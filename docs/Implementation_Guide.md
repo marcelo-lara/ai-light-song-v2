@@ -146,4 +146,6 @@ Before the full pipeline is considered ready, the implementation should expose a
 
 This first-phase validation target is documented in `docs/phase_1_validation_cli.md`.
 
+That supporting document defines the recommended CLI command shape, required flags, exit codes, and the expected machine-readable validation report structure.
+
 The final documentation set must be internally consistent with the sample artifact family already present in `data/artifacts/What a Feeling - Courtney Storm/`.
