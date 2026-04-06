@@ -30,7 +30,7 @@ The repository structure is part of the implementation contract.
 
 - Reference data must never be copied into generated outputs as a fallback.
 - The term `reference` is reserved for `/data/reference/` only.
-- Generated artifacts inside `data/artifacts/` must be grouped under the producing model or tool when that provenance matters, such as `essentia/` or `moises/`.
+- Generated artifacts inside `data/artifacts/` must be grouped under the producing model or tool when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
 - All generated artifacts must come from inference, heuristics, or rule logic.
 - All development and validation must run inside the project Docker environment.
 - Time values are stored in seconds.
@@ -98,7 +98,7 @@ Convert songs into structured musical analysis artifacts and then into fixture-a
 - Validation-only truth data lives in `data/reference/<Song - Artist>/`.
 - Final outputs live in `data/output/<Song - Artist>/`.
 
-Inside `data/artifacts/<Song - Artist>/`, generated files should use model-scoped folders when relevant. Example: `data/artifacts/<Song - Artist>/essentia/beats.json`.
+Inside `data/artifacts/<Song - Artist>/`, generated files should use producer-scoped folders when relevant. Examples: `data/artifacts/<Song - Artist>/essentia/beats.json`, `data/artifacts/<Song - Artist>/section_segmentation/sections.json`, `data/artifacts/<Song - Artist>/energy_summary/features.json`, `data/artifacts/<Song - Artist>/pattern_mining/chord_patterns.json`.
 
 ### Canonical Upstream Layers
 
@@ -122,6 +122,7 @@ This file is the explicit EPIC 5.1 output and the required input to downstream l
 
 - Never copy from `data/reference/` into generated artifacts.
 - Never create `reference/` subfolders under `data/artifacts/`.
+- Do not keep future generated chord, section, or feature artifacts at flat top-level artifact paths when a producer namespace is known.
 - Always align time-based outputs to the canonical beat and bar grid when the story requires it.
 - Keep all artifact paths and `generated_from` metadata explicit.
 - Keep schemas versioned.

@@ -58,19 +58,23 @@ Primary source inputs: harmonic layer outputs plus the beat and bar grid.
 
 ## Supporting Artifact Files
 
-### `features.json`
+### `energy_summary/features.json`
 
 Stores base feature summaries and shared analysis signals used by higher-level layers.
 
-### `sections.json`
+### `section_segmentation/sections.json`
 
 Stores section windows and labels used across symbolic, energy, and merged artifacts.
 
-### `hints.json`
+### `energy_summary/hints.json`
 
 Stores rises, drops, or other hint-level events that assist later aggregation.
 
-### `stem_patterns.json`
+### `pattern_mining/chord_patterns.json`
+
+Stores repeated harmonic pattern summaries used by harmonic and musical layers.
+
+### `pattern_mining/stem_patterns.json`
 
 Stores repeated stem-aware patterns used for comparison or pattern-aware lighting logic.
 
@@ -100,5 +104,5 @@ This file is the explicit handoff artifact for EPIC 5.2 and EPIC 5.3.
 - All major artifacts should record upstream dependencies in `generated_from`.
 - Shared timing must remain consistent across all layer files.
 - The term `reference` is reserved for `/data/reference/` only and must not be used for inferred artifacts under `data/artifacts/`.
-- Generated artifacts should use model- or tool-scoped subfolders when that provenance matters, such as `essentia/` for inferred beats.
+- Generated artifacts should use producer-scoped subfolders when that provenance matters, such as `essentia/` for inferred beats, `section_segmentation/` for inferred sections, `energy_summary/` for derived feature summaries, and `pattern_mining/` for pattern outputs.
 - Reference inputs under `data/reference/` may be used for validation only.

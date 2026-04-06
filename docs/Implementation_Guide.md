@@ -21,7 +21,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 
 - Generated files must include explicit `generated_from` metadata when practical.
 - The term `reference` is reserved for `/data/reference/` and human-validated, read-only source-of-truth material only.
-- Generated files inside `data/artifacts/` must use model- or tool-scoped namespaces when that provenance matters, such as `essentia/` or `moises/`.
+- Generated files inside `data/artifacts/` must use producer-scoped namespaces when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
 - Time values are expressed in seconds.
 - Bars are 1-indexed.
 - Beat and bar alignment come from the canonical EPIC 1.2 timing grid.
