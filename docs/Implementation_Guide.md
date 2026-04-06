@@ -1,279 +1,137 @@
-# 🎵 Audio → Lighting Pipeline (Implementation Guide)
+# Audio -> Lighting Pipeline Implementation Guide
 
-## 🧭 Overview
+## Purpose
 
-This document defines the full pipeline to transform audio into structured, LLM-ready data for DMX lighting generation.
+This document is the canonical hub for the repository. It defines the pipeline structure, repository contracts, story ordering, and the relationship between detailed story-level specifications.
 
-Architecture is divided into **4 Layers (Epics)**:
+It is intentionally concise. Detailed implementation rules live in the linked story files.
 
-- EPIC 1 → Audio Preprocessing
-- EPIC 2 → Harmonic Summary
-- EPIC 3 → Symbolic Event Summary
-- EPIC 4 → Audio Energy Summary
+## Repository Contracts
 
----
+### Folder semantics
 
-# 🧱 EPIC 1 — Audio Preprocessing Pipeline
+- `data/songs/`: source `.mp3` files for analysis.
+- `data/stems/`: temporary stem and `.wav` outputs.
+- `data/artifacts/`: intermediate artifacts such as beats, chords, sections, layer outputs, merged layer files, and validation notes.
+- `data/reference/`: validation-only reference data used to evaluate model quality. It must never be copied into generated outputs.
+- `data/output/`: final outputs such as lighting scores and future DMX-ready event exports.
+- `docs/`: implementation contracts, schemas, and developer guidance.
 
-## 🎯 Goal
-Prepare clean, structured inputs for feature extraction.
+### Global data rules
 
-## 🧩 Story 1.1 — Stem Separation
+- Generated files must include explicit `generated_from` metadata when practical.
+- The term `reference` is reserved for `/data/reference/` and human-validated, read-only source-of-truth material only.
+- Generated files inside `data/artifacts/` must use model- or tool-scoped namespaces when that provenance matters, such as `essentia/` or `moises/`.
+- Time values are expressed in seconds.
+- Bars are 1-indexed.
+- Beat and bar alignment come from the canonical EPIC 1.2 timing grid.
+- Schemas must be versioned.
+- Reference files are for validation only, not fallback generation.
 
-### Tools
-- Demucs
+## Containerized Development Rule
 
-### Tasks
-- Split audio into vocals, drums, bass, harmonic
-- Normalize stems
-- Cache results
+All development, validation, and sample-song execution must run inside the project Docker environment.
 
-### Output
-```json
-  "stems": {
-    "bass": "path",
-    "drums": "path",
-    "harmonic": "path",
-    "vocals": "path"
-  }
-}
-```
+- Target environment: NVIDIA GPU-enabled Docker runtime.
+- Do not depend on host-installed Python packages.
+- Validate tool imports and sample-song runs inside the container.
 
----
+See `docs/docker_development.md` and the repository `Dockerfile` for the runtime contract.
 
-## 🧩 Story 1.2 — Beat & Tempo Detection
+## Pipeline Overview
 
-### Tools
-- Essentia
+The pipeline is divided into five epics:
 
-### Tasks
-- Detect BPM
-- Extract beats
-- Compute bars
+1. EPIC 1: audio preprocessing.
+2. EPIC 2: harmonic summary.
+3. EPIC 3: symbolic event summary.
+4. EPIC 4: audio energy summary.
+5. EPIC 5: unified music feature assembly and lighting design.
 
-### Output
-```json
-{ 
-  "tempo": 124, 
-  "beats": [...], 
-  "bars": [...] 
-}
-```
+## EPIC 1: Audio Preprocessing Pipeline
 
----
+Goal: prepare clean, aligned source material for all downstream analysis.
 
-# 🎼 EPIC 2 — Harmonic Summary
+| Story | Intent | Primary outputs | Detailed spec |
+| --- | --- | --- | --- |
+| 1.1 | Stem separation and caching | normalized stems and stem metadata | `docs/1.1.stem_separation_story.md` |
+| 1.2 | Beat, tempo, and bar grid detection | BPM, beats, bars, timing grid | `docs/1.2.beat_tempo_detection_story.md` |
 
-## 🎯 Goal
-Provide harmonic context
+## EPIC 2: Harmonic Summary
 
-## 🧩 Story 2.1 — HPCP Feature Extraction
+Goal: provide tonal, chordal, and harmonic-motion context.
 
-### Tools
-- Essentia
+| Story | Intent | Primary outputs | Detailed spec |
+| --- | --- | --- | --- |
+| 2.1 | HPCP extraction | beat-aligned chroma/HPCP features | `docs/2.1.hpcp_extraction_story.md` |
+| 2.2 | Chord inference | chord probabilities, decoded chord events | `docs/2.2.chord_detection_story.md` |
+| 2.3 | Key and tonal center detection | global key and optional section key estimates | `docs/2.3.key_tonal_center_story.md` |
+| 2.4 | Harmonic feature derivation | cadence, tension, mobility, role summaries | `docs/2.4.harmonic_features_story.md` |
 
-### Tasks
-- Extract HPCP from harmonic stem 
-- Apply tuning correction 
-- Aggregate per beat
+Representative artifact: `layer_a_harmonic.json`.
 
-### Acceptance
-- Stable chroma representation across time
+## EPIC 3: Symbolic Event Summary
 
-## 🧩 Story 2.2 — Chords
+Goal: translate audio into note-level and phrase-level musical behavior.
 
-Phase 1: template matching + HMM 
-Phase 2: CRNN model
+| Story | Intent | Primary outputs | Detailed spec |
+| --- | --- | --- | --- |
+| 3.1 | MIDI-like transcription | note events from harmonic and bass stems | `docs/3.1.midi_transcription_story.md` |
+| 3.2 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/3.2.symbolic_feature_engineering_story.md` |
+| 3.3 | Temporal alignment | beat- and bar-aligned symbolic timeline | `docs/3.3.temporal_alignment_story.md` |
+| 3.4 | LLM-friendly abstraction | musician-readable symbolic descriptions | `docs/3.4.llm_friendly_abstraction_story.md` |
 
-### Tools
-- Template + HMM
-- Viterbi decoding
+Representative artifact: `layer_b_symbolic.json`.
 
-### Tasks 
-- Generate chord probabilities 
-- Decode with Viterbi 
+## EPIC 4: Audio Energy Summary
 
-### Output 
-```json
-  { "chords": [ {"time": 0.0, "label": "Am", "confidence": 0.82} ] } 
-```
-### Acceptance 
-- Progression matches human expectation for test songs
-
-## 🧩 Story 2.3 — Key & Tonal Center Detection
-Detect global key
-
-### Tools 
-- Essentia key detection 
-
-### Tasks 
-- Detect global key 
-- Optional: local key per section 
-
-### Output 
-```json
-{ "key": "A minor" }
-```
-
-## 🧩 Story 2.4 — Harmonic Features
-
-- tension
-- cadence
-
-### Tasks 
-Extract: 
-- root 
-- chord quality 
-- cadence detection 
-- harmonic tension score 
-
-### Output
-```json
- { "harmonic_features": { "tension": 0.7, "cadence": "V-I" } }
-```
-
----
-
-# 🎹 EPIC 3 — Symbolic Event Summary
-
-## 🎯 Goal
-Translate audio into musical behavior
-
-## 🧩 Story 3.1 — MIDI-like Transcription (CORE)
-
-### Tools
-- Basic Pitch (Spotify)
+Goal: capture physical intensity, brightness, transients, and structure.
 
-### Tasks
-- Run transcription on:
-  - harmonic stem (`other.wav` in current Demucs output)
-  - bass stem (`bass.wav`)
+| Story | Intent | Primary outputs | Detailed spec |
+| --- | --- | --- | --- |
+| 4.1 | Low-level energy feature extraction | frame- and beat-level loudness, centroid, flux, onset | `docs/4.1.energy_feature_schema.md` |
+| 4.2 | Section segmentation | section boundaries, labels, confidence | `docs/4.2.section_segmentation_story.md` |
+| 4.3 | Derived energy features | energy cards, peaks, dips, accent candidates | `docs/4.3.energy_feature_derivation_story.md` |
 
-- Extract:
-  - note onsets
-  - pitch (MIDI)
-  - duration
-  - velocity
-  - confidence (optional)
-- Merge note events into a unified timeline aligned to the canonical beat grid
-
-### Output
-```json
-{
-  "notes": [
-    {"time": 1.23, "pitch": 64, "duration": 0.2, "velocity": 0.5, "confidence": 0.8}
-  ]
-}
-```
-
-### Acceptance
-- Captures main harmonic structure from the harmonic stem
-- Captures bass line movement clearly from the bass stem
-- Timing aligns with the beat grid and analyzer section windows
-- Feeds Story 3.2 feature engineering for density, contour, repetition, sustain, and bass motion
-
-## 🧩 Story 3.2 — Feature Engineering
-
-- density
-- contour
-- repetition
-- bass motion
-
-### Tasks
-Compute:
-- note density (per beat/bar) 
-- active note count 
-- pitch range 
-- register centroid 
-- melodic contour (slope) 
-- bass movement 
-- repetition score 
-- sustain ratio 
-- pitch bend activity
-
-### Output
-```json
-Output { "symbolic_features": { "density": 0.65, "melodic_contour": "rising", "bass_motion": "stepwise" } }
-```
-## 🧩 Story 3.3 — Temporal Alignment
-
-### Tasks
-Snap notes to:
-- beat grid (from EPIC 1.2)
-- bars
-
-## 🧩 Story 3.4 — LLM-Friendly Abstraction
-
-### Tasks 
-Convert raw features → descriptors 
-
-### Output (IMPORTANT)
-```json
-{ "description": "Repeated staccato mid-register pattern with rising melodic contour and stable bass" } 
-```
-
-### Acceptance 
-- Description is understandable by a musician
----
-
-# 🔊 EPIC 4 — Audio Energy Summary
-
-## 🎯 Goal
-Capture physical intensity & motion
-
-## 🧩 Story 4.1 — Features
-
-### Tools
-- Essentia
-
-### Tasks
-Extract:
-- loudness
-- spectral centroid
-- spectral flux
-- onset strength
-
-### Output
-
-see `4.1.energy_feature_schema.md`
-
-## 🧩 Story 4.2 — Section Segmentation
-
-see `4.2.section_segmentation_story.md`
-
-## 🧩 Story 4.3 — Energy Features
-
-- energy curve 
-- intensity score 
-- transient density
-
-## 🔗 Final IR
-```json
-{
-  "tempo": {},
-  "beats": [],
-  "bars": [],
-  "chords": [],
-  "key": "",
-  "notes": [],
-  "symbolic_features": {},
-  "description": "",
-  "energy": {},
-  "sections": []
-}
-```
-
----
-
-# 💡 EPIC 5 — Light Show Design
-
-## 🧩 Story 5.1 
-Translate analyzed audio energy and musical features into **DMX lighting behaviors**.
-see `5.1.energy_to_lighting_mapping.md`
-
-## 🧩 Story 5.2
-Translate analyzed musical + energy features into:
-1. Fixture-specific lighting behaviors (DMX-ready)
-2. A fully populated `lighting_score_template.md` for LLM + human refinement
-
-see `5.2.fixture_aware_mapping_story`
+Representative artifact: `layer_c_energy.json`.
+
+## EPIC 5: Unified Music Feature Assembly and Light Show Design
+
+Goal: consolidate upstream layer outputs into a single handoff artifact, then translate that artifact into lighting behavior and a human-readable lighting score.
+
+| Story | Intent | Primary outputs | Detailed spec |
+| --- | --- | --- | --- |
+| 5.1 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/5.1.music_feature_layers_story.md` |
+| 5.2 | Feature-to-lighting mapping | normalized lighting events and mapping logic | `docs/5.2.energy_to_lighting_mapping.md` |
+| 5.3 | Fixture-aware orchestration | fixture-aware events and `lighting_score.md` | `docs/5.3.fixture_aware_mapping_story.md` |
+
+Representative artifacts: `layer_d_musical.json`, `music_feature_layers.json`, `lighting_score.md`.
+
+## Canonical Artifact Flow
+
+The expected high-level artifact dependency chain is:
+
+1. Source song in `data/songs/`.
+2. Stem outputs in `data/stems/`.
+3. Timing, harmonic, symbolic, and energy artifacts in `data/artifacts/<Song - Artist>/`.
+4. Unified cross-layer handoff file `music_feature_layers.json` in `data/artifacts/<Song - Artist>/`.
+5. Final outputs in `data/output/<Song - Artist>/`.
+
+## Required Supporting Documents
+
+- `docs/layer_manifest.md`: layer-by-layer artifact contract.
+- `docs/lighting_score_template.md`: stable lighting-score structure.
+- `docs/docker_development.md`: container runtime and validation contract.
+
+## Validation Expectations
+
+Every implementation story must define:
+
+- exact inputs and upstream dependencies
+- generated artifact paths
+- schema examples
+- acceptance criteria
+- failure modes
+- validation against sample artifacts and reference data
+
+The final documentation set must be internally consistent with the sample artifact family already present in `data/artifacts/What a Feeling - Courtney Storm/`.
