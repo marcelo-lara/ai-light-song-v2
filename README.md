@@ -12,8 +12,9 @@ The pipeline transforms an input song into progressively richer artifacts:
 2. Harmonic analysis extracts key, chords, and harmonic motion.
 3. Symbolic analysis extracts note events and higher-level musical descriptors.
 4. Energy analysis extracts loudness, brightness, transients, and sections.
-5. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
-6. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
+5. Pattern mining extracts repeated multi-bar chord progressions into Layer D summaries.
+6. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
+7. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
 
 ## Repository Layout
 
@@ -29,6 +30,7 @@ The repository structure is part of the implementation contract.
 ## Hard Rules
 
 - Reference data must never be copied into generated outputs as a fallback.
+- Reference files are optional. The pipeline must infer outputs from the documented analysis stages first, then compare against reference data only when those files are available.
 - The term `reference` is reserved for `/data/reference/` only.
 - Generated artifacts inside `data/artifacts/` must be grouped under the producing model or tool when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
 - All generated artifacts must come from inference, heuristics, or rule logic.
@@ -39,12 +41,12 @@ The repository structure is part of the implementation contract.
 
 ## Primary Artifacts
 
-The current sample artifact set demonstrates the intended contract:
+The intended contract defines these primary artifacts:
 
 - `layer_a_harmonic.json`: chord events, key, cadence, harmonic summaries.
 - `layer_b_symbolic.json`: note events, symbolic summaries, contour and density views.
 - `layer_c_energy.json`: loudness, onset, centroid, energy sections, accent candidates.
-- `layer_d_musical.json`: repeated harmonic or structural patterns.
+- `layer_d_patterns.json`: repeated multi-bar chord progressions and their occurrences.
 - `music_feature_layers.json`: unified cross-layer timeline and downstream lighting handoff artifact.
 - `lighting_score.md`: final human-readable lighting design document.
 
@@ -53,9 +55,10 @@ The current sample artifact set demonstrates the intended contract:
 - `docs/Implementation_Guide.md`: canonical hub for the full pipeline and repository contracts.
 - `docs/4.1.energy_feature_schema.md`: low-level energy schema.
 - `docs/4.2.section_segmentation_story.md`: section inference contract.
-- `docs/5.1.music_feature_layers_story.md`: unified layer assembly contract.
-- `docs/5.2.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
-- `docs/5.3.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
+- `docs/5.1.find_chord_patterns_story.md`: Layer D chord-pattern detection contract.
+- `docs/5.2.music_feature_layers_story.md`: unified layer assembly contract.
+- `docs/5.3.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
+- `docs/5.4.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
 
 Additional story-level specifications under `docs/` define the exact implementation contract for each Epic and story.
 
@@ -111,8 +114,9 @@ Recommended implementation order:
 1. EPIC 1: preprocessing and timing grid.
 2. EPIC 4: energy features and section structure.
 3. EPIC 2 and EPIC 3: harmonic and symbolic refinement.
-4. EPIC 5.1: unified music feature layer assembly.
-5. EPIC 5.2 and EPIC 5.3: lighting mapping and score generation.
+4. EPIC 5.1: chord-pattern detection for Layer D.
+5. EPIC 5.2: unified music feature layer assembly.
+6. EPIC 5.3 and EPIC 5.4: lighting mapping and score generation.
 
 This ordering reduces downstream churn because lighting behavior depends on stable upstream artifact contracts.
 
@@ -139,13 +143,13 @@ Inside `data/artifacts/<Song - Artist>/`, generated files should use producer-sc
 - `layer_a_harmonic.json`
 - `layer_b_symbolic.json`
 - `layer_c_energy.json`
-- `layer_d_musical.json`
+- `layer_d_patterns.json`
 
 ### Canonical Unified Handoff Artifact
 
 - `music_feature_layers.json`
 
-This file is the explicit EPIC 5.1 output and the required input to downstream lighting-mapping stories.
+This file is the explicit EPIC 5.2 output and the required input to downstream lighting-mapping stories.
 
 ### Required Downstream Outputs
 
