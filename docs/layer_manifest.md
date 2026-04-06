@@ -25,6 +25,7 @@ Contains symbolic and note-event analysis outputs such as:
 
 - note events
 - phrase contours
+- phrase anchors or phrase-group timing references when available
 - density per bar
 - symbolic summaries
 - bass movement events
@@ -45,16 +46,18 @@ Contains energy analysis outputs such as:
 
 Primary source stories: EPIC 4.1 through EPIC 4.3.
 
-### `layer_d_musical.json`
+### `layer_d_patterns.json`
 
-Contains repeated-pattern and musical structure outputs such as:
+Contains repeated harmonic-pattern outputs such as:
 
 - pattern definitions
+- representative bar sequences
 - pattern occurrences
 - mismatch counts
-- motif-level pattern summaries
 
-Primary source inputs: harmonic layer outputs plus the beat and bar grid.
+This layer is for repeated chord-progression structure. It complements, and does not replace, note-level or motif-level repetition summaries in `layer_b_symbolic.json`.
+
+Primary source story: EPIC 5.1.
 
 ## Supporting Artifact Files
 
@@ -72,7 +75,7 @@ Stores rises, drops, or other hint-level events that assist later aggregation.
 
 ### `pattern_mining/chord_patterns.json`
 
-Stores repeated harmonic pattern summaries used by harmonic and musical layers.
+Stores the producer-scoped output of `find_chord_patterns(...)` before it is promoted into the canonical Layer D artifact.
 
 ### `pattern_mining/stem_patterns.json`
 
@@ -86,17 +89,40 @@ Stores canonical song metadata and references to major generated files.
 
 ### `music_feature_layers.json`
 
-This is the EPIC 5.1 output. It combines:
+This is the EPIC 5.2 output. It combines:
 
 - shared metadata
-- timeline objects such as beats, bars, sections, and accent windows
+- timeline objects such as beats, bars, sections, phrase anchors, and accent windows
 - harmonic layer content
 - symbolic layer content
 - energy layer content
-- musical pattern content
+- pattern content
+- lighting-facing cue-anchor references
 - downstream mapping notes
 
-This file is the explicit handoff artifact for EPIC 5.2 and EPIC 5.3.
+The symbolic layer remains the owner of motif-level repetition summaries, while Layer D contributes harmonic progression-pattern structure.
+
+For lighting-facing integration, the unified artifact should preserve these canonical cross-layer reference fields when available:
+
+- `timeline.phrases[].id`
+- `timeline.phrases[].phrase_group_id`
+- `timeline.phrases[].start_s`
+- `timeline.phrases[].end_s`
+- `layers.symbolic.motif_summary.dominant_motif_id`
+- `layers.symbolic.motif_summary.motif_groups[].id`
+- `layers.patterns.occurrences[]`
+- `layers.patterns.occurrences[].pattern_id`
+- `layers.patterns.occurrences[].start_s`
+- `layers.patterns.occurrences[].end_s`
+- `lighting_context.cue_anchors[].id`
+- `lighting_context.cue_anchors[].time_s`
+- `lighting_context.cue_anchors[].anchor_type`
+- `lighting_context.pattern_callbacks[].pattern_id`
+- `lighting_context.pattern_callbacks[].callback_action`
+- `lighting_context.motif_callbacks[].motif_group_id`
+- `lighting_context.motif_callbacks[].callback_action`
+
+This file is the explicit handoff artifact for EPIC 5.3 and EPIC 5.4.
 
 ## Cross-File Rules
 
@@ -105,4 +131,4 @@ This file is the explicit handoff artifact for EPIC 5.2 and EPIC 5.3.
 - Shared timing must remain consistent across all layer files.
 - The term `reference` is reserved for `/data/reference/` only and must not be used for inferred artifacts under `data/artifacts/`.
 - Generated artifacts should use producer-scoped subfolders when that provenance matters, such as `essentia/` for inferred beats, `section_segmentation/` for inferred sections, `energy_summary/` for derived feature summaries, and `pattern_mining/` for pattern outputs.
-- Reference inputs under `data/reference/` may be used for validation only.
+- Reference inputs under `data/reference/` are always read-only and may be used for validation or explicit review only.

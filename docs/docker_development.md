@@ -101,6 +101,7 @@ At minimum, developers should validate the following inside Docker:
 4. A sample song can be analyzed end to end without relying on host dependencies.
 5. Generated outputs are written to `data/artifacts/` and `data/output/`.
 6. The phase-1 validation CLI can compare inferred chords and sections against validation-only files in `data/reference/`.
+7. Inference still runs when those reference files are missing; comparison is optional and only happens when the relevant files are available.
 
 ## Smoke Test Expectations
 

@@ -10,6 +10,7 @@
 ## Code and Design Policy
 - Remove deprecated helpers, dead code, and compatibility shims.
 - Prefer correctness and clarity over backward compatibility in unfinished internal contracts.
+- No substitute inference algorithm when a story names a primary dependency. Do not implement a custom inference algorithm when a well-known one is named in the story. Fail gracefully if the story's named dependencies cannot be used.
 - Keep public behavior explicit. Do not hide important behavior behind silent fallbacks.
 - Update repository documentation when contracts, artifact layouts, commands, or validation behavior change.
 - Document current status only. Do not describe repo behavior as "new" or "old" in durable docs.
