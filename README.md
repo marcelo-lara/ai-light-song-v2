@@ -63,12 +63,46 @@ Additional story-level specifications under `docs/` define the exact implementat
 
 The repository is Docker-first.
 
-- Use an NVIDIA CUDA-enabled Docker image.
+- Use the root `Dockerfile` and `docker-compose.yml` as the canonical local development environment.
+- The Docker image is NVIDIA CUDA-enabled.
+- The current local development setup uses an `NVIDIA GeForce GTX 1650`, and the container workflow is configured to take advantage of that GPU.
 - Validate all tooling and sample-song runs inside the container.
 - Do not rely on host-installed Python packages or audio tooling.
 - Treat the Docker image as the authoritative developer runtime.
 
-The detailed environment contract lives in `docs/docker_development.md` and the repo root `Dockerfile`.
+The detailed environment contract lives in `docs/docker_development.md`, the repo root `Dockerfile`, and `docker-compose.yml`.
+
+### Docker Setup
+
+- `Dockerfile`: multi-stage CUDA-based build with `python-base`, `builder`, and `runtime` stages.
+- `docker-compose.yml`: defines the `app` service used for interactive development.
+- The Compose service builds the `runtime` target, mounts the repository at `/app`, mounts `./data` at `/data`, and requests `gpus: all`.
+
+### Recommended Commands
+
+Build the development image:
+
+```bash
+docker compose build
+```
+
+Start an interactive shell in the development container:
+
+```bash
+docker compose run --rm app
+```
+
+Start the long-running development service:
+
+```bash
+docker compose up
+```
+
+Inside the container:
+
+- application code is available under `/app`
+- song inputs and generated artifacts are available under `/data`
+- all implementation validation should run from this environment
 
 ## Implementation Priorities
 

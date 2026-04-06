@@ -1,0 +1,17 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: ai-light-song-v2:dev
+    working_dir: /app
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/app
+      - ./data:/data
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+    gpus: all

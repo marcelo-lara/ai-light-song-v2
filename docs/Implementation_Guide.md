@@ -122,6 +122,7 @@ The expected high-level artifact dependency chain is:
 - `docs/layer_manifest.md`: layer-by-layer artifact contract.
 - `docs/lighting_score_template.md`: stable lighting-score structure.
 - `docs/docker_development.md`: container runtime and validation contract.
+- `docs/phase_1_validation_cli.md`: first-phase analyzer entry point and reference-comparison contract.
 
 ## Validation Expectations
 
@@ -133,5 +134,16 @@ Every implementation story must define:
 - acceptance criteria
 - failure modes
 - validation against sample artifacts and reference data
+
+## First-Phase Validation Target
+
+Before the full pipeline is considered ready, the implementation should expose a first-phase validation entry point, preferably a CLI analyzer, that can:
+
+1. run against a real song such as `What a Feeling - Courtney Storm.mp3`
+2. generate inferred analysis artifacts inside `data/artifacts/<Song - Artist>/`
+3. compare inferred chord and section outputs against validation-only source-of-truth files in `data/reference/<Song - Artist>/moises/`
+4. emit a validation summary or report without copying reference values into generated artifacts
+
+This first-phase validation target is documented in `docs/phase_1_validation_cli.md`.
 
 The final documentation set must be internally consistent with the sample artifact family already present in `data/artifacts/What a Feeling - Courtney Storm/`.
