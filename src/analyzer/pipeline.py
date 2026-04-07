@@ -6,6 +6,7 @@ from analyzer.paths import SongPaths
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.harmonic import extract_hpcp_and_chords
+from analyzer.stages.light_design import generate_lighting_score
 from analyzer.stages.lighting import generate_lighting_events
 from analyzer.stages.patterns import extract_chord_patterns
 from analyzer.stages.sections_v2 import segment_sections
@@ -32,6 +33,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     patterns = extract_chord_patterns(paths, timing, harmonic)
     unified = assemble_music_feature_layers(paths, timing, harmonic, symbolic, energy, patterns, sections)
     lighting = generate_lighting_events(paths)
+    lighting_score = generate_lighting_score(paths)
 
     info_payload = {
         "schema_version": "1.0",
@@ -54,6 +56,9 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "timing_grid": str(paths.artifact("essentia", "beats.json")),
+        },
+        "outputs": {
+            "lighting_score": str(paths.song_output_dir / "lighting_score.md"),
         },
     }
     write_json(paths.artifact("info.json"), info_payload)
