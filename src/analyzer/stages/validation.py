@@ -86,7 +86,7 @@ def build_validation_report(
         },
         "generated_artifacts": {
             "harmonic_layer_file": str(harmonic_path),
-            "energy_layer_file": str(paths.artifact("energy_summary", "features.json")),
+            "energy_layer_file": str(paths.artifact("layer_c_energy.json")),
             "sections_file": str(sections_path),
         },
         "validation": {

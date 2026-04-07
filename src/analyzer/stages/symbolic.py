@@ -795,6 +795,155 @@ def _compute_symbolic_summary(
     }
 
 
+def _global_density_label(density_mean: float | None) -> str:
+    if density_mean is None:
+        return "unknown density"
+    if density_mean >= 18.0:
+        return "very dense"
+    if density_mean >= 12.0:
+        return "dense"
+    if density_mean >= 7.0:
+        return "moderately dense"
+    if density_mean >= 3.0:
+        return "light"
+    return "sparse"
+
+
+def _phrase_density_label(density: float | None) -> str:
+    if density is None:
+        return "unknown activity"
+    if density >= 70.0:
+        return "high activity"
+    if density >= 50.0:
+        return "active motion"
+    if density >= 30.0:
+        return "moderate activity"
+    return "restrained activity"
+
+
+def _repetition_label(score: float | None) -> str:
+    if score is None:
+        return "unknown repetition"
+    if score >= 0.75:
+        return "strong repetition"
+    if score >= 0.4:
+        return "moderate repetition"
+    if score >= 0.15:
+        return "occasional repetition"
+    return "limited repetition"
+
+
+def _sustain_label(ratio: float | None) -> str:
+    if ratio is None:
+        return "unknown sustain"
+    if ratio >= 0.15:
+        return "long-held notes"
+    if ratio >= 0.08:
+        return "mixed sustain"
+    if ratio >= 0.04:
+        return "mostly short notes"
+    return "clipped note lengths"
+
+
+def _format_float(value: float | None, digits: int = 2) -> str:
+    if value is None:
+        return "n/a"
+    return f"{float(value):.{digits}f}"
+
+
+def _build_global_description(symbolic_summary: dict, density_per_bar: list[dict]) -> str:
+    density_values = [float(row["density"]) for row in density_per_bar]
+    density_mean = mean(density_values) if density_values else None
+    return (
+        f"{str(symbolic_summary['texture']).capitalize()} {symbolic_summary['register_label']}-register material "
+        f"with {symbolic_summary['melodic_contour']} contour, {str(_global_density_label(density_mean))} activity "
+        f"({_format_float(density_mean, 1)} notes per bar), {symbolic_summary['bass_motion']} bass movement, "
+        f"{_repetition_label(float(symbolic_summary['repetition_score']))}, and {_sustain_label(float(symbolic_summary['sustain_ratio']))}."
+    )
+
+
+def _build_section_descriptions(section_summaries: list[dict]) -> list[dict]:
+    descriptions: list[dict] = []
+    for summary in section_summaries:
+        section_name = summary["section_name"] or summary["section_id"]
+        description = (
+            f"{str(section_name).capitalize()} spans bars {summary['bar_start']}-{summary['bar_end']} with a {summary['texture']} texture, "
+            f"{summary['melodic_contour']} contour, {_global_density_label(summary['density_mean'])} activity "
+            f"({_format_float(summary['density_mean'], 1)} notes per bar), {_repetition_label(summary['repetition_score'])}, "
+            f"and {_sustain_label(summary['sustain_ratio'])}."
+        )
+        descriptions.append(
+            {
+                "section_id": summary["section_id"],
+                "section_name": summary["section_name"],
+                "description": description,
+            }
+        )
+    return descriptions
+
+
+def _build_phrase_group_descriptions(phrase_windows: list[dict], motif_summary: dict) -> list[dict]:
+    phrase_windows_by_group: dict[str, list[dict]] = {}
+    for window in phrase_windows:
+        phrase_windows_by_group.setdefault(str(window["phrase_group_id"]), []).append(window)
+
+    motif_by_group: dict[str, dict] = {}
+    for motif_group in motif_summary.get("motif_groups", []):
+        for phrase_group_id in motif_group.get("phrase_group_ids", []):
+            motif_by_group[str(phrase_group_id)] = motif_group
+
+    descriptions: list[dict] = []
+    for phrase_group in motif_summary.get("repeated_phrase_groups", []):
+        group_id = str(phrase_group["id"])
+        windows = sorted(phrase_windows_by_group.get(group_id, []), key=lambda item: float(item["start_s"]))
+        if not windows:
+            continue
+        density_mean = mean(float(window["density"]) for window in windows)
+        dominant_section = Counter(
+            str(window["section_name"] or window["section_id"])
+            for window in windows
+        ).most_common(1)[0][0]
+        contours = Counter(str(window["melodic_contour"]) for window in windows)
+        contour = contours.most_common(1)[0][0]
+        motif_group = motif_by_group.get(group_id)
+        motif_id = motif_group.get("id") if motif_group else None
+        description = (
+            f"{phrase_group['label']} recurs {phrase_group['occurrence_count']} times, usually in {dominant_section}, "
+            f"with {contour} contour and {_phrase_density_label(density_mean)} ({_format_float(density_mean, 1)} notes per bar)."
+        )
+        descriptions.append(
+            {
+                "phrase_group_id": group_id,
+                "motif_group_id": motif_id,
+                "description": description,
+            }
+        )
+    return descriptions
+
+
+def _build_symbolic_abstraction(
+    symbolic_summary: dict,
+    density_per_bar: list[dict],
+    section_summaries: list[dict],
+    phrase_windows: list[dict],
+    motif_summary: dict,
+) -> dict:
+    description = _build_global_description(symbolic_summary, density_per_bar)
+    return {
+        "description": description,
+        "core_terms": {
+            "texture": symbolic_summary["texture"],
+            "register_label": symbolic_summary["register_label"],
+            "melodic_contour": symbolic_summary["melodic_contour"],
+            "bass_motion": symbolic_summary["bass_motion"],
+            "repetition_level": _repetition_label(float(symbolic_summary["repetition_score"])),
+            "sustain_profile": _sustain_label(float(symbolic_summary["sustain_ratio"])),
+        },
+        "section_descriptions": _build_section_descriptions(section_summaries),
+        "phrase_group_descriptions": _build_phrase_group_descriptions(phrase_windows, motif_summary),
+    }
+
+
 def extract_symbolic_features(paths: SongPaths, stems: dict[str, str], timing: dict, sections_payload: dict) -> dict:
     raw_dir = paths.artifact("symbolic_transcription", "basic_pitch")
     ensure_directory(raw_dir)
@@ -873,6 +1022,18 @@ def extract_symbolic_features(paths: SongPaths, stems: dict[str, str], timing: d
         if motif_groups
         else None
     )
+    motif_summary = {
+        "dominant_motif_id": dominant_motif_id,
+        "motif_groups": motif_groups,
+        "repeated_phrase_groups": repeated_phrase_groups,
+    }
+    abstraction = _build_symbolic_abstraction(
+        symbolic_summary,
+        density_per_bar,
+        section_summaries,
+        phrase_windows,
+        motif_summary,
+    )
 
     validation_payload = {
         "schema_version": SCHEMA_VERSION,
@@ -929,15 +1090,13 @@ def extract_symbolic_features(paths: SongPaths, stems: dict[str, str], timing: d
             ],
             "promoted_sources": promoted_sources,
         },
+        "description": abstraction["description"],
+        "abstraction": abstraction,
         "density_per_beat": density_per_beat,
         "density_per_bar": density_per_bar,
         "section_summaries": section_summaries,
         "phrase_windows": phrase_windows,
-        "motif_summary": {
-            "dominant_motif_id": dominant_motif_id,
-            "motif_groups": motif_groups,
-            "repeated_phrase_groups": repeated_phrase_groups,
-        },
+        "motif_summary": motif_summary,
         "validation_summary": validation_payload,
         "transcription_sources": {
             source_stem: {

@@ -88,7 +88,7 @@ Goal: translate audio into note-level and phrase-level musical behavior.
 | 3.1 | MIDI-like transcription | validated multi-source note events from stems and full mix | `docs/3.1.midi_transcription_story.md` |
 | 3.2 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/3.2.symbolic_feature_engineering_story.md` |
 | 3.3 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/3.3.temporal_alignment_story.md` |
-| 3.4 | LLM-friendly abstraction | musician-readable symbolic descriptions | `docs/3.4.llm_friendly_abstraction_story.md` |
+| 3.4 | LLM-friendly abstraction | deterministic musician-readable symbolic descriptions | `docs/3.4.llm_friendly_abstraction_story.md` |
 
 Representative artifact: `layer_b_symbolic.json`.
 

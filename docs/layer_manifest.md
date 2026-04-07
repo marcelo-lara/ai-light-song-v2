@@ -28,6 +28,7 @@ Contains symbolic and note-event analysis outputs such as:
 - phrase contours
 - phrase anchors or phrase-group timing references when available
 - symbolic summaries
+- deterministic musician-readable descriptions
 - bass movement events
 - repeated motifs
 - section-level symbolic cards
