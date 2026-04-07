@@ -85,9 +85,9 @@ Goal: translate audio into note-level and phrase-level musical behavior.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 3.1 | MIDI-like transcription | note events from harmonic and bass stems | `docs/3.1.midi_transcription_story.md` |
+| 3.1 | MIDI-like transcription | validated multi-source note events from stems and full mix | `docs/3.1.midi_transcription_story.md` |
 | 3.2 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/3.2.symbolic_feature_engineering_story.md` |
-| 3.3 | Temporal alignment | beat- and bar-aligned symbolic timeline | `docs/3.3.temporal_alignment_story.md` |
+| 3.3 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/3.3.temporal_alignment_story.md` |
 | 3.4 | LLM-friendly abstraction | musician-readable symbolic descriptions | `docs/3.4.llm_friendly_abstraction_story.md` |
 
 Representative artifact: `layer_b_symbolic.json`.
@@ -141,7 +141,7 @@ The expected high-level artifact dependency chain is:
 
 Before Story 5.4 can produce a reliable `lighting_score.md`, the implementation should have at minimum:
 
-- canonical beat and bar timing from Story 1.2 with per-beat time, bar, and beat indices
+- canonical beat and bar timing from Story 1.2 with per-beat time, 1-indexed bar, and beat-in-bar indices
 - `data/artifacts/<Song - Artist>/section_segmentation/sections.json` with stable section IDs and exact section windows
 - `data/artifacts/<Song - Artist>/layer_b_symbolic.json` with `motif_summary.dominant_motif_id`, `motif_summary.motif_groups[]`, and `motif_summary.repeated_phrase_groups[]`
 - phrase timing anchors exposed as `phrase_windows[]` or normalized into `music_feature_layers.json.timeline.phrases[]`

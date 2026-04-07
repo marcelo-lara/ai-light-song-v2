@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from collections import Counter
 from pathlib import Path
+import math
 from statistics import mean, median
 
 from analyzer.exceptions import DependencyError
@@ -184,10 +186,12 @@ def _align_note_events(notes: list[dict], timing: dict, sections_payload: dict) 
         aligned_beat_index, beat_delta = _nearest_beat_alignment(float(note["time"]), beat_times)
         aligned_bar = None
         aligned_beat = None
+        aligned_beat_global = None
         if aligned_beat_index is not None:
             beat = beat_points[aligned_beat_index]
             aligned_bar = int(beat["bar"])
-            aligned_beat = int(beat["index"])
+            aligned_beat = int(beat["beat_in_bar"])
+            aligned_beat_global = int(beat["index"])
         else:
             for bar in bars:
                 if float(bar["start_s"]) <= float(note["time"]) < float(bar["end_s"]):
@@ -199,6 +203,7 @@ def _align_note_events(notes: list[dict], timing: dict, sections_payload: dict) 
         aligned.update(
             {
                 "aligned_beat": aligned_beat,
+                "aligned_beat_global": aligned_beat_global,
                 "aligned_bar": aligned_bar,
                 "beat_time_delta": round(float(beat_delta), 6) if beat_delta is not None else None,
                 "alignment_resolved": aligned_beat_index is not None,
@@ -295,6 +300,501 @@ def _deduplicate_notes(notes: list[dict]) -> list[dict]:
     return deduplicated
 
 
+def _safe_mean(values: list[float]) -> float | None:
+    return round(float(mean(values)), 6) if values else None
+
+
+def _notes_in_window(notes: list[dict], start_s: float, end_s: float) -> list[dict]:
+    return [
+        note
+        for note in notes
+        if float(note["time"]) < end_s and float(note["end_s"]) > start_s
+    ]
+
+
+def _section_name(section: dict | None) -> str | None:
+    if not section:
+        return None
+    label = section.get("label")
+    return str(label) if label is not None else None
+
+
+def _find_bar_sections(timing: dict, sections_payload: dict) -> dict[int, dict | None]:
+    sections = sections_payload.get("sections", [])
+    bar_sections: dict[int, dict | None] = {}
+    for bar in timing["bars"]:
+        midpoint = (float(bar["start_s"]) + float(bar["end_s"])) / 2.0
+        bar_sections[int(bar["bar"])] = _section_for_time(midpoint, sections)
+    return bar_sections
+
+
+def _pitch_range_payload(pitches: list[int]) -> dict:
+    return {
+        "min": min(pitches) if pitches else None,
+        "max": max(pitches) if pitches else None,
+    }
+
+
+def _register_label(centroid: float | None) -> str:
+    if centroid is None:
+        return "unknown"
+    if centroid < 48:
+        return "low"
+    if centroid < 60:
+        return "low-mid"
+    if centroid < 72:
+        return "mid"
+    if centroid < 84:
+        return "high"
+    return "very-high"
+
+
+def _contour_label(values: list[float]) -> str:
+    filtered = [value for value in values if value is not None]
+    if len(filtered) < 2:
+        return "static"
+
+    head_size = max(1, len(filtered) // 3)
+    tail_size = max(1, len(filtered) // 3)
+    head_mean = mean(filtered[:head_size])
+    tail_mean = mean(filtered[-tail_size:])
+    drift = tail_mean - head_mean
+    spread = max(filtered) - min(filtered)
+    if abs(drift) <= 1.5 and spread <= 3.0:
+        return "static"
+    if drift >= 3.0:
+        return "rising"
+    if drift <= -3.0:
+        return "falling"
+    return "undulating"
+
+
+def _texture_label(active_note_peak_values: list[int], density_values: list[float]) -> str:
+    peak_mean = mean(active_note_peak_values) if active_note_peak_values else 0.0
+    density_mean = mean(density_values) if density_values else 0.0
+    if peak_mean >= 4 or density_mean >= 3.0:
+        return "layered"
+    if peak_mean >= 2 or density_mean >= 1.5:
+        return "polyphonic"
+    if density_mean >= 0.7:
+        return "melodic"
+    return "sparse"
+
+
+def _bass_motion_label(bass_notes: list[dict]) -> str:
+    ordered = sorted(bass_notes, key=lambda note: float(note["time"]))
+    if len(ordered) < 2:
+        return "minimal"
+    intervals = [
+        abs(int(current["pitch"]) - int(previous["pitch"]))
+        for previous, current in zip(ordered, ordered[1:])
+    ]
+    zero_ratio = sum(1 for interval in intervals if interval == 0) / len(intervals)
+    median_interval = median(intervals)
+    if zero_ratio >= 0.45:
+        return "pedal"
+    if median_interval <= 2:
+        return "stepwise"
+    if median_interval >= 5:
+        return "leaping"
+    return "mixed"
+
+
+def _compute_density_per_beat(notes: list[dict], timing: dict, sections_payload: dict) -> list[dict]:
+    beats = timing["beats"]
+    bars = timing["bars"]
+    sections = sections_payload.get("sections", [])
+    density_rows: list[dict] = []
+    for index, beat in enumerate(beats):
+        start_s = float(beat["time"])
+        if index + 1 < len(beats):
+            end_s = float(beats[index + 1]["time"])
+        else:
+            end_s = float(bars[-1]["end_s"])
+        window_notes = _notes_in_window(notes, start_s, end_s)
+        section = _section_for_time((start_s + end_s) / 2.0, sections)
+        duration = max(end_s - start_s, 1e-6)
+        density_rows.append(
+            {
+                "beat": int(beat["index"]),
+                "bar": int(beat["bar"]),
+                "beat_in_bar": int(beat["beat_in_bar"]),
+                "time": round(start_s, 6),
+                "density": round(len(window_notes) / duration, 6),
+                "note_count": len(window_notes),
+                "section_id": section.get("section_id") if section else None,
+                "section_name": _section_name(section),
+            }
+        )
+    return density_rows
+
+
+def _compute_density_per_bar(notes: list[dict], timing: dict, sections_payload: dict) -> list[dict]:
+    bar_sections = _find_bar_sections(timing, sections_payload)
+    density_rows: list[dict] = []
+    for bar in timing["bars"]:
+        bar_number = int(bar["bar"])
+        start_s = float(bar["start_s"])
+        end_s = float(bar["end_s"])
+        window_notes = _notes_in_window(notes, start_s, end_s)
+        pitches = [int(note["pitch"]) for note in window_notes]
+        centroids = [int(note["pitch"]) for note in window_notes if int(note["pitch"]) >= 48]
+        section = bar_sections.get(bar_number)
+        active_note_peak = max(
+            (
+                sum(1 for note in window_notes if float(note["time"]) <= sample_time < float(note["end_s"]))
+                for sample_time in (start_s, (start_s + end_s) / 2.0, end_s - 1e-6)
+            ),
+            default=0,
+        )
+        density_rows.append(
+            {
+                "bar": bar_number,
+                "start_s": round(start_s, 6),
+                "end_s": round(end_s, 6),
+                "density": round(len(window_notes) / 4.0, 6),
+                "note_count": len(window_notes),
+                "active_note_peak": active_note_peak,
+                "pitch_range": _pitch_range_payload(pitches),
+                "register_centroid": round(float(mean(centroids)), 6) if centroids else None,
+                "register_label": _register_label(float(mean(centroids)) if centroids else None),
+                "section_id": section.get("section_id") if section else None,
+                "section_name": _section_name(section),
+            }
+        )
+    return density_rows
+
+
+def _section_bar_numbers(section: dict, timing: dict) -> list[int]:
+    start_s = float(section["start"])
+    end_s = float(section["end"])
+    return [
+        int(bar["bar"])
+        for bar in timing["bars"]
+        if float(bar["start_s"]) < end_s and float(bar["end_s"]) > start_s
+    ]
+
+
+def _notes_for_bars(notes: list[dict], bar_numbers: list[int]) -> list[dict]:
+    bar_set = set(bar_numbers)
+    return [note for note in notes if note.get("aligned_bar") in bar_set]
+
+
+def _section_summary(section: dict, notes: list[dict], density_per_bar: list[dict], timing: dict) -> dict:
+    bar_numbers = _section_bar_numbers(section, timing)
+    local_notes = _notes_for_bars(notes, bar_numbers)
+    bar_number_set = set(bar_numbers)
+    local_bars = [row for row in density_per_bar if int(row["bar"]) in bar_number_set]
+    melodic_notes = [note for note in local_notes if str(note["source_stem"]) != "bass"] or local_notes
+    melodic_centroids = [float(row["register_centroid"]) for row in local_bars if row["register_centroid"] is not None]
+    pitches = [int(note["pitch"]) for note in local_notes]
+    sustain_ratio = (
+        sum(1 for note in local_notes if float(note["duration"]) >= 0.5) / len(local_notes)
+        if local_notes
+        else 0.0
+    )
+    return {
+        "section_id": section["section_id"],
+        "section_name": _section_name(section),
+        "start_s": round(float(section["start"]), 6),
+        "end_s": round(float(section["end"]), 6),
+        "bar_start": min(bar_numbers) if bar_numbers else None,
+        "bar_end": max(bar_numbers) if bar_numbers else None,
+        "note_count": len(local_notes),
+        "pitch_range": _pitch_range_payload(pitches),
+        "register_centroid": _safe_mean([int(note["pitch"]) for note in melodic_notes]),
+        "register_label": _register_label(_safe_mean([int(note["pitch"]) for note in melodic_notes])),
+        "texture": _texture_label(
+            [int(row["active_note_peak"]) for row in local_bars],
+            [float(row["density"]) for row in local_bars],
+        ),
+        "melodic_contour": _contour_label(melodic_centroids),
+        "density_mean": _safe_mean([float(row["density"]) for row in local_bars]),
+        "repetition_score": 0.0,
+        "sustain_ratio": round(float(sustain_ratio), 6),
+    }
+
+
+def _window_signature(notes: list[dict], bar_count: int) -> dict:
+    pitches = [int(note["pitch"]) for note in notes]
+    if not notes:
+        return {
+            "vector": [0.0] * 16,
+            "contour": "static",
+            "register_centroid": None,
+            "note_count": 0,
+            "density": 0.0,
+            "pitch_range": _pitch_range_payload([]),
+            "top_pitch_classes": [],
+        }
+
+    histogram = [0.0] * 12
+    for pitch in pitches:
+        histogram[pitch % 12] += 1.0
+    hist_norm = math.sqrt(sum(value * value for value in histogram))
+    if hist_norm > 0:
+        histogram = [value / hist_norm for value in histogram]
+
+    melodic = [note for note in notes if str(note["source_stem"]) != "bass"] or notes
+    melodic_centroid = [int(note["pitch"]) for note in melodic]
+    contour = _contour_label(melodic_centroid)
+    density = len(notes) / max(bar_count, 1)
+    range_span = max(pitches) - min(pitches) if pitches else 0
+    vector = histogram + [
+        density / 16.0,
+        (mean(melodic_centroid) if melodic_centroid else 0.0) / 96.0,
+        range_span / 48.0,
+        (sum(1 for note in notes if float(note["duration"]) >= 0.5) / len(notes)) if notes else 0.0,
+    ]
+    pitch_class_counts = Counter(pitch % 12 for pitch in pitches)
+    top_pitch_classes = [pitch_class for pitch_class, _ in pitch_class_counts.most_common(3)]
+    return {
+        "vector": vector,
+        "contour": contour,
+        "register_centroid": _safe_mean(melodic_centroid),
+        "note_count": len(notes),
+        "density": round(float(density), 6),
+        "pitch_range": _pitch_range_payload(pitches),
+        "top_pitch_classes": top_pitch_classes,
+    }
+
+
+def _cosine_similarity(left: list[float], right: list[float]) -> float:
+    numerator = sum(a * b for a, b in zip(left, right))
+    left_norm = math.sqrt(sum(a * a for a in left))
+    right_norm = math.sqrt(sum(b * b for b in right))
+    if left_norm == 0 or right_norm == 0:
+        return 0.0
+    return numerator / (left_norm * right_norm)
+
+
+def _shared_pitch_class_count(left: list[int], right: list[int]) -> int:
+    return len(set(left) & set(right))
+
+
+def _group_code(index: int) -> str:
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    code = ""
+    current = index
+    while True:
+        current, remainder = divmod(current, 26)
+        code = letters[remainder] + code
+        if current == 0:
+            return code
+        current -= 1
+
+
+def _motif_name(index: int) -> str:
+    names = [
+        "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa",
+    ]
+    if index < len(names):
+        return names[index]
+    return f"group_{index + 1:02d}"
+
+
+def _phrase_windows(notes: list[dict], timing: dict, sections_payload: dict) -> tuple[list[dict], list[dict], list[dict], float]:
+    windows: list[dict] = []
+    for section in sections_payload.get("sections", []):
+        bar_numbers = _section_bar_numbers(section, timing)
+        if not bar_numbers:
+            continue
+        section_bar_count = len(bar_numbers)
+        if section_bar_count >= 8:
+            bars_per_window = 4
+        elif section_bar_count >= 4:
+            bars_per_window = 2
+        else:
+            bars_per_window = section_bar_count
+
+        for start_index in range(0, len(bar_numbers), bars_per_window):
+            window_bars = bar_numbers[start_index:start_index + bars_per_window]
+            if not window_bars:
+                continue
+            window_notes = _notes_for_bars(notes, window_bars)
+            start_bar = window_bars[0]
+            end_bar = window_bars[-1]
+            start_s = next(float(bar["start_s"]) for bar in timing["bars"] if int(bar["bar"]) == start_bar)
+            end_s = next(float(bar["end_s"]) for bar in timing["bars"] if int(bar["bar"]) == end_bar)
+            signature = _window_signature(window_notes, len(window_bars))
+            windows.append(
+                {
+                    "section_id": section["section_id"],
+                    "section_name": _section_name(section),
+                    "start_s": round(start_s, 6),
+                    "end_s": round(end_s, 6),
+                    "start_bar": start_bar,
+                    "end_bar": end_bar,
+                    "start_beat": 1,
+                    "end_beat": 4,
+                    "bar_count": len(window_bars),
+                    "note_count": signature["note_count"],
+                    "density": signature["density"],
+                    "melodic_contour": signature["contour"],
+                    "register_centroid": signature["register_centroid"],
+                    "register_label": _register_label(signature["register_centroid"]),
+                    "pitch_range": signature["pitch_range"],
+                    "top_pitch_classes": signature["top_pitch_classes"],
+                    "vector": signature["vector"],
+                    "phrase_group_id": None,
+                    "id": None,
+                    "label": None,
+                }
+            )
+
+    groups: list[dict] = []
+    for window in windows:
+        best_group = None
+        best_similarity = 0.0
+        for group in groups:
+            if group["bar_count"] != window["bar_count"]:
+                continue
+            if group["contour"] != window["melodic_contour"]:
+                continue
+            group_centroid = group["register_centroid"]
+            window_centroid = window["register_centroid"]
+            if group_centroid is not None and window_centroid is not None:
+                if abs(float(group_centroid) - float(window_centroid)) > 4.5:
+                    continue
+            density_delta = abs(float(group["density_mean"]) - float(window["density"])) / max(float(group["density_mean"]), 1.0)
+            if density_delta > 0.3:
+                continue
+            if _shared_pitch_class_count(group["top_pitch_classes"], window["top_pitch_classes"]) < 2:
+                continue
+            similarity = _cosine_similarity(group["prototype_vector"], window["vector"])
+            if similarity > best_similarity:
+                best_similarity = similarity
+                best_group = group
+        if best_group is None or best_similarity < 0.97:
+            groups.append(
+                {
+                    "bar_count": window["bar_count"],
+                    "prototype_vector": list(window["vector"]),
+                    "contour": window["melodic_contour"],
+                    "density_mean": float(window["density"]),
+                    "register_centroid": window["register_centroid"],
+                    "top_pitch_classes": list(window["top_pitch_classes"]),
+                    "windows": [window],
+                }
+            )
+            continue
+        count = len(best_group["windows"])
+        best_group["windows"].append(window)
+        best_group["prototype_vector"] = [
+            ((value * count) + new_value) / (count + 1)
+            for value, new_value in zip(best_group["prototype_vector"], window["vector"])
+        ]
+        best_group["density_mean"] = ((float(best_group["density_mean"]) * count) + float(window["density"])) / (count + 1)
+        group_centroid = best_group["register_centroid"]
+        window_centroid = window["register_centroid"]
+        if group_centroid is None:
+            best_group["register_centroid"] = window_centroid
+        elif window_centroid is not None:
+            best_group["register_centroid"] = ((float(group_centroid) * count) + float(window_centroid)) / (count + 1)
+
+    repeated_phrase_groups: list[dict] = []
+    motif_groups: list[dict] = []
+    repeated_window_count = 0
+    for group_index, group in enumerate(sorted(groups, key=lambda item: (-len(item["windows"]), item["windows"][0]["start_s"]))):
+        group_code = _group_code(group_index)
+        phrase_group_id = f"phrase_group_{group_code}"
+        motif_id = f"motif_{_motif_name(group_index)}"
+        group_windows = sorted(group["windows"], key=lambda item: item["start_s"])
+        for occurrence_index, window in enumerate(group_windows, start=1):
+            window["phrase_group_id"] = phrase_group_id
+            window["id"] = f"{phrase_group_id}_{occurrence_index}"
+            window["label"] = f"Phrase Group {group_code} - Occurrence {occurrence_index}"
+        if len(group_windows) >= 2:
+            repeated_window_count += len(group_windows)
+            repeated_phrase_groups.append(
+                {
+                    "id": phrase_group_id,
+                    "label": f"Phrase Group {group_code}",
+                    "occurrence_count": len(group_windows),
+                    "phrase_window_ids": [window["id"] for window in group_windows],
+                }
+            )
+            representative = group_windows[0]
+            motif_groups.append(
+                {
+                    "id": motif_id,
+                    "label": f"Motif {_motif_name(group_index).replace('_', ' ').title()}",
+                    "summary": (
+                        f"Repeated {representative['melodic_contour']} {representative['register_label']} register figure "
+                        f"across {len(group_windows)} phrase windows."
+                    ),
+                    "occurrence_count": len(group_windows),
+                    "phrase_group_ids": [phrase_group_id],
+                    "occurrence_refs": [
+                        {
+                            "phrase_window_id": window["id"],
+                            "start_s": window["start_s"],
+                            "end_s": window["end_s"],
+                            "start_bar": window["start_bar"],
+                            "end_bar": window["end_bar"],
+                            "section_id": window["section_id"],
+                        }
+                        for window in group_windows
+                    ],
+                }
+            )
+
+    for window_index, window in enumerate(sorted(windows, key=lambda item: item["start_s"])):
+        if window["id"] is not None:
+            continue
+        phrase_group_id = f"phrase_group_single_{window_index + 1:03d}"
+        window["phrase_group_id"] = phrase_group_id
+        window["id"] = f"{phrase_group_id}_1"
+        window["label"] = f"Phrase Window {window_index + 1}"
+
+    repetition_score = repeated_window_count / len(windows) if windows else 0.0
+    normalized_windows = [
+        {
+            key: value
+            for key, value in window.items()
+            if key != "vector"
+        }
+        for window in sorted(windows, key=lambda item: item["start_s"])
+    ]
+    return normalized_windows, repeated_phrase_groups, motif_groups, round(float(repetition_score), 6)
+
+
+def _compute_symbolic_summary(
+    notes: list[dict],
+    density_per_bar: list[dict],
+    section_summaries: list[dict],
+    repetition_score: float,
+) -> dict:
+    melodic_notes = [note for note in notes if str(note["source_stem"]) != "bass"] or notes
+    melodic_centroids = [
+        float(row["register_centroid"])
+        for row in density_per_bar
+        if row["register_centroid"] is not None
+    ]
+    pitches = [int(note["pitch"]) for note in notes]
+    bass_notes = [note for note in notes if str(note["source_stem"]) == "bass"]
+    sustain_ratio = (
+        sum(1 for note in notes if float(note["duration"]) >= 0.5) / len(notes)
+        if notes
+        else 0.0
+    )
+    return {
+        "note_count": len(notes),
+        "pitch_range": _pitch_range_payload(pitches),
+        "register_centroid": _safe_mean([int(note["pitch"]) for note in melodic_notes]),
+        "register_label": _register_label(_safe_mean([int(note["pitch"]) for note in melodic_notes])),
+        "texture": _texture_label(
+            [int(row["active_note_peak"]) for row in density_per_bar],
+            [float(row["density"]) for row in density_per_bar],
+        ),
+        "melodic_contour": _contour_label(melodic_centroids),
+        "bass_motion": _bass_motion_label(bass_notes),
+        "repetition_score": round(float(repetition_score), 6),
+        "sustain_ratio": round(float(sustain_ratio), 6),
+        "section_count": len(section_summaries),
+    }
+
+
 def extract_symbolic_features(paths: SongPaths, stems: dict[str, str], timing: dict, sections_payload: dict) -> dict:
     raw_dir = paths.artifact("symbolic_transcription", "basic_pitch")
     ensure_directory(raw_dir)
@@ -331,9 +831,48 @@ def extract_symbolic_features(paths: SongPaths, stems: dict[str, str], timing: d
     ]
     final_notes = _deduplicate_notes(merged_notes)
 
-    pitch_values = [int(note["pitch"]) for note in final_notes]
     bass_notes = [note for note in final_notes if note["source_stem"] == "bass"]
     harmonic_notes = [note for note in final_notes if note["source_stem"] == "harmonic"]
+    density_per_beat = _compute_density_per_beat(final_notes, timing, sections_payload)
+    density_per_bar = _compute_density_per_bar(final_notes, timing, sections_payload)
+    section_summaries = [
+        _section_summary(section, final_notes, density_per_bar, timing)
+        for section in sections_payload.get("sections", [])
+    ]
+    phrase_windows, repeated_phrase_groups, motif_groups, repetition_score = _phrase_windows(
+        final_notes,
+        timing,
+        sections_payload,
+    )
+    section_repetition_index = {
+        summary["section_id"]: 0.0
+        for summary in section_summaries
+    }
+    phrase_window_index = {window["id"]: window for window in phrase_windows}
+    for group in repeated_phrase_groups:
+        windows = [phrase_window_index[window_id] for window_id in group["phrase_window_ids"] if window_id in phrase_window_index]
+        grouped_sections = Counter(window["section_id"] for window in windows if window["section_id"])
+        for section_id, occurrence_count in grouped_sections.items():
+            section_repetition_index[section_id] += occurrence_count
+    max_section_occurrences = max(section_repetition_index.values(), default=0.0)
+    for summary in section_summaries:
+        raw_value = section_repetition_index.get(summary["section_id"], 0.0)
+        summary["repetition_score"] = round(
+            float(raw_value / max_section_occurrences) if max_section_occurrences else 0.0,
+            6,
+        )
+
+    symbolic_summary = _compute_symbolic_summary(
+        final_notes,
+        density_per_bar,
+        section_summaries,
+        repetition_score,
+    )
+    dominant_motif_id = (
+        max(motif_groups, key=lambda group: (group["occurrence_count"], len(group["occurrence_refs"]))) ["id"]
+        if motif_groups
+        else None
+    )
 
     validation_payload = {
         "schema_version": SCHEMA_VERSION,
@@ -372,13 +911,9 @@ def extract_symbolic_features(paths: SongPaths, stems: dict[str, str], timing: d
         },
         "note_events": final_notes,
         "symbolic_summary": {
-            "note_count": len(final_notes),
+            **symbolic_summary,
             "harmonic_note_count": len(harmonic_notes),
             "bass_note_count": len(bass_notes),
-            "pitch_range": {
-                "min": min(pitch_values) if pitch_values else None,
-                "max": max(pitch_values) if pitch_values else None,
-            },
             "bass_pitch_range": {
                 "min": min(int(note["pitch"]) for note in bass_notes) if bass_notes else None,
                 "max": max(int(note["pitch"]) for note in bass_notes) if bass_notes else None,
@@ -389,8 +924,19 @@ def extract_symbolic_features(paths: SongPaths, stems: dict[str, str], timing: d
                 "model_output_summary",
                 "per-stem midi cache",
                 "all-source validation",
+                "density-per-beat",
+                "phrase-window grouping",
             ],
             "promoted_sources": promoted_sources,
+        },
+        "density_per_beat": density_per_beat,
+        "density_per_bar": density_per_bar,
+        "section_summaries": section_summaries,
+        "phrase_windows": phrase_windows,
+        "motif_summary": {
+            "dominant_motif_id": dominant_motif_id,
+            "motif_groups": motif_groups,
+            "repeated_phrase_groups": repeated_phrase_groups,
         },
         "validation_summary": validation_payload,
         "transcription_sources": {

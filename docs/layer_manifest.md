@@ -24,9 +24,9 @@ Primary source stories: EPIC 2.1 through EPIC 2.4.
 Contains symbolic and note-event analysis outputs such as:
 
 - note events
+- density per beat and per bar
 - phrase contours
 - phrase anchors or phrase-group timing references when available
-- density per bar
 - symbolic summaries
 - bass movement events
 - repeated motifs
@@ -116,6 +116,8 @@ For lighting-facing integration, the unified artifact should preserve these cano
 - `timeline.phrases[].phrase_group_id`
 - `timeline.phrases[].start_s`
 - `timeline.phrases[].end_s`
+- `layers.symbolic.phrase_windows[].id`
+- `layers.symbolic.phrase_windows[].phrase_group_id`
 - `layers.symbolic.motif_summary.dominant_motif_id`
 - `layers.symbolic.motif_summary.motif_groups[].id`
 - `layers.patterns.occurrences[]`
