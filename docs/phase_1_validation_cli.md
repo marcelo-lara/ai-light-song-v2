@@ -13,6 +13,11 @@ For phase 1, that checkpoint should be a developer-facing entry point that can a
 - `data/reference/What a Feeling - Courtney Storm/moises/chords.json` when available
 - `data/reference/What a Feeling - Courtney Storm/moises/segments.json` when available
 
+Current reference posture:
+
+- the chord reference file is treated as a human-validated comparison target when present
+- the segment reference file is treated as structural change-point guidance; its labels may be informative but are not authoritative for pass/fail
+
 ## Scope
 
 This first-phase validation target is not the final full product.
@@ -35,6 +40,11 @@ Acceptable implementations include:
 - an installed command such as `analyzer`
 - an equivalent scripted entry point documented in the implementation repo
 
+Current implementation status:
+
+- the repository now includes an initial Python module entry point at `python -m analyzer.cli validate-phase-1`
+- the module currently covers the first runnable phase-1 slice: stem separation, canonical beat extraction, harmonic inference, symbolic analysis, canonical energy derivation, pattern mining, unified feature assembly, and validation report generation
+
 The exact command name can be chosen by the implementation team, but the interface must be documented and runnable inside Docker.
 
 ## Recommended Command Shape
@@ -46,7 +56,7 @@ analyzer validate-phase-1 \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
-  --compare chords,sections \
+  --compare chords,sections,energy,patterns,unified \
   --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
 ```
 
@@ -57,7 +67,7 @@ python -m analyzer.cli validate-phase-1 \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
-  --compare chords,sections \
+  --compare chords,sections,energy,patterns,unified \
   --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
 ```
 
@@ -66,11 +76,11 @@ python -m analyzer.cli validate-phase-1 \
 - `--song`: required absolute or container-relative path to the source song.
 - `--artifacts-root`: required root directory where inferred outputs are written.
 - `--reference-root`: optional root directory for validation-only reference files. If omitted or if files are missing, inference must still run and validation for those targets is skipped.
-- `--compare`: optional list of validation targets for phase 1. Supported values include `chords` and `sections`; targets are validated only when the matching reference files are available.
+- `--compare`: optional list of validation targets for phase 1. Supported values include `chords`, `sections`, `energy`, `patterns`, and `unified`. Reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts.
 - `--report-json`: required path for the machine-readable validation report.
 - `--report-md`: optional human-readable report path.
 - `--fail-on-mismatch`: optional flag causing the command to exit non-zero when validation thresholds are missed.
-- `--tolerance-seconds`: optional float for section-boundary comparison tolerance.
+- `--tolerance-seconds`: optional float for section change-point comparison tolerance. The phase-1 default should allow roughly one to two bars of drift.
 - `--chord-min-overlap`: optional float defining minimum overlap ratio for chord-event comparison.
 - `--device`: optional execution target such as `cuda` or `cpu`, but container validation should prefer GPU when available.
 - `--verbose`: optional flag for detailed logging.
@@ -88,9 +98,10 @@ The phase 1 analyzer must:
 1. read the source song from `data/songs/`
 2. generate inferred timing, harmonic, and section-related artifacts under `data/artifacts/<Song - Artist>/`
 3. compare inferred chord outputs against `data/reference/<Song - Artist>/moises/chords.json` when that file is available
-4. compare inferred section outputs against `data/reference/<Song - Artist>/moises/segments.json` when that file is available
-5. write a validation report under `data/artifacts/<Song - Artist>/validation/`
-6. exit with a documented success or failure status
+4. compare inferred section change points against `data/reference/<Song - Artist>/moises/segments.json` when that file is available
+5. validate canonical energy, pattern, and unified feature artifacts for internal consistency
+6. write a validation report under `data/artifacts/<Song - Artist>/validation/`
+7. exit with a documented success or failure status
 
 ## Required Outputs
 
@@ -115,7 +126,7 @@ At minimum:
 - The analyzer must infer chord and section outputs from the pipeline even when reference files are available.
 - If reference files are present, they may be used for validation, reporting, or explicit review workflows only.
 - Comparisons should report agreement, disagreement, and confidence or tolerance when relevant.
-- Section comparisons should use time-window overlap and label comparison.
+- Section comparisons should use structural change-point alignment. Reference labels may be reported for review but should not control pass/fail.
 - Chord comparisons should use time-aligned event comparison and label comparison.
 
 ## Recommended Report Contents
@@ -126,6 +137,9 @@ At minimum:
 - generated artifact paths
 - chord comparison summary
 - section comparison summary
+- energy-layer internal consistency summary
+- pattern-layer internal consistency summary
+- unified-layer internal consistency summary
 - mismatches and confidence notes
 - pass/fail summary
 
@@ -157,7 +171,7 @@ At minimum:
     },
     "sections": {
       "status": "passed",
-      "matched_sections": 9,
+      "matched_sections": 7,
       "mismatched_sections": 0,
       "boundary_tolerance_seconds": 0.50
     }
@@ -171,7 +185,7 @@ At minimum:
 Phase 1 is successful when a developer can run the analyzer in Docker against `What a Feeling - Courtney Storm.mp3` and receive:
 
 1. generated analysis artifacts
-2. a comparison report against reference chords and segments when those files are available
+2. a comparison report against human-validated reference chords and section change points when those files are available
 3. enough detail to understand whether the current implementation is improving or regressing
 4. a stable CLI command shape that can be reused in Docker-based smoke tests and automation
 

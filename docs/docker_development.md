@@ -51,6 +51,10 @@ The container should provide a baseline environment capable of supporting:
 
 Exact versions can be pinned later in a dedicated dependency file once the implementation repository exists.
 
+Current compatibility note:
+
+- the current Basic Pitch runtime in this container requires `numpy<2` because the bundled TensorFlow Lite runtime is not compatible with NumPy 2.x.
+
 ## Workspace Layout in Container
 
 Current local container layout:

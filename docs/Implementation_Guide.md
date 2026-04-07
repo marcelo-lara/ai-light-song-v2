@@ -85,10 +85,10 @@ Goal: translate audio into note-level and phrase-level musical behavior.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 3.1 | MIDI-like transcription | note events from harmonic and bass stems | `docs/3.1.midi_transcription_story.md` |
+| 3.1 | MIDI-like transcription | validated multi-source note events from stems and full mix | `docs/3.1.midi_transcription_story.md` |
 | 3.2 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/3.2.symbolic_feature_engineering_story.md` |
-| 3.3 | Temporal alignment | beat- and bar-aligned symbolic timeline | `docs/3.3.temporal_alignment_story.md` |
-| 3.4 | LLM-friendly abstraction | musician-readable symbolic descriptions | `docs/3.4.llm_friendly_abstraction_story.md` |
+| 3.3 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/3.3.temporal_alignment_story.md` |
+| 3.4 | LLM-friendly abstraction | deterministic musician-readable symbolic descriptions | `docs/3.4.llm_friendly_abstraction_story.md` |
 
 Representative artifact: `layer_b_symbolic.json`.
 
@@ -99,7 +99,7 @@ Goal: capture physical intensity, brightness, transients, and structure.
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
 | 4.1 | Low-level energy feature extraction | frame- and beat-level loudness, centroid, flux, onset | `docs/4.1.energy_feature_schema.md` |
-| 4.2 | Section segmentation | section boundaries, labels, confidence | `docs/4.2.section_segmentation_story.md` |
+| 4.2 | Section segmentation | structural change windows, optional labels, confidence | `docs/4.2.section_segmentation_story.md` |
 | 4.3 | Derived energy features | energy cards, peaks, dips, accent candidates | `docs/4.3.energy_feature_derivation_story.md` |
 
 Representative artifact: `layer_c_energy.json`.
@@ -114,7 +114,7 @@ Layer D covers repeated harmonic progression structure. Motif-level and phrase-l
 | --- | --- | --- | --- |
 | 5.1 | Find chord patterns | `pattern_mining/chord_patterns.json` and `layer_d_patterns.json` | `docs/5.1.find_chord_patterns_story.md` |
 | 5.2 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/5.2.music_feature_layers_story.md` |
-| 5.3 | Feature-to-lighting mapping | normalized lighting events and mapping logic | `docs/5.3.energy_to_lighting_mapping.md` |
+| 5.3 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/5.3.energy_to_lighting_mapping.md` |
 | 5.4 | Fixture-aware orchestration | fixture-aware events and `lighting_score.md` | `docs/5.4.fixture_aware_mapping_story.md` |
 
 Representative artifacts: `layer_d_patterns.json`, `music_feature_layers.json`, `lighting_score.md`.
@@ -141,7 +141,7 @@ The expected high-level artifact dependency chain is:
 
 Before Story 5.4 can produce a reliable `lighting_score.md`, the implementation should have at minimum:
 
-- canonical beat and bar timing from Story 1.2 with per-beat time, bar, and beat indices
+- canonical beat and bar timing from Story 1.2 with per-beat time, 1-indexed bar, and beat-in-bar indices
 - `data/artifacts/<Song - Artist>/section_segmentation/sections.json` with stable section IDs and exact section windows
 - `data/artifacts/<Song - Artist>/layer_b_symbolic.json` with `motif_summary.dominant_motif_id`, `motif_summary.motif_groups[]`, and `motif_summary.repeated_phrase_groups[]`
 - phrase timing anchors exposed as `phrase_windows[]` or normalized into `music_feature_layers.json.timeline.phrases[]`
@@ -170,7 +170,7 @@ Before the full pipeline is considered ready, the implementation should expose a
 
 1. run against a real song such as `What a Feeling - Courtney Storm.mp3`
 2. generate inferred analysis artifacts inside `data/artifacts/<Song - Artist>/`
-3. compare inferred chord and section outputs against validation-only source-of-truth files in `data/reference/<Song - Artist>/moises/` when they are available
+3. compare inferred chord outputs against human-validated reference chords and compare inferred section change points against validation-only reference segments in `data/reference/<Song - Artist>/moises/` when they are available
 4. emit a validation summary or report without copying reference values into generated artifacts
 
 Reference files under `data/reference/` are optional validation inputs. The pipeline must infer chords, sections, and other generated values from the documented analysis stack first. When reference files are present, they may be used to validate or explicitly review those inferred results, but they must not silently replace generated artifact values.

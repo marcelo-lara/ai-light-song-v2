@@ -24,10 +24,11 @@ Primary source stories: EPIC 2.1 through EPIC 2.4.
 Contains symbolic and note-event analysis outputs such as:
 
 - note events
+- density per beat and per bar
 - phrase contours
 - phrase anchors or phrase-group timing references when available
-- density per bar
 - symbolic summaries
+- deterministic musician-readable descriptions
 - bass movement events
 - repeated motifs
 - section-level symbolic cards
@@ -67,7 +68,7 @@ Stores base feature summaries and shared analysis signals used by higher-level l
 
 ### `section_segmentation/sections.json`
 
-Stores section windows and labels used across symbolic, energy, and merged artifacts.
+Stores structural section windows and optional heuristic labels used across symbolic, energy, and merged artifacts.
 
 ### `energy_summary/hints.json`
 
@@ -80,6 +81,14 @@ Stores the producer-scoped output of `find_chord_patterns(...)` before it is pro
 ### `pattern_mining/stem_patterns.json`
 
 Stores repeated stem-aware patterns used for comparison or pattern-aware lighting logic.
+
+### `symbolic_transcription/basic_pitch/*.json`
+
+Stores producer-scoped raw Basic Pitch note caches, model-output summaries, and per-stem transcription metadata used to build `layer_b_symbolic.json`.
+
+### `symbolic_transcription/validation.json`
+
+Stores source-level symbolic validation results and promotion decisions used to assemble the final `layer_b_symbolic.json` artifact from all analyzed stems and the full mix.
 
 ### `info.json`
 
@@ -108,6 +117,8 @@ For lighting-facing integration, the unified artifact should preserve these cano
 - `timeline.phrases[].phrase_group_id`
 - `timeline.phrases[].start_s`
 - `timeline.phrases[].end_s`
+- `layers.symbolic.phrase_windows[].id`
+- `layers.symbolic.phrase_windows[].phrase_group_id`
 - `layers.symbolic.motif_summary.dominant_motif_id`
 - `layers.symbolic.motif_summary.motif_groups[].id`
 - `layers.patterns.occurrences[]`
@@ -123,6 +134,12 @@ For lighting-facing integration, the unified artifact should preserve these cano
 - `lighting_context.motif_callbacks[].callback_action`
 
 This file is the explicit handoff artifact for EPIC 5.3 and EPIC 5.4.
+
+### `lighting_events.json`
+
+Stores fixture-agnostic lighting events and normalized cue anchors derived from `music_feature_layers.json`.
+
+This file is the explicit handoff artifact for EPIC 5.4.
 
 ## Cross-File Rules
 
