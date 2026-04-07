@@ -43,7 +43,7 @@ Acceptable implementations include:
 Current implementation status:
 
 - the repository now includes an initial Python module entry point at `python -m analyzer.cli validate-phase-1`
-- the module currently covers the first runnable phase-1 slice: stem separation, canonical beat extraction, harmonic inference, energy features, section segmentation, and validation report generation
+- the module currently covers the first runnable phase-1 slice: stem separation, canonical beat extraction, harmonic inference, symbolic analysis, canonical energy derivation, pattern mining, unified feature assembly, and validation report generation
 
 The exact command name can be chosen by the implementation team, but the interface must be documented and runnable inside Docker.
 
@@ -56,7 +56,7 @@ analyzer validate-phase-1 \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
-  --compare chords,sections \
+  --compare chords,sections,energy,patterns,unified \
   --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
 ```
 
@@ -67,7 +67,7 @@ python -m analyzer.cli validate-phase-1 \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
-  --compare chords,sections \
+  --compare chords,sections,energy,patterns,unified \
   --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
 ```
 
@@ -76,7 +76,7 @@ python -m analyzer.cli validate-phase-1 \
 - `--song`: required absolute or container-relative path to the source song.
 - `--artifacts-root`: required root directory where inferred outputs are written.
 - `--reference-root`: optional root directory for validation-only reference files. If omitted or if files are missing, inference must still run and validation for those targets is skipped.
-- `--compare`: optional list of validation targets for phase 1. Supported values include `chords` and `sections`; targets are validated only when the matching reference files are available.
+- `--compare`: optional list of validation targets for phase 1. Supported values include `chords`, `sections`, `energy`, `patterns`, and `unified`. Reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts.
 - `--report-json`: required path for the machine-readable validation report.
 - `--report-md`: optional human-readable report path.
 - `--fail-on-mismatch`: optional flag causing the command to exit non-zero when validation thresholds are missed.
@@ -99,8 +99,9 @@ The phase 1 analyzer must:
 2. generate inferred timing, harmonic, and section-related artifacts under `data/artifacts/<Song - Artist>/`
 3. compare inferred chord outputs against `data/reference/<Song - Artist>/moises/chords.json` when that file is available
 4. compare inferred section change points against `data/reference/<Song - Artist>/moises/segments.json` when that file is available
-5. write a validation report under `data/artifacts/<Song - Artist>/validation/`
-6. exit with a documented success or failure status
+5. validate canonical energy, pattern, and unified feature artifacts for internal consistency
+6. write a validation report under `data/artifacts/<Song - Artist>/validation/`
+7. exit with a documented success or failure status
 
 ## Required Outputs
 
@@ -136,6 +137,9 @@ At minimum:
 - generated artifact paths
 - chord comparison summary
 - section comparison summary
+- energy-layer internal consistency summary
+- pattern-layer internal consistency summary
+- unified-layer internal consistency summary
 - mismatches and confidence notes
 - pass/fail summary
 

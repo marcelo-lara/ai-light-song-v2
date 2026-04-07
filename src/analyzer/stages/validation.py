@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
+from analyzer.exceptions import AnalysisError
+
 from analyzer.io import read_json, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
@@ -53,13 +55,33 @@ def build_validation_report(
 ) -> tuple[dict, int]:
     harmonic_path = paths.artifact("layer_a_harmonic.json")
     sections_path = paths.artifact("section_segmentation", "sections.json")
+    beats_path = paths.artifact("essentia", "beats.json")
+    energy_path = paths.artifact("layer_c_energy.json")
+    patterns_path = paths.artifact("layer_d_patterns.json")
+    symbolic_path = paths.artifact("layer_b_symbolic.json")
+    unified_path = paths.artifact("music_feature_layers.json")
     harmonic = read_json(harmonic_path)
     sections = read_json(sections_path)
+    timing = read_json(beats_path)
 
-    chord_result = _validate_chords(paths, harmonic, chord_min_overlap) if "chords" in compare_targets else skipped_result()
-    section_result = _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result()
+    results = {
+        "chords": _validate_chords(paths, harmonic, chord_min_overlap) if "chords" in compare_targets else skipped_result(),
+        "sections": _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
+        "energy": _validate_energy_layer(read_json(energy_path), timing, sections) if "energy" in compare_targets else skipped_result(),
+        "patterns": _validate_patterns_layer(read_json(patterns_path), timing) if "patterns" in compare_targets else skipped_result(),
+        "unified": _validate_unified_layer(
+            read_json(unified_path),
+            timing,
+            sections,
+            read_json(symbolic_path),
+            read_json(energy_path),
+            read_json(patterns_path),
+            paths,
+        ) if "unified" in compare_targets else skipped_result(),
+    }
 
-    if fail_on_mismatch and any(result.status == "failed" for result in (chord_result, section_result)):
+    evaluated_results = [result for result in results.values() if result.status != "skipped"]
+    if fail_on_mismatch and any(result.status == "failed" for result in evaluated_results):
         exit_code = 1
         status = "failed"
     else:
@@ -71,6 +93,12 @@ def build_validation_report(
         notes.append("Chord validation treats reference chord files as authoritative human-validated comparison inputs when present.")
     if "sections" in compare_targets:
         notes.append("Section validation compares structural change points only; reference segment labels are advisory and do not affect pass/fail.")
+    if "energy" in compare_targets:
+        notes.append("Energy validation checks internal consistency between section windows, accent candidates, and the canonical beat timeline.")
+    if "patterns" in compare_targets:
+        notes.append("Pattern validation checks window length, occurrence counts, and non-overlap rules inside Layer D.")
+    if "unified" in compare_targets:
+        notes.append("Unified validation checks cross-layer references, phrase and accent timeline joins, and callback integrity.")
 
     report = {
         "schema_version": SCHEMA_VERSION,
@@ -86,13 +114,13 @@ def build_validation_report(
         },
         "generated_artifacts": {
             "harmonic_layer_file": str(harmonic_path),
-            "energy_layer_file": str(paths.artifact("layer_c_energy.json")),
+            "symbolic_layer_file": str(symbolic_path),
+            "energy_layer_file": str(energy_path),
+            "patterns_layer_file": str(patterns_path),
+            "music_feature_layers_file": str(unified_path),
             "sections_file": str(sections_path),
         },
-        "validation": {
-            "chords": asdict(chord_result),
-            "sections": asdict(section_result),
-        },
+        "validation": {key: asdict(value) for key, value in results.items()},
         "notes": notes,
     }
     return report, exit_code
@@ -126,6 +154,223 @@ def write_validation_markdown(report: dict, report_md: Path) -> None:
 
 def skipped_result() -> ValidationResult:
     return ValidationResult(status="skipped", matched=0, mismatched=0, match_ratio=None, details=[], reference_file=None)
+
+
+def _result_from_checks(checks: list[dict], reference_file: str | None = None) -> ValidationResult:
+    matched = sum(1 for check in checks if bool(check.get("passed")))
+    mismatched = len(checks) - matched
+    ratio = matched / len(checks) if checks else None
+    status = "passed" if mismatched == 0 else "failed"
+    return ValidationResult(
+        status=status,
+        matched=matched,
+        mismatched=mismatched,
+        match_ratio=ratio,
+        details=checks,
+        reference_file=reference_file,
+    )
+
+
+def _section_for_time(time_s: float, sections: list[dict]) -> dict | None:
+    for section in sections:
+        if float(section["start"]) <= time_s < float(section["end"]):
+            return section
+    if sections and time_s >= float(sections[-1]["start"]):
+        return sections[-1]
+    return None
+
+
+def _validate_energy_layer(energy: dict, timing: dict, sections: dict) -> ValidationResult:
+    section_rows = sections.get("sections", [])
+    beat_count = len(timing.get("beats", []))
+    max_time = float(timing["bars"][-1]["end_s"]) if timing.get("bars") else 0.0
+    checks = []
+
+    checks.append({
+        "check": "global_energy_fields_present",
+        "passed": all(key in energy.get("global_energy", {}) for key in ("mean", "peak", "dynamic_range", "transient_density", "energy_trend")),
+    })
+    checks.append({
+        "check": "section_energy_count_matches_sections",
+        "passed": len(energy.get("section_energy", [])) == len(section_rows),
+        "expected": len(section_rows),
+        "actual": len(energy.get("section_energy", [])),
+    })
+    checks.append({
+        "check": "beat_energy_count_matches_timing",
+        "passed": len(energy.get("beat_energy", [])) == beat_count,
+        "expected": beat_count,
+        "actual": len(energy.get("beat_energy", [])),
+    })
+
+    accent_rows = energy.get("accent_candidates", [])
+    accent_ids: set[str] = set()
+    accent_sorted = True
+    previous_time = -1.0
+    accent_integrity_passed = True
+    for accent in accent_rows:
+        accent_time = float(accent.get("time", -1.0))
+        accent_id = str(accent.get("id"))
+        accent_ids.add(accent_id)
+        if accent_time < previous_time:
+            accent_sorted = False
+        previous_time = accent_time
+        section = _section_for_time(accent_time, section_rows)
+        if not (0.0 <= accent_time <= max_time):
+            accent_integrity_passed = False
+        if section is not None and accent.get("section_id") != section.get("section_id"):
+            accent_integrity_passed = False
+    checks.append({
+        "check": "accent_candidate_ids_unique",
+        "passed": len(accent_ids) == len(accent_rows),
+        "expected": len(accent_rows),
+        "actual": len(accent_ids),
+    })
+    checks.append({
+        "check": "accent_candidates_sorted_by_time",
+        "passed": accent_sorted,
+    })
+    checks.append({
+        "check": "accent_candidates_reference_valid_time_and_section",
+        "passed": accent_integrity_passed,
+    })
+    return _result_from_checks(checks)
+
+
+def _validate_patterns_layer(patterns: dict, timing: dict) -> ValidationResult:
+    max_bar = int(timing["bars"][-1]["bar"]) if timing.get("bars") else 0
+    checks = []
+    pattern_rows = patterns.get("patterns", [])
+    checks.append({
+        "check": "pattern_count_matches_rows",
+        "passed": int(patterns.get("pattern_count", 0)) == len(pattern_rows),
+        "expected": len(pattern_rows),
+        "actual": int(patterns.get("pattern_count", 0)),
+    })
+    checks.append({
+        "check": "pattern_ids_unique",
+        "passed": len({str(pattern.get("id")) for pattern in pattern_rows}) == len(pattern_rows),
+    })
+    for pattern in pattern_rows:
+        occurrences = pattern.get("occurrences", [])
+        pattern_id = str(pattern.get("id"))
+        bar_count = int(pattern.get("bar_count", 0))
+        checks.append({
+            "check": f"{pattern_id}_bar_count_range",
+            "passed": 2 <= bar_count <= 8,
+            "bar_count": bar_count,
+        })
+        checks.append({
+            "check": f"{pattern_id}_occurrence_count_matches_rows",
+            "passed": int(pattern.get("occurrence_count", 0)) == len(occurrences),
+            "expected": len(occurrences),
+            "actual": int(pattern.get("occurrence_count", 0)),
+        })
+        non_overlap_passed = True
+        occurrence_shape_passed = True
+        previous_end_bar = 0
+        for occurrence in sorted(occurrences, key=lambda item: int(item["start_bar"])):
+            start_bar = int(occurrence["start_bar"])
+            end_bar = int(occurrence["end_bar"])
+            if end_bar - start_bar + 1 != bar_count:
+                occurrence_shape_passed = False
+            if not (1 <= start_bar <= end_bar <= max_bar):
+                occurrence_shape_passed = False
+            if start_bar <= previous_end_bar:
+                non_overlap_passed = False
+            previous_end_bar = end_bar
+        checks.append({
+            "check": f"{pattern_id}_occurrence_lengths_match_bar_count",
+            "passed": occurrence_shape_passed,
+        })
+        checks.append({
+            "check": f"{pattern_id}_occurrences_non_overlapping",
+            "passed": non_overlap_passed,
+        })
+    return _result_from_checks(checks)
+
+
+def _validate_unified_layer(
+    unified: dict,
+    timing: dict,
+    sections: dict,
+    symbolic: dict,
+    energy: dict,
+    patterns: dict,
+    paths: SongPaths,
+) -> ValidationResult:
+    checks = []
+    generated_from = unified.get("generated_from", {})
+    checks.append({
+        "check": "generated_from_files_exist",
+        "passed": all(Path(path).exists() for path in generated_from.values()),
+    })
+
+    unified_phrases = unified.get("timeline", {}).get("phrases", [])
+    symbolic_phrases = symbolic.get("phrase_windows", [])
+    checks.append({
+        "check": "timeline_phrases_match_symbolic_phrase_windows",
+        "passed": [phrase.get("id") for phrase in unified_phrases] == [phrase.get("id") for phrase in symbolic_phrases],
+        "expected_count": len(symbolic_phrases),
+        "actual_count": len(unified_phrases),
+    })
+
+    unified_accents = unified.get("timeline", {}).get("accent_windows", [])
+    energy_accents = energy.get("accent_candidates", [])
+    checks.append({
+        "check": "accent_windows_match_energy_candidates",
+        "passed": [accent.get("id") for accent in unified_accents] == [accent.get("id") for accent in energy_accents],
+        "expected_count": len(energy_accents),
+        "actual_count": len(unified_accents),
+    })
+
+    pattern_ids = {str(pattern.get("id")) for pattern in patterns.get("patterns", [])}
+    unified_pattern_ids = {str(pattern.get("id")) for pattern in unified.get("layers", {}).get("patterns", {}).get("patterns", [])}
+    checks.append({
+        "check": "unified_pattern_ids_match_layer_d",
+        "passed": unified_pattern_ids == pattern_ids,
+    })
+
+    motif_ids = {str(motif.get("id")) for motif in symbolic.get("motif_summary", {}).get("motif_groups", [])}
+    phrase_group_ids = {str(group.get("id")) for group in symbolic.get("motif_summary", {}).get("repeated_phrase_groups", [])}
+    valid_section_ids = {str(section.get("section_id")) for section in sections.get("sections", [])}
+
+    cue_anchors = unified.get("lighting_context", {}).get("cue_anchors", [])
+    cue_times = [float(anchor.get("time_s", -1.0)) for anchor in cue_anchors]
+    checks.append({
+        "check": "cue_anchors_sorted_by_time",
+        "passed": cue_times == sorted(cue_times),
+    })
+
+    pattern_callbacks = unified.get("lighting_context", {}).get("pattern_callbacks", [])
+    checks.append({
+        "check": "pattern_callbacks_reference_existing_patterns",
+        "passed": all(str(callback.get("pattern_id")) in pattern_ids for callback in pattern_callbacks),
+    })
+    checks.append({
+        "check": "pattern_callbacks_reference_valid_sections",
+        "passed": all((callback.get("section_id") is None or str(callback.get("section_id")) in valid_section_ids) for callback in pattern_callbacks),
+    })
+
+    motif_callbacks = unified.get("lighting_context", {}).get("motif_callbacks", [])
+    checks.append({
+        "check": "motif_callbacks_reference_existing_motifs",
+        "passed": all(str(callback.get("motif_group_id")) in motif_ids for callback in motif_callbacks),
+    })
+    checks.append({
+        "check": "motif_callbacks_reference_existing_phrase_groups",
+        "passed": all(str(callback.get("phrase_group_id")) in phrase_group_ids for callback in motif_callbacks),
+    })
+    checks.append({
+        "check": "motif_callbacks_reference_valid_sections",
+        "passed": all((callback.get("section_id") is None or str(callback.get("section_id")) in valid_section_ids) for callback in motif_callbacks),
+    })
+
+    checks.append({
+        "check": "metadata_duration_matches_timing",
+        "passed": abs(float(unified.get("metadata", {}).get("duration_s", 0.0)) - float(timing["bars"][-1]["end_s"])) <= 1e-6,
+    })
+    return _result_from_checks(checks)
 
 
 def _validate_chords(paths: SongPaths, harmonic: dict, chord_min_overlap: float) -> ValidationResult:

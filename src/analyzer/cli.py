@@ -17,7 +17,7 @@ def build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--song", required=True)
     validate.add_argument("--artifacts-root", required=True)
     validate.add_argument("--reference-root")
-    validate.add_argument("--compare", default="chords,sections")
+    validate.add_argument("--compare", default="chords,sections,energy,patterns,unified")
     validate.add_argument("--report-json", required=True)
     validate.add_argument("--report-md")
     validate.add_argument("--fail-on-mismatch", action="store_true")
@@ -36,7 +36,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     compare_targets = tuple(item.strip() for item in args.compare.split(",") if item.strip())
-    supported_targets = {"chords", "sections"}
+    supported_targets = {"chords", "sections", "energy", "patterns", "unified"}
     try:
         if not set(compare_targets).issubset(supported_targets):
             raise UsageError(f"Unsupported compare target. Supported values: {sorted(supported_targets)}")
