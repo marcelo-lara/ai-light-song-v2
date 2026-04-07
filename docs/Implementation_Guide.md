@@ -114,7 +114,7 @@ Layer D covers repeated harmonic progression structure. Motif-level and phrase-l
 | --- | --- | --- | --- |
 | 5.1 | Find chord patterns | `pattern_mining/chord_patterns.json` and `layer_d_patterns.json` | `docs/5.1.find_chord_patterns_story.md` |
 | 5.2 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/5.2.music_feature_layers_story.md` |
-| 5.3 | Feature-to-lighting mapping | normalized lighting events and mapping logic | `docs/5.3.energy_to_lighting_mapping.md` |
+| 5.3 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/5.3.energy_to_lighting_mapping.md` |
 | 5.4 | Fixture-aware orchestration | fixture-aware events and `lighting_score.md` | `docs/5.4.fixture_aware_mapping_story.md` |
 
 Representative artifacts: `layer_d_patterns.json`, `music_feature_layers.json`, `lighting_score.md`.

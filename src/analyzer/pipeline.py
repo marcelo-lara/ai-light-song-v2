@@ -6,6 +6,7 @@ from analyzer.paths import SongPaths
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.harmonic import extract_hpcp_and_chords
+from analyzer.stages.lighting import generate_lighting_events
 from analyzer.stages.patterns import extract_chord_patterns
 from analyzer.stages.sections_v2 import segment_sections
 from analyzer.stages.symbolic import extract_symbolic_features
@@ -30,6 +31,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     energy = derive_energy_layer(paths, timing, energy_features, sections)
     patterns = extract_chord_patterns(paths, timing, harmonic)
     unified = assemble_music_feature_layers(paths, timing, harmonic, symbolic, energy, patterns, sections)
+    lighting = generate_lighting_events(paths)
 
     info_payload = {
         "schema_version": "1.0",
@@ -47,6 +49,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             "patterns_layer": str(paths.artifact("layer_d_patterns.json")),
             "pattern_mining": str(paths.artifact("pattern_mining", "chord_patterns.json")),
             "music_feature_layers": str(paths.artifact("music_feature_layers.json")),
+            "lighting_events": str(paths.artifact("lighting_events.json")),
         },
         "generated_from": {
             "source_song_path": str(paths.song_path),

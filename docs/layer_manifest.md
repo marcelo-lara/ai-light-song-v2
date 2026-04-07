@@ -135,6 +135,12 @@ For lighting-facing integration, the unified artifact should preserve these cano
 
 This file is the explicit handoff artifact for EPIC 5.3 and EPIC 5.4.
 
+### `lighting_events.json`
+
+Stores fixture-agnostic lighting events and normalized cue anchors derived from `music_feature_layers.json`.
+
+This file is the explicit handoff artifact for EPIC 5.4.
+
 ## Cross-File Rules
 
 - All major artifacts should use `schema_version`.

@@ -60,6 +60,7 @@ def build_validation_report(
     patterns_path = paths.artifact("layer_d_patterns.json")
     symbolic_path = paths.artifact("layer_b_symbolic.json")
     unified_path = paths.artifact("music_feature_layers.json")
+    lighting_path = paths.artifact("lighting_events.json")
     harmonic = read_json(harmonic_path)
     sections = read_json(sections_path)
     timing = read_json(beats_path)
@@ -118,6 +119,7 @@ def build_validation_report(
             "energy_layer_file": str(energy_path),
             "patterns_layer_file": str(patterns_path),
             "music_feature_layers_file": str(unified_path),
+            "lighting_events_file": str(lighting_path),
             "sections_file": str(sections_path),
         },
         "validation": {key: asdict(value) for key, value in results.items()},
@@ -137,9 +139,16 @@ def write_validation_markdown(report: dict, report_md: Path) -> None:
         f"Status: {report['status']}",
         f"Generated at: {report['generated_at']}",
         "",
-        "## Validation",
+        "## Artifacts",
         "",
     ]
+    for artifact_name, artifact_path in report.get("generated_artifacts", {}).items():
+        lines.append(f"- {artifact_name}: {artifact_path}")
+    lines.extend([
+        "",
+        "## Validation",
+        "",
+    ])
     for target, payload in report["validation"].items():
         lines.append(f"### {target.title()}")
         lines.append(f"Status: {payload['status']}")
@@ -147,6 +156,31 @@ def write_validation_markdown(report: dict, report_md: Path) -> None:
         lines.append(f"Mismatched: {payload['mismatched']}")
         if payload["match_ratio"] is not None:
             lines.append(f"Match ratio: {payload['match_ratio']:.3f}")
+        details = payload.get("details", [])
+        if details:
+            lines.append("")
+            lines.append("Checks:")
+            for detail in details[:20]:
+                if "check" in detail:
+                    prefix = "PASS" if detail.get("passed") else "FAIL"
+                    extra_items = [
+                        f"{key}={value}"
+                        for key, value in detail.items()
+                        if key not in {"check", "passed"}
+                    ]
+                    suffix = f" ({', '.join(extra_items)})" if extra_items else ""
+                    lines.append(f"- {prefix}: {detail['check']}{suffix}")
+                elif detail.get("match_type"):
+                    lines.append(f"- {detail['match_type']}: {detail}")
+                else:
+                    lines.append(f"- {detail}")
+        lines.append("")
+    notes = report.get("notes", [])
+    if notes:
+        lines.append("## Notes")
+        lines.append("")
+        for note in notes:
+            lines.append(f"- {note}")
         lines.append("")
     report_md.parent.mkdir(parents=True, exist_ok=True)
     report_md.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
