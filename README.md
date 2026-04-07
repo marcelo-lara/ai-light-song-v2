@@ -53,6 +53,7 @@ The intended contract defines these primary artifacts:
 ## Documentation Map
 
 - `docs/Implementation_Guide.md`: canonical hub for the full pipeline and repository contracts.
+- `docs/phase_1_validation_cli.md`: Phase 1 analyzer CLI specification, command reference, and validation report format.
 - `docs/4.1.energy_feature_schema.md`: low-level energy schema.
 - `docs/4.2.section_segmentation_story.md`: section inference contract.
 - `docs/5.1.find_chord_patterns_story.md`: Layer D chord-pattern detection contract.
@@ -61,6 +62,21 @@ The intended contract defines these primary artifacts:
 - `docs/5.4.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
 
 Additional story-level specifications under `docs/` define the exact implementation contract for each Epic and story.
+
+## Quick Start
+
+1. **Prerequisites:** Docker with NVIDIA GPU support
+2. **Build:** `docker compose build`
+3. **Run analyzer:**
+   ```bash
+   docker compose run --rm app \
+     python -m analyzer.cli validate-phase-1 \
+     --song "/data/songs/YOUR_SONG.mp3" \
+     --artifacts-root "/data/artifacts" \
+     --report-json "/data/artifacts/YOUR_SONG/validation/report.json"
+   ```
+
+For detailed CLI options, see [Running the Phase 1 Analyzer](#running-the-phase-1-analyzer) below.
 
 ## Development Environment
 
@@ -106,6 +122,41 @@ Inside the container:
 - application code is available under `/app`
 - song inputs and generated artifacts are available under `/data`
 - all implementation validation should run from this environment
+
+### Running the Phase 1 Analyzer
+
+The repository includes a Phase 1 validation CLI that runs the full analysis pipeline against a song and optionally validates against reference data:
+
+```bash
+python -m analyzer.cli validate-phase-1 \
+  --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
+  --artifacts-root "/data/artifacts" \
+  --reference-root "/data/reference" \
+  --compare chords,sections,energy,patterns,unified \
+  --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json" \
+  --report-md "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.md"
+```
+
+**Available compare targets:** `chords`, `sections`, `energy`, `patterns`, `unified`
+
+**CLI flags:**
+- `--song`: Required path to source song
+- `--artifacts-root`: Required root directory for generated artifacts
+- `--reference-root`: Optional root directory for validation reference files
+- `--compare`: Comma-separated list of validation targets
+- `--report-json`: Required path for machine-readable validation report
+- `--report-md`: Optional path for human-readable report
+- `--fail-on-mismatch`: Exit non-zero when validation thresholds are missed
+- `--tolerance-seconds`: Section boundary tolerance (default: 2.0)
+- `--chord-min-overlap`: Minimum overlap ratio for chord comparison (default: 0.5)
+- `--device`: Execution device (`cuda` or `cpu`)
+- `--verbose`: Enable detailed logging
+
+**Exit codes:**
+- `0`: Analysis completed and validation passed
+- `1`: Analysis completed but validation failed
+- `2`: Invalid CLI usage
+- `3`: Runtime analysis failure
 
 ## Implementation Priorities
 
