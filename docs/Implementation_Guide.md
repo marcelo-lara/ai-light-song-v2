@@ -99,7 +99,7 @@ Goal: capture physical intensity, brightness, transients, and structure.
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
 | 4.1 | Low-level energy feature extraction | frame- and beat-level loudness, centroid, flux, onset | `docs/4.1.energy_feature_schema.md` |
-| 4.2 | Section segmentation | section boundaries, labels, confidence | `docs/4.2.section_segmentation_story.md` |
+| 4.2 | Section segmentation | structural change windows, optional labels, confidence | `docs/4.2.section_segmentation_story.md` |
 | 4.3 | Derived energy features | energy cards, peaks, dips, accent candidates | `docs/4.3.energy_feature_derivation_story.md` |
 
 Representative artifact: `layer_c_energy.json`.
@@ -170,7 +170,7 @@ Before the full pipeline is considered ready, the implementation should expose a
 
 1. run against a real song such as `What a Feeling - Courtney Storm.mp3`
 2. generate inferred analysis artifacts inside `data/artifacts/<Song - Artist>/`
-3. compare inferred chord and section outputs against validation-only source-of-truth files in `data/reference/<Song - Artist>/moises/` when they are available
+3. compare inferred chord outputs against human-validated reference chords and compare inferred section change points against validation-only reference segments in `data/reference/<Song - Artist>/moises/` when they are available
 4. emit a validation summary or report without copying reference values into generated artifacts
 
 Reference files under `data/reference/` are optional validation inputs. The pipeline must infer chords, sections, and other generated values from the documented analysis stack first. When reference files are present, they may be used to validate or explicitly review those inferred results, but they must not silently replace generated artifact values.

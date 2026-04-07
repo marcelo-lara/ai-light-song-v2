@@ -67,7 +67,7 @@ Stores base feature summaries and shared analysis signals used by higher-level l
 
 ### `section_segmentation/sections.json`
 
-Stores section windows and labels used across symbolic, energy, and merged artifacts.
+Stores structural section windows and optional heuristic labels used across symbolic, energy, and merged artifacts.
 
 ### `energy_summary/hints.json`
 
@@ -80,6 +80,14 @@ Stores the producer-scoped output of `find_chord_patterns(...)` before it is pro
 ### `pattern_mining/stem_patterns.json`
 
 Stores repeated stem-aware patterns used for comparison or pattern-aware lighting logic.
+
+### `symbolic_transcription/basic_pitch/*.json`
+
+Stores producer-scoped raw Basic Pitch note caches, model-output summaries, and per-stem transcription metadata used to build `layer_b_symbolic.json`.
+
+### `symbolic_transcription/validation.json`
+
+Stores source-level symbolic validation results and promotion decisions used to assemble the final `layer_b_symbolic.json` artifact from all analyzed stems and the full mix.
 
 ### `info.json`
 
