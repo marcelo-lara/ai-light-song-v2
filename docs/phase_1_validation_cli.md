@@ -52,7 +52,7 @@ The exact command name can be chosen by the implementation team, but the interfa
 Recommended baseline command:
 
 ```bash
-analyzer validate-phase-1 \
+python -m analyzer.cli validate-phase-1 \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
@@ -60,7 +60,7 @@ analyzer validate-phase-1 \
   --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
 ```
 
-Equivalent Python module form is acceptable:
+Equivalent Python module form is the supported container entry point:
 
 ```bash
 python -m analyzer.cli validate-phase-1 \
@@ -71,14 +71,25 @@ python -m analyzer.cli validate-phase-1 \
   --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
 ```
 
+Batch mode analyzes every `.mp3` in `/data/songs` and writes canonical validation reports under each song artifact directory:
+
+```bash
+python -m analyzer.cli validate-phase-1 \
+  --all-songs \
+  --artifacts-root "/data/artifacts" \
+  --reference-root "/data/reference"
+```
+
 ## Recommended Flags
 
-- `--song`: required absolute or container-relative path to the source song.
+- `--song`: required absolute or container-relative path to the source song for single-song runs.
+- `--all-songs`: analyze every `.mp3` under `/data/songs` or the directory supplied by `--songs-root`.
+- `--songs-root`: optional directory override for batch mode. Defaults to the sibling `songs/` directory next to `--artifacts-root`.
 - `--artifacts-root`: required root directory where inferred outputs are written.
 - `--reference-root`: optional root directory for validation-only reference files. If omitted or if files are missing, inference must still run and validation for those targets is skipped.
 - `--compare`: optional list of validation targets for phase 1. Supported values include `chords`, `sections`, `energy`, `patterns`, and `unified`. Reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts.
-- `--report-json`: required path for the machine-readable validation report.
-- `--report-md`: optional human-readable report path.
+- `--report-json`: required path for the machine-readable validation report in single-song mode. Batch mode writes `validation/phase_1_report.json` under each song artifact directory automatically.
+- `--report-md`: optional human-readable report path in single-song mode. Batch mode writes `validation/phase_1_report.md` under each song artifact directory automatically.
 - `--fail-on-mismatch`: optional flag causing the command to exit non-zero when validation thresholds are missed.
 - `--tolerance-seconds`: optional float for section change-point comparison tolerance. The phase-1 default should allow roughly one to two bars of drift.
 - `--chord-min-overlap`: optional float defining minimum overlap ratio for chord-event comparison.
@@ -87,7 +98,7 @@ python -m analyzer.cli validate-phase-1 \
 
 ## Minimum Required Inputs
 
-- song path or song identifier
+- song path or `--all-songs`
 - output artifact root
 - optional validation flag or reference-song identifier
 

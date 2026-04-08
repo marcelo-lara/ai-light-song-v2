@@ -87,12 +87,22 @@ Run the first-phase validation entry point:
 
 ```bash
 docker compose run --rm app \
-  analyzer validate-phase-1 \
+  python -m analyzer.cli validate-phase-1 \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
   --compare chords,sections \
   --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
+```
+
+Batch mode is also supported for all mounted songs:
+
+```bash
+docker compose run --rm app \
+  python -m analyzer.cli validate-phase-1 \
+  --all-songs \
+  --artifacts-root "/data/artifacts" \
+  --reference-root "/data/reference"
 ```
 
 An equivalent `python -m analyzer.cli` form is also acceptable if that becomes the chosen entry point.

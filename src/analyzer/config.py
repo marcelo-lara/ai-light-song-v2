@@ -19,6 +19,19 @@ class ValidationConfig:
     verbose: bool
 
 
+def default_validation_report_paths(paths: SongPaths) -> tuple[Path, Path]:
+    validation_dir = paths.song_artifacts_dir / "validation"
+    return validation_dir / "phase_1_report.json", validation_dir / "phase_1_report.md"
+
+
+def discover_song_files(artifacts_root: str, songs_root: str | None = None) -> list[Path]:
+    root = resolve_songs_root(artifacts_root, songs_root)
+    songs = sorted(path for path in root.iterdir() if path.is_file() and path.suffix.lower() == ".mp3")
+    if not songs:
+        raise UsageError(f"No .mp3 files found in songs directory: {root}")
+    return songs
+
+
 def build_song_paths(song: str, artifacts_root: str, reference_root: str | None) -> SongPaths:
     song_path = Path(song)
     if not song_path.exists():
@@ -36,3 +49,12 @@ def build_song_paths(song: str, artifacts_root: str, reference_root: str | None)
         output_root=output_root,
         stems_root=stems_root,
     )
+
+
+def resolve_songs_root(artifacts_root: str, songs_root: str | None = None) -> Path:
+    root = Path(songs_root) if songs_root else Path(artifacts_root).parent / "songs"
+    if not root.exists():
+        raise UsageError(f"Songs directory does not exist: {root}")
+    if not root.is_dir():
+        raise UsageError(f"Songs path is not a directory: {root}")
+    return root

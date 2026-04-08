@@ -81,6 +81,16 @@ Additional story-level specifications under `docs/` define the exact implementat
      --report-json "/data/artifacts/YOUR_SONG/validation/phase_1_report.json"
    ```
 
+  Analyze every song under `/data/songs` and write per-song reports automatically:
+
+  ```bash
+  docker compose run --rm app \
+    python -m analyzer.cli validate-phase-1 \
+    --all-songs \
+    --artifacts-root "/data/artifacts" \
+    --reference-root "/data/reference"
+  ```
+
 For detailed CLI options, see [Running the Phase 1 Analyzer](#running-the-phase-1-analyzer) below.
 
 ## Development Environment
@@ -135,23 +145,25 @@ Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not inv
 ```bash
 docker compose run --rm app \
   python -m analyzer.cli validate-phase-1 \
-  --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
+  --song "/data/songs/Sash - Raindrops.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
   --compare chords,sections,energy,patterns,unified \
-  --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json" \
-  --report-md "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.md"
+  --report-json "/data/artifacts/Sash - Raindrops/validation/phase_1_report.json" \
+  --report-md "/data/artifacts/Sash - Raindrops/validation/phase_1_report.md"
 ```
 
 **Available compare targets:** `chords`, `sections`, `energy`, `patterns`, `unified`
 
 **CLI flags:**
-- `--song`: Required path to source song
+- `--song`: Required path to source song for single-song runs
+- `--all-songs`: Analyze every `.mp3` under `/data/songs` or `--songs-root`
+- `--songs-root`: Optional songs directory for batch mode. Defaults to the sibling `songs/` directory next to `--artifacts-root`
 - `--artifacts-root`: Required root directory for generated artifacts
 - `--reference-root`: Optional root directory for validation reference files
 - `--compare`: Comma-separated list of validation targets
-- `--report-json`: Required path for machine-readable validation report
-- `--report-md`: Optional path for human-readable report
+- `--report-json`: Required path for single-song machine-readable validation report. Batch mode writes `/validation/phase_1_report.json` per song automatically
+- `--report-md`: Optional path for a single-song human-readable report. Batch mode writes `/validation/phase_1_report.md` per song automatically
 - `--fail-on-mismatch`: Exit non-zero when validation thresholds are missed
 - `--tolerance-seconds`: Section boundary tolerance (default: 2.0)
 - `--chord-min-overlap`: Minimum overlap ratio for chord comparison (default: 0.5)
