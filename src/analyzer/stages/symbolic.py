@@ -9,6 +9,7 @@ from analyzer.exceptions import DependencyError
 from analyzer.io import ensure_directory, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
+from analyzer.stages._basic_pitch_runtime import load_basic_pitch_predict
 
 
 SOURCE_CONFIGS = {
@@ -79,13 +80,13 @@ def _predict_stem_notes(
     maximum_frequency: float | None,
 ) -> dict:
     try:
-        from basic_pitch.inference import ICASSP_2022_MODEL_PATH, predict
+        model_path, predict = load_basic_pitch_predict()
     except ImportError as exc:
         raise DependencyError("basic-pitch is required for symbolic transcription") from exc
 
     model_output, midi_data, note_events = predict(
         stem_path,
-        model_or_model_path=ICASSP_2022_MODEL_PATH,
+        model_or_model_path=model_path,
         onset_threshold=onset_threshold,
         frame_threshold=frame_threshold,
         minimum_note_length=minimum_note_length,
@@ -130,7 +131,7 @@ def _predict_stem_notes(
         "generated_from": {
             "stem_file": stem_path,
             "engine": "basic-pitch",
-            "model": str(ICASSP_2022_MODEL_PATH),
+            "model": str(model_path),
             "thresholds": {
                 "onset_threshold": onset_threshold,
                 "frame_threshold": frame_threshold,

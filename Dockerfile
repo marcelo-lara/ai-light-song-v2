@@ -39,7 +39,8 @@ COPY requirements.txt ./requirements.txt
 
 RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     pip install --upgrade pip setuptools wheel && \
-    pip install -r requirements.txt
+    pip install -r requirements.txt && \
+    pip install --no-deps resampy==0.4.3
 
 FROM python-base AS runtime
 

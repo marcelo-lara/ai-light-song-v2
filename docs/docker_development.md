@@ -54,6 +54,8 @@ Exact versions can be pinned later in a dedicated dependency file once the imple
 Current compatibility note:
 
 - the current Basic Pitch runtime in this container requires `numpy<2` because the bundled TensorFlow Lite runtime is not compatible with NumPy 2.x.
+- the analyzer loads Basic Pitch through its packaged TensorFlow Lite model path so Docker runs do not emit optional backend warnings for TensorFlow, ONNX, or CoreML backends that are not used in this repository.
+- the container overrides `resampy` to `0.4.3` after the main requirements install because `0.4.2` emits a deprecated `pkg_resources` warning during Basic Pitch inference.
 
 ## Workspace Layout in Container
 
