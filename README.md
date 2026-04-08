@@ -68,7 +68,7 @@ Additional story-level specifications under `docs/` define the exact implementat
 
 1. **Prerequisites:** Docker with NVIDIA GPU support
 2. **Build:** `docker compose build`
-3. **Run analyzer:**
+3. **Run analyzer from the host shell:**
    ```bash
    docker compose run --rm app \
      python -m analyzer.cli validate-phase-1 \
@@ -126,10 +126,11 @@ Inside the container:
 
 ### Running the Phase 1 Analyzer
 
-The repository includes a Phase 1 validation CLI that runs the full analysis pipeline against a song and optionally validates against reference data:
+Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not invoke `python -m analyzer.cli` directly on the host.
 
 ```bash
-python -m analyzer.cli validate-phase-1 \
+docker compose run --rm app \
+  python -m analyzer.cli validate-phase-1 \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
