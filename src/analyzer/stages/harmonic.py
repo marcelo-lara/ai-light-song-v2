@@ -436,7 +436,7 @@ def extract_hpcp_and_chords(paths: SongPaths, stems: dict[str, str], timing: dic
 
     hpcp_payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "generated_from": GeneratedFrom(
             source_song_path=str(paths.song_path),
             harmonic_stem=harmonic_stem,
@@ -503,7 +503,7 @@ def extract_hpcp_and_chords(paths: SongPaths, stems: dict[str, str], timing: dic
 
     layer_payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "harmonic_stem": harmonic_stem,

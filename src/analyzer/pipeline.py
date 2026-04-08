@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from analyzer.config import ValidationConfig
 from analyzer.io import ensure_directory, write_json
+from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
@@ -13,6 +14,7 @@ from analyzer.stages.sections_v2 import segment_sections
 from analyzer.stages.symbolic import extract_symbolic_features
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import extract_timing_grid
+from analyzer.stages.ui_data import build_ui_data
 from analyzer.stages.unified import assemble_music_feature_layers
 from analyzer.stages.validation import (
     build_validation_report,
@@ -29,6 +31,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     energy_features = extract_energy_features(paths, timing)
     sections = segment_sections(paths, timing, harmonic, energy_features)
     symbolic = extract_symbolic_features(paths, stems, timing, sections)
+    ui_outputs = build_ui_data(paths)
     energy = derive_energy_layer(paths, timing, energy_features, sections)
     patterns = extract_chord_patterns(paths, timing, harmonic)
     unified = assemble_music_feature_layers(paths, timing, harmonic, symbolic, energy, patterns, sections)
@@ -36,8 +39,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     lighting_score = generate_lighting_score(paths)
 
     info_payload = {
-        "schema_version": "1.0",
-        "song_id": paths.song_id,
+        "schema_version": SCHEMA_VERSION,
+        **build_song_schema_fields(paths, bpm=timing["bpm"], duration=timing["duration"]),
         "song_path": str(paths.song_path),
         "artifacts": {
             "beats": str(paths.artifact("essentia", "beats.json")),
@@ -58,10 +61,12 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             "timing_grid": str(paths.artifact("essentia", "beats.json")),
         },
         "outputs": {
+            "beats": ui_outputs["beats"],
+            "sections": ui_outputs["sections"],
             "lighting_score": str(paths.song_output_dir / "lighting_score.md"),
         },
     }
-    write_json(paths.artifact("info.json"), info_payload)
+    write_json(paths.song_output_dir / "info.json", info_payload)
 
     report, exit_code = build_validation_report(
         paths=paths,

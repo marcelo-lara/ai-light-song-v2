@@ -17,7 +17,7 @@ The score contract assumes these upstream inputs already exist and are internall
 - motif-level and repeated-phrase summaries from `layer_b_symbolic.json`
 - harmonic progression-pattern occurrences from `layer_d_patterns.json`
 - unified timing and cross-layer references from `music_feature_layers.json`
-- fixture-aware or fixture-ready lighting events from Story 5.4
+- fixture-aware or fixture-ready lighting events from Story 5.5
 
 If those inputs are incomplete, the score may still be readable, but it is not complete enough to serve as a reliable LLM light-show prompt.
 

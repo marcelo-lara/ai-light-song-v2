@@ -91,7 +91,7 @@ def ensure_stems(paths: SongPaths, force: bool = False) -> dict[str, str]:
 
     metadata = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "generated_from": GeneratedFrom(
             source_song_path=str(paths.song_path),
             engine="demucs",

@@ -92,13 +92,29 @@ Stores source-level symbolic validation results and promotion decisions used to 
 
 ### `info.json`
 
-Stores canonical song metadata and references to major generated files.
+Stores canonical song metadata and references to major generated files. This file is written to `data/output/<Song - Artist>/info.json`.
+
+Expected top-level metadata fields are `song_name`, `bpm`, and `duration`, with file references grouped under `artifacts`, `generated_from`, and `outputs`.
+
+## Consolidated Output Files
+
+### `data/output/<Song - Artist>/beats.json`
+
+Stores compact UI-facing beat rows projected from `essentia/beats.json`, aligned chord labels projected from `layer_a_harmonic.json`, and a beat-aligned bass note projected from `symbolic_transcription/basic_pitch/bass.json`.
+
+Expected fields per row are `time`, `beat`, `bar`, `bass`, `chord`, and `type`, where `bass` is a pitch-class note name without octave suffix.
+
+### `data/output/<Song - Artist>/sections.json`
+
+Stores compact UI-facing section rows projected from `section_segmentation/sections.json`.
+
+Expected fields per row are `start`, `end`, `label`, `description`, and `hints`.
 
 ## Unified Artifact
 
 ### `music_feature_layers.json`
 
-This is the EPIC 5.2 output. It combines:
+This is the EPIC 5.3 output. It combines:
 
 - shared metadata
 - timeline objects such as beats, bars, sections, phrase anchors, and accent windows
@@ -133,13 +149,13 @@ For lighting-facing integration, the unified artifact should preserve these cano
 - `lighting_context.motif_callbacks[].motif_group_id`
 - `lighting_context.motif_callbacks[].callback_action`
 
-This file is the explicit handoff artifact for EPIC 5.3 and EPIC 5.4.
+This file is the explicit handoff artifact for EPIC 5.4 and EPIC 5.5.
 
 ### `lighting_events.json`
 
 Stores fixture-agnostic lighting events and normalized cue anchors derived from `music_feature_layers.json`.
 
-This file is the explicit handoff artifact for EPIC 5.4.
+This file is the explicit handoff artifact for EPIC 5.5.
 
 ## Cross-File Rules
 

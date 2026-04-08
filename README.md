@@ -1,8 +1,8 @@
 # ai-light-song-v2
 
-ai-light-song-v2 defines a documentation-first pipeline for turning source songs into structured musical analysis artifacts and fixture-aware lighting guidance.
+ai-light-song-v2 implements a Docker-first pipeline for turning source songs into structured musical analysis artifacts and fixture-aware lighting guidance.
 
-This repository is the analysis and planning side of the broader ai-light-show-v2 workflow. Its job is to define the artifact contracts, processing stages, validation rules, and developer environment needed to build the real implementation.
+This repository contains the runnable analyzer, the artifact contracts it emits, the validation rules used to score those artifacts, and the Docker environment used to run the pipeline end to end.
 
 ## Scope
 
@@ -13,8 +13,9 @@ The pipeline transforms an input song into progressively richer artifacts:
 3. Symbolic analysis extracts note events and higher-level musical descriptors.
 4. Energy analysis extracts loudness, brightness, transients, and sections.
 5. Pattern mining extracts repeated multi-bar chord progressions into Layer D summaries.
-6. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
-7. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
+6. UI data projection builds compact beat and section outputs for downstream consumers.
+7. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
+8. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
 
 ## Repository Layout
 
@@ -24,7 +25,7 @@ The repository structure is part of the implementation contract.
 - `data/stems/`: temporary stem and `.wav` work area generated during preprocessing.
 - `data/artifacts/`: intermediate analysis artifacts, layer outputs, merged timeline artifacts, and validation metadata.
 - `data/reference/`: validation-only truth data such as chords, sections, lyrics, or beats from external tools. These files are for scoring and comparison only.
-- `data/output/`: final generated deliverables such as `lighting_score.md` and future DMX-ready exports.
+- `data/output/`: final generated deliverables such as `info.json`, `lighting_score.md`, and future DMX-ready exports.
 - `docs/`: canonical implementation and contract documentation.
 
 ## Hard Rules
@@ -43,6 +44,9 @@ The repository structure is part of the implementation contract.
 
 The intended contract defines these primary artifacts:
 
+- `info.json`: canonical song metadata, including `song_name`, `bpm`, `duration`, and generated file references, written to `data/output/<Song - Artist>/info.json`.
+- `beats.json`: compact UI-facing beat timeline written to `data/output/<Song - Artist>/beats.json`.
+- `sections.json`: compact UI-facing section timeline written to `data/output/<Song - Artist>/sections.json`.
 - `layer_a_harmonic.json`: chord events, key, cadence, harmonic summaries.
 - `layer_b_symbolic.json`: note events, symbolic summaries, contour and density views.
 - `layer_c_energy.json`: loudness, onset, centroid, energy sections, accent candidates.
@@ -57,9 +61,10 @@ The intended contract defines these primary artifacts:
 - `docs/4.1.energy_feature_schema.md`: low-level energy schema.
 - `docs/4.2.section_segmentation_story.md`: section inference contract.
 - `docs/5.1.find_chord_patterns_story.md`: Layer D chord-pattern detection contract.
-- `docs/5.2.music_feature_layers_story.md`: unified layer assembly contract.
-- `docs/5.3.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
-- `docs/5.4.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
+- `docs/5.2.build_ui_data_story.md`: compact UI output contract.
+- `docs/5.3.music_feature_layers_story.md`: unified layer assembly contract.
+- `docs/5.4.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
+- `docs/5.5.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
 
 Additional story-level specifications under `docs/` define the exact implementation contract for each Epic and story.
 
@@ -67,13 +72,13 @@ Additional story-level specifications under `docs/` define the exact implementat
 
 1. **Prerequisites:** Docker with NVIDIA GPU support
 2. **Build:** `docker compose build`
-3. **Run analyzer:**
+3. **Run analyzer from the host shell:**
    ```bash
    docker compose run --rm app \
      python -m analyzer.cli validate-phase-1 \
      --song "/data/songs/YOUR_SONG.mp3" \
      --artifacts-root "/data/artifacts" \
-     --report-json "/data/artifacts/YOUR_SONG/validation/report.json"
+     --report-json "/data/artifacts/YOUR_SONG/validation/phase_1_report.json"
    ```
 
 For detailed CLI options, see [Running the Phase 1 Analyzer](#running-the-phase-1-analyzer) below.
@@ -125,10 +130,11 @@ Inside the container:
 
 ### Running the Phase 1 Analyzer
 
-The repository includes a Phase 1 validation CLI that runs the full analysis pipeline against a song and optionally validates against reference data:
+Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not invoke `python -m analyzer.cli` directly on the host.
 
 ```bash
-python -m analyzer.cli validate-phase-1 \
+docker compose run --rm app \
+  python -m analyzer.cli validate-phase-1 \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
@@ -166,8 +172,9 @@ Recommended implementation order:
 2. EPIC 4: energy features and section structure.
 3. EPIC 2 and EPIC 3: harmonic and symbolic refinement.
 4. EPIC 5.1: chord-pattern detection for Layer D.
-5. EPIC 5.2: unified music feature layer assembly.
-6. EPIC 5.3 and EPIC 5.4: lighting mapping and score generation.
+5. EPIC 5.2: compact UI beat and section outputs.
+6. EPIC 5.3: unified music feature layer assembly.
+7. EPIC 5.4 and EPIC 5.5: lighting mapping and score generation.
 
 This ordering reduces downstream churn because lighting behavior depends on stable upstream artifact contracts.
 
@@ -187,6 +194,8 @@ Convert songs into structured musical analysis artifacts and then into fixture-a
 - Validation-only truth data lives in `data/reference/<Song - Artist>/`.
 - Final outputs live in `data/output/<Song - Artist>/`.
 
+Examples: `data/output/<Song - Artist>/info.json`, `data/output/<Song - Artist>/lighting_score.md`.
+
 Inside `data/artifacts/<Song - Artist>/`, generated files should use producer-scoped folders when relevant. Examples: `data/artifacts/<Song - Artist>/essentia/beats.json`, `data/artifacts/<Song - Artist>/section_segmentation/sections.json`, `data/artifacts/<Song - Artist>/energy_summary/features.json`, `data/artifacts/<Song - Artist>/pattern_mining/chord_patterns.json`.
 
 ### Canonical Upstream Layers
@@ -200,7 +209,7 @@ Inside `data/artifacts/<Song - Artist>/`, generated files should use producer-sc
 
 - `music_feature_layers.json`
 
-This file is the explicit EPIC 5.2 output and the required input to downstream lighting-mapping stories.
+This file is the explicit EPIC 5.3 output and the required input to downstream lighting-mapping stories.
 
 ### Required Downstream Outputs
 
@@ -219,4 +228,4 @@ This file is the explicit EPIC 5.2 output and the required input to downstream l
 
 ### Developer Intent
 
-This repository is not a loose note dump. It is the specification source used to implement the production codebase.
+This repository is not a loose note dump. It is the implemented analyzer and the contract source for its emitted artifacts.

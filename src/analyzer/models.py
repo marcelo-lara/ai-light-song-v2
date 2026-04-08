@@ -2,10 +2,32 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field, is_dataclass
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+
+if TYPE_CHECKING:
+    from analyzer.paths import SongPaths
 
 
 SCHEMA_VERSION = "1.0"
+
+
+def round_schema_float(value: float, digits: int = 2) -> float:
+    return round(float(value), digits)
+
+
+def build_song_schema_fields(
+    paths: SongPaths,
+    *,
+    bpm: float | None = None,
+    duration: float | None = None,
+) -> dict[str, Any]:
+    payload: dict[str, Any] = {"song_name": paths.song_name}
+    if bpm is not None:
+        payload["bpm"] = round_schema_float(bpm)
+    if duration is not None:
+        payload["duration"] = round_schema_float(duration)
+    return payload
 
 
 def to_jsonable(value: Any) -> Any:

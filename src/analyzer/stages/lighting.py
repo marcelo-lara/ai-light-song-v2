@@ -278,7 +278,7 @@ def generate_lighting_events(paths: SongPaths) -> dict:
     lighting_events.sort(key=lambda event: (float(event["time"]), str(event["id"])))
     payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "generated_from": {
             "music_feature_layers_file": str(paths.artifact("music_feature_layers.json")),
             "engine": "rule-based-lighting-mapping",

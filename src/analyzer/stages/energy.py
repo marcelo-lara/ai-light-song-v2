@@ -140,7 +140,7 @@ def extract_energy_features(paths: SongPaths, timing: dict) -> dict:
 
     payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "generated_from": GeneratedFrom(
             source_song_path=str(paths.song_path),
             beats_file=str(paths.artifact("essentia", "beats.json")),
@@ -262,7 +262,7 @@ def derive_energy_layer(paths: SongPaths, timing: dict, energy_features: dict, s
 
     payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "beats_file": str(paths.artifact("essentia", "beats.json")),
