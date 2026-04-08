@@ -253,7 +253,7 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
 
     payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "generated_from": {
             "beats_file": str(paths.artifact("essentia", "beats.json")),
             "harmonic_layer_file": str(paths.artifact("layer_a_harmonic.json")),

@@ -148,8 +148,8 @@ At minimum:
 ```json
 {
   "schema_version": "1.0",
-  "song_id": "What a Feeling - Courtney Storm",
-  "command": "analyzer validate-phase-1",
+  "song_name": "What a Feeling - Courtney Storm",
+  "command": "python -m analyzer.cli validate-phase-1",
   "status": "passed",
   "exit_code": 0,
   "generated_at": "2026-04-06T00:00:00Z",

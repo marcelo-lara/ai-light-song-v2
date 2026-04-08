@@ -6,10 +6,10 @@ from analyzer.io import ensure_directory, read_json
 from analyzer.paths import SongPaths
 
 
-def _split_song_id(song_id: str) -> tuple[str, str | None]:
-    if " - " not in song_id:
-        return song_id, None
-    title, artist = song_id.split(" - ", 1)
+def _split_song_name(song_name: str) -> tuple[str, str | None]:
+    if " - " not in song_name:
+        return song_name, None
+    title, artist = song_name.split(" - ", 1)
     return title.strip(), artist.strip()
 
 
@@ -198,7 +198,7 @@ def _build_lighting_score_markdown(paths: SongPaths) -> str:
     lighting_events = read_json(paths.artifact("lighting_events.json"))
     fixtures = read_json(paths.artifacts_root.parent / "fixtures" / "fixtures.json")
 
-    title, artist = _split_song_id(paths.song_id)
+    title, artist = _split_song_name(paths.song_name)
     metadata = unified.get("metadata", {})
     section_energy = energy.get("section_energy", [])
 

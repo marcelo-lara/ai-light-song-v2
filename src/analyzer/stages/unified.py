@@ -169,7 +169,7 @@ def assemble_music_feature_layers(
 
     payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "source_song_path": str(paths.song_path),
         "generated_from": {
             "harmonic_layer_file": str(paths.artifact("layer_a_harmonic.json")),
@@ -180,9 +180,9 @@ def assemble_music_feature_layers(
             "sections_file": str(paths.artifact("section_segmentation", "sections.json")),
         },
         "metadata": {
-            "title": paths.song_id,
+            "title": paths.song_name,
             "duration_s": round(float(timing["bars"][-1]["end_s"]), 6),
-            "bpm": round(float(timing["tempo"]), 3),
+            "bpm": round(float(timing["bpm"]), 2),
             "time_signature": timing.get("time_signature", "4/4"),
             "key": harmonic.get("global_key", {}).get("label"),
         },

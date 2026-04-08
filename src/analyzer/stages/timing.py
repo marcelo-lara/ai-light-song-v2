@@ -4,7 +4,7 @@ from statistics import median
 
 from analyzer.exceptions import AnalysisError, DependencyError
 from analyzer.io import write_json
-from analyzer.models import BarWindow, BeatPoint, GeneratedFrom, SCHEMA_VERSION, to_jsonable
+from analyzer.models import BarWindow, BeatPoint, GeneratedFrom, SCHEMA_VERSION, build_song_schema_fields, round_schema_float, to_jsonable
 from analyzer.paths import SongPaths
 
 
@@ -53,13 +53,13 @@ def extract_timing_grid(paths: SongPaths) -> dict:
 
     payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
-        "tempo": round(float(tempo), 3),
+        **build_song_schema_fields(paths, bpm=tempo, duration=duration),
         "time_signature": "4/4",
         "generated_from": GeneratedFrom(
             source_song_path=str(paths.song_path),
             engine="essentia.RhythmExtractor2013",
         ),
+        "tempo": round_schema_float(tempo),
         "beats": beats,
         "bars": bars,
     }

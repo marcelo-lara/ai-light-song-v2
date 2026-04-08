@@ -92,7 +92,9 @@ Stores source-level symbolic validation results and promotion decisions used to 
 
 ### `info.json`
 
-Stores canonical song metadata and references to major generated files.
+Stores canonical song metadata and references to major generated files. This file is written to `data/output/<Song - Artist>/info.json`.
+
+Expected top-level metadata fields are `song_name`, `bpm`, and `duration`, with file references grouped under `artifacts`, `generated_from`, and `outputs`.
 
 ## Unified Artifact
 

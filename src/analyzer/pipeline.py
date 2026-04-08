@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from analyzer.config import ValidationConfig
 from analyzer.io import ensure_directory, write_json
+from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
@@ -36,8 +37,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     lighting_score = generate_lighting_score(paths)
 
     info_payload = {
-        "schema_version": "1.0",
-        "song_id": paths.song_id,
+        "schema_version": SCHEMA_VERSION,
+        **build_song_schema_fields(paths, bpm=timing["bpm"], duration=timing["duration"]),
         "song_path": str(paths.song_path),
         "artifacts": {
             "beats": str(paths.artifact("essentia", "beats.json")),
@@ -61,7 +62,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             "lighting_score": str(paths.song_output_dir / "lighting_score.md"),
         },
     }
-    write_json(paths.artifact("info.json"), info_payload)
+    write_json(paths.song_output_dir / "info.json", info_payload)
 
     report, exit_code = build_validation_report(
         paths=paths,

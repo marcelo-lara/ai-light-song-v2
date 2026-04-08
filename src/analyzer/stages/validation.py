@@ -103,7 +103,7 @@ def build_validation_report(
 
     report = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "command": "python -m analyzer.cli validate-phase-1",
         "status": status,
         "exit_code": exit_code,
@@ -134,7 +134,7 @@ def write_validation_report(report: dict, report_json: Path) -> None:
 
 def write_validation_markdown(report: dict, report_md: Path) -> None:
     lines = [
-        f"# Phase 1 Validation Report: {report['song_id']}",
+        f"# Phase 1 Validation Report: {report['song_name']}",
         "",
         f"Status: {report['status']}",
         f"Generated at: {report['generated_at']}",

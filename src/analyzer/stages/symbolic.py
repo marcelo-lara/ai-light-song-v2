@@ -125,7 +125,7 @@ def _predict_stem_notes(
 
     raw_payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": output_dir.parent.parent.name,
+        "song_name": output_dir.parent.parent.name,
         "source_stem": source_stem,
         "generated_from": {
             "stem_file": stem_path,
@@ -1037,7 +1037,7 @@ def extract_symbolic_features(paths: SongPaths, stems: dict[str, str], timing: d
 
     validation_payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "sections_file": str(paths.artifact("section_segmentation", "sections.json")),
@@ -1054,7 +1054,7 @@ def extract_symbolic_features(paths: SongPaths, stems: dict[str, str], timing: d
 
     payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_id": paths.song_id,
+        "song_name": paths.song_name,
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "harmonic_stem": stems["harmonic"],

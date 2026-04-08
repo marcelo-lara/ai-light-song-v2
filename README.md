@@ -1,8 +1,8 @@
 # ai-light-song-v2
 
-ai-light-song-v2 defines a documentation-first pipeline for turning source songs into structured musical analysis artifacts and fixture-aware lighting guidance.
+ai-light-song-v2 implements a Docker-first pipeline for turning source songs into structured musical analysis artifacts and fixture-aware lighting guidance.
 
-This repository is the analysis and planning side of the broader ai-light-show-v2 workflow. Its job is to define the artifact contracts, processing stages, validation rules, and developer environment needed to build the real implementation.
+This repository contains the runnable analyzer, the artifact contracts it emits, the validation rules used to score those artifacts, and the Docker environment used to run the pipeline end to end.
 
 ## Scope
 
@@ -24,7 +24,7 @@ The repository structure is part of the implementation contract.
 - `data/stems/`: temporary stem and `.wav` work area generated during preprocessing.
 - `data/artifacts/`: intermediate analysis artifacts, layer outputs, merged timeline artifacts, and validation metadata.
 - `data/reference/`: validation-only truth data such as chords, sections, lyrics, or beats from external tools. These files are for scoring and comparison only.
-- `data/output/`: final generated deliverables such as `lighting_score.md` and future DMX-ready exports.
+- `data/output/`: final generated deliverables such as `info.json`, `lighting_score.md`, and future DMX-ready exports.
 - `docs/`: canonical implementation and contract documentation.
 
 ## Hard Rules
@@ -43,6 +43,7 @@ The repository structure is part of the implementation contract.
 
 The intended contract defines these primary artifacts:
 
+- `info.json`: canonical song metadata, including `song_name`, `bpm`, `duration`, and generated file references, written to `data/output/<Song - Artist>/info.json`.
 - `layer_a_harmonic.json`: chord events, key, cadence, harmonic summaries.
 - `layer_b_symbolic.json`: note events, symbolic summaries, contour and density views.
 - `layer_c_energy.json`: loudness, onset, centroid, energy sections, accent candidates.
@@ -73,7 +74,7 @@ Additional story-level specifications under `docs/` define the exact implementat
      python -m analyzer.cli validate-phase-1 \
      --song "/data/songs/YOUR_SONG.mp3" \
      --artifacts-root "/data/artifacts" \
-     --report-json "/data/artifacts/YOUR_SONG/validation/report.json"
+     --report-json "/data/artifacts/YOUR_SONG/validation/phase_1_report.json"
    ```
 
 For detailed CLI options, see [Running the Phase 1 Analyzer](#running-the-phase-1-analyzer) below.
@@ -187,6 +188,8 @@ Convert songs into structured musical analysis artifacts and then into fixture-a
 - Validation-only truth data lives in `data/reference/<Song - Artist>/`.
 - Final outputs live in `data/output/<Song - Artist>/`.
 
+Examples: `data/output/<Song - Artist>/info.json`, `data/output/<Song - Artist>/lighting_score.md`.
+
 Inside `data/artifacts/<Song - Artist>/`, generated files should use producer-scoped folders when relevant. Examples: `data/artifacts/<Song - Artist>/essentia/beats.json`, `data/artifacts/<Song - Artist>/section_segmentation/sections.json`, `data/artifacts/<Song - Artist>/energy_summary/features.json`, `data/artifacts/<Song - Artist>/pattern_mining/chord_patterns.json`.
 
 ### Canonical Upstream Layers
@@ -219,4 +222,4 @@ This file is the explicit EPIC 5.2 output and the required input to downstream l
 
 ### Developer Intent
 
-This repository is not a loose note dump. It is the specification source used to implement the production codebase.
+This repository is not a loose note dump. It is the implemented analyzer and the contract source for its emitted artifacts.
