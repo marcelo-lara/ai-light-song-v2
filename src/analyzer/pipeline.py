@@ -14,6 +14,7 @@ from analyzer.stages.sections_v2 import segment_sections
 from analyzer.stages.symbolic import extract_symbolic_features
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import extract_timing_grid
+from analyzer.stages.ui_data import build_ui_data
 from analyzer.stages.unified import assemble_music_feature_layers
 from analyzer.stages.validation import (
     build_validation_report,
@@ -30,6 +31,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     energy_features = extract_energy_features(paths, timing)
     sections = segment_sections(paths, timing, harmonic, energy_features)
     symbolic = extract_symbolic_features(paths, stems, timing, sections)
+    ui_outputs = build_ui_data(paths)
     energy = derive_energy_layer(paths, timing, energy_features, sections)
     patterns = extract_chord_patterns(paths, timing, harmonic)
     unified = assemble_music_feature_layers(paths, timing, harmonic, symbolic, energy, patterns, sections)
@@ -59,6 +61,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             "timing_grid": str(paths.artifact("essentia", "beats.json")),
         },
         "outputs": {
+            "beats": ui_outputs["beats"],
+            "sections": ui_outputs["sections"],
             "lighting_score": str(paths.song_output_dir / "lighting_score.md"),
         },
     }

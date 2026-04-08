@@ -13,8 +13,9 @@ The pipeline transforms an input song into progressively richer artifacts:
 3. Symbolic analysis extracts note events and higher-level musical descriptors.
 4. Energy analysis extracts loudness, brightness, transients, and sections.
 5. Pattern mining extracts repeated multi-bar chord progressions into Layer D summaries.
-6. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
-7. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
+6. UI data projection builds compact beat and section outputs for downstream consumers.
+7. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
+8. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
 
 ## Repository Layout
 
@@ -44,6 +45,8 @@ The repository structure is part of the implementation contract.
 The intended contract defines these primary artifacts:
 
 - `info.json`: canonical song metadata, including `song_name`, `bpm`, `duration`, and generated file references, written to `data/output/<Song - Artist>/info.json`.
+- `beats.json`: compact UI-facing beat timeline written to `data/output/<Song - Artist>/beats.json`.
+- `sections.json`: compact UI-facing section timeline written to `data/output/<Song - Artist>/sections.json`.
 - `layer_a_harmonic.json`: chord events, key, cadence, harmonic summaries.
 - `layer_b_symbolic.json`: note events, symbolic summaries, contour and density views.
 - `layer_c_energy.json`: loudness, onset, centroid, energy sections, accent candidates.
@@ -58,9 +61,10 @@ The intended contract defines these primary artifacts:
 - `docs/4.1.energy_feature_schema.md`: low-level energy schema.
 - `docs/4.2.section_segmentation_story.md`: section inference contract.
 - `docs/5.1.find_chord_patterns_story.md`: Layer D chord-pattern detection contract.
-- `docs/5.2.music_feature_layers_story.md`: unified layer assembly contract.
-- `docs/5.3.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
-- `docs/5.4.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
+- `docs/5.2.build_ui_data_story.md`: compact UI output contract.
+- `docs/5.3.music_feature_layers_story.md`: unified layer assembly contract.
+- `docs/5.4.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
+- `docs/5.5.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
 
 Additional story-level specifications under `docs/` define the exact implementation contract for each Epic and story.
 
@@ -168,8 +172,9 @@ Recommended implementation order:
 2. EPIC 4: energy features and section structure.
 3. EPIC 2 and EPIC 3: harmonic and symbolic refinement.
 4. EPIC 5.1: chord-pattern detection for Layer D.
-5. EPIC 5.2: unified music feature layer assembly.
-6. EPIC 5.3 and EPIC 5.4: lighting mapping and score generation.
+5. EPIC 5.2: compact UI beat and section outputs.
+6. EPIC 5.3: unified music feature layer assembly.
+7. EPIC 5.4 and EPIC 5.5: lighting mapping and score generation.
 
 This ordering reduces downstream churn because lighting behavior depends on stable upstream artifact contracts.
 
@@ -204,7 +209,7 @@ Inside `data/artifacts/<Song - Artist>/`, generated files should use producer-sc
 
 - `music_feature_layers.json`
 
-This file is the explicit EPIC 5.2 output and the required input to downstream lighting-mapping stories.
+This file is the explicit EPIC 5.3 output and the required input to downstream lighting-mapping stories.
 
 ### Required Downstream Outputs
 
