@@ -457,7 +457,7 @@ Summary: compact UI-facing section timeline with presentation-friendly labels.
 Why it matters: quick section overview without opening the fuller artifact files.
 
 LLM hint:
-- See: `start`, `end`, and `label`.
+- See: `start`, `end`, and `label`, where `label` embeds the numeric section id prefix and a confidence suffix such as `001 Intro (0.74)`.
 - Use: for fast section summaries, section cue lists, and high-level show pacing.
 
 ### `data/output/<Song - Artist>/lighting_score.md`

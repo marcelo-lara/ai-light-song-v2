@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from bisect import bisect_left
+import re
 
 from analyzer.io import read_json, write_json
 from analyzer.models import round_schema_float
@@ -25,10 +26,27 @@ def _resolve_chord_for_time(time_s: float, chord_events: list[dict]) -> str | No
     return previous_label or (str(chord_events[0]["chord"]) if chord_events else None)
 
 
-def _format_section_label(label: str | None) -> str:
-    if not label:
-        return "Unlabeled"
-    return str(label).replace("_", " ").title()
+def _format_section_label(
+    label: str | None,
+    section_id: str | None,
+    confidence: float | None,
+) -> str:
+    label_text = str(label).replace("_", " ").title() if label else "Unlabeled"
+
+    prefix = ""
+    if section_id:
+        match = re.search(r"(\d+)", str(section_id))
+        if match:
+            prefix = f"{match.group(1)} "
+
+    suffix = ""
+    if confidence is not None:
+        try:
+            suffix = f" ({round_schema_float(float(confidence)):.2f})"
+        except (TypeError, ValueError):
+            suffix = ""
+
+    return f"{prefix}{label_text}{suffix}"
 
 
 def _pitch_to_note_name(pitch: int) -> str:
@@ -95,7 +113,11 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         {
             "start": round_schema_float(float(section["start"])),
             "end": round_schema_float(float(section["end"])),
-            "label": _format_section_label(section.get("label")),
+            "label": _format_section_label(
+                section.get("label"),
+                section.get("section_id"),
+                section.get("confidence"),
+            ),
             "description": "",
             "hints": [],
         }

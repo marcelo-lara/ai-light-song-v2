@@ -108,7 +108,7 @@ Expected fields per row are `time`, `beat`, `bar`, `bass`, `chord`, and `type`, 
 
 Stores compact UI-facing section rows projected from `section_segmentation/sections.json`.
 
-Expected fields per row are `start`, `end`, `label`, `description`, and `hints`.
+Expected fields per row are `start`, `end`, `label`, `description`, and `hints`, where `label` embeds the numeric section id prefix and a confidence suffix such as `001 Intro (0.74)`.
 
 ## Unified Artifact
 
