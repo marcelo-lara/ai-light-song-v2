@@ -149,7 +149,7 @@ def assemble_music_feature_layers(
         section_cards.append(
             {
                 "section_id": section_id,
-                "section_name": section.get("label"),
+                "section_name": section.get("section_character") or section.get("label"),
                 "start_s": round(float(section["start"]), 6),
                 "end_s": round(float(section["end"]), 6),
                 "symbolic_description": next(

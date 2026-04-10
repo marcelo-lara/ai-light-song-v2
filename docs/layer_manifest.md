@@ -19,6 +19,8 @@ Contains harmonic analysis outputs such as:
 
 Primary source stories: EPIC 2.1 through EPIC 2.4.
 
+Genre guidance from Story 2.5 is intentionally producer-scoped and does not extend the harmonic layer contract by default.
+
 ### `layer_b_symbolic.json`
 
 Contains symbolic and note-event analysis outputs such as:
@@ -33,7 +35,7 @@ Contains symbolic and note-event analysis outputs such as:
 - repeated motifs
 - section-level symbolic cards
 
-Primary source stories: EPIC 3.1 through EPIC 3.4.
+Primary source stories: EPIC 3.1 through EPIC 3.5.
 
 ### `layer_c_energy.json`
 
@@ -45,7 +47,7 @@ Contains energy analysis outputs such as:
 - notable peaks and dips
 - accent candidates
 
-Primary source stories: EPIC 4.1 through EPIC 4.3.
+Primary source stories: EPIC 4.1 through EPIC 4.4.
 
 ### `layer_d_patterns.json`
 
@@ -62,6 +64,10 @@ Primary source story: EPIC 5.1.
 
 ## Supporting Artifact Files
 
+### `genre.json`
+
+Stores a producer-scoped coarse genre label, confidence, candidate predictions, and review guidance from Story 2.5. If classification is unavailable or low confidence, the artifact should record `genre: "unknown"` rather than invoking a custom fallback algorithm.
+
 ### `energy_summary/features.json`
 
 Stores base feature summaries and shared analysis signals used by higher-level layers.
@@ -72,7 +78,7 @@ Stores structural section windows and optional heuristic labels used across symb
 
 ### `energy_summary/hints.json`
 
-Stores rises, drops, or other hint-level events that assist later aggregation.
+Stores producer-scoped named energy-event identifiers such as drops and other later-defined song moments that assist later aggregation and lighting mapping.
 
 ### `pattern_mining/chord_patterns.json`
 
@@ -89,6 +95,10 @@ Stores producer-scoped raw Basic Pitch note caches, model-output summaries, and 
 ### `symbolic_transcription/validation.json`
 
 Stores source-level symbolic validation results and promotion decisions used to assemble the final `layer_b_symbolic.json` artifact from all analyzed stems and the full mix.
+
+### `symbolic_transcription/hints.json`
+
+Stores deterministic section-level hint inference derived from the aligned symbolic timeline before user-authored edits are merged into the output-facing hints file.
 
 ### `info.json`
 
@@ -108,7 +118,11 @@ Expected fields per row are `time`, `beat`, `bar`, `bass`, `chord`, and `type`, 
 
 Stores compact UI-facing section rows projected from `section_segmentation/sections.json`.
 
-Expected fields per row are `start`, `end`, `label`, `description`, and `hints`.
+Expected fields per row are `start`, `end`, `label`, `description`, and `hints`, where `label` embeds the numeric section id prefix and a confidence suffix such as `001 Intro (0.74)`. The `hints` field remains a placeholder in this file and is not the authoritative editable hint store.
+
+### `data/output/<Song - Artist>/hints.json`
+
+Stores the editable merged section hints consumed by `lighting_score.md`, combining regenerated inference-authored hints with preserved user-authored hints.
 
 ## Unified Artifact
 

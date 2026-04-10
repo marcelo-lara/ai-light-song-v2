@@ -8,19 +8,25 @@ from analyzer.paths import SongPaths
 
 
 SECTION_SCENES = {
-    "intro": "intro_glow",
-    "verse": "verse_drive",
-    "chorus": "chorus_lift",
-    "bridge": "bridge_sweep",
-    "outro": "outro_release",
+    "ambient_opening": "ambient_opening",
+    "steady_flow": "steady_flow",
+    "driving_pulse": "driving_pulse",
+    "rising_drive": "rising_drive",
+    "peak_lift": "peak_lift",
+    "tense_transition": "tense_transition",
+    "sparse_break": "sparse_break",
+    "release_tail": "release_tail",
 }
 
 SECTION_COLORS = {
-    "intro": "cool",
-    "verse": "neutral",
-    "chorus": "warm",
-    "bridge": "magenta",
-    "outro": "cool",
+    "ambient_opening": "cool",
+    "steady_flow": "neutral",
+    "driving_pulse": "warm",
+    "rising_drive": "warm",
+    "peak_lift": "warm",
+    "tense_transition": "magenta",
+    "sparse_break": "cool",
+    "release_tail": "cool",
 }
 
 
@@ -142,7 +148,7 @@ def generate_lighting_events(paths: SongPaths) -> dict:
 
     for section in sections:
         section_id = section["section_id"]
-        section_label = _dominant_section_name(section.get("label"))
+        section_label = _dominant_section_name(section.get("section_character") or section.get("label"))
         start_s = float(section["start"])
         end_s = float(section["end"])
         energy_row = energy_sections.get(section_id, {})
@@ -155,7 +161,7 @@ def generate_lighting_events(paths: SongPaths) -> dict:
         mean_energy = float(energy_row.get("mean", 0.0))
         transient_density = float(energy_row.get("transient_density", 0.0))
         intensity = _normalize(mean_energy, energy_min, energy_max, 0.25, 0.95)
-        if section_label == "chorus":
+        if section_label in {"peak_lift", "rising_drive"}:
             intensity = round(_clamp01(intensity + 0.05), 6)
         movement_speed = _normalize(transient_density, transient_min, transient_max, 0.2, 0.95)
 
@@ -288,7 +294,7 @@ def generate_lighting_events(paths: SongPaths) -> dict:
         "mapping_rules": [
             "Section energy drives base intensity.",
             "Transient density drives movement speed.",
-            "Section label selects scene family and color family.",
+            "Section character selects scene family and color family.",
             "Accent windows create short flash or rise events.",
             "Motif and pattern callbacks create repeatable variation events.",
         ],

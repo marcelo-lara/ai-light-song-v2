@@ -153,6 +153,16 @@ docker compose run --rm app \
   --report-md "/data/artifacts/Sash - Raindrops/validation/phase_1_report.md"
 ```
 
+Run the same analysis for every song under `/data/songs`:
+
+```bash
+docker compose run --rm app \
+  python -m analyzer.cli validate-phase-1 \
+  --all-songs \
+  --artifacts-root "/data/artifacts" \
+  --reference-root "/data/reference"
+```
+
 **Available compare targets:** `chords`, `sections`, `energy`, `patterns`, `unified`
 
 **CLI flags:**

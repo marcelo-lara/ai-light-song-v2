@@ -106,6 +106,7 @@ Each subsection must include:
 - movement guidance
 - accent behavior
 - repeated-pattern or motif callback behavior
+- human-editable hint lines from `data/output/<Song - Artist>/hints.json` when available
 - any special transition behavior
 
 ### Song-Specific Rules
@@ -139,6 +140,10 @@ Optional LLM-refined prose may improve readability, but it must not invent contr
 ## Output Path
 
 - `data/output/<Song - Artist>/lighting_score.md`
+
+## Related Output
+
+- `data/output/<Song - Artist>/hints.json`
 
 ## Compact Example Skeleton
 
@@ -177,6 +182,7 @@ This is a structural example only. It shows how deterministic timing anchors and
 ### intro
 - Window: 0.00s -> 15.36s
 - Cue anchors: 1.23s, 4.88s, 8.00s
+- Hint: Treat the first phrase as the establishing visual idea and keep later recalls visibly related.
 - Callback rule: first `motif_alpha` occurrence is restrained; repeated occurrence may echo with added width.
 
 ## Song-Specific Rules

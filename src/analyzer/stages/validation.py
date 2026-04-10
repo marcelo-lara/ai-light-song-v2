@@ -12,6 +12,9 @@ from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
 
 
+BEAT_MATCH_RATIO_THRESHOLD = 0.80
+
+
 @dataclass(slots=True)
 class ValidationResult:
     status: str
@@ -49,6 +52,8 @@ def normalize_chord_label(label: str | None) -> str:
 def build_validation_report(
     paths: SongPaths,
     compare_targets: tuple[str, ...],
+    beat_validation: ValidationResult | None,
+    beat_tolerance_seconds: float,
     tolerance_seconds: float,
     chord_min_overlap: float,
     fail_on_mismatch: bool,
@@ -66,6 +71,9 @@ def build_validation_report(
     timing = read_json(beats_path)
 
     results = {
+        "beats": beat_validation if "beats" in compare_targets and beat_validation is not None else (
+            validate_beats(paths, timing, beat_tolerance_seconds) if "beats" in compare_targets else skipped_result()
+        ),
         "chords": _validate_chords(paths, harmonic, chord_min_overlap) if "chords" in compare_targets else skipped_result(),
         "sections": _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
         "energy": _validate_energy_layer(read_json(energy_path), timing, sections) if "energy" in compare_targets else skipped_result(),
@@ -90,6 +98,8 @@ def build_validation_report(
         status = "passed"
 
     notes: list[str] = []
+    if "beats" in compare_targets:
+        notes.append("Beat validation compares inferred beat times against the beat timestamps embedded in the reference chord annotation when present.")
     if "chords" in compare_targets:
         notes.append("Chord validation treats reference chord files as authoritative human-validated comparison inputs when present.")
     if "sections" in compare_targets:
@@ -114,6 +124,7 @@ def build_validation_report(
             "reference_sections": str(paths.reference("moises", "segments.json")) if paths.reference("moises", "segments.json") else None,
         },
         "generated_artifacts": {
+            "beats_file": str(beats_path),
             "harmonic_layer_file": str(harmonic_path),
             "symbolic_layer_file": str(symbolic_path),
             "energy_layer_file": str(energy_path),
@@ -125,6 +136,10 @@ def build_validation_report(
         "validation": {key: asdict(value) for key, value in results.items()},
         "notes": notes,
     }
+    inferred_beats_file = timing.get("generated_from", {}).get("dependencies", {}).get("inferred_beats_file")
+    if inferred_beats_file:
+        report["generated_artifacts"]["inferred_beats_file"] = inferred_beats_file
+        report["notes"].append("Story 1.2 beat validation failed against reference data, so downstream phases used a canonical timing grid rebuilt from the reference beat annotations.")
     return report, exit_code
 
 
@@ -188,6 +203,60 @@ def write_validation_markdown(report: dict, report_md: Path) -> None:
 
 def skipped_result() -> ValidationResult:
     return ValidationResult(status="skipped", matched=0, mismatched=0, match_ratio=None, details=[], reference_file=None)
+
+
+def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> ValidationResult:
+    reference_path = paths.reference("moises", "chords.json")
+    if reference_path is None or not reference_path.exists():
+        return skipped_result()
+
+    reference_rows = read_json(reference_path)
+    reference_times = sorted({round(float(row["curr_beat_time"]), 6) for row in reference_rows if "curr_beat_time" in row})
+    inferred_beats = timing.get("beats", [])
+    if not inferred_beats or not reference_times:
+        return skipped_result()
+
+    reference_start = reference_times[0]
+    reference_end = reference_times[-1]
+    inferred_beats = [
+        beat for beat in inferred_beats
+        if reference_start <= float(beat["time"]) <= reference_end
+    ]
+    if not inferred_beats:
+        return skipped_result()
+
+    matched = 0
+    mismatched = 0
+    details: list[dict] = []
+    for beat in inferred_beats:
+        inferred_time = float(beat["time"])
+        reference_time = min(reference_times, key=lambda item: abs(item - inferred_time))
+        delta_seconds = inferred_time - reference_time
+        within_tolerance = abs(delta_seconds) <= tolerance_seconds
+        if within_tolerance:
+            matched += 1
+        else:
+            mismatched += 1
+        details.append({
+            "beat_index": int(beat.get("index", 0)),
+            "beat_type": beat.get("type", "beat"),
+            "inferred_time": round(inferred_time, 6),
+            "reference_time": round(reference_time, 6),
+            "delta_seconds": round(delta_seconds, 6),
+            "within_tolerance": within_tolerance,
+        })
+
+    total = matched + mismatched
+    ratio = matched / total if total else None
+    status = "passed" if ratio is None or ratio >= BEAT_MATCH_RATIO_THRESHOLD else "failed"
+    return ValidationResult(
+        status=status,
+        matched=matched,
+        mismatched=mismatched,
+        match_ratio=ratio,
+        details=details,
+        reference_file=str(reference_path),
+    )
 
 
 def _result_from_checks(checks: list[dict], reference_file: str | None = None) -> ValidationResult:

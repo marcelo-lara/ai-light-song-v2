@@ -104,3 +104,4 @@ class SectionWindow:
     end: float
     label: str | None
     confidence: float
+    section_character: str | None = None
