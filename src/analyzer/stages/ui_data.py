@@ -114,7 +114,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
             "start": round_schema_float(float(section["start"])),
             "end": round_schema_float(float(section["end"])),
             "label": _format_section_label(
-                section.get("label"),
+                section.get("section_character") or section.get("label"),
                 section.get("section_id"),
                 section.get("confidence"),
             ),

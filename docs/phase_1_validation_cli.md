@@ -56,7 +56,7 @@ python -m analyzer.cli validate-phase-1 \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
-  --compare chords,sections,energy,patterns,unified \
+  --compare beats,chords,sections,energy,patterns,unified \
   --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
 ```
 
@@ -67,7 +67,7 @@ python -m analyzer.cli validate-phase-1 \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
-  --compare chords,sections,energy,patterns,unified \
+  --compare beats,chords,sections,energy,patterns,unified \
   --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
 ```
 
@@ -87,10 +87,11 @@ python -m analyzer.cli validate-phase-1 \
 - `--songs-root`: optional directory override for batch mode. Defaults to the sibling `songs/` directory next to `--artifacts-root`.
 - `--artifacts-root`: required root directory where inferred outputs are written.
 - `--reference-root`: optional root directory for validation-only reference files. If omitted or if files are missing, inference must still run and validation for those targets is skipped.
-- `--compare`: optional list of validation targets for phase 1. Supported values include `chords`, `sections`, `energy`, `patterns`, and `unified`. Reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts.
+- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `sections`, `energy`, `patterns`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. If that strict Story 1.2 check fails and reference values exist, the pipeline preserves the inferred beat grid separately and promotes a canonical reference-derived beat grid for downstream phases. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts.
 - `--report-json`: required path for the machine-readable validation report in single-song mode. Batch mode writes `validation/phase_1_report.json` under each song artifact directory automatically.
 - `--report-md`: optional human-readable report path in single-song mode. Batch mode writes `validation/phase_1_report.md` under each song artifact directory automatically.
 - `--fail-on-mismatch`: optional flag causing the command to exit non-zero when validation thresholds are missed.
+- `--beat-tolerance-seconds`: optional float for beat-timestamp comparison tolerance. The phase-1 default is `0.10` seconds.
 - `--tolerance-seconds`: optional float for section change-point comparison tolerance. The phase-1 default should allow roughly one to two bars of drift.
 - `--chord-min-overlap`: optional float defining minimum overlap ratio for chord-event comparison.
 - `--device`: optional execution target such as `cuda` or `cpu`, but container validation should prefer GPU when available.
@@ -108,11 +109,12 @@ The phase 1 analyzer must:
 
 1. read the source song from `data/songs/`
 2. generate inferred timing, harmonic, and section-related artifacts under `data/artifacts/<Song - Artist>/`
-3. compare inferred chord outputs against `data/reference/<Song - Artist>/moises/chords.json` when that file is available
-4. compare inferred section change points against `data/reference/<Song - Artist>/moises/segments.json` when that file is available
-5. validate canonical energy, pattern, and unified feature artifacts for internal consistency
-6. write a validation report under `data/artifacts/<Song - Artist>/validation/`
-7. exit with a documented success or failure status
+3. compare inferred beat outputs against beat timestamps embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available
+4. compare inferred chord outputs against `data/reference/<Song - Artist>/moises/chords.json` when that file is available
+5. compare inferred section change points against `data/reference/<Song - Artist>/moises/segments.json` when that file is available
+6. validate canonical energy, pattern, and unified feature artifacts for internal consistency
+7. write a validation report under `data/artifacts/<Song - Artist>/validation/`
+8. exit with a documented success or failure status
 
 ## Required Outputs
 
@@ -137,6 +139,8 @@ At minimum:
 - The analyzer must infer chord and section outputs from the pipeline even when reference files are available.
 - If reference files are present, they may be used for validation, reporting, or explicit review workflows only.
 - Comparisons should report agreement, disagreement, and confidence or tolerance when relevant.
+- Beat comparisons should use the inferred timing grid produced by Story 1.2, run before downstream stories consume that grid, and evaluate only the reference-covered portion of the timeline.
+- If a reference-backed beat comparison fails, downstream stories should use the promoted canonical reference timing grid rather than the failed inferred timing grid, and the report should record that takeover explicitly.
 - Section comparisons should use structural change-point alignment. Reference labels may be reported for review but should not control pass/fail.
 - Chord comparisons should use time-aligned event comparison and label comparison.
 
@@ -146,6 +150,7 @@ At minimum:
 - execution timestamp
 - tool versions or model versions used
 - generated artifact paths
+- beat comparison summary
 - chord comparison summary
 - section comparison summary
 - energy-layer internal consistency summary
@@ -174,17 +179,23 @@ At minimum:
     "energy_layer_file": "/data/artifacts/What a Feeling - Courtney Storm/layer_c_energy.json"
   },
   "validation": {
+    "beats": {
+      "status": "passed",
+      "matched": 412,
+      "mismatched": 10,
+      "match_ratio": 0.98
+    },
     "chords": {
       "status": "passed",
-      "matched_events": 42,
-      "mismatched_events": 5,
+      "matched": 42,
+      "mismatched": 5,
       "match_ratio": 0.89
     },
     "sections": {
       "status": "passed",
-      "matched_sections": 7,
-      "mismatched_sections": 0,
-      "boundary_tolerance_seconds": 0.50
+      "matched": 7,
+      "mismatched": 0,
+      "match_ratio": 1.0
     }
   },
   "notes": []

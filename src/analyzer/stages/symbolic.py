@@ -209,7 +209,7 @@ def _align_note_events(notes: list[dict], timing: dict, sections_payload: dict) 
                 "beat_time_delta": round(float(beat_delta), 6) if beat_delta is not None else None,
                 "alignment_resolved": aligned_beat_index is not None,
                 "section_id": section.get("section_id") if section else None,
-                "section_name": section.get("label") if section else None,
+                "section_name": (section.get("section_character") or section.get("label")) if section else None,
                 "pitch_bend_step_count": len(note.get("pitch_bend", [])),
             }
         )
@@ -316,7 +316,7 @@ def _notes_in_window(notes: list[dict], start_s: float, end_s: float) -> list[di
 def _section_name(section: dict | None) -> str | None:
     if not section:
         return None
-    label = section.get("label")
+    label = section.get("section_character") or section.get("label")
     return str(label) if label is not None else None
 
 

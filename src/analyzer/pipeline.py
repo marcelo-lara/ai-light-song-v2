@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from analyzer.config import ValidationConfig
 from analyzer.io import ensure_directory, write_json
+from analyzer.exceptions import AnalysisError
 from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
 from analyzer.stages.energy import extract_energy_features
@@ -13,11 +14,13 @@ from analyzer.stages.patterns import extract_chord_patterns
 from analyzer.stages.sections_v2 import segment_sections
 from analyzer.stages.symbolic import extract_symbolic_features
 from analyzer.stages.stems import ensure_stems
-from analyzer.stages.timing import extract_timing_grid
+from analyzer.stages.timing import build_reference_timing_grid, extract_timing_grid
 from analyzer.stages.ui_data import build_ui_data
 from analyzer.stages.unified import assemble_music_feature_layers
 from analyzer.stages.validation import (
     build_validation_report,
+    skipped_result,
+    validate_beats,
     write_validation_markdown,
     write_validation_report,
 )
@@ -27,6 +30,23 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     ensure_directory(paths.song_artifacts_dir)
     stems = ensure_stems(paths)
     timing = extract_timing_grid(paths)
+    beat_validation = (
+        validate_beats(paths, timing, config.beat_tolerance_seconds)
+        if "beats" in config.compare_targets
+        else skipped_result()
+    )
+    if beat_validation.status == "failed" and beat_validation.reference_file is not None:
+        inferred_beats_path = paths.artifact("essentia", "beats_inferred.json")
+        write_json(inferred_beats_path, timing)
+        timing = build_reference_timing_grid(
+            paths,
+            float(timing.get("duration", 0.0)),
+            reference_chords_path=beat_validation.reference_file,
+            inferred_beats_path=str(inferred_beats_path),
+        )
+        if not timing.get("beats"):
+            raise AnalysisError("Reference timing takeover did not produce any canonical beats")
+        write_json(paths.artifact("essentia", "beats.json"), timing)
     _, harmonic = extract_hpcp_and_chords(paths, stems, timing)
     energy_features = extract_energy_features(paths, timing)
     sections = segment_sections(paths, timing, harmonic, energy_features)
@@ -71,6 +91,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     report, exit_code = build_validation_report(
         paths=paths,
         compare_targets=config.compare_targets,
+        beat_validation=beat_validation,
+        beat_tolerance_seconds=config.beat_tolerance_seconds,
         tolerance_seconds=config.tolerance_seconds,
         chord_min_overlap=config.chord_min_overlap,
         fail_on_mismatch=config.fail_on_mismatch,

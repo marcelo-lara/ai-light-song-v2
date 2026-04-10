@@ -120,9 +120,9 @@ def _visual_strategy_lines(energy: dict, lighting_events: dict) -> list[str]:
     global_energy = energy.get("global_energy", {})
     dominant_bass_motion = lighting_events.get("metadata", {}).get("dominant_bass_motion") or "mixed"
     return [
-        f"- Palette logic: keep intros and outros cooler, let choruses and repeated callbacks move warmer or brighter.",
+        f"- Palette logic: keep ambient openings, sparse breaks, and release tails cooler, while driving and peak sections move warmer or brighter.",
         f"- Movement philosophy: tie motion density to transient density and let bass motion `{dominant_bass_motion}` decide pulse character.",
-        f"- Contrast strategy: reserve the highest intensity for repeated-section payoffs and strong accent clusters.",
+        f"- Contrast strategy: reserve the highest intensity for peak lifts, rising drives, and strong accent clusters.",
         f"- Boundary treatment: section starts should read as explicit cue changes, not gradual guesswork.",
         f"- Brightness trend: {global_energy.get('energy_trend', 'unknown')} with controlled release at the end.",
     ]
@@ -183,7 +183,7 @@ def _song_specific_rule_lines(lighting_events: dict, patterns: dict) -> list[str
     rise_count = sum(1 for row in event_rows if row.get("scene") == "accent_rise")
     return [
         "- Do not move cue times away from deterministic section, phrase, accent, or pattern anchors.",
-        "- Keep intro and outro looks more restrained than the chorus and late-verse pushes.",
+        "- Keep ambient and release sections more restrained than peak lifts, rising drives, and dense pulse sections.",
         f"- Reuse harmonic callbacks from {len(pattern_rows)} detected pattern groups with controlled variation instead of unrelated new looks.",
         f"- Preserve rise accents as separate moments; current design exposes {rise_count} rise-style accent cues.",
         "- Keep fixture roles stable across the song so repeated motifs feel intentionally recalled rather than randomly reassigned.",

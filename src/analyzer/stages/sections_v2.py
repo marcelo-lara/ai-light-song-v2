@@ -192,37 +192,50 @@ def _compute_section_repetition(sections: list[dict[str, object]]) -> list[float
     return repetitions
 
 
-def _label_sections(sections: list[dict[str, object]]) -> list[str]:
+def _section_character_labels(sections: list[dict[str, object]]) -> list[str]:
     if not sections:
         return []
 
     energies = np.array([section["energy"] for section in sections], dtype=float)
+    motions = np.array([(float(section["onset"]) + float(section["flux"])) / 2.0 for section in sections], dtype=float)
     repetitions = np.array(_compute_section_repetition(sections), dtype=float)
-    labels = ["verse"] * len(sections)
-    labels[0] = "intro"
-    labels[-1] = "outro"
+    energy_low = float(np.quantile(energies, 0.35))
+    energy_high = float(np.quantile(energies, 0.7))
+    energy_peak = float(np.quantile(energies, 0.85))
+    motion_low = float(np.quantile(motions, 0.35))
+    motion_high = float(np.quantile(motions, 0.7))
+    repetition_median = float(np.median(repetitions))
 
-    if len(sections) > 2:
-        interior_indexes = list(range(1, len(sections) - 1))
-        chorus_index = max(interior_indexes, key=lambda index: (energies[index] * 0.7) + (repetitions[index] * 0.3))
-        labels[chorus_index] = "chorus"
-        chorus_energy = energies[chorus_index]
-        median_repetition = float(np.median(repetitions[interior_indexes]))
-        median_energy = float(np.median(energies[interior_indexes]))
-        for index in interior_indexes:
-            if index == chorus_index:
-                continue
-            is_bridge = (
-                repetitions[index] >= median_repetition
-                and energies[index] < chorus_energy - 0.03
-                and (index > chorus_index or energies[index] < median_energy)
-            )
-            labels[index] = "bridge" if is_bridge else "verse"
+    labels: list[str] = []
+    for index in range(len(sections)):
+        energy_value = float(energies[index])
+        motion_value = float(motions[index])
+        repetition_value = float(repetitions[index])
+        previous_energy = float(energies[index - 1]) if index > 0 else energy_value
+        energy_delta = energy_value - previous_energy
 
-    if len(sections) >= 2 and energies[0] > float(np.median(energies[1:])):
-        labels[0] = "verse"
-    if len(sections) >= 2 and energies[-1] > float(np.median(energies[:-1])):
-        labels[-1] = "bridge"
+        if index == 0:
+            labels.append("ambient_opening")
+            continue
+        if index == len(sections) - 1:
+            labels.append("release_tail")
+            continue
+        if energy_value >= energy_peak and (repetition_value >= repetition_median or motion_value >= motion_high):
+            labels.append("peak_lift")
+            continue
+        if energy_delta >= 0.04 and motion_value >= motion_high:
+            labels.append("rising_drive")
+            continue
+        if energy_value <= energy_low and motion_value <= motion_low:
+            labels.append("sparse_break")
+            continue
+        if repetition_value < repetition_median and (motion_value >= motion_high or abs(energy_delta) >= 0.05):
+            labels.append("tense_transition")
+            continue
+        if motion_value >= motion_high or energy_value >= energy_high:
+            labels.append("driving_pulse")
+            continue
+        labels.append("steady_flow")
     return labels
 
 
@@ -230,7 +243,7 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
     bar_rows = _build_bar_feature_rows(timing, harmonic, energy)
     blocks = _build_phrase_blocks(bar_rows)
     grouped_sections = [_merge_group(group) for group in _group_phrase_blocks(blocks)]
-    labels = _label_sections(grouped_sections)
+    labels = _section_character_labels(grouped_sections)
     repetitions = _compute_section_repetition(grouped_sections)
 
     bar_starts = [float(bar["start_s"]) for bar in timing["bars"]]
@@ -247,6 +260,7 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
                 start=round(start, 6),
                 end=round(end, 6),
                 label=label,
+                section_character=label,
                 confidence=round(float(confidence), 6),
             )
         )
@@ -259,8 +273,8 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
             "harmonic_layer_file": str(paths.artifact("layer_a_harmonic.json")),
             "energy_features_file": str(paths.artifact("energy_summary", "features.json")),
             "snapping_rule": "nearest bar boundary, prefer later boundary on ties",
-            "label_strategy": "optional heuristic labels from 8-bar block grouping with section-scale energy and repetition cues",
-            "annotation_strategy": "structural change windows are primary; labels are auxiliary metadata",
+            "label_strategy": "lighting-oriented section_character labels from section-scale energy, motion, repetition, and contrast cues",
+            "annotation_strategy": "structural change windows are primary; section_character labels are auxiliary lighting metadata",
         },
         "sections": sections,
     }

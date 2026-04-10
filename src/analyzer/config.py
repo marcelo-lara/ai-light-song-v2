@@ -13,6 +13,7 @@ class ValidationConfig:
     report_json: Path
     report_md: Path | None
     fail_on_mismatch: bool
+    beat_tolerance_seconds: float
     tolerance_seconds: float
     chord_min_overlap: float
     device: str | None

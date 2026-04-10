@@ -25,10 +25,11 @@ def build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <artifacts-root parent>/songs")
     validate.add_argument("--artifacts-root", required=True)
     validate.add_argument("--reference-root")
-    validate.add_argument("--compare", default="chords,sections,energy,patterns,unified")
+    validate.add_argument("--compare", default="beats,chords,sections,energy,patterns,unified")
     validate.add_argument("--report-json")
     validate.add_argument("--report-md")
     validate.add_argument("--fail-on-mismatch", action="store_true")
+    validate.add_argument("--beat-tolerance-seconds", type=float, default=0.10)
     validate.add_argument("--tolerance-seconds", type=float, default=2.0)
     validate.add_argument("--chord-min-overlap", type=float, default=0.5)
     validate.add_argument("--device")
@@ -47,6 +48,7 @@ def _build_validation_config(
         report_json=report_json,
         report_md=report_md,
         fail_on_mismatch=args.fail_on_mismatch,
+        beat_tolerance_seconds=args.beat_tolerance_seconds,
         tolerance_seconds=args.tolerance_seconds,
         chord_min_overlap=args.chord_min_overlap,
         device=args.device,
@@ -120,7 +122,7 @@ def main(argv: list[str] | None = None) -> int:
         parser.print_help()
         return 2
 
-    supported_targets = {"chords", "sections", "energy", "patterns", "unified"}
+    supported_targets = {"beats", "chords", "sections", "energy", "patterns", "unified"}
     try:
         compare_targets = _validate_args(args, supported_targets)
         if args.all_songs:
