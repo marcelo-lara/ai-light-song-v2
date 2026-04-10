@@ -76,6 +76,7 @@ Goal: provide tonal, chordal, and harmonic-motion context.
 | 2.2 | Chord inference | chord probabilities, decoded chord events | `docs/2.2.chord_detection_story.md` |
 | 2.3 | Key and tonal center detection | global key and optional section key estimates | `docs/2.3.key_tonal_center_story.md` |
 | 2.4 | Harmonic feature derivation | cadence, tension, mobility, role summaries | `docs/2.4.harmonic_features_story.md` |
+| 2.5 | Song genre guidance | producer-scoped coarse genre label and review guidance | `docs/2.5.song_genre_guidance_story.md` |
 
 Representative artifact: `layer_a_harmonic.json`.
 
@@ -102,6 +103,7 @@ Goal: capture physical intensity, brightness, transients, and structure.
 | 4.1 | Low-level energy feature extraction | frame- and beat-level loudness, centroid, flux, onset | `docs/4.1.energy_feature_schema.md` |
 | 4.2 | Section segmentation | structural change windows, optional labels, confidence | `docs/4.2.section_segmentation_story.md` |
 | 4.3 | Derived energy features | energy cards, peaks, dips, accent candidates | `docs/4.3.energy_feature_derivation_story.md` |
+| 4.4 | Song identifier inference | producer-scoped drop and other named energy-event identifiers | `docs/4.4.song_identifier_inference_story.md` |
 
 Representative artifact: `layer_c_energy.json`.
 

@@ -19,6 +19,8 @@ Contains harmonic analysis outputs such as:
 
 Primary source stories: EPIC 2.1 through EPIC 2.4.
 
+Genre guidance from Story 2.5 is intentionally producer-scoped and does not extend the harmonic layer contract by default.
+
 ### `layer_b_symbolic.json`
 
 Contains symbolic and note-event analysis outputs such as:
@@ -45,7 +47,7 @@ Contains energy analysis outputs such as:
 - notable peaks and dips
 - accent candidates
 
-Primary source stories: EPIC 4.1 through EPIC 4.3.
+Primary source stories: EPIC 4.1 through EPIC 4.4.
 
 ### `layer_d_patterns.json`
 
@@ -62,6 +64,10 @@ Primary source story: EPIC 5.1.
 
 ## Supporting Artifact Files
 
+### `genre.json`
+
+Stores a producer-scoped coarse genre label, confidence, candidate predictions, and review guidance from Story 2.5. If classification is unavailable or low confidence, the artifact should record `genre: "unknown"` rather than invoking a custom fallback algorithm.
+
 ### `energy_summary/features.json`
 
 Stores base feature summaries and shared analysis signals used by higher-level layers.
@@ -72,7 +78,7 @@ Stores structural section windows and optional heuristic labels used across symb
 
 ### `energy_summary/hints.json`
 
-Stores rises, drops, or other hint-level events that assist later aggregation.
+Stores producer-scoped named energy-event identifiers such as drops and other later-defined song moments that assist later aggregation and lighting mapping.
 
 ### `pattern_mining/chord_patterns.json`
 

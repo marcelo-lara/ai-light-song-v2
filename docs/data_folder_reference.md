@@ -46,6 +46,7 @@ data/
         phase_1_report.json
         phase_1_report.md
       layer_a_harmonic.json
+      genre.json
       layer_b_symbolic.json
       layer_c_energy.json
       layer_d_patterns.json
@@ -225,6 +226,18 @@ LLM hint:
 - Use: audit whether a proposed cue pattern matches the actual transient behavior.
 - Avoid: treating this as the first file for section planning; use `layer_c_energy.json` first.
 
+### `data/artifacts/<Song - Artist>/energy_summary/hints.json`
+
+Summary: producer-scoped named energy-event identifiers such as drops and other later-defined song moments.
+
+Why it matters: this is the contract for event-level energy semantics that go beyond generic accent candidates.
+
+LLM hint:
+- See: `supported_identifiers` and `events[]`.
+- Use: detect whether a named moment such as `drop` has already been inferred from the energy layer.
+- Use: distinguish broad section energy from sharper named event moments.
+- Avoid: inventing undocumented identifier labels when this file is absent or incomplete.
+
 ### `data/artifacts/<Song - Artist>/section_segmentation/sections.json`
 
 Summary: canonical structural windows with section ids, start and end times, labels, and confidence scores.
@@ -350,6 +363,18 @@ LLM hint:
 - Use: trigger scene changes or color-family shifts on meaningful chord changes, not random beat churn.
 - Use: keep verse and chorus callbacks harmonically grounded.
 - Use: derive harmonic tension and release logic for cue escalation.
+
+### `data/artifacts/<Song - Artist>/genre.json`
+
+Summary: producer-scoped coarse genre classification and review guidance.
+
+Why it matters: optional context for what kinds of song parts or transitions may deserve closer review.
+
+LLM hint:
+- See: `genre`, `confidence`, `top_predictions`, and `guidance`.
+- Use: as advisory context when reviewing likely structural or stylistic cues.
+- Use: treat `unknown` as an explicit valid outcome.
+- Avoid: inventing a genre from heuristics when the artifact says `unknown`.
 
 ### `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
 
