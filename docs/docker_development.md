@@ -92,25 +92,20 @@ Run the first-phase validation entry point:
 
 ```bash
 docker compose run --rm app \
-  python -m analyzer.cli validate-phase-1 \
+  ./analyze \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
-  --artifacts-root "/data/artifacts" \
-  --reference-root "/data/reference" \
-  --compare chords,sections \
-  --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
+  --compare beats,chords,sections,energy,patterns,unified
 ```
 
 Batch mode is also supported for all mounted songs:
 
 ```bash
 docker compose run --rm app \
-  python -m analyzer.cli validate-phase-1 \
-  --all-songs \
-  --artifacts-root "/data/artifacts" \
-  --reference-root "/data/reference"
+  ./analyze \
+  --all-songs
 ```
 
-An equivalent `python -m analyzer.cli` form is also acceptable if that becomes the chosen entry point.
+`./analyze` is the simplest container entry point. `python -m analyzer` is the equivalent module form.
 
 ## Required Validation Inside Container
 
@@ -121,7 +116,7 @@ At minimum, developers should validate the following inside Docker:
 3. Core imports succeed for the selected toolchain.
 4. A sample song can be analyzed end to end without relying on host dependencies.
 5. Generated outputs are written to `data/artifacts/` and `data/output/`.
-6. The phase-1 validation CLI can compare inferred chords and sections against validation-only files in `data/reference/`.
+6. The phase-1 validation CLI can compare inferred beats, chords, and sections against validation-only files in `data/reference/`, and validate the generated energy, pattern, and unified artifacts for internal consistency.
 7. Inference still runs when those reference files are missing; comparison is optional and only happens when the relevant files are available.
 
 ## Smoke Test Expectations

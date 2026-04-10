@@ -72,23 +72,21 @@ Additional story-level specifications under `docs/` define the exact implementat
 
 1. **Prerequisites:** Docker with NVIDIA GPU support
 2. **Build:** `docker compose build`
-3. **Run analyzer from the host shell:**
+3. **Run the full pipeline from the host shell for one song:**
    ```bash
    docker compose run --rm app \
-     python -m analyzer.cli validate-phase-1 \
-     --song "/data/songs/YOUR_SONG.mp3" \
-     --artifacts-root "/data/artifacts" \
-     --report-json "/data/artifacts/YOUR_SONG/validation/phase_1_report.json"
+     ./analyze \
+     --song "/data/songs/YOUR_SONG.mp3"
    ```
 
-  Analyze every song under `/data/songs` and write per-song reports automatically:
+  This command runs the full production pipeline, writes generated artifacts under `data/artifacts/<Song - Artist>/`, writes final outputs under `data/output/<Song - Artist>/`, and always writes validation reports under `data/artifacts/<Song - Artist>/validation/`.
+
+  Analyze every song under `/data/songs` with the same full-pipeline flow and write per-song reports automatically:
 
   ```bash
   docker compose run --rm app \
-    python -m analyzer.cli validate-phase-1 \
-    --all-songs \
-    --artifacts-root "/data/artifacts" \
-    --reference-root "/data/reference"
+    ./analyze \
+    --all-songs
   ```
 
 For detailed CLI options, see [Running the Phase 1 Analyzer](#running-the-phase-1-analyzer) below.
@@ -140,41 +138,38 @@ Inside the container:
 
 ### Running the Phase 1 Analyzer
 
-Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not invoke `python -m analyzer.cli` directly on the host.
+Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not invoke the analyzer directly on the host. Use the repo-root `./analyze` helper inside the container, or call `python -m analyzer` directly if you prefer. Both forms run the full end-to-end pipeline, write production artifacts and outputs, and then emit validation reports.
 
 ```bash
 docker compose run --rm app \
-  python -m analyzer.cli validate-phase-1 \
+  ./analyze \
   --song "/data/songs/Sash - Raindrops.mp3" \
-  --artifacts-root "/data/artifacts" \
-  --reference-root "/data/reference" \
-  --compare chords,sections,energy,patterns,unified \
-  --report-json "/data/artifacts/Sash - Raindrops/validation/phase_1_report.json" \
-  --report-md "/data/artifacts/Sash - Raindrops/validation/phase_1_report.md"
+  --compare beats,chords,sections,energy,patterns,unified
 ```
 
-Run the same analysis for every song under `/data/songs`:
+Run the same full pipeline for every song under `/data/songs`:
 
 ```bash
 docker compose run --rm app \
-  python -m analyzer.cli validate-phase-1 \
-  --all-songs \
-  --artifacts-root "/data/artifacts" \
-  --reference-root "/data/reference"
+  ./analyze \
+  --all-songs
 ```
 
-**Available compare targets:** `chords`, `sections`, `energy`, `patterns`, `unified`
+**Available compare targets:** `beats`, `chords`, `sections`, `energy`, `patterns`, `unified`
+
+Generated outputs from each run include the canonical artifact set under `data/artifacts/<Song - Artist>/` and final deliverables such as `data/output/<Song - Artist>/info.json`, `beats.json`, `sections.json`, and `lighting_score.md`.
+
+Validation reports are always written automatically to `data/artifacts/<Song - Artist>/validation/phase_1_report.json` and `data/artifacts/<Song - Artist>/validation/phase_1_report.md`.
 
 **CLI flags:**
 - `--song`: Required path to source song for single-song runs
 - `--all-songs`: Analyze every `.mp3` under `/data/songs` or `--songs-root`
 - `--songs-root`: Optional songs directory for batch mode. Defaults to the sibling `songs/` directory next to `--artifacts-root`
-- `--artifacts-root`: Required root directory for generated artifacts
-- `--reference-root`: Optional root directory for validation reference files
+- `--artifacts-root`: Optional root directory for generated artifacts. Defaults to `/data/artifacts`
+- `--reference-root`: Optional root directory for validation reference files. Defaults to `/data/reference`
 - `--compare`: Comma-separated list of validation targets
-- `--report-json`: Required path for single-song machine-readable validation report. Batch mode writes `/validation/phase_1_report.json` per song automatically
-- `--report-md`: Optional path for a single-song human-readable report. Batch mode writes `/validation/phase_1_report.md` per song automatically
 - `--fail-on-mismatch`: Exit non-zero when validation thresholds are missed
+- `--beat-tolerance-seconds`: Beat timestamp tolerance (default: 0.10)
 - `--tolerance-seconds`: Section boundary tolerance (default: 2.0)
 - `--chord-min-overlap`: Minimum overlap ratio for chord comparison (default: 0.5)
 - `--device`: Execution device (`cuda` or `cpu`)

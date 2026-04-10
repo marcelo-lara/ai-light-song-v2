@@ -105,6 +105,5 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
         fail_on_mismatch=config.fail_on_mismatch,
     )
     write_validation_report(report, config.report_json)
-    if config.report_md is not None:
-        write_validation_markdown(report, config.report_md)
+    write_validation_markdown(report, config.report_md)
     return exit_code
