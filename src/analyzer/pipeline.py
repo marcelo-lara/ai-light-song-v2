@@ -8,6 +8,7 @@ from analyzer.paths import SongPaths
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.harmonic import extract_hpcp_and_chords
+from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.light_design import generate_lighting_score
 from analyzer.stages.lighting import generate_lighting_events
 from analyzer.stages.patterns import extract_chord_patterns
@@ -51,6 +52,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     energy_features = extract_energy_features(paths, timing)
     sections = segment_sections(paths, timing, harmonic, energy_features)
     symbolic = extract_symbolic_features(paths, stems, timing, sections)
+    hints = generate_section_hints(paths, symbolic, sections)
     ui_outputs = build_ui_data(paths)
     energy = derive_energy_layer(paths, timing, energy_features, sections)
     patterns = extract_chord_patterns(paths, timing, harmonic)
@@ -67,6 +69,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             "hpcp": str(paths.artifact("essentia", "hpcp.json")),
             "harmonic_layer": str(paths.artifact("layer_a_harmonic.json")),
             "symbolic_layer": str(paths.artifact("layer_b_symbolic.json")),
+            "symbolic_hints": hints["symbolic_hints"],
             "symbolic_validation": str(paths.artifact("symbolic_transcription", "validation.json")),
             "energy_features": str(paths.artifact("energy_summary", "features.json")),
             "energy_layer": str(paths.artifact("layer_c_energy.json")),
@@ -82,6 +85,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
         },
         "outputs": {
             "beats": ui_outputs["beats"],
+            "hints": hints["hints"],
             "sections": ui_outputs["sections"],
             "lighting_score": str(paths.song_output_dir / "lighting_score.md"),
         },

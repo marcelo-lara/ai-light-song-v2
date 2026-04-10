@@ -33,7 +33,7 @@ Contains symbolic and note-event analysis outputs such as:
 - repeated motifs
 - section-level symbolic cards
 
-Primary source stories: EPIC 3.1 through EPIC 3.4.
+Primary source stories: EPIC 3.1 through EPIC 3.5.
 
 ### `layer_c_energy.json`
 
@@ -90,6 +90,10 @@ Stores producer-scoped raw Basic Pitch note caches, model-output summaries, and 
 
 Stores source-level symbolic validation results and promotion decisions used to assemble the final `layer_b_symbolic.json` artifact from all analyzed stems and the full mix.
 
+### `symbolic_transcription/hints.json`
+
+Stores deterministic section-level hint inference derived from the aligned symbolic timeline before user-authored edits are merged into the output-facing hints file.
+
 ### `info.json`
 
 Stores canonical song metadata and references to major generated files. This file is written to `data/output/<Song - Artist>/info.json`.
@@ -108,7 +112,11 @@ Expected fields per row are `time`, `beat`, `bar`, `bass`, `chord`, and `type`, 
 
 Stores compact UI-facing section rows projected from `section_segmentation/sections.json`.
 
-Expected fields per row are `start`, `end`, `label`, `description`, and `hints`, where `label` embeds the numeric section id prefix and a confidence suffix such as `001 Intro (0.74)`.
+Expected fields per row are `start`, `end`, `label`, `description`, and `hints`, where `label` embeds the numeric section id prefix and a confidence suffix such as `001 Intro (0.74)`. The `hints` field remains a placeholder in this file and is not the authoritative editable hint store.
+
+### `data/output/<Song - Artist>/hints.json`
+
+Stores the editable merged section hints consumed by `lighting_score.md`, combining regenerated inference-authored hints with preserved user-authored hints.
 
 ## Unified Artifact
 

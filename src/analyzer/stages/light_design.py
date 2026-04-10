@@ -137,11 +137,21 @@ def _fixture_intention_lines(fixtures: list[dict]) -> list[str]:
     return lines
 
 
-def _section_plan_lines(unified: dict, lighting_events: dict) -> list[str]:
+def _section_hints_by_section(hints_payload: dict) -> dict[str, list[dict]]:
+    sections = hints_payload.get("sections", []) if isinstance(hints_payload, dict) else []
+    return {
+        str(section.get("section_id")): list(section.get("hints", []))
+        for section in sections
+        if section.get("section_id") is not None
+    }
+
+
+def _section_plan_lines(unified: dict, lighting_events: dict, hints_payload: dict) -> list[str]:
     sections = unified.get("timeline", {}).get("sections", [])
     phrases = unified.get("timeline", {}).get("phrases", [])
     accents = unified.get("timeline", {}).get("accent_windows", [])
     events = lighting_events.get("lighting_events", [])
+    section_hints = _section_hints_by_section(hints_payload)
 
     lines: list[str] = []
     for section in sections:
@@ -173,6 +183,10 @@ def _section_plan_lines(unified: dict, lighting_events: dict) -> list[str]:
             )
         else:
             lines.append("- Intensity guidance: follow the canonical section scene with explicit anchors only.")
+        for hint in section_hints.get(str(section_id), []):
+            text = str(hint.get("text") or "").strip()
+            if text:
+                lines.append(f"- Hint: {text}")
         lines.append("")
     return lines
 
@@ -196,6 +210,7 @@ def _build_lighting_score_markdown(paths: SongPaths) -> str:
     energy = read_json(paths.artifact("layer_c_energy.json"))
     patterns = read_json(paths.artifact("layer_d_patterns.json"))
     lighting_events = read_json(paths.artifact("lighting_events.json"))
+    hints = read_json(paths.song_output_dir / "hints.json")
     fixtures = read_json(paths.artifacts_root.parent / "fixtures" / "fixtures.json")
 
     title, artist = _split_song_name(paths.song_name)
@@ -228,7 +243,7 @@ def _build_lighting_score_markdown(paths: SongPaths) -> str:
         *_fixture_intention_lines(fixtures),
         "",
         "## Section Plan",
-        *_section_plan_lines(unified, lighting_events),
+        *_section_plan_lines(unified, lighting_events, hints),
         "## Song-Specific Rules",
         *_song_specific_rule_lines(lighting_events, patterns),
         "",

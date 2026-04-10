@@ -57,6 +57,7 @@ data/
   output/
     <Song - Artist>/
       beats.json
+      hints.json
       info.json
       lighting_score.md
       sections.json
@@ -82,13 +83,14 @@ data/
 If you only open a few files, start here in this order:
 
 1. `data/output/<Song - Artist>/lighting_score.md`
-2. `data/artifacts/<Song - Artist>/music_feature_layers.json`
-3. `data/artifacts/<Song - Artist>/lighting_events.json`
-4. `data/artifacts/<Song - Artist>/layer_c_energy.json`
-5. `data/artifacts/<Song - Artist>/layer_a_harmonic.json`
-6. `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
-7. `data/fixtures/fixtures.json`
-8. `data/fixtures/pois.json`
+2. `data/output/<Song - Artist>/hints.json`
+3. `data/artifacts/<Song - Artist>/music_feature_layers.json`
+4. `data/artifacts/<Song - Artist>/lighting_events.json`
+5. `data/artifacts/<Song - Artist>/layer_c_energy.json`
+6. `data/artifacts/<Song - Artist>/layer_a_harmonic.json`
+7. `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
+8. `data/fixtures/fixtures.json`
+9. `data/fixtures/pois.json`
 
 ## Top-Level Folder Reference
 
@@ -246,6 +248,17 @@ LLM hint:
 - Use: judge whether bass, vocals, or full-mix notes are reliable enough to drive visible effects.
 - Use: explain confidence limits when symbolic content feels noisy or sparse.
 - Avoid: treating rejected or auxiliary-only sources as equal to promoted sources.
+
+### `data/artifacts/<Song - Artist>/symbolic_transcription/hints.json`
+
+Summary: producer-scoped inferred section hints derived from the aligned symbolic timeline.
+
+Why it matters: provenance layer for editable hint generation.
+
+LLM hint:
+- See: `sections[].section_id`, `label`, and `hints[]`.
+- Use: inspect which hints were inferred deterministically before any user edits were merged.
+- Avoid: treating this producer-scoped file as the user-editable source; use `data/output/<Song - Artist>/hints.json` for that.
 
 ### `data/artifacts/<Song - Artist>/symbolic_transcription/basic_pitch/bass.json`
 
@@ -459,6 +472,19 @@ Why it matters: quick section overview without opening the fuller artifact files
 LLM hint:
 - See: `start`, `end`, and `label`, where `label` embeds the numeric section id prefix and a confidence suffix such as `001 Intro (0.74)`.
 - Use: for fast section summaries, section cue lists, and high-level show pacing.
+- Avoid: treating `hints` here as the authoritative editable hint contract; use `data/output/<Song - Artist>/hints.json`.
+
+### `data/output/<Song - Artist>/hints.json`
+
+Summary: editable per-section hint store combining regenerated inference-authored hints with preserved user-authored hints.
+
+Why it matters: direct hint source for `lighting_score.md` and other prompt-based downstream consumers.
+
+LLM hint:
+- See: `sections[].section_id`, `label`, `start`, `end`, and `hints[]`.
+- Use: add or revise human-authored section guidance without losing regenerated inference hints on the next pipeline run.
+- Use: match hints by `section_id` instead of relying on repeated section labels alone.
+- Avoid: placing energy-derived drop or accent claims here unless they were produced by a later energy-stage story.
 
 ### `data/output/<Song - Artist>/lighting_score.md`
 
@@ -470,6 +496,7 @@ LLM hint:
 - See: `Timing Anchors`, `Fixture Intentions`, `Section Plan`, and `Song-Specific Rules`.
 - Use: as the first file for quick briefing, revision, or operator-facing explanation.
 - Use: cross-check any rewritten score against deterministic timestamps from `music_feature_layers.json` or `lighting_events.json`.
+- Use: section `Hint:` lines as human-editable guidance sourced from `hints.json`.
 - Avoid: changing cue times casually; the score is expected to preserve anchor times from upstream structured artifacts.
 
 ### `data/reference/<Song - Artist>/moises/chords.json`
