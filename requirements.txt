@@ -7,4 +7,4 @@ pyyaml
 rich
 demucs
 basic-pitch
-essentia
+tensorflow==2.12.1

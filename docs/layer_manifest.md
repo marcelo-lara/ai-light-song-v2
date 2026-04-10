@@ -66,7 +66,7 @@ Primary source story: EPIC 5.1.
 
 ### `genre.json`
 
-Stores a producer-scoped coarse genre label, confidence, candidate predictions, and review guidance from Story 2.5. If classification is unavailable or low confidence, the artifact should record `genre: "unknown"` rather than invoking a custom fallback algorithm.
+Stores producer-scoped model-native genre or style winners, confidence, candidate predictions, and review guidance from Story 2.5. If classification is unavailable or ambiguous, the artifact should record `genres: ["unknown"]` rather than invoking a custom fallback algorithm.
 
 ### `energy_summary/features.json`
 

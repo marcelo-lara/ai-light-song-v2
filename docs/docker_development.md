@@ -26,7 +26,6 @@ This image provides a CUDA-enabled environment that is suitable for audio ML too
 
 - `python3`
 - `python3-pip`
-- `python3-venv`
 - `ffmpeg`
 - `libsndfile1`
 - `git`
@@ -43,7 +42,8 @@ The container should provide a baseline environment capable of supporting:
 - `pandas`
 - `soundfile`
 - `librosa`
-- `essentia`
+- `tensorflow`
+- `essentia` built from source with TensorFlow support
 - `demucs`
 - `basic-pitch`
 - `pyyaml`
@@ -56,6 +56,10 @@ Current compatibility note:
 - the current Basic Pitch runtime in this container requires `numpy<2` because the bundled TensorFlow Lite runtime is not compatible with NumPy 2.x.
 - the analyzer loads Basic Pitch through its packaged TensorFlow Lite model path so Docker runs do not emit optional backend warnings for TensorFlow, ONNX, or CoreML backends that are not used in this repository.
 - the container overrides `resampy` to `0.4.3` after the main requirements install because `0.4.2` emits a deprecated `pkg_resources` warning during Basic Pitch inference.
+- the plain PyPI `essentia` wheel does not expose TensorFlow predictor algorithms such as `TensorflowPredictMusiCNN`; the Docker image therefore installs TensorFlow and compiles Essentia from source with `--with-tensorflow`.
+- the Docker image pins TensorFlow to `2.12.1` because the Essentia TensorFlow setup helper used by this repository mis-detects the TensorFlow `2.15.x` wheel layout and generates broken linker symlinks during the native build.
+- the TensorFlow Python wheel alone does not export the TensorFlow C API symbols that Essentia resolves at runtime, so the image also installs the matching `libtensorflow` C library tarball and patches Essentia's `_essentia` extension to depend on `libtensorflow.so.2` explicitly.
+- the Docker image installs Python dependencies directly into the container Python environment; it does not create an in-container virtual environment.
 
 ## Workspace Layout in Container
 
@@ -63,6 +67,7 @@ Current local container layout:
 
 - repository mount: `/app`
 - data mount: `/data`
+- model assets: `/app/models`
 - Compose service name: `app`
 
 Expected working directory:
