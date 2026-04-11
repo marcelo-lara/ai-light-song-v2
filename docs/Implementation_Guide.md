@@ -137,9 +137,9 @@ Layer D covers repeated harmonic progression structure. Motif-level and phrase-l
 | 6.2 | Build UI data | `data/output/<Song - Artist>/beats.json` and `data/output/<Song - Artist>/sections.json` | `docs/6.2.build_ui_data_story.md` |
 | 6.3 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/6.3.music_feature_layers_story.md` |
 | 6.4 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/6.4.energy_to_lighting_mapping.md` |
-| 6.5 | Fixture-aware orchestration | fixture-aware events and `lighting_score.md` | `docs/6.5.fixture_aware_mapping_story.md` |
+| 6.5 | Fixture-aware orchestration | fixture-aware events with stable-role and event-overlay logic, plus `lighting_score.md` | `docs/6.5.fixture_aware_mapping_story.md` |
 
-Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/beats.json`, `data/output/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_score.md`.
+Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/beats.json`, `data/output/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_events.json`, `lighting_score.md`.
 
 ## Canonical Artifact Flow
 
@@ -170,10 +170,11 @@ Before Story 6.5 can produce a reliable `lighting_score.md`, the implementation 
 - `data/artifacts/<Song - Artist>/layer_b_symbolic.json` with `motif_summary.dominant_motif_id`, `motif_summary.motif_groups[]`, and `motif_summary.repeated_phrase_groups[]`
 - phrase timing anchors exposed as `phrase_windows[]` or normalized into `music_feature_layers.json.timeline.phrases[]`
 - `data/artifacts/<Song - Artist>/layer_c_energy.json` with accent windows, energy transitions, peaks, and dips relevant to cue placement
-- `data/output/<Song - Artist>/song_event_timeline.json` or equivalent reviewed event export when event-aware lighting logic is enabled
+- `data/output/<Song - Artist>/song_event_timeline.json` or equivalent reviewed event export when event-aware lighting logic is enabled, with canonical event IDs and exact event windows preserved
 - `data/artifacts/<Song - Artist>/layer_d_patterns.json` with `patterns[].id` and occurrence windows using `start_s` and `end_s`
 - `data/artifacts/<Song - Artist>/music_feature_layers.json` with `timeline.phrases[]`, `lighting_context.cue_anchors[]`, `lighting_context.pattern_callbacks[]`, and `lighting_context.motif_callbacks[]`
 - fixture-agnostic lighting events from Story 6.4 with `anchor_refs` that point back to section, phrase, motif, pattern, and cue-anchor IDs
+- fixture-aware events from Story 6.5, when exported separately, with exact `event_ref`, `role_overlay`, and explicit target metadata for dynamic regroupings such as moving-head unison focus
 - `data/fixtures/fixtures.json` so Story 6.5 can translate abstract behavior into fixture-aware instructions
 
 If those artifacts are missing, the pipeline is not yet lighting-score-ready even if partial prose generation is possible.

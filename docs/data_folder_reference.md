@@ -436,7 +436,7 @@ LLM hint:
 
 ### `data/artifacts/<Song - Artist>/lighting_events.json`
 
-Summary: fixture-agnostic lighting events and cue anchors derived from the unified music feature layer.
+Summary: lighting events and cue anchors derived from the unified music feature layer, preserving deterministic anchor references and any later fixture-aware overlay metadata when the pipeline emits it.
 
 Why it matters: direct bridge from analysis to show logic.
 
@@ -444,6 +444,8 @@ LLM hint:
 - See: `cue_anchors[]` and `lighting_events[]`.
 - Use: as the structured pre-score layer when writing or reviewing scene logic.
 - Use: anchor refs to explain why a cue exists, not just when it happens.
+- Use: preserve `event_ref`, `role_overlay`, and explicit focal `target` fields when Story 6.5 adds event-driven regroupings such as moving-head unison focus.
+- See also: the end-to-end drop-to-stage-center sequence example in `docs/6.5.fixture_aware_mapping_story.md` when you need a concrete fixture-aware payload shape.
 - Use: preserve these deterministic anchor times when translating into prose or operator instructions.
 
 ### `data/artifacts/<Song - Artist>/validation/phase_1_report.json`
@@ -513,7 +515,7 @@ LLM hint:
 
 ### `data/output/<Song - Artist>/lighting_score.md`
 
-Summary: current human-readable lighting plan. Includes metadata, feature summary, timing anchors, fixture intentions, section plans, and song-specific rules.
+Summary: current human-readable lighting plan. Includes metadata, feature summary, timing anchors, fixture intentions, section plans, and song-specific rules, including event-driven fixture overlay rules when supported by the rig.
 
 Why it matters: best single human-facing summary of the current show design.
 
@@ -521,6 +523,7 @@ LLM hint:
 - See: `Timing Anchors`, `Fixture Intentions`, `Section Plan`, and `Song-Specific Rules`.
 - Use: as the first file for quick briefing, revision, or operator-facing explanation.
 - Use: cross-check any rewritten score against deterministic timestamps from `music_feature_layers.json` or `lighting_events.json`.
+- Use: keep event-driven regroupings tied to exact event rows or cue anchors instead of vague prose such as "somewhere near the drop".
 - Use: section `Hint:` lines as human-editable guidance sourced from `hints.json`.
 - Avoid: changing cue times casually; the score is expected to preserve anchor times from upstream structured artifacts.
 

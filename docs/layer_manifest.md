@@ -173,6 +173,8 @@ Stores fixture-agnostic lighting events and normalized cue anchors derived from 
 
 This file is the explicit handoff artifact for EPIC 6.5.
 
+When Story 6.5 emits fixture-aware overlay metadata, the event records should preserve deterministic links back to the triggering music logic, for example through fields such as `event_ref`, `role_overlay`, and explicit focal targets for supported fixtures.
+
 ## Cross-File Rules
 
 - All major artifacts should use `schema_version`.
