@@ -16,24 +16,22 @@ from analyzer.pipeline import run_phase_1
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="python -m analyzer.cli")
-    subparsers = parser.add_subparsers(dest="command")
-
-    validate = subparsers.add_parser("validate-phase-1", help="Run the phase-1 analyzer and optional validation")
-    validate.add_argument("--song")
-    validate.add_argument("--all-songs", action="store_true", help="Analyze every .mp3 under the songs root")
-    validate.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <artifacts-root parent>/songs")
-    validate.add_argument("--artifacts-root", required=True)
-    validate.add_argument("--reference-root")
-    validate.add_argument("--compare", default="beats,chords,sections,energy,patterns,unified")
-    validate.add_argument("--report-json")
-    validate.add_argument("--report-md")
-    validate.add_argument("--fail-on-mismatch", action="store_true")
-    validate.add_argument("--beat-tolerance-seconds", type=float, default=0.10)
-    validate.add_argument("--tolerance-seconds", type=float, default=2.0)
-    validate.add_argument("--chord-min-overlap", type=float, default=0.5)
-    validate.add_argument("--device")
-    validate.add_argument("--verbose", action="store_true")
+    parser = argparse.ArgumentParser(
+        prog="python -m analyzer",
+        description="Run the phase-1 analyzer pipeline and write validation reports.",
+    )
+    parser.add_argument("--song")
+    parser.add_argument("--all-songs", action="store_true", help="Analyze every .mp3 under the songs root")
+    parser.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <artifacts-root parent>/songs")
+    parser.add_argument("--artifacts-root", default="/data/artifacts")
+    parser.add_argument("--reference-root", default="/data/reference")
+    parser.add_argument("--compare", default="beats,chords,sections,energy,patterns,unified")
+    parser.add_argument("--fail-on-mismatch", action="store_true")
+    parser.add_argument("--beat-tolerance-seconds", type=float, default=0.10)
+    parser.add_argument("--tolerance-seconds", type=float, default=2.0)
+    parser.add_argument("--chord-min-overlap", type=float, default=0.5)
+    parser.add_argument("--device")
+    parser.add_argument("--verbose", action="store_true")
     return parser
 
 
@@ -41,7 +39,7 @@ def _build_validation_config(
     args: argparse.Namespace,
     compare_targets: tuple[str, ...],
     report_json: Path,
-    report_md: Path | None,
+    report_md: Path,
 ) -> ValidationConfig:
     return ValidationConfig(
         compare_targets=compare_targets,
@@ -64,20 +62,17 @@ def _validate_args(args: argparse.Namespace, supported_targets: set[str]) -> tup
         raise UsageError(f"Unsupported compare target. Supported values: {sorted(supported_targets)}")
     if bool(args.song) == bool(args.all_songs):
         raise UsageError("Pass exactly one of --song or --all-songs.")
-    if args.all_songs and (args.report_json or args.report_md):
-        raise UsageError("Batch mode writes per-song reports automatically; omit --report-json and --report-md when using --all-songs.")
-    if args.song and not args.report_json:
-        raise UsageError("--report-json is required when using --song.")
     return compare_targets
 
 
 def _run_single_song(args: argparse.Namespace, compare_targets: tuple[str, ...]) -> int:
     paths = build_song_paths(args.song, args.artifacts_root, args.reference_root)
+    report_json, report_md = default_validation_report_paths(paths)
     config = _build_validation_config(
         args,
         compare_targets,
-        Path(args.report_json),
-        Path(args.report_md) if args.report_md else None,
+        report_json,
+        report_md,
     )
     return run_phase_1(paths, config)
 
@@ -118,9 +113,6 @@ def _run_all_songs(args: argparse.Namespace, compare_targets: tuple[str, ...]) -
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.command != "validate-phase-1":
-        parser.print_help()
-        return 2
 
     supported_targets = {"beats", "chords", "sections", "energy", "patterns", "unified"}
     try:

@@ -114,7 +114,7 @@ def build_validation_report(
     report = {
         "schema_version": SCHEMA_VERSION,
         "song_name": paths.song_name,
-        "command": "python -m analyzer.cli validate-phase-1",
+        "command": "python -m analyzer",
         "status": status,
         "exit_code": exit_code,
         "generated_at": datetime.now(timezone.utc).isoformat(),

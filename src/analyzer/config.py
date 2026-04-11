@@ -11,7 +11,7 @@ from analyzer.paths import SongPaths
 class ValidationConfig:
     compare_targets: tuple[str, ...]
     report_json: Path
-    report_md: Path | None
+    report_md: Path
     fail_on_mismatch: bool
     beat_tolerance_seconds: float
     tolerance_seconds: float

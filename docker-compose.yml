@@ -3,7 +3,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: runtime
     image: ai-light-song-v2:dev
     working_dir: /app
     tty: true

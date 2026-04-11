@@ -366,12 +366,12 @@ LLM hint:
 
 ### `data/artifacts/<Song - Artist>/genre.json`
 
-Summary: producer-scoped coarse genre classification and review guidance.
+Summary: producer-scoped model-native genre or style winner list and review guidance.
 
 Why it matters: optional context for what kinds of song parts or transitions may deserve closer review.
 
 LLM hint:
-- See: `genre`, `confidence`, `top_predictions`, and `guidance`.
+- See: `genres`, `confidence`, `top_predictions`, and `guidance`.
 - Use: as advisory context when reviewing likely structural or stylistic cues.
 - Use: treat `unknown` as an explicit valid outcome.
 - Avoid: inventing a genre from heuristics when the artifact says `unknown`.

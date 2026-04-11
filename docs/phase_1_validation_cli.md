@@ -36,13 +36,13 @@ Preferred form: a CLI analyzer.
 
 Acceptable implementations include:
 
-- a Python CLI such as `python -m analyzer.cli`
-- an installed command such as `analyzer`
+- a Python CLI such as `python -m analyzer`
+- a repo-root helper such as `./analyze`
 - an equivalent scripted entry point documented in the implementation repo
 
 Current implementation status:
 
-- the repository now includes an initial Python module entry point at `python -m analyzer.cli validate-phase-1`
+- the repository now includes a top-level CLI entry point at `python -m analyzer` and a repo-root helper at `./analyze`
 - the module currently covers the first runnable phase-1 slice: stem separation, canonical beat extraction, harmonic inference, symbolic analysis, canonical energy derivation, pattern mining, unified feature assembly, and validation report generation
 
 The exact command name can be chosen by the implementation team, but the interface must be documented and runnable inside Docker.
@@ -52,32 +52,26 @@ The exact command name can be chosen by the implementation team, but the interfa
 Recommended baseline command:
 
 ```bash
-python -m analyzer.cli validate-phase-1 \
+./analyze \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
-  --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
-  --compare beats,chords,sections,energy,patterns,unified \
-  --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
+  --compare beats,chords,sections,energy,patterns,unified
 ```
 
 Equivalent Python module form is the supported container entry point:
 
 ```bash
-python -m analyzer.cli validate-phase-1 \
+python -m analyzer \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
-  --artifacts-root "/data/artifacts" \
   --reference-root "/data/reference" \
-  --compare beats,chords,sections,energy,patterns,unified \
-  --report-json "/data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json"
+  --compare beats,chords,sections,energy,patterns,unified
 ```
 
 Batch mode analyzes every `.mp3` in `/data/songs` and writes canonical validation reports under each song artifact directory:
 
 ```bash
-python -m analyzer.cli validate-phase-1 \
-  --all-songs \
-  --artifacts-root "/data/artifacts" \
-  --reference-root "/data/reference"
+python -m analyzer \
+  --all-songs
 ```
 
 ## Recommended Flags
@@ -85,11 +79,10 @@ python -m analyzer.cli validate-phase-1 \
 - `--song`: required absolute or container-relative path to the source song for single-song runs.
 - `--all-songs`: analyze every `.mp3` under `/data/songs` or the directory supplied by `--songs-root`.
 - `--songs-root`: optional directory override for batch mode. Defaults to the sibling `songs/` directory next to `--artifacts-root`.
-- `--artifacts-root`: required root directory where inferred outputs are written.
-- `--reference-root`: optional root directory for validation-only reference files. If omitted or if files are missing, inference must still run and validation for those targets is skipped.
+- `--artifacts-root`: optional root directory where inferred outputs are written. Defaults to `/data/artifacts`.
+- `--reference-root`: optional root directory for validation-only reference files. Defaults to `/data/reference`. If the directory or files are missing, inference must still run and validation for those targets is skipped.
 - `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `sections`, `energy`, `patterns`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. If that strict Story 1.2 check fails and reference values exist, the pipeline preserves the inferred beat grid separately and promotes a canonical reference-derived beat grid for downstream phases. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts.
-- `--report-json`: required path for the machine-readable validation report in single-song mode. Batch mode writes `validation/phase_1_report.json` under each song artifact directory automatically.
-- `--report-md`: optional human-readable report path in single-song mode. Batch mode writes `validation/phase_1_report.md` under each song artifact directory automatically.
+- machine-readable and markdown validation reports are always written automatically under `data/artifacts/<Song - Artist>/validation/` as `phase_1_report.json` and `phase_1_report.md`.
 - `--fail-on-mismatch`: optional flag causing the command to exit non-zero when validation thresholds are missed.
 - `--beat-tolerance-seconds`: optional float for beat-timestamp comparison tolerance. The phase-1 default is `0.10` seconds.
 - `--tolerance-seconds`: optional float for section change-point comparison tolerance. The phase-1 default should allow roughly one to two bars of drift.
@@ -165,7 +158,7 @@ At minimum:
 {
   "schema_version": "1.0",
   "song_name": "What a Feeling - Courtney Storm",
-  "command": "python -m analyzer.cli validate-phase-1",
+  "command": "python -m analyzer",
   "status": "passed",
   "exit_code": 0,
   "generated_at": "2026-04-06T00:00:00Z",

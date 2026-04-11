@@ -5,6 +5,8 @@ soundfile
 librosa
 pyyaml
 rich
+torch==2.1.2
+torchaudio==2.1.2
 demucs
 basic-pitch
-essentia
+tensorflow==2.12.1

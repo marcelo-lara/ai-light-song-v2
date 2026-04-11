@@ -47,7 +47,7 @@ Contains energy analysis outputs such as:
 - notable peaks and dips
 - accent candidates
 
-Primary source stories: EPIC 4.1 through EPIC 4.4.
+Primary source stories: EPIC 4.1 through EPIC 4.3.
 
 ### `layer_d_patterns.json`
 
@@ -60,13 +60,13 @@ Contains repeated harmonic-pattern outputs such as:
 
 This layer is for repeated chord-progression structure. It complements, and does not replace, note-level or motif-level repetition summaries in `layer_b_symbolic.json`.
 
-Primary source story: EPIC 5.1.
+Primary source story: EPIC 6.1.
 
 ## Supporting Artifact Files
 
 ### `genre.json`
 
-Stores a producer-scoped coarse genre label, confidence, candidate predictions, and review guidance from Story 2.5. If classification is unavailable or low confidence, the artifact should record `genre: "unknown"` rather than invoking a custom fallback algorithm.
+Stores producer-scoped model-native genre or style winners, confidence, candidate predictions, and review guidance from Story 2.5. If classification is unavailable or ambiguous, the artifact should record `genres: ["unknown"]` rather than invoking a custom fallback algorithm.
 
 ### `energy_summary/features.json`
 
@@ -79,6 +79,8 @@ Stores structural section windows and optional heuristic labels used across symb
 ### `energy_summary/hints.json`
 
 Stores producer-scoped named energy-event identifiers such as drops and other later-defined song moments that assist later aggregation and lighting mapping.
+
+Primary source story: EPIC 5.4.
 
 ### `pattern_mining/chord_patterns.json`
 
@@ -128,7 +130,7 @@ Stores the editable merged section hints consumed by `lighting_score.md`, combin
 
 ### `music_feature_layers.json`
 
-This is the EPIC 5.3 output. It combines:
+This is the EPIC 6.3 output. It combines:
 
 - shared metadata
 - timeline objects such as beats, bars, sections, phrase anchors, and accent windows
@@ -163,13 +165,13 @@ For lighting-facing integration, the unified artifact should preserve these cano
 - `lighting_context.motif_callbacks[].motif_group_id`
 - `lighting_context.motif_callbacks[].callback_action`
 
-This file is the explicit handoff artifact for EPIC 5.4 and EPIC 5.5.
+This file is the explicit handoff artifact for EPIC 6.4 and EPIC 6.5.
 
 ### `lighting_events.json`
 
 Stores fixture-agnostic lighting events and normalized cue anchors derived from `music_feature_layers.json`.
 
-This file is the explicit handoff artifact for EPIC 5.5.
+This file is the explicit handoff artifact for EPIC 6.5.
 
 ## Cross-File Rules
 

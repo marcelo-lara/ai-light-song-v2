@@ -60,11 +60,14 @@ The intended contract defines these primary artifacts:
 - `docs/phase_1_validation_cli.md`: Phase 1 analyzer CLI specification, command reference, and validation report format.
 - `docs/4.1.energy_feature_schema.md`: low-level energy schema.
 - `docs/4.2.section_segmentation_story.md`: section inference contract.
-- `docs/5.1.find_chord_patterns_story.md`: Layer D chord-pattern detection contract.
-- `docs/5.2.build_ui_data_story.md`: compact UI output contract.
-- `docs/5.3.music_feature_layers_story.md`: unified layer assembly contract.
-- `docs/5.4.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
-- `docs/5.5.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
+- `docs/event_user_stories block 5.x.md`: phased Epic 5 plan for song-event inference.
+- `docs/5.1.event_vocabulary_and_schema_story.md`: canonical event vocabulary and schema contract.
+- `docs/5.4.song_identifier_inference_story.md`: controlled named-event inference contract.
+- `docs/5.8.event_timeline_export_story.md`: compact event timeline export contract.
+- `docs/6.1.find_chord_patterns_story.md`: Layer D chord-pattern detection contract.
+- `docs/6.3.music_feature_layers_story.md`: unified layer assembly contract.
+- `docs/6.4.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
+- `docs/6.5.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
 
 Additional story-level specifications under `docs/` define the exact implementation contract for each Epic and story.
 
@@ -72,23 +75,21 @@ Additional story-level specifications under `docs/` define the exact implementat
 
 1. **Prerequisites:** Docker with NVIDIA GPU support
 2. **Build:** `docker compose build`
-3. **Run analyzer from the host shell:**
+3. **Run the full pipeline from the host shell for one song:**
    ```bash
    docker compose run --rm app \
-     python -m analyzer.cli validate-phase-1 \
-     --song "/data/songs/YOUR_SONG.mp3" \
-     --artifacts-root "/data/artifacts" \
-     --report-json "/data/artifacts/YOUR_SONG/validation/phase_1_report.json"
+     ./analyze \
+     --song "/data/songs/YOUR_SONG.mp3"
    ```
 
-  Analyze every song under `/data/songs` and write per-song reports automatically:
+  This command runs the full production pipeline, writes generated artifacts under `data/artifacts/<Song - Artist>/`, writes final outputs under `data/output/<Song - Artist>/`, and always writes validation reports under `data/artifacts/<Song - Artist>/validation/`.
+
+  Analyze every song under `/data/songs` with the same full-pipeline flow and write per-song reports automatically:
 
   ```bash
   docker compose run --rm app \
-    python -m analyzer.cli validate-phase-1 \
-    --all-songs \
-    --artifacts-root "/data/artifacts" \
-    --reference-root "/data/reference"
+    ./analyze \
+    --all-songs
   ```
 
 For detailed CLI options, see [Running the Phase 1 Analyzer](#running-the-phase-1-analyzer) below.
@@ -140,41 +141,38 @@ Inside the container:
 
 ### Running the Phase 1 Analyzer
 
-Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not invoke `python -m analyzer.cli` directly on the host.
+Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not invoke the analyzer directly on the host. Use the repo-root `./analyze` helper inside the container, or call `python -m analyzer` directly if you prefer. Both forms run the full end-to-end pipeline, write production artifacts and outputs, and then emit validation reports.
 
 ```bash
 docker compose run --rm app \
-  python -m analyzer.cli validate-phase-1 \
+  ./analyze \
   --song "/data/songs/Sash - Raindrops.mp3" \
-  --artifacts-root "/data/artifacts" \
-  --reference-root "/data/reference" \
-  --compare chords,sections,energy,patterns,unified \
-  --report-json "/data/artifacts/Sash - Raindrops/validation/phase_1_report.json" \
-  --report-md "/data/artifacts/Sash - Raindrops/validation/phase_1_report.md"
+  --compare beats,chords,sections,energy,patterns,unified
 ```
 
-Run the same analysis for every song under `/data/songs`:
+Run the same full pipeline for every song under `/data/songs`:
 
 ```bash
 docker compose run --rm app \
-  python -m analyzer.cli validate-phase-1 \
-  --all-songs \
-  --artifacts-root "/data/artifacts" \
-  --reference-root "/data/reference"
+  ./analyze \
+  --all-songs
 ```
 
-**Available compare targets:** `chords`, `sections`, `energy`, `patterns`, `unified`
+**Available compare targets:** `beats`, `chords`, `sections`, `energy`, `patterns`, `unified`
+
+Generated outputs from each run include the canonical artifact set under `data/artifacts/<Song - Artist>/` and final deliverables such as `data/output/<Song - Artist>/info.json`, `beats.json`, `sections.json`, and `lighting_score.md`.
+
+Validation reports are always written automatically to `data/artifacts/<Song - Artist>/validation/phase_1_report.json` and `data/artifacts/<Song - Artist>/validation/phase_1_report.md`.
 
 **CLI flags:**
 - `--song`: Required path to source song for single-song runs
 - `--all-songs`: Analyze every `.mp3` under `/data/songs` or `--songs-root`
 - `--songs-root`: Optional songs directory for batch mode. Defaults to the sibling `songs/` directory next to `--artifacts-root`
-- `--artifacts-root`: Required root directory for generated artifacts
-- `--reference-root`: Optional root directory for validation reference files
+- `--artifacts-root`: Optional root directory for generated artifacts. Defaults to `/data/artifacts`
+- `--reference-root`: Optional root directory for validation reference files. Defaults to `/data/reference`
 - `--compare`: Comma-separated list of validation targets
-- `--report-json`: Required path for single-song machine-readable validation report. Batch mode writes `/validation/phase_1_report.json` per song automatically
-- `--report-md`: Optional path for a single-song human-readable report. Batch mode writes `/validation/phase_1_report.md` per song automatically
 - `--fail-on-mismatch`: Exit non-zero when validation thresholds are missed
+- `--beat-tolerance-seconds`: Beat timestamp tolerance (default: 0.10)
 - `--tolerance-seconds`: Section boundary tolerance (default: 2.0)
 - `--chord-min-overlap`: Minimum overlap ratio for chord comparison (default: 0.5)
 - `--device`: Execution device (`cuda` or `cpu`)
@@ -193,10 +191,10 @@ Recommended implementation order:
 1. EPIC 1: preprocessing and timing grid.
 2. EPIC 4: energy features and section structure.
 3. EPIC 2 and EPIC 3: harmonic and symbolic refinement.
-4. EPIC 5.1: chord-pattern detection for Layer D.
-5. EPIC 5.2: compact UI beat and section outputs.
-6. EPIC 5.3: unified music feature layer assembly.
-7. EPIC 5.4 and EPIC 5.5: lighting mapping and score generation.
+4. EPIC 5.1 through EPIC 5.4: event contracts, aligned features, baseline rules, and controlled identifier inference.
+5. EPIC 5.5 through EPIC 5.8: refined event classification, review, benchmarking, and compact timeline export.
+6. EPIC 6.1 and EPIC 6.2: pattern mining and compact UI outputs.
+7. EPIC 6.3 through EPIC 6.5: unified layer assembly, lighting mapping, and score generation.
 
 This ordering reduces downstream churn because lighting behavior depends on stable upstream artifact contracts.
 
@@ -231,7 +229,7 @@ Inside `data/artifacts/<Song - Artist>/`, generated files should use producer-sc
 
 - `music_feature_layers.json`
 
-This file is the explicit EPIC 5.3 output and the required input to downstream lighting-mapping stories.
+This file is the explicit EPIC 6.3 output and the required input to downstream lighting-mapping stories.
 
 ### Required Downstream Outputs
 

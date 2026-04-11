@@ -7,6 +7,7 @@ from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
+from analyzer.stages.genre import classify_genre
 from analyzer.stages.harmonic import extract_hpcp_and_chords
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.light_design import generate_lighting_score
@@ -48,6 +49,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
         if not timing.get("beats"):
             raise AnalysisError("Reference timing takeover did not produce any canonical beats")
         write_json(paths.artifact("essentia", "beats.json"), timing)
+    genre_result = classify_genre(paths)
     _, harmonic = extract_hpcp_and_chords(paths, stems, timing)
     energy_features = extract_energy_features(paths, timing)
     sections = segment_sections(paths, timing, harmonic, energy_features)
@@ -66,6 +68,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
         "song_path": str(paths.song_path),
         "artifacts": {
             "beats": str(paths.artifact("essentia", "beats.json")),
+            "genre": str(paths.artifact("genre.json")),
             "hpcp": str(paths.artifact("essentia", "hpcp.json")),
             "harmonic_layer": str(paths.artifact("layer_a_harmonic.json")),
             "symbolic_layer": str(paths.artifact("layer_b_symbolic.json")),
@@ -102,6 +105,5 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
         fail_on_mismatch=config.fail_on_mismatch,
     )
     write_validation_report(report, config.report_json)
-    if config.report_md is not None:
-        write_validation_markdown(report, config.report_md)
+    write_validation_markdown(report, config.report_md)
     return exit_code
