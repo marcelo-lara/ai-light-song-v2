@@ -25,9 +25,9 @@ def _classify_fixture_roles(fixtures: list[dict]) -> dict[str, list[str]]:
         fixture_id = str(fixture.get("id") or "")
         fixture_type = str(fixture.get("fixture") or "")
         if "head_el150" in fixture_type:
-            role = "moving_head_main"
-        elif "moving_head" in fixture_type:
             role = "moving_head_fx"
+        elif "moving_head" in fixture_type:
+            role = "moving_head_main"
         elif fixture_id in {"parcan_l", "parcan_r"}:
             role = "parcan_inner"
         elif fixture_id in {"parcan_pl", "parcan_pr"}:
