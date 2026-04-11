@@ -218,7 +218,7 @@ def _build_lighting_score_markdown(paths: SongPaths) -> str:
     section_energy = energy.get("section_energy", [])
 
     lines = [
-        "# Lighting Score",
+        f"# {title} - Lighting Score",
         "",
         "## Metadata",
         f"- Song: {title}",

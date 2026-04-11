@@ -49,13 +49,14 @@ See `docs/docker_development.md` and the repository `Dockerfile` for the runtime
 
 ## Pipeline Overview
 
-The pipeline is divided into five epics:
+The pipeline is divided into six epics:
 
 1. EPIC 1: audio preprocessing.
 2. EPIC 2: harmonic summary.
 3. EPIC 3: symbolic event summary.
 4. EPIC 4: audio energy summary.
-5. EPIC 5: unified music feature assembly and lighting design.
+5. EPIC 5: event vocabulary, inference, review, and export.
+6. EPIC 6: pattern mining, unified music feature assembly, and lighting design.
 
 ## EPIC 1: Audio Preprocessing Pipeline
 
@@ -103,11 +104,28 @@ Goal: capture physical intensity, brightness, transients, and structure.
 | 4.1 | Low-level energy feature extraction | frame- and beat-level loudness, centroid, flux, onset | `docs/4.1.energy_feature_schema.md` |
 | 4.2 | Section segmentation | structural change windows, optional labels, confidence | `docs/4.2.section_segmentation_story.md` |
 | 4.3 | Derived energy features | energy cards, peaks, dips, accent candidates | `docs/4.3.energy_feature_derivation_story.md` |
-| 4.4 | Song identifier inference | producer-scoped drop and other named energy-event identifiers | `docs/4.4.song_identifier_inference_story.md` |
 
 Representative artifact: `layer_c_energy.json`.
 
-## EPIC 5: Pattern Mining, Unified Music Feature Assembly, and Light Show Design
+## EPIC 5: Musical Event Vocabulary, Inference, Review, and Export
+
+Goal: define the canonical event contract, infer musically meaningful event windows, support review and benchmarking, and export compact event timelines for downstream lighting logic.
+
+| Story | Intent | Primary outputs | Detailed spec |
+| --- | --- | --- | --- |
+| 5.1 | Event vocabulary and schema | `event_vocabulary.json` and `song_event_schema.json` | `docs/5.1.event_vocabulary_and_schema_story.md` |
+| 5.2 | Event feature normalization and timeline alignment | `event_inference/features.json` and optional helper indices | `docs/5.2.event_feature_normalization_story.md` |
+| 5.3 | Rule-based baseline event detection | `event_inference/rule_candidates.json` | `docs/5.3.rule_based_event_detection_story.md` |
+| 5.4 | Song identifier inference | `energy_summary/hints.json` | `docs/5.4.song_identifier_inference_story.md` |
+| 5.5 | Advanced musical event classification | `event_inference/events.machine.json` | `docs/5.5.advanced_event_classification_story.md` |
+| 5.6 | Confidence, review, and override workflow | review outputs and override files | `docs/5.6.event_review_and_override_story.md` |
+| 5.7 | Event benchmarking and genre-sensitive tuning | benchmark annotations, validation reports, threshold profiles | `docs/5.7.event_benchmarking_and_tuning_story.md` |
+| 5.8 | LLM-friendly event timeline export | `song_event_timeline.json` and `song_event_timeline.md` | `docs/5.8.event_timeline_export_story.md` |
+| 5.9 | Optional ML event classifier and explainability | classifier artifacts and explanation outputs | `docs/5.9.event_ml_classifier_story.md` |
+
+Representative artifacts: `energy_summary/hints.json`, `event_inference/events.machine.json`, `song_event_timeline.json`.
+
+## EPIC 6: Pattern Mining, Unified Music Feature Assembly, and Light Show Design
 
 Goal: derive recurring harmonic pattern structure as Layer D, project compact UI-facing beat and section outputs, consolidate the upstream layers into a single handoff artifact, then translate that artifact into lighting behavior and a human-readable lighting score.
 
@@ -115,11 +133,11 @@ Layer D covers repeated harmonic progression structure. Motif-level and phrase-l
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 5.1 | Find chord patterns | `pattern_mining/chord_patterns.json` and `layer_d_patterns.json` | `docs/5.1.find_chord_patterns_story.md` |
-| 5.2 | Build UI data | `data/output/<Song - Artist>/beats.json` and `data/output/<Song - Artist>/sections.json` | `docs/5.2.build_ui_data_story.md` |
-| 5.3 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/5.3.music_feature_layers_story.md` |
-| 5.4 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/5.4.energy_to_lighting_mapping.md` |
-| 5.5 | Fixture-aware orchestration | fixture-aware events and `lighting_score.md` | `docs/5.5.fixture_aware_mapping_story.md` |
+| 6.1 | Find chord patterns | `pattern_mining/chord_patterns.json` and `layer_d_patterns.json` | `docs/6.1.find_chord_patterns_story.md` |
+| 6.2 | Build UI data | `data/output/<Song - Artist>/beats.json` and `data/output/<Song - Artist>/sections.json` | `docs/6.2.build_ui_data_story.md` |
+| 6.3 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/6.3.music_feature_layers_story.md` |
+| 6.4 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/6.4.energy_to_lighting_mapping.md` |
+| 6.5 | Fixture-aware orchestration | fixture-aware events and `lighting_score.md` | `docs/6.5.fixture_aware_mapping_story.md` |
 
 Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/beats.json`, `data/output/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_score.md`.
 
@@ -130,10 +148,11 @@ The expected high-level artifact dependency chain is:
 1. Source song in `data/songs/`.
 2. Stem outputs in `data/stems/`.
 3. Timing, harmonic, symbolic, and energy artifacts in `data/artifacts/<Song - Artist>/`.
-4. Pattern-mining outputs in `data/artifacts/<Song - Artist>/pattern_mining/` and the Layer D file `layer_d_patterns.json` in `data/artifacts/<Song - Artist>/`.
-5. UI-facing `beats.json` and `sections.json` in `data/output/<Song - Artist>/`.
-6. Unified cross-layer handoff file `music_feature_layers.json` in `data/artifacts/<Song - Artist>/`.
-7. Final outputs in `data/output/<Song - Artist>/`.
+4. Event-inference artifacts in `data/artifacts/<Song - Artist>/event_inference/` and `data/artifacts/<Song - Artist>/energy_summary/hints.json`.
+5. Pattern-mining outputs in `data/artifacts/<Song - Artist>/pattern_mining/` and the Layer D file `layer_d_patterns.json` in `data/artifacts/<Song - Artist>/`.
+6. UI-facing `beats.json`, `sections.json`, and event-timeline exports in `data/output/<Song - Artist>/`.
+7. Unified cross-layer handoff file `music_feature_layers.json` in `data/artifacts/<Song - Artist>/`.
+8. Final lighting outputs in `data/output/<Song - Artist>/`.
 
 ## Required Supporting Documents
 
@@ -144,17 +163,18 @@ The expected high-level artifact dependency chain is:
 
 ## Lighting-Score-Ready Minimum Artifact Set
 
-Before Story 5.5 can produce a reliable `lighting_score.md`, the implementation should have at minimum:
+Before Story 6.5 can produce a reliable `lighting_score.md`, the implementation should have at minimum:
 
 - canonical beat and bar timing from Story 1.2 with per-beat time, 1-indexed bar, and beat-in-bar indices
 - `data/artifacts/<Song - Artist>/section_segmentation/sections.json` with stable section IDs and exact section windows
 - `data/artifacts/<Song - Artist>/layer_b_symbolic.json` with `motif_summary.dominant_motif_id`, `motif_summary.motif_groups[]`, and `motif_summary.repeated_phrase_groups[]`
 - phrase timing anchors exposed as `phrase_windows[]` or normalized into `music_feature_layers.json.timeline.phrases[]`
 - `data/artifacts/<Song - Artist>/layer_c_energy.json` with accent windows, energy transitions, peaks, and dips relevant to cue placement
+- `data/output/<Song - Artist>/song_event_timeline.json` or equivalent reviewed event export when event-aware lighting logic is enabled
 - `data/artifacts/<Song - Artist>/layer_d_patterns.json` with `patterns[].id` and occurrence windows using `start_s` and `end_s`
 - `data/artifacts/<Song - Artist>/music_feature_layers.json` with `timeline.phrases[]`, `lighting_context.cue_anchors[]`, `lighting_context.pattern_callbacks[]`, and `lighting_context.motif_callbacks[]`
-- fixture-agnostic lighting events from Story 5.4 with `anchor_refs` that point back to section, phrase, motif, pattern, and cue-anchor IDs
-- `data/fixtures/fixtures.json` so Story 5.5 can translate abstract behavior into fixture-aware instructions
+- fixture-agnostic lighting events from Story 6.4 with `anchor_refs` that point back to section, phrase, motif, pattern, and cue-anchor IDs
+- `data/fixtures/fixtures.json` so Story 6.5 can translate abstract behavior into fixture-aware instructions
 
 If those artifacts are missing, the pipeline is not yet lighting-score-ready even if partial prose generation is possible.
 

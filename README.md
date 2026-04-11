@@ -60,11 +60,14 @@ The intended contract defines these primary artifacts:
 - `docs/phase_1_validation_cli.md`: Phase 1 analyzer CLI specification, command reference, and validation report format.
 - `docs/4.1.energy_feature_schema.md`: low-level energy schema.
 - `docs/4.2.section_segmentation_story.md`: section inference contract.
-- `docs/5.1.find_chord_patterns_story.md`: Layer D chord-pattern detection contract.
-- `docs/5.2.build_ui_data_story.md`: compact UI output contract.
-- `docs/5.3.music_feature_layers_story.md`: unified layer assembly contract.
-- `docs/5.4.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
-- `docs/5.5.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
+- `docs/event_user_stories block 5.x.md`: phased Epic 5 plan for song-event inference.
+- `docs/5.1.event_vocabulary_and_schema_story.md`: canonical event vocabulary and schema contract.
+- `docs/5.4.song_identifier_inference_story.md`: controlled named-event inference contract.
+- `docs/5.8.event_timeline_export_story.md`: compact event timeline export contract.
+- `docs/6.1.find_chord_patterns_story.md`: Layer D chord-pattern detection contract.
+- `docs/6.3.music_feature_layers_story.md`: unified layer assembly contract.
+- `docs/6.4.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
+- `docs/6.5.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
 
 Additional story-level specifications under `docs/` define the exact implementation contract for each Epic and story.
 
@@ -188,10 +191,10 @@ Recommended implementation order:
 1. EPIC 1: preprocessing and timing grid.
 2. EPIC 4: energy features and section structure.
 3. EPIC 2 and EPIC 3: harmonic and symbolic refinement.
-4. EPIC 5.1: chord-pattern detection for Layer D.
-5. EPIC 5.2: compact UI beat and section outputs.
-6. EPIC 5.3: unified music feature layer assembly.
-7. EPIC 5.4 and EPIC 5.5: lighting mapping and score generation.
+4. EPIC 5.1 through EPIC 5.4: event contracts, aligned features, baseline rules, and controlled identifier inference.
+5. EPIC 5.5 through EPIC 5.8: refined event classification, review, benchmarking, and compact timeline export.
+6. EPIC 6.1 and EPIC 6.2: pattern mining and compact UI outputs.
+7. EPIC 6.3 through EPIC 6.5: unified layer assembly, lighting mapping, and score generation.
 
 This ordering reduces downstream churn because lighting behavior depends on stable upstream artifact contracts.
 
@@ -226,7 +229,7 @@ Inside `data/artifacts/<Song - Artist>/`, generated files should use producer-sc
 
 - `music_feature_layers.json`
 
-This file is the explicit EPIC 5.3 output and the required input to downstream lighting-mapping stories.
+This file is the explicit EPIC 6.3 output and the required input to downstream lighting-mapping stories.
 
 ### Required Downstream Outputs
 
