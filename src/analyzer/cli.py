@@ -16,6 +16,14 @@ from analyzer.exceptions import AnalyzerError, UsageError
 from analyzer.pipeline import run_phase_1
 
 
+SONG_SEPARATOR_WIDTH = 80
+
+
+def _print_song_header(song_name: str) -> None:
+    print("-" * SONG_SEPARATOR_WIDTH, flush=True)
+    print(song_name, flush=True)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m analyzer",
@@ -68,6 +76,7 @@ def _validate_args(args: argparse.Namespace, supported_targets: set[str]) -> tup
 
 def _run_single_song(args: argparse.Namespace, compare_targets: tuple[str, ...]) -> int:
     paths = build_song_paths(args.song, args.artifacts_root, args.reference_root)
+    _print_song_header(paths.song_name)
     report_json, report_md = default_validation_report_paths(paths)
     config = _build_validation_config(
         args,
