@@ -22,9 +22,15 @@ data/
     <Song - Artist>/
       energy_summary/
         features.json
+        hints.json
       essentia/
         beats.json
         hpcp.json
+      event_inference/
+        events.machine.json
+        features.json
+        rule_candidates.json
+        timeline_index.json
       pattern_mining/
         chord_patterns.json
       section_segmentation/
@@ -41,8 +47,10 @@ data/
           harmonic.mid
           vocals.json
           vocals.mid
+        hints.json
         validation.json
       validation/
+        event_benchmark.json
         phase_1_report.json
         phase_1_report.md
       layer_a_harmonic.json
@@ -61,6 +69,11 @@ data/
       hints.json
       info.json
       lighting_score.md
+      song_event_timeline.json
+      song_event_timeline.md
+      song_events.overrides.json
+      song_events.review.json
+      song_events.review.md
       sections.json
   reference/
     <Song - Artist>/
@@ -84,14 +97,15 @@ data/
 If you only open a few files, start here in this order:
 
 1. `data/output/<Song - Artist>/lighting_score.md`
-2. `data/output/<Song - Artist>/hints.json`
-3. `data/artifacts/<Song - Artist>/music_feature_layers.json`
-4. `data/artifacts/<Song - Artist>/lighting_events.json`
-5. `data/artifacts/<Song - Artist>/layer_c_energy.json`
-6. `data/artifacts/<Song - Artist>/layer_a_harmonic.json`
-7. `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
-8. `data/fixtures/fixtures.json`
-9. `data/fixtures/pois.json`
+2. `data/output/<Song - Artist>/song_event_timeline.json`
+3. `data/output/<Song - Artist>/hints.json`
+4. `data/artifacts/<Song - Artist>/music_feature_layers.json`
+5. `data/artifacts/<Song - Artist>/lighting_events.json`
+6. `data/artifacts/<Song - Artist>/layer_c_energy.json`
+7. `data/artifacts/<Song - Artist>/layer_a_harmonic.json`
+8. `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
+9. `data/fixtures/fixtures.json`
+10. `data/fixtures/pois.json`
 
 ## Top-Level Folder Reference
 
@@ -237,6 +251,49 @@ LLM hint:
 - Use: detect whether a named moment such as `drop` has already been inferred from the energy layer.
 - Use: distinguish broad section energy from sharper named event moments.
 - Avoid: inventing undocumented identifier labels when this file is absent or incomplete.
+
+### `data/artifacts/<Song - Artist>/event_inference/features.json`
+
+Summary: normalized event-feature rows aligned to the shared beat, bar, section, and phrase timeline.
+
+Why it matters: this is the canonical feature surface behind rule candidates and machine event inference.
+
+LLM hint:
+- See: per-window feature values, timing anchors, and normalized feature names.
+- Use: understand why later event stages promoted or rejected a candidate window.
+- Use: audit whether a claimed drop, build, or break has support in the upstream normalized features.
+
+### `data/artifacts/<Song - Artist>/event_inference/timeline_index.json`
+
+Summary: helper index that maps event-analysis windows back to shared timing anchors and upstream layer references.
+
+Why it matters: quickest way to explain where an event window sits in relation to beats, sections, and phrases.
+
+LLM hint:
+- See: anchor ids, section ids, and time-window references.
+- Use: cross-reference event windows without recomputing alignment logic from multiple source files.
+
+### `data/artifacts/<Song - Artist>/event_inference/rule_candidates.json`
+
+Summary: baseline rule-generated event candidates before review merging or final machine-event promotion.
+
+Why it matters: this shows the first explicit event hypotheses the pipeline generated.
+
+LLM hint:
+- See: candidate labels, supporting features, confidence values, and timing windows.
+- Use: inspect why the baseline detector believed a moment might be a drop, build, or other supported event.
+- Avoid: treating every rule candidate as final; the reviewed export is the downstream contract.
+
+### `data/artifacts/<Song - Artist>/event_inference/events.machine.json`
+
+Summary: canonical machine-generated event set after the Epic 5 inference chain applies schema normalization and confidence handling.
+
+Why it matters: this is the structured source for reviewed event exports and lighting-facing event timing.
+
+LLM hint:
+- See: canonical event ids, event types, start and end times, confidence, and provenance fields.
+- Use: build event-aware cue logic from this file when you need the machine view before human review merges.
+- Use: cross-check event provenance against `rule_candidates.json`, `features.json`, and `energy_summary/hints.json`.
 
 ### `data/artifacts/<Song - Artist>/section_segmentation/sections.json`
 
@@ -469,6 +526,16 @@ LLM hint:
 - Use: as a quick trust summary before consuming lower-level artifacts.
 - Use: especially when deciding whether chord-driven or section-driven cues should be treated as high-confidence.
 
+### `data/artifacts/<Song - Artist>/validation/event_benchmark.json`
+
+Summary: event-specific benchmark and status report for the Epic 5 output chain.
+
+Why it matters: quickest way to confirm whether machine events, review outputs, and timeline exports were produced coherently enough to trust downstream.
+
+LLM hint:
+- See: benchmark status, required file paths, and event-count summaries.
+- Use: decide whether the reviewed event surface is ready to drive event-aware fixture overlays or whether manual review is still needed.
+
 ### `data/output/<Song - Artist>/info.json`
 
 Summary: output-side index file. Stores song metadata and paths to major artifacts and outputs.
@@ -511,7 +578,51 @@ LLM hint:
 - See: `sections[].section_id`, `label`, `start`, `end`, and `hints[]`.
 - Use: add or revise human-authored section guidance without losing regenerated inference hints on the next pipeline run.
 - Use: match hints by `section_id` instead of relying on repeated section labels alone.
-- Avoid: placing energy-derived drop or accent claims here unless they were produced by a later energy-stage story.
+- Avoid: using this file as the canonical store for event windows such as drops or builds; prefer the reviewed event files and event timeline for that role.
+
+### `data/output/<Song - Artist>/song_events.review.json`
+
+Summary: merged review surface that combines machine-generated event rows with any preserved user-authored review decisions.
+
+Why it matters: this is the main reviewed event contract before timeline export.
+
+LLM hint:
+- See: reviewed events, review status fields, and any preserved manual decisions.
+- Use: confirm which machine events survived review and which rows need operator attention.
+- Use: prefer this file over `events.machine.json` when downstream behavior should reflect the current reviewed state.
+
+### `data/output/<Song - Artist>/song_events.review.md`
+
+Summary: human-readable companion to the reviewed event JSON payload.
+
+Why it matters: fastest way to scan reviewed event timing and status without opening raw JSON.
+
+### `data/output/<Song - Artist>/song_events.overrides.json`
+
+Summary: persisted override store for user-authored event edits and suppressions.
+
+Why it matters: preserves manual corrections across reruns of the event inference pipeline.
+
+LLM hint:
+- See: override keys, explicit replacements, and suppressed event ids.
+- Use: explain why a reviewed event differs from the machine event source.
+
+### `data/output/<Song - Artist>/song_event_timeline.json`
+
+Summary: compact LLM-friendly export of the reviewed event timeline.
+
+Why it matters: best single structured event file for downstream lighting logic and prompt-based planning.
+
+LLM hint:
+- See: canonical event rows, exact timing windows, and any human-readable summary fields.
+- Use: drive event-aware cue planning, especially when fixture overlays or focal changes should line up with drops and other named moments.
+- Use: preserve canonical event ids when translating this file into prose or cue sheets.
+
+### `data/output/<Song - Artist>/song_event_timeline.md`
+
+Summary: human-readable companion to the reviewed event timeline export.
+
+Why it matters: quick event briefing for review or operator-facing discussion.
 
 ### `data/output/<Song - Artist>/lighting_score.md`
 

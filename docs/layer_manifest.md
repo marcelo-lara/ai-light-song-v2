@@ -82,6 +82,30 @@ Stores producer-scoped named energy-event identifiers such as drops and other la
 
 Primary source story: EPIC 5.4.
 
+### `event_inference/features.json`
+
+Stores normalized event-analysis feature rows aligned to the canonical timing grid and structural anchors.
+
+Primary source story: EPIC 5.2.
+
+### `event_inference/timeline_index.json`
+
+Stores helper timing indices and anchor references that let later Epic 5 stages map event windows back to beats, sections, and phrases.
+
+Primary source story: EPIC 5.2.
+
+### `event_inference/rule_candidates.json`
+
+Stores producer-scoped baseline rule candidates before final machine-event promotion and review merging.
+
+Primary source story: EPIC 5.3.
+
+### `event_inference/events.machine.json`
+
+Stores the canonical machine-generated event set that downstream review, timeline export, and benchmarking stages consume.
+
+Primary source story: EPIC 5.5.
+
 ### `pattern_mining/chord_patterns.json`
 
 Stores the producer-scoped output of `find_chord_patterns(...)` before it is promoted into the canonical Layer D artifact.
@@ -101,6 +125,12 @@ Stores source-level symbolic validation results and promotion decisions used to 
 ### `symbolic_transcription/hints.json`
 
 Stores deterministic section-level hint inference derived from the aligned symbolic timeline before user-authored edits are merged into the output-facing hints file.
+
+### `validation/event_benchmark.json`
+
+Stores event-specific benchmark status and output-surface checks for the Epic 5 review and timeline chain.
+
+Primary source story: EPIC 5.7.
 
 ### `info.json`
 
@@ -125,6 +155,24 @@ Expected fields per row are `start`, `end`, `label`, `description`, and `hints`,
 ### `data/output/<Song - Artist>/hints.json`
 
 Stores the editable merged section hints consumed by `lighting_score.md`, combining regenerated inference-authored hints with preserved user-authored hints.
+
+### `data/output/<Song - Artist>/song_events.review.json`
+
+Stores the reviewed event payload that merges machine-generated events with any preserved user review decisions.
+
+Primary source story: EPIC 5.6.
+
+### `data/output/<Song - Artist>/song_events.overrides.json`
+
+Stores persistent user-authored event overrides that are re-applied when the pipeline regenerates the reviewed event set.
+
+Primary source story: EPIC 5.6.
+
+### `data/output/<Song - Artist>/song_event_timeline.json`
+
+Stores the compact reviewed event timeline exported for downstream lighting logic and prompt-friendly consumption.
+
+Primary source story: EPIC 5.8.
 
 ## Unified Artifact
 

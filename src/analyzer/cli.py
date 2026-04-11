@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import subprocess
 import sys
 import traceback
 from pathlib import Path
@@ -25,7 +26,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <artifacts-root parent>/songs")
     parser.add_argument("--artifacts-root", default="/data/artifacts")
     parser.add_argument("--reference-root", default="/data/reference")
-    parser.add_argument("--compare", default="beats,chords,sections,energy,patterns,unified")
+    parser.add_argument("--compare", default="beats,chords,sections,energy,patterns,unified,events")
     parser.add_argument("--fail-on-mismatch", action="store_true")
     parser.add_argument("--beat-tolerance-seconds", type=float, default=0.10)
     parser.add_argument("--tolerance-seconds", type=float, default=2.0)
@@ -78,11 +79,40 @@ def _run_single_song(args: argparse.Namespace, compare_targets: tuple[str, ...])
 
 
 def _batch_exit_code(exit_codes: list[int]) -> int:
-    if any(code == 3 for code in exit_codes):
+    if any(code not in {0, 1} for code in exit_codes):
         return 3
     if any(code == 1 for code in exit_codes):
         return 1
     return 0
+
+
+def _single_song_command(args: argparse.Namespace, song_path: Path) -> list[str]:
+    command = [
+        sys.executable,
+        "-m",
+        "analyzer",
+        "--song",
+        str(song_path),
+        "--artifacts-root",
+        str(args.artifacts_root),
+        "--reference-root",
+        str(args.reference_root),
+        "--compare",
+        str(args.compare),
+        "--beat-tolerance-seconds",
+        str(args.beat_tolerance_seconds),
+        "--tolerance-seconds",
+        str(args.tolerance_seconds),
+        "--chord-min-overlap",
+        str(args.chord_min_overlap),
+    ]
+    if args.fail_on_mismatch:
+        command.append("--fail-on-mismatch")
+    if args.device:
+        command.extend(["--device", str(args.device)])
+    if args.verbose:
+        command.append("--verbose")
+    return command
 
 
 def _run_all_songs(args: argparse.Namespace, compare_targets: tuple[str, ...]) -> int:
@@ -91,17 +121,13 @@ def _run_all_songs(args: argparse.Namespace, compare_targets: tuple[str, ...]) -
     for song_path in songs:
         paths = build_song_paths(str(song_path), args.artifacts_root, args.reference_root)
         report_json, report_md = default_validation_report_paths(paths)
-        config = _build_validation_config(args, compare_targets, report_json, report_md)
-        try:
-            exit_code = run_phase_1(paths, config)
+        command = _single_song_command(args, song_path)
+        completed = subprocess.run(command, check=False)
+        exit_code = int(completed.returncode)
+        if exit_code in {0, 1}:
             print(f"[{paths.song_name}] wrote {report_json}")
-        except AnalyzerError as exc:
-            exit_code = exc.exit_code
-            if args.verbose:
-                print(f"[{paths.song_name}] failed", file=sys.stderr)
-                traceback.print_exc()
-            else:
-                print(f"[{paths.song_name}] {exc}", file=sys.stderr)
+        else:
+            print(f"[{paths.song_name}] analyzer subprocess exited with code {exit_code}", file=sys.stderr)
         exit_codes.append(exit_code)
 
     passed = sum(1 for code in exit_codes if code == 0)
@@ -114,7 +140,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    supported_targets = {"beats", "chords", "sections", "energy", "patterns", "unified"}
+    supported_targets = {"beats", "chords", "sections", "energy", "patterns", "unified", "events"}
     try:
         compare_targets = _validate_args(args, supported_targets)
         if args.all_songs:

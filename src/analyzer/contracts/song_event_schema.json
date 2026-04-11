@@ -1,0 +1,155 @@
+{
+  "schema_version": "1.0",
+  "contract": "song_event_schema",
+  "description": "Strict event payload contract for Epic 5 detection, review, and export artifacts.",
+  "top_level": {
+    "required": [
+      "schema_version",
+      "song_name",
+      "generated_from",
+      "events"
+    ],
+    "optional": [
+      "review_status",
+      "notes",
+      "threshold_profile",
+      "metadata"
+    ]
+  },
+  "event": {
+    "required": [
+      "id",
+      "type",
+      "start_time",
+      "end_time",
+      "confidence",
+      "intensity",
+      "evidence",
+      "notes"
+    ],
+    "optional": [
+      "section_name",
+      "section_id",
+      "source_layers",
+      "human_override",
+      "lighting_hints",
+      "candidates",
+      "metadata"
+    ],
+    "numeric_ranges": {
+      "confidence": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "intensity": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      }
+    },
+    "source_layers_enum": [
+      "timing",
+      "sections",
+      "harmonic",
+      "symbolic",
+      "energy",
+      "genre",
+      "event_features",
+      "rule_candidates",
+      "energy_identifiers",
+      "event_machine",
+      "event_review",
+      "user_override"
+    ]
+  },
+  "evidence": {
+    "allowed": [
+      "summary",
+      "source_windows",
+      "metrics",
+      "reasons",
+      "rule_names",
+      "model",
+      "metadata"
+    ],
+    "required_at_least_one_of": [
+      "summary",
+      "source_windows",
+      "metrics",
+      "reasons",
+      "rule_names",
+      "model"
+    ]
+  },
+  "source_window": {
+    "required": [
+      "layer",
+      "start_time",
+      "end_time"
+    ],
+    "optional": [
+      "ref",
+      "metric_names",
+      "notes"
+    ]
+  },
+  "metric": {
+    "required": [
+      "name",
+      "value"
+    ],
+    "optional": [
+      "unit",
+      "threshold",
+      "comparator",
+      "source_layer",
+      "notes"
+    ]
+  },
+  "model": {
+    "required": [
+      "name"
+    ],
+    "optional": [
+      "version",
+      "confidence_delta",
+      "notes"
+    ]
+  },
+  "human_override": {
+    "required": [
+      "status"
+    ],
+    "optional": [
+      "editor",
+      "reason",
+      "updated_type",
+      "updated_start_time",
+      "updated_end_time",
+      "notes"
+    ],
+    "status_enum": [
+      "confirmed",
+      "deleted",
+      "retimed",
+      "relabeled",
+      "annotated"
+    ]
+  },
+  "lighting_hints": {
+    "allowed": [
+      "cue_style",
+      "energy_profile",
+      "notes",
+      "editable"
+    ]
+  },
+  "candidate": {
+    "required": [
+      "type",
+      "confidence"
+    ],
+    "optional": [
+      "notes"
+    ]
+  }
+}

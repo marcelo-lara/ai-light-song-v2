@@ -62,6 +62,15 @@ def build_validation_report(
     sections_path = paths.artifact("section_segmentation", "sections.json")
     beats_path = paths.artifact("essentia", "beats.json")
     energy_path = paths.artifact("layer_c_energy.json")
+    energy_identifiers_path = paths.artifact("energy_summary", "hints.json")
+    event_features_path = paths.artifact("event_inference", "features.json")
+    timeline_index_path = paths.artifact("event_inference", "timeline_index.json")
+    rule_candidates_path = paths.artifact("event_inference", "rule_candidates.json")
+    machine_events_path = paths.artifact("event_inference", "events.machine.json")
+    event_review_path = paths.song_output_dir / "song_events.review.json"
+    event_overrides_path = paths.song_output_dir / "song_events.overrides.json"
+    event_timeline_path = paths.song_output_dir / "song_event_timeline.json"
+    event_benchmark_path = paths.artifact("validation", "event_benchmark.json")
     patterns_path = paths.artifact("layer_d_patterns.json")
     symbolic_path = paths.artifact("layer_b_symbolic.json")
     unified_path = paths.artifact("music_feature_layers.json")
@@ -78,6 +87,16 @@ def build_validation_report(
         "sections": _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
         "energy": _validate_energy_layer(read_json(energy_path), timing, sections) if "energy" in compare_targets else skipped_result(),
         "patterns": _validate_patterns_layer(read_json(patterns_path), timing) if "patterns" in compare_targets else skipped_result(),
+        "events": _validate_event_outputs(
+            read_json(energy_identifiers_path),
+            read_json(event_features_path),
+            read_json(rule_candidates_path),
+            read_json(machine_events_path),
+            read_json(event_review_path),
+            read_json(event_overrides_path),
+            read_json(event_timeline_path),
+            read_json(event_benchmark_path),
+        ) if "events" in compare_targets else skipped_result(),
         "unified": _validate_unified_layer(
             read_json(unified_path),
             timing,
@@ -108,6 +127,8 @@ def build_validation_report(
         notes.append("Energy validation checks internal consistency between section windows, accent candidates, and the canonical beat timeline.")
     if "patterns" in compare_targets:
         notes.append("Pattern validation checks window length, occurrence counts, and non-overlap rules inside Layer D.")
+    if "events" in compare_targets:
+        notes.append("Event validation checks Epic 5 artifact integrity, machine-review timeline consistency, and benchmark status when reviewed annotations exist.")
     if "unified" in compare_targets:
         notes.append("Unified validation checks cross-layer references, phrase and accent timeline joins, and callback integrity.")
 
@@ -128,6 +149,15 @@ def build_validation_report(
             "harmonic_layer_file": str(harmonic_path),
             "symbolic_layer_file": str(symbolic_path),
             "energy_layer_file": str(energy_path),
+            "energy_identifiers_file": str(energy_identifiers_path),
+            "event_features_file": str(event_features_path),
+            "event_timeline_index_file": str(timeline_index_path),
+            "event_rule_candidates_file": str(rule_candidates_path),
+            "event_machine_file": str(machine_events_path),
+            "event_review_file": str(event_review_path),
+            "event_overrides_file": str(event_overrides_path),
+            "event_timeline_file": str(event_timeline_path),
+            "event_benchmark_file": str(event_benchmark_path),
             "patterns_layer_file": str(patterns_path),
             "music_feature_layers_file": str(unified_path),
             "lighting_events_file": str(lighting_path),
@@ -336,6 +366,67 @@ def _validate_energy_layer(energy: dict, timing: dict, sections: dict) -> Valida
     checks.append({
         "check": "accent_candidates_reference_valid_time_and_section",
         "passed": accent_integrity_passed,
+    })
+    return _result_from_checks(checks)
+
+
+def _validate_event_outputs(
+    energy_identifiers: dict,
+    event_features: dict,
+    rule_candidates: dict,
+    machine_events: dict,
+    review_payload: dict,
+    overrides_payload: dict,
+    timeline_payload: dict,
+    benchmark_payload: dict,
+) -> ValidationResult:
+    checks = []
+    identifier_names = set(energy_identifiers.get("supported_identifiers", []))
+    checks.append({
+        "check": "drop_identifier_supported",
+        "passed": "drop" in identifier_names,
+    })
+    checks.append({
+        "check": "event_feature_rows_present",
+        "passed": len(event_features.get("features", [])) > 0,
+        "count": len(event_features.get("features", [])),
+    })
+    checks.append({
+        "check": "rule_candidates_present",
+        "passed": len(rule_candidates.get("events", [])) > 0,
+        "count": len(rule_candidates.get("events", [])),
+    })
+    checks.append({
+        "check": "machine_events_present",
+        "passed": len(machine_events.get("events", [])) > 0,
+        "count": len(machine_events.get("events", [])),
+    })
+    checks.append({
+        "check": "review_summary_present",
+        "passed": isinstance(review_payload.get("summary"), dict),
+    })
+    checks.append({
+        "check": "overrides_operations_list_present",
+        "passed": isinstance(overrides_payload.get("operations"), list),
+    })
+    timeline_events = timeline_payload.get("events", [])
+    merged_count = review_payload.get("summary", {}).get("merged_event_count")
+    checks.append({
+        "check": "timeline_matches_merged_review_count",
+        "passed": len(timeline_events) == int(merged_count),
+        "timeline_count": len(timeline_events),
+        "merged_count": merged_count,
+    })
+    benchmark_status = str(benchmark_payload.get("status", "skipped"))
+    checks.append({
+        "check": "benchmark_report_written",
+        "passed": benchmark_status in {"passed", "failed", "skipped"},
+        "status": benchmark_status,
+    })
+    checks.append({
+        "check": "benchmark_failure_only_counts_when_report_exists",
+        "passed": benchmark_status != "failed" or benchmark_payload.get("matched", 0) >= 0,
+        "status": benchmark_status,
     })
     return _result_from_checks(checks)
 

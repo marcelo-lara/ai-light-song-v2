@@ -50,6 +50,13 @@ The intended contract defines these primary artifacts:
 - `layer_a_harmonic.json`: chord events, key, cadence, harmonic summaries.
 - `layer_b_symbolic.json`: note events, symbolic summaries, contour and density views.
 - `layer_c_energy.json`: loudness, onset, centroid, energy sections, accent candidates.
+- `energy_summary/hints.json`: named energy-event identifiers such as high-confidence `drop` anchors with explicit evidence.
+- `event_inference/features.json`: aligned event-inference feature timeline with normalized per-beat cross-layer features and rolling windows.
+- `event_inference/rule_candidates.json`: deterministic baseline event candidates with explicit evidence for transitions and held states.
+- `event_inference/events.machine.json`: refined machine event classifications with subtype fallback candidates preserved.
+- `song_events.review.json`: review-friendly machine output with confidence bands and ambiguity flags.
+- `song_events.overrides.json`: deterministic override file for confirm, delete, retime, relabel, and annotation operations.
+- `song_event_timeline.json`: compact event export for downstream prompting and planning.
 - `layer_d_patterns.json`: repeated multi-bar chord progressions and their occurrences.
 - `music_feature_layers.json`: unified cross-layer timeline and downstream lighting handoff artifact.
 - `lighting_score.md`: final human-readable lighting design document.
@@ -62,6 +69,9 @@ The intended contract defines these primary artifacts:
 - `docs/4.2.section_segmentation_story.md`: section inference contract.
 - `docs/event_user_stories block 5.x.md`: phased Epic 5 plan for song-event inference.
 - `docs/5.1.event_vocabulary_and_schema_story.md`: canonical event vocabulary and schema contract.
+- `docs/5.5.advanced_event_classification_story.md`: refined event classification contract.
+- `docs/5.6.event_review_and_override_story.md`: review and override workflow contract.
+- `docs/5.7.event_benchmarking_and_tuning_story.md`: benchmarking and threshold-profile tuning contract.
 - `docs/5.4.song_identifier_inference_story.md`: controlled named-event inference contract.
 - `docs/5.8.event_timeline_export_story.md`: compact event timeline export contract.
 - `docs/6.1.find_chord_patterns_story.md`: Layer D chord-pattern detection contract.
@@ -101,6 +111,7 @@ The repository is Docker-first.
 - Use the root `Dockerfile` and `docker-compose.yml` as the canonical local development environment.
 - The Docker image is NVIDIA CUDA-enabled.
 - The current local development setup uses an `NVIDIA GeForce GTX 1650`, and the container workflow is configured to take advantage of that GPU.
+- Demucs checkpoints are cached explicitly under `models/demucs/` so analyzer runs do not rely on mid-run `torch.hub` downloads.
 - Validate all tooling and sample-song runs inside the container.
 - Do not rely on host-installed Python packages or audio tooling.
 - Treat the Docker image as the authoritative developer runtime.
@@ -147,7 +158,7 @@ Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not inv
 docker compose run --rm app \
   ./analyze \
   --song "/data/songs/Sash - Raindrops.mp3" \
-  --compare beats,chords,sections,energy,patterns,unified
+  --compare beats,chords,sections,energy,patterns,unified,events
 ```
 
 Run the same full pipeline for every song under `/data/songs`:
@@ -158,9 +169,11 @@ docker compose run --rm app \
   --all-songs
 ```
 
-**Available compare targets:** `beats`, `chords`, `sections`, `energy`, `patterns`, `unified`
+**Available compare targets:** `beats`, `chords`, `sections`, `energy`, `patterns`, `unified`, `events`
 
-Generated outputs from each run include the canonical artifact set under `data/artifacts/<Song - Artist>/` and final deliverables such as `data/output/<Song - Artist>/info.json`, `beats.json`, `sections.json`, and `lighting_score.md`.
+Generated outputs from each run include the canonical artifact set under `data/artifacts/<Song - Artist>/`, Epic 5 event artifacts such as `energy_summary/hints.json`, `event_inference/events.machine.json`, `validation/event_benchmark.json`, and final deliverables such as `data/output/<Song - Artist>/info.json`, `beats.json`, `sections.json`, `song_events.review.json`, `song_event_timeline.json`, and `lighting_score.md`.
+
+The current Epic 5 implementation also writes `data/artifacts/<Song - Artist>/energy_summary/hints.json`, `event_inference/features.json`, `timeline_index.json`, `rule_candidates.json`, `events.machine.json`, and `validation/event_benchmark.json`, along with output review and timeline files under `data/output/<Song - Artist>/`.
 
 Validation reports are always written automatically to `data/artifacts/<Song - Artist>/validation/phase_1_report.json` and `data/artifacts/<Song - Artist>/validation/phase_1_report.md`.
 

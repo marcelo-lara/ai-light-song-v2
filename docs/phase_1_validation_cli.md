@@ -55,7 +55,7 @@ Recommended baseline command:
 ./analyze \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --reference-root "/data/reference" \
-  --compare beats,chords,sections,energy,patterns,unified
+  --compare beats,chords,sections,energy,patterns,unified,events
 ```
 
 Equivalent Python module form is the supported container entry point:
@@ -64,7 +64,7 @@ Equivalent Python module form is the supported container entry point:
 python -m analyzer \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --reference-root "/data/reference" \
-  --compare beats,chords,sections,energy,patterns,unified
+  --compare beats,chords,sections,energy,patterns,unified,events
 ```
 
 Batch mode analyzes every `.mp3` in `/data/songs` and writes canonical validation reports under each song artifact directory:
@@ -74,6 +74,8 @@ python -m analyzer \
   --all-songs
 ```
 
+The current batch implementation isolates each song run in a subprocess and reuses the repo-local Demucs cache under `models/demucs/` so long-running Docker validation does not depend on mid-run model downloads or a long-lived parent process.
+
 ## Recommended Flags
 
 - `--song`: required absolute or container-relative path to the source song for single-song runs.
@@ -81,7 +83,7 @@ python -m analyzer \
 - `--songs-root`: optional directory override for batch mode. Defaults to the sibling `songs/` directory next to `--artifacts-root`.
 - `--artifacts-root`: optional root directory where inferred outputs are written. Defaults to `/data/artifacts`.
 - `--reference-root`: optional root directory for validation-only reference files. Defaults to `/data/reference`. If the directory or files are missing, inference must still run and validation for those targets is skipped.
-- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `sections`, `energy`, `patterns`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. If that strict Story 1.2 check fails and reference values exist, the pipeline preserves the inferred beat grid separately and promotes a canonical reference-derived beat grid for downstream phases. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts.
+- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `sections`, `energy`, `patterns`, `events`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. If that strict Story 1.2 check fails and reference values exist, the pipeline preserves the inferred beat grid separately and promotes a canonical reference-derived beat grid for downstream phases. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target validates the Epic 5 event chain across `event_inference/`, review outputs, timeline exports, and benchmark metadata.
 - machine-readable and markdown validation reports are always written automatically under `data/artifacts/<Song - Artist>/validation/` as `phase_1_report.json` and `phase_1_report.md`.
 - `--fail-on-mismatch`: optional flag causing the command to exit non-zero when validation thresholds are missed.
 - `--beat-tolerance-seconds`: optional float for beat-timestamp comparison tolerance. The phase-1 default is `0.10` seconds.
@@ -105,7 +107,7 @@ The phase 1 analyzer must:
 3. compare inferred beat outputs against beat timestamps embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available
 4. compare inferred chord outputs against `data/reference/<Song - Artist>/moises/chords.json` when that file is available
 5. compare inferred section change points against `data/reference/<Song - Artist>/moises/segments.json` when that file is available
-6. validate canonical energy, pattern, and unified feature artifacts for internal consistency
+6. validate canonical energy, pattern, event, and unified feature artifacts for internal consistency
 7. write a validation report under `data/artifacts/<Song - Artist>/validation/`
 8. exit with a documented success or failure status
 
@@ -148,6 +150,7 @@ At minimum:
 - section comparison summary
 - energy-layer internal consistency summary
 - pattern-layer internal consistency summary
+- event-layer internal consistency summary, including review and timeline export checks
 - unified-layer internal consistency summary
 - mismatches and confidence notes
 - pass/fail summary
@@ -169,7 +172,9 @@ At minimum:
   },
   "generated_artifacts": {
     "harmonic_layer_file": "/data/artifacts/What a Feeling - Courtney Storm/layer_a_harmonic.json",
-    "energy_layer_file": "/data/artifacts/What a Feeling - Courtney Storm/layer_c_energy.json"
+    "energy_layer_file": "/data/artifacts/What a Feeling - Courtney Storm/layer_c_energy.json",
+    "event_machine_file": "/data/artifacts/What a Feeling - Courtney Storm/event_inference/events.machine.json",
+    "event_timeline_file": "/data/output/What a Feeling - Courtney Storm/song_event_timeline.json"
   },
   "validation": {
     "beats": {
@@ -189,6 +194,12 @@ At minimum:
       "matched": 7,
       "mismatched": 0,
       "match_ratio": 1.0
+    },
+    "events": {
+      "status": "passed",
+      "machine_events_present": true,
+      "review_consistent": true,
+      "timeline_consistent": true
     }
   },
   "notes": []

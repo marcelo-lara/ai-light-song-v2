@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "contract": "event_threshold_profiles",
+  "default_profile": "default",
+  "profiles": {
+    "default": {
+      "description": "Generic event thresholds that do not require genre metadata.",
+      "overrides": {}
+    },
+    "festival_edm": {
+      "description": "Favor stronger release and accent thresholds for large-scale EDM drops.",
+      "overrides": {
+        "drop_energy_delta": 0.25,
+        "drop_accent_min": 0.4,
+        "drop_onset_min": 0.6
+      }
+    },
+    "electro_pop": {
+      "description": "Slightly lower vocal and hook thresholds with medium release strictness.",
+      "overrides": {
+        "vocal_phrase_min": 0.42,
+        "hook_repeat_min": 2,
+        "drop_energy_delta": 0.2
+      }
+    },
+    "alt_rock": {
+      "description": "Bias toward punch and reset events over wide explosive releases.",
+      "overrides": {
+        "drop_accent_min": 0.5,
+        "impact_intensity_min": 0.7,
+        "energy_reset_followup_delta": 0.18
+      }
+    },
+    "dark_electronic": {
+      "description": "Favor tension-hold and atmospheric plateaus while preserving drop detection.",
+      "overrides": {
+        "tension_mean_min": 0.42,
+        "atmo_energy_max": 0.4,
+        "fake_drop_tension_mean": 0.42
+      }
+    },
+    "downtempo": {
+      "description": "Lower intensity ceilings and softer release expectations.",
+      "overrides": {
+        "drop_energy_delta": 0.16,
+        "drop_accent_min": 0.22,
+        "atmo_energy_max": 0.45
+      }
+    }
+  }
+}

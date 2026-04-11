@@ -5,6 +5,13 @@ from analyzer.io import ensure_directory, write_json
 from analyzer.exceptions import AnalysisError
 from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
+from analyzer.stages.event_benchmark import benchmark_event_outputs
+from analyzer.stages.event_features import build_event_feature_layer
+from analyzer.stages.event_identifiers import infer_song_identifiers
+from analyzer.stages.event_machine import generate_machine_events
+from analyzer.stages.event_rules import generate_rule_candidates
+from analyzer.stages.event_review import generate_event_review
+from analyzer.stages.event_timeline import export_event_timeline
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.genre import classify_genre
@@ -57,6 +64,13 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     hints = generate_section_hints(paths, symbolic, sections)
     ui_outputs = build_ui_data(paths)
     energy = derive_energy_layer(paths, timing, energy_features, sections)
+    event_features = build_event_feature_layer(paths, timing, harmonic, symbolic, energy_features, energy, sections, genre_result)
+    rule_candidates = generate_rule_candidates(paths, event_features, sections, genre_result)
+    event_identifiers = infer_song_identifiers(paths, event_features, energy_features, energy, rule_candidates, sections)
+    machine_events = generate_machine_events(paths, event_features, rule_candidates, event_identifiers, symbolic, sections)
+    review_outputs = generate_event_review(paths, machine_events)
+    event_timeline = export_event_timeline(paths, review_outputs["merged_payload"])
+    event_benchmark = benchmark_event_outputs(paths, review_outputs["merged_payload"], genre_result)
     patterns = extract_chord_patterns(paths, timing, harmonic)
     unified = assemble_music_feature_layers(paths, timing, harmonic, symbolic, energy, patterns, sections)
     lighting = generate_lighting_events(paths)
@@ -76,6 +90,12 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             "symbolic_validation": str(paths.artifact("symbolic_transcription", "validation.json")),
             "energy_features": str(paths.artifact("energy_summary", "features.json")),
             "energy_layer": str(paths.artifact("layer_c_energy.json")),
+            "energy_identifiers": str(paths.artifact("energy_summary", "hints.json")),
+            "event_features": str(paths.artifact("event_inference", "features.json")),
+            "event_timeline_index": str(paths.artifact("event_inference", "timeline_index.json")),
+            "event_rule_candidates": str(paths.artifact("event_inference", "rule_candidates.json")),
+            "event_machine": str(paths.artifact("event_inference", "events.machine.json")),
+            "event_benchmark": str(paths.artifact("validation", "event_benchmark.json")),
             "sections": str(paths.artifact("section_segmentation", "sections.json")),
             "patterns_layer": str(paths.artifact("layer_d_patterns.json")),
             "pattern_mining": str(paths.artifact("pattern_mining", "chord_patterns.json")),
@@ -90,6 +110,9 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             "beats": ui_outputs["beats"],
             "hints": hints["hints"],
             "sections": ui_outputs["sections"],
+            "song_events_review": str(paths.song_output_dir / "song_events.review.json"),
+            "song_events_overrides": str(paths.song_output_dir / "song_events.overrides.json"),
+            "song_event_timeline": str(paths.song_output_dir / "song_event_timeline.json"),
             "lighting_score": str(paths.song_output_dir / "lighting_score.md"),
         },
     }

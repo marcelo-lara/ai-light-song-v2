@@ -1,0 +1,244 @@
+{
+  "schema_version": "1.0",
+  "contract": "event_vocabulary",
+  "description": "Canonical event vocabulary for Epic 5 music-event inference and review.",
+  "export_rules": {
+    "canonical_only": true,
+    "normalize_aliases_on_ingest": true
+  },
+  "categories": [
+    {
+      "name": "transition",
+      "description": "Structural shifts that change energy direction or listener expectation."
+    },
+    {
+      "name": "drop_variant",
+      "description": "Release-phase event types that refine the parent drop concept."
+    },
+    {
+      "name": "sustained_state",
+      "description": "Persistent song states that describe plateau, loop, or held-tension behavior."
+    },
+    {
+      "name": "vocal_phrase",
+      "description": "Vocal-led moments that often need phrase-aware lighting treatment."
+    },
+    {
+      "name": "arrangement_change",
+      "description": "Layering changes that reshape density without necessarily creating a full transition."
+    },
+    {
+      "name": "accent",
+      "description": "Short impact-style events that mark emphasis inside a larger section or phrase."
+    }
+  ],
+  "events": [
+    {
+      "name": "build",
+      "category": "transition",
+      "description": "Escalating pre-release energy with rising density, tension, or expectation.",
+      "aliases": [
+        "build_up",
+        "build-up",
+        "build up",
+        "buildup"
+      ]
+    },
+    {
+      "name": "breakdown",
+      "category": "transition",
+      "description": "A deliberate reduction in arrangement, density, or intensity before a later change.",
+      "aliases": [
+        "break_down",
+        "break-down",
+        "break down"
+      ]
+    },
+    {
+      "name": "drop",
+      "category": "transition",
+      "description": "The main tension-release event where built energy resolves into peak motion or impact.",
+      "aliases": [
+        "release",
+        "main_drop",
+        "main-drop"
+      ]
+    },
+    {
+      "name": "drop_explode",
+      "category": "drop_variant",
+      "parent_type": "drop",
+      "description": "A drop variant with explosive onset, large spectral expansion, and obvious impact emphasis.",
+      "aliases": [
+        "explosive_drop",
+        "explosive-drop"
+      ]
+    },
+    {
+      "name": "drop_groove",
+      "category": "drop_variant",
+      "parent_type": "drop",
+      "description": "A groove-led drop with sustained rhythmic drive rather than a single oversized hit.",
+      "aliases": [
+        "groove_drop",
+        "groove-drop"
+      ]
+    },
+    {
+      "name": "drop_punch",
+      "category": "drop_variant",
+      "parent_type": "drop",
+      "description": "A compact, punch-forward drop that emphasizes transient impact over wide release bloom.",
+      "aliases": [
+        "punch_drop",
+        "punch-drop"
+      ]
+    },
+    {
+      "name": "soft_release",
+      "category": "drop_variant",
+      "parent_type": "drop",
+      "description": "A release event that resolves tension with a smoother or less aggressive energy landing.",
+      "aliases": [
+        "soft_drop",
+        "soft-drop",
+        "gentle_release"
+      ]
+    },
+    {
+      "name": "no_drop_plateau",
+      "category": "sustained_state",
+      "description": "A plateau after expectation-building where no full drop materializes.",
+      "aliases": [
+        "plateau_release",
+        "plateau-release",
+        "no_drop"
+      ]
+    },
+    {
+      "name": "fake_drop",
+      "category": "transition",
+      "description": "A fake-out release cue that withholds the expected drop payoff.",
+      "aliases": [
+        "fake_out",
+        "fake-out",
+        "fakeout"
+      ]
+    },
+    {
+      "name": "tension_hold",
+      "category": "sustained_state",
+      "description": "A held state where tension persists without resolving into a drop or reset.",
+      "aliases": [
+        "hold_tension",
+        "hold-tension"
+      ]
+    },
+    {
+      "name": "pause_break",
+      "category": "transition",
+      "description": "A stop-time, pause, or near-silent interruption used as a structural punctuation point.",
+      "aliases": [
+        "pause",
+        "stop_time",
+        "stop-time"
+      ]
+    },
+    {
+      "name": "anthem_call",
+      "category": "vocal_phrase",
+      "description": "A strong lead-vocal call moment meant to frame a crowd-facing or singalong phrase.",
+      "aliases": [
+        "vocal_call",
+        "crowd_call",
+        "anthem-call"
+      ]
+    },
+    {
+      "name": "call_response",
+      "category": "vocal_phrase",
+      "description": "A phrase pair where one motif is answered by another voice, line, or instrumental phrase.",
+      "aliases": [
+        "call-and-response",
+        "call_and_response"
+      ]
+    },
+    {
+      "name": "hook_phrase",
+      "category": "vocal_phrase",
+      "description": "A recurring hook or refrain phrase that acts as a memorable focal line.",
+      "aliases": [
+        "hook-phrase",
+        "hook_phrase_repeat"
+      ]
+    },
+    {
+      "name": "energy_reset",
+      "category": "transition",
+      "description": "A clear reset of intensity or momentum before the next section re-establishes direction.",
+      "aliases": [
+        "reset",
+        "release_reset",
+        "release-reset"
+      ]
+    },
+    {
+      "name": "layer_add",
+      "category": "arrangement_change",
+      "description": "An arrangement moment where material is added and density or width meaningfully increases.",
+      "aliases": [
+        "add_layer",
+        "add-layer",
+        "layer-in"
+      ]
+    },
+    {
+      "name": "layer_remove",
+      "category": "arrangement_change",
+      "description": "An arrangement moment where material is stripped back and density meaningfully decreases.",
+      "aliases": [
+        "remove_layer",
+        "remove-layer",
+        "layer-out"
+      ]
+    },
+    {
+      "name": "impact_hit",
+      "category": "accent",
+      "description": "A short impact marker with strong transient emphasis or downbeat punctuation.",
+      "aliases": [
+        "impact",
+        "impact-hit",
+        "downbeat_hit"
+      ]
+    },
+    {
+      "name": "stinger",
+      "category": "accent",
+      "description": "A compact one-shot accent or punctuation phrase that ends or punctuates a moment.",
+      "aliases": [
+        "sting",
+        "one_shot",
+        "one-shot"
+      ]
+    },
+    {
+      "name": "groove_loop",
+      "category": "sustained_state",
+      "description": "A sustained rhythmic loop state with stable pulse and repetition-driven momentum.",
+      "aliases": [
+        "groove-loop",
+        "loop_groove"
+      ]
+    },
+    {
+      "name": "atmospheric_plateau",
+      "category": "sustained_state",
+      "description": "A persistent spacious or ambient plateau with low-volatility energy and texture emphasis.",
+      "aliases": [
+        "atmospheric-plateau",
+        "ambient_plateau"
+      ]
+    }
+  ]
+}

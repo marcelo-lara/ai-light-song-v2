@@ -68,6 +68,7 @@ Current local container layout:
 - repository mount: `/app`
 - data mount: `/data`
 - model assets: `/app/models`
+- Demucs cache: `/app/models/demucs`
 - Compose service name: `app`
 
 Expected working directory:
@@ -94,7 +95,7 @@ Run the first-phase validation entry point:
 docker compose run --rm app \
   ./analyze \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
-  --compare beats,chords,sections,energy,patterns,unified
+  --compare beats,chords,sections,energy,patterns,unified,events
 ```
 
 Batch mode is also supported for all mounted songs:
@@ -104,6 +105,8 @@ docker compose run --rm app \
   ./analyze \
   --all-songs
 ```
+
+The current batch implementation isolates each song run in a subprocess so the long-lived parent container process does not retain unstable native analysis state between songs.
 
 `./analyze` is the simplest container entry point. `python -m analyzer` is the equivalent module form.
 
@@ -116,7 +119,7 @@ At minimum, developers should validate the following inside Docker:
 3. Core imports succeed for the selected toolchain.
 4. A sample song can be analyzed end to end without relying on host dependencies.
 5. Generated outputs are written to `data/artifacts/` and `data/output/`.
-6. The phase-1 validation CLI can compare inferred beats, chords, and sections against validation-only files in `data/reference/`, and validate the generated energy, pattern, and unified artifacts for internal consistency.
+6. The phase-1 validation CLI can compare inferred beats, chords, and sections against validation-only files in `data/reference/`, and validate the generated energy, pattern, event, and unified artifacts for internal consistency.
 7. Inference still runs when those reference files are missing; comparison is optional and only happens when the relevant files are available.
 
 ## Smoke Test Expectations

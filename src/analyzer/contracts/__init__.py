@@ -1,0 +1,1 @@
+"""Static contract resources for Epic 5 event inference."""
