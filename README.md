@@ -25,7 +25,7 @@ The repository structure is part of the implementation contract.
 - `data/stems/`: temporary stem and `.wav` work area generated during preprocessing.
 - `data/artifacts/`: intermediate analysis artifacts, layer outputs, merged timeline artifacts, and validation metadata.
 - `data/reference/`: validation-only truth data such as chords, sections, lyrics, or beats from external tools. These files are for scoring and comparison only.
-- `data/output/`: final generated deliverables such as `info.json`, `lighting_score.md`, and future DMX-ready exports.
+- `data/output/`: stable UI-facing deliverables. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 - `docs/`: canonical implementation and contract documentation.
 
 ## Hard Rules
@@ -39,6 +39,8 @@ The repository structure is part of the implementation contract.
 - Time values are stored in seconds.
 - Bars are 1-indexed.
 - Beat-aligned artifacts must use the canonical beat grid from EPIC 1.2.
+- `data/output/<Song - Artist>/` is a stable UI contract, not an open-ended export area.
+- Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
 
 ## Primary Artifacts
 
@@ -46,6 +48,7 @@ The intended contract defines these primary artifacts:
 
 - `info.json`: canonical song metadata, including `song_name`, `bpm`, `duration`, and generated file references, written to `data/output/<Song - Artist>/info.json`.
 - `beats.json`: compact UI-facing beat timeline written to `data/output/<Song - Artist>/beats.json`.
+- `hints.json`: editable UI-facing section hints written to `data/output/<Song - Artist>/hints.json`.
 - `sections.json`: compact UI-facing section timeline written to `data/output/<Song - Artist>/sections.json`.
 - `layer_a_harmonic.json`: chord events, key, cadence, harmonic summaries.
 - `layer_b_symbolic.json`: note events, symbolic summaries, contour and density views.
@@ -54,9 +57,11 @@ The intended contract defines these primary artifacts:
 - `event_inference/features.json`: aligned event-inference feature timeline with normalized per-beat cross-layer features and rolling windows.
 - `event_inference/rule_candidates.json`: deterministic baseline event candidates with explicit evidence for transitions and held states.
 - `event_inference/events.machine.json`: refined machine event classifications with subtype fallback candidates preserved.
-- `song_events.review.json`: review-friendly machine output with confidence bands and ambiguity flags.
-- `song_events.overrides.json`: deterministic override file for confirm, delete, retime, relabel, and annotation operations.
 - `song_event_timeline.json`: compact event export for downstream prompting and planning.
+- `validation/song_events.review.json`: review-friendly machine output with confidence bands and ambiguity flags.
+- `validation/song_events.overrides.json`: deterministic override file for confirm, delete, retime, relabel, and annotation operations.
+- `validation/song_events.review.md`: human-review markdown companion for the reviewed event payload.
+- `validation/song_event_timeline.md`: human-review markdown companion for the compact event timeline.
 - `layer_d_patterns.json`: repeated multi-bar chord progressions and their occurrences.
 - `music_feature_layers.json`: unified cross-layer timeline and downstream lighting handoff artifact.
 - `lighting_score.md`: final human-readable lighting design document.
@@ -92,7 +97,7 @@ Additional story-level specifications under `docs/` define the exact implementat
      --song "/data/songs/YOUR_SONG.mp3"
    ```
 
-  This command runs the full production pipeline, writes generated artifacts under `data/artifacts/<Song - Artist>/`, writes final outputs under `data/output/<Song - Artist>/`, and always writes validation reports under `data/artifacts/<Song - Artist>/validation/`.
+  This command runs the full production pipeline, writes generated artifacts under `data/artifacts/<Song - Artist>/`, preserves the stable UI output contract under `data/output/<Song - Artist>/`, and always writes validation and human-review documents under `data/artifacts/<Song - Artist>/validation/`.
 
   Analyze every song under `/data/songs` with the same full-pipeline flow and write per-song reports automatically:
 
@@ -171,9 +176,9 @@ docker compose run --rm app \
 
 **Available compare targets:** `beats`, `chords`, `sections`, `energy`, `patterns`, `unified`, `events`
 
-Generated outputs from each run include the canonical artifact set under `data/artifacts/<Song - Artist>/`, Epic 5 event artifacts such as `energy_summary/hints.json`, `event_inference/events.machine.json`, `validation/event_benchmark.json`, and final deliverables such as `data/output/<Song - Artist>/info.json`, `beats.json`, `sections.json`, `song_events.review.json`, `song_event_timeline.json`, and `lighting_score.md`.
+Generated outputs from each run include the canonical artifact set under `data/artifacts/<Song - Artist>/`, Epic 5 event artifacts such as `energy_summary/hints.json`, `event_inference/events.machine.json`, `validation/event_benchmark.json`, stable UI deliverables under `data/output/<Song - Artist>/` (`info.json`, `beats.json`, `hints.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`), and human-review support files under `data/artifacts/<Song - Artist>/validation/`.
 
-The current Epic 5 implementation also writes `data/artifacts/<Song - Artist>/energy_summary/hints.json`, `event_inference/features.json`, `timeline_index.json`, `rule_candidates.json`, `events.machine.json`, and `validation/event_benchmark.json`, along with output review and timeline files under `data/output/<Song - Artist>/`.
+The current Epic 5 implementation also writes `data/artifacts/<Song - Artist>/energy_summary/hints.json`, `event_inference/features.json`, `timeline_index.json`, `rule_candidates.json`, `events.machine.json`, and validation-scoped review documents such as `song_events.review.json`, `song_events.review.md`, `song_events.overrides.json`, and `song_event_timeline.md`.
 
 Validation reports are always written automatically to `data/artifacts/<Song - Artist>/validation/phase_1_report.json` and `data/artifacts/<Song - Artist>/validation/phase_1_report.md`.
 
@@ -225,9 +230,9 @@ Convert songs into structured musical analysis artifacts and then into fixture-a
 - Temporary stems and `.wav` files live in `data/stems/`.
 - Intermediate artifacts live in `data/artifacts/<Song - Artist>/`.
 - Validation-only truth data lives in `data/reference/<Song - Artist>/`.
-- Final outputs live in `data/output/<Song - Artist>/`.
+- Final UI outputs live in `data/output/<Song - Artist>/` and must remain limited to `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 
-Examples: `data/output/<Song - Artist>/info.json`, `data/output/<Song - Artist>/lighting_score.md`.
+Examples: `data/output/<Song - Artist>/info.json`, `data/output/<Song - Artist>/song_event_timeline.json`, `data/output/<Song - Artist>/lighting_score.md`.
 
 Inside `data/artifacts/<Song - Artist>/`, generated files should use producer-scoped folders when relevant. Examples: `data/artifacts/<Song - Artist>/essentia/beats.json`, `data/artifacts/<Song - Artist>/section_segmentation/sections.json`, `data/artifacts/<Song - Artist>/energy_summary/features.json`, `data/artifacts/<Song - Artist>/pattern_mining/chord_patterns.json`.
 

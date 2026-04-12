@@ -101,6 +101,9 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
                 "event_timeline_index": str(paths.artifact("event_inference", "timeline_index.json")),
                 "event_rule_candidates": str(paths.artifact("event_inference", "rule_candidates.json")),
                 "event_machine": str(paths.artifact("event_inference", "events.machine.json")),
+                "event_review": str(paths.review_json_path),
+                "event_overrides": str(paths.overrides_path),
+                "event_timeline_markdown": str(paths.timeline_md_path),
                 "event_benchmark": str(paths.artifact("validation", "event_benchmark.json")),
                 "sections": str(paths.artifact("section_segmentation", "sections.json")),
                 "patterns_layer": str(paths.artifact("layer_d_patterns.json")),
@@ -116,13 +119,11 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
                 "beats": ui_outputs["beats"],
                 "hints": hints["hints"],
                 "sections": ui_outputs["sections"],
-                "song_events_review": str(paths.song_output_dir / "song_events.review.json"),
-                "song_events_overrides": str(paths.song_output_dir / "song_events.overrides.json"),
-                "song_event_timeline": str(paths.song_output_dir / "song_event_timeline.json"),
-                "lighting_score": str(paths.song_output_dir / "lighting_score.md"),
+                "song_event_timeline": str(paths.timeline_output_path),
+                "lighting_score": str(paths.lighting_score_output_path),
             },
         }
-        write_json(paths.song_output_dir / "info.json", info_payload)
+        write_json(paths.info_output_path, info_payload)
 
         report, exit_code = build_validation_report(
             paths=paths,

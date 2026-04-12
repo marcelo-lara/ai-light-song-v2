@@ -28,6 +28,7 @@
       "notes"
     ],
     "optional": [
+      "created_by",
       "section_name",
       "section_id",
       "source_layers",

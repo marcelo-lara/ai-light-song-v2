@@ -96,8 +96,8 @@ Expose confidence bands, alternative candidates, and human-editable overrides so
 
 Primary outputs:
 
-- `data/output/<Song - Artist>/song_events.review.json`
-- `data/output/<Song - Artist>/song_events.overrides.json`
+- `data/artifacts/<Song - Artist>/validation/song_events.review.json`
+- `data/artifacts/<Song - Artist>/validation/song_events.overrides.json`
 
 ## Story 5.7 — Event benchmarking and genre-sensitive tuning
 
@@ -117,7 +117,7 @@ Export a compact JSON and markdown event timeline with confidence, intensity, sh
 Primary outputs:
 
 - `data/output/<Song - Artist>/song_event_timeline.json`
-- `data/output/<Song - Artist>/song_event_timeline.md`
+- `data/artifacts/<Song - Artist>/validation/song_event_timeline.md`
 
 ## Story 5.9 — Optional ML event classifier and explainability
 

@@ -10,7 +10,8 @@ Use this as a navigation guide first, then open the referenced files for the act
 
 - `data/reference/` is read-only comparison material. Do not treat it as generation input.
 - `data/artifacts/` contains generated analysis artifacts and intermediate caches.
-- `data/output/` contains consumer-facing outputs and the current lighting score.
+- `data/output/` contains a stable UI-facing output contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
+- Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
 - `data/fixtures/` contains rig and focus-point context.
 - `data/songs/` contains source audio. `data/stems/` contains stem-separated audio derived from those songs.
 
@@ -53,6 +54,10 @@ data/
         event_benchmark.json
         phase_1_report.json
         phase_1_report.md
+        song_event_timeline.md
+        song_events.overrides.json
+        song_events.review.json
+        song_events.review.md
       layer_a_harmonic.json
       genre.json
       layer_b_symbolic.json
@@ -70,10 +75,6 @@ data/
       info.json
       lighting_score.md
       song_event_timeline.json
-      song_event_timeline.md
-      song_events.overrides.json
-      song_events.review.json
-      song_events.review.md
       sections.json
   reference/
     <Song - Artist>/
@@ -125,7 +126,7 @@ Per-song generated analysis artifacts. This is the main machine-readable analysi
 
 ### `data/output/`
 
-Per-song consumer-facing outputs. These files are more compact and presentation-friendly than the artifact files.
+Per-song consumer-facing outputs. These files are more compact and presentation-friendly than the artifact files, and the directory is a stable UI contract rather than an open-ended export area.
 
 ### `data/fixtures/`
 
@@ -580,7 +581,7 @@ LLM hint:
 - Use: match hints by `section_id` instead of relying on repeated section labels alone.
 - Avoid: using this file as the canonical store for event windows such as drops or builds; prefer the reviewed event files and event timeline for that role.
 
-### `data/output/<Song - Artist>/song_events.review.json`
+### `data/artifacts/<Song - Artist>/validation/song_events.review.json`
 
 Summary: merged review surface that combines machine-generated event rows with any preserved user-authored review decisions.
 
@@ -591,13 +592,13 @@ LLM hint:
 - Use: confirm which machine events survived review and which rows need operator attention.
 - Use: prefer this file over `events.machine.json` when downstream behavior should reflect the current reviewed state.
 
-### `data/output/<Song - Artist>/song_events.review.md`
+### `data/artifacts/<Song - Artist>/validation/song_events.review.md`
 
 Summary: human-readable companion to the reviewed event JSON payload.
 
 Why it matters: fastest way to scan reviewed event timing and status without opening raw JSON.
 
-### `data/output/<Song - Artist>/song_events.overrides.json`
+### `data/artifacts/<Song - Artist>/validation/song_events.overrides.json`
 
 Summary: persisted override store for user-authored event edits and suppressions.
 
@@ -617,8 +618,9 @@ LLM hint:
 - See: canonical event rows, exact timing windows, and any human-readable summary fields.
 - Use: drive event-aware cue planning, especially when fixture overlays or focal changes should line up with drops and other named moments.
 - Use: preserve canonical event ids when translating this file into prose or cue sheets.
+- Use: preserve the explicit `created_by` provenance on each inferred event row.
 
-### `data/output/<Song - Artist>/song_event_timeline.md`
+### `data/artifacts/<Song - Artist>/validation/song_event_timeline.md`
 
 Summary: human-readable companion to the reviewed event timeline export.
 

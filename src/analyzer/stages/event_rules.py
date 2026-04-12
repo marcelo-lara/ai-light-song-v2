@@ -99,6 +99,7 @@ def _build_event(
     event = {
         "id": event_id,
         "type": event_type,
+        "created_by": "analyzer_rule_engine",
         "start_time": round(float(rows[0]["start_time"]), 6),
         "end_time": round(float(rows[-1]["end_time"]), 6),
         "confidence": round(confidence, 6),

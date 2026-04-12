@@ -129,6 +129,7 @@ class EventRuleCandidatesTests(unittest.TestCase):
             self.assertIn("drop", event_types)
             self.assertIn("pause_break", event_types)
             self.assertIn("groove_loop", event_types)
+            self.assertTrue(all(event["created_by"] == "analyzer_rule_engine" for event in payload["events"]))
             self.assertTrue(paths.artifact("event_inference", "rule_candidates.json").exists())
 
 

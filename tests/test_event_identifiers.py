@@ -78,6 +78,7 @@ class EventIdentifiersTests(unittest.TestCase):
             self.assertEqual(len(payload["events"]), 1)
             event = payload["events"][0]
             self.assertEqual(event["identifier"], "drop")
+            self.assertEqual(event["created_by"], "analyzer_energy_identifier")
             self.assertEqual(event["section_id"], "section-002")
             self.assertGreater(event["evidence"]["loudness_delta"], 0.0)
             self.assertTrue(paths.artifact("energy_summary", "hints.json").exists())

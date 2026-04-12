@@ -15,7 +15,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - `data/stems/`: temporary stem and `.wav` outputs.
 - `data/artifacts/`: intermediate artifacts such as beats, chords, sections, layer outputs, merged layer files, and validation notes.
 - `data/reference/`: validation-only reference data used to evaluate model quality. It must never be copied into generated outputs.
-- `data/output/`: final outputs such as lighting scores and future DMX-ready event exports.
+- `data/output/`: stable UI-facing outputs. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 - `docs/`: implementation contracts, schemas, and developer guidance.
 
 ### Source layout and implementation rules
@@ -36,6 +36,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - Beat and bar alignment come from the canonical EPIC 1.2 timing grid.
 - Schemas must be versioned.
 - Reference files are for validation only, not fallback generation.
+- Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
 
 ## Containerized Development Rule
 
@@ -121,12 +122,12 @@ Goal: define the canonical event contract, infer musically meaningful event wind
 | 5.3 | Rule-based baseline event detection | `event_inference/rule_candidates.json` | `docs/5.3.rule_based_event_detection_story.md` |
 | 5.4 | Song identifier inference | `energy_summary/hints.json` | `docs/5.4.song_identifier_inference_story.md` |
 | 5.5 | Advanced musical event classification | `event_inference/events.machine.json` | `docs/5.5.advanced_event_classification_story.md` |
-| 5.6 | Confidence, review, and override workflow | `song_events.review.json`, `song_events.review.md`, and `song_events.overrides.json` | `docs/5.6.event_review_and_override_story.md` |
+| 5.6 | Confidence, review, and override workflow | `validation/song_events.review.json`, `validation/song_events.review.md`, and `validation/song_events.overrides.json` | `docs/5.6.event_review_and_override_story.md` |
 | 5.7 | Event benchmarking and genre-sensitive tuning | `validation/event_benchmark.json`, benchmark annotations, and threshold profiles | `docs/5.7.event_benchmarking_and_tuning_story.md` |
-| 5.8 | LLM-friendly event timeline export | `song_event_timeline.json` and `song_event_timeline.md` | `docs/5.8.event_timeline_export_story.md` |
+| 5.8 | LLM-friendly event timeline export | `data/output/<Song - Artist>/song_event_timeline.json` and `validation/song_event_timeline.md` | `docs/5.8.event_timeline_export_story.md` |
 | 5.9 | Optional ML event classifier and explainability | classifier artifacts and explanation outputs | `docs/5.9.event_ml_classifier_story.md` |
 
-Representative artifacts: `energy_summary/hints.json`, `event_inference/features.json`, `event_inference/rule_candidates.json`, `event_inference/events.machine.json`, `data/output/<Song - Artist>/song_events.review.json`, `data/output/<Song - Artist>/song_event_timeline.json`, `validation/event_benchmark.json`.
+Representative artifacts: `energy_summary/hints.json`, `event_inference/features.json`, `event_inference/rule_candidates.json`, `event_inference/events.machine.json`, `data/artifacts/<Song - Artist>/validation/song_events.review.json`, `data/output/<Song - Artist>/song_event_timeline.json`, `validation/event_benchmark.json`.
 
 ## EPIC 6: Pattern Mining, Unified Music Feature Assembly, and Light Show Design
 
@@ -152,11 +153,11 @@ The expected high-level artifact dependency chain is:
 2. Stem outputs in `data/stems/`.
 3. Timing, harmonic, symbolic, and energy artifacts in `data/artifacts/<Song - Artist>/`.
 4. Event-inference artifacts in `data/artifacts/<Song - Artist>/event_inference/` and identifier hints in `data/artifacts/<Song - Artist>/energy_summary/hints.json`.
-5. Review, override, timeline, and benchmark outputs in `data/output/<Song - Artist>/song_events.*`, `data/output/<Song - Artist>/song_event_timeline.*`, and `data/artifacts/<Song - Artist>/validation/event_benchmark.json`.
+5. Review, override, timeline-markdown, and benchmark outputs in `data/artifacts/<Song - Artist>/validation/`, plus the UI timeline JSON in `data/output/<Song - Artist>/song_event_timeline.json`.
 6. Pattern-mining outputs in `data/artifacts/<Song - Artist>/pattern_mining/` and the Layer D file `layer_d_patterns.json` in `data/artifacts/<Song - Artist>/`.
-7. UI-facing `beats.json` and `sections.json` in `data/output/<Song - Artist>/`.
+7. UI-facing `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md` in `data/output/<Song - Artist>/`.
 8. Unified cross-layer handoff file `music_feature_layers.json` in `data/artifacts/<Song - Artist>/`.
-9. Final lighting outputs in `data/output/<Song - Artist>/`.
+9. No additional routine files are added to `data/output/<Song - Artist>/` beyond the stable UI contract unless a UI contract change makes that strictly required.
 
 ## Required Supporting Documents
 

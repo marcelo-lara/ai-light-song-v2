@@ -140,6 +140,7 @@ def infer_song_identifiers(
             {
                 "id": f"event_drop_{index:03d}",
                 "identifier": "drop",
+                "created_by": "analyzer_energy_identifier",
                 "time_s": round(anchor_time, 6),
                 "start_s": round(min(anchor_time, section_start), 6),
                 "end_s": round(max(event_end, min(section_end, anchor_time + (event_end - anchor_time))), 6),

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from analyzer.io import write_json
+from analyzer.io import ensure_directory, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
 
@@ -35,6 +35,7 @@ def export_event_timeline(paths: SongPaths, merged_payload: dict) -> dict[str, A
                 "section_name": event.get("section_name"),
                 "provenance": provenance,
                 "summary": event.get("notes"),
+                "created_by": event.get("created_by", "analyzer_unknown_source"),
                 "evidence_summary": event.get("evidence", {}).get("summary"),
                 "lighting_hint": LIGHTING_HINTS.get(str(event["type"]), "Use the event as a high-level musical cue, not a fixture-specific instruction."),
                 "evidence_ref": {
@@ -52,13 +53,13 @@ def export_event_timeline(paths: SongPaths, merged_payload: dict) -> dict[str, A
             "engine": "llm-friendly-event-timeline-v1",
             "dependencies": {
                 "machine_events_file": str(paths.artifact("event_inference", "events.machine.json")),
-                "review_file": str(paths.song_output_dir / "song_events.review.json"),
-                "overrides_file": str(paths.song_output_dir / "song_events.overrides.json"),
+                "review_file": str(paths.review_json_path),
+                "overrides_file": str(paths.overrides_path),
             },
         },
         "events": compact_events,
     }
-    timeline_json_path = paths.song_output_dir / "song_event_timeline.json"
+    timeline_json_path = paths.timeline_output_path
     write_json(timeline_json_path, payload)
 
     lines = [
@@ -74,7 +75,8 @@ def export_event_timeline(paths: SongPaths, merged_payload: dict) -> dict[str, A
         lines.append(f"  note: {event['summary']}")
         lines.append(f"  evidence: {event['evidence_summary']}")
         lines.append(f"  lighting hint: {event['lighting_hint']}")
-    timeline_md_path = paths.song_output_dir / "song_event_timeline.md"
+    timeline_md_path = paths.timeline_md_path
+    ensure_directory(paths.song_validation_dir)
     timeline_md_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
     return {
         "timeline_json": str(timeline_json_path),

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -25,6 +26,7 @@ class EventTimelineTests(unittest.TestCase):
                     {
                         "id": "machine_drop_explode_001",
                         "type": "drop_explode",
+                        "created_by": "analyzer_event_classifier",
                         "start_time": 1.0,
                         "end_time": 2.0,
                         "confidence": 0.9,
@@ -35,8 +37,15 @@ class EventTimelineTests(unittest.TestCase):
                 ]
             }
             result = export_event_timeline(paths, merged_payload)
-            self.assertTrue(Path(result["timeline_json"]).exists())
-            self.assertTrue(Path(result["timeline_md"]).exists())
+            self.assertEqual(Path(result["timeline_json"]), paths.timeline_output_path)
+            self.assertEqual(Path(result["timeline_md"]), paths.timeline_md_path)
+            self.assertTrue(paths.timeline_output_path.exists())
+            self.assertTrue(paths.timeline_md_path.exists())
+
+            payload = json.loads(paths.timeline_output_path.read_text(encoding="utf-8"))
+            self.assertEqual(payload["events"][0]["created_by"], "analyzer_event_classifier")
+            self.assertEqual(payload["generated_from"]["dependencies"]["review_file"], str(paths.review_json_path))
+            self.assertEqual(payload["generated_from"]["dependencies"]["overrides_file"], str(paths.overrides_path))
 
 
 if __name__ == "__main__":

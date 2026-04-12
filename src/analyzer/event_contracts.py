@@ -344,6 +344,8 @@ def validate_event_payload(event: Any, *, normalize_aliases: bool = True) -> dic
         "notes": _require_string(mapping["notes"], "event.notes"),
     }
 
+    if "created_by" in mapping:
+        normalized["created_by"] = _require_string(mapping["created_by"], "event.created_by")
     if "section_name" in mapping:
         normalized["section_name"] = _require_string(mapping["section_name"], "event.section_name")
     if "section_id" in mapping:

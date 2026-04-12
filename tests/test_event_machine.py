@@ -56,6 +56,7 @@ class EventMachineTests(unittest.TestCase):
                     {
                         "id": "rule_drop_001",
                         "type": "drop",
+                        "created_by": "analyzer_rule_engine",
                         "start_time": 0.0,
                         "end_time": 1.0,
                         "confidence": 0.8,
@@ -94,6 +95,9 @@ class EventMachineTests(unittest.TestCase):
             event_types = [event["type"] for event in payload["events"]]
             self.assertIn("drop_explode", event_types)
             self.assertIn("hook_phrase", event_types)
+            created_by_by_type = {event["type"]: event["created_by"] for event in payload["events"]}
+            self.assertEqual(created_by_by_type["drop_explode"], "analyzer_event_classifier")
+            self.assertEqual(created_by_by_type["hook_phrase"], "analyzer_phrase_classifier")
             self.assertTrue(paths.artifact("event_inference", "events.machine.json").exists())
 
 

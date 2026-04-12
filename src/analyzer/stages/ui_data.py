@@ -124,8 +124,8 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         for section in sections_payload.get("sections", [])
     ]
 
-    beats_output_path = paths.song_output_dir / "beats.json"
-    sections_output_path = paths.song_output_dir / "sections.json"
+    beats_output_path = paths.beats_output_path
+    sections_output_path = paths.sections_output_path
     write_json(beats_output_path, beat_rows)
     write_json(sections_output_path, section_rows)
     return {

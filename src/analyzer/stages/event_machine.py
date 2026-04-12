@@ -128,6 +128,7 @@ def _phrase_event(
     event = {
         "id": event_id,
         "type": event_type,
+        "created_by": "analyzer_phrase_classifier",
         "start_time": round(float(phrase["start_s"]), 6),
         "end_time": round(float(phrase["end_s"]), 6),
         "confidence": round(min(1.0, 0.4 + vocal_mean * 0.35 + energy_mean * 0.2), 6),
@@ -183,6 +184,7 @@ def generate_machine_events(
         source_event = dict(source_event)
         event_type = str(source_event["type"])
         candidate_event = _copy_event(source_event)
+        candidate_event["created_by"] = "analyzer_event_classifier"
         base_feature_rows = _event_feature_rows(event_features, float(source_event["start_time"]), float(source_event["end_time"]))
         candidate_event["intensity"] = round(_infer_event_intensity(candidate_event, base_feature_rows), 6)
         if event_type == "drop":
@@ -226,6 +228,7 @@ def generate_machine_events(
                     {
                         "id": _event_id("layer_remove", layer_remove_index),
                         "type": "layer_remove",
+                        "created_by": "analyzer_event_classifier",
                         "start_time": round(float(row["start_time"]), 6),
                         "end_time": round(float(row["end_time"]), 6),
                         "confidence": round(min(1.0, 0.45 + abs(density_delta) * 0.4), 6),
@@ -262,6 +265,7 @@ def generate_machine_events(
                     {
                         "id": _event_id("layer_add", layer_add_index),
                         "type": "layer_add",
+                        "created_by": "analyzer_event_classifier",
                         "start_time": round(float(row["start_time"]), 6),
                         "end_time": round(float(row["end_time"]), 6),
                         "confidence": round(min(1.0, 0.45 + density_delta * 0.35), 6),
@@ -357,6 +361,7 @@ def generate_machine_events(
             {
                 "id": _event_id("call_response", response_index),
                 "type": "call_response",
+                "created_by": "analyzer_phrase_classifier",
                 "start_time": round(float(left["start_s"]), 6),
                 "end_time": round(float(right["end_s"]), 6),
                 "confidence": round(min(1.0, 0.4 + ((left_vocal + right_vocal) / 2.0) * 0.35), 6),

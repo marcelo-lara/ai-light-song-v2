@@ -50,8 +50,8 @@ def _default_overrides_payload(paths: SongPaths, machine_file: Path) -> dict[str
 
 
 def _load_or_create_overrides(paths: SongPaths, machine_file: Path) -> tuple[dict[str, Any], Path]:
-    overrides_path = paths.song_output_dir / "song_events.overrides.json"
-    ensure_directory(paths.song_output_dir)
+    overrides_path = paths.overrides_path
+    ensure_directory(paths.song_validation_dir)
     if overrides_path.exists():
         payload = read_json(overrides_path)
         if isinstance(payload, dict):
@@ -132,6 +132,7 @@ def generate_event_review(paths: SongPaths, machine_payload: dict) -> dict[str, 
     machine_path = paths.artifact("event_inference", "events.machine.json")
     overrides_payload, overrides_path = _load_or_create_overrides(paths, machine_path)
     merged_payload = apply_event_overrides(machine_payload, overrides_payload)
+    merged_payload.setdefault("generated_from", {})["override_file"] = str(overrides_path)
 
     review_rows = []
     for event in machine_payload.get("events", []):
@@ -186,7 +187,7 @@ def generate_event_review(paths: SongPaths, machine_payload: dict) -> dict[str, 
             for event in merged_payload.get("events", [])
         ],
     }
-    review_json_path = paths.song_output_dir / "song_events.review.json"
+    review_json_path = paths.review_json_path
     write_json(review_json_path, review_payload)
 
     md_lines = [
@@ -203,7 +204,8 @@ def generate_event_review(paths: SongPaths, machine_payload: dict) -> dict[str, 
         md_lines.append(
             f"- {row['event_id']}: {row['type']} {row['start_time']:.2f}s-{row['end_time']:.2f}s confidence={row['confidence']:.2f} band={row['confidence_band']} ambiguous={row['ambiguous']}"
         )
-    review_md_path = paths.song_output_dir / "song_events.review.md"
+    review_md_path = paths.review_md_path
+    ensure_directory(paths.song_validation_dir)
     review_md_path.write_text("\n".join(md_lines).rstrip() + "\n", encoding="utf-8")
 
     return {

@@ -132,6 +132,30 @@ Stores event-specific benchmark status and output-surface checks for the Epic 5 
 
 Primary source story: EPIC 5.7.
 
+### `validation/song_events.review.json`
+
+Stores the reviewed event payload used for human review without expanding the UI-facing `data/output/<Song - Artist>/` contract.
+
+Primary source story: EPIC 5.6.
+
+### `validation/song_events.review.md`
+
+Stores the human-readable markdown companion to `validation/song_events.review.json`.
+
+Primary source story: EPIC 5.6.
+
+### `validation/song_events.overrides.json`
+
+Stores persistent user-authored review operations that are re-applied when the reviewed event payload is regenerated.
+
+Primary source story: EPIC 5.6.
+
+### `validation/song_event_timeline.md`
+
+Stores the human-readable markdown companion to the compact UI-facing event timeline JSON.
+
+Primary source story: EPIC 5.8.
+
 ### `info.json`
 
 Stores canonical song metadata and references to major generated files. This file is written to `data/output/<Song - Artist>/info.json`.
@@ -139,6 +163,8 @@ Stores canonical song metadata and references to major generated files. This fil
 Expected top-level metadata fields are `song_name`, `bpm`, and `duration`, with file references grouped under `artifacts`, `generated_from`, and `outputs`.
 
 ## Consolidated Output Files
+
+`data/output/<Song - Artist>/` is a stable UI contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`. `lighting_score.md` is the only markdown file allowed there. Do not add or remove files from this directory unless a UI contract change makes that strictly required.
 
 ### `data/output/<Song - Artist>/beats.json`
 
@@ -156,23 +182,15 @@ Expected fields per row are `start`, `end`, `label`, `description`, and `hints`,
 
 Stores the editable merged section hints consumed by `lighting_score.md`, combining regenerated inference-authored hints with preserved user-authored hints.
 
-### `data/output/<Song - Artist>/song_events.review.json`
-
-Stores the reviewed event payload that merges machine-generated events with any preserved user review decisions.
-
-Primary source story: EPIC 5.6.
-
-### `data/output/<Song - Artist>/song_events.overrides.json`
-
-Stores persistent user-authored event overrides that are re-applied when the pipeline regenerates the reviewed event set.
-
-Primary source story: EPIC 5.6.
-
 ### `data/output/<Song - Artist>/song_event_timeline.json`
 
-Stores the compact reviewed event timeline exported for downstream lighting logic and prompt-friendly consumption.
+Stores the compact reviewed event timeline exported for downstream lighting logic and prompt-friendly consumption. Each inferred entry should carry an explicit `created_by` value in the form `analyzer_{module/algorithm/model}`.
 
 Primary source story: EPIC 5.8.
+
+### `data/output/<Song - Artist>/lighting_score.md`
+
+Stores the final human-readable lighting design document. This is the only markdown file allowed under `data/output/<Song - Artist>/`.
 
 ## Unified Artifact
 

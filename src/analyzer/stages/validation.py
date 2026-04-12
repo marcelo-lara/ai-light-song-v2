@@ -67,9 +67,9 @@ def build_validation_report(
     timeline_index_path = paths.artifact("event_inference", "timeline_index.json")
     rule_candidates_path = paths.artifact("event_inference", "rule_candidates.json")
     machine_events_path = paths.artifact("event_inference", "events.machine.json")
-    event_review_path = paths.song_output_dir / "song_events.review.json"
-    event_overrides_path = paths.song_output_dir / "song_events.overrides.json"
-    event_timeline_path = paths.song_output_dir / "song_event_timeline.json"
+    event_review_path = paths.review_json_path
+    event_overrides_path = paths.overrides_path
+    event_timeline_path = paths.timeline_output_path
     event_benchmark_path = paths.artifact("validation", "event_benchmark.json")
     patterns_path = paths.artifact("layer_d_patterns.json")
     symbolic_path = paths.artifact("layer_b_symbolic.json")

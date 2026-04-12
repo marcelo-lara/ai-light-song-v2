@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -22,6 +23,7 @@ class EventReviewTests(unittest.TestCase):
                 {
                     "id": "machine_drop_001",
                     "type": "drop",
+                    "created_by": "analyzer_event_classifier",
                     "start_time": 1.0,
                     "end_time": 2.0,
                     "confidence": 0.8,
@@ -40,6 +42,7 @@ class EventReviewTests(unittest.TestCase):
         merged = apply_event_overrides(machine_payload, overrides_payload)
         self.assertEqual(merged["events"][0]["type"], "drop_punch")
         self.assertEqual(merged["events"][0]["human_override"]["status"], "confirmed")
+        self.assertEqual(merged["events"][0]["created_by"], "analyzer_event_classifier")
 
     def test_generate_event_review_writes_outputs(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -63,6 +66,7 @@ class EventReviewTests(unittest.TestCase):
                     {
                         "id": "machine_hook_phrase_001",
                         "type": "hook_phrase",
+                        "created_by": "analyzer_phrase_classifier",
                         "start_time": 1.0,
                         "end_time": 2.0,
                         "confidence": 0.61,
@@ -74,9 +78,16 @@ class EventReviewTests(unittest.TestCase):
                 ],
             }
             result = generate_event_review(paths, machine_payload)
-            self.assertTrue(Path(result["review_json"]).exists())
-            self.assertTrue(Path(result["review_md"]).exists())
-            self.assertTrue(Path(result["overrides"]).exists())
+            self.assertEqual(Path(result["review_json"]), paths.review_json_path)
+            self.assertEqual(Path(result["review_md"]), paths.review_md_path)
+            self.assertEqual(Path(result["overrides"]), paths.overrides_path)
+            self.assertTrue(paths.review_json_path.exists())
+            self.assertTrue(paths.review_md_path.exists())
+            self.assertTrue(paths.overrides_path.exists())
+            self.assertIn(str(paths.song_validation_dir), result["review_json"])
+
+            payload = json.loads(paths.review_json_path.read_text(encoding="utf-8"))
+            self.assertEqual(payload["generated_from"]["dependencies"]["overrides_file"], str(paths.overrides_path))
 
 
 if __name__ == "__main__":
