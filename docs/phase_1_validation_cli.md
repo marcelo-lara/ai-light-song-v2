@@ -84,6 +84,7 @@ The current batch implementation isolates each song run in a subprocess and reus
 - `--artifacts-root`: optional root directory where inferred outputs are written. Defaults to `/data/artifacts`.
 - `--reference-root`: optional root directory for validation-only reference files. Defaults to `/data/reference`. If the directory or files are missing, inference must still run and validation for those targets is skipped.
 - `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `sections`, `energy`, `patterns`, `events`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. If that strict Story 1.2 check fails and reference values exist, the pipeline preserves the inferred beat grid separately and promotes a canonical reference-derived beat grid for downstream phases. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target validates the Epic 5 event chain across `event_inference/`, review outputs, timeline exports, and benchmark metadata.
+- when `data/reference/<Song - Artist>/human/human_hints.json` exists, the analyzer also writes review-only alignment files under `data/artifacts/<Song - Artist>/validation/` that compare those hint windows against generated sections, events, patterns, and harmonic events. These files aid issue triage and review; they do not replace generated outputs.
 - machine-readable and markdown validation reports are always written automatically under `data/artifacts/<Song - Artist>/validation/` as `phase_1_report.json` and `phase_1_report.md`.
 - `--fail-on-mismatch`: optional flag causing the command to exit non-zero when validation thresholds are missed.
 - `--beat-tolerance-seconds`: optional float for beat-timestamp comparison tolerance. The phase-1 default is `0.10` seconds.
@@ -119,6 +120,9 @@ At minimum:
 - a validation report such as:
   - `data/artifacts/<Song - Artist>/validation/phase_1_report.json`
   - or `data/artifacts/<Song - Artist>/validation/phase_1_report.md`
+- when human hints exist, companion review files such as:
+  - `data/artifacts/<Song - Artist>/validation/human_hints_alignment.json`
+  - `data/artifacts/<Song - Artist>/validation/human_hints_alignment.md`
 
 ## Exit Codes
 
@@ -146,8 +150,11 @@ At minimum:
 - tool versions or model versions used
 - generated artifact paths
 - beat comparison summary
+- beat timing diagnostics that distinguish global offset, local drift, and the reference beat interval used for diagnosis
 - chord comparison summary
+- chord miss attribution that distinguishes timing-overlap failures from label mismatches when reference chords are available
 - section comparison summary
+- section boundary timing diagnostics that highlight snap-like offsets in beat units when reference beat annotations are available
 - energy-layer internal consistency summary
 - pattern-layer internal consistency summary
 - event-layer internal consistency summary, including review and timeline export checks
@@ -181,19 +188,45 @@ At minimum:
       "status": "passed",
       "matched": 412,
       "mismatched": 10,
-      "match_ratio": 0.98
+      "match_ratio": 0.98,
+      "diagnostics": {
+        "global_offset_seconds": 0.012,
+        "global_offset_direction": "late",
+        "global_offset_present": false,
+        "mean_absolute_delta_seconds": 0.024,
+        "start_window_median_seconds": 0.008,
+        "end_window_median_seconds": 0.014,
+        "local_drift_seconds": 0.006,
+        "local_drift_present": false,
+        "residual_spread_seconds": 0.031,
+        "reference_beat_interval_seconds": 0.48
+      }
     },
     "chords": {
       "status": "passed",
       "matched": 42,
       "mismatched": 5,
-      "match_ratio": 0.89
+      "match_ratio": 0.89,
+      "diagnostics": {
+        "matched_event_count": 42,
+        "timing_overlap_failure_count": 2,
+        "label_mismatch_count": 3,
+        "no_reference_overlap_count": 0,
+        "median_overlap_ratio": 0.91
+      }
     },
     "sections": {
       "status": "passed",
       "matched": 7,
       "mismatched": 0,
-      "match_ratio": 1.0
+      "match_ratio": 1.0,
+      "diagnostics": {
+        "boundary_offset_seconds": 0.0,
+        "boundary_offset_direction": "aligned",
+        "reference_beat_interval_seconds": 0.48,
+        "snap_like_boundary_count": 0,
+        "dominant_snap_multiple_beats": null
+      }
     },
     "events": {
       "status": "passed",

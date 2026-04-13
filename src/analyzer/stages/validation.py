@@ -4,6 +4,7 @@ from dataclasses import asdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from statistics import median
 
 from analyzer.exceptions import AnalysisError
 
@@ -23,6 +24,7 @@ class ValidationResult:
     match_ratio: float | None
     details: list[dict]
     reference_file: str | None
+    diagnostics: dict | None = None
 
 
 def normalize_chord_label(label: str | None) -> str:
@@ -201,6 +203,12 @@ def write_validation_markdown(report: dict, report_md: Path) -> None:
         lines.append(f"Mismatched: {payload['mismatched']}")
         if payload["match_ratio"] is not None:
             lines.append(f"Match ratio: {payload['match_ratio']:.3f}")
+        diagnostics = payload.get("diagnostics") or {}
+        if diagnostics:
+            lines.append("")
+            lines.append("Diagnostics:")
+            for key, value in diagnostics.items():
+                lines.append(f"- {key}: {value}")
         details = payload.get("details", [])
         if details:
             lines.append("")
@@ -232,7 +240,145 @@ def write_validation_markdown(report: dict, report_md: Path) -> None:
 
 
 def skipped_result() -> ValidationResult:
-    return ValidationResult(status="skipped", matched=0, mismatched=0, match_ratio=None, details=[], reference_file=None)
+    return ValidationResult(status="skipped", matched=0, mismatched=0, match_ratio=None, details=[], reference_file=None, diagnostics=None)
+
+
+def _median(values: list[float]) -> float | None:
+    if not values:
+        return None
+    return float(median(values))
+
+
+def _mean_abs(values: list[float]) -> float | None:
+    if not values:
+        return None
+    return sum(abs(value) for value in values) / len(values)
+
+
+def _round_or_none(value: float | None, digits: int = 6) -> float | None:
+    if value is None:
+        return None
+    return round(value, digits)
+
+
+def _timing_direction(delta_seconds: float | None, tolerance_seconds: float) -> str:
+    if delta_seconds is None or abs(delta_seconds) <= tolerance_seconds:
+        return "aligned"
+    if delta_seconds > 0:
+        return "late"
+    return "early"
+
+
+def _estimate_reference_beat_interval(reference_times: list[float]) -> float | None:
+    if len(reference_times) < 2:
+        return None
+    intervals = [
+        later - earlier
+        for earlier, later in zip(reference_times, reference_times[1:])
+        if later > earlier
+    ]
+    return _median(intervals)
+
+
+def _window(values: list[float], size: int) -> list[float]:
+    if len(values) <= size:
+        return values
+    return values[:size]
+
+
+def _build_beat_timing_diagnostics(
+    details: list[dict],
+    tolerance_seconds: float,
+    reference_times: list[float],
+) -> dict | None:
+    deltas = [float(detail["delta_seconds"]) for detail in details if "delta_seconds" in detail]
+    if not deltas:
+        return None
+
+    if len(deltas) <= 6:
+        window_size = max(2, len(deltas) // 2)
+    else:
+        window_size = max(3, min(16, len(deltas) // 4))
+    start_window = _window(deltas, window_size)
+    end_window = deltas[-window_size:]
+    median_delta = _median(deltas)
+    start_median = _median(start_window)
+    end_median = _median(end_window)
+    reference_beat_interval = _estimate_reference_beat_interval(reference_times)
+    residuals = [delta - (median_delta or 0.0) for delta in deltas]
+    residual_spread = max(abs(value) for value in residuals) if residuals else None
+    drift_span = None if start_median is None or end_median is None else end_median - start_median
+
+    global_offset_present = median_delta is not None and abs(median_delta) > tolerance_seconds
+    local_drift_present = drift_span is not None and abs(drift_span) > tolerance_seconds
+
+    diagnostics = {
+        "global_offset_seconds": _round_or_none(median_delta),
+        "global_offset_direction": _timing_direction(median_delta, tolerance_seconds),
+        "global_offset_present": global_offset_present,
+        "mean_absolute_delta_seconds": _round_or_none(_mean_abs(deltas)),
+        "start_window_median_seconds": _round_or_none(start_median),
+        "end_window_median_seconds": _round_or_none(end_median),
+        "local_drift_seconds": _round_or_none(drift_span),
+        "local_drift_present": local_drift_present,
+        "residual_spread_seconds": _round_or_none(residual_spread),
+        "reference_beat_interval_seconds": _round_or_none(reference_beat_interval),
+    }
+    return diagnostics
+
+
+def _build_section_timing_diagnostics(
+    details: list[dict],
+    tolerance_seconds: float,
+    reference_times: list[float],
+) -> dict | None:
+    matched_deltas = [
+        float(detail["delta_seconds"])
+        for detail in details
+        if detail.get("match_type") == "matched_boundary" and detail.get("delta_seconds") is not None
+    ]
+    if not matched_deltas:
+        return None
+
+    reference_beat_interval = _estimate_reference_beat_interval(reference_times)
+    snapped_boundary_count = 0
+    dominant_snap_multiple = None
+    if reference_beat_interval and reference_beat_interval > 0:
+        snap_multiples = [round(delta / reference_beat_interval) for delta in matched_deltas]
+        non_zero_snap_multiples = [multiple for multiple in snap_multiples if multiple != 0]
+        for delta in matched_deltas:
+            multiple = round(delta / reference_beat_interval)
+            snapped_seconds = multiple * reference_beat_interval
+            if multiple != 0 and abs(delta - snapped_seconds) <= tolerance_seconds:
+                snapped_boundary_count += 1
+        if non_zero_snap_multiples:
+            dominant_snap_multiple = max(set(non_zero_snap_multiples), key=non_zero_snap_multiples.count)
+
+    median_delta = _median(matched_deltas)
+    diagnostics = {
+        "boundary_offset_seconds": _round_or_none(median_delta),
+        "boundary_offset_direction": _timing_direction(median_delta, 1e-6),
+        "reference_beat_interval_seconds": _round_or_none(reference_beat_interval),
+        "snap_like_boundary_count": snapped_boundary_count,
+        "dominant_snap_multiple_beats": dominant_snap_multiple,
+    }
+    return diagnostics
+
+
+def _build_chord_diagnostics(details: list[dict]) -> dict | None:
+    mismatch_reasons: dict[str, int] = {}
+    overlap_ratios = [float(detail["overlap_ratio"]) for detail in details if detail.get("overlap_ratio") is not None]
+    for detail in details:
+        reason = detail.get("result") or "unknown"
+        mismatch_reasons[reason] = mismatch_reasons.get(reason, 0) + 1
+    diagnostics = {
+        "matched_event_count": mismatch_reasons.get("matched", 0),
+        "timing_overlap_failure_count": mismatch_reasons.get("timing_overlap_failure", 0),
+        "label_mismatch_count": mismatch_reasons.get("label_mismatch", 0),
+        "no_reference_overlap_count": mismatch_reasons.get("no_reference_overlap", 0),
+        "median_overlap_ratio": _round_or_none(_median(overlap_ratios)),
+    }
+    return diagnostics
 
 
 def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> ValidationResult:
@@ -279,6 +425,7 @@ def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> 
     total = matched + mismatched
     ratio = matched / total if total else None
     status = "passed" if ratio is None or ratio >= BEAT_MATCH_RATIO_THRESHOLD else "failed"
+    diagnostics = _build_beat_timing_diagnostics(details, tolerance_seconds, reference_times)
     return ValidationResult(
         status=status,
         matched=matched,
@@ -286,6 +433,7 @@ def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> 
         match_ratio=ratio,
         details=details,
         reference_file=str(reference_path),
+        diagnostics=diagnostics,
     )
 
 
@@ -301,6 +449,7 @@ def _result_from_checks(checks: list[dict], reference_file: str | None = None) -
         match_ratio=ratio,
         details=checks,
         reference_file=reference_file,
+        diagnostics=None,
     )
 
 
@@ -620,19 +769,33 @@ def _validate_chords(paths: SongPaths, harmonic: dict, chord_min_overlap: float)
             if ratio > best_overlap:
                 best_overlap = ratio
                 overlap_match = reference
-        if overlap_match and best_overlap >= chord_min_overlap and normalize_chord_label(event["chord"]) == normalize_chord_label(overlap_match["chord"]):
-            matched += 1
-        else:
+        normalized_inferred = normalize_chord_label(event["chord"])
+        normalized_reference = normalize_chord_label(overlap_match["chord"]) if overlap_match else None
+        if overlap_match is None:
+            result = "no_reference_overlap"
             mismatched += 1
+        elif best_overlap < chord_min_overlap:
+            result = "timing_overlap_failure"
+            mismatched += 1
+        elif normalized_inferred != normalized_reference:
+            result = "label_mismatch"
+            mismatched += 1
+        else:
+            result = "matched"
+            matched += 1
         details.append({
             "inferred": event,
             "reference": overlap_match,
+            "inferred_label_normalized": normalized_inferred,
+            "reference_label_normalized": normalized_reference,
             "overlap_ratio": round(best_overlap, 6),
+            "result": result,
         })
 
     total = matched + mismatched
     ratio = matched / total if total else None
     status = "passed" if ratio is None or ratio >= 0.6 else "failed"
+    diagnostics = _build_chord_diagnostics(details)
     return ValidationResult(
         status=status,
         matched=matched,
@@ -640,6 +803,7 @@ def _validate_chords(paths: SongPaths, harmonic: dict, chord_min_overlap: float)
         match_ratio=ratio,
         details=details,
         reference_file=str(reference_path),
+        diagnostics=diagnostics,
     )
 
 
@@ -649,6 +813,9 @@ def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: floa
         return skipped_result()
 
     reference_rows = read_json(reference_path)
+    reference_chords_path = paths.reference("moises", "chords.json")
+    reference_chord_rows = read_json(reference_chords_path) if reference_chords_path and reference_chords_path.exists() else []
+    reference_times = sorted({round(float(row["curr_beat_time"]), 6) for row in reference_chord_rows if "curr_beat_time" in row})
     inferred_sections = sections.get("sections", [])
     inferred_boundaries = [
         {
@@ -736,6 +903,7 @@ def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: floa
     denominator = max(len(inferred_boundaries), len(reference_boundaries))
     ratio = matched / denominator if denominator else None
     status = "passed" if ratio is None or ratio >= 0.75 else "failed"
+    diagnostics = _build_section_timing_diagnostics(details, tolerance_seconds, reference_times)
     return ValidationResult(
         status=status,
         matched=matched,
@@ -743,4 +911,5 @@ def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: floa
         match_ratio=ratio,
         details=details,
         reference_file=str(reference_path),
+        diagnostics=diagnostics,
     )

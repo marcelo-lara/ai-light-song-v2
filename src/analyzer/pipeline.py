@@ -16,6 +16,7 @@ from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.genre import classify_genre
 from analyzer.stages.harmonic import extract_hpcp_and_chords
+from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.light_design import generate_lighting_score
 from analyzer.stages.lighting import generate_lighting_events
@@ -81,6 +82,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
         unified = assemble_music_feature_layers(paths, timing, harmonic, symbolic, energy, patterns, sections)
         lighting = generate_lighting_events(paths)
         lighting_score = generate_lighting_score(paths)
+        human_hint_alignment = build_human_hints_alignment(paths)
 
         info_payload = {
             "schema_version": SCHEMA_VERSION,
@@ -105,6 +107,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
                 "event_overrides": str(paths.overrides_path),
                 "event_timeline_markdown": str(paths.timeline_md_path),
                 "event_benchmark": str(paths.artifact("validation", "event_benchmark.json")),
+                "human_hints_alignment": human_hint_alignment["json_path"] if human_hint_alignment else None,
+                "human_hints_alignment_markdown": human_hint_alignment["markdown_path"] if human_hint_alignment else None,
                 "sections": str(paths.artifact("section_segmentation", "sections.json")),
                 "patterns_layer": str(paths.artifact("layer_d_patterns.json")),
                 "pattern_mining": str(paths.artifact("pattern_mining", "chord_patterns.json")),
@@ -134,6 +138,10 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             chord_min_overlap=config.chord_min_overlap,
             fail_on_mismatch=config.fail_on_mismatch,
         )
+        if human_hint_alignment:
+            report["generated_artifacts"]["human_hints_alignment_file"] = human_hint_alignment["json_path"]
+            report["generated_artifacts"]["human_hints_alignment_markdown"] = human_hint_alignment["markdown_path"]
+            report["notes"].append("Human hint alignment review files compare narrative hint windows against generated sections, events, patterns, and harmonic events when human hints are available.")
         write_validation_report(report, config.report_json)
         write_validation_markdown(report, config.report_md)
         return exit_code
