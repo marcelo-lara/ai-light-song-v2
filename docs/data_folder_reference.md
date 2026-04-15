@@ -49,6 +49,8 @@ data/
           vocals.json
           vocals.mid
         drum_events.json
+        omnizart/
+          drums.mid
         hints.json
         validation.json
       validation/
@@ -342,6 +344,17 @@ LLM hint:
 - See: `events[].time`, `event_type`, `confidence`, and the `summary` counts.
 - Use: inspect whether kick, snare, and hat placements support the intended rhythmic reading of the song.
 - Avoid: treating this phase-1 review artifact as a full replacement for the canonical symbolic layer.
+
+### `data/artifacts/<Song - Artist>/symbolic_transcription/omnizart/drums.mid`
+
+Summary: raw Omnizart drum-transcription MIDI cache for the isolated drums stem.
+
+Why it matters: first review surface when the normalized `drum_events.json` counts or labels look suspicious.
+
+LLM hint:
+- See: GM drum note pitches such as 35, 38, and 42 to confirm kick, snare, and hat placements.
+- Use: compare raw Omnizart output against the normalized review artifact when unsupported or unresolved events appear.
+- Avoid: treating the raw MIDI as the final review contract; `drum_events.json` is the normalized producer-scoped artifact.
 
 ### `data/artifacts/<Song - Artist>/symbolic_transcription/basic_pitch/bass.json`
 

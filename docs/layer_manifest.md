@@ -125,6 +125,10 @@ Stores producer-scoped raw Basic Pitch note caches, model-output summaries, and 
 
 Stores the producer-scoped kick, snare, and hat review artifact from Story 3.2 for rhythmic inspection and debugging.
 
+### `symbolic_transcription/omnizart/drums.mid`
+
+Stores the raw Omnizart drum MIDI cache used to build Story 3.2 review rows.
+
 ### `symbolic_transcription/validation.json`
 
 Stores source-level symbolic validation results and promotion decisions used to assemble the final `layer_b_symbolic.json` artifact from all analyzed stems and the full mix.
