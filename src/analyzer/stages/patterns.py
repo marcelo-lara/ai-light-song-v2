@@ -7,6 +7,12 @@ from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
 
 
+MIN_PATTERN_BARS = 2
+PRIORITY_PATTERN_BARS = 4
+MAX_PATTERN_BARS = 24
+NOISE_TOLERANCE_BEATS = 3
+
+
 def _normalize_chord(label: str | None) -> str | None:
     if label is None:
         return None
@@ -103,6 +109,50 @@ def _display_window(window_bars: list[dict]) -> str:
     return "|".join(_display_bar(bar["beats"]) for bar in window_bars)
 
 
+def _display_bar_sequence(labels: list[str]) -> str:
+    return "|".join(labels)
+
+
+def _display_compact_progression(labels: list[str]) -> str:
+    return "→".join(labels)
+
+
+def _collapse_adjacent_labels(labels: list[str]) -> list[str]:
+    collapsed: list[str] = []
+    previous = object()
+    for label in labels:
+        if label != previous:
+            collapsed.append(label)
+            previous = label
+    return collapsed
+
+
+def _shortest_repeating_unit(labels: list[str]) -> list[str]:
+    if not labels:
+        return labels
+    for unit_length in range(1, (len(labels) // 2) + 1):
+        if len(labels) % unit_length != 0:
+            continue
+        unit = labels[:unit_length]
+        if unit * (len(labels) // unit_length) == labels:
+            return unit
+    return labels
+
+
+def _compact_progression_sequence(window_bars: list[dict]) -> str:
+    bar_labels = [_display_bar(bar["beats"]) for bar in window_bars]
+    repeated_unit = _shortest_repeating_unit(bar_labels)
+    collapsed_labels = _collapse_adjacent_labels(repeated_unit)
+    compact_labels = _shortest_repeating_unit(collapsed_labels)
+    return _display_compact_progression(compact_labels)
+
+
+def _pattern_sequence(window_bars: list[dict]) -> str:
+    bar_labels = [_display_bar(bar["beats"]) for bar in window_bars]
+    repeated_unit = _shortest_repeating_unit(bar_labels)
+    return _display_bar_sequence(repeated_unit)
+
+
 def _representative_window(occurrences: list[dict], bars: list[dict], window_length: int) -> list[dict]:
     sorted_occurrences = sorted(occurrences, key=lambda item: (int(item["mismatch_count"]), int(item["start_bar"])))
     representative: list[dict] = []
@@ -130,10 +180,32 @@ def _representative_window(occurrences: list[dict], bars: list[dict], window_len
     return representative
 
 
+def _search_lengths(bar_count: int) -> list[int]:
+    max_window_length = min(MAX_PATTERN_BARS, bar_count)
+    search_lengths: list[int] = []
+    if max_window_length >= PRIORITY_PATTERN_BARS:
+        search_lengths.append(PRIORITY_PATTERN_BARS)
+    for window_length in range(max_window_length, MIN_PATTERN_BARS - 1, -1):
+        if window_length != PRIORITY_PATTERN_BARS:
+            search_lengths.append(window_length)
+    return search_lengths
+
+
+def _candidate_score(window_length: int, occurrence_count: int, total_mismatch: int) -> int:
+    covered_bars = window_length * occurrence_count
+    return (
+        covered_bars * 1000
+        + (window_length * 10)
+        + occurrence_count
+        + (50 if window_length == PRIORITY_PATTERN_BARS else 0)
+        - (total_mismatch * 5)
+    )
+
+
 def _best_candidate(bars: list[dict], covered: set[int]) -> dict | None:
-    search_lengths = [4, 5, 6, 7, 8, 3, 2]
+    best: dict | None = None
+    search_lengths = _search_lengths(len(bars))
     for window_length in search_lengths:
-        best: dict | None = None
         for start_index in range(0, len(bars) - window_length + 1):
             window_bars = bars[start_index:start_index + window_length]
             window_bar_numbers = {int(bar["bar"]) for bar in window_bars}
@@ -149,7 +221,9 @@ def _best_candidate(bars: list[dict], covered: set[int]) -> dict | None:
                     "start_s": round(float(window_bars[0]["start_s"]), 6),
                     "end_s": round(float(window_bars[-1]["end_s"]), 6),
                     "mismatch_count": 0,
-                    "sequence": _display_window(window_bars),
+                    "sequence": _pattern_sequence(window_bars),
+                    "collapsed_sequence": _compact_progression_sequence(window_bars),
+                    "bar_sequence": _display_window(window_bars),
                 }
             ]
 
@@ -161,9 +235,9 @@ def _best_candidate(bars: list[dict], covered: set[int]) -> dict | None:
                 if candidate_bar_numbers & candidate_used_bars:
                     continue
                 mismatch_count = _window_mismatch_count(window_bars, candidate_bars)
-                if window_length == 2 and mismatch_count != 0:
+                if window_length == MIN_PATTERN_BARS and mismatch_count != 0:
                     continue
-                if window_length > 2 and mismatch_count > 3:
+                if window_length > MIN_PATTERN_BARS and mismatch_count > NOISE_TOLERANCE_BEATS:
                     continue
                 occurrences.append(
                     {
@@ -173,7 +247,9 @@ def _best_candidate(bars: list[dict], covered: set[int]) -> dict | None:
                         "start_s": round(float(candidate_bars[0]["start_s"]), 6),
                         "end_s": round(float(candidate_bars[-1]["end_s"]), 6),
                         "mismatch_count": mismatch_count,
-                        "sequence": _display_window(candidate_bars),
+                        "sequence": _pattern_sequence(candidate_bars),
+                        "collapsed_sequence": _compact_progression_sequence(candidate_bars),
+                        "bar_sequence": _display_window(candidate_bars),
                     }
                 )
                 candidate_used_bars.update(candidate_bar_numbers)
@@ -182,11 +258,7 @@ def _best_candidate(bars: list[dict], covered: set[int]) -> dict | None:
                 continue
 
             total_mismatch = sum(int(item["mismatch_count"]) for item in occurrences[1:])
-            score = (
-                len(occurrences) * window_length * 100
-                + (250 if window_length == 4 else 0)
-                - (total_mismatch * 5)
-            )
+            score = _candidate_score(window_length, len(occurrences), total_mismatch)
             candidate = {
                 "window_length": window_length,
                 "score": score,
@@ -194,10 +266,7 @@ def _best_candidate(bars: list[dict], covered: set[int]) -> dict | None:
             }
             if best is None or candidate["score"] > best["score"]:
                 best = candidate
-
-        if best is not None:
-            return best
-    return None
+    return best
 
 
 def extract_chord_patterns(paths: SongPaths, timing: dict, harmonic: dict) -> dict:
@@ -213,7 +282,9 @@ def extract_chord_patterns(paths: SongPaths, timing: dict, harmonic: dict) -> di
         window_length = int(candidate["window_length"])
         occurrences = sorted(candidate["occurrences"], key=lambda item: int(item["start_bar"]))
         representative = _representative_window(occurrences, bars, window_length)
-        sequence = _display_window(representative)
+        sequence = _pattern_sequence(representative)
+        collapsed_sequence = _compact_progression_sequence(representative)
+        bar_sequence = _display_window(representative)
         pattern_index = len(pattern_rows)
         pattern_id = f"pattern_{chr(ord('A') + pattern_index)}"
         pattern_rows.append(
@@ -222,6 +293,8 @@ def extract_chord_patterns(paths: SongPaths, timing: dict, harmonic: dict) -> di
                 "label": chr(ord('A') + pattern_index),
                 "bar_count": window_length,
                 "sequence": sequence,
+                "collapsed_sequence": collapsed_sequence,
+                "bar_sequence": bar_sequence,
                 "occurrence_count": len(occurrences),
                 "occurrences": [
                     {
@@ -231,6 +304,8 @@ def extract_chord_patterns(paths: SongPaths, timing: dict, harmonic: dict) -> di
                         "end_s": occurrence["end_s"],
                         "mismatch_count": int(occurrence["mismatch_count"]),
                         "sequence": occurrence["sequence"],
+                        "collapsed_sequence": occurrence["collapsed_sequence"],
+                        "bar_sequence": occurrence["bar_sequence"],
                     }
                     for occurrence in occurrences
                 ],
@@ -249,9 +324,9 @@ def extract_chord_patterns(paths: SongPaths, timing: dict, harmonic: dict) -> di
         },
         "pattern_count": len(pattern_rows),
         "settings": {
-            "priority_bars": 4,
-            "max_pattern_bars": 8,
-            "noise_tolerance_beats": 3,
+            "priority_bars": PRIORITY_PATTERN_BARS,
+            "max_pattern_bars": MAX_PATTERN_BARS,
+            "noise_tolerance_beats": NOISE_TOLERANCE_BEATS,
         },
         "patterns": pattern_rows,
     }

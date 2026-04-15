@@ -475,7 +475,7 @@ Summary: canonical repeated chord-pattern layer. Contains named pattern groups, 
 Why it matters: strongest source for structural callback logic based on repeated progression blocks.
 
 LLM hint:
-- See: `patterns[]`, `sequence`, `occurrence_count`, and `occurrences[]`.
+- See: `patterns[]`, repeated-unit `sequence`, collapsed `collapsed_sequence`, bar-resolved `bar_sequence`, `occurrence_count`, and `occurrences[]`.
 - Use: repeat or evolve looks when the same harmonic loop returns.
 - Use: escalate later occurrences of the same pattern rather than inventing unrelated scenes.
 - Use: align callback timing to `start_s` and `end_s`, not rough section labels.

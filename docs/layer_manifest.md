@@ -54,6 +54,7 @@ Primary source stories: EPIC 4.1 through EPIC 4.3.
 Contains repeated harmonic-pattern outputs such as:
 
 - pattern definitions
+- compact progression sequences
 - representative bar sequences
 - pattern occurrences
 - mismatch counts

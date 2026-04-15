@@ -11,6 +11,7 @@ from analyzer.exceptions import AnalysisError
 from analyzer.io import read_json, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
+from analyzer.stages.patterns import MAX_PATTERN_BARS, _build_bars, _build_beat_rows, _compact_progression_sequence, _display_window, _pattern_sequence
 
 
 BEAT_MATCH_RATIO_THRESHOLD = 0.80
@@ -28,6 +29,121 @@ class ValidationResult:
     details: list[dict]
     reference_file: str | None
     diagnostics: dict | None = None
+
+
+def _validate_bar_beat_window(
+    *,
+    start_bar: int,
+    start_beat: int,
+    end_bar: int,
+    end_beat: int,
+) -> None:
+    if start_beat not in {1, 2, 3, 4} or end_beat not in {1, 2, 3, 4}:
+        raise AnalysisError("Bar-window beats must be between 1 and 4")
+    if start_bar < 1 or end_bar < 1:
+        raise AnalysisError("Bar-window bars must be >= 1")
+    if (end_bar, end_beat) < (start_bar, start_beat):
+        raise AnalysisError("Bar-window end must not precede the start")
+
+
+def _flatten_window_beats(
+    bars_by_number: dict[int, dict],
+    *,
+    start_bar: int,
+    start_beat: int,
+    end_bar: int,
+    end_beat: int,
+) -> list[str | None]:
+    labels: list[str | None] = []
+    for bar_number in range(start_bar, end_bar + 1):
+        bar = bars_by_number.get(bar_number)
+        if bar is None:
+            raise AnalysisError(f"Bar {bar_number} is missing from the canonical timing grid")
+        beat_start = start_beat if bar_number == start_bar else 1
+        beat_end = end_beat if bar_number == end_bar else 4
+        labels.extend(bar["beats"][beat_start - 1:beat_end])
+    return labels
+
+
+def _window_display_rows(
+    bars_by_number: dict[int, dict],
+    *,
+    start_bar: int,
+    end_bar: int,
+) -> list[dict]:
+    return [bars_by_number[bar_number] for bar_number in range(start_bar, end_bar + 1)]
+
+
+def find_pattern_matches_for_bar_window(
+    patterns: dict,
+    timing: dict,
+    harmonic: dict,
+    *,
+    start_bar: int,
+    start_beat: int = 1,
+    end_bar: int,
+    end_beat: int = 4,
+) -> list[dict]:
+    _validate_bar_beat_window(
+        start_bar=start_bar,
+        start_beat=start_beat,
+        end_bar=end_bar,
+        end_beat=end_beat,
+    )
+
+    bars = _build_bars(_build_beat_rows(timing, harmonic), timing)
+    bars_by_number = {int(bar["bar"]): bar for bar in bars}
+    window_beats = _flatten_window_beats(
+        bars_by_number,
+        start_bar=start_bar,
+        start_beat=start_beat,
+        end_bar=end_bar,
+        end_beat=end_beat,
+    )
+    full_bar_window = start_beat == 1 and end_beat == 4
+    window_rows = _window_display_rows(bars_by_number, start_bar=start_bar, end_bar=end_bar) if full_bar_window else []
+
+    matches: list[dict] = []
+    for pattern in patterns.get("patterns", []):
+        for occurrence in pattern.get("occurrences", []):
+            occurrence_start_bar = int(occurrence.get("start_bar", 0))
+            occurrence_end_bar = int(occurrence.get("end_bar", 0))
+            if not (occurrence_start_bar <= start_bar <= end_bar <= occurrence_end_bar):
+                continue
+
+            occurrence_beats = _flatten_window_beats(
+                bars_by_number,
+                start_bar=occurrence_start_bar,
+                start_beat=1,
+                end_bar=occurrence_end_bar,
+                end_beat=4,
+            )
+            offset = ((start_bar - occurrence_start_bar) * 4) + (start_beat - 1)
+            window_length = ((end_bar - start_bar) * 4) + (end_beat - start_beat + 1)
+            candidate_beats = occurrence_beats[offset:offset + window_length]
+            if candidate_beats != window_beats:
+                continue
+
+            match_row = {
+                "pattern_id": pattern.get("id"),
+                "pattern_label": pattern.get("label"),
+                "pattern_sequence": pattern.get("sequence"),
+                "pattern_collapsed_sequence": pattern.get("collapsed_sequence"),
+                "occurrence_start_bar": occurrence_start_bar,
+                "occurrence_end_bar": occurrence_end_bar,
+                "window_start_bar": start_bar,
+                "window_start_beat": start_beat,
+                "window_end_bar": end_bar,
+                "window_end_beat": end_beat,
+                "contained": True,
+                "mismatch_count": occurrence.get("mismatch_count"),
+            }
+            if full_bar_window:
+                match_row["window_sequence"] = _pattern_sequence(window_rows)
+                match_row["window_collapsed_sequence"] = _compact_progression_sequence(window_rows)
+                match_row["window_bar_sequence"] = _display_window(window_rows)
+            matches.append(match_row)
+    return matches
 
 
 def normalize_chord_label(label: str | None) -> str:
@@ -606,7 +722,7 @@ def _validate_patterns_layer(patterns: dict, timing: dict) -> ValidationResult:
         bar_count = int(pattern.get("bar_count", 0))
         checks.append({
             "check": f"{pattern_id}_bar_count_range",
-            "passed": 2 <= bar_count <= 8,
+            "passed": 2 <= bar_count <= MAX_PATTERN_BARS,
             "bar_count": bar_count,
         })
         checks.append({
