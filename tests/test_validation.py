@@ -274,8 +274,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         self.assertEqual(matches[0]["pattern_id"], "pattern_A")
         self.assertEqual(matches[0]["occurrence_start_bar"], 9)
         self.assertEqual(matches[0]["occurrence_end_bar"], 16)
-        self.assertEqual(matches[0]["window_sequence"], "C#|C#|D#|D#|Fm|Fm|D#|D#")
-        self.assertEqual(matches[0]["window_collapsed_sequence"], "C#→D#→Fm→D#")
+        self.assertEqual(matches[0]["window_sequence"], "C#→D#→Fm→D#")
         self.assertEqual(matches[0]["window_bar_sequence"], "C#|C#|D#|D#|Fm|Fm|D#|D#")
 
 

@@ -11,7 +11,7 @@ from analyzer.exceptions import AnalysisError
 from analyzer.io import read_json, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
-from analyzer.stages.patterns import MAX_PATTERN_BARS, _build_bars, _build_beat_rows, _compact_progression_sequence, _display_window, _pattern_sequence
+from analyzer.stages.patterns import MAX_PATTERN_BARS, _build_bars, _build_beat_rows, _display_window, _pattern_sequence
 
 
 BEAT_MATCH_RATIO_THRESHOLD = 0.80
@@ -128,7 +128,6 @@ def find_pattern_matches_for_bar_window(
                 "pattern_id": pattern.get("id"),
                 "pattern_label": pattern.get("label"),
                 "pattern_sequence": pattern.get("sequence"),
-                "pattern_collapsed_sequence": pattern.get("collapsed_sequence"),
                 "occurrence_start_bar": occurrence_start_bar,
                 "occurrence_end_bar": occurrence_end_bar,
                 "window_start_bar": start_bar,
@@ -140,7 +139,6 @@ def find_pattern_matches_for_bar_window(
             }
             if full_bar_window:
                 match_row["window_sequence"] = _pattern_sequence(window_rows)
-                match_row["window_collapsed_sequence"] = _compact_progression_sequence(window_rows)
                 match_row["window_bar_sequence"] = _display_window(window_rows)
             matches.append(match_row)
     return matches

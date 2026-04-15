@@ -113,18 +113,25 @@ def _display_bar_sequence(labels: list[str]) -> str:
     return "|".join(labels)
 
 
-def _display_compact_progression(labels: list[str]) -> str:
-    return "→".join(labels)
+def _display_sequence(labels: list[str]) -> str:
+    if not labels:
+        return ""
 
-
-def _collapse_adjacent_labels(labels: list[str]) -> list[str]:
-    collapsed: list[str] = []
-    previous = object()
+    runs: list[tuple[str, int]] = []
     for label in labels:
-        if label != previous:
-            collapsed.append(label)
-            previous = label
-    return collapsed
+        if runs and runs[-1][0] == label:
+            previous_label, previous_count = runs[-1]
+            runs[-1] = (previous_label, previous_count + 1)
+            continue
+        runs.append((label, 1))
+
+    parts = [runs[0][0]]
+    for index in range(1, len(runs)):
+        previous_count = runs[index - 1][1]
+        label, count = runs[index]
+        delimiter = "→" if previous_count > 1 or count > 1 else "|"
+        parts.append(f"{delimiter}{label}")
+    return "".join(parts)
 
 
 def _shortest_repeating_unit(labels: list[str]) -> list[str]:
@@ -145,18 +152,10 @@ def _repeating_unit_length(window_bars: list[dict]) -> int:
     return len(repeated_unit) if repeated_unit else len(window_bars)
 
 
-def _compact_progression_sequence(window_bars: list[dict]) -> str:
-    bar_labels = [_display_bar(bar["beats"]) for bar in window_bars]
-    repeated_unit = _shortest_repeating_unit(bar_labels)
-    collapsed_labels = _collapse_adjacent_labels(repeated_unit)
-    compact_labels = _shortest_repeating_unit(collapsed_labels)
-    return _display_compact_progression(compact_labels)
-
-
 def _pattern_sequence(window_bars: list[dict]) -> str:
     bar_labels = [_display_bar(bar["beats"]) for bar in window_bars]
     repeated_unit = _shortest_repeating_unit(bar_labels)
-    return _display_bar_sequence(repeated_unit)
+    return _display_sequence(repeated_unit)
 
 
 def _reduce_window_to_repeating_unit(window_bars: list[dict]) -> list[dict]:
@@ -180,7 +179,6 @@ def _split_occurrences_by_repeating_unit(
                 "end_s": occurrence["end_s"],
                 "mismatch_count": int(occurrence["mismatch_count"]),
                 "sequence": occurrence["sequence"],
-                "collapsed_sequence": occurrence["collapsed_sequence"],
                 "bar_sequence": occurrence["bar_sequence"],
             }
             for occurrence in occurrences
@@ -200,7 +198,6 @@ def _split_occurrences_by_repeating_unit(
                     "end_s": round(float(chunk_bars[-1]["end_s"]), 6),
                     "mismatch_count": _window_mismatch_count(representative_unit, chunk_bars),
                     "sequence": _pattern_sequence(chunk_bars),
-                    "collapsed_sequence": _compact_progression_sequence(chunk_bars),
                     "bar_sequence": _display_window(chunk_bars),
                 }
             )
@@ -276,7 +273,6 @@ def _best_candidate(bars: list[dict], covered: set[int]) -> dict | None:
                     "end_s": round(float(window_bars[-1]["end_s"]), 6),
                     "mismatch_count": 0,
                     "sequence": _pattern_sequence(window_bars),
-                    "collapsed_sequence": _compact_progression_sequence(window_bars),
                     "bar_sequence": _display_window(window_bars),
                 }
             ]
@@ -302,7 +298,6 @@ def _best_candidate(bars: list[dict], covered: set[int]) -> dict | None:
                         "end_s": round(float(candidate_bars[-1]["end_s"]), 6),
                         "mismatch_count": mismatch_count,
                         "sequence": _pattern_sequence(candidate_bars),
-                        "collapsed_sequence": _compact_progression_sequence(candidate_bars),
                         "bar_sequence": _display_window(candidate_bars),
                     }
                 )
@@ -339,7 +334,6 @@ def extract_chord_patterns(paths: SongPaths, timing: dict, harmonic: dict) -> di
         representative_unit = _reduce_window_to_repeating_unit(representative)
         occurrences = _split_occurrences_by_repeating_unit(raw_occurrences, bars, window_length, representative_unit)
         sequence = _pattern_sequence(representative_unit)
-        collapsed_sequence = _compact_progression_sequence(representative_unit)
         bar_sequence = _display_window(representative)
         pattern_index = len(pattern_rows)
         pattern_id = f"pattern_{chr(ord('A') + pattern_index)}"
@@ -349,7 +343,6 @@ def extract_chord_patterns(paths: SongPaths, timing: dict, harmonic: dict) -> di
                 "label": chr(ord('A') + pattern_index),
                 "bar_count": len(representative_unit),
                 "sequence": sequence,
-                "collapsed_sequence": collapsed_sequence,
                 "bar_sequence": bar_sequence,
                 "occurrence_count": len(occurrences),
                 "occurrences": [
@@ -360,7 +353,6 @@ def extract_chord_patterns(paths: SongPaths, timing: dict, harmonic: dict) -> di
                         "end_s": occurrence["end_s"],
                         "mismatch_count": int(occurrence["mismatch_count"]),
                         "sequence": occurrence["sequence"],
-                        "collapsed_sequence": occurrence["collapsed_sequence"],
                         "bar_sequence": occurrence["bar_sequence"],
                     }
                     for occurrence in occurrences
