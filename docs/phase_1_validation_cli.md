@@ -83,7 +83,9 @@ The current batch implementation isolates each song run in a subprocess and reus
 - `--songs-root`: optional directory override for batch mode. Defaults to the sibling `songs/` directory next to `--artifacts-root`.
 - `--artifacts-root`: optional root directory where inferred outputs are written. Defaults to `/data/artifacts`.
 - `--reference-root`: optional root directory for validation-only reference files. Defaults to `/data/reference`. If the directory or files are missing, inference must still run and validation for those targets is skipped.
-- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `sections`, `energy`, `patterns`, `events`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. If that strict Story 1.2 check fails and reference values exist, the pipeline preserves the inferred beat grid separately and promotes a canonical reference-derived beat grid for downstream phases. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target validates the Epic 5 event chain across `event_inference/`, review outputs, timeline exports, and benchmark metadata.
+- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `sections`, `energy`, `patterns`, `events`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. When that Moises reference file exists, the pipeline preserves the inferred beat grid separately and then promotes a canonical reference-derived beat grid for all downstream phases. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target validates the Epic 5 event chain across `event_inference/`, review outputs, timeline exports, and benchmark metadata.
+- chord validation should use a stricter gate than the historical phase-1 default: materially low match ratio, persistent label mismatches, or repeated timing-overlap failures should count as a failed inferred harmonic result even if some overlap remains.
+- when a Moises chord reference exists, the analyzer preserves the inferred harmonic layer separately and promotes an explicit canonical harmonic layer rebuilt from the reference file for downstream phases.
 - when `data/reference/<Song - Artist>/human/human_hints.json` exists, the analyzer also writes review-only alignment files under `data/artifacts/<Song - Artist>/validation/` that compare those hint windows against generated sections, events, patterns, and harmonic events. These files aid issue triage and review; they do not replace generated outputs.
 - machine-readable and markdown validation reports are always written automatically under `data/artifacts/<Song - Artist>/validation/` as `phase_1_report.json` and `phase_1_report.md`.
 - `--fail-on-mismatch`: optional flag causing the command to exit non-zero when validation thresholds are missed.
@@ -134,12 +136,13 @@ At minimum:
 ## Validation Rules
 
 - Reference files are optional, read-only validation inputs.
-- Reference values must never be copied into or overwrite generated inference artifacts.
+- Reference-backed canonical outputs may replace the final downstream beat and harmonic artifacts when a Moises chord reference exists, but the inferred beat and harmonic artifacts must be preserved separately with explicit provenance.
 - The analyzer must infer chord and section outputs from the pipeline even when reference files are available.
-- If reference files are present, they may be used for validation, reporting, or explicit review workflows only.
+- If reference files are present, they may be used for validation, reporting, explicit review workflows, and the final canonical beat/chord handoff to downstream stages.
+- For beats and chords specifically, the analyzer must preserve the inferred artifacts first, then use the Moises reference as the final canonical downstream source of truth when it exists, and record that takeover in the report.
 - Comparisons should report agreement, disagreement, and confidence or tolerance when relevant.
 - Beat comparisons should use the inferred timing grid produced by Story 1.2, run before downstream stories consume that grid, and evaluate only the reference-covered portion of the timeline.
-- If a reference-backed beat comparison fails, downstream stories should use the promoted canonical reference timing grid rather than the failed inferred timing grid, and the report should record that takeover explicitly.
+- If a Moises chord reference exists, downstream stories should use the promoted canonical reference timing grid rather than the inferred timing grid, and the report should record that takeover explicitly.
 - Section comparisons should use structural change-point alignment. Reference labels may be reported for review but should not control pass/fail.
 - Chord comparisons should use time-aligned event comparison and label comparison.
 

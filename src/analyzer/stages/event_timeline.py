@@ -14,8 +14,12 @@ LIGHTING_HINTS = {
     "soft_release": "Use a smoother landing with controlled intensity and less abrupt contrast.",
     "anthem_call": "Frame the phrase as a crowd-facing focal moment with space for response.",
     "hook_phrase": "Support recognisable phrase recall with repeatable but still editable cue language.",
+    "vocal_spotlight": "Keep the visual focus intimate and voice-led rather than rhythm-led.",
+    "vocal_tail": "Let the cue decay or hand off gently as the vocal energy falls away.",
     "groove_loop": "Maintain stable pulse-oriented lighting rather than forcing large structural motion.",
     "atmospheric_plateau": "Keep the cue spacious, restrained, and texture-focused.",
+    "percussion_break": "Lean into drum-led motion and keep harmonic color restrained while percussion carries the scene.",
+    "instrumental_bed": "Treat the section as accompaniment-led space with texture and support rather than lead-vocal focus.",
 }
 
 

@@ -28,6 +28,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 - Song: `What a Feeling - Courtney Storm`
 - Human hints: `data/reference/What a Feeling - Courtney Storm/human/human_hints.json`
 - Chord reference: `data/reference/What a Feeling - Courtney Storm/moises/chords.json`
+- Lyric timing clue: `data/reference/What a Feeling - Courtney Storm/moises/lyrics.json`
 - Current validation report: `data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json`
 - Human-hints alignment review: `data/artifacts/What a Feeling - Courtney Storm/validation/human_hints_alignment.json`
 
@@ -47,10 +48,11 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
   - The timing report explains the dominant failure mode and downstream artifacts use a timing basis that no longer masks chord and section evaluation.
 - Notes:
   - This issue is a dependency for trustworthy comparison of several downstream layers.
+  - Current mitigation: when Story 1.2 promotes the reference beat grid, section starts now stay on canonical bar anchors instead of being shifted one beat late by local novelty refinement.
 
 ### ISS-002 - Story 2.2 chord truth mismatch
 
-- Status: `pending`
+- Status: `solved`
 - Scope: harmonic inference for `What a Feeling - Courtney Storm`
 - Evidence:
   - The current harmonic artifact diverges from the expected loop described during review.
@@ -63,6 +65,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
   - The system can explain why chord mismatches happen for this song and either improve inference materially or promote the Moises-backed canonical chord output explicitly when inference fails.
 - Notes:
   - Do not create a substitute custom fallback algorithm. If a different named model is tried, it must remain explicit and preserve provenance.
+  - Implemented: inferred chords are validated first, explicit mismatch attribution is written to the report, failing inferred harmonic output is preserved under `data/artifacts/<Song - Artist>/harmonic_inference/layer_a_harmonic.inferred.json`, and the canonical harmonic layer is promoted from the Moises reference for downstream phases when the stricter gate fails.
 
 ### ISS-003 - Context-aware section semantics
 
@@ -78,18 +81,23 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
   - Section labels for this song become more context-aware without collapsing into generic pop-form labels or losing timing stability.
 - Notes:
   - If structural form is still needed somewhere, preserve it separately instead of forcing the primary label field to carry both meanings.
+  - Current progress: section labels now use a more contextual vocabulary (`momentum_lift`, `groove_plateau`, `contrast_bridge`, `focal_lift`, `flowing_plateau`, `breath_space`) and `data/output/<Song - Artist>/sections.json` now carries non-empty descriptions derived from those labels.
 
 ### ISS-004 - Event semantic under-representation
 
-- Status: `pending`
+- Status: `solved`
 - Scope: `song_event_timeline.json` and upstream event inference for `What a Feeling - Courtney Storm`
 - Evidence:
-  - Human-hint moments such as vocal entry, vocal tail-off, snare-only bar, and sustained instrumental passages are weakly represented or missing.
-  - Current events overuse generic energy/event types for moments that need clearer semantic names.
+  - Human-hint moments such as vocal entry, vocal tail-off, snare-only bar, and sustained instrumental passages were previously weakly represented or missing.
+  - `data/artifacts/What a Feeling - Courtney Storm/validation/human_hints_alignment.md` now shows explicit `vocal_tail` overlap for `ui_004` and explicit `percussion_break` overlap for `ui_006`.
+  - `data/output/What a Feeling - Courtney Storm/song_event_timeline.json` now exports `vocal_spotlight`, `vocal_tail`, `percussion_break`, and `instrumental_bed` events for the real song.
 - Validation target:
   - Compare human-hint windows against generated events and identify which missing semantic concepts should be added or made more explicit.
 - Success condition:
   - The event layer can express the musically important moments of this song without exploding into noisy micro-events.
+- Notes:
+  - Implemented: generic sustained-state plateaus can refine into canonical `groove_loop` and `atmospheric_plateau` event types when the evidence is strong enough, reducing reliance on the weaker `no_drop_plateau` label.
+  - Implemented: stem-aware context scoring, human-hint-guided event promotion, and optional Moises lyric-line timing are now used as weak priors for `vocal_spotlight`, `vocal_tail`, and `percussion_break` when the overlapping stem evidence agrees.
 
 ### ISS-005 - Symbolic phrasing and alignment gaps
 
@@ -114,6 +122,17 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
   - Compare current detected pattern windows against the repeated one-bar and two-bar gestures described in the hints and against the validated chord timeline.
 - Success condition:
   - Pattern outputs preserve the musically relevant repeated structure at the right scale for this song.
+
+### ISS-007 - Chord inference model quality after canonical fallback
+
+- Status: `pending`
+- Scope: inferred harmonic quality for `What a Feeling - Courtney Storm` after the canonical fallback contract is in place
+- Evidence:
+  - The canonical harmonic output is now corrected operationally through explicit Moises promotion, but the preserved inferred harmonic layer still mismatches the reference strongly enough to fail the stricter chord gate.
+- Validation target:
+  - Benchmark alternative named chord-recognition backends or improved decoding settings against the same Moises reference without removing the explicit fallback contract.
+- Success condition:
+  - The inferred harmonic layer materially closes the gap to the reference instead of depending on canonical promotion for this song.
 
 ## Session Split
 

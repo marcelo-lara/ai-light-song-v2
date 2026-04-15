@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from analyzer.event_contracts import validate_song_event_payload
+from analyzer.io import read_json
 from analyzer.io import write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
@@ -26,6 +27,79 @@ def _event_feature_rows(event_features: dict, start_time: float, end_time: float
         for row in event_features.get("features", [])
         if float(row["start_time"]) < end_time and float(row["end_time"]) > start_time
     ]
+
+
+def _section_feature_rows(event_features: dict, section: dict) -> list[dict]:
+    return _event_feature_rows(event_features, float(section["start"]), float(section["end"]))
+
+
+def _load_human_hints(paths: SongPaths) -> list[dict[str, Any]]:
+    hint_path = paths.reference("human", "human_hints.json")
+    if hint_path is None or not hint_path.exists():
+        return []
+    payload = read_json(hint_path)
+    return [dict(row) for row in payload.get("human_hints", [])]
+
+
+def _load_lyric_lines(paths: SongPaths) -> list[dict[str, Any]]:
+    lyric_path = paths.reference("moises", "lyrics.json")
+    if lyric_path is None or not lyric_path.exists():
+        return []
+    payload = read_json(lyric_path)
+    if not isinstance(payload, list):
+        return []
+
+    lines: dict[int, dict[str, Any]] = {}
+    for token in payload:
+        if not isinstance(token, dict):
+            continue
+        line_id_raw = token.get("line_id")
+        try:
+            line_id = int(line_id_raw)
+        except (TypeError, ValueError):
+            continue
+        text = str(token.get("text", "")).strip()
+        if not text or text in {"<SOL>", "<EOL>"}:
+            continue
+        start = float(token.get("start", 0.0))
+        end = float(token.get("end", start))
+        if end < start:
+            end = start
+        line = lines.setdefault(
+            line_id,
+            {"line_id": line_id, "start": start, "end": end, "tokens": [], "confidences": []},
+        )
+        line["start"] = min(float(line["start"]), start)
+        line["end"] = max(float(line["end"]), end)
+        line["tokens"].append(text)
+        confidence = token.get("confidence")
+        try:
+            if confidence is not None:
+                line["confidences"].append(float(confidence))
+        except (TypeError, ValueError):
+            pass
+
+    lyric_lines: list[dict[str, Any]] = []
+    for line_id in sorted(lines):
+        line = lines[line_id]
+        if not line["tokens"]:
+            continue
+        confidences = [float(value) for value in line["confidences"]]
+        lyric_lines.append(
+            {
+                "line_id": line_id,
+                "start": round(float(line["start"]), 6),
+                "end": round(float(line["end"]), 6),
+                "text": " ".join(str(token) for token in line["tokens"]),
+                "confidence": _mean(confidences),
+                "token_count": len(line["tokens"]),
+            }
+        )
+    return lyric_lines
+
+
+def _hint_text(hint: dict[str, Any]) -> str:
+    return f"{hint.get('title', '')} {hint.get('summary', '')}".casefold()
 
 
 def _repeated_phrase_counts(symbolic: dict) -> dict[str, int]:
@@ -109,6 +183,42 @@ def _classify_drop_variant(rule_event: dict, feature_rows: list[dict], identifie
     return "drop", candidates, "Subtype evidence is not decisive enough; keeping parent drop label."
 
 
+def _classify_plateau_variant(rule_event: dict, feature_rows: list[dict], section: dict | None) -> tuple[str, list[dict], str]:
+    duration = max(0.0, float(rule_event["end_time"]) - float(rule_event["start_time"]))
+    bass_mean = _mean([float(row["derived"].get("bass_activation_score", 0.0)) for row in feature_rows])
+    vocal_mean = _mean([float(row["derived"].get("vocal_presence_score", 0.0)) for row in feature_rows])
+    energy_mean = _mean([
+        float(row["normalized"].get("energy_score", row["rolling"]["medium"].get("energy_mean", 0.0)))
+        for row in feature_rows
+    ])
+    onset_mean = _mean([float(row["normalized"].get("onset_density", 0.0)) for row in feature_rows])
+    section_character = str((section or {}).get("section_character") or (section or {}).get("label") or "")
+
+    scores = [
+        (
+            "groove_loop",
+            0.3 * bass_mean + 0.25 * energy_mean + 0.2 * onset_mean + 0.15 * min(1.0, duration / 16.0) + 0.1 * (1.0 if "groove" in section_character else 0.0),
+            "Stable bass-led pulse and sustained motion support a groove-loop interpretation.",
+        ),
+        (
+            "atmospheric_plateau",
+            0.32 * max(0.0, 0.6 - onset_mean) + 0.22 * max(0.0, 0.55 - bass_mean) + 0.18 * max(0.0, 0.5 - energy_mean) + 0.18 * min(1.0, duration / 16.0) + 0.1 * (1.0 if "ambient" in section_character or "breath" in section_character else 0.0),
+            "Lower-volatility texture and sustained space support an atmospheric plateau.",
+        ),
+        (
+            "no_drop_plateau",
+            0.3 + 0.2 * min(1.0, duration / 12.0) + 0.15 * energy_mean,
+            "Build evidence remains present, but sustained-state evidence is not decisive enough for a narrower subtype.",
+        ),
+    ]
+    candidates = _build_candidates(scores)
+    top = candidates[0]
+    second = candidates[1] if len(candidates) > 1 else None
+    if str(top["type"]) != "no_drop_plateau" and float(top["confidence"]) >= 0.55 and (second is None or float(top["confidence"]) - float(second["confidence"]) >= 0.04):
+        return str(top["type"]), candidates, str(top["notes"])
+    return "no_drop_plateau", candidates, "Sustained-state subtype evidence is not decisive enough; keeping the parent plateau label."
+
+
 def _match_identifier(rule_event: dict, identifier_index: dict[str, dict]) -> dict | None:
     return identifier_index.get(str(rule_event.get("id")))
 
@@ -167,6 +277,52 @@ def _phrase_event(
     return event
 
 
+def _section_context_event(
+    *,
+    event_id: str,
+    event_type: str,
+    section: dict,
+    feature_rows: list[dict],
+    summary: str,
+    notes: str,
+) -> dict[str, Any]:
+    vocal_focus = _mean([float(row["derived"].get("vocal_focus_score", 0.0)) for row in feature_rows])
+    percussion_focus = _mean([float(row["derived"].get("percussion_focus_score", 0.0)) for row in feature_rows])
+    instrumental_focus = _mean([float(row["derived"].get("instrumental_focus_score", 0.0)) for row in feature_rows])
+    intensity = max(vocal_focus, percussion_focus, instrumental_focus, _mean([float(row["normalized"].get("energy_score", 0.0)) for row in feature_rows]))
+    return {
+        "id": event_id,
+        "type": event_type,
+        "created_by": "analyzer_context_classifier",
+        "start_time": round(float(section["start"]), 6),
+        "end_time": round(float(section["end"]), 6),
+        "confidence": round(min(1.0, 0.45 + intensity * 0.4), 6),
+        "intensity": round(intensity, 6),
+        "evidence": {
+            "summary": summary,
+            "source_windows": [
+                {
+                    "layer": "event_features",
+                    "start_time": round(float(feature_rows[0]["start_time"]), 6),
+                    "end_time": round(float(feature_rows[-1]["end_time"]), 6),
+                    "ref": f"beats:{feature_rows[0]['beat']}-{feature_rows[-1]['beat']}",
+                    "metric_names": ["vocal_focus_score", "percussion_focus_score", "instrumental_focus_score"],
+                }
+            ],
+            "metrics": [
+                {"name": "vocal_focus_mean", "value": vocal_focus, "source_layer": "event_features"},
+                {"name": "percussion_focus_mean", "value": percussion_focus, "source_layer": "event_features"},
+                {"name": "instrumental_focus_mean", "value": instrumental_focus, "source_layer": "event_features"},
+            ],
+            "reasons": [summary],
+            "rule_names": [f"{event_type}_section_context_rule"],
+        },
+        "notes": notes,
+        "section_id": section.get("section_id"),
+        "source_layers": ["event_features", "sections"],
+    }
+
+
 def generate_machine_events(
     paths: SongPaths,
     event_features: dict,
@@ -178,6 +334,7 @@ def generate_machine_events(
     section_by_id = _section_index(sections_payload)
     identifier_by_source = _identifier_index(identifier_payload)
     phrase_repeat_counts = _repeated_phrase_counts(symbolic)
+    lyric_lines = _load_lyric_lines(paths)
     refined_events: list[dict[str, Any]] = []
 
     for event_index, source_event in enumerate(rule_candidates.get("events", []), start=1):
@@ -198,6 +355,14 @@ def generate_machine_events(
                 candidate_event["confidence"] = round(min(1.0, float(candidate_event["confidence"]) + (float(candidates[0]["confidence"]) - 0.5) * 0.15), 6)
                 if identifier is not None:
                     candidate_event["source_layers"] = list(dict.fromkeys([*candidate_event.get("source_layers", []), "energy_identifiers"]))
+        elif event_type == "no_drop_plateau":
+            section = section_by_id.get(str(source_event.get("section_id"))) if source_event.get("section_id") else None
+            if base_feature_rows:
+                refined_type, candidates, note = _classify_plateau_variant(source_event, base_feature_rows, section)
+                candidate_event["type"] = refined_type
+                candidate_event["candidates"] = candidates
+                candidate_event["notes"] = f"{candidate_event['notes']} {note}".strip()
+                candidate_event["confidence"] = round(min(1.0, max(float(candidate_event["confidence"]), float(candidates[0]["confidence"]) * 0.9)), 6)
         elif event_type in {"breakdown", "pause_break"}:
             feature_rows = _event_feature_rows(event_features, float(source_event["end_time"]), float(source_event["end_time"]) + 4.0)
             followup_rise = _mean([max(0.0, float(row["derived"].get("energy_delta", 0.0))) for row in feature_rows])
@@ -344,6 +509,66 @@ def generate_machine_events(
             )
             anthem_index += 1
 
+    context_index = 1
+    for section in sections_payload.get("sections", []):
+        rows = _section_feature_rows(event_features, section)
+        if not rows:
+            continue
+        key_section = str(section.get("section_id"))
+        vocal_focus = _mean([float(row["derived"].get("vocal_focus_score", 0.0)) for row in rows])
+        percussion_focus = _mean([float(row["derived"].get("percussion_focus_score", 0.0)) for row in rows])
+        instrumental_focus = _mean([float(row["derived"].get("instrumental_focus_score", 0.0)) for row in rows])
+        vocals_stem = _mean([float(row["derived"].get("vocals_stem_score", 0.0)) for row in rows])
+        drums_stem = _mean([float(row["derived"].get("drums_stem_score", 0.0)) for row in rows])
+        harmonic_stem = _mean([float(row["derived"].get("harmonic_stem_score", 0.0)) for row in rows])
+        duration = max(0.0, float(section["end"]) - float(section["start"]))
+
+        if vocal_focus >= 0.5 and drums_stem <= 0.35 and duration >= 1.5:
+            key = (round(float(section["start"]), 6), round(float(section["end"]), 6), "vocal_spotlight")
+            if key not in existing_keys:
+                refined_events.append(
+                    _section_context_event(
+                        event_id=_event_id("vocal_spotlight", context_index),
+                        event_type="vocal_spotlight",
+                        section=section,
+                        feature_rows=rows,
+                        summary="Stem activity and symbolic evidence show the vocal line dominating the section more than drums or accompaniment.",
+                        notes="Voice-led section promoted to a vocal spotlight for downstream prompting and cue planning.",
+                    )
+                )
+                existing_keys.add(key)
+                context_index += 1
+        if percussion_focus >= 0.38 and vocals_stem <= 0.25 and harmonic_stem <= 0.4 and duration <= 8.0:
+            key = (round(float(section["start"]), 6), round(float(section["end"]), 6), "percussion_break")
+            if key not in existing_keys:
+                refined_events.append(
+                    _section_context_event(
+                        event_id=_event_id("percussion_break", context_index),
+                        event_type="percussion_break",
+                        section=section,
+                        feature_rows=rows,
+                        summary="Drum stem activity dominates while vocal and harmonic stems stay reduced, indicating a percussion-led pocket.",
+                        notes="Percussion carries the motion more than harmony or voice in this window.",
+                    )
+                )
+                existing_keys.add(key)
+                context_index += 1
+        if instrumental_focus >= 0.4 and vocals_stem <= 0.25 and duration >= 6.0:
+            key = (round(float(section["start"]), 6), round(float(section["end"]), 6), "instrumental_bed")
+            if key not in existing_keys:
+                refined_events.append(
+                    _section_context_event(
+                        event_id=_event_id("instrumental_bed", context_index),
+                        event_type="instrumental_bed",
+                        section=section,
+                        feature_rows=rows,
+                        summary="Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
+                        notes="Instrumental support is the main driver of this section rather than a lead-vocal phrase.",
+                    )
+                )
+                existing_keys.add(key)
+                context_index += 1
+
     for left, right in zip(phrase_windows, phrase_windows[1:]):
         if left.get("section_id") != right.get("section_id"):
             continue
@@ -385,6 +610,251 @@ def generate_machine_events(
             }
         )
         response_index += 1
+
+    vocal_tail_index = 1
+    for phrase in phrase_windows:
+        rows = phrase_rows_by_id.get(str(phrase["id"]), [])
+        if not rows:
+            continue
+        phrase_end = float(phrase["end_s"])
+        followup_rows = _event_feature_rows(event_features, phrase_end, phrase_end + 2.5)
+        if not followup_rows:
+            continue
+        vocal_focus = _mean([float(row["derived"].get("vocal_focus_score", 0.0)) for row in rows])
+        followup_vocals = _mean([float(row["derived"].get("vocals_stem_score", 0.0)) for row in followup_rows])
+        followup_harmonic = _mean([float(row["derived"].get("harmonic_stem_score", 0.0)) for row in followup_rows])
+        followup_drums = _mean([float(row["derived"].get("drums_stem_score", 0.0)) for row in followup_rows])
+        if vocal_focus < 0.45:
+            continue
+        if (vocal_focus - followup_vocals) < 0.28:
+            continue
+        if max(followup_harmonic, followup_drums) < 0.18:
+            continue
+        start_time = phrase_end
+        end_time = float(followup_rows[-1]["end_time"])
+        key = (round(start_time, 6), round(end_time, 6), "vocal_tail")
+        if key in existing_keys:
+            continue
+        refined_events.append(
+            {
+                "id": _event_id("vocal_tail", vocal_tail_index),
+                "type": "vocal_tail",
+                "created_by": "analyzer_context_classifier",
+                "start_time": round(start_time, 6),
+                "end_time": round(end_time, 6),
+                "confidence": round(min(1.0, 0.45 + (vocal_focus - followup_vocals) * 0.6), 6),
+                "intensity": round(max(vocal_focus - followup_vocals, 0.0), 6),
+                "evidence": {
+                    "summary": "Vocal energy falls away after the phrase while accompaniment remains active, indicating a vocal tail or handoff.",
+                    "source_windows": [
+                        {"layer": "symbolic", "start_time": round(float(phrase["start_s"]), 6), "end_time": round(float(phrase["end_s"]), 6), "ref": str(phrase["id"]), "metric_names": ["phrase_group_id"]},
+                        {"layer": "event_features", "start_time": round(float(followup_rows[0]["start_time"]), 6), "end_time": round(float(followup_rows[-1]["end_time"]), 6), "ref": f"beats:{followup_rows[0]['beat']}-{followup_rows[-1]['beat']}", "metric_names": ["vocals_stem_score", "harmonic_stem_score", "drums_stem_score"]},
+                    ],
+                    "metrics": [
+                        {"name": "phrase_vocal_focus_mean", "value": vocal_focus, "source_layer": "event_features"},
+                        {"name": "followup_vocals_mean", "value": followup_vocals, "source_layer": "event_features"},
+                        {"name": "followup_harmonic_mean", "value": followup_harmonic, "source_layer": "event_features"},
+                        {"name": "followup_drums_mean", "value": followup_drums, "source_layer": "event_features"},
+                    ],
+                    "reasons": ["Vocal phrase decays while accompaniment persists."],
+                    "rule_names": ["vocal_tail_transition_rule"],
+                },
+                "notes": "Phrase decays into the underlying bed instead of ending with a hard stop.",
+                "section_id": phrase.get("section_id"),
+                "source_layers": ["symbolic", "event_features"],
+            }
+        )
+        existing_keys.add(key)
+        vocal_tail_index += 1
+
+    lyric_event_index = 1
+    for lyric_line in lyric_lines:
+        rows = _event_feature_rows(event_features, float(lyric_line["start"]), float(lyric_line["end"]))
+        if not rows:
+            continue
+        section_id = rows[0].get("section_id")
+        vocals_mean = _mean([float(row["derived"].get("vocals_stem_score", 0.0)) for row in rows])
+        vocal_focus = _mean([float(row["derived"].get("vocal_focus_score", 0.0)) for row in rows])
+        drums_mean = _mean([float(row["derived"].get("drums_stem_score", 0.0)) for row in rows])
+        instrumental_focus = _mean([float(row["derived"].get("instrumental_focus_score", 0.0)) for row in rows])
+        lyric_confidence = float(lyric_line.get("confidence", 0.0))
+        line_text = str(lyric_line.get("text", ""))
+
+        spotlight_key = (round(float(lyric_line["start"]), 6), round(float(lyric_line["end"]), 6), "vocal_spotlight")
+        if spotlight_key not in existing_keys and vocals_mean >= 0.32 and vocal_focus >= 0.32 and (vocals_mean >= drums_mean or lyric_confidence >= 0.7):
+            refined_events.append(
+                {
+                    "id": _event_id("vocal_spotlight", lyric_event_index),
+                    "type": "vocal_spotlight",
+                    "created_by": "analyzer_lyric_guided_classifier",
+                    "start_time": round(float(lyric_line["start"]), 6),
+                    "end_time": round(float(lyric_line["end"]), 6),
+                    "confidence": round(min(1.0, 0.42 + vocal_focus * 0.35 + vocals_mean * 0.2 + min(0.12, lyric_confidence * 0.12)), 6),
+                    "intensity": round(max(vocals_mean, vocal_focus), 6),
+                    "evidence": {
+                        "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
+                        "source_windows": [
+                            {
+                                "layer": "event_features",
+                                "start_time": round(float(rows[0]["start_time"]), 6),
+                                "end_time": round(float(rows[-1]["end_time"]), 6),
+                                "ref": f"beats:{rows[0]['beat']}-{rows[-1]['beat']}",
+                                "metric_names": ["vocals_stem_score", "vocal_focus_score", "drums_stem_score"],
+                            }
+                        ],
+                        "metrics": [
+                            {"name": "lyric_line_confidence", "value": lyric_confidence},
+                            {"name": "vocals_stem_mean", "value": vocals_mean, "source_layer": "event_features"},
+                            {"name": "vocal_focus_mean", "value": vocal_focus, "source_layer": "event_features"},
+                            {"name": "drums_stem_mean", "value": drums_mean, "source_layer": "event_features"},
+                        ],
+                        "reasons": [f"Lyric line {lyric_line['line_id']} overlaps a clear vocal-led window."],
+                        "rule_names": ["lyric_guided_vocal_spotlight_rule"],
+                        "metadata": {"lyric_line_id": lyric_line["line_id"], "lyric_text": line_text},
+                    },
+                    "notes": "Timed lyric line reinforces that this window should read as a vocal spotlight rather than only a section-level vocal texture.",
+                    "section_id": section_id,
+                    "source_layers": ["event_features", "sections"],
+                }
+            )
+            existing_keys.add(spotlight_key)
+            lyric_event_index += 1
+
+        followup_rows = _event_feature_rows(event_features, float(lyric_line["end"]), float(lyric_line["end"]) + 2.5)
+        if not followup_rows:
+            continue
+        followup_vocals = _mean([float(row["derived"].get("vocals_stem_score", 0.0)) for row in followup_rows])
+        followup_harmonic = _mean([float(row["derived"].get("harmonic_stem_score", 0.0)) for row in followup_rows])
+        followup_drums = _mean([float(row["derived"].get("drums_stem_score", 0.0)) for row in followup_rows])
+        tail_key = (round(float(lyric_line["end"]), 6), round(float(followup_rows[-1]["end_time"]), 6), "vocal_tail")
+        if tail_key not in existing_keys and vocal_focus >= 0.34 and (vocals_mean - followup_vocals) >= 0.18 and max(followup_harmonic, followup_drums, instrumental_focus) >= 0.12:
+            refined_events.append(
+                {
+                    "id": _event_id("vocal_tail", lyric_event_index),
+                    "type": "vocal_tail",
+                    "created_by": "analyzer_lyric_guided_classifier",
+                    "start_time": round(float(lyric_line["end"]), 6),
+                    "end_time": round(float(followup_rows[-1]["end_time"]), 6),
+                    "confidence": round(min(1.0, 0.42 + (vocals_mean - followup_vocals) * 0.55 + min(0.1, lyric_confidence * 0.1)), 6),
+                    "intensity": round(max(vocals_mean - followup_vocals, 0.0), 6),
+                    "evidence": {
+                        "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
+                        "source_windows": [
+                            {
+                                "layer": "event_features",
+                                "start_time": round(float(rows[0]["start_time"]), 6),
+                                "end_time": round(float(followup_rows[-1]["end_time"]), 6),
+                                "ref": f"beats:{rows[0]['beat']}-{followup_rows[-1]['beat']}",
+                                "metric_names": ["vocals_stem_score", "harmonic_stem_score", "drums_stem_score"],
+                            }
+                        ],
+                        "metrics": [
+                            {"name": "lyric_line_confidence", "value": lyric_confidence},
+                            {"name": "line_vocals_mean", "value": vocals_mean, "source_layer": "event_features"},
+                            {"name": "followup_vocals_mean", "value": followup_vocals, "source_layer": "event_features"},
+                            {"name": "followup_harmonic_mean", "value": followup_harmonic, "source_layer": "event_features"},
+                            {"name": "followup_drums_mean", "value": followup_drums, "source_layer": "event_features"},
+                        ],
+                        "reasons": [f"Lyric line {lyric_line['line_id']} ends as the vocal stem decays and the backing bed persists."],
+                        "rule_names": ["lyric_guided_vocal_tail_rule"],
+                        "metadata": {"lyric_line_id": lyric_line["line_id"], "lyric_text": line_text},
+                    },
+                    "notes": "Timed lyric ending provides a stronger phrase boundary for a vocal tail than stem energy alone.",
+                    "section_id": section_id,
+                    "source_layers": ["event_features", "sections"],
+                }
+            )
+            existing_keys.add(tail_key)
+            lyric_event_index += 1
+
+    hint_events_index = 1
+    for hint in _load_human_hints(paths):
+        hint_start = float(hint.get("start_time", 0.0))
+        hint_end = float(hint.get("end_time", hint_start))
+        if hint_end <= hint_start:
+            continue
+        rows = _event_feature_rows(event_features, hint_start, hint_end)
+        if not rows:
+            continue
+        text = _hint_text(hint)
+        section_id = rows[0].get("section_id")
+
+        drums_mean = _mean([float(row["derived"].get("drums_stem_score", 0.0)) for row in rows])
+        vocals_mean = _mean([float(row["derived"].get("vocals_stem_score", 0.0)) for row in rows])
+        harmonic_mean = _mean([float(row["derived"].get("harmonic_stem_score", 0.0)) for row in rows])
+        percussion_focus = _mean([float(row["derived"].get("percussion_focus_score", 0.0)) for row in rows])
+        instrumental_focus = _mean([float(row["derived"].get("instrumental_focus_score", 0.0)) for row in rows])
+
+        if any(keyword in text for keyword in ("snare", "ride", "drum", "percussion")):
+            key = (round(hint_start, 6), round(hint_end, 6), "percussion_break")
+            if key not in existing_keys and drums_mean >= 0.28 and percussion_focus >= 0.08 and vocals_mean <= 0.3:
+                refined_events.append(
+                    {
+                        "id": _event_id("percussion_break", hint_events_index),
+                        "type": "percussion_break",
+                        "created_by": "analyzer_hint_guided_classifier",
+                        "start_time": round(hint_start, 6),
+                        "end_time": round(hint_end, 6),
+                        "confidence": round(min(1.0, 0.45 + drums_mean * 0.25 + percussion_focus * 0.6), 6),
+                        "intensity": round(max(drums_mean, percussion_focus), 6),
+                        "evidence": {
+                            "summary": "Hint-guided percussion pocket confirmed by drum-dominant stem activity and reduced vocal presence.",
+                            "source_windows": [
+                                {"layer": "event_features", "start_time": round(float(rows[0]["start_time"]), 6), "end_time": round(float(rows[-1]["end_time"]), 6), "ref": f"beats:{rows[0]['beat']}-{rows[-1]['beat']}", "metric_names": ["drums_stem_score", "percussion_focus_score", "vocals_stem_score"]}
+                            ],
+                            "metrics": [
+                                {"name": "drums_stem_mean", "value": drums_mean, "source_layer": "event_features"},
+                                {"name": "percussion_focus_mean", "value": percussion_focus, "source_layer": "event_features"},
+                                {"name": "hint_window_duration", "value": hint_end - hint_start},
+                            ],
+                            "reasons": [f"Human hint {hint.get('id')} suggested a percussion-only pocket and the stem evidence is compatible."],
+                            "rule_names": ["hint_guided_percussion_break_rule"],
+                            "metadata": {"hint_id": hint.get("id"), "hint_title": hint.get("title")},
+                        },
+                        "notes": "Human hint and stem evidence both point to a drum-led break rather than a full-band event.",
+                        "section_id": section_id,
+                        "source_layers": ["event_features", "sections"],
+                    }
+                )
+                existing_keys.add(key)
+                hint_events_index += 1
+
+        if any(keyword in text for keyword in ("ends slowly", "ends", "tail", "fade", "fades out")):
+            previous_rows = _event_feature_rows(event_features, max(0.0, hint_start - 2.0), hint_start)
+            previous_vocal_focus = _mean([float(row["derived"].get("vocal_focus_score", 0.0)) for row in previous_rows]) if previous_rows else 0.0
+            key = (round(hint_start, 6), round(hint_end, 6), "vocal_tail")
+            if key not in existing_keys and previous_vocal_focus >= 0.35 and (previous_vocal_focus - vocals_mean) >= 0.12 and max(harmonic_mean, instrumental_focus, drums_mean) >= 0.12:
+                refined_events.append(
+                    {
+                        "id": _event_id("vocal_tail", hint_events_index),
+                        "type": "vocal_tail",
+                        "created_by": "analyzer_hint_guided_classifier",
+                        "start_time": round(hint_start, 6),
+                        "end_time": round(hint_end, 6),
+                        "confidence": round(min(1.0, 0.45 + (previous_vocal_focus - vocals_mean) * 0.8), 6),
+                        "intensity": round(max(previous_vocal_focus - vocals_mean, 0.0), 6),
+                        "evidence": {
+                            "summary": "Hint-guided vocal decay confirmed by falling vocal stem energy while accompaniment remains active.",
+                            "source_windows": [
+                                {"layer": "event_features", "start_time": round(hint_start, 6), "end_time": round(hint_end, 6), "ref": f"hint:{hint.get('id')}", "metric_names": ["vocals_stem_score", "harmonic_stem_score", "drums_stem_score"]}
+                            ],
+                            "metrics": [
+                                {"name": "previous_vocal_focus_mean", "value": previous_vocal_focus, "source_layer": "event_features"},
+                                {"name": "hint_window_vocals_mean", "value": vocals_mean, "source_layer": "event_features"},
+                                {"name": "hint_window_harmonic_mean", "value": harmonic_mean, "source_layer": "event_features"},
+                                {"name": "hint_window_drums_mean", "value": drums_mean, "source_layer": "event_features"},
+                            ],
+                            "reasons": [f"Human hint {hint.get('id')} suggested a vocal ending or fade and the stem evidence shows a decaying handoff."],
+                            "rule_names": ["hint_guided_vocal_tail_rule"],
+                            "metadata": {"hint_id": hint.get("id"), "hint_title": hint.get("title")},
+                        },
+                        "notes": "Human hint and stem evidence both point to a trailing vocal handoff rather than a hard phrase stop.",
+                        "section_id": section_id,
+                        "source_layers": ["event_features", "sections"],
+                    }
+                )
+                existing_keys.add(key)
+                hint_events_index += 1
 
     payload = {
         "schema_version": SCHEMA_VERSION,

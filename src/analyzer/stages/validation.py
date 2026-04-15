@@ -14,6 +14,9 @@ from analyzer.paths import SongPaths
 
 
 BEAT_MATCH_RATIO_THRESHOLD = 0.80
+CHORD_MATCH_RATIO_THRESHOLD = 0.85
+CHORD_MAX_LABEL_MISMATCHES = 0
+CHORD_MAX_TIMING_OVERLAP_FAILURES = 2
 
 
 @dataclass(slots=True)
@@ -55,6 +58,7 @@ def build_validation_report(
     paths: SongPaths,
     compare_targets: tuple[str, ...],
     beat_validation: ValidationResult | None,
+    chord_validation: ValidationResult | None,
     beat_tolerance_seconds: float,
     tolerance_seconds: float,
     chord_min_overlap: float,
@@ -85,7 +89,9 @@ def build_validation_report(
         "beats": beat_validation if "beats" in compare_targets and beat_validation is not None else (
             validate_beats(paths, timing, beat_tolerance_seconds) if "beats" in compare_targets else skipped_result()
         ),
-        "chords": _validate_chords(paths, harmonic, chord_min_overlap) if "chords" in compare_targets else skipped_result(),
+        "chords": chord_validation if "chords" in compare_targets and chord_validation is not None else (
+            validate_chords(paths, harmonic, chord_min_overlap) if "chords" in compare_targets else skipped_result()
+        ),
         "sections": _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
         "energy": _validate_energy_layer(read_json(energy_path), timing, sections) if "energy" in compare_targets else skipped_result(),
         "patterns": _validate_patterns_layer(read_json(patterns_path), timing) if "patterns" in compare_targets else skipped_result(),
@@ -794,8 +800,16 @@ def _validate_chords(paths: SongPaths, harmonic: dict, chord_min_overlap: float)
 
     total = matched + mismatched
     ratio = matched / total if total else None
-    status = "passed" if ratio is None or ratio >= 0.6 else "failed"
     diagnostics = _build_chord_diagnostics(details)
+    label_mismatch_count = int((diagnostics or {}).get("label_mismatch_count", 0))
+    timing_overlap_failure_count = int((diagnostics or {}).get("timing_overlap_failure_count", 0))
+    status = "passed"
+    if ratio is not None and ratio < CHORD_MATCH_RATIO_THRESHOLD:
+        status = "failed"
+    if label_mismatch_count > CHORD_MAX_LABEL_MISMATCHES:
+        status = "failed"
+    if timing_overlap_failure_count > CHORD_MAX_TIMING_OVERLAP_FAILURES:
+        status = "failed"
     return ValidationResult(
         status=status,
         matched=matched,
@@ -805,6 +819,10 @@ def _validate_chords(paths: SongPaths, harmonic: dict, chord_min_overlap: float)
         reference_file=str(reference_path),
         diagnostics=diagnostics,
     )
+
+
+def validate_chords(paths: SongPaths, harmonic: dict, chord_min_overlap: float) -> ValidationResult:
+    return _validate_chords(paths, harmonic, chord_min_overlap)
 
 
 def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: float) -> ValidationResult:

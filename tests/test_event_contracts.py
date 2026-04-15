@@ -50,9 +50,11 @@ def _sample_event(event_type: str = "drop") -> dict:
 class EventContractsTests(unittest.TestCase):
     def test_canonical_seed_contains_expected_events(self) -> None:
         event_types = canonical_event_types()
-        self.assertEqual(len(event_types), 21)
+        self.assertEqual(len(event_types), 25)
         self.assertIn("drop", event_types)
         self.assertIn("hook_phrase", event_types)
+        self.assertIn("vocal_tail", event_types)
+        self.assertIn("percussion_break", event_types)
 
     def test_normalize_event_type_accepts_aliases(self) -> None:
         self.assertEqual(normalize_event_type("build-up"), "build")

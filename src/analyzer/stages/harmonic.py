@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 
 from analyzer.exceptions import AnalysisError, DependencyError
-from analyzer.io import write_json
+from analyzer.io import read_json, write_json
 from analyzer.models import ChordEvent, GeneratedFrom, SCHEMA_VERSION, to_jsonable
 from analyzer.paths import SongPaths
 
@@ -34,6 +34,119 @@ def _normalize_note_spelling(label: str) -> str:
     normalized = normalized.replace(":maj", "")
     normalized = normalized.replace(":min", "m")
     return normalized
+
+
+def _normalize_reference_chord_label(label: str | None) -> str:
+    normalized = _normalize_note_spelling(label or "N")
+    normalized = normalized.replace("maj7", "")
+    normalized = normalized.replace("maj9", "")
+    normalized = normalized.replace("add9", "")
+    normalized = normalized.replace("sus2", "")
+    normalized = normalized.replace("sus4", "")
+    normalized = normalized.replace("7", "")
+    normalized = normalized.replace(":", "")
+    normalized = normalized.replace("/", "")
+    if normalized.endswith("min"):
+        normalized = normalized[:-3] + "m"
+    return normalized or "N"
+
+
+def build_reference_harmonic_layer(
+    paths: SongPaths,
+    timing: dict,
+    *,
+    inferred_harmonic_path: str | None = None,
+) -> dict:
+    reference_path = paths.reference("moises", "chords.json")
+    if reference_path is None or not reference_path.exists():
+        raise AnalysisError("Reference chord file is required to promote the canonical harmonic layer")
+
+    reference_rows = read_json(reference_path)
+    if not reference_rows:
+        raise AnalysisError("Reference chord file did not contain any rows")
+
+    beat_rows = []
+    for row in reference_rows:
+        if "curr_beat_time" not in row:
+            continue
+        beat_rows.append(
+            {
+                "time": round(float(row["curr_beat_time"]), 6),
+                "bar": int(row.get("bar_num") or 0),
+                "beat": int(row.get("beat_num") or 0),
+                "label": _normalize_reference_chord_label(
+                    row.get("chord_simple_pop") or row.get("chord_basic_pop") or row.get("prev_chord")
+                ),
+            }
+        )
+    if not beat_rows:
+        raise AnalysisError("Reference chord file did not contain usable beat-aligned chord rows")
+
+    chord_events: list[ChordEvent] = []
+    chord_probabilities = []
+    current = beat_rows[0]
+    run_start_index = 0
+    song_end = float(timing["bars"][-1]["end_s"]) if timing.get("bars") else float(beat_rows[-1]["time"])
+
+    for index, row in enumerate(beat_rows):
+        chord_probabilities.append(
+            {
+                "beat": index + 1,
+                "time": row["time"],
+                "label": row["label"],
+                "confidence": 1.0,
+                "source": "reference_promoted",
+            }
+        )
+        if row["label"] != current["label"]:
+            chord_events.append(
+                ChordEvent(
+                    time=current["time"],
+                    end_s=row["time"],
+                    bar=current["bar"] or ((run_start_index // 4) + 1),
+                    beat=current["beat"] or ((run_start_index % 4) + 1),
+                    chord=current["label"],
+                    confidence=1.0,
+                )
+            )
+            current = row
+            run_start_index = index
+
+    chord_events.append(
+        ChordEvent(
+            time=current["time"],
+            end_s=song_end,
+            bar=current["bar"] or ((run_start_index // 4) + 1),
+            beat=current["beat"] or ((run_start_index % 4) + 1),
+            chord=current["label"],
+            confidence=1.0,
+        )
+    )
+
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "generated_from": {
+            "source_song_path": str(paths.song_path),
+            "beats_file": str(paths.artifact("essentia", "beats.json")),
+            "reference_chords_file": str(reference_path),
+            "engine": "reference.moises.chords.promotion",
+            "dependencies": {
+                "reference_chords": str(reference_path),
+                **({"inferred_harmonic_file": inferred_harmonic_path} if inferred_harmonic_path is not None else {}),
+            },
+        },
+        "global_key": {
+            "label": None,
+            "confidence": 1.0,
+            "source": "reference_promoted",
+        },
+        "chords": chord_events,
+        "chord_probabilities": chord_probabilities,
+    }
+    payload = to_jsonable(payload)
+    write_json(paths.artifact("layer_a_harmonic.json"), payload)
+    return payload
 
 
 def _diatonic_chord_map(key_label: str, key_scale: str) -> dict[int, str]:

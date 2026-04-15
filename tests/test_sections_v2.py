@@ -109,7 +109,7 @@ class SectionSegmentationTests(unittest.TestCase):
         self.assertEqual(groups[0][0]["bar_end"], 8)
         self.assertEqual(groups[1][0]["bar_start"], 9)
 
-    def test_section_character_labels_marks_low_energy_near_threshold_as_sparse_break(self) -> None:
+    def test_section_character_labels_marks_low_energy_near_threshold_as_breath_space(self) -> None:
         sections = [
             {"energy": 0.35, "onset": 0.34, "flux": 0.33, "vector": np.array([1.0, 0.0, 0.0])},
             {"energy": 0.34, "onset": 0.30, "flux": 0.28, "vector": np.array([0.9, 0.1, 0.0])},
@@ -122,7 +122,7 @@ class SectionSegmentationTests(unittest.TestCase):
 
         labels = _section_character_labels(sections)
 
-        self.assertEqual(labels[1], "sparse_break")
+        self.assertEqual(labels[1], "breath_space")
 
     def test_segment_sections_refines_boundary_before_next_bar(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -179,6 +179,79 @@ class SectionSegmentationTests(unittest.TestCase):
             self.assertEqual(payload["sections"][1]["start"], 16.0)
             self.assertEqual(payload["sections"][0]["end"], 16.0)
             self.assertTrue(paths.artifact("section_segmentation", "sections.json").exists())
+
+    def test_segment_sections_keeps_bar_boundary_with_reference_timing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "Example Song.mp3",
+                artifacts_root=root / "artifacts",
+                reference_root=root / "reference",
+                output_root=root / "output",
+                stems_root=root / "stems",
+            )
+
+            beats = []
+            bars = []
+            beat_features = []
+            beat_time = 0.5
+            for bar_number in range(1, 17):
+                bar_start = beat_time
+                for beat_in_bar in range(1, 5):
+                    beats.append(
+                        {
+                            "index": len(beats) + 1,
+                            "time": beat_time,
+                            "bar": bar_number,
+                            "beat_in_bar": beat_in_bar,
+                            "type": "downbeat" if beat_in_bar == 1 else "beat",
+                        }
+                    )
+                    is_changed_region = beat_time >= 16.0
+                    beat_features.append(
+                        {
+                            "beat": len(beat_features) + 1,
+                            "time": beat_time,
+                            "loudness_avg": 0.9 if is_changed_region else 0.15,
+                            "onset_density": 0.85 if is_changed_region else 0.1,
+                            "flux_avg": 0.8 if is_changed_region else 0.1,
+                        }
+                    )
+                    beat_time += 0.5
+                bars.append({"bar": bar_number, "start_s": bar_start, "end_s": beat_time})
+
+            timing = {
+                "beats": beats,
+                "bars": bars,
+                "generated_from": {
+                    "engine": "reference.moises.chords",
+                    "dependencies": {"reference_chords": "/tmp/reference.json"},
+                },
+            }
+            harmonic = {
+                "chords": [
+                    {"time": 0.5, "end_s": 16.0, "bar": 1, "beat": 1, "chord": "C", "confidence": 1.0},
+                    {"time": 16.0, "end_s": beat_time, "bar": 8, "beat": 4, "chord": "G", "confidence": 1.0},
+                ]
+            }
+            energy = {"beat_features": beat_features}
+
+            payload = segment_sections(paths, timing, harmonic, energy)
+
+            self.assertEqual(len(payload["sections"]), 2)
+            self.assertEqual(payload["sections"][1]["start"], 16.5)
+            self.assertEqual(payload["sections"][0]["end"], 16.5)
+
+    def test_section_character_labels_marks_vocal_spotlight_when_voice_dominates(self) -> None:
+        sections = [
+            {"energy": 0.25, "onset": 0.15, "flux": 0.14, "vocals": 0.62, "drums": 0.08, "harmonic": 0.3, "bass": 0.18, "vector": np.array([1.0, 0.0, 0.0])},
+            {"energy": 0.3, "onset": 0.18, "flux": 0.16, "vocals": 0.68, "drums": 0.12, "harmonic": 0.28, "bass": 0.16, "vector": np.array([0.9, 0.1, 0.0])},
+            {"energy": 0.45, "onset": 0.32, "flux": 0.3, "vocals": 0.22, "drums": 0.46, "harmonic": 0.44, "bass": 0.3, "vector": np.array([0.0, 1.0, 0.0])},
+        ]
+
+        labels = _section_character_labels(sections)
+
+        self.assertEqual(labels[1], "vocal_spotlight")
 
 
 if __name__ == "__main__":

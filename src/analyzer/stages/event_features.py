@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from analyzer.stages._stem_activity import estimate_stem_activity_by_beat
 from analyzer.io import write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
@@ -189,6 +190,14 @@ def build_event_feature_layer(
         for row in symbolic.get("density_per_beat", [])
     }
     accent_candidates = [dict(row) for row in energy_layer.get("accent_candidates", [])]
+    beat_times = [float(beat["time"]) for beat in beats]
+    song_end = float(timing.get("bars", [{}])[-1].get("end_s", beat_times[-1] if beat_times else 0.0)) if beats or timing.get("bars") else 0.0
+    stem_activity = {
+        "vocals_stem_activity": estimate_stem_activity_by_beat(paths.stems_dir / "vocals.wav", beat_times, song_end),
+        "drums_stem_activity": estimate_stem_activity_by_beat(paths.stems_dir / "drums.wav", beat_times, song_end),
+        "harmonic_stem_activity": estimate_stem_activity_by_beat(paths.stems_dir / "harmonic.wav", beat_times, song_end),
+        "bass_stem_activity": estimate_stem_activity_by_beat(paths.stems_dir / "bass.wav", beat_times, song_end),
+    }
 
     raw_rows: list[dict[str, Any]] = []
     silence_gap_seconds = 0.0
@@ -242,6 +251,10 @@ def build_event_feature_layer(
                 "symbolic_note_count": note_count,
                 "vocal_presence": round(_window_note_overlap_score(vocal_notes, start_s, end_s), 6),
                 "bass_activation": round(_window_note_overlap_score(bass_notes, start_s, end_s), 6),
+                "vocals_stem_activity": float(stem_activity["vocals_stem_activity"][index]) if index < len(stem_activity["vocals_stem_activity"]) else 0.0,
+                "drums_stem_activity": float(stem_activity["drums_stem_activity"][index]) if index < len(stem_activity["drums_stem_activity"]) else 0.0,
+                "harmonic_stem_activity": float(stem_activity["harmonic_stem_activity"][index]) if index < len(stem_activity["harmonic_stem_activity"]) else 0.0,
+                "bass_stem_activity": float(stem_activity["bass_stem_activity"][index]) if index < len(stem_activity["bass_stem_activity"]) else 0.0,
                 "accent_id": accent_id,
                 "accent_intensity": round(accent_intensity, 6),
                 "silence_gap_seconds": silence_gap_seconds,
@@ -259,6 +272,10 @@ def build_event_feature_layer(
             "symbolic_density",
             "vocal_presence",
             "bass_activation",
+            "vocals_stem_activity",
+            "drums_stem_activity",
+            "harmonic_stem_activity",
+            "bass_stem_activity",
             "accent_intensity",
             "chord_confidence",
         )
@@ -277,6 +294,20 @@ def build_event_feature_layer(
             "silence_gap_seconds": round(float(row["silence_gap_seconds"]), 6),
             "vocal_presence_score": normalized["vocal_presence"],
             "bass_activation_score": normalized["bass_activation"],
+            "vocals_stem_score": normalized["vocals_stem_activity"],
+            "drums_stem_score": normalized["drums_stem_activity"],
+            "harmonic_stem_score": normalized["harmonic_stem_activity"],
+            "bass_stem_score": normalized["bass_stem_activity"],
+            "vocal_focus_score": round(min(1.0, (normalized["vocal_presence"] * 0.55) + (normalized["vocals_stem_activity"] * 0.45)), 6),
+            "percussion_focus_score": round(
+                max(
+                    0.0,
+                    normalized["drums_stem_activity"] - max(normalized["vocals_stem_activity"], normalized["harmonic_stem_activity"]),
+                ),
+                6,
+            ),
+            "instrumental_focus_score": round(max(0.0, ((normalized["harmonic_stem_activity"] * 0.6) + (normalized["bass_stem_activity"] * 0.4)) - (normalized["vocals_stem_activity"] * 0.5)), 6),
+            "vocal_stem_delta": round(normalized["vocals_stem_activity"] - float(previous["normalized"]["vocals_stem_activity"]), 6) if previous else 0.0,
             "harmonic_tension_proxy": round(min(1.0, max(0.0, ((1.0 - normalized["chord_confidence"]) + float(row["chord_change"])) / 2.0)), 6),
             "accent_intensity": normalized["accent_intensity"],
         }
@@ -359,6 +390,10 @@ def build_event_feature_layer(
                 "symbolic_density",
                 "vocal_presence",
                 "bass_activation",
+                "vocals_stem_activity",
+                "drums_stem_activity",
+                "harmonic_stem_activity",
+                "bass_stem_activity",
                 "accent_intensity",
                 "chord_confidence",
             ],
@@ -368,6 +403,14 @@ def build_event_feature_layer(
                 "silence_gap_seconds",
                 "vocal_presence_score",
                 "bass_activation_score",
+                "vocals_stem_score",
+                "drums_stem_score",
+                "harmonic_stem_score",
+                "bass_stem_score",
+                "vocal_focus_score",
+                "percussion_focus_score",
+                "instrumental_focus_score",
+                "vocal_stem_delta",
                 "harmonic_tension_proxy",
                 "accent_intensity",
             ],

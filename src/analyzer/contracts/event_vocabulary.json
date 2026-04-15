@@ -173,6 +173,26 @@
       ]
     },
     {
+      "name": "vocal_spotlight",
+      "category": "vocal_phrase",
+      "description": "A voice-led window where the vocal envelope dominates the listener focus over the supporting arrangement.",
+      "aliases": [
+        "vocal-focus",
+        "voice_spotlight",
+        "voice-focus"
+      ]
+    },
+    {
+      "name": "vocal_tail",
+      "category": "transition",
+      "description": "A trailing vocal decay or handoff where the vocal energy falls away while the section continues underneath.",
+      "aliases": [
+        "vocal-decay",
+        "voice_tail",
+        "voice-decay"
+      ]
+    },
+    {
       "name": "energy_reset",
       "category": "transition",
       "description": "A clear reset of intensity or momentum before the next section re-establishes direction.",
@@ -238,6 +258,26 @@
       "aliases": [
         "atmospheric-plateau",
         "ambient_plateau"
+      ]
+    },
+    {
+      "name": "percussion_break",
+      "category": "sustained_state",
+      "description": "A percussion-dominant pocket where drums carry the motion while harmonic and vocal material pull back.",
+      "aliases": [
+        "drum_break",
+        "percussion-break",
+        "drum-only"
+      ]
+    },
+    {
+      "name": "instrumental_bed",
+      "category": "sustained_state",
+      "description": "A support-driven instrumental passage where accompaniment or texture carries the section more than the lead vocal.",
+      "aliases": [
+        "instrumental-bed",
+        "instrumental_plateau",
+        "music_bed"
       ]
     }
   ]

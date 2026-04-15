@@ -15,7 +15,7 @@ from analyzer.stages.event_timeline import export_event_timeline
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.genre import classify_genre
-from analyzer.stages.harmonic import extract_hpcp_and_chords
+from analyzer.stages.harmonic import build_reference_harmonic_layer, extract_hpcp_and_chords
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.light_design import generate_lighting_score
@@ -30,6 +30,7 @@ from analyzer.stages.unified import assemble_music_feature_layers
 from analyzer.stages.validation import (
     build_validation_report,
     skipped_result,
+    validate_chords,
     validate_beats,
     write_validation_markdown,
     write_validation_report,
@@ -44,6 +45,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     _print_phase_marker(paths.song_name, "phase-1", "start")
     try:
         ensure_directory(paths.song_artifacts_dir)
+        reference_chords_path = paths.reference("moises", "chords.json")
+        has_reference_chords = reference_chords_path is not None and reference_chords_path.exists()
         stems = ensure_stems(paths)
         timing = extract_timing_grid(paths)
         beat_validation = (
@@ -51,13 +54,14 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             if "beats" in config.compare_targets
             else skipped_result()
         )
-        if beat_validation.status == "failed" and beat_validation.reference_file is not None:
+        inferred_beats_path: str | None = None
+        if has_reference_chords:
             inferred_beats_path = paths.artifact("essentia", "beats_inferred.json")
             write_json(inferred_beats_path, timing)
             timing = build_reference_timing_grid(
                 paths,
                 float(timing.get("duration", 0.0)),
-                reference_chords_path=beat_validation.reference_file,
+                reference_chords_path=str(reference_chords_path),
                 inferred_beats_path=str(inferred_beats_path),
             )
             if not timing.get("beats"):
@@ -65,6 +69,20 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             write_json(paths.artifact("essentia", "beats.json"), timing)
         genre_result = classify_genre(paths)
         _, harmonic = extract_hpcp_and_chords(paths, stems, timing)
+        chord_validation = (
+            validate_chords(paths, harmonic, config.chord_min_overlap)
+            if "chords" in config.compare_targets
+            else skipped_result()
+        )
+        inferred_harmonic_path: str | None = None
+        if has_reference_chords:
+            inferred_harmonic_path = paths.artifact("harmonic_inference", "layer_a_harmonic.inferred.json")
+            write_json(inferred_harmonic_path, harmonic)
+            harmonic = build_reference_harmonic_layer(
+                paths,
+                timing,
+                inferred_harmonic_path=str(inferred_harmonic_path),
+            )
         energy_features = extract_energy_features(paths, timing)
         sections = segment_sections(paths, timing, harmonic, energy_features)
         symbolic = extract_symbolic_features(paths, stems, timing, sections)
@@ -133,11 +151,18 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             paths=paths,
             compare_targets=config.compare_targets,
             beat_validation=beat_validation,
+            chord_validation=chord_validation,
             beat_tolerance_seconds=config.beat_tolerance_seconds,
             tolerance_seconds=config.tolerance_seconds,
             chord_min_overlap=config.chord_min_overlap,
             fail_on_mismatch=config.fail_on_mismatch,
         )
+        if inferred_beats_path is not None:
+            report["generated_artifacts"]["inferred_beats_file"] = str(inferred_beats_path)
+            report["notes"].append("Moises chord reference data was present, so downstream phases used the canonical beat grid rebuilt from that reference while preserving the inferred beat grid separately for diagnostics.")
+        if inferred_harmonic_path is not None:
+            report["generated_artifacts"]["inferred_harmonic_file"] = str(inferred_harmonic_path)
+            report["notes"].append("Moises chord reference data was present, so downstream phases used the canonical harmonic layer rebuilt from that reference while preserving the inferred harmonic layer separately for diagnostics.")
         if human_hint_alignment:
             report["generated_artifacts"]["human_hints_alignment_file"] = human_hint_alignment["json_path"]
             report["generated_artifacts"]["human_hints_alignment_markdown"] = human_hint_alignment["markdown_path"]

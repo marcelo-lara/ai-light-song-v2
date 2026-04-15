@@ -5,6 +5,7 @@ import math
 import numpy as np
 
 from analyzer.io import write_json
+from analyzer.stages._stem_activity import estimate_stem_activity_by_beat
 from analyzer.models import SCHEMA_VERSION, SectionWindow, to_jsonable
 from analyzer.paths import SongPaths
 
@@ -20,6 +21,17 @@ INTRO_BOUNDARY_PRESERVE_THRESHOLD = 1.5
 SPARSE_BREAK_MOTION_SLACK = 0.01
 EARLY_SPARSE_BREAK_ENERGY_SLACK = 0.01
 EARLY_SPARSE_BREAK_MOTION_OFFSET = 0.02
+
+
+def _uses_reference_timing(timing: dict) -> bool:
+    generated_from = timing.get("generated_from", {})
+    if not isinstance(generated_from, dict):
+        return False
+    engine = str(generated_from.get("engine") or "")
+    dependencies = generated_from.get("dependencies", {})
+    return engine == "reference.moises.chords" or (
+        isinstance(dependencies, dict) and "reference_chords" in dependencies
+    )
 
 
 def _snap_to_bar_boundary(candidate_time: float, bar_starts: list[float]) -> float:
@@ -61,7 +73,12 @@ def _active_chord_root(chord_events: list[dict], time_s: float) -> str | None:
     return None
 
 
-def _build_bar_feature_rows(timing: dict, harmonic: dict, energy: dict) -> list[dict[str, object]]:
+def _build_bar_feature_rows(
+    timing: dict,
+    harmonic: dict,
+    energy: dict,
+    stem_activity_by_beat: dict[str, list[float]] | None = None,
+) -> list[dict[str, object]]:
     beat_features = energy["beat_features"]
     note_index = _note_index()
     rows: list[dict[str, object]] = []
@@ -88,6 +105,12 @@ def _build_bar_feature_rows(timing: dict, harmonic: dict, energy: dict) -> list[
         energy_mean = float(np.mean([row["loudness_avg"] for row in beats_in_bar]))
         onset_mean = float(np.mean([row["onset_density"] for row in beats_in_bar]))
         flux_mean = float(np.mean([row["flux_avg"] for row in beats_in_bar]))
+        start_beat_index = max(0, int(beats_in_bar[0]["beat"]) - 1)
+        end_beat_index = min(len(energy["beat_features"]), int(beats_in_bar[-1]["beat"]))
+        vocals_mean = float(np.mean((stem_activity_by_beat or {}).get("vocals", [0.0])[start_beat_index:end_beat_index] or [0.0]))
+        drums_mean = float(np.mean((stem_activity_by_beat or {}).get("drums", [0.0])[start_beat_index:end_beat_index] or [0.0]))
+        harmonic_mean = float(np.mean((stem_activity_by_beat or {}).get("harmonic", [0.0])[start_beat_index:end_beat_index] or [0.0]))
+        bass_mean = float(np.mean((stem_activity_by_beat or {}).get("bass", [0.0])[start_beat_index:end_beat_index] or [0.0]))
         rows.append(
             {
                 "bar": int(bar["bar"]),
@@ -96,8 +119,12 @@ def _build_bar_feature_rows(timing: dict, harmonic: dict, energy: dict) -> list[
                 "energy": energy_mean,
                 "onset": onset_mean,
                 "flux": flux_mean,
+                "vocals": vocals_mean,
+                "drums": drums_mean,
+                "harmonic": harmonic_mean,
+                "bass": bass_mean,
                 "vector": np.concatenate(
-                    [np.array([energy_mean, onset_mean, flux_mean], dtype=float), chord_histogram]
+                    [np.array([energy_mean, onset_mean, flux_mean, vocals_mean, drums_mean, harmonic_mean, bass_mean], dtype=float), chord_histogram]
                 ),
             }
         )
@@ -159,6 +186,10 @@ def _build_phrase_blocks(bar_rows: list[dict[str, object]]) -> list[dict[str, ob
                 "energy": float(np.mean([row["energy"] for row in chunk])),
                 "onset": float(np.mean([row["onset"] for row in chunk])),
                 "flux": float(np.mean([row["flux"] for row in chunk])),
+                "vocals": float(np.mean([row["vocals"] for row in chunk])),
+                "drums": float(np.mean([row["drums"] for row in chunk])),
+                "harmonic": float(np.mean([row["harmonic"] for row in chunk])),
+                "bass": float(np.mean([row["bass"] for row in chunk])),
                 "vector": vector,
             }
         )
@@ -174,6 +205,10 @@ def _build_phrase_blocks(bar_rows: list[dict[str, object]]) -> list[dict[str, ob
         previous["energy"] = float(np.mean([previous["energy"], trailing["energy"]]))
         previous["onset"] = float(np.mean([previous["onset"], trailing["onset"]]))
         previous["flux"] = float(np.mean([previous["flux"], trailing["flux"]]))
+        previous["vocals"] = float(np.mean([previous["vocals"], trailing["vocals"]]))
+        previous["drums"] = float(np.mean([previous["drums"], trailing["drums"]]))
+        previous["harmonic"] = float(np.mean([previous["harmonic"], trailing["harmonic"]]))
+        previous["bass"] = float(np.mean([previous["bass"], trailing["bass"]]))
         previous["vector"] = merged_vector / norm if norm > 0 else merged_vector
         blocks.pop()
 
@@ -252,6 +287,10 @@ def _merge_group(group: list[dict[str, object]]) -> dict[str, object]:
         "energy": float(np.mean([block["energy"] for block in group])),
         "onset": float(np.mean([block["onset"] for block in group])),
         "flux": float(np.mean([block["flux"] for block in group])),
+        "vocals": float(np.mean([block["vocals"] for block in group])),
+        "drums": float(np.mean([block["drums"] for block in group])),
+        "harmonic": float(np.mean([block["harmonic"] for block in group])),
+        "bass": float(np.mean([block["bass"] for block in group])),
         "vector": vector,
     }
 
@@ -342,6 +381,10 @@ def _section_character_labels(sections: list[dict[str, object]]) -> list[str]:
     energies = np.array([section["energy"] for section in sections], dtype=float)
     motions = np.array([(float(section["onset"]) + float(section["flux"])) / 2.0 for section in sections], dtype=float)
     repetitions = np.array(_compute_section_repetition(sections), dtype=float)
+    vocals = np.array([float(section.get("vocals", 0.0)) for section in sections], dtype=float)
+    drums = np.array([float(section.get("drums", 0.0)) for section in sections], dtype=float)
+    harmonic = np.array([float(section.get("harmonic", 0.0)) for section in sections], dtype=float)
+    bass = np.array([float(section.get("bass", 0.0)) for section in sections], dtype=float)
     energy_low = float(np.quantile(energies, 0.35))
     energy_high = float(np.quantile(energies, 0.7))
     energy_peak = float(np.quantile(energies, 0.85))
@@ -354,50 +397,78 @@ def _section_character_labels(sections: list[dict[str, object]]) -> list[str]:
         energy_value = float(energies[index])
         motion_value = float(motions[index])
         repetition_value = float(repetitions[index])
+        vocal_value = float(vocals[index])
+        drum_value = float(drums[index])
+        harmonic_value = float(harmonic[index])
+        bass_value = float(bass[index])
         previous_energy = float(energies[index - 1]) if index > 0 else energy_value
         energy_delta = energy_value - previous_energy
 
         if index == 0:
-            labels.append("ambient_opening")
+            if vocal_value >= 0.45 and drum_value <= 0.2:
+                labels.append("vocal_spotlight")
+            else:
+                labels.append("ambient_opening")
             continue
         if index == len(sections) - 1:
             labels.append("release_tail")
             continue
+        if vocal_value >= max(drum_value + 0.2, harmonic_value * 0.8) and drum_value <= (motion_low + 0.05):
+            if energy_value >= energy_high:
+                labels.append("vocal_lift")
+            else:
+                labels.append("vocal_spotlight")
+            continue
+        if drum_value >= 0.55 and harmonic_value <= 0.35 and vocal_value <= 0.25:
+            labels.append("percussion_break")
+            continue
+        if (harmonic_value + bass_value) >= 0.7 and vocal_value <= 0.25 and drum_value <= 0.45:
+            labels.append("instrumental_bed")
+            continue
         if energy_value >= energy_peak and (repetition_value >= repetition_median or motion_value >= motion_high):
-            labels.append("peak_lift")
+            labels.append("focal_lift")
             continue
         if energy_delta >= 0.04 and motion_value >= motion_high:
-            labels.append("rising_drive")
+            labels.append("momentum_lift")
             continue
         if energy_value <= energy_low and motion_value <= (motion_low + SPARSE_BREAK_MOTION_SLACK):
-            labels.append("sparse_break")
+            labels.append("breath_space")
             continue
         if index == 1 and energy_value <= (energy_low + EARLY_SPARSE_BREAK_ENERGY_SLACK) and motion_value <= (motion_high - EARLY_SPARSE_BREAK_MOTION_OFFSET):
-            labels.append("sparse_break")
+            labels.append("breath_space")
             continue
         if repetition_value < repetition_median and (motion_value >= motion_high or abs(energy_delta) >= 0.05):
-            labels.append("tense_transition")
+            labels.append("contrast_bridge")
             continue
         if motion_value >= motion_high or energy_value >= energy_high:
-            labels.append("driving_pulse")
+            labels.append("groove_plateau")
             continue
-        labels.append("steady_flow")
+        labels.append("flowing_plateau")
     return labels
 
 
 def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dict) -> dict:
-    bar_rows = _build_bar_feature_rows(timing, harmonic, energy)
+    beat_times = [float(beat["time"]) for beat in timing.get("beats", [])]
+    song_end = float(timing["bars"][-1]["end_s"]) if timing.get("bars") else (beat_times[-1] if beat_times else 0.0)
+    stem_activity_by_beat = {
+        "vocals": estimate_stem_activity_by_beat(paths.stems_dir / "vocals.wav", beat_times, song_end),
+        "drums": estimate_stem_activity_by_beat(paths.stems_dir / "drums.wav", beat_times, song_end),
+        "harmonic": estimate_stem_activity_by_beat(paths.stems_dir / "harmonic.wav", beat_times, song_end),
+        "bass": estimate_stem_activity_by_beat(paths.stems_dir / "bass.wav", beat_times, song_end),
+    }
+    bar_rows = _build_bar_feature_rows(timing, harmonic, energy, stem_activity_by_beat)
     beat_rows = _build_beat_feature_rows(harmonic, energy)
     blocks = _build_phrase_blocks(bar_rows)
     grouped_sections = [_merge_group(group) for group in _group_phrase_blocks(blocks, beat_rows)]
     labels = _section_character_labels(grouped_sections)
     repetitions = _compute_section_repetition(grouped_sections)
+    reference_timing = _uses_reference_timing(timing)
 
     bar_starts = [float(bar["start_s"]) for bar in timing["bars"]]
     section_starts = []
     for index, section in enumerate(grouped_sections):
         coarse_start = _snap_to_bar_boundary(float(section["start_s"]), bar_starts)
-        if index > 0:
+        if index > 0 and not reference_timing:
             coarse_start = _refine_boundary_to_local_novelty(coarse_start, beat_rows)
             if coarse_start <= section_starts[-1]:
                 coarse_start = _snap_to_bar_boundary(float(section["start_s"]), bar_starts)
@@ -428,8 +499,8 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
             "beats_file": str(paths.artifact("essentia", "beats.json")),
             "harmonic_layer_file": str(paths.artifact("layer_a_harmonic.json")),
             "energy_features_file": str(paths.artifact("energy_summary", "features.json")),
-            "snapping_rule": "coarse section starts snap to the nearest bar boundary, then nearby beat boundaries within the local novelty window may refine the final cut when contrast evidence is stronger",
-            "label_strategy": "lighting-oriented section_character labels from section-scale energy, motion, repetition, and contrast cues",
+            "snapping_rule": "coarse section starts snap to the nearest bar boundary; inferred timing may refine those starts to nearby beat boundaries when novelty contrast is materially stronger, while reference-promoted timing keeps section starts on canonical bar anchors",
+            "label_strategy": "context-aware musical-state section_character labels from section-scale energy, motion, repetition, and contrast cues",
             "annotation_strategy": "structural change windows are primary; section_character labels are auxiliary lighting metadata",
         },
         "sections": sections,
