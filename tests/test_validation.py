@@ -244,7 +244,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         self.assertEqual(result.status, "passed")
 
     def test_find_pattern_matches_for_bar_window_matches_subspan_inside_occurrence(self) -> None:
-        phrase = ["C#", "D#", "Fm", "D#"] * 6
+        phrase = ["C#", "C#", "D#", "D#", "Fm", "Fm", "D#", "D#"] * 3
         bar_chords = phrase + phrase
         timing = _build_timing(bar_chords)
         harmonic = _build_harmonic(bar_chords)
@@ -272,11 +272,11 @@ class ValidationDiagnosticsTests(unittest.TestCase):
 
         self.assertEqual(len(matches), 1)
         self.assertEqual(matches[0]["pattern_id"], "pattern_A")
-        self.assertEqual(matches[0]["occurrence_start_bar"], 1)
-        self.assertEqual(matches[0]["occurrence_end_bar"], 24)
-        self.assertEqual(matches[0]["window_sequence"], "C#|D#|Fm|D#")
-        self.assertEqual(matches[0]["window_collapsed_sequence"], "C# → D# → Fm → D#")
-        self.assertEqual(matches[0]["window_bar_sequence"], "C#|D#|Fm|D#|C#|D#|Fm|D#")
+        self.assertEqual(matches[0]["occurrence_start_bar"], 9)
+        self.assertEqual(matches[0]["occurrence_end_bar"], 16)
+        self.assertEqual(matches[0]["window_sequence"], "C#|C#|D#|D#|Fm|Fm|D#|D#")
+        self.assertEqual(matches[0]["window_collapsed_sequence"], "C#→D#→Fm→D#")
+        self.assertEqual(matches[0]["window_bar_sequence"], "C#|C#|D#|D#|Fm|Fm|D#|D#")
 
 
 if __name__ == "__main__":

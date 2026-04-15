@@ -77,15 +77,15 @@ class PatternMiningTests(unittest.TestCase):
 
         self.assertEqual(payload["settings"]["max_pattern_bars"], 24)
         self.assertEqual(payload["pattern_count"], 1)
-        self.assertEqual(payload["patterns"][0]["bar_count"], 24)
-        self.assertEqual(payload["patterns"][0]["occurrence_count"], 2)
+        self.assertEqual(payload["patterns"][0]["bar_count"], 4)
+        self.assertEqual(payload["patterns"][0]["occurrence_count"], 12)
         self.assertEqual(payload["patterns"][0]["sequence"], "C#|D#|Fm|D#")
-        self.assertEqual(payload["patterns"][0]["collapsed_sequence"], "C# → D# → Fm → D#")
+        self.assertEqual(payload["patterns"][0]["collapsed_sequence"], "C#→D#→Fm→D#")
         self.assertEqual(payload["patterns"][0]["bar_sequence"], "|".join(phrase))
         self.assertEqual(
             [occurrence["start_bar"] for occurrence in payload["patterns"][0]["occurrences"]],
-            [1, 25],
+            [1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45],
         )
         self.assertEqual(payload["patterns"][0]["occurrences"][0]["sequence"], "C#|D#|Fm|D#")
-        self.assertEqual(payload["patterns"][0]["occurrences"][0]["collapsed_sequence"], "C# → D# → Fm → D#")
-        self.assertEqual(payload["patterns"][0]["occurrences"][0]["bar_sequence"], "|".join(phrase))
+        self.assertEqual(payload["patterns"][0]["occurrences"][0]["collapsed_sequence"], "C#→D#→Fm→D#")
+        self.assertEqual(payload["patterns"][0]["occurrences"][0]["bar_sequence"], "C#|D#|Fm|D#")
