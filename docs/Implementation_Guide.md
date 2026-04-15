@@ -87,15 +87,16 @@ Representative artifact: `layer_a_harmonic.json`.
 
 ## EPIC 3: Symbolic Event Summary
 
-Goal: translate audio into note-level and phrase-level musical behavior.
+Goal: translate audio into note-level, drum-hit, and phrase-level musical behavior.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
 | 3.1 | MIDI-like transcription | validated multi-source note events from stems and full mix | `docs/3.1.midi_transcription_story.md` |
-| 3.2 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/3.2.symbolic_feature_engineering_story.md` |
-| 3.3 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/3.3.temporal_alignment_story.md` |
-| 3.4 | Section hint inference | deterministic symbolic and structural section hints with editable output merge | `docs/3.4.section_hints_story.md` |
-| 3.5 | LLM-friendly abstraction | deterministic musician-readable symbolic descriptions | `docs/3.5.llm_friendly_abstraction_story.md` |
+| 3.2 | Drums transcription | reviewable kick, snare, and hat event artifact | `docs/3.2.drums_transcription_story.md` |
+| 3.3 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/3.3.symbolic_feature_engineering_story.md` |
+| 3.4 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/3.4.temporal_alignment_story.md` |
+| 3.5 | Section hint inference | deterministic symbolic and structural section hints with editable output merge | `docs/3.5.section_hints_story.md` |
+| 3.6 | LLM-friendly abstraction | deterministic musician-readable symbolic descriptions | `docs/3.6.llm_friendly_abstraction_story.md` |
 
 Representative artifact: `layer_b_symbolic.json`.
 
@@ -202,7 +203,8 @@ Before the full pipeline is considered ready, the implementation should expose a
 1. run against a real song such as `What a Feeling - Courtney Storm.mp3`
 2. generate inferred analysis artifacts inside `data/artifacts/<Song - Artist>/`
 3. compare inferred chord outputs against human-validated reference chords and compare inferred section change points against validation-only reference segments in `data/reference/<Song - Artist>/moises/` when they are available
-4. emit a validation summary or report without copying reference values into generated artifacts
+4. validate the generated Story 3.2 drum review artifact for recognizable kick, snare, and hat behavior on `What a Feeling - Courtney Storm.mp3` without treating reference data as generation fallback
+5. emit a validation summary or report without copying reference values into generated artifacts
 
 Reference files under `data/reference/` are optional validation inputs. The pipeline must infer chords, sections, and other generated values from the documented analysis stack first. When reference files are present, they may be used to validate or explicitly review those inferred results, but they must not silently replace generated artifact values.
 

@@ -95,7 +95,7 @@ Run the first-phase validation entry point:
 docker compose run --rm app \
   ./analyze \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
-  --compare beats,chords,sections,energy,patterns,unified,events
+  --compare beats,chords,drums,sections,energy,patterns,unified,events
 ```
 
 Batch mode is also supported for all mounted songs:

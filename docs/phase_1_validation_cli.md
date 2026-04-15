@@ -12,6 +12,7 @@ For phase 1, that checkpoint should be a developer-facing entry point that can a
 
 - `data/reference/What a Feeling - Courtney Storm/moises/chords.json` when available
 - `data/reference/What a Feeling - Courtney Storm/moises/segments.json` when available
+- the generated drum-hit review artifact for recognizable kick, snare, and hat behavior without relying on validation-only fallback data
 
 Current reference posture:
 
@@ -43,7 +44,7 @@ Acceptable implementations include:
 Current implementation status:
 
 - the repository now includes a top-level CLI entry point at `python -m analyzer` and a repo-root helper at `./analyze`
-- the module currently covers the first runnable phase-1 slice: stem separation, canonical beat extraction, harmonic inference, symbolic analysis, canonical energy derivation, pattern mining, unified feature assembly, and validation report generation
+- the module currently covers the first runnable phase-1 slice: stem separation, canonical beat extraction, harmonic inference, drums transcription review, symbolic analysis, canonical energy derivation, pattern mining, unified feature assembly, and validation report generation
 
 The exact command name can be chosen by the implementation team, but the interface must be documented and runnable inside Docker.
 
@@ -55,7 +56,7 @@ Recommended baseline command:
 ./analyze \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --reference-root "/data/reference" \
-  --compare beats,chords,sections,energy,patterns,unified,events
+  --compare beats,chords,drums,sections,energy,patterns,unified,events
 ```
 
 Equivalent Python module form is the supported container entry point:
@@ -64,7 +65,7 @@ Equivalent Python module form is the supported container entry point:
 python -m analyzer \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
   --reference-root "/data/reference" \
-  --compare beats,chords,sections,energy,patterns,unified,events
+  --compare beats,chords,drums,sections,energy,patterns,unified,events
 ```
 
 Batch mode analyzes every `.mp3` in `/data/songs` and writes canonical validation reports under each song artifact directory:
@@ -83,7 +84,7 @@ The current batch implementation isolates each song run in a subprocess and reus
 - `--songs-root`: optional directory override for batch mode. Defaults to the sibling `songs/` directory next to `--artifacts-root`.
 - `--artifacts-root`: optional root directory where inferred outputs are written. Defaults to `/data/artifacts`.
 - `--reference-root`: optional root directory for validation-only reference files. Defaults to `/data/reference`. If the directory or files are missing, inference must still run and validation for those targets is skipped.
-- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `sections`, `energy`, `patterns`, `events`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. When that Moises reference file exists, the pipeline preserves the inferred beat grid separately and then promotes a canonical reference-derived beat grid for all downstream phases. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target validates the Epic 5 event chain across `event_inference/`, review outputs, timeline exports, and benchmark metadata.
+- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `drums`, `sections`, `energy`, `patterns`, `events`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. When that Moises reference file exists, the pipeline preserves the inferred beat grid separately and then promotes a canonical reference-derived beat grid for all downstream phases. The `drums` target validates `data/artifacts/<Song - Artist>/symbolic_transcription/drum_events.json` as a producer-scoped review artifact: rows must be time-ordered, supported labels must be limited to `kick`, `snare`, `hat`, or unresolved, summary counts must match the event rows, and the report should call out whether the detected pattern on `What a Feeling - Courtney Storm.mp3` exposes a recognizable backbeat and hat pulse. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target validates the Epic 5 event chain across `event_inference/`, review outputs, timeline exports, and benchmark metadata.
 - chord validation should use a stricter gate than the historical phase-1 default: materially low match ratio, persistent label mismatches, or repeated timing-overlap failures should count as a failed inferred harmonic result even if some overlap remains.
 - when a Moises chord reference exists, the analyzer preserves the inferred harmonic layer separately and promotes an explicit canonical harmonic layer rebuilt from the reference file for downstream phases.
 - when `data/reference/<Song - Artist>/human/human_hints.json` exists, the analyzer also writes review-only alignment files under `data/artifacts/<Song - Artist>/validation/` that compare those hint windows against generated sections, events, patterns, and harmonic events. These files aid issue triage and review; they do not replace generated outputs.
@@ -109,16 +110,18 @@ The phase 1 analyzer must:
 2. generate inferred timing, harmonic, and section-related artifacts under `data/artifacts/<Song - Artist>/`
 3. compare inferred beat outputs against beat timestamps embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available
 4. compare inferred chord outputs against `data/reference/<Song - Artist>/moises/chords.json` when that file is available
-5. compare inferred section change points against `data/reference/<Song - Artist>/moises/segments.json` when that file is available
-6. validate canonical energy, pattern, event, and unified feature artifacts for internal consistency
-7. write a validation report under `data/artifacts/<Song - Artist>/validation/`
-8. exit with a documented success or failure status
+5. validate `data/artifacts/<Song - Artist>/symbolic_transcription/drum_events.json` for schema integrity, count consistency, and recognizable kick, snare, and hat pulse behavior on `What a Feeling - Courtney Storm.mp3`
+6. compare inferred section change points against `data/reference/<Song - Artist>/moises/segments.json` when that file is available
+7. validate canonical energy, pattern, event, and unified feature artifacts for internal consistency
+8. write a validation report under `data/artifacts/<Song - Artist>/validation/`
+9. exit with a documented success or failure status
 
 ## Required Outputs
 
 At minimum:
 
 - inferred artifacts under `data/artifacts/<Song - Artist>/`
+- a generated drum review artifact at `data/artifacts/<Song - Artist>/symbolic_transcription/drum_events.json` when the drums stage is enabled for the run
 - a validation report such as:
   - `data/artifacts/<Song - Artist>/validation/phase_1_report.json`
   - or `data/artifacts/<Song - Artist>/validation/phase_1_report.md`
@@ -143,6 +146,8 @@ At minimum:
 - Comparisons should report agreement, disagreement, and confidence or tolerance when relevant.
 - Beat comparisons should use the inferred timing grid produced by Story 1.2, run before downstream stories consume that grid, and evaluate only the reference-covered portion of the timeline.
 - If a Moises chord reference exists, downstream stories should use the promoted canonical reference timing grid rather than the inferred timing grid, and the report should record that takeover explicitly.
+- Drum comparisons should validate the generated Story 3.2 review artifact without treating `data/reference/` as drum generation input or silent fallback truth.
+- Drum validation should report whether kick, snare, and hat detections remain plausible at the song level, and should flag unresolved or over-dense output explicitly instead of masking uncertainty.
 - Section comparisons should use structural change-point alignment. Reference labels may be reported for review but should not control pass/fail.
 - Chord comparisons should use time-aligned event comparison and label comparison.
 
@@ -156,6 +161,8 @@ At minimum:
 - beat timing diagnostics that distinguish global offset, local drift, and the reference beat interval used for diagnosis
 - chord comparison summary
 - chord miss attribution that distinguishes timing-overlap failures from label mismatches when reference chords are available
+- drum review summary, including kick, snare, hat, and unresolved counts
+- drum diagnostics that distinguish plausible backbeat/pulse detection from over-generated or sparse artifacts
 - section comparison summary
 - section boundary timing diagnostics that highlight snap-like offsets in beat units when reference beat annotations are available
 - energy-layer internal consistency summary
@@ -182,6 +189,7 @@ At minimum:
   },
   "generated_artifacts": {
     "harmonic_layer_file": "/data/artifacts/What a Feeling - Courtney Storm/layer_a_harmonic.json",
+    "drum_events_file": "/data/artifacts/What a Feeling - Courtney Storm/symbolic_transcription/drum_events.json",
     "energy_layer_file": "/data/artifacts/What a Feeling - Courtney Storm/layer_c_energy.json",
     "event_machine_file": "/data/artifacts/What a Feeling - Courtney Storm/event_inference/events.machine.json",
     "event_timeline_file": "/data/output/What a Feeling - Courtney Storm/song_event_timeline.json"
@@ -218,6 +226,21 @@ At minimum:
         "median_overlap_ratio": 0.91
       }
     },
+    "drums": {
+      "status": "passed",
+      "event_count": 96,
+      "kick_count": 24,
+      "snare_count": 24,
+      "hat_count": 44,
+      "unresolved_count": 4,
+      "diagnostics": {
+        "time_sorted": true,
+        "summary_counts_match": true,
+        "recognizable_backbeat": true,
+        "recognizable_hat_pulse": true,
+        "overdense_hat_regions": 0
+      }
+    },
     "sections": {
       "status": "passed",
       "matched": 7,
@@ -248,8 +271,9 @@ Phase 1 is successful when a developer can run the analyzer in Docker against `W
 
 1. generated analysis artifacts
 2. a comparison report against human-validated reference chords and section change points when those files are available
-3. enough detail to understand whether the current implementation is improving or regressing
-4. a stable CLI command shape that can be reused in Docker-based smoke tests and automation
+3. a drum review summary showing whether the generated kick, snare, and hat artifact for `What a Feeling - Courtney Storm.mp3` is rhythmically plausible
+4. enough detail to understand whether the current implementation is improving or regressing
+5. a stable CLI command shape that can be reused in Docker-based smoke tests and automation
 
 ## Out of Scope
 

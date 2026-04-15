@@ -20,7 +20,7 @@ The score contract assumes these upstream inputs already exist and are internall
 - canonical beat and bar timing from Story 1.2
 - section windows and labels from Story 4.2
 - accent windows, peaks, dips, and energy transitions from Story 4.3
-- phrase-aligned symbolic timing and phrase-grouping anchors from Story 3.3
+- phrase-aligned symbolic timing and phrase-grouping anchors from Story 3.4
 - motif-level and repeated-phrase summaries from `layer_b_symbolic.json`
 - harmonic progression-pattern occurrences from `layer_d_patterns.json`
 - unified timing and cross-layer references from `music_feature_layers.json`

@@ -35,7 +35,9 @@ Contains symbolic and note-event analysis outputs such as:
 - repeated motifs
 - section-level symbolic cards
 
-Primary source stories: EPIC 3.1 through EPIC 3.5.
+Primary source stories: EPIC 3.1 and EPIC 3.3 through EPIC 3.6.
+
+Story 3.2 adds a producer-scoped drum review artifact under `symbolic_transcription/` without expanding the canonical Layer B contract in phase 1.
 
 ### `layer_c_energy.json`
 
@@ -118,6 +120,10 @@ Stores repeated stem-aware patterns used for comparison or pattern-aware lightin
 ### `symbolic_transcription/basic_pitch/*.json`
 
 Stores producer-scoped raw Basic Pitch note caches, model-output summaries, and per-stem transcription metadata used to build `layer_b_symbolic.json`.
+
+### `symbolic_transcription/drum_events.json`
+
+Stores the producer-scoped kick, snare, and hat review artifact from Story 3.2 for rhythmic inspection and debugging.
 
 ### `symbolic_transcription/validation.json`
 

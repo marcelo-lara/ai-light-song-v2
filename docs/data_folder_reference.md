@@ -48,6 +48,7 @@ data/
           harmonic.mid
           vocals.json
           vocals.mid
+        drum_events.json
         hints.json
         validation.json
       validation/
@@ -191,7 +192,7 @@ Why it matters: upstream source for bass-oriented symbolic analysis and bass not
 
 Summary: isolated drums stem audio.
 
-Why it matters: upstream source for rhythm- and hit-oriented symbolic review.
+Why it matters: upstream source for rhythm- and hit-oriented symbolic review and drum-hit transcription.
 
 ### `data/stems/<Song - Artist>/harmonic.wav`
 
@@ -330,6 +331,17 @@ LLM hint:
 - See: `sections[].section_id`, `label`, and `hints[]`.
 - Use: inspect which hints were inferred deterministically before any user edits were merged.
 - Avoid: treating this producer-scoped file as the user-editable source; use `data/output/<Song - Artist>/hints.json` for that.
+
+### `data/artifacts/<Song - Artist>/symbolic_transcription/drum_events.json`
+
+Summary: simple producer-scoped drum-hit review artifact containing kick, snare, and hat event rows plus summary counts.
+
+Why it matters: fastest way to inspect rhythmic pulse and debug drum-hit translation without opening note-heavy symbolic layers first.
+
+LLM hint:
+- See: `events[].time`, `event_type`, `confidence`, and the `summary` counts.
+- Use: inspect whether kick, snare, and hat placements support the intended rhythmic reading of the song.
+- Avoid: treating this phase-1 review artifact as a full replacement for the canonical symbolic layer.
 
 ### `data/artifacts/<Song - Artist>/symbolic_transcription/basic_pitch/bass.json`
 
