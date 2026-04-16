@@ -8,7 +8,7 @@ from pathlib import Path
 from analyzer.paths import SongPaths
 from analyzer.stages.harmonic import build_reference_harmonic_layer
 from analyzer.stages.patterns import extract_chord_patterns
-from analyzer.stages.validation import _validate_chords, _validate_patterns_layer, _validate_sections, find_pattern_matches_for_bar_window, validate_beats
+from analyzer.stages.validation import _validate_chords, _validate_patterns_layer, _validate_sections, find_pattern_matches_for_bar_window, validate_beats, validate_drums
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -67,6 +67,95 @@ def _build_harmonic(bar_chords: list[str]) -> dict:
 
 
 class ValidationDiagnosticsTests(unittest.TestCase):
+    def test_validate_drums_reports_debug_paths_and_diagnostics(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "Example Song.mp3",
+                artifacts_root=root / "artifacts",
+                reference_root=root / "reference",
+                output_root=root / "output",
+                stems_root=root / "stems",
+            )
+            timing = _build_timing(["C#", "D#"])
+            _write_json(
+                paths.artifact("symbolic_transcription", "drum_events.json"),
+                {
+                    "schema_version": "1.0",
+                    "song_name": "Example Song",
+                    "generated_from": {
+                        "source_song_path": str(paths.song_path),
+                        "engine": "audiohacking.omnizart.drum",
+                        "dependencies": {
+                            "drums_stem": str(paths.stems_dir / "drums.wav"),
+                            "beats_file": str(paths.artifact("essentia", "beats.json")),
+                            "raw_midi_cache": str(paths.artifact("symbolic_transcription", "omnizart", "drums.mid")),
+                        },
+                        "debug_sources": {
+                            "full_mix": str(paths.song_path),
+                            "drums_stem": str(paths.stems_dir / "drums.wav"),
+                        },
+                    },
+                    "summary": {
+                        "event_count": 4,
+                        "kick_count": 1,
+                        "snare_count": 1,
+                        "hat_count": 2,
+                        "unresolved_count": 0,
+                    },
+                    "events": [
+                        {
+                            "event_id": "drum-event-00001",
+                            "time": 0.0,
+                            "event_type": "kick",
+                            "alignment_resolved": True,
+                            "aligned_bar": 1,
+                            "aligned_beat": 1,
+                            "aligned_beat_global": 1,
+                        },
+                        {
+                            "event_id": "drum-event-00002",
+                            "time": 0.25,
+                            "event_type": "hat",
+                            "alignment_resolved": True,
+                            "aligned_bar": 1,
+                            "aligned_beat": 1,
+                            "aligned_beat_global": 1,
+                        },
+                        {
+                            "event_id": "drum-event-00003",
+                            "time": 0.5,
+                            "event_type": "snare",
+                            "alignment_resolved": True,
+                            "aligned_bar": 1,
+                            "aligned_beat": 2,
+                            "aligned_beat_global": 2,
+                        },
+                        {
+                            "event_id": "drum-event-00004",
+                            "time": 0.75,
+                            "event_type": "hat",
+                            "alignment_resolved": True,
+                            "aligned_bar": 1,
+                            "aligned_beat": 2,
+                            "aligned_beat_global": 2,
+                        },
+                    ],
+                },
+            )
+            drum_midi_path = paths.artifact("symbolic_transcription", "omnizart", "drums.mid")
+            drum_midi_path.parent.mkdir(parents=True, exist_ok=True)
+            drum_midi_path.write_bytes(b"MThd")
+
+            result = validate_drums(paths, timing)
+
+        self.assertEqual(result.status, "passed")
+        self.assertIsNotNone(result.diagnostics)
+        assert result.diagnostics is not None
+        self.assertEqual(result.diagnostics["kick_count"], 1)
+        self.assertEqual(result.diagnostics["snare_count"], 1)
+        self.assertFalse(result.diagnostics["recognizable_hat_pulse"])
+
     def test_validate_beats_reports_global_offset_and_local_drift(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)

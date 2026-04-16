@@ -15,6 +15,7 @@ from analyzer.stages.event_timeline import export_event_timeline
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.genre import classify_genre
+from analyzer.stages.drums import extract_drum_events
 from analyzer.stages.harmonic import build_reference_harmonic_layer, extract_hpcp_and_chords
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
@@ -86,6 +87,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
         energy_features = extract_energy_features(paths, timing)
         sections = segment_sections(paths, timing, harmonic, energy_features)
         symbolic = extract_symbolic_features(paths, stems, timing, sections)
+        drum_events = extract_drum_events(paths, stems, timing, sections)
         hints = generate_section_hints(paths, symbolic, sections)
         ui_outputs = build_ui_data(paths)
         energy = derive_energy_layer(paths, timing, energy_features, sections)
@@ -112,6 +114,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
                 "hpcp": str(paths.artifact("essentia", "hpcp.json")),
                 "harmonic_layer": str(paths.artifact("layer_a_harmonic.json")),
                 "symbolic_layer": str(paths.artifact("layer_b_symbolic.json")),
+                "drum_events": str(paths.artifact("symbolic_transcription", "drum_events.json")),
+                "drum_midi": str(paths.artifact("symbolic_transcription", "omnizart", "drums.mid")),
                 "symbolic_hints": hints["symbolic_hints"],
                 "symbolic_validation": str(paths.artifact("symbolic_transcription", "validation.json")),
                 "energy_features": str(paths.artifact("energy_summary", "features.json")),
@@ -143,6 +147,9 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
                 "sections": ui_outputs["sections"],
                 "song_event_timeline": str(paths.timeline_output_path),
                 "lighting_score": str(paths.lighting_score_output_path),
+            },
+            "debug": {
+                "drum_events_engine": drum_events["generated_from"]["engine"],
             },
         }
         write_json(paths.info_output_path, info_payload)

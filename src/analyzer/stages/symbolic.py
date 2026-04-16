@@ -3,13 +3,15 @@ from __future__ import annotations
 from collections import Counter
 from pathlib import Path
 import math
+import json
+import subprocess
 from statistics import mean, median
+import sys
 
-from analyzer.exceptions import DependencyError
+from analyzer.exceptions import AnalysisError, DependencyError
 from analyzer.io import ensure_directory, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
-from analyzer.stages._basic_pitch_runtime import load_basic_pitch_predict
 
 
 SOURCE_CONFIGS = {
@@ -79,82 +81,40 @@ def _predict_stem_notes(
     minimum_frequency: float | None,
     maximum_frequency: float | None,
 ) -> dict:
+    output_json = output_dir / f"{source_stem}.json"
     try:
-        model_path, predict = load_basic_pitch_predict()
-    except ImportError as exc:
-        raise DependencyError("basic-pitch is required for symbolic transcription") from exc
-
-    model_output, midi_data, note_events = predict(
-        stem_path,
-        model_or_model_path=model_path,
-        onset_threshold=onset_threshold,
-        frame_threshold=frame_threshold,
-        minimum_note_length=minimum_note_length,
-        minimum_frequency=minimum_frequency,
-        maximum_frequency=maximum_frequency,
-        multiple_pitch_bends=True,
-        melodia_trick=True,
-    )
-
-    midi_path = output_dir / f"{source_stem}.mid"
-    midi_data.write(str(midi_path))
-
-    notes = []
-    pitch_bend_count = 0
-    for index, event in enumerate(note_events, start=1):
-        start_s, end_s, pitch, confidence, pitch_bend = event
-        bends = [int(value) for value in pitch_bend] if pitch_bend else []
-        pitch_bend_count += len(bends)
-        notes.append(
-            {
-                "note_id": f"{source_stem}-note-{index:05d}",
-                "time": round(float(start_s), 6),
-                "end_s": round(float(end_s), 6),
-                "duration": round(float(end_s - start_s), 6),
-                "pitch": int(pitch),
-                "velocity": round(float(confidence), 6),
-                "confidence": round(float(confidence), 6),
-                "source_stem": source_stem,
-                "transcription_engine": "basic-pitch",
-                "pitch_bend": bends,
-                "pitch_bend_range": {
-                    "min": min(bends) if bends else None,
-                    "max": max(bends) if bends else None,
-                },
-            }
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "analyzer.stages._basic_pitch_subprocess",
+                stem_path,
+                str(output_dir),
+                source_stem,
+                str(onset_threshold),
+                str(frame_threshold),
+                str(minimum_note_length),
+                "none" if minimum_frequency is None else str(minimum_frequency),
+                "none" if maximum_frequency is None else str(maximum_frequency),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
         )
+    except FileNotFoundError as exc:
+        raise DependencyError("basic-pitch runtime is not available") from exc
+    except subprocess.CalledProcessError as exc:
+        stderr = (exc.stderr or "").strip()
+        stdout = (exc.stdout or "").strip()
+        detail = stderr or stdout or str(exc)
+        if "basic-pitch" in detail or "tflite-runtime" in detail or "No module named" in detail:
+            raise DependencyError("basic-pitch is required for symbolic transcription") from exc
+        raise AnalysisError(f"Basic Pitch transcription failed for {stem_path}: {detail}") from exc
 
-    raw_payload = {
-        "schema_version": SCHEMA_VERSION,
-        "song_name": output_dir.parent.parent.name,
-        "source_stem": source_stem,
-        "generated_from": {
-            "stem_file": stem_path,
-            "engine": "basic-pitch",
-            "model": str(model_path),
-            "thresholds": {
-                "onset_threshold": onset_threshold,
-                "frame_threshold": frame_threshold,
-                "minimum_note_length_ms": minimum_note_length,
-                "minimum_frequency": minimum_frequency,
-                "maximum_frequency": maximum_frequency,
-            },
-        },
-        "model_output_summary": {
-            key: {
-                "shape": list(value.shape),
-                "max": round(float(value.max()), 6),
-                "mean": round(float(value.mean()), 6),
-            }
-            for key, value in model_output.items()
-        },
-        "note_count": len(notes),
-        "pitch_bend_count": pitch_bend_count,
-        "notes": notes,
-        "midi_file": str(midi_path),
-    }
-    write_json(output_dir / f"{source_stem}.json", raw_payload)
-    return raw_payload
+    if not output_json.exists():
+        raise AnalysisError(f"Basic Pitch did not produce the expected raw cache: {output_json}")
+    with output_json.open() as handle:
+        return json.load(handle)
 
 
 def _nearest_beat_alignment(time_s: float, beat_times: list[float], tolerance_seconds: float = 0.2) -> tuple[int | None, float | None]:

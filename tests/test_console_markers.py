@@ -158,6 +158,7 @@ class ConsoleMarkerTests(unittest.TestCase):
             hints_payload = {"hints": str(paths.hints_output_path), "symbolic_hints": []}
             energy_features = {"beat_features": []}
             symbolic = {"phrase_windows": [], "motif_summary": {"repeated_phrase_groups": []}}
+            drum_events = {"generated_from": {"engine": "audiohacking.omnizart.drum"}}
             energy = {"sections": []}
             event_features = {"features": []}
             rule_candidates = {"events": []}
@@ -184,6 +185,7 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.extract_energy_features", return_value=energy_features))
                 mock_segment_sections = stack.enter_context(patch("analyzer.pipeline.segment_sections", return_value=sections_payload))
                 stack.enter_context(patch("analyzer.pipeline.extract_symbolic_features", return_value=symbolic))
+                stack.enter_context(patch("analyzer.pipeline.extract_drum_events", return_value=drum_events))
                 stack.enter_context(patch("analyzer.pipeline.generate_section_hints", return_value=hints_payload))
                 stack.enter_context(patch("analyzer.pipeline.build_ui_data", return_value=ui_outputs))
                 stack.enter_context(patch("analyzer.pipeline.derive_energy_layer", return_value=energy))

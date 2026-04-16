@@ -34,7 +34,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <artifacts-root parent>/songs")
     parser.add_argument("--artifacts-root", default="/data/artifacts")
     parser.add_argument("--reference-root", default="/data/reference")
-    parser.add_argument("--compare", default="beats,chords,sections,energy,patterns,unified,events")
+    parser.add_argument("--compare", default="beats,chords,drums,sections,energy,patterns,unified,events")
     parser.add_argument("--fail-on-mismatch", action="store_true")
     parser.add_argument("--beat-tolerance-seconds", type=float, default=0.10)
     parser.add_argument("--tolerance-seconds", type=float, default=2.0)
@@ -149,7 +149,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    supported_targets = {"beats", "chords", "sections", "energy", "patterns", "unified", "events"}
+    supported_targets = {"beats", "chords", "drums", "sections", "energy", "patterns", "unified", "events"}
     try:
         compare_targets = _validate_args(args, supported_targets)
         if args.all_songs:

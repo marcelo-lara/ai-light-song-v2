@@ -63,6 +63,7 @@ Current compatibility note:
 - the Docker image completes the packaged Omnizart drum checkpoint during build by downloading the missing `variables.data-00000-of-00001` weight shard into the installed package tree.
 - the Docker image also exposes TensorFlow wheel shared libraries from the container runtime so Omnizart's direct Python drum import can resolve native TensorFlow dependencies.
 - the Docker image installs Python dependencies directly into the container Python environment; it does not create an in-container virtual environment.
+- Story 3.2 debug preservation is metadata-only: the generated drum artifact records explicit source paths for the full mix and drums stem, and the pipeline does not copy those audio files into `data/artifacts/`.
 
 ## Workspace Layout in Container
 
