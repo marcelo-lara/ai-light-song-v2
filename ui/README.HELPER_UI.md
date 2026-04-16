@@ -19,6 +19,7 @@ The UI under `ui/` is an internal, read-only visual debugger for inspecting infe
 
 - Container: `ui/Dockerfile`
 - Server: Nginx
+- Build pipeline: Vite with Preact source compiled during the image build
 - Port: `8080`
 - Data mount: `./data:/data:ro`
 - Compose service: `ui`
@@ -37,11 +38,15 @@ http://localhost:8080
 
 ## Current File Map
 
-- `ui/index.html`: current single-page layout
-- `ui/styles.css`: visual styling and responsive layout
-- `ui/app.js`: all current browser logic
+- `ui/index.html`: Vite entry document with the Preact mount point
+- `ui/styles.css`: shared visual styling imported by the Preact app
+- `ui/src/App.jsx`: top-level application orchestration and state
+- `ui/src/components/`: panel and timeline component boundaries
+- `ui/src/lib/`: artifact loading, normalization, and imperative timeline helpers
+- `ui/package.json`: frontend dependencies and scripts
+- `ui/vite.config.js`: Vite plus Preact build configuration
 - `ui/nginx.conf`: static serving plus `/data/` alias and autoindex
-- `ui/Dockerfile`: Nginx-based container image
+- `ui/Dockerfile`: multi-stage Node build plus Nginx runtime image
 
 ## What Exists Today
 
@@ -115,21 +120,17 @@ The current UI attempts to load these files:
 
 ## Current Browser Logic
 
-The implementation in `ui/app.js` is intentionally simple and does not use a framework.
+The implementation now uses Preact for UI composition and state ownership, with Vite building the browser bundle during the container image build.
 
 Key pieces:
 
 - `artifactDefinitions`: declares the files the debugger tries to load for each song
 - `fetchJson(...)`: reads JSON files from the mounted `/data` tree
 - `fetchDirectoryListing(...)`: parses the Nginx autoindex HTML for `/data/artifacts/` and extracts per-song folders
-- `discoverSongs(...)`: populates the song selector and auto-loads the first discovered song when appropriate
-- `loadSong(...)`: loads all registered artifacts for the selected song in parallel
-- `renderFileStatus(...)`: shows loaded, missing, or error states per file
-- `renderCoreArtifactState(...)`: warns when core inference files are missing
-- `renderSummary(...)`: builds summary cards from loaded artifacts
-- `renderValidation(...)`: shows the current validation report status
-- `renderSections(...)`: previews section windows
-- `updateArtifactSelector(...)` and `setArtifactViewer(...)`: drive the raw JSON inspector
+- `App.jsx`: coordinates discovery, artifact loading, audio state, query string updates, and waveform decoding
+- `Sidebar.jsx`, `OverviewPanels.jsx`, and `DetailPanels.jsx`: declarative panel rendering for the shell, summaries, sections, validation, and artifact inspector
+- `TimelinePanel.jsx`: owns the timeline viewport and delegates dense-lane drawing to imperative helpers for parity with the previous implementation
+- `lib/timeline.js`: renders sparse lane markup, draws dynamic lanes, and updates the shared now-marker positions
 
 ## Important Implementation Detail
 
@@ -194,7 +195,7 @@ docker compose stop ui
 
 Also check editor diagnostics for:
 
-- `ui/app.js`
+- `ui/src/`
 - `ui/index.html`
 - `ui/styles.css`
 

@@ -44,7 +44,7 @@ The debugger runs as a separate Compose service named `ui`.
 Current implementation shape:
 
 - server: Nginx
-- browser app: static HTML, CSS, and JavaScript under `ui/`
+- browser app: Preact source under `ui/src/`, bundled by Vite during the `ui` image build
 - exposed port: `8080`
 
 ## Data Access Rules
