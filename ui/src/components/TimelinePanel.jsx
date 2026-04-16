@@ -3,10 +3,10 @@ import { useEffect, useRef } from "preact/hooks";
 import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM, dynamicLaneIds } from "../lib/config.js";
 import {
   buildScrubSelection,
-  buildSelectionFromDataset,
   centerTimeInView,
+  findSelectionAtTrackPosition,
   getVisibleRange,
-  renderDynamicLane,
+  renderTrackLane,
   renderTimelineMarkup,
   updateNowMarkers,
 } from "../lib/timeline.js";
@@ -46,15 +46,15 @@ export default function TimelinePanel({
     rowsElement.innerHTML = renderTimelineMarkup(timeline, laneVisibility, zoom);
     const visibleRange = getVisibleRange(scrollerElement, zoom, timeline.duration);
     for (const laneId of Object.keys(laneVisibility)) {
-      if (laneVisibility[laneId] && dynamicLaneIds.has(laneId)) {
+      if (laneVisibility[laneId]) {
         const track = rowsElement.querySelector(`[data-track-lane="${laneId}"]`);
-        renderDynamicLane(track, laneId, timeline, zoom, visibleRange, waveformPeaks);
+        renderTrackLane(track, laneId, timeline, zoom, visibleRange, waveformPeaks);
       }
     }
     updateNowMarkers(rowsElement, timeline, zoom, currentTime);
     onVisibleWindowChange(`Visible ${formatRange(visibleRange.start, visibleRange.end)}`, formatRange(visibleRange.start, visibleRange.end));
     return undefined;
-  }, [timeline, laneVisibility, zoom, waveformPeaks, onVisibleWindowChange, currentTime]);
+  }, [timeline, laneVisibility, zoom, waveformPeaks, onVisibleWindowChange]);
 
   useEffect(() => {
     if (!rowsRef.current || !timeline) {
@@ -80,17 +80,18 @@ export default function TimelinePanel({
     if (!timeline) {
       return;
     }
-    const region = event.target.closest("[data-select-region]");
-    if (region) {
-      onSeek(buildSelectionFromDataset(region.dataset).start_s, buildSelectionFromDataset(region.dataset));
-      return;
-    }
     const track = event.target.closest("[data-track-lane], .ruler-track");
     if (!track) {
       return;
     }
     const rectangle = track.getBoundingClientRect();
     const absoluteX = (scrollerRef.current?.scrollLeft || 0) + (event.clientX - rectangle.left);
+    const offsetY = event.clientY - rectangle.top;
+    const regionSelection = findSelectionAtTrackPosition(track, absoluteX, offsetY);
+    if (regionSelection) {
+      onSeek(regionSelection.start_s, regionSelection);
+      return;
+    }
     const time = absoluteX / zoom;
     onSeek(time, buildScrubSelection(track.dataset.trackLane, time));
   }
@@ -107,7 +108,7 @@ export default function TimelinePanel({
       for (const laneId of ["drums", "density", "energy", "validation"]) {
         if (laneVisibility[laneId]) {
           const track = rowsRef.current.querySelector(`[data-track-lane="${laneId}"]`);
-          renderDynamicLane(track, laneId, timeline, zoom, visibleRange, waveformPeaks);
+          renderTrackLane(track, laneId, timeline, zoom, visibleRange, waveformPeaks);
         }
       }
       onVisibleWindowChange(`Visible ${formatRange(visibleRange.start, visibleRange.end)}`, formatRange(visibleRange.start, visibleRange.end));
@@ -119,7 +120,6 @@ export default function TimelinePanel({
       <div className="panel-header">
         <div>
           <h2>{loadedSong || "Timeline"}</h2>
-          <p className="hint">Waveform anchor, sparse and dense artifact lanes, beat grid, and regression overlays stay aligned to the audio clock.</p>
         </div>
         <div className="timeline-toolbar">
           <label className="range-control" htmlFor="zoom-control">

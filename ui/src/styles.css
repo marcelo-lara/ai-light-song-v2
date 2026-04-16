@@ -61,7 +61,7 @@ button {
 }
 
 .main {
-  padding: 24px;
+  padding: 1em;
   display: grid;
   gap: 16px;
 }
@@ -347,6 +347,8 @@ button {
   border: 1px solid var(--border);
   background: var(--timeline-bg);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .timeline-rows {
@@ -401,6 +403,8 @@ button {
 .lane-track {
   position: relative;
   min-height: 84px;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .ruler-track {
@@ -414,6 +418,12 @@ button {
 .ruler-ticks {
   position: absolute;
   inset: 0;
+}
+
+.lane-content,
+.now-markers {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .grid-line {
@@ -449,87 +459,28 @@ button {
   border: 1px solid rgba(77, 53, 29, 0.1);
 }
 
-.lane-region {
-  position: absolute;
-  top: 12px;
-  bottom: 12px;
-  min-width: 2px;
-  border-radius: 12px;
-  padding: 8px 10px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  border: 1px solid transparent;
-  box-shadow: 0 10px 24px rgba(26, 16, 8, 0.08);
-  cursor: pointer;
-}
-
-.lane-region:hover {
-  transform: translateY(-1px);
-}
-
-.lane-region strong {
-  display: block;
-  font-size: 0.76rem;
-}
-
-.lane-region span {
-  color: rgba(35, 22, 14, 0.72);
-  font-size: 0.7rem;
-}
-
-.lane-region.sections {
-  background: rgba(15, 118, 110, 0.16);
-  border-color: rgba(15, 118, 110, 0.24);
-}
-
-.lane-region.phrases {
-  background: rgba(76, 29, 149, 0.12);
-  border-color: rgba(76, 29, 149, 0.2);
-}
-
-.lane-region.chords {
-  background: rgba(14, 116, 144, 0.12);
-  border-color: rgba(14, 116, 144, 0.2);
-}
-
-.lane-region.patterns {
-  background: rgba(202, 138, 4, 0.16);
-  border-color: rgba(202, 138, 4, 0.24);
-}
-
-.lane-region.machine-events {
-  background: rgba(185, 28, 28, 0.12);
-  border-color: rgba(185, 28, 28, 0.2);
-}
-
-.lane-region.timeline-events {
-  top: 18px;
-  bottom: 18px;
-  background: rgba(30, 64, 175, 0.12);
-  border-color: rgba(30, 64, 175, 0.2);
-}
-
-.lane-svg {
+.lane-canvas {
   position: absolute;
   inset: 0;
+  display: block;
   pointer-events: none;
-}
-
-.lane-svg text {
-  fill: var(--muted);
-  font-size: 10px;
-  font-family: "IBM Plex Mono", monospace;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .now-marker {
   position: absolute;
   top: 0;
   bottom: 0;
+  left: 0;
   width: 2px;
   background: linear-gradient(180deg, rgba(185, 28, 28, 0.92) 0%, rgba(251, 146, 60, 0.92) 100%);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
   pointer-events: none;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .now-marker::before {
