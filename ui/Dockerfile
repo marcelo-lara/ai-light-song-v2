@@ -1,9 +1,21 @@
-FROM node:20-alpine AS build
+FROM node:20-alpine AS deps
 
 WORKDIR /srv/ui
 
 COPY package.json /srv/ui/package.json
 RUN npm install
+
+FROM deps AS dev
+
+WORKDIR /srv/ui
+
+COPY . /srv/ui
+
+CMD ["npm", "run", "dev"]
+
+FROM deps AS build
+
+WORKDIR /srv/ui
 
 COPY . /srv/ui
 RUN npm run build

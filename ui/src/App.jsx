@@ -321,21 +321,6 @@ export default function App() {
 
       <div>
         <main className="main">
-          <OverviewPanels
-            loadedSong={loadedSong}
-            data={data}
-            timeline={timeline}
-            artifactRecords={artifactRecords}
-            visibleWindowLabel={metaViewportText}
-            waveformStatus={waveformStatus}
-            audioStatus={audioStatus}
-            audioRef={audioRef}
-            onAudioTimeUpdate={handleAudioTimeUpdate}
-            onAudioPlay={handleAudioPlay}
-            onAudioPause={handleAudioPause}
-            onAudioLoadedMetadata={handleAudioLoadedMetadata}
-          />
-
           <TimelinePanel
             timeline={timeline}
             zoom={zoom}
@@ -355,6 +340,22 @@ export default function App() {
             onSelectArtifact={(event) => setSelectedArtifactKey(event.currentTarget.value)}
             selection={selectedRegion}
           />
+
+          <OverviewPanels
+            loadedSong={loadedSong}
+            data={data}
+            timeline={timeline}
+            artifactRecords={artifactRecords}
+            visibleWindowLabel={metaViewportText}
+            waveformStatus={waveformStatus}
+            audioStatus={audioStatus}
+            audioRef={audioRef}
+            onAudioTimeUpdate={handleAudioTimeUpdate}
+            onAudioPlay={handleAudioPlay}
+            onAudioPause={handleAudioPause}
+            onAudioLoadedMetadata={handleAudioLoadedMetadata}
+          />
+
         </main>
       </div>
     </div>

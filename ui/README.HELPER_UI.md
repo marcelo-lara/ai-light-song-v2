@@ -18,8 +18,8 @@ The UI under `ui/` is an internal, read-only visual debugger for inspecting infe
 ## Current Runtime
 
 - Container: `ui/Dockerfile`
-- Server: Nginx
-- Build pipeline: Vite with Preact source compiled during the image build
+- Compose runtime: Vite dev server with live reload for `ui/src` edits
+- Production runtime: Nginx serving the built bundle from the Dockerfile production stage
 - Port: `8080`
 - Data mount: `./data:/data:ro`
 - Compose service: `ui`
@@ -29,6 +29,8 @@ Start the UI:
 ```bash
 docker compose up ui
 ```
+
+The helper UI service now bind-mounts `ui/` and reloads when files under `ui/src/` change.
 
 Open:
 
@@ -46,7 +48,7 @@ http://localhost:8080
 - `ui/package.json`: frontend dependencies and scripts
 - `ui/vite.config.js`: Vite plus Preact build configuration
 - `ui/nginx.conf`: static serving plus `/data/` alias and autoindex
-- `ui/Dockerfile`: multi-stage Node build plus Nginx runtime image
+- `ui/Dockerfile`: development stage for the Vite dev server plus a production Nginx build stage
 
 ## What Exists Today
 
@@ -186,11 +188,16 @@ These are the safest next implementation areas:
 For low-risk validation, use:
 
 ```bash
-docker compose build ui
 docker compose up -d ui
 curl -s http://localhost:8080 | head
 curl -s http://localhost:8080/data/artifacts/ | head
 docker compose stop ui
+```
+
+For a production bundle check, use:
+
+```bash
+docker compose build ui
 ```
 
 Also check editor diagnostics for:

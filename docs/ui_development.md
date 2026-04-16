@@ -43,8 +43,9 @@ The debugger runs as a separate Compose service named `ui`.
 
 Current implementation shape:
 
-- server: Nginx
-- browser app: Preact source under `ui/src/`, bundled by Vite during the `ui` image build
+- compose development server: Vite with live reload from `ui/src/`
+- production server: Nginx
+- browser app: Preact source under `ui/src/`, with Vite serving it in development and bundling it for the production image build
 - exposed port: `8080`
 
 ## Data Access Rules
@@ -111,16 +112,18 @@ The debugger now implements the full Epic 7 internal viewer surface in the stati
 
 ## Development Commands
 
-Build the debugger image:
-
-```bash
-docker compose build ui
-```
-
-Run the debugger service:
+Run the debugger with live reload:
 
 ```bash
 docker compose up ui
+```
+
+The `ui` service reloads when files under `ui/src/` change.
+
+Build the production debugger image:
+
+```bash
+docker compose build ui
 ```
 
 Open the debugger in a browser:
