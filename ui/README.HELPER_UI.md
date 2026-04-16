@@ -45,7 +45,7 @@ http://localhost:8080
 
 ## What Exists Today
 
-The current implementation is a lightweight artifact browser with these features:
+The current implementation is a read-only Epic 7 debugger with these features:
 
 - automatic discovery of song directories by reading `/data/artifacts/`
 - automatic loading of the first discovered song when there is no `?song=` query parameter
@@ -53,11 +53,17 @@ The current implementation is a lightweight artifact browser with these features
 - manual refresh of the discovered song list
 - read-only loading of artifact and helper JSON files
 - artifact availability list with per-file load status
-- summary cards for several core inference surfaces
+- summary cards for core inference surfaces
 - validation preview from `validation/phase_1_report.json`
 - section preview from the artifact or output projection
-- raw JSON inspector for any successfully loaded file
 - audio element pointed at `data/songs/<Song - Artist>.mp3`
+- shared playback cursor driven by the mounted audio file
+- waveform anchor decoded in-browser when possible, with beat-pulse fallback
+- fixed-label synchronized lane layout with shared zoom and horizontal scroll
+- sparse lanes for sections, phrases, chords, pattern occurrences, and event windows
+- dense lanes for drums, symbolic density, and energy
+- regression overlay lane for beat drift and exported-event comparison
+- raw JSON inspector for any successfully loaded file
 - explicit missing-core-artifacts warning card for partial song folders
 
 ## Primary Data Sources
@@ -152,25 +158,19 @@ If these are missing, the selected song still loads, but the UI shows a warning 
 
 ## Known Limitations
 
-- No Wavesurfer integration yet
-- No shared playhead or lane-based timeline renderer yet
-- No canvas-based dense-lane rendering yet
-- No beat grid overlay yet
-- No viewport culling or zoom system yet
-- Discovery relies on HTML directory parsing rather than a structured API
-- Audio playback is native HTML audio only
-- The UI is still a scaffold, not a full DAW-style debugger
+- Discovery still relies on HTML directory parsing rather than a structured API
+- Audio playback remains native HTML audio rather than a custom transport engine
+- Waveform decoding is browser-side and can fall back to beat pulses on decode failure
+- The debugger is intentionally internal and read-only; it does not persist review state
 
 ## Safe Extension Targets
 
 These are the safest next implementation areas:
 
-- add Wavesurfer and a shared playback clock
-- add sparse timeline lanes for sections, chords, patterns, and event windows
-- add dense renderers for drums and energy
-- add beat-grid and validation overlays
-- improve artifact summaries without changing data contracts
+- improve overlay detail and hover affordances without changing data contracts
+- add more artifact-first lanes when new story contracts introduce them
 - improve partial-data handling for songs with incomplete artifacts
+- tune dense-lane aggregation thresholds for larger generated datasets
 
 ## Unsafe Changes Unless the Contract Changes
 

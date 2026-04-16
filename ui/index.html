@@ -12,7 +12,7 @@
         <div>
           <p class="eyebrow">AI Light Song v2</p>
           <h1>Artifact Debugger</h1>
-          <p class="lede">Read-only inspection for model and rule inferences under <code>data/artifacts</code>.</p>
+          <p class="lede">Read-only inspection for generated inference surfaces, timing alignment, and regression drift under <code>data/artifacts</code>.</p>
         </div>
 
         <form id="song-form" class="panel controls">
@@ -26,6 +26,37 @@
           </div>
           <p class="hint">The debugger discovers per-song directories from <code>data/artifacts</code>. It never writes to <code>data/artifacts</code> or <code>data/output</code>.</p>
         </form>
+
+        <section class="panel controls">
+          <h2>Playback</h2>
+          <div class="transport-controls">
+            <button id="play-pause" type="button">Play</button>
+            <button id="jump-start" type="button" class="secondary-button">Jump to Start</button>
+          </div>
+          <label class="checkbox-row" for="follow-playhead">
+            <input id="follow-playhead" type="checkbox" checked>
+            <span>Follow playhead</span>
+          </label>
+          <div class="transport-readout">
+            <div>
+              <span class="stat-label">Now</span>
+              <strong id="transport-now">0:00.0</strong>
+            </div>
+            <div>
+              <span class="stat-label">Bar / Beat</span>
+              <strong id="transport-beat">-</strong>
+            </div>
+          </div>
+          <p id="transport-status" class="hint">Audio playback time is the shared timeline source of truth.</p>
+        </section>
+
+        <section class="panel controls">
+          <div class="panel-header compact-header">
+            <h2>Lane Toggles</h2>
+            <span class="hint">Local only</span>
+          </div>
+          <div id="lane-toggles" class="lane-toggle-list empty">Load a song to enable lane visibility controls.</div>
+        </section>
 
         <section class="panel controls">
           <h2>Available Paths</h2>
@@ -62,12 +93,19 @@
               <span class="stat-label">Validation</span>
               <strong id="meta-validation">-</strong>
             </div>
+            <div class="stat-card">
+              <span class="stat-label">Viewport</span>
+              <strong id="meta-viewport">-</strong>
+            </div>
           </div>
         </section>
 
         <section class="grid two-up">
           <article class="panel">
-            <h2>Audio</h2>
+            <div class="panel-header compact-header">
+              <h2>Audio Anchor</h2>
+              <span id="waveform-status" class="hint">Waveform preview loads in the browser when audio is available.</span>
+            </div>
             <audio id="audio-player" controls preload="none"></audio>
             <p id="audio-status" class="hint">Audio source is loaded from <code>data/songs</code> when present.</p>
           </article>
@@ -93,16 +131,46 @@
 
         <section class="panel">
           <div class="panel-header">
-            <h2>Artifact Inspector</h2>
-            <select id="artifact-select">
-              <option value="">Select a loaded file</option>
-            </select>
+            <div>
+              <h2>Timeline</h2>
+              <p class="hint">Waveform anchor, sparse and dense artifact lanes, beat grid, and regression overlays stay aligned to the audio clock.</p>
+            </div>
+            <div class="timeline-toolbar">
+              <label class="range-control" for="zoom-control">
+                <span>Zoom</span>
+                <input id="zoom-control" type="range" min="12" max="180" step="2" value="48">
+                <strong id="zoom-value">48 px/s</strong>
+              </label>
+              <div class="timeline-toolbar-readouts">
+                <span id="visible-window">Visible 0:00.0-0:00.0</span>
+                <span id="selection-brief">No region selected.</span>
+              </div>
+            </div>
           </div>
-          <pre id="artifact-viewer" class="json-viewer">No artifact selected.</pre>
+          <div id="timeline-scroller" class="timeline-scroller">
+            <div id="timeline-rows" class="timeline-rows empty">Load a song to inspect the synchronized timeline lanes.</div>
+          </div>
+        </section>
+
+        <section class="grid two-up">
+          <article class="panel">
+            <h2>Selection Detail</h2>
+            <div id="selection-detail" class="empty">Click a region, overlay, or lane to inspect it and jump the shared cursor.</div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <h2>Artifact Inspector</h2>
+              <select id="artifact-select">
+                <option value="">Select a loaded file</option>
+              </select>
+            </div>
+            <pre id="artifact-viewer" class="json-viewer">No artifact selected.</pre>
+          </article>
         </section>
       </main>
     </div>
 
-    <script src="/app.js"></script>
+    <script type="module" src="/app.js"></script>
   </body>
 </html>
