@@ -15,7 +15,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - `data/stems/`: temporary stem and `.wav` outputs.
 - `data/artifacts/`: intermediate artifacts such as beats, chords, sections, layer outputs, merged layer files, and validation notes.
 - `data/reference/`: validation-only reference data used to evaluate model quality. It must never be copied into generated outputs.
-- `data/output/`: final outputs such as lighting scores and future DMX-ready event exports.
+- `data/output/`: stable UI-facing outputs. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 - `docs/`: implementation contracts, schemas, and developer guidance.
 
 ### Source layout and implementation rules
@@ -36,6 +36,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - Beat and bar alignment come from the canonical EPIC 1.2 timing grid.
 - Schemas must be versioned.
 - Reference files are for validation only, not fallback generation.
+- Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
 
 ## Containerized Development Rule
 
@@ -44,6 +45,9 @@ All development, validation, and sample-song execution must run inside the proje
 - Target environment: NVIDIA GPU-enabled Docker runtime.
 - Do not depend on host-installed Python packages.
 - Validate tool imports and sample-song runs inside the container.
+- Use `./analyze` or `python -m analyzer` as the supported container entry points.
+- Batch runs via `--all-songs` must isolate each song in a subprocess because the long-lived parent process is not treated as a stable execution model for the native analysis stack.
+- Demucs model weights must resolve through the repo-local cache under `models/demucs/` rather than opportunistic mid-run downloads.
 
 See `docs/docker_development.md` and the repository `Dockerfile` for the runtime contract.
 
@@ -83,15 +87,16 @@ Representative artifact: `layer_a_harmonic.json`.
 
 ## EPIC 3: Symbolic Event Summary
 
-Goal: translate audio into note-level and phrase-level musical behavior.
+Goal: translate audio into note-level, drum-hit, and phrase-level musical behavior.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
 | 3.1 | MIDI-like transcription | validated multi-source note events from stems and full mix | `docs/3.1.midi_transcription_story.md` |
-| 3.2 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/3.2.symbolic_feature_engineering_story.md` |
-| 3.3 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/3.3.temporal_alignment_story.md` |
-| 3.4 | Section hint inference | deterministic symbolic and structural section hints with editable output merge | `docs/3.4.section_hints_story.md` |
-| 3.5 | LLM-friendly abstraction | deterministic musician-readable symbolic descriptions | `docs/3.5.llm_friendly_abstraction_story.md` |
+| 3.2 | Drums transcription | reviewable kick, snare, and hat event artifact | `docs/3.2.drums_transcription_story.md` |
+| 3.3 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/3.3.symbolic_feature_engineering_story.md` |
+| 3.4 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/3.4.temporal_alignment_story.md` |
+| 3.5 | Section hint inference | deterministic symbolic and structural section hints with editable output merge | `docs/3.5.section_hints_story.md` |
+| 3.6 | LLM-friendly abstraction | deterministic musician-readable symbolic descriptions | `docs/3.6.llm_friendly_abstraction_story.md` |
 
 Representative artifact: `layer_b_symbolic.json`.
 
@@ -114,16 +119,16 @@ Goal: define the canonical event contract, infer musically meaningful event wind
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
 | 5.1 | Event vocabulary and schema | `event_vocabulary.json` and `song_event_schema.json` | `docs/5.1.event_vocabulary_and_schema_story.md` |
-| 5.2 | Event feature normalization and timeline alignment | `event_inference/features.json` and optional helper indices | `docs/5.2.event_feature_normalization_story.md` |
+| 5.2 | Event feature normalization and timeline alignment | `event_inference/features.json` and helper indices such as `event_inference/timeline_index.json` | `docs/5.2.event_feature_normalization_story.md` |
 | 5.3 | Rule-based baseline event detection | `event_inference/rule_candidates.json` | `docs/5.3.rule_based_event_detection_story.md` |
 | 5.4 | Song identifier inference | `energy_summary/hints.json` | `docs/5.4.song_identifier_inference_story.md` |
 | 5.5 | Advanced musical event classification | `event_inference/events.machine.json` | `docs/5.5.advanced_event_classification_story.md` |
-| 5.6 | Confidence, review, and override workflow | review outputs and override files | `docs/5.6.event_review_and_override_story.md` |
-| 5.7 | Event benchmarking and genre-sensitive tuning | benchmark annotations, validation reports, threshold profiles | `docs/5.7.event_benchmarking_and_tuning_story.md` |
-| 5.8 | LLM-friendly event timeline export | `song_event_timeline.json` and `song_event_timeline.md` | `docs/5.8.event_timeline_export_story.md` |
+| 5.6 | Confidence, review, and override workflow | `validation/song_events.review.json`, `validation/song_events.review.md`, and `validation/song_events.overrides.json` | `docs/5.6.event_review_and_override_story.md` |
+| 5.7 | Event benchmarking and genre-sensitive tuning | `validation/event_benchmark.json`, benchmark annotations, and threshold profiles | `docs/5.7.event_benchmarking_and_tuning_story.md` |
+| 5.8 | LLM-friendly event timeline export | `data/output/<Song - Artist>/song_event_timeline.json` and `validation/song_event_timeline.md` | `docs/5.8.event_timeline_export_story.md` |
 | 5.9 | Optional ML event classifier and explainability | classifier artifacts and explanation outputs | `docs/5.9.event_ml_classifier_story.md` |
 
-Representative artifacts: `energy_summary/hints.json`, `event_inference/events.machine.json`, `song_event_timeline.json`.
+Representative artifacts: `energy_summary/hints.json`, `event_inference/features.json`, `event_inference/rule_candidates.json`, `event_inference/events.machine.json`, `data/artifacts/<Song - Artist>/validation/song_events.review.json`, `data/output/<Song - Artist>/song_event_timeline.json`, `validation/event_benchmark.json`.
 
 ## EPIC 6: Pattern Mining, Unified Music Feature Assembly, and Light Show Design
 
@@ -137,9 +142,9 @@ Layer D covers repeated harmonic progression structure. Motif-level and phrase-l
 | 6.2 | Build UI data | `data/output/<Song - Artist>/beats.json` and `data/output/<Song - Artist>/sections.json` | `docs/6.2.build_ui_data_story.md` |
 | 6.3 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/6.3.music_feature_layers_story.md` |
 | 6.4 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/6.4.energy_to_lighting_mapping.md` |
-| 6.5 | Fixture-aware orchestration | fixture-aware events and `lighting_score.md` | `docs/6.5.fixture_aware_mapping_story.md` |
+| 6.5 | Fixture-aware orchestration | fixture-aware events with stable-role and event-overlay logic, plus `lighting_score.md` | `docs/6.5.fixture_aware_mapping_story.md` |
 
-Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/beats.json`, `data/output/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_score.md`.
+Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/beats.json`, `data/output/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_events.json`, `lighting_score.md`.
 
 ## Canonical Artifact Flow
 
@@ -148,11 +153,12 @@ The expected high-level artifact dependency chain is:
 1. Source song in `data/songs/`.
 2. Stem outputs in `data/stems/`.
 3. Timing, harmonic, symbolic, and energy artifacts in `data/artifacts/<Song - Artist>/`.
-4. Event-inference artifacts in `data/artifacts/<Song - Artist>/event_inference/` and `data/artifacts/<Song - Artist>/energy_summary/hints.json`.
-5. Pattern-mining outputs in `data/artifacts/<Song - Artist>/pattern_mining/` and the Layer D file `layer_d_patterns.json` in `data/artifacts/<Song - Artist>/`.
-6. UI-facing `beats.json`, `sections.json`, and event-timeline exports in `data/output/<Song - Artist>/`.
-7. Unified cross-layer handoff file `music_feature_layers.json` in `data/artifacts/<Song - Artist>/`.
-8. Final lighting outputs in `data/output/<Song - Artist>/`.
+4. Event-inference artifacts in `data/artifacts/<Song - Artist>/event_inference/` and identifier hints in `data/artifacts/<Song - Artist>/energy_summary/hints.json`.
+5. Review, override, timeline-markdown, and benchmark outputs in `data/artifacts/<Song - Artist>/validation/`, plus the UI timeline JSON in `data/output/<Song - Artist>/song_event_timeline.json`.
+6. Pattern-mining outputs in `data/artifacts/<Song - Artist>/pattern_mining/` and the Layer D file `layer_d_patterns.json` in `data/artifacts/<Song - Artist>/`.
+7. UI-facing `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md` in `data/output/<Song - Artist>/`.
+8. Unified cross-layer handoff file `music_feature_layers.json` in `data/artifacts/<Song - Artist>/`.
+9. No additional routine files are added to `data/output/<Song - Artist>/` beyond the stable UI contract unless a UI contract change makes that strictly required.
 
 ## Required Supporting Documents
 
@@ -170,10 +176,11 @@ Before Story 6.5 can produce a reliable `lighting_score.md`, the implementation 
 - `data/artifacts/<Song - Artist>/layer_b_symbolic.json` with `motif_summary.dominant_motif_id`, `motif_summary.motif_groups[]`, and `motif_summary.repeated_phrase_groups[]`
 - phrase timing anchors exposed as `phrase_windows[]` or normalized into `music_feature_layers.json.timeline.phrases[]`
 - `data/artifacts/<Song - Artist>/layer_c_energy.json` with accent windows, energy transitions, peaks, and dips relevant to cue placement
-- `data/output/<Song - Artist>/song_event_timeline.json` or equivalent reviewed event export when event-aware lighting logic is enabled
+- `data/output/<Song - Artist>/song_event_timeline.json` or equivalent reviewed event export when event-aware lighting logic is enabled, with canonical event IDs and exact event windows preserved
 - `data/artifacts/<Song - Artist>/layer_d_patterns.json` with `patterns[].id` and occurrence windows using `start_s` and `end_s`
 - `data/artifacts/<Song - Artist>/music_feature_layers.json` with `timeline.phrases[]`, `lighting_context.cue_anchors[]`, `lighting_context.pattern_callbacks[]`, and `lighting_context.motif_callbacks[]`
 - fixture-agnostic lighting events from Story 6.4 with `anchor_refs` that point back to section, phrase, motif, pattern, and cue-anchor IDs
+- fixture-aware events from Story 6.5, when exported separately, with exact `event_ref`, `role_overlay`, and explicit target metadata for dynamic regroupings such as moving-head unison focus
 - `data/fixtures/fixtures.json` so Story 6.5 can translate abstract behavior into fixture-aware instructions
 
 If those artifacts are missing, the pipeline is not yet lighting-score-ready even if partial prose generation is possible.
@@ -196,7 +203,8 @@ Before the full pipeline is considered ready, the implementation should expose a
 1. run against a real song such as `What a Feeling - Courtney Storm.mp3`
 2. generate inferred analysis artifacts inside `data/artifacts/<Song - Artist>/`
 3. compare inferred chord outputs against human-validated reference chords and compare inferred section change points against validation-only reference segments in `data/reference/<Song - Artist>/moises/` when they are available
-4. emit a validation summary or report without copying reference values into generated artifacts
+4. validate the generated Story 3.2 drum review artifact for recognizable kick, snare, and hat behavior on `What a Feeling - Courtney Storm.mp3` without treating reference data as generation fallback
+5. emit a validation summary or report without copying reference values into generated artifacts
 
 Reference files under `data/reference/` are optional validation inputs. The pipeline must infer chords, sections, and other generated values from the documented analysis stack first. When reference files are present, they may be used to validate or explicitly review those inferred results, but they must not silently replace generated artifact values.
 

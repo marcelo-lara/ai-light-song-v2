@@ -210,7 +210,7 @@ def _build_lighting_score_markdown(paths: SongPaths) -> str:
     energy = read_json(paths.artifact("layer_c_energy.json"))
     patterns = read_json(paths.artifact("layer_d_patterns.json"))
     lighting_events = read_json(paths.artifact("lighting_events.json"))
-    hints = read_json(paths.song_output_dir / "hints.json")
+    hints = read_json(paths.hints_output_path)
     fixtures = read_json(paths.artifacts_root.parent / "fixtures" / "fixtures.json")
 
     title, artist = _split_song_name(paths.song_name)
@@ -254,7 +254,7 @@ def _build_lighting_score_markdown(paths: SongPaths) -> str:
 def generate_lighting_score(paths: SongPaths) -> dict:
     markdown = _build_lighting_score_markdown(paths)
     ensure_directory(paths.song_output_dir)
-    score_path = paths.song_output_dir / "lighting_score.md"
+    score_path = paths.lighting_score_output_path
     score_path.write_text(markdown, encoding="utf-8")
     return {
         "lighting_score_file": str(score_path),

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 import shutil
+import urllib.request
 from pathlib import Path
 
 from analyzer.exceptions import AnalysisError, DependencyError
@@ -16,6 +18,13 @@ REQUIRED_STEMS = {
     "vocals": "vocals.wav",
 }
 
+DEMUCS_MODEL_NAME = "htdemucs"
+DEMUCS_MODEL_SIGNATURE = "955717e8"
+DEMUCS_MODEL_CHECKSUM = "8726e21a"
+DEMUCS_MODEL_FILENAME = f"{DEMUCS_MODEL_SIGNATURE}-{DEMUCS_MODEL_CHECKSUM}.th"
+DEMUCS_MODEL_URL = f"https://dl.fbaipublicfiles.com/demucs/hybrid_transformer/{DEMUCS_MODEL_FILENAME}"
+DEMUCS_MODEL_YAML = f"models: ['{DEMUCS_MODEL_SIGNATURE}']\n"
+
 
 def _normalize_audio(audio):
     peak = float(abs(audio).max()) if audio.size else 0.0
@@ -28,6 +37,56 @@ def _cleanup_legacy_demucs_directory(stems_dir: Path) -> None:
     legacy_directory = stems_dir / ".demucs"
     if legacy_directory.exists():
         shutil.rmtree(legacy_directory, ignore_errors=True)
+
+
+def _demucs_repo_root() -> Path:
+    return Path(__file__).resolve().parents[3] / "models" / "demucs"
+
+
+def _checksum_prefix(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()[: len(DEMUCS_MODEL_CHECKSUM)]
+
+
+def _write_demucs_repo_manifest(repo_root: Path) -> None:
+    manifest_path = repo_root / f"{DEMUCS_MODEL_NAME}.yaml"
+    if manifest_path.exists() and manifest_path.read_text(encoding="utf-8") == DEMUCS_MODEL_YAML:
+        return
+    manifest_path.write_text(DEMUCS_MODEL_YAML, encoding="utf-8")
+
+
+def _download_demucs_model(target_path: Path) -> None:
+    temporary_path = target_path.with_suffix(target_path.suffix + ".tmp")
+    if temporary_path.exists():
+        temporary_path.unlink()
+    try:
+        with urllib.request.urlopen(DEMUCS_MODEL_URL) as response, temporary_path.open("wb") as handle:
+            shutil.copyfileobj(response, handle)
+    except Exception as exc:
+        temporary_path.unlink(missing_ok=True)
+        raise AnalysisError(f"Failed to download Demucs model checkpoint: {exc}") from exc
+    checksum = _checksum_prefix(temporary_path)
+    if checksum != DEMUCS_MODEL_CHECKSUM:
+        temporary_path.unlink(missing_ok=True)
+        raise AnalysisError(
+            f"Downloaded Demucs model checksum mismatch: expected {DEMUCS_MODEL_CHECKSUM}, got {checksum}"
+        )
+    temporary_path.replace(target_path)
+
+
+def _ensure_local_demucs_repo() -> Path:
+    repo_root = _demucs_repo_root()
+    ensure_directory(repo_root)
+    _write_demucs_repo_manifest(repo_root)
+    model_path = repo_root / DEMUCS_MODEL_FILENAME
+    if model_path.exists() and _checksum_prefix(model_path) == DEMUCS_MODEL_CHECKSUM:
+        return repo_root
+    model_path.unlink(missing_ok=True)
+    _download_demucs_model(model_path)
+    return repo_root
 
 
 def ensure_stems(paths: SongPaths, force: bool = False) -> dict[str, str]:
@@ -54,7 +113,8 @@ def ensure_stems(paths: SongPaths, force: bool = False) -> dict[str, str]:
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     try:
-        model = get_model("htdemucs")
+        model_repo = _ensure_local_demucs_repo()
+        model = get_model(DEMUCS_MODEL_NAME, repo=model_repo)
         mix = AudioFile(str(paths.song_path)).read(
             streams=0,
             samplerate=model.samplerate,

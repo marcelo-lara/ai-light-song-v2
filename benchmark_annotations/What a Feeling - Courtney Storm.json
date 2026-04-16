@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "song_name": "What a Feeling - Courtney Storm",
+  "annotation_status": "pending_review",
+  "notes": [
+    "Seed benchmark template created by Epic 5 implementation.",
+    "Populate reviewed event windows before using this file for scored benchmarking."
+  ],
+  "events": []
+}

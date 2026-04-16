@@ -10,7 +10,8 @@ Use this as a navigation guide first, then open the referenced files for the act
 
 - `data/reference/` is read-only comparison material. Do not treat it as generation input.
 - `data/artifacts/` contains generated analysis artifacts and intermediate caches.
-- `data/output/` contains consumer-facing outputs and the current lighting score.
+- `data/output/` contains a stable UI-facing output contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
+- Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
 - `data/fixtures/` contains rig and focus-point context.
 - `data/songs/` contains source audio. `data/stems/` contains stem-separated audio derived from those songs.
 
@@ -22,9 +23,15 @@ data/
     <Song - Artist>/
       energy_summary/
         features.json
+        hints.json
       essentia/
         beats.json
         hpcp.json
+      event_inference/
+        events.machine.json
+        features.json
+        rule_candidates.json
+        timeline_index.json
       pattern_mining/
         chord_patterns.json
       section_segmentation/
@@ -41,10 +48,19 @@ data/
           harmonic.mid
           vocals.json
           vocals.mid
+        drum_events.json
+        omnizart/
+          drums.mid
+        hints.json
         validation.json
       validation/
+        event_benchmark.json
         phase_1_report.json
         phase_1_report.md
+        song_event_timeline.md
+        song_events.overrides.json
+        song_events.review.json
+        song_events.review.md
       layer_a_harmonic.json
       genre.json
       layer_b_symbolic.json
@@ -61,6 +77,7 @@ data/
       hints.json
       info.json
       lighting_score.md
+      song_event_timeline.json
       sections.json
   reference/
     <Song - Artist>/
@@ -84,14 +101,15 @@ data/
 If you only open a few files, start here in this order:
 
 1. `data/output/<Song - Artist>/lighting_score.md`
-2. `data/output/<Song - Artist>/hints.json`
-3. `data/artifacts/<Song - Artist>/music_feature_layers.json`
-4. `data/artifacts/<Song - Artist>/lighting_events.json`
-5. `data/artifacts/<Song - Artist>/layer_c_energy.json`
-6. `data/artifacts/<Song - Artist>/layer_a_harmonic.json`
-7. `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
-8. `data/fixtures/fixtures.json`
-9. `data/fixtures/pois.json`
+2. `data/output/<Song - Artist>/song_event_timeline.json`
+3. `data/output/<Song - Artist>/hints.json`
+4. `data/artifacts/<Song - Artist>/music_feature_layers.json`
+5. `data/artifacts/<Song - Artist>/lighting_events.json`
+6. `data/artifacts/<Song - Artist>/layer_c_energy.json`
+7. `data/artifacts/<Song - Artist>/layer_a_harmonic.json`
+8. `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
+9. `data/fixtures/fixtures.json`
+10. `data/fixtures/pois.json`
 
 ## Top-Level Folder Reference
 
@@ -111,7 +129,7 @@ Per-song generated analysis artifacts. This is the main machine-readable analysi
 
 ### `data/output/`
 
-Per-song consumer-facing outputs. These files are more compact and presentation-friendly than the artifact files.
+Per-song consumer-facing outputs. These files are more compact and presentation-friendly than the artifact files, and the directory is a stable UI contract rather than an open-ended export area.
 
 ### `data/fixtures/`
 
@@ -176,7 +194,7 @@ Why it matters: upstream source for bass-oriented symbolic analysis and bass not
 
 Summary: isolated drums stem audio.
 
-Why it matters: upstream source for rhythm- and hit-oriented symbolic review.
+Why it matters: upstream source for rhythm- and hit-oriented symbolic review and drum-hit transcription.
 
 ### `data/stems/<Song - Artist>/harmonic.wav`
 
@@ -238,6 +256,49 @@ LLM hint:
 - Use: distinguish broad section energy from sharper named event moments.
 - Avoid: inventing undocumented identifier labels when this file is absent or incomplete.
 
+### `data/artifacts/<Song - Artist>/event_inference/features.json`
+
+Summary: normalized event-feature rows aligned to the shared beat, bar, section, and phrase timeline.
+
+Why it matters: this is the canonical feature surface behind rule candidates and machine event inference.
+
+LLM hint:
+- See: per-window feature values, timing anchors, and normalized feature names.
+- Use: understand why later event stages promoted or rejected a candidate window.
+- Use: audit whether a claimed drop, build, or break has support in the upstream normalized features.
+
+### `data/artifacts/<Song - Artist>/event_inference/timeline_index.json`
+
+Summary: helper index that maps event-analysis windows back to shared timing anchors and upstream layer references.
+
+Why it matters: quickest way to explain where an event window sits in relation to beats, sections, and phrases.
+
+LLM hint:
+- See: anchor ids, section ids, and time-window references.
+- Use: cross-reference event windows without recomputing alignment logic from multiple source files.
+
+### `data/artifacts/<Song - Artist>/event_inference/rule_candidates.json`
+
+Summary: baseline rule-generated event candidates before review merging or final machine-event promotion.
+
+Why it matters: this shows the first explicit event hypotheses the pipeline generated.
+
+LLM hint:
+- See: candidate labels, supporting features, confidence values, and timing windows.
+- Use: inspect why the baseline detector believed a moment might be a drop, build, or other supported event.
+- Avoid: treating every rule candidate as final; the reviewed export is the downstream contract.
+
+### `data/artifacts/<Song - Artist>/event_inference/events.machine.json`
+
+Summary: canonical machine-generated event set after the Epic 5 inference chain applies schema normalization and confidence handling.
+
+Why it matters: this is the structured source for reviewed event exports and lighting-facing event timing.
+
+LLM hint:
+- See: canonical event ids, event types, start and end times, confidence, and provenance fields.
+- Use: build event-aware cue logic from this file when you need the machine view before human review merges.
+- Use: cross-check event provenance against `rule_candidates.json`, `features.json`, and `energy_summary/hints.json`.
+
 ### `data/artifacts/<Song - Artist>/section_segmentation/sections.json`
 
 Summary: canonical structural windows with section ids, start and end times, labels, and confidence scores.
@@ -272,6 +333,28 @@ LLM hint:
 - See: `sections[].section_id`, `label`, and `hints[]`.
 - Use: inspect which hints were inferred deterministically before any user edits were merged.
 - Avoid: treating this producer-scoped file as the user-editable source; use `data/output/<Song - Artist>/hints.json` for that.
+
+### `data/artifacts/<Song - Artist>/symbolic_transcription/drum_events.json`
+
+Summary: simple producer-scoped drum-hit review artifact containing kick, snare, and hat event rows plus summary counts.
+
+Why it matters: fastest way to inspect rhythmic pulse and debug drum-hit translation without opening note-heavy symbolic layers first.
+
+LLM hint:
+- See: `events[].time`, `event_type`, `confidence`, and the `summary` counts.
+- Use: inspect whether kick, snare, and hat placements support the intended rhythmic reading of the song.
+- Avoid: treating this phase-1 review artifact as a full replacement for the canonical symbolic layer.
+
+### `data/artifacts/<Song - Artist>/symbolic_transcription/omnizart/drums.mid`
+
+Summary: raw Omnizart drum-transcription MIDI cache for the isolated drums stem.
+
+Why it matters: first review surface when the normalized `drum_events.json` counts or labels look suspicious.
+
+LLM hint:
+- See: GM drum note pitches such as 35, 38, and 42 to confirm kick, snare, and hat placements.
+- Use: compare raw Omnizart output against the normalized review artifact when unsupported or unresolved events appear.
+- Avoid: treating the raw MIDI as the final review contract; `drum_events.json` is the normalized producer-scoped artifact.
 
 ### `data/artifacts/<Song - Artist>/symbolic_transcription/basic_pitch/bass.json`
 
@@ -417,7 +500,7 @@ Summary: canonical repeated chord-pattern layer. Contains named pattern groups, 
 Why it matters: strongest source for structural callback logic based on repeated progression blocks.
 
 LLM hint:
-- See: `patterns[]`, `sequence`, `occurrence_count`, and `occurrences[]`.
+- See: `patterns[]`, UI-facing `sequence`, bar-resolved `bar_sequence`, `occurrence_count`, and `occurrences[]`.
 - Use: repeat or evolve looks when the same harmonic loop returns.
 - Use: escalate later occurrences of the same pattern rather than inventing unrelated scenes.
 - Use: align callback timing to `start_s` and `end_s`, not rough section labels.
@@ -436,7 +519,7 @@ LLM hint:
 
 ### `data/artifacts/<Song - Artist>/lighting_events.json`
 
-Summary: fixture-agnostic lighting events and cue anchors derived from the unified music feature layer.
+Summary: lighting events and cue anchors derived from the unified music feature layer, preserving deterministic anchor references and any later fixture-aware overlay metadata when the pipeline emits it.
 
 Why it matters: direct bridge from analysis to show logic.
 
@@ -444,6 +527,8 @@ LLM hint:
 - See: `cue_anchors[]` and `lighting_events[]`.
 - Use: as the structured pre-score layer when writing or reviewing scene logic.
 - Use: anchor refs to explain why a cue exists, not just when it happens.
+- Use: preserve `event_ref`, `role_overlay`, and explicit focal `target` fields when Story 6.5 adds event-driven regroupings such as moving-head unison focus.
+- See also: the end-to-end drop-to-stage-center sequence example in `docs/6.5.fixture_aware_mapping_story.md` when you need a concrete fixture-aware payload shape.
 - Use: preserve these deterministic anchor times when translating into prose or operator instructions.
 
 ### `data/artifacts/<Song - Artist>/validation/phase_1_report.json`
@@ -466,6 +551,16 @@ Why it matters: fastest way to scan pass/fail state and major mismatches.
 LLM hint:
 - Use: as a quick trust summary before consuming lower-level artifacts.
 - Use: especially when deciding whether chord-driven or section-driven cues should be treated as high-confidence.
+
+### `data/artifacts/<Song - Artist>/validation/event_benchmark.json`
+
+Summary: event-specific benchmark and status report for the Epic 5 output chain.
+
+Why it matters: quickest way to confirm whether machine events, review outputs, and timeline exports were produced coherently enough to trust downstream.
+
+LLM hint:
+- See: benchmark status, required file paths, and event-count summaries.
+- Use: decide whether the reviewed event surface is ready to drive event-aware fixture overlays or whether manual review is still needed.
 
 ### `data/output/<Song - Artist>/info.json`
 
@@ -509,11 +604,56 @@ LLM hint:
 - See: `sections[].section_id`, `label`, `start`, `end`, and `hints[]`.
 - Use: add or revise human-authored section guidance without losing regenerated inference hints on the next pipeline run.
 - Use: match hints by `section_id` instead of relying on repeated section labels alone.
-- Avoid: placing energy-derived drop or accent claims here unless they were produced by a later energy-stage story.
+- Avoid: using this file as the canonical store for event windows such as drops or builds; prefer the reviewed event files and event timeline for that role.
+
+### `data/artifacts/<Song - Artist>/validation/song_events.review.json`
+
+Summary: merged review surface that combines machine-generated event rows with any preserved user-authored review decisions.
+
+Why it matters: this is the main reviewed event contract before timeline export.
+
+LLM hint:
+- See: reviewed events, review status fields, and any preserved manual decisions.
+- Use: confirm which machine events survived review and which rows need operator attention.
+- Use: prefer this file over `events.machine.json` when downstream behavior should reflect the current reviewed state.
+
+### `data/artifacts/<Song - Artist>/validation/song_events.review.md`
+
+Summary: human-readable companion to the reviewed event JSON payload.
+
+Why it matters: fastest way to scan reviewed event timing and status without opening raw JSON.
+
+### `data/artifacts/<Song - Artist>/validation/song_events.overrides.json`
+
+Summary: persisted override store for user-authored event edits and suppressions.
+
+Why it matters: preserves manual corrections across reruns of the event inference pipeline.
+
+LLM hint:
+- See: override keys, explicit replacements, and suppressed event ids.
+- Use: explain why a reviewed event differs from the machine event source.
+
+### `data/output/<Song - Artist>/song_event_timeline.json`
+
+Summary: compact LLM-friendly export of the reviewed event timeline.
+
+Why it matters: best single structured event file for downstream lighting logic and prompt-based planning.
+
+LLM hint:
+- See: canonical event rows, exact timing windows, and any human-readable summary fields.
+- Use: drive event-aware cue planning, especially when fixture overlays or focal changes should line up with drops and other named moments.
+- Use: preserve canonical event ids when translating this file into prose or cue sheets.
+- Use: preserve the explicit `created_by` provenance on each inferred event row.
+
+### `data/artifacts/<Song - Artist>/validation/song_event_timeline.md`
+
+Summary: human-readable companion to the reviewed event timeline export.
+
+Why it matters: quick event briefing for review or operator-facing discussion.
 
 ### `data/output/<Song - Artist>/lighting_score.md`
 
-Summary: current human-readable lighting plan. Includes metadata, feature summary, timing anchors, fixture intentions, section plans, and song-specific rules.
+Summary: current human-readable lighting plan. Includes metadata, feature summary, timing anchors, fixture intentions, section plans, and song-specific rules, including event-driven fixture overlay rules when supported by the rig.
 
 Why it matters: best single human-facing summary of the current show design.
 
@@ -521,6 +661,7 @@ LLM hint:
 - See: `Timing Anchors`, `Fixture Intentions`, `Section Plan`, and `Song-Specific Rules`.
 - Use: as the first file for quick briefing, revision, or operator-facing explanation.
 - Use: cross-check any rewritten score against deterministic timestamps from `music_feature_layers.json` or `lighting_events.json`.
+- Use: keep event-driven regroupings tied to exact event rows or cue anchors instead of vague prose such as "somewhere near the drop".
 - Use: section `Hint:` lines as human-editable guidance sourced from `hints.json`.
 - Avoid: changing cue times casually; the score is expected to preserve anchor times from upstream structured artifacts.
 

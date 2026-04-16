@@ -11,6 +11,8 @@ The score has two layers:
 
 Exact timing must come from structured upstream artifacts. Optional prose may improve readability, emphasis, and show-planning clarity, but it must not contradict the deterministic analysis.
 
+`lighting_score.md` is written to `data/output/<Song - Artist>/lighting_score.md` as part of the stable UI output contract. It is the only markdown file allowed under `data/output/<Song - Artist>/`.
+
 ## Required Upstream Analysis And Artifacts
 
 The score contract assumes these upstream inputs already exist and are internally consistent:
@@ -18,7 +20,7 @@ The score contract assumes these upstream inputs already exist and are internall
 - canonical beat and bar timing from Story 1.2
 - section windows and labels from Story 4.2
 - accent windows, peaks, dips, and energy transitions from Story 4.3
-- phrase-aligned symbolic timing and phrase-grouping anchors from Story 3.3
+- phrase-aligned symbolic timing and phrase-grouping anchors from Story 3.4
 - motif-level and repeated-phrase summaries from `layer_b_symbolic.json`
 - harmonic progression-pattern occurrences from `layer_d_patterns.json`
 - unified timing and cross-layer references from `music_feature_layers.json`
@@ -114,10 +116,11 @@ Describe how each fixture role behaves.
 
 Expected content:
 
-- main moving-head role
-- FX moving-head role
-- parcan role
+- stable main moving-head role
+- stable FX moving-head role
+- stable parcan role
 - supporting wash or pulse role
+- event-driven overlay rules that explain when fixtures temporarily converge, mirror, widen, isolate, or target a shared focal point
 
 ### Section Plan
 
@@ -128,6 +131,7 @@ Each subsection must include:
 - section label
 - start and end time in seconds
 - phrase or bar-level cue anchors inside the section when available
+- event-driven regroupings tied to exact event rows or cue anchors when they occur inside the section
 - intensity guidance
 - movement guidance
 - accent behavior
@@ -145,6 +149,7 @@ Expected content:
 - maximum brightness or aggression caps
 - repeated phrase rules
 - pattern callback rules and allowed variation rules
+- event-to-formation rules such as drop-driven moving-head unison or build-driven tightening behavior
 - special fixture constraints
 
 ## Recommended Curation Layer
@@ -316,6 +321,7 @@ This is a structural example only. It shows how deterministic timing anchors and
 ## Fixture Intentions
 - `moving_head_main`: carry large section changes and chorus pushes.
 - `moving_head_fx`: answer motif callbacks with tighter motion.
+- Dynamic overlay rule: on `drop_explode`, all moving heads may enter `moving_head_unison_focus` aimed at `stage_center` if no higher-priority safety or capability constraint blocks it.
 
 ## Section Plan
 ### intro
@@ -324,6 +330,12 @@ This is a structural example only. It shows how deterministic timing anchors and
 - Hint: Treat the first phrase as the establishing visual idea and keep later recalls visibly related.
 - Callback rule: first `motif_alpha` occurrence is restrained; repeated occurrence may echo with added width.
 
+### chorus_1
+- Window: 31.04s -> 46.40s
+- Event-linked anchors: `drop_explode` at 31.04s, cue anchor `anchor_chorus_1_start` at 31.04s
+- Overlay rule: on `drop_explode`, all moving heads converge on `stage_center` for the first impact phrase, then widen back into mirrored motion on the next phrase anchor.
+- Callback rule: if `pattern_A` repeats later, reuse the same unison-focus entry but escalate brightness or beam width instead of inventing a new formation.
+
 ## Compact LLM Handoff Summary
 - Song feel: restrained opening, strong lift, high-contrast release.
 - Main event types: build, drop_explode, groove_loop.
@@ -331,6 +343,7 @@ This is a structural example only. It shows how deterministic timing anchors and
 
 ## Song-Specific Rules
 - Reuse `pattern_A` callbacks with controlled color variation.
+- On `drop` or `drop_explode`, prefer a deterministic moving-head convergence target such as `stage_center` before widening back out.
 - Do not move cue times away from deterministic anchors.
 ```
 

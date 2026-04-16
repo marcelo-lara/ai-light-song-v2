@@ -280,7 +280,7 @@ def generate_section_hints(paths: SongPaths, symbolic: dict, sections_payload: d
     inferred_path = paths.artifact("symbolic_transcription", "hints.json")
     write_json(inferred_path, inferred_payload)
 
-    output_path = paths.song_output_dir / "hints.json"
+    output_path = paths.hints_output_path
     ensure_directory(paths.song_output_dir)
     existing_output = _load_existing_output(output_path)
     merged_sections = _merge_sections(inferred_sections, existing_output)

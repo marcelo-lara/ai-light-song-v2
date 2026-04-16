@@ -4,15 +4,20 @@ from dataclasses import asdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from statistics import median
 
 from analyzer.exceptions import AnalysisError
 
 from analyzer.io import read_json, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
+from analyzer.stages.patterns import MAX_PATTERN_BARS, _build_bars, _build_beat_rows, _display_window, _pattern_sequence
 
 
 BEAT_MATCH_RATIO_THRESHOLD = 0.80
+CHORD_MATCH_RATIO_THRESHOLD = 0.85
+CHORD_MAX_LABEL_MISMATCHES = 0
+CHORD_MAX_TIMING_OVERLAP_FAILURES = 2
 
 
 @dataclass(slots=True)
@@ -23,6 +28,120 @@ class ValidationResult:
     match_ratio: float | None
     details: list[dict]
     reference_file: str | None
+    diagnostics: dict | None = None
+
+
+def _validate_bar_beat_window(
+    *,
+    start_bar: int,
+    start_beat: int,
+    end_bar: int,
+    end_beat: int,
+) -> None:
+    if start_beat not in {1, 2, 3, 4} or end_beat not in {1, 2, 3, 4}:
+        raise AnalysisError("Bar-window beats must be between 1 and 4")
+    if start_bar < 1 or end_bar < 1:
+        raise AnalysisError("Bar-window bars must be >= 1")
+    if (end_bar, end_beat) < (start_bar, start_beat):
+        raise AnalysisError("Bar-window end must not precede the start")
+
+
+def _flatten_window_beats(
+    bars_by_number: dict[int, dict],
+    *,
+    start_bar: int,
+    start_beat: int,
+    end_bar: int,
+    end_beat: int,
+) -> list[str | None]:
+    labels: list[str | None] = []
+    for bar_number in range(start_bar, end_bar + 1):
+        bar = bars_by_number.get(bar_number)
+        if bar is None:
+            raise AnalysisError(f"Bar {bar_number} is missing from the canonical timing grid")
+        beat_start = start_beat if bar_number == start_bar else 1
+        beat_end = end_beat if bar_number == end_bar else 4
+        labels.extend(bar["beats"][beat_start - 1:beat_end])
+    return labels
+
+
+def _window_display_rows(
+    bars_by_number: dict[int, dict],
+    *,
+    start_bar: int,
+    end_bar: int,
+) -> list[dict]:
+    return [bars_by_number[bar_number] for bar_number in range(start_bar, end_bar + 1)]
+
+
+def find_pattern_matches_for_bar_window(
+    patterns: dict,
+    timing: dict,
+    harmonic: dict,
+    *,
+    start_bar: int,
+    start_beat: int = 1,
+    end_bar: int,
+    end_beat: int = 4,
+) -> list[dict]:
+    _validate_bar_beat_window(
+        start_bar=start_bar,
+        start_beat=start_beat,
+        end_bar=end_bar,
+        end_beat=end_beat,
+    )
+
+    bars = _build_bars(_build_beat_rows(timing, harmonic), timing)
+    bars_by_number = {int(bar["bar"]): bar for bar in bars}
+    window_beats = _flatten_window_beats(
+        bars_by_number,
+        start_bar=start_bar,
+        start_beat=start_beat,
+        end_bar=end_bar,
+        end_beat=end_beat,
+    )
+    full_bar_window = start_beat == 1 and end_beat == 4
+    window_rows = _window_display_rows(bars_by_number, start_bar=start_bar, end_bar=end_bar) if full_bar_window else []
+
+    matches: list[dict] = []
+    for pattern in patterns.get("patterns", []):
+        for occurrence in pattern.get("occurrences", []):
+            occurrence_start_bar = int(occurrence.get("start_bar", 0))
+            occurrence_end_bar = int(occurrence.get("end_bar", 0))
+            if not (occurrence_start_bar <= start_bar <= end_bar <= occurrence_end_bar):
+                continue
+
+            occurrence_beats = _flatten_window_beats(
+                bars_by_number,
+                start_bar=occurrence_start_bar,
+                start_beat=1,
+                end_bar=occurrence_end_bar,
+                end_beat=4,
+            )
+            offset = ((start_bar - occurrence_start_bar) * 4) + (start_beat - 1)
+            window_length = ((end_bar - start_bar) * 4) + (end_beat - start_beat + 1)
+            candidate_beats = occurrence_beats[offset:offset + window_length]
+            if candidate_beats != window_beats:
+                continue
+
+            match_row = {
+                "pattern_id": pattern.get("id"),
+                "pattern_label": pattern.get("label"),
+                "pattern_sequence": pattern.get("sequence"),
+                "occurrence_start_bar": occurrence_start_bar,
+                "occurrence_end_bar": occurrence_end_bar,
+                "window_start_bar": start_bar,
+                "window_start_beat": start_beat,
+                "window_end_bar": end_bar,
+                "window_end_beat": end_beat,
+                "contained": True,
+                "mismatch_count": occurrence.get("mismatch_count"),
+            }
+            if full_bar_window:
+                match_row["window_sequence"] = _pattern_sequence(window_rows)
+                match_row["window_bar_sequence"] = _display_window(window_rows)
+            matches.append(match_row)
+    return matches
 
 
 def normalize_chord_label(label: str | None) -> str:
@@ -53,6 +172,7 @@ def build_validation_report(
     paths: SongPaths,
     compare_targets: tuple[str, ...],
     beat_validation: ValidationResult | None,
+    chord_validation: ValidationResult | None,
     beat_tolerance_seconds: float,
     tolerance_seconds: float,
     chord_min_overlap: float,
@@ -61,7 +181,18 @@ def build_validation_report(
     harmonic_path = paths.artifact("layer_a_harmonic.json")
     sections_path = paths.artifact("section_segmentation", "sections.json")
     beats_path = paths.artifact("essentia", "beats.json")
+    drum_events_path = paths.artifact("symbolic_transcription", "drum_events.json")
+    drum_midi_path = paths.artifact("symbolic_transcription", "omnizart", "drums.mid")
     energy_path = paths.artifact("layer_c_energy.json")
+    energy_identifiers_path = paths.artifact("energy_summary", "hints.json")
+    event_features_path = paths.artifact("event_inference", "features.json")
+    timeline_index_path = paths.artifact("event_inference", "timeline_index.json")
+    rule_candidates_path = paths.artifact("event_inference", "rule_candidates.json")
+    machine_events_path = paths.artifact("event_inference", "events.machine.json")
+    event_review_path = paths.review_json_path
+    event_overrides_path = paths.overrides_path
+    event_timeline_path = paths.timeline_output_path
+    event_benchmark_path = paths.artifact("validation", "event_benchmark.json")
     patterns_path = paths.artifact("layer_d_patterns.json")
     symbolic_path = paths.artifact("layer_b_symbolic.json")
     unified_path = paths.artifact("music_feature_layers.json")
@@ -74,10 +205,23 @@ def build_validation_report(
         "beats": beat_validation if "beats" in compare_targets and beat_validation is not None else (
             validate_beats(paths, timing, beat_tolerance_seconds) if "beats" in compare_targets else skipped_result()
         ),
-        "chords": _validate_chords(paths, harmonic, chord_min_overlap) if "chords" in compare_targets else skipped_result(),
+        "chords": chord_validation if "chords" in compare_targets and chord_validation is not None else (
+            validate_chords(paths, harmonic, chord_min_overlap) if "chords" in compare_targets else skipped_result()
+        ),
+        "drums": validate_drums(paths, timing) if "drums" in compare_targets else skipped_result(),
         "sections": _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
         "energy": _validate_energy_layer(read_json(energy_path), timing, sections) if "energy" in compare_targets else skipped_result(),
         "patterns": _validate_patterns_layer(read_json(patterns_path), timing) if "patterns" in compare_targets else skipped_result(),
+        "events": _validate_event_outputs(
+            read_json(energy_identifiers_path),
+            read_json(event_features_path),
+            read_json(rule_candidates_path),
+            read_json(machine_events_path),
+            read_json(event_review_path),
+            read_json(event_overrides_path),
+            read_json(event_timeline_path),
+            read_json(event_benchmark_path),
+        ) if "events" in compare_targets else skipped_result(),
         "unified": _validate_unified_layer(
             read_json(unified_path),
             timing,
@@ -102,12 +246,16 @@ def build_validation_report(
         notes.append("Beat validation compares inferred beat times against the beat timestamps embedded in the reference chord annotation when present.")
     if "chords" in compare_targets:
         notes.append("Chord validation treats reference chord files as authoritative human-validated comparison inputs when present.")
+    if "drums" in compare_targets:
+        notes.append("Drum validation checks the producer-scoped drum_events.json artifact for structural integrity, Omnizart provenance, debug-source metadata, and song-level pulse plausibility.")
     if "sections" in compare_targets:
         notes.append("Section validation compares structural change points only; reference segment labels are advisory and do not affect pass/fail.")
     if "energy" in compare_targets:
         notes.append("Energy validation checks internal consistency between section windows, accent candidates, and the canonical beat timeline.")
     if "patterns" in compare_targets:
         notes.append("Pattern validation checks window length, occurrence counts, and non-overlap rules inside Layer D.")
+    if "events" in compare_targets:
+        notes.append("Event validation checks Epic 5 artifact integrity, machine-review timeline consistency, and benchmark status when reviewed annotations exist.")
     if "unified" in compare_targets:
         notes.append("Unified validation checks cross-layer references, phrase and accent timeline joins, and callback integrity.")
 
@@ -127,7 +275,18 @@ def build_validation_report(
             "beats_file": str(beats_path),
             "harmonic_layer_file": str(harmonic_path),
             "symbolic_layer_file": str(symbolic_path),
+            "drum_events_file": str(drum_events_path),
+            "drum_midi_file": str(drum_midi_path),
             "energy_layer_file": str(energy_path),
+            "energy_identifiers_file": str(energy_identifiers_path),
+            "event_features_file": str(event_features_path),
+            "event_timeline_index_file": str(timeline_index_path),
+            "event_rule_candidates_file": str(rule_candidates_path),
+            "event_machine_file": str(machine_events_path),
+            "event_review_file": str(event_review_path),
+            "event_overrides_file": str(event_overrides_path),
+            "event_timeline_file": str(event_timeline_path),
+            "event_benchmark_file": str(event_benchmark_path),
             "patterns_layer_file": str(patterns_path),
             "music_feature_layers_file": str(unified_path),
             "lighting_events_file": str(lighting_path),
@@ -171,6 +330,12 @@ def write_validation_markdown(report: dict, report_md: Path) -> None:
         lines.append(f"Mismatched: {payload['mismatched']}")
         if payload["match_ratio"] is not None:
             lines.append(f"Match ratio: {payload['match_ratio']:.3f}")
+        diagnostics = payload.get("diagnostics") or {}
+        if diagnostics:
+            lines.append("")
+            lines.append("Diagnostics:")
+            for key, value in diagnostics.items():
+                lines.append(f"- {key}: {value}")
         details = payload.get("details", [])
         if details:
             lines.append("")
@@ -202,7 +367,292 @@ def write_validation_markdown(report: dict, report_md: Path) -> None:
 
 
 def skipped_result() -> ValidationResult:
-    return ValidationResult(status="skipped", matched=0, mismatched=0, match_ratio=None, details=[], reference_file=None)
+    return ValidationResult(status="skipped", matched=0, mismatched=0, match_ratio=None, details=[], reference_file=None, diagnostics=None)
+
+
+def _failed_result(checks: list[dict], reference_file: str | None = None, diagnostics: dict | None = None) -> ValidationResult:
+    matched = sum(1 for check in checks if bool(check.get("passed")))
+    mismatched = len(checks) - matched
+    ratio = matched / len(checks) if checks else None
+    return ValidationResult(
+        status="failed",
+        matched=matched,
+        mismatched=mismatched,
+        match_ratio=ratio,
+        details=checks,
+        reference_file=reference_file,
+        diagnostics=diagnostics,
+    )
+
+
+def _median(values: list[float]) -> float | None:
+    if not values:
+        return None
+    return float(median(values))
+
+
+def _mean_abs(values: list[float]) -> float | None:
+    if not values:
+        return None
+    return sum(abs(value) for value in values) / len(values)
+
+
+def _round_or_none(value: float | None, digits: int = 6) -> float | None:
+    if value is None:
+        return None
+    return round(value, digits)
+
+
+def _reference_beat_interval_seconds(timing: dict) -> float | None:
+    beat_times = [float(beat["time"]) for beat in timing.get("beats", [])]
+    if len(beat_times) < 2:
+        return None
+    intervals = [later - earlier for earlier, later in zip(beat_times, beat_times[1:]) if later > earlier]
+    return _median(intervals)
+
+
+def _validate_drums_summary(summary: dict, events: list[dict]) -> bool:
+    event_types = [str(event.get("event_type")) for event in events]
+    return summary == {
+        "event_count": len(events),
+        "kick_count": event_types.count("kick"),
+        "snare_count": event_types.count("snare"),
+        "hat_count": event_types.count("hat"),
+        "unresolved_count": event_types.count("unresolved"),
+    }
+
+
+def _drum_diagnostics(events: list[dict], timing: dict) -> dict:
+    event_types = [str(event.get("event_type")) for event in events]
+    beat_interval = _reference_beat_interval_seconds(timing)
+    hat_times = [float(event["time"]) for event in events if event.get("event_type") == "hat"]
+    hat_intervals = [later - earlier for earlier, later in zip(hat_times, hat_times[1:]) if later > earlier]
+    median_hat_interval = _median(hat_intervals)
+    aligned_event_ratio = sum(1 for event in events if event.get("alignment_resolved")) / len(events) if events else 0.0
+
+    backbeat_snares = sum(
+        1
+        for event in events
+        if event.get("event_type") == "snare" and event.get("aligned_beat") in {2, 4}
+    )
+    downbeat_kicks = sum(
+        1
+        for event in events
+        if event.get("event_type") == "kick" and event.get("aligned_beat") in {1, 3}
+    )
+    recognizable_backbeat = backbeat_snares >= 2 and downbeat_kicks >= 2
+    recognizable_hat_pulse = (
+        beat_interval is not None
+        and median_hat_interval is not None
+        and len(hat_times) >= 2
+        and (beat_interval * 0.2) <= median_hat_interval <= (beat_interval * 0.75)
+    )
+    overdense_hat_regions = 0
+    if beat_interval is not None:
+        overdense_hat_regions = sum(1 for interval in hat_intervals if interval < (beat_interval / 6.0))
+
+    return {
+        "event_count": len(events),
+        "kick_count": event_types.count("kick"),
+        "snare_count": event_types.count("snare"),
+        "hat_count": event_types.count("hat"),
+        "unresolved_count": event_types.count("unresolved"),
+        "aligned_event_ratio": _round_or_none(aligned_event_ratio),
+        "reference_beat_interval_seconds": _round_or_none(beat_interval),
+        "median_hat_interval_seconds": _round_or_none(median_hat_interval),
+        "recognizable_backbeat": recognizable_backbeat,
+        "recognizable_hat_pulse": recognizable_hat_pulse,
+        "overdense_hat_regions": overdense_hat_regions,
+    }
+
+
+def validate_drums(paths: SongPaths, timing: dict) -> ValidationResult:
+    drum_events_path = paths.artifact("symbolic_transcription", "drum_events.json")
+    drum_midi_path = paths.artifact("symbolic_transcription", "omnizart", "drums.mid")
+    if not drum_events_path.exists():
+        return _failed_result(
+            [{"check": "drum_events_present", "passed": False, "path": str(drum_events_path)}],
+            reference_file=str(drum_events_path),
+        )
+
+    payload = read_json(drum_events_path)
+    events = payload.get("events", [])
+    summary = payload.get("summary", {})
+    debug_sources = payload.get("generated_from", {}).get("debug_sources", {})
+    dependencies = payload.get("generated_from", {}).get("dependencies", {})
+    checks = [
+        {
+            "check": "drum_events_present",
+            "passed": len(events) > 0,
+            "count": len(events),
+        },
+        {
+            "check": "event_ids_unique",
+            "passed": len({str(event.get("event_id")) for event in events}) == len(events),
+        },
+        {
+            "check": "event_times_sorted",
+            "passed": [float(event.get("time", -1.0)) for event in events] == sorted(float(event.get("time", -1.0)) for event in events),
+        },
+        {
+            "check": "event_types_supported",
+            "passed": all(str(event.get("event_type")) in {"kick", "snare", "hat", "unresolved"} for event in events),
+        },
+        {
+            "check": "summary_counts_match_event_rows",
+            "passed": _validate_drums_summary(summary, events),
+        },
+        {
+            "check": "resolved_events_have_alignment_fields",
+            "passed": all(
+                (not event.get("alignment_resolved"))
+                or (event.get("aligned_bar") is not None and event.get("aligned_beat") is not None and event.get("aligned_beat_global") is not None)
+                for event in events
+            ),
+        },
+        {
+            "check": "raw_midi_cache_present",
+            "passed": drum_midi_path.exists() and dependencies.get("raw_midi_cache") == str(drum_midi_path),
+        },
+        {
+            "check": "generated_engine_is_omnizart",
+            "passed": payload.get("generated_from", {}).get("engine") == "audiohacking.omnizart.drum",
+        },
+        {
+            "check": "debug_source_paths_present",
+            "passed": bool(debug_sources.get("full_mix")) and bool(debug_sources.get("drums_stem")),
+        },
+    ]
+    diagnostics = _drum_diagnostics(events, timing)
+    return ValidationResult(
+        status="passed" if all(bool(check.get("passed")) for check in checks) else "failed",
+        matched=sum(1 for check in checks if bool(check.get("passed"))),
+        mismatched=sum(1 for check in checks if not bool(check.get("passed"))),
+        match_ratio=(sum(1 for check in checks if bool(check.get("passed"))) / len(checks)) if checks else None,
+        details=checks,
+        reference_file=str(drum_events_path),
+        diagnostics=diagnostics,
+    )
+
+
+def _timing_direction(delta_seconds: float | None, tolerance_seconds: float) -> str:
+    if delta_seconds is None or abs(delta_seconds) <= tolerance_seconds:
+        return "aligned"
+    if delta_seconds > 0:
+        return "late"
+    return "early"
+
+
+def _estimate_reference_beat_interval(reference_times: list[float]) -> float | None:
+    if len(reference_times) < 2:
+        return None
+    intervals = [
+        later - earlier
+        for earlier, later in zip(reference_times, reference_times[1:])
+        if later > earlier
+    ]
+    return _median(intervals)
+
+
+def _window(values: list[float], size: int) -> list[float]:
+    if len(values) <= size:
+        return values
+    return values[:size]
+
+
+def _build_beat_timing_diagnostics(
+    details: list[dict],
+    tolerance_seconds: float,
+    reference_times: list[float],
+) -> dict | None:
+    deltas = [float(detail["delta_seconds"]) for detail in details if "delta_seconds" in detail]
+    if not deltas:
+        return None
+
+    if len(deltas) <= 6:
+        window_size = max(2, len(deltas) // 2)
+    else:
+        window_size = max(3, min(16, len(deltas) // 4))
+    start_window = _window(deltas, window_size)
+    end_window = deltas[-window_size:]
+    median_delta = _median(deltas)
+    start_median = _median(start_window)
+    end_median = _median(end_window)
+    reference_beat_interval = _estimate_reference_beat_interval(reference_times)
+    residuals = [delta - (median_delta or 0.0) for delta in deltas]
+    residual_spread = max(abs(value) for value in residuals) if residuals else None
+    drift_span = None if start_median is None or end_median is None else end_median - start_median
+
+    global_offset_present = median_delta is not None and abs(median_delta) > tolerance_seconds
+    local_drift_present = drift_span is not None and abs(drift_span) > tolerance_seconds
+
+    diagnostics = {
+        "global_offset_seconds": _round_or_none(median_delta),
+        "global_offset_direction": _timing_direction(median_delta, tolerance_seconds),
+        "global_offset_present": global_offset_present,
+        "mean_absolute_delta_seconds": _round_or_none(_mean_abs(deltas)),
+        "start_window_median_seconds": _round_or_none(start_median),
+        "end_window_median_seconds": _round_or_none(end_median),
+        "local_drift_seconds": _round_or_none(drift_span),
+        "local_drift_present": local_drift_present,
+        "residual_spread_seconds": _round_or_none(residual_spread),
+        "reference_beat_interval_seconds": _round_or_none(reference_beat_interval),
+    }
+    return diagnostics
+
+
+def _build_section_timing_diagnostics(
+    details: list[dict],
+    tolerance_seconds: float,
+    reference_times: list[float],
+) -> dict | None:
+    matched_deltas = [
+        float(detail["delta_seconds"])
+        for detail in details
+        if detail.get("match_type") == "matched_boundary" and detail.get("delta_seconds") is not None
+    ]
+    if not matched_deltas:
+        return None
+
+    reference_beat_interval = _estimate_reference_beat_interval(reference_times)
+    snapped_boundary_count = 0
+    dominant_snap_multiple = None
+    if reference_beat_interval and reference_beat_interval > 0:
+        snap_multiples = [round(delta / reference_beat_interval) for delta in matched_deltas]
+        non_zero_snap_multiples = [multiple for multiple in snap_multiples if multiple != 0]
+        for delta in matched_deltas:
+            multiple = round(delta / reference_beat_interval)
+            snapped_seconds = multiple * reference_beat_interval
+            if multiple != 0 and abs(delta - snapped_seconds) <= tolerance_seconds:
+                snapped_boundary_count += 1
+        if non_zero_snap_multiples:
+            dominant_snap_multiple = max(set(non_zero_snap_multiples), key=non_zero_snap_multiples.count)
+
+    median_delta = _median(matched_deltas)
+    diagnostics = {
+        "boundary_offset_seconds": _round_or_none(median_delta),
+        "boundary_offset_direction": _timing_direction(median_delta, 1e-6),
+        "reference_beat_interval_seconds": _round_or_none(reference_beat_interval),
+        "snap_like_boundary_count": snapped_boundary_count,
+        "dominant_snap_multiple_beats": dominant_snap_multiple,
+    }
+    return diagnostics
+
+
+def _build_chord_diagnostics(details: list[dict]) -> dict | None:
+    mismatch_reasons: dict[str, int] = {}
+    overlap_ratios = [float(detail["overlap_ratio"]) for detail in details if detail.get("overlap_ratio") is not None]
+    for detail in details:
+        reason = detail.get("result") or "unknown"
+        mismatch_reasons[reason] = mismatch_reasons.get(reason, 0) + 1
+    diagnostics = {
+        "matched_event_count": mismatch_reasons.get("matched", 0),
+        "timing_overlap_failure_count": mismatch_reasons.get("timing_overlap_failure", 0),
+        "label_mismatch_count": mismatch_reasons.get("label_mismatch", 0),
+        "no_reference_overlap_count": mismatch_reasons.get("no_reference_overlap", 0),
+        "median_overlap_ratio": _round_or_none(_median(overlap_ratios)),
+    }
+    return diagnostics
 
 
 def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> ValidationResult:
@@ -249,6 +699,7 @@ def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> 
     total = matched + mismatched
     ratio = matched / total if total else None
     status = "passed" if ratio is None or ratio >= BEAT_MATCH_RATIO_THRESHOLD else "failed"
+    diagnostics = _build_beat_timing_diagnostics(details, tolerance_seconds, reference_times)
     return ValidationResult(
         status=status,
         matched=matched,
@@ -256,6 +707,7 @@ def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> 
         match_ratio=ratio,
         details=details,
         reference_file=str(reference_path),
+        diagnostics=diagnostics,
     )
 
 
@@ -271,6 +723,7 @@ def _result_from_checks(checks: list[dict], reference_file: str | None = None) -
         match_ratio=ratio,
         details=checks,
         reference_file=reference_file,
+        diagnostics=None,
     )
 
 
@@ -340,6 +793,67 @@ def _validate_energy_layer(energy: dict, timing: dict, sections: dict) -> Valida
     return _result_from_checks(checks)
 
 
+def _validate_event_outputs(
+    energy_identifiers: dict,
+    event_features: dict,
+    rule_candidates: dict,
+    machine_events: dict,
+    review_payload: dict,
+    overrides_payload: dict,
+    timeline_payload: dict,
+    benchmark_payload: dict,
+) -> ValidationResult:
+    checks = []
+    identifier_names = set(energy_identifiers.get("supported_identifiers", []))
+    checks.append({
+        "check": "drop_identifier_supported",
+        "passed": "drop" in identifier_names,
+    })
+    checks.append({
+        "check": "event_feature_rows_present",
+        "passed": len(event_features.get("features", [])) > 0,
+        "count": len(event_features.get("features", [])),
+    })
+    checks.append({
+        "check": "rule_candidates_present",
+        "passed": len(rule_candidates.get("events", [])) > 0,
+        "count": len(rule_candidates.get("events", [])),
+    })
+    checks.append({
+        "check": "machine_events_present",
+        "passed": len(machine_events.get("events", [])) > 0,
+        "count": len(machine_events.get("events", [])),
+    })
+    checks.append({
+        "check": "review_summary_present",
+        "passed": isinstance(review_payload.get("summary"), dict),
+    })
+    checks.append({
+        "check": "overrides_operations_list_present",
+        "passed": isinstance(overrides_payload.get("operations"), list),
+    })
+    timeline_events = timeline_payload.get("events", [])
+    merged_count = review_payload.get("summary", {}).get("merged_event_count")
+    checks.append({
+        "check": "timeline_matches_merged_review_count",
+        "passed": len(timeline_events) == int(merged_count),
+        "timeline_count": len(timeline_events),
+        "merged_count": merged_count,
+    })
+    benchmark_status = str(benchmark_payload.get("status", "skipped"))
+    checks.append({
+        "check": "benchmark_report_written",
+        "passed": benchmark_status in {"passed", "failed", "skipped"},
+        "status": benchmark_status,
+    })
+    checks.append({
+        "check": "benchmark_failure_only_counts_when_report_exists",
+        "passed": benchmark_status != "failed" or benchmark_payload.get("matched", 0) >= 0,
+        "status": benchmark_status,
+    })
+    return _result_from_checks(checks)
+
+
 def _validate_patterns_layer(patterns: dict, timing: dict) -> ValidationResult:
     max_bar = int(timing["bars"][-1]["bar"]) if timing.get("bars") else 0
     checks = []
@@ -360,7 +874,7 @@ def _validate_patterns_layer(patterns: dict, timing: dict) -> ValidationResult:
         bar_count = int(pattern.get("bar_count", 0))
         checks.append({
             "check": f"{pattern_id}_bar_count_range",
-            "passed": 2 <= bar_count <= 8,
+            "passed": 2 <= bar_count <= MAX_PATTERN_BARS,
             "bar_count": bar_count,
         })
         checks.append({
@@ -529,19 +1043,41 @@ def _validate_chords(paths: SongPaths, harmonic: dict, chord_min_overlap: float)
             if ratio > best_overlap:
                 best_overlap = ratio
                 overlap_match = reference
-        if overlap_match and best_overlap >= chord_min_overlap and normalize_chord_label(event["chord"]) == normalize_chord_label(overlap_match["chord"]):
-            matched += 1
-        else:
+        normalized_inferred = normalize_chord_label(event["chord"])
+        normalized_reference = normalize_chord_label(overlap_match["chord"]) if overlap_match else None
+        if overlap_match is None:
+            result = "no_reference_overlap"
             mismatched += 1
+        elif best_overlap < chord_min_overlap:
+            result = "timing_overlap_failure"
+            mismatched += 1
+        elif normalized_inferred != normalized_reference:
+            result = "label_mismatch"
+            mismatched += 1
+        else:
+            result = "matched"
+            matched += 1
         details.append({
             "inferred": event,
             "reference": overlap_match,
+            "inferred_label_normalized": normalized_inferred,
+            "reference_label_normalized": normalized_reference,
             "overlap_ratio": round(best_overlap, 6),
+            "result": result,
         })
 
     total = matched + mismatched
     ratio = matched / total if total else None
-    status = "passed" if ratio is None or ratio >= 0.6 else "failed"
+    diagnostics = _build_chord_diagnostics(details)
+    label_mismatch_count = int((diagnostics or {}).get("label_mismatch_count", 0))
+    timing_overlap_failure_count = int((diagnostics or {}).get("timing_overlap_failure_count", 0))
+    status = "passed"
+    if ratio is not None and ratio < CHORD_MATCH_RATIO_THRESHOLD:
+        status = "failed"
+    if label_mismatch_count > CHORD_MAX_LABEL_MISMATCHES:
+        status = "failed"
+    if timing_overlap_failure_count > CHORD_MAX_TIMING_OVERLAP_FAILURES:
+        status = "failed"
     return ValidationResult(
         status=status,
         matched=matched,
@@ -549,7 +1085,12 @@ def _validate_chords(paths: SongPaths, harmonic: dict, chord_min_overlap: float)
         match_ratio=ratio,
         details=details,
         reference_file=str(reference_path),
+        diagnostics=diagnostics,
     )
+
+
+def validate_chords(paths: SongPaths, harmonic: dict, chord_min_overlap: float) -> ValidationResult:
+    return _validate_chords(paths, harmonic, chord_min_overlap)
 
 
 def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: float) -> ValidationResult:
@@ -558,6 +1099,9 @@ def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: floa
         return skipped_result()
 
     reference_rows = read_json(reference_path)
+    reference_chords_path = paths.reference("moises", "chords.json")
+    reference_chord_rows = read_json(reference_chords_path) if reference_chords_path and reference_chords_path.exists() else []
+    reference_times = sorted({round(float(row["curr_beat_time"]), 6) for row in reference_chord_rows if "curr_beat_time" in row})
     inferred_sections = sections.get("sections", [])
     inferred_boundaries = [
         {
@@ -645,6 +1189,7 @@ def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: floa
     denominator = max(len(inferred_boundaries), len(reference_boundaries))
     ratio = matched / denominator if denominator else None
     status = "passed" if ratio is None or ratio >= 0.75 else "failed"
+    diagnostics = _build_section_timing_diagnostics(details, tolerance_seconds, reference_times)
     return ValidationResult(
         status=status,
         matched=matched,
@@ -652,4 +1197,5 @@ def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: floa
         match_ratio=ratio,
         details=details,
         reference_file=str(reference_path),
+        diagnostics=diagnostics,
     )

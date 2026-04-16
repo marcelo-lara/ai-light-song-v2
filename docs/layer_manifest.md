@@ -35,7 +35,9 @@ Contains symbolic and note-event analysis outputs such as:
 - repeated motifs
 - section-level symbolic cards
 
-Primary source stories: EPIC 3.1 through EPIC 3.5.
+Primary source stories: EPIC 3.1 and EPIC 3.3 through EPIC 3.6.
+
+Story 3.2 adds a producer-scoped drum review artifact under `symbolic_transcription/` without expanding the canonical Layer B contract in phase 1.
 
 ### `layer_c_energy.json`
 
@@ -54,6 +56,7 @@ Primary source stories: EPIC 4.1 through EPIC 4.3.
 Contains repeated harmonic-pattern outputs such as:
 
 - pattern definitions
+- compact progression sequences
 - representative bar sequences
 - pattern occurrences
 - mismatch counts
@@ -82,6 +85,30 @@ Stores producer-scoped named energy-event identifiers such as drops and other la
 
 Primary source story: EPIC 5.4.
 
+### `event_inference/features.json`
+
+Stores normalized event-analysis feature rows aligned to the canonical timing grid and structural anchors.
+
+Primary source story: EPIC 5.2.
+
+### `event_inference/timeline_index.json`
+
+Stores helper timing indices and anchor references that let later Epic 5 stages map event windows back to beats, sections, and phrases.
+
+Primary source story: EPIC 5.2.
+
+### `event_inference/rule_candidates.json`
+
+Stores producer-scoped baseline rule candidates before final machine-event promotion and review merging.
+
+Primary source story: EPIC 5.3.
+
+### `event_inference/events.machine.json`
+
+Stores the canonical machine-generated event set that downstream review, timeline export, and benchmarking stages consume.
+
+Primary source story: EPIC 5.5.
+
 ### `pattern_mining/chord_patterns.json`
 
 Stores the producer-scoped output of `find_chord_patterns(...)` before it is promoted into the canonical Layer D artifact.
@@ -94,6 +121,14 @@ Stores repeated stem-aware patterns used for comparison or pattern-aware lightin
 
 Stores producer-scoped raw Basic Pitch note caches, model-output summaries, and per-stem transcription metadata used to build `layer_b_symbolic.json`.
 
+### `symbolic_transcription/drum_events.json`
+
+Stores the producer-scoped kick, snare, and hat review artifact from Story 3.2 for rhythmic inspection and debugging.
+
+### `symbolic_transcription/omnizart/drums.mid`
+
+Stores the raw Omnizart drum MIDI cache used to build Story 3.2 review rows.
+
 ### `symbolic_transcription/validation.json`
 
 Stores source-level symbolic validation results and promotion decisions used to assemble the final `layer_b_symbolic.json` artifact from all analyzed stems and the full mix.
@@ -102,6 +137,36 @@ Stores source-level symbolic validation results and promotion decisions used to 
 
 Stores deterministic section-level hint inference derived from the aligned symbolic timeline before user-authored edits are merged into the output-facing hints file.
 
+### `validation/event_benchmark.json`
+
+Stores event-specific benchmark status and output-surface checks for the Epic 5 review and timeline chain.
+
+Primary source story: EPIC 5.7.
+
+### `validation/song_events.review.json`
+
+Stores the reviewed event payload used for human review without expanding the UI-facing `data/output/<Song - Artist>/` contract.
+
+Primary source story: EPIC 5.6.
+
+### `validation/song_events.review.md`
+
+Stores the human-readable markdown companion to `validation/song_events.review.json`.
+
+Primary source story: EPIC 5.6.
+
+### `validation/song_events.overrides.json`
+
+Stores persistent user-authored review operations that are re-applied when the reviewed event payload is regenerated.
+
+Primary source story: EPIC 5.6.
+
+### `validation/song_event_timeline.md`
+
+Stores the human-readable markdown companion to the compact UI-facing event timeline JSON.
+
+Primary source story: EPIC 5.8.
+
 ### `info.json`
 
 Stores canonical song metadata and references to major generated files. This file is written to `data/output/<Song - Artist>/info.json`.
@@ -109,6 +174,8 @@ Stores canonical song metadata and references to major generated files. This fil
 Expected top-level metadata fields are `song_name`, `bpm`, and `duration`, with file references grouped under `artifacts`, `generated_from`, and `outputs`.
 
 ## Consolidated Output Files
+
+`data/output/<Song - Artist>/` is a stable UI contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`. `lighting_score.md` is the only markdown file allowed there. Do not add or remove files from this directory unless a UI contract change makes that strictly required.
 
 ### `data/output/<Song - Artist>/beats.json`
 
@@ -125,6 +192,16 @@ Expected fields per row are `start`, `end`, `label`, `description`, and `hints`,
 ### `data/output/<Song - Artist>/hints.json`
 
 Stores the editable merged section hints consumed by `lighting_score.md`, combining regenerated inference-authored hints with preserved user-authored hints.
+
+### `data/output/<Song - Artist>/song_event_timeline.json`
+
+Stores the compact reviewed event timeline exported for downstream lighting logic and prompt-friendly consumption. Each inferred entry should carry an explicit `created_by` value in the form `analyzer_{module/algorithm/model}`.
+
+Primary source story: EPIC 5.8.
+
+### `data/output/<Song - Artist>/lighting_score.md`
+
+Stores the final human-readable lighting design document. This is the only markdown file allowed under `data/output/<Song - Artist>/`.
 
 ## Unified Artifact
 
@@ -172,6 +249,8 @@ This file is the explicit handoff artifact for EPIC 6.4 and EPIC 6.5.
 Stores fixture-agnostic lighting events and normalized cue anchors derived from `music_feature_layers.json`.
 
 This file is the explicit handoff artifact for EPIC 6.5.
+
+When Story 6.5 emits fixture-aware overlay metadata, the event records should preserve deterministic links back to the triggering music logic, for example through fields such as `event_ref`, `role_overlay`, and explicit focal targets for supported fixtures.
 
 ## Cross-File Rules
 

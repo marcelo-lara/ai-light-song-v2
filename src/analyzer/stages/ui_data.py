@@ -10,6 +10,21 @@ from analyzer.paths import SongPaths
 
 NOTE_NAMES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 
+SECTION_DESCRIPTIONS = {
+    "ambient_opening": "Restrained opening space with low-volatility motion and room for atmosphere.",
+    "vocal_spotlight": "Voice-led section where the vocal contour carries most of the attention and motion.",
+    "vocal_lift": "Vocal-led section with stronger energy and emotional lift than a simple spotlight moment.",
+    "momentum_lift": "Energy and motion climb together into a more assertive forward push.",
+    "flowing_plateau": "Stable mid-energy passage with continuous motion but limited structural shock.",
+    "groove_plateau": "Pulse-led section with sustained rhythmic momentum and repeat-driven stability.",
+    "instrumental_bed": "Instrument-led passage where accompaniment or synth texture carries the section more than the voice.",
+    "percussion_break": "Percussion-dominant pocket with reduced harmonic or vocal material.",
+    "contrast_bridge": "Contrast-focused transition where texture or pressure shifts before the next settled state.",
+    "focal_lift": "Payoff section where energy, repetition, or phrasing converge into the strongest focal state.",
+    "breath_space": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
+    "release_tail": "Closing release state where energy tapers and the track settles out.",
+}
+
 
 def _resolve_chord_for_time(time_s: float, chord_events: list[dict]) -> str | None:
     previous_label: str | None = None
@@ -47,6 +62,11 @@ def _format_section_label(
             suffix = ""
 
     return f"{prefix}{label_text}{suffix}"
+
+
+def _section_description(section: dict) -> str:
+    key = str(section.get("section_character") or section.get("label") or "")
+    return SECTION_DESCRIPTIONS.get(key, "")
 
 
 def _pitch_to_note_name(pitch: int) -> str:
@@ -118,14 +138,14 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
                 section.get("section_id"),
                 section.get("confidence"),
             ),
-            "description": "",
+            "description": _section_description(section),
             "hints": [],
         }
         for section in sections_payload.get("sections", [])
     ]
 
-    beats_output_path = paths.song_output_dir / "beats.json"
-    sections_output_path = paths.song_output_dir / "sections.json"
+    beats_output_path = paths.beats_output_path
+    sections_output_path = paths.sections_output_path
     write_json(beats_output_path, beat_rows)
     write_json(sections_output_path, section_rows)
     return {
