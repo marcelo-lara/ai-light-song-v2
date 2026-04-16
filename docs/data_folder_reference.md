@@ -12,6 +12,8 @@ Use this as a navigation guide first, then open the referenced files for the act
 - `data/artifacts/` contains generated analysis artifacts and intermediate caches.
 - `data/output/` contains a stable UI-facing output contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 - Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
+- The internal debugger served from `/ui/` primarily reads `data/artifacts/<Song - Artist>/` directly and uses `data/output/<Song - Artist>/` only as supporting context when useful.
+- The debugger is read-only against generated data and must not write files into `data/artifacts/` or `data/output/`.
 - `data/fixtures/` contains rig and focus-point context.
 - `data/songs/` contains source audio. `data/stems/` contains stem-separated audio derived from those songs.
 
@@ -111,6 +113,8 @@ If you only open a few files, start here in this order:
 9. `data/fixtures/fixtures.json`
 10. `data/fixtures/pois.json`
 
+For internal debugger work, invert that priority: start with `data/artifacts/<Song - Artist>/` layer and validation files first, then use `data/output/<Song - Artist>/` only as compact helper projections.
+
 ## Top-Level Folder Reference
 
 ### `data/songs/`
@@ -127,9 +131,13 @@ Per-song separated audio stems and lightweight stem metadata. These are derived 
 
 Per-song generated analysis artifacts. This is the main machine-readable analysis area.
 
+The internal debugger should treat this folder as its primary read surface.
+
 ### `data/output/`
 
 Per-song consumer-facing outputs. These files are more compact and presentation-friendly than the artifact files, and the directory is a stable UI contract rather than an open-ended export area.
+
+The internal debugger may read selected files here for quick navigation or compact comparisons, but it must not treat this folder as its primary source of truth and must not write additional files into it.
 
 ### `data/fixtures/`
 

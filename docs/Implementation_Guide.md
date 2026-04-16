@@ -11,6 +11,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 ### Folder semantics
 
 - `src/`: implementation code. Organize it with subfolders for cohesive features or analysis phases rather than by file type.
+- `ui/`: internal artifact-debugger web application and UI-specific container files. Keep browser assets and UI server configuration here rather than under `src/`.
 - `data/songs/`: source `.mp3` files for analysis.
 - `data/stems/`: temporary stem and `.wav` outputs.
 - `data/artifacts/`: intermediate artifacts such as beats, chords, sections, layer outputs, merged layer files, and validation notes.
@@ -37,6 +38,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - Schemas must be versioned.
 - Reference files are for validation only, not fallback generation.
 - Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
+- The internal debugger may read directly from `data/artifacts/<Song - Artist>/` and selected `data/output/<Song - Artist>/` helper files, but it is read-only and must not write files into either tree.
 
 ## Containerized Development Rule
 
@@ -46,14 +48,15 @@ All development, validation, and sample-song execution must run inside the proje
 - Do not depend on host-installed Python packages.
 - Validate tool imports and sample-song runs inside the container.
 - Use `./analyze` or `python -m analyzer` as the supported container entry points.
+- The analyzer runtime is the Compose `app` service. The internal debugger UI runs as a separate Compose `ui` service backed by the `/ui` folder and read-only mounted generated data.
 - Batch runs via `--all-songs` must isolate each song in a subprocess because the long-lived parent process is not treated as a stable execution model for the native analysis stack.
 - Demucs model weights must resolve through the repo-local cache under `models/demucs/` rather than opportunistic mid-run downloads.
 
-See `docs/docker_development.md` and the repository `Dockerfile` for the runtime contract.
+See `docs/docker_development.md`, `docs/ui_development.md`, and the repository `Dockerfile` for the runtime contract.
 
 ## Pipeline Overview
 
-The pipeline is divided into six epics:
+The pipeline is divided into seven epics:
 
 1. EPIC 1: audio preprocessing.
 2. EPIC 2: harmonic summary.
@@ -61,6 +64,7 @@ The pipeline is divided into six epics:
 4. EPIC 4: audio energy summary.
 5. EPIC 5: event vocabulary, inference, review, and export.
 6. EPIC 6: pattern mining, unified music feature assembly, and lighting design.
+7. EPIC 7: internal artifact debugger and regression viewer.
 
 ## EPIC 1: Audio Preprocessing Pipeline
 
@@ -146,6 +150,24 @@ Layer D covers repeated harmonic progression structure. Motif-level and phrase-l
 
 Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/beats.json`, `data/output/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_events.json`, `lighting_score.md`.
 
+## EPIC 7: Internal Artifact Debugger and Regression Viewer
+
+Goal: provide a read-only web debugger for inspecting generated inferences, timing alignment, and validation surfaces without changing the stable downstream output contract.
+
+The debugger is an internal engineering and review tool. Its primary inspection surface is `data/artifacts/<Song - Artist>/`. It may also read compact helper projections from `data/output/<Song - Artist>/`, but it must not write debugger state or exported files into either tree.
+
+| Story | Intent | Primary outputs | Detailed spec |
+| --- | --- | --- | --- |
+| 7.1 | Song auto-discovery and artifact entry | discovered song-directory selection and artifact entry shell | `docs/7.1.song_auto_discovery_and_artifact_entry_story.md` |
+| 7.2 | Master sync and waveform anchor | debugger playback shell and shared timeline clock | `docs/7.2.master_sync_and_waveform_anchor_story.md` |
+| 7.3 | DAW-style lane architecture | shared lane layout, zoom, filtering, and scroll sync | `docs/7.3.daw_style_lane_architecture_story.md` |
+| 7.4 | Sparse data lanes | section, chord, pattern, and event-region lanes | `docs/7.4.sparse_data_lanes_story.md` |
+| 7.5 | High-density lanes | drum, density, and energy renderers | `docs/7.5.high_density_lanes_story.md` |
+| 7.6 | Semantic zoom and performance guardrails | clustering, zoom floors, and viewport-limited rendering | `docs/7.6.semantic_zoom_and_performance_story.md` |
+| 7.7 | Regression validation overlay | beat-grid, drift, and validation comparison overlays | `docs/7.7.regression_validation_overlay_story.md` |
+
+Representative implementation assets: `/ui/`, the Compose `ui` service, and read-only debugger access to `layer_a_harmonic.json`, `layer_b_symbolic.json`, `layer_c_energy.json`, `layer_d_patterns.json`, `event_inference/*.json`, `validation/phase_1_report.json`, and `music_feature_layers.json`.
+
 ## Canonical Artifact Flow
 
 The expected high-level artifact dependency chain is:
@@ -159,12 +181,14 @@ The expected high-level artifact dependency chain is:
 7. UI-facing `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md` in `data/output/<Song - Artist>/`.
 8. Unified cross-layer handoff file `music_feature_layers.json` in `data/artifacts/<Song - Artist>/`.
 9. No additional routine files are added to `data/output/<Song - Artist>/` beyond the stable UI contract unless a UI contract change makes that strictly required.
+10. The internal debugger served from `/ui/` reads `data/artifacts/<Song - Artist>/` and selected output helper files without writing any new files back into those generated-data directories.
 
 ## Required Supporting Documents
 
 - `docs/layer_manifest.md`: layer-by-layer artifact contract.
 - `docs/lighting_score_template.md`: stable lighting-score structure.
 - `docs/docker_development.md`: container runtime and validation contract.
+- `docs/ui_development.md`: internal debugger runtime, folder ownership, and read-only data-access contract.
 - `docs/phase_1_validation_cli.md`: first-phase analyzer entry point and reference-comparison contract.
 
 ## Lighting-Score-Ready Minimum Artifact Set

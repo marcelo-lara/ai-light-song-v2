@@ -1,0 +1,246 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f0e8;
+  --panel: rgba(255, 251, 245, 0.92);
+  --panel-strong: #fffaf2;
+  --border: rgba(67, 49, 33, 0.14);
+  --text: #24170c;
+  --muted: #6a5748;
+  --accent: #0f766e;
+  --accent-strong: #155e75;
+  --warn: #a16207;
+  --danger: #b91c1c;
+  --shadow: 0 18px 60px rgba(68, 41, 17, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(202, 138, 4, 0.18), transparent 22%),
+    linear-gradient(160deg, #efe7da 0%, #f8f4ee 48%, #efe0d1 100%);
+  min-height: 100vh;
+}
+
+code,
+pre,
+input,
+select,
+button {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  padding: 24px;
+  border-right: 1px solid var(--border);
+  background: rgba(255, 248, 240, 0.86);
+  backdrop-filter: blur(18px);
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.main {
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+
+.hero-meta,
+.summary-grid,
+.grid {
+  display: grid;
+  gap: 12px;
+}
+
+.hero-meta {
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+}
+
+.grid.two-up {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.summary-grid {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.stat-card,
+.summary-card {
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.summary-card strong,
+.stat-card strong {
+  display: block;
+  font-size: 1.35rem;
+  margin-top: 6px;
+}
+
+.empty-state-card {
+  margin-bottom: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(161, 98, 7, 0.24);
+  background: linear-gradient(180deg, rgba(250, 237, 205, 0.9) 0%, rgba(255, 248, 232, 0.96) 100%);
+}
+
+.empty-state-card strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.empty-state-card ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.hidden {
+  display: none;
+}
+
+.stat-label,
+.eyebrow {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+}
+
+.lede,
+.hint,
+.empty {
+  color: var(--muted);
+}
+
+.controls {
+  display: grid;
+  gap: 10px;
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+input,
+select,
+button {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  font-size: 0.95rem;
+}
+
+button {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: #f7fffd;
+  border: none;
+  cursor: pointer;
+}
+
+.secondary-button {
+  background: var(--panel-strong);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.path-list,
+.file-status-list,
+.preview-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.panel-header {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.panel-header select {
+  max-width: 320px;
+}
+
+.json-viewer {
+  margin: 0;
+  min-height: 420px;
+  max-height: 720px;
+  overflow: auto;
+  padding: 18px;
+  border-radius: 18px;
+  background: #1d1f21;
+  color: #f3f2ef;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.status-ok {
+  color: var(--accent);
+}
+
+.status-missing {
+  color: var(--warn);
+}
+
+.status-error {
+  color: var(--danger);
+}
+
+@media (max-width: 1080px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .grid.two-up,
+  .hero-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    flex-direction: column;
+  }
+}

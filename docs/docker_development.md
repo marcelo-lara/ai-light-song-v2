@@ -12,7 +12,10 @@ All development and validation must run inside Docker.
 - Do not rely on host Python packages.
 - Treat the container as the authoritative development runtime.
 
-The repository's primary local runtime is the Compose `app` service backed by the root `Dockerfile`.
+The repository's local runtime has two services:
+
+- `app`: analyzer and validation runtime backed by the root `Dockerfile`
+- `ui`: internal artifact-debugger runtime backed by `ui/Dockerfile`
 
 ## Base Image
 
@@ -73,7 +76,8 @@ Current local container layout:
 - data mount: `/data`
 - model assets: `/app/models`
 - Demucs cache: `/app/models/demucs`
-- Compose service name: `app`
+- Compose service names: `app` and `ui`
+- UI assets: `/usr/share/nginx/html` inside the `ui` container
 
 Expected working directory:
 
@@ -87,11 +91,25 @@ Build the development image:
 docker compose build
 ```
 
+Build only the debugger image:
+
+```bash
+docker compose build ui
+```
+
 Open an interactive shell in the development container:
 
 ```bash
 docker compose run --rm app
 ```
+
+Run the debugger service:
+
+```bash
+docker compose up ui
+```
+
+The debugger is served at `http://localhost:8080` and mounts `./data` read-only. It is an internal visualization tool for `data/artifacts/<Song - Artist>/` and selected compact helper files from `data/output/<Song - Artist>/`.
 
 Run the first-phase validation entry point:
 
@@ -113,6 +131,8 @@ docker compose run --rm app \
 The current batch implementation isolates each song run in a subprocess so the long-lived parent container process does not retain unstable native analysis state between songs.
 
 `./analyze` is the simplest container entry point. `python -m analyzer` is the equivalent module form.
+
+The `ui` service is not an analyzer runtime. It serves the debugger assets from `/ui/` and must not write any debugger state into `data/artifacts/` or `data/output/`.
 
 ## Required Validation Inside Container
 

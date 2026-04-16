@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Artifact Debugger</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div>
+          <p class="eyebrow">AI Light Song v2</p>
+          <h1>Artifact Debugger</h1>
+          <p class="lede">Read-only inspection for model and rule inferences under <code>data/artifacts</code>.</p>
+        </div>
+
+        <form id="song-form" class="panel controls">
+          <label for="song-select">Song Directory</label>
+          <select id="song-select" name="song">
+            <option value="">Discovering artifact directories...</option>
+          </select>
+          <div class="button-row">
+            <button type="submit">Load Artifacts</button>
+            <button id="refresh-songs" type="button" class="secondary-button">Refresh List</button>
+          </div>
+          <p class="hint">The debugger discovers per-song directories from <code>data/artifacts</code>. It never writes to <code>data/artifacts</code> or <code>data/output</code>.</p>
+        </form>
+
+        <section class="panel controls">
+          <h2>Available Paths</h2>
+          <ul class="path-list">
+            <li><code>/data/artifacts/&lt;Song - Artist&gt;/</code></li>
+            <li><code>/data/output/&lt;Song - Artist&gt;/</code></li>
+            <li><code>/data/songs/&lt;Song - Artist&gt;.mp3</code></li>
+          </ul>
+        </section>
+
+        <section class="panel controls">
+          <h2>Files</h2>
+          <div id="file-status" class="file-status empty">Load a song directory to inspect artifact availability.</div>
+        </section>
+      </aside>
+
+      <main class="main">
+        <section class="hero panel">
+          <div>
+            <p class="eyebrow">Inference Viewer</p>
+            <h2 id="song-title">No song loaded</h2>
+            <p id="song-subtitle" class="lede">Choose a discovered per-song directory from <code>data/artifacts</code>.</p>
+          </div>
+          <div class="hero-meta">
+            <div class="stat-card">
+              <span class="stat-label">BPM</span>
+              <strong id="meta-bpm">-</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Duration</span>
+              <strong id="meta-duration">-</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Validation</span>
+              <strong id="meta-validation">-</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid two-up">
+          <article class="panel">
+            <h2>Audio</h2>
+            <audio id="audio-player" controls preload="none"></audio>
+            <p id="audio-status" class="hint">Audio source is loaded from <code>data/songs</code> when present.</p>
+          </article>
+
+          <article class="panel">
+            <h2>Artifact Summary</h2>
+            <div id="core-artifact-state" class="empty-state-card hidden" aria-live="polite"></div>
+            <div id="summary-grid" class="summary-grid empty">Load a song to summarize harmonic, symbolic, energy, pattern, and event artifacts.</div>
+          </article>
+        </section>
+
+        <section class="grid two-up">
+          <article class="panel">
+            <h2>Validation Snapshot</h2>
+            <div id="validation-summary" class="empty">No validation report loaded.</div>
+          </article>
+
+          <article class="panel">
+            <h2>Sections</h2>
+            <div id="sections-preview" class="empty">No section artifact loaded.</div>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Artifact Inspector</h2>
+            <select id="artifact-select">
+              <option value="">Select a loaded file</option>
+            </select>
+          </div>
+          <pre id="artifact-viewer" class="json-viewer">No artifact selected.</pre>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
