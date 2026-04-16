@@ -287,3 +287,17 @@ This file is the explicit EPIC 6.3 output and the required input to downstream l
 ### Developer Intent
 
 This repository is not a loose note dump. It is the implemented analyzer and the contract source for its emitted artifacts.
+
+## Appendix: Visual Debugger
+
+The internal visual debugger runs as the separate Compose `ui` service.
+
+Start it with Docker:
+
+```bash
+docker compose up ui
+```
+
+Then open `http://localhost:8080` in a browser.
+
+For internal LLM-oriented UI development instructions, see `ui/README.HELPER_UI.md`.
