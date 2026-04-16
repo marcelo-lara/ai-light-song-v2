@@ -13,6 +13,7 @@ import {
 import { clamp, formatRange } from "../lib/utils.js";
 
 export default function TimelinePanel({
+  loadedSong,
   timeline,
   zoom,
   onZoomChange,
@@ -117,7 +118,7 @@ export default function TimelinePanel({
     <section className="panel">
       <div className="panel-header">
         <div>
-          <h2>Timeline</h2>
+          <h2>{loadedSong || "Timeline"}</h2>
           <p className="hint">Waveform anchor, sparse and dense artifact lanes, beat grid, and regression overlays stay aligned to the audio clock.</p>
         </div>
         <div className="timeline-toolbar">

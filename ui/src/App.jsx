@@ -322,6 +322,7 @@ export default function App() {
       <div>
         <main className="main">
           <TimelinePanel
+            loadedSong={loadedSong}
             timeline={timeline}
             zoom={zoom}
             onZoomChange={setZoom}

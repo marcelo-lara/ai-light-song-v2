@@ -41,7 +41,7 @@ http://localhost:8080
 ## Current File Map
 
 - `ui/index.html`: Vite entry document with the Preact mount point
-- `ui/styles.css`: shared visual styling imported by the Preact app
+- `ui/src/styles.css`: shared visual styling imported by the Preact app
 - `ui/src/App.jsx`: top-level application orchestration and state
 - `ui/src/components/`: panel and timeline component boundaries
 - `ui/src/lib/`: artifact loading, normalization, and imperative timeline helpers
@@ -204,7 +204,7 @@ Also check editor diagnostics for:
 
 - `ui/src/`
 - `ui/index.html`
-- `ui/styles.css`
+- `ui/src/styles.css`
 
 ## Summary For LLM Agents
 
