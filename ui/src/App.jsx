@@ -42,6 +42,68 @@ function beatAtTime(timeline, time) {
   return timeline.beats.at(-1) || null;
 }
 
+function previousMarkerTime(rows, currentTime, getTime, fallback = 0) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return fallback;
+  }
+  const threshold = Number(currentTime) - 0.05;
+  for (let index = rows.length - 1; index >= 0; index -= 1) {
+    const markerTime = Number(getTime(rows[index]));
+    if (markerTime < threshold) {
+      return markerTime;
+    }
+  }
+  return fallback;
+}
+
+function nextMarkerTime(rows, currentTime, getTime, fallback = 0) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return fallback;
+  }
+  const threshold = Number(currentTime) + 0.05;
+  for (const row of rows) {
+    const markerTime = Number(getTime(row));
+    if (markerTime > threshold) {
+      return markerTime;
+    }
+  }
+  return fallback;
+}
+
+function buildWaveformEnvelope(audioBuffer) {
+  const channelCount = Math.max(1, Number(audioBuffer.numberOfChannels || 1));
+  const channels = Array.from({ length: channelCount }, (_, index) => audioBuffer.getChannelData(index));
+  const sampleCount = Math.max(2048, Math.min(8192, Math.floor(audioBuffer.length / 96)));
+  const blockSize = Math.max(1, Math.floor(audioBuffer.length / sampleCount));
+  const envelope = [];
+
+  for (let index = 0; index < sampleCount; index += 1) {
+    const start = index * blockSize;
+    const end = Math.min(audioBuffer.length, start + blockSize);
+    let min = 1;
+    let max = -1;
+
+    for (let offset = start; offset < end; offset += 1) {
+      for (const channel of channels) {
+        const sample = channel[offset] || 0;
+        if (sample < min) {
+          min = sample;
+        }
+        if (sample > max) {
+          max = sample;
+        }
+      }
+    }
+
+    envelope.push({
+      min: Math.max(-1, min),
+      max: Math.min(1, max),
+    });
+  }
+
+  return envelope;
+}
+
 export default function App() {
   const audioRef = useRef(null);
   const waveformCacheRef = useRef(new Map());
@@ -101,19 +163,7 @@ export default function App() {
       }
       const buffer = await response.arrayBuffer();
       const audioBuffer = await audioDecodeContext.decodeAudioData(buffer.slice(0));
-      const channel = audioBuffer.getChannelData(0);
-      const peakCount = 1400;
-      const blockSize = Math.max(1, Math.floor(channel.length / peakCount));
-      const peaks = [];
-      for (let index = 0; index < peakCount; index += 1) {
-        const start = index * blockSize;
-        const end = Math.min(channel.length, start + blockSize);
-        let peak = 0;
-        for (let offset = start; offset < end; offset += 1) {
-          peak = Math.max(peak, Math.abs(channel[offset]));
-        }
-        peaks.push(peak);
-      }
+      const peaks = buildWaveformEnvelope(audioBuffer);
       waveformCacheRef.current.set(song, peaks);
       if (latestSongRef.current === song) {
         setWaveformPeaks(peaks);
@@ -282,6 +332,60 @@ export default function App() {
     });
   }
 
+  function handlePreviousBeat() {
+    const targetTime = previousMarkerTime(timeline?.beats, currentTime, (beat) => beat.time, 0);
+    seekTo(targetTime, {
+      laneLabel: "Playback",
+      label: `Previous Beat ${formatDuration(targetTime)}`,
+      start_s: targetTime,
+      end_s: targetTime,
+      reference: "playback",
+      detail: "previous_beat",
+      summary: "Playback moved to the previous detected beat on the shared timeline.",
+    });
+  }
+
+  function handleNextBeat() {
+    const fallback = Number(timeline?.duration || audioRef.current?.duration || currentTime || 0);
+    const targetTime = nextMarkerTime(timeline?.beats, currentTime, (beat) => beat.time, fallback);
+    seekTo(targetTime, {
+      laneLabel: "Playback",
+      label: `Next Beat ${formatDuration(targetTime)}`,
+      start_s: targetTime,
+      end_s: targetTime,
+      reference: "playback",
+      detail: "next_beat",
+      summary: "Playback moved to the next detected beat on the shared timeline.",
+    });
+  }
+
+  function handlePreviousBar() {
+    const targetTime = previousMarkerTime(timeline?.bars, currentTime, (bar) => bar.start_s, 0);
+    seekTo(targetTime, {
+      laneLabel: "Playback",
+      label: `Previous Bar ${formatDuration(targetTime)}`,
+      start_s: targetTime,
+      end_s: targetTime,
+      reference: "playback",
+      detail: "previous_bar",
+      summary: "Playback moved to the previous bar boundary on the shared timeline.",
+    });
+  }
+
+  function handleNextBar() {
+    const fallback = Number(timeline?.duration || audioRef.current?.duration || currentTime || 0);
+    const targetTime = nextMarkerTime(timeline?.bars, currentTime, (bar) => bar.start_s, fallback);
+    seekTo(targetTime, {
+      laneLabel: "Playback",
+      label: `Next Bar ${formatDuration(targetTime)}`,
+      start_s: targetTime,
+      end_s: targetTime,
+      reference: "playback",
+      detail: "next_bar",
+      summary: "Playback moved to the next bar boundary on the shared timeline.",
+    });
+  }
+
   function handleAudioTimeUpdate(event) {
     setCurrentTime(Number(event.currentTarget.currentTime || 0));
   }
@@ -345,8 +449,15 @@ export default function App() {
               onZoomChange={setZoom}
               selection={{ region: selectedRegion, visibleWindowLabel: visibleWindowText }}
               currentTime={currentTime}
+              isPlaying={isPlaying}
               followPlayhead={followPlayhead}
               onSeek={seekTo}
+              onPlayPause={handlePlayPause}
+              onJumpStart={handleJumpStart}
+              onPreviousBar={handlePreviousBar}
+              onPreviousBeat={handlePreviousBeat}
+              onNextBeat={handleNextBeat}
+              onNextBar={handleNextBar}
               onOpenSelectionOverlay={handleOpenSelectionOverlay}
               onCloseSelectionOverlay={handleCloseSelectionOverlay}
               onVisibleWindowChange={handleVisibleWindowChange}

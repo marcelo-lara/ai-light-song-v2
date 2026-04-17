@@ -1,5 +1,14 @@
 import { useEffect, useRef } from "preact/hooks";
 
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import FirstPageRoundedIcon from "@mui/icons-material/FirstPageRounded";
+import KeyboardDoubleArrowLeftRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftRounded";
+import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import SkipNextRoundedIcon from "@mui/icons-material/SkipNextRounded";
+import SkipPreviousRoundedIcon from "@mui/icons-material/SkipPreviousRounded";
+
 import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM, dynamicLaneIds } from "../lib/config.js";
 import {
   buildScrubSelection,
@@ -19,8 +28,15 @@ export default function TimelinePanel({
   onZoomChange,
   selection,
   currentTime,
+  isPlaying,
   followPlayhead,
   onSeek,
+  onPlayPause,
+  onJumpStart,
+  onPreviousBar,
+  onPreviousBeat,
+  onNextBeat,
+  onNextBar,
   onOpenSelectionOverlay,
   onCloseSelectionOverlay,
   onVisibleWindowChange,
@@ -193,11 +209,68 @@ export default function TimelinePanel({
     });
   }
 
+  const transportDisabled = !timeline;
+
+  function renderTransportButton(label, onClick, icon, extraSx = {}) {
+    return (
+      <Tooltip title={label}>
+        <span>
+          <IconButton
+            aria-label={label}
+            onClick={onClick}
+            disabled={transportDisabled}
+            size="small"
+            sx={{
+              width: 40,
+              height: 40,
+              border: "1px solid rgba(77, 53, 29, 0.14)",
+              background: "rgba(255, 254, 250, 0.92)",
+              color: "#23160e",
+              borderRadius: "12px",
+              '&:hover': {
+                background: "rgba(255, 248, 240, 0.98)",
+              },
+              '&.Mui-disabled': {
+                color: "rgba(112, 89, 71, 0.45)",
+                borderColor: "rgba(77, 53, 29, 0.08)",
+              },
+              ...extraSx,
+            }}
+          >
+            {icon}
+          </IconButton>
+        </span>
+      </Tooltip>
+    );
+  }
+
   return (
     <section className="panel">
       <div className="panel-header">
         <div>
           <h2>{loadedSong || "Timeline"}</h2>
+        </div>
+        <div className="player-controls">
+          {renderTransportButton("Stop and return to start", onJumpStart, <FirstPageRoundedIcon fontSize="small" />)}
+          {renderTransportButton("Previous bar", onPreviousBar, <KeyboardDoubleArrowLeftRoundedIcon fontSize="small" />)}
+          {renderTransportButton("Previous beat", onPreviousBeat, <SkipPreviousRoundedIcon fontSize="small" />)}
+          {renderTransportButton(
+            isPlaying ? "Pause" : "Play",
+            onPlayPause,
+            isPlaying ? <PauseRoundedIcon fontSize="small" /> : <PlayArrowRoundedIcon fontSize="small" />,
+            {
+              width: 48,
+              height: 48,
+              background: "linear-gradient(135deg, #0f766e 0%, #155e75 100%)",
+              color: "#f7fffd",
+              border: "none",
+              '&:hover': {
+                background: "linear-gradient(135deg, #0d6b64 0%, #134f61 100%)",
+              },
+            },
+          )}
+          {renderTransportButton("Next beat", onNextBeat, <SkipNextRoundedIcon fontSize="small" />)}
+          {renderTransportButton("Next bar", onNextBar, <KeyboardDoubleArrowLeftRoundedIcon fontSize="small" sx={{ transform: "scaleX(-1)" }} />)}
         </div>
         <div className="timeline-toolbar">
           <label className="range-control" htmlFor="zoom-control">
