@@ -7,7 +7,7 @@ import SelectionDetailCard from "./components/SelectionDetailCard.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import TimelinePanel from "./components/TimelinePanel.jsx";
 import { DEFAULT_ZOOM, artifactDefinitions, laneDefinitions } from "./lib/config.js";
-import { buildTimelineData, fetchDirectoryListing, fetchJson } from "./lib/data.js";
+import { buildTimelineData, fetchDirectoryFiles, fetchDirectoryListing, fetchJson } from "./lib/data.js";
 import { clamp, encodePath, formatDuration, formatRange } from "./lib/utils.js";
 
 function createInitialLaneVisibility() {
@@ -112,7 +112,9 @@ export default function App() {
   const playbackFrameRef = useRef(null);
 
   const [availableSongs, setAvailableSongs] = useState([]);
+  const [availableAudioSongs, setAvailableAudioSongs] = useState([]);
   const [isDiscovering, setIsDiscovering] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [selectedSong, setSelectedSong] = useState("");
   const [loadedSong, setLoadedSong] = useState("");
   const [artifactRecords, setArtifactRecords] = useState([]);
@@ -239,8 +241,12 @@ export default function App() {
   async function discoverSongs(preferredSong = "") {
     setIsDiscovering(true);
     try {
-      const discoveredSongs = await fetchDirectoryListing(["data", "artifacts"]);
+      const [discoveredSongs, discoveredAudioSongs] = await Promise.all([
+        fetchDirectoryListing(["data", "artifacts"]),
+        fetchDirectoryFiles(["data", "songs"], [".mp3", ".wav", ".flac", ".m4a", ".ogg"]),
+      ]);
       setAvailableSongs(discoveredSongs);
+      setAvailableAudioSongs(discoveredAudioSongs);
       const selectedSong = discoveredSongs.includes(preferredSong) ? preferredSong : "";
       if (selectedSong) {
         await loadSong(selectedSong);
@@ -454,9 +460,17 @@ export default function App() {
     setOverlayAnchor(null);
   }
 
+  async function handleHeaderSongSelect(song) {
+    await loadSong(song);
+  }
+
+  function handleToggleSidebar() {
+    setIsSidebarCollapsed((current) => !current);
+  }
+
   return (
     <>
-      <div className="shell">
+      <div className={`shell${isSidebarCollapsed ? " sidebar-collapsed" : ""}`}>
         <Sidebar
           availableSongs={availableSongs}
           selectedSong={selectedSong}
@@ -475,12 +489,14 @@ export default function App() {
           onJumpStart={handleJumpStart}
           isPlaying={isPlaying}
           fileStatuses={artifactRecords}
+          onToggleCollapse={handleToggleSidebar}
         />
 
         <div>
           <main className="main">
             <TimelinePanel
               loadedSong={loadedSong}
+              availableAudioSongs={availableAudioSongs}
               timeline={timeline}
               zoom={zoom}
               onZoomChange={setZoom}
@@ -495,6 +511,9 @@ export default function App() {
               onPreviousBeat={handlePreviousBeat}
               onNextBeat={handleNextBeat}
               onNextBar={handleNextBar}
+              onHeaderSongSelect={handleHeaderSongSelect}
+              isSidebarCollapsed={isSidebarCollapsed}
+              onToggleSidebar={handleToggleSidebar}
               onOpenSelectionOverlay={handleOpenSelectionOverlay}
               onCloseSelectionOverlay={handleCloseSelectionOverlay}
               onVisibleWindowChange={handleVisibleWindowChange}

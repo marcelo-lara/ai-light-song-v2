@@ -46,6 +46,11 @@ button {
   display: grid;
   grid-template-columns: 340px minmax(0, 1fr);
   min-height: 100vh;
+  transition: grid-template-columns 180ms ease;
+}
+
+.shell.sidebar-collapsed {
+  grid-template-columns: 0 minmax(0, 1fr);
 }
 
 .shell > div {
@@ -62,6 +67,18 @@ button {
   align-content: start;
   max-height: 100vh;
   overflow: auto;
+  min-width: 0;
+  transition: opacity 180ms ease, transform 180ms ease, padding 180ms ease, border-color 180ms ease;
+}
+
+.shell.sidebar-collapsed .sidebar {
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  padding-left: 0;
+  padding-right: 0;
+  border-right-color: transparent;
+  transform: translateX(-12px);
 }
 
 .main {
@@ -216,7 +233,6 @@ button {
 input,
 select,
 button {
-  width: 100%;
   border-radius: 12px;
   border: 1px solid var(--border);
   padding: 12px 14px;
@@ -314,6 +330,13 @@ button {
   margin-bottom: 12px;
 }
 
+.sidebar-title-row {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .panel-header select {
   max-width: 320px;
 }
@@ -322,6 +345,17 @@ button {
   display: grid;
   gap: 10px;
   justify-items: end;
+}
+
+.timeline-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.timeline-title-group h2 {
+  margin: 0;
 }
 
 .player-controls {

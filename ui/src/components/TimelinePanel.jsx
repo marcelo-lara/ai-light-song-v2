@@ -1,9 +1,14 @@
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 
 import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import FirstPageRoundedIcon from "@mui/icons-material/FirstPageRounded";
+import MenuIcon from "@mui/icons-material/Menu";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import KeyboardDoubleArrowLeftRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftRounded";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import SkipNextRoundedIcon from "@mui/icons-material/SkipNextRounded";
@@ -23,6 +28,7 @@ import { clamp, formatRange } from "../lib/utils.js";
 
 export default function TimelinePanel({
   loadedSong,
+  availableAudioSongs,
   timeline,
   zoom,
   onZoomChange,
@@ -37,6 +43,9 @@ export default function TimelinePanel({
   onPreviousBeat,
   onNextBeat,
   onNextBar,
+  onHeaderSongSelect,
+  isSidebarCollapsed,
+  onToggleSidebar,
   onOpenSelectionOverlay,
   onCloseSelectionOverlay,
   onVisibleWindowChange,
@@ -46,6 +55,7 @@ export default function TimelinePanel({
   const scrollerRef = useRef(null);
   const rowsRef = useRef(null);
   const viewportFrameRef = useRef(null);
+  const [songMenuAnchor, setSongMenuAnchor] = useState(null);
   const dragStateRef = useRef({
     active: false,
     startClientX: 0,
@@ -210,6 +220,20 @@ export default function TimelinePanel({
   }
 
   const transportDisabled = !timeline;
+  const songMenuOpen = Boolean(songMenuAnchor);
+
+  function handleOpenSongMenu(event) {
+    setSongMenuAnchor(event.currentTarget);
+  }
+
+  function handleCloseSongMenu() {
+    setSongMenuAnchor(null);
+  }
+
+  async function handleSongMenuSelect(song) {
+    handleCloseSongMenu();
+    await onHeaderSongSelect?.(song);
+  }
 
   function renderTransportButton(label, onClick, icon, extraSx = {}) {
     return (
@@ -247,7 +271,17 @@ export default function TimelinePanel({
   return (
     <section className="panel">
       <div className="panel-header">
-        <div>
+        <div className="timeline-title-group">
+          <Tooltip title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}>
+            <IconButton aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} onClick={onToggleSidebar} size="small">
+              {isSidebarCollapsed ? <MenuIcon fontSize="small" /> : <MenuOpenIcon fontSize="small" />}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Open song list from data/songs">
+            <IconButton aria-label="Open song list" onClick={handleOpenSongMenu} size="small">
+              <OpenInNewIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
           <h2>{loadedSong || "Timeline"}</h2>
         </div>
         <div className="player-controls">
@@ -284,6 +318,11 @@ export default function TimelinePanel({
           </div>
         </div>
       </div>
+      <Menu anchorEl={songMenuAnchor} open={songMenuOpen} onClose={handleCloseSongMenu}>
+        {availableAudioSongs.length ? availableAudioSongs.map((song) => (
+          <MenuItem key={song} selected={song === loadedSong} onClick={() => void handleSongMenuSelect(song)}>{song}</MenuItem>
+        )) : <MenuItem disabled>No songs found in data/songs</MenuItem>}
+      </Menu>
       <div className="timeline-scroller" ref={scrollerRef} onMouseDown={handleTimelineMouseDown} onScroll={handleScroll}>
         <div className="timeline-rows empty" ref={rowsRef} onClick={handleTimelineClick}>Load a song to inspect the synchronized timeline lanes.</div>
       </div>
