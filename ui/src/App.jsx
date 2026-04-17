@@ -73,7 +73,7 @@ function nextMarkerTime(rows, currentTime, getTime, fallback = 0) {
 function buildWaveformEnvelope(audioBuffer) {
   const channelCount = Math.max(1, Number(audioBuffer.numberOfChannels || 1));
   const channels = Array.from({ length: channelCount }, (_, index) => audioBuffer.getChannelData(index));
-  const sampleCount = Math.max(2048, Math.min(8192, Math.floor(audioBuffer.length / 96)));
+  const sampleCount = Math.max(4096, Math.min(16384, Math.floor(audioBuffer.duration * 240)));
   const blockSize = Math.max(1, Math.floor(audioBuffer.length / sampleCount));
   const envelope = [];
 
@@ -109,6 +109,7 @@ export default function App() {
   const waveformCacheRef = useRef(new Map());
   const audioDecodeContextRef = useRef(null);
   const latestSongRef = useRef("");
+  const playbackFrameRef = useRef(null);
 
   const [availableSongs, setAvailableSongs] = useState([]);
   const [isDiscovering, setIsDiscovering] = useState(true);
@@ -271,6 +272,40 @@ export default function App() {
     }
   }, [audioSrc]);
 
+  useEffect(() => {
+    function cancelPlaybackFrame() {
+      if (playbackFrameRef.current) {
+        cancelAnimationFrame(playbackFrameRef.current);
+        playbackFrameRef.current = null;
+      }
+    }
+
+    function syncPlaybackFrame() {
+      const audioElement = audioRef.current;
+      if (!audioElement) {
+        cancelPlaybackFrame();
+        return;
+      }
+
+      setCurrentTime(audioElement.currentTime || 0);
+
+      if (!audioElement.paused && !audioElement.ended) {
+        playbackFrameRef.current = requestAnimationFrame(syncPlaybackFrame);
+        return;
+      }
+
+      playbackFrameRef.current = null;
+    }
+
+    if (isPlaying) {
+      playbackFrameRef.current = requestAnimationFrame(syncPlaybackFrame);
+    } else {
+      cancelPlaybackFrame();
+    }
+
+    return cancelPlaybackFrame;
+  }, [isPlaying]);
+
   function handleSongChange(event) {
     setSelectedSong(event.currentTarget.value);
   }
@@ -391,10 +426,12 @@ export default function App() {
   }
 
   function handleAudioPlay() {
+    setCurrentTime(Number(audioRef.current?.currentTime || 0));
     setIsPlaying(true);
   }
 
   function handleAudioPause() {
+    setCurrentTime(Number(audioRef.current?.currentTime || 0));
     setIsPlaying(false);
   }
 

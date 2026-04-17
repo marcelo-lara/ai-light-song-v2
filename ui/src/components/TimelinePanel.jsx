@@ -199,7 +199,7 @@ export default function TimelinePanel({
     }
     viewportFrameRef.current = requestAnimationFrame(() => {
       const visibleRange = getVisibleRange(scrollerRef.current, zoom, timeline.duration);
-      for (const laneId of ["drums", "density", "energy", "validation"]) {
+      for (const laneId of ["waveform", "drums", "density", "energy", "validation"]) {
         if (laneVisibility[laneId]) {
           const track = rowsRef.current.querySelector(`[data-track-lane="${laneId}"]`);
           renderTrackLane(track, laneId, timeline, zoom, visibleRange, waveformPeaks);
