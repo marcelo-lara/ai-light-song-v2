@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 
 import DetailPanels from "./components/DetailPanels.jsx";
+import OverlayPanel from "./components/OverlayPanel.jsx";
 import OverviewPanels from "./components/OverviewPanels.jsx";
+import SelectionDetailCard from "./components/SelectionDetailCard.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import TimelinePanel from "./components/TimelinePanel.jsx";
 import { DEFAULT_ZOOM, artifactDefinitions, laneDefinitions } from "./lib/config.js";
 import { buildTimelineData, fetchDirectoryListing, fetchJson } from "./lib/data.js";
-import { clamp, encodePath, formatDuration } from "./lib/utils.js";
+import { clamp, encodePath, formatDuration, formatRange } from "./lib/utils.js";
 
 function createInitialLaneVisibility() {
   return Object.fromEntries(laneDefinitions.map((lane) => [lane.id, lane.id !== "phrases"]));
@@ -55,6 +57,8 @@ export default function App() {
   const [timeline, setTimeline] = useState(null);
   const [selectedArtifactKey, setSelectedArtifactKey] = useState("");
   const [selectedRegion, setSelectedRegion] = useState(null);
+  const [overlaySelection, setOverlaySelection] = useState(null);
+  const [overlayAnchor, setOverlayAnchor] = useState(null);
   const [laneVisibility, setLaneVisibility] = useState(createInitialLaneVisibility);
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const [followPlayhead, setFollowPlayhead] = useState(true);
@@ -133,6 +137,8 @@ export default function App() {
     setSelectedSong(trimmedSong);
     setLoadedSong(trimmedSong);
     setSelectedRegion(null);
+    setOverlaySelection(null);
+    setOverlayAnchor(null);
     setSelectedArtifactKey("");
     setCurrentTime(0);
     setIsPlaying(false);
@@ -297,68 +303,92 @@ export default function App() {
     setMetaViewportText(nextMetaViewportText);
   }
 
+  function handleOpenSelectionOverlay(selection, anchorPosition) {
+    setOverlaySelection(selection);
+    setOverlayAnchor(anchorPosition || null);
+  }
+
+  function handleCloseSelectionOverlay() {
+    setOverlaySelection(null);
+    setOverlayAnchor(null);
+  }
+
   return (
-    <div className="shell">
-      <Sidebar
-        availableSongs={availableSongs}
-        selectedSong={selectedSong}
-        isDiscovering={isDiscovering}
-        onSongChange={handleSongChange}
-        onLoadSong={handleLoadSong}
-        onRefreshSongs={handleRefreshSongs}
-        timelineLoaded={Boolean(timeline)}
-        laneVisibility={laneVisibility}
-        onLaneToggle={handleLaneToggle}
-        currentTimeLabel={formatDuration(currentTime)}
-        transportBeatLabel={transportBeatLabel}
-        followPlayhead={followPlayhead}
-        onFollowPlayheadChange={handleFollowPlayheadChange}
-        onPlayPause={handlePlayPause}
-        onJumpStart={handleJumpStart}
-        isPlaying={isPlaying}
-        fileStatuses={artifactRecords}
-      />
+    <>
+      <div className="shell">
+        <Sidebar
+          availableSongs={availableSongs}
+          selectedSong={selectedSong}
+          isDiscovering={isDiscovering}
+          onSongChange={handleSongChange}
+          onLoadSong={handleLoadSong}
+          onRefreshSongs={handleRefreshSongs}
+          timelineLoaded={Boolean(timeline)}
+          laneVisibility={laneVisibility}
+          onLaneToggle={handleLaneToggle}
+          currentTimeLabel={formatDuration(currentTime)}
+          transportBeatLabel={transportBeatLabel}
+          followPlayhead={followPlayhead}
+          onFollowPlayheadChange={handleFollowPlayheadChange}
+          onPlayPause={handlePlayPause}
+          onJumpStart={handleJumpStart}
+          isPlaying={isPlaying}
+          fileStatuses={artifactRecords}
+        />
 
-      <div>
-        <main className="main">
-          <TimelinePanel
-            loadedSong={loadedSong}
-            timeline={timeline}
-            zoom={zoom}
-            onZoomChange={setZoom}
-            selection={{ region: selectedRegion, visibleWindowLabel: visibleWindowText }}
-            currentTime={currentTime}
-            followPlayhead={followPlayhead}
-            onSeek={seekTo}
-            onVisibleWindowChange={handleVisibleWindowChange}
-            laneVisibility={laneVisibility}
-            waveformPeaks={waveformPeaks}
-          />
+        <div>
+          <main className="main">
+            <TimelinePanel
+              loadedSong={loadedSong}
+              timeline={timeline}
+              zoom={zoom}
+              onZoomChange={setZoom}
+              selection={{ region: selectedRegion, visibleWindowLabel: visibleWindowText }}
+              currentTime={currentTime}
+              followPlayhead={followPlayhead}
+              onSeek={seekTo}
+              onOpenSelectionOverlay={handleOpenSelectionOverlay}
+              onCloseSelectionOverlay={handleCloseSelectionOverlay}
+              onVisibleWindowChange={handleVisibleWindowChange}
+              laneVisibility={laneVisibility}
+              waveformPeaks={waveformPeaks}
+            />
 
-          <DetailPanels
-            artifactRecords={artifactRecords}
-            selectedArtifactKey={selectedArtifactKey}
-            onSelectArtifact={(event) => setSelectedArtifactKey(event.currentTarget.value)}
-            selection={selectedRegion}
-          />
+            <DetailPanels
+              artifactRecords={artifactRecords}
+              selectedArtifactKey={selectedArtifactKey}
+              onSelectArtifact={(event) => setSelectedArtifactKey(event.currentTarget.value)}
+              selection={selectedRegion}
+            />
 
-          <OverviewPanels
-            loadedSong={loadedSong}
-            data={data}
-            timeline={timeline}
-            artifactRecords={artifactRecords}
-            visibleWindowLabel={metaViewportText}
-            waveformStatus={waveformStatus}
-            audioStatus={audioStatus}
-            audioRef={audioRef}
-            onAudioTimeUpdate={handleAudioTimeUpdate}
-            onAudioPlay={handleAudioPlay}
-            onAudioPause={handleAudioPause}
-            onAudioLoadedMetadata={handleAudioLoadedMetadata}
-          />
+            <OverviewPanels
+              loadedSong={loadedSong}
+              data={data}
+              timeline={timeline}
+              artifactRecords={artifactRecords}
+              visibleWindowLabel={metaViewportText}
+              waveformStatus={waveformStatus}
+              audioStatus={audioStatus}
+              audioRef={audioRef}
+              onAudioTimeUpdate={handleAudioTimeUpdate}
+              onAudioPlay={handleAudioPlay}
+              onAudioPause={handleAudioPause}
+              onAudioLoadedMetadata={handleAudioLoadedMetadata}
+            />
 
-        </main>
+          </main>
+        </div>
       </div>
-    </div>
+
+      <OverlayPanel
+        isOpen={Boolean(overlaySelection)}
+        title={overlaySelection?.label || "Selection Detail"}
+        subtitle={overlaySelection ? `${overlaySelection.laneLabel} · ${formatRange(overlaySelection.start_s, overlaySelection.end_s)}` : ""}
+        anchorPosition={overlayAnchor}
+        onClose={handleCloseSelectionOverlay}
+      >
+        <SelectionDetailCard selection={overlaySelection} emptyMessage="Click a lane item to inspect it here." />
+      </OverlayPanel>
+    </>
   );
 }

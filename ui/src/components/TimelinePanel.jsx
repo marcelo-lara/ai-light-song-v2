@@ -21,6 +21,8 @@ export default function TimelinePanel({
   currentTime,
   followPlayhead,
   onSeek,
+  onOpenSelectionOverlay,
+  onCloseSelectionOverlay,
   onVisibleWindowChange,
   laneVisibility,
   waveformPeaks,
@@ -28,6 +30,13 @@ export default function TimelinePanel({
   const scrollerRef = useRef(null);
   const rowsRef = useRef(null);
   const viewportFrameRef = useRef(null);
+  const dragStateRef = useRef({
+    active: false,
+    startClientX: 0,
+    startScrollLeft: 0,
+    moved: false,
+  });
+  const suppressClickRef = useRef(false);
 
   useEffect(() => {
     const rowsElement = rowsRef.current;
@@ -76,7 +85,71 @@ export default function TimelinePanel({
     }
   }, []);
 
+  useEffect(() => {
+    function handleWindowMouseMove(event) {
+      const scrollerElement = scrollerRef.current;
+      const dragState = dragStateRef.current;
+      if (!dragState.active || !scrollerElement) {
+        return;
+      }
+
+      const deltaX = event.clientX - dragState.startClientX;
+      if (Math.abs(deltaX) > 3) {
+        dragState.moved = true;
+      }
+
+      if (!dragState.moved) {
+        return;
+      }
+
+      scrollerElement.scrollLeft = dragState.startScrollLeft - deltaX;
+      event.preventDefault();
+    }
+
+    function stopDragging() {
+      const dragState = dragStateRef.current;
+      if (!dragState.active) {
+        return;
+      }
+
+      if (dragState.moved) {
+        suppressClickRef.current = true;
+      }
+
+      dragState.active = false;
+      dragState.startClientX = 0;
+      dragState.startScrollLeft = 0;
+      dragState.moved = false;
+      scrollerRef.current?.classList.remove("is-dragging");
+    }
+
+    window.addEventListener("mousemove", handleWindowMouseMove);
+    window.addEventListener("mouseup", stopDragging);
+
+    return () => {
+      window.removeEventListener("mousemove", handleWindowMouseMove);
+      window.removeEventListener("mouseup", stopDragging);
+    };
+  }, []);
+
+  function handleTimelineMouseDown(event) {
+    if (event.button !== 0 || !timeline || !scrollerRef.current) {
+      return;
+    }
+
+    dragStateRef.current.active = true;
+    dragStateRef.current.startClientX = event.clientX;
+    dragStateRef.current.startScrollLeft = scrollerRef.current.scrollLeft;
+    dragStateRef.current.moved = false;
+    scrollerRef.current.classList.add("is-dragging");
+  }
+
   function handleTimelineClick(event) {
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      return;
+    }
+
     if (!timeline) {
       return;
     }
@@ -85,15 +158,20 @@ export default function TimelinePanel({
       return;
     }
     const rectangle = track.getBoundingClientRect();
-    const absoluteX = (scrollerRef.current?.scrollLeft || 0) + (event.clientX - rectangle.left);
+    const absoluteX = event.clientX - rectangle.left;
     const offsetY = event.clientY - rectangle.top;
     const regionSelection = findSelectionAtTrackPosition(track, absoluteX, offsetY);
     if (regionSelection) {
       onSeek(regionSelection.start_s, regionSelection);
+      onOpenSelectionOverlay?.(regionSelection, {
+        x: event.clientX,
+        y: event.clientY,
+      });
       return;
     }
     const time = absoluteX / zoom;
     onSeek(time, buildScrubSelection(track.dataset.trackLane, time));
+    onCloseSelectionOverlay?.();
   }
 
   function handleScroll() {
@@ -133,7 +211,7 @@ export default function TimelinePanel({
           </div>
         </div>
       </div>
-      <div className="timeline-scroller" ref={scrollerRef} onScroll={handleScroll}>
+      <div className="timeline-scroller" ref={scrollerRef} onMouseDown={handleTimelineMouseDown} onScroll={handleScroll}>
         <div className="timeline-rows empty" ref={rowsRef} onClick={handleTimelineClick}>Load a song to inspect the synchronized timeline lanes.</div>
       </div>
     </section>

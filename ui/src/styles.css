@@ -48,6 +48,10 @@ button {
   min-height: 100vh;
 }
 
+.shell > div {
+  min-width: 0;
+}
+
 .sidebar {
   padding: 24px;
   border-right: 1px solid var(--border);
@@ -64,6 +68,7 @@ button {
   padding: 1em;
   display: grid;
   gap: 16px;
+  min-width: 0;
 }
 
 .panel {
@@ -72,6 +77,7 @@ button {
   border-radius: 20px;
   box-shadow: var(--shadow);
   padding: 18px;
+  min-width: 0;
 }
 
 .hero {
@@ -349,15 +355,23 @@ button {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   transform: translateZ(0);
   backface-visibility: hidden;
+  user-select: none;
+}
+
+.timeline-scroller.is-dragging {
+  cursor: grabbing;
 }
 
 .timeline-rows {
-  min-width: calc(var(--label-width) + 720px);
+  width: max-content;
+  min-width: max(100%, calc(var(--label-width) + 720px));
 }
 
 .timeline-row {
   display: grid;
   grid-template-columns: var(--label-width) minmax(0, 1fr);
+  width: max-content;
+  min-width: 100%;
   min-height: 84px;
   border-top: 1px solid rgba(77, 53, 29, 0.08);
 }
@@ -529,6 +543,64 @@ button {
   line-height: 1.5;
 }
 
+.overlay-panel {
+  position: fixed;
+  z-index: 120;
+  width: min(420px, calc(100vw - 32px));
+  max-height: min(480px, calc(100vh - 32px));
+  overflow: auto;
+  border-radius: 22px;
+  border: 1px solid rgba(77, 53, 29, 0.18);
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.98) 0%, rgba(250, 242, 232, 0.98) 100%);
+  box-shadow: 0 22px 60px rgba(35, 22, 14, 0.24);
+}
+
+.hovercard-panel::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  left: -8px;
+  width: 16px;
+  height: 16px;
+  border-left: 1px solid rgba(77, 53, 29, 0.18);
+  border-bottom: 1px solid rgba(77, 53, 29, 0.18);
+  background: rgba(255, 250, 243, 0.98);
+  transform: rotate(45deg);
+}
+
+.overlay-panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  padding: 22px 22px 0;
+}
+
+.overlay-panel-header h2 {
+  margin: 0;
+}
+
+.overlay-panel-subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.overlay-panel-body {
+  padding: 18px 22px 22px;
+}
+
+.overlay-panel .selection-summary {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+}
+
+.overlay-close-button {
+  width: auto;
+  flex: 0 0 auto;
+}
+
 .json-viewer {
   margin: 0;
   min-height: 420px;
@@ -589,5 +661,19 @@ button {
 
   .hero {
     flex-direction: column;
+  }
+
+  .overlay-panel {
+    width: min(420px, calc(100vw - 24px));
+    max-height: min(60vh, calc(100vh - 24px));
+  }
+
+  .hovercard-panel::before {
+    display: none;
+  }
+
+  .overlay-panel-header {
+    flex-direction: column;
+    align-items: start;
   }
 }

@@ -70,6 +70,7 @@ The current implementation is a read-only Epic 7 debugger with these features:
 - sparse lanes for sections, phrases, chords, pattern occurrences, and event windows
 - dense lanes for drums, symbolic density, and energy
 - regression overlay lane for beat drift and exported-event comparison
+- lane-item detail hovercards opened directly from clicked timeline regions
 - raw JSON inspector for any successfully loaded file
 - explicit missing-core-artifacts warning card for partial song folders
 
