@@ -14,3 +14,18 @@ services:
       NVIDIA_VISIBLE_DEVICES: all
       NVIDIA_DRIVER_CAPABILITIES: compute,utility
     gpus: all
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    image: ai-light-song-v2-ui:dev
+    working_dir: /srv/ui
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./ui:/srv/ui
+      - /srv/ui/node_modules
+      - ./data:/data:ro
+    ports:
+      - "8080:8080"

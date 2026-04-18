@@ -4,6 +4,8 @@
 
 This document defines the role of the major artifact files under `data/artifacts/<Song - Artist>/`.
 
+These artifact files are also the primary read targets for the internal debugger under `/ui/`. The debugger may inspect them directly, but it remains read-only against `data/artifacts/` and `data/output/`.
+
 ## Layer Files
 
 ### `layer_a_harmonic.json`
@@ -176,6 +178,8 @@ Expected top-level metadata fields are `song_name`, `bpm`, and `duration`, with 
 ## Consolidated Output Files
 
 `data/output/<Song - Artist>/` is a stable UI contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`. `lighting_score.md` is the only markdown file allowed there. Do not add or remove files from this directory unless a UI contract change makes that strictly required.
+
+The internal debugger may read selected files from this directory as compact helper projections, but its primary inspection surface remains `data/artifacts/<Song - Artist>/`.
 
 ### `data/output/<Song - Artist>/beats.json`
 

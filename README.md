@@ -2,7 +2,7 @@
 
 ai-light-song-v2 implements a Docker-first pipeline for turning source songs into structured musical analysis artifacts and fixture-aware lighting guidance.
 
-This repository contains the runnable analyzer, the artifact contracts it emits, the validation rules used to score those artifacts, and the Docker environment used to run the pipeline end to end.
+This repository contains the runnable analyzer, the artifact contracts it emits, the validation rules used to score those artifacts, the internal read-only artifact debugger, and the Docker environment used to run the pipeline end to end.
 
 ## Scope
 
@@ -16,6 +16,7 @@ The pipeline transforms an input song into progressively richer artifacts:
 6. UI data projection builds compact beat and section outputs for downstream consumers.
 7. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
 8. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
+9. An internal debugger served from `/ui/` visualizes generated inferences directly from `data/artifacts/<Song - Artist>/` without writing back into generated-data folders.
 
 ## Repository Layout
 
@@ -27,6 +28,7 @@ The repository structure is part of the implementation contract.
 - `data/reference/`: validation-only truth data such as chords, sections, lyrics, or beats from external tools. These files are for scoring and comparison only.
 - `data/output/`: stable UI-facing deliverables. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 - `docs/`: canonical implementation and contract documentation.
+- `ui/`: internal artifact-debugger application and UI-specific container files.
 
 ## Hard Rules
 
@@ -41,6 +43,7 @@ The repository structure is part of the implementation contract.
 - Beat-aligned artifacts must use the canonical beat grid from EPIC 1.2.
 - `data/output/<Song - Artist>/` is a stable UI contract, not an open-ended export area.
 - Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
+- The internal debugger is read-only against generated data and must not write files into `data/artifacts/` or `data/output/`.
 
 ## Primary Artifacts
 
@@ -83,6 +86,7 @@ The intended contract defines these primary artifacts:
 - `docs/6.3.music_feature_layers_story.md`: unified layer assembly contract.
 - `docs/6.4.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
 - `docs/6.5.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
+- `docs/ui_development.md`: internal debugger runtime, folder ownership, and read-only data-access contract.
 
 Additional story-level specifications under `docs/` define the exact implementation contract for each Epic and story.
 
@@ -109,11 +113,20 @@ Additional story-level specifications under `docs/` define the exact implementat
 
 For detailed CLI options, see [Running the Phase 1 Analyzer](#running-the-phase-1-analyzer) below.
 
+To run the internal debugger UI separately:
+
+```bash
+docker compose up ui
+```
+
+Then open `http://localhost:8080` and load a per-song directory name from `data/artifacts/`.
+
 ## Development Environment
 
 The repository is Docker-first.
 
 - Use the root `Dockerfile` and `docker-compose.yml` as the canonical local development environment.
+- Use the separate `ui` service for the internal artifact debugger rather than serving debugger assets from the analyzer container.
 - The Docker image is NVIDIA CUDA-enabled.
 - The current local development setup uses an `NVIDIA GeForce GTX 1650`, and the container workflow is configured to take advantage of that GPU.
 - Demucs checkpoints are cached explicitly under `models/demucs/` so analyzer runs do not rely on mid-run `torch.hub` downloads.
@@ -126,8 +139,9 @@ The detailed environment contract lives in `docs/docker_development.md`, the rep
 ### Docker Setup
 
 - `Dockerfile`: multi-stage CUDA-based build with `python-base`, `builder`, and `runtime` stages.
-- `docker-compose.yml`: defines the `app` service used for interactive development.
-- The Compose service builds the `runtime` target, mounts the repository at `/app`, mounts `./data` at `/data`, and requests `gpus: all`.
+- `docker-compose.yml`: defines the `app` analyzer service and the separate `ui` debugger service.
+- The `app` service builds the CUDA-enabled analyzer runtime, mounts the repository at `/app`, mounts `./data` at `/data`, and requests `gpus: all`.
+- The `ui` service builds from `/ui`, serves the debugger on port `8080`, and mounts `./data` read-only.
 
 ### Recommended Commands
 
@@ -154,6 +168,12 @@ Inside the container:
 - application code is available under `/app`
 - song inputs and generated artifacts are available under `/data`
 - all implementation validation should run from this environment
+
+Inside the debugger container:
+
+- browser assets are served from `/usr/share/nginx/html`
+- generated data is mounted at `/data` in read-only mode
+- the debugger may inspect generated artifacts but must not write back into `data/artifacts/` or `data/output/`
 
 ### Running the Phase 1 Analyzer
 
@@ -267,3 +287,17 @@ This file is the explicit EPIC 6.3 output and the required input to downstream l
 ### Developer Intent
 
 This repository is not a loose note dump. It is the implemented analyzer and the contract source for its emitted artifacts.
+
+## Appendix: Visual Debugger
+
+The internal visual debugger runs as the separate Compose `ui` service.
+
+Start it with Docker:
+
+```bash
+docker compose up ui
+```
+
+Then open `http://localhost:8080` in a browser.
+
+For internal LLM-oriented UI development instructions, see `ui/README.HELPER_UI.md`.
