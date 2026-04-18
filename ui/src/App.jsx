@@ -14,6 +14,10 @@ function createInitialLaneVisibility() {
   return Object.fromEntries(laneDefinitions.map((lane) => [lane.id, lane.id !== "phrases"]));
 }
 
+function createInitialLaneCollapsed() {
+  return Object.fromEntries(laneDefinitions.map((lane) => [lane.id, false]));
+}
+
 function getAudioDecodeContext(existing) {
   if (existing) {
     return existing;
@@ -114,7 +118,7 @@ export default function App() {
   const [availableSongs, setAvailableSongs] = useState([]);
   const [availableAudioSongs, setAvailableAudioSongs] = useState([]);
   const [isDiscovering, setIsDiscovering] = useState(true);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [selectedSong, setSelectedSong] = useState("");
   const [loadedSong, setLoadedSong] = useState("");
   const [artifactRecords, setArtifactRecords] = useState([]);
@@ -125,6 +129,7 @@ export default function App() {
   const [overlaySelection, setOverlaySelection] = useState(null);
   const [overlayAnchor, setOverlayAnchor] = useState(null);
   const [laneVisibility, setLaneVisibility] = useState(createInitialLaneVisibility);
+  const [laneCollapsed, setLaneCollapsed] = useState(createInitialLaneCollapsed);
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const [followPlayhead, setFollowPlayhead] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
@@ -329,6 +334,10 @@ export default function App() {
     setLaneVisibility((current) => ({ ...current, [laneId]: checked }));
   }
 
+  function handleLaneCollapsedToggle(laneId) {
+    setLaneCollapsed((current) => ({ ...current, [laneId]: !current[laneId] }));
+  }
+
   function handleFollowPlayheadChange(event) {
     setFollowPlayhead(event.currentTarget.checked);
   }
@@ -518,6 +527,8 @@ export default function App() {
               onCloseSelectionOverlay={handleCloseSelectionOverlay}
               onVisibleWindowChange={handleVisibleWindowChange}
               laneVisibility={laneVisibility}
+              laneCollapsed={laneCollapsed}
+              onToggleLaneCollapsed={handleLaneCollapsedToggle}
               waveformPeaks={waveformPeaks}
             />
 

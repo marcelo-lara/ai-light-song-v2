@@ -50,6 +50,8 @@ export default function TimelinePanel({
   onCloseSelectionOverlay,
   onVisibleWindowChange,
   laneVisibility,
+  laneCollapsed,
+  onToggleLaneCollapsed,
   waveformPeaks,
 }) {
   const scrollerRef = useRef(null);
@@ -78,10 +80,10 @@ export default function TimelinePanel({
     }
 
     rowsElement.className = "timeline-rows";
-    rowsElement.innerHTML = renderTimelineMarkup(timeline, laneVisibility, zoom);
+    rowsElement.innerHTML = renderTimelineMarkup(timeline, laneVisibility, laneCollapsed, zoom);
     const visibleRange = getVisibleRange(scrollerElement, zoom, timeline.duration);
     for (const laneId of Object.keys(laneVisibility)) {
-      if (laneVisibility[laneId]) {
+      if (laneVisibility[laneId] && !laneCollapsed[laneId]) {
         const track = rowsElement.querySelector(`[data-track-lane="${laneId}"]`);
         renderTrackLane(track, laneId, timeline, zoom, visibleRange, waveformPeaks);
       }
@@ -89,7 +91,7 @@ export default function TimelinePanel({
     updateNowMarkers(rowsElement, timeline, zoom, currentTime);
     onVisibleWindowChange(`Visible ${formatRange(visibleRange.start, visibleRange.end)}`, formatRange(visibleRange.start, visibleRange.end));
     return undefined;
-  }, [timeline, laneVisibility, zoom, waveformPeaks, onVisibleWindowChange]);
+  }, [timeline, laneVisibility, laneCollapsed, zoom, waveformPeaks, onVisibleWindowChange]);
 
   useEffect(() => {
     if (!rowsRef.current || !timeline) {
@@ -162,6 +164,9 @@ export default function TimelinePanel({
     if (event.button !== 0 || !timeline || !scrollerRef.current) {
       return;
     }
+    if (event.target.closest("[data-lane-toggle]")) {
+      return;
+    }
 
     dragStateRef.current.active = true;
     dragStateRef.current.startClientX = event.clientX;
@@ -177,6 +182,11 @@ export default function TimelinePanel({
     }
 
     if (!timeline) {
+      return;
+    }
+    const laneToggle = event.target.closest("[data-lane-toggle]");
+    if (laneToggle) {
+      onToggleLaneCollapsed?.(laneToggle.dataset.laneToggle);
       return;
     }
     const track = event.target.closest("[data-track-lane], .ruler-track");
@@ -210,7 +220,7 @@ export default function TimelinePanel({
     viewportFrameRef.current = requestAnimationFrame(() => {
       const visibleRange = getVisibleRange(scrollerRef.current, zoom, timeline.duration);
       for (const laneId of ["waveform", "drums", "density", "energy", "validation"]) {
-        if (laneVisibility[laneId]) {
+        if (laneVisibility[laneId] && !laneCollapsed[laneId]) {
           const track = rowsRef.current.querySelector(`[data-track-lane="${laneId}"]`);
           renderTrackLane(track, laneId, timeline, zoom, visibleRange, waveformPeaks);
         }

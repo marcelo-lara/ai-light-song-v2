@@ -82,7 +82,6 @@ button {
 }
 
 .main {
-  padding: 1em;
   display: grid;
   gap: 16px;
   min-width: 0;
@@ -354,6 +353,13 @@ button {
   min-width: 0;
 }
 
+.timeline-title-group button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
 .timeline-title-group h2 {
   margin: 0;
 }
@@ -453,9 +459,75 @@ button {
   font-size: 0.98rem;
 }
 
+.lane-label-title-row {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.lane-collapse-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.8rem;
+  height: 0.8rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: rgba(77, 53, 29, 0.8);
+  font: inherit;
+  font-size: 0.58rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lane-collapse-toggle:hover {
+  color: rgba(35, 22, 14, 0.98);
+}
+
+.lane-collapse-toggle:focus-visible {
+  outline: 1px solid rgba(15, 118, 110, 0.4);
+  outline-offset: 1px;
+  border-radius: 999px;
+}
+
 .lane-meta {
   color: var(--muted);
   font-size: 0.76rem;
+}
+
+.timeline-row.lane-collapsed {
+  min-height: 1em;
+}
+
+.timeline-row.lane-collapsed .lane-label {
+  padding-top: 0;
+  padding-bottom: 0;
+  border-right: none;
+  min-height: 1em;
+  gap: 0;
+  align-content: center;
+}
+
+.timeline-row.lane-collapsed .lane-label-title-row {
+  min-height: 1em;
+}
+
+.timeline-row.lane-collapsed .lane-label h3 {
+  font-size: 0.82rem;
+  line-height: 1;
+}
+
+.timeline-row.lane-collapsed .lane-collapse-toggle {
+  width: 0.72rem;
+  height: 0.72rem;
+  font-size: 0.52rem;
+}
+
+.timeline-row.lane-collapsed .lane-meta {
+  display: none;
 }
 
 .lane-track {
