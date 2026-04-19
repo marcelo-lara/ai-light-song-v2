@@ -57,6 +57,7 @@ The UI should support direct reads from at least:
 - `layer_a_harmonic.json`
 - `layer_b_symbolic.json`
 - `layer_c_energy.json`
+- `essentia/fft_bands.json`
 - `layer_d_patterns.json`
 - `section_segmentation/sections.json`
 - `symbolic_transcription/drum_events.json`
@@ -104,7 +105,7 @@ The debugger now implements the full Epic 7 internal viewer surface in the stati
 - DAW-style lane layout with fixed labels and a synchronized timeline region
 - browser-local lane enablement toggles
 - sparse lanes for sections, phrase windows, chords, harmonic-pattern occurrences, machine event windows, and output-timeline helper windows
-- dense lanes for drum activity, symbolic density, and energy profile views
+- dense lanes for seven-band FFT activity, drum activity, symbolic density, and energy profile views
 - shared zoom across all lanes with coarse beat-grid reduction at distant zoom levels
 - viewport-aware dense-lane rerendering on horizontal scroll
 - regression overlay lane for beat drift and machine-vs-exported event comparison

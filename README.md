@@ -9,14 +9,15 @@ This repository contains the runnable analyzer, the artifact contracts it emits,
 The pipeline transforms an input song into progressively richer artifacts:
 
 1. Audio preprocessing creates stems, beats, tempo, and bar alignment.
-2. Harmonic analysis extracts key, chords, and harmonic motion.
-3. Symbolic analysis extracts note events and higher-level musical descriptors.
-4. Energy analysis extracts loudness, brightness, transients, and sections.
-5. Pattern mining extracts repeated multi-bar chord progressions into Layer D summaries.
-6. UI data projection builds compact beat and section outputs for downstream consumers.
-7. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
-8. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
-9. An internal debugger served from `/ui/` visualizes generated inferences directly from `data/artifacts/<Song - Artist>/` without writing back into generated-data folders.
+2. Audio preprocessing also creates a seven-band FFT inspection artifact for debugger spectral review.
+3. Harmonic analysis extracts key, chords, and harmonic motion.
+4. Symbolic analysis extracts note events and higher-level musical descriptors.
+5. Energy analysis extracts loudness, brightness, transients, and sections.
+6. Pattern mining extracts repeated multi-bar chord progressions into Layer D summaries.
+7. UI data projection builds compact beat and section outputs for downstream consumers.
+8. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
+9. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
+10. An internal debugger served from `/ui/` visualizes generated inferences directly from `data/artifacts/<Song - Artist>/` without writing back into generated-data folders.
 
 ## Repository Layout
 
@@ -51,6 +52,7 @@ The intended contract defines these primary artifacts:
 
 - `info.json`: canonical song metadata, including `song_name`, `bpm`, `duration`, and generated file references, written to `data/output/<Song - Artist>/info.json`.
 - `beats.json`: compact UI-facing beat timeline written to `data/output/<Song - Artist>/beats.json`.
+- `essentia/fft_bands.json`: seven fixed 50 ms low-to-high spectral band levels for debugger inspection.
 - `hints.json`: editable UI-facing section hints written to `data/output/<Song - Artist>/hints.json`.
 - `sections.json`: compact UI-facing section timeline written to `data/output/<Song - Artist>/sections.json`.
 - `layer_a_harmonic.json`: chord events, key, cadence, harmonic summaries.
@@ -72,6 +74,7 @@ The intended contract defines these primary artifacts:
 ## Documentation Map
 
 - `docs/Implementation_Guide.md`: canonical hub for the full pipeline and repository contracts.
+- `docs/1.3.fft_band_extraction_story.md`: seven-band FFT artifact contract.
 - `docs/phase_1_validation_cli.md`: Phase 1 analyzer CLI specification, command reference, and validation report format.
 - `docs/4.1.energy_feature_schema.md`: low-level energy schema.
 - `docs/4.2.section_segmentation_story.md`: section inference contract.

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import tempfile
 import unittest
 from contextlib import ExitStack
@@ -10,7 +11,7 @@ from unittest.mock import call, patch
 from analyzer.cli import SONG_SEPARATOR_WIDTH, _print_song_header, _run_single_song
 from analyzer.config import ValidationConfig
 from analyzer.paths import SongPaths
-from analyzer.pipeline import _print_phase_marker, run_phase_1
+from analyzer.pipeline import _print_phase_marker, _print_stage_marker, run_phase_1
 from analyzer.stages.validation import ValidationResult
 
 
@@ -32,6 +33,15 @@ class ConsoleMarkerTests(unittest.TestCase):
             _print_phase_marker("Example Song", "phase-1", "start")
 
         mock_print.assert_called_once_with("Example Song-phase-1-start", flush=True)
+
+    def test_print_stage_marker_writes_song_phase_stage_start(self) -> None:
+        with patch("builtins.print") as mock_print:
+            _print_stage_marker("Example Song", "phase-1", "classify-genre")
+
+        mock_print.assert_called_once_with(
+            "Example Song | classify-genre",
+            flush=True,
+        )
 
     def test_run_single_song_prints_song_header_before_running_pipeline(self) -> None:
         args = argparse.Namespace(
@@ -104,6 +114,37 @@ class ConsoleMarkerTests(unittest.TestCase):
             ],
         )
 
+    def test_run_phase_1_prints_stage_marker_before_first_stage(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "Example Song.mp3",
+                artifacts_root=root / "artifacts",
+                reference_root=root / "reference",
+                output_root=root / "output",
+                stems_root=root / "stems",
+            )
+            config = ValidationConfig(
+                compare_targets=("beats",),
+                report_json=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.json",
+                report_md=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.md",
+                fail_on_mismatch=False,
+                beat_tolerance_seconds=0.1,
+                tolerance_seconds=2.0,
+                chord_min_overlap=0.5,
+                device=None,
+                verbose=False,
+            )
+
+            with patch("analyzer.pipeline._print_stage_marker") as mock_stage_marker, patch(
+                "analyzer.pipeline.ensure_stems",
+                side_effect=RuntimeError("boom"),
+            ):
+                with self.assertRaisesRegex(RuntimeError, "boom"):
+                    run_phase_1(paths, config)
+
+        mock_stage_marker.assert_called_once_with("Example Song", "phase-1", "ensure-stems")
+
     def test_run_phase_1_uses_reference_timing_and_harmonic_when_moises_exists(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -171,11 +212,13 @@ class ConsoleMarkerTests(unittest.TestCase):
             unified = {"sections": []}
             lighting = {"events": []}
             lighting_score = "score"
+            fft_bands = {"bands": [{"id": "sub"}, {"id": "bass"}, {"id": "low_mid"}, {"id": "mid"}, {"id": "upper_mid"}, {"id": "presence"}, {"id": "brilliance"}]}
             report = {"generated_artifacts": {}, "notes": [], "validation": {}, "status": "passed", "exit_code": 0}
 
             with ExitStack() as stack:
                 stack.enter_context(patch("analyzer.pipeline.ensure_stems", return_value={"harmonic": "harmonic.wav", "bass": "bass.wav", "vocals": "vocals.wav", "drums": "drums.wav"}))
                 stack.enter_context(patch("analyzer.pipeline.extract_timing_grid", return_value=inferred_timing))
+                stack.enter_context(patch("analyzer.pipeline.extract_fft_bands", return_value=fft_bands))
                 stack.enter_context(patch("analyzer.pipeline.validate_beats", return_value=beat_validation))
                 mock_reference_timing = stack.enter_context(patch("analyzer.pipeline.build_reference_timing_grid", return_value=reference_timing))
                 stack.enter_context(patch("analyzer.pipeline.classify_genre", return_value={"genres": []}))
@@ -206,11 +249,16 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.write_validation_markdown"))
                 exit_code = run_phase_1(paths, config)
 
+            info_payload = json.loads(paths.info_output_path.read_text(encoding="utf-8"))
+
         self.assertEqual(exit_code, 0)
         mock_reference_timing.assert_called_once()
         mock_reference_harmonic.assert_called_once()
         self.assertEqual(mock_segment_sections.call_args.args[2], reference_harmonic)
         self.assertEqual(mock_segment_sections.call_args.args[1], reference_timing)
+        self.assertEqual(info_payload["artifacts"]["fft_bands"], str(paths.artifact("essentia", "fft_bands.json")))
+        self.assertEqual(info_payload["generated_from"]["fft_bands_file"], str(paths.artifact("essentia", "fft_bands.json")))
+        self.assertEqual(info_payload["debug"]["fft_band_count"], 7)
 
 
 if __name__ == "__main__":

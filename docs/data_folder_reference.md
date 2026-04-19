@@ -28,6 +28,7 @@ data/
         hints.json
       essentia/
         beats.json
+        fft_bands.json
         hpcp.json
       event_inference/
         events.machine.json
@@ -251,6 +252,18 @@ LLM hint:
 - Use: design custom micro-accents, motion-speed changes, or brightness sweeps when section-level summaries are too coarse.
 - Use: audit whether a proposed cue pattern matches the actual transient behavior.
 - Avoid: treating this as the first file for section planning; use `layer_c_energy.json` first.
+
+### `data/artifacts/<Song - Artist>/essentia/fft_bands.json`
+
+Summary: seven fixed low-to-high spectral band levels sampled every 50 ms from the source mix.
+
+Why it matters: this is the debugger-facing spectral-motion surface for quick low-versus-high energy inspection without opening a full spectrogram tool.
+
+LLM hint:
+- See: `bands[]`, `frames[]`, and `metadata.interval_ms`.
+- Use: inspect whether bass-driven, mid-driven, or top-end-driven motion explains a cue idea or an event boundary.
+- Use: compare broad spectral movement against waveform, drums, and energy lanes when sections feel too coarse.
+- Avoid: treating this as a replacement for the stable `data/output/` contract. It is an artifact-first debugger surface.
 
 ### `data/artifacts/<Song - Artist>/energy_summary/hints.json`
 

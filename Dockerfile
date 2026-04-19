@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
 ARG ESSENTIA_REF=8da4f17c7fa2e748b6cde70a0438675d84c8c089
 ARG TENSORFLOW_VERSION=2.12.1
@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PYTHONPATH=/app/src \
-    LD_LIBRARY_PATH=/usr/local/lib/tensorflow-wheel-libs:/usr/local/lib
+    LD_LIBRARY_PATH=/usr/local/lib/tensorflow-wheel-libs:/usr/local/lib:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -48,8 +48,9 @@ COPY requirements.txt ./requirements.txt
 RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     python3 -m pip install --upgrade pip setuptools wheel poetry-core Cython && \
     python3 -m pip install 'numpy<2' && \
-    grep -v '^git+https://github.com/audiohacking/omnizart.git$' requirements.txt > /tmp/build/requirements.core.txt && \
+    grep -Ev '^(git\+https://github.com/audiohacking/omnizart.git|torch==2.1.2|torchaudio==2.1.2)$' requirements.txt > /tmp/build/requirements.core.txt && \
     python3 -m pip install --no-build-isolation -r /tmp/build/requirements.core.txt && \
+    python3 -m pip install --index-url https://download.pytorch.org/whl/cu118 torch==2.1.2 torchaudio==2.1.2 && \
     python3 -m pip install --no-deps git+https://github.com/audiohacking/omnizart.git && \
     python3 -m pip install --no-deps resampy==0.4.3 && \
     PYTHON_SITE_PACKAGES="$(python3 -c 'import sysconfig; print(sysconfig.get_path("purelib"))')" && \
@@ -70,7 +71,7 @@ RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     rm -rf /tmp/build/essentia-src && \
     ldconfig
 
-RUN curl -L -o /tmp/build/libtensorflow.tar.gz "https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-${TENSORFLOW_VERSION}.tar.gz" && \
+RUN curl -L -o /tmp/build/libtensorflow.tar.gz "https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-${TENSORFLOW_VERSION}.tar.gz" && \
     tar -C /usr/local -xzf /tmp/build/libtensorflow.tar.gz && \
     PYTHON_SITE_PACKAGES="$(python3 -c 'import sysconfig; print(sysconfig.get_path("purelib"))')" && \
     ESSENTIA_EXTENSION="$(find "$PYTHON_SITE_PACKAGES/essentia" -maxdepth 1 -name '_essentia*.so' -print -quit)" && \

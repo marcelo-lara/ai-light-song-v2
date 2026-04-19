@@ -590,6 +590,10 @@ button {
   backface-visibility: hidden;
 }
 
+.lane-track[data-track-lane="fftBands"] .grid-layer {
+  display: none;
+}
+
 .grid-line {
   position: absolute;
   top: 0;
