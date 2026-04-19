@@ -46,6 +46,61 @@ function beatAtTime(timeline, time) {
   return timeline.beats.at(-1) || null;
 }
 
+function beatIndexAtTime(timeline, time) {
+  if (!timeline || !Array.isArray(timeline.beats) || timeline.beats.length === 0) {
+    return null;
+  }
+  for (let index = 0; index < timeline.beats.length; index += 1) {
+    const beat = timeline.beats[index];
+    const next = timeline.beats[index + 1];
+    const end = next ? Number(next.time) : Number(timeline.duration);
+    if (Number(beat.time) <= Number(time) && Number(time) < end) {
+      return index;
+    }
+  }
+  return timeline.beats.length - 1;
+}
+
+function resolvedPlaybackTime(audioElement, currentTime) {
+  const audioTime = Number(audioElement?.currentTime);
+  const stateTime = Number(currentTime ?? 0);
+  if (!Number.isFinite(audioTime)) {
+    return stateTime;
+  }
+  if (Math.abs(audioTime - stateTime) <= 0.05) {
+    return Math.max(audioTime, stateTime);
+  }
+  return audioTime;
+}
+
+function previousBeatTime(timeline, currentTime, fallback = 0) {
+  if (!timeline || !Array.isArray(timeline.beats) || timeline.beats.length === 0) {
+    return fallback;
+  }
+  const threshold = Number(currentTime) - 0.001;
+  for (let index = timeline.beats.length - 1; index >= 0; index -= 1) {
+    const markerTime = Number(timeline.beats[index]?.time);
+    if (markerTime < threshold) {
+      return markerTime;
+    }
+  }
+  return fallback;
+}
+
+function nextBeatTime(timeline, currentTime, fallback = 0) {
+  if (!timeline || !Array.isArray(timeline.beats) || timeline.beats.length === 0) {
+    return fallback;
+  }
+  const threshold = Number(currentTime) + 0.001;
+  for (const beat of timeline.beats) {
+    const markerTime = Number(beat?.time);
+    if (markerTime > threshold) {
+      return markerTime;
+    }
+  }
+  return fallback;
+}
+
 function previousMarkerTime(rows, currentTime, getTime, fallback = 0) {
   if (!Array.isArray(rows) || rows.length === 0) {
     return fallback;
@@ -383,7 +438,8 @@ export default function App() {
   }
 
   function handlePreviousBeat() {
-    const targetTime = previousMarkerTime(timeline?.beats, currentTime, (beat) => beat.time, 0);
+    const playbackTime = resolvedPlaybackTime(audioRef.current, currentTime);
+    const targetTime = previousBeatTime(timeline, playbackTime, 0);
     seekTo(targetTime, {
       laneLabel: "Playback",
       label: `Previous Beat ${formatDuration(targetTime)}`,
@@ -396,8 +452,9 @@ export default function App() {
   }
 
   function handleNextBeat() {
+    const playbackTime = resolvedPlaybackTime(audioRef.current, currentTime);
     const fallback = Number(timeline?.duration || audioRef.current?.duration || currentTime || 0);
-    const targetTime = nextMarkerTime(timeline?.beats, currentTime, (beat) => beat.time, fallback);
+    const targetTime = nextBeatTime(timeline, playbackTime, fallback);
     seekTo(targetTime, {
       laneLabel: "Playback",
       label: `Next Beat ${formatDuration(targetTime)}`,

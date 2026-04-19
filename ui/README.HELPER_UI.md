@@ -135,6 +135,8 @@ Key pieces:
 - `TimelinePanel.jsx`: owns the timeline viewport and delegates dense-lane drawing to imperative helpers for parity with the previous implementation
 - `lib/timeline.js`: renders sparse lane markup, draws dynamic lanes, and updates the shared now-marker positions
 
+The timeline now also reads optional human reference hints from `data/reference/<Song - Artist>/human/human_hints.json` and renders them as a sparse lane between the waveform anchor and sections. Missing reference hints stay explicit in the file list and simply leave that lane empty.
+
 ## Important Implementation Detail
 
 Song discovery currently depends on Nginx `autoindex on` for `/data/` and parses the returned HTML directory listing in the browser.

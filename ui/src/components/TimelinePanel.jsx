@@ -160,6 +160,52 @@ export default function TimelinePanel({
     };
   }, []);
 
+  useEffect(() => {
+    function handleWindowKeyDown(event) {
+      const target = event.target;
+      if (
+        target instanceof HTMLElement
+        && (
+          target.isContentEditable
+          || ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(target.tagName)
+        )
+      ) {
+        return;
+      }
+
+      if (event.key === " " || event.code === "Space") {
+        event.preventDefault();
+        onPlayPause?.();
+        return;
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        if (event.shiftKey) {
+          onPreviousBar?.();
+          return;
+        }
+        onPreviousBeat?.();
+        return;
+      }
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        if (event.shiftKey) {
+          onNextBar?.();
+          return;
+        }
+        onNextBeat?.();
+      }
+    }
+
+    window.addEventListener("keydown", handleWindowKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleWindowKeyDown);
+    };
+  }, [onNextBar, onNextBeat, onPlayPause, onPreviousBar, onPreviousBeat]);
+
   function handleTimelineMouseDown(event) {
     if (event.button !== 0 || !timeline || !scrollerRef.current) {
       return;
@@ -257,16 +303,16 @@ export default function TimelinePanel({
             sx={{
               width: 40,
               height: 40,
-              border: "1px solid rgba(77, 53, 29, 0.14)",
-              background: "rgba(255, 254, 250, 0.92)",
-              color: "#23160e",
-              borderRadius: "12px",
+              border: "1px solid rgba(141, 167, 191, 0.18)",
+              background: "rgba(17, 28, 38, 0.92)",
+              color: "#e5edf5",
+              borderRadius: "4px",
               '&:hover': {
-                background: "rgba(255, 248, 240, 0.98)",
+                background: "rgba(25, 38, 50, 0.98)",
               },
               '&.Mui-disabled': {
-                color: "rgba(112, 89, 71, 0.45)",
-                borderColor: "rgba(77, 53, 29, 0.08)",
+                color: "rgba(146, 165, 181, 0.4)",
+                borderColor: "rgba(141, 167, 191, 0.08)",
               },
               ...extraSx,
             }}
@@ -277,6 +323,22 @@ export default function TimelinePanel({
       </Tooltip>
     );
   }
+
+  const playbackTime = clamp(Number(currentTime) || 0, 0, Number(timeline?.duration) || 0);
+  const currentBeat = timeline?.beats?.reduce((activeBeat, beat) => {
+    if (Number(beat.time) <= playbackTime) {
+      return beat;
+    }
+    return activeBeat;
+  }, null) || null;
+  const currentBar = timeline?.bars?.reduce((activeBar, bar) => {
+    if (Number(bar.start_s) <= playbackTime) {
+      return bar;
+    }
+    return activeBar;
+  }, null) || null;
+  const beatIndicator = currentBeat?.beat_in_bar ?? "-";
+  const barIndicator = currentBar?.bar ?? currentBeat?.bar ?? "-";
 
   return (
     <section className="panel">
@@ -301,20 +363,24 @@ export default function TimelinePanel({
           {renderTransportButton(
             isPlaying ? "Pause" : "Play",
             onPlayPause,
-            isPlaying ? <PauseRoundedIcon fontSize="small" /> : <PlayArrowRoundedIcon fontSize="small" />,
+            isPlaying ? <PauseRoundedIcon fontSize="large" /> : <PlayArrowRoundedIcon fontSize="large" />,
             {
               width: 48,
               height: 48,
-              background: "linear-gradient(135deg, #0f766e 0%, #155e75 100%)",
-              color: "#f7fffd",
+              background: "linear-gradient(135deg, #14b8a6 0%, #0f766e 100%)",
+              color: "#041311",
               border: "none",
               '&:hover': {
-                background: "linear-gradient(135deg, #0d6b64 0%, #134f61 100%)",
+                background: "linear-gradient(135deg, #2dd4bf 0%, #0d5f59 100%)",
               },
             },
           )}
           {renderTransportButton("Next beat", onNextBeat, <SkipNextRoundedIcon fontSize="small" />)}
           {renderTransportButton("Next bar", onNextBar, <KeyboardDoubleArrowLeftRoundedIcon fontSize="small" sx={{ transform: "scaleX(-1)" }} />)}
+        </div>
+        <div className="current-beat-bar">
+          <strong className="current-beat-bar-value">{barIndicator}.</strong>
+          <strong className="current-beat-bar-value">{beatIndicator}</strong>
         </div>
         <div className="timeline-toolbar">
           <label className="range-control" htmlFor="zoom-control">
