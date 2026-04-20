@@ -68,6 +68,7 @@ Current compatibility note:
 - Story 3.2 installs Omnizart from the `audiohacking/omnizart` GitHub fork during the Docker build because the legacy PyPI package metadata excludes the repository's Python 3.10 runtime.
 - the Docker image completes the packaged Omnizart drum checkpoint during build by downloading the missing `variables.data-00000-of-00001` weight shard into the installed package tree.
 - the Docker image also exposes TensorFlow wheel shared libraries from the container runtime so Omnizart's direct Python drum import can resolve native TensorFlow dependencies.
+- Python startup in this repository sets `TF_CPP_MIN_LOG_LEVEL=1` by default so TensorFlow's info-level C++ startup noise does not pollute analyzer output while warnings and errors remain visible.
 - the Docker image installs Python dependencies directly into the container Python environment; it does not create an in-container virtual environment.
 - Story 3.2 debug preservation is metadata-only: the generated drum artifact records explicit source paths for the full mix and drums stem, and the pipeline does not copy those audio files into `data/artifacts/`.
 

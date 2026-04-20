@@ -25,6 +25,7 @@ from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.light_design import generate_lighting_score
 from analyzer.stages.lighting import generate_lighting_events
+from analyzer.stages.loudness import extract_mix_stem_loudness
 from analyzer.stages.patterns import extract_chord_patterns
 from analyzer.stages.sections_v2 import segment_sections
 from analyzer.stages.symbolic import extract_symbolic_features
@@ -74,6 +75,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
         stems = _run_stage(paths.song_name, "phase-1", "ensure-stems", ensure_stems, paths)
         timing = _run_stage(paths.song_name, "phase-1", "extract-timing-grid", extract_timing_grid, paths)
         fft_bands = _run_stage(paths.song_name, "phase-1", "extract-fft-bands", extract_fft_bands, paths)
+        loudness = _run_stage(paths.song_name, "phase-1", "extract-mix-stem-loudness", extract_mix_stem_loudness, paths, stems)
         beat_validation = (
             _run_stage(
                 paths.song_name,
@@ -214,6 +216,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             "artifacts": {
                 "beats": str(paths.artifact("essentia", "beats.json")),
                 "fft_bands": str(paths.artifact("essentia", "fft_bands.json")),
+                "rms_loudness": str(paths.artifact("essentia", "rms_loudness.json")),
+                "loudness_envelope": str(paths.artifact("essentia", "loudness_envelope.json")),
                 "genre": str(paths.artifact("genre.json")),
                 "hpcp": str(paths.artifact("essentia", "hpcp.json")),
                 "harmonic_layer": str(paths.artifact("layer_a_harmonic.json")),
@@ -245,6 +249,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
                 "source_song_path": str(paths.song_path),
                 "timing_grid": str(paths.artifact("essentia", "beats.json")),
                 "fft_bands_file": str(paths.artifact("essentia", "fft_bands.json")),
+                "rms_loudness_file": str(paths.artifact("essentia", "rms_loudness.json")),
+                "loudness_envelope_file": str(paths.artifact("essentia", "loudness_envelope.json")),
             },
             "outputs": {
                 "beats": ui_outputs["beats"],
@@ -255,6 +261,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             },
             "debug": {
                 "fft_band_count": len(fft_bands.get("bands", [])),
+                "loudness_source_count": len(loudness["rms_loudness"].get("sources", [])),
                 "drum_events_engine": drum_events["generated_from"]["engine"],
             },
         }

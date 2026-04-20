@@ -213,12 +213,17 @@ class ConsoleMarkerTests(unittest.TestCase):
             lighting = {"events": []}
             lighting_score = "score"
             fft_bands = {"bands": [{"id": "sub"}, {"id": "bass"}, {"id": "low_mid"}, {"id": "mid"}, {"id": "upper_mid"}, {"id": "presence"}, {"id": "brilliance"}]}
+            loudness = {
+                "rms_loudness": {"sources": [{"id": "mix"}, {"id": "bass"}, {"id": "drums"}, {"id": "harmonic"}, {"id": "vocals"}]},
+                "loudness_envelope": {"sources": [{"id": "mix"}, {"id": "bass"}, {"id": "drums"}, {"id": "harmonic"}, {"id": "vocals"}]},
+            }
             report = {"generated_artifacts": {}, "notes": [], "validation": {}, "status": "passed", "exit_code": 0}
 
             with ExitStack() as stack:
                 stack.enter_context(patch("analyzer.pipeline.ensure_stems", return_value={"harmonic": "harmonic.wav", "bass": "bass.wav", "vocals": "vocals.wav", "drums": "drums.wav"}))
                 stack.enter_context(patch("analyzer.pipeline.extract_timing_grid", return_value=inferred_timing))
                 stack.enter_context(patch("analyzer.pipeline.extract_fft_bands", return_value=fft_bands))
+                stack.enter_context(patch("analyzer.pipeline.extract_mix_stem_loudness", return_value=loudness))
                 stack.enter_context(patch("analyzer.pipeline.validate_beats", return_value=beat_validation))
                 mock_reference_timing = stack.enter_context(patch("analyzer.pipeline.build_reference_timing_grid", return_value=reference_timing))
                 stack.enter_context(patch("analyzer.pipeline.classify_genre", return_value={"genres": []}))
@@ -257,7 +262,12 @@ class ConsoleMarkerTests(unittest.TestCase):
         self.assertEqual(mock_segment_sections.call_args.args[2], reference_harmonic)
         self.assertEqual(mock_segment_sections.call_args.args[1], reference_timing)
         self.assertEqual(info_payload["artifacts"]["fft_bands"], str(paths.artifact("essentia", "fft_bands.json")))
+        self.assertEqual(info_payload["artifacts"]["rms_loudness"], str(paths.artifact("essentia", "rms_loudness.json")))
+        self.assertEqual(info_payload["artifacts"]["loudness_envelope"], str(paths.artifact("essentia", "loudness_envelope.json")))
         self.assertEqual(info_payload["generated_from"]["fft_bands_file"], str(paths.artifact("essentia", "fft_bands.json")))
+        self.assertEqual(info_payload["generated_from"]["rms_loudness_file"], str(paths.artifact("essentia", "rms_loudness.json")))
+        self.assertEqual(info_payload["generated_from"]["loudness_envelope_file"], str(paths.artifact("essentia", "loudness_envelope.json")))
+        self.assertEqual(info_payload["debug"]["loudness_source_count"], 5)
         self.assertEqual(info_payload["debug"]["fft_band_count"], 7)
 
 

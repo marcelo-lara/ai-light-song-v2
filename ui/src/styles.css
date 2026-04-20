@@ -594,6 +594,16 @@ button {
   display: none;
 }
 
+.timeline-row[data-lane-row="rmsLoudness"],
+.timeline-row[data-lane-row="loudnessEnvelope"] {
+  min-height: 112px;
+}
+
+.lane-track[data-track-lane="rmsLoudness"],
+.lane-track[data-track-lane="loudnessEnvelope"] {
+  min-height: 112px;
+}
+
 .grid-line {
   position: absolute;
   top: 0;

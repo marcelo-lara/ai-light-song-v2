@@ -114,7 +114,7 @@ The current implementation is a read-only Epic 7 debugger with these features:
 - waveform anchor decoded in-browser when possible, with beat-pulse fallback
 - fixed-label synchronized lane layout with shared zoom and horizontal scroll
 - sparse lanes for sections, phrases, chords, pattern occurrences, and event windows
-- dense lanes for drums, symbolic density, and energy
+- dense lanes for FFT bands, per-source RMS loudness, per-source loudness envelope, drums, symbolic density, and energy
 - regression overlay lane for beat drift and exported-event comparison
 - lane-item detail hovercards opened directly from clicked timeline regions
 - raw JSON inspector for any successfully loaded file
@@ -126,6 +126,9 @@ The current UI attempts to load these files:
 
 ### Primary artifact-side files
 
+- `data/artifacts/<Song - Artist>/essentia/fft_bands.json`
+- `data/artifacts/<Song - Artist>/essentia/rms_loudness.json`
+- `data/artifacts/<Song - Artist>/essentia/loudness_envelope.json`
 - `data/artifacts/<Song - Artist>/layer_a_harmonic.json`
 - `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
 - `data/artifacts/<Song - Artist>/layer_c_energy.json`
@@ -337,4 +340,3 @@ When extending this UI:
 - preserve the separate `ui` service
 - document any contract-affecting change in the repo docs
 - treat the current implementation as a scaffold to evolve, not as a throwaway mock
-

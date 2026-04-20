@@ -265,6 +265,30 @@ LLM hint:
 - Use: compare broad spectral movement against waveform, drums, and energy lanes when sections feel too coarse.
 - Avoid: treating this as a replacement for the stable `data/output/` contract. It is an artifact-first debugger surface.
 
+### `data/artifacts/<Song - Artist>/essentia/rms_loudness.json`
+
+Summary: shared-timeline RMS loudness sampled every 10 ms for the source mix plus the required bass, drums, harmonic, and vocal stems.
+
+Why it matters: this is the fastest debugger-facing view of which source is physically active at fine time resolution.
+
+LLM hint:
+- See: `sources[]`, `frames[]`, `metadata.interval_ms`, and `metadata.source_order`.
+- Use: compare the mix against the isolated stems when a cue feels driven by drums, bass, vocals, or harmonic bed.
+- Use: inspect short-lived loudness bursts that are too brief for section- or beat-level summaries.
+- Avoid: treating normalized values as calibrated LUFS. They are per-song per-source display values.
+
+### `data/artifacts/<Song - Artist>/essentia/loudness_envelope.json`
+
+Summary: slower loudness envelope sampled on 200 ms windows for the source mix plus the required stems.
+
+Why it matters: smooths the faster RMS motion into a source-aware macro-dynamics view that is easier to compare against section transitions.
+
+LLM hint:
+- See: `sources[]`, `frames[]`, `metadata.window_ms`, and `metadata.source_order`.
+- Use: inspect whether a rise, swell, or release is coming from the full mix or from a specific isolated source.
+- Use: compare broad per-source dynamics against sections, phrases, and machine-event boundaries.
+- Avoid: assuming this file replaces the denser RMS file when you need short transient detail.
+
 ### `data/artifacts/<Song - Artist>/energy_summary/hints.json`
 
 Summary: producer-scoped named energy-event identifiers such as drops and other later-defined song moments.
