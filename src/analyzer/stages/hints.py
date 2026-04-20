@@ -76,12 +76,61 @@ def _build_inference_hint(
     }
 
 
+def _transition_role_phrase(section_name: str) -> str:
+    if section_name in {"groove_plateau", "momentum_lift", "flowing_plateau"}:
+        return "new pulse state"
+    if section_name in {"focal_lift", "vocal_lift", "vocal_spotlight"}:
+        return "new focal state"
+    if section_name == "instrumental_bed":
+        return "new accompaniment-led state"
+    if section_name == "percussion_break":
+        return "new drum-led state"
+    return "new section state"
+
+
+def _transition_role_hint(section: dict, previous_section: dict | None) -> dict | None:
+    if previous_section is None:
+        return None
+
+    previous_label = _section_label(previous_section)
+    current_label = _section_label(section)
+    if previous_label == current_label:
+        return None
+    if previous_label not in {"contrast_bridge", "breath_space", "ambient_opening"}:
+        return None
+    if current_label not in {
+        "groove_plateau",
+        "momentum_lift",
+        "flowing_plateau",
+        "instrumental_bed",
+        "focal_lift",
+        "vocal_lift",
+        "vocal_spotlight",
+        "percussion_break",
+    }:
+        return None
+
+    start_s = round_schema_float(float(section["start"]), digits=2)
+    section_id = str(section["section_id"])
+    section_label = current_label.replace("_", " ")
+    role_phrase = _transition_role_phrase(current_label)
+    return _build_inference_hint(
+        section_id,
+        "transition_role",
+        (
+            f"Treat {start_s:.2f}s as the main cue reset into this {section_label}; "
+            f"let the {role_phrase} land on the boundary instead of drifting late."
+        ),
+    )
+
+
 def _section_inference_hints(
     section: dict,
     summary: dict | None,
     phrase_windows: list[dict],
     repeated_groups: list[dict],
     phrase_group_to_motif: dict[str, str],
+    previous_section: dict | None = None,
 ) -> list[dict]:
     section_id = str(section["section_id"])
     section_name = _section_label(section)
@@ -89,6 +138,9 @@ def _section_inference_hints(
     section_phrase_group_ids = list(dict.fromkeys(str(window["phrase_group_id"]) for window in phrase_windows))
 
     hints: list[dict] = []
+    transition_hint = _transition_role_hint(section, previous_section)
+    if transition_hint is not None:
+        hints.append(transition_hint)
     if summary is not None:
         hints.append(
             _build_inference_hint(
@@ -177,6 +229,7 @@ def _build_inferred_sections(symbolic: dict, sections_payload: dict) -> list[dic
             phrase_group_to_motif[str(phrase_group_id)] = motif_id
 
     inferred_sections: list[dict] = []
+    previous_section: dict | None = None
     for section in sections_payload.get("sections", []):
         section_id = str(section["section_id"])
         inferred_sections.append(
@@ -191,9 +244,11 @@ def _build_inferred_sections(symbolic: dict, sections_payload: dict) -> list[dic
                     phrase_windows_by_section.get(section_id, []),
                     repeated_groups,
                     phrase_group_to_motif,
+                    previous_section,
                 ),
             }
         )
+        previous_section = section
     return inferred_sections
 
 

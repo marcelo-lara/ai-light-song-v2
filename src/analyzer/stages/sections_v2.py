@@ -18,6 +18,14 @@ LOCAL_BOUNDARY_CONTEXT_BEATS = 4
 LOCAL_BOUNDARY_DISTANCE_PENALTY = 0.12
 LOCAL_BOUNDARY_MIN_IMPROVEMENT = 0.03
 INTRO_BOUNDARY_PRESERVE_THRESHOLD = 1.5
+INTERNAL_SPLIT_CONTEXT_BARS = 2
+INTERNAL_SPLIT_MIN_SIDE_BARS = 2
+INTERNAL_SPLIT_MIN_CONTRAST = 0.9
+INTERNAL_SPLIT_MIN_SECTION_ADVANTAGE = 0.28
+INTERNAL_SPLIT_MIN_ENERGY_JUMP = 0.12
+INTERNAL_SPLIT_MIN_ONSET_JUMP = 0.12
+INTERNAL_SPLIT_MIN_DRUM_JUMP = 0.18
+INTERNAL_SPLIT_MIN_SUSTAINED_BAR_DELTA = 0.08
 SPARSE_BREAK_MOTION_SLACK = 0.01
 EARLY_SPARSE_BREAK_ENERGY_SLACK = 0.01
 EARLY_SPARSE_BREAK_MOTION_OFFSET = 0.02
@@ -292,6 +300,30 @@ def _merge_group(group: list[dict[str, object]]) -> dict[str, object]:
         "harmonic": float(np.mean([block["harmonic"] for block in group])),
         "bass": float(np.mean([block["bass"] for block in group])),
         "vector": vector,
+        "preserve_start": bool(any(block.get("preserve_start") for block in group)),
+    }
+
+
+def _merge_bar_rows(rows: list[dict[str, object]], *, preserve_start: bool = False) -> dict[str, object]:
+    vector = np.mean(np.vstack([row["vector"] for row in rows]), axis=0)
+    norm = np.linalg.norm(vector)
+    if norm > 0:
+        vector = vector / norm
+    return {
+        "bar_start": int(rows[0]["bar"]),
+        "bar_end": int(rows[-1]["bar"]),
+        "start_s": float(rows[0]["start_s"]),
+        "end_s": float(rows[-1]["end_s"]),
+        "bar_count": len(rows),
+        "energy": float(np.mean([row["energy"] for row in rows])),
+        "onset": float(np.mean([row["onset"] for row in rows])),
+        "flux": float(np.mean([row["flux"] for row in rows])),
+        "vocals": float(np.mean([row["vocals"] for row in rows])),
+        "drums": float(np.mean([row["drums"] for row in rows])),
+        "harmonic": float(np.mean([row["harmonic"] for row in rows])),
+        "bass": float(np.mean([row["bass"] for row in rows])),
+        "vector": vector,
+        "preserve_start": preserve_start,
     }
 
 
@@ -374,6 +406,89 @@ def _refine_boundary_to_local_novelty(candidate_time: float, beat_rows: list[dic
     return candidate_time
 
 
+def _window_mean(rows: list[dict[str, object]], key: str) -> float:
+    return float(np.mean([float(row[key]) for row in rows])) if rows else 0.0
+
+
+def _best_internal_split_index(section: dict[str, object], bar_rows: list[dict[str, object]], beat_rows: list[dict[str, object]]) -> int | None:
+    section_rows = [
+        row
+        for row in bar_rows
+        if int(section["bar_start"]) <= int(row["bar"]) <= int(section["bar_end"])
+    ]
+    if len(section_rows) < INTERNAL_SPLIT_MIN_SIDE_BARS * 2:
+        return None
+
+    contrast_scores: list[tuple[int, float]] = []
+    for split_index in range(INTERNAL_SPLIT_MIN_SIDE_BARS, len(section_rows) - INTERNAL_SPLIT_MIN_SIDE_BARS + 1):
+        candidate_time = float(section_rows[split_index]["start_s"])
+        contrast = _boundary_contrast_at_time(candidate_time, beat_rows)
+        if contrast is not None:
+            contrast_scores.append((split_index, contrast))
+
+    if not contrast_scores:
+        return None
+
+    section_mean_contrast = float(np.mean([score for _, score in contrast_scores]))
+    best_index: int | None = None
+    best_score = float("-inf")
+    best_time = float("-inf")
+
+    for split_index, contrast in contrast_scores:
+        left_context = section_rows[split_index - INTERNAL_SPLIT_CONTEXT_BARS:split_index]
+        right_context = section_rows[split_index:split_index + INTERNAL_SPLIT_CONTEXT_BARS]
+        if len(left_context) < INTERNAL_SPLIT_CONTEXT_BARS or len(right_context) < INTERNAL_SPLIT_CONTEXT_BARS:
+            continue
+
+        left_energy = _window_mean(left_context, "energy")
+        right_energy = _window_mean(right_context, "energy")
+        left_onset = _window_mean(left_context, "onset")
+        right_onset = _window_mean(right_context, "onset")
+        left_drums = _window_mean(left_context, "drums")
+        right_drums = _window_mean(right_context, "drums")
+        sustained_energy = min(float(row["energy"]) for row in right_context) >= (left_energy + INTERNAL_SPLIT_MIN_SUSTAINED_BAR_DELTA)
+        sustained_onset = min(float(row["onset"]) for row in right_context) >= (left_onset + INTERNAL_SPLIT_MIN_SUSTAINED_BAR_DELTA)
+
+        if contrast < INTERNAL_SPLIT_MIN_CONTRAST:
+            continue
+        if contrast < section_mean_contrast + INTERNAL_SPLIT_MIN_SECTION_ADVANTAGE:
+            continue
+        if (right_energy - left_energy) < INTERNAL_SPLIT_MIN_ENERGY_JUMP:
+            continue
+        if (right_onset - left_onset) < INTERNAL_SPLIT_MIN_ONSET_JUMP:
+            continue
+        if (right_drums - left_drums) < INTERNAL_SPLIT_MIN_DRUM_JUMP:
+            continue
+        if not sustained_energy or not sustained_onset:
+            continue
+
+        candidate_time = float(section_rows[split_index]["start_s"])
+        if contrast > best_score + 1e-9 or (math.isclose(contrast, best_score) and candidate_time > best_time):
+            best_index = split_index
+            best_score = contrast
+            best_time = candidate_time
+
+    return best_index
+
+
+def _apply_internal_section_splits(grouped_sections: list[dict[str, object]], bar_rows: list[dict[str, object]], beat_rows: list[dict[str, object]]) -> list[dict[str, object]]:
+    split_sections: list[dict[str, object]] = []
+    for section in grouped_sections:
+        split_index = _best_internal_split_index(section, bar_rows, beat_rows)
+        if split_index is None:
+            split_sections.append(section)
+            continue
+
+        section_rows = [
+            row
+            for row in bar_rows
+            if int(section["bar_start"]) <= int(row["bar"]) <= int(section["bar_end"])
+        ]
+        split_sections.append(_merge_bar_rows(section_rows[:split_index], preserve_start=bool(section.get("preserve_start", False))))
+        split_sections.append(_merge_bar_rows(section_rows[split_index:], preserve_start=True))
+    return split_sections
+
+
 def _section_character_labels(sections: list[dict[str, object]]) -> list[str]:
     if not sections:
         return []
@@ -403,6 +518,9 @@ def _section_character_labels(sections: list[dict[str, object]]) -> list[str]:
         bass_value = float(bass[index])
         previous_energy = float(energies[index - 1]) if index > 0 else energy_value
         energy_delta = energy_value - previous_energy
+        next_energy = float(energies[index + 1]) if index + 1 < len(sections) else energy_value
+        next_motion = float(motions[index + 1]) if index + 1 < len(sections) else motion_value
+        next_drums = float(drums[index + 1]) if index + 1 < len(sections) else drum_value
 
         if index == 0:
             if vocal_value >= 0.45 and drum_value <= 0.2:
@@ -413,17 +531,33 @@ def _section_character_labels(sections: list[dict[str, object]]) -> list[str]:
         if index == len(sections) - 1:
             labels.append("release_tail")
             continue
+        if (
+            repetition_value < repetition_median
+            and (next_energy - energy_value) >= ENTRY_ENERGY_JUMP_THRESHOLD
+            and next_motion >= motion_high
+            and next_drums >= 0.45
+        ):
+            labels.append("contrast_bridge")
+            continue
         if vocal_value >= max(drum_value + 0.2, harmonic_value * 0.8) and drum_value <= (motion_low + 0.05):
             if energy_value >= energy_high:
                 labels.append("vocal_lift")
             else:
                 labels.append("vocal_spotlight")
             continue
-        if drum_value >= 0.55 and harmonic_value <= 0.35 and vocal_value <= 0.25:
-            labels.append("percussion_break")
-            continue
         if (harmonic_value + bass_value) >= 0.7 and vocal_value <= 0.25 and drum_value <= 0.45:
             labels.append("instrumental_bed")
+            continue
+        if (
+            energy_delta >= ENTRY_ENERGY_JUMP_THRESHOLD
+            and motion_value >= motion_high
+            and drum_value >= 0.45
+            and (vocal_value >= 0.1 or bass_value >= 0.35 or harmonic_value >= 0.12)
+        ):
+            labels.append("momentum_lift")
+            continue
+        if drum_value >= 0.55 and harmonic_value <= 0.35 and vocal_value <= 0.25:
+            labels.append("percussion_break")
             continue
         if energy_value >= energy_peak and (repetition_value >= repetition_median or motion_value >= motion_high):
             labels.append("focal_lift")
@@ -460,6 +594,7 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
     beat_rows = _build_beat_feature_rows(harmonic, energy)
     blocks = _build_phrase_blocks(bar_rows)
     grouped_sections = [_merge_group(group) for group in _group_phrase_blocks(blocks, beat_rows)]
+    grouped_sections = _apply_internal_section_splits(grouped_sections, bar_rows, beat_rows)
     labels = _section_character_labels(grouped_sections)
     repetitions = _compute_section_repetition(grouped_sections)
     reference_timing = _uses_reference_timing(timing)
@@ -468,7 +603,7 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
     section_starts = []
     for index, section in enumerate(grouped_sections):
         coarse_start = _snap_to_bar_boundary(float(section["start_s"]), bar_starts)
-        if index > 0 and not reference_timing:
+        if index > 0 and not reference_timing and not bool(section.get("preserve_start", False)):
             coarse_start = _refine_boundary_to_local_novelty(coarse_start, beat_rows)
             if coarse_start <= section_starts[-1]:
                 coarse_start = _snap_to_bar_boundary(float(section["start_s"]), bar_starts)
