@@ -2,6 +2,7 @@ import { useMemo, useRef } from "preact/hooks";
 
 import AppView from "./app/AppView.jsx";
 import { createAppViewProps } from "./app/createAppViewProps.js";
+import { useHumanHintsEditor } from "./app/useHumanHintsEditor.js";
 import { useSongData } from "./app/useSongData.js";
 import { beatAtTime } from "./app/timelineNavigation.js";
 import { usePlaybackActions } from "./app/usePlaybackActions.js";
@@ -29,6 +30,7 @@ export default function App() {
     waveformPeaks,
     loadSong,
     discoverSongs,
+    saveHumanHints,
   } = useSongData({
     audioDecodeContextRef,
     onBeforeLoadSong() {
@@ -55,6 +57,17 @@ export default function App() {
   }, [timeline, playback.currentTime]);
 
   const audioStatus = audioSrc ? `Read-only audio source: ${audioSrc}` : "Audio source is loaded from data/songs when present.";
+  const humanHintsEditor = useHumanHintsEditor({
+    selectedSong,
+    humanHintsFile: data.humanHints,
+    selectedRegion: shellState.selectedRegion,
+    currentTime: playback.currentTime,
+    onSave: saveHumanHints,
+    onCancelSelection() {
+      shellState.setSelectedRegion(null);
+    },
+  });
+
   const viewProps = createAppViewProps({
     audioRef,
     audioStatus,
@@ -75,6 +88,7 @@ export default function App() {
     transportBeatLabel,
     waveformPeaks,
     waveformStatus,
+    humanHintsEditor,
   });
 
   return <AppView {...viewProps} />;

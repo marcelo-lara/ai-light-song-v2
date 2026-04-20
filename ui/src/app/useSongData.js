@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 
 import { buildTimelineData } from "../lib/data.js";
 import { encodePath } from "../lib/utils.js";
-import { discoverAvailableSongs, loadArtifactRecords } from "./songDataApi.js";
+import { discoverAvailableSongs, humanHintsPath, loadArtifactRecords, saveHumanHintsFile } from "./songDataApi.js";
 import { createEnsureWaveform } from "./waveformPreview.js";
 
 export function useSongData({ audioDecodeContextRef, onBeforeLoadSong }) {
@@ -72,6 +72,37 @@ export function useSongData({ audioDecodeContextRef, onBeforeLoadSong }) {
     }
   }
 
+  async function saveHumanHints(payload) {
+    if (!selectedSong) {
+      throw new Error("Select a song before saving human hints.");
+    }
+
+    const savedPayload = await saveHumanHintsFile(selectedSong, payload);
+
+    setData((current) => {
+      const nextData = { ...current, humanHints: savedPayload };
+      setTimeline(buildTimelineData(nextData));
+      return nextData;
+    });
+
+    setArtifactRecords((current) => {
+      const recordIndex = current.findIndex((record) => record.key === "humanHints");
+      const nextRecord = {
+        key: "humanHints",
+        label: "Reference Human Hints",
+        path: humanHintsPath(selectedSong),
+        ok: true,
+        data: savedPayload,
+      };
+      if (recordIndex === -1) {
+        return [...current, nextRecord].sort((left, right) => left.label.localeCompare(right.label));
+      }
+      return current.map((record, index) => index === recordIndex ? nextRecord : record);
+    });
+
+    return savedPayload;
+  }
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     void discoverSongs(params.get("song") || "");
@@ -92,5 +123,6 @@ export function useSongData({ audioDecodeContextRef, onBeforeLoadSong }) {
     waveformPeaks,
     loadSong,
     discoverSongs,
+    saveHumanHints,
   };
 }

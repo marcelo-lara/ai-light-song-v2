@@ -15,6 +15,7 @@ Included:
 - artifact-to-artifact comparison views
 - raw JSON inspection for debugging
 - audio playback for review context
+- explicit human-hint editing for `data/reference/<Song - Artist>/human/human_hints.json`
 
 Excluded:
 
@@ -38,7 +39,7 @@ The debugger runs as a separate Compose service named `ui`.
 
 - The analyzer `app` service remains the only supported runtime for inference, validation, and GPU-backed work.
 - The `ui` service serves browser assets and mounted generated data.
-- The `ui` service mounts `./data` read-only.
+- The `ui` service mounts `./data` read-only except for the narrower writable bind mount at `./data/reference:/data/reference` used by Story 7.8.
 - The `ui` service must not reuse the analyzer container.
 
 Current implementation shape:
@@ -76,7 +77,7 @@ Secondary helper inputs may be read from `data/output/<Song - Artist>/` when com
 - `sections.json`
 - `song_event_timeline.json`
 
-## Read-Only Rule
+## Restricted Write Rule
 
 The debugger is read-only against generated data.
 
@@ -85,6 +86,9 @@ The debugger is read-only against generated data.
 - Do not write derived JSON to `data/artifacts/`.
 - Do not write overrides or review operations to `data/artifacts/`.
 - Do not write helper files to `data/output/`.
+- The only persisted helper UI edit path is `data/reference/<Song - Artist>/human/human_hints.json`.
+- `Cancel` must not update the file.
+- `Save` is the only action that may update the file.
 
 If a future workflow requires persisted review data, that workflow must be documented explicitly as a new contract rather than added implicitly to the debugger.
 
@@ -110,6 +114,12 @@ The debugger now implements the full Epic 7 internal viewer surface in the stati
 - viewport-aware dense-lane rerendering on horizontal scroll
 - regression overlay lane for beat drift and machine-vs-exported event comparison
 - raw JSON inspection for any successfully loaded file
+- right-side human hint editor that opens from timeline human-hint selections or explicit new-hint actions
+- selected-hint-only editing for existing human hints, with no sidebar-side hint picker
+- `Set` actions for start and end time that sit to the left of the corresponding input and copy the current timeline cursor
+- human hints use the sidebar instead of the standard selection popup
+- the human-hint sidebar stays open across focus changes and closes only through explicit editor actions
+- the human-hint editor uses a compact text and spacing treatment suitable for the narrow sidebar, avoiding nested cards and editor paddings above `0.5em`
 
 ## Development Commands
 
@@ -134,3 +144,5 @@ http://localhost:8080
 ```
 
 The debugger remains read-only. All interaction state such as zoom, playhead movement, lane visibility, and region selection stays in the browser only.
+
+The only exception is Story 7.8 human-hint editing, which persists only to `data/reference/<Song - Artist>/human/human_hints.json` on explicit `Save`.

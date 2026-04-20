@@ -37,6 +37,10 @@ export function useTimelinePointerHandlers(context) {
       const regionSelection = findSelectionAtTrackPosition(track, absoluteX, offsetY);
       if (regionSelection) {
         onSeek(regionSelection.start_s, regionSelection);
+        if (regionSelection.laneLabel === "Human Hints") {
+          onCloseSelectionOverlay?.();
+          return;
+        }
         onOpenSelectionOverlay?.(regionSelection, { x: event.clientX, y: event.clientY });
         return;
       }
