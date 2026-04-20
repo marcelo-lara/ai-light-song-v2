@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import collections
 from collections import abc
+import os
 import numpy as np
+
+
+os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "1")
 
 
 _ABC_NAMES = (

@@ -1,0 +1,31 @@
+export function createTimelineProps(context) {
+  const { loadedSong, availableAudioSongs, timeline, shellState, playback, actions, loadSong, waveformPeaks } = context;
+  return {
+    loadedSong,
+    availableAudioSongs,
+    timeline,
+    zoom: shellState.zoom,
+    onZoomChange: shellState.setZoom,
+    selection: { region: shellState.selectedRegion, visibleWindowLabel: shellState.visibleWindowText },
+    currentTime: playback.currentTime,
+    isPlaying: playback.isPlaying,
+    followPlayhead: shellState.followPlayhead,
+    onSeek: actions.seekTo,
+    onPlayPause: actions.handlePlayPause,
+    onJumpStart: actions.handleJumpStart,
+    onPreviousBar: actions.handlePreviousBar,
+    onPreviousBeat: actions.handlePreviousBeat,
+    onNextBeat: actions.handleNextBeat,
+    onNextBar: actions.handleNextBar,
+    onHeaderSongSelect: loadSong,
+    isSidebarCollapsed: shellState.isSidebarCollapsed,
+    onToggleSidebar: shellState.handleToggleSidebar,
+    onOpenSelectionOverlay: shellState.handleOpenSelectionOverlay,
+    onCloseSelectionOverlay: shellState.handleCloseSelectionOverlay,
+    onVisibleWindowChange: shellState.handleVisibleWindowChange,
+    laneVisibility: shellState.laneVisibility,
+    laneCollapsed: shellState.laneCollapsed,
+    onToggleLaneCollapsed: shellState.handleLaneCollapsedToggle,
+    waveformPeaks,
+  };
+}

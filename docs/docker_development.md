@@ -21,9 +21,9 @@ The repository's local runtime has two services:
 
 Recommended base image:
 
-- `nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04`
+- `nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04`
 
-This image provides a CUDA-enabled environment that is suitable for audio ML tooling and later model-backed analysis steps.
+This image matches TensorFlow `2.12.1` GPU's tested CUDA and cuDNN stack while still allowing NVIDIA runtime passthrough from the host driver.
 
 ## Required System Packages
 
@@ -61,10 +61,14 @@ Current compatibility note:
 - the container overrides `resampy` to `0.4.3` after the main requirements install because `0.4.2` emits a deprecated `pkg_resources` warning during Basic Pitch inference.
 - the plain PyPI `essentia` wheel does not expose TensorFlow predictor algorithms such as `TensorflowPredictMusiCNN`; the Docker image therefore installs TensorFlow and compiles Essentia from source with `--with-tensorflow`.
 - the Docker image pins TensorFlow to `2.12.1` because the Essentia TensorFlow setup helper used by this repository mis-detects the TensorFlow `2.15.x` wheel layout and generates broken linker symlinks during the native build.
-- the TensorFlow Python wheel alone does not export the TensorFlow C API symbols that Essentia resolves at runtime, so the image also installs the matching `libtensorflow` C library tarball and patches Essentia's `_essentia` extension to depend on `libtensorflow.so.2` explicitly.
+- TensorFlow `2.12.1` GPU expects CUDA `11.8` and cuDNN `8.6`; using a CUDA `12.x` base image prevents TensorFlow from loading the required GPU libraries.
+- the Docker image installs `torch==2.1.2` and `torchaudio==2.1.2` from the PyTorch `cu118` wheel index so Demucs and other Torch-backed stages stay aligned with the CUDA `11.8` container runtime instead of pulling the default PyPI CUDA `12.1` wheels.
+- the Docker image preserves the NVIDIA container runtime library paths in `LD_LIBRARY_PATH` so TensorFlow can resolve the host-mounted `libcuda` driver libraries at runtime.
+- the TensorFlow Python wheel alone does not export the TensorFlow C API symbols that Essentia resolves at runtime, so the image also installs the matching GPU-enabled `libtensorflow` C library tarball and patches Essentia's `_essentia` extension to depend on `libtensorflow.so.2` explicitly.
 - Story 3.2 installs Omnizart from the `audiohacking/omnizart` GitHub fork during the Docker build because the legacy PyPI package metadata excludes the repository's Python 3.10 runtime.
 - the Docker image completes the packaged Omnizart drum checkpoint during build by downloading the missing `variables.data-00000-of-00001` weight shard into the installed package tree.
 - the Docker image also exposes TensorFlow wheel shared libraries from the container runtime so Omnizart's direct Python drum import can resolve native TensorFlow dependencies.
+- Python startup in this repository sets `TF_CPP_MIN_LOG_LEVEL=1` by default so TensorFlow's info-level C++ startup noise does not pollute analyzer output while warnings and errors remain visible.
 - the Docker image installs Python dependencies directly into the container Python environment; it does not create an in-container virtual environment.
 - Story 3.2 debug preservation is metadata-only: the generated drum artifact records explicit source paths for the full mix and drums stem, and the pipeline does not copy those audio files into `data/artifacts/`.
 

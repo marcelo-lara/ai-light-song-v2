@@ -74,6 +74,8 @@ Goal: prepare clean, aligned source material for all downstream analysis.
 | --- | --- | --- | --- |
 | 1.1 | Stem separation and caching | normalized stems and stem metadata | `docs/1.1.stem_separation_story.md` |
 | 1.2 | Beat, tempo, and bar grid detection | BPM, beats, bars, timing grid | `docs/1.2.beat_tempo_detection_story.md` |
+| 1.3 | Seven-band FFT extraction | `essentia/fft_bands.json` for debugger spectral inspection | `docs/1.3.fft_band_extraction_story.md` |
+| 1.4 | Mix and per-stem loudness | `essentia/rms_loudness.json` and `essentia/loudness_envelope.json` for debugger loudness inspection | `docs/1.4.mix_and_per_stem_loudness_story.md` |
 
 ## EPIC 2: Harmonic Summary
 

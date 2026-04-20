@@ -28,6 +28,7 @@ data/
         hints.json
       essentia/
         beats.json
+        fft_bands.json
         hpcp.json
       event_inference/
         events.machine.json
@@ -251,6 +252,42 @@ LLM hint:
 - Use: design custom micro-accents, motion-speed changes, or brightness sweeps when section-level summaries are too coarse.
 - Use: audit whether a proposed cue pattern matches the actual transient behavior.
 - Avoid: treating this as the first file for section planning; use `layer_c_energy.json` first.
+
+### `data/artifacts/<Song - Artist>/essentia/fft_bands.json`
+
+Summary: seven fixed low-to-high spectral band levels sampled every 50 ms from the source mix.
+
+Why it matters: this is the debugger-facing spectral-motion surface for quick low-versus-high energy inspection without opening a full spectrogram tool.
+
+LLM hint:
+- See: `bands[]`, `frames[]`, and `metadata.interval_ms`.
+- Use: inspect whether bass-driven, mid-driven, or top-end-driven motion explains a cue idea or an event boundary.
+- Use: compare broad spectral movement against waveform, drums, and energy lanes when sections feel too coarse.
+- Avoid: treating this as a replacement for the stable `data/output/` contract. It is an artifact-first debugger surface.
+
+### `data/artifacts/<Song - Artist>/essentia/rms_loudness.json`
+
+Summary: shared-timeline RMS loudness sampled every 10 ms for the source mix plus the required bass, drums, harmonic, and vocal stems.
+
+Why it matters: this is the fastest debugger-facing view of which source is physically active at fine time resolution.
+
+LLM hint:
+- See: `sources[]`, `frames[]`, `metadata.interval_ms`, and `metadata.source_order`.
+- Use: compare the mix against the isolated stems when a cue feels driven by drums, bass, vocals, or harmonic bed.
+- Use: inspect short-lived loudness bursts that are too brief for section- or beat-level summaries.
+- Avoid: treating normalized values as calibrated LUFS. They are per-song per-source display values.
+
+### `data/artifacts/<Song - Artist>/essentia/loudness_envelope.json`
+
+Summary: slower loudness envelope sampled on 200 ms windows for the source mix plus the required stems.
+
+Why it matters: smooths the faster RMS motion into a source-aware macro-dynamics view that is easier to compare against section transitions.
+
+LLM hint:
+- See: `sources[]`, `frames[]`, `metadata.window_ms`, and `metadata.source_order`.
+- Use: inspect whether a rise, swell, or release is coming from the full mix or from a specific isolated source.
+- Use: compare broad per-source dynamics against sections, phrases, and machine-event boundaries.
+- Avoid: assuming this file replaces the denser RMS file when you need short transient detail.
 
 ### `data/artifacts/<Song - Artist>/energy_summary/hints.json`
 
