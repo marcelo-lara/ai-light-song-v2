@@ -711,6 +711,85 @@ def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> 
     )
 
 
+def generate_timing_diagnosis(
+    paths: SongPaths,
+    inferred_timing: dict,
+    reference_timing: dict,
+) -> dict:
+    """Compare inferred beats against the reference beat grid and write a dedicated diagnosis file.
+
+    Writes global_offset_s (mean signed error), local_drift_s (end-vs-start window drift),
+    and snap_multiple_histogram (how often errors cluster at beat-interval multiples).
+    """
+    inferred_beats = [float(b["time"]) for b in inferred_timing.get("beats", [])]
+    reference_beats = [float(b["time"]) for b in reference_timing.get("beats", [])]
+
+    if not inferred_beats or not reference_beats:
+        payload: dict = {
+            "schema_version": SCHEMA_VERSION,
+            "song_name": paths.song_name,
+            "status": "skipped",
+            "reason": "insufficient beat data for diagnosis",
+        }
+        write_json(paths.artifact("validation", "timing_diagnosis.json"), payload)
+        return payload
+
+    errors: list[float] = []
+    for inferred_time in inferred_beats:
+        nearest_ref = min(reference_beats, key=lambda t: abs(t - inferred_time))
+        errors.append(inferred_time - nearest_ref)
+
+    global_offset_s = sum(errors) / len(errors)
+    beat_interval = _estimate_reference_beat_interval(reference_beats)
+    window_size = max(4, min(20, len(errors) // 8))
+    start_median = _median(errors[:window_size])
+    end_median = _median(errors[-window_size:])
+    local_drift_s = (end_median - start_median) if (start_median is not None and end_median is not None) else None
+    mean_abs_error = sum(abs(e) for e in errors) / len(errors)
+
+    snap_multiple_histogram: dict[str, int] = {}
+    if beat_interval and beat_interval > 0:
+        for error in errors:
+            multiple = round(error / beat_interval * 2) / 2.0
+            bucket = str(multiple)
+            snap_multiple_histogram[bucket] = snap_multiple_histogram.get(bucket, 0) + 1
+
+    dominant_mode = "well_aligned"
+    if beat_interval and beat_interval > 0:
+        if mean_abs_error > beat_interval * 0.4:
+            dominant_snap = max(snap_multiple_histogram, key=lambda k: snap_multiple_histogram[k]) if snap_multiple_histogram else "0.0"
+            dominant_count = snap_multiple_histogram.get(dominant_snap, 0)
+            if dominant_snap != "0.0" and dominant_count > len(errors) * 0.4:
+                dominant_mode = f"systematic_snap_error_{dominant_snap}_beats"
+            elif abs(global_offset_s) > beat_interval * 0.25:
+                dominant_mode = "global_offset"
+            else:
+                dominant_mode = "local_drift"
+        elif abs(global_offset_s) > beat_interval * 0.1:
+            dominant_mode = "minor_global_offset"
+
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "generated_from": {
+            "inferred_beats_file": str(paths.artifact("essentia", "beats_inferred.json")),
+            "reference_beats_source": str(paths.reference("moises", "chords.json")) if paths.reference("moises", "chords.json") else None,
+        },
+        "beat_count": {
+            "inferred": len(inferred_beats),
+            "reference": len(reference_beats),
+        },
+        "global_offset_s": _round_or_none(global_offset_s),
+        "local_drift_s": _round_or_none(local_drift_s),
+        "mean_absolute_error_s": _round_or_none(mean_abs_error),
+        "reference_beat_interval_s": _round_or_none(beat_interval),
+        "snap_multiple_histogram": snap_multiple_histogram,
+        "dominant_failure_mode": dominant_mode,
+    }
+    write_json(paths.artifact("validation", "timing_diagnosis.json"), payload)
+    return payload
+
+
 def _result_from_checks(checks: list[dict], reference_file: str | None = None) -> ValidationResult:
     matched = sum(1 for check in checks if bool(check.get("passed")))
     mismatched = len(checks) - matched

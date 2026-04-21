@@ -35,6 +35,7 @@ from analyzer.stages.ui_data import build_ui_data
 from analyzer.stages.unified import assemble_music_feature_layers
 from analyzer.stages.validation import (
     build_validation_report,
+    generate_timing_diagnosis,
     skipped_result,
     validate_chords,
     validate_beats,
@@ -92,20 +93,30 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
         inferred_beats_path: str | None = None
         if has_reference_chords:
             inferred_beats_path = paths.artifact("essentia", "beats_inferred.json")
-            write_json(inferred_beats_path, timing)
+            inferred_timing = timing
+            write_json(inferred_beats_path, inferred_timing)
             timing = _run_stage(
                 paths.song_name,
                 "phase-1",
                 "build-reference-timing-grid",
                 build_reference_timing_grid,
                 paths,
-                float(timing.get("duration", 0.0)),
+                float(inferred_timing.get("duration", 0.0)),
                 reference_chords_path=str(reference_chords_path),
                 inferred_beats_path=str(inferred_beats_path),
             )
             if not timing.get("beats"):
                 raise AnalysisError("Reference timing takeover did not produce any canonical beats")
             write_json(paths.artifact("essentia", "beats.json"), timing)
+            _run_stage(
+                paths.song_name,
+                "phase-1",
+                "generate-timing-diagnosis",
+                generate_timing_diagnosis,
+                paths,
+                inferred_timing,
+                timing,
+            )
         genre_result = _run_stage(paths.song_name, "phase-1", "classify-genre", classify_genre, paths)
         _, harmonic = _run_stage(paths.song_name, "phase-1", "extract-hpcp-and-chords", extract_hpcp_and_chords, paths, stems, timing)
         chord_validation = (

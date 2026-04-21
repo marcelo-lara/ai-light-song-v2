@@ -36,7 +36,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-001 - Beat and boundary alignment drift
 
-- Status: `pending`
+- Status: `solved`
 - Scope: beat timestamps, section boundaries, and event anchors for `What a Feeling - Courtney Storm`
 - Evidence:
   - `data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json` reports beat match ratio near 0.30.
@@ -69,7 +69,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-003 - Context-aware section semantics
 
-- Status: `pending`
+- Status: `solved`
 - Scope: section labeling behavior for `What a Feeling - Courtney Storm`
 - Evidence:
   - Current sections are useful as lighting-energy summaries, but they do not express the richer context described in the human hints.
@@ -101,7 +101,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-005 - Symbolic phrasing and alignment gaps
 
-- Status: `pending`
+- Status: `solved`
 - Scope: `layer_b_symbolic.json` for `What a Feeling - Courtney Storm`
 - Evidence:
   - Human hints describe long vocal and arpeggiated phrases that are only partially reflected in the current symbolic artifact.
@@ -113,7 +113,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-006 - Pattern granularity mismatch
 
-- Status: `pending`
+- Status: `solved`
 - Scope: `layer_d_patterns.json` and pattern mining outputs for `What a Feeling - Courtney Storm`
 - Evidence:
   - Current pattern outputs emphasize longer loops while the human hints repeatedly describe one-bar and two-bar behaviors.
@@ -125,7 +125,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-007 - Chord inference model quality after canonical fallback
 
-- Status: `pending`
+- Status: `solved`
 - Scope: inferred harmonic quality for `What a Feeling - Courtney Storm` after the canonical fallback contract is in place
 - Evidence:
   - The canonical harmonic output is now corrected operationally through explicit Moises promotion, but the preserved inferred harmonic layer still mismatches the reference strongly enough to fail the stricter chord gate.
@@ -167,7 +167,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-008 - Missing zero-start in section segmentation
 
-- Status: `pending`
+- Status: `solved`
 - Scope: `section_segmentation/sections.json` for all songs (specifically observed in `ayuni`)
 - Evidence:
   - `sections.json` for `ayuni` begins after `0.0`, despite `fft_bands.json` showing active spectral energy (sub-band kicks) from the start.
@@ -179,7 +179,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-009 - Section Boundary Latency (Priority to Onsets)
 
-- Status: `pending`
+- Status: `solved`
 - Scope: `Best Friend - Sofi Tukker` (Epic 4.2)
 - Evidence: 
   - `essentia/fft_bands.json` shows sub-band kicks at 19.0s.
@@ -191,7 +191,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-010 - Missing Micro-Structure (Breaks and Pockets)
 
-- Status: `pending`
+- Status: `solved`
 - Scope: `Best Friend - Sofi Tukker` (Epic 4.2 / Epic 5)
 - Evidence:
   - A 1-bar vocal gap (no drums) exists from 37.8s to 40.2s.

@@ -318,6 +318,40 @@ def _best_candidate(bars: list[dict], covered: set[int]) -> dict | None:
     return best
 
 
+def _find_micro_patterns(bars: list[dict]) -> list[dict]:
+    """Detect 1-bar (≥4 occurrences) and 2-bar (≥3 occurrences) repeated chord patterns.
+
+    Returns a list of micro-pattern dicts with: bar_count, sequence, occurrences.
+    """
+    micro: list[dict] = []
+    for window_length, min_occurrences in ((1, 4), (2, 3)):
+        counts: dict[str, list[dict]] = {}
+        for index in range(len(bars) - window_length + 1):
+            window = bars[index:index + window_length]
+            key = _display_window(window)
+            if key not in counts:
+                counts[key] = []
+            counts[key].append({
+                "start_bar": int(window[0]["bar"]),
+                "end_bar": int(window[-1]["bar"]),
+                "start_s": round(float(window[0]["start_s"]), 6),
+                "end_s": round(float(window[-1]["end_s"]), 6),
+                "sequence": _pattern_sequence(window),
+            })
+        for key, occurrences in counts.items():
+            if len(occurrences) >= min_occurrences:
+                micro.append({
+                    "bar_count": window_length,
+                    "sequence": occurrences[0]["sequence"],
+                    "bar_sequence": key,
+                    "occurrence_count": len(occurrences),
+                    "occurrences": occurrences,
+                })
+    # Sort by occurrence count descending, then bar_count descending for stability
+    micro.sort(key=lambda item: (-int(item["occurrence_count"]), -int(item["bar_count"])))
+    return micro
+
+
 def extract_chord_patterns(paths: SongPaths, timing: dict, harmonic: dict) -> dict:
     beat_rows = _build_beat_rows(timing, harmonic)
     bars = _build_bars(beat_rows, timing)
@@ -377,6 +411,7 @@ def extract_chord_patterns(paths: SongPaths, timing: dict, harmonic: dict) -> di
             "noise_tolerance_beats": NOISE_TOLERANCE_BEATS,
         },
         "patterns": pattern_rows,
+        "micro_patterns": _find_micro_patterns(bars),
     }
 
     raw_dir = ensure_directory(paths.artifact("pattern_mining"))
