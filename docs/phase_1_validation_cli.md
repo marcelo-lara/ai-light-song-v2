@@ -152,6 +152,7 @@ At minimum:
 - Drum validation should report whether kick, snare, and hat detections remain plausible at the song level, and should flag unresolved or over-dense output explicitly instead of masking uncertainty.
 - Drum validation should also confirm that the artifact records explicit debug source paths for the full mix and drums stem rather than copying audio debug files into the artifact tree.
 - Section comparisons should use structural change-point alignment. Reference labels may be reported for review but should not control pass/fail.
+- **Spectral Alignment Check:** Cross-reference `sections.json` and `layer_d_patterns.json` against `essentia/fft_bands.json`. Report any "Ghost Latency" where a boundary misses a physical spectral onset.
 - Chord comparisons should use time-aligned event comparison and label comparison.
 
 ## Recommended Report Contents

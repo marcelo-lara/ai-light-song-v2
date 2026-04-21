@@ -176,5 +176,33 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
   - Ensure the first section of every song starts at exactly `0.0`.
 - Success condition:
   - The section segmentation post-processor forces the first section start to `0.0` and snaps it to the beat grid.
+
+### ISS-009 - Section Boundary Latency (Priority to Onsets)
+
+- Status: `pending`
+- Scope: `Best Friend - Sofi Tukker` (Epic 4.2)
+- Evidence: 
+  - `essentia/fft_bands.json` shows sub-band kicks at 19.0s.
+  - `sections.json` places the `percussion_break` at 19.6s (snapping to grid), missing the physical 19.0s kick.
+- Validation target:
+  - Section boundaries must use the exact 19.0s onset timestamp.
+- Success condition:
+  - The 19.0s kick is the authoritative boundary, overriding the 19.6s beat grid anchor.
+
+### ISS-010 - Missing Micro-Structure (Breaks and Pockets)
+
+- Status: `pending`
+- Scope: `Best Friend - Sofi Tukker` (Epic 4.2 / Epic 5)
+- Evidence:
+  - A 1-bar vocal gap (no drums) exists from 37.8s to 40.2s.
+  - This window is currently ignored by the segmenter, merging it into the surrounding high-energy section.
+  - **Clap Break:** 56.6s to 106.1s (near `contrast_bridge`) is not identified as a distinct structural/rhythmic shift.
+  - **Percussion Break:** A distinct break starting at 115.5s is missing from the `sections.json` boundaries.
+- Validation target:
+  - Enable sensitivity for sub-phrase energy/percussion shifts (1-bar to 4-bar pockets).
+- Success condition:
+  - The windows at 37.8s, 56.6s, and 115.5s are identified as distinct structural states (e.g., `breath_space`, `percussion_break`) or high-confidence Events.
+- Notes:
+  - Lighting requires these "blackout" or "contrast" windows to be explicitly identified, even if they are shorter than a traditional musical "section."
 - Notes:
   - This is a constitutional requirement for "Determinism" and "Clarity."
