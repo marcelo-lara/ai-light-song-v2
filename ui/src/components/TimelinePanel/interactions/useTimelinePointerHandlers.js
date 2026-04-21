@@ -15,10 +15,10 @@ export function useTimelinePointerHandlers(context) {
       scrollerRef.current.classList.add("is-dragging");
     },
     handleTimelineClick(event) {
-      if (suppressClickRef.current) {
-        suppressClickRef.current = false;
+      if (Number(suppressClickRef.current) > Date.now()) {
         return;
       }
+      suppressClickRef.current = 0;
       if (!timeline) {
         return;
       }

@@ -1,4 +1,5 @@
-import fs from "node:fs/promises";
+import fs from "node:fs";
+import fsp from "node:fs/promises";
 import path from "node:path";
 
 import { defineConfig } from "vite";
@@ -105,6 +106,55 @@ function humanHintsFilePath(song) {
   return filePath;
 }
 
+function parseByteRange(rangeHeader, fileSize) {
+  if (!rangeHeader || !rangeHeader.startsWith("bytes=")) {
+    return null;
+  }
+
+  const [rangeSpec] = rangeHeader.replace("bytes=", "").split(",");
+  const [startText, endText] = rangeSpec.split("-");
+  const hasStart = startText !== undefined && startText !== "";
+  const hasEnd = endText !== undefined && endText !== "";
+
+  if (!hasStart && !hasEnd) {
+    return null;
+  }
+
+  let start = hasStart ? Number.parseInt(startText, 10) : NaN;
+  let end = hasEnd ? Number.parseInt(endText, 10) : NaN;
+
+  if (!hasStart) {
+    const suffixLength = Number.isNaN(end) ? 0 : end;
+    if (suffixLength <= 0) {
+      return null;
+    }
+    start = Math.max(fileSize - suffixLength, 0);
+    end = fileSize - 1;
+  } else {
+    if (Number.isNaN(start) || start < 0 || start >= fileSize) {
+      return null;
+    }
+    if (Number.isNaN(end) || end >= fileSize) {
+      end = fileSize - 1;
+    }
+  }
+
+  if (Number.isNaN(start) || Number.isNaN(end) || start > end) {
+    return null;
+  }
+
+  return { start, end };
+}
+
+function pipeFile(response, filePath, start, end) {
+  return new Promise((resolve, reject) => {
+    const stream = fs.createReadStream(filePath, { start, end });
+    stream.on("error", reject);
+    stream.on("end", resolve);
+    stream.pipe(response);
+  });
+}
+
 function dataMountPlugin() {
   return {
     name: "data-mount-plugin",
@@ -116,8 +166,8 @@ function dataMountPlugin() {
             const song = decodeURIComponent(requestUrl.pathname.replace("/api/human-hints/", ""));
             const payload = normalizeHumanHintPayload(await readJsonBody(request));
             const filePath = humanHintsFilePath(song);
-            await fs.mkdir(path.dirname(filePath), { recursive: true });
-            await fs.writeFile(filePath, JSON.stringify(payload, null, 2) + "\n", "utf-8");
+            await fsp.mkdir(path.dirname(filePath), { recursive: true });
+            await fsp.writeFile(filePath, JSON.stringify(payload, null, 2) + "\n", "utf-8");
             response.statusCode = 200;
             response.setHeader("Content-Type", "application/json; charset=utf-8");
             response.end(JSON.stringify(payload));
@@ -135,19 +185,44 @@ function dataMountPlugin() {
 
         try {
           const filePath = normalizeDataPath(requestUrl.pathname);
-          const stats = await fs.stat(filePath);
+          const stats = await fsp.stat(filePath);
           if (stats.isDirectory()) {
-            const entries = await fs.readdir(filePath, { withFileTypes: true });
+            const entries = await fsp.readdir(filePath, { withFileTypes: true });
             response.statusCode = 200;
             response.setHeader("Content-Type", "text/html; charset=utf-8");
+            if (request.method === "HEAD") {
+              response.end();
+              return;
+            }
             response.end(renderDirectoryListing(requestUrl.pathname, entries));
             return;
           }
 
-          const fileContents = await fs.readFile(filePath);
+          const contentType = contentTypeFor(filePath);
+          const range = parseByteRange(request.headers.range, stats.size);
+          response.setHeader("Accept-Ranges", "bytes");
+          response.setHeader("Content-Type", contentType);
+
+          if (range) {
+            const { start, end } = range;
+            response.statusCode = 206;
+            response.setHeader("Content-Range", `bytes ${start}-${end}/${stats.size}`);
+            response.setHeader("Content-Length", String(end - start + 1));
+            if (request.method === "HEAD") {
+              response.end();
+              return;
+            }
+            await pipeFile(response, filePath, start, end);
+            return;
+          }
+
           response.statusCode = 200;
-          response.setHeader("Content-Type", contentTypeFor(filePath));
-          response.end(fileContents);
+          response.setHeader("Content-Length", String(stats.size));
+          if (request.method === "HEAD") {
+            response.end();
+            return;
+          }
+          await pipeFile(response, filePath, 0, stats.size - 1);
         } catch (error) {
           response.statusCode = 404;
           response.setHeader("Content-Type", "text/plain; charset=utf-8");

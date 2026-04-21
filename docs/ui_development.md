@@ -104,7 +104,8 @@ The debugger now implements the full Epic 7 internal viewer surface in the stati
 - summary cards for core inference surfaces
 - validation and section previews
 - native audio playback for the matching song file when available
-- audio-playback-driven shared cursor state used as the single timeline clock
+- byte-range serving for mounted song files so browser audio seeks can land on the requested paused cursor position
+- browser-local shared cursor state that remains authoritative while paused and syncs from audio playback time during active playback
 - browser-decoded waveform anchor when the mounted song file is readable, with beat-pulse fallback when decoding is unavailable
 - DAW-style lane layout with fixed labels and a synchronized timeline region
 - browser-local lane enablement toggles

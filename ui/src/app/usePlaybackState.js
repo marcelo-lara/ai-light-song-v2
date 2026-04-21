@@ -1,8 +1,16 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 
 export function usePlaybackState({ audioRef, playbackFrameRef, audioSrc }) {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const currentTimeRef = useRef(0);
+
+  function updateCurrentTime(nextTime) {
+    const numericTime = Number(nextTime);
+    const safeTime = Number.isFinite(numericTime) && numericTime >= 0 ? numericTime : 0;
+    currentTimeRef.current = safeTime;
+    setCurrentTime(safeTime);
+  }
 
   useEffect(() => {
     if (!audioRef.current) {
@@ -31,7 +39,7 @@ export function usePlaybackState({ audioRef, playbackFrameRef, audioSrc }) {
         cancelPlaybackFrame();
         return;
       }
-      setCurrentTime(audioElement.currentTime || 0);
+      updateCurrentTime(audioElement.currentTime || 0);
       if (!audioElement.paused && !audioElement.ended) {
         playbackFrameRef.current = requestAnimationFrame(syncPlaybackFrame);
         return;
@@ -51,17 +59,34 @@ export function usePlaybackState({ audioRef, playbackFrameRef, audioSrc }) {
   return {
     currentTime,
     isPlaying,
-    setCurrentTime,
+    setCurrentTime: updateCurrentTime,
     setIsPlaying,
-    handleAudioTimeUpdate(event) { setCurrentTime(Number(event.currentTarget.currentTime || 0)); },
+    handleAudioTimeUpdate(event) {
+      if (!isPlaying) {
+        return;
+      }
+      updateCurrentTime(Number(event.currentTarget.currentTime || 0));
+    },
     handleAudioPlay() {
-      setCurrentTime(Number(audioRef.current?.currentTime || 0));
+      updateCurrentTime(Number(audioRef.current?.currentTime || currentTimeRef.current || 0));
       setIsPlaying(true);
     },
     handleAudioPause() {
-      setCurrentTime(Number(audioRef.current?.currentTime || 0));
+      updateCurrentTime(Number(audioRef.current?.currentTime || currentTimeRef.current || 0));
       setIsPlaying(false);
     },
-    handleAudioLoadedMetadata(event) { setCurrentTime(Number(event.currentTarget.currentTime || 0)); },
+    handleAudioLoadedMetadata(event) {
+      const audioElement = event.currentTarget;
+      if (!isPlaying && currentTimeRef.current > 0) {
+        try {
+          audioElement.currentTime = currentTimeRef.current;
+        } catch {
+          // Ignore browsers that reject currentTime writes before media is seekable.
+        }
+        updateCurrentTime(currentTimeRef.current);
+        return;
+      }
+      updateCurrentTime(Number(audioElement.currentTime || 0));
+    },
   };
 }

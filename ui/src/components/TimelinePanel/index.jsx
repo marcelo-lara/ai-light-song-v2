@@ -17,7 +17,7 @@ export default function TimelinePanel(props) {
     startScrollLeft: 0,
     moved: false,
   });
-  const suppressClickRef = useRef(false);
+  const suppressClickRef = useRef(0);
 
   useTimelineEffects({
     timeline: props.timeline,
