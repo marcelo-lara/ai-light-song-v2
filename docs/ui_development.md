@@ -108,8 +108,10 @@ The debugger now implements the full Epic 7 internal viewer surface in the stati
 - browser-decoded waveform anchor when the mounted song file is readable, with beat-pulse fallback when decoding is unavailable
 - DAW-style lane layout with fixed labels and a synchronized timeline region
 - browser-local lane enablement toggles
-- sparse lanes for sections, phrase windows, chords, harmonic-pattern occurrences, machine event windows, and output-timeline helper windows
-- dense lanes for seven-band FFT activity, drum activity, symbolic density, and energy profile views
+- browser-local lane collapse toggles that reduce every collapsed lane, including RMS Loudness and Loudness Envelope, to the compact label-only row height
+- sparse lanes for sections, symbolic phrases grouped by `phrase_group_id`, chords, harmonic-pattern occurrences, machine event windows, and output-timeline helper windows
+- overlapping symbolic phrases use the same stacked compaction behavior as machine event windows
+- dense lanes for seven-band FFT activity, drum activity, and energy profile views
 - shared zoom across all lanes with coarse beat-grid reduction at distant zoom levels
 - viewport-aware dense-lane rerendering on horizontal scroll
 - regression overlay lane for beat drift and machine-vs-exported event comparison

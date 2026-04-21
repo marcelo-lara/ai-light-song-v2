@@ -1,7 +1,7 @@
 import { laneDefinitions } from "../lib/config.js";
 
 export function createInitialLaneVisibility() {
-  return Object.fromEntries(laneDefinitions.map((lane) => [lane.id, lane.id !== "phrases"]));
+  return Object.fromEntries(laneDefinitions.map((lane) => [lane.id, true]));
 }
 
 export function createInitialLaneCollapsed() {

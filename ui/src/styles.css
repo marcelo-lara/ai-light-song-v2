@@ -763,6 +763,11 @@ textarea {
   min-height: 112px;
 }
 
+.timeline-row.lane-collapsed[data-lane-row="rmsLoudness"],
+.timeline-row.lane-collapsed[data-lane-row="loudnessEnvelope"] {
+  min-height: 1em;
+}
+
 .lane-track[data-track-lane="rmsLoudness"],
 .lane-track[data-track-lane="loudnessEnvelope"] {
   min-height: 112px;

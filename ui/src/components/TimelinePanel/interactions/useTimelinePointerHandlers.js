@@ -1,7 +1,7 @@
 import { buildScrubSelection, findSelectionAtTrackPosition, getVisibleRange, renderTrackLane } from "../../../lib/timeline.js";
 import { formatRange } from "../../../lib/utils.js";
 
-const scrollRenderedLaneIds = ["waveform", "drums", "density", "energy", "validation"];
+const scrollRenderedLaneIds = ["waveform", "drums", "energy", "validation"];
 
 export function useTimelinePointerHandlers(context) {
   const { timeline, zoom, onSeek, onOpenSelectionOverlay, onCloseSelectionOverlay, onToggleLaneCollapsed, laneVisibility, laneCollapsed, waveformPeaks, onVisibleWindowChange, scrollerRef, rowsRef, viewportFrameRef, dragStateRef, suppressClickRef } = context;
