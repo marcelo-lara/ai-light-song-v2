@@ -1004,7 +1004,7 @@ textarea {
   }
 
   .current-beat-bar {
-    width: 100%;
+    width: 10em;
     justify-content: flex-start;
   }
 

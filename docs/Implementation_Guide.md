@@ -34,6 +34,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - Generated files inside `data/artifacts/` must use producer-scoped namespaces when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
 - Time values are expressed in seconds.
 - Bars are 1-indexed.
+- **Timeline Totality:** All layers must cover the timeline from `0.0`. If the audio begins with silence, state-based layers (Sections/Chords) must prepend a "silence" or "ambient_opening" state. Frame-based layers (FFT/Energy) must include zero-value frames from `0.0`.
 - Beat and bar alignment come from the canonical EPIC 1.2 timing grid.
 - Schemas must be versioned.
 - Reference files are for validation only, not fallback generation.

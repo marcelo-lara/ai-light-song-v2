@@ -164,3 +164,17 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 ### Session 7
 
 - Work ISS-006.
+
+### ISS-008 - Missing zero-start in section segmentation
+
+- Status: `pending`
+- Scope: `section_segmentation/sections.json` for all songs (specifically observed in `ayuni`)
+- Evidence:
+  - `sections.json` for `ayuni` begins after `0.0`, despite `fft_bands.json` showing active spectral energy (sub-band kicks) from the start.
+  - Algorithmic novelty detection is likely missing the initial "state" as a "boundary."
+- Validation target:
+  - Ensure the first section of every song starts at exactly `0.0`.
+- Success condition:
+  - The section segmentation post-processor forces the first section start to `0.0` and snaps it to the beat grid.
+- Notes:
+  - This is a constitutional requirement for "Determinism" and "Clarity."
