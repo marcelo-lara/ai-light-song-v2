@@ -25,7 +25,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - Keep `src/shared/` or similarly named common folders limited to truly cross-cutting utilities, schemas, or infrastructure code.
 - Do not add silent fallbacks or substitute inference algorithms when a story specifies a primary dependency. Fail explicitly and document the failure mode.
 - Remove deprecated helpers, dead code, and compatibility shims rather than preserving them by default.
-- Update the relevant docs in the same change whenever contracts, artifact paths, runtime commands, or validation behavior change.
+- **Synchronization Rule:** Update the relevant docs and Story files in the same change whenever implementation details, contracts, artifact paths, or validation behavior change. The Story is the implementation's reflection.
 
 ### Global data rules
 
@@ -188,6 +188,7 @@ The expected high-level artifact dependency chain is:
 
 ## Required Supporting Documents
 
+- `docs/constitution.md`: high-level project values, coding standards, and architectural principles.
 - `docs/layer_manifest.md`: layer-by-layer artifact contract.
 - `docs/lighting_score_template.md`: stable lighting-score structure.
 - `docs/docker_development.md`: container runtime and validation contract.
