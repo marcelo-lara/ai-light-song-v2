@@ -1,0 +1,15 @@
+export const laneDefinitions = [
+  { id: "waveform", label: "Waveform Anchor", description: "Browser-decoded waveform or beat pulse fallback", type: "dynamic" },
+  { id: "fftBands", label: "FFT Bands", description: "low-to-high spectral bands from the source mix", type: "dynamic" },
+  { id: "rmsLoudness", label: "RMS Loudness", description: "mix + stem RMS loudness sampled every 10 ms", type: "dynamic" },
+  { id: "loudnessEnvelope", label: "Loudness Envelope", description: "mix + stem loudness envelope in 200 ms windows", type: "dynamic" },
+  { id: "humanHints", label: "Human Hints", description: "Reference windows from human_hints", type: "sparse" },
+  { id: "sections", label: "Sections", description: "Section windows from artifact-first segmentation", type: "sparse" },
+  { id: "chords", label: "Chord Regions", description: "Layer A harmonic chord windows", type: "sparse" },
+  { id: "patterns", label: "Pattern Occurrences", description: "Repeated harmonic pattern windows", type: "sparse" },
+  { id: "machineEvents", label: "Machine Events", description: "Rule and machine event windows", type: "sparse" },
+  { id: "drums", label: "Drum Density", description: "Kick, snare, and hat activity from artifact drum events", type: "dynamic" },
+  { id: "phrases", label: "Symbolic Phrases", description: "Phrase windows grouped by phrase_group_id from the symbolic layer", type: "sparse" },
+  { id: "energy", label: "Energy Profile", description: "Beat-aligned energy with accent candidates", type: "dynamic" },
+  { id: "validation", label: "Regression Overlay", description: "Beat drift and exported-event comparison overlays", type: "dynamic" },
+];

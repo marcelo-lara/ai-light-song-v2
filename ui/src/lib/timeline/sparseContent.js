@@ -1,0 +1,13 @@
+import { formatRange, roundNumber } from "../utils.js";
+
+export function buildSparseLaneContent(laneId, timeline) {
+  switch (laneId) {
+    case "humanHints": return timeline.humanHints.map((hint) => ({ ...hint, laneId, laneLabel: "Human Hints", caption: `${formatRange(hint.start_s, hint.end_s)}${hint.lighting_hint ? ` · ${hint.lighting_hint}` : ""}`, detail: hint.id, summary: hint.summary || "Reference hint window from human annotation." }));
+    case "sections": return timeline.sections.map((section) => ({ ...section, laneId, laneLabel: "Sections", caption: `${formatRange(section.start_s, section.end_s)} · conf ${roundNumber(section.confidence, 2)}`, summary: section.description || "Section navigation stays browser-local and updates only the shared playback cursor." }));
+    case "phrases": return timeline.phrases.map((phrase) => ({ ...phrase, laneId, laneLabel: "Symbolic Phrases", label: phrase.group_id || phrase.label, caption: `${formatRange(phrase.start_s, phrase.end_s)} · ${phrase.label}`, detail: phrase.group_id || phrase.id, summary: `Phrase window ${phrase.label} from the symbolic layer${phrase.group_id ? ` in ${phrase.group_id}.` : "."}` }));
+    case "chords": return timeline.chords.map((chord) => ({ ...chord, laneId, laneLabel: "Chord Regions", caption: `${formatRange(chord.start_s, chord.end_s)} · conf ${roundNumber(chord.confidence, 2)}` }));
+    case "patterns": return timeline.patterns.map((pattern) => ({ ...pattern, laneId, laneLabel: "Pattern Occurrences", label: `Pattern ${pattern.label}`, caption: `${formatRange(pattern.start_s, pattern.end_s)} · bars ${pattern.start_bar}-${pattern.end_bar}`, reference: pattern.pattern_id, detail: pattern.bar_sequence || pattern.sequence || `bars ${pattern.start_bar}-${pattern.end_bar}`, summary: `Occurrence ${pattern.occurrence_index} of ${pattern.occurrence_count} for ${pattern.pattern_id} spans bars ${pattern.start_bar}-${pattern.end_bar}${pattern.sequence ? ` with progression ${pattern.sequence}.` : "."}` }));
+    case "machineEvents": return timeline.machineEvents.map((event) => ({ id: event.id, laneId, laneLabel: "Machine Events", label: String(event.type), start_s: Number(event.start_time), end_s: Number(event.end_time), caption: `${formatRange(event.start_time, event.end_time)} · conf ${roundNumber(event.confidence, 2)}`, detail: event.section_id || event.created_by || "machine", summary: event.evidence?.summary || event.notes || "Machine event window" }));
+    default: return [];
+  }
+}
