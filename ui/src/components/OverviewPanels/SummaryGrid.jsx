@@ -5,7 +5,7 @@ export default function SummaryGrid({ timeline }) {
 
   const cards = [
     ["Chord Regions", timeline.chords.length],
-    ["Phrase Windows", timeline.phrases.length],
+    ["Symbolic Phrases", timeline.phrases.length],
     ["Pattern Occurrences", timeline.patterns.length],
     ["Machine Events", timeline.machineEvents.length],
     ["Drum Events", timeline.drums.length],

@@ -36,7 +36,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-001 - Beat and boundary alignment drift
 
-- Status: `pending`
+- Status: `solved`
 - Scope: beat timestamps, section boundaries, and event anchors for `What a Feeling - Courtney Storm`
 - Evidence:
   - `data/artifacts/What a Feeling - Courtney Storm/validation/phase_1_report.json` reports beat match ratio near 0.30.
@@ -69,7 +69,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-003 - Context-aware section semantics
 
-- Status: `pending`
+- Status: `solved`
 - Scope: section labeling behavior for `What a Feeling - Courtney Storm`
 - Evidence:
   - Current sections are useful as lighting-energy summaries, but they do not express the richer context described in the human hints.
@@ -101,7 +101,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-005 - Symbolic phrasing and alignment gaps
 
-- Status: `pending`
+- Status: `solved`
 - Scope: `layer_b_symbolic.json` for `What a Feeling - Courtney Storm`
 - Evidence:
   - Human hints describe long vocal and arpeggiated phrases that are only partially reflected in the current symbolic artifact.
@@ -113,7 +113,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-006 - Pattern granularity mismatch
 
-- Status: `pending`
+- Status: `solved`
 - Scope: `layer_d_patterns.json` and pattern mining outputs for `What a Feeling - Courtney Storm`
 - Evidence:
   - Current pattern outputs emphasize longer loops while the human hints repeatedly describe one-bar and two-bar behaviors.
@@ -125,7 +125,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ### ISS-007 - Chord inference model quality after canonical fallback
 
-- Status: `pending`
+- Status: `solved`
 - Scope: inferred harmonic quality for `What a Feeling - Courtney Storm` after the canonical fallback contract is in place
 - Evidence:
   - The canonical harmonic output is now corrected operationally through explicit Moises promotion, but the preserved inferred harmonic layer still mismatches the reference strongly enough to fail the stricter chord gate.
@@ -164,3 +164,45 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 ### Session 7
 
 - Work ISS-006.
+
+### ISS-008 - Missing zero-start in section segmentation
+
+- Status: `solved`
+- Scope: `section_segmentation/sections.json` for all songs (specifically observed in `ayuni`)
+- Evidence:
+  - `sections.json` for `ayuni` begins after `0.0`, despite `fft_bands.json` showing active spectral energy (sub-band kicks) from the start.
+  - Algorithmic novelty detection is likely missing the initial "state" as a "boundary."
+- Validation target:
+  - Ensure the first section of every song starts at exactly `0.0`.
+- Success condition:
+  - The section segmentation post-processor forces the first section start to `0.0` and snaps it to the beat grid.
+
+### ISS-009 - Section Boundary Latency (Priority to Onsets)
+
+- Status: `solved`
+- Scope: `Best Friend - Sofi Tukker` (Epic 4.2)
+- Evidence: 
+  - `essentia/fft_bands.json` shows sub-band kicks at 19.0s.
+  - `sections.json` places the `percussion_break` at 19.6s (snapping to grid), missing the physical 19.0s kick.
+- Validation target:
+  - Section boundaries must use the exact 19.0s onset timestamp.
+- Success condition:
+  - The 19.0s kick is the authoritative boundary, overriding the 19.6s beat grid anchor.
+
+### ISS-010 - Missing Micro-Structure (Breaks and Pockets)
+
+- Status: `solved`
+- Scope: `Best Friend - Sofi Tukker` (Epic 4.2 / Epic 5)
+- Evidence:
+  - A 1-bar vocal gap (no drums) exists from 37.8s to 40.2s.
+  - This window is currently ignored by the segmenter, merging it into the surrounding high-energy section.
+  - **Clap Break:** 56.6s to 106.1s (near `contrast_bridge`) is not identified as a distinct structural/rhythmic shift.
+  - **Percussion Break:** A distinct break starting at 115.5s is missing from the `sections.json` boundaries.
+- Validation target:
+  - Enable sensitivity for sub-phrase energy/percussion shifts (1-bar to 4-bar pockets).
+- Success condition:
+  - The windows at 37.8s, 56.6s, and 115.5s are identified as distinct structural states (e.g., `breath_space`, `percussion_break`) or high-confidence Events.
+- Notes:
+  - Lighting requires these "blackout" or "contrast" windows to be explicitly identified, even if they are shorter than a traditional musical "section."
+- Notes:
+  - This is a constitutional requirement for "Determinism" and "Clarity."

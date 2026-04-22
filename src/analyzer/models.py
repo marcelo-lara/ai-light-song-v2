@@ -105,3 +105,4 @@ class SectionWindow:
     label: str | None
     confidence: float
     section_character: str | None = None
+    onset_anchored: bool = False

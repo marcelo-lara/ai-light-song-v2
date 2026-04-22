@@ -1,5 +1,7 @@
 import { useEffect } from "preact/hooks";
 
+const DRAG_CLICK_SUPPRESS_MS = 120;
+
 export function useTimelineDragPan({ dragStateRef, scrollerRef, suppressClickRef }) {
   useEffect(() => {
     function handleWindowMouseMove(event) {
@@ -25,7 +27,7 @@ export function useTimelineDragPan({ dragStateRef, scrollerRef, suppressClickRef
         return;
       }
       if (dragState.moved) {
-        suppressClickRef.current = true;
+        suppressClickRef.current = Date.now() + DRAG_CLICK_SUPPRESS_MS;
       }
       Object.assign(dragState, { active: false, startClientX: 0, startScrollLeft: 0, moved: false });
       scrollerRef.current?.classList.remove("is-dragging");

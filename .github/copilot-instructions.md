@@ -2,17 +2,18 @@
 
 ## Runtime and Validation
 - Treat Docker and Compose as the authoritative runtime for this repository.
-- Run implementation and validation inside the container by default.
+- Always verify implementation, analyzer runs, and UI changes inside the appropriate container services (`app` or `ui`).
 - If Python must run outside Docker for local-only work, use the `ai-light` pyenv environment. Do not create other local Python environments.
 - Do not add fallbacks for behavior that fails in the container. If it does not work in Docker, treat it as broken.
 - Prefer GPU-aware execution paths when the container exposes NVIDIA hardware, but do not hardcode behavior to a single GPU model.
 
 ## Code and Design Policy
+- ALWAYS consult the `docs/` folder, specifically the `Implementation_Guide.md` and the relevant Story files, before proposing or implementing changes.
 - Remove deprecated helpers, dead code, and compatibility shims.
 - Prefer correctness and clarity over backward compatibility in unfinished internal contracts.
 - No substitute inference algorithm when a story names a primary dependency. Do not implement a custom inference algorithm when a well-known one is named in the story. Fail gracefully if the story's named dependencies cannot be used.
 - Keep public behavior explicit. Do not hide important behavior behind silent fallbacks.
-- Update repository documentation when contracts, artifact layouts, commands, or validation behavior change.
+- ALWAYS update repository documentation and the involved Story files to reflect implementation changes, refinements, or corrections.
 - Document current status only. Do not describe repo behavior as "new" or "old" in durable docs.
 
 ## Artifact and Validation Rules

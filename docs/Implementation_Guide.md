@@ -15,7 +15,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - `data/songs/`: source `.mp3` files for analysis.
 - `data/stems/`: temporary stem and `.wav` outputs.
 - `data/artifacts/`: intermediate artifacts such as beats, chords, sections, layer outputs, merged layer files, and validation notes.
-- `data/reference/`: validation-only reference data used to evaluate model quality. It must never be copied into generated outputs.
+- `data/reference/`: validation and curated reference data used to evaluate model quality. It must never be copied into generated outputs.
 - `data/output/`: stable UI-facing outputs. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 - `docs/`: implementation contracts, schemas, and developer guidance.
 
@@ -25,20 +25,21 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - Keep `src/shared/` or similarly named common folders limited to truly cross-cutting utilities, schemas, or infrastructure code.
 - Do not add silent fallbacks or substitute inference algorithms when a story specifies a primary dependency. Fail explicitly and document the failure mode.
 - Remove deprecated helpers, dead code, and compatibility shims rather than preserving them by default.
-- Update the relevant docs in the same change whenever contracts, artifact paths, runtime commands, or validation behavior change.
+- **Synchronization Rule:** Update the relevant docs and Story files in the same change whenever implementation details, contracts, artifact paths, or validation behavior change. The Story is the implementation's reflection.
 
 ### Global data rules
 
 - Generated files must include explicit `generated_from` metadata when practical.
-- The term `reference` is reserved for `/data/reference/` and human-validated, read-only source-of-truth material only.
+- The term `reference` is reserved for `/data/reference/` and human-validated source-of-truth material. Story 7.8 allows explicit editing only for `data/reference/<Song - Artist>/human/human_hints.json`.
 - Generated files inside `data/artifacts/` must use producer-scoped namespaces when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
 - Time values are expressed in seconds.
 - Bars are 1-indexed.
+- **Timeline Totality:** All layers must cover the timeline from `0.0`. For structural boundaries (Sections/Events), prioritize the **Physical Onset** (transient) over the beat grid to ensure zero-latency synchronization.
 - Beat and bar alignment come from the canonical EPIC 1.2 timing grid.
 - Schemas must be versioned.
 - Reference files are for validation only, not fallback generation.
 - Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
-- The internal debugger may read directly from `data/artifacts/<Song - Artist>/` and selected `data/output/<Song - Artist>/` helper files, but it is read-only and must not write files into either tree.
+- The internal debugger may read directly from `data/artifacts/<Song - Artist>/` and selected `data/output/<Song - Artist>/` helper files. It must not write files into either tree. The only persisted debugger edit path is `data/reference/<Song - Artist>/human/human_hints.json` on explicit save.
 
 ## Containerized Development Rule
 
@@ -48,7 +49,7 @@ All development, validation, and sample-song execution must run inside the proje
 - Do not depend on host-installed Python packages.
 - Validate tool imports and sample-song runs inside the container.
 - Use `./analyze` or `python -m analyzer` as the supported container entry points.
-- The analyzer runtime is the Compose `app` service. The internal debugger UI runs as a separate Compose `ui` service backed by the `/ui` folder and read-only mounted generated data.
+- The analyzer runtime is the Compose `app` service. The internal debugger UI runs as a separate Compose `ui` service backed by the `/ui` folder, with generated data mounted read-only and only `data/reference/<Song - Artist>/human/human_hints.json` writable through the Story 7.8 helper UI flow.
 - Batch runs via `--all-songs` must isolate each song in a subprocess because the long-lived parent process is not treated as a stable execution model for the native analysis stack.
 - Demucs model weights must resolve through the repo-local cache under `models/demucs/` rather than opportunistic mid-run downloads.
 
@@ -154,9 +155,9 @@ Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/
 
 ## EPIC 7: Internal Artifact Debugger and Regression Viewer
 
-Goal: provide a read-only web debugger for inspecting generated inferences, timing alignment, and validation surfaces without changing the stable downstream output contract.
+Goal: provide an internal web debugger for inspecting generated inferences, timing alignment, and validation surfaces without changing the stable downstream output contract. Generated artifacts and outputs remain read-only; Story 7.8 adds an explicit reference-human-hints editing surface.
 
-The debugger is an internal engineering and review tool. Its primary inspection surface is `data/artifacts/<Song - Artist>/`. It may also read compact helper projections from `data/output/<Song - Artist>/`, but it must not write debugger state or exported files into either tree.
+The debugger is an internal engineering and review tool. Its primary inspection surface is `data/artifacts/<Song - Artist>/`. It may also read compact helper projections from `data/output/<Song - Artist>/`, but it must not write debugger state or exported files into either tree. The only allowed persisted edit is `data/reference/<Song - Artist>/human/human_hints.json`.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
@@ -167,8 +168,9 @@ The debugger is an internal engineering and review tool. Its primary inspection 
 | 7.5 | High-density lanes | drum, density, and energy renderers | `docs/7.5.high_density_lanes_story.md` |
 | 7.6 | Semantic zoom and performance guardrails | clustering, zoom floors, and viewport-limited rendering | `docs/7.6.semantic_zoom_and_performance_story.md` |
 | 7.7 | Regression validation overlay | beat-grid, drift, and validation comparison overlays | `docs/7.7.regression_validation_overlay_story.md` |
+| 7.8 | Human hint editor | explicit editing of reference human hints in the helper UI | `docs/7.8.human_hint_editor_story.md` |
 
-Representative implementation assets: `/ui/`, the Compose `ui` service, and read-only debugger access to `layer_a_harmonic.json`, `layer_b_symbolic.json`, `layer_c_energy.json`, `layer_d_patterns.json`, `event_inference/*.json`, `validation/phase_1_report.json`, and `music_feature_layers.json`.
+Representative implementation assets: `/ui/`, the Compose `ui` service, debugger access to `layer_a_harmonic.json`, `layer_b_symbolic.json`, `layer_c_energy.json`, `layer_d_patterns.json`, `event_inference/*.json`, `validation/phase_1_report.json`, `music_feature_layers.json`, and the editable reference file `data/reference/<Song - Artist>/human/human_hints.json`.
 
 ## Canonical Artifact Flow
 
@@ -187,6 +189,7 @@ The expected high-level artifact dependency chain is:
 
 ## Required Supporting Documents
 
+- `docs/constitution.md`: high-level project values, coding standards, and architectural principles.
 - `docs/layer_manifest.md`: layer-by-layer artifact contract.
 - `docs/lighting_score_template.md`: stable lighting-score structure.
 - `docs/docker_development.md`: container runtime and validation contract.

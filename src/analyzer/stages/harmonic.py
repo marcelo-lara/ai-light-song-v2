@@ -284,6 +284,82 @@ def _merge_short_chord_runs(labels: list[str], strengths: list[float], min_run_b
     return merged_labels, merged_strengths
 
 
+def _apply_viterbi_smoothing(
+    labels: list[str],
+    strengths: list[float],
+    key_label: str,
+    key_scale: str,
+    key_confidence: float,
+) -> tuple[list[str], list[float]]:
+    """Smooth beat-level chord labels using Viterbi decoding over a 24-chord state space.
+
+    Applied only when key_confidence >= 0.5 so the transition prior is trustworthy.
+    States: 12 major + 12 minor chords (chromatic).
+    Transition: diatonic transitions are boosted; chromatic jumps are penalized.
+    Emission: agreement with existing label = high likelihood; disagreement = low.
+    """
+    if key_confidence < 0.5 or len(labels) < 2:
+        return labels, strengths
+
+    # Build 24-state chord alphabet
+    states: list[str] = []
+    for note in NOTE_NAMES:
+        states.append(note)          # major
+        states.append(f"{note}m")    # minor
+    state_index: dict[str, int] = {state: i for i, state in enumerate(states)}
+    n_states = len(states)
+
+    # Diatonic chord set for current key (for transition boost)
+    diatonic_set = set(_diatonic_chord_map(key_label, key_scale).values())
+
+    # Build log transition matrix: penalize non-diatonic jumps
+    LOG_SELF = np.log(0.70)          # stay probability
+    LOG_DIATONIC = np.log(0.25 / max(len(diatonic_set), 1))
+    LOG_CHROMATIC = np.log(0.05 / max(n_states - len(diatonic_set) - 1, 1))
+    LOG_FLOOR = -30.0
+
+    log_trans = np.full((n_states, n_states), LOG_FLOOR)
+    for src in range(n_states):
+        log_trans[src, src] = LOG_SELF
+        remaining = 1.0 - 0.70
+        n_diatonic = 0
+        for dst, state in enumerate(states):
+            if dst != src and state in diatonic_set:
+                log_trans[src, dst] = LOG_DIATONIC
+                n_diatonic += 1
+        for dst, state in enumerate(states):
+            if dst != src and state not in diatonic_set:
+                log_trans[src, dst] = LOG_CHROMATIC
+
+    # Viterbi decode
+    T = len(labels)
+    log_emit = np.full((T, n_states), np.log(0.05 / (n_states - 1)))
+    for t, label in enumerate(labels):
+        if label in state_index:
+            log_emit[t, state_index[label]] = np.log(0.95)
+
+    viterbi = np.full((T, n_states), -np.inf)
+    backpointer = np.zeros((T, n_states), dtype=int)
+    viterbi[0] = log_emit[0]  # uniform prior
+
+    for t in range(1, T):
+        for s in range(n_states):
+            candidates = viterbi[t - 1] + log_trans[:, s]
+            best_prev = int(np.argmax(candidates))
+            viterbi[t, s] = candidates[best_prev] + log_emit[t, s]
+            backpointer[t, s] = best_prev
+
+    # Backtrack
+    path: list[int] = [int(np.argmax(viterbi[T - 1]))]
+    for t in range(T - 1, 0, -1):
+        path.append(backpointer[t, path[-1]])
+    path.reverse()
+
+    smoothed_labels = [states[s] for s in path]
+    # Preserve original strengths but update label
+    return smoothed_labels, strengths
+
+
 def _decode_chords_by_beat(
     frame_vectors: list[np.ndarray],
     frame_times: list[float],
@@ -564,6 +640,13 @@ def extract_hpcp_and_chords(paths: SongPaths, stems: dict[str, str], timing: dic
     key_label, key_scale, key_strength, _ = Key(profileType="edma", pcpSize=12)(aggregated_vectors.mean(axis=0))
     normalized_key_label = _normalize_note_spelling(key_label)
     normalized_labels, normalized_strengths = _decode_chords_by_beat(frame_vectors, frame_times, beat_times)
+    normalized_labels, normalized_strengths = _apply_viterbi_smoothing(
+        normalized_labels,
+        normalized_strengths,
+        normalized_key_label,
+        key_scale,
+        float(key_strength),
+    )
 
     chord_events: list[ChordEvent] = []
     chord_probabilities = []

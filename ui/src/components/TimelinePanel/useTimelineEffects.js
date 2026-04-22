@@ -47,7 +47,7 @@ export function useTimelineEffects({
     updateNowMarkers(rowsElement, timeline, zoom, currentTime);
     onVisibleWindowChange(`Visible ${formatRange(visibleRange.start, visibleRange.end)}`, formatRange(visibleRange.start, visibleRange.end));
     return undefined;
-  }, [timeline, laneVisibility, laneCollapsed, zoom, waveformPeaks, onVisibleWindowChange, currentTime, rowsRef, scrollerRef]);
+  }, [timeline, laneVisibility, laneCollapsed, zoom, waveformPeaks, onVisibleWindowChange, rowsRef, scrollerRef]);
 
   useEffect(() => {
     if (!rowsRef.current || !timeline) {

@@ -1,7 +1,7 @@
 import { buildScrubSelection, findSelectionAtTrackPosition, getVisibleRange, renderTrackLane } from "../../../lib/timeline.js";
 import { formatRange } from "../../../lib/utils.js";
 
-const scrollRenderedLaneIds = ["waveform", "drums", "density", "energy", "validation"];
+const scrollRenderedLaneIds = ["waveform", "drums", "energy", "validation", "rmsLoudness", "loudnessEnvelope"];
 
 export function useTimelinePointerHandlers(context) {
   const { timeline, zoom, onSeek, onOpenSelectionOverlay, onCloseSelectionOverlay, onToggleLaneCollapsed, laneVisibility, laneCollapsed, waveformPeaks, onVisibleWindowChange, scrollerRef, rowsRef, viewportFrameRef, dragStateRef, suppressClickRef } = context;
@@ -15,10 +15,10 @@ export function useTimelinePointerHandlers(context) {
       scrollerRef.current.classList.add("is-dragging");
     },
     handleTimelineClick(event) {
-      if (suppressClickRef.current) {
-        suppressClickRef.current = false;
+      if (Number(suppressClickRef.current) > Date.now()) {
         return;
       }
+      suppressClickRef.current = 0;
       if (!timeline) {
         return;
       }
@@ -37,6 +37,10 @@ export function useTimelinePointerHandlers(context) {
       const regionSelection = findSelectionAtTrackPosition(track, absoluteX, offsetY);
       if (regionSelection) {
         onSeek(regionSelection.start_s, regionSelection);
+        if (regionSelection.laneLabel === "Human Hints") {
+          onCloseSelectionOverlay?.();
+          return;
+        }
         onOpenSelectionOverlay?.(regionSelection, { x: event.clientX, y: event.clientY });
         return;
       }

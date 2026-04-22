@@ -51,6 +51,24 @@ def _level_label(value: float, low_threshold: float, high_threshold: float) -> s
     return "medium"
 
 
+def _extract_onset_peaks(frames: list) -> list[dict]:
+    """Return frame-level onset peaks: local maxima above the 90th-percentile strength threshold."""
+    if len(frames) < 3:
+        return []
+    strengths = [float(frame.onset_strength) for frame in frames]
+    threshold = float(np.quantile(np.array(strengths, dtype=float), 0.90))
+    peaks: list[dict] = []
+    for index in range(1, len(frames) - 1):
+        strength = strengths[index]
+        if (
+            strength >= threshold
+            and strength >= strengths[index - 1]
+            and strength > strengths[index + 1]
+        ):
+            peaks.append({"time_s": round(float(frames[index].time), 6), "strength": round(strength, 6)})
+    return peaks
+
+
 def extract_energy_features(paths: SongPaths, timing: dict) -> dict:
     try:
         from essentia.standard import FrameGenerator, MonoLoader, Spectrum, Windowing
@@ -148,6 +166,7 @@ def extract_energy_features(paths: SongPaths, timing: dict) -> dict:
         ),
         "features": frames,
         "beat_features": beat_rows,
+        "onset_peaks": _extract_onset_peaks(frames),
         "metadata": {
             "frame_rate": round(sample_rate / hop_size, 6),
             "total_frames": len(frames),

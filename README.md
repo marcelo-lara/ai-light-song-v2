@@ -33,6 +33,8 @@ The repository structure is part of the implementation contract.
 
 ## Hard Rules
 
+- **Constitution:** All development must adhere to the laws defined in `docs/constitution.md`.
+- **Living Documentation:** No task is "done" until the corresponding Story files and documentation are updated to reflect the final implementation.
 - Reference data must never be copied into generated outputs as a fallback.
 - Reference files are optional. The pipeline must infer outputs from the documented analysis stages first, then compare against reference data only when those files are available.
 - The term `reference` is reserved for `/data/reference/` only.
@@ -73,6 +75,7 @@ The intended contract defines these primary artifacts:
 
 ## Documentation Map
 
+- `docs/constitution.md`: The architectural "North Star," coding standards, and project values.
 - `docs/Implementation_Guide.md`: canonical hub for the full pipeline and repository contracts.
 - `docs/1.3.fft_band_extraction_story.md`: seven-band FFT artifact contract.
 - `docs/phase_1_validation_cli.md`: Phase 1 analyzer CLI specification, command reference, and validation report format.
@@ -134,6 +137,7 @@ The repository is Docker-first.
 - The current local development setup uses an `NVIDIA GeForce GTX 1650`, and the container workflow is configured to take advantage of that GPU.
 - Demucs checkpoints are cached explicitly under `models/demucs/` so analyzer runs do not rely on mid-run `torch.hub` downloads.
 - Validate all tooling and sample-song runs inside the container.
+- **Always Test in Container:** All analysis logic and UI behaviors must be verified inside their respective Docker services (`app` or `ui`).
 - Do not rely on host-installed Python packages or audio tooling.
 - Treat the Docker image as the authoritative developer runtime.
 

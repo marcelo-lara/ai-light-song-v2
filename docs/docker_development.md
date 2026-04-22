@@ -81,7 +81,7 @@ Current local container layout:
 - model assets: `/app/models`
 - Demucs cache: `/app/models/demucs`
 - Compose service names: `app` and `ui`
-- UI assets: `/usr/share/nginx/html` inside the `ui` container
+- UI working tree: `/srv/ui` inside the Compose `ui` container
 
 Expected working directory:
 
@@ -113,7 +113,7 @@ Run the debugger service:
 docker compose up ui
 ```
 
-The debugger is served at `http://localhost:8080` and mounts `./data` read-only. It is an internal visualization tool for `data/artifacts/<Song - Artist>/` and selected compact helper files from `data/output/<Song - Artist>/`.
+The debugger is served at `http://localhost:8080`. The Compose `ui` service mounts `./data` read-only and overlays `./data/reference:/data/reference` for the Story 7.8 human-hint editor, which may persist only `data/reference/<Song - Artist>/human/human_hints.json` on explicit save.
 
 Run the first-phase validation entry point:
 
@@ -136,7 +136,7 @@ The current batch implementation isolates each song run in a subprocess so the l
 
 `./analyze` is the simplest container entry point. `python -m analyzer` is the equivalent module form.
 
-The `ui` service is not an analyzer runtime. It serves the debugger assets from `/ui/` and must not write any debugger state into `data/artifacts/` or `data/output/`.
+The `ui` service is not an analyzer runtime. It serves the debugger assets from the Vite development server and must not write any debugger state into `data/artifacts/` or `data/output/`. The only allowed write path is `data/reference/<Song - Artist>/human/human_hints.json` for explicit human-hint saves.
 
 ## Required Validation Inside Container
 

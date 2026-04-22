@@ -4,12 +4,13 @@
 
 This file documents the current UI implementation for LLM-assisted development.
 
-The UI under `ui/` is an internal, read-only visual debugger for inspecting inference outputs under `data/artifacts/<Song - Artist>/`. It is not the production consumer UI.
+The UI under `ui/` is an internal visual debugger for inspecting inference outputs under `data/artifacts/<Song - Artist>/`. It is not the production consumer UI.
 
 ## Non-Negotiable Rules
 
 - Do not write files into `data/artifacts/`.
 - Do not write files into `data/output/`.
+- Only Story 7.8 may write `data/reference/<Song - Artist>/human/human_hints.json`, and only on explicit save.
 - Do not turn this UI into a production-facing consumer experience.
 - Treat `data/artifacts/<Song - Artist>/` as the primary source of truth.
 - Treat `data/output/<Song - Artist>/` as secondary helper context only.
@@ -21,7 +22,7 @@ The UI under `ui/` is an internal, read-only visual debugger for inspecting infe
 - Compose runtime: Vite dev server with live reload for `ui/src` edits
 - Production runtime: Nginx serving the built bundle from the Dockerfile production stage
 - Port: `8080`
-- Data mount: `./data:/data:ro`
+- Data mount: `./data:/data:ro` plus `./data/reference:/data/reference`
 - Compose service: `ui`
 
 Start the UI:
@@ -98,7 +99,7 @@ The files `ui/src/lib/config.js`, `ui/src/lib/data.js`, and `ui/src/lib/timeline
 
 ## What Exists Today
 
-The current implementation is a read-only Epic 7 debugger with these features:
+The current implementation is an Epic 7 debugger with these features:
 
 - automatic discovery of song directories by reading `/data/artifacts/`
 - automatic loading of the first discovered song when there is no `?song=` query parameter
@@ -119,6 +120,13 @@ The current implementation is a read-only Epic 7 debugger with these features:
 - lane-item detail hovercards opened directly from clicked timeline regions
 - raw JSON inspector for any successfully loaded file
 - explicit missing-core-artifacts warning card for partial song folders
+- right-side human hint editor that opens from timeline human-hint selections or explicit new-hint actions
+- selected-hint-only sidebar editing for existing human hints, with timeline selection as the only existing-hint selection path
+- left-side `Set` actions for start and end time that copy the current timeline cursor into the matching field
+- human hints use the sidebar as their only detail surface instead of the standard selection popup
+- the human-hint sidebar remains open across focus changes and closes only through explicit save, delete, or cancel actions
+- the human-hint editor stays compact for the sidebar: smaller text, no nested cards, and no editor paddings greater than `0.5em`
+- explicit save flow that updates only `data/reference/<Song - Artist>/human/human_hints.json`
 
 ## Primary Data Sources
 

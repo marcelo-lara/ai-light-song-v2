@@ -23,6 +23,7 @@ SOURCE_CONFIGS = {
         "minimum_frequency": 65.0,
         "maximum_frequency": None,
         "promotion_policy": "core",
+        "beat_alignment_tolerance_s": 0.30,
     },
     "bass": {
         "path_key": "bass",
@@ -32,6 +33,7 @@ SOURCE_CONFIGS = {
         "minimum_frequency": 32.7,
         "maximum_frequency": 330.0,
         "promotion_policy": "core",
+        "beat_alignment_tolerance_s": 0.20,
     },
     "vocals": {
         "path_key": "vocals",
@@ -41,6 +43,7 @@ SOURCE_CONFIGS = {
         "minimum_frequency": 98.0,
         "maximum_frequency": 1400.0,
         "promotion_policy": "candidate",
+        "beat_alignment_tolerance_s": 0.30,
     },
     "drums": {
         "path_key": "drums",
@@ -50,6 +53,7 @@ SOURCE_CONFIGS = {
         "minimum_frequency": 36.0,
         "maximum_frequency": 2000.0,
         "promotion_policy": "auxiliary",
+        "beat_alignment_tolerance_s": 0.20,
     },
     "full_mix": {
         "path_key": "full_mix",
@@ -59,6 +63,7 @@ SOURCE_CONFIGS = {
         "minimum_frequency": 55.0,
         "maximum_frequency": None,
         "promotion_policy": "candidate",
+        "beat_alignment_tolerance_s": 0.20,
     },
 }
 
@@ -136,7 +141,7 @@ def _section_for_time(time_s: float, sections: list[dict]) -> dict | None:
     return None
 
 
-def _align_note_events(notes: list[dict], timing: dict, sections_payload: dict) -> list[dict]:
+def _align_note_events(notes: list[dict], timing: dict, sections_payload: dict, *, tolerance_seconds: float = 0.2) -> list[dict]:
     beat_points = timing["beats"]
     beat_times = [float(beat["time"]) for beat in beat_points]
     bars = timing["bars"]
@@ -144,7 +149,7 @@ def _align_note_events(notes: list[dict], timing: dict, sections_payload: dict) 
 
     aligned_notes = []
     for note in notes:
-        aligned_beat_index, beat_delta = _nearest_beat_alignment(float(note["time"]), beat_times)
+        aligned_beat_index, beat_delta = _nearest_beat_alignment(float(note["time"]), beat_times, tolerance_seconds=tolerance_seconds)
         aligned_bar = None
         aligned_beat = None
         aligned_beat_global = None
@@ -753,6 +758,10 @@ def _compute_symbolic_summary(
         "repetition_score": round(float(repetition_score), 6),
         "sustain_ratio": round(float(sustain_ratio), 6),
         "section_count": len(section_summaries),
+        "loosely_aligned_note_count": sum(
+            1 for note in notes
+            if not note.get("alignment_resolved", False) and note.get("beat_time_delta") is not None
+        ),
     }
 
 
@@ -927,7 +936,12 @@ def extract_symbolic_features(paths: SongPaths, stems: dict[str, str], timing: d
             maximum_frequency=config["maximum_frequency"],
         )
         raw_payloads[source_stem] = raw_payload
-        aligned_notes = _align_note_events(raw_payload["notes"], timing, sections_payload)
+        aligned_notes = _align_note_events(
+            raw_payload["notes"],
+            timing,
+            sections_payload,
+            tolerance_seconds=float(config.get("beat_alignment_tolerance_s", 0.2)),
+        )
         aligned_by_source[source_stem] = aligned_notes
         validation_row = _validate_transcription_source(source_stem, aligned_notes)
         validation_row["promotion_policy"] = config["promotion_policy"]

@@ -8,6 +8,72 @@ import {
 import { buildPlaybackSelection } from "./playbackSelection.js";
 import { clamp, formatDuration } from "../lib/utils.js";
 
+function onceEvent(target, eventName, handler, options) {
+  target.addEventListener(eventName, handler, options);
+  return () => target.removeEventListener(eventName, handler, options);
+}
+
+async function ensureAudioMetadata(audioElement) {
+  if (audioElement.readyState >= 1) {
+    return;
+  }
+
+  await new Promise((resolve) => {
+    let timeoutId = 0;
+    const finish = () => {
+      cleanup();
+      resolve();
+    };
+    const removers = [
+      onceEvent(audioElement, "loadedmetadata", finish, { once: true }),
+      onceEvent(audioElement, "error", finish, { once: true }),
+    ];
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      removers.forEach((remove) => remove());
+    };
+    timeoutId = window.setTimeout(finish, 5000);
+    audioElement.load();
+  });
+}
+
+async function ensureAudioSeek(audioElement, targetTime) {
+  const clampedTarget = Math.max(0, Number(targetTime) || 0);
+  if (Math.abs(Number(audioElement.currentTime || 0) - clampedTarget) <= 0.05) {
+    return;
+  }
+
+  await new Promise((resolve) => {
+    let timeoutId = 0;
+    const finish = () => {
+      cleanup();
+      resolve();
+    };
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      removers.forEach((remove) => remove());
+    };
+    const maybeFinish = () => {
+      if (Math.abs(Number(audioElement.currentTime || 0) - clampedTarget) <= 0.05) {
+        finish();
+      }
+    };
+    const removers = [
+      onceEvent(audioElement, "seeked", finish, { once: true }),
+      onceEvent(audioElement, "timeupdate", maybeFinish),
+      onceEvent(audioElement, "error", finish, { once: true }),
+    ];
+    timeoutId = window.setTimeout(finish, 750);
+    try {
+      audioElement.currentTime = clampedTarget;
+    } catch {
+      finish();
+      return;
+    }
+    maybeFinish();
+  });
+}
+
 export function usePlaybackActions({ audioRef, audioDecodeContextRef, timeline, currentTime, setCurrentTime, setIsPlaying, setSelectedRegion }) {
   function seekTo(time, selection = null) {
     const duration = Number(timeline?.duration || audioRef.current?.duration || 0);
@@ -25,16 +91,22 @@ export function usePlaybackActions({ audioRef, audioDecodeContextRef, timeline, 
     if (!audioRef.current?.src) {
       return;
     }
+    const audioElement = audioRef.current;
+    const duration = Number(timeline?.duration || audioElement.duration || currentTime || 0);
+    const clampedTime = clamp(Number(currentTime) || 0, 0, duration);
     const audioDecodeContext = getAudioDecodeContext(audioDecodeContextRef.current);
     audioDecodeContextRef.current = audioDecodeContext;
     if (audioDecodeContext && audioDecodeContext.state === "suspended") {
       await audioDecodeContext.resume();
     }
-    if (audioRef.current.paused) {
-      await audioRef.current.play();
+    if (audioElement.paused) {
+      await ensureAudioMetadata(audioElement);
+      await ensureAudioSeek(audioElement, clampedTime);
+      setCurrentTime(clampedTime);
+      await audioElement.play();
       return;
     }
-    audioRef.current.pause();
+    audioElement.pause();
     setIsPlaying(false);
   }
 

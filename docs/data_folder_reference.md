@@ -8,12 +8,13 @@ Use this as a navigation guide first, then open the referenced files for the act
 
 ## Working Rules
 
-- `data/reference/` is read-only comparison material. Do not treat it as generation input.
+- `data/reference/` is reference and validation material. Do not treat it as generation input.
 - `data/artifacts/` contains generated analysis artifacts and intermediate caches.
 - `data/output/` contains a stable UI-facing output contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 - Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
 - The internal debugger served from `/ui/` primarily reads `data/artifacts/<Song - Artist>/` directly and uses `data/output/<Song - Artist>/` only as supporting context when useful.
 - The debugger is read-only against generated data and must not write files into `data/artifacts/` or `data/output/`.
+- Story 7.8 allows the helper UI to update only `data/reference/<Song - Artist>/human/human_hints.json` on explicit save.
 - `data/fixtures/` contains rig and focus-point context.
 - `data/songs/` contains source audio. `data/stems/` contains stem-separated audio derived from those songs.
 
@@ -84,6 +85,8 @@ data/
       sections.json
   reference/
     <Song - Artist>/
+      human/
+        human_hints.json
       moises/
         chords.json
         lyrics.json
@@ -146,7 +149,7 @@ Lighting rig metadata and point-of-interest targeting data.
 
 ### `data/reference/`
 
-Read-only external comparison material, currently Moises-style chord, segment, and lyric references for validation and review.
+Reference and curated external material, including Moises-style chord, segment, and lyric references for validation and review plus the helper UI human-hints file at `data/reference/<Song - Artist>/human/human_hints.json`.
 
 ## File Reference
 
