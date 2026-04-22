@@ -201,6 +201,12 @@ docker compose run --rm app \
   --all-songs
 ```
 
+Analye all songs in background
+```bash
+mkdir -p logs && nohup docker compose run --rm -T app ./analyze --all-songs --device cuda > "logs/all-songs-$(date +%F_%H-%M-%S).log" 2>&1 < /dev/null & echo $!
+```
+
+
 **Available compare targets:** `beats`, `chords`, `sections`, `energy`, `patterns`, `unified`, `events`
 
 Generated outputs from each run include the canonical artifact set under `data/artifacts/<Song - Artist>/`, Epic 5 event artifacts such as `energy_summary/hints.json`, `event_inference/events.machine.json`, `validation/event_benchmark.json`, stable UI deliverables under `data/output/<Song - Artist>/` (`info.json`, `beats.json`, `hints.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`), and human-review support files under `data/artifacts/<Song - Artist>/validation/`.

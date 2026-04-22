@@ -380,13 +380,28 @@ def generate_machine_events(
     existing_keys = {(round(float(event["start_time"]), 6), round(float(event["end_time"]), 6), str(event["type"])) for event in refined_events}
 
     feature_rows = [dict(row) for row in event_features.get("features", [])]
+    
+    def _is_peak(idx: int, vals: list[float], r: int = 2, is_min: bool = False) -> bool:
+        val = vals[idx]
+        start = max(0, idx - r)
+        end = min(len(vals), idx + r + 1)
+        for i in range(start, end):
+            if i == idx: continue
+            if is_min and vals[i] < val: return False
+            if not is_min and vals[i] > val: return False
+        return True
+
+    densities = [float(row["derived"].get("density_delta", 0.0)) for row in feature_rows]
     layer_remove_index = 1
     layer_add_index = 1
-    for row in feature_rows:
+    
+    for i, row in enumerate(feature_rows):
         energy_delta = float(row["derived"].get("energy_delta", 0.0))
-        density_delta = float(row["derived"].get("density_delta", 0.0))
+        density_delta = densities[i]
         section = section_by_id.get(str(row.get("section_id"))) if row.get("section_id") else None
-        if density_delta <= -0.18 and energy_delta <= -0.08:
+        
+        # Local Minimum (Layer Remove)
+        if density_delta <= -0.18 and energy_delta <= -0.08 and _is_peak(i, densities, r=4, is_min=True):
             key = (round(float(row["start_time"]), 6), round(float(row["end_time"]), 6), "layer_remove")
             if key not in existing_keys:
                 refined_events.append(
@@ -423,7 +438,9 @@ def generate_machine_events(
                 )
                 existing_keys.add(key)
                 layer_remove_index += 1
-        if density_delta >= 0.18 and energy_delta >= 0.05:
+
+        # Local Maximum (Layer Add)
+        if density_delta >= 0.18 and energy_delta >= 0.05 and _is_peak(i, densities, r=4, is_min=False):
             key = (round(float(row["start_time"]), 6), round(float(row["end_time"]), 6), "layer_add")
             if key not in existing_keys:
                 refined_events.append(

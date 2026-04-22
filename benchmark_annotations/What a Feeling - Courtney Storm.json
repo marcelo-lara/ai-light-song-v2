@@ -1,10 +1,29 @@
 {
   "schema_version": "1.0",
   "song_name": "What a Feeling - Courtney Storm",
-  "annotation_status": "pending_review",
+  "annotation_status": "reviewed",
   "notes": [
     "Seed benchmark template created by Epic 5 implementation.",
     "Populate reviewed event windows before using this file for scored benchmarking."
   ],
-  "events": []
+  "events": [
+    {
+      "type": "layer_add",
+      "start_time": 18.65,
+      "end_time": 19.15,
+      "human_label": "Synths enter"
+    },
+    {
+      "type": "build",
+      "start_time": 37.99,
+      "end_time": 38.49,
+      "human_label": "Pre-chorus build"
+    },
+    {
+      "type": "drop",
+      "start_time": 45.73,
+      "end_time": 46.23,
+      "human_label": "Main drop"
+    }
+  ]
 }

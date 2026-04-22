@@ -147,9 +147,81 @@ def generate_rule_candidates(
     sections_payload: dict,
     genre_result: dict | None = None,
 ) -> dict[str, Any]:
-    thresholds = DEFAULT_THRESHOLD_PROFILE
+    import statistics
+    import numpy as np
+    from sklearn.cluster import KMeans
+
     features = [dict(row) for row in event_features.get("features", [])]
     sections = [dict(row) for row in sections_payload.get("sections", [])]
+
+    # K-Means Clustering (Alternative 3) on Beat Features
+    if len(features) > 10:
+        km_data = np.array([
+            [
+                float(r["normalized"]["energy_score"]),
+                float(r["derived"]["bass_activation_score"]),
+                float(r["normalized"]["onset_density"])
+            ] for r in features
+        ])
+        kmeans = KMeans(n_clusters=3, random_state=42, n_init="auto")
+        labels = kmeans.fit_predict(km_data)
+        
+        # Sort cluster IDs by their energy centroid to map Low -> 0, Mid -> 1, High -> 2
+        cluster_energies = {i: kmeans.cluster_centers_[i][0] for i in range(3)}
+        sorted_clusters = sorted(cluster_energies.keys(), key=lambda k: cluster_energies[k])
+        cluster_map = {sorted_clusters[0]: 0, sorted_clusters[1]: 1, sorted_clusters[2]: 2}
+        
+        for i, row in enumerate(features):
+            row["_intensity_cluster"] = cluster_map[labels[i]]
+    else:
+        for row in features:
+            row["_intensity_cluster"] = 2
+
+    def _safe_stat(vals, fn, default=0.0):
+        return fn(vals) if len(vals) > 1 else default
+
+    energy_deltas = [float(r["derived"]["energy_delta"]) for r in features]
+    mean_energy_delta = _safe_stat(energy_deltas, statistics.mean)
+    stdev_energy_delta = _safe_stat(energy_deltas, statistics.stdev)
+
+    tension_means = [float(r["rolling"]["short"]["harmonic_tension_mean"]) for r in features]
+    mean_tension = _safe_stat(tension_means, statistics.mean)
+    stdev_tension = _safe_stat(tension_means, statistics.stdev)
+
+    energy_means = [float(r["rolling"]["short"]["energy_mean"]) for r in features]
+    mean_energy_mean = _safe_stat(energy_means, statistics.mean)
+    stdev_energy_mean = _safe_stat(energy_means, statistics.stdev)
+
+    # Use dynamically calculated statistical thresholds based on track features
+    thresholds = {
+        "name": "dynamic_z_score_v1",
+        "transition": {
+            "build_energy_delta": max(0.04, mean_energy_delta + 1.2 * stdev_energy_delta),
+            "build_tension_mean": max(0.15, mean_tension + 0.8 * stdev_tension),
+            "build_energy_mean": max(0.25, mean_energy_mean + 0.8 * stdev_energy_mean),
+            "breakdown_energy_delta": min(-0.1, mean_energy_delta - 1.2 * stdev_energy_delta),
+            "breakdown_density_delta": -0.15,
+            "drop_energy_delta": max(0.1, mean_energy_delta + 1.8 * stdev_energy_delta),
+            "drop_onset_min": 0.45,
+            "drop_bass_min": 0.25,
+            "drop_accent_min": 0.25,
+            "fake_drop_tension_mean": max(0.20, mean_tension + 1.0 * stdev_tension),
+            "impact_intensity_min": 0.65,
+            "pause_gap_seconds": 0.5,
+            "pause_energy_max": 0.4
+        },
+        "state": {
+            "groove_energy_min": max(0.30, mean_energy_mean + 0.5 * stdev_energy_mean),
+            "groove_bass_min": 0.30,
+            "groove_volatility_max": 0.3,
+            "atmo_energy_max": max(0.1, mean_energy_mean - 0.5 * stdev_energy_mean),
+            "atmo_onset_max": 0.3,
+            "atmo_volatility_max": 0.2,
+            "tension_mean_min": max(0.3, mean_tension + 0.5 * stdev_tension),
+            "no_drop_energy_min": 0.35,
+            "no_drop_energy_max": 0.6
+        }
+    }
     event_counter: defaultdict[str, int] = defaultdict(int)
     events: list[dict[str, Any]] = []
 
@@ -163,6 +235,7 @@ def generate_rule_candidates(
         if float(row["derived"]["energy_delta"]) >= thresholds["transition"]["build_energy_delta"]
         and float(row["rolling"]["short"]["harmonic_tension_mean"]) >= thresholds["transition"]["build_tension_mean"]
         and float(row["rolling"]["short"]["energy_mean"]) >= thresholds["transition"]["build_energy_mean"]
+        and row.get("_intensity_cluster", 2) >= 1  # Alt 3: Must reach Mid or High energy
     ]
     for rows in _merge_anchor_rows(build_anchors):
         section = _section_for_time(float(rows[0]["start_time"]), sections)
@@ -192,6 +265,7 @@ def generate_rule_candidates(
         for row in features
         if float(row["derived"]["energy_delta"]) <= thresholds["transition"]["breakdown_energy_delta"]
         and float(row["derived"]["density_delta"]) <= thresholds["transition"]["breakdown_density_delta"]
+        and row.get("_intensity_cluster", 0) <= 1  # Alt 3: Must drop into Low or Mid
     ]
     for rows in _merge_anchor_rows(breakdown_anchors):
         section = _section_for_time(float(rows[0]["start_time"]), sections)
@@ -217,6 +291,8 @@ def generate_rule_candidates(
 
     drop_events: list[dict[str, Any]] = []
     for row in features:
+        if row.get("_intensity_cluster", 2) < 2:  # Alt 3: True drops only occur in the highest energy cluster
+            continue
         if not (
             float(row["derived"]["energy_delta"]) >= thresholds["transition"]["drop_energy_delta"]
             and float(row["normalized"]["onset_density"]) >= thresholds["transition"]["drop_onset_min"]
@@ -250,11 +326,23 @@ def generate_rule_candidates(
         drop_events.append(event)
         events.append(event)
 
-    for row in features:
-        if float(row["derived"]["accent_intensity"]) < thresholds["transition"]["impact_intensity_min"]:
+    def _is_peak(idx: int, vals: list[float], r: int = 2, min_val: float = 0.0) -> bool:
+        val = vals[idx]
+        if val < min_val: return False
+        start = max(0, idx - r)
+        end = min(len(vals), idx + r + 1)
+        for i in range(start, end):
+            if i == idx: continue
+            if vals[i] > val: return False
+        return True
+
+    accent_values = [float(row["derived"]["accent_intensity"]) for row in features]
+    for i, row in enumerate(features):
+        intensity = float(row["derived"]["accent_intensity"])
+        threshold = thresholds["transition"]["impact_intensity_min"]
+        if intensity < threshold or not _is_peak(i, accent_values, r=4, min_val=threshold):
             continue
         section = _section_for_time(float(row["start_time"]), sections)
-        intensity = float(row["derived"]["accent_intensity"])
         events.append(
             _build_event(
                 event_id=next_event_id("impact_hit"),
@@ -277,6 +365,7 @@ def generate_rule_candidates(
         for row in features
         if float(row["derived"]["silence_gap_seconds"]) >= thresholds["transition"]["pause_gap_seconds"]
         and float(row["normalized"]["energy_score"]) <= thresholds["transition"]["pause_energy_max"]
+        and row.get("_intensity_cluster", 0) == 0  # Alt 3: Breaks/Pauses must be in the Low energy cluster
     ]
     for row in pause_rows:
         section = _section_for_time(float(row["start_time"]), sections)
