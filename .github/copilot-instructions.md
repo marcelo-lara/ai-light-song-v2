@@ -39,3 +39,6 @@
 
 ## Decision Rule
 - If an instruction conflicts with correctness, artifact-contract clarity, or the container runtime contract, prioritize correctness and update the documentation to match the current state.
+
+## Workspace Cleanup
+- Never leave temporary scripts, patching code, or scaffolded one-off files laying around in the workspace. Always clean up after yourself.

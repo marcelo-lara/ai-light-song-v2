@@ -1,4 +1,5 @@
 from __future__ import annotations
+import numpy as np
 
 from typing import Any
 
@@ -8,10 +9,11 @@ from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
 
 
+# Multi-Scale Rolling Windows based on expected beats
 ROLLING_WINDOWS = {
-    "short": 4,
-    "medium": 8,
-    "long": 16,
+    "local": 1,         # 1-beat window
+    "phrasal": 16,      # 4-bar window (Assuming 4/4)
+    "structural": 128,  # 32-bar window
 }
 
 
@@ -64,18 +66,51 @@ def _window_note_overlap_score(notes: list[dict], start_s: float, end_s: float) 
     return min(overlap_sum / duration, 1.0)
 
 
-def _value_bounds(rows: list[dict], key: str) -> tuple[float, float]:
-    values = [float(row[key]) for row in rows]
-    if not values:
-        return 0.0, 0.0
-    return min(values), max(values)
+def _calculate_song_statistics(raw_rows: list[dict], numeric_keys: list[str]) -> dict[str, dict]:
+    statistics = {}
+    for key in numeric_keys:
+        values = np.array([float(row[key]) for row in raw_rows])
+        mean = float(np.mean(values))
+        std = float(np.std(values))
+        statistics[key] = {
+            "mean": round(mean, 6),
+            "std_dev": round(std, 6),
+            "min": round(float(np.min(values)), 6),
+            "max": round(float(np.max(values)), 6),
+        }
+    return statistics
 
 
-def _normalize(value: float, bounds: tuple[float, float]) -> float:
-    minimum, maximum = bounds
-    if maximum <= minimum:
+def _apply_zscore(value: float, mean: float, std_dev: float) -> float:
+    if std_dev < 1e-9:
         return 0.0
-    return round((value - minimum) / (maximum - minimum), 6)
+    return round((value - mean) / std_dev, 6)
+
+
+def _resample_to_100ms_grid(
+    normalized_rows: list[dict],
+    duration_s: float,
+) -> list[dict]:
+    if not normalized_rows:
+        return []
+    grid_times = np.arange(0.0, duration_s + 0.05, 0.1)
+    beat_time_array = np.array([float(row["start_time"]) for row in normalized_rows])
+    grid_features = []
+        
+    for grid_time in grid_times:
+        closest_idx = int(np.argmin(np.abs(beat_time_array - float(grid_time))))
+        source_row = normalized_rows[closest_idx]
+        grid_row = {
+            "time_s": round(float(grid_time), 3),
+            "source_beat": source_row["beat"],
+            "section_id": source_row.get("section_id"),
+            "section_name": source_row.get("section_name"),
+            "normalized": dict(source_row["normalized"]),
+            "derived": dict(source_row["derived"]),
+            "rolling": dict(source_row.get("rolling", {})),
+        }
+        grid_features.append(grid_row)
+    return grid_features
 
 
 def _accent_lookup(accent_candidates: list[dict], start_s: float, end_s: float) -> tuple[str | None, float]:
@@ -261,9 +296,7 @@ def build_event_feature_layer(
             }
         )
 
-    normalization_bounds = {
-        key: _value_bounds(raw_rows, key)
-        for key in (
+    numeric_keys = [
             "loudness_avg",
             "onset_density",
             "spectral_flux",
@@ -278,14 +311,26 @@ def build_event_feature_layer(
             "bass_stem_activity",
             "accent_intensity",
             "chord_confidence",
-        )
+    ]
+    song_statistics = _calculate_song_statistics(raw_rows, numeric_keys)
+    
+    statistics_payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "generated_from": {
+            "features_file": str(paths.artifact("event_inference", "features.json")),
+        },
+        "normalization_method": "z-score",
+        "statistics": song_statistics,
     }
+    write_json(paths.artifact("event_inference", "song_statistics.json"), statistics_payload)
+
 
     normalized_rows: list[dict[str, Any]] = []
     for index, row in enumerate(raw_rows):
         normalized = {
-            key: _normalize(float(row[key]), bounds)
-            for key, bounds in normalization_bounds.items()
+            key: _apply_zscore(float(row[key]), stats["mean"], stats["std_dev"])
+            for key, stats in song_statistics.items()
         }
         previous = normalized_rows[index - 1] if index > 0 else None
         derived = {
@@ -361,11 +406,11 @@ def build_event_feature_layer(
             "normalization_rules": {
                 "numeric_fields": {
                     key: {
-                        "method": "per-song min-max",
-                        "minimum": round(bounds[0], 6),
-                        "maximum": round(bounds[1], 6),
+                        "method": "per-song z-score",
+                        "mean": stats["mean"],
+                        "std_dev": stats["std_dev"],
                     }
-                    for key, bounds in normalization_bounds.items()
+                    for key, stats in song_statistics.items()
                 },
                 "silence_gap": "accumulate consecutive beat durations where symbolic_note_count equals zero",
                 "rolling_windows_beats": dict(ROLLING_WINDOWS),
@@ -421,6 +466,31 @@ def build_event_feature_layer(
     for row in payload["features"]:
         if float(row["start_time"]) < 0.0 or float(row["end_time"]) > duration_s + 1e-6:
             raise ValueError("Event feature windows must stay within song duration")
+
+    
+    duration_s = float(timing.get("bars", [{}])[-1].get("end_s", beats[-1]["time"] if beats else 0.0)) if beats or timing.get("bars") else 0.0
+    grid_features = _resample_to_100ms_grid(normalized_rows, duration_s)
+    
+    contextual_payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "generated_from": {
+            "source_song_path": str(paths.song_path),
+            "features_file": str(paths.artifact("event_inference", "features.json")),
+            "song_statistics_file": str(paths.artifact("event_inference", "song_statistics.json")),
+        },
+        "metadata": {
+            "duration_s": round(duration_s, 6),
+            "grid_resolution_s": 0.1,
+            "grid_size": len(grid_features),
+            "normalization_method": "z-score",
+        },
+        "feature_catalog": {
+            "normalized": list(song_statistics.keys()),
+        },
+        "features": grid_features,
+    }
+    write_json(paths.artifact("event_inference", "contextual_features.json"), contextual_payload)
 
     write_json(paths.artifact("event_inference", "features.json"), payload)
     _build_timeline_index(

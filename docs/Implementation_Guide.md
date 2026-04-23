@@ -242,3 +242,6 @@ This first-phase validation target is documented in `docs/phase_1_validation_cli
 That supporting document defines the recommended CLI command shape, required flags, exit codes, and the expected machine-readable validation report structure.
 
 The final documentation set must remain internally consistent across story files, schemas, runtime commands, and validation contracts.
+
+## Workspace Cleanup
+- Never leave temporary scripts, patching code, or scaffolded one-off files laying around in the workspace. Always clean up after yourself.

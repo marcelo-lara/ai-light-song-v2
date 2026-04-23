@@ -184,11 +184,11 @@ def generate_rule_candidates(
     mean_energy_delta = _safe_stat(energy_deltas, statistics.mean)
     stdev_energy_delta = _safe_stat(energy_deltas, statistics.stdev)
 
-    tension_means = [float(r["rolling"]["short"]["harmonic_tension_mean"]) for r in features]
+    tension_means = [float(r["rolling"]["local"]["harmonic_tension_mean"]) for r in features]
     mean_tension = _safe_stat(tension_means, statistics.mean)
     stdev_tension = _safe_stat(tension_means, statistics.stdev)
 
-    energy_means = [float(r["rolling"]["short"]["energy_mean"]) for r in features]
+    energy_means = [float(r["rolling"]["local"]["energy_mean"]) for r in features]
     mean_energy_mean = _safe_stat(energy_means, statistics.mean)
     stdev_energy_mean = _safe_stat(energy_means, statistics.stdev)
 
@@ -233,14 +233,14 @@ def generate_rule_candidates(
         row
         for row in features
         if float(row["derived"]["energy_delta"]) >= thresholds["transition"]["build_energy_delta"]
-        and float(row["rolling"]["short"]["harmonic_tension_mean"]) >= thresholds["transition"]["build_tension_mean"]
-        and float(row["rolling"]["short"]["energy_mean"]) >= thresholds["transition"]["build_energy_mean"]
+        and float(row["rolling"]["local"]["harmonic_tension_mean"]) >= thresholds["transition"]["build_tension_mean"]
+        and float(row["rolling"]["local"]["energy_mean"]) >= thresholds["transition"]["build_energy_mean"]
         and row.get("_intensity_cluster", 2) >= 1  # Alt 3: Must reach Mid or High energy
     ]
     for rows in _merge_anchor_rows(build_anchors):
         section = _section_for_time(float(rows[0]["start_time"]), sections)
-        energy_mean = _mean([float(row["rolling"]["short"]["energy_mean"]) for row in rows])
-        tension_mean = _mean([float(row["rolling"]["short"]["harmonic_tension_mean"]) for row in rows])
+        energy_mean = _mean([float(row["rolling"]["local"]["energy_mean"]) for row in rows])
+        tension_mean = _mean([float(row["rolling"]["local"]["harmonic_tension_mean"]) for row in rows])
         events.append(
             _build_event(
                 event_id=next_event_id("build"),
@@ -385,13 +385,13 @@ def generate_rule_candidates(
                     {"name": "energy_score", "value": float(row["normalized"]["energy_score"]), "threshold": thresholds["transition"]["pause_energy_max"], "comparator": "<=", "source_layer": "event_features"},
                 ],
                 notes="Pause candidates are kept even when they may precede a later release.",
-                candidates=[{"type": "fake_drop", "confidence": min(0.95, float(row["rolling"]["short"]["harmonic_tension_mean"])), "notes": "Held tension may resolve to a fake drop instead of a true pause."}],
+                candidates=[{"type": "fake_drop", "confidence": min(0.95, float(row["rolling"]["local"]["harmonic_tension_mean"])), "notes": "Held tension may resolve to a fake drop instead of a true pause."}],
             )
         )
 
     for row in pause_rows:
         next_drop = any(round(float(candidate["start_time"]), 6) > round(float(row["end_time"]), 6) and round(float(candidate["start_time"]), 6) <= round(float(row["end_time"] + 2.0), 6) for candidate in drop_events)
-        if next_drop or float(row["rolling"]["short"]["harmonic_tension_mean"]) < thresholds["transition"]["fake_drop_tension_mean"]:
+        if next_drop or float(row["rolling"]["local"]["harmonic_tension_mean"]) < thresholds["transition"]["fake_drop_tension_mean"]:
             continue
         section = _section_for_time(float(row["start_time"]), sections)
         events.append(
@@ -400,12 +400,12 @@ def generate_rule_candidates(
                 event_type="fake_drop",
                 rows=[row],
                 section=section,
-                confidence=min(1.0, 0.35 + float(row["rolling"]["short"]["harmonic_tension_mean"]) * 0.4),
-                intensity=float(row["rolling"]["short"]["harmonic_tension_mean"]),
+                confidence=min(1.0, 0.35 + float(row["rolling"]["local"]["harmonic_tension_mean"]) * 0.4),
+                intensity=float(row["rolling"]["local"]["harmonic_tension_mean"]),
                 summary="A pause-like break holds tension but is not followed by a qualifying drop window.",
                 rule_names=["fake_drop_unresolved_pause"],
                 metrics=[
-                    {"name": "harmonic_tension_mean", "value": float(row["rolling"]["short"]["harmonic_tension_mean"]), "threshold": thresholds["transition"]["fake_drop_tension_mean"], "comparator": ">=", "source_layer": "event_features"},
+                    {"name": "harmonic_tension_mean", "value": float(row["rolling"]["local"]["harmonic_tension_mean"]), "threshold": thresholds["transition"]["fake_drop_tension_mean"], "comparator": ">=", "source_layer": "event_features"},
                 ],
                 notes="Fake-drop candidates remain separate from pause_break for review.",
                 candidates=[{"type": "pause_break", "confidence": 0.5, "notes": "Window also satisfies the baseline pause rule."}],
