@@ -155,17 +155,13 @@ export function useHumanHintsEditor({
     handleChangeActiveHint(field, formatEditableTime(currentTime));
   }
 
-  function handleDeleteActiveHint() {
+  async function handleDeleteActiveHint() {
     if (!activeHintId) {
       return;
     }
-    setHints((currentHints) => {
-      return currentHints.filter((hint) => hint.id !== activeHintId);
-    });
+    setHints((currentHints) => currentHints.filter((hint) => hint.id !== activeHintId));
     setActiveHintId("");
-    setIsOpen(false);
     setSaveState({ status: "idle", message: "" });
-    onCancelSelection?.();
   }
 
   function handleCancel() {
@@ -187,7 +183,10 @@ export function useHumanHintsEditor({
       selectedSongRef.current = selectedSong;
       setSongName(payload.song_name);
       setHints(payload.human_hints.map(normalizeDraftHint));
+      setActiveHintId("");
+      setIsOpen(false);
       setSaveState({ status: "success", message: "Human hints saved to the reference file." });
+      onCancelSelection?.();
     } catch (error) {
       setSaveState({ status: "error", message: error instanceof Error ? error.message : "Unable to save human hints." });
     }
