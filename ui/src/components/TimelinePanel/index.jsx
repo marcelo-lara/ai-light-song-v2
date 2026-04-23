@@ -41,11 +41,13 @@ export default function TimelinePanel(props) {
     handleSongMenuSelect,
     handleTimelineMouseDown,
     handleTimelineClick,
+    handleTimelineContextMenu,
     handleScroll,
   } = useTimelineInteractions({
     timeline: props.timeline,
     zoom: props.zoom,
     onSeek: props.onSeek,
+    onAddHumanHint: props.onAddHumanHint,
     onOpenSelectionOverlay: props.onOpenSelectionOverlay,
     onCloseSelectionOverlay: props.onCloseSelectionOverlay,
     onToggleLaneCollapsed: props.onToggleLaneCollapsed,
@@ -93,7 +95,7 @@ export default function TimelinePanel(props) {
         selectionLabel={selectionLabel}
       />
       <TimelineSongMenu anchorEl={songMenuAnchor} open={songMenuOpen} onClose={handleCloseSongMenu} songs={props.availableAudioSongs} loadedSong={props.loadedSong} onSelectSong={handleSongMenuSelect} />
-      <TimelineViewport scrollerRef={scrollerRef} rowsRef={rowsRef} onMouseDown={handleTimelineMouseDown} onScroll={handleScroll} onClick={handleTimelineClick} />
+      <TimelineViewport scrollerRef={scrollerRef} rowsRef={rowsRef} onMouseDown={handleTimelineMouseDown} onContextMenu={handleTimelineContextMenu} onScroll={handleScroll} onClick={handleTimelineClick} />
     </section>
   );
 }

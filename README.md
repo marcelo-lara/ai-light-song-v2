@@ -189,7 +189,7 @@ Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not inv
 ```bash
 docker compose run --rm app \
   ./analyze \
-  --song "/data/songs/Sash - Raindrops.mp3" \
+  --song "/data/songs/Cinderella - Ella Lee.mp3" \
   --compare beats,chords,sections,energy,patterns,unified,events
 ```
 

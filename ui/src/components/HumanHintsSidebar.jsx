@@ -49,10 +49,6 @@ export default function HumanHintsSidebar({
 
           <div className="field-grid">
             <label>
-              <span className="stat-label">Id</span>
-              <input type="text" value={activeHint.id} onInput={(event) => handleChangeActiveHint("id", event.currentTarget.value)} />
-            </label>
-            <label>
               <span className="stat-label">Title</span>
               <input type="text" value={activeHint.title} onInput={(event) => handleChangeActiveHint("title", event.currentTarget.value)} />
             </label>

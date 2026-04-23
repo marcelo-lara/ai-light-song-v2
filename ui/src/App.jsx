@@ -87,7 +87,7 @@ export default function App() {
     timeline: timeline ? {
       ...timeline,
       humanHints: (humanHintsEditor.hints || []).map((hint, index) => ({
-        id: String(hint.id ?? `human-hint-${index + 1}`),
+        id: String(hint.id ?? `hint-${String(index + 1).padStart(3, "0")}`),
         label: String(hint.title ?? hint.label ?? `Hint ${index + 1}`),
         start_s: Number(hint.start_time) || 0,
         end_s: Number(hint.end_time) || 0,

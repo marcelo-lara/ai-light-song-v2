@@ -27,5 +27,6 @@ export function createTimelineProps(context) {
     laneCollapsed: shellState.laneCollapsed,
     onToggleLaneCollapsed: shellState.handleLaneCollapsedToggle,
     waveformPeaks,
+    onAddHumanHint: context.humanHintsEditor?.handleAddHint,
   };
 }

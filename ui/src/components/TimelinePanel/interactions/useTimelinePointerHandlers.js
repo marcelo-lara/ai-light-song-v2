@@ -4,7 +4,7 @@ import { formatRange } from "../../../lib/utils.js";
 const scrollRenderedLaneIds = ["waveform", "drums", "energy", "validation", "rmsLoudness", "loudnessEnvelope"];
 
 export function useTimelinePointerHandlers(context) {
-  const { timeline, zoom, onSeek, onOpenSelectionOverlay, onCloseSelectionOverlay, onToggleLaneCollapsed, laneVisibility, laneCollapsed, waveformPeaks, onVisibleWindowChange, scrollerRef, rowsRef, viewportFrameRef, dragStateRef, suppressClickRef } = context;
+  const { timeline, zoom, onSeek, onAddHumanHint, onOpenSelectionOverlay, onCloseSelectionOverlay, onToggleLaneCollapsed, laneVisibility, laneCollapsed, waveformPeaks, onVisibleWindowChange, scrollerRef, rowsRef, viewportFrameRef, dragStateRef, suppressClickRef } = context;
 
   return {
     handleTimelineMouseDown(event) {
@@ -46,6 +46,24 @@ export function useTimelinePointerHandlers(context) {
       }
       onSeek(absoluteX / zoom, buildScrubSelection(track.dataset.trackLane, absoluteX / zoom));
       onCloseSelectionOverlay?.();
+    },
+    handleTimelineContextMenu(event) {
+      if (!timeline) {
+        return;
+      }
+      const track = event.target.closest("[data-track-lane]");
+      if (!track || track.dataset.trackLane !== "humanHints") {
+        return;
+      }
+      event.preventDefault();
+      
+      const rectangle = track.getBoundingClientRect();
+      const absoluteX = event.clientX - rectangle.left;
+      const targetTime = absoluteX / zoom;
+      
+      onSeek(targetTime);
+      onCloseSelectionOverlay?.();
+      onAddHumanHint?.(targetTime);
     },
     handleScroll() {
       if (!timeline || !rowsRef.current) {
