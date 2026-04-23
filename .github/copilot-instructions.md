@@ -32,6 +32,7 @@
 ## Implementation Style
 - Prefer small, focused files, but do not split code mechanically just to satisfy a line limit.
 - Keep functions narrow in purpose and isolate side effects at boundaries.
+- When files grow significantly (e.g., over 200 lines), consider whether they can be split into smaller, more focused modules. This is a guideline, not a hard rule; prioritize clarity and cohesion over a strict line count.
 - Use explicit names, explicit types, and consistent return shapes.
 - Extract duplicated logic instead of repeating it.
 - Add comments only when intent is not obvious from the code.

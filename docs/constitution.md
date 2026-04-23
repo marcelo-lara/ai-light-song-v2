@@ -9,7 +9,7 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 - **Contracts First:** Implementation never begins without a Story spec. The spec defines the schema, inputs, and acceptance criteria.
 - **Documentation as Truth:** If the code and the documentation disagree, the documentation is assumed to be correct until a formal spec change occurs.
 - **Living Specifications:** Stories and specifications must be updated to reflect final implementation details. A task is not considered "done" until the corresponding Story file accurately reflects the current codebase.
-- **Modular Epics:** The pipeline is divided into independent Epics (Audio, Harmonic, Symbolic, Energy, Events, Unified, UI).
+- **Modular Epics:** The pipeline is divided into eight independent Epics: Audio Preprocessing, Harmonic Summary, Energy & Structure, Symbolic Event Summary, Rule-Based Event Detection, ML-Based Event Classification, Lighting Score Generation, and the Internal Artifact Debugger.
 
 ### 2.2 Determinism and Reproducibility
 - **Same Input, Same Output:** Given the same audio file and model version, the pipeline must produce byte-for-byte identical JSON artifacts.
@@ -19,6 +19,7 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 - **Docker is Authoritative:** The only valid development and execution environment is the project's Docker container. 
 - **Always Test in Container:** All analysis logic, validation runs, and UI behaviors must be tested and verified within their respective Docker services (`app` or `ui`). Proposing host-side executions or host-installed dependencies is a constitutional violation.
 - **GPU Dependency:** The system is optimized for NVIDIA/CUDA runtimes. CPU fallbacks are for debugging only and must not be used for canonical artifact generation.
+- **Isolated Analyzer from Helper UI:** When working on the helper UI, do not update the core Analyzer modules.
 
 ## 3. Data Governance
 

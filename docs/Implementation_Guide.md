@@ -30,7 +30,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 ### Global data rules
 
 - Generated files must include explicit `generated_from` metadata when practical.
-- The term `reference` is reserved for `/data/reference/` and human-validated source-of-truth material. Story 7.8 allows explicit editing only for `data/reference/<Song - Artist>/human/human_hints.json`.
+- The term `reference` is reserved for `/data/reference/` and human-validated source-of-truth material. Story 8.8 allows explicit editing only for `data/reference/<Song - Artist>/human/human_hints.json`.
 - Generated files inside `data/artifacts/` must use producer-scoped namespaces when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
 - Time values are expressed in seconds.
 - Bars are 1-indexed.
@@ -49,7 +49,7 @@ All development, validation, and sample-song execution must run inside the proje
 - Do not depend on host-installed Python packages.
 - Validate tool imports and sample-song runs inside the container.
 - Use `./analyze` or `python -m analyzer` as the supported container entry points.
-- The analyzer runtime is the Compose `app` service. The internal debugger UI runs as a separate Compose `ui` service backed by the `/ui` folder, with generated data mounted read-only and only `data/reference/<Song - Artist>/human/human_hints.json` writable through the Story 7.8 helper UI flow.
+- The analyzer runtime is the Compose `app` service. The internal debugger UI runs as a separate Compose `ui` service backed by the `/ui` folder, with generated data mounted read-only and only `data/reference/<Song - Artist>/human/human_hints.json` writable through the Story 8.8 helper UI flow.
 - Batch runs via `--all-songs` must isolate each song in a subprocess because the long-lived parent process is not treated as a stable execution model for the native analysis stack.
 - Demucs model weights must resolve through the repo-local cache under `models/demucs/` rather than opportunistic mid-run downloads.
 
@@ -57,15 +57,16 @@ See `docs/docker_development.md`, `docs/ui_development.md`, and the repository `
 
 ## Pipeline Overview
 
-The pipeline is divided into seven epics:
+The pipeline is divided into eight epics:
 
 1. EPIC 1: audio preprocessing.
 2. EPIC 2: harmonic summary.
-3. EPIC 3: symbolic event summary.
-4. EPIC 4: audio energy summary.
-5. EPIC 5: event vocabulary, inference, review, and export.
-6. EPIC 6: pattern mining, unified music feature assembly, and lighting design.
-7. EPIC 7: internal artifact debugger and regression viewer.
+3. EPIC 3: energy and structure.
+4. EPIC 4: symbolic event summary.
+5. EPIC 5: rule-based event detection.
+6. EPIC 6: ML-based event classification.
+7. EPIC 7: lighting score generation.
+8. EPIC 8: internal artifact debugger and regression viewer.
 
 ## EPIC 1: Audio Preprocessing Pipeline
 
@@ -92,34 +93,36 @@ Goal: provide tonal, chordal, and harmonic-motion context.
 
 Representative artifact: `layer_a_harmonic.json`.
 
-## EPIC 3: Symbolic Event Summary
-
-Goal: translate audio into note-level, drum-hit, and phrase-level musical behavior.
-
-| Story | Intent | Primary outputs | Detailed spec |
-| --- | --- | --- | --- |
-| 3.1 | MIDI-like transcription | validated multi-source note events from stems and full mix | `docs/3.1.midi_transcription_story.md` |
-| 3.2 | Drums transcription | reviewable kick, snare, and hat event artifact | `docs/3.2.drums_transcription_story.md` |
-| 3.3 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/3.3.symbolic_feature_engineering_story.md` |
-| 3.4 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/3.4.temporal_alignment_story.md` |
-| 3.5 | Section hint inference | deterministic symbolic and structural section hints with editable output merge | `docs/3.5.section_hints_story.md` |
-| 3.6 | LLM-friendly abstraction | deterministic musician-readable symbolic descriptions | `docs/3.6.llm_friendly_abstraction_story.md` |
-
-Representative artifact: `layer_b_symbolic.json`.
-
-## EPIC 4: Audio Energy Summary
+## EPIC 3: Energy & Structure
 
 Goal: capture physical intensity, brightness, transients, and structure.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 4.1 | Low-level energy feature extraction | frame- and beat-level loudness, centroid, flux, onset | `docs/4.1.energy_feature_schema.md` |
-| 4.2 | Section segmentation | structural change windows, optional labels, confidence | `docs/4.2.section_segmentation_story.md` |
-| 4.3 | Derived energy features | energy cards, peaks, dips, accent candidates | `docs/4.3.energy_feature_derivation_story.md` |
+| 3.1 | Low-level energy feature extraction | frame- and beat-level loudness, centroid, flux, onset | `docs/3.1.energy_feature_schema.md` |
+| 3.2 | Section segmentation | structural change windows, optional labels, confidence | `docs/3.2.section_segmentation_story.md` |
+| 3.3 | Derived energy features | energy cards, peaks, dips, accent candidates | `docs/3.3.energy_feature_derivation_story.md` |
+| 3.4 | Structural integrity audit | confidence scores and transient-locking metadata | `docs/3.4.structural_integrity_audit_story.md` |
+| 3.5 | LLM-friendly song map | unified "Song Map" for LLM consumption | `docs/3.5.llm-friendly_song_map_abstraction.md` |
 
 Representative artifact: `layer_c_energy.json`.
 
-## EPIC 5: Musical Event Vocabulary, Inference, Review, and Export
+## EPIC 4: Symbolic Event Summary
+
+Goal: translate audio into note-level, drum-hit, and phrase-level musical behavior.
+
+| Story | Intent | Primary outputs | Detailed spec |
+| --- | --- | --- | --- |
+| 4.1 | MIDI-like transcription | validated multi-source note events from stems and full mix | `docs/4.1.midi_transcription_story.md` |
+| 4.2 | Drums transcription | reviewable kick, snare, and hat event artifact | `docs/4.2.drums_transcription_story.md` |
+| 4.3 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/4.3.symbolic_feature_engineering_story.md` |
+| 4.4 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/4.4.temporal_alignment_story.md` |
+| 4.5 | Section hint inference | deterministic symbolic and structural section hints with editable output merge | `docs/4.5.section_hints_story.md` |
+| 4.6 | LLM-friendly abstraction | deterministic musician-readable symbolic descriptions | `docs/4.6.llm_friendly_abstraction_story.md` |
+
+Representative artifact: `layer_b_symbolic.json`.
+
+## EPIC 5: Rule-Based Event Detection
 
 Goal: define the canonical event contract, infer musically meaningful event windows, support review and benchmarking, and export compact event timelines for downstream lighting logic.
 
@@ -133,11 +136,19 @@ Goal: define the canonical event contract, infer musically meaningful event wind
 | 5.6 | Confidence, review, and override workflow | `validation/song_events.review.json`, `validation/song_events.review.md`, and `validation/song_events.overrides.json` | `docs/5.6.event_review_and_override_story.md` |
 | 5.7 | Event benchmarking and genre-sensitive tuning | `validation/event_benchmark.json`, benchmark annotations, and threshold profiles | `docs/5.7.event_benchmarking_and_tuning_story.md` |
 | 5.8 | LLM-friendly event timeline export | `data/output/<Song - Artist>/song_event_timeline.json` and `validation/song_event_timeline.md` | `docs/5.8.event_timeline_export_story.md` |
-| 5.9 | Optional ML event classifier and explainability | classifier artifacts and explanation outputs | `docs/5.9.event_ml_classifier_story.md` |
 
 Representative artifacts: `energy_summary/hints.json`, `event_inference/features.json`, `event_inference/rule_candidates.json`, `event_inference/events.machine.json`, `data/artifacts/<Song - Artist>/validation/song_events.review.json`, `data/output/<Song - Artist>/song_event_timeline.json`, `validation/event_benchmark.json`.
 
-## EPIC 6: Pattern Mining, Unified Music Feature Assembly, and Light Show Design
+## EPIC 6: ML-Based Event Classification
+
+Goal: Classify events from multi-modal feature streams with explainability.
+
+| Story | Intent | Primary outputs | Detailed spec |
+| --- | --- | --- | --- |
+| 6.1 | Optional ML event classifier and explainability | classifier artifacts and explanation outputs | `docs/6.1.event_ml_classifier_story.md` |
+| 6.2 | Unified perceptual embedding | `layer_perceptual_embedding.json` and `layer_musical_signature.json` | `docs/6.2.unified_perceptual_embedding_story.md` |
+
+## EPIC 7: Lighting Score Generation
 
 Goal: derive recurring harmonic pattern structure as Layer D, project compact UI-facing beat and section outputs, consolidate the upstream layers into a single handoff artifact, then translate that artifact into lighting behavior and a human-readable lighting score.
 
@@ -145,30 +156,30 @@ Layer D covers repeated harmonic progression structure. Motif-level and phrase-l
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 6.1 | Find chord patterns | `pattern_mining/chord_patterns.json` and `layer_d_patterns.json` | `docs/6.1.find_chord_patterns_story.md` |
-| 6.2 | Build UI data | `data/output/<Song - Artist>/beats.json` and `data/output/<Song - Artist>/sections.json` | `docs/6.2.build_ui_data_story.md` |
-| 6.3 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/6.3.music_feature_layers_story.md` |
-| 6.4 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/6.4.energy_to_lighting_mapping.md` |
-| 6.5 | Fixture-aware orchestration | fixture-aware events with stable-role and event-overlay logic, plus `lighting_score.md` | `docs/6.5.fixture_aware_mapping_story.md` |
+| 7.1 | Find chord patterns | `pattern_mining/chord_patterns.json` and `layer_d_patterns.json` | `docs/7.1.find_chord_patterns_story.md` |
+| 7.2 | Build UI data | `data/output/<Song - Artist>/beats.json` and `data/output/<Song - Artist>/sections.json` | `docs/7.2.build_ui_data_story.md` |
+| 7.3 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/7.3.music_feature_layers_story.md` |
+| 7.4 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/7.4.energy_to_lighting_mapping.md` |
+| 7.5 | Fixture-aware orchestration | fixture-aware events with stable-role and event-overlay logic, plus `lighting_score.md` | `docs/7.5.fixture_aware_mapping_story.md` |
 
 Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/beats.json`, `data/output/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_events.json`, `lighting_score.md`.
 
-## EPIC 7: Internal Artifact Debugger and Regression Viewer
+## EPIC 8: Internal Artifact Debugger and Regression Viewer
 
-Goal: provide an internal web debugger for inspecting generated inferences, timing alignment, and validation surfaces without changing the stable downstream output contract. Generated artifacts and outputs remain read-only; Story 7.8 adds an explicit reference-human-hints editing surface.
+Goal: provide an internal web debugger for inspecting generated inferences, timing alignment, and validation surfaces without changing the stable downstream output contract. Generated artifacts and outputs remain read-only; Story 8.8 adds an explicit reference-human-hints editing surface.
 
 The debugger is an internal engineering and review tool. Its primary inspection surface is `data/artifacts/<Song - Artist>/`. It may also read compact helper projections from `data/output/<Song - Artist>/`, but it must not write debugger state or exported files into either tree. The only allowed persisted edit is `data/reference/<Song - Artist>/human/human_hints.json`.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 7.1 | Song auto-discovery and artifact entry | discovered song-directory selection and artifact entry shell | `docs/7.1.song_auto_discovery_and_artifact_entry_story.md` |
-| 7.2 | Master sync and waveform anchor | debugger playback shell and shared timeline clock | `docs/7.2.master_sync_and_waveform_anchor_story.md` |
-| 7.3 | DAW-style lane architecture | shared lane layout, zoom, filtering, and scroll sync | `docs/7.3.daw_style_lane_architecture_story.md` |
-| 7.4 | Sparse data lanes | section, chord, pattern, and event-region lanes | `docs/7.4.sparse_data_lanes_story.md` |
-| 7.5 | High-density lanes | drum, density, and energy renderers | `docs/7.5.high_density_lanes_story.md` |
-| 7.6 | Semantic zoom and performance guardrails | clustering, zoom floors, and viewport-limited rendering | `docs/7.6.semantic_zoom_and_performance_story.md` |
-| 7.7 | Regression validation overlay | beat-grid, drift, and validation comparison overlays | `docs/7.7.regression_validation_overlay_story.md` |
-| 7.8 | Human hint editor | explicit editing of reference human hints in the helper UI | `docs/7.8.human_hint_editor_story.md` |
+| 8.1 | Song auto-discovery and artifact entry | discovered song-directory selection and artifact entry shell | `docs/8.1.song_auto_discovery_and_artifact_entry_story.md` |
+| 8.2 | Master sync and waveform anchor | debugger playback shell and shared timeline clock | `docs/8.2.master_sync_and_waveform_anchor_story.md` |
+| 8.3 | DAW-style lane architecture | shared lane layout, zoom, filtering, and scroll sync | `docs/8.3.daw_style_lane_architecture_story.md` |
+| 8.4 | Sparse data lanes | section, chord, pattern, and event-region lanes | `docs/8.4.sparse_data_lanes_story.md` |
+| 8.5 | High-density lanes | drum, density, and energy renderers | `docs/8.5.high_density_lanes_story.md` |
+| 8.6 | Semantic zoom and performance guardrails | clustering, zoom floors, and viewport-limited rendering | `docs/8.6.semantic_zoom_and_performance_story.md` |
+| 8.7 | Regression validation overlay | beat-grid, drift, and validation comparison overlays | `docs/8.7.regression_validation_overlay_story.md` |
+| 8.8 | Human hint editor | explicit editing of reference human hints in the helper UI | `docs/8.8.human_hint_editor_story.md` |
 
 Representative implementation assets: `/ui/`, the Compose `ui` service, debugger access to `layer_a_harmonic.json`, `layer_b_symbolic.json`, `layer_c_energy.json`, `layer_d_patterns.json`, `event_inference/*.json`, `validation/phase_1_report.json`, `music_feature_layers.json`, and the editable reference file `data/reference/<Song - Artist>/human/human_hints.json`.
 
@@ -198,7 +209,7 @@ The expected high-level artifact dependency chain is:
 
 ## Lighting-Score-Ready Minimum Artifact Set
 
-Before Story 6.5 can produce a reliable `lighting_score.md`, the implementation should have at minimum:
+Before Story 7.5 can produce a reliable `lighting_score.md`, the implementation should have at minimum:
 
 - canonical beat and bar timing from Story 1.2 with per-beat time, 1-indexed bar, and beat-in-bar indices
 - `data/artifacts/<Song - Artist>/section_segmentation/sections.json` with stable section IDs and exact section windows
@@ -208,9 +219,9 @@ Before Story 6.5 can produce a reliable `lighting_score.md`, the implementation 
 - `data/output/<Song - Artist>/song_event_timeline.json` or equivalent reviewed event export when event-aware lighting logic is enabled, with canonical event IDs and exact event windows preserved
 - `data/artifacts/<Song - Artist>/layer_d_patterns.json` with `patterns[].id` and occurrence windows using `start_s` and `end_s`
 - `data/artifacts/<Song - Artist>/music_feature_layers.json` with `timeline.phrases[]`, `lighting_context.cue_anchors[]`, `lighting_context.pattern_callbacks[]`, and `lighting_context.motif_callbacks[]`
-- fixture-agnostic lighting events from Story 6.4 with `anchor_refs` that point back to section, phrase, motif, pattern, and cue-anchor IDs
-- fixture-aware events from Story 6.5, when exported separately, with exact `event_ref`, `role_overlay`, and explicit target metadata for dynamic regroupings such as moving-head unison focus
-- `data/fixtures/fixtures.json` so Story 6.5 can translate abstract behavior into fixture-aware instructions
+- fixture-agnostic lighting events from Story 7.4 with `anchor_refs` that point back to section, phrase, motif, pattern, and cue-anchor IDs
+- fixture-aware events from Story 7.5, when exported separately, with exact `event_ref`, `role_overlay`, and explicit target metadata for dynamic regroupings such as moving-head unison focus
+- `data/fixtures/fixtures.json` so Story 7.5 can translate abstract behavior into fixture-aware instructions
 
 If those artifacts are missing, the pipeline is not yet lighting-score-ready even if partial prose generation is possible.
 
@@ -232,7 +243,7 @@ Before the full pipeline is considered ready, the implementation should expose a
 1. run against a real song such as `What a Feeling - Courtney Storm.mp3`
 2. generate inferred analysis artifacts inside `data/artifacts/<Song - Artist>/`
 3. compare inferred chord outputs against human-validated reference chords and compare inferred section change points against validation-only reference segments in `data/reference/<Song - Artist>/moises/` when they are available
-4. validate the generated Story 3.2 drum review artifact for recognizable kick, snare, and hat behavior on `What a Feeling - Courtney Storm.mp3` without treating reference data as generation fallback
+4. validate the generated Story 4.2 drum review artifact for recognizable kick, snare, and hat behavior on `What a Feeling - Courtney Storm.mp3` without treating reference data as generation fallback
 5. emit a validation summary or report without copying reference values into generated artifacts
 
 Reference files under `data/reference/` are optional validation inputs. The pipeline must infer chords, sections, and other generated values from the documented analysis stack first. When reference files are present, they may be used to validate or explicitly review those inferred results, but they must not silently replace generated artifact values.
