@@ -126,7 +126,7 @@ def _build_candidates(score_rows: list[tuple[str, float, str]]) -> list[dict[str
     return [
         {
             "type": label,
-            "confidence": round(_clamp01(score), 6),
+            "confidence": round(_clamp01(_clamp01(score)), 6),
             "notes": notes,
         }
         for label, score, notes in ordered
@@ -163,7 +163,7 @@ def _classify_drop_variant(rule_event: dict, feature_rows: list[dict], identifie
     energy_delta = _mean([float(row["derived"].get("energy_delta", 0.0)) for row in feature_rows])
     accent = _mean([float(row["derived"].get("accent_intensity", 0.0)) for row in feature_rows])
     bass = _mean([float(row["derived"].get("bass_activation_score", 0.0)) for row in feature_rows])
-    energy_mean = _mean([float(row["rolling"]["medium"].get("energy_mean", 0.0)) for row in feature_rows])
+    energy_mean = _mean([float(row["rolling"]["local"].get("energy_mean", 0.0)) for row in feature_rows])
     onset = _mean([float(row["normalized"].get("onset_density", 0.0)) for row in feature_rows])
     spectral_rise = 0.0
     if identifier is not None:
@@ -188,7 +188,7 @@ def _classify_plateau_variant(rule_event: dict, feature_rows: list[dict], sectio
     bass_mean = _mean([float(row["derived"].get("bass_activation_score", 0.0)) for row in feature_rows])
     vocal_mean = _mean([float(row["derived"].get("vocal_presence_score", 0.0)) for row in feature_rows])
     energy_mean = _mean([
-        float(row["normalized"].get("energy_score", row["rolling"]["medium"].get("energy_mean", 0.0)))
+        float(row["normalized"].get("energy_score", row["rolling"]["local"].get("energy_mean", 0.0)))
         for row in feature_rows
     ])
     onset_mean = _mean([float(row["normalized"].get("onset_density", 0.0)) for row in feature_rows])
@@ -234,15 +234,15 @@ def _phrase_event(
     candidates: list[dict] | None = None,
 ) -> dict[str, Any]:
     vocal_mean = _mean([float(row["derived"].get("vocal_presence_score", 0.0)) for row in feature_rows])
-    energy_mean = _mean([float(row["rolling"]["medium"].get("energy_mean", 0.0)) for row in feature_rows])
+    energy_mean = _mean([float(row["rolling"]["local"].get("energy_mean", 0.0)) for row in feature_rows])
     event = {
         "id": event_id,
         "type": event_type,
         "created_by": "analyzer_phrase_classifier",
         "start_time": round(float(phrase["start_s"]), 6),
         "end_time": round(float(phrase["end_s"]), 6),
-        "confidence": round(min(1.0, 0.4 + vocal_mean * 0.35 + energy_mean * 0.2), 6),
-        "intensity": round(max(vocal_mean, energy_mean), 6),
+        "confidence": round(_clamp01(min(1.0, 0.4 + vocal_mean * 0.35 + energy_mean * 0.2)), 6),
+        "intensity": round(_clamp01(max(vocal_mean, energy_mean)), 6),
         "evidence": {
             "summary": summary,
             "source_windows": [
@@ -296,8 +296,8 @@ def _section_context_event(
         "created_by": "analyzer_context_classifier",
         "start_time": round(float(section["start"]), 6),
         "end_time": round(float(section["end"]), 6),
-        "confidence": round(min(1.0, 0.45 + intensity * 0.4), 6),
-        "intensity": round(intensity, 6),
+        "confidence": round(_clamp01(min(1.0, 0.45 + intensity * 0.4)), 6),
+        "intensity": round(_clamp01(intensity), 6),
         "evidence": {
             "summary": summary,
             "source_windows": [
@@ -370,7 +370,7 @@ def generate_machine_events(
                 candidate_event["type"] = "energy_reset"
                 candidate_event["notes"] = f"{candidate_event['notes']} Follow-up energy rise indicates a reset-and-reentry mechanic.".strip()
                 candidate_event["candidates"] = [
-                    {"type": "energy_reset", "confidence": round(min(1.0, 0.55 + followup_rise), 6), "notes": "Energy rebuild follows the negative-space window."},
+                    {"type": "energy_reset", "confidence": round(_clamp01(min(1.0, 0.55 + followup_rise)), 6), "notes": "Energy rebuild follows the negative-space window."},
                     {"type": event_type, "confidence": float(source_event["confidence"]), "notes": "Parent transition remains a valid fallback."}
                 ]
                 candidate_event["confidence"] = round(min(1.0, max(float(source_event["confidence"]), 0.55 + followup_rise * 0.5)), 6)
@@ -411,8 +411,8 @@ def generate_machine_events(
                         "created_by": "analyzer_event_classifier",
                         "start_time": round(float(row["start_time"]), 6),
                         "end_time": round(float(row["end_time"]), 6),
-                        "confidence": round(min(1.0, 0.45 + abs(density_delta) * 0.4), 6),
-                        "intensity": round(min(1.0, abs(density_delta)), 6),
+                        "confidence": round(_clamp01(min(1.0, 0.45 + abs(density_delta) * 0.4)), 6),
+                        "intensity": round(_clamp01(min(1.0, abs(density_delta))), 6),
                         "evidence": {
                             "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
                             "source_windows": [
@@ -450,8 +450,8 @@ def generate_machine_events(
                         "created_by": "analyzer_event_classifier",
                         "start_time": round(float(row["start_time"]), 6),
                         "end_time": round(float(row["end_time"]), 6),
-                        "confidence": round(min(1.0, 0.45 + density_delta * 0.35), 6),
-                        "intensity": round(min(1.0, density_delta), 6),
+                        "confidence": round(_clamp01(min(1.0, 0.45 + density_delta * 0.35)), 6),
+                        "intensity": round(_clamp01(min(1.0, density_delta)), 6),
                         "evidence": {
                             "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
                             "source_windows": [
@@ -491,7 +491,7 @@ def generate_machine_events(
         if not rows:
             continue
         vocal_mean = _mean([float(row["derived"].get("vocal_presence_score", 0.0)) for row in rows])
-        energy_mean = _mean([float(row["rolling"]["medium"].get("energy_mean", 0.0)) for row in rows])
+        energy_mean = _mean([float(row["rolling"]["local"].get("energy_mean", 0.0)) for row in rows])
         repeat_count = phrase_repeat_counts.get(str(phrase.get("phrase_group_id")), 1)
         section = section_by_id.get(str(phrase.get("section_id"))) if phrase.get("section_id") else None
         if repeat_count >= 2 and vocal_mean >= 0.35:
@@ -504,7 +504,7 @@ def generate_machine_events(
                     summary="Repeated phrase-group activity and vocal presence indicate a hook phrase.",
                     notes=f"Phrase group repeats {repeat_count} time(s), making the phrase a stable hook candidate.",
                     candidates=[
-                        {"type": "anthem_call", "confidence": round(min(1.0, vocal_mean), 6), "notes": "Strong vocals could also read as a call moment."}
+                        {"type": "anthem_call", "confidence": round(_clamp01(min(1.0, vocal_mean)), 6), "notes": "Strong vocals could also read as a call moment."}
                     ]
                 )
             )
@@ -520,7 +520,7 @@ def generate_machine_events(
                     summary="Phrase opens a section with strong vocal presence and enough supporting energy to read as an anthem call.",
                     notes="Section-entry vocal phrase promoted as a crowd-facing call moment.",
                     candidates=[
-                        {"type": "hook_phrase", "confidence": round(min(1.0, vocal_mean * 0.9), 6), "notes": "Phrase may also function as a repeated hook."}
+                        {"type": "hook_phrase", "confidence": round(_clamp01(min(1.0, vocal_mean * 0.9)), 6), "notes": "Phrase may also function as a repeated hook."}
                     ]
                 )
             )
@@ -606,8 +606,8 @@ def generate_machine_events(
                 "created_by": "analyzer_phrase_classifier",
                 "start_time": round(float(left["start_s"]), 6),
                 "end_time": round(float(right["end_s"]), 6),
-                "confidence": round(min(1.0, 0.4 + ((left_vocal + right_vocal) / 2.0) * 0.35), 6),
-                "intensity": round(max(left_vocal, right_vocal), 6),
+                "confidence": round(_clamp01(min(1.0, 0.4 + ((left_vocal + right_vocal) / 2.0) * 0.35)), 6),
+                "intensity": round(_clamp01(max(left_vocal, right_vocal)), 6),
                 "evidence": {
                     "summary": "Adjacent vocal phrases with different phrase-group identities indicate a call-and-response exchange.",
                     "source_windows": [
@@ -659,8 +659,8 @@ def generate_machine_events(
                 "created_by": "analyzer_context_classifier",
                 "start_time": round(start_time, 6),
                 "end_time": round(end_time, 6),
-                "confidence": round(min(1.0, 0.45 + (vocal_focus - followup_vocals) * 0.6), 6),
-                "intensity": round(max(vocal_focus - followup_vocals, 0.0), 6),
+                "confidence": round(_clamp01(min(1.0, 0.45 + (vocal_focus - followup_vocals) * 0.6)), 6),
+                "intensity": round(_clamp01(max(vocal_focus - followup_vocals, 0.0)), 6),
                 "evidence": {
                     "summary": "Vocal energy falls away after the phrase while accompaniment remains active, indicating a vocal tail or handoff.",
                     "source_windows": [
@@ -706,8 +706,8 @@ def generate_machine_events(
                     "created_by": "analyzer_lyric_guided_classifier",
                     "start_time": round(float(lyric_line["start"]), 6),
                     "end_time": round(float(lyric_line["end"]), 6),
-                    "confidence": round(min(1.0, 0.42 + vocal_focus * 0.35 + vocals_mean * 0.2 + min(0.12, lyric_confidence * 0.12)), 6),
-                    "intensity": round(max(vocals_mean, vocal_focus), 6),
+                    "confidence": round(_clamp01(min(1.0, 0.42 + vocal_focus * 0.35 + vocals_mean * 0.2 + min(0.12, lyric_confidence * 0.12))), 6),
+                    "intensity": round(_clamp01(max(vocals_mean, vocal_focus)), 6),
                     "evidence": {
                         "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
                         "source_windows": [
@@ -752,8 +752,8 @@ def generate_machine_events(
                     "created_by": "analyzer_lyric_guided_classifier",
                     "start_time": round(float(lyric_line["end"]), 6),
                     "end_time": round(float(followup_rows[-1]["end_time"]), 6),
-                    "confidence": round(min(1.0, 0.42 + (vocals_mean - followup_vocals) * 0.55 + min(0.1, lyric_confidence * 0.1)), 6),
-                    "intensity": round(max(vocals_mean - followup_vocals, 0.0), 6),
+                    "confidence": round(_clamp01(min(1.0, 0.42 + (vocals_mean - followup_vocals) * 0.55 + min(0.1, lyric_confidence * 0.1))), 6),
+                    "intensity": round(_clamp01(max(vocals_mean - followup_vocals, 0.0)), 6),
                     "evidence": {
                         "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
                         "source_windows": [
@@ -812,8 +812,8 @@ def generate_machine_events(
                         "created_by": "analyzer_hint_guided_classifier",
                         "start_time": round(hint_start, 6),
                         "end_time": round(hint_end, 6),
-                        "confidence": round(min(1.0, 0.45 + drums_mean * 0.25 + percussion_focus * 0.6), 6),
-                        "intensity": round(max(drums_mean, percussion_focus), 6),
+                        "confidence": round(_clamp01(min(1.0, 0.45 + drums_mean * 0.25 + percussion_focus * 0.6)), 6),
+                        "intensity": round(_clamp01(max(drums_mean, percussion_focus)), 6),
                         "evidence": {
                             "summary": "Hint-guided percussion pocket confirmed by drum-dominant stem activity and reduced vocal presence.",
                             "source_windows": [
@@ -848,8 +848,8 @@ def generate_machine_events(
                         "created_by": "analyzer_hint_guided_classifier",
                         "start_time": round(hint_start, 6),
                         "end_time": round(hint_end, 6),
-                        "confidence": round(min(1.0, 0.45 + (previous_vocal_focus - vocals_mean) * 0.8), 6),
-                        "intensity": round(max(previous_vocal_focus - vocals_mean, 0.0), 6),
+                        "confidence": round(_clamp01(min(1.0, 0.45 + (previous_vocal_focus - vocals_mean) * 0.8)), 6),
+                        "intensity": round(_clamp01(max(previous_vocal_focus - vocals_mean, 0.0)), 6),
                         "evidence": {
                             "summary": "Hint-guided vocal decay confirmed by falling vocal stem energy while accompaniment remains active.",
                             "source_windows": [

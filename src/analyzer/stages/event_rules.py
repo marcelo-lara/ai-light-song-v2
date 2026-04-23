@@ -49,6 +49,10 @@ def _section_for_time(time_s: float, sections: list[dict]) -> dict | None:
     return None
 
 
+def _clamp01(value: float) -> float:
+    return max(0.0, min(1.0, float(value)))
+
+
 def _mean(values: list[float]) -> float:
     return round(sum(values) / len(values), 6) if values else 0.0
 
@@ -247,8 +251,8 @@ def generate_rule_candidates(
                 event_type="build",
                 rows=rows,
                 section=section,
-                confidence=min(1.0, 0.45 + energy_mean * 0.25 + tension_mean * 0.3),
-                intensity=min(1.0, energy_mean),
+                confidence=_clamp01(0.45 + energy_mean * 0.25 + tension_mean * 0.3),
+                intensity=_clamp01(energy_mean),
                 summary="Rising short-window energy and harmonic tension indicate an obvious build phase.",
                 rule_names=["build_energy_rise"],
                 metrics=[
@@ -277,8 +281,8 @@ def generate_rule_candidates(
                 event_type="breakdown",
                 rows=rows,
                 section=section,
-                confidence=min(1.0, 0.45 + energy_drop * 0.3 + density_drop * 0.2),
-                intensity=min(1.0, energy_drop),
+                confidence=_clamp01(0.45 + energy_drop * 0.3 + density_drop * 0.2),
+                intensity=_clamp01(energy_drop),
                 summary="Energy and symbolic density both drop sharply across this window.",
                 rule_names=["breakdown_dual_drop"],
                 metrics=[
@@ -310,8 +314,8 @@ def generate_rule_candidates(
             event_type="drop",
             rows=[row],
             section=section,
-            confidence=confidence,
-            intensity=max(float(row["normalized"]["energy_score"]), float(row["derived"]["accent_intensity"])),
+            confidence=_clamp01(confidence),
+            intensity=_clamp01(max(float(row["normalized"]["energy_score"]), float(row["derived"]["accent_intensity"]))),
             summary="Synchronized rise in energy, onset activity, bass activation, and accent intensity indicates a baseline drop.",
             rule_names=["drop_energy_release"],
             metrics=[
@@ -349,8 +353,8 @@ def generate_rule_candidates(
                 event_type="impact_hit",
                 rows=[row],
                 section=section,
-                confidence=min(1.0, 0.4 + intensity * 0.5),
-                intensity=intensity,
+                confidence=_clamp01(0.4 + intensity * 0.5),
+                intensity=_clamp01(intensity),
                 summary="Accent intensity crosses the impact threshold on this beat.",
                 rule_names=["impact_accent_peak"],
                 metrics=[
@@ -376,8 +380,8 @@ def generate_rule_candidates(
                 event_type="pause_break",
                 rows=[row],
                 section=section,
-                confidence=min(1.0, 0.45 + gap * 0.2),
-                intensity=max(0.0, 1.0 - float(row["normalized"]["energy_score"])),
+                confidence=_clamp01(0.45 + gap * 0.2),
+                intensity=_clamp01(max(0.0, 1.0 - float(row["normalized"]["energy_score"]))),
                 summary="Silence gap duration and low energy indicate a pause or stop-time break.",
                 rule_names=["pause_gap_low_energy"],
                 metrics=[
@@ -400,8 +404,8 @@ def generate_rule_candidates(
                 event_type="fake_drop",
                 rows=[row],
                 section=section,
-                confidence=min(1.0, 0.35 + float(row["rolling"]["local"]["harmonic_tension_mean"]) * 0.4),
-                intensity=float(row["rolling"]["local"]["harmonic_tension_mean"]),
+                confidence=_clamp01(0.35 + float(row["rolling"]["local"]["harmonic_tension_mean"]) * 0.4),
+                intensity=_clamp01(float(row["rolling"]["local"]["harmonic_tension_mean"])),
                 summary="A pause-like break holds tension but is not followed by a qualifying drop window.",
                 rule_names=["fake_drop_unresolved_pause"],
                 metrics=[
@@ -436,8 +440,8 @@ def generate_rule_candidates(
                     event_type="groove_loop",
                     rows=section_rows_window,
                     section=section,
-                    confidence=min(1.0, 0.45 + energy_mean * 0.2 + bass_mean * 0.2),
-                    intensity=energy_mean,
+                    confidence=_clamp01(0.45 + energy_mean * 0.2 + bass_mean * 0.2),
+                    intensity=_clamp01(energy_mean),
                     summary="Stable section energy and bass activation indicate a sustained groove-loop state.",
                     rule_names=["groove_loop_section_state"],
                     metrics=[
@@ -456,8 +460,8 @@ def generate_rule_candidates(
                     event_type="atmospheric_plateau",
                     rows=section_rows_window,
                     section=section,
-                    confidence=min(1.0, 0.45 + (1.0 - energy_mean) * 0.2 + (1.0 - onset_mean) * 0.2),
-                    intensity=max(0.0, 1.0 - energy_mean),
+                    confidence=_clamp01(0.45 + (1.0 - energy_mean) * 0.2 + (1.0 - onset_mean) * 0.2),
+                    intensity=_clamp01(max(0.0, 1.0 - energy_mean)),
                     summary="Low-energy low-motion section profile indicates an atmospheric plateau.",
                     rule_names=["atmospheric_plateau_section_state"],
                     metrics=[
@@ -475,8 +479,8 @@ def generate_rule_candidates(
                     event_type="tension_hold",
                     rows=section_rows_window,
                     section=section,
-                    confidence=min(1.0, 0.4 + tension_mean * 0.35),
-                    intensity=tension_mean,
+                    confidence=_clamp01(0.4 + tension_mean * 0.35),
+                    intensity=_clamp01(tension_mean),
                     summary="Sustained harmonic tension stays elevated across the section without a qualifying release.",
                     rule_names=["tension_hold_section_state"],
                     metrics=[
@@ -493,8 +497,8 @@ def generate_rule_candidates(
                     event_type="no_drop_plateau",
                     rows=section_rows_window,
                     section=section,
-                    confidence=min(1.0, 0.4 + tension_mean * 0.25 + energy_mean * 0.15),
-                    intensity=energy_mean,
+                    confidence=_clamp01(0.4 + tension_mean * 0.25 + energy_mean * 0.15),
+                    intensity=_clamp01(energy_mean),
                     summary="Build evidence is present, but the section settles into a plateau without a qualifying drop.",
                     rule_names=["no_drop_plateau_unresolved_build"],
                     metrics=[

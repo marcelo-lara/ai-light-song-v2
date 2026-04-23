@@ -9,6 +9,7 @@ from analyzer.exceptions import AnalysisError
 from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
 from analyzer.stages.event_benchmark import benchmark_event_outputs
+from analyzer.stages.event_ml import generate_ml_events
 from analyzer.stages.event_features import build_event_feature_layer
 from analyzer.stages.event_identifiers import infer_song_identifiers
 from analyzer.stages.event_machine import generate_machine_events
@@ -166,6 +167,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             sections,
             genre_result,
         )
+        ml_events = _run_stage(paths.song_name, "phase-1", "generate-ml-events", generate_ml_events, paths)
         rule_candidates = _run_stage(paths.song_name, "phase-1", "generate-rule-candidates", generate_rule_candidates, paths, event_features, sections, genre_result)
         event_identifiers = _run_stage(
             paths.song_name,
