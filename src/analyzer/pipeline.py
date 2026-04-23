@@ -175,10 +175,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             "infer-song-identifiers",
             infer_song_identifiers,
             paths,
-            event_features,
-            energy_features,
             energy,
-            rule_candidates,
             sections,
         )
         machine_events = _run_stage(
