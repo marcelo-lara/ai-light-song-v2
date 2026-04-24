@@ -103,7 +103,7 @@ Goal: capture physical intensity, brightness, transients, and structure.
 | 3.1 | Section segmentation | structural change windows, optional labels, confidence | `docs/3.1.section_segmentation_story.md` |
 | 4.1 | Derived energy features | energy cards, peaks, dips, accent candidates | `docs/4.1.energy_feature_derivation_story.md` |
 | 3.2 | Structural integrity audit | confidence scores and transient-locking metadata | `docs/3.2.structural_integrity_audit_story.md` |
-| 6.3 | LLM-friendly song map | unified "Song Map" for LLM consumption | `docs/6.3.llm-friendly_song_map_abstraction.md` |
+| 6.3 | LLM-friendly song map abstraction | unified deterministic song map for prompt-based consumers | `docs/6.3.unified_llm_friendly_abstraction_story.md` |
 
 Representative artifact: `layer_c_energy.json`.
 
@@ -118,7 +118,7 @@ Goal: translate audio into note-level, drum-hit, and phrase-level musical behavi
 | 4.3 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/4.3.symbolic_feature_engineering_story.md` |
 | 3.4 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/3.4.temporal_alignment_story.md` |
 | 6.2 | Section hint inference | deterministic symbolic and structural section hints with editable output merge | `docs/6.2.section_hints_story.md` |
-| 6.3 | LLM-friendly abstraction | deterministic musician-readable symbolic descriptions | `docs/6.3.llm_friendly_abstraction_story.md` |
+| 6.3 | Unified LLM-friendly abstraction | deterministic prompt-facing song map with symbolic, structural, and identifier context | `docs/6.3.unified_llm_friendly_abstraction_story.md` |
 
 Representative artifact: `layer_b_symbolic.json`.
 
@@ -131,7 +131,7 @@ Goal: define the canonical event contract, infer musically meaningful event wind
 | 5.1 | Event vocabulary and schema | `event_vocabulary.json` and `song_event_schema.json` | `docs/5.1.event_vocabulary_and_schema_story.md` |
 | 4.4 | Event feature normalization and timeline alignment | `event_inference/features.json` and helper indices such as `event_inference/timeline_index.json` | `docs/4.4.event_feature_normalization_story.md` |
 | 5.2 | Rule-based baseline event detection | `event_inference/rule_candidates.json` | `docs/5.2.rule_based_event_detection_story.md` |
-| 4.5 | Song identifier inference | `energy_summary/hints.json` | `docs/4.5.song_identifier_inference_story.md` |
+| 4.5 | Song identifier inference and physical transient audit | `energy_summary/hints.json` with event-level audit metadata | `docs/4.5.song_identifier_inference_story.md` |
 | 5.4 | Advanced musical event classification | `event_inference/events.machine.json` | `docs/5.4.advanced_event_classification_story.md` |
 | 5.5 | Confidence, review, and override workflow | `validation/song_events.review.json`, `validation/song_events.review.md`, and `validation/song_events.overrides.json` | `docs/5.5.event_review_and_override_story.md` |
 | 5.5 | Event benchmarking and genre-sensitive tuning | `validation/event_benchmark.json`, benchmark annotations, and threshold profiles | `docs/5.5.event_benchmarking_and_tuning_story.md` |
@@ -146,7 +146,7 @@ Goal: Classify events from multi-modal feature streams with explainability.
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
 | 5.3 | [PENDING] 1D-CNN Event Classifier with Penalty Logic | `1d_cnn_v1.pth` trained with physical constraints | `docs/5.3.ml_event_classifier_and_training_story.md` |
-| 5.9 | [PENDING] ML Classification with Penalty Logic Training | Training pipeline with FFT-Audit Rewards | `docs/5.9.ml_classification_penalty_logic_story.md` |
+| 5.9 | [PENDING] ML classification with physical-constraint penalty logic | training and inference penalty metadata with reproducibility controls | `docs/5.9.ml_classification_penalty_logic_story.md` |
 | 5.3 | 1D-CNN training and dataset generation | `models/event_classifier/1d_cnn_v1.pth` and `models/event_classifier/metadata.json` | `docs/5.3.event_classifier_training_story.md` |
 | 1.5 | Unified perceptual embedding | `layer_perceptual_embedding.json` and `layer_musical_signature.json` | `docs/1.5.unified_perceptual_embedding_story.md` |
 
