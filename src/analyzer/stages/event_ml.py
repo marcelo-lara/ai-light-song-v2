@@ -1,7 +1,12 @@
+from pathlib import Path
+
 from analyzer.paths import SongPaths
 from analyzer.event_ml_models import parse_contextual_features, Event1DCNN, EVENT_TYPES
 import torch
 from analyzer.io import write_json
+
+
+MODEL_PATH = Path(__file__).resolve().parents[3] / "models" / "event_classifier" / "1d_cnn_v1.pth"
 
 def generate_ml_events(paths: SongPaths) -> dict:
     features_path = paths.artifact("event_inference", "contextual_features.json")
@@ -14,9 +19,8 @@ def generate_ml_events(paths: SongPaths) -> dict:
     num_features = tensor.shape[0]
     model = Event1DCNN(num_features=num_features)
     
-    model_path = "/data/artifacts/models/event_classifier/1d_cnn_v1.pth"
     try:
-        model.load_state_dict(torch.load(model_path))
+        model.load_state_dict(torch.load(MODEL_PATH, map_location="cpu"))
     except Exception as e:
         print(f"Skipping ML events: {e}")
         return {"schema_version": 1, "events": []}

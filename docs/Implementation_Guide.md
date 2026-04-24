@@ -146,7 +146,8 @@ Goal: Classify events from multi-modal feature streams with explainability.
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
 | 6.1 | Optional ML event classifier and explainability | classifier artifacts and explanation outputs | `docs/6.1.event_ml_classifier_story.md` |
-| 6.2 | Unified perceptual embedding | `layer_perceptual_embedding.json` and `layer_musical_signature.json` | `docs/6.2.unified_perceptual_embedding_story.md` |
+| 6.2 | 1D-CNN training and dataset generation | `models/event_classifier/1d_cnn_v1.pth` and `models/event_classifier/metadata.json` | `docs/6.2.event_classifier_training_story.md` |
+| 6.3 | Unified perceptual embedding | `layer_perceptual_embedding.json` and `layer_musical_signature.json` | `docs/6.3.unified_perceptual_embedding_story.md` |
 
 ## EPIC 7: Lighting Score Generation
 
