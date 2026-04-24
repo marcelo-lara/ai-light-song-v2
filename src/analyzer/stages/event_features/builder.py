@@ -1,198 +1,18 @@
 from __future__ import annotations
-import numpy as np
-
 from typing import Any
-
-from analyzer.stages._stem_activity import estimate_stem_activity_by_beat
 from analyzer.io import write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
+from analyzer.stages._stem_activity import estimate_stem_activity_by_beat
 
-
-# Multi-Scale Rolling Windows based on expected beats
-ROLLING_WINDOWS = {
-    "local": 1,         # 1-beat window
-    "phrasal": 16,      # 4-bar window (Assuming 4/4)
-    "structural": 128,  # 32-bar window
-}
-
-
-def _window_end_s(timing: dict, beat_index: int) -> float:
-    beats = timing.get("beats", [])
-    bars = timing.get("bars", [])
-    if beat_index + 1 < len(beats):
-        return float(beats[beat_index + 1]["time"])
-    if bars:
-        return float(bars[-1]["end_s"])
-    return float(beats[beat_index]["time"])
-
-
-def _section_for_time(time_s: float, sections: list[dict]) -> dict | None:
-    for section in sections:
-        if float(section["start"]) <= time_s < float(section["end"]):
-            return section
-    if sections and time_s >= float(sections[-1]["start"]):
-        return sections[-1]
-    return None
-
-
-def _phrase_for_time(time_s: float, phrases: list[dict]) -> dict | None:
-    for phrase in phrases:
-        if float(phrase["start_s"]) <= time_s < float(phrase["end_s"]):
-            return phrase
-    if phrases and time_s >= float(phrases[-1]["start_s"]):
-        return phrases[-1]
-    return None
-
-
-def _chord_for_time(time_s: float, chords: list[dict]) -> dict | None:
-    for chord in chords:
-        if float(chord["time"]) <= time_s < float(chord["end_s"]):
-            return chord
-    if chords and time_s >= float(chords[-1]["time"]):
-        return chords[-1]
-    return None
-
-
-def _overlap(start_a: float, end_a: float, start_b: float, end_b: float) -> float:
-    return max(0.0, min(end_a, end_b) - max(start_a, start_b))
-
-
-def _window_note_overlap_score(notes: list[dict], start_s: float, end_s: float) -> float:
-    duration = max(end_s - start_s, 1e-6)
-    overlap_sum = 0.0
-    for note in notes:
-        overlap_sum += _overlap(start_s, end_s, float(note["time"]), float(note["end_s"]))
-    return min(overlap_sum / duration, 1.0)
-
-
-def _calculate_song_statistics(raw_rows: list[dict], numeric_keys: list[str]) -> dict[str, dict]:
-    statistics = {}
-    for key in numeric_keys:
-        values = np.array([float(row[key]) for row in raw_rows])
-        mean = float(np.mean(values))
-        std = float(np.std(values))
-        statistics[key] = {
-            "mean": round(mean, 6),
-            "std_dev": round(std, 6),
-            "min": round(float(np.min(values)), 6),
-            "max": round(float(np.max(values)), 6),
-        }
-    return statistics
-
-
-def _apply_zscore(value: float, mean: float, std_dev: float) -> float:
-    if std_dev < 1e-9:
-        return 0.0
-    return round((value - mean) / std_dev, 6)
-
-
-def _resample_to_100ms_grid(
-    normalized_rows: list[dict],
-    duration_s: float,
-) -> list[dict]:
-    if not normalized_rows:
-        return []
-    grid_times = np.arange(0.0, duration_s + 0.05, 0.1)
-    beat_time_array = np.array([float(row["start_time"]) for row in normalized_rows])
-    grid_features = []
-        
-    for grid_time in grid_times:
-        closest_idx = int(np.argmin(np.abs(beat_time_array - float(grid_time))))
-        source_row = normalized_rows[closest_idx]
-        grid_row = {
-            "time_s": round(float(grid_time), 3),
-            "source_beat": source_row["beat"],
-            "section_id": source_row.get("section_id"),
-            "section_name": source_row.get("section_name"),
-            "normalized": dict(source_row["normalized"]),
-            "derived": dict(source_row["derived"]),
-            "rolling": dict(source_row.get("rolling", {})),
-        }
-        grid_features.append(grid_row)
-    return grid_features
-
-
-def _accent_lookup(accent_candidates: list[dict], start_s: float, end_s: float) -> tuple[str | None, float]:
-    for accent in accent_candidates:
-        accent_time = float(accent["time"])
-        if start_s <= accent_time < end_s:
-            return str(accent["id"]), float(accent.get("intensity", 0.0))
-    return None, 0.0
-
-
-def _build_timeline_index(
-    *,
-    paths: SongPaths,
-    timing: dict,
-    sections: list[dict],
-    phrases: list[dict],
-    chords: list[dict],
-    accent_candidates: list[dict],
-) -> dict[str, Any]:
-    payload = {
-        "schema_version": SCHEMA_VERSION,
-        "song_name": paths.song_name,
-        "generated_from": {
-            "source_song_path": str(paths.song_path),
-            "beats_file": str(paths.artifact("essentia", "beats.json")),
-            "sections_file": str(paths.artifact("section_segmentation", "sections.json")),
-            "harmonic_layer_file": str(paths.artifact("layer_a_harmonic.json")),
-            "symbolic_layer_file": str(paths.artifact("layer_b_symbolic.json")),
-            "energy_layer_file": str(paths.artifact("layer_c_energy.json")),
-            "features_file": str(paths.artifact("event_inference", "features.json")),
-        },
-        "beats": [
-            {
-                "beat": int(beat["index"]),
-                "bar": int(beat["bar"]),
-                "beat_in_bar": int(beat["beat_in_bar"]),
-                "time": round(float(beat["time"]), 6),
-            }
-            for beat in timing.get("beats", [])
-        ],
-        "sections": [
-            {
-                "section_id": section["section_id"],
-                "section_name": section.get("section_character") or section.get("label"),
-                "start_time": round(float(section["start"]), 6),
-                "end_time": round(float(section["end"]), 6),
-                "confidence": round(float(section["confidence"]), 6),
-            }
-            for section in sections
-        ],
-        "phrases": [
-            {
-                "phrase_window_id": phrase["id"],
-                "phrase_group_id": phrase.get("phrase_group_id"),
-                "section_id": phrase.get("section_id"),
-                "start_time": round(float(phrase["start_s"]), 6),
-                "end_time": round(float(phrase["end_s"]), 6),
-            }
-            for phrase in phrases
-        ],
-        "chords": [
-            {
-                "chord": chord["chord"],
-                "start_time": round(float(chord["time"]), 6),
-                "end_time": round(float(chord["end_s"]), 6),
-                "confidence": round(float(chord["confidence"]), 6),
-            }
-            for chord in chords
-        ],
-        "accents": [
-            {
-                "accent_id": accent["id"],
-                "time": round(float(accent["time"]), 6),
-                "kind": accent["kind"],
-                "intensity": round(float(accent["intensity"]), 6),
-            }
-            for accent in accent_candidates
-        ],
-    }
-    write_json(paths.artifact("event_inference", "timeline_index.json"), payload)
-    return payload
-
+from .utils import (
+    ROLLING_WINDOWS, _window_end_s, _section_for_time, _phrase_for_time,
+    _chord_for_time, _accent_lookup, _window_note_overlap_score,
+    _calculate_song_statistics, _apply_zscore
+)
+from .resampler import _resample_to_100ms_grid
+from .timeline import _build_timeline_index
+from .utils import _rolling_mean
 
 def build_event_feature_layer(
     paths: SongPaths,
@@ -504,16 +324,3 @@ def build_event_feature_layer(
     return payload
 
 
-def _rolling_mean(rows: list[dict[str, Any]], end_index: int, dotted_key: str, window_size: int) -> float:
-    start_index = max(0, end_index - window_size + 1)
-    window = rows[start_index : end_index + 1]
-    if not window:
-        return 0.0
-    key_parts = dotted_key.split(".")
-    total = 0.0
-    for row in window:
-        value: Any = row
-        for key in key_parts:
-            value = value[key]
-        total += float(value)
-    return round(total / len(window), 6)

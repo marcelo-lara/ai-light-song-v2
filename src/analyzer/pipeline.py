@@ -28,7 +28,7 @@ from analyzer.stages.light_design import generate_lighting_score
 from analyzer.stages.lighting import generate_lighting_events
 from analyzer.stages.loudness import extract_mix_stem_loudness
 from analyzer.stages.patterns import extract_chord_patterns
-from analyzer.stages.sections_v2 import segment_sections
+from analyzer.stages.sections import segment_sections
 from analyzer.stages.symbolic import extract_symbolic_features
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import build_reference_timing_grid, extract_timing_grid

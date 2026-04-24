@@ -11,7 +11,7 @@ from analyzer.io import ensure_directory, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
 from analyzer.stages._omnizart_runtime import resolve_omnizart_drum_model_path
-from analyzer.stages.symbolic import _nearest_beat_alignment, _section_for_time
+from analyzer.stages.symbolic.utils import _nearest_beat_alignment, _section_for_time
 
 
 SUPPORTED_EVENT_TYPES = ["kick", "snare", "hat", "unresolved"]

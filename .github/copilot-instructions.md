@@ -9,6 +9,7 @@
 
 ## Code and Design Policy
 - ALWAYS consult the `docs/` folder, specifically the `Implementation_Guide.md` and the relevant Story files, before proposing or implementing changes.
+- **CRITICAL FILE REFERENCE**: You MUST use `docs/source_files_reference.md` as your primary index to locate source files without brute-forcing search. If you create new modules or move files, you MUST update this guide immediately to reflect the workspace structure.
 - Remove deprecated helpers, dead code, and compatibility shims.
 - Prefer correctness and clarity over backward compatibility in unfinished internal contracts.
 - No substitute inference algorithm when a story names a primary dependency. Do not implement a custom inference algorithm when a well-known one is named in the story. Fail gracefully if the story's named dependencies cannot be used.
