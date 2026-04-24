@@ -5,7 +5,7 @@ import { buildSparseLaneContent } from "./sparseContent.js";
 import { drawRoundedRect, getTrackContext, getTrackWidth, timeToPx, trimCanvasText } from "./shared.js";
 
 function buildSparseRegions(laneId, timeline, zoom) {
-  const overlapCompactLaneIds = new Set(["machineEvents", "phrases"]);
+  const overlapCompactLaneIds = new Set(["identifierHints", "machineEvents", "mlEvents", "phrases"]);
   const top = TRACK_PADDING;
   const availableHeight = TRACK_HEIGHT - (TRACK_PADDING * 2);
   const baseRegions = buildSparseLaneContent(laneId, timeline).map((item) => ({ x: timeToPx(item.start_s, timeline, zoom), width: Math.max(2, timeToPx(item.end_s, timeline, zoom) - timeToPx(item.start_s, timeline, zoom)), selection: { laneLabel: item.laneLabel, label: item.label, start_s: Number(item.start_s), end_s: Number(item.end_s), reference: item.reference || item.id || "-", detail: item.detail || "-", summary: item.summary || "", caption: item.caption || "" }, caption: item.caption || formatRange(item.start_s, item.end_s) }));

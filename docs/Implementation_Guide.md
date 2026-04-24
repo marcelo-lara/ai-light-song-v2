@@ -180,6 +180,7 @@ The debugger is an internal engineering and review tool. Its primary inspection 
 | 8.6 | Semantic zoom and performance guardrails | clustering, zoom floors, and viewport-limited rendering | `docs/8.6.semantic_zoom_and_performance_story.md` |
 | 8.7 | Regression validation overlay | beat-grid, drift, and validation comparison overlays | `docs/8.7.regression_validation_overlay_story.md` |
 | 8.8 | Human hint editor | explicit editing of reference human hints in the helper UI | `docs/8.8.human_hint_editor_story.md` |
+| 8.9 | Identifier and ML event lanes | read-only debugger lanes for rule identifier hints and ML event predictions | `docs/8.9.identifier_and_ml_event_lanes_story.md` |
 
 Representative implementation assets: `/ui/`, the Compose `ui` service, debugger access to `layer_a_harmonic.json`, `layer_b_symbolic.json`, `layer_c_energy.json`, `layer_d_patterns.json`, `event_inference/*.json`, `validation/phase_1_report.json`, `music_feature_layers.json`, and the editable reference file `data/reference/<Song - Artist>/human/human_hints.json`.
 
