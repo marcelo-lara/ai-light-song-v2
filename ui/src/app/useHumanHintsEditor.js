@@ -10,7 +10,7 @@ function formatEditableTime(value) {
 
 function normalizeDraftHint(hint, index) {
   return {
-    id: String(hint?.id ?? `human-hint-${index + 1}`),
+    id: String(hint?.id ?? `hint-${String(index + 1).padStart(3, "0")}`),
     title: String(hint?.title ?? hint?.label ?? `Hint ${index + 1}`),
     start_time: formatEditableTime(hint?.start_time ?? hint?.start_s ?? hint?.start ?? 0),
     end_time: formatEditableTime(hint?.end_time ?? hint?.end_s ?? hint?.end ?? 0),
@@ -60,10 +60,14 @@ function buildSavePayload(songName, hints) {
 }
 
 function createNewHint(currentTime, existingHints) {
-  const nextIndex = existingHints.length + 1;
+  const maxIndex = existingHints.reduce((max, hint) => {
+    const num = parseInt(hint.id.replace("hint-", ""), 10);
+    return !isNaN(num) && num > max ? num : max;
+  }, 0);
+  const nextIndex = maxIndex + 1;
   return {
-    id: `human-hint-${Date.now()}`,
-    title: `Hint ${nextIndex}`,
+    id: `hint-${String(nextIndex).padStart(3, "0")}`,
+    title: `Hint ${existingHints.length + 1}`,
     start_time: formatEditableTime(currentTime),
     end_time: formatEditableTime(currentTime),
     summary: "",
@@ -75,10 +79,10 @@ function findHintIdFromSelection(selection, hints) {
   if (!selection || selection.laneLabel !== "Human Hints") {
     return "";
   }
-  const candidateIds = [selection.reference, selection.detail, selection.label]
+  const candidateIds = [selection.reference, selection.detail]
     .map((value) => String(value || "").trim())
     .filter(Boolean);
-  const match = hints.find((hint) => candidateIds.includes(hint.id) || candidateIds.includes(hint.title));
+  const match = hints.find((hint) => candidateIds.includes(hint.id));
   return match?.id || "";
 }
 
@@ -143,8 +147,9 @@ export function useHumanHintsEditor({
     setSaveState({ status: "idle", message: "" });
   }
 
-  function handleAddHint() {
-    const nextHint = createNewHint(currentTime, hints);
+  function handleAddHint(timeHint) {
+    const time = typeof timeHint === "number" ? timeHint : currentTime;
+    const nextHint = createNewHint(time, hints);
     setHints((currentHints) => [...currentHints, nextHint]);
     setActiveHintId(nextHint.id);
     setIsOpen(true);
@@ -155,17 +160,13 @@ export function useHumanHintsEditor({
     handleChangeActiveHint(field, formatEditableTime(currentTime));
   }
 
-  function handleDeleteActiveHint() {
+  async function handleDeleteActiveHint() {
     if (!activeHintId) {
       return;
     }
-    setHints((currentHints) => {
-      return currentHints.filter((hint) => hint.id !== activeHintId);
-    });
+    setHints((currentHints) => currentHints.filter((hint) => hint.id !== activeHintId));
     setActiveHintId("");
-    setIsOpen(false);
     setSaveState({ status: "idle", message: "" });
-    onCancelSelection?.();
   }
 
   function handleCancel() {
@@ -187,7 +188,10 @@ export function useHumanHintsEditor({
       selectedSongRef.current = selectedSong;
       setSongName(payload.song_name);
       setHints(payload.human_hints.map(normalizeDraftHint));
+      setActiveHintId("");
+      setIsOpen(false);
       setSaveState({ status: "success", message: "Human hints saved to the reference file." });
+      onCancelSelection?.();
     } catch (error) {
       setSaveState({ status: "error", message: error instanceof Error ? error.message : "Unable to save human hints." });
     }

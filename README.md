@@ -189,9 +189,13 @@ Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not inv
 ```bash
 docker compose run --rm app \
   ./analyze \
-  --song "/data/songs/Sash - Raindrops.mp3" \
+  --song "/data/songs/Cinderella - Ella Lee.mp3" \
   --compare beats,chords,sections,energy,patterns,unified,events
 ```
+
+Stage progress lines are prefixed with the pipeline story identifier when one is defined, for example `[1.1] Cinderella - Ella Lee | ensure-stems`.
+
+When `--all-songs` is used, the same progress lines also include the batch position prefix, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
 
 Run the same full pipeline for every song under `/data/songs`:
 
@@ -200,6 +204,12 @@ docker compose run --rm app \
   ./analyze \
   --all-songs
 ```
+
+Analye all songs in background
+```bash
+mkdir -p logs && nohup docker compose run --rm -T app ./analyze --all-songs --device cuda > "logs/all-songs-$(date +%F_%H-%M-%S).log" 2>&1 < /dev/null & echo $!
+```
+
 
 **Available compare targets:** `beats`, `chords`, `sections`, `energy`, `patterns`, `unified`, `events`
 

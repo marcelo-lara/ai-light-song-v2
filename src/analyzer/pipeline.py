@@ -9,6 +9,7 @@ from analyzer.exceptions import AnalysisError
 from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
 from analyzer.stages.event_benchmark import benchmark_event_outputs
+from analyzer.stages.event_ml import generate_ml_events
 from analyzer.stages.event_features import build_event_feature_layer
 from analyzer.stages.event_identifiers import infer_song_identifiers
 from analyzer.stages.event_machine import generate_machine_events
@@ -27,7 +28,7 @@ from analyzer.stages.light_design import generate_lighting_score
 from analyzer.stages.lighting import generate_lighting_events
 from analyzer.stages.loudness import extract_mix_stem_loudness
 from analyzer.stages.patterns import extract_chord_patterns
-from analyzer.stages.sections_v2 import segment_sections
+from analyzer.stages.sections import segment_sections
 from analyzer.stages.symbolic import extract_symbolic_features
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import build_reference_timing_grid, extract_timing_grid
@@ -44,12 +45,85 @@ from analyzer.stages.validation import (
 )
 
 
+_BATCH_PROGRESS: tuple[int, int] | None = None
+
+
+STAGE_PIPELINE_IDS: dict[str, str] = {
+    "ensure-stems": "1.1",
+    "extract-timing-grid": "1.2",
+    "build-reference-timing-grid": "1.2",
+    "validate-beats": "1.2",
+    "generate-timing-diagnosis": "1.2",
+    "extract-fft-bands": "1.3",
+    "extract-mix-stem-loudness": "1.4",
+    "extract-hpcp-and-chords": "2.1-2.2",
+    "build-reference-harmonic-layer": "2.1-2.2",
+    "validate-chords": "2.2",
+    "extract-chord-patterns": "2.3",
+    "extract-symbolic-features": "2.4-4.3",
+    "extract-drum-events": "2.5",
+    "extract-energy-features": "2.6",
+    "segment-sections": "3.1",
+    "derive-energy-layer": "4.1",
+    "build-event-feature-layer": "4.4",
+    "infer-song-identifiers": "4.5",
+    "generate-rule-candidates": "5.2",
+    "generate-ml-events": "5.3",
+    "generate-machine-events": "5.4",
+    "generate-event-review": "5.5",
+    "benchmark-event-outputs": "5.5",
+    "export-event-timeline": "5.6",
+    "classify-genre": "6.1",
+    "generate-section-hints": "6.2",
+    "assemble-music-feature-layers": "7.1",
+    "build-ui-data": "7.2",
+    "generate-lighting-events": "7.3",
+    "generate-lighting-score": "7.4",
+    "build-human-hints-alignment": "8.8",
+    "build-validation-report": "validation",
+    "write-validation-report": "validation",
+    "write-validation-markdown": "validation",
+}
+
+
+def set_batch_progress(current_song: int, total_songs: int) -> None:
+    if current_song < 1:
+        raise ValueError("current_song must be >= 1")
+    if total_songs < 1:
+        raise ValueError("total_songs must be >= 1")
+    if current_song > total_songs:
+        raise ValueError("current_song must be <= total_songs")
+
+    global _BATCH_PROGRESS
+    _BATCH_PROGRESS = (current_song, total_songs)
+
+
+def clear_batch_progress() -> None:
+    global _BATCH_PROGRESS
+    _BATCH_PROGRESS = None
+
+
+def format_batch_progress_prefix() -> str:
+    if _BATCH_PROGRESS is None:
+        return ""
+
+    current_song, total_songs = _BATCH_PROGRESS
+    return f"[{current_song}/{total_songs}]"
+
+
 def _print_phase_marker(song_name: str, phase_name: str, edge: str) -> None:
-    print(f"{song_name}-{phase_name}-{edge}", flush=True)
+    print(f"{format_batch_progress_prefix()}{song_name}-{phase_name}-{edge}", flush=True)
 
 
 def _print_stage_marker(song_name: str, _phase_name: str, stage_name: str) -> None:
-    print(f"{song_name} | {stage_name}", flush=True)
+    stage_id = STAGE_PIPELINE_IDS.get(stage_name)
+    if stage_id:
+        # Extract the major epic number (e.g. "1.2" -> "1", "2.1-2.2" -> "2")
+        epic_num = stage_id.split(".")[0]
+        stage_prefix = f"[EPIC {epic_num} | {stage_id}] "
+    else:
+        stage_prefix = ""
+    print(f"{format_batch_progress_prefix()}{stage_prefix}{song_name} | {stage_name}", flush=True)
 
 
 StageResult = TypeVar("StageResult")
@@ -166,6 +240,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             sections,
             genre_result,
         )
+        ml_events = _run_stage(paths.song_name, "phase-1", "generate-ml-events", generate_ml_events, paths)
         rule_candidates = _run_stage(paths.song_name, "phase-1", "generate-rule-candidates", generate_rule_candidates, paths, event_features, sections, genre_result)
         event_identifiers = _run_stage(
             paths.song_name,
@@ -173,10 +248,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             "infer-song-identifiers",
             infer_song_identifiers,
             paths,
-            event_features,
-            energy_features,
             energy,
-            rule_candidates,
             sections,
         )
         machine_events = _run_stage(

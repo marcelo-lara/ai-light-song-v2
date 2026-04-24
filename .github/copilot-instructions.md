@@ -9,6 +9,7 @@
 
 ## Code and Design Policy
 - ALWAYS consult the `docs/` folder, specifically the `Implementation_Guide.md` and the relevant Story files, before proposing or implementing changes.
+- **CRITICAL FILE REFERENCE**: You MUST use `docs/source_files_reference.md` as your primary index to locate source files without brute-forcing search. If you create new modules or move files, you MUST update this guide immediately to reflect the workspace structure.
 - Remove deprecated helpers, dead code, and compatibility shims.
 - Prefer correctness and clarity over backward compatibility in unfinished internal contracts.
 - No substitute inference algorithm when a story names a primary dependency. Do not implement a custom inference algorithm when a well-known one is named in the story. Fail gracefully if the story's named dependencies cannot be used.
@@ -32,6 +33,7 @@
 ## Implementation Style
 - Prefer small, focused files, but do not split code mechanically just to satisfy a line limit.
 - Keep functions narrow in purpose and isolate side effects at boundaries.
+- When files grow significantly (e.g., over 200 lines), consider whether they can be split into smaller, more focused modules. This is a guideline, not a hard rule; prioritize clarity and cohesion over a strict line count.
 - Use explicit names, explicit types, and consistent return shapes.
 - Extract duplicated logic instead of repeating it.
 - Add comments only when intent is not obvious from the code.
@@ -39,3 +41,6 @@
 
 ## Decision Rule
 - If an instruction conflicts with correctness, artifact-contract clarity, or the container runtime contract, prioritize correctness and update the documentation to match the current state.
+
+## Workspace Cleanup
+- Never leave temporary scripts, patching code, or scaffolded one-off files laying around in the workspace. Always clean up after yourself.

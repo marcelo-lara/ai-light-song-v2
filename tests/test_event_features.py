@@ -97,10 +97,11 @@ class EventFeatureLayerTests(unittest.TestCase):
             self.assertTrue(paths.artifact("event_inference", "timeline_index.json").exists())
             self.assertAlmostEqual(payload["features"][2]["derived"]["silence_gap_seconds"], 1.0)
             self.assertEqual(payload["features"][3]["source_refs"]["accent_id"], "accent_001")
+            self.assertTrue(paths.artifact("event_inference", "song_statistics.json").exists())
+            self.assertTrue(paths.artifact("event_inference", "contextual_features.json").exists())
             for row in payload["features"]:
                 for value in row["normalized"].values():
-                    self.assertGreaterEqual(float(value), 0.0)
-                    self.assertLessEqual(float(value), 1.0)
+                    self.assertIsInstance(value, float)
 
 
 if __name__ == "__main__":

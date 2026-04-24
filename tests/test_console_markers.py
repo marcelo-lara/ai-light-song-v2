@@ -8,14 +8,17 @@ from contextlib import ExitStack
 from pathlib import Path
 from unittest.mock import call, patch
 
-from analyzer.cli import SONG_SEPARATOR_WIDTH, _print_song_header, _run_single_song
+from analyzer.cli import SONG_SEPARATOR_WIDTH, _print_song_header, _run_single_song, _single_song_command
 from analyzer.config import ValidationConfig
 from analyzer.paths import SongPaths
-from analyzer.pipeline import _print_phase_marker, _print_stage_marker, run_phase_1
+from analyzer.pipeline import _print_phase_marker, _print_stage_marker, clear_batch_progress, run_phase_1, set_batch_progress
 from analyzer.stages.validation import ValidationResult
 
 
 class ConsoleMarkerTests(unittest.TestCase):
+    def tearDown(self) -> None:
+        clear_batch_progress()
+
     def test_print_song_header_writes_separator_and_song_name(self) -> None:
         with patch("builtins.print") as mock_print:
             _print_song_header("Example Song")
@@ -28,6 +31,20 @@ class ConsoleMarkerTests(unittest.TestCase):
             ],
         )
 
+    def test_print_song_header_includes_batch_progress_prefix(self) -> None:
+        set_batch_progress(2, 20)
+
+        with patch("builtins.print") as mock_print:
+            _print_song_header("Example Song")
+
+        self.assertEqual(
+            mock_print.call_args_list,
+            [
+                call("-" * SONG_SEPARATOR_WIDTH, flush=True),
+                call("[2/20]Example Song", flush=True),
+            ],
+        )
+
     def test_print_phase_marker_writes_song_phase_edge(self) -> None:
         with patch("builtins.print") as mock_print:
             _print_phase_marker("Example Song", "phase-1", "start")
@@ -36,10 +53,30 @@ class ConsoleMarkerTests(unittest.TestCase):
 
     def test_print_stage_marker_writes_song_phase_stage_start(self) -> None:
         with patch("builtins.print") as mock_print:
-            _print_stage_marker("Example Song", "phase-1", "classify-genre")
+            _print_stage_marker("Example Song", "phase-1", "ensure-stems")
 
         mock_print.assert_called_once_with(
-            "Example Song | classify-genre",
+            "[1.1] Example Song | ensure-stems",
+            flush=True,
+        )
+
+    def test_print_stage_marker_includes_batch_progress_prefix(self) -> None:
+        set_batch_progress(2, 20)
+
+        with patch("builtins.print") as mock_print:
+            _print_stage_marker("Example Song", "phase-1", "ensure-stems")
+
+        mock_print.assert_called_once_with(
+            "[2/20][1.1] Example Song | ensure-stems",
+            flush=True,
+        )
+
+    def test_print_stage_marker_falls_back_when_stage_is_unmapped(self) -> None:
+        with patch("builtins.print") as mock_print:
+            _print_stage_marker("Example Song", "phase-1", "unknown-stage")
+
+        mock_print.assert_called_once_with(
+            "Example Song | unknown-stage",
             flush=True,
         )
 
@@ -54,6 +91,8 @@ class ConsoleMarkerTests(unittest.TestCase):
             chord_min_overlap=0.5,
             device=None,
             verbose=False,
+            batch_song_index=None,
+            batch_song_total=None,
         )
         compare_targets = ("beats", "sections")
         paths = SongPaths(
@@ -76,6 +115,31 @@ class ConsoleMarkerTests(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         mock_header.assert_called_once_with("Example Song")
         mock_run_phase.assert_called_once()
+
+    def test_single_song_command_includes_batch_progress_flags(self) -> None:
+        args = argparse.Namespace(
+            artifacts_root="/tmp/artifacts",
+            reference_root="/tmp/reference",
+            compare="beats,sections",
+            fail_on_mismatch=False,
+            beat_tolerance_seconds=0.1,
+            tolerance_seconds=2.0,
+            chord_min_overlap=0.5,
+            device=None,
+            verbose=False,
+        )
+
+        command = _single_song_command(
+            args,
+            Path("/tmp/Example Song.mp3"),
+            batch_song_index=2,
+            batch_song_total=20,
+        )
+
+        self.assertEqual(
+            command[-4:],
+            ["--batch-song-index", "2", "--batch-song-total", "20"],
+        )
 
     def test_run_phase_1_prints_end_marker_when_setup_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Cinderella",
+  "generated_from": {
+    "engine": "event-inference-v2",
+    "source_layers": ["timing", "energy", "symbolic", "essentia"],
+    "threshold_profile": "electro_pop"
+  },
+  "events": [
+    {
+      "id": "ev_001",
+      "type": "heartbeat_pattern",
+      "start_time": 0.0,
+      "end_time": 45.0,
+      "confidence": 0.94,
+      "intensity": 0.35,
+      "evidence": {
+        "summary": "Consistent syncopated transients in the 20-60Hz FFT band aligned with Drum stem kick hits.",
+        "metrics": [
+          { "name": "sub_band_periodicity", "value": 0.88 },
+          { "name": "drum_rms_envelope_stability", "value": 0.91 }
+        ]
+      },
+      "notes": "The heartbeat kick pattern is the dominant rhythmic texture of the intro."
+    },
+    {
+      "id": "ev_002",
+      "type": "vocal_spotlight",
+      "start_time": 15.0,
+      "end_time": 45.0,
+      "confidence": 0.89,
+      "intensity": 0.5,
+      "evidence": {
+        "summary": "Vocal stem RMS exceeds threshold; spectral energy centered in 1kHz-4kHz bands.",
+        "metrics": [
+          { "name": "vocal_rms_ratio", "value": 0.65 },
+          { "name": "presence_band_dominance", "value": 0.78 }
+        ]
+      },
+      "notes": "Intimate vocal entry over the heartbeat pulse."
+    },
+    {
+      "id": "ev_003",
+      "type": "build",
+      "start_time": 45.0,
+      "end_time": 60.0,
+      "confidence": 0.92,
+      "intensity": 0.75,
+      "evidence": {
+        "summary": "Rising overall RMS and increasing high-frequency energy in 2kHz-6kHz FFT bands.",
+        "metrics": [
+          { "name": "rms_slope", "value": 0.15, "unit": "dB/s" },
+          { "name": "onset_density_increase", "value": 0.4 }
+        ]
+      },
+      "notes": "Standard energy escalation leading into the first drop."
+    },
+    {
+      "id": "ev_004",
+      "type": "drop_explode",
+      "start_time": 60.0,
+      "end_time": 75.0,
+      "confidence": 0.98,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Broadband spectral spike across all bands; 12dB RMS jump in 50ms.",
+        "metrics": [
+          { "name": "broadband_transient_spike", "value": 0.95 },
+          { "name": "bass_band_delta_db", "value": 14.2 }
+        ]
+      },
+      "notes": "High-impact chorus transition."
+    },
+    {
+      "id": "ev_005",
+      "type": "four_on_the_floor",
+      "start_time": 60.0,
+      "end_time": 90.0,
+      "confidence": 0.96,
+      "intensity": 0.9,
+      "notes": "Rhythmic shift from heartbeat to steady 4/4 drive during the chorus."
+    }
+  ]
+}

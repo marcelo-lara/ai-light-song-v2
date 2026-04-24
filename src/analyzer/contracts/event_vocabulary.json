@@ -30,13 +30,17 @@
     {
       "name": "accent",
       "description": "Short impact-style events that mark emphasis inside a larger section or phrase."
+    },
+    {
+      "name": "rhythmic_texture",
+      "description": "Descriptive patterns of rhythmic movement, often validated by stem loudness or FFT transients."
     }
   ],
   "events": [
     {
       "name": "build",
       "category": "transition",
-      "description": "Escalating pre-release energy with rising density, tension, or expectation.",
+      "description": "Escalating pre-release energy, often marked by rising overall RMS loudness, increasing high-frequency FFT energy, and/or increasing onset density.",
       "aliases": [
         "build_up",
         "build-up",
@@ -47,7 +51,7 @@
     {
       "name": "breakdown",
       "category": "transition",
-      "description": "A deliberate reduction in arrangement, density, or intensity before a later change.",
+      "description": "A deliberate reduction in arrangement, density, or intensity, often marked by decreasing overall RMS loudness, spectral simplification, and/or reduced active stems.",
       "aliases": [
         "break_down",
         "break-down",
@@ -57,7 +61,7 @@
     {
       "name": "drop",
       "category": "transition",
-      "description": "The main tension-release event where built energy resolves into peak motion or impact.",
+      "description": "The main tension-release event where built energy resolves into peak motion or impact, characterized by a significant increase in overall RMS loudness, rhythmic activation, and spectral expansion.",
       "aliases": [
         "release",
         "main_drop",
@@ -108,7 +112,7 @@
     {
       "name": "no_drop_plateau",
       "category": "sustained_state",
-      "description": "A plateau after expectation-building where no full drop materializes.",
+      "description": "A plateau after expectation-building where no full drop materializes, characterized by sustained mid-level RMS loudness and a stable FFT profile without significant transients.",
       "aliases": [
         "plateau_release",
         "plateau-release",
@@ -118,7 +122,7 @@
     {
       "name": "fake_drop",
       "category": "transition",
-      "description": "A fake-out release cue that withholds the expected drop payoff.",
+      "description": "A fake-out release cue that withholds the expected drop payoff, often indicated by a brief increase in high-frequency FFT energy without sustained bass activation.",
       "aliases": [
         "fake_out",
         "fake-out",
@@ -128,7 +132,7 @@
     {
       "name": "tension_hold",
       "category": "sustained_state",
-      "description": "A held state where tension persists without resolving into a drop or reset.",
+      "description": "A held state where tension persists without resolving into a drop or reset, often showing sustained high-frequency FFT energy and stable but elevated RMS loudness.",
       "aliases": [
         "hold_tension",
         "hold-tension"
@@ -137,7 +141,7 @@
     {
       "name": "pause_break",
       "category": "transition",
-      "description": "A stop-time, pause, or near-silent interruption used as a structural punctuation point.",
+      "description": "A stop-time, pause, or near-silent interruption used as a structural punctuation point, characterized by near-zero RMS loudness across all stems and minimal FFT activity.",
       "aliases": [
         "pause",
         "stop_time",
@@ -147,7 +151,7 @@
     {
       "name": "anthem_call",
       "category": "vocal_phrase",
-      "description": "A strong lead-vocal call moment meant to frame a crowd-facing or singalong phrase.",
+      "description": "A strong lead-vocal call moment meant to frame a crowd-facing or singalong phrase, typically showing high vocal stem RMS loudness and clear vocal fundamental frequency.",
       "aliases": [
         "vocal_call",
         "crowd_call",
@@ -157,7 +161,7 @@
     {
       "name": "call_response",
       "category": "vocal_phrase",
-      "description": "A phrase pair where one motif is answered by another voice, line, or instrumental phrase.",
+      "description": "A phrase pair where one motif is answered by another voice, line, or instrumental phrase, often indicated by alternating peaks in vocal stem RMS and instrumental stem RMS.",
       "aliases": [
         "call-and-response",
         "call_and_response"
@@ -166,7 +170,7 @@
     {
       "name": "hook_phrase",
       "category": "vocal_phrase",
-      "description": "A recurring hook or refrain phrase that acts as a memorable focal line.",
+      "description": "A recurring hook or refrain phrase that acts as a memorable focal line, often indicated by repeated vocal melodic contour and consistent vocal stem RMS profile across occurrences.",
       "aliases": [
         "hook-phrase",
         "hook_phrase_repeat"
@@ -175,7 +179,7 @@
     {
       "name": "vocal_spotlight",
       "category": "vocal_phrase",
-      "description": "A voice-led window where the vocal envelope dominates the listener focus over the supporting arrangement.",
+      "description": "A voice-led window where the vocal envelope dominates, often triggered by the removal of rhythmic elements like the kick drum. Characterized by high vocal stem RMS relative to other stems and clear presence in 1kHz-4kHz FFT bands.",
       "aliases": [
         "vocal-focus",
         "voice_spotlight",
@@ -185,7 +189,7 @@
     {
       "name": "vocal_tail",
       "category": "transition",
-      "description": "A trailing vocal decay or handoff where the vocal energy falls away while the section continues underneath.",
+      "description": "A trailing vocal decay or handoff where the vocal energy falls away while the section continues underneath, marked by decreasing vocal stem RMS loudness and vocal stem activity falling below a threshold.",
       "aliases": [
         "vocal-decay",
         "voice_tail",
@@ -195,7 +199,7 @@
     {
       "name": "energy_reset",
       "category": "transition",
-      "description": "A clear reset of intensity or momentum before the next section re-establishes direction.",
+      "description": "A clear reset of intensity or momentum before the next section re-establishes direction, often indicated by an abrupt drop in overall RMS loudness and spectral simplification.",
       "aliases": [
         "reset",
         "release_reset",
@@ -205,7 +209,7 @@
     {
       "name": "layer_add",
       "category": "arrangement_change",
-      "description": "An arrangement moment where material is added and density or width meaningfully increases.",
+      "description": "An arrangement moment where material is added and density or width meaningfully increases, typically showing an increase in overall RMS loudness, addition of new active stems, and/or expansion of FFT activity.",
       "aliases": [
         "add_layer",
         "add-layer",
@@ -215,7 +219,7 @@
     {
       "name": "layer_remove",
       "category": "arrangement_change",
-      "description": "An arrangement moment where material is stripped back and density meaningfully decreases.",
+      "description": "An arrangement moment where material is stripped back and density meaningfully decreases, typically showing a decrease in overall RMS loudness, reduction of active stems, and/or simplification of FFT activity.",
       "aliases": [
         "remove_layer",
         "remove-layer",
@@ -225,7 +229,7 @@
     {
       "name": "impact_hit",
       "category": "accent",
-      "description": "A short impact marker with strong transient emphasis or downbeat punctuation.",
+      "description": "A short impact marker with strong transient emphasis or downbeat punctuation, characterized by a sharp, short-duration peak in overall RMS loudness, broadband FFT spike, and high onset strength.",
       "aliases": [
         "impact",
         "impact-hit",
@@ -235,7 +239,7 @@
     {
       "name": "stinger",
       "category": "accent",
-      "description": "A compact one-shot accent or punctuation phrase that ends or punctuates a moment.",
+      "description": "A compact one-shot accent or punctuation phrase that ends or punctuates a moment, often a short-duration, high-energy event with specific timbral characteristics.",
       "aliases": [
         "sting",
         "one_shot",
@@ -245,7 +249,7 @@
     {
       "name": "groove_loop",
       "category": "sustained_state",
-      "description": "A sustained rhythmic loop state with stable pulse and repetition-driven momentum.",
+      "description": "A sustained rhythmic loop state with stable pulse and repetition-driven momentum, characterized by periodic drum stem RMS peaks and consistent low-frequency FFT activity.",
       "aliases": [
         "groove-loop",
         "loop_groove"
@@ -254,7 +258,7 @@
     {
       "name": "atmospheric_plateau",
       "category": "sustained_state",
-      "description": "A persistent spacious or ambient plateau with low-volatility energy and texture emphasis.",
+      "description": "A persistent spacious or ambient plateau with low-volatility energy and texture emphasis, typically showing low overall RMS loudness, diffuse FFT activity without sharp transients, and minimal drum stem activity.",
       "aliases": [
         "atmospheric-plateau",
         "ambient_plateau"
@@ -263,7 +267,7 @@
     {
       "name": "percussion_break",
       "category": "sustained_state",
-      "description": "A percussion-dominant pocket where drums carry the motion while harmonic and vocal material pull back.",
+      "description": "A percussion-dominant pocket where drums carry the motion while harmonic and vocal material pull back, characterized by high drum stem RMS loudness, low harmonic/vocal stem RMS, and prominent mid-range FFT activity (snare/hats).",
       "aliases": [
         "drum_break",
         "percussion-break",
@@ -273,11 +277,29 @@
     {
       "name": "instrumental_bed",
       "category": "sustained_state",
-      "description": "A support-driven instrumental passage where accompaniment or texture carries the section more than the lead vocal.",
+      "description": "A support-driven instrumental passage where accompaniment or texture carries the section more than the lead vocal, typically showing low vocal stem RMS loudness and sustained harmonic/bass stem RMS loudness.",
       "aliases": [
         "instrumental-bed",
         "instrumental_plateau",
         "music_bed"
+      ]
+    },
+    {
+      "name": "heartbeat_pattern",
+      "category": "rhythmic_texture",
+      "description": "A syncopated, low-frequency pulse resembling a heartbeat, usually driven by the kick drum.",
+      "aliases": [
+        "pulse_heart",
+        "heart-beat"
+      ]
+    },
+    {
+      "name": "four_on_the_floor",
+      "category": "rhythmic_texture",
+      "description": "A steady, driving rhythmic pulse on every beat, typically in 4/4 time.",
+      "aliases": [
+        "straight_four",
+        "driving_kick"
       ]
     }
   ]

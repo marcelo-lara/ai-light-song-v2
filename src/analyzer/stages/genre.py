@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+import urllib.request
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -54,6 +55,31 @@ def _load_audio_for_genre(song_path: str) -> "np.ndarray":
     # Essentia genre models typically use 16kHz
     audio = MonoLoader(filename=song_path, sampleRate=16000)()
     return audio
+
+
+def _ensure_genre_model() -> None:
+    """Download the Essentia genre model and metadata if missing."""
+    ESSENTIA_MODEL_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Download model .pb
+    model_path = ESSENTIA_MODEL_DIR / ESSENTIA_GENRE_MODEL_FILE
+    if not model_path.exists():
+        url = "https://essentia.upf.edu/models/autotagging/msd/msd-musicnn-1.pb"
+        print(f"[GENRE] Downloading model weights from {url}")
+        try:
+            urllib.request.urlretrieve(url, str(model_path))
+        except Exception as exc:
+            raise DependencyError(f"Failed to download genre model: {exc}") from exc
+
+    # Download model .json
+    meta_path = ESSENTIA_MODEL_DIR / ESSENTIA_GENRE_METADATA_FILE
+    if not meta_path.exists():
+        url = "https://essentia.upf.edu/models/autotagging/msd/msd-musicnn-1.json"
+        print(f"[GENRE] Downloading model metadata from {url}")
+        try:
+            urllib.request.urlretrieve(url, str(meta_path))
+        except Exception as exc:
+            raise DependencyError(f"Failed to download genre metadata: {exc}") from exc
 
 
 def _load_genre_model_label_names() -> list[str]:
@@ -215,6 +241,7 @@ def classify_genre(paths: SongPaths) -> dict:
 
     # Run genre classification
     try:
+        _ensure_genre_model()
         raw_predictions, allowed_labels = _run_essentia_genre_classifier(audio)
         result = _normalize_predictions(raw_predictions, allowed_labels)
     except (AnalysisError, DependencyError) as exc:

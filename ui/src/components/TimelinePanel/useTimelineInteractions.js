@@ -7,6 +7,7 @@ export function useTimelineInteractions({
   timeline,
   zoom,
   onSeek,
+  onAddHumanHint,
   onOpenSelectionOverlay,
   onCloseSelectionOverlay,
   onToggleLaneCollapsed,
@@ -29,7 +30,7 @@ export function useTimelineInteractions({
   useTimelineDragPan({ dragStateRef, scrollerRef, suppressClickRef });
   useTimelineKeyboardShortcuts({ onPlayPause, onPreviousBar, onPreviousBeat, onNextBeat, onNextBar });
   const menu = useTimelineSongMenu(onHeaderSongSelect);
-  const pointerHandlers = useTimelinePointerHandlers({ timeline, zoom, onSeek, onOpenSelectionOverlay, onCloseSelectionOverlay, onToggleLaneCollapsed, laneVisibility, laneCollapsed, waveformPeaks, onVisibleWindowChange, scrollerRef, rowsRef, viewportFrameRef, dragStateRef, suppressClickRef });
+  const pointerHandlers = useTimelinePointerHandlers({ timeline, zoom, onSeek, onAddHumanHint, onOpenSelectionOverlay, onCloseSelectionOverlay, onToggleLaneCollapsed, laneVisibility, laneCollapsed, waveformPeaks, onVisibleWindowChange, scrollerRef, rowsRef, viewportFrameRef, dragStateRef, suppressClickRef });
 
   return {
     ...menu,
