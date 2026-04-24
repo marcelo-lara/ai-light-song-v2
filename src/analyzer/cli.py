@@ -13,7 +13,7 @@ from analyzer.config import (
     discover_song_files,
 )
 from analyzer.exceptions import AnalyzerError, UsageError
-from analyzer.pipeline import run_phase_1
+from analyzer.pipeline import clear_batch_progress, format_batch_progress_prefix, run_phase_1, set_batch_progress
 
 
 SONG_SEPARATOR_WIDTH = 80
@@ -21,7 +21,7 @@ SONG_SEPARATOR_WIDTH = 80
 
 def _print_song_header(song_name: str) -> None:
     print("-" * SONG_SEPARATOR_WIDTH, flush=True)
-    print(song_name, flush=True)
+    print(f"{format_batch_progress_prefix()}{song_name}", flush=True)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -41,6 +41,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--chord-min-overlap", type=float, default=0.5)
     parser.add_argument("--device")
     parser.add_argument("--verbose", action="store_true")
+    parser.add_argument("--batch-song-index", type=int, help=argparse.SUPPRESS)
+    parser.add_argument("--batch-song-total", type=int, help=argparse.SUPPRESS)
     return parser
 
 
@@ -75,16 +77,28 @@ def _validate_args(args: argparse.Namespace, supported_targets: set[str]) -> tup
 
 
 def _run_single_song(args: argparse.Namespace, compare_targets: tuple[str, ...]) -> int:
-    paths = build_song_paths(args.song, args.artifacts_root, args.reference_root)
-    _print_song_header(paths.song_name)
-    report_json, report_md = default_validation_report_paths(paths)
-    config = _build_validation_config(
-        args,
-        compare_targets,
-        report_json,
-        report_md,
-    )
-    return run_phase_1(paths, config)
+    batch_song_index = getattr(args, "batch_song_index", None)
+    batch_song_total = getattr(args, "batch_song_total", None)
+    if batch_song_index is None and batch_song_total is None:
+        clear_batch_progress()
+    elif batch_song_index is None or batch_song_total is None:
+        raise UsageError("Batch progress requires both --batch-song-index and --batch-song-total.")
+    else:
+        set_batch_progress(batch_song_index, batch_song_total)
+
+    try:
+        paths = build_song_paths(args.song, args.artifacts_root, args.reference_root)
+        _print_song_header(paths.song_name)
+        report_json, report_md = default_validation_report_paths(paths)
+        config = _build_validation_config(
+            args,
+            compare_targets,
+            report_json,
+            report_md,
+        )
+        return run_phase_1(paths, config)
+    finally:
+        clear_batch_progress()
 
 
 def _batch_exit_code(exit_codes: list[int]) -> int:
@@ -95,7 +109,12 @@ def _batch_exit_code(exit_codes: list[int]) -> int:
     return 0
 
 
-def _single_song_command(args: argparse.Namespace, song_path: Path) -> list[str]:
+def _single_song_command(
+    args: argparse.Namespace,
+    song_path: Path,
+    batch_song_index: int | None = None,
+    batch_song_total: int | None = None,
+) -> list[str]:
     command = [
         sys.executable,
         "-m",
@@ -121,16 +140,21 @@ def _single_song_command(args: argparse.Namespace, song_path: Path) -> list[str]
         command.extend(["--device", str(args.device)])
     if args.verbose:
         command.append("--verbose")
+    if batch_song_index is not None or batch_song_total is not None:
+        if batch_song_index is None or batch_song_total is None:
+            raise ValueError("batch_song_index and batch_song_total must be provided together")
+        command.extend(["--batch-song-index", str(batch_song_index), "--batch-song-total", str(batch_song_total)])
     return command
 
 
 def _run_all_songs(args: argparse.Namespace, compare_targets: tuple[str, ...]) -> int:
     exit_codes: list[int] = []
     songs = discover_song_files(args.artifacts_root, args.songs_root)
-    for song_path in songs:
+    total_songs = len(songs)
+    for song_index, song_path in enumerate(songs, start=1):
         paths = build_song_paths(str(song_path), args.artifacts_root, args.reference_root)
         report_json, report_md = default_validation_report_paths(paths)
-        command = _single_song_command(args, song_path)
+        command = _single_song_command(args, song_path, batch_song_index=song_index, batch_song_total=total_songs)
         completed = subprocess.run(command, check=False)
         exit_code = int(completed.returncode)
         if exit_code in {0, 1}:

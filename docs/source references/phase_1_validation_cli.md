@@ -75,6 +75,8 @@ python -m analyzer \
   --all-songs
 ```
 
+When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
+
 The current batch implementation isolates each song run in a subprocess and reuses the repo-local Demucs cache under `models/demucs/` so long-running Docker validation does not depend on mid-run model downloads or a long-lived parent process.
 
 ## Recommended Flags

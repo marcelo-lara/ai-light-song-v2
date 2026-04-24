@@ -132,6 +132,8 @@ docker compose run --rm app \
   --all-songs
 ```
 
+When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
+
 The current batch implementation isolates each song run in a subprocess so the long-lived parent container process does not retain unstable native analysis state between songs.
 
 `./analyze` is the simplest container entry point. `python -m analyzer` is the equivalent module form.

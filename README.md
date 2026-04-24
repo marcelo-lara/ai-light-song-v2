@@ -193,6 +193,10 @@ docker compose run --rm app \
   --compare beats,chords,sections,energy,patterns,unified,events
 ```
 
+Stage progress lines are prefixed with the pipeline story identifier when one is defined, for example `[1.1] Cinderella - Ella Lee | ensure-stems`.
+
+When `--all-songs` is used, the same progress lines also include the batch position prefix, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
+
 Run the same full pipeline for every song under `/data/songs`:
 
 ```bash
