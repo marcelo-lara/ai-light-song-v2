@@ -56,29 +56,29 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "generate-timing-diagnosis": "1.2",
     "extract-fft-bands": "1.3",
     "extract-mix-stem-loudness": "1.4",
-    "extract-hpcp-and-chords": "2.1-2.4",
-    "build-reference-harmonic-layer": "2.1-2.4",
+    "extract-hpcp-and-chords": "2.1-2.2",
+    "build-reference-harmonic-layer": "2.1-2.2",
     "validate-chords": "2.2",
-    "classify-genre": "2.5",
-    "extract-energy-features": "3.1",
-    "segment-sections": "3.2",
-    "derive-energy-layer": "3.3",
-    "extract-symbolic-features": "4.1-4.4",
-    "extract-drum-events": "4.2",
-    "generate-section-hints": "4.5",
-    "build-event-feature-layer": "5.2",
-    "generate-rule-candidates": "5.3",
-    "infer-song-identifiers": "5.4",
-    "generate-machine-events": "5.5",
-    "generate-event-review": "5.6",
-    "benchmark-event-outputs": "5.7",
-    "export-event-timeline": "5.8",
-    "generate-ml-events": "6.1",
-    "extract-chord-patterns": "7.1",
+    "extract-chord-patterns": "2.3",
+    "extract-symbolic-features": "2.4-4.3",
+    "extract-drum-events": "2.5",
+    "extract-energy-features": "2.6",
+    "segment-sections": "3.1",
+    "derive-energy-layer": "4.1",
+    "build-event-feature-layer": "4.4",
+    "infer-song-identifiers": "4.5",
+    "generate-rule-candidates": "5.2",
+    "generate-ml-events": "5.3",
+    "generate-machine-events": "5.4",
+    "generate-event-review": "5.5",
+    "benchmark-event-outputs": "5.5",
+    "export-event-timeline": "5.6",
+    "classify-genre": "6.1",
+    "generate-section-hints": "6.2",
+    "assemble-music-feature-layers": "7.1",
     "build-ui-data": "7.2",
-    "assemble-music-feature-layers": "7.3",
-    "generate-lighting-events": "7.4",
-    "generate-lighting-score": "7.5",
+    "generate-lighting-events": "7.3",
+    "generate-lighting-score": "7.4",
     "build-human-hints-alignment": "8.8",
     "build-validation-report": "validation",
     "write-validation-report": "validation",
@@ -117,7 +117,12 @@ def _print_phase_marker(song_name: str, phase_name: str, edge: str) -> None:
 
 def _print_stage_marker(song_name: str, _phase_name: str, stage_name: str) -> None:
     stage_id = STAGE_PIPELINE_IDS.get(stage_name)
-    stage_prefix = f"[{stage_id}] " if stage_id else ""
+    if stage_id:
+        # Extract the major epic number (e.g. "1.2" -> "1", "2.1-2.2" -> "2")
+        epic_num = stage_id.split(".")[0]
+        stage_prefix = f"[EPIC {epic_num} | {stage_id}] "
+    else:
+        stage_prefix = ""
     print(f"{format_batch_progress_prefix()}{stage_prefix}{song_name} | {stage_name}", flush=True)
 
 
