@@ -8,6 +8,7 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 ### 2.1 Spec-Driven Development (SDD)
 - **Contracts First:** Implementation never begins without a Story spec. The spec defines the schema, inputs, and acceptance criteria.
 - **Documentation as Truth:** If the code and the documentation disagree, the documentation is assumed to be correct until a formal spec change occurs.
+- **Deterministic Randomization:** Any non-deterministic steps (data augmentation, initialization) must use the **Mersenne Twister (MT19937)** with a logged seed to ensure perfectly reproducible debug sessions.
 - **Living Specifications:** Stories and specifications must be updated to reflect final implementation details. A task is not considered "done" until the corresponding Story file accurately reflects the current codebase.
 - **Modular Epics:** The pipeline is divided into eight independent Epics: Audio Preprocessing, Harmonic Summary, Energy & Structure, Symbolic Event Summary, Rule-Based Event Detection, ML-Based Event Classification, Lighting Score Generation, and the Internal Artifact Debugger.
 
