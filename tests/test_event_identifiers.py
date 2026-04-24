@@ -57,6 +57,9 @@ class EventIdentifiersTests(unittest.TestCase):
             self.assertEqual(event["identifier"], "drop")
             self.assertEqual(event["section_id"], "section-002")
             self.assertGreater(event["evidence"]["loudness_delta"], 0.0)
+            self.assertIn("audit", event)
+            self.assertIn("alignment_score", event["audit"])
+            self.assertIn("mismatch_flag", event["audit"])
             self.assertTrue(paths.artifact("energy_summary", "hints.json").exists())
 
 if __name__ == "__main__":

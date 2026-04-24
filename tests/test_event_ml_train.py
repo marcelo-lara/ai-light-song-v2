@@ -111,6 +111,18 @@ class EventMlTrainTests(unittest.TestCase):
             self.assertIn("precision", metadata["training"]["best_validation_metrics"])
             self.assertEqual(metadata["artifacts"]["weights_path"], str(output_dir / "1d_cnn_v1.pth"))
 
+            skip_metadata = train_event_classifier(
+                songs_root=reference_root,
+                artifacts_root=artifacts_root,
+                output_dir=output_dir,
+                epochs=2,
+                batch_size=4,
+                threshold=0.4,
+                random_seed=3,
+                enforce_promotion_gate=False,
+            )
+            self.assertTrue(skip_metadata.get("training", {}).get("skipped_existing_weights"))
+
 
 if __name__ == "__main__":
     unittest.main()

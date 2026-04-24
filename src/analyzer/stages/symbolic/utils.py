@@ -165,6 +165,8 @@ def _align_note_events(notes: list[dict], timing: dict, sections_payload: dict, 
                     break
 
         section = _section_for_time(float(note["time"]), sections)
+        audit_frame_time = round(round(float(note["time"]) / 0.1) * 0.1, 6)
+        audit_frame_delta_ms = round((audit_frame_time - float(note["time"])) * 1000.0, 6)
         aligned = {key: value for key, value in note.items() if key != "pitch_bend"}
         aligned.update(
             {
@@ -176,6 +178,13 @@ def _align_note_events(notes: list[dict], timing: dict, sections_payload: dict, 
                 "section_id": section.get("section_id") if section else None,
                 "section_name": (section.get("section_character") or section.get("label")) if section else None,
                 "pitch_bend_step_count": len(note.get("pitch_bend", [])),
+                "audit_anchor_time": round(float(note["time"]), 6),
+                "audit_frame_time": audit_frame_time,
+                "audit_frame_delta_ms": audit_frame_delta_ms,
+                "audit_buffer_profile": {
+                    "look_ahead_ms": 100,
+                    "history_ms": 500,
+                },
             }
         )
         aligned_notes.append(aligned)

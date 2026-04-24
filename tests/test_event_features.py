@@ -96,12 +96,21 @@ class EventFeatureLayerTests(unittest.TestCase):
             self.assertTrue(paths.artifact("event_inference", "features.json").exists())
             self.assertTrue(paths.artifact("event_inference", "timeline_index.json").exists())
             self.assertAlmostEqual(payload["features"][2]["derived"]["silence_gap_seconds"], 1.0)
+            derived = payload["features"][0]["derived"]
+            self.assertIn("bass_att", derived)
+            self.assertIn("mid_att", derived)
+            self.assertIn("bass_att_lma", derived)
+            self.assertIn("spectral_flux_lma", derived)
             self.assertEqual(payload["features"][3]["source_refs"]["accent_id"], "accent_001")
             self.assertTrue(paths.artifact("event_inference", "song_statistics.json").exists())
             self.assertTrue(paths.artifact("event_inference", "contextual_features.json").exists())
             for row in payload["features"]:
                 for value in row["normalized"].values():
                     self.assertIsInstance(value, float)
+            self.assertIn("rolling", payload["features"][0])
+            self.assertIn("local", payload["features"][0]["rolling"])
+            self.assertIn("phrasal", payload["features"][0]["rolling"])
+            self.assertIn("structural", payload["features"][0]["rolling"])
 
 
 if __name__ == "__main__":

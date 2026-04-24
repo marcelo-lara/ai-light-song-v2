@@ -74,10 +74,10 @@ Goal: prepare clean, aligned source material for all downstream analysis.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 1.1 | [PENDING] Stem separation and High-Res Preprocessing | normalized stems, downsampling, stem metadata | `docs/1.1.stem_separation_story.md` |
+| 1.1 | Stem separation and High-Res Preprocessing | normalized stems, downsampling, stem metadata | `docs/1.1.stem_separation_story.md` |
 | 1.2 | Beat, tempo, and bar grid detection | BPM, beats, bars, timing grid | `docs/1.2.beat_tempo_detection_story.md` |
 | 1.3 | Seven-band FFT extraction | `essentia/fft_bands.json` for debugger spectral inspection | `docs/1.3.fft_band_extraction_story.md` |
-| 1.4 | [PENDING] Mix and per-stem loudness with History Buffers | `rms_loudness.json` with 2-5s rolling history | `docs/1.4.mix_and_per_stem_loudness_story.md` |
+| 1.4 | Mix and per-stem loudness with History Buffers | `rms_loudness.json` with 2-5s rolling history | `docs/1.4.mix_and_per_stem_loudness_story.md` |
 
 ## EPIC 2: Harmonic Summary
 
@@ -145,8 +145,8 @@ Goal: Classify events from multi-modal feature streams with explainability.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 5.3 | [PENDING] 1D-CNN Event Classifier with Penalty Logic | `1d_cnn_v1.pth` trained with physical constraints | `docs/5.3.ml_event_classifier_and_training_story.md` |
-| 5.9 | [PENDING] ML classification with physical-constraint penalty logic | training and inference penalty metadata with reproducibility controls | `docs/5.9.ml_classification_penalty_logic_story.md` |
+| 5.3 | 1D-CNN Event Classifier with Penalty Logic | `1d_cnn_v1.pth` trained with physical constraints | `docs/5.3.ml_event_classifier_and_training_story.md` |
+| 5.9 | ML classification with physical-constraint penalty logic | training and inference penalty metadata with reproducibility controls | `docs/5.9.ml_classification_penalty_logic_story.md` |
 | 5.3 | 1D-CNN training and dataset generation | `models/event_classifier/1d_cnn_v1.pth` and `models/event_classifier/metadata.json` | `docs/5.3.event_classifier_training_story.md` |
 | 1.5 | Unified perceptual embedding | `layer_perceptual_embedding.json` and `layer_musical_signature.json` | `docs/1.5.unified_perceptual_embedding_story.md` |
 

@@ -48,6 +48,37 @@ def generate_machine_events(
                 candidate_event["notes"] = f"{candidate_event['notes']} {note}".strip()
                 candidate_event["confidence"] = round(min(1.0, float(candidate_event["confidence"]) + (float(candidates[0]["confidence"]) - 0.5) * 0.15), 6)
                 if identifier is not None:
+                    alignment_score = float(identifier.get("audit", {}).get("alignment_score", 0.0))
+                    mismatch_flag = bool(identifier.get("audit", {}).get("mismatch_flag", False))
+
+                    adjusted_confidence = float(candidate_event["confidence"])
+                    if mismatch_flag:
+                        adjusted_confidence *= 0.85
+                    if alignment_score > 0.0:
+                        adjusted_confidence = min(1.0, adjusted_confidence + alignment_score * 0.1)
+                    candidate_event["confidence"] = round(adjusted_confidence, 6)
+
+                    candidate_event["notes"] = (
+                        f"{candidate_event['notes']} "
+                        f"Identifier audit alignment_score={alignment_score:.3f}."
+                    ).strip()
+
+                    metrics = candidate_event.get("evidence", {}).get("metrics", [])
+                    if isinstance(metrics, list):
+                        metrics.append(
+                            {
+                                "name": "alignment_score",
+                                "value": round(alignment_score, 6),
+                                "source_layer": "energy_identifiers",
+                            }
+                        )
+                        metrics.append(
+                            {
+                                "name": "audit_mismatch_flag",
+                                "value": 1.0 if mismatch_flag else 0.0,
+                                "source_layer": "energy_identifiers",
+                            }
+                        )
                     candidate_event["source_layers"] = list(dict.fromkeys([*candidate_event.get("source_layers", []), "energy_identifiers"]))
         elif event_type == "no_drop_plateau":
             section = section_by_id.get(str(source_event.get("section_id"))) if source_event.get("section_id") else None

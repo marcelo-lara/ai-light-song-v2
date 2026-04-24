@@ -327,9 +327,47 @@ def train_event_classifier(
     device_name: str | None = None,
     random_seed: int = DEFAULT_RANDOM_SEED,
     enforce_promotion_gate: bool = True,
+    force_retrain: bool = False,
 ) -> dict[str, Any]:
     if epochs <= 0:
         raise ValueError("epochs must be greater than zero")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    weights_path = output_dir / "1d_cnn_v1.pth"
+    metadata_path = output_dir / "metadata.json"
+
+    if weights_path.exists() and not force_retrain:
+        if metadata_path.exists():
+            existing = json.loads(metadata_path.read_text(encoding="utf-8"))
+            training_info = dict(existing.get("training", {}))
+            training_info["skipped_existing_weights"] = True
+            training_info["skip_reason"] = "promoted_weights_present"
+            existing["training"] = training_info
+            existing.setdefault("artifacts", {})
+            existing["artifacts"]["weights_path"] = str(weights_path)
+            existing["artifacts"]["metadata_path"] = str(metadata_path)
+            metadata_path.write_text(json.dumps(existing, indent=2), encoding="utf-8")
+            return existing
+
+        skipped = {
+            "schema_version": "1.0",
+            "model_name": "event_classifier_1d_cnn_v1",
+            "generated_from": {
+                "reference_root": str(songs_root),
+                "artifacts_root": str(artifacts_root),
+            },
+            "training": {
+                "skipped_existing_weights": True,
+                "skip_reason": "promoted_weights_present",
+                "seed": random_seed,
+            },
+            "artifacts": {
+                "weights_path": str(weights_path),
+                "metadata_path": str(metadata_path),
+            },
+        }
+        metadata_path.write_text(json.dumps(skipped, indent=2), encoding="utf-8")
+        return skipped
 
     _set_random_seed(random_seed)
     labeled_songs = discover_labeled_songs(songs_root, artifacts_root)
@@ -396,10 +434,6 @@ def train_event_classifier(
     if best_state is None or best_metrics is None:
         raise RuntimeError("Training finished without producing a best checkpoint.")
 
-    output_dir.mkdir(parents=True, exist_ok=True)
-    weights_path = output_dir / "1d_cnn_v1.pth"
-    metadata_path = output_dir / "metadata.json"
-
     train_positive_windows = sum(1 for sample in training_samples if sample.has_event)
     validation_positive_windows = sum(1 for sample in validation_samples if sample.has_event)
     cinderella_metrics = None
@@ -448,6 +482,9 @@ def train_event_classifier(
             "best_validation_metrics": best_metrics,
             "promotion_threshold_precision": promotion_precision,
             "promotion_ready": promotion_ready,
+            "seed": random_seed,
+            "random_engine": "MT19937",
+            "skipped_existing_weights": False,
         },
         "cinderella_check": cinderella_metrics,
         "artifacts": {
@@ -486,6 +523,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--seed", type=int, default=DEFAULT_RANDOM_SEED)
     parser.add_argument("--device")
     parser.add_argument("--allow-below-threshold", action="store_true")
+    parser.add_argument("--force-retrain", action="store_true")
     return parser
 
 
@@ -507,6 +545,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         device_name=args.device,
         random_seed=args.seed,
         enforce_promotion_gate=not args.allow_below_threshold,
+        force_retrain=args.force_retrain,
     )
     best_metrics = metadata["training"]["best_validation_metrics"]
     print(

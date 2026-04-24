@@ -7,6 +7,18 @@ ROLLING_WINDOWS = {
     "structural": 128,
 }
 
+
+def _attenuated_series(values: list[float], decay: float = 0.85) -> list[float]:
+    if not values:
+        return []
+    attenuated: list[float] = []
+    previous = 0.0
+    for value in values:
+        current = max(float(value), previous * decay)
+        attenuated.append(current)
+        previous = current
+    return attenuated
+
 def _window_end_s(timing: dict, beat_index: int) -> float:
     beats = timing.get("beats", [])
     bars = timing.get("bars", [])
@@ -89,3 +101,19 @@ def _rolling_mean(rows: list[dict[str, Any]], end_index: int, dotted_key: str, w
             value = value[key]
         total += float(value)
     return total / len(window)
+
+
+def _rolling_peak(rows: list[dict[str, Any]], end_index: int, dotted_key: str, window_size: int) -> float:
+    start_index = max(0, end_index - window_size + 1)
+    window = rows[start_index : end_index + 1]
+    if not window:
+        return 0.0
+    key_parts = dotted_key.split(".")
+    peak = None
+    for row in window:
+        value: Any = row
+        for key in key_parts:
+            value = value[key]
+        numeric = float(value)
+        peak = numeric if peak is None else max(peak, numeric)
+    return 0.0 if peak is None else peak
