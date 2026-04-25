@@ -14,8 +14,81 @@ from .utils import (
     _load_human_hints, _load_lyric_lines, _hint_text, _repeated_phrase_counts,
     _section_index, _identifier_index, _build_candidates, _copy_event,
     _infer_event_intensity, _classify_drop_variant, _classify_plateau_variant,
-    _match_identifier, _phrase_event, _section_context_event
+    _match_identifier, _phrase_event, _section_context_event, _rolling_energy_mean
 )
+
+LYRIC_RESCUE_CONFIDENCE_GATE = 0.7
+
+
+def _event_key(event: dict[str, Any]) -> tuple[float, float, str]:
+    return (
+        round(float(event["start_time"]), 6),
+        round(float(event["end_time"]), 6),
+        str(event["type"]),
+    )
+
+
+def _overlap_seconds(start_a: float, end_a: float, start_b: float, end_b: float) -> float:
+    return max(0.0, min(end_a, end_b) - max(start_a, start_b))
+
+
+def _find_best_overlapping_event(
+    events: list[dict[str, Any]],
+    *,
+    event_type: str,
+    start_time: float,
+    end_time: float,
+) -> tuple[int | None, dict[str, Any] | None]:
+    best_index: int | None = None
+    best_event: dict[str, Any] | None = None
+    best_overlap = 0.0
+    for index, event in enumerate(events):
+        if str(event.get("type")) != event_type:
+            continue
+        overlap = _overlap_seconds(
+            start_time,
+            end_time,
+            float(event["start_time"]),
+            float(event["end_time"]),
+        )
+        if overlap > best_overlap:
+            best_overlap = overlap
+            best_index = index
+            best_event = event
+    return best_index, best_event
+
+
+def _remove_replaced_event(
+    refined_events: list[dict[str, Any]],
+    existing_keys: set[tuple[float, float, str]],
+    event_index: int | None,
+) -> dict[str, Any] | None:
+    if event_index is None:
+        return None
+    replaced_event = refined_events.pop(event_index)
+    existing_keys.discard(_event_key(replaced_event))
+    return dict(replaced_event)
+
+
+def _lyric_rescue_metadata(
+    *,
+    rescue_kind: str,
+    lyric_line: dict[str, Any],
+    replaced_event: dict[str, Any] | None,
+    confidence_gate: float,
+) -> dict[str, Any]:
+    metadata: dict[str, Any] = {
+        "lyric_line_id": lyric_line["line_id"],
+        "lyric_text": str(lyric_line.get("text", "")),
+        "rescue": {
+            "kind": rescue_kind,
+            "confidence_gate": confidence_gate,
+            "replaced_event": replaced_event,
+            "had_overlapping_inferred_event": replaced_event is not None,
+        },
+    }
+    return metadata
+
 
 def generate_machine_events(
     paths: SongPaths,
@@ -216,7 +289,7 @@ def generate_machine_events(
         if not rows:
             continue
         vocal_mean = _mean([float(row["derived"].get("vocal_presence_score", 0.0)) for row in rows])
-        energy_mean = _mean([float(row["rolling"]["local"].get("energy_mean", 0.0)) for row in rows])
+        energy_mean = _mean([_rolling_energy_mean(row) for row in rows])
         repeat_count = phrase_repeat_counts.get(str(phrase.get("phrase_group_id")), 1)
         section = section_by_id.get(str(phrase.get("section_id"))) if phrase.get("section_id") else None
         if repeat_count >= 2 and vocal_mean >= 0.35:
@@ -423,12 +496,21 @@ def generate_machine_events(
         line_text = str(lyric_line.get("text", ""))
 
         spotlight_key = (round(float(lyric_line["start"]), 6), round(float(lyric_line["end"]), 6), "vocal_spotlight")
-        if spotlight_key not in existing_keys and vocals_mean >= 0.32 and vocal_focus >= 0.32 and (vocals_mean >= drums_mean or lyric_confidence >= 0.7):
+        spotlight_index, spotlight_event = _find_best_overlapping_event(
+            refined_events,
+            event_type="vocal_spotlight",
+            start_time=float(lyric_line["start"]),
+            end_time=float(lyric_line["end"]),
+        )
+        spotlight_confidence = float(spotlight_event["confidence"]) if spotlight_event is not None else 0.0
+        spotlight_needs_rescue = spotlight_event is None or spotlight_confidence < LYRIC_RESCUE_CONFIDENCE_GATE
+        if spotlight_key not in existing_keys and spotlight_needs_rescue and vocals_mean >= 0.32 and vocal_focus >= 0.32 and (vocals_mean >= drums_mean or lyric_confidence >= 0.7):
+            replaced_event = _remove_replaced_event(refined_events, existing_keys, spotlight_index)
             refined_events.append(
                 {
                     "id": _event_id("vocal_spotlight", lyric_event_index),
                     "type": "vocal_spotlight",
-                    "created_by": "analyzer_lyric_guided_classifier",
+                    "created_by": "analyzer_lyric_rescue_classifier",
                     "start_time": round(float(lyric_line["start"]), 6),
                     "end_time": round(float(lyric_line["end"]), 6),
                     "confidence": round(_clamp01(min(1.0, 0.42 + vocal_focus * 0.35 + vocals_mean * 0.2 + min(0.12, lyric_confidence * 0.12))), 6),
@@ -449,12 +531,18 @@ def generate_machine_events(
                             {"name": "vocals_stem_mean", "value": vocals_mean, "source_layer": "event_features"},
                             {"name": "vocal_focus_mean", "value": vocal_focus, "source_layer": "event_features"},
                             {"name": "drums_stem_mean", "value": drums_mean, "source_layer": "event_features"},
+                            {"name": "rescued_inferred_confidence", "value": spotlight_confidence},
                         ],
                         "reasons": [f"Lyric line {lyric_line['line_id']} overlaps a clear vocal-led window."],
                         "rule_names": ["lyric_guided_vocal_spotlight_rule"],
-                        "metadata": {"lyric_line_id": lyric_line["line_id"], "lyric_text": line_text},
+                        "metadata": _lyric_rescue_metadata(
+                            rescue_kind="vocal_spotlight_timing",
+                            lyric_line=lyric_line,
+                            replaced_event=replaced_event,
+                            confidence_gate=LYRIC_RESCUE_CONFIDENCE_GATE,
+                        ),
                     },
-                    "notes": "Timed lyric line reinforces that this window should read as a vocal spotlight rather than only a section-level vocal texture.",
+                    "notes": "Timed lyric line rescues a weak or missing inferred vocal spotlight and anchors it to a lyric-aligned phrase window.",
                     "section_id": section_id,
                     "source_layers": ["event_features", "sections"],
                 }
@@ -469,12 +557,21 @@ def generate_machine_events(
         followup_harmonic = _mean([float(row["derived"].get("harmonic_stem_score", 0.0)) for row in followup_rows])
         followup_drums = _mean([float(row["derived"].get("drums_stem_score", 0.0)) for row in followup_rows])
         tail_key = (round(float(lyric_line["end"]), 6), round(float(followup_rows[-1]["end_time"]), 6), "vocal_tail")
-        if tail_key not in existing_keys and vocal_focus >= 0.34 and (vocals_mean - followup_vocals) >= 0.18 and max(followup_harmonic, followup_drums, instrumental_focus) >= 0.12:
+        tail_index, tail_event = _find_best_overlapping_event(
+            refined_events,
+            event_type="vocal_tail",
+            start_time=float(lyric_line["end"]),
+            end_time=float(followup_rows[-1]["end_time"]),
+        )
+        tail_confidence = float(tail_event["confidence"]) if tail_event is not None else 0.0
+        tail_needs_rescue = tail_event is None or tail_confidence < LYRIC_RESCUE_CONFIDENCE_GATE
+        if tail_key not in existing_keys and tail_needs_rescue and vocal_focus >= 0.34 and (vocals_mean - followup_vocals) >= 0.18 and max(followup_harmonic, followup_drums, instrumental_focus) >= 0.12:
+            replaced_event = _remove_replaced_event(refined_events, existing_keys, tail_index)
             refined_events.append(
                 {
                     "id": _event_id("vocal_tail", lyric_event_index),
                     "type": "vocal_tail",
-                    "created_by": "analyzer_lyric_guided_classifier",
+                    "created_by": "analyzer_lyric_rescue_classifier",
                     "start_time": round(float(lyric_line["end"]), 6),
                     "end_time": round(float(followup_rows[-1]["end_time"]), 6),
                     "confidence": round(_clamp01(min(1.0, 0.42 + (vocals_mean - followup_vocals) * 0.55 + min(0.1, lyric_confidence * 0.1))), 6),
@@ -496,12 +593,18 @@ def generate_machine_events(
                             {"name": "followup_vocals_mean", "value": followup_vocals, "source_layer": "event_features"},
                             {"name": "followup_harmonic_mean", "value": followup_harmonic, "source_layer": "event_features"},
                             {"name": "followup_drums_mean", "value": followup_drums, "source_layer": "event_features"},
+                            {"name": "rescued_inferred_confidence", "value": tail_confidence},
                         ],
                         "reasons": [f"Lyric line {lyric_line['line_id']} ends as the vocal stem decays and the backing bed persists."],
                         "rule_names": ["lyric_guided_vocal_tail_rule"],
-                        "metadata": {"lyric_line_id": lyric_line["line_id"], "lyric_text": line_text},
+                        "metadata": _lyric_rescue_metadata(
+                            rescue_kind="vocal_tail_timing",
+                            lyric_line=lyric_line,
+                            replaced_event=replaced_event,
+                            confidence_gate=LYRIC_RESCUE_CONFIDENCE_GATE,
+                        ),
                     },
-                    "notes": "Timed lyric ending provides a stronger phrase boundary for a vocal tail than stem energy alone.",
+                    "notes": "Timed lyric ending rescues a weak or missing inferred vocal tail and snaps it to a clearer phrase handoff.",
                     "section_id": section_id,
                     "source_layers": ["event_features", "sections"],
                 }
@@ -608,6 +711,7 @@ def generate_machine_events(
             "identifier_hints_file": str(paths.artifact("energy_summary", "hints.json")),
             "symbolic_layer_file": str(paths.artifact("layer_b_symbolic.json")),
             "sections_file": str(paths.artifact("section_segmentation", "sections.json")),
+            "lyric_reference_file": str(paths.reference("moises", "lyrics.json")) if paths.reference("moises", "lyrics.json") else None,
             "engine": "deterministic-event-classifier-v1"
         },
         "review_status": "machine",
@@ -615,7 +719,8 @@ def generate_machine_events(
         "threshold_profile": "default",
         "metadata": {
             "event_count": len(refined_events),
-            "source_rule_event_count": len(rule_candidates.get("events", []))
+            "source_rule_event_count": len(rule_candidates.get("events", [])),
+            "lyric_rescue_confidence_gate": LYRIC_RESCUE_CONFIDENCE_GATE,
         },
         "events": refined_events
     }

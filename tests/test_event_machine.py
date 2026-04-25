@@ -78,6 +78,7 @@ class EventMachineTests(unittest.TestCase):
                 "events": [
                     {
                         "source_event_id": "rule_drop_001",
+                        "identifier": "drop",
                         "evidence": {"spectral_centroid_delta": 220.0},
                     }
                 ]
@@ -315,8 +316,95 @@ class EventMachineTests(unittest.TestCase):
             event_types = {event["type"] for event in payload["events"]}
             self.assertIn("vocal_spotlight", event_types)
             self.assertIn("vocal_tail", event_types)
-            lyric_guided = [event for event in payload["events"] if event["created_by"] == "analyzer_lyric_guided_classifier"]
+            lyric_guided = [event for event in payload["events"] if event["created_by"] == "analyzer_lyric_rescue_classifier"]
             self.assertTrue(lyric_guided)
+            self.assertEqual(
+                lyric_guided[0]["evidence"]["metadata"]["rescue"]["confidence_gate"],
+                0.7,
+            )
+
+    def test_generate_machine_events_lyric_rescue_replaces_low_confidence_context_event(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "Example Song.mp3",
+                artifacts_root=root / "artifacts",
+                reference_root=root / "reference",
+                output_root=root / "output",
+                stems_root=root / "stems",
+            )
+            lyrics_path = root / "reference" / "Example Song" / "moises" / "lyrics.json"
+            lyrics_path.parent.mkdir(parents=True, exist_ok=True)
+            lyrics_path.write_text(
+                json.dumps(
+                    [
+                        {"id": 1, "line_id": 1, "start": 10.0, "end": 10.0, "text": "<SOL>", "confidence": None},
+                        {"id": 2, "line_id": 1, "start": 10.0, "end": 10.8, "text": "some", "confidence": "0.96"},
+                        {"id": 3, "line_id": 1, "start": 10.8, "end": 12.0, "text": "line", "confidence": "0.95"},
+                        {"id": 4, "line_id": 1, "start": 12.0, "end": 12.0, "text": "<EOL>", "confidence": None},
+                    ]
+                ),
+                encoding="utf-8",
+            )
+
+            event_features = {
+                "features": [
+                    {
+                        "beat": 10,
+                        "start_time": 10.0,
+                        "end_time": 11.0,
+                        "section_id": "section-001",
+                        "derived": {"energy_delta": 0.0, "accent_intensity": 0.08, "bass_activation_score": 0.12, "vocal_presence_score": 0.54, "vocals_stem_score": 0.56, "drums_stem_score": 0.12, "harmonic_stem_score": 0.22, "bass_stem_score": 0.18, "vocal_focus_score": 0.72, "percussion_focus_score": 0.02, "instrumental_focus_score": 0.12, "vocal_stem_delta": 0.0},
+                        "normalized": {"onset_density": 0.12, "energy_score": 0.34},
+                        "rolling": {"medium": {"energy_mean": 0.34}, "short": {"harmonic_tension_mean": 0.2}},
+                    },
+                    {
+                        "beat": 11,
+                        "start_time": 11.0,
+                        "end_time": 12.0,
+                        "section_id": "section-001",
+                        "derived": {"energy_delta": -0.03, "accent_intensity": 0.08, "bass_activation_score": 0.12, "vocal_presence_score": 0.5, "vocals_stem_score": 0.52, "drums_stem_score": 0.14, "harmonic_stem_score": 0.24, "bass_stem_score": 0.18, "vocal_focus_score": 0.68, "percussion_focus_score": 0.02, "instrumental_focus_score": 0.14, "vocal_stem_delta": -0.04},
+                        "normalized": {"onset_density": 0.12, "energy_score": 0.34},
+                        "rolling": {"medium": {"energy_mean": 0.34}, "short": {"harmonic_tension_mean": 0.19}},
+                    },
+                    {
+                        "beat": 12,
+                        "start_time": 12.0,
+                        "end_time": 13.0,
+                        "section_id": "section-001",
+                        "derived": {"energy_delta": -0.05, "accent_intensity": 0.08, "bass_activation_score": 0.12, "vocal_presence_score": 0.14, "vocals_stem_score": 0.14, "drums_stem_score": 0.24, "harmonic_stem_score": 0.38, "bass_stem_score": 0.18, "vocal_focus_score": 0.36, "percussion_focus_score": 0.02, "instrumental_focus_score": 0.22, "vocal_stem_delta": -0.38},
+                        "normalized": {"onset_density": 0.16, "energy_score": 0.32},
+                        "rolling": {"medium": {"energy_mean": 0.33}, "short": {"harmonic_tension_mean": 0.18}},
+                    },
+                    {
+                        "beat": 13,
+                        "start_time": 13.0,
+                        "end_time": 14.0,
+                        "section_id": "section-001",
+                        "derived": {"energy_delta": -0.03, "accent_intensity": 0.08, "bass_activation_score": 0.12, "vocal_presence_score": 0.12, "vocals_stem_score": 0.12, "drums_stem_score": 0.26, "harmonic_stem_score": 0.4, "bass_stem_score": 0.18, "vocal_focus_score": 0.34, "percussion_focus_score": 0.03, "instrumental_focus_score": 0.24, "vocal_stem_delta": -0.02},
+                        "normalized": {"onset_density": 0.16, "energy_score": 0.3},
+                        "rolling": {"medium": {"energy_mean": 0.31}, "short": {"harmonic_tension_mean": 0.18}},
+                    },
+                ]
+            }
+            rule_candidates = {"events": []}
+            identifier_payload = {"events": []}
+            symbolic = {"phrase_windows": [], "motif_summary": {"repeated_phrase_groups": []}}
+            sections = {
+                "sections": [
+                    {"section_id": "section-001", "start": 10.0, "end": 14.0, "label": "vocal_spotlight", "section_character": "vocal_spotlight", "confidence": 0.88},
+                ]
+            }
+
+            payload = generate_machine_events(paths, event_features, rule_candidates, identifier_payload, symbolic, sections)
+
+            rescued_spotlights = [event for event in payload["events"] if event["type"] == "vocal_spotlight"]
+            self.assertEqual(len(rescued_spotlights), 1)
+            self.assertEqual(rescued_spotlights[0]["created_by"], "analyzer_lyric_rescue_classifier")
+            rescue_metadata = rescued_spotlights[0]["evidence"]["metadata"]["rescue"]
+            self.assertTrue(rescue_metadata["had_overlapping_inferred_event"])
+            self.assertIsNotNone(rescue_metadata["replaced_event"])
+            self.assertLess(rescue_metadata["replaced_event"]["confidence"], 0.7)
 
 
 if __name__ == "__main__":

@@ -375,7 +375,7 @@ def _print_stage_marker(song_name: str, _phase_name: str, stage_name: str) -> No
     if stage_id:
         # Extract the major epic number (e.g. "1.2" -> "1", "2.1-2.2" -> "2")
         epic_num = stage_id.split(".")[0]
-        stage_prefix = f"[EPIC {epic_num} | {stage_id}] "
+        stage_prefix = f"[{stage_id}] "
     else:
         stage_prefix = ""
     print(f"{format_batch_progress_prefix()}{stage_prefix}{song_name} | {stage_name}", flush=True)

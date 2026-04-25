@@ -2,13 +2,15 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+import json
 from pathlib import Path
 from unittest.mock import patch
 
 import numpy as np
 
 from analyzer.paths import SongPaths
-from analyzer.stages.sections_v2 import _group_phrase_blocks, _refine_boundary_to_local_novelty, _section_character_labels, segment_sections
+from analyzer.stages.sections import segment_sections
+from analyzer.stages.sections.utils import _group_phrase_blocks, _refine_boundary_to_local_novelty, _section_character_labels
 
 
 def _beat_row(time_s: float, energy: float, onset: float, flux: float, root_index: int) -> dict[str, object]:
@@ -339,6 +341,82 @@ class SectionSegmentationTests(unittest.TestCase):
             self.assertEqual(payload["sections"][1]["start"], 16.5)
             self.assertEqual(payload["sections"][0]["end"], 16.5)
 
+    def test_segment_sections_promotes_reference_boundaries_when_inferred_result_is_snap_like_and_low_confidence(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "Example Song.mp3",
+                artifacts_root=root / "artifacts",
+                reference_root=root / "reference",
+                output_root=root / "output",
+                stems_root=root / "stems",
+            )
+
+            segments_path = root / "reference" / "Example Song" / "moises" / "segments.json"
+            segments_path.parent.mkdir(parents=True, exist_ok=True)
+            segments_path.write_text(
+                json.dumps(
+                    [
+                        {"start": 0.0, "end": 4.0, "label": "opening"},
+                        {"start": 4.0, "end": 8.0, "label": "lift"},
+                        {"start": 8.0, "end": 12.0, "label": "tail"},
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            chords_path = root / "reference" / "Example Song" / "moises" / "chords.json"
+            chords_path.write_text(
+                json.dumps(
+                    [
+                        {"curr_beat_time": float(index), "bar_num": (index // 4) + 1, "beat_num": (index % 4) + 1, "chord_simple_pop": "C"}
+                        for index in range(12)
+                    ]
+                ),
+                encoding="utf-8",
+            )
+
+            timing = {
+                "beats": [
+                    {"index": index + 1, "time": 1.0 + index, "bar": (index // 4) + 1, "beat_in_bar": (index % 4) + 1, "type": "downbeat" if index % 4 == 0 else "beat"}
+                    for index in range(12)
+                ],
+                "bars": [
+                    {"bar": 1, "start_s": 0.0, "end_s": 5.0},
+                    {"bar": 2, "start_s": 5.0, "end_s": 9.0},
+                    {"bar": 3, "start_s": 9.0, "end_s": 12.0},
+                ],
+            }
+            harmonic = {
+                "chords": [
+                    {"time": 0.0, "end_s": 5.0, "bar": 1, "beat": 1, "chord": "C", "confidence": 1.0},
+                    {"time": 5.0, "end_s": 9.0, "bar": 2, "beat": 1, "chord": "G", "confidence": 1.0},
+                    {"time": 9.0, "end_s": 12.0, "bar": 3, "beat": 1, "chord": "Am", "confidence": 1.0},
+                ]
+            }
+            energy = {
+                "beat_features": [
+                    {"beat": 1, "time": 1.0, "loudness_avg": 0.22, "onset_density": 0.14, "flux_avg": 0.1},
+                    {"beat": 2, "time": 2.0, "loudness_avg": 0.22, "onset_density": 0.14, "flux_avg": 0.1},
+                    {"beat": 3, "time": 3.0, "loudness_avg": 0.22, "onset_density": 0.14, "flux_avg": 0.1},
+                    {"beat": 4, "time": 4.0, "loudness_avg": 0.22, "onset_density": 0.14, "flux_avg": 0.1},
+                    {"beat": 5, "time": 5.0, "loudness_avg": 0.28, "onset_density": 0.18, "flux_avg": 0.12},
+                    {"beat": 6, "time": 6.0, "loudness_avg": 0.28, "onset_density": 0.18, "flux_avg": 0.12},
+                    {"beat": 7, "time": 7.0, "loudness_avg": 0.28, "onset_density": 0.18, "flux_avg": 0.12},
+                    {"beat": 8, "time": 8.0, "loudness_avg": 0.28, "onset_density": 0.18, "flux_avg": 0.12},
+                    {"beat": 9, "time": 9.0, "loudness_avg": 0.32, "onset_density": 0.2, "flux_avg": 0.14},
+                    {"beat": 10, "time": 10.0, "loudness_avg": 0.32, "onset_density": 0.2, "flux_avg": 0.14},
+                    {"beat": 11, "time": 11.0, "loudness_avg": 0.32, "onset_density": 0.2, "flux_avg": 0.14},
+                    {"beat": 12, "time": 12.0, "loudness_avg": 0.32, "onset_density": 0.2, "flux_avg": 0.14},
+                ]
+            }
+
+            payload = segment_sections(paths, timing, harmonic, energy)
+
+            self.assertEqual(payload["generated_from"]["engine"], "reference.moises.segments.promotion")
+            self.assertEqual([section["start"] for section in payload["sections"]], [0.0, 4.0, 8.0])
+            self.assertTrue(paths.artifact("section_segmentation", "sections.inferred.json").exists())
+            self.assertTrue(payload["generated_from"]["promotion_gate"]["rescue_applied"])
+
     def test_section_character_labels_marks_vocal_spotlight_when_voice_dominates(self) -> None:
         sections = [
             {"energy": 0.25, "onset": 0.15, "flux": 0.14, "vocals": 0.62, "drums": 0.08, "harmonic": 0.3, "bass": 0.18, "vector": np.array([1.0, 0.0, 0.0])},
@@ -371,7 +449,7 @@ class SectionSegmentationTests(unittest.TestCase):
             timing, harmonic, energy, stem_activity = _song_payload_from_bars(bar_configs)
 
             with patch(
-                "analyzer.stages.sections_v2.estimate_stem_activity_by_beat",
+                "analyzer.stages.sections.segmenter.estimate_stem_activity_by_beat",
                 side_effect=[
                     stem_activity["vocals"],
                     stem_activity["drums"],
@@ -408,7 +486,7 @@ class SectionSegmentationTests(unittest.TestCase):
             timing, harmonic, energy, stem_activity = _song_payload_from_bars(bar_configs)
 
             with patch(
-                "analyzer.stages.sections_v2.estimate_stem_activity_by_beat",
+                "analyzer.stages.sections.segmenter.estimate_stem_activity_by_beat",
                 side_effect=[
                     stem_activity["vocals"],
                     stem_activity["drums"],

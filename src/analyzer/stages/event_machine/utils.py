@@ -17,6 +17,19 @@ def _mean(values: list[float]) -> float:
     return round(sum(values) / len(values), 6) if values else 0.0
 
 
+def _rolling_energy_mean(row: dict[str, Any]) -> float:
+    rolling = row.get("rolling", {})
+    if not isinstance(rolling, dict):
+        return 0.0
+    local = rolling.get("local", {})
+    if isinstance(local, dict) and "energy_mean" in local:
+        return float(local.get("energy_mean", 0.0))
+    medium = rolling.get("medium", {})
+    if isinstance(medium, dict):
+        return float(medium.get("energy_mean", 0.0))
+    return 0.0
+
+
 def _event_id(label: str, index: int) -> str:
     return f"machine_{label}_{index:03d}"
 
@@ -159,7 +172,7 @@ def _classify_drop_variant(rule_event: dict, feature_rows: list[dict], identifie
     energy_delta = _mean([float(row["derived"].get("energy_delta", 0.0)) for row in feature_rows])
     accent = _mean([float(row["derived"].get("accent_intensity", 0.0)) for row in feature_rows])
     bass = _mean([float(row["derived"].get("bass_activation_score", 0.0)) for row in feature_rows])
-    energy_mean = _mean([float(row["rolling"]["local"].get("energy_mean", 0.0)) for row in feature_rows])
+    energy_mean = _mean([_rolling_energy_mean(row) for row in feature_rows])
     onset = _mean([float(row["normalized"].get("onset_density", 0.0)) for row in feature_rows])
     spectral_rise = 0.0
     if identifier is not None:
@@ -184,7 +197,7 @@ def _classify_plateau_variant(rule_event: dict, feature_rows: list[dict], sectio
     bass_mean = _mean([float(row["derived"].get("bass_activation_score", 0.0)) for row in feature_rows])
     vocal_mean = _mean([float(row["derived"].get("vocal_presence_score", 0.0)) for row in feature_rows])
     energy_mean = _mean([
-        float(row["normalized"].get("energy_score", row["rolling"]["local"].get("energy_mean", 0.0)))
+        float(row["normalized"].get("energy_score", _rolling_energy_mean(row)))
         for row in feature_rows
     ])
     onset_mean = _mean([float(row["normalized"].get("onset_density", 0.0)) for row in feature_rows])
@@ -253,7 +266,7 @@ def _phrase_event(
     candidates: list[dict] | None = None,
 ) -> dict[str, Any]:
     vocal_mean = _mean([float(row["derived"].get("vocal_presence_score", 0.0)) for row in feature_rows])
-    energy_mean = _mean([float(row["rolling"]["local"].get("energy_mean", 0.0)) for row in feature_rows])
+    energy_mean = _mean([_rolling_energy_mean(row) for row in feature_rows])
     event = {
         "id": event_id,
         "type": event_type,
@@ -340,5 +353,4 @@ def _section_context_event(
         "section_id": section.get("section_id"),
         "source_layers": ["event_features", "sections"],
     }
-
 
