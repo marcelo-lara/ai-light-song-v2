@@ -14,6 +14,7 @@ This guide provides an LLM-friendly directory and file reference for the `ai-lig
 |------|---------|
 | `src/analyzer/cli.py` | Primary CLI entrypoint for the `analyze` command. Parses arguments (`--song`, `--all-songs`, etc.). |
 | `src/analyzer/pipeline.py` | The Pipeline DAG. Maps the 8 Epics and orchestrates exactly when and how each `src/analyzer/stages/` function is executed. |
+| `src/analyzer/__init__.py` | Analyzer package runtime defaults (TensorFlow allocator and GPU growth environment settings). |
 | `src/analyzer/models.py` | Data structures, JSON encodable utilities, and the overarching `SCHEMA_VERSION`. |
 | `src/analyzer/io.py` | Disk operations (JSON read/write, file validation). |
 | `src/analyzer/paths.py` | Centralized `SongPaths` resolution (managing references to `/data/songs/`, `/data/artifacts/`, `/data/reference/`, etc.). |

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+import gc
+import sys
 from pathlib import Path
 from typing import TypeVar
 
@@ -382,6 +384,27 @@ def _print_stage_marker(song_name: str, _phase_name: str, stage_name: str) -> No
 StageResult = TypeVar("StageResult")
 
 
+def _release_gpu_memory() -> None:
+    # Always collect Python references first.
+    gc.collect()
+
+    torch_module = sys.modules.get("torch")
+    if torch_module is not None:
+        try:
+            if torch_module.cuda.is_available():
+                torch_module.cuda.empty_cache()
+                torch_module.cuda.ipc_collect()
+        except Exception:
+            pass
+
+    tensorflow_module = sys.modules.get("tensorflow")
+    if tensorflow_module is not None:
+        try:
+            tensorflow_module.keras.backend.clear_session()
+        except Exception:
+            pass
+
+
 def _run_stage(
     song_name: str,
     phase_name: str,
@@ -390,8 +413,12 @@ def _run_stage(
     *args: object,
     **kwargs: object,
 ) -> StageResult:
+    _release_gpu_memory()
     _print_stage_marker(song_name, phase_name, stage_name)
-    return operation(*args, **kwargs)
+    try:
+        return operation(*args, **kwargs)
+    finally:
+        _release_gpu_memory()
 
 
 def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | None = None) -> int:
@@ -447,7 +474,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 inferred_timing,
                 timing,
             )
-        genre_result = _run_stage(paths.song_name, "phase-1", "classify-genre", classify_genre, paths)
         _, harmonic = _run_stage(paths.song_name, "phase-1", "extract-hpcp-and-chords", extract_hpcp_and_chords, paths, stems, timing)
         chord_validation = (
             _run_stage(
@@ -479,8 +505,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         sections = _run_stage(paths.song_name, "phase-1", "segment-sections", segment_sections, paths, timing, harmonic, energy_features)
         symbolic = _run_stage(paths.song_name, "phase-1", "extract-symbolic-features", extract_symbolic_features, paths, stems, timing, sections)
         drum_events = _run_stage(paths.song_name, "phase-1", "extract-drum-events", extract_drum_events, paths, stems, timing, sections)
-        hints = _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, symbolic, sections)
-        ui_outputs = _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
+        patterns = _run_stage(paths.song_name, "phase-1", "extract-chord-patterns", extract_chord_patterns, paths, timing, harmonic)
+        genre_result = _run_stage(paths.song_name, "phase-1", "classify-genre", classify_genre, paths)
         energy = _run_stage(paths.song_name, "phase-1", "derive-energy-layer", derive_energy_layer, paths, timing, energy_features, sections)
         event_features = _run_stage(
             paths.song_name,
@@ -496,8 +522,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             sections,
             genre_result,
         )
-        ml_events = _run_stage(paths.song_name, "phase-1", "generate-ml-events", generate_ml_events, paths)
-        rule_candidates = _run_stage(paths.song_name, "phase-1", "generate-rule-candidates", generate_rule_candidates, paths, event_features, sections, genre_result)
         event_identifiers = _run_stage(
             paths.song_name,
             "phase-1",
@@ -507,6 +531,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             energy,
             sections,
         )
+        rule_candidates = _run_stage(paths.song_name, "phase-1", "generate-rule-candidates", generate_rule_candidates, paths, event_features, sections, genre_result)
+        ml_events = _run_stage(paths.song_name, "phase-1", "generate-ml-events", generate_ml_events, paths)
         machine_events = _run_stage(
             paths.song_name,
             "phase-1",
@@ -520,7 +546,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             sections,
         )
         review_outputs = _run_stage(paths.song_name, "phase-1", "generate-event-review", generate_event_review, paths, machine_events)
-        event_timeline = _run_stage(paths.song_name, "phase-1", "export-event-timeline", export_event_timeline, paths, review_outputs["merged_payload"])
         event_benchmark = _run_stage(
             paths.song_name,
             "phase-1",
@@ -530,7 +555,9 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             review_outputs["merged_payload"],
             genre_result,
         )
-        patterns = _run_stage(paths.song_name, "phase-1", "extract-chord-patterns", extract_chord_patterns, paths, timing, harmonic)
+        event_timeline = _run_stage(paths.song_name, "phase-1", "export-event-timeline", export_event_timeline, paths, review_outputs["merged_payload"])
+        hints = _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, symbolic, sections)
+        ui_outputs = _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
         unified = _run_stage(
             paths.song_name,
             "phase-1",

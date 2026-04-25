@@ -197,8 +197,9 @@ def generate_ml_events(paths: SongPaths) -> dict:
         )
 
     torch.manual_seed(SEED)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     num_features = tensor.shape[0]
-    model = Event1DCNN(num_features=num_features)
+    model = Event1DCNN(num_features=num_features).to(device)
 
     if not MODEL_PATH.exists():
         return _write_empty_outputs(
@@ -211,7 +212,7 @@ def generate_ml_events(paths: SongPaths) -> dict:
         )
 
     try:
-        checkpoint = torch.load(MODEL_PATH, map_location="cpu")
+        checkpoint = torch.load(MODEL_PATH, map_location=device)
         model.load_state_dict(checkpoint)
     except Exception as exc:
         return _write_empty_outputs(
@@ -240,6 +241,7 @@ def generate_ml_events(paths: SongPaths) -> dict:
                 padding = WINDOW_SIZE - chunk.size(1)
                 chunk = torch.nn.functional.pad(chunk, (0, padding))
 
+            chunk = chunk.to(device)
             logits = model(chunk.unsqueeze(0)).squeeze(0)
             probabilities = torch.sigmoid(logits)
 
