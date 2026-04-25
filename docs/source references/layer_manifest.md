@@ -177,7 +177,7 @@ Expected top-level metadata fields are `song_name`, `bpm`, and `duration`, with 
 
 ## Consolidated Output Files
 
-`data/output/<Song - Artist>/` is a stable UI contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`. `lighting_score.md` is the only markdown file allowed there. Do not add or remove files from this directory unless a UI contract change makes that strictly required.
+`data/output/<Song - Artist>/` is a stable UI contract. Each song output directory must contain `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and `beatdrop_visual_plan.json`. `beatdrop_visual_plan.md` is an optional companion markdown export. Do not add or remove files from this directory unless a UI contract change makes that strictly required.
 
 The internal debugger may read selected files from this directory as compact helper projections, but its primary inspection surface remains `data/artifacts/<Song - Artist>/`.
 
@@ -205,7 +205,15 @@ Primary source story: EPIC 5.8.
 
 ### `data/output/<Song - Artist>/lighting_score.md`
 
-Stores the final human-readable lighting design document. This is the only markdown file allowed under `data/output/<Song - Artist>/`.
+Stores the final human-readable lighting design document.
+
+### `data/output/<Song - Artist>/beatdrop_visual_plan.json`
+
+Stores deterministic Story 7.5 offline visualizer planning windows and transitions for BeatDrop-style preset workflows.
+
+### `data/output/<Song - Artist>/beatdrop_visual_plan.md`
+
+Optional human-readable companion markdown for the Story 7.5 offline visualizer plan.
 
 ## Unified Artifact
 

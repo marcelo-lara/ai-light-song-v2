@@ -105,3 +105,14 @@ class FftBandsTests(unittest.TestCase):
         self.assertEqual(len(written["frames"][0]["levels"]), 7)
         self.assertEqual(written["frames"][0]["time"], 0.0)
         self.assertTrue(all(0.0 <= value <= 1.0 for value in written["frames"][0]["levels"]))
+        self.assertIn("brightness_ratio", written["frames"][0])
+        self.assertIn("transient_strength", written["frames"][0])
+        self.assertIn("dropout_strength", written["frames"][0])
+        self.assertTrue(0.0 <= written["frames"][0]["brightness_ratio"] <= 1.0)
+        self.assertTrue(0.0 <= written["frames"][0]["transient_strength"] <= 1.0)
+        self.assertTrue(0.0 <= written["frames"][0]["dropout_strength"] <= 1.0)
+        self.assertEqual(
+            written["metadata"]["normalization_scope"],
+            "per-song-per-band-log-power-percentile",
+        )
+        self.assertEqual(written["metadata"]["normalization_percentiles"], [5.0, 95.0])

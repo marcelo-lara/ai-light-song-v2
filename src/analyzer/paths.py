@@ -65,6 +65,14 @@ class SongPaths:
         return self.song_output_dir / "lighting_score.md"
 
     @property
+    def beatdrop_visual_plan_output_path(self) -> Path:
+        return self.song_output_dir / "beatdrop_visual_plan.json"
+
+    @property
+    def beatdrop_visual_plan_md_output_path(self) -> Path:
+        return self.song_output_dir / "beatdrop_visual_plan.md"
+
+    @property
     def review_json_path(self) -> Path:
         return self.song_validation_dir / "song_events.review.json"
 

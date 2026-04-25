@@ -18,6 +18,11 @@ BAND_DEFINITIONS: tuple[dict[str, float | str], ...] = (
     {"id": "brilliance", "label": "Brilliance", "start_hz": 6000.0, "end_hz": 16000.0},
 )
 
+EPSILON = 1e-12
+LOW_PERCENTILE = 5.0
+HIGH_PERCENTILE = 95.0
+HIGH_BAND_IDS = {"upper_mid", "presence", "brilliance"}
+
 
 def _normalize(values: np.ndarray) -> np.ndarray:
     minimum = float(values.min())
@@ -25,6 +30,15 @@ def _normalize(values: np.ndarray) -> np.ndarray:
     if maximum - minimum < 1e-8:
         return np.zeros_like(values)
     return (values - minimum) / (maximum - minimum)
+
+
+def _robust_normalize(values: np.ndarray, *, low_percentile: float = LOW_PERCENTILE, high_percentile: float = HIGH_PERCENTILE) -> np.ndarray:
+    lower = float(np.percentile(values, low_percentile))
+    upper = float(np.percentile(values, high_percentile))
+    if upper - lower < 1e-8:
+        return np.zeros_like(values)
+    clipped = np.clip(values, lower, upper)
+    return (clipped - lower) / (upper - lower)
 
 
 def _build_band_masks(frequencies: np.ndarray) -> list[np.ndarray]:
@@ -38,6 +52,13 @@ def _build_band_masks(frequencies: np.ndarray) -> list[np.ndarray]:
             mask = (frequencies >= start_hz) & (frequencies < end_hz)
         masks.append(mask)
     return masks
+
+
+def _normalized_deltas(values: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    deltas = np.diff(values, prepend=values[0])
+    rising = np.clip(deltas, 0.0, None)
+    falling = np.clip(-deltas, 0.0, None)
+    return _normalize(rising), _normalize(falling)
 
 
 def extract_fft_bands(paths: SongPaths) -> dict:
@@ -58,6 +79,7 @@ def extract_fft_bands(paths: SongPaths) -> dict:
     spectrum = Spectrum(size=frame_size)
     frequencies = np.fft.rfftfreq(frame_size, d=1.0 / sample_rate)
     band_masks = _build_band_masks(frequencies)
+    high_band_indices = [index for index, band in enumerate(BAND_DEFINITIONS) if str(band["id"]) in HIGH_BAND_IDS]
 
     raw_levels: list[list[float]] = []
     for frame in FrameGenerator(audio, frameSize=frame_size, hopSize=hop_size, startFromZero=True):
@@ -68,12 +90,27 @@ def extract_fft_bands(paths: SongPaths) -> dict:
         raise AnalysisError("No FFT band frames were extracted from the source song")
 
     raw_matrix = np.asarray(raw_levels, dtype=float)
-    normalized_matrix = np.column_stack([_normalize(raw_matrix[:, index]) for index in range(raw_matrix.shape[1])])
+    # Use power-domain energy to improve stability under broadband loudness swings.
+    power_matrix = np.maximum(raw_matrix, 0.0) ** 2
+    log_power_matrix = 10.0 * np.log10(np.maximum(power_matrix, EPSILON))
+    normalized_matrix = np.column_stack([
+        _robust_normalize(log_power_matrix[:, index])
+        for index in range(log_power_matrix.shape[1])
+    ])
+
+    total_power = np.sum(power_matrix, axis=1)
+    high_band_power = np.sum(power_matrix[:, high_band_indices], axis=1) if high_band_indices else np.zeros_like(total_power)
+    brightness_ratio = np.where(total_power > EPSILON, high_band_power / total_power, 0.0)
+    transient_strength, dropout_strength = _normalized_deltas(total_power)
+
     frames = [
         {
             "frame_index": frame_index,
             "time": round((frame_index * hop_size) / sample_rate, 6),
             "levels": [round(float(level), 6) for level in normalized_matrix[frame_index].tolist()],
+            "brightness_ratio": round(float(brightness_ratio[frame_index]), 6),
+            "transient_strength": round(float(transient_strength[frame_index]), 6),
+            "dropout_strength": round(float(dropout_strength[frame_index]), 6),
         }
         for frame_index in range(normalized_matrix.shape[0])
     ]
@@ -92,7 +129,9 @@ def extract_fft_bands(paths: SongPaths) -> dict:
             "window": "hann",
             "total_frames": len(frames),
             "duration": round(len(audio) / sample_rate, 6),
-            "normalization_scope": "per-song-per-band",
+            "normalization_scope": "per-song-per-band-log-power-percentile",
+            "normalization_percentiles": [LOW_PERCENTILE, HIGH_PERCENTILE],
+            "derived_frame_fields": ["brightness_ratio", "transient_strength", "dropout_strength"],
         },
     }
     payload = to_jsonable(payload)

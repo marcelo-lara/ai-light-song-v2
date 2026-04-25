@@ -65,6 +65,7 @@ Each submodule exports its main generator function out of its `__init__.py`.
 * `stems.py` / `fft_bands.py` / `timing.py` / `loudness.py` (Epic 1) – Audio ingestion, demux, downsampling, grid extraction.
 * `drums.py` / `harmonic.py` / `genre.py` (Epics 2 & 6) – Model-based musical extraction and classifications.
 * `ui_data.py` (Epic 7) – Packs intermediate JSON payloads into the finalized web deployment structure.
+* `beatdrop_visualizer.py` (Epic 7.5) – Exports deterministic offline preset windows and transition plans for BeatDrop-style visualizer workflows.
 * `lighting.py` / `light_design.py` (Epic 7) – Maps timing, energy, and semantic events into DMX/fixture commands.
 
 ---
@@ -80,6 +81,7 @@ Each submodule exports its main generator function out of its `__init__.py`.
 | File | Purpose |
 |------|---------|
 | `tests/test_event_ml.py` | Verifies ML inference writes `events.ml.json`, saliency output, and penalty timeline/metadata artifacts under the Story 5.3 and 5.9 contract. |
+| `tests/test_beatdrop_visualizer.py` | Verifies Story 7.5 offline BeatDrop visualizer plan exports deterministic preset windows and transitions with output files. |
 
 ---
 

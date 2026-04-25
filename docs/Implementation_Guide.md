@@ -16,7 +16,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - `data/stems/`: temporary stem and `.wav` outputs.
 - `data/artifacts/`: intermediate artifacts such as beats, chords, sections, layer outputs, merged layer files, and validation notes.
 - `data/reference/`: validation and curated reference data used to evaluate model quality. It must never be copied into generated outputs.
-- `data/output/`: stable UI-facing outputs. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
+- `data/output/`: stable UI-facing outputs. Each per-song directory must contain `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and `beatdrop_visual_plan.json`. `beatdrop_visual_plan.md` is an optional companion narrative export.
 - `docs/`: implementation contracts, schemas, and developer guidance.
 
 ### Source layout and implementation rules
@@ -165,8 +165,9 @@ Layer D covers repeated harmonic progression structure. Motif-level and phrase-l
 | 7.1 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/7.1.music_feature_layers_story.md` |
 | 7.3 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/7.3.energy_to_lighting_mapping.md` |
 | 7.4 | Fixture-aware orchestration | fixture-aware events with stable-role and event-overlay logic, plus `lighting_score.md` | `docs/7.4.fixture_aware_mapping_story.md` |
+| 7.5 | BeatDrop offline visualizer export | deterministic offline preset windows and transition schedule in `beatdrop_visual_plan.json` | `docs/7.5.beatdrop_offline_visualizer_export_story.md` |
 
-Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/beats.json`, `data/output/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_events.json`, `lighting_score.md`.
+Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/beats.json`, `data/output/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_events.json`, `lighting_score.md`, `data/output/<Song - Artist>/beatdrop_visual_plan.json`.
 
 ## EPIC 8: Internal Artifact Debugger and Regression Viewer
 
@@ -198,7 +199,7 @@ The expected high-level artifact dependency chain is:
 4. Event-inference artifacts in `data/artifacts/<Song - Artist>/event_inference/` and identifier hints in `data/artifacts/<Song - Artist>/energy_summary/hints.json`.
 5. Review, override, timeline-markdown, and benchmark outputs in `data/artifacts/<Song - Artist>/validation/`, plus the UI timeline JSON in `data/output/<Song - Artist>/song_event_timeline.json`.
 6. Pattern-mining outputs in `data/artifacts/<Song - Artist>/pattern_mining/` and the Layer D file `layer_d_patterns.json` in `data/artifacts/<Song - Artist>/`.
-7. UI-facing `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md` in `data/output/<Song - Artist>/`.
+7. UI-facing `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and `beatdrop_visual_plan.json` in `data/output/<Song - Artist>/`, plus optional `beatdrop_visual_plan.md`.
 8. Unified cross-layer handoff file `music_feature_layers.json` in `data/artifacts/<Song - Artist>/`.
 9. No additional routine files are added to `data/output/<Song - Artist>/` beyond the stable UI contract unless a UI contract change makes that strictly required.
 10. The internal debugger served from `/ui/` reads `data/artifacts/<Song - Artist>/` and selected output helper files without writing any new files back into those generated-data directories.

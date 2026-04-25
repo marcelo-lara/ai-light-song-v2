@@ -10,7 +10,7 @@ Use this as a navigation guide first, then open the referenced files for the act
 
 - `data/reference/` is reference and validation material. Do not treat it as generation input.
 - `data/artifacts/` contains generated analysis artifacts and intermediate caches.
-- `data/output/` contains a stable UI-facing output contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
+- `data/output/` contains a stable UI-facing output contract. Each song output directory must contain `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and `beatdrop_visual_plan.json`. `beatdrop_visual_plan.md` is optional.
 - Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
 - The internal debugger served from `/ui/` primarily reads `data/artifacts/<Song - Artist>/` directly and uses `data/output/<Song - Artist>/` only as supporting context when useful.
 - The debugger is read-only against generated data and must not write files into `data/artifacts/` or `data/output/`.
@@ -79,6 +79,8 @@ data/
     <Song - Artist>/
       beats.json
       hints.json
+      beatdrop_visual_plan.json
+      beatdrop_visual_plan.md
       info.json
       lighting_score.md
       song_event_timeline.json
@@ -107,15 +109,16 @@ data/
 If you only open a few files, start here in this order:
 
 1. `data/output/<Song - Artist>/lighting_score.md`
-2. `data/output/<Song - Artist>/song_event_timeline.json`
-3. `data/output/<Song - Artist>/hints.json`
-4. `data/artifacts/<Song - Artist>/music_feature_layers.json`
-5. `data/artifacts/<Song - Artist>/lighting_events.json`
-6. `data/artifacts/<Song - Artist>/layer_c_energy.json`
-7. `data/artifacts/<Song - Artist>/layer_a_harmonic.json`
-8. `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
-9. `data/fixtures/fixtures.json`
-10. `data/fixtures/pois.json`
+2. `data/output/<Song - Artist>/beatdrop_visual_plan.json`
+3. `data/output/<Song - Artist>/song_event_timeline.json`
+4. `data/output/<Song - Artist>/hints.json`
+5. `data/artifacts/<Song - Artist>/music_feature_layers.json`
+6. `data/artifacts/<Song - Artist>/lighting_events.json`
+7. `data/artifacts/<Song - Artist>/layer_c_energy.json`
+8. `data/artifacts/<Song - Artist>/layer_a_harmonic.json`
+9. `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
+10. `data/fixtures/fixtures.json`
+11. `data/fixtures/pois.json`
 
 For internal debugger work, invert that priority: start with `data/artifacts/<Song - Artist>/` layer and validation files first, then use `data/output/<Song - Artist>/` only as compact helper projections.
 

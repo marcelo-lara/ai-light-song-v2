@@ -12,4 +12,5 @@ export const sparseLaneStyles = {
   identifierHints: { fill: "rgba(3, 105, 161, 0.18)", stroke: "rgba(3, 105, 161, 0.32)", text: "rgba(241, 245, 249, 0.96)", caption: "rgba(226, 232, 240, 0.82)" },
   machineEvents: { fill: "rgba(185, 28, 28, 0.12)", stroke: "rgba(185, 28, 28, 0.24)", text: "rgba(241, 245, 249, 0.96)", caption: "rgba(226, 232, 240, 0.82)" },
   mlEvents: { fill: "rgba(91, 33, 182, 0.14)", stroke: "rgba(91, 33, 182, 0.28)", text: "rgba(241, 245, 249, 0.96)", caption: "rgba(226, 232, 240, 0.82)" },
+  beatdropPlan: { fill: "rgba(234, 88, 12, 0.14)", stroke: "rgba(234, 88, 12, 0.28)", text: "rgba(241, 245, 249, 0.96)", caption: "rgba(226, 232, 240, 0.82)" },
 };
