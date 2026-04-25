@@ -83,6 +83,29 @@ python -m analyzer \
   --stage extract-fft-bands
 ```
 
+Generated-data cleanup mode removes only per-song directories from artifacts and output roots:
+
+```bash
+python -m analyzer \
+  --clean-generated-data
+```
+
+## Implementation-Time Validation Sequence
+
+Use the following sequence when developing or changing pipeline logic:
+
+1. During implementation, run only the updated stage(s) with `--stage` for fast feedback.
+2. Keep stage-only runs focused on the stage you changed and any directly dependent stage outputs.
+3. At the end of each implementation task, run one full pipeline command (without `--stage`) to validate end-to-end behavior and report generation.
+
+Recommended final validation command:
+
+```bash
+python -m analyzer \
+  --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
+  --compare beats,chords,drums,sections,energy,patterns,unified,events
+```
+
 When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
 
 The current batch implementation isolates each song run in a subprocess and reuses the repo-local Demucs cache under `models/demucs/` so long-running Docker validation does not depend on mid-run model downloads or a long-lived parent process.
@@ -107,6 +130,7 @@ The current batch implementation isolates each song run in a subprocess and reus
 - `--device`: optional execution target such as `cuda` or `cpu`, but container validation should prefer GPU when available.
 - `--verbose`: optional flag for detailed logging.
 - `--stage`: optional stage selector to run only one pipeline stage. Stages with upstream dependencies require existing artifacts from prior stage runs.
+- `--clean-generated-data`: optional maintenance mode that deletes generated per-song directories under artifacts/output only; it never deletes source songs or validation reference data.
 
 ## Minimum Required Inputs
 

@@ -8,7 +8,7 @@ from contextlib import ExitStack
 from pathlib import Path
 from unittest.mock import call, patch
 
-from analyzer.cli import SONG_SEPARATOR_WIDTH, _print_song_header, _run_single_song, _single_song_command
+from analyzer.cli import SONG_SEPARATOR_WIDTH, _clean_generated_song_data, _print_song_header, _run_single_song, _single_song_command, main
 from analyzer.config import ValidationConfig
 from analyzer.paths import SongPaths
 from analyzer.pipeline import _print_phase_marker, _print_stage_marker, clear_batch_progress, run_phase_1, set_batch_progress
@@ -180,6 +180,39 @@ class ConsoleMarkerTests(unittest.TestCase):
         )
         self.assertIn("--stage", command)
         self.assertIn("extract-fft-bands", command)
+
+    def test_clean_generated_song_data_removes_only_artifacts_and_output(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            artifacts_root = root / "artifacts"
+            output_root = root / "output"
+            songs_root = root / "songs"
+            reference_root = root / "reference"
+
+            (artifacts_root / "Song A").mkdir(parents=True, exist_ok=True)
+            (output_root / "Song A").mkdir(parents=True, exist_ok=True)
+            (songs_root / "Song A.mp3").parent.mkdir(parents=True, exist_ok=True)
+            (songs_root / "Song A.mp3").write_text("mp3", encoding="utf-8")
+            (reference_root / "Song A" / "moises").mkdir(parents=True, exist_ok=True)
+
+            args = argparse.Namespace(artifacts_root=str(artifacts_root))
+            _clean_generated_song_data(args)
+
+            self.assertFalse((artifacts_root / "Song A").exists())
+            self.assertFalse((output_root / "Song A").exists())
+            self.assertTrue((songs_root / "Song A.mp3").exists())
+            self.assertTrue((reference_root / "Song A" / "moises").exists())
+
+    def test_main_clean_only_mode_exits_without_pipeline(self) -> None:
+        with patch("analyzer.cli._clean_generated_song_data") as mock_clean, patch(
+            "analyzer.cli._run_single_song"
+        ) as mock_single, patch("analyzer.cli._run_all_songs") as mock_all:
+            exit_code = main(["--clean-generated-data"])
+
+        self.assertEqual(exit_code, 0)
+        mock_clean.assert_called_once()
+        mock_single.assert_not_called()
+        mock_all.assert_not_called()
 
     def test_run_phase_1_single_stage_runs_only_requested_stage(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

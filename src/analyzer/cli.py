@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 import subprocess
 import sys
 import traceback
@@ -41,6 +42,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--chord-min-overlap", type=float, default=0.5)
     parser.add_argument("--device")
     parser.add_argument("--verbose", action="store_true")
+    parser.add_argument(
+        "--clean-generated-data",
+        action="store_true",
+        help=(
+            "Remove generated per-song data under artifacts/output only. "
+            "Songs and reference data are never touched."
+        ),
+    )
     parser.add_argument(
         "--stage",
         choices=SINGLE_STAGE_NAMES,
@@ -176,13 +185,51 @@ def _run_all_songs(args: argparse.Namespace, compare_targets: tuple[str, ...]) -
     return _batch_exit_code(exit_codes)
 
 
+def _clean_song_directories(root_path: Path) -> int:
+    if not root_path.exists():
+        return 0
+    if not root_path.is_dir():
+        raise UsageError(f"Generated-data root is not a directory: {root_path}")
+
+    removed = 0
+    for child in root_path.iterdir():
+        if not child.is_dir():
+            continue
+        shutil.rmtree(child)
+        removed += 1
+    return removed
+
+
+def _clean_generated_song_data(args: argparse.Namespace) -> None:
+    artifacts_root = Path(args.artifacts_root)
+    output_root = artifacts_root.parent / "output"
+
+    removed_artifacts = _clean_song_directories(artifacts_root)
+    removed_output = _clean_song_directories(output_root)
+
+    print(
+        (
+            "Cleaned generated song data: "
+            f"removed {removed_artifacts} artifact directories and "
+            f"{removed_output} output directories."
+        ),
+        flush=True,
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
     supported_targets = {"beats", "chords", "drums", "sections", "energy", "patterns", "unified", "events"}
     try:
+        if args.clean_generated_data and not args.song and not args.all_songs:
+            _clean_generated_song_data(args)
+            return 0
+
         compare_targets = _validate_args(args, supported_targets)
+        if args.clean_generated_data:
+            _clean_generated_song_data(args)
         if args.all_songs:
             return _run_all_songs(args, compare_targets)
         return _run_single_song(args, compare_targets)

@@ -48,6 +48,8 @@ All development, validation, and sample-song execution must run inside the proje
 - Target environment: NVIDIA GPU-enabled Docker runtime.
 - Do not depend on host-installed Python packages.
 - Validate tool imports and sample-song runs inside the container.
+- During implementation, validate only the updated stage(s) with `--stage` where possible.
+- At the end of each implementation task, run one full pipeline command (no `--stage`) and treat that report as the final end-to-end validation gate.
 - Use `./analyze` or `python -m analyzer` as the supported container entry points.
 - The analyzer runtime is the Compose `app` service. The internal debugger UI runs as a separate Compose `ui` service backed by the `/ui` folder, with generated data mounted read-only and only `data/reference/<Song - Artist>/human/human_hints.json` writable through the Story 8.8 helper UI flow.
 - Batch runs via `--all-songs` must isolate each song in a subprocess because the long-lived parent process is not treated as a stable execution model for the native analysis stack.
