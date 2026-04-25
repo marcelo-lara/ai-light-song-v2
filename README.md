@@ -205,6 +205,15 @@ docker compose run --rm app \
   --all-songs
 ```
 
+Run a single stage only (using existing prerequisite artifacts when needed):
+
+```bash
+docker compose run --rm app \
+  ./analyze \
+  --song "/data/songs/Cinderella - Ella Lee.mp3" \
+  --stage extract-fft-bands
+```
+
 Analye all songs in background
 ```bash
 mkdir -p logs && nohup docker compose run --rm -T app ./analyze --all-songs --device cuda > "logs/all-songs-$(date +%F_%H-%M-%S).log" 2>&1 < /dev/null & echo $!
@@ -232,6 +241,7 @@ Validation reports are always written automatically to `data/artifacts/<Song - A
 - `--chord-min-overlap`: Minimum overlap ratio for chord comparison (default: 0.5)
 - `--device`: Execution device (`cuda` or `cpu`)
 - `--verbose`: Enable detailed logging
+- `--stage`: Run only one pipeline stage by name. This mode expects prerequisite artifacts to already exist for stages that depend on earlier outputs.
 
 **Exit codes:**
 - `0`: Analysis completed and validation passed

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from pathlib import Path
 from typing import TypeVar
 
 from analyzer.config import ValidationConfig
-from analyzer.io import ensure_directory, write_json
+from analyzer.io import ensure_directory, read_json, write_json
 from analyzer.exceptions import AnalysisError
 from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
@@ -86,6 +87,258 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
 }
 
 
+SINGLE_STAGE_BLOCKLIST: set[str] = {
+    "build-validation-report",
+    "write-validation-report",
+    "write-validation-markdown",
+}
+
+SINGLE_STAGE_NAMES: tuple[str, ...] = tuple(
+    sorted(stage_name for stage_name in STAGE_PIPELINE_IDS.keys() if stage_name not in SINGLE_STAGE_BLOCKLIST)
+)
+
+
+def _required_artifact_payload(paths: SongPaths, stage_name: str, *artifact_parts: str) -> dict:
+    artifact_path = paths.artifact(*artifact_parts)
+    if not artifact_path.exists():
+        joined = "/".join(artifact_parts)
+        raise AnalysisError(
+            f"Single-stage execution for '{stage_name}' requires existing artifact '{joined}'. "
+            "Run prerequisite stages first or execute the full pipeline once."
+        )
+    payload = read_json(artifact_path)
+    if not isinstance(payload, dict):
+        joined = "/".join(artifact_parts)
+        raise AnalysisError(f"Artifact '{joined}' must contain a JSON object payload.")
+    return payload
+
+
+def _optional_artifact_payload(paths: SongPaths, *artifact_parts: str) -> dict | None:
+    artifact_path = paths.artifact(*artifact_parts)
+    if not artifact_path.exists():
+        return None
+    payload = read_json(artifact_path)
+    return payload if isinstance(payload, dict) else None
+
+
+def _existing_stems(paths: SongPaths, stage_name: str) -> dict[str, str]:
+    stems = {
+        "bass": paths.stems_dir / "bass.wav",
+        "drums": paths.stems_dir / "drums.wav",
+        "harmonic": paths.stems_dir / "harmonic.wav",
+        "vocals": paths.stems_dir / "vocals.wav",
+    }
+    missing = [name for name, stem_path in stems.items() if not stem_path.exists()]
+    if missing:
+        raise AnalysisError(
+            f"Single-stage execution for '{stage_name}' requires existing stems for {missing}. "
+            "Run 'ensure-stems' first."
+        )
+    return {name: str(stem_path) for name, stem_path in stems.items()}
+
+
+def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: str) -> int:
+    ensure_directory(paths.song_artifacts_dir)
+
+    if stage_name == "ensure-stems":
+        _run_stage(paths.song_name, "phase-1", stage_name, ensure_stems, paths)
+        return 0
+    if stage_name == "extract-timing-grid":
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_timing_grid, paths)
+        return 0
+    if stage_name == "build-reference-timing-grid":
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        rebuilt = _run_stage(
+            paths.song_name,
+            "phase-1",
+            stage_name,
+            build_reference_timing_grid,
+            paths,
+            float(timing.get("duration", 0.0)),
+        )
+        write_json(paths.artifact("essentia", "beats.json"), rebuilt)
+        return 0
+    if stage_name == "validate-beats":
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, validate_beats, paths, timing, config.beat_tolerance_seconds)
+        return 0
+    if stage_name == "generate-timing-diagnosis":
+        inferred = _required_artifact_payload(paths, stage_name, "essentia", "beats_inferred.json")
+        canonical = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, generate_timing_diagnosis, paths, inferred, canonical)
+        return 0
+    if stage_name == "extract-fft-bands":
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_fft_bands, paths)
+        return 0
+    if stage_name == "extract-mix-stem-loudness":
+        stems = _existing_stems(paths, stage_name)
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_mix_stem_loudness, paths, stems)
+        return 0
+    if stage_name == "classify-genre":
+        _run_stage(paths.song_name, "phase-1", stage_name, classify_genre, paths)
+        return 0
+    if stage_name == "extract-hpcp-and-chords":
+        stems = _existing_stems(paths, stage_name)
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_hpcp_and_chords, paths, stems, timing)
+        return 0
+    if stage_name == "build-reference-harmonic-layer":
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, build_reference_harmonic_layer, paths, timing)
+        return 0
+    if stage_name == "validate-chords":
+        harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, validate_chords, paths, harmonic, config.chord_min_overlap)
+        return 0
+    if stage_name == "extract-energy-features":
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_energy_features, paths, timing)
+        return 0
+    if stage_name == "segment-sections":
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
+        energy_features = _required_artifact_payload(paths, stage_name, "energy_summary", "features.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, segment_sections, paths, timing, harmonic, energy_features)
+        return 0
+    if stage_name == "extract-symbolic-features":
+        stems = _existing_stems(paths, stage_name)
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_symbolic_features, paths, stems, timing, sections)
+        return 0
+    if stage_name == "extract-drum-events":
+        stems = _existing_stems(paths, stage_name)
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_drum_events, paths, stems, timing, sections)
+        return 0
+    if stage_name == "generate-section-hints":
+        symbolic = _required_artifact_payload(paths, stage_name, "layer_b_symbolic.json")
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, generate_section_hints, paths, symbolic, sections)
+        return 0
+    if stage_name == "build-ui-data":
+        _run_stage(paths.song_name, "phase-1", stage_name, build_ui_data, paths)
+        return 0
+    if stage_name == "derive-energy-layer":
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        energy_features = _required_artifact_payload(paths, stage_name, "energy_summary", "features.json")
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, derive_energy_layer, paths, timing, energy_features, sections)
+        return 0
+    if stage_name == "build-event-feature-layer":
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
+        symbolic = _required_artifact_payload(paths, stage_name, "layer_b_symbolic.json")
+        energy_features = _required_artifact_payload(paths, stage_name, "energy_summary", "features.json")
+        energy_layer = _required_artifact_payload(paths, stage_name, "layer_c_energy.json")
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        genre_result = _optional_artifact_payload(paths, "genre.json")
+        _run_stage(
+            paths.song_name,
+            "phase-1",
+            stage_name,
+            build_event_feature_layer,
+            paths,
+            timing,
+            harmonic,
+            symbolic,
+            energy_features,
+            energy_layer,
+            sections,
+            genre_result,
+        )
+        return 0
+    if stage_name == "generate-ml-events":
+        _run_stage(paths.song_name, "phase-1", stage_name, generate_ml_events, paths)
+        return 0
+    if stage_name == "generate-rule-candidates":
+        event_features = _required_artifact_payload(paths, stage_name, "event_inference", "features.json")
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        genre_result = _optional_artifact_payload(paths, "genre.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, generate_rule_candidates, paths, event_features, sections, genre_result)
+        return 0
+    if stage_name == "infer-song-identifiers":
+        energy_layer = _required_artifact_payload(paths, stage_name, "layer_c_energy.json")
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, infer_song_identifiers, paths, energy_layer, sections)
+        return 0
+    if stage_name == "generate-machine-events":
+        event_features = _required_artifact_payload(paths, stage_name, "event_inference", "features.json")
+        rule_candidates = _required_artifact_payload(paths, stage_name, "event_inference", "rule_candidates.json")
+        event_identifiers = _required_artifact_payload(paths, stage_name, "energy_summary", "hints.json")
+        symbolic = _required_artifact_payload(paths, stage_name, "layer_b_symbolic.json")
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        _run_stage(
+            paths.song_name,
+            "phase-1",
+            stage_name,
+            generate_machine_events,
+            paths,
+            event_features,
+            rule_candidates,
+            event_identifiers,
+            symbolic,
+            sections,
+        )
+        return 0
+    if stage_name == "generate-event-review":
+        machine_events = _required_artifact_payload(paths, stage_name, "event_inference", "events.machine.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, generate_event_review, paths, machine_events)
+        return 0
+    if stage_name == "export-event-timeline":
+        machine_events = _required_artifact_payload(paths, stage_name, "event_inference", "events.machine.json")
+        review_outputs = _run_stage(paths.song_name, "phase-1", "generate-event-review", generate_event_review, paths, machine_events)
+        _run_stage(paths.song_name, "phase-1", stage_name, export_event_timeline, paths, review_outputs["merged_payload"])
+        return 0
+    if stage_name == "benchmark-event-outputs":
+        machine_events = _required_artifact_payload(paths, stage_name, "event_inference", "events.machine.json")
+        review_outputs = _run_stage(paths.song_name, "phase-1", "generate-event-review", generate_event_review, paths, machine_events)
+        genre_result = _optional_artifact_payload(paths, "genre.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, benchmark_event_outputs, paths, review_outputs["merged_payload"], genre_result)
+        return 0
+    if stage_name == "extract-chord-patterns":
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_chord_patterns, paths, timing, harmonic)
+        return 0
+    if stage_name == "assemble-music-feature-layers":
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
+        symbolic = _required_artifact_payload(paths, stage_name, "layer_b_symbolic.json")
+        energy = _required_artifact_payload(paths, stage_name, "layer_c_energy.json")
+        patterns = _required_artifact_payload(paths, stage_name, "layer_d_patterns.json")
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        _run_stage(
+            paths.song_name,
+            "phase-1",
+            stage_name,
+            assemble_music_feature_layers,
+            paths,
+            timing,
+            harmonic,
+            symbolic,
+            energy,
+            patterns,
+            sections,
+        )
+        return 0
+    if stage_name == "generate-lighting-events":
+        _run_stage(paths.song_name, "phase-1", stage_name, generate_lighting_events, paths)
+        return 0
+    if stage_name == "generate-lighting-score":
+        _run_stage(paths.song_name, "phase-1", stage_name, generate_lighting_score, paths)
+        return 0
+    if stage_name == "build-human-hints-alignment":
+        _run_stage(paths.song_name, "phase-1", stage_name, build_human_hints_alignment, paths)
+        return 0
+
+    raise AnalysisError(
+        f"Single-stage execution for '{stage_name}' is not supported. "
+        f"Supported stages: {list(SINGLE_STAGE_NAMES)}"
+    )
+
+
 def set_batch_progress(current_song: int, total_songs: int) -> None:
     if current_song < 1:
         raise ValueError("current_song must be >= 1")
@@ -141,9 +394,12 @@ def _run_stage(
     return operation(*args, **kwargs)
 
 
-def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
+def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | None = None) -> int:
     _print_phase_marker(paths.song_name, "phase-1", "start")
     try:
+        if stage_name is not None:
+            return _run_single_stage(paths, config, stage_name)
+
         ensure_directory(paths.song_artifacts_dir)
         reference_chords_path = paths.reference("moises", "chords.json")
         has_reference_chords = reference_chords_path is not None and reference_chords_path.exists()

@@ -75,6 +75,14 @@ python -m analyzer \
   --all-songs
 ```
 
+Single-stage mode runs only one stage and skips the full phase-1 chain:
+
+```bash
+python -m analyzer \
+  --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
+  --stage extract-fft-bands
+```
+
 When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
 
 The current batch implementation isolates each song run in a subprocess and reuses the repo-local Demucs cache under `models/demucs/` so long-running Docker validation does not depend on mid-run model downloads or a long-lived parent process.
@@ -98,6 +106,7 @@ The current batch implementation isolates each song run in a subprocess and reus
 - `--chord-min-overlap`: optional float defining minimum overlap ratio for chord-event comparison.
 - `--device`: optional execution target such as `cuda` or `cpu`, but container validation should prefer GPU when available.
 - `--verbose`: optional flag for detailed logging.
+- `--stage`: optional stage selector to run only one pipeline stage. Stages with upstream dependencies require existing artifacts from prior stage runs.
 
 ## Minimum Required Inputs
 

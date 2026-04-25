@@ -136,6 +136,42 @@ def _load_contextual_rows(paths: SongPaths) -> list[dict[str, Any]]:
     return [dict(row) for row in payload.get("features", [])]
 
 
+def _write_empty_outputs(
+    paths: SongPaths,
+    out_path: Path,
+    saliency_path: Path,
+    penalty_timeline_path: Path,
+    *,
+    notes: str,
+    status: str,
+) -> dict[str, Any]:
+    empty_payload = {"schema_version": "1.0", "song_name": paths.song_name, "events": []}
+    write_json(out_path, empty_payload)
+    write_json(saliency_path, {"schema_version": "1.0", "song_name": paths.song_name, "saliency": []})
+    write_json(
+        penalty_timeline_path,
+        {
+            "schema_version": "1.0",
+            "song_name": paths.song_name,
+            "frames": [],
+            "notes": notes,
+        },
+    )
+    MODEL_DIR.mkdir(parents=True, exist_ok=True)
+    write_json(
+        PENALTY_METADATA_PATH,
+        {
+            "schema_version": "1.0",
+            "model_path": str(MODEL_PATH),
+            "seed": SEED,
+            "status": status,
+            "song_name": paths.song_name,
+            "notes": notes,
+        },
+    )
+    return empty_payload
+
+
 def generate_ml_events(paths: SongPaths) -> dict:
     features_path = paths.artifact("event_inference", "contextual_features.json")
     out_path = paths.artifact("event_inference", "events.ml.json")
@@ -151,48 +187,45 @@ def generate_ml_events(paths: SongPaths) -> dict:
         identifiers = [dict(row) for row in read_json(identifiers_path).get("events", [])]
 
     if tensor.numel() == 0:
-        empty_payload = {"schema_version": "1.0", "song_name": paths.song_name, "events": []}
-        write_json(out_path, empty_payload)
-        write_json(saliency_path, {"schema_version": "1.0", "song_name": paths.song_name, "saliency": []})
-        write_json(
+        return _write_empty_outputs(
+            paths,
+            out_path,
+            saliency_path,
             penalty_timeline_path,
-            {
-                "schema_version": "1.0",
-                "song_name": paths.song_name,
-                "frames": [],
-            },
+            notes="No contextual features were available; no ML events generated.",
+            status="skipped_empty_features",
         )
-        return empty_payload
 
     torch.manual_seed(SEED)
     num_features = tensor.shape[0]
     model = Event1DCNN(num_features=num_features)
 
     if not MODEL_PATH.exists():
-        empty_payload = {"schema_version": "1.0", "song_name": paths.song_name, "events": []}
-        write_json(out_path, empty_payload)
-        write_json(saliency_path, {"schema_version": "1.0", "song_name": paths.song_name, "saliency": []})
-        write_json(
+        return _write_empty_outputs(
+            paths,
+            out_path,
+            saliency_path,
             penalty_timeline_path,
-            {
-                "schema_version": "1.0",
-                "song_name": paths.song_name,
-                "frames": [],
-                "notes": "Model weights were not found; no ML events generated.",
-            },
+            notes="Model weights were not found; no ML events generated.",
+            status="skipped_missing_weights",
         )
-        write_json(
-            PENALTY_METADATA_PATH,
-            {
-                "schema_version": "1.0",
-                "model_path": str(MODEL_PATH),
-                "seed": SEED,
-                "status": "skipped_missing_weights",
-            },
-        )
-        return empty_payload
 
-    model.load_state_dict(torch.load(MODEL_PATH, map_location="cpu"))
+    try:
+        checkpoint = torch.load(MODEL_PATH, map_location="cpu")
+        model.load_state_dict(checkpoint)
+    except Exception as exc:
+        return _write_empty_outputs(
+            paths,
+            out_path,
+            saliency_path,
+            penalty_timeline_path,
+            notes=(
+                "Model weights are incompatible with the current feature schema "
+                f"or could not be loaded: {exc}"
+            ),
+            status="skipped_incompatible_weights",
+        )
+
     model.eval()
 
     sequence_length = tensor.size(1)

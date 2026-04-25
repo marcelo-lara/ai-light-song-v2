@@ -12,7 +12,7 @@ from analyzer.cli import SONG_SEPARATOR_WIDTH, _print_song_header, _run_single_s
 from analyzer.config import ValidationConfig
 from analyzer.paths import SongPaths
 from analyzer.pipeline import _print_phase_marker, _print_stage_marker, clear_batch_progress, run_phase_1, set_batch_progress
-from analyzer.stages.validation import ValidationResult
+from analyzer.stages.validation.utils import ValidationResult
 
 
 class ConsoleMarkerTests(unittest.TestCase):
@@ -56,7 +56,7 @@ class ConsoleMarkerTests(unittest.TestCase):
             _print_stage_marker("Example Song", "phase-1", "ensure-stems")
 
         mock_print.assert_called_once_with(
-            "[1.1] Example Song | ensure-stems",
+            "[EPIC 1 | 1.1] Example Song | ensure-stems",
             flush=True,
         )
 
@@ -67,7 +67,7 @@ class ConsoleMarkerTests(unittest.TestCase):
             _print_stage_marker("Example Song", "phase-1", "ensure-stems")
 
         mock_print.assert_called_once_with(
-            "[2/20][1.1] Example Song | ensure-stems",
+            "[2/20][EPIC 1 | 1.1] Example Song | ensure-stems",
             flush=True,
         )
 
@@ -91,6 +91,7 @@ class ConsoleMarkerTests(unittest.TestCase):
             chord_min_overlap=0.5,
             device=None,
             verbose=False,
+            stage=None,
             batch_song_index=None,
             batch_song_total=None,
         )
@@ -116,6 +117,42 @@ class ConsoleMarkerTests(unittest.TestCase):
         mock_header.assert_called_once_with("Example Song")
         mock_run_phase.assert_called_once()
 
+    def test_run_single_song_passes_stage_name_to_pipeline(self) -> None:
+        args = argparse.Namespace(
+            song="/tmp/Example Song.mp3",
+            artifacts_root="/tmp/artifacts",
+            reference_root="/tmp/reference",
+            fail_on_mismatch=False,
+            beat_tolerance_seconds=0.1,
+            tolerance_seconds=2.0,
+            chord_min_overlap=0.5,
+            device=None,
+            verbose=False,
+            stage="extract-fft-bands",
+            batch_song_index=None,
+            batch_song_total=None,
+        )
+        compare_targets = ("beats",)
+        paths = SongPaths(
+            song_path=Path("/tmp/Example Song.mp3"),
+            artifacts_root=Path("/tmp/artifacts"),
+            reference_root=Path("/tmp/reference"),
+            output_root=Path("/tmp/output"),
+            stems_root=Path("/tmp/stems"),
+        )
+
+        with patch("analyzer.cli.build_song_paths", return_value=paths), patch(
+            "analyzer.cli.default_validation_report_paths",
+            return_value=(Path("/tmp/report.json"), Path("/tmp/report.md")),
+        ), patch("analyzer.cli._print_song_header"), patch(
+            "analyzer.cli.run_phase_1",
+            return_value=0,
+        ) as mock_run_phase:
+            exit_code = _run_single_song(args, compare_targets)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(mock_run_phase.call_args.kwargs["stage_name"], "extract-fft-bands")
+
     def test_single_song_command_includes_batch_progress_flags(self) -> None:
         args = argparse.Namespace(
             artifacts_root="/tmp/artifacts",
@@ -127,6 +164,7 @@ class ConsoleMarkerTests(unittest.TestCase):
             chord_min_overlap=0.5,
             device=None,
             verbose=False,
+            stage="extract-fft-bands",
         )
 
         command = _single_song_command(
@@ -140,6 +178,42 @@ class ConsoleMarkerTests(unittest.TestCase):
             command[-4:],
             ["--batch-song-index", "2", "--batch-song-total", "20"],
         )
+        self.assertIn("--stage", command)
+        self.assertIn("extract-fft-bands", command)
+
+    def test_run_phase_1_single_stage_runs_only_requested_stage(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "Example Song.mp3",
+                artifacts_root=root / "artifacts",
+                reference_root=root / "reference",
+                output_root=root / "output",
+                stems_root=root / "stems",
+            )
+            paths.song_path.parent.mkdir(parents=True, exist_ok=True)
+            paths.song_path.write_text("", encoding="utf-8")
+
+            config = ValidationConfig(
+                compare_targets=("beats",),
+                report_json=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.json",
+                report_md=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.md",
+                fail_on_mismatch=False,
+                beat_tolerance_seconds=0.1,
+                tolerance_seconds=2.0,
+                chord_min_overlap=0.5,
+                device=None,
+                verbose=False,
+            )
+
+            with patch("analyzer.pipeline.extract_fft_bands", return_value={"bands": []}) as mock_fft, patch(
+                "analyzer.pipeline.ensure_stems"
+            ) as mock_stems:
+                exit_code = run_phase_1(paths, config, stage_name="extract-fft-bands")
+
+        self.assertEqual(exit_code, 0)
+        mock_fft.assert_called_once_with(paths)
+        mock_stems.assert_not_called()
 
     def test_run_phase_1_prints_end_marker_when_setup_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

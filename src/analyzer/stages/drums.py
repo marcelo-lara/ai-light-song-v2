@@ -204,8 +204,20 @@ def _summary(events: list[dict]) -> dict:
 def extract_drum_events(paths: SongPaths, stems: dict[str, str], timing: dict, sections_payload: dict) -> dict:
     omnizart_dir = ensure_directory(paths.artifact("symbolic_transcription", "omnizart"))
     midi_path = omnizart_dir / "drums.mid"
-    midi, model_path, model_source = _transcribe_drums(stems["drums"], midi_path)
-    events = _build_events(midi, timing, sections_payload)
+    transcription_status = "ok"
+    transcription_error = None
+    model_path: Path | None = None
+    model_source: str | None = None
+
+    try:
+        midi, model_path, model_source = _transcribe_drums(stems["drums"], midi_path)
+        events = _build_events(midi, timing, sections_payload)
+    except (AnalysisError, DependencyError) as exc:
+        # Story contract: fail gracefully when the named dependency cannot execute.
+        transcription_status = "failed"
+        transcription_error = str(exc)
+        events = []
+
     auxiliary_cache_path = paths.artifact("symbolic_transcription", "basic_pitch", "drums.json")
 
     payload = {
@@ -218,7 +230,7 @@ def extract_drum_events(paths: SongPaths, stems: dict[str, str], timing: dict, s
                 "drums_stem": stems["drums"],
                 "beats_file": str(paths.artifact("essentia", "beats.json")),
                 "raw_midi_cache": str(midi_path),
-                "model_path": str(model_path),
+                "model_path": str(model_path) if model_path is not None else None,
                 "model_source": model_source,
                 "auxiliary_note_cache": str(auxiliary_cache_path) if auxiliary_cache_path.exists() else None,
             },
@@ -226,10 +238,16 @@ def extract_drum_events(paths: SongPaths, stems: dict[str, str], timing: dict, s
                 "full_mix": str(paths.song_path),
                 "drums_stem": stems["drums"],
             },
+            "transcription_status": transcription_status,
+            "transcription_error": transcription_error,
         },
         "supported_event_types": SUPPORTED_EVENT_TYPES,
         "summary": _summary(events),
-        "quality_flags": _quality_flags(events, timing),
+        "quality_flags": (
+            _quality_flags(events, timing)
+            if transcription_status == "ok"
+            else ["transcription_failed"]
+        ),
         "events": events,
     }
     write_json(paths.artifact("symbolic_transcription", "drum_events.json"), payload)
