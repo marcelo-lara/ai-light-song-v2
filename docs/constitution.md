@@ -29,6 +29,7 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 - **`data/artifacts/`**: Machine-readable intermediate analysis. Read-only for the UI. Must use producer-scoped subfolders.
 - **State Continuity:** All state-based and frame-based layers must provide 100% coverage of the song timeline starting at `0.0`. If a song begins with physical silence, this must be represented as a "silence" state or zero-value frames, rather than omitting the data.
 - **`data/output/`**: Stable UI contract. Must contain exactly the files specified in the `layer_manifest.md`.
+- **Reference Promotion Exception:** A Story may explicitly allow confidence-gated promotion from `data/reference/` into a canonical artifact when the inferred result is below a documented quality gate. This is not a silent fallback. The promoted artifact must preserve the inferred result separately, record the reference file path, the failing gate, and the promotion decision in provenance metadata, and remain deterministic across runs.
 
 ### 3.2 Immutability
 - Once an artifact is written to `data/artifacts/`, it is considered a historical record of that pipeline run. 
@@ -38,6 +39,7 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 
 ### 4.1 Error Handling
 - **Fail Explicitly:** The pipeline must never use silent fallbacks (e.g., if a chord model fails, do not invent a generic "C" major chord; fail the run or mark it as `unknown`).
+- **Explicit Reference Promotion Only:** When a Story permits reference-backed rescue behavior, it must be confidence-gated, deterministic, and surfaced in metadata and validation output. Silent substitution is a constitutional violation.
 - **Provenance:** Every generated file must include a `generated_from` block identifying the source files, engine version, and timestamps.
 
 ### 4.2 Code Quality
@@ -49,5 +51,5 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 - Every new feature must be introduced via a "Story" file in the `docs/` folder before being implemented in `src/`.
 
 ---
-*Last Updated: 2026-04-20*
+*Last Updated: 2026-04-24*
 *Status: Active*

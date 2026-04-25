@@ -734,6 +734,8 @@ LLM hint:
 - See: segment boundaries and labels.
 - Use: compare against `section_segmentation/sections.json` to sanity-check large structural changes.
 - Treat labels as advisory. The important part is the boundary timing.
+- Use: derive offline boundary-quality metrics such as over-segmentation, under-segmentation, and snap-like late or early offsets.
+- Optional promotion rule: if a Story explicitly allows it, this file may rescue low-confidence or clearly failed inferred section boundaries, but only through an explicit confidence gate with preserved inferred output and provenance.
 
 ### `data/reference/<Song - Artist>/moises/lyrics.json`
 
@@ -745,7 +747,8 @@ LLM hint:
 - See: `text`, `start`, `end`, `line_id`, and markers like `<SOL>` and `<EOL>`.
 - Use: align spotlight moments, text-reactive effects, or visual punctuation to words and line starts.
 - Combine: with vocal symbolic data for melody-aware lyric moments.
-- Remember: this file is for review and timing reference, not pipeline fallback generation.
+- Use: derive beat- or line-aligned features such as lyric density, line starts, line ends, post-line tails, and confidence-weighted vocal-presence priors.
+- Optional promotion rule: if a Story explicitly allows it, this file may rescue low-confidence vocal timing or event timing only when the overlapping stem or energy evidence agrees and the promotion is recorded explicitly.
 
 ## Practical Usage Patterns
 

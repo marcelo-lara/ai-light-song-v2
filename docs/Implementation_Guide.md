@@ -37,7 +37,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - **Timeline Totality:** All layers must cover the timeline from `0.0`. For structural boundaries (Sections/Events), prioritize the **Physical Onset** (transient) over the beat grid to ensure zero-latency synchronization.
 - Beat and bar alignment come from the canonical EPIC 1.2 timing grid.
 - Schemas must be versioned.
-- Reference files are for validation only, not fallback generation.
+- Reference files are validation-only by default. A Story may explicitly allow confidence-gated reference promotion for a named artifact when the inferred result falls below a documented quality threshold. That promotion must preserve the inferred artifact, must not hide the failure, and must record the reference source and promotion reason in provenance and validation output.
 - Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
 - The internal debugger may read directly from `data/artifacts/<Song - Artist>/` and selected `data/output/<Song - Artist>/` helper files. It must not write files into either tree. The only persisted debugger edit path is `data/reference/<Song - Artist>/human/human_hints.json` on explicit save.
 
