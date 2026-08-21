@@ -10,6 +10,7 @@ services:
     volumes:
       - .:/app
       - ./data:/data
+      - /home/darkangel/ai-dmx-light-render/data/songs:/data/songs
     environment:
       NVIDIA_VISIBLE_DEVICES: all
       NVIDIA_DRIVER_CAPABILITIES: compute,utility
@@ -29,5 +30,6 @@ services:
       - /srv/ui/node_modules
       - ./data:/data:ro
       - ./data/reference:/data/reference
+      - /home/darkangel/ai-dmx-light-render/data/songs:/data/songs:ro
     ports:
       - "8080:8080"

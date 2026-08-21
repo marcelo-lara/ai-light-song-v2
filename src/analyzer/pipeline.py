@@ -289,7 +289,11 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
             sections,
         )
         lighting = _run_stage(paths.song_name, "phase-1", "generate-lighting-events", generate_lighting_events, paths)
-        lighting_score = _run_stage(paths.song_name, "phase-1", "generate-lighting-score", generate_lighting_score, paths)
+        try:
+            lighting_score = _run_stage(paths.song_name, "phase-1", "generate-lighting-score", generate_lighting_score, paths)
+        except Exception as exc:
+            print(f"{format_batch_progress_prefix()}{paths.song_name} | generate-lighting-score failed, continuing: {exc}", flush=True)
+            lighting_score = {"lighting_score_file": None}
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
         info_payload = {
