@@ -74,10 +74,8 @@ class FftBandsTests(unittest.TestCase):
             song_path.write_bytes(b"fake-mp3")
             paths = SongPaths(
                 song_path=song_path,
-                artifacts_root=root / "artifacts",
+                analysis_root=root / "analysis",
                 reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
             )
 
             fake_standard = types.ModuleType("essentia.standard")

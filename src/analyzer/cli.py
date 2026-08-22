@@ -31,8 +31,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--song")
     parser.add_argument("--all-songs", action="store_true", help="Analyze every .mp3 under the songs root")
-    parser.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <artifacts-root parent>/songs")
-    parser.add_argument("--artifacts-root", default="/data/artifacts")
+    parser.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <analysis-root parent>/songs")
+    parser.add_argument("--analysis-root", default="/data/analysis")
     parser.add_argument("--reference-root", default="/data/reference")
     parser.add_argument("--compare", default="beats,chords,drums,sections,energy,patterns,unified,events")
     parser.add_argument("--fail-on-mismatch", action="store_true")
@@ -87,7 +87,7 @@ def _run_single_song(args: argparse.Namespace, compare_targets: tuple[str, ...])
         set_batch_progress(batch_song_index, batch_song_total)
 
     try:
-        paths = build_song_paths(args.song, args.artifacts_root, args.reference_root)
+        paths = build_song_paths(args.song, args.analysis_root, args.reference_root)
         _print_song_header(paths.song_name)
         report_json, report_md = default_validation_report_paths(paths)
         config = _build_validation_config(
@@ -121,8 +121,8 @@ def _single_song_command(
         "analyzer",
         "--song",
         str(song_path),
-        "--artifacts-root",
-        str(args.artifacts_root),
+        "--analysis-root",
+        str(args.analysis_root),
         "--reference-root",
         str(args.reference_root),
         "--compare",
@@ -149,10 +149,10 @@ def _single_song_command(
 
 def _run_all_songs(args: argparse.Namespace, compare_targets: tuple[str, ...]) -> int:
     exit_codes: list[int] = []
-    songs = discover_song_files(args.artifacts_root, args.songs_root)
+    songs = discover_song_files(args.analysis_root, args.songs_root)
     total_songs = len(songs)
     for song_index, song_path in enumerate(songs, start=1):
-        paths = build_song_paths(str(song_path), args.artifacts_root, args.reference_root)
+        paths = build_song_paths(str(song_path), args.analysis_root, args.reference_root)
         report_json, report_md = default_validation_report_paths(paths)
         command = _single_song_command(args, song_path, batch_song_index=song_index, batch_song_total=total_songs)
         completed = subprocess.run(command, check=False)

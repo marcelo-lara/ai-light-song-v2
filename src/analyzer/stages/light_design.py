@@ -211,7 +211,7 @@ def _build_lighting_score_markdown(paths: SongPaths) -> str:
     patterns = read_json(paths.artifact("layer_d_patterns.json"))
     lighting_events = read_json(paths.artifact("lighting_events.json"))
     hints = read_json(paths.hints_output_path)
-    fixtures = read_json(paths.artifacts_root.parent / "fixtures" / "fixtures.json")
+    fixtures = read_json(paths.analysis_root.parent / "fixtures" / "fixtures.json")
 
     title, artist = _split_song_name(paths.song_name)
     metadata = unified.get("metadata", {})

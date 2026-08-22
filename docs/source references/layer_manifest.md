@@ -2,9 +2,9 @@
 
 ## Purpose
 
-This document defines the role of the major artifact files under `data/artifacts/<Song - Artist>/`.
+This document defines the role of the major artifact files under `data/analysis/<Song - Artist>/artifacts/`.
 
-These artifact files are also the primary read targets for the internal debugger under `/ui/`. The debugger may inspect them directly, but it remains read-only against `data/artifacts/` and `data/output/`.
+These artifact files are also the primary read targets for the internal debugger under `/ui/`. The debugger may inspect them directly, but it remains read-only against `data/analysis/`.
 
 ## Layer Files
 
@@ -147,7 +147,7 @@ Primary source story: EPIC 5.7.
 
 ### `validation/song_events.review.json`
 
-Stores the reviewed event payload used for human review without expanding the UI-facing `data/output/<Song - Artist>/` contract.
+Stores the reviewed event payload used for human review without expanding the UI-facing `data/analysis/<Song - Artist>/` contract.
 
 Primary source story: EPIC 5.6.
 
@@ -171,41 +171,41 @@ Primary source story: EPIC 5.8.
 
 ### `info.json`
 
-Stores canonical song metadata and references to major generated files. This file is written to `data/output/<Song - Artist>/info.json`.
+Stores canonical song metadata and references to major generated files. This file is written to `data/analysis/<Song - Artist>/info.json`.
 
 Expected top-level metadata fields are `song_name`, `bpm`, and `duration`, with file references grouped under `artifacts`, `generated_from`, and `outputs`.
 
 ## Consolidated Output Files
 
-`data/output/<Song - Artist>/` is a stable UI contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`. `lighting_score.md` is the only markdown file allowed there. Do not add or remove files from this directory unless a UI contract change makes that strictly required.
+`data/analysis/<Song - Artist>/` is a stable UI contract. Each song output directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`. `lighting_score.md` is the only markdown file allowed there. Do not add or remove files from this directory unless a UI contract change makes that strictly required.
 
-The internal debugger may read selected files from this directory as compact helper projections, but its primary inspection surface remains `data/artifacts/<Song - Artist>/`.
+The internal debugger may read selected files from this directory as compact helper projections, but its primary inspection surface remains `data/analysis/<Song - Artist>/artifacts/`.
 
-### `data/output/<Song - Artist>/beats.json`
+### `data/analysis/<Song - Artist>/beats.json`
 
 Stores compact UI-facing beat rows projected from `essentia/beats.json`, aligned chord labels projected from `layer_a_harmonic.json`, and a beat-aligned bass note projected from `symbolic_transcription/basic_pitch/bass.json`.
 
 Expected fields per row are `time`, `beat`, `bar`, `bass`, `chord`, and `type`, where `bass` is a pitch-class note name without octave suffix.
 
-### `data/output/<Song - Artist>/sections.json`
+### `data/analysis/<Song - Artist>/sections.json`
 
 Stores compact UI-facing section rows projected from `section_segmentation/sections.json`.
 
 Expected fields per row are `start`, `end`, `label`, `description`, and `hints`, where `label` embeds the numeric section id prefix and a confidence suffix such as `001 Intro (0.74)`. The `hints` field remains a placeholder in this file and is not the authoritative editable hint store.
 
-### `data/output/<Song - Artist>/hints.json`
+### `data/analysis/<Song - Artist>/hints.json`
 
 Stores the editable merged section hints consumed by `lighting_score.md`, combining regenerated inference-authored hints with preserved user-authored hints.
 
-### `data/output/<Song - Artist>/song_event_timeline.json`
+### `data/analysis/<Song - Artist>/song_event_timeline.json`
 
 Stores the compact reviewed event timeline exported for downstream lighting logic and prompt-friendly consumption. Each inferred entry should carry an explicit `created_by` value in the form `analyzer_{module/algorithm/model}`.
 
 Primary source story: EPIC 5.8.
 
-### `data/output/<Song - Artist>/lighting_score.md`
+### `data/analysis/<Song - Artist>/lighting_score.md`
 
-Stores the final human-readable lighting design document. This is the only markdown file allowed under `data/output/<Song - Artist>/`.
+Stores the final human-readable lighting design document. This is the only markdown file allowed under `data/analysis/<Song - Artist>/`.
 
 ## Unified Artifact
 
@@ -261,6 +261,6 @@ When Story 6.5 emits fixture-aware overlay metadata, the event records should pr
 - All major artifacts should use `schema_version`.
 - All major artifacts should record upstream dependencies in `generated_from`.
 - Shared timing must remain consistent across all layer files.
-- The term `reference` is reserved for `/data/reference/` only and must not be used for inferred artifacts under `data/artifacts/`.
+- The term `reference` is reserved for `/data/reference/` only and must not be used for inferred artifacts under `data/analysis/`.
 - Generated artifacts should use producer-scoped subfolders when that provenance matters, such as `essentia/` for inferred beats, `section_segmentation/` for inferred sections, `energy_summary/` for derived feature summaries, and `pattern_mining/` for pattern outputs.
 - Reference inputs under `data/reference/` are always read-only and may be used for validation or explicit review only.

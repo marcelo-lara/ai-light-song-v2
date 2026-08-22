@@ -8,7 +8,7 @@ export default function SidebarHeader({ onToggleCollapse }) {
       <div>
         <p className="eyebrow">AI Light Song v2</p>
         <h1>Artifact Debugger</h1>
-        <p className="lede">Read-only inspection for generated inference surfaces, timing alignment, and regression drift under <code>data/artifacts</code>.</p>
+        <p className="lede">Read-only inspection for generated inference surfaces, timing alignment, and regression drift under <code>data/analysis/&lt;Song - Artist&gt;/artifacts</code>.</p>
       </div>
       <Tooltip title="Collapse sidebar">
         <IconButton aria-label="Collapse sidebar" onClick={onToggleCollapse} size="small">

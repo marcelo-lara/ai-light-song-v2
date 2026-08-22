@@ -13,10 +13,10 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - `src/`: implementation code. Organize it with subfolders for cohesive features or analysis phases rather than by file type.
 - `ui/`: internal artifact-debugger web application and UI-specific container files. Keep browser assets and UI server configuration here rather than under `src/`.
 - `data/songs/`: source `.mp3` files for analysis.
-- `data/stems/`: temporary stem and `.wav` outputs.
-- `data/artifacts/`: intermediate artifacts such as beats, chords, sections, layer outputs, merged layer files, and validation notes.
+- `data/analysis/<Song - Artist>/artifacts/stems/`: temporary stem and `.wav` outputs.
+- `data/analysis/<Song - Artist>/artifacts/`: intermediate artifacts such as beats, chords, sections, layer outputs, merged layer files, and validation notes.
 - `data/reference/`: validation and curated reference data used to evaluate model quality. It must never be copied into generated outputs.
-- `data/output/`: stable UI-facing outputs. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
+- `data/analysis/<Song - Artist>/`: stable UI-facing outputs, alongside (but outside) the nested `artifacts/` folder. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 - `docs/`: implementation contracts, schemas, and developer guidance.
 
 ### Source layout and implementation rules
@@ -31,15 +31,15 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 
 - Generated files must include explicit `generated_from` metadata when practical.
 - The term `reference` is reserved for `/data/reference/` and human-validated source-of-truth material. Story 8.8 allows explicit editing only for `data/reference/<Song - Artist>/human/human_hints.json`.
-- Generated files inside `data/artifacts/` must use producer-scoped namespaces when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
+- Generated files inside `data/analysis/` must use producer-scoped namespaces when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
 - Time values are expressed in seconds.
 - Bars are 1-indexed.
 - **Timeline Totality:** All layers must cover the timeline from `0.0`. For structural boundaries (Sections/Events), prioritize the **Physical Onset** (transient) over the beat grid to ensure zero-latency synchronization.
 - Beat and bar alignment come from the canonical EPIC 1.2 timing grid.
 - Schemas must be versioned.
 - Reference files are for validation only, not fallback generation.
-- Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
-- The internal debugger may read directly from `data/artifacts/<Song - Artist>/` and selected `data/output/<Song - Artist>/` helper files. It must not write files into either tree. The only persisted debugger edit path is `data/reference/<Song - Artist>/human/human_hints.json` on explicit save.
+- Do not add or remove files under `data/analysis/<Song - Artist>/` unless a UI contract change makes that strictly required.
+- The internal debugger may read directly from `data/analysis/<Song - Artist>/artifacts/` and selected `data/analysis/<Song - Artist>/` helper files. It must not write files into either tree. The only persisted debugger edit path is `data/reference/<Song - Artist>/human/human_hints.json` on explicit save.
 
 ## Containerized Development Rule
 
@@ -135,9 +135,9 @@ Goal: define the canonical event contract, infer musically meaningful event wind
 | 5.4 | Advanced musical event classification | `event_inference/events.machine.json` | `docs/5.4.advanced_event_classification_story.md` |
 | 5.5 | Confidence, review, and override workflow | `validation/song_events.review.json`, `validation/song_events.review.md`, and `validation/song_events.overrides.json` | `docs/5.5.event_review_and_override_story.md` |
 | 5.5 | Event benchmarking and genre-sensitive tuning | `validation/event_benchmark.json`, benchmark annotations, and threshold profiles | `docs/5.5.event_benchmarking_and_tuning_story.md` |
-| 5.6 | LLM-friendly event timeline export | `data/output/<Song - Artist>/song_event_timeline.json` and `validation/song_event_timeline.md` | `docs/5.6.event_timeline_export_story.md` |
+| 5.6 | LLM-friendly event timeline export | `data/analysis/<Song - Artist>/song_event_timeline.json` and `validation/song_event_timeline.md` | `docs/5.6.event_timeline_export_story.md` |
 
-Representative artifacts: `energy_summary/hints.json`, `event_inference/features.json`, `event_inference/rule_candidates.json`, `event_inference/events.machine.json`, `data/artifacts/<Song - Artist>/validation/song_events.review.json`, `data/output/<Song - Artist>/song_event_timeline.json`, `validation/event_benchmark.json`.
+Representative artifacts: `energy_summary/hints.json`, `event_inference/features.json`, `event_inference/rule_candidates.json`, `event_inference/events.machine.json`, `data/analysis/<Song - Artist>/artifacts/validation/song_events.review.json`, `data/analysis/<Song - Artist>/song_event_timeline.json`, `validation/event_benchmark.json`.
 
 ## EPIC 6: ML-Based Event Classification
 
@@ -158,18 +158,18 @@ Layer D covers repeated harmonic progression structure. Motif-level and phrase-l
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
 | 2.3 | Find chord patterns | `pattern_mining/chord_patterns.json` and `layer_d_patterns.json` | `docs/2.3.find_chord_patterns_story.md` |
-| 7.2 | Build UI data | `data/output/<Song - Artist>/beats.json` and `data/output/<Song - Artist>/sections.json` | `docs/7.2.build_ui_data_story.md` |
+| 7.2 | Build UI data | `data/analysis/<Song - Artist>/beats.json` and `data/analysis/<Song - Artist>/sections.json` | `docs/7.2.build_ui_data_story.md` |
 | 7.1 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/7.1.music_feature_layers_story.md` |
 | 7.3 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/7.3.energy_to_lighting_mapping.md` |
 | 7.4 | Fixture-aware orchestration | fixture-aware events with stable-role and event-overlay logic, plus `lighting_score.md` | `docs/7.4.fixture_aware_mapping_story.md` |
 
-Representative artifacts: `layer_d_patterns.json`, `data/output/<Song - Artist>/beats.json`, `data/output/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_events.json`, `lighting_score.md`.
+Representative artifacts: `layer_d_patterns.json`, `data/analysis/<Song - Artist>/beats.json`, `data/analysis/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_events.json`, `lighting_score.md`.
 
 ## EPIC 8: Internal Artifact Debugger and Regression Viewer
 
 Goal: provide an internal web debugger for inspecting generated inferences, timing alignment, and validation surfaces without changing the stable downstream output contract. Generated artifacts and outputs remain read-only; Story 8.8 adds an explicit reference-human-hints editing surface.
 
-The debugger is an internal engineering and review tool. Its primary inspection surface is `data/artifacts/<Song - Artist>/`. It may also read compact helper projections from `data/output/<Song - Artist>/`, but it must not write debugger state or exported files into either tree. The only allowed persisted edit is `data/reference/<Song - Artist>/human/human_hints.json`.
+The debugger is an internal engineering and review tool. Its primary inspection surface is `data/analysis/<Song - Artist>/artifacts/`. It may also read compact helper projections from `data/analysis/<Song - Artist>/`, but it must not write debugger state or exported files into either tree. The only allowed persisted edit is `data/reference/<Song - Artist>/human/human_hints.json`.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
@@ -190,15 +190,15 @@ Representative implementation assets: `/ui/`, the Compose `ui` service, debugger
 The expected high-level artifact dependency chain is:
 
 1. Source song in `data/songs/`.
-2. Stem outputs in `data/stems/`.
-3. Timing, harmonic, symbolic, and energy artifacts in `data/artifacts/<Song - Artist>/`.
-4. Event-inference artifacts in `data/artifacts/<Song - Artist>/event_inference/` and identifier hints in `data/artifacts/<Song - Artist>/energy_summary/hints.json`.
-5. Review, override, timeline-markdown, and benchmark outputs in `data/artifacts/<Song - Artist>/validation/`, plus the UI timeline JSON in `data/output/<Song - Artist>/song_event_timeline.json`.
-6. Pattern-mining outputs in `data/artifacts/<Song - Artist>/pattern_mining/` and the Layer D file `layer_d_patterns.json` in `data/artifacts/<Song - Artist>/`.
-7. UI-facing `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md` in `data/output/<Song - Artist>/`.
-8. Unified cross-layer handoff file `music_feature_layers.json` in `data/artifacts/<Song - Artist>/`.
-9. No additional routine files are added to `data/output/<Song - Artist>/` beyond the stable UI contract unless a UI contract change makes that strictly required.
-10. The internal debugger served from `/ui/` reads `data/artifacts/<Song - Artist>/` and selected output helper files without writing any new files back into those generated-data directories.
+2. Stem outputs in `data/analysis/<Song - Artist>/artifacts/stems/`.
+3. Timing, harmonic, symbolic, and energy artifacts in `data/analysis/<Song - Artist>/artifacts/`.
+4. Event-inference artifacts in `data/analysis/<Song - Artist>/artifacts/event_inference/` and identifier hints in `data/analysis/<Song - Artist>/artifacts/energy_summary/hints.json`.
+5. Review, override, timeline-markdown, and benchmark outputs in `data/analysis/<Song - Artist>/artifacts/validation/`, plus the UI timeline JSON in `data/analysis/<Song - Artist>/song_event_timeline.json`.
+6. Pattern-mining outputs in `data/analysis/<Song - Artist>/artifacts/pattern_mining/` and the Layer D file `layer_d_patterns.json` in `data/analysis/<Song - Artist>/artifacts/`.
+7. UI-facing `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md` in `data/analysis/<Song - Artist>/`.
+8. Unified cross-layer handoff file `music_feature_layers.json` in `data/analysis/<Song - Artist>/artifacts/`.
+9. No additional routine files are added to `data/analysis/<Song - Artist>/` beyond the stable UI contract unless a UI contract change makes that strictly required.
+10. The internal debugger served from `/ui/` reads `data/analysis/<Song - Artist>/artifacts/` and selected output helper files without writing any new files back into those generated-data directories.
 
 ## Required Supporting Documents
 
@@ -214,13 +214,13 @@ The expected high-level artifact dependency chain is:
 Before Story 7.4 can produce a reliable `lighting_score.md`, the implementation should have at minimum:
 
 - canonical beat and bar timing from Story 1.2 with per-beat time, 1-indexed bar, and beat-in-bar indices
-- `data/artifacts/<Song - Artist>/section_segmentation/sections.json` with stable section IDs and exact section windows
-- `data/artifacts/<Song - Artist>/layer_b_symbolic.json` with `motif_summary.dominant_motif_id`, `motif_summary.motif_groups[]`, and `motif_summary.repeated_phrase_groups[]`
+- `data/analysis/<Song - Artist>/artifacts/section_segmentation/sections.json` with stable section IDs and exact section windows
+- `data/analysis/<Song - Artist>/artifacts/layer_b_symbolic.json` with `motif_summary.dominant_motif_id`, `motif_summary.motif_groups[]`, and `motif_summary.repeated_phrase_groups[]`
 - phrase timing anchors exposed as `phrase_windows[]` or normalized into `music_feature_layers.json.timeline.phrases[]`
-- `data/artifacts/<Song - Artist>/layer_c_energy.json` with accent windows, energy transitions, peaks, and dips relevant to cue placement
-- `data/output/<Song - Artist>/song_event_timeline.json` or equivalent reviewed event export when event-aware lighting logic is enabled, with canonical event IDs and exact event windows preserved
-- `data/artifacts/<Song - Artist>/layer_d_patterns.json` with `patterns[].id` and occurrence windows using `start_s` and `end_s`
-- `data/artifacts/<Song - Artist>/music_feature_layers.json` with `timeline.phrases[]`, `lighting_context.cue_anchors[]`, `lighting_context.pattern_callbacks[]`, and `lighting_context.motif_callbacks[]`
+- `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json` with accent windows, energy transitions, peaks, and dips relevant to cue placement
+- `data/analysis/<Song - Artist>/song_event_timeline.json` or equivalent reviewed event export when event-aware lighting logic is enabled, with canonical event IDs and exact event windows preserved
+- `data/analysis/<Song - Artist>/artifacts/layer_d_patterns.json` with `patterns[].id` and occurrence windows using `start_s` and `end_s`
+- `data/analysis/<Song - Artist>/artifacts/music_feature_layers.json` with `timeline.phrases[]`, `lighting_context.cue_anchors[]`, `lighting_context.pattern_callbacks[]`, and `lighting_context.motif_callbacks[]`
 - fixture-agnostic lighting events from Story 7.3 with `anchor_refs` that point back to section, phrase, motif, pattern, and cue-anchor IDs
 - fixture-aware events from Story 7.4, when exported separately, with exact `event_ref`, `role_overlay`, and explicit target metadata for dynamic regroupings such as moving-head unison focus
 - `data/fixtures/fixtures.json` so Story 7.4 can translate abstract behavior into fixture-aware instructions
@@ -243,7 +243,7 @@ Every implementation story must define:
 Before the full pipeline is considered ready, the implementation should expose a first-phase validation entry point, preferably a CLI analyzer, that can:
 
 1. run against a real song such as `What a Feeling - Courtney Storm.mp3`
-2. generate inferred analysis artifacts inside `data/artifacts/<Song - Artist>/`
+2. generate inferred analysis artifacts inside `data/analysis/<Song - Artist>/artifacts/`
 3. compare inferred chord outputs against human-validated reference chords and compare inferred section change points against validation-only reference segments in `data/reference/<Song - Artist>/moises/` when they are available
 4. validate the generated Story 2.5 drum review artifact for recognizable kick, snare, and hat behavior on `What a Feeling - Courtney Storm.mp3` without treating reference data as generation fallback
 5. emit a validation summary or report without copying reference values into generated artifacts

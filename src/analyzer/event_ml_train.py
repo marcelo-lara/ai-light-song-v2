@@ -128,11 +128,11 @@ def load_human_hints(filepath: Path) -> list[dict[str, Any]]:
     return [dict(row) for row in payload.get("human_hints", []) if isinstance(row, dict)]
 
 
-def discover_labeled_songs(reference_root: Path, artifacts_root: Path) -> list[str]:
+def discover_labeled_songs(reference_root: Path, analysis_root: Path) -> list[str]:
     songs: list[str] = []
     for human_hints_path in sorted(reference_root.glob("*/human/human_hints.json")):
         song_name = human_hints_path.parent.parent.name
-        features_path = artifacts_root / song_name / "event_inference" / "contextual_features.json"
+        features_path = analysis_root / song_name / "artifacts" / "event_inference" / "contextual_features.json"
         if features_path.exists():
             songs.append(song_name)
     return songs
@@ -165,8 +165,8 @@ def _build_label_mask(frame_times: Sequence[float], hints: Sequence[dict[str, An
     return mask, label_counts, unmapped_hints
 
 
-def load_song_training_data(song_name: str, artifacts_root: Path, reference_root: Path) -> SongTrainingData | None:
-    features_path = artifacts_root / song_name / "event_inference" / "contextual_features.json"
+def load_song_training_data(song_name: str, analysis_root: Path, reference_root: Path) -> SongTrainingData | None:
+    features_path = analysis_root / song_name / "artifacts" / "event_inference" / "contextual_features.json"
     hints_path = reference_root / song_name / "human" / "human_hints.json"
     feature_tensor, time_map, feature_keys = parse_contextual_features(features_path)
     if feature_tensor.numel() == 0 or not hints_path.exists():
@@ -314,7 +314,7 @@ def _resolve_device(device_name: str | None) -> torch.device:
 
 def train_event_classifier(
     songs_root: Path,
-    artifacts_root: Path,
+    analysis_root: Path,
     output_dir: Path = DEFAULT_MODEL_DIR,
     epochs: int = DEFAULT_EPOCHS,
     batch_size: int = DEFAULT_BATCH_SIZE,
@@ -332,14 +332,14 @@ def train_event_classifier(
         raise ValueError("epochs must be greater than zero")
 
     _set_random_seed(random_seed)
-    labeled_songs = discover_labeled_songs(songs_root, artifacts_root)
+    labeled_songs = discover_labeled_songs(songs_root, analysis_root)
     if len(labeled_songs) < 2:
         raise ValueError("At least two songs with both contextual features and human hints are required.")
 
     training_song_names, validation_song_names = split_song_names(labeled_songs, validation_ratio)
     song_payloads: dict[str, SongTrainingData] = {}
     for song_name in labeled_songs:
-        payload = load_song_training_data(song_name, artifacts_root, songs_root)
+        payload = load_song_training_data(song_name, analysis_root, songs_root)
         if payload is not None:
             song_payloads[song_name] = payload
 
@@ -416,7 +416,7 @@ def train_event_classifier(
         "model_name": "event_classifier_1d_cnn_v1",
         "generated_from": {
             "reference_root": str(songs_root),
-            "artifacts_root": str(artifacts_root),
+            "analysis_root": str(analysis_root),
         },
         "songs": {
             "all": labeled_songs,
@@ -473,7 +473,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="Train the Story 6.2 1D-CNN event classifier from contextual features and human hints.",
     )
     parser.add_argument("--songs-root", default="/data/reference")
-    parser.add_argument("--artifacts-root", default="/data/artifacts")
+    parser.add_argument("--analysis-root", default="/data/analysis")
     parser.add_argument("--output-dir", default=str(DEFAULT_MODEL_DIR))
     parser.add_argument("--epochs", type=int, default=DEFAULT_EPOCHS)
     parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE)
@@ -494,7 +494,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     metadata = train_event_classifier(
         songs_root=Path(args.songs_root),
-        artifacts_root=Path(args.artifacts_root),
+        analysis_root=Path(args.analysis_root),
         output_dir=Path(args.output_dir),
         epochs=args.epochs,
         batch_size=args.batch_size,

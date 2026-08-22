@@ -15,30 +15,28 @@ def derive_song_name(song_path: Path) -> str:
 @dataclass(slots=True)
 class SongPaths:
     song_path: Path
-    artifacts_root: Path
+    analysis_root: Path
     reference_root: Path | None
-    output_root: Path
-    stems_root: Path
 
     @property
     def song_name(self) -> str:
         return derive_song_name(self.song_path)
 
     @property
+    def song_output_dir(self) -> Path:
+        return self.analysis_root / self.song_name
+
+    @property
     def song_artifacts_dir(self) -> Path:
-        return self.artifacts_root / self.song_name
+        return self.song_output_dir / "artifacts"
 
     @property
     def song_validation_dir(self) -> Path:
         return self.song_artifacts_dir / "validation"
 
     @property
-    def song_output_dir(self) -> Path:
-        return self.output_root / self.song_name
-
-    @property
     def stems_dir(self) -> Path:
-        return self.stems_root / self.song_name
+        return self.song_artifacts_dir / "stems"
 
     @property
     def beats_output_path(self) -> Path:

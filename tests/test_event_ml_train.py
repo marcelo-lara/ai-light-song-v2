@@ -58,7 +58,7 @@ class EventMlTrainTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             reference_root = root / "reference"
-            artifacts_root = root / "artifacts"
+            analysis_root = root / "analysis"
             output_dir = root / "models" / "event_classifier"
 
             for song_name, hotspot, title in (
@@ -67,7 +67,7 @@ class EventMlTrainTests(unittest.TestCase):
                 ("ayuni", (180, 210), "Hook pattern build tension"),
             ):
                 _write_contextual_features(
-                    artifacts_root / song_name / "event_inference" / "contextual_features.json",
+                    analysis_root / song_name / "artifacts" / "event_inference" / "contextual_features.json",
                     hotspot_start=hotspot[0],
                     hotspot_end=hotspot[1],
                 )
@@ -89,13 +89,13 @@ class EventMlTrainTests(unittest.TestCase):
                 )
 
             self.assertEqual(
-                discover_labeled_songs(reference_root, artifacts_root),
+                discover_labeled_songs(reference_root, analysis_root),
                 ["Cinderella - Ella Lee", "What a Feeling - Courtney Storm", "ayuni"],
             )
 
             metadata = train_event_classifier(
                 songs_root=reference_root,
-                artifacts_root=artifacts_root,
+                analysis_root=analysis_root,
                 output_dir=output_dir,
                 epochs=2,
                 batch_size=4,

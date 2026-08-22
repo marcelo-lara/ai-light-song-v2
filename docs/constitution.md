@@ -25,13 +25,13 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 
 ### 3.1 Folder Sanctity
 - **`data/reference/`**: Source of truth for validation. Read-only (except for Story 7.8 human hints).
-- **`data/artifacts/`**: Machine-readable intermediate analysis. Read-only for the UI. Must use producer-scoped subfolders.
+- **`data/analysis/<Song - Artist>/artifacts/`**: Machine-readable intermediate analysis. Read-only for the UI. Must use producer-scoped subfolders.
 - **State Continuity:** All state-based and frame-based layers must provide 100% coverage of the song timeline starting at `0.0`. If a song begins with physical silence, this must be represented as a "silence" state or zero-value frames, rather than omitting the data.
-- **`data/output/`**: Stable UI contract. Must contain exactly the files specified in the `layer_manifest.md`.
+- **`data/analysis/<Song - Artist>/`**: Stable UI contract (outside the nested `artifacts/` folder). Must contain exactly the files specified in the `layer_manifest.md`.
 
 ### 3.2 Immutability
-- Once an artifact is written to `data/artifacts/`, it is considered a historical record of that pipeline run. 
-- The Internal Debugger (UI) is strictly forbidden from writing to `artifacts` or `output`.
+- Once an artifact is written to `data/analysis/`, it is considered a historical record of that pipeline run. 
+- The Internal Debugger (UI) is strictly forbidden from writing to `data/analysis/`.
 
 ## 4. Development Standards
 

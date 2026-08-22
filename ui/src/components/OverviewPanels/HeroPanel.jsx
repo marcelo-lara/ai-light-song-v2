@@ -6,7 +6,7 @@ export default function HeroPanel({ loadedSong, timeline, validation, visibleWin
       <div>
         <p className="eyebrow">Inference Viewer</p>
         <h2>{loadedSong || "No song loaded"}</h2>
-        <p className="lede">{loadedSong ? "Artifact lanes remain primary. Output helper projections are overlaid only when useful for comparison." : <>Choose a discovered per-song directory from <code>data/artifacts</code>.</>}</p>
+        <p className="lede">{loadedSong ? "Artifact lanes remain primary. Output helper projections are overlaid only when useful for comparison." : <>Choose a discovered per-song directory from <code>data/analysis</code>.</>}</p>
       </div>
       <div className="hero-meta">
         <div className="stat-card"><span className="stat-label">BPM</span><strong>{timeline && Number.isFinite(timeline.bpm) && timeline.bpm > 0 ? roundNumber(timeline.bpm, 1) : "-"}</strong></div>

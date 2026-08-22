@@ -83,7 +83,7 @@ class ConsoleMarkerTests(unittest.TestCase):
     def test_run_single_song_prints_song_header_before_running_pipeline(self) -> None:
         args = argparse.Namespace(
             song="/tmp/Example Song.mp3",
-            artifacts_root="/tmp/artifacts",
+            analysis_root="/tmp/analysis",
             reference_root="/tmp/reference",
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
@@ -97,10 +97,8 @@ class ConsoleMarkerTests(unittest.TestCase):
         compare_targets = ("beats", "sections")
         paths = SongPaths(
             song_path=Path("/tmp/Example Song.mp3"),
-            artifacts_root=Path("/tmp/artifacts"),
+            analysis_root=Path("/tmp/analysis"),
             reference_root=Path("/tmp/reference"),
-            output_root=Path("/tmp/output"),
-            stems_root=Path("/tmp/stems"),
         )
 
         with patch("analyzer.cli.build_song_paths", return_value=paths), patch(
@@ -118,7 +116,7 @@ class ConsoleMarkerTests(unittest.TestCase):
 
     def test_single_song_command_includes_batch_progress_flags(self) -> None:
         args = argparse.Namespace(
-            artifacts_root="/tmp/artifacts",
+            analysis_root="/tmp/analysis",
             reference_root="/tmp/reference",
             compare="beats,sections",
             fail_on_mismatch=False,
@@ -146,15 +144,13 @@ class ConsoleMarkerTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
+                analysis_root=root / "analysis",
                 reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
             )
             config = ValidationConfig(
                 compare_targets=("beats",),
-                report_json=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.json",
-                report_md=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.md",
+                report_json=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.json",
+                report_md=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.md",
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,
@@ -183,15 +179,13 @@ class ConsoleMarkerTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
+                analysis_root=root / "analysis",
                 reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
             )
             config = ValidationConfig(
                 compare_targets=("beats",),
-                report_json=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.json",
-                report_md=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.md",
+                report_json=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.json",
+                report_md=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.md",
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,
@@ -214,10 +208,8 @@ class ConsoleMarkerTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
+                analysis_root=root / "analysis",
                 reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
             )
             paths.song_path.parent.mkdir(parents=True, exist_ok=True)
             paths.song_path.write_text("", encoding="utf-8")
@@ -228,8 +220,8 @@ class ConsoleMarkerTests(unittest.TestCase):
 
             config = ValidationConfig(
                 compare_targets=("beats", "chords"),
-                report_json=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.json",
-                report_md=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.md",
+                report_json=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.json",
+                report_md=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.md",
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,

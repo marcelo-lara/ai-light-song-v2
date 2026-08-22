@@ -8,7 +8,7 @@ export function humanHintsPath(song) {
 
 export async function discoverAvailableSongs() {
   const [availableSongs, availableAudioSongs] = await Promise.all([
-    fetchDirectoryListing(["data", "artifacts"]),
+    fetchDirectoryListing(["data", "analysis"]),
     fetchDirectoryFiles(["data", "songs"], [".mp3", ".wav", ".flac", ".m4a", ".ogg"]),
   ]);
   return { availableSongs, availableAudioSongs };

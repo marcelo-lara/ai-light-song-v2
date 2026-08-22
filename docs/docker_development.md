@@ -70,7 +70,7 @@ Current compatibility note:
 - the Docker image also exposes TensorFlow wheel shared libraries from the container runtime so Omnizart's direct Python drum import can resolve native TensorFlow dependencies.
 - Python startup in this repository sets `TF_CPP_MIN_LOG_LEVEL=1` by default so TensorFlow's info-level C++ startup noise does not pollute analyzer output while warnings and errors remain visible.
 - the Docker image installs Python dependencies directly into the container Python environment; it does not create an in-container virtual environment.
-- Story 3.2 debug preservation is metadata-only: the generated drum artifact records explicit source paths for the full mix and drums stem, and the pipeline does not copy those audio files into `data/artifacts/`.
+- Story 3.2 debug preservation is metadata-only: the generated drum artifact records explicit source paths for the full mix and drums stem, and the pipeline does not copy those audio files into `data/analysis/`.
 
 ## Workspace Layout in Container
 
@@ -138,7 +138,7 @@ The current batch implementation isolates each song run in a subprocess so the l
 
 `./analyze` is the simplest container entry point. `python -m analyzer` is the equivalent module form.
 
-The `ui` service is not an analyzer runtime. It serves the debugger assets from the Vite development server and must not write any debugger state into `data/artifacts/` or `data/output/`. The only allowed write path is `data/reference/<Song - Artist>/human/human_hints.json` for explicit human-hint saves.
+The `ui` service is not an analyzer runtime. It serves the debugger assets from the Vite development server and must not write any debugger state into `data/analysis/`. The only allowed write path is `data/reference/<Song - Artist>/human/human_hints.json` for explicit human-hint saves.
 
 ## Required Validation Inside Container
 
@@ -148,7 +148,7 @@ At minimum, developers should validate the following inside Docker:
 2. `ffmpeg` is available.
 3. Core imports succeed for the selected toolchain.
 4. A sample song can be analyzed end to end without relying on host dependencies.
-5. Generated outputs are written to `data/artifacts/` and `data/output/`.
+5. Generated outputs are written to `data/analysis/<Song - Artist>/artifacts/` and `data/analysis/<Song - Artist>/`.
 6. The phase-1 validation CLI can compare inferred beats, chords, and sections against validation-only files in `data/reference/`, and validate the generated energy, pattern, event, and unified artifacts for internal consistency.
 7. Inference still runs when those reference files are missing; comparison is optional and only happens when the relevant files are available.
 
@@ -160,7 +160,7 @@ The first smoke test should verify:
 - successful import of the chosen analysis libraries
 - ability to read a sample song from `data/songs/`
 - ability to write outputs into the mounted workspace
-- ability to emit a machine-readable validation report under `data/artifacts/<Song - Artist>/validation/`
+- ability to emit a machine-readable validation report under `data/analysis/<Song - Artist>/artifacts/validation/`
 
 ## Deferred Items
 
