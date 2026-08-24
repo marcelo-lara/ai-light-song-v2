@@ -41,6 +41,8 @@
 
 ## Decision Rule
 - If an instruction conflicts with correctness, artifact-contract clarity, or the container runtime contract, prioritize correctness and update the documentation to match the current state.
+- Keep all documentation and Story files up to date with the current implementation. If a change is made, update the relevant docs immediately to reflect the new state of the codebase.
+- Keep all the ui code in the `ui/` folder. Do not create frontend code files elsewhere.
 
 ## Workspace Cleanup
 - Never leave temporary scripts, patching code, or scaffolded one-off files laying around in the workspace. Always clean up after yourself.
