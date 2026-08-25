@@ -146,7 +146,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig) -> int:
     try:
         ensure_directory(paths.song_artifacts_dir)
         reference_chords_path = paths.reference("moises", "chords.json")
-        has_reference_chords = reference_chords_path is not None and reference_chords_path.exists()
+        has_reference_chords = reference_chords_path.exists()
         stems = _run_stage(paths.song_name, "phase-1", "ensure-stems", ensure_stems, paths)
         timing = _run_stage(paths.song_name, "phase-1", "extract-timing-grid", extract_timing_grid, paths)
         fft_bands = _run_stage(paths.song_name, "phase-1", "extract-fft-bands", extract_fft_bands, paths)

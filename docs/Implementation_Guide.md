@@ -15,7 +15,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - `data/songs/`: source `.mp3` files for analysis.
 - `data/analysis/<Song - Artist>/artifacts/stems/`: temporary stem and `.wav` outputs.
 - `data/analysis/<Song - Artist>/artifacts/`: intermediate artifacts such as beats, chords, sections, layer outputs, merged layer files, and validation notes.
-- `data/reference/`: validation and curated reference data used to evaluate model quality. It must never be copied into generated outputs.
+- `data/analysis/<Song - Artist>/reference/`: validation and curated reference data used to evaluate model quality. It must never be copied into generated outputs.
 - `data/analysis/<Song - Artist>/`: stable UI-facing outputs, alongside (but outside) the nested `artifacts/` folder. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 - `docs/`: implementation contracts, schemas, and developer guidance.
 
@@ -30,7 +30,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 ### Global data rules
 
 - Generated files must include explicit `generated_from` metadata when practical.
-- The term `reference` is reserved for `/data/reference/` and human-validated source-of-truth material. Story 8.8 allows explicit editing only for `data/reference/<Song - Artist>/human/human_hints.json`.
+- The term `reference` is reserved for `data/analysis/<Song - Artist>/reference/` and human-validated source-of-truth material. Story 8.8 allows explicit editing only for `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
 - Generated files inside `data/analysis/` must use producer-scoped namespaces when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
 - Time values are expressed in seconds.
 - Bars are 1-indexed.
@@ -39,7 +39,7 @@ It is intentionally concise. Detailed implementation rules live in the linked st
 - Schemas must be versioned.
 - Reference files are for validation only, not fallback generation.
 - Do not add or remove files under `data/analysis/<Song - Artist>/` unless a UI contract change makes that strictly required.
-- The internal debugger may read directly from `data/analysis/<Song - Artist>/artifacts/` and selected `data/analysis/<Song - Artist>/` helper files. It must not write files into either tree. The only persisted debugger edit path is `data/reference/<Song - Artist>/human/human_hints.json` on explicit save.
+- The internal debugger may read directly from `data/analysis/<Song - Artist>/artifacts/` and selected `data/analysis/<Song - Artist>/` helper files. It must not write files into either tree. The only persisted debugger edit path is `data/analysis/<Song - Artist>/reference/human/human_hints.json` on explicit save.
 
 ## Containerized Development Rule
 
@@ -49,7 +49,7 @@ All development, validation, and sample-song execution must run inside the proje
 - Do not depend on host-installed Python packages.
 - Validate tool imports and sample-song runs inside the container.
 - Use `./analyze` or `python -m analyzer` as the supported container entry points.
-- The analyzer runtime is the Compose `app` service. The internal debugger UI runs as a separate Compose `ui` service backed by the `/ui` folder, with generated data mounted read-only and only `data/reference/<Song - Artist>/human/human_hints.json` writable through the Story 8.8 helper UI flow.
+- The analyzer runtime is the Compose `app` service. The internal debugger UI runs as a separate Compose `ui` service backed by the `/ui` folder, with generated data mounted read-write and only `data/analysis/<Song - Artist>/reference/human/human_hints.json` writable in practice, enforced by the helper UI's own Story 8.8 save flow.
 - Batch runs via `--all-songs` must isolate each song in a subprocess because the long-lived parent process is not treated as a stable execution model for the native analysis stack.
 - Demucs model weights must resolve through the repo-local cache under `models/demucs/` rather than opportunistic mid-run downloads.
 
@@ -169,7 +169,7 @@ Representative artifacts: `layer_d_patterns.json`, `data/analysis/<Song - Artist
 
 Goal: provide an internal web debugger for inspecting generated inferences, timing alignment, and validation surfaces without changing the stable downstream output contract. Generated artifacts and outputs remain read-only; Story 8.8 adds an explicit reference-human-hints editing surface.
 
-The debugger is an internal engineering and review tool. Its primary inspection surface is `data/analysis/<Song - Artist>/artifacts/`. It may also read compact helper projections from `data/analysis/<Song - Artist>/`, but it must not write debugger state or exported files into either tree. The only allowed persisted edit is `data/reference/<Song - Artist>/human/human_hints.json`.
+The debugger is an internal engineering and review tool. Its primary inspection surface is `data/analysis/<Song - Artist>/artifacts/`. It may also read compact helper projections from `data/analysis/<Song - Artist>/`, but it must not write debugger state or exported files into either tree. The only allowed persisted edit is `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
@@ -183,7 +183,7 @@ The debugger is an internal engineering and review tool. Its primary inspection 
 | 8.8 | Human hint editor | explicit editing of reference human hints in the helper UI | `docs/8.8.human_hint_editor_story.md` |
 | 8.9 | Identifier and ML event lanes | read-only debugger lanes for rule identifier hints and ML event predictions | `docs/8.9.identifier_and_ml_event_lanes_story.md` |
 
-Representative implementation assets: `/ui/`, the Compose `ui` service, debugger access to `layer_a_harmonic.json`, `layer_b_symbolic.json`, `layer_c_energy.json`, `layer_d_patterns.json`, `event_inference/*.json`, `validation/phase_1_report.json`, `music_feature_layers.json`, and the editable reference file `data/reference/<Song - Artist>/human/human_hints.json`.
+Representative implementation assets: `/ui/`, the Compose `ui` service, debugger access to `layer_a_harmonic.json`, `layer_b_symbolic.json`, `layer_c_energy.json`, `layer_d_patterns.json`, `event_inference/*.json`, `validation/phase_1_report.json`, `music_feature_layers.json`, and the editable reference file `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
 
 ## Canonical Artifact Flow
 
@@ -244,11 +244,11 @@ Before the full pipeline is considered ready, the implementation should expose a
 
 1. run against a real song such as `What a Feeling - Courtney Storm.mp3`
 2. generate inferred analysis artifacts inside `data/analysis/<Song - Artist>/artifacts/`
-3. compare inferred chord outputs against human-validated reference chords and compare inferred section change points against validation-only reference segments in `data/reference/<Song - Artist>/moises/` when they are available
+3. compare inferred chord outputs against human-validated reference chords and compare inferred section change points against validation-only reference segments in `data/analysis/<Song - Artist>/reference/moises/` when they are available
 4. validate the generated Story 2.5 drum review artifact for recognizable kick, snare, and hat behavior on `What a Feeling - Courtney Storm.mp3` without treating reference data as generation fallback
 5. emit a validation summary or report without copying reference values into generated artifacts
 
-Reference files under `data/reference/` are optional validation inputs. The pipeline must infer chords, sections, and other generated values from the documented analysis stack first. When reference files are present, they may be used to validate or explicitly review those inferred results, but they must not silently replace generated artifact values.
+Reference files under `data/analysis/<Song - Artist>/reference/` are optional validation inputs. The pipeline must infer chords, sections, and other generated values from the documented analysis stack first. When reference files are present, they may be used to validate or explicitly review those inferred results, but they must not silently replace generated artifact values.
 
 This first-phase validation target is documented in `docs/phase_1_validation_cli.md`.
 

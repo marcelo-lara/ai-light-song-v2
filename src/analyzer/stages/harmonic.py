@@ -58,7 +58,7 @@ def build_reference_harmonic_layer(
     inferred_harmonic_path: str | None = None,
 ) -> dict:
     reference_path = paths.reference("moises", "chords.json")
-    if reference_path is None or not reference_path.exists():
+    if not reference_path.exists():
         raise AnalysisError("Reference chord file is required to promote the canonical harmonic layer")
 
     reference_rows = read_json(reference_path)

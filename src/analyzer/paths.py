@@ -16,7 +16,6 @@ def derive_song_name(song_path: Path) -> str:
 class SongPaths:
     song_path: Path
     analysis_root: Path
-    reference_root: Path | None
 
     @property
     def song_name(self) -> str:
@@ -29,6 +28,10 @@ class SongPaths:
     @property
     def song_artifacts_dir(self) -> Path:
         return self.song_output_dir / "artifacts"
+
+    @property
+    def song_reference_dir(self) -> Path:
+        return self.song_output_dir / "reference"
 
     @property
     def song_validation_dir(self) -> Path:
@@ -81,7 +84,5 @@ class SongPaths:
     def artifact(self, *parts: str) -> Path:
         return self.song_artifacts_dir.joinpath(*parts)
 
-    def reference(self, *parts: str) -> Path | None:
-        if self.reference_root is None:
-            return None
-        return self.reference_root.joinpath(self.song_name, *parts)
+    def reference(self, *parts: str) -> Path:
+        return self.song_reference_dir.joinpath(*parts)

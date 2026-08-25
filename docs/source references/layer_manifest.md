@@ -261,6 +261,6 @@ When Story 6.5 emits fixture-aware overlay metadata, the event records should pr
 - All major artifacts should use `schema_version`.
 - All major artifacts should record upstream dependencies in `generated_from`.
 - Shared timing must remain consistent across all layer files.
-- The term `reference` is reserved for `/data/reference/` only and must not be used for inferred artifacts under `data/analysis/`.
+- The term `reference` is reserved for `data/analysis/<Song - Artist>/reference/` only and must not be used for inferred artifacts under `data/analysis/<Song - Artist>/artifacts/`.
 - Generated artifacts should use producer-scoped subfolders when that provenance matters, such as `essentia/` for inferred beats, `section_segmentation/` for inferred sections, `energy_summary/` for derived feature summaries, and `pattern_mining/` for pattern outputs.
-- Reference inputs under `data/reference/` are always read-only and may be used for validation or explicit review only.
+- Reference inputs under `data/analysis/<Song - Artist>/reference/` are always read-only and may be used for validation or explicit review only.

@@ -9,7 +9,7 @@ The UI under `ui/` is an internal visual debugger for inspecting inference outpu
 ## Non-Negotiable Rules
 
 - Do not write files into `data/analysis/`.
-- Only Story 7.8 may write `data/reference/<Song - Artist>/human/human_hints.json`, and only on explicit save.
+- Only Story 7.8 may write `data/analysis/<Song - Artist>/reference/human/human_hints.json`, and only on explicit save.
 - Do not turn this UI into a production-facing consumer experience.
 - Treat `data/analysis/<Song - Artist>/artifacts/` as the primary source of truth.
 - Treat `data/analysis/<Song - Artist>/` as secondary helper context only.
@@ -21,7 +21,7 @@ The UI under `ui/` is an internal visual debugger for inspecting inference outpu
 - Compose runtime: Vite dev server with live reload for `ui/src` edits
 - Production runtime: Nginx serving the built bundle from the Dockerfile production stage
 - Port: `8080`
-- Data mount: `./data:/data:ro` plus `./data/reference:/data/reference`
+- Data mount: `./data:/data` (the human-hint editor writes only `data/analysis/<Song - Artist>/reference/human/human_hints.json`, enforced by the dev-server API, not by mount isolation)
 - Compose service: `ui`
 
 Start the UI:
@@ -125,7 +125,7 @@ The current implementation is an Epic 7 debugger with these features:
 - human hints use the sidebar as their only detail surface instead of the standard selection popup
 - the human-hint sidebar remains open across focus changes and closes only through explicit save, delete, or cancel actions
 - the human-hint editor stays compact for the sidebar: smaller text, no nested cards, and no editor paddings greater than `0.5em`
-- explicit save flow that updates only `data/reference/<Song - Artist>/human/human_hints.json`
+- explicit save flow that updates only `data/analysis/<Song - Artist>/reference/human/human_hints.json`
 
 ## Primary Data Sources
 
@@ -193,7 +193,7 @@ Key pieces:
 - `ui/src/components/TimelinePanel/`: owns viewport composition, transport header wiring, song-menu behavior, and interaction hooks while delegating lane rendering to `ui/src/lib/timeline/`
 - `ui/src/lib/timeline/`: renders sparse lane markup, draws dynamic lanes, and updates shared now-marker positions
 
-The timeline now also reads optional human reference hints from `data/reference/<Song - Artist>/human/human_hints.json` and renders them as a sparse lane between the waveform anchor and sections. Missing reference hints stay explicit in the file list and simply leave that lane empty.
+The timeline now also reads optional human reference hints from `data/analysis/<Song - Artist>/reference/human/human_hints.json` and renders them as a sparse lane between the waveform anchor and sections. Missing reference hints stay explicit in the file list and simply leave that lane empty.
 
 ## LLM Update Guidelines
 
@@ -228,7 +228,7 @@ Use these rules when making helper UI changes with an LLM agent.
 - Do not add write paths, mutation endpoints, or client-side persistence for review data.
 - Keep artifact-side files as the primary source of truth.
 - Keep output-side files as helper context only.
-- Treat `data/reference/` as optional read-only context.
+- Treat `data/analysis/<Song - Artist>/reference/` as optional read-only context.
 
 ### Validate after edits
 

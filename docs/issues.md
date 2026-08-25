@@ -18,17 +18,17 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 - Keep this file cumulative. Add newly discovered issues instead of replacing older ones.
 - Scope each issue to one concrete problem, one validation target, and one success condition.
 - Prefer evidence from generated artifacts and documented reference files.
-- Treat `data/reference/` as read-only validation input.
-- For chord truth, treat `data/reference/<Song - Artist>/moises/chords.json` as authoritative when it exists.
+- Treat `data/analysis/<Song - Artist>/reference/` as read-only validation input.
+- For chord truth, treat `data/analysis/<Song - Artist>/reference/moises/chords.json` as authoritative when it exists.
 - For section semantics, prefer context-aware musical-state labels over generic form labels like `intro`, `verse`, or `chorus` unless a separate structural contract explicitly requires those labels.
 - Human storytelling hints are review guidance. They are not direct replacements for harmonic, symbolic, or energy truth.
 
 ## Current Focus Song
 
 - Song: `What a Feeling - Courtney Storm`
-- Human hints: `data/reference/What a Feeling - Courtney Storm/human/human_hints.json`
-- Chord reference: `data/reference/What a Feeling - Courtney Storm/moises/chords.json`
-- Lyric timing clue: `data/reference/What a Feeling - Courtney Storm/moises/lyrics.json`
+- Human hints: `data/analysis/What a Feeling - Courtney Storm/reference/human/human_hints.json`
+- Chord reference: `data/analysis/What a Feeling - Courtney Storm/reference/moises/chords.json`
+- Lyric timing clue: `data/analysis/What a Feeling - Courtney Storm/reference/moises/lyrics.json`
 - Current validation report: `data/analysis/What a Feeling - Courtney Storm/artifacts/validation/phase_1_report.json`
 - Human-hints alignment review: `data/analysis/What a Feeling - Courtney Storm/artifacts/validation/human_hints_alignment.json`
 
@@ -56,7 +56,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 - Scope: harmonic inference for `What a Feeling - Courtney Storm`
 - Evidence:
   - The current harmonic artifact diverges from the expected loop described during review.
-  - `data/reference/What a Feeling - Courtney Storm/moises/chords.json` is the source of truth for chord validation in this repo.
+  - `data/analysis/What a Feeling - Courtney Storm/reference/moises/chords.json` is the source of truth for chord validation in this repo.
   - Current phase validation does not yet provide enough attribution to separate timing-overlap misses from actual chord-label failures.
 - Validation target:
   - Compare inferred chords against Moises chords with explicit miss attribution.

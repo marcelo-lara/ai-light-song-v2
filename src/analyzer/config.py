@@ -33,17 +33,14 @@ def discover_song_files(analysis_root: str, songs_root: str | None = None) -> li
     return songs
 
 
-def build_song_paths(song: str, analysis_root: str, reference_root: str | None) -> SongPaths:
+def build_song_paths(song: str, analysis_root: str) -> SongPaths:
     song_path = Path(song)
     if not song_path.exists():
         raise UsageError(f"Song file does not exist: {song_path}")
 
-    analysis_path = Path(analysis_root)
-    reference_path = Path(reference_root) if reference_root else None
     return SongPaths(
         song_path=song_path,
-        analysis_root=analysis_path,
-        reference_root=reference_path,
+        analysis_root=Path(analysis_root),
     )
 
 

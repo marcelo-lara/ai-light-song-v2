@@ -26,8 +26,8 @@ The repository structure is part of the implementation contract.
 - `data/songs/`: source `.mp3` files to analyze.
 - `data/analysis/<Song - Artist>/artifacts/stems/`: temporary stem and `.wav` work area generated during preprocessing.
 - `data/analysis/<Song - Artist>/artifacts/`: intermediate analysis artifacts, layer outputs, merged timeline artifacts, and validation metadata.
-- `data/reference/`: validation-only truth data such as chords, sections, lyrics, or beats from external tools. These files are for scoring and comparison only.
-- `data/analysis/<Song - Artist>/`: stable UI-facing deliverables, alongside (but outside) the nested `artifacts/` folder. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and the `artifacts/` subfolder.
+- `data/analysis/<Song - Artist>/reference/`: validation-only truth data such as chords, sections, lyrics, or beats from external tools. These files are for scoring and comparison only.
+- `data/analysis/<Song - Artist>/`: stable UI-facing deliverables, alongside (but outside) the nested `artifacts/` and `reference/` folders. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and the `artifacts/` subfolder.
 - `docs/`: canonical implementation and contract documentation.
 - `ui/`: internal artifact-debugger application and UI-specific container files.
 
@@ -37,7 +37,7 @@ The repository structure is part of the implementation contract.
 - **Living Documentation:** No task is "done" until the corresponding Story files and documentation are updated to reflect the final implementation.
 - Reference data must never be copied into generated outputs as a fallback.
 - Reference files are optional. The pipeline must infer outputs from the documented analysis stages first, then compare against reference data only when those files are available.
-- The term `reference` is reserved for `/data/reference/` only.
+- The term `reference` is reserved for `data/analysis/<Song - Artist>/reference/` only.
 - Generated artifacts inside `data/analysis/<Song - Artist>/artifacts/` must be grouped under the producing model or tool when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
 - All generated artifacts must come from inference, heuristics, or rule logic.
 - All development and validation must run inside the project Docker environment.
@@ -189,13 +189,13 @@ Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not inv
 ```bash
 docker compose run --rm app \
   ./analyze \
-  --song "/data/songs/Cinderella - Ella Lee.mp3" \
+  --song "/data/songs/_test_song.mp3" \
   --compare beats,chords,sections,energy,patterns,unified,events
 ```
 
-Stage progress lines are prefixed with the pipeline story identifier when one is defined, for example `[1.1] Cinderella - Ella Lee | ensure-stems`.
+Stage progress lines are prefixed with the pipeline story identifier when one is defined, for example `[1.1] _test_song | ensure-stems`.
 
-When `--all-songs` is used, the same progress lines also include the batch position prefix, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
+When `--all-songs` is used, the same progress lines also include the batch position prefix, for example `[2/20][1.1] _test_song | ensure-stems`.
 
 Run the same full pipeline for every song under `/data/songs`:
 
@@ -223,8 +223,7 @@ Validation reports are always written automatically to `data/analysis/<Song - Ar
 - `--song`: Required path to source song for single-song runs
 - `--all-songs`: Analyze every `.mp3` under `/data/songs` or `--songs-root`
 - `--songs-root`: Optional songs directory for batch mode. Defaults to the sibling `songs/` directory next to `--analysis-root`
-- `--analysis-root`: Optional root directory for generated per-song analysis directories. Defaults to `/data/analysis`
-- `--reference-root`: Optional root directory for validation reference files. Defaults to `/data/reference`
+- `--analysis-root`: Optional root directory for generated per-song analysis directories. Defaults to `/data/analysis`. Validation reference files are read from `<analysis-root>/<Song - Artist>/reference/`.
 - `--compare`: Comma-separated list of validation targets
 - `--fail-on-mismatch`: Exit non-zero when validation thresholds are missed
 - `--beat-tolerance-seconds`: Beat timestamp tolerance (default: 0.10)
@@ -266,7 +265,7 @@ Convert songs into structured musical analysis artifacts and then into fixture-a
 - Input songs live in `data/songs/`.
 - Temporary stems and `.wav` files live in `data/analysis/<Song - Artist>/artifacts/stems/`.
 - Intermediate artifacts live in `data/analysis/<Song - Artist>/artifacts/`.
-- Validation-only truth data lives in `data/reference/<Song - Artist>/`.
+- Validation-only truth data lives in `data/analysis/<Song - Artist>/reference/`.
 - Final UI outputs live in `data/analysis/<Song - Artist>/` and must remain limited to `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 
 Examples: `data/analysis/<Song - Artist>/info.json`, `data/analysis/<Song - Artist>/song_event_timeline.json`, `data/analysis/<Song - Artist>/lighting_score.md`.
@@ -293,8 +292,8 @@ This file is the explicit EPIC 6.3 output and the required input to downstream l
 
 ### Non-Negotiable Rules
 
-- Never copy from `data/reference/` into generated artifacts.
-- Never create `reference/` subfolders under `data/analysis/`.
+- Never copy from `data/analysis/<Song - Artist>/reference/` into generated artifacts.
+- Never create `reference/` subfolders anywhere except directly under `data/analysis/<Song - Artist>/`.
 - Do not keep future generated chord, section, or feature artifacts at flat top-level artifact paths when a producer namespace is known.
 - Always align time-based outputs to the canonical beat and bar grid when the story requires it.
 - Keep all artifact paths and `generated_from` metadata explicit.

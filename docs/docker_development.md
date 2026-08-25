@@ -113,7 +113,7 @@ Run the debugger service:
 docker compose up ui
 ```
 
-The debugger is served at `http://localhost:8080`. The Compose `ui` service mounts `./data` read-only and overlays `./data/reference:/data/reference` for the Story 7.8 human-hint editor, which may persist only `data/reference/<Song - Artist>/human/human_hints.json` on explicit save.
+The debugger is served at `http://localhost:8080`. The Compose `ui` service mounts `./data:/data` so the Story 7.8 human-hint editor can persist to `data/analysis/<Song - Artist>/reference/human/human_hints.json`; the dev-server API enforces that this is the only writable path, since the mount itself is no longer read-only.
 
 Run the first-phase validation entry point:
 
@@ -132,13 +132,13 @@ docker compose run --rm app \
   --all-songs
 ```
 
-When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
+When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] _test_song | ensure-stems`.
 
 The current batch implementation isolates each song run in a subprocess so the long-lived parent container process does not retain unstable native analysis state between songs.
 
 `./analyze` is the simplest container entry point. `python -m analyzer` is the equivalent module form.
 
-The `ui` service is not an analyzer runtime. It serves the debugger assets from the Vite development server and must not write any debugger state into `data/analysis/`. The only allowed write path is `data/reference/<Song - Artist>/human/human_hints.json` for explicit human-hint saves.
+The `ui` service is not an analyzer runtime. It serves the debugger assets from the Vite development server and must not write any debugger state into `data/analysis/`. The only allowed write path is `data/analysis/<Song - Artist>/reference/human/human_hints.json` for explicit human-hint saves.
 
 ## Required Validation Inside Container
 
@@ -149,7 +149,7 @@ At minimum, developers should validate the following inside Docker:
 3. Core imports succeed for the selected toolchain.
 4. A sample song can be analyzed end to end without relying on host dependencies.
 5. Generated outputs are written to `data/analysis/<Song - Artist>/artifacts/` and `data/analysis/<Song - Artist>/`.
-6. The phase-1 validation CLI can compare inferred beats, chords, and sections against validation-only files in `data/reference/`, and validate the generated energy, pattern, event, and unified artifacts for internal consistency.
+6. The phase-1 validation CLI can compare inferred beats, chords, and sections against validation-only files in `data/analysis/<Song - Artist>/reference/`, and validate the generated energy, pattern, event, and unified artifacts for internal consistency.
 7. Inference still runs when those reference files are missing; comparison is optional and only happens when the relevant files are available.
 
 ## Smoke Test Expectations

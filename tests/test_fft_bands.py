@@ -75,7 +75,6 @@ class FftBandsTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=song_path,
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
 
             fake_standard = types.ModuleType("essentia.standard")

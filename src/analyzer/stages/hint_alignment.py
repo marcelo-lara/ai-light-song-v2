@@ -19,7 +19,7 @@ def _load_json_if_exists(path: Path) -> dict | list | None:
 
 def build_human_hints_alignment(paths: SongPaths) -> dict | None:
     reference_path = paths.reference("human", "human_hints.json")
-    if reference_path is None or not reference_path.exists():
+    if not reference_path.exists():
         return None
 
     hints_payload = read_json(reference_path)

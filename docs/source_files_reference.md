@@ -16,7 +16,7 @@ This guide provides an LLM-friendly directory and file reference for the `ai-lig
 | `src/analyzer/pipeline.py` | The Pipeline DAG. Maps the 8 Epics and orchestrates exactly when and how each `src/analyzer/stages/` function is executed. |
 | `src/analyzer/models.py` | Data structures, JSON encodable utilities, and the overarching `SCHEMA_VERSION`. |
 | `src/analyzer/io.py` | Disk operations (JSON read/write, file validation). |
-| `src/analyzer/paths.py` | Centralized `SongPaths` resolution (managing references to `/data/songs/`, `/data/analysis/`, `/data/reference/`, etc.). |
+| `src/analyzer/paths.py` | Centralized `SongPaths` resolution (managing references to `/data/songs/`, `/data/analysis/`, and the per-song `reference/` subfolder, etc.). |
 | `src/analyzer/exceptions.py`| Custom exceptions (`AnalysisError`). |
 
 ---

@@ -70,7 +70,6 @@ class DrumTranscriptionTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=song_path,
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
             timing = _build_timing()
             sections = {

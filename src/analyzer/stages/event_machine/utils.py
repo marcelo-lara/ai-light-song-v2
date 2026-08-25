@@ -35,7 +35,7 @@ def _section_feature_rows(event_features: dict, section: dict) -> list[dict]:
 
 def _load_human_hints(paths: SongPaths) -> list[dict[str, Any]]:
     hint_path = paths.reference("human", "human_hints.json")
-    if hint_path is None or not hint_path.exists():
+    if not hint_path.exists():
         return []
     payload = read_json(hint_path)
     return [dict(row) for row in payload.get("human_hints", [])]
@@ -43,7 +43,7 @@ def _load_human_hints(paths: SongPaths) -> list[dict[str, Any]]:
 
 def _load_lyric_lines(paths: SongPaths) -> list[dict[str, Any]]:
     lyric_path = paths.reference("moises", "lyrics.json")
-    if lyric_path is None or not lyric_path.exists():
+    if not lyric_path.exists():
         return []
     payload = read_json(lyric_path)
     if not isinstance(payload, list):

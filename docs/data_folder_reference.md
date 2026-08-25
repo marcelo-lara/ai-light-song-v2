@@ -8,13 +8,13 @@ Use this as a navigation guide first, then open the referenced files for the act
 
 ## Working Rules
 
-- `data/reference/` is reference and validation material. Do not treat it as generation input.
+- `data/analysis/<Song - Artist>/reference/` is reference and validation material. Do not treat it as generation input.
 - `data/analysis/<Song - Artist>/artifacts/` contains generated analysis artifacts and intermediate caches, including the separated stems under `artifacts/stems/`.
-- `data/analysis/<Song - Artist>/` (outside the nested `artifacts/` folder) contains a stable UI-facing output contract. Each song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and the `artifacts/` subfolder.
+- `data/analysis/<Song - Artist>/` (outside the nested `artifacts/` and `reference/` folders) contains a stable UI-facing output contract. Each song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and the `artifacts/` subfolder.
 - Do not add or remove the top-level files under `data/analysis/<Song - Artist>/` unless a UI contract change makes that strictly required.
 - The internal debugger served from `/ui/` primarily reads `data/analysis/<Song - Artist>/artifacts/` directly and uses the top-level `data/analysis/<Song - Artist>/` files only as supporting context when useful.
-- The debugger is read-only against generated data and must not write files into `data/analysis/`.
-- Story 7.8 allows the helper UI to update only `data/reference/<Song - Artist>/human/human_hints.json` on explicit save.
+- The debugger is read-only against generated data and must not write files into `data/analysis/`, with the single exception below.
+- Story 7.8 allows the helper UI to update only `data/analysis/<Song - Artist>/reference/human/human_hints.json` on explicit save.
 - `data/fixtures/` contains rig and focus-point context.
 - `data/songs/` contains source audio. `data/analysis/<Song - Artist>/artifacts/stems/` contains stem-separated audio derived from those songs.
 
@@ -30,6 +30,13 @@ data/
       lighting_score.md
       song_event_timeline.json
       sections.json
+      reference/
+        human/
+          human_hints.json
+        moises/
+          chords.json
+          lyrics.json
+          segments.json
       artifacts/
         stems/
           bass.wav
@@ -88,14 +95,6 @@ data/
   fixtures/
     fixtures.json
     pois.json
-  reference/
-    <Song - Artist>/
-      human/
-        human_hints.json
-      moises/
-        chords.json
-        lyrics.json
-        segments.json
   songs/
     <Song - Artist>.mp3
 ```
@@ -137,7 +136,7 @@ The internal debugger should treat this folder as its primary read surface.
 
 ### `data/analysis/<Song - Artist>/`
 
-Per-song consumer-facing outputs, living alongside (but outside) the nested `artifacts/` folder. These files are more compact and presentation-friendly than the artifact files, and the directory is a stable UI contract rather than an open-ended export area.
+Per-song consumer-facing outputs, living alongside (but outside) the nested `artifacts/` and `reference/` folders. These files are more compact and presentation-friendly than the artifact files, and the directory is a stable UI contract rather than an open-ended export area.
 
 The internal debugger may read selected files here for quick navigation or compact comparisons, but it must not treat this folder as its primary source of truth and must not write additional files into it.
 
@@ -145,9 +144,9 @@ The internal debugger may read selected files here for quick navigation or compa
 
 Lighting rig metadata and point-of-interest targeting data.
 
-### `data/reference/`
+### `data/analysis/<Song - Artist>/reference/`
 
-Reference and curated external material, including Moises-style chord, segment, and lyric references for validation and review plus the helper UI human-hints file at `data/reference/<Song - Artist>/human/human_hints.json`.
+Reference and curated external material, nested under each song's analysis folder, including Moises-style chord, segment, and lyric references for validation and review plus the helper UI human-hints file at `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
 
 ## File Reference
 
@@ -473,7 +472,7 @@ Why it matters: melodic source for vocal contour and phrase emphasis.
 LLM hint:
 - See: vocal note timing around lyrical phrases or refrain entries.
 - Use: support follow-spot style entries, vocal-led accents, or melody-aware beam lifts.
-- Combine: with `reference/.../lyrics.json` if you want word-driven or line-driven moments.
+- Combine: with `reference/moises/lyrics.json` if you want word-driven or line-driven moments.
 
 ### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/vocals.mid`
 
@@ -711,7 +710,7 @@ LLM hint:
 - Use: section `Hint:` lines as human-editable guidance sourced from `hints.json`.
 - Avoid: changing cue times casually; the score is expected to preserve anchor times from upstream structured artifacts.
 
-### `data/reference/<Song - Artist>/moises/chords.json`
+### `data/analysis/<Song - Artist>/reference/moises/chords.json`
 
 Summary: read-only chord comparison file from the reference set. Stores beat-like chord rows and multiple chord label formats.
 
@@ -722,7 +721,7 @@ LLM hint:
 - Use: compare against `layer_a_harmonic.json` when checking harmonic plausibility.
 - Use: as validation or review input, not as a fallback generation source.
 
-### `data/reference/<Song - Artist>/moises/segments.json`
+### `data/analysis/<Song - Artist>/reference/moises/segments.json`
 
 Summary: read-only reference structural segments with start, end, and human labels.
 
@@ -733,7 +732,7 @@ LLM hint:
 - Use: compare against `section_segmentation/sections.json` to sanity-check large structural changes.
 - Treat labels as advisory. The important part is the boundary timing.
 
-### `data/reference/<Song - Artist>/moises/lyrics.json`
+### `data/analysis/<Song - Artist>/reference/moises/lyrics.json`
 
 Summary: read-only word-level lyric timing with line ids and confidence values.
 
@@ -769,4 +768,4 @@ Open `data/fixtures/fixtures.json` and `data/fixtures/pois.json`.
 
 ### For trust and QA review
 
-Open `validation/phase_1_report.md`, `validation/phase_1_report.json`, and then the matching reference files under `data/reference/`.
+Open `validation/phase_1_report.md`, `validation/phase_1_report.json`, and then the matching reference files under `data/analysis/<Song - Artist>/reference/`.

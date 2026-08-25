@@ -1,6 +1,6 @@
 export const artifactDefinitions = [
   { key: "info", label: "Output Info", path: (song) => ["data", "analysis", song, "info.json"] },
-  { key: "humanHints", label: "Reference Human Hints", path: (song) => ["data", "reference", song, "human", "human_hints.json"] },
+  { key: "humanHints", label: "Reference Human Hints", path: (song) => ["data", "analysis", song, "reference", "human", "human_hints.json"] },
   { key: "beatsOutput", label: "Output Beats", path: (song) => ["data", "analysis", song, "beats.json"] },
   { key: "sectionsOutput", label: "Output Sections", path: (song) => ["data", "analysis", song, "sections.json"] },
   { key: "eventsTimeline", label: "Output Event Timeline", path: (song) => ["data", "analysis", song, "song_event_timeline.json"] },

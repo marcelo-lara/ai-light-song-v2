@@ -24,7 +24,7 @@ export default function HumanHintsSidebar({
         <div>
           <p className="eyebrow">Human Hint Editor</p>
           <h2>Reference Human Hints</h2>
-          <p className="hint">Save updates only data/reference/{selectedSong}/human/human_hints.json.</p>
+          <p className="hint">Save updates only data/analysis/{selectedSong}/reference/human/human_hints.json.</p>
         </div>
         <button className="secondary-button human-hints-compact-button" type="button" onClick={handleAddHint}>New Hint</button>
       </div>

@@ -83,7 +83,6 @@ class PatternMiningTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
 
             payload = extract_chord_patterns(paths, _build_timing(bar_chords), _build_harmonic(bar_chords))
@@ -110,7 +109,6 @@ class PatternMiningTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
 
             payload = extract_chord_patterns(paths, _build_timing(bar_chords), _build_harmonic(bar_chords))

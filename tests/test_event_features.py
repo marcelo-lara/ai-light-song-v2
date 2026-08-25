@@ -15,7 +15,6 @@ class EventFeatureLayerTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
 
             timing = {

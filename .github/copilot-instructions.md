@@ -18,7 +18,7 @@
 - Document current status only. Do not describe repo behavior as "new" or "old" in durable docs.
 
 ## Artifact and Validation Rules
-- Treat `data/reference/` as read-only validation input, never as fallback generation input.
+- Treat `data/analysis/<Song - Artist>/reference/` as read-only validation input, never as fallback generation input.
 - Keep generated artifacts producer-scoped under `data/analysis/` when provenance matters.
 - Preserve explicit `generated_from` metadata and stable schema shapes.
 - Validation code should produce reports that explain match quality, mismatches, and failure conditions.

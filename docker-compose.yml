@@ -28,8 +28,7 @@ services:
     volumes:
       - ./ui:/srv/ui
       - /srv/ui/node_modules
-      - ./data:/data:ro
-      - ./data/reference:/data/reference
+      - ./data:/data
       - /home/darkangel/ai-dmx-light-render/data/songs:/data/songs:ro
     ports:
       - "8080:8080"

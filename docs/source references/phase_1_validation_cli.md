@@ -10,8 +10,8 @@ The repository already defines detailed artifact contracts, but implementation a
 
 For phase 1, that checkpoint should be a developer-facing entry point that can analyze `What a Feeling - Courtney Storm.mp3` and compare its inferred outputs against:
 
-- `data/reference/What a Feeling - Courtney Storm/moises/chords.json` when available
-- `data/reference/What a Feeling - Courtney Storm/moises/segments.json` when available
+- `data/analysis/What a Feeling - Courtney Storm/reference/moises/chords.json` when available
+- `data/analysis/What a Feeling - Courtney Storm/reference/moises/segments.json` when available
 - the generated drum-hit review artifact for recognizable kick, snare, and hat behavior without relying on validation-only fallback data
 
 Current reference posture:
@@ -55,7 +55,7 @@ Recommended baseline command:
 ```bash
 ./analyze \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
-  --reference-root "/data/reference" \
+  --analysis-root "/data/analysis" \
   --compare beats,chords,drums,sections,energy,patterns,unified,events
 ```
 
@@ -64,7 +64,7 @@ Equivalent Python module form is the supported container entry point:
 ```bash
 python -m analyzer \
   --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
-  --reference-root "/data/reference" \
+  --analysis-root "/data/analysis" \
   --compare beats,chords,drums,sections,energy,patterns,unified,events
 ```
 
@@ -75,7 +75,7 @@ python -m analyzer \
   --all-songs
 ```
 
-When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
+When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] _test_song | ensure-stems`.
 
 The current batch implementation isolates each song run in a subprocess and reuses the repo-local Demucs cache under `models/demucs/` so long-running Docker validation does not depend on mid-run model downloads or a long-lived parent process.
 
@@ -84,13 +84,12 @@ The current batch implementation isolates each song run in a subprocess and reus
 - `--song`: required absolute or container-relative path to the source song for single-song runs.
 - `--all-songs`: analyze every `.mp3` under `/data/songs` or the directory supplied by `--songs-root`.
 - `--songs-root`: optional directory override for batch mode. Defaults to the sibling `songs/` directory next to `--analysis-root`.
-- `--analysis-root`: optional root directory where inferred outputs are written. Defaults to `/data/analysis`.
-- `--reference-root`: optional root directory for validation-only reference files. Defaults to `/data/reference`. If the directory or files are missing, inference must still run and validation for those targets is skipped.
-- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `drums`, `sections`, `energy`, `patterns`, `events`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. When that Moises reference file exists, the pipeline preserves the inferred beat grid separately and then promotes a canonical reference-derived beat grid for all downstream phases. The `drums` target validates `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json` as a producer-scoped review artifact generated from the `audiohacking/omnizart` fork: rows must be time-ordered, supported labels must be limited to `kick`, `snare`, `hat`, or unresolved, summary counts must match the event rows, raw Omnizart MIDI must be preserved, explicit debug source paths for the mix and drums stem must be recorded in metadata, and the report should call out whether the detected pattern on `What a Feeling - Courtney Storm.mp3` exposes a recognizable backbeat and hat pulse. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target validates the Epic 5 event chain across `event_inference/`, review outputs, timeline exports, and benchmark metadata.
+- `--analysis-root`: optional root directory where inferred outputs are written. Defaults to `/data/analysis`. Validation-only reference files are read from `<analysis-root>/<Song - Artist>/reference/`; if missing, inference must still run and validation for those targets is skipped.
+- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `drums`, `sections`, `energy`, `patterns`, `events`, and `unified`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/analysis/<Song - Artist>/reference/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. When that Moises reference file exists, the pipeline preserves the inferred beat grid separately and then promotes a canonical reference-derived beat grid for all downstream phases. The `drums` target validates `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json` as a producer-scoped review artifact generated from the `audiohacking/omnizart` fork: rows must be time-ordered, supported labels must be limited to `kick`, `snare`, `hat`, or unresolved, summary counts must match the event rows, raw Omnizart MIDI must be preserved, explicit debug source paths for the mix and drums stem must be recorded in metadata, and the report should call out whether the detected pattern on `What a Feeling - Courtney Storm.mp3` exposes a recognizable backbeat and hat pulse. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target validates the Epic 5 event chain across `event_inference/`, review outputs, timeline exports, and benchmark metadata.
 - In the Docker runtime, Story 3.2 uses the installed Omnizart package checkpoint by default. `OMNIZART_DRUM_MODEL_PATH` remains an explicit override when a different drum model directory must be tested.
 - chord validation should use a stricter gate than the historical phase-1 default: materially low match ratio, persistent label mismatches, or repeated timing-overlap failures should count as a failed inferred harmonic result even if some overlap remains.
 - when a Moises chord reference exists, the analyzer preserves the inferred harmonic layer separately and promotes an explicit canonical harmonic layer rebuilt from the reference file for downstream phases.
-- when `data/reference/<Song - Artist>/human/human_hints.json` exists, the analyzer also writes review-only alignment files under `data/analysis/<Song - Artist>/artifacts/validation/` that compare those hint windows against generated sections, events, patterns, and harmonic events. These files aid issue triage and review; they do not replace generated outputs.
+- when `data/analysis/<Song - Artist>/reference/human/human_hints.json` exists, the analyzer also writes review-only alignment files under `data/analysis/<Song - Artist>/artifacts/validation/` that compare those hint windows against generated sections, events, patterns, and harmonic events. These files aid issue triage and review; they do not replace generated outputs.
 - machine-readable and markdown validation reports are always written automatically under `data/analysis/<Song - Artist>/artifacts/validation/` as `phase_1_report.json` and `phase_1_report.md`.
 - `--fail-on-mismatch`: optional flag causing the command to exit non-zero when validation thresholds are missed.
 - `--beat-tolerance-seconds`: optional float for beat-timestamp comparison tolerance. The phase-1 default is `0.10` seconds.
@@ -111,10 +110,10 @@ The phase 1 analyzer must:
 
 1. read the source song from `data/songs/`
 2. generate inferred timing, harmonic, and section-related artifacts under `data/analysis/<Song - Artist>/artifacts/`
-3. compare inferred beat outputs against beat timestamps embedded in `data/reference/<Song - Artist>/moises/chords.json` when that file is available
-4. compare inferred chord outputs against `data/reference/<Song - Artist>/moises/chords.json` when that file is available
+3. compare inferred beat outputs against beat timestamps embedded in `data/analysis/<Song - Artist>/reference/moises/chords.json` when that file is available
+4. compare inferred chord outputs against `data/analysis/<Song - Artist>/reference/moises/chords.json` when that file is available
 5. validate `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json` for schema integrity, count consistency, and recognizable kick, snare, and hat pulse behavior on `What a Feeling - Courtney Storm.mp3`
-6. compare inferred section change points against `data/reference/<Song - Artist>/moises/segments.json` when that file is available
+6. compare inferred section change points against `data/analysis/<Song - Artist>/reference/moises/segments.json` when that file is available
 7. validate canonical energy, pattern, event, and unified feature artifacts for internal consistency
 8. write a validation report under `data/analysis/<Song - Artist>/artifacts/validation/`
 9. exit with a documented success or failure status
@@ -150,7 +149,7 @@ At minimum:
 - Comparisons should report agreement, disagreement, and confidence or tolerance when relevant.
 - Beat comparisons should use the inferred timing grid produced by Story 1.2, run before downstream stories consume that grid, and evaluate only the reference-covered portion of the timeline.
 - If a Moises chord reference exists, downstream stories should use the promoted canonical reference timing grid rather than the inferred timing grid, and the report should record that takeover explicitly.
-- Drum comparisons should validate the generated Story 3.2 review artifact without treating `data/reference/` as drum generation input or silent fallback truth.
+- Drum comparisons should validate the generated Story 3.2 review artifact without treating `data/analysis/<Song - Artist>/reference/` as drum generation input or silent fallback truth.
 - Drum validation should report whether kick, snare, and hat detections remain plausible at the song level, and should flag unresolved or over-dense output explicitly instead of masking uncertainty.
 - Drum validation should also confirm that the artifact records explicit debug source paths for the full mix and drums stem rather than copying audio debug files into the artifact tree.
 - Section comparisons should use structural change-point alignment. Reference labels may be reported for review but should not control pass/fail.
@@ -190,8 +189,8 @@ At minimum:
   "generated_at": "2026-04-06T00:00:00Z",
   "inputs": {
     "song_path": "/data/songs/What a Feeling - Courtney Storm.mp3",
-    "reference_chords": "/data/reference/What a Feeling - Courtney Storm/moises/chords.json",
-    "reference_sections": "/data/reference/What a Feeling - Courtney Storm/moises/segments.json"
+    "reference_chords": "/data/analysis/What a Feeling - Courtney Storm/reference/moises/chords.json",
+    "reference_sections": "/data/analysis/What a Feeling - Courtney Storm/reference/moises/segments.json"
   },
   "generated_artifacts": {
     "harmonic_layer_file": "/data/analysis/What a Feeling - Courtney Storm/artifacts/layer_a_harmonic.json",

@@ -73,7 +73,6 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
             timing = _build_timing(["C#", "D#"])
             _write_json(
@@ -160,7 +159,6 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
             reference_rows = [
                 {"curr_beat_time": float(index), "bar_num": (index // 4) + 1, "beat_num": (index % 4) + 1}
@@ -192,7 +190,6 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
             reference_rows = [
                 {"curr_beat_time": 0.0, "bar_num": 1, "beat_num": 1, "chord_simple_pop": "C#:maj"},
@@ -229,7 +226,6 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
             reference_segments_path = paths.reference("moises", "segments.json")
             assert reference_segments_path is not None
@@ -273,7 +269,6 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
             reference_chords_path = paths.reference("moises", "chords.json")
             assert reference_chords_path is not None
@@ -333,7 +328,6 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
             patterns = extract_chord_patterns(paths, timing, harmonic)
 

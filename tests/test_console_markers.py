@@ -84,7 +84,6 @@ class ConsoleMarkerTests(unittest.TestCase):
         args = argparse.Namespace(
             song="/tmp/Example Song.mp3",
             analysis_root="/tmp/analysis",
-            reference_root="/tmp/reference",
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
             tolerance_seconds=2.0,
@@ -98,7 +97,6 @@ class ConsoleMarkerTests(unittest.TestCase):
         paths = SongPaths(
             song_path=Path("/tmp/Example Song.mp3"),
             analysis_root=Path("/tmp/analysis"),
-            reference_root=Path("/tmp/reference"),
         )
 
         with patch("analyzer.cli.build_song_paths", return_value=paths), patch(
@@ -117,7 +115,6 @@ class ConsoleMarkerTests(unittest.TestCase):
     def test_single_song_command_includes_batch_progress_flags(self) -> None:
         args = argparse.Namespace(
             analysis_root="/tmp/analysis",
-            reference_root="/tmp/reference",
             compare="beats,sections",
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
@@ -145,7 +142,6 @@ class ConsoleMarkerTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
             config = ValidationConfig(
                 compare_targets=("beats",),
@@ -180,7 +176,6 @@ class ConsoleMarkerTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
             config = ValidationConfig(
                 compare_targets=("beats",),
@@ -209,12 +204,10 @@ class ConsoleMarkerTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
             paths.song_path.parent.mkdir(parents=True, exist_ok=True)
             paths.song_path.write_text("", encoding="utf-8")
             reference_path = paths.reference("moises", "chords.json")
-            assert reference_path is not None
             reference_path.parent.mkdir(parents=True, exist_ok=True)
             reference_path.write_text("[]", encoding="utf-8")
 

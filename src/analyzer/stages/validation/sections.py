@@ -20,12 +20,12 @@ from .utils import ValidationResult, skipped_result
 
 def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: float) -> ValidationResult:
     reference_path = paths.reference("moises", "segments.json")
-    if reference_path is None or not reference_path.exists():
+    if not reference_path.exists():
         return skipped_result()
 
     reference_rows = read_json(reference_path)
     reference_chords_path = paths.reference("moises", "chords.json")
-    reference_chord_rows = read_json(reference_chords_path) if reference_chords_path and reference_chords_path.exists() else []
+    reference_chord_rows = read_json(reference_chords_path) if reference_chords_path.exists() else []
     reference_times = sorted({round(float(row["curr_beat_time"]), 6) for row in reference_chord_rows if "curr_beat_time" in row})
     inferred_sections = sections.get("sections", [])
     inferred_boundaries = [

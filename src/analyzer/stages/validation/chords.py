@@ -35,7 +35,7 @@ def _build_chord_diagnostics(details: list[dict]) -> dict | None:
 
 def _validate_chords(paths: SongPaths, harmonic: dict, chord_min_overlap: float) -> ValidationResult:
     reference_path = paths.reference("moises", "chords.json")
-    if reference_path is None or not reference_path.exists():
+    if not reference_path.exists():
         return skipped_result()
 
     reference_rows = read_json(reference_path)

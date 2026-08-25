@@ -16,7 +16,6 @@ class EventMachineTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
 
             event_features = {
@@ -105,7 +104,6 @@ class EventMachineTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
 
             event_features = {
@@ -166,7 +164,6 @@ class EventMachineTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
 
             event_features = {
@@ -237,9 +234,8 @@ class EventMachineTests(unittest.TestCase):
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
                 analysis_root=root / "analysis",
-                reference_root=root / "reference",
             )
-            lyrics_path = root / "reference" / "Example Song" / "moises" / "lyrics.json"
+            lyrics_path = paths.reference("moises", "lyrics.json")
             lyrics_path.parent.mkdir(parents=True, exist_ok=True)
             lyrics_path.write_text(
                 json.dumps(

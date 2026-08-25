@@ -98,7 +98,7 @@ def _build_section_timing_diagnostics(
 
 def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> ValidationResult:
     reference_path = paths.reference("moises", "chords.json")
-    if reference_path is None or not reference_path.exists():
+    if not reference_path.exists():
         return skipped_result()
 
     reference_rows = read_json(reference_path)
@@ -214,7 +214,7 @@ def generate_timing_diagnosis(
         "song_name": paths.song_name,
         "generated_from": {
             "inferred_beats_file": str(paths.artifact("essentia", "beats_inferred.json")),
-            "reference_beats_source": str(paths.reference("moises", "chords.json")) if paths.reference("moises", "chords.json") else None,
+            "reference_beats_source": str(paths.reference("moises", "chords.json")),
         },
         "beat_count": {
             "inferred": len(inferred_beats),
