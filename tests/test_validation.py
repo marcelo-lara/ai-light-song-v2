@@ -72,10 +72,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             timing = _build_timing(["C#", "D#"])
             _write_json(
@@ -161,10 +158,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             reference_rows = [
                 {"curr_beat_time": float(index), "bar_num": (index // 4) + 1, "beat_num": (index % 4) + 1}
@@ -195,10 +189,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             reference_rows = [
                 {"curr_beat_time": 0.0, "bar_num": 1, "beat_num": 1, "chord_simple_pop": "C#:maj"},
@@ -234,10 +225,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             reference_segments_path = paths.reference("moises", "segments.json")
             assert reference_segments_path is not None
@@ -280,10 +268,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             reference_chords_path = paths.reference("moises", "chords.json")
             assert reference_chords_path is not None
@@ -342,10 +327,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             patterns = extract_chord_patterns(paths, timing, harmonic)
 

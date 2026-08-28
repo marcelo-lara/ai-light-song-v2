@@ -49,10 +49,7 @@ class EventReviewTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             machine_payload = {
                 "schema_version": "1.0",

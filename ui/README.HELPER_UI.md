@@ -4,16 +4,15 @@
 
 This file documents the current UI implementation for LLM-assisted development.
 
-The UI under `ui/` is an internal visual debugger for inspecting inference outputs under `data/artifacts/<Song - Artist>/`. It is not the production consumer UI.
+The UI under `ui/` is an internal visual debugger for inspecting inference outputs under `data/analysis/<Song - Artist>/artifacts/`. It is not the production consumer UI.
 
 ## Non-Negotiable Rules
 
-- Do not write files into `data/artifacts/`.
-- Do not write files into `data/output/`.
-- Only Story 7.8 may write `data/reference/<Song - Artist>/human/human_hints.json`, and only on explicit save.
+- Do not write files into `data/analysis/`.
+- Only Story 7.8 may write `data/analysis/<Song - Artist>/reference/human/human_hints.json`, and only on explicit save.
 - Do not turn this UI into a production-facing consumer experience.
-- Treat `data/artifacts/<Song - Artist>/` as the primary source of truth.
-- Treat `data/output/<Song - Artist>/` as secondary helper context only.
+- Treat `data/analysis/<Song - Artist>/artifacts/` as the primary source of truth.
+- Treat `data/analysis/<Song - Artist>/` as secondary helper context only.
 - Keep the debugger running in its own Compose `ui` service. Do not fold it into the analyzer container.
 
 ## Current Runtime
@@ -22,7 +21,7 @@ The UI under `ui/` is an internal visual debugger for inspecting inference outpu
 - Compose runtime: Vite dev server with live reload for `ui/src` edits
 - Production runtime: Nginx serving the built bundle from the Dockerfile production stage
 - Port: `8080`
-- Data mount: `./data:/data:ro` plus `./data/reference:/data/reference`
+- Data mount: `./data:/data` (the human-hint editor writes only `data/analysis/<Song - Artist>/reference/human/human_hints.json`, enforced by the dev-server API, not by mount isolation)
 - Compose service: `ui`
 
 Start the UI:
@@ -101,7 +100,7 @@ The files `ui/src/lib/config.js`, `ui/src/lib/data.js`, and `ui/src/lib/timeline
 
 The current implementation is an Epic 7 debugger with these features:
 
-- automatic discovery of song directories by reading `/data/artifacts/`
+- automatic discovery of song directories by reading `/data/analysis/`
 - automatic loading of the first discovered song when there is no `?song=` query parameter
 - explicit song selection from a discovered dropdown
 - manual refresh of the discovered song list
@@ -126,7 +125,7 @@ The current implementation is an Epic 7 debugger with these features:
 - human hints use the sidebar as their only detail surface instead of the standard selection popup
 - the human-hint sidebar remains open across focus changes and closes only through explicit save, delete, or cancel actions
 - the human-hint editor stays compact for the sidebar: smaller text, no nested cards, and no editor paddings greater than `0.5em`
-- explicit save flow that updates only `data/reference/<Song - Artist>/human/human_hints.json`
+- explicit save flow that updates only `data/analysis/<Song - Artist>/reference/human/human_hints.json`
 
 ## Primary Data Sources
 
@@ -134,29 +133,29 @@ The current UI attempts to load these files:
 
 ### Primary artifact-side files
 
-- `data/artifacts/<Song - Artist>/essentia/fft_bands.json`
-- `data/artifacts/<Song - Artist>/essentia/rms_loudness.json`
-- `data/artifacts/<Song - Artist>/essentia/loudness_envelope.json`
-- `data/artifacts/<Song - Artist>/layer_a_harmonic.json`
-- `data/artifacts/<Song - Artist>/layer_b_symbolic.json`
-- `data/artifacts/<Song - Artist>/layer_c_energy.json`
-- `data/artifacts/<Song - Artist>/layer_d_patterns.json`
-- `data/artifacts/<Song - Artist>/section_segmentation/sections.json`
-- `data/artifacts/<Song - Artist>/symbolic_transcription/drum_events.json`
-- `data/artifacts/<Song - Artist>/event_inference/features.json`
-- `data/artifacts/<Song - Artist>/event_inference/timeline_index.json`
-- `data/artifacts/<Song - Artist>/event_inference/rule_candidates.json`
-- `data/artifacts/<Song - Artist>/event_inference/events.machine.json`
-- `data/artifacts/<Song - Artist>/pattern_mining/chord_patterns.json`
-- `data/artifacts/<Song - Artist>/music_feature_layers.json`
-- `data/artifacts/<Song - Artist>/validation/phase_1_report.json`
+- `data/analysis/<Song - Artist>/artifacts/essentia/fft_bands.json`
+- `data/analysis/<Song - Artist>/artifacts/essentia/rms_loudness.json`
+- `data/analysis/<Song - Artist>/artifacts/essentia/loudness_envelope.json`
+- `data/analysis/<Song - Artist>/artifacts/layer_a_harmonic.json`
+- `data/analysis/<Song - Artist>/artifacts/layer_b_symbolic.json`
+- `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`
+- `data/analysis/<Song - Artist>/artifacts/layer_d_patterns.json`
+- `data/analysis/<Song - Artist>/artifacts/section_segmentation/sections.json`
+- `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json`
+- `data/analysis/<Song - Artist>/artifacts/event_inference/features.json`
+- `data/analysis/<Song - Artist>/artifacts/event_inference/timeline_index.json`
+- `data/analysis/<Song - Artist>/artifacts/event_inference/rule_candidates.json`
+- `data/analysis/<Song - Artist>/artifacts/event_inference/events.machine.json`
+- `data/analysis/<Song - Artist>/artifacts/pattern_mining/chord_patterns.json`
+- `data/analysis/<Song - Artist>/artifacts/music_feature_layers.json`
+- `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.json`
 
 ### Secondary output-side helper files
 
-- `data/output/<Song - Artist>/info.json`
-- `data/output/<Song - Artist>/beats.json`
-- `data/output/<Song - Artist>/sections.json`
-- `data/output/<Song - Artist>/song_event_timeline.json`
+- `data/analysis/<Song - Artist>/info.json`
+- `data/analysis/<Song - Artist>/beats.json`
+- `data/analysis/<Song - Artist>/sections.json`
+- `data/analysis/<Song - Artist>/song_event_timeline.json`
 
 ## Current UI Structure
 
@@ -186,7 +185,7 @@ Key pieces:
 
 - `ui/src/lib/config/artifactDefinitions.js`: declares the files the debugger tries to load for each song
 - `ui/src/lib/data/fetch.js`: reads JSON files from the mounted `/data` tree and parses directory listings
-- `fetchDirectoryListing(...)`: parses the Nginx autoindex HTML for `/data/artifacts/` and extracts per-song folders
+- `fetchDirectoryListing(...)`: parses the Nginx autoindex HTML for `/data/analysis/` and extracts per-song folders
 - `App.jsx`: keeps root composition thin and delegates real work to app hooks and view helpers
 - `ui/src/app/useSongData.js`: coordinates discovery, artifact loading, query-string song selection, and waveform decoding setup
 - `ui/src/app/usePlaybackState.js` and `ui/src/app/usePlaybackActions.js`: keep audio timing and transport actions out of the render tree
@@ -194,7 +193,7 @@ Key pieces:
 - `ui/src/components/TimelinePanel/`: owns viewport composition, transport header wiring, song-menu behavior, and interaction hooks while delegating lane rendering to `ui/src/lib/timeline/`
 - `ui/src/lib/timeline/`: renders sparse lane markup, draws dynamic lanes, and updates shared now-marker positions
 
-The timeline now also reads optional human reference hints from `data/reference/<Song - Artist>/human/human_hints.json` and renders them as a sparse lane between the waveform anchor and sections. Missing reference hints stay explicit in the file list and simply leave that lane empty.
+The timeline now also reads optional human reference hints from `data/analysis/<Song - Artist>/reference/human/human_hints.json` and renders them as a sparse lane between the waveform anchor and sections. Missing reference hints stay explicit in the file list and simply leave that lane empty.
 
 ## LLM Update Guidelines
 
@@ -229,7 +228,7 @@ Use these rules when making helper UI changes with an LLM agent.
 - Do not add write paths, mutation endpoints, or client-side persistence for review data.
 - Keep artifact-side files as the primary source of truth.
 - Keep output-side files as helper context only.
-- Treat `data/reference/` as optional read-only context.
+- Treat `data/analysis/<Song - Artist>/reference/` as optional read-only context.
 
 ### Validate after edits
 
@@ -290,8 +289,8 @@ These are the safest next implementation areas:
 
 ## Unsafe Changes Unless the Contract Changes
 
-- writing review state into `data/artifacts/validation/`
-- writing snapshots into `data/output/`
+- writing review state into `data/analysis/<Song - Artist>/artifacts/validation/`
+- writing snapshots into `data/analysis/`
 - adding server-side mutation endpoints
 - moving UI code into `src/`
 - making the debugger depend on production-facing output files as its main source
@@ -303,7 +302,7 @@ For low-risk validation, use:
 ```bash
 docker compose up -d --build ui
 curl -s http://localhost:8080 | head
-curl -s http://localhost:8080/data/artifacts/ | head
+curl -s http://localhost:8080/data/analysis/ | head
 ```
 
 For a live browser verification pass, also load a real song:
@@ -314,7 +313,7 @@ http://localhost:8080/?song=ayuni
 
 For a smoke check after a larger refactor, verify all of the following in the running page:
 
-- the song dropdown populates from `/data/artifacts/`
+- the song dropdown populates from `/data/analysis/`
 - the selected song loads without console/runtime errors
 - `Reference Human Hints` appears in the file list when available
 - `Human Hints` appears between `Waveform Anchor` and `Sections`

@@ -33,10 +33,7 @@ class EventBenchmarkTests(unittest.TestCase):
 
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             merged_payload = {
                 "events": [

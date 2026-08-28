@@ -16,7 +16,7 @@ export default function SongControlsPanel({ availableSongs, selectedSong, isDisc
         <button type="submit">Load Artifacts</button>
         <button type="button" className="secondary-button" onClick={onRefreshSongs}>Refresh List</button>
       </div>
-      <p className="hint">The debugger discovers per-song directories from <code>data/artifacts</code>. It never writes to <code>data/artifacts</code> or <code>data/output</code>.</p>
+      <p className="hint">The debugger discovers per-song directories from <code>data/analysis</code>. It never writes to <code>data/analysis</code>.</p>
     </form>
   );
 }

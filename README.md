@@ -17,17 +17,17 @@ The pipeline transforms an input song into progressively richer artifacts:
 7. UI data projection builds compact beat and section outputs for downstream consumers.
 8. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
 9. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
-10. An internal debugger served from `/ui/` visualizes generated inferences directly from `data/artifacts/<Song - Artist>/` without writing back into generated-data folders.
+10. An internal debugger served from `/ui/` visualizes generated inferences directly from `data/analysis/<Song - Artist>/artifacts/` without writing back into generated-data folders.
 
 ## Repository Layout
 
 The repository structure is part of the implementation contract.
 
 - `data/songs/`: source `.mp3` files to analyze.
-- `data/stems/`: temporary stem and `.wav` work area generated during preprocessing.
-- `data/artifacts/`: intermediate analysis artifacts, layer outputs, merged timeline artifacts, and validation metadata.
-- `data/reference/`: validation-only truth data such as chords, sections, lyrics, or beats from external tools. These files are for scoring and comparison only.
-- `data/output/`: stable UI-facing deliverables. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
+- `data/analysis/<Song - Artist>/artifacts/stems/`: temporary stem and `.wav` work area generated during preprocessing.
+- `data/analysis/<Song - Artist>/artifacts/`: intermediate analysis artifacts, layer outputs, merged timeline artifacts, and validation metadata.
+- `data/analysis/<Song - Artist>/reference/`: validation-only truth data such as chords, sections, lyrics, or beats from external tools. These files are for scoring and comparison only.
+- `data/analysis/<Song - Artist>/`: stable UI-facing deliverables, alongside (but outside) the nested `artifacts/` and `reference/` folders. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and the `artifacts/` subfolder.
 - `docs/`: canonical implementation and contract documentation.
 - `ui/`: internal artifact-debugger application and UI-specific container files.
 
@@ -37,26 +37,26 @@ The repository structure is part of the implementation contract.
 - **Living Documentation:** No task is "done" until the corresponding Story files and documentation are updated to reflect the final implementation.
 - Reference data must never be copied into generated outputs as a fallback.
 - Reference files are optional. The pipeline must infer outputs from the documented analysis stages first, then compare against reference data only when those files are available.
-- The term `reference` is reserved for `/data/reference/` only.
-- Generated artifacts inside `data/artifacts/` must be grouped under the producing model or tool when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
+- The term `reference` is reserved for `data/analysis/<Song - Artist>/reference/` only.
+- Generated artifacts inside `data/analysis/<Song - Artist>/artifacts/` must be grouped under the producing model or tool when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
 - All generated artifacts must come from inference, heuristics, or rule logic.
 - All development and validation must run inside the project Docker environment.
 - Time values are stored in seconds.
 - Bars are 1-indexed.
 - Beat-aligned artifacts must use the canonical beat grid from EPIC 1.2.
-- `data/output/<Song - Artist>/` is a stable UI contract, not an open-ended export area.
-- Do not add or remove files under `data/output/<Song - Artist>/` unless a UI contract change makes that strictly required.
-- The internal debugger is read-only against generated data and must not write files into `data/artifacts/` or `data/output/`.
+- `data/analysis/<Song - Artist>/` is a stable UI contract, not an open-ended export area.
+- Do not add or remove files under `data/analysis/<Song - Artist>/` unless a UI contract change makes that strictly required.
+- The internal debugger is read-only against generated data and must not write files into `data/analysis/`.
 
 ## Primary Artifacts
 
 The intended contract defines these primary artifacts:
 
-- `info.json`: canonical song metadata, including `song_name`, `bpm`, `duration`, and generated file references, written to `data/output/<Song - Artist>/info.json`.
-- `beats.json`: compact UI-facing beat timeline written to `data/output/<Song - Artist>/beats.json`.
+- `info.json`: canonical song metadata, including `song_name`, `bpm`, `duration`, and generated file references, written to `data/analysis/<Song - Artist>/info.json`.
+- `beats.json`: compact UI-facing beat timeline written to `data/analysis/<Song - Artist>/beats.json`.
 - `essentia/fft_bands.json`: seven fixed 50 ms low-to-high spectral band levels for debugger inspection.
-- `hints.json`: editable UI-facing section hints written to `data/output/<Song - Artist>/hints.json`.
-- `sections.json`: compact UI-facing section timeline written to `data/output/<Song - Artist>/sections.json`.
+- `hints.json`: editable UI-facing section hints written to `data/analysis/<Song - Artist>/hints.json`.
+- `sections.json`: compact UI-facing section timeline written to `data/analysis/<Song - Artist>/sections.json`.
 - `layer_a_harmonic.json`: chord events, key, cadence, harmonic summaries.
 - `layer_b_symbolic.json`: note events, symbolic summaries, contour and density views.
 - `layer_c_energy.json`: loudness, onset, centroid, energy sections, accent candidates.
@@ -107,7 +107,7 @@ Additional story-level specifications under `docs/` define the exact implementat
      --song "/data/songs/YOUR_SONG.mp3"
    ```
 
-  This command runs the full production pipeline, writes generated artifacts under `data/artifacts/<Song - Artist>/`, preserves the stable UI output contract under `data/output/<Song - Artist>/`, and always writes validation and human-review documents under `data/artifacts/<Song - Artist>/validation/`.
+  This command runs the full production pipeline, writes generated artifacts under `data/analysis/<Song - Artist>/artifacts/`, preserves the stable UI output contract under `data/analysis/<Song - Artist>/`, and always writes validation and human-review documents under `data/analysis/<Song - Artist>/artifacts/validation/`.
 
   Analyze every song under `/data/songs` with the same full-pipeline flow and write per-song reports automatically:
 
@@ -125,7 +125,7 @@ To run the internal debugger UI separately:
 docker compose up ui
 ```
 
-Then open `http://localhost:8080` and load a per-song directory name from `data/artifacts/`.
+Then open `http://localhost:8080` and load a per-song directory name from `data/analysis/`.
 
 ## Development Environment
 
@@ -180,7 +180,7 @@ Inside the debugger container:
 
 - browser assets are served from `/usr/share/nginx/html`
 - generated data is mounted at `/data` in read-only mode
-- the debugger may inspect generated artifacts but must not write back into `data/artifacts/` or `data/output/`
+- the debugger may inspect generated artifacts but must not write back into `data/analysis/`
 
 ### Running the Phase 1 Analyzer
 
@@ -189,13 +189,13 @@ Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not inv
 ```bash
 docker compose run --rm app \
   ./analyze \
-  --song "/data/songs/Cinderella - Ella Lee.mp3" \
+  --song "/data/songs/_test_song.mp3" \
   --compare beats,chords,sections,energy,patterns,unified,events
 ```
 
-Stage progress lines are prefixed with the pipeline story identifier when one is defined, for example `[1.1] Cinderella - Ella Lee | ensure-stems`.
+Stage progress lines are prefixed with the pipeline story identifier when one is defined, for example `[1.1] _test_song | ensure-stems`.
 
-When `--all-songs` is used, the same progress lines also include the batch position prefix, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
+When `--all-songs` is used, the same progress lines also include the batch position prefix, for example `[2/20][1.1] _test_song | ensure-stems`.
 
 Run the same full pipeline for every song under `/data/songs`:
 
@@ -237,7 +237,7 @@ docker compose run --rm app \
   --compare beats,chords,sections,energy,patterns,unified,events
 ```
 
-4. Treat the full run validation report under `data/artifacts/<Song - Artist>/validation/` as the final check before considering the implementation complete.
+4. Treat the full run validation report under `data/analysis/<Song - Artist>/artifacts/validation/` as the final check before considering the implementation complete.
 
 Clean generated song data only (artifacts and output), without touching songs or reference data:
 
@@ -255,18 +255,17 @@ mkdir -p logs && nohup docker compose run --rm -T app ./analyze --all-songs --de
 
 **Available compare targets:** `beats`, `chords`, `sections`, `energy`, `patterns`, `unified`, `events`
 
-Generated outputs from each run include the canonical artifact set under `data/artifacts/<Song - Artist>/`, Epic 5 event artifacts such as `energy_summary/hints.json`, `event_inference/events.machine.json`, `validation/event_benchmark.json`, stable UI deliverables under `data/output/<Song - Artist>/` (`info.json`, `beats.json`, `hints.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`), and human-review support files under `data/artifacts/<Song - Artist>/validation/`.
+Generated outputs from each run include the canonical artifact set under `data/analysis/<Song - Artist>/artifacts/`, Epic 5 event artifacts such as `energy_summary/hints.json`, `event_inference/events.machine.json`, `validation/event_benchmark.json`, stable UI deliverables under `data/analysis/<Song - Artist>/` (`info.json`, `beats.json`, `hints.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`), and human-review support files under `data/analysis/<Song - Artist>/artifacts/validation/`.
 
-The current Epic 5 implementation also writes `data/artifacts/<Song - Artist>/energy_summary/hints.json`, `event_inference/features.json`, `timeline_index.json`, `rule_candidates.json`, `events.machine.json`, and validation-scoped review documents such as `song_events.review.json`, `song_events.review.md`, `song_events.overrides.json`, and `song_event_timeline.md`.
+The current Epic 5 implementation also writes `data/analysis/<Song - Artist>/artifacts/energy_summary/hints.json`, `event_inference/features.json`, `timeline_index.json`, `rule_candidates.json`, `events.machine.json`, and validation-scoped review documents such as `song_events.review.json`, `song_events.review.md`, `song_events.overrides.json`, and `song_event_timeline.md`.
 
-Validation reports are always written automatically to `data/artifacts/<Song - Artist>/validation/phase_1_report.json` and `data/artifacts/<Song - Artist>/validation/phase_1_report.md`.
+Validation reports are always written automatically to `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.json` and `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.md`.
 
 **CLI flags:**
 - `--song`: Required path to source song for single-song runs
 - `--all-songs`: Analyze every `.mp3` under `/data/songs` or `--songs-root`
-- `--songs-root`: Optional songs directory for batch mode. Defaults to the sibling `songs/` directory next to `--artifacts-root`
-- `--artifacts-root`: Optional root directory for generated artifacts. Defaults to `/data/artifacts`
-- `--reference-root`: Optional root directory for validation reference files. Defaults to `/data/reference`
+- `--songs-root`: Optional songs directory for batch mode. Defaults to the sibling `songs/` directory next to `--analysis-root`
+- `--analysis-root`: Optional root directory for generated per-song analysis directories. Defaults to `/data/analysis`. Validation reference files are read from `<analysis-root>/<Song - Artist>/reference/`.
 - `--compare`: Comma-separated list of validation targets
 - `--fail-on-mismatch`: Exit non-zero when validation thresholds are missed
 - `--beat-tolerance-seconds`: Beat timestamp tolerance (default: 0.10)
@@ -275,7 +274,7 @@ Validation reports are always written automatically to `data/artifacts/<Song - A
 - `--device`: Execution device (`cuda` or `cpu`)
 - `--verbose`: Enable detailed logging
 - `--stage`: Run only one pipeline stage by name. This mode expects prerequisite artifacts to already exist for stages that depend on earlier outputs.
-- `--clean-generated-data`: Remove generated per-song data under `data/artifacts/` and `data/output/` only. Source songs and reference data are never deleted.
+- `--clean-generated-data`: Remove generated per-song data under `data/analysis/<Song - Artist>/` only. Source songs and reference data (`data/analysis/<Song - Artist>/reference/`) are never deleted.
 
 **Exit codes:**
 - `0`: Analysis completed and validation passed
@@ -308,14 +307,14 @@ Convert songs into structured musical analysis artifacts and then into fixture-a
 ### Input and Output Contract
 
 - Input songs live in `data/songs/`.
-- Temporary stems and `.wav` files live in `data/stems/`.
-- Intermediate artifacts live in `data/artifacts/<Song - Artist>/`.
-- Validation-only truth data lives in `data/reference/<Song - Artist>/`.
-- Final UI outputs live in `data/output/<Song - Artist>/` and must remain limited to `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
+- Temporary stems and `.wav` files live in `data/analysis/<Song - Artist>/artifacts/stems/`.
+- Intermediate artifacts live in `data/analysis/<Song - Artist>/artifacts/`.
+- Validation-only truth data lives in `data/analysis/<Song - Artist>/reference/`.
+- Final UI outputs live in `data/analysis/<Song - Artist>/` and must remain limited to `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
 
-Examples: `data/output/<Song - Artist>/info.json`, `data/output/<Song - Artist>/song_event_timeline.json`, `data/output/<Song - Artist>/lighting_score.md`.
+Examples: `data/analysis/<Song - Artist>/info.json`, `data/analysis/<Song - Artist>/song_event_timeline.json`, `data/analysis/<Song - Artist>/lighting_score.md`.
 
-Inside `data/artifacts/<Song - Artist>/`, generated files should use producer-scoped folders when relevant. Examples: `data/artifacts/<Song - Artist>/essentia/beats.json`, `data/artifacts/<Song - Artist>/section_segmentation/sections.json`, `data/artifacts/<Song - Artist>/energy_summary/features.json`, `data/artifacts/<Song - Artist>/pattern_mining/chord_patterns.json`.
+Inside `data/analysis/<Song - Artist>/artifacts/`, generated files should use producer-scoped folders when relevant. Examples: `data/analysis/<Song - Artist>/artifacts/essentia/beats.json`, `data/analysis/<Song - Artist>/artifacts/section_segmentation/sections.json`, `data/analysis/<Song - Artist>/artifacts/energy_summary/features.json`, `data/analysis/<Song - Artist>/artifacts/pattern_mining/chord_patterns.json`.
 
 ### Canonical Upstream Layers
 
@@ -337,8 +336,8 @@ This file is the explicit EPIC 6.3 output and the required input to downstream l
 
 ### Non-Negotiable Rules
 
-- Never copy from `data/reference/` into generated artifacts.
-- Never create `reference/` subfolders under `data/artifacts/`.
+- Never copy from `data/analysis/<Song - Artist>/reference/` into generated artifacts.
+- Never create `reference/` subfolders anywhere except directly under `data/analysis/<Song - Artist>/`.
 - Do not keep future generated chord, section, or feature artifacts at flat top-level artifact paths when a producer namespace is known.
 - Always align time-based outputs to the canonical beat and bar grid when the story requires it.
 - Keep all artifact paths and `generated_from` metadata explicit.

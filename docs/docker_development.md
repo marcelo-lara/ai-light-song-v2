@@ -72,7 +72,7 @@ Current compatibility note:
 - Python startup in this repository sets `TF_GPU_ALLOCATOR=cuda_malloc_async` and `TF_FORCE_GPU_ALLOW_GROWTH=true` by default so TensorFlow can share limited GPU memory with other model-backed stages.
 - The pipeline executes a best-effort GPU cleanup boundary before and after each stage (`gc.collect`, Torch cache release, TensorFlow session clear) to reduce inter-stage memory retention in long runs.
 - the Docker image installs Python dependencies directly into the container Python environment; it does not create an in-container virtual environment.
-- Story 3.2 debug preservation is metadata-only: the generated drum artifact records explicit source paths for the full mix and drums stem, and the pipeline does not copy those audio files into `data/artifacts/`.
+- Story 3.2 debug preservation is metadata-only: the generated drum artifact records explicit source paths for the full mix and drums stem, and the pipeline does not copy those audio files into `data/analysis/`.
 
 ## Workspace Layout in Container
 
@@ -115,7 +115,7 @@ Run the debugger service:
 docker compose up ui
 ```
 
-The debugger is served at `http://localhost:8080`. The Compose `ui` service mounts `./data` read-only and overlays `./data/reference:/data/reference` for the Story 7.8 human-hint editor, which may persist only `data/reference/<Song - Artist>/human/human_hints.json` on explicit save.
+The debugger is served at `http://localhost:8080`. The Compose `ui` service mounts `./data:/data` so the Story 7.8 human-hint editor can persist to `data/analysis/<Song - Artist>/reference/human/human_hints.json`; the dev-server API enforces that this is the only writable path, since the mount itself is no longer read-only.
 
 Run the first-phase validation entry point:
 
@@ -134,13 +134,13 @@ docker compose run --rm app \
   --all-songs
 ```
 
-When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] Cinderella - Ella Lee | ensure-stems`.
+When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] _test_song | ensure-stems`.
 
 The current batch implementation isolates each song run in a subprocess so the long-lived parent container process does not retain unstable native analysis state between songs.
 
 `./analyze` is the simplest container entry point. `python -m analyzer` is the equivalent module form.
 
-The `ui` service is not an analyzer runtime. It serves the debugger assets from the Vite development server and must not write any debugger state into `data/artifacts/` or `data/output/`. The only allowed write path is `data/reference/<Song - Artist>/human/human_hints.json` for explicit human-hint saves.
+The `ui` service is not an analyzer runtime. It serves the debugger assets from the Vite development server and must not write any debugger state into `data/analysis/`. The only allowed write path is `data/analysis/<Song - Artist>/reference/human/human_hints.json` for explicit human-hint saves.
 
 ## Required Validation Inside Container
 
@@ -150,8 +150,8 @@ At minimum, developers should validate the following inside Docker:
 2. `ffmpeg` is available.
 3. Core imports succeed for the selected toolchain.
 4. A sample song can be analyzed end to end without relying on host dependencies.
-5. Generated outputs are written to `data/artifacts/` and `data/output/`.
-6. The phase-1 validation CLI can compare inferred beats, chords, and sections against validation-only files in `data/reference/`, and validate the generated energy, pattern, event, and unified artifacts for internal consistency.
+5. Generated outputs are written to `data/analysis/<Song - Artist>/artifacts/` and `data/analysis/<Song - Artist>/`.
+6. The phase-1 validation CLI can compare inferred beats, chords, and sections against validation-only files in `data/analysis/<Song - Artist>/reference/`, and validate the generated energy, pattern, event, and unified artifacts for internal consistency.
 7. Inference still runs when those reference files are missing; comparison is optional and only happens when the relevant files are available.
 
 ## Smoke Test Expectations
@@ -162,7 +162,7 @@ The first smoke test should verify:
 - successful import of the chosen analysis libraries
 - ability to read a sample song from `data/songs/`
 - ability to write outputs into the mounted workspace
-- ability to emit a machine-readable validation report under `data/artifacts/<Song - Artist>/validation/`
+- ability to emit a machine-readable validation report under `data/analysis/<Song - Artist>/artifacts/validation/`
 
 ## Deferred Items
 

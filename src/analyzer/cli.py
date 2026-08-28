@@ -32,9 +32,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--song")
     parser.add_argument("--all-songs", action="store_true", help="Analyze every .mp3 under the songs root")
-    parser.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <artifacts-root parent>/songs")
-    parser.add_argument("--artifacts-root", default="/data/artifacts")
-    parser.add_argument("--reference-root", default="/data/reference")
+    parser.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <analysis-root parent>/songs")
+    parser.add_argument("--analysis-root", default="/data/analysis")
     parser.add_argument("--compare", default="beats,chords,drums,sections,energy,patterns,unified,events")
     parser.add_argument("--fail-on-mismatch", action="store_true")
     parser.add_argument("--beat-tolerance-seconds", type=float, default=0.10)
@@ -46,7 +45,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--clean-generated-data",
         action="store_true",
         help=(
-            "Remove generated per-song data under artifacts/output only. "
+            "Remove generated per-song data under the analysis root. "
             "Songs and reference data are never touched."
         ),
     )
@@ -101,7 +100,7 @@ def _run_single_song(args: argparse.Namespace, compare_targets: tuple[str, ...])
         set_batch_progress(batch_song_index, batch_song_total)
 
     try:
-        paths = build_song_paths(args.song, args.artifacts_root, args.reference_root)
+        paths = build_song_paths(args.song, args.analysis_root)
         _print_song_header(paths.song_name)
         report_json, report_md = default_validation_report_paths(paths)
         config = _build_validation_config(
@@ -135,10 +134,8 @@ def _single_song_command(
         "analyzer",
         "--song",
         str(song_path),
-        "--artifacts-root",
-        str(args.artifacts_root),
-        "--reference-root",
-        str(args.reference_root),
+        "--analysis-root",
+        str(args.analysis_root),
         "--compare",
         str(args.compare),
         "--beat-tolerance-seconds",
@@ -165,10 +162,10 @@ def _single_song_command(
 
 def _run_all_songs(args: argparse.Namespace, compare_targets: tuple[str, ...]) -> int:
     exit_codes: list[int] = []
-    songs = discover_song_files(args.artifacts_root, args.songs_root)
+    songs = discover_song_files(args.analysis_root, args.songs_root)
     total_songs = len(songs)
     for song_index, song_path in enumerate(songs, start=1):
-        paths = build_song_paths(str(song_path), args.artifacts_root, args.reference_root)
+        paths = build_song_paths(str(song_path), args.analysis_root)
         report_json, report_md = default_validation_report_paths(paths)
         command = _single_song_command(args, song_path, batch_song_index=song_index, batch_song_total=total_songs)
         completed = subprocess.run(command, check=False)
@@ -191,28 +188,32 @@ def _clean_song_directories(root_path: Path) -> int:
     if not root_path.is_dir():
         raise UsageError(f"Generated-data root is not a directory: {root_path}")
 
-    removed = 0
-    for child in root_path.iterdir():
-        if not child.is_dir():
+    cleaned = 0
+    for song_dir in root_path.iterdir():
+        if not song_dir.is_dir():
             continue
-        shutil.rmtree(child)
-        removed += 1
-    return removed
+        removed_any = False
+        for child in song_dir.iterdir():
+            # Preserve hand-authored reference data (e.g. reference/human/human_hints.json).
+            if child.name == "reference":
+                continue
+            if child.is_dir():
+                shutil.rmtree(child)
+            else:
+                child.unlink()
+            removed_any = True
+        if removed_any:
+            cleaned += 1
+    return cleaned
 
 
 def _clean_generated_song_data(args: argparse.Namespace) -> None:
-    artifacts_root = Path(args.artifacts_root)
-    output_root = artifacts_root.parent / "output"
+    analysis_root = Path(args.analysis_root)
 
-    removed_artifacts = _clean_song_directories(artifacts_root)
-    removed_output = _clean_song_directories(output_root)
+    cleaned = _clean_song_directories(analysis_root)
 
     print(
-        (
-            "Cleaned generated song data: "
-            f"removed {removed_artifacts} artifact directories and "
-            f"{removed_output} output directories."
-        ),
+        f"Cleaned generated song data for {cleaned} song(s); reference data was preserved.",
         flush=True,
     )
 

@@ -440,7 +440,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
 
         ensure_directory(paths.song_artifacts_dir)
         reference_chords_path = paths.reference("moises", "chords.json")
-        has_reference_chords = reference_chords_path is not None and reference_chords_path.exists()
+        has_reference_chords = reference_chords_path.exists()
         stems = _run_stage(paths.song_name, "phase-1", "ensure-stems", ensure_stems, paths)
         timing = _run_stage(paths.song_name, "phase-1", "extract-timing-grid", extract_timing_grid, paths)
         fft_bands = _run_stage(paths.song_name, "phase-1", "extract-fft-bands", extract_fft_bands, paths)
@@ -583,7 +583,11 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             sections,
         )
         lighting = _run_stage(paths.song_name, "phase-1", "generate-lighting-events", generate_lighting_events, paths)
-        lighting_score = _run_stage(paths.song_name, "phase-1", "generate-lighting-score", generate_lighting_score, paths)
+        try:
+            lighting_score = _run_stage(paths.song_name, "phase-1", "generate-lighting-score", generate_lighting_score, paths)
+        except Exception as exc:
+            print(f"{format_batch_progress_prefix()}{paths.song_name} | generate-lighting-score failed, continuing: {exc}", flush=True)
+            lighting_score = {"lighting_score_file": None}
         _run_stage(
             paths.song_name,
             "phase-1",

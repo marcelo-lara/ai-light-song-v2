@@ -7,7 +7,7 @@ from pathlib import Path
 
 def test_song(song_name: str):
     song_path = Path("/data/songs") / f"{song_name}.mp3"
-    paths = SongPaths(song_path, Path("/data/artifacts"), Path("/data/reference"), Path("/data/output"), Path("/data/stems"))
+    paths = SongPaths(song_path, Path("/data/analysis"))
     
     event_features = read_json(paths.artifact("event_inference", "features.json"))
     sections_payload = read_json(paths.artifact("section_segmentation", "sections.json"))

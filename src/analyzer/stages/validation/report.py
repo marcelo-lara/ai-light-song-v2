@@ -125,8 +125,8 @@ def build_validation_report(
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "inputs": {
             "song_path": str(paths.song_path),
-            "reference_chords": str(paths.reference("moises", "chords.json")) if paths.reference("moises", "chords.json") else None,
-            "reference_sections": str(paths.reference("moises", "segments.json")) if paths.reference("moises", "segments.json") else None,
+            "reference_chords": str(paths.reference("moises", "chords.json")),
+            "reference_sections": str(paths.reference("moises", "segments.json")),
         },
         "generated_artifacts": {
             "beats_file": str(beats_path),

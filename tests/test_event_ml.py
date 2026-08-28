@@ -78,10 +78,7 @@ class EventMlStageTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
 
             contextual_path = paths.artifact("event_inference", "contextual_features.json")

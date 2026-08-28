@@ -111,7 +111,7 @@ def _safe_mean(values: list[float]) -> float:
 
 
 def _load_preset_library(paths: SongPaths) -> tuple[list[dict[str, Any]], str]:
-    library_path = paths.artifacts_root.parent / "fixtures" / "beatdrop_preset_library.json"
+    library_path = paths.analysis_root.parent / "fixtures" / "beatdrop_preset_library.json"
     if not library_path.exists():
         return [dict(row) for row in DEFAULT_PRESET_LIBRARY], "built-in-default"
 

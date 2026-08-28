@@ -15,10 +15,7 @@ class BeatdropVisualizerTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             ensure_directory(paths.song_path.parent)
             paths.song_path.write_text("", encoding="utf-8")

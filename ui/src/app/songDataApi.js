@@ -3,12 +3,12 @@ import { fetchDirectoryFiles, fetchDirectoryListing, fetchJson } from "../lib/da
 import { encodePath } from "../lib/utils.js";
 
 export function humanHintsPath(song) {
-  return encodePath(["data", "reference", song, "human", "human_hints.json"]);
+  return encodePath(["data", "analysis", song, "reference", "human", "human_hints.json"]);
 }
 
 export async function discoverAvailableSongs() {
   const [availableSongs, availableAudioSongs] = await Promise.all([
-    fetchDirectoryListing(["data", "artifacts"]),
+    fetchDirectoryListing(["data", "analysis"]),
     fetchDirectoryFiles(["data", "songs"], [".mp3", ".wav", ".flac", ".m4a", ".ogg"]),
   ]);
   return { availableSongs, availableAudioSongs };

@@ -18,8 +18,8 @@
 - Document current status only. Do not describe repo behavior as "new" or "old" in durable docs.
 
 ## Artifact and Validation Rules
-- Treat `data/reference/` as read-only validation input, never as fallback generation input.
-- Keep generated artifacts producer-scoped under `data/artifacts/` when provenance matters.
+- Treat `data/analysis/<Song - Artist>/reference/` as read-only validation input, never as fallback generation input.
+- Keep generated artifacts producer-scoped under `data/analysis/` when provenance matters.
 - Preserve explicit `generated_from` metadata and stable schema shapes.
 - Validation code should produce reports that explain match quality, mismatches, and failure conditions.
 
@@ -41,6 +41,8 @@
 
 ## Decision Rule
 - If an instruction conflicts with correctness, artifact-contract clarity, or the container runtime contract, prioritize correctness and update the documentation to match the current state.
+- Keep all documentation and Story files up to date with the current implementation. If a change is made, update the relevant docs immediately to reflect the new state of the codebase.
+- Keep all the ui code in the `ui/` folder. Do not create frontend code files elsewhere.
 
 ## Workspace Cleanup
 - Never leave temporary scripts, patching code, or scaffolded one-off files laying around in the workspace. Always clean up after yourself.

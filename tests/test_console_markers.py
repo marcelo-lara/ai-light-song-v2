@@ -83,8 +83,7 @@ class ConsoleMarkerTests(unittest.TestCase):
     def test_run_single_song_prints_song_header_before_running_pipeline(self) -> None:
         args = argparse.Namespace(
             song="/tmp/Example Song.mp3",
-            artifacts_root="/tmp/artifacts",
-            reference_root="/tmp/reference",
+            analysis_root="/tmp/analysis",
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
             tolerance_seconds=2.0,
@@ -98,10 +97,7 @@ class ConsoleMarkerTests(unittest.TestCase):
         compare_targets = ("beats", "sections")
         paths = SongPaths(
             song_path=Path("/tmp/Example Song.mp3"),
-            artifacts_root=Path("/tmp/artifacts"),
-            reference_root=Path("/tmp/reference"),
-            output_root=Path("/tmp/output"),
-            stems_root=Path("/tmp/stems"),
+            analysis_root=Path("/tmp/analysis"),
         )
 
         with patch("analyzer.cli.build_song_paths", return_value=paths), patch(
@@ -120,8 +116,7 @@ class ConsoleMarkerTests(unittest.TestCase):
     def test_run_single_song_passes_stage_name_to_pipeline(self) -> None:
         args = argparse.Namespace(
             song="/tmp/Example Song.mp3",
-            artifacts_root="/tmp/artifacts",
-            reference_root="/tmp/reference",
+            analysis_root="/tmp/analysis",
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
             tolerance_seconds=2.0,
@@ -135,10 +130,7 @@ class ConsoleMarkerTests(unittest.TestCase):
         compare_targets = ("beats",)
         paths = SongPaths(
             song_path=Path("/tmp/Example Song.mp3"),
-            artifacts_root=Path("/tmp/artifacts"),
-            reference_root=Path("/tmp/reference"),
-            output_root=Path("/tmp/output"),
-            stems_root=Path("/tmp/stems"),
+            analysis_root=Path("/tmp/analysis"),
         )
 
         with patch("analyzer.cli.build_song_paths", return_value=paths), patch(
@@ -155,8 +147,7 @@ class ConsoleMarkerTests(unittest.TestCase):
 
     def test_single_song_command_includes_batch_progress_flags(self) -> None:
         args = argparse.Namespace(
-            artifacts_root="/tmp/artifacts",
-            reference_root="/tmp/reference",
+            analysis_root="/tmp/analysis",
             compare="beats,sections",
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
@@ -181,27 +172,26 @@ class ConsoleMarkerTests(unittest.TestCase):
         self.assertIn("--stage", command)
         self.assertIn("extract-fft-bands", command)
 
-    def test_clean_generated_song_data_removes_only_artifacts_and_output(self) -> None:
+    def test_clean_generated_song_data_removes_generated_data_but_keeps_reference(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
-            artifacts_root = root / "artifacts"
-            output_root = root / "output"
+            analysis_root = root / "analysis"
             songs_root = root / "songs"
-            reference_root = root / "reference"
 
-            (artifacts_root / "Song A").mkdir(parents=True, exist_ok=True)
-            (output_root / "Song A").mkdir(parents=True, exist_ok=True)
+            (analysis_root / "Song A" / "artifacts" / "essentia").mkdir(parents=True, exist_ok=True)
+            (analysis_root / "Song A" / "beats.json").write_text("{}", encoding="utf-8")
+            (analysis_root / "Song A" / "reference" / "human").mkdir(parents=True, exist_ok=True)
+            (analysis_root / "Song A" / "reference" / "human" / "human_hints.json").write_text("{}", encoding="utf-8")
             (songs_root / "Song A.mp3").parent.mkdir(parents=True, exist_ok=True)
             (songs_root / "Song A.mp3").write_text("mp3", encoding="utf-8")
-            (reference_root / "Song A" / "moises").mkdir(parents=True, exist_ok=True)
 
-            args = argparse.Namespace(artifacts_root=str(artifacts_root))
+            args = argparse.Namespace(analysis_root=str(analysis_root))
             _clean_generated_song_data(args)
 
-            self.assertFalse((artifacts_root / "Song A").exists())
-            self.assertFalse((output_root / "Song A").exists())
+            self.assertFalse((analysis_root / "Song A" / "artifacts").exists())
+            self.assertFalse((analysis_root / "Song A" / "beats.json").exists())
+            self.assertTrue((analysis_root / "Song A" / "reference" / "human" / "human_hints.json").exists())
             self.assertTrue((songs_root / "Song A.mp3").exists())
-            self.assertTrue((reference_root / "Song A" / "moises").exists())
 
     def test_main_clean_only_mode_exits_without_pipeline(self) -> None:
         with patch("analyzer.cli._clean_generated_song_data") as mock_clean, patch(
@@ -219,18 +209,15 @@ class ConsoleMarkerTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             paths.song_path.parent.mkdir(parents=True, exist_ok=True)
             paths.song_path.write_text("", encoding="utf-8")
 
             config = ValidationConfig(
                 compare_targets=("beats",),
-                report_json=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.json",
-                report_md=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.md",
+                report_json=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.json",
+                report_md=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.md",
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,
@@ -253,15 +240,12 @@ class ConsoleMarkerTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             config = ValidationConfig(
                 compare_targets=("beats",),
-                report_json=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.json",
-                report_md=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.md",
+                report_json=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.json",
+                report_md=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.md",
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,
@@ -290,15 +274,12 @@ class ConsoleMarkerTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             config = ValidationConfig(
                 compare_targets=("beats",),
-                report_json=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.json",
-                report_md=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.md",
+                report_json=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.json",
+                report_md=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.md",
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,
@@ -321,22 +302,18 @@ class ConsoleMarkerTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             paths.song_path.parent.mkdir(parents=True, exist_ok=True)
             paths.song_path.write_text("", encoding="utf-8")
             reference_path = paths.reference("moises", "chords.json")
-            assert reference_path is not None
             reference_path.parent.mkdir(parents=True, exist_ok=True)
             reference_path.write_text("[]", encoding="utf-8")
 
             config = ValidationConfig(
                 compare_targets=("beats", "chords"),
-                report_json=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.json",
-                report_md=root / "artifacts" / "Example Song" / "validation" / "phase_1_report.md",
+                report_json=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.json",
+                report_md=root / "analysis" / "Example Song" / "artifacts" / "validation" / "phase_1_report.md",
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,

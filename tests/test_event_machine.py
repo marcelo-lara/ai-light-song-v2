@@ -15,10 +15,7 @@ class EventMachineTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
 
             event_features = {
@@ -107,10 +104,7 @@ class EventMachineTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
 
             event_features = {
@@ -170,10 +164,7 @@ class EventMachineTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
 
             event_features = {
@@ -243,12 +234,9 @@ class EventMachineTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
-            lyrics_path = root / "reference" / "Example Song" / "moises" / "lyrics.json"
+            lyrics_path = paths.reference("moises", "lyrics.json")
             lyrics_path.parent.mkdir(parents=True, exist_ok=True)
             lyrics_path.write_text(
                 json.dumps(
@@ -328,10 +316,7 @@ class EventMachineTests(unittest.TestCase):
             root = Path(temp_dir)
             paths = SongPaths(
                 song_path=root / "songs" / "Example Song.mp3",
-                artifacts_root=root / "artifacts",
-                reference_root=root / "reference",
-                output_root=root / "output",
-                stems_root=root / "stems",
+                analysis_root=root / "analysis",
             )
             lyrics_path = root / "reference" / "Example Song" / "moises" / "lyrics.json"
             lyrics_path.parent.mkdir(parents=True, exist_ok=True)

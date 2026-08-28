@@ -4,7 +4,7 @@
 
 Define the repository and runtime contract for the internal artifact debugger UI.
 
-This UI is an engineering tool for inspecting model, heuristic, and rule outputs under `data/artifacts/<Song - Artist>/`. It is not the production consumer UI and it must not redefine the stable downstream contract under `data/output/<Song - Artist>/`.
+This UI is an engineering tool for inspecting model, heuristic, and rule outputs under `data/analysis/<Song - Artist>/artifacts/`. It is not the production consumer UI and it must not redefine the stable downstream contract under `data/analysis/<Song - Artist>/`.
 
 ## Scope
 
@@ -15,12 +15,11 @@ Included:
 - artifact-to-artifact comparison views
 - raw JSON inspection for debugging
 - audio playback for review context
-- explicit human-hint editing for `data/reference/<Song - Artist>/human/human_hints.json`
+- explicit human-hint editing for `data/analysis/<Song - Artist>/reference/human/human_hints.json`
 
 Excluded:
 
-- writing files into `data/artifacts/`
-- writing files into `data/output/`
+- writing files into `data/analysis/`
 - authoring or editing production lighting outputs
 - replacing `lighting_score.md`
 - acting as an end-user playback product
@@ -39,7 +38,7 @@ The debugger runs as a separate Compose service named `ui`.
 
 - The analyzer `app` service remains the only supported runtime for inference, validation, and GPU-backed work.
 - The `ui` service serves browser assets and mounted generated data.
-- The `ui` service mounts `./data` read-only except for the narrower writable bind mount at `./data/reference:/data/reference` used by Story 7.8.
+- The `ui` service mounts `./data:/data`. The dev-server API enforces that the only writable path is `data/analysis/<Song - Artist>/reference/human/human_hints.json`, used by Story 7.8.
 - The `ui` service must not reuse the analyzer container.
 
 Current implementation shape:
@@ -51,7 +50,7 @@ Current implementation shape:
 
 ## Data Access Rules
 
-Primary debugger inputs live under `data/artifacts/<Song - Artist>/`.
+Primary debugger inputs live under `data/analysis/<Song - Artist>/artifacts/`.
 
 The UI should support direct reads from at least:
 
@@ -70,7 +69,7 @@ The UI should support direct reads from at least:
 - `music_feature_layers.json`
 - `validation/phase_1_report.json`
 
-Secondary helper inputs may be read from `data/output/<Song - Artist>/` when compact projections are useful for navigation or comparison, for example:
+Secondary helper inputs may be read from `data/analysis/<Song - Artist>/` when compact projections are useful for navigation or comparison, for example:
 
 - `info.json`
 - `beats.json`
@@ -81,12 +80,12 @@ Secondary helper inputs may be read from `data/output/<Song - Artist>/` when com
 
 The debugger is read-only against generated data.
 
-- Do not write snapshots to `data/artifacts/`.
-- Do not write caches to `data/artifacts/`.
-- Do not write derived JSON to `data/artifacts/`.
-- Do not write overrides or review operations to `data/artifacts/`.
-- Do not write helper files to `data/output/`.
-- The only persisted helper UI edit path is `data/reference/<Song - Artist>/human/human_hints.json`.
+- Do not write snapshots to `data/analysis/`.
+- Do not write caches to `data/analysis/`.
+- Do not write derived JSON to `data/analysis/`.
+- Do not write overrides or review operations to `data/analysis/`.
+- Do not write helper files to `data/analysis/`.
+- The only persisted helper UI edit path is `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
 - `Cancel` must not update the file.
 - `Save` is the only action that may update the file.
 
@@ -96,7 +95,7 @@ If a future workflow requires persisted review data, that workflow must be docum
 
 The debugger now implements the full Epic 7 internal viewer surface in the static `/ui` app:
 
-- auto-discovery of per-song artifact directories from `data/artifacts/`
+- auto-discovery of per-song artifact directories from `data/analysis/`
 - browser-local song selection keyed by discovered per-song folders
 - automatic loading of the first discovered song when no explicit song selection is present
 - read-only JSON fetches from mounted artifact and output paths
@@ -148,4 +147,4 @@ http://localhost:8080
 
 The debugger remains read-only. All interaction state such as zoom, playhead movement, lane visibility, and region selection stays in the browser only.
 
-The only exception is Story 7.8 human-hint editing, which persists only to `data/reference/<Song - Artist>/human/human_hints.json` on explicit `Save`.
+The only exception is Story 7.8 human-hint editing, which persists only to `data/analysis/<Song - Artist>/reference/human/human_hints.json` on explicit `Save`.

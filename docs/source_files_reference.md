@@ -17,7 +17,7 @@ This guide provides an LLM-friendly directory and file reference for the `ai-lig
 | `src/analyzer/__init__.py` | Analyzer package runtime defaults (TensorFlow allocator and GPU growth environment settings). |
 | `src/analyzer/models.py` | Data structures, JSON encodable utilities, and the overarching `SCHEMA_VERSION`. |
 | `src/analyzer/io.py` | Disk operations (JSON read/write, file validation). |
-| `src/analyzer/paths.py` | Centralized `SongPaths` resolution (managing references to `/data/songs/`, `/data/artifacts/`, `/data/reference/`, etc.). |
+| `src/analyzer/paths.py` | Centralized `SongPaths` resolution (managing references to `/data/songs/`, `/data/analysis/`, and the per-song `reference/` subfolder, etc.). |
 | `src/analyzer/exceptions.py`| Custom exceptions (`AnalysisError`). |
 
 ---

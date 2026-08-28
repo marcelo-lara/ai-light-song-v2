@@ -6,7 +6,7 @@ import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
 
 const dataRoot = "/data";
-const referenceRoot = path.join(dataRoot, "reference");
+const analysisRoot = path.join(dataRoot, "analysis");
 
 function contentTypeFor(filePath) {
   const extension = path.extname(filePath).toLowerCase();
@@ -98,8 +98,9 @@ function humanHintsFilePath(song) {
   if (!safeSong) {
     throw new Error("Song name is required.");
   }
-  const filePath = path.join(referenceRoot, safeSong, "human", "human_hints.json");
-  const relativePath = path.relative(referenceRoot, filePath);
+  const songDir = path.join(analysisRoot, safeSong);
+  const filePath = path.join(songDir, "reference", "human", "human_hints.json");
+  const relativePath = path.relative(songDir, filePath);
   if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
     throw new Error("Song path is outside the reference data root.");
   }

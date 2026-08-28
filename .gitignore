@@ -1,5 +1,7 @@
 ## Project specific files
 data/
+!ui/src/lib/data/
+!ui/src/lib/data/**
 logs/
 models/
 
