@@ -60,10 +60,10 @@ class DrumTranscriptionTests(unittest.TestCase):
     def test_extract_drum_events_writes_omnizart_artifact(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
-            song_path = root / "songs" / "Example Song.mp3"
+            song_path = root / "songs" / "_test_song.mp3"
             song_path.parent.mkdir(parents=True, exist_ok=True)
             song_path.write_bytes(b"fake-mp3")
-            drums_stem_path = root / "stems" / "Example Song" / "drums.wav"
+            drums_stem_path = root / "stems" / "_test_song" / "drums.wav"
             drums_stem_path.parent.mkdir(parents=True, exist_ok=True)
             drums_stem_path.write_bytes(b"fake-wav")
 

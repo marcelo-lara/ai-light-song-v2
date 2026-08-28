@@ -31,7 +31,7 @@ class _FakeMonoLoader:
 
     def __call__(self) -> np.ndarray:
         amplitudes = {
-            "Example Song.mp3": 0.8,
+            "_test_song.mp3": 0.8,
             "bass.wav": 0.25,
             "drums.wav": 0.65,
             "harmonic.wav": 0.45,
@@ -44,10 +44,10 @@ class LoudnessExtractionTests(unittest.TestCase):
     def test_extract_mix_stem_loudness_writes_rms_and_envelope_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
-            song_path = root / "songs" / "Example Song.mp3"
+            song_path = root / "songs" / "_test_song.mp3"
             song_path.parent.mkdir(parents=True, exist_ok=True)
             song_path.write_bytes(b"fake-mp3")
-            stems_dir = root / "stems" / "Example Song"
+            stems_dir = root / "stems" / "_test_song"
             stems_dir.mkdir(parents=True, exist_ok=True)
             stems = {}
             for stem_name in ("bass", "drums", "harmonic", "vocals"):

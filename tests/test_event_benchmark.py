@@ -16,12 +16,12 @@ class EventBenchmarkTests(unittest.TestCase):
             root = Path(temp_dir)
             annotation_dir = root / "benchmark_annotations"
             annotation_dir.mkdir(parents=True, exist_ok=True)
-            annotation_file = annotation_dir / "Example Song.json"
+            annotation_file = annotation_dir / "_test_song.json"
             annotation_file.write_text(
                 json.dumps(
                     {
                         "schema_version": "1.0",
-                        "song_name": "Example Song",
+                        "song_name": "_test_song",
                         "annotation_status": "reviewed",
                         "events": [
                             {"type": "drop_punch", "start_time": 1.0, "end_time": 2.0}
@@ -32,7 +32,7 @@ class EventBenchmarkTests(unittest.TestCase):
             )
 
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
             merged_payload = {

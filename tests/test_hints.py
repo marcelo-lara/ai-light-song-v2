@@ -19,7 +19,7 @@ class SectionHintsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
 
@@ -76,7 +76,7 @@ class SectionHintsTests(unittest.TestCase):
                 paths.hints_output_path,
                 {
                     "schema_version": "1.0",
-                    "song_name": "Example Song",
+                    "song_name": "_test_song",
                     "sections": [
                         {
                             "section_id": "section-002",

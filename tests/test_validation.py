@@ -71,7 +71,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
             timing = _build_timing(["C#", "D#"])
@@ -79,7 +79,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
                 paths.artifact("symbolic_transcription", "drum_events.json"),
                 {
                     "schema_version": "1.0",
-                    "song_name": "Example Song",
+                    "song_name": "_test_song",
                     "generated_from": {
                         "source_song_path": str(paths.song_path),
                         "engine": "audiohacking.omnizart.drum",
@@ -157,7 +157,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
             reference_rows = [
@@ -188,7 +188,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
             reference_rows = [
@@ -224,7 +224,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
             reference_segments_path = paths.reference("moises", "segments.json")
@@ -267,7 +267,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
             reference_chords_path = paths.reference("moises", "chords.json")
@@ -326,7 +326,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
             patterns = extract_chord_patterns(paths, timing, harmonic)

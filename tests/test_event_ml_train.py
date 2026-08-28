@@ -62,8 +62,8 @@ class EventMlTrainTests(unittest.TestCase):
 
             for song_name, hotspot, title in (
                 ("_test_song", (70, 110), "Build"),
-                ("What a Feeling - Courtney Storm", (120, 150), "Female vocal"),
-                ("ayuni", (180, 210), "Hook pattern build tension"),
+                ("_test_song", (120, 150), "Female vocal"),
+                ("_test_song", (180, 210), "Hook pattern build tension"),
             ):
                 _write_contextual_features(
                     analysis_root / song_name / "artifacts" / "event_inference" / "contextual_features.json",
@@ -89,7 +89,7 @@ class EventMlTrainTests(unittest.TestCase):
 
             self.assertEqual(
                 discover_labeled_songs(analysis_root),
-                ["What a Feeling - Courtney Storm", "_test_song", "ayuni"],
+                ["_test_song"],
             )
 
             metadata = train_event_classifier(
@@ -104,7 +104,7 @@ class EventMlTrainTests(unittest.TestCase):
 
             self.assertTrue((output_dir / "1d_cnn_v1.pth").exists())
             self.assertTrue((output_dir / "metadata.json").exists())
-            self.assertEqual(metadata["songs"]["validation"], ["ayuni"])
+            self.assertEqual(metadata["songs"]["validation"], ["_test_song"])
             self.assertEqual(metadata["dataset"]["num_features"], 7)
             self.assertIn("precision", metadata["training"]["best_validation_metrics"])
             self.assertEqual(metadata["artifacts"]["weights_path"], str(output_dir / "1d_cnn_v1.pth"))

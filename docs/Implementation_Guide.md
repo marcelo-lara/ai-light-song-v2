@@ -246,10 +246,10 @@ Every implementation story must define:
 
 Before the full pipeline is considered ready, the implementation should expose a first-phase validation entry point, preferably a CLI analyzer, that can:
 
-1. run against a real song such as `What a Feeling - Courtney Storm.mp3`
+1. run against a real song such as `_test_song.mp3`
 2. generate inferred analysis artifacts inside `data/analysis/<Song - Artist>/artifacts/`
 3. compare inferred chord outputs against human-validated reference chords and compare inferred section change points against validation-only reference segments in `data/analysis/<Song - Artist>/reference/moises/` when they are available
-4. validate the generated Story 2.5 drum review artifact for recognizable kick, snare, and hat behavior on `What a Feeling - Courtney Storm.mp3` without treating reference data as generation fallback
+4. validate the generated Story 2.5 drum review artifact for recognizable kick, snare, and hat behavior on `_test_song.mp3` without treating reference data as generation fallback
 5. emit a validation summary or report without copying reference values into generated artifacts
 
 Reference files under `data/analysis/<Song - Artist>/reference/` are optional validation inputs. The pipeline must infer chords, sections, and other generated values from the documented analysis stack first. When reference files are present, they may be used to validate or explicitly review those inferred results, but they must not silently replace generated artifact values.

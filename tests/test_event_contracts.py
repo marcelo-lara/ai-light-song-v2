@@ -77,8 +77,8 @@ class EventContractsTests(unittest.TestCase):
     def test_validate_song_event_payload_accepts_collection(self) -> None:
         payload = {
             "schema_version": "1.0",
-            "song_name": "Example Song",
-            "generated_from": {"source_song_path": "/data/songs/example.mp3"},
+            "song_name": "_test_song",
+            "generated_from": {"source_song_path": "/data/songs/_test_song.mp3"},
             "events": [_sample_event()],
             "review_status": "machine",
             "notes": "Initial detection pass.",

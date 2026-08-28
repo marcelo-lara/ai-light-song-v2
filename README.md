@@ -210,7 +210,7 @@ Run a single stage only (using existing prerequisite artifacts when needed):
 ```bash
 docker compose run --rm app \
   ./analyze \
-  --song "/data/songs/Cinderella - Ella Lee.mp3" \
+  --song "/data/songs/_test_song.mp3" \
   --stage extract-fft-bands
 ```
 
@@ -223,7 +223,7 @@ Use stage-only runs while implementing changes, then run one full-pipeline valid
 ```bash
 docker compose run --rm app \
   ./analyze \
-  --song "/data/songs/Cinderella - Ella Lee.mp3" \
+  --song "/data/songs/_test_song.mp3" \
   --stage <updated-stage-name>
 ```
 
@@ -233,7 +233,7 @@ docker compose run --rm app \
 ```bash
 docker compose run --rm app \
   ./analyze \
-  --song "/data/songs/Cinderella - Ella Lee.mp3" \
+  --song "/data/songs/_test_song.mp3" \
   --compare beats,chords,sections,energy,patterns,unified,events
 ```
 

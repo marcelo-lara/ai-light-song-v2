@@ -25,21 +25,21 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 
 ## Current Focus Song
 
-- Song: `What a Feeling - Courtney Storm`
-- Human hints: `data/analysis/What a Feeling - Courtney Storm/reference/human/human_hints.json`
-- Chord reference: `data/analysis/What a Feeling - Courtney Storm/reference/moises/chords.json`
-- Lyric timing clue: `data/analysis/What a Feeling - Courtney Storm/reference/moises/lyrics.json`
-- Current validation report: `data/analysis/What a Feeling - Courtney Storm/artifacts/validation/phase_1_report.json`
-- Human-hints alignment review: `data/analysis/What a Feeling - Courtney Storm/artifacts/validation/human_hints_alignment.json`
+- Song: `_test_song`
+- Human hints: `data/analysis/_test_song/reference/human/human_hints.json`
+- Chord reference: `data/analysis/_test_song/reference/moises/chords.json`
+- Lyric timing clue: `data/analysis/_test_song/reference/moises/lyrics.json`
+- Current validation report: `data/analysis/_test_song/artifacts/validation/phase_1_report.json`
+- Human-hints alignment review: `data/analysis/_test_song/artifacts/validation/human_hints_alignment.json`
 
 ## Active Queue
 
 ### ISS-001 - Beat and boundary alignment drift
 
 - Status: `solved`
-- Scope: beat timestamps, section boundaries, and event anchors for `What a Feeling - Courtney Storm`
+- Scope: beat timestamps, section boundaries, and event anchors for `_test_song`
 - Evidence:
-  - `data/analysis/What a Feeling - Courtney Storm/artifacts/validation/phase_1_report.json` reports beat match ratio near 0.30.
+  - `data/analysis/_test_song/artifacts/validation/phase_1_report.json` reports beat match ratio near 0.30.
   - Generated boundaries show repeated sub-second drift against reference anchors and human-hint landmarks.
   - Section and event timing differences appear large enough to contaminate chord, section, and event comparisons.
 - Validation target:
@@ -53,10 +53,10 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 ### ISS-002 - Story 2.2 chord truth mismatch
 
 - Status: `solved`
-- Scope: harmonic inference for `What a Feeling - Courtney Storm`
+- Scope: harmonic inference for `_test_song`
 - Evidence:
   - The current harmonic artifact diverges from the expected loop described during review.
-  - `data/analysis/What a Feeling - Courtney Storm/reference/moises/chords.json` is the source of truth for chord validation in this repo.
+  - `data/analysis/_test_song/reference/moises/chords.json` is the source of truth for chord validation in this repo.
   - Current phase validation does not yet provide enough attribution to separate timing-overlap misses from actual chord-label failures.
 - Validation target:
   - Compare inferred chords against Moises chords with explicit miss attribution.
@@ -70,7 +70,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 ### ISS-003 - Context-aware section semantics
 
 - Status: `solved`
-- Scope: section labeling behavior for `What a Feeling - Courtney Storm`
+- Scope: section labeling behavior for `_test_song`
 - Evidence:
   - Current sections are useful as lighting-energy summaries, but they do not express the richer context described in the human hints.
   - Generic structural labels such as `intro` or `verse` are not the desired target for this song.
@@ -86,11 +86,11 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 ### ISS-004 - Event semantic under-representation
 
 - Status: `solved`
-- Scope: `song_event_timeline.json` and upstream event inference for `What a Feeling - Courtney Storm`
+- Scope: `song_event_timeline.json` and upstream event inference for `_test_song`
 - Evidence:
   - Human-hint moments such as vocal entry, vocal tail-off, snare-only bar, and sustained instrumental passages were previously weakly represented or missing.
-  - `data/analysis/What a Feeling - Courtney Storm/artifacts/validation/human_hints_alignment.md` now shows explicit `vocal_tail` overlap for `ui_004` and explicit `percussion_break` overlap for `ui_006`.
-  - `data/analysis/What a Feeling - Courtney Storm/song_event_timeline.json` now exports `vocal_spotlight`, `vocal_tail`, `percussion_break`, and `instrumental_bed` events for the real song.
+  - `data/analysis/_test_song/artifacts/validation/human_hints_alignment.md` now shows explicit `vocal_tail` overlap for `ui_004` and explicit `percussion_break` overlap for `ui_006`.
+  - `data/analysis/_test_song/song_event_timeline.json` now exports `vocal_spotlight`, `vocal_tail`, `percussion_break`, and `instrumental_bed` events for the real song.
 - Validation target:
   - Compare human-hint windows against generated events and identify which missing semantic concepts should be added or made more explicit.
 - Success condition:
@@ -102,7 +102,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 ### ISS-005 - Symbolic phrasing and alignment gaps
 
 - Status: `solved`
-- Scope: `layer_b_symbolic.json` for `What a Feeling - Courtney Storm`
+- Scope: `layer_b_symbolic.json` for `_test_song`
 - Evidence:
   - Human hints describe long vocal and arpeggiated phrases that are only partially reflected in the current symbolic artifact.
   - Some note events remain unresolved against the beat grid, which weakens phrase-level interpretation.
@@ -114,7 +114,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 ### ISS-006 - Pattern granularity mismatch
 
 - Status: `solved`
-- Scope: `layer_d_patterns.json` and pattern mining outputs for `What a Feeling - Courtney Storm`
+- Scope: `layer_d_patterns.json` and pattern mining outputs for `_test_song`
 - Evidence:
   - Current pattern outputs emphasize longer loops while the human hints repeatedly describe one-bar and two-bar behaviors.
   - The present grouping loses some phrase-level repetition detail that matters for this track.
@@ -126,7 +126,7 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 ### ISS-007 - Chord inference model quality after canonical fallback
 
 - Status: `solved`
-- Scope: inferred harmonic quality for `What a Feeling - Courtney Storm` after the canonical fallback contract is in place
+- Scope: inferred harmonic quality for `_test_song` after the canonical fallback contract is in place
 - Evidence:
   - The canonical harmonic output is now corrected operationally through explicit Moises promotion, but the preserved inferred harmonic layer still mismatches the reference strongly enough to fail the stricter chord gate.
 - Validation target:
@@ -168,9 +168,9 @@ Do not change an issue from `pending` to `solved` without updating its evidence,
 ### ISS-008 - Missing zero-start in section segmentation
 
 - Status: `solved`
-- Scope: `section_segmentation/sections.json` for all songs (specifically observed in `ayuni`)
+- Scope: `section_segmentation/sections.json` for all songs (specifically observed in `_test_song`)
 - Evidence:
-  - `sections.json` for `ayuni` begins after `0.0`, despite `fft_bands.json` showing active spectral energy (sub-band kicks) from the start.
+  - `sections.json` for `_test_song` begins after `0.0`, despite `fft_bands.json` showing active spectral energy (sub-band kicks) from the start.
   - Algorithmic novelty detection is likely missing the initial "state" as a "boundary."
 - Validation target:
   - Ensure the first section of every song starts at exactly `0.0`.

@@ -14,7 +14,7 @@ class BeatdropVisualizerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
             ensure_directory(paths.song_path.parent)
@@ -92,7 +92,7 @@ class BeatdropVisualizerTests(unittest.TestCase):
 
             payload = generate_beatdrop_visual_plan(paths)
 
-            self.assertEqual(payload["song_name"], "Example Song")
+            self.assertEqual(payload["song_name"], "_test_song")
             self.assertEqual(len(payload["preset_windows"]), 2)
             self.assertEqual(len(payload["transitions"]), 1)
             self.assertTrue(paths.beatdrop_visual_plan_output_path.exists())

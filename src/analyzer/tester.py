@@ -45,5 +45,5 @@ def test_song(song_name: str):
     print(f"[{song_name}] Generated {len(machine_payload.get('events', []))} machine events")
 
 if __name__ == '__main__':
-    test_song("What a Feeling - Courtney Storm")
-    test_song("ayuni")
+    test_song("_test_song")
+    test_song("_test_song")

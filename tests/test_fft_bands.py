@@ -69,7 +69,7 @@ class FftBandsTests(unittest.TestCase):
     def test_extract_fft_bands_writes_expected_schema(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
-            song_path = root / "songs" / "Example Song.mp3"
+            song_path = root / "songs" / "_test_song.mp3"
             song_path.parent.mkdir(parents=True, exist_ok=True)
             song_path.write_bytes(b"fake-mp3")
             paths = SongPaths(
@@ -91,7 +91,7 @@ class FftBandsTests(unittest.TestCase):
 
             written = _read_json(paths.artifact("essentia", "fft_bands.json"))
 
-        self.assertEqual(payload["song_name"], "Example Song")
+        self.assertEqual(payload["song_name"], "_test_song")
         self.assertEqual(written["metadata"]["interval_ms"], 50)
         self.assertEqual(written["metadata"]["hop_size"], 2205)
         self.assertEqual(written["metadata"]["window"], "hann")

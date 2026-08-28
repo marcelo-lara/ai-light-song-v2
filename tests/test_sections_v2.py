@@ -227,7 +227,7 @@ class SectionSegmentationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
 
@@ -280,7 +280,7 @@ class SectionSegmentationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
 
@@ -339,11 +339,11 @@ class SectionSegmentationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
 
-            segments_path = root / "reference" / "Example Song" / "moises" / "segments.json"
+            segments_path = root / "reference" / "_test_song" / "moises" / "segments.json"
             segments_path.parent.mkdir(parents=True, exist_ok=True)
             segments_path.write_text(
                 json.dumps(
@@ -355,7 +355,7 @@ class SectionSegmentationTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            chords_path = root / "reference" / "Example Song" / "moises" / "chords.json"
+            chords_path = root / "reference" / "_test_song" / "moises" / "chords.json"
             chords_path.write_text(
                 json.dumps(
                     [
@@ -423,7 +423,7 @@ class SectionSegmentationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
 
@@ -456,7 +456,7 @@ class SectionSegmentationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
 

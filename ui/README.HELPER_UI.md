@@ -237,7 +237,7 @@ After UI changes, validate all of the following:
 - editor diagnostics for `ui/src/`
 - line-count pressure if a refactor was part of the change
 - `docker compose up -d --build ui`
-- browser load against a real song such as `?song=ayuni`
+- browser load against a real song such as `?song=_test_song`
 - lane/file status behavior when optional files like human hints are present or absent
 
 For structural refactors, also confirm that:
@@ -308,7 +308,7 @@ curl -s http://localhost:8080/data/analysis/ | head
 For a live browser verification pass, also load a real song:
 
 ```text
-http://localhost:8080/?song=ayuni
+http://localhost:8080/?song=_test_song
 ```
 
 For a smoke check after a larger refactor, verify all of the following in the running page:

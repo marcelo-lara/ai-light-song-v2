@@ -13,8 +13,8 @@ class EventReviewTests(unittest.TestCase):
     def test_apply_event_overrides_relabels_and_confirms(self) -> None:
         machine_payload = {
             "schema_version": "1.0",
-            "song_name": "Example Song",
-            "generated_from": {"source_song_path": "/data/songs/example.mp3"},
+            "song_name": "_test_song",
+            "generated_from": {"source_song_path": "/data/songs/_test_song.mp3"},
             "review_status": "machine",
             "notes": "machine",
             "threshold_profile": "default",
@@ -48,12 +48,12 @@ class EventReviewTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
-                song_path=root / "songs" / "Example Song.mp3",
+                song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
             machine_payload = {
                 "schema_version": "1.0",
-                "song_name": "Example Song",
+                "song_name": "_test_song",
                 "generated_from": {"source_song_path": str(paths.song_path)},
                 "review_status": "machine",
                 "notes": "machine",

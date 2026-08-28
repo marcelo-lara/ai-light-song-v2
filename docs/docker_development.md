@@ -122,7 +122,7 @@ Run the first-phase validation entry point:
 ```bash
 docker compose run --rm app \
   ./analyze \
-  --song "/data/songs/What a Feeling - Courtney Storm.mp3" \
+  --song "/data/songs/_test_song.mp3" \
   --compare beats,chords,drums,sections,energy,patterns,unified,events
 ```
 
