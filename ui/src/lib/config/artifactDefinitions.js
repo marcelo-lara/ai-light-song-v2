@@ -4,6 +4,7 @@ export const artifactDefinitions = [
   { key: "beatsOutput", label: "Output Beats", path: (song) => ["data", "analysis", song, "beats.json"] },
   { key: "sectionsOutput", label: "Output Sections", path: (song) => ["data", "analysis", song, "sections.json"] },
   { key: "eventsTimeline", label: "Output Event Timeline", path: (song) => ["data", "analysis", song, "song_event_timeline.json"] },
+  { key: "beatdropVisualPlan", label: "BeatDrop Visual Plan", path: (song) => ["data", "analysis", song, "beatdrop_visual_plan.json"] },
   { key: "beatsArtifact", label: "Artifact Beats", path: (song) => ["data", "analysis", song, "artifacts", "essentia", "beats.json"] },
   { key: "fftBands", label: "FFT Bands", path: (song) => ["data", "analysis", song, "artifacts", "essentia", "fft_bands.json"] },
   { key: "rmsLoudness", label: "RMS Loudness", path: (song) => ["data", "analysis", song, "artifacts", "essentia", "rms_loudness.json"] },

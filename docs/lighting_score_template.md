@@ -11,7 +11,7 @@ The score has two layers:
 
 Exact timing must come from structured upstream artifacts. Optional prose may improve readability, emphasis, and show-planning clarity, but it must not contradict the deterministic analysis.
 
-`lighting_score.md` is written to `data/analysis/<Song - Artist>/lighting_score.md` as part of the stable UI output contract. It is the only markdown file allowed under `data/analysis/<Song - Artist>/`.
+`lighting_score.md` is written to `data/analysis/<Song - Artist>/lighting_score.md` as part of the stable UI output contract. Story 7.5 also allows an optional `beatdrop_visual_plan.md` companion markdown under `data/analysis/<Song - Artist>/`.
 
 ## Required Upstream Analysis And Artifacts
 

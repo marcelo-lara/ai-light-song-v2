@@ -33,6 +33,16 @@ def _normalize_audio(audio):
     return audio / peak * 0.99
 
 
+def _source_sample_rate(song_path: Path) -> int | None:
+    try:
+        import soundfile as sf
+
+        info = sf.info(str(song_path))
+        return int(info.samplerate)
+    except Exception:
+        return None
+
+
 def _cleanup_legacy_demucs_directory(stems_dir: Path) -> None:
     legacy_directory = stems_dir / ".demucs"
     if legacy_directory.exists():
@@ -98,7 +108,25 @@ def ensure_stems(paths: SongPaths, force: bool = False) -> dict[str, str]:
         "harmonic": cached["other"],
         "vocals": cached["vocals"],
     }
+    metadata_path = paths.stems_dir / "metadata.json"
     if not force and all(path.exists() and path.stat().st_size > 0 for path in harmonic_cache.values()):
+        if not metadata_path.exists():
+            source_sample_rate = _source_sample_rate(paths.song_path)
+            write_json(
+                metadata_path,
+                {
+                    "schema_version": SCHEMA_VERSION,
+                    "song_name": paths.song_name,
+                    "generated_from": GeneratedFrom(source_song_path=str(paths.song_path), engine="demucs"),
+                    "stems": {key: str(value) for key, value in harmonic_cache.items()},
+                    "metadata": {
+                        "source_sample_rate": source_sample_rate,
+                        "analysis_sample_rate": None,
+                        "resample_strategy": "demucs_audiofile_samplerate",
+                        "high_resolution_input": bool(source_sample_rate and source_sample_rate >= 96000),
+                    },
+                },
+            )
         _cleanup_legacy_demucs_directory(paths.stems_dir)
         return {key: str(value) for key, value in harmonic_cache.items()}
 
@@ -149,6 +177,7 @@ def ensure_stems(paths: SongPaths, force: bool = False) -> dict[str, str]:
         logical_name = "harmonic" if source_name == "other" else source_name
         resolved_stems[logical_name] = str(target_path)
 
+    source_sample_rate = _source_sample_rate(paths.song_path)
     metadata = {
         "schema_version": SCHEMA_VERSION,
         "song_name": paths.song_name,
@@ -157,7 +186,13 @@ def ensure_stems(paths: SongPaths, force: bool = False) -> dict[str, str]:
             engine="demucs",
         ),
         "stems": resolved_stems,
+        "metadata": {
+            "source_sample_rate": source_sample_rate,
+            "analysis_sample_rate": int(model.samplerate),
+            "resample_strategy": "demucs_audiofile_samplerate",
+            "high_resolution_input": bool(source_sample_rate and source_sample_rate >= 96000),
+        },
     }
-    write_json(paths.stems_dir / "metadata.json", metadata)
+    write_json(metadata_path, metadata)
     _cleanup_legacy_demucs_directory(paths.stems_dir)
     return resolved_stems

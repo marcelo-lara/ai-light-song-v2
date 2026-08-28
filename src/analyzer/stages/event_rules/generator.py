@@ -23,6 +23,8 @@ def generate_rule_candidates(
     features = [dict(row) for row in event_features.get("features", [])]
     sections = [dict(row) for row in sections_payload.get("sections", [])]
 
+    random_seed = 42
+
     # K-Means Clustering (Alternative 3) on Beat Features
     if len(features) > 10:
         km_data = np.array([
@@ -32,7 +34,7 @@ def generate_rule_candidates(
                 float(r["normalized"]["onset_density"])
             ] for r in features
         ])
-        kmeans = KMeans(n_clusters=3, random_state=42, n_init="auto")
+        kmeans = KMeans(n_clusters=3, random_state=random_seed, n_init="auto")
         labels = kmeans.fit_predict(km_data)
         
         # Sort cluster IDs by their energy centroid to map Low -> 0, Mid -> 1, High -> 2
@@ -61,6 +63,13 @@ def generate_rule_candidates(
     mean_energy_mean = _safe_stat(energy_means, statistics.mean)
     stdev_energy_mean = _safe_stat(energy_means, statistics.stdev)
 
+    bass_ratios = [max(0.0, float(r["derived"].get("bass_att_ratio", 1.0))) for r in features]
+    flux_ratios = [max(0.0, float(r["derived"].get("spectral_flux_ratio", 1.0))) for r in features]
+    mean_bass_ratio = _safe_stat(bass_ratios, statistics.mean, default=1.0)
+    stdev_bass_ratio = _safe_stat(bass_ratios, statistics.stdev, default=0.0)
+    mean_flux_ratio = _safe_stat(flux_ratios, statistics.mean, default=1.0)
+    stdev_flux_ratio = _safe_stat(flux_ratios, statistics.stdev, default=0.0)
+
     # Use dynamically calculated statistical thresholds based on track features
     thresholds = {
         "name": "dynamic_z_score_v1",
@@ -74,8 +83,11 @@ def generate_rule_candidates(
             "drop_onset_min": 0.45,
             "drop_bass_min": 0.25,
             "drop_accent_min": 0.25,
+            "drop_bass_ratio_min": max(1.2, mean_bass_ratio + 0.5 * stdev_bass_ratio),
+            "drop_flux_ratio_min": max(1.2, mean_flux_ratio + 0.5 * stdev_flux_ratio),
             "fake_drop_tension_mean": max(0.20, mean_tension + 1.0 * stdev_tension),
             "impact_intensity_min": 0.65,
+            "impact_ratio_min": max(1.15, mean_flux_ratio + 0.4 * stdev_flux_ratio),
             "pause_gap_seconds": 0.5,
             "pause_energy_max": 0.4
         },
@@ -162,11 +174,15 @@ def generate_rule_candidates(
     for row in features:
         if row.get("_intensity_cluster", 2) < 2:  # Alt 3: True drops only occur in the highest energy cluster
             continue
+        bass_ratio = float(row["derived"].get("bass_att_ratio", 1.0))
+        flux_ratio = float(row["derived"].get("spectral_flux_ratio", 1.0))
         if not (
             float(row["derived"]["energy_delta"]) >= thresholds["transition"]["drop_energy_delta"]
             and float(row["normalized"]["onset_density"]) >= thresholds["transition"]["drop_onset_min"]
             and float(row["derived"]["bass_activation_score"]) >= thresholds["transition"]["drop_bass_min"]
             and float(row["derived"]["accent_intensity"]) >= thresholds["transition"]["drop_accent_min"]
+            and bass_ratio >= thresholds["transition"]["drop_bass_ratio_min"]
+            and flux_ratio >= thresholds["transition"]["drop_flux_ratio_min"]
         ):
             continue
         section = _section_for_time(float(row["start_time"]), sections)
@@ -188,6 +204,8 @@ def generate_rule_candidates(
                 {"name": "onset_density", "value": onset_level, "threshold": thresholds["transition"]["drop_onset_min"], "comparator": ">=", "source_layer": "event_features"},
                 {"name": "bass_activation", "value": bass_level, "threshold": thresholds["transition"]["drop_bass_min"], "comparator": ">=", "source_layer": "event_features"},
                 {"name": "accent_intensity", "value": float(row["derived"]["accent_intensity"]), "threshold": thresholds["transition"]["drop_accent_min"], "comparator": ">=", "source_layer": "event_features"},
+                {"name": "bass_att_ratio", "value": bass_ratio, "threshold": thresholds["transition"]["drop_bass_ratio_min"], "comparator": ">=", "source_layer": "event_features"},
+                {"name": "spectral_flux_ratio", "value": flux_ratio, "threshold": thresholds["transition"]["drop_flux_ratio_min"], "comparator": ">=", "source_layer": "event_features"},
             ],
             notes="Baseline drop candidate without subtype refinement.",
             candidates=[{"type": "impact_hit", "confidence": min(1.0, float(row["derived"]["accent_intensity"]) + 0.1), "notes": "Short accent overlap suggests an impact reading too."}],
@@ -208,8 +226,12 @@ def generate_rule_candidates(
     accent_values = [float(row["derived"]["accent_intensity"]) for row in features]
     for i, row in enumerate(features):
         intensity = float(row["derived"]["accent_intensity"])
+        ratio_gate = max(
+            float(row["derived"].get("spectral_flux_ratio", 1.0)),
+            float(row["derived"].get("bass_att_ratio", 1.0)),
+        )
         threshold = thresholds["transition"]["impact_intensity_min"]
-        if intensity < threshold or not _is_peak(i, accent_values, r=4, min_val=threshold):
+        if intensity < threshold or ratio_gate < thresholds["transition"]["impact_ratio_min"] or not _is_peak(i, accent_values, r=4, min_val=threshold):
             continue
         section = _section_for_time(float(row["start_time"]), sections)
         events.append(
@@ -224,6 +246,7 @@ def generate_rule_candidates(
                 rule_names=["impact_accent_peak"],
                 metrics=[
                     {"name": "accent_intensity", "value": intensity, "threshold": thresholds["transition"]["impact_intensity_min"], "comparator": ">=", "source_layer": "event_features"},
+                    {"name": "impact_support_ratio", "value": ratio_gate, "threshold": thresholds["transition"]["impact_ratio_min"], "comparator": ">=", "source_layer": "event_features"},
                 ],
                 notes="Impact hits remain single-beat candidates.",
             )
@@ -385,6 +408,10 @@ def generate_rule_candidates(
             "genre_file": str(paths.artifact("genre.json")) if genre_result is not None else None,
             "engine": "rule-based-event-detection",
             "threshold_profile": thresholds,
+            "determinism": {
+                "random_engine": "MT19937",
+                "seed": random_seed,
+            },
         },
         "review_status": "rule_candidates",
         "notes": "Deterministic baseline candidates with explicit evidence and preserved ambiguities.",

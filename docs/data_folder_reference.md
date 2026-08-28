@@ -10,7 +10,7 @@ Use this as a navigation guide first, then open the referenced files for the act
 
 - `data/analysis/<Song - Artist>/reference/` is reference and validation material. Do not treat it as generation input.
 - `data/analysis/<Song - Artist>/artifacts/` contains generated analysis artifacts and intermediate caches, including the separated stems under `artifacts/stems/`.
-- `data/analysis/<Song - Artist>/` (outside the nested `artifacts/` and `reference/` folders) contains a stable UI-facing output contract. Each song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and the `artifacts/` subfolder.
+- `data/analysis/<Song - Artist>/` (outside the nested `artifacts/` and `reference/` folders) contains a stable UI-facing output contract. Each song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, `beatdrop_visual_plan.json`, and the `artifacts/` subfolder. `beatdrop_visual_plan.md` is optional.
 - Do not add or remove the top-level files under `data/analysis/<Song - Artist>/` unless a UI contract change makes that strictly required.
 - The internal debugger served from `/ui/` primarily reads `data/analysis/<Song - Artist>/artifacts/` directly and uses the top-level `data/analysis/<Song - Artist>/` files only as supporting context when useful.
 - The debugger is read-only against generated data and must not write files into `data/analysis/`, with the single exception below.
@@ -26,6 +26,8 @@ data/
     <Song - Artist>/
       beats.json
       hints.json
+      beatdrop_visual_plan.json
+      beatdrop_visual_plan.md
       info.json
       lighting_score.md
       song_event_timeline.json
@@ -104,15 +106,16 @@ data/
 If you only open a few files, start here in this order:
 
 1. `data/analysis/<Song - Artist>/lighting_score.md`
-2. `data/analysis/<Song - Artist>/song_event_timeline.json`
-3. `data/analysis/<Song - Artist>/hints.json`
-4. `data/analysis/<Song - Artist>/artifacts/music_feature_layers.json`
-5. `data/analysis/<Song - Artist>/artifacts/lighting_events.json`
-6. `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`
-7. `data/analysis/<Song - Artist>/artifacts/layer_a_harmonic.json`
-8. `data/analysis/<Song - Artist>/artifacts/layer_b_symbolic.json`
-9. `data/fixtures/fixtures.json`
-10. `data/fixtures/pois.json`
+2. `data/analysis/<Song - Artist>/beatdrop_visual_plan.json`
+3. `data/analysis/<Song - Artist>/song_event_timeline.json`
+4. `data/analysis/<Song - Artist>/hints.json`
+5. `data/analysis/<Song - Artist>/artifacts/music_feature_layers.json`
+6. `data/analysis/<Song - Artist>/artifacts/lighting_events.json`
+7. `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`
+8. `data/analysis/<Song - Artist>/artifacts/layer_a_harmonic.json`
+9. `data/analysis/<Song - Artist>/artifacts/layer_b_symbolic.json`
+10. `data/fixtures/fixtures.json`
+11. `data/fixtures/pois.json`
 
 For internal debugger work, invert that priority: start with `data/analysis/<Song - Artist>/artifacts/` layer and validation files first, then use `data/analysis/<Song - Artist>/` only as compact helper projections.
 
@@ -731,6 +734,8 @@ LLM hint:
 - See: segment boundaries and labels.
 - Use: compare against `section_segmentation/sections.json` to sanity-check large structural changes.
 - Treat labels as advisory. The important part is the boundary timing.
+- Use: derive offline boundary-quality metrics such as over-segmentation, under-segmentation, and snap-like late or early offsets.
+- Optional promotion rule: if a Story explicitly allows it, this file may rescue low-confidence or clearly failed inferred section boundaries, but only through an explicit confidence gate with preserved inferred output and provenance.
 
 ### `data/analysis/<Song - Artist>/reference/moises/lyrics.json`
 
@@ -742,7 +747,8 @@ LLM hint:
 - See: `text`, `start`, `end`, `line_id`, and markers like `<SOL>` and `<EOL>`.
 - Use: align spotlight moments, text-reactive effects, or visual punctuation to words and line starts.
 - Combine: with vocal symbolic data for melody-aware lyric moments.
-- Remember: this file is for review and timing reference, not pipeline fallback generation.
+- Use: derive beat- or line-aligned features such as lyric density, line starts, line ends, post-line tails, and confidence-weighted vocal-presence priors.
+- Optional promotion rule: if a Story explicitly allows it, this file may rescue low-confidence vocal timing or event timing only when the overlapping stem or energy evidence agrees and the promotion is recorded explicitly.
 
 ## Practical Usage Patterns
 

@@ -10,6 +10,7 @@ export const laneDefinitions = [
   { id: "identifierHints", label: "Identifier Hints", description: "Named energy-event identifiers from energy_summary/hints.json", type: "sparse" },
   { id: "machineEvents", label: "Machine Events", description: "Rule and machine event windows", type: "sparse" },
   { id: "mlEvents", label: "ML Events", description: "Story 6.1 ML event predictions from events.ml.json", type: "sparse" },
+  { id: "beatdropPlan", label: "BeatDrop Plan", description: "Offline preset windows and transition recommendations from Story 7.5", type: "sparse" },
   { id: "drums", label: "Drum Density", description: "Kick, snare, and hat activity from artifact drum events", type: "dynamic" },
   { id: "phrases", label: "Symbolic Phrases", description: "Phrase windows grouped by phrase_group_id from the symbolic layer", type: "sparse" },
   { id: "energy", label: "Energy Profile", description: "Beat-aligned energy with accent candidates", type: "dynamic" },

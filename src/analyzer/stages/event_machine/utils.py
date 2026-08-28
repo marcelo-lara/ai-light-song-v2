@@ -17,6 +17,19 @@ def _mean(values: list[float]) -> float:
     return round(sum(values) / len(values), 6) if values else 0.0
 
 
+def _rolling_energy_mean(row: dict[str, Any]) -> float:
+    rolling = row.get("rolling", {})
+    if not isinstance(rolling, dict):
+        return 0.0
+    local = rolling.get("local", {})
+    if isinstance(local, dict) and "energy_mean" in local:
+        return float(local.get("energy_mean", 0.0))
+    medium = rolling.get("medium", {})
+    if isinstance(medium, dict):
+        return float(medium.get("energy_mean", 0.0))
+    return 0.0
+
+
 def _event_id(label: str, index: int) -> str:
     return f"machine_{label}_{index:03d}"
 
@@ -113,12 +126,8 @@ def _section_index(sections_payload: dict) -> dict[str, dict]:
     return {str(section["section_id"]): dict(section) for section in sections_payload.get("sections", [])}
 
 
-def _identifier_index(identifier_payload: dict) -> dict[str, dict]:
-    return {
-        str(event.get("source_event_id")): dict(event)
-        for event in identifier_payload.get("events", [])
-        if event.get("source_event_id")
-    }
+def _identifier_index(identifier_payload: dict) -> list[dict[str, Any]]:
+    return [dict(event) for event in identifier_payload.get("events", []) if event.get("identifier")]
 
 
 def _build_candidates(score_rows: list[tuple[str, float, str]]) -> list[dict[str, Any]]:
@@ -163,7 +172,7 @@ def _classify_drop_variant(rule_event: dict, feature_rows: list[dict], identifie
     energy_delta = _mean([float(row["derived"].get("energy_delta", 0.0)) for row in feature_rows])
     accent = _mean([float(row["derived"].get("accent_intensity", 0.0)) for row in feature_rows])
     bass = _mean([float(row["derived"].get("bass_activation_score", 0.0)) for row in feature_rows])
-    energy_mean = _mean([float(row["rolling"]["local"].get("energy_mean", 0.0)) for row in feature_rows])
+    energy_mean = _mean([_rolling_energy_mean(row) for row in feature_rows])
     onset = _mean([float(row["normalized"].get("onset_density", 0.0)) for row in feature_rows])
     spectral_rise = 0.0
     if identifier is not None:
@@ -188,7 +197,7 @@ def _classify_plateau_variant(rule_event: dict, feature_rows: list[dict], sectio
     bass_mean = _mean([float(row["derived"].get("bass_activation_score", 0.0)) for row in feature_rows])
     vocal_mean = _mean([float(row["derived"].get("vocal_presence_score", 0.0)) for row in feature_rows])
     energy_mean = _mean([
-        float(row["normalized"].get("energy_score", row["rolling"]["local"].get("energy_mean", 0.0)))
+        float(row["normalized"].get("energy_score", _rolling_energy_mean(row)))
         for row in feature_rows
     ])
     onset_mean = _mean([float(row["normalized"].get("onset_density", 0.0)) for row in feature_rows])
@@ -219,8 +228,31 @@ def _classify_plateau_variant(rule_event: dict, feature_rows: list[dict], sectio
     return "no_drop_plateau", candidates, "Sustained-state subtype evidence is not decisive enough; keeping the parent plateau label."
 
 
-def _match_identifier(rule_event: dict, identifier_index: dict[str, dict]) -> dict | None:
-    return identifier_index.get(str(rule_event.get("id")))
+def _match_identifier(rule_event: dict, identifier_index: list[dict[str, Any]]) -> dict | None:
+    if not identifier_index:
+        return None
+
+    start_time = float(rule_event.get("start_time", 0.0))
+    end_time = float(rule_event.get("end_time", start_time))
+    center = (start_time + end_time) / 2.0
+
+    best_match = None
+    best_score = -1.0
+    for identifier in identifier_index:
+        if str(identifier.get("identifier")) != str(rule_event.get("type")):
+            continue
+
+        identifier_start = float(identifier.get("start_s", identifier.get("time_s", 0.0)))
+        identifier_end = float(identifier.get("end_s", identifier_start))
+        overlap = max(0.0, min(end_time, identifier_end) - max(start_time, identifier_start))
+        distance = abs(center - ((identifier_start + identifier_end) / 2.0))
+        score = overlap - (distance * 0.05)
+
+        if score > best_score:
+            best_score = score
+            best_match = identifier
+
+    return best_match
 
 
 def _phrase_event(
@@ -234,7 +266,7 @@ def _phrase_event(
     candidates: list[dict] | None = None,
 ) -> dict[str, Any]:
     vocal_mean = _mean([float(row["derived"].get("vocal_presence_score", 0.0)) for row in feature_rows])
-    energy_mean = _mean([float(row["rolling"]["local"].get("energy_mean", 0.0)) for row in feature_rows])
+    energy_mean = _mean([_rolling_energy_mean(row) for row in feature_rows])
     event = {
         "id": event_id,
         "type": event_type,
@@ -321,5 +353,4 @@ def _section_context_event(
         "section_id": section.get("section_id"),
         "source_layers": ["event_features", "sections"],
     }
-
 

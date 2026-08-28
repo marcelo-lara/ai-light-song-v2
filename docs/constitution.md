@@ -8,6 +8,7 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 ### 2.1 Spec-Driven Development (SDD)
 - **Contracts First:** Implementation never begins without a Story spec. The spec defines the schema, inputs, and acceptance criteria.
 - **Documentation as Truth:** If the code and the documentation disagree, the documentation is assumed to be correct until a formal spec change occurs.
+- **Deterministic Randomization:** Any non-deterministic steps (data augmentation, initialization) must use the **Mersenne Twister (MT19937)** with a logged seed to ensure perfectly reproducible debug sessions.
 - **Living Specifications:** Stories and specifications must be updated to reflect final implementation details. A task is not considered "done" until the corresponding Story file accurately reflects the current codebase.
 - **Modular Epics:** The pipeline is divided into eight independent Epics: Audio Preprocessing, Harmonic Summary, Energy & Structure, Symbolic Event Summary, Rule-Based Event Detection, ML-Based Event Classification, Lighting Score Generation, and the Internal Artifact Debugger.
 
@@ -28,6 +29,7 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 - **`data/analysis/<Song - Artist>/artifacts/`**: Machine-readable intermediate analysis. Read-only for the UI. Must use producer-scoped subfolders.
 - **State Continuity:** All state-based and frame-based layers must provide 100% coverage of the song timeline starting at `0.0`. If a song begins with physical silence, this must be represented as a "silence" state or zero-value frames, rather than omitting the data.
 - **`data/analysis/<Song - Artist>/`**: Stable UI contract (outside the nested `artifacts/` folder). Must contain exactly the files specified in the `layer_manifest.md`.
+- **Reference Promotion Exception:** A Story may explicitly allow confidence-gated promotion from `data/analysis/<Song - Artist>/reference/` into a canonical artifact when the inferred result is below a documented quality gate. This is not a silent fallback. The promoted artifact must preserve the inferred result separately, record the reference file path, the failing gate, and the promotion decision in provenance metadata, and remain deterministic across runs.
 
 ### 3.2 Immutability
 - Once an artifact is written to `data/analysis/`, it is considered a historical record of that pipeline run. 
@@ -37,6 +39,7 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 
 ### 4.1 Error Handling
 - **Fail Explicitly:** The pipeline must never use silent fallbacks (e.g., if a chord model fails, do not invent a generic "C" major chord; fail the run or mark it as `unknown`).
+- **Explicit Reference Promotion Only:** When a Story permits reference-backed rescue behavior, it must be confidence-gated, deterministic, and surfaced in metadata and validation output. Silent substitution is a constitutional violation.
 - **Provenance:** Every generated file must include a `generated_from` block identifying the source files, engine version, and timestamps.
 
 ### 4.2 Code Quality
@@ -48,5 +51,5 @@ To build a deterministic, musically intelligent pipeline that transforms raw aud
 - Every new feature must be introduced via a "Story" file in the `docs/` folder before being implemented in `src/`.
 
 ---
-*Last Updated: 2026-04-20*
+*Last Updated: 2026-04-24*
 *Status: Active*

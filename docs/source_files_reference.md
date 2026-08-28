@@ -14,6 +14,7 @@ This guide provides an LLM-friendly directory and file reference for the `ai-lig
 |------|---------|
 | `src/analyzer/cli.py` | Primary CLI entrypoint for the `analyze` command. Parses arguments (`--song`, `--all-songs`, etc.). |
 | `src/analyzer/pipeline.py` | The Pipeline DAG. Maps the 8 Epics and orchestrates exactly when and how each `src/analyzer/stages/` function is executed. |
+| `src/analyzer/__init__.py` | Analyzer package runtime defaults (TensorFlow allocator and GPU growth environment settings). |
 | `src/analyzer/models.py` | Data structures, JSON encodable utilities, and the overarching `SCHEMA_VERSION`. |
 | `src/analyzer/io.py` | Disk operations (JSON read/write, file validation). |
 | `src/analyzer/paths.py` | Centralized `SongPaths` resolution (managing references to `/data/songs/`, `/data/analysis/`, and the per-song `reference/` subfolder, etc.). |
@@ -64,6 +65,7 @@ Each submodule exports its main generator function out of its `__init__.py`.
 * `stems.py` / `fft_bands.py` / `timing.py` / `loudness.py` (Epic 1) – Audio ingestion, demux, downsampling, grid extraction.
 * `drums.py` / `harmonic.py` / `genre.py` (Epics 2 & 6) – Model-based musical extraction and classifications.
 * `ui_data.py` (Epic 7) – Packs intermediate JSON payloads into the finalized web deployment structure.
+* `beatdrop_visualizer.py` (Epic 7.5) – Exports deterministic offline preset windows and transition plans for BeatDrop-style visualizer workflows.
 * `lighting.py` / `light_design.py` (Epic 7) – Maps timing, energy, and semantic events into DMX/fixture commands.
 
 ---
@@ -71,6 +73,15 @@ Each submodule exports its main generator function out of its `__init__.py`.
 ## 4. Machine Learning & Training
 * **Subprocess execution layers**: `_basic_pitch_subprocess.py`, `_omnizart_runtime.py`, `_stem_activity.py` encapsulate isolation logic for external Python ML environments.
 * **Event Classifier**: `src/analyzer/event_ml_models.py`, `event_ml_train.py` and `src/scripts/train_event_classifier.py` house the PyTorch/TensorFlow graphs and logic for training custom event recognizers.
+
+---
+
+## 5. Targeted Regression Tests
+
+| File | Purpose |
+|------|---------|
+| `tests/test_event_ml.py` | Verifies ML inference writes `events.ml.json`, saliency output, and penalty timeline/metadata artifacts under the Story 5.3 and 5.9 contract. |
+| `tests/test_beatdrop_visualizer.py` | Verifies Story 7.5 offline BeatDrop visualizer plan exports deterministic preset windows and transitions with output files. |
 
 ---
 

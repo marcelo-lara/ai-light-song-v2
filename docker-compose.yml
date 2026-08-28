@@ -31,4 +31,4 @@ services:
       - ./data:/data
       - /home/darkangel/ai-dmx-light-render/data/songs:/data/songs:ro
     ports:
-      - "8080:8080"
+      - "9090:8080"

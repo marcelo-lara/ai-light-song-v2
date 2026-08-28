@@ -17,6 +17,9 @@ if TYPE_CHECKING:
 
 UNKNOWN_GENRE = "unknown"
 CO_WINNER_MARGIN_RATIO = 0.5
+GENRE_SAMPLE_RATE = 16000
+GENRE_CHUNK_SECONDS = 30.0
+GENRE_CHUNK_HOP_SECONDS = 15.0
 
 # Model provenance metadata
 GENRE_MODEL_NAME = "essentia-tensorflow-genre"
@@ -53,8 +56,32 @@ def _load_audio_for_genre(song_path: str) -> "np.ndarray":
         raise DependencyError("essentia is required for genre classification") from exc
 
     # Essentia genre models typically use 16kHz
-    audio = MonoLoader(filename=song_path, sampleRate=16000)()
+    audio = MonoLoader(filename=song_path, sampleRate=GENRE_SAMPLE_RATE)()
     return audio
+
+
+def _iter_genre_chunks(audio: "np.ndarray") -> list["np.ndarray"]:
+    total_samples = int(audio.shape[0])
+    if total_samples <= 0:
+        return []
+
+    chunk_samples = max(1, int(GENRE_CHUNK_SECONDS * GENRE_SAMPLE_RATE))
+    hop_samples = max(1, int(GENRE_CHUNK_HOP_SECONDS * GENRE_SAMPLE_RATE))
+
+    if total_samples <= chunk_samples:
+        return [audio]
+
+    chunks: list[np.ndarray] = []
+    start = 0
+    while start < total_samples:
+        end = min(total_samples, start + chunk_samples)
+        chunk = audio[start:end]
+        if chunk.size > 0:
+            chunks.append(chunk)
+        if end >= total_samples:
+            break
+        start += hop_samples
+    return chunks
 
 
 def _ensure_genre_model() -> None:
@@ -139,12 +166,25 @@ def _run_essentia_genre_classifier(
             isTrainingName="model/Placeholder_1",
         )
 
-        # Process audio and get predictions
-        predictions = genre_predictor(audio)
-        
+        # Process the song in chunks to reduce peak TensorFlow GPU memory.
+        prediction_rows: list[np.ndarray] = []
+        for chunk in _iter_genre_chunks(audio):
+            chunk_predictions = genre_predictor(chunk)
+            chunk_rows = np.asarray(chunk_predictions, dtype=float)
+            if chunk_rows.ndim == 1:
+                chunk_rows = chunk_rows.reshape(1, -1)
+            if chunk_rows.size > 0:
+                prediction_rows.append(chunk_rows)
+
+        if not prediction_rows:
+            raise AnalysisError("Genre model returned no prediction rows")
+
+        predictions = np.concatenate(prediction_rows, axis=0)
+        mean_scores = np.mean(predictions, axis=0)
+
         # Build confidence mapping
         confidences = {}
-        for label, confidence in zip(label_names, predictions[0]):
+        for label, confidence in zip(label_names, mean_scores):
             confidences[label] = float(confidence)
             
         return confidences, [*label_names, UNKNOWN_GENRE]

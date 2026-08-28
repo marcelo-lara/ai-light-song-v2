@@ -14,6 +14,7 @@ from analyzer.paths import SongPaths
 SAMPLE_RATE = 44100
 RMS_INTERVAL_MS = 10
 ENVELOPE_WINDOW_MS = 200
+HISTORY_WINDOWS_SECONDS: tuple[float, ...] = (2.0, 5.0)
 SOURCE_ORDER: tuple[tuple[str, str], ...] = (
     ("mix", "Mix"),
     ("bass", "Bass"),
@@ -72,11 +73,32 @@ def _extract_series(audio_by_source: dict[str, np.ndarray], duration_seconds: fl
 
     normalized_by_source = {source_id: _normalize(values) for source_id, values in values_by_source.items()}
 
+    history_window_frames = {
+        history_seconds: max(1, int(round((history_seconds * 1000.0) / window_ms)))
+        for history_seconds in HISTORY_WINDOWS_SECONDS
+    }
+
     rows: list[dict] = []
     for frame_index in range(total_frames):
         start_s = round((frame_index * window_samples) / SAMPLE_RATE, 6)
         end_s = round(min(duration_seconds, ((frame_index + 1) * window_samples) / SAMPLE_RATE), 6)
         center_s = round((start_s + end_s) / 2.0, 6)
+        history_payload = {}
+        for history_seconds, history_frames in history_window_frames.items():
+            start_index = max(0, frame_index - history_frames + 1)
+            history_window = {
+                source_id: values_by_source[source_id][start_index : frame_index + 1]
+                for source_id, _ in SOURCE_ORDER
+            }
+            history_payload[f"mean_{int(history_seconds)}s"] = [
+                round(float(np.mean(history_window[source_id])) if history_window[source_id].size else 0.0, 8)
+                for source_id, _ in SOURCE_ORDER
+            ]
+            history_payload[f"peak_{int(history_seconds)}s"] = [
+                round(float(np.max(history_window[source_id])) if history_window[source_id].size else 0.0, 8)
+                for source_id, _ in SOURCE_ORDER
+            ]
+
         rows.append(
             {
                 "frame_index": frame_index,
@@ -85,6 +107,7 @@ def _extract_series(audio_by_source: dict[str, np.ndarray], duration_seconds: fl
                 "time": center_s,
                 "values": [round(float(values_by_source[source_id][frame_index]), 8) for source_id, _ in SOURCE_ORDER],
                 "normalized_values": [round(float(normalized_by_source[source_id][frame_index]), 6) for source_id, _ in SOURCE_ORDER],
+                "history": history_payload,
             }
         )
 
@@ -96,6 +119,8 @@ def _extract_series(audio_by_source: dict[str, np.ndarray], duration_seconds: fl
         "total_frames": total_frames,
         "normalization_scope": "per-song-per-source-peak-rms",
         "source_order": [source_id for source_id, _ in SOURCE_ORDER],
+        "history_windows_s": list(HISTORY_WINDOWS_SECONDS),
+        "history_window_frames": {str(int(seconds)): frames for seconds, frames in history_window_frames.items()},
     }
     return rows, metadata
 

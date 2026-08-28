@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 import subprocess
 import sys
 import traceback
@@ -13,7 +14,7 @@ from analyzer.config import (
     discover_song_files,
 )
 from analyzer.exceptions import AnalyzerError, UsageError
-from analyzer.pipeline import clear_batch_progress, format_batch_progress_prefix, run_phase_1, set_batch_progress
+from analyzer.pipeline import SINGLE_STAGE_NAMES, clear_batch_progress, format_batch_progress_prefix, run_phase_1, set_batch_progress
 
 
 SONG_SEPARATOR_WIDTH = 80
@@ -40,6 +41,19 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--chord-min-overlap", type=float, default=0.5)
     parser.add_argument("--device")
     parser.add_argument("--verbose", action="store_true")
+    parser.add_argument(
+        "--clean-generated-data",
+        action="store_true",
+        help=(
+            "Remove generated per-song data under the analysis root. "
+            "Songs and reference data are never touched."
+        ),
+    )
+    parser.add_argument(
+        "--stage",
+        choices=SINGLE_STAGE_NAMES,
+        help="Run only one pipeline stage using existing prerequisite artifacts when needed.",
+    )
     parser.add_argument("--batch-song-index", type=int, help=argparse.SUPPRESS)
     parser.add_argument("--batch-song-total", type=int, help=argparse.SUPPRESS)
     return parser
@@ -95,7 +109,7 @@ def _run_single_song(args: argparse.Namespace, compare_targets: tuple[str, ...])
             report_json,
             report_md,
         )
-        return run_phase_1(paths, config)
+        return run_phase_1(paths, config, stage_name=args.stage)
     finally:
         clear_batch_progress()
 
@@ -137,6 +151,8 @@ def _single_song_command(
         command.extend(["--device", str(args.device)])
     if args.verbose:
         command.append("--verbose")
+    if args.stage:
+        command.extend(["--stage", str(args.stage)])
     if batch_song_index is not None or batch_song_total is not None:
         if batch_song_index is None or batch_song_total is None:
             raise ValueError("batch_song_index and batch_song_total must be provided together")
@@ -166,13 +182,55 @@ def _run_all_songs(args: argparse.Namespace, compare_targets: tuple[str, ...]) -
     return _batch_exit_code(exit_codes)
 
 
+def _clean_song_directories(root_path: Path) -> int:
+    if not root_path.exists():
+        return 0
+    if not root_path.is_dir():
+        raise UsageError(f"Generated-data root is not a directory: {root_path}")
+
+    cleaned = 0
+    for song_dir in root_path.iterdir():
+        if not song_dir.is_dir():
+            continue
+        removed_any = False
+        for child in song_dir.iterdir():
+            # Preserve hand-authored reference data (e.g. reference/human/human_hints.json).
+            if child.name == "reference":
+                continue
+            if child.is_dir():
+                shutil.rmtree(child)
+            else:
+                child.unlink()
+            removed_any = True
+        if removed_any:
+            cleaned += 1
+    return cleaned
+
+
+def _clean_generated_song_data(args: argparse.Namespace) -> None:
+    analysis_root = Path(args.analysis_root)
+
+    cleaned = _clean_song_directories(analysis_root)
+
+    print(
+        f"Cleaned generated song data for {cleaned} song(s); reference data was preserved.",
+        flush=True,
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
     supported_targets = {"beats", "chords", "drums", "sections", "energy", "patterns", "unified", "events"}
     try:
+        if args.clean_generated_data and not args.song and not args.all_songs:
+            _clean_generated_song_data(args)
+            return 0
+
         compare_targets = _validate_args(args, supported_targets)
+        if args.clean_generated_data:
+            _clean_generated_song_data(args)
         if args.all_songs:
             return _run_all_songs(args, compare_targets)
         return _run_single_song(args, compare_targets)
