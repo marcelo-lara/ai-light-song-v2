@@ -18,6 +18,7 @@ from .utils import (
     _calculate_song_statistics,
     _chord_for_time,
     _phrase_for_time,
+    _robust_range_scale,
     _rolling_mean,
     _rolling_peak,
     _section_for_time,
@@ -211,6 +212,24 @@ def build_event_feature_layer(
             }
         )
 
+    # v1.1 item 1.1 — stem-relative activation. Scale each stem/spectral series
+    # against its own robust range so a bass dropout -> re-entry reads as a full
+    # 0 -> 1 swing even when the limited mix RMS is nearly flat.
+    STEM_RELATIVE_SPECS = {
+        "bass_stem_rel": "bass_stem_activity",
+        "drums_stem_rel": "drums_stem_activity",
+        "harmonic_stem_rel": "harmonic_stem_activity",
+        "vocals_stem_rel": "vocals_stem_activity",
+        "spectral_flux_rel": "spectral_flux",
+        "onset_density_rel": "onset_density",
+    }
+    stem_relative_ranges: dict[str, dict] = {}
+    for out_key, src_key in STEM_RELATIVE_SPECS.items():
+        scaled, band = _robust_range_scale([float(row[src_key]) for row in raw_rows])
+        for index, row in enumerate(raw_rows):
+            row[out_key] = scaled[index] if index < len(scaled) else 0.0
+        stem_relative_ranges[out_key] = {**band, "source": src_key}
+
     bass_att_values = _attenuated_series([float(row["bass_band_energy_raw"]) for row in raw_rows], decay=0.86)
     mid_att_values = _attenuated_series([float(row["mid_band_energy_raw"]) for row in raw_rows], decay=0.9)
 
@@ -305,6 +324,7 @@ def build_event_feature_layer(
             "spectral_flux_ratio": round(float(row["spectral_flux_ratio"]), 6),
             "mix_rms_rel_2s": round(float(row["mix_rms_rel_2s"]), 6),
             "mix_rms_rel_5s": round(float(row["mix_rms_rel_5s"]), 6),
+            **{key: round(float(row[key]), 6) for key in STEM_RELATIVE_SPECS},
         }
 
         normalized_rows.append(
@@ -350,7 +370,7 @@ def build_event_feature_layer(
         else 0.0
     )
     payload = {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": "1.1",  # item 1.1 adds stem-relative feature keys
         "song_name": paths.song_name,
         "generated_from": {
             "source_song_path": str(paths.song_path),
@@ -363,8 +383,9 @@ def build_event_feature_layer(
             "rms_loudness_file": str(paths.artifact("essentia", "rms_loudness.json")),
             "sections_file": str(paths.artifact("section_segmentation", "sections.json")),
             "genre_file": str(paths.artifact("genre.json")) if genre_result is not None else None,
-            "engine": "rule-based-event-feature-alignment",
+            "engine": "rule-based-event-feature-alignment.stem-relative.v2",
             "normalization_rules": {
+                "stem_relative_ranges": stem_relative_ranges,
                 "numeric_fields": {
                     key: {"method": "per-song z-score", "mean": stats["mean"], "std_dev": stats["std_dev"]}
                     for key, stats in song_statistics.items()
@@ -410,6 +431,7 @@ def build_event_feature_layer(
                 "spectral_flux_ratio",
                 "mix_rms_rel_2s",
                 "mix_rms_rel_5s",
+                *STEM_RELATIVE_SPECS.keys(),
             ],
         },
         "features": normalized_rows,

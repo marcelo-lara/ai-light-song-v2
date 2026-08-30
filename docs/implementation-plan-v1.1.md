@@ -30,7 +30,7 @@ stall a whole run; everything independent of it still gets built.
 | 0.1 | Prune orphaned analysis directory | — | ☑ |
 | 0.2 | Label the gold set | R7 | ⚠ blocked → D1 |
 | 0.3 | Scoring harness (`--compare form,drops`) | R3 R4 | ☑ (baseline recorded) |
-| 1.1 | Stem-relative energy signal | R4 | ☐ |
+| 1.1 | Stem-relative energy signal | R4 | ☑ (provisional, D1) |
 | 1.2 | Drop detection rebuild | R4 B2 | ☐ |
 | 1.3 | `fake_drop` symmetry | R4 B3 | ☐ |
 | 2.1 | `form_family` inference | R1a | ☐ |
@@ -185,18 +185,19 @@ The largest failure and the fastest visible win. Ordered before form because
 
 ### 1.1 Stem-relative energy signal
 
-- [ ] Add a stem-relative activation feature: per-band and per-stem energy
-      normalised against the song's own stem range, not mix RMS. On
-      `Armin - Revolution` the bass stem varies ~30× across sections while mix
-      RMS varies ~2.7×, so mix RMS cannot separate drop from non-drop on a
-      limited master.
-- [ ] Expose bass activation, spectral flux and onset density on this scale in
-      `event_inference/features.json`.
-- [ ] Bump that artifact's `generated_from.engine` version; `schema_version` →
-      `"1.1"` if the shape changes.
+- [x] Add a stem-relative activation feature: per-stem energy normalised against
+      the song's own robust range (p5–p95), not mix RMS. `_robust_range_scale`
+      in `event_features/utils.py`, applied per-song in `builder.py`.
+- [x] Expose bass/drums/harmonic/vocals activation, spectral flux and onset
+      density on this scale as `*_stem_rel` / `*_rel` in `derived` and in
+      `feature_catalog.derived`.
+- [x] `generated_from.engine` → `rule-based-event-feature-alignment.stem-relative.v2`;
+      `features.json` `schema_version` → `"1.1"`; per-stem ranges recorded in
+      `normalization_rules.stem_relative_ranges`.
 
-**Test:** `pytest tests/test_event_features.py -q`; feature values on the four
-tracks separate known drop windows from non-drop windows by inspection.
+**Test:** `pytest tests/test_event_features.py -q` (8 passed; extended with
+stem-relative assertions). Cross-track separation of drop vs non-drop windows is
+provisional pending D1 / a corpus re-run.
 **Commit:** `1.1 stem-relative energy signal`
 
 ### 1.2 Drop detection rebuild

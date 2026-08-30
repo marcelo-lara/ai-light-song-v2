@@ -76,6 +76,34 @@ def _calculate_song_statistics(raw_rows: list[dict], numeric_keys: list[str]) ->
         }
     return statistics
 
+def _robust_range_scale(
+    values: list[float], low_pct: float = 5.0, high_pct: float = 95.0
+) -> tuple[list[float], dict]:
+    """Scale a series into [0, 1] against its own robust range (p5..p95).
+
+    v1.1 item 1.1: on a limited master the mix RMS barely moves, so per-song
+    z-score (which divides by a std dominated by the flat majority) still
+    compresses the drop. Anchoring to the 5th/95th percentile of the stem's own
+    distribution keeps the loud sections near 1.0 and the dropouts near 0.0,
+    which is the signal drop detection needs.
+    """
+    arr = np.array([float(v) for v in values], dtype=float)
+    if arr.size == 0:
+        return [], {"low": 0.0, "high": 0.0, "method": "robust-minmax-p5-p95"}
+    low = float(np.percentile(arr, low_pct))
+    high = float(np.percentile(arr, high_pct))
+    span = high - low
+    if span < 1e-9:
+        scaled = [0.0 for _ in arr]
+    else:
+        scaled = [float(min(1.0, max(0.0, (value - low) / span))) for value in arr]
+    return [round(value, 6) for value in scaled], {
+        "low": round(low, 6),
+        "high": round(high, 6),
+        "method": "robust-minmax-p5-p95",
+    }
+
+
 def _apply_zscore(value: float, mean: float, std_dev: float) -> float:
     if std_dev < 1e-9:
         return 0.0
