@@ -42,7 +42,7 @@ stall a whole run; everything independent of it still gets built.
 | 4.2 | Lean timeline and absolute `intensity` | R6 B4 | ☑ (provisional, D1) |
 | 5.1 | `song_facts.json` + `review_queue.json` | R7 | ☑ |
 | 5.2 | UI round-trip for the review queue | R7 | ☑ (provisional, no UI runtime) |
-| 5.3 | Benchmark profiles keyed on `form_family` | B6 | ☐ |
+| 5.3 | Benchmark profiles keyed on `form_family` | B6 | ☑ |
 | 6.1 | Full-corpus run | — | ☐ |
 | 6.2 | MCP contract-change note | — | ☐ |
 | 6.3 | Release close-out | — | ☐ |
@@ -419,14 +419,15 @@ save-only-on-explicit-save contract is enforced by the single PUT handler.
 
 ### 5.3 Benchmark profiles keyed on `form_family`
 
-- [ ] `src/analyzer/stages/event_benchmark.py:39` selects threshold profiles from
-      `genre_result["genres"][0]`. That label is near-constant across the corpus
-      (`electronic`/`dance` for 20 of 21) at 0.199–0.454 confidence, so profiles
-      bucket on noise.
-- [ ] Key profile selection on `form_family`, or on a human-confirmed genre.
-- [ ] Update `docs/human-curated/5.5.event_review_and_benchmark_story.md`.
+- [x] `_select_profile` in `event_benchmark.py` replaces the
+      `genre_result["genres"][0]` lookup: a human-confirmed `genre` fact wins,
+      else `form_family` maps to a profile (`dance_form → festival_edm`,
+      `song_form`/`hybrid → electro_pop`, else `default`). `genre_result` is no
+      longer read.
+- [x] `event_benchmark.json` records `selected_profile_basis`.
+- [x] Story 5.5 updated.
 
-**Test:** `pytest tests/test_event_benchmark.py -q`.
+**Test:** `tests/test_event_benchmark.py::SelectProfileTests` (3 cases).
 **Commit:** `5.3 benchmark profiles keyed on form_family`
 
 ---

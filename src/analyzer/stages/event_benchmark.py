@@ -4,12 +4,47 @@ import json
 from pathlib import Path
 from typing import Any
 
-from analyzer.io import write_json
+from analyzer.io import read_json, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
+from analyzer.stages.validation.form_drops import load_song_facts
 
 
 EVENT_TOLERANCE_SECONDS = 1.5
+
+# v1.1 item 5.3 (B6) — threshold profiles are selected from form_family, not the
+# near-constant inferred genre label. A human-confirmed genre still wins.
+_FORM_FAMILY_PROFILE = {
+    "dance_form": "festival_edm",
+    "song_form": "electro_pop",
+    "hybrid": "electro_pop",
+    "unknown": "default",
+}
+
+
+def _select_profile(paths: SongPaths, profiles: dict) -> tuple[str, str]:
+    """Return (profile_name, selection_basis)."""
+    available = profiles.get("profiles", {})
+    default = profiles["default_profile"]
+
+    facts = load_song_facts(paths)
+    genre_fact = facts.get("genre")
+    genre_value = genre_fact.get("value") if isinstance(genre_fact, dict) else genre_fact
+    if genre_value:
+        label = str(genre_value).casefold().replace(" ", "_")
+        if label in available:
+            return label, "human_confirmed_genre"
+
+    sections_path = paths.artifact("section_segmentation", "sections.json")
+    if sections_path.exists():
+        payload = read_json(sections_path)
+        family = payload.get("form_family") if isinstance(payload, dict) else None
+        family_value = family.get("value") if isinstance(family, dict) else family
+        mapped = _FORM_FAMILY_PROFILE.get(str(family_value))
+        if mapped and mapped in available:
+            return mapped, f"form_family:{family_value}"
+
+    return default, "default"
 
 
 def _repo_root() -> Path:
@@ -35,16 +70,13 @@ def benchmark_event_outputs(paths: SongPaths, merged_payload: dict, genre_result
     annotation_path = _annotation_path(paths.song_name)
     report_path = paths.artifact("validation", "event_benchmark.json")
     profiles = _load_threshold_profiles()
-    selected_profile = profiles["default_profile"]
-    if genre_result and genre_result.get("genres"):
-        label = str(genre_result["genres"][0]).casefold().replace(" ", "_")
-        if label in profiles.get("profiles", {}):
-            selected_profile = label
+    selected_profile, profile_basis = _select_profile(paths, profiles)
 
     base_report = {
         "schema_version": SCHEMA_VERSION,
         "song_name": paths.song_name,
         "selected_profile": selected_profile,
+        "selected_profile_basis": profile_basis,
         "annotation_file": str(annotation_path),
         "generated_from": {
             "machine_events_file": str(paths.artifact("event_inference", "events.machine.json")),

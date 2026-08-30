@@ -7,7 +7,48 @@ from pathlib import Path
 from unittest.mock import patch
 
 from analyzer.paths import SongPaths
-from analyzer.stages.event_benchmark import benchmark_event_outputs
+from analyzer.stages.event_benchmark import _load_threshold_profiles, _select_profile, benchmark_event_outputs
+
+
+class SelectProfileTests(unittest.TestCase):
+    def _paths(self, tmp):
+        root = Path(tmp)
+        return SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
+
+    def test_form_family_selects_profile_not_genre(self) -> None:
+        profiles = _load_threshold_profiles()
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._paths(tmp)
+            paths.artifact("section_segmentation").mkdir(parents=True)
+            paths.artifact("section_segmentation", "sections.json").write_text(
+                json.dumps({"form_family": {"value": "dance_form"}, "sections": []})
+            )
+            name, basis = _select_profile(paths, profiles)
+        self.assertEqual(name, "festival_edm")
+        self.assertEqual(basis, "form_family:dance_form")
+
+    def test_human_confirmed_genre_wins(self) -> None:
+        profiles = _load_threshold_profiles()
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._paths(tmp)
+            paths.artifact("section_segmentation").mkdir(parents=True)
+            paths.artifact("section_segmentation", "sections.json").write_text(
+                json.dumps({"form_family": {"value": "dance_form"}, "sections": []})
+            )
+            paths.reference("human").mkdir(parents=True)
+            paths.reference("human", "song_facts.json").write_text(
+                json.dumps({"facts": {"genre": {"value": "alt_rock"}}})
+            )
+            name, basis = _select_profile(paths, profiles)
+        self.assertEqual(name, "alt_rock")
+        self.assertEqual(basis, "human_confirmed_genre")
+
+    def test_default_when_nothing_available(self) -> None:
+        profiles = _load_threshold_profiles()
+        with tempfile.TemporaryDirectory() as tmp:
+            name, basis = _select_profile(self._paths(tmp), profiles)
+        self.assertEqual(name, profiles["default_profile"])
+        self.assertEqual(basis, "default")
 
 
 class EventBenchmarkTests(unittest.TestCase):
