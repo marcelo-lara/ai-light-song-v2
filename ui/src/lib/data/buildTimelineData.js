@@ -368,6 +368,7 @@ export function buildTimelineData(data) {
     identifierHints,
     machineEvents,
     mlEvents,
+    beatdropPlan: asArray(data?.beatdropPlan?.windows),
     drums,
     energyRows,
     accentCandidates,
