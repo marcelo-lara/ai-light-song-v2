@@ -27,7 +27,7 @@ stall a whole run; everything independent of it still gets built.
 
 | # | Item | Refs | State |
 | --- | --- | --- | --- |
-| 0.1 | Prune orphaned analysis directory | — | ☐ |
+| 0.1 | Prune orphaned analysis directory | — | ☑ |
 | 0.2 | Label the gold set | R7 | ☐ |
 | 0.3 | Scoring harness (`--compare form,drops`) | R3 R4 | ☐ |
 | 1.1 | Stem-relative energy signal | R4 | ☐ |
@@ -91,11 +91,10 @@ are provisional until 0.3 lands.
 
 ### 0.1 Prune orphaned analysis directory
 
-- [ ] Delete `data/analysis/test-song/` — it has no corresponding mp3 in
-      `data/songs/`.
-- [ ] Confirm no code or doc references it (`grep -rn "test-song" --include=*.py
-      --include=*.js --include=*.md .` — note `_test_song` is a different name
-      and must survive).
+- [x] Delete `data/analysis/test-song/` — it has no corresponding mp3 in
+      `data/songs/`. (`data/` is gitignored, so this is a filesystem-only prune.)
+- [x] Confirm no code or doc references it. The only `test-song` (non-`_test_song`)
+      match in the tree is this plan's own instruction line.
 
 **Test:** `pytest tests/ -q` passes.
 **Commit:** `0.1 prune orphaned analysis directory`
