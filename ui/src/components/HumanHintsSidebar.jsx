@@ -1,4 +1,5 @@
 import { formatDuration } from "../lib/utils.js";
+import ReviewQueuePanel from "./ReviewQueuePanel.jsx";
 
 export default function HumanHintsSidebar({
   selectedSong,
@@ -94,6 +95,8 @@ export default function HumanHintsSidebar({
           {saveState.status !== "idle" ? <p className={`save-status ${saveState.status}`}>{saveState.message}</p> : null}
         </div>
       )}
+
+      <ReviewQueuePanel selectedSong={selectedSong} />
     </aside>
   );
 }

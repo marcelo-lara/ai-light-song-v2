@@ -94,17 +94,56 @@ function normalizeHumanHintPayload(payload) {
 }
 
 function humanHintsFilePath(song) {
+  return referenceHumanFilePath(song, "human_hints.json");
+}
+
+// v1.1 Story 5.2 — song_facts.json is written only by an explicit human save,
+// the same rule Story 8.8 applies to human hints. The analyzer never writes it.
+function songFactsFilePath(song) {
+  return referenceHumanFilePath(song, "song_facts.json");
+}
+
+function referenceHumanFilePath(song, fileName) {
   const safeSong = path.basename(String(song || "").trim());
   if (!safeSong) {
     throw new Error("Song name is required.");
   }
   const songDir = path.join(analysisRoot, safeSong);
-  const filePath = path.join(songDir, "reference", "human", "human_hints.json");
+  const filePath = path.join(songDir, "reference", "human", fileName);
   const relativePath = path.relative(songDir, filePath);
   if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
     throw new Error("Song path is outside the reference data root.");
   }
   return filePath;
+}
+
+const SONG_FACT_KEYS = new Set(["genre", "form_family", "has_drop"]);
+
+function normalizeSongFactsPayload(payload) {
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Song facts payload must be a JSON object.");
+  }
+  const facts = payload.facts && typeof payload.facts === "object" ? payload.facts : {};
+  const normalizedFacts = {};
+  for (const [key, entry] of Object.entries(facts)) {
+    if (!SONG_FACT_KEYS.has(key)) {
+      continue;
+    }
+    const value = entry && typeof entry === "object" ? entry.value : entry;
+    if (value === undefined || value === null || value === "") {
+      continue;
+    }
+    normalizedFacts[key] = {
+      value,
+      provenance: "human-confirmed",
+      confirmed_on: new Date().toISOString().slice(0, 10),
+    };
+  }
+  return {
+    schema_version: "1.1",
+    song_name: String(payload.song_name || ""),
+    facts: normalizedFacts,
+  };
 }
 
 function parseByteRange(rangeHeader, fileSize) {
@@ -176,6 +215,23 @@ function dataMountPlugin() {
             response.statusCode = 400;
             response.setHeader("Content-Type", "text/plain; charset=utf-8");
             response.end(error instanceof Error ? error.message : "Unable to save human hints.");
+          }
+          return;
+        }
+        if (requestUrl && request.method === "PUT" && requestUrl.pathname.startsWith("/api/song-facts/")) {
+          try {
+            const song = decodeURIComponent(requestUrl.pathname.replace("/api/song-facts/", ""));
+            const payload = normalizeSongFactsPayload(await readJsonBody(request));
+            const filePath = songFactsFilePath(song);
+            await fsp.mkdir(path.dirname(filePath), { recursive: true });
+            await fsp.writeFile(filePath, JSON.stringify(payload, null, 2) + "\n", "utf-8");
+            response.statusCode = 200;
+            response.setHeader("Content-Type", "application/json; charset=utf-8");
+            response.end(JSON.stringify(payload));
+          } catch (error) {
+            response.statusCode = 400;
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            response.end(error instanceof Error ? error.message : "Unable to save song facts.");
           }
           return;
         }

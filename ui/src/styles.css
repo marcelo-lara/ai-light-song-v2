@@ -1039,3 +1039,35 @@ textarea {
     align-items: start;
   }
 }
+
+/* v1.1 Story 5.2 — machine review queue panel */
+.review-queue-panel {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.review-queue-list {
+  list-style: decimal;
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+.review-queue-item {
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+.review-queue-item.context-only {
+  opacity: 0.7;
+}
+.review-queue-field {
+  font-weight: 600;
+}
+.review-queue-reason,
+.review-queue-evidence,
+.review-queue-context-note,
+.review-queue-existing {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+.review-queue-existing {
+  color: #6ee7b7;
+}

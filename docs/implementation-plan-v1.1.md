@@ -41,7 +41,7 @@ stall a whole run; everything independent of it still gets built.
 | 4.1 | Composite events with phases | R5 | ☑ (provisional, D1) |
 | 4.2 | Lean timeline and absolute `intensity` | R6 B4 | ☑ (provisional, D1) |
 | 5.1 | `song_facts.json` + `review_queue.json` | R7 | ☑ |
-| 5.2 | UI round-trip for the review queue | R7 | ☐ |
+| 5.2 | UI round-trip for the review queue | R7 | ☑ (provisional, no UI runtime) |
 | 5.3 | Benchmark profiles keyed on `form_family` | B6 | ☐ |
 | 6.1 | Full-corpus run | — | ☐ |
 | 6.2 | MCP contract-change note | — | ☐ |
@@ -404,13 +404,17 @@ pre-existing failures.
 
 ### 5.2 UI round-trip for the review queue
 
-- [ ] Render `review_queue.json` in the debugger as answerable questions.
-- [ ] Save answers into `reference/human/song_facts.json` on explicit save only —
-      the same rule Story 8.8 already applies to human hints.
-- [ ] Write a new Story spec under `docs/web-ui/`.
+- [x] `ReviewQueuePanel.jsx` + `useReviewQueueEditor.js` render
+      `review_queue.json` as answerable questions inside the Human Hint editor
+      sidebar; whole-song questions get a candidate `<select>`.
+- [x] `PUT /api/song-facts/<song>` handler in `vite.config.js` +
+      `saveSongFactsFile` write `song_facts.json` with
+      `provenance: "human-confirmed"` on explicit Save only — same rule as 8.8.
+- [x] New Story 8.10. `npm run build` passes.
 
-**Test:** answering a question in the UI changes the next run's `form_family`,
-and the affected sections carry `provenance: "human-confirmed"`.
+**Test:** end-to-end (answer → save → re-run changes `form_family`) needs a
+running UI + pipeline; provisional (no UI runtime here). The
+save-only-on-explicit-save contract is enforced by the single PUT handler.
 **Commit:** `5.2 UI round-trip for the review queue`
 
 ### 5.3 Benchmark profiles keyed on `form_family`
