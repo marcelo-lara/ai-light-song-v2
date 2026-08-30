@@ -28,7 +28,7 @@ stall a whole run; everything independent of it still gets built.
 | # | Item | Refs | State |
 | --- | --- | --- | --- |
 | 0.1 | Prune orphaned analysis directory | — | ☑ |
-| 0.2 | Label the gold set | R7 | ☐ |
+| 0.2 | Label the gold set | R7 | ⚠ blocked → D1 |
 | 0.3 | Scoring harness (`--compare form,drops`) | R3 R4 | ☐ |
 | 1.1 | Stem-relative energy signal | R4 | ☐ |
 | 1.2 | Drop detection rebuild | R4 B2 | ☐ |
@@ -103,6 +103,10 @@ are provisional until 0.3 lands.
 
 No new tooling. The Story 8.8 human-hint editor already writes timed hints in
 the shape these labels take.
+
+> **Status: blocked — see D1.** This item requires a human listener and is
+> deferred out of the batch run. The remaining items are implemented and
+> committed with their acceptance marked provisional per "Evaluation set".
 
 - [ ] For each of the four tracks, label in `reference/human/human_hints.json`:
       every section boundary, its intended `form_role`, and the start/end of each
@@ -404,5 +408,37 @@ mkdir -p logs && nohup docker compose run --rm -T app \
 
 ## Decisions raised during implementation
 
-None yet. Add `D1`, `D2`… here when an item is genuinely blocked, then continue
-with the next independent item.
+### D1 — Gold-set ground truth requires a human listener (blocks 0.2)
+
+**Blocked item:** 0.2 "Label the gold set".
+
+**Why it is genuinely blocking rather than recommendation-resolvable.** The gold
+set is the ground truth every later acceptance criterion is scored against.
+Deriving section boundaries, `form_role`, and drop times for `Armin - Revolution`,
+`Hideaway - Kiesza` and `Titanium` from the existing analysis artifacts would
+score the pipeline's new inference against labels produced by the pipeline's old
+inference — the circularity that refinement item 7 explicitly rules out ("a guess
+parked in the truth folder… launders a weak inference into truth"). The
+constitution also restricts `reference/human/` to explicit human saves. A machine
+guess here is worse than no label.
+
+**Options.**
+- **(taken) Defer 0.2 to a human pass; implement everything else provisionally.**
+  Per the plan's own rule ("an item's acceptance is provisional… it may be
+  implemented and pushed, but it is not considered validated"), items 0.3 and 1.x–3.x
+  proceed as code + synthetic-fixture unit tests + story specs, committed per item,
+  with corpus scoring wired but not gated. When a human lands
+  `reference/human/{human_hints,song_facts}.json` for the three unlabelled tracks,
+  run `0.3`'s harness to validate retroactively.
+- Author draft labels now, tagged `provenance: "machine-derived-draft"`, and let a
+  human correct. Rejected: pollutes the truth set and the validation numbers
+  degrade silently, exactly per R7.
+
+**`_test_song`** already carries 11 timed human hints and is extended with
+`form_role` per section in item 2.2's commit (that is real human data, not a
+guess).
+
+**Expected `form_family` answers** (for 2.1 acceptance, once labelled):
+`_test_song` → `dance_form`; `Armin - Revolution` → `dance_form`;
+`Hideaway - Kiesza` → `hybrid` (vocal song-form with a dance drop);
+`Titanium - David Guetta ft Sia` → `hybrid`.
