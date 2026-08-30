@@ -18,8 +18,9 @@ from .utils import *
 # until nothing qualifies.
 DROP_EVIDENCE_PROFILE = {
     "name": "stem_relative_weighted_v1",
-    "decision_threshold": 0.42,
+    "decision_threshold": 0.5,
     "bass_reentry_lookback_beats": 8,
+    "min_spacing_seconds": 6.0,
     "weights": {
         "bass_reentry": 0.28,      # bass_stem_rel now, minus its recent floor
         "bass_stem_rel": 0.14,     # absolute stem-relative bass level
@@ -228,6 +229,16 @@ def generate_rule_candidates(
         # A drop raises energy — a pure dropout with high stem-rel is not a drop.
         if evidence["score"] >= decision_threshold and float(row["derived"].get("energy_delta", 0.0)) > 0.0:
             drop_anchor_rows.append(row)
+
+    # Non-maximum suppression: a drop is a rare structural moment, so keep only
+    # the highest-scoring anchor inside each min-spacing window.
+    min_spacing = float(DROP_EVIDENCE_PROFILE["min_spacing_seconds"])
+    drop_anchor_rows.sort(key=lambda r: evidence_by_beat[int(r["beat"])]["score"], reverse=True)
+    kept: list[dict] = []
+    for row in drop_anchor_rows:
+        if all(abs(float(row["start_time"]) - float(other["start_time"])) >= min_spacing for other in kept):
+            kept.append(row)
+    drop_anchor_rows = sorted(kept, key=lambda r: float(r["start_time"]))
 
     for rows in _merge_anchor_rows(drop_anchor_rows):
         peak_row = max(rows, key=lambda candidate: evidence_by_beat[int(candidate["beat"])]["score"])
