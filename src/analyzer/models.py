@@ -116,3 +116,5 @@ class SectionWindow:
     repetition_group: str | None = None
     variant_of: str | None = None
     similarity: float | None = None
+    # v1.1 item 3.1 — inspectable boundary/label evidence behind `confidence`.
+    confidence_terms: dict | None = None

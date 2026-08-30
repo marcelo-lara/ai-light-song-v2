@@ -10,7 +10,7 @@ from analyzer.stages._stem_activity import estimate_stem_activity_by_beat
 from analyzer.stages.validation.sections import _validate_sections
 from analyzer.stages.validation.form_drops import load_song_facts
 
-from .form import assign_form_roles, compute_repetition_groups, infer_form_family
+from .form import assign_form_roles, boundary_confidence, compute_repetition_groups, infer_form_family
 
 from .utils import (
     _uses_reference_timing, _find_nearest_onset_peak, _snap_to_bar_boundary,
@@ -45,7 +45,7 @@ def _inferred_section_payload(paths: SongPaths, sections: list[SectionWindow], m
             "beats_file": str(paths.artifact("essentia", "beats.json")),
             "harmonic_layer_file": str(paths.artifact("layer_a_harmonic.json")),
             "energy_features_file": str(paths.artifact("energy_summary", "features.json")),
-            "engine": "deterministic.section_segmentation.v2",
+            "engine": "deterministic.section_segmentation.v3",
             "snapping_rule": "coarse section starts snap to the nearest bar boundary; inferred timing may refine those starts to nearby beat boundaries when novelty contrast is materially stronger, while reference-promoted timing keeps section starts on canonical bar anchors",
             "label_strategy": "context-aware musical-state section_character labels from section-scale energy, motion, repetition, and contrast cues",
             "annotation_strategy": "structural change windows are primary; section_character labels are auxiliary lighting metadata",
@@ -244,9 +244,23 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
         end = float(section["end_s"])
         if index + 1 < len(grouped_sections):
             end = section_starts[index + 1]
-        confidence = max(0.2, min(0.99, 0.35 + (section["energy"] * 0.25) + (repetition * 0.25) + (section["onset"] * 0.15)))
         role = role_assignments[index]
         group = repetition_groups[index]
+        # v1.1 item 3.1 — confidence is boundary + label evidence only.
+        if index == 0:
+            confidence = 0.9  # the first boundary is fixed at 0.0 and trivially correct
+            confidence_terms = {"reason": "first section start is fixed at 0.0"}
+        else:
+            bc = boundary_confidence(
+                beat_rows,
+                bar_starts,
+                float(start),
+                onset_anchored=section_onset_anchored[index],
+                form_role_margin=role["form_role_margin"],
+                beat_interval_s=beat_interval_s,
+            )
+            confidence = bc["value"]
+            confidence_terms = bc["terms"]
         variant_of_index = group["variant_of"]
         variant_of_id = f"section-{variant_of_index + 1:03d}" if variant_of_index is not None else None
         sections.append(
@@ -265,6 +279,7 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
                 repetition_group=group["repetition_group"],
                 variant_of=variant_of_id,
                 similarity=group["similarity"],
+                confidence_terms=confidence_terms,
             )
         )
 

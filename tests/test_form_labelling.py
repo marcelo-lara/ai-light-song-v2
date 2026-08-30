@@ -8,6 +8,7 @@ import numpy as np
 from analyzer.stages.sections.form import (
     FORM_FAMILY_ROLES,
     assign_form_roles,
+    boundary_confidence,
     compute_repetition_groups,
     infer_form_family,
 )
@@ -126,6 +127,50 @@ class FormRoleTests(unittest.TestCase):
         roles = [r["form_role"] for r in assign_form_roles(sections, reps, "song_form")]
         self.assertEqual(roles[1], "verse")
         self.assertEqual(roles[2], "chorus")
+
+
+class BoundaryConfidenceTests(unittest.TestCase):
+    def _beats(self, n, *, loud, onset, flux, chord):
+        rows = []
+        for i in range(n):
+            hist = np.zeros(12)
+            hist[chord % 12] = 1.0
+            rows.append({
+                "time": i * 0.5,
+                "vector": np.concatenate([np.array([loud, onset, flux]), hist]),
+            })
+        return rows
+
+    def test_sharp_agreeing_boundary_scores_higher_than_smooth_one(self) -> None:
+        # Strong contrast: loud/onset/flux and chord all change at the boundary.
+        left = self._beats(6, loud=0.2, onset=0.1, flux=0.1, chord=0)
+        right = self._beats(6, loud=0.9, onset=0.8, flux=0.7, chord=7)
+        for i, row in enumerate(right):
+            row["time"] = 3.0 + i * 0.5
+        beat_rows = left + right
+        bar_starts = [0.0, 2.0, 3.0, 4.0]
+        sharp = boundary_confidence(beat_rows, bar_starts, 3.0, onset_anchored=True,
+                                    form_role_margin=0.35, beat_interval_s=0.5)
+
+        flat = left + self._beats(6, loud=0.22, onset=0.12, flux=0.12, chord=0)
+        for i, row in enumerate(flat[6:]):
+            row["time"] = 3.0 + i * 0.5
+        smooth = boundary_confidence(flat, bar_starts, 3.0, onset_anchored=False,
+                                     form_role_margin=0.0, beat_interval_s=0.5)
+
+        self.assertGreater(sharp["value"], smooth["value"])
+        self.assertGreater(sharp["value"], 0.6)
+        self.assertLess(smooth["value"], 0.4)
+        self.assertIn("channel_strengths", sharp["terms"])
+
+    def test_confidence_can_span_full_range(self) -> None:
+        left = self._beats(6, loud=0.2, onset=0.1, flux=0.1, chord=0)
+        ident = self._beats(6, loud=0.2, onset=0.1, flux=0.1, chord=0)
+        for i, row in enumerate(ident):
+            row["time"] = 3.0 + i * 0.5
+        result = boundary_confidence(left + ident, [0.0, 3.0], 3.05,
+                                     onset_anchored=False, form_role_margin=0.0, beat_interval_s=0.5)
+        self.assertLess(result["value"], 0.25)
 
 
 if __name__ == "__main__":

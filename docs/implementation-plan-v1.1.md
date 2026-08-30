@@ -36,7 +36,7 @@ stall a whole run; everything independent of it still gets built.
 | 2.1 | `form_family` inference | R1a | ☑ (provisional, D1) |
 | 2.2 | `form_role` labelling | R1 | ☑ (provisional, D1) |
 | 2.3 | Section repetition identity | R2 | ☑ (provisional, D1) |
-| 3.1 | Honest boundary confidence | R3 B1 | ☐ |
+| 3.1 | Honest boundary confidence | R3 B1 | ☑ (provisional, D1) |
 | 3.2 | Join section lists on `section_id` | B5 | ☐ |
 | 4.1 | Composite events with phases | R5 | ☐ |
 | 4.2 | Lean timeline and absolute `intensity` | R6 B4 | ☐ |
@@ -295,20 +295,19 @@ together, choruses group together, distinct groups; varied repeat records
 
 ### 3.1 Honest boundary confidence
 
-- [ ] Replace `src/analyzer/stages/sections/segmenter.py:228` — currently an
-      affine function of energy, repetition and onset density with no term for
-      boundary certainty.
-- [ ] Compose confidence from boundary and label evidence only: novelty-peak
-      sharpness, agreement between independent detectors, transient alignment,
-      bar-grid alignment, and the best-vs-second-best `form_role` margin.
-- [ ] Remove loudness, repetition count and onset density as direct terms.
-- [ ] Allow the full range — a genuinely ambiguous boundary must be able to
-      report ~0.25.
-- [ ] Update `docs/audio-inference/3.2.structural_integrity_audit_story.md`.
+- [x] `boundary_confidence` in `sections/form.py` replaces the affine formula.
+- [x] Terms: mean per-channel (energy/timbral/harmonic) boundary strength,
+      three-channel detector agreement, novelty-peak sharpness vs ±2-beat
+      neighbours, transient alignment, bar-grid alignment, `form_role` margin —
+      weights sum to 1.0. Recorded per section as `confidence_terms`.
+- [x] Section loudness, repetition count and onset level removed as terms.
+- [x] Full `[0, 1]` range reachable — `test_confidence_can_span_full_range`
+      shows an identical-material boundary at ~0.05.
+- [x] Story 3.2 updated. Engine → `deterministic.section_segmentation.v3`.
 
-**Test:** the 0.3 calibration report shows confidence tracking observed accuracy
-across buckets, and values spanning a wide range rather than clustering in
-0.54–0.86 as they do today.
+**Test:** `tests/test_form_labelling.py::BoundaryConfidenceTests` (sharp+agreeing
+boundary > smooth one; full range). The 0.3 calibration report across the corpus
+is provisional under D1.
 **Commit:** `3.1 honest boundary confidence`
 
 ### 3.2 Join section lists on `section_id`

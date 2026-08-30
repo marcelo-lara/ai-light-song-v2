@@ -18,7 +18,14 @@ from statistics import mean, pstdev
 
 import numpy as np
 
-from .utils import _compute_section_repetition
+from .utils import LOCAL_BOUNDARY_CONTEXT_BEATS, _compute_section_repetition, _nearest_beat_index
+
+# beat_rows["vector"] layout: [loudness, onset, flux, *chord_histogram(12)]
+_CHANNELS = {
+    "energy": slice(0, 1),
+    "timbral": slice(1, 3),
+    "harmonic": slice(3, 15),
+}
 
 # Full fused vocabulary. Which values are admissible is gated per song by
 # form_family (see FORM_FAMILY_ROLES).
@@ -36,6 +43,91 @@ FORM_FAMILY_ROLES: dict[str, set[str]] = {
 
 # Below this inferred confidence a human-confirmed form_family breaks the tie.
 FORM_FAMILY_TIE_CONFIDENCE = 0.55
+
+
+def _channel_boundary_strength(beat_rows: list[dict], boundary_index: int, channel: slice) -> float:
+    """Cosine distance between the mean feature vector on each side of the
+    boundary, restricted to one feature channel. 0 = identical, 1 = orthogonal."""
+    left = beat_rows[max(0, boundary_index - LOCAL_BOUNDARY_CONTEXT_BEATS):boundary_index]
+    right = beat_rows[boundary_index:boundary_index + LOCAL_BOUNDARY_CONTEXT_BEATS]
+    if not left or not right:
+        return 0.0
+    left_vec = np.mean(np.vstack([np.asarray(row["vector"])[channel] for row in left]), axis=0)
+    right_vec = np.mean(np.vstack([np.asarray(row["vector"])[channel] for row in right]), axis=0)
+    left_norm = float(np.linalg.norm(left_vec))
+    right_norm = float(np.linalg.norm(right_vec))
+    if left_norm < 1e-9 or right_norm < 1e-9:
+        # A channel that goes silent on one side is itself a strong boundary.
+        return 1.0 if (left_norm < 1e-9) != (right_norm < 1e-9) else 0.0
+    cosine = float((left_vec @ right_vec) / (left_norm * right_norm))
+    return max(0.0, min(1.0, 1.0 - cosine))
+
+
+def boundary_confidence(
+    beat_rows: list[dict],
+    bar_starts: list[float],
+    boundary_time: float,
+    *,
+    onset_anchored: bool,
+    form_role_margin: float | None,
+    beat_interval_s: float,
+) -> dict:
+    """v1.1 item 3.1 — confidence in a section boundary and its label, composed
+    ONLY of boundary/label evidence. Loudness, repetition count and onset
+    *level* are deliberately excluded; the value is free to span [0, 1].
+    """
+    boundary_index = _nearest_beat_index(boundary_time, beat_rows)
+    if boundary_index is None:
+        return {"value": 0.25, "terms": {"reason": "no beat grid"}}
+
+    strengths = {name: _channel_boundary_strength(beat_rows, boundary_index, sl) for name, sl in _CHANNELS.items()}
+    mean_strength = float(np.mean(list(strengths.values())))
+    # Detector agreement: high when the three channels report a similar strength.
+    spread = float(np.std(list(strengths.values())))
+    agreement = mean_strength * max(0.0, 1.0 - spread / 0.35)
+
+    # Novelty-peak sharpness: is the boundary a local maximum of total contrast?
+    def _total(idx: int) -> float:
+        return sum(_channel_boundary_strength(beat_rows, idx, sl) for sl in _CHANNELS.values())
+    here = _total(boundary_index)
+    neighbours = [_total(boundary_index + offset) for offset in (-2, -1, 1, 2)
+                  if 0 <= boundary_index + offset < len(beat_rows)]
+    best_neighbour = max(neighbours) if neighbours else 0.0
+    sharpness = max(0.0, min(1.0, (here - best_neighbour) / max(here, 1e-6) + 0.5)) if here > 0 else 0.0
+
+    # Transient alignment.
+    transient = 1.0 if onset_anchored else 0.35
+
+    # Bar-grid alignment.
+    nearest_bar_gap = min((abs(boundary_time - bar) for bar in bar_starts), default=beat_interval_s)
+    bar_grid = max(0.0, 1.0 - nearest_bar_gap / max(beat_interval_s, 1e-6))
+
+    # form_role margin (label certainty).
+    role_margin = max(0.0, min(1.0, (form_role_margin or 0.0) / 0.4))
+
+    # All sub-terms are in [0, 1]; weights sum to 1.0 so the value can reach
+    # either end of the range.
+    value = (
+        0.34 * min(1.0, mean_strength / 0.4)
+        + 0.24 * min(1.0, agreement / 0.4)
+        + 0.16 * sharpness
+        + 0.13 * transient
+        + 0.08 * bar_grid
+        + 0.05 * role_margin
+    )
+    value = max(0.0, min(1.0, value))
+    return {
+        "value": round(value, 6),
+        "terms": {
+            "channel_strengths": {k: round(v, 6) for k, v in strengths.items()},
+            "mean_strength": round(mean_strength, 6),
+            "detector_agreement": round(agreement, 6),
+            "novelty_sharpness": round(sharpness, 6),
+            "transient_aligned": onset_anchored,
+            "bar_grid_alignment": round(bar_grid, 6),
+            "form_role_margin": round(role_margin, 6),
+        },
+    }
 
 
 def _scalars(grouped_sections: list[dict], key: str) -> list[float]:
