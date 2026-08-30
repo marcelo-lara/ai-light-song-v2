@@ -1,5 +1,9 @@
 # Documentation Map
 
+**Active release:** [product-refinement-v1.1.md](product-refinement-v1.1.md)
+(worklist and version convention) →
+[implementation-plan-v1.1.md](implementation-plan-v1.1.md) (ordered work).
+
 Story specs are grouped by the *kind of work* they describe, so the music-feature
 inference layer can be maintained and improved in isolation.
 

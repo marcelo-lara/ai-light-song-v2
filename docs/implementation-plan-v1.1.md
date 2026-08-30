@@ -1,0 +1,409 @@
+# Implementation Plan — v1.1
+
+Turns [product-refinement-v1.1.md](product-refinement-v1.1.md) into ordered,
+validated work. Item numbers here are plan items; they reference the refinement
+doc's items (`R1`–`R7`) and bugs (`B1`–`B6`) rather than renumbering them.
+
+## How this plan is worked
+
+**Validate each item, then push it on its own.** Work one plan item at a time.
+When an item is complete, run its tests in the container as the item specifies;
+only if they pass, tick its checkboxes, then commit and push that item by itself
+before starting the next. Name the commit after the plan item as this plan writes
+it — for example ``1.2 drop detection rebuild``. One commit per item, never a
+single batch commit at the end: a later failure then cannot strand the validated
+work in front of it, and the history reads as this plan's own sequence.
+
+**Use the recommendation; only a genuinely blocking decision stops an item.** An
+open question that surfaces mid-implementation is resolved by adopting the best
+recommendation and continuing — do not idle waiting to ask. The exception is a
+decision where proceeding under any assumption would make the work wrong or
+wasted. In that case write the decision and its options into this plan as a new
+`D` item, then **continue with the next item**, skipping only those that
+genuinely depend on the blocked one. A single unresolved question must never
+stall a whole run; everything independent of it still gets built.
+
+## Status
+
+| # | Item | Refs | State |
+| --- | --- | --- | --- |
+| 0.1 | Prune orphaned analysis directory | — | ☐ |
+| 0.2 | Label the gold set | R7 | ☐ |
+| 0.3 | Scoring harness (`--compare form,drops`) | R3 R4 | ☐ |
+| 1.1 | Stem-relative energy signal | R4 | ☐ |
+| 1.2 | Drop detection rebuild | R4 B2 | ☐ |
+| 1.3 | `fake_drop` symmetry | R4 B3 | ☐ |
+| 2.1 | `form_family` inference | R1a | ☐ |
+| 2.2 | `form_role` labelling | R1 | ☐ |
+| 2.3 | Section repetition identity | R2 | ☐ |
+| 3.1 | Honest boundary confidence | R3 B1 | ☐ |
+| 3.2 | Join section lists on `section_id` | B5 | ☐ |
+| 4.1 | Composite events with phases | R5 | ☐ |
+| 4.2 | Lean timeline and absolute `intensity` | R6 B4 | ☐ |
+| 5.1 | `song_facts.json` + `review_queue.json` | R7 | ☐ |
+| 5.2 | UI round-trip for the review queue | R7 | ☐ |
+| 5.3 | Benchmark profiles keyed on `form_family` | B6 | ☐ |
+| 6.1 | Full-corpus run | — | ☐ |
+| 6.2 | MCP contract-change note | — | ☐ |
+| 6.3 | Release close-out | — | ☐ |
+
+## Test set
+
+Four tracks, all with unambiguous drops:
+
+```
+_test_song                        # 58 s, already labelled, fast regression fixture
+Armin - Revolution                # 194 s, zero drops currently detected
+Hideaway - Kiesza                 # genre mis-tagged ambient @ 0.22
+Titanium - David Guetta ft Sia    # hybrid: vocal verse/chorus + a drop
+```
+
+**During an item**, iterate on `_test_song` only — it is 58 s and already
+labelled:
+
+```bash
+docker compose run --rm app ./analyze \
+  --song "/data/songs/_test_song.mp3" --stage <changed-stage>
+```
+
+**To validate an item**, run all four and score them:
+
+```bash
+for s in "_test_song" "Armin - Revolution" "Hideaway - Kiesza" "Titanium - David Guetta ft Sia"; do
+  docker compose run --rm app ./analyze --song "/data/songs/$s.mp3" --compare form,drops
+done
+```
+
+Unit tests, always, before any commit:
+
+```bash
+docker compose run --rm app python -m pytest tests/ -q
+```
+
+Full-corpus runs are the release gate (item 6.1), not a per-item step.
+
+---
+
+## Phase 0 — Gold set and scoring harness
+
+Nothing downstream can be validated until this phase is done. Items 1.x onward
+are provisional until 0.3 lands.
+
+### 0.1 Prune orphaned analysis directory
+
+- [ ] Delete `data/analysis/test-song/` — it has no corresponding mp3 in
+      `data/songs/`.
+- [ ] Confirm no code or doc references it (`grep -rn "test-song" --include=*.py
+      --include=*.js --include=*.md .` — note `_test_song` is a different name
+      and must survive).
+
+**Test:** `pytest tests/ -q` passes.
+**Commit:** `0.1 prune orphaned analysis directory`
+
+### 0.2 Label the gold set
+
+No new tooling. The Story 8.8 human-hint editor already writes timed hints in
+the shape these labels take.
+
+- [ ] For each of the four tracks, label in `reference/human/human_hints.json`:
+      every section boundary, its intended `form_role`, and the start/end of each
+      drop. `_test_song` is already labelled — extend it with `form_role` per
+      section, do not re-time what is there.
+- [ ] Hand-author `reference/human/song_facts.json` for each of the four with
+      `genre` and `form_family`, each carrying
+      `provenance: "human-confirmed"`.
+- [ ] Record in the plan which track is which `form_family`, so 2.1's acceptance
+      has an expected answer.
+
+**Test:** all four files parse; every labelled boundary falls inside the song
+duration from `info.json`.
+**Commit:** `0.2 label the gold set`
+
+### 0.3 Scoring harness
+
+- [ ] Add `form` and `drops` compare targets (`src/analyzer/cli.py:37` default
+      list and `supported_targets`), with validators under
+      `src/analyzer/stages/validation/`.
+- [ ] `drops`: precision/recall of detected drops against human drop hints, with
+      an onset tolerance (start at ±1.0 s, on a bar-length scale).
+- [ ] `form`: section-boundary F-measure at ±2.0 s (reuse
+      `--tolerance-seconds`), `form_role` accuracy over matched boundaries, and
+      `form_family` exact match.
+- [ ] Confidence calibration: bucket sections by predicted confidence and report
+      observed accuracy per bucket. This is the only way item 3.1 can be shown to
+      have worked.
+- [ ] Write results into `artifacts/validation/` alongside the existing reports.
+- [ ] Add `tests/test_validation_form_drops.py` with synthetic fixtures.
+
+**Test:** harness runs on all four tracks and reports a baseline. Record that
+baseline in this plan — it is what every later item is measured against.
+**Commit:** `0.3 scoring harness`
+
+---
+
+## Phase 1 — Drops
+
+The largest failure and the fastest visible win. Ordered before form because
+2.1 reuses 1.1's signal.
+
+### 1.1 Stem-relative energy signal
+
+- [ ] Add a stem-relative activation feature: per-band and per-stem energy
+      normalised against the song's own stem range, not mix RMS. On
+      `Armin - Revolution` the bass stem varies ~30× across sections while mix
+      RMS varies ~2.7×, so mix RMS cannot separate drop from non-drop on a
+      limited master.
+- [ ] Expose bass activation, spectral flux and onset density on this scale in
+      `event_inference/features.json`.
+- [ ] Bump that artifact's `generated_from.engine` version; `schema_version` →
+      `"1.1"` if the shape changes.
+
+**Test:** `pytest tests/test_event_features.py -q`; feature values on the four
+tracks separate known drop windows from non-drop windows by inspection.
+**Commit:** `1.1 stem-relative energy signal`
+
+### 1.2 Drop detection rebuild
+
+- [ ] Replace the six-way conjunction at
+      `src/analyzer/stages/event_rules/generator.py:175-190` with accumulated
+      weighted evidence scored against a single decision threshold, so one weak
+      feature no longer vetoes an unambiguous drop.
+- [ ] Remove the self-adaptive thresholds derived from the song's own mean and
+      stdev (`drop_energy_delta`, `drop_bass_ratio_min`, `drop_flux_ratio_min` at
+      `generator.py:82-87`) — on a track that is mostly drops they raise the bar
+      until nothing qualifies.
+- [ ] Keep per-drop evidence payloads: every accepted drop records which features
+      contributed and their weights.
+- [ ] Tune the decision threshold against the 0.3 baseline, not by eye.
+
+**Test:** `pytest tests/test_event_rules.py -q`; `--compare drops` on all four —
+each reports at least one drop, and drop times fall within tolerance of the human
+labels.
+**Commit:** `1.2 drop detection rebuild`
+
+### 1.3 `fake_drop` symmetry
+
+- [ ] Rewrite the `fake_drop` condition at `generator.py:286`. It currently
+      accepts on a disjunction whose second branch fires on *low* harmonic
+      tension, making it strictly easier to satisfy than `drop`.
+- [ ] Require positive evidence of a withheld release: a build present, and the
+      expected release absent.
+
+**Test:** `pytest tests/test_event_rules.py -q`; across the four tracks
+`fake_drop` no longer outnumbers `drop`.
+**Commit:** `1.3 fake_drop symmetry`
+
+---
+
+## Phase 2 — Form
+
+### 2.1 `form_family` inference
+
+- [ ] Infer song-level `form_family` (`dance_form` / `song_form` / `hybrid` /
+      `unknown`) from audio evidence only: tempo stability, four-on-the-floor
+      kick pattern, and bass-dropout → re-entry transients from 1.1.
+- [ ] Emit it with its own confidence into
+      `artifacts/section_segmentation/sections.json`.
+- [ ] A human-confirmed `form_family` in `song_facts.json` breaks ties when the
+      measured evidence is close; it never overrides a confident measurement.
+      Record `provenance` when it is used.
+- [ ] The inferred genre label is **not** an input. Add a regression test
+      asserting that.
+
+**Test:** `pytest tests/test_sections_v2.py -q`; `--compare form` — `form_family`
+matches the hand-authored value on all four (expect `hybrid` for `Titanium`).
+**Commit:** `2.1 form_family inference`
+
+### 2.2 `form_role` labelling
+
+- [ ] Add the `form_role` vocabulary and assign it by deterministic rules, gated
+      by `form_family`. `unknown` is a first-class output — emit it rather than
+      guessing.
+- [ ] Keep `energy_character` unchanged as secondary metadata.
+- [ ] Rebuild the top-level `sections.json` `label` from `form_role`. Confidence
+      stays a separate numeric field and is not folded into the label string.
+- [ ] Bump `section_segmentation` engine to `.v2` and `schema_version` → `"1.1"`.
+- [ ] Update the Story spec: `docs/audio-inference/3.1.section_segmentation_story.md`.
+
+**Test:** `--compare form` — `form_role` accuracy over matched boundaries beats
+the 0.3 baseline; no section carries a role outside its `form_family`.
+**Commit:** `2.2 form_role labelling`
+
+### 2.3 Section repetition identity
+
+- [ ] Add `repetition_group`, `variant_of` and `similarity`, derived from
+      self-similarity over combined harmonic and timbral features — never from
+      the label.
+- [ ] Stop using `energy_character` equality as the reusable-look signal.
+- [ ] Update `docs/audio-inference/3.1.section_segmentation_story.md`.
+
+**Test:** on `Titanium`, choruses group together and verses group together, as
+distinct groups. Note the coverage gap: this is the only track in the gold set
+with clear verse/chorus form.
+**Commit:** `2.3 section repetition identity`
+
+---
+
+## Phase 3 — Confidence
+
+### 3.1 Honest boundary confidence
+
+- [ ] Replace `src/analyzer/stages/sections/segmenter.py:228` — currently an
+      affine function of energy, repetition and onset density with no term for
+      boundary certainty.
+- [ ] Compose confidence from boundary and label evidence only: novelty-peak
+      sharpness, agreement between independent detectors, transient alignment,
+      bar-grid alignment, and the best-vs-second-best `form_role` margin.
+- [ ] Remove loudness, repetition count and onset density as direct terms.
+- [ ] Allow the full range — a genuinely ambiguous boundary must be able to
+      report ~0.25.
+- [ ] Update `docs/audio-inference/3.2.structural_integrity_audit_story.md`.
+
+**Test:** the 0.3 calibration report shows confidence tracking observed accuracy
+across buckets, and values spanning a wide range rather than clustering in
+0.54–0.86 as they do today.
+**Commit:** `3.1 honest boundary confidence`
+
+### 3.2 Join section lists on `section_id`
+
+- [ ] Stop matching the top-level `sections.json` to the segmentation list by
+      array index. Carry `section_id` in both and join on it.
+- [ ] Fail explicitly on an unresolvable id rather than silently misaligning.
+- [ ] Update `docs/web-ui/7.2.build_ui_data_story.md`.
+
+**Test:** `pytest tests/test_validation.py -q`; a deliberately reordered list
+fails loudly instead of misaligning.
+**Commit:** `3.2 join section lists on section_id`
+
+---
+
+## Phase 4 — Events
+
+### 4.1 Composite events with phases
+
+- [ ] Add composite events: overall `start_time`/`end_time`/`confidence`/
+      `intensity` plus ordered `phases[]` (`approach`, `build`, `tension`,
+      `impact`, `release`, `recovery`).
+- [ ] Phase members are no longer emitted as independent top-level events.
+- [ ] A build that never resolves becomes a composite with no `release` phase —
+      not a standalone phase event.
+- [ ] Update `song_event_schema.json` and `event_vocabulary.json`;
+      `schema_version` → `"1.1"`.
+- [ ] Leave `beatdrop_visual_plan.json` on the flattened view — v1.2.
+- [ ] Update `docs/audio-inference/5.1.event_vocabulary_and_schema_story.md` and
+      `5.6.event_timeline_export_story.md`.
+
+**Test:** `pytest tests/test_event_contracts.py tests/test_event_timeline.py -q`;
+on all four, each detected drop is one entry whose phases cover its span
+contiguously.
+**Commit:** `4.1 composite events with phases`
+
+### 4.2 Lean timeline and absolute `intensity`
+
+- [ ] Remove `layer_add` / `layer_remove` as timeline events — they are ~50–60%
+      of all events at a median 0.46 s. Summarise texture change per section
+      instead (which stems enter and leave, and where).
+- [ ] Rescale `intensity` onto an **absolute** scale. It currently sits at
+      exactly 1.0 for a majority of events, collapsing one of only five unscoped
+      projected fields into a constant. Per-song normalisation is explicitly not
+      used — the consumer reads it as a cross-song magnitude.
+- [ ] Rewrite event `summary` text to describe the musical moment rather than
+      restate the rule that fired.
+
+**Test:** event counts per song fall substantially on all four; `intensity` is
+distributed across its range rather than piled at the ceiling.
+**Commit:** `4.2 lean timeline and absolute intensity`
+
+---
+
+## Phase 5 — Human loop
+
+Sized for the 17 tracks outside the gold set, where hand-labelling does not
+scale.
+
+### 5.1 `song_facts.json` + `review_queue.json`
+
+- [ ] Read `reference/human/song_facts.json` as an optional input (already
+      consumed by 2.1; formalise the contract and schema here).
+- [ ] Emit `artifacts/validation/review_queue.json`: the field in question,
+      competing candidates with scores, timestamps of the ambiguous evidence, and
+      why confidence was low — ranked, highest-leverage first.
+- [ ] Include the `form_family` / genre disagreement flag from R1a.
+- [ ] The analyzer must never write into `reference/`. Add a test asserting that.
+- [ ] Write a new Story spec for this contract under `docs/audio-inference/`.
+
+**Test:** `pytest -q`; a run on an ambiguous track emits a ranked queue whose top
+entry is answerable in one choice; `reference/` is unmodified after a full run.
+**Commit:** `5.1 song_facts and review_queue`
+
+### 5.2 UI round-trip for the review queue
+
+- [ ] Render `review_queue.json` in the debugger as answerable questions.
+- [ ] Save answers into `reference/human/song_facts.json` on explicit save only —
+      the same rule Story 8.8 already applies to human hints.
+- [ ] Write a new Story spec under `docs/web-ui/`.
+
+**Test:** answering a question in the UI changes the next run's `form_family`,
+and the affected sections carry `provenance: "human-confirmed"`.
+**Commit:** `5.2 UI round-trip for the review queue`
+
+### 5.3 Benchmark profiles keyed on `form_family`
+
+- [ ] `src/analyzer/stages/event_benchmark.py:39` selects threshold profiles from
+      `genre_result["genres"][0]`. That label is near-constant across the corpus
+      (`electronic`/`dance` for 20 of 21) at 0.199–0.454 confidence, so profiles
+      bucket on noise.
+- [ ] Key profile selection on `form_family`, or on a human-confirmed genre.
+- [ ] Update `docs/human-curated/5.5.event_review_and_benchmark_story.md`.
+
+**Test:** `pytest tests/test_event_benchmark.py -q`.
+**Commit:** `5.3 benchmark profiles keyed on form_family`
+
+---
+
+## Phase 6 — Release
+
+### 6.1 Full-corpus run
+
+- [ ] Run the full pipeline over all songs and confirm no stage fails.
+- [ ] Confirm determinism: run one song twice, compare artifacts byte-for-byte.
+- [ ] Record drop counts and confidence distributions across the corpus, for
+      comparison against the pre-v1.1 figures in the refinement doc.
+
+```bash
+mkdir -p logs && nohup docker compose run --rm -T app \
+  ./analyze --all-songs --device cuda \
+  > "logs/v1.1-validation-$(date +%F_%H-%M-%S).log" 2>&1 < /dev/null & echo $!
+```
+
+**Commit:** `6.1 full-corpus run`
+
+### 6.2 MCP contract-change note
+
+- [ ] Write `docs/source references/contract-change-v1.1.md`: exactly what
+      changed in the top-level files — `form_role`/`form_family`,
+      `repetition_group`, composite `phases[]`, the removal of `layer_add`/
+      `layer_remove`, the new `intensity` scale, and `section_id` as the join key.
+- [ ] The MCP server is not modified in this release; this note is the handover.
+
+**Commit:** `6.2 MCP contract-change note`
+
+### 6.3 Release close-out
+
+- [ ] Confirm every changed artifact carries the right `schema_version` and
+      engine version per the refinement doc's convention.
+- [ ] Confirm every touched Story spec matches the implementation.
+- [ ] Update `docs/data_folder_reference.md` and `docs/Implementation_Guide.md`
+      for the new files and fields.
+- [ ] Update the root `README.md` status line to point at v1.1 as released.
+- [ ] Archive this plan and `product-refinement-v1.1.md`.
+- [ ] Tag `v1.1`.
+
+**Commit:** `6.3 release close-out`
+
+---
+
+## Decisions raised during implementation
+
+None yet. Add `D1`, `D2`… here when an item is genuinely blocked, then continue
+with the next independent item.
