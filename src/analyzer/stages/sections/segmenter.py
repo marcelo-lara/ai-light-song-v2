@@ -235,6 +235,8 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
 
     # v1.1 item 2.2 — form_role is the primary label, gated by form_family.
     role_assignments = assign_form_roles(grouped_sections, repetitions, form_family["value"])
+    # v1.1 item 2.3 — repetition identity from material self-similarity, not label.
+    repetition_groups = compute_repetition_groups(grouped_sections)
 
     sections = []
     for index, (section, label, repetition) in enumerate(zip(grouped_sections, labels, repetitions)):
@@ -244,6 +246,9 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
             end = section_starts[index + 1]
         confidence = max(0.2, min(0.99, 0.35 + (section["energy"] * 0.25) + (repetition * 0.25) + (section["onset"] * 0.15)))
         role = role_assignments[index]
+        group = repetition_groups[index]
+        variant_of_index = group["variant_of"]
+        variant_of_id = f"section-{variant_of_index + 1:03d}" if variant_of_index is not None else None
         sections.append(
             SectionWindow(
                 section_id=f"section-{index + 1:03d}",
@@ -257,6 +262,9 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
                 form_role_confidence=role["form_role_confidence"],
                 form_role_margin=role["form_role_margin"],
                 energy_character=label,
+                repetition_group=group["repetition_group"],
+                variant_of=variant_of_id,
+                similarity=group["similarity"],
             )
         )
 

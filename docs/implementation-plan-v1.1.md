@@ -35,7 +35,7 @@ stall a whole run; everything independent of it still gets built.
 | 1.3 | `fake_drop` symmetry | R4 B3 | ☑ (provisional, D1) |
 | 2.1 | `form_family` inference | R1a | ☑ (provisional, D1) |
 | 2.2 | `form_role` labelling | R1 | ☑ (provisional, D1) |
-| 2.3 | Section repetition identity | R2 | ☐ |
+| 2.3 | Section repetition identity | R2 | ☑ (provisional, D1) |
 | 3.1 | Honest boundary confidence | R3 B1 | ☐ |
 | 3.2 | Join section lists on `section_id` | B5 | ☐ |
 | 4.1 | Composite events with phases | R5 | ☐ |
@@ -274,15 +274,19 @@ alternation). `--compare form` accuracy-vs-baseline is provisional under D1.
 
 ### 2.3 Section repetition identity
 
-- [ ] Add `repetition_group`, `variant_of` and `similarity`, derived from
-      self-similarity over combined harmonic and timbral features — never from
-      the label.
-- [ ] Stop using `energy_character` equality as the reusable-look signal.
-- [ ] Update `docs/audio-inference/3.1.section_segmentation_story.md`.
+- [x] `compute_repetition_groups` in `form.py` assigns `repetition_group`
+      (`A`/`B`/`C`…) from cosine similarity over the section feature `vector`
+      (fused harmonic histogram + timbral means); `variant_of` is the first
+      occurrence's `section_id` (mapped from index in the segmenter), `similarity`
+      the measured cosine. Wired into every `SectionWindow`.
+- [x] Story 3.1 states that `repetition_group`, not `energy_character` equality,
+      is the reusable-look input; the MCP-side switch is carried in the 6.2
+      contract-change note (the MCP server is not modified in v1.1).
+- [x] Story 3.1 updated.
 
-**Test:** on `Titanium`, choruses group together and verses group together, as
-distinct groups. Note the coverage gap: this is the only track in the gold set
-with clear verse/chorus form.
+**Test:** `tests/test_form_labelling.py::RepetitionGroupTests` — verses group
+together, choruses group together, distinct groups; varied repeat records
+`variant_of`. The `Titanium` corpus check is provisional under D1.
 **Commit:** `2.3 section repetition identity`
 
 ---
