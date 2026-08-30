@@ -114,6 +114,16 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     harmonic_payload = read_json(paths.artifact("layer_a_harmonic.json"))
     sections_payload = read_json(paths.artifact("section_segmentation", "sections.json"))
 
+    # v1.1 item 3.2 (B5) — validate the join key up front. The top-level section
+    # list must be joinable to the segmentation list on section_id, never on
+    # array position.
+    raw_sections = list(sections_payload.get("sections", []))
+    section_ids = [section.get("section_id") for section in raw_sections]
+    if any(not section_id for section_id in section_ids):
+        raise ValueError("section_segmentation/sections.json has a section without a section_id; cannot build a joinable UI section list")
+    if len(set(section_ids)) != len(section_ids):
+        raise ValueError(f"section_segmentation/sections.json has duplicate section_id values: {section_ids}")
+
     chord_events = harmonic_payload.get("chords", [])
     beat_points = beats_payload.get("beats", [])
     beat_times = [float(beat["time"]) for beat in beat_points]
@@ -131,17 +141,22 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     ]
     section_rows = [
         {
+            "section_id": section["section_id"],
             "start": round_schema_float(float(section["start"])),
             "end": round_schema_float(float(section["end"])),
             "label": _format_section_label(
-                section.get("section_character") or section.get("label"),
+                section.get("form_role") or section.get("section_character") or section.get("label"),
                 section.get("section_id"),
                 section.get("confidence"),
             ),
+            "form_role": section.get("form_role"),
+            "energy_character": section.get("energy_character") or section.get("section_character"),
+            "repetition_group": section.get("repetition_group"),
+            "confidence": section.get("confidence"),
             "description": _section_description(section),
             "hints": [],
         }
-        for section in sections_payload.get("sections", [])
+        for section in raw_sections
     ]
 
     beats_output_path = paths.beats_output_path

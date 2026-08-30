@@ -37,7 +37,7 @@ stall a whole run; everything independent of it still gets built.
 | 2.2 | `form_role` labelling | R1 | ☑ (provisional, D1) |
 | 2.3 | Section repetition identity | R2 | ☑ (provisional, D1) |
 | 3.1 | Honest boundary confidence | R3 B1 | ☑ (provisional, D1) |
-| 3.2 | Join section lists on `section_id` | B5 | ☐ |
+| 3.2 | Join section lists on `section_id` | B5 | ☑ |
 | 4.1 | Composite events with phases | R5 | ☐ |
 | 4.2 | Lean timeline and absolute `intensity` | R6 B4 | ☐ |
 | 5.1 | `song_facts.json` + `review_queue.json` | R7 | ☐ |
@@ -312,13 +312,18 @@ is provisional under D1.
 
 ### 3.2 Join section lists on `section_id`
 
-- [ ] Stop matching the top-level `sections.json` to the segmentation list by
-      array index. Carry `section_id` in both and join on it.
-- [ ] Fail explicitly on an unresolvable id rather than silently misaligning.
-- [ ] Update `docs/web-ui/7.2.build_ui_data_story.md`.
+- [x] `build_ui_data` projects `section_id` (plus `form_role`,
+      `energy_character`, `repetition_group`, numeric `confidence`) into every
+      top-level `sections.json` row.
+- [x] `build_ui_data` raises `ValueError` on a missing or duplicate
+      `section_id` in the segmentation list rather than emitting a
+      position-joinable list.
+- [x] Story 7.2 updated. Also repaired the stale imports in
+      `tests/test_validation.py` (the pre-existing collection error from an
+      earlier validation-module refactor) — that file now runs green (22 cases).
 
-**Test:** `pytest tests/test_validation.py -q`; a deliberately reordered list
-fails loudly instead of misaligning.
+**Test:** `tests/test_ui_data_section_join.py` (3 cases: id projection, missing
+id fails, duplicate id fails) + `tests/test_validation.py` restored.
 **Commit:** `3.2 join section lists on section_id`
 
 ---
