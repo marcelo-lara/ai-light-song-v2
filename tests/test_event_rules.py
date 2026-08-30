@@ -130,5 +130,77 @@ class EventRuleCandidatesTests(unittest.TestCase):
             self.assertTrue(paths.artifact("event_inference", "rule_candidates.json").exists())
 
 
+    def test_weighted_evidence_detects_bass_reentry_drop(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "_test_song.mp3",
+                analysis_root=root / "analysis",
+            )
+
+            def beat(n, *, bass_rel, flux_rel=0.3, onset_rel=0.3, e_delta=0.0, accent=0.2, ratio=1.0):
+                return {
+                    "beat": n,
+                    "start_time": float(n - 1),
+                    "end_time": float(n),
+                    "section_id": "section-001",
+                    "section_name": "x",
+                    "normalized": {"energy_score": 0.6, "onset_density": 0.4},
+                    "derived": {
+                        "energy_delta": e_delta,
+                        "density_delta": 0.0,
+                        "silence_gap_seconds": 0.0,
+                        "bass_activation_score": bass_rel,
+                        "harmonic_tension_proxy": 0.3,
+                        "accent_intensity": accent,
+                        "bass_stem_rel": bass_rel,
+                        "spectral_flux_rel": flux_rel,
+                        "onset_density_rel": onset_rel,
+                        "bass_att_ratio": ratio,
+                    },
+                    "rolling": {"local": {"energy_mean": 0.6, "harmonic_tension_mean": 0.3}},
+                }
+
+            # 8 beats of bass dropout, then a hard re-entry with an energy jump.
+            rows = [beat(n, bass_rel=0.05, flux_rel=0.1, onset_rel=0.1) for n in range(1, 9)]
+            rows.append(beat(9, bass_rel=0.95, flux_rel=0.9, onset_rel=0.9, e_delta=1.6, accent=0.9, ratio=2.2))
+            rows.append(beat(10, bass_rel=0.9, flux_rel=0.8, onset_rel=0.8, e_delta=0.2, accent=0.6, ratio=1.4))
+
+            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 10.0, "label": "x", "section_character": "x", "confidence": 0.8}]}
+            payload = generate_rule_candidates(paths, {"features": rows}, sections, {"genres": ["dance"]})
+
+            drops = [e for e in payload["events"] if e["type"] == "drop"]
+            self.assertEqual(len(drops), 1)
+            self.assertAlmostEqual(drops[0]["start_time"], 8.0)
+            meta = drops[0]["evidence"]["metadata"]["drop_evidence"]
+            self.assertEqual(meta["profile"], "stem_relative_weighted_v1")
+            self.assertGreaterEqual(meta["score"], meta["decision_threshold"])
+            names = {c["name"] for c in meta["contributions"]}
+            self.assertIn("bass_reentry", names)
+
+    def test_no_drop_without_bass_reentry(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
+            rows = [
+                {
+                    "beat": n, "start_time": float(n - 1), "end_time": float(n),
+                    "section_id": "section-001", "section_name": "x",
+                    "normalized": {"energy_score": 0.5, "onset_density": 0.4},
+                    "derived": {
+                        "energy_delta": 0.05, "density_delta": 0.0, "silence_gap_seconds": 0.0,
+                        "bass_activation_score": 0.5, "harmonic_tension_proxy": 0.3,
+                        "accent_intensity": 0.2, "bass_stem_rel": 0.5,
+                        "spectral_flux_rel": 0.4, "onset_density_rel": 0.4, "bass_att_ratio": 1.0,
+                    },
+                    "rolling": {"local": {"energy_mean": 0.5, "harmonic_tension_mean": 0.3}},
+                }
+                for n in range(1, 11)
+            ]
+            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 10.0, "label": "x", "section_character": "x", "confidence": 0.8}]}
+            payload = generate_rule_candidates(paths, {"features": rows}, sections, {"genres": ["dance"]})
+            self.assertEqual([e for e in payload["events"] if e["type"] == "drop"], [])
+
+
 if __name__ == "__main__":
     unittest.main()

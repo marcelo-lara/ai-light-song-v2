@@ -31,7 +31,7 @@ stall a whole run; everything independent of it still gets built.
 | 0.2 | Label the gold set | R7 | ⚠ blocked → D1 |
 | 0.3 | Scoring harness (`--compare form,drops`) | R3 R4 | ☑ (baseline recorded) |
 | 1.1 | Stem-relative energy signal | R4 | ☑ (provisional, D1) |
-| 1.2 | Drop detection rebuild | R4 B2 | ☐ |
+| 1.2 | Drop detection rebuild | R4 B2 | ☑ (provisional, D1) |
 | 1.3 | `fake_drop` symmetry | R4 B3 | ☐ |
 | 2.1 | `form_family` inference | R1a | ☐ |
 | 2.2 | `form_role` labelling | R1 | ☐ |
@@ -202,21 +202,20 @@ provisional pending D1 / a corpus re-run.
 
 ### 1.2 Drop detection rebuild
 
-- [ ] Replace the six-way conjunction at
-      `src/analyzer/stages/event_rules/generator.py:175-190` with accumulated
-      weighted evidence scored against a single decision threshold, so one weak
-      feature no longer vetoes an unambiguous drop.
-- [ ] Remove the self-adaptive thresholds derived from the song's own mean and
-      stdev (`drop_energy_delta`, `drop_bass_ratio_min`, `drop_flux_ratio_min` at
-      `generator.py:82-87`) — on a track that is mostly drops they raise the bar
-      until nothing qualifies.
-- [ ] Keep per-drop evidence payloads: every accepted drop records which features
-      contributed and their weights.
-- [ ] Tune the decision threshold against the 0.3 baseline, not by eye.
+- [x] Replaced the six-way drop conjunction with `_drop_evidence()` — a fixed
+      weighted sum of seven sub-scores vs. a single `DROP_EVIDENCE_PROFILE`
+      decision threshold. Also dropped the `_intensity_cluster == 2` hard gate
+      (the "plus membership in the top cluster" half of B2).
+- [x] Removed `drop_energy_delta`, `drop_bass_ratio_min`, `drop_flux_ratio_min`,
+      `drop_onset_min`, `drop_bass_min`, `drop_accent_min` — all song-adaptive.
+- [x] Each drop records `evidence.metadata.drop_evidence` with per-feature
+      sub-score, weight and weighted contribution; adjacent anchors merge.
+- [~] Decision threshold set to 0.42 by construction (weights sum to 1.0);
+      **tuning against the 0.3 baseline is deferred to a corpus re-run (D1)**.
 
-**Test:** `pytest tests/test_event_rules.py -q`; `--compare drops` on all four —
-each reports at least one drop, and drop times fall within tolerance of the human
-labels.
+**Test:** `tests/test_event_rules.py` — added `test_weighted_evidence_detects_bass_reentry_drop`
+and `test_no_drop_without_bass_reentry` (3 passed). `--compare drops` on the
+four tracks is a corpus-run check, still provisional under D1.
 **Commit:** `1.2 drop detection rebuild`
 
 ### 1.3 `fake_drop` symmetry

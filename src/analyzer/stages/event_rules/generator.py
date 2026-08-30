@@ -10,6 +10,56 @@ from analyzer.paths import SongPaths
 
 from .utils import *
 
+
+# v1.1 item 1.2 — drop detection is accumulated weighted evidence against a
+# single fixed decision threshold, not a conjunction of song-adaptive thresholds.
+# All weights and the threshold are FIXED (not derived from the song's own mean
+# and stdev): B2 showed that a track which is mostly drops raises its own bar
+# until nothing qualifies.
+DROP_EVIDENCE_PROFILE = {
+    "name": "stem_relative_weighted_v1",
+    "decision_threshold": 0.42,
+    "bass_reentry_lookback_beats": 8,
+    "weights": {
+        "bass_reentry": 0.28,      # bass_stem_rel now, minus its recent floor
+        "bass_stem_rel": 0.14,     # absolute stem-relative bass level
+        "energy_delta": 0.16,      # positive z-score energy jump
+        "spectral_flux_rel": 0.12,
+        "onset_density_rel": 0.12,
+        "accent_intensity": 0.10,
+        "bass_att_ratio": 0.08,    # band-energy re-entry ratio > 1
+    },
+}
+
+
+def _drop_evidence(row: dict, recent_rows: list[dict]) -> dict:
+    """Per-beat weighted drop evidence. Returns the sub-scores, the contributing
+    features with their weights, and the accumulated score."""
+    derived = row["derived"]
+    bass_stem_rel = float(derived.get("bass_stem_rel", 0.0))
+    floor = min(
+        (float(candidate["derived"].get("bass_stem_rel", 0.0)) for candidate in recent_rows),
+        default=bass_stem_rel,
+    )
+    sub = {
+        "bass_reentry": _clamp01(bass_stem_rel - floor),
+        "bass_stem_rel": _clamp01(bass_stem_rel),
+        "energy_delta": _clamp01(float(derived.get("energy_delta", 0.0)) / 2.0),
+        "spectral_flux_rel": _clamp01(float(derived.get("spectral_flux_rel", 0.0))),
+        "onset_density_rel": _clamp01(float(derived.get("onset_density_rel", 0.0))),
+        "accent_intensity": _clamp01(float(derived.get("accent_intensity", 0.0))),
+        "bass_att_ratio": _clamp01((float(derived.get("bass_att_ratio", 1.0)) - 1.0) / 1.0),
+    }
+    weights = DROP_EVIDENCE_PROFILE["weights"]
+    contributions = [
+        {"name": name, "sub_score": round(value, 6), "weight": weights[name],
+         "weighted": round(value * weights[name], 6)}
+        for name, value in sub.items()
+    ]
+    score = round(sum(item["weighted"] for item in contributions), 6)
+    return {"sub_scores": sub, "contributions": contributions, "score": score}
+
+
 def generate_rule_candidates(
     paths: SongPaths,
     event_features: dict,
@@ -72,19 +122,15 @@ def generate_rule_candidates(
 
     # Use dynamically calculated statistical thresholds based on track features
     thresholds = {
-        "name": "dynamic_z_score_v1",
+        "name": "dynamic_z_score_v1_1",
+        "drop_evidence_profile": DROP_EVIDENCE_PROFILE,
         "transition": {
             "build_energy_delta": max(0.04, mean_energy_delta + 1.2 * stdev_energy_delta),
             "build_tension_mean": max(0.15, mean_tension + 0.8 * stdev_tension),
             "build_energy_mean": max(0.25, mean_energy_mean + 0.8 * stdev_energy_mean),
             "breakdown_energy_delta": min(-0.1, mean_energy_delta - 1.2 * stdev_energy_delta),
             "breakdown_density_delta": -0.15,
-            "drop_energy_delta": max(0.1, mean_energy_delta + 1.8 * stdev_energy_delta),
-            "drop_onset_min": 0.45,
-            "drop_bass_min": 0.25,
-            "drop_accent_min": 0.25,
-            "drop_bass_ratio_min": max(1.2, mean_bass_ratio + 0.5 * stdev_bass_ratio),
-            "drop_flux_ratio_min": max(1.2, mean_flux_ratio + 0.5 * stdev_flux_ratio),
+            # Drop thresholds removed in v1.1 item 1.2 — see DROP_EVIDENCE_PROFILE.
             "fake_drop_tension_mean": max(0.20, mean_tension + 1.0 * stdev_tension),
             "impact_intensity_min": 0.65,
             "impact_ratio_min": max(1.15, mean_flux_ratio + 0.4 * stdev_flux_ratio),
@@ -170,46 +216,61 @@ def generate_rule_candidates(
             )
         )
 
+    # v1.1 item 1.2 — weighted-evidence drop detection.
     drop_events: list[dict[str, Any]] = []
-    for row in features:
-        if row.get("_intensity_cluster", 2) < 2:  # Alt 3: True drops only occur in the highest energy cluster
-            continue
-        bass_ratio = float(row["derived"].get("bass_att_ratio", 1.0))
-        flux_ratio = float(row["derived"].get("spectral_flux_ratio", 1.0))
-        if not (
-            float(row["derived"]["energy_delta"]) >= thresholds["transition"]["drop_energy_delta"]
-            and float(row["normalized"]["onset_density"]) >= thresholds["transition"]["drop_onset_min"]
-            and float(row["derived"]["bass_activation_score"]) >= thresholds["transition"]["drop_bass_min"]
-            and float(row["derived"]["accent_intensity"]) >= thresholds["transition"]["drop_accent_min"]
-            and bass_ratio >= thresholds["transition"]["drop_bass_ratio_min"]
-            and flux_ratio >= thresholds["transition"]["drop_flux_ratio_min"]
-        ):
-            continue
-        section = _section_for_time(float(row["start_time"]), sections)
-        energy_delta = float(row["derived"]["energy_delta"])
-        onset_level = float(row["normalized"]["onset_density"])
-        bass_level = float(row["derived"]["bass_activation_score"])
-        confidence = min(1.0, 0.45 + energy_delta * 0.2 + onset_level * 0.15 + bass_level * 0.2)
+    lookback = int(DROP_EVIDENCE_PROFILE["bass_reentry_lookback_beats"])
+    decision_threshold = float(DROP_EVIDENCE_PROFILE["decision_threshold"])
+    drop_anchor_rows: list[dict] = []
+    evidence_by_beat: dict[int, dict] = {}
+    for index, row in enumerate(features):
+        evidence = _drop_evidence(row, features[max(0, index - lookback):index])
+        evidence_by_beat[int(row["beat"])] = evidence
+        # A drop raises energy — a pure dropout with high stem-rel is not a drop.
+        if evidence["score"] >= decision_threshold and float(row["derived"].get("energy_delta", 0.0)) > 0.0:
+            drop_anchor_rows.append(row)
+
+    for rows in _merge_anchor_rows(drop_anchor_rows):
+        peak_row = max(rows, key=lambda candidate: evidence_by_beat[int(candidate["beat"])]["score"])
+        evidence = evidence_by_beat[int(peak_row["beat"])]
+        section = _section_for_time(float(rows[0]["start_time"]), sections)
+        # Map [threshold, 1.0] of accumulated score onto [0.55, 0.95] confidence.
+        headroom = max(1e-6, 1.0 - decision_threshold)
+        confidence = 0.55 + 0.4 * min(1.0, (evidence["score"] - decision_threshold) / headroom)
+        intensity = _clamp01(max(
+            float(peak_row["normalized"]["energy_score"]),
+            float(peak_row["derived"].get("bass_stem_rel", 0.0)),
+            float(peak_row["derived"].get("accent_intensity", 0.0)),
+        ))
+        contributing = [item["name"] for item in evidence["contributions"] if item["weighted"] > 0.0]
         event = _build_event(
             event_id=next_event_id("drop"),
             event_type="drop",
-            rows=[row],
+            rows=rows,
             section=section,
             confidence=_clamp01(confidence),
-            intensity=_clamp01(max(float(row["normalized"]["energy_score"]), float(row["derived"]["accent_intensity"]))),
-            summary="Synchronized rise in energy, onset activity, bass activation, and accent intensity indicates a baseline drop.",
-            rule_names=["drop_energy_release"],
+            intensity=intensity,
+            summary="Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
+            rule_names=["drop_weighted_evidence"],
             metrics=[
-                {"name": "energy_delta", "value": energy_delta, "threshold": thresholds["transition"]["drop_energy_delta"], "comparator": ">=", "source_layer": "event_features"},
-                {"name": "onset_density", "value": onset_level, "threshold": thresholds["transition"]["drop_onset_min"], "comparator": ">=", "source_layer": "event_features"},
-                {"name": "bass_activation", "value": bass_level, "threshold": thresholds["transition"]["drop_bass_min"], "comparator": ">=", "source_layer": "event_features"},
-                {"name": "accent_intensity", "value": float(row["derived"]["accent_intensity"]), "threshold": thresholds["transition"]["drop_accent_min"], "comparator": ">=", "source_layer": "event_features"},
-                {"name": "bass_att_ratio", "value": bass_ratio, "threshold": thresholds["transition"]["drop_bass_ratio_min"], "comparator": ">=", "source_layer": "event_features"},
-                {"name": "spectral_flux_ratio", "value": flux_ratio, "threshold": thresholds["transition"]["drop_flux_ratio_min"], "comparator": ">=", "source_layer": "event_features"},
+                {"name": "drop_evidence_score", "value": evidence["score"], "threshold": decision_threshold, "comparator": ">=", "source_layer": "event_features"},
+                *[
+                    {"name": item["name"], "value": item["sub_score"], "threshold": 0.0, "comparator": ">", "source_layer": "event_features"}
+                    for item in evidence["contributions"]
+                ],
             ],
-            notes="Baseline drop candidate without subtype refinement.",
-            candidates=[{"type": "impact_hit", "confidence": min(1.0, float(row["derived"]["accent_intensity"]) + 0.1), "notes": "Short accent overlap suggests an impact reading too."}],
+            notes=f"Weighted-evidence drop; contributing features: {', '.join(contributing)}.",
+            candidates=[{"type": "impact_hit", "confidence": _clamp01(float(peak_row["derived"].get("accent_intensity", 0.0)) + 0.1), "notes": "Short accent overlap suggests an impact reading too."}],
         )
+        # Full weighted breakdown (weights + weighted contributions) lives in
+        # evidence.metadata, the schema's pass-through slot.
+        event["evidence"]["metadata"] = {
+            "drop_evidence": {
+                "profile": DROP_EVIDENCE_PROFILE["name"],
+                "decision_threshold": decision_threshold,
+                "score": evidence["score"],
+                "contributions": evidence["contributions"],
+            }
+        }
         drop_events.append(event)
         events.append(event)
 
@@ -406,7 +467,7 @@ def generate_rule_candidates(
             "event_features_file": str(paths.artifact("event_inference", "features.json")),
             "sections_file": str(paths.artifact("section_segmentation", "sections.json")),
             "genre_file": str(paths.artifact("genre.json")) if genre_result is not None else None,
-            "engine": "rule-based-event-detection",
+            "engine": "rule-based-event-detection.v2",
             "threshold_profile": thresholds,
             "determinism": {
                 "random_engine": "MT19937",
