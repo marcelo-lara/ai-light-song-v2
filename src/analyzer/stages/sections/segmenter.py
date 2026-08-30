@@ -8,6 +8,9 @@ from analyzer.models import SCHEMA_VERSION, to_jsonable
 from analyzer.paths import SongPaths
 from analyzer.stages._stem_activity import estimate_stem_activity_by_beat
 from analyzer.stages.validation.sections import _validate_sections
+from analyzer.stages.validation.form_drops import load_song_facts
+
+from .form import assign_form_roles, compute_repetition_groups, infer_form_family
 
 from .utils import (
     _uses_reference_timing, _find_nearest_onset_peak, _snap_to_bar_boundary,
@@ -187,6 +190,10 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
     repetitions = _compute_section_repetition(grouped_sections)
     reference_timing = _uses_reference_timing(timing)
 
+    # v1.1 item 2.1 — song-level form_family from audio evidence only.
+    song_facts = load_song_facts(paths)
+    form_family = infer_form_family(grouped_sections, timing, song_facts)
+
     bar_starts = [float(bar["start_s"]) for bar in timing["bars"]]
     beat_times = [float(beat["time"]) for beat in timing.get("beats", [])]
     beat_interval_s = float(
@@ -259,6 +266,7 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
         payload.setdefault("generated_from", {})["promotion_gate"] = promotion_gate
         payload.setdefault("metadata", {})["promotion_applied"] = False
 
+    payload["form_family"] = form_family
     payload = to_jsonable(payload)
     write_json(paths.artifact("section_segmentation", "sections.json"), payload)
     return payload

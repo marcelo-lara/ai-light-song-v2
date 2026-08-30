@@ -106,3 +106,13 @@ class SectionWindow:
     confidence: float
     section_character: str | None = None
     onset_anchored: bool = False
+    # v1.1 item 2.2 — musical form function (primary label). `energy_character`
+    # keeps the existing 13-value energy-shape vocabulary as secondary metadata.
+    form_role: str | None = None
+    form_role_confidence: float | None = None
+    form_role_margin: float | None = None
+    energy_character: str | None = None
+    # v1.1 item 2.3 — repetition identity from material self-similarity.
+    repetition_group: str | None = None
+    variant_of: str | None = None
+    similarity: float | None = None

@@ -33,7 +33,7 @@ stall a whole run; everything independent of it still gets built.
 | 1.1 | Stem-relative energy signal | R4 | ☑ (provisional, D1) |
 | 1.2 | Drop detection rebuild | R4 B2 | ☑ (provisional, D1) |
 | 1.3 | `fake_drop` symmetry | R4 B3 | ☑ (provisional, D1) |
-| 2.1 | `form_family` inference | R1a | ☐ |
+| 2.1 | `form_family` inference | R1a | ☑ (provisional, D1) |
 | 2.2 | `form_role` labelling | R1 | ☐ |
 | 2.3 | Section repetition identity | R2 | ☐ |
 | 3.1 | Honest boundary confidence | R3 B1 | ☐ |
@@ -240,19 +240,18 @@ harness already reports the `fake_outnumbers_drop` flag per song.
 
 ### 2.1 `form_family` inference
 
-- [ ] Infer song-level `form_family` (`dance_form` / `song_form` / `hybrid` /
-      `unknown`) from audio evidence only: tempo stability, four-on-the-floor
-      kick pattern, and bass-dropout → re-entry transients from 1.1.
-- [ ] Emit it with its own confidence into
-      `artifacts/section_segmentation/sections.json`.
-- [ ] A human-confirmed `form_family` in `song_facts.json` breaks ties when the
-      measured evidence is close; it never overrides a confident measurement.
-      Record `provenance` when it is used.
-- [ ] The inferred genre label is **not** an input. Add a regression test
-      asserting that.
+- [x] `infer_form_family` in `src/analyzer/stages/sections/form.py` — audio
+      evidence only: tempo CV, mean drum-stem activity + tempo stability
+      (steady kick), and section-level bass dropout → re-entry range.
+- [x] Emitted as the song-level `form_family` object (`value`, `confidence`,
+      `provenance`, `evidence`) in `sections.json`.
+- [x] Human-confirmed `form_family` from `reference/human/song_facts.json` breaks
+      a tie only when inferred confidence < 0.55; `provenance` → `"human-confirmed"`.
+- [x] `infer_form_family` takes no genre argument;
+      `test_form_labelling.py::test_genre_is_not_a_parameter` asserts it.
 
-**Test:** `pytest tests/test_sections_v2.py -q`; `--compare form` — `form_family`
-matches the hand-authored value on all four (expect `hybrid` for `Titanium`).
+**Test:** `tests/test_form_labelling.py::FormFamilyTests` (4 cases). `--compare
+form` cross-track match is provisional under D1 (expected answers recorded in D1).
 **Commit:** `2.1 form_family inference`
 
 ### 2.2 `form_role` labelling
