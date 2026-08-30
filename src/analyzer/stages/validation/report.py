@@ -23,6 +23,7 @@ from .unified import _validate_unified_layer
 from .chords import validate_chords
 from .utils import ValidationResult, skipped_result
 from .sections import _validate_sections
+from .form_drops import validate_form, validate_drops
 
 
 def build_validation_report(
@@ -79,6 +80,8 @@ def build_validation_report(
             read_json(event_timeline_path),
             read_json(event_benchmark_path),
         ) if "events" in compare_targets else skipped_result(),
+        "form": validate_form(paths) if "form" in compare_targets else skipped_result(),
+        "drops": validate_drops(paths) if "drops" in compare_targets else skipped_result(),
         "unified": _validate_unified_layer(
             read_json(unified_path),
             timing,
@@ -90,8 +93,16 @@ def build_validation_report(
         ) if "unified" in compare_targets else skipped_result(),
     }
 
+    # form/drops are advisory structural scores (plan item 0.3): they surface in
+    # the report but never flip the pipeline exit code, even under
+    # --fail-on-mismatch, because their ground truth is an incomplete gold set.
+    ADVISORY_TARGETS = {"form", "drops"}
     evaluated_results = [result for result in results.values() if result.status != "skipped"]
-    if fail_on_mismatch and any(result.status == "failed" for result in evaluated_results):
+    gating_results = [
+        result for key, result in results.items()
+        if result.status != "skipped" and key not in ADVISORY_TARGETS
+    ]
+    if fail_on_mismatch and any(result.status == "failed" for result in gating_results):
         exit_code = 1
         status = "failed"
     else:
@@ -115,6 +126,10 @@ def build_validation_report(
         notes.append("Event validation checks Epic 5 artifact integrity, machine-review timeline consistency, and benchmark status when reviewed annotations exist.")
     if "unified" in compare_targets:
         notes.append("Unified validation checks cross-layer references, phrase and accent timeline joins, and callback integrity.")
+    if "form" in compare_targets:
+        notes.append("Form validation scores section boundaries, form_role and form_family against reference/human labels; advisory only, and reports 'skipped' until the gold set is labelled (plan D1).")
+    if "drops" in compare_targets:
+        notes.append("Drop validation scores detected drops against timed human drop hints, or against the song-level has_drop fact when only that is available; advisory only.")
 
     report = {
         "schema_version": SCHEMA_VERSION,

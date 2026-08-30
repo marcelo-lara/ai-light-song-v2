@@ -34,7 +34,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--all-songs", action="store_true", help="Analyze every .mp3 under the songs root")
     parser.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <analysis-root parent>/songs")
     parser.add_argument("--analysis-root", default="/data/analysis")
-    parser.add_argument("--compare", default="beats,chords,drums,sections,energy,patterns,unified,events")
+    parser.add_argument("--compare", default="beats,chords,drums,sections,energy,patterns,unified,events,form,drops")
     parser.add_argument("--fail-on-mismatch", action="store_true")
     parser.add_argument("--beat-tolerance-seconds", type=float, default=0.10)
     parser.add_argument("--tolerance-seconds", type=float, default=2.0)
@@ -222,7 +222,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    supported_targets = {"beats", "chords", "drums", "sections", "energy", "patterns", "unified", "events"}
+    supported_targets = {"beats", "chords", "drums", "sections", "energy", "patterns", "unified", "events", "form", "drops"}
     try:
         if args.clean_generated_data and not args.song and not args.all_songs:
             _clean_generated_song_data(args)

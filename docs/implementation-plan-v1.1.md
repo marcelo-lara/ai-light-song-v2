@@ -29,7 +29,7 @@ stall a whole run; everything independent of it still gets built.
 | --- | --- | --- | --- |
 | 0.1 | Prune orphaned analysis directory | — | ☑ |
 | 0.2 | Label the gold set | R7 | ⚠ blocked → D1 |
-| 0.3 | Scoring harness (`--compare form,drops`) | R3 R4 | ☐ |
+| 0.3 | Scoring harness (`--compare form,drops`) | R3 R4 | ☑ (baseline recorded) |
 | 1.1 | Stem-relative energy signal | R4 | ☐ |
 | 1.2 | Drop detection rebuild | R4 B2 | ☐ |
 | 1.3 | `fake_drop` symmetry | R4 B3 | ☐ |
@@ -141,6 +141,40 @@ duration from `info.json`.
 **Test:** harness runs on all four tracks and reports a baseline. Record that
 baseline in this plan — it is what every later item is measured against.
 **Commit:** `0.3 scoring harness`
+
+#### Implementation notes
+
+Delivered as `src/analyzer/stages/validation/form_drops.py`, wired into
+`build_validation_report` as the `form` and `drops` compare targets (added to the
+`--compare` default and `supported_targets`). Both are **advisory**: a new
+`ADVISORY_TARGETS` set in `report.py` keeps them out of the `--fail-on-mismatch`
+exit-code gate, since their ground truth is the incomplete gold set. Per-song
+scores are written to `artifacts/validation/{form,drops}_score.json`.
+
+- `drops`: greedy nearest-first one-to-one matching of detected drops (timeline
+  `type` ∈ drop-like, or composite `impact` phase) to timed human drop hints at
+  ±1.0 s → precision/recall/F1. With no timed hints it falls back to a
+  `presence` check against the `has_drop` fact. Always reports whether
+  `fake_drop` outnumbers `drop` (B3 signal).
+- `form`: boundary F-measure at ±2.0 s, `form_role` accuracy over matched
+  boundaries, `form_family` exact match, plus a confidence-calibration table
+  (sections bucketed by predicted confidence vs. observed boundary alignment)
+  and the predicted-confidence spread (the item 3.1 signal).
+- Tests: `tests/test_validation_form_drops.py` (9 cases, synthetic fixtures).
+
+#### Baseline (2026-08-30, scored against current on-disk artifacts)
+
+| Track | drops mode | detected | fake | drops result | conf. spread |
+| --- | --- | --- | --- | --- | --- |
+| `_test_song` | timed (label @ 28.8 s) | 0 | 0 | **failed** (recall 0.0) | 0.115 |
+| `Armin - Revolution` | presence | 0 | 0 | **failed** | 0.235 |
+| `Hideaway - Kiesza` | presence | 0 | 0 | **failed** | 0.193 |
+| `Titanium - David Guetta ft Sia` | presence | 1 | 0 | passed | 0.267 |
+
+`form` is `skipped` on all four: `form_family` is not emitted until item 2.1 and
+no boundary labels exist yet (D1). Confirms the refinement doc: drops are almost
+never detected (3/4 tracks at zero), and boundary confidence spans a narrow
+0.11–0.27 band (B1).
 
 ---
 
