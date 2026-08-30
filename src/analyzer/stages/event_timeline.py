@@ -119,10 +119,47 @@ def _fold_composites(events: list[dict]) -> list[dict]:
     return sorted(result, key=lambda row: float(row["start_time"]))
 
 
+# v1.1 item 4.2 (B4) — `intensity` is an ABSOLUTE cross-song magnitude, not a
+# per-song normalisation. The previous values came straight off a per-song
+# z-score and saturated at 1.0 for most events. Here each event type has a fixed
+# [floor, ceiling] band; the raw signal only positions the event within its
+# band, so a quiet track's loudest moment stays distinguishable from a loud
+# track's, and the field spreads across its range.
+_INTENSITY_BANDS = {
+    "drop": (0.80, 1.00),
+    "fake_drop": (0.45, 0.70),
+    "impact_hit": (0.70, 0.95),
+    "build": (0.35, 0.70),
+    "breakdown": (0.15, 0.45),
+    "pause_break": (0.05, 0.30),
+    "post_drop": (0.55, 0.80),
+    "energy_reset": (0.10, 0.35),
+    "groove_loop": (0.40, 0.65),
+    "atmospheric_plateau": (0.05, 0.30),
+    "tension_hold": (0.35, 0.60),
+    "no_drop_plateau": (0.30, 0.55),
+    "hook": (0.55, 0.85),
+    "vocal_spotlight": (0.35, 0.65),
+    "anthem_call": (0.65, 0.90),
+}
+_DEFAULT_INTENSITY_BAND = (0.30, 0.70)
+
+
+def _absolute_intensity(event_type: str, raw_intensity: float) -> float:
+    floor, ceiling = _INTENSITY_BANDS.get(str(event_type), _DEFAULT_INTENSITY_BAND)
+    positioned = max(0.0, min(1.0, float(raw_intensity)))
+    return round(floor + (ceiling - floor) * positioned, 6)
+
+
 def export_event_timeline(paths: SongPaths, merged_payload: dict) -> dict[str, Any]:
     compact_events = []
     for event in merged_payload.get("events", []):
+        if str(event["type"]) in ("layer_add", "layer_remove"):
+            continue  # item 4.2 — no longer timeline events
         provenance = "human-edited" if "human_override" in event else "machine-only"
+        # Prefer the evidence summary (it describes the musical moment) over the
+        # rule note (which tends to restate the rule that fired).
+        moment_summary = event.get("evidence", {}).get("summary") or event.get("notes")
         compact_events.append(
             {
                 "id": event["id"],
@@ -130,11 +167,11 @@ def export_event_timeline(paths: SongPaths, merged_payload: dict) -> dict[str, A
                 "start_time": event["start_time"],
                 "end_time": event["end_time"],
                 "confidence": event["confidence"],
-                "intensity": event["intensity"],
+                "intensity": _absolute_intensity(event["type"], event["intensity"]),
                 "section_id": event.get("section_id"),
                 "section_name": event.get("section_name"),
                 "provenance": provenance,
-                "summary": event.get("notes"),
+                "summary": moment_summary,
                 "created_by": event.get("created_by", "analyzer_unknown_source"),
                 "evidence_summary": event.get("evidence", {}).get("summary"),
                 "lighting_hint": LIGHTING_HINTS.get(str(event["type"]), "Use the event as a high-level musical cue, not a fixture-specific instruction."),
@@ -160,6 +197,7 @@ def export_event_timeline(paths: SongPaths, merged_payload: dict) -> dict[str, A
             },
         },
         "events": compact_events,
+        "texture_summary": merged_payload.get("metadata", {}).get("texture_summary", []),
     }
     timeline_json_path = paths.timeline_output_path
     write_json(timeline_json_path, payload)

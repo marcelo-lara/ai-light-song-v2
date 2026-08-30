@@ -39,7 +39,7 @@ stall a whole run; everything independent of it still gets built.
 | 3.1 | Honest boundary confidence | R3 B1 | ☑ (provisional, D1) |
 | 3.2 | Join section lists on `section_id` | B5 | ☑ |
 | 4.1 | Composite events with phases | R5 | ☑ (provisional, D1) |
-| 4.2 | Lean timeline and absolute `intensity` | R6 B4 | ☐ |
+| 4.2 | Lean timeline and absolute `intensity` | R6 B4 | ☑ (provisional, D1) |
 | 5.1 | `song_facts.json` + `review_queue.json` | R7 | ☐ |
 | 5.2 | UI round-trip for the review queue | R7 | ☐ |
 | 5.3 | Benchmark profiles keyed on `form_family` | B6 | ☐ |
@@ -357,18 +357,21 @@ Per-track corpus check provisional under D1.
 
 ### 4.2 Lean timeline and absolute `intensity`
 
-- [ ] Remove `layer_add` / `layer_remove` as timeline events — they are ~50–60%
-      of all events at a median 0.46 s. Summarise texture change per section
-      instead (which stems enter and leave, and where).
-- [ ] Rescale `intensity` onto an **absolute** scale. It currently sits at
-      exactly 1.0 for a majority of events, collapsing one of only five unscoped
-      projected fields into a constant. Per-song normalisation is explicitly not
-      used — the consumer reads it as a cross-song magnitude.
-- [ ] Rewrite event `summary` text to describe the musical moment rather than
-      restate the rule that fired.
+- [x] `event_machine/generator.py` no longer emits `layer_add`/`layer_remove`
+      and filters any that arrive from ML/rule inputs. `_summarise_texture_changes`
+      writes a per-section `texture_summary[]` (stem activity, `stems_entering`,
+      `stems_leaving`) to `events.machine.json` metadata; `export_event_timeline`
+      also skips those types and echoes `texture_summary`.
+- [x] `_absolute_intensity(type, raw)` in `event_timeline.py` — a fixed
+      `[floor, ceiling]` band per event type; the raw signal only positions the
+      event within its band. Cross-song absolute, no per-song normalisation.
+- [x] Timeline `summary` now comes from the evidence summary, not the rule note.
+- [x] `event_vocabulary.json` marks `layer_add`/`layer_remove` `deprecated`.
+      Stories 5.1 / 5.6 updated.
 
-**Test:** event counts per song fall substantially on all four; `intensity` is
-distributed across its range rather than piled at the ceiling.
+**Test:** `tests/test_event_timeline.py::test_layer_events_dropped_and_intensity_is_type_banded`
+(raw 1.0 → 0.30 band for an `atmospheric_plateau`; layer events gone). Per-song
+event-count / distribution check is provisional under D1.
 **Commit:** `4.2 lean timeline and absolute intensity`
 
 ---

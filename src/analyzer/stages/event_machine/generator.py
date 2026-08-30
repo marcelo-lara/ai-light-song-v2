@@ -90,6 +90,41 @@ def _lyric_rescue_metadata(
     return metadata
 
 
+_TEXTURE_STEMS = ("bass_stem_rel", "drums_stem_rel", "harmonic_stem_rel", "vocals_stem_rel")
+
+
+def _summarise_texture_changes(feature_rows: list[dict], sections: list[dict]) -> list[dict]:
+    """v1.1 item 4.2 — per-section arrangement summary that replaces the
+    per-beat layer_add / layer_remove blip events: which stems enter and leave,
+    and where."""
+    def _section_means(section: dict) -> dict[str, float]:
+        start, end = float(section["start"]), float(section["end"])
+        rows = [row for row in feature_rows if start <= float(row["start_time"]) < end]
+        means: dict[str, float] = {}
+        for stem in _TEXTURE_STEMS:
+            values = [float(row["derived"].get(stem, 0.0)) for row in rows]
+            means[stem] = sum(values) / len(values) if values else 0.0
+        return means
+
+    summary: list[dict] = []
+    previous: dict[str, float] | None = None
+    for section in sections:
+        means = _section_means(section)
+        entering = [stem.replace("_stem_rel", "") for stem in _TEXTURE_STEMS
+                    if previous is not None and previous[stem] < 0.25 <= means[stem]]
+        leaving = [stem.replace("_stem_rel", "") for stem in _TEXTURE_STEMS
+                   if previous is not None and means[stem] < 0.25 <= previous[stem]]
+        summary.append({
+            "section_id": section.get("section_id"),
+            "start_time": round(float(section["start"]), 6),
+            "stem_activity": {stem.replace("_stem_rel", ""): round(value, 4) for stem, value in means.items()},
+            "stems_entering": entering,
+            "stems_leaving": leaving,
+        })
+        previous = means
+    return summary
+
+
 def generate_machine_events(
     paths: SongPaths,
     event_features: dict,
@@ -190,91 +225,12 @@ def generate_machine_events(
         return True
 
     densities = [float(row["derived"].get("density_delta", 0.0)) for row in feature_rows]
-    layer_remove_index = 1
-    layer_add_index = 1
-    
-    for i, row in enumerate(feature_rows):
-        energy_delta = float(row["derived"].get("energy_delta", 0.0))
-        density_delta = densities[i]
-        section = section_by_id.get(str(row.get("section_id"))) if row.get("section_id") else None
-        
-        # Local Minimum (Layer Remove)
-        if density_delta <= -0.18 and energy_delta <= -0.08 and _is_peak(i, densities, r=4, is_min=True):
-            key = (round(float(row["start_time"]), 6), round(float(row["end_time"]), 6), "layer_remove")
-            if key not in existing_keys:
-                refined_events.append(
-                    {
-                        "id": _event_id("layer_remove", layer_remove_index),
-                        "type": "layer_remove",
-                        "created_by": "analyzer_event_classifier",
-                        "start_time": round(float(row["start_time"]), 6),
-                        "end_time": round(float(row["end_time"]), 6),
-                        "confidence": round(_clamp01(min(1.0, 0.45 + abs(density_delta) * 0.4)), 6),
-                        "intensity": round(_clamp01(min(1.0, abs(density_delta))), 6),
-                        "evidence": {
-                            "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
-                            "source_windows": [
-                                {
-                                    "layer": "event_features",
-                                    "start_time": round(float(row["start_time"]), 6),
-                                    "end_time": round(float(row["end_time"]), 6),
-                                    "ref": f"beats:{row['beat']}-{row['beat']}",
-                                    "metric_names": ["density_delta", "energy_delta"]
-                                }
-                            ],
-                            "metrics": [
-                                {"name": "density_delta", "value": density_delta, "source_layer": "event_features"},
-                                {"name": "energy_delta", "value": energy_delta, "source_layer": "event_features"}
-                            ],
-                            "reasons": ["Abrupt density decrease with concurrent energy loss."],
-                            "rule_names": ["layer_remove_delta_rule"]
-                        },
-                        "notes": "Arrangement appears to strip back at this beat.",
-                        "section_id": section.get("section_id") if section else None,
-                        "source_layers": ["event_features"]
-                    }
-                )
-                existing_keys.add(key)
-                layer_remove_index += 1
 
-        # Local Maximum (Layer Add)
-        if density_delta >= 0.18 and energy_delta >= 0.05 and _is_peak(i, densities, r=4, is_min=False):
-            key = (round(float(row["start_time"]), 6), round(float(row["end_time"]), 6), "layer_add")
-            if key not in existing_keys:
-                refined_events.append(
-                    {
-                        "id": _event_id("layer_add", layer_add_index),
-                        "type": "layer_add",
-                        "created_by": "analyzer_event_classifier",
-                        "start_time": round(float(row["start_time"]), 6),
-                        "end_time": round(float(row["end_time"]), 6),
-                        "confidence": round(_clamp01(min(1.0, 0.45 + density_delta * 0.35)), 6),
-                        "intensity": round(_clamp01(min(1.0, density_delta)), 6),
-                        "evidence": {
-                            "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
-                            "source_windows": [
-                                {
-                                    "layer": "event_features",
-                                    "start_time": round(float(row["start_time"]), 6),
-                                    "end_time": round(float(row["end_time"]), 6),
-                                    "ref": f"beats:{row['beat']}-{row['beat']}",
-                                    "metric_names": ["density_delta", "energy_delta"]
-                                }
-                            ],
-                            "metrics": [
-                                {"name": "density_delta", "value": density_delta, "source_layer": "event_features"},
-                                {"name": "energy_delta", "value": energy_delta, "source_layer": "event_features"}
-                            ],
-                            "reasons": ["Abrupt density increase with concurrent energy growth."],
-                            "rule_names": ["layer_add_delta_rule"]
-                        },
-                        "notes": "Arrangement appears to gain material at this beat.",
-                        "section_id": section.get("section_id") if section else None,
-                        "source_layers": ["event_features"]
-                    }
-                )
-                existing_keys.add(key)
-                layer_add_index += 1
+    # v1.1 item 4.2 — layer_add / layer_remove are no longer emitted as timeline
+    # events (they were ~50–60% of all events at a median 0.46 s — the exact
+    # dense-blip anti-pattern the consumer guide warns against). Arrangement
+    # changes are summarised per section instead.
+    texture_summary = _summarise_texture_changes(feature_rows, sections_payload.get("sections", []))
 
     phrase_windows = [dict(window) for window in symbolic.get("phrase_windows", [])]
     phrase_rows_by_id = {
@@ -721,9 +677,14 @@ def generate_machine_events(
             "event_count": len(refined_events),
             "source_rule_event_count": len(rule_candidates.get("events", [])),
             "lyric_rescue_confidence_gate": LYRIC_RESCUE_CONFIDENCE_GATE,
+            "texture_summary": texture_summary,
         },
         "events": refined_events
     }
+    # v1.1 item 4.2 — drop any layer_add / layer_remove that arrived from the ML
+    # or rule inputs; they are no longer timeline events.
+    payload["events"] = [event for event in payload["events"] if str(event["type"]) not in ("layer_add", "layer_remove")]
+    payload["metadata"]["event_count"] = len(payload["events"])
     validated = validate_song_event_payload(payload)
     write_json(paths.artifact("event_inference", "events.machine.json"), validated)
     return validated
