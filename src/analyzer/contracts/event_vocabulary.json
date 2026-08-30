@@ -6,6 +6,10 @@
     "canonical_only": true,
     "normalize_aliases_on_ingest": true
   },
+  "composite_phase_vocabulary": {
+    "description": "v1.1 item 4.1 — ordered sub-phases of a composite gesture in song_event_timeline.json. Each phase carries phase, start_time, end_time, intensity. A composite with no impact/release phase is the withheld-release (fake_drop) case.",
+    "phases": ["approach", "build", "tension", "impact", "release", "recovery"]
+  },
   "categories": [
     {
       "name": "transition",

@@ -45,5 +45,53 @@ class EventTimelineTests(unittest.TestCase):
             self.assertEqual(payload["generated_from"]["dependencies"]["overrides_file"], str(paths.overrides_path))
 
 
+    def _payload(self, events):
+        return {"events": [{"created_by": "analyzer_rule_engine", "notes": "n",
+                            "evidence": {"summary": "s"}, "confidence": 0.8, **e} for e in events]}
+
+    def test_build_drop_post_drop_folds_into_one_composite(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
+            paths.song_output_dir.mkdir(parents=True, exist_ok=True)
+            payload = self._payload([
+                {"id": "b1", "type": "build", "start_time": 20.0, "end_time": 24.0, "intensity": 0.5},
+                {"id": "d1", "type": "drop", "start_time": 24.5, "end_time": 25.0, "intensity": 0.95},
+                {"id": "p1", "type": "post_drop", "start_time": 25.0, "end_time": 30.0, "intensity": 0.7},
+                {"id": "g1", "type": "groove_loop", "start_time": 40.0, "end_time": 50.0, "intensity": 0.6},
+            ])
+            export_event_timeline(paths, payload)
+            events = json.loads(paths.timeline_output_path.read_text())["events"]
+            composites = [e for e in events if e.get("composite")]
+            self.assertEqual(len(composites), 1)
+            composite = composites[0]
+            self.assertEqual(composite["start_time"], 20.0)
+            self.assertEqual(composite["end_time"], 30.0)
+            phase_names = [p["phase"] for p in composite["phases"]]
+            self.assertEqual(phase_names, ["build", "tension", "impact", "release"])
+            # members are gone as standalone rows
+            standalone_ids = {e["id"] for e in events}
+            self.assertNotIn("b1", standalone_ids)
+            self.assertIn("g1", standalone_ids)
+
+    def test_build_without_drop_folds_into_composite_with_no_impact(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
+            paths.song_output_dir.mkdir(parents=True, exist_ok=True)
+            payload = self._payload([
+                {"id": "b1", "type": "build", "start_time": 20.0, "end_time": 24.0, "intensity": 0.5},
+                {"id": "f1", "type": "fake_drop", "start_time": 25.0, "end_time": 26.0, "intensity": 0.4},
+            ])
+            export_event_timeline(paths, payload)
+            events = json.loads(paths.timeline_output_path.read_text())["events"]
+            composites = [e for e in events if e.get("composite")]
+            self.assertEqual(len(composites), 1)
+            phase_names = [p["phase"] for p in composites[0]["phases"]]
+            self.assertNotIn("impact", phase_names)
+            self.assertNotIn("release", phase_names)
+            self.assertIn("build", phase_names)
+
+
 if __name__ == "__main__":
     unittest.main()

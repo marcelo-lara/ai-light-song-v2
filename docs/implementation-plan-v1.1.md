@@ -38,7 +38,7 @@ stall a whole run; everything independent of it still gets built.
 | 2.3 | Section repetition identity | R2 | ☑ (provisional, D1) |
 | 3.1 | Honest boundary confidence | R3 B1 | ☑ (provisional, D1) |
 | 3.2 | Join section lists on `section_id` | B5 | ☑ |
-| 4.1 | Composite events with phases | R5 | ☐ |
+| 4.1 | Composite events with phases | R5 | ☑ (provisional, D1) |
 | 4.2 | Lean timeline and absolute `intensity` | R6 B4 | ☐ |
 | 5.1 | `song_facts.json` + `review_queue.json` | R7 | ☐ |
 | 5.2 | UI round-trip for the review queue | R7 | ☐ |
@@ -332,21 +332,27 @@ id fails, duplicate id fails) + `tests/test_validation.py` restored.
 
 ### 4.1 Composite events with phases
 
-- [ ] Add composite events: overall `start_time`/`end_time`/`confidence`/
-      `intensity` plus ordered `phases[]` (`approach`, `build`, `tension`,
-      `impact`, `release`, `recovery`).
-- [ ] Phase members are no longer emitted as independent top-level events.
-- [ ] A build that never resolves becomes a composite with no `release` phase —
-      not a standalone phase event.
-- [ ] Update `song_event_schema.json` and `event_vocabulary.json`;
-      `schema_version` → `"1.1"`.
-- [ ] Leave `beatdrop_visual_plan.json` on the flattened view — v1.2.
-- [ ] Update `docs/audio-inference/5.1.event_vocabulary_and_schema_story.md` and
-      `5.6.event_timeline_export_story.md`.
+- [x] `_fold_composites` in `event_timeline.py` folds `build → drop → post_drop`
+      (8 s window) into one row: overall `start_time`/`end_time`/`confidence`/
+      `intensity`, `member_event_ids[]`, ordered `phases[]`
+      (`approach`/`build`/`tension`/`impact`/`release`/`recovery`).
+- [x] Folded members are removed from the exported timeline; non-members pass
+      through unchanged.
+- [x] A `build` with no resolving `drop` (or a `fake_drop` with a preceding
+      build) folds into a composite with **no `impact`/`release` phase**.
+- [x] `event_vocabulary.json` gains `composite_phase_vocabulary`. Composites live
+      only in the `song_event_timeline.json` projection (`schema_version` `"1.1"`,
+      engine `llm-friendly-event-timeline-v2`); the strict internal
+      `song_event_schema.json` stays at `"1.0"` with flat members because
+      `beatdrop_visual_plan.json` still reads them (v1.2 moves it).
+- [x] `beatdrop_visual_plan.json` is built from sections/energy/fft, not this
+      timeline — unaffected.
+- [x] Stories 5.1 and 5.6 updated.
 
-**Test:** `pytest tests/test_event_contracts.py tests/test_event_timeline.py -q`;
-on all four, each detected drop is one entry whose phases cover its span
-contiguously.
+**Test:** `tests/test_event_timeline.py` — `test_build_drop_post_drop_folds_into_one_composite`
+(phases `build→tension→impact→release`, members gone) and
+`test_build_without_drop_folds_into_composite_with_no_impact` (3 passed).
+Per-track corpus check provisional under D1.
 **Commit:** `4.1 composite events with phases`
 
 ### 4.2 Lean timeline and absolute `intensity`
