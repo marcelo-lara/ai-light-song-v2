@@ -37,7 +37,7 @@ All formalized output schemas used by the timeline UI and lighting engines.
 
 ## 3. Pipeline Stages (`src/analyzer/stages/`)
 
-The pipeline logic is distributed across various modules mapping directly to the narrative stories in `docs/*.story.md`. 
+The pipeline logic is distributed across various modules mapping directly to the narrative stories under `docs/audio-processing/`, `docs/audio-inference/`, `docs/lighting-score/`, and `docs/web-ui/`. 
 *Note: Large monolithic stages (>300 lines) have been aggressively refactored into focused subdirectories.*
 
 ### Submodules (Refactored Stages)

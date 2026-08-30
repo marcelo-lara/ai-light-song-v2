@@ -576,7 +576,7 @@ LLM hint:
 - Use: as the structured pre-score layer when writing or reviewing scene logic.
 - Use: anchor refs to explain why a cue exists, not just when it happens.
 - Use: preserve `event_ref`, `role_overlay`, and explicit focal `target` fields when Story 6.5 adds event-driven regroupings such as moving-head unison focus.
-- See also: the end-to-end drop-to-stage-center sequence example in `docs/6.5.fixture_aware_mapping_story.md` when you need a concrete fixture-aware payload shape.
+- See also: the end-to-end drop-to-stage-center sequence example in `docs/lighting-score/7.4.fixture_aware_mapping_story.md` when you need a concrete fixture-aware payload shape.
 - Use: preserve these deterministic anchor times when translating into prose or operator instructions.
 
 ### `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.json`

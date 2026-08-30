@@ -142,7 +142,7 @@ docker compose build ui
 Open the debugger in a browser:
 
 ```text
-http://localhost:8080
+http://localhost:9090
 ```
 
 The debugger remains read-only. All interaction state such as zoom, playhead movement, lane visibility, and region selection stays in the browser only.

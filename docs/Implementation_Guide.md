@@ -76,10 +76,10 @@ Goal: prepare clean, aligned source material for all downstream analysis.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 1.1 | Stem separation and High-Res Preprocessing | normalized stems, downsampling, stem metadata | `docs/1.1.stem_separation_story.md` |
-| 1.2 | Beat, tempo, and bar grid detection | BPM, beats, bars, timing grid | `docs/1.2.beat_tempo_detection_story.md` |
-| 1.3 | Seven-band FFT extraction | `essentia/fft_bands.json` for debugger spectral inspection | `docs/1.3.fft_band_extraction_story.md` |
-| 1.4 | Mix and per-stem loudness with History Buffers | `rms_loudness.json` with 2-5s rolling history | `docs/1.4.mix_and_per_stem_loudness_story.md` |
+| 1.1 | Stem separation and High-Res Preprocessing | normalized stems, downsampling, stem metadata | `docs/audio-inference/1.1.stem_separation_story.md` |
+| 1.2 | Beat, tempo, and bar grid detection | BPM, beats, bars, timing grid | `docs/audio-processing/1.2.beat_tempo_detection_story.md` |
+| 1.3 | Seven-band FFT extraction | `essentia/fft_bands.json` for debugger spectral inspection | `docs/audio-processing/1.3.fft_band_extraction_story.md` |
+| 1.4 | Mix and per-stem loudness with History Buffers | `rms_loudness.json` with 2-5s rolling history | `docs/audio-processing/1.4.mix_and_per_stem_loudness_story.md` |
 
 ## EPIC 2: Harmonic Summary
 
@@ -87,11 +87,11 @@ Goal: provide tonal, chordal, and harmonic-motion context.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 2.1 | HPCP extraction | beat-aligned chroma/HPCP features | `docs/2.1.hpcp_extraction_story.md` |
-| 2.2 | Chord inference | chord probabilities, decoded chord events | `docs/2.2.chord_detection_story.md` |
-| 3.3 | Key and tonal center detection | global key and optional section key estimates | `docs/3.3.key_tonal_center_story.md` |
-| 4.2 | Harmonic feature derivation | cadence, tension, mobility, role summaries | `docs/4.2.harmonic_features_story.md` |
-| 6.1 | Song genre guidance | producer-scoped coarse genre label and review guidance | `docs/6.1.song_genre_guidance_story.md` |
+| 2.1 | HPCP extraction | beat-aligned chroma/HPCP features | `docs/audio-processing/2.1.hpcp_extraction_story.md` |
+| 2.2 | Chord inference | chord probabilities, decoded chord events | `docs/audio-inference/2.2.chord_detection_story.md` |
+| 3.3 | Key and tonal center detection | global key and optional section key estimates | `docs/audio-processing/3.3.key_tonal_center_story.md` |
+| 4.2 | Harmonic feature derivation | cadence, tension, mobility, role summaries | `docs/audio-processing/4.2.harmonic_features_story.md` |
+| 6.1 | Song genre guidance | producer-scoped coarse genre label and review guidance | `docs/audio-inference/6.1.song_genre_guidance_story.md` |
 
 Representative artifact: `layer_a_harmonic.json`.
 
@@ -101,11 +101,11 @@ Goal: capture physical intensity, brightness, transients, and structure.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 2.6 | Low-level energy feature extraction | frame- and beat-level loudness, centroid, flux, onset | `docs/2.6.energy_feature_schema.md` |
-| 3.1 | Section segmentation | structural change windows, optional labels, confidence | `docs/3.1.section_segmentation_story.md` |
-| 4.1 | Derived energy features | energy cards, peaks, dips, accent candidates | `docs/4.1.energy_feature_derivation_story.md` |
-| 3.2 | Structural integrity audit | confidence scores and transient-locking metadata | `docs/3.2.structural_integrity_audit_story.md` |
-| 6.3 | LLM-friendly song map abstraction | unified deterministic song map for prompt-based consumers | `docs/6.3.unified_llm_friendly_abstraction_story.md` |
+| 2.6 | Low-level energy feature extraction | frame- and beat-level loudness, centroid, flux, onset | `docs/audio-processing/2.6.energy_feature_schema.md` |
+| 3.1 | Section segmentation | structural change windows, optional labels, confidence | `docs/audio-inference/3.1.section_segmentation_story.md` |
+| 4.1 | Derived energy features | energy cards, peaks, dips, accent candidates | `docs/audio-processing/4.1.energy_feature_derivation_story.md` |
+| 3.2 | Structural integrity audit | confidence scores and transient-locking metadata | `docs/audio-inference/3.2.structural_integrity_audit_story.md` |
+| 6.3 | LLM-friendly song map abstraction | unified deterministic song map for prompt-based consumers | `docs/audio-inference/6.3.unified_llm_friendly_abstraction_story.md` |
 
 Representative artifact: `layer_c_energy.json`.
 
@@ -115,12 +115,12 @@ Goal: translate audio into note-level, drum-hit, and phrase-level musical behavi
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 2.4 | MIDI-like transcription | validated multi-source note events from stems and full mix | `docs/2.4.midi_transcription_story.md` |
-| 2.5 | Drums transcription | reviewable kick, snare, and hat event artifact | `docs/2.5.drums_transcription_story.md` |
-| 4.3 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/4.3.symbolic_feature_engineering_story.md` |
-| 3.4 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/3.4.temporal_alignment_story.md` |
-| 6.2 | Section hint inference | deterministic symbolic and structural section hints with editable output merge | `docs/6.2.section_hints_story.md` |
-| 6.3 | Unified LLM-friendly abstraction | deterministic prompt-facing song map with symbolic, structural, and identifier context | `docs/6.3.unified_llm_friendly_abstraction_story.md` |
+| 2.4 | MIDI-like transcription | validated multi-source note events from stems and full mix | `docs/audio-inference/2.4.midi_transcription_story.md` |
+| 2.5 | Drums transcription | reviewable kick, snare, and hat event artifact | `docs/audio-inference/2.5.drums_transcription_story.md` |
+| 4.3 | Symbolic feature engineering | density, contour, range, repetition, sustain | `docs/audio-processing/4.3.symbolic_feature_engineering_story.md` |
+| 3.4 | Temporal alignment | beat-, bar-, and phrase-aligned symbolic timeline | `docs/audio-processing/3.4.temporal_alignment_story.md` |
+| 6.2 | Section hint inference | deterministic symbolic and structural section hints with editable output merge | `docs/audio-inference/6.2.section_hints_story.md` |
+| 6.3 | Unified LLM-friendly abstraction | deterministic prompt-facing song map with symbolic, structural, and identifier context | `docs/audio-inference/6.3.unified_llm_friendly_abstraction_story.md` |
 
 Representative artifact: `layer_b_symbolic.json`.
 
@@ -130,14 +130,14 @@ Goal: define the canonical event contract, infer musically meaningful event wind
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 5.1 | Event vocabulary and schema | `event_vocabulary.json` and `song_event_schema.json` | `docs/5.1.event_vocabulary_and_schema_story.md` |
-| 4.4 | Event feature normalization and timeline alignment | `event_inference/features.json` and helper indices such as `event_inference/timeline_index.json` | `docs/4.4.event_feature_normalization_story.md` |
-| 5.2 | Rule-based baseline event detection | `event_inference/rule_candidates.json` | `docs/5.2.rule_based_event_detection_story.md` |
-| 4.5 | Song identifier inference and physical transient audit | `energy_summary/hints.json` with event-level audit metadata | `docs/4.5.song_identifier_inference_story.md` |
-| 5.4 | Advanced musical event classification | `event_inference/events.machine.json` | `docs/5.4.advanced_event_classification_story.md` |
-| 5.5 | Confidence, review, and override workflow | `validation/song_events.review.json`, `validation/song_events.review.md`, and `validation/song_events.overrides.json` | `docs/5.5.event_review_and_override_story.md` |
-| 5.5 | Event benchmarking and genre-sensitive tuning | `validation/event_benchmark.json`, benchmark annotations, and threshold profiles | `docs/5.5.event_benchmarking_and_tuning_story.md` |
-| 5.6 | LLM-friendly event timeline export | `data/analysis/<Song - Artist>/song_event_timeline.json` and `validation/song_event_timeline.md` | `docs/5.6.event_timeline_export_story.md` |
+| 5.1 | Event vocabulary and schema | `event_vocabulary.json` and `song_event_schema.json` | `docs/audio-inference/5.1.event_vocabulary_and_schema_story.md` |
+| 4.4 | Event feature normalization and timeline alignment | `event_inference/features.json` and helper indices such as `event_inference/timeline_index.json` | `docs/audio-processing/4.4.event_feature_normalization_story.md` |
+| 5.2 | Rule-based baseline event detection | `event_inference/rule_candidates.json` | `docs/audio-inference/5.2.rule_based_event_detection_story.md` |
+| 4.5 | Song identifier inference and physical transient audit | `energy_summary/hints.json` with event-level audit metadata | `docs/audio-inference/4.5.song_identifier_inference_story.md` |
+| 5.4 | Advanced musical event classification | `event_inference/events.machine.json` | `docs/audio-inference/5.4.advanced_event_classification_story.md` |
+| 5.5 | Confidence, review, and override workflow | `validation/song_events.review.json`, `validation/song_events.review.md`, and `validation/song_events.overrides.json` | `docs/human-curated/5.5.event_review_and_benchmark_story.md` |
+| 5.5 | Event benchmarking and genre-sensitive tuning | `validation/event_benchmark.json`, benchmark annotations, and threshold profiles | `docs/human-curated/5.5.event_review_and_benchmark_story.md` |
+| 5.6 | LLM-friendly event timeline export | `data/analysis/<Song - Artist>/song_event_timeline.json` and `validation/song_event_timeline.md` | `docs/audio-inference/5.6.event_timeline_export_story.md` |
 
 Representative artifacts: `energy_summary/hints.json`, `event_inference/features.json`, `event_inference/rule_candidates.json`, `event_inference/events.machine.json`, `data/analysis/<Song - Artist>/artifacts/validation/song_events.review.json`, `data/analysis/<Song - Artist>/song_event_timeline.json`, `validation/event_benchmark.json`.
 
@@ -147,10 +147,10 @@ Goal: Classify events from multi-modal feature streams with explainability.
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 5.3 | 1D-CNN Event Classifier with Penalty Logic | `1d_cnn_v1.pth` trained with physical constraints | `docs/5.3.ml_event_classifier_and_training_story.md` |
-| 5.9 | ML classification with physical-constraint penalty logic | training and inference penalty metadata with reproducibility controls | `docs/5.9.ml_classification_penalty_logic_story.md` |
-| 5.3 | 1D-CNN training and dataset generation | `models/event_classifier/1d_cnn_v1.pth` and `models/event_classifier/metadata.json` | `docs/5.3.event_classifier_training_story.md` |
-| 1.5 | Unified perceptual embedding | `layer_perceptual_embedding.json` and `layer_musical_signature.json` | `docs/1.5.unified_perceptual_embedding_story.md` |
+| 5.3 | 1D-CNN Event Classifier with Penalty Logic | `1d_cnn_v1.pth` trained with physical constraints | `docs/audio-inference/5.3.ml_event_classifier_and_training_story.md` |
+| 5.9 | ML classification with physical-constraint penalty logic | training and inference penalty metadata with reproducibility controls | `docs/audio-inference/5.9.ml_classification_penalty_logic_story.md` |
+| 5.3 | 1D-CNN training and dataset generation | `models/event_classifier/1d_cnn_v1.pth` and `models/event_classifier/metadata.json` | `docs/audio-inference/5.3.ml_event_classifier_and_training_story.md` |
+| 1.5 | Unified perceptual embedding | `layer_perceptual_embedding.json` and `layer_musical_signature.json` | `docs/audio-inference/1.5.unified_perceptual_embedding_story.md` |
 
 ## EPIC 7: Lighting Score Generation
 
@@ -160,12 +160,12 @@ Layer D covers repeated harmonic progression structure. Motif-level and phrase-l
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 2.3 | Find chord patterns | `pattern_mining/chord_patterns.json` and `layer_d_patterns.json` | `docs/2.3.find_chord_patterns_story.md` |
-| 7.2 | Build UI data | `data/analysis/<Song - Artist>/beats.json` and `data/analysis/<Song - Artist>/sections.json` | `docs/7.2.build_ui_data_story.md` |
-| 7.1 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/7.1.music_feature_layers_story.md` |
-| 7.3 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/7.3.energy_to_lighting_mapping.md` |
-| 7.4 | Fixture-aware orchestration | fixture-aware events with stable-role and event-overlay logic, plus `lighting_score.md` | `docs/7.4.fixture_aware_mapping_story.md` |
-| 7.5 | BeatDrop offline visualizer export | deterministic offline preset windows and transition schedule in `beatdrop_visual_plan.json` | `docs/7.5.beatdrop_offline_visualizer_export_story.md` |
+| 2.3 | Find chord patterns | `pattern_mining/chord_patterns.json` and `layer_d_patterns.json` | `docs/audio-processing/2.3.find_chord_patterns_story.md` |
+| 7.2 | Build UI data | `data/analysis/<Song - Artist>/beats.json` and `data/analysis/<Song - Artist>/sections.json` | `docs/web-ui/7.2.build_ui_data_story.md` |
+| 7.1 | Unified music feature layer assembly | `music_feature_layers.json` and documented helper outputs | `docs/lighting-score/7.1.music_feature_layers_story.md` |
+| 7.3 | Feature-to-lighting mapping | fixture-agnostic `lighting_events.json` and mapping logic | `docs/lighting-score/7.3.energy_to_lighting_mapping.md` |
+| 7.4 | Fixture-aware orchestration | fixture-aware events with stable-role and event-overlay logic, plus `lighting_score.md` | `docs/lighting-score/7.4.fixture_aware_mapping_story.md` |
+| 7.5 | BeatDrop offline visualizer export | deterministic offline preset windows and transition schedule in `beatdrop_visual_plan.json` | `docs/web-ui/7.5.beatdrop_offline_visualizer_export_story.md` |
 
 Representative artifacts: `layer_d_patterns.json`, `data/analysis/<Song - Artist>/beats.json`, `data/analysis/<Song - Artist>/sections.json`, `music_feature_layers.json`, `lighting_events.json`, `lighting_score.md`, `data/analysis/<Song - Artist>/beatdrop_visual_plan.json`.
 
@@ -177,15 +177,15 @@ The debugger is an internal engineering and review tool. Its primary inspection 
 
 | Story | Intent | Primary outputs | Detailed spec |
 | --- | --- | --- | --- |
-| 8.1 | Song auto-discovery and artifact entry | discovered song-directory selection and artifact entry shell | `docs/8.1.song_auto_discovery_and_artifact_entry_story.md` |
-| 8.2 | Master sync and waveform anchor | debugger playback shell and shared timeline clock | `docs/8.2.master_sync_and_waveform_anchor_story.md` |
-| 8.3 | DAW-style lane architecture | shared lane layout, zoom, filtering, and scroll sync | `docs/8.3.daw_style_lane_architecture_story.md` |
-| 8.4 | Sparse data lanes | section, chord, pattern, and event-region lanes | `docs/8.4.sparse_data_lanes_story.md` |
-| 8.5 | High-density lanes | drum, density, and energy renderers | `docs/8.5.high_density_lanes_story.md` |
-| 8.6 | Semantic zoom and performance guardrails | clustering, zoom floors, and viewport-limited rendering | `docs/8.6.semantic_zoom_and_performance_story.md` |
-| 8.7 | Regression validation overlay | beat-grid, drift, and validation comparison overlays | `docs/8.7.regression_validation_overlay_story.md` |
-| 8.8 | Human hint editor | explicit editing of reference human hints in the helper UI | `docs/8.8.human_hint_editor_story.md` |
-| 8.9 | Identifier and ML event lanes | read-only debugger lanes for rule identifier hints and ML event predictions | `docs/8.9.identifier_and_ml_event_lanes_story.md` |
+| 8.1 | Song auto-discovery and artifact entry | discovered song-directory selection and artifact entry shell | `docs/web-ui/8.1.song_auto_discovery_and_artifact_entry_story.md` |
+| 8.2 | Master sync and waveform anchor | debugger playback shell and shared timeline clock | `docs/web-ui/8.2.master_sync_and_waveform_anchor_story.md` |
+| 8.3 | DAW-style lane architecture | shared lane layout, zoom, filtering, and scroll sync | `docs/web-ui/8.3.daw_style_lane_architecture_story.md` |
+| 8.4 | Sparse data lanes | section, chord, pattern, and event-region lanes | `docs/web-ui/8.4.sparse_data_lanes_story.md` |
+| 8.5 | High-density lanes | drum, density, and energy renderers | `docs/web-ui/8.5.high_density_lanes_story.md` |
+| 8.6 | Semantic zoom and performance guardrails | clustering, zoom floors, and viewport-limited rendering | `docs/web-ui/8.6.semantic_zoom_and_performance_story.md` |
+| 8.7 | Regression validation overlay | beat-grid, drift, and validation comparison overlays | `docs/web-ui/8.7.regression_validation_overlay_story.md` |
+| 8.8 | Human hint editor | explicit editing of reference human hints in the helper UI | `docs/web-ui/8.8.human_hint_editor_story.md` |
+| 8.9 | Identifier and ML event lanes | read-only debugger lanes for rule identifier hints and ML event predictions | `docs/web-ui/8.9.identifier_and_ml_event_lanes_story.md` |
 
 Representative implementation assets: `/ui/`, the Compose `ui` service, debugger access to `layer_a_harmonic.json`, `layer_b_symbolic.json`, `layer_c_energy.json`, `layer_d_patterns.json`, `event_inference/*.json`, `validation/phase_1_report.json`, `music_feature_layers.json`, and the editable reference file `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
 
@@ -208,7 +208,7 @@ The expected high-level artifact dependency chain is:
 
 - `docs/constitution.md`: high-level project values, coding standards, and architectural principles.
 - `docs/layer_manifest.md`: layer-by-layer artifact contract.
-- `docs/lighting_score_template.md`: stable lighting-score structure.
+- `docs/human-curated/lighting_score_template.md`: stable lighting-score structure.
 - `docs/docker_development.md`: container runtime and validation contract.
 - `docs/ui_development.md`: internal debugger runtime, folder ownership, and read-only data-access contract.
 - `docs/phase_1_validation_cli.md`: first-phase analyzer entry point and reference-comparison contract.
