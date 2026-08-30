@@ -45,7 +45,7 @@ stall a whole run; everything independent of it still gets built.
 | 5.3 | Benchmark profiles keyed on `form_family` | B6 | ☑ |
 | 6.1 | Full-corpus run | — | ⚠ blocked → D2 |
 | 6.2 | MCP contract-change note | — | ☑ |
-| 6.3 | Release close-out | — | ◐ (docs done; tag held on D2) |
+| 6.3 | Release close-out | — | ◐ (docs done; archive + tag held on D1/D2) |
 
 ## Test set
 

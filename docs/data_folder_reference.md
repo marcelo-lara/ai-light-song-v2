@@ -151,6 +151,16 @@ Lighting rig metadata and point-of-interest targeting data.
 
 Reference and curated external material, nested under each song's analysis folder, including Moises-style chord, segment, and lyric references for validation and review plus the helper UI human-hints file at `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
 
+**v1.1:** `reference/human/song_facts.json` (new) holds song-level human-confirmed facts (`genre`, `form_family`, `has_drop`), each `{ value, provenance: "human-confirmed", confirmed_on }`. It is a sibling of `human_hints.json`, written **only** by the debugger UI on an explicit human save (Story 8.10). The analyzer reads it but never writes `reference/`.
+
+## v1.1 artifact and field changes
+
+- `artifacts/section_segmentation/sections.json` (`schema_version` `"1.1"`): new song-level `form_family` object; per-section `form_role` (primary label, gates the top-level `label`), `form_role_confidence`, `form_role_margin`, `energy_character` (former energy-shape label), `repetition_group` / `variant_of` / `similarity`, and `confidence_terms`. `confidence` now measures boundary/label certainty only and spans the full `[0, 1]` range.
+- Top-level `sections.json`: every row carries `section_id` (join key, item 3.2), plus `form_role`, `energy_character`, `repetition_group`, numeric `confidence`.
+- `song_event_timeline.json` (`schema_version` `"1.1"`): composite events with `phases[]`; `layer_add`/`layer_remove` removed and replaced by `texture_summary[]`; `intensity` is an absolute cross-song scale.
+- `artifacts/validation/review_queue.json` (new): ranked open questions for a human to answer into `song_facts.json`.
+- `artifacts/validation/form_score.json`, `drops_score.json` (new): advisory `--compare form,drops` scores.
+
 ## File Reference
 
 ### `data/fixtures/fixtures.json`

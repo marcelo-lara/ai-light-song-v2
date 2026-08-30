@@ -1,10 +1,14 @@
 # ai-light-song-v2
 
-**Status:** working toward module release **v1.1** — see
-[docs/product-refinement-v1.1.md](docs/product-refinement-v1.1.md) for the
-worklist and version convention, and
+**Status:** **v1.1** code complete — all plan items implemented and committed
+(one commit per item). The `v1.1` tag is held pending two host-dependent gates:
+the gold-set labelling pass (D1) and the full-corpus GPU validation run (D2).
+See [docs/product-refinement-v1.1.md](docs/product-refinement-v1.1.md) for the
+worklist and version convention,
 [docs/implementation-plan-v1.1.md](docs/implementation-plan-v1.1.md) for the
-ordered work.
+per-item status, and
+[docs/source references/contract-change-v1.1.md](docs/source%20references/contract-change-v1.1.md)
+for the handover note to the MCP side.
 
 A Docker-first pipeline that turns a source song into structured musical
 analysis artifacts and fixture-aware lighting guidance. This repo is the
