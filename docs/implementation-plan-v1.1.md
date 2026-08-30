@@ -434,6 +434,14 @@ guess here is worse than no label.
   human correct. Rejected: pollutes the truth set and the validation numbers
   degrade silently, exactly per R7.
 
+**Partial unblock (2026-08-30).** The project owner has confirmed that **all four
+gold tracks contain at least one real drop**, recorded as `has_drop` with
+`provenance: "human-confirmed"` in each track's
+`reference/human/song_facts.json` (a new file; `data/` is gitignored so it lives
+only on the local disk). This makes item 1.2's acceptance — "each reports at
+least one drop" — checkable now, ahead of the full timed labelling. Timed drop
+boundaries, section boundaries and `form_role` are still pending a human pass.
+
 **`_test_song`** already carries 11 timed human hints and is extended with
 `form_role` per section in item 2.2's commit (that is real human data, not a
 guess).
