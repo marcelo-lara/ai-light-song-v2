@@ -34,7 +34,7 @@ stall a whole run; everything independent of it still gets built.
 | 1.2 | Drop detection rebuild | R4 B2 | ☑ (provisional, D1) |
 | 1.3 | `fake_drop` symmetry | R4 B3 | ☑ (provisional, D1) |
 | 2.1 | `form_family` inference | R1a | ☑ (provisional, D1) |
-| 2.2 | `form_role` labelling | R1 | ☐ |
+| 2.2 | `form_role` labelling | R1 | ☑ (provisional, D1) |
 | 2.3 | Section repetition identity | R2 | ☐ |
 | 3.1 | Honest boundary confidence | R3 B1 | ☐ |
 | 3.2 | Join section lists on `section_id` | B5 | ☐ |
@@ -256,17 +256,20 @@ form` cross-track match is provisional under D1 (expected answers recorded in D1
 
 ### 2.2 `form_role` labelling
 
-- [ ] Add the `form_role` vocabulary and assign it by deterministic rules, gated
-      by `form_family`. `unknown` is a first-class output — emit it rather than
-      guessing.
-- [ ] Keep `energy_character` unchanged as secondary metadata.
-- [ ] Rebuild the top-level `sections.json` `label` from `form_role`. Confidence
-      stays a separate numeric field and is not folded into the label string.
-- [ ] Bump `section_segmentation` engine to `.v2` and `schema_version` → `"1.1"`.
-- [ ] Update the Story spec: `docs/audio-inference/3.1.section_segmentation_story.md`.
+- [x] `FORM_ROLE_VOCAB` + `FORM_FAMILY_ROLES` gate in `form.py`;
+      `assign_form_roles` scores every admissible role deterministically and
+      emits `unknown` when the best score < 0.4 or its margin < 0.08.
+- [x] `energy_character` carries the 13-value energy-shape label (with
+      `section_character` kept as its alias).
+- [x] Top-level `label` rebuilt from `form_role`; `form_role_confidence` and
+      `form_role_margin` are separate numeric fields.
+- [x] `section_segmentation` engine → `deterministic.section_segmentation.v2`,
+      `schema_version` → `"1.1"` (inferred and reference-promoted payloads).
+- [x] Story 3.1 updated. `test_sections_v2` split-label assertion moved to
+      `section_character`.
 
-**Test:** `--compare form` — `form_role` accuracy over matched boundaries beats
-the 0.3 baseline; no section carries a role outside its `form_family`.
+**Test:** `tests/test_form_labelling.py::FormRoleTests` (in-vocab + verse/chorus
+alternation). `--compare form` accuracy-vs-baseline is provisional under D1.
 **Commit:** `2.2 form_role labelling`
 
 ### 2.3 Section repetition identity

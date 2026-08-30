@@ -38,14 +38,14 @@ def _section_key(section: dict[str, Any]) -> tuple[float, float, str | None]:
 
 def _inferred_section_payload(paths: SongPaths, sections: list[SectionWindow], metadata_breaks: list[dict[str, Any]]) -> dict[str, Any]:
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": "1.1",
         "song_name": paths.song_name,
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "beats_file": str(paths.artifact("essentia", "beats.json")),
             "harmonic_layer_file": str(paths.artifact("layer_a_harmonic.json")),
             "energy_features_file": str(paths.artifact("energy_summary", "features.json")),
-            "engine": "deterministic.section_segmentation.v1",
+            "engine": "deterministic.section_segmentation.v2",
             "snapping_rule": "coarse section starts snap to the nearest bar boundary; inferred timing may refine those starts to nearby beat boundaries when novelty contrast is materially stronger, while reference-promoted timing keeps section starts on canonical bar anchors",
             "label_strategy": "context-aware musical-state section_character labels from section-scale energy, motion, repetition, and contrast cues",
             "annotation_strategy": "structural change windows are primary; section_character labels are auxiliary lighting metadata",
@@ -140,11 +140,18 @@ def _build_reference_promoted_sections(
                 section_character=section_character,
                 confidence=round(max(0.55, confidence), 6),
                 onset_anchored=False,
+                form_role=(inferred_section.get("form_role") if inferred_section else None),
+                form_role_confidence=(inferred_section.get("form_role_confidence") if inferred_section else None),
+                form_role_margin=(inferred_section.get("form_role_margin") if inferred_section else None),
+                energy_character=(inferred_section.get("energy_character") if inferred_section else section_character),
+                repetition_group=(inferred_section.get("repetition_group") if inferred_section else None),
+                variant_of=(inferred_section.get("variant_of") if inferred_section else None),
+                similarity=(inferred_section.get("similarity") if inferred_section else None),
             )
         )
 
     payload = {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": "1.1",
         "song_name": paths.song_name,
         "generated_from": {
             "source_song_path": str(paths.song_path),
@@ -226,6 +233,9 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
         section_starts[0] = 0.0
         section_onset_anchored[0] = False
 
+    # v1.1 item 2.2 — form_role is the primary label, gated by form_family.
+    role_assignments = assign_form_roles(grouped_sections, repetitions, form_family["value"])
+
     sections = []
     for index, (section, label, repetition) in enumerate(zip(grouped_sections, labels, repetitions)):
         start = section_starts[index]
@@ -233,15 +243,20 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
         if index + 1 < len(grouped_sections):
             end = section_starts[index + 1]
         confidence = max(0.2, min(0.99, 0.35 + (section["energy"] * 0.25) + (repetition * 0.25) + (section["onset"] * 0.15)))
+        role = role_assignments[index]
         sections.append(
             SectionWindow(
                 section_id=f"section-{index + 1:03d}",
                 start=round(start, 6),
                 end=round(end, 6),
-                label=label,
+                label=role["form_role"],
                 section_character=label,
                 confidence=round(float(confidence), 6),
                 onset_anchored=section_onset_anchored[index],
+                form_role=role["form_role"],
+                form_role_confidence=role["form_role_confidence"],
+                form_role_margin=role["form_role_margin"],
+                energy_character=label,
             )
         )
 

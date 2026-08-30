@@ -450,7 +450,9 @@ class SectionSegmentationTests(unittest.TestCase):
             starts = [section["start"] for section in payload["sections"]]
             self.assertIn(24.5, starts)
             split_section = next(section for section in payload["sections"] if section["start"] == 24.5)
-            self.assertIn(split_section["label"], {"momentum_lift", "groove_plateau"})
+            # v1.1: top-level `label` is now `form_role`; the energy-shape label
+            # moved to `section_character` / `energy_character`.
+            self.assertIn(split_section["section_character"], {"momentum_lift", "groove_plateau"})
 
     def test_segment_sections_does_not_split_for_brief_internal_accent(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
