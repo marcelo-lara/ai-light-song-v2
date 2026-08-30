@@ -43,9 +43,9 @@ stall a whole run; everything independent of it still gets built.
 | 5.1 | `song_facts.json` + `review_queue.json` | R7 | ☑ |
 | 5.2 | UI round-trip for the review queue | R7 | ☑ (provisional, no UI runtime) |
 | 5.3 | Benchmark profiles keyed on `form_family` | B6 | ☑ |
-| 6.1 | Full-corpus run | — | ☐ |
-| 6.2 | MCP contract-change note | — | ☐ |
-| 6.3 | Release close-out | — | ☐ |
+| 6.1 | Full-corpus run | — | ⚠ blocked → D2 |
+| 6.2 | MCP contract-change note | — | ☑ |
+| 6.3 | Release close-out | — | ◐ (docs done; tag held on D2) |
 
 ## Test set
 
@@ -436,6 +436,11 @@ save-only-on-explicit-save contract is enforced by the single PUT handler.
 
 ### 6.1 Full-corpus run
 
+> **Status: blocked — see D2.** No GPU / model runtime in this environment. The
+> changed stages were smoke-tested end-to-end on `_test_song` via `--stage`
+> (see D2 for the observed provisional numbers). The corpus gate is deferred to
+> a GPU host.
+
 - [ ] Run the full pipeline over all songs and confirm no stage fails.
 - [ ] Confirm determinism: run one song twice, compare artifacts byte-for-byte.
 - [ ] Record drop counts and confidence distributions across the corpus, for
@@ -451,30 +456,68 @@ mkdir -p logs && nohup docker compose run --rm -T app \
 
 ### 6.2 MCP contract-change note
 
-- [ ] Write `docs/source references/contract-change-v1.1.md`: exactly what
-      changed in the top-level files — `form_role`/`form_family`,
-      `repetition_group`, composite `phases[]`, the removal of `layer_add`/
-      `layer_remove`, the new `intensity` scale, and `section_id` as the join key.
-- [ ] The MCP server is not modified in this release; this note is the handover.
+- [x] `docs/source references/contract-change-v1.1.md` written — every
+      top-level change: `form_family`/`form_role`/`energy_character`,
+      `repetition_group`/`variant_of`/`similarity`, `confidence_terms` and the
+      new `confidence` semantics, `section_id` as the join key, composite
+      `phases[]`, `layer_add`/`layer_remove` → `texture_summary[]`, the absolute
+      `intensity` scale, and the new `review_queue.json` / `song_facts.json`
+      files.
+- [x] States that the MCP server is not modified in v1.1.
 
 **Commit:** `6.2 MCP contract-change note`
 
 ### 6.3 Release close-out
 
-- [ ] Confirm every changed artifact carries the right `schema_version` and
-      engine version per the refinement doc's convention.
-- [ ] Confirm every touched Story spec matches the implementation.
-- [ ] Update `docs/data_folder_reference.md` and `docs/Implementation_Guide.md`
+- [x] Schema/engine versions bumped where shape or behaviour changed:
+      `section_segmentation` → schema `"1.1"` / engine `.v3`;
+      `event_inference/features.json` → schema `"1.1"` / engine
+      `…stem-relative.v2`; `rule_candidates.json` engine
+      `rule-based-event-detection.v2`; `song_event_timeline.json` → schema
+      `"1.1"` / engine `…v2`; `review_queue.json` / `song_facts.json` at `"1.1"`.
+      The strict internal `song_event_schema.json` deliberately stays at `"1.0"`
+      (flat members retained for `beatdrop_visual_plan.json`).
+- [x] Story specs updated inside each item's commit (3.1, 3.2, 4.4, 5.1, 5.2,
+      5.5, 5.6, 7.2) plus new Stories 5.7 and 8.10.
+- [x] `docs/data_folder_reference.md` and `docs/Implementation_Guide.md` updated
       for the new files and fields.
-- [ ] Update the root `README.md` status line to point at v1.1 as released.
-- [ ] Archive this plan and `product-refinement-v1.1.md`.
-- [ ] Tag `v1.1`.
+- [x] Root `README.md` status line updated — v1.1 code complete, tag held on
+      D1 + D2.
+- [ ] Archive this plan and `product-refinement-v1.1.md` — **held**: the release
+      is not closed until D1 (gold-set labelling) and D2 (full-corpus run) pass.
+- [ ] Tag `v1.1` — **held** on D1 + D2.
 
 **Commit:** `6.3 release close-out`
 
 ---
 
 ## Decisions raised during implementation
+
+### D2 — Full-corpus validation run needs a GPU host (blocks 6.1)
+
+**Blocked item:** 6.1 "Full-corpus run".
+
+**Why it is blocking.** The run is `./analyze --all-songs --device cuda` over 22
+songs through demucs / omnizart / essentia-tensorflow. This environment reports
+*"The NVIDIA Driver was not detected"* and has no model runtime, so a full
+corpus pass cannot be executed or timed here.
+
+**What was done instead.** Every changed stage was smoke-tested end-to-end on
+`_test_song` via `./analyze --stage <name>` against its existing stems/artifacts:
+`segment-sections` → `build-event-feature-layer` → `generate-rule-candidates` →
+`generate-machine-events` → `export-event-timeline` → `build-review-queue` all
+run clean. Observed on `_test_song` (provisional, not the gate): `form_family`
+inferred `hybrid`; boundary confidence spans 0.13–0.90 (was 0.54–0.86);
+`fake_drop` count 0; drops reduced from 8 to 2 after NMS, the first at 30.0 s
+against the human "Drop in" at 28.8 s; composites fold; `layer_add`/`layer_remove`
+gone from the timeline; `review_queue.json` emits one answerable question.
+
+**Options.**
+- **(taken) Defer 6.1 to a GPU host; ship the code.** The release tag `v1.1`
+  is held until 6.1 and the D1 gold-set validation both pass. All item code,
+  tests and story specs are committed.
+- Run 6.1 in CI or on the analysis workstation and record drop counts /
+  confidence distributions vs. the pre-v1.1 figures, then tag.
 
 ### D1 — Gold-set ground truth requires a human listener (blocks 0.2)
 
