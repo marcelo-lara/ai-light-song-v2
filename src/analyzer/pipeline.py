@@ -19,6 +19,7 @@ from analyzer.stages.event_machine import generate_machine_events
 from analyzer.stages.event_rules import generate_rule_candidates
 from analyzer.stages.event_review import generate_event_review
 from analyzer.stages.event_timeline import export_event_timeline
+from analyzer.stages.review_queue import build_review_queue
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.genre import classify_genre
@@ -77,6 +78,7 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "generate-event-review": "5.5",
     "benchmark-event-outputs": "5.5",
     "export-event-timeline": "5.6",
+    "build-review-queue": "5.1",
     "classify-genre": "6.1",
     "generate-section-hints": "6.2",
     "assemble-music-feature-layers": "7.1",
@@ -300,6 +302,12 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         review_outputs = _run_stage(paths.song_name, "phase-1", "generate-event-review", generate_event_review, paths, machine_events)
         genre_result = _optional_artifact_payload(paths, "genre.json")
         _run_stage(paths.song_name, "phase-1", stage_name, benchmark_event_outputs, paths, review_outputs["merged_payload"], genre_result)
+        return 0
+    if stage_name == "build-review-queue":
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        genre_result = _optional_artifact_payload(paths, "genre.json")
+        timeline = read_json(paths.timeline_output_path) if paths.timeline_output_path.exists() else {}
+        _run_stage(paths.song_name, "phase-1", stage_name, build_review_queue, paths, sections, genre_result, timeline)
         return 0
     if stage_name == "extract-chord-patterns":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
@@ -567,6 +575,16 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             genre_result,
         )
         event_timeline = _run_stage(paths.song_name, "phase-1", "export-event-timeline", export_event_timeline, paths, review_outputs["merged_payload"])
+        _run_stage(
+            paths.song_name,
+            "phase-1",
+            "build-review-queue",
+            build_review_queue,
+            paths,
+            sections,
+            genre_result,
+            read_json(paths.timeline_output_path) if paths.timeline_output_path.exists() else {},
+        )
         hints = _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, symbolic, sections)
         ui_outputs = _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
         unified = _run_stage(
@@ -630,6 +648,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 "event_overrides": str(paths.overrides_path),
                 "event_timeline_markdown": str(paths.timeline_md_path),
                 "event_benchmark": str(paths.artifact("validation", "event_benchmark.json")),
+                "review_queue": str(paths.artifact("validation", "review_queue.json")),
+                "song_facts": str(paths.reference("human", "song_facts.json")),
                 "human_hints_alignment": human_hint_alignment["json_path"] if human_hint_alignment else None,
                 "human_hints_alignment_markdown": human_hint_alignment["markdown_path"] if human_hint_alignment else None,
                 "sections": str(paths.artifact("section_segmentation", "sections.json")),

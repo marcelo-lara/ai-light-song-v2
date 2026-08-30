@@ -40,7 +40,7 @@ stall a whole run; everything independent of it still gets built.
 | 3.2 | Join section lists on `section_id` | B5 | ☑ |
 | 4.1 | Composite events with phases | R5 | ☑ (provisional, D1) |
 | 4.2 | Lean timeline and absolute `intensity` | R6 B4 | ☑ (provisional, D1) |
-| 5.1 | `song_facts.json` + `review_queue.json` | R7 | ☐ |
+| 5.1 | `song_facts.json` + `review_queue.json` | R7 | ☑ |
 | 5.2 | UI round-trip for the review queue | R7 | ☐ |
 | 5.3 | Benchmark profiles keyed on `form_family` | B6 | ☐ |
 | 6.1 | Full-corpus run | — | ☐ |
@@ -383,17 +383,23 @@ scale.
 
 ### 5.1 `song_facts.json` + `review_queue.json`
 
-- [ ] Read `reference/human/song_facts.json` as an optional input (already
-      consumed by 2.1; formalise the contract and schema here).
-- [ ] Emit `artifacts/validation/review_queue.json`: the field in question,
-      competing candidates with scores, timestamps of the ambiguous evidence, and
-      why confidence was low — ranked, highest-leverage first.
-- [ ] Include the `form_family` / genre disagreement flag from R1a.
-- [ ] The analyzer must never write into `reference/`. Add a test asserting that.
-- [ ] Write a new Story spec for this contract under `docs/audio-inference/`.
+- [x] `song_facts.json` contract formalised in the new Story 5.7; loaded via
+      `load_song_facts` (shared with 2.1 and the 0.3 harness).
+- [x] `src/analyzer/stages/review_queue.py::build_review_queue` emits
+      `artifacts/validation/review_queue.json` — ranked by `leverage`, each entry
+      carrying `field`, `candidates` (value+score), `evidence_timestamps`,
+      `reason_low_confidence`. Wired as the `build-review-queue` pipeline stage
+      (5.1) and registered in `info.json`.
+- [x] Question sources: low-confidence `form_family`, `form_family_vs_genre`
+      (R1a flag), ambiguous/`unknown` `form_role`, and `drops.timed_location`
+      when `has_drop` is true but nothing was detected.
+- [x] `direction_of_flow` is stated in the artifact; `build_review_queue` only
+      ever writes under `validation/`. Regression test
+      `test_analyzer_never_writes_reference`.
+- [x] New Story 5.7.
 
-**Test:** `pytest -q`; a run on an ambiguous track emits a ranked queue whose top
-entry is answerable in one choice; `reference/` is unmodified after a full run.
+**Test:** `tests/test_review_queue.py` (4 cases). Suite: 94 passed, 3
+pre-existing failures.
 **Commit:** `5.1 song_facts and review_queue`
 
 ### 5.2 UI round-trip for the review queue
