@@ -342,25 +342,50 @@ def generate_rule_candidates(
             )
         )
 
+    # v1.1 item 1.3 — fake_drop symmetry. A fake_drop requires POSITIVE evidence
+    # of a withheld release: a `build` that ends just before this point (the
+    # release was set up) AND no qualifying `drop` in the release window that
+    # follows (the release never came). It may no longer fire on a bare
+    # low-tension pause, which was easier to satisfy than `drop` itself (B3).
+    BUILD_LOOKBACK_SECONDS = 6.0
+    RELEASE_WINDOW_SECONDS = 4.0
+    build_events = [event for event in events if event["type"] == "build"]
     for row in pause_rows:
-        next_drop = any(round(float(candidate["start_time"]), 6) > round(float(row["end_time"]), 6) and round(float(candidate["start_time"]), 6) <= round(float(row["end_time"] + 2.0), 6) for candidate in drop_events)
-        if next_drop or float(row["rolling"]["local"]["harmonic_tension_mean"]) < thresholds["transition"]["fake_drop_tension_mean"]:
+        pause_start = float(row["start_time"])
+        pause_end = float(row["end_time"])
+        preceding_build = next(
+            (
+                event for event in build_events
+                if pause_start - BUILD_LOOKBACK_SECONDS <= float(event["end_time"]) <= pause_start + 1.0
+            ),
+            None,
+        )
+        if preceding_build is None:
             continue
-        section = _section_for_time(float(row["start_time"]), sections)
+        release_present = any(
+            pause_end < float(candidate["start_time"]) <= pause_end + RELEASE_WINDOW_SECONDS
+            for candidate in drop_events
+        )
+        if release_present:
+            continue
+        tension_mean = float(row["rolling"]["local"]["harmonic_tension_mean"])
+        section = _section_for_time(pause_start, sections)
         events.append(
             _build_event(
                 event_id=next_event_id("fake_drop"),
                 event_type="fake_drop",
                 rows=[row],
                 section=section,
-                confidence=_clamp01(0.35 + float(row["rolling"]["local"]["harmonic_tension_mean"]) * 0.4),
-                intensity=_clamp01(float(row["rolling"]["local"]["harmonic_tension_mean"])),
-                summary="A pause-like break holds tension but is not followed by a qualifying drop window.",
-                rule_names=["fake_drop_unresolved_pause"],
+                confidence=_clamp01(0.4 + float(preceding_build["confidence"]) * 0.3 + tension_mean * 0.2),
+                intensity=_clamp01(max(tension_mean, float(preceding_build["intensity"]))),
+                summary="A build sets up a release, but the expected drop never arrives in the window that follows.",
+                rule_names=["fake_drop_withheld_release"],
                 metrics=[
-                    {"name": "harmonic_tension_mean", "value": float(row["rolling"]["local"]["harmonic_tension_mean"]), "threshold": thresholds["transition"]["fake_drop_tension_mean"], "comparator": ">=", "source_layer": "event_features"},
+                    {"name": "preceding_build_end", "value": float(preceding_build["end_time"]), "threshold": pause_start, "comparator": "<=", "source_layer": "event_features"},
+                    {"name": "release_window_drop_count", "value": 0.0, "threshold": 1.0, "comparator": "<", "source_layer": "event_features"},
+                    {"name": "harmonic_tension_mean", "value": tension_mean, "threshold": thresholds["transition"]["fake_drop_tension_mean"], "comparator": ">=", "source_layer": "event_features"},
                 ],
-                notes="Fake-drop candidates remain separate from pause_break for review.",
+                notes=f"Withheld-release fake_drop paired with build {preceding_build['id']}.",
                 candidates=[{"type": "pause_break", "confidence": 0.5, "notes": "Window also satisfies the baseline pause rule."}],
             )
         )

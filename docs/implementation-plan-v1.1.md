@@ -32,7 +32,7 @@ stall a whole run; everything independent of it still gets built.
 | 0.3 | Scoring harness (`--compare form,drops`) | R3 R4 | ☑ (baseline recorded) |
 | 1.1 | Stem-relative energy signal | R4 | ☑ (provisional, D1) |
 | 1.2 | Drop detection rebuild | R4 B2 | ☑ (provisional, D1) |
-| 1.3 | `fake_drop` symmetry | R4 B3 | ☐ |
+| 1.3 | `fake_drop` symmetry | R4 B3 | ☑ (provisional, D1) |
 | 2.1 | `form_family` inference | R1a | ☐ |
 | 2.2 | `form_role` labelling | R1 | ☐ |
 | 2.3 | Section repetition identity | R2 | ☐ |
@@ -220,14 +220,18 @@ four tracks is a corpus-run check, still provisional under D1.
 
 ### 1.3 `fake_drop` symmetry
 
-- [ ] Rewrite the `fake_drop` condition at `generator.py:286`. It currently
-      accepts on a disjunction whose second branch fires on *low* harmonic
-      tension, making it strictly easier to satisfy than `drop`.
-- [ ] Require positive evidence of a withheld release: a build present, and the
-      expected release absent.
+- [x] Rewrote the `fake_drop` loop: `fake_drop_withheld_release`. It now needs a
+      `build` event ending within 6 s before the pause point **and** no `drop` in
+      the 4 s release window after. The bare held-tension path is gone.
+- [x] Positive evidence: the paired build id and its end time are recorded in the
+      event; the release-window drop count (0) is an explicit metric.
 
-**Test:** `pytest tests/test_event_rules.py -q`; across the four tracks
-`fake_drop` no longer outnumbers `drop`.
+**Test:** `tests/test_event_rules.py` — added
+`test_fake_drop_requires_build_and_absent_release`,
+`test_no_fake_drop_when_release_arrives`,
+`test_no_fake_drop_without_preceding_build` (6 passed total). The corpus-level
+"`fake_drop` no longer outnumbers `drop`" check is provisional under D1; the 0.3
+harness already reports the `fake_outnumbers_drop` flag per song.
 **Commit:** `1.3 fake_drop symmetry`
 
 ---
