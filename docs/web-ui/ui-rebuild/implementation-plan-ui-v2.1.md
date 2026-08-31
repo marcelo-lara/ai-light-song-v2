@@ -53,7 +53,7 @@ stall a whole run; everything independent of it still gets built.
 | 4 | Left panel collapsed by default | R2 | ☑ |
 | 5 | Collapsed lane shows the title only | R1 | ☑ |
 | 6 | Collapse/expand control keeps a fixed position | R5 | ☑ |
-| 7 | "Fit to width" is an icon-only control | R3 | ☐ |
+| 7 | "Fit to width" is an icon-only control | R3 | ☑ |
 | 8 | "Hide all" button on the lane list | R4 | ☐ |
 
 ## How to test
@@ -496,10 +496,10 @@ assert the caret's container is the same fl/ grid slot.
 
 Refinement item `R3`.
 
-- [ ] `fit-to-width` renders a single Phosphor icon — no text label, no border.
-- [ ] On hover it changes background colour, matching the `zoom-in` / `zoom-out`
+- [x] `fit-to-width` renders a single Phosphor icon — no text label, no border.
+- [x] On hover it changes background colour, matching the `zoom-in` / `zoom-out`
       icon-button hover treatment (same token, same transition-less swap).
-- [ ] Its action (`fitToWidthPxPerBar`) and keyboard binding (`f`) are unchanged;
+- [x] Its action (`fitToWidthPxPerBar`) and keyboard binding (`f`) are unchanged;
       it keeps an accessible name (`aria-label="Fit to width"`).
 
 **Test:** unit — the control renders no text node and has `aria-label`; a
@@ -517,6 +517,26 @@ render-with-hover test asserts the hover class toggles the background token.
     of the viewport inner width). Diff `timeline-zoom-min.png`.
   - `assertNoRuntimeErrors` empty.
 **Commit:** `7. fit-to-width is an icon-only control`
+
+**Notes — item 7 (resolved during implementation).**
+- **New presentational component** `src/timeline/FitToWidthButton.tsx` (so the
+  control is unit-testable outside `App`). It swaps the footer button's class
+  from `zbtn` (bordered, with text) to `zic` — the *exact* class `zoom-in` /
+  `zoom-out` use: `border: none`, transparent background, and a transition-less
+  `background: var(--color-neutral-900)` on `:hover`. Icon unchanged
+  (`ph-arrows-out-line-horizontal`); the visible "Fit to width" text is dropped;
+  `aria-label="Fit to width"` kept (plus a `title` for the hover tooltip). The
+  `fitToWidth` action and the `f` keybinding are untouched.
+- **Hover-swap is pure CSS** (shared `.zic:hover`), matching the zoom buttons
+  exactly — so the plan's "hover class toggles the background token" unit check
+  is instead covered by the item-7 Playwright QA (computed-style default ==
+  `zoom-in`, hover == shared token, unhover reverts). The vitest test asserts:
+  no text node, `aria-label` present, single icon, `className === "zic"` (no
+  border, shared treatment), click fires the action.
+- **No baseline change:** all timeline screenshots target `.app-timeline__grid`;
+  the footer is outside it. `timeline-zoom-min.png` is unchanged.
+
+
 ### 8. "Hide all" button on the lane list
 
 Refinement item `R4`.

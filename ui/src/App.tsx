@@ -24,6 +24,7 @@ import {
 import { makeCoords } from "./timeline/coords";
 import { followScrollLeft, LABEL_WIDTH } from "./timeline/follow";
 import { CanvasLane, type CanvasLaneSource } from "./timeline/CanvasLane";
+import { FitToWidthButton } from "./timeline/FitToWidthButton";
 import { SparseLane } from "./timeline/SparseLane";
 import { buildLaneBlocks, type LaneContentSources } from "./timeline/laneContent";
 import { LaneList } from "./timeline/LaneList";
@@ -807,16 +808,7 @@ export function App(): React.JSX.Element {
             <i className="ph ph-magnifying-glass-plus" />
           </button>
           <span className="app-footer__ppb">{ppbLabel(pxPerBar)}</span>
-          <button
-            type="button"
-            className="zbtn"
-            data-testid="fit-to-width"
-            aria-label="Fit to width"
-            onClick={fitToWidth}
-          >
-            <i className="ph ph-arrows-out-line-horizontal" />
-            Fit to width
-          </button>
+          <FitToWidthButton onClick={fitToWidth} />
         </div>
         <div className="app-footer__spacer" />
         <button
