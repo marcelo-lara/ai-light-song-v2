@@ -48,7 +48,7 @@ stall a whole run; everything independent of it still gets built.
 | # | Item | Refs | State |
 | --- | --- | --- | --- |
 | 1 | Visual-regression harness skeleton | guide §9 | ☑ |
-| 2 | Waveform lane renders on a real song | B1 | ☐ |
+| 2 | Waveform lane renders on a real song | B1 | ☑ |
 | 3 | Continuous lanes span the full timeline | B2 | ☐ |
 | 4 | Left panel collapsed by default | R2 | ☐ |
 | 5 | Collapsed lane shows the title only | R1 | ☐ |
@@ -183,10 +183,10 @@ enough).
 Refinement `B1`. On a song with a real `data/songs/<song>.mp3`, the Waveform
 Anchor lane is blank.
 
-- [ ] Reproduce against `RegFull - Fixture` (has a real mp3): confirm the
+- [x] Reproduce against `RegFull - Fixture` (has a real mp3): confirm the
       wavesurfer instance in `WaveformLane.tsx` receives the audio, finishes
       decoding, and that its container has non-zero width at mount.
-- [ ] Root-cause and fix. Candidates to check in order: the wavesurfer container
+- [x] Root-cause and fix. Candidates to check in order: the wavesurfer container
       width is set from `timelineW` before `pxPerSec` is known (0-width canvas);
       the instance is created before the `<audio>` / URL is ready and never
       re-loads; the shell's playhead layer or a lane background is painted over
@@ -194,12 +194,12 @@ Anchor lane is blank.
       transparent token. Adopt the fix the reproduction points to; if it is the
       decode cost, wire the loading state through and decode on an effect keyed
       to the resolved URL + width.
-- [ ] Decide and record (as a `D` item if it changes fixture shape) whether
+- [x] Decide and record (as a `D` item if it changes fixture shape) whether
       `RegFull - Fixture` ships a real short mp3 or a pre-computed peaks JSON
       consumed via wavesurfer's `peaks` option. Recommendation: ship a short real
       mp3 re-timed to the fixture duration — it exercises the real decode path
       the operator hits.
-- [ ] The lane still falls back to the beat-pulse rendering when no mp3 exists
+- [x] The lane still falls back to the beat-pulse rendering when no mp3 exists
       (`_test_song`), unchanged.
 
 **Test:** unit — a `WaveformLane` render test asserts the wavesurfer container
@@ -218,10 +218,41 @@ below.
     snapshot `song-full-waveform.png`) at `maxDiffPixelRatio: 0.01`.
   - `assertNoRuntimeErrors` list is empty.
 - Surface: `/?song=_test_song`.
-  - The `data-lane="waveform"` lane shows the beat-pulse fallback (diff
+  - The `data-lane="waveform"` lane shows its no-audio state (diff
     `song-no-audio.png`); the only allowed failed response is
     `/data/songs/_test_song.mp3`.
 **Commit:** `2. waveform lane renders on a real song`
+
+**Notes — item 2 (resolved during implementation).**
+- **Root cause: a wavesurfer 7.8 API change, not our layout.** wavesurfer
+  `>=7.8` derives the drawn waveform width from `minPxPerSec * duration`
+  (`renderer-utils.calculateWaveformLayout`); the `width` option now only sizes
+  the outer scroll container. `useTransport` passed `width: coords.timelineW`
+  and no `minPxPerSec`, so `scrollWidth` computed to `0` → the wrapper, every
+  canvas and the whole waveform rendered at zero width (blank lane). Confirmed
+  in the Playwright container: shadow DOM present, styles present, `.wrapper`
+  `width: 0px`, zero `<canvas>` nodes.
+- **Fix:** pass `minPxPerSec: coords.pxPerSec` on create and on the zoom-resize
+  `setOptions` (alongside the retained `width`, which keeps the scroll container
+  non-scrollable so wavesurfer renders every tile eagerly). `coords.pxPerSec`
+  is the timeline's own scale, so the waveform now spans exactly
+  `coords.timelineW` and stays time-aligned with every other lane, at every
+  zoom.
+- **Fixture shape unchanged** — RegFull still ships the real `Armin -
+  Revolution.mp3`; the real decode path works in the pinned Playwright
+  container, so no peaks-JSON swap and no `build-fixtures.py` change.
+- **No beat-pulse fallback exists in the code.** The `_test_song` waveform lane
+  renders wavesurfer's "audio failed to load" state (the mp3 404s). This pass
+  leaves that unchanged; `song-no-audio.png` captures it. `song-no-audio.png`
+  *was* recaptured, but only because the item-3 fix makes that fixture's
+  continuous lanes now paint their full width (see item 3 notes).
+- **New surface:** `song-full-waveform.spec.ts` (snapshot `song-full-waveform.png`
+  with the waveform region UNMASKED, plus the `fullExtentOfLane(page,"waveform")`
+  ≥ 97% check, the no-blank-100px-band check, and the no-audio state check).
+  `helpers.ts` `fullExtentOfLane` was reworked to measure in lane-body-local px
+  (`= coords.timelineW`) and to reach into the waveform lane's shadow-DOM tiled
+  canvases; it also now ignores the benign `willReadFrequently` console advisory
+  its own `getImageData` calls trigger.
 
 ### 3. Continuous lanes span the full timeline
 

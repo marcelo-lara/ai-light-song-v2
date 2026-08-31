@@ -129,6 +129,11 @@ export function useTransport({ audioUrl, coords }: TransportInput): Transport {
       container: surface,
       url: audioUrl,
       height: WAVE_HEIGHT,
+      // wavesurfer 7.8+ derives the waveform width from `minPxPerSec * duration`,
+      // NOT the `width` option (which only sizes the scroll container). Feed it
+      // the timeline's own px-per-second so the drawn waveform spans exactly
+      // `coords.timelineW` and stays in time-alignment with every other lane.
+      minPxPerSec: Math.max(coords.pxPerSec, 1),
       width: Math.max(coords.timelineW, 1),
       fillParent: false,
       hideScrollbar: true,
@@ -177,8 +182,13 @@ export function useTransport({ audioUrl, coords }: TransportInput): Transport {
   // redraw on zoom — resize the existing instance, never rebuild it
   useEffect(() => {
     const ws = wsRef.current;
-    if (ws && isReady) ws.setOptions({ width: Math.max(coords.timelineW, 1) });
-  }, [coords.timelineW, isReady]);
+    if (ws && isReady) {
+      ws.setOptions({
+        minPxPerSec: Math.max(coords.pxPerSec, 1),
+        width: Math.max(coords.timelineW, 1),
+      });
+    }
+  }, [coords.pxPerSec, coords.timelineW, isReady]);
 
   const duration = wsDuration || coords.duration;
 

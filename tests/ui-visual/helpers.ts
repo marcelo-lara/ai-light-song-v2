@@ -81,6 +81,9 @@ export function assertNoRuntimeErrors(
     const type = msg.type();
     if (type !== "error" && type !== "warning") return;
     const text = msg.text();
+    // Benign performance advisory emitted when the full-extent helpers read back
+    // canvas pixels with getImageData — not a fault in the app.
+    if (/willReadFrequently/i.test(text)) return;
     // Chromium logs a URL-less "Failed to load resource ... 404" console error
     // for the absent mp3; the request/response handlers below still catch any
     // real /data/analysis/ failure (those carry a URL).
@@ -113,15 +116,28 @@ export function assertNoRuntimeErrors(
 
 export interface LaneExtent {
   hasCanvas: boolean;
-  /** rightmost non-transparent column, in timeline-content px (0 at content left) */
+  /**
+   * Rightmost non-transparent column of the lane's rendered content, in
+   * lane-body-local CSS px (0 at the lane body's left edge). Directly
+   * comparable to `contentWidth`.
+   */
   lastNonEmptyX: number;
-  /** total timeline content width in px */
+  /**
+   * The timeline's full content width in CSS px — the lane body's own width,
+   * which equals `coords.timelineW` (NOT the scroll viewport width). This is
+   * the "timeline content width" the §5 full-extent assertions compare against.
+   */
   contentWidth: number;
 }
 
 /**
- * Rightmost non-empty pixel column of a lane's canvas, expressed relative to the
- * timeline content width — for the §5 full-extent assertions.
+ * Rightmost non-empty pixel column of a lane's rendering, expressed in the lane
+ * body's own coordinate space so it is directly comparable to the full timeline
+ * content width — for the §5 full-extent assertions.
+ *
+ * Handles both the `<canvas>` data lanes (canvas lives in the light DOM, sized
+ * to `coords.timelineW`) and the `waveform` lane, whose wavesurfer canvases live
+ * in a shadow root and are tiled horizontally with per-canvas `left` offsets.
  */
 export async function fullExtentOfLane(
   page: Page,
@@ -131,33 +147,52 @@ export async function fullExtentOfLane(
     const body = document.querySelector(
       `.tl-lane-body[data-lane="${id}"]`,
     ) as HTMLElement | null;
-    const grid = document.querySelector(".app-timeline__grid") as HTMLElement | null;
-    const canvas = body?.querySelector("canvas") as HTMLCanvasElement | null;
-    if (!body || !grid || !canvas) {
-      return { hasCanvas: false, lastNonEmptyX: -1, contentWidth: grid?.getBoundingClientRect().width ?? 0 };
-    }
-    const w = canvas.width;
-    const h = canvas.height;
-    const ctx = canvas.getContext("2d");
-    let lastCol = -1;
-    if (ctx && w > 0 && h > 0) {
+    if (!body) return { hasCanvas: false, lastNonEmptyX: -1, contentWidth: 0 };
+    const contentWidth = body.getBoundingClientRect().width;
+
+    const rightmostNonEmpty = (canvas: HTMLCanvasElement): number => {
+      const w = canvas.width;
+      const h = canvas.height;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx || w <= 0 || h <= 0) return -1;
       const data = ctx.getImageData(0, 0, w, h).data;
-      for (let x = w - 1; x >= 0 && lastCol < 0; x--) {
+      for (let x = w - 1; x >= 0; x--) {
         for (let y = 0; y < h; y++) {
-          if (data[(y * w + x) * 4 + 3] !== 0) {
-            lastCol = x;
-            break;
-          }
+          if (data[(y * w + x) * 4 + 3] !== 0) return x;
         }
       }
+      return -1;
+    };
+
+    if (id === "waveform") {
+      const surface = body.querySelector(
+        ".tl-waveform__surface",
+      ) as HTMLElement | null;
+      const shadow = (surface?.firstElementChild as HTMLElement | null)?.shadowRoot;
+      const canvases = shadow
+        ? (Array.from(shadow.querySelectorAll("canvas")) as HTMLCanvasElement[])
+        : [];
+      if (!canvases.length) return { hasCanvas: false, lastNonEmptyX: -1, contentWidth };
+      let maxX = -1;
+      for (const canvas of canvases) {
+        const col = rightmostNonEmpty(canvas);
+        if (col < 0) continue;
+        const cssWidth = canvas.getBoundingClientRect().width;
+        const left = parseFloat(canvas.style.left || "0") || 0;
+        const x = left + (col / canvas.width) * cssWidth;
+        if (x > maxX) maxX = x;
+      }
+      return { hasCanvas: true, lastNonEmptyX: maxX, contentWidth };
     }
-    const cRect = canvas.getBoundingClientRect();
-    const gRect = grid.getBoundingClientRect();
-    const cssX = w > 0 ? (lastCol / w) * cRect.width : -1;
+
+    const canvas = body.querySelector("canvas") as HTMLCanvasElement | null;
+    if (!canvas) return { hasCanvas: false, lastNonEmptyX: -1, contentWidth };
+    const col = rightmostNonEmpty(canvas);
+    const cssWidth = canvas.getBoundingClientRect().width || contentWidth;
     return {
       hasCanvas: true,
-      lastNonEmptyX: lastCol < 0 ? -1 : cRect.left - gRect.left + cssX,
-      contentWidth: gRect.width,
+      lastNonEmptyX: col < 0 ? -1 : (col / canvas.width) * cssWidth,
+      contentWidth,
     };
   }, laneId);
 }
