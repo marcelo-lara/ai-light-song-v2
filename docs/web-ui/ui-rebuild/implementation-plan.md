@@ -50,7 +50,7 @@ stall a whole run; everything independent of it still gets built.
 | 1 | Fresh app shell — React + TS + Vite | R1 | ☑ |
 | 2 | Data layer — typed artifact access | R2 | ☑ |
 | 3 | Timeline shell — grid, rulers, zoom, playhead, lane list | R3 | ☑ |
-| 4 | wavesurfer.js — audio, waveform lane, master clock | R4 | ☐ |
+| 4 | wavesurfer.js — audio, waveform lane, master clock | R4 | ☑ |
 | 5 | Dynamic data lanes — FFT, RMS, Envelope (+ drums, energy) | R5 | ☐ |
 | 6 | Right panel — shell + block inspector (read-only) + hint editor | R6 | ☐ |
 | 7 | Review-queue editor — right-panel third mode (functional v1) | R7 | ☐ |
@@ -191,19 +191,19 @@ design; playhead sits exactly on a bar line at each real bar time at 14, 62 and
 
 ### 4. wavesurfer.js — audio, waveform lane, master clock
 
-- [ ] `src/timeline/WaveformLane.tsx` — wavesurfer v7 bound to
+- [x] `src/timeline/WaveformLane.tsx` — wavesurfer v7 bound to
       `data/songs/<song>.mp3`, container width = `timelineW`, blurple wave
       colours (design notes §3a), redrawn on zoom, its own cursor disabled
       (the shared playhead is drawn by the timeline shell).
-- [ ] **First-load decode is accepted.** No peaks artifact exists — wavesurfer
+- [x] **First-load decode is accepted.** No peaks artifact exists — wavesurfer
       decodes the full mp3 on song load; show the lane's loading state until it
       is ready. A `/api/peaks/<song>` precompute endpoint is a **later**
       optimisation, out of scope for `ui-v2`.
-- [ ] `src/timeline/useTransport.ts` — `currentTime` driven only by wavesurfer
+- [x] `src/timeline/useTransport.ts` — `currentTime` driven only by wavesurfer
       events (`audioprocess` / `seeking` / `interaction`); exposes `play/pause`,
       `seekTo`, `seekToBeat`, `stepBeat(±1)`, `stepBar(±1)`, `isPlaying`,
       `duration`. **No rAF position loop.**
-- [ ] Header transport cluster + `m:ss.s / total` + `bar.beat` bound to the hook;
+- [x] Header transport cluster + `m:ss.s / total` + `bar.beat` bound to the hook;
       the playhead x and follow-scroll read `currentTime` → `timeToX`.
 
 **Test:** manual against the design — space toggles audio and the playhead moves

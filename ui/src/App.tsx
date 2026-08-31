@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { discoverSongs, useSong } from "./data";
+import { artifactPaths, discoverSongs, useSong } from "./data";
 import type { SectionRow } from "./data/types";
 import { makeCoords } from "./timeline/coords";
 import { followScrollLeft, LABEL_WIDTH } from "./timeline/follow";
 import { LaneList } from "./timeline/LaneList";
 import { useLaneState } from "./timeline/laneState";
+import type { Lane } from "./timeline/laneState";
 import type { SegmentBlock } from "./timeline/segments";
 import { TimelineGrid } from "./timeline/TimelineGrid";
+import { useTransport } from "./timeline/useTransport";
+import { WaveformLane } from "./timeline/WaveformLane";
 import {
   clampPxPerBar,
   fitToWidthPxPerBar,
@@ -34,49 +37,6 @@ const DRAWER_ENTRIES: readonly DrawerEntry[] = [
 ] as const;
 
 const TIMELINE_KEYS = ["info", "beats", "sectionsTopLevel", "harmonicLayer"] as const;
-
-/**
- * Placeholder transport. Item 4 replaces this with `src/timeline/useTransport.ts`
- * bound to wavesurfer events — the seam is this hook's return shape
- * (`currentTime`, `playing`, `seek`, `togglePlay`, `duration`). No rAF loop
- * survives into item 4; wavesurfer's `audioprocess` drives `currentTime` there.
- */
-function usePlaceholderTransport(duration: number) {
-  const [currentTime, setCurrentTime] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const raf = useRef<number | null>(null);
-  const last = useRef<number>(0);
-
-  useEffect(() => {
-    if (!playing) return;
-    last.current = performance.now();
-    const step = (now: number) => {
-      const dt = (now - last.current) / 1000;
-      last.current = now;
-      setCurrentTime((t) => {
-        const next = t + dt;
-        if (next >= duration) {
-          setPlaying(false);
-          return duration;
-        }
-        return next;
-      });
-      raf.current = requestAnimationFrame(step);
-    };
-    raf.current = requestAnimationFrame(step);
-    return () => {
-      if (raf.current != null) cancelAnimationFrame(raf.current);
-    };
-  }, [playing, duration]);
-
-  const seek = useCallback(
-    (time: number) => setCurrentTime(Math.max(0, Math.min(time, duration || 0))),
-    [duration],
-  );
-  const togglePlay = useCallback(() => setPlaying((p) => !p), []);
-
-  return { currentTime, playing, seek, togglePlay, setPlaying, duration };
-}
 
 function formatClock(seconds: number): string {
   const safe = Math.max(0, seconds || 0);
@@ -121,13 +81,28 @@ export function App(): React.JSX.Element {
     () => artifacts.sectionsTopLevel.data ?? [],
     [artifacts.sectionsTopLevel.data],
   );
-  const duration = info?.duration ?? beats.at(-1)?.time ?? 0;
-
-  const transport = usePlaceholderTransport(duration);
+  const estimatedDuration = info?.duration ?? beats.at(-1)?.time ?? 0;
 
   const coords = useMemo(
-    () => makeCoords({ beats, duration, pxPerBar }),
-    [beats, duration, pxPerBar],
+    () => makeCoords({ beats, duration: estimatedDuration, pxPerBar }),
+    [beats, estimatedDuration, pxPerBar],
+  );
+
+  const audioUrl = song ? artifactPaths.audio(song) : null;
+  const transport = useTransport({ audioUrl, coords });
+  const duration = transport.duration || estimatedDuration;
+
+  const renderLaneBody = useCallback(
+    (lane: Lane): React.ReactNode =>
+      lane.id === "waveform" ? (
+        <WaveformLane
+          surface={transport.surface}
+          ready={transport.isReady}
+          error={transport.error}
+          width={coords.timelineW}
+        />
+      ) : null,
+    [transport.surface, transport.isReady, transport.error, coords.timelineW],
   );
 
   // Follow-playhead scroll while playing (design notes §2).
@@ -139,10 +114,10 @@ export function App(): React.JSX.Element {
       scrollLeft: el.scrollLeft,
       viewportWidth: el.clientWidth,
       maxScrollLeft: el.scrollWidth - el.clientWidth,
-      playing: transport.playing,
+      playing: transport.isPlaying,
     });
     if (Math.abs(next - el.scrollLeft) > 0.5) el.scrollLeft = next;
-  }, [transport.currentTime, transport.playing, coords]);
+  }, [transport.currentTime, transport.isPlaying, coords]);
 
   const fitToWidth = useCallback(() => {
     const el = scrollerRef.current;
@@ -150,34 +125,12 @@ export function App(): React.JSX.Element {
     setPxPerBar(fitToWidthPxPerBar(el.clientWidth, duration, coords.medianBarSeconds));
   }, [duration, coords.medianBarSeconds]);
 
-  const stepBeat = useCallback(
-    (dir: 1 | -1) => {
-      if (beats.length === 0) return;
-      const i = coords.beatIndexAtTime(transport.currentTime);
-      const target = beats[Math.max(0, Math.min(i + dir, beats.length - 1))];
-      if (target) transport.seek(target.time);
-    },
-    [beats, coords, transport],
-  );
-
-  const stepBar = useCallback(
-    (dir: 1 | -1) => {
-      const lines = coords.barLines;
-      if (lines.length === 0) return;
-      const t = transport.currentTime;
-      const next =
-        dir === 1
-          ? lines.find((l) => l.time > t + 0.001)
-          : [...lines].reverse().find((l) => l.time < t - 0.001);
-      if (next) transport.seek(next.time);
-    },
-    [coords, transport],
-  );
+  const { stepBeat, stepBar } = transport;
 
   const handleSelectSegment = useCallback(
     (block: SegmentBlock) => {
       // Move the shared playhead to the block start (design notes §4).
-      transport.seek(block.section.start);
+      transport.seekTo(block.section.start);
       // TODO(item 6): open the right-panel block inspector with this selection.
     },
     [transport],
@@ -202,7 +155,7 @@ export function App(): React.JSX.Element {
           </button>
           <div className="app-header__divider" />
           <div className="app-header__transport">
-            <button type="button" className="tp" aria-label="To start" onClick={() => transport.seek(0)}>
+            <button type="button" className="tp" aria-label="To start" onClick={() => transport.seekTo(0)}>
               <i className="ph ph-skip-back" />
             </button>
             <button type="button" className="tp" aria-label="Previous bar" onClick={() => stepBar(-1)}>
@@ -214,10 +167,10 @@ export function App(): React.JSX.Element {
             <button
               type="button"
               className="tp tp-main"
-              aria-label={transport.playing ? "Pause" : "Play"}
+              aria-label={transport.isPlaying ? "Pause" : "Play"}
               onClick={transport.togglePlay}
             >
-              <i className={`ph ${transport.playing ? "ph-pause" : "ph-play"}`} />
+              <i className={`ph ${transport.isPlaying ? "ph-pause" : "ph-play"}`} />
             </button>
             <button type="button" className="tp" aria-label="Next beat" onClick={() => stepBeat(1)}>
               <i className="ph ph-caret-right" />
@@ -302,10 +255,11 @@ export function App(): React.JSX.Element {
                 lanes={laneState.visibleLanes}
                 sections={sections}
                 currentTime={transport.currentTime}
-                playing={transport.playing}
-                onSeek={transport.seek}
+                playing={transport.isPlaying}
+                onSeek={transport.seekTo}
                 onToggleExpand={laneState.toggleExpanded}
                 onSelectSegment={handleSelectSegment}
+                renderLaneBody={renderLaneBody}
                 scrollerRef={scrollerRef}
               />
               {laneListOpen && (

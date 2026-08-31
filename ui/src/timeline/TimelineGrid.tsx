@@ -28,6 +28,8 @@ interface TimelineGridProps {
   onToggleExpand: (laneId: string) => void;
   /** item 6 block inspector — stubbed no-op for now */
   onSelectSegment?: (block: SegmentBlock) => void;
+  /** per-lane body content drawn over the grid backdrop (waveform / canvas) */
+  renderLaneBody?: (lane: Lane) => React.ReactNode;
   scrollerRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -40,6 +42,7 @@ export function TimelineGrid({
   onSeek,
   onToggleExpand,
   onSelectSegment,
+  renderLaneBody,
   scrollerRef,
 }: TimelineGridProps): React.JSX.Element {
   const { timelineW, barLines } = coords;
@@ -144,6 +147,7 @@ export function TimelineGrid({
             barLines={barLines}
             timelineW={timelineW}
             onToggleExpand={onToggleExpand}
+            body={renderLaneBody?.(lane)}
           />
         ))}
 
@@ -166,6 +170,7 @@ interface LaneRowProps {
   barLines: Coords["barLines"];
   timelineW: number;
   onToggleExpand: (laneId: string) => void;
+  body?: React.ReactNode;
 }
 
 function LaneRow({
@@ -173,6 +178,7 @@ function LaneRow({
   barLines,
   timelineW,
   onToggleExpand,
+  body,
 }: LaneRowProps): React.JSX.Element {
   return (
     <>
@@ -205,6 +211,7 @@ function LaneRow({
             style={{ left: line.x }}
           />
         ))}
+        {body}
       </div>
     </>
   );

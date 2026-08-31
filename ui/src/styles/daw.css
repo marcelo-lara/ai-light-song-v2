@@ -228,6 +228,30 @@ input[type="range"]:focus-visible {
 
 .tl-lane-body { position: relative; overflow: hidden; }
 
+/* ---- Waveform Anchor lane (wavesurfer, design notes §3a) ---- */
+
+.tl-waveform {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+.tl-waveform__mount { position: absolute; inset: 0; }
+/* wavesurfer's centre line — --color-accent-900 */
+.tl-waveform__surface { --wave-mid: #2b2741; }
+.tl-waveform__state {
+  position: sticky;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 var(--space-4);
+  font: 500 10px/1 var(--font-body);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-400);
+}
+.tl-waveform__state--error { color: var(--color-danger, #e0757a); }
+
 .tl-grid-line {
   position: absolute;
   top: 0;
