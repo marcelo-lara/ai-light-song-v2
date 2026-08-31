@@ -150,3 +150,8 @@ mkdir -p logs && nohup docker compose run --rm -T app \
   ./analyze --all-songs --device cuda \
   > "logs/all-songs-$(date +%F_%H-%M-%S).log" 2>&1 < /dev/null & echo $!
 ```
+
+
+## Notes
+
+- try <https://www.relume.ai/> for UI generation.

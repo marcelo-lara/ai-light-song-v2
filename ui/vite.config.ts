@@ -411,6 +411,7 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 8080,
     strictPort: true,
+    allowedHosts: ["s2.local"],
     watch: {
       usePolling: true,
     },
