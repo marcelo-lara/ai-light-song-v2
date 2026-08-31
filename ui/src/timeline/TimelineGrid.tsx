@@ -1,0 +1,211 @@
+// TimelineGrid.tsx — the timeline shell: a `212px max-content` CSS grid with
+// two sticky header rows (Segments h26, Bars ruler h30), one row per visible
+// lane (sticky label cell + body cell with the shared bar / 4-bar grid lines),
+// and the accent playhead spanning every lane.
+//
+// Item 3 does NOT render lane bodies — the waveform is item 4 and the canvas
+// data lanes are item 5. Each lane body here is the grid backdrop only. The
+// Segments header and Bars ruler ARE item 3 and render from real artifacts.
+
+import { useCallback } from "react";
+
+import type { SectionRow } from "../data/types";
+
+import type { Coords } from "./coords";
+import type { Lane } from "./laneState";
+import { buildSegments, type SegmentBlock } from "./segments";
+import { semanticZoom } from "./zoom";
+
+export const LABEL_WIDTH = 212;
+
+interface TimelineGridProps {
+  coords: Coords;
+  lanes: readonly Lane[];
+  sections: readonly SectionRow[];
+  currentTime: number;
+  playing: boolean;
+  onSeek: (time: number) => void;
+  onToggleExpand: (laneId: string) => void;
+  /** item 6 block inspector — stubbed no-op for now */
+  onSelectSegment?: (block: SegmentBlock) => void;
+  scrollerRef: React.RefObject<HTMLDivElement>;
+}
+
+export function TimelineGrid({
+  coords,
+  lanes,
+  sections,
+  currentTime,
+  playing,
+  onSeek,
+  onToggleExpand,
+  onSelectSegment,
+  scrollerRef,
+}: TimelineGridProps): React.JSX.Element {
+  const { timelineW, barLines } = coords;
+  const zoom = semanticZoom(coords.pxPerBar);
+  const segments = buildSegments(sections, coords);
+  const playheadX = LABEL_WIDTH + coords.timeToX(currentTime);
+
+  const seekFromEvent = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      onSeek(coords.xToTime(event.clientX - rect.left));
+    },
+    [coords, onSeek],
+  );
+
+  const beatTicks = zoom.beatSubTicks
+    ? coords.beats.filter((b) => b.type !== "downbeat" && b.beat !== 1)
+    : [];
+
+  return (
+    <div className="app-timeline tl" ref={scrollerRef}>
+      <div className="app-timeline__grid" style={{ position: "relative" }}>
+        {/* ---- Segments header (sticky, h26) ---- */}
+        <div
+          className="app-timeline__lane-head app-timeline__header-row tl-sticky-head"
+          style={{ top: 0, zIndex: 11, height: 26 }}
+        >
+          <i className="ph ph-flag" style={{ fontSize: 11 }} />
+          <span>Segments</span>
+        </div>
+        <div
+          className="app-timeline__header-row tl-sticky-body"
+          style={{ top: 0, zIndex: 8, height: 26, width: timelineW }}
+        >
+          {segments.map((seg) => (
+            <button
+              key={seg.key}
+              type="button"
+              className={`tl-seg-block${seg.accent ? " is-accent" : ""}`}
+              style={{ left: seg.left, width: seg.width }}
+              title={`${seg.name}${seg.barsText ? ` · ${seg.barsText}` : ""}`}
+              onClick={() => onSelectSegment?.(seg)}
+            >
+              {seg.showLabel && (
+                <>
+                  <span className="tl-seg-name">{seg.name}</span>
+                  {seg.barsText && <span className="tl-seg-len">{seg.barsText}</span>}
+                </>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* ---- Bars ruler (sticky, h30) ---- */}
+        <div
+          className="app-timeline__lane-head tl-ruler-head tl-sticky-head"
+          style={{ top: 26, zIndex: 11, height: 30 }}
+        >
+          <span>Bars</span>
+        </div>
+        <div
+          className="tl-ruler-body tl-sticky-body"
+          style={{ top: 26, zIndex: 8, height: 30, width: timelineW }}
+          onClick={seekFromEvent}
+          role="presentation"
+        >
+          {beatTicks.map((beat, i) => (
+            <div
+              key={`bt-${i}`}
+              className="tl-beat-tick"
+              style={{ left: coords.timeToX(beat.time) }}
+            />
+          ))}
+          {barLines.map((line) => {
+            const major = line.bar % 4 === 1;
+            return (
+              <div
+                key={`bar-${line.bar}`}
+                className={`tl-bar-tick${major ? " is-major" : ""}`}
+                style={{ left: line.x, height: major ? 13 : 8 }}
+              />
+            );
+          })}
+          {barLines
+            .filter((line) => (line.bar - 1) % zoom.barLabelEvery === 0)
+            .map((line) => (
+              <div
+                key={`lbl-${line.bar}`}
+                className="tl-bar-label"
+                style={{ left: line.x + 4 }}
+              >
+                {line.bar}
+              </div>
+            ))}
+        </div>
+
+        {/* ---- Lanes ---- */}
+        {lanes.map((lane) => (
+          <LaneRow
+            key={lane.id}
+            lane={lane}
+            barLines={barLines}
+            timelineW={timelineW}
+            onToggleExpand={onToggleExpand}
+          />
+        ))}
+
+        {/* ---- Playhead (spans every lane) ---- */}
+        <div
+          className={`tl-playhead${playing ? " is-playing" : ""}`}
+          style={{ left: playheadX }}
+        >
+          <div className="tl-playhead__caret-anchor">
+            <div className="tl-playhead__caret" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface LaneRowProps {
+  lane: Lane;
+  barLines: Coords["barLines"];
+  timelineW: number;
+  onToggleExpand: (laneId: string) => void;
+}
+
+function LaneRow({
+  lane,
+  barLines,
+  timelineW,
+  onToggleExpand,
+}: LaneRowProps): React.JSX.Element {
+  return (
+    <>
+      <div
+        className="app-timeline__lane-head tl-lane-head"
+        style={{ height: lane.renderHeight }}
+      >
+        <button
+          type="button"
+          className="caret"
+          aria-label={lane.expanded ? `Collapse ${lane.label}` : `Expand ${lane.label}`}
+          aria-expanded={lane.expanded}
+          onClick={() => onToggleExpand(lane.id)}
+        >
+          <i className={`ph ${lane.expanded ? "ph-caret-down" : "ph-caret-right"}`} />
+        </button>
+        <div className="tl-lane-head__text">
+          <div className="tl-lane-head__name">{lane.label}</div>
+          <div className="tl-lane-head__sub">{lane.expanded ? lane.sub : "collapsed"}</div>
+        </div>
+      </div>
+      <div
+        className="app-timeline__lane-body tl-lane-body"
+        style={{ height: lane.renderHeight, width: timelineW }}
+      >
+        {barLines.map((line) => (
+          <div
+            key={`g-${line.bar}`}
+            className={`tl-grid-line${line.bar % 4 === 1 ? " is-major" : ""}`}
+            style={{ left: line.x }}
+          />
+        ))}
+      </div>
+    </>
+  );
+}

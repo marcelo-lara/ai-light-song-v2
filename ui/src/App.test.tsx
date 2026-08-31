@@ -30,10 +30,15 @@ describe("App shell", () => {
     expect(screen.getByRole("button", { name: "Timeline" })).toHaveAttribute("aria-current", "page");
   });
 
-  it("renders the design's five expanded lanes as stubs", () => {
+  it("shows the zoom control, its px/bar label and the lane-list toggle", () => {
     render(<App />);
-    for (const label of ["Waveform Anchor", "Human Hints", "FFT Bands", "RMS Loudness", "Loudness Envelope"]) {
-      expect(screen.getByText(label)).toBeInTheDocument();
-    }
+    expect(screen.getByLabelText("Zoom (px per bar)")).toBeInTheDocument();
+    expect(screen.getByText("62 px/bar")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Lanes" })).toBeInTheDocument();
+  });
+
+  it("prompts for a song when none is selected", () => {
+    render(<App />);
+    expect(screen.getByText(/open .Select Song/i)).toBeInTheDocument();
   });
 });

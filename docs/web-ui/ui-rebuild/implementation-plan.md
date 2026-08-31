@@ -49,7 +49,7 @@ stall a whole run; everything independent of it still gets built.
 | --- | --- | --- | --- |
 | 1 | Fresh app shell — React + TS + Vite | R1 | ☑ |
 | 2 | Data layer — typed artifact access | R2 | ☑ |
-| 3 | Timeline shell — grid, rulers, zoom, playhead, lane list | R3 | ☐ |
+| 3 | Timeline shell — grid, rulers, zoom, playhead, lane list | R3 | ☑ |
 | 4 | wavesurfer.js — audio, waveform lane, master clock | R4 | ☐ |
 | 5 | Dynamic data lanes — FFT, RMS, Envelope (+ drums, energy) | R5 | ☐ |
 | 6 | Right panel — shell + block inspector (read-only) + hint editor | R6 | ☐ |
@@ -147,35 +147,35 @@ fixtures; manual: the drawer song picker lists the analysed songs and selecting
 
 ### 3. Timeline shell — grid, rulers, zoom, playhead, lane list
 
-- [ ] `src/timeline/coords.ts` — **time-proportional x**: `x = t · pxPerSec`
+- [x] `src/timeline/coords.ts` — **time-proportional x**: `x = t · pxPerSec`
       where `pxPerSec = pxPerBar / medianBarSeconds` (median bar length from
       `beats.json`). `timeToX` / `xToTime` are the primitives; `beatToX`,
       `xToBeat`, `beatToBarBeat` go through the real beat list. Bar lines are
       drawn at each bar's **real start time**, so bars are not equal pixel widths
       when the tempo drifts, and every lane + the playhead + wavesurfer stay in
       exact time alignment. `timelineW = duration · pxPerSec`. Pure, unit-tested.
-- [ ] `src/timeline/TimelineGrid.tsx` — CSS grid `212px max-content`, sticky
+- [x] `src/timeline/TimelineGrid.tsx` — CSS grid `212px max-content`, sticky
       Segments (h26) + Bars (h30) header rows, shared bar / 4-bar grid lines,
       the accent playhead (1 px line + `0 0 9px` glow + caret) spanning lanes.
-- [ ] `src/timeline/laneState.ts` — the lane registry (id, label, sub-caption,
+- [x] `src/timeline/laneState.ts` — the lane registry (id, label, sub-caption,
       `kind`, `expanded`, `visible`). Default `expanded`: the design's five
       (`waveform`, `humanHints`, `fftBands`, `rmsLoudness`, `loudnessEnvelope`);
       every other lane collapsed. Persist `expanded` / `visible` per session
       (`localStorage`, wrapped in try/catch).
-- [ ] `src/timeline/LaneList.tsx` — a lane list (drawer "Analysis" section, or a
+- [x] `src/timeline/LaneList.tsx` — a lane list (drawer "Analysis" section, or a
       togglable panel) to show/hide any lane and expand/collapse it; each lane's
       inline collapse caret toggles the same state.
-- [ ] `src/timeline/zoom.ts` + footer controls — `pxPerBar` 14–180 stays the
+- [x] `src/timeline/zoom.ts` + footer controls — `pxPerBar` 14–180 stays the
       zoom control and the `ppbLabel`; internally it sets `pxPerSec` (via
       `medianBarSeconds`). ± buttons (×/÷ 1.3), range slider,
       `fitToWidth = (viewportW − 212 − 12) / durationSeconds → pxPerSec` (then
       back-solve `pxPerBar` for the label). Semantic-zoom threshold table from
       design notes §2, keyed on `pxPerBar`.
-- [ ] Follow-playhead scroll while playing (design notes §2).
-- [ ] Bars ruler: bar lines at each bar's **real start time** from `beats.json`
+- [x] Follow-playhead scroll while playing (design notes §2).
+- [x] Bars ruler: bar lines at each bar's **real start time** from `beats.json`
       (downbeats = taller ticks), bar-number labels every *N* bars (*N* by
       `pxPerBar`), **beat sub-ticks only when `pxPerBar ≥ 44`**, click-to-seek.
-- [ ] Segments header: HTML blocks from the top-level `sections.json` list by
+- [x] Segments header: HTML blocks from the top-level `sections.json` list by
       `start`/`end` seconds → x; tint by `form_role` family (chorus/drop/hook =
       accent ramp, else neutral ramp); label = `form_role` + `N bars` (hidden
       when narrow), from the canvas `buildSegments` truncation rules. Click a
@@ -456,7 +456,18 @@ to clear the stale Preact `node_modules` volume.
 - **`.gitignore`:** root `data/` rule also matched `ui/src/data/`; added
   `!ui/src/data/**` negations so the directory is committed.
 
-Add `D3`, `D4`… here only when an item is genuinely blocked
+### D3 — Interactive browser QA unavailable in the implementation environment
+
+The `/implement` run had no working browser-automation channel (claude-in-chrome
+extension not connected), so the per-item "spawn a QA subagent that screenshots
+the affected screens" step could not run. Frontend items are instead validated
+by: in-container `npm run test` (which includes `@testing-library/react` render
+tests), `npm run build`, and a `curl` smoke of `docker compose up ui` (page 200,
+`/data` mount + `info.json` reachable). Visual/interaction parity against the
+design canvas still needs a human pass with a real browser before cutover —
+fold this into item 11's parity sign-off.
+
+Add `D4`, `D5`… here only when an item is genuinely blocked
 mid-implementation — a decision where proceeding under any assumption would make
 the work wrong or wasted. Record it and its options, then continue with the next
 independent item. Once such a decision is answered, fold the answer into the
