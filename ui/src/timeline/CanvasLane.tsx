@@ -142,16 +142,21 @@ export function CanvasLane({
 
     const pxPerSec = coords.pxPerSec;
     const scrollStart = pxPerSec > 0 ? scrollLeft / pxPerSec : 0;
-    const visibleSeconds =
-      pxPerSec > 0 ? viewportWidth / pxPerSec : coords.duration;
+    // Every renderer draws the FULL song, `0 .. duration`, so the lane always
+    // spans `coords.timelineW` and matches the Bars ruler — regardless of the
+    // current scroll offset or viewport width. `scrollStart` is still the real
+    // scroll offset so viewport-anchored sub-labels stay pinned to the left
+    // edge. When an artifact's data ends before the song does, the renderer
+    // simply draws to its last frame and leaves the rest of the (full-width)
+    // canvas empty: "data ran out", not "lane is short".
     const rc: RenderCtx = {
       ctx,
       width: cssWidth * xScale,
       height: cssHeight,
       pxPerSec,
       timeToX: (t) => coords.timeToX(t) * xScale,
-      visibleStart: scrollStart,
-      visibleEnd: scrollStart + visibleSeconds,
+      visibleStart: 0,
+      visibleEnd: coords.duration,
       scrollStart,
     };
 

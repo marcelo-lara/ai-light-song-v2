@@ -49,7 +49,7 @@ stall a whole run; everything independent of it still gets built.
 | --- | --- | --- | --- |
 | 1 | Visual-regression harness skeleton | guide §9 | ☑ |
 | 2 | Waveform lane renders on a real song | B1 | ☑ |
-| 3 | Continuous lanes span the full timeline | B2 | ☐ |
+| 3 | Continuous lanes span the full timeline | B2 | ☑ |
 | 4 | Left panel collapsed by default | R2 | ☐ |
 | 5 | Collapsed lane shows the title only | R1 | ☐ |
 | 6 | Collapse/expand control keeps a fixed position | R5 | ☐ |
@@ -259,18 +259,18 @@ below.
 Refinement `B2`. FFT Bands, RMS Loudness, and Loudness Envelope draw their data
 only across the opening span of the timeline instead of the whole song.
 
-- [ ] Reproduce against `RegFull - Fixture` at min zoom (whole song visible):
+- [x] Reproduce against `RegFull - Fixture` at min zoom (whole song visible):
       confirm each lane's drawn content stops short of the timeline's right edge.
-- [ ] Root-cause. Candidates: `CanvasLane.tsx` sizes its backing canvas from the
+- [x] Root-cause. Candidates: `CanvasLane.tsx` sizes its backing canvas from the
       viewport width rather than `timelineW`; the per-kind renderer iterates a
       truncated frame window; `bucketSeconds` / x-mapping caps at the first
       screen; the ResizeObserver redraw path does not pass the full content
       width. Fix so the canvas backing store and every renderer's x-domain run
       `0 .. timelineW` (`timeToX(duration)`), matching the ruler.
-- [ ] Confirm the fix holds for `drums` and `energy` (same `CanvasLane` base) and
+- [x] Confirm the fix holds for `drums` and `energy` (same `CanvasLane` base) and
       after zoom changes and horizontal scroll (redraw covers the full extent,
       not just the current viewport).
-- [ ] Define, in the item, the intended behaviour where an artifact's data ends
+- [x] Define, in the item, the intended behaviour where an artifact's data ends
       before the song does (short `fft_bands.json`): the lane renders data to the
       last frame and leaves the remainder empty **without** clipping the canvas —
       i.e. "data ran out", not "lane is short".
@@ -291,6 +291,45 @@ draws to its last frame and no further.
     `timeline-zoom-max.png`).
   - `assertNoRuntimeErrors` empty across the scroll and zoom steps.
 **Commit:** `3. continuous lanes span the full timeline`
+
+**Notes — item 3 (resolved during implementation).**
+- **Root cause: renderers clipped to the scroll viewport.** `CanvasLane.draw`
+  built the `RenderCtx` with `visibleStart = scrollLeft/pxPerSec` and
+  `visibleEnd = visibleStart + viewportWidth/pxPerSec`, and every renderer
+  (`drawFft`, `drawLoudness`, `drawDrums`, `drawEnergy`) uses that window to
+  bound its bucket / marker iteration. On first paint `viewportWidth` is `0`,
+  so `visibleEnd ≈ 0` and only the opening frame drew; after layout it still
+  only drew the visible span. The canvas backing store was already sized from
+  `coords.timelineW`, so the lane box was full width but the *content* stopped
+  short. (`RMS` / `Envelope` looked full only because `drawStemRow` fills a
+  faint full-width background rectangle over the truncated data.)
+- **Fix:** `CanvasLane.draw` now sets `visibleStart: 0`, `visibleEnd:
+  coords.duration` — every renderer's x-domain runs the whole song, matching
+  the Bars ruler, independent of scroll offset or viewport width. `scrollStart`
+  is still the real scroll offset, so the viewport-anchored stem sub-labels
+  stay pinned to the left edge. Bucket count stays bounded (`bucketSeconds` is
+  floored at `1/pxPerSec`), so full-domain redraw is not more expensive per
+  frame than before.
+- **Short-data behaviour (defined):** when an artifact's frames end before the
+  song does, the renderer draws to its last frame and leaves the rest of the
+  (full-width) canvas empty — "data ran out", not "lane is short". The canvas
+  backing store and CSS width still span `coords.timelineW`. The RegFull
+  fixtures exercise this: dense arrays are decimated to ~60 frames but keep full
+  duration. `fft_bands` in particular has a near-silent outro whose last ~2 s
+  fall below the spectral visibility floor, so FFT Bands' painted right edge
+  tracks the last *audible* frame (~98% of the timeline), not the very end —
+  this is correct, and the extent spec asserts ≥95% for FFT Bands / Drums
+  (content-dependent edges) and ≤4px for the continuous-field lanes.
+- **Confirmed for `drums` and `energy`** (same `CanvasLane` base) and after
+  zoom + horizontal scroll (50% / max `scrollLeft`, max zoom): redraw covers
+  the full extent, not just the viewport.
+- **New surface:** `continuous-lanes-extent.spec.ts` (min zoom, mid/end scroll,
+  max zoom). No new snapshot — the existing `song-full` / `timeline-scrolled-50`
+  / `timeline-zoom-*` baselines did NOT change, because they only ever captured
+  the ~viewport-width visible region and the old code did draw within that.
+  `song-no-audio.png` *did* change: `_test_song` fits entirely in the viewport,
+  so its FFT / RMS / Envelope lanes now visibly paint their full width.
+
 
 ---
 
