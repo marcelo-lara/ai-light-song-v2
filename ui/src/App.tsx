@@ -4,7 +4,9 @@ import { artifactPaths, discoverSongs, useSong } from "./data";
 import type { SectionRow } from "./data/types";
 import { makeCoords } from "./timeline/coords";
 import { followScrollLeft, LABEL_WIDTH } from "./timeline/follow";
+import { CanvasLane, type CanvasLaneSource } from "./timeline/CanvasLane";
 import { LaneList } from "./timeline/LaneList";
+import type { LaneMarker } from "./timeline/laneRenderers";
 import { useLaneState } from "./timeline/laneState";
 import type { Lane } from "./timeline/laneState";
 import type { SegmentBlock } from "./timeline/segments";
@@ -36,7 +38,26 @@ const DRAWER_ENTRIES: readonly DrawerEntry[] = [
   { id: "review", label: "Review queue", icon: "ph-flag" },
 ] as const;
 
-const TIMELINE_KEYS = ["info", "beats", "sectionsTopLevel", "harmonicLayer"] as const;
+const TIMELINE_KEYS = [
+  "info",
+  "beats",
+  "sectionsTopLevel",
+  "harmonicLayer",
+  "fftBands",
+  "rmsLoudness",
+  "loudnessEnvelope",
+  "drums",
+  "energy",
+] as const;
+
+/** lane id → (artifact key, canvas renderer kind) for the item-5 data lanes. */
+const CANVAS_LANES: Record<string, { key: (typeof TIMELINE_KEYS)[number]; kind: CanvasLaneSource["kind"] }> = {
+  fftBands: { key: "fftBands", kind: "fft" },
+  rmsLoudness: { key: "rmsLoudness", kind: "rms" },
+  loudnessEnvelope: { key: "loudnessEnvelope", kind: "env" },
+  drums: { key: "drums", kind: "drums" },
+  energy: { key: "energy", kind: "energy" },
+};
 
 function formatClock(seconds: number): string {
   const safe = Math.max(0, seconds || 0);
@@ -53,6 +74,8 @@ export function App(): React.JSX.Element {
   const [discoveryError, setDiscoveryError] = useState<string | null>(null);
   const [pxPerBar, setPxPerBar] = useState(62);
   const [laneListOpen, setLaneListOpen] = useState(false);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [viewportWidth, setViewportWidth] = useState(0);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const laneState = useLaneState();
@@ -92,18 +115,80 @@ export function App(): React.JSX.Element {
   const transport = useTransport({ audioUrl, coords });
   const duration = transport.duration || estimatedDuration;
 
-  const renderLaneBody = useCallback(
-    (lane: Lane): React.ReactNode =>
-      lane.id === "waveform" ? (
-        <WaveformLane
-          surface={transport.surface}
-          ready={transport.isReady}
-          error={transport.error}
-          width={coords.timelineW}
-        />
-      ) : null,
-    [transport.surface, transport.isReady, transport.error, coords.timelineW],
+  const handleSelectMarker = useCallback(
+    (marker: LaneMarker) => {
+      transport.seekTo(marker.time);
+      // TODO(item 6): open the right-panel block inspector for this marker.
+    },
+    [transport],
   );
+
+  const renderLaneBody = useCallback(
+    (lane: Lane): React.ReactNode => {
+      if (lane.id === "waveform") {
+        return (
+          <WaveformLane
+            surface={transport.surface}
+            ready={transport.isReady}
+            error={transport.error}
+            width={coords.timelineW}
+          />
+        );
+      }
+      const entry = CANVAS_LANES[lane.id];
+      if (!entry) return null;
+      const art = artifacts[entry.key];
+      return (
+        <CanvasLane
+          lane={lane}
+          coords={coords}
+          source={{ kind: entry.kind, data: art.data as never } as CanvasLaneSource}
+          status={art.status}
+          error={art.error?.message ?? null}
+          scrollLeft={scrollLeft}
+          viewportWidth={viewportWidth}
+          onSeek={transport.seekTo}
+          onSelectMarker={handleSelectMarker}
+        />
+      );
+    },
+    [
+      transport.surface,
+      transport.isReady,
+      transport.error,
+      transport.seekTo,
+      coords,
+      artifacts,
+      scrollLeft,
+      viewportWidth,
+      handleSelectMarker,
+    ],
+  );
+
+  // Track the timeline scroll offset + viewport width for the canvas lanes
+  // (sub-labels are anchored to the viewport's left edge). rAF-coalesced.
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    let raf = 0;
+    const sync = () => {
+      raf = 0;
+      setScrollLeft(el.scrollLeft);
+      setViewportWidth(el.clientWidth);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(sync);
+    };
+    sync();
+    el.addEventListener("scroll", onScroll, { passive: true });
+    const observer = new ResizeObserver(sync);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      observer.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [song, activeView]);
 
   // Follow-playhead scroll while playing (design notes §2).
   useEffect(() => {

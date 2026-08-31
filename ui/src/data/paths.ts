@@ -32,6 +32,10 @@ export const artifactPaths = {
     encodePath(analysis(song, "artifacts", "essentia", "loudness_envelope.json")),
   harmonicLayer: (song: string) =>
     encodePath(analysis(song, "artifacts", "layer_a_harmonic.json")),
+  drumEvents: (song: string) =>
+    encodePath(analysis(song, "artifacts", "symbolic_transcription", "drum_events.json")),
+  energyLayer: (song: string) =>
+    encodePath(analysis(song, "artifacts", "layer_c_energy.json")),
   reviewQueue: (song: string) =>
     encodePath(analysis(song, "artifacts", "validation", "review_queue.json")),
   audio: (song: string) => encodePath(["data", "songs", `${song}.mp3`]),

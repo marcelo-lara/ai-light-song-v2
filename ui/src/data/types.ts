@@ -225,6 +225,48 @@ export interface HarmonicLayer {
 }
 
 // ---------------------------------------------------------------------------
+// artifacts/symbolic_transcription/drum_events.json
+// ---------------------------------------------------------------------------
+
+export interface DrumEvent {
+  id: string;
+  time: number;
+  end_s: number;
+  event_type: string;
+}
+
+export interface DrumEventsFile {
+  schema_version: string;
+  song_name: string;
+  events: DrumEvent[];
+}
+
+// ---------------------------------------------------------------------------
+// artifacts/layer_c_energy.json  (beat-aligned energy + accent candidates)
+// ---------------------------------------------------------------------------
+
+export interface EnergyBeat {
+  time: number;
+  energy_score: number;
+  bar: number | null;
+  beat: number | null;
+}
+
+export interface EnergyAccent {
+  id: string;
+  time: number;
+  intensity: number;
+  kind: string;
+}
+
+export interface EnergyLayer {
+  schema_version: string;
+  song_name: string;
+  beat_energy: EnergyBeat[];
+  accent_candidates: EnergyAccent[];
+}
+
+// ---------------------------------------------------------------------------
 // reference/human/human_hints.json  (editable hint store)
 // ---------------------------------------------------------------------------
 

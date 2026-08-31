@@ -6,6 +6,8 @@ import { ShapeError } from "./parse";
 import { artifactPaths } from "./paths";
 import {
   parseBeats,
+  parseDrumEvents,
+  parseEnergyLayer,
   parseEventTimeline,
   parseFftBands,
   parseHarmonicLayer,
@@ -19,6 +21,8 @@ import {
 } from "./parsers";
 import type {
   Beats,
+  DrumEventsFile,
+  EnergyLayer,
   EventTimeline,
   FftBands,
   HarmonicLayer,
@@ -148,6 +152,12 @@ export const loadHarmonicLayer = (song: string, f?: typeof fetch) =>
     f,
   );
 
+export const loadDrumEvents = (song: string, f?: typeof fetch) =>
+  loadJson<DrumEventsFile>(artifactPaths.drumEvents(song), parseDrumEvents, f);
+
+export const loadEnergyLayer = (song: string, f?: typeof fetch) =>
+  loadJson<EnergyLayer>(artifactPaths.energyLayer(song), parseEnergyLayer, f);
+
 export const loadHumanHints = (song: string, f?: typeof fetch) =>
   loadJson<HumanHintsFile>(artifactPaths.humanHints(song), parseHumanHints, f);
 
@@ -172,6 +182,8 @@ export const artifactLoaders = {
   rmsLoudness: loadRmsLoudness,
   loudnessEnvelope: loadLoudnessEnvelope,
   harmonicLayer: loadHarmonicLayer,
+  drums: loadDrumEvents,
+  energy: loadEnergyLayer,
   humanHints: loadHumanHints,
   eventTimeline: loadEventTimeline,
   reviewQueue: loadReviewQueue,

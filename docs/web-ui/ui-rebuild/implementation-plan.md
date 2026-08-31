@@ -51,7 +51,7 @@ stall a whole run; everything independent of it still gets built.
 | 2 | Data layer — typed artifact access | R2 | ☑ |
 | 3 | Timeline shell — grid, rulers, zoom, playhead, lane list | R3 | ☑ |
 | 4 | wavesurfer.js — audio, waveform lane, master clock | R4 | ☑ |
-| 5 | Dynamic data lanes — FFT, RMS, Envelope (+ drums, energy) | R5 | ☐ |
+| 5 | Dynamic data lanes — FFT, RMS, Envelope (+ drums, energy) | R5 | ☑ |
 | 6 | Right panel — shell + block inspector (read-only) + hint editor | R6 | ☐ |
 | 7 | Review-queue editor — right-panel third mode (functional v1) | R7 | ☐ |
 | 8 | Artifact inspector (raw-JSON browser) | R8 | ☐ |
@@ -224,40 +224,40 @@ right `beats.json` entries.
 This item does the **continuous** lanes. Sparse (block) lanes and the click →
 inspector wiring are item 9 + item 6.
 
-- [ ] `src/timeline/CanvasLane.tsx` — DPR-aware `<canvas>` lane body: shared
+- [x] `src/timeline/CanvasLane.tsx` — DPR-aware `<canvas>` lane body: shared
       grid + a per-`kind` renderer; redraw on `pxPerBar` / collapse / resize
       (ResizeObserver). Lane header (name / sub / collapse caret) bound to
       `laneState` (item 3); collapsed = 26 px + faint waveform strip. Continuous
       lanes: click anywhere = seek (no hit regions).
-- [ ] Port `src/timeline/palette.ts` from the current impl: `FFT_BAND_HUES =
+- [x] Port `src/timeline/palette.ts` from the current impl: `FFT_BAND_HUES =
       [22,46,88,138,164,186,196]`, `bandColor(i,v) → hsla(hue,84%,58%,v·0.9)`;
       `SOURCE_COLORS` = `[[250,204,21],[248,113,113],[34,211,238],[74,222,128],
       [192,132,252]]`; `CAPTION_FONT = '11px "IBM Plex Mono", monospace'`;
       lane heights (FFT 84, RMS/Env 112, hints 58, collapsed 26).
-- [ ] `fft` renderer — per-band `hsla` heat, **band 0 (Sub) at the bottom**
+- [x] `fft` renderer — per-band `hsla` heat, **band 0 (Sub) at the bottom**
       (`displayIndex = bandCount−1−i`), `topPadding = bottomPadding = 6`,
       visibility floor `0.02` then `(v−0.02)/0.98`, per-bucket **max**,
       `bucketSeconds = max(intervalSeconds||0.05, 1/max(zoom,1))`.
-- [ ] `rms` renderer — per-stem row (`rowHeight = (112−10−(n−1)·2)/n`), per
+- [x] `rms` renderer — per-stem row (`rowHeight = (112−10−(n−1)·2)/n`), per
       bucket `rgba(stem, 0.16 + v·0.72)` at `rowTop+1 .. rowHeight−2`, per-bucket
       max, floor `0.02`. Per-row bg `rgba(148,163,184,0.06)` + `0.16` bottom rule.
-- [ ] `env` renderer — filled area `rgba(stem, 0.18)` + stroke `rgba(stem, 0.94)`
+- [x] `env` renderer — filled area `rgba(stem, 0.18)` + stroke `rgba(stem, 0.94)`
       `lineWidth 1.5`, `baseline = rowTop + rowHeight − 4`,
       `amplitude = max(6, rowHeight − 14)`, x = bucket midpoint, per-bucket
       average.
-- [ ] Stem sub-labels (`drawSourceLabel`) — one per row, **anchored to the
+- [x] Stem sub-labels (`drawSourceLabel`) — one per row, **anchored to the
       visible viewport left edge**: `x = round(scrollStart·zoom) + 6`; text =
       `sources[i].label` trimmed to 56 px in `CAPTION_FONT`, stem colour;
       background a plain `rgba(10,18,28,0.68)` rect `(x−2, rowTop+2,
       textWidth+6, 13)` — no border/radius; baseline `rowTop + 11`. Recompute on
       scroll.
-- [ ] wavesurfer `waveColor` / `progressColor` set to Nocturne blurple
+- [x] wavesurfer `waveColor` / `progressColor` set to Nocturne blurple
       (`#968ae0` / `#d2cefd`) per design notes §3a — not `ui.old`'s teal.
-- [ ] `drums` (kick/snare/hat density) and `energy` (beat-aligned energy +
+- [x] `drums` (kick/snare/hat density) and `energy` (beat-aligned energy +
       accent candidates) lanes ported from `ui.old/src/lib/timeline/drumsLane.js`
       / `seriesLane.js`, **collapsed by default**. Discrete markers (accent
       candidates) get hit regions → block inspector (item 6).
-- [ ] Each lane renders its own loading / empty (artifact missing) / error state.
+- [x] Each lane renders its own loading / empty (artifact missing) / error state.
 
 **Test:** `palette.ts` + renderer geometry helpers (row edges, bucketing,
 sub-label x) unit-tested; manual: FFT / RMS / Envelope render **pixel-comparable

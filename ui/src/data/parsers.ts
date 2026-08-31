@@ -22,6 +22,11 @@ import {
 import type {
   Beats,
   BeatRow,
+  DrumEvent,
+  DrumEventsFile,
+  EnergyAccent,
+  EnergyBeat,
+  EnergyLayer,
   EventTimeline,
   FftBands,
   FftBand,
@@ -407,6 +412,75 @@ export function parseHumanHints(raw: unknown): HumanHintsFile {
     human_hints: list.map((h, i) =>
       parseHumanHint(h, `human_hints.human_hints[${i}]`),
     ),
+  };
+}
+
+// ---------------------------------------------------------------------------
+
+function parseDrumEvent(raw: unknown, ctx: string, index: number): DrumEvent {
+  const o = asObject(raw, ctx);
+  const time = numberOr(o.time, 0, `${ctx}.time`);
+  return {
+    id: stringOr(
+      (o.event_id ?? o.id) as unknown,
+      `drum-${String(index + 1).padStart(5, "0")}`,
+      `${ctx}.id`,
+    ),
+    time,
+    end_s: Math.max(numberOr(o.end_s, time, `${ctx}.end_s`), time),
+    event_type: stringOr(o.event_type, "unresolved", `${ctx}.event_type`),
+  };
+}
+
+export function parseDrumEvents(raw: unknown): DrumEventsFile {
+  const o = asObject(raw, "drum_events.json");
+  const events = asArray(o.events ?? [], "drum_events.events")
+    .map((e, i) => parseDrumEvent(e, `drum_events.events[${i}]`, i))
+    .sort((a, b) => a.time - b.time);
+  return {
+    schema_version: stringOr(o.schema_version, "", "drum_events.schema_version"),
+    song_name: stringOr(o.song_name, "", "drum_events.song_name"),
+    events,
+  };
+}
+
+// ---------------------------------------------------------------------------
+
+function parseEnergyBeat(raw: unknown, ctx: string): EnergyBeat {
+  const o = asObject(raw, ctx);
+  return {
+    time: numberOr(o.time, 0, `${ctx}.time`),
+    energy_score: numberOr(o.energy_score, 0, `${ctx}.energy_score`),
+    bar: numberOrNull(o.bar, `${ctx}.bar`),
+    beat: numberOrNull(o.beat_in_bar ?? o.beat, `${ctx}.beat`),
+  };
+}
+
+function parseEnergyAccent(raw: unknown, ctx: string, index: number): EnergyAccent {
+  const o = asObject(raw, ctx);
+  return {
+    id: stringOr(
+      (o.id ?? o.accent_id) as unknown,
+      `accent-${String(index + 1).padStart(3, "0")}`,
+      `${ctx}.id`,
+    ),
+    time: numberOr(o.time, 0, `${ctx}.time`),
+    intensity: numberOr(o.intensity, 0, `${ctx}.intensity`),
+    kind: stringOr(o.kind, "hit", `${ctx}.kind`),
+  };
+}
+
+export function parseEnergyLayer(raw: unknown): EnergyLayer {
+  const o = asObject(raw, "layer_c_energy.json");
+  return {
+    schema_version: stringOr(o.schema_version, "", "energy.schema_version"),
+    song_name: stringOr(o.song_name, "", "energy.song_name"),
+    beat_energy: asArray(o.beat_energy ?? [], "energy.beat_energy")
+      .map((b, i) => parseEnergyBeat(b, `energy.beat_energy[${i}]`))
+      .sort((a, b) => a.time - b.time),
+    accent_candidates: asArray(o.accent_candidates ?? [], "energy.accent_candidates")
+      .map((a, i) => parseEnergyAccent(a, `energy.accent_candidates[${i}]`, i))
+      .sort((a, b) => a.time - b.time),
   };
 }
 
