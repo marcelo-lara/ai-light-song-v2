@@ -47,7 +47,7 @@ stall a whole run; everything independent of it still gets built.
 
 | # | Item | Refs | State |
 | --- | --- | --- | --- |
-| 1 | Fresh app shell — React + TS + Vite | R1 | ☐ |
+| 1 | Fresh app shell — React + TS + Vite | R1 | ☑ |
 | 2 | Data layer — typed artifact access | R2 | ☐ |
 | 3 | Timeline shell — grid, rulers, zoom, playhead, lane list | R3 | ☐ |
 | 4 | wavesurfer.js — audio, waveform lane, master clock | R4 | ☐ |
@@ -83,31 +83,32 @@ are smoke-tested manually against the design.
 
 ### 1. Fresh app shell — React + TS + Vite
 
-- [ ] New `ui/` tree: `package.json` (React 18, `react-dom`, `wavesurfer.js@^7`,
+- [x] New `ui/` tree: `package.json` (React 18, `react-dom`, `wavesurfer.js@^7`,
       `@phosphor-icons/web`, `vite`, `typescript`, `vitest`,
       `@testing-library/react`, `@testing-library/jest-dom`), `tsconfig.json`
       (strict), `vite.config.ts`, `index.html`, `src/main.tsx`, `src/App.tsx`.
-- [ ] `src/styles/nocturne.css` — Nocturne `styles.css` vendored **unchanged**
-      (keep the header comment pointing at the design project).
-- [ ] `src/styles/daw.css` — `.tp` / `.tp-main` / `.zbtn` / `.zic` / `.caret` /
+- [x] `src/styles/nocturne.css` — Nocturne `styles.css` vendored **unchanged**
+      (keep the header comment pointing at the design project). *(See D1: the
+      real DS file is not in-repo; reconstructed from design-notes §1/§3a.)*
+- [x] `src/styles/daw.css` — `.tp` / `.tp-main` / `.zbtn` / `.zic` / `.caret` /
       `.dr-item`, the range-input and `.tl` scrollbar rules, and 4–5 named
       timeline-chrome locals (`--tl-bg`, `--tl-lane-head`, `--tl-ruler`, …),
       ported from the canvas `<style>` block to tokens.
-- [ ] Vendor Phosphor regular CSS + font files under `src/styles/phosphor/`
+- [x] Vendor Phosphor regular CSS + font files under `src/styles/phosphor/`
       (no unpkg at runtime).
-- [ ] App shell layout: header (3-col grid) / `main` (drawer · timeline ·
+- [x] App shell layout: header (3-col grid) / `main` (drawer · timeline ·
       right panel) / footer, all fixed bands with the scrolling middle — chrome
       only, lanes stubbed. Drawer has **exactly four** entries: **Select Song**,
       **Timeline** (active), **Artifact inspector**, **Review queue** — no
       placeholder destinations.
-- [ ] **`git mv ui ui.old`**, then scaffold the new tree at `ui/`, **in this
+- [x] **`git mv ui ui.old`**, then scaffold the new tree at `ui/`, **in this
       same commit**. `ui.old/` is the reference copy for items 2–10 and is
       deleted at cutover (item 11).
-- [ ] `ui/Dockerfile` (dev Vite stage + prod nginx stage) and `ui/nginx.conf`
+- [x] `ui/Dockerfile` (dev Vite stage + prod nginx stage) and `ui/nginx.conf`
       written for the new build output; `esnext` build target (Chrome 151).
       Compose `ui` service + port unchanged (still builds from `ui/`). No compose
       service for `ui.old/`.
-- [ ] `ui/README.HELPER_UI.md` written for the new file map.
+- [x] `ui/README.HELPER_UI.md` written for the new file map.
 
 **Test:** `npm run build` + `npm run test` pass in the container; `docker compose
 up ui` serves the empty shell at `:8080` matching the design's frame; `grep -E
@@ -416,7 +417,28 @@ checkout with no analysed songs shows an empty state, not an error.
 
 ## Decisions raised during implementation
 
-None. Add `D1`, `D2`… here only when an item is genuinely blocked
+### D1 — Nocturne `styles.css` is not in the repo (item 1, resolved by recommendation)
+
+`docs/web-ui/ui-rebuild/design/README.md` lists the Nocturne design-system
+`styles.css` under "Not vendored here", and the file the plan assumed was the
+vendored copy (`ui/src/styles.css`) was the old teal-debugger CSS. Item 1 could
+not vendor the DS file "unchanged" because it does not exist in-repo.
+
+**Decision:** reconstruct `ui/src/styles/nocturne.css` from the authoritative
+token + component tabulation in `design-notes.md` §1, with accent/neutral ramp
+steps interpolated from the three anchors in §3a (`accent-300 #d2cefd`,
+`accent-500 #968ae0`, `accent-900 #2b2741`). The file header documents this. If
+the real DS file becomes available it should be dropped in unchanged; nothing
+else in item 1 depends on the reconstructed intermediate values. Minor item-1
+sub-decisions (Phosphor `.svg` `@font-face` fallback dropped — woff2/woff/ttf
+only for Chrome 151; `defineConfig` imported from `vite` not `vitest/config` to
+keep the dev server loading; `@vitejs/plugin-react` / `jsdom` / `@types/react*`
+added as unavoidable devDeps) are folded in and need no review.
+
+**Checkout note:** run `docker compose rm -sfv ui` once after pulling this branch
+to clear the stale Preact `node_modules` volume.
+
+Add `D2`, `D3`… here only when an item is genuinely blocked
 mid-implementation — a decision where proceeding under any assumption would make
 the work wrong or wasted. Record it and its options, then continue with the next
 independent item. Once such a decision is answered, fold the answer into the

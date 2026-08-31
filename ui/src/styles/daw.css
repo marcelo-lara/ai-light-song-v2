@@ -1,0 +1,195 @@
+/*
+ * daw.css — interface-local classes for the Score Analysis DAW timeline.
+ *
+ * Ported from the design canvas <style> block
+ * (docs/web-ui/ui-rebuild/design/Score-Analysis-DAW.dc.html), with the raw
+ * hex/px the canvas used replaced by Nocturne tokens where a token carries the
+ * value. The handful of timeline-chrome greys that have no token are kept here
+ * as named locals (design-notes.md §1, final bullet) so the timeline reads as
+ * one surface family.
+ */
+
+:root {
+  /* Timeline-chrome locals — the greys the canvas uses for the DAW surface. */
+  --tl-bg: #101219;            /* lane body / scroll container ground */
+  --tl-lane-head: #181a26;     /* sticky lane-label cell */
+  --tl-ruler: #1a1c29;         /* bars ruler row */
+  --tl-segment-head: #1e2130;  /* segments header row */
+  --tl-border: #202331;        /* lane bottom-border / grid dividers */
+  --tl-header-grad-a: #1d2030; /* app header gradient start */
+  --tl-header-grad-b: #181a28; /* app header gradient end */
+}
+
+/* ---- Transport buttons ------------------------------------------------- */
+
+.tp {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-neutral-300);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.tp:hover {
+  background: var(--color-accent-900);
+  color: var(--color-accent-300);
+}
+.tp:active {
+  background: var(--color-accent-800);
+  color: var(--color-accent-200);
+}
+.tp:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.tp-main {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-accent-700);
+  color: var(--color-accent-300);
+  font-size: 16px;
+}
+.tp-main:hover {
+  background: var(--color-accent-800);
+  border-color: var(--color-accent);
+  color: var(--color-accent-200);
+}
+
+/* ---- Zoom controls (footer) ----------------------------------------------- */
+
+.zbtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 26px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-neutral-800);
+  background: transparent;
+  color: var(--color-neutral-400);
+  font: 500 11px/1 var(--font-body);
+  cursor: pointer;
+}
+.zbtn:hover {
+  border-color: var(--color-accent-700);
+  color: var(--color-accent-300);
+}
+.zbtn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.zic {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--color-neutral-500);
+  font-size: 14px;
+  cursor: pointer;
+}
+.zic:hover {
+  color: var(--color-accent-300);
+  background: var(--color-neutral-900);
+}
+.zic:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ---- Lane-collapse caret ------------------------------------------------- */
+
+.caret {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 3px;
+  flex: none;
+}
+.caret:hover {
+  color: var(--color-accent-300);
+  background: var(--color-neutral-900);
+}
+.caret:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+/* ---- Drawer nav row --------------------------------------------------- */
+
+.dr-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-neutral-400);
+  font-size: 12.5px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+.dr-item:hover {
+  background: var(--color-neutral-900);
+  color: var(--color-neutral-200);
+}
+.dr-item[aria-current="page"] {
+  background: var(--color-accent-900);
+  color: var(--color-accent-200);
+}
+
+/* ---- Range input ---------------------------------------------------------- */
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: #2b2e3d;
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--color-accent-300);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(145, 132, 217, 0.6);
+}
+input[type="range"]:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* ---- Timeline scrollbar -------------------------------------------------- */
+
+.tl::-webkit-scrollbar {
+  height: 11px;
+  width: 11px;
+}
+.tl::-webkit-scrollbar-track {
+  background: var(--tl-bg);
+}
+.tl::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-800);
+  border-radius: 6px;
+}
+.tl::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-700);
+}

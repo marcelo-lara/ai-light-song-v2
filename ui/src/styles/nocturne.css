@@ -1,0 +1,377 @@
+/*
+ * Nocturne — design-system stylesheet (token + component layer)
+ * Source of truth: Claude Design project "Score Analysis DAW"
+ *   claude.ai/design/p/06705e66-fe17-476d-8f92-5edfb95e5810
+ *   design system: nocturne-7bb68ef7-5a06-4960-93bb-2c04d70976b8  (_ds/.../styles.css)
+ *
+ * Nocturne's own styles.css is design-system source and is NOT vendored into the
+ * repo's docs/ tree (see docs/web-ui/ui-rebuild/design/README.md → "Not vendored
+ * here"). This file reproduces it from the authoritative token + component
+ * tabulation in docs/web-ui/ui-rebuild/design/design-notes.md §1. Retuning
+ * happens in the design project, not here — treat this file as vendored:
+ * do not edit tokens locally.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* Ground / text */
+  --color-bg: #161826;
+  --color-surface: #232532;
+  --color-text: #e9e9ed;
+  --color-divider: rgba(233, 233, 237, 0.16);
+
+  /* Accent — blurple. Used as a line and a glow, not a flood. */
+  --color-accent: #9184d9;
+  --color-accent-100: #ecebfa;
+  --color-accent-200: #dcd9f5;
+  --color-accent-300: #d2cefd;
+  --color-accent-400: #b3aae9;
+  --color-accent-500: #968ae0;
+  --color-accent-600: #7e70d4;
+  --color-accent-700: #6455b8;
+  --color-accent-800: #453a86;
+  --color-accent-900: #2b2741;
+
+  /* Accent-2 — mono stand-in, same role as accent. */
+  --color-accent-2: #9184d9;
+  --color-accent-2-100: #ecebfa;
+  --color-accent-2-300: #d2cefd;
+  --color-accent-2-500: #968ae0;
+  --color-accent-2-700: #6455b8;
+  --color-accent-2-900: #2b2741;
+
+  /* Neutrals — keep chroma low outside the accent. */
+  --color-neutral-100: #e9e9ed;
+  --color-neutral-200: #c7c8d0;
+  --color-neutral-300: #a9abb6;
+  --color-neutral-400: #8b8d9c;
+  --color-neutral-500: #6f7183;
+  --color-neutral-600: #565867;
+  --color-neutral-700: #3e404d;
+  --color-neutral-800: #2b2d38;
+  --color-neutral-900: #1d1f2b;
+
+  /* Deck-scale fills — slide/hero grounds only, not used in this interface. */
+  --color-section: #2b2741;
+  --color-section-glow: rgba(145, 132, 217, 0.35);
+  --color-section-ghost: rgba(145, 132, 217, 0.12);
+
+  /* Type */
+  --font-heading: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Space (px) */
+  --space-1: 2.8px;
+  --space-2: 5.6px;
+  --space-3: 8.4px;
+  --space-4: 11.2px;
+  --space-6: 16.8px;
+  --space-8: 22.4px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  /* Elevation — an edge + ambient darkness on dark ground; don't stack. */
+  --shadow-sm: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.36);
+  --shadow-lg: 0 0 0 1px rgba(0, 0, 0, 0.45), 0 18px 50px rgba(0, 0, 0, 0.5);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  margin: 0 0 var(--space-4);
+  letter-spacing: -0.01em;
+}
+h1 { font-size: 42px; }
+h2 { font-size: 32px; }
+h3 { font-size: 25px; }
+h4 { font-size: 20px; }
+h5 { font-size: 16px; }
+h6 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-neutral-400);
+}
+
+a {
+  color: var(--color-accent-300);
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--color-accent-800);
+  color: var(--color-accent-100);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ---- Buttons -------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 30px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-neutral-700);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-neutral-200);
+  font: 500 12px/1 var(--font-body);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.btn:hover {
+  border-color: var(--color-accent-700);
+  background: var(--color-accent-900);
+  color: var(--color-accent-200);
+}
+.btn:active {
+  background: var(--color-accent-800);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* primary is an accent OUTLINE, never filled */
+.btn-primary {
+  border-color: var(--color-accent);
+  color: var(--color-accent-300);
+}
+.btn-primary:hover {
+  background: color-mix(in oklab, var(--color-accent) 16%, transparent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-200);
+}
+
+.btn-secondary {
+  border-color: var(--color-neutral-600);
+  color: var(--color-neutral-200);
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--color-neutral-300);
+}
+.btn-ghost:hover {
+  background: var(--color-neutral-900);
+  border-color: transparent;
+  color: var(--color-neutral-100);
+}
+
+.btn-icon {
+  width: 30px;
+  padding: 0;
+}
+
+.btn-block {
+  display: flex;
+  width: 100%;
+}
+
+/* ---- Tags -------------------------------------------------------------- */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font: 500 10.5px/1.4 var(--font-body);
+}
+.tag-accent {
+  background: var(--color-accent-900);
+  border-color: var(--color-accent-700);
+  color: var(--color-accent-200);
+}
+.tag-outline {
+  border-color: var(--color-neutral-700);
+  color: var(--color-neutral-300);
+}
+.tag-neutral {
+  background: var(--color-neutral-800);
+  color: var(--color-neutral-200);
+}
+
+/* ---- Fields -------------------------------------------------------------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.field label,
+label.field-label {
+  font: 500 9px/1 var(--font-body);
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--color-neutral-700);
+  border-radius: var(--radius-sm);
+  background: var(--color-neutral-900);
+  color: var(--color-text);
+  font: 500 12px/1.4 var(--font-body);
+}
+.input:focus-visible {
+  border-color: var(--color-accent);
+  outline: none;
+}
+textarea.input {
+  resize: vertical;
+  min-height: 56px;
+}
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+  color: var(--color-neutral-200);
+  cursor: pointer;
+}
+
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--color-neutral-700);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.seg > button {
+  border: none;
+  background: transparent;
+  color: var(--color-neutral-300);
+  font: 500 11px/1 var(--font-body);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+}
+.seg > button[aria-pressed="true"] {
+  background: var(--color-accent-900);
+  color: var(--color-accent-200);
+}
+
+/* ---- Card -------------------------------------------------------------- */
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-800);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+.card-kicker {
+  font: 500 9px/1 var(--font-body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+  margin-bottom: var(--space-3);
+}
+.card-title {
+  font: 500 16px/1.2 var(--font-heading);
+  margin-bottom: var(--space-3);
+}
+.card-body {
+  font-size: 12.5px;
+  color: var(--color-neutral-200);
+}
+.card-meta {
+  margin-top: var(--space-4);
+  font-size: 11px;
+  color: var(--color-neutral-500);
+}
+
+/* ---- Nav -------------------------------------------------------------- */
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* ---- Table -------------------------------------------------------------- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.table th,
+.table td {
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-neutral-800);
+}
+.table th {
+  font: 500 9px/1 var(--font-body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+}
+
+/* ---- Dialog -------------------------------------------------------------- */
+
+.dialog {
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-700);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-8);
+}
+
+/* ---- Description list (block inspector) -------------------------------- */
+
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  font-size: 12px;
+}
+dl dt {
+  color: var(--color-neutral-500);
+}
+dl dd {
+  margin: 0;
+  color: var(--color-neutral-100);
+}
+
+/* ---- Rule -------------------------------------------------------------- */
+
+.hr {
+  border: none;
+  border-top: 1px solid var(--color-divider);
+  margin: var(--space-6) 0;
+}
