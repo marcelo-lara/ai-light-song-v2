@@ -52,7 +52,7 @@ stall a whole run; everything independent of it still gets built.
 | 3 | Continuous lanes span the full timeline | B2 | ☑ |
 | 4 | Left panel collapsed by default | R2 | ☑ |
 | 5 | Collapsed lane shows the title only | R1 | ☑ |
-| 6 | Collapse/expand control keeps a fixed position | R5 | ☐ |
+| 6 | Collapse/expand control keeps a fixed position | R5 | ☑ |
 | 7 | "Fit to width" is an icon-only control | R3 | ☐ |
 | 8 | "Hide all" button on the lane list | R4 | ☐ |
 
@@ -451,10 +451,10 @@ Refinement item `R1`.
 
 Refinement item `R5`.
 
-- [ ] The collapse/expand caret is anchored at the top of the lane label,
+- [x] The collapse/expand caret is anchored at the top of the lane label,
       immediately beside the title, at the **same x/y** in both the expanded and
       collapsed states. Toggling a lane must not move the caret's bounding box.
-- [ ] Applies to every lane kind (canvas and sparse) and to the collapsed
+- [x] Applies to every lane kind (canvas and sparse) and to the collapsed
       single-line row from item 5.
 
 **Test:** unit — snapshot the lane-header layout classes for both states and
@@ -471,6 +471,27 @@ assert the caret's container is the same fl/ grid slot.
   - Repeat for a sparse lane (`sections`).
   - `assertNoRuntimeErrors` empty.
 **Commit:** `6. collapse/expand control keeps a fixed position`
+
+**Notes — item 6 (resolved during implementation).**
+- **Root cause of the drift:** `.app-timeline__lane-head` (in `app.css`, loaded
+  *after* `daw.css`) sets `align-items: center`, which beat `daw.css`'s
+  `.tl-lane-head { align-items: flex-start }` on equal specificity. So the caret
+  was vertically centred and moved down ~29 px when a lane expanded (26 → 84 px
+  row).
+- **Fix:** one higher-specificity rule in `daw.css`,
+  `.app-timeline__lane-head.tl-lane-head { align-items: flex-start; padding:
+  var(--space-3) var(--space-4) }`. The caret is the first flex child (fixed
+  18×18, `flex: none`), so its bounding box is now identical x/y expanded vs
+  collapsed. Applies to every lane (canvas + sparse both render through the same
+  `LaneHeader`), including the item-5 single-line row.
+- **Unit test** `src/timeline/LaneHeader.test.tsx`: identical row `className` and
+  identical caret container `className` / slot (first child) across both states.
+- **Baselines recaptured:** the caret y-shift is visible in every timeline
+  screenshot with an expanded lane — `song-full.png`, `left-panel-open.png`,
+  `lane-collapsed.png`, `timeline-zoom-max.png`, `timeline-zoom-min.png`,
+  `timeline-scrolled-50.png`, `song-no-audio.png`.
+
+
 ### 7. "Fit to width" is an icon-only control
 
 Refinement item `R3`.

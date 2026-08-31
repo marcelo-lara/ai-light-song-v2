@@ -199,8 +199,15 @@ input[type="range"]:focus-visible {
 .tl-sticky-head { position: sticky; }
 .tl-sticky-body { position: sticky; }
 
-/* Lane label cells override the small uppercase header treatment. */
-.tl-lane-head {
+/* Lane label cells override the small uppercase header treatment.
+ *
+ * item 6 / R5 — the collapse caret must sit at a fixed x/y regardless of the
+ * row height so toggling expand/collapse never moves it. The generic
+ * `.app-timeline__lane-head` centres its content (and is loaded after this
+ * file), so anchor the row content to the top at higher specificity: the caret
+ * is the first flex child of a `flex-start` row with a fixed top padding, so
+ * its bounding box is identical expanded vs collapsed. */
+.app-timeline__lane-head.tl-lane-head {
   z-index: 10;
   align-items: flex-start;
   gap: var(--space-2);
