@@ -55,7 +55,7 @@ stall a whole run; everything independent of it still gets built.
 | 6 | Right panel — shell + block inspector (read-only) + hint editor | R6 | ☑ |
 | 7 | Review-queue editor — right-panel third mode (functional v1) | R7 | ☑ |
 | 8 | Artifact inspector (raw-JSON browser) | R8 | ☑ |
-| 9 | All remaining lanes (sparse + validation), collapsed by default | R9 | ☐ |
+| 9 | All remaining lanes (sparse + validation), collapsed by default | R9 | ☑ |
 | 10 | Keyboard, states, polish | R10 | ☐ |
 | 11 | Parity sign-off + cutover | — | ☐ |
 
@@ -351,32 +351,32 @@ Every lane in `ui.old/src/lib/config/laneDefinitions.js` ships (no conductor /
 tempo / "global" strip — that stays removed). This item does the sparse lanes
 and the regression overlay; FFT/RMS/Envelope/drums/energy are item 5.
 
-- [ ] `src/timeline/SparseLane.tsx` — a reusable block-lane body: builds hit
+- [x] `src/timeline/SparseLane.tsx` — a reusable block-lane body: builds hit
       regions from a per-lane content adapter, draws Nocturne-tinted rounded
       blocks with a label (+ caption when wide), row-packs overlapping blocks
       (the `identifierHints` / `machineEvents` / `mlEvents` / `phrases`
       compaction from `sparseLane.js`), sets hit regions for item 6.
-- [ ] `src/timeline/laneContent.ts` — the per-lane content adapters ported from
+- [x] `src/timeline/laneContent.ts` — the per-lane content adapters ported from
       `ui.old/src/lib/timeline/sparseContent.js`: `humanHints`, `sections`, `chords`
       (name + roman numeral, roman only when wide), `patterns`,
       `identifierHints`, `machineEvents`, `mlEvents`, `beatdropPlan`, `phrases`.
       Each yields `{ start_s, end_s, label, laneLabel, caption, reference,
       detail, summary, … }` for the block inspector.
-- [ ] `validation` (Regression Overlay) — port `validationLane.js` **best
+- [x] `validation` (Regression Overlay) — port `validationLane.js` **best
       effort**: beat-drift + exported-event comparison marks, discrete marks
       clickable → block inspector. Its inputs (`eventComparisons`,
       `validationDrift`) are assembled in `ui.old`'s `buildTimelineData.js` from
       validation artifacts — **don't spend time re-tracing them**: if the data
       isn't readily available, ship the lane as an empty-state stub and note it
       in the parity checklist. (Absorbs Story 8.7.)
-- [ ] Per-lane Nocturne tint set (replaces `sparseLaneStyles`) — keep the current
+- [x] Per-lane Nocturne tint set (replaces `sparseLaneStyles`) — keep the current
       hue assignments (hints amber, sections teal, chords cyan, patterns gold,
       identifiers blue, machine red, ml violet, beatdrop orange) but move the
       values onto ramp steps / documented locals.
-- [ ] **Default state:** all lanes in this item start **collapsed**
+- [x] **Default state:** all lanes in this item start **collapsed**
       except `humanHints` (expanded). Every lane is show/hide + expand/collapse
       from the lane list (item 3).
-- [ ] Clicking a block → item 6 block inspector (read-only), except `humanHints`
+- [x] Clicking a block → item 6 block inspector (read-only), except `humanHints`
       → hint editor. Clicking a block also seeks the playhead to its start.
 
 **Test:** `laneContent` adapters unit-tested against artifact fixtures; manual:
@@ -500,7 +500,23 @@ component only issues GETs against the `/data` listing + file endpoints. Non-JSO
 files render as raw text (`.md`/`.txt`) or an "not rendered here" note (`.wav`,
 `.mid`). `_test_song` probe: 73 files reached, 0 of `ui.old`'s 25 missing.
 
-Add `D6`, `D7`… here only when an item is genuinely blocked
+### D6 — Item 9: validation lane shipped as an empty-state stub (per plan allowance)
+
+The `validation` (Regression Overlay) lane renders "Regression overlay —
+validation wiring deferred (item 11 parity)" rather than real marks.
+`eventComparisons` needs machine-event ids aligned to `song_event_timeline.json`
+event ids, an alignment that is not verified, and the plan explicitly says not to
+re-trace `ui.old`'s `buildTimelineData.js`. `VALIDATION_MARK_COLORS` is in place
+for when it is wired. Item 11's parity checklist should record this gap.
+
+Related item-9 notes: roman numerals degrade to plain chord names when
+`layer_a_harmonic.json` carries `global_key.label: null` (reference-promoted
+chords — `_test_song` is in this state); sparse-artifact parsers are deliberately
+tolerant (coerce, never hard-fail a lane) to match `ui.old`'s `buildTimelineData`
+behaviour on half-populated v1.0 artifacts. On `_test_song`, `mlEvents` and
+`validation` show empty states; every other sparse lane has data.
+
+Add `D7`, `D8`… here only when an item is genuinely blocked
 mid-implementation — a decision where proceeding under any assumption would make
 the work wrong or wasted. Record it and its options, then continue with the next
 independent item. Once such a decision is answered, fold the answer into the

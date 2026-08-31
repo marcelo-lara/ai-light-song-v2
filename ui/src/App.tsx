@@ -16,6 +16,8 @@ import { ArtifactInspector } from "./inspector";
 import { makeCoords } from "./timeline/coords";
 import { followScrollLeft, LABEL_WIDTH } from "./timeline/follow";
 import { CanvasLane, type CanvasLaneSource } from "./timeline/CanvasLane";
+import { SparseLane } from "./timeline/SparseLane";
+import { buildLaneBlocks, type LaneContentSources } from "./timeline/laneContent";
 import { LaneList } from "./timeline/LaneList";
 import type { LaneMarker } from "./timeline/laneRenderers";
 import { useLaneState } from "./timeline/laneState";
@@ -60,7 +62,27 @@ const TIMELINE_KEYS = [
   "drums",
   "energy",
   "humanHints",
+  // item 9 sparse lanes
+  "patterns",
+  "identifierHints",
+  "machineEvents",
+  "mlEvents",
+  "beatdropPlan",
+  "symbolicPhrases",
 ] as const;
+
+/** sparse lane id → the single artifact key that backs it (drives empty-state). */
+const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
+  humanHints: "humanHints",
+  sections: "sectionsTopLevel",
+  chords: "harmonicLayer",
+  patterns: "patterns",
+  identifierHints: "identifierHints",
+  machineEvents: "machineEvents",
+  mlEvents: "mlEvents",
+  beatdropPlan: "beatdropPlan",
+  phrases: "symbolicPhrases",
+};
 
 /** lane id → (artifact key, canvas renderer kind) for the item-5 data lanes. */
 const CANVAS_LANES: Record<string, { key: (typeof TIMELINE_KEYS)[number]; kind: CanvasLaneSource["kind"] }> = {
@@ -135,6 +157,32 @@ export function App(): React.JSX.Element {
 
   const humanHintsFile = hintsOverride ?? artifacts.humanHints.data;
 
+  // item 9: block lists for every sparse lane, rebuilt when a source changes.
+  const laneContentSources = useMemo<LaneContentSources>(
+    () => ({
+      humanHints: humanHintsFile,
+      sections,
+      harmonicLayer: artifacts.harmonicLayer.data,
+      patterns: artifacts.patterns.data,
+      identifierHints: artifacts.identifierHints.data,
+      machineEvents: artifacts.machineEvents.data,
+      mlEvents: artifacts.mlEvents.data,
+      beatdropPlan: artifacts.beatdropPlan.data,
+      symbolicPhrases: artifacts.symbolicPhrases.data,
+    }),
+    [
+      humanHintsFile,
+      sections,
+      artifacts.harmonicLayer.data,
+      artifacts.patterns.data,
+      artifacts.identifierHints.data,
+      artifacts.machineEvents.data,
+      artifacts.mlEvents.data,
+      artifacts.beatdropPlan.data,
+      artifacts.symbolicPhrases.data,
+    ],
+  );
+
   // Reset panel + hint override when the song changes.
   useEffect(() => {
     setPanelMode(null);
@@ -200,53 +248,68 @@ export function App(): React.JSX.Element {
           />
         );
       }
-      if (lane.id === "humanHints") {
-        const hints = humanHintsFile?.human_hints ?? [];
+      const entry = CANVAS_LANES[lane.id];
+      if (entry) {
+        const art = artifacts[entry.key];
         return (
-          <div className="tl-hint-lane">
-            <button
-              type="button"
-              className="tl-hint-pill tl-hint-pill--new"
-              title="New hint at the playhead"
-              onClick={() => openHintEditor(null)}
-            >
-              <i className="ph ph-plus" />
-            </button>
-            {hints.map((hint) => {
-              const x = coords.timeToX(hint.start_time);
-              const w = Math.max(coords.timeToX(hint.end_time) - x, 8);
-              return (
-                <button
-                  key={hint.id}
-                  type="button"
-                  className={`tl-hint-pill${hint.id === activeHintRef ? " is-selected" : ""}`}
-                  style={{ left: x, width: w }}
-                  title={hint.title || hint.id}
-                  onClick={() => openHintEditor(hint.id)}
-                >
-                  <span className="tl-hint-pill__label">{hint.title || hint.id}</span>
-                </button>
-              );
-            })}
+          <CanvasLane
+            lane={lane}
+            coords={coords}
+            source={{ kind: entry.kind, data: art.data as never } as CanvasLaneSource}
+            status={art.status}
+            error={art.error?.message ?? null}
+            scrollLeft={scrollLeft}
+            viewportWidth={viewportWidth}
+            onSeek={transport.seekTo}
+            onSelectMarker={handleSelectMarker}
+          />
+        );
+      }
+
+      const sparseKey = SPARSE_LANE_ARTIFACT[lane.id];
+      if (sparseKey) {
+        const art = artifacts[sparseKey];
+        const blocks = buildLaneBlocks(lane.id, laneContentSources);
+        return (
+          <>
+            <SparseLane
+              lane={lane}
+              laneId={lane.id}
+              coords={coords}
+              blocks={blocks}
+              status={art.status}
+              error={art.error?.message ?? null}
+              activeId={lane.id === "humanHints" ? activeHintRef : null}
+              onSeek={transport.seekTo}
+              onSelectMarker={handleSelectMarker}
+            />
+            {lane.id === "humanHints" && (
+              <button
+                type="button"
+                className="tl-hint-pill tl-hint-pill--new"
+                title="New hint at the playhead"
+                onClick={() => openHintEditor(null)}
+              >
+                <i className="ph ph-plus" />
+              </button>
+            )}
+          </>
+        );
+      }
+
+      if (lane.id === "validation") {
+        // Regression Overlay — item 9 ships this as an empty-state stub; the
+        // eventComparisons / beat-drift wiring is deferred to item 11's parity
+        // pass (validation-artifact id alignment not verified). See D-log.
+        return (
+          <div className="tl-canvas-lane" style={{ position: "absolute", inset: 0 }}>
+            <div className="tl-canvas-lane__state">
+              Regression overlay — validation wiring deferred (item 11 parity)
+            </div>
           </div>
         );
       }
-      const entry = CANVAS_LANES[lane.id];
-      if (!entry) return null;
-      const art = artifacts[entry.key];
-      return (
-        <CanvasLane
-          lane={lane}
-          coords={coords}
-          source={{ kind: entry.kind, data: art.data as never } as CanvasLaneSource}
-          status={art.status}
-          error={art.error?.message ?? null}
-          scrollLeft={scrollLeft}
-          viewportWidth={viewportWidth}
-          onSeek={transport.seekTo}
-          onSelectMarker={handleSelectMarker}
-        />
-      );
+      return null;
     },
     [
       transport.surface,
@@ -258,7 +321,7 @@ export function App(): React.JSX.Element {
       scrollLeft,
       viewportWidth,
       handleSelectMarker,
-      humanHintsFile,
+      laneContentSources,
       activeHintRef,
       openHintEditor,
     ],

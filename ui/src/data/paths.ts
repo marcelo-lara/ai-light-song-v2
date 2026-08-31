@@ -38,6 +38,19 @@ export const artifactPaths = {
     encodePath(analysis(song, "artifacts", "layer_c_energy.json")),
   reviewQueue: (song: string) =>
     encodePath(analysis(song, "artifacts", "validation", "review_queue.json")),
+  // item 9 sparse lanes
+  patterns: (song: string) =>
+    encodePath(analysis(song, "artifacts", "layer_d_patterns.json")),
+  symbolicLayer: (song: string) =>
+    encodePath(analysis(song, "artifacts", "layer_b_symbolic.json")),
+  identifierHints: (song: string) =>
+    encodePath(analysis(song, "artifacts", "energy_summary", "hints.json")),
+  machineEvents: (song: string) =>
+    encodePath(analysis(song, "artifacts", "event_inference", "events.machine.json")),
+  mlEvents: (song: string) =>
+    encodePath(analysis(song, "artifacts", "event_inference", "events.ml.json")),
+  beatdropPlan: (song: string) =>
+    encodePath(analysis(song, "beatdrop_visual_plan.json")),
   audio: (song: string) => encodePath(["data", "songs", `${song}.mp3`]),
 } as const;
 

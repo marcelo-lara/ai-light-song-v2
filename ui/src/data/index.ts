@@ -2,6 +2,7 @@
 
 export * from "./types";
 export * from "./loaders";
+export * from "./sparseArtifacts";
 export * from "./discovery";
 export { useSong } from "./useSong";
 export type {

@@ -5,6 +5,14 @@
 import { ShapeError } from "./parse";
 import { artifactPaths } from "./paths";
 import {
+  loadPatterns,
+  loadIdentifierHints,
+  loadMachineEvents,
+  loadMlEvents,
+  loadBeatdropPlan,
+  loadSymbolicPhrases,
+} from "./sparseArtifacts";
+import {
   parseBeats,
   parseDrumEvents,
   parseEnergyLayer,
@@ -180,6 +188,12 @@ export const loadSongFacts = (song: string, f?: typeof fetch) =>
 
 export const artifactLoaders = {
   info: loadInfo,
+  patterns: loadPatterns,
+  identifierHints: loadIdentifierHints,
+  machineEvents: loadMachineEvents,
+  mlEvents: loadMlEvents,
+  beatdropPlan: loadBeatdropPlan,
+  symbolicPhrases: loadSymbolicPhrases,
   beats: loadBeats,
   sectionsTopLevel: loadSectionsTopLevel,
   sectionSegmentation: loadSectionSegmentation,

@@ -1,0 +1,1824 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "event_features_file": "/data/analysis/_test_song/artifacts/event_inference/features.json",
+    "rule_candidates_file": "/data/analysis/_test_song/artifacts/event_inference/rule_candidates.json",
+    "identifier_hints_file": "/data/analysis/_test_song/artifacts/energy_summary/hints.json",
+    "symbolic_layer_file": "/data/analysis/_test_song/artifacts/layer_b_symbolic.json",
+    "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
+    "lyric_reference_file": "/data/analysis/_test_song/reference/moises/lyrics.json",
+    "engine": "deterministic-event-classifier-v1"
+  },
+  "events": [
+    {
+      "id": "machine_drop_001",
+      "type": "drop",
+      "start_time": 30.04,
+      "end_time": 30.5,
+      "confidence": 0.888186,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 30.04,
+            "end_time": 30.5,
+            "ref": "beats:66-66",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 29.605442,
+            "end_time": 44.36,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "drop_evidence_score",
+            "value": 0.753983,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "bass_reentry",
+            "value": 0.97417,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "bass_stem_rel",
+            "value": 0.975044,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.06711,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "spectral_flux_rel",
+            "value": 0.815618,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "onset_density_rel",
+            "value": 0.99885,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "accent_intensity",
+            "value": 1.0,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "bass_att_ratio",
+            "value": 0.202935,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "alignment_score",
+            "value": 0.6,
+            "source_layer": "energy_identifiers"
+          },
+          {
+            "name": "audit_mismatch_flag",
+            "value": 0.0,
+            "source_layer": "energy_identifiers"
+          }
+        ],
+        "reasons": [
+          "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold."
+        ],
+        "rule_names": [
+          "drop_weighted_evidence"
+        ],
+        "metadata": {
+          "drop_evidence": {
+            "profile": "stem_relative_weighted_v1",
+            "decision_threshold": 0.5,
+            "score": 0.753983,
+            "contributions": [
+              {
+                "name": "bass_reentry",
+                "sub_score": 0.97417,
+                "weight": 0.28,
+                "weighted": 0.272768
+              },
+              {
+                "name": "bass_stem_rel",
+                "sub_score": 0.975044,
+                "weight": 0.14,
+                "weighted": 0.136506
+              },
+              {
+                "name": "energy_delta",
+                "sub_score": 0.06711,
+                "weight": 0.16,
+                "weighted": 0.010738
+              },
+              {
+                "name": "spectral_flux_rel",
+                "sub_score": 0.815618,
+                "weight": 0.12,
+                "weighted": 0.097874
+              },
+              {
+                "name": "onset_density_rel",
+                "sub_score": 0.99885,
+                "weight": 0.12,
+                "weighted": 0.119862
+              },
+              {
+                "name": "accent_intensity",
+                "sub_score": 1.0,
+                "weight": 0.1,
+                "weighted": 0.1
+              },
+              {
+                "name": "bass_att_ratio",
+                "sub_score": 0.202935,
+                "weight": 0.08,
+                "weighted": 0.016235
+              }
+            ]
+          }
+        }
+      },
+      "notes": "Weighted-evidence drop; contributing features: bass_reentry, bass_stem_rel, energy_delta, spectral_flux_rel, onset_density_rel, accent_intensity, bass_att_ratio. Subtype evidence is not decisive enough; keeping parent drop label. Identifier audit alignment_score=0.600.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "momentum_lift",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections",
+        "energy_identifiers"
+      ],
+      "candidates": [
+        {
+          "type": "drop_punch",
+          "confidence": 1.0,
+          "notes": "Compact high-impact release with punch-forward attack."
+        },
+        {
+          "type": "drop_explode",
+          "confidence": 1.0,
+          "notes": "Explosive release with strong accent and spectral opening."
+        },
+        {
+          "type": "drop_groove",
+          "confidence": 1.0,
+          "notes": "Sustained bass-led release with groove continuity."
+        },
+        {
+          "type": "soft_release",
+          "confidence": 0.628144,
+          "notes": "Release resolves tension with softer attack and less explosive accent."
+        }
+      ]
+    },
+    {
+      "id": "machine_impact_hit_002",
+      "type": "impact_hit",
+      "start_time": 30.04,
+      "end_time": 30.5,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Accent intensity crosses the impact threshold on this beat.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 30.04,
+            "end_time": 30.5,
+            "ref": "beats:66-66",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 29.605442,
+            "end_time": 44.36,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "accent_intensity",
+            "value": 3.577611,
+            "threshold": 0.65,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "impact_support_ratio",
+            "value": 1.230123,
+            "threshold": 1.15,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Accent intensity crosses the impact threshold on this beat."
+        ],
+        "rule_names": [
+          "impact_accent_peak"
+        ]
+      },
+      "notes": "Impact hits remain single-beat candidates.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "momentum_lift",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_003",
+      "type": "energy_reset",
+      "start_time": 36.5,
+      "end_time": 36.98,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 36.5,
+            "end_time": 36.98,
+            "ref": "beats:80-80",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 29.605442,
+            "end_time": 44.36,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -1.882501,
+            "threshold": -0.5701840134265567,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.791495,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "momentum_lift",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.787379,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_drop_004",
+      "type": "drop",
+      "start_time": 36.98,
+      "end_time": 37.44,
+      "confidence": 0.844078,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 36.98,
+            "end_time": 37.44,
+            "ref": "beats:81-81",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 29.605442,
+            "end_time": 44.36,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "drop_evidence_score",
+            "value": 0.698848,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "bass_reentry",
+            "value": 0.837296,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "bass_stem_rel",
+            "value": 1.0,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.88178,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "spectral_flux_rel",
+            "value": 0.547514,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "onset_density_rel",
+            "value": 0.958841,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "accent_intensity",
+            "value": 0.0,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "bass_att_ratio",
+            "value": 0.031965,
+            "threshold": 0.0,
+            "comparator": ">",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "alignment_score",
+            "value": 0.6,
+            "source_layer": "energy_identifiers"
+          },
+          {
+            "name": "audit_mismatch_flag",
+            "value": 0.0,
+            "source_layer": "energy_identifiers"
+          }
+        ],
+        "reasons": [
+          "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold."
+        ],
+        "rule_names": [
+          "drop_weighted_evidence"
+        ],
+        "metadata": {
+          "drop_evidence": {
+            "profile": "stem_relative_weighted_v1",
+            "decision_threshold": 0.5,
+            "score": 0.698848,
+            "contributions": [
+              {
+                "name": "bass_reentry",
+                "sub_score": 0.837296,
+                "weight": 0.28,
+                "weighted": 0.234443
+              },
+              {
+                "name": "bass_stem_rel",
+                "sub_score": 1.0,
+                "weight": 0.14,
+                "weighted": 0.14
+              },
+              {
+                "name": "energy_delta",
+                "sub_score": 0.88178,
+                "weight": 0.16,
+                "weighted": 0.141085
+              },
+              {
+                "name": "spectral_flux_rel",
+                "sub_score": 0.547514,
+                "weight": 0.12,
+                "weighted": 0.065702
+              },
+              {
+                "name": "onset_density_rel",
+                "sub_score": 0.958841,
+                "weight": 0.12,
+                "weighted": 0.115061
+              },
+              {
+                "name": "accent_intensity",
+                "sub_score": 0.0,
+                "weight": 0.1,
+                "weighted": 0.0
+              },
+              {
+                "name": "bass_att_ratio",
+                "sub_score": 0.031965,
+                "weight": 0.08,
+                "weighted": 0.002557
+              }
+            ]
+          }
+        }
+      },
+      "notes": "Weighted-evidence drop; contributing features: bass_reentry, bass_stem_rel, energy_delta, spectral_flux_rel, onset_density_rel, bass_att_ratio. Subtype evidence is not decisive enough; keeping parent drop label. Identifier audit alignment_score=0.600.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "momentum_lift",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections",
+        "energy_identifiers"
+      ],
+      "candidates": [
+        {
+          "type": "drop_groove",
+          "confidence": 1.0,
+          "notes": "Sustained bass-led release with groove continuity."
+        },
+        {
+          "type": "soft_release",
+          "confidence": 0.964059,
+          "notes": "Release resolves tension with softer attack and less explosive accent."
+        },
+        {
+          "type": "drop_explode",
+          "confidence": 0.380095,
+          "notes": "Explosive release with strong accent and spectral opening."
+        },
+        {
+          "type": "drop_punch",
+          "confidence": 0.160729,
+          "notes": "Compact high-impact release with punch-forward attack."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_005",
+      "type": "energy_reset",
+      "start_time": 42.5,
+      "end_time": 42.98,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 42.5,
+            "end_time": 42.98,
+            "ref": "beats:93-93",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 29.605442,
+            "end_time": 44.36,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -2.609947,
+            "threshold": -0.5701840134265567,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.351775,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "momentum_lift",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.740572,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_tension_hold_006",
+      "type": "tension_hold",
+      "start_time": 44.36,
+      "end_time": 57.74,
+      "confidence": 0.593103,
+      "intensity": 0.551724,
+      "evidence": {
+        "summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 44.36,
+            "end_time": 57.74,
+            "ref": "beats:97-125",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.74,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "tension_mean",
+            "value": 0.551724,
+            "threshold": 0.5504162264103712,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Sustained harmonic tension stays elevated across the section without a qualifying release."
+        ],
+        "rule_names": [
+          "tension_hold_section_state"
+        ]
+      },
+      "notes": "Held-state candidate preserved even when overlapping build windows exist.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_breakdown_007",
+      "type": "breakdown",
+      "start_time": 44.82,
+      "end_time": 45.28,
+      "confidence": 0.713931,
+      "intensity": 0.59835,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 44.82,
+            "end_time": 45.28,
+            "ref": "beats:98-98",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.74,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.59835,
+            "threshold": -0.5701840134265567,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.42213,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_breakdown_008",
+      "type": "breakdown",
+      "start_time": 54.52,
+      "end_time": 54.98,
+      "confidence": 0.820124,
+      "intensity": 0.577098,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 54.52,
+            "end_time": 54.98,
+            "ref": "beats:119-119",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.74,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.577098,
+            "threshold": -0.5701840134265567,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.984971,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_breakdown_009",
+      "type": "breakdown",
+      "start_time": 55.44,
+      "end_time": 55.9,
+      "confidence": 0.853901,
+      "intensity": 0.971109,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 55.44,
+            "end_time": 55.9,
+            "ref": "beats:121-121",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.74,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.971109,
+            "threshold": -0.5701840134265567,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.56284,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_hook_phrase_001",
+      "type": "hook_phrase",
+      "start_time": 22.2,
+      "end_time": 29.58,
+      "confidence": 0.645958,
+      "intensity": 0.75318,
+      "evidence": {
+        "summary": "Repeated phrase-group activity and vocal presence indicate a hook phrase.",
+        "source_windows": [
+          {
+            "layer": "symbolic",
+            "start_time": 22.2,
+            "end_time": 29.58,
+            "ref": "phrase_group_A_3",
+            "metric_names": [
+              "phrase_window_id",
+              "phrase_group_id"
+            ]
+          },
+          {
+            "layer": "event_features",
+            "start_time": 22.2,
+            "end_time": 29.58,
+            "ref": "beats:49-64",
+            "metric_names": [
+              "vocal_presence_score",
+              "energy_mean"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "vocal_presence_mean",
+            "value": 0.75318,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_mean",
+            "value": -0.088273,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Repeated phrase-group activity and vocal presence indicate a hook phrase."
+        ],
+        "rule_names": [
+          "hook_phrase_phrase_classifier"
+        ]
+      },
+      "notes": "Phrase group repeats 3 time(s), making the phrase a stable hook candidate.",
+      "created_by": "analyzer_phrase_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "symbolic",
+        "event_features"
+      ],
+      "candidates": [
+        {
+          "type": "anthem_call",
+          "confidence": 0.75318,
+          "notes": "Strong vocals could also read as a call moment."
+        }
+      ]
+    },
+    {
+      "id": "machine_instrumental_bed_001",
+      "type": "instrumental_bed",
+      "start_time": 29.605442,
+      "end_time": 44.36,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 29.58,
+            "end_time": 44.36,
+            "ref": "beats:65-96",
+            "metric_names": [
+              "vocal_focus_score",
+              "percussion_focus_score",
+              "instrumental_focus_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "vocal_focus_mean",
+            "value": -0.652965,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "percussion_focus_mean",
+            "value": 0.563044,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "instrumental_focus_mean",
+            "value": 1.438495,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed."
+        ],
+        "rule_names": [
+          "instrumental_bed_section_context_rule"
+        ]
+      },
+      "notes": "Instrumental support is the main driver of this section rather than a lead-vocal phrase.",
+      "created_by": "analyzer_context_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_call_response_001",
+      "type": "call_response",
+      "start_time": 14.82,
+      "end_time": 29.58,
+      "confidence": 0.602957,
+      "intensity": 0.75318,
+      "evidence": {
+        "summary": "Adjacent vocal phrases with different phrase-group identities indicate a call-and-response exchange.",
+        "source_windows": [
+          {
+            "layer": "symbolic",
+            "start_time": 14.82,
+            "end_time": 22.2,
+            "ref": "phrase_group_C_1",
+            "metric_names": [
+              "phrase_group_id"
+            ]
+          },
+          {
+            "layer": "symbolic",
+            "start_time": 22.2,
+            "end_time": 29.58,
+            "ref": "phrase_group_A_3",
+            "metric_names": [
+              "phrase_group_id"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "left_vocal_presence_mean",
+            "value": 0.406577,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "right_vocal_presence_mean",
+            "value": 0.75318,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Sequential vocal phrases remain distinct but similarly prominent."
+        ],
+        "rule_names": [
+          "call_response_phrase_pair"
+        ]
+      },
+      "notes": "Adjacent phrase groups suggest an answer phrase instead of a single repeated hook.",
+      "created_by": "analyzer_phrase_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "symbolic",
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_vocal_tail_001",
+      "type": "vocal_tail",
+      "start_time": 29.58,
+      "end_time": 32.36,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Vocal energy falls away after the phrase while accompaniment remains active, indicating a vocal tail or handoff.",
+        "source_windows": [
+          {
+            "layer": "symbolic",
+            "start_time": 22.2,
+            "end_time": 29.58,
+            "ref": "phrase_group_A_3",
+            "metric_names": [
+              "phrase_group_id"
+            ]
+          },
+          {
+            "layer": "event_features",
+            "start_time": 29.58,
+            "end_time": 32.36,
+            "ref": "beats:65-70",
+            "metric_names": [
+              "vocals_stem_score",
+              "harmonic_stem_score",
+              "drums_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "phrase_vocal_focus_mean",
+            "value": 0.56377,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_vocals_mean",
+            "value": -0.685207,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_harmonic_mean",
+            "value": 1.222573,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_drums_mean",
+            "value": 1.761865,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Vocal phrase decays while accompaniment persists."
+        ],
+        "rule_names": [
+          "vocal_tail_transition_rule"
+        ]
+      },
+      "notes": "Phrase decays into the underlying bed instead of ending with a hard stop.",
+      "created_by": "analyzer_context_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "symbolic",
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_vocal_spotlight_001",
+      "type": "vocal_spotlight",
+      "start_time": 15.92,
+      "end_time": 18.21,
+      "confidence": 0.870599,
+      "intensity": 0.833869,
+      "evidence": {
+        "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 15.74,
+            "end_time": 18.52,
+            "ref": "beats:35-40",
+            "metric_names": [
+              "vocals_stem_score",
+              "vocal_focus_score",
+              "drums_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "lyric_line_confidence",
+            "value": 0.918
+          },
+          {
+            "name": "vocals_stem_mean",
+            "value": 0.833869,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "vocal_focus_mean",
+            "value": 0.496187,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "drums_stem_mean",
+            "value": -0.570933,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "rescued_inferred_confidence",
+            "value": 0.0
+          }
+        ],
+        "reasons": [
+          "Lyric line 1 overlaps a clear vocal-led window."
+        ],
+        "rule_names": [
+          "lyric_guided_vocal_spotlight_rule"
+        ],
+        "metadata": {
+          "lyric_line_id": 1,
+          "lyric_text": "This is a test song",
+          "rescue": {
+            "kind": "vocal_spotlight_timing",
+            "confidence_gate": 0.7,
+            "replaced_event": null,
+            "had_overlapping_inferred_event": false
+          }
+        }
+      },
+      "notes": "Timed lyric line rescues a weak or missing inferred vocal spotlight and anchors it to a lyric-aligned phrase window.",
+      "created_by": "analyzer_lyric_rescue_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_vocal_spotlight_002",
+      "type": "vocal_spotlight",
+      "start_time": 19.16,
+      "end_time": 21.83,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 18.98,
+            "end_time": 22.2,
+            "ref": "beats:42-48",
+            "metric_names": [
+              "vocals_stem_score",
+              "vocal_focus_score",
+              "drums_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "lyric_line_confidence",
+            "value": 0.788333
+          },
+          {
+            "name": "vocals_stem_mean",
+            "value": 1.133679,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "vocal_focus_mean",
+            "value": 0.899532,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "drums_stem_mean",
+            "value": -0.502507,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "rescued_inferred_confidence",
+            "value": 0.0
+          }
+        ],
+        "reasons": [
+          "Lyric line 2 overlaps a clear vocal-led window."
+        ],
+        "rule_names": [
+          "lyric_guided_vocal_spotlight_rule"
+        ],
+        "metadata": {
+          "lyric_line_id": 2,
+          "lyric_text": "Welcome to the dark blue studio",
+          "rescue": {
+            "kind": "vocal_spotlight_timing",
+            "confidence_gate": 0.7,
+            "replaced_event": null,
+            "had_overlapping_inferred_event": false
+          }
+        }
+      },
+      "notes": "Timed lyric line rescues a weak or missing inferred vocal spotlight and anchors it to a lyric-aligned phrase window.",
+      "created_by": "analyzer_lyric_rescue_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_vocal_tail_003",
+      "type": "vocal_tail",
+      "start_time": 21.83,
+      "end_time": 24.52,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 18.98,
+            "end_time": 24.52,
+            "ref": "beats:42-53",
+            "metric_names": [
+              "vocals_stem_score",
+              "harmonic_stem_score",
+              "drums_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "lyric_line_confidence",
+            "value": 0.788333
+          },
+          {
+            "name": "line_vocals_mean",
+            "value": 1.133679,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_vocals_mean",
+            "value": -0.17198,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_harmonic_mean",
+            "value": 0.466379,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_drums_mean",
+            "value": 0.42209,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "rescued_inferred_confidence",
+            "value": 0.0
+          }
+        ],
+        "reasons": [
+          "Lyric line 2 ends as the vocal stem decays and the backing bed persists."
+        ],
+        "rule_names": [
+          "lyric_guided_vocal_tail_rule"
+        ],
+        "metadata": {
+          "lyric_line_id": 2,
+          "lyric_text": "Welcome to the dark blue studio",
+          "rescue": {
+            "kind": "vocal_tail_timing",
+            "confidence_gate": 0.7,
+            "replaced_event": null,
+            "had_overlapping_inferred_event": false
+          }
+        }
+      },
+      "notes": "Timed lyric ending rescues a weak or missing inferred vocal tail and snaps it to a clearer phrase handoff.",
+      "created_by": "analyzer_lyric_rescue_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_vocal_spotlight_004",
+      "type": "vocal_spotlight",
+      "start_time": 24.94,
+      "end_time": 29.22,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 24.52,
+            "end_time": 29.58,
+            "ref": "beats:54-64",
+            "metric_names": [
+              "vocals_stem_score",
+              "vocal_focus_score",
+              "drums_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "lyric_line_confidence",
+            "value": 0.7175
+          },
+          {
+            "name": "vocals_stem_mean",
+            "value": 1.367998,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "vocal_focus_mean",
+            "value": 0.873042,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "drums_stem_mean",
+            "value": -0.129436,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "rescued_inferred_confidence",
+            "value": 0.0
+          }
+        ],
+        "reasons": [
+          "Lyric line 3 overlaps a clear vocal-led window."
+        ],
+        "rule_names": [
+          "lyric_guided_vocal_spotlight_rule"
+        ],
+        "metadata": {
+          "lyric_line_id": 3,
+          "lyric_text": "Light show, light show",
+          "rescue": {
+            "kind": "vocal_spotlight_timing",
+            "confidence_gate": 0.7,
+            "replaced_event": null,
+            "had_overlapping_inferred_event": false
+          }
+        }
+      },
+      "notes": "Timed lyric line rescues a weak or missing inferred vocal spotlight and anchors it to a lyric-aligned phrase window.",
+      "created_by": "analyzer_lyric_rescue_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_vocal_spotlight_005",
+      "type": "vocal_spotlight",
+      "start_time": 43.36,
+      "end_time": 43.99,
+      "confidence": 0.876503,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 42.98,
+            "end_time": 44.36,
+            "ref": "beats:94-96",
+            "metric_names": [
+              "vocals_stem_score",
+              "vocal_focus_score",
+              "drums_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "lyric_line_confidence",
+            "value": 0.685
+          },
+          {
+            "name": "vocals_stem_mean",
+            "value": 1.270685,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "vocal_focus_mean",
+            "value": 0.343331,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "drums_stem_mean",
+            "value": 0.031277,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "rescued_inferred_confidence",
+            "value": 0.0
+          }
+        ],
+        "reasons": [
+          "Lyric line 4 overlaps a clear vocal-led window."
+        ],
+        "rule_names": [
+          "lyric_guided_vocal_spotlight_rule"
+        ],
+        "metadata": {
+          "lyric_line_id": 4,
+          "lyric_text": "Light show",
+          "rescue": {
+            "kind": "vocal_spotlight_timing",
+            "confidence_gate": 0.7,
+            "replaced_event": null,
+            "had_overlapping_inferred_event": false
+          }
+        }
+      },
+      "notes": "Timed lyric line rescues a weak or missing inferred vocal spotlight and anchors it to a lyric-aligned phrase window.",
+      "created_by": "analyzer_lyric_rescue_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_vocal_tail_006",
+      "type": "vocal_tail",
+      "start_time": 43.99,
+      "end_time": 46.66,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 42.98,
+            "end_time": 46.66,
+            "ref": "beats:94-101",
+            "metric_names": [
+              "vocals_stem_score",
+              "harmonic_stem_score",
+              "drums_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "lyric_line_confidence",
+            "value": 0.685
+          },
+          {
+            "name": "line_vocals_mean",
+            "value": 1.270685,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_vocals_mean",
+            "value": -0.202932,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_harmonic_mean",
+            "value": 0.618625,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_drums_mean",
+            "value": -0.193682,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "rescued_inferred_confidence",
+            "value": 0.0
+          }
+        ],
+        "reasons": [
+          "Lyric line 4 ends as the vocal stem decays and the backing bed persists."
+        ],
+        "rule_names": [
+          "lyric_guided_vocal_tail_rule"
+        ],
+        "metadata": {
+          "lyric_line_id": 4,
+          "lyric_text": "Light show",
+          "rescue": {
+            "kind": "vocal_tail_timing",
+            "confidence_gate": 0.7,
+            "replaced_event": null,
+            "had_overlapping_inferred_event": false
+          }
+        }
+      },
+      "notes": "Timed lyric ending rescues a weak or missing inferred vocal tail and snaps it to a clearer phrase handoff.",
+      "created_by": "analyzer_lyric_rescue_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_vocal_spotlight_007",
+      "type": "vocal_spotlight",
+      "start_time": 47.09,
+      "end_time": 53.18,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 46.66,
+            "end_time": 53.6,
+            "ref": "beats:102-116",
+            "metric_names": [
+              "vocals_stem_score",
+              "vocal_focus_score",
+              "drums_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "lyric_line_confidence",
+            "value": 0.787143
+          },
+          {
+            "name": "vocals_stem_mean",
+            "value": 1.317472,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "vocal_focus_mean",
+            "value": 0.657518,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "drums_stem_mean",
+            "value": -0.810718,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "rescued_inferred_confidence",
+            "value": 0.0
+          }
+        ],
+        "reasons": [
+          "Lyric line 5 overlaps a clear vocal-led window."
+        ],
+        "rule_names": [
+          "lyric_guided_vocal_spotlight_rule"
+        ],
+        "metadata": {
+          "lyric_line_id": 5,
+          "lyric_text": "Light show, welcome to dark blue studio",
+          "rescue": {
+            "kind": "vocal_spotlight_timing",
+            "confidence_gate": 0.7,
+            "replaced_event": null,
+            "had_overlapping_inferred_event": false
+          }
+        }
+      },
+      "notes": "Timed lyric line rescues a weak or missing inferred vocal spotlight and anchors it to a lyric-aligned phrase window.",
+      "created_by": "analyzer_lyric_rescue_classifier",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_vocal_tail_008",
+      "type": "vocal_tail",
+      "start_time": 53.18,
+      "end_time": 55.9,
+      "confidence": 0.739219,
+      "intensity": 0.437282,
+      "evidence": {
+        "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 46.66,
+            "end_time": 55.9,
+            "ref": "beats:102-121",
+            "metric_names": [
+              "vocals_stem_score",
+              "harmonic_stem_score",
+              "drums_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "lyric_line_confidence",
+            "value": 0.787143
+          },
+          {
+            "name": "line_vocals_mean",
+            "value": 1.317472,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_vocals_mean",
+            "value": 0.88019,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_harmonic_mean",
+            "value": 0.130472,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_drums_mean",
+            "value": -0.822905,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "rescued_inferred_confidence",
+            "value": 0.0
+          }
+        ],
+        "reasons": [
+          "Lyric line 5 ends as the vocal stem decays and the backing bed persists."
+        ],
+        "rule_names": [
+          "lyric_guided_vocal_tail_rule"
+        ],
+        "metadata": {
+          "lyric_line_id": 5,
+          "lyric_text": "Light show, welcome to dark blue studio",
+          "rescue": {
+            "kind": "vocal_tail_timing",
+            "confidence_gate": 0.7,
+            "replaced_event": null,
+            "had_overlapping_inferred_event": false
+          }
+        }
+      },
+      "notes": "Timed lyric ending rescues a weak or missing inferred vocal tail and snaps it to a clearer phrase handoff.",
+      "created_by": "analyzer_lyric_rescue_classifier",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_percussion_break_001",
+      "type": "percussion_break",
+      "start_time": 42.483051,
+      "end_time": 43.205556,
+      "confidence": 0.864465,
+      "intensity": 0.562158,
+      "evidence": {
+        "summary": "Hint-guided percussion pocket confirmed by drum-dominant stem activity and reduced vocal presence.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 42.04,
+            "end_time": 43.44,
+            "ref": "beats:92-94",
+            "metric_names": [
+              "drums_stem_score",
+              "percussion_focus_score",
+              "vocals_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "drums_stem_mean",
+            "value": 0.562158,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "percussion_focus_mean",
+            "value": 0.456543,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "hint_window_duration",
+            "value": 0.7225047080979294
+          }
+        ],
+        "reasons": [
+          "Human hint hint-005 suggested a percussion-only pocket and the stem evidence is compatible."
+        ],
+        "rule_names": [
+          "hint_guided_percussion_break_rule"
+        ],
+        "metadata": {
+          "hint_id": "hint-005",
+          "hint_title": "Outro start"
+        }
+      },
+      "notes": "Human hint and stem evidence both point to a drum-led break rather than a full-band event.",
+      "created_by": "analyzer_hint_guided_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    }
+  ],
+  "review_status": "machine",
+  "threshold_profile": "default",
+  "notes": "Machine-refined event set with fallback candidates preserved for review.",
+  "metadata": {
+    "event_count": 22,
+    "source_rule_event_count": 9,
+    "lyric_rescue_confidence_gate": 0.7,
+    "texture_summary": [
+      {
+        "section_id": "section-001",
+        "start_time": 0.0,
+        "stem_activity": {
+          "bass": 0.4714,
+          "drums": 0.0728,
+          "harmonic": 0.1389,
+          "vocals": 0.002
+        },
+        "stems_entering": [],
+        "stems_leaving": []
+      },
+      {
+        "section_id": "section-002",
+        "start_time": 14.82,
+        "stem_activity": {
+          "bass": 0.0991,
+          "drums": 0.2551,
+          "harmonic": 0.4372,
+          "vocals": 0.5669
+        },
+        "stems_entering": [
+          "drums",
+          "harmonic",
+          "vocals"
+        ],
+        "stems_leaving": [
+          "bass"
+        ]
+      },
+      {
+        "section_id": "section-003",
+        "start_time": 29.605442,
+        "stem_activity": {
+          "bass": 0.8372,
+          "drums": 0.8833,
+          "harmonic": 0.7952,
+          "vocals": 0.0822
+        },
+        "stems_entering": [
+          "bass"
+        ],
+        "stems_leaving": [
+          "vocals"
+        ]
+      },
+      {
+        "section_id": "section-004",
+        "start_time": 44.36,
+        "stem_activity": {
+          "bass": 0.3572,
+          "drums": 0.0425,
+          "harmonic": 0.5026,
+          "vocals": 0.4995
+        },
+        "stems_entering": [
+          "vocals"
+        ],
+        "stems_leaving": [
+          "drums"
+        ]
+      }
+    ]
+  }
+}

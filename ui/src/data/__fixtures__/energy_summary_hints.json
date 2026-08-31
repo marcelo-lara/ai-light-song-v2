@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "engine": "energy-song-identifiers-v1",
+    "dependencies": {
+      "energy_layer_file": "/data/analysis/_test_song/artifacts/layer_c_energy.json",
+      "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
+      "fft_bands_file": "/data/analysis/_test_song/artifacts/essentia/fft_bands.json",
+      "event_features_file": "/data/analysis/_test_song/artifacts/event_inference/features.json"
+    }
+  },
+  "supported_identifiers": [
+    "drop"
+  ],
+  "events": [
+    {
+      "id": "event_drop_001",
+      "identifier": "drop",
+      "time_s": 29.58,
+      "start_s": 29.58,
+      "end_s": 33.58,
+      "section_id": "section-002",
+      "confidence": 1.0,
+      "audit": {
+        "alignment_score": 0.6,
+        "nearest_transient_delta_ms": 20.0,
+        "is_transient_locked": true,
+        "transient_sources": [
+          "fft_bands",
+          "bass_att"
+        ],
+        "mismatch_flag": false,
+        "support": {
+          "bass_att": 0.905887,
+          "bass_att_lma": 0.580195,
+          "spectral_flux": 0.41661,
+          "spectral_flux_lma": 0.237201,
+          "bass_ratio": 1.561349,
+          "flux_ratio": 1.756359
+        }
+      },
+      "evidence": {
+        "loudness_delta": 0.17628,
+        "onset_density_delta": 0.176397,
+        "spectral_centroid_delta": -47.014461,
+        "bass_energy_delta": 0.0
+      },
+      "notes": [
+        "Transition anchors to vocal_spotlight (section-002).",
+        "Coordinated loudness and rhythmic activation increase support a release event."
+      ],
+      "created_by": "analyzer_energy_identifier"
+    }
+  ]
+}
