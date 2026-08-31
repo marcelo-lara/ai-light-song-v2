@@ -48,7 +48,7 @@ stall a whole run; everything independent of it still gets built.
 | # | Item | Refs | State |
 | --- | --- | --- | --- |
 | 1 | Fresh app shell — React + TS + Vite | R1 | ☑ |
-| 2 | Data layer — typed artifact access | R2 | ☐ |
+| 2 | Data layer — typed artifact access | R2 | ☑ |
 | 3 | Timeline shell — grid, rulers, zoom, playhead, lane list | R3 | ☐ |
 | 4 | wavesurfer.js — audio, waveform lane, master clock | R4 | ☐ |
 | 5 | Dynamic data lanes — FFT, RMS, Envelope (+ drums, energy) | R5 | ☐ |
@@ -117,23 +117,23 @@ up ui` serves the empty shell at `:8080` matching the design's frame; `grep -E
 
 ### 2. Data layer — typed artifact access
 
-- [ ] Port to `vite.config.ts`: the `/data` static mount + directory listing and
+- [x] Port to `vite.config.ts`: the `/data` static mount + directory listing and
       `PUT /api/human-hints/<song>` handler from `ui.old/vite.config.js`
       (byte-for-byte behaviour, including the path-escape guard).
-- [ ] `src/data/types.ts` — TS types for every artifact the UI reads, mirroring
+- [x] `src/data/types.ts` — TS types for every artifact the UI reads, mirroring
       the v1.1 contracts (`docs/web-ui/7.2.build_ui_data_story.md`,
       `docs/source references/contract-change-v1.1.md`).
-- [ ] `src/data/loaders.ts` — one loader per artifact
+- [x] `src/data/loaders.ts` — one loader per artifact
       (`info`, `beats`, `sectionsTopLevel`, `sectionSegmentation`, `fftBands`,
       `rmsLoudness`, `loudnessEnvelope`, `harmonicLayer`, `humanHints`,
       `eventTimeline`, `reviewQueue`), each returning parsed + typed data or a
       typed error.
-- [ ] `src/data/discovery.ts` — `data/analysis` listing ∩ `data/songs` audio
+- [x] `src/data/discovery.ts` — `data/analysis` listing ∩ `data/songs` audio
       files (logic from the old `songDataApi.js` / `discovery`).
-- [ ] `src/data/useSong.ts` — hook: given a song name, loads `info.json` + the
+- [x] `src/data/useSong.ts` — hook: given a song name, loads `info.json` + the
       artifacts the visible lanes need; exposes `{ status, data, error }` per
       artifact.
-- [ ] `src/data/saveHumanHints.ts` — `PUT /api/human-hints/<song>` client with
+- [x] `src/data/saveHumanHints.ts` — `PUT /api/human-hints/<song>` client with
       the validation `ui.old`'s hint editor enforced.
 
 **Test:** `npm run test` covers the type parsers and discovery filter with
@@ -438,7 +438,25 @@ added as unavoidable devDeps) are folded in and need no review.
 **Checkout note:** run `docker compose rm -sfv ui` once after pulling this branch
 to clear the stale Preact `node_modules` volume.
 
-Add `D2`, `D3`… here only when an item is genuinely blocked
+### D2 — Non-blocking notes from item 2 (data layer), resolved by recommendation
+
+- **`vite.config.ts` is outside the TS project.** The ported `/data` mount +
+  hint-save handler needs Node builtins (`node:fs`, `Buffer`), which would pull
+  in `@types/node` (not in the Docker image → needs an image rebuild). `ui.old`'s
+  config was `.js` and never type-checked either; Vite transpiles the config via
+  esbuild at load. `tsconfig.json` `include` narrowed to `["src"]`. A later item
+  that wants the config type-checked should add `@types/node` +
+  `tsconfig.node.json` and rebuild the image.
+- **Top-level `sections.json` is still the v1.0 projection** (no
+  `section_id`/`form_role`/`confidence`) while the v1.1 contract adds them.
+  `SectionRow` types the additions as `T | null` and the parser coerces missing
+  → `null` rather than rejecting. `artifacts/section_segmentation/sections.json`
+  *is* v1.1 and is parsed strictly (incl. the loud failure on duplicate
+  `section_id`).
+- **`.gitignore`:** root `data/` rule also matched `ui/src/data/`; added
+  `!ui/src/data/**` negations so the directory is committed.
+
+Add `D3`, `D4`… here only when an item is genuinely blocked
 mid-implementation — a decision where proceeding under any assumption would make
 the work wrong or wasted. Record it and its options, then continue with the next
 independent item. Once such a decision is answered, fold the answer into the

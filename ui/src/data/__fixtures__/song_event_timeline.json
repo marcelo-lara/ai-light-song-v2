@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.1",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "engine": "llm-friendly-event-timeline-v2",
+    "dependencies": {
+      "machine_events_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json",
+      "review_file": "/data/analysis/_test_song/artifacts/validation/song_events.review.json",
+      "overrides_file": "/data/analysis/_test_song/artifacts/validation/song_events.overrides.json"
+    }
+  },
+  "events": [
+    {
+      "id": "machine_call_response_001",
+      "type": "call_response",
+      "start_time": 14.82,
+      "end_time": 29.58,
+      "confidence": 0.602957,
+      "intensity": 0.601272,
+      "section_id": "section-002",
+      "section_name": null,
+      "provenance": "machine-only",
+      "summary": "Adjacent vocal phrases with different phrase-group identities indicate a call-and-response exchange.",
+      "created_by": "analyzer_phrase_classifier",
+      "evidence_summary": "Adjacent vocal phrases with different phrase-group identities indicate a call-and-response exchange.",
+      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
+      "evidence_ref": {
+        "machine_event_id": "machine_call_response_001",
+        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
+      }
+    },
+    {
+      "id": "composite_machine_drop_001",
+      "type": "drop",
+      "start_time": 30.04,
+      "end_time": 36.98,
+      "confidence": 0.888186,
+      "intensity": 1.0,
+      "section_id": "section-003",
+      "section_name": "momentum_lift",
+      "provenance": "machine-only",
+      "summary": "Composite drop gesture: impact \u2192 release",
+      "created_by": "analyzer_event_classifier",
+      "evidence_summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
+      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
+      "evidence_ref": {
+        "machine_event_id": "machine_drop_001",
+        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
+      },
+      "composite": true,
+      "phases": [
+        {
+          "phase": "impact",
+          "start_time": 30.04,
+          "end_time": 30.5,
+          "intensity": 1.0
+        },
+        {
+          "phase": "release",
+          "start_time": 36.5,
+          "end_time": 36.98,
+          "intensity": 0.35
+        }
+      ],
+      "member_event_ids": [
+        "machine_drop_001",
+        "machine_energy_reset_003"
+      ]
+    }
+  ],
+  "texture_summary": [
+    {
+      "section_id": "section-001",
+      "start_time": 0.0,
+      "stem_activity": {
+        "bass": 0.4714,
+        "drums": 0.0728,
+        "harmonic": 0.1389,
+        "vocals": 0.002
+      },
+      "stems_entering": [],
+      "stems_leaving": []
+    },
+    {
+      "section_id": "section-002",
+      "start_time": 14.82,
+      "stem_activity": {
+        "bass": 0.0991,
+        "drums": 0.2551,
+        "harmonic": 0.4372,
+        "vocals": 0.5669
+      },
+      "stems_entering": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "stems_leaving": [
+        "bass"
+      ]
+    }
+  ]
+}

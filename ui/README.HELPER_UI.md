@@ -46,9 +46,20 @@ the behaviour reference until cutover (plan item 11), then deleted.
 | `src/styles/daw.css` | Interface-local timeline classes (`.tp` / `.zbtn` / `.caret` / `.dr-item` / range + `.tl` scrollbar) ported from the design canvas `<style>` block to tokens, plus the `--tl-*` timeline-chrome locals |
 | `src/styles/app.css` | The fixed-band app-shell layout |
 | `src/styles/phosphor/` | Phosphor regular-weight `style.css` + `Phosphor.woff2/woff/ttf`, vendored (no unpkg at runtime) |
-| `src/data/` `src/timeline/` `src/panel/` | Empty — populated by plan items 2–9 |
-| `vite.config.ts` | Vite + React plugin; `build.target: esnext`; vitest (`jsdom`) config. The `/data` mount + `PUT` handlers arrive in plan item 2. |
-| `tsconfig.json` | `strict` (+ `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, no-unused), `target`/`module` `esnext` |
+| `src/data/types.ts` | TS types for every artifact the UI reads, mirroring the v1.1 contracts. v1.1-added fields typed `T \| null` so a pre-v1.1 song still parses. |
+| `src/data/parse.ts` | Structural-assertion toolkit (`ShapeError`, `asNumber`, `stringOrNull`, …) shared by the parsers |
+| `src/data/parsers.ts` | Pure `(raw: unknown) => T` parser per artifact; throws `ShapeError` on a contract mismatch. Enforces the v1.1 B5 `section_id` uniqueness rule. |
+| `src/data/paths.ts` | `/data` URL builders (`artifactPaths`, `listingPaths`, `encodePath`) — every segment percent-encoded |
+| `src/data/loaders.ts` | One fetch+parse loader per artifact → `LoadResult<T>` (`{ ok, data }` \| `{ ok, error }`, never throws). `artifactLoaders` registry + `ArtifactKey` / `ArtifactData<K>`. |
+| `src/data/discovery.ts` | Directory-index HTML parsing; `intersectSongs` = analysis dirs ∩ `data/songs` audio basenames; `discoverSongs()` fetch wrapper |
+| `src/data/useSong.ts` | Hook: given a song, loads `info.json` + requested artifacts; `{ status, data, error }` per key, stale-run guarded, `reload()` |
+| `src/data/saveHumanHints.ts` | `buildHumanHintsPayload` (ui.old's hint-editor validation) + `saveHumanHints` `PUT /api/human-hints/<song>` client |
+| `src/data/index.ts` | Barrel re-export for the data layer |
+| `src/data/__fixtures__/` | Trimmed real `_test_song` artifacts for the parser/discovery unit tests |
+| `src/data/*.test.ts` | vitest: parsers (against fixtures), discovery filter, loader error mapping, hint-payload validation |
+| `src/timeline/` `src/panel/` | Empty — populated by plan items 3–9 |
+| `vite.config.ts` | Vite + React plugin; `build.target: esnext`; vitest (`jsdom`) config; `data-mount-plugin` = `/data` static mount + directory listing + `PUT /api/human-hints/<song>` (ported from `ui.old/vite.config.js`, incl. path-escape guard + byte-range). Not in a `tsconfig` (build tooling, transpiled by esbuild — as `ui.old`'s `.js` config was). |
+| `tsconfig.json` | `strict` (+ `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, no-unused), `target`/`module` `esnext`; `include: ["src"]` |
 | `Dockerfile` | `deps` → `dev` (Vite) / `build` (tsc + vite) → `final` (nginx) |
 | `nginx.conf` | Static serve + SPA fallback + read-only `/data/` autoindex |
 

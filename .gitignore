@@ -2,6 +2,10 @@
 data/
 !ui/src/lib/data/
 !ui/src/lib/data/**
+!ui/src/data/
+!ui/src/data/**
+!ui.old/src/lib/data/
+!ui.old/src/lib/data/**
 logs/
 models/
 
