@@ -54,7 +54,7 @@ stall a whole run; everything independent of it still gets built.
 | 5 | Dynamic data lanes — FFT, RMS, Envelope (+ drums, energy) | R5 | ☑ |
 | 6 | Right panel — shell + block inspector (read-only) + hint editor | R6 | ☑ |
 | 7 | Review-queue editor — right-panel third mode (functional v1) | R7 | ☑ |
-| 8 | Artifact inspector (raw-JSON browser) | R8 | ☐ |
+| 8 | Artifact inspector (raw-JSON browser) | R8 | ☑ |
 | 9 | All remaining lanes (sparse + validation), collapsed by default | R9 | ☐ |
 | 10 | Keyboard, states, polish | R10 | ☐ |
 | 11 | Parity sign-off + cutover | — | ☐ |
@@ -328,11 +328,14 @@ review queue shows the empty state.
 
 ### 8. Artifact inspector
 
-- [ ] `src/inspector/ArtifactInspector.tsx` — drawer entry / bottom sheet that
+- [x] `src/inspector/ArtifactInspector.tsx` — drawer entry / bottom sheet that
       lists the song's `artifacts/**` files and renders a selected JSON with
       collapsible nodes + copy-path, styled with Nocturne `.table` / `.card`.
-      Read-only.
-- [ ] Reachability check against `ui.old`'s inspector file set (Story 8.9).
+      Read-only. *(See D5: the walk roots at `data/analysis/<song>` rather than
+      `artifacts/` so ui.old's non-`artifacts/` inspector files stay reachable.)*
+- [x] Reachability check against `ui.old`'s inspector file set (Story 8.9) — all
+      25 files ui.old's inspector exposed resolve through the recursive walk
+      (`_test_song`: 73 files reached, 0 missing).
 
 **Test:** manual: every artifact `ui.old`'s inspector exposed is reachable and
 readable; no write path.
@@ -481,7 +484,23 @@ review-queue questions. The panel is still the only writer of the file. The
 review queue opens off the `Review queue` drawer entry (`activeView === "review"`)
 through the same `RightPanel` shell — a mode switch, not a second aside.
 
-Add `D5`, `D6`… here only when an item is genuinely blocked
+### D5 — Artifact inspector walks the song root, not just `artifacts/` (item 8, resolved by recommendation)
+
+The item text and `product-refinement.md` §8 describe the inspector as a view of
+files "under `data/analysis/<song>/artifacts/`", but Story 8.9's acceptance
+criterion is that **every file `ui.old`'s inspector exposed** is reachable — and
+six of `ui.old`'s 25 `artifactDefinitions` entries live **outside** `artifacts/`
+(`info.json`, `beats.json`, `sections.json`, `song_event_timeline.json`,
+`beatdrop_visual_plan.json`, `reference/human/human_hints.json`).
+
+**Decision:** the recursive walk roots at `data/analysis/<song>` so all of
+`ui.old`'s set stays reachable (and the debugger sees `reference/`, `stems/`,
+etc. too, which is useful for cross-checking). Still strictly read-only — the
+component only issues GETs against the `/data` listing + file endpoints. Non-JSON
+files render as raw text (`.md`/`.txt`) or an "not rendered here" note (`.wav`,
+`.mid`). `_test_song` probe: 73 files reached, 0 of `ui.old`'s 25 missing.
+
+Add `D6`, `D7`… here only when an item is genuinely blocked
 mid-implementation — a decision where proceeding under any assumption would make
 the work wrong or wasted. Record it and its options, then continue with the next
 independent item. Once such a decision is answered, fold the answer into the

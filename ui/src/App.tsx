@@ -12,6 +12,7 @@ import {
   type BlockSelection,
   type PanelMode,
 } from "./panel";
+import { ArtifactInspector } from "./inspector";
 import { makeCoords } from "./timeline/coords";
 import { followScrollLeft, LABEL_WIDTH } from "./timeline/follow";
 import { CanvasLane, type CanvasLaneSource } from "./timeline/CanvasLane";
@@ -423,7 +424,9 @@ export function App(): React.JSX.Element {
         )}
 
         <div className="app-timeline-wrap" style={{ position: "relative", flex: 1, minWidth: 0, display: "flex" }}>
-          {activeView === "song" ? (
+          {activeView === "inspector" ? (
+            <ArtifactInspector song={song} />
+          ) : activeView === "song" ? (
             <SongPicker
               songs={songs}
               current={song}
@@ -501,13 +504,6 @@ export function App(): React.JSX.Element {
               <p className="card-body">Select a song to review its open questions.</p>
             </aside>
           ))}
-
-        {activeView === "inspector" && (
-          <aside className="app-rightpanel" aria-label={activeView}>
-            <div className="card-kicker">{drawerLabel(activeView)}</div>
-            <p className="card-body">This surface is built in a later plan item. The shell is chrome-only.</p>
-          </aside>
-        )}
       </main>
 
       <footer className="app-footer">
@@ -590,9 +586,4 @@ function SongPicker({
       </div>
     </div>
   );
-}
-
-function drawerLabel(view: DrawerView): string {
-  const entry = DRAWER_ENTRIES.find((candidate) => candidate.id === view);
-  return entry ? entry.label : view;
 }
