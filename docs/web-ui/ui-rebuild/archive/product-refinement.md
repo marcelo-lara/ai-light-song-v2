@@ -212,6 +212,12 @@ surrounding chrome changes to Nocturne. `drums` and `energy` are ported here and
   right panel (item 6).
 - Lane header: name + sub-caption + collapse caret; collapsed lane = 26 px with
   the faint waveform strip summary.
+  > **Superseded by UI v2.1 plan items 5 & 6.** Item 5 (R1): a *collapsed* lane
+  > header renders the **title only** — the sub-caption line is not rendered
+  > until the lane is expanded (the faint mini strip is unchanged). Item 6 (R5):
+  > the collapse caret is anchored top-left at a fixed x/y so toggling
+  > expand/collapse never moves it. Collapsed row height stays 26 px, now via
+  > `collapsedLaneHeight()` (guaranteed ≥ the mini-strip height).
 
 **Acceptance.** Each lane renders from its artifact; FFT / RMS / Envelope match
 the previous app's palette and the scroll-following stem sub-labels

@@ -51,7 +51,7 @@ stall a whole run; everything independent of it still gets built.
 | 2 | Waveform lane renders on a real song | B1 | ☑ |
 | 3 | Continuous lanes span the full timeline | B2 | ☑ |
 | 4 | Left panel collapsed by default | R2 | ☑ |
-| 5 | Collapsed lane shows the title only | R1 | ☐ |
+| 5 | Collapsed lane shows the title only | R1 | ☑ |
 | 6 | Collapse/expand control keeps a fixed position | R5 | ☐ |
 | 7 | "Fit to width" is an icon-only control | R3 | ☐ |
 | 8 | "Hide all" button on the lane list | R4 | ☐ |
@@ -396,15 +396,15 @@ through the persistence helper.
 
 Refinement item `R1`.
 
-- [ ] When a lane's `expanded` is false, the label column renders only the lane
+- [x] When a lane's `expanded` is false, the label column renders only the lane
       title — the sub-caption line is not rendered in the collapsed state. It
       returns when the lane is expanded.
-- [ ] The faint mini data-strip summary in the collapsed lane body is
+- [x] The faint mini data-strip summary in the collapsed lane body is
       **unchanged** and still renders.
-- [ ] The collapsed row height may shrink to fit the single-line label + strip;
+- [x] The collapsed row height may shrink to fit the single-line label + strip;
       update any hard-coded `26px` collapsed-lane constant and the canvas
       geometry that depends on it so the strip is not clipped.
-- [ ] Annotate the `UI v2` archived spec's "collapsed = title + sub-caption"
+- [x] Annotate the `UI v2` archived spec's "collapsed = title + sub-caption"
       wording as superseded.
 
 **Test:** unit — the lane-header component renders the sub-caption node only when
@@ -422,6 +422,31 @@ Refinement item `R1`.
   - Diff `lane-collapsed.png`.
   - `assertNoRuntimeErrors` empty.
 **Commit:** `5. collapsed lane shows the title only`
+
+**Notes — item 5 (resolved during implementation).**
+- **Change is in the lane header only.** The header markup moved from an inline
+  block in `TimelineGrid.LaneRow` into an exported `LaneHeader` component (so
+  items 5 + 6 are unit-testable). Collapsed state: the `.tl-lane-head__sub` node
+  is not rendered at all (was previously rendered with the literal text
+  `"collapsed"`); it returns on expand.
+- **Collapsed row height stays 26 px.** The `26px` constant was the
+  `COLLAPSED_LANE_HEIGHT` in `laneState.ts` (there is no `daw.css:69` lane-height
+  rule — line 69 there is `.zbtn { height: 26px }`, unrelated). Added
+  `COLLAPSED_STRIP_HEIGHT = 10` and `collapsedLaneHeight()` (returns
+  `max(COLLAPSED_LANE_HEIGHT, COLLAPSED_STRIP_HEIGHT)` = 26). Kept 26 rather than
+  shrinking: the strip (`drawCollapsedStrip` / SparseLane tick row) is anchored
+  to `rc.height` so it already tracks the constant and is not clipped, and 26
+  comfortably fits the single title line; shrinking would only churn every
+  timeline baseline for no visible gain now that the sub-caption is gone.
+- **Archived-doc annotation** landed in `archive/product-refinement.md`
+  ("Lane header: name + sub-caption…") and `archive/implementation-plan.md`
+  (`CanvasLane.tsx` bullet).
+- **Unit test** `src/timeline/LaneHeader.test.tsx`: sub-caption node present iff
+  `expanded`; `collapsedLaneHeight() ≥ COLLAPSED_STRIP_HEIGHT`.
+- **Baseline recaptured:** `lane-collapsed.png` (sub-caption line gone; and the
+  item-6 caret is now top-anchored).
+
+
 ### 6. Collapse/expand control keeps a fixed position
 
 Refinement item `R5`.

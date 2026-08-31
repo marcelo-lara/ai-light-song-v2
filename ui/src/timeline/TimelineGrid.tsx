@@ -165,6 +165,46 @@ export function TimelineGrid({
   );
 }
 
+/**
+ * The sticky lane label cell. Split out (and exported) so the item 5/6 layout
+ * invariants are unit-testable in isolation:
+ *  - item 5 / R1: the sub-caption node renders ONLY when the lane is expanded.
+ *  - item 6 / R5: the collapse caret is the first flex child of a
+ *    `align-items: flex-start` row, so its bounding box is the same x/y in both
+ *    states — toggling `expanded` never moves it.
+ */
+export function LaneHeader({
+  lane,
+  onToggleExpand,
+}: {
+  lane: Lane;
+  onToggleExpand: (laneId: string) => void;
+}): React.JSX.Element {
+  return (
+    <div
+      className="app-timeline__lane-head tl-lane-head"
+      style={{ height: lane.renderHeight }}
+      data-lane={lane.id}
+      data-lane-collapsed={lane.expanded ? "false" : "true"}
+    >
+      <button
+        type="button"
+        className="caret"
+        data-testid={`lane-collapse-${lane.id}`}
+        aria-label={lane.expanded ? `Collapse ${lane.label}` : `Expand ${lane.label}`}
+        aria-expanded={lane.expanded}
+        onClick={() => onToggleExpand(lane.id)}
+      >
+        <i className={`ph ${lane.expanded ? "ph-caret-down" : "ph-caret-right"}`} />
+      </button>
+      <div className="tl-lane-head__text">
+        <div className="tl-lane-head__name">{lane.label}</div>
+        {lane.expanded && <div className="tl-lane-head__sub">{lane.sub}</div>}
+      </div>
+    </div>
+  );
+}
+
 interface LaneRowProps {
   lane: Lane;
   barLines: Coords["barLines"];
@@ -183,27 +223,7 @@ function LaneRow({
   const collapsed = lane.expanded ? "false" : "true";
   return (
     <>
-      <div
-        className="app-timeline__lane-head tl-lane-head"
-        style={{ height: lane.renderHeight }}
-        data-lane={lane.id}
-        data-lane-collapsed={collapsed}
-      >
-        <button
-          type="button"
-          className="caret"
-          data-testid={`lane-collapse-${lane.id}`}
-          aria-label={lane.expanded ? `Collapse ${lane.label}` : `Expand ${lane.label}`}
-          aria-expanded={lane.expanded}
-          onClick={() => onToggleExpand(lane.id)}
-        >
-          <i className={`ph ${lane.expanded ? "ph-caret-down" : "ph-caret-right"}`} />
-        </button>
-        <div className="tl-lane-head__text">
-          <div className="tl-lane-head__name">{lane.label}</div>
-          <div className="tl-lane-head__sub">{lane.expanded ? lane.sub : "collapsed"}</div>
-        </div>
-      </div>
+      <LaneHeader lane={lane} onToggleExpand={onToggleExpand} />
       <div
         className="app-timeline__lane-body tl-lane-body"
         style={{ height: lane.renderHeight, width: timelineW }}

@@ -36,7 +36,26 @@ export interface LaneDef {
   height: number;
 }
 
+/**
+ * Height (px) of the faint mini data-strip drawn in a collapsed lane body
+ * (`drawCollapsedStrip` / SparseLane's tick row). The collapsed row must never
+ * be shorter than this or the strip clips (plan item 5).
+ */
+export const COLLAPSED_STRIP_HEIGHT = 10;
+
+/**
+ * Collapsed lane row height (plan item 5 / R1). A collapsed lane shows only its
+ * title (no sub-caption) plus the mini strip. 26px fits the single title line
+ * and is comfortably ≥ COLLAPSED_STRIP_HEIGHT so the strip is not clipped; the
+ * canvas geometry (`drawCollapsedStrip`, SparseLane tick row) is anchored to
+ * `rc.height` so it tracks this constant automatically.
+ */
 export const COLLAPSED_LANE_HEIGHT = 26;
+
+/** The collapsed row height, guaranteed ≥ the mini strip height. */
+export function collapsedLaneHeight(): number {
+  return Math.max(COLLAPSED_LANE_HEIGHT, COLLAPSED_STRIP_HEIGHT);
+}
 
 /** Registry order = top-to-bottom lane order in the timeline. */
 export const LANE_DEFS: readonly LaneDef[] = [
