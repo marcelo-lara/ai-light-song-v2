@@ -10,6 +10,10 @@ per-item status, and
 [docs/source references/contract-change-v1.1.md](docs/source%20references/contract-change-v1.1.md)
 for the handover note to the MCP side.
 
+The internal debugger UI is being rebuilt from scratch (React + TypeScript, the
+"Score Analysis DAW" design, wavesurfer.js) — see
+[docs/web-ui/ui-rebuild/](docs/web-ui/ui-rebuild/).
+
 A Docker-first pipeline that turns a source song into structured musical
 analysis artifacts and fixture-aware lighting guidance. This repo is the
 analysis module of a three-part stage-lighting system: its job is to work out a

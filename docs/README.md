@@ -13,7 +13,7 @@ inference layer can be maintained and improved in isolation.
 | [`audio-processing/`](audio-processing/) | Deterministic DSP and feature math: timing grid, FFT bands, loudness, HPCP/chroma, key, alignment, energy/symbolic/event feature derivation. | Pure math, byte-reproducible |
 | [`audio-inference/`](audio-inference/) | The music-understanding layer: ML models (stems, embeddings, chords, MIDI/drum transcription, section SSM, event classifier) plus the rule-based baselines, event vocabularies, identifier inference and LLM-friendly abstractions that feed or compete with them. | Interpretation of audio |
 | [`lighting-score/`](lighting-score/) | Epic 7 generation stage: unified feature-layer assembly, feature-to-lighting mapping, fixture-aware orchestration. | Feature → lighting transform |
-| [`web-ui/`](web-ui/) | Epic 8 internal debugger, the `build_ui_data` contract, the offline visualizer export, and UI issue/regression notes. | Web interface |
+| [`web-ui/`](web-ui/) | Epic 8 internal debugger, the `build_ui_data` contract, the offline visualizer export, UI issue/regression notes, and the active [`web-ui/ui-rebuild/`](web-ui/ui-rebuild/) (React + TS rebuild as the "Score Analysis DAW" design). | Web interface |
 
 Cross-cutting docs stay at `docs/` root: [`constitution.md`](constitution.md),
 [`Implementation_Guide.md`](Implementation_Guide.md),
