@@ -1,7 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { artifactPaths, discoverSongs, useSong } from "./data";
-import type { SectionRow } from "./data/types";
+import type { HumanHintsFile, SectionRow } from "./data/types";
+import {
+  BlockInspector,
+  HintEditorPanel,
+  RightPanel,
+  selectionFromMarker,
+  selectionFromSection,
+  type BlockSelection,
+  type PanelMode,
+} from "./panel";
 import { makeCoords } from "./timeline/coords";
 import { followScrollLeft, LABEL_WIDTH } from "./timeline/follow";
 import { CanvasLane, type CanvasLaneSource } from "./timeline/CanvasLane";
@@ -48,6 +57,7 @@ const TIMELINE_KEYS = [
   "loudnessEnvelope",
   "drums",
   "energy",
+  "humanHints",
 ] as const;
 
 /** lane id → (artifact key, canvas renderer kind) for the item-5 data lanes. */
@@ -77,6 +87,12 @@ export function App(): React.JSX.Element {
   const [scrollLeft, setScrollLeft] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(0);
 
+  // Right-panel modes (item 6). `review` is item 7's seam.
+  const [panelMode, setPanelMode] = useState<PanelMode | null>(null);
+  const [selection, setSelection] = useState<BlockSelection | null>(null);
+  const [activeHintRef, setActiveHintRef] = useState<string | null>(null);
+  const [hintsOverride, setHintsOverride] = useState<HumanHintsFile | null>(null);
+
   const scrollerRef = useRef<HTMLDivElement>(null);
   const laneState = useLaneState();
 
@@ -97,7 +113,7 @@ export function App(): React.JSX.Element {
     };
   }, []);
 
-  const { artifacts } = useSong(song, TIMELINE_KEYS);
+  const { artifacts, reload: reloadSong } = useSong(song, TIMELINE_KEYS);
   const info = artifacts.info.data;
   const beats = useMemo(() => artifacts.beats.data ?? [], [artifacts.beats.data]);
   const sections: SectionRow[] = useMemo(
@@ -115,12 +131,59 @@ export function App(): React.JSX.Element {
   const transport = useTransport({ audioUrl, coords });
   const duration = transport.duration || estimatedDuration;
 
+  const humanHintsFile = hintsOverride ?? artifacts.humanHints.data;
+
+  // Reset panel + hint override when the song changes.
+  useEffect(() => {
+    setPanelMode(null);
+    setSelection(null);
+    setActiveHintRef(null);
+    setHintsOverride(null);
+  }, [song]);
+
+  const closePanel = useCallback(() => {
+    setPanelMode(null);
+    setSelection(null);
+    setActiveHintRef(null);
+  }, []);
+
+  const scrollTimelineToTime = useCallback(
+    (seconds: number) => {
+      const el = scrollerRef.current;
+      if (!el) return;
+      const target = LABEL_WIDTH + coords.timeToX(seconds) - el.clientWidth * 0.3;
+      const max = el.scrollWidth - el.clientWidth;
+      el.scrollLeft = Math.max(0, Math.min(target, max));
+    },
+    [coords],
+  );
+
+  const openHintEditor = useCallback((reference: string | null) => {
+    setSelection(null);
+    setActiveHintRef(reference);
+    setPanelMode("hint");
+  }, []);
+
   const handleSelectMarker = useCallback(
     (marker: LaneMarker) => {
       transport.seekTo(marker.time);
-      // TODO(item 6): open the right-panel block inspector for this marker.
+      if (marker.laneId === "humanHints") {
+        openHintEditor(marker.id);
+        return;
+      }
+      setActiveHintRef(null);
+      setSelection(selectionFromMarker(marker));
+      setPanelMode("inspector");
     },
-    [transport],
+    [transport, openHintEditor],
+  );
+
+  const handleSaveHints = useCallback(
+    (file: HumanHintsFile) => {
+      setHintsOverride(file);
+      reloadSong();
+    },
+    [reloadSong],
   );
 
   const renderLaneBody = useCallback(
@@ -133,6 +196,37 @@ export function App(): React.JSX.Element {
             error={transport.error}
             width={coords.timelineW}
           />
+        );
+      }
+      if (lane.id === "humanHints") {
+        const hints = humanHintsFile?.human_hints ?? [];
+        return (
+          <div className="tl-hint-lane">
+            <button
+              type="button"
+              className="tl-hint-pill tl-hint-pill--new"
+              title="New hint at the playhead"
+              onClick={() => openHintEditor(null)}
+            >
+              <i className="ph ph-plus" />
+            </button>
+            {hints.map((hint) => {
+              const x = coords.timeToX(hint.start_time);
+              const w = Math.max(coords.timeToX(hint.end_time) - x, 8);
+              return (
+                <button
+                  key={hint.id}
+                  type="button"
+                  className={`tl-hint-pill${hint.id === activeHintRef ? " is-selected" : ""}`}
+                  style={{ left: x, width: w }}
+                  title={hint.title || hint.id}
+                  onClick={() => openHintEditor(hint.id)}
+                >
+                  <span className="tl-hint-pill__label">{hint.title || hint.id}</span>
+                </button>
+              );
+            })}
+          </div>
         );
       }
       const entry = CANVAS_LANES[lane.id];
@@ -162,6 +256,9 @@ export function App(): React.JSX.Element {
       scrollLeft,
       viewportWidth,
       handleSelectMarker,
+      humanHintsFile,
+      activeHintRef,
+      openHintEditor,
     ],
   );
 
@@ -216,7 +313,9 @@ export function App(): React.JSX.Element {
     (block: SegmentBlock) => {
       // Move the shared playhead to the block start (design notes §4).
       transport.seekTo(block.section.start);
-      // TODO(item 6): open the right-panel block inspector with this selection.
+      setActiveHintRef(null);
+      setSelection(selectionFromSection(block, "segments"));
+      setPanelMode("inspector");
     },
     [transport],
   );
@@ -366,6 +465,31 @@ export function App(): React.JSX.Element {
             </div>
           )}
         </div>
+
+        {activeView === "timeline" && song && panelMode === "inspector" && selection && (
+          <RightPanel
+            open
+            onClose={closePanel}
+            aria-label="Block inspector"
+            header={<span className="app-rightpanel__kicker">{selection.laneLabel}</span>}
+          >
+            <BlockInspector selection={selection} />
+          </RightPanel>
+        )}
+
+        {activeView === "timeline" && song && panelMode === "hint" && (
+          <HintEditorPanel
+            song={song}
+            file={humanHintsFile}
+            currentTime={transport.currentTime}
+            activeReference={activeHintRef}
+            onClose={closePanel}
+            onSaved={handleSaveHints}
+            onScrollToTime={scrollTimelineToTime}
+          />
+        )}
+
+        {/* item 7: `panelMode === "review"` mounts ReviewQueuePanel here. */}
 
         {activeView !== "timeline" && activeView !== "song" && (
           <aside className="app-rightpanel" aria-label={activeView}>

@@ -448,3 +448,157 @@ input[type="range"]:focus-visible {
 /* ---- Footer lane-list toggle ---- */
 
 .app-footer__spacer { flex: 1; }
+
+/* ---- Human Hints lane pills (item 6) ---------------------------------- */
+
+.tl-hint-lane { position: absolute; inset: 0; }
+.tl-hint-pill {
+  position: absolute;
+  top: 8px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 7px;
+  overflow: hidden;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  background: var(--color-accent-900);
+  border: 1px solid var(--color-accent-700);
+  color: var(--color-accent-200);
+}
+.tl-hint-pill:hover { border-color: var(--color-accent); }
+.tl-hint-pill.is-selected {
+  background: var(--color-accent-700);
+  border-color: var(--color-accent-400);
+  color: var(--color-accent-100);
+}
+.tl-hint-pill__label {
+  font: 500 10px/1 var(--font-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tl-hint-pill--new {
+  position: sticky;
+  left: 6px;
+  width: 22px;
+  padding: 0;
+  justify-content: center;
+  z-index: 3;
+}
+
+/* ---- Right panel — modal modes (item 6) ------------------------------ */
+
+.app-rightpanel--modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.app-rightpanel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.app-rightpanel__header-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.app-rightpanel__kicker {
+  font: 500 9px/1 var(--font-body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
+}
+.app-rightpanel__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.app-rightpanel__footer {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.tp--round { border-radius: 50%; width: 22px; height: 22px; font-size: 12px; }
+
+/* ---- Block inspector ---- */
+
+.block-inspector { display: flex; flex-direction: column; gap: var(--space-4); }
+.block-inspector__title {
+  font: 500 16px/1.2 var(--font-heading);
+  color: var(--color-text);
+  margin: 0;
+}
+.block-inspector__dl { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; }
+.block-inspector__row {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: var(--space-3);
+  align-items: baseline;
+}
+.block-inspector__row dt {
+  font: 500 9px/1.3 var(--font-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.block-inspector__row dd {
+  margin: 0;
+  font: 400 12px/1.4 var(--font-body);
+  color: var(--color-neutral-300);
+  word-break: break-word;
+  font-variant-numeric: tabular-nums;
+}
+.block-inspector__summary {
+  font: 400 12px/1.5 var(--font-body);
+  color: var(--color-neutral-400);
+  margin: 0;
+}
+.block-inspector__raw summary {
+  cursor: pointer;
+  font: 500 10px/1 var(--font-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.block-inspector__raw pre {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3);
+  background: var(--tl-bg);
+  border: 1px solid var(--color-neutral-900);
+  border-radius: var(--radius-sm);
+  font: 400 11px/1.5 "IBM Plex Mono", monospace;
+  color: var(--color-neutral-400);
+  overflow-x: auto;
+  max-height: 320px;
+}
+
+/* ---- Hint editor ---- */
+
+.hint-editor__header { display: flex; align-items: center; gap: var(--space-2); }
+.hint-editor__toolbar { display: flex; gap: var(--space-2); }
+.hint-editor__row2 { display: flex; gap: var(--space-3); }
+.hint-editor__row2 .field { flex: 1; min-width: 0; }
+.hint-editor__time { display: flex; gap: var(--space-2); align-items: center; }
+.hint-editor__time .input { min-width: 0; }
+.hint-editor__actions { display: flex; gap: var(--space-3); }
+.hint-editor__actions .btn { flex: 1; }
+.hint-editor__empty,
+.hint-editor__status {
+  font: 400 12px/1.5 var(--font-body);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+.hint-editor__status.is-error { color: var(--color-accent-200); }
+.hint-editor__status.is-ok { color: var(--color-neutral-400); }
+.btn-sm { padding: var(--space-1) var(--space-3); font-size: 10px; }

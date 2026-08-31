@@ -52,7 +52,7 @@ stall a whole run; everything independent of it still gets built.
 | 3 | Timeline shell — grid, rulers, zoom, playhead, lane list | R3 | ☑ |
 | 4 | wavesurfer.js — audio, waveform lane, master clock | R4 | ☑ |
 | 5 | Dynamic data lanes — FFT, RMS, Envelope (+ drums, energy) | R5 | ☑ |
-| 6 | Right panel — shell + block inspector (read-only) + hint editor | R6 | ☐ |
+| 6 | Right panel — shell + block inspector (read-only) + hint editor | R6 | ☑ |
 | 7 | Review-queue editor — right-panel third mode (functional v1) | R7 | ☐ |
 | 8 | Artifact inspector (raw-JSON browser) | R8 | ☐ |
 | 9 | All remaining lanes (sparse + validation), collapsed by default | R9 | ☐ |
@@ -275,10 +275,10 @@ scrolls and zooms without dropped frames.
 The 296 px right panel (`sc-if panelOpen`) is one shell with **modes**. This
 item builds the shell + two modes; item 7 adds the third.
 
-- [ ] `src/panel/RightPanel.tsx` — the shell: header row (mode-specific ‹ › / ✕),
+- [x] `src/panel/RightPanel.tsx` — the shell: header row (mode-specific ‹ › / ✕),
       body, footer; mount/unmount on `panelOpen`; outside-click dismiss (ignore
       clicks on a lane block / hint pill); `esc` closes.
-- [ ] **Mode: block inspector (read-only).** `src/panel/BlockInspector.tsx` —
+- [x] **Mode: block inspector (read-only).** `src/panel/BlockInspector.tsx` —
       renders the clicked block's `selection` payload: `label` heading, a
       Nocturne `<dl>` of fields (`laneLabel`, time range, `confidence`,
       `reference`/`id`, `section_id`, `created_by`, …), and the `summary` line.
@@ -286,18 +286,18 @@ item builds the shell + two modes; item 7 adds the third.
       no Save.** Fields per lane come from a `blockFields(laneId, selection)`
       map ported from `ui.old/src/lib/timeline/sparseContent.js` +
       `SelectionDetailCard/selectionFields.js`.
-- [ ] Clicking any lane block sets the selection → opens the panel in inspector
+- [x] Clicking any lane block sets the selection → opens the panel in inspector
       mode and moves the shared playhead to the block start. Clicking a
       **Human Hints** block opens the **hint editor** mode instead.
-- [ ] **Mode: hint editor** (`HintEditorPanel`) — Start / End / Title / Musical
+- [x] **Mode: hint editor** (`HintEditorPanel`) — Start / End / Title / Musical
       hint / Lighting hint (mapping in design notes §4), ‹ › prev/next-hint,
       **new hint**, **delete active hint**, **set start/end to playhead**,
       Cancel / Save (`.btn-ghost` / `.btn-primary`).
-- [ ] Save → `PUT /api/human-hints/<song>` on explicit Save only; validation
+- [x] Save → `PUT /api/human-hints/<song>` on explicit Save only; validation
       (id + title required, end ≥ start, numeric times); optimistic update +
       reload; pill reflects the edit. Selecting / creating a hint scrolls the
       timeline to it.
-- [ ] Replaces `ui.old`'s floating `OverlayPanel` — block detail lives
+- [x] Replaces `ui.old`'s floating `OverlayPanel` — block detail lives
       in the right panel, not a popover.
 
 **Test:** `blockFields` mapping + hint draft↔payload + validation unit-tested;
