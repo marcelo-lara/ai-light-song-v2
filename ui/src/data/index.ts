@@ -12,4 +12,14 @@ export type {
 } from "./useSong";
 export { buildHumanHintsPayload, saveHumanHints } from "./saveHumanHints";
 export type { HintDraft } from "./saveHumanHints";
+export {
+  buildSongFactsPayload,
+  saveSongFacts,
+  WHOLE_SONG_FACT_FIELDS,
+} from "./saveSongFacts";
+export type {
+  SongFactsDraft,
+  SongFactsPayload,
+  WholeSongFactField,
+} from "./saveSongFacts";
 export { artifactPaths, listingPaths, encodePath } from "./paths";

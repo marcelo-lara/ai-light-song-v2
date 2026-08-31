@@ -285,6 +285,25 @@ export interface HumanHintsFile {
 }
 
 // ---------------------------------------------------------------------------
+// reference/human/song_facts.json  (v1.1 — whole-song facts, human-confirmed)
+// ---------------------------------------------------------------------------
+// Written ONLY by an explicit human Save in the review-queue editor (Story
+// 8.10). The analyzer never writes `reference/`.
+
+export interface SongFact {
+  value: unknown;
+  provenance: string | null;
+  confirmed_on: string | null;
+  note: string | null;
+}
+
+export interface SongFactsFile {
+  schema_version: string;
+  song_name: string;
+  facts: Record<string, SongFact>;
+}
+
+// ---------------------------------------------------------------------------
 // song_event_timeline.json  (v1.1 — composite events + texture_summary)
 // ---------------------------------------------------------------------------
 

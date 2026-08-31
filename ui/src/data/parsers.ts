@@ -46,6 +46,8 @@ import type {
   SectionSegmentation,
   SectionsTopLevel,
   SegmentationSection,
+  SongFact,
+  SongFactsFile,
   SongInfo,
   TextureSummary,
   TimelineEvent,
@@ -582,6 +584,29 @@ function parseReviewQuestion(raw: unknown, ctx: string): ReviewQuestion {
       `${ctx}.reason_low_confidence`,
     ),
     leverage: numberOrNull(o.leverage, `${ctx}.leverage`),
+  };
+}
+
+export function parseSongFacts(raw: unknown): SongFactsFile {
+  const o = asObject(raw, "song_facts.json");
+  const factsRaw = objectOrNull(o.facts, "song_facts.facts") ?? {};
+  const facts: Record<string, SongFact> = {};
+  for (const [key, entry] of Object.entries(factsRaw)) {
+    const fo = asObject(entry, `song_facts.facts.${key}`);
+    facts[key] = {
+      value: fo.value ?? null,
+      provenance: stringOrNull(fo.provenance, `song_facts.facts.${key}.provenance`),
+      confirmed_on: stringOrNull(
+        fo.confirmed_on,
+        `song_facts.facts.${key}.confirmed_on`,
+      ),
+      note: stringOrNull(fo.note, `song_facts.facts.${key}.note`),
+    };
+  }
+  return {
+    schema_version: stringOr(o.schema_version, "", "song_facts.schema_version"),
+    song_name: stringOr(o.song_name, "", "song_facts.song_name"),
+    facts,
   };
 }
 

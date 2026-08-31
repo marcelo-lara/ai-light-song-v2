@@ -53,7 +53,7 @@ stall a whole run; everything independent of it still gets built.
 | 4 | wavesurfer.js — audio, waveform lane, master clock | R4 | ☑ |
 | 5 | Dynamic data lanes — FFT, RMS, Envelope (+ drums, energy) | R5 | ☑ |
 | 6 | Right panel — shell + block inspector (read-only) + hint editor | R6 | ☑ |
-| 7 | Review-queue editor — right-panel third mode (functional v1) | R7 | ☐ |
+| 7 | Review-queue editor — right-panel third mode (functional v1) | R7 | ☑ |
 | 8 | Artifact inspector (raw-JSON browser) | R8 | ☐ |
 | 9 | All remaining lanes (sparse + validation), collapsed by default | R9 | ☐ |
 | 10 | Keyboard, states, polish | R10 | ☐ |
@@ -310,15 +310,15 @@ edit + save writes `human_hints.json` and nothing else writes it.
 
 A working first version — deeper iteration is a later release.
 
-- [ ] Port `PUT /api/song-facts/<song>` handler into `vite.config.ts` (from the
+- [x] Port `PUT /api/song-facts/<song>` handler into `vite.config.ts` (from the
       `ui.old/vite.config.js`).
-- [ ] `src/panel/ReviewQueuePanel.tsx` — renders
+- [x] `src/panel/ReviewQueuePanel.tsx` — renders
       `artifacts/validation/review_queue.json` as ranked questions; whole-song
       answers (`form_family`, `form_family_vs_genre`) → `song_facts.json` on
       explicit Save; per-section / drop questions shown read-only for context.
       Opened from a drawer entry (no lane).
-- [ ] Third mode in the item-6 shell (mode switch, not a second aside).
-- [ ] Empty state when a song has no `review_queue.json` (not yet analysed under
+- [x] Third mode in the item-6 shell (mode switch, not a second aside).
+- [x] Empty state when a song has no `review_queue.json` (not yet analysed under
       v1.1) — the panel says so rather than erroring.
 
 **Test:** as Story 8.10 — answering `form_family` + Save writes `song_facts.json`
@@ -467,7 +467,21 @@ tests), `npm run build`, and a `curl` smoke of `docker compose up ui` (page 200,
 design canvas still needs a human pass with a real browser before cutover —
 fold this into item 11's parity sign-off.
 
-Add `D4`, `D5`… here only when an item is genuinely blocked
+### D4 — Item 7 song-facts handler: merge, not rewrite (resolved by recommendation)
+
+`ui.old`'s `PUT /api/song-facts` rewrote the whole file and re-stamped every
+fact on each save. The new handler reads the current `song_facts.json`, spreads
+its `facts`, and overwrites only the answered whole-song keys
+(`form_family`, `form_family_vs_genre`), stamping `provenance:
+"human-confirmed"` + `confirmed_on`. Answering one review-queue question then
+preserves prior human answers (e.g. `_test_song`'s hand-authored `has_drop`
+note). `SONG_FACT_KEYS` is narrowed to those two fields — Story 8.10 defines
+exactly them as the queue's whole-song answers; `genre`/`has_drop` are not
+review-queue questions. The panel is still the only writer of the file. The
+review queue opens off the `Review queue` drawer entry (`activeView === "review"`)
+through the same `RightPanel` shell — a mode switch, not a second aside.
+
+Add `D5`, `D6`… here only when an item is genuinely blocked
 mid-implementation — a decision where proceeding under any assumption would make
 the work wrong or wasted. Record it and its options, then continue with the next
 independent item. Once such a decision is answered, fold the answer into the

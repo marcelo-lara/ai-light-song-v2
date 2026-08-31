@@ -5,6 +5,7 @@ import type { HumanHintsFile, SectionRow } from "./data/types";
 import {
   BlockInspector,
   HintEditorPanel,
+  ReviewQueuePanel,
   RightPanel,
   selectionFromMarker,
   selectionFromSection,
@@ -489,9 +490,19 @@ export function App(): React.JSX.Element {
           />
         )}
 
-        {/* item 7: `panelMode === "review"` mounts ReviewQueuePanel here. */}
+        {/* item 7: the review queue is the RightPanel shell's third mode,
+            opened from the "Review queue" drawer entry (no lane). */}
+        {activeView === "review" &&
+          (song ? (
+            <ReviewQueuePanel song={song} onClose={() => setActiveView("timeline")} />
+          ) : (
+            <aside className="app-rightpanel" aria-label="Review queue">
+              <div className="card-kicker">Review queue</div>
+              <p className="card-body">Select a song to review its open questions.</p>
+            </aside>
+          ))}
 
-        {activeView !== "timeline" && activeView !== "song" && (
+        {activeView === "inspector" && (
           <aside className="app-rightpanel" aria-label={activeView}>
             <div className="card-kicker">{drawerLabel(activeView)}</div>
             <p className="card-body">This surface is built in a later plan item. The shell is chrome-only.</p>

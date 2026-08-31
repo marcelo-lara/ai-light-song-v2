@@ -10,6 +10,7 @@ import {
   parseInfo,
   parseLoudnessEnvelope,
   parseReviewQueue,
+  parseSongFacts,
   parseRmsLoudness,
   parseSectionSegmentation,
   parseSectionsTopLevel,
@@ -178,5 +179,35 @@ describe("parseReviewQueue", () => {
     expect(rq.questions[0]!.field).toContain("form_role");
     expect(rq.questions[0]!.candidates[0]!.score).toBeGreaterThan(0);
     expect(rq.questions[0]!.evidence_timestamps.length).toBeGreaterThan(0);
+  });
+});
+
+describe("parseSongFacts", () => {
+  it("reads facts keyed by field with provenance", () => {
+    const facts = parseSongFacts({
+      schema_version: "1.1",
+      song_name: "_test_song",
+      facts: {
+        has_drop: {
+          value: true,
+          provenance: "human-confirmed",
+          confirmed_on: "2026-08-30",
+          note: "confirmed",
+        },
+      },
+    });
+    expect(facts.facts.has_drop!.value).toBe(true);
+    expect(facts.facts.has_drop!.provenance).toBe("human-confirmed");
+    expect(facts.facts.has_drop!.note).toBe("confirmed");
+  });
+
+  it("tolerates a missing facts object", () => {
+    expect(parseSongFacts({ schema_version: "1.1", song_name: "s" }).facts).toEqual(
+      {},
+    );
+  });
+
+  it("throws on a non-object root", () => {
+    expect(() => parseSongFacts([])).toThrow(ShapeError);
   });
 });

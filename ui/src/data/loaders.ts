@@ -15,6 +15,7 @@ import {
   parseInfo,
   parseLoudnessEnvelope,
   parseReviewQueue,
+  parseSongFacts,
   parseRmsLoudness,
   parseSectionSegmentation,
   parseSectionsTopLevel,
@@ -32,6 +33,7 @@ import type {
   RmsLoudness,
   SectionSegmentation,
   SectionsTopLevel,
+  SongFactsFile,
   SongInfo,
 } from "./types";
 
@@ -171,6 +173,9 @@ export const loadEventTimeline = (song: string, f?: typeof fetch) =>
 export const loadReviewQueue = (song: string, f?: typeof fetch) =>
   loadJson<ReviewQueue>(artifactPaths.reviewQueue(song), parseReviewQueue, f);
 
+export const loadSongFacts = (song: string, f?: typeof fetch) =>
+  loadJson<SongFactsFile>(artifactPaths.songFacts(song), parseSongFacts, f);
+
 // -- registry (keyed access for useSong) --------------------------------------
 
 export const artifactLoaders = {
@@ -187,6 +192,7 @@ export const artifactLoaders = {
   humanHints: loadHumanHints,
   eventTimeline: loadEventTimeline,
   reviewQueue: loadReviewQueue,
+  songFacts: loadSongFacts,
 } as const;
 
 export type ArtifactKey = keyof typeof artifactLoaders;

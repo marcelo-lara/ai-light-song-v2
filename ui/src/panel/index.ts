@@ -4,6 +4,15 @@
 export { RightPanel, type PanelMode } from "./RightPanel";
 export { BlockInspector } from "./BlockInspector";
 export { HintEditorPanel } from "./HintEditorPanel";
+export { ReviewQueuePanel } from "./ReviewQueuePanel";
+export {
+  partitionReviewQueue,
+  questionOptions,
+  reviewQuestionKind,
+  type AnswerOption,
+  type PartitionedReviewQueue,
+  type ReviewQuestionKind,
+} from "./reviewQueue";
 export {
   blockFields,
   selectionFromSection,
