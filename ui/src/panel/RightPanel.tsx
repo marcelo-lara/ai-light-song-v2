@@ -9,6 +9,8 @@
 
 import { useEffect, useRef } from "react";
 
+import { useFocusTrap } from "../app/useFocusTrap";
+
 export type PanelMode = "inspector" | "hint" | "review";
 
 interface RightPanelProps {
@@ -34,6 +36,11 @@ export function RightPanel({
   "aria-label": ariaLabel = "Detail panel",
 }: RightPanelProps): React.JSX.Element | null {
   const ref = useRef<HTMLElement>(null);
+
+  // Focus trap + restore-on-close (plan item 10). The panel is the app's one
+  // modal surface; while open, Tab stays inside it and closing returns focus
+  // to the control that opened it (a lane block, a hint pill, a drawer entry).
+  useFocusTrap(ref, open);
 
   useEffect(() => {
     if (!open) return;
@@ -62,7 +69,13 @@ export function RightPanel({
   if (!open) return null;
 
   return (
-    <aside className="app-rightpanel app-rightpanel--modal" aria-label={ariaLabel} ref={ref}>
+    <aside
+      className="app-rightpanel app-rightpanel--modal"
+      role="dialog"
+      aria-modal="true"
+      aria-label={ariaLabel}
+      ref={ref}
+    >
       <div className="app-rightpanel__header">
         <div className="app-rightpanel__header-main">{header}</div>
         <button type="button" className="tp" aria-label="Close panel" onClick={onClose}>

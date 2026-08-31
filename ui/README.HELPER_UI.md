@@ -32,7 +32,33 @@ the behaviour reference until cutover (plan item 11), then deleted.
   - `docker compose run --rm ui npm run build` — `tsc --noEmit` + vite bundle
   - `docker compose run --rm ui npm run test` — vitest + @testing-library/react
 
-## File map (as of plan item 1)
+## Keyboard (plan item 10 / refinement §10)
+
+Resolved by the pure `src/app/keymap.ts` module (`resolveKeyAction`); `App.tsx`
+owns the single `window` `keydown` listener. Ignored while focus is in an
+`input` / `textarea` / `select` / `contentEditable` (only `esc` passes through);
+any Ctrl / Meta / Alt chord is ignored.
+
+| Key | Action |
+| --- | --- |
+| `space` | play / pause |
+| `←` / `→` | step ∓1 beat |
+| `shift` + `←` / `→` | step ∓1 bar |
+| `+` `=` `]` | zoom in |
+| `-` `_` `[` | zoom out |
+| `f` | fit timeline to width |
+| `esc` | close, in order: right panel → review-queue view → lane list → drawer |
+
+**§10 deviation:** refinement §10 groups "`+` / `-` / `[` / `]` = zoom" without
+splitting the four keys, and plan item 10 guessed `[` `]` might be prev/next
+section. §10's explicit word is "zoom", so all four are zoom — `]`/`+`/`=` in,
+`[`/`-`/`_` out. No prev/next-section binding was added.
+
+Focus management: `src/app/useFocusTrap.ts` traps Tab inside `RightPanel` while
+open and restores focus to the opener on close. The drawer is a persistent,
+non-modal nav — it takes initial focus on an open transition but is not trapped.
+
+## File map
 
 | Path | Role |
 | --- | --- |
@@ -57,7 +83,25 @@ the behaviour reference until cutover (plan item 11), then deleted.
 | `src/data/index.ts` | Barrel re-export for the data layer |
 | `src/data/__fixtures__/` | Trimmed real `_test_song` artifacts for the parser/discovery unit tests |
 | `src/data/*.test.ts` | vitest: parsers (against fixtures), discovery filter, loader error mapping, hint-payload validation |
-| `src/timeline/` `src/panel/` | Empty — populated by plan items 3–9 |
+| `src/app/keymap.ts` | Pure keyboard model: `resolveKeyAction(event) → KeyAction \| null` + the input-focus guard + `shouldPreventDefault`. Unit-tested. |
+| `src/app/loadStates.ts` | Pure state selectors: `selectSongListState` (song picker) + `selectSongLoadState` (a song: loading / fatal / degraded / ready). Unit-tested. |
+| `src/app/useFocusTrap.ts` | Tab-cycle trap + initial focus + restore-on-close for `RightPanel`. |
+| `src/app/*.test.ts` | vitest: keymap resolution (incl. focus guard, §10 deviation), load-state selection |
+| `src/timeline/coords.ts` | Time-proportional `timeToX` / `xToTime`, real-beat `beatToX` / `xToBeat`, bar grid, `timeToBarBeat`. |
+| `src/timeline/zoom.ts` | `pxPerBar` clamp/step, `fitToWidthPxPerBar`, `semanticZoom` threshold table. |
+| `src/timeline/follow.ts` | `followScrollLeft` follow-playhead scroll maths; `LABEL_WIDTH`. |
+| `src/timeline/laneState.ts` | `useLaneState` — lane registry (`visible` / `expanded`), localStorage-persisted. |
+| `src/timeline/TimelineGrid.tsx` `LaneList.tsx` | Sticky grid + playhead; the show/hide + expand/collapse panel. |
+| `src/timeline/useTransport.ts` | wavesurfer master clock — `play/pause`, `seekTo`, `stepBeat`, `stepBar`; pure `nextBeatTime` / `nextBarTime`. |
+| `src/timeline/WaveformLane.tsx` | Waveform Anchor lane (wavesurfer v7, blurple). |
+| `src/timeline/CanvasLane.tsx` `laneRenderers.ts` `palette.ts` | DPR canvas lane body + `fft` / `rms` / `env` / `drums` / `energy` renderers + ported palette. |
+| `src/timeline/SparseLane.tsx` `laneContent.ts` | Reusable block-lane body + per-lane content adapters. |
+| `src/panel/RightPanel.tsx` | 296px modal shell, three modes; `esc` / outside-click dismiss; focus trap + restore (item 10). |
+| `src/panel/BlockInspector.tsx` `blockFields.ts` | Read-only block detail card + per-lane field map. |
+| `src/panel/HintEditorPanel.tsx` `hintDraft.ts` | Hint-editor mode + draft ↔ payload mapping. |
+| `src/panel/ReviewQueuePanel.tsx` `reviewQueue.ts` | Review-queue mode + `partitionReviewQueue` / `questionOptions`. |
+| `src/data/saveSongFacts.ts` | `buildSongFactsPayload` + `PUT /api/song-facts/<song>` client (merge, not rewrite — D4). |
+| `src/inspector/ArtifactInspector.tsx` `walk.ts` `jsonTree.ts` | Read-only raw-JSON browser: recursive `/data` walk of `data/analysis/<song>` (D5) + collapsible tree. |
 | `vite.config.ts` | Vite + React plugin; `build.target: esnext`; vitest (`jsdom`) config; `data-mount-plugin` = `/data` static mount + directory listing + `PUT /api/human-hints/<song>` (ported from `ui.old/vite.config.js`, incl. path-escape guard + byte-range). Not in a `tsconfig` (build tooling, transpiled by esbuild — as `ui.old`'s `.js` config was). |
 | `tsconfig.json` | `strict` (+ `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, no-unused), `target`/`module` `esnext`; `include: ["src"]` |
 | `Dockerfile` | `deps` → `dev` (Vite) / `build` (tsc + vite) → `final` (nginx) |
@@ -65,7 +109,8 @@ the behaviour reference until cutover (plan item 11), then deleted.
 
 ## Plan item status
 
-Item 1 (this tree) delivers the shell only. Data layer, timeline, lanes, panels,
-inspector, review queue and keyboard model follow in items 2–10; parity sign-off
-and `ui.old/` deletion is item 11. See
+Items 1–10 are done: shell, data layer, timeline (coords / grid / zoom / follow /
+transport / waveform / canvas + sparse lanes), right panel (inspector / hint /
+review), artifact inspector, and the keyboard model + non-happy-path states +
+focus management. Parity sign-off and `ui.old/` deletion is item 11. See
 `docs/web-ui/ui-rebuild/implementation-plan.md`.

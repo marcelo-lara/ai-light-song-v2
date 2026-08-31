@@ -13,6 +13,13 @@ import {
   type PanelMode,
 } from "./panel";
 import { ArtifactInspector } from "./inspector";
+import { resolveKeyAction, shouldPreventDefault } from "./app/keymap";
+import {
+  selectSongListState,
+  selectSongLoadState,
+  type ArtifactLoadStatus,
+  type SongListState,
+} from "./app/loadStates";
 import { makeCoords } from "./timeline/coords";
 import { followScrollLeft, LABEL_WIDTH } from "./timeline/follow";
 import { CanvasLane, type CanvasLaneSource } from "./timeline/CanvasLane";
@@ -106,6 +113,7 @@ export function App(): React.JSX.Element {
   const [song, setSong] = useState<string | null>(null);
   const [songs, setSongs] = useState<string[]>([]);
   const [discoveryError, setDiscoveryError] = useState<string | null>(null);
+  const [discoveryLoaded, setDiscoveryLoaded] = useState(false);
   const [pxPerBar, setPxPerBar] = useState(62);
   const [laneListOpen, setLaneListOpen] = useState(false);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -127,10 +135,12 @@ export function App(): React.JSX.Element {
         if (cancelled) return;
         setSongs(result.songs);
         setDiscoveryError(null);
+        setDiscoveryLoaded(true);
       })
       .catch((error: unknown) => {
         if (cancelled) return;
         setDiscoveryError(error instanceof Error ? error.message : "Discovery failed.");
+        setDiscoveryLoaded(true);
       });
     return () => {
       cancelled = true;
@@ -374,6 +384,78 @@ export function App(): React.JSX.Element {
 
   const { stepBeat, stepBar } = transport;
 
+  // esc target: panel → review view → lane list → drawer (refinement §10).
+  const closeOverlay = useCallback(() => {
+    if (panelMode) {
+      closePanel();
+      return;
+    }
+    if (activeView === "review") {
+      setActiveView("timeline");
+      return;
+    }
+    if (laneListOpen) {
+      setLaneListOpen(false);
+      return;
+    }
+    if (drawerOpen) setDrawerOpen(false);
+  }, [panelMode, activeView, laneListOpen, drawerOpen, closePanel]);
+
+  // Single global keyboard listener (plan item 10). Resolution + the
+  // input-focus guard live in the pure `keymap` module.
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      const action = resolveKeyAction(event);
+      if (!action) return;
+      if (action === "closeOverlay") {
+        closeOverlay();
+        return;
+      }
+      if (activeView !== "timeline" || !song) return;
+      if (shouldPreventDefault(action)) event.preventDefault();
+      switch (action) {
+        case "playPause":
+          transport.togglePlay();
+          break;
+        case "stepBeatBack":
+          stepBeat(-1);
+          break;
+        case "stepBeatForward":
+          stepBeat(1);
+          break;
+        case "stepBarBack":
+          stepBar(-1);
+          break;
+        case "stepBarForward":
+          stepBar(1);
+          break;
+        case "zoomIn":
+          setPxPerBar((v) => zoomInPxPerBar(v));
+          break;
+        case "zoomOut":
+          setPxPerBar((v) => zoomOutPxPerBar(v));
+          break;
+        case "fitToWidth":
+          fitToWidth();
+          break;
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [activeView, song, transport, stepBeat, stepBar, fitToWidth, closeOverlay]);
+
+  // Move focus into the drawer when it opens (non-modal — no trap).
+  const drawerRef = useRef<HTMLElement>(null);
+  const drawerWasOpen = useRef(drawerOpen);
+  useEffect(() => {
+    // only on an open transition (not initial mount) so we don't grab focus
+    // out from under the page on load.
+    if (drawerOpen && !drawerWasOpen.current) {
+      drawerRef.current?.querySelector<HTMLElement>(".dr-item")?.focus();
+    }
+    drawerWasOpen.current = drawerOpen;
+  }, [drawerOpen]);
+
   const handleSelectSegment = useCallback(
     (block: SegmentBlock) => {
       // Move the shared playhead to the block start (design notes §4).
@@ -387,6 +469,29 @@ export function App(): React.JSX.Element {
 
   const barBeat = coords.timeToBarBeat(transport.currentTime);
   const keyLabel = artifacts.harmonicLayer.data?.global_key?.label ?? "— key";
+
+  // Non-happy-path states (plan item 10). Both selectors are pure + unit-tested.
+  const songListState = selectSongListState({
+    loaded: discoveryLoaded,
+    error: discoveryError,
+    songs,
+  });
+
+  const laneArtifactStatus = useMemo<Record<string, ArtifactLoadStatus>>(() => {
+    const entries: Record<string, ArtifactLoadStatus> = {};
+    for (const lane of laneState.visibleLanes) {
+      const key = CANVAS_LANES[lane.id]?.key ?? SPARSE_LANE_ARTIFACT[lane.id];
+      if (key) entries[lane.label] = artifacts[key].status;
+    }
+    return entries;
+  }, [laneState.visibleLanes, artifacts]);
+
+  const songLoadState = selectSongLoadState({
+    infoStatus: artifacts.info.status,
+    infoError: artifacts.info.error?.message ?? null,
+    hasBeats: beats.length > 0,
+    laneArtifactStatus,
+  });
 
   return (
     <div className="app-shell">
@@ -465,7 +570,7 @@ export function App(): React.JSX.Element {
 
       <main className="app-main">
         {drawerOpen && (
-          <nav className="app-drawer" aria-label="Primary">
+          <nav className="app-drawer" aria-label="Primary" ref={drawerRef}>
             <div>
               <div className="app-drawer__section-label">Analysis</div>
               <div className="nav">
@@ -491,16 +596,42 @@ export function App(): React.JSX.Element {
             <ArtifactInspector song={song} />
           ) : activeView === "song" ? (
             <SongPicker
-              songs={songs}
+              listState={songListState}
               current={song}
-              error={discoveryError}
               onPick={(name) => {
                 setSong(name);
                 setActiveView("timeline");
               }}
             />
+          ) : song && songLoadState.kind === "loading" ? (
+            <div className="app-timeline tl">
+              <div className="app-timeline__stub" style={{ padding: "var(--space-8)" }}>
+                Loading {song}…
+              </div>
+            </div>
+          ) : song && songLoadState.kind === "fatal" ? (
+            <div className="app-timeline tl">
+              <div className="app-timeline__state" style={{ padding: "var(--space-8)" }}>
+                <p className="card-kicker">Can’t open {song}</p>
+                <p className="card-body">{songLoadState.message}</p>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => setActiveView("song")}
+                >
+                  Pick another song
+                </button>
+              </div>
+            </div>
           ) : song ? (
             <>
+              {songLoadState.kind === "degraded" && (
+                <div className="app-timeline__banner" role="status">
+                  {songLoadState.missing.length} lane
+                  {songLoadState.missing.length === 1 ? "" : "s"} missing an artifact:{" "}
+                  {songLoadState.missing.join(", ")}. Those lanes show an empty state.
+                </div>
+              )}
               <TimelineGrid
                 coords={coords}
                 lanes={laneState.visibleLanes}
@@ -618,35 +749,47 @@ export function App(): React.JSX.Element {
 }
 
 function SongPicker({
-  songs,
+  listState,
   current,
-  error,
   onPick,
 }: {
-  songs: readonly string[];
+  listState: SongListState;
   current: string | null;
-  error: string | null;
   onPick: (song: string) => void;
 }): React.JSX.Element {
   return (
     <div className="app-rightpanel" style={{ width: "100%", borderLeft: "none" }}>
       <div className="card-kicker">Select Song</div>
-      {error && <p className="card-body">Discovery failed: {error}</p>}
-      {!error && songs.length === 0 && <p className="card-body">No analysed songs found.</p>}
-      <div className="nav" style={{ marginTop: "var(--space-4)" }}>
-        {songs.map((name) => (
-          <button
-            key={name}
-            type="button"
-            className="dr-item"
-            aria-current={name === current ? "page" : undefined}
-            onClick={() => onPick(name)}
-          >
-            <i className="ph ph-file-audio" />
-            {name}
-          </button>
-        ))}
-      </div>
+
+      {listState.kind === "loading" && (
+        <p className="card-body">Discovering analysed songs…</p>
+      )}
+      {listState.kind === "error" && (
+        <p className="card-body">Discovery failed: {listState.message}</p>
+      )}
+      {listState.kind === "empty" && (
+        <p className="card-body">
+          No analysed songs found. Run the analysis pipeline so a song appears in
+          both <code>data/analysis/</code> and <code>data/songs/</code>.
+        </p>
+      )}
+
+      {listState.kind === "ready" && (
+        <div className="nav" style={{ marginTop: "var(--space-4)" }}>
+          {listState.songs.map((name) => (
+            <button
+              key={name}
+              type="button"
+              className="dr-item"
+              aria-current={name === current ? "page" : undefined}
+              onClick={() => onPick(name)}
+            >
+              <i className="ph ph-file-audio" />
+              {name}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

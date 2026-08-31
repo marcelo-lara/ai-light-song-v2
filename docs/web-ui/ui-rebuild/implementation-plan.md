@@ -56,7 +56,7 @@ stall a whole run; everything independent of it still gets built.
 | 7 | Review-queue editor — right-panel third mode (functional v1) | R7 | ☑ |
 | 8 | Artifact inspector (raw-JSON browser) | R8 | ☑ |
 | 9 | All remaining lanes (sparse + validation), collapsed by default | R9 | ☑ |
-| 10 | Keyboard, states, polish | R10 | ☐ |
+| 10 | Keyboard, states, polish | R10 | ☑ |
 | 11 | Parity sign-off + cutover | — | ☐ |
 
 ## How to test
@@ -387,15 +387,31 @@ fields; the sticky header shows only Segments + Bars.
 
 ### 10. Keyboard, states, polish
 
-- [ ] Keyboard: space / ←→ / shift+←→ / `+ - [ ]` / `f` / `esc` (refinement §10).
-- [ ] Loading / empty / error states for the song list and a song with missing
-      artifacts.
-- [ ] Focus management for the drawer and right panel.
-- [ ] Update `ui/README.HELPER_UI.md` and the affected Epic 8 story files
-      (8.1–8.10) to the new component names and file map.
+- [x] Keyboard: space / ←→ / shift+←→ / `+ - [ ]` / `f` / `esc` (refinement §10).
+      Pure `src/app/keymap.ts` (`resolveKeyAction` + input-focus guard +
+      `shouldPreventDefault`); single `window` listener in `App.tsx`. **§10
+      deviation:** `[` `]` are zoom (with `+`/`-`), not prev/next-section — §10
+      says "zoom" and does not split the four keys. `=`/`_` added as the
+      unshifted faces of `+`/`_`. `esc` closes panel → review view → lane list →
+      drawer, in that order.
+- [x] Loading / empty / error states for the song list (`selectSongListState`)
+      and a song with missing artifacts (`selectSongLoadState`: loading / fatal
+      / degraded / ready) — pure selectors in `src/app/loadStates.ts`, both
+      unit-tested. `SongPicker` renders the four list states; the timeline shows
+      a loading stub, a fatal card (bad/absent `info.json` or `beats.json`), or a
+      degraded banner naming the lanes whose artifact failed.
+- [x] Focus management: `src/app/useFocusTrap.ts` — Tab-cycle trap + initial
+      focus + restore-on-close, wired into `RightPanel` (all three modes;
+      `role="dialog"` `aria-modal`). The drawer is non-modal — it takes initial
+      focus on an open transition but is not trapped (documented deviation).
+- [x] Updated `ui/README.HELPER_UI.md` (keyboard table + §10-deviation note +
+      full file map + item status) and Epic 8 story files 8.1–8.10 (a "UI v2
+      component map" section per story; 8.10's stale `.jsx` file list rewritten).
 
-**Test:** `npm run test` + `npm run build`; manual: full keyboard operation; a
-checkout with no analysed songs shows an empty state, not an error.
+**Test:** `npm run test` (178 pass, +21 for item 10) + `npm run build` green in the container;
+keymap resolution + load-state selection unit-tested; `curl` smoke of `docker
+compose up ui` (`/` 200, `/data/.../info.json` 200). Interactive keyboard pass
+deferred to item 11 parity (D3 — no browser channel).
 **Commit:** `10. keyboard and states`
 
 ### 11. Parity sign-off + cutover
@@ -516,7 +532,26 @@ tolerant (coerce, never hard-fail a lane) to match `ui.old`'s `buildTimelineData
 behaviour on half-populated v1.0 artifacts. On `_test_song`, `mlEvents` and
 `validation` show empty states; every other sparse lane has data.
 
-Add `D7`, `D8`… here only when an item is genuinely blocked
+### D7 — Item 10 keyboard/focus deviations from refinement §10 (resolved by recommendation)
+
+- **`[` / `]` are zoom out / in**, not prev/next-section. §10's literal text is
+  "`+` `-` `[` `]` = zoom" and does not split the four; item 10's plan text only
+  guessed at section-nav. Implemented as two pairs (`]` `+` `=` in; `[` `-` `_`
+  out). `=` and `_` added as the unshifted faces of `+` / `_`.
+- **Only `RightPanel` is focus-trapped.** §10 says "focus trap … for the drawer
+  and right panel", but the v2 drawer is a persistent non-modal nav that is part
+  of the base layout — a hard trap would break the app. The drawer gets
+  initial-focus-on-open only; the trap is on `RightPanel`, the one modal surface.
+- **`esc` also closes the drawer / lane list / review view**, extending §10's
+  "close panel" to the additional dismissable surfaces v2 introduces
+  (order: right panel → review view → lane list → drawer).
+
+Missing-artifact handling is two-level: individual lanes keep their own
+empty/error state (items 5/9); item 10 adds a song-level `degraded` banner
+naming the failed lanes and a `fatal` screen when `info.json` / `beats.json`
+themselves are unusable.
+
+Add `D8`, `D9`… here only when an item is genuinely blocked
 mid-implementation — a decision where proceeding under any assumption would make
 the work wrong or wasted. Record it and its options, then continue with the next
 independent item. Once such a decision is answered, fold the answer into the
