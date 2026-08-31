@@ -50,7 +50,7 @@ stall a whole run; everything independent of it still gets built.
 | 1 | Visual-regression harness skeleton | guide §9 | ☑ |
 | 2 | Waveform lane renders on a real song | B1 | ☑ |
 | 3 | Continuous lanes span the full timeline | B2 | ☑ |
-| 4 | Left panel collapsed by default | R2 | ☐ |
+| 4 | Left panel collapsed by default | R2 | ☑ |
 | 5 | Collapsed lane shows the title only | R1 | ☐ |
 | 6 | Collapse/expand control keeps a fixed position | R5 | ☐ |
 | 7 | "Fit to width" is an icon-only control | R3 | ☐ |
@@ -339,16 +339,16 @@ draws to its last frame and no further.
 
 Refinement item `R2`.
 
-- [ ] The left panel (`data-testid="left-panel"`) mounts collapsed on first
+- [x] The left panel (`data-testid="left-panel"`) mounts collapsed on first
       load. Persist the open/closed state to `localStorage` (try/catch); absent
       or unreadable value → collapsed.
-- [ ] The burger control (`data-testid="burger-toggle"`) toggles it open/closed;
+- [x] The burger control (`data-testid="burger-toggle"`) toggles it open/closed;
       `esc` closes it (extend the existing `esc` cascade — panel → review → lane
       list → left panel → drawer).
-- [ ] With the panel collapsed the timeline occupies the full width between the
+- [x] With the panel collapsed the timeline occupies the full width between the
       212px label column and the right edge; opening the panel reflows the
       timeline, it does not overlay.
-- [ ] Annotate the `UI v2` archived refinement/plan "left panel open by default"
+- [x] Annotate the `UI v2` archived refinement/plan "left panel open by default"
       note as superseded by this item, in the same commit.
 
 **Test:** unit — the panel-state reducer defaults to collapsed and round-trips
@@ -368,6 +368,29 @@ through the persistence helper.
     state persisted; assert it reflects the last toggle (open→reload→open).
   - `assertNoRuntimeErrors` empty.
 **Commit:** `4. left panel collapsed by default`
+
+**Notes — item 4 (resolved during implementation).**
+- **The "left panel" is the existing drawer** (`data-testid="left-panel"`, the
+  `.app-drawer` nav, toggled by `burger-toggle`). No new component — the change
+  is: default `drawerOpen` from `true` → `loadLeftPanelOpen()`, which returns
+  `false` (collapsed) when the persisted value is absent or unreadable.
+- **New module `src/app/panelState.ts`** — pure `leftPanelReducer` +
+  `loadLeftPanelOpen` / `saveLeftPanelOpen` (localStorage key
+  `als.ui.leftPanel.v1`, try/catch), mirroring `laneState.ts`. Unit-tested in
+  `src/app/panelState.test.ts` (default collapsed; open/closed round-trip;
+  unreadable storage → collapsed).
+- **`esc` cascade unchanged.** It already ended on the drawer
+  (`panel → review → lane list → drawer`); the plan's "…→ left panel → drawer"
+  wording is the same surface named twice. Only the comment was updated.
+- **Reflow, not overlay, already holds.** `.app-drawer` is `flex: none; width:
+  212px` and is conditionally rendered; when collapsed it is absent from the
+  flex row and `.app-timeline` (`flex: 1`) fills the width between the 212px
+  label column and the right edge. No layout CSS change needed.
+- **Archived-doc annotation** landed in `archive/implementation-plan.md` on the
+  D7 `esc` bullet and the focus-management bullet (both about the drawer
+  default).
+- **Baselines recaptured:** `song-full.png` (drawer now absent on load).
+  `left-panel-open.png` unchanged (that spec force-opens the drawer).
 
 ### 5. Collapsed lane shows the title only
 
@@ -399,7 +422,6 @@ Refinement item `R1`.
   - Diff `lane-collapsed.png`.
   - `assertNoRuntimeErrors` empty.
 **Commit:** `5. collapsed lane shows the title only`
-
 ### 6. Collapse/expand control keeps a fixed position
 
 Refinement item `R5`.
@@ -424,7 +446,6 @@ assert the caret's container is the same fl/ grid slot.
   - Repeat for a sparse lane (`sections`).
   - `assertNoRuntimeErrors` empty.
 **Commit:** `6. collapse/expand control keeps a fixed position`
-
 ### 7. "Fit to width" is an icon-only control
 
 Refinement item `R3`.
@@ -450,7 +471,6 @@ render-with-hover test asserts the hover class toggles the background token.
     of the viewport inner width). Diff `timeline-zoom-min.png`.
   - `assertNoRuntimeErrors` empty.
 **Commit:** `7. fit-to-width is an icon-only control`
-
 ### 8. "Hide all" button on the lane list
 
 Refinement item `R4`.
@@ -476,9 +496,6 @@ Refinement item `R4`.
   - Re-show one lane from the list: that `data-lane` row reappears and renders.
   - Diff a new baseline `lanes-hidden-all.png`.
 **Commit:** `8. hide all button on the lane list`
-
----
-
 ## When something fails after an item is committed
 
 Route by *which component* and *does the fix need planning*:

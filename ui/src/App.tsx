@@ -14,6 +14,7 @@ import {
 } from "./panel";
 import { ArtifactInspector } from "./inspector";
 import { resolveKeyAction, shouldPreventDefault } from "./app/keymap";
+import { loadLeftPanelOpen, saveLeftPanelOpen } from "./app/panelState";
 import {
   selectSongListState,
   selectSongLoadState,
@@ -108,7 +109,9 @@ function formatClock(seconds: number): string {
 }
 
 export function App(): React.JSX.Element {
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  // Left panel (drawer): collapsed by default on first load (plan item 4 / R2),
+  // open/closed persisted per session.
+  const [drawerOpen, setDrawerOpen] = useState(loadLeftPanelOpen);
   const [activeView, setActiveView] = useState<DrawerView>("timeline");
   const [song, setSong] = useState<string | null>(null);
   const [songs, setSongs] = useState<string[]>([]);
@@ -145,6 +148,11 @@ export function App(): React.JSX.Element {
     else url.searchParams.delete("song");
     window.history.replaceState(null, "", url);
   }, [song]);
+
+  // Persist the left panel open/closed state (plan item 4).
+  useEffect(() => {
+    saveLeftPanelOpen(drawerOpen);
+  }, [drawerOpen]);
 
   useEffect(() => {
     let cancelled = false;
@@ -402,7 +410,8 @@ export function App(): React.JSX.Element {
 
   const { stepBeat, stepBar } = transport;
 
-  // esc target: panel → review view → lane list → drawer (refinement §10).
+  // esc target: panel → review view → lane list → left panel (drawer).
+  // (refinement §10, extended by plan item 4 — the left panel is the drawer.)
   const closeOverlay = useCallback(() => {
     if (panelMode) {
       closePanel();

@@ -1,7 +1,14 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 
 import { App } from "./App";
+
+afterEach(() => globalThis.localStorage?.clear());
+
+/** Item 4: the left panel is collapsed by default — open it for drawer checks. */
+function openDrawer(): void {
+  fireEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+}
 
 describe("App shell", () => {
   it("renders the three fixed bands and the timeline surface", () => {
@@ -12,8 +19,14 @@ describe("App shell", () => {
     expect(container.querySelector(".app-timeline")).toBeInTheDocument();
   });
 
+  it("left panel is collapsed by default", () => {
+    render(<App />);
+    expect(screen.queryByRole("navigation", { name: "Primary" })).toBeNull();
+  });
+
   it("has exactly four drawer entries", () => {
     render(<App />);
+    openDrawer();
     const nav = screen.getByRole("navigation", { name: "Primary" });
     const entries = nav.querySelectorAll(".dr-item");
     expect(entries).toHaveLength(4);
@@ -27,6 +40,7 @@ describe("App shell", () => {
 
   it("marks Timeline as the active drawer entry by default", () => {
     render(<App />);
+    openDrawer();
     expect(screen.getByRole("button", { name: "Timeline" })).toHaveAttribute("aria-current", "page");
   });
 

@@ -229,6 +229,9 @@ inspector wiring are item 9 + item 6.
       (ResizeObserver). Lane header (name / sub / collapse caret) bound to
       `laneState` (item 3); collapsed = 26 px + faint waveform strip. Continuous
       lanes: click anywhere = seek (no hit regions).
+      > **Superseded by UI v2.1 plan items 5 & 6:** collapsed header shows the
+      > **title only** (no sub-caption); the collapse caret is fixed top-left.
+      > Collapsed height stays 26 px via `collapsedLaneHeight()`.
 - [x] Port `src/timeline/palette.ts` from the current impl: `FFT_BAND_HUES =
       [22,46,88,138,164,186,196]`, `bandColor(i,v) → hsla(hue,84%,58%,v·0.9)`;
       `SOURCE_COLORS` = `[[250,204,21],[248,113,113],[34,211,238],[74,222,128],
@@ -404,6 +407,8 @@ fields; the sticky header shows only Segments + Bars.
       focus + restore-on-close, wired into `RightPanel` (all three modes;
       `role="dialog"` `aria-modal`). The drawer is non-modal — it takes initial
       focus on an open transition but is not trapped (documented deviation).
+      > **Superseded by UI v2.1 plan item 4 (R2):** the drawer mounts collapsed
+      > by default and its open/closed state persists to `localStorage`.
 - [x] Updated `ui/README.HELPER_UI.md` (keyboard table + §10-deviation note +
       full file map + item status) and Epic 8 story files 8.1–8.10 (a "UI v2
       component map" section per story; 8.10's stale `.jsx` file list rewritten).
@@ -652,6 +657,9 @@ behaviour on half-populated v1.0 artifacts. On `_test_song`, `mlEvents` and
 - **`esc` also closes the drawer / lane list / review view**, extending §10's
   "close panel" to the additional dismissable surfaces v2 introduces
   (order: right panel → review view → lane list → drawer).
+  > **Superseded by UI v2.1 plan item 4 (R2).** The left panel (drawer) now
+  > mounts **collapsed** by default (persisted to `localStorage`), not open. The
+  > `esc` cascade is unchanged — it already ends on the drawer.
 
 Missing-artifact handling is two-level: individual lanes keep their own
 empty/error state (items 5/9); item 10 adds a song-level `degraded` banner
