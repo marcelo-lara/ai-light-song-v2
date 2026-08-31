@@ -54,7 +54,7 @@ stall a whole run; everything independent of it still gets built.
 | 5 | Collapsed lane shows the title only | R1 | ☑ |
 | 6 | Collapse/expand control keeps a fixed position | R5 | ☑ |
 | 7 | "Fit to width" is an icon-only control | R3 | ☑ |
-| 8 | "Hide all" button on the lane list | R4 | ☐ |
+| 8 | "Hide all" button on the lane list | R4 | ☑ |
 
 ## How to test
 
@@ -541,12 +541,12 @@ render-with-hover test asserts the hover class toggles the background token.
 
 Refinement item `R4`.
 
-- [ ] Add a `lane-list-hide-all` control to `tl-lanelist` (`LaneList.tsx`) that
+- [x] Add a `lane-list-hide-all` control to `tl-lanelist` (`LaneList.tsx`) that
       sets `visible = false` for every lane in one action, persisted like the
       per-lane toggles.
-- [ ] Individual lanes can still be re-shown from the list afterward; a
+- [x] Individual lanes can still be re-shown from the list afterward; a
       companion "show all" is **out of scope** unless it already exists.
-- [ ] With every lane hidden the timeline shows the sticky Segments + Bars header
+- [x] With every lane hidden the timeline shows the sticky Segments + Bars header
       and an empty lane area (no crash, no error).
 
 **Test:** unit — the lane-visibility reducer's "hide all" action zeroes every
@@ -562,6 +562,25 @@ Refinement item `R4`.
   - Re-show one lane from the list: that `data-lane` row reappears and renders.
   - Diff a new baseline `lanes-hidden-all.png`.
 **Commit:** `8. hide all button on the lane list`
+
+**Notes — item 8 (resolved during implementation).**
+- **Mostly landed in item 1.** `laneState.hideAll()`, the `onHideAll` wiring in
+  `App.tsx`, and the `lane-list-hide-all` button in `LaneList.tsx` already
+  existed. This item extracts the shared pure reducer
+  `setAllVisible(state, value)` (backs both `showAll` and `hideAll`), so the
+  behaviour is unit-testable, and adds the tests + visual coverage.
+- **`showAll` ("Show all") already exists** in `LaneList` — left as is per the
+  item's "no companion show-all unless it already exists".
+- **Empty lane set is safe:** `TimelineGrid` maps `lanes` (→ `[]`), the sticky
+  Segments + Bars header rows and the playhead still render, no crash.
+- **Unit test** `src/timeline/laneState.test.ts`: `setAllVisible(_, false)`
+  zeroes every `visible`, preserves `expanded`, round-trips through
+  `saveLaneState`/`loadLaneState`, and an individual lane is re-showable after.
+- **New baseline:** `lanes-hidden-all.png` (0 lane rows, header rows present).
+
+---
+
+
 ## When something fails after an item is committed
 
 Route by *which component* and *does the fix need planning*:

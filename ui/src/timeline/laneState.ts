@@ -128,6 +128,15 @@ export function loadLaneState(): LaneStateMap {
   return base;
 }
 
+/** Pure "set every lane's `visible` to `value`" — backs showAll / hideAll. */
+export function setAllVisible(state: LaneStateMap, value: boolean): LaneStateMap {
+  const next: LaneStateMap = {};
+  for (const def of LANE_DEFS) {
+    next[def.id] = { ...(state[def.id] ?? { expanded: false, visible: true }), visible: value };
+  }
+  return next;
+}
+
 export function saveLaneState(state: LaneStateMap): void {
   try {
     globalThis.localStorage?.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -179,24 +188,8 @@ export function useLaneState(): UseLaneStateResult {
   );
   const setExpanded = useCallback((id: string, expanded: boolean) => mutate(id, { expanded }), [mutate]);
   const setVisible = useCallback((id: string, visible: boolean) => mutate(id, { visible }), [mutate]);
-  const showAll = useCallback(
-    () =>
-      setState((c) => {
-        const next: LaneStateMap = {};
-        for (const def of LANE_DEFS) next[def.id] = { ...c[def.id]!, visible: true };
-        return next;
-      }),
-    [],
-  );
-  const hideAll = useCallback(
-    () =>
-      setState((c) => {
-        const next: LaneStateMap = {};
-        for (const def of LANE_DEFS) next[def.id] = { ...c[def.id]!, visible: false };
-        return next;
-      }),
-    [],
-  );
+  const showAll = useCallback(() => setState((c) => setAllVisible(c, true)), []);
+  const hideAll = useCallback(() => setState((c) => setAllVisible(c, false)), []);
   const resetToDefaults = useCallback(() => setState(defaultLaneState()), []);
 
   const lanes = useMemo<Lane[]>(
