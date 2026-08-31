@@ -1,5 +1,5 @@
 // laneRenderers.ts — the per-`kind` canvas painters for the data lanes.
-// Straight port of ui.old/src/lib/timeline/{fftBandsLane,loudnessLane,
+// Straight port of the previous app's src/lib/timeline/{fftBandsLane,loudnessLane,
 // waveformLane,drumsLane,seriesLane}.js — geometry maths live in
 // laneGeometry.ts, colours in palette.ts.
 

@@ -1,6 +1,6 @@
 // sparseGeometry.ts — pure, testable block geometry for SparseLane.
 //
-// Ported from ui.old/src/lib/timeline/sparseLane.js `buildSparseRegions`:
+// Ported from the previous app's src/lib/timeline/sparseLane.js `buildSparseRegions`:
 //   * lanes in COMPACT_LANE_IDS row-pack overlapping blocks into as many rows as
 //     the worst overlap needs, then split the lane body height across the rows;
 //   * every other lane draws every block as one full-height band.

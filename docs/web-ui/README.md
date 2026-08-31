@@ -4,14 +4,16 @@ The internal artifact debugger (Epic 8), the data contract it reads, the offline
 visualizer export, and UI issue/regression notes. Read-only against generated
 data (except the human-hint editor, 8.8).
 
-**Active work:** [`ui-rebuild/`](ui-rebuild/) — a from-scratch **React + TypeScript**
-rebuild of the debugger (`UI v2`) as the "Score Analysis DAW" design, with
-wavesurfer.js as the audio player. The Epic 8 stories below are the behaviour
-parity reference and are updated per plan item as the rebuild lands.
+**Current app:** `UI v2` — a from-scratch **React + TypeScript + Vite** rebuild of
+the debugger as the "Score Analysis DAW" design, with wavesurfer.js as the audio
+player and master clock. Shipped (items 1–11 committed); the `ui-v2` tag is held
+pending a live-browser parity pass (D3). The pre-rebuild Preact/MUI app was
+removed at cutover. The Epic 8 stories below are the behaviour parity reference;
+each carries a "UI v2 component map" section.
 
 | Group | Docs |
 |-------|------|
-| Rebuild (active) | [ui-rebuild/product-refinement.md](ui-rebuild/product-refinement.md), [ui-rebuild/implementation-plan.md](ui-rebuild/implementation-plan.md), [ui-rebuild/design/design-notes.md](ui-rebuild/design/design-notes.md) |
+| Rebuild (shipped, archived) | [ui-rebuild/README.md](ui-rebuild/README.md), [ui-rebuild/design/design-notes.md](ui-rebuild/design/design-notes.md), [ui-rebuild/archive/implementation-plan.md](ui-rebuild/archive/implementation-plan.md) (parity sign-off), [ui-rebuild/archive/product-refinement.md](ui-rebuild/archive/product-refinement.md) |
 | UI data contract | 7.2 build_ui_data |
 | Visualizer | 7.5 beatdrop offline visualizer export |
 | Debugger shell | 8.1 auto-discovery, 8.2 master sync & waveform anchor, 8.3 DAW-style lanes, 8.6 semantic zoom & performance |

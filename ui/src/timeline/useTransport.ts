@@ -17,7 +17,7 @@ import WaveSurfer from "wavesurfer.js";
 
 import type { Coords } from "./coords";
 
-// design notes §3a — Nocturne blurple, not ui.old's teal.
+// design notes §3a — Nocturne blurple, not the previous app's teal.
 export const WAVE_COLOR = "#968ae0"; // --color-accent-500
 export const WAVE_PROGRESS_COLOR = "#d2cefd"; // --color-accent-300
 export const WAVE_HEIGHT = 84; // TRACK_HEIGHT

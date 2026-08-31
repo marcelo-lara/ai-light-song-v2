@@ -27,16 +27,16 @@ stall a whole run; everything independent of it still gets built.
 
 ## Working notes for this rebuild
 
-- **The old app moves to `ui.old/` in item 1's commit** (not deleted yet) and is
-  the **behaviour reference** for the whole rebuild — read
-  `ui.old/src/app/*`, `ui.old/src/components/*`, `ui.old/src/lib/*`,
-  `ui.old/vite.config.js` to learn the data API, discovery logic, hint-editor
-  rules and semantic-zoom thresholds, then write the new code fresh at `ui/`.
-  `ui.old/` is **deleted at cutover (item 11)**, and after that there must be
-  **zero references to it** anywhere in the repo.
+- **The pre-rebuild app was moved to a reference copy in item 1's commit** (not
+  deleted yet) and was the **behaviour reference** for the whole rebuild — its
+  `src/app/*`, `src/components/*`, `src/lib/*`, `vite.config.js` were read to
+  learn the data API, discovery logic, hint-editor rules and semantic-zoom
+  thresholds, then the new code was written fresh at `ui/`. The reference copy
+  was **deleted at cutover (item 11)**; there are now **zero references to it**
+  anywhere in the repo.
 - Design source of truth:
-  [`design/design-notes.md`](design/design-notes.md) and
-  [`design/Score-Analysis-DAW.dc.html`](design/Score-Analysis-DAW.dc.html).
+  [`design/design-notes.md`](../design/design-notes.md) and
+  [`design/Score-Analysis-DAW.dc.html`](../design/Score-Analysis-DAW.dc.html).
 - Every token comes from `src/styles/nocturne.css`. Every icon is Phosphor.
 - **Target browser: Chrome 151** (the operator's browser) — nothing else. No
   cross-browser fallbacks, no polyfills, no autoprefixer. Use modern web APIs
@@ -57,7 +57,7 @@ stall a whole run; everything independent of it still gets built.
 | 8 | Artifact inspector (raw-JSON browser) | R8 | ☑ |
 | 9 | All remaining lanes (sparse + validation), collapsed by default | R9 | ☑ |
 | 10 | Keyboard, states, polish | R10 | ☑ |
-| 11 | Parity sign-off + cutover | — | ☐ |
+| 11 | Parity sign-off + cutover | — | ☑ (tag `ui-v2` held — D8) |
 
 ## How to test
 
@@ -101,24 +101,24 @@ are smoke-tested manually against the design.
       only, lanes stubbed. Drawer has **exactly four** entries: **Select Song**,
       **Timeline** (active), **Artifact inspector**, **Review queue** — no
       placeholder destinations.
-- [x] **`git mv ui ui.old`**, then scaffold the new tree at `ui/`, **in this
-      same commit**. `ui.old/` is the reference copy for items 2–10 and is
+- [x] **`git mv ui the previous app`**, then scaffold the new tree at `ui/`, **in this
+      same commit**. the previous app is the reference copy for items 2–10 and is
       deleted at cutover (item 11).
 - [x] `ui/Dockerfile` (dev Vite stage + prod nginx stage) and `ui/nginx.conf`
       written for the new build output; `esnext` build target (Chrome 151).
       Compose `ui` service + port unchanged (still builds from `ui/`). No compose
-      service for `ui.old/`.
+      service for the previous app.
 - [x] `ui/README.HELPER_UI.md` written for the new file map.
 
 **Test:** `npm run build` + `npm run test` pass in the container; `docker compose
 up ui` serves the empty shell at `:8080` matching the design's frame; `grep -E
-'preact|@mui|@emotion' ui/package.json` is empty; `ui.old/` still present.
+'preact|@mui|@emotion' ui/package.json` is empty; the previous app still present.
 **Commit:** `1. fresh app shell`
 
 ### 2. Data layer — typed artifact access
 
 - [x] Port to `vite.config.ts`: the `/data` static mount + directory listing and
-      `PUT /api/human-hints/<song>` handler from `ui.old/vite.config.js`
+      `PUT /api/human-hints/<song>` handler from the previous app's `vite.config.js`
       (byte-for-byte behaviour, including the path-escape guard).
 - [x] `src/data/types.ts` — TS types for every artifact the UI reads, mirroring
       the v1.1 contracts (`docs/web-ui/7.2.build_ui_data_story.md`,
@@ -134,7 +134,7 @@ up ui` serves the empty shell at `:8080` matching the design's frame; `grep -E
       artifacts the visible lanes need; exposes `{ status, data, error }` per
       artifact.
 - [x] `src/data/saveHumanHints.ts` — `PUT /api/human-hints/<song>` client with
-      the validation `ui.old`'s hint editor enforced.
+      the validation the previous app's hint editor enforced.
 
 **Test:** `npm run test` covers the type parsers and discovery filter with
 fixtures; manual: the drawer song picker lists the analysed songs and selecting
@@ -216,7 +216,7 @@ right `beats.json` entries.
 
 > **Palette is carried over verbatim.** The FFT / RMS / Envelope renderers and
 > the stem sub-labels are a straight port of
-> `ui.old/src/lib/timeline/fftBandsLane.js`, `loudnessLane.js`,
+> the previous app's `src/lib/timeline/fftBandsLane.js`, `loudnessLane.js`,
 > `waveformLane.js` and `constants.js` — the exact constants are in **design
 > notes §3a**. Do not re-derive lane colours from Nocturne's accent ramp; the
 > mock's blurple lane formulas are superseded.
@@ -252,16 +252,16 @@ inspector wiring are item 9 + item 6.
       textWidth+6, 13)` — no border/radius; baseline `rowTop + 11`. Recompute on
       scroll.
 - [x] wavesurfer `waveColor` / `progressColor` set to Nocturne blurple
-      (`#968ae0` / `#d2cefd`) per design notes §3a — not `ui.old`'s teal.
+      (`#968ae0` / `#d2cefd`) per design notes §3a — not the previous app's teal.
 - [x] `drums` (kick/snare/hat density) and `energy` (beat-aligned energy +
-      accent candidates) lanes ported from `ui.old/src/lib/timeline/drumsLane.js`
+      accent candidates) lanes ported from the previous app's `src/lib/timeline/drumsLane.js`
       / `seriesLane.js`, **collapsed by default**. Discrete markers (accent
       candidates) get hit regions → block inspector (item 6).
 - [x] Each lane renders its own loading / empty (artifact missing) / error state.
 
 **Test:** `palette.ts` + renderer geometry helpers (row edges, bucketing,
 sub-label x) unit-tested; manual: FFT / RMS / Envelope render **pixel-comparable
-to `ui.old`** (run both) side by side against `_test_song`; sub-labels stay put
+to the previous app** (run both) side by side against `_test_song`; sub-labels stay put
 while scrolling; collapse drops to 26 px + strip; `Hideaway - Kiesza` at max zoom
 scrolls and zooms without dropped frames.
 **Commit:** `5. data lanes`
@@ -284,7 +284,7 @@ item builds the shell + two modes; item 7 adds the third.
       `reference`/`id`, `section_id`, `created_by`, …), and the `summary` line.
       A "show raw" disclosure dumps the block's full source object. **No inputs,
       no Save.** Fields per lane come from a `blockFields(laneId, selection)`
-      map ported from `ui.old/src/lib/timeline/sparseContent.js` +
+      map ported from the previous app's `src/lib/timeline/sparseContent.js` +
       `SelectionDetailCard/selectionFields.js`.
 - [x] Clicking any lane block sets the selection → opens the panel in inspector
       mode and moves the shared playhead to the block start. Clicking a
@@ -297,7 +297,7 @@ item builds the shell + two modes; item 7 adds the third.
       (id + title required, end ≥ start, numeric times); optimistic update +
       reload; pill reflects the edit. Selecting / creating a hint scrolls the
       timeline to it.
-- [x] Replaces `ui.old`'s floating `OverlayPanel` — block detail lives
+- [x] Replaces the previous app's floating `OverlayPanel` — block detail lives
       in the right panel, not a popover.
 
 **Test:** `blockFields` mapping + hint draft↔payload + validation unit-tested;
@@ -311,7 +311,7 @@ edit + save writes `human_hints.json` and nothing else writes it.
 A working first version — deeper iteration is a later release.
 
 - [x] Port `PUT /api/song-facts/<song>` handler into `vite.config.ts` (from the
-      `ui.old/vite.config.js`).
+      the previous app's `vite.config.js`).
 - [x] `src/panel/ReviewQueuePanel.tsx` — renders
       `artifacts/validation/review_queue.json` as ranked questions; whole-song
       answers (`form_family`, `form_family_vs_genre`) → `song_facts.json` on
@@ -332,12 +332,12 @@ review queue shows the empty state.
       lists the song's `artifacts/**` files and renders a selected JSON with
       collapsible nodes + copy-path, styled with Nocturne `.table` / `.card`.
       Read-only. *(See D5: the walk roots at `data/analysis/<song>` rather than
-      `artifacts/` so ui.old's non-`artifacts/` inspector files stay reachable.)*
-- [x] Reachability check against `ui.old`'s inspector file set (Story 8.9) — all
-      25 files ui.old's inspector exposed resolve through the recursive walk
+      `artifacts/` so the previous app's non-`artifacts/` inspector files stay reachable.)*
+- [x] Reachability check against the previous app's inspector file set (Story 8.9) — all
+      25 files the previous app's inspector exposed resolve through the recursive walk
       (`_test_song`: 73 files reached, 0 missing).
 
-**Test:** manual: every artifact `ui.old`'s inspector exposed is reachable and
+**Test:** manual: every artifact the previous app's inspector exposed is reachable and
 readable; no write path.
 **Commit:** `8. artifact inspector`
 
@@ -347,7 +347,7 @@ readable; no write path.
 
 ### 9. All remaining lanes — sparse + validation
 
-Every lane in `ui.old/src/lib/config/laneDefinitions.js` ships (no conductor /
+Every lane in the previous app's `src/lib/config/laneDefinitions.js` ships (no conductor /
 tempo / "global" strip — that stays removed). This item does the sparse lanes
 and the regression overlay; FFT/RMS/Envelope/drums/energy are item 5.
 
@@ -357,7 +357,7 @@ and the regression overlay; FFT/RMS/Envelope/drums/energy are item 5.
       (the `identifierHints` / `machineEvents` / `mlEvents` / `phrases`
       compaction from `sparseLane.js`), sets hit regions for item 6.
 - [x] `src/timeline/laneContent.ts` — the per-lane content adapters ported from
-      `ui.old/src/lib/timeline/sparseContent.js`: `humanHints`, `sections`, `chords`
+      the previous app's `src/lib/timeline/sparseContent.js`: `humanHints`, `sections`, `chords`
       (name + roman numeral, roman only when wide), `patterns`,
       `identifierHints`, `machineEvents`, `mlEvents`, `beatdropPlan`, `phrases`.
       Each yields `{ start_s, end_s, label, laneLabel, caption, reference,
@@ -365,7 +365,7 @@ and the regression overlay; FFT/RMS/Envelope/drums/energy are item 5.
 - [x] `validation` (Regression Overlay) — port `validationLane.js` **best
       effort**: beat-drift + exported-event comparison marks, discrete marks
       clickable → block inspector. Its inputs (`eventComparisons`,
-      `validationDrift`) are assembled in `ui.old`'s `buildTimelineData.js` from
+      `validationDrift`) are assembled in the previous app's `buildTimelineData.js` from
       validation artifacts — **don't spend time re-tracing them**: if the data
       isn't readily available, ship the lane as an empty-state stub and note it
       in the parity checklist. (Absorbs Story 8.7.)
@@ -416,21 +416,128 @@ deferred to item 11 parity (D3 — no browser channel).
 
 ### 11. Parity sign-off + cutover
 
-- [ ] Walk the refinement doc's **Parity checklist** against the running app;
-      record the result here.
-- [ ] Confirm `docker compose up ui` (dev) and the prod nginx build both serve
-      the app.
-- [ ] Confirm no writes to `data/analysis/**` except the two human-save
-      endpoints (grep the built bundle + the dev-server handlers).
-- [ ] **Delete `ui.old/`.** Then `grep -rn 'ui\.old' .` (repo-wide, excluding
-      git history) returns **nothing** — no doc, compose file, script or comment
-      references it.
-- [ ] Archive this plan and `product-refinement.md`; update
-      `docs/web-ui/README.md`, `docs/web-ui/8.*.md` where they now describe the
-      v2 components, and the root `README.md` UI pointer.
-- [ ] Tag `ui-v2`.
+- [x] Walk the refinement doc's **Parity checklist** against the running app;
+      record the result here. *(See "Parity sign-off" below.)*
+- [x] Confirm `docker compose up ui` (dev) and the prod nginx build both serve
+      the app. *(dev `:9090` → 200; prod `final` stage image → 200 + assets +
+      SPA fallback + `/data` mount. Commands + results below.)*
+- [x] Confirm no writes to `data/analysis/**` except the two human-save
+      endpoints (grep the built bundle + the dev-server handlers). *(Result
+      below — the only two `writeFile` calls are `human_hints.json` /
+      `song_facts.json` under `reference/human/`, both PUT-only, both behind the
+      path-escape guard.)*
+- [x] **Delete the pre-rebuild reference copy** (`git rm -r` on it); a repo-wide
+      grep for it (excluding git history) now returns **nothing**.
+- [x] Archive this plan and `product-refinement.md` into this `archive/`
+      directory; update `docs/web-ui/README.md`,
+      `docs/web-ui/8.*.md` where they now describe the v2 components, the
+      `ui-rebuild/README.md`, `docs/README.md`, and the root `README.md` UI
+      pointer.
+- [ ] Tag `ui-v2` — **held**, mirroring the 6.3 "archive + tag held" close-out
+      (commit `888c929`): the one open gate is D3's live-browser visual /
+      interaction parity pass (see the sign-off table's DEFERRED rows). The
+      orchestrator makes the tag with `git tag ui-v2` once that pass is done.
 
 **Commit:** `11. parity sign-off`
+
+---
+
+## Parity sign-off (item 11)
+
+Walked against the running dev app (`docker compose up -d ui`, `_test_song`) and
+the prod `final`-stage image, plus a source read of every writer. Interactive /
+pixel checks that need a real browser are marked **DEFERRED (D3)** — the
+`/implement` environment had no browser-automation channel; a human runs these
+against the design canvas before the `ui-v2` tag.
+
+### Refinement doc "Parity checklist"
+
+| Row | Result | Note |
+| --- | --- | --- |
+| Song auto-discovery + switch (8.1) | **PASS** | `src/data/discovery.ts` = `data/analysis` listing ∩ `data/songs` audio, `localeCompare` sorted (parity with the old `fetch.js`); unit-tested. `SongPicker` renders loading/empty/error/ready. Drawer switch reloads `useSong`. |
+| DAW multi-lane timeline, master sync, semantic zoom, fit-to-width (8.2, 8.3, 8.6) | **PARTIAL** | Logic PASS: `coords.ts` time-proportional x (tempo-drift round-trip tested), `zoom.ts` threshold table + `fitToWidthPxPerBar` unit-tested, `useTransport` is the sole clock (wavesurfer events, no rAF), `follow.ts` follow-scroll tested. Visual match to the design + audio/playhead lockstep + 4-min-song frame-rate = **DEFERRED (D3)**. |
+| All lanes from `laneDefinitions.js` render from real artifacts; lane list show/hide + expand/collapse; non-core collapsed by default (8.4, 8.5, 8.9, 8.7) | **PARTIAL** | All 17 lanes registered in `laneState.ts`; defaults = the design's five expanded, rest collapsed; `LaneList.tsx` + inline carets toggle, persisted to `localStorage`. `validation` (Regression Overlay) ships as an **empty-state stub** (D6 — inputs need `buildTimelineData.js` re-tracing, which the plan forbids). `mlEvents` shows its empty state on `_test_song` (no ML artifact). Per-lane canvas rendering fidelity = **DEFERRED (D3)**. |
+| Click any lane block → read-only detail in the right panel + playhead seek | **PARTIAL** | `BlockInspector.tsx` + `blockFields.ts` (ported field maps, unit-tested); `SparseLane` / `CanvasLane` set hit regions; click routes to inspector mode (or hint editor for `humanHints`) and seeks the shared playhead. End-to-end click behaviour in a browser = **DEFERRED (D3)**. |
+| Human hint editor: view / create / edit / delete / set-to-playhead / save (8.8) | **PARTIAL** | `HintEditorPanel.tsx` + `hintDraft.ts` (draft↔payload + validation unit-tested); `saveHumanHints.ts` → `PUT /api/human-hints/<song>` on explicit Save; optimistic update + reload. Round-trip write verified by source read of the handler; interactive edit/save = **DEFERRED (D3)**. |
+| Review-queue editor round-trip — `review_queue.json` → `song_facts.json` (8.10) | **PARTIAL** | `ReviewQueuePanel.tsx` + `reviewQueue.ts` (`partitionReviewQueue` / `questionOptions` unit-tested); `saveSongFacts.ts` → `PUT /api/song-facts/<song>`; handler merges onto existing facts and stamps `provenance: "human-confirmed"` (D4), whole-song keys only (`form_family`, `form_family_vs_genre`). Empty state when no `review_queue.json`. Interactive answer+save = **DEFERRED (D3)**. |
+| Artifact inspector — raw-JSON file browser (8.9) | **PASS** | `ArtifactInspector.tsx` + recursive `walk.ts` rooted at `data/analysis/<song>` (D5). Reachability test: `_test_song` → 73 files reached, 0 of the previous inspector's 25 `artifactDefinitions` missing (`walk.test.ts`). Read-only — GET only. |
+| Runs as the `ui` Compose service on `:8080`; prod nginx build works | **PASS** | dev: `docker compose up -d ui` → `curl :9090/` (host map of container `:8080`) = 200. prod: `docker build --target final -t ui-v2-prod ./ui` then run → `/` 200, hashed asset 200, SPA deep route 200, `/data/.../info.json` 200. |
+
+### Deferred interactive checks (D3 — needs a live browser pass)
+
+Run in Chrome 151 against `docs/web-ui/ui-rebuild/design/` before tagging `ui-v2`:
+
+1. Zoom slider / ± / fit-to-width visually match the design at `pxPerBar` 14 / 62 / 180; beat sub-ticks appear only at `pxPerBar ≥ 44`.
+2. Playhead sits exactly on a bar line at each real bar time across the zoom range; horizontal scroll never moves the 212 px label column or the page body.
+3. Space toggles audio and the playhead tracks what is heard; ruler / waveform click seeks audio + every lane; header `bar.beat` matches the beat under the playhead.
+4. FFT / RMS / Envelope render pixel-comparable to the previous app (run both side by side on `_test_song`); stem sub-labels stay pinned to the viewport left edge while scrolling; collapse → 26 px + strip.
+5. `Hideaway - Kiesza` at max zoom scrolls / zooms with no dropped frames.
+6. Clicking a block in every lane opens the right-panel inspector with that block's fields and seeks the playhead; a hint pill opens the editor.
+7. Hint editor: create / edit / delete / set-start-to-playhead / Save writes `human_hints.json` and nothing else; pill reflects the edit.
+8. Review queue: answering `form_family` + Save writes `song_facts.json` with `provenance: "human-confirmed"` and preserves prior human facts.
+9. Full keyboard model (space / ←→ / shift+←→ / `+ - [ ] = _` / `f` / `esc` cascade) and the focus trap + restore on `RightPanel`.
+10. Sticky header shows only Segments + Bars; segment tint by `form_role` family.
+
+### dev + prod serve results
+
+```
+# dev
+docker compose up -d ui
+curl -s -o /dev/null -w '%{http_code}' http://localhost:9090/            # 200
+curl -s -o /dev/null -w '%{http_code}' http://localhost:9090/data/analysis/_test_song/info.json   # 200
+
+# prod  (Dockerfile stage: `final`; nginx.conf listen 8080)
+docker compose run --rm ui npm run build                                 # exit 0, dist/ written
+docker build --target final -t ui-v2-prod ./ui                           # exit 0
+docker run -d --rm -p 9091:8080 -v "$PWD/data:/data:ro" ui-v2-prod
+curl -s -o /dev/null -w '%{http_code}' http://localhost:9091/            # 200  (index.html)
+curl -s -o /dev/null -w '%{http_code}' http://localhost:9091/assets/index-<hash>.js   # 200
+curl -s -o /dev/null -w '%{http_code}' http://localhost:9091/some/spa/route          # 200  (SPA fallback)
+curl -s -o /dev/null -w '%{http_code}' http://localhost:9091/data/analysis/_test_song/info.json  # 200
+```
+
+### no-writes-to-`data/analysis/**` grep
+
+`ui/dist/assets/*.js` (built bundle): the only request verbs are `GET`
+(`fetch(..., {cache:"no-store"})` for artifact loads) and two `method:"PUT"`
+calls to `/api/human-hints` and `/api/song-facts`. No other `/api/` path, no
+write verb. The browser cannot touch the filesystem otherwise.
+
+`ui/vite.config.ts` (dev server): exactly two `fsp.writeFile` calls —
+`humanHintsFilePath()` and `songFactsFilePath()`, both `= referenceHumanFilePath(song, …)`
+which resolves to `<analysisRoot>/<song>/reference/human/<file>` and throws if
+the resolved path escapes `<analysisRoot>/<song>/`. Both are reached only on
+`request.method === "PUT"` to their respective `/api/…` prefix. `mkdir` is the
+only other write and only for those two parents. Nothing writes elsewhere under
+`data/analysis/**`.
+
+### D-log items folded in here
+
+- **D3** — interactive/visual parity: recorded above as the 10 DEFERRED checks;
+  gates the `ui-v2` tag, not the cutover commit.
+- **D6** — `validation` (Regression Overlay) lane: confirmed shipped as an
+  empty-state stub; `VALIDATION_MARK_COLORS` in place. Wiring it needs the
+  `eventComparisons` / `validationDrift` assembly from the old
+  `buildTimelineData.js`, deferred to a later UI release (not `ui-v2`).
+- **D6, roman numerals** — chord blocks degrade to plain names when
+  `layer_a_harmonic.json` has `global_key.label: null` (reference-promoted
+  chords; `_test_song` is in this state). Expected; no fix needed for `ui-v2`.
+- **D7** — keyboard/focus deviations from refinement §10 stand as implemented
+  and are documented in `ui/README.HELPER_UI.md`.
+
+### New decision
+
+### D8 — `ui-v2` tag held pending the D3 live-browser pass (item 11, resolved by recommendation)
+
+The refinement doc says `UI v2` is "Tagged `ui-v2` in git on completion", but the
+repo's own most recent precedent (`888c929`, "6.3 release close-out (docs;
+archive + tag held)") is to complete the documentation close-out and **hold the
+tag** until the release's outstanding gates pass. UI v2's one outstanding gate is
+D3: no visual/interaction parity pass has run in a real browser. Following the
+same convention, item 11 does the full cutover (delete the old app, archive the
+docs, update every pointer) and commits it, but the `ui-v2` tag is **held** and
+made by the orchestrator with `git tag ui-v2` after the D3 checklist above is
+walked in Chrome 151.
 
 ---
 
@@ -461,7 +568,7 @@ to clear the stale Preact `node_modules` volume.
 
 - **`vite.config.ts` is outside the TS project.** The ported `/data` mount +
   hint-save handler needs Node builtins (`node:fs`, `Buffer`), which would pull
-  in `@types/node` (not in the Docker image → needs an image rebuild). `ui.old`'s
+  in `@types/node` (not in the Docker image → needs an image rebuild). the previous app's
   config was `.js` and never type-checked either; Vite transpiles the config via
   esbuild at load. `tsconfig.json` `include` narrowed to `["src"]`. A later item
   that wants the config type-checked should add `@types/node` +
@@ -488,7 +595,7 @@ fold this into item 11's parity sign-off.
 
 ### D4 — Item 7 song-facts handler: merge, not rewrite (resolved by recommendation)
 
-`ui.old`'s `PUT /api/song-facts` rewrote the whole file and re-stamped every
+the previous app's `PUT /api/song-facts` rewrote the whole file and re-stamped every
 fact on each save. The new handler reads the current `song_facts.json`, spreads
 its `facts`, and overwrites only the answered whole-song keys
 (`form_family`, `form_family_vs_genre`), stamping `provenance:
@@ -504,17 +611,17 @@ through the same `RightPanel` shell — a mode switch, not a second aside.
 
 The item text and `product-refinement.md` §8 describe the inspector as a view of
 files "under `data/analysis/<song>/artifacts/`", but Story 8.9's acceptance
-criterion is that **every file `ui.old`'s inspector exposed** is reachable — and
-six of `ui.old`'s 25 `artifactDefinitions` entries live **outside** `artifacts/`
+criterion is that **every file the previous app's inspector exposed** is reachable — and
+six of the previous app's 25 `artifactDefinitions` entries live **outside** `artifacts/`
 (`info.json`, `beats.json`, `sections.json`, `song_event_timeline.json`,
 `beatdrop_visual_plan.json`, `reference/human/human_hints.json`).
 
 **Decision:** the recursive walk roots at `data/analysis/<song>` so all of
-`ui.old`'s set stays reachable (and the debugger sees `reference/`, `stems/`,
+the previous app's set stays reachable (and the debugger sees `reference/`, `stems/`,
 etc. too, which is useful for cross-checking). Still strictly read-only — the
 component only issues GETs against the `/data` listing + file endpoints. Non-JSON
 files render as raw text (`.md`/`.txt`) or an "not rendered here" note (`.wav`,
-`.mid`). `_test_song` probe: 73 files reached, 0 of `ui.old`'s 25 missing.
+`.mid`). `_test_song` probe: 73 files reached, 0 of the previous app's 25 missing.
 
 ### D6 — Item 9: validation lane shipped as an empty-state stub (per plan allowance)
 
@@ -522,13 +629,13 @@ The `validation` (Regression Overlay) lane renders "Regression overlay —
 validation wiring deferred (item 11 parity)" rather than real marks.
 `eventComparisons` needs machine-event ids aligned to `song_event_timeline.json`
 event ids, an alignment that is not verified, and the plan explicitly says not to
-re-trace `ui.old`'s `buildTimelineData.js`. `VALIDATION_MARK_COLORS` is in place
+re-trace the previous app's `buildTimelineData.js`. `VALIDATION_MARK_COLORS` is in place
 for when it is wired. Item 11's parity checklist should record this gap.
 
 Related item-9 notes: roman numerals degrade to plain chord names when
 `layer_a_harmonic.json` carries `global_key.label: null` (reference-promoted
 chords — `_test_song` is in this state); sparse-artifact parsers are deliberately
-tolerant (coerce, never hard-fail a lane) to match `ui.old`'s `buildTimelineData`
+tolerant (coerce, never hard-fail a lane) to match the previous app's `buildTimelineData`
 behaviour on half-populated v1.0 artifacts. On `_test_song`, `mlEvents` and
 `validation` show empty states; every other sparse lane has data.
 

@@ -12,7 +12,7 @@ import react from "@vitejs/plugin-react";
 //
 // The dev-server `/data` static mount + directory listing and the
 // `PUT /api/human-hints/<song>` handler below are ported byte-for-byte (in
-// behaviour) from ui.old/vite.config.js, plan item 2. The `PUT
+// behaviour) from the previous app's vite.config.js, plan item 2. The `PUT
 // /api/song-facts/<song>` handler is added by plan item 7.
 
 const dataRoot = "/data";

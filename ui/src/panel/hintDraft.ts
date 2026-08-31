@@ -9,7 +9,7 @@
 //   lighting      | lighting_hint  (textarea, 3 rows)
 //
 // Start/End are held in the draft as canonical **seconds strings** (matching
-// ui.old's numeric inputs and `buildHumanHintsPayload`'s `Number(...)`
+// the previous app's numeric inputs and `buildHumanHintsPayload`'s `Number(...)`
 // coercion); `parseTimeInput` additionally accepts `m:ss(.s)` for convenience.
 
 import type { HintDraft } from "../data/saveHumanHints";

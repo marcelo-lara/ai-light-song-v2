@@ -1,7 +1,7 @@
 // Client for `PUT /api/human-hints/<song>`.
 //
-// The validation here is the exact set ui.old's hint editor enforced
-// (ui.old/src/app/useHumanHintsEditor.js `buildSavePayload`): id + title
+// The validation here is the exact set the previous app's hint editor enforced
+// (the previous app's src/app/useHumanHintsEditor.js `buildSavePayload`): id + title
 // required, start/end must be finite numbers, end >= start. Times may arrive as
 // strings from text inputs; they are coerced with `Number(...)`.
 

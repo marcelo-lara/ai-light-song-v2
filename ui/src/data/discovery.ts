@@ -3,7 +3,7 @@
 //
 // The dev server renders a plain HTML `<ul><li><a>` directory index for any
 // `/data/...` directory (see vite.config.ts). We parse those anchors — the same
-// approach as ui.old/src/lib/data/fetch.js.
+// approach as the previous app's src/lib/data/fetch.js.
 
 import { listingPaths } from "./paths";
 

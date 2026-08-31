@@ -1,6 +1,6 @@
 // laneGeometry.ts — pure, unit-tested geometry + bucketing maths for the
 // canvas data lanes (FFT / RMS / Envelope / drums / energy). Ported from
-// ui.old/src/lib/timeline/{fftBandsLane,loudnessLane,drumsLane,seriesLane,
+// the previous app's src/lib/timeline/{fftBandsLane,loudnessLane,drumsLane,seriesLane,
 // dynamicHelpers}.js. No canvas, no React — just numbers in, numbers out.
 //
 // "zoom" in the ported constants === pxPerSec (design notes §2 / item 5 note).

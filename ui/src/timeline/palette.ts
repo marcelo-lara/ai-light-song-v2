@@ -1,5 +1,5 @@
 // palette.ts — lane fill colours + fonts, carried over VERBATIM from
-// ui.old/src/lib/timeline/{fftBandsLane,loudnessLane,constants}.js
+// the previous app's src/lib/timeline/{fftBandsLane,loudnessLane,constants}.js
 // (design notes §3a). These are NOT re-derived from Nocturne's accent ramp —
 // the shipped debugger's spectral / per-stem palette is the authority for the
 // FFT / RMS / Envelope lanes and their stem sub-labels.

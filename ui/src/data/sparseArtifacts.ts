@@ -7,7 +7,7 @@
 // they coerce with `Number(x) || 0` / `String(x ?? "")` and never throw on a
 // missing optional field. Quality of the structural read comes first, and a
 // half-populated artifact should still render its blocks rather than hard-fail
-// the whole lane (matches ui.old's `buildTimelineData` behaviour).
+// the whole lane (matches the previous app's `buildTimelineData` behaviour).
 
 import { asObject } from "./parse";
 import { artifactPaths } from "./paths";

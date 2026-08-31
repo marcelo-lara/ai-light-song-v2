@@ -10,7 +10,7 @@ import {
   sourceRgb,
 } from "./palette";
 
-describe("palette — carried over verbatim from ui.old", () => {
+describe("palette — carried over verbatim from the previous app", () => {
   it("has the 7 FFT band hues, Sub … Brilliance", () => {
     expect([...FFT_BAND_HUES]).toEqual([22, 46, 88, 138, 164, 186, 196]);
   });

@@ -13,9 +13,9 @@ keeps its **layout, visual language, lane model and interactions** and replaces
 every data source with a real analyzer artifact plus wavesurfer.js for audio.
 
 **One deliberate exception:** for the FFT / RMS / Envelope lane *fill colours and
-sub-labels*, the **shipped debugger** (`ui.old/src/lib/timeline/`) is the
+sub-labels*, the **previous debugger** (its `src/lib/timeline/`) is the
 authority, not this mock — see §3a. The mock renders those lanes in muted
-Nocturne blurple; the shipped `ui.old` uses a richer spectral / per-stem palette
+Nocturne blurple; the previous debugger used a richer spectral / per-stem palette
 the user wants preserved.
 
 ---
@@ -125,7 +125,7 @@ Full-viewport, `overflow:hidden`, three fixed bands + a scrolling middle:
 - The canvas mock is **uniform px-per-bar** (constant tempo). **The rebuild is time-proportional** (bars drift with tempo): `x = t · pxPerSec` where `pxPerSec = pxPerBar / medianBarSeconds`. `pxPerBar` (14–180) stays the zoom control and the "px/bar" label; internally it drives `pxPerSec`. `timelineW = durationSeconds · pxPerSec`. `fitToWidth` solves `pxPerSec = (viewportWidth − 212 − 12) / durationSeconds`.
 - Bar lines are drawn at each bar's **real start time** (from `beats.json`), so bar spacing is not uniform when the tempo drifts. Ruler seek: `t = (clientX − rulerLeft) / pxPerSec` → wavesurfer. Every lane, the playhead and wavesurfer therefore share one time→x mapping.
 - **Follow-playhead**: while playing, if the playhead x exceeds `scrollLeft + viewportWidth − 120` scroll so it sits at 55% of the viewport; if it goes behind the sticky label column, scroll back.
-- Lane heights (rebuild): Waveform 84, Human Hints 58, FFT 84, RMS 112, Envelope 112, other sparse lanes 84 (`ui.old` `TRACK_HEIGHT`). A **collapsed** lane is 26 px and its body draws a faint waveform "strip" summary.
+- Lane heights (rebuild): Waveform 84, Human Hints 58, FFT 84, RMS 112, Envelope 112, other sparse lanes 84 (the previous app `TRACK_HEIGHT`). A **collapsed** lane is 26 px and its body draws a faint waveform "strip" summary.
 
 ### Semantic-zoom thresholds (from `renderVals`)
 
@@ -143,7 +143,7 @@ Hint pills: show the time range only when the pill is ≥ 70 px wide, the note o
 ## 3. Lanes — canvas mock vs. real artifact
 
 The canvas renders 5 lanes + 2 sticky header rows. **The rebuild renders all
-lanes from `ui.old/src/lib/config/laneDefinitions.js`**: the design's five
+lanes from the previous app's `src/lib/config/laneDefinitions.js`**: the design's five
 expanded, every other lane **collapsed by default** (26 px strip), all
 show/hide- and expand/collapse-able from a lane list. Column widths, grid lines
 (`b%4===0` bright accent @ .16, else @ .06) and the playhead are shared. Each
@@ -162,11 +162,11 @@ and seeks the playhead.
 | **RMS Loudness** (`rms`) | 5 stem rows, per-px bars, muted-blurple stem colours; stem sublabels | `artifacts/essentia/rms_loudness.json` (`frames[].normalized_values[]`, `sources[]` = Mix/Bass/Drums/Harmonic/Vocals) | **Use §3a `SOURCE_COLORS`** (gold / red / cyan / green / purple), per-bucket heat, alpha by value. |
 | **Loudness Envelope** (`env`) | 5 stem rows, smoothed line per stem | `artifacts/essentia/loudness_envelope.json` | **Use §3a** — filled area + stroke line per stem in the same 5 colours. |
 
-> **`ui.old`'s lane rendering is the palette authority,
+> **the previous app's lane rendering is the palette authority,
 > not the canvas mock.** The mock keeps everything in Nocturne blurple; the
 > shipped debugger already renders FFT / RMS / Envelope with a richer, more
 > legible palette that the user wants kept. §3a captures it verbatim from
-> `ui.old/src/lib/timeline/`. The mock stays authoritative for *layout* and *chrome*;
+> the previous app's `src/lib/timeline/`. The mock stays authoritative for *layout* and *chrome*;
 > §3a is authoritative for FFT / RMS / Envelope *fill colour and sub-labels*.
 
 ### No conductor / "global" track
@@ -176,16 +176,16 @@ pins) and reads a `showChordTrack` prop — scaffolding for a global/conductor
 strip — but **nothing places it in the template**. That strip was deliberately
 removed and **is not rebuilt**. The sticky header area is **only Segments +
 Bars** (user-confirmed). Chords are shown as an *ordinary sparse lane* (it
-already exists in `ui.old` as "Chord Regions" from
+already existed in the previous debugger as "Chord Regions" from
 `layer_a_harmonic.json`), not as a header strip; there is no tempo/meter/key
 lane at all.
 
 ---
 
-## 3a. Lane palette & sub-labels — carried over verbatim from `ui.old/src/lib/timeline/`
+## 3a. Lane palette & sub-labels — carried over verbatim from the previous app's `src/lib/timeline/`
 
-`ui.old`'s FFT / RMS / Envelope rendering is kept as-is in the
-rebuild. Values below are lifted exactly from `ui.old/src/lib/timeline/fftBandsLane.js`,
+the previous app's FFT / RMS / Envelope rendering is kept as-is in the
+rebuild. Values below are lifted exactly from the previous app's `src/lib/timeline/fftBandsLane.js`,
 `loudnessLane.js`, `waveformLane.js` and `constants.js`. Reuse the same
 constants in the React `CanvasLane` renderers; do **not** re-derive them from
 Nocturne's accent ramp.
@@ -282,7 +282,7 @@ wavesurfer:
   the timeline shell over all lanes (not wavesurfer's own cursor — disable it).
 
 (The current `waveformLane.js` teal — `rgba(15,118,110,·)` — is **not** carried
-over; only FFT / RMS / Envelope keep the `ui.old` palette, per §3a above.)
+over; only FFT / RMS / Envelope keep the previous app palette, per §3a above.)
 
 ### Lane heights — current impl vs. mock
 
@@ -300,7 +300,7 @@ over; only FFT / RMS / Envelope keep the `ui.old` palette, per §3a above.)
 ## 4. Right panel — one shell, three modes
 
 296 px, `sc-if panelOpen`, `#13151f`, left border, `overflow-y:auto`, with a
-header row, body and footer. It replaces `ui.old`'s floating
+header row, body and footer. It replaces the previous app's floating
 `OverlayPanel` — all block detail lives here. Modes:
 
 | Mode | Opened by | Editable? |
@@ -318,8 +318,8 @@ Every open also moves the shared playhead to the selection's start.
 `section_id`, `created_by`, and any lane-specific fields — then the `summary`
 sentence, then a "show raw" disclosure with the block's full source object.
 **No inputs, no Save.** Field lists per lane come from
-`ui.old/src/lib/timeline/sparseContent.js` + `SelectionDetailCard/selectionFields.js`
-in `ui.old`.
+the previous app's `src/lib/timeline/sparseContent.js` + `SelectionDetailCard/selectionFields.js`
+in the previous app.
 
 ### 4b. Hint editor
 
@@ -366,7 +366,7 @@ state; the playhead and follow-scroll read from it.
 - **Song discovery** — the canvas has one hard-coded song. The drawer's "Select Song" opens a picker backed by the existing discovery API (`data/analysis` listing + `data/songs` audio files). Parity requirement.
 - **All ~16 lanes**, not the mock's 5 — with a lane list to show/hide and expand/collapse, and non-core lanes collapsed by default.
 - **Time-proportional x** — the mock assumes constant tempo; the rebuild maps every lane by real time so bars can drift (§2).
-- **Block inspector (read-only)** — clicking any lane content block shows its detail in the right panel (§4a); replaces `ui.old`'s floating overlay.
+- **Block inspector (read-only)** — clicking any lane content block shows its detail in the right panel (§4a); replaces the previous app's floating overlay.
 - **Artifact inspector (plan item 8)** — the canvas has no raw-JSON view. Parity with Story 8.9: a drawer entry listing `artifacts/**` with a collapsible JSON view, styled to Nocturne (`.table`, `.card`). A *file* browser, distinct from the per-block inspector.
 - **Loading / empty / error states** for every lane and for a song with missing artifacts.
 - **Keyboard**: space = play/pause, ←/→ = prev/next beat, shift+←/→ = bar, `[` `]` or `+` `-` = zoom, `f` = fit, `esc` = close panel. (The canvas has none.)
@@ -374,6 +374,6 @@ state; the playhead and follow-scroll read from it.
 ## 7. Build / target facts
 
 - **Target: Chrome 151 only** (the operator's browser). No cross-browser support, no polyfills, no autoprefixer. Modern CSS/JS freely — Nocturne's `styles.css` already relies on `oklch()`, `color-mix()`, `:has()`. Vite / tsconfig `target: esnext`.
-- **`ui.old/`** — the current app is `git mv`'d to `ui.old/` in plan item 1 and is the behaviour reference for the whole rebuild. It is deleted at cutover (plan item 11); after that, nothing in the repo references it.
+- **Previous app** — the pre-rebuild Preact/MUI app was kept as a reference copy from plan item 1 and was the behaviour reference for the whole rebuild. It was removed at cutover (plan item 11); nothing in the repo references it now.
 - **No conductor / tempo / "global" strip** — removed, not rebuilt (§3a). Chords is an ordinary sparse lane.
 - **First-load audio** — no peaks artifact; wavesurfer decodes the full mp3 on song load (loading state shown). A precompute endpoint is a later optimisation.

@@ -28,7 +28,7 @@ type FileState =
  * renders any selected JSON as a collapsible tree with a copy-path action.
  *
  * The walk starts at `data/analysis/<song>` (not just `artifacts/`) so every file
- * ui.old's inspector exposed — including the top-level `info.json` / `beats.json`
+ * the previous app's inspector exposed — including the top-level `info.json` / `beats.json`
  * / `sections.json` / `song_event_timeline.json` / `beatdrop_visual_plan.json`
  * and `reference/human/*` — stays reachable. See D5 in the implementation plan.
  *

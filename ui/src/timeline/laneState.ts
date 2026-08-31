@@ -1,6 +1,6 @@
 // laneState.ts — the timeline lane registry + per-session expand/visible state.
 //
-// Every lane in ui.old's `laneDefinitions` ships (no conductor / tempo / global
+// Every lane in the previous app's `laneDefinitions` ships (no conductor / tempo / global
 // strip — design notes §3). The design's five lanes are expanded by default;
 // every other lane starts collapsed. `expanded` and `visible` persist per
 // session in localStorage, wrapped in try/catch so a private window or blocked

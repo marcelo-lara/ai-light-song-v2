@@ -1,7 +1,7 @@
 // blockFields.ts — the read-only block-inspector field map.
 //
-// Ported from ui.old/src/lib/timeline/sparseContent.js (`buildSparseLaneContent`)
-// + ui.old/src/components/SelectionDetailCard/selectionFields.js
+// Ported from the previous app's src/lib/timeline/sparseContent.js (`buildSparseLaneContent`)
+// + the previous app's src/components/SelectionDetailCard/selectionFields.js
 // (`buildSelectionFields`). `blockFields(laneId, selection)` returns the ordered
 // <dl> rows the right-panel inspector renders; `selectionFrom*` normalise a
 // clicked segment / lane marker into the shared `BlockSelection` payload.
@@ -50,7 +50,7 @@ export const LANE_LABELS: Record<string, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// formatting (ported from ui.old/src/lib/utils.js)
+// formatting (ported from the previous app's src/lib/utils.js)
 // ---------------------------------------------------------------------------
 
 export function formatDuration(seconds: number | null | undefined): string {

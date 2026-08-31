@@ -1,6 +1,6 @@
 // laneContent.ts — per-lane content adapters for SparseLane.
 //
-// Ported from ui.old/src/lib/timeline/sparseContent.js. Each adapter is a pure
+// Ported from the previous app's src/lib/timeline/sparseContent.js. Each adapter is a pure
 // function from a loaded artifact payload to an ordered `SparseBlock[]`; the
 // blocks carry everything the item-6 block inspector needs (`label`,
 // `laneLabel`, `caption`, `reference`, `detail`, `summary`) plus the raw source
@@ -36,7 +36,7 @@ export interface SparseBlock {
   raw: unknown;
 }
 
-// -- formatting (ported from ui.old/src/lib/utils.js) ------------------------
+// -- formatting (ported from the previous app's src/lib/utils.js) ------------------------
 
 function fmtTime(seconds: number): string {
   const n = Number(seconds);

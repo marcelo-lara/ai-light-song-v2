@@ -36,7 +36,7 @@ describe("parseDirectoryIndex", () => {
 
 describe("listSubdirectories", () => {
   it("returns only directories, sorted", () => {
-    // sorted by String#localeCompare, matching ui.old's fetch.js
+    // sorted by String#localeCompare, matching the previous app's fetch.js
     expect(listSubdirectories(analysisIndex)).toEqual([
       "_test_song",
       "Hideaway - Kiesza",

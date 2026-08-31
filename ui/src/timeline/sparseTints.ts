@@ -1,7 +1,7 @@
-// sparseTints.ts — per-lane block tints for SparseLane (replaces ui.old's
+// sparseTints.ts — per-lane block tints for SparseLane (replaces the previous app's
 // `sparseLaneStyles` table).
 //
-// The hue assignments are carried over from ui.old — hints amber, sections
+// The hue assignments are carried over from the previous app — hints amber, sections
 // teal, chords cyan, patterns gold, identifiers blue, machine red, ml violet,
 // beatdrop orange, phrases deep-violet — but instead of nine hand-written rgba
 // quads the values are now derived from one documented base hue per lane
@@ -23,15 +23,15 @@ export interface SparseTint {
 
 /** documented base hue (deg) + saturation (%) per lane id */
 const BASE: Record<string, [hue: number, sat: number, light: number]> = {
-  humanHints: [35, 92, 48], // amber   (ui.old rgba(217,119,6))
-  sections: [174, 78, 38], // teal    (ui.old rgba(15,118,110))
-  chords: [193, 82, 44], // cyan    (ui.old rgba(14,116,144))
-  patterns: [43, 96, 40], // gold    (ui.old rgba(202,138,4))
-  identifierHints: [201, 96, 33], // blue    (ui.old rgba(3,105,161))
-  machineEvents: [0, 74, 42], // red     (ui.old rgba(185,28,28))
-  mlEvents: [263, 70, 42], // violet  (ui.old rgba(91,33,182))
-  beatdropPlan: [25, 95, 49], // orange  (ui.old rgba(234,88,12))
-  phrases: [265, 68, 43], // deep violet (ui.old rgba(76,29,149))
+  humanHints: [35, 92, 48], // amber   (the previous app rgba(217,119,6))
+  sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
+  chords: [193, 82, 44], // cyan    (the previous app rgba(14,116,144))
+  patterns: [43, 96, 40], // gold    (the previous app rgba(202,138,4))
+  identifierHints: [201, 96, 33], // blue    (the previous app rgba(3,105,161))
+  machineEvents: [0, 74, 42], // red     (the previous app rgba(185,28,28))
+  mlEvents: [263, 70, 42], // violet  (the previous app rgba(91,33,182))
+  beatdropPlan: [25, 95, 49], // orange  (the previous app rgba(234,88,12))
+  phrases: [265, 68, 43], // deep violet (the previous app rgba(76,29,149))
 };
 
 /** fixed alpha ramp shared by every lane */

@@ -10,8 +10,10 @@ per-item status, and
 [docs/source references/contract-change-v1.1.md](docs/source%20references/contract-change-v1.1.md)
 for the handover note to the MCP side.
 
-The internal debugger UI is being rebuilt from scratch (React + TypeScript, the
-"Score Analysis DAW" design, wavesurfer.js) — see
+The internal debugger UI (`ui/`) is the `UI v2` from-scratch rebuild (React +
+TypeScript + Vite, the "Score Analysis DAW" design, wavesurfer.js as player and
+master clock) — items 1–11 committed; the `ui-v2` tag is held pending a
+live-browser parity pass. Close-out and parity sign-off:
 [docs/web-ui/ui-rebuild/](docs/web-ui/ui-rebuild/).
 
 A Docker-first pipeline that turns a source song into structured musical
@@ -110,9 +112,12 @@ Full CLI reference (flags, compare targets, exit codes, validation workflow):
 docker compose up ui
 ```
 
-Open `http://localhost:8080` and load a per-song directory name from
-`data/analysis/`. The `ui` service mounts `./data` read-only. Helper-UI dev
-notes: [ui/README.HELPER_UI.md](ui/README.HELPER_UI.md).
+Open `http://localhost:9090` (Compose maps host `9090` → container `8080`) and
+load a per-song directory name from `data/analysis/`. The debugger is read-only
+against `data/analysis/**` except the two explicit human-save endpoints
+(`PUT /api/human-hints/<song>`, `PUT /api/song-facts/<song>`). Prod build:
+`docker build --target final -t ui-v2-prod ./ui` (nginx, `listen 8080`).
+Helper-UI dev notes: [ui/README.HELPER_UI.md](ui/README.HELPER_UI.md).
 
 ## Documentation map
 

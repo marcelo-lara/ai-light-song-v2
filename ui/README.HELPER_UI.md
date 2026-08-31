@@ -4,7 +4,7 @@ Internal visual debugger for the analyzer's artifacts under
 `data/analysis/<Song - Artist>/artifacts/`. **Not** the production consumer UI.
 
 This is the from-scratch React + TypeScript + Vite rebuild
-(`docs/web-ui/ui-rebuild/`). The previous Preact/MUI app is kept at `ui.old/` as
+(`docs/web-ui/ui-rebuild/`). The previous Preact/MUI app was kept as a reference copy as
 the behaviour reference until cutover (plan item 11), then deleted.
 
 ## Non-negotiable rules
@@ -79,7 +79,7 @@ non-modal nav — it takes initial focus on an open transition but is not trappe
 | `src/data/loaders.ts` | One fetch+parse loader per artifact → `LoadResult<T>` (`{ ok, data }` \| `{ ok, error }`, never throws). `artifactLoaders` registry + `ArtifactKey` / `ArtifactData<K>`. |
 | `src/data/discovery.ts` | Directory-index HTML parsing; `intersectSongs` = analysis dirs ∩ `data/songs` audio basenames; `discoverSongs()` fetch wrapper |
 | `src/data/useSong.ts` | Hook: given a song, loads `info.json` + requested artifacts; `{ status, data, error }` per key, stale-run guarded, `reload()` |
-| `src/data/saveHumanHints.ts` | `buildHumanHintsPayload` (ui.old's hint-editor validation) + `saveHumanHints` `PUT /api/human-hints/<song>` client |
+| `src/data/saveHumanHints.ts` | `buildHumanHintsPayload` (the previous app's hint-editor validation) + `saveHumanHints` `PUT /api/human-hints/<song>` client |
 | `src/data/index.ts` | Barrel re-export for the data layer |
 | `src/data/__fixtures__/` | Trimmed real `_test_song` artifacts for the parser/discovery unit tests |
 | `src/data/*.test.ts` | vitest: parsers (against fixtures), discovery filter, loader error mapping, hint-payload validation |
@@ -102,7 +102,7 @@ non-modal nav — it takes initial focus on an open transition but is not trappe
 | `src/panel/ReviewQueuePanel.tsx` `reviewQueue.ts` | Review-queue mode + `partitionReviewQueue` / `questionOptions`. |
 | `src/data/saveSongFacts.ts` | `buildSongFactsPayload` + `PUT /api/song-facts/<song>` client (merge, not rewrite — D4). |
 | `src/inspector/ArtifactInspector.tsx` `walk.ts` `jsonTree.ts` | Read-only raw-JSON browser: recursive `/data` walk of `data/analysis/<song>` (D5) + collapsible tree. |
-| `vite.config.ts` | Vite + React plugin; `build.target: esnext`; vitest (`jsdom`) config; `data-mount-plugin` = `/data` static mount + directory listing + `PUT /api/human-hints/<song>` (ported from `ui.old/vite.config.js`, incl. path-escape guard + byte-range). Not in a `tsconfig` (build tooling, transpiled by esbuild — as `ui.old`'s `.js` config was). |
+| `vite.config.ts` | Vite + React plugin; `build.target: esnext`; vitest (`jsdom`) config; `data-mount-plugin` = `/data` static mount + directory listing + `PUT /api/human-hints/<song>` (ported from the previous app's `vite.config.js`, incl. path-escape guard + byte-range). Not in a `tsconfig` (build tooling, transpiled by esbuild — as the previous app's `.js` config was). |
 | `tsconfig.json` | `strict` (+ `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, no-unused), `target`/`module` `esnext`; `include: ["src"]` |
 | `Dockerfile` | `deps` → `dev` (Vite) / `build` (tsc + vite) → `final` (nginx) |
 | `nginx.conf` | Static serve + SPA fallback + read-only `/data/` autoindex |
@@ -112,5 +112,5 @@ non-modal nav — it takes initial focus on an open transition but is not trappe
 Items 1–10 are done: shell, data layer, timeline (coords / grid / zoom / follow /
 transport / waveform / canvas + sparse lanes), right panel (inspector / hint /
 review), artifact inspector, and the keyboard model + non-happy-path states +
-focus management. Parity sign-off and `ui.old/` deletion is item 11. See
+focus management. Parity sign-off and removal of the previous app was item 11. See
 `docs/web-ui/ui-rebuild/implementation-plan.md`.
