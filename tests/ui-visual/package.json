@@ -1,0 +1,14 @@
+{
+  "name": "ai-light-song-v2-ui-visual",
+  "private": true,
+  "type": "module",
+  "description": "Deterministic Playwright visual-regression suite for the ui/ Artifact Debugger.",
+  "scripts": {
+    "test": "playwright test",
+    "report": "playwright show-report report",
+    "update": "playwright test --update-snapshots"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.0"
+  }
+}

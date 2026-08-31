@@ -31,6 +31,11 @@ the behaviour reference until cutover (plan item 11), then deleted.
   - `docker compose run --rm ui npm install`
   - `docker compose run --rm ui npm run build` — `tsc --noEmit` + vite bundle
   - `docker compose run --rm ui npm run test` — vitest + @testing-library/react
+  - Visual regression (Playwright): serve the frozen fixtures with
+    `docker compose -f docker-compose.yml -f docker-compose.visual.yml up -d --build ui`,
+    then run the suite in the pinned container per
+    `../docs/web-ui/ui-regression_guide.md` §6. The suite lives in
+    `../tests/ui-visual/` (its own npm project — not part of `ui/`).
 
 ## Keyboard (plan item 10 / refinement §10)
 

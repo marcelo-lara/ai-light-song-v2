@@ -1,0 +1,13 @@
+# Visual-regression override — freezes the data the `ui` container serves to the
+# committed fixture set so Playwright screenshots are deterministic.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.visual.yml up -d --build ui
+#
+# The dev-server serves /data from the container path `/data` (ui/vite.config.ts
+# `dataRoot`). We bind-mount the frozen fixture folders on top of the base
+# `./data:/data` mount, replacing only `analysis/` and `songs/`.
+services:
+  ui:
+    volumes:
+      - ./tests/ui-visual/fixtures/analysis:/data/analysis:ro
+      - ./tests/ui-visual/fixtures/songs:/data/songs:ro

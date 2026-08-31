@@ -10,6 +10,7 @@ interface LaneListProps {
   onToggleVisible: (laneId: string) => void;
   onToggleExpanded: (laneId: string) => void;
   onShowAll: () => void;
+  onHideAll: () => void;
   onReset: () => void;
   onClose: () => void;
 }
@@ -19,11 +20,12 @@ export function LaneList({
   onToggleVisible,
   onToggleExpanded,
   onShowAll,
+  onHideAll,
   onReset,
   onClose,
 }: LaneListProps): React.JSX.Element {
   return (
-    <div className="tl-lanelist" role="dialog" aria-label="Lane list">
+    <div className="tl-lanelist" role="dialog" aria-label="Lane list" data-testid="lane-list">
       <div className="tl-lanelist__head">
         <span className="tl-lanelist__title">Analysis lanes</span>
         <button type="button" className="tp" aria-label="Close lane list" onClick={onClose}>
@@ -34,6 +36,14 @@ export function LaneList({
       <div className="tl-lanelist__actions">
         <button type="button" className="zbtn" onClick={onShowAll}>
           Show all
+        </button>
+        <button
+          type="button"
+          className="zbtn"
+          data-testid="lane-list-hide-all"
+          onClick={onHideAll}
+        >
+          Hide all
         </button>
         <button type="button" className="zbtn" onClick={onReset}>
           Reset

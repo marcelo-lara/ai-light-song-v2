@@ -11,6 +11,13 @@ references it. The `ui-v2` git tag is **held** pending the D3 live-browser
 visual / interaction parity pass — see the *Parity sign-off (item 11)* section of
 the archived plan.
 
+Defects and refinements found during the D3 parity pass are collected in
+[`product-refinement-ui-v2.1.md`](product-refinement-ui-v2.1.md) (active
+worklist) and planned in
+[`implementation-plan-ui-v2.1.md`](implementation-plan-ui-v2.1.md) (8 items,
+one commit each; item 1 stands up a Playwright visual-regression suite under
+`tests/ui-visual/`).
+
 | File | What it is |
 | --- | --- |
 | [`design/design-notes.md`](design/design-notes.md) | Nocturne tokens, layout anatomy, per-lane spec (incl. §3a — the FFT/RMS/Envelope palette carried verbatim from the previous app), the 3-mode right panel, and how each lane maps onto a real analyzer artifact. |

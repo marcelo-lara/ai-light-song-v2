@@ -70,7 +70,7 @@ Determinism depends on fixed input data. Do **not** point the suite at the live
 
 ### 3.1 Fixture set
 
-Create `ui/test/fixtures/analysis/` containing 3 frozen song folders:
+Create `tests/ui-visual/fixtures/analysis/` containing 3 frozen song folders:
 
 - `RegFull - Fixture/` — every artifact the debugger loads
   (`ui/src/lib/config/artifactDefinitions.js` is the authoritative list), including
@@ -90,7 +90,7 @@ Two options; pick one and document it in `ui/README.HELPER_UI.md`:
 
 - **Static mount (preferred, closest to prod):** run the `ui` container with the
   fixture dir bind-mounted over the data root, e.g.
-  `-v $(pwd)/ui/test/fixtures/analysis:/usr/share/nginx/html/data/analysis:ro` and a
+  `-v $(pwd)/tests/ui-visual/fixtures/analysis:/usr/share/nginx/html/data/analysis:ro` and a
   matching `data/songs` dir (may be empty). Discovery still exercises the real
   Nginx autoindex + `fetchDirectoryListing` path.
 - **Route interception:** in the Playwright config, `page.route('**/data/**', ...)`
@@ -155,16 +155,26 @@ Visual diffs are only meaningful if everything except the code under test is fix
 - Target the running `ui` container over HTTP (`baseURL:
   http://localhost:9090`). Do not import app modules directly; test the built,
   served bundle.
-- Keep the suite in `ui/test/visual/`. Add `@playwright/test` to `ui/package.json`
-  `devDependencies` and a `ui/playwright.config.js`.
+- Keep the suite in `tests/ui-visual/` — a standalone Playwright project
+  (`tests/ui-visual/package.json` with `@playwright/test` pinned exact, plus
+  `tests/ui-visual/playwright.config.ts`). It is NOT part of `ui/`'s npm project.
 
 ### 5.2 App readiness signal
 
-Add a small, test-only readiness marker to the app so tests wait on state, not
-guesses. Cheapest option: after `loadSong` finishes and the timeline is drawn, set
-`document.documentElement.dataset.uiReady = "1"` (and clear it at the start of
-`loadSong`). Tests do
-`await page.waitForSelector('html[data-ui-ready="1"]')`.
+A test-only readiness marker lives in `ui/src/App.tsx` (added by plan item 1):
+
+- `document.documentElement.dataset.uiReady` is `"0"` during any song load or
+  full re-layout (song change, `pxPerBar` / viewport-width change) and flips to
+  `"1"` two animation frames after a fully-settled song's visible lanes have had
+  a chance to draw. A song is "settled" when `selectSongLoadState` is `ready` or
+  `degraded` (not `loading` / `fatal`) and no requested artifact is still
+  in-flight.
+- `document.documentElement.dataset.uiLoading` carries the in-flight artifact
+  count (debugging aid).
+
+Tests wait with `await page.waitForSelector('html[data-ui-ready="1"]')`
+(`gotoSong` / `waitReady` in `helpers.ts`). The app also honours a `?song=<name>`
+deep link, which is how `gotoSong` selects a song.
 
 Also assert, on every test:
 
@@ -178,16 +188,16 @@ Also assert, on every test:
 ### 5.3 Config sketch
 
 ```js
-// ui/playwright.config.js
+// tests/ui-visual/playwright.config.ts
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: "./test/visual",
-  snapshotDir: "./test/visual/__screenshots__",
+  testDir: "./specs",
+  snapshotDir: "./__screenshots__",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  reporter: [["html", { outputFolder: "test/visual/report", open: "never" }]],
+  reporter: [["html", { outputFolder: "report", open: "never" }], ["list"]],
   use: {
     baseURL: process.env.UI_BASE_URL ?? "http://localhost:9090",
     viewport: { width: 1280, height: 720 },
@@ -210,9 +220,9 @@ export default defineConfig({
 ### 5.4 Test sketch
 
 ```js
-// ui/test/visual/song-full.spec.js
+// tests/ui-visual/specs/song-full.spec.ts
 import { test, expect } from "@playwright/test";
-import { gotoSong, assertNoRuntimeErrors } from "./helpers.js";
+import { gotoSong, assertNoRuntimeErrors } from "../helpers";
 
 test("song-full timeline", async ({ page }) => {
   const errors = assertNoRuntimeErrors(page); // collects console.error / pageerror / bad /data responses
@@ -227,45 +237,53 @@ test("song-full timeline", async ({ page }) => {
 
 ### 5.5 Selectors to add to the app
 
-E2E stability (issue #3) needs stable hooks. Add `data-testid` to:
+E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 
-- sidebar: `sidebar-toggle`, `song-select`, `song-refresh`, `paths-panel`,
-  `file-status-list`, and each `lane-toggle-<laneId>`;
-- transport header: `transport-play`, `transport-pause`, `zoom-in`, `zoom-out`,
-  `follow-playhead`, `song-menu`;
-- timeline: `timeline-viewport`, and `data-lane="<laneId>"` on each lane row;
-- overlay: `selection-overlay`;
-- hint editor: `human-hints-sidebar`, `hint-save`, `hint-cancel`, `hint-delete`,
-  `hint-set-start`, `hint-set-end`.
+- header: `burger-toggle` (the menu button);
+- left drawer / panel: `left-panel` on `<nav.app-drawer>`, with `data-open`
+  `"true" | "false"`;
+- footer zoom controls: `zoom-in`, `zoom-out`, `fit-to-width`;
+- lane list (`LaneList.tsx`): `lane-list` on the panel, `lane-list-hide-all` on
+  the hide-all button;
+- timeline: `timeline-viewport` on the scroller; on every lane row (both the
+  label cell and the body cell) `data-lane="<laneId>"` and
+  `data-lane-collapsed="true" | "false"`; `lane-collapse-<laneId>` on the caret.
 
-Prefer `getByRole`/`getByLabel` where the control already has an accessible name;
-use `data-testid` only where it does not.
+Still pending (later plan items / not yet needed): `song-select`,
+`transport-play` / `transport-pause`, `selection-overlay`, and the hint-editor
+hooks. Prefer `getByRole` / `getByLabel` where the control already has an
+accessible name (transport buttons, zoom buttons all have `aria-label`).
 
 ---
 
 ## 6. Local workflow
 
-Prereqs: Docker, and `npm install` inside `ui/` (or run Playwright via its Docker
-image — see §7).
+Prereqs: Docker. The suite runs in the pinned Playwright container image — the
+host does not need Node or browsers (and Playwright does not ship browsers for
+every host OS).
 
 ```bash
-# 1. build + start the UI against the fixture data
-docker compose up -d --build ui
-#    (with the fixture mount from §3.2; add a compose override file
-#     docker-compose.visual.yml and use `-f docker-compose.yml -f docker-compose.visual.yml`)
+# 1. rebuild the frozen fixtures (only if a source song changed)
+python3 tests/ui-visual/fixtures/build-fixtures.py
 
-# 2. sanity check
+# 2. build + start the UI against the fixture data
+docker compose -f docker-compose.yml -f docker-compose.visual.yml up -d --build ui
+
+# 3. sanity check
 curl -s -o /dev/null -w '%{http_code}\n' http://localhost:9090/
-curl -s http://localhost:9090/data/analysis/ | head
+curl -s "http://localhost:9090/data/analysis/" | head
 
-# 3. run the suite
-cd ui
-npx playwright test               # compare against committed baselines
-npx playwright show-report test/visual/report
+# 4. run the suite (pinned container, host network → localhost:9090)
+docker run --rm --network host -v "$PWD/tests/ui-visual:/work" -w /work \
+  mcr.microsoft.com/playwright:v1.56.0-noble \
+  sh -c "npm ci && npx playwright test"
+# report: tests/ui-visual/report/index.html
 
-# 4. when a change is intentional, re-capture and review the diff before committing
-npx playwright test --update-snapshots
-git add test/visual/__screenshots__
+# 5. when a change is intentional, re-capture and review the diff before committing
+docker run --rm --network host -v "$PWD/tests/ui-visual:/work" -w /work \
+  mcr.microsoft.com/playwright:v1.56.0-noble \
+  sh -c "npm ci && npx playwright test --update-snapshots"
+git add tests/ui-visual/__screenshots__
 ```
 
 Review rule: a baseline update PR must include the Playwright HTML report (or the
@@ -275,7 +293,7 @@ before/after PNGs) and a one-line justification per changed snapshot.
 
 ## 7. CI integration
 
-Trigger: any PR touching `ui/**` or `ui/test/fixtures/**`.
+Trigger: any PR touching `ui/**` or `tests/ui-visual/**`.
 
 Steps:
 
@@ -283,9 +301,9 @@ Steps:
 2. Wait for `http://localhost:9090/` to return `200` (poll, ~30s timeout).
 3. Run Playwright **inside the pinned Playwright container** so the Chromium build
    matches local Linux runs:
-   `docker run --rm --network host -v "$PWD/ui:/work" -w /work
+   `docker run --rm --network host -v "$PWD/tests/ui-visual:/work" -w /work
    mcr.microsoft.com/playwright:v<pinned> npx playwright test`
-4. On failure: upload `ui/test/visual/report/` and `ui/test/visual/**/*-diff.png`
+4. On failure: upload `tests/ui-visual/report/` and `tests/ui-visual/**/*-diff.png`
    as build artifacts; fail the job.
 5. On success: no artifacts needed.
 
@@ -312,13 +330,19 @@ should be well under that.
 
 ## 9. Open items before this suite is "done"
 
-- [ ] Add the `data-ui-ready` readiness marker to the app (§5.2).
-- [ ] Add `data-testid`s listed in §5.5.
-- [ ] Build the three fixture folders (§3.1) and the compose override for mounting
-      them (§3.2).
-- [ ] Add `@playwright/test` + `playwright.config.js` + `test/visual/` to `ui/`.
-- [ ] Capture initial baselines in the CI container image and commit them.
-- [ ] Add the CI job (§7).
+- [x] Add the `data-ui-ready` readiness marker to the app (§5.2). *(plan item 1)*
+- [x] Add `data-testid`s listed in §5.5 — the subset plan v2.1 needs. *(plan item 1)*
+- [x] Build the three fixture folders (§3.1) and the compose override for mounting
+      them (§3.2) — `tests/ui-visual/fixtures/` + `docker-compose.visual.yml`. *(plan item 1)*
+- [x] Add the standalone `tests/ui-visual/` Playwright project
+      (`package.json` + `playwright.config.ts` + `specs/`). *(plan item 1)*
+- [x] Capture initial baselines in the pinned container image and commit them
+      — `song-full`, `song-no-audio`, `left-panel-open`, `lane-collapsed`,
+      `timeline-scrolled-50`, `timeline-zoom-max`, `timeline-zoom-min`. *(plan item 1)*
+- [x] Add the CI job (§7) — `.github/workflows/ui-visual.yml`. *(plan item 1)*
 - [ ] Decide the `_test_song` audio question with Ops (see `ui-issues.md` §2).
+      Interim: `RegFull`/`RegPartial` ship the real mp3; `_test_song` has none
+      (its baseline is the beat-pulse fallback). Plan item 2 finalizes whether
+      `RegFull` keeps the mp3 or moves to a pre-decoded peaks JSON.
 - [ ] Fold the "smoke check" list from `ui/README.HELPER_UI.md` into explicit
       assertions so the README checklist and the suite cannot drift apart.

@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "engine": "essentia-tensorflow-genre",
+    "dependencies": {
+      "model_name": "essentia-tensorflow-genre",
+      "model_version": "1.0"
+    }
+  },
+  "genres": [
+    "dance",
+    "electronic",
+    "pop"
+  ],
+  "confidence": 0.312636,
+  "top_predictions": [
+    {
+      "label": "dance",
+      "confidence": 0.312636
+    },
+    {
+      "label": "electronic",
+      "confidence": 0.254756
+    },
+    {
+      "label": "pop",
+      "confidence": 0.200326
+    },
+    {
+      "label": "female vocalists",
+      "confidence": 0.142062
+    },
+    {
+      "label": "House",
+      "confidence": 0.141891
+    }
+  ],
+  "guidance": [
+    "Use the genre only as review guidance for what song parts are likely to matter.",
+    "Do not assume genre-specific drops or section semantics unless downstream evidence supports them."
+  ]
+}

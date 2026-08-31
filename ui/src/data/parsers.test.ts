@@ -40,6 +40,15 @@ describe("parseInfo", () => {
   it("throws on a missing required field", () => {
     expect(() => parseInfo({ song_name: "x" })).toThrow(ShapeError);
   });
+
+  it("tolerates null-valued artifact entries (unproduced artifacts)", () => {
+    const info = parseInfo({
+      song_name: "x",
+      duration: 10,
+      artifacts: { beats: "/p/beats.json", human_hints_alignment: null },
+    });
+    expect(info.artifacts).toEqual({ beats: "/p/beats.json" });
+  });
 });
 
 describe("parseBeats", () => {

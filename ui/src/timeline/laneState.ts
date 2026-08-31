@@ -127,6 +127,8 @@ export interface UseLaneStateResult {
   setExpanded(id: string, expanded: boolean): void;
   setVisible(id: string, visible: boolean): void;
   showAll(): void;
+  /** item 8 — hide every lane in one action (persisted like the per-lane toggles) */
+  hideAll(): void;
   resetToDefaults(): void;
 }
 
@@ -167,6 +169,15 @@ export function useLaneState(): UseLaneStateResult {
       }),
     [],
   );
+  const hideAll = useCallback(
+    () =>
+      setState((c) => {
+        const next: LaneStateMap = {};
+        for (const def of LANE_DEFS) next[def.id] = { ...c[def.id]!, visible: false };
+        return next;
+      }),
+    [],
+  );
   const resetToDefaults = useCallback(() => setState(defaultLaneState()), []);
 
   const lanes = useMemo<Lane[]>(
@@ -192,6 +203,7 @@ export function useLaneState(): UseLaneStateResult {
     setExpanded,
     setVisible,
     showAll,
+    hideAll,
     resetToDefaults,
   };
 }

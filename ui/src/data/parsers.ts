@@ -58,6 +58,10 @@ function stringRecord(value: unknown, ctx: string): Record<string, string> {
   const obj = asObject(value, ctx);
   const out: Record<string, string> = {};
   for (const [key, entry] of Object.entries(obj)) {
+    // Real info.json files carry `null` for artifacts that were not produced
+    // (e.g. `human_hints_alignment`). Skip those rather than failing the whole
+    // document — an absent path is simply an absent entry.
+    if (entry === null || entry === undefined) continue;
     out[key] = asString(entry, `${ctx}.${key}`);
   }
   return out;

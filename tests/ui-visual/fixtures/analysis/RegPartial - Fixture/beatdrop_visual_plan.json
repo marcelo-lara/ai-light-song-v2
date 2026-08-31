@@ -1,0 +1,708 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "beats_file": "/data/analysis/Armin - Revolution/artifacts/essentia/beats.json",
+    "fft_bands_file": "/data/analysis/Armin - Revolution/artifacts/essentia/fft_bands.json",
+    "sections_file": "/data/analysis/Armin - Revolution/artifacts/section_segmentation/sections.json",
+    "lighting_events_file": "/data/analysis/Armin - Revolution/artifacts/lighting_events.json",
+    "music_feature_layers_file": "/data/analysis/Armin - Revolution/artifacts/music_feature_layers.json",
+    "event_timeline_file": "/data/analysis/Armin - Revolution/song_event_timeline.json",
+    "preset_library_source": "built-in-default"
+  },
+  "global_rules": {
+    "selection_mode": "feature_driven",
+    "hard_cut_mode": "predictive_offline",
+    "strobe_safe": true
+  },
+  "preset_windows": [
+    {
+      "id": "preset_window_001",
+      "start_s": 0.0,
+      "end_s": 15.232,
+      "section_id": "section-001",
+      "section_character": "ambient_opening",
+      "recommended_profile": "ambient",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_air_01",
+          "score": 0.893,
+          "tags": [
+            "ambient",
+            "dreamy",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_air_02",
+          "score": 0.882,
+          "tags": [
+            "ambient",
+            "release",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_lift_02",
+          "score": 0.754,
+          "tags": [
+            "uplifting",
+            "release",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.437,
+        "fft_activity_score": 0.0,
+        "section_payoff_score": 0.18
+      }
+    },
+    {
+      "id": "preset_window_002",
+      "start_s": 15.232,
+      "end_s": 30.209,
+      "section_id": "section-002",
+      "section_character": "instrumental_bed",
+      "recommended_profile": "hypnotic",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_drive_01",
+          "score": 1.0,
+          "tags": [
+            "percussive",
+            "hypnotic",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_hypno_01",
+          "score": 1.0,
+          "tags": [
+            "hypnotic",
+            "percussive",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_hypno_02",
+          "score": 0.93,
+          "tags": [
+            "hypnotic",
+            "tense",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 1.0,
+        "fft_activity_score": 0.941,
+        "section_payoff_score": 0.38
+      }
+    },
+    {
+      "id": "preset_window_003",
+      "start_s": 30.209,
+      "end_s": 59.838,
+      "section_id": "section-003",
+      "section_character": "vocal_spotlight",
+      "recommended_profile": "ambient",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_air_02",
+          "score": 0.783,
+          "tags": [
+            "ambient",
+            "release",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_air_01",
+          "score": 0.757,
+          "tags": [
+            "ambient",
+            "dreamy",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_lift_02",
+          "score": 0.681,
+          "tags": [
+            "uplifting",
+            "release",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.565,
+        "fft_activity_score": 0.461,
+        "section_payoff_score": 0.45
+      }
+    },
+    {
+      "id": "preset_window_004",
+      "start_s": 59.838,
+      "end_s": 74.606,
+      "section_id": "section-004",
+      "section_character": "breath_space",
+      "recommended_profile": "ambient",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_air_01",
+          "score": 0.987,
+          "tags": [
+            "ambient",
+            "dreamy",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_air_02",
+          "score": 0.982,
+          "tags": [
+            "ambient",
+            "release",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_lift_02",
+          "score": 0.83,
+          "tags": [
+            "uplifting",
+            "release",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.21,
+        "fft_activity_score": 0.253,
+        "section_payoff_score": 0.2
+      }
+    },
+    {
+      "id": "preset_window_005",
+      "start_s": 74.606,
+      "end_s": 88.131,
+      "section_id": "section-005",
+      "section_character": "flowing_plateau",
+      "recommended_profile": "anthemic",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_impact_01",
+          "score": 0.741,
+          "tags": [
+            "aggressive",
+            "anthemic",
+            "hard_cut_friendly",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_lift_01",
+          "score": 0.718,
+          "tags": [
+            "anthemic",
+            "uplifting",
+            "hard_cut_friendly",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_hypno_02",
+          "score": 0.668,
+          "tags": [
+            "hypnotic",
+            "tense",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.622,
+        "fft_activity_score": 0.537,
+        "section_payoff_score": 0.7
+      }
+    },
+    {
+      "id": "preset_window_006",
+      "start_s": 88.131,
+      "end_s": 103.851,
+      "section_id": "section-006",
+      "section_character": "momentum_lift",
+      "recommended_profile": "aggressive",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_impact_01",
+          "score": 0.835,
+          "tags": [
+            "aggressive",
+            "anthemic",
+            "hard_cut_friendly",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_impact_02",
+          "score": 0.802,
+          "tags": [
+            "aggressive",
+            "percussive",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_lift_01",
+          "score": 0.717,
+          "tags": [
+            "anthemic",
+            "uplifting",
+            "hard_cut_friendly",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.82,
+        "fft_activity_score": 0.673,
+        "section_payoff_score": 0.9
+      }
+    },
+    {
+      "id": "preset_window_007",
+      "start_s": 103.851,
+      "end_s": 118.619,
+      "section_id": "section-007",
+      "section_character": "instrumental_bed",
+      "recommended_profile": "hypnotic",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_hypno_01",
+          "score": 0.926,
+          "tags": [
+            "hypnotic",
+            "percussive",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_hypno_02",
+          "score": 0.866,
+          "tags": [
+            "hypnotic",
+            "tense",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_drive_01",
+          "score": 0.926,
+          "tags": [
+            "percussive",
+            "hypnotic",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.961,
+        "fft_activity_score": 1.0,
+        "section_payoff_score": 0.38
+      }
+    },
+    {
+      "id": "preset_window_008",
+      "start_s": 118.619,
+      "end_s": 133.863,
+      "section_id": "section-008",
+      "section_character": "groove_plateau",
+      "recommended_profile": "aggressive",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_impact_01",
+          "score": 0.869,
+          "tags": [
+            "aggressive",
+            "anthemic",
+            "hard_cut_friendly",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_impact_02",
+          "score": 0.848,
+          "tags": [
+            "aggressive",
+            "percussive",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_lift_01",
+          "score": 0.768,
+          "tags": [
+            "anthemic",
+            "uplifting",
+            "hard_cut_friendly",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.744,
+        "fft_activity_score": 0.813,
+        "section_payoff_score": 0.78
+      }
+    },
+    {
+      "id": "preset_window_009",
+      "start_s": 133.863,
+      "end_s": 150.999,
+      "section_id": "section-009",
+      "section_character": "flowing_plateau",
+      "recommended_profile": "aggressive",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_impact_01",
+          "score": 0.825,
+          "tags": [
+            "aggressive",
+            "anthemic",
+            "hard_cut_friendly",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_lift_01",
+          "score": 0.741,
+          "tags": [
+            "anthemic",
+            "uplifting",
+            "hard_cut_friendly",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_impact_02",
+          "score": 0.838,
+          "tags": [
+            "aggressive",
+            "percussive",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.689,
+        "fft_activity_score": 0.97,
+        "section_payoff_score": 0.7
+      }
+    },
+    {
+      "id": "preset_window_010",
+      "start_s": 150.999,
+      "end_s": 156.746,
+      "section_id": "section-010",
+      "section_character": "breath_space",
+      "recommended_profile": "ambient",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_air_02",
+          "score": 0.957,
+          "tags": [
+            "ambient",
+            "release",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_lift_02",
+          "score": 0.85,
+          "tags": [
+            "uplifting",
+            "release",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_air_01",
+          "score": 0.963,
+          "tags": [
+            "ambient",
+            "dreamy",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.367,
+        "fft_activity_score": 0.472,
+        "section_payoff_score": 0.2
+      }
+    },
+    {
+      "id": "preset_window_011",
+      "start_s": 156.746,
+      "end_s": 162.307,
+      "section_id": "section-011",
+      "section_character": "breath_space",
+      "recommended_profile": "ambient",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_lift_02",
+          "score": 0.812,
+          "tags": [
+            "uplifting",
+            "release",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_air_01",
+          "score": 1.0,
+          "tags": [
+            "ambient",
+            "dreamy",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_air_02",
+          "score": 1.0,
+          "tags": [
+            "ambient",
+            "release",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.0,
+        "fft_activity_score": 0.01,
+        "section_payoff_score": 0.2
+      }
+    },
+    {
+      "id": "preset_window_012",
+      "start_s": 162.307,
+      "end_s": 177.9,
+      "section_id": "section-012",
+      "section_character": "breath_space",
+      "recommended_profile": "ambient",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_air_02",
+          "score": 0.961,
+          "tags": [
+            "ambient",
+            "release",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_air_01",
+          "score": 0.959,
+          "tags": [
+            "ambient",
+            "dreamy",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_lift_02",
+          "score": 0.844,
+          "tags": [
+            "uplifting",
+            "release",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.339,
+        "fft_activity_score": 0.492,
+        "section_payoff_score": 0.2
+      }
+    },
+    {
+      "id": "preset_window_013",
+      "start_s": 177.9,
+      "end_s": 193.852,
+      "section_id": "section-013",
+      "section_character": "release_tail",
+      "recommended_profile": "ambient",
+      "candidate_presets": [
+        {
+          "preset_id": "preset_air_02",
+          "score": 0.966,
+          "tags": [
+            "ambient",
+            "release",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_air_01",
+          "score": 0.895,
+          "tags": [
+            "ambient",
+            "dreamy",
+            "strobe_safe"
+          ]
+        },
+        {
+          "preset_id": "preset_lift_02",
+          "score": 0.764,
+          "tags": [
+            "uplifting",
+            "release",
+            "strobe_safe"
+          ]
+        }
+      ],
+      "reason": {
+        "energy_score": 0.461,
+        "fft_activity_score": 0.111,
+        "section_payoff_score": 0.16
+      }
+    }
+  ],
+  "transitions": [
+    {
+      "id": "transition_002",
+      "time_s": 15.232,
+      "from_preset_window_id": "preset_window_001",
+      "to_preset_window_id": "preset_window_002",
+      "transition_mode": "hard_cut",
+      "predicted_boundary": true,
+      "transient_confirmed": true,
+      "anchor_ref": "anchor_section-002_start",
+      "confidence": 0.768
+    },
+    {
+      "id": "transition_003",
+      "time_s": 30.209,
+      "from_preset_window_id": "preset_window_002",
+      "to_preset_window_id": "preset_window_003",
+      "transition_mode": "soft_blend",
+      "predicted_boundary": true,
+      "transient_confirmed": false,
+      "anchor_ref": "anchor_section-003_start",
+      "confidence": 0.473
+    },
+    {
+      "id": "transition_004",
+      "time_s": 59.838,
+      "from_preset_window_id": "preset_window_003",
+      "to_preset_window_id": "preset_window_004",
+      "transition_mode": "soft_blend",
+      "predicted_boundary": true,
+      "transient_confirmed": false,
+      "anchor_ref": "anchor_section-004_start",
+      "confidence": 0.333
+    },
+    {
+      "id": "transition_005",
+      "time_s": 74.606,
+      "from_preset_window_id": "preset_window_004",
+      "to_preset_window_id": "preset_window_005",
+      "transition_mode": "hard_cut",
+      "predicted_boundary": true,
+      "transient_confirmed": true,
+      "anchor_ref": "anchor_section-005_start",
+      "confidence": 0.779
+    },
+    {
+      "id": "transition_006",
+      "time_s": 88.131,
+      "from_preset_window_id": "preset_window_005",
+      "to_preset_window_id": "preset_window_006",
+      "transition_mode": "soft_blend",
+      "predicted_boundary": true,
+      "transient_confirmed": false,
+      "anchor_ref": "anchor_section-006_start",
+      "confidence": 0.683
+    },
+    {
+      "id": "transition_007",
+      "time_s": 103.851,
+      "from_preset_window_id": "preset_window_006",
+      "to_preset_window_id": "preset_window_007",
+      "transition_mode": "hard_cut",
+      "predicted_boundary": true,
+      "transient_confirmed": true,
+      "anchor_ref": "anchor_section-007_start",
+      "confidence": 0.783
+    },
+    {
+      "id": "transition_008",
+      "time_s": 118.619,
+      "from_preset_window_id": "preset_window_007",
+      "to_preset_window_id": "preset_window_008",
+      "transition_mode": "hard_cut",
+      "predicted_boundary": true,
+      "transient_confirmed": true,
+      "anchor_ref": "anchor_section-008_start",
+      "confidence": 0.876
+    },
+    {
+      "id": "transition_009",
+      "time_s": 133.863,
+      "from_preset_window_id": "preset_window_008",
+      "to_preset_window_id": "preset_window_009",
+      "transition_mode": "soft_blend",
+      "predicted_boundary": true,
+      "transient_confirmed": false,
+      "anchor_ref": "anchor_section-009_start",
+      "confidence": 0.687
+    },
+    {
+      "id": "transition_010",
+      "time_s": 150.999,
+      "from_preset_window_id": "preset_window_009",
+      "to_preset_window_id": "preset_window_010",
+      "transition_mode": "hard_cut",
+      "predicted_boundary": true,
+      "transient_confirmed": true,
+      "anchor_ref": "anchor_section-010_start",
+      "confidence": 0.588
+    },
+    {
+      "id": "transition_011",
+      "time_s": 156.746,
+      "from_preset_window_id": "preset_window_010",
+      "to_preset_window_id": "preset_window_011",
+      "transition_mode": "soft_blend",
+      "predicted_boundary": true,
+      "transient_confirmed": false,
+      "anchor_ref": "anchor_section-011_start",
+      "confidence": 0.272
+    },
+    {
+      "id": "transition_012",
+      "time_s": 162.307,
+      "from_preset_window_id": "preset_window_011",
+      "to_preset_window_id": "preset_window_012",
+      "transition_mode": "hard_cut",
+      "predicted_boundary": true,
+      "transient_confirmed": true,
+      "anchor_ref": "anchor_section-012_start",
+      "confidence": 0.593
+    },
+    {
+      "id": "transition_013",
+      "time_s": 177.9,
+      "from_preset_window_id": "preset_window_012",
+      "to_preset_window_id": "preset_window_013",
+      "transition_mode": "soft_blend",
+      "predicted_boundary": true,
+      "transient_confirmed": false,
+      "anchor_ref": "anchor_section-013_start",
+      "confidence": 0.283
+    }
+  ]
+}

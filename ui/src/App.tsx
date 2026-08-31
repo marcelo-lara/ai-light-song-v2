@@ -128,6 +128,24 @@ export function App(): React.JSX.Element {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const laneState = useLaneState();
 
+  // Deep-link: `/?song=<name>` selects a song on load, and the current
+  // selection is mirrored back into the URL so a reload restores it. This is
+  // also the entry point the visual-regression suite drives (`gotoSong`).
+  useEffect(() => {
+    const initial = new URLSearchParams(window.location.search).get("song");
+    if (initial) {
+      setSong(initial);
+      setActiveView("timeline");
+    }
+  }, []);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (song) url.searchParams.set("song", song);
+    else url.searchParams.delete("song");
+    window.history.replaceState(null, "", url);
+  }, [song]);
+
   useEffect(() => {
     let cancelled = false;
     discoverSongs()
@@ -493,6 +511,48 @@ export function App(): React.JSX.Element {
     laneArtifactStatus,
   });
 
+  // --- Test readiness marker (regression guide §5.2) ----------------------
+  // `data-ui-ready` is "0" during any song load / full re-layout and flips to
+  // "1" one paint after a fully-settled song's visible lanes have had a chance
+  // to draw. `data-ui-loading` carries the in-flight artifact count.
+  const inFlightCount = useMemo(
+    () =>
+      TIMELINE_KEYS.reduce(
+        (n, key) => n + (artifacts[key].status === "loading" ? 1 : 0),
+        0,
+      ),
+    [artifacts],
+  );
+
+  const canRenderTimeline =
+    !!song && songLoadState.kind !== "loading" && songLoadState.kind !== "fatal";
+
+  useEffect(() => {
+    document.documentElement.dataset.uiLoading = String(inFlightCount);
+  }, [inFlightCount]);
+
+  // Clear the marker at the start of every song load / full re-layout.
+  useEffect(() => {
+    document.documentElement.dataset.uiReady = "0";
+  }, [song, pxPerBar, viewportWidth]);
+
+  useEffect(() => {
+    if (!canRenderTimeline || inFlightCount > 0) {
+      document.documentElement.dataset.uiReady = "0";
+      return;
+    }
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        document.documentElement.dataset.uiReady = "1";
+      });
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [canRenderTimeline, inFlightCount, pxPerBar, viewportWidth, activeView]);
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -501,6 +561,7 @@ export function App(): React.JSX.Element {
             type="button"
             className="tp"
             style={{ fontSize: 18 }}
+            data-testid="burger-toggle"
             aria-label="Toggle menu"
             aria-pressed={drawerOpen}
             onClick={() => setDrawerOpen((open) => !open)}
@@ -570,7 +631,13 @@ export function App(): React.JSX.Element {
 
       <main className="app-main">
         {drawerOpen && (
-          <nav className="app-drawer" aria-label="Primary" ref={drawerRef}>
+          <nav
+            className="app-drawer"
+            aria-label="Primary"
+            data-testid="left-panel"
+            data-open={drawerOpen ? "true" : "false"}
+            ref={drawerRef}
+          >
             <div>
               <div className="app-drawer__section-label">Analysis</div>
               <div className="nav">
@@ -650,6 +717,7 @@ export function App(): React.JSX.Element {
                   onToggleVisible={laneState.toggleVisible}
                   onToggleExpanded={laneState.toggleExpanded}
                   onShowAll={laneState.showAll}
+                  onHideAll={laneState.hideAll}
                   onReset={laneState.resetToDefaults}
                   onClose={() => setLaneListOpen(false)}
                 />
@@ -705,6 +773,7 @@ export function App(): React.JSX.Element {
           <button
             type="button"
             className="zic"
+            data-testid="zoom-out"
             aria-label="Zoom out"
             onClick={() => setPxPerBar((v) => zoomOutPxPerBar(v))}
           >
@@ -722,13 +791,20 @@ export function App(): React.JSX.Element {
           <button
             type="button"
             className="zic"
+            data-testid="zoom-in"
             aria-label="Zoom in"
             onClick={() => setPxPerBar((v) => zoomInPxPerBar(v))}
           >
             <i className="ph ph-magnifying-glass-plus" />
           </button>
           <span className="app-footer__ppb">{ppbLabel(pxPerBar)}</span>
-          <button type="button" className="zbtn" onClick={fitToWidth}>
+          <button
+            type="button"
+            className="zbtn"
+            data-testid="fit-to-width"
+            aria-label="Fit to width"
+            onClick={fitToWidth}
+          >
             <i className="ph ph-arrows-out-line-horizontal" />
             Fit to width
           </button>

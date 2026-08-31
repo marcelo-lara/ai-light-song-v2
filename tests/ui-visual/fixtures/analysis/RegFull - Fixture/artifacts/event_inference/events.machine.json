@@ -1,0 +1,5483 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "source_song_path": "/data/songs/Armin - Revolution.mp3",
+    "event_features_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/features.json",
+    "rule_candidates_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/rule_candidates.json",
+    "identifier_hints_file": "/data/analysis/Armin - Revolution/artifacts/energy_summary/hints.json",
+    "symbolic_layer_file": "/data/analysis/Armin - Revolution/artifacts/layer_b_symbolic.json",
+    "sections_file": "/data/analysis/Armin - Revolution/artifacts/section_segmentation/sections.json",
+    "lyric_reference_file": "/data/analysis/Armin - Revolution/reference/moises/lyrics.json",
+    "engine": "deterministic-event-classifier-v1"
+  },
+  "events": [
+    {
+      "id": "machine_energy_reset_001",
+      "type": "energy_reset",
+      "start_time": 1.393197,
+      "end_time": 1.857596,
+      "confidence": 0.972277,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 1.393197,
+            "end_time": 1.857596,
+            "ref": "beats:3-3",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.0,
+            "end_time": 15.23229,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -1.620304,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.180929,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.902149,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.972277,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_build_002",
+      "type": "build",
+      "start_time": 3.703583,
+      "end_time": 4.156372,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Rising short-window energy and harmonic tension indicate an obvious build phase.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 3.703583,
+            "end_time": 4.156372,
+            "ref": "beats:8-8",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.0,
+            "end_time": 15.23229,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_mean",
+            "value": 1.443616,
+            "threshold": 0.8009668058175147,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "harmonic_tension_mean",
+            "value": 0.967842,
+            "threshold": 0.8042607331094108,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Rising short-window energy and harmonic tension indicate an obvious build phase."
+        ],
+        "rule_names": [
+          "build_energy_rise"
+        ]
+      },
+      "notes": "Merged consecutive build anchors to preserve the multi-beat rise window.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_003",
+      "type": "energy_reset",
+      "start_time": 4.156372,
+      "end_time": 4.620771,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 4.156372,
+            "end_time": 4.620771,
+            "ref": "beats:9-9",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.0,
+            "end_time": 15.23229,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -3.01889,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.951036,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.830493,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_004",
+      "type": "energy_reset",
+      "start_time": 7.859954,
+      "end_time": 8.312743,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 7.859954,
+            "end_time": 8.312743,
+            "ref": "beats:17-17",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.0,
+            "end_time": 15.23229,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -1.932983,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -2.041258,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.813193,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_005",
+      "type": "energy_reset",
+      "start_time": 13.397914,
+      "end_time": 13.862312,
+      "confidence": 0.731872,
+      "intensity": 0.818956,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 13.397914,
+            "end_time": 13.862312,
+            "ref": "beats:29-29",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.0,
+            "end_time": 15.23229,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.818956,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.180926,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.82853,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.731872,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_tension_hold_006",
+      "type": "tension_hold",
+      "start_time": 15.23229,
+      "end_time": 30.000181,
+      "confidence": 0.659174,
+      "intensity": 0.740498,
+      "evidence": {
+        "summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 15.23229,
+            "end_time": 30.000181,
+            "ref": "beats:33-64",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 15.23229,
+            "end_time": 30.209161,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "tension_mean",
+            "value": 0.740498,
+            "threshold": 0.6998974205427794,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Sustained harmonic tension stays elevated across the section without a qualifying release."
+        ],
+        "rule_names": [
+          "tension_hold_section_state"
+        ]
+      },
+      "notes": "Held-state candidate preserved even when overlapping build windows exist.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "instrumental_bed",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_impact_hit_007",
+      "type": "impact_hit",
+      "start_time": 15.696689,
+      "end_time": 16.161089,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Accent intensity crosses the impact threshold on this beat.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 15.696689,
+            "end_time": 16.161089,
+            "ref": "beats:34-34",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 15.23229,
+            "end_time": 30.209161,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "accent_intensity",
+            "value": 4.216479,
+            "threshold": 0.65,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "impact_support_ratio",
+            "value": 1.304687,
+            "threshold": 1.15,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Accent intensity crosses the impact threshold on this beat."
+        ],
+        "rule_names": [
+          "impact_accent_peak"
+        ]
+      },
+      "notes": "Impact hits remain single-beat candidates.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "instrumental_bed",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_breakdown_008",
+      "type": "breakdown",
+      "start_time": 18.924263,
+      "end_time": 19.388662,
+      "confidence": 0.817576,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 18.924263,
+            "end_time": 19.388662,
+            "ref": "beats:41-41",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 15.23229,
+            "end_time": 30.209161,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -1.067521,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.2366,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "instrumental_bed",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_impact_hit_009",
+      "type": "impact_hit",
+      "start_time": 25.855419,
+      "end_time": 26.308208,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Accent intensity crosses the impact threshold on this beat.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 25.855419,
+            "end_time": 26.308208,
+            "ref": "beats:56-56",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 15.23229,
+            "end_time": 30.209161,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "accent_intensity",
+            "value": 4.328087,
+            "threshold": 0.65,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "impact_support_ratio",
+            "value": 1.255974,
+            "threshold": 1.15,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Accent intensity crosses the impact threshold on this beat."
+        ],
+        "rule_names": [
+          "impact_accent_peak"
+        ]
+      },
+      "notes": "Impact hits remain single-beat candidates.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "instrumental_bed",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_010",
+      "type": "energy_reset",
+      "start_time": 29.547392,
+      "end_time": 30.000181,
+      "confidence": 0.982554,
+      "intensity": 0.785483,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 29.547392,
+            "end_time": 30.000181,
+            "ref": "beats:64-64",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 15.23229,
+            "end_time": 30.209161,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.785483,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -1.484546,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "instrumental_bed",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.84675,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.982554,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_tension_hold_011",
+      "type": "tension_hold",
+      "start_time": 30.000181,
+      "end_time": 59.837822,
+      "confidence": 0.672921,
+      "intensity": 0.779775,
+      "evidence": {
+        "summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 30.000181,
+            "end_time": 59.837822,
+            "ref": "beats:65-128",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 30.209161,
+            "end_time": 59.837822,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "tension_mean",
+            "value": 0.779775,
+            "threshold": 0.6998974205427794,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Sustained harmonic tension stays elevated across the section without a qualifying release."
+        ],
+        "rule_names": [
+          "tension_hold_section_state"
+        ]
+      },
+      "notes": "Held-state candidate preserved even when overlapping build windows exist.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "vocal_spotlight",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_012",
+      "type": "energy_reset",
+      "start_time": 30.92898,
+      "end_time": 31.393377,
+      "confidence": 1.0,
+      "intensity": 0.921209,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 30.92898,
+            "end_time": 31.393377,
+            "ref": "beats:67-67",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 30.209161,
+            "end_time": 59.837822,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.921209,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -2.89486,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "vocal_spotlight",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.812686,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_013",
+      "type": "energy_reset",
+      "start_time": 32.786575,
+      "end_time": 33.250973,
+      "confidence": 0.952927,
+      "intensity": 0.952702,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 32.786575,
+            "end_time": 33.250973,
+            "ref": "beats:71-71",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 30.209161,
+            "end_time": 59.837822,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.952702,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -1.085582,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "vocal_spotlight",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.759114,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.952927,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_014",
+      "type": "energy_reset",
+      "start_time": 36.47855,
+      "end_time": 36.942947,
+      "confidence": 1.0,
+      "intensity": 0.791843,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 36.47855,
+            "end_time": 36.942947,
+            "ref": "beats:79-79",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 30.209161,
+            "end_time": 59.837822,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.791843,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -2.713902,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "vocal_spotlight",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.817974,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_015",
+      "type": "energy_reset",
+      "start_time": 38.312923,
+      "end_time": 38.777325,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 38.312923,
+            "end_time": 38.777325,
+            "ref": "beats:83-83",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 30.209161,
+            "end_time": 59.837822,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -1.128345,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -2.259301,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "vocal_spotlight",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.751266,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_016",
+      "type": "energy_reset",
+      "start_time": 40.170521,
+      "end_time": 40.634918,
+      "confidence": 1.0,
+      "intensity": 0.768333,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 40.170521,
+            "end_time": 40.634918,
+            "ref": "beats:87-87",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 30.209161,
+            "end_time": 59.837822,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.768333,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -2.533006,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "vocal_spotlight",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.755103,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_017",
+      "type": "energy_reset",
+      "start_time": 46.16127,
+      "end_time": 46.625668,
+      "confidence": 0.908259,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 46.16127,
+            "end_time": 46.625668,
+            "ref": "beats:100-100",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 30.209161,
+            "end_time": 59.837822,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -1.286299,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.361845,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "vocal_spotlight",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.777336,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.908259,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_breakdown_018",
+      "type": "breakdown",
+      "start_time": 55.576962,
+      "end_time": 56.52898,
+      "confidence": 0.781819,
+      "intensity": 0.988389,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 55.576962,
+            "end_time": 56.52898,
+            "ref": "beats:120-121",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 30.209161,
+            "end_time": 59.837822,
+            "ref": "section-003",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.988389,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.176513,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "vocal_spotlight",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_tension_hold_019",
+      "type": "tension_hold",
+      "start_time": 59.837822,
+      "end_time": 74.605713,
+      "confidence": 0.650449,
+      "intensity": 0.715569,
+      "evidence": {
+        "summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 59.837822,
+            "end_time": 74.605713,
+            "ref": "beats:129-160",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 59.837822,
+            "end_time": 74.605713,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "tension_mean",
+            "value": 0.715569,
+            "threshold": 0.6998974205427794,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Sustained harmonic tension stays elevated across the section without a qualifying release."
+        ],
+        "rule_names": [
+          "tension_hold_section_state"
+        ]
+      },
+      "notes": "Held-state candidate preserved even when overlapping build windows exist.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "breath_space",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_020",
+      "type": "energy_reset",
+      "start_time": 109.389206,
+      "end_time": 109.853607,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 109.389206,
+            "end_time": 109.853607,
+            "ref": "beats:236-236",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 103.851247,
+            "end_time": 118.619138,
+            "ref": "section-007",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -2.028204,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -1.447425,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "instrumental_bed",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.934135,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_build_021",
+      "type": "build",
+      "start_time": 110.77079,
+      "end_time": 111.223579,
+      "confidence": 0.985579,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Rising short-window energy and harmonic tension indicate an obvious build phase.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 110.77079,
+            "end_time": 111.223579,
+            "ref": "beats:239-239",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 103.851247,
+            "end_time": 118.619138,
+            "ref": "section-007",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_mean",
+            "value": 1.060716,
+            "threshold": 0.8009668058175147,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "harmonic_tension_mean",
+            "value": 0.901332,
+            "threshold": 0.8042607331094108,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Rising short-window energy and harmonic tension indicate an obvious build phase."
+        ],
+        "rule_names": [
+          "build_energy_rise"
+        ]
+      },
+      "notes": "Merged consecutive build anchors to preserve the multi-beat rise window.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "instrumental_bed",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_build_022",
+      "type": "build",
+      "start_time": 111.687981,
+      "end_time": 112.152382,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Rising short-window energy and harmonic tension indicate an obvious build phase.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 111.687981,
+            "end_time": 112.152382,
+            "ref": "beats:241-241",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 103.851247,
+            "end_time": 118.619138,
+            "ref": "section-007",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_mean",
+            "value": 1.458978,
+            "threshold": 0.8009668058175147,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "harmonic_tension_mean",
+            "value": 0.901332,
+            "threshold": 0.8042607331094108,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Rising short-window energy and harmonic tension indicate an obvious build phase."
+        ],
+        "rule_names": [
+          "build_energy_rise"
+        ]
+      },
+      "notes": "Merged consecutive build anchors to preserve the multi-beat rise window.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "instrumental_bed",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_build_023",
+      "type": "build",
+      "start_time": 116.308754,
+      "end_time": 116.773148,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Rising short-window energy and harmonic tension indicate an obvious build phase.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 116.308754,
+            "end_time": 116.773148,
+            "ref": "beats:251-251",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 103.851247,
+            "end_time": 118.619138,
+            "ref": "section-007",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_mean",
+            "value": 1.19223,
+            "threshold": 0.8009668058175147,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "harmonic_tension_mean",
+            "value": 1.0,
+            "threshold": 0.8042607331094108,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Rising short-window energy and harmonic tension indicate an obvious build phase."
+        ],
+        "rule_names": [
+          "build_energy_rise"
+        ]
+      },
+      "notes": "Merged consecutive build anchors to preserve the multi-beat rise window.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "instrumental_bed",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_024",
+      "type": "energy_reset",
+      "start_time": 118.166344,
+      "end_time": 118.630745,
+      "confidence": 0.763377,
+      "intensity": 0.682713,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 118.166344,
+            "end_time": 118.630745,
+            "ref": "beats:255-255",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 103.851247,
+            "end_time": 118.619138,
+            "ref": "section-007",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.682713,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.542817,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "instrumental_bed",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.78321,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.763377,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_025",
+      "type": "energy_reset",
+      "start_time": 128.777863,
+      "end_time": 129.242264,
+      "confidence": 0.737276,
+      "intensity": 0.716353,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 128.777863,
+            "end_time": 129.242264,
+            "ref": "beats:278-278",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 118.619138,
+            "end_time": 133.863037,
+            "ref": "section-008",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.716353,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.361852,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "groove_plateau",
+      "section_id": "section-008",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.781006,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.737276,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_026",
+      "type": "energy_reset",
+      "start_time": 132.028656,
+      "end_time": 132.493057,
+      "confidence": 0.942942,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 132.028656,
+            "end_time": 132.493057,
+            "ref": "beats:285-285",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 118.619138,
+            "end_time": 133.863037,
+            "ref": "section-008",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -1.160666,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.723713,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "groove_plateau",
+      "section_id": "section-008",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.76173,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.942942,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_tension_hold_027",
+      "type": "tension_hold",
+      "start_time": 150.999359,
+      "end_time": 156.746307,
+      "confidence": 0.664162,
+      "intensity": 0.754749,
+      "evidence": {
+        "summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 150.999359,
+            "end_time": 156.746307,
+            "ref": "beats:325-336",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 150.999359,
+            "end_time": 156.746307,
+            "ref": "section-010",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "tension_mean",
+            "value": 0.754749,
+            "threshold": 0.6998974205427794,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Sustained harmonic tension stays elevated across the section without a qualifying release."
+        ],
+        "rule_names": [
+          "tension_hold_section_state"
+        ]
+      },
+      "notes": "Held-state candidate preserved even when overlapping build windows exist.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "breath_space",
+      "section_id": "section-010",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_breakdown_028",
+      "type": "breakdown",
+      "start_time": 151.962997,
+      "end_time": 152.438995,
+      "confidence": 0.721322,
+      "intensity": 0.669067,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 151.962997,
+            "end_time": 152.438995,
+            "ref": "beats:327-327",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 150.999359,
+            "end_time": 156.746307,
+            "ref": "section-010",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.669067,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.353007,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "breath_space",
+      "section_id": "section-010",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_tension_hold_029",
+      "type": "tension_hold",
+      "start_time": 156.746307,
+      "end_time": 162.30748,
+      "confidence": 0.713043,
+      "intensity": 0.89441,
+      "evidence": {
+        "summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 156.746307,
+            "end_time": 162.30748,
+            "ref": "beats:337-348",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 156.746307,
+            "end_time": 162.30748,
+            "ref": "section-011",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "tension_mean",
+            "value": 0.89441,
+            "threshold": 0.6998974205427794,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Sustained harmonic tension stays elevated across the section without a qualifying release."
+        ],
+        "rule_names": [
+          "tension_hold_section_state"
+        ]
+      },
+      "notes": "Held-state candidate preserved even when overlapping build windows exist.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "breath_space",
+      "section_id": "section-011",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_030",
+      "type": "energy_reset",
+      "start_time": 176.251068,
+      "end_time": 176.727066,
+      "confidence": 0.838799,
+      "intensity": 0.70764,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 176.251068,
+            "end_time": 176.727066,
+            "ref": "beats:379-379",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 162.30748,
+            "end_time": 177.899683,
+            "ref": "section-012",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.70764,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.882533,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "breath_space",
+      "section_id": "section-012",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 1.0,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.838799,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_031",
+      "type": "energy_reset",
+      "start_time": 179.095505,
+      "end_time": 179.559906,
+      "confidence": 0.867262,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 179.095505,
+            "end_time": 179.559906,
+            "ref": "beats:385-385",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 177.899683,
+            "end_time": 193.851791,
+            "ref": "section-013",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -1.270253,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.180928,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.897774,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.867262,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_032",
+      "type": "energy_reset",
+      "start_time": 180.477097,
+      "end_time": 180.941498,
+      "confidence": 0.784582,
+      "intensity": 0.846199,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 180.477097,
+            "end_time": 180.941498,
+            "ref": "beats:388-388",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 177.899683,
+            "end_time": 193.851791,
+            "ref": "section-013",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.846199,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.403612,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.801073,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 0.784582,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_033",
+      "type": "energy_reset",
+      "start_time": 184.180679,
+      "end_time": 184.645081,
+      "confidence": 1.0,
+      "intensity": 0.832025,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 184.180679,
+            "end_time": 184.645081,
+            "ref": "beats:396-396",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 177.899683,
+            "end_time": 193.851791,
+            "ref": "section-013",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.832025,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -2.713925,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.805436,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_034",
+      "type": "energy_reset",
+      "start_time": 186.038269,
+      "end_time": 186.514282,
+      "confidence": 1.0,
+      "intensity": 0.891938,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 186.038269,
+            "end_time": 186.514282,
+            "ref": "beats:400-400",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 177.899683,
+            "end_time": 193.851791,
+            "ref": "section-013",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.891938,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -1.487147,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.792468,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "breakdown",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_breakdown_035",
+      "type": "breakdown",
+      "start_time": 187.930695,
+      "end_time": 188.406708,
+      "confidence": 0.912459,
+      "intensity": 0.717733,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 187.930695,
+            "end_time": 188.406708,
+            "ref": "beats:404-404",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 177.899683,
+            "end_time": 193.851791,
+            "ref": "section-013",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.717733,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -1.235697,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_breakdown_036",
+      "type": "breakdown",
+      "start_time": 191.878098,
+      "end_time": 192.377319,
+      "confidence": 0.713944,
+      "intensity": 0.655433,
+      "evidence": {
+        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 191.878098,
+            "end_time": 192.377319,
+            "ref": "beats:412-412",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 177.899683,
+            "end_time": 193.851791,
+            "ref": "section-013",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "energy_delta",
+            "value": -0.655433,
+            "threshold": -0.6457480055083928,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "density_delta",
+            "value": -0.336571,
+            "threshold": -0.15,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Energy and symbolic density both drop sharply across this window."
+        ],
+        "rule_names": [
+          "breakdown_dual_drop"
+        ]
+      },
+      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_037",
+      "type": "pause_break",
+      "start_time": 192.876556,
+      "end_time": 193.38739,
+      "confidence": 0.552167,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 192.876556,
+            "end_time": 193.38739,
+            "ref": "beats:414-414",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 177.899683,
+            "end_time": 193.851791,
+            "ref": "section-013",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 0.510834,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -2.499112,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_038",
+      "type": "pause_break",
+      "start_time": 193.38739,
+      "end_time": 193.851791,
+      "confidence": 0.645047,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 193.38739,
+            "end_time": 193.851791,
+            "ref": "beats:415-415",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 177.899683,
+            "end_time": 193.851791,
+            "ref": "section-013",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 0.975235,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -2.580111,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_001",
+      "type": "layer_remove",
+      "start_time": 4.156372,
+      "end_time": 4.620771,
+      "confidence": 0.830414,
+      "intensity": 0.951036,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 4.156372,
+            "end_time": 4.620771,
+            "ref": "beats:9-9",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -0.951036,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -3.01889,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_001",
+      "type": "layer_add",
+      "start_time": 6.942766,
+      "end_time": 7.407166,
+      "confidence": 0.956599,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 6.942766,
+            "end_time": 7.407166,
+            "ref": "beats:15-15",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.447426,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.934651,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_002",
+      "type": "layer_remove",
+      "start_time": 7.859954,
+      "end_time": 8.312743,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 7.859954,
+            "end_time": 8.312743,
+            "ref": "beats:17-17",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -2.041258,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -1.932983,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_002",
+      "type": "layer_add",
+      "start_time": 11.099138,
+      "end_time": 11.563538,
+      "confidence": 0.639973,
+      "intensity": 0.542781,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 11.099138,
+            "end_time": 11.563538,
+            "ref": "beats:24-24",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.542781,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.554824,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_003",
+      "type": "layer_remove",
+      "start_time": 16.625486,
+      "end_time": 17.089886,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 16.625486,
+            "end_time": 17.089886,
+            "ref": "beats:36-36",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -1.628385,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.093433,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_004",
+      "type": "layer_remove",
+      "start_time": 20.317459,
+      "end_time": 20.781858,
+      "confidence": 0.884235,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 20.317459,
+            "end_time": 20.781858,
+            "ref": "beats:44-44",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -1.085587,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.098882,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_003",
+      "type": "layer_add",
+      "start_time": 23.080635,
+      "end_time": 23.545034,
+      "confidence": 0.829951,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 23.080635,
+            "end_time": 23.545034,
+            "ref": "beats:50-50",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.085574,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.597825,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_005",
+      "type": "layer_remove",
+      "start_time": 24.473831,
+      "end_time": 24.938231,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 24.473831,
+            "end_time": 24.938231,
+            "ref": "beats:53-53",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -1.990221,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.25309,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_006",
+      "type": "layer_remove",
+      "start_time": 30.92898,
+      "end_time": 31.393377,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 30.92898,
+            "end_time": 31.393377,
+            "ref": "beats:67-67",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -2.89486,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.921209,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_007",
+      "type": "layer_remove",
+      "start_time": 36.47855,
+      "end_time": 36.942947,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 36.47855,
+            "end_time": 36.942947,
+            "ref": "beats:79-79",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -2.713902,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.791843,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_004",
+      "type": "layer_add",
+      "start_time": 39.241722,
+      "end_time": 39.706123,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 39.241722,
+            "end_time": 39.706123,
+            "ref": "beats:85-85",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 2.894837,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 1.076115,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_008",
+      "type": "layer_remove",
+      "start_time": 40.170521,
+      "end_time": 40.634918,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 40.170521,
+            "end_time": 40.634918,
+            "ref": "beats:87-87",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -2.533006,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.768333,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_005",
+      "type": "layer_add",
+      "start_time": 45.24408,
+      "end_time": 45.696869,
+      "confidence": 0.597757,
+      "intensity": 0.422164,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 45.24408,
+            "end_time": 45.696869,
+            "ref": "beats:98-98",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.422164,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.536785,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_009",
+      "type": "layer_remove",
+      "start_time": 48.018864,
+      "end_time": 48.483265,
+      "confidence": 0.667118,
+      "intensity": 0.542796,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 48.018864,
+            "end_time": 48.483265,
+            "ref": "beats:104-104",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -0.542796,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.341578,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_006",
+      "type": "layer_add",
+      "start_time": 48.483265,
+      "end_time": 48.947662,
+      "confidence": 0.703305,
+      "intensity": 0.72373,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 48.483265,
+            "end_time": 48.947662,
+            "ref": "beats:105-105",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.72373,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 1.249441,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_010",
+      "type": "layer_remove",
+      "start_time": 50.816872,
+      "end_time": 51.292877,
+      "confidence": 0.803027,
+      "intensity": 0.882567,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 50.816872,
+            "end_time": 51.292877,
+            "ref": "beats:110-110",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -0.882567,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.132438,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_011",
+      "type": "layer_remove",
+      "start_time": 53.196915,
+      "end_time": 53.672924,
+      "confidence": 0.944243,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 53.196915,
+            "end_time": 53.672924,
+            "ref": "beats:115-115",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -1.235607,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.634863,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_007",
+      "type": "layer_add",
+      "start_time": 61.231018,
+      "end_time": 61.683807,
+      "confidence": 0.662704,
+      "intensity": 0.607727,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 61.231018,
+            "end_time": 61.683807,
+            "ref": "beats:132-132",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.607727,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.539461,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_012",
+      "type": "layer_remove",
+      "start_time": 61.683807,
+      "end_time": 62.136597,
+      "confidence": 0.821138,
+      "intensity": 0.927845,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 61.683807,
+            "end_time": 62.136597,
+            "ref": "beats:133-133",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -0.927845,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.362893,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_008",
+      "type": "layer_add",
+      "start_time": 64.922989,
+      "end_time": 65.375778,
+      "confidence": 0.664323,
+      "intensity": 0.612352,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 64.922989,
+            "end_time": 65.375778,
+            "ref": "beats:140-140",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.612352,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.668059,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_013",
+      "type": "layer_remove",
+      "start_time": 70.008163,
+      "end_time": 70.472565,
+      "confidence": 0.9566,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 70.008163,
+            "end_time": 70.472565,
+            "ref": "beats:151-151",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -1.2665,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.359113,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_009",
+      "type": "layer_add",
+      "start_time": 70.472565,
+      "end_time": 70.925346,
+      "confidence": 0.789378,
+      "intensity": 0.96965,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 70.472565,
+            "end_time": 70.925346,
+            "ref": "beats:152-152",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.96965,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.929046,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_010",
+      "type": "layer_add",
+      "start_time": 74.152924,
+      "end_time": 74.605713,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 74.152924,
+            "end_time": 74.605713,
+            "ref": "beats:160-160",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.869603,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.069465,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_014",
+      "type": "layer_remove",
+      "start_time": 78.309296,
+      "end_time": 78.762085,
+      "confidence": 0.67268,
+      "intensity": 0.5567,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 78.309296,
+            "end_time": 78.762085,
+            "ref": "beats:169-169",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -0.5567,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.285747,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-005",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_011",
+      "type": "layer_add",
+      "start_time": 86.703308,
+      "end_time": 87.179321,
+      "confidence": 0.697105,
+      "intensity": 0.706014,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 86.703308,
+            "end_time": 87.179321,
+            "ref": "beats:187-187",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.706014,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.12466,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-005",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_012",
+      "type": "layer_add",
+      "start_time": 89.071747,
+      "end_time": 89.53614,
+      "confidence": 0.829973,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 89.071747,
+            "end_time": 89.53614,
+            "ref": "beats:192-192",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.085638,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.078455,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-006",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_015",
+      "type": "layer_remove",
+      "start_time": 98.313286,
+      "end_time": 98.777687,
+      "confidence": 0.884228,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 98.313286,
+            "end_time": 98.777687,
+            "ref": "beats:212-212",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -1.085569,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.17616,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-006",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_013",
+      "type": "layer_add",
+      "start_time": 98.777687,
+      "end_time": 99.242081,
+      "confidence": 0.703319,
+      "intensity": 0.72377,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 98.777687,
+            "end_time": 99.242081,
+            "ref": "beats:213-213",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.72377,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.21939,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-006",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_014",
+      "type": "layer_add",
+      "start_time": 104.791656,
+      "end_time": 105.244446,
+      "confidence": 0.752015,
+      "intensity": 0.8629,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 104.791656,
+            "end_time": 105.244446,
+            "ref": "beats:226-226",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.8629,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.395297,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_016",
+      "type": "layer_remove",
+      "start_time": 105.244446,
+      "end_time": 105.708839,
+      "confidence": 0.939873,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 105.244446,
+            "end_time": 105.708839,
+            "ref": "beats:227-227",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -1.224682,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.25585,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_017",
+      "type": "layer_remove",
+      "start_time": 107.554825,
+      "end_time": 108.019226,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 107.554825,
+            "end_time": 108.019226,
+            "ref": "beats:232-232",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -2.533068,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.923442,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_015",
+      "type": "layer_add",
+      "start_time": 108.472015,
+      "end_time": 108.924805,
+      "confidence": 0.969588,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 108.472015,
+            "end_time": 108.924805,
+            "ref": "beats:234-234",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.484538,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.528156,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_016",
+      "type": "layer_add",
+      "start_time": 114.474373,
+      "end_time": 114.938774,
+      "confidence": 0.893274,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 114.474373,
+            "end_time": 114.938774,
+            "ref": "beats:247-247",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.266497,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.636159,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_017",
+      "type": "layer_add",
+      "start_time": 118.630745,
+      "end_time": 119.095146,
+      "confidence": 0.766624,
+      "intensity": 0.904641,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 118.630745,
+            "end_time": 119.095146,
+            "ref": "beats:256-256",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.904641,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.489055,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-008",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_018",
+      "type": "layer_add",
+      "start_time": 120.92952,
+      "end_time": 121.393921,
+      "confidence": 0.703295,
+      "intensity": 0.723699,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 120.92952,
+            "end_time": 121.393921,
+            "ref": "beats:261-261",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.723699,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.059324,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-008",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_019",
+      "type": "layer_add",
+      "start_time": 124.157097,
+      "end_time": 124.621498,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 124.157097,
+            "end_time": 124.621498,
+            "ref": "beats:268-268",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.758242,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.563992,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-008",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_018",
+      "type": "layer_remove",
+      "start_time": 128.313461,
+      "end_time": 128.777863,
+      "confidence": 0.594762,
+      "intensity": 0.361905,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 128.313461,
+            "end_time": 128.777863,
+            "ref": "beats:277-277",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -0.361905,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.413972,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-008",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_019",
+      "type": "layer_remove",
+      "start_time": 135.697418,
+      "end_time": 136.161804,
+      "confidence": 0.884197,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 135.697418,
+            "end_time": 136.161804,
+            "ref": "beats:293-293",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -1.085493,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.337605,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-009",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_020",
+      "type": "layer_add",
+      "start_time": 136.626205,
+      "end_time": 137.090607,
+      "confidence": 0.893271,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 136.626205,
+            "end_time": 137.090607,
+            "ref": "beats:295-295",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.266488,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.079139,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-009",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_021",
+      "type": "layer_add",
+      "start_time": 141.71138,
+      "end_time": 142.175781,
+      "confidence": 0.829949,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 141.71138,
+            "end_time": 142.175781,
+            "ref": "beats:306-306",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.085569,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.231212,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-009",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_022",
+      "type": "layer_add",
+      "start_time": 144.184311,
+      "end_time": 144.695145,
+      "confidence": 0.853016,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 144.184311,
+            "end_time": 144.695145,
+            "ref": "beats:311-311",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.151473,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.057103,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-009",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_023",
+      "type": "layer_add",
+      "start_time": 154.366257,
+      "end_time": 154.84227,
+      "confidence": 0.953068,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 154.366257,
+            "end_time": 154.84227,
+            "ref": "beats:332-332",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.437336,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.222811,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-010",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_020",
+      "type": "layer_remove",
+      "start_time": 154.84227,
+      "end_time": 155.318268,
+      "confidence": 0.873617,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 154.84227,
+            "end_time": 155.318268,
+            "ref": "beats:333-333",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -1.059042,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.255767,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-010",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_021",
+      "type": "layer_remove",
+      "start_time": 159.521088,
+      "end_time": 159.985489,
+      "confidence": 0.618868,
+      "intensity": 0.422171,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 159.521088,
+            "end_time": 159.985489,
+            "ref": "beats:343-343",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -0.422171,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.223746,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-011",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_024",
+      "type": "layer_add",
+      "start_time": 168.309845,
+      "end_time": 168.762634,
+      "confidence": 0.709796,
+      "intensity": 0.742273,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 168.309845,
+            "end_time": 168.762634,
+            "ref": "beats:362-362",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 0.742273,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.408284,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-012",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_022",
+      "type": "layer_remove",
+      "start_time": 172.942215,
+      "end_time": 173.406616,
+      "confidence": 0.884228,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 172.942215,
+            "end_time": 173.406616,
+            "ref": "beats:372-372",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -1.085569,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.168455,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-012",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_025",
+      "type": "layer_add",
+      "start_time": 178.155106,
+      "end_time": 178.631104,
+      "confidence": 0.820694,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 178.155106,
+            "end_time": 178.631104,
+            "ref": "beats:383-383",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.059127,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.921737,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_023",
+      "type": "layer_remove",
+      "start_time": 180.477097,
+      "end_time": 180.941498,
+      "confidence": 0.611445,
+      "intensity": 0.403612,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 180.477097,
+            "end_time": 180.941498,
+            "ref": "beats:388-388",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -0.403612,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.846199,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_026",
+      "type": "layer_add",
+      "start_time": 183.251877,
+      "end_time": 183.716278,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 183.251877,
+            "end_time": 183.716278,
+            "ref": "beats:394-394",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 2.171138,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.538513,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_024",
+      "type": "layer_remove",
+      "start_time": 184.180679,
+      "end_time": 184.645081,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 184.180679,
+            "end_time": 184.645081,
+            "ref": "beats:396-396",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -2.713925,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.832025,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_add_027",
+      "type": "layer_add",
+      "start_time": 186.978683,
+      "end_time": 187.454697,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Symbolic density and energy rise together, indicating arrangement addition.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 186.978683,
+            "end_time": 187.454697,
+            "ref": "beats:402-402",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": 1.716588,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": 0.797017,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density increase with concurrent energy growth."
+        ],
+        "rule_names": [
+          "layer_add_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to gain material at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_layer_remove_025",
+      "type": "layer_remove",
+      "start_time": 192.377319,
+      "end_time": 192.876556,
+      "confidence": 0.651977,
+      "intensity": 0.504942,
+      "evidence": {
+        "summary": "Symbolic density and energy both step downward, indicating arrangement subtraction.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 192.377319,
+            "end_time": 192.876556,
+            "ref": "beats:413-413",
+            "metric_names": [
+              "density_delta",
+              "energy_delta"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "density_delta",
+            "value": -0.504942,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_delta",
+            "value": -0.398046,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Abrupt density decrease with concurrent energy loss."
+        ],
+        "rule_names": [
+          "layer_remove_delta_rule"
+        ]
+      },
+      "notes": "Arrangement appears to strip back at this beat.",
+      "created_by": "analyzer_event_classifier",
+      "section_id": "section-013",
+      "source_layers": [
+        "event_features"
+      ]
+    },
+    {
+      "id": "machine_instrumental_bed_001",
+      "type": "instrumental_bed",
+      "start_time": 15.23229,
+      "end_time": 30.209161,
+      "confidence": 0.931594,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 15.23229,
+            "end_time": 30.464581,
+            "ref": "beats:33-65",
+            "metric_names": [
+              "vocal_focus_score",
+              "percussion_focus_score",
+              "instrumental_focus_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "vocal_focus_mean",
+            "value": -0.24867,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "percussion_focus_mean",
+            "value": 0.16091,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "instrumental_focus_mean",
+            "value": 1.083631,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed."
+        ],
+        "rule_names": [
+          "instrumental_bed_section_context_rule"
+        ]
+      },
+      "notes": "Instrumental support is the main driver of this section rather than a lead-vocal phrase.",
+      "created_by": "analyzer_context_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_instrumental_bed_002",
+      "type": "instrumental_bed",
+      "start_time": 59.837822,
+      "end_time": 74.605713,
+      "confidence": 0.65331,
+      "intensity": 0.508275,
+      "evidence": {
+        "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 59.837822,
+            "end_time": 74.605713,
+            "ref": "beats:129-160",
+            "metric_names": [
+              "vocal_focus_score",
+              "percussion_focus_score",
+              "instrumental_focus_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "vocal_focus_mean",
+            "value": -0.421845,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "percussion_focus_mean",
+            "value": 0.003318,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "instrumental_focus_mean",
+            "value": 0.508275,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed."
+        ],
+        "rule_names": [
+          "instrumental_bed_section_context_rule"
+        ]
+      },
+      "notes": "Instrumental support is the main driver of this section rather than a lead-vocal phrase.",
+      "created_by": "analyzer_context_classifier",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_instrumental_bed_003",
+      "type": "instrumental_bed",
+      "start_time": 88.13134,
+      "end_time": 103.851247,
+      "confidence": 0.750886,
+      "intensity": 0.752215,
+      "evidence": {
+        "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 88.13134,
+            "end_time": 103.862854,
+            "ref": "beats:190-223",
+            "metric_names": [
+              "vocal_focus_score",
+              "percussion_focus_score",
+              "instrumental_focus_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "vocal_focus_mean",
+            "value": 0.020907,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "percussion_focus_mean",
+            "value": 0.124527,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "instrumental_focus_mean",
+            "value": 0.752215,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed."
+        ],
+        "rule_names": [
+          "instrumental_bed_section_context_rule"
+        ]
+      },
+      "notes": "Instrumental support is the main driver of this section rather than a lead-vocal phrase.",
+      "created_by": "analyzer_context_classifier",
+      "section_id": "section-006",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_instrumental_bed_004",
+      "type": "instrumental_bed",
+      "start_time": 103.851247,
+      "end_time": 118.619138,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 103.398453,
+            "end_time": 118.630745,
+            "ref": "beats:223-255",
+            "metric_names": [
+              "vocal_focus_score",
+              "percussion_focus_score",
+              "instrumental_focus_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "vocal_focus_mean",
+            "value": -0.309318,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "percussion_focus_mean",
+            "value": 0.229879,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "instrumental_focus_mean",
+            "value": 1.482866,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed."
+        ],
+        "rule_names": [
+          "instrumental_bed_section_context_rule"
+        ]
+      },
+      "notes": "Instrumental support is the main driver of this section rather than a lead-vocal phrase.",
+      "created_by": "analyzer_context_classifier",
+      "section_id": "section-007",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_instrumental_bed_005",
+      "type": "instrumental_bed",
+      "start_time": 118.619138,
+      "end_time": 133.863037,
+      "confidence": 0.672158,
+      "intensity": 0.555396,
+      "evidence": {
+        "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 118.166344,
+            "end_time": 133.863037,
+            "ref": "beats:255-288",
+            "metric_names": [
+              "vocal_focus_score",
+              "percussion_focus_score",
+              "instrumental_focus_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "vocal_focus_mean",
+            "value": 0.070112,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "percussion_focus_mean",
+            "value": 0.199428,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "instrumental_focus_mean",
+            "value": 0.555396,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed."
+        ],
+        "rule_names": [
+          "instrumental_bed_section_context_rule"
+        ]
+      },
+      "notes": "Instrumental support is the main driver of this section rather than a lead-vocal phrase.",
+      "created_by": "analyzer_context_classifier",
+      "section_id": "section-008",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_instrumental_bed_006",
+      "type": "instrumental_bed",
+      "start_time": 133.863037,
+      "end_time": 150.999359,
+      "confidence": 0.683936,
+      "intensity": 0.584839,
+      "evidence": {
+        "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 133.863037,
+            "end_time": 150.999359,
+            "ref": "beats:289-324",
+            "metric_names": [
+              "vocal_focus_score",
+              "percussion_focus_score",
+              "instrumental_focus_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "vocal_focus_mean",
+            "value": 0.057325,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "percussion_focus_mean",
+            "value": 0.584839,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "instrumental_focus_mean",
+            "value": 0.535995,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed."
+        ],
+        "rule_names": [
+          "instrumental_bed_section_context_rule"
+        ]
+      },
+      "notes": "Instrumental support is the main driver of this section rather than a lead-vocal phrase.",
+      "created_by": "analyzer_context_classifier",
+      "section_id": "section-009",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_instrumental_bed_007",
+      "type": "instrumental_bed",
+      "start_time": 162.30748,
+      "end_time": 177.899683,
+      "confidence": 0.635552,
+      "intensity": 0.46388,
+      "evidence": {
+        "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 162.30748,
+            "end_time": 178.155106,
+            "ref": "beats:349-382",
+            "metric_names": [
+              "vocal_focus_score",
+              "percussion_focus_score",
+              "instrumental_focus_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "vocal_focus_mean",
+            "value": -0.239141,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "percussion_focus_mean",
+            "value": 0.065273,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "instrumental_focus_mean",
+            "value": 0.46388,
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed."
+        ],
+        "rule_names": [
+          "instrumental_bed_section_context_rule"
+        ]
+      },
+      "notes": "Instrumental support is the main driver of this section rather than a lead-vocal phrase.",
+      "created_by": "analyzer_context_classifier",
+      "section_id": "section-012",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    }
+  ],
+  "review_status": "machine",
+  "threshold_profile": "default",
+  "notes": "Machine-refined event set with fallback candidates preserved for review.",
+  "metadata": {
+    "event_count": 97,
+    "source_rule_event_count": 38,
+    "lyric_rescue_confidence_gate": 0.7
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "bpm": 129.41,
+  "duration": 194.01,
+  "song_path": "/data/songs/Armin - Revolution.mp3",
+  "artifacts": {
+    "beats": "/data/analysis/Armin - Revolution/artifacts/essentia/beats.json",
+    "fft_bands": "/data/analysis/Armin - Revolution/artifacts/essentia/fft_bands.json",
+    "rms_loudness": "/data/analysis/Armin - Revolution/artifacts/essentia/rms_loudness.json",
+    "loudness_envelope": "/data/analysis/Armin - Revolution/artifacts/essentia/loudness_envelope.json",
+    "genre": "/data/analysis/Armin - Revolution/artifacts/genre.json",
+    "hpcp": "/data/analysis/Armin - Revolution/artifacts/essentia/hpcp.json",
+    "harmonic_layer": "/data/analysis/Armin - Revolution/artifacts/layer_a_harmonic.json",
+    "symbolic_layer": "/data/analysis/Armin - Revolution/artifacts/layer_b_symbolic.json",
+    "drum_events": "/data/analysis/Armin - Revolution/artifacts/symbolic_transcription/drum_events.json",
+    "drum_midi": "/data/analysis/Armin - Revolution/artifacts/symbolic_transcription/omnizart/drums.mid",
+    "symbolic_hints": "/data/analysis/Armin - Revolution/artifacts/symbolic_transcription/hints.json",
+    "symbolic_validation": "/data/analysis/Armin - Revolution/artifacts/symbolic_transcription/validation.json",
+    "energy_features": "/data/analysis/Armin - Revolution/artifacts/energy_summary/features.json",
+    "energy_layer": "/data/analysis/Armin - Revolution/artifacts/layer_c_energy.json",
+    "energy_identifiers": "/data/analysis/Armin - Revolution/artifacts/energy_summary/hints.json",
+    "event_features": "/data/analysis/Armin - Revolution/artifacts/event_inference/features.json",
+    "event_timeline_index": "/data/analysis/Armin - Revolution/artifacts/event_inference/timeline_index.json",
+    "event_rule_candidates": "/data/analysis/Armin - Revolution/artifacts/event_inference/rule_candidates.json",
+    "event_machine": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json",
+    "event_review": "/data/analysis/Armin - Revolution/artifacts/validation/song_events.review.json",
+    "event_overrides": "/data/analysis/Armin - Revolution/artifacts/validation/song_events.overrides.json",
+    "event_timeline_markdown": "/data/analysis/Armin - Revolution/artifacts/validation/song_event_timeline.md",
+    "event_benchmark": "/data/analysis/Armin - Revolution/artifacts/validation/event_benchmark.json",
+    "human_hints_alignment": null,
+    "human_hints_alignment_markdown": null,
+    "sections": "/data/analysis/Armin - Revolution/artifacts/section_segmentation/sections.json",
+    "patterns_layer": "/data/analysis/Armin - Revolution/artifacts/layer_d_patterns.json",
+    "pattern_mining": "/data/analysis/Armin - Revolution/artifacts/pattern_mining/chord_patterns.json",
+    "music_feature_layers": "/data/analysis/Armin - Revolution/artifacts/music_feature_layers.json",
+    "lighting_events": "/data/analysis/Armin - Revolution/artifacts/lighting_events.json",
+    "beatdrop_visual_plan": "/data/analysis/Armin - Revolution/beatdrop_visual_plan.json",
+    "beatdrop_visual_plan_markdown": "/data/analysis/Armin - Revolution/beatdrop_visual_plan.md"
+  },
+  "generated_from": {
+    "source_song_path": "/data/songs/Armin - Revolution.mp3",
+    "timing_grid": "/data/analysis/Armin - Revolution/artifacts/essentia/beats.json",
+    "fft_bands_file": "/data/analysis/Armin - Revolution/artifacts/essentia/fft_bands.json",
+    "rms_loudness_file": "/data/analysis/Armin - Revolution/artifacts/essentia/rms_loudness.json",
+    "loudness_envelope_file": "/data/analysis/Armin - Revolution/artifacts/essentia/loudness_envelope.json"
+  },
+  "outputs": {
+    "beats": "/data/analysis/Armin - Revolution/beats.json",
+    "hints": "/data/analysis/Armin - Revolution/hints.json",
+    "sections": "/data/analysis/Armin - Revolution/sections.json",
+    "song_event_timeline": "/data/analysis/Armin - Revolution/song_event_timeline.json",
+    "lighting_score": "/data/analysis/Armin - Revolution/lighting_score.md",
+    "beatdrop_visual_plan": "/data/analysis/Armin - Revolution/beatdrop_visual_plan.json",
+    "beatdrop_visual_plan_markdown": "/data/analysis/Armin - Revolution/beatdrop_visual_plan.md"
+  },
+  "debug": {
+    "fft_band_count": 7,
+    "loudness_source_count": 5,
+    "drum_events_engine": "audiohacking.omnizart.drum"
+  }
+}

@@ -63,7 +63,7 @@ export function TimelineGrid({
     : [];
 
   return (
-    <div className="app-timeline tl" ref={scrollerRef}>
+    <div className="app-timeline tl" data-testid="timeline-viewport" ref={scrollerRef}>
       <div className="app-timeline__grid" style={{ position: "relative" }}>
         {/* ---- Segments header (sticky, h26) ---- */}
         <div
@@ -180,15 +180,19 @@ function LaneRow({
   onToggleExpand,
   body,
 }: LaneRowProps): React.JSX.Element {
+  const collapsed = lane.expanded ? "false" : "true";
   return (
     <>
       <div
         className="app-timeline__lane-head tl-lane-head"
         style={{ height: lane.renderHeight }}
+        data-lane={lane.id}
+        data-lane-collapsed={collapsed}
       >
         <button
           type="button"
           className="caret"
+          data-testid={`lane-collapse-${lane.id}`}
           aria-label={lane.expanded ? `Collapse ${lane.label}` : `Expand ${lane.label}`}
           aria-expanded={lane.expanded}
           onClick={() => onToggleExpand(lane.id)}
@@ -203,6 +207,8 @@ function LaneRow({
       <div
         className="app-timeline__lane-body tl-lane-body"
         style={{ height: lane.renderHeight, width: timelineW }}
+        data-lane={lane.id}
+        data-lane-collapsed={collapsed}
       >
         {barLines.map((line) => (
           <div

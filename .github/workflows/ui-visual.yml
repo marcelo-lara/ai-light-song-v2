@@ -1,0 +1,52 @@
+name: ui-visual
+
+# Deterministic Playwright visual-regression suite over the `ui` container.
+# See docs/web-ui/ui-regression_guide.md §7. Baselines are never auto-updated
+# here — a baseline change is always a reviewed commit.
+on:
+  pull_request:
+    paths:
+      - "ui/**"
+      - "tests/ui-visual/**"
+      - "docker-compose.visual.yml"
+      - ".github/workflows/ui-visual.yml"
+  workflow_dispatch:
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build + start the ui container against the frozen fixtures
+        run: docker compose -f docker-compose.yml -f docker-compose.visual.yml up -d --build ui
+
+      - name: Wait for the ui server
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null http://localhost:9090/; then echo "up"; exit 0; fi
+            sleep 2
+          done
+          echo "ui did not come up"; docker compose logs ui; exit 1
+
+      - name: Run Playwright in the pinned container image
+        run: |
+          docker run --rm --network host \
+            -v "$PWD/tests/ui-visual:/work" -w /work \
+            mcr.microsoft.com/playwright:v1.56.0-noble \
+            sh -c "npm ci --no-audit --no-fund && npx playwright test"
+
+      - name: Upload report + diffs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            tests/ui-visual/report/
+            tests/ui-visual/**/*-diff.png
+          retention-days: 14
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.visual.yml down -v

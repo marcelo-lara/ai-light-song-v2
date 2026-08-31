@@ -1,0 +1,804 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "harmonic_stem": "/data/analysis/_test_song/artifacts/stems/harmonic.wav",
+    "bass_stem": "/data/analysis/_test_song/artifacts/stems/bass.wav",
+    "vocals_stem": "/data/analysis/_test_song/artifacts/stems/vocals.wav",
+    "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
+    "hpcp_file": "/data/analysis/_test_song/artifacts/essentia/hpcp.json",
+    "engine": "essentia.HPCP+ChordsDetection+Key+bass-root-diatonic-correction+mix-bass-vocal-boundary-alignment"
+  },
+  "global_key": {
+    "label": "D# minor",
+    "confidence": 0.765,
+    "source": "hpcp"
+  },
+  "chords": [
+    {
+      "time": 0.06,
+      "end_s": 46.2,
+      "bar": 1,
+      "beat": 1,
+      "chord": "D#m",
+      "confidence": 0.852469
+    },
+    {
+      "time": 46.2,
+      "end_s": 48.04,
+      "bar": 26,
+      "beat": 1,
+      "chord": "B",
+      "confidence": 0.919112
+    },
+    {
+      "time": 48.04,
+      "end_s": 51.74,
+      "bar": 27,
+      "beat": 1,
+      "chord": "F#",
+      "confidence": 0.927244
+    },
+    {
+      "time": 51.74,
+      "end_s": 57.74,
+      "bar": 29,
+      "beat": 1,
+      "chord": "D#m",
+      "confidence": 0.948858
+    }
+  ],
+  "chord_probabilities": [
+    {
+      "beat": 1,
+      "time": 0.06,
+      "label": "D#",
+      "confidence": 0.635149
+    },
+    {
+      "beat": 2,
+      "time": 0.52,
+      "label": "D#",
+      "confidence": 0.624676
+    },
+    {
+      "beat": 3,
+      "time": 0.98,
+      "label": "D#",
+      "confidence": 0.618657
+    },
+    {
+      "beat": 4,
+      "time": 1.44,
+      "label": "D#m",
+      "confidence": 0.642
+    },
+    {
+      "beat": 5,
+      "time": 1.9,
+      "label": "D#m",
+      "confidence": 0.721212
+    },
+    {
+      "beat": 6,
+      "time": 2.36,
+      "label": "D#m",
+      "confidence": 0.818037
+    },
+    {
+      "beat": 7,
+      "time": 2.82,
+      "label": "D#m",
+      "confidence": 0.856144
+    },
+    {
+      "beat": 8,
+      "time": 3.28,
+      "label": "D#m",
+      "confidence": 0.854298
+    },
+    {
+      "beat": 9,
+      "time": 3.74,
+      "label": "D#m",
+      "confidence": 0.796733
+    },
+    {
+      "beat": 10,
+      "time": 4.2,
+      "label": "D#m",
+      "confidence": 0.671445
+    },
+    {
+      "beat": 11,
+      "time": 4.66,
+      "label": "G#m",
+      "confidence": 0.63424
+    },
+    {
+      "beat": 12,
+      "time": 5.12,
+      "label": "G#m",
+      "confidence": 0.647183
+    },
+    {
+      "beat": 13,
+      "time": 5.58,
+      "label": "G#m",
+      "confidence": 0.602554
+    },
+    {
+      "beat": 14,
+      "time": 6.04,
+      "label": "D#",
+      "confidence": 0.775106
+    },
+    {
+      "beat": 15,
+      "time": 6.5,
+      "label": "D#",
+      "confidence": 0.701045
+    },
+    {
+      "beat": 16,
+      "time": 6.96,
+      "label": "D#",
+      "confidence": 0.761199
+    },
+    {
+      "beat": 17,
+      "time": 7.44,
+      "label": "D#",
+      "confidence": 0.803579
+    },
+    {
+      "beat": 18,
+      "time": 7.9,
+      "label": "D#",
+      "confidence": 0.815685
+    },
+    {
+      "beat": 19,
+      "time": 8.36,
+      "label": "D#",
+      "confidence": 0.797022
+    },
+    {
+      "beat": 20,
+      "time": 8.82,
+      "label": "D#",
+      "confidence": 0.772103
+    },
+    {
+      "beat": 21,
+      "time": 9.28,
+      "label": "D#m",
+      "confidence": 0.822697
+    },
+    {
+      "beat": 22,
+      "time": 9.72,
+      "label": "D#m",
+      "confidence": 0.864436
+    },
+    {
+      "beat": 23,
+      "time": 10.2,
+      "label": "D#m",
+      "confidence": 0.891392
+    },
+    {
+      "beat": 24,
+      "time": 10.66,
+      "label": "D#m",
+      "confidence": 0.882914
+    },
+    {
+      "beat": 25,
+      "time": 11.12,
+      "label": "D#m",
+      "confidence": 0.82344
+    },
+    {
+      "beat": 26,
+      "time": 11.58,
+      "label": "D#m",
+      "confidence": 0.747356
+    },
+    {
+      "beat": 27,
+      "time": 12.04,
+      "label": "D#m",
+      "confidence": 0.65455
+    },
+    {
+      "beat": 28,
+      "time": 12.5,
+      "label": "D#m",
+      "confidence": 0.822697
+    },
+    {
+      "beat": 29,
+      "time": 12.96,
+      "label": "D#m",
+      "confidence": 0.822697
+    },
+    {
+      "beat": 30,
+      "time": 13.42,
+      "label": "D#m",
+      "confidence": 0.67438
+    },
+    {
+      "beat": 31,
+      "time": 13.9,
+      "label": "D#m",
+      "confidence": 0.734035
+    },
+    {
+      "beat": 32,
+      "time": 14.36,
+      "label": "D#m",
+      "confidence": 0.759653
+    },
+    {
+      "beat": 33,
+      "time": 14.82,
+      "label": "D#",
+      "confidence": 0.753954
+    },
+    {
+      "beat": 34,
+      "time": 15.28,
+      "label": "D#",
+      "confidence": 0.707711
+    },
+    {
+      "beat": 35,
+      "time": 15.74,
+      "label": "D#",
+      "confidence": 0.661262
+    },
+    {
+      "beat": 36,
+      "time": 16.2,
+      "label": "D#",
+      "confidence": 0.626579
+    },
+    {
+      "beat": 37,
+      "time": 16.68,
+      "label": "D#m",
+      "confidence": 0.70736
+    },
+    {
+      "beat": 38,
+      "time": 17.14,
+      "label": "D#m",
+      "confidence": 0.823965
+    },
+    {
+      "beat": 39,
+      "time": 17.6,
+      "label": "D#m",
+      "confidence": 0.884823
+    },
+    {
+      "beat": 40,
+      "time": 18.06,
+      "label": "D#m",
+      "confidence": 0.906587
+    },
+    {
+      "beat": 41,
+      "time": 18.52,
+      "label": "D#m",
+      "confidence": 0.886404
+    },
+    {
+      "beat": 42,
+      "time": 18.98,
+      "label": "D#m",
+      "confidence": 0.793431
+    },
+    {
+      "beat": 43,
+      "time": 19.44,
+      "label": "D#m",
+      "confidence": 0.688275
+    },
+    {
+      "beat": 44,
+      "time": 19.9,
+      "label": "D#m",
+      "confidence": 0.70736
+    },
+    {
+      "beat": 45,
+      "time": 20.36,
+      "label": "D#m",
+      "confidence": 0.621918
+    },
+    {
+      "beat": 46,
+      "time": 20.82,
+      "label": "D#m",
+      "confidence": 0.682048
+    },
+    {
+      "beat": 47,
+      "time": 21.28,
+      "label": "D#m",
+      "confidence": 0.755204
+    },
+    {
+      "beat": 48,
+      "time": 21.74,
+      "label": "D#m",
+      "confidence": 0.778385
+    },
+    {
+      "beat": 49,
+      "time": 22.2,
+      "label": "D#m",
+      "confidence": 0.750676
+    },
+    {
+      "beat": 50,
+      "time": 22.66,
+      "label": "D#m",
+      "confidence": 0.70736
+    },
+    {
+      "beat": 51,
+      "time": 23.12,
+      "label": "D#m",
+      "confidence": 0.70736
+    },
+    {
+      "beat": 52,
+      "time": 23.6,
+      "label": "D#m",
+      "confidence": 0.678448
+    },
+    {
+      "beat": 53,
+      "time": 24.06,
+      "label": "D#m",
+      "confidence": 0.730515
+    },
+    {
+      "beat": 54,
+      "time": 24.52,
+      "label": "D#m",
+      "confidence": 0.837842
+    },
+    {
+      "beat": 55,
+      "time": 24.98,
+      "label": "D#m",
+      "confidence": 0.916476
+    },
+    {
+      "beat": 56,
+      "time": 25.44,
+      "label": "D#m",
+      "confidence": 0.917778
+    },
+    {
+      "beat": 57,
+      "time": 25.9,
+      "label": "D#m",
+      "confidence": 0.869335
+    },
+    {
+      "beat": 58,
+      "time": 26.36,
+      "label": "D#m",
+      "confidence": 0.752521
+    },
+    {
+      "beat": 59,
+      "time": 26.82,
+      "label": "D#m",
+      "confidence": 0.672314
+    },
+    {
+      "beat": 60,
+      "time": 27.28,
+      "label": "D#",
+      "confidence": 0.645957
+    },
+    {
+      "beat": 61,
+      "time": 27.74,
+      "label": "D#",
+      "confidence": 0.65904
+    },
+    {
+      "beat": 62,
+      "time": 28.2,
+      "label": "D#",
+      "confidence": 0.663509
+    },
+    {
+      "beat": 63,
+      "time": 28.66,
+      "label": "D#",
+      "confidence": 0.729432
+    },
+    {
+      "beat": 64,
+      "time": 29.12,
+      "label": "D#",
+      "confidence": 0.781807
+    },
+    {
+      "beat": 65,
+      "time": 29.58,
+      "label": "D#",
+      "confidence": 0.799046
+    },
+    {
+      "beat": 66,
+      "time": 30.04,
+      "label": "D#",
+      "confidence": 0.8091
+    },
+    {
+      "beat": 67,
+      "time": 30.5,
+      "label": "D#",
+      "confidence": 0.729731
+    },
+    {
+      "beat": 68,
+      "time": 30.98,
+      "label": "D#",
+      "confidence": 0.670258
+    },
+    {
+      "beat": 69,
+      "time": 31.44,
+      "label": "D#",
+      "confidence": 0.683818
+    },
+    {
+      "beat": 70,
+      "time": 31.9,
+      "label": "D#",
+      "confidence": 0.714402
+    },
+    {
+      "beat": 71,
+      "time": 32.36,
+      "label": "D#m",
+      "confidence": 0.812672
+    },
+    {
+      "beat": 72,
+      "time": 32.82,
+      "label": "D#m",
+      "confidence": 0.848898
+    },
+    {
+      "beat": 73,
+      "time": 33.28,
+      "label": "D#m",
+      "confidence": 0.847388
+    },
+    {
+      "beat": 74,
+      "time": 33.74,
+      "label": "D#m",
+      "confidence": 0.803817
+    },
+    {
+      "beat": 75,
+      "time": 34.2,
+      "label": "D#",
+      "confidence": 0.760703
+    },
+    {
+      "beat": 76,
+      "time": 34.66,
+      "label": "D#",
+      "confidence": 0.716576
+    },
+    {
+      "beat": 77,
+      "time": 35.12,
+      "label": "D#",
+      "confidence": 0.720568
+    },
+    {
+      "beat": 78,
+      "time": 35.58,
+      "label": "D#",
+      "confidence": 0.84861
+    },
+    {
+      "beat": 79,
+      "time": 36.04,
+      "label": "D#",
+      "confidence": 0.84861
+    },
+    {
+      "beat": 80,
+      "time": 36.5,
+      "label": "D#",
+      "confidence": 0.84861
+    },
+    {
+      "beat": 81,
+      "time": 36.98,
+      "label": "D#",
+      "confidence": 0.873858
+    },
+    {
+      "beat": 82,
+      "time": 37.44,
+      "label": "D#",
+      "confidence": 0.872131
+    },
+    {
+      "beat": 83,
+      "time": 37.9,
+      "label": "D#",
+      "confidence": 0.834419
+    },
+    {
+      "beat": 84,
+      "time": 38.36,
+      "label": "D#",
+      "confidence": 0.79361
+    },
+    {
+      "beat": 85,
+      "time": 38.82,
+      "label": "D#",
+      "confidence": 0.797327
+    },
+    {
+      "beat": 86,
+      "time": 39.28,
+      "label": "D#",
+      "confidence": 0.774506
+    },
+    {
+      "beat": 87,
+      "time": 39.74,
+      "label": "D#m",
+      "confidence": 0.823477
+    },
+    {
+      "beat": 88,
+      "time": 40.2,
+      "label": "D#m",
+      "confidence": 0.840582
+    },
+    {
+      "beat": 89,
+      "time": 40.66,
+      "label": "D#m",
+      "confidence": 0.851703
+    },
+    {
+      "beat": 90,
+      "time": 41.12,
+      "label": "D#m",
+      "confidence": 0.847772
+    },
+    {
+      "beat": 91,
+      "time": 41.58,
+      "label": "D#",
+      "confidence": 0.819169
+    },
+    {
+      "beat": 92,
+      "time": 42.04,
+      "label": "D#",
+      "confidence": 0.800536
+    },
+    {
+      "beat": 93,
+      "time": 42.5,
+      "label": "D#",
+      "confidence": 0.734563
+    },
+    {
+      "beat": 94,
+      "time": 42.98,
+      "label": "D#m",
+      "confidence": 0.720058
+    },
+    {
+      "beat": 95,
+      "time": 43.44,
+      "label": "D#m",
+      "confidence": 0.824083
+    },
+    {
+      "beat": 96,
+      "time": 43.9,
+      "label": "D#m",
+      "confidence": 0.918704
+    },
+    {
+      "beat": 97,
+      "time": 44.36,
+      "label": "D#m",
+      "confidence": 0.955491
+    },
+    {
+      "beat": 98,
+      "time": 44.82,
+      "label": "D#m",
+      "confidence": 0.970396
+    },
+    {
+      "beat": 99,
+      "time": 45.28,
+      "label": "D#m",
+      "confidence": 0.987893
+    },
+    {
+      "beat": 100,
+      "time": 45.74,
+      "label": "D#m",
+      "confidence": 0.95065
+    },
+    {
+      "beat": 101,
+      "time": 46.2,
+      "label": "B",
+      "confidence": 0.910619
+    },
+    {
+      "beat": 102,
+      "time": 46.66,
+      "label": "B",
+      "confidence": 0.962259
+    },
+    {
+      "beat": 103,
+      "time": 47.12,
+      "label": "B",
+      "confidence": 0.944077
+    },
+    {
+      "beat": 104,
+      "time": 47.58,
+      "label": "B",
+      "confidence": 0.859491
+    },
+    {
+      "beat": 105,
+      "time": 48.04,
+      "label": "F#",
+      "confidence": 0.765131
+    },
+    {
+      "beat": 106,
+      "time": 48.52,
+      "label": "F#",
+      "confidence": 0.87818
+    },
+    {
+      "beat": 107,
+      "time": 48.98,
+      "label": "F#",
+      "confidence": 0.95505
+    },
+    {
+      "beat": 108,
+      "time": 49.44,
+      "label": "F#",
+      "confidence": 0.97463
+    },
+    {
+      "beat": 109,
+      "time": 49.9,
+      "label": "F#",
+      "confidence": 0.974156
+    },
+    {
+      "beat": 110,
+      "time": 50.36,
+      "label": "F#",
+      "confidence": 0.97906
+    },
+    {
+      "beat": 111,
+      "time": 50.82,
+      "label": "F#",
+      "confidence": 0.969499
+    },
+    {
+      "beat": 112,
+      "time": 51.3,
+      "label": "F#",
+      "confidence": 0.922243
+    },
+    {
+      "beat": 113,
+      "time": 51.74,
+      "label": "D#m",
+      "confidence": 0.92855
+    },
+    {
+      "beat": 114,
+      "time": 52.22,
+      "label": "D#m",
+      "confidence": 0.96722
+    },
+    {
+      "beat": 115,
+      "time": 52.68,
+      "label": "D#m",
+      "confidence": 0.927262
+    },
+    {
+      "beat": 116,
+      "time": 53.14,
+      "label": "D#m",
+      "confidence": 0.901054
+    },
+    {
+      "beat": 117,
+      "time": 53.6,
+      "label": "D#m",
+      "confidence": 0.854255
+    },
+    {
+      "beat": 118,
+      "time": 54.06,
+      "label": "D#m",
+      "confidence": 0.891601
+    },
+    {
+      "beat": 119,
+      "time": 54.52,
+      "label": "D#m",
+      "confidence": 0.924753
+    },
+    {
+      "beat": 120,
+      "time": 54.98,
+      "label": "D#m",
+      "confidence": 0.965379
+    },
+    {
+      "beat": 121,
+      "time": 55.44,
+      "label": "D#m",
+      "confidence": 0.987809
+    },
+    {
+      "beat": 122,
+      "time": 55.9,
+      "label": "D#m",
+      "confidence": 0.99328
+    },
+    {
+      "beat": 123,
+      "time": 56.36,
+      "label": "D#m",
+      "confidence": 0.997705
+    },
+    {
+      "beat": 124,
+      "time": 56.82,
+      "label": "D#m",
+      "confidence": 0.998324
+    },
+    {
+      "beat": 125,
+      "time": 57.28,
+      "label": "D#m",
+      "confidence": 0.997967
+    }
+  ]
+}

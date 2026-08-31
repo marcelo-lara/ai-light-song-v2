@@ -1,0 +1,2655 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "source_song_path": "/data/songs/_test_song.mp3",
+  "generated_from": {
+    "harmonic_layer_file": "/data/analysis/_test_song/artifacts/layer_a_harmonic.json",
+    "symbolic_layer_file": "/data/analysis/_test_song/artifacts/layer_b_symbolic.json",
+    "energy_layer_file": "/data/analysis/_test_song/artifacts/layer_c_energy.json",
+    "patterns_layer_file": "/data/analysis/_test_song/artifacts/layer_d_patterns.json",
+    "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
+    "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json"
+  },
+  "metadata": {
+    "title": "_test_song",
+    "duration_s": 57.74,
+    "bpm": 130.43,
+    "time_signature": "4/4",
+    "key": null
+  },
+  "timeline": {
+    "beats": [
+      {
+        "index": 1,
+        "time": 0.06,
+        "bar": 1,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 2,
+        "time": 0.52,
+        "bar": 1,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 3,
+        "time": 0.98,
+        "bar": 1,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 4,
+        "time": 1.44,
+        "bar": 1,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 5,
+        "time": 1.9,
+        "bar": 2,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 6,
+        "time": 2.36,
+        "bar": 2,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 7,
+        "time": 2.82,
+        "bar": 2,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 8,
+        "time": 3.28,
+        "bar": 2,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 9,
+        "time": 3.74,
+        "bar": 3,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 10,
+        "time": 4.2,
+        "bar": 3,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 11,
+        "time": 4.66,
+        "bar": 3,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 12,
+        "time": 5.12,
+        "bar": 3,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 13,
+        "time": 5.58,
+        "bar": 4,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 14,
+        "time": 6.04,
+        "bar": 4,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 15,
+        "time": 6.5,
+        "bar": 4,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 16,
+        "time": 6.96,
+        "bar": 4,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 17,
+        "time": 7.44,
+        "bar": 5,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 18,
+        "time": 7.9,
+        "bar": 5,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 19,
+        "time": 8.36,
+        "bar": 5,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 20,
+        "time": 8.82,
+        "bar": 5,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 21,
+        "time": 9.28,
+        "bar": 6,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 22,
+        "time": 9.72,
+        "bar": 6,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 23,
+        "time": 10.2,
+        "bar": 6,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 24,
+        "time": 10.66,
+        "bar": 6,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 25,
+        "time": 11.12,
+        "bar": 7,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 26,
+        "time": 11.58,
+        "bar": 7,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 27,
+        "time": 12.04,
+        "bar": 7,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 28,
+        "time": 12.5,
+        "bar": 7,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 29,
+        "time": 12.96,
+        "bar": 8,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 30,
+        "time": 13.42,
+        "bar": 8,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 31,
+        "time": 13.9,
+        "bar": 8,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 32,
+        "time": 14.36,
+        "bar": 8,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 33,
+        "time": 14.82,
+        "bar": 9,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 34,
+        "time": 15.28,
+        "bar": 9,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 35,
+        "time": 15.74,
+        "bar": 9,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 36,
+        "time": 16.2,
+        "bar": 9,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 37,
+        "time": 16.68,
+        "bar": 10,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 38,
+        "time": 17.14,
+        "bar": 10,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 39,
+        "time": 17.6,
+        "bar": 10,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 40,
+        "time": 18.06,
+        "bar": 10,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 41,
+        "time": 18.52,
+        "bar": 11,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 42,
+        "time": 18.98,
+        "bar": 11,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 43,
+        "time": 19.44,
+        "bar": 11,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 44,
+        "time": 19.9,
+        "bar": 11,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 45,
+        "time": 20.36,
+        "bar": 12,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 46,
+        "time": 20.82,
+        "bar": 12,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 47,
+        "time": 21.28,
+        "bar": 12,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 48,
+        "time": 21.74,
+        "bar": 12,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 49,
+        "time": 22.2,
+        "bar": 13,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 50,
+        "time": 22.66,
+        "bar": 13,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 51,
+        "time": 23.12,
+        "bar": 13,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 52,
+        "time": 23.6,
+        "bar": 13,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 53,
+        "time": 24.06,
+        "bar": 14,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 54,
+        "time": 24.52,
+        "bar": 14,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 55,
+        "time": 24.98,
+        "bar": 14,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 56,
+        "time": 25.44,
+        "bar": 14,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 57,
+        "time": 25.9,
+        "bar": 15,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 58,
+        "time": 26.36,
+        "bar": 15,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 59,
+        "time": 26.82,
+        "bar": 15,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 60,
+        "time": 27.28,
+        "bar": 15,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 61,
+        "time": 27.74,
+        "bar": 16,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 62,
+        "time": 28.2,
+        "bar": 16,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 63,
+        "time": 28.66,
+        "bar": 16,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 64,
+        "time": 29.12,
+        "bar": 16,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 65,
+        "time": 29.58,
+        "bar": 17,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 66,
+        "time": 30.04,
+        "bar": 17,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 67,
+        "time": 30.5,
+        "bar": 17,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 68,
+        "time": 30.98,
+        "bar": 17,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 69,
+        "time": 31.44,
+        "bar": 18,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 70,
+        "time": 31.9,
+        "bar": 18,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 71,
+        "time": 32.36,
+        "bar": 18,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 72,
+        "time": 32.82,
+        "bar": 18,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 73,
+        "time": 33.28,
+        "bar": 19,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 74,
+        "time": 33.74,
+        "bar": 19,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 75,
+        "time": 34.2,
+        "bar": 19,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 76,
+        "time": 34.66,
+        "bar": 19,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 77,
+        "time": 35.12,
+        "bar": 20,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 78,
+        "time": 35.58,
+        "bar": 20,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 79,
+        "time": 36.04,
+        "bar": 20,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 80,
+        "time": 36.5,
+        "bar": 20,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 81,
+        "time": 36.98,
+        "bar": 21,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 82,
+        "time": 37.44,
+        "bar": 21,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 83,
+        "time": 37.9,
+        "bar": 21,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 84,
+        "time": 38.36,
+        "bar": 21,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 85,
+        "time": 38.82,
+        "bar": 22,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 86,
+        "time": 39.28,
+        "bar": 22,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 87,
+        "time": 39.74,
+        "bar": 22,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 88,
+        "time": 40.2,
+        "bar": 22,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 89,
+        "time": 40.66,
+        "bar": 23,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 90,
+        "time": 41.12,
+        "bar": 23,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 91,
+        "time": 41.58,
+        "bar": 23,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 92,
+        "time": 42.04,
+        "bar": 23,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 93,
+        "time": 42.5,
+        "bar": 24,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 94,
+        "time": 42.98,
+        "bar": 24,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 95,
+        "time": 43.44,
+        "bar": 24,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 96,
+        "time": 43.9,
+        "bar": 24,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 97,
+        "time": 44.36,
+        "bar": 25,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 98,
+        "time": 44.82,
+        "bar": 25,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 99,
+        "time": 45.28,
+        "bar": 25,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 100,
+        "time": 45.74,
+        "bar": 25,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 101,
+        "time": 46.2,
+        "bar": 26,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 102,
+        "time": 46.66,
+        "bar": 26,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 103,
+        "time": 47.12,
+        "bar": 26,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 104,
+        "time": 47.58,
+        "bar": 26,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 105,
+        "time": 48.04,
+        "bar": 27,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 106,
+        "time": 48.52,
+        "bar": 27,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 107,
+        "time": 48.98,
+        "bar": 27,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 108,
+        "time": 49.44,
+        "bar": 27,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 109,
+        "time": 49.9,
+        "bar": 28,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 110,
+        "time": 50.36,
+        "bar": 28,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 111,
+        "time": 50.82,
+        "bar": 28,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 112,
+        "time": 51.3,
+        "bar": 28,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 113,
+        "time": 51.74,
+        "bar": 29,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 114,
+        "time": 52.22,
+        "bar": 29,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 115,
+        "time": 52.68,
+        "bar": 29,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 116,
+        "time": 53.14,
+        "bar": 29,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 117,
+        "time": 53.6,
+        "bar": 30,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 118,
+        "time": 54.06,
+        "bar": 30,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 119,
+        "time": 54.52,
+        "bar": 30,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 120,
+        "time": 54.98,
+        "bar": 30,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 121,
+        "time": 55.44,
+        "bar": 31,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      },
+      {
+        "index": 122,
+        "time": 55.9,
+        "bar": 31,
+        "beat_in_bar": 2,
+        "type": "beat"
+      },
+      {
+        "index": 123,
+        "time": 56.36,
+        "bar": 31,
+        "beat_in_bar": 3,
+        "type": "beat"
+      },
+      {
+        "index": 124,
+        "time": 56.82,
+        "bar": 31,
+        "beat_in_bar": 4,
+        "type": "beat"
+      },
+      {
+        "index": 125,
+        "time": 57.28,
+        "bar": 32,
+        "beat_in_bar": 1,
+        "type": "downbeat"
+      }
+    ],
+    "bars": [
+      {
+        "bar": 1,
+        "start_s": 0.06,
+        "end_s": 1.9
+      },
+      {
+        "bar": 2,
+        "start_s": 1.9,
+        "end_s": 3.74
+      },
+      {
+        "bar": 3,
+        "start_s": 3.74,
+        "end_s": 5.58
+      },
+      {
+        "bar": 4,
+        "start_s": 5.58,
+        "end_s": 7.44
+      },
+      {
+        "bar": 5,
+        "start_s": 7.44,
+        "end_s": 9.28
+      },
+      {
+        "bar": 6,
+        "start_s": 9.28,
+        "end_s": 11.12
+      },
+      {
+        "bar": 7,
+        "start_s": 11.12,
+        "end_s": 12.96
+      },
+      {
+        "bar": 8,
+        "start_s": 12.96,
+        "end_s": 14.82
+      },
+      {
+        "bar": 9,
+        "start_s": 14.82,
+        "end_s": 16.68
+      },
+      {
+        "bar": 10,
+        "start_s": 16.68,
+        "end_s": 18.52
+      },
+      {
+        "bar": 11,
+        "start_s": 18.52,
+        "end_s": 20.36
+      },
+      {
+        "bar": 12,
+        "start_s": 20.36,
+        "end_s": 22.2
+      },
+      {
+        "bar": 13,
+        "start_s": 22.2,
+        "end_s": 24.06
+      },
+      {
+        "bar": 14,
+        "start_s": 24.06,
+        "end_s": 25.9
+      },
+      {
+        "bar": 15,
+        "start_s": 25.9,
+        "end_s": 27.74
+      },
+      {
+        "bar": 16,
+        "start_s": 27.74,
+        "end_s": 29.58
+      },
+      {
+        "bar": 17,
+        "start_s": 29.58,
+        "end_s": 31.44
+      },
+      {
+        "bar": 18,
+        "start_s": 31.44,
+        "end_s": 33.28
+      },
+      {
+        "bar": 19,
+        "start_s": 33.28,
+        "end_s": 35.12
+      },
+      {
+        "bar": 20,
+        "start_s": 35.12,
+        "end_s": 36.98
+      },
+      {
+        "bar": 21,
+        "start_s": 36.98,
+        "end_s": 38.82
+      },
+      {
+        "bar": 22,
+        "start_s": 38.82,
+        "end_s": 40.66
+      },
+      {
+        "bar": 23,
+        "start_s": 40.66,
+        "end_s": 42.5
+      },
+      {
+        "bar": 24,
+        "start_s": 42.5,
+        "end_s": 44.36
+      },
+      {
+        "bar": 25,
+        "start_s": 44.36,
+        "end_s": 46.2
+      },
+      {
+        "bar": 26,
+        "start_s": 46.2,
+        "end_s": 48.04
+      },
+      {
+        "bar": 27,
+        "start_s": 48.04,
+        "end_s": 49.9
+      },
+      {
+        "bar": 28,
+        "start_s": 49.9,
+        "end_s": 51.74
+      },
+      {
+        "bar": 29,
+        "start_s": 51.74,
+        "end_s": 53.6
+      },
+      {
+        "bar": 30,
+        "start_s": 53.6,
+        "end_s": 55.44
+      },
+      {
+        "bar": 31,
+        "start_s": 55.44,
+        "end_s": 57.28
+      },
+      {
+        "bar": 32,
+        "start_s": 57.28,
+        "end_s": 57.74
+      }
+    ],
+    "sections": [
+      {
+        "section_id": "section-001",
+        "start": 0.0,
+        "end": 14.82,
+        "label": "ambient_opening",
+        "confidence": 0.656488,
+        "section_character": "ambient_opening",
+        "onset_anchored": false
+      },
+      {
+        "section_id": "section-002",
+        "start": 14.82,
+        "end": 29.605442,
+        "label": "vocal_spotlight",
+        "confidence": 0.708398,
+        "section_character": "vocal_spotlight",
+        "onset_anchored": false
+      },
+      {
+        "section_id": "section-003",
+        "start": 29.605442,
+        "end": 44.36,
+        "label": "momentum_lift",
+        "confidence": 0.804972,
+        "section_character": "momentum_lift",
+        "onset_anchored": true
+      },
+      {
+        "section_id": "section-004",
+        "start": 44.36,
+        "end": 57.74,
+        "label": "release_tail",
+        "confidence": 0.689986,
+        "section_character": "release_tail",
+        "onset_anchored": false
+      }
+    ],
+    "phrases": [
+      {
+        "id": "phrase_group_A_1",
+        "phrase_group_id": "phrase_group_A",
+        "start_s": 0.06,
+        "end_s": 7.44,
+        "start_bar": 1,
+        "end_bar": 4,
+        "section_id": "section-001"
+      },
+      {
+        "id": "phrase_group_A_2",
+        "phrase_group_id": "phrase_group_A",
+        "start_s": 7.44,
+        "end_s": 14.82,
+        "start_bar": 5,
+        "end_bar": 8,
+        "section_id": "section-001"
+      },
+      {
+        "id": "phrase_group_C_1",
+        "phrase_group_id": "phrase_group_C",
+        "start_s": 14.82,
+        "end_s": 22.2,
+        "start_bar": 9,
+        "end_bar": 12,
+        "section_id": "section-002"
+      },
+      {
+        "id": "phrase_group_A_3",
+        "phrase_group_id": "phrase_group_A",
+        "start_s": 22.2,
+        "end_s": 29.58,
+        "start_bar": 13,
+        "end_bar": 16,
+        "section_id": "section-002"
+      },
+      {
+        "id": "phrase_group_D_1",
+        "phrase_group_id": "phrase_group_D",
+        "start_s": 29.58,
+        "end_s": 31.44,
+        "start_bar": 17,
+        "end_bar": 17,
+        "section_id": "section-002"
+      },
+      {
+        "id": "phrase_group_B_1",
+        "phrase_group_id": "phrase_group_B",
+        "start_s": 29.58,
+        "end_s": 36.98,
+        "start_bar": 17,
+        "end_bar": 20,
+        "section_id": "section-003"
+      },
+      {
+        "id": "phrase_group_E_1",
+        "phrase_group_id": "phrase_group_E",
+        "start_s": 36.98,
+        "end_s": 44.36,
+        "start_bar": 21,
+        "end_bar": 24,
+        "section_id": "section-003"
+      },
+      {
+        "id": "phrase_group_F_1",
+        "phrase_group_id": "phrase_group_F",
+        "start_s": 44.36,
+        "end_s": 51.74,
+        "start_bar": 25,
+        "end_bar": 28,
+        "section_id": "section-004"
+      },
+      {
+        "id": "phrase_group_B_2",
+        "phrase_group_id": "phrase_group_B",
+        "start_s": 51.74,
+        "end_s": 57.74,
+        "start_bar": 29,
+        "end_bar": 32,
+        "section_id": "section-004"
+      }
+    ],
+    "accent_windows": [
+      {
+        "id": "accent_001",
+        "time_s": 30.04,
+        "kind": "hit",
+        "intensity": 0.658438,
+        "section_id": "section-003",
+        "section_name": "momentum_lift"
+      },
+      {
+        "id": "accent_002",
+        "time_s": 32.82,
+        "kind": "hit",
+        "intensity": 0.667603,
+        "section_id": "section-003",
+        "section_name": "momentum_lift"
+      },
+      {
+        "id": "accent_003",
+        "time_s": 34.2,
+        "kind": "hit",
+        "intensity": 0.657889,
+        "section_id": "section-003",
+        "section_name": "momentum_lift"
+      },
+      {
+        "id": "accent_004",
+        "time_s": 35.12,
+        "kind": "hit",
+        "intensity": 0.664164,
+        "section_id": "section-003",
+        "section_name": "momentum_lift"
+      },
+      {
+        "id": "accent_005",
+        "time_s": 36.04,
+        "kind": "hit",
+        "intensity": 0.65956,
+        "section_id": "section-003",
+        "section_name": "momentum_lift"
+      },
+      {
+        "id": "accent_006",
+        "time_s": 37.44,
+        "kind": "hit",
+        "intensity": 0.656519,
+        "section_id": "section-003",
+        "section_name": "momentum_lift"
+      },
+      {
+        "id": "accent_007",
+        "time_s": 38.36,
+        "kind": "hit",
+        "intensity": 0.660547,
+        "section_id": "section-003",
+        "section_name": "momentum_lift"
+      },
+      {
+        "id": "accent_008",
+        "time_s": 40.2,
+        "kind": "hit",
+        "intensity": 0.661227,
+        "section_id": "section-003",
+        "section_name": "momentum_lift"
+      },
+      {
+        "id": "accent_009",
+        "time_s": 41.58,
+        "kind": "hit",
+        "intensity": 0.659144,
+        "section_id": "section-003",
+        "section_name": "momentum_lift"
+      }
+    ]
+  },
+  "layers": {
+    "harmonic": {
+      "global_key": {
+        "label": null,
+        "confidence": 1.0,
+        "source": "reference_promoted"
+      },
+      "chords": [
+        {
+          "time": 0.06,
+          "end_s": 46.2,
+          "bar": 1,
+          "beat": 1,
+          "chord": "D#m",
+          "confidence": 1.0
+        },
+        {
+          "time": 46.2,
+          "end_s": 48.04,
+          "bar": 26,
+          "beat": 1,
+          "chord": "B",
+          "confidence": 1.0
+        },
+        {
+          "time": 48.04,
+          "end_s": 51.74,
+          "bar": 27,
+          "beat": 1,
+          "chord": "F#",
+          "confidence": 1.0
+        },
+        {
+          "time": 51.74,
+          "end_s": 57.74,
+          "bar": 29,
+          "beat": 1,
+          "chord": "D#m",
+          "confidence": 1.0
+        }
+      ],
+      "description": null
+    },
+    "symbolic": {
+      "description": "Layered mid-register material with undulating contour, dense activity (14.7 notes per bar), leaping bass movement, moderate repetition, and clipped note lengths.",
+      "symbolic_summary": {
+        "note_count": 1734,
+        "pitch_range": {
+          "min": 27,
+          "max": 92
+        },
+        "register_centroid": 63.710586,
+        "register_label": "mid",
+        "texture": "layered",
+        "melodic_contour": "undulating",
+        "bass_motion": "leaping",
+        "repetition_score": 0.555556,
+        "sustain_ratio": 0.027105,
+        "section_count": 4,
+        "loosely_aligned_note_count": 77,
+        "harmonic_note_count": 1021,
+        "bass_note_count": 421,
+        "bass_pitch_range": {
+          "min": 27,
+          "max": 63
+        },
+        "transcription_engines": [
+          "basic-pitch"
+        ],
+        "extra_features": [
+          "pitch_bend",
+          "model_output_summary",
+          "per-stem midi cache",
+          "all-source validation",
+          "density-per-beat",
+          "phrase-window grouping"
+        ],
+        "promoted_sources": [
+          "harmonic",
+          "bass",
+          "vocals",
+          "full_mix"
+        ]
+      },
+      "motif_summary": {
+        "dominant_motif_id": "motif_alpha",
+        "motif_groups": [
+          {
+            "id": "motif_alpha",
+            "label": "Motif Alpha",
+            "summary": "Repeated rising mid register figure across 3 phrase windows.",
+            "occurrence_count": 3,
+            "phrase_group_ids": [
+              "phrase_group_A"
+            ],
+            "occurrence_refs": [
+              {
+                "phrase_window_id": "phrase_group_A_1",
+                "start_s": 0.06,
+                "end_s": 7.44,
+                "start_bar": 1,
+                "end_bar": 4,
+                "section_id": "section-001"
+              },
+              {
+                "phrase_window_id": "phrase_group_A_2",
+                "start_s": 7.44,
+                "end_s": 14.82,
+                "start_bar": 5,
+                "end_bar": 8,
+                "section_id": "section-001"
+              },
+              {
+                "phrase_window_id": "phrase_group_A_3",
+                "start_s": 22.2,
+                "end_s": 29.58,
+                "start_bar": 13,
+                "end_bar": 16,
+                "section_id": "section-002"
+              }
+            ]
+          },
+          {
+            "id": "motif_beta",
+            "label": "Motif Beta",
+            "summary": "Repeated undulating mid register figure across 2 phrase windows.",
+            "occurrence_count": 2,
+            "phrase_group_ids": [
+              "phrase_group_B"
+            ],
+            "occurrence_refs": [
+              {
+                "phrase_window_id": "phrase_group_B_1",
+                "start_s": 29.58,
+                "end_s": 36.98,
+                "start_bar": 17,
+                "end_bar": 20,
+                "section_id": "section-003"
+              },
+              {
+                "phrase_window_id": "phrase_group_B_2",
+                "start_s": 51.74,
+                "end_s": 57.74,
+                "start_bar": 29,
+                "end_bar": 32,
+                "section_id": "section-004"
+              }
+            ]
+          }
+        ],
+        "repeated_phrase_groups": [
+          {
+            "id": "phrase_group_A",
+            "label": "Phrase Group A",
+            "occurrence_count": 3,
+            "phrase_window_ids": [
+              "phrase_group_A_1",
+              "phrase_group_A_2",
+              "phrase_group_A_3"
+            ]
+          },
+          {
+            "id": "phrase_group_B",
+            "label": "Phrase Group B",
+            "occurrence_count": 2,
+            "phrase_window_ids": [
+              "phrase_group_B_1",
+              "phrase_group_B_2"
+            ]
+          }
+        ]
+      },
+      "phrase_groups": [
+        {
+          "id": "phrase_group_A",
+          "label": "Phrase Group A",
+          "occurrence_count": 3,
+          "phrase_window_ids": [
+            "phrase_group_A_1",
+            "phrase_group_A_2",
+            "phrase_group_A_3"
+          ]
+        },
+        {
+          "id": "phrase_group_B",
+          "label": "Phrase Group B",
+          "occurrence_count": 2,
+          "phrase_window_ids": [
+            "phrase_group_B_1",
+            "phrase_group_B_2"
+          ]
+        }
+      ],
+      "abstraction": {
+        "description": "Layered mid-register material with undulating contour, dense activity (14.7 notes per bar), leaping bass movement, moderate repetition, and clipped note lengths.",
+        "core_terms": {
+          "texture": "layered",
+          "register_label": "mid",
+          "melodic_contour": "undulating",
+          "bass_motion": "leaping",
+          "repetition_level": "moderate repetition",
+          "sustain_profile": "clipped note lengths"
+        },
+        "section_descriptions": [
+          {
+            "section_id": "section-001",
+            "section_name": "ambient_opening",
+            "description": "Ambient_opening spans bars 1-8 with a layered texture, undulating contour, dense activity (15.3 notes per bar), strong repetition, and mostly short notes."
+          },
+          {
+            "section_id": "section-002",
+            "section_name": "vocal_spotlight",
+            "description": "Vocal_spotlight spans bars 9-17 with a layered texture, rising contour, dense activity (13.2 notes per bar), moderate repetition, and clipped note lengths."
+          },
+          {
+            "section_id": "section-003",
+            "section_name": "momentum_lift",
+            "description": "Momentum_lift spans bars 17-24 with a layered texture, falling contour, moderately dense activity (11.5 notes per bar), moderate repetition, and clipped note lengths."
+          },
+          {
+            "section_id": "section-004",
+            "section_name": "release_tail",
+            "description": "Release_tail spans bars 25-32 with a layered texture, undulating contour, very dense activity (18.7 notes per bar), moderate repetition, and clipped note lengths."
+          }
+        ],
+        "phrase_group_descriptions": [
+          {
+            "phrase_group_id": "phrase_group_A",
+            "motif_group_id": "motif_alpha",
+            "description": "Phrase Group A recurs 3 times, usually in ambient_opening, with rising contour and active motion (50.5 notes per bar)."
+          },
+          {
+            "phrase_group_id": "phrase_group_B",
+            "motif_group_id": "motif_beta",
+            "description": "Phrase Group B recurs 2 times, usually in momentum_lift, with undulating contour and active motion (50.1 notes per bar)."
+          }
+        ]
+      }
+    },
+    "energy": {
+      "global_energy": {
+        "mean": 0.343009,
+        "peak": 0.584213,
+        "dynamic_range": 0.479388,
+        "transient_density": 0.366217,
+        "energy_trend": "build"
+      },
+      "section_energy": [
+        {
+          "section_id": "section-001",
+          "section_name": "ambient_opening",
+          "start_s": 0.0,
+          "end_s": 14.82,
+          "bar_start": 1,
+          "bar_end": 8,
+          "mean": 0.252503,
+          "peak": 0.32484,
+          "transient_density": 0.2236,
+          "level": "low",
+          "trend": "wave"
+        },
+        {
+          "section_id": "section-002",
+          "section_name": "vocal_spotlight",
+          "start_s": 14.82,
+          "end_s": 29.605442,
+          "bar_start": 9,
+          "bar_end": 17,
+          "mean": 0.311454,
+          "peak": 0.562094,
+          "transient_density": 0.333931,
+          "level": "medium",
+          "trend": "build"
+        },
+        {
+          "section_id": "section-003",
+          "section_name": "momentum_lift",
+          "start_s": 29.605442,
+          "end_s": 44.36,
+          "bar_start": 17,
+          "bar_end": 24,
+          "mean": 0.526248,
+          "peak": 0.584213,
+          "transient_density": 0.60032,
+          "level": "high",
+          "trend": "release"
+        },
+        {
+          "section_id": "section-004",
+          "section_name": "release_tail",
+          "start_s": 44.36,
+          "end_s": 57.74,
+          "bar_start": 25,
+          "bar_end": 32,
+          "mean": 0.282907,
+          "peak": 0.393913,
+          "transient_density": 0.310078,
+          "level": "medium",
+          "trend": "release"
+        }
+      ],
+      "accent_candidates": [
+        {
+          "id": "accent_001",
+          "time": 30.04,
+          "kind": "hit",
+          "intensity": 0.658438,
+          "bar": 17,
+          "beat": 2,
+          "section_id": "section-003",
+          "section_name": "momentum_lift"
+        },
+        {
+          "id": "accent_002",
+          "time": 32.82,
+          "kind": "hit",
+          "intensity": 0.667603,
+          "bar": 18,
+          "beat": 4,
+          "section_id": "section-003",
+          "section_name": "momentum_lift"
+        },
+        {
+          "id": "accent_003",
+          "time": 34.2,
+          "kind": "hit",
+          "intensity": 0.657889,
+          "bar": 19,
+          "beat": 3,
+          "section_id": "section-003",
+          "section_name": "momentum_lift"
+        },
+        {
+          "id": "accent_004",
+          "time": 35.12,
+          "kind": "hit",
+          "intensity": 0.664164,
+          "bar": 20,
+          "beat": 1,
+          "section_id": "section-003",
+          "section_name": "momentum_lift"
+        },
+        {
+          "id": "accent_005",
+          "time": 36.04,
+          "kind": "hit",
+          "intensity": 0.65956,
+          "bar": 20,
+          "beat": 3,
+          "section_id": "section-003",
+          "section_name": "momentum_lift"
+        },
+        {
+          "id": "accent_006",
+          "time": 37.44,
+          "kind": "hit",
+          "intensity": 0.656519,
+          "bar": 21,
+          "beat": 2,
+          "section_id": "section-003",
+          "section_name": "momentum_lift"
+        },
+        {
+          "id": "accent_007",
+          "time": 38.36,
+          "kind": "hit",
+          "intensity": 0.660547,
+          "bar": 21,
+          "beat": 4,
+          "section_id": "section-003",
+          "section_name": "momentum_lift"
+        },
+        {
+          "id": "accent_008",
+          "time": 40.2,
+          "kind": "hit",
+          "intensity": 0.661227,
+          "bar": 22,
+          "beat": 4,
+          "section_id": "section-003",
+          "section_name": "momentum_lift"
+        },
+        {
+          "id": "accent_009",
+          "time": 41.58,
+          "kind": "hit",
+          "intensity": 0.659144,
+          "bar": 23,
+          "beat": 3,
+          "section_id": "section-003",
+          "section_name": "momentum_lift"
+        }
+      ]
+    },
+    "patterns": {
+      "patterns": [
+        {
+          "id": "pattern_A",
+          "label": "A",
+          "bar_count": 1,
+          "sequence": "D#m",
+          "bar_sequence": "D#m|D#m|D#m",
+          "occurrence_count": 27,
+          "occurrences": [
+            {
+              "start_bar": 1,
+              "end_bar": 1,
+              "start_s": 0.06,
+              "end_s": 1.9,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 2,
+              "end_bar": 2,
+              "start_s": 1.9,
+              "end_s": 3.74,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 3,
+              "end_bar": 3,
+              "start_s": 3.74,
+              "end_s": 5.58,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 4,
+              "end_bar": 4,
+              "start_s": 5.58,
+              "end_s": 7.44,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 5,
+              "end_bar": 5,
+              "start_s": 7.44,
+              "end_s": 9.28,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 6,
+              "end_bar": 6,
+              "start_s": 9.28,
+              "end_s": 11.12,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 7,
+              "end_bar": 7,
+              "start_s": 11.12,
+              "end_s": 12.96,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 8,
+              "end_bar": 8,
+              "start_s": 12.96,
+              "end_s": 14.82,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 9,
+              "end_bar": 9,
+              "start_s": 14.82,
+              "end_s": 16.68,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 10,
+              "end_bar": 10,
+              "start_s": 16.68,
+              "end_s": 18.52,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 11,
+              "end_bar": 11,
+              "start_s": 18.52,
+              "end_s": 20.36,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 12,
+              "end_bar": 12,
+              "start_s": 20.36,
+              "end_s": 22.2,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 13,
+              "end_bar": 13,
+              "start_s": 22.2,
+              "end_s": 24.06,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 14,
+              "end_bar": 14,
+              "start_s": 24.06,
+              "end_s": 25.9,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 15,
+              "end_bar": 15,
+              "start_s": 25.9,
+              "end_s": 27.74,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 16,
+              "end_bar": 16,
+              "start_s": 27.74,
+              "end_s": 29.58,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 17,
+              "end_bar": 17,
+              "start_s": 29.58,
+              "end_s": 31.44,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 18,
+              "end_bar": 18,
+              "start_s": 31.44,
+              "end_s": 33.28,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 19,
+              "end_bar": 19,
+              "start_s": 33.28,
+              "end_s": 35.12,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 20,
+              "end_bar": 20,
+              "start_s": 35.12,
+              "end_s": 36.98,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 21,
+              "end_bar": 21,
+              "start_s": 36.98,
+              "end_s": 38.82,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 22,
+              "end_bar": 22,
+              "start_s": 38.82,
+              "end_s": 40.66,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 23,
+              "end_bar": 23,
+              "start_s": 40.66,
+              "end_s": 42.5,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 24,
+              "end_bar": 24,
+              "start_s": 42.5,
+              "end_s": 44.36,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 29,
+              "end_bar": 29,
+              "start_s": 51.74,
+              "end_s": 53.6,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 30,
+              "end_bar": 30,
+              "start_s": 53.6,
+              "end_s": 55.44,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            },
+            {
+              "start_bar": 31,
+              "end_bar": 31,
+              "start_s": 55.44,
+              "end_s": 57.28,
+              "mismatch_count": 0,
+              "sequence": "D#m",
+              "bar_sequence": "D#m"
+            }
+          ]
+        }
+      ],
+      "occurrences": [
+        {
+          "start_bar": 1,
+          "end_bar": 1,
+          "start_s": 0.06,
+          "end_s": 1.9,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 2,
+          "end_bar": 2,
+          "start_s": 1.9,
+          "end_s": 3.74,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 3,
+          "end_bar": 3,
+          "start_s": 3.74,
+          "end_s": 5.58,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 4,
+          "end_bar": 4,
+          "start_s": 5.58,
+          "end_s": 7.44,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 5,
+          "end_bar": 5,
+          "start_s": 7.44,
+          "end_s": 9.28,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 6,
+          "end_bar": 6,
+          "start_s": 9.28,
+          "end_s": 11.12,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 7,
+          "end_bar": 7,
+          "start_s": 11.12,
+          "end_s": 12.96,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 8,
+          "end_bar": 8,
+          "start_s": 12.96,
+          "end_s": 14.82,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 9,
+          "end_bar": 9,
+          "start_s": 14.82,
+          "end_s": 16.68,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 10,
+          "end_bar": 10,
+          "start_s": 16.68,
+          "end_s": 18.52,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 11,
+          "end_bar": 11,
+          "start_s": 18.52,
+          "end_s": 20.36,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 12,
+          "end_bar": 12,
+          "start_s": 20.36,
+          "end_s": 22.2,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 13,
+          "end_bar": 13,
+          "start_s": 22.2,
+          "end_s": 24.06,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 14,
+          "end_bar": 14,
+          "start_s": 24.06,
+          "end_s": 25.9,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 15,
+          "end_bar": 15,
+          "start_s": 25.9,
+          "end_s": 27.74,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 16,
+          "end_bar": 16,
+          "start_s": 27.74,
+          "end_s": 29.58,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 17,
+          "end_bar": 17,
+          "start_s": 29.58,
+          "end_s": 31.44,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 18,
+          "end_bar": 18,
+          "start_s": 31.44,
+          "end_s": 33.28,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 19,
+          "end_bar": 19,
+          "start_s": 33.28,
+          "end_s": 35.12,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 20,
+          "end_bar": 20,
+          "start_s": 35.12,
+          "end_s": 36.98,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 21,
+          "end_bar": 21,
+          "start_s": 36.98,
+          "end_s": 38.82,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 22,
+          "end_bar": 22,
+          "start_s": 38.82,
+          "end_s": 40.66,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 23,
+          "end_bar": 23,
+          "start_s": 40.66,
+          "end_s": 42.5,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 24,
+          "end_bar": 24,
+          "start_s": 42.5,
+          "end_s": 44.36,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 29,
+          "end_bar": 29,
+          "start_s": 51.74,
+          "end_s": 53.6,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 30,
+          "end_bar": 30,
+          "start_s": 53.6,
+          "end_s": 55.44,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        },
+        {
+          "start_bar": 31,
+          "end_bar": 31,
+          "start_s": 55.44,
+          "end_s": 57.28,
+          "mismatch_count": 0,
+          "sequence": "D#m",
+          "bar_sequence": "D#m",
+          "pattern_id": "pattern_A"
+        }
+      ]
+    }
+  },
+  "section_cards": [
+    {
+      "section_id": "section-001",
+      "section_name": "ambient_opening",
+      "start_s": 0.0,
+      "end_s": 14.82,
+      "symbolic_description": "Ambient_opening spans bars 1-8 with a layered texture, undulating contour, dense activity (15.3 notes per bar), strong repetition, and mostly short notes.",
+      "energy_level": "low",
+      "energy_trend": "wave",
+      "phrase_count": 2,
+      "motif_activity": 1.0
+    },
+    {
+      "section_id": "section-002",
+      "section_name": "vocal_spotlight",
+      "start_s": 14.82,
+      "end_s": 29.605442,
+      "symbolic_description": "Vocal_spotlight spans bars 9-17 with a layered texture, rising contour, dense activity (13.2 notes per bar), moderate repetition, and clipped note lengths.",
+      "energy_level": "medium",
+      "energy_trend": "build",
+      "phrase_count": 3,
+      "motif_activity": 0.5
+    },
+    {
+      "section_id": "section-003",
+      "section_name": "momentum_lift",
+      "start_s": 29.605442,
+      "end_s": 44.36,
+      "symbolic_description": "Momentum_lift spans bars 17-24 with a layered texture, falling contour, moderately dense activity (11.5 notes per bar), moderate repetition, and clipped note lengths.",
+      "energy_level": "high",
+      "energy_trend": "release",
+      "phrase_count": 2,
+      "motif_activity": 0.5
+    },
+    {
+      "section_id": "section-004",
+      "section_name": "release_tail",
+      "start_s": 44.36,
+      "end_s": 57.74,
+      "symbolic_description": "Release_tail spans bars 25-32 with a layered texture, undulating contour, very dense activity (18.7 notes per bar), moderate repetition, and clipped note lengths.",
+      "energy_level": "medium",
+      "energy_trend": "release",
+      "phrase_count": 2,
+      "motif_activity": 0.5
+    }
+  ],
+  "lighting_context": {
+    "cue_anchors": [
+      {
+        "id": "anchor_section-001_start",
+        "time_s": 0.0,
+        "anchor_type": "section_start",
+        "section_id": "section-001",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_phrase_group_A_1_start",
+        "time_s": 0.06,
+        "anchor_type": "phrase_start",
+        "section_id": "section-001",
+        "phrase_window_id": "phrase_group_A_1"
+      },
+      {
+        "id": "anchor_phrase_group_A_2_start",
+        "time_s": 7.44,
+        "anchor_type": "phrase_start",
+        "section_id": "section-001",
+        "phrase_window_id": "phrase_group_A_2"
+      },
+      {
+        "id": "anchor_phrase_group_C_1_start",
+        "time_s": 14.82,
+        "anchor_type": "phrase_start",
+        "section_id": "section-002",
+        "phrase_window_id": "phrase_group_C_1"
+      },
+      {
+        "id": "anchor_section-002_start",
+        "time_s": 14.82,
+        "anchor_type": "section_start",
+        "section_id": "section-002",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_phrase_group_A_3_start",
+        "time_s": 22.2,
+        "anchor_type": "phrase_start",
+        "section_id": "section-002",
+        "phrase_window_id": "phrase_group_A_3"
+      },
+      {
+        "id": "anchor_phrase_group_B_1_start",
+        "time_s": 29.58,
+        "anchor_type": "phrase_start",
+        "section_id": "section-003",
+        "phrase_window_id": "phrase_group_B_1"
+      },
+      {
+        "id": "anchor_phrase_group_D_1_start",
+        "time_s": 29.58,
+        "anchor_type": "phrase_start",
+        "section_id": "section-002",
+        "phrase_window_id": "phrase_group_D_1"
+      },
+      {
+        "id": "anchor_section-003_start",
+        "time_s": 29.605442,
+        "anchor_type": "section_start",
+        "section_id": "section-003",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_accent_001",
+        "time_s": 30.04,
+        "anchor_type": "accent_hit",
+        "section_id": "section-003",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_accent_002",
+        "time_s": 32.82,
+        "anchor_type": "accent_hit",
+        "section_id": "section-003",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_accent_003",
+        "time_s": 34.2,
+        "anchor_type": "accent_hit",
+        "section_id": "section-003",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_accent_004",
+        "time_s": 35.12,
+        "anchor_type": "accent_hit",
+        "section_id": "section-003",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_accent_005",
+        "time_s": 36.04,
+        "anchor_type": "accent_hit",
+        "section_id": "section-003",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_phrase_group_E_1_start",
+        "time_s": 36.98,
+        "anchor_type": "phrase_start",
+        "section_id": "section-003",
+        "phrase_window_id": "phrase_group_E_1"
+      },
+      {
+        "id": "anchor_accent_006",
+        "time_s": 37.44,
+        "anchor_type": "accent_hit",
+        "section_id": "section-003",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_accent_007",
+        "time_s": 38.36,
+        "anchor_type": "accent_hit",
+        "section_id": "section-003",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_accent_008",
+        "time_s": 40.2,
+        "anchor_type": "accent_hit",
+        "section_id": "section-003",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_accent_009",
+        "time_s": 41.58,
+        "anchor_type": "accent_hit",
+        "section_id": "section-003",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_phrase_group_F_1_start",
+        "time_s": 44.36,
+        "anchor_type": "phrase_start",
+        "section_id": "section-004",
+        "phrase_window_id": "phrase_group_F_1"
+      },
+      {
+        "id": "anchor_section-004_start",
+        "time_s": 44.36,
+        "anchor_type": "section_start",
+        "section_id": "section-004",
+        "phrase_window_id": null
+      },
+      {
+        "id": "anchor_phrase_group_B_2_start",
+        "time_s": 51.74,
+        "anchor_type": "phrase_start",
+        "section_id": "section-004",
+        "phrase_window_id": "phrase_group_B_2"
+      }
+    ],
+    "pattern_callbacks": [
+      {
+        "id": "pattern_callback_pattern_A_1",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 1,
+        "start_s": 0.06,
+        "end_s": 1.9,
+        "section_id": "section-001",
+        "callback_action": "establish"
+      },
+      {
+        "id": "pattern_callback_pattern_A_2",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 2,
+        "start_s": 1.9,
+        "end_s": 3.74,
+        "section_id": "section-001",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_3",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 3,
+        "start_s": 3.74,
+        "end_s": 5.58,
+        "section_id": "section-001",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_4",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 4,
+        "start_s": 5.58,
+        "end_s": 7.44,
+        "section_id": "section-001",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_5",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 5,
+        "start_s": 7.44,
+        "end_s": 9.28,
+        "section_id": "section-001",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_6",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 6,
+        "start_s": 9.28,
+        "end_s": 11.12,
+        "section_id": "section-001",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_7",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 7,
+        "start_s": 11.12,
+        "end_s": 12.96,
+        "section_id": "section-001",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_8",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 8,
+        "start_s": 12.96,
+        "end_s": 14.82,
+        "section_id": "section-001",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_9",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 9,
+        "start_s": 14.82,
+        "end_s": 16.68,
+        "section_id": "section-002",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_10",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 10,
+        "start_s": 16.68,
+        "end_s": 18.52,
+        "section_id": "section-002",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_11",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 11,
+        "start_s": 18.52,
+        "end_s": 20.36,
+        "section_id": "section-002",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_12",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 12,
+        "start_s": 20.36,
+        "end_s": 22.2,
+        "section_id": "section-002",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_13",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 13,
+        "start_s": 22.2,
+        "end_s": 24.06,
+        "section_id": "section-002",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_14",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 14,
+        "start_s": 24.06,
+        "end_s": 25.9,
+        "section_id": "section-002",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_15",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 15,
+        "start_s": 25.9,
+        "end_s": 27.74,
+        "section_id": "section-002",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_16",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 16,
+        "start_s": 27.74,
+        "end_s": 29.58,
+        "section_id": "section-002",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_17",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 17,
+        "start_s": 29.58,
+        "end_s": 31.44,
+        "section_id": "section-002",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_18",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 18,
+        "start_s": 31.44,
+        "end_s": 33.28,
+        "section_id": "section-003",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_19",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 19,
+        "start_s": 33.28,
+        "end_s": 35.12,
+        "section_id": "section-003",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_20",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 20,
+        "start_s": 35.12,
+        "end_s": 36.98,
+        "section_id": "section-003",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_21",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 21,
+        "start_s": 36.98,
+        "end_s": 38.82,
+        "section_id": "section-003",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_22",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 22,
+        "start_s": 38.82,
+        "end_s": 40.66,
+        "section_id": "section-003",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_23",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 23,
+        "start_s": 40.66,
+        "end_s": 42.5,
+        "section_id": "section-003",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_24",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 24,
+        "start_s": 42.5,
+        "end_s": 44.36,
+        "section_id": "section-003",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_25",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 25,
+        "start_s": 51.74,
+        "end_s": 53.6,
+        "section_id": "section-004",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_26",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 26,
+        "start_s": 53.6,
+        "end_s": 55.44,
+        "section_id": "section-004",
+        "callback_action": "repeat_with_variation"
+      },
+      {
+        "id": "pattern_callback_pattern_A_27",
+        "pattern_id": "pattern_A",
+        "occurrence_index": 27,
+        "start_s": 55.44,
+        "end_s": 57.28,
+        "section_id": "section-004",
+        "callback_action": "repeat_with_variation"
+      }
+    ],
+    "motif_callbacks": [
+      {
+        "id": "motif_callback_motif_alpha_phrase_group_A",
+        "motif_group_id": "motif_alpha",
+        "phrase_group_id": "phrase_group_A",
+        "start_s": 0.06,
+        "end_s": 29.58,
+        "section_id": "section-001",
+        "callback_action": "echo"
+      },
+      {
+        "id": "motif_callback_motif_beta_phrase_group_B",
+        "motif_group_id": "motif_beta",
+        "phrase_group_id": "phrase_group_B",
+        "start_s": 29.58,
+        "end_s": 57.74,
+        "section_id": "section-003",
+        "callback_action": "echo"
+      }
+    ]
+  },
+  "generation_notes": [
+    "Symbolic motif repetition remains sourced from layer_b_symbolic.json.",
+    "Harmonic progression repetition remains sourced from layer_d_patterns.json.",
+    "Accent windows are derived from layer_c_energy.json accent candidates."
+  ],
+  "mapping_rules": []
+}
