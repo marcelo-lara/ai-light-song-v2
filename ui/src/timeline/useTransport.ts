@@ -29,21 +29,27 @@ export interface TimePoint {
 }
 
 /**
- * Time of the beat `dir` steps from the beat currently under `currentTime`
- * (`beatIndexAtTime` from coords), clamped to the list. `null` when there are
- * no beats.
+ * Time of the next / previous beat relative to `currentTime`, found by walking
+ * the flat, time-ordered `beats` list directly (the same pattern as
+ * `nextBarTime`). This deliberately does NOT derive a beat *index* from
+ * `beatIndexAtTime` and step it: when a prior `seekTo` left `currentTime` a
+ * floating-point hair short of a beat line, that index is the previous beat and
+ * `+1` lands back on the same beat — a stall, most visible at the last beat of a
+ * bar (ui-issues finding 6). Walking the list with an epsilon crosses bar
+ * boundaries cleanly. `null` when there are no beats.
  */
 export function nextBeatTime(
   beats: readonly TimePoint[],
-  beatIndexAtTime: (t: number) => number,
   currentTime: number,
   dir: 1 | -1,
 ): number | null {
   if (beats.length === 0) return null;
-  const i = beatIndexAtTime(currentTime);
-  const base = i < 0 ? 0 : i;
-  const j = Math.max(0, Math.min(base + dir, beats.length - 1));
-  return beats[j]?.time ?? null;
+  if (dir === 1) {
+    const next = beats.find((b) => b.time > currentTime + 1e-3);
+    return next ? next.time : beats[beats.length - 1]!.time;
+  }
+  const prev = [...beats].reverse().find((b) => b.time < currentTime - 1e-3);
+  return prev ? prev.time : beats[0]!.time;
 }
 
 /**
@@ -227,10 +233,10 @@ export function useTransport({ audioUrl, coords }: TransportInput): Transport {
 
   const stepBeat = useCallback(
     (dir: 1 | -1) => {
-      const t = nextBeatTime(beats, coords.beatIndexAtTime, currentTime, dir);
+      const t = nextBeatTime(beats, currentTime, dir);
       if (t != null) seekTo(t);
     },
-    [beats, coords, currentTime, seekTo],
+    [beats, currentTime, seekTo],
   );
 
   const stepBar = useCallback(
