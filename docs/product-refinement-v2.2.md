@@ -6,7 +6,8 @@ scoped as they are agreed, then turned into `implementation-plan-v2.2.md`.
 This doc is **open for refinement**: new scope arrives as `ADD` items below, new
 defects as `BUG` entries under *Bugs — Open*. Items 1 and 2 close out pieces v2.1
 explicitly deferred (a deprecation and a gold-set gap); items 3–7 are the release
-proper — the drop-sequence rebuild.
+proper — the drop-sequence rebuild; items 8–10 are hint-editor and UI-helper
+refinements that support labelling that rebuild.
 
 ## Version convention
 
@@ -326,6 +327,116 @@ labelled drops respectively and scores each detected sequence against its
 five-phase label. An ML training run over the gold set produces `drop` frames
 only across the `impact` spans, not the build-ups.
 
+## 8. Double-click an empty spot in the Human Hints lane to create a hint
+
+**Status.** Complete (commit `8. Double-click an empty spot in the Human Hints
+lane to create a hint`). `SparseLane` gains an `onDoubleClick` that creates a
+1.0 s draft on empty lane background and opens the editor focused on it, or
+opens the hit hint with no duplicate. Story 8.8 updated.
+
+**Intent.** Story 8.8 currently only lets a user start a new human hint by
+right-clicking the empty background of the "Human Hints" lane, which begins a
+zero-width draft at the clicked time. Authoring the drop-sequence hints this
+release depends on (seven five-phase runs, 35 phase hints) is faster with a
+direct double-click gesture that also drops the user straight into the detail
+editor with a usable default span.
+
+**Change.** Add a double-click affordance to the Human Hints lane, alongside the
+existing right-click path:
+
+- Double-clicking an empty spot in the "Human Hints" lane creates a new draft
+  hint whose `start_time` is the clicked time and whose `end_time` is
+  `start_time + 1.0 s`.
+- The same action opens (expands) the human-hint detail sidebar with the new
+  draft selected and its fields focused for editing, exactly as the right-click
+  path does today.
+- The new hint is a draft in local editor state — it follows the existing
+  explicit-save model (live timeline preview; persisted only on `Save`,
+  discarded on `Cancel`).
+- If the double-click lands on an existing hint rather than empty space, the
+  existing "click a hint to open it in the sidebar" behaviour wins; the
+  create gesture only fires on empty lane background.
+- Story 8.8 is updated to document the double-click create gesture and the
+  1-second default span next to the current right-click behaviour.
+
+**Acceptance.** Double-clicking empty space in the Human Hints lane produces one
+new draft hint spanning exactly 1.0 s from the clicked time, with the detail
+sidebar open and editing that hint. `Cancel` discards it and `Save` writes it to
+`reference/human/human_hints.json` only. Double-clicking an existing hint does
+not create a duplicate.
+
+## 9. Human-hint drags snap to a nearby beat, with a modifier to override
+
+**Status.** Complete (commits `9. Human-hint drags snap to a nearby beat, with a
+modifier to override` and `9. Adapt hint-drag visual spec for beat-snap`).
+`computeDrag` gains a `snapAnchor`; `SparseLane` unions beat-line x's into the
+drag snap targets under a 4px threshold (`BEAT_SNAP_PX`) and disables snapping
+while ⌘/Ctrl is held. Block-edge snapping on the hints lane also tightened
+5px → 4px as a consequence. Story 8.8 and the `hint-drag` visual spec/baseline
+updated.
+
+**Intent.** Human hints — both structural boundaries and the drop-phase edges
+from item 7 — sit on the beat grid far more often than not, and free-dragging to
+an arbitrary millisecond makes clean placement slow. A light beat-snap speeds up
+the common case; because the snap only engages when the dragged edge is already
+almost on a beat line, it does not fight fine placement, and a held modifier
+turns it off entirely.
+
+**Change.** Add snapping to the Human Hints lane drag interactions:
+
+- While dragging a hint — moving it, or dragging its start or end handle — the
+  dragged edge snaps to the nearest **beat** on the EPIC 1.2 beat/bar grid, but
+  only when that beat line is **within 4 screen pixels** of the dragged edge at
+  the current zoom. Outside that 4 px threshold the drag is free and continuous,
+  so sub-beat placement needs no modifier as long as the target is not right next
+  to a beat line.
+- A move drag snaps the hint's start to a nearby beat and preserves the hint's
+  duration; a resize drag snaps only the edge being dragged.
+- Holding **Command** (⌘; Ctrl on non-mac keyboards) during the drag disables
+  snapping entirely for that drag, regardless of proximity.
+- Snapping is a view-time interaction aid only — the snapped value is written to
+  `start_time` / `end_time` as an ordinary timestamp; nothing about the hint
+  schema or the stored file changes.
+- The live timeline preview reflects the snapped position during the drag, not
+  just on release.
+- Story 8.8 is updated to document the 4 px beat-snap and the Command override
+  for hint drags.
+
+**Acceptance.** Dragging a hint edge to within 4 px of a beat line lands it
+exactly on that beat; dragging to a point more than 4 px from any beat line
+leaves it at the raw cursor time; holding Command lands on the raw cursor time
+in both cases. The stored `human_hints.json` values are plain timestamps
+throughout.
+
+## 10. Lane-status notices move to the bottom of the view
+
+**Status.** Complete (commits `10. Lane-status notices move to the bottom of the
+view` and `10. Regenerate visual baselines for the bottom-anchored lane-status
+notice`). The degraded-state banner now renders below the lane stack
+(`.app-timeline-wrap` switched to a column layout, `.app-timeline__banner--bottom`);
+fatal/error states are unchanged. `_test_song` visual baselines regenerated.
+
+**Intent.** The UI shows an informational notice such as *"1 lane missing an
+artifact: Human Hints. Those lanes show an empty state."* near the top of the
+timeline view, where it pushes the timeline down and competes with the content
+the user is actually working on. These notices are low-urgency status, not
+errors, so they belong out of the primary work area.
+
+**Change.**
+
+- Move the missing-artifact / empty-lane status notice, and any notice of the
+  same class (lane-state summaries, "showing empty state" advisories), to the
+  bottom of the view — below the timeline / lane stack — rather than above it.
+- The notice stays dismissible/collapsible exactly as it is today if it already
+  is; only its placement changes.
+- Genuine errors (load failures, parse errors) are **not** in this class and
+  keep their current prominence.
+
+**Acceptance.** With `_test_song` loaded (Human Hints lane has no artifact), the
+"1 lane missing an artifact" notice renders at the bottom of the view and the
+timeline occupies the top of the content area with nothing above it. No
+error-level message is relocated.
+
 ---
 
 ## Evaluation set
@@ -392,6 +503,7 @@ so they can be reviewed in one pass; each is stated in full where it belongs.
 | `beatdrop_visual_plan.json` is deprecated and removed — it targets a screen visualizer, not moving heads, and no downstream consumer reads it. | Item 1 |
 | The composite is pipeline-wide: `song_event_schema.json` is bumped to carry the grouping and `phases[]`, with flat member events retained inside each composite. The fold moves out of the export into the event-machine stage. | Item 3 |
 | Drop-phase hints are grouped into one sequence **by adjacency** — a contiguous run of the canonical phase titles in order. No new hint field, no editor change. | Item 7 |
+| Human-hint drags snap to the nearest **beat** (not bar), and only when the dragged edge is within 4 screen pixels of the beat line; ⌘-drag disables it. | Item 9 |
 | `approach` is a **derived phase label only**, not an event type. It has no rule detector and no ML label; its span is filled geometrically from `build.start` back to where energy lifts off the section floor. | Items 3, 7 |
 
 ## Out of scope for v2.2

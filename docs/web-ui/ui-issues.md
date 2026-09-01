@@ -1,7 +1,8 @@
 # UI Visual Regression Report
 
 Date: 2026-08-30
-Last updated: 2026-08-30 (findings re-verified against source; fixes applied)
+Last updated: 2026-09-01 (added findings 6–7 — "Next beat" bar-boundary stall;
+view resets after hint edit — then marked both FIXED)
 
 Scope: Visual regression and manual inspection of the internal Artifact Debugger UI
 (`ui/`, the Compose `ui` service) with `_test_song` loaded.
@@ -102,6 +103,49 @@ Console log: `ui-issues_console.log`
   captured `record.error` string and show a distinct "failed to load / parse"
   state with the path, separate from "not present". A per-file reload action is a
   nice-to-have.
+
+### 6) "Next beat" transport button stalls on the last beat of a bar (reported 2026-09-01)
+
+- Severity: Minor (navigation correctness in the hint editor / transport).
+- Status: FIXED. `nextBeatTime` in `ui/src/timeline/useTransport.ts` now walks
+  the flat, time-ordered beat list (first beat past `currentTime ± 1e-3` in the
+  step direction, clamped to the ends) instead of stepping a bar-local beat
+  index, so the last beat of a bar advances to beat 1 of the next bar and a
+  playhead a rounding-hair short of a beat line no longer stalls. Covered by a
+  new bar-boundary unit test.
+- Symptom: the "Next beat" button does not advance when the playhead is on the
+  final beat of a bar. Expected: from `bar.beat` 10.4 (last beat of bar 10),
+  clicking "Next beat" moves to 11.1 (first beat of bar 11). Observed: the
+  position does not move to the next bar's first beat.
+- Likely area: the beat-stepping logic behind the transport's next-beat control
+  appears to search within the current bar's beat list and has no fall-through to
+  the first beat of the following bar when already at the last beat of the current
+  one.
+- Recommendation: when the current beat is the last in its bar, "Next beat"
+  should advance to beat 1 of the next bar (and symmetrically, "Previous beat"
+  from `x.1` should step back to the last beat of the previous bar). Confirm the
+  same wrap behaviour at the first/last bar of the song (clamp, no wrap-around).
+
+### 7) Timeline view jumps to song start after editing a human hint (reported 2026-09-01)
+
+- Severity: Minor (loses the user's place during hint editing).
+- Status: FIXED. `handleSaveHints` in `ui/src/App.tsx` no longer calls
+  `reloadSong()` — the server-normalised file already flows into `hintsOverride`
+  and updates the Human Hints lane in place. The full reload had reseeded every
+  artifact to loading/null, collapsing `beats → coords → timelineW` and
+  resetting the scroller's zoom/scroll on every hint drag-commit and panel Save.
+- Symptom: after dragging a human hint — moving it, or dragging its start or end
+  handle — the timeline scroll position and zoom reset to the beginning of the
+  song. Expected: the view stays at the same scroll position and zoom level it
+  had before the edit, with only the hint's geometry changed.
+- Likely area: the hint-edit commit path appears to rebuild the timeline model or
+  remount the timeline component, dropping the transient view state (scroll
+  offset / zoom) instead of preserving it across the re-render.
+- Recommendation: treat scroll offset and zoom as view state that survives a data
+  update. On hint mutation, update only the affected hint in the timeline model
+  and re-draw in place, keeping the current viewport. Applies to all three hint
+  drag operations (move, resize-start, resize-end) and should also hold for hint
+  create and delete.
 
 ## Handoff summary
 
