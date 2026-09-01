@@ -1,19 +1,31 @@
-# Product Refinement — v1.1
+# Product Refinement — v2.1
 
-Active worklist for the **v1.1** release of the analysis module. Items here are
-scoped and ready to be turned into `implementation-plan-v1.1.md`.
+Active worklist for the **v2.1** release of the analysis module. Items here are
+scoped and ready to be turned into `implementation-plan-v2.1.md`.
 
 ## Version convention
 
-`v1.1` is the version of **this module** (the analyzer in `ai-light-song-v2`) —
+`v2.1` is the version of **this module** (the analyzer in `ai-light-song-v2`) —
 not of the lighting system as a whole, and not of any single artifact.
+
+The module release line is numbered `v2.x` to match the repository (`v2`) and
+the from-scratch UI rebuild (`UI v2`), so a reader sees one major version across
+the three. This release was drafted as `v1.1` and renumbered to `v2.1` before
+its tag was cut; the git tag is `v2.1`, and there is no `v1.x` tag. The next
+release is `v2.2`.
+
+The artifact `schema_version` carrier is **independent** of the module version
+and is not renumbered by this alignment: an artifact whose shape changed this
+release carries `schema_version` `"1.1"` (its second shape), regardless of the
+module being `v2.1`. `schema_version` counts an artifact's own shape revisions;
+the module version is the umbrella release.
 
 | Carrier | Rule |
 |---------|------|
-| Module release | `vMAJOR.MINOR`. The work in this doc produces `v1.1`. Tagged `v1.1` in git on completion. |
+| Module release | `vMAJOR.MINOR`, `MAJOR` tracks the repo (`2`). The work in this doc produces `v2.1`. Tagged `v2.1` in git on completion. |
 | Refinement doc | `product-refinement-vX.Y.md` — the active worklist for that release. |
 | Implementation plan | `implementation-plan-vX.Y.md`, archived when the release closes. |
-| Artifact `schema_version` | Bumped to `"1.1"` on every artifact whose **shape** changes this release. Artifacts whose shape is unchanged stay at `"1.0"`. |
+| Artifact `schema_version` | Per-artifact shape counter, independent of the module version. Bumped to `"1.1"` on every artifact whose **shape** changes this release. Artifacts whose shape is unchanged stay at `"1.0"`. |
 | `generated_from.engine` | Carries its own version suffix, bumped when **behaviour** changes even if the schema does not — e.g. `deterministic.section_segmentation.v1` → `.v2`. |
 
 A consumer therefore learns *what shape* to expect from `schema_version` and
@@ -203,8 +215,8 @@ absent, not as a standalone phase event. That case is musically the `fake_drop`
 situation, and keeping one representation means a consumer never has to handle
 phases in two different shapes.
 
-`beatdrop_visual_plan.json` keeps reading the flattened view for v1.1 and is not
-updated to consume composites; that moves to v1.2.
+`beatdrop_visual_plan.json` keeps reading the flattened view for v2.1 and is not
+updated to consume composites; that moves to v2.2.
 
 **Acceptance.** A detected drop is one timeline entry whose phases cover its span
 contiguously and can each be authored as a distinct scene.
@@ -316,8 +328,8 @@ release, sized for the remaining 17 tracks where hand-labelling does not scale.
 **Known gap in coverage.** All four tracks are `dance_form` or `hybrid`, chosen
 because drop detection is the largest failure. Pure `song_form` is therefore
 under-tested: item 1a's `song_form` branch and item 2's verse/chorus grouping are
-exercised only through `Titanium`. Accepted for v1.1; a `song_form` track should
-join the gold set before v1.2.
+exercised only through `Titanium`. Accepted for v2.1; a `song_form` track should
+join the gold set before v2.2.
 
 **Fixtures.** `data/analysis/test-song/` is an orphaned analysis directory with
 no source mp3 in `data/songs/` and should be deleted. `ayuni` is a real 165 s
@@ -335,7 +347,7 @@ file edits for the contract it changed. The constitution requires a Story to
 match the code before a task is done, and doing it per item avoids a
 reconciliation backlog at the end of the release.
 
-**The MCP server is not modified in v1.1.** It is a separate component. Items 1,
+**The MCP server is not modified in v2.1.** It is a separate component. Items 1,
 5 and 6 change the shape it projects — `form_role`/`form_family`, composite
 `phases[]`, and the removal of `layer_add`/`layer_remove` — so this release
 instead produces a **contract-change note** listing exactly what changed in the
@@ -398,17 +410,17 @@ one pass before handoff. Each is stated in full where it belongs.
 | `form_role` comes from deterministic rules, not a model | Item 1 |
 | Genre is not a prior on `form_role`; `form_family` is evidence-derived | Item 1a |
 | An unresolved build is a composite with no `release` phase | Item 5 |
-| `beatdrop_visual_plan.json` keeps the flattened view until v1.2 | Item 5 |
+| `beatdrop_visual_plan.json` keeps the flattened view until v2.2 | Item 5 |
 | `intensity` is on an absolute scale, not per-song | Item 6 |
 | Gold set is `_test_song`, `Armin - Revolution`, `Hideaway - Kiesza`, `Titanium` | Evaluation set |
 | Labelling uses the existing 8.8 editor; item 7 is not a gold-set prerequisite | Evaluation set |
-| Pure `song_form` is under-tested in v1.1; accepted risk | Evaluation set |
+| Pure `song_form` is under-tested in v2.1; accepted risk | Evaluation set |
 | `data/analysis/test-song/` is orphaned and should be deleted | Evaluation set |
 | Story specs are updated inside the item that changes them | Release process |
-| The MCP server is not modified in v1.1; a contract note is handed over | Release process |
+| The MCP server is not modified in v2.1; a contract note is handed over | Release process |
 | Per-item runs use one song; full-corpus runs are the release gate | Release process |
 
-## Out of scope for v1.1
+## Out of scope for v2.1
 
 - Fixture mapping and `lighting_score.md` generation — downstream of this work
   and unaffected while the published contracts are re-cut.

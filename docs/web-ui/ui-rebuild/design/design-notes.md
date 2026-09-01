@@ -154,7 +154,7 @@ and seeks the playhead.
 
 | Lane (canvas `id` / `kind`) | Canvas mock draws | Real source | Rebuild rendering |
 | --- | --- | --- | --- |
-| **Segments** header | 10 hard-coded blocks; chorus/bridge tinted accent, others neutral; left-border "mark" | `sections.json` top-level list (v1.1: `section_id`, `form_role`, `energy_character`, `confidence`) | HTML blocks positioned by `start`/`end` → bar. Tint by `form_role` family (chorus/drop/hook = accent, verse/intro/outro/bridge = neutral). Click → block inspector (§4a). |
+| **Segments** header | 10 hard-coded blocks; chorus/bridge tinted accent, others neutral; left-border "mark" | `sections.json` top-level list (v2.1: `section_id`, `form_role`, `energy_character`, `confidence`) | HTML blocks positioned by `start`/`end` → bar. Tint by `form_role` family (chorus/drop/hook = accent, verse/intro/outro/bridge = neutral). Click → block inspector (§4a). |
 | **Bars** ruler | **always**: a minor tick per bar + a taller tick + number label at every *N*th bar (*N* by zoom). **Only when not crowded** (`pxPerBar ≥ 44`): beat sub-ticks between the bar ticks. `21 px/bar` example = per-bar minor ticks, labels every 4 bars, no beat sub-ticks. Click-to-seek. | `beats.json` (`time`, `bar`, `beat_in_bar`, `type`) | Real bar/beat grid from the beat list; downbeats = the taller ticks. Beat sub-ticks gated on the §2 zoom table. Click-to-seek drives wavesurfer. |
 | **Waveform Anchor** (`wave`) | seeded fake peak waveform, mirror-drawn around a mid-line | the song's decoded audio (`data/songs/<song>.mp3`) | **wavesurfer.js** renders this lane. It owns waveform + audio playback + region-drag; its `currentTime` is the single clock the other lanes and the playhead follow. Peaks pre-decoded and cached where possible. |
 | **Human Hints** (`hints`) | canvas draws only the grid; hint **pills** are HTML overlays (`buildHints`) | `reference/human/human_hints.json` | HTML pills at `start_time`/`end_time`. Click opens the right panel. Selected pill = accent-700 bg / accent-400 border. |
@@ -340,7 +340,7 @@ Story 8.8) and only on explicit Save.
 
 **Not in the canvas but required at parity:** create a new hint, delete the
 active hint, and "set start/end to playhead" — carry these over from the current
-`HumanHintsSidebar` (they already exist). The v1.1 review-queue editor (Story
+`HumanHintsSidebar` (they already exist). The v2.1 review-queue editor (Story
 8.10) reuses the same right-panel shell as a second mode.
 
 ---

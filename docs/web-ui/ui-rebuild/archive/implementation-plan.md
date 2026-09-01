@@ -121,8 +121,8 @@ up ui` serves the empty shell at `:8080` matching the design's frame; `grep -E
       `PUT /api/human-hints/<song>` handler from the previous app's `vite.config.js`
       (byte-for-byte behaviour, including the path-escape guard).
 - [x] `src/data/types.ts` — TS types for every artifact the UI reads, mirroring
-      the v1.1 contracts (`docs/web-ui/7.2.build_ui_data_story.md`,
-      `docs/source references/contract-change-v1.1.md`).
+      the v2.1 contracts (`docs/web-ui/7.2.build_ui_data_story.md`,
+      `docs/source references/contract-change-v2.1.md`).
 - [x] `src/data/loaders.ts` — one loader per artifact
       (`info`, `beats`, `sectionsTopLevel`, `sectionSegmentation`, `fftBands`,
       `rmsLoudness`, `loudnessEnvelope`, `harmonicLayer`, `humanHints`,
@@ -322,7 +322,7 @@ A working first version — deeper iteration is a later release.
       Opened from a drawer entry (no lane).
 - [x] Third mode in the item-6 shell (mode switch, not a second aside).
 - [x] Empty state when a song has no `review_queue.json` (not yet analysed under
-      v1.1) — the panel says so rather than erroring.
+      v2.1) — the panel says so rather than erroring.
 
 **Test:** as Story 8.10 — answering `form_family` + Save writes `song_facts.json`
 with `provenance: "human-confirmed"`; nothing else writes it; a song without a
@@ -579,10 +579,10 @@ to clear the stale Preact `node_modules` volume.
   that wants the config type-checked should add `@types/node` +
   `tsconfig.node.json` and rebuild the image.
 - **Top-level `sections.json` is still the v1.0 projection** (no
-  `section_id`/`form_role`/`confidence`) while the v1.1 contract adds them.
+  `section_id`/`form_role`/`confidence`) while the v2.1 contract adds them.
   `SectionRow` types the additions as `T | null` and the parser coerces missing
   → `null` rather than rejecting. `artifacts/section_segmentation/sections.json`
-  *is* v1.1 and is parsed strictly (incl. the loud failure on duplicate
+  *is* v2.1 and is parsed strictly (incl. the loud failure on duplicate
   `section_id`).
 - **`.gitignore`:** root `data/` rule also matched `ui/src/data/`; added
   `!ui/src/data/**` negations so the directory is committed.

@@ -1,6 +1,6 @@
-# Implementation Plan — v1.1
+# Implementation Plan — v2.1
 
-Turns [product-refinement-v1.1.md](product-refinement-v1.1.md) into ordered,
+Turns [product-refinement-v2.1.md](product-refinement-v2.1.md) into ordered,
 validated work. Item numbers here are plan items; they reference the refinement
 doc's items (`R1`–`R7`) and bugs (`B1`–`B6`) rather than renumbering them.
 
@@ -281,7 +281,7 @@ alternation). `--compare form` accuracy-vs-baseline is provisional under D1.
       the measured cosine. Wired into every `SectionWindow`.
 - [x] Story 3.1 states that `repetition_group`, not `energy_character` equality,
       is the reusable-look input; the MCP-side switch is carried in the 6.2
-      contract-change note (the MCP server is not modified in v1.1).
+      contract-change note (the MCP server is not modified in v2.1).
 - [x] Story 3.1 updated.
 
 **Test:** `tests/test_form_labelling.py::RepetitionGroupTests` — verses group
@@ -344,7 +344,7 @@ id fails, duplicate id fails) + `tests/test_validation.py` restored.
       only in the `song_event_timeline.json` projection (`schema_version` `"1.1"`,
       engine `llm-friendly-event-timeline-v2`); the strict internal
       `song_event_schema.json` stays at `"1.0"` with flat members because
-      `beatdrop_visual_plan.json` still reads them (v1.2 moves it).
+      `beatdrop_visual_plan.json` still reads them (v2.2 moves it).
 - [x] `beatdrop_visual_plan.json` is built from sections/energy/fft, not this
       timeline — unaffected.
 - [x] Stories 5.1 and 5.6 updated.
@@ -444,26 +444,26 @@ save-only-on-explicit-save contract is enforced by the single PUT handler.
 - [ ] Run the full pipeline over all songs and confirm no stage fails.
 - [ ] Confirm determinism: run one song twice, compare artifacts byte-for-byte.
 - [ ] Record drop counts and confidence distributions across the corpus, for
-      comparison against the pre-v1.1 figures in the refinement doc.
+      comparison against the pre-v2.1 figures in the refinement doc.
 
 ```bash
 mkdir -p logs && nohup docker compose run --rm -T app \
   ./analyze --all-songs --device cuda \
-  > "logs/v1.1-validation-$(date +%F_%H-%M-%S).log" 2>&1 < /dev/null & echo $!
+  > "logs/v2.1-validation-$(date +%F_%H-%M-%S).log" 2>&1 < /dev/null & echo $!
 ```
 
 **Commit:** `6.1 full-corpus run`
 
 ### 6.2 MCP contract-change note
 
-- [x] `docs/source references/contract-change-v1.1.md` written — every
+- [x] `docs/source references/contract-change-v2.1.md` written — every
       top-level change: `form_family`/`form_role`/`energy_character`,
       `repetition_group`/`variant_of`/`similarity`, `confidence_terms` and the
       new `confidence` semantics, `section_id` as the join key, composite
       `phases[]`, `layer_add`/`layer_remove` → `texture_summary[]`, the absolute
       `intensity` scale, and the new `review_queue.json` / `song_facts.json`
       files.
-- [x] States that the MCP server is not modified in v1.1.
+- [x] States that the MCP server is not modified in v2.1.
 
 **Commit:** `6.2 MCP contract-change note`
 
@@ -481,11 +481,11 @@ mkdir -p logs && nohup docker compose run --rm -T app \
       5.5, 5.6, 7.2) plus new Stories 5.7 and 8.10.
 - [x] `docs/data_folder_reference.md` and `docs/Implementation_Guide.md` updated
       for the new files and fields.
-- [x] Root `README.md` status line updated — v1.1 code complete, tag held on
+- [x] Root `README.md` status line updated — v2.1 code complete, tag held on
       D1 + D2.
-- [ ] Archive this plan and `product-refinement-v1.1.md` — **held**: the release
+- [ ] Archive this plan and `product-refinement-v2.1.md` — **held**: the release
       is not closed until D1 (gold-set labelling) and D2 (full-corpus run) pass.
-- [ ] Tag `v1.1` — **held** on D1 + D2.
+- [ ] Tag `v2.1` — **held** on D1 + D2.
 
 **Commit:** `6.3 release close-out`
 
@@ -513,11 +513,11 @@ against the human "Drop in" at 28.8 s; composites fold; `layer_add`/`layer_remov
 gone from the timeline; `review_queue.json` emits one answerable question.
 
 **Options.**
-- **(taken) Defer 6.1 to a GPU host; ship the code.** The release tag `v1.1`
+- **(taken) Defer 6.1 to a GPU host; ship the code.** The release tag `v2.1`
   is held until 6.1 and the D1 gold-set validation both pass. All item code,
   tests and story specs are committed.
 - Run 6.1 in CI or on the analysis workstation and record drop counts /
-  confidence distributions vs. the pre-v1.1 figures, then tag.
+  confidence distributions vs. the pre-v2.1 figures, then tag.
 
 ### D1 — Gold-set ground truth requires a human listener (blocks 0.2)
 

@@ -1,14 +1,18 @@
 # ai-light-song-v2
 
-**Status:** **v1.1** code complete — all plan items implemented and committed
-(one commit per item). The `v1.1` tag is held pending two host-dependent gates:
-the gold-set labelling pass (D1) and the full-corpus GPU validation run (D2).
-See [docs/product-refinement-v1.1.md](docs/product-refinement-v1.1.md) for the
-worklist and version convention,
-[docs/implementation-plan-v1.1.md](docs/implementation-plan-v1.1.md) for the
-per-item status, and
-[docs/source references/contract-change-v1.1.md](docs/source%20references/contract-change-v1.1.md)
-for the handover note to the MCP side.
+**Status:** `v2.1` code complete — all plan items implemented and committed (one
+commit per item); the `v2.1` tag is held pending two host-dependent gates, the
+gold-set labelling pass (D1) and the full-corpus GPU validation run (D2). The
+module release line is `v2.x` to match the repo and the `UI v2` rebuild; `v2.1`
+was drafted as `v1.1` and renumbered before tagging (there is no `v1.x` tag).
+`v2.2` planning is now open. See
+[docs/product-refinement-v2.1.md](docs/product-refinement-v2.1.md) (v2.1
+worklist and the version convention),
+[docs/implementation-plan-v2.1.md](docs/implementation-plan-v2.1.md) (per-item
+status), [docs/source references/contract-change-v2.1.md](docs/source%20references/contract-change-v2.1.md)
+(the MCP handover note), and
+[docs/product-refinement-v2.2.md](docs/product-refinement-v2.2.md) (the next
+release worklist).
 
 The internal debugger UI (`ui/`) is the `UI v2` from-scratch rebuild (React +
 TypeScript + Vite, the "Score Analysis DAW" design, wavesurfer.js as player and
@@ -124,8 +128,9 @@ Helper-UI dev notes: [ui/README.HELPER_UI.md](ui/README.HELPER_UI.md).
 - [docs/README.md](docs/README.md) — index of all specs, grouped by kind of work.
 - [docs/constitution.md](docs/constitution.md) — architecture North Star and project law.
 - [docs/Implementation_Guide.md](docs/Implementation_Guide.md) — full pipeline and repository contracts.
-- [docs/product-refinement-v1.1.md](docs/product-refinement-v1.1.md) — active release worklist.
-- [docs/implementation-plan-v1.1.md](docs/implementation-plan-v1.1.md) — ordered v1.1 work, one commit per item.
+- [docs/product-refinement-v2.2.md](docs/product-refinement-v2.2.md) — active release worklist (v2.2, planning).
+- [docs/product-refinement-v2.1.md](docs/product-refinement-v2.1.md) — v2.1 worklist and the version convention.
+- [docs/implementation-plan-v2.1.md](docs/implementation-plan-v2.1.md) — ordered v2.1 work, one commit per item.
 - [docs/data_folder_reference.md](docs/data_folder_reference.md) — every `data/` file and its purpose.
 - [docs/source references/analysis-input-guide.md](docs/source%20references/analysis-input-guide.md) — what the downstream MCP server actually consumes; the contract analysis quality is judged against.
 - Story specs: [docs/audio-processing/](docs/audio-processing/), [docs/audio-inference/](docs/audio-inference/), [docs/lighting-score/](docs/lighting-score/), [docs/web-ui/](docs/web-ui/), [docs/human-curated/](docs/human-curated/).

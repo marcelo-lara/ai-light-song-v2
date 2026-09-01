@@ -1,6 +1,6 @@
-# Contract-change note — analyzer v1.1 → MCP server
+# Contract-change note — analyzer v2.1 → MCP server
 
-The MCP server is **not modified in v1.1**. This note lists exactly what changed
+The MCP server is **not modified in v2.1**. This note lists exactly what changed
 in the top-level files it projects, for the MCP side to absorb. Compatibility
 was not a constraint on the change; documenting it is.
 
@@ -46,9 +46,9 @@ was not a constraint on the change; documenting it is.
 | `reference/human/song_facts.json` | the debugger UI on explicit human save only | Song-level human-confirmed facts (`genre`, `form_family`, `has_drop`). Sibling of `human_hints.json`, not part of it. The analyzer never writes it. |
 | `artifacts/validation/form_score.json`, `drops_score.json` | `--compare form,drops` | Advisory structural scores against `reference/human/` labels. |
 
-## Unchanged for v1.1
+## Unchanged for v2.1
 
 `beatdrop_visual_plan.json` still reads the **flattened** event view (it is built
-from sections/energy/fft, not the timeline). Moving it to composites is v1.2. The
+from sections/energy/fft, not the timeline). Moving it to composites is v2.2. The
 strict internal `song_event_schema.json` for `rule_candidates.json` /
 `events.machine.json` stays at `schema_version` `"1.0"` with flat member events.

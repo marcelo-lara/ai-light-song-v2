@@ -7,9 +7,9 @@ in `ui/`. Items here are scoped and ready to be turned into
 ## Version convention
 
 `UI v2` is the version of the **debugger web app** — a separate component from
-the analyzer module (whose current release is `v1.1`). It has no bearing on the
+the analyzer module (whose current release is `v2.1`). It has no bearing on the
 analyzer's version or on any artifact `schema_version`. The rebuild consumes the
-analyzer's published contracts as they stand after `v1.1`; it does not change
+analyzer's published contracts as they stand after `v2.1`; it does not change
 them.
 
 | Carrier | Rule |
@@ -95,9 +95,9 @@ central so a lane component never fetches ad-hoc.
   `essentia/fft_bands.json`, `essentia/rms_loudness.json`,
   `essentia/loudness_envelope.json`, `layer_a_harmonic.json`,
   `reference/human/human_hints.json`, `song_event_timeline.json`,
-  `artifacts/validation/review_queue.json`). TypeScript types mirror the v1.1
+  `artifacts/validation/review_queue.json`). TypeScript types mirror the v2.1
   contracts (`docs/web-ui/7.2.build_ui_data_story.md`,
-  `docs/source references/contract-change-v1.1.md`).
+  `docs/source references/contract-change-v2.1.md`).
 - A `useSong(songName)` hook: loads `info.json` + the artifacts the visible lanes
   need, exposes `{ status, data, error }` per artifact so lanes render their own
   loading / missing / error state.
@@ -257,7 +257,7 @@ path writes it; the panel matches the design.
 
 ## 7. Review-queue editor — right-panel third mode
 
-**Intent.** The v1.1 human loop (Story 8.10) rebuilt into the new shell so
+**Intent.** The v2.1 human loop (Story 8.10) rebuilt into the new shell so
 `review_queue.json` stays consumable and `song_facts.json` stays editable. A
 **functional first version** — deeper iteration (richer question types, inline
 evidence playback, bulk answering) is a following release.
