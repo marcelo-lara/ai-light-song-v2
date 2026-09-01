@@ -5,25 +5,29 @@ The internal artifact debugger in `ui/` was rebuilt from scratch as the
 **wavesurfer.js** as the audio player and master clock. Internal debugger only —
 the constitution's "not a production consumer experience" rule stands.
 
-**Status:** items 1–11 complete and committed (one commit per item). The
-pre-rebuild Preact/MUI app was removed at cutover (item 11); nothing in the repo
-references it. The `ui-v2` git tag is **held** pending the D3 live-browser
-visual / interaction parity pass — see the *Parity sign-off (item 11)* section of
-the archived plan.
+**Status:** UI v2 items 1–11 complete and committed. The follow-on **UI v2.1**
+polish-and-fix pass (D3 live-browser parity defects + refinements) is also
+**complete** — all 10 plan items implemented and committed one per item, plus a
+Playwright visual-regression suite under `tests/ui-visual/`. Both passes are
+archived under [`archive/`](archive/). The pre-rebuild Preact/MUI app was removed
+at cutover (item 11); nothing in the repo references it.
 
-Defects and refinements found during the D3 parity pass are collected in
-[`product-refinement-ui-v2.1.md`](product-refinement-ui-v2.1.md) (active
-worklist) and planned in
-[`implementation-plan-ui-v2.1.md`](implementation-plan-ui-v2.1.md) (8 items,
-one commit each; item 1 stands up a Playwright visual-regression suite under
-`tests/ui-visual/`).
+Defects and refinements from the D3 parity pass were collected in
+[`archive/v2.1/product-refinement-ui-v2.1.md`](archive/v2.1/product-refinement-ui-v2.1.md)
+and worked through
+[`archive/v2.1/implementation-plan-ui-v2.1.md`](archive/v2.1/implementation-plan-ui-v2.1.md)
+(10 items; item 1 stood up the visual-regression suite). The living
+visual-regression reference is
+[`../ui-regression_guide.md`](../ui-regression_guide.md).
 
 | File | What it is |
 | --- | --- |
 | [`design/design-notes.md`](design/design-notes.md) | Nocturne tokens, layout anatomy, per-lane spec (incl. §3a — the FFT/RMS/Envelope palette carried verbatim from the previous app), the 3-mode right panel, and how each lane maps onto a real analyzer artifact. |
 | [`design/Score-Analysis-DAW.dc.html`](design/Score-Analysis-DAW.dc.html) | The Claude Design canvas markup + behavioural script, verbatim, as the visual/interaction reference. |
-| [`archive/implementation-plan.md`](archive/implementation-plan.md) | The completed, checkboxed, one-commit-per-item plan (items 1–11), the D1–D8 decision log, and the item-11 **parity sign-off** table + dev/prod serve + no-writes-grep results. |
-| [`archive/product-refinement.md`](archive/product-refinement.md) | The intent + scoped worklist (`R1`–`R10`), parity checklist (signed off in item 11), decisions, out-of-scope. |
+| [`archive/implementation-plan.md`](archive/implementation-plan.md) | UI v2: the completed, checkboxed, one-commit-per-item plan (items 1–11), the D1–D8 decision log, and the item-11 **parity sign-off** table + dev/prod serve + no-writes-grep results. |
+| [`archive/product-refinement.md`](archive/product-refinement.md) | UI v2: the intent + scoped worklist (`R1`–`R10`), parity checklist (signed off in item 11), decisions, out-of-scope. |
+| [`archive/v2.1/implementation-plan-ui-v2.1.md`](archive/v2.1/implementation-plan-ui-v2.1.md) | UI v2.1: the completed 10-item polish-and-fix plan (harness, `B1`/`B2` bug fixes, refinements `R1`–`R7`), each item with its per-item resolution notes and Visual QA block. |
+| [`archive/v2.1/product-refinement-ui-v2.1.md`](archive/v2.1/product-refinement-ui-v2.1.md) | UI v2.1: the intent + scoped worklist for the parity-pass defects and refinements. |
 
 ## What shipped
 

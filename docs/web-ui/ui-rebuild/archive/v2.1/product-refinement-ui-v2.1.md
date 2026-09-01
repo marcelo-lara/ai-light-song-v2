@@ -1,8 +1,11 @@
 # Product Refinement — Web UI v2.1
 
-Active worklist for a **polish and fix pass** on the shipped UI v2 rebuild of the
-internal artifact debugger in `ui/`. Items here are scoped and ready to be turned
-into an implementation plan.
+> **Archived — pass complete.** Every item and bug below was planned and shipped
+> via [`implementation-plan-ui-v2.1.md`](implementation-plan-ui-v2.1.md) (10
+> items, one commit each). Kept as the record of intent for the pass.
+
+Worklist for a **polish and fix pass** on the shipped UI v2 rebuild of the
+internal artifact debugger in `ui/`.
 
 ## Version convention
 
@@ -142,7 +145,17 @@ on drop, and survives a reload; a plain click still opens the editor.
 
 ---
 
-## Bugs — Open
+## Bugs — Resolved
+
+**B1 — fixed by plan item 2** (wavesurfer ≥ 7.8 derives waveform width from
+`minPxPerSec * duration`, not the `width` option; `useTransport` now passes
+`minPxPerSec: coords.pxPerSec` on create and zoom-resize).
+
+**B2 — fixed by plan item 3** (`CanvasLane.draw` clipped every renderer's
+x-domain to the scroll viewport; it now runs `0 .. coords.duration`, matching the
+Bars ruler, so the continuous lanes paint the full song).
+
+Original reports, for context:
 
 **B1. Waveform lane renders nothing on a real song.**
 On a song with a real audio file loaded, the Waveform Anchor lane is blank — no

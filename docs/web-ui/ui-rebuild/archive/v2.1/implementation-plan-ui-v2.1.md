@@ -1,5 +1,12 @@
 # Implementation Plan — Web UI v2.1
 
+> **Archived — pass complete.** All 10 items below are implemented, validated
+> (unit + Playwright visual-regression), and committed one per item on the
+> `claude-improvements` branch. No analyzer-contract change was made, so this
+> pass produced no downstream handoff note. Kept here as the point-in-time
+> execution record; the living visual-regression reference is
+> [`../../../ui-regression_guide.md`](../../../ui-regression_guide.md).
+
 Turns [`product-refinement-ui-v2.1.md`](product-refinement-ui-v2.1.md) into
 ordered, validated work. Item numbers are plan items; the refinement doc's items
 (`1`–`7`, `B1`, `B2`) are referenced, not renumbered.
@@ -32,8 +39,8 @@ stall a whole run; everything independent of it still gets built.
   `build_ui_data` contract changes** — so this pass produces **no
   contract-change / handoff note**; the MCP surface is untouched.
 - Design source of truth is unchanged:
-  [`design/design-notes.md`](design/design-notes.md) and
-  [`design/Score-Analysis-DAW.dc.html`](design/Score-Analysis-DAW.dc.html).
+  [`design/design-notes.md`](../../design/design-notes.md) and
+  [`design/Score-Analysis-DAW.dc.html`](../../design/Score-Analysis-DAW.dc.html).
   Where an item here contradicts a `UI v2` decision (item 1 vs. the collapsed
   "title + sub-caption" row; item 4 vs. the "left panel open" default), the
   refinement doc for this pass wins and the `UI v2` archived docs are annotated
@@ -87,7 +94,7 @@ suite built in item 1, not by vitest.
 ### 1. Visual-regression harness skeleton
 
 Builds the deterministic Playwright suite the later items validate against —
-[`../ui-regression_guide.md`](../ui-regression_guide.md) §9's outstanding list.
+[`../ui-regression_guide.md`](../../../ui-regression_guide.md) §9's outstanding list.
 Until this lands, no frontend item in this plan is considered validatable.
 
 - [x] **Readiness marker.** `App.tsx` sets
@@ -783,7 +790,7 @@ dragged one). Canvas/pointer interaction is covered by Visual QA.
 Route by *which component* and *does the fix need planning*:
 
 - **One-off UI fix, no design decision** → a finding in
-  [`../ui-issues.md`](../ui-issues.md) (finding / severity / location / root
+  [`../ui-issues.md`](../../ui-issues.md) (finding / severity / location / root
   cause / fix applied), with failing screenshots + the Playwright diff under
   `tests/ui-visual/`.
 - **Needs a design decision, or must be sequenced with other work** → a `BUG`
