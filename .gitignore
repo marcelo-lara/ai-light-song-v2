@@ -221,3 +221,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# drop-detection exploration: regenerable feature cache
+experiments/drop_detection/cache/

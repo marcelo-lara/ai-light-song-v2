@@ -269,6 +269,72 @@ export function parseSymbolicPhrases(raw: unknown): SymbolicPhrasesFile {
 }
 
 // ---------------------------------------------------------------------------
+// drop-impact proposals — reference/proposals/drop_impacts.json
+// ---------------------------------------------------------------------------
+//
+// Candidate `drop impact` instants from the stage-1 proposer in
+// `experiments/drop_detection`. They are NOT ground truth: the lane exists so a
+// human can audition each candidate against the Human Hints lane and copy the
+// survivors across by hand. `matches_human_label` is the proposer's own note
+// that a candidate already sits within 0.5 s of a hand-authored impact, so the
+// lane can grey out what is already labelled and highlight what is new.
+
+export interface DropProposal {
+  id: string;
+  start_s: number;
+  end_s: number;
+  /** which role-change channels fired here, e.g. ["handover", "voc_out"] */
+  channels: string[];
+  /** time of the human `drop impact` it matches, or null when unconfirmed */
+  matches_human_label: number | null;
+  evidence: Record<string, number>;
+  raw: Record<string, unknown>;
+}
+
+export interface DropProposalsFile {
+  schema_version: string;
+  song_name: string;
+  note: string;
+  /** every hand-authored `drop impact` instant in this song, for comparison */
+  existing_labels: number[];
+  proposals: DropProposal[];
+}
+
+export function parseDropProposals(raw: unknown): DropProposalsFile {
+  const o = asObject(raw, "reference/proposals/drop_impacts.json");
+  const proposals = arr(o.proposals).map((row, i): DropProposal => {
+    const r = rec(row);
+    const start_s = num(r.start_s ?? r.start_time ?? r.start);
+    const evidenceIn = rec(r.evidence);
+    const evidence: Record<string, number> = {};
+    for (const [key, value] of Object.entries(evidenceIn)) {
+      const n = Number(value);
+      if (Number.isFinite(n)) evidence[key] = n;
+    }
+    return {
+      id: st(r.id, `proposal-${String(i + 1).padStart(3, "0")}`),
+      start_s,
+      end_s: Math.max(num(r.end_s ?? r.end_time ?? r.end, start_s), start_s),
+      channels: arr(r.channels).map((c) => st(c)).filter(Boolean),
+      matches_human_label:
+        r.matches_human_label == null ? null : num(r.matches_human_label),
+      evidence,
+      raw: r,
+    };
+  });
+  proposals.sort((a, b) => a.start_s - b.start_s);
+  return {
+    schema_version: st(o.schema_version),
+    song_name: st(o.song_name),
+    note: st(o.note),
+    existing_labels: arr(o.existing_labels)
+      .map((v) => Number(v))
+      .filter((v) => Number.isFinite(v)),
+    proposals,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // loaders
 // ---------------------------------------------------------------------------
 
@@ -284,3 +350,32 @@ export const loadBeatdropPlan = (song: string, f?: typeof fetch): Promise<LoadRe
   loadJson(artifactPaths.beatdropPlan(song), parseBeatdropPlan, f);
 export const loadSymbolicPhrases = (song: string, f?: typeof fetch): Promise<LoadResult<SymbolicPhrasesFile>> =>
   loadJson(artifactPaths.symbolicLayer(song), parseSymbolicPhrases, f);
+/**
+ * The proposals file is optional — it exists only for songs the drop-detection
+ * exporter has been run over — so a 404 resolves to an empty file rather than a
+ * load error. Every other failure (network, bad JSON, wrong shape) still
+ * surfaces, so a real problem is not silently swallowed.
+ */
+export async function loadDropProposals(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<DropProposalsFile>> {
+  const result = await loadJson(
+    artifactPaths.dropProposals(song),
+    parseDropProposals,
+    f,
+  );
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return {
+      ok: true,
+      data: {
+        schema_version: "",
+        song_name: song,
+        note: "",
+        existing_labels: [],
+        proposals: [],
+      },
+    };
+  }
+  return result;
+}

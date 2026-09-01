@@ -22,6 +22,11 @@ export const artifactPaths = {
     encodePath(analysis(song, "reference", "human", "human_hints.json")),
   songFacts: (song: string) =>
     encodePath(analysis(song, "reference", "human", "song_facts.json")),
+  // Written by experiments/drop_detection (`run export`), never by the pipeline
+  // and never by a human. Kept out of `reference/human/` so the drop-impact
+  // ground truth stays a purely hand-authored file.
+  dropProposals: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "drop_impacts.json")),
   sectionSegmentation: (song: string) =>
     encodePath(analysis(song, "artifacts", "section_segmentation", "sections.json")),
   fftBands: (song: string) =>

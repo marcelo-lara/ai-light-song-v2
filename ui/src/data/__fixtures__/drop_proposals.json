@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "engine": "experiments.drop_detection.stage1"
+  },
+  "note": "Draft `drop impact` candidates from the stage-1 proposer. Audition each against the Human Hints lane, then copy the survivors into reference/human/human_hints.json by hand.",
+  "existing_labels": [
+    57.834,
+    153.961
+  ],
+  "proposals": [
+    {
+      "id": "proposal-001",
+      "title": "drop impact",
+      "start_time": 15.232,
+      "end_time": 15.774,
+      "channels": [
+        "drums_in",
+        "sub_in",
+        "voc_out"
+      ],
+      "matches_human_label": null,
+      "evidence": {
+        "bass_reentry_db": 7.4,
+        "vocals_delta_db": -29.6,
+        "drums_delta_db": 27.2,
+        "mix_delta_db": -1.4
+      }
+    },
+    {
+      "id": "proposal-002",
+      "title": "drop impact",
+      "start_time": 57.969,
+      "end_time": 58.511,
+      "channels": [
+        "after_suck",
+        "handover",
+        "voc_out"
+      ],
+      "matches_human_label": 57.834,
+      "evidence": {
+        "bass_reentry_db": 11.9,
+        "vocals_delta_db": -35.3,
+        "drums_delta_db": -18.3,
+        "mix_delta_db": -6.5
+      }
+    },
+    {
+      "id": "proposal-003",
+      "title": "drop impact",
+      "start_time": 64.923,
+      "end_time": 65.465,
+      "channels": [
+        "after_build",
+        "voc_in"
+      ],
+      "matches_human_label": null,
+      "evidence": {
+        "bass_reentry_db": 18.3,
+        "vocals_delta_db": 29.6,
+        "drums_delta_db": 7.6,
+        "mix_delta_db": 4.5
+      }
+    }
+  ]
+}

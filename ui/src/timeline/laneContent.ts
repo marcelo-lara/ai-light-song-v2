@@ -12,6 +12,7 @@
 import type { HumanHintsFile, HarmonicLayer, SectionRow } from "../data/types";
 import type {
   BeatdropPlanFile,
+  DropProposalsFile,
   EventsFile,
   PatternsFile,
   SymbolicPhrasesFile,
@@ -27,6 +28,12 @@ export interface SparseBlock {
   label: string;
   /** label variant drawn when the block is wide (e.g. chord + roman numeral) */
   wideLabel?: string;
+  /**
+   * Optional per-block tint id, overriding the lane's own tint. Used by the
+   * Drop Proposals lane to colour a candidate that already matches a human
+   * label differently from one still needing a decision.
+   */
+  tintId?: string;
   laneLabel: string;
   caption: string;
   reference: string;
@@ -70,6 +77,50 @@ export function humanHintsContent(file: HumanHintsFile | null): SparseBlock[] {
     summary: h.summary || "Reference hint window from human annotation.",
     raw: h,
   }));
+}
+
+/**
+ * Drop-impact proposals from `experiments/drop_detection`. These are candidates
+ * to audition, not findings: the label leads with whether the candidate already
+ * matches a hand-authored `drop impact` (`✓`) or is unconfirmed (`?`), then
+ * names the role-change channels that fired, which is what you need in order to
+ * judge it against what you are hearing.
+ */
+export function dropProposalsContent(file: DropProposalsFile | null): SparseBlock[] {
+  return (file?.proposals ?? []).map((p) => {
+    const matched = p.matches_human_label != null;
+    const channels = p.channels.join(" · ") || "no channel";
+    const evidence = Object.entries(p.evidence)
+      .map(([key, value]) => `${key.replace(/_db$/, "")} ${value > 0 ? "+" : ""}${round(value, 1)} dB`)
+      .join(", ");
+    return {
+      id: p.id,
+      start_s: p.start_s,
+      end_s: p.end_s,
+      label: `${matched ? "✓" : "?"} ${channels}`,
+      // Confirmed candidates go teal and unconfirmed ones stay magenta, so the
+      // lane reads as a triage queue at song-overview zoom, where the 0.5 s
+      // blocks are far too narrow for their labels.
+      ...(matched ? { tintId: "dropProposalsMatched" } : {}),
+      wideLabel: `${matched ? "✓" : "?"} ${channels}${evidence ? ` · ${evidence}` : ""}`,
+      laneLabel: "Drop Proposals",
+      caption: `${formatRange(p.start_s, p.end_s)} · ${
+        matched
+          ? `matches human ${round(p.matches_human_label, 2)}s`
+          : "unconfirmed"
+      }`,
+      reference: p.id,
+      detail: channels,
+      summary: `Stage-1 drop-impact candidate fired by ${channels}${
+        evidence ? `; ${evidence}` : ""
+      }. ${
+        matched
+          ? `Already within 0.5 s of the human label at ${round(p.matches_human_label, 2)}s.`
+          : "Not yet in human_hints.json — audition it, then copy it across by hand if it is real."
+      }`,
+      raw: p.raw ?? p,
+    };
+  });
 }
 
 export function sectionsContent(rows: readonly SectionRow[]): SparseBlock[] {
@@ -207,6 +258,7 @@ export function phrasesContent(file: SymbolicPhrasesFile | null): SparseBlock[] 
 
 export interface LaneContentSources {
   humanHints?: HumanHintsFile | null;
+  dropProposals?: DropProposalsFile | null;
   sections?: readonly SectionRow[];
   harmonicLayer?: HarmonicLayer | null;
   patterns?: PatternsFile | null;
@@ -220,6 +272,7 @@ export interface LaneContentSources {
 /** the sparse (block) lane ids handled by this module, in registry order */
 export const SPARSE_LANE_IDS = [
   "humanHints",
+  "dropProposals",
   "sections",
   "chords",
   "patterns",
@@ -239,6 +292,8 @@ export function buildLaneBlocks(
   switch (laneId) {
     case "humanHints":
       return humanHintsContent(s.humanHints ?? null);
+    case "dropProposals":
+      return dropProposalsContent(s.dropProposals ?? null);
     case "sections":
       return sectionsContent(s.sections ?? []);
     case "chords":

@@ -24,6 +24,10 @@ export interface SparseTint {
 /** documented base hue (deg) + saturation (%) per lane id */
 const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   humanHints: [35, 92, 48], // amber   (the previous app rgba(217,119,6))
+  dropProposals: [318, 72, 46], // magenta — deliberately unlike the amber of the
+  //                               human hints it is auditioned against
+  dropProposalsMatched: [168, 60, 40], // muted teal — a proposal that already
+  //                                      matches a hand-authored drop impact
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
   chords: [193, 82, 44], // cyan    (the previous app rgba(14,116,144))
   patterns: [43, 96, 40], // gold    (the previous app rgba(202,138,4))

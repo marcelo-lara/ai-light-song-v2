@@ -8,9 +8,11 @@ import machineFix from "../data/__fixtures__/events_machine.json";
 import mlFix from "../data/__fixtures__/events_ml.json";
 import beatdropFix from "../data/__fixtures__/beatdrop_visual_plan.json";
 import symbolicFix from "../data/__fixtures__/layer_b_symbolic.json";
+import dropProposalsFix from "../data/__fixtures__/drop_proposals.json";
 
 import {
   parseBeatdropPlan,
+  parseDropProposals,
   parseIdentifierHints,
   parseMachineEvents,
   parseMlEvents,
@@ -22,6 +24,7 @@ import { parseHarmonicLayer, parseHumanHints } from "../data/parsers";
 import {
   beatdropPlanContent,
   chordsContent,
+  dropProposalsContent,
   humanHintsContent,
   identifierHintsContent,
   machineEventsContent,
@@ -137,5 +140,42 @@ describe("null inputs", () => {
     expect(patternsContent(null)).toEqual([]);
     expect(beatdropPlanContent(null)).toEqual([]);
     expect(phrasesContent(null)).toEqual([]);
+  });
+});
+
+describe("dropProposalsContent", () => {
+  const blocks = dropProposalsContent(parseDropProposals(dropProposalsFix));
+
+  it("marks a proposal that already matches a human label", () => {
+    const matched = blocks.find((b) => b.id === "proposal-002");
+    expect(matched?.label).toMatch(/^\u2713 /);
+    expect(matched?.caption).toContain("matches human 57.83s");
+  });
+
+  it("marks an unconfirmed proposal and names the channels that fired", () => {
+    const unconfirmed = blocks.find((b) => b.id === "proposal-001");
+    expect(unconfirmed?.label).toBe("? drums_in \u00b7 sub_in \u00b7 voc_out");
+    expect(unconfirmed?.caption).toContain("unconfirmed");
+    expect(unconfirmed?.summary).toContain("copy it across by hand");
+  });
+
+  it("tints a matched proposal differently from an unconfirmed one", () => {
+    expect(blocks.find((b) => b.id === "proposal-002")?.tintId).toBe(
+      "dropProposalsMatched",
+    );
+    expect(blocks.find((b) => b.id === "proposal-001")?.tintId).toBeUndefined();
+  });
+
+  it("carries the dB evidence in the wide label", () => {
+    const matched = blocks.find((b) => b.id === "proposal-002");
+    expect(matched?.wideLabel).toContain("vocals_delta -35.3 dB");
+    expect(matched?.wideLabel).toContain("bass_reentry +11.9 dB");
+  });
+
+  it("is ordered by time and never throws on a missing file", () => {
+    expect(blocks.map((b) => b.start_s)).toEqual(
+      [...blocks.map((b) => b.start_s)].sort((a, b) => a - b),
+    );
+    expect(dropProposalsContent(null)).toEqual([]);
   });
 });

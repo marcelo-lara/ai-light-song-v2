@@ -80,11 +80,14 @@ const TIMELINE_KEYS = [
   "mlEvents",
   "beatdropPlan",
   "symbolicPhrases",
+  // drop-sequence exploration (experiments/drop_detection)
+  "dropProposals",
 ] as const;
 
 /** sparse lane id → the single artifact key that backs it (drives empty-state). */
 const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   humanHints: "humanHints",
+  dropProposals: "dropProposals",
   sections: "sectionsTopLevel",
   chords: "harmonicLayer",
   patterns: "patterns",
@@ -206,6 +209,7 @@ export function App(): React.JSX.Element {
   const laneContentSources = useMemo<LaneContentSources>(
     () => ({
       humanHints: humanHintsFile,
+      dropProposals: artifacts.dropProposals.data,
       sections,
       harmonicLayer: artifacts.harmonicLayer.data,
       patterns: artifacts.patterns.data,
@@ -217,6 +221,7 @@ export function App(): React.JSX.Element {
     }),
     [
       humanHintsFile,
+      artifacts.dropProposals.data,
       sections,
       artifacts.harmonicLayer.data,
       artifacts.patterns.data,

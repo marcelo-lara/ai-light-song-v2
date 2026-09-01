@@ -210,8 +210,8 @@ export function SparseLane({
 
     // Collapsed: a faint tick per block along the strip.
     if (!lane.expanded) {
-      ctx.fillStyle = tint.stroke;
       for (const block of blocks) {
+        ctx.fillStyle = (block.tintId ? sparseTint(block.tintId) : tint).stroke;
         const x = coords.timeToX(block.start_s) * xScale;
         const w = Math.max(2, coords.timeToX(block.end_s) * xScale - x);
         ctx.fillRect(x, cssHeight - 8, w, 5);
@@ -230,10 +230,11 @@ export function SparseLane({
       const w = Math.max(2, baseW * xScale);
       const layout = blockTextLayout(w, p.height);
       const selected = activeId != null && p.block.id === activeId;
+      const blockTint = p.block.tintId ? sparseTint(p.block.tintId) : tint;
 
-      ctx.fillStyle = tint.fill;
+      ctx.fillStyle = blockTint.fill;
       ctx.fillRect(x, p.y, w, p.height);
-      ctx.strokeStyle = selected ? tint.label : tint.stroke;
+      ctx.strokeStyle = selected ? blockTint.label : blockTint.stroke;
       ctx.strokeRect(x, p.y, w, p.height);
 
       hitsRef.current.push({

@@ -24,7 +24,8 @@ export type LaneKind =
   | "machine"
   | "ml"
   | "beatdrop"
-  | "phrases";
+  | "phrases"
+  | "proposals";
 
 export interface LaneDef {
   id: string;
@@ -61,6 +62,7 @@ export function collapsedLaneHeight(): number {
 export const LANE_DEFS: readonly LaneDef[] = [
   { id: "waveform", label: "Waveform Anchor", sub: "decoded source mix", kind: "waveform", height: 84 },
   { id: "humanHints", label: "Human Hints", sub: "reference/human · human_hints", kind: "hints", height: 58 },
+  { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58 },
   { id: "fftBands", label: "FFT Bands", sub: "essentia · 7 spectral bands", kind: "fft", height: 84 },
   { id: "rmsLoudness", label: "RMS Loudness", sub: "essentia · mix + 4 stems", kind: "rms", height: 112 },
   { id: "loudnessEnvelope", label: "Loudness Envelope", sub: "essentia · mix + 4 stems", kind: "env", height: 112 },
@@ -77,10 +79,15 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "validation", label: "Regression Overlay", sub: "beat drift + event comparison", kind: "validation", height: 84 },
 ];
 
-/** design notes §2: the five lanes expanded on first load. */
+/**
+ * design notes §2: the five lanes expanded on first load, plus Drop Proposals.
+ * Proposals only exist to be compared against Human Hints while the song plays,
+ * so it sits directly beneath that lane and opens with it.
+ */
 export const DEFAULT_EXPANDED: readonly string[] = [
   "waveform",
   "humanHints",
+  "dropProposals",
   "fftBands",
   "rmsLoudness",
   "loudnessEnvelope",

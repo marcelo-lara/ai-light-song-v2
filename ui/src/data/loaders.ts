@@ -11,6 +11,7 @@ import {
   loadMlEvents,
   loadBeatdropPlan,
   loadSymbolicPhrases,
+  loadDropProposals,
 } from "./sparseArtifacts";
 import {
   parseBeats,
@@ -194,6 +195,7 @@ export const artifactLoaders = {
   mlEvents: loadMlEvents,
   beatdropPlan: loadBeatdropPlan,
   symbolicPhrases: loadSymbolicPhrases,
+  dropProposals: loadDropProposals,
   beats: loadBeats,
   sectionsTopLevel: loadSectionsTopLevel,
   sectionSegmentation: loadSectionSegmentation,

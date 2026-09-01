@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { loadJson, loadInfo } from "./loaders";
+import { loadDropProposals } from "./sparseArtifacts";
 import { parseInfo } from "./parsers";
 
 import infoFixture from "./__fixtures__/info.json";
@@ -65,5 +66,22 @@ describe("loadJson", () => {
     const res = await loadJson("/data/x", parseInfo, fetchImpl);
     expect(res.ok).toBe(false);
     if (!res.ok) expect(res.error.kind).toBe("network");
+  });
+});
+
+describe("loadDropProposals", () => {
+  it("treats a missing proposals file as an empty lane, not an error", async () => {
+    const fetchImpl = (async () =>
+      new Response("Not found", { status: 404 })) as unknown as typeof fetch;
+    const result = await loadDropProposals("Nothing Exported", fetchImpl);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.data.proposals).toEqual([]);
+  });
+
+  it("still reports a real failure", async () => {
+    const fetchImpl = (async () =>
+      new Response("boom", { status: 500 })) as unknown as typeof fetch;
+    const result = await loadDropProposals("Broken", fetchImpl);
+    expect(result.ok).toBe(false);
   });
 });

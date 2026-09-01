@@ -6,6 +6,13 @@ Source of truth:
   RegPartial <- RegFull minus artifacts/essentia/fft_bands.json (degraded banner)
   _test_song <- data/analysis/_test_song (synthetic, no audio)
 
+WARNING: `reference/human/human_hints.json` in the fixtures is HAND-CURATED, not
+a faithful copy of the source song. `hint-drag.spec.ts` depends on three
+clearly-separated blocks (hint-001 40-48, hint-002 52-60, hint-003 64-72) that do
+not exist in the real track. Re-running this script overwrites them with the live
+values and breaks that spec, so `git checkout` those three files (or re-curate
+them) after any rebuild.
+
 Dense per-frame arrays (fft_bands / rms_loudness / loudness_envelope) are
 decimated to ~60 evenly spaced frames, keeping the first and last frame so the
 song's full duration is still represented. info.json / beats.json are copied
@@ -31,6 +38,7 @@ NEEDED = [
     "beatdrop_visual_plan.json",
     "song_event_timeline.json",
     "reference/human/human_hints.json",
+    "reference/proposals/drop_impacts.json",
     "artifacts/essentia/fft_bands.json",
     "artifacts/essentia/rms_loudness.json",
     "artifacts/essentia/loudness_envelope.json",
