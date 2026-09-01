@@ -49,24 +49,6 @@ interface HitBox {
   block: SparseBlock;
 }
 
-function roundedRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number,
-): void {
-  const radius = Math.max(0, Math.min(r, w / 2, h / 2));
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.arcTo(x + w, y, x + w, y + h, radius);
-  ctx.arcTo(x + w, y + h, x, y + h, radius);
-  ctx.arcTo(x, y + h, x, y, radius);
-  ctx.arcTo(x, y, x + w, y, radius);
-  ctx.closePath();
-}
-
 function trimText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
   if (!text || maxWidth <= 0) return "";
   if (ctx.measureText(text).width <= maxWidth) return text;
@@ -171,11 +153,10 @@ export function SparseLane({
       const layout = blockTextLayout(w, p.height);
       const selected = activeId != null && p.block.id === activeId;
 
-      roundedRect(ctx, x, p.y, w, p.height, layout.radius);
       ctx.fillStyle = tint.fill;
-      ctx.fill();
+      ctx.fillRect(x, p.y, w, p.height);
       ctx.strokeStyle = selected ? tint.label : tint.stroke;
-      ctx.stroke();
+      ctx.strokeRect(x, p.y, w, p.height);
 
       hitsRef.current.push({
         x1: p.x,

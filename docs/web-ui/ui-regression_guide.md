@@ -54,6 +54,7 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `overlay-open` | Hovercard/selection overlay | click a sections-lane region | Overlay anchor + content |
 | `detail-inspector` | Raw JSON inspector | select an artifact in the inspector dropdown | Scroll region, formatting |
 | `human-hints-editor` | Right-side hint editor open | trigger "add hint" | Editor stays open; compact styling |
+| `hint-drag-resized` | `song-full` after a right-edge resize + interior move of two `humanHints` blocks | drag handles on the `humanHints` lane (plan v2.1 item 10) | Blocks at post-drag positions, pre-reload; `.app-timeline__grid`, waveform masked |
 | `validation-snapshot` | Validation panel populated | part of `song-full` (assert region) | Status, beat match ratio, comparison counts |
 
 Component-level (optional, faster feedback): capture individual panels
@@ -248,11 +249,15 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 - timeline: `timeline-viewport` on the scroller; on every lane row (both the
   label cell and the body cell) `data-lane="<laneId>"` and
   `data-lane-collapsed="true" | "false"`; `lane-collapse-<laneId>` on the caret.
+- `humanHints` lane body (plan v2.1 item 10): `data-hint-drag-ready="1"` once the
+  block drag hit-zones are registered (the executor waits on this, no timeout).
+- hint editor (plan v2.1 item 10): `hint-editor` on the editor panel root, with
+  `data-hint-id="<id>"` for the hint currently loaded.
 
 Still pending (later plan items / not yet needed): `song-select`,
-`transport-play` / `transport-pause`, `selection-overlay`, and the hint-editor
-hooks. Prefer `getByRole` / `getByLabel` where the control already has an
-accessible name (transport buttons, zoom buttons all have `aria-label`).
+`transport-play` / `transport-pause`, `selection-overlay`. Prefer `getByRole` /
+`getByLabel` where the control already has an accessible name (transport buttons,
+zoom buttons all have `aria-label`).
 
 ---
 
@@ -346,3 +351,11 @@ should be well under that.
       `RegFull` keeps the mp3 or moves to a pre-decoded peaks JSON.
 - [ ] Fold the "smoke check" list from `ui/README.HELPER_UI.md` into explicit
       assertions so the README checklist and the suite cannot drift apart.
+- [ ] *(plan item 9)* Corner-pixel checks on `humanHints` / `sections` blocks;
+      re-diff `song-full` after squaring the block corners.
+- [ ] *(plan item 10)* `data-hint-drag-ready` marker + `hint-editor`
+      `data-hint-id` selector; drag/resize/move/snap/persist checks on the
+      `humanHints` lane; new baseline `hint-drag-resized.png`. When item 10
+      lands, record `RegFull`'s frozen `human_hints.json` block ids and
+      start/end times in §3.1 (≥ 3 non-overlapping blocks) so the drag targets
+      are deterministic.

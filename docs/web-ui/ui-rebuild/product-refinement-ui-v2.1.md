@@ -91,6 +91,55 @@ pointer.
 **Acceptance.** The caret stays at a fixed point beside the title through repeated
 collapse/expand toggles.
 
+## 6. Square corners on canvas block entries
+
+**Intent.** The sparse-lane block entries (human hints, sections, chords,
+patterns, identifier / machine / ML events, BeatDrop plan, symbolic phrases) are
+drawn as rounded rectangles. The rounding softens the read of where a block
+starts and ends, which matters more now that human-hint blocks are directly
+draggable (item 7).
+
+**Change.** Every `SparseLane` block draws with square corners (corner radius 0)
+in both the expanded body and — where applicable — the selection outline. The
+`CanvasLane` data renderers (drums, energy, FFT bands, RMS, loudness envelope)
+are not "entries" and are out of scope. The collapsed-lane tick strip is
+unchanged.
+
+**Acceptance.** Every sparse-lane block renders with hard 90° corners; no visible
+corner radius at any zoom.
+
+## 7. Drag to edit a human-hint block on the timeline
+
+**Intent.** Editing a human hint's start/end time requires opening the hint
+editor and typing numbers. For coarse timing work it is faster to drag the block
+on the timeline itself.
+
+**Change.** On the `humanHints` lane, when it is expanded, a block exposes three
+drag regions:
+
+- the **left edge** (a 6px-wide grab zone inside the block) drags the start time;
+- the **right edge** (a 6px-wide grab zone inside the block) drags the end time;
+- the **interior** drags the whole block, moving start and end together by the
+  same delta.
+
+While dragging an edge or the box, the dragged edge (or, for a box move,
+whichever of the two moving edges is nearer a target) **snaps** to the closest
+start or end of another block in the same `humanHints` lane when it comes within
+~5px on screen. On drop, the new times are written straight to
+`reference/human/human_hints.json` via the existing save path (the same PUT the
+hint editor uses), and the server-normalised file becomes the new source of
+truth. A press that releases with less than 4px of pointer travel is treated as a
+click and opens the hint editor as before.
+
+**Constraints.** `start_time` is clamped to ≥ 0, `end_time` to ≤ song duration,
+and the two edges may not cross or come within 0.05s of each other. Overlwith
+Overlap with other hints is allowed (the lane already row-packs overlapping blocks). Dragging
+does not move the playhead. The collapsed lane is not draggable.
+
+**Acceptance.** Dragging a human-hint block's left edge, right edge, or interior
+changes its time(s), snaps to a neighbouring block's edge within ~5px, persists
+on drop, and survives a reload; a plain click still opens the editor.
+
 ---
 
 ## Bugs — Open

@@ -112,8 +112,6 @@ export interface BlockTextLayout {
   showWideLabel: boolean;
   /** px available for text inside the block */
   contentWidth: number;
-  /** corner radius for the rounded rect */
-  radius: number;
 }
 
 export function blockTextLayout(width: number, height: number): BlockTextLayout {
@@ -122,7 +120,6 @@ export function blockTextLayout(width: number, height: number): BlockTextLayout 
     showCaption: width >= MIN_CAPTION_WIDTH && height > MIN_CAPTION_HEIGHT,
     showWideLabel: width >= WIDE_LABEL_WIDTH,
     contentWidth: Math.max(width - 20, 0),
-    radius: height <= 22 ? 8 : 12,
   };
 }
 

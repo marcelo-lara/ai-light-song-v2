@@ -79,4 +79,9 @@ describe("blockTextLayout", () => {
     expect(blockTextLayout(130, 72).showWideLabel).toBe(true);
     expect(blockTextLayout(90, 72).showWideLabel).toBe(false);
   });
+
+  it("no longer reports a corner radius (blocks are square)", () => {
+    expect(blockTextLayout(100, 72)).not.toHaveProperty("radius");
+    expect(blockTextLayout(100, 20)).not.toHaveProperty("radius");
+  });
 });

@@ -2,7 +2,7 @@
 
 Turns [`product-refinement-ui-v2.1.md`](product-refinement-ui-v2.1.md) into
 ordered, validated work. Item numbers are plan items; the refinement doc's items
-(`1`–`5`, `B1`, `B2`) are referenced, not renumbered.
+(`1`–`7`, `B1`, `B2`) are referenced, not renumbered.
 
 ## How this plan is worked
 
@@ -42,6 +42,11 @@ stall a whole run; everything independent of it still gets built.
 - Target browser: **Chrome 151** only. `esnext` build target. No polyfills.
 - Persisted lane/panel state lives in `localStorage` (already wrapped in
   try/catch by `laneState.ts`); new persisted keys follow the same pattern.
+- Item 10 writes human-hint times back to disk. It reuses the **existing**
+  `PUT /api/human-hints/<song>` path (`src/data/saveHumanHints.ts` +
+  `App.handleSaveHints`) — one of the two human-save paths the refinement doc
+  keeps in scope. No new endpoint, no artifact/schema change, so still **no
+  contract-change / handoff note**.
 
 ## Status
 
@@ -55,6 +60,8 @@ stall a whole run; everything independent of it still gets built.
 | 6 | Collapse/expand control keeps a fixed position | R5 | ☑ |
 | 7 | "Fit to width" is an icon-only control | R3 | ☑ |
 | 8 | "Hide all" button on the lane list | R4 | ☑ |
+| 9 | Square corners on canvas block entries | R6 | ☑ |
+| 10 | Drag to edit a human-hint block on the timeline | R7 | ☐ |
 
 ## How to test
 
@@ -577,6 +584,152 @@ Refinement item `R4`.
   zeroes every `visible`, preserves `expanded`, round-trips through
   `saveLaneState`/`loadLaneState`, and an individual lane is re-showable after.
 - **New baseline:** `lanes-hidden-all.png` (0 lane rows, header rows present).
+
+### 9. Square corners on canvas block entries
+
+Refinement item `R6`. Every `SparseLane` block entry is drawn as a rounded
+rectangle; this squares them off. Sets up item 10 (a crisp edge is easier to
+grab).
+
+- [x] In `src/timeline/SparseLane.tsx`, the expanded-body block fill/stroke is
+      drawn as a plain rectangle (`ctx.rect` / `fillRect` + `strokeRect`), not
+      via `roundedRect`. Remove the now-unused `roundedRect` helper and the
+      `layout.radius` consumption; if `blockTextLayout` in
+      `src/timeline/sparseGeometry.ts` still returns `radius`, drop that field
+      and its test assertions.
+- [x] The selection outline (the `selected` stroke) is also square.
+- [x] The collapsed-lane tick strip (`fillRect` at `cssHeight - 8`) is
+      **unchanged** — it is already square.
+- [x] `CanvasLane` data renderers (drums, energy, FFT bands, RMS, loudness
+      envelope) are **out of scope** — they draw fields/markers, not block
+      "entries". Confirm none of them route through `roundedRect`.
+- [x] Applies to every sparse lane that renders through `SparseLane`: human
+      hints, sections, chords/harmonic, patterns, identifier hints, machine
+      events, ML events, BeatDrop plan, symbolic phrases.
+
+**Test:** unit — a `sparseGeometry` test asserts `blockTextLayout` no longer
+reports a non-zero corner radius (or the field is gone); a `SparseLane` render
+test (if one exists for geometry) is updated. Canvas pixel output is covered by
+the Visual QA below.
+
+**Visual QA (item 9).**
+
+- Surface: `/?song=RegFull%20-%20Fixture`, left panel closed, `humanHints` and
+  `sections` lanes expanded. Wait for `html[data-ui-ready="1"]`.
+- Checks (all binary):
+  - For `data-lane="humanHints"` and `data-lane="sections"`: sample the 4 corner
+    pixels of the first block's bounding box (inset 1px). Each corner pixel is
+    non-transparent (a rounded corner would leave the corner pixel transparent /
+    background) — tolerance: alpha ≥ 200 at all four inset-1px corners.
+  - Diff `song-full.png` at `maxDiffPixelRatio: 0.01` — the only permitted change
+    is the block corners; the waveform region stays masked.
+  - Diff `lane-collapsed.png` — **unchanged** (collapsed strip was already
+    square).
+  - `assertNoRuntimeErrors` list is empty.
+**Commit:** `9. square corners on canvas block entries`
+
+### 10. Drag to edit a human-hint block on the timeline
+
+Refinement item `R7`. On the expanded `humanHints` lane, a block's left edge,
+right edge, and interior become drag handles that edit `start_time` / `end_time`
+and persist on drop.
+
+- [ ] **Hit zones (expanded lane only).** In `SparseLane.tsx`, for
+      `laneId === "humanHints"` only, extend `hitsRef` regions (or add a parallel
+      structure) so each block exposes: a 6px-wide **left** zone at its left edge,
+      a 6px-wide **right** zone at its right edge, and the remaining **interior**.
+      A block narrower than ~18px is interior-only (move), no edge zones. The
+      cursor is `ew-resize` over an edge zone, `grab` over the interior,
+      `grabbing` while dragging.
+- [ ] **Drag mechanics.** `pointerdown` in a zone starts a drag: capture the
+      pointer, track `dx` in px, convert with `coords.xToTime`. Left-edge drag
+      moves `start_time` only; right-edge moves `end_time` only; interior moves
+      both by the same `dt`. The lane redraws live during the drag (the dragged
+      block follows the pointer); the playhead does **not** move.
+- [ ] **Click vs. drag.** If the pointer travels < 4px total before `pointerup`,
+      treat it as a click — no time change, open the hint editor exactly as the
+      current `onSelectMarker` → `openHintEditor` path does. ≥ 4px is a drag and
+      does not open the editor.
+- [ ] **Snap.** Build the sorted set of all *other* `humanHints` block edges
+      (each block contributes its `start_s` and `end_s` in px). While dragging an
+      edge, if the dragged edge is within 5px (screen) of a member of that set,
+      snap it exactly to that member. For an interior (box) move, compute the
+      candidate snap offset for both the moving left edge and the moving right
+      edge and apply whichever is closest, if within 5px. No snap target within
+      5px → free drag.
+- [ ] **Constraints.** After snap, clamp: `start_time ≥ 0`,
+      `end_time ≤ coords.duration`, and `end_time - start_time ≥ 0.05` (an edge
+      drag that would violate this stops at the limit; an interior drag that
+      would push an edge past 0 or `duration` stops the whole box at that
+      boundary, preserving its length).
+- [ ] **Persist on drop.** On `pointerup` after a real drag, build the updated
+      `HumanHintsFile` (all hints, with this hint's new `start_time` / `end_time`,
+      other fields untouched), call `saveHumanHints(song, payload)` and feed the
+      server-normalised result through the existing `handleSaveHints` (which sets
+      `hintsOverride` and calls `reloadSong`). On a save error, revert the block
+      to its pre-drag position and surface the error the same way the hint editor
+      does (reuse its error channel). This needs a new callback prop on
+      `SparseLane` (e.g. `onCommitHintTimes(id, start, end)`) wired in `App.tsx`;
+      `SparseLane` stays otherwise generic (the prop is only passed for the
+      `humanHints` lane).
+- [ ] **Editor sync.** If `HintEditorPanel` is open for the dragged hint, its
+      start/end fields refresh from the reloaded file after the drop (no
+      mid-drag live tracking required). Confirm the panel does not clobber the
+      just-saved values with a stale draft.
+- [ ] **Collapsed lane unchanged.** No drag handles when `lane.expanded` is
+      false; a click still seeks / opens as today.
+- [ ] **Selectors for QA.** Add `data-hint-drag-ready="1"` on the `humanHints`
+      lane body once its hit zones are registered, so the executor can wait
+      without a timeout. Keep `data-lane="humanHints"` on both cells (already
+      present from item 1).
+
+**Test:** unit — a pure geometry/reducer module (e.g.
+`src/timeline/hintDrag.ts`) covering: px delta → time delta; edge vs. interior
+resolution from an x within a block; snap (edge within 5px snaps exactly; > 5px
+does not; nearest of several wins); clamps (`start ≥ 0`, `end ≤ duration`,
+min 0.05 gap, interior move preserves length at a boundary); click-vs-drag
+threshold at exactly 4px. The persistence payload builder is unit-tested against
+`buildHumanHintsPayload` (unchanged times for other hints, updated for the
+dragged one). Canvas/pointer interaction is covered by Visual QA.
+
+**Visual QA (item 10).**
+
+- Surface: `/?song=RegFull%20-%20Fixture`, left panel closed, `humanHints` lane
+  expanded. Wait for `html[data-ui-ready="1"]` then
+  `[data-lane="humanHints"][data-hint-drag-ready="1"]`.
+- Determinism: the fixture's `human_hints.json` has ≥ 3 blocks with known,
+  non-overlapping times (record them in the guide). All drags below use
+  Playwright `mouse.move` steps ≥ 5 (so intermediate redraws are exercised) and
+  the frozen clock from item 1.
+- Checks (all binary, each reports the observed value):
+  - **Right-edge resize.** Grab block 1's right edge (its right x, y at lane
+    mid-height), drag +40px, drop. After
+    `[data-lane="humanHints"]` redraws: block 1's right edge x has moved
+    +40px ± 2px; its left edge x is unchanged ± 1px. `fullExtentOfLane` is not
+    asserted here (blocks are sparse).
+  - **Left-edge resize.** Grab block 2's left edge, drag −25px, drop: left edge
+    x moved −25px ± 2px; right edge unchanged ± 1px.
+  - **Interior move.** Grab block 3's centre, drag +60px, drop: both edges moved
+    +60px ± 2px (width unchanged ± 1px).
+  - **Snap.** Position block 1's right edge so that +drag lands it 3px short of
+    block 2's left edge; drop. Block 1's right edge x is exactly block 2's left
+    edge x ± 1px (snapped).
+  - **Click still opens the editor.** `mouse.down` then `mouse.up` on block 2's
+    interior with < 4px travel: the hint editor panel
+    (`[data-testid="left-panel"]`-independent right panel) is visible and shows
+    block 2's id.
+  - **Persistence.** After the resize/move drags, reload
+    `/?song=RegFull%20-%20Fixture`; the three blocks render at their post-drag
+    positions (edge x values within ± 2px of the values observed before reload).
+  - **Constraint.** Attempt to drag block 3's right edge left past its own left
+    edge: the right edge stops with `end - start` ≥ 0.05s worth of px, does not
+    cross.
+  - `assertNoRuntimeErrors` list is empty across every drag, the reload, and the
+    save round-trips (`PUT /api/human-hints/...` returning 2xx is expected and
+    not a failure; a non-2xx is).
+- Diff a new baseline `hint-drag-resized.png` (`.app-timeline__grid`, waveform
+  masked) captured after the right-edge resize + interior move, before reload.
+**Commit:** `10. drag to edit a human-hint block on the timeline`
 
 ---
 
