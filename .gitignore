@@ -1,9 +1,17 @@
 ## Project specific files
-data/
+data/*
+!data/analysis/
+data/analysis/*
+!data/analysis/*/
+# Ignore all per-song analysis outputs by default.
+data/analysis/*/**
+!data/analysis/*/reference/
 !ui/src/lib/data/
 !ui/src/lib/data/**
 !ui/src/data/
 !ui/src/data/**
+!data/analysis/*/reference/human/
+!data/analysis/*/reference/human/*.json
 logs/
 models/
 

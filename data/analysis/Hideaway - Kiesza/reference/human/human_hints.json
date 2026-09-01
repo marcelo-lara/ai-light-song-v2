@@ -1,0 +1,45 @@
+{
+  "song_name": "Hideaway - Kiesza",
+  "human_hints": [
+    {
+      "id": "hint-001",
+      "title": "drop approach",
+      "start_time": 47.2,
+      "end_time": 54.109,
+      "summary": "drop approach",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-002",
+      "title": "drop build",
+      "start_time": 54.109,
+      "end_time": 59.222,
+      "summary": "drop build",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-003",
+      "title": "drop tension",
+      "start_time": 59.222,
+      "end_time": 62.408,
+      "summary": "drop tension",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-004",
+      "title": "drop impact",
+      "start_time": 62.408,
+      "end_time": 62.95,
+      "summary": "drop impact",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-005",
+      "title": "drop release",
+      "start_time": 62.95,
+      "end_time": 63.395,
+      "summary": "drop release",
+      "lighting_hint": ""
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "song_name": "Armin - Revolution",
+  "human_hints": [
+    {
+      "id": "hint-001",
+      "title": "drop approach",
+      "start_time": 44.833,
+      "end_time": 51.293,
+      "summary": "drop approach",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-002",
+      "title": "drop build",
+      "start_time": 51.333,
+      "end_time": 55.811,
+      "summary": "drop build",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-003",
+      "title": "drop tension",
+      "start_time": 55.824,
+      "end_time": 57.834,
+      "summary": "drop tension",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-004",
+      "title": "drop release",
+      "start_time": 59.554,
+      "end_time": 59.554,
+      "summary": "drop release",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-005",
+      "title": "drop impact",
+      "start_time": 57.834,
+      "end_time": 59.533,
+      "summary": "drop impact",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-006",
+      "title": "Breath",
+      "start_time": 81.395,
+      "end_time": 96.326,
+      "summary": "Vocal - no intense section",
+      "lighting_hint": "soft motion of moving heads.\nparcans slow violet waves"
+    },
+    {
+      "id": "hint-007",
+      "title": "drop approach",
+      "start_time": 126.1,
+      "end_time": 133.357,
+      "summary": "drop approach",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-008",
+      "title": "drop build",
+      "start_time": 133.357,
+      "end_time": 151.859,
+      "summary": "drop build",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-009",
+      "title": "drop tension",
+      "start_time": 151.859,
+      "end_time": 153.961,
+      "summary": "drop tension",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-010",
+      "title": "drop release",
+      "start_time": 155.555,
+      "end_time": 155.555,
+      "summary": "drop release",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-011",
+      "title": "drop impact",
+      "start_time": 153.961,
+      "end_time": 155.555,
+      "summary": "drop impact",
+      "lighting_hint": ""
+    }
+  ]
+}
