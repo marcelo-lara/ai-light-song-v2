@@ -62,6 +62,12 @@ interface SparseLaneProps {
   onCommitHintTimes?:
     | ((id: string, start: number, end: number) => void | Promise<void>)
     | undefined;
+  /**
+   * humanHints lane only (item 8): double-clicking empty lane background
+   * creates a new draft hint at the given time. A double-click that lands on an
+   * existing block opens it in the sidebar instead (no create).
+   */
+  onCreateHint?: ((time: number) => void) | undefined;
 }
 
 interface HitBox {
@@ -119,6 +125,7 @@ export function SparseLane({
   onSeek,
   onSelectMarker,
   onCommitHintTimes,
+  onCreateHint,
 }: SparseLaneProps): React.JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -465,6 +472,26 @@ export function SparseLane({
     [coords, lane.expanded, laneId, onSeek, onSelectMarker],
   );
 
+  // item 8: double-click empty humanHints background -> new 1.0s draft hint.
+  // A double-click on an existing block opens it (same as a single click).
+  const handleDoubleClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (!onCreateHint) return;
+      const rect = containerRef.current?.getBoundingClientRect();
+      const x = event.clientX - (rect?.left ?? 0);
+      const y = event.clientY - (rect?.top ?? 0);
+      const hit = hitsRef.current.find(
+        (h) => x >= h.x1 && x <= h.x2 && y >= h.y1 && y <= h.y2,
+      );
+      if (hit) {
+        onSelectMarker(markerFor(hit.block, laneId));
+        return;
+      }
+      onCreateHint(coords.xToTime(x));
+    },
+    [onCreateHint, coords, laneId, onSelectMarker],
+  );
+
   const state = useMemo(() => {
     if (status === "loading") return "Loading…";
     if (status === "error") return `Unavailable${error ? ` — ${error}` : ""}`;
@@ -481,6 +508,7 @@ export function SparseLane({
       data-lane={dragEnabled ? laneId : undefined}
       data-hint-drag-ready={dragEnabled && hitsReady ? "1" : undefined}
       onClick={handleClick}
+      onDoubleClick={onCreateHint ? handleDoubleClick : undefined}
       onPointerDown={dragEnabled ? handlePointerDown : undefined}
       onPointerMove={dragEnabled ? handlePointerMove : undefined}
       onPointerUp={dragEnabled ? endDrag : undefined}

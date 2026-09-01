@@ -78,13 +78,14 @@ export function nextHintId(existing: readonly HintDraftFields[]): string {
 export function newHintDraft(
   currentTime: number,
   existing: readonly HintDraftFields[],
+  spanSeconds = 0,
 ): HintDraftFields {
-  const t = formatSeconds(Math.max(0, currentTime || 0));
+  const start = Math.max(0, currentTime || 0);
   return {
     id: nextHintId(existing),
     title: `Hint ${existing.length + 1}`,
-    start: t,
-    end: t,
+    start: formatSeconds(start),
+    end: formatSeconds(start + Math.max(0, spanSeconds)),
     musical: "",
     lighting: "",
   };

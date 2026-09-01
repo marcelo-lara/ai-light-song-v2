@@ -115,6 +115,13 @@ describe("new hint ids", () => {
     expect(d.end).toBe("12.346");
     expect(d.id).toBe("hint-001");
   });
+  it("item 8: a span spreads end to start + span; default span unchanged", () => {
+    const d = newHintDraft(10, [], 1.0);
+    expect(d.start).toBe("10");
+    expect(d.end).toBe("11");
+    // default (zero span) still collapses end onto start
+    expect(newHintDraft(10, []).end).toBe("10");
+  });
 });
 
 describe("draftIdForReference", () => {

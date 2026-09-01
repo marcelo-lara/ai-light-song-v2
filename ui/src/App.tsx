@@ -130,6 +130,12 @@ export function App(): React.JSX.Element {
   const [selection, setSelection] = useState<BlockSelection | null>(null);
   const [activeHintRef, setActiveHintRef] = useState<string | null>(null);
   const [hintsOverride, setHintsOverride] = useState<HumanHintsFile | null>(null);
+  // item 8: a pending "create a draft hint at this time" request from a
+  // double-click on the Human Hints lane. `nonce` makes each request distinct
+  // so the panel consumes it exactly once.
+  const [hintSeed, setHintSeed] = useState<{ time: number; nonce: number } | null>(
+    null,
+  );
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const laneState = useLaneState();
@@ -228,12 +234,14 @@ export function App(): React.JSX.Element {
     setSelection(null);
     setActiveHintRef(null);
     setHintsOverride(null);
+    setHintSeed(null);
   }, [song]);
 
   const closePanel = useCallback(() => {
     setPanelMode(null);
     setSelection(null);
     setActiveHintRef(null);
+    setHintSeed(null);
   }, []);
 
   const scrollTimelineToTime = useCallback(
@@ -250,6 +258,15 @@ export function App(): React.JSX.Element {
   const openHintEditor = useCallback((reference: string | null) => {
     setSelection(null);
     setActiveHintRef(reference);
+    setPanelMode("hint");
+  }, []);
+
+  // item 8: a double-click on empty Human Hints lane background seeds a new
+  // 1.0s draft hint in the editor and opens it.
+  const handleCreateHintAt = useCallback((time: number) => {
+    setSelection(null);
+    setActiveHintRef(null);
+    setHintSeed({ time, nonce: Date.now() });
     setPanelMode("hint");
   }, []);
 
@@ -349,6 +366,9 @@ export function App(): React.JSX.Element {
               onCommitHintTimes={
                 lane.id === "humanHints" ? handleCommitHintTimes : undefined
               }
+              onCreateHint={
+                lane.id === "humanHints" ? handleCreateHintAt : undefined
+              }
             />
             {lane.id === "humanHints" && (
               <button
@@ -392,6 +412,7 @@ export function App(): React.JSX.Element {
       activeHintRef,
       openHintEditor,
       handleCommitHintTimes,
+      handleCreateHintAt,
     ],
   );
 
@@ -790,6 +811,7 @@ export function App(): React.JSX.Element {
             file={humanHintsFile}
             currentTime={transport.currentTime}
             activeReference={activeHintRef}
+            seed={hintSeed}
             onClose={closePanel}
             onSaved={handleSaveHints}
             onScrollToTime={scrollTimelineToTime}
