@@ -25,6 +25,7 @@ import type { Lane } from "./laneState";
 import type { LaneMarker } from "./laneRenderers";
 import type { SparseBlock } from "./laneContent";
 import {
+  BEAT_SNAP_PX,
   computeDrag,
   isClick,
   resolveZone,
@@ -303,6 +304,23 @@ export function SparseLane({
     );
   }, []);
 
+  // item 9: snap targets for a hint drag — the union of every OTHER block's
+  // edges and every beat-line x at the current zoom. `computeDrag` picks the
+  // nearest within BEAT_SNAP_PX (so the block edges effectively also beat-snap,
+  // matching the tighter threshold).
+  const snapTargets = useCallback(
+    (draggedId: string): number[] => {
+      const out: number[] = [];
+      for (const b of blocks) {
+        if (b.id === draggedId) continue;
+        out.push(coords.timeToX(b.start_s), coords.timeToX(b.end_s));
+      }
+      for (const beat of coords.beats) out.push(coords.timeToX(beat.time));
+      return out;
+    },
+    [blocks, coords],
+  );
+
   const handlePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
       if (!dragEnabled || event.button !== 0) return;
@@ -355,22 +373,21 @@ export function SparseLane({
 
       if (containerRef.current) containerRef.current.style.cursor = "grabbing";
 
-      const targets: number[] = [];
-      for (const b of blocks) {
-        if (b.id === drag.id) continue;
-        targets.push(coords.timeToX(b.start_s), coords.timeToX(b.end_s));
-      }
+      // item 9: ⌘/Ctrl held during the drag disables snapping entirely.
+      const snap = !(event.metaKey || event.ctrlKey);
       const next = computeDrag({
         zone: drag.zone,
         original: { start: drag.origStart, end: drag.origEnd },
         dxPx: dx,
         pxPerSec: coords.pxPerSec,
         duration: coords.duration,
-        snapTargetsPx: targets,
+        snapTargetsPx: snap ? snapTargets(drag.id) : [],
+        snapThresholdPx: BEAT_SNAP_PX,
+        snapAnchor: drag.zone === "interior" ? "start" : "nearest",
       });
       setPreview({ id: drag.id, start: next.start, end: next.end });
     },
-    [dragEnabled, localPoint, findHit, blocks, coords],
+    [dragEnabled, localPoint, findHit, snapTargets, coords.pxPerSec, coords.duration],
   );
 
   const endDrag = useCallback(
@@ -393,18 +410,18 @@ export function SparseLane({
       }
 
       const dx = event.clientX - drag.startClientX;
-      const targets: number[] = [];
-      for (const b of blocks) {
-        if (b.id === drag.id) continue;
-        targets.push(coords.timeToX(b.start_s), coords.timeToX(b.end_s));
-      }
+      // item 9: mirror handlePointerMove — beat-snap unless ⌘/Ctrl is held on
+      // the pointerup event.
+      const snap = !(event.metaKey || event.ctrlKey);
       const next = computeDrag({
         zone: drag.zone,
         original: { start: drag.origStart, end: drag.origEnd },
         dxPx: dx,
         pxPerSec: coords.pxPerSec,
         duration: coords.duration,
-        snapTargetsPx: targets,
+        snapTargetsPx: snap ? snapTargets(drag.id) : [],
+        snapThresholdPx: BEAT_SNAP_PX,
+        snapAnchor: drag.zone === "interior" ? "start" : "nearest",
       });
       setPreview({ id: drag.id, start: next.start, end: next.end });
 
@@ -415,7 +432,7 @@ export function SparseLane({
         },
       );
     },
-    [blocks, coords, laneId, onCommitHintTimes, onSelectMarker],
+    [snapTargets, coords, laneId, onCommitHintTimes, onSelectMarker],
   );
 
   const handlePointerCancel = useCallback(() => {

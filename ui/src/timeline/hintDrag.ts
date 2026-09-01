@@ -22,6 +22,12 @@ export const EDGE_ZONE_PX = 6;
 export const MIN_BLOCK_PX = 18;
 /** an edge within this many screen px of another block's edge snaps to it. */
 export const SNAP_PX = 5;
+/**
+ * item 9 (refinement v2.2 §9): a hint edge within this many screen px of a beat
+ * line snaps to that beat; beyond it the drag is free. Deliberately tighter than
+ * `SNAP_PX` so it does not fight fine sub-beat placement.
+ */
+export const BEAT_SNAP_PX = 4;
 /** pointer travel (px) below this on pointerup is a click, not a drag. */
 export const CLICK_PX = 4;
 /** the smallest allowed `end - start` (seconds). */
@@ -146,15 +152,25 @@ export interface ComputeDragInput {
   dxPx: number;
   pxPerSec: number;
   duration: number;
-  /** every OTHER block's start_s / end_s, already converted to px. */
+  /** every OTHER block's start_s / end_s (and, item 9, beat-line x), in px. */
   snapTargetsPx?: readonly number[];
   snapThresholdPx?: number;
+  /**
+   * item 9: for an interior (move) drag, which edge is allowed to snap.
+   * `"start"` snaps only the leading edge (preserving duration — the §9 move
+   * behaviour), `"end"` only the trailing edge, `"nearest"` (default) keeps the
+   * "whichever edge is closest to a target" behaviour. Ignored for edge drags,
+   * which already snap only the dragged edge.
+   */
+  snapAnchor?: "start" | "end" | "nearest";
 }
 
 /**
- * Full pointermove -> new {start,end}: apply the raw delta, snap (edge: the
- * moving edge; interior: whichever of the two moving edges is closest to a
- * target), then clamp.
+ * Full pointermove -> new {start,end}: apply the raw delta, snap, then clamp.
+ * Edge drags snap the moving edge. Interior drags snap per `snapAnchor`:
+ * `"nearest"` shifts the whole box by whichever of its two edges is closest to a
+ * target; `"start"` / `"end"` consider only that one edge (item 9 move drags use
+ * `"start"` so the hint's leading edge beat-snaps while its duration is kept).
  */
 export function computeDrag(input: ComputeDragInput): TimeSpan {
   const {
@@ -165,6 +181,7 @@ export function computeDrag(input: ComputeDragInput): TimeSpan {
     duration,
     snapTargetsPx,
     snapThresholdPx = SNAP_PX,
+    snapAnchor = "nearest",
   } = input;
 
   let moved = applyDrag(zone, original, pxToSeconds(dxPx, pxPerSec));
@@ -173,8 +190,14 @@ export function computeDrag(input: ComputeDragInput): TimeSpan {
     if (zone === "interior") {
       const startPx = moved.start * pxPerSec;
       const endPx = moved.end * pxPerSec;
-      const snapStart = nearestSnapPx(startPx, snapTargetsPx, snapThresholdPx);
-      const snapEnd = nearestSnapPx(endPx, snapTargetsPx, snapThresholdPx);
+      const snapStart =
+        snapAnchor === "end"
+          ? null
+          : nearestSnapPx(startPx, snapTargetsPx, snapThresholdPx);
+      const snapEnd =
+        snapAnchor === "start"
+          ? null
+          : nearestSnapPx(endPx, snapTargetsPx, snapThresholdPx);
       const dStartPx = snapStart == null ? null : snapStart - startPx;
       const dEndPx = snapEnd == null ? null : snapEnd - endPx;
       let adjPx = 0;

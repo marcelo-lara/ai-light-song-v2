@@ -221,6 +221,36 @@ describe("computeDrag", () => {
     expect(r.end - r.start).toBeCloseTo(10, 6);
   });
 
+  it("item 9: snapAnchor 'start' ignores a target near the end edge", () => {
+    // box 10-20s (200-400px). Move +199px -> start 399px, end 599px.
+    // Only target is near the end (600px); with anchor "start" it is ignored.
+    const r = computeDrag({
+      zone: "interior",
+      original: { start: 10, end: 20 },
+      dxPx: 199,
+      pxPerSec,
+      duration,
+      snapTargetsPx: [600],
+      snapAnchor: "start",
+    });
+    expect(r.start * pxPerSec).toBeCloseTo(399, 6);
+    expect(r.end - r.start).toBeCloseTo(10, 6);
+  });
+
+  it("item 9: snapAnchor 'start' snaps the start and preserves duration", () => {
+    const r = computeDrag({
+      zone: "interior",
+      original: { start: 10, end: 20 },
+      dxPx: 199,
+      pxPerSec,
+      duration,
+      snapTargetsPx: [400, 601],
+      snapAnchor: "start",
+    });
+    expect(r.start * pxPerSec).toBeCloseTo(400, 6);
+    expect(r.end - r.start).toBeCloseTo(10, 6);
+  });
+
   it("clamps the result to the timeline", () => {
     const r = computeDrag({
       zone: "interior",
