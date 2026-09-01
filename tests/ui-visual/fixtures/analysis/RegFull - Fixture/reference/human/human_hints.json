@@ -4,40 +4,24 @@
     {
       "id": "hint-001",
       "title": "Drop - approach",
-      "start_time": 44.833333333333336,
-      "end_time": 51.292877,
+      "start_time": 40.0,
+      "end_time": 48.0,
       "summary": "",
       "lighting_hint": ""
     },
     {
       "id": "hint-002",
       "title": "drop build",
-      "start_time": 51.333333333333336,
-      "end_time": 55.810810810810814,
+      "start_time": 52.0,
+      "end_time": 60.0,
       "summary": "",
       "lighting_hint": ""
     },
     {
       "id": "hint-003",
       "title": "drop tension",
-      "start_time": 55.82432432432432,
-      "end_time": 57.92567567567568,
-      "summary": "",
-      "lighting_hint": ""
-    },
-    {
-      "id": "hint-004",
-      "title": "drop release",
-      "start_time": 59.554054054054056,
-      "end_time": 59.554054054054056,
-      "summary": "",
-      "lighting_hint": ""
-    },
-    {
-      "id": "hint-005",
-      "title": "drop impact",
-      "start_time": 57.939189189189186,
-      "end_time": 59.53333333333333,
+      "start_time": 64.0,
+      "end_time": 72.0,
       "summary": "",
       "lighting_hint": ""
     }

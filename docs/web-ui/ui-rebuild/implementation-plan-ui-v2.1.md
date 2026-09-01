@@ -61,7 +61,7 @@ stall a whole run; everything independent of it still gets built.
 | 7 | "Fit to width" is an icon-only control | R3 | ☑ |
 | 8 | "Hide all" button on the lane list | R4 | ☑ |
 | 9 | Square corners on canvas block entries | R6 | ☑ |
-| 10 | Drag to edit a human-hint block on the timeline | R7 | ☐ |
+| 10 | Drag to edit a human-hint block on the timeline | R7 | ☑ |
 
 ## How to test
 
@@ -634,35 +634,35 @@ Refinement item `R7`. On the expanded `humanHints` lane, a block's left edge,
 right edge, and interior become drag handles that edit `start_time` / `end_time`
 and persist on drop.
 
-- [ ] **Hit zones (expanded lane only).** In `SparseLane.tsx`, for
+- [x] **Hit zones (expanded lane only).** In `SparseLane.tsx`, for
       `laneId === "humanHints"` only, extend `hitsRef` regions (or add a parallel
       structure) so each block exposes: a 6px-wide **left** zone at its left edge,
       a 6px-wide **right** zone at its right edge, and the remaining **interior**.
       A block narrower than ~18px is interior-only (move), no edge zones. The
       cursor is `ew-resize` over an edge zone, `grab` over the interior,
       `grabbing` while dragging.
-- [ ] **Drag mechanics.** `pointerdown` in a zone starts a drag: capture the
+- [x] **Drag mechanics.** `pointerdown` in a zone starts a drag: capture the
       pointer, track `dx` in px, convert with `coords.xToTime`. Left-edge drag
       moves `start_time` only; right-edge moves `end_time` only; interior moves
       both by the same `dt`. The lane redraws live during the drag (the dragged
       block follows the pointer); the playhead does **not** move.
-- [ ] **Click vs. drag.** If the pointer travels < 4px total before `pointerup`,
+- [x] **Click vs. drag.** If the pointer travels < 4px total before `pointerup`,
       treat it as a click — no time change, open the hint editor exactly as the
       current `onSelectMarker` → `openHintEditor` path does. ≥ 4px is a drag and
       does not open the editor.
-- [ ] **Snap.** Build the sorted set of all *other* `humanHints` block edges
+- [x] **Snap.** Build the sorted set of all *other* `humanHints` block edges
       (each block contributes its `start_s` and `end_s` in px). While dragging an
       edge, if the dragged edge is within 5px (screen) of a member of that set,
       snap it exactly to that member. For an interior (box) move, compute the
       candidate snap offset for both the moving left edge and the moving right
       edge and apply whichever is closest, if within 5px. No snap target within
       5px → free drag.
-- [ ] **Constraints.** After snap, clamp: `start_time ≥ 0`,
+- [x] **Constraints.** After snap, clamp: `start_time ≥ 0`,
       `end_time ≤ coords.duration`, and `end_time - start_time ≥ 0.05` (an edge
       drag that would violate this stops at the limit; an interior drag that
       would push an edge past 0 or `duration` stops the whole box at that
       boundary, preserving its length).
-- [ ] **Persist on drop.** On `pointerup` after a real drag, build the updated
+- [x] **Persist on drop.** On `pointerup` after a real drag, build the updated
       `HumanHintsFile` (all hints, with this hint's new `start_time` / `end_time`,
       other fields untouched), call `saveHumanHints(song, payload)` and feed the
       server-normalised result through the existing `handleSaveHints` (which sets
@@ -672,13 +672,13 @@ and persist on drop.
       `SparseLane` (e.g. `onCommitHintTimes(id, start, end)`) wired in `App.tsx`;
       `SparseLane` stays otherwise generic (the prop is only passed for the
       `humanHints` lane).
-- [ ] **Editor sync.** If `HintEditorPanel` is open for the dragged hint, its
+- [x] **Editor sync.** If `HintEditorPanel` is open for the dragged hint, its
       start/end fields refresh from the reloaded file after the drop (no
       mid-drag live tracking required). Confirm the panel does not clobber the
       just-saved values with a stale draft.
-- [ ] **Collapsed lane unchanged.** No drag handles when `lane.expanded` is
+- [x] **Collapsed lane unchanged.** No drag handles when `lane.expanded` is
       false; a click still seeks / opens as today.
-- [ ] **Selectors for QA.** Add `data-hint-drag-ready="1"` on the `humanHints`
+- [x] **Selectors for QA.** Add `data-hint-drag-ready="1"` on the `humanHints`
       lane body once its hit zones are registered, so the executor can wait
       without a timeout. Keep `data-lane="humanHints"` on both cells (already
       present from item 1).
@@ -730,6 +730,50 @@ dragged one). Canvas/pointer interaction is covered by Visual QA.
 - Diff a new baseline `hint-drag-resized.png` (`.app-timeline__grid`, waveform
   masked) captured after the right-edge resize + interior move, before reload.
 **Commit:** `10. drag to edit a human-hint block on the timeline`
+
+**Notes — item 10 (resolved during implementation).**
+- **New pure module `src/timeline/hintDrag.ts`** (+ `hintDrag.test.ts`): `resolveZone`
+  (6px edge zones, `<18px` → interior-only), `pxToSeconds`, `applyDrag`,
+  `nearestSnapPx` / `snapEdge` (5px, nearest wins; interior move snaps whichever
+  of the two moving edges is closest), `clampTimes` (`start ≥ 0`,
+  `end ≤ duration`, `end - start ≥ 0.05`; interior clamp preserves length at a
+  boundary), `isClick` (< 4px travel), and a `computeDrag` orchestrator.
+  Constants exported (`EDGE_ZONE_PX`, `MIN_BLOCK_PX`, `SNAP_PX`, `CLICK_PX`,
+  `MIN_GAP_S`).
+- **`SparseLane.tsx`** gains an optional `onCommitHintTimes(id, start, end)` prop,
+  passed by `App` **only** for the `humanHints` lane. When it is set and the lane
+  is expanded, the outer `.tl-canvas-lane` div carries pointer handlers: a real
+  drag (≥ 4px) shows a live canvas preview of the dragged block, snaps against
+  the other blocks' edges, clamps, and commits on drop; < 4px falls through to
+  the existing `onSelectMarker` → `openHintEditor` click path. Hover cursor is
+  `ew-resize` / `grab`, `grabbing` while dragging. `data-hint-drag-ready="1"` is
+  set on the lane body once hits are registered. The drag hit-test uses 4px of
+  slack around each block box so a grab on the visible edge resolves (the
+  exact-bounds test is kept for the click path).
+- **`App.tsx`** `handleCommitHintTimes` rebuilds the full `HumanHintsFile` via
+  `hintToDraft` / `draftToHint` / `buildHumanHintsPayload`, PUTs through the
+  existing `saveHumanHints`, and feeds the server-normalised result to
+  `handleSaveHints` (`hintsOverride` + `reloadSong`). It re-throws on failure so
+  `SparseLane` reverts the optimistic preview.
+- **`panel/RightPanel.tsx` + `HintEditorPanel.tsx`**: the panel root forwards
+  `data-testid="hint-editor"` and `data-hint-id={activeId}`. The existing
+  `baseSigRef` file-signature reseed already refreshes the editor's start/end
+  after a drop's reload and never touches drafts on the drag path.
+- **Fixture reshaped for deterministic QA:** `RegFull - Fixture`'s
+  `human_hints.json` now holds three non-overlapping blocks — `hint-001`
+  40.0–48.0, `hint-002` 52.0–60.0, `hint-003` 64.0–72.0 (`hint-004` / `hint-005`
+  dropped); the ids/times are recorded in the regression guide §3.1.
+- **Harness fixes folded in (test-only):** `docker-compose.visual.yml` now mounts
+  `fixtures/analysis` **writable** (the drop exercises the real
+  `PUT /api/human-hints/<song>`, which writes
+  `reference/human/human_hints.json`); the new
+  `tests/ui-visual/specs/hint-drag.spec.ts` scrolls the target lane into the
+  1280px viewport before driving `page.mouse` (the blocks sit ~1340–2410px into a
+  6502px timeline), waits for the PUT + `reloadSong()` to settle, runs
+  `mode: "serial"`, and snapshots/restores the one mutated fixture file.
+- **New baseline:** `hint-drag-resized.png`. No other baseline changed — the
+  `humanHints` fixture reposition did not move `song-full` or any other snapshot.
+  Full Playwright suite 18/18; unit tests 233/233; `tsc` + `vite build` clean.
 
 ---
 

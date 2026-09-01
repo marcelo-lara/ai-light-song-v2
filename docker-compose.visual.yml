@@ -9,5 +9,9 @@
 services:
   ui:
     volumes:
-      - ./tests/ui-visual/fixtures/analysis:/data/analysis:ro
+      # analysis is writable (NOT :ro) so the item-10 hint-drag spec can exercise
+      # the real PUT /api/human-hints save path. hint-drag.spec.ts snapshots and
+      # restores the one fixture file it mutates; if a run is hard-killed, run
+      # `git checkout -- tests/ui-visual/fixtures/analysis` to reset it.
+      - ./tests/ui-visual/fixtures/analysis:/data/analysis
       - ./tests/ui-visual/fixtures/songs:/data/songs:ro

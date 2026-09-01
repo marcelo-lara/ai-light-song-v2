@@ -198,7 +198,15 @@ export function HintEditorPanel({
   );
 
   return (
-    <RightPanel open onClose={onClose} header={header} footer={footer} aria-label="Hint editor">
+    <RightPanel
+      open
+      onClose={onClose}
+      header={header}
+      footer={footer}
+      aria-label="Hint editor"
+      data-testid="hint-editor"
+      data-hint-id={activeId || undefined}
+    >
       <div className="hint-editor__toolbar">
         <button type="button" className="btn btn-secondary btn-sm" onClick={addHint}>
           <i className="ph ph-plus" /> New hint

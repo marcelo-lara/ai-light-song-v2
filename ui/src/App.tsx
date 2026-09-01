@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { artifactPaths, discoverSongs, useSong } from "./data";
 import type { HumanHintsFile, SectionRow } from "./data/types";
+import { buildHumanHintsPayload, saveHumanHints } from "./data/saveHumanHints";
+import { draftToHint, hintToDraft } from "./panel/hintDraft";
 import {
   BlockInspector,
   HintEditorPanel,
@@ -273,6 +275,31 @@ export function App(): React.JSX.Element {
     [reloadSong],
   );
 
+  // item 10: persist a humanHints block's new start/end after a timeline drag.
+  // Builds the full file from the current hints (only the dragged one's times
+  // change) through the same validator/PUT the hint editor uses, then feeds the
+  // server-normalised result through `handleSaveHints`. Rejects on failure so
+  // `SparseLane` reverts its optimistic preview.
+  const handleCommitHintTimes = useCallback(
+    async (id: string, start: number, end: number) => {
+      if (!song) throw new Error("No song selected.");
+      const current = humanHintsFile?.human_hints ?? [];
+      const drafts = current.map((hint) => {
+        const draft = hintToDraft(hint);
+        return hint.id === id
+          ? { ...draft, start: String(start), end: String(end) }
+          : draft;
+      });
+      const payload = buildHumanHintsPayload(
+        humanHintsFile?.song_name || song,
+        drafts.map(draftToHint),
+      );
+      const written = await saveHumanHints(song, payload);
+      handleSaveHints(written);
+    },
+    [song, humanHintsFile, handleSaveHints],
+  );
+
   const renderLaneBody = useCallback(
     (lane: Lane): React.ReactNode => {
       if (lane.id === "waveform") {
@@ -319,6 +346,9 @@ export function App(): React.JSX.Element {
               activeId={lane.id === "humanHints" ? activeHintRef : null}
               onSeek={transport.seekTo}
               onSelectMarker={handleSelectMarker}
+              onCommitHintTimes={
+                lane.id === "humanHints" ? handleCommitHintTimes : undefined
+              }
             />
             {lane.id === "humanHints" && (
               <button
@@ -361,6 +391,7 @@ export function App(): React.JSX.Element {
       laneContentSources,
       activeHintRef,
       openHintEditor,
+      handleCommitHintTimes,
     ],
   );
 

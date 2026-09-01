@@ -76,6 +76,19 @@ Create `tests/ui-visual/fixtures/analysis/` containing 3 frozen song folders:
 - `RegFull - Fixture/` — every artifact the debugger loads
   (`ui/src/lib/config/artifactDefinitions.js` is the authoritative list), including
   `reference/human/human_hints.json` and a `beatdrop_visual_plan.json`.
+  - **`human_hints.json` frozen blocks (plan v2.1 item 10 drag targets).** Three
+    non-overlapping blocks with an 4 s gap between each, well inside the 194.01 s
+    duration:
+
+    | id | `start_time` | `end_time` |
+    |----|-------------:|-----------:|
+    | `hint-001` | 40.0 | 48.0 |
+    | `hint-002` | 52.0 | 60.0 |
+    | `hint-003` | 64.0 | 72.0 |
+
+    (The pre-item-10 file had 5 hints clustered 44–60 s, some adjacent and one
+    degenerate — `hint-004` had `start == end`. `hint-004`/`hint-005` were
+    dropped so the drag QA has deterministic, clearly-separated edges.)
 - `RegPartial - Fixture/` — missing at least one core key from the gate
   (`harmonic`, `symbolic`, `energy`, `sectionsArtifact`, `eventMachine`,
   `validation`) so the warning card renders.
@@ -353,9 +366,17 @@ should be well under that.
       assertions so the README checklist and the suite cannot drift apart.
 - [ ] *(plan item 9)* Corner-pixel checks on `humanHints` / `sections` blocks;
       re-diff `song-full` after squaring the block corners.
-- [ ] *(plan item 10)* `data-hint-drag-ready` marker + `hint-editor`
-      `data-hint-id` selector; drag/resize/move/snap/persist checks on the
-      `humanHints` lane; new baseline `hint-drag-resized.png`. When item 10
-      lands, record `RegFull`'s frozen `human_hints.json` block ids and
-      start/end times in §3.1 (≥ 3 non-overlapping blocks) so the drag targets
-      are deterministic.
+- [x] *(plan item 10)* `data-hint-drag-ready` marker + `hint-editor`
+      `data-hint-id` selector wired; `RegFull`'s frozen `human_hints.json` block
+      ids + start/end times recorded in §3.1 (3 non-overlapping blocks).
+- [x] *(plan item 10)* `hint-drag-resized.png` baseline captured in the pinned
+      container; `tests/ui-visual/specs/hint-drag.spec.ts` drag / resize / move /
+      snap / persist / min-gap checks all green (full suite 18/18). The spec
+      drives `page.mouse` in page coordinates, so its `lanePoint` helper first
+      scrolls `.app-timeline` to bring the (far off-screen) fixture blocks into
+      the viewport — `page.mouse` never auto-scrolls.
+- [x] *(plan item 10)* The drop commits through the real `PUT /api/human-hints`,
+      so `docker-compose.visual.yml` mounts `fixtures/analysis` **writable** (no
+      `:ro`). `hint-drag.spec.ts` snapshots the one fixture file it mutates and
+      restores it in `afterAll` / before each test; if a run is hard-killed,
+      `git checkout -- "tests/ui-visual/fixtures/analysis"` resets it.

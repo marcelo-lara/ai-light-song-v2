@@ -21,6 +21,9 @@ interface RightPanelProps {
   children: React.ReactNode;
   footer?: React.ReactNode;
   "aria-label"?: string;
+  /** optional test/data hooks forwarded to the panel root (item 10). */
+  "data-testid"?: string | undefined;
+  "data-hint-id"?: string | undefined;
 }
 
 /** Selectors whose clicks must NOT dismiss the panel (they open/drive it). */
@@ -34,6 +37,8 @@ export function RightPanel({
   children,
   footer,
   "aria-label": ariaLabel = "Detail panel",
+  "data-testid": dataTestId,
+  "data-hint-id": dataHintId,
 }: RightPanelProps): React.JSX.Element | null {
   const ref = useRef<HTMLElement>(null);
 
@@ -74,6 +79,8 @@ export function RightPanel({
       role="dialog"
       aria-modal="true"
       aria-label={ariaLabel}
+      data-testid={dataTestId}
+      data-hint-id={dataHintId}
       ref={ref}
     >
       <div className="app-rightpanel__header">

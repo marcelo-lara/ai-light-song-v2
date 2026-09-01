@@ -9,7 +9,14 @@
 // `humanHints`, the hint editor — routed by App via marker.laneId). A click
 // that misses every block seeks the playhead.
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import type { ArtifactStatus } from "../data";
 
@@ -17,6 +24,12 @@ import type { Coords } from "./coords";
 import type { Lane } from "./laneState";
 import type { LaneMarker } from "./laneRenderers";
 import type { SparseBlock } from "./laneContent";
+import {
+  computeDrag,
+  isClick,
+  resolveZone,
+  type DragZone,
+} from "./hintDrag";
 import {
   blockBox,
   blockTextLayout,
@@ -39,6 +52,15 @@ interface SparseLaneProps {
   activeId?: string | null;
   onSeek: (time: number) => void;
   onSelectMarker: (marker: LaneMarker) => void;
+  /**
+   * humanHints lane only (plan v2.1 item 10): persist a block's new
+   * start/end after a drag. When present AND the lane is the expanded
+   * `humanHints` lane, block edges / interiors become drag handles. A
+   * rejected promise reverts the on-canvas preview to the pre-drag position.
+   */
+  onCommitHintTimes?:
+    | ((id: string, start: number, end: number) => void | Promise<void>)
+    | undefined;
 }
 
 interface HitBox {
@@ -95,13 +117,55 @@ export function SparseLane({
   activeId,
   onSeek,
   onSelectMarker,
+  onCommitHintTimes,
 }: SparseLaneProps): React.JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const hitsRef = useRef<HitBox[]>([]);
 
   const cssWidth = coords.timelineW;
   const cssHeight = lane.renderHeight;
   const tint = sparseTint(laneId);
+
+  // --- item 10: drag-to-edit on the expanded humanHints lane --------------
+  const dragEnabled =
+    laneId === "humanHints" && lane.expanded && typeof onCommitHintTimes === "function";
+
+  // live start/end for the block currently being (or just) dragged; overrides
+  // the drawn geometry so the block follows the pointer. Cleared whenever the
+  // `blocks` prop changes (a successful save reloads them at the new times).
+  const [preview, setPreview] = useState<{ id: string; start: number; end: number } | null>(
+    null,
+  );
+  const [hitsReady, setHitsReady] = useState(false);
+
+  const dragRef = useRef<
+    | null
+    | {
+        id: string;
+        zone: DragZone;
+        pointerId: number;
+        startClientX: number;
+        startClientY: number;
+        origStart: number;
+        origEnd: number;
+        block: SparseBlock;
+        travel: number;
+        moved: boolean;
+      }
+  >(null);
+  const suppressClickRef = useRef(false);
+
+  // Clear the optimistic preview only when the blocks' actual times change
+  // (a successful save reloads them) — not on every unrelated parent re-render,
+  // which would hand back a fresh `blocks` array reference.
+  const blocksSig = useMemo(
+    () => blocks.map((b) => `${b.id}:${b.start_s}:${b.end_s}`).join("|"),
+    [blocks],
+  );
+  useEffect(() => {
+    setPreview(null);
+  }, [blocksSig]);
 
   const packed = useMemo<PackedBlock<SparseBlock & { x: number; width: number }>[]>(() => {
     const boxed = blocks.map((block) => {
@@ -148,8 +212,14 @@ export function SparseLane({
     }
 
     for (const p of packed) {
-      const x = p.x * xScale;
-      const w = Math.max(2, p.width * xScale);
+      // item 10: the dragged block follows the pointer via `preview`.
+      const dragging = preview != null && preview.id === p.block.id;
+      const baseX = dragging ? coords.timeToX(preview.start) : p.x;
+      const baseW = dragging
+        ? Math.max(0, coords.timeToX(preview.end) - coords.timeToX(preview.start))
+        : p.width;
+      const x = baseX * xScale;
+      const w = Math.max(2, baseW * xScale);
       const layout = blockTextLayout(w, p.height);
       const selected = activeId != null && p.block.id === activeId;
 
@@ -159,8 +229,8 @@ export function SparseLane({
       ctx.strokeRect(x, p.y, w, p.height);
 
       hitsRef.current.push({
-        x1: p.x,
-        x2: p.x + p.width,
+        x1: baseX,
+        x2: baseX + baseW,
         y1: p.y,
         y2: p.y + p.height,
         block: p.block,
@@ -186,6 +256,8 @@ export function SparseLane({
         );
       }
     }
+
+    setHitsReady(hitsRef.current.length > 0);
   }, [
     blocks,
     packed,
@@ -196,6 +268,7 @@ export function SparseLane({
     status,
     tint,
     activeId,
+    preview,
   ]);
 
   useLayoutEffect(draw, [draw]);
@@ -208,8 +281,156 @@ export function SparseLane({
     return () => observer.disconnect();
   }, [draw]);
 
+  const localPoint = useCallback(
+    (clientX: number, clientY: number): { x: number; y: number } => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      return {
+        x: clientX - (rect?.left ?? 0),
+        y: clientY - (rect?.top ?? 0),
+      };
+    },
+    [],
+  );
+
+  // Drag/hover hit-test with a few px of slack around each block so a grab that
+  // lands right on (or a hair past) an edge still resolves to that block — the
+  // way a resize handle normally extends slightly outside its element. The
+  // click-to-open path keeps its own exact-bounds test.
+  const findHit = useCallback((x: number, y: number): HitBox | undefined => {
+    const m = 4;
+    return hitsRef.current.find(
+      (h) => x >= h.x1 - m && x <= h.x2 + m && y >= h.y1 - m && y <= h.y2 + m,
+    );
+  }, []);
+
+  const handlePointerDown = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      if (!dragEnabled || event.button !== 0) return;
+      const { x, y } = localPoint(event.clientX, event.clientY);
+      const hit = findHit(x, y);
+      if (!hit) return; // a miss still seeks via the click handler
+      const zone = resolveZone(x - hit.x1, hit.x2 - hit.x1);
+      dragRef.current = {
+        id: hit.block.id,
+        zone,
+        pointerId: event.pointerId,
+        startClientX: event.clientX,
+        startClientY: event.clientY,
+        origStart: hit.block.start_s,
+        origEnd: hit.block.end_s,
+        block: hit.block,
+        travel: 0,
+        moved: false,
+      };
+      event.currentTarget.setPointerCapture(event.pointerId);
+      setPreview({ id: hit.block.id, start: hit.block.start_s, end: hit.block.end_s });
+    },
+    [dragEnabled, localPoint, findHit],
+  );
+
+  const handlePointerMove = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      const drag = dragRef.current;
+      if (!drag) {
+        // hover cursor feedback only
+        if (!dragEnabled) return;
+        const el = containerRef.current;
+        if (!el) return;
+        const { x, y } = localPoint(event.clientX, event.clientY);
+        const hit = findHit(x, y);
+        if (!hit) {
+          el.style.cursor = "";
+          return;
+        }
+        const zone = resolveZone(x - hit.x1, hit.x2 - hit.x1);
+        el.style.cursor = zone === "interior" ? "grab" : "ew-resize";
+        return;
+      }
+
+      const dx = event.clientX - drag.startClientX;
+      const dy = event.clientY - drag.startClientY;
+      drag.travel = Math.max(drag.travel, Math.hypot(dx, dy));
+      if (!isClick(drag.travel)) drag.moved = true;
+      if (!drag.moved) return;
+
+      if (containerRef.current) containerRef.current.style.cursor = "grabbing";
+
+      const targets: number[] = [];
+      for (const b of blocks) {
+        if (b.id === drag.id) continue;
+        targets.push(coords.timeToX(b.start_s), coords.timeToX(b.end_s));
+      }
+      const next = computeDrag({
+        zone: drag.zone,
+        original: { start: drag.origStart, end: drag.origEnd },
+        dxPx: dx,
+        pxPerSec: coords.pxPerSec,
+        duration: coords.duration,
+        snapTargetsPx: targets,
+      });
+      setPreview({ id: drag.id, start: next.start, end: next.end });
+    },
+    [dragEnabled, localPoint, findHit, blocks, coords],
+  );
+
+  const endDrag = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      const drag = dragRef.current;
+      if (!drag) return;
+      dragRef.current = null;
+      if (containerRef.current) containerRef.current.style.cursor = "";
+      try {
+        event.currentTarget.releasePointerCapture(drag.pointerId);
+      } catch {
+        /* pointer already released */
+      }
+      suppressClickRef.current = true;
+
+      if (!drag.moved) {
+        setPreview(null);
+        onSelectMarker(markerFor(drag.block, laneId));
+        return;
+      }
+
+      const dx = event.clientX - drag.startClientX;
+      const targets: number[] = [];
+      for (const b of blocks) {
+        if (b.id === drag.id) continue;
+        targets.push(coords.timeToX(b.start_s), coords.timeToX(b.end_s));
+      }
+      const next = computeDrag({
+        zone: drag.zone,
+        original: { start: drag.origStart, end: drag.origEnd },
+        dxPx: dx,
+        pxPerSec: coords.pxPerSec,
+        duration: coords.duration,
+        snapTargetsPx: targets,
+      });
+      setPreview({ id: drag.id, start: next.start, end: next.end });
+
+      const preDrag = { start: drag.origStart, end: drag.origEnd };
+      Promise.resolve(onCommitHintTimes?.(drag.id, next.start, next.end)).catch(
+        () => {
+          setPreview({ id: drag.id, start: preDrag.start, end: preDrag.end });
+        },
+      );
+    },
+    [blocks, coords, laneId, onCommitHintTimes, onSelectMarker],
+  );
+
+  const handlePointerCancel = useCallback(() => {
+    if (!dragRef.current) return;
+    dragRef.current = null;
+    if (containerRef.current) containerRef.current.style.cursor = "";
+    setPreview(null);
+  }, []);
+
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
+      if (suppressClickRef.current) {
+        suppressClickRef.current = false;
+        return;
+      }
       const rect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
@@ -236,10 +457,25 @@ export function SparseLane({
 
   return (
     <div
+      ref={containerRef}
       className="tl-canvas-lane tl-sparse-lane"
       style={{ position: "absolute", inset: 0, width: cssWidth }}
       role="presentation"
+      data-lane={dragEnabled ? laneId : undefined}
+      data-hint-drag-ready={dragEnabled && hitsReady ? "1" : undefined}
       onClick={handleClick}
+      onPointerDown={dragEnabled ? handlePointerDown : undefined}
+      onPointerMove={dragEnabled ? handlePointerMove : undefined}
+      onPointerUp={dragEnabled ? endDrag : undefined}
+      onPointerCancel={dragEnabled ? handlePointerCancel : undefined}
+      onPointerLeave={
+        dragEnabled
+          ? () => {
+              if (!dragRef.current && containerRef.current)
+                containerRef.current.style.cursor = "";
+            }
+          : undefined
+      }
     >
       <canvas ref={canvasRef} className="tl-canvas-lane__canvas" />
       {state && <div className="tl-canvas-lane__state">{state}</div>}
