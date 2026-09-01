@@ -14,6 +14,13 @@ status), [docs/source references/contract-change-v2.1.md](docs/source%20referenc
 [docs/product-refinement-v2.2.md](docs/product-refinement-v2.2.md) (the next
 release worklist).
 
+A new **`mcp/`** component is being specced: a read-only, token-efficient MCP
+server that projects song mood, sections, and dynamics (drop sequences
+especially) to a reasoning model — whole-song overview plus on-demand segment
+detail. Song comprehension only; cue authoring belongs to the separate
+`ai-dmx-light-render` server. Definition and build plan:
+[docs/mcp-server/](docs/mcp-server/).
+
 The internal debugger UI (`ui/`) is the `UI v2` from-scratch rebuild (React +
 TypeScript + Vite, the "Score Analysis DAW" design, wavesurfer.js as player and
 master clock) — items 1–11 committed; the `ui-v2` tag is held pending a

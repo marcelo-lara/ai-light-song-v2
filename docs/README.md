@@ -1,5 +1,7 @@
 # Documentation Map
 
+**Resume here:** [next_steps.md](next_steps.md) — working checkpoint.
+
 **Active release:** [product-refinement-v2.2.md](product-refinement-v2.2.md)
 (v2.2 worklist — planning). **Previous release:**
 [product-refinement-v2.1.md](product-refinement-v2.1.md) (v2.1 worklist and the
@@ -16,6 +18,7 @@ inference layer can be maintained and improved in isolation.
 | [`audio-inference/`](audio-inference/) | The music-understanding layer: ML models (stems, embeddings, chords, MIDI/drum transcription, section SSM, event classifier) plus the rule-based baselines, event vocabularies, identifier inference and LLM-friendly abstractions that feed or compete with them. | Interpretation of audio |
 | [`lighting-score/`](lighting-score/) | Epic 7 generation stage: unified feature-layer assembly, feature-to-lighting mapping, fixture-aware orchestration. | Feature → lighting transform |
 | [`web-ui/`](web-ui/) | Epic 8 internal debugger, the `build_ui_data` contract, the offline visualizer export, UI issue/regression notes, and the [`web-ui/ui-rebuild/`](web-ui/ui-rebuild/) close-out (the shipped `UI v2` React + TS rebuild as the "Score Analysis DAW" design; parity sign-off in `ui-rebuild/archive/`). | Web interface |
+| [`mcp-server/`](mcp-server/) | The `mcp/` component: a read-only, token-efficient MCP server that projects song mood, sections, and dynamics (drop sequences especially) — whole-song overview plus on-demand segment detail. Song comprehension only; cue authoring is `ai-dmx-light-render`'s job, not this server's. Product definition and build plan. | Analysis consumer |
 
 Cross-cutting docs stay at `docs/` root: [`constitution.md`](constitution.md),
 [`Implementation_Guide.md`](Implementation_Guide.md),
