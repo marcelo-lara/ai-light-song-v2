@@ -182,7 +182,7 @@ export function App(): React.JSX.Element {
     };
   }, []);
 
-  const { artifacts, reload: reloadSong } = useSong(song, TIMELINE_KEYS);
+  const { artifacts } = useSong(song, TIMELINE_KEYS);
   const info = artifacts.info.data;
   const beats = useMemo(() => artifacts.beats.data ?? [], [artifacts.beats.data]);
   const sections: SectionRow[] = useMemo(
@@ -284,13 +284,15 @@ export function App(): React.JSX.Element {
     [transport, openHintEditor],
   );
 
-  const handleSaveHints = useCallback(
-    (file: HumanHintsFile) => {
-      setHintsOverride(file);
-      reloadSong();
-    },
-    [reloadSong],
-  );
+  // item 7 (ui-issues finding 7): the server-normalised file returned by the
+  // save flows into `hintsOverride`, which authoritatively updates the Human
+  // Hints lane in place. We deliberately do NOT `reloadSong()` here — a full
+  // reload reseeds every artifact to loading/null, collapsing beats → coords →
+  // timelineW to zero and resetting the scroller's zoom/scroll to song start on
+  // every hint drag-commit and panel Save.
+  const handleSaveHints = useCallback((file: HumanHintsFile) => {
+    setHintsOverride(file);
+  }, []);
 
   // item 10: persist a humanHints block's new start/end after a timeline drag.
   // Builds the full file from the current hints (only the dragged one's times
