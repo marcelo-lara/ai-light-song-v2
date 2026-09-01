@@ -110,6 +110,11 @@
 
 /* ---- Main band ------------------------------------------------------- */
 
+/* item 10 — column layout so the timeline stack and the bottom lane-status
+   notice stack vertically (the right panel is a sibling of this wrap). */
+.app-timeline-wrap {
+  flex-direction: column;
+}
 .app-main {
   flex: 1;
   display: flex;
@@ -206,6 +211,13 @@
   border-bottom: 1px solid var(--tl-border);
   color: var(--color-neutral-400);
   font: 500 11px/1.4 var(--font-body);
+}
+/* item 10 — the lane-status notice sits flush at the bottom of the view,
+   below the timeline / lane stack, as the last flex child. */
+.app-timeline__banner--bottom {
+  margin-top: auto;
+  border-bottom: none;
+  border-top: 1px solid var(--tl-border);
 }
 
 /* Right panel */

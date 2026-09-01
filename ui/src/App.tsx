@@ -756,13 +756,6 @@ export function App(): React.JSX.Element {
             </div>
           ) : song ? (
             <>
-              {songLoadState.kind === "degraded" && (
-                <div className="app-timeline__banner" role="status">
-                  {songLoadState.missing.length} lane
-                  {songLoadState.missing.length === 1 ? "" : "s"} missing an artifact:{" "}
-                  {songLoadState.missing.join(", ")}. Those lanes show an empty state.
-                </div>
-              )}
               <TimelineGrid
                 coords={coords}
                 lanes={laneState.visibleLanes}
@@ -785,6 +778,19 @@ export function App(): React.JSX.Element {
                   onReset={laneState.resetToDefaults}
                   onClose={() => setLaneListOpen(false)}
                 />
+              )}
+              {/* item 10 (refinement v2.2 §10): lane-status notices are
+                  low-urgency and belong out of the primary work area, so this
+                  renders below the timeline / lane stack, flush at the bottom. */}
+              {songLoadState.kind === "degraded" && (
+                <div
+                  className="app-timeline__banner app-timeline__banner--bottom"
+                  role="status"
+                >
+                  {songLoadState.missing.length} lane
+                  {songLoadState.missing.length === 1 ? "" : "s"} missing an artifact:{" "}
+                  {songLoadState.missing.join(", ")}. Those lanes show an empty state.
+                </div>
               )}
             </>
           ) : (
