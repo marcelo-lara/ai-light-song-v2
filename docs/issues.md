@@ -5,8 +5,8 @@
 This file is the **open** analysis-issue queue. It breaks broad quality problems
 into focused, testable items that can be handled one at a time across sessions.
 
-**It contains only pending issues.** When an issue is solved it moves out, in
-the same change, to [`archive/issues-solved.md`](archive/issues-solved.md). A
+**It contains only pending issues.** When an issue is solved the entry is
+removed in the same change; the closed entry stays recoverable in that commit. A
 tracker whose entries are mostly closed stops being a queue and becomes a
 history nobody can skim — see constitution §4.2.
 
@@ -17,13 +17,14 @@ history nobody can skim — see constitution §4.2.
   success condition was met.
 
 Do not mark an issue solved without updating its evidence, validation notes and
-success-condition outcome. Then **cut the whole entry and paste it into
-[`archive/issues-solved.md`](archive/issues-solved.md)** — closing an issue and
-moving it are one action, not two.
+success-condition outcome. Then **delete the entry** — closing an issue and
+removing it are one action, not two. If closing it established something durable
+(a contract, a constraint, a measured number), write that into the relevant doc
+or `CLAUDE.md` first; the issue text itself is scaffolding.
 
 ## Operating Rules
 
-- Add newly discovered issues rather than rewriting older ones; the *record* is cumulative across this file and the archive, but this file is not.
+- Add newly discovered issues rather than rewriting older ones. This file is not cumulative — it is a queue.
 - Scope each issue to one concrete problem, one validation target, and one success condition — and make the success condition mean the stage improved, not that one song stopped complaining.
 - Prefer evidence from generated artifacts and documented reference files.
 - Treat `data/analysis/<Song - Artist>/reference/` as read-only validation input.
@@ -44,8 +45,8 @@ moving it are one action, not two.
 
 *Empty.*
 
-All ten issues raised so far are closed and have moved to
-[`archive/issues-solved.md`](archive/issues-solved.md).
+All ten issues raised so far were closed; their entries were removed in commit
+`c227bec` and remain recoverable there.
 
 Worth knowing before adding the next one: the queue emptying does **not** mean
 the analysis is in good shape. The 2026-09 measurement in

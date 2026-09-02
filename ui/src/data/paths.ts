@@ -54,8 +54,6 @@ export const artifactPaths = {
     encodePath(analysis(song, "artifacts", "event_inference", "events.machine.json")),
   mlEvents: (song: string) =>
     encodePath(analysis(song, "artifacts", "event_inference", "events.ml.json")),
-  beatdropPlan: (song: string) =>
-    encodePath(analysis(song, "beatdrop_visual_plan.json")),
   audio: (song: string) => encodePath(["data", "songs", `${song}.mp3`]),
 } as const;
 

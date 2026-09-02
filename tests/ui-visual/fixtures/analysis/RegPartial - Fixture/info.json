@@ -33,10 +33,7 @@
     "sections": "/data/analysis/Armin - Revolution/artifacts/section_segmentation/sections.json",
     "patterns_layer": "/data/analysis/Armin - Revolution/artifacts/layer_d_patterns.json",
     "pattern_mining": "/data/analysis/Armin - Revolution/artifacts/pattern_mining/chord_patterns.json",
-    "music_feature_layers": "/data/analysis/Armin - Revolution/artifacts/music_feature_layers.json",
-    "lighting_events": "/data/analysis/Armin - Revolution/artifacts/lighting_events.json",
-    "beatdrop_visual_plan": "/data/analysis/Armin - Revolution/beatdrop_visual_plan.json",
-    "beatdrop_visual_plan_markdown": "/data/analysis/Armin - Revolution/beatdrop_visual_plan.md"
+    "music_feature_layers": "/data/analysis/Armin - Revolution/artifacts/music_feature_layers.json"
   },
   "generated_from": {
     "source_song_path": "/data/songs/Armin - Revolution.mp3",
@@ -49,10 +46,7 @@
     "beats": "/data/analysis/Armin - Revolution/beats.json",
     "hints": "/data/analysis/Armin - Revolution/hints.json",
     "sections": "/data/analysis/Armin - Revolution/sections.json",
-    "song_event_timeline": "/data/analysis/Armin - Revolution/song_event_timeline.json",
-    "lighting_score": "/data/analysis/Armin - Revolution/lighting_score.md",
-    "beatdrop_visual_plan": "/data/analysis/Armin - Revolution/beatdrop_visual_plan.json",
-    "beatdrop_visual_plan_markdown": "/data/analysis/Armin - Revolution/beatdrop_visual_plan.md"
+    "song_event_timeline": "/data/analysis/Armin - Revolution/song_event_timeline.json"
   },
   "debug": {
     "fft_band_count": 7,

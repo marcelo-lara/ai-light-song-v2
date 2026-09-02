@@ -21,7 +21,6 @@ Excluded:
 
 - writing files into `data/analysis/`
 - authoring or editing production lighting outputs
-- replacing `lighting_score.md`
 - acting as an end-user playback product
 
 ## Repository Layout

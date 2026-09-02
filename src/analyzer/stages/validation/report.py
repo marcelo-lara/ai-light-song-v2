@@ -54,7 +54,6 @@ def build_validation_report(
     patterns_path = paths.artifact("layer_d_patterns.json")
     symbolic_path = paths.artifact("layer_b_symbolic.json")
     unified_path = paths.artifact("music_feature_layers.json")
-    lighting_path = paths.artifact("lighting_events.json")
     harmonic = read_json(harmonic_path)
     sections = read_json(sections_path)
     timing = read_json(beats_path)
@@ -161,7 +160,6 @@ def build_validation_report(
             "event_benchmark_file": str(event_benchmark_path),
             "patterns_layer_file": str(patterns_path),
             "music_feature_layers_file": str(unified_path),
-            "lighting_events_file": str(lighting_path),
             "sections_file": str(sections_path),
         },
         "validation": {key: asdict(value) for key, value in results.items()},

@@ -1,6 +1,6 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by item 9's SparseLane (patterns, identifier hints,
-// machine / ML events, BeatDrop plan, symbolic phrase windows).
+// machine / ML events, symbolic phrase windows).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -165,54 +165,6 @@ export const parseMlEvents = eventsParser(
 );
 
 // ---------------------------------------------------------------------------
-// beatdrop plan — beatdrop_visual_plan.json (preset_windows)
-// ---------------------------------------------------------------------------
-
-export interface BeatdropWindow {
-  id: string;
-  start_s: number;
-  end_s: number;
-  section_id: string | null;
-  section_character: string | null;
-  recommended_profile: string | null;
-  top_preset: string | null;
-  top_preset_score: number | null;
-  raw: Record<string, unknown>;
-}
-
-export interface BeatdropPlanFile {
-  schema_version: string;
-  song_name: string;
-  windows: BeatdropWindow[];
-}
-
-export function parseBeatdropPlan(raw: unknown): BeatdropPlanFile {
-  const o = asObject(raw, "beatdrop_visual_plan.json");
-  const windows = arr(o.preset_windows ?? o.windows).map((w, i): BeatdropWindow => {
-    const r = rec(w);
-    const start_s = num(r.start_s ?? r.start_time ?? r.start);
-    const candidates = arr(r.candidate_presets)
-      .map(rec)
-      .sort((a, b) => num(b.score) - num(a.score));
-    const top = candidates[0];
-    return {
-      id: st(r.id, `preset_window_${String(i + 1).padStart(3, "0")}`),
-      start_s,
-      end_s: Math.max(num(r.end_s ?? r.end_time ?? r.end, start_s), start_s),
-      section_id: r.section_id == null ? null : st(r.section_id),
-      section_character: r.section_character == null ? null : st(r.section_character),
-      recommended_profile:
-        r.recommended_profile == null ? null : st(r.recommended_profile),
-      top_preset: top ? st(top.preset_id) : (r.top_preset == null ? null : st(r.top_preset)),
-      top_preset_score: top ? num(top.score) : null,
-      raw: r,
-    };
-  });
-  windows.sort((a, b) => a.start_s - b.start_s);
-  return { schema_version: st(o.schema_version), song_name: st(o.song_name), windows };
-}
-
-// ---------------------------------------------------------------------------
 // symbolic phrase windows — artifacts/layer_b_symbolic.json (phrase_windows)
 // ---------------------------------------------------------------------------
 
@@ -346,8 +298,6 @@ export const loadMachineEvents = (song: string, f?: typeof fetch): Promise<LoadR
   loadJson(artifactPaths.machineEvents(song), parseMachineEvents, f);
 export const loadMlEvents = (song: string, f?: typeof fetch): Promise<LoadResult<EventsFile>> =>
   loadJson(artifactPaths.mlEvents(song), parseMlEvents, f);
-export const loadBeatdropPlan = (song: string, f?: typeof fetch): Promise<LoadResult<BeatdropPlanFile>> =>
-  loadJson(artifactPaths.beatdropPlan(song), parseBeatdropPlan, f);
 export const loadSymbolicPhrases = (song: string, f?: typeof fetch): Promise<LoadResult<SymbolicPhrasesFile>> =>
   loadJson(artifactPaths.symbolicLayer(song), parseSymbolicPhrases, f);
 /**

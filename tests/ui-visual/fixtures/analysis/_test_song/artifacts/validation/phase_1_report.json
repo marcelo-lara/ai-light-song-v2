@@ -28,7 +28,6 @@
     "event_benchmark_file": "/data/analysis/_test_song/artifacts/validation/event_benchmark.json",
     "patterns_layer_file": "/data/analysis/_test_song/artifacts/layer_d_patterns.json",
     "music_feature_layers_file": "/data/analysis/_test_song/artifacts/music_feature_layers.json",
-    "lighting_events_file": "/data/analysis/_test_song/artifacts/lighting_events.json",
     "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
     "inferred_beats_file": "/data/analysis/_test_song/artifacts/essentia/beats_inferred.json",
     "inferred_harmonic_file": "/data/analysis/_test_song/artifacts/harmonic_inference/layer_a_harmonic.inferred.json",

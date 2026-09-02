@@ -29,7 +29,7 @@ debugger (`ui/`), and the Docker environment.
 | 4 | Symbolic: note events, energy features, event-feature layer | `layer_b_symbolic.json`, `layer_c_energy.json` |
 | 5 | Events: vocabulary, rule baseline, ML classifier, review | `song_event_timeline.json` |
 | 6 | Guidance: genre, section hints, LLM-friendly song map | `hints.json` |
-| 7 | ~~Lighting: feature-layer assembly, mapping, fixture score~~ | **Legacy, no consumer** — out of scope per constitution §1.1 |
+| 7 | Feature-layer assembly (`music_feature_layers.json`); ~~fixture score~~ removed | Lighting/fixture output is out of scope — constitution §1.1 |
 | 8 | Internal read-only artifact debugger (`ui/`) | — |
 
 The stage list above is the shipped shape, not a quality claim — see
@@ -43,7 +43,7 @@ The structure is part of the contract.
 - `data/songs/` — source `.mp3` inputs.
 - `data/analysis/<Song - Artist>/` — stable UI-facing deliverables. Exactly:
   `info.json`, `beats.json`, `hints.json`, `sections.json`,
-  `song_event_timeline.json`, `lighting_score.md`, `beatdrop_visual_plan.json`,
+  `song_event_timeline.json`,
   plus `artifacts/`. Do not add or remove files here without a contract change.
 - `data/analysis/<Song - Artist>/artifacts/` — intermediate artifacts, grouped
   by producer (`essentia/`, `section_segmentation/`, `energy_summary/`,
@@ -51,8 +51,8 @@ The structure is part of the contract.
   `artifacts/stems/`.
 - `data/analysis/<Song - Artist>/reference/` — validation-only truth data
   (external tools, human hints). Scoring and comparison only.
-- `docs/` — current contracts and reference; `docs/archive/` holds historical
-  story specs and release plans, which are **not** contracts.
+- `docs/` — current contracts and reference, and nothing else. Superseded
+  documents are deleted, not archived; git history is the archive.
 - `src/`, `ui/` — analyzer and debugger.
 
 ## Hard rules
@@ -61,9 +61,8 @@ Full law is in [docs/constitution.md](docs/constitution.md). Load-bearing:
 
 - **Scope.** Musical facts with times and confidences. Not fixture
   orchestration, cue authoring or DMX.
-- **Living docs.** A task is not done until the current docs match the
-  implementation. This applies to `docs/` — *not* to `docs/archive/`, which is
-  a frozen historical record.
+- **Living docs.** A task is not done until the docs match the implementation,
+  and a document that has stopped being true is deleted in the same change.
 - **Experiments are first-class**, live in `experiments/`, and must be measured
   against the incumbent. Negative results get written down, not deleted.
 - **Determinism.** Same input + engine version ⇒ byte-identical artifacts. No
@@ -127,7 +126,6 @@ Helper-UI dev notes: [ui/README.HELPER_UI.md](ui/README.HELPER_UI.md).
 - [docs/data_folder_reference.md](docs/data_folder_reference.md) — every `data/` file and its purpose.
 - [docs/source_files_reference.md](docs/source_files_reference.md) — map of `src/`.
 - [docs/reference/analysis-input-guide.md](docs/reference/analysis-input-guide.md) — what the downstream MCP server actually consumes; the contract analysis quality is judged against.
-- [docs/archive/](docs/archive/) — story specs, release plans and close-outs. **Historical records, not specifications.**
 - [experiments/drop_detection/README.md](experiments/drop_detection/README.md) — measured evaluation of the structural stages and of pretrained alternatives.
 
 ## Development environment

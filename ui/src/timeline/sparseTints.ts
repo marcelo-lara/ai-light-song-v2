@@ -3,7 +3,7 @@
 //
 // The hue assignments are carried over from the previous app — hints amber, sections
 // teal, chords cyan, patterns gold, identifiers blue, machine red, ml violet,
-// beatdrop orange, phrases deep-violet — but instead of nine hand-written rgba
+// phrases deep-violet — but instead of hand-written rgba
 // quads the values are now derived from one documented base hue per lane
 // (`BASE_HUE`) plus a fixed alpha ramp (`FILL_A` / `STROKE_A`). Canvas needs
 // concrete colour strings, so these resolve to `hsl()` / `hsla()` here rather
@@ -34,7 +34,6 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   identifierHints: [201, 96, 33], // blue    (the previous app rgba(3,105,161))
   machineEvents: [0, 74, 42], // red     (the previous app rgba(185,28,28))
   mlEvents: [263, 70, 42], // violet  (the previous app rgba(91,33,182))
-  beatdropPlan: [25, 95, 49], // orange  (the previous app rgba(234,88,12))
   phrases: [265, 68, 43], // deep violet (the previous app rgba(76,29,149))
 };
 

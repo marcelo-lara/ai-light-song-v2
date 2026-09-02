@@ -24,16 +24,14 @@ justified by them:
 
 - **Fixture-aware orchestration.** Which fixture does what, when, in what
   colour, is authored downstream. We never model a rig.
-- **Cue authoring, lighting design documents, and DMX.** Including
-  `lighting_score.md`, `lighting_events.json`, and fixture role overlays.
-- **Screen visualizers.** Including `beatdrop_visual_plan.json`.
+- **Cue authoring, lighting design documents, and DMX.**
+- **Screen visualizers.**
 
-The Epic 7 lighting stages and the beatdrop visualizer exist in `src/` for
-historical reasons and **have no consumer**: neither `lighting_score.md` nor
-`beatdrop_visual_plan.json` appears in
+Epic 7 no longer exists in `src/`. `lighting_score.md`, `lighting_events.json`
+and `beatdrop_visual_plan.json` — and the three stages that produced them — were
+removed on 2026-09-02, having had no consumer: none of them appeared in
 [`reference/analysis-input-guide.md`](reference/analysis-input-guide.md), and
-`data/fixtures/` does not exist. They are legacy. Do not extend them; removing
-them is a change worth proposing.
+`data/fixtures/` never existed. Do not reintroduce them here.
 
 ### 1.2 What "concrete and reliable, at precise times" means
 
@@ -106,9 +104,10 @@ make the failure *legible*, so it is not repeated.
 - **A negative result is a deliverable.** Write it down: what was tried, what it
   scored, and what specifically was wrong with it. A documented dead end stops
   the approach from being reinvented; an undocumented one guarantees it.
-- **Archive failures, do not delete them.** Move them under the experiment's
-  own folder or `docs/archive/`, marked as historical. Deleting the record
-  costs the next person the same week.
+- **Keep the record where the experiment lives.** A failed attempt is written
+  up in its own `experiments/<topic>/README.md`, alongside the numbers. That
+  README is current material — it states what is true about what was tried — so
+  it stays in the tree. Losing the record costs the next person the same week.
 - **Promotion into `src/` requires beating the incumbent on the stated metric**,
   and the number goes in the commit message. Nothing is adopted because it is
   newer, larger, or from a better-known lab.
@@ -120,22 +119,26 @@ make the failure *legible*, so it is not repeated.
 
 ## 4. Documentation
 
-- **Two tiers, and the difference is load-bearing.** `docs/` describes how the
-  system is meant to behave now and is kept in sync with the code.
-  `docs/archive/` is a frozen historical record: plans, story specs, close-outs.
-  Every archived file is banner-marked.
-- **Inside `docs/archive/`, the code wins.** Those files are not contracts and
-  must not be implemented from.
-- **For current docs, intent and behaviour must agree.** If they disagree,
-  that is a defect to resolve now — by fixing the code or the doc — not a
-  precedence rule to invoke. (This replaces the former "documentation is assumed
-  correct" rule, which is what turned 45 story specs into apparent
-  specifications for behaviour that had since changed.)
-- **No per-feature story spec is required.** Document a change where a future
-  reader will look for it: the contract docs, `CLAUDE.md`, or the experiment's
-  own README. Adding a new numbered story file needs a reason.
+- **`docs/` holds current material only.** Everything in it describes how the
+  system is meant to behave now, and is kept in sync with the code. There is no
+  archive folder: **git history is the archive.** A document that has stopped
+  being true is deleted in a commit, not parked in a subfolder — the commit
+  keeps it recoverable while keeping it out of the working tree, where a reader
+  (human or model) would otherwise mistake it for a specification.
+- **Delete on the same change that makes it stale.** A release ships, a plan is
+  executed, an approach is abandoned: the document goes then, not later.
+- **Intent and behaviour must agree.** If they disagree, that is a defect to
+  resolve now — by fixing the code or the doc — not a precedence rule to invoke.
+  (This replaces the former "documentation is assumed correct" rule, which is
+  what turned 45 story specs into apparent specifications for behaviour that had
+  since changed.)
+- **No per-feature story spec.** Document a change where a future reader will
+  look for it: the contract docs, `CLAUDE.md`, or the experiment's own README.
 - **Do not make process state the entry point.** Release status, held tags and
   worklists belong in their own file, never at the top of a README.
+- **Measured evidence is not stale.** `experiments/*/README.md` records what was
+  tried and what it scored. That stays regardless of age; it is the only honest
+  account of what works.
 - A contract change that alters a projected file requires a handoff note to the
   downstream consumer.
 
@@ -158,17 +161,20 @@ the UI rebuild, and UI v2.1). That is banned.
 
 The point is that a reader — human or model — should never have to work out
 which of several worklists is the live one. There is one, it is in `docs/`, and
-everything else with that shape is in `docs/archive/`.
+superseded ones are gone from the tree.
 
 ### 4.2 The issue tracker holds open issues only
 
 [`issues.md`](issues.md) is a queue, not a history.
 
 - **Only `pending` issues live in `issues.md`.** The moment an issue is solved,
-  the whole entry moves to [`archive/issues-solved.md`](archive/issues-solved.md)
-  — in the same change that closes it. Closing and moving are one action.
-- **Keep the evidence.** Solved issues are archived, not deleted: the evidence,
-  validation notes and success-condition outcome are the useful part.
+  the entry is removed — in the same change that closes it. Closing and removing
+  are one action. The closed entry, with its evidence, stays recoverable in the
+  commit that closed it.
+- **Put the durable part somewhere durable.** If closing an issue established
+  something a future reader needs — a contract, a constraint, a measured number
+  — write it into the relevant doc or `CLAUDE.md` before deleting the entry. The
+  issue text itself is scaffolding.
 - **A closed issue is not a quality claim.** It says its own success condition
   was met. Where that condition was narrow — one song, one timestamp — say so on
   the way out, so a stage that passed a narrow gate is never mistaken for a

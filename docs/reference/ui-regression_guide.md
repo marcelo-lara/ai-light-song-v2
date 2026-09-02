@@ -75,7 +75,7 @@ Create `tests/ui-visual/fixtures/analysis/` containing 3 frozen song folders:
 
 - `RegFull - Fixture/` — every artifact the debugger loads
   (`ui/src/lib/config/artifactDefinitions.js` is the authoritative list), including
-  `reference/human/human_hints.json` and a `beatdrop_visual_plan.json`.
+  `reference/human/human_hints.json`.
   - **`human_hints.json` frozen blocks (plan v2.1 item 10 drag targets).** Three
     non-overlapping blocks with an 4 s gap between each, well inside the 194.01 s
     duration:

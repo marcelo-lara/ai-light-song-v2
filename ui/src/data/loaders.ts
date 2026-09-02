@@ -9,7 +9,6 @@ import {
   loadIdentifierHints,
   loadMachineEvents,
   loadMlEvents,
-  loadBeatdropPlan,
   loadSymbolicPhrases,
   loadDropProposals,
 } from "./sparseArtifacts";
@@ -193,7 +192,6 @@ export const artifactLoaders = {
   identifierHints: loadIdentifierHints,
   machineEvents: loadMachineEvents,
   mlEvents: loadMlEvents,
-  beatdropPlan: loadBeatdropPlan,
   symbolicPhrases: loadSymbolicPhrases,
   dropProposals: loadDropProposals,
   beats: loadBeats,

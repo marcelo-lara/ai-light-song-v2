@@ -10,7 +10,7 @@ Use this as a navigation guide first, then open the referenced files for the act
 
 - `data/analysis/<Song - Artist>/reference/` is reference and validation material. Do not treat it as generation input.
 - `data/analysis/<Song - Artist>/artifacts/` contains generated analysis artifacts and intermediate caches, including the separated stems under `artifacts/stems/`.
-- `data/analysis/<Song - Artist>/` (outside the nested `artifacts/` and `reference/` folders) contains a stable UI-facing output contract. Each song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, `beatdrop_visual_plan.json`, and the `artifacts/` subfolder. `beatdrop_visual_plan.md` is optional.
+- `data/analysis/<Song - Artist>/` (outside the nested `artifacts/` and `reference/` folders) contains a stable UI-facing output contract. Each song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and the `artifacts/` subfolder.
 - Do not add or remove the top-level files under `data/analysis/<Song - Artist>/` unless a UI contract change makes that strictly required.
 - The internal debugger served from `/ui/` primarily reads `data/analysis/<Song - Artist>/artifacts/` directly and uses the top-level `data/analysis/<Song - Artist>/` files only as supporting context when useful.
 - The debugger is read-only against generated data and must not write files into `data/analysis/`, with the single exception below.
@@ -26,11 +26,8 @@ data/
     <Song - Artist>/
       beats.json
       hints.json
-      beatdrop_visual_plan.json
-      beatdrop_visual_plan.md
       info.json
-      lighting_score.md
-      song_event_timeline.json
+        song_event_timeline.json
       sections.json
       reference/
         human/
@@ -92,7 +89,6 @@ data/
         layer_b_symbolic.json
         layer_c_energy.json
         layer_d_patterns.json
-        lighting_events.json
         music_feature_layers.json
   fixtures/
     fixtures.json
@@ -105,14 +101,16 @@ data/
 
 If you only open a few files, start here in this order:
 
-1. `data/analysis/<Song - Artist>/lighting_score.md`
-2. `data/analysis/<Song - Artist>/beatdrop_visual_plan.json`
-3. `data/analysis/<Song - Artist>/song_event_timeline.json`
-4. `data/analysis/<Song - Artist>/hints.json`
-5. `data/analysis/<Song - Artist>/artifacts/music_feature_layers.json`
-6. `data/analysis/<Song - Artist>/artifacts/lighting_events.json`
-7. `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`
-8. `data/analysis/<Song - Artist>/artifacts/layer_a_harmonic.json`
+1. `data/analysis/<Song - Artist>/sections.json`
+2. `data/analysis/<Song - Artist>/song_event_timeline.json`
+3. `data/analysis/<Song - Artist>/hints.json`
+4. `data/analysis/<Song - Artist>/beats.json`
+5. `data/analysis/<Song - Artist>/artifacts/section_segmentation/sections.json`
+6. `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`
+7. `data/analysis/<Song - Artist>/artifacts/layer_a_harmonic.json`
+
+These are also, near enough, the files the downstream MCP server actually
+projects — see [`reference/analysis-input-guide.md`](reference/analysis-input-guide.md).
 9. `data/analysis/<Song - Artist>/artifacts/layer_b_symbolic.json`
 10. `data/fixtures/fixtures.json`
 11. `data/fixtures/pois.json`
@@ -575,20 +573,6 @@ LLM hint:
 - Use: `lighting_context.cue_anchors` for deterministic cue times.
 - Use: phrase, motif, and pattern callbacks together so recurring musical structure leads to recurring visual structure.
 
-### `data/analysis/<Song - Artist>/artifacts/lighting_events.json`
-
-Summary: lighting events and cue anchors derived from the unified music feature layer, preserving deterministic anchor references and any later fixture-aware overlay metadata when the pipeline emits it.
-
-Why it matters: direct bridge from analysis to show logic.
-
-LLM hint:
-- See: `cue_anchors[]` and `lighting_events[]`.
-- Use: as the structured pre-score layer when writing or reviewing scene logic.
-- Use: anchor refs to explain why a cue exists, not just when it happens.
-- Use: preserve `event_ref`, `role_overlay`, and explicit focal `target` fields when Story 6.5 adds event-driven regroupings such as moving-head unison focus.
-- See also: the end-to-end drop-to-stage-center sequence example in `docs/lighting-score/7.4.fixture_aware_mapping_story.md` when you need a concrete fixture-aware payload shape.
-- Use: preserve these deterministic anchor times when translating into prose or operator instructions.
-
 ### `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.json`
 
 Summary: machine-readable validation report comparing generated artifacts against reference material and internal consistency checks.
@@ -656,7 +640,7 @@ LLM hint:
 
 Summary: editable per-section hint store combining regenerated inference-authored hints with preserved user-authored hints.
 
-Why it matters: direct hint source for `lighting_score.md` and other prompt-based downstream consumers.
+Why it matters: direct hint source for the prompt-based downstream consumers.
 
 LLM hint:
 - See: `sections[].section_id`, `label`, `start`, `end`, and `hints[]`.
@@ -709,20 +693,6 @@ Summary: human-readable companion to the reviewed event timeline export.
 
 Why it matters: quick event briefing for review or operator-facing discussion.
 
-### `data/analysis/<Song - Artist>/lighting_score.md`
-
-Summary: current human-readable lighting plan. Includes metadata, feature summary, timing anchors, fixture intentions, section plans, and song-specific rules, including event-driven fixture overlay rules when supported by the rig.
-
-Why it matters: best single human-facing summary of the current show design.
-
-LLM hint:
-- See: `Timing Anchors`, `Fixture Intentions`, `Section Plan`, and `Song-Specific Rules`.
-- Use: as the first file for quick briefing, revision, or operator-facing explanation.
-- Use: cross-check any rewritten score against deterministic timestamps from `music_feature_layers.json` or `lighting_events.json`.
-- Use: keep event-driven regroupings tied to exact event rows or cue anchors instead of vague prose such as "somewhere near the drop".
-- Use: section `Hint:` lines as human-editable guidance sourced from `hints.json`.
-- Avoid: changing cue times casually; the score is expected to preserve anchor times from upstream structured artifacts.
-
 ### `data/analysis/<Song - Artist>/reference/moises/chords.json`
 
 Summary: read-only chord comparison file from the reference set. Stores beat-like chord rows and multiple chord label formats.
@@ -764,7 +734,7 @@ LLM hint:
 
 ### For fast show briefing
 
-Open `data/analysis/<Song - Artist>/lighting_score.md` first, then `data/analysis/<Song - Artist>/sections.json`.
+Open `data/analysis/<Song - Artist>/sections.json` first, then `data/analysis/<Song - Artist>/song_event_timeline.json`.
 
 ### For structured cue generation
 

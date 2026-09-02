@@ -11,7 +11,6 @@
 
 import type { HumanHintsFile, HarmonicLayer, SectionRow } from "../data/types";
 import type {
-  BeatdropPlanFile,
   DropProposalsFile,
   EventsFile,
   PatternsFile,
@@ -216,25 +215,6 @@ export const machineEventsContent = (file: EventsFile | null): SparseBlock[] =>
 export const mlEventsContent = (file: EventsFile | null): SparseBlock[] =>
   eventContent(file, "ML Events", "ML-predicted event window (Story 6.1).");
 
-export function beatdropPlanContent(file: BeatdropPlanFile | null): SparseBlock[] {
-  return (file?.windows ?? []).map((w) => ({
-    id: w.id,
-    start_s: w.start_s,
-    end_s: w.end_s,
-    label: w.top_preset ? `${w.recommended_profile ?? "preset"} · ${w.top_preset}` : (w.recommended_profile ?? w.id),
-    laneLabel: "BeatDrop Plan",
-    caption: `${formatRange(w.start_s, w.end_s)}${
-      w.section_character ? ` · ${w.section_character}` : ""
-    }`,
-    reference: w.section_id ?? w.id,
-    detail: w.top_preset ?? "-",
-    summary: `Offline visualizer preset window — profile ${w.recommended_profile ?? "?"}${
-      w.top_preset ? `, top preset ${w.top_preset} (${round(w.top_preset_score)})` : ""
-    }.`,
-    raw: w.raw ?? w,
-  }));
-}
-
 export function phrasesContent(file: SymbolicPhrasesFile | null): SparseBlock[] {
   return (file?.phrases ?? []).map((p) => ({
     id: p.id,
@@ -265,7 +245,6 @@ export interface LaneContentSources {
   identifierHints?: EventsFile | null;
   machineEvents?: EventsFile | null;
   mlEvents?: EventsFile | null;
-  beatdropPlan?: BeatdropPlanFile | null;
   symbolicPhrases?: SymbolicPhrasesFile | null;
 }
 
@@ -279,7 +258,6 @@ export const SPARSE_LANE_IDS = [
   "identifierHints",
   "machineEvents",
   "mlEvents",
-  "beatdropPlan",
   "phrases",
 ] as const;
 
@@ -306,8 +284,6 @@ export function buildLaneBlocks(
       return machineEventsContent(s.machineEvents ?? null);
     case "mlEvents":
       return mlEventsContent(s.mlEvents ?? null);
-    case "beatdropPlan":
-      return beatdropPlanContent(s.beatdropPlan ?? null);
     case "phrases":
       return phrasesContent(s.symbolicPhrases ?? null);
     default:

@@ -33,10 +33,7 @@
     "sections": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
     "patterns_layer": "/data/analysis/_test_song/artifacts/layer_d_patterns.json",
     "pattern_mining": "/data/analysis/_test_song/artifacts/pattern_mining/chord_patterns.json",
-    "music_feature_layers": "/data/analysis/_test_song/artifacts/music_feature_layers.json",
-    "lighting_events": "/data/analysis/_test_song/artifacts/lighting_events.json",
-    "beatdrop_visual_plan": "/data/analysis/_test_song/beatdrop_visual_plan.json",
-    "beatdrop_visual_plan_markdown": "/data/analysis/_test_song/beatdrop_visual_plan.md"
+    "music_feature_layers": "/data/analysis/_test_song/artifacts/music_feature_layers.json"
   },
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
@@ -49,10 +46,7 @@
     "beats": "/data/analysis/_test_song/beats.json",
     "hints": "/data/analysis/_test_song/hints.json",
     "sections": "/data/analysis/_test_song/sections.json",
-    "song_event_timeline": "/data/analysis/_test_song/song_event_timeline.json",
-    "lighting_score": "/data/analysis/_test_song/lighting_score.md",
-    "beatdrop_visual_plan": "/data/analysis/_test_song/beatdrop_visual_plan.json",
-    "beatdrop_visual_plan_markdown": "/data/analysis/_test_song/beatdrop_visual_plan.md"
+    "song_event_timeline": "/data/analysis/_test_song/song_event_timeline.json"
   },
   "debug": {
     "fft_band_count": 7,

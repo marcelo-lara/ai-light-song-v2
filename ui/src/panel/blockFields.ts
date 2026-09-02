@@ -42,7 +42,6 @@ export const LANE_LABELS: Record<string, string> = {
   identifierHints: "Identifier Hints",
   machineEvents: "Machine Events",
   mlEvents: "ML Events",
-  beatdropPlan: "BeatDrop Plan",
   phrases: "Symbolic Phrases",
   drums: "Drum Density",
   energy: "Energy Profile",
@@ -166,18 +165,6 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
       if (roman) out.push({ label: "Roman", value: roman });
       const name = firstStr(r.name, r.label);
       if (name) out.push({ label: "Chord", value: name });
-      break;
-    }
-    case "beatdropPlan": {
-      const preset = str(r.top_preset);
-      if (preset) out.push({ label: "Top preset", value: preset });
-      const mode = str(r.transition_mode);
-      if (mode) out.push({ label: "Transition", value: mode });
-      if (r.transient_confirmed != null)
-        out.push({
-          label: "Transient",
-          value: r.transient_confirmed ? "confirmed" : "no",
-        });
       break;
     }
     case "phrases": {

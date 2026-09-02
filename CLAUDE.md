@@ -74,12 +74,14 @@ describing them, as unvalidated.
 independent trackers (essentia, beat-this, allin1) hit 3/7, 3/7 and 4/7 and
 disagree with each other in different places. Do not assume a correct bar grid.
 
-### Legacy — no consumer
+### Removed — Epic 7 is gone
 
-`stages/lighting.py`, `stages/light_design.py`, `stages/beatdrop_visualizer.py`
-(~1,066 lines). Neither `lighting_score.md` nor `beatdrop_visual_plan.json`
-appears in the MCP input contract, and `data/fixtures/` does not exist. Out of
-scope per constitution §1.1. Do not extend them.
+`light_design.py`, `lighting.py` and `beatdrop_visualizer.py` (~1,066 lines) and
+their outputs `lighting_score.md`, `lighting_events.json` and
+`beatdrop_visual_plan.json` were deleted on 2026-09-02. None appeared in the MCP
+input contract; `data/fixtures/` never existed; and the lighting-score stage had
+been throwing on every run with its failure swallowed by a bare `except`. Out of
+scope per constitution §1.1 — do not reintroduce them.
 
 ### Known-good direction (researched, not yet implemented)
 
@@ -95,17 +97,17 @@ Nothing from this is in `src/` yet.
 
 | Location | Status | How to treat it |
 | --- | --- | --- |
-| `CLAUDE.md`, `README.md`, `docs/README.md`, `docs/constitution.md`, `docs/data_folder_reference.md`, `docs/source_files_reference.md`, `docs/docker_development.md`, `docs/reference/` | **Current** | Contracts. Keep in sync with code. |
-| `docs/issues.md`, `docs/product-refinement-v2.2.md` | **Open** | Intent, not behaviour. `issues.md` holds **pending issues only** — solving one means moving it to `docs/archive/issues-solved.md` in the same change (§4.2). **Exactly one `product-refinement-*.md` lives in `docs/` at a time**, covering core, `ui/`, MCP and experiments together — constitution §4.1. Do not open a second one, and do not create per-component refinements or plans. |
-| `docs/archive/` | **Historical** | 45 story specs, release plans, close-outs. **Not specifications.** Do not implement from them. Inside `archive/`, the code wins over the doc. |
+| `CLAUDE.md`, `README.md`, `docs/` | **Current** | Contracts. `docs/` holds current material only — ten files. Keep in sync with code; delete a doc in the change that makes it stale. |
+| `docs/issues.md` | **Open** | The issue queue — **pending issues only**; solving one means deleting the entry in the same change (§4.2). Currently empty. |
+| *(git history)* | **Historical** | There is no archive folder. 45 story specs, the release plans, the closed issues and the superseded worklist were deleted in `c227bec` and after. Recover with `git log --diff-filter=D --name-only` if you need one — but they are **not** specifications, and current behaviour is defined by `src/`. |
 | `experiments/` | **Measured evidence** | Reproducible experiments and their outputs. The best available statement of what actually works. |
 
 `docs/constitution.md` was rewritten on 2026-09-02. Its former rules — *"if the
 code and the documentation disagree, the documentation is assumed correct"* and
 *"every new feature must be introduced via a Story file"* — are what produced 45
-story specs for behaviour that had since changed. Both are gone. **Do not create
-a new numbered story file**; document a change where a future reader will look
-for it.
+story specs for behaviour that had since changed. Both are gone, and so are the
+story specs. **Do not create a new numbered story file**, and **do not add an
+archive folder**: a document that stops being true gets deleted in a commit.
 
 ## Rules that are load-bearing
 

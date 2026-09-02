@@ -21,7 +21,7 @@ scoped those reads hard, so the surface is now small and specific:
 
 **Everything else under `artifacts/` is invisible to cue authoring.** The
 layer files (`layer_a_harmonic`, `layer_b_symbolic`, `layer_c_energy`,
-`layer_d_patterns`, `music_feature_layers`, `lighting_events`), the
+`layer_d_patterns`, `music_feature_layers`), the
 `event_inference/` internals, `pattern_mining/`, and the `validation/`
 reports are not on the MCP surface. They can still be worth generating as
 *upstream inputs to the seven top-level files*, but polishing their prose or

@@ -29,7 +29,7 @@ type FileState =
  *
  * The walk starts at `data/analysis/<song>` (not just `artifacts/`) so every file
  * the previous app's inspector exposed — including the top-level `info.json` / `beats.json`
- * / `sections.json` / `song_event_timeline.json` / `beatdrop_visual_plan.json`
+ * / `sections.json` / `song_event_timeline.json`
  * and `reference/human/*` — stays reachable. See D5 in the implementation plan.
  *
  * No write path: this component only ever issues GETs.

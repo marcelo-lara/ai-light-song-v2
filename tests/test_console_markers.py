@@ -358,8 +358,6 @@ class ConsoleMarkerTests(unittest.TestCase):
             event_benchmark = {"status": "ok"}
             patterns = {"patterns": []}
             unified = {"sections": []}
-            lighting = {"events": []}
-            lighting_score = "score"
             fft_bands = {"bands": [{"id": "sub"}, {"id": "bass"}, {"id": "low_mid"}, {"id": "mid"}, {"id": "upper_mid"}, {"id": "presence"}, {"id": "brilliance"}]}
             loudness = {
                 "rms_loudness": {"sources": [{"id": "mix"}, {"id": "bass"}, {"id": "drums"}, {"id": "harmonic"}, {"id": "vocals"}]},
@@ -394,8 +392,6 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.benchmark_event_outputs", return_value=event_benchmark))
                 stack.enter_context(patch("analyzer.pipeline.extract_chord_patterns", return_value=patterns))
                 stack.enter_context(patch("analyzer.pipeline.assemble_music_feature_layers", return_value=unified))
-                stack.enter_context(patch("analyzer.pipeline.generate_lighting_events", return_value=lighting))
-                stack.enter_context(patch("analyzer.pipeline.generate_lighting_score", return_value=lighting_score))
                 stack.enter_context(patch("analyzer.pipeline.build_human_hints_alignment", return_value=None))
                 stack.enter_context(patch("analyzer.pipeline.build_validation_report", return_value=(report, 0)))
                 stack.enter_context(patch("analyzer.pipeline.write_validation_report"))

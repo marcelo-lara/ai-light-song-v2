@@ -6,12 +6,10 @@ import patternsFix from "../data/__fixtures__/layer_d_patterns.json";
 import identifiersFix from "../data/__fixtures__/energy_summary_hints.json";
 import machineFix from "../data/__fixtures__/events_machine.json";
 import mlFix from "../data/__fixtures__/events_ml.json";
-import beatdropFix from "../data/__fixtures__/beatdrop_visual_plan.json";
 import symbolicFix from "../data/__fixtures__/layer_b_symbolic.json";
 import dropProposalsFix from "../data/__fixtures__/drop_proposals.json";
 
 import {
-  parseBeatdropPlan,
   parseDropProposals,
   parseIdentifierHints,
   parseMachineEvents,
@@ -22,7 +20,6 @@ import {
 import { parseHarmonicLayer, parseHumanHints } from "../data/parsers";
 
 import {
-  beatdropPlanContent,
   chordsContent,
   dropProposalsContent,
   humanHintsContent,
@@ -115,14 +112,6 @@ describe("identifier / machine / ml event content", () => {
   });
 });
 
-describe("beatdropPlanContent", () => {
-  it("picks the top-scoring candidate preset", () => {
-    const blocks = beatdropPlanContent(parseBeatdropPlan(beatdropFix));
-    expect(blocks).toHaveLength(4);
-    expect(blocks[0]!.detail).toBe("preset_air_02");
-    expect(blocks[0]!.laneLabel).toBe("BeatDrop Plan");
-  });
-});
 
 describe("phrasesContent", () => {
   it("labels phrase windows by group id", () => {
@@ -138,7 +127,6 @@ describe("null inputs", () => {
     expect(humanHintsContent(null)).toEqual([]);
     expect(chordsContent(null)).toEqual([]);
     expect(patternsContent(null)).toEqual([]);
-    expect(beatdropPlanContent(null)).toEqual([]);
     expect(phrasesContent(null)).toEqual([]);
   });
 });

@@ -1,6 +1,6 @@
 // SparseLane.tsx — the reusable block-lane body for every item-9 sparse lane
 // (human hints, sections, chords, patterns, identifier hints, machine / ML
-// events, BeatDrop plan, symbolic phrases).
+// events, symbolic phrases).
 //
 // It takes an already-built `SparseBlock[]` from a laneContent adapter, draws
 // Nocturne-tinted rounded blocks with a label (+ caption when wide), row-packs
