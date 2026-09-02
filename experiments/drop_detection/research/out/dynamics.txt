@@ -1,0 +1,16 @@
+
+
+
+
+
+
+window 10s
+
+song                               impact  tension pct  intensity pct  d intensity  d tension
+_test_song                          28.40           66             35        -0.11      -0.27
+Hideaway - Kiesza                   62.41           28             15        -0.65      +0.02
+Armin - Revolution                  57.83           79             73        +0.91      -0.89
+Armin - Revolution                 153.96           34             58        +0.49      -0.28
+Titanium - David Guetta ft Sia      74.66           37             81        +0.42      -0.02
+Titanium - David Guetta ft Sia     151.26           59             19        +0.03      -0.30
+Titanium - David Guetta ft Sia     212.01           52             53        +0.29      -0.16

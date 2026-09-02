@@ -1,0 +1,283 @@
+{
+ "_test_song": [
+  {
+   "start": 0.04,
+   "end": 14.81,
+   "function": "intro",
+   "identity": 1,
+   "is": [
+    "a steady groove holding at full energy",
+    "no drums at all, only sustained sounds"
+   ],
+   "is_not": [
+    "an instrumental section with no singing, the synths take the lead"
+   ]
+  },
+  {
+   "start": 14.81,
+   "end": 58.12,
+   "function": "chorus",
+   "identity": 2,
+   "is": [
+    "an instrumental section with no singing, the synths take the lead",
+    "an impact hit with a crash cymbal on the downbeat"
+   ],
+   "is_not": [
+    "a steady groove holding at full energy"
+   ]
+  }
+ ],
+ "Hideaway - Kiesza": [
+  {
+   "start": 0.03,
+   "end": 31.25,
+   "function": "intro",
+   "identity": 1,
+   "is": [
+    "the intro of a song, before the beat comes in",
+    "a dense wall of sound, everything playing at once"
+   ],
+   "is_not": [
+    "a lead synth playing the main melody"
+   ]
+  },
+  {
+   "start": 31.25,
+   "end": 46.84,
+   "function": "chorus",
+   "identity": 1,
+   "is": [
+    "a dense wall of sound, everything playing at once",
+    "the intro of a song, before the beat comes in"
+   ],
+   "is_not": [
+    "a quiet sparse passage with very little going on"
+   ]
+  },
+  {
+   "start": 46.84,
+   "end": 62.46,
+   "function": "inst",
+   "identity": 2,
+   "is": [
+    "no drums at all, only sustained sounds",
+    "a steady groove holding at full energy"
+   ],
+   "is_not": [
+    "the moment the bass drops and the whole club goes off"
+   ]
+  },
+  {
+   "start": 62.46,
+   "end": 171.74,
+   "function": "intro",
+   "identity": 0,
+   "is": [
+    "purely instrumental music with no singing",
+    "a long filter sweep rising towards something"
+   ],
+   "is_not": [
+    "sustained atmospheric pads and reverb"
+   ]
+  },
+  {
+   "start": 171.74,
+   "end": 202.95,
+   "function": "chorus",
+   "identity": 4,
+   "is": [
+    "an instrumental section with no singing, the synths take the lead",
+    "an impact hit with a crash cymbal on the downbeat"
+   ],
+   "is_not": [
+    "no drums at all, only sustained sounds"
+   ]
+  },
+  {
+   "start": 202.95,
+   "end": 251.73,
+   "function": "inst",
+   "identity": 0,
+   "is": [
+    "a steady groove holding at full energy",
+    "a heavy sub bass line"
+   ],
+   "is_not": [
+    "the chorus, the biggest and catchiest part of the song"
+   ]
+  }
+ ],
+ "Armin - Revolution": [
+  {
+   "start": 0.03,
+   "end": 111.25,
+   "function": "intro",
+   "identity": 1,
+   "is": [
+    "loud lead vocals singing",
+    "the moment the bass drops and the whole club goes off"
+   ],
+   "is_not": [
+    "the music cuts out to almost nothing"
+   ]
+  },
+  {
+   "start": 111.25,
+   "end": 155.56,
+   "function": "inst",
+   "identity": 3,
+   "is": [
+    "the music cuts out to almost nothing",
+    "a heavy sub bass line"
+   ],
+   "is_not": [
+    "an instrumental section with no singing, the synths take the lead"
+   ]
+  },
+  {
+   "start": 155.56,
+   "end": 194.03,
+   "function": "intro",
+   "identity": 4,
+   "is": [
+    "a dense wall of sound, everything playing at once",
+    "purely instrumental music with no singing"
+   ],
+   "is_not": [
+    "a breakdown where the drums drop out and the music opens up"
+   ]
+  }
+ ],
+ "Titanium - David Guetta ft Sia": [
+  {
+   "start": 0.02,
+   "end": 14.3,
+   "function": "intro",
+   "identity": 4,
+   "is": [
+    "a build-up with a rising riser and a snare roll, tension increasing",
+    "sustained atmospheric pads and reverb"
+   ],
+   "is_not": [
+    "a sudden silence right before the beat returns"
+   ]
+  },
+  {
+   "start": 14.3,
+   "end": 44.77,
+   "function": "verse",
+   "identity": 2,
+   "is": [
+    "the chorus, the biggest and catchiest part of the song",
+    "the moment the bass drops and the whole club goes off"
+   ],
+   "is_not": [
+    "loud lead vocals singing"
+   ]
+  },
+  {
+   "start": 44.77,
+   "end": 75.25,
+   "function": "chorus",
+   "identity": 1,
+   "is": [
+    "a sudden silence right before the beat returns",
+    "a lead synth playing the main melody"
+   ],
+   "is_not": [
+    "a dense wall of sound, everything playing at once"
+   ]
+  },
+  {
+   "start": 75.25,
+   "end": 90.49,
+   "function": "inst",
+   "identity": 3,
+   "is": [
+    "a dense wall of sound, everything playing at once",
+    "purely instrumental music with no singing"
+   ],
+   "is_not": [
+    "a breakdown where the drums drop out and the music opens up"
+   ]
+  },
+  {
+   "start": 90.49,
+   "end": 120.97,
+   "function": "verse",
+   "identity": 2,
+   "is": [
+    "the moment the bass drops and the whole club goes off",
+    "the outro of a song, the arrangement thinning out towards the end"
+   ],
+   "is_not": [
+    "a steady groove holding at full energy"
+   ]
+  },
+  {
+   "start": 120.97,
+   "end": 151.44,
+   "function": "chorus",
+   "identity": 1,
+   "is": [
+    "a sudden silence right before the beat returns",
+    "a verse, the singer telling the story over a light backing"
+   ],
+   "is_not": [
+    "bright shimmering high frequencies and cymbals"
+   ]
+  },
+  {
+   "start": 151.44,
+   "end": 166.67,
+   "function": "inst",
+   "identity": 3,
+   "is": [
+    "bright shimmering high frequencies and cymbals",
+    "the arrangement thinning out, instruments dropping away"
+   ],
+   "is_not": [
+    "an instrumental section with no singing, the synths take the lead"
+   ]
+  },
+  {
+   "start": 166.67,
+   "end": 181.92,
+   "function": "bridge",
+   "identity": 0,
+   "is": [
+    "a long filter sweep rising towards something",
+    "a heavy sub bass line"
+   ],
+   "is_not": [
+    "the moment the bass drops and the whole club goes off"
+   ]
+  },
+  {
+   "start": 181.92,
+   "end": 212.39,
+   "function": "chorus",
+   "identity": 1,
+   "is": [
+    "no drums at all, only sustained sounds",
+    "a steady groove holding at full energy"
+   ],
+   "is_not": [
+    "an impact hit with a crash cymbal on the downbeat"
+   ]
+  },
+  {
+   "start": 212.39,
+   "end": 232.44,
+   "function": "outro",
+   "identity": 3,
+   "is": [
+    "a dense wall of sound, everything playing at once",
+    "the intro of a song, before the beat comes in"
+   ],
+   "is_not": [
+    "a breakdown where the drums drop out and the music opens up"
+   ]
+  }
+ ]
+}

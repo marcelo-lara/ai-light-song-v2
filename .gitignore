@@ -224,3 +224,5 @@ __marimo__/
 
 # drop-detection exploration: regenerable feature cache
 experiments/drop_detection/cache/
+experiments/drop_detection/research/cache/mert/
+experiments/drop_detection/research/cache/clap*/

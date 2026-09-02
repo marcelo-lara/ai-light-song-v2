@@ -1,0 +1,30 @@
+
+
+
+
+
+
+song                                    segs  runs  kinds  top share  labels
+Armin - Revolution                        11     3      2       0.82  inst,intro  <-- degenerate
+Best Friend - Sofi Tukker                  8     4      4       0.50  chorus,inst,intro,verse
+Chimera - Hana                            10     4      2       0.50  inst,intro  <-- degenerate
+Cinderella - Ella Lee                     20    13      6       0.30  break,chorus,inst,intro,outro,verse
+CruelSummer - Malvina                     16     6      4       0.56  chorus,end,intro,verse
+Fascination (The Droyds One Armed Remix)    26    11      6       0.35  chorus,inst,intro,outro,start,verse
+Gabry Ponte - Tutta L'Italia               9     6      3       0.56  chorus,inst,verse
+Hideaway - Kiesza                         15     6      3       0.60  chorus,inst,intro
+In da name of love - Anita and Ray         8     3      3       0.75  chorus,end,intro
+It's a fine day - Opus III                19     9      5       0.63  chorus,inst,intro,outro,verse
+Only this moment - royksopp               15    10      6       0.47  bridge,chorus,inst,intro,outro,verse
+Pet Shop Boys - I'm not scared            22    11      5       0.32  chorus,inst,intro,solo,verse
+Queen of Kings - Alessandra               10     8      3       0.60  bridge,chorus,verse
+Rapture - Nadia Ali                       13     7      4       0.38  chorus,inst,outro,verse
+Sash - Raindrops                          11     9      7       0.27  chorus,inst,intro,outro,solo,start,verse
+Titanium - David Guetta ft Sia            16    10      6       0.38  bridge,chorus,inst,intro,outro,verse
+Underworld - Born Slippy                  13    10      5       0.31  chorus,inst,intro,outro,verse
+What a Feeling - Courtney Storm           14    10      7       0.36  chorus,end,inst,intro,outro,start,verse
+Yonaka - Seize the Power                  10     5      4       0.40  chorus,intro,solo,verse
+_test_song                                 4     2      2       0.75  chorus,intro  <-- degenerate
+ayuni                                      9     5      4       0.56  chorus,inst,intro,verse
+
+degenerate on 3 songs: Armin - Revolution, Chimera - Hana, _test_song

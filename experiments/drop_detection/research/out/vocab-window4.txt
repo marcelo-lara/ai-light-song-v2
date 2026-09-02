@@ -1,0 +1,35 @@
+
+
+
+
+
+
+window 4s, before/after guarded by 2s
+
+sign agree   mean d   pre z  prompt
+      7/7    +1.14   -0.69  the chorus, the biggest and catchiest part of the song
+      7/7    -0.69   +0.34  a long filter sweep rising towards something
+      6/7    +1.48   -0.75  a dense wall of sound, everything playing at once
+      6/7    +1.44   -0.62  the music cuts out to almost nothing
+      6/7    +1.11   -0.60  purely instrumental music with no singing
+      6/7    -1.06   +0.24  a breakdown where the drums drop out and the music opens up
+      6/7    -0.80   +0.37  a lead synth playing the main melody
+      6/7    -0.77   +0.68  loud lead vocals singing
+      6/7    +0.73   -0.17  the arrangement thinning out, instruments dropping away
+      6/7    -0.57   +0.15  the moment the bass drops and the whole club goes off
+      6/7    -0.40   -0.07  a verse, the singer telling the story over a light backing
+      6/7    -0.24   +0.34  a steady groove holding at full energy
+      5/7    +0.97   -0.54  a snare roll speeding up before an explosion
+      5/7    -0.84   +0.68  a sudden silence right before the beat returns
+      5/7    -0.74   +0.51  the drop, the beat slams back in at full power
+      5/7    -0.67   -0.03  a strong four on the floor kick drum and a driving beat
+      5/7    -0.58   +0.14  a build-up with a rising riser and a snare roll, tension increasing
+      5/7    +0.52   -0.16  bright shimmering high frequencies and cymbals
+      5/7    -0.49   -0.06  an instrumental section with no singing, the synths take the lead
+      5/7    -0.47   -0.08  a quiet sparse passage with very little going on
+      5/7    +0.33   +0.15  the intro of a song, before the beat comes in
+      5/7    -0.32   +0.53  no drums at all, only sustained sounds
+      4/7    +0.29   -0.10  sustained atmospheric pads and reverb
+      4/7    +0.18   -0.28  the outro of a song, the arrangement thinning out towards the end
+      4/7    -0.15   +0.15  a heavy sub bass line
+      4/7    -0.10   -0.33  an impact hit with a crash cymbal on the downbeat

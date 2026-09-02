@@ -1,0 +1,58 @@
+[
+ {
+  "song": "_test_song",
+  "impact": 28.396,
+  "essentia_beat": -0.1960000000000015,
+  "essentia_downbeat": -0.6560000000000024,
+  "beatthis_beat": -0.17600000000000193,
+  "beatthis_downbeat": -0.6359999999999992
+ },
+ {
+  "song": "Hideaway - Kiesza",
+  "impact": 62.408,
+  "essentia_beat": -0.22496300000000247,
+  "essentia_downbeat": 0.7734960000000015,
+  "beatthis_beat": 0.07199999999999562,
+  "beatthis_downbeat": 0.07199999999999562
+ },
+ {
+  "song": "Armin - Revolution",
+  "impact": 57.834,
+  "essentia_beat": 0.13461599999999407,
+  "essentia_downbeat": 0.13461599999999407,
+  "beatthis_beat": -0.11400000000000432,
+  "beatthis_downbeat": 1.725999999999999
+ },
+ {
+  "song": "Armin - Revolution",
+  "impact": 153.961,
+  "essentia_beat": -0.08236800000000244,
+  "essentia_downbeat": 0.8812700000000007,
+  "beatthis_beat": 0.2189999999999941,
+  "beatthis_downbeat": -0.24100000000001387
+ },
+ {
+  "song": "Titanium - David Guetta ft Sia",
+  "impact": 74.655,
+  "essentia_beat": 0.11324999999999363,
+  "essentia_downbeat": 0.11324999999999363,
+  "beatthis_beat": 0.125,
+  "beatthis_downbeat": 0.605000000000004
+ },
+ {
+  "song": "Titanium - David Guetta ft Sia",
+  "impact": 151.258,
+  "essentia_beat": 0.15932799999998792,
+  "essentia_downbeat": -0.31668500000000677,
+  "beatthis_beat": 0.20199999999999818,
+  "beatthis_downbeat": 0.20199999999999818
+ },
+ {
+  "song": "Titanium - David Guetta ft Sia",
+  "impact": 212.01,
+  "essentia_beat": -0.10469599999998991,
+  "essentia_downbeat": -0.10469599999998991,
+  "beatthis_beat": -0.09000000000000341,
+  "beatthis_downbeat": 0.3900000000000148
+ }
+]
