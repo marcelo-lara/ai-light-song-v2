@@ -115,6 +115,57 @@ make the failure *legible*, so it is not repeated.
   floor of the labels, say so and fix the labels rather than tuning against
   them.
 
+### 3.1 `experiments/` is a sandbox for anything
+
+`experiments/` at the repository root exists so that a new idea can be tried
+*without touching the production pipeline*. Inside it, try anything: other
+models, other libraries, other container images, throwaway code, competing
+approaches side by side. Nothing in `experiments/` is held to the pipeline's
+determinism, schema or style rules, and nothing in `src/` may import from it.
+
+The reason is historical and specific: unproven work merged straight into `src/`
+is how the analyzer accumulated several thousand lines of event machinery built
+on a segmentation that measures at chance. **An experiment stays an experiment
+until it has earned promotion.**
+
+### 3.2 Make it reviewable — add a UI lane
+
+Musical output has to be *heard against the song*, not read as a table. When an
+experiment produces anything time-bearing — boundaries, regions, events, curves
+— it should be viewable in the debugger (`ui/`) as its own lane, played against
+the waveform and against the human hints.
+
+The established pattern, and the one to copy: `experiments/drop_detection`
+writes `data/analysis/<Song - Artist>/reference/proposals/drop_impacts.json`,
+and the UI renders it as the **Drop Proposals** lane directly beneath **Human
+Hints**, so a proposal can be auditioned against hand-authored truth while the
+song plays.
+
+Rules for experiment output:
+
+- It goes under `reference/proposals/`, never into `artifacts/` and never into
+  the stable top-level contract. It is a proposal, not a deliverable.
+- It never overwrites `reference/human/` — hand-authored ground truth stays
+  purely hand-authored.
+- The lane is added to the debugger's lane registry like any other, and removed
+  when the experiment is abandoned or promoted.
+
+An experiment whose output cannot be placed on a timeline is not exempt; it just
+reports its numbers instead.
+
+### 3.3 Promotion is asked for, never assumed
+
+When an experiment beats the incumbent on the stated metric, **stop and ask
+before moving anything into `src/`.** Promotion is a decision for the operator,
+not a conclusion the evidence makes on its own — a better number on the gold set
+is necessary, not sufficient, and the cost of carrying another production stage
+is a judgement about the pipeline as a whole.
+
+A promotion proposal states: what it replaces, the metric and both numbers, what
+gets **deleted** from `src/` in the same change, and which projected file changes
+as a result (§1.3). Promotion that only adds is usually a mistake; the point of
+the sandbox is that the pipeline stays small.
+
 ---
 
 ## 4. Documentation

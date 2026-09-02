@@ -142,10 +142,15 @@ archive folder**: a document that stops being true gets deleted in a commit.
   confident wrong answer.
 - **The reach test.** A feature is only real if it reaches the authoring model.
   Before building, say which projected file the signal lands in.
-- **Experiments are first-class.** They live in `experiments/<topic>/`, state a
-  question and a measurement up front, are scored against the incumbent *and* a
-  cheap baseline, and a negative result gets written down rather than deleted.
-  Constitution §3.
+- **Experiments are first-class, and stay out of `src/`.** `experiments/` is a
+  sandbox for anything — any model, any dependency, any throwaway code; `src/`
+  never imports from it. State a question and a measurement up front, score
+  against the incumbent *and* a cheap baseline, and write down negative results.
+  Give time-bearing output a debugger lane so it can be auditioned against the
+  song (copy the **Drop Proposals** lane: written to
+  `reference/proposals/`, rendered under **Human Hints**). When something beats
+  the incumbent, **ask before promoting it to `src/`** — and say what gets
+  deleted in the same change. Constitution §3.
 - **`reference/` is validation-only.** Never copy `data/analysis/<song>/reference/`
   into a generated artifact except through an explicit, confidence-gated,
   provenance-recorded promotion.
