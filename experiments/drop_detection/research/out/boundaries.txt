@@ -1,0 +1,61 @@
+
+
+
+
+
+
+
+== _test_song  impacts [28.4]
+   mert L2            n=4   nearest err +0.72
+   mert L6            n=4   nearest err +0.72
+   mert L9            n=4   nearest err +0.72
+   mert L2+4+6+8      n=4   nearest err +0.72
+   clap novelty       n=3   nearest err +0.10
+   clap ssm           n=4   nearest err +3.50
+   mert+clap          n=4   nearest err +1.18
+   pipeline sections  n=3   nearest err +1.21
+   librosa CQT        n=4   nearest err +0.72
+
+== Hideaway - Kiesza  impacts [62.41]
+   mert L2            n=17  nearest err +1.75
+   mert L6            n=17  nearest err +1.75
+   mert L9            n=17  nearest err -3.27
+   mert L2+4+6+8      n=17  nearest err -3.78
+   clap novelty       n=7   nearest err -6.91
+   clap ssm           n=15  nearest err +12.96
+   mert+clap          n=17  nearest err +1.75
+   pipeline sections  n=14  nearest err +6.14
+   librosa CQT        n=17  nearest err -5.29
+
+== Armin - Revolution  impacts [57.83, 153.96]
+   mert L2            n=13  nearest err -1.78, +0.88
+   mert L6            n=13  nearest err -2.26, -2.00
+   mert L9            n=13  nearest err -2.26, -2.47
+   mert L2+4+6+8      n=13  nearest err -1.78, +1.36
+   clap novelty       n=12  nearest err +0.17, -4.46
+   clap ssm           n=13  nearest err -3.21, -5.91
+   mert+clap          n=13  nearest err -1.78, -5.91
+   pipeline sections  n=12  nearest err +2.01, +2.79
+   librosa CQT        n=13  nearest err -6.54, -2.47
+
+== Titanium - David Guetta ft Sia  impacts [74.66, 151.26, 212.01]
+   mert L2            n=15  nearest err +0.58, +0.16, -0.10
+   mert L6            n=15  nearest err +0.58, -0.32, -0.10
+   mert L9            n=15  nearest err +0.58, -0.32, +1.80
+   mert L2+4+6+8      n=15  nearest err +0.58, +0.16, -0.10
+   clap novelty       n=14  nearest err -0.66, -0.76, -1.51
+   clap ssm           n=15  nearest err +0.58, -2.20, -0.10
+   mert+clap          n=15  nearest err +0.58, +0.16, -0.10
+   pipeline sections  n=16  nearest err +2.50, +2.08, +2.29
+   librosa CQT        n=15  nearest err -1.31, -1.72, -1.53
+
+representation         +-0.5     +-1.0     +-2.0  bounds/min
+mert L2            2/7       5/7       7/7              4.43
+mert L6            2/7       4/7       6/7              4.45
+mert L9            1/7       3/7       4/7              4.59
+mert L2+4+6+8      2/7       4/7       6/7              4.52
+clap novelty       2/7       4/7       5/7              3.77
+clap ssm           1/7       2/7       2/7              4.24
+mert+clap          2/7       3/7       6/7              4.41
+pipeline sections  0/7       0/7       1/7              4.55
+librosa CQT        0/7       1/7       4/7              4.43

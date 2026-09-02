@@ -8,6 +8,9 @@ from analyzer.models import SCHEMA_VERSION, to_jsonable
 from analyzer.paths import SongPaths
 from analyzer.stages._stem_activity import estimate_stem_activity_by_beat
 from analyzer.stages.validation.sections import _validate_sections
+from analyzer.stages.validation.form_drops import load_song_facts
+
+from .form import assign_form_roles, boundary_confidence, compute_repetition_groups, infer_form_family
 
 from .utils import (
     _uses_reference_timing, _find_nearest_onset_peak, _snap_to_bar_boundary,
@@ -35,14 +38,14 @@ def _section_key(section: dict[str, Any]) -> tuple[float, float, str | None]:
 
 def _inferred_section_payload(paths: SongPaths, sections: list[SectionWindow], metadata_breaks: list[dict[str, Any]]) -> dict[str, Any]:
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": "1.1",
         "song_name": paths.song_name,
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "beats_file": str(paths.artifact("essentia", "beats.json")),
             "harmonic_layer_file": str(paths.artifact("layer_a_harmonic.json")),
             "energy_features_file": str(paths.artifact("energy_summary", "features.json")),
-            "engine": "deterministic.section_segmentation.v1",
+            "engine": "deterministic.section_segmentation.v3",
             "snapping_rule": "coarse section starts snap to the nearest bar boundary; inferred timing may refine those starts to nearby beat boundaries when novelty contrast is materially stronger, while reference-promoted timing keeps section starts on canonical bar anchors",
             "label_strategy": "context-aware musical-state section_character labels from section-scale energy, motion, repetition, and contrast cues",
             "annotation_strategy": "structural change windows are primary; section_character labels are auxiliary lighting metadata",
@@ -137,11 +140,18 @@ def _build_reference_promoted_sections(
                 section_character=section_character,
                 confidence=round(max(0.55, confidence), 6),
                 onset_anchored=False,
+                form_role=(inferred_section.get("form_role") if inferred_section else None),
+                form_role_confidence=(inferred_section.get("form_role_confidence") if inferred_section else None),
+                form_role_margin=(inferred_section.get("form_role_margin") if inferred_section else None),
+                energy_character=(inferred_section.get("energy_character") if inferred_section else section_character),
+                repetition_group=(inferred_section.get("repetition_group") if inferred_section else None),
+                variant_of=(inferred_section.get("variant_of") if inferred_section else None),
+                similarity=(inferred_section.get("similarity") if inferred_section else None),
             )
         )
 
     payload = {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": "1.1",
         "song_name": paths.song_name,
         "generated_from": {
             "source_song_path": str(paths.song_path),
@@ -187,6 +197,10 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
     repetitions = _compute_section_repetition(grouped_sections)
     reference_timing = _uses_reference_timing(timing)
 
+    # v1.1 item 2.1 — song-level form_family from audio evidence only.
+    song_facts = load_song_facts(paths)
+    form_family = infer_form_family(grouped_sections, timing, song_facts)
+
     bar_starts = [float(bar["start_s"]) for bar in timing["bars"]]
     beat_times = [float(beat["time"]) for beat in timing.get("beats", [])]
     beat_interval_s = float(
@@ -219,22 +233,53 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
         section_starts[0] = 0.0
         section_onset_anchored[0] = False
 
+    # v1.1 item 2.2 — form_role is the primary label, gated by form_family.
+    role_assignments = assign_form_roles(grouped_sections, repetitions, form_family["value"])
+    # v1.1 item 2.3 — repetition identity from material self-similarity, not label.
+    repetition_groups = compute_repetition_groups(grouped_sections)
+
     sections = []
     for index, (section, label, repetition) in enumerate(zip(grouped_sections, labels, repetitions)):
         start = section_starts[index]
         end = float(section["end_s"])
         if index + 1 < len(grouped_sections):
             end = section_starts[index + 1]
-        confidence = max(0.2, min(0.99, 0.35 + (section["energy"] * 0.25) + (repetition * 0.25) + (section["onset"] * 0.15)))
+        role = role_assignments[index]
+        group = repetition_groups[index]
+        # v1.1 item 3.1 — confidence is boundary + label evidence only.
+        if index == 0:
+            confidence = 0.9  # the first boundary is fixed at 0.0 and trivially correct
+            confidence_terms = {"reason": "first section start is fixed at 0.0"}
+        else:
+            bc = boundary_confidence(
+                beat_rows,
+                bar_starts,
+                float(start),
+                onset_anchored=section_onset_anchored[index],
+                form_role_margin=role["form_role_margin"],
+                beat_interval_s=beat_interval_s,
+            )
+            confidence = bc["value"]
+            confidence_terms = bc["terms"]
+        variant_of_index = group["variant_of"]
+        variant_of_id = f"section-{variant_of_index + 1:03d}" if variant_of_index is not None else None
         sections.append(
             SectionWindow(
                 section_id=f"section-{index + 1:03d}",
                 start=round(start, 6),
                 end=round(end, 6),
-                label=label,
+                label=role["form_role"],
                 section_character=label,
                 confidence=round(float(confidence), 6),
                 onset_anchored=section_onset_anchored[index],
+                form_role=role["form_role"],
+                form_role_confidence=role["form_role_confidence"],
+                form_role_margin=role["form_role_margin"],
+                energy_character=label,
+                repetition_group=group["repetition_group"],
+                variant_of=variant_of_id,
+                similarity=group["similarity"],
+                confidence_terms=confidence_terms,
             )
         )
 
@@ -259,6 +304,7 @@ def segment_sections(paths: SongPaths, timing: dict, harmonic: dict, energy: dic
         payload.setdefault("generated_from", {})["promotion_gate"] = promotion_gate
         payload.setdefault("metadata", {})["promotion_applied"] = False
 
+    payload["form_family"] = form_family
     payload = to_jsonable(payload)
     write_json(paths.artifact("section_segmentation", "sections.json"), payload)
     return payload

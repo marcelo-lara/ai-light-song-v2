@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
+    "reference_chords_file": "/data/analysis/_test_song/reference/moises/chords.json",
+    "engine": "reference.moises.chords.promotion",
+    "dependencies": {
+      "reference_chords": "/data/analysis/_test_song/reference/moises/chords.json",
+      "inferred_harmonic_file": "/data/analysis/_test_song/artifacts/harmonic_inference/layer_a_harmonic.inferred.json"
+    }
+  },
+  "global_key": {
+    "label": null,
+    "confidence": 1.0,
+    "source": "reference_promoted"
+  },
+  "chords": [
+    {
+      "time": 0.06,
+      "end_s": 46.2,
+      "bar": 1,
+      "beat": 1,
+      "chord": "D#m",
+      "confidence": 1.0
+    },
+    {
+      "time": 46.2,
+      "end_s": 48.04,
+      "bar": 26,
+      "beat": 1,
+      "chord": "B",
+      "confidence": 1.0
+    },
+    {
+      "time": 48.04,
+      "end_s": 51.74,
+      "bar": 27,
+      "beat": 1,
+      "chord": "F#",
+      "confidence": 1.0
+    }
+  ]
+}

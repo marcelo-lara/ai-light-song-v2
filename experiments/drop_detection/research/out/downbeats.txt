@@ -1,0 +1,18 @@
+
+
+
+
+
+
+song                               impact  ess beat   ess bar   bt beat    bt bar
+_test_song                          28.40    -0.196    -0.656    -0.176    -0.636
+Hideaway - Kiesza                   62.41    -0.225    +0.773    +0.072    +0.072
+Armin - Revolution                  57.83    +0.135    +0.135    -0.114    +1.726
+Armin - Revolution                 153.96    -0.082    +0.881    +0.219    -0.241
+Titanium - David Guetta ft Sia      74.66    +0.113    +0.113    +0.125    +0.605
+Titanium - David Guetta ft Sia     151.26    +0.159    -0.317    +0.202    +0.202
+Titanium - David Guetta ft Sia     212.01    -0.105    -0.105    -0.090    +0.390
+  essentia_beat        median |err| 0.135s   within 0.1s 1/7   within 0.25s 7/7
+  essentia_downbeat    median |err| 0.317s   within 0.1s 0/7   within 0.25s 3/7
+  beatthis_beat        median |err| 0.125s   within 0.1s 2/7   within 0.25s 7/7
+  beatthis_downbeat    median |err| 0.390s   within 0.1s 1/7   within 0.25s 3/7

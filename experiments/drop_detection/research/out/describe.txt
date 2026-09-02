@@ -1,0 +1,35 @@
+
+
+
+
+
+
+
+== _test_song
+     0.04-  14.81  intro   id=1  a steady groove holding at full energy; no drums at all, only sustained sounds
+    14.81-  58.12  chorus  id=2  an instrumental section with no singin; an impact hit with a crash cymbal on t
+
+== Hideaway - Kiesza
+     0.03-  31.25  intro   id=1  the intro of a song, before the beat c; a dense wall of sound, everything play
+    31.25-  46.84  chorus  id=1  a dense wall of sound, everything play; the intro of a song, before the beat c
+    46.84-  62.46  inst    id=2  no drums at all, only sustained sounds; a steady groove holding at full energy
+    62.46- 171.74  intro   id=0  purely instrumental music with no sing; a long filter sweep rising towards som   <<< human impact
+   171.74- 202.95  chorus  id=4  an instrumental section with no singin; an impact hit with a crash cymbal on t
+   202.95- 251.73  inst    id=0  a steady groove holding at full energy; a heavy sub bass line
+
+== Armin - Revolution
+     0.03- 111.25  intro   id=1  loud lead vocals singing; the moment the bass drops and the whol
+   111.25- 155.56  inst    id=3  the music cuts out to almost nothing; a heavy sub bass line
+   155.56- 194.03  intro   id=4  a dense wall of sound, everything play; purely instrumental music with no sing
+
+== Titanium - David Guetta ft Sia
+     0.02-  14.30  intro   id=4  a build-up with a rising riser and a s; sustained atmospheric pads and reverb
+    14.30-  44.77  verse   id=2  the chorus, the biggest and catchiest ; the moment the bass drops and the whol
+    44.77-  75.25  chorus  id=1  a sudden silence right before the beat; a lead synth playing the main melody
+    75.25-  90.49  inst    id=3  a dense wall of sound, everything play; purely instrumental music with no sing   <<< human impact
+    90.49- 120.97  verse   id=2  the moment the bass drops and the whol; the outro of a song, the arrangement t
+   120.97- 151.44  chorus  id=1  a sudden silence right before the beat; a verse, the singer telling the story 
+   151.44- 166.67  inst    id=3  bright shimmering high frequencies and; the arrangement thinning out, instrume   <<< human impact
+   166.67- 181.92  bridge  id=0  a long filter sweep rising towards som; a heavy sub bass line
+   181.92- 212.39  chorus  id=1  no drums at all, only sustained sounds; a steady groove holding at full energy
+   212.39- 232.44  outro   id=3  a dense wall of sound, everything play; the intro of a song, before the beat c   <<< human impact

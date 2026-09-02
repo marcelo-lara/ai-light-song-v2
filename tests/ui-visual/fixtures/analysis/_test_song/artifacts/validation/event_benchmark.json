@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "selected_profile": "default",
+  "annotation_file": "/app/benchmark_annotations/_test_song.json",
+  "generated_from": {
+    "machine_events_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json",
+    "timeline_file": "/data/analysis/_test_song/song_event_timeline.json"
+  },
+  "status": "skipped",
+  "reason": "No benchmark annotation file exists for this song.",
+  "matched": 0,
+  "missed": 0,
+  "false_positives": 0,
+  "details": []
+}

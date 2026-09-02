@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.1",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
+    "harmonic_layer_file": "/data/analysis/_test_song/artifacts/layer_a_harmonic.json",
+    "energy_features_file": "/data/analysis/_test_song/artifacts/energy_summary/features.json",
+    "engine": "deterministic.section_segmentation.v3",
+    "snapping_rule": "coarse section starts snap to the nearest bar boundary; inferred timing may refine those starts to nearby beat boundaries when novelty contrast is materially stronger, while reference-promoted timing keeps section starts on canonical bar anchors",
+    "label_strategy": "context-aware musical-state section_character labels from section-scale energy, motion, repetition, and contrast cues",
+    "annotation_strategy": "structural change windows are primary; section_character labels are auxiliary lighting metadata"
+  },
+  "sections": [
+    {
+      "section_id": "section-001",
+      "start": 0.0,
+      "end": 14.82,
+      "label": "intro",
+      "confidence": 0.9,
+      "section_character": "ambient_opening",
+      "onset_anchored": false,
+      "form_role": "intro",
+      "form_role_confidence": 0.924371,
+      "form_role_margin": 0.331236,
+      "energy_character": "ambient_opening",
+      "repetition_group": "A",
+      "variant_of": null,
+      "similarity": 1.0,
+      "confidence_terms": {
+        "reason": "first section start is fixed at 0.0"
+      }
+    },
+    {
+      "section_id": "section-002",
+      "start": 14.82,
+      "end": 29.605442,
+      "label": "unknown",
+      "confidence": 0.135042,
+      "section_character": "vocal_spotlight",
+      "onset_anchored": false,
+      "form_role": "unknown",
+      "form_role_confidence": 0.735777,
+      "form_role_margin": 0.069832,
+      "energy_character": "vocal_spotlight",
+      "repetition_group": "A",
+      "variant_of": "section-001",
+      "similarity": 0.868002,
+      "confidence_terms": {
+        "channel_strengths": {
+          "energy": 0.0,
+          "timbral": 0.001683,
+          "harmonic": 0.0
+        },
+        "mean_strength": 0.000561,
+        "detector_agreement": 0.00056,
+        "novelty_sharpness": 0.0,
+        "transient_aligned": false,
+        "bar_grid_alignment": 1.0,
+        "form_role_margin": 0.17458
+      }
+    },
+    {
+      "section_id": "section-003",
+      "start": 29.605442,
+      "end": 44.36,
+      "label": "drop",
+      "confidence": 0.231702,
+      "section_character": "momentum_lift",
+      "onset_anchored": true,
+      "form_role": "drop",
+      "form_role_confidence": 0.909385,
+      "form_role_margin": 0.208923,
+      "energy_character": "momentum_lift",
+      "repetition_group": "A",
+      "variant_of": "section-001",
+      "similarity": 0.856762,
+      "confidence_terms": {
+        "channel_strengths": {
+          "energy": 0.0,
+          "timbral": 2.3e-05,
+          "harmonic": 0.0
+        },
+        "mean_strength": 8e-06,
+        "detector_agreement": 8e-06,
+        "novelty_sharpness": 0.0,
+        "transient_aligned": true,
+        "bar_grid_alignment": 0.944691,
+        "form_role_margin": 0.522307
+      }
+    },
+    {
+      "section_id": "section-004",
+      "start": 44.36,
+      "end": 57.74,
+      "label": "outro",
+      "confidence": 0.172544,
+      "section_character": "release_tail",
+      "onset_anchored": false,
+      "form_role": "outro",
+      "form_role_confidence": 0.920784,
+      "form_role_margin": 0.319279,
+      "energy_character": "release_tail",
+      "repetition_group": "A",
+      "variant_of": "section-001",
+      "similarity": 0.853543,
+      "confidence_terms": {
+        "channel_strengths": {
+          "energy": 0.0,
+          "timbral": 0.014883,
+          "harmonic": 0.0
+        },
+        "mean_strength": 0.004961,
+        "detector_agreement": 0.004862,
+        "novelty_sharpness": 0.0,
+        "transient_aligned": false,
+        "bar_grid_alignment": 1.0,
+        "form_role_margin": 0.798197
+      }
+    }
+  ],
+  "micro_breaks": [
+    {
+      "start_s": 22.2,
+      "end_s": 24.06,
+      "bar_count": 1,
+      "break_type": "pause_break"
+    },
+    {
+      "start_s": 55.44,
+      "end_s": 57.74,
+      "bar_count": 2,
+      "break_type": "pause_break"
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "engine": "experiments.drop_detection.stage1"
+  },
+  "note": "Draft `drop impact` candidates from the stage-1 proposer. Audition each against the Human Hints lane, then copy the survivors into reference/human/human_hints.json by hand.",
+  "existing_labels": [
+    28.396
+  ],
+  "proposals": [
+    {
+      "id": "proposal-001",
+      "title": "drop impact",
+      "start_time": 16.68,
+      "end_time": 17.222,
+      "channels": [
+        "voc_in"
+      ],
+      "matches_human_label": null,
+      "evidence": {
+        "bass_reentry_db": -36.6,
+        "vocals_delta_db": 46.9,
+        "drums_delta_db": 1.6,
+        "mix_delta_db": 0.9
+      }
+    },
+    {
+      "id": "proposal-002",
+      "title": "drop impact",
+      "start_time": 22.66,
+      "end_time": 23.202,
+      "channels": [
+        "after_suck",
+        "drums_in",
+        "voc_out"
+      ],
+      "matches_human_label": null,
+      "evidence": {
+        "bass_reentry_db": -3.4,
+        "vocals_delta_db": -15.2,
+        "drums_delta_db": 20.4,
+        "mix_delta_db": 1.6
+      }
+    },
+    {
+      "id": "proposal-003",
+      "title": "drop impact",
+      "start_time": 23.12,
+      "end_time": 23.662,
+      "channels": [
+        "handover",
+        "sub_in"
+      ],
+      "matches_human_label": null,
+      "evidence": {
+        "bass_reentry_db": 21.3,
+        "vocals_delta_db": -17.9,
+        "drums_delta_db": 25.4,
+        "mix_delta_db": 1.4
+      }
+    },
+    {
+      "id": "proposal-004",
+      "title": "drop impact",
+      "start_time": 23.12,
+      "end_time": 23.662,
+      "channels": [
+        "bass_in"
+      ],
+      "matches_human_label": null,
+      "evidence": {
+        "bass_reentry_db": 28.1,
+        "vocals_delta_db": -10.4,
+        "drums_delta_db": 16.9,
+        "mix_delta_db": 1.0
+      }
+    },
+    {
+      "id": "proposal-005",
+      "title": "drop impact",
+      "start_time": 30.04,
+      "end_time": 30.582,
+      "channels": [
+        "after_build",
+        "handover",
+        "sub_in",
+        "voc_out"
+      ],
+      "matches_human_label": null,
+      "evidence": {
+        "bass_reentry_db": 51.2,
+        "vocals_delta_db": -37.8,
+        "drums_delta_db": -3.0,
+        "mix_delta_db": 3.5
+      }
+    },
+    {
+      "id": "proposal-006",
+      "title": "drop impact",
+      "start_time": 36.04,
+      "end_time": 36.582,
+      "channels": [
+        "bass_in"
+      ],
+      "matches_human_label": null,
+      "evidence": {
+        "bass_reentry_db": 46.3,
+        "vocals_delta_db": -1.5,
+        "drums_delta_db": 0.7,
+        "mix_delta_db": -0.1
+      }
+    },
+    {
+      "id": "proposal-007",
+      "title": "drop impact",
+      "start_time": 47.12,
+      "end_time": 47.662,
+      "channels": [
+        "after_build",
+        "drums_out",
+        "voc_in"
+      ],
+      "matches_human_label": null,
+      "evidence": {
+        "bass_reentry_db": 4.5,
+        "vocals_delta_db": 29.1,
+        "drums_delta_db": -37.8,
+        "mix_delta_db": 2.7
+      }
+    },
+    {
+      "id": "proposal-008",
+      "title": "drop impact",
+      "start_time": 55.44,
+      "end_time": 55.982,
+      "channels": [
+        "voc_out"
+      ],
+      "matches_human_label": null,
+      "evidence": {
+        "bass_reentry_db": -59.4,
+        "vocals_delta_db": -51.7,
+        "drums_delta_db": -9.5,
+        "mix_delta_db": -32.0
+      }
+    }
+  ]
+}

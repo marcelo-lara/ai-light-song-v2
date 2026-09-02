@@ -1,0 +1,63 @@
+// URL builders for the dev-server `/data` mount. Every segment is
+// percent-encoded (song names contain spaces and " - ").
+
+export function encodePath(parts: string[]): string {
+  return "/" + parts.map((part) => encodeURIComponent(part)).join("/");
+}
+
+const analysis = (song: string, ...rest: string[]): string[] => [
+  "data",
+  "analysis",
+  song,
+  ...rest,
+];
+
+export const artifactPaths = {
+  info: (song: string) => encodePath(analysis(song, "info.json")),
+  beats: (song: string) => encodePath(analysis(song, "beats.json")),
+  sectionsTopLevel: (song: string) => encodePath(analysis(song, "sections.json")),
+  eventTimeline: (song: string) =>
+    encodePath(analysis(song, "song_event_timeline.json")),
+  humanHints: (song: string) =>
+    encodePath(analysis(song, "reference", "human", "human_hints.json")),
+  songFacts: (song: string) =>
+    encodePath(analysis(song, "reference", "human", "song_facts.json")),
+  // Written by experiments/drop_detection (`run export`), never by the pipeline
+  // and never by a human. Kept out of `reference/human/` so the drop-impact
+  // ground truth stays a purely hand-authored file.
+  dropProposals: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "drop_impacts.json")),
+  sectionSegmentation: (song: string) =>
+    encodePath(analysis(song, "artifacts", "section_segmentation", "sections.json")),
+  fftBands: (song: string) =>
+    encodePath(analysis(song, "artifacts", "essentia", "fft_bands.json")),
+  rmsLoudness: (song: string) =>
+    encodePath(analysis(song, "artifacts", "essentia", "rms_loudness.json")),
+  loudnessEnvelope: (song: string) =>
+    encodePath(analysis(song, "artifacts", "essentia", "loudness_envelope.json")),
+  harmonicLayer: (song: string) =>
+    encodePath(analysis(song, "artifacts", "layer_a_harmonic.json")),
+  drumEvents: (song: string) =>
+    encodePath(analysis(song, "artifacts", "symbolic_transcription", "drum_events.json")),
+  energyLayer: (song: string) =>
+    encodePath(analysis(song, "artifacts", "layer_c_energy.json")),
+  reviewQueue: (song: string) =>
+    encodePath(analysis(song, "artifacts", "validation", "review_queue.json")),
+  // item 9 sparse lanes
+  patterns: (song: string) =>
+    encodePath(analysis(song, "artifacts", "layer_d_patterns.json")),
+  symbolicLayer: (song: string) =>
+    encodePath(analysis(song, "artifacts", "layer_b_symbolic.json")),
+  identifierHints: (song: string) =>
+    encodePath(analysis(song, "artifacts", "energy_summary", "hints.json")),
+  machineEvents: (song: string) =>
+    encodePath(analysis(song, "artifacts", "event_inference", "events.machine.json")),
+  mlEvents: (song: string) =>
+    encodePath(analysis(song, "artifacts", "event_inference", "events.ml.json")),
+  audio: (song: string) => encodePath(["data", "songs", `${song}.mp3`]),
+} as const;
+
+export const listingPaths = {
+  analysis: () => encodePath(["data", "analysis"]) + "/",
+  songs: () => encodePath(["data", "songs"]) + "/",
+};

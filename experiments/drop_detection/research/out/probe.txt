@@ -1,0 +1,21 @@
+
+
+
+
+
+
+
+== _test_song
+  impact   28.40   outro: -0.73->+0.81   beat: +0.36->-1.07   drop: +0.24->-1.16   instrumental: -0.63->+0.74   chorus: -0.68->+0.68
+
+== Hideaway - Kiesza
+  impact   62.41   build-up: +0.33->-0.59   sparse: -0.38->+0.03   beat: -0.24->-0.61   breakdown: -0.73->-0.40   intro: -0.82->-0.50
+
+== Armin - Revolution
+  impact   57.83   sparse: +0.81->-1.19   no-beat: -0.76->+0.97   outro: +1.05->-0.62   breakdown: +0.36->-0.82   intro: -0.02->+1.08
+  impact  153.96   build-up: -1.30->+0.34   sparse: +0.12->-1.27   drop: +0.02->+1.34   chorus: -0.78->+0.26   breakdown: +0.20->-0.73
+
+== Titanium - David Guetta ft Sia
+  impact   74.66   instrumental: -1.12->+1.66   outro: -1.52->+0.33   drop: +0.91->-0.65   chorus: -1.02->+0.54   no-beat: +1.62->+0.11
+  impact  151.26   build-up: +0.87->-0.86   instrumental: -1.38->+0.34   drop: +0.95->-0.58   sparse: -1.28->-0.05   chorus: -0.51->+0.68
+  impact  212.01   instrumental: -0.97->+1.31   intro: +0.02->+1.41   build-up: +0.56->-0.75   breakdown: +0.04->-1.18   chorus: -0.65->+0.57

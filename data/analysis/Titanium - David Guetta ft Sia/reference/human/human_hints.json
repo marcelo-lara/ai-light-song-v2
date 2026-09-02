@@ -1,0 +1,126 @@
+{
+  "song_name": "Titanium - David Guetta ft Sia",
+  "human_hints": [
+    {
+      "id": "hint-001",
+      "title": "drop approach",
+      "start_time": 51.92677647569444,
+      "end_time": 59.588,
+      "summary": "drop approach",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-002",
+      "title": "drop build",
+      "start_time": 59.588,
+      "end_time": 71.469,
+      "summary": "drop build",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-003",
+      "title": "drop tension",
+      "start_time": 71.469,
+      "end_time": 74.655,
+      "summary": "drop tension",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-004",
+      "title": "drop impact",
+      "start_time": 74.655,
+      "end_time": 75.197,
+      "summary": "drop impact",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-005",
+      "title": "drop release",
+      "start_time": 75.197,
+      "end_time": 75.642,
+      "summary": "drop release",
+      "lighting_hint": ""
+    },    
+    {
+      "id": "hint-006",
+      "title": "drop approach",
+      "start_time": 128.530,
+      "end_time": 136.191,
+      "summary": "drop approach",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-007",
+      "title": "drop build",
+      "start_time": 136.191,
+      "end_time": 148.072,
+      "summary": "drop build",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-008",
+      "title": "drop tension",
+      "start_time": 148.072,
+      "end_time": 151.258,
+      "summary": "drop tension",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-009",
+      "title": "drop impact",
+      "start_time": 151.258,
+      "end_time": 151.800,
+      "summary": "drop impact",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-010",
+      "title": "drop release",
+      "start_time": 151.800,
+      "end_time": 152.245,
+      "summary": "drop release",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-011",
+      "title": "drop approach",
+      "start_time": 189.282,
+      "end_time": 196.943,
+      "summary": "drop approach",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-012",
+      "title": "drop build",
+      "start_time": 196.943,
+      "end_time": 208.824,
+      "summary": "drop build",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-013",
+      "title": "drop tension",
+      "start_time": 208.824,
+      "end_time": 212.010,
+      "summary": "drop tension",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-014",
+      "title": "drop impact",
+      "start_time": 212.010,
+      "end_time": 212.552,
+      "summary": "drop impact",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-015",
+      "title": "drop release",
+      "start_time": 212.552,
+      "end_time": 212.997,
+      "summary": "drop release",
+      "lighting_hint": ""
+    }
+
+  ]
+}

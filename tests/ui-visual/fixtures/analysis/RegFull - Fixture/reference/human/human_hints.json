@@ -1,0 +1,29 @@
+{
+  "song_name": "Armin - Revolution",
+  "human_hints": [
+    {
+      "id": "hint-001",
+      "title": "Drop - approach",
+      "start_time": 40.0,
+      "end_time": 48.0,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-002",
+      "title": "drop build",
+      "start_time": 52.0,
+      "end_time": 60.0,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-003",
+      "title": "drop tension",
+      "start_time": 64.0,
+      "end_time": 72.0,
+      "summary": "",
+      "lighting_hint": ""
+    }
+  ]
+}

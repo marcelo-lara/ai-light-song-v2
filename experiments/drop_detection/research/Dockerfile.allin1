@@ -1,0 +1,18 @@
+# Second research sandbox, for All-In-One (allin1) only.
+#
+# allin1 calls the pre-0.17 NATTEN API (`natten.functional.natten1dqkrpb`),
+# which needs natten 0.15.1, which is only built against torch 2.1 — so it
+# cannot share the transformers sandbox (that one is on torch 2.13 because
+# beat_this pulls it in). Kept separate rather than trying to reconcile them.
+FROM ai-light-song-v2:dev
+
+ENV HF_HOME=/app/models/hf \
+    TOKENIZERS_PARALLELISM=false
+
+# NATTEN's own wheel index, as its install docs prescribe. `--trusted-host` is
+# needed because shi-labs.com is currently serving an expired certificate.
+RUN pip install --no-cache-dir "natten==0.15.1+torch210cu121" \
+      -f https://shi-labs.com/natten/wheels/cu121/torch2.1.0/index.html \
+      --trusted-host shi-labs.com
+
+RUN pip install --no-cache-dir allin1

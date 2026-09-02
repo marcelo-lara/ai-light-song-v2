@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "engine": "event-overrides-template-v1",
+    "dependencies": {
+      "machine_events_file": "/data/artifacts/_test_song/event_inference/events.machine.json"
+    }
+  },
+  "notes": "Add operations to confirm, delete, retime, relabel, or annotate machine events without editing source artifacts.",
+  "operations": []
+}

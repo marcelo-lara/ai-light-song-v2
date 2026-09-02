@@ -1,0 +1,268 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "engine": "symbolic-section-hints-v1",
+    "dependencies": {
+      "symbolic_layer_file": "/data/analysis/_test_song/artifacts/layer_b_symbolic.json",
+      "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json"
+    }
+  },
+  "sections": [
+    {
+      "section_id": "section-001",
+      "label": "ambient_opening",
+      "start": 0.0,
+      "end": 14.82,
+      "hints": [
+        {
+          "id": "section-001-inference-section_shape",
+          "source": "inference",
+          "category": "section_shape",
+          "text": "ambient opening reads as a layered section with undulating contour, dense activity, and mostly short notes.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_A_1",
+              "phrase_group_A_2"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_A"
+            ],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-001-inference-phrase_boundaries",
+          "source": "inference",
+          "category": "phrase_boundaries",
+          "text": "Treat phrase anchors phrase_group_A_1, phrase_group_A_2 as the main internal cue boundaries inside this section.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_A_1",
+              "phrase_group_A_2"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_A"
+            ],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-001-inference-motif_recall",
+          "source": "inference",
+          "category": "motif_recall",
+          "text": "Repeated material returns here through phrase groups phrase_group_A via motifs motif_alpha; keep recalls visibly related instead of inventing a disconnected look.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_A_1",
+              "phrase_group_A_2"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_A"
+            ],
+            "motif_group_ids": [
+              "motif_alpha"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "section-002",
+      "label": "vocal_spotlight",
+      "start": 14.82,
+      "end": 29.605442,
+      "hints": [
+        {
+          "id": "section-002-inference-transition_role",
+          "source": "inference",
+          "category": "transition_role",
+          "text": "Treat 14.82s as the main cue reset into this vocal spotlight; let the new focal state land on the boundary instead of drifting late.",
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-002-inference-section_shape",
+          "source": "inference",
+          "category": "section_shape",
+          "text": "vocal spotlight reads as a layered section with rising contour, dense activity, and clipped note lengths.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_C_1",
+              "phrase_group_A_3",
+              "phrase_group_D_1"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_C",
+              "phrase_group_A",
+              "phrase_group_D"
+            ],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-002-inference-phrase_boundaries",
+          "source": "inference",
+          "category": "phrase_boundaries",
+          "text": "Treat phrase anchors phrase_group_C_1, phrase_group_A_3, phrase_group_D_1 as the main internal cue boundaries inside this section.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_C_1",
+              "phrase_group_A_3",
+              "phrase_group_D_1"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_C",
+              "phrase_group_A",
+              "phrase_group_D"
+            ],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-002-inference-motif_recall",
+          "source": "inference",
+          "category": "motif_recall",
+          "text": "Repeated material returns here through phrase groups phrase_group_A via motifs motif_alpha; keep recalls visibly related instead of inventing a disconnected look.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_C_1",
+              "phrase_group_A_3",
+              "phrase_group_D_1"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_A"
+            ],
+            "motif_group_ids": [
+              "motif_alpha"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "section-003",
+      "label": "momentum_lift",
+      "start": 29.605442,
+      "end": 44.36,
+      "hints": [
+        {
+          "id": "section-003-inference-section_shape",
+          "source": "inference",
+          "category": "section_shape",
+          "text": "momentum lift reads as a layered section with falling contour, moderate activity, and clipped note lengths.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_B_1",
+              "phrase_group_E_1"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_B",
+              "phrase_group_E"
+            ],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-003-inference-phrase_boundaries",
+          "source": "inference",
+          "category": "phrase_boundaries",
+          "text": "Treat phrase anchors phrase_group_B_1, phrase_group_E_1 as the main internal cue boundaries inside this section.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_B_1",
+              "phrase_group_E_1"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_B",
+              "phrase_group_E"
+            ],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-003-inference-motif_recall",
+          "source": "inference",
+          "category": "motif_recall",
+          "text": "Repeated material returns here through phrase groups phrase_group_B via motifs motif_beta; keep recalls visibly related instead of inventing a disconnected look.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_B_1",
+              "phrase_group_E_1"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_B"
+            ],
+            "motif_group_ids": [
+              "motif_beta"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "section-004",
+      "label": "release_tail",
+      "start": 44.36,
+      "end": 57.74,
+      "hints": [
+        {
+          "id": "section-004-inference-section_shape",
+          "source": "inference",
+          "category": "section_shape",
+          "text": "release tail reads as a layered section with undulating contour, very dense activity, and clipped note lengths.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_F_1",
+              "phrase_group_B_2"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_F",
+              "phrase_group_B"
+            ],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-004-inference-phrase_boundaries",
+          "source": "inference",
+          "category": "phrase_boundaries",
+          "text": "Treat phrase anchors phrase_group_F_1, phrase_group_B_2 as the main internal cue boundaries inside this section.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_F_1",
+              "phrase_group_B_2"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_F",
+              "phrase_group_B"
+            ],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-004-inference-motif_recall",
+          "source": "inference",
+          "category": "motif_recall",
+          "text": "Repeated material returns here through phrase groups phrase_group_B via motifs motif_beta; keep recalls visibly related instead of inventing a disconnected look.",
+          "anchor_refs": {
+            "phrase_window_ids": [
+              "phrase_group_F_1",
+              "phrase_group_B_2"
+            ],
+            "phrase_group_ids": [
+              "phrase_group_B"
+            ],
+            "motif_group_ids": [
+              "motif_beta"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

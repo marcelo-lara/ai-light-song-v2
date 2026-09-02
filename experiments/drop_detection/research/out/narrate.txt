@@ -1,0 +1,155 @@
+
+
+
+
+
+
+
+== _test_song   impacts [28.4]
+     5.0  role=intro      dyn=full-groove  voc=+0.45 beat=-0.51
+    10.0  role=intro      dyn=full-groove  voc=+0.05 beat=-0.37
+    15.0  role=breakdown  dyn=sparse       voc=+0.29 beat=+0.38
+    20.0  role=breakdown  dyn=sparse       voc=+0.67 beat=+0.75
+    25.0  role=intro      dyn=drop         voc=+0.75 beat=-0.76 <<< IMPACT
+    30.0  role=outro      dyn=sparse       voc=+0.82 beat=-1.21
+    35.0  role=chorus     dyn=sparse       voc=+0.02 beat=-0.72
+    40.0  role=chorus     dyn=build-up     voc=-0.95 beat=+0.01
+    45.0  role=verse      dyn=build-up     voc=-1.65 beat=+0.92
+    50.0  role=verse      dyn=drop         voc=-0.57 beat=+1.89
+
+== Hideaway - Kiesza   impacts [62.4]
+     5.0  role=intro      dyn=build-up     voc=-1.00 beat=-0.11
+    10.0  role=intro      dyn=build-up     voc=-0.62 beat=-0.45
+    15.0  role=intro      dyn=build-up     voc=-0.55 beat=-0.61
+    20.0  role=intro      dyn=build-up     voc=-0.48 beat=-0.65
+    25.0  role=intro      dyn=build-up     voc=-0.53 beat=-0.42
+    30.0  role=intro      dyn=build-up     voc=-0.79 beat=-0.45
+    35.0  role=intro      dyn=build-up     voc=-0.88 beat=-0.39
+    40.0  role=intro      dyn=build-up     voc=-0.67 beat=-0.26
+    45.0  role=intro      dyn=build-up     voc=-0.09 beat=-0.25
+    50.0  role=intro      dyn=drop         voc=+0.50 beat=-0.25
+    55.0  role=breakdown  dyn=full-groove  voc=+0.69 beat=-0.24
+    60.0  role=breakdown  dyn=full-groove  voc=+0.91 beat=-0.38 <<< IMPACT
+    65.0  role=breakdown  dyn=full-groove  voc=+0.92 beat=-0.58
+    70.0  role=intro      dyn=full-groove  voc=+0.97 beat=-0.88
+    75.0  role=outro      dyn=drop         voc=+0.75 beat=-0.80
+    80.0  role=outro      dyn=sparse       voc=+0.57 beat=-0.26
+    85.0  role=outro      dyn=drop         voc=+0.70 beat=-0.23
+    90.0  role=outro      dyn=sparse       voc=+0.73 beat=-0.41
+    95.0  role=breakdown  dyn=full-groove  voc=+0.83 beat=-0.52
+   100.0  role=outro      dyn=full-groove  voc=+0.99 beat=-0.89
+   105.0  role=outro      dyn=full-groove  voc=+0.96 beat=-0.98
+   110.0  role=intro      dyn=full-groove  voc=+0.95 beat=-0.80
+   115.0  role=intro      dyn=full-groove  voc=+0.91 beat=-0.79
+   120.0  role=outro      dyn=full-groove  voc=+0.69 beat=-0.77
+   125.0  role=outro      dyn=sparse       voc=+0.64 beat=-0.28
+   130.0  role=outro      dyn=drop         voc=+0.64 beat=-0.17
+   135.0  role=outro      dyn=drop         voc=+0.59 beat=-0.05
+   140.0  role=intro      dyn=sparse       voc=+0.60 beat=+0.07
+   145.0  role=intro      dyn=drop         voc=+0.45 beat=-0.08
+   150.0  role=intro      dyn=drop         voc=+0.19 beat=-0.06
+   155.0  role=intro      dyn=drop         voc=-0.54 beat=+0.02
+   160.0  role=intro      dyn=drop         voc=-1.30 beat=+0.16
+   165.0  role=intro      dyn=drop         voc=-1.27 beat=+0.25
+   170.0  role=breakdown  dyn=sparse       voc=-1.60 beat=+1.22
+   175.0  role=outro      dyn=build-up     voc=-1.97 beat=+2.10
+   180.0  role=outro      dyn=sparse       voc=-1.91 beat=+2.18
+   185.0  role=outro      dyn=build-up     voc=-2.00 beat=+2.63
+   190.0  role=outro      dyn=build-up     voc=-1.94 beat=+2.73
+   195.0  role=breakdown  dyn=build-up     voc=-1.90 beat=+2.67
+   200.0  role=verse      dyn=build-up     voc=-1.03 beat=+1.33
+   205.0  role=outro      dyn=build-up     voc=+0.13 beat=+0.42
+   210.0  role=breakdown  dyn=full-groove  voc=+0.61 beat=+0.15
+   215.0  role=breakdown  dyn=full-groove  voc=+0.82 beat=-0.32
+   220.0  role=breakdown  dyn=full-groove  voc=+0.84 beat=-0.61
+   225.0  role=intro      dyn=full-groove  voc=+0.91 beat=-0.84
+   230.0  role=intro      dyn=drop         voc=+0.86 beat=-0.64
+   235.0  role=breakdown  dyn=sparse       voc=+0.71 beat=-0.11
+   240.0  role=outro      dyn=drop         voc=+0.68 beat=-0.22
+   245.0  role=breakdown  dyn=drop         voc=+0.62 beat=-0.34
+
+== Armin - Revolution   impacts [57.8, 154.0]
+     5.0  role=intro      dyn=full-groove  voc=+1.08 beat=-1.11
+    10.0  role=breakdown  dyn=full-groove  voc=+1.13 beat=-0.64
+    15.0  role=breakdown  dyn=full-groove  voc=+0.71 beat=-0.50
+    20.0  role=breakdown  dyn=full-groove  voc=+0.70 beat=-0.18
+    25.0  role=breakdown  dyn=sparse       voc=+1.46 beat=+0.70
+    30.0  role=chorus     dyn=sparse       voc=+0.15 beat=+1.26
+    35.0  role=outro      dyn=sparse       voc=-0.65 beat=+0.56
+    40.0  role=verse      dyn=sparse       voc=+0.19 beat=+0.25
+    45.0  role=verse      dyn=sparse       voc=+0.64 beat=+0.61
+    50.0  role=outro      dyn=sparse       voc=+0.86 beat=+0.09
+    55.0  role=intro      dyn=drop         voc=+0.11 beat=-0.44 <<< IMPACT
+    60.0  role=intro      dyn=drop         voc=-0.42 beat=-0.27
+    65.0  role=intro      dyn=drop         voc=-0.23 beat=+0.06
+    70.0  role=intro      dyn=drop         voc=-0.23 beat=-0.12
+    75.0  role=intro      dyn=drop         voc=-0.29 beat=-0.59
+    80.0  role=outro      dyn=build-up     voc=-0.61 beat=-0.73
+    85.0  role=outro      dyn=build-up     voc=-1.25 beat=-0.24
+    90.0  role=breakdown  dyn=build-up     voc=-0.02 beat=-1.17
+    95.0  role=verse      dyn=build-up     voc=+0.82 beat=-1.39
+   100.0  role=verse      dyn=sparse       voc=+0.57 beat=-0.13
+   105.0  role=breakdown  dyn=build-up     voc=+0.36 beat=+0.06
+   110.0  role=breakdown  dyn=full-groove  voc=+0.60 beat=+0.24
+   115.0  role=breakdown  dyn=full-groove  voc=+0.93 beat=+0.54
+   120.0  role=breakdown  dyn=full-groove  voc=+1.08 beat=+1.09
+   125.0  role=outro      dyn=full-groove  voc=-0.41 beat=+1.77
+   130.0  role=outro      dyn=build-up     voc=-1.57 beat=+1.56
+   135.0  role=verse      dyn=build-up     voc=-0.69 beat=+0.83
+   140.0  role=verse      dyn=sparse       voc=-0.04 beat=+0.24
+   145.0  role=intro      dyn=full-groove  voc=+0.43 beat=-0.57
+   150.0  role=intro      dyn=drop         voc=-0.42 beat=-0.96 <<< IMPACT
+   155.0  role=intro      dyn=drop         voc=-0.83 beat=-0.89
+   160.0  role=intro      dyn=drop         voc=-0.47 beat=-0.55
+   165.0  role=intro      dyn=drop         voc=-0.30 beat=-0.58
+   170.0  role=intro      dyn=drop         voc=-0.40 beat=-0.89
+   175.0  role=outro      dyn=sparse       voc=-0.58 beat=+0.42
+   180.0  role=outro      dyn=sparse       voc=-0.98 beat=+1.51
+   185.0  role=chorus     dyn=build-up     voc=-1.46 beat=+0.18
+
+== Titanium - David Guetta ft Sia   impacts [74.7, 151.3, 212.0]
+     5.0  role=outro      dyn=build-up     voc=-0.10 beat=+0.23
+    10.0  role=outro      dyn=build-up     voc=-0.64 beat=+0.53
+    15.0  role=outro      dyn=sparse       voc=-1.55 beat=+1.42
+    20.0  role=outro      dyn=sparse       voc=-2.01 beat=+1.31
+    25.0  role=chorus     dyn=sparse       voc=-1.81 beat=+0.54
+    30.0  role=chorus     dyn=sparse       voc=-1.56 beat=+0.43
+    35.0  role=chorus     dyn=sparse       voc=-1.36 beat=+0.55
+    40.0  role=chorus     dyn=sparse       voc=-0.89 beat=+0.46
+    45.0  role=breakdown  dyn=sparse       voc=+0.10 beat=+1.37
+    50.0  role=breakdown  dyn=sparse       voc=+0.75 beat=+1.74
+    55.0  role=breakdown  dyn=drop         voc=+0.78 beat=+1.22
+    60.0  role=breakdown  dyn=drop         voc=+1.20 beat=+0.12
+    65.0  role=intro      dyn=drop         voc=+1.25 beat=-0.69
+    70.0  role=intro      dyn=drop         voc=+0.75 beat=-0.53 <<< IMPACT
+    75.0  role=intro      dyn=full-groove  voc=+0.06 beat=-0.56
+    80.0  role=intro      dyn=full-groove  voc=-0.53 beat=-0.95
+    85.0  role=intro      dyn=build-up     voc=-0.85 beat=-0.61
+    90.0  role=outro      dyn=build-up     voc=-0.79 beat=+0.63
+    95.0  role=breakdown  dyn=build-up     voc=-0.78 beat=+1.11
+   100.0  role=outro      dyn=build-up     voc=-0.63 beat=+0.35
+   105.0  role=outro      dyn=sparse       voc=-0.77 beat=+0.37
+   110.0  role=outro      dyn=sparse       voc=-1.46 beat=+0.68
+   115.0  role=chorus     dyn=sparse       voc=-1.28 beat=+0.53
+   120.0  role=breakdown  dyn=sparse       voc=-0.28 beat=+1.07
+   125.0  role=verse      dyn=sparse       voc=+0.54 beat=+1.39
+   130.0  role=verse      dyn=drop         voc=+0.53 beat=+1.29
+   135.0  role=verse      dyn=drop         voc=+0.42 beat=+0.57
+   140.0  role=intro      dyn=drop         voc=+0.47 beat=-0.29
+   145.0  role=intro      dyn=drop         voc=+0.61 beat=-0.60
+   150.0  role=intro      dyn=sparse       voc=-0.23 beat=-0.15 <<< IMPACT
+   155.0  role=intro      dyn=full-groove  voc=-0.04 beat=-0.96
+   160.0  role=intro      dyn=full-groove  voc=+0.31 beat=-0.97
+   165.0  role=intro      dyn=full-groove  voc=+0.90 beat=-1.00
+   170.0  role=intro      dyn=full-groove  voc=+1.41 beat=-1.36
+   175.0  role=intro      dyn=drop         voc=+1.38 beat=-1.41
+   180.0  role=intro      dyn=drop         voc=+0.74 beat=-0.76
+   185.0  role=intro      dyn=full-groove  voc=+0.43 beat=-0.40
+   190.0  role=intro      dyn=full-groove  voc=+1.05 beat=-1.00
+   195.0  role=verse      dyn=drop         voc=+1.21 beat=-1.16
+   200.0  role=intro      dyn=drop         voc=+1.23 beat=-0.68
+   205.0  role=breakdown  dyn=drop         voc=+0.81 beat=-0.53
+   210.0  role=intro      dyn=build-up     voc=+0.30 beat=-0.55 <<< IMPACT
+   215.0  role=intro      dyn=full-groove  voc=+0.06 beat=-1.02
+   220.0  role=intro      dyn=full-groove  voc=-0.16 beat=-0.89
+   225.0  role=intro      dyn=full-groove  voc=+0.69 beat=-1.39

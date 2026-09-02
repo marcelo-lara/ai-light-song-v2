@@ -1,0 +1,3322 @@
+[
+  {
+    "time": 0.46,
+    "beat": 1,
+    "bar": 1,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 0.93,
+    "beat": 2,
+    "bar": 1,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 1.39,
+    "beat": 3,
+    "bar": 1,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 1.86,
+    "beat": 4,
+    "bar": 1,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 2.32,
+    "beat": 1,
+    "bar": 2,
+    "bass": "G#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 2.79,
+    "beat": 2,
+    "bar": 2,
+    "bass": "G#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 3.25,
+    "beat": 3,
+    "bar": 2,
+    "bass": null,
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 3.7,
+    "beat": 4,
+    "bar": 2,
+    "bass": "G",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 4.16,
+    "beat": 1,
+    "bar": 3,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 4.62,
+    "beat": 2,
+    "bar": 3,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 5.09,
+    "beat": 3,
+    "bar": 3,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 5.55,
+    "beat": 4,
+    "bar": 3,
+    "bass": "B",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 6.01,
+    "beat": 1,
+    "bar": 4,
+    "bass": "B",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 6.48,
+    "beat": 2,
+    "bar": 4,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 6.94,
+    "beat": 3,
+    "bar": 4,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 7.41,
+    "beat": 4,
+    "bar": 4,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 7.86,
+    "beat": 1,
+    "bar": 5,
+    "bass": "D",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 8.31,
+    "beat": 2,
+    "bar": 5,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 8.78,
+    "beat": 3,
+    "bar": 5,
+    "bass": "B",
+    "chord": "C#m",
+    "type": "beat"
+  },
+  {
+    "time": 9.24,
+    "beat": 4,
+    "bar": 5,
+    "bass": null,
+    "chord": "C#m",
+    "type": "beat"
+  },
+  {
+    "time": 9.71,
+    "beat": 1,
+    "bar": 6,
+    "bass": null,
+    "chord": "C#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 10.17,
+    "beat": 2,
+    "bar": 6,
+    "bass": null,
+    "chord": "C#m",
+    "type": "beat"
+  },
+  {
+    "time": 10.63,
+    "beat": 3,
+    "bar": 6,
+    "bass": null,
+    "chord": "C#m",
+    "type": "beat"
+  },
+  {
+    "time": 11.1,
+    "beat": 4,
+    "bar": 6,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 11.56,
+    "beat": 1,
+    "bar": 7,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 12.03,
+    "beat": 2,
+    "bar": 7,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 12.48,
+    "beat": 3,
+    "bar": 7,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 12.93,
+    "beat": 4,
+    "bar": 7,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 13.4,
+    "beat": 1,
+    "bar": 8,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 13.86,
+    "beat": 2,
+    "bar": 8,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 14.33,
+    "beat": 3,
+    "bar": 8,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 14.78,
+    "beat": 4,
+    "bar": 8,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 15.23,
+    "beat": 1,
+    "bar": 9,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 15.7,
+    "beat": 2,
+    "bar": 9,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 16.16,
+    "beat": 3,
+    "bar": 9,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 16.63,
+    "beat": 4,
+    "bar": 9,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 17.09,
+    "beat": 1,
+    "bar": 10,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 17.55,
+    "beat": 2,
+    "bar": 10,
+    "bass": "D#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 18.02,
+    "beat": 3,
+    "bar": 10,
+    "bass": "D#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 18.47,
+    "beat": 4,
+    "bar": 10,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 18.92,
+    "beat": 1,
+    "bar": 11,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 19.39,
+    "beat": 2,
+    "bar": 11,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 19.85,
+    "beat": 3,
+    "bar": 11,
+    "bass": "B",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 20.32,
+    "beat": 4,
+    "bar": 11,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 20.78,
+    "beat": 1,
+    "bar": 12,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 21.25,
+    "beat": 2,
+    "bar": 12,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 21.71,
+    "beat": 3,
+    "bar": 12,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 22.16,
+    "beat": 4,
+    "bar": 12,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 22.62,
+    "beat": 1,
+    "bar": 13,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 23.08,
+    "beat": 2,
+    "bar": 13,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 23.55,
+    "beat": 3,
+    "bar": 13,
+    "bass": "D#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 24.01,
+    "beat": 4,
+    "bar": 13,
+    "bass": "D#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 24.47,
+    "beat": 1,
+    "bar": 14,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 24.94,
+    "beat": 2,
+    "bar": 14,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 25.4,
+    "beat": 3,
+    "bar": 14,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 25.86,
+    "beat": 4,
+    "bar": 14,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 26.31,
+    "beat": 1,
+    "bar": 15,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 26.77,
+    "beat": 2,
+    "bar": 15,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 27.24,
+    "beat": 3,
+    "bar": 15,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 27.7,
+    "beat": 4,
+    "bar": 15,
+    "bass": "G#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 28.17,
+    "beat": 1,
+    "bar": 16,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 28.63,
+    "beat": 2,
+    "bar": 16,
+    "bass": "D",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 29.09,
+    "beat": 3,
+    "bar": 16,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 29.55,
+    "beat": 4,
+    "bar": 16,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 30.0,
+    "beat": 1,
+    "bar": 17,
+    "bass": "A#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 30.46,
+    "beat": 2,
+    "bar": 17,
+    "bass": "G#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 30.93,
+    "beat": 3,
+    "bar": 17,
+    "bass": "C",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 31.39,
+    "beat": 4,
+    "bar": 17,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 31.86,
+    "beat": 1,
+    "bar": 18,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 32.32,
+    "beat": 2,
+    "bar": 18,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 32.79,
+    "beat": 3,
+    "bar": 18,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 33.25,
+    "beat": 4,
+    "bar": 18,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 33.7,
+    "beat": 1,
+    "bar": 19,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 34.16,
+    "beat": 2,
+    "bar": 19,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 34.62,
+    "beat": 3,
+    "bar": 19,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 35.09,
+    "beat": 4,
+    "bar": 19,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 35.55,
+    "beat": 1,
+    "bar": 20,
+    "bass": "B",
+    "chord": "Em",
+    "type": "downbeat"
+  },
+  {
+    "time": 36.01,
+    "beat": 2,
+    "bar": 20,
+    "bass": "G",
+    "chord": "Em",
+    "type": "beat"
+  },
+  {
+    "time": 36.48,
+    "beat": 3,
+    "bar": 20,
+    "bass": "F#",
+    "chord": "Em",
+    "type": "beat"
+  },
+  {
+    "time": 36.94,
+    "beat": 4,
+    "bar": 20,
+    "bass": "F#",
+    "chord": "Em",
+    "type": "beat"
+  },
+  {
+    "time": 37.4,
+    "beat": 1,
+    "bar": 21,
+    "bass": "G",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 37.86,
+    "beat": 2,
+    "bar": 21,
+    "bass": "G",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 38.31,
+    "beat": 3,
+    "bar": 21,
+    "bass": null,
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 38.78,
+    "beat": 4,
+    "bar": 21,
+    "bass": "C#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 39.24,
+    "beat": 1,
+    "bar": 22,
+    "bass": "G",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 39.71,
+    "beat": 2,
+    "bar": 22,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 40.17,
+    "beat": 3,
+    "bar": 22,
+    "bass": null,
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 40.63,
+    "beat": 4,
+    "bar": 22,
+    "bass": null,
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 41.1,
+    "beat": 1,
+    "bar": 23,
+    "bass": "G",
+    "chord": "Bm",
+    "type": "downbeat"
+  },
+  {
+    "time": 41.55,
+    "beat": 2,
+    "bar": 23,
+    "bass": "G",
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 42.0,
+    "beat": 3,
+    "bar": 23,
+    "bass": "B",
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 42.47,
+    "beat": 4,
+    "bar": 23,
+    "bass": null,
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 42.93,
+    "beat": 1,
+    "bar": 24,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 43.4,
+    "beat": 2,
+    "bar": 24,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 43.86,
+    "beat": 3,
+    "bar": 24,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 44.33,
+    "beat": 4,
+    "bar": 24,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 44.78,
+    "beat": 1,
+    "bar": 25,
+    "bass": "A",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 45.24,
+    "beat": 2,
+    "bar": 25,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 45.7,
+    "beat": 3,
+    "bar": 25,
+    "bass": "A#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 46.16,
+    "beat": 4,
+    "bar": 25,
+    "bass": "A#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 46.63,
+    "beat": 1,
+    "bar": 26,
+    "bass": "E",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 47.09,
+    "beat": 2,
+    "bar": 26,
+    "bass": null,
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 47.55,
+    "beat": 3,
+    "bar": 26,
+    "bass": null,
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 48.02,
+    "beat": 4,
+    "bar": 26,
+    "bass": null,
+    "chord": "D",
+    "type": "beat"
+  },
+  {
+    "time": 48.48,
+    "beat": 1,
+    "bar": 27,
+    "bass": null,
+    "chord": "D",
+    "type": "downbeat"
+  },
+  {
+    "time": 48.95,
+    "beat": 2,
+    "bar": 27,
+    "bass": null,
+    "chord": "D",
+    "type": "beat"
+  },
+  {
+    "time": 49.41,
+    "beat": 3,
+    "bar": 27,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 49.88,
+    "beat": 4,
+    "bar": 27,
+    "bass": "C",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 50.34,
+    "beat": 1,
+    "bar": 28,
+    "bass": "D#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 50.82,
+    "beat": 2,
+    "bar": 28,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 51.29,
+    "beat": 3,
+    "bar": 28,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 51.77,
+    "beat": 4,
+    "bar": 28,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 52.24,
+    "beat": 1,
+    "bar": 29,
+    "bass": "G",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 52.72,
+    "beat": 2,
+    "bar": 29,
+    "bass": "D",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 53.2,
+    "beat": 3,
+    "bar": 29,
+    "bass": null,
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 53.67,
+    "beat": 4,
+    "bar": 29,
+    "bass": "G",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 54.15,
+    "beat": 1,
+    "bar": 30,
+    "bass": "A",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 54.62,
+    "beat": 2,
+    "bar": 30,
+    "bass": "D#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 55.1,
+    "beat": 3,
+    "bar": 30,
+    "bass": "A",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 55.58,
+    "beat": 4,
+    "bar": 30,
+    "bass": "F",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 56.05,
+    "beat": 1,
+    "bar": 31,
+    "bass": "D#",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 56.53,
+    "beat": 2,
+    "bar": 31,
+    "bass": "D#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 57.0,
+    "beat": 3,
+    "bar": 31,
+    "bass": "D#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 57.48,
+    "beat": 4,
+    "bar": 31,
+    "bass": "G#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 57.97,
+    "beat": 1,
+    "bar": 32,
+    "bass": "D",
+    "chord": "A",
+    "type": "downbeat"
+  },
+  {
+    "time": 58.44,
+    "beat": 2,
+    "bar": 32,
+    "bass": null,
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 58.91,
+    "beat": 3,
+    "bar": 32,
+    "bass": "A",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 59.37,
+    "beat": 4,
+    "bar": 32,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 59.84,
+    "beat": 1,
+    "bar": 33,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 60.3,
+    "beat": 2,
+    "bar": 33,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 60.77,
+    "beat": 3,
+    "bar": 33,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 61.23,
+    "beat": 4,
+    "bar": 33,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 61.68,
+    "beat": 1,
+    "bar": 34,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 62.14,
+    "beat": 2,
+    "bar": 34,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 62.6,
+    "beat": 3,
+    "bar": 34,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 63.07,
+    "beat": 4,
+    "bar": 34,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 63.53,
+    "beat": 1,
+    "bar": 35,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 63.99,
+    "beat": 2,
+    "bar": 35,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 64.46,
+    "beat": 3,
+    "bar": 35,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 64.92,
+    "beat": 4,
+    "bar": 35,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 65.38,
+    "beat": 1,
+    "bar": 36,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 65.84,
+    "beat": 2,
+    "bar": 36,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 66.3,
+    "beat": 3,
+    "bar": 36,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 66.77,
+    "beat": 4,
+    "bar": 36,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 67.23,
+    "beat": 1,
+    "bar": 37,
+    "bass": "E",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 67.7,
+    "beat": 2,
+    "bar": 37,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 68.15,
+    "beat": 3,
+    "bar": 37,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 68.61,
+    "beat": 4,
+    "bar": 37,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 69.08,
+    "beat": 1,
+    "bar": 38,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 69.54,
+    "beat": 2,
+    "bar": 38,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 70.01,
+    "beat": 3,
+    "bar": 38,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 70.47,
+    "beat": 4,
+    "bar": 38,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 70.93,
+    "beat": 1,
+    "bar": 39,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 71.38,
+    "beat": 2,
+    "bar": 39,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 71.84,
+    "beat": 3,
+    "bar": 39,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 72.31,
+    "beat": 4,
+    "bar": 39,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 72.77,
+    "beat": 1,
+    "bar": 40,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 73.24,
+    "beat": 2,
+    "bar": 40,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 73.69,
+    "beat": 3,
+    "bar": 40,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 74.15,
+    "beat": 4,
+    "bar": 40,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 74.61,
+    "beat": 1,
+    "bar": 41,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 75.07,
+    "beat": 2,
+    "bar": 41,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 75.53,
+    "beat": 3,
+    "bar": 41,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 76.0,
+    "beat": 4,
+    "bar": 41,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 76.46,
+    "beat": 1,
+    "bar": 42,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 76.93,
+    "beat": 2,
+    "bar": 42,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 77.39,
+    "beat": 3,
+    "bar": 42,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 77.86,
+    "beat": 4,
+    "bar": 42,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 78.31,
+    "beat": 1,
+    "bar": 43,
+    "bass": null,
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 78.76,
+    "beat": 2,
+    "bar": 43,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 79.23,
+    "beat": 3,
+    "bar": 43,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 79.69,
+    "beat": 4,
+    "bar": 43,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 80.16,
+    "beat": 1,
+    "bar": 44,
+    "bass": null,
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 80.62,
+    "beat": 2,
+    "bar": 44,
+    "bass": "D#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 81.08,
+    "beat": 3,
+    "bar": 44,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 81.55,
+    "beat": 4,
+    "bar": 44,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 82.02,
+    "beat": 1,
+    "bar": 45,
+    "bass": "B",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 82.5,
+    "beat": 2,
+    "bar": 45,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 82.96,
+    "beat": 3,
+    "bar": 45,
+    "bass": "G#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 83.43,
+    "beat": 4,
+    "bar": 45,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 83.89,
+    "beat": 1,
+    "bar": 46,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 84.36,
+    "beat": 2,
+    "bar": 46,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 84.82,
+    "beat": 3,
+    "bar": 46,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 85.29,
+    "beat": 4,
+    "bar": 46,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 85.75,
+    "beat": 1,
+    "bar": 47,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 86.23,
+    "beat": 2,
+    "bar": 47,
+    "bass": null,
+    "chord": "E",
+    "type": "beat"
+  },
+  {
+    "time": 86.7,
+    "beat": 3,
+    "bar": 47,
+    "bass": "B",
+    "chord": "E",
+    "type": "beat"
+  },
+  {
+    "time": 87.18,
+    "beat": 4,
+    "bar": 47,
+    "bass": null,
+    "chord": "E",
+    "type": "beat"
+  },
+  {
+    "time": 87.66,
+    "beat": 1,
+    "bar": 48,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 88.13,
+    "beat": 2,
+    "bar": 48,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 88.61,
+    "beat": 3,
+    "bar": 48,
+    "bass": "B",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 89.07,
+    "beat": 4,
+    "bar": 48,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 89.54,
+    "beat": 1,
+    "bar": 49,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 90.0,
+    "beat": 2,
+    "bar": 49,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 90.46,
+    "beat": 3,
+    "bar": 49,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 90.93,
+    "beat": 4,
+    "bar": 49,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 91.39,
+    "beat": 1,
+    "bar": 50,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 91.86,
+    "beat": 2,
+    "bar": 50,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 92.31,
+    "beat": 3,
+    "bar": 50,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 92.78,
+    "beat": 4,
+    "bar": 50,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 93.24,
+    "beat": 1,
+    "bar": 51,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 93.69,
+    "beat": 2,
+    "bar": 51,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 94.16,
+    "beat": 3,
+    "bar": 51,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 94.62,
+    "beat": 4,
+    "bar": 51,
+    "bass": "E",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 95.09,
+    "beat": 1,
+    "bar": 52,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 95.55,
+    "beat": 2,
+    "bar": 52,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 96.01,
+    "beat": 3,
+    "bar": 52,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 96.48,
+    "beat": 4,
+    "bar": 52,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 96.93,
+    "beat": 1,
+    "bar": 53,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 97.4,
+    "beat": 2,
+    "bar": 53,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 97.85,
+    "beat": 3,
+    "bar": 53,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 98.31,
+    "beat": 4,
+    "bar": 53,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 98.78,
+    "beat": 1,
+    "bar": 54,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 99.24,
+    "beat": 2,
+    "bar": 54,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 99.71,
+    "beat": 3,
+    "bar": 54,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 100.17,
+    "beat": 4,
+    "bar": 54,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 100.64,
+    "beat": 1,
+    "bar": 55,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 101.09,
+    "beat": 2,
+    "bar": 55,
+    "bass": "E",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 101.54,
+    "beat": 3,
+    "bar": 55,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 102.01,
+    "beat": 4,
+    "bar": 55,
+    "bass": "B",
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 102.47,
+    "beat": 1,
+    "bar": 56,
+    "bass": "B",
+    "chord": "Bm",
+    "type": "downbeat"
+  },
+  {
+    "time": 102.93,
+    "beat": 2,
+    "bar": 56,
+    "bass": "B",
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 103.4,
+    "beat": 3,
+    "bar": 56,
+    "bass": "B",
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 103.86,
+    "beat": 4,
+    "bar": 56,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 104.33,
+    "beat": 1,
+    "bar": 57,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 104.79,
+    "beat": 2,
+    "bar": 57,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 105.24,
+    "beat": 3,
+    "bar": 57,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 105.71,
+    "beat": 4,
+    "bar": 57,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 106.16,
+    "beat": 1,
+    "bar": 58,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 106.63,
+    "beat": 2,
+    "bar": 58,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 107.09,
+    "beat": 3,
+    "bar": 58,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 107.55,
+    "beat": 4,
+    "bar": 58,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 108.02,
+    "beat": 1,
+    "bar": 59,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 108.47,
+    "beat": 2,
+    "bar": 59,
+    "bass": "E",
+    "chord": "E",
+    "type": "beat"
+  },
+  {
+    "time": 108.92,
+    "beat": 3,
+    "bar": 59,
+    "bass": "E",
+    "chord": "E",
+    "type": "beat"
+  },
+  {
+    "time": 109.39,
+    "beat": 4,
+    "bar": 59,
+    "bass": "E",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 109.85,
+    "beat": 1,
+    "bar": 60,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 110.32,
+    "beat": 2,
+    "bar": 60,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 110.77,
+    "beat": 3,
+    "bar": 60,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 111.22,
+    "beat": 4,
+    "bar": 60,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 111.69,
+    "beat": 1,
+    "bar": 61,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 112.15,
+    "beat": 2,
+    "bar": 61,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 112.62,
+    "beat": 3,
+    "bar": 61,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 113.08,
+    "beat": 4,
+    "bar": 61,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 113.55,
+    "beat": 1,
+    "bar": 62,
+    "bass": "F#",
+    "chord": "D",
+    "type": "downbeat"
+  },
+  {
+    "time": 114.01,
+    "beat": 2,
+    "bar": 62,
+    "bass": null,
+    "chord": "D",
+    "type": "beat"
+  },
+  {
+    "time": 114.47,
+    "beat": 3,
+    "bar": 62,
+    "bass": "F#",
+    "chord": "D",
+    "type": "beat"
+  },
+  {
+    "time": 114.94,
+    "beat": 4,
+    "bar": 62,
+    "bass": "F",
+    "chord": "D",
+    "type": "beat"
+  },
+  {
+    "time": 115.4,
+    "beat": 1,
+    "bar": 63,
+    "bass": "G",
+    "chord": "D",
+    "type": "downbeat"
+  },
+  {
+    "time": 115.86,
+    "beat": 2,
+    "bar": 63,
+    "bass": null,
+    "chord": "D",
+    "type": "beat"
+  },
+  {
+    "time": 116.31,
+    "beat": 3,
+    "bar": 63,
+    "bass": "E",
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 116.77,
+    "beat": 4,
+    "bar": 63,
+    "bass": "A",
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 117.24,
+    "beat": 1,
+    "bar": 64,
+    "bass": null,
+    "chord": "Bm",
+    "type": "downbeat"
+  },
+  {
+    "time": 117.7,
+    "beat": 2,
+    "bar": 64,
+    "bass": "A",
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 118.17,
+    "beat": 3,
+    "bar": 64,
+    "bass": null,
+    "chord": "Bm",
+    "type": "beat"
+  },
+  {
+    "time": 118.63,
+    "beat": 4,
+    "bar": 64,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 119.1,
+    "beat": 1,
+    "bar": 65,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 119.55,
+    "beat": 2,
+    "bar": 65,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 120.0,
+    "beat": 3,
+    "bar": 65,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 120.47,
+    "beat": 4,
+    "bar": 65,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 120.93,
+    "beat": 1,
+    "bar": 66,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 121.39,
+    "beat": 2,
+    "bar": 66,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 121.86,
+    "beat": 3,
+    "bar": 66,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 122.32,
+    "beat": 4,
+    "bar": 66,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 122.79,
+    "beat": 1,
+    "bar": 67,
+    "bass": "D",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 123.25,
+    "beat": 2,
+    "bar": 67,
+    "bass": "E",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 123.7,
+    "beat": 3,
+    "bar": 67,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 124.16,
+    "beat": 4,
+    "bar": 67,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 124.62,
+    "beat": 1,
+    "bar": 68,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 125.09,
+    "beat": 2,
+    "bar": 68,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 125.55,
+    "beat": 3,
+    "bar": 68,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 126.01,
+    "beat": 4,
+    "bar": 68,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 126.47,
+    "beat": 1,
+    "bar": 69,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 126.93,
+    "beat": 2,
+    "bar": 69,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 127.4,
+    "beat": 3,
+    "bar": 69,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 127.85,
+    "beat": 4,
+    "bar": 69,
+    "bass": "C#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 128.31,
+    "beat": 1,
+    "bar": 70,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 128.78,
+    "beat": 2,
+    "bar": 70,
+    "bass": "D",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 129.24,
+    "beat": 3,
+    "bar": 70,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 129.71,
+    "beat": 4,
+    "bar": 70,
+    "bass": "A",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 130.17,
+    "beat": 1,
+    "bar": 71,
+    "bass": "A#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 130.64,
+    "beat": 2,
+    "bar": 71,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 131.1,
+    "beat": 3,
+    "bar": 71,
+    "bass": "A#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 131.56,
+    "beat": 4,
+    "bar": 71,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 132.03,
+    "beat": 1,
+    "bar": 72,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 132.49,
+    "beat": 2,
+    "bar": 72,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 132.95,
+    "beat": 3,
+    "bar": 72,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 133.4,
+    "beat": 4,
+    "bar": 72,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 133.86,
+    "beat": 1,
+    "bar": 73,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 134.33,
+    "beat": 2,
+    "bar": 73,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 134.78,
+    "beat": 3,
+    "bar": 73,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 135.23,
+    "beat": 4,
+    "bar": 73,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 135.7,
+    "beat": 1,
+    "bar": 74,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 136.16,
+    "beat": 2,
+    "bar": 74,
+    "bass": "A#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 136.63,
+    "beat": 3,
+    "bar": 74,
+    "bass": "A#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 137.09,
+    "beat": 4,
+    "bar": 74,
+    "bass": "A#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 137.56,
+    "beat": 1,
+    "bar": 75,
+    "bass": "A#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 138.02,
+    "beat": 2,
+    "bar": 75,
+    "bass": "A#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 138.48,
+    "beat": 3,
+    "bar": 75,
+    "bass": "C#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 138.94,
+    "beat": 4,
+    "bar": 75,
+    "bass": "A#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 139.39,
+    "beat": 1,
+    "bar": 76,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 139.85,
+    "beat": 2,
+    "bar": 76,
+    "bass": null,
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 140.32,
+    "beat": 3,
+    "bar": 76,
+    "bass": null,
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 140.78,
+    "beat": 4,
+    "bar": 76,
+    "bass": "G",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 141.25,
+    "beat": 1,
+    "bar": 77,
+    "bass": "G",
+    "chord": "A",
+    "type": "downbeat"
+  },
+  {
+    "time": 141.71,
+    "beat": 2,
+    "bar": 77,
+    "bass": "A#",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 142.18,
+    "beat": 3,
+    "bar": 77,
+    "bass": "A#",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 142.63,
+    "beat": 4,
+    "bar": 77,
+    "bass": "A",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 143.15,
+    "beat": 1,
+    "bar": 78,
+    "bass": "F#",
+    "chord": "A",
+    "type": "downbeat"
+  },
+  {
+    "time": 143.67,
+    "beat": 2,
+    "bar": 78,
+    "bass": "F#",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 144.18,
+    "beat": 3,
+    "bar": 78,
+    "bass": "G",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 144.7,
+    "beat": 4,
+    "bar": 78,
+    "bass": "A",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 145.21,
+    "beat": 1,
+    "bar": 79,
+    "bass": "A",
+    "chord": "A",
+    "type": "downbeat"
+  },
+  {
+    "time": 145.66,
+    "beat": 2,
+    "bar": 79,
+    "bass": "A",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 146.11,
+    "beat": 3,
+    "bar": 79,
+    "bass": null,
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 146.56,
+    "beat": 4,
+    "bar": 79,
+    "bass": "A",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 147.02,
+    "beat": 1,
+    "bar": 80,
+    "bass": null,
+    "chord": "A",
+    "type": "downbeat"
+  },
+  {
+    "time": 147.53,
+    "beat": 2,
+    "bar": 80,
+    "bass": "B",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 148.05,
+    "beat": 3,
+    "bar": 80,
+    "bass": null,
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 148.57,
+    "beat": 4,
+    "bar": 80,
+    "bass": null,
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 149.06,
+    "beat": 1,
+    "bar": 81,
+    "bass": "A",
+    "chord": "A",
+    "type": "downbeat"
+  },
+  {
+    "time": 149.55,
+    "beat": 2,
+    "bar": 81,
+    "bass": "C",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 150.04,
+    "beat": 3,
+    "bar": 81,
+    "bass": "C",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 150.51,
+    "beat": 4,
+    "bar": 81,
+    "bass": null,
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 151.0,
+    "beat": 1,
+    "bar": 82,
+    "bass": "A",
+    "chord": "A",
+    "type": "downbeat"
+  },
+  {
+    "time": 151.49,
+    "beat": 2,
+    "bar": 82,
+    "bass": "G#",
+    "chord": "A",
+    "type": "beat"
+  },
+  {
+    "time": 151.96,
+    "beat": 3,
+    "bar": 82,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 152.44,
+    "beat": 4,
+    "bar": 82,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 152.92,
+    "beat": 1,
+    "bar": 83,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 153.39,
+    "beat": 2,
+    "bar": 83,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 153.88,
+    "beat": 3,
+    "bar": 83,
+    "bass": "G",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 154.37,
+    "beat": 4,
+    "bar": 83,
+    "bass": null,
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 154.84,
+    "beat": 1,
+    "bar": 84,
+    "bass": null,
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 155.32,
+    "beat": 2,
+    "bar": 84,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 155.79,
+    "beat": 3,
+    "bar": 84,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 156.27,
+    "beat": 4,
+    "bar": 84,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 156.75,
+    "beat": 1,
+    "bar": 85,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 157.22,
+    "beat": 2,
+    "bar": 85,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 157.69,
+    "beat": 3,
+    "bar": 85,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 158.15,
+    "beat": 4,
+    "bar": 85,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 158.62,
+    "beat": 1,
+    "bar": 86,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 159.07,
+    "beat": 2,
+    "bar": 86,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 159.52,
+    "beat": 3,
+    "bar": 86,
+    "bass": "F",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 159.99,
+    "beat": 4,
+    "bar": 86,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 160.45,
+    "beat": 1,
+    "bar": 87,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 160.91,
+    "beat": 2,
+    "bar": 87,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 161.38,
+    "beat": 3,
+    "bar": 87,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 161.84,
+    "beat": 4,
+    "bar": 87,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 162.31,
+    "beat": 1,
+    "bar": 88,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 162.77,
+    "beat": 2,
+    "bar": 88,
+    "bass": "F",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 163.24,
+    "beat": 3,
+    "bar": 88,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 163.7,
+    "beat": 4,
+    "bar": 88,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 164.17,
+    "beat": 1,
+    "bar": 89,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 164.63,
+    "beat": 2,
+    "bar": 89,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 165.08,
+    "beat": 3,
+    "bar": 89,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 165.54,
+    "beat": 4,
+    "bar": 89,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 166.0,
+    "beat": 1,
+    "bar": 90,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 166.46,
+    "beat": 2,
+    "bar": 90,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 166.93,
+    "beat": 3,
+    "bar": 90,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 167.39,
+    "beat": 4,
+    "bar": 90,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 167.86,
+    "beat": 1,
+    "bar": 91,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 168.31,
+    "beat": 2,
+    "bar": 91,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 168.76,
+    "beat": 3,
+    "bar": 91,
+    "bass": "F#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 169.23,
+    "beat": 4,
+    "bar": 91,
+    "bass": "D#",
+    "chord": "F#m",
+    "type": "beat"
+  },
+  {
+    "time": 169.69,
+    "beat": 1,
+    "bar": 92,
+    "bass": "F",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 170.16,
+    "beat": 2,
+    "bar": 92,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 170.62,
+    "beat": 3,
+    "bar": 92,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 171.08,
+    "beat": 4,
+    "bar": 92,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 171.55,
+    "beat": 1,
+    "bar": 93,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 172.01,
+    "beat": 2,
+    "bar": 93,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 172.48,
+    "beat": 3,
+    "bar": 93,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 172.94,
+    "beat": 4,
+    "bar": 93,
+    "bass": "D#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 173.41,
+    "beat": 1,
+    "bar": 94,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 173.87,
+    "beat": 2,
+    "bar": 94,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 174.35,
+    "beat": 3,
+    "bar": 94,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 174.82,
+    "beat": 4,
+    "bar": 94,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 175.3,
+    "beat": 1,
+    "bar": 95,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 175.78,
+    "beat": 2,
+    "bar": 95,
+    "bass": "D",
+    "chord": "D",
+    "type": "beat"
+  },
+  {
+    "time": 176.25,
+    "beat": 3,
+    "bar": 95,
+    "bass": "D",
+    "chord": "D",
+    "type": "beat"
+  },
+  {
+    "time": 176.73,
+    "beat": 4,
+    "bar": 95,
+    "bass": null,
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 177.2,
+    "beat": 1,
+    "bar": 96,
+    "bass": null,
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 177.68,
+    "beat": 2,
+    "bar": 96,
+    "bass": null,
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 178.16,
+    "beat": 3,
+    "bar": 96,
+    "bass": "C",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 178.63,
+    "beat": 4,
+    "bar": 96,
+    "bass": null,
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 179.1,
+    "beat": 1,
+    "bar": 97,
+    "bass": null,
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 179.56,
+    "beat": 2,
+    "bar": 97,
+    "bass": "G",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 180.02,
+    "beat": 3,
+    "bar": 97,
+    "bass": "A",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 180.48,
+    "beat": 4,
+    "bar": 97,
+    "bass": null,
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 180.94,
+    "beat": 1,
+    "bar": 98,
+    "bass": "D",
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 181.39,
+    "beat": 2,
+    "bar": 98,
+    "bass": "B",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 181.86,
+    "beat": 3,
+    "bar": 98,
+    "bass": "B",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 182.32,
+    "beat": 4,
+    "bar": 98,
+    "bass": "B",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 182.79,
+    "beat": 1,
+    "bar": 99,
+    "bass": null,
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 183.25,
+    "beat": 2,
+    "bar": 99,
+    "bass": "F#",
+    "chord": "Em",
+    "type": "beat"
+  },
+  {
+    "time": 183.72,
+    "beat": 3,
+    "bar": 99,
+    "bass": "G",
+    "chord": "Em",
+    "type": "beat"
+  },
+  {
+    "time": 184.18,
+    "beat": 4,
+    "bar": 99,
+    "bass": "F#",
+    "chord": "Em",
+    "type": "beat"
+  },
+  {
+    "time": 184.65,
+    "beat": 1,
+    "bar": 100,
+    "bass": "F#",
+    "chord": "Em",
+    "type": "downbeat"
+  },
+  {
+    "time": 185.11,
+    "beat": 2,
+    "bar": 100,
+    "bass": "A#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 185.57,
+    "beat": 3,
+    "bar": 100,
+    "bass": "G",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 186.04,
+    "beat": 4,
+    "bar": 100,
+    "bass": "F#",
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 186.51,
+    "beat": 1,
+    "bar": 101,
+    "bass": null,
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 186.98,
+    "beat": 2,
+    "bar": 101,
+    "bass": "F#",
+    "chord": "A#m",
+    "type": "beat"
+  },
+  {
+    "time": 187.45,
+    "beat": 3,
+    "bar": 101,
+    "bass": "G",
+    "chord": "A#m",
+    "type": "beat"
+  },
+  {
+    "time": 187.93,
+    "beat": 4,
+    "bar": 101,
+    "bass": null,
+    "chord": "A#m",
+    "type": "beat"
+  },
+  {
+    "time": 188.41,
+    "beat": 1,
+    "bar": 102,
+    "bass": null,
+    "chord": "A#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 188.88,
+    "beat": 2,
+    "bar": 102,
+    "bass": "B",
+    "chord": "A#m",
+    "type": "beat"
+  },
+  {
+    "time": 189.36,
+    "beat": 3,
+    "bar": 102,
+    "bass": "F",
+    "chord": "A#m",
+    "type": "beat"
+  },
+  {
+    "time": 189.85,
+    "beat": 4,
+    "bar": 102,
+    "bass": null,
+    "chord": "A#m",
+    "type": "beat"
+  },
+  {
+    "time": 190.36,
+    "beat": 1,
+    "bar": 103,
+    "bass": "A",
+    "chord": "A#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 190.87,
+    "beat": 2,
+    "bar": 103,
+    "bass": "F#",
+    "chord": "A#m",
+    "type": "beat"
+  },
+  {
+    "time": 191.38,
+    "beat": 3,
+    "bar": 103,
+    "bass": "F#",
+    "chord": "A#m",
+    "type": "beat"
+  },
+  {
+    "time": 191.88,
+    "beat": 4,
+    "bar": 103,
+    "bass": "D#",
+    "chord": "A#m",
+    "type": "beat"
+  },
+  {
+    "time": 192.38,
+    "beat": 1,
+    "bar": 104,
+    "bass": null,
+    "chord": "F#",
+    "type": "downbeat"
+  },
+  {
+    "time": 192.88,
+    "beat": 2,
+    "bar": 104,
+    "bass": null,
+    "chord": "F#",
+    "type": "beat"
+  },
+  {
+    "time": 193.39,
+    "beat": 3,
+    "bar": 104,
+    "bass": null,
+    "chord": "F#",
+    "type": "beat"
+  }
+]

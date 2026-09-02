@@ -1,0 +1,174 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "phrase_windows": [
+    {
+      "section_id": "section-001",
+      "section_name": "ambient_opening",
+      "start_s": 0.06,
+      "end_s": 7.44,
+      "start_bar": 1,
+      "end_bar": 4,
+      "start_beat": 1,
+      "end_beat": 4,
+      "bar_count": 4,
+      "note_count": 253,
+      "density": 63.25,
+      "melodic_contour": "rising",
+      "register_centroid": 65.433862,
+      "register_label": "mid",
+      "pitch_range": {
+        "min": 27,
+        "max": 90
+      },
+      "top_pitch_classes": [
+        3,
+        8,
+        6
+      ],
+      "phrase_group_id": "phrase_group_A",
+      "id": "phrase_group_A_1",
+      "label": "Phrase Group A - Occurrence 1"
+    },
+    {
+      "section_id": "section-001",
+      "section_name": "ambient_opening",
+      "start_s": 7.44,
+      "end_s": 14.82,
+      "start_bar": 5,
+      "end_bar": 8,
+      "start_beat": 1,
+      "end_beat": 4,
+      "bar_count": 4,
+      "note_count": 191,
+      "density": 47.75,
+      "melodic_contour": "rising",
+      "register_centroid": 64.186667,
+      "register_label": "mid",
+      "pitch_range": {
+        "min": 27,
+        "max": 82
+      },
+      "top_pitch_classes": [
+        3,
+        6,
+        10
+      ],
+      "phrase_group_id": "phrase_group_A",
+      "id": "phrase_group_A_2",
+      "label": "Phrase Group A - Occurrence 2"
+    },
+    {
+      "section_id": "section-002",
+      "section_name": "vocal_spotlight",
+      "start_s": 14.82,
+      "end_s": 22.2,
+      "start_bar": 9,
+      "end_bar": 12,
+      "start_beat": 1,
+      "end_beat": 4,
+      "bar_count": 4,
+      "note_count": 232,
+      "density": 58.0,
+      "melodic_contour": "rising",
+      "register_centroid": 59.589888,
+      "register_label": "low-mid",
+      "pitch_range": {
+        "min": 27,
+        "max": 90
+      },
+      "top_pitch_classes": [
+        3,
+        6,
+        8
+      ],
+      "phrase_group_id": "phrase_group_C",
+      "id": "phrase_group_C_1",
+      "label": "Phrase Group C - Occurrence 1"
+    },
+    {
+      "section_id": "section-002",
+      "section_name": "vocal_spotlight",
+      "start_s": 22.2,
+      "end_s": 29.58,
+      "start_bar": 13,
+      "end_bar": 16,
+      "start_beat": 1,
+      "end_beat": 4,
+      "bar_count": 4,
+      "note_count": 162,
+      "density": 40.5,
+      "melodic_contour": "rising",
+      "register_centroid": 63.189189,
+      "register_label": "mid",
+      "pitch_range": {
+        "min": 27,
+        "max": 92
+      },
+      "top_pitch_classes": [
+        3,
+        10,
+        8
+      ],
+      "phrase_group_id": "phrase_group_A",
+      "id": "phrase_group_A_3",
+      "label": "Phrase Group A - Occurrence 3"
+    },
+    {
+      "section_id": "section-002",
+      "section_name": "vocal_spotlight",
+      "start_s": 29.58,
+      "end_s": 31.44,
+      "start_bar": 17,
+      "end_bar": 17,
+      "start_beat": 1,
+      "end_beat": 4,
+      "bar_count": 1,
+      "note_count": 41,
+      "density": 41.0,
+      "melodic_contour": "rising",
+      "register_centroid": 60.9,
+      "register_label": "mid",
+      "pitch_range": {
+        "min": 27,
+        "max": 75
+      },
+      "top_pitch_classes": [
+        3,
+        10,
+        0
+      ],
+      "phrase_group_id": "phrase_group_D",
+      "id": "phrase_group_D_1",
+      "label": "Phrase Group D - Occurrence 1"
+    },
+    {
+      "section_id": "section-003",
+      "section_name": "momentum_lift",
+      "start_s": 29.58,
+      "end_s": 36.98,
+      "start_bar": 17,
+      "end_bar": 20,
+      "start_beat": 1,
+      "end_beat": 4,
+      "bar_count": 4,
+      "note_count": 182,
+      "density": 45.5,
+      "melodic_contour": "undulating",
+      "register_centroid": 62.12037,
+      "register_label": "mid",
+      "pitch_range": {
+        "min": 27,
+        "max": 82
+      },
+      "top_pitch_classes": [
+        3,
+        10,
+        1
+      ],
+      "phrase_group_id": "phrase_group_B",
+      "id": "phrase_group_B_1",
+      "label": "Phrase Group B - Occurrence 1"
+    }
+  ]
+}

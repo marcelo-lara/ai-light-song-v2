@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "bpm": 130.43,
+  "duration": 58.12,
+  "song_path": "/data/songs/_test_song.mp3",
+  "artifacts": {
+    "beats": "/data/analysis/_test_song/artifacts/essentia/beats.json",
+    "fft_bands": "/data/analysis/_test_song/artifacts/essentia/fft_bands.json",
+    "rms_loudness": "/data/analysis/_test_song/artifacts/essentia/rms_loudness.json",
+    "loudness_envelope": "/data/analysis/_test_song/artifacts/essentia/loudness_envelope.json",
+    "genre": "/data/analysis/_test_song/artifacts/genre.json",
+    "hpcp": "/data/analysis/_test_song/artifacts/essentia/hpcp.json",
+    "harmonic_layer": "/data/analysis/_test_song/artifacts/layer_a_harmonic.json",
+    "symbolic_layer": "/data/analysis/_test_song/artifacts/layer_b_symbolic.json",
+    "drum_events": "/data/analysis/_test_song/artifacts/symbolic_transcription/drum_events.json",
+    "drum_midi": "/data/analysis/_test_song/artifacts/symbolic_transcription/omnizart/drums.mid",
+    "symbolic_hints": "/data/analysis/_test_song/artifacts/symbolic_transcription/hints.json",
+    "symbolic_validation": "/data/analysis/_test_song/artifacts/symbolic_transcription/validation.json",
+    "energy_features": "/data/analysis/_test_song/artifacts/energy_summary/features.json",
+    "energy_layer": "/data/analysis/_test_song/artifacts/layer_c_energy.json",
+    "energy_identifiers": "/data/analysis/_test_song/artifacts/energy_summary/hints.json",
+    "event_features": "/data/analysis/_test_song/artifacts/event_inference/features.json",
+    "event_timeline_index": "/data/analysis/_test_song/artifacts/event_inference/timeline_index.json",
+    "event_rule_candidates": "/data/analysis/_test_song/artifacts/event_inference/rule_candidates.json",
+    "event_machine": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json",
+    "event_review": "/data/analysis/_test_song/artifacts/validation/song_events.review.json",
+    "event_overrides": "/data/analysis/_test_song/artifacts/validation/song_events.overrides.json",
+    "event_timeline_markdown": "/data/analysis/_test_song/artifacts/validation/song_event_timeline.md",
+    "event_benchmark": "/data/analysis/_test_song/artifacts/validation/event_benchmark.json",
+    "human_hints_alignment": "/data/analysis/_test_song/artifacts/validation/human_hints_alignment.json",
+    "human_hints_alignment_markdown": "/data/analysis/_test_song/artifacts/validation/human_hints_alignment.md",
+    "sections": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
+    "patterns_layer": "/data/analysis/_test_song/artifacts/layer_d_patterns.json",
+    "pattern_mining": "/data/analysis/_test_song/artifacts/pattern_mining/chord_patterns.json",
+    "music_feature_layers": "/data/analysis/_test_song/artifacts/music_feature_layers.json"
+  },
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "timing_grid": "/data/analysis/_test_song/artifacts/essentia/beats.json",
+    "fft_bands_file": "/data/analysis/_test_song/artifacts/essentia/fft_bands.json",
+    "rms_loudness_file": "/data/analysis/_test_song/artifacts/essentia/rms_loudness.json",
+    "loudness_envelope_file": "/data/analysis/_test_song/artifacts/essentia/loudness_envelope.json"
+  },
+  "outputs": {
+    "beats": "/data/analysis/_test_song/beats.json",
+    "hints": "/data/analysis/_test_song/hints.json",
+    "sections": "/data/analysis/_test_song/sections.json",
+    "song_event_timeline": "/data/analysis/_test_song/song_event_timeline.json"
+  },
+  "debug": {
+    "fft_band_count": 7,
+    "loudness_source_count": 5,
+    "drum_events_engine": "audiohacking.omnizart.drum"
+  }
+}

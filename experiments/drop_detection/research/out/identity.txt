@@ -1,0 +1,83 @@
+
+
+
+
+
+
+
+== _test_song
+      0.06 -   14.82  cluster 3   
+     14.82 -   23.12  cluster 4   
+     23.12 -   29.58  cluster 1   IMPACT 28.40
+     29.58 -   42.50  cluster 0   
+     42.50 -   57.74  cluster 2   
+   cluster entered at each impact: [None]
+
+== Hideaway - Kiesza
+      0.64 -   32.44  cluster 3   
+     32.44 -   36.83  cluster 3   
+     36.83 -   43.65  cluster 0   
+     43.65 -   48.76  cluster 4   
+     48.76 -   59.14  cluster 0   
+     59.14 -   70.50  cluster 4   IMPACT 62.41
+     70.50 -   77.32  cluster 1   
+     77.32 -   82.69  cluster 4   
+     82.69 -  110.99  cluster 1   
+    110.99 -  124.16  cluster 1   
+    124.16 -  128.55  cluster 4   
+    128.55 -  140.25  cluster 1   
+    140.25 -  144.64  cluster 4   
+    144.64 -  155.85  cluster 1   
+    155.85 -  159.76  cluster 4   
+    159.76 -  170.50  cluster 3   
+    170.50 -  195.37  cluster 2   
+    195.37 -  199.76  cluster 0   
+    199.76 -  205.24  cluster 4   
+    205.24 -  215.38  cluster 0   
+    215.38 -  222.70  cluster 4   
+    222.70 -  233.92  cluster 1   
+    233.92 -  238.79  cluster 4   
+    238.79 -  251.47  cluster 1   
+   cluster entered at each impact: [None]
+
+== Armin - Revolution
+      0.46 -   14.78  cluster 2   
+     14.78 -   30.00  cluster 1   
+     30.00 -   44.78  cluster 0   
+     44.78 -   56.53  cluster 4   
+     56.53 -   66.30  cluster 2   IMPACT 57.83
+     66.30 -   82.02  cluster 3   
+     82.02 -   96.48  cluster 2   
+     96.48 -  126.01  cluster 1   
+    126.01 -  139.85  cluster 0   
+    139.85 -  153.39  cluster 4   
+    153.39 -  162.31  cluster 2   IMPACT 153.96
+    162.31 -  178.16  cluster 3   
+    178.16 -  189.36  cluster 0   
+    189.36 -  193.85  cluster 2   
+   cluster entered at each impact: [None, 2]
+
+== Titanium - David Guetta ft Sia
+      0.48 -   14.77  cluster 4   
+     14.77 -   25.72  cluster 3   
+     25.72 -   30.48  cluster 4   
+     30.48 -   40.95  cluster 3   
+     40.95 -   46.25  cluster 4   
+     46.25 -   60.48  cluster 0   
+     60.48 -   75.23  cluster 1   IMPACT 74.66
+     75.23 -   91.44  cluster 2   
+     91.44 -   95.71  cluster 0   
+     95.71 -  101.90  cluster 3   
+    101.90 -  106.20  cluster 4   
+    106.20 -  117.62  cluster 3   
+    117.62 -  122.44  cluster 4   
+    122.44 -  136.67  cluster 0   
+    136.67 -  151.42  cluster 1   IMPACT 151.26
+    151.42 -  157.14  cluster 2   IMPACT 151.26
+    157.14 -  163.79  cluster 2   
+    163.79 -  182.86  cluster 0   
+    182.86 -  189.53  cluster 1   
+    189.53 -  212.39  cluster 1   IMPACT 212.01
+    212.39 -  228.10  cluster 2   IMPACT 212.01
+    228.10 -  232.40  cluster 4   
+   cluster entered at each impact: [2, 2, 2]

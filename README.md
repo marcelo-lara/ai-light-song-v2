@@ -1,363 +1,155 @@
 # ai-light-song-v2
 
-ai-light-song-v2 implements a Docker-first pipeline for turning source songs into structured musical analysis artifacts and fixture-aware lighting guidance.
+A Docker-first pipeline that turns a source song into **concrete, reliable,
+precisely-timed musical facts** that a reasoning model can author a
+production-quality light show from. This repo is the analysis module of a
+three-part stage-lighting system: it works out a song's structure and intention
+precisely enough that a downstream MCP server can author the show from the
+analysis alone.
 
-This repository contains the runnable analyzer, the artifact contracts it emits, the validation rules used to score those artifacts, the internal read-only artifact debugger, and the Docker environment used to run the pipeline end to end.
+It is the *foundation* of a light show, not the light show. **Fixture-aware
+orchestration, cue authoring and DMX are out of scope** — see
+[docs/constitution.md](docs/constitution.md) §1.
 
-## Scope
+**If you are an LLM, or new here, start with [CLAUDE.md](CLAUDE.md)** — what the
+system does, which stages are trusted, what the measurements say is broken, and
+which docs are current versus historical.
 
-The pipeline transforms an input song into progressively richer artifacts:
+This repository holds the runnable analyzer (`src/`), the artifact contracts it
+emits, the validation rules that score those artifacts, the read-only artifact
+debugger (`ui/`), and the Docker environment.
 
-1. Audio preprocessing creates stems, beats, tempo, and bar alignment.
-2. Audio preprocessing also creates a seven-band FFT inspection artifact for debugger spectral review.
-3. Harmonic analysis extracts key, chords, and harmonic motion.
-4. Symbolic analysis extracts note events and higher-level musical descriptors.
-5. Energy analysis extracts loudness, brightness, transients, and sections.
-6. Pattern mining extracts repeated multi-bar chord progressions into Layer D summaries.
-7. UI data projection builds compact beat and section outputs for downstream consumers.
-8. Music feature layer assembly merges the upstream layers into a unified handoff artifact for lighting logic.
-9. Lighting design translates those artifacts into lighting events and a human-readable lighting score.
-10. An internal debugger served from `/ui/` visualizes generated inferences directly from `data/analysis/<Song - Artist>/artifacts/` without writing back into generated-data folders.
+## Pipeline
 
-## Repository Layout
+| Epic | Stage | Key output |
+| --- | --- | --- |
+| 1 | Preprocessing: stems, beats, tempo, bar grid, 7-band FFT | `essentia/beats.json`, `essentia/fft_bands.json` |
+| 2 | Harmonic: key, chords, HPCP, chord-pattern mining | `layer_a_harmonic.json`, `layer_d_patterns.json` |
+| 3 | Structure: section segmentation, boundary audit, alignment | `section_segmentation/sections.json` |
+| 4 | Symbolic: note events, energy features, event-feature layer | `layer_b_symbolic.json`, `layer_c_energy.json` |
+| 5 | Events: vocabulary, rule baseline, ML classifier, review | `song_event_timeline.json` |
+| 6 | Guidance: genre, section hints, LLM-friendly song map | `hints.json` |
+| 7 | Feature-layer assembly (`music_feature_layers.json`); ~~fixture score~~ removed | Lighting/fixture output is out of scope — constitution §1.1 |
+| 8 | Internal read-only artifact debugger (`ui/`) | — |
 
-The repository structure is part of the implementation contract.
+The stage list above is the shipped shape, not a quality claim — see
+[CLAUDE.md](CLAUDE.md) for which stages are trusted and which are measured as
+not working.
 
-- `data/songs/`: source `.mp3` files to analyze.
-- `data/analysis/<Song - Artist>/artifacts/stems/`: temporary stem and `.wav` work area generated during preprocessing.
-- `data/analysis/<Song - Artist>/artifacts/`: intermediate analysis artifacts, layer outputs, merged timeline artifacts, and validation metadata.
-- `data/analysis/<Song - Artist>/reference/`: validation-only truth data such as chords, sections, lyrics, or beats from external tools. These files are for scoring and comparison only.
-- `data/analysis/<Song - Artist>/`: stable UI-facing deliverables, alongside (but outside) the nested `artifacts/` and `reference/` folders. Each per-song directory must contain exactly `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`, and the `artifacts/` subfolder.
-- `docs/`: canonical implementation and contract documentation.
-- `ui/`: internal artifact-debugger application and UI-specific container files.
+## Repository layout
 
-## Hard Rules
+The structure is part of the contract.
 
-- **Constitution:** All development must adhere to the laws defined in `docs/constitution.md`.
-- **Living Documentation:** No task is "done" until the corresponding Story files and documentation are updated to reflect the final implementation.
-- Reference data must never be copied into generated outputs as a fallback.
-- Reference files are optional. The pipeline must infer outputs from the documented analysis stages first, then compare against reference data only when those files are available.
-- The term `reference` is reserved for `data/analysis/<Song - Artist>/reference/` only.
-- Generated artifacts inside `data/analysis/<Song - Artist>/artifacts/` must be grouped under the producing model or tool when that provenance matters, such as `essentia/`, `moises/`, `section_segmentation/`, `energy_summary/`, or `pattern_mining/`.
-- All generated artifacts must come from inference, heuristics, or rule logic.
-- All development and validation must run inside the project Docker environment.
-- Time values are stored in seconds.
-- Bars are 1-indexed.
-- Beat-aligned artifacts must use the canonical beat grid from EPIC 1.2.
-- `data/analysis/<Song - Artist>/` is a stable UI contract, not an open-ended export area.
-- Do not add or remove files under `data/analysis/<Song - Artist>/` unless a UI contract change makes that strictly required.
-- The internal debugger is read-only against generated data and must not write files into `data/analysis/`.
+- `data/songs/` — source `.mp3` inputs.
+- `data/analysis/<Song - Artist>/` — stable UI-facing deliverables. Exactly:
+  `info.json`, `beats.json`, `hints.json`, `sections.json`,
+  `song_event_timeline.json`,
+  plus `artifacts/`. Do not add or remove files here without a contract change.
+- `data/analysis/<Song - Artist>/artifacts/` — intermediate artifacts, grouped
+  by producer (`essentia/`, `section_segmentation/`, `energy_summary/`,
+  `event_inference/`, `pattern_mining/`, `validation/`, …), including
+  `artifacts/stems/`.
+- `data/analysis/<Song - Artist>/reference/` — validation-only truth data
+  (external tools, human hints). Scoring and comparison only.
+- `docs/` — current contracts and reference, and nothing else. Superseded
+  documents are deleted, not archived; git history is the archive.
+- `src/`, `ui/` — analyzer and debugger.
 
-## Primary Artifacts
+## Hard rules
 
-The intended contract defines these primary artifacts:
+Full law is in [docs/constitution.md](docs/constitution.md). Load-bearing:
 
-- `info.json`: canonical song metadata, including `song_name`, `bpm`, `duration`, and generated file references, written to `data/analysis/<Song - Artist>/info.json`.
-- `beats.json`: compact UI-facing beat timeline written to `data/analysis/<Song - Artist>/beats.json`.
-- `essentia/fft_bands.json`: seven fixed 50 ms low-to-high spectral band levels for debugger inspection.
-- `hints.json`: editable UI-facing section hints written to `data/analysis/<Song - Artist>/hints.json`.
-- `sections.json`: compact UI-facing section timeline written to `data/analysis/<Song - Artist>/sections.json`.
-- `layer_a_harmonic.json`: chord events, key, cadence, harmonic summaries.
-- `layer_b_symbolic.json`: note events, symbolic summaries, contour and density views.
-- `layer_c_energy.json`: loudness, onset, centroid, energy sections, accent candidates.
-- `energy_summary/hints.json`: named energy-event identifiers such as high-confidence `drop` anchors with explicit evidence.
-- `event_inference/features.json`: aligned event-inference feature timeline with normalized per-beat cross-layer features and rolling windows.
-- `event_inference/rule_candidates.json`: deterministic baseline event candidates with explicit evidence for transitions and held states.
-- `event_inference/events.machine.json`: refined machine event classifications with subtype fallback candidates preserved.
-- `song_event_timeline.json`: compact event export for downstream prompting and planning.
-- `validation/song_events.review.json`: review-friendly machine output with confidence bands and ambiguity flags.
-- `validation/song_events.overrides.json`: deterministic override file for confirm, delete, retime, relabel, and annotation operations.
-- `validation/song_events.review.md`: human-review markdown companion for the reviewed event payload.
-- `validation/song_event_timeline.md`: human-review markdown companion for the compact event timeline.
-- `layer_d_patterns.json`: repeated multi-bar chord progressions and their occurrences.
-- `music_feature_layers.json`: unified cross-layer timeline and downstream lighting handoff artifact.
-- `lighting_score.md`: final human-readable lighting design document.
+- **Scope.** Musical facts with times and confidences. Not fixture
+  orchestration, cue authoring or DMX.
+- **Living docs.** A task is not done until the docs match the implementation,
+  and a document that has stopped being true is deleted in the same change.
+- **Experiments are first-class**, live in `experiments/`, and must be measured
+  against the incumbent. Negative results get written down, not deleted.
+- **Determinism.** Same input + engine version ⇒ byte-identical artifacts. No
+  silent fallbacks; fail explicitly or mark `unknown`.
+- **Reference isolation.** Never copy `reference/` data into generated artifacts
+  except through an explicit, confidence-gated, provenance-recorded promotion.
+  `reference/` exists only directly under `data/analysis/<Song - Artist>/`.
+- **Provenance.** Every generated file carries a `generated_from` block;
+  schemas are versioned.
+- **Time in seconds, bars 1-indexed**, all beat-aligned outputs on the EPIC 1.2
+  grid.
+- **Docker only.** All analysis and validation runs inside the `app`/`ui`
+  services. The debugger never writes to `data/analysis/`.
 
-## Documentation Map
+## Quick start
 
-- `docs/constitution.md`: The architectural "North Star," coding standards, and project values.
-- `docs/Implementation_Guide.md`: canonical hub for the full pipeline and repository contracts.
-- `docs/1.3.fft_band_extraction_story.md`: seven-band FFT artifact contract.
-- `docs/phase_1_validation_cli.md`: Phase 1 analyzer CLI specification, command reference, and validation report format.
-- `docs/4.1.energy_feature_schema.md`: low-level energy schema.
-- `docs/4.2.section_segmentation_story.md`: section inference contract.
-- `docs/event_user_stories block 5.x.md`: phased Epic 5 plan for song-event inference.
-- `docs/5.1.event_vocabulary_and_schema_story.md`: canonical event vocabulary and schema contract.
-- `docs/5.5.advanced_event_classification_story.md`: refined event classification contract.
-- `docs/5.6.event_review_and_override_story.md`: review and override workflow contract.
-- `docs/5.7.event_benchmarking_and_tuning_story.md`: benchmarking and threshold-profile tuning contract.
-- `docs/5.4.song_identifier_inference_story.md`: controlled named-event inference contract.
-- `docs/5.8.event_timeline_export_story.md`: compact event timeline export contract.
-- `docs/6.1.find_chord_patterns_story.md`: Layer D chord-pattern detection contract.
-- `docs/6.3.music_feature_layers_story.md`: unified layer assembly contract.
-- `docs/6.4.energy_to_lighting_mapping.md`: feature-to-lighting mapping contract.
-- `docs/6.5.fixture_aware_mapping_story.md`: fixture-aware orchestration and lighting score generation.
-- `docs/ui_development.md`: internal debugger runtime, folder ownership, and read-only data-access contract.
-
-Additional story-level specifications under `docs/` define the exact implementation contract for each Epic and story.
-
-## Quick Start
-
-1. **Prerequisites:** Docker with NVIDIA GPU support
-2. **Build:** `docker compose build`
-3. **Run the full pipeline from the host shell for one song:**
-   ```bash
-   docker compose run --rm app \
-     ./analyze \
-     --song "/data/songs/YOUR_SONG.mp3"
-   ```
-
-  This command runs the full production pipeline, writes generated artifacts under `data/analysis/<Song - Artist>/artifacts/`, preserves the stable UI output contract under `data/analysis/<Song - Artist>/`, and always writes validation and human-review documents under `data/analysis/<Song - Artist>/artifacts/validation/`.
-
-  Analyze every song under `/data/songs` with the same full-pipeline flow and write per-song reports automatically:
-
-  ```bash
-  docker compose run --rm app \
-    ./analyze \
-    --all-songs
-  ```
-
-For detailed CLI options, see [Running the Phase 1 Analyzer](#running-the-phase-1-analyzer) below.
-
-To run the internal debugger UI separately:
-
-```bash
-docker compose up ui
-```
-
-Then open `http://localhost:8080` and load a per-song directory name from `data/analysis/`.
-
-## Development Environment
-
-The repository is Docker-first.
-
-- Use the root `Dockerfile` and `docker-compose.yml` as the canonical local development environment.
-- Use the separate `ui` service for the internal artifact debugger rather than serving debugger assets from the analyzer container.
-- The Docker image is NVIDIA CUDA-enabled.
-- The current local development setup uses an `NVIDIA GeForce GTX 1650`, and the container workflow is configured to take advantage of that GPU.
-- Demucs checkpoints are cached explicitly under `models/demucs/` so analyzer runs do not rely on mid-run `torch.hub` downloads.
-- Validate all tooling and sample-song runs inside the container.
-- **Always Test in Container:** All analysis logic and UI behaviors must be verified inside their respective Docker services (`app` or `ui`).
-- Do not rely on host-installed Python packages or audio tooling.
-- Treat the Docker image as the authoritative developer runtime.
-
-The detailed environment contract lives in `docs/docker_development.md`, the repo root `Dockerfile`, and `docker-compose.yml`.
-
-### Docker Setup
-
-- `Dockerfile`: multi-stage CUDA-based build with `python-base`, `builder`, and `runtime` stages.
-- `docker-compose.yml`: defines the `app` analyzer service and the separate `ui` debugger service.
-- The `app` service builds the CUDA-enabled analyzer runtime, mounts the repository at `/app`, mounts `./data` at `/data`, and requests `gpus: all`.
-- The `ui` service builds from `/ui`, serves the debugger on port `8080`, and mounts `./data` read-only.
-
-### Recommended Commands
-
-Build the development image:
+Prerequisite: Docker with NVIDIA GPU support.
 
 ```bash
 docker compose build
+
+# one song, full pipeline + validation report
+docker compose run --rm app ./analyze --song "/data/songs/YOUR_SONG.mp3"
+
+# every song under /data/songs
+docker compose run --rm app ./analyze --all-songs
+
+# one stage only (prerequisite artifacts must already exist)
+docker compose run --rm app ./analyze --song "/data/songs/YOUR_SONG.mp3" --stage <stage-name>
+
+# remove generated data only (songs + reference kept)
+docker compose run --rm app ./analyze --clean-generated-data
 ```
 
-Start an interactive shell in the development container:
+Each run writes artifacts under `data/analysis/<Song - Artist>/artifacts/`, the
+stable deliverables under `data/analysis/<Song - Artist>/`, and validation
+reports under `artifacts/validation/phase_1_report.{json,md}`. Stage progress
+lines are prefixed with the story id, e.g. `[1.1] YOUR_SONG | ensure-stems`.
 
-```bash
-docker compose run --rm app
-```
+Full CLI reference (flags, compare targets, exit codes, validation workflow):
+[docs/reference/phase_1_validation_cli.md](docs/reference/phase_1_validation_cli.md).
 
-Start the long-running development service:
-
-```bash
-docker compose up
-```
-
-Inside the container:
-
-- application code is available under `/app`
-- song inputs and generated artifacts are available under `/data`
-- all implementation validation should run from this environment
-
-Inside the debugger container:
-
-- browser assets are served from `/usr/share/nginx/html`
-- generated data is mounted at `/data` in read-only mode
-- the debugger may inspect generated artifacts but must not write back into `data/analysis/`
-
-### Running the Phase 1 Analyzer
-
-Run the Phase 1 analyzer from the host CLI with `docker compose run`. Do not invoke the analyzer directly on the host. Use the repo-root `./analyze` helper inside the container, or call `python -m analyzer` directly if you prefer. Both forms run the full end-to-end pipeline, write production artifacts and outputs, and then emit validation reports.
-
-```bash
-docker compose run --rm app \
-  ./analyze \
-  --song "/data/songs/_test_song.mp3" \
-  --compare beats,chords,sections,energy,patterns,unified,events
-```
-
-Stage progress lines are prefixed with the pipeline story identifier when one is defined, for example `[1.1] _test_song | ensure-stems`.
-
-When `--all-songs` is used, the same progress lines also include the batch position prefix, for example `[2/20][1.1] _test_song | ensure-stems`.
-
-Run the same full pipeline for every song under `/data/songs`:
-
-```bash
-docker compose run --rm app \
-  ./analyze \
-  --all-songs
-```
-
-Run a single stage only (using existing prerequisite artifacts when needed):
-
-```bash
-docker compose run --rm app \
-  ./analyze \
-  --song "/data/songs/_test_song.mp3" \
-  --stage extract-fft-bands
-```
-
-### Recommended Validation Workflow During Implementation
-
-Use stage-only runs while implementing changes, then run one full-pipeline validation at the end:
-
-1. During active implementation, run only the stage you changed:
-
-```bash
-docker compose run --rm app \
-  ./analyze \
-  --song "/data/songs/_test_song.mp3" \
-  --stage <updated-stage-name>
-```
-
-2. If you changed multiple adjacent stages, run each updated stage explicitly in dependency order.
-3. After implementation is complete, run the full pipeline once as the final validation gate:
-
-```bash
-docker compose run --rm app \
-  ./analyze \
-  --song "/data/songs/_test_song.mp3" \
-  --compare beats,chords,sections,energy,patterns,unified,events
-```
-
-4. Treat the full run validation report under `data/analysis/<Song - Artist>/artifacts/validation/` as the final check before considering the implementation complete.
-
-Clean generated song data only (artifacts and output), without touching songs or reference data:
-
-```bash
-docker compose run --rm app \
-  ./analyze \
-  --clean-generated-data
-```
-
-Analye all songs in background
-```bash
-mkdir -p logs && nohup docker compose run --rm -T app ./analyze --all-songs --device cuda > "logs/all-songs-$(date +%F_%H-%M-%S).log" 2>&1 < /dev/null & echo $!
-```
-
-
-**Available compare targets:** `beats`, `chords`, `sections`, `energy`, `patterns`, `unified`, `events`
-
-Generated outputs from each run include the canonical artifact set under `data/analysis/<Song - Artist>/artifacts/`, Epic 5 event artifacts such as `energy_summary/hints.json`, `event_inference/events.machine.json`, `validation/event_benchmark.json`, stable UI deliverables under `data/analysis/<Song - Artist>/` (`info.json`, `beats.json`, `hints.json`, `sections.json`, `song_event_timeline.json`, `lighting_score.md`), and human-review support files under `data/analysis/<Song - Artist>/artifacts/validation/`.
-
-The current Epic 5 implementation also writes `data/analysis/<Song - Artist>/artifacts/energy_summary/hints.json`, `event_inference/features.json`, `timeline_index.json`, `rule_candidates.json`, `events.machine.json`, and validation-scoped review documents such as `song_events.review.json`, `song_events.review.md`, `song_events.overrides.json`, and `song_event_timeline.md`.
-
-Validation reports are always written automatically to `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.json` and `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.md`.
-
-**CLI flags:**
-- `--song`: Required path to source song for single-song runs
-- `--all-songs`: Analyze every `.mp3` under `/data/songs` or `--songs-root`
-- `--songs-root`: Optional songs directory for batch mode. Defaults to the sibling `songs/` directory next to `--analysis-root`
-- `--analysis-root`: Optional root directory for generated per-song analysis directories. Defaults to `/data/analysis`. Validation reference files are read from `<analysis-root>/<Song - Artist>/reference/`.
-- `--compare`: Comma-separated list of validation targets
-- `--fail-on-mismatch`: Exit non-zero when validation thresholds are missed
-- `--beat-tolerance-seconds`: Beat timestamp tolerance (default: 0.10)
-- `--tolerance-seconds`: Section boundary tolerance (default: 2.0)
-- `--chord-min-overlap`: Minimum overlap ratio for chord comparison (default: 0.5)
-- `--device`: Execution device (`cuda` or `cpu`)
-- `--verbose`: Enable detailed logging
-- `--stage`: Run only one pipeline stage by name. This mode expects prerequisite artifacts to already exist for stages that depend on earlier outputs.
-- `--clean-generated-data`: Remove generated per-song data under `data/analysis/<Song - Artist>/` only. Source songs and reference data (`data/analysis/<Song - Artist>/reference/`) are never deleted.
-
-**Exit codes:**
-- `0`: Analysis completed and validation passed
-- `1`: Analysis completed but validation failed
-- `2`: Invalid CLI usage
-- `3`: Runtime analysis failure
-
-## Implementation Priorities
-
-Recommended implementation order:
-
-1. EPIC 1: preprocessing and timing grid.
-2. EPIC 4: energy features and section structure.
-3. EPIC 2 and EPIC 3: harmonic and symbolic refinement.
-4. EPIC 5.1 through EPIC 5.4: event contracts, aligned features, baseline rules, and controlled identifier inference.
-5. EPIC 5.5 through EPIC 5.8: refined event classification, review, benchmarking, and compact timeline export.
-6. EPIC 6.1 and EPIC 6.2: pattern mining and compact UI outputs.
-7. EPIC 6.3 through EPIC 6.5: unified layer assembly, lighting mapping, and score generation.
-
-This ordering reduces downstream churn because lighting behavior depends on stable upstream artifact contracts.
-
-## LLM-Friendly Summary
-
-Use this section as the compact machine-readable contract for code-generation or agent workflows.
-
-### System Purpose
-
-Convert songs into structured musical analysis artifacts and then into fixture-aware lighting guidance.
-
-### Input and Output Contract
-
-- Input songs live in `data/songs/`.
-- Temporary stems and `.wav` files live in `data/analysis/<Song - Artist>/artifacts/stems/`.
-- Intermediate artifacts live in `data/analysis/<Song - Artist>/artifacts/`.
-- Validation-only truth data lives in `data/analysis/<Song - Artist>/reference/`.
-- Final UI outputs live in `data/analysis/<Song - Artist>/` and must remain limited to `beats.json`, `hints.json`, `info.json`, `sections.json`, `song_event_timeline.json`, and `lighting_score.md`.
-
-Examples: `data/analysis/<Song - Artist>/info.json`, `data/analysis/<Song - Artist>/song_event_timeline.json`, `data/analysis/<Song - Artist>/lighting_score.md`.
-
-Inside `data/analysis/<Song - Artist>/artifacts/`, generated files should use producer-scoped folders when relevant. Examples: `data/analysis/<Song - Artist>/artifacts/essentia/beats.json`, `data/analysis/<Song - Artist>/artifacts/section_segmentation/sections.json`, `data/analysis/<Song - Artist>/artifacts/energy_summary/features.json`, `data/analysis/<Song - Artist>/artifacts/pattern_mining/chord_patterns.json`.
-
-### Canonical Upstream Layers
-
-- `layer_a_harmonic.json`
-- `layer_b_symbolic.json`
-- `layer_c_energy.json`
-- `layer_d_patterns.json`
-
-### Canonical Unified Handoff Artifact
-
-- `music_feature_layers.json`
-
-This file is the explicit EPIC 6.3 output and the required input to downstream lighting-mapping stories.
-
-### Required Downstream Outputs
-
-- `lighting_events.json` or equivalent DMX-ready event artifact
-- `lighting_score.md`
-
-### Non-Negotiable Rules
-
-- Never copy from `data/analysis/<Song - Artist>/reference/` into generated artifacts.
-- Never create `reference/` subfolders anywhere except directly under `data/analysis/<Song - Artist>/`.
-- Do not keep future generated chord, section, or feature artifacts at flat top-level artifact paths when a producer namespace is known.
-- Always align time-based outputs to the canonical beat and bar grid when the story requires it.
-- Keep all artifact paths and `generated_from` metadata explicit.
-- Keep schemas versioned.
-- Validate all implementation inside Docker with NVIDIA GPU support available.
-
-### Developer Intent
-
-This repository is not a loose note dump. It is the implemented analyzer and the contract source for its emitted artifacts.
-
-## Appendix: Visual Debugger
-
-The internal visual debugger runs as the separate Compose `ui` service.
-
-Start it with Docker:
+### Debugger UI
 
 ```bash
 docker compose up ui
 ```
 
-Then open `http://localhost:8080` in a browser.
+Open `http://localhost:9090` (Compose maps host `9090` → container `8080`) and
+load a per-song directory name from `data/analysis/`. The debugger is read-only
+against `data/analysis/**` except the two explicit human-save endpoints
+(`PUT /api/human-hints/<song>`, `PUT /api/song-facts/<song>`). Prod build:
+`docker build --target final -t ui-v2-prod ./ui` (nginx, `listen 8080`).
+Helper-UI dev notes: [ui/README.HELPER_UI.md](ui/README.HELPER_UI.md).
 
-For internal LLM-oriented UI development instructions, see `ui/README.HELPER_UI.md`.
+## Documentation map
+
+- [CLAUDE.md](CLAUDE.md) — entry point: current state, trusted vs. suspect stages, doc conventions.
+- [docs/README.md](docs/README.md) — index of current documents.
+- [docs/constitution.md](docs/constitution.md) — project law.
+- [docs/data_folder_reference.md](docs/data_folder_reference.md) — every `data/` file and its purpose.
+- [docs/source_files_reference.md](docs/source_files_reference.md) — map of `src/`.
+- [docs/reference/analysis-input-guide.md](docs/reference/analysis-input-guide.md) — what the downstream MCP server actually consumes; the contract analysis quality is judged against.
+- [experiments/drop_detection/README.md](experiments/drop_detection/README.md) — measured evaluation of the structural stages and of pretrained alternatives.
+
+## Development environment
+
+Docker-first; the root `Dockerfile` and `docker-compose.yml` are the canonical
+runtime. CUDA-enabled image (local dev on a GTX 1650). Demucs checkpoints are
+cached under `models/demucs/` to avoid mid-run downloads. Do not rely on
+host-installed Python or audio tooling. Details:
+[docs/docker_development.md](docs/docker_development.md).
+
+```bash
+docker compose run --rm app        # interactive shell in the analyzer container
+docker compose up                  # long-running dev service
+```
+
+Analyze all songs in the background:
+
+```bash
+mkdir -p logs && nohup docker compose run --rm -T app \
+  ./analyze --all-songs --device cuda \
+  > "logs/all-songs-$(date +%F_%H-%M-%S).log" 2>&1 < /dev/null & echo $!
+```
+
+
+## Notes
+
+- try <https://www.relume.ai/> for UI generation.

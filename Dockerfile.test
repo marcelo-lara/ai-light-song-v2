@@ -1,0 +1,8 @@
+# Test image: layers pytest onto the built dev image so the suite runs in the
+# same container the analyzer runs in (constitution: always test in container).
+FROM ai-light-song-v2:dev
+
+RUN python3 -m pip install --no-cache-dir pytest==8.3.4 pytest-timeout==2.3.1
+
+WORKDIR /app
+CMD ["python3", "-m", "pytest", "tests/", "-q"]

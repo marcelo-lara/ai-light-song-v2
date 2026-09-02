@@ -109,6 +109,18 @@ class EventFeatureLayerTests(unittest.TestCase):
             self.assertIn("phrasal", payload["features"][0]["rolling"])
             self.assertIn("structural", payload["features"][0]["rolling"])
 
+            # v1.1 item 1.1 — stem-relative activation features
+            self.assertEqual(payload["schema_version"], "1.1")
+            self.assertIn("stem-relative", payload["generated_from"]["engine"])
+            for key in ("bass_stem_rel", "drums_stem_rel", "spectral_flux_rel", "onset_density_rel"):
+                self.assertIn(key, derived)
+                for row in payload["features"]:
+                    self.assertGreaterEqual(row["derived"][key], 0.0)
+                    self.assertLessEqual(row["derived"][key], 1.0)
+                self.assertIn(key, payload["feature_catalog"]["derived"])
+            ranges = payload["generated_from"]["normalization_rules"]["stem_relative_ranges"]
+            self.assertEqual(ranges["bass_stem_rel"]["source"], "bass_stem_activity")
+
 
 if __name__ == "__main__":
     unittest.main()

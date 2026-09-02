@@ -1,0 +1,50 @@
+[
+  {
+    "time": 0.06,
+    "beat": 1,
+    "bar": 1,
+    "bass": "D#",
+    "chord": "D#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 0.52,
+    "beat": 2,
+    "bar": 1,
+    "bass": "D#",
+    "chord": "D#m",
+    "type": "beat"
+  },
+  {
+    "time": 0.98,
+    "beat": 3,
+    "bar": 1,
+    "bass": "D#",
+    "chord": "D#m",
+    "type": "beat"
+  },
+  {
+    "time": 1.44,
+    "beat": 4,
+    "bar": 1,
+    "bass": "D#",
+    "chord": "D#m",
+    "type": "beat"
+  },
+  {
+    "time": 1.9,
+    "beat": 1,
+    "bar": 2,
+    "bass": "D#",
+    "chord": "D#m",
+    "type": "downbeat"
+  },
+  {
+    "time": 2.36,
+    "beat": 2,
+    "bar": 2,
+    "bass": "D#",
+    "chord": "D#m",
+    "type": "beat"
+  }
+]

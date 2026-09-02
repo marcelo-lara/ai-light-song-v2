@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from dataclasses import replace
 
 import numpy as np
 
@@ -691,16 +692,8 @@ def _apply_micro_breaks(
             if sec.start < mb_start and mb_end < sec.end:
                 label = str(mb["break_type"])
                 confidence = round(max(0.4, sec.confidence * 0.8), 6)
-                # left fragment
-                new_insertions.append(SectionWindow(
-                    section_id=sec.section_id,
-                    start=sec.start,
-                    end=round(mb_start, 6),
-                    label=sec.label,
-                    section_character=sec.section_character,
-                    confidence=sec.confidence,
-                    onset_anchored=sec.onset_anchored,
-                ))
+                # left fragment — preserves the parent section's v1.1 labels
+                new_insertions.append(replace(sec, end=round(mb_start, 6)))
                 # break pocket
                 new_insertions.append(SectionWindow(
                     section_id=f"{sec.section_id}_break",
@@ -710,17 +703,11 @@ def _apply_micro_breaks(
                     section_character=label,
                     confidence=confidence,
                     onset_anchored=False,
+                    form_role="breakdown",
+                    energy_character=label,
                 ))
                 # right fragment
-                new_insertions.append(SectionWindow(
-                    section_id=f"{sec.section_id}_post",
-                    start=round(mb_end, 6),
-                    end=sec.end,
-                    label=sec.label,
-                    section_character=sec.section_character,
-                    confidence=sec.confidence,
-                    onset_anchored=sec.onset_anchored,
-                ))
+                new_insertions.append(replace(sec, section_id=f"{sec.section_id}_post", start=round(mb_end, 6)))
                 split_sections[sec_index] = None  # type: ignore[assignment]
                 break
         else:
@@ -749,19 +736,9 @@ def _apply_micro_breaks(
         else:
             result.append(sec)
 
-    # Re-number section IDs
-    final: list[SectionWindow] = []
-    for idx, sec in enumerate(result):
-        final.append(SectionWindow(
-            section_id=f"section-{idx + 1:03d}",
-            start=sec.start,
-            end=sec.end,
-            label=sec.label,
-            section_character=sec.section_character,
-            confidence=sec.confidence,
-            onset_anchored=sec.onset_anchored,
-        ))
-
+    # Re-number section IDs, preserving every field (incl. v1.1 form_role,
+    # energy_character, repetition_group, variant_of, similarity, confidence_terms).
+    final = [replace(sec, section_id=f"section-{idx + 1:03d}") for idx, sec in enumerate(result)]
     return final, metadata_breaks
 
 

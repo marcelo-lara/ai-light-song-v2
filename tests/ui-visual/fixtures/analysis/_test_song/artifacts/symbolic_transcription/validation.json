@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
+    "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
+    "transcription_sources": [
+      "/data/analysis/_test_song/artifacts/symbolic_transcription/basic_pitch/harmonic.json",
+      "/data/analysis/_test_song/artifacts/symbolic_transcription/basic_pitch/bass.json",
+      "/data/analysis/_test_song/artifacts/symbolic_transcription/basic_pitch/vocals.json",
+      "/data/analysis/_test_song/artifacts/symbolic_transcription/basic_pitch/drums.json",
+      "/data/analysis/_test_song/artifacts/symbolic_transcription/basic_pitch/full_mix.json"
+    ]
+  },
+  "sources": [
+    {
+      "source_stem": "harmonic",
+      "note_count": 1064,
+      "alignment_resolved_ratio": 0.99906,
+      "confidence_mean": 0.411304,
+      "confidence_median": 0.399749,
+      "pitch_range": {
+        "min": 39,
+        "max": 90
+      },
+      "median_duration": 0.16254,
+      "low_register_ratio": 0.24718,
+      "mid_high_ratio": 0.703947,
+      "decision": "promoted",
+      "promote_to_final": true,
+      "reason": "harmonic source provides core note texture",
+      "promotion_policy": "core"
+    },
+    {
+      "source_stem": "bass",
+      "note_count": 421,
+      "alignment_resolved_ratio": 0.897862,
+      "confidence_mean": 0.414709,
+      "confidence_median": 0.338658,
+      "pitch_range": {
+        "min": 27,
+        "max": 63
+      },
+      "median_duration": 0.13932,
+      "low_register_ratio": 0.969121,
+      "mid_high_ratio": 0.011876,
+      "decision": "promoted",
+      "promote_to_final": true,
+      "reason": "bass source passed low-register validation",
+      "promotion_policy": "core"
+    },
+    {
+      "source_stem": "vocals",
+      "note_count": 239,
+      "alignment_resolved_ratio": 0.991632,
+      "confidence_mean": 0.36094,
+      "confidence_median": 0.318591,
+      "pitch_range": {
+        "min": 43,
+        "max": 87
+      },
+      "median_duration": 0.128994,
+      "low_register_ratio": 0.251046,
+      "mid_high_ratio": 0.728033,
+      "decision": "promoted",
+      "promote_to_final": true,
+      "reason": "vocal melody notes passed confidence and register checks",
+      "promotion_policy": "candidate"
+    },
+    {
+      "source_stem": "drums",
+      "note_count": 47,
+      "alignment_resolved_ratio": 0.851064,
+      "confidence_mean": 0.426761,
+      "confidence_median": 0.422641,
+      "pitch_range": {
+        "min": 27,
+        "max": 54
+      },
+      "median_duration": 0.13932,
+      "low_register_ratio": 1.0,
+      "mid_high_ratio": 0.0,
+      "decision": "auxiliary_only",
+      "promote_to_final": false,
+      "reason": "percussive source analyzed for review but not promoted to the final melodic note stream by default",
+      "promotion_policy": "auxiliary"
+    },
+    {
+      "source_stem": "full_mix",
+      "note_count": 665,
+      "alignment_resolved_ratio": 0.750376,
+      "confidence_mean": 0.33955,
+      "confidence_median": 0.316884,
+      "pitch_range": {
+        "min": 33,
+        "max": 92
+      },
+      "median_duration": 0.16254,
+      "low_register_ratio": 0.380451,
+      "mid_high_ratio": 0.593985,
+      "decision": "promoted",
+      "promote_to_final": true,
+      "reason": "full-mix source complements missing notes from stems",
+      "promotion_policy": "candidate"
+    }
+  ],
+  "promoted_sources": [
+    "harmonic",
+    "bass",
+    "vocals",
+    "full_mix"
+  ],
+  "final_note_count": 1734
+}

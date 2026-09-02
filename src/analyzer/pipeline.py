@@ -19,6 +19,7 @@ from analyzer.stages.event_machine import generate_machine_events
 from analyzer.stages.event_rules import generate_rule_candidates
 from analyzer.stages.event_review import generate_event_review
 from analyzer.stages.event_timeline import export_event_timeline
+from analyzer.stages.review_queue import build_review_queue
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.genre import classify_genre
@@ -27,9 +28,6 @@ from analyzer.stages.fft_bands import extract_fft_bands
 from analyzer.stages.harmonic import build_reference_harmonic_layer, extract_hpcp_and_chords
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
-from analyzer.stages.beatdrop_visualizer import generate_beatdrop_visual_plan
-from analyzer.stages.light_design import generate_lighting_score
-from analyzer.stages.lighting import generate_lighting_events
 from analyzer.stages.loudness import extract_mix_stem_loudness
 from analyzer.stages.patterns import extract_chord_patterns
 from analyzer.stages.sections import segment_sections
@@ -77,13 +75,11 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "generate-event-review": "5.5",
     "benchmark-event-outputs": "5.5",
     "export-event-timeline": "5.6",
+    "build-review-queue": "5.1",
     "classify-genre": "6.1",
     "generate-section-hints": "6.2",
     "assemble-music-feature-layers": "7.1",
     "build-ui-data": "7.2",
-    "generate-lighting-events": "7.3",
-    "generate-lighting-score": "7.4",
-    "export-beatdrop-visual-plan": "7.5",
     "build-human-hints-alignment": "8.8",
     "build-validation-report": "validation",
     "write-validation-report": "validation",
@@ -301,6 +297,12 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         genre_result = _optional_artifact_payload(paths, "genre.json")
         _run_stage(paths.song_name, "phase-1", stage_name, benchmark_event_outputs, paths, review_outputs["merged_payload"], genre_result)
         return 0
+    if stage_name == "build-review-queue":
+        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        genre_result = _optional_artifact_payload(paths, "genre.json")
+        timeline = read_json(paths.timeline_output_path) if paths.timeline_output_path.exists() else {}
+        _run_stage(paths.song_name, "phase-1", stage_name, build_review_queue, paths, sections, genre_result, timeline)
+        return 0
     if stage_name == "extract-chord-patterns":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
         harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
@@ -326,21 +328,6 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
             patterns,
             sections,
         )
-        return 0
-    if stage_name == "generate-lighting-events":
-        _run_stage(paths.song_name, "phase-1", stage_name, generate_lighting_events, paths)
-        return 0
-    if stage_name == "generate-lighting-score":
-        _run_stage(paths.song_name, "phase-1", stage_name, generate_lighting_score, paths)
-        return 0
-    if stage_name == "export-beatdrop-visual-plan":
-        _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        _required_artifact_payload(paths, stage_name, "essentia", "fft_bands.json")
-        _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
-        _required_artifact_payload(paths, stage_name, "layer_c_energy.json")
-        _required_artifact_payload(paths, stage_name, "lighting_events.json")
-        _required_artifact_payload(paths, stage_name, "music_feature_layers.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, generate_beatdrop_visual_plan, paths)
         return 0
     if stage_name == "build-human-hints-alignment":
         _run_stage(paths.song_name, "phase-1", stage_name, build_human_hints_alignment, paths)
@@ -567,6 +554,16 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             genre_result,
         )
         event_timeline = _run_stage(paths.song_name, "phase-1", "export-event-timeline", export_event_timeline, paths, review_outputs["merged_payload"])
+        _run_stage(
+            paths.song_name,
+            "phase-1",
+            "build-review-queue",
+            build_review_queue,
+            paths,
+            sections,
+            genre_result,
+            read_json(paths.timeline_output_path) if paths.timeline_output_path.exists() else {},
+        )
         hints = _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, symbolic, sections)
         ui_outputs = _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
         unified = _run_stage(
@@ -581,24 +578,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             energy,
             patterns,
             sections,
-        )
-        lighting = _run_stage(paths.song_name, "phase-1", "generate-lighting-events", generate_lighting_events, paths)
-        try:
-            lighting_score = _run_stage(paths.song_name, "phase-1", "generate-lighting-score", generate_lighting_score, paths)
-        except Exception as exc:
-            print(f"{format_batch_progress_prefix()}{paths.song_name} | generate-lighting-score failed, continuing: {exc}", flush=True)
-            lighting_score = {"lighting_score_file": None}
-        _run_stage(
-            paths.song_name,
-            "phase-1",
-            "export-beatdrop-visual-plan",
-            generate_beatdrop_visual_plan,
-            paths,
-            fft_payload=fft_bands,
-            sections_payload=sections,
-            energy_payload=energy,
-            lighting_payload=lighting,
-            feature_layers_payload=unified,
         )
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
@@ -630,15 +609,14 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 "event_overrides": str(paths.overrides_path),
                 "event_timeline_markdown": str(paths.timeline_md_path),
                 "event_benchmark": str(paths.artifact("validation", "event_benchmark.json")),
+                "review_queue": str(paths.artifact("validation", "review_queue.json")),
+                "song_facts": str(paths.reference("human", "song_facts.json")),
                 "human_hints_alignment": human_hint_alignment["json_path"] if human_hint_alignment else None,
                 "human_hints_alignment_markdown": human_hint_alignment["markdown_path"] if human_hint_alignment else None,
                 "sections": str(paths.artifact("section_segmentation", "sections.json")),
                 "patterns_layer": str(paths.artifact("layer_d_patterns.json")),
                 "pattern_mining": str(paths.artifact("pattern_mining", "chord_patterns.json")),
                 "music_feature_layers": str(paths.artifact("music_feature_layers.json")),
-                "lighting_events": str(paths.artifact("lighting_events.json")),
-                "beatdrop_visual_plan": str(paths.beatdrop_visual_plan_output_path),
-                "beatdrop_visual_plan_markdown": str(paths.beatdrop_visual_plan_md_output_path),
             },
             "generated_from": {
                 "source_song_path": str(paths.song_path),
@@ -652,9 +630,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 "hints": hints["hints"],
                 "sections": ui_outputs["sections"],
                 "song_event_timeline": str(paths.timeline_output_path),
-                "lighting_score": str(paths.lighting_score_output_path),
-                "beatdrop_visual_plan": str(paths.beatdrop_visual_plan_output_path),
-                "beatdrop_visual_plan_markdown": str(paths.beatdrop_visual_plan_md_output_path),
             },
             "debug": {
                 "fft_band_count": len(fft_bands.get("bands", [])),

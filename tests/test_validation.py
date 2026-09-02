@@ -8,7 +8,11 @@ from pathlib import Path
 from analyzer.paths import SongPaths
 from analyzer.stages.harmonic import build_reference_harmonic_layer
 from analyzer.stages.patterns import extract_chord_patterns
-from analyzer.stages.validation import _validate_chords, _validate_patterns_layer, _validate_sections, find_pattern_matches_for_bar_window, validate_beats, validate_drums
+from analyzer.stages.validation.beats import validate_beats
+from analyzer.stages.validation.chords import _validate_chords
+from analyzer.stages.validation.drums import validate_drums
+from analyzer.stages.validation.patterns import _validate_patterns_layer, find_pattern_matches_for_bar_window
+from analyzer.stages.validation.sections import _validate_sections
 
 
 def _write_json(path: Path, payload: object) -> None:

@@ -1,30 +1,45 @@
-# Documentation Map
+# Documentation map
 
-Story specs are grouped by the *kind of work* they describe, so the music-feature
-inference layer can be maintained and improved in isolation.
+`docs/` holds **current material only** — how the system is meant to behave now.
+There is no archive folder: git history is the archive (constitution §4). If a
+document here has stopped being true, fix it or delete it.
 
-| Folder | Contents | Nature |
-|--------|----------|--------|
-| [`human-curated/`](human-curated/) | Artifacts and workflows owned by a human: reference/benchmark data, the review-and-override loop, the lighting-score target format. | Hand-authored ground truth |
-| [`audio-processing/`](audio-processing/) | Deterministic DSP and feature math: timing grid, FFT bands, loudness, HPCP/chroma, key, alignment, energy/symbolic/event feature derivation. | Pure math, byte-reproducible |
-| [`audio-inference/`](audio-inference/) | The music-understanding layer: ML models (stems, embeddings, chords, MIDI/drum transcription, section SSM, event classifier) plus the rule-based baselines, event vocabularies, identifier inference and LLM-friendly abstractions that feed or compete with them. | Interpretation of audio |
-| [`lighting-score/`](lighting-score/) | Epic 7 generation stage: unified feature-layer assembly, feature-to-lighting mapping, fixture-aware orchestration. | Feature → lighting transform |
-| [`web-ui/`](web-ui/) | Epic 8 internal debugger, the `build_ui_data` contract, the offline visualizer export, and UI issue/regression notes. | Web interface |
+**Start at [`../CLAUDE.md`](../CLAUDE.md)** — the entry point for people and
+models alike: what the system does, which stages are trusted, and what the
+measurements say is broken.
 
-Cross-cutting docs stay at `docs/` root: [`constitution.md`](constitution.md),
-[`Implementation_Guide.md`](Implementation_Guide.md),
-[`data_folder_reference.md`](data_folder_reference.md),
-[`source_files_reference.md`](source_files_reference.md),
-[`docker_development.md`](docker_development.md), [`issues.md`](issues.md), and
-[`source references/`](source%20references/).
+## Contracts and law
 
-## Improving inferences
+| Doc | What it covers |
+| --- | --- |
+| [`constitution.md`](constitution.md) | Project law. §1 scope (musical facts, **not** fixture orchestration), §2 honesty, §3 the experiment lifecycle, §4 documentation, §5 the four pipeline phases, §7 time, §9 data governance, §10 change control. |
+| [`data_folder_reference.md`](data_folder_reference.md) | Every file under `data/` and what produces it. The artifact contract. |
+| [`source_files_reference.md`](source_files_reference.md) | Map of `src/` — where each pipeline stage lives. Update it when you move code. |
+| [`docker_development.md`](docker_development.md) | Container runtime, GPU expectations, model caches. |
 
-To improve how the pipeline understands a musical feature, work almost entirely
-inside [`audio-inference/`](audio-inference/):
+## Reference — [`reference/`](reference/)
 
-1. The upstream deterministic inputs are specified in `audio-processing/` and are
-   assumed correct — change them only if the feature math itself is wrong.
-2. Ground truth and benchmarks live in `human-curated/`.
-3. Downstream consumers (`lighting-score/`, `web-ui/`) read published contracts;
-   keep those contracts stable while iterating on the inference internals.
+| Doc | What it covers |
+| --- | --- |
+| [`analysis-input-guide.md`](reference/analysis-input-guide.md) | **The contract analysis quality is judged against.** Which artifacts reach the cue-authoring model, and which are invisible to it. A signal that lands in no projected file does not affect the show. |
+| [`phase_1_validation_cli.md`](reference/phase_1_validation_cli.md) | `./analyze` flags, compare targets, exit codes, validation report shape. |
+| [`ui_development.md`](reference/ui_development.md) | Debugger runtime and its read-only data contract. |
+| [`ui-regression_guide.md`](reference/ui-regression_guide.md) | How to run and review the UI visual regression suite. |
+
+## Open work
+
+| Doc | State |
+| --- | --- |
+| [`issues.md`](issues.md) | The analysis-issue queue — **open issues only** (constitution §4.2). Currently empty. |
+
+No release worklist is open. When one starts it is a single
+`product-refinement-vX.Y.md` here covering core, `ui/`, MCP and experiments
+together, and the previous one is deleted first — constitution §4.1.
+
+## Measured evidence
+
+[`../experiments/drop_detection/README.md`](../experiments/drop_detection/README.md)
+— the hand-built drop detector and the 2026-09 pretrained-model survey
+(`allin1`, MERT, CLAP, beat-this), with reproducible measurements against
+hand-labelled ground truth. This is the current best account of what the
+structural stages actually do, and it does not go stale with age.

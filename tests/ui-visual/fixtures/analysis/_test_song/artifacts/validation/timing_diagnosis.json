@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "inferred_beats_file": "/data/analysis/_test_song/artifacts/essentia/beats_inferred.json",
+    "reference_beats_source": "/data/analysis/_test_song/reference/moises/chords.json"
+  },
+  "beat_count": {
+    "inferred": 115,
+    "reference": 125
+  },
+  "global_offset_s": -0.015267,
+  "local_drift_s": -0.13966,
+  "mean_absolute_error_s": 0.065749,
+  "reference_beat_interval_s": 0.46,
+  "snap_multiple_histogram": {
+    "0.0": 86,
+    "0.5": 13,
+    "-0.5": 16
+  },
+  "dominant_failure_mode": "well_aligned"
+}

@@ -1,0 +1,93 @@
+{
+  "song_name": "_test_song",
+  "human_hints": [
+    {
+      "id": "hint-001",
+      "title": "Drum Hit",
+      "start_time": 7.288888888888889,
+      "end_time": 7.633333333333334,
+      "summary": "Drum Hit",
+      "lighting_hint": "Intense strobe"
+    },
+    {
+      "id": "hint-002",
+      "title": "build up",
+      "start_time": 22.178571428571427,
+      "end_time": 25.928571428571427,
+      "summary": "build up",
+      "lighting_hint": "strobes, slow to fast"
+    },
+    {
+      "id": "hint-003",
+      "title": "Drop in",
+      "start_time": 28.779661016949152,
+      "end_time": 29.576271186440678,
+      "summary": "Drop in",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-004",
+      "title": "Spacer",
+      "start_time": 36.5,
+      "end_time": 36.95762711864407,
+      "summary": "Volume drops to restart melody",
+      "lighting_hint": "dim intensity close to 0"
+    },
+    {
+      "id": "hint-005",
+      "title": "Outro start",
+      "start_time": 42.483050847457626,
+      "end_time": 43.205555555555556,
+      "summary": "Drum and bass leaves",
+      "lighting_hint": "stop moving effects, prepare for next effect."
+    },
+    {
+      "id": "hint-006",
+      "title": "Vocal outro phrase 1.1",
+      "start_time": 43.33888888888889,
+      "end_time": 44.355555555555554,
+      "summary": "vocal slowdown",
+      "lighting_hint": "moving heads movement following vocal levels"
+    },
+    {
+      "id": "hint-009",
+      "title": "Hint 8",
+      "start_time": 44.45454545454545,
+      "end_time": 47.04545454545455,
+      "summary": "ambient melody",
+      "lighting_hint": "minimal moving head intensity / movements"
+    },
+    {
+      "id": "hint-010",
+      "title": "Vocal outro 2",
+      "start_time": 47.09090909090909,
+      "end_time": 50.03030303030303,
+      "summary": "Soft vocal outro (part 2)",
+      "lighting_hint": "moving heads long travels, parcans with violet gradient chase"
+    },
+    {
+      "id": "hint-011",
+      "title": "Vocal Outro 3",
+      "start_time": 50.07575757575758,
+      "end_time": 54.57575757575758,
+      "summary": "Soft vocal outro (part 3)",
+      "lighting_hint": "moving heads circle around the table center with violet or indigo"
+    },
+    {
+      "id": "hint-012",
+      "title": "prepare for end",
+      "start_time": 54.60606060606061,
+      "end_time": 55,
+      "summary": "moving heads dim close to 0, move to table.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-013",
+      "title": "Finale",
+      "start_time": 55.03787878787879,
+      "end_time": 55.916666666666664,
+      "summary": "finale",
+      "lighting_hint": "all fixtures to max intensity. prism on. quickly fadeout."
+    }
+  ]
+}

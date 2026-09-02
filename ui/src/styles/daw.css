@@ -1,0 +1,777 @@
+/*
+ * daw.css — interface-local classes for the Score Analysis DAW timeline.
+ *
+ * Ported from the design canvas <style> block
+ * (docs/web-ui/ui-rebuild/design/Score-Analysis-DAW.dc.html), with the raw
+ * hex/px the canvas used replaced by Nocturne tokens where a token carries the
+ * value. The handful of timeline-chrome greys that have no token are kept here
+ * as named locals (design-notes.md §1, final bullet) so the timeline reads as
+ * one surface family.
+ */
+
+:root {
+  /* Timeline-chrome locals — the greys the canvas uses for the DAW surface. */
+  --tl-bg: #101219;            /* lane body / scroll container ground */
+  --tl-lane-head: #181a26;     /* sticky lane-label cell */
+  --tl-ruler: #1a1c29;         /* bars ruler row */
+  --tl-segment-head: #1e2130;  /* segments header row */
+  --tl-border: #202331;        /* lane bottom-border / grid dividers */
+  --tl-header-grad-a: #1d2030; /* app header gradient start */
+  --tl-header-grad-b: #181a28; /* app header gradient end */
+}
+
+/* ---- Transport buttons ------------------------------------------------- */
+
+.tp {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-neutral-300);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.tp:hover {
+  background: var(--color-accent-900);
+  color: var(--color-accent-300);
+}
+.tp:active {
+  background: var(--color-accent-800);
+  color: var(--color-accent-200);
+}
+.tp:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.tp-main {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-accent-700);
+  color: var(--color-accent-300);
+  font-size: 16px;
+}
+.tp-main:hover {
+  background: var(--color-accent-800);
+  border-color: var(--color-accent);
+  color: var(--color-accent-200);
+}
+
+/* ---- Zoom controls (footer) ----------------------------------------------- */
+
+.zbtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 26px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-neutral-800);
+  background: transparent;
+  color: var(--color-neutral-400);
+  font: 500 11px/1 var(--font-body);
+  cursor: pointer;
+}
+.zbtn:hover {
+  border-color: var(--color-accent-700);
+  color: var(--color-accent-300);
+}
+.zbtn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.zic {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--color-neutral-500);
+  font-size: 14px;
+  cursor: pointer;
+}
+.zic:hover {
+  color: var(--color-accent-300);
+  background: var(--color-neutral-900);
+}
+.zic:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ---- Lane-collapse caret ------------------------------------------------- */
+
+.caret {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 3px;
+  flex: none;
+}
+.caret:hover {
+  color: var(--color-accent-300);
+  background: var(--color-neutral-900);
+}
+.caret:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+/* ---- Drawer nav row --------------------------------------------------- */
+
+.dr-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-neutral-400);
+  font-size: 12.5px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+.dr-item:hover {
+  background: var(--color-neutral-900);
+  color: var(--color-neutral-200);
+}
+.dr-item[aria-current="page"] {
+  background: var(--color-accent-900);
+  color: var(--color-accent-200);
+}
+
+/* ---- Range input ---------------------------------------------------------- */
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: #2b2e3d;
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--color-accent-300);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(145, 132, 217, 0.6);
+}
+input[type="range"]:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* ---- Timeline scrollbar -------------------------------------------------- */
+
+.tl::-webkit-scrollbar {
+  height: 11px;
+  width: 11px;
+}
+.tl::-webkit-scrollbar-track {
+  background: var(--tl-bg);
+}
+.tl::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-800);
+  border-radius: 6px;
+}
+.tl::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-700);
+}
+
+/* ==== Timeline grid (plan item 3) ====================================== */
+
+.tl-sticky-head { position: sticky; }
+.tl-sticky-body { position: sticky; }
+
+/* Lane label cells override the small uppercase header treatment.
+ *
+ * item 6 / R5 — the collapse caret must sit at a fixed x/y regardless of the
+ * row height so toggling expand/collapse never moves it. The generic
+ * `.app-timeline__lane-head` centres its content (and is loaded after this
+ * file), so anchor the row content to the top at higher specificity: the caret
+ * is the first flex child of a `flex-start` row with a fixed top padding, so
+ * its bounding box is identical expanded vs collapsed. */
+.app-timeline__lane-head.tl-lane-head {
+  z-index: 10;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.tl-lane-head__text { flex: 1; min-width: 0; }
+.tl-lane-head__name {
+  font: 500 12.5px/1.3 var(--font-heading);
+  letter-spacing: -0.01em;
+  color: var(--color-neutral-200);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tl-lane-head__sub {
+  font: 400 9.5px/1.35 var(--font-body);
+  color: var(--color-neutral-700);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tl-lane-body { position: relative; overflow: hidden; }
+
+/* ---- Waveform Anchor lane (wavesurfer, design notes §3a) ---- */
+
+.tl-waveform {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+.tl-waveform__mount { position: absolute; inset: 0; }
+/* wavesurfer's centre line — --color-accent-900 */
+.tl-waveform__surface { --wave-mid: #2b2741; }
+.tl-waveform__state {
+  position: sticky;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 var(--space-4);
+  font: 500 10px/1 var(--font-body);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-400);
+}
+.tl-waveform__state--error { color: var(--color-danger, #e0757a); }
+
+/* ---- Canvas data lanes (FFT / RMS / Envelope / drums / energy) ---- */
+
+.tl-canvas-lane { pointer-events: auto; }
+.tl-canvas-lane__canvas { position: absolute; inset: 0; display: block; }
+.tl-canvas-lane__state {
+  position: sticky;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 var(--space-4);
+  font: 500 10px/1 var(--font-body);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+}
+
+.tl-grid-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(145, 132, 217, 0.06);
+  pointer-events: none;
+}
+.tl-grid-line.is-major { background: rgba(145, 132, 217, 0.16); }
+
+/* ---- Bars ruler ---- */
+
+.tl-ruler-head {
+  z-index: 11;
+  justify-content: space-between;
+  background: var(--tl-ruler);
+}
+.tl-ruler-body {
+  background: var(--tl-ruler);
+  border-bottom: 1px solid var(--color-neutral-900);
+  cursor: text;
+}
+.tl-beat-tick {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 6px;
+  background: #2f3345;
+  pointer-events: none;
+}
+.tl-bar-tick {
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  border-left: 1px solid #2f3345;
+  pointer-events: none;
+}
+.tl-bar-tick.is-major { border-left-color: #4a4f63; }
+.tl-bar-label {
+  position: absolute;
+  top: 3px;
+  font: 500 9.5px/1 var(--font-body);
+  color: var(--color-neutral-500);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* ---- Segments header ---- */
+
+.tl-seg-block {
+  position: absolute;
+  top: 3px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  cursor: pointer;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-neutral-800);
+  border-left: 2px solid var(--color-neutral-600);
+  text-align: left;
+}
+.tl-seg-block.is-accent {
+  background: var(--color-accent-900);
+  border-color: var(--color-accent-700);
+  border-left-color: var(--color-accent-500);
+}
+.tl-seg-block:hover { border-color: var(--color-accent); }
+.tl-seg-name {
+  font: 500 10px/1 var(--font-body);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-neutral-300);
+}
+.tl-seg-block.is-accent .tl-seg-name { color: var(--color-accent-200); }
+.tl-seg-len {
+  font: 400 9px/1 var(--font-body);
+  white-space: nowrap;
+  color: var(--color-neutral-700);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+/* ---- Playhead ---- */
+
+.tl-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 9;
+  width: 1px;
+  pointer-events: none;
+  background: var(--color-accent-300);
+  box-shadow: 0 0 9px 1px rgba(145, 132, 217, 0.5);
+}
+.tl-playhead__caret-anchor { position: sticky; top: 0; width: 0; height: 0; }
+.tl-playhead__caret {
+  position: absolute;
+  top: 0;
+  left: -5px;
+  width: 11px;
+  height: 8px;
+  background: var(--color-accent-300);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* ---- Lane list panel ---- */
+
+.tl-lanelist {
+  position: absolute;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  z-index: 30;
+  width: 268px;
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  background: #13151f;
+  border: 1px solid var(--color-neutral-800);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.tl-lanelist__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-neutral-900);
+}
+.tl-lanelist__title {
+  font: 500 9px/1 var(--font-body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+}
+.tl-lanelist__actions {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+}
+.tl-lanelist__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--space-3) var(--space-3);
+  overflow-y: auto;
+}
+.tl-lanelist__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.tl-lanelist__row.is-hidden { opacity: 0.5; }
+.tl-lanelist__vis {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  min-width: 0;
+}
+.tl-lanelist__label {
+  font-size: 11.5px;
+  color: var(--color-neutral-300);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Footer lane-list toggle ---- */
+
+.app-footer__spacer { flex: 1; }
+
+/* ---- Human Hints lane pills (item 6) ---------------------------------- */
+
+.tl-hint-lane { position: absolute; inset: 0; }
+.tl-hint-pill {
+  position: absolute;
+  top: 8px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 7px;
+  overflow: hidden;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  background: var(--color-accent-900);
+  border: 1px solid var(--color-accent-700);
+  color: var(--color-accent-200);
+}
+.tl-hint-pill:hover { border-color: var(--color-accent); }
+.tl-hint-pill.is-selected {
+  background: var(--color-accent-700);
+  border-color: var(--color-accent-400);
+  color: var(--color-accent-100);
+}
+.tl-hint-pill__label {
+  font: 500 10px/1 var(--font-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tl-hint-pill--new {
+  position: sticky;
+  left: 6px;
+  width: 22px;
+  padding: 0;
+  justify-content: center;
+  z-index: 3;
+}
+
+/* ---- Right panel — modal modes (item 6) ------------------------------ */
+
+.app-rightpanel--modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.app-rightpanel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.app-rightpanel__header-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.app-rightpanel__kicker {
+  font: 500 9px/1 var(--font-body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
+}
+.app-rightpanel__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.app-rightpanel__footer {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.tp--round { border-radius: 50%; width: 22px; height: 22px; font-size: 12px; }
+
+/* ---- Block inspector ---- */
+
+.block-inspector { display: flex; flex-direction: column; gap: var(--space-4); }
+.block-inspector__title {
+  font: 500 16px/1.2 var(--font-heading);
+  color: var(--color-text);
+  margin: 0;
+}
+.block-inspector__dl { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; }
+.block-inspector__row {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: var(--space-3);
+  align-items: baseline;
+}
+.block-inspector__row dt {
+  font: 500 9px/1.3 var(--font-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.block-inspector__row dd {
+  margin: 0;
+  font: 400 12px/1.4 var(--font-body);
+  color: var(--color-neutral-300);
+  word-break: break-word;
+  font-variant-numeric: tabular-nums;
+}
+.block-inspector__summary {
+  font: 400 12px/1.5 var(--font-body);
+  color: var(--color-neutral-400);
+  margin: 0;
+}
+.block-inspector__raw summary {
+  cursor: pointer;
+  font: 500 10px/1 var(--font-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.block-inspector__raw pre {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3);
+  background: var(--tl-bg);
+  border: 1px solid var(--color-neutral-900);
+  border-radius: var(--radius-sm);
+  font: 400 11px/1.5 "IBM Plex Mono", monospace;
+  color: var(--color-neutral-400);
+  overflow-x: auto;
+  max-height: 320px;
+}
+
+/* ---- Hint editor ---- */
+
+.hint-editor__header { display: flex; align-items: center; gap: var(--space-2); }
+.hint-editor__toolbar { display: flex; gap: var(--space-2); }
+.hint-editor__row2 { display: flex; gap: var(--space-3); }
+.hint-editor__row2 .field { flex: 1; min-width: 0; }
+.hint-editor__time { display: flex; gap: var(--space-2); align-items: center; }
+.hint-editor__time .input { min-width: 0; }
+.hint-editor__actions { display: flex; gap: var(--space-3); }
+.hint-editor__actions .btn { flex: 1; }
+.hint-editor__empty,
+.hint-editor__status {
+  font: 400 12px/1.5 var(--font-body);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+.hint-editor__status.is-error { color: var(--color-accent-200); }
+.hint-editor__status.is-ok { color: var(--color-neutral-400); }
+.btn-sm { padding: var(--space-1) var(--space-3); font-size: 10px; }
+
+/* ---- Review queue editor (item 7) ---- */
+
+.review-queue { display: flex; flex-direction: column; gap: var(--space-5); }
+.review-queue__flow {
+  font: 400 11px/1.5 var(--font-body);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+.review-queue__group { display: flex; flex-direction: column; gap: var(--space-3); }
+.review-queue__group-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font: 500 10px/1 var(--font-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.review-queue__count {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--tl-bg);
+  border: 1px solid var(--color-neutral-900);
+  color: var(--color-neutral-500);
+}
+.review-queue__q label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+}
+.review-queue__reason,
+.review-queue__evidence,
+.review-queue__answered {
+  font: 400 11px/1.4 var(--font-body);
+  color: var(--color-neutral-500);
+  margin: var(--space-1) 0 0;
+}
+.review-queue__answered { color: var(--color-neutral-400); }
+.review-queue__context { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.review-queue__context-item {
+  padding: var(--space-3);
+  background: var(--tl-bg);
+  border: 1px solid var(--color-neutral-900);
+  border-radius: var(--radius-sm);
+}
+.review-queue__context-field {
+  font: 500 11px/1.3 "IBM Plex Mono", monospace;
+  color: var(--color-neutral-400);
+}
+
+/* ---- Artifact inspector (plan item 8 / Story 8.9) --------------------- */
+
+.inspector {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: var(--space-4);
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-4);
+  overflow: hidden;
+  background: var(--tl-bg, var(--color-bg));
+}
+.inspector__list,
+.inspector__view {
+  overflow: auto;
+  min-height: 0;
+}
+.inspector__view { min-width: 0; }
+.inspector__files { margin-top: var(--space-3); }
+.inspector__files th,
+.inspector__files td { border-bottom: none; padding: 0; }
+.inspector__dir th {
+  padding: var(--space-3) var(--space-2) var(--space-1);
+  color: var(--color-neutral-500);
+  font: 500 9px/1.2 "IBM Plex Mono", monospace;
+  letter-spacing: 0.08em;
+}
+.inspector__file-btn {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--color-neutral-200);
+  font: 400 11px/1.5 "IBM Plex Mono", monospace;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.inspector__file-btn:hover { background: var(--color-neutral-800); }
+.inspector__file.is-selected .inspector__file-btn {
+  background: var(--color-accent-900);
+  color: var(--color-accent-200);
+}
+.inspector__error { color: #f0a3a3; }
+
+.inspector__view-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-neutral-800);
+}
+.inspector__view-path {
+  font: 500 11px/1.3 "IBM Plex Mono", monospace;
+  color: var(--color-neutral-300);
+}
+.inspector__copied { font-size: 10px; color: var(--color-accent-400); }
+.inspector__raw {
+  font: 400 11px/1.5 "IBM Plex Mono", monospace;
+  color: var(--color-neutral-200);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* JSON tree ----------------------------------------------------------- */
+.json-tree {
+  font: 400 11px/1.6 "IBM Plex Mono", monospace;
+  color: var(--color-neutral-200);
+}
+.json-tree__children {
+  margin-left: 12px;
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--color-neutral-800);
+}
+.json-tree__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.json-tree__row:hover { background: var(--color-neutral-900); }
+.json-tree__toggle {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  font-size: 10px;
+}
+.json-tree__toggle--leaf { cursor: default; }
+.json-tree__key { color: var(--color-neutral-400); }
+.json-tree__key--number { color: var(--color-neutral-600); }
+.json-tree__key--root { color: var(--color-accent-400); }
+.json-tree__summary { color: var(--color-neutral-500); }
+.json-tree__value--string { color: #9fd0a4; }
+.json-tree__value--number { color: var(--color-accent-300); }
+.json-tree__value--boolean { color: #d6b06a; }
+.json-tree__value--null { color: var(--color-neutral-500); }
+.json-tree__copy {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--color-neutral-600);
+  cursor: pointer;
+  opacity: 0;
+  font-size: 11px;
+  flex: none;
+}
+.json-tree__row:hover .json-tree__copy { opacity: 1; }
+.json-tree__copy:hover { color: var(--color-accent-400); }

@@ -1,0 +1,93 @@
+[
+  {
+    "start": 0.0,
+    "end": 15.23,
+    "label": "001 Ambient Opening (0.73)",
+    "description": "Restrained opening space with low-volatility motion and room for atmosphere.",
+    "hints": []
+  },
+  {
+    "start": 15.23,
+    "end": 30.21,
+    "label": "002 Instrumental Bed (0.82)",
+    "description": "Instrument-led passage where accompaniment or synth texture carries the section more than the voice.",
+    "hints": []
+  },
+  {
+    "start": 30.21,
+    "end": 59.84,
+    "label": "003 Vocal Spotlight (0.75)",
+    "description": "Voice-led section where the vocal contour carries most of the attention and motion.",
+    "hints": []
+  },
+  {
+    "start": 59.84,
+    "end": 74.61,
+    "label": "004 Breath Space (0.72)",
+    "description": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
+    "hints": []
+  },
+  {
+    "start": 74.61,
+    "end": 88.13,
+    "label": "005 Flowing Plateau (0.76)",
+    "description": "Stable mid-energy passage with continuous motion but limited structural shock.",
+    "hints": []
+  },
+  {
+    "start": 88.13,
+    "end": 103.85,
+    "label": "006 Momentum Lift (0.79)",
+    "description": "Energy and motion climb together into a more assertive forward push.",
+    "hints": []
+  },
+  {
+    "start": 103.85,
+    "end": 118.62,
+    "label": "007 Instrumental Bed (0.80)",
+    "description": "Instrument-led passage where accompaniment or synth texture carries the section more than the voice.",
+    "hints": []
+  },
+  {
+    "start": 118.62,
+    "end": 133.86,
+    "label": "008 Groove Plateau (0.78)",
+    "description": "Pulse-led section with sustained rhythmic momentum and repeat-driven stability.",
+    "hints": []
+  },
+  {
+    "start": 133.86,
+    "end": 151.0,
+    "label": "009 Flowing Plateau (0.73)",
+    "description": "Stable mid-energy passage with continuous motion but limited structural shock.",
+    "hints": []
+  },
+  {
+    "start": 151.0,
+    "end": 156.75,
+    "label": "010 Breath Space (0.73)",
+    "description": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
+    "hints": []
+  },
+  {
+    "start": 156.75,
+    "end": 162.31,
+    "label": "011 Breath Space (0.58)",
+    "description": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
+    "hints": []
+  },
+  {
+    "start": 162.31,
+    "end": 177.9,
+    "label": "012 Breath Space (0.73)",
+    "description": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
+    "hints": []
+  },
+  {
+    "start": 177.9,
+    "end": 193.85,
+    "label": "013 Release Tail (0.71)",
+    "description": "Closing release state where energy tapers and the track settles out.",
+    "hints": []
+  }
+]

@@ -276,6 +276,16 @@ class SectionSegmentationTests(unittest.TestCase):
             self.assertEqual(payload["sections"][0]["end"], 16.0)
             self.assertTrue(paths.artifact("section_segmentation", "sections.json").exists())
 
+            # v1.1: the two-axis labels and boundary evidence survive the
+            # micro-break re-numbering pass and reach the artifact.
+            self.assertIn("form_family", payload)
+            for section in payload["sections"]:
+                self.assertIn("form_role", section)
+                self.assertIn("energy_character", section)
+                self.assertIn("repetition_group", section)
+            self.assertIsNotNone(payload["sections"][1]["confidence_terms"])
+            self.assertEqual(payload["sections"][0]["label"], payload["sections"][0]["form_role"])
+
     def test_segment_sections_keeps_bar_boundary_with_reference_timing(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -450,7 +460,9 @@ class SectionSegmentationTests(unittest.TestCase):
             starts = [section["start"] for section in payload["sections"]]
             self.assertIn(24.5, starts)
             split_section = next(section for section in payload["sections"] if section["start"] == 24.5)
-            self.assertIn(split_section["label"], {"momentum_lift", "groove_plateau"})
+            # v1.1: top-level `label` is now `form_role`; the energy-shape label
+            # moved to `section_character` / `energy_character`.
+            self.assertIn(split_section["section_character"], {"momentum_lift", "groove_plateau"})
 
     def test_segment_sections_does_not_split_for_brief_internal_accent(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

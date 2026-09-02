@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "engine": "essentia+numpy.fft_bands",
+    "beats_file": null,
+    "harmonic_stem": null,
+    "dependencies": {}
+  },
+  "bands": [
+    {
+      "id": "sub",
+      "label": "Sub",
+      "start_hz": 20.0,
+      "end_hz": 60.0
+    },
+    {
+      "id": "bass",
+      "label": "Bass",
+      "start_hz": 60.0,
+      "end_hz": 150.0
+    },
+    {
+      "id": "low_mid",
+      "label": "Low Mid",
+      "start_hz": 150.0,
+      "end_hz": 400.0
+    },
+    {
+      "id": "mid",
+      "label": "Mid",
+      "start_hz": 400.0,
+      "end_hz": 1000.0
+    },
+    {
+      "id": "upper_mid",
+      "label": "Upper Mid",
+      "start_hz": 1000.0,
+      "end_hz": 2500.0
+    },
+    {
+      "id": "presence",
+      "label": "Presence",
+      "start_hz": 2500.0,
+      "end_hz": 6000.0
+    },
+    {
+      "id": "brilliance",
+      "label": "Brilliance",
+      "start_hz": 6000.0,
+      "end_hz": 16000.0
+    }
+  ],
+  "frames": [
+    {
+      "frame_index": 0,
+      "time": 0.0,
+      "levels": [
+        0.667467,
+        1.0,
+        1.0,
+        0.020866,
+        0.482809,
+        0.761112,
+        0.730466
+      ],
+      "brightness_ratio": 0.343037,
+      "transient_strength": 0.0,
+      "dropout_strength": 0.0
+    },
+    {
+      "frame_index": 1,
+      "time": 0.05,
+      "levels": [
+        0.883075,
+        1.0,
+        0.674636,
+        0.306409,
+        0.329992,
+        0.542587,
+        0.725413
+      ],
+      "brightness_ratio": 0.297582,
+      "transient_strength": 0.0,
+      "dropout_strength": 0.076548
+    },
+    {
+      "frame_index": 2,
+      "time": 0.1,
+      "levels": [
+        0.890014,
+        0.937909,
+        0.571297,
+        0.085006,
+        0.288527,
+        0.511574,
+        0.660446
+      ],
+      "brightness_ratio": 0.388301,
+      "transient_strength": 0.0,
+      "dropout_strength": 0.050586
+    }
+  ],
+  "metadata": {
+    "interval_ms": 50,
+    "sample_rate": 44100,
+    "frame_size": 4096,
+    "hop_size": 2205,
+    "window": "hann",
+    "total_frames": 1162,
+    "duration": 58.122449,
+    "normalization_scope": "per-song-per-band-log-power-percentile",
+    "normalization_percentiles": [
+      5.0,
+      95.0
+    ],
+    "derived_frame_fields": [
+      "brightness_ratio",
+      "transient_strength",
+      "dropout_strength"
+    ]
+  }
+}

@@ -1,349 +1,121 @@
-# Internal Artifact Debugger and Regression Viewer
-
-## Purpose
-
-This file documents the current UI implementation for LLM-assisted development.
-
-The UI under `ui/` is an internal visual debugger for inspecting inference outputs under `data/analysis/<Song - Artist>/artifacts/`. It is not the production consumer UI.
-
-## Non-Negotiable Rules
-
-- Do not write files into `data/analysis/`.
-- Only Story 7.8 may write `data/analysis/<Song - Artist>/reference/human/human_hints.json`, and only on explicit save.
-- Do not turn this UI into a production-facing consumer experience.
-- Treat `data/analysis/<Song - Artist>/artifacts/` as the primary source of truth.
-- Treat `data/analysis/<Song - Artist>/` as secondary helper context only.
-- Keep the debugger running in its own Compose `ui` service. Do not fold it into the analyzer container.
-
-## Current Runtime
-
-- Container: `ui/Dockerfile`
-- Compose runtime: Vite dev server with live reload for `ui/src` edits
-- Production runtime: Nginx serving the built bundle from the Dockerfile production stage
-- Port: `8080`
-- Data mount: `./data:/data` (the human-hint editor writes only `data/analysis/<Song - Artist>/reference/human/human_hints.json`, enforced by the dev-server API, not by mount isolation)
-- Compose service: `ui`
-
-Start the UI:
-
-```bash
-docker compose up ui
-```
-
-The helper UI service now bind-mounts `ui/` and reloads when files under `ui/src/` change.
-
-Open:
-
-```text
-http://localhost:8080
-```
-
-## Current File Map
-
-- `ui/index.html`: Vite entry document with the Preact mount point
-- `ui/src/styles.css`: shared visual styling imported by the Preact app
-- `ui/src/App.jsx`: thin top-level composition layer that wires app hooks into the view
-- `ui/src/app/`: app-owned state, song loading, playback control, and prop-builder helpers
-- `ui/src/components/`: folderized panel and timeline components with colocated submodules
-- `ui/src/components/TimelinePanel/`: timeline shell, header, viewport, interaction hooks, and transport helpers
-- `ui/src/lib/config/`: artifact definitions, lane definitions, and shared UI constants
-- `ui/src/lib/data/`: directory fetch helpers, data normalization, and timeline-model assembly
-- `ui/src/lib/timeline/`: imperative timeline markup, selection, viewport, and lane renderers
-- `ui/src/lib/config.js`: stable re-export surface for config consumers
-- `ui/src/lib/data.js`: stable re-export surface for data-loading consumers
-- `ui/src/lib/timeline.js`: stable re-export surface for timeline consumers
-- `ui/package.json`: frontend dependencies and scripts
-- `ui/vite.config.js`: Vite plus Preact build configuration
-- `ui/nginx.conf`: static serving plus `/data/` alias and autoindex
-- `ui/Dockerfile`: development stage for the Vite dev server plus a production Nginx build stage
-
-## Helper UI Architecture
-
-The helper UI is intentionally split into three layers so behavior stays local and future edits do not rebuild monoliths.
-
-### App layer
-
-Files under `ui/src/app/` own cross-panel state and side effects.
-
-- `useSongData.js`: song discovery, artifact loading, timeline-model creation, waveform-preview coordination
-- `useShellState.js`: sidebar state and lane visibility state
-- `usePlaybackState.js`: current playback cursor, follow-playhead state, and audio-driven timing state
-- `usePlaybackActions.js`: transport actions and playback-side event handlers
-- `createAppViewProps.js` and related prop builders: assemble stable component props instead of pushing business logic back into JSX
-
-Keep shared state here when it is consumed by multiple panels. Do not move shell state into timeline-only components just to shorten prop lists.
-
-### Component layer
-
-Files under `ui/src/components/` render the UI and stay close to the parent they support.
-
-- `Sidebar/`: shell controls, path hints, file-status list, and lane toggles
-- `OverviewPanels/`: hero metadata, audio anchor, artifact summary, validation snapshot, and sections preview
-- `DetailPanels/`: selection detail plus raw artifact inspector
-- `OverlayPanel/`: anchored overlay behavior and dismissal logic
-- `SelectionDetailCard/`: selection field formatting and display
-- `TimelinePanel/`: timeline header, viewport, song menu, playback indicators, and interaction hooks
-
-Component folders should keep small helpers next to their parent component. If a helper exists only to support one component folder, keep it inside that folder instead of promoting it into `ui/src/lib/`.
-
-### Library layer
-
-Files under `ui/src/lib/` are browser-side infrastructure, not app state.
-
-- `config/`: lane and artifact definitions plus constants shared by the UI
-- `data/`: fetch helpers and normalization utilities that turn loaded JSON into a timeline-friendly model
-- `timeline/`: imperative drawing, markup, viewport math, and selection lookup for the synchronized lane renderer
-
-The files `ui/src/lib/config.js`, `ui/src/lib/data.js`, and `ui/src/lib/timeline.js` are public entrypoints for the rest of the UI. Prefer adding new submodules behind those entrypoints instead of spreading deep import paths through the app.
-
-## What Exists Today
-
-The current implementation is an Epic 7 debugger with these features:
-
-- automatic discovery of song directories by reading `/data/analysis/`
-- automatic loading of the first discovered song when there is no `?song=` query parameter
-- explicit song selection from a discovered dropdown
-- manual refresh of the discovered song list
-- read-only loading of artifact and helper JSON files
-- artifact availability list with per-file load status
-- summary cards for core inference surfaces
-- validation preview from `validation/phase_1_report.json`
-- section preview from the artifact or output projection
-- audio element pointed at `data/songs/<Song - Artist>.mp3`
-- shared playback cursor driven by the mounted audio file
-- waveform anchor decoded in-browser when possible, with beat-pulse fallback
-- fixed-label synchronized lane layout with shared zoom and horizontal scroll
-- sparse lanes for sections, phrases, chords, pattern occurrences, and event windows
-- dense lanes for FFT bands, per-source RMS loudness, per-source loudness envelope, drums, symbolic density, and energy
-- regression overlay lane for beat drift and exported-event comparison
-- lane-item detail hovercards opened directly from clicked timeline regions
-- raw JSON inspector for any successfully loaded file
-- explicit missing-core-artifacts warning card for partial song folders
-- right-side human hint editor that opens from timeline human-hint selections or explicit new-hint actions
-- selected-hint-only sidebar editing for existing human hints, with timeline selection as the only existing-hint selection path
-- left-side `Set` actions for start and end time that copy the current timeline cursor into the matching field
-- human hints use the sidebar as their only detail surface instead of the standard selection popup
-- the human-hint sidebar remains open across focus changes and closes only through explicit save, delete, or cancel actions
-- the human-hint editor stays compact for the sidebar: smaller text, no nested cards, and no editor paddings greater than `0.5em`
-- explicit save flow that updates only `data/analysis/<Song - Artist>/reference/human/human_hints.json`
-
-## Primary Data Sources
-
-The current UI attempts to load these files:
-
-### Primary artifact-side files
-
-- `data/analysis/<Song - Artist>/artifacts/essentia/fft_bands.json`
-- `data/analysis/<Song - Artist>/artifacts/essentia/rms_loudness.json`
-- `data/analysis/<Song - Artist>/artifacts/essentia/loudness_envelope.json`
-- `data/analysis/<Song - Artist>/artifacts/layer_a_harmonic.json`
-- `data/analysis/<Song - Artist>/artifacts/layer_b_symbolic.json`
-- `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`
-- `data/analysis/<Song - Artist>/artifacts/layer_d_patterns.json`
-- `data/analysis/<Song - Artist>/artifacts/section_segmentation/sections.json`
-- `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json`
-- `data/analysis/<Song - Artist>/artifacts/event_inference/features.json`
-- `data/analysis/<Song - Artist>/artifacts/event_inference/timeline_index.json`
-- `data/analysis/<Song - Artist>/artifacts/event_inference/rule_candidates.json`
-- `data/analysis/<Song - Artist>/artifacts/event_inference/events.machine.json`
-- `data/analysis/<Song - Artist>/artifacts/pattern_mining/chord_patterns.json`
-- `data/analysis/<Song - Artist>/artifacts/music_feature_layers.json`
-- `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.json`
-
-### Secondary output-side helper files
-
-- `data/analysis/<Song - Artist>/info.json`
-- `data/analysis/<Song - Artist>/beats.json`
-- `data/analysis/<Song - Artist>/sections.json`
-- `data/analysis/<Song - Artist>/song_event_timeline.json`
-
-## Current UI Structure
-
-### Sidebar
-
-- app title and purpose copy
-- discovered song selector
-- refresh button
-- available path reference
-- loaded-file status list
-
-### Main content
-
-- song title and metadata cards
-- audio panel
-- artifact summary panel
-- core-artifact missing-state card when required files are absent
-- validation snapshot panel
-- sections preview panel
-- raw JSON artifact inspector
-
-## Current Browser Logic
-
-The implementation now uses Preact for UI composition and state ownership, with Vite building the browser bundle during the container image build.
-
-Key pieces:
-
-- `ui/src/lib/config/artifactDefinitions.js`: declares the files the debugger tries to load for each song
-- `ui/src/lib/data/fetch.js`: reads JSON files from the mounted `/data` tree and parses directory listings
-- `fetchDirectoryListing(...)`: parses the Nginx autoindex HTML for `/data/analysis/` and extracts per-song folders
-- `App.jsx`: keeps root composition thin and delegates real work to app hooks and view helpers
-- `ui/src/app/useSongData.js`: coordinates discovery, artifact loading, query-string song selection, and waveform decoding setup
-- `ui/src/app/usePlaybackState.js` and `ui/src/app/usePlaybackActions.js`: keep audio timing and transport actions out of the render tree
-- `ui/src/components/Sidebar/`, `ui/src/components/OverviewPanels/`, `ui/src/components/DetailPanels/`, `ui/src/components/OverlayPanel/`, and `ui/src/components/SelectionDetailCard/`: declarative panel rendering with local helper modules kept close to the parent component
-- `ui/src/components/TimelinePanel/`: owns viewport composition, transport header wiring, song-menu behavior, and interaction hooks while delegating lane rendering to `ui/src/lib/timeline/`
-- `ui/src/lib/timeline/`: renders sparse lane markup, draws dynamic lanes, and updates shared now-marker positions
-
-The timeline now also reads optional human reference hints from `data/analysis/<Song - Artist>/reference/human/human_hints.json` and renders them as a sparse lane between the waveform anchor and sections. Missing reference hints stay explicit in the file list and simply leave that lane empty.
-
-## LLM Update Guidelines
-
-Use these rules when making helper UI changes with an LLM agent.
-
-### Preserve the layer boundaries
-
-- Put shared state and side effects in `ui/src/app/`.
-- Put rendering-only component helpers beside the component they support.
-- Put reusable browser infrastructure in `ui/src/lib/`.
-- Do not move app state into `ui/src/lib/`.
-- Do not put canvas drawing or DOM math into `App.jsx` or overview/sidebar components.
-
-### Prefer colocated, non-recursive helpers
-
-- Keep functions near the closest parent that owns the behavior.
-- Do not create helper chains that only forward props through multiple files without adding real separation.
-- Do not create recursive component trees or recursive render helpers for lanes, panels, or menu structures.
-- Do not reintroduce giant "manager" files that both load data and render markup and handle DOM events.
-- If a file grows past roughly 100 lines, first look for a natural split by responsibility inside the same parent folder.
-
-"Avoid recursion" here means more than avoiding literal self-calls. It also means avoiding architectural recursion where a component delegates to a helper that delegates to another helper that eventually just reconstructs the same parent concerns in a harder-to-follow shape.
-
-### Keep entrypoints stable
-
-- Prefer importing config/data/timeline helpers through `ui/src/lib/config.js`, `ui/src/lib/data.js`, and `ui/src/lib/timeline.js`.
-- Add new submodules behind those entrypoints instead of scattering deep imports across the app.
-- Keep top-level files such as `App.jsx` and `TimelinePanel/index.jsx` as composition layers, not logic dumps.
-
-### Preserve read-only and artifact-first behavior
-
-- Do not add write paths, mutation endpoints, or client-side persistence for review data.
-- Keep artifact-side files as the primary source of truth.
-- Keep output-side files as helper context only.
-- Treat `data/analysis/<Song - Artist>/reference/` as optional read-only context.
-
-### Validate after edits
-
-After UI changes, validate all of the following:
-
-- editor diagnostics for `ui/src/`
-- line-count pressure if a refactor was part of the change
-- `docker compose up -d --build ui`
-- browser load against a real song such as `?song=_test_song`
-- lane/file status behavior when optional files like human hints are present or absent
-
-For structural refactors, also confirm that:
-
-- `ui/src/lib/config.js`, `ui/src/lib/data.js`, and `ui/src/lib/timeline.js` still work as stable import surfaces
-- component-local helpers stay inside the closest component folder instead of drifting into unrelated shared modules
-- app-owned hooks in `ui/src/app/` still own shared state rather than pushing it down into timeline-only files
-
-## Important Implementation Detail
-
-Song discovery currently depends on Nginx `autoindex on` for `/data/` and parses the returned HTML directory listing in the browser.
-
-That means:
-
-- discovery works without adding a backend service
-- discovery is intentionally simple and read-only
-- if discovery behavior changes, check `ui/nginx.conf` and `fetchDirectoryListing(...)` together
-
-Do not replace this with a write-capable backend unless the contract changes explicitly.
-
-## Current Core Artifact Gate
-
-The UI treats these keys as core surfaces for the empty-state warning:
-
-- `harmonic`
-- `symbolic`
-- `energy`
-- `sectionsArtifact`
-- `eventMachine`
-- `validation`
-
-If these are missing, the selected song still loads, but the UI shows a warning card to make the partial state explicit.
-
-## Known Limitations
-
-- Discovery still relies on HTML directory parsing rather than a structured API
-- Audio playback remains native HTML audio rather than a custom transport engine
-- Waveform decoding is browser-side and can fall back to beat pulses on decode failure
-- The debugger is intentionally internal and read-only; it does not persist review state
-
-## Safe Extension Targets
-
-These are the safest next implementation areas:
-
-- improve overlay detail and hover affordances without changing data contracts
-- add more artifact-first lanes when new story contracts introduce them
-- improve partial-data handling for songs with incomplete artifacts
-- tune dense-lane aggregation thresholds for larger generated datasets
-
-## Unsafe Changes Unless the Contract Changes
-
-- writing review state into `data/analysis/<Song - Artist>/artifacts/validation/`
-- writing snapshots into `data/analysis/`
-- adding server-side mutation endpoints
-- moving UI code into `src/`
-- making the debugger depend on production-facing output files as its main source
-
-## Suggested Validation After UI Changes
-
-For low-risk validation, use:
-
-```bash
-docker compose up -d --build ui
-curl -s http://localhost:8080 | head
-curl -s http://localhost:8080/data/analysis/ | head
-```
-
-For a live browser verification pass, also load a real song:
-
-```text
-http://localhost:8080/?song=_test_song
-```
-
-For a smoke check after a larger refactor, verify all of the following in the running page:
-
-- the song dropdown populates from `/data/analysis/`
-- the selected song loads without console/runtime errors
-- `Reference Human Hints` appears in the file list when available
-- `Human Hints` appears between `Waveform Anchor` and `Sections`
-- timeline controls still respond and the viewport still scrolls and updates markers
-
-For shutdown or clean rebuild cycles, use:
-
-```bash
-docker compose up -d ui
-docker compose stop ui
-```
-
-For a production bundle check, use:
-
-```bash
-docker compose build ui
-```
-
-Also check editor diagnostics for:
-
-- `ui/src/`
-- `ui/index.html`
-- `ui/src/styles.css`
-
-## Summary For LLM Agents
-
-When extending this UI:
-
-- keep it read-only
-- prefer artifact-first views
-- preserve the separate `ui` service
-- document any contract-affecting change in the repo docs
-- treat the current implementation as a scaffold to evolve, not as a throwaway mock
+# Internal Artifact Debugger — UI v2 (Score Analysis DAW)
+
+Internal visual debugger for the analyzer's artifacts under
+`data/analysis/<Song - Artist>/artifacts/`. **Not** the production consumer UI.
+
+This is the from-scratch React + TypeScript + Vite rebuild
+(`docs/web-ui/ui-rebuild/`). The previous Preact/MUI app was kept as a reference copy as
+the behaviour reference until cutover (plan item 11), then deleted.
+
+## Non-negotiable rules
+
+- Never write into `data/analysis/**` except the two explicit human-save paths:
+  `reference/human/human_hints.json` (hint editor) and
+  `reference/human/song_facts.json` (review-queue editor). Both write only on an
+  explicit Save, via the dev-server `PUT` handlers.
+- Read-only against every other artifact.
+- Own Compose `ui` service, port `8080` (host `9090`). Not folded into the
+  analyzer container.
+- Every colour / font / space / radius / shadow comes from
+  `src/styles/nocturne.css` tokens. Every icon is Phosphor.
+- **Target browser: Chrome 151 only.** No cross-browser fallbacks, polyfills or
+  autoprefixer. `tsconfig` / vite `build.target` = `esnext`.
+
+## Runtime
+
+- Dev: `docker compose up ui` → Vite dev server with live reload, `:8080`
+  (mapped to host `:9090`).
+- Prod: `docker compose run --rm ui npm run build` then the `final` nginx stage
+  of `ui/Dockerfile` serves `dist/`.
+- Validation (in the container):
+  - `docker compose run --rm ui npm install`
+  - `docker compose run --rm ui npm run build` — `tsc --noEmit` + vite bundle
+  - `docker compose run --rm ui npm run test` — vitest + @testing-library/react
+  - Visual regression (Playwright): serve the frozen fixtures with
+    `docker compose -f docker-compose.yml -f docker-compose.visual.yml up -d --build ui`,
+    then run the suite in the pinned container per
+    `../docs/web-ui/ui-regression_guide.md` §6. The suite lives in
+    `../tests/ui-visual/` (its own npm project — not part of `ui/`).
+
+## Keyboard (plan item 10 / refinement §10)
+
+Resolved by the pure `src/app/keymap.ts` module (`resolveKeyAction`); `App.tsx`
+owns the single `window` `keydown` listener. Ignored while focus is in an
+`input` / `textarea` / `select` / `contentEditable` (only `esc` passes through);
+any Ctrl / Meta / Alt chord is ignored.
+
+| Key | Action |
+| --- | --- |
+| `space` | play / pause |
+| `←` / `→` | step ∓1 beat |
+| `shift` + `←` / `→` | step ∓1 bar |
+| `+` `=` `]` | zoom in |
+| `-` `_` `[` | zoom out |
+| `f` | fit timeline to width |
+| `esc` | close, in order: right panel → review-queue view → lane list → drawer |
+
+**§10 deviation:** refinement §10 groups "`+` / `-` / `[` / `]` = zoom" without
+splitting the four keys, and plan item 10 guessed `[` `]` might be prev/next
+section. §10's explicit word is "zoom", so all four are zoom — `]`/`+`/`=` in,
+`[`/`-`/`_` out. No prev/next-section binding was added.
+
+Focus management: `src/app/useFocusTrap.ts` traps Tab inside `RightPanel` while
+open and restores focus to the opener on close. The drawer is a persistent,
+non-modal nav — it takes initial focus on an open transition but is not trapped.
+
+## File map
+
+| Path | Role |
+| --- | --- |
+| `index.html` | Vite entry document, `#root` mount |
+| `src/main.tsx` | React root; imports the four stylesheets then mounts `<App/>` |
+| `src/App.tsx` | App shell: header (3-col grid) / main (drawer · timeline · right panel) / footer. Chrome only — lanes stubbed. |
+| `src/App.test.tsx` | Smoke tests for the shell (bands, four drawer entries, active Timeline, stub lanes) |
+| `src/test/setup.ts` | vitest setup — `@testing-library/jest-dom` matchers |
+| `src/vite-env.d.ts` | Vite client type reference |
+| `src/styles/nocturne.css` | Nocturne design-system tokens + component classes. Reproduced from `docs/web-ui/ui-rebuild/design/design-notes.md` §1 (the DS `styles.css` is not vendored in-repo). Treat as vendored — do not retune locally. |
+| `src/styles/daw.css` | Interface-local timeline classes (`.tp` / `.zbtn` / `.caret` / `.dr-item` / range + `.tl` scrollbar) ported from the design canvas `<style>` block to tokens, plus the `--tl-*` timeline-chrome locals |
+| `src/styles/app.css` | The fixed-band app-shell layout |
+| `src/styles/phosphor/` | Phosphor regular-weight `style.css` + `Phosphor.woff2/woff/ttf`, vendored (no unpkg at runtime) |
+| `src/data/types.ts` | TS types for every artifact the UI reads, mirroring the v1.1 contracts. v1.1-added fields typed `T \| null` so a pre-v1.1 song still parses. |
+| `src/data/parse.ts` | Structural-assertion toolkit (`ShapeError`, `asNumber`, `stringOrNull`, …) shared by the parsers |
+| `src/data/parsers.ts` | Pure `(raw: unknown) => T` parser per artifact; throws `ShapeError` on a contract mismatch. Enforces the v1.1 B5 `section_id` uniqueness rule. |
+| `src/data/paths.ts` | `/data` URL builders (`artifactPaths`, `listingPaths`, `encodePath`) — every segment percent-encoded |
+| `src/data/loaders.ts` | One fetch+parse loader per artifact → `LoadResult<T>` (`{ ok, data }` \| `{ ok, error }`, never throws). `artifactLoaders` registry + `ArtifactKey` / `ArtifactData<K>`. |
+| `src/data/discovery.ts` | Directory-index HTML parsing; `intersectSongs` = analysis dirs ∩ `data/songs` audio basenames; `discoverSongs()` fetch wrapper |
+| `src/data/useSong.ts` | Hook: given a song, loads `info.json` + requested artifacts; `{ status, data, error }` per key, stale-run guarded, `reload()` |
+| `src/data/saveHumanHints.ts` | `buildHumanHintsPayload` (the previous app's hint-editor validation) + `saveHumanHints` `PUT /api/human-hints/<song>` client |
+| `src/data/index.ts` | Barrel re-export for the data layer |
+| `src/data/__fixtures__/` | Trimmed real `_test_song` artifacts for the parser/discovery unit tests |
+| `src/data/*.test.ts` | vitest: parsers (against fixtures), discovery filter, loader error mapping, hint-payload validation |
+| `src/app/keymap.ts` | Pure keyboard model: `resolveKeyAction(event) → KeyAction \| null` + the input-focus guard + `shouldPreventDefault`. Unit-tested. |
+| `src/app/loadStates.ts` | Pure state selectors: `selectSongListState` (song picker) + `selectSongLoadState` (a song: loading / fatal / degraded / ready). Unit-tested. |
+| `src/app/useFocusTrap.ts` | Tab-cycle trap + initial focus + restore-on-close for `RightPanel`. |
+| `src/app/*.test.ts` | vitest: keymap resolution (incl. focus guard, §10 deviation), load-state selection |
+| `src/timeline/coords.ts` | Time-proportional `timeToX` / `xToTime`, real-beat `beatToX` / `xToBeat`, bar grid, `timeToBarBeat`. |
+| `src/timeline/zoom.ts` | `pxPerBar` clamp/step, `fitToWidthPxPerBar`, `semanticZoom` threshold table. |
+| `src/timeline/follow.ts` | `followScrollLeft` follow-playhead scroll maths; `LABEL_WIDTH`. |
+| `src/timeline/laneState.ts` | `useLaneState` — lane registry (`visible` / `expanded`), localStorage-persisted. |
+| `src/timeline/TimelineGrid.tsx` `LaneList.tsx` | Sticky grid + playhead; the show/hide + expand/collapse panel. |
+| `src/timeline/useTransport.ts` | wavesurfer master clock — `play/pause`, `seekTo`, `stepBeat`, `stepBar`; pure `nextBeatTime` / `nextBarTime`. |
+| `src/timeline/WaveformLane.tsx` | Waveform Anchor lane (wavesurfer v7, blurple). |
+| `src/timeline/CanvasLane.tsx` `laneRenderers.ts` `palette.ts` | DPR canvas lane body + `fft` / `rms` / `env` / `drums` / `energy` renderers + ported palette. |
+| `src/timeline/SparseLane.tsx` `laneContent.ts` | Reusable block-lane body + per-lane content adapters. |
+| `src/panel/RightPanel.tsx` | 296px modal shell, three modes; `esc` / outside-click dismiss; focus trap + restore (item 10). |
+| `src/panel/BlockInspector.tsx` `blockFields.ts` | Read-only block detail card + per-lane field map. |
+| `src/panel/HintEditorPanel.tsx` `hintDraft.ts` | Hint-editor mode + draft ↔ payload mapping. |
+| `src/panel/ReviewQueuePanel.tsx` `reviewQueue.ts` | Review-queue mode + `partitionReviewQueue` / `questionOptions`. |
+| `src/data/saveSongFacts.ts` | `buildSongFactsPayload` + `PUT /api/song-facts/<song>` client (merge, not rewrite — D4). |
+| `src/inspector/ArtifactInspector.tsx` `walk.ts` `jsonTree.ts` | Read-only raw-JSON browser: recursive `/data` walk of `data/analysis/<song>` (D5) + collapsible tree. |
+| `vite.config.ts` | Vite + React plugin; `build.target: esnext`; vitest (`jsdom`) config; `data-mount-plugin` = `/data` static mount + directory listing + `PUT /api/human-hints/<song>` (ported from the previous app's `vite.config.js`, incl. path-escape guard + byte-range). Not in a `tsconfig` (build tooling, transpiled by esbuild — as the previous app's `.js` config was). |
+| `tsconfig.json` | `strict` (+ `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, no-unused), `target`/`module` `esnext`; `include: ["src"]` |
+| `Dockerfile` | `deps` → `dev` (Vite) / `build` (tsc + vite) → `final` (nginx) |
+| `nginx.conf` | Static serve + SPA fallback + read-only `/data/` autoindex |
+
+## Plan item status
+
+Items 1–10 are done: shell, data layer, timeline (coords / grid / zoom / follow /
+transport / waveform / canvas + sparse lanes), right panel (inspector / hint /
+review), artifact inspector, and the keyboard model + non-happy-path states +
+focus management. Parity sign-off and removal of the previous app was item 11. See
+`docs/web-ui/ui-rebuild/implementation-plan.md`.

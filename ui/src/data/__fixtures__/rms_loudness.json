@@ -1,0 +1,219 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "source_song_path": "/data/songs/_test_song.mp3",
+    "engine": "essentia+numpy.rms_loudness",
+    "beats_file": null,
+    "harmonic_stem": null,
+    "dependencies": {}
+  },
+  "sources": [
+    {
+      "id": "mix",
+      "label": "Mix",
+      "path": "/data/songs/_test_song.mp3",
+      "kind": "mix"
+    },
+    {
+      "id": "bass",
+      "label": "Bass",
+      "path": "/data/analysis/_test_song/artifacts/stems/bass.wav",
+      "kind": "stem"
+    },
+    {
+      "id": "drums",
+      "label": "Drums",
+      "path": "/data/analysis/_test_song/artifacts/stems/drums.wav",
+      "kind": "stem"
+    },
+    {
+      "id": "harmonic",
+      "label": "Harmonic",
+      "path": "/data/analysis/_test_song/artifacts/stems/harmonic.wav",
+      "kind": "stem"
+    },
+    {
+      "id": "vocals",
+      "label": "Vocals",
+      "path": "/data/analysis/_test_song/artifacts/stems/vocals.wav",
+      "kind": "stem"
+    }
+  ],
+  "frames": [
+    {
+      "frame_index": 0,
+      "start_s": 0.0,
+      "end_s": 0.01,
+      "time": 0.005,
+      "values": [
+        0.0,
+        0.00266278,
+        0.00053018,
+        0.00173561,
+        0.00138808
+      ],
+      "normalized_values": [
+        0.0,
+        0.00411,
+        0.001239,
+        0.005664,
+        0.003555
+      ],
+      "history": {
+        "mean_2s": [
+          0.0,
+          0.00266278,
+          0.00053018,
+          0.00173561,
+          0.00138808
+        ],
+        "peak_2s": [
+          0.0,
+          0.00266278,
+          0.00053018,
+          0.00173561,
+          0.00138808
+        ],
+        "mean_5s": [
+          0.0,
+          0.00266278,
+          0.00053018,
+          0.00173561,
+          0.00138808
+        ],
+        "peak_5s": [
+          0.0,
+          0.00266278,
+          0.00053018,
+          0.00173561,
+          0.00138808
+        ]
+      }
+    },
+    {
+      "frame_index": 1,
+      "start_s": 0.01,
+      "end_s": 0.02,
+      "time": 0.015,
+      "values": [
+        0.0,
+        0.00048706,
+        0.00038091,
+        0.00043537,
+        0.00054444
+      ],
+      "normalized_values": [
+        0.0,
+        0.000752,
+        0.00089,
+        0.001421,
+        0.001394
+      ],
+      "history": {
+        "mean_2s": [
+          0.0,
+          0.00157492,
+          0.00045555,
+          0.00108549,
+          0.00096626
+        ],
+        "peak_2s": [
+          0.0,
+          0.00266278,
+          0.00053018,
+          0.00173561,
+          0.00138808
+        ],
+        "mean_5s": [
+          0.0,
+          0.00157492,
+          0.00045555,
+          0.00108549,
+          0.00096626
+        ],
+        "peak_5s": [
+          0.0,
+          0.00266278,
+          0.00053018,
+          0.00173561,
+          0.00138808
+        ]
+      }
+    },
+    {
+      "frame_index": 2,
+      "start_s": 0.02,
+      "end_s": 0.03,
+      "time": 0.025,
+      "values": [
+        2.26e-06,
+        0.00048867,
+        0.00041538,
+        0.00066592,
+        0.0007777
+      ],
+      "normalized_values": [
+        5e-06,
+        0.000754,
+        0.00097,
+        0.002173,
+        0.001992
+      ],
+      "history": {
+        "mean_2s": [
+          7.5e-07,
+          0.00121284,
+          0.00044216,
+          0.00094564,
+          0.00090341
+        ],
+        "peak_2s": [
+          2.26e-06,
+          0.00266278,
+          0.00053018,
+          0.00173561,
+          0.00138808
+        ],
+        "mean_5s": [
+          7.5e-07,
+          0.00121284,
+          0.00044216,
+          0.00094564,
+          0.00090341
+        ],
+        "peak_5s": [
+          2.26e-06,
+          0.00266278,
+          0.00053018,
+          0.00173561,
+          0.00138808
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "sample_rate": 44100,
+    "window_ms": 10,
+    "window_size": 441,
+    "duration": 58.122449,
+    "total_frames": 5813,
+    "normalization_scope": "per-song-per-source-peak-rms",
+    "source_order": [
+      "mix",
+      "bass",
+      "drums",
+      "harmonic",
+      "vocals"
+    ],
+    "history_windows_s": [
+      2.0,
+      5.0
+    ],
+    "history_window_frames": {
+      "2": 200,
+      "5": 500
+    },
+    "interval_ms": 10
+  }
+}

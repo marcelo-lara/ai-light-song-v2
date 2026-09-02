@@ -1,7 +1,17 @@
 ## Project specific files
-data/
+data/*
+!data/analysis/
+data/analysis/*
+!data/analysis/*/
+# Ignore all per-song analysis outputs by default.
+data/analysis/*/**
+!data/analysis/*/reference/
 !ui/src/lib/data/
 !ui/src/lib/data/**
+!ui/src/data/
+!ui/src/data/**
+!data/analysis/*/reference/human/
+!data/analysis/*/reference/human/*.json
 logs/
 models/
 
@@ -211,3 +221,8 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# drop-detection exploration: regenerable feature cache
+experiments/drop_detection/cache/
+experiments/drop_detection/research/cache/mert/
+experiments/drop_detection/research/cache/clap*/

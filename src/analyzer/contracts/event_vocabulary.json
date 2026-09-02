@@ -6,6 +6,17 @@
     "canonical_only": true,
     "normalize_aliases_on_ingest": true
   },
+  "composite_phase_vocabulary": {
+    "description": "v1.1 item 4.1 \u2014 ordered sub-phases of a composite gesture in song_event_timeline.json. Each phase carries phase, start_time, end_time, intensity. A composite with no impact/release phase is the withheld-release (fake_drop) case.",
+    "phases": [
+      "approach",
+      "build",
+      "tension",
+      "impact",
+      "release",
+      "recovery"
+    ]
+  },
   "categories": [
     {
       "name": "transition",
@@ -209,22 +220,24 @@
     {
       "name": "layer_add",
       "category": "arrangement_change",
-      "description": "An arrangement moment where material is added and density or width meaningfully increases, typically showing an increase in overall RMS loudness, addition of new active stems, and/or expansion of FFT activity.",
+      "description": "DEPRECATED in v1.1 (item 4.2): no longer emitted as a timeline event. Arrangement change is summarised per section in song_event_timeline.json texture_summary[]. Retained here only as an ingest alias for older data. An arrangement moment where material is added and density or width meaningfully increases, typically showing an increase in overall RMS loudness, addition of new active stems, and/or expansion of FFT activity.",
       "aliases": [
         "add_layer",
         "add-layer",
         "layer-in"
-      ]
+      ],
+      "deprecated": true
     },
     {
       "name": "layer_remove",
       "category": "arrangement_change",
-      "description": "An arrangement moment where material is stripped back and density meaningfully decreases, typically showing a decrease in overall RMS loudness, reduction of active stems, and/or simplification of FFT activity.",
+      "description": "DEPRECATED in v1.1 (item 4.2): no longer emitted as a timeline event. Arrangement change is summarised per section in song_event_timeline.json texture_summary[]. Retained here only as an ingest alias for older data. An arrangement moment where material is stripped back and density meaningfully decreases, typically showing a decrease in overall RMS loudness, reduction of active stems, and/or simplification of FFT activity.",
       "aliases": [
         "remove_layer",
         "remove-layer",
         "layer-out"
-      ]
+      ],
+      "deprecated": true
     },
     {
       "name": "impact_hit",

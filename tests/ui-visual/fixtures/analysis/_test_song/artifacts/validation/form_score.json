@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.1",
+  "song_name": "_test_song",
+  "target": "form",
+  "tolerance_seconds": 2.0,
+  "predicted_boundary_count": 3,
+  "labelled_boundary_count": 0,
+  "form_family_predicted": "hybrid",
+  "form_family_labelled": null,
+  "form_family_match": false,
+  "mode": "unlabelled",
+  "confidence_calibration": {
+    "buckets": [
+      {
+        "range": [
+          0.0,
+          0.2
+        ],
+        "section_count": 2,
+        "observed_alignment": null
+      },
+      {
+        "range": [
+          0.2,
+          0.4
+        ],
+        "section_count": 1,
+        "observed_alignment": null
+      },
+      {
+        "range": [
+          0.4,
+          0.6
+        ],
+        "section_count": 0,
+        "observed_alignment": null
+      },
+      {
+        "range": [
+          0.6,
+          0.8
+        ],
+        "section_count": 0,
+        "observed_alignment": null
+      },
+      {
+        "range": [
+          0.8,
+          1.01
+        ],
+        "section_count": 0,
+        "observed_alignment": null
+      }
+    ],
+    "predicted_spread": 0.0967
+  }
+}
