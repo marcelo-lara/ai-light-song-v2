@@ -1,3 +1,11 @@
+> **DRAFTED, NOT STARTED — premise under review.** This worklist aims to
+> improve *drop* detection as a first-class target. The 2026-09 model
+> survey in [`../experiments/drop_detection/README.md`](../experiments/drop_detection/README.md)
+> argues that a drop is better derived from a named section transition than
+> detected directly, and measured the segmentation this plan builds on at
+> 0/7 boundaries within +/-1.0 s of a human-marked impact. Re-decide the
+> approach before implementing any item here.
+
 # Product Refinement — v2.2
 
 Active worklist for the **v2.2** release of the analysis module. Items here are
@@ -12,7 +20,7 @@ refinements that support labelling that rebuild.
 ## Version convention
 
 Unchanged from v2.1 — the full table and its rationale live in
-[product-refinement-v2.1.md](product-refinement-v2.1.md) under *Version
+[product-refinement-v2.1.md](archive/product-refinement-v2.1.md) under *Version
 convention*. In short:
 
 | Carrier | Rule |
@@ -31,7 +39,7 @@ tag.
 
 v2.1 is code-complete; its `v2.1` tag is held on two host-dependent gates —
 **D1** (gold-set timed labelling) and **D2** (full-corpus GPU validation run) —
-recorded in [implementation-plan-v2.1.md](implementation-plan-v2.1.md). Those
+recorded in [implementation-plan-v2.1.md](archive/implementation-plan-v2.1.md). Those
 gates close v2.1 and are **not** v2.2 items. v2.2 work may begin against the
 committed v2.1 code before the tag lands; where a v2.2 item depends on a D1/D2
 outcome, it says so.
@@ -71,7 +79,7 @@ Items 3–7 below deliver this. Item 1 removes `beatdrop_visual_plan.json`, the 
 consumer for which v2.1 had deferred the composite migration.
 
 The consumer contract this release optimises against is unchanged:
-[source references/analysis-input-guide.md](source%20references/analysis-input-guide.md).
+[source references/analysis-input-guide.md](reference/analysis-input-guide.md).
 Compatibility with the current artifact set and the MCP server's present
 projections is **not** a constraint — where a schema, vocabulary, or file layout
 blocks a more correct musical read, it changes, and the change is documented in
@@ -87,7 +95,7 @@ on a projection or LED wall. Its output is a `preset_id` schedule with
 visualizer-preset descriptors (`aggressive`, `hypnotic`, `dreamy`,
 `hard_cut_friendly`). None of that maps onto moving-head control (pan/tilt,
 colour, gobo, prism, zoom, beam-vs-wash, shutter), and the MCP consumer contract
-[analysis-input-guide.md](source%20references/analysis-input-guide.md) — the
+[analysis-input-guide.md](reference/analysis-input-guide.md) — the
 document the light show is actually authored from — does not reference the file
 at all. It is a mandatory per-song deliverable that nothing downstream reads.
 
@@ -460,7 +468,7 @@ Carries the v2.1 conventions unchanged:
 - **Story specs are updated inside the item that changes them.**
 - **Projected-shape changes update the in-repo MCP server in the same commit.**
   The song-understanding MCP server now lives in this repo (`mcp/`, see
-  [mcp-server/product-definition.md](mcp-server/product-definition.md)); an item
+  [mcp-server/product-definition.md](reference/mcp-server-product-definition.md)); an item
   that reshapes an artifact it projects also updates the affected serializer and
   its golden snapshots, and the tests fail if it drifts. A **contract-change
   note** (`contract-change-v2.2.md`) is still maintained for any *external*

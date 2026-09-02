@@ -1,37 +1,19 @@
 # ai-light-song-v2
 
-**Status:** `v2.1` code complete — all plan items implemented and committed (one
-commit per item); the `v2.1` tag is held pending two host-dependent gates, the
-gold-set labelling pass (D1) and the full-corpus GPU validation run (D2). The
-module release line is `v2.x` to match the repo and the `UI v2` rebuild; `v2.1`
-was drafted as `v1.1` and renumbered before tagging (there is no `v1.x` tag).
-`v2.2` planning is now open. See
-[docs/product-refinement-v2.1.md](docs/product-refinement-v2.1.md) (v2.1
-worklist and the version convention),
-[docs/implementation-plan-v2.1.md](docs/implementation-plan-v2.1.md) (per-item
-status), [docs/source references/contract-change-v2.1.md](docs/source%20references/contract-change-v2.1.md)
-(the MCP handover note), and
-[docs/product-refinement-v2.2.md](docs/product-refinement-v2.2.md) (the next
-release worklist).
+A Docker-first pipeline that turns a source song into **concrete, reliable,
+precisely-timed musical facts** that a reasoning model can author a
+production-quality light show from. This repo is the analysis module of a
+three-part stage-lighting system: it works out a song's structure and intention
+precisely enough that a downstream MCP server can author the show from the
+analysis alone.
 
-A new **`mcp/`** component is being specced: a read-only, token-efficient MCP
-server that projects song mood, sections, and dynamics (drop sequences
-especially) to a reasoning model — whole-song overview plus on-demand segment
-detail. Song comprehension only; cue authoring belongs to the separate
-`ai-dmx-light-render` server. Definition and build plan:
-[docs/mcp-server/](docs/mcp-server/).
+It is the *foundation* of a light show, not the light show. **Fixture-aware
+orchestration, cue authoring and DMX are out of scope** — see
+[docs/constitution.md](docs/constitution.md) §1.
 
-The internal debugger UI (`ui/`) is the `UI v2` from-scratch rebuild (React +
-TypeScript + Vite, the "Score Analysis DAW" design, wavesurfer.js as player and
-master clock) — items 1–11 committed; the `ui-v2` tag is held pending a
-live-browser parity pass. Close-out and parity sign-off:
-[docs/web-ui/ui-rebuild/](docs/web-ui/ui-rebuild/).
-
-A Docker-first pipeline that turns a source song into structured musical
-analysis artifacts and fixture-aware lighting guidance. This repo is the
-analysis module of a three-part stage-lighting system: its job is to work out a
-song's structure and intention precisely enough that a downstream MCP server can
-author a light show from the analysis alone.
+**If you are an LLM, or new here, start with [CLAUDE.md](CLAUDE.md)** — what the
+system does, which stages are trusted, what the measurements say is broken, and
+which docs are current versus historical.
 
 This repository holds the runnable analyzer (`src/`), the artifact contracts it
 emits, the validation rules that score those artifacts, the read-only artifact
@@ -47,11 +29,12 @@ debugger (`ui/`), and the Docker environment.
 | 4 | Symbolic: note events, energy features, event-feature layer | `layer_b_symbolic.json`, `layer_c_energy.json` |
 | 5 | Events: vocabulary, rule baseline, ML classifier, review | `song_event_timeline.json` |
 | 6 | Guidance: genre, section hints, LLM-friendly song map | `hints.json` |
-| 7 | Lighting: feature-layer assembly, mapping, fixture score | `lighting_score.md` |
+| 7 | ~~Lighting: feature-layer assembly, mapping, fixture score~~ | **Legacy, no consumer** — out of scope per constitution §1.1 |
 | 8 | Internal read-only artifact debugger (`ui/`) | — |
 
-Per-epic and per-story specs live under `docs/` (see the
-[Documentation map](#documentation-map)).
+The stage list above is the shipped shape, not a quality claim — see
+[CLAUDE.md](CLAUDE.md) for which stages are trusted and which are measured as
+not working.
 
 ## Repository layout
 
@@ -68,15 +51,21 @@ The structure is part of the contract.
   `artifacts/stems/`.
 - `data/analysis/<Song - Artist>/reference/` — validation-only truth data
   (external tools, human hints). Scoring and comparison only.
-- `docs/` — canonical specs and contracts.
+- `docs/` — current contracts and reference; `docs/archive/` holds historical
+  story specs and release plans, which are **not** contracts.
 - `src/`, `ui/` — analyzer and debugger.
 
 ## Hard rules
 
 Full law is in [docs/constitution.md](docs/constitution.md). Load-bearing:
 
-- **Living docs.** A task is not done until its Story spec and docs match the
-  implementation.
+- **Scope.** Musical facts with times and confidences. Not fixture
+  orchestration, cue authoring or DMX.
+- **Living docs.** A task is not done until the current docs match the
+  implementation. This applies to `docs/` — *not* to `docs/archive/`, which is
+  a frozen historical record.
+- **Experiments are first-class**, live in `experiments/`, and must be measured
+  against the incumbent. Negative results get written down, not deleted.
 - **Determinism.** Same input + engine version ⇒ byte-identical artifacts. No
   silent fallbacks; fail explicitly or mark `unknown`.
 - **Reference isolation.** Never copy `reference/` data into generated artifacts
@@ -115,7 +104,7 @@ reports under `artifacts/validation/phase_1_report.{json,md}`. Stage progress
 lines are prefixed with the story id, e.g. `[1.1] YOUR_SONG | ensure-stems`.
 
 Full CLI reference (flags, compare targets, exit codes, validation workflow):
-[docs/source references/phase_1_validation_cli.md](docs/source%20references/phase_1_validation_cli.md).
+[docs/reference/phase_1_validation_cli.md](docs/reference/phase_1_validation_cli.md).
 
 ### Debugger UI
 
@@ -132,15 +121,14 @@ Helper-UI dev notes: [ui/README.HELPER_UI.md](ui/README.HELPER_UI.md).
 
 ## Documentation map
 
-- [docs/README.md](docs/README.md) — index of all specs, grouped by kind of work.
-- [docs/constitution.md](docs/constitution.md) — architecture North Star and project law.
-- [docs/Implementation_Guide.md](docs/Implementation_Guide.md) — full pipeline and repository contracts.
-- [docs/product-refinement-v2.2.md](docs/product-refinement-v2.2.md) — active release worklist (v2.2, planning).
-- [docs/product-refinement-v2.1.md](docs/product-refinement-v2.1.md) — v2.1 worklist and the version convention.
-- [docs/implementation-plan-v2.1.md](docs/implementation-plan-v2.1.md) — ordered v2.1 work, one commit per item.
+- [CLAUDE.md](CLAUDE.md) — entry point: current state, trusted vs. suspect stages, doc conventions.
+- [docs/README.md](docs/README.md) — index of current documents.
+- [docs/constitution.md](docs/constitution.md) — project law.
 - [docs/data_folder_reference.md](docs/data_folder_reference.md) — every `data/` file and its purpose.
-- [docs/source references/analysis-input-guide.md](docs/source%20references/analysis-input-guide.md) — what the downstream MCP server actually consumes; the contract analysis quality is judged against.
-- Story specs: [docs/audio-processing/](docs/audio-processing/), [docs/audio-inference/](docs/audio-inference/), [docs/lighting-score/](docs/lighting-score/), [docs/web-ui/](docs/web-ui/), [docs/human-curated/](docs/human-curated/).
+- [docs/source_files_reference.md](docs/source_files_reference.md) — map of `src/`.
+- [docs/reference/analysis-input-guide.md](docs/reference/analysis-input-guide.md) — what the downstream MCP server actually consumes; the contract analysis quality is judged against.
+- [docs/archive/](docs/archive/) — story specs, release plans and close-outs. **Historical records, not specifications.**
+- [experiments/drop_detection/README.md](experiments/drop_detection/README.md) — measured evaluation of the structural stages and of pretrained alternatives.
 
 ## Development environment
 
