@@ -12,7 +12,7 @@ measurements say is broken.
 
 | Doc | What it covers |
 | --- | --- |
-| [`constitution.md`](constitution.md) | Project law. §1 scope (musical facts, **not** fixture orchestration), §2 honesty, §3 the experiment lifecycle, §4 documentation, §6 time, §8 data governance, §9 change control. |
+| [`constitution.md`](constitution.md) | Project law. §1 scope (musical facts, **not** fixture orchestration), §2 honesty, §3 the experiment lifecycle, §4 documentation, §5 the four pipeline phases, §7 time, §9 data governance, §10 change control. |
 | [`data_folder_reference.md`](data_folder_reference.md) | Every file under `data/` and what produces it. The artifact contract. |
 | [`source_files_reference.md`](source_files_reference.md) | Map of `src/` — where each pipeline stage lives. Update it when you move code. |
 | [`docker_development.md`](docker_development.md) | Container runtime, GPU expectations, model caches. |

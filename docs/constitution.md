@@ -186,7 +186,82 @@ a status report on a system that is fine.
 
 ---
 
-## 5. Determinism and reproducibility
+## 5. Pipeline architecture — four phases
+
+The pipeline runs in four phases. The split is not organisational tidiness: it
+is what makes §2 enforceable, because it puts a line in the codebase past which
+everything is a claim that can be wrong.
+
+| Phase | Name | Reads | Produces |
+| --- | --- | --- | --- |
+| 1 | **measure** | audio | facts that cannot be musically wrong — beat grid, loudness, spectra, chroma, stems |
+| 2 | **interpret** | phase 1 + audio | claims about the music — chords, key, sections and their names, note and drum events, genre |
+| 3 | **relate** | phase 2 only, **never audio** | relations between what phase 2 named — identity, repetition, transitions, phrase structure, composite gestures |
+| 4 | **publish** | phases 1-3 | the projected deliverables, and nothing else |
+
+### 5.1 The line between phase 1 and phase 2
+
+It is **not** "DSP versus machine learning". Stem separation, beat tracking and
+transcription all use trained models, and excluding them would leave phase 1
+empty. The test is:
+
+> **Does this stage assert something that could be musically wrong?**
+
+A loudness curve cannot be wrong; it is a measurement. A chord label can. A
+section name can. Measurements go in phase 1, claims in phase 2.
+
+A consequence to honour rather than work around: **chroma extraction and chord
+decoding are two stages, not one.** Fusing them makes a chroma bug and a
+decoding bug indistinguishable in the artifact, which is exactly the ambiguity
+that made past chord issues hard to attribute.
+
+Phase 1 carries no `confidence` field, because there is nothing to be uncertain
+about. From phase 2 onward, confidence and provenance are mandatory (§2).
+
+### 5.2 Phase 3 is defined by its input
+
+Phase 3 is *not* "whatever is deterministic post-processing" — chord-pattern
+mining is deterministic arithmetic and still belongs here. The rule is
+structural: **phase 3 reads phase 2's output and never opens the audio.**
+
+That makes it the layer where the show actually gets its shape: which sections
+are the same one returning; that a transition is `chorus → inst`; that a **drop
+is derived from a named section pair rather than detected**; that a gesture has
+an approach, a build, a tension span, an impact and a release. Inferring a
+composite gesture straight from raw features, without the named structure to
+hang it on, is the mistake this phase exists to prevent.
+
+### 5.3 Feedback is allowed; mutation is not
+
+Phase 3 will sometimes improve on phase 2 — snapping a boundary to a phrase grid
+it derived, for instance. That is permitted, but it **writes a new artifact with
+provenance**; it never edits phase 2's output in place. Once a later phase can
+silently overwrite an earlier one, it stops being possible to say which stage was
+wrong, and the layering has bought nothing.
+
+### 5.4 Phase 4 owns the reach test
+
+Everything projected downstream is published here, and nothing else is published
+at all. §1.3 is this phase's acceptance criterion: a signal that reaches no
+projected file did not ship, whatever earlier phases computed.
+
+### 5.5 What is not a phase
+
+**Validation and the human/reference loop are orthogonal.** They observe every
+phase rather than occupying a position in the sequence, and must not be
+interleaved into it as ordinary stages — doing so is what previously scattered
+`validate-beats` and `validate-chords` through the middle of extraction. Each
+phase's output is scored independently, and human corrections may enter at any
+phase, subject to the promotion rules in §2.
+
+### 5.6 Adopting it
+
+Re-filing existing stages is not the point and is not worth doing on its own.
+The phases are the shape the rewrite takes: replacement structural inference
+lands as phase 2, identity and transitions as phase 3, and code that belongs to
+neither is deleted rather than relocated (§10).
+
+## 6. Determinism and reproducibility
 
 - **Same input, same engine version ⇒ byte-identical artifacts.**
 - **No hidden state.** All parameters explicit. No opportunistic mid-run
@@ -199,7 +274,7 @@ a status report on a system that is fine.
 
 ---
 
-## 6. Time
+## 7. Time
 
 - **Time values are in seconds** (float) in every artifact.
 - **Bars are 1-indexed.** Beat- and bar-aligned outputs sit on the canonical
@@ -213,7 +288,7 @@ a status report on a system that is fine.
 
 ---
 
-## 7. Environment isolation
+## 8. Environment isolation
 
 - **Docker is authoritative.** All analysis, validation and tests run inside the
   project's Compose services. Proposing host-installed Python or audio tooling
@@ -226,7 +301,7 @@ a status report on a system that is fine.
 
 ---
 
-## 8. Data governance
+## 9. Data governance
 
 - `data/songs/` — source audio. Inputs only.
 - `data/analysis/<Song - Artist>/` — the stable deliverable contract. Adding or
@@ -241,7 +316,7 @@ a status report on a system that is fine.
 
 ---
 
-## 9. Change control
+## 10. Change control
 
 - **Musical correctness outranks compatibility.** When the schema, the
   controlled vocabularies, the artifact file set or the downstream projection

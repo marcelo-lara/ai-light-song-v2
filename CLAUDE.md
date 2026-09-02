@@ -40,6 +40,28 @@ do not build a workaround. Judge a proposal by whether it makes the structural
 read more correct and more honestly-confident, not by whether it adds signals or
 preserves a contract.
 
+## The four phases
+
+The pipeline is layered so that §2's honesty rules are enforceable — there is a
+line past which everything is a claim that can be wrong
+([`docs/constitution.md`](docs/constitution.md) §5).
+
+| Phase | Reads | Produces |
+| --- | --- | --- |
+| 1 **measure** | audio | facts that cannot be musically wrong — beat grid, loudness, spectra, chroma, stems |
+| 2 **interpret** | phase 1 + audio | claims — chords, key, sections and their names, note/drum events, genre |
+| 3 **relate** | phase 2 only, **never audio** | identity, repetition, transitions, phrase structure, composite gestures |
+| 4 **publish** | phases 1-3 | the projected deliverables, and nothing else |
+
+The 1/2 line is **not** DSP vs. ML (stems, beats and transcription all use
+models); it is *does this stage assert something that could be musically wrong?*
+Phase 1 carries no confidence field; phase 2 onward always does. Phase 3 may
+refine phase 2 but writes a new artifact — never mutates. Validation and the
+human/reference loop are orthogonal to all four, not stages within them.
+
+The current code does not yet follow this. Adopt it as the shape of the
+segmentation rewrite rather than as a re-filing pass (§5.6).
+
 ## Current state — what to trust
 
 Measured against hand-labelled ground truth on the gold set (`Titanium - David
