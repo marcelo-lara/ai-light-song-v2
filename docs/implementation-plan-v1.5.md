@@ -56,7 +56,7 @@ the only statement of them that survives. Do not go looking for another source.
 | 2 | Left panel hides on song pick and on any outside click | R4, R5 | [x] done |
 | 3 | Lane events panel + `columns-plus-right` opener | R1 (stack), R2 | [x] done |
 | 4 | Active-card highlight and follow during playback | R1 (highlight) | [x] done |
-| 5 | Header readout — drop the bar.beat caption, reserve the space | R9, R10 | [ ] pending |
+| 5 | Header readout — drop the bar.beat caption, reserve the space | R9, R10 | [x] done |
 | 6 | Follow-playhead toggle in the footer | R6 | [ ] pending |
 | 7 | Flask badge on lanes fed by unpromoted experiments | R7 | [ ] pending |
 | 8 | `captured_from` note on the human-hints schema | R8 (enabling half) | [ ] pending |
@@ -692,14 +692,14 @@ first header baseline.
 
 ### Deliverable
 
-- [ ] `ui/src/App.tsx` — delete the `app-header__barbeat-caption` span (R9). The
+- [x] `ui/src/App.tsx` — delete the `app-header__barbeat-caption` span (R9). The
       wrapper `<div style={{ display: "flex", alignItems: "baseline", gap: … }}>`
       around it exists only to pair the value with that caption; collapse it so
       the bar.beat value is a direct child of `.app-header__center`.
-- [ ] `ui/src/styles/app.css` — delete the now-unused
+- [x] `ui/src/styles/app.css` — delete the now-unused
       `.app-header__barbeat-caption` rule (constitution §10: delete, don't keep
       it working).
-- [ ] `ui/src/styles/app.css` — reserve the readouts' width (R10). Both already
+- [x] `ui/src/styles/app.css` — reserve the readouts' width (R10). Both already
       inherit `font-variant-numeric: tabular-nums` from `.app-header__center`;
       restate it on each rule so a later refactor of the parent cannot silently
       remove the guarantee, and give each a fixed box:
@@ -710,13 +710,13 @@ first header baseline.
       - `.app-header__barbeat` — `display: inline-block; min-width: 6ch; text-align: right;`
         (`bar.beat`, six characters at a four-digit bar). Right-aligned so the
         decimal point holds still as the bar number grows.
-- [ ] No JS-side formatting change. `formatClock` and `coords.timeToBarBeat`
+- [x] No JS-side formatting change. `formatClock` and `coords.timeToBarBeat`
       keep their current output; this item is layout only.
 
 ### Docs to update in this commit
 
-- [ ] `reference/ui-regression_guide.md` §2 — new surface row `header-readout`.
-- [ ] `reference/ui-regression_guide.md` §9 — ticked line for the spec + baseline.
+- [x] `reference/ui-regression_guide.md` §2 — new surface row `header-readout`.
+- [x] `reference/ui-regression_guide.md` §9 — ticked line for the spec + baseline.
 
 ### Visual QA — item 5
 

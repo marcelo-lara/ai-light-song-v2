@@ -764,12 +764,9 @@ export function App(): React.JSX.Element {
             <span className="app-header__total">{formatClock(duration)}</span>
           </div>
           <div className="app-header__divider" />
-          <div style={{ display: "flex", alignItems: "baseline", gap: "var(--space-2)" }}>
-            <span className="app-header__barbeat">
-              {barBeat.bar}.{barBeat.beat}
-            </span>
-            <span className="app-header__barbeat-caption">bar.beat</span>
-          </div>
+          <span className="app-header__barbeat">
+            {barBeat.bar}.{barBeat.beat}
+          </span>
         </div>
 
         <div className="app-header__right">

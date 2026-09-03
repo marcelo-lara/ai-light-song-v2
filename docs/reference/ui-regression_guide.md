@@ -58,6 +58,7 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `human-hints-editor` | Right-side hint editor open | trigger "add hint" | Editor stays open; compact styling |
 | `hint-drag-resized` | `song-full` after a right-edge resize + interior move of two `humanHints` blocks | drag handles on the `humanHints` lane (plan v2.1 item 10) | Blocks at post-drag positions, pre-reload; `.app-timeline__grid`, waveform masked |
 | `validation-snapshot` | Validation panel populated | part of `song-full` (assert region) | Status, beat match ratio, comparison counts |
+| `header-readout` | `.app-header` with the playhead at `1:04.0` | `/?song=<full-fixture>`, click `hint-003` on the `humanHints` lane | Plan v1.5 item 5 / R9, R10: no `app-header__barbeat-caption`; time / total / bar.beat readouts have reserved widths so nothing shifts as the digit count grows; `.app-header` |
 
 Component-level (optional, faster feedback): capture individual panels
 (`HeroPanel`, `ArtifactSummaryPanel`, `SectionsPreviewPanel`,
@@ -422,3 +423,12 @@ should be well under that.
       (`lane-events-active.png` baseline). The pure rule is `activeBlockIndex`
       in `ui/src/panel/laneEvents.ts` (`laneEvents.test.ts`); the
       `scrollIntoView` follow is playback-only and not visually asserted.
+- [x] *(plan v1.5 item 5)* `tests/ui-visual/specs/header-readout.spec.ts` — R9/R10:
+      the `app-header__barbeat-caption` span is gone and `.app-header` no longer
+      contains the string "bar.beat"; the `.app-header__center`,
+      `.app-header__time` and `.app-header__barbeat` bounding boxes do not shift
+      (within 0.5 px) when the clock goes from `0:00.0` / bar `1.1` to `1:04.0`
+      and the bar number gains digits; the reserved widths are real
+      (`.app-header__time` ≥ 48 px, `.app-header__barbeat` ≥ 40 px at the short
+      strings). Baseline `header-readout.png` (`.app-header`) — the first header
+      baseline; no existing `.app-timeline__grid` baseline changes.
