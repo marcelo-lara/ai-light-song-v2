@@ -1,7 +1,7 @@
 // LaneHeader — items 5 (collapsed = title only) and 6 (caret keeps a fixed slot).
 
-import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { LaneHeader } from "./TimelineGrid";
 import {
@@ -67,5 +67,91 @@ describe("item 6 — collapse/expand caret keeps a fixed slot", () => {
     expect(cCaret.getAttribute("data-testid")).toBe(eCaret.getAttribute("data-testid"));
     expect(cCaret.querySelector("i")?.className).toBe("ph ph-caret-right");
     expect(eCaret.querySelector("i")?.className).toBe("ph ph-caret-down");
+  });
+});
+
+describe("item 3 — columns-plus-right events opener", () => {
+  it("renders only when onOpenEvents is given", () => {
+    const without = render(
+      <LaneHeader lane={makeLane(true)} onToggleExpand={() => {}} />,
+    );
+    expect(
+      without.container.querySelector(".tl-lane-head__events"),
+    ).toBeNull();
+
+    const withOpener = render(
+      <LaneHeader
+        lane={makeLane(true)}
+        onToggleExpand={() => {}}
+        onOpenEvents={() => {}}
+      />,
+    );
+    const btn = withOpener.container.querySelector(
+      ".tl-lane-head__events",
+    ) as HTMLElement;
+    expect(btn).not.toBeNull();
+    expect(btn.getAttribute("data-testid")).toBe("lane-events-rmsLoudness");
+    expect(btn.querySelector("i")?.className).toBe("ph ph-columns-plus-right");
+  });
+
+  it("renders as the last child of the lane head", () => {
+    const { container } = render(
+      <LaneHeader
+        lane={makeLane(true)}
+        onToggleExpand={() => {}}
+        onOpenEvents={() => {}}
+      />,
+    );
+    const head = container.querySelector(".tl-lane-head") as HTMLElement;
+    expect(head.lastElementChild?.classList.contains("tl-lane-head__events")).toBe(
+      true,
+    );
+  });
+
+  it("aria-pressed follows eventsOpen", () => {
+    const closed = render(
+      <LaneHeader
+        lane={makeLane(true)}
+        onToggleExpand={() => {}}
+        onOpenEvents={() => {}}
+        eventsOpen={false}
+      />,
+    );
+    expect(
+      closed.container
+        .querySelector(".tl-lane-head__events")
+        ?.getAttribute("aria-pressed"),
+    ).toBe("false");
+
+    const open = render(
+      <LaneHeader
+        lane={makeLane(true)}
+        onToggleExpand={() => {}}
+        onOpenEvents={() => {}}
+        eventsOpen
+      />,
+    );
+    expect(
+      open.container
+        .querySelector(".tl-lane-head__events")
+        ?.getAttribute("aria-pressed"),
+    ).toBe("true");
+  });
+
+  it("clicking it calls onOpenEvents(lane.id) and not onToggleExpand", () => {
+    const onOpenEvents = vi.fn();
+    const onToggleExpand = vi.fn();
+    const { container } = render(
+      <LaneHeader
+        lane={makeLane(true)}
+        onToggleExpand={onToggleExpand}
+        onOpenEvents={onOpenEvents}
+      />,
+    );
+    fireEvent.click(
+      container.querySelector(".tl-lane-head__events") as HTMLElement,
+    );
+    expect(onOpenEvents).toHaveBeenCalledWith("rmsLoudness");
+    expect(onToggleExpand).not.toHaveBeenCalled();
   });
 });

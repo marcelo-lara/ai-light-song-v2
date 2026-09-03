@@ -54,7 +54,7 @@ the only statement of them that survives. Do not go looking for another source.
 | --- | --- | --- | --- |
 | 1 | A card click never moves the playhead while the transport is playing | R3 | [x] done |
 | 2 | Left panel hides on song pick and on any outside click | R4, R5 | [x] done |
-| 3 | Lane events panel + `columns-plus-right` opener | R1 (stack), R2 | [ ] pending |
+| 3 | Lane events panel + `columns-plus-right` opener | R1 (stack), R2 | [x] done |
 | 4 | Active-card highlight and follow during playback | R1 (highlight) | [ ] pending |
 | 5 | Header readout — drop the bar.beat caption, reserve the space | R9, R10 | [ ] pending |
 | 6 | Follow-playhead toggle in the footer | R6 | [ ] pending |
@@ -419,13 +419,13 @@ card.
 
 ### Deliverable
 
-- [ ] `ui/src/panel/RightPanel.tsx` — add `modal?: boolean` (**default `true`**,
+- [x] `ui/src/panel/RightPanel.tsx` — add `modal?: boolean` (**default `true`**,
       so the three existing modes are byte-identical in behaviour). When
       `modal === false`: skip `useFocusTrap`, skip the outside-`mousedown`
       dismissal, render `<aside role="complementary">` without `aria-modal`.
       Keep the `esc` handler and the ✕ button in both modes. (D3.)
-- [ ] `ui/src/panel/RightPanel.tsx` — `PanelMode` gains `"lane"`.
-- [ ] `ui/src/panel/LaneEventsPanel.tsx` (new) — the stacked list. Props:
+- [x] `ui/src/panel/RightPanel.tsx` — `PanelMode` gains `"lane"`.
+- [x] `ui/src/panel/LaneEventsPanel.tsx` (new) — the stacked list. Props:
       `laneId`, `laneLabel`, `blocks: readonly SparseBlock[]`,
       `status: ArtifactStatus`, `error: string | null`, `onClose`,
       `onSelectBlock(block)`. Renders inside `RightPanel` with `modal={false}`:
@@ -448,8 +448,8 @@ card.
         `status === "loading"` → `Loading…`; `status === "error"` →
         `Unavailable — {error}`; ready with no blocks →
         `No data in this artifact`.
-- [ ] `ui/src/panel/index.ts` — export `LaneEventsPanel`.
-- [ ] `ui/src/timeline/TimelineGrid.tsx` — `LaneHeader` gains optional
+- [x] `ui/src/panel/index.ts` — export `LaneEventsPanel`.
+- [x] `ui/src/timeline/TimelineGrid.tsx` — `LaneHeader` gains optional
       `onOpenEvents?: (laneId: string) => void` and `eventsOpen?: boolean`. When
       `onOpenEvents` is present it renders, as the **last flex child of
       `.tl-lane-head`** (after `.tl-lane-head__text`):
@@ -469,12 +469,12 @@ card.
 
       `ph-columns-plus-right` is present in the vendored subset
       (`ui/src/styles/phosphor/style.css`) — do not add an icon dependency.
-- [ ] `ui/src/timeline/TimelineGrid.tsx` — `TimelineGrid` takes
+- [x] `ui/src/timeline/TimelineGrid.tsx` — `TimelineGrid` takes
       `onOpenLaneEvents?: (laneId: string) => void` and `eventsLaneId?: string | null`,
       and passes `onOpenEvents` down **only for lanes in `SPARSE_LANE_IDS`**
       (imported from `./laneContent`). Waveform, the canvas data lanes and the
       Regression Overlay therefore get no button — they have no event list.
-- [ ] `ui/src/App.tsx` — `const [eventsLaneId, setEventsLaneId] = useState<string | null>(null)`;
+- [x] `ui/src/App.tsx` — `const [eventsLaneId, setEventsLaneId] = useState<string | null>(null)`;
       `toggleLaneEvents(laneId)`: if `panelMode === "lane" && eventsLaneId === laneId`
       → close (`setPanelMode(null); setEventsLaneId(null)`); otherwise
       `setSelection(null); setActiveHintRef(null); setHintSeed(null);
@@ -484,10 +484,10 @@ card.
       `activeView === "timeline" && song && panelMode === "lane" && eventsLaneId`,
       feeding it `buildLaneBlocks(eventsLaneId, laneContentSources)` and the
       status of `artifacts[SPARSE_LANE_ARTIFACT[eventsLaneId]]`.
-- [ ] `ui/src/App.tsx` — `onSelectBlock` seeks through
+- [x] `ui/src/App.tsx` — `onSelectBlock` seeks through
       `seekTimeForCardClick(transport.isPlaying, block.start_s)` (item 1) and
       does nothing else (D2).
-- [ ] `ui/src/styles/daw.css`:
+- [x] `ui/src/styles/daw.css`:
       - `.tl-lane-head__events` — mirror `.caret`: 18×18 grid, transparent
         background, `color: var(--color-neutral-700)`, `font-size: 11px`,
         `border: none`, `border-radius: 3px`, `flex: none`,
@@ -505,7 +505,7 @@ card.
         `gap: 1px`, `cursor: pointer`.
       - `.lane-events__label` — reuse `.tl-lane-head__name`'s font stack/size;
         `.lane-events__caption` — reuse `.tl-lane-head__sub`'s.
-- [ ] Unit tests:
+- [x] Unit tests:
       - `ui/src/timeline/LaneHeader.test.tsx` — the button renders when
         `onOpenEvents` is given and is absent when it is not; `aria-pressed`
         follows `eventsOpen`; clicking it calls `onOpenEvents(lane.id)` and
@@ -519,13 +519,13 @@ card.
 
 ### Docs to update in this commit
 
-- [ ] `reference/ui-regression_guide.md` §2 — new surface row
+- [x] `reference/ui-regression_guide.md` §2 — new surface row
       `lane-events-panel`: "`song-full` with the Human Hints lane's events panel
       open · click `lane-events-humanHints` · stacked cards, no inter-card gap".
-- [ ] `reference/ui-regression_guide.md` §5.5 — add `lane-events-<laneId>` (the
+- [x] `reference/ui-regression_guide.md` §5.5 — add `lane-events-<laneId>` (the
       opener, on every block lane's head), `lane-events-panel` (the `<ol>`), and
       `lane-event-<blockId>` (each card).
-- [ ] `reference/ui-regression_guide.md` §9 — ticked lines for the new spec and
+- [x] `reference/ui-regression_guide.md` §9 — ticked lines for the new spec and
       the baseline re-capture, with the one-line justification below.
 
 ### Visual QA — item 3

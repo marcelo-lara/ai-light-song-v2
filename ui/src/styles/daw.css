@@ -233,6 +233,34 @@ input[type="range"]:focus-visible {
   text-overflow: ellipsis;
 }
 
+/* plan v1.5 item 3 — the `columns-plus-right` events opener. Mirrors `.caret`
+ * (18×18 grid, quiet neutral, no border) and, like it, is anchored to the top
+ * of the `flex-start` row (`align-self: flex-start`) so its box is identical
+ * whether the lane is expanded or collapsed. `.tl-lane-head__text`'s `flex: 1`
+ * pushes it to the head's right edge (R2). */
+.tl-lane-head__events {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 3px;
+  flex: none;
+  align-self: flex-start;
+}
+.tl-lane-head__events:hover {
+  color: var(--color-accent-300);
+  background: var(--color-neutral-900);
+}
+.tl-lane-head__events:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
 .tl-lane-body { position: relative; overflow: hidden; }
 
 /* ---- Waveform Anchor lane (wavesurfer, design notes §3a) ---- */
@@ -537,6 +565,46 @@ input[type="range"]:focus-visible {
   gap: var(--space-2);
 }
 .tp--round { border-radius: 50%; width: 22px; height: 22px; font-size: 12px; }
+
+/* ---- Lane events panel (plan v1.5 item 3 / R1) --------------------------- */
+
+/* Small count beside the lane kicker in the panel header. */
+.lane-events__count {
+  font: 400 10px/1 var(--font-body);
+  color: var(--color-neutral-700);
+}
+/* The stacked list — full-bleed past `.app-rightpanel`'s padding, and R1's
+ * "without intermediate spaces": no gap between cards. */
+.lane-events {
+  list-style: none;
+  margin: 0 calc(-1 * var(--space-6));
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.lane-events__card {
+  width: 100%;
+  text-align: left;
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-left: 3px solid; /* tint stroke, set inline */
+  border-bottom: 1px solid var(--tl-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  cursor: pointer;
+}
+/* label reuses `.tl-lane-head__name`'s font; caption `.tl-lane-head__sub`'s. */
+.lane-events__label {
+  font: 500 12.5px/1.3 var(--font-heading);
+  letter-spacing: -0.01em;
+  color: var(--color-neutral-200);
+}
+.lane-events__caption {
+  font: 400 9.5px/1.35 var(--font-body);
+  color: var(--color-neutral-700);
+}
 
 /* ---- Block inspector ---- */
 

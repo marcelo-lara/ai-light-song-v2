@@ -7,6 +7,7 @@ import { draftToHint, hintToDraft } from "./panel/hintDraft";
 import {
   BlockInspector,
   HintEditorPanel,
+  LaneEventsPanel,
   ReviewQueuePanel,
   RightPanel,
   selectionFromMarker,
@@ -33,10 +34,14 @@ import { followScrollLeft, LABEL_WIDTH } from "./timeline/follow";
 import { CanvasLane, type CanvasLaneSource } from "./timeline/CanvasLane";
 import { FitToWidthButton } from "./timeline/FitToWidthButton";
 import { SparseLane } from "./timeline/SparseLane";
-import { buildLaneBlocks, type LaneContentSources } from "./timeline/laneContent";
+import {
+  buildLaneBlocks,
+  type LaneContentSources,
+  type SparseBlock,
+} from "./timeline/laneContent";
 import { LaneList } from "./timeline/LaneList";
 import type { LaneMarker } from "./timeline/laneRenderers";
-import { useLaneState } from "./timeline/laneState";
+import { LANE_DEFS, useLaneState } from "./timeline/laneState";
 import type { Lane } from "./timeline/laneState";
 import type { SegmentBlock } from "./timeline/segments";
 import { TimelineGrid } from "./timeline/TimelineGrid";
@@ -144,6 +149,8 @@ export function App(): React.JSX.Element {
   // Right-panel modes (item 6). `review` is item 7's seam.
   const [panelMode, setPanelMode] = useState<PanelMode | null>(null);
   const [selection, setSelection] = useState<BlockSelection | null>(null);
+  // plan v1.5 item 3: the sparse lane whose stacked events panel is open.
+  const [eventsLaneId, setEventsLaneId] = useState<string | null>(null);
   const [activeHintRef, setActiveHintRef] = useState<string | null>(null);
   const [hintsOverride, setHintsOverride] = useState<HumanHintsFile | null>(null);
   // item 8: a pending "create a draft hint at this time" request from a
@@ -272,6 +279,7 @@ export function App(): React.JSX.Element {
     setActiveHintRef(null);
     setHintsOverride(null);
     setHintSeed(null);
+    setEventsLaneId(null);
   }, [song]);
 
   const closePanel = useCallback(() => {
@@ -279,7 +287,52 @@ export function App(): React.JSX.Element {
     setSelection(null);
     setActiveHintRef(null);
     setHintSeed(null);
+    setEventsLaneId(null);
   }, []);
+
+  // plan v1.5 item 3 / R2: open the stacked events panel for a lane, replacing
+  // any previous lane panel; a second click on the same lane's opener closes it.
+  const toggleLaneEvents = useCallback(
+    (laneId: string) => {
+      if (panelMode === "lane" && eventsLaneId === laneId) {
+        setPanelMode(null);
+        setEventsLaneId(null);
+        return;
+      }
+      setSelection(null);
+      setActiveHintRef(null);
+      setHintSeed(null);
+      setEventsLaneId(laneId);
+      setPanelMode("lane");
+    },
+    [panelMode, eventsLaneId],
+  );
+
+  // plan v1.5 item 3: props for the lane-events panel, or null when it is shut.
+  const eventsPanel = useMemo(() => {
+    if (panelMode !== "lane" || !eventsLaneId) return null;
+    const key = SPARSE_LANE_ARTIFACT[eventsLaneId];
+    const art = key ? artifacts[key] : null;
+    const status: ArtifactLoadStatus = art?.status ?? "idle";
+    return {
+      laneId: eventsLaneId,
+      laneLabel:
+        LANE_DEFS.find((d) => d.id === eventsLaneId)?.label ?? eventsLaneId,
+      blocks: buildLaneBlocks(eventsLaneId, laneContentSources),
+      status,
+      error: art?.error?.message ?? null,
+    };
+  }, [panelMode, eventsLaneId, artifacts, laneContentSources]);
+
+  // R3/D1 + D2: a lane-events card click seeks (only when paused) and nothing
+  // else — the panel stays on the same lane.
+  const handleSelectBlock = useCallback(
+    (block: SparseBlock) => {
+      const seekTo = seekTimeForCardClick(transport.isPlaying, block.start_s);
+      if (seekTo !== null) transport.seekTo(seekTo);
+    },
+    [transport],
+  );
 
   const scrollTimelineToTime = useCallback(
     (seconds: number) => {
@@ -814,6 +867,8 @@ export function App(): React.JSX.Element {
                 onToggleExpand={laneState.toggleExpanded}
                 onSelectSegment={handleSelectSegment}
                 renderLaneBody={renderLaneBody}
+                onOpenLaneEvents={toggleLaneEvents}
+                eventsLaneId={panelMode === "lane" ? eventsLaneId : null}
                 scrollerRef={scrollerRef}
               />
               {laneListOpen && (
@@ -859,6 +914,18 @@ export function App(): React.JSX.Element {
           >
             <BlockInspector selection={selection} />
           </RightPanel>
+        )}
+
+        {activeView === "timeline" && song && eventsPanel && (
+          <LaneEventsPanel
+            laneId={eventsPanel.laneId}
+            laneLabel={eventsPanel.laneLabel}
+            blocks={eventsPanel.blocks}
+            status={eventsPanel.status}
+            error={eventsPanel.error}
+            onClose={closePanel}
+            onSelectBlock={handleSelectBlock}
+          />
         )}
 
         {activeView === "timeline" && song && panelMode === "hint" && (

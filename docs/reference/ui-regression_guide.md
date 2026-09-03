@@ -51,6 +51,7 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `timeline-scrolled` | `song-full` scrolled to ~50% | set viewport scrollLeft | Marker + ruler alignment mid-song |
 | `sidebar-expanded` | `song-full` with sidebar open | click sidebar toggle | Path panel, file-status list, lane toggles. Dismissal (plan v1.5 item 2 / R4, R5): a `mousedown` anywhere outside the drawer and the burger closes it; an inside click never does; picking a song in the song picker closes it too. |
 | `lane-toggles-min` | `song-full` with only waveform + sections visible | toggle lanes off | Lane show/hide layout reflow |
+| `lane-events-panel` | `song-full` with the Human Hints lane's events panel open | click `lane-events-humanHints` | Stacked cards, no inter-card gap; non-modal (survives Play, timeline drag, scroll); `.app-rightpanel` |
 | `overlay-open` | Hovercard/selection overlay | click a sections-lane region | Overlay anchor + content |
 | `detail-inspector` | Raw JSON inspector | select an artifact in the inspector dropdown | Scroll region, formatting |
 | `human-hints-editor` | Right-side hint editor open | trigger "add hint" | Editor stays open; compact styling |
@@ -266,6 +267,10 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
   block drag hit-zones are registered (the executor waits on this, no timeout).
 - hint editor (plan v2.1 item 10): `hint-editor` on the editor panel root, with
   `data-hint-id="<id>"` for the hint currently loaded.
+- lane events panel (plan v1.5 item 3): `lane-events-<laneId>` on the
+  `columns-plus-right` opener in every block lane's head (`aria-pressed`
+  tracks the open panel); `lane-events-panel` on the stacked `<ol>` (with
+  `data-lane="<laneId>"`); `lane-event-<blockId>` on each card.
 
 Still pending (later plan items / not yet needed): `song-select`,
 `transport-play` / `transport-pause`, `selection-overlay`. Prefer `getByRole` /
@@ -392,3 +397,20 @@ should be well under that.
       re-open it, `esc` still closes, and picking a song closes it. The pure
       rule is `shouldDismissLeftPanel` in `ui/src/app/panelState.ts`
       (`panelState.test.ts` truth table).
+- [x] *(plan v1.5 item 3)* `tests/ui-visual/specs/lane-events.spec.ts` — the
+      `columns-plus-right` opener sits right-aligned in every block lane's head
+      and does not move the collapse caret; clicking it stacks that lane's
+      events in the right panel (`lane-events-panel.png` baseline), the panel is
+      non-modal (survives a viewport click, a caret click and a zoom), a second
+      opener click toggles it off, opening another lane's replaces it (never two
+      panels), and `esc` closes it.
+- [x] *(plan v1.5 item 3)* Re-capture every `.app-timeline__grid` baseline —
+      `song-full`, `song-full-waveform`, `song-no-audio`, `left-panel-open`,
+      `lane-collapsed`, `lanes-hidden-all`, `timeline-scrolled-50`,
+      `timeline-zoom-min` (both the `timeline-zoom` and `fit-to-width` snapshot
+      dirs), `timeline-zoom-max`, `hint-drag-resized`. Justification: "lane
+      heads gain the `columns-plus-right` events opener (plan v1.5 item 3)" — an
+      18px glyph added to thirteen lane heads, under `maxDiffPixelRatio` on a
+      full-grid capture, so the old baselines may pass while being wrong.
+      `waveform-no-audio.png` (locator `.tl-lane-body[data-lane="waveform"]`,
+      which has no lane head) must **not** change.

@@ -55,4 +55,13 @@ describe("App shell", () => {
     render(<App />);
     expect(screen.getByText(/open .Select Song/i)).toBeInTheDocument();
   });
+
+  // item 3: no lane-events panel until a lane opener is clicked (App renders
+  // without a song in jsdom, so this just guards the default render path).
+  it("renders no lane-events panel by default", () => {
+    const { container } = render(<App />);
+    expect(
+      container.querySelector('[data-testid="lane-events-panel"]'),
+    ).toBeNull();
+  });
 });
