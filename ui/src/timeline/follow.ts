@@ -40,3 +40,53 @@ export function followScrollLeft(input: FollowInput): number {
   const clamped = Math.max(0, Math.min(next, Math.max(maxScrollLeft, 0)));
   return clamped;
 }
+
+// ---- Follow-playhead toggle (plan v1.5 item 6 / R6) -----------------------
+//
+// The footer toggle's flag persists per session, default on (D7): turning
+// following *off* is what R6 asks for, so a first-time load keeps today's
+// behaviour. Storage shape copied from `app/panelState.ts` — a versioned key,
+// try/catch around both accessors, the default on anything unreadable.
+
+/** First-load / unreadable-storage default: follow the playhead (plan v1.5 D7). */
+export const DEFAULT_FOLLOW_PLAYHEAD = true;
+
+const STORAGE_KEY = "als.ui.followPlayhead.v1";
+
+/** Read the persisted follow flag; absent or unreadable → the default. */
+export function loadFollowPlayhead(): boolean {
+  try {
+    const raw = globalThis.localStorage?.getItem(STORAGE_KEY);
+    if (raw == null) return DEFAULT_FOLLOW_PLAYHEAD;
+    return raw === "true";
+  } catch {
+    return DEFAULT_FOLLOW_PLAYHEAD;
+  }
+}
+
+/** Persist the follow flag. Best-effort — persistence is a convenience. */
+export function saveFollowPlayhead(on: boolean): void {
+  try {
+    globalThis.localStorage?.setItem(STORAGE_KEY, String(on));
+  } catch {
+    // ignore — private window / blocked storage
+  }
+}
+
+/**
+ * D6: did the user scroll, or did the follow effect? The follow effect writes
+ * `el.scrollLeft` itself, so the scroll listener cannot tell whose scroll it is
+ * observing without help. `lastProgrammatic` is the offset the effect last
+ * wrote (null when it has written none — so the observed scroll must be the
+ * user's). Any observed offset further than `tolerancePx` from the last
+ * programmatic write is the user's; this covers wheel, trackpad, scrollbar drag
+ * and keyboard alike. Pure — unit-testable without a browser.
+ */
+export function isUserScroll(
+  observed: number,
+  lastProgrammatic: number | null,
+  tolerancePx = 1,
+): boolean {
+  if (lastProgrammatic == null) return true;
+  return Math.abs(observed - lastProgrammatic) > tolerancePx;
+}

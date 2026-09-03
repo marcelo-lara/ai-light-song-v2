@@ -11,7 +11,7 @@ import { useEffect, useRef } from "react";
 
 import { useFocusTrap } from "../app/useFocusTrap";
 
-export type PanelMode = "inspector" | "hint" | "review";
+export type PanelMode = "inspector" | "hint" | "review" | "lane";
 
 interface RightPanelProps {
   open: boolean;
@@ -20,6 +20,14 @@ interface RightPanelProps {
   header: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
+  /**
+   * Modal shell (default). The three original modes (inspector / hint / review)
+   * are modal: focus-trapped, `aria-modal`, dismissed by an outside mousedown.
+   * The lane-events panel (plan v1.5 item 3 / D3) passes `modal={false}` — it
+   * must survive Play, a timeline drag and a scroll, so it drops the trap, the
+   * `aria-modal` flag and the outside-click dismissal, keeping only `esc` + ✕.
+   */
+  modal?: boolean;
   "aria-label"?: string;
   /** optional test/data hooks forwarded to the panel root (item 10). */
   "data-testid"?: string | undefined;
@@ -36,6 +44,7 @@ export function RightPanel({
   header,
   children,
   footer,
+  modal = true,
   "aria-label": ariaLabel = "Detail panel",
   "data-testid": dataTestId,
   "data-hint-id": dataHintId,
@@ -45,7 +54,7 @@ export function RightPanel({
   // Focus trap + restore-on-close (plan item 10). The panel is the app's one
   // modal surface; while open, Tab stays inside it and closing returns focus
   // to the control that opened it (a lane block, a hint pill, a drawer entry).
-  useFocusTrap(ref, open);
+  useFocusTrap(ref, open && modal);
 
   useEffect(() => {
     if (!open) return;
@@ -55,6 +64,8 @@ export function RightPanel({
         onClose();
       }
     };
+    document.addEventListener("keydown", onKey);
+    if (!modal) return () => document.removeEventListener("keydown", onKey);
     const onPointer = (e: MouseEvent): void => {
       const target = e.target as Element | null;
       if (!target) return;
@@ -62,22 +73,21 @@ export function RightPanel({
       if (target.closest(IGNORE_OUTSIDE)) return;
       onClose();
     };
-    document.addEventListener("keydown", onKey);
     // `mousedown` so a drag that starts outside also dismisses.
     document.addEventListener("mousedown", onPointer);
     return () => {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("mousedown", onPointer);
     };
-  }, [open, onClose]);
+  }, [open, onClose, modal]);
 
   if (!open) return null;
 
   return (
     <aside
-      className="app-rightpanel app-rightpanel--modal"
-      role="dialog"
-      aria-modal="true"
+      className={`app-rightpanel${modal ? " app-rightpanel--modal" : ""}`}
+      role={modal ? "dialog" : "complementary"}
+      aria-modal={modal ? "true" : undefined}
       aria-label={ariaLabel}
       data-testid={dataTestId}
       data-hint-id={dataHintId}

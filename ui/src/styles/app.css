@@ -53,27 +53,33 @@
   font-variant-numeric: tabular-nums;
 }
 .app-header__time {
+  display: inline-block;
+  min-width: 7ch;
+  text-align: right;
   font: 500 20px/1 var(--font-heading);
   letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
 }
 .app-header__time-sep {
   font-size: 13px;
   color: var(--color-neutral-700);
 }
 .app-header__total {
+  display: inline-block;
+  min-width: 7ch;
+  text-align: left;
   font-size: 13px;
   color: var(--color-neutral-500);
+  font-variant-numeric: tabular-nums;
 }
 .app-header__barbeat {
+  display: inline-block;
+  min-width: 6ch;
+  text-align: right;
   font: 500 20px/1 var(--font-heading);
   letter-spacing: -0.01em;
   color: var(--color-accent-300);
-}
-.app-header__barbeat-caption {
-  font: 500 9px/1 var(--font-body);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-neutral-700);
+  font-variant-numeric: tabular-nums;
 }
 .app-header__right {
   display: flex;
@@ -227,7 +233,10 @@
   background: #13151f;
   border-left: 1px solid var(--color-neutral-900);
   overflow-y: auto;
-  padding: var(--space-6);
+  /* `.lane-events` full-bleeds past this padding with negative margins — clip
+   * the cross axis so that never shows a horizontal scrollbar. */
+  overflow-x: clip;
+  padding: var(--space-2);
 }
 
 /* ---- Footer ------------------------------------------------------- */

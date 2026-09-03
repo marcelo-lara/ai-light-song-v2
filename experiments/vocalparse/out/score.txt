@@ -1,0 +1,7 @@
+lyric WER / word-onset MAE against reference/moises (｜ = missing)
+
+  song                                 VP WER  Whisper WER  Whisper onset MAE
+  _test_song                             0.12         0.04             0.59 s
+  Titanium - David Guetta ft Sia         1.00         0.32             0.41 s
+  Hideaway - Kiesza                      1.00         0.97            26.94 s
+  Armin - Revolution                     1.00         0.99            71.14 s

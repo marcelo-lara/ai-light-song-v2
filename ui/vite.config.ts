@@ -90,6 +90,7 @@ type NormalizedHint = {
   end_time: number;
   summary: string;
   lighting_hint: string;
+  captured_from?: string;
 };
 
 function normalizeHumanHintPayload(payload: unknown): {
@@ -112,6 +113,8 @@ function normalizeHumanHintPayload(payload: unknown): {
         string,
         unknown
       >;
+      const capturedFrom =
+        typeof h.captured_from === "string" ? h.captured_from.trim() : "";
       return {
         id: String(h.id ?? `human-hint-${index + 1}`),
         title: String(h.title ?? h.label ?? `Hint ${index + 1}`),
@@ -119,6 +122,8 @@ function normalizeHumanHintPayload(payload: unknown): {
         end_time: Number(h.end_time ?? h.end_s ?? h.end ?? 0),
         summary: typeof h.summary === "string" ? h.summary : "",
         lighting_hint: typeof h.lighting_hint === "string" ? h.lighting_hint : "",
+        // Informative note (plan v1.5 D11) — pass through only when non-empty.
+        ...(capturedFrom ? { captured_from: capturedFrom } : {}),
       };
     }),
   };

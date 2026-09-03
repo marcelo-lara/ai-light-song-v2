@@ -4,6 +4,7 @@
 export { RightPanel, type PanelMode } from "./RightPanel";
 export { BlockInspector } from "./BlockInspector";
 export { HintEditorPanel } from "./HintEditorPanel";
+export { LaneEventsPanel } from "./LaneEventsPanel";
 export { ReviewQueuePanel } from "./ReviewQueuePanel";
 export {
   partitionReviewQueue,
@@ -25,8 +26,9 @@ export {
 export {
   hintToDraft,
   draftToHint,
-  newHintDraft,
+  hintDraftFromSeed,
   parseTimeInput,
   draftIdForReference,
   type HintDraftFields,
+  type HintSeed,
 } from "./hintDraft";

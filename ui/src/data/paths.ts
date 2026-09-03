@@ -27,6 +27,21 @@ export const artifactPaths = {
   // ground truth stays a purely hand-authored file.
   dropProposals: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "drop_impacts.json")),
+  // Written by experiments/allin1 (`run export`), never by the pipeline. Same
+  // rule as the drop proposals above: an experiment's output is a proposal, so
+  // it stays out of `artifacts/` and out of `reference/human/`.
+  allin1: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "allin1.json")),
+  // Written by experiments/clap (`run character`). Texture blocks — what a
+  // passage is *like* — merged from the stems, CLAP's calm axis, and allin1's
+  // frame-level shadow labels.
+  character: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "character.json")),
+  // Written by experiments/vocalparse and experiments/acestep_transcriber
+  // (`run export`). Sung lyrics with timing — one file, a `sources` list keyed
+  // by model, plus the shared whisper baseline row.
+  vocalTranscription: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "vocal_transcription.json")),
   sectionSegmentation: (song: string) =>
     encodePath(analysis(song, "artifacts", "section_segmentation", "sections.json")),
   fftBands: (song: string) =>

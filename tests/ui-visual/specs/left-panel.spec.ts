@@ -1,5 +1,11 @@
 import { test, expect } from "@playwright/test";
-import { assertNoRuntimeErrors, FIXTURES, gotoSong, waitReady } from "../helpers";
+import {
+  assertNoRuntimeErrors,
+  FIXTURES,
+  gotoSong,
+  injectDeterminism,
+  waitReady,
+} from "../helpers";
 
 const GRID = ".app-timeline__grid";
 
@@ -47,6 +53,58 @@ test("item 4 — left panel collapsed by default, toggle, esc, persistence", asy
   await page.reload();
   await waitReady(page);
   await expect(page.getByTestId("left-panel")).toHaveAttribute("data-open", "true");
+
+  expect(errors.list()).toEqual([]);
+});
+
+// Item 2 (plan v1.5, R4/R5): the left panel hides on any outside click and on
+// picking a song; an inside click never dismisses it, and the burger's
+// mousedown/click pair does not leave it open. No new baseline image —
+// `left-panel-open.png` is unchanged and covered by the first test.
+test("item 2 — left panel hides on outside click and on song pick", async ({
+  page,
+}) => {
+  const errors = assertNoRuntimeErrors(page);
+  await gotoSong(page, FIXTURES.full);
+
+  const panel = page.getByTestId("left-panel");
+  const burger = page.getByTestId("burger-toggle");
+
+  // Open it.
+  await burger.click();
+  await waitReady(page);
+  await expect(panel).toHaveAttribute("data-open", "true");
+
+  // An inside click never dismisses.
+  await page.getByRole("button", { name: "Timeline" }).click();
+  await expect(panel).toHaveAttribute("data-open", "true");
+
+  // A click on the timeline viewport closes it.
+  await page.getByTestId("timeline-viewport").click();
+  await expect(panel).toHaveCount(0);
+
+  // The burger's mousedown (close) → click (toggle) pair does not re-open it.
+  await burger.click();
+  await expect(panel).toHaveAttribute("data-open", "true");
+  await burger.click();
+  await expect(panel).toHaveCount(0);
+
+  // esc still closes (re-asserted — the new listener sits next to it).
+  await burger.click();
+  await expect(panel).toHaveAttribute("data-open", "true");
+  await page.keyboard.press("Escape");
+  await expect(panel).toHaveCount(0);
+
+  // R4 path: picking a song from the drawer closes the panel.
+  await injectDeterminism(page);
+  await page.goto("/");
+  await page.waitForSelector('[data-testid="burger-toggle"]', { timeout: 20_000 });
+  await burger.click();
+  await expect(panel).toHaveAttribute("data-open", "true");
+  await page.getByRole("button", { name: "Select Song" }).click();
+  await page.getByRole("button", { name: FIXTURES.full }).click();
+  await expect(panel).toHaveCount(0);
+  expect(page.url()).toMatch(/song=RegFull(\+|%20| )-(\+|%20| )Fixture/);
 
   expect(errors.list()).toEqual([]);
 });

@@ -141,6 +141,15 @@ on three:
 | Chimera - Hana | `intro`, `inst` only |
 | `_test_song` | `intro`, `chorus` — but it is a 58 s excerpt, so this is arguably correct |
 
+> **Superseded, 2026-09-02.** This degeneracy is an artifact of the source
+> separation, not a property of the model. The cache these three rows were
+> computed from let `allin1` run its own `demucs`, whose output is not
+> reproducible; re-run against the pipeline's fixed stems, Armin comes back as
+> `intro verse inst verse chorus inst` and Chimera as eight sections with six
+> distinct labels. Only `_test_song` still degenerates. Measurement and cause in
+> [`../allin1/README.md`](../allin1/README.md) "Measurement 2". The paragraph
+> below is kept because the *detector* it describes is still the right idea.
+
 The pattern in the two real failures is instrumental trance with no
 verse/chorus vocal contrast — outside the Harmonix pop distribution the model
 was trained on. **This is detectable without labels** (count distinct labels,

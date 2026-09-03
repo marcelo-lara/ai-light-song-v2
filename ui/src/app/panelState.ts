@@ -44,3 +44,17 @@ export function saveLeftPanelOpen(open: boolean): void {
     // ignore — private window / blocked storage
   }
 }
+
+/**
+ * Clicks inside these never dismiss the left panel (plan v1.5 item 2 / R5).
+ * The burger is excluded so the `mousedown` (closes) → `click` (toggles) pair
+ * does not leave the drawer open on every burger press.
+ */
+export const LEFT_PANEL_KEEP_OPEN =
+  '[data-testid="left-panel"], [data-testid="burger-toggle"]';
+
+/** R5: does this pointer target dismiss the left panel? Pure. */
+export function shouldDismissLeftPanel(open: boolean, target: Element | null): boolean {
+  if (!open || target == null) return false;
+  return target.closest(LEFT_PANEL_KEEP_OPEN) == null;
+}

@@ -19,6 +19,14 @@ for (const laneId of ["fftBands", "sections"]) {
       return { x: b!.x, y: b!.y };
     };
 
+    // `boundingBox()` is viewport-relative and Playwright auto-scrolls a target
+    // into view before clicking it, so a lane sitting below the fold would be
+    // measured at one scroll offset and re-measured at another — reporting a
+    // move the caret never made. Scroll it in first and every measurement is
+    // taken in the same scroll state. Lanes below the fold are normal: the
+    // registry is longer than one screen even with most lanes collapsed.
+    await caret.scrollIntoViewIfNeeded();
+
     const start = await bbox();
     const startCollapsed = await head.getAttribute("data-lane-collapsed");
 

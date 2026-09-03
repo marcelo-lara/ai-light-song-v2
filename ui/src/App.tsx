@@ -7,16 +7,24 @@ import { draftToHint, hintToDraft } from "./panel/hintDraft";
 import {
   BlockInspector,
   HintEditorPanel,
+  LaneEventsPanel,
   ReviewQueuePanel,
   RightPanel,
+  LANE_LABELS,
   selectionFromMarker,
   selectionFromSection,
   type BlockSelection,
+  type HintSeed,
   type PanelMode,
 } from "./panel";
 import { ArtifactInspector } from "./inspector";
 import { resolveKeyAction, shouldPreventDefault } from "./app/keymap";
-import { loadLeftPanelOpen, saveLeftPanelOpen } from "./app/panelState";
+import {
+  loadLeftPanelOpen,
+  saveLeftPanelOpen,
+  shouldDismissLeftPanel,
+} from "./app/panelState";
+import { seekTimeForCardClick } from "./app/transportRules";
 import {
   selectSongListState,
   selectSongLoadState,
@@ -24,14 +32,24 @@ import {
   type SongListState,
 } from "./app/loadStates";
 import { makeCoords } from "./timeline/coords";
-import { followScrollLeft, LABEL_WIDTH } from "./timeline/follow";
+import {
+  followScrollLeft,
+  isUserScroll,
+  LABEL_WIDTH,
+  loadFollowPlayhead,
+  saveFollowPlayhead,
+} from "./timeline/follow";
 import { CanvasLane, type CanvasLaneSource } from "./timeline/CanvasLane";
 import { FitToWidthButton } from "./timeline/FitToWidthButton";
 import { SparseLane } from "./timeline/SparseLane";
-import { buildLaneBlocks, type LaneContentSources } from "./timeline/laneContent";
+import {
+  buildLaneBlocks,
+  type LaneContentSources,
+  type SparseBlock,
+} from "./timeline/laneContent";
 import { LaneList } from "./timeline/LaneList";
 import type { LaneMarker } from "./timeline/laneRenderers";
-import { useLaneState } from "./timeline/laneState";
+import { LANE_DEFS, useLaneState } from "./timeline/laneState";
 import type { Lane } from "./timeline/laneState";
 import type { SegmentBlock } from "./timeline/segments";
 import { TimelineGrid } from "./timeline/TimelineGrid";
@@ -81,12 +99,22 @@ const TIMELINE_KEYS = [
   "symbolicPhrases",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",
+  // named song form under review (experiments/allin1)
+  "allin1",
+  // texture / character blocks under review (experiments/clap)
+  "character",
+  // sung lyrics + timing under review (experiments/vocalparse, acestep_transcriber)
+  "vocalTranscription",
 ] as const;
 
 /** sparse lane id → the single artifact key that backs it (drives empty-state). */
 const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   humanHints: "humanHints",
   dropProposals: "dropProposals",
+  allin1Transitions: "allin1",
+  allin1Sections: "allin1",
+  character: "character",
+  vocalTranscription: "vocalTranscription",
   sections: "sectionsTopLevel",
   chords: "harmonicLayer",
   patterns: "patterns",
@@ -125,20 +153,28 @@ export function App(): React.JSX.Element {
   const [laneListOpen, setLaneListOpen] = useState(false);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(0);
+  // plan v1.5 item 6 / R6: follow the playhead while playing. Persisted per
+  // session, default on (D7). A user scroll during playback flips it off.
+  const [followPlayhead, setFollowPlayhead] = useState(loadFollowPlayhead);
 
   // Right-panel modes (item 6). `review` is item 7's seam.
   const [panelMode, setPanelMode] = useState<PanelMode | null>(null);
   const [selection, setSelection] = useState<BlockSelection | null>(null);
+  // plan v1.5 item 3: the sparse lane whose stacked events panel is open.
+  const [eventsLaneId, setEventsLaneId] = useState<string | null>(null);
   const [activeHintRef, setActiveHintRef] = useState<string | null>(null);
   const [hintsOverride, setHintsOverride] = useState<HumanHintsFile | null>(null);
-  // item 8: a pending "create a draft hint at this time" request from a
-  // double-click on the Human Hints lane. `nonce` makes each request distinct
-  // so the panel consumes it exactly once.
-  const [hintSeed, setHintSeed] = useState<{ time: number; nonce: number } | null>(
-    null,
-  );
+  // A pending "open the hint editor on a pre-filled draft" request — from a
+  // double-click on the Human Hints lane (item 8) or the block inspector's
+  // "Create human hint" action (item 9). `nonce` makes each request distinct so
+  // the panel consumes it exactly once.
+  const [hintSeed, setHintSeed] = useState<HintSeed | null>(null);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
+  // plan v1.5 D6: the offset the follow effect last wrote, so the scroll
+  // listener can tell a user scroll from the effect's own. null until the
+  // effect writes.
+  const autoScrollRef = useRef<number | null>(null);
   const laneState = useLaneState();
 
   // Deep-link: `/?song=<name>` selects a song on load, and the current
@@ -162,6 +198,26 @@ export function App(): React.JSX.Element {
   // Persist the left panel open/closed state (plan item 4).
   useEffect(() => {
     saveLeftPanelOpen(drawerOpen);
+  }, [drawerOpen]);
+
+  // Persist the follow-playhead flag (plan v1.5 item 6 / D7).
+  useEffect(() => {
+    saveFollowPlayhead(followPlayhead);
+  }, [followPlayhead]);
+
+  // R5 (plan v1.5 item 2): while the drawer is open, a mousedown anywhere
+  // outside it (and outside the burger) closes it. `mousedown`, not `click`,
+  // matches RightPanel's dismissal so a drag that starts outside also closes.
+  // Registered only while open; removed on cleanup.
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const onPointer = (event: MouseEvent): void => {
+      if (shouldDismissLeftPanel(true, event.target as Element | null)) {
+        setDrawerOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onPointer);
+    return () => document.removeEventListener("mousedown", onPointer);
   }, [drawerOpen]);
 
   useEffect(() => {
@@ -208,6 +264,9 @@ export function App(): React.JSX.Element {
     () => ({
       humanHints: humanHintsFile,
       dropProposals: artifacts.dropProposals.data,
+      allin1: artifacts.allin1.data,
+      character: artifacts.character.data,
+      vocalTranscription: artifacts.vocalTranscription.data,
       sections,
       harmonicLayer: artifacts.harmonicLayer.data,
       patterns: artifacts.patterns.data,
@@ -219,6 +278,9 @@ export function App(): React.JSX.Element {
     [
       humanHintsFile,
       artifacts.dropProposals.data,
+      artifacts.allin1.data,
+      artifacts.character.data,
+      artifacts.vocalTranscription.data,
       sections,
       artifacts.harmonicLayer.data,
       artifacts.patterns.data,
@@ -236,6 +298,7 @@ export function App(): React.JSX.Element {
     setActiveHintRef(null);
     setHintsOverride(null);
     setHintSeed(null);
+    setEventsLaneId(null);
   }, [song]);
 
   const closePanel = useCallback(() => {
@@ -243,7 +306,53 @@ export function App(): React.JSX.Element {
     setSelection(null);
     setActiveHintRef(null);
     setHintSeed(null);
+    setEventsLaneId(null);
   }, []);
+
+  // plan v1.5 item 3 / R2: open the stacked events panel for a lane, replacing
+  // any previous lane panel; a second click on the same lane's opener closes it.
+  const toggleLaneEvents = useCallback(
+    (laneId: string) => {
+      if (panelMode === "lane" && eventsLaneId === laneId) {
+        setPanelMode(null);
+        setEventsLaneId(null);
+        return;
+      }
+      setSelection(null);
+      setActiveHintRef(null);
+      setHintSeed(null);
+      setEventsLaneId(laneId);
+      setPanelMode("lane");
+    },
+    [panelMode, eventsLaneId],
+  );
+
+  // plan v1.5 item 3: props for the lane-events panel, or null when it is shut.
+  const eventsPanel = useMemo(() => {
+    if (panelMode !== "lane" || !eventsLaneId) return null;
+    const key = SPARSE_LANE_ARTIFACT[eventsLaneId];
+    const art = key ? artifacts[key] : null;
+    const status: ArtifactLoadStatus = art?.status ?? "idle";
+    const laneDef = LANE_DEFS.find((d) => d.id === eventsLaneId);
+    return {
+      laneId: eventsLaneId,
+      laneLabel: laneDef?.label ?? eventsLaneId,
+      experiment: laneDef?.experiment,
+      blocks: buildLaneBlocks(eventsLaneId, laneContentSources),
+      status,
+      error: art?.error?.message ?? null,
+    };
+  }, [panelMode, eventsLaneId, artifacts, laneContentSources]);
+
+  // R3/D1 + D2: a lane-events card click seeks (only when paused) and nothing
+  // else — the panel stays on the same lane.
+  const handleSelectBlock = useCallback(
+    (block: SparseBlock) => {
+      const seekTo = seekTimeForCardClick(transport.isPlaying, block.start_s);
+      if (seekTo !== null) transport.seekTo(seekTo);
+    },
+    [transport],
+  );
 
   const scrollTimelineToTime = useCallback(
     (seconds: number) => {
@@ -267,13 +376,44 @@ export function App(): React.JSX.Element {
   const handleCreateHintAt = useCallback((time: number) => {
     setSelection(null);
     setActiveHintRef(null);
-    setHintSeed({ time, nonce: Date.now() });
+    setHintSeed({ start: time, end: time + 1.0, nonce: Date.now() });
+    setPanelMode("hint");
+  }, []);
+
+  // plan v1.5 item 9 / R8: promote the inspected event to a new, editable human
+  // hint. Seeds an unsaved draft pre-filled from the block — no seek, no save,
+  // no write to the source artifact (D10, D13).
+  const handleCreateHintFromSelection = useCallback((sel: BlockSelection) => {
+    const end =
+      typeof sel.end_s === "number" && Number.isFinite(sel.end_s)
+        ? sel.end_s
+        : sel.start_s + 1.0;
+    // D11: one readable string naming the lane the event came from. Label via
+    // LANE_LABELS, experiment via LANE_DEFS; fall back to the raw lane id when
+    // the lane is in neither (constitution §2).
+    const laneLabel = LANE_LABELS[sel.laneId] ?? sel.laneId;
+    const experiment = LANE_DEFS.find((d) => d.id === sel.laneId)?.experiment;
+    const capturedFrom = experiment
+      ? `${laneLabel} · experiments/${experiment}`
+      : laneLabel;
+    setSelection(null);
+    setActiveHintRef(null);
+    setHintSeed({
+      start: sel.start_s,
+      end,
+      title: sel.label,
+      summary: sel.summary ?? "",
+      capturedFrom,
+      nonce: Date.now(),
+    });
     setPanelMode("hint");
   }, []);
 
   const handleSelectMarker = useCallback(
     (marker: LaneMarker) => {
-      transport.seekTo(marker.time);
+      // R3/D1: a card click never moves the playhead while playing.
+      const seekTo = seekTimeForCardClick(transport.isPlaying, marker.time);
+      if (seekTo !== null) transport.seekTo(seekTo);
       if (marker.laneId === "humanHints") {
         openHintEditor(marker.id);
         return;
@@ -419,6 +559,13 @@ export function App(): React.JSX.Element {
     ],
   );
 
+  // Latest values for the scroll listener below, read through refs so the
+  // listener need not re-register on every playback tick (plan v1.5 item 6).
+  const followPlayheadRef = useRef(followPlayhead);
+  followPlayheadRef.current = followPlayhead;
+  const playingRef = useRef(transport.isPlaying);
+  playingRef.current = transport.isPlaying;
+
   // Track the timeline scroll offset + viewport width for the canvas lanes
   // (sub-labels are anchored to the viewport's left edge). rAF-coalesced.
   useEffect(() => {
@@ -431,6 +578,15 @@ export function App(): React.JSX.Element {
       setViewportWidth(el.clientWidth);
     };
     const onScroll = () => {
+      // plan v1.5 item 6 / D6: a user scroll during playback turns following
+      // off. `isUserScroll` distinguishes it from the follow effect's own write.
+      if (
+        playingRef.current &&
+        followPlayheadRef.current &&
+        isUserScroll(el.scrollLeft, autoScrollRef.current)
+      ) {
+        setFollowPlayhead(false);
+      }
       if (!raf) raf = requestAnimationFrame(sync);
     };
     sync();
@@ -444,10 +600,11 @@ export function App(): React.JSX.Element {
     };
   }, [song, activeView]);
 
-  // Follow-playhead scroll while playing (design notes §2).
+  // Follow-playhead scroll while playing (design notes §2; plan v1.5 item 6).
   useEffect(() => {
     const el = scrollerRef.current;
     if (!el) return;
+    if (!(followPlayhead && transport.isPlaying)) return;
     const next = followScrollLeft({
       playheadX: LABEL_WIDTH + coords.timeToX(transport.currentTime),
       scrollLeft: el.scrollLeft,
@@ -455,8 +612,11 @@ export function App(): React.JSX.Element {
       maxScrollLeft: el.scrollWidth - el.clientWidth,
       playing: transport.isPlaying,
     });
-    if (Math.abs(next - el.scrollLeft) > 0.5) el.scrollLeft = next;
-  }, [transport.currentTime, transport.isPlaying, coords]);
+    if (Math.abs(next - el.scrollLeft) > 0.5) {
+      autoScrollRef.current = next;
+      el.scrollLeft = next;
+    }
+  }, [transport.currentTime, transport.isPlaying, followPlayhead, coords]);
 
   const fitToWidth = useCallback(() => {
     const el = scrollerRef.current;
@@ -542,7 +702,12 @@ export function App(): React.JSX.Element {
   const handleSelectSegment = useCallback(
     (block: SegmentBlock) => {
       // Move the shared playhead to the block start (design notes §4).
-      transport.seekTo(block.section.start);
+      // R3/D1: suppressed while the transport is playing.
+      const seekTo = seekTimeForCardClick(
+        transport.isPlaying,
+        block.section.start,
+      );
+      if (seekTo !== null) transport.seekTo(seekTo);
       setActiveHintRef(null);
       setSelection(selectionFromSection(block, "segments"));
       setPanelMode("inspector");
@@ -668,12 +833,9 @@ export function App(): React.JSX.Element {
             <span className="app-header__total">{formatClock(duration)}</span>
           </div>
           <div className="app-header__divider" />
-          <div style={{ display: "flex", alignItems: "baseline", gap: "var(--space-2)" }}>
-            <span className="app-header__barbeat">
-              {barBeat.bar}.{barBeat.beat}
-            </span>
-            <span className="app-header__barbeat-caption">bar.beat</span>
-          </div>
+          <span className="app-header__barbeat">
+            {barBeat.bar}.{barBeat.beat}
+          </span>
         </div>
 
         <div className="app-header__right">
@@ -733,6 +895,10 @@ export function App(): React.JSX.Element {
               onPick={(name) => {
                 setSong(name);
                 setActiveView("timeline");
+                // R4/D4: picking a song hides the left panel. Deliberately not
+                // done on the `?song=` deep-link effect or the song-change
+                // reset effect — only a user pick counts.
+                setDrawerOpen(false);
               }}
             />
           ) : song && songLoadState.kind === "loading" ? (
@@ -767,6 +933,8 @@ export function App(): React.JSX.Element {
                 onToggleExpand={laneState.toggleExpanded}
                 onSelectSegment={handleSelectSegment}
                 renderLaneBody={renderLaneBody}
+                onOpenLaneEvents={toggleLaneEvents}
+                eventsLaneId={panelMode === "lane" ? eventsLaneId : null}
                 scrollerRef={scrollerRef}
               />
               {laneListOpen && (
@@ -810,8 +978,26 @@ export function App(): React.JSX.Element {
             aria-label="Block inspector"
             header={<span className="app-rightpanel__kicker">{selection.laneLabel}</span>}
           >
-            <BlockInspector selection={selection} />
+            <BlockInspector
+              selection={selection}
+              onCreateHint={handleCreateHintFromSelection}
+            />
           </RightPanel>
+        )}
+
+        {activeView === "timeline" && song && eventsPanel && (
+          <LaneEventsPanel
+            laneId={eventsPanel.laneId}
+            laneLabel={eventsPanel.laneLabel}
+            experiment={eventsPanel.experiment}
+            blocks={eventsPanel.blocks}
+            status={eventsPanel.status}
+            error={eventsPanel.error}
+            currentTime={transport.currentTime}
+            playing={transport.isPlaying}
+            onClose={closePanel}
+            onSelectBlock={handleSelectBlock}
+          />
         )}
 
         {activeView === "timeline" && song && panelMode === "hint" && (
@@ -873,6 +1059,17 @@ export function App(): React.JSX.Element {
           <FitToWidthButton onClick={fitToWidth} />
         </div>
         <div className="app-footer__spacer" />
+        <button
+          type="button"
+          className="zbtn zbtn--icon"
+          data-testid="follow-toggle"
+          aria-pressed={followPlayhead}
+          aria-label="Follow playhead"
+          title="Follow the playhead while playing"
+          onClick={() => setFollowPlayhead((on) => !on)}
+        >
+          <i className="ph ph-arrows-in-line-horizontal" />
+        </button>
         <button
           type="button"
           className="zbtn"

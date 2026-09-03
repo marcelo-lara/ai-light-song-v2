@@ -1,0 +1,33 @@
+# Research sandbox for the ACE-Step Transcriber experiment.
+#
+# ACE-Step Transcriber is a Qwen2.5-Omni fine-tune (config.json says
+# Qwen2_5OmniForConditionalGeneration; ~7B-class thinker, ~22 GB of weights on
+# disk). Qwen2.5-Omni needs transformers >= 4.52 and `qwen-omni-utils`, far
+# newer than the survey sandbox's 4.44 — hence its own image.
+#
+# The base image's torch 2.1 is too old for both (transformers >= 4.52 needs
+# torch >= 2.2; Qwen2.5-Omni wants >= 2.4), and this box's 4 GB GPU can't hold
+# an 11B model. So: CPU torch 2.4, and the thinker runs on CPU in bf16
+# (~14 GB RAM). The whisper baseline runs on CPU too.
+FROM ai-light-song-v2:dev
+
+ENV PYTHONPATH=/app \
+    HF_HOME=/app/models/hf \
+    TOKENIZERS_PARALLELISM=false \
+    WHISPER_DEVICE=cpu \
+    ACESTEP_DEVICE=cpu \
+    ACESTEP_DTYPE=bfloat16 \
+    CUDA_VISIBLE_DEVICES=""
+
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
+      "torch==2.4.1" "torchaudio==2.4.1" "torchvision==0.19.1"
+
+RUN pip install --no-cache-dir \
+      "numpy<2" \
+      "transformers==4.57.1" \
+      "accelerate>=1.0" \
+      "qwen-omni-utils==0.0.9" \
+      "faster-whisper==1.1.1" \
+      "librosa>=0.10" \
+      "soundfile" \
+ && pip install --no-cache-dir --force-reinstall "numpy<2"

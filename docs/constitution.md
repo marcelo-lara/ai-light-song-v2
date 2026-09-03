@@ -166,6 +166,44 @@ gets **deleted** from `src/` in the same change, and which projected file change
 as a result (§1.3). Promotion that only adds is usually a mistake; the point of
 the sandbox is that the pipeline stays small.
 
+### 3.4 The pending-experiments queue
+
+Experiments that have not started yet are queued in
+[`experiments_pending.md`](experiments_pending.md). The file as it currently
+stands is the sample skeleton — copy one entry's shape for every new entry.
+
+- **Immediately after the entry's title comes the URL** to the model or repo the
+  experiment is about. That link may itself carry basic instructions, so it is
+  the first thing a reader follows.
+- **`### Why? What for?`** states the purpose of the *thing* the operator wants
+  out of this experiment — what capability or answer it is meant to deliver, in
+  the operator's terms.
+- **`### Experiment Plan`** is the assistant's plan for how to implement the
+  experiment under `experiments/<topic>/` — the concrete approach, not the
+  motivation.
+- **`### Results evidence`** holds the measured output — the golden-set
+  comparison, the numbers against the incumbent and the baseline.
+- **`### Conclusion`** is a short TLDR of what the results mean.
+
+When an experiment is concluded, the assistant tells the operator it can be
+**archived** or **promoted** (promotion still follows §3.3). Once the operator
+picks one, the entry is removed from `experiments_pending.md` and moved, with its
+filled-in results and conclusion, to
+[`archive/experiments.md`](archive/experiments.md). This archive file is a
+deliberate, named exception to §4's "no archive folder" rule: it is the standing
+record of which experiments were run and what they scored.
+
+### 3.5 The experiment corpus
+
+Experiments run against the **four golden songs only**: `_test_song`,
+`Titanium - David Guetta ft Sia`, `Hideaway - Kiesza`, and `Armin - Revolution`.
+These are the songs with hand-labelled ground truth, so they are the only ones
+where a measured comparison against the incumbent and a baseline means anything.
+
+When an experiment is too heavy to run across all four — a slow model, an
+expensive container — or when the goal is just a smoke test that the code path
+works, use **`_test_song` alone**.
+
 ---
 
 ## 4. Documentation
@@ -175,7 +213,9 @@ the sandbox is that the pipeline stays small.
   archive folder: **git history is the archive.** A document that has stopped
   being true is deleted in a commit, not parked in a subfolder — the commit
   keeps it recoverable while keeping it out of the working tree, where a reader
-  (human or model) would otherwise mistake it for a specification.
+  (human or model) would otherwise mistake it for a specification. The sole
+  exception is [`archive/experiments.md`](archive/experiments.md), the concluded-
+  experiments record defined in §3.4.
 - **Delete on the same change that makes it stale.** A release ships, a plan is
   executed, an approach is abandoned: the document goes then, not later.
 - **Intent and behaviour must agree.** If they disagree, that is a defect to

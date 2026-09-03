@@ -1,0 +1,463 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Titanium - David Guetta ft Sia",
+  "generated_from": {
+    "engine": "experiments.allin1",
+    "model": "allin1 (Kim & Nam 2023), harmonix-all checkpoint",
+    "raw_cache": "experiments/allin1/cache/Titanium - David Guetta ft Sia.json"
+  },
+  "note": "allin1 (Kim & Nam 2023) functional segmentation, exported by experiments/allin1. Proposals for review, not deliverables: nothing in src/ reads this file. Audition the transitions against the Human Hints lane \u2014 a transition is where a cue belongs, and the label pair says what kind of change it is.",
+  "human_impacts": [
+    74.655,
+    151.258,
+    212.01
+  ],
+  "match_tolerance_s": 0.5,
+  "tempo": {
+    "bpm": 125,
+    "beat_count": 478,
+    "median_beat_period_s": 0.48,
+    "beat_period_stdev_s": 0.005
+  },
+  "bar_grid": {
+    "meter": 4,
+    "bar_count": 120,
+    "median_bar_length_s": 1.9,
+    "downbeats": [
+      0.94,
+      2.85,
+      4.75,
+      6.66,
+      8.56,
+      10.47,
+      12.37,
+      14.28
+    ]
+  },
+  "beat_agreement": {
+    "comparable": true,
+    "median_abs_offset_s": 0.008,
+    "within_0.05s": 455,
+    "beats_compared": 478,
+    "essentia_beat_count": 487
+  },
+  "labelling": {
+    "status": "ok",
+    "distinct_labels": 6,
+    "dominant_label": "chorus",
+    "dominant_share": 0.393,
+    "reason": null,
+    "note": null
+  },
+  "sections": [
+    {
+      "id": "allin1-001",
+      "function": "intro",
+      "occurrence": 1,
+      "occurrence_count": 1,
+      "name": "intro",
+      "start_s": 0.0,
+      "end_s": 14.28,
+      "duration_s": 14.28,
+      "start_bar": null,
+      "bars": 7,
+      "phrase_count": 1,
+      "phrase_ids": [
+        "phrase-001"
+      ],
+      "same_label_as": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-002",
+      "function": "verse",
+      "occurrence": 1,
+      "occurrence_count": 2,
+      "name": "verse 1",
+      "start_s": 14.28,
+      "end_s": 44.75,
+      "duration_s": 30.47,
+      "start_bar": 8,
+      "bars": 16,
+      "phrase_count": 2,
+      "phrase_ids": [
+        "phrase-002",
+        "phrase-003"
+      ],
+      "same_label_as": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-003",
+      "function": "chorus",
+      "occurrence": 1,
+      "occurrence_count": 3,
+      "name": "chorus 1",
+      "start_s": 44.75,
+      "end_s": 75.23,
+      "duration_s": 30.48,
+      "start_bar": 24,
+      "bars": 16,
+      "phrase_count": 2,
+      "phrase_ids": [
+        "phrase-004",
+        "phrase-005"
+      ],
+      "same_label_as": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-004",
+      "function": "inst",
+      "occurrence": 1,
+      "occurrence_count": 2,
+      "name": "inst 1",
+      "start_s": 75.23,
+      "end_s": 90.47,
+      "duration_s": 15.24,
+      "start_bar": 40,
+      "bars": 8,
+      "phrase_count": 1,
+      "phrase_ids": [
+        "phrase-006"
+      ],
+      "same_label_as": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-005",
+      "function": "verse",
+      "occurrence": 2,
+      "occurrence_count": 2,
+      "name": "verse 2",
+      "start_s": 90.47,
+      "end_s": 120.94,
+      "duration_s": 30.47,
+      "start_bar": 48,
+      "bars": 16,
+      "phrase_count": 2,
+      "phrase_ids": [
+        "phrase-007",
+        "phrase-008"
+      ],
+      "same_label_as": "allin1-002",
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-006",
+      "function": "chorus",
+      "occurrence": 2,
+      "occurrence_count": 3,
+      "name": "chorus 2",
+      "start_s": 120.94,
+      "end_s": 151.42,
+      "duration_s": 30.48,
+      "start_bar": 64,
+      "bars": 16,
+      "phrase_count": 2,
+      "phrase_ids": [
+        "phrase-009",
+        "phrase-010"
+      ],
+      "same_label_as": "allin1-003",
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-007",
+      "function": "inst",
+      "occurrence": 2,
+      "occurrence_count": 2,
+      "name": "inst 2",
+      "start_s": 151.42,
+      "end_s": 166.66,
+      "duration_s": 15.24,
+      "start_bar": 80,
+      "bars": 8,
+      "phrase_count": 1,
+      "phrase_ids": [
+        "phrase-011"
+      ],
+      "same_label_as": "allin1-004",
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-008",
+      "function": "bridge",
+      "occurrence": 1,
+      "occurrence_count": 1,
+      "name": "bridge",
+      "start_s": 166.66,
+      "end_s": 181.9,
+      "duration_s": 15.24,
+      "start_bar": 88,
+      "bars": 8,
+      "phrase_count": 1,
+      "phrase_ids": [
+        "phrase-012"
+      ],
+      "same_label_as": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-009",
+      "function": "chorus",
+      "occurrence": 3,
+      "occurrence_count": 3,
+      "name": "chorus 3",
+      "start_s": 181.9,
+      "end_s": 212.38,
+      "duration_s": 30.48,
+      "start_bar": 96,
+      "bars": 16,
+      "phrase_count": 2,
+      "phrase_ids": [
+        "phrase-013",
+        "phrase-014"
+      ],
+      "same_label_as": "allin1-003",
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-010",
+      "function": "outro",
+      "occurrence": 1,
+      "occurrence_count": 1,
+      "name": "outro",
+      "start_s": 212.38,
+      "end_s": 232.41,
+      "duration_s": 20.03,
+      "start_bar": 112,
+      "bars": 9,
+      "phrase_count": 2,
+      "phrase_ids": [
+        "phrase-015",
+        "phrase-016"
+      ],
+      "same_label_as": null,
+      "function_status": "named"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "allin1-t-001",
+      "time_s": 14.28,
+      "start_s": 14.28,
+      "end_s": 16.18,
+      "from": "intro",
+      "to": "verse",
+      "from_name": "intro",
+      "to_name": "verse 1",
+      "pair": "intro \u2192 verse",
+      "kind": "lift",
+      "bar": 8,
+      "essentia_beat_offset_s": 0.0,
+      "on_downbeat": true,
+      "leaves_bars": 7,
+      "enters_bars": 16,
+      "matches_human_impact": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-t-002",
+      "time_s": 44.75,
+      "start_s": 44.75,
+      "end_s": 46.65,
+      "from": "verse",
+      "to": "chorus",
+      "from_name": "verse 1",
+      "to_name": "chorus 1",
+      "pair": "verse \u2192 chorus",
+      "kind": "lift",
+      "bar": 24,
+      "essentia_beat_offset_s": 0.018,
+      "on_downbeat": true,
+      "leaves_bars": 16,
+      "enters_bars": 16,
+      "matches_human_impact": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-t-003",
+      "time_s": 75.23,
+      "start_s": 75.23,
+      "end_s": 77.13,
+      "from": "chorus",
+      "to": "inst",
+      "from_name": "chorus 1",
+      "to_name": "inst 1",
+      "pair": "chorus \u2192 inst",
+      "kind": "release",
+      "bar": 40,
+      "essentia_beat_offset_s": 0.003,
+      "on_downbeat": true,
+      "leaves_bars": 16,
+      "enters_bars": 8,
+      "matches_human_impact": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-t-004",
+      "time_s": 90.47,
+      "start_s": 90.47,
+      "end_s": 92.37,
+      "from": "inst",
+      "to": "verse",
+      "from_name": "inst 1",
+      "to_name": "verse 2",
+      "pair": "inst \u2192 verse",
+      "kind": "release",
+      "bar": 48,
+      "essentia_beat_offset_s": -0.005,
+      "on_downbeat": true,
+      "leaves_bars": 8,
+      "enters_bars": 16,
+      "matches_human_impact": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-t-005",
+      "time_s": 120.94,
+      "start_s": 120.94,
+      "end_s": 122.84,
+      "from": "verse",
+      "to": "chorus",
+      "from_name": "verse 2",
+      "to_name": "chorus 2",
+      "pair": "verse \u2192 chorus",
+      "kind": "lift",
+      "bar": 64,
+      "essentia_beat_offset_s": 0.024,
+      "on_downbeat": true,
+      "leaves_bars": 16,
+      "enters_bars": 16,
+      "matches_human_impact": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-t-006",
+      "time_s": 151.42,
+      "start_s": 151.42,
+      "end_s": 153.32,
+      "from": "chorus",
+      "to": "inst",
+      "from_name": "chorus 2",
+      "to_name": "inst 2",
+      "pair": "chorus \u2192 inst",
+      "kind": "release",
+      "bar": 80,
+      "essentia_beat_offset_s": -0.003,
+      "on_downbeat": true,
+      "leaves_bars": 16,
+      "enters_bars": 8,
+      "matches_human_impact": 151.258,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-t-007",
+      "time_s": 166.66,
+      "start_s": 166.66,
+      "end_s": 168.56,
+      "from": "inst",
+      "to": "bridge",
+      "from_name": "inst 2",
+      "to_name": "bridge",
+      "pair": "inst \u2192 bridge",
+      "kind": "release",
+      "bar": 88,
+      "essentia_beat_offset_s": 0.024,
+      "on_downbeat": true,
+      "leaves_bars": 8,
+      "enters_bars": 8,
+      "matches_human_impact": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-t-008",
+      "time_s": 181.9,
+      "start_s": 181.9,
+      "end_s": 183.8,
+      "from": "bridge",
+      "to": "chorus",
+      "from_name": "bridge",
+      "to_name": "chorus 3",
+      "pair": "bridge \u2192 chorus",
+      "kind": "lift",
+      "bar": 96,
+      "essentia_beat_offset_s": 0.017,
+      "on_downbeat": true,
+      "leaves_bars": 8,
+      "enters_bars": 16,
+      "matches_human_impact": null,
+      "function_status": "named"
+    },
+    {
+      "id": "allin1-t-009",
+      "time_s": 212.38,
+      "start_s": 212.38,
+      "end_s": 214.28,
+      "from": "chorus",
+      "to": "outro",
+      "from_name": "chorus 3",
+      "to_name": "outro",
+      "pair": "chorus \u2192 outro",
+      "kind": "release",
+      "bar": 112,
+      "essentia_beat_offset_s": 0.013,
+      "on_downbeat": true,
+      "leaves_bars": 16,
+      "enters_bars": 9,
+      "matches_human_impact": 212.01,
+      "function_status": "named"
+    }
+  ],
+  "phrases": [
+    {
+      "id": "phrase-001",
+      "start_s": 0.0,
+      "end_s": 14.28,
+      "label": "intro",
+      "start_bar": null,
+      "bars": 7
+    },
+    {
+      "id": "phrase-002",
+      "start_s": 14.28,
+      "end_s": 29.52,
+      "label": "verse",
+      "start_bar": 8,
+      "bars": 8
+    },
+    {
+      "id": "phrase-003",
+      "start_s": 29.52,
+      "end_s": 44.75,
+      "label": "verse",
+      "start_bar": 16,
+      "bars": 8
+    },
+    {
+      "id": "phrase-004",
+      "start_s": 44.75,
+      "end_s": 60.0,
+      "label": "chorus",
+      "start_bar": 24,
+      "bars": 8
+    },
+    {
+      "id": "phrase-005",
+      "start_s": 60.0,
+      "end_s": 75.23,
+      "label": "chorus",
+      "start_bar": 32,
+      "bars": 8
+    },
+    {
+      "id": "phrase-006",
+      "start_s": 75.23,
+      "end_s": 90.47,
+      "label": "inst",
+      "start_bar": 40,
+      "bars": 8
+    }
+  ]
+}

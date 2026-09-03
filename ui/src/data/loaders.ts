@@ -10,6 +10,9 @@ import {
   loadMachineEvents,
   loadMlEvents,
   loadSymbolicPhrases,
+  loadAllin1,
+  loadCharacter,
+  loadVocalTranscription,
   loadDropProposals,
 } from "./sparseArtifacts";
 import {
@@ -194,6 +197,9 @@ export const artifactLoaders = {
   mlEvents: loadMlEvents,
   symbolicPhrases: loadSymbolicPhrases,
   dropProposals: loadDropProposals,
+  allin1: loadAllin1,
+  character: loadCharacter,
+  vocalTranscription: loadVocalTranscription,
   beats: loadBeats,
   sectionsTopLevel: loadSectionsTopLevel,
   sectionSegmentation: loadSectionSegmentation,

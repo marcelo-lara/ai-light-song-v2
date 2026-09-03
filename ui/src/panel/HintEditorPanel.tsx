@@ -16,10 +16,11 @@ import { RightPanel } from "./RightPanel";
 import {
   draftIdForReference,
   draftToHint,
+  hintDraftFromSeed,
   hintToDraft,
-  newHintDraft,
   parseTimeInput,
   type HintDraftFields,
+  type HintSeed,
 } from "./hintDraft";
 
 interface HintEditorPanelProps {
@@ -29,11 +30,11 @@ interface HintEditorPanelProps {
   /** id of the hint a Human Hints block click selected, if any */
   activeReference: string | null;
   /**
-   * item 8: a pending "create a 1.0s draft hint at this time" request from a
-   * double-click on the Human Hints lane. Each distinct `nonce` is consumed
-   * once.
+   * A pending "open on a pre-filled draft" request — from a double-click on the
+   * Human Hints lane (item 8) or the block inspector's "Create human hint"
+   * action (plan v1.5 item 9). Each distinct `nonce` is consumed once.
    */
-  seed?: { time: number; nonce: number } | null;
+  seed?: HintSeed | null;
   onClose: () => void;
   onSaved: (file: HumanHintsFile) => void;
   onScrollToTime: (seconds: number) => void;
@@ -86,20 +87,19 @@ export function HintEditorPanel({
     if (d) onScrollToTime(Number(parseTimeInput(d.start)) || 0);
   }, [activeReference, drafts, onScrollToTime]);
 
-  // item 8: consume a double-click "create hint" seed once per nonce. Appends a
-  // 1.0s draft to the current drafts (not a reseed), so it does not fight the
-  // on-disk reseed effect above, which keys off `file.human_hints` — unchanged
-  // by an unsaved draft.
+  // Consume a "create hint" seed once per nonce. Appends a draft to the current
+  // drafts (not a reseed), so it does not fight the on-disk reseed effect above,
+  // which keys off `file.human_hints` — unchanged by an unsaved draft.
   useEffect(() => {
     if (!seed || seed.nonce === seedNonceRef.current) return;
     seedNonceRef.current = seed.nonce;
     setDrafts((cur) => {
-      const next = newHintDraft(seed.time, cur, 1.0);
+      const next = hintDraftFromSeed(seed, cur);
       setActiveId(next.id);
       return [...cur, next];
     });
     setSave({ status: "idle" });
-    onScrollToTime(Math.max(0, seed.time));
+    onScrollToTime(Math.max(0, seed.start));
     const raf = requestAnimationFrame(() => {
       document.getElementById("hint-title")?.focus();
     });
@@ -132,7 +132,8 @@ export function HintEditorPanel({
 
   const addHint = useCallback(() => {
     setDrafts((cur) => {
-      const next = newHintDraft(currentTime, cur);
+      const start = Math.max(0, currentTime || 0);
+      const next = hintDraftFromSeed({ start, end: start, nonce: 0 }, cur);
       setActiveId(next.id);
       return [...cur, next];
     });
@@ -257,6 +258,11 @@ export function HintEditorPanel({
         </p>
       ) : (
         <>
+          {active.capturedFrom && active.capturedFrom.trim() && (
+            <p className="hint-editor__captured">
+              Captured from {active.capturedFrom.trim()}
+            </p>
+          )}
           <div className="hint-editor__row2">
             <div className="field">
               <label htmlFor="hint-start">Start</label>

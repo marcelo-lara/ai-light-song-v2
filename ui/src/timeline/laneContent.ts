@@ -11,7 +11,10 @@
 
 import type { HumanHintsFile, HarmonicLayer, SectionRow } from "../data/types";
 import type {
+  Allin1File,
+  CharacterFile,
   DropProposalsFile,
+  VocalTranscriptionFile,
   EventsFile,
   PatternsFile,
   SymbolicPhrasesFile,
@@ -30,7 +33,8 @@ export interface SparseBlock {
   /**
    * Optional per-block tint id, overriding the lane's own tint. Used by the
    * Drop Proposals lane to colour a candidate that already matches a human
-   * label differently from one still needing a decision.
+   * label differently from one still needing a decision, and by the allin1
+   * lanes to grey out rows whose section name the model cannot be trusted on.
    */
   tintId?: string;
   laneLabel: string;
@@ -120,6 +124,213 @@ export function dropProposalsContent(file: DropProposalsFile | null): SparseBloc
       raw: p.raw ?? p,
     };
   });
+}
+
+/**
+ * allin1 functional sections — what part of the song this is.
+ *
+ * The label is the thing the shipped Sections lane has no equivalent of: a
+ * returning chorus is named `chorus 2`, so the lane says which parts of the
+ * song are the same part. When the exporter has marked the song degenerate
+ * (allin1 outside its training distribution) the names are shown with a
+ * trailing `?` and a muted tint — the boundary may still be right even where
+ * the name is not.
+ */
+export function allin1SectionsContent(file: Allin1File | null): SparseBlock[] {
+  const unnamed = file?.labelling_status === "degenerate";
+  return (file?.sections ?? []).map((s) => {
+    const bars = s.start_bar != null ? `bars ${s.start_bar}–${s.start_bar + s.bars - 1}` : `${s.bars} bars`;
+    const repeat =
+      s.occurrence_count > 1
+        ? `${s.occurrence} of ${s.occurrence_count} ${s.function} sections`
+        : `the only ${s.function}`;
+    return {
+      id: s.id,
+      start_s: s.start_s,
+      end_s: s.end_s,
+      label: unnamed ? `${s.name} ?` : s.name,
+      wideLabel: `${unnamed ? `${s.name} ?` : s.name} · ${bars} · ${s.phrase_count} phrase${
+        s.phrase_count === 1 ? "" : "s"
+      }`,
+      ...(unnamed ? { tintId: "allin1Unnamed" } : {}),
+      laneLabel: "allin1 Sections",
+      caption: `${formatRange(s.start_s, s.end_s)} · ${bars}`,
+      reference: s.id,
+      detail: s.same_label_as ? `same label as ${s.same_label_as}` : repeat,
+      summary: unnamed
+        ? `allin1 called this \`${s.function}\`, but it produced too few distinct labels on this song to be trusted — treat the boundary as the finding and the name as unknown.`
+        : `allin1 functional section \`${s.function}\` (${repeat}), ${bars}, built from ${s.phrase_count} 8-bar phrase${
+            s.phrase_count === 1 ? "" : "s"
+          }.`,
+      raw: s.raw,
+    };
+  });
+}
+
+/**
+ * allin1 section transitions — where a cue belongs, and what kind of change it
+ * is. A transition already matching a hand-placed `drop impact` leads with
+ * `✓`; everything else is an open question to audition, exactly like the Drop
+ * Proposals lane above it.
+ */
+export function allin1TransitionsContent(file: Allin1File | null): SparseBlock[] {
+  return (file?.transitions ?? []).map((t) => {
+    const matched = t.matches_human_impact != null;
+    const offset =
+      t.essentia_beat_offset_s == null
+        ? "no beat grid"
+        : `${t.essentia_beat_offset_s > 0 ? "+" : ""}${round(t.essentia_beat_offset_s, 3)}s off beat`;
+    return {
+      id: t.id,
+      start_s: t.start_s,
+      end_s: t.end_s,
+      // A transition block is one bar wide, which at song-overview zoom is far
+      // too narrow for `chorus → inst`. The destination is the half that
+      // decides the next look, so the narrow label keeps that and the wide one
+      // carries the full pair.
+      label: `${matched ? "✓" : "?"} → ${t.to}`,
+      wideLabel: `${matched ? "✓" : "?"} ${t.pair} · ${t.kind}${
+        t.bar != null ? ` · bar ${t.bar}` : ""
+      } · ${offset}`,
+      ...(matched ? { tintId: "allin1TransitionsMatched" } : {}),
+      laneLabel: "allin1 Transitions",
+      caption: `${formatRange(t.start_s, t.end_s)} · ${t.kind}${
+        matched ? ` · matches human ${round(t.matches_human_impact, 2)}s` : ""
+      }`,
+      reference: t.id,
+      detail: t.on_downbeat ? "on a downbeat" : "off the downbeat",
+      summary: `Section change ${t.pair} at ${round(t.time_s, 2)}s (${offset}${
+        t.on_downbeat ? ", on an allin1 downbeat" : ""
+      }). ${
+        matched
+          ? `Within 0.5 s of the hand-placed drop impact at ${round(t.matches_human_impact, 2)}s.`
+          : "No hand-placed impact here — audition it: a transition is where a cue belongs whether or not anyone has labelled it."
+      }`,
+      raw: t.raw,
+    };
+  });
+}
+
+/**
+ * Character blocks — what a passage is *like*, not where it sits in the form.
+ *
+ * The lane exists because the operator already works this way: `Armin -
+ * Revolution` carries a hand-marked "Breath" block ("Vocal - no intense
+ * section") with its own fixture behaviour, and it is not a section boundary.
+ * Blocks are tinted by kind, so the texture of a song reads as a colour strip
+ * before any label does, and each one names the sources that had to agree.
+ */
+export function characterContent(file: CharacterFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b) => {
+    const evidence = Object.entries(b.evidence)
+      .map(([key, value]) => `${key.replace(/_z$/, "")} ${round(value, 2)}`)
+      .join(", ");
+    const shadow = b.kind.startsWith("shadow ");
+    return {
+      id: b.id,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: b.kind,
+      wideLabel: `${b.kind} · ${b.source}${evidence ? ` · ${evidence}` : ""}`,
+      // `vocal lead` -> characterVocalLead, `breath` -> characterBreath.
+      tintId: `character${
+        shadow
+          ? "Shadow"
+          : b.kind.replace(/(?:^|\s)(.)/g, (_, c: string) => c.toUpperCase())
+      }`,
+      laneLabel: "Character",
+      caption: `${formatRange(b.start_s, b.end_s)} · ${b.source}`,
+      reference: b.id,
+      detail: b.source,
+      summary: shadow
+        ? `allin1's frame-level posterior holds sustained mass on \`${b.kind.slice(7)}\` here, a label its own published segmentation never used anywhere in this song — a character the 8-bar argmax could not express.`
+        : `${b.kind} passage${
+            b.source === "stems+clap"
+              ? ", from the stems plus CLAP's calm/intense axis"
+              : ", from the stems alone"
+          }${evidence ? `: ${evidence}` : ""}.`,
+      raw: b.raw,
+    };
+  });
+}
+
+/**
+ * Vocal transcription — the sung lyric line, with as much timing as the models
+ * actually provide.
+ *
+ * One block per lyric line, across every source in the file: the
+ * `whisper-large-v3` baseline and whichever of VocalParse / ACE-Step has been
+ * run. Blocks are tinted by source so the baseline reads apart from the models
+ * being tried against it, and every block says how its timing was arrived at —
+ * `aligned to whisper words`, `approx`, `span` — because neither singing model
+ * emits trustworthy per-word seconds and the lane must not imply otherwise.
+ *
+ * ACE-Step's `[Section]` tags, when present, are appended as wide spans so its
+ * form read can be eyeballed against Sections and allin1 Sections beside it.
+ */
+export function vocalTranscriptionContent(
+  file: VocalTranscriptionFile | null,
+): SparseBlock[] {
+  const out: SparseBlock[] = [];
+  for (const source of file?.sources ?? []) {
+    const baseline = source.kind === "baseline";
+    const short = source.model.replace(/\s*\(.*\)$/, "").split(",")[0] ?? source.model;
+    const tintId = baseline ? "vocalTranscriptionBaseline" : "vocalTranscriptionModel";
+    const timing = baseline
+      ? "word timestamps"
+      : source.alignment === "words"
+        ? "aligned to whisper words"
+        : source.alignment === "native"
+          ? "model timestamps"
+          : source.alignment === "span"
+            ? "whole-span only"
+            : "approximate timing";
+
+    for (const line of source.lines) {
+      const label = line.text.length > 32 ? `${line.text.slice(0, 31)}…` : line.text || "♪";
+      out.push({
+        id: `${short}-${line.id}`,
+        start_s: line.start_s,
+        end_s: line.end_s,
+        label,
+        wideLabel: `${short}: ${line.text || "♪"}`,
+        tintId,
+        laneLabel: "Vocal Transcription",
+        caption: `${formatRange(line.start_s, line.end_s)} · ${short}${
+          line.approx ? " · approx" : ""
+        }`,
+        reference: line.id,
+        detail: short,
+        summary: `${short} — "${line.text}"${
+          source.language ? ` (${source.language})` : ""
+        }. Timing: ${timing}${
+          line.approx ? ", approximate — not measured" : ""
+        }.${source.alignment_reason ? ` ${source.alignment_reason}.` : ""}`,
+        raw: line.raw,
+      });
+    }
+
+    for (const span of source.structure) {
+      out.push({
+        id: `${short}-${span.id}`,
+        start_s: span.start_s,
+        end_s: span.end_s,
+        label: span.tag,
+        wideLabel: `${span.tag}${span.instruments ? ` · ${span.instruments}` : ""} · ${short}`,
+        tintId: "vocalTranscriptionStructure",
+        laneLabel: "Vocal Transcription",
+        caption: `${formatRange(span.start_s, span.end_s)} · ${short} structure`,
+        reference: span.id,
+        detail: `${short} structure`,
+        summary: `${short} tagged this span \`${span.tag}\`${
+          span.instruments ? ` (${span.instruments})` : ""
+        } — a form read to compare against Sections and allin1 Sections, derived from the lines it contains.`,
+        raw: span as unknown as Record<string, unknown>,
+      });
+    }
+  }
+  out.sort((a, b) => a.start_s - b.start_s);
+  return out;
 }
 
 export function sectionsContent(rows: readonly SectionRow[]): SparseBlock[] {
@@ -242,6 +453,9 @@ export interface LaneContentSources {
   sections?: readonly SectionRow[];
   harmonicLayer?: HarmonicLayer | null;
   patterns?: PatternsFile | null;
+  allin1?: Allin1File | null;
+  character?: CharacterFile | null;
+  vocalTranscription?: VocalTranscriptionFile | null;
   identifierHints?: EventsFile | null;
   machineEvents?: EventsFile | null;
   mlEvents?: EventsFile | null;
@@ -252,7 +466,11 @@ export interface LaneContentSources {
 export const SPARSE_LANE_IDS = [
   "humanHints",
   "dropProposals",
+  "allin1Transitions",
   "sections",
+  "character",
+  "vocalTranscription",
+  "allin1Sections",
   "chords",
   "patterns",
   "identifierHints",
@@ -272,8 +490,16 @@ export function buildLaneBlocks(
       return humanHintsContent(s.humanHints ?? null);
     case "dropProposals":
       return dropProposalsContent(s.dropProposals ?? null);
+    case "allin1Transitions":
+      return allin1TransitionsContent(s.allin1 ?? null);
     case "sections":
       return sectionsContent(s.sections ?? []);
+    case "allin1Sections":
+      return allin1SectionsContent(s.allin1 ?? null);
+    case "character":
+      return characterContent(s.character ?? null);
+    case "vocalTranscription":
+      return vocalTranscriptionContent(s.vocalTranscription ?? null);
     case "chords":
       return chordsContent(s.harmonicLayer ?? null);
     case "patterns":

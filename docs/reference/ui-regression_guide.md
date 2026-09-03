@@ -49,13 +49,18 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `timeline-zoomed-in` | `song-full` after zoom-in to max | click zoom-in control N times | Dense-lane semantic zoom |
 | `timeline-zoomed-out` | `song-full` at min zoom | click zoom-out control N times | Whole-song overview |
 | `timeline-scrolled` | `song-full` scrolled to ~50% | set viewport scrollLeft | Marker + ruler alignment mid-song |
-| `sidebar-expanded` | `song-full` with sidebar open | click sidebar toggle | Path panel, file-status list, lane toggles |
+| `sidebar-expanded` | `song-full` with sidebar open | click sidebar toggle | Path panel, file-status list, lane toggles. Dismissal (plan v1.5 item 2 / R4, R5): a `mousedown` anywhere outside the drawer and the burger closes it; an inside click never does; picking a song in the song picker closes it too. |
 | `lane-toggles-min` | `song-full` with only waveform + sections visible | toggle lanes off | Lane show/hide layout reflow |
+| `lane-events-panel` | `song-full` with the Human Hints lane's events panel open | click `lane-events-humanHints` | Stacked cards, no inter-card gap; non-modal (survives Play, timeline drag, scroll); `.app-rightpanel` |
+| `lane-events-active` | `song-full` lane-events panel with the playhead inside a card | open `lane-events-humanHints`, click the `hint-003` card | Active card carries `data-active="true"` / `aria-current`: raised tint, accent left border, bright label; `.app-rightpanel` |
 | `overlay-open` | Hovercard/selection overlay | click a sections-lane region | Overlay anchor + content |
 | `detail-inspector` | Raw JSON inspector | select an artifact in the inspector dropdown | Scroll region, formatting |
 | `human-hints-editor` | Right-side hint editor open | trigger "add hint" | Editor stays open; compact styling |
 | `hint-drag-resized` | `song-full` after a right-edge resize + interior move of two `humanHints` blocks | drag handles on the `humanHints` lane (plan v2.1 item 10) | Blocks at post-drag positions, pre-reload; `.app-timeline__grid`, waveform masked |
 | `validation-snapshot` | Validation panel populated | part of `song-full` (assert region) | Status, beat match ratio, comparison counts |
+| `inspector-promote` | `song-full` with an `allin1Sections` block selected | click the block, then `promote-hint` | Plan v1.5 item 9 / R8: the `rows-plus-bottom` "Create human hint" action under the inspector title opens the hint editor pre-filled from the event (no seek, no save); `.app-rightpanel` |
+| `header-readout` | `.app-header` with the playhead at `1:04.0` | `/?song=<full-fixture>`, click `hint-003` on the `humanHints` lane | Plan v1.5 item 5 / R9, R10: no `app-header__barbeat-caption`; time / total / bar.beat readouts have reserved widths so nothing shifts as the digit count grows; `.app-header` |
+| `footer-follow` | `.app-footer` with the follow toggle off, transport paused | `/?song=<full-fixture>`, clear `localStorage`, click `follow-toggle` once | Plan v1.5 item 6 / R6: the `arrows-in-line-horizontal` follow toggle sits immediately left of the `Lanes` button; `aria-pressed` and the pressed styling track the flag (default on, persisted per session); `.app-footer` |
 
 Component-level (optional, faster feedback): capture individual panels
 (`HeroPanel`, `ArtifactSummaryPanel`, `SectionsPreviewPanel`,
@@ -89,6 +94,12 @@ Create `tests/ui-visual/fixtures/analysis/` containing 3 frozen song folders:
     (The pre-item-10 file had 5 hints clustered 44–60 s, some adjacent and one
     degenerate — `hint-004` had `start == end`. `hint-004`/`hint-005` were
     dropped so the drag QA has deterministic, clearly-separated edges.)
+
+    All three stay **hand-authored** — none carries a `captured_from` key (plan
+    v1.5 item 8 / D11) — so the field's *absence* is itself under test: a save
+    of an untouched hint must not introduce it. `promote-hint.spec.ts` (item 9)
+    is the only spec that writes a hint with `captured_from`, and it snapshots
+    and restores the file.
 - `RegPartial - Fixture/` — missing at least one core key from the gate
   (`harmonic`, `symbolic`, `energy`, `sectionsArtifact`, `eventMachine`,
   `validation`) so the warning card renders.
@@ -211,6 +222,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
+  workers: 1, // hint-drag / captured-from / promote-hint share one writable
+              // fixture file and race across workers (plan v1.5 D15)
   reporter: [["html", { outputFolder: "report", open: "never" }], ["list"]],
   use: {
     baseURL: process.env.UI_BASE_URL ?? "http://localhost:9090",
@@ -266,6 +279,24 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
   block drag hit-zones are registered (the executor waits on this, no timeout).
 - hint editor (plan v2.1 item 10): `hint-editor` on the editor panel root, with
   `data-hint-id="<id>"` for the hint currently loaded.
+- lane events panel (plan v1.5 item 3): `lane-events-<laneId>` on the
+  `columns-plus-right` opener in every block lane's head (`aria-pressed`
+  tracks the open panel); `lane-events-panel` on the stacked `<ol>` (with
+  `data-lane="<laneId>"`); `lane-event-<blockId>` on each card.
+- footer (plan v1.5 item 6): `follow-toggle` on the follow-playhead toggle
+  button, immediately left of the `Lanes` button; `aria-pressed` tracks the
+  persisted flag (default on).
+- lane head (plan v1.5 item 7): a lane fed by an unpromoted `experiments/`
+  sandbox carries `<i.ph.ph-flask.tl-lane-head__flask>` (`aria-label`
+  `"Experimental lane"`) as the first child of `.tl-lane-head__name`, before
+  `<span.tl-lane-head__name-text>`. Exactly five lanes — `dropProposals`,
+  `allin1Transitions`, `allin1Sections`, `character`, `vocalTranscription`. The
+  same badge precedes `.app-rightpanel__kicker` in that lane's events panel
+  header. `LaneList.tsx` is not badged.
+- block inspector (plan v1.5 item 9): `promote-hint` on the `rows-plus-bottom`
+  "Create human hint" action, rendered under `block-inspector__title` for every
+  inspected event and in both transport states. A Human Hints block routes to
+  the hint editor, not the inspector, so it never carries this button.
 
 Still pending (later plan items / not yet needed): `song-select`,
 `transport-play` / `transport-pause`, `selection-overlay`. Prefer `getByRole` /
@@ -327,8 +358,9 @@ Steps:
 
 Do not auto-update baselines in CI. Baseline changes are always a reviewed commit.
 
-Keep the job under ~3 minutes: ~14 screenshots + error assertions, fully parallel,
-should be well under that.
+Keep the job under ~3 minutes: ~14 screenshots + error assertions. The suite
+runs **single-worker** (`workers: 1`) because three specs mutate the same
+writable fixture file (plan v1.5 D15); it is still ~15 s.
 
 ---
 
@@ -380,3 +412,101 @@ should be well under that.
       `:ro`). `hint-drag.spec.ts` snapshots the one fixture file it mutates and
       restores it in `afterAll` / before each test; if a run is hard-killed,
       `git checkout -- "tests/ui-visual/fixtures/analysis"` resets it.
+- [x] *(plan v1.5 item 1)* `tests/ui-visual/specs/card-click-seek.spec.ts` — a
+      paused card click (human-hint block, segment block) seeks and opens its
+      panel; background clicks on the Bars ruler still seek; no baseline pixels
+      change. The playing-half of R3 (`seekTimeForCardClick` returns `null` while
+      playing) is covered by `ui/src/app/transportRules.test.ts`, since the suite
+      cannot press Play.
+- [x] *(plan v1.5 item 2)* `tests/ui-visual/specs/left-panel.spec.ts` second
+      `test(...)` block — R4/R5: an outside `mousedown` closes the left panel, an
+      inside click never does, the burger's mousedown/click pair does not
+      re-open it, `esc` still closes, and picking a song closes it. The pure
+      rule is `shouldDismissLeftPanel` in `ui/src/app/panelState.ts`
+      (`panelState.test.ts` truth table).
+- [x] *(plan v1.5 item 3)* `tests/ui-visual/specs/lane-events.spec.ts` — the
+      `columns-plus-right` opener sits right-aligned in every block lane's head
+      and does not move the collapse caret; clicking it stacks that lane's
+      events in the right panel (`lane-events-panel.png` baseline), the panel is
+      non-modal (survives a viewport click, a caret click and a zoom), a second
+      opener click toggles it off, opening another lane's replaces it (never two
+      panels), and `esc` closes it.
+- [x] *(plan v1.5 item 3)* Re-capture every `.app-timeline__grid` baseline —
+      `song-full`, `song-full-waveform`, `song-no-audio`, `left-panel-open`,
+      `lane-collapsed`, `lanes-hidden-all`, `timeline-scrolled-50`,
+      `timeline-zoom-min` (both the `timeline-zoom` and `fit-to-width` snapshot
+      dirs), `timeline-zoom-max`, `hint-drag-resized`. Justification: "lane
+      heads gain the `columns-plus-right` events opener (plan v1.5 item 3)" — an
+      18px glyph added to thirteen lane heads, under `maxDiffPixelRatio` on a
+      full-grid capture, so the old baselines may pass while being wrong.
+      `waveform-no-audio.png` (locator `.tl-lane-body[data-lane="waveform"]`,
+      which has no lane head) must **not** change.
+- [x] *(plan v1.5 item 4)* `tests/ui-visual/specs/lane-events.spec.ts` second
+      `test(...)` block — R1's highlight: nothing active at `0:00.0`, a paused
+      card click marks exactly that card `data-active="true"`, the highlight
+      clears when a "Previous beat" step lands in the gap between two hints
+      (`lane-events-active.png` baseline). The pure rule is `activeBlockIndex`
+      in `ui/src/panel/laneEvents.ts` (`laneEvents.test.ts`); the
+      `scrollIntoView` follow is playback-only and not visually asserted.
+- [x] *(plan v1.5 item 5)* `tests/ui-visual/specs/header-readout.spec.ts` — R9/R10:
+      the `app-header__barbeat-caption` span is gone and `.app-header` no longer
+      contains the string "bar.beat"; the `.app-header__center`,
+      `.app-header__time` and `.app-header__barbeat` bounding boxes do not shift
+      (within 0.5 px) when the clock goes from `0:00.0` / bar `1.1` to `1:04.0`
+      and the bar number gains digits; the reserved widths are real
+      (`.app-header__time` ≥ 48 px, `.app-header__barbeat` ≥ 40 px at the short
+      strings). Baseline `header-readout.png` (`.app-header`) — the first header
+      baseline; no existing `.app-timeline__grid` baseline changes.
+- [x] *(plan v1.5 item 6)* `tests/ui-visual/specs/follow-playhead.spec.ts` — R6:
+      the `follow-toggle` sits left of the `Lanes` button, defaults to
+      `aria-pressed="true"`, toggles and persists across a reload, and its
+      pressed `color` differs between states; paused, nothing follows a card
+      click. Baseline `footer-follow.png` (`.app-footer`), follow off. The
+      behavioural half (follow moves the timeline while playing; a user scroll
+      during playback turns the toggle off) is covered by `followScrollLeft` and
+      `isUserScroll` in `ui/src/timeline/follow.test.ts` — the suite cannot
+      press Play. No `.app-timeline__grid` baseline changes.
+- [x] *(plan v1.5 item 7)* `tests/ui-visual/specs/experiment-badge.spec.ts` —
+      R7: exactly five lane heads (`dropProposals`, `allin1Transitions`,
+      `allin1Sections`, `character`, `vocalTranscription`) carry
+      `.tl-lane-head__flask`; every production lane and the whole-document count
+      confirm five total; the badge sits left of `.tl-lane-head__name-text` and
+      no badged label is pushed into an ellipsis (`scrollWidth - clientWidth` ≤ 0
+      at 1280 px); the collapse caret does not move; opening
+      `lane-events-character` shows exactly one `.app-rightpanel .tl-lane-head__flask`
+      in the panel header. `caret-fixed-position.spec.ts` still passes.
+- [x] *(plan v1.5 item 7)* Re-capture the same eleven `.app-timeline__grid`
+      baselines listed for item 3 — `song-full`, `song-full-waveform`,
+      `song-no-audio`, `left-panel-open`, `lane-collapsed`, `lanes-hidden-all`,
+      `timeline-scrolled-50`, `timeline-zoom-min` (both the `timeline-zoom` and
+      `fit-to-width` snapshot dirs), `timeline-zoom-max`, `hint-drag-resized`.
+      Justification: "experiment lanes gain the flask badge (plan v1.5 item 7)".
+      `waveform-no-audio.png` must again be unchanged.
+- [x] *(plan v1.5 item 8)* `tests/ui-visual/specs/captured-from.spec.ts` — the
+      optional `captured_from` note on a hint: the editor shows no
+      `/^Captured from/` line for a hand-authored `hint-001`, and saving an
+      untouched hint through the editor does not introduce a `captured_from`
+      key — the frozen `human_hints.json` stays byte-hand-authored. The spec
+      snapshots and restores the fixture file, following `hint-drag.spec.ts`.
+      The display and payload rules are unit-tested in
+      `ui/src/data/saveHumanHints.test.ts`, `ui/src/panel/hintDraft.test.ts` and
+      `ui/src/panel/HintEditorPanel.test.tsx`. No baseline pixels change.
+- [x] *(plan v1.5 item 9)* `tests/ui-visual/specs/promote-hint.spec.ts` — the
+      block inspector's `promote-hint` action: absent before a selection, present
+      (count 1) for every inspected event (`allin1Sections`, `machineEvents`, a
+      Segments block) and in both transport states, absent on a `humanHints`
+      block (routed to the hint editor). Clicking it opens the hint editor on a
+      pre-filled unsaved draft (title + start/end from the block, `Captured from
+      allin1 Sections · experiments/allin1` line, header clock unchanged — no
+      seek); nothing is written to `human_hints.json` or the source
+      `reference/proposals/allin1.json` until Save, which then adds a fourth hint
+      carrying `captured_from` while the original three stay key-free (D11). The
+      spec writes to `RegFull`'s `human_hints.json`, so it snapshots the file in
+      `beforeAll` and restores it in `afterAll` / before each test, exactly as
+      `hint-drag.spec.ts` does — any spec touching the one writable fixture file
+      must. The draft-building rule is unit-tested in
+      `ui/src/panel/hintDraft.test.ts` (`hintDraftFromSeed`) and the button in
+      `ui/src/panel/BlockInspector.test.tsx`.
+- [x] *(plan v1.5 item 9)* Baseline `inspector-promote.png` (`.app-rightpanel`,
+      first `allin1Sections` block selected). No `.app-timeline__grid` baseline
+      changes — the button lives only in the right panel.

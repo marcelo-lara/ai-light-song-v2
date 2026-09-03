@@ -22,6 +22,12 @@ export interface HintDraftFields {
   end: string;
   musical: string;
   lighting: string;
+  /**
+   * Informative note about where a captured hint came from (plan v1.5 D11).
+   * Carried through untouched — never editable in the form. Absent on
+   * hand-authored hints.
+   */
+  capturedFrom?: string;
 }
 
 /** Accept "83.4" or "1:23.4" -> canonical seconds string ("83.4"). Empty and
@@ -50,6 +56,9 @@ export function hintToDraft(hint: HumanHint): HintDraftFields {
     end: formatSeconds(Number(hint.end_time ?? 0)),
     musical: typeof hint.summary === "string" ? hint.summary : "",
     lighting: typeof hint.lighting_hint === "string" ? hint.lighting_hint : "",
+    ...(typeof hint.captured_from === "string" && hint.captured_from.trim()
+      ? { capturedFrom: hint.captured_from }
+      : {}),
   };
 }
 
@@ -62,6 +71,9 @@ export function draftToHint(draft: HintDraftFields): HintDraft {
     end_time: parseTimeInput(draft.end),
     summary: draft.musical,
     lighting_hint: draft.lighting,
+    ...(draft.capturedFrom && draft.capturedFrom.trim()
+      ? { captured_from: draft.capturedFrom }
+      : {}),
   };
 }
 
@@ -75,19 +87,43 @@ export function nextHintId(existing: readonly HintDraftFields[]): string {
   return `hint-${String(max + 1).padStart(3, "0")}`;
 }
 
-export function newHintDraft(
-  currentTime: number,
+/**
+ * A pending "open the hint editor on a pre-filled draft" request. Raised by a
+ * double-click on the Human Hints lane background (`{ start, end }` only) and by
+ * the block inspector's "Create human hint" action, which also carries the
+ * event's title, summary and a `capturedFrom` note (plan v1.5 item 9 / D11).
+ * `nonce` makes each request distinct so the editor consumes it exactly once.
+ */
+export interface HintSeed {
+  start: number;
+  end: number;
+  title?: string;
+  summary?: string;
+  capturedFrom?: string;
+  nonce: number;
+}
+
+/**
+ * Build a fresh draft from a {@link HintSeed}. `title` falls back to
+ * `Hint <n>` when the seed carries none; `capturedFrom` is carried straight
+ * through when non-empty; times pass through `formatSeconds`.
+ */
+export function hintDraftFromSeed(
+  seed: HintSeed,
   existing: readonly HintDraftFields[],
-  spanSeconds = 0,
 ): HintDraftFields {
-  const start = Math.max(0, currentTime || 0);
+  const start = Math.max(0, seed.start || 0);
+  const end = Math.max(start, seed.end || start);
   return {
     id: nextHintId(existing),
-    title: `Hint ${existing.length + 1}`,
+    title: seed.title?.trim() ? seed.title : `Hint ${existing.length + 1}`,
     start: formatSeconds(start),
-    end: formatSeconds(start + Math.max(0, spanSeconds)),
-    musical: "",
+    end: formatSeconds(end),
+    musical: typeof seed.summary === "string" ? seed.summary : "",
     lighting: "",
+    ...(seed.capturedFrom && seed.capturedFrom.trim()
+      ? { capturedFrom: seed.capturedFrom }
+      : {}),
   };
 }
 

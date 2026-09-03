@@ -1,0 +1,93 @@
+Identity: can a representation tell a returning part from a different part?
+
+Columns 1-4: ROC-AUC over every pair of allin1 sections in a song, positives
+being the pairs allin1 gave the same functional label. 0.50 is chance.
+This is AGREEMENT BETWEEN TWO MODELS, not accuracy — the repository holds no
+hand-labelled section identity, so nothing here says either model is right.
+
+`ctl` columns use no audio at all and catch a confounded result.
+
+`split` is the one number that needs neither labels nor a second model: AUC
+separating the two halves of the same section from halves of different
+sections. It asks only whether the embedding is stable within a part.
+
+song                                     sec   pairs       CLAP raw   CLAP centred        MFCC 20      chroma 12       ctl time   ctl duration   split
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Armin - Revolution                         6    2/15           0.50           0.77           0.85           0.92           0.31           0.62    0.76
+Best Friend - Sofi Tukker                  5    1/10           0.11           0.11           0.67           0.67           0.44           0.89    0.86
+Chimera - Hana                             8    3/28           0.85           0.49           0.76           0.48           0.52           0.44    0.79
+Cinderella - Ella Lee                     14   15/91           0.64           0.62           0.66           0.63           0.45           0.46    0.89
+CruelSummer - Malvina                      5    2/10           1.00           1.00           1.00           0.44           0.38           0.62    0.79
+Fascination (The Droyds One Armed Remix)  11    9/55           0.80           0.80           0.89           0.82           0.49           0.57    0.89
+Gabry Ponte - Tutta L'Italia               7    5/21           0.64           0.75           0.79           0.53           0.35           0.59    0.77
+Hideaway - Kiesza                          8    5/28           0.45           0.48           0.56           0.48           0.42           0.48    0.93
+In da name of love - Anita and Ray         5    1/10           1.00           0.67           1.00           0.89           0.44           0.11    0.74
+It's a fine day - Opus III                 9    6/36           0.76           0.68           0.93           0.72           0.48           0.22    0.83
+Only this moment - royksopp                9    4/36           0.71           0.42           0.65           0.73           0.52           0.93    0.85
+Pet Shop Boys - I'm not scared            12   10/66           0.60           0.51           0.67           0.49           0.50           0.47    0.87
+Queen of Kings - Alessandra                8    9/28           0.69           0.54           0.73           0.51           0.48           0.57    0.59
+Rapture - Nadia Ali                        7    3/21           0.52           0.52           0.78           0.37           0.48           0.46    0.92
+Sash - Raindrops                           8    2/28           0.77           0.92           0.52           0.48           0.63           0.56    0.86
+Titanium - David Guetta ft Sia            10    5/45           0.97           0.96           0.93           0.98           0.46           0.97    0.85
+Underworld - Born Slippy                  10    7/45           0.48           0.50           0.48           0.42           0.43           0.41    0.89
+What a Feeling - Courtney Storm            8    3/28           0.55           0.67           0.60           0.55           0.35           0.39    0.94
+Yonaka - Seize the Power                   5    1/10           0.56           0.44           0.44           0.22           0.56           1.00    0.77
+ayuni                                      5    1/10           1.00           0.44           0.67           1.00           0.44           1.00    0.73
+------------------------------------------------------------------------------------------------------------------------------------------------------
+mean over songs                                                0.68           0.61           0.73           0.62           0.46           0.59    0.83
+
+The incumbent has no row here. `src/analyzer/stages/sections/form.py` computes
+a `repetition_group` letter and `ui_data.py` copies it into the projected
+`sections.json` — but it is `null` on every section of all 21 songs, so the key
+is dropped on write and no identity reaches the authoring model at all.
+
+
+Boundaries: recall of the 7 hand-placed drop impacts, at a matched budget.
+
+Every learned method is capped at the incumbent's own boundary count for that
+song, so nothing wins by proposing more.
+
+method                              +-0.5    +-1.0    +-2.0  bounds/min
+-----------------------------------------------------------------------
+CLAP semantic novelty                 1/7      3/7      3/7         3.6
+MFCC novelty (baseline)               1/7      1/7      5/7         3.6
+allin1 transitions                    3/7      4/7      4/7         1.6
+shipped sections.json                 0/7      0/7      1/7         3.6
+even grid (= shipped budget)          0/7      2/7      3/7         3.6
+
+
+Catalog similarity: nearest neighbour of each song's mean CLAP vector.
+
+This is the 'audio vectors for similarity search' use the queue entry names.
+Raw cosines span a range of about 0.05 across the whole corpus, so the raw
+column is a ranking of noise; the centred column is the usable one.
+
+It also reaches nothing. No projected file carries a song-to-song relation
+(constitution §1.3), so however good this is, it changes nothing about a light
+show authored for one song.
+
+song                                    nearest (raw)                         cos   nearest (centred)                     cos
+-----------------------------------------------------------------------------------------------------------------------------
+Armin - Revolution                      Sash - Raindrops                    0.999   Best Friend - Sofi Tukker           0.908
+Best Friend - Sofi Tukker               In da name of love - Anita and Ray  0.999   In da name of love - Anita and Ray  0.953
+Chimera - Hana                          Pet Shop Boys - I'm not scared      0.988   Fascination (The Droyds One Armed Remix)  0.306
+Cinderella - Ella Lee                   Queen of Kings - Alessandra         0.998   Queen of Kings - Alessandra         0.821
+CruelSummer - Malvina                   Pet Shop Boys - I'm not scared      0.998   Gabry Ponte - Tutta L'Italia        0.826
+Fascination (The Droyds One Armed Remix)Gabry Ponte - Tutta L'Italia        0.994   Gabry Ponte - Tutta L'Italia        0.786
+Gabry Ponte - Tutta L'Italia            CruelSummer - Malvina               0.998   CruelSummer - Malvina               0.826
+Hideaway - Kiesza                       Yonaka - Seize the Power            0.999   Yonaka - Seize the Power            0.911
+In da name of love - Anita and Ray      Best Friend - Sofi Tukker           0.999   Best Friend - Sofi Tukker           0.953
+It's a fine day - Opus III              Cinderella - Ella Lee               0.994   Fascination (The Droyds One Armed Remix)  0.679
+Only this moment - royksopp             Pet Shop Boys - I'm not scared      0.997   Pet Shop Boys - I'm not scared      0.813
+Pet Shop Boys - I'm not scared          CruelSummer - Malvina               0.998   Only this moment - royksopp         0.813
+Queen of Kings - Alessandra             Cinderella - Ella Lee               0.998   Cinderella - Ella Lee               0.821
+Rapture - Nadia Ali                     Fascination (The Droyds One Armed Remix)  0.953   Fascination (The Droyds One Armed Remix)  0.475
+Sash - Raindrops                        In da name of love - Anita and Ray  0.999   In da name of love - Anita and Ray  0.936
+Titanium - David Guetta ft Sia          Underworld - Born Slippy            0.997   In da name of love - Anita and Ray  0.493
+Underworld - Born Slippy                Hideaway - Kiesza                   0.998   Sash - Raindrops                    0.828
+What a Feeling - Courtney Storm         Best Friend - Sofi Tukker           0.999   Best Friend - Sofi Tukker           0.950
+Yonaka - Seize the Power                In da name of love - Anita and Ray  0.999   In da name of love - Anita and Ray  0.925
+_test_song                              Cinderella - Ella Lee               0.993   Only this moment - royksopp         0.500
+ayuni                                   Yonaka - Seize the Power            0.998   Yonaka - Seize the Power            0.901
+
+Raw pairwise cosine across the corpus: min 0.910, max 0.999, spread 0.089.

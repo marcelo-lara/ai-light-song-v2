@@ -13,6 +13,7 @@ import type { SectionRow } from "../data/types";
 
 import type { Coords } from "./coords";
 import type { Lane } from "./laneState";
+import { SPARSE_LANE_IDS } from "./laneContent";
 import { buildSegments, type SegmentBlock } from "./segments";
 import { semanticZoom } from "./zoom";
 
@@ -30,8 +31,14 @@ interface TimelineGridProps {
   onSelectSegment?: (block: SegmentBlock) => void;
   /** per-lane body content drawn over the grid backdrop (waveform / canvas) */
   renderLaneBody?: (lane: Lane) => React.ReactNode;
+  /** plan v1.5 item 3 — open the stacked events panel for a sparse lane */
+  onOpenLaneEvents?: (laneId: string) => void;
+  /** lane id whose events panel is currently open, for the opener's pressed state */
+  eventsLaneId?: string | null;
   scrollerRef: React.RefObject<HTMLDivElement>;
 }
+
+const SPARSE_LANE_ID_SET: ReadonlySet<string> = new Set(SPARSE_LANE_IDS);
 
 export function TimelineGrid({
   coords,
@@ -43,6 +50,8 @@ export function TimelineGrid({
   onToggleExpand,
   onSelectSegment,
   renderLaneBody,
+  onOpenLaneEvents,
+  eventsLaneId,
   scrollerRef,
 }: TimelineGridProps): React.JSX.Element {
   const { timelineW, barLines } = coords;
@@ -147,6 +156,12 @@ export function TimelineGrid({
             barLines={barLines}
             timelineW={timelineW}
             onToggleExpand={onToggleExpand}
+            onOpenEvents={
+              onOpenLaneEvents && SPARSE_LANE_ID_SET.has(lane.id)
+                ? onOpenLaneEvents
+                : undefined
+            }
+            eventsOpen={eventsLaneId === lane.id}
             body={renderLaneBody?.(lane)}
           />
         ))}
@@ -176,9 +191,14 @@ export function TimelineGrid({
 export function LaneHeader({
   lane,
   onToggleExpand,
+  onOpenEvents,
+  eventsOpen,
 }: {
   lane: Lane;
   onToggleExpand: (laneId: string) => void;
+  /** plan v1.5 item 3 — present only for the sparse (block) lanes */
+  onOpenEvents?: ((laneId: string) => void) | undefined;
+  eventsOpen?: boolean | undefined;
 }): React.JSX.Element {
   return (
     <div
@@ -198,9 +218,31 @@ export function LaneHeader({
         <i className={`ph ${lane.expanded ? "ph-caret-down" : "ph-caret-right"}`} />
       </button>
       <div className="tl-lane-head__text">
-        <div className="tl-lane-head__name">{lane.label}</div>
+        <div className="tl-lane-head__name">
+          {lane.experiment && (
+            <i
+              className="ph ph-flask tl-lane-head__flask"
+              role="img"
+              aria-label="Experimental lane"
+              title={`Experiment · experiments/${lane.experiment} · not promoted to the pipeline`}
+            />
+          )}
+          <span className="tl-lane-head__name-text">{lane.label}</span>
+        </div>
         {lane.expanded && <div className="tl-lane-head__sub">{lane.sub}</div>}
       </div>
+      {onOpenEvents && (
+        <button
+          type="button"
+          className="tl-lane-head__events"
+          data-testid={`lane-events-${lane.id}`}
+          aria-label={`Show ${lane.label} events`}
+          aria-pressed={eventsOpen ?? false}
+          onClick={() => onOpenEvents(lane.id)}
+        >
+          <i className="ph ph-columns-plus-right" />
+        </button>
+      )}
     </div>
   );
 }
@@ -210,6 +252,8 @@ interface LaneRowProps {
   barLines: Coords["barLines"];
   timelineW: number;
   onToggleExpand: (laneId: string) => void;
+  onOpenEvents?: ((laneId: string) => void) | undefined;
+  eventsOpen?: boolean | undefined;
   body?: React.ReactNode;
 }
 
@@ -218,12 +262,19 @@ function LaneRow({
   barLines,
   timelineW,
   onToggleExpand,
+  onOpenEvents,
+  eventsOpen,
   body,
 }: LaneRowProps): React.JSX.Element {
   const collapsed = lane.expanded ? "false" : "true";
   return (
     <>
-      <LaneHeader lane={lane} onToggleExpand={onToggleExpand} />
+      <LaneHeader
+        lane={lane}
+        onToggleExpand={onToggleExpand}
+        onOpenEvents={onOpenEvents}
+        eventsOpen={eventsOpen}
+      />
       <div
         className="app-timeline__lane-body tl-lane-body"
         style={{ height: lane.renderHeight, width: timelineW }}

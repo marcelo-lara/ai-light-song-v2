@@ -36,6 +36,11 @@ export interface BlockSelection {
 export const LANE_LABELS: Record<string, string> = {
   segments: "Segments",
   sections: "Sections",
+  dropProposals: "Drop Proposals",
+  allin1Sections: "allin1 Sections",
+  allin1Transitions: "allin1 Transitions",
+  character: "Character",
+  vocalTranscription: "Vocal Transcription",
   humanHints: "Human Hints",
   chords: "Chord Regions",
   patterns: "Pattern Occurrences",
@@ -146,6 +151,59 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
       if (role) out.push({ label: "Form role", value: role });
       const rep = str(r.repetition_group);
       if (rep) out.push({ label: "Repetition group", value: rep });
+      break;
+    }
+    case "allin1Sections": {
+      const bar = str(r.start_bar);
+      const bars = str(r.bars);
+      if (bar && bars) out.push({ label: "Bars", value: `${bar} +${bars}` });
+      const phrases = str(r.phrase_count);
+      if (phrases) out.push({ label: "8-bar phrases", value: phrases });
+      const same = str(r.same_label_as);
+      if (same) out.push({ label: "Same label as", value: same });
+      const status = str(r.function_status);
+      if (status) out.push({ label: "Function", value: status });
+      break;
+    }
+    case "character": {
+      const kind = str(r.kind);
+      if (kind) out.push({ label: "Kind", value: kind });
+      const source = str(r.source);
+      if (source) out.push({ label: "Sources agreeing", value: source });
+      const ev = rec(r.evidence);
+      for (const [key, value] of Object.entries(ev)) {
+        const n = Number(value);
+        if (Number.isFinite(n))
+          out.push({ label: key.replace(/_/g, " "), value: roundNumber(n, 3) });
+      }
+      break;
+    }
+    case "vocalTranscription": {
+      const text = str(r.text);
+      if (text) out.push({ label: "Text", value: text });
+      if (r.approx === true)
+        out.push({ label: "Timing", value: "approximate — not measured" });
+      const conf = r.confidence;
+      if (conf != null && Number.isFinite(Number(conf)))
+        out.push({ label: "Confidence", value: roundNumber(Number(conf), 3) });
+      const tag = str(r.tag);
+      if (tag) out.push({ label: "Structure tag", value: tag });
+      const instr = str(r.instruments);
+      if (instr) out.push({ label: "Instruments", value: instr });
+      break;
+    }
+    case "allin1Transitions": {
+      const pair = str(r.pair);
+      if (pair) out.push({ label: "Label pair", value: pair });
+      const kind = str(r.kind);
+      if (kind) out.push({ label: "Kind", value: kind });
+      const offset = r.essentia_beat_offset_s;
+      if (offset != null)
+        out.push({ label: "Offset to essentia beat", value: `${roundNumber(offset, 3)} s` });
+      out.push({ label: "On downbeat", value: r.on_downbeat === true ? "yes" : "no" });
+      const match = r.matches_human_impact;
+      if (match != null)
+        out.push({ label: "Matches human impact", value: `${roundNumber(match, 2)} s` });
       break;
     }
     case "patterns": {

@@ -29,6 +29,31 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   dropProposalsMatched: [168, 60, 40], // muted teal — a proposal that already
   //                                      matches a hand-authored drop impact
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
+  allin1Sections: [96, 60, 38], // green — next to the teal Sections lane it is
+  //                               scored against, close enough to read as the
+  //                               same kind of thing, far enough to tell apart
+  allin1Transitions: [96, 60, 38], // same family as its sections lane
+  allin1TransitionsMatched: [168, 60, 40], // a transition already matching a
+  //                                          hand-placed drop impact
+  allin1Unnamed: [220, 6, 42], // near-grey — allin1 is out of distribution on
+  //                              this song, so the name carries no weight
+  // Character blocks are tinted by *kind*, so a song's texture reads as a
+  // colour strip before any label is. Violet for `breath` is not arbitrary —
+  // it is the look the operator wrote for the block this lane was built to
+  // find ("parcans slow violet waves").
+  character: [275, 55, 44],
+  characterBreath: [275, 60, 46],
+  characterVoid: [214, 28, 38],
+  characterVocalLead: [150, 55, 38],
+  characterFullPower: [12, 80, 45],
+  characterShadow: [96, 34, 34], // allin1's family hue, muted: a losing label
+  //                                with sustained posterior mass
+  // Vocal transcription: the whisper baseline is a warm neutral, the singing
+  // models a brighter amber against it, structure tags a muted variant.
+  vocalTranscription: [32, 45, 42],
+  vocalTranscriptionBaseline: [28, 20, 40],
+  vocalTranscriptionModel: [32, 80, 46],
+  vocalTranscriptionStructure: [32, 30, 34],
   chords: [193, 82, 44], // cyan    (the previous app rgba(14,116,144))
   patterns: [43, 96, 40], // gold    (the previous app rgba(202,138,4))
   identifierHints: [201, 96, 33], // blue    (the previous app rgba(3,105,161))

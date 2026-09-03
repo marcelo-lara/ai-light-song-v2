@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "note": "Vocal transcription proposals from experiments/vocalparse and experiments/acestep_transcriber. Lyric lines with timing, for review \u2014 nothing in src/ reads this file.",
+  "sources": [
+    {
+      "model": "whisper-large-v3 (baseline, vocal stem)",
+      "kind": "baseline",
+      "language": "en",
+      "word_timestamps": true,
+      "lines": [
+        {
+          "id": "w001",
+          "start_s": 15.92,
+          "end_s": 18.21,
+          "text": "This is a test song",
+          "words": [
+            {
+              "t": 15.92,
+              "d": 0.2,
+              "w": "This",
+              "p": 0.72
+            },
+            {
+              "t": 16.23,
+              "d": 0.17,
+              "w": "is",
+              "p": 0.98
+            },
+            {
+              "t": 16.4,
+              "d": 0.1,
+              "w": "a",
+              "p": 0.98
+            },
+            {
+              "t": 16.61,
+              "d": 0.7,
+              "w": "test",
+              "p": 0.95
+            },
+            {
+              "t": 17.35,
+              "d": 0.86,
+              "w": "song",
+              "p": 0.96
+            }
+          ],
+          "confidence": -0.18
+        },
+        {
+          "id": "w002",
+          "start_s": 19.16,
+          "end_s": 21.83,
+          "text": "Welcome to the dark blue studio",
+          "words": [
+            {
+              "t": 19.16,
+              "d": 0.62,
+              "w": "Welcome",
+              "p": 0.96
+            },
+            {
+              "t": 19.89,
+              "d": 0.13,
+              "w": "to",
+              "p": 0.99
+            }
+          ],
+          "confidence": -0.25
+        }
+      ]
+    },
+    {
+      "model": "ACE-Step Transcriber (ACE-Step/acestep-transcriber)",
+      "kind": "singing-transcription",
+      "alignment": "words",
+      "alignment_reason": "3/3 lines matched to whisper",
+      "language": "en",
+      "bpm": null,
+      "structure": [
+        {
+          "id": "aces001",
+          "tag": "Verse 1",
+          "instruments": null,
+          "start_s": 15.92,
+          "end_s": 29.22
+        }
+      ],
+      "lines": [
+        {
+          "id": "ace001",
+          "start_s": 15.92,
+          "end_s": 18.21,
+          "text": "This is a test song",
+          "words": [],
+          "confidence": null
+        },
+        {
+          "id": "ace002",
+          "start_s": 19.16,
+          "end_s": 21.83,
+          "text": "Welcome to the dark blue studio",
+          "words": [],
+          "confidence": null
+        }
+      ]
+    }
+  ]
+}
