@@ -149,6 +149,8 @@ Lighting rig metadata and point-of-interest targeting data.
 
 Reference and curated external material, nested under each song's analysis folder, including Moises-style chord, segment, and lyric references for validation and review plus the helper UI human-hints file at `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
 
+Each hint in `human_hints.json` carries `id`, `title`, `start_time`, `end_time`, `summary`, `lighting_hint`, and an optional `captured_from`: a single human-readable string naming the experiment or lane an entry was captured from (e.g. `"allin1 Sections · experiments/allin1"`). It is written only by the debugger's "Create human hint" action, is absent on hand-authored hints, and is informative only — no analyzer code reads it (plan v1.5 item 8 / D11).
+
 **v2.1:** `reference/human/song_facts.json` (new) holds song-level human-confirmed facts (`genre`, `form_family`, `has_drop`), each `{ value, provenance: "human-confirmed", confirmed_on }`. It is a sibling of `human_hints.json`, written **only** by the debugger UI on an explicit human save (Story 8.10). The analyzer reads it but never writes `reference/`.
 
 ## v2.1 artifact and field changes

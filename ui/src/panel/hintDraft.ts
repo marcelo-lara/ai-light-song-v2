@@ -22,6 +22,12 @@ export interface HintDraftFields {
   end: string;
   musical: string;
   lighting: string;
+  /**
+   * Informative note about where a captured hint came from (plan v1.5 D11).
+   * Carried through untouched — never editable in the form. Absent on
+   * hand-authored hints.
+   */
+  capturedFrom?: string;
 }
 
 /** Accept "83.4" or "1:23.4" -> canonical seconds string ("83.4"). Empty and
@@ -50,6 +56,9 @@ export function hintToDraft(hint: HumanHint): HintDraftFields {
     end: formatSeconds(Number(hint.end_time ?? 0)),
     musical: typeof hint.summary === "string" ? hint.summary : "",
     lighting: typeof hint.lighting_hint === "string" ? hint.lighting_hint : "",
+    ...(typeof hint.captured_from === "string" && hint.captured_from.trim()
+      ? { capturedFrom: hint.captured_from }
+      : {}),
   };
 }
 
@@ -62,6 +71,9 @@ export function draftToHint(draft: HintDraftFields): HintDraft {
     end_time: parseTimeInput(draft.end),
     summary: draft.musical,
     lighting_hint: draft.lighting,
+    ...(draft.capturedFrom && draft.capturedFrom.trim()
+      ? { captured_from: draft.capturedFrom }
+      : {}),
   };
 }
 

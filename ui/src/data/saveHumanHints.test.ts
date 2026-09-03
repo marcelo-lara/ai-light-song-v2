@@ -60,6 +60,28 @@ describe("buildHumanHintsPayload", () => {
         .human_hints[0]!.end_time,
     ).toBe(5);
   });
+
+  it("omits captured_from when the draft has no note", () => {
+    const hint = buildHumanHintsPayload("s", [draft()]).human_hints[0]!;
+    expect(hint).not.toHaveProperty("captured_from");
+  });
+
+  it("emits a trimmed captured_from when the draft carries one", () => {
+    const hint = buildHumanHintsPayload("s", [
+      draft({ captured_from: "  allin1 Sections · experiments/allin1  " }),
+    ]).human_hints[0]!;
+    expect(hint.captured_from).toBe("allin1 Sections · experiments/allin1");
+  });
+
+  it("omits captured_from for an empty or whitespace-only note", () => {
+    expect(
+      buildHumanHintsPayload("s", [draft({ captured_from: "" })]).human_hints[0]!,
+    ).not.toHaveProperty("captured_from");
+    expect(
+      buildHumanHintsPayload("s", [draft({ captured_from: "   " })])
+        .human_hints[0]!,
+    ).not.toHaveProperty("captured_from");
+  });
 });
 
 describe("saveHumanHints", () => {

@@ -713,6 +713,12 @@ input[type="range"]:focus-visible {
 }
 .hint-editor__status.is-error { color: var(--color-accent-200); }
 .hint-editor__status.is-ok { color: var(--color-neutral-400); }
+/* Read-only provenance note on a captured hint (plan v1.5 item 8). */
+.hint-editor__captured {
+  font: 400 11px/1.4 var(--font-body);
+  color: var(--color-neutral-600);
+  margin: 0 0 var(--space-2);
+}
 .btn-sm { padding: var(--space-1) var(--space-3); font-size: 10px; }
 
 /* ---- Review queue editor (item 7) ---- */

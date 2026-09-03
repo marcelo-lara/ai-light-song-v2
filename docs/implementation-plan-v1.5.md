@@ -59,7 +59,7 @@ the only statement of them that survives. Do not go looking for another source.
 | 5 | Header readout — drop the bar.beat caption, reserve the space | R9, R10 | [x] done |
 | 6 | Follow-playhead toggle in the footer | R6 | [x] done |
 | 7 | Flask badge on lanes fed by unpromoted experiments | R7 | [x] done |
-| 8 | `captured_from` note on the human-hints schema | R8 (enabling half) | [ ] pending |
+| 8 | `captured_from` note on the human-hints schema | R8 (enabling half) | [x] done |
 | 9 | “Create human hint” button in the block inspector | R8 (the button) | [ ] pending |
 
 Order matters in three places, and nowhere else:
@@ -976,13 +976,13 @@ ship a write with nowhere to put the note.
 
 ### Deliverable
 
-- [ ] **Re-confirm the analyzer tolerates the new key before writing it**:
+- [x] **Re-confirm the analyzer tolerates the new key before writing it**:
       `grep -rn "human_hints" src/ --include=*.py` and check every reader goes
       through `.get(...)` on the hint dict with no strict schema validation. At
       the time of writing, `src/analyzer/stages/hint_alignment.py` and
       `src/analyzer/stages/validation/form_drops.py` do. If that has changed,
       extend the validator in this commit.
-- [ ] `ui/src/data/types.ts` — on `HumanHint`:
+- [x] `ui/src/data/types.ts` — on `HumanHint`:
 
       ```ts
       /**
@@ -992,24 +992,24 @@ ship a write with nowhere to put the note.
        */
       captured_from?: string;
       ```
-- [ ] `ui/src/data/saveHumanHints.ts` — `HintDraft` gains the same optional
+- [x] `ui/src/data/saveHumanHints.ts` — `HintDraft` gains the same optional
       field; `buildHumanHintsPayload` emits the key **only** when the draft
       carries a non-empty string, trimmed. An empty or whitespace-only value
       means "no note" and the key is omitted — there is nothing to validate and
       nothing to throw over.
-- [ ] `ui/vite.config.ts` — `normalizeHumanHintPayload` passes `captured_from`
+- [x] `ui/vite.config.ts` — `normalizeHumanHintPayload` passes `captured_from`
       through when it is a non-empty string, omitting the key otherwise. It
       currently rebuilds each hint from a fixed field list, so without this
       change the note would be dropped on save and never survive a round-trip.
-- [ ] `ui/src/panel/hintDraft.ts` — `HintDraftFields` gains
+- [x] `ui/src/panel/hintDraft.ts` — `HintDraftFields` gains
       `capturedFrom?: string`; `hintToDraft` and `draftToHint` carry it through
       untouched. It is never editable in the form — it is a note about where the
       entry came from, not a field the human authors.
-- [ ] `ui/src/panel/HintEditorPanel.tsx` — when the active draft carries it,
+- [x] `ui/src/panel/HintEditorPanel.tsx` — when the active draft carries it,
       render one read-only line above the inputs: `Captured from <value>`.
       Style it as a quiet caption (reuse `.app-rightpanel__kicker`'s treatment
       or the block inspector's caption ink); it is information, not a control.
-- [ ] Unit tests:
+- [x] Unit tests:
       - `ui/src/data/saveHumanHints.test.ts` — a draft without the field emits
         no key; with a value it round-trips trimmed; with `""` or `"   "` the
         key is omitted.
@@ -1020,14 +1020,14 @@ ship a write with nowhere to put the note.
 
 ### Docs to update in this commit
 
-- [ ] `data_folder_reference.md` — the `reference/human/human_hints.json`
+- [x] `data_folder_reference.md` — the `reference/human/human_hints.json`
       section gains `captured_from`: optional string, written only by the
       debugger's "Create human hint" action, absent on hand-authored hints,
       informative only — no code reads it.
-- [ ] `reference/ui-regression_guide.md` §3.1 — note that `RegFull`'s frozen
+- [x] `reference/ui-regression_guide.md` §3.1 — note that `RegFull`'s frozen
       `human_hints.json` stays hand-authored (no `captured_from`), so the
       field's absence is itself under test.
-- [ ] No downstream handoff note: `human_hints.json` lives under `reference/`
+- [x] No downstream handoff note: `human_hints.json` lives under `reference/`
       and is not one of the files projected to the cue-authoring model
       (`reference/analysis-input-guide.md`). Say so in the commit message.
 

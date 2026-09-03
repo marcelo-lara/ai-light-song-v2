@@ -15,6 +15,12 @@ export interface HintDraft {
   end_time: string | number;
   summary?: string;
   lighting_hint?: string;
+  /**
+   * Informative note naming the experiment or lane the entry was captured
+   * from. Never authored in the editor; absent on hand-authored hints
+   * (plan v1.5 D11).
+   */
+  captured_from?: string;
 }
 
 /**
@@ -42,6 +48,7 @@ export function buildHumanHintsPayload(
         "Human hint end time must be greater than or equal to start time.",
       );
     }
+    const capturedFrom = (hint.captured_from ?? "").trim();
     return {
       id: hint.id.trim(),
       title: hint.title.trim(),
@@ -49,6 +56,8 @@ export function buildHumanHintsPayload(
       end_time: endTime,
       summary: (hint.summary ?? "").trim(),
       lighting_hint: (hint.lighting_hint ?? "").trim(),
+      // Emitted only for a non-empty note; hand-authored hints omit the key.
+      ...(capturedFrom ? { captured_from: capturedFrom } : {}),
     };
   });
 

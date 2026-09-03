@@ -93,6 +93,12 @@ Create `tests/ui-visual/fixtures/analysis/` containing 3 frozen song folders:
     (The pre-item-10 file had 5 hints clustered 44–60 s, some adjacent and one
     degenerate — `hint-004` had `start == end`. `hint-004`/`hint-005` were
     dropped so the drag QA has deterministic, clearly-separated edges.)
+
+    All three stay **hand-authored** — none carries a `captured_from` key (plan
+    v1.5 item 8 / D11) — so the field's *absence* is itself under test: a save
+    of an untouched hint must not introduce it. `promote-hint.spec.ts` (item 9)
+    is the only spec that writes a hint with `captured_from`, and it snapshots
+    and restores the file.
 - `RegPartial - Fixture/` — missing at least one core key from the gate
   (`harmonic`, `symbolic`, `energy`, `sectionsArtifact`, `eventMachine`,
   `validation`) so the warning card renders.
@@ -468,3 +474,12 @@ should be well under that.
       `fit-to-width` snapshot dirs), `timeline-zoom-max`, `hint-drag-resized`.
       Justification: "experiment lanes gain the flask badge (plan v1.5 item 7)".
       `waveform-no-audio.png` must again be unchanged.
+- [x] *(plan v1.5 item 8)* `tests/ui-visual/specs/captured-from.spec.ts` — the
+      optional `captured_from` note on a hint: the editor shows no
+      `/^Captured from/` line for a hand-authored `hint-001`, and saving an
+      untouched hint through the editor does not introduce a `captured_from`
+      key — the frozen `human_hints.json` stays byte-hand-authored. The spec
+      snapshots and restores the fixture file, following `hint-drag.spec.ts`.
+      The display and payload rules are unit-tested in
+      `ui/src/data/saveHumanHints.test.ts`, `ui/src/panel/hintDraft.test.ts` and
+      `ui/src/panel/HintEditorPanel.test.tsx`. No baseline pixels change.

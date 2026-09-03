@@ -277,6 +277,12 @@ export interface HumanHint {
   end_time: number;
   summary: string;
   lighting_hint: string;
+  /**
+   * Where this hint was captured from, e.g. "allin1 Sections ·
+   * experiments/allin1". Informative only — nothing reads it. Absent on
+   * hand-authored hints (plan v1.5 D11).
+   */
+  captured_from?: string;
 }
 
 export interface HumanHintsFile {

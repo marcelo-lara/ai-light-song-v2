@@ -257,6 +257,11 @@ export function HintEditorPanel({
         </p>
       ) : (
         <>
+          {active.capturedFrom && active.capturedFrom.trim() && (
+            <p className="hint-editor__captured">
+              Captured from {active.capturedFrom.trim()}
+            </p>
+          )}
           <div className="hint-editor__row2">
             <div className="field">
               <label htmlFor="hint-start">Start</label>

@@ -52,6 +52,27 @@ describe("draft <-> hint mapping (design notes §4)", () => {
     expect(payload.human_hints[0]).toEqual(hint);
   });
 
+  it("carries captured_from through hintToDraft / draftToHint untouched", () => {
+    const captured = {
+      ...hint,
+      id: "hint-003",
+      captured_from: "allin1 Sections · experiments/allin1",
+    };
+    const draft = hintToDraft(captured);
+    expect(draft.capturedFrom).toBe("allin1 Sections · experiments/allin1");
+    const out = buildHumanHintsPayload("song", [draftToHint(draft)])
+      .human_hints[0]!;
+    expect(out.captured_from).toBe("allin1 Sections · experiments/allin1");
+  });
+
+  it("omits capturedFrom on a hand-authored hint", () => {
+    expect(hintToDraft(hint)).not.toHaveProperty("capturedFrom");
+    expect(
+      buildHumanHintsPayload("song", [draftToHint(hintToDraft(hint))])
+        .human_hints[0]!,
+    ).not.toHaveProperty("captured_from");
+  });
+
   it("maps musical->summary and lighting->lighting_hint", () => {
     const draft: HintDraftFields = {
       id: "hint-001",
