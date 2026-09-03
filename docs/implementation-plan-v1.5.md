@@ -57,7 +57,7 @@ the only statement of them that survives. Do not go looking for another source.
 | 3 | Lane events panel + `columns-plus-right` opener | R1 (stack), R2 | [x] done |
 | 4 | Active-card highlight and follow during playback | R1 (highlight) | [x] done |
 | 5 | Header readout — drop the bar.beat caption, reserve the space | R9, R10 | [x] done |
-| 6 | Follow-playhead toggle in the footer | R6 | [ ] pending |
+| 6 | Follow-playhead toggle in the footer | R6 | [x] done |
 | 7 | Flask badge on lanes fed by unpromoted experiments | R7 | [ ] pending |
 | 8 | `captured_from` note on the human-hints schema | R8 (enabling half) | [ ] pending |
 | 9 | “Create human hint” button in the block inspector | R8 (the button) | [ ] pending |
@@ -753,7 +753,7 @@ New spec: `tests/ui-visual/specs/header-readout.spec.ts`. Surface:
 
 ### Deliverable
 
-- [ ] `ui/src/timeline/follow.ts` — extend the module that already owns
+- [x] `ui/src/timeline/follow.ts` — extend the module that already owns
       `followScrollLeft`:
 
       ```ts
@@ -774,21 +774,21 @@ New spec: `tests/ui-visual/specs/header-readout.spec.ts`. Surface:
       Copy `panelState.ts`'s storage shape exactly: a `STORAGE_KEY` constant
       (`als.ui.followPlayhead.v1`), `try`/`catch` around both accessors, and
       the default returned on anything unreadable.
-- [ ] `ui/src/timeline/follow.test.ts` — `isUserScroll`: `null` last-write →
+- [x] `ui/src/timeline/follow.test.ts` — `isUserScroll`: `null` last-write →
       `true`; observed within tolerance → `false`; observed 400 px away →
       `true`; exactly at tolerance → `false`. Plus load/save round-trip and the
       blocked-storage fallback.
-- [ ] `ui/src/App.tsx` — `const [followPlayhead, setFollowPlayhead] = useState(loadFollowPlayhead)`,
+- [x] `ui/src/App.tsx` — `const [followPlayhead, setFollowPlayhead] = useState(loadFollowPlayhead)`,
       persisted by an effect mirroring the `drawerOpen` one.
-- [ ] `ui/src/App.tsx` — the follow effect runs only when
+- [x] `ui/src/App.tsx` — the follow effect runs only when
       `followPlayhead && transport.isPlaying`, and records what it writes:
       `autoScrollRef.current = next` immediately before `el.scrollLeft = next`.
-- [ ] `ui/src/App.tsx` — the existing scroll listener (the rAF-coalesced one
+- [x] `ui/src/App.tsx` — the existing scroll listener (the rAF-coalesced one
       that tracks `scrollLeft` / `viewportWidth`) additionally calls
       `setFollowPlayhead(false)` when `transport.isPlaying && followPlayhead &&
       isUserScroll(el.scrollLeft, autoScrollRef.current)`. Keep it inside the
       existing handler — do not add a second `scroll` listener.
-- [ ] `ui/src/App.tsx` — footer button, **immediately before** the existing
+- [x] `ui/src/App.tsx` — footer button, **immediately before** the existing
       `Lanes` button so it renders to its left:
 
       ```tsx
@@ -807,16 +807,16 @@ New spec: `tests/ui-visual/specs/header-readout.spec.ts`. Surface:
 
       Icon only — R6 asks for an icon, and the `Lanes` button beside it carries
       the only text label in that corner.
-- [ ] `ui/src/styles/daw.css` — `.zbtn--icon`: square padding, no text gap,
+- [x] `ui/src/styles/daw.css` — `.zbtn--icon`: square padding, no text gap,
       and an unmistakable pressed state (`[aria-pressed="true"]` →
       `color: var(--color-accent-300)`, `background: var(--color-accent-900)`),
       because the button's meaning is entirely in its state.
 
 ### Docs to update in this commit
 
-- [ ] `reference/ui-regression_guide.md` §2 — new surface row `footer-follow`.
-- [ ] `reference/ui-regression_guide.md` §5.5 — add `follow-toggle`.
-- [ ] `reference/ui-regression_guide.md` §9 — ticked line for the spec + baseline.
+- [x] `reference/ui-regression_guide.md` §2 — new surface row `footer-follow`.
+- [x] `reference/ui-regression_guide.md` §5.5 — add `follow-toggle`.
+- [x] `reference/ui-regression_guide.md` §9 — ticked line for the spec + baseline.
 
 ### Visual QA — item 6
 

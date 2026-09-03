@@ -59,6 +59,7 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `hint-drag-resized` | `song-full` after a right-edge resize + interior move of two `humanHints` blocks | drag handles on the `humanHints` lane (plan v2.1 item 10) | Blocks at post-drag positions, pre-reload; `.app-timeline__grid`, waveform masked |
 | `validation-snapshot` | Validation panel populated | part of `song-full` (assert region) | Status, beat match ratio, comparison counts |
 | `header-readout` | `.app-header` with the playhead at `1:04.0` | `/?song=<full-fixture>`, click `hint-003` on the `humanHints` lane | Plan v1.5 item 5 / R9, R10: no `app-header__barbeat-caption`; time / total / bar.beat readouts have reserved widths so nothing shifts as the digit count grows; `.app-header` |
+| `footer-follow` | `.app-footer` with the follow toggle off, transport paused | `/?song=<full-fixture>`, clear `localStorage`, click `follow-toggle` once | Plan v1.5 item 6 / R6: the `arrows-in-line-horizontal` follow toggle sits immediately left of the `Lanes` button; `aria-pressed` and the pressed styling track the flag (default on, persisted per session); `.app-footer` |
 
 Component-level (optional, faster feedback): capture individual panels
 (`HeroPanel`, `ArtifactSummaryPanel`, `SectionsPreviewPanel`,
@@ -273,6 +274,9 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
   `columns-plus-right` opener in every block lane's head (`aria-pressed`
   tracks the open panel); `lane-events-panel` on the stacked `<ol>` (with
   `data-lane="<laneId>"`); `lane-event-<blockId>` on each card.
+- footer (plan v1.5 item 6): `follow-toggle` on the follow-playhead toggle
+  button, immediately left of the `Lanes` button; `aria-pressed` tracks the
+  persisted flag (default on).
 
 Still pending (later plan items / not yet needed): `song-select`,
 `transport-play` / `transport-pause`, `selection-overlay`. Prefer `getByRole` /
@@ -432,3 +436,12 @@ should be well under that.
       (`.app-header__time` ≥ 48 px, `.app-header__barbeat` ≥ 40 px at the short
       strings). Baseline `header-readout.png` (`.app-header`) — the first header
       baseline; no existing `.app-timeline__grid` baseline changes.
+- [x] *(plan v1.5 item 6)* `tests/ui-visual/specs/follow-playhead.spec.ts` — R6:
+      the `follow-toggle` sits left of the `Lanes` button, defaults to
+      `aria-pressed="true"`, toggles and persists across a reload, and its
+      pressed `color` differs between states; paused, nothing follows a card
+      click. Baseline `footer-follow.png` (`.app-footer`), follow off. The
+      behavioural half (follow moves the timeline while playing; a user scroll
+      during playback turns the toggle off) is covered by `followScrollLeft` and
+      `isUserScroll` in `ui/src/timeline/follow.test.ts` — the suite cannot
+      press Play. No `.app-timeline__grid` baseline changes.

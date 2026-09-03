@@ -83,6 +83,18 @@
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
+
+/* Icon-only zbtn (plan v1.5 item 6 / R6): square, no text gap, and an
+   unmistakable pressed state — the button's meaning is entirely in its state. */
+.zbtn--icon {
+  gap: 0;
+  padding: 0 var(--space-2);
+}
+.zbtn--icon[aria-pressed="true"] {
+  color: var(--color-accent-300);
+  background: var(--color-accent-900);
+}
+
 .zic {
   display: grid;
   place-items: center;

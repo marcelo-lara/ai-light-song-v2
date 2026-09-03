@@ -30,7 +30,13 @@ import {
   type SongListState,
 } from "./app/loadStates";
 import { makeCoords } from "./timeline/coords";
-import { followScrollLeft, LABEL_WIDTH } from "./timeline/follow";
+import {
+  followScrollLeft,
+  isUserScroll,
+  LABEL_WIDTH,
+  loadFollowPlayhead,
+  saveFollowPlayhead,
+} from "./timeline/follow";
 import { CanvasLane, type CanvasLaneSource } from "./timeline/CanvasLane";
 import { FitToWidthButton } from "./timeline/FitToWidthButton";
 import { SparseLane } from "./timeline/SparseLane";
@@ -145,6 +151,9 @@ export function App(): React.JSX.Element {
   const [laneListOpen, setLaneListOpen] = useState(false);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(0);
+  // plan v1.5 item 6 / R6: follow the playhead while playing. Persisted per
+  // session, default on (D7). A user scroll during playback flips it off.
+  const [followPlayhead, setFollowPlayhead] = useState(loadFollowPlayhead);
 
   // Right-panel modes (item 6). `review` is item 7's seam.
   const [panelMode, setPanelMode] = useState<PanelMode | null>(null);
@@ -161,6 +170,10 @@ export function App(): React.JSX.Element {
   );
 
   const scrollerRef = useRef<HTMLDivElement>(null);
+  // plan v1.5 D6: the offset the follow effect last wrote, so the scroll
+  // listener can tell a user scroll from the effect's own. null until the
+  // effect writes.
+  const autoScrollRef = useRef<number | null>(null);
   const laneState = useLaneState();
 
   // Deep-link: `/?song=<name>` selects a song on load, and the current
@@ -185,6 +198,11 @@ export function App(): React.JSX.Element {
   useEffect(() => {
     saveLeftPanelOpen(drawerOpen);
   }, [drawerOpen]);
+
+  // Persist the follow-playhead flag (plan v1.5 item 6 / D7).
+  useEffect(() => {
+    saveFollowPlayhead(followPlayhead);
+  }, [followPlayhead]);
 
   // R5 (plan v1.5 item 2): while the drawer is open, a mousedown anywhere
   // outside it (and outside the burger) closes it. `mousedown`, not `click`,
@@ -510,6 +528,13 @@ export function App(): React.JSX.Element {
     ],
   );
 
+  // Latest values for the scroll listener below, read through refs so the
+  // listener need not re-register on every playback tick (plan v1.5 item 6).
+  const followPlayheadRef = useRef(followPlayhead);
+  followPlayheadRef.current = followPlayhead;
+  const playingRef = useRef(transport.isPlaying);
+  playingRef.current = transport.isPlaying;
+
   // Track the timeline scroll offset + viewport width for the canvas lanes
   // (sub-labels are anchored to the viewport's left edge). rAF-coalesced.
   useEffect(() => {
@@ -522,6 +547,15 @@ export function App(): React.JSX.Element {
       setViewportWidth(el.clientWidth);
     };
     const onScroll = () => {
+      // plan v1.5 item 6 / D6: a user scroll during playback turns following
+      // off. `isUserScroll` distinguishes it from the follow effect's own write.
+      if (
+        playingRef.current &&
+        followPlayheadRef.current &&
+        isUserScroll(el.scrollLeft, autoScrollRef.current)
+      ) {
+        setFollowPlayhead(false);
+      }
       if (!raf) raf = requestAnimationFrame(sync);
     };
     sync();
@@ -535,10 +569,11 @@ export function App(): React.JSX.Element {
     };
   }, [song, activeView]);
 
-  // Follow-playhead scroll while playing (design notes §2).
+  // Follow-playhead scroll while playing (design notes §2; plan v1.5 item 6).
   useEffect(() => {
     const el = scrollerRef.current;
     if (!el) return;
+    if (!(followPlayhead && transport.isPlaying)) return;
     const next = followScrollLeft({
       playheadX: LABEL_WIDTH + coords.timeToX(transport.currentTime),
       scrollLeft: el.scrollLeft,
@@ -546,8 +581,11 @@ export function App(): React.JSX.Element {
       maxScrollLeft: el.scrollWidth - el.clientWidth,
       playing: transport.isPlaying,
     });
-    if (Math.abs(next - el.scrollLeft) > 0.5) el.scrollLeft = next;
-  }, [transport.currentTime, transport.isPlaying, coords]);
+    if (Math.abs(next - el.scrollLeft) > 0.5) {
+      autoScrollRef.current = next;
+      el.scrollLeft = next;
+    }
+  }, [transport.currentTime, transport.isPlaying, followPlayhead, coords]);
 
   const fitToWidth = useCallback(() => {
     const el = scrollerRef.current;
@@ -986,6 +1024,17 @@ export function App(): React.JSX.Element {
           <FitToWidthButton onClick={fitToWidth} />
         </div>
         <div className="app-footer__spacer" />
+        <button
+          type="button"
+          className="zbtn zbtn--icon"
+          data-testid="follow-toggle"
+          aria-pressed={followPlayhead}
+          aria-label="Follow playhead"
+          title="Follow the playhead while playing"
+          onClick={() => setFollowPlayhead((on) => !on)}
+        >
+          <i className="ph ph-arrows-in-line-horizontal" />
+        </button>
         <button
           type="button"
           className="zbtn"
