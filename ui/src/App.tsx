@@ -16,7 +16,11 @@ import {
 } from "./panel";
 import { ArtifactInspector } from "./inspector";
 import { resolveKeyAction, shouldPreventDefault } from "./app/keymap";
-import { loadLeftPanelOpen, saveLeftPanelOpen } from "./app/panelState";
+import {
+  loadLeftPanelOpen,
+  saveLeftPanelOpen,
+  shouldDismissLeftPanel,
+} from "./app/panelState";
 import { seekTimeForCardClick } from "./app/transportRules";
 import {
   selectSongListState,
@@ -173,6 +177,21 @@ export function App(): React.JSX.Element {
   // Persist the left panel open/closed state (plan item 4).
   useEffect(() => {
     saveLeftPanelOpen(drawerOpen);
+  }, [drawerOpen]);
+
+  // R5 (plan v1.5 item 2): while the drawer is open, a mousedown anywhere
+  // outside it (and outside the burger) closes it. `mousedown`, not `click`,
+  // matches RightPanel's dismissal so a drag that starts outside also closes.
+  // Registered only while open; removed on cleanup.
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const onPointer = (event: MouseEvent): void => {
+      if (shouldDismissLeftPanel(true, event.target as Element | null)) {
+        setDrawerOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onPointer);
+    return () => document.removeEventListener("mousedown", onPointer);
   }, [drawerOpen]);
 
   useEffect(() => {
@@ -757,6 +776,10 @@ export function App(): React.JSX.Element {
               onPick={(name) => {
                 setSong(name);
                 setActiveView("timeline");
+                // R4/D4: picking a song hides the left panel. Deliberately not
+                // done on the `?song=` deep-link effect or the song-change
+                // reset effect — only a user pick counts.
+                setDrawerOpen(false);
               }}
             />
           ) : song && songLoadState.kind === "loading" ? (

@@ -5,6 +5,7 @@ import {
   leftPanelReducer,
   loadLeftPanelOpen,
   saveLeftPanelOpen,
+  shouldDismissLeftPanel,
 } from "./panelState";
 
 describe("leftPanelReducer", () => {
@@ -45,5 +46,48 @@ describe("left panel persistence", () => {
       throw new Error("blocked");
     });
     expect(loadLeftPanelOpen()).toBe(false);
+  });
+});
+
+describe("shouldDismissLeftPanel", () => {
+  afterEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  function mount(): { drawerChild: Element; burgerChild: Element; outside: Element } {
+    document.body.innerHTML = `
+      <div data-testid="left-panel"><button id="drawer-entry">Timeline</button></div>
+      <button data-testid="burger-toggle"><i id="burger-icon"></i></button>
+      <div id="elsewhere"><span id="deep">x</span></div>
+    `;
+    return {
+      drawerChild: document.getElementById("drawer-entry")!,
+      burgerChild: document.getElementById("burger-icon")!,
+      outside: document.getElementById("deep")!,
+    };
+  }
+
+  it("target inside the drawer → false", () => {
+    const { drawerChild } = mount();
+    expect(shouldDismissLeftPanel(true, drawerChild)).toBe(false);
+  });
+
+  it("target inside the burger → false", () => {
+    const { burgerChild } = mount();
+    expect(shouldDismissLeftPanel(true, burgerChild)).toBe(false);
+  });
+
+  it("target elsewhere → true", () => {
+    const { outside } = mount();
+    expect(shouldDismissLeftPanel(true, outside)).toBe(true);
+  });
+
+  it("open === false → false", () => {
+    const { outside } = mount();
+    expect(shouldDismissLeftPanel(false, outside)).toBe(false);
+  });
+
+  it("target === null → false", () => {
+    expect(shouldDismissLeftPanel(true, null)).toBe(false);
   });
 });

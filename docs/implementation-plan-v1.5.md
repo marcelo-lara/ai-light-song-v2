@@ -53,7 +53,7 @@ the only statement of them that survives. Do not go looking for another source.
 | # | Item | Requirements | State |
 | --- | --- | --- | --- |
 | 1 | A card click never moves the playhead while the transport is playing | R3 | [x] done |
-| 2 | Left panel hides on song pick and on any outside click | R4, R5 | [ ] pending |
+| 2 | Left panel hides on song pick and on any outside click | R4, R5 | [x] done |
 | 3 | Lane events panel + `columns-plus-right` opener | R1 (stack), R2 | [ ] pending |
 | 4 | Active-card highlight and follow during playback | R1 (highlight) | [ ] pending |
 | 5 | Header readout — drop the bar.beat caption, reserve the space | R9, R10 | [ ] pending |

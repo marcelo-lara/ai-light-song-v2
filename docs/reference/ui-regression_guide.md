@@ -49,7 +49,7 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `timeline-zoomed-in` | `song-full` after zoom-in to max | click zoom-in control N times | Dense-lane semantic zoom |
 | `timeline-zoomed-out` | `song-full` at min zoom | click zoom-out control N times | Whole-song overview |
 | `timeline-scrolled` | `song-full` scrolled to ~50% | set viewport scrollLeft | Marker + ruler alignment mid-song |
-| `sidebar-expanded` | `song-full` with sidebar open | click sidebar toggle | Path panel, file-status list, lane toggles |
+| `sidebar-expanded` | `song-full` with sidebar open | click sidebar toggle | Path panel, file-status list, lane toggles. Dismissal (plan v1.5 item 2 / R4, R5): a `mousedown` anywhere outside the drawer and the burger closes it; an inside click never does; picking a song in the song picker closes it too. |
 | `lane-toggles-min` | `song-full` with only waveform + sections visible | toggle lanes off | Lane show/hide layout reflow |
 | `overlay-open` | Hovercard/selection overlay | click a sections-lane region | Overlay anchor + content |
 | `detail-inspector` | Raw JSON inspector | select an artifact in the inspector dropdown | Scroll region, formatting |
@@ -386,3 +386,9 @@ should be well under that.
       change. The playing-half of R3 (`seekTimeForCardClick` returns `null` while
       playing) is covered by `ui/src/app/transportRules.test.ts`, since the suite
       cannot press Play.
+- [x] *(plan v1.5 item 2)* `tests/ui-visual/specs/left-panel.spec.ts` second
+      `test(...)` block — R4/R5: an outside `mousedown` closes the left panel, an
+      inside click never does, the burger's mousedown/click pair does not
+      re-open it, `esc` still closes, and picking a song closes it. The pure
+      rule is `shouldDismissLeftPanel` in `ui/src/app/panelState.ts`
+      (`panelState.test.ts` truth table).
