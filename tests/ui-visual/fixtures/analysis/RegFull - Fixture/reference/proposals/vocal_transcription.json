@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "note": "Vocal transcription proposals from experiments/vocalparse and experiments/acestep_transcriber. Lyric lines with timing, for review — nothing in src/ reads this file.",
+  "sources": [
+    {
+      "model": "whisper-large-v3 (baseline, vocal stem)",
+      "kind": "baseline",
+      "language": "en",
+      "language_confidence": 0.98,
+      "word_timestamps": true,
+      "lines": [
+        {
+          "id": "w001",
+          "start_s": 29.5,
+          "end_s": 33.1,
+          "text": "We are the fire, we are the sound",
+          "words": [
+            { "t": 29.5, "d": 0.3, "w": "We", "p": 0.9 },
+            { "t": 29.9, "d": 0.2, "w": "are", "p": 0.88 },
+            { "t": 30.2, "d": 0.3, "w": "the", "p": 0.7 },
+            { "t": 30.6, "d": 0.6, "w": "fire", "p": 0.95 }
+          ],
+          "confidence": -0.21
+        },
+        {
+          "id": "w002",
+          "start_s": 83.5,
+          "end_s": 90.2,
+          "text": "Hold your breath and let it go",
+          "words": [
+            { "t": 83.5, "d": 0.4, "w": "Hold", "p": 0.92 },
+            { "t": 84.0, "d": 0.3, "w": "your", "p": 0.8 },
+            { "t": 84.4, "d": 0.7, "w": "breath", "p": 0.97 }
+          ],
+          "confidence": -0.3
+        }
+      ]
+    },
+    {
+      "model": "ACE-Step Transcriber (ACE-Step/acestep-transcriber)",
+      "kind": "singing-transcription",
+      "alignment": "words",
+      "alignment_reason": "12/14 lines matched to whisper",
+      "language": "en",
+      "bpm": null,
+      "structure": [
+        { "id": "aces001", "tag": "Verse 1", "instruments": "Synth Pad", "start_s": 29.5, "end_s": 55.2 },
+        { "id": "aces002", "tag": "Chorus", "instruments": null, "start_s": 96.7, "end_s": 120.4 }
+      ],
+      "lines": [
+        {
+          "id": "ace001",
+          "start_s": 29.5,
+          "end_s": 33.1,
+          "text": "We are the fire, we are the sound",
+          "words": [],
+          "confidence": null
+        },
+        {
+          "id": "ace002",
+          "start_s": 83.5,
+          "end_s": 90.2,
+          "text": "Hold your breath and let it go",
+          "words": [],
+          "confidence": null
+        }
+      ]
+    },
+    {
+      "model": "VocalParse (pymaster/VocalParse)",
+      "kind": "singing-transcription",
+      "alignment": "span",
+      "alignment_reason": "text similarity 0.11 < 0.35 (likely language mismatch — VocalParse is Mandarin-biased)",
+      "language": null,
+      "bpm": 128,
+      "structure": [],
+      "lines": [
+        {
+          "id": "vp001",
+          "start_s": 29.5,
+          "end_s": 192.7,
+          "text": "革命 的 火 焰",
+          "words": [],
+          "confidence": null,
+          "approx": true
+        }
+      ]
+    }
+  ]
+}

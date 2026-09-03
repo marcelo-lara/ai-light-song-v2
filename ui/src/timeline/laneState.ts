@@ -24,7 +24,10 @@ export type LaneKind =
   | "machine"
   | "ml"
   | "phrases"
-  | "proposals";
+  | "proposals"
+  | "allin1"
+  | "character"
+  | "lyrics";
 
 export interface LaneDef {
   id: string;
@@ -62,10 +65,14 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "waveform", label: "Waveform Anchor", sub: "decoded source mix", kind: "waveform", height: 84 },
   { id: "humanHints", label: "Human Hints", sub: "reference/human · human_hints", kind: "hints", height: 58 },
   { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58 },
+  { id: "allin1Transitions", label: "allin1 Transitions", sub: "experiment · section changes · audition vs. Human Hints", kind: "allin1", height: 58 },
   { id: "fftBands", label: "FFT Bands", sub: "essentia · 7 spectral bands", kind: "fft", height: 84 },
   { id: "rmsLoudness", label: "RMS Loudness", sub: "essentia · mix + 4 stems", kind: "rms", height: 112 },
   { id: "loudnessEnvelope", label: "Loudness Envelope", sub: "essentia · mix + 4 stems", kind: "env", height: 112 },
   { id: "sections", label: "Sections", sub: "artifact-first segmentation", kind: "sections", height: 84 },
+  { id: "character", label: "Character", sub: "experiment · what this passage is like", kind: "character", height: 84 },
+  { id: "vocalTranscription", label: "Vocal Transcription", sub: "experiment · sung lyrics + timing · VocalParse / ACE-Step / whisper", kind: "lyrics", height: 84 },
+  { id: "allin1Sections", label: "allin1 Sections", sub: "experiment · named song form · compare with Sections", kind: "allin1", height: 84 },
   { id: "chords", label: "Chord Regions", sub: "layer A harmonic", kind: "chords", height: 84 },
   { id: "patterns", label: "Pattern Occurrences", sub: "repeated harmonic patterns", kind: "patterns", height: 84 },
   { id: "identifierHints", label: "Identifier Hints", sub: "energy_summary · named events", kind: "identifiers", height: 84 },
@@ -78,14 +85,22 @@ export const LANE_DEFS: readonly LaneDef[] = [
 ];
 
 /**
- * design notes §2: the five lanes expanded on first load, plus Drop Proposals.
- * Proposals only exist to be compared against Human Hints while the song plays,
- * so it sits directly beneath that lane and opens with it.
+ * design notes §2: the five lanes expanded on first load, plus the two review
+ * lanes that only exist to be compared against Human Hints while the song
+ * plays — Drop Proposals and allin1 Transitions both sit directly under it and
+ * open with it.
+ *
+ * `allin1Sections` is deliberately NOT here even though it is the headline of
+ * the experiment: it belongs next to `sections`, the incumbent it is scored
+ * against, and expanding that pair on load pushes the default view past the
+ * fold. Expand them together when comparing. The experiment lanes come out of
+ * the registry entirely when it is promoted or abandoned (constitution §3.2).
  */
 export const DEFAULT_EXPANDED: readonly string[] = [
   "waveform",
   "humanHints",
   "dropProposals",
+  "allin1Transitions",
   "fftBands",
   "rmsLoudness",
   "loudnessEnvelope",

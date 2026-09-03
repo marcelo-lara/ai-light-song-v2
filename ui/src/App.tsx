@@ -81,12 +81,22 @@ const TIMELINE_KEYS = [
   "symbolicPhrases",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",
+  // named song form under review (experiments/allin1)
+  "allin1",
+  // texture / character blocks under review (experiments/clap)
+  "character",
+  // sung lyrics + timing under review (experiments/vocalparse, acestep_transcriber)
+  "vocalTranscription",
 ] as const;
 
 /** sparse lane id → the single artifact key that backs it (drives empty-state). */
 const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   humanHints: "humanHints",
   dropProposals: "dropProposals",
+  allin1Transitions: "allin1",
+  allin1Sections: "allin1",
+  character: "character",
+  vocalTranscription: "vocalTranscription",
   sections: "sectionsTopLevel",
   chords: "harmonicLayer",
   patterns: "patterns",
@@ -208,6 +218,9 @@ export function App(): React.JSX.Element {
     () => ({
       humanHints: humanHintsFile,
       dropProposals: artifacts.dropProposals.data,
+      allin1: artifacts.allin1.data,
+      character: artifacts.character.data,
+      vocalTranscription: artifacts.vocalTranscription.data,
       sections,
       harmonicLayer: artifacts.harmonicLayer.data,
       patterns: artifacts.patterns.data,
@@ -219,6 +232,9 @@ export function App(): React.JSX.Element {
     [
       humanHintsFile,
       artifacts.dropProposals.data,
+      artifacts.allin1.data,
+      artifacts.character.data,
+      artifacts.vocalTranscription.data,
       sections,
       artifacts.harmonicLayer.data,
       artifacts.patterns.data,

@@ -1,8 +1,10 @@
 # Documentation map
 
 `docs/` holds **current material only** — how the system is meant to behave now.
-There is no archive folder: git history is the archive (constitution §4). If a
-document here has stopped being true, fix it or delete it.
+Git history is the archive (constitution §4): if a document here has stopped
+being true, fix it or delete it. The single exception is
+[`archive/experiments.md`](archive/experiments.md), the standing record of
+concluded experiments defined in §3.4.
 
 **Start at [`../CLAUDE.md`](../CLAUDE.md)** — the entry point for people and
 models alike: what the system does, which stages are trusted, and what the
@@ -31,15 +33,23 @@ measurements say is broken.
 | Doc | State |
 | --- | --- |
 | [`issues.md`](issues.md) | The analysis-issue queue — **open issues only** (constitution §4.2). Currently empty. |
+| [`experiments_pending.md`](experiments_pending.md) | The experiment queue (constitution §3.4). One entry per experiment, carrying its plan, its measured results and its conclusion. A concluded entry leaves this file only when the operator picks archive or promote. |
+| [`archive/experiments.md`](archive/experiments.md) | Concluded experiments and what they scored. The one archive file §4 permits. |
+| [`implementation-plan-v1.5.md`](implementation-plan-v1.5.md) | The open release worklist — UI v1.5, nine items, each with its own checks and Visual QA block. It quotes the operator's requirements verbatim, so it is self-contained. |
 
-No release worklist is open. When one starts it is a single
-`product-refinement-vX.Y.md` here covering core, `ui/`, MCP and experiments
-together, and the previous one is deleted first — constitution §4.1.
+One release worklist is open (v1.5, `ui/` only), and it is the plan alone: the
+refinement doc it was drafted from is gone, its requirements having been carried
+into the plan word for word (constitution §4 — a document goes when it stops
+being true). The plan is deleted in turn when v1.5 ships.
 
 ## Measured evidence
 
-[`../experiments/drop_detection/README.md`](../experiments/drop_detection/README.md)
-— the hand-built drop detector and the 2026-09 pretrained-model survey
-(`allin1`, MERT, CLAP, beat-this), with reproducible measurements against
-hand-labelled ground truth. This is the current best account of what the
-structural stages actually do, and it does not go stale with age.
+Reproducible measurements against hand-labelled ground truth. This is the
+current best account of what the structural stages actually do, and it does not
+go stale with age (constitution §4).
+
+| Experiment | What it establishes |
+| --- | --- |
+| [`../experiments/drop_detection/README.md`](../experiments/drop_detection/README.md) | The hand-built drop detector and the 2026-09 pretrained-model survey (`allin1`, MERT, CLAP, beat-this). |
+| [`../experiments/allin1/README.md`](../experiments/allin1/README.md) | Named functional structure from All-In-One, exported per song and rendered as two debugger lanes. Beats the incumbent segmentation at less than half its boundary budget. **Not promoted.** |
+| [`../experiments/clap/README.md`](../experiments/clap/README.md) | What CLAP infers *beyond* the arrangement: a character layer (breath / void / vocal lead / full power) built from the stems, CLAP's calm axis and allin1's frame-level shadow labels. Also the negative identity result that sets the MFCC baseline. **Not promoted.** |

@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "engine": "experiments.clap.character",
+    "clap_model": "laion/larger_clap_music",
+    "stems": "artifacts/essentia/rms_loudness.json",
+    "shadow_labels": "reference/proposals/allin1.json (frame_labels)",
+    "grid_hz": 10.0
+  },
+  "note": "Character blocks from experiments/clap: what a passage is like, not where it sits in the arrangement. Proposals for review, not deliverables \u2014 nothing in src/ reads this file. `stems` blocks come from per-stem RMS the pipeline already produces, `stems+clap` blocks additionally need CLAP's calm/intense axis, and `allin1` blocks are labels with sustained frame-level posterior mass that allin1's own published segmentation never used.",
+  "thresholds": {
+    "stem_present_fraction_of_p90": 0.35,
+    "stem_out_fraction_of_p90": 0.25,
+    "smooth_s": 2.0,
+    "close_gap_s": 2.0,
+    "calm_z": 0.5,
+    "intense_z": -0.5,
+    "min_block_s": 4.0
+  },
+  "counts": {
+    "vocal lead": 1,
+    "shadow inst": 1,
+    "shadow outro": 1
+  },
+  "blocks": [
+    {
+      "kind": "vocal lead",
+      "source": "stems",
+      "start_s": 21.8,
+      "end_s": 29.5,
+      "evidence": {
+        "vocals": 0.334,
+        "drums": 0.142,
+        "bass": 0.031,
+        "calm_z": -0.03,
+        "sparse_z": -0.1
+      },
+      "id": "char-001"
+    },
+    {
+      "kind": "shadow inst",
+      "source": "allin1",
+      "start_s": 30.0,
+      "end_s": 42.5,
+      "evidence": {
+        "peak_share": 0.505,
+        "mean_share": 0.365
+      },
+      "id": "char-002"
+    },
+    {
+      "kind": "shadow outro",
+      "source": "allin1",
+      "start_s": 48.8,
+      "end_s": 58.0,
+      "evidence": {
+        "peak_share": 0.406,
+        "mean_share": 0.294
+      },
+      "id": "char-003"
+    }
+  ]
+}

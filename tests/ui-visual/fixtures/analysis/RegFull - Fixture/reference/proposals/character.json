@@ -1,0 +1,178 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "engine": "experiments.clap.character",
+    "clap_model": "laion/larger_clap_music",
+    "stems": "artifacts/essentia/rms_loudness.json",
+    "shadow_labels": "reference/proposals/allin1.json (frame_labels)",
+    "grid_hz": 10.0
+  },
+  "note": "Character blocks from experiments/clap: what a passage is like, not where it sits in the arrangement. Proposals for review, not deliverables \u2014 nothing in src/ reads this file. `stems` blocks come from per-stem RMS the pipeline already produces, `stems+clap` blocks additionally need CLAP's calm/intense axis, and `allin1` blocks are labels with sustained frame-level posterior mass that allin1's own published segmentation never used.",
+  "thresholds": {
+    "stem_present_fraction_of_p90": 0.35,
+    "stem_out_fraction_of_p90": 0.25,
+    "smooth_s": 2.0,
+    "close_gap_s": 2.0,
+    "calm_z": 0.5,
+    "intense_z": -0.5,
+    "min_block_s": 4.0
+  },
+  "counts": {
+    "void": 1,
+    "vocal lead": 5,
+    "shadow break": 2,
+    "breath": 2,
+    "full power": 1
+  },
+  "blocks": [
+    {
+      "kind": "void",
+      "source": "stems",
+      "start_s": 19.7,
+      "end_s": 25.0,
+      "evidence": {
+        "vocals": 0.034,
+        "drums": 0.021,
+        "bass": 0.008,
+        "calm_z": -0.11,
+        "sparse_z": -0.54
+      },
+      "id": "char-001"
+    },
+    {
+      "kind": "vocal lead",
+      "source": "stems",
+      "start_s": 29.5,
+      "end_s": 55.2,
+      "evidence": {
+        "vocals": 0.377,
+        "drums": 0.147,
+        "bass": 0.008,
+        "calm_z": -0.1,
+        "sparse_z": 1.07
+      },
+      "id": "char-002"
+    },
+    {
+      "kind": "shadow break",
+      "source": "allin1",
+      "start_s": 68.6,
+      "end_s": 75.9,
+      "evidence": {
+        "peak_share": 0.29,
+        "mean_share": 0.24
+      },
+      "id": "char-003"
+    },
+    {
+      "kind": "breath",
+      "source": "stems+clap",
+      "start_s": 83.5,
+      "end_s": 95.0,
+      "evidence": {
+        "vocals": 0.238,
+        "drums": 0.004,
+        "bass": 0.005,
+        "calm_z": 1.77,
+        "sparse_z": 1.26
+      },
+      "id": "char-004"
+    },
+    {
+      "kind": "vocal lead",
+      "source": "stems",
+      "start_s": 96.7,
+      "end_s": 103.3,
+      "evidence": {
+        "vocals": 0.207,
+        "drums": 0.129,
+        "bass": 0.31,
+        "calm_z": -0.95,
+        "sparse_z": 0.72
+      },
+      "id": "char-005"
+    },
+    {
+      "kind": "vocal lead",
+      "source": "stems",
+      "start_s": 126.3,
+      "end_s": 139.4,
+      "evidence": {
+        "vocals": 0.329,
+        "drums": 0.171,
+        "bass": 0.008,
+        "calm_z": -0.43,
+        "sparse_z": -0.31
+      },
+      "id": "char-006"
+    },
+    {
+      "kind": "full power",
+      "source": "stems+clap",
+      "start_s": 140.2,
+      "end_s": 144.5,
+      "evidence": {
+        "vocals": 0.141,
+        "drums": 0.176,
+        "bass": 0.25,
+        "calm_z": -1.42,
+        "sparse_z": -0.09
+      },
+      "id": "char-007"
+    },
+    {
+      "kind": "shadow break",
+      "source": "allin1",
+      "start_s": 143.4,
+      "end_s": 175.0,
+      "evidence": {
+        "peak_share": 0.403,
+        "mean_share": 0.301
+      },
+      "id": "char-008"
+    },
+    {
+      "kind": "vocal lead",
+      "source": "stems",
+      "start_s": 147.0,
+      "end_s": 151.8,
+      "evidence": {
+        "vocals": 0.231,
+        "drums": 0.111,
+        "bass": 0.029,
+        "calm_z": -0.45,
+        "sparse_z": -0.25
+      },
+      "id": "char-009"
+    },
+    {
+      "kind": "vocal lead",
+      "source": "stems",
+      "start_s": 177.7,
+      "end_s": 186.3,
+      "evidence": {
+        "vocals": 0.402,
+        "drums": 0.15,
+        "bass": 0.01,
+        "calm_z": -0.15,
+        "sparse_z": 0.32
+      },
+      "id": "char-010"
+    },
+    {
+      "kind": "breath",
+      "source": "stems+clap",
+      "start_s": 188.5,
+      "end_s": 192.7,
+      "evidence": {
+        "vocals": 0.353,
+        "drums": 0.001,
+        "bass": 0.004,
+        "calm_z": 2.0,
+        "sparse_z": -0.17
+      },
+      "id": "char-011"
+    }
+  ]
+}

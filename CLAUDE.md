@@ -115,13 +115,48 @@ directly** — CLAP ranks *"the drop, the beat slams back in"* near the bottom o
 26 probes while *"the chorus, the biggest and catchiest part"* ranks top.
 Nothing from this is in `src/` yet.
 
+The first half of that is now an experiment with output you can audition:
+[`experiments/allin1/`](experiments/allin1/README.md) exports named sections and
+their transitions per song and renders them as two debugger lanes. Its
+transitions reach **4/7 impacts at ±1.0 s while proposing 1.6 boundaries/min**
+against the incumbent's 0/7 at 3.6/min — and the incumbent also loses to an
+evenly spaced grid at the same budget. **Not promoted**; §3.3 promotion has not
+been asked for. Identity is still missing, and the model's own beat grid should
+not be used (four songs land a clean half-beat off essentia's, one halves the
+tempo).
+
+**Character is a separate deliverable from arrangement, and it is measured.**
+The operator hand-marks blocks like `Armin - Revolution` `hint-006` — "Breath",
+81.4-96.3, *"Vocal - no intense section"*, lit as "soft motion of moving heads,
+parcans slow violet waves". That is a texture fact, not a verse/chorus fact, and
+no shipped artifact carries it. [`experiments/clap/`](experiments/clap/README.md)
+finds it from the stems plus one CLAP axis (calm vs intense), and adding that
+axis cuts the detector's false territory from 73 % of the corpus to 41 % with no
+loss. Ask CLAP how a passage *feels*; never what is playing — its drum and bass
+probes are confidently wrong where the stems are exact. allin1 contributes
+**shadow labels** here: with `include_activations=True` its frame-level
+posterior holds sustained mass on labels its own 8-bar segmentation never used,
+which is how a breakdown inside an `inst` stretch becomes visible.
+
+**Identity is measured and still open.** No section identity reaches the
+authoring model at all: `sections/form.py` computes a `repetition_group` and
+`ui_data.py` copies it into the projected `sections.json`, but it is `null` on
+every section of all 21 songs, so the key is dropped on write.
+[`experiments/clap/`](experiments/clap/README.md) tried CLAP embeddings for it
+and **lost to 20 MFCC coefficients** (mean pair AUC 0.68 vs 0.73). Its useful
+finding: CLAP scores 0.83 at telling a section from *itself* and 0.68 at
+matching two occurrences of the same part, so identity needs a representation
+trained for invariance between occurrences — not a bigger general-purpose
+embedding. **MFCC 0.73 is the number any next attempt must beat.**
+
 ## Documentation conventions
 
 | Location | Status | How to treat it |
 | --- | --- | --- |
-| `CLAUDE.md`, `README.md`, `docs/` | **Current** | Contracts. `docs/` holds current material only — ten files. Keep in sync with code; delete a doc in the change that makes it stale. |
+| `CLAUDE.md`, `README.md`, `docs/` | **Current** | Contracts. `docs/` holds current material only. Keep in sync with code; delete a doc in the change that makes it stale. |
 | `docs/issues.md` | **Open** | The issue queue — **pending issues only**; solving one means deleting the entry in the same change (§4.2). Currently empty. |
-| *(git history)* | **Historical** | There is no archive folder. 45 story specs, the release plans, the closed issues and the superseded worklist were deleted in `c227bec` and after. Recover with `git log --diff-filter=D --name-only` if you need one — but they are **not** specifications, and current behaviour is defined by `src/`. |
+| *(git history)* | **Historical** | Git history is the archive. 45 story specs, the release plans, the closed issues and the superseded worklist were deleted in `c227bec` and after. Recover with `git log --diff-filter=D --name-only` if you need one — but they are **not** specifications, and current behaviour is defined by `src/`. |
+| `docs/experiments_pending.md` | **Queue** | One entry per experiment — its plan, its measured results, its conclusion (constitution §3.4). A concluded entry leaves only when the operator picks archive or promote; `docs/archive/experiments.md` is where it goes, and is the one archive file the docs rule permits. |
 | `experiments/` | **Measured evidence** | Reproducible experiments and their outputs. The best available statement of what actually works. |
 
 `docs/constitution.md` was rewritten on 2026-09-02. Its former rules — *"if the
@@ -129,7 +164,8 @@ code and the documentation disagree, the documentation is assumed correct"* and
 *"every new feature must be introduced via a Story file"* — are what produced 45
 story specs for behaviour that had since changed. Both are gone, and so are the
 story specs. **Do not create a new numbered story file**, and **do not add an
-archive folder**: a document that stops being true gets deleted in a commit.
+archive folder**: a document that stops being true gets deleted in a commit. The
+sole exception is `docs/archive/experiments.md`, defined in constitution §3.4.
 
 ## Rules that are load-bearing
 
@@ -199,6 +235,8 @@ analyzer image: `experiments/drop_detection/research/run_in_container.sh`.
 | `data/analysis/<Song - Artist>/reference/` | Human and external ground truth. Read-only to the pipeline. |
 | `ui/` | Read-only artifact debugger (React + TS + Vite). Never writes to `data/analysis/`. |
 | `experiments/drop_detection/` | Drop-detector experiment and the pretrained-model survey. |
+| `experiments/allin1/` | Named functional structure from All-In-One — proposal files plus two review lanes. Not promoted. |
+| `experiments/clap/` | Character blocks beyond the arrangement (stems + CLAP calm axis + allin1 shadow labels), and the negative identity result. Not promoted. |
 
 ## What actually reaches the light show
 

@@ -226,3 +226,10 @@ __marimo__/
 experiments/drop_detection/cache/
 experiments/drop_detection/research/cache/mert/
 experiments/drop_detection/research/cache/clap*/
+
+# CLAP experiment: regenerable embedding + baseline feature caches
+experiments/clap/cache/
+
+# singing-voice-transcription experiments: regenerable raw model output caches
+experiments/vocalparse/cache/
+experiments/acestep_transcriber/cache/
