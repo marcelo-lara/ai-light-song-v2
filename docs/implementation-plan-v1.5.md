@@ -55,7 +55,7 @@ the only statement of them that survives. Do not go looking for another source.
 | 1 | A card click never moves the playhead while the transport is playing | R3 | [x] done |
 | 2 | Left panel hides on song pick and on any outside click | R4, R5 | [x] done |
 | 3 | Lane events panel + `columns-plus-right` opener | R1 (stack), R2 | [x] done |
-| 4 | Active-card highlight and follow during playback | R1 (highlight) | [ ] pending |
+| 4 | Active-card highlight and follow during playback | R1 (highlight) | [x] done |
 | 5 | Header readout — drop the bar.beat caption, reserve the space | R9, R10 | [ ] pending |
 | 6 | Follow-playhead toggle in the footer | R6 | [ ] pending |
 | 7 | Flask badge on lanes fed by unpromoted experiments | R7 | [ ] pending |
@@ -597,7 +597,7 @@ New spec: `tests/ui-visual/specs/lane-events.spec.ts`. Surface:
 
 ### Deliverable
 
-- [ ] `ui/src/panel/laneEvents.ts` (new) — one pure selector:
+- [x] `ui/src/panel/laneEvents.ts` (new) — one pure selector:
 
       ```ts
       /**
@@ -612,38 +612,38 @@ New spec: `tests/ui-visual/specs/lane-events.spec.ts`. Surface:
         time: number,
       ): number;
       ```
-- [ ] `ui/src/panel/laneEvents.test.ts` (new) — before the first block → `-1`;
+- [x] `ui/src/panel/laneEvents.test.ts` (new) — before the first block → `-1`;
       in the gap between two blocks → `-1`; exactly at `start_s` → that block;
       exactly at `end_s` → `-1` (or the next block if it starts there);
       overlapping blocks → the later start wins; degenerate block → never;
       empty list → `-1`.
-- [ ] `ui/src/panel/LaneEventsPanel.tsx` — new props `currentTime: number` and
+- [x] `ui/src/panel/LaneEventsPanel.tsx` — new props `currentTime: number` and
       `playing: boolean`. The card at `activeBlockIndex(blocks, currentTime)`
       gets `data-active="true"` and `aria-current="true"`; every other card gets
       `data-active="false"` and no `aria-current`.
-- [ ] `ui/src/panel/LaneEventsPanel.tsx` — follow: a `useEffect` on the active
+- [x] `ui/src/panel/LaneEventsPanel.tsx` — follow: a `useEffect` on the active
       index scrolls the active card into view with
       `scrollIntoView({ block: "nearest" })` **only when `playing` is true**.
       Paused, the list never moves on its own — which is what keeps every
       screenshot in this plan deterministic. Guard the call
       (`el?.scrollIntoView?.()`) so jsdom unit tests do not throw.
-- [ ] `ui/src/App.tsx` — pass `currentTime={transport.currentTime}` and
+- [x] `ui/src/App.tsx` — pass `currentTime={transport.currentTime}` and
       `playing={transport.isPlaying}`.
-- [ ] `ui/src/styles/daw.css` — `.lane-events__card[data-active="true"]`:
+- [x] `ui/src/styles/daw.css` — `.lane-events__card[data-active="true"]`:
       raise the tint (a second inline background at higher alpha, or a
       `filter: brightness(1.6)` on the card background), widen the left border
       to 3 px `var(--color-accent)`, and set the label ink to
       `var(--color-neutral-100)`. It must be unmistakable at a glance in a
       296 px column.
-- [ ] Unit tests in `ui/src/panel/LaneEventsPanel.test.tsx` — exactly one card
+- [x] Unit tests in `ui/src/panel/LaneEventsPanel.test.tsx` — exactly one card
       carries `data-active="true"` for a time inside a block; zero cards carry
       it for a time in a gap.
 
 ### Docs to update in this commit
 
-- [ ] `reference/ui-regression_guide.md` §2 — new surface row
+- [x] `reference/ui-regression_guide.md` §2 — new surface row
       `lane-events-active`.
-- [ ] `reference/ui-regression_guide.md` §9 — ticked line for the highlight
+- [x] `reference/ui-regression_guide.md` §9 — ticked line for the highlight
       spec and its baseline.
 
 ### Visual QA — item 4

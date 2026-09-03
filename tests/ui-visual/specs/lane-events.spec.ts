@@ -156,3 +156,50 @@ test("item 3 — lane events opener + stacked non-modal panel", async ({ page })
 
   expect(errors.list()).toEqual([]);
 });
+
+// Plan v1.5 item 4 (R1 highlight): the card covering the playhead carries
+// `data-active="true"` / `aria-current`. The suite cannot press Play, so it
+// drives `currentTime` by seeking; the pure rule is `activeBlockIndex`
+// (`ui/src/panel/laneEvents.test.ts`).
+test("item 4 — active-card highlight follows the playhead", async ({ page }) => {
+  const errors = assertNoRuntimeErrors(page);
+  await gotoSong(page, FIXTURES.full);
+
+  // 1. runtime assertions clean (checked again at the end).
+
+  await page.getByTestId("lane-events-humanHints").click();
+  await expect(page.getByTestId("lane-events-panel")).toHaveCount(1);
+
+  // 2. nothing active at the start (first hint starts at 40.0 s).
+  await page.getByRole("button", { name: "To start" }).click();
+  await waitReady(page);
+  await expect(page.locator('.app-header__time')).toHaveText("0:00.0");
+  await expect(page.locator('[data-active="true"]')).toHaveCount(0);
+
+  // 3. a paused card click highlights it.
+  await page.getByTestId("lane-event-hint-002").click();
+  await expect(page.locator(".app-header__time")).toHaveText("0:52.0");
+  const active = page.locator('.lane-events__card[data-active="true"]');
+  await expect(active).toHaveCount(1);
+  await expect(active).toHaveAttribute("data-block-id", "hint-002");
+
+  // 4. and it moves with the playhead.
+  await page.getByTestId("lane-event-hint-003").click();
+  await expect(page.locator(".app-header__time")).toHaveText("1:04.0");
+  await expect(active).toHaveCount(1);
+  await expect(active).toHaveAttribute("data-block-id", "hint-003");
+
+  // 5. baseline — hint-003 active.
+  await expect(page.locator(".app-rightpanel")).toHaveScreenshot(
+    "lane-events-active.png",
+  );
+
+  // 6. the highlight clears in a gap (48.0–52.0, between hint-001 and hint-002).
+  await page.getByTestId("lane-event-hint-002").click();
+  await expect(page.locator(".app-header__time")).toHaveText("0:52.0");
+  await page.getByRole("button", { name: "Previous beat" }).click();
+  await expect(page.locator(".app-header__time")).toHaveText("0:51.8");
+  await expect(page.locator('[data-active="true"]')).toHaveCount(0);
+
+  expect(errors.list()).toEqual([]);
+});

@@ -923,6 +923,8 @@ export function App(): React.JSX.Element {
             blocks={eventsPanel.blocks}
             status={eventsPanel.status}
             error={eventsPanel.error}
+            currentTime={transport.currentTime}
+            playing={transport.isPlaying}
             onClose={closePanel}
             onSelectBlock={handleSelectBlock}
           />

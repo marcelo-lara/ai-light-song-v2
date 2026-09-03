@@ -10,11 +10,19 @@
 // A card click seeks (only when paused — item 1 / D1) and does nothing else
 // (D2): the panel stays on the same lane. Card colour comes from the same
 // `sparseTint` source the timeline blocks use so the two read as one thing.
+//
+// item 4 / R1 "highlight the active card": the card covering `currentTime`
+// (per `activeBlockIndex`) gets `data-active="true"` / `aria-current`. While
+// `playing`, the active card is scrolled into view on every index change;
+// paused, the list never moves on its own, which keeps the screenshots stable.
+
+import { useEffect, useRef } from "react";
 
 import type { ArtifactStatus } from "../data";
 import type { SparseBlock } from "../timeline/laneContent";
 import { sparseTint } from "../timeline/sparseTints";
 
+import { activeBlockIndex } from "./laneEvents";
 import { RightPanel } from "./RightPanel";
 
 interface LaneEventsPanelProps {
@@ -23,6 +31,8 @@ interface LaneEventsPanelProps {
   blocks: readonly SparseBlock[];
   status: ArtifactStatus;
   error: string | null;
+  currentTime: number;
+  playing: boolean;
   onClose: () => void;
   onSelectBlock: (block: SparseBlock) => void;
 }
@@ -33,9 +43,20 @@ export function LaneEventsPanel({
   blocks,
   status,
   error,
+  currentTime,
+  playing,
   onClose,
   onSelectBlock,
 }: LaneEventsPanelProps): React.JSX.Element {
+  const activeIndex = activeBlockIndex(blocks, currentTime);
+  const activeCardRef = useRef<HTMLButtonElement | null>(null);
+
+  // Follow: keep the active card visible while playing. Guarded so jsdom
+  // (no `scrollIntoView`) does not throw.
+  useEffect(() => {
+    if (!playing || activeIndex < 0) return;
+    activeCardRef.current?.scrollIntoView?.({ block: "nearest" });
+  }, [playing, activeIndex]);
   // Mirrors SparseLane's `state` string exactly.
   const state =
     status === "loading"
@@ -63,15 +84,19 @@ export function LaneEventsPanel({
         <div className="tl-canvas-lane__state">{state}</div>
       ) : (
         <ol className="lane-events" data-testid="lane-events-panel" data-lane={laneId}>
-          {blocks.map((block) => {
+          {blocks.map((block, index) => {
             const tint = sparseTint(block.tintId ?? laneId);
+            const active = index === activeIndex;
             return (
               <li key={block.id}>
                 <button
+                  ref={active ? activeCardRef : undefined}
                   type="button"
                   className="lane-events__card"
                   data-testid={`lane-event-${block.id}`}
                   data-block-id={block.id}
+                  data-active={active}
+                  aria-current={active ? "true" : undefined}
                   style={{ background: tint.fill, borderLeftColor: tint.stroke }}
                   onClick={() => onSelectBlock(block)}
                 >

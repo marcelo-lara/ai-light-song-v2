@@ -33,6 +33,8 @@ const base = {
   laneLabel: "Human Hints",
   status: "ready" as const,
   error: null,
+  currentTime: 0,
+  playing: false,
   onClose: () => {},
   onSelectBlock: () => {},
 };
@@ -116,5 +118,39 @@ describe("LaneEventsPanel", () => {
       <LaneEventsPanel {...base} status="ready" blocks={[]} />,
     );
     expect(container.textContent).toContain("No data in this artifact");
+  });
+
+  // item 4 / R1: the active-card highlight.
+  const TIMED = [
+    block({ id: "hint-001", start_s: 40, end_s: 48 }),
+    block({ id: "hint-002", start_s: 52, end_s: 60 }),
+    block({ id: "hint-003", start_s: 64, end_s: 72 }),
+  ];
+
+  it("marks exactly one card active for a time inside a block", () => {
+    const { container } = render(
+      <LaneEventsPanel {...base} blocks={TIMED} currentTime={54} />,
+    );
+    const active = container.querySelectorAll<HTMLElement>(
+      '.lane-events__card[data-active="true"]',
+    );
+    expect(active).toHaveLength(1);
+    expect(active[0]?.dataset.blockId).toBe("hint-002");
+    expect(active[0]?.getAttribute("aria-current")).toBe("true");
+  });
+
+  it("marks no card active for a time in a gap", () => {
+    const { container } = render(
+      <LaneEventsPanel {...base} blocks={TIMED} currentTime={50} />,
+    );
+    expect(
+      container.querySelectorAll('.lane-events__card[data-active="true"]'),
+    ).toHaveLength(0);
+    expect(
+      Array.from(
+        container.querySelectorAll(".lane-events__card"),
+        (c) => (c as HTMLElement).dataset.active,
+      ),
+    ).toEqual(["false", "false", "false"]);
   });
 });

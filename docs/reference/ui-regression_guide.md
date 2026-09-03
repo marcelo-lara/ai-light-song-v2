@@ -52,6 +52,7 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `sidebar-expanded` | `song-full` with sidebar open | click sidebar toggle | Path panel, file-status list, lane toggles. Dismissal (plan v1.5 item 2 / R4, R5): a `mousedown` anywhere outside the drawer and the burger closes it; an inside click never does; picking a song in the song picker closes it too. |
 | `lane-toggles-min` | `song-full` with only waveform + sections visible | toggle lanes off | Lane show/hide layout reflow |
 | `lane-events-panel` | `song-full` with the Human Hints lane's events panel open | click `lane-events-humanHints` | Stacked cards, no inter-card gap; non-modal (survives Play, timeline drag, scroll); `.app-rightpanel` |
+| `lane-events-active` | `song-full` lane-events panel with the playhead inside a card | open `lane-events-humanHints`, click the `hint-003` card | Active card carries `data-active="true"` / `aria-current`: raised tint, accent left border, bright label; `.app-rightpanel` |
 | `overlay-open` | Hovercard/selection overlay | click a sections-lane region | Overlay anchor + content |
 | `detail-inspector` | Raw JSON inspector | select an artifact in the inspector dropdown | Scroll region, formatting |
 | `human-hints-editor` | Right-side hint editor open | trigger "add hint" | Editor stays open; compact styling |
@@ -414,3 +415,10 @@ should be well under that.
       full-grid capture, so the old baselines may pass while being wrong.
       `waveform-no-audio.png` (locator `.tl-lane-body[data-lane="waveform"]`,
       which has no lane head) must **not** change.
+- [x] *(plan v1.5 item 4)* `tests/ui-visual/specs/lane-events.spec.ts` second
+      `test(...)` block — R1's highlight: nothing active at `0:00.0`, a paused
+      card click marks exactly that card `data-active="true"`, the highlight
+      clears when a "Previous beat" step lands in the gap between two hints
+      (`lane-events-active.png` baseline). The pure rule is `activeBlockIndex`
+      in `ui/src/panel/laneEvents.ts` (`laneEvents.test.ts`); the
+      `scrollIntoView` follow is playback-only and not visually asserted.
