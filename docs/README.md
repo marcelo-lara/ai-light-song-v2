@@ -35,12 +35,8 @@ measurements say is broken.
 | [`issues.md`](issues.md) | The analysis-issue queue — **open issues only** (constitution §4.2). Currently empty. |
 | [`experiments_pending.md`](experiments_pending.md) | The experiment queue (constitution §3.4). One entry per experiment, carrying its plan, its measured results and its conclusion. A concluded entry leaves this file only when the operator picks archive or promote. |
 | [`archive/experiments.md`](archive/experiments.md) | Concluded experiments and what they scored. The one archive file §4 permits. |
-| [`implementation-plan-v1.5.md`](implementation-plan-v1.5.md) | The open release worklist — UI v1.5, nine items, each with its own checks and Visual QA block. It quotes the operator's requirements verbatim, so it is self-contained. |
 
-One release worklist is open (v1.5, `ui/` only), and it is the plan alone: the
-refinement doc it was drafted from is gone, its requirements having been carried
-into the plan word for word (constitution §4 — a document goes when it stops
-being true). The plan is deleted in turn when v1.5 ships.
+No release worklist is open.
 
 ## Measured evidence
 
