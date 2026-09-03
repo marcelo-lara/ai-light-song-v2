@@ -52,7 +52,7 @@ the only statement of them that survives. Do not go looking for another source.
 
 | # | Item | Requirements | State |
 | --- | --- | --- | --- |
-| 1 | A card click never moves the playhead while the transport is playing | R3 | [ ] pending |
+| 1 | A card click never moves the playhead while the transport is playing | R3 | [x] done |
 | 2 | Left panel hides on song pick and on any outside click | R4, R5 | [ ] pending |
 | 3 | Lane events panel + `columns-plus-right` opener | R1 (stack), R2 | [ ] pending |
 | 4 | Active-card highlight and follow during playback | R1 (highlight) | [ ] pending |
@@ -172,6 +172,16 @@ committed" below.
   and no "confirmed" flag is set on the block. The action is the existing
   "new hint" flow with the fields pre-filled from the event.
   **Operator's instruction, 2026-09-03.**
+- **D14 — the ten `.app-timeline__grid` screenshot baselines were already stale
+  on the branch tip (`f421b48 checkpoint before ui changes`) before this run
+  started.** Running the full Playwright suite against an unmodified checkout
+  fails the same ten specs (`song-full`, `song-full-waveform`, `song-no-audio`,
+  `left-panel`, `lane-collapsed`, `timeline-scrolled`, `timeline-zoom` min+max,
+  `fit-to-width`, `hint-drag`) on pixel diffs. This pre-dates plan v1.5. Items
+  that change no `.app-timeline__grid` pixels are validated on the delta (new
+  spec green, no *new* failures) rather than on an impossible "zero
+  `--update-snapshots`"; items 3 and 7 already mandate re-capturing this exact
+  baseline set and will bring the suite fully green. Resolved 2026-09-03.
 
 ---
 

@@ -17,6 +17,7 @@ import {
 import { ArtifactInspector } from "./inspector";
 import { resolveKeyAction, shouldPreventDefault } from "./app/keymap";
 import { loadLeftPanelOpen, saveLeftPanelOpen } from "./app/panelState";
+import { seekTimeForCardClick } from "./app/transportRules";
 import {
   selectSongListState,
   selectSongLoadState,
@@ -289,7 +290,9 @@ export function App(): React.JSX.Element {
 
   const handleSelectMarker = useCallback(
     (marker: LaneMarker) => {
-      transport.seekTo(marker.time);
+      // R3/D1: a card click never moves the playhead while playing.
+      const seekTo = seekTimeForCardClick(transport.isPlaying, marker.time);
+      if (seekTo !== null) transport.seekTo(seekTo);
       if (marker.laneId === "humanHints") {
         openHintEditor(marker.id);
         return;
@@ -558,7 +561,12 @@ export function App(): React.JSX.Element {
   const handleSelectSegment = useCallback(
     (block: SegmentBlock) => {
       // Move the shared playhead to the block start (design notes §4).
-      transport.seekTo(block.section.start);
+      // R3/D1: suppressed while the transport is playing.
+      const seekTo = seekTimeForCardClick(
+        transport.isPlaying,
+        block.section.start,
+      );
+      if (seekTo !== null) transport.seekTo(seekTo);
       setActiveHintRef(null);
       setSelection(selectionFromSection(block, "segments"));
       setPanelMode("inspector");

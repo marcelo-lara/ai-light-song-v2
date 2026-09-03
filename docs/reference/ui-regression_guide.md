@@ -380,3 +380,9 @@ should be well under that.
       `:ro`). `hint-drag.spec.ts` snapshots the one fixture file it mutates and
       restores it in `afterAll` / before each test; if a run is hard-killed,
       `git checkout -- "tests/ui-visual/fixtures/analysis"` resets it.
+- [x] *(plan v1.5 item 1)* `tests/ui-visual/specs/card-click-seek.spec.ts` — a
+      paused card click (human-hint block, segment block) seeks and opens its
+      panel; background clicks on the Bars ruler still seek; no baseline pixels
+      change. The playing-half of R3 (`seekTimeForCardClick` returns `null` while
+      playing) is covered by `ui/src/app/transportRules.test.ts`, since the suite
+      cannot press Play.
