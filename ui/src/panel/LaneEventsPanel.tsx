@@ -28,6 +28,8 @@ import { RightPanel } from "./RightPanel";
 interface LaneEventsPanelProps {
   laneId: string;
   laneLabel: string;
+  /** plan v1.5 item 7 — the `experiments/<name>/` sandbox feeding this lane, if any */
+  experiment?: string | undefined;
   blocks: readonly SparseBlock[];
   status: ArtifactStatus;
   error: string | null;
@@ -40,6 +42,7 @@ interface LaneEventsPanelProps {
 export function LaneEventsPanel({
   laneId,
   laneLabel,
+  experiment,
   blocks,
   status,
   error,
@@ -75,6 +78,14 @@ export function LaneEventsPanel({
       aria-label={`${laneLabel} events`}
       header={
         <>
+          {experiment && (
+            <i
+              className="ph ph-flask tl-lane-head__flask"
+              role="img"
+              aria-label="Experimental lane"
+              title={`Experiment · experiments/${experiment} · not promoted to the pipeline`}
+            />
+          )}
           <span className="app-rightpanel__kicker">{laneLabel}</span>
           <span className="lane-events__count">{blocks.length} events</span>
         </>

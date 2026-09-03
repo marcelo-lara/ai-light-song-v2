@@ -37,6 +37,17 @@ export interface LaneDef {
   kind: LaneKind;
   /** body height when expanded (px); collapsed is always 26 */
   height: number;
+  /**
+   * The `experiments/<name>/` sandbox the lane's `reference/proposals/` file
+   * comes from; absent on production (`src/`) lanes. Rendered into the lane
+   * head as a quiet flask badge and into the tooltip as
+   * `Experiment · experiments/<value> · not promoted to the pipeline` — a
+   * human-readable source, not a path to resolve.
+   *
+   * constitution §3.2: this field and the lanes that carry it leave the
+   * registry together when the experiment is promoted into `src/` or abandoned.
+   */
+  experiment?: string;
 }
 
 /**
@@ -64,15 +75,15 @@ export function collapsedLaneHeight(): number {
 export const LANE_DEFS: readonly LaneDef[] = [
   { id: "waveform", label: "Waveform Anchor", sub: "decoded source mix", kind: "waveform", height: 84 },
   { id: "humanHints", label: "Human Hints", sub: "reference/human · human_hints", kind: "hints", height: 58 },
-  { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58 },
-  { id: "allin1Transitions", label: "allin1 Transitions", sub: "experiment · section changes · audition vs. Human Hints", kind: "allin1", height: 58 },
+  { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58, experiment: "drop_detection" },
+  { id: "allin1Transitions", label: "allin1 Transitions", sub: "experiment · section changes · audition vs. Human Hints", kind: "allin1", height: 58, experiment: "allin1" },
   { id: "fftBands", label: "FFT Bands", sub: "essentia · 7 spectral bands", kind: "fft", height: 84 },
   { id: "rmsLoudness", label: "RMS Loudness", sub: "essentia · mix + 4 stems", kind: "rms", height: 112 },
   { id: "loudnessEnvelope", label: "Loudness Envelope", sub: "essentia · mix + 4 stems", kind: "env", height: 112 },
   { id: "sections", label: "Sections", sub: "artifact-first segmentation", kind: "sections", height: 84 },
-  { id: "character", label: "Character", sub: "experiment · what this passage is like", kind: "character", height: 84 },
-  { id: "vocalTranscription", label: "Vocal Transcription", sub: "experiment · sung lyrics + timing · VocalParse / ACE-Step / whisper", kind: "lyrics", height: 84 },
-  { id: "allin1Sections", label: "allin1 Sections", sub: "experiment · named song form · compare with Sections", kind: "allin1", height: 84 },
+  { id: "character", label: "Character", sub: "experiment · what this passage is like", kind: "character", height: 84, experiment: "clap" },
+  { id: "vocalTranscription", label: "Vocal Transcription", sub: "experiment · sung lyrics + timing · VocalParse / ACE-Step / whisper", kind: "lyrics", height: 84, experiment: "vocalparse + acestep_transcriber" },
+  { id: "allin1Sections", label: "allin1 Sections", sub: "experiment · named song form · compare with Sections", kind: "allin1", height: 84, experiment: "allin1" },
   { id: "chords", label: "Chord Regions", sub: "layer A harmonic", kind: "chords", height: 84 },
   { id: "patterns", label: "Pattern Occurrences", sub: "repeated harmonic patterns", kind: "patterns", height: 84 },
   { id: "identifierHints", label: "Identifier Hints", sub: "energy_summary · named events", kind: "identifiers", height: 84 },

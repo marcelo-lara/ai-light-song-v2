@@ -10,13 +10,14 @@ import {
   type Lane,
 } from "./laneState";
 
-function makeLane(expanded: boolean): Lane {
+function makeLane(expanded: boolean, experiment?: string): Lane {
   return {
     id: "rmsLoudness",
     label: "RMS Loudness",
     sub: "essentia · mix + 4 stems",
     kind: "rms",
     height: 112,
+    ...(experiment ? { experiment } : {}),
     expanded,
     visible: true,
     renderHeight: expanded ? 112 : collapsedLaneHeight(),
@@ -67,6 +68,45 @@ describe("item 6 — collapse/expand caret keeps a fixed slot", () => {
     expect(cCaret.getAttribute("data-testid")).toBe(eCaret.getAttribute("data-testid"));
     expect(cCaret.querySelector("i")?.className).toBe("ph ph-caret-right");
     expect(eCaret.querySelector("i")?.className).toBe("ph ph-caret-down");
+  });
+});
+
+describe("item 7 — flask badge on unpromoted-experiment lanes", () => {
+  const flaskOf = (expanded: boolean, experiment?: string) =>
+    render(
+      <LaneHeader lane={makeLane(expanded, experiment)} onToggleExpand={() => {}} />,
+    ).container.querySelector(".tl-lane-head__flask");
+
+  it("renders the flask only when the lane carries `experiment`", () => {
+    expect(flaskOf(true)).toBeNull();
+    expect(flaskOf(true, "allin1")).not.toBeNull();
+  });
+
+  it("is a phosphor flask icon with the accessible name 'Experimental lane'", () => {
+    const flask = flaskOf(true, "allin1") as HTMLElement;
+    expect(flask.className).toBe("ph ph-flask tl-lane-head__flask");
+    expect(flask.getAttribute("aria-label")).toBe("Experimental lane");
+    expect(flask.getAttribute("title")).toBe(
+      "Experiment · experiments/allin1 · not promoted to the pipeline",
+    );
+  });
+
+  it("is the first child of `.tl-lane-head__name`, before the label text", () => {
+    const { container } = render(
+      <LaneHeader lane={makeLane(true, "clap")} onToggleExpand={() => {}} />,
+    );
+    const name = container.querySelector(".tl-lane-head__name") as HTMLElement;
+    expect(name.firstElementChild?.classList.contains("tl-lane-head__flask")).toBe(true);
+    expect(name.querySelector(".tl-lane-head__name-text")?.textContent).toBe("RMS Loudness");
+  });
+
+  it("the icon contributes no text — `.tl-lane-head__name` reads exactly the label", () => {
+    const { container } = render(
+      <LaneHeader lane={makeLane(true, "clap")} onToggleExpand={() => {}} />,
+    );
+    expect(
+      container.querySelector(".tl-lane-head__name")?.textContent,
+    ).toBe("RMS Loudness");
   });
 });
 

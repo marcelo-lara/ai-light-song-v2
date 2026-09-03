@@ -332,10 +332,11 @@ export function App(): React.JSX.Element {
     const key = SPARSE_LANE_ARTIFACT[eventsLaneId];
     const art = key ? artifacts[key] : null;
     const status: ArtifactLoadStatus = art?.status ?? "idle";
+    const laneDef = LANE_DEFS.find((d) => d.id === eventsLaneId);
     return {
       laneId: eventsLaneId,
-      laneLabel:
-        LANE_DEFS.find((d) => d.id === eventsLaneId)?.label ?? eventsLaneId,
+      laneLabel: laneDef?.label ?? eventsLaneId,
+      experiment: laneDef?.experiment,
       blocks: buildLaneBlocks(eventsLaneId, laneContentSources),
       status,
       error: art?.error?.message ?? null,
@@ -955,6 +956,7 @@ export function App(): React.JSX.Element {
           <LaneEventsPanel
             laneId={eventsPanel.laneId}
             laneLabel={eventsPanel.laneLabel}
+            experiment={eventsPanel.experiment}
             blocks={eventsPanel.blocks}
             status={eventsPanel.status}
             error={eventsPanel.error}

@@ -277,6 +277,13 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 - footer (plan v1.5 item 6): `follow-toggle` on the follow-playhead toggle
   button, immediately left of the `Lanes` button; `aria-pressed` tracks the
   persisted flag (default on).
+- lane head (plan v1.5 item 7): a lane fed by an unpromoted `experiments/`
+  sandbox carries `<i.ph.ph-flask.tl-lane-head__flask>` (`aria-label`
+  `"Experimental lane"`) as the first child of `.tl-lane-head__name`, before
+  `<span.tl-lane-head__name-text>`. Exactly five lanes — `dropProposals`,
+  `allin1Transitions`, `allin1Sections`, `character`, `vocalTranscription`. The
+  same badge precedes `.app-rightpanel__kicker` in that lane's events panel
+  header. `LaneList.tsx` is not badged.
 
 Still pending (later plan items / not yet needed): `song-select`,
 `transport-play` / `transport-pause`, `selection-overlay`. Prefer `getByRole` /
@@ -445,3 +452,19 @@ should be well under that.
       during playback turns the toggle off) is covered by `followScrollLeft` and
       `isUserScroll` in `ui/src/timeline/follow.test.ts` — the suite cannot
       press Play. No `.app-timeline__grid` baseline changes.
+- [x] *(plan v1.5 item 7)* `tests/ui-visual/specs/experiment-badge.spec.ts` —
+      R7: exactly five lane heads (`dropProposals`, `allin1Transitions`,
+      `allin1Sections`, `character`, `vocalTranscription`) carry
+      `.tl-lane-head__flask`; every production lane and the whole-document count
+      confirm five total; the badge sits left of `.tl-lane-head__name-text` and
+      no badged label is pushed into an ellipsis (`scrollWidth - clientWidth` ≤ 0
+      at 1280 px); the collapse caret does not move; opening
+      `lane-events-character` shows exactly one `.app-rightpanel .tl-lane-head__flask`
+      in the panel header. `caret-fixed-position.spec.ts` still passes.
+- [x] *(plan v1.5 item 7)* Re-capture the same eleven `.app-timeline__grid`
+      baselines listed for item 3 — `song-full`, `song-full-waveform`,
+      `song-no-audio`, `left-panel-open`, `lane-collapsed`, `lanes-hidden-all`,
+      `timeline-scrolled-50`, `timeline-zoom-min` (both the `timeline-zoom` and
+      `fit-to-width` snapshot dirs), `timeline-zoom-max`, `hint-drag-resized`.
+      Justification: "experiment lanes gain the flask badge (plan v1.5 item 7)".
+      `waveform-no-audio.png` must again be unchanged.

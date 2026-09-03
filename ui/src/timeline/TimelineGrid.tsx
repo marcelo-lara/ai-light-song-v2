@@ -218,7 +218,17 @@ export function LaneHeader({
         <i className={`ph ${lane.expanded ? "ph-caret-down" : "ph-caret-right"}`} />
       </button>
       <div className="tl-lane-head__text">
-        <div className="tl-lane-head__name">{lane.label}</div>
+        <div className="tl-lane-head__name">
+          {lane.experiment && (
+            <i
+              className="ph ph-flask tl-lane-head__flask"
+              role="img"
+              aria-label="Experimental lane"
+              title={`Experiment · experiments/${lane.experiment} · not promoted to the pipeline`}
+            />
+          )}
+          <span className="tl-lane-head__name-text">{lane.label}</span>
+        </div>
         {lane.expanded && <div className="tl-lane-head__sub">{lane.sub}</div>}
       </div>
       {onOpenEvents && (

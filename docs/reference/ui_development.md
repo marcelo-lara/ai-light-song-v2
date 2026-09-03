@@ -85,6 +85,7 @@ The debugger is read-only against generated data.
 - Do not write overrides or review operations to `data/analysis/`.
 - Do not write helper files to `data/analysis/`.
 - The only persisted helper UI edit path is `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
+- Lanes reading from `data/analysis/<Song - Artist>/reference/proposals/` are fed by unpromoted `experiments/` and carry a `ph-flask` badge in the lane head (and its events-panel header) to mark them non-production.
 - `Cancel` must not update the file.
 - `Save` is the only action that may update the file.
 

@@ -58,7 +58,7 @@ the only statement of them that survives. Do not go looking for another source.
 | 4 | Active-card highlight and follow during playback | R1 (highlight) | [x] done |
 | 5 | Header readout — drop the bar.beat caption, reserve the space | R9, R10 | [x] done |
 | 6 | Follow-playhead toggle in the footer | R6 | [x] done |
-| 7 | Flask badge on lanes fed by unpromoted experiments | R7 | [ ] pending |
+| 7 | Flask badge on lanes fed by unpromoted experiments | R7 | [x] done |
 | 8 | `captured_from` note on the human-hints schema | R8 (enabling half) | [ ] pending |
 | 9 | “Create human hint” button in the block inspector | R8 (the button) | [ ] pending |
 
@@ -861,7 +861,7 @@ the persisted flag from a previous run cannot decide the outcome.
 
 ### Deliverable
 
-- [ ] `ui/src/timeline/laneState.ts` — `LaneDef` gains
+- [x] `ui/src/timeline/laneState.ts` — `LaneDef` gains
       `experiment?: string`: the `experiments/<name>/` folder the lane's
       proposal file comes from, absent on production lanes. Set it on exactly
       five lanes (D8):
@@ -886,7 +886,7 @@ the persisted flag from a previous run cannot decide the outcome.
 
       Leave a comment naming constitution §3.2: this field and these lanes come
       out of the registry together when an experiment is promoted or abandoned.
-- [ ] `ui/src/timeline/TimelineGrid.tsx` — `LaneHeader` renders, as the **first
+- [x] `ui/src/timeline/TimelineGrid.tsx` — `LaneHeader` renders, as the **first
       child of `.tl-lane-head__name`**, before the label text:
 
       ```tsx
@@ -902,32 +902,32 @@ the persisted flag from a previous run cannot decide the outcome.
 
       The label text moves into `<span className="tl-lane-head__name-text">` so
       the ellipsis still applies to the text and not to the icon.
-- [ ] `ui/src/styles/daw.css` — `.tl-lane-head__name` becomes
+- [x] `ui/src/styles/daw.css` — `.tl-lane-head__name` becomes
       `display: flex; align-items: center; gap: 4px;` with its
       `white-space`/`overflow`/`text-overflow` rules moved to
       `.tl-lane-head__name-text` (plus `min-width: 0`).
       `.tl-lane-head__flask` — `flex: none; font-size: 10px;
       color: var(--color-neutral-600);`. It must read as a quiet badge, not a
       control: no hover state, not focusable.
-- [ ] `ui/src/panel/LaneEventsPanel.tsx` — the same badge before the header
+- [x] `ui/src/panel/LaneEventsPanel.tsx` — the same badge before the header
       kicker when the panel's lane carries `experiment`, so a lane's events read
       as experimental in the panel too. Pass `experiment?: string` as a prop
       from `App.tsx` (look it up in `LANE_DEFS`).
-- [ ] **Out of scope for this item:** the lane-visibility list (`LaneList.tsx`)
+- [x] **Out of scope for this item:** the lane-visibility list (`LaneList.tsx`)
       is not badged. R7 says "the title", and the list is a settings surface,
       not a reading surface. Do not extend it here.
-- [ ] Unit tests in `ui/src/timeline/LaneHeader.test.tsx` — the flask renders
+- [x] Unit tests in `ui/src/timeline/LaneHeader.test.tsx` — the flask renders
       for a lane with `experiment` set and is absent without it; the accessible
       name is `Experimental lane`; `.tl-lane-head__name`'s `textContent` is
       still exactly the label (the icon contributes no text).
 
 ### Docs to update in this commit
 
-- [ ] `reference/ui-regression_guide.md` §5.5 — note that experiment lane heads
+- [x] `reference/ui-regression_guide.md` §5.5 — note that experiment lane heads
       carry `.tl-lane-head__flask`.
-- [ ] `reference/ui-regression_guide.md` §9 — ticked line for the spec + the
+- [x] `reference/ui-regression_guide.md` §9 — ticked line for the spec + the
       baseline re-capture.
-- [ ] `reference/ui_development.md` — one line under the debugger's data-access
+- [x] `reference/ui_development.md` — one line under the debugger's data-access
       rules: lanes reading from `reference/proposals/` are badged as
       experimental in the head.
 
