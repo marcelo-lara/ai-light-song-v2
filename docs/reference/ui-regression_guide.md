@@ -58,6 +58,7 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `human-hints-editor` | Right-side hint editor open | trigger "add hint" | Editor stays open; compact styling |
 | `hint-drag-resized` | `song-full` after a right-edge resize + interior move of two `humanHints` blocks | drag handles on the `humanHints` lane (plan v2.1 item 10) | Blocks at post-drag positions, pre-reload; `.app-timeline__grid`, waveform masked |
 | `validation-snapshot` | Validation panel populated | part of `song-full` (assert region) | Status, beat match ratio, comparison counts |
+| `inspector-promote` | `song-full` with an `allin1Sections` block selected | click the block, then `promote-hint` | Plan v1.5 item 9 / R8: the `rows-plus-bottom` "Create human hint" action under the inspector title opens the hint editor pre-filled from the event (no seek, no save); `.app-rightpanel` |
 | `header-readout` | `.app-header` with the playhead at `1:04.0` | `/?song=<full-fixture>`, click `hint-003` on the `humanHints` lane | Plan v1.5 item 5 / R9, R10: no `app-header__barbeat-caption`; time / total / bar.beat readouts have reserved widths so nothing shifts as the digit count grows; `.app-header` |
 | `footer-follow` | `.app-footer` with the follow toggle off, transport paused | `/?song=<full-fixture>`, clear `localStorage`, click `follow-toggle` once | Plan v1.5 item 6 / R6: the `arrows-in-line-horizontal` follow toggle sits immediately left of the `Lanes` button; `aria-pressed` and the pressed styling track the flag (default on, persisted per session); `.app-footer` |
 
@@ -221,6 +222,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
+  workers: 1, // hint-drag / captured-from / promote-hint share one writable
+              // fixture file and race across workers (plan v1.5 D15)
   reporter: [["html", { outputFolder: "report", open: "never" }], ["list"]],
   use: {
     baseURL: process.env.UI_BASE_URL ?? "http://localhost:9090",
@@ -290,6 +293,10 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
   `allin1Transitions`, `allin1Sections`, `character`, `vocalTranscription`. The
   same badge precedes `.app-rightpanel__kicker` in that lane's events panel
   header. `LaneList.tsx` is not badged.
+- block inspector (plan v1.5 item 9): `promote-hint` on the `rows-plus-bottom`
+  "Create human hint" action, rendered under `block-inspector__title` for every
+  inspected event and in both transport states. A Human Hints block routes to
+  the hint editor, not the inspector, so it never carries this button.
 
 Still pending (later plan items / not yet needed): `song-select`,
 `transport-play` / `transport-pause`, `selection-overlay`. Prefer `getByRole` /
@@ -351,8 +358,9 @@ Steps:
 
 Do not auto-update baselines in CI. Baseline changes are always a reviewed commit.
 
-Keep the job under ~3 minutes: ~14 screenshots + error assertions, fully parallel,
-should be well under that.
+Keep the job under ~3 minutes: ~14 screenshots + error assertions. The suite
+runs **single-worker** (`workers: 1`) because three specs mutate the same
+writable fixture file (plan v1.5 D15); it is still ~15 s.
 
 ---
 
@@ -483,3 +491,22 @@ should be well under that.
       The display and payload rules are unit-tested in
       `ui/src/data/saveHumanHints.test.ts`, `ui/src/panel/hintDraft.test.ts` and
       `ui/src/panel/HintEditorPanel.test.tsx`. No baseline pixels change.
+- [x] *(plan v1.5 item 9)* `tests/ui-visual/specs/promote-hint.spec.ts` — the
+      block inspector's `promote-hint` action: absent before a selection, present
+      (count 1) for every inspected event (`allin1Sections`, `machineEvents`, a
+      Segments block) and in both transport states, absent on a `humanHints`
+      block (routed to the hint editor). Clicking it opens the hint editor on a
+      pre-filled unsaved draft (title + start/end from the block, `Captured from
+      allin1 Sections · experiments/allin1` line, header clock unchanged — no
+      seek); nothing is written to `human_hints.json` or the source
+      `reference/proposals/allin1.json` until Save, which then adds a fourth hint
+      carrying `captured_from` while the original three stay key-free (D11). The
+      spec writes to `RegFull`'s `human_hints.json`, so it snapshots the file in
+      `beforeAll` and restores it in `afterAll` / before each test, exactly as
+      `hint-drag.spec.ts` does — any spec touching the one writable fixture file
+      must. The draft-building rule is unit-tested in
+      `ui/src/panel/hintDraft.test.ts` (`hintDraftFromSeed`) and the button in
+      `ui/src/panel/BlockInspector.test.tsx`.
+- [x] *(plan v1.5 item 9)* Baseline `inspector-promote.png` (`.app-rightpanel`,
+      first `allin1Sections` block selected). No `.app-timeline__grid` baseline
+      changes — the button lives only in the right panel.

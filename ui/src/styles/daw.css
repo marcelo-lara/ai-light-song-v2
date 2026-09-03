@@ -646,6 +646,8 @@ input[type="range"]:focus-visible {
 /* ---- Block inspector ---- */
 
 .block-inspector { display: flex; flex-direction: column; gap: var(--space-4); }
+/* plan v1.5 item 9: "Create human hint" action under the title heading. */
+.block-inspector__promote { align-self: flex-start; }
 .block-inspector__title {
   font: 500 16px/1.2 var(--font-heading);
   color: var(--color-text);

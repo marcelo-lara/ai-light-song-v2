@@ -5,8 +5,8 @@ import { buildHumanHintsPayload } from "../data/saveHumanHints";
 import {
   draftIdForReference,
   draftToHint,
+  hintDraftFromSeed,
   hintToDraft,
-  newHintDraft,
   nextHintId,
   parseTimeInput,
   type HintDraftFields,
@@ -130,18 +130,62 @@ describe("new hint ids", () => {
     expect(nextHintId(drafts)).toBe("hint-005");
     expect(nextHintId([])).toBe("hint-001");
   });
-  it("seeds start/end at the playhead", () => {
-    const d = newHintDraft(12.3456, []);
+});
+
+describe("hintDraftFromSeed (plan v1.5 item 9)", () => {
+  it("seeds start/end from the seed, rounding through formatSeconds", () => {
+    const d = hintDraftFromSeed({ start: 12.3456, end: 12.3456, nonce: 1 }, []);
     expect(d.start).toBe("12.346");
     expect(d.end).toBe("12.346");
     expect(d.id).toBe("hint-001");
   });
-  it("item 8: a span spreads end to start + span; default span unchanged", () => {
-    const d = newHintDraft(10, [], 1.0);
+  it("carries a widened span through (double-click path: end = start + 1.0)", () => {
+    const d = hintDraftFromSeed({ start: 10, end: 11, nonce: 2 }, []);
     expect(d.start).toBe("10");
     expect(d.end).toBe("11");
-    // default (zero span) still collapses end onto start
-    expect(newHintDraft(10, []).end).toBe("10");
+  });
+  it("continues the existing hint-NNN sequence", () => {
+    const existing = [
+      { id: "hint-001" } as HintDraftFields,
+      { id: "hint-002" } as HintDraftFields,
+    ];
+    expect(hintDraftFromSeed({ start: 0, end: 0, nonce: 3 }, existing).id).toBe(
+      "hint-003",
+    );
+  });
+  it("falls back to `Hint <n>` when the seed carries no title", () => {
+    const existing = [{ id: "hint-001" } as HintDraftFields];
+    expect(hintDraftFromSeed({ start: 0, end: 0, nonce: 4 }, existing).title).toBe(
+      "Hint 2",
+    );
+    expect(
+      hintDraftFromSeed({ start: 0, end: 0, title: "  ", nonce: 5 }, []).title,
+    ).toBe("Hint 1");
+  });
+  it("maps title, summary and capturedFrom from the seed", () => {
+    const d = hintDraftFromSeed(
+      {
+        start: 40,
+        end: 48,
+        title: "intro",
+        summary: "the opening bars",
+        capturedFrom: "allin1 Sections · experiments/allin1",
+        nonce: 6,
+      },
+      [],
+    );
+    expect(d.title).toBe("intro");
+    expect(d.musical).toBe("the opening bars");
+    expect(d.capturedFrom).toBe("allin1 Sections · experiments/allin1");
+    expect(d.lighting).toBe("");
+  });
+  it("omits capturedFrom when the seed carries none or an empty string", () => {
+    expect(
+      hintDraftFromSeed({ start: 0, end: 0, nonce: 7 }, []),
+    ).not.toHaveProperty("capturedFrom");
+    expect(
+      hintDraftFromSeed({ start: 0, end: 0, capturedFrom: "  ", nonce: 8 }, []),
+    ).not.toHaveProperty("capturedFrom");
   });
 });
 

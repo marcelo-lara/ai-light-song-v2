@@ -9,7 +9,13 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 2 : undefined,
+  // Single worker, unconditionally: `hint-drag.spec.ts`, `captured-from.spec.ts`
+  // and `promote-hint.spec.ts` all mutate the one writable fixture file
+  // (`RegFull - Fixture/reference/human/human_hints.json`) through the real
+  // `PUT /api/human-hints`. On separate workers they race on that file and leave
+  // it dirty. The suite is ~30 tests / ~15s — determinism outranks the seconds.
+  // (plan v1.5 D15.)
+  workers: 1,
   reporter: [["html", { outputFolder: "report", open: "never" }], ["list"]],
   use: {
     baseURL: process.env.UI_BASE_URL ?? "http://localhost:9090",

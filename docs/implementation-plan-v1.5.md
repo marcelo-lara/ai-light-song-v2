@@ -60,7 +60,7 @@ the only statement of them that survives. Do not go looking for another source.
 | 6 | Follow-playhead toggle in the footer | R6 | [x] done |
 | 7 | Flask badge on lanes fed by unpromoted experiments | R7 | [x] done |
 | 8 | `captured_from` note on the human-hints schema | R8 (enabling half) | [x] done |
-| 9 | “Create human hint” button in the block inspector | R8 (the button) | [ ] pending |
+| 9 | “Create human hint” button in the block inspector | R8 (the button) | [x] done |
 
 Order matters in three places, and nowhere else:
 
@@ -182,6 +182,16 @@ committed" below.
   spec green, no *new* failures) rather than on an impossible "zero
   `--update-snapshots`"; items 3 and 7 already mandate re-capturing this exact
   baseline set and will bring the suite fully green. Resolved 2026-09-03.
+- **D15 — the visual suite runs single-worker.** Three specs mutate the one
+  writable fixture file (`RegFull - Fixture/reference/human/human_hints.json`)
+  through the real `PUT /api/human-hints`: `hint-drag.spec.ts`,
+  `captured-from.spec.ts` and, from item 9, `promote-hint.spec.ts`. Under
+  `fullyParallel` on multiple workers they race on that file — the run flakes
+  and can leave the fixture dirty. Fix: `workers: 1` unconditionally in
+  `tests/ui-visual/playwright.config.ts` (the suite is ~30 tests / ~15 s, so the
+  cost is a few seconds); each of the three specs also snapshots the file in
+  `beforeAll` and restores it in `afterAll` **and** `afterEach`, so a hard
+  failure never strands a dirty fixture. Resolved 2026-09-03.
 
 ---
 
@@ -1061,7 +1071,7 @@ hover affordance and no per-block overlay — see D9.
 
 ### Deliverable
 
-- [ ] `ui/src/panel/BlockInspector.tsx` — a `rows-plus-bottom` action button,
+- [x] `ui/src/panel/BlockInspector.tsx` — a `rows-plus-bottom` action button,
       rendered directly under the `block-inspector__title` heading so it reads
       as an action on the thing named above it:
 
@@ -1082,7 +1092,7 @@ hover affordance and no per-block overlay — see D9.
       btn-sm` already looks like in `daw.css` — do not invent a new button
       style; add only `.block-inspector__promote { align-self: flex-start; }`
       plus the icon gap if the shared class does not already provide one.
-- [ ] `ui/src/App.tsx` — `handleCreateHintFromSelection(selection)`:
+- [x] `ui/src/App.tsx` — `handleCreateHintFromSelection(selection)`:
       - `end` is `selection.end_s` when finite, otherwise `selection.start_s + 1.0`
         (a point marker gets the same 1.0 s span the existing "new hint"
         double-click creates — do not invent a different default);
@@ -1105,11 +1115,11 @@ hover affordance and no per-block overlay — see D9.
       - does **not** seek, does **not** save, and does **not** touch the source
         artifact (D10, D13).
       Pass it to `<BlockInspector onCreateHint={…} />`.
-- [ ] `ui/src/App.tsx` — the hint seed widens from `{ time, nonce }` to
+- [x] `ui/src/App.tsx` — the hint seed widens from `{ time, nonce }` to
       `{ start, end, title?, summary?, capturedFrom?, nonce }`. The existing
       double-click path `handleCreateHintAt(time)` becomes
       `{ start: time, end: time + 1.0, nonce }` — identical behaviour to today.
-- [ ] `ui/src/panel/hintDraft.ts` — add
+- [x] `ui/src/panel/hintDraft.ts` — add
       `hintDraftFromSeed(seed, existing): HintDraftFields`, building the draft
       from the widened seed (id from `nextHintId`, `title` falling back to
       `Hint <n>` when the seed carries none, times through `formatSeconds`,
@@ -1118,15 +1128,15 @@ hover affordance and no per-block overlay — see D9.
       caller is the seed effect. Remove its export from `ui/src/panel/index.ts`
       and fold its tests into the new function's (constitution §10: delete dead
       code rather than keeping it working).
-- [ ] `ui/src/panel/HintEditorPanel.tsx` — the seed effect consumes the widened
+- [x] `ui/src/panel/HintEditorPanel.tsx` — the seed effect consumes the widened
       seed through `hintDraftFromSeed`. Everything else about that effect (the
       nonce guard, append-don't-reseed, focusing `#hint-title`,
       `onScrollToTime`) is unchanged.
-- [ ] **Not in scope:** the lane events panel's cards (item 3) do not get this
+- [x] **Not in scope:** the lane events panel's cards (item 3) do not get this
       button. A card click seeks and nothing else (D2); promoting goes through
       the inspector, which is the surface that shows the event's fields. Say so
       in the commit message so its absence reads as a decision.
-- [ ] Unit tests:
+- [x] Unit tests:
       - `ui/src/panel/hintDraft.test.ts` — `hintDraftFromSeed` maps every seed
         field; a seed with no title gets the `Hint <n>` fallback; the id
         continues the existing sequence; `capturedFrom` survives.
@@ -1138,15 +1148,15 @@ hover affordance and no per-block overlay — see D9.
 
 ### Docs to update in this commit
 
-- [ ] `reference/ui_development.md` — the human-hint write path now has a second
+- [x] `reference/ui_development.md` — the human-hint write path now has a second
       entry point (the block inspector's "Create human hint"), still landing in
       the same editor and the same single writable file.
-- [ ] `reference/ui-regression_guide.md` §2 — new surface row
+- [x] `reference/ui-regression_guide.md` §2 — new surface row
       `inspector-promote`: "`song-full` with an `allin1Sections` block selected ·
       click the block, then `promote-hint` · hint editor pre-filled".
-- [ ] `reference/ui-regression_guide.md` §5.5 — add `promote-hint` (the
+- [x] `reference/ui-regression_guide.md` §5.5 — add `promote-hint` (the
       inspector's action button).
-- [ ] `reference/ui-regression_guide.md` §9 — ticked lines for the spec and the
+- [x] `reference/ui-regression_guide.md` §9 — ticked lines for the spec and the
       baseline, and repeat §9's existing warning that any spec touching the hint
       file must snapshot and restore it.
 

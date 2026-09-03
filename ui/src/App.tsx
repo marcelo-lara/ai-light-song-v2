@@ -10,9 +10,11 @@ import {
   LaneEventsPanel,
   ReviewQueuePanel,
   RightPanel,
+  LANE_LABELS,
   selectionFromMarker,
   selectionFromSection,
   type BlockSelection,
+  type HintSeed,
   type PanelMode,
 } from "./panel";
 import { ArtifactInspector } from "./inspector";
@@ -162,12 +164,11 @@ export function App(): React.JSX.Element {
   const [eventsLaneId, setEventsLaneId] = useState<string | null>(null);
   const [activeHintRef, setActiveHintRef] = useState<string | null>(null);
   const [hintsOverride, setHintsOverride] = useState<HumanHintsFile | null>(null);
-  // item 8: a pending "create a draft hint at this time" request from a
-  // double-click on the Human Hints lane. `nonce` makes each request distinct
-  // so the panel consumes it exactly once.
-  const [hintSeed, setHintSeed] = useState<{ time: number; nonce: number } | null>(
-    null,
-  );
+  // A pending "open the hint editor on a pre-filled draft" request — from a
+  // double-click on the Human Hints lane (item 8) or the block inspector's
+  // "Create human hint" action (item 9). `nonce` makes each request distinct so
+  // the panel consumes it exactly once.
+  const [hintSeed, setHintSeed] = useState<HintSeed | null>(null);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   // plan v1.5 D6: the offset the follow effect last wrote, so the scroll
@@ -375,7 +376,36 @@ export function App(): React.JSX.Element {
   const handleCreateHintAt = useCallback((time: number) => {
     setSelection(null);
     setActiveHintRef(null);
-    setHintSeed({ time, nonce: Date.now() });
+    setHintSeed({ start: time, end: time + 1.0, nonce: Date.now() });
+    setPanelMode("hint");
+  }, []);
+
+  // plan v1.5 item 9 / R8: promote the inspected event to a new, editable human
+  // hint. Seeds an unsaved draft pre-filled from the block — no seek, no save,
+  // no write to the source artifact (D10, D13).
+  const handleCreateHintFromSelection = useCallback((sel: BlockSelection) => {
+    const end =
+      typeof sel.end_s === "number" && Number.isFinite(sel.end_s)
+        ? sel.end_s
+        : sel.start_s + 1.0;
+    // D11: one readable string naming the lane the event came from. Label via
+    // LANE_LABELS, experiment via LANE_DEFS; fall back to the raw lane id when
+    // the lane is in neither (constitution §2).
+    const laneLabel = LANE_LABELS[sel.laneId] ?? sel.laneId;
+    const experiment = LANE_DEFS.find((d) => d.id === sel.laneId)?.experiment;
+    const capturedFrom = experiment
+      ? `${laneLabel} · experiments/${experiment}`
+      : laneLabel;
+    setSelection(null);
+    setActiveHintRef(null);
+    setHintSeed({
+      start: sel.start_s,
+      end,
+      title: sel.label,
+      summary: sel.summary ?? "",
+      capturedFrom,
+      nonce: Date.now(),
+    });
     setPanelMode("hint");
   }, []);
 
@@ -948,7 +978,10 @@ export function App(): React.JSX.Element {
             aria-label="Block inspector"
             header={<span className="app-rightpanel__kicker">{selection.laneLabel}</span>}
           >
-            <BlockInspector selection={selection} />
+            <BlockInspector
+              selection={selection}
+              onCreateHint={handleCreateHintFromSelection}
+            />
           </RightPanel>
         )}
 

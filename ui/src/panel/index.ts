@@ -26,8 +26,9 @@ export {
 export {
   hintToDraft,
   draftToHint,
-  newHintDraft,
+  hintDraftFromSeed,
   parseTimeInput,
   draftIdForReference,
   type HintDraftFields,
+  type HintSeed,
 } from "./hintDraft";

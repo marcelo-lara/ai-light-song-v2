@@ -117,6 +117,7 @@ The debugger now implements the full Epic 7 internal viewer surface in the stati
 - regression overlay lane for beat drift and machine-vs-exported event comparison
 - raw JSON inspection for any successfully loaded file
 - right-side human hint editor that opens from timeline human-hint selections or explicit new-hint actions
+- the block inspector's "Create human hint" action is a second entry point into that same editor: it seeds an unsaved, pre-filled draft from the inspected event (lane label carried as an informative `captured_from` note) and still lands in the one writable file only on explicit `Save` — it never writes to disk or marks the source artifact on click
 - selected-hint-only editing for existing human hints, with no sidebar-side hint picker
 - `Set` actions for start and end time that sit to the left of the corresponding input and copy the current timeline cursor
 - human hints use the sidebar instead of the standard selection popup
