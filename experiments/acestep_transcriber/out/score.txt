@@ -1,0 +1,12 @@
+ACE-Step Transcriber — lyrics vs reference/moises, structure vs impacts
+
+  _test_song
+    whisper baseline lyric WER  0.04
+    ACE-Step lyric WER          0.04
+    impact recall @±1.0s   ACE-Step 0/1   allin1 0/1
+
+  Titanium - David Guetta ft Sia
+    whisper baseline lyric WER  0.32
+    ACE-Step lyric WER          0.23
+    impact recall @±1.0s   ACE-Step 0/3   allin1 3/3
+

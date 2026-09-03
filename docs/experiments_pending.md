@@ -207,9 +207,11 @@ songs.
 
 ### Status
 
-NOT STARTED — scaffolded at [`../experiments/vocalparse/`](../experiments/vocalparse/README.md),
-no GPU run yet. `### Results evidence` and `### Conclusion` are placeholders
-until the sandbox image is built and the corpus is transcribed.
+[DONE] — concluded, **negative**. Ran on CPU (this box's 4 GB GPU can't hold the
+model) over the four gold songs, which now all carry Moises word-level lyric
+ground truth. VocalParse hallucinates Mandarin on real non-Mandarin vocals and
+its melody head collapses; it is not usable for this corpus. Awaiting the
+operator's archive-or-promote decision (§3.3) — recommendation: **archive**.
 
 ### Why? What for?
 
@@ -262,26 +264,64 @@ outcome.
 
 ### Results evidence
 
-_Pending first run._ Planned measurements, on the gold set:
+Run on CPU in the `ai-light-song-v2-vocalparse:dev` sandbox (torch 2.4.1+cpu),
+`max_new_tokens=768`, greedy. Scored against `reference/moises/lyrics.json`,
+which now exists for all four gold songs (the operator added it mid-experiment).
+Raw output in [`../experiments/vocalparse/out/score.txt`](../experiments/vocalparse/out/score.txt)
+and the per-song caches.
 
-- **Lyric WER** against `_test_song`'s word-level ground truth
-  (`reference/moises/lyrics.json`, the only hand-checked lyric reference in the
-  repo — scarce, so corpus-wide results are qualitative and reviewed in the
-  lane).
-- **Word-onset median absolute error** (seconds) for the Whisper baseline
-  against the same file — this is the number any timing claim rests on.
-- **Melody sanity:** fraction of voiced frames where VocalParse's MIDI pitch
-  is within ±1 semitone of a YIN pitch track of the vocal stem.
-- Incumbent = nothing (no lyrics ship today). Baseline = `whisper-large-v3` on
-  the vocal stem, lyrics + timing, no VocalParse.
+**Lyric WER — VocalParse vs the whisper-large-v3 baseline (both on the vocal stem):**
+
+| song | VocalParse WER | whisper baseline WER | whisper word-onset MAE |
+| --- | --- | --- | --- |
+| `_test_song` (synthetic, English) | 0.12 | **0.04** | 0.59 s |
+| `Titanium` (English pop) | 1.00 | **0.32** | 0.41 s |
+| `Hideaway` (English house) | 1.00 | 0.97 | 27 s (hallucinated) |
+| `Armin - Revolution` (trance, sparse vocal) | 1.00 | 0.99 | 71 s (hallucinated) |
+
+(Whisper baseline: `float32`, VAD off, `condition_on_previous_text=False` —
+the settings arrived at for the ACE-Step experiment; the shared baseline cache
+lives at `experiments/.whisper_baseline_cache/`.)
+
+**What VocalParse actually produced:**
+
+- `_test_song` — its `<asr_text>` chain-of-thought step gave
+  *"This is a test song welcome to dark blue studio light show light show light
+  show welcome to dark blue studio"* — near-perfect, and the only case where it
+  beat the (CPU-degraded) baseline.
+- `Titanium` — transcribed as **Chinese**: *"有啥的好我爱听你温柔的叙述…"* then
+  an infinite loop of *"嗯许多话阮不想说"*. Pure hallucination.
+- `Hideaway` — *"啊啊啊啊…"* (just "ah") to the token limit.
+- `Armin` — *"啊啊啊…"*, language reported as `Other HEME`.
+
+**The melody head never worked.** On every song the interleaved
+`<P_#> <NOTE_#>` span collapsed to a run of `<P_0>` (pitch 0) followed by junk
+tokens (`rawidłow`, `-wsj`, `CUS`). `melody_status` is `degenerate` or `empty`
+on 4/4. No BPM token was ever emitted. This is consistent with the model card's
+"primarily trained on Mandarin Chinese singing", and CPU-only inference
+(float32, no flash-attn) likely makes the collapse worse — but the Mandarin
+hallucination on the lyric side is a model-capability limit, not a decoding
+knob.
+
+**Baseline caveat.** The whisper baseline runs on CPU (CTranslate2 4.x needs
+CUDA 12, which this box's CUDA-11.8 base image lacks). At `float32` with the VAD
+off it is strong on the two prominent-vocal songs (WER 0.04 and 0.32) but
+hallucinates YouTube-caption text on the two sparse-vocal songs. The VocalParse
+verdict does not depend on it — VocalParse scored 1.00 on every real song.
 
 ### Conclusion
 
-_Pending._ The question to answer: does VocalParse's lyric transcription beat
-the Whisper baseline on this non-Mandarin corpus, and if not, is the **melody**
-signal alone worth a GPU pass? If promoted, adds a top-level `lyrics.json` to
-the deliverable contract (§9) plus a handoff note to the MCP server, projected
-alongside `hints.json` in the section read.
+**Negative. VocalParse is not usable on this corpus.** Three of the four gold
+songs came back as hallucinated Mandarin; the one success is a synthetic test
+track. The melody signal — the one thing VocalParse offers that the pipeline
+lacks — collapsed on every song. Nothing here reaches the reach test, so
+`lyrics.json` is not proposed. Recommendation: **archive**. If singing-voice
+melody is wanted later, it needs a model trained on Western pop, run on a GPU.
+
+The reusable artifacts: the `whisper-large-v3`-on-the-vocal-stem baseline (worth
+re-running on a GPU box — it is the real lyric-timing candidate), the
+`reference/proposals/vocal_transcription.json` schema, and the **Vocal
+Transcription** debugger lane, all shared with the ACE-Step experiment.
 
 
 ## ACE-Step Transcriber — multilingual singing transcription with structure
@@ -290,10 +330,13 @@ alongside `hints.json` in the section read.
 
 ### Status
 
-NOT STARTED — scaffolded at
-[`../experiments/acestep_transcriber/`](../experiments/acestep_transcriber/README.md),
-no GPU run yet. Results and conclusion are placeholders until the 22 GB weights
-are pulled and the corpus is transcribed.
+**PROBED — strongly positive, not yet a full run.** Transcribed `_test_song`
+and `Titanium - David Guetta ft Sia` on CPU (the thinker is 8.9 B params;
+`Qwen2_5OmniThinkerForConditionalGeneration`, bf16, ~18 GB mmap'd, no GPU on
+this box). Both came back with near-correct lyrics **and** a correct named song
+structure. The one gap is timing — the model emits ordered lines and `[tags]`
+with no seconds. Full corpus run and the timing solution are the open work;
+`### Results evidence` below is the two-song probe.
 
 ### Why? What for?
 
@@ -333,22 +376,90 @@ Built as [`../experiments/acestep_transcriber/`](../experiments/acestep_transcri
 
 ### Results evidence
 
-_Pending first run._ Planned measurements, on the gold set:
+Two-song CPU probe in the `ai-light-song-v2-acestep:dev` sandbox
+(transformers 4.57.1, torch 2.4.1+cpu, `Qwen2_5OmniThinkerForConditionalGeneration`
+bf16, thinker only — the talker and token2wav vocoder are not loaded). Prompt
+`"Transcribe this audio in detail"` on the **mix**. `_test_song` at 320 new
+tokens (~13 min), `Titanium` at 1024 (~40 min). Raw output in
+`experiments/acestep_transcriber/cache/*.acestep.json`.
 
-- **Lyric WER** and **word-onset MAE** against `_test_song`'s
-  `reference/moises/lyrics.json`, as above.
-- **Structure agreement:** boundary recall of ACE-Step's `[Section]` spans
-  against the hand-marked drop impacts (7 impacts, 4 songs) and against
-  `allin1`'s transitions, at a matched boundary budget — the same scoring the
-  `allin1` entry uses, so all three form reads sit on one axis.
-- **Language ID accuracy** on the songs whose language is known.
-- Incumbent for structure = `src/analyzer/stages/sections/`. Baseline for
-  lyrics = `whisper-large-v3` on the vocal stem.
+**`_test_song`** (synthetic, 58 s):
+
+```
+[Intro] [Atmospheric synth pads and arpeggio]
+[Verse 1]   This is a test song / Welcome to Dark Blue Studio
+[Build-up]  Light show! / Light show!
+[Drop 1] [Instrumental]
+[Chorus]    Light show! / Light show! / Welcome to Dark Blue Studio
+[Outro] [Synth pads fade out]
+```
+
+Moises truth: *"This is a test song / Welcome to the dark blue studio / Light
+show, light show / Light show / Light show, welcome to dark blue studio"* — one
+dropped "the", otherwise exact.
+
+**`Titanium`** (real English pop — the song VocalParse turned into looping
+Mandarin):
+
+- Structure: `Intro → Verse 1 → Pre-Chorus → Chorus → Instrumental Break →
+  Verse 2 → Pre-Chorus → Chorus → Instrumental Break → Bridge → Chorus →
+  Outro`. This is the correct song form, with scene tags ("Clean electric
+  guitar arpeggio", "Synth lead melody over driving beat", "Music fades out")
+  and backing-vocal parentheticals "(I am titanium)".
+- Chorus *"You shoot me down, but I'm on fire / I am titanium"* — exact.
+  Pre-chorus *"I'm bulletproof, nothing to lose / Fire away, fire away /
+  Ricochet, you take your aim"* — exact. Verse 1 near-exact (one garbled line:
+  "how are your bullets weak?" → "how are I? But that's me, go slow"). Bridge,
+  Verse 2 mostly right.
+
+**Lyric WER vs `reference/moises/lyrics.json`** (`run score`):
+
+| song | ACE-Step WER | whisper baseline WER |
+| --- | --- | --- |
+| `_test_song` | 0.04 | 0.04 |
+| `Titanium` | **0.23** | 0.32 |
+
+On the synthetic track both are near-perfect; on `Titanium` ACE-Step wins on WER
+*and* delivers the structure the baseline cannot. The whisper baseline
+(`float32`, VAD off, `condition_on_previous_text=False`) is strong on these two
+but **hallucinated YouTube-caption junk** on the two sparse-vocal gold songs —
+`Hideaway` came back as French *"Sous-titrage Société Radio-Canada"*, `Armin` as
+Japanese *"ご視聴ありがとうございました"*. A whisper baseline on the vocal stem
+needs a stem-RMS vocal-activity gate (the LyricWhiz "PANNs filtering" idea) to
+be trustworthy on quiet passages.
+
+**Timing is the open problem.** The transcriber emits no seconds — ordered
+lines and `[tags]` only (ACE-Step 1.5's LRC comes from a separate alignment
+stage that is not in this checkpoint). `align.py` currently anchors the lines to
+a `whisper-large-v3` word timeline on the vocal stem, but that baseline is weak
+on CPU (`int8`/`float32`, CUDA-12 CTranslate2 unavailable on the CUDA-11.8
+base), so on `_test_song` only 2 of 7 lines matched and the section spans fell
+back to even spacing (`alignment: "unavailable"`, every span flagged `approx`).
+A real timing solution is **forced alignment of ACE-Step's own (good) transcript
+to the vocal stem** — not yet built.
+
+**Structure vs the incumbent and allin1:** blocked by the timing problem. With
+the spans falling back to even spacing, ACE-Step's `[Section]` boundaries score
+0/1 and 0/3 against the hand-marked drop impacts (allin1 gets 0/1 and 3/3 on the
+same two songs). That 0/3 measures the broken alignment, not the structure —
+the *sequence* of tags on `Titanium` (Intro/Verse/Pre-Chorus/Chorus/…) is
+correct. The comparison only becomes real once the lines carry true onsets.
 
 ### Conclusion
 
-_Pending._ The questions: does it transcribe this corpus's lyrics usefully, and
-is its structure read competitive with `allin1` and better than the incumbent?
-If promoted, the lyric side adds top-level `lyrics.json` (§9 contract change +
-MCP handoff note); the structure side would feed section naming rather than
-ship as its own file.
+**Positive on the two things that are hard — lyrics and named structure — and
+open on timing.** ACE-Step Transcriber transcribes this corpus's English pop
+with low WER and produces a correct verse/pre-chorus/chorus/bridge/instrumental
+form with descriptive scene tags, in one pass, on the mix. It is the first thing
+tried here that delivers *named* structure and lyrics together, and it succeeds
+exactly where VocalParse fails.
+
+It is **not ready to promote**: (1) timing is unsolved — the lines need real
+onsets, which means adding a forced-aligner; (2) only two songs are transcribed,
+both English — the 50-language claim is untested here; (3) an 8.9 B model with
+no GPU path on the current box is a heavy production dependency. Next steps, in
+order: a forced-aligner against ACE-Step's transcript; the full 21-song run
+(needs a GPU or an overnight CPU batch); then score its structure against
+`allin1` and the incumbent on one axis. If it clears those, promotion adds a
+top-level `lyrics.json` (§9 contract change + MCP handoff) and its structure
+feeds section naming rather than shipping as its own file.

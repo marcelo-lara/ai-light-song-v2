@@ -233,7 +233,10 @@
   background: #13151f;
   border-left: 1px solid var(--color-neutral-900);
   overflow-y: auto;
-  padding: var(--space-6);
+  /* `.lane-events` full-bleeds past this padding with negative margins — clip
+   * the cross axis so that never shows a horizontal scrollbar. */
+  overflow-x: clip;
+  padding: var(--space-2);
 }
 
 /* ---- Footer ------------------------------------------------------- */

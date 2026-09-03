@@ -580,6 +580,9 @@ input[type="range"]:focus-visible {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  /* full-bleed children (`.lane-events`) reach the panel edge via negative
+   * margins — clip the horizontal axis so that never raises a bottom scrollbar. */
+  overflow-x: clip;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -613,7 +616,9 @@ input[type="range"]:focus-visible {
 .lane-events__card {
   width: 100%;
   text-align: left;
-  padding: var(--space-2) var(--space-4);
+  /* horizontal padding offsets `.lane-events`'s negative full-bleed margin so the
+   * label/caption align with the rest of the panel's content. */
+  padding: var(--space-2) var(--space-6);
   border: 0;
   border-left: 3px solid; /* tint stroke, set inline */
   border-bottom: 1px solid var(--tl-border);

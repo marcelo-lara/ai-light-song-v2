@@ -1,0 +1,75 @@
+Gold set: 4 songs, 7 hand-placed drop impacts.
+
+method                                  +-0.5    +-1.0    +-2.0  bounds/min
+---------------------------------------------------------------------------
+allin1 section transitions                3/7      4/7      4/7         1.6
+allin1 phrase edges (all segments)        3/7      4/7      6/7         3.3
+shipped sections.json                     0/7      0/7      1/7         3.6
+even grid (= shipped budget)              0/7      2/7      3/7         3.6
+
+Per song, nearest allin1 transition to each impact:
+
+  _test_song                               impact   28.40  nearest   14.82  (-13.58s)
+  Hideaway - Kiesza                        impact   62.41  nearest   62.44  (+0.03s)
+  Armin - Revolution                       impact   57.83  nearest   44.76  (-13.07s)
+  Armin - Revolution                       impact  153.96  nearest  111.23  (-42.73s)
+  Titanium - David Guetta ft Sia           impact   74.66  nearest   75.23  (+0.58s)
+  Titanium - David Guetta ft Sia           impact  151.26  nearest  151.42  (+0.16s)
+  Titanium - David Guetta ft Sia           impact  212.01  nearest  212.38  (+0.37s)
+
+
+Labelling health over 21 songs.
+
+song                                     sections  labels  dominant   share  status
+-----------------------------------------------------------------------------------
+Armin - Revolution                              6       4      inst    0.62  ok
+Best Friend - Sofi Tukker                       5       4     intro    0.42  ok
+Chimera - Hana                                  8       6      inst    0.46  ok
+Cinderella - Ella Lee                          14       6    chorus    0.28  ok
+CruelSummer - Malvina                           5       3    chorus    0.61  ok
+Fascination (The Droyds One Armed Remix)       11       5    chorus    0.32  ok
+Gabry Ponte - Tutta L'Italia                    7       3     verse    0.43  ok
+Hideaway - Kiesza                               8       4     intro    0.50  ok
+In da name of love - Anita and Ray              5       4    chorus    0.54  ok
+It's a fine day - Opus III                      9       6    chorus    0.62  ok
+Only this moment - royksopp                     9       6    chorus    0.61  ok
+Pet Shop Boys - I'm not scared                 12       6    chorus    0.39  ok
+Queen of Kings - Alessandra                     8       3    chorus    0.68  ok
+Rapture - Nadia Ali                             7       4     verse    0.36  ok
+Sash - Raindrops                                8       6    chorus    0.23  ok
+Titanium - David Guetta ft Sia                 10       6    chorus    0.39  ok
+Underworld - Born Slippy                       10       5    chorus    0.36  ok
+What a Feeling - Courtney Storm                 8       5     intro    0.39  ok
+Yonaka - Seize the Power                        5       4    chorus    0.38  ok
+_test_song                                      2       2    chorus    0.75  degenerate
+ayuni                                           5       4      inst    0.57  ok
+
+Degenerate on 1/21:
+  _test_song (only 2 distinct label(s))
+
+
+allin1 beat grid vs. the essentia grid the pipeline already ships.
+
+song                                       bpm  beats  ess beats  median |err|  of a beat  verdict
+--------------------------------------------------------------------------------------------------
+Armin - Revolution                         130    408        415         0.017       0.04  agrees
+Best Friend - Sofi Tukker                  102    297        306         0.011       0.02  agrees
+Chimera - Hana                             122    624        655         0.011       0.02  agrees
+Cinderella - Ella Lee                      125    700        707         0.026       0.05  agrees
+CruelSummer - Malvina                      118    480        490         0.023       0.05  agrees
+Fascination (The Droyds One Armed Remix)   128    841        857         0.019       0.04  agrees
+Gabry Ponte - Tutta L'Italia               128    372        372         0.022       0.05  agrees
+Hideaway - Kiesza                          122    513        507         0.228       0.47  half-beat phase offset
+In da name of love - Anita and Ray         130    375        424         0.221       0.47  half-beat phase offset
+It's a fine day - Opus III                 125    649        681         0.022       0.05  agrees
+Only this moment - royksopp                122    468        466         0.006       0.01  agrees
+Pet Shop Boys - I'm not scared             109    808        811         0.021       0.04  agrees
+Queen of Kings - Alessandra                125    291        306         0.022       0.05  agrees
+Rapture - Nadia Ali                        130    450        465         0.016       0.03  agrees
+Sash - Raindrops                            70    178        446         0.176       0.20  HALF TEMPO
+Titanium - David Guetta ft Sia             125    478        487         0.008       0.02  agrees
+Underworld - Born Slippy                   140    499        525         0.030       0.07  agrees
+What a Feeling - Courtney Storm            125    413        422         0.228       0.47  half-beat phase offset
+Yonaka - Seize the Power                   133    333        353         0.024       0.05  agrees
+_test_song                                 130    113        125         0.010       0.02  agrees
+ayuni                                      122    329        334         0.213       0.43  half-beat phase offset

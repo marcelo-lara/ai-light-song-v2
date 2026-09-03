@@ -233,3 +233,4 @@ experiments/clap/cache/
 # singing-voice-transcription experiments: regenerable raw model output caches
 experiments/vocalparse/cache/
 experiments/acestep_transcriber/cache/
+experiments/.whisper_baseline_cache/

@@ -193,6 +193,17 @@ filled-in results and conclusion, to
 deliberate, named exception to §4's "no archive folder" rule: it is the standing
 record of which experiments were run and what they scored.
 
+### 3.5 The experiment corpus
+
+Experiments run against the **four golden songs only**: `_test_song`,
+`Titanium - David Guetta ft Sia`, `Hideaway - Kiesza`, and `Armin - Revolution`.
+These are the songs with hand-labelled ground truth, so they are the only ones
+where a measured comparison against the incumbent and a baseline means anything.
+
+When an experiment is too heavy to run across all four — a slow model, an
+expensive container — or when the goal is just a smoke test that the code path
+works, use **`_test_song` alone**.
+
 ---
 
 ## 4. Documentation

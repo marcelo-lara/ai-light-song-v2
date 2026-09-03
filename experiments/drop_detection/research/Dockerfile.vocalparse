@@ -1,0 +1,36 @@
+# Research sandbox for the VocalParse singing-voice-transcription experiment.
+#
+# VocalParse is a Qwen3-ASR-1.7B fine-tune, distributed as the `vocalparse`
+# package (which pulls `qwen-asr` -> a recent transformers + gradio). It cannot
+# share the transformers-4.44 survey sandbox.
+#
+# The base image is CUDA 11.8 / torch 2.1, but modern transformers needs
+# torch >= 2.2 (`torch.utils._pytree.register_pytree_node`) and this box's 4 GB
+# GPU can't hold the model anyway — so we install CPU torch 2.4 and run the
+# whisper baseline and VocalParse on CPU. Slow, but the baseline's accuracy is
+# what matters, not its speed.
+FROM ai-light-song-v2:dev
+
+# `/app/src` on PYTHONPATH auto-imports the analyzer's sitecustomize (a madmom
+# monkeypatch) on every interpreter start, which breaks under this image's
+# dependency set. Point PYTHONPATH at the repo root instead — `experiments.*`
+# still resolves, `src.*` is not force-loaded.
+ENV PYTHONPATH=/app \
+    HF_HOME=/app/models/hf \
+    TOKENIZERS_PARALLELISM=false \
+    WHISPER_DEVICE=cpu \
+    VOCALPARSE_DEVICE=cpu \
+    CUDA_VISIBLE_DEVICES=""
+
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
+      "torch==2.4.1" "torchaudio==2.4.1"
+
+RUN pip install --no-cache-dir \
+      "numpy<2" \
+      "faster-whisper==1.1.1" \
+      "librosa>=0.10" \
+      "soundfile" \
+ && pip install --no-cache-dir "git+https://github.com/pymaster17/VocalParse.git" \
+ && pip install --no-cache-dir --force-reinstall \
+      --index-url https://download.pytorch.org/whl/cpu "torch==2.4.1" "torchaudio==2.4.1" \
+ && pip install --no-cache-dir --force-reinstall "numpy<2"

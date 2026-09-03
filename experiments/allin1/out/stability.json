@@ -1,0 +1,242 @@
+[
+  {
+    "song": "_test_song",
+    "repeats": 3,
+    "label_sequences": [
+      [
+        "intro",
+        "chorus"
+      ],
+      [
+        "intro",
+        "chorus"
+      ],
+      [
+        "intro",
+        "chorus"
+      ]
+    ],
+    "boundaries": [
+      [
+        14.82
+      ],
+      [
+        14.82
+      ],
+      [
+        14.82
+      ]
+    ],
+    "boundary_agreement": {
+      "matched": 1,
+      "union": 1
+    }
+  },
+  {
+    "song": "Hideaway - Kiesza",
+    "repeats": 3,
+    "label_sequences": [
+      [
+        "intro 1",
+        "chorus 1",
+        "inst 1",
+        "intro 2",
+        "inst 2",
+        "chorus 2",
+        "inst 3",
+        "outro"
+      ],
+      [
+        "intro 1",
+        "chorus 1",
+        "inst 1",
+        "intro 2",
+        "inst 2",
+        "chorus 2",
+        "inst 3",
+        "outro"
+      ],
+      [
+        "intro 1",
+        "chorus 1",
+        "inst 1",
+        "intro 2",
+        "inst 2",
+        "chorus 2",
+        "inst 3",
+        "outro"
+      ]
+    ],
+    "boundaries": [
+      [
+        31.23,
+        46.82,
+        62.44,
+        156.1,
+        171.71,
+        202.92,
+        249.75
+      ],
+      [
+        31.23,
+        46.82,
+        62.44,
+        156.1,
+        171.71,
+        202.92,
+        249.75
+      ],
+      [
+        31.23,
+        46.82,
+        62.44,
+        156.1,
+        171.71,
+        202.92,
+        249.75
+      ]
+    ],
+    "boundary_agreement": {
+      "matched": 7,
+      "union": 7
+    }
+  },
+  {
+    "song": "Armin - Revolution",
+    "repeats": 3,
+    "label_sequences": [
+      [
+        "intro",
+        "verse 1",
+        "inst 1",
+        "verse 2",
+        "chorus",
+        "inst 2"
+      ],
+      [
+        "intro",
+        "verse 1",
+        "inst 1",
+        "verse 2",
+        "chorus",
+        "inst 2"
+      ],
+      [
+        "intro",
+        "verse 1",
+        "inst 1",
+        "verse 2",
+        "chorus",
+        "inst 2"
+      ]
+    ],
+    "boundaries": [
+      [
+        30.0,
+        44.76,
+        81.76,
+        96.46,
+        111.23
+      ],
+      [
+        30.0,
+        44.76,
+        81.76,
+        96.46,
+        111.23
+      ],
+      [
+        30.0,
+        44.76,
+        81.76,
+        96.46,
+        111.23
+      ]
+    ],
+    "boundary_agreement": {
+      "matched": 5,
+      "union": 5
+    }
+  },
+  {
+    "song": "Titanium - David Guetta ft Sia",
+    "repeats": 3,
+    "label_sequences": [
+      [
+        "intro",
+        "verse 1",
+        "chorus 1",
+        "inst 1",
+        "verse 2",
+        "chorus 2",
+        "inst 2",
+        "bridge",
+        "chorus 3",
+        "outro"
+      ],
+      [
+        "intro",
+        "verse 1",
+        "chorus 1",
+        "inst 1",
+        "verse 2",
+        "chorus 2",
+        "inst 2",
+        "bridge",
+        "chorus 3",
+        "outro"
+      ],
+      [
+        "intro",
+        "verse 1",
+        "chorus 1",
+        "inst 1",
+        "verse 2",
+        "chorus 2",
+        "inst 2",
+        "bridge",
+        "chorus 3",
+        "outro"
+      ]
+    ],
+    "boundaries": [
+      [
+        14.28,
+        44.75,
+        75.23,
+        90.47,
+        120.94,
+        151.42,
+        166.66,
+        181.9,
+        212.38
+      ],
+      [
+        14.28,
+        44.75,
+        75.23,
+        90.47,
+        120.94,
+        151.42,
+        166.66,
+        181.9,
+        212.38
+      ],
+      [
+        14.28,
+        44.75,
+        75.23,
+        90.47,
+        120.94,
+        151.42,
+        166.66,
+        181.9,
+        212.38
+      ]
+    ],
+    "boundary_agreement": {
+      "matched": 9,
+      "union": 9
+    }
+  }
+]

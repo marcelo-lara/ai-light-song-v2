@@ -1,0 +1,40 @@
+Character hints: what the models say inside the passages a human marked.
+
+Every column is a z-score of that signal inside the hint against the whole
+song. CLAP axes are contrastive pairs (positive = the first sentence);
+stem columns are per-stem RMS the pipeline already produces.
+
+song                hint                              span   vocal  drums   bass  spars   calm   pads |  voca  drum  bass  harm   mix  covered by
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Armin - Revolution  Breath                    81.4-  96.3   +0.95  +0.77  -0.06  +1.30  +1.65  -0.32 |  +0.2  -0.5  -0.4  +0.4  +0.2  breath
+_test_song          Drum Hit                   7.3-   7.8   -1.81  -1.06  -0.33  -0.86  -0.07  +0.97 |  -0.7  +0.2  +0.3  -0.7  -0.3  -
+_test_song          Spacer                    36.5-  37.0   -0.75  -0.37  +0.03  -0.92  +1.26  +1.13 |  -0.7  +0.5  -0.9  +0.7  -0.1  shadow inst
+_test_song          Outro start               42.5-  43.2   -0.48  +1.17  -0.31  -0.42  +1.80  +0.32 |  -0.7  -0.0  -1.0  -0.1  -0.8  shadow inst
+_test_song          Vocal outro phrase 1.1    43.3-  44.4   +0.36  +1.29  +1.21  +0.55  +1.06  -0.20 |  +1.5  +0.2  -1.0  +0.2  +0.4  -
+_test_song          Hint 8                    44.5-  47.0   +0.73  +1.79  +0.46  +0.25  +0.43  -1.00 |  -0.6  -0.2  +0.0  +0.6  -0.4  -
+_test_song          Vocal outro 2             47.1-  50.0   +1.18  +1.24  -0.38  -0.34  +0.73  +0.67 |  +1.6  -0.6  +0.1  +0.4  +0.2  shadow outro
+_test_song          Vocal Outro 3             50.1-  54.6   +0.42  +1.30  +2.12  +0.89  -1.11  +0.10 |  +1.2  -0.6  +0.1  +0.4  +0.1  shadow outro
+_test_song          prepare for end           54.6-  55.1   +0.25  -0.14  +1.25  +1.52  -2.54  -0.03 |  +0.1  -0.6  +0.1  +0.7  -0.4  shadow outro
+_test_song          Finale                    55.0-  55.9   +1.05  -0.43  +0.90  +1.45  -2.35  +0.29 |  -0.4  -0.6  -0.6  -0.2  -1.1  shadow outro
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Hints covered by some character block: 7/10
+
+Coverage is a weak test — a block that spans half the song covers everything.
+The per-axis columns are the substance: they say whether the signal a human
+responded to is actually present in the representation.
+
+
+Ablation: what the CLAP calm axis adds to the stems.
+
+rule                          breath blocks  breath seconds  full-power blocks  % of corpus
+-------------------------------------------------------------------------------------------
+stems + CLAP calm                        28            241s                 46          41%
+    Armin Breath found                  yes
+stems alone (CLAP dropped)               81            973s                 68          73%
+    Armin Breath found                  yes
+
+Both rules find the Armin block. The difference is specificity: without the
+calm term `breath` degenerates into `any voice with the drums down`, and
+`full power` into `drums and bass both playing`, which is most of a dance
+track. The stems say what is playing; CLAP says how it feels, and only the
+second distinguishes a breath from a verse.
