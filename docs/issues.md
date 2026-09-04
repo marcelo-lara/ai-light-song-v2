@@ -28,7 +28,7 @@ or `CLAUDE.md` first; the issue text itself is scaffolding.
 - Scope each issue to one concrete problem, one validation target, and one success condition — and make the success condition mean the stage improved, not that one song stopped complaining.
 - Prefer evidence from generated artifacts and documented reference files.
 - Treat `data/analysis/<Song - Artist>/reference/` as read-only validation input.
-- For chord truth, treat `data/analysis/<Song - Artist>/reference/moises/chords.json` as authoritative when it exists.
+- `data/analysis/<Song - Artist>/reference/moises/chords.json` is Moises.ai inference, not chord truth: it carries no confidence field, so a chord comparison against it measures agreement with a second model, not correctness.
 - For section semantics, prefer context-aware musical-state labels over generic form labels like `intro`, `verse`, or `chorus` unless a separate structural contract explicitly requires those labels.
 - Human storytelling hints are review guidance. They are not direct replacements for harmonic, symbolic, or energy truth.
 
@@ -43,7 +43,34 @@ or `CLAUDE.md` first; the issue text itself is scaffolding.
 
 ## Open queue
 
-*Empty.*
+### `validate-chords` crashes on every song that has a real Moises chord reference
+
+- **Status:** `pending`
+- **Found:** 2026-09-04, during plan v3.0 item 5. Not caused by it.
+- **Symptom:** `./analyze --song "Titanium - David Guetta ft Sia.mp3"` exits
+  non-zero after `extract-hpcp-and-chords` with `KeyError: 'bar_num'`.
+- **Cause:** `src/analyzer/stages/validation/chords.py` lines 62-63 read
+  `row["bar_num"]` and `row["beat_num"]` from `reference/moises/chords.json`.
+  The real file carries no such keys — its rows are
+  `curr_beat_time`, `curr_beat`, `prev_chord`, `chord_complex_jazz`,
+  `chord_simple_jazz`, `chord_complex_pop`, `chord_simple_pop`. On Titanium
+  **487 of 487 rows** lack both. Line 49 of the same function already reads
+  `curr_beat_time` correctly, so only those two lines are wrong: the validator
+  was written against a Moises schema that the files in `reference/` are not.
+- **Why it went unnoticed:** the now-deleted `build_reference_timing_grid` read
+  the same two fields defensively, as `int(row.get("bar_num") or 0)`, so it
+  never raised — it silently produced `bar: 0` for every row and then fell back
+  to the `((index - 1) // 4) + 1` modulo it was supposed to be replacing. The
+  validator uses direct subscripting and therefore fails loudly. Nothing had run
+  this path against real reference data before.
+- **Validation target:** `validate-chords` on the four gold songs.
+- **Success condition:** `./analyze` completes on all four gold songs with a
+  real chord-agreement number reported for each, and no song reports `skipped`
+  because of a schema mismatch. Reading `curr_beat` is not enough on its own —
+  the bar/beat position it needs must either be derived honestly from the
+  pipeline's own grid or the check must state that it cannot be computed.
+- **Blocks:** plan v3.0 item 16 (the corpus re-run). Scheduled into item 10,
+  which owns the validation surface.
 
 All ten issues raised so far were closed; their entries were removed in commit
 `c227bec` and remain recoverable there.

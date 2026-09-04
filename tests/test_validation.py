@@ -6,7 +6,6 @@ import unittest
 from pathlib import Path
 
 from analyzer.paths import SongPaths
-from analyzer.stages.harmonic import build_reference_harmonic_layer
 from analyzer.stages.validation.beats import validate_beats
 from analyzer.stages.validation.chords import _validate_chords
 from analyzer.stages.validation.drums import validate_drums
@@ -264,35 +263,6 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         self.assertEqual(result.diagnostics["dominant_snap_multiple_beats"], 1)
         self.assertEqual(result.diagnostics["snap_like_boundary_count"], 2)
         self.assertEqual(result.diagnostics["boundary_offset_direction"], "late")
-
-    def test_build_reference_harmonic_layer_promotes_reference_chords(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            paths = SongPaths(
-                song_path=root / "songs" / "_test_song.mp3",
-                analysis_root=root / "analysis",
-            )
-            reference_chords_path = paths.reference("moises", "chords.json")
-            assert reference_chords_path is not None
-            _write_json(
-                reference_chords_path,
-                [
-                    {"curr_beat_time": 0.5, "bar_num": 1, "beat_num": 1, "chord_simple_pop": "C#:maj"},
-                    {"curr_beat_time": 1.0, "bar_num": 1, "beat_num": 2, "chord_simple_pop": "C#:maj"},
-                    {"curr_beat_time": 1.5, "bar_num": 1, "beat_num": 3, "chord_simple_pop": "D#:maj"},
-                    {"curr_beat_time": 2.0, "bar_num": 1, "beat_num": 4, "chord_simple_pop": "Fm:add9"},
-                ],
-            )
-            timing = {
-                "bars": [{"bar": 1, "start_s": 0.5, "end_s": 2.5}],
-                "beats": [],
-            }
-
-            payload = build_reference_harmonic_layer(paths, timing, inferred_harmonic_path="/tmp/inferred.json")
-
-        self.assertEqual([event["chord"] for event in payload["chords"]], ["C#", "D#", "Fm"])
-        self.assertEqual(payload["generated_from"]["engine"], "reference.moises.chords.promotion")
-        self.assertEqual(payload["generated_from"]["dependencies"]["inferred_harmonic_file"], "/tmp/inferred.json")
 
 if __name__ == "__main__":
     unittest.main()

@@ -95,7 +95,7 @@ def build_validation_report(
     if "beats" in compare_targets:
         notes.append("Beat validation compares inferred beat times against the beat timestamps embedded in the reference chord annotation when present.")
     if "chords" in compare_targets:
-        notes.append("Chord validation treats reference chord files as authoritative human-validated comparison inputs when present.")
+        notes.append("reference/moises/*.json is Moises.ai inference, not human ground truth. Only lyrics.json carries a confidence field, and only its \"0.99\" rows are operator-curated. Chord validation therefore measures agreement with a second model, not correctness.")
     if "drums" in compare_targets:
         notes.append("Drum validation checks the producer-scoped drum_events.json artifact for structural integrity, Omnizart provenance, debug-source metadata, and song-level pulse plausibility.")
     if "sections" in compare_targets:

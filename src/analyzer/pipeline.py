@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections.abc import Callable
 import gc
 import sys
-from pathlib import Path
 from typing import TypeVar
 
 from analyzer.config import ValidationConfig
@@ -23,18 +22,17 @@ from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.genre import classify_genre
 from analyzer.stages.drums import extract_drum_events
 from analyzer.stages.fft_bands import extract_fft_bands
-from analyzer.stages.harmonic import build_reference_harmonic_layer, extract_hpcp_and_chords
+from analyzer.stages.harmonic import extract_hpcp_and_chords
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.loudness import extract_mix_stem_loudness
 from analyzer.stages.sections import segment_sections
 from analyzer.stages.symbolic import extract_symbolic_features
 from analyzer.stages.stems import ensure_stems
-from analyzer.stages.timing import build_reference_timing_grid, extract_timing_grid
+from analyzer.stages.timing import extract_timing_grid
 from analyzer.stages.ui_data import build_ui_data
 from analyzer.stages.validation import (
     build_validation_report,
-    generate_timing_diagnosis,
     skipped_result,
     validate_chords,
     validate_beats,
@@ -49,13 +47,10 @@ _BATCH_PROGRESS: tuple[int, int] | None = None
 STAGE_PIPELINE_IDS: dict[str, str] = {
     "ensure-stems": "1.1",
     "extract-timing-grid": "1.2",
-    "build-reference-timing-grid": "1.2",
     "validate-beats": "1.2",
-    "generate-timing-diagnosis": "1.2",
     "extract-fft-bands": "1.3",
     "extract-mix-stem-loudness": "1.4",
     "extract-hpcp-and-chords": "2.1-2.2",
-    "build-reference-harmonic-layer": "2.1-2.2",
     "validate-chords": "2.2",
     "extract-symbolic-features": "2.4-4.3",
     "extract-drum-events": "2.5",
@@ -138,26 +133,9 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
     if stage_name == "extract-timing-grid":
         _run_stage(paths.song_name, "phase-1", stage_name, extract_timing_grid, paths)
         return 0
-    if stage_name == "build-reference-timing-grid":
-        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        rebuilt = _run_stage(
-            paths.song_name,
-            "phase-1",
-            stage_name,
-            build_reference_timing_grid,
-            paths,
-            float(timing.get("duration", 0.0)),
-        )
-        write_json(paths.artifact("essentia", "beats.json"), rebuilt)
-        return 0
     if stage_name == "validate-beats":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
         _run_stage(paths.song_name, "phase-1", stage_name, validate_beats, paths, timing, config.beat_tolerance_seconds)
-        return 0
-    if stage_name == "generate-timing-diagnosis":
-        inferred = _required_artifact_payload(paths, stage_name, "essentia", "beats_inferred.json")
-        canonical = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, generate_timing_diagnosis, paths, inferred, canonical)
         return 0
     if stage_name == "extract-fft-bands":
         _run_stage(paths.song_name, "phase-1", stage_name, extract_fft_bands, paths)
@@ -173,10 +151,6 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         stems = _existing_stems(paths, stage_name)
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
         _run_stage(paths.song_name, "phase-1", stage_name, extract_hpcp_and_chords, paths, stems, timing)
-        return 0
-    if stage_name == "build-reference-harmonic-layer":
-        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, build_reference_harmonic_layer, paths, timing)
         return 0
     if stage_name == "validate-chords":
         harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
@@ -383,8 +357,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             return _run_single_stage(paths, config, stage_name)
 
         ensure_directory(paths.song_artifacts_dir)
-        reference_chords_path = paths.reference("moises", "chords.json")
-        has_reference_chords = reference_chords_path.exists()
         stems = _run_stage(paths.song_name, "phase-1", "ensure-stems", ensure_stems, paths)
         timing = _run_stage(paths.song_name, "phase-1", "extract-timing-grid", extract_timing_grid, paths)
         fft_bands = _run_stage(paths.song_name, "phase-1", "extract-fft-bands", extract_fft_bands, paths)
@@ -402,33 +374,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             if "beats" in config.compare_targets
             else skipped_result()
         )
-        inferred_beats_path: Path | None = None
-        if has_reference_chords:
-            inferred_beats_path = paths.artifact("essentia", "beats_inferred.json")
-            inferred_timing = timing
-            write_json(inferred_beats_path, inferred_timing)
-            timing = _run_stage(
-                paths.song_name,
-                "phase-1",
-                "build-reference-timing-grid",
-                build_reference_timing_grid,
-                paths,
-                float(inferred_timing.get("duration", 0.0)),
-                reference_chords_path=str(reference_chords_path),
-                inferred_beats_path=str(inferred_beats_path),
-            )
-            if not timing.get("beats"):
-                raise AnalysisError("Reference timing takeover did not produce any canonical beats")
-            write_json(paths.artifact("essentia", "beats.json"), timing)
-            _run_stage(
-                paths.song_name,
-                "phase-1",
-                "generate-timing-diagnosis",
-                generate_timing_diagnosis,
-                paths,
-                inferred_timing,
-                timing,
-            )
         _, harmonic = _run_stage(paths.song_name, "phase-1", "extract-hpcp-and-chords", extract_hpcp_and_chords, paths, stems, timing)
         chord_validation = (
             _run_stage(
@@ -443,19 +388,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             if "chords" in config.compare_targets
             else skipped_result()
         )
-        inferred_harmonic_path: Path | None = None
-        if has_reference_chords:
-            inferred_harmonic_path = paths.artifact("harmonic_inference", "layer_a_harmonic.inferred.json")
-            write_json(inferred_harmonic_path, harmonic)
-            harmonic = _run_stage(
-                paths.song_name,
-                "phase-1",
-                "build-reference-harmonic-layer",
-                build_reference_harmonic_layer,
-                paths,
-                timing,
-                inferred_harmonic_path=str(inferred_harmonic_path),
-            )
         energy_features = _run_stage(paths.song_name, "phase-1", "extract-energy-features", extract_energy_features, paths, timing)
         sections = _run_stage(paths.song_name, "phase-1", "segment-sections", segment_sections, paths, timing, harmonic, energy_features)
         symbolic = _run_stage(paths.song_name, "phase-1", "extract-symbolic-features", extract_symbolic_features, paths, stems, timing, sections)
@@ -582,12 +514,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             chord_min_overlap=config.chord_min_overlap,
             fail_on_mismatch=config.fail_on_mismatch,
         )
-        if inferred_beats_path is not None:
-            report["generated_artifacts"]["inferred_beats_file"] = str(inferred_beats_path)
-            report["notes"].append("Moises chord reference data was present, so downstream phases used the canonical beat grid rebuilt from that reference while preserving the inferred beat grid separately for diagnostics.")
-        if inferred_harmonic_path is not None:
-            report["generated_artifacts"]["inferred_harmonic_file"] = str(inferred_harmonic_path)
-            report["notes"].append("Moises chord reference data was present, so downstream phases used the canonical harmonic layer rebuilt from that reference while preserving the inferred harmonic layer separately for diagnostics.")
         if human_hint_alignment:
             report["generated_artifacts"]["human_hints_alignment_file"] = human_hint_alignment["json_path"]
             report["generated_artifacts"]["human_hints_alignment_markdown"] = human_hint_alignment["markdown_path"]

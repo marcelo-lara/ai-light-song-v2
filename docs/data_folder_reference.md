@@ -648,27 +648,27 @@ Why it matters: quick event briefing for review or operator-facing discussion.
 
 ### `data/analysis/<Song - Artist>/reference/moises/chords.json`
 
-Summary: read-only chord comparison file from the reference set. Stores beat-like chord rows and multiple chord label formats.
+Summary: read-only chord comparison file from Moises.ai. This is a second model's **inference**, not human ground truth — it carries no confidence field, so none of its rows are curated. Stores beat-like chord rows and multiple chord label formats.
 
-Why it matters: external chord truth source for validation.
+Why it matters: a second model's chord opinion, used to measure agreement, not correctness.
 
 LLM hint:
 - See: chord label variants such as jazz, pop, and Nashville forms.
-- Use: compare against `layer_a_harmonic.json` when checking harmonic plausibility.
-- Use: as validation or review input, not as a fallback generation source.
+- Use: compare against `layer_a_harmonic.json` to measure agreement with a second model — not as a correctness check.
+- Use: as validation or review input, never as a fallback or takeover source for a generated artifact.
 
 ### `data/analysis/<Song - Artist>/reference/moises/segments.json`
 
-Summary: read-only reference structural segments with start, end, and human labels.
+Summary: read-only structural segments from Moises.ai, with start, end, and labels. This is model inference, not hand-labelled ground truth — it carries no confidence field.
 
-Why it matters: external structural guidance for validation.
+Why it matters: a second model's structural opinion, used for offline boundary-quality comparison, not as external truth.
 
 LLM hint:
 - See: segment boundaries and labels.
 - Use: compare against `section_segmentation/sections.json` to sanity-check large structural changes.
 - Treat labels as advisory. The important part is the boundary timing.
 - Use: derive offline boundary-quality metrics such as over-segmentation, under-segmentation, and snap-like late or early offsets.
-- Optional promotion rule: if a Story explicitly allows it, this file may rescue low-confidence or clearly failed inferred section boundaries, but only through an explicit confidence gate with preserved inferred output and provenance.
+- Never promote or substitute: `reference/` is validation-only (constitution §2). No pipeline stage takes over a canonical artifact from this file.
 
 ### `data/analysis/<Song - Artist>/reference/moises/lyrics.json`
 

@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 4 |
+| Done | 5 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -238,22 +238,22 @@ writes neither pattern artifact.
 This is the honesty repair, and it **must land before item 16**. See
 refinement §4 item 7 for why.
 
-- [ ] Delete `build_reference_timing_grid` from `src/analyzer/stages/timing.py`
+- [x] Delete `build_reference_timing_grid` from `src/analyzer/stages/timing.py`
       and `build_reference_harmonic_layer` from
       `src/analyzer/stages/harmonic.py`.
-- [ ] Remove the `build-reference-timing-grid` and
+- [x] Remove the `build-reference-timing-grid` and
       `build-reference-harmonic-layer` stage entries, imports and single-stage
       branches from `src/analyzer/pipeline.py`.
-- [ ] In `run_phase_1`, delete the whole `has_reference_chords` takeover path:
+- [x] In `run_phase_1`, delete the whole `has_reference_chords` takeover path:
       the `beats_inferred.json` side-write, the `layer_a_harmonic.inferred.json`
       side-write, the `generate-timing-diagnosis` call that compares the two, and
       the two `report["notes"].append(...)` lines that explain the substitution.
       `essentia/beats.json` and `layer_a_harmonic.json` are now always the
       pipeline's own output.
-- [ ] Decide `generate-timing-diagnosis` in the same commit: it exists only to
+- [x] Decide `generate-timing-diagnosis` in the same commit: it exists only to
       diff inferred against reference-rebuilt grids. Delete it and its stage
       entry.
-- [ ] **Correct the false note** wherever `phase_1_report.json` states that
+- [x] **Correct the false note** wherever `phase_1_report.json` states that
       reference chord files are *"authoritative human-validated comparison
       inputs"* (`src/analyzer/stages/validation/report.py` and/or `chords.py`).
       The replacement text states plainly that `reference/moises/*.json` is
@@ -261,10 +261,10 @@ refinement §4 item 7 for why.
       field and only its `"0.99"` rows are operator-curated, and that a chord
       comparison against it measures **agreement with a second model**, not
       correctness.
-- [ ] Update `docs/data_folder_reference.md`: delete the `beats_inferred.json`
+- [x] Update `docs/data_folder_reference.md`: delete the `beats_inferred.json`
       and `layer_a_harmonic.inferred.json` entries; correct the
       `reference/moises/` description to say inference, not ground truth.
-- [ ] **Create `docs/contract-change-v3.0.md`** with the header paragraph (the
+- [x] **Create `docs/contract-change-v3.0.md`** with the header paragraph (the
       v2.1 → v3.0 transition; compatibility was not a constraint, documenting it
       is) and its first section: `essentia/beats.json` and
       `layer_a_harmonic.json` are no longer ever rebuilt from
@@ -597,6 +597,19 @@ Runs after item 9 so the validators die with their subjects.
       `skipped` with the reason, never the `presence` check that passes by
       construction. Rename the module `drops.py`.
 - [ ] Keep `validation/beats.py`, `chords.py`, `sections.py`, `drums.py`.
+- [ ] **Fix the `validate-chords` crash** logged in `docs/issues.md`.
+      `validation/chords.py` lines 62-63 read `row["bar_num"]` and
+      `row["beat_num"]` from `reference/moises/chords.json`, which carries
+      neither — 487 of 487 rows on Titanium lack both, and the real schema is
+      `curr_beat_time`, `curr_beat`, `prev_chord`, `chord_*`. It raises
+      `KeyError: 'bar_num'` and takes the whole run non-zero, so **item 16
+      cannot pass until this is fixed**. Found during item 5 and not caused by
+      it: the deleted `build_reference_timing_grid` read the same fields as
+      `int(row.get("bar_num") or 0)` and so silently produced `bar: 0` rather
+      than raising. Derive the bar/beat position from the pipeline's own grid,
+      or state honestly that it cannot be computed — no invented default
+      (constitution §2). Delete the `docs/issues.md` entry in the same commit
+      that fixes it (constitution §4.2).
 - [ ] Rewire `validation/report.py` and `validation/__init__.py` to the surviving
       set; remove the dead `compare_targets` entries from
       `src/analyzer/config.py` and the CLI help in `src/analyzer/cli.py`.
