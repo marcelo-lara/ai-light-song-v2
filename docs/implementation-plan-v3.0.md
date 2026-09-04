@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 1 |
+| Done | 2 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -167,12 +167,12 @@ deleted test files gone. `docker compose run --rm app ./analyze --song
 
 ### 2. Delete `event_benchmark.py`
 
-- [ ] Delete `src/analyzer/stages/event_benchmark.py` and
+- [x] Delete `src/analyzer/stages/event_benchmark.py` and
       `tests/test_event_benchmark.py`.
-- [ ] Remove the `benchmark-event-outputs` stage entry, import, single-stage
+- [x] Remove the `benchmark-event-outputs` stage entry, import, single-stage
       branch and `run_phase_1` call from `src/analyzer/pipeline.py`, and the
       `event_benchmark` row from `info.json`'s `artifacts` block.
-- [ ] Remove `validation/event_benchmark.json` from
+- [x] Remove `validation/event_benchmark.json` from
       `docs/data_folder_reference.md`.
 
 **Tests:** `docker compose run --rm test`; a `_test_song` run writes no

@@ -50,7 +50,6 @@ def build_validation_report(
     event_review_path = paths.review_json_path
     event_overrides_path = paths.overrides_path
     event_timeline_path = paths.timeline_output_path
-    event_benchmark_path = paths.artifact("validation", "event_benchmark.json")
     patterns_path = paths.artifact("layer_d_patterns.json")
     symbolic_path = paths.artifact("layer_b_symbolic.json")
     unified_path = paths.artifact("music_feature_layers.json")
@@ -77,7 +76,6 @@ def build_validation_report(
             read_json(event_review_path),
             read_json(event_overrides_path),
             read_json(event_timeline_path),
-            read_json(event_benchmark_path),
         ) if "events" in compare_targets else skipped_result(),
         "form": validate_form(paths) if "form" in compare_targets else skipped_result(),
         "drops": validate_drops(paths) if "drops" in compare_targets else skipped_result(),
@@ -122,7 +120,7 @@ def build_validation_report(
     if "patterns" in compare_targets:
         notes.append("Pattern validation checks window length, occurrence counts, and non-overlap rules inside Layer D.")
     if "events" in compare_targets:
-        notes.append("Event validation checks Epic 5 artifact integrity, machine-review timeline consistency, and benchmark status when reviewed annotations exist.")
+        notes.append("Event validation checks Epic 5 artifact integrity and machine-review timeline consistency.")
     if "unified" in compare_targets:
         notes.append("Unified validation checks cross-layer references, phrase and accent timeline joins, and callback integrity.")
     if "form" in compare_targets:
@@ -157,7 +155,6 @@ def build_validation_report(
             "event_review_file": str(event_review_path),
             "event_overrides_file": str(event_overrides_path),
             "event_timeline_file": str(event_timeline_path),
-            "event_benchmark_file": str(event_benchmark_path),
             "patterns_layer_file": str(patterns_path),
             "music_feature_layers_file": str(unified_path),
             "sections_file": str(sections_path),

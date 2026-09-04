@@ -77,7 +77,6 @@ data/
           hints.json
           validation.json
         validation/
-          event_benchmark.json
           phase_1_report.json
           phase_1_report.md
           song_event_timeline.md
@@ -595,16 +594,6 @@ Why it matters: fastest way to scan pass/fail state and major mismatches.
 LLM hint:
 - Use: as a quick trust summary before consuming lower-level artifacts.
 - Use: especially when deciding whether chord-driven or section-driven cues should be treated as high-confidence.
-
-### `data/analysis/<Song - Artist>/artifacts/validation/event_benchmark.json`
-
-Summary: event-specific benchmark and status report for the Epic 5 output chain.
-
-Why it matters: quickest way to confirm whether machine events, review outputs, and timeline exports were produced coherently enough to trust downstream.
-
-LLM hint:
-- See: benchmark status, required file paths, and event-count summaries.
-- Use: decide whether the reviewed event surface is ready to drive event-aware fixture overlays or whether manual review is still needed.
 
 ### `data/analysis/<Song - Artist>/info.json`
 

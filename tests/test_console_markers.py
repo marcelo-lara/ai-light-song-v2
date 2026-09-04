@@ -355,7 +355,6 @@ class ConsoleMarkerTests(unittest.TestCase):
             machine_events = {"events": []}
             review_outputs = {"merged_payload": {"events": []}}
             event_timeline = {"events": []}
-            event_benchmark = {"status": "ok"}
             patterns = {"patterns": []}
             unified = {"sections": []}
             fft_bands = {"bands": [{"id": "sub"}, {"id": "bass"}, {"id": "low_mid"}, {"id": "mid"}, {"id": "upper_mid"}, {"id": "presence"}, {"id": "brilliance"}]}
@@ -389,7 +388,6 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.generate_machine_events", return_value=machine_events))
                 stack.enter_context(patch("analyzer.pipeline.generate_event_review", return_value=review_outputs))
                 stack.enter_context(patch("analyzer.pipeline.export_event_timeline", return_value=event_timeline))
-                stack.enter_context(patch("analyzer.pipeline.benchmark_event_outputs", return_value=event_benchmark))
                 stack.enter_context(patch("analyzer.pipeline.extract_chord_patterns", return_value=patterns))
                 stack.enter_context(patch("analyzer.pipeline.assemble_music_feature_layers", return_value=unified))
                 stack.enter_context(patch("analyzer.pipeline.build_human_hints_alignment", return_value=None))

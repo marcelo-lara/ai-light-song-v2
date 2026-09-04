@@ -25,7 +25,6 @@ def _validate_event_outputs(
     review_payload: dict,
     overrides_payload: dict,
     timeline_payload: dict,
-    benchmark_payload: dict,
 ) -> ValidationResult:
     checks = []
     identifier_names = set(energy_identifiers.get("supported_identifiers", []))
@@ -63,17 +62,6 @@ def _validate_event_outputs(
         "passed": len(timeline_events) == int(merged_count),
         "timeline_count": len(timeline_events),
         "merged_count": merged_count,
-    })
-    benchmark_status = str(benchmark_payload.get("status", "skipped"))
-    checks.append({
-        "check": "benchmark_report_written",
-        "passed": benchmark_status in {"passed", "failed", "skipped"},
-        "status": benchmark_status,
-    })
-    checks.append({
-        "check": "benchmark_failure_only_counts_when_report_exists",
-        "passed": benchmark_status != "failed" or benchmark_payload.get("matched", 0) >= 0,
-        "status": benchmark_status,
     })
     return _result_from_checks(checks)
 

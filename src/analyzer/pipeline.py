@@ -11,7 +11,6 @@ from analyzer.io import ensure_directory, read_json, write_json
 from analyzer.exceptions import AnalysisError
 from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
-from analyzer.stages.event_benchmark import benchmark_event_outputs
 from analyzer.stages.event_features import build_event_feature_layer
 from analyzer.stages.event_identifiers import infer_song_identifiers
 from analyzer.stages.event_machine import generate_machine_events
@@ -71,7 +70,6 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "generate-rule-candidates": "5.2",
     "generate-machine-events": "5.4",
     "generate-event-review": "5.5",
-    "benchmark-event-outputs": "5.5",
     "export-event-timeline": "5.6",
     "build-review-queue": "5.1",
     "classify-genre": "6.1",
@@ -285,12 +283,6 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         machine_events = _required_artifact_payload(paths, stage_name, "event_inference", "events.machine.json")
         review_outputs = _run_stage(paths.song_name, "phase-1", "generate-event-review", generate_event_review, paths, machine_events)
         _run_stage(paths.song_name, "phase-1", stage_name, export_event_timeline, paths, review_outputs["merged_payload"])
-        return 0
-    if stage_name == "benchmark-event-outputs":
-        machine_events = _required_artifact_payload(paths, stage_name, "event_inference", "events.machine.json")
-        review_outputs = _run_stage(paths.song_name, "phase-1", "generate-event-review", generate_event_review, paths, machine_events)
-        genre_result = _optional_artifact_payload(paths, "genre.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, benchmark_event_outputs, paths, review_outputs["merged_payload"], genre_result)
         return 0
     if stage_name == "build-review-queue":
         sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
@@ -538,15 +530,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             sections,
         )
         review_outputs = _run_stage(paths.song_name, "phase-1", "generate-event-review", generate_event_review, paths, machine_events)
-        event_benchmark = _run_stage(
-            paths.song_name,
-            "phase-1",
-            "benchmark-event-outputs",
-            benchmark_event_outputs,
-            paths,
-            review_outputs["merged_payload"],
-            genre_result,
-        )
         event_timeline = _run_stage(paths.song_name, "phase-1", "export-event-timeline", export_event_timeline, paths, review_outputs["merged_payload"])
         _run_stage(
             paths.song_name,
@@ -602,7 +585,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 "event_review": str(paths.review_json_path),
                 "event_overrides": str(paths.overrides_path),
                 "event_timeline_markdown": str(paths.timeline_md_path),
-                "event_benchmark": str(paths.artifact("validation", "event_benchmark.json")),
                 "review_queue": str(paths.artifact("validation", "review_queue.json")),
                 "song_facts": str(paths.reference("human", "song_facts.json")),
                 "human_hints_alignment": human_hint_alignment["json_path"] if human_hint_alignment else None,

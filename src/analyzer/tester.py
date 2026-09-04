@@ -2,7 +2,6 @@ from analyzer.paths import SongPaths
 from analyzer.io import read_json
 from analyzer.stages.event_rules import generate_rule_candidates
 from analyzer.stages.event_machine import generate_machine_events
-from analyzer.stages.event_benchmark import benchmark_event_outputs
 from pathlib import Path
 
 def test_song(song_name: str):
@@ -29,18 +28,7 @@ def test_song(song_name: str):
         identifier_payload = {"identifiers": []}
 
     machine_payload = generate_machine_events(paths, event_features, rules_payload, identifier_payload, symbolic_payload, sections_payload)
-    
-    # Run benchmark
-    benchmark_payload = benchmark_event_outputs(paths, machine_payload, genre_result)
-    
-    if benchmark_payload and benchmark_payload.get("status") != "skipped":
-        matched = benchmark_payload.get("matched", 0)
-        missed = benchmark_payload.get("missed", 0)
-        fp = benchmark_payload.get("false_positives", 0)
-        print(f"[{song_name}] Benchmark Results - Matched: {matched}, Missed: {missed}, False Positives: {fp}")
-    else:
-        print(f"[{song_name}] Benchmark skipped: {benchmark_payload.get('reason', 'Missing score/skipped')}")
-        
+
     print(f"[{song_name}] Generated {len(rules_payload.get('events', []))} rule candidates")
     print(f"[{song_name}] Generated {len(machine_payload.get('events', []))} machine events")
 
