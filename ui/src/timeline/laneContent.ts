@@ -19,6 +19,10 @@ import type {
   EventsFile,
   PatternsFile,
   SymbolicPhrasesFile,
+  VocalPhrasesFile,
+  ReactiveBandsFile,
+  GesturesFile,
+  GridFile,
 } from "../data/sparseArtifacts";
 
 import { romanNumeral } from "./romanNumeral";
@@ -503,6 +507,116 @@ export function phrasesContent(file: SymbolicPhrasesFile | null): SparseBlock[] 
   }));
 }
 
+/**
+ * Vocal phrase / instrumental gap / sustained-note blocks from
+ * `experiments/vocal_phrases` (Part A — no model, local-auto-gain hysteresis
+ * over the vocal stem). A proposal to audition against Human Hints and
+ * Moises Lyrics directly above it, per constitution §3.2.
+ */
+export function vocalPhrasesContent(file: VocalPhrasesFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => {
+    const kindLabel =
+      b.kind === "vocal_phrase" ? "phrase" : b.kind === "instrumental_gap" ? "gap" : "sustained";
+    return {
+      id: `vocal-phrase-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: b.kind === "sustained_note" ? `♪ ${kindLabel}` : kindLabel,
+      ...(b.kind === "instrumental_gap" ? { tintId: "vocalPhrasesGap" } : {}),
+      ...(b.kind === "sustained_note" ? { tintId: "vocalPhrasesSustained" } : {}),
+      wideLabel: `${kindLabel} · conf ${round(b.confidence, 2)}${b.note_hz ? ` · ${Math.round(b.note_hz)}Hz` : ""}`,
+      laneLabel: "Vocal Phrases",
+      caption: `${formatRange(b.start_s, b.end_s)} · conf ${round(b.confidence, 2)}`,
+      reference: `vocal-phrase-${i + 1}`,
+      detail: kindLabel,
+      summary: `experiments/vocal_phrases (Part A, no model) — a ${
+        b.kind === "vocal_phrase" ? "detected sung phrase" : b.kind === "instrumental_gap" ? "gap with no vocal activity" : "sustained held note"
+      } over the vocal stem's local-auto-gain envelope.`,
+      raw: b,
+    };
+  });
+}
+
+/**
+ * Discrete accents from `experiments/reactive_bands` — locally auto-gained
+ * band-power spikes, budget-matched and threshold-calibrated (see the
+ * experiment's README, which reports the local-normalisation ablation coming
+ * back *against* the headline hypothesis once measured fairly). The dense
+ * per-beat bass/mid/treb stream this experiment also produces is not
+ * rendered here — see the README.
+ */
+export function reactiveBandsContent(file: ReactiveBandsFile | null): SparseBlock[] {
+  return (file?.accents ?? []).map((a, i) => ({
+    id: `reactive-accent-${i + 1}`,
+    start_s: a.time_s,
+    end_s: a.time_s + 0.05,
+    label: `${a.band} ${round(a.strength, 1)}`,
+    laneLabel: "Reactive Bands",
+    caption: `${formatRange(a.time_s, a.time_s)} · ${a.band} band, strength ${round(a.strength, 2)}${
+      a.bar != null ? ` · bar ${a.bar} beat ${a.beat}` : ""
+    }`,
+    reference: `reactive-accent-${i + 1}`,
+    detail: a.band,
+    summary: `experiments/reactive_bands — an instantaneous ${a.band}-band power spike above its own damped (locally auto-gained) twin.`,
+    raw: a,
+  }));
+}
+
+/**
+ * Composite drop gestures from `experiments/gestures` — approach/build/
+ * tension/impact/release assembled from named sound-design primitive
+ * detectors. Never claims a section name (§5.2); the phase breakdown is
+ * folded into the caption/summary text rather than drawn as sub-bars (a
+ * simplification — see the experiment's README).
+ */
+export function gesturesContent(file: GesturesFile | null): SparseBlock[] {
+  return (file?.gestures ?? []).map((g) => {
+    const phaseNames = g.phases.map((p) => p.name).join(" → ") || "impact only";
+    return {
+      id: g.id,
+      start_s: g.start_s,
+      end_s: Math.max(g.end_s, g.start_s + 0.1),
+      label: phaseNames,
+      wideLabel: `${phaseNames} · impact ${round(g.impact_time_s, 2)}s · conf ${round(g.confidence, 2)}`,
+      laneLabel: "Gestures",
+      caption: `${formatRange(g.start_s, g.end_s)} · phases: ${phaseNames}`,
+      reference: g.id,
+      detail: g.phases.map((p) => `${p.name} (${p.from})`).join(", ") || "impact only",
+      summary: `experiments/gestures — a composite gesture anchored on an impact at ${round(
+        g.impact_time_s, 2,
+      )}s, phases: ${g.phases.map((p) => `${p.name} ${formatRange(p.start_s, p.end_s)} from ${p.from}`).join("; ") || "impact only"}.`,
+      raw: g,
+    };
+  });
+}
+
+/**
+ * Phrase-grid boundaries from `experiments/grid_consensus` — the resolved
+ * downbeat phase's derived 8/16-bar phrase edges. `status: "unknown"` marks
+ * a song where trackers disagreed and musical evidence did not resolve it
+ * (constitution §7 — say so rather than snapping); those blocks are tinted
+ * distinctly as disputed.
+ */
+export function gridPhraseContent(file: GridFile | null): SparseBlock[] {
+  const disputed = file?.status === "unknown";
+  return (file?.boundaries ?? []).map((b, i) => ({
+    id: `phrase-grid-${i + 1}`,
+    start_s: b.time_s,
+    end_s: b.time_s + 0.1,
+    label: `bar ${b.bar}`,
+    ...(disputed ? { tintId: "gridDisputed" } : {}),
+    wideLabel: `phrase boundary · bar ${b.bar} · conf ${round(b.confidence, 2)}${disputed ? " · DISPUTED" : ""}`,
+    laneLabel: "Phrase Grid",
+    caption: `${formatRange(b.time_s, b.time_s)} · bar ${b.bar}${disputed ? " · disputed grid" : ""}`,
+    reference: `phrase-grid-${i + 1}`,
+    detail: disputed ? "grid status: unknown" : "grid status: resolved",
+    summary: `experiments/grid_consensus — an ${file?.phrase_length_bars ?? "?"}-bar phrase boundary at bar ${b.bar}${
+      disputed ? "; this song's downbeat phase was not confidently resolved (trackers disagreed, evidence inconclusive) — treat the whole grid on this song with caution" : ""
+    }.`,
+    raw: b,
+  }));
+}
+
 // -- dispatch -------------------------------------------------------------
 
 export interface LaneContentSources {
@@ -519,6 +633,10 @@ export interface LaneContentSources {
   machineEvents?: EventsFile | null;
   mlEvents?: EventsFile | null;
   symbolicPhrases?: SymbolicPhrasesFile | null;
+  vocalPhrases?: VocalPhrasesFile | null;
+  reactiveBands?: ReactiveBandsFile | null;
+  gestures?: GesturesFile | null;
+  grid?: GridFile | null;
 }
 
 /** the sparse (block) lane ids handled by this module, in registry order */
@@ -526,6 +644,10 @@ export const SPARSE_LANE_IDS = [
   "humanHints",
   "moisesLyrics",
   "dropProposals",
+  "vocalPhrases",
+  "reactiveBands",
+  "gestures",
+  "gridPhrase",
   "allin1Transitions",
   "sections",
   "character",
@@ -552,6 +674,14 @@ export function buildLaneBlocks(
       return moisesLyricsContent(s.moisesLyrics ?? null);
     case "dropProposals":
       return dropProposalsContent(s.dropProposals ?? null);
+    case "vocalPhrases":
+      return vocalPhrasesContent(s.vocalPhrases ?? null);
+    case "reactiveBands":
+      return reactiveBandsContent(s.reactiveBands ?? null);
+    case "gestures":
+      return gesturesContent(s.gestures ?? null);
+    case "gridPhrase":
+      return gridPhraseContent(s.grid ?? null);
     case "allin1Transitions":
       return allin1TransitionsContent(s.allin1 ?? null);
     case "sections":

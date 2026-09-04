@@ -473,12 +473,12 @@ feeds section naming rather than shipping as its own file.
 
 ### Status
 
-**[PENDING] — run order 1 of 7.** New in this wave. No new model needed for the
-detector — it derives from `artifacts/stems/vocals.wav`, which is trusted
-phase-1 — and it now has clean ground truth: the operator rebuilt
-`_test_song`'s `reference/moises/lyrics.json` with genuine word-level timing on
-2026-09-04. The forced-aligner half of the entry also unblocks the ACE-Step
-Transcriber's one open problem.
+**[DONE] — Part A concluded, Part B not built.** The detector finds the
+operator's vocal-phrase edges 5–6× better than the shipped `sections.json`, but
+does not clearly beat a naive mix-RMS threshold once its firing rate is accounted
+for, and the two were never compared at a matched budget. Forced alignment
+(Part B) needs its own sandbox image and was not attempted. Awaiting the
+operator's archive-or-promote decision (§3.3).
 
 ### Why? What for?
 
@@ -585,11 +585,57 @@ themselves stay validation-only (§2) — the detector reads the stem, never
 
 ### Results evidence
 
-*(to be filled by the run)*
+Built as [`experiments/vocal_phrases/`](../experiments/vocal_phrases/README.md),
+**Part A only**. Full tables in
+[`out/score.txt`](../experiments/vocal_phrases/out/score.txt). Gold set, 94 hint
+boundaries.
+
+| method | ±0.1 s | ±0.25 s | ±0.5 s | bounds/min |
+| --- | --- | --- | --- | --- |
+| **vocal_phrases** | **28/94** | **42/94** | **66/94** | 44.9 |
+| shipped `sections.json` (incumbent) | 5/94 | 5/94 | 10/94 | 3.6 |
+| mix-RMS threshold (cheap baseline) | 25/94 | 37/94 | 51/94 | 61.2 |
+
+**It beats the incumbent and does not clearly beat the baseline.** The mix-RMS
+threshold fires 61/min against the detector's 45, and at that inflated budget it
+matches or beats the detector on the two songs where it fires roughly twice as
+often — `_test_song` (12/16/23 at 47/min vs 11/14/20 at 21/min) and `Titanium`
+(10/18/21 at 85/min vs 7/14/24 at 45/min). Where the stem gate earns its keep is
+the dense mixes: `Hideaway` **8/10** at ±0.5 s against **0/10** for both the
+baseline and the incumbent, and `Armin` 8/24 at ±0.1 s against the baseline's
+3/24. **No budget-matched ablation was run**, and the sibling reactive-bands
+entry below is the standing evidence that omitting one can invert a result.
+
+**breath_s sweep** (`_test_song`, the only song with trustworthy word-level
+offsets): onset MAE is flat at **0.022 s** across 0.3–1.0 s — the detector finds
+where a phrase starts regardless of the breath setting. Offset MAE degrades
+0.145 → 0.164 s as looser thresholds merge trailing reverb into the phrase. The
+shipped 0.5 s is a middle point, not a measured winner.
+
+**`sustained_note` came back empty on `_test_song`** — the one song whose audit
+names a 2.78 s note held through the drop build. Root cause confirmed by
+inspection: the held note's own amplitude decay dips below the hysteresis OFF
+threshold mid-note and splits the phrase, so neither half reaches the 1.5 s
+minimum, and the sustain scan only looks within a phrase. Bridging on pitch
+continuity would fix it — a design gap, not a tuning one.
+
+**Part B — forced alignment — was not built.** `transformers` is absent from the
+`app` image and that image's `torchaudio` reports a CUDA mismatch against `torch`
+(2.1.2+cu121 vs a CUDA-11.8 build), so it needs a new sandbox image on the
+`experiments/vocalparse` pattern. The ACE-Step Transcriber entry's one open
+problem therefore stays open, and line *offsets* on the three non-`_test_song`
+gold songs remain unusable as truth.
 
 ### Conclusion
 
-*(to be filled by the run)*
+The premise holds: the operator marks vocal edges, nothing in the pipeline emits
+them, and a stem-gated hysteresis detector finds them far better than the shipped
+segmentation does. What is **not** established is the claim the entry rests on —
+that the stem gate and the hysteresis are what does the work. Against a fixed
+threshold on mix RMS the win appears only on the dense mixes, and the two were
+never compared at a matched firing budget. Two things stand between this and a
+promotion discussion, in order: a budget-matched ablation against the mix-RMS
+baseline, and Part B, which is also the ACE-Step entry's blocker.
 
 ---
 
@@ -599,9 +645,12 @@ themselves stay validation-only (§2) — the detector reads the stem, never
 
 ### Status
 
-**[PENDING] — run order 2 of 7.** No new model, no new container: derives
-entirely from trusted phase-1 artifacts. Cheapest entry in this wave and the one
-most likely to change what the authoring model actually sees.
+**[DONE] — concluded, negative on its own headline hypothesis.** Measured fairly,
+the incumbent's whole-song percentile normalisation **beats** the local auto-gain
+this entry was built to displace, for discrete accent extraction. The dense
+per-beat stream — the intended deliverable — was never measured separately and
+remains an untested claim. Awaiting the operator's archive-or-promote decision
+(§3.3).
 
 ### Why? What for?
 
@@ -694,11 +743,74 @@ Accents additionally become `song_event_timeline.json` events with a real
 
 ### Results evidence
 
-*(to be filled by the run)*
+Built as [`experiments/reactive_bands/`](../experiments/reactive_bands/README.md);
+`bands.py` replicates the incumbent's exact FFT frame parameters (44.1 kHz,
+4096-sample Hann, 50 ms hop) so that normalisation is the only variable. Full
+tables in [`out/score.txt`](../experiments/reactive_bands/out/score.txt). Gold
+set, 7 drop impacts.
+
+**A methodology bug was caught mid-run, and fixing it inverted the result.** The
+first ablation pass applied the same *absolute* accent threshold to both curves.
+That is not a comparison: the local ratio is unbounded (`power / running_mean`,
+spikes past 10) while the incumbent's percentile ratio is clipped to `[0, 2]` by
+construction, so a cutoff like 2.0 made the percentile curve fire ~0 accents
+whatever the quality of its normalisation. Replaced with a per-song binary search
+on each curve's own threshold to a matched ~29 accents/min.
+
+| normalisation, budget-matched at ~29/min | ±0.25 s | ±0.5 s | ±1.0 s |
+| --- | --- | --- | --- |
+| local running mean (2 s) | 2/7 | 4/7 | 5/7 |
+| **whole-song percentile (incumbent)** | **5/7** | **7/7** | **7/7** |
+
+**At a matched budget the incumbent wins outright.** That is the opposite of this
+entry's hypothesis, and it is the result.
+
+**The sub-hypothesis the entry was actually designed around is at the noise
+floor.** Whether local normalisation helps *specifically* inside quiet passages
+has **2** qualifying impacts in the whole gold set, and they tie either way (2/2
+at ±0.5 s both). Not resolved — this needs more hand-marked low-loudness impacts,
+not more tuning (§3, "ground truth is precious and scarce").
+
+**The discrete-accent measurement is itself unstable to how the threshold is
+set.** The same local detector scores 2/7 at ±0.25 s under per-song budget
+matching and 4/7 at the fixed shipped threshold of 2.0, at effectively the same
+average rate (29.2 vs 29.2/min). The ablation's direction is unaffected — both
+normalisations were measured under one protocol — but it is a reason to distrust
+small differences anywhere in these tables.
+
+**Against a genuinely naive baseline it still wins**: thresholded raw drums-stem
+RMS, no band split, no auto-gain, gets 3/7, 4/7, 4/7 while firing 130/min; the
+band accents get 4/7, 5/7, 6/7 at 29/min. That is a win over no processing at
+all, not over the incumbent.
+
+**Calibration and sweeps.** The first accent threshold tried (0.5) fired 91/min —
+useless as a discrete list. 2.0 was shipped (29/min, 5/7 at ±0.5 s); recall
+degrades smoothly with no natural knee, so it is a token-budget choice as much as
+an accuracy one. Window sweep at matched rate: 2 s best (5/7 at ±0.5 s), 1 s 4/7,
+4 s and 8 s 3/7 each; a per-song bar-length window ties 2 s at 5/7 and is
+arguably the more principled default, not adopted only because this gold set
+cannot separate the two.
+
+**The token-budget goal was not demonstrated.** The plan asked for the byte cost
+per song. The exported proposal carries five sources × three bands, per-beat and
+per-bar, and runs **0.43–1.8 MB per song** on disk (Titanium 1.69 MB; 834 KB
+minified; a mix-only three-band slice of that song is 161 KB). Nothing that size
+reaches an authoring model, and which one or two sources a projected form would
+keep is an unmade decision.
 
 ### Conclusion
 
-*(to be filled by the run)*
+The ablation this entry exists to run came back **against** local auto-gain, once
+measured fairly, for discrete accent extraction. That is the headline — not the
+win over a naive RMS threshold. Three things would have to change before it is
+worth reopening: the dense per-beat stream, which is the actual deliverable and a
+different claim from accent recall, needs a measurement of its own; the
+low-loudness hypothesis needs more than two marked impacts; and if local
+normalisation is kept at all it should be for the continuous stream, not as a
+replacement accent detector. The durable finding for anyone who tries this again
+is the methodological one: two curves on different scales cannot share a
+threshold, and the unfair version of this comparison looked like a strong
+positive.
 
 ---
 
@@ -708,10 +820,12 @@ Accents additionally become `song_event_timeline.json` events with a real
 
 ### Status
 
-**[PENDING] — run order 3 of 7.** Deterministic derivation from trusted phase-1
-artifacts; no new model or image. Directly targets constitution §1.2's
-"composite gestures with internal phases", which nothing in the pipeline
-currently produces honestly.
+**[DONE] — concluded, mixed.** Beats the `event_*` stack it was built to replace
+by a wide margin, and is the only method measured here that emits named phase
+structure — but it loses on raw impact recall to a one-line RMS-derivative
+peak-picker, and the per-primitive precision audit the plan named as the thing
+that matters was not done. Awaiting the operator's archive-or-promote decision
+(§3.3).
 
 ### Why? What for?
 
@@ -800,11 +914,61 @@ it (§3.3 — promotion that only adds is usually a mistake).
 
 ### Results evidence
 
-*(to be filled by the run)*
+Built as [`experiments/gestures/`](../experiments/gestures/README.md) — one
+detector per device (riser, downlifter, reverse cymbal, snare roll, impact,
+pre-drop gap), assembled into gestures anchored on a detected impact, with any
+phase lacking a supporting primitive simply absent (§2). Full tables in
+[`out/score.txt`](../experiments/gestures/out/score.txt). Gold set, 7 drop
+impacts.
+
+| method | ±0.25 s | ±0.5 s | ±1.0 s | events/min |
+| --- | --- | --- | --- | --- |
+| gesture impact phase | 2/7 | 4/7 | 4/7 | 14.1 |
+| incumbent `song_event_timeline` build/drop/impact | 0/7 | 1/7 | 2/7 | 1.5 |
+| **RMS-derivative peak-picker (baseline)** | **3/7** | **6/7** | **7/7** | 40.8 |
+
+**The incumbent row is a direct confirmation of `CLAUDE.md`'s "measured at
+chance"** — on the metric its own event stack exists to own, it lands 0/7 at
+±0.25 s. **The baseline row is the humbling one**: an eight-detector rule engine
+does not beat a one-line peak-picker on impact-instant recall. The peak-picker
+fires ~3× as often and says nothing — no phases, no evidence, no claim that can
+be wrong — which is why recall alone cannot settle this comparison in either
+direction.
+
+**What the gestures deliver that the baseline structurally cannot**: 12 gestures
+assembled from 35 primitives on `_test_song` alone, each phase carrying its own
+span, confidence and a per-primitive evidence string auditable against the audio.
+That is constitution §1.2's composite gesture, and no recall number scores it.
+
+**Non-drop hint coverage is where the limits show, and the coverage criterion is
+generous.** Overlap-based coverage credits `_test_song`'s `Drum Hit`
+(7.44–7.63 s, 0.19 s long) to a `build` spanning **2.8–32.2 s**, and Armin's
+`Breath` (81.4–96.3) to builds and approaches spanning 78–100 s. A 29-second
+build overlapping a fifth-of-a-second hint is not evidence the detector found it.
+The one convincing case is `_test_song`'s `High Energy` (29.6–36.5), covered by a
+dense and plausibly-timed tension/impact/release chain. It **misses outright**
+all three `Vocal outro` phrases, `Synth Pad`, `prepare for end` and `Finale` —
+every vocal- and texture-driven block, none of which has a riser, roll or
+transient to detect. That is the vocal-phrase entry's territory rather than a bug
+here; the two signals are complementary.
+
+**The measurement the plan called for was not run.** Per-primitive precision —
+does each detected riser, roll and gap actually exist in the audio, hand-audited
+over 20–30 spans across four songs — is the number that decides whether these are
+real, and only spot-checking against the score tables was done. A phantom build
+fires a cue that contradicts the music, and nothing measured here rules that out.
 
 ### Conclusion
 
-*(to be filled by the run)*
+Positive against the stack it was built to replace, negative against the cheapest
+possible baseline on the only metric measured, and the one thing it uniquely
+offers — named, evidenced, phase-structured gestures — is not scored by that
+metric at all. The honest reading is that this is not yet a settled result so
+much as a working detector with one number attached. Before a promotion
+discussion: the precision audit by ear, and a baseline made to say something
+structured, so that it can be wrong too. If promoted this would be a phase-3
+stage and the first honest candidate to **delete** part of the `event_*` stack
+rather than sit beside it.
 
 ---
 
@@ -816,6 +980,13 @@ it (§3.3 — promotion that only adds is usually a mistake).
 
 **[PENDING] — run order 4 of 7.** Must run *before* any decision to promote
 allin1, because it may change which model gets promoted.
+
+**Not executed in the 2026-09-04 wave-2 batch.** Scoped only: SongFormer's
+`requirements.txt` pins `torch==2.4.0` alongside `muq==0.1.0` and some fifty
+other dependencies, and the project's own runtime figure is 2–4 s/song on an
+NVIDIA L40 against this box's 4 GB GTX 1650 — a new multi-GB sandbox image on the
+`experiments/acestep_transcriber` pattern, not a side task. It still gates the
+allin1 promotion decision.
 
 ### Why? What for?
 
@@ -903,6 +1074,11 @@ The top-level `sections.json` and `artifacts/section_segmentation/sections.json`
 
 **[PENDING] — run order 5 of 7.** Reopens the one question the CLAP experiment
 closed negatively, with the representation class its own diagnosis pointed at.
+
+**Not executed in the 2026-09-04 wave-2 batch.** Scoped only: it needs several
+model downloads (CoverHunter/ByteCover, MuQ) behind one harness alongside the
+classical DTW/MFCC baseline — more image-building than the SongFormer entry, not
+less.
 
 ### Why? What for?
 
@@ -994,8 +1170,11 @@ approximate.
 
 ### Status
 
-**[PENDING] — run order 6 of 7.** Addresses a limitation `CLAUDE.md` states
-outright and nothing currently owns.
+**[DONE] — concluded, negative.** The plan's assumed strongest evidence signal —
+kick placement — measured as a near-useless phase discriminator in this
+repertoire; the resulting consensus ties two of the three individual trackers and
+loses to the third, and its phrase grid loses clearly to allin1's. Awaiting the
+operator's archive-or-promote decision (§3.3).
 
 ### Why? What for?
 
@@ -1069,11 +1248,71 @@ never emitted).
 
 ### Results evidence
 
-*(to be filled by the run)*
+Built as
+[`experiments/grid_consensus/`](../experiments/grid_consensus/README.md), reading
+three already-committed caches as data — `beats.json` (essentia, trusted),
+`experiments/allin1/cache/`, and `drop_detection/research/cache/beatthis/` — so
+no new model or container was needed. Scope stated up front: 4/4 assumed, one
+global phase per song resolved over essentia's own beat times. Full tables in
+[`out/score.txt`](../experiments/grid_consensus/out/score.txt).
+
+**The evidence sweep falsified the plan's own reasoning.** The plan asserted kick
+placement would be a strong discriminator. Measured, kicks in this
+four-on-the-floor-heavy corpus land **near-uniformly across all four phases** —
+Titanium's histogram is `[77, 76, 65, 86]`. Every weighting that included kick
+evidence at any weight scored at or below chord evidence alone:
+
+| weighting | hits @ ±0.25 s |
+| --- | --- |
+| kick-only | 1/7 |
+| **chord-change-only (shipped)** | **3/7** |
+| section-only | 2/7 |
+| gesture-only | 3/7 |
+| equal-all (kick included) | 2/7 |
+| kick-heavy, as originally planned | 2/7 |
+
+The shipped weighting is chord-change-only because of this table, not because of
+the plan.
+
+**Consensus does not beat the best single tracker:**
+
+| method | downbeat phase, hits @ ±0.25 s |
+| --- | --- |
+| essentia's own downbeat marking (what ships today) | 3/7 |
+| beat-this | 3/7 |
+| **allin1** | **4/7** |
+| this experiment's consensus | 3/7 |
+
+**Phrase grid is a clear loss**: 0/7 at ±0.5 s, 0/7 at ±1.0 s and 1/7 at ±2.0 s,
+against allin1's already-measured raw unmerged phrase edges at 3/7, 4/7, 6/7 and
+3.3 edges/min. The phrase-length-picking logic never got to matter — the bar
+anchoring underneath it is too weak.
+
+**The problem is deeper than phase.** On `_test_song` all four hypotheses agree
+at confidence 1.0 and the resolved downbeat still misses the impact by **0.66 s**
+— essentia's trusted beat *times* place no beat on that impact at all. Choosing
+the right one of four phases cannot fix that.
+
+**Corpus-wide disagreement:** across 21 songs only **6 resolve** and **15 come
+back `unknown`** under the shipped weighting, with at least one hypothesis
+disagreeing on 20 of 21. Of the resolved songs, musical evidence overrides
+essentia's own downbeat phase on 3/21. The high `unknown` rate is the most
+defensible thing here: it says chord-change evidence alone is often too sparse to
+resolve a song's phase, which is §7's "say so rather than snapping" applied
+honestly rather than a confident wrong grid on fifteen songs.
 
 ### Conclusion
 
-*(to be filled by the run)*
+Negative. The specific fusion tried ties two trackers, loses to the third, and its
+phrase grid is clearly worse than the one allin1 already produces as a
+by-product. Two things are worth carrying forward. First the kick-uniformity
+result: in four-on-the-floor repertoire kick placement carries almost no
+downbeat-phase information, which falsifies an assumption obvious enough that it
+would otherwise be made again. Second, if allin1 is promoted for section
+structure, the honest move on this problem is to take allin1's downbeat *phase*
+directly — it already wins this exact comparison at 4/7 — and retire the fusion
+approach rather than iterate on it. `unknown` on 15 of 21 songs may be the most
+useful output this run produced.
 
 ---
 
@@ -1088,6 +1327,8 @@ risk, heaviest to run. Smoke on `_test_song` first (§3.5). Note the checkpoint
 is released for **non-commercial research only** — that constrains promotion,
 not experimentation, and should be settled with the operator before any
 promotion discussion.
+
+**Not executed in the 2026-09-04 wave-2 batch**, and unchanged in scope.
 
 ### Why? What for?
 

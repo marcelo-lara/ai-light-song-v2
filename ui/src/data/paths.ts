@@ -42,6 +42,25 @@ export const artifactPaths = {
   // by model, plus the shared whisper baseline row.
   vocalTranscription: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "vocal_transcription.json")),
+  // Written by experiments/vocal_phrases (`run export`). Vocal-activity
+  // phrase/gap/sustained-note blocks over the vocal stem — Part A of the
+  // "vocal phrase blocks" wave-2 entry.
+  vocalPhrases: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "vocal_phrases.json")),
+  // Written by experiments/reactive_bands (`run export`). Locally auto-gained
+  // FFT band accents (the discrete list only — the dense per-beat stream is
+  // not rendered as its own lane, see the experiment's README).
+  reactiveBands: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "reactive_bands.json")),
+  // Written by experiments/gestures (`run export`). Composite drop gestures
+  // (approach/build/tension/impact/release) assembled from named sound-design
+  // primitive detectors.
+  gestures: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "gestures.json")),
+  // Written by experiments/grid_consensus (`run export`). The resolved
+  // downbeat phase + derived phrase grid.
+  grid: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "grid.json")),
   // Moises' word-level sung-lyric export, delivered as external reference. A
   // flat list of word tokens with `line_id`, `start`, `end`; `<SOL>` / `<EOL>`
   // rows mark line boundaries. Read-only ground truth, never written by the

@@ -27,7 +27,9 @@ export type LaneKind =
   | "proposals"
   | "allin1"
   | "character"
-  | "lyrics";
+  | "lyrics"
+  | "gestures"
+  | "gridPhrase";
 
 export interface LaneDef {
   id: string;
@@ -77,6 +79,10 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "humanHints", label: "Human Hints", sub: "reference/human · human_hints", kind: "hints", height: 58 },
   { id: "moisesLyrics", label: "Moises Lyrics", sub: "reference/moises · per-word tokens · tinted by confidence", kind: "lyrics", height: 84 },
   { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58, experiment: "drop_detection" },
+  { id: "vocalPhrases", label: "Vocal Phrases", sub: "experiment · phrase / gap / sustained-note blocks over the vocal stem", kind: "proposals", height: 58, experiment: "vocal_phrases" },
+  { id: "reactiveBands", label: "Reactive Bands", sub: "experiment · locally auto-gained band-power accents", kind: "proposals", height: 58, experiment: "reactive_bands" },
+  { id: "gestures", label: "Gestures", sub: "experiment · approach/build/tension/impact/release", kind: "gestures", height: 58, experiment: "gestures" },
+  { id: "gridPhrase", label: "Phrase Grid", sub: "experiment · resolved downbeat phase · 8/16-bar edges", kind: "gridPhrase", height: 58, experiment: "grid_consensus" },
   { id: "allin1Transitions", label: "allin1 Transitions", sub: "experiment · section changes · audition vs. Human Hints", kind: "allin1", height: 58, experiment: "allin1" },
   { id: "fftBands", label: "FFT Bands", sub: "essentia · 7 spectral bands", kind: "fft", height: 84 },
   { id: "rmsLoudness", label: "RMS Loudness", sub: "essentia · mix + 4 stems", kind: "rms", height: 112 },

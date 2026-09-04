@@ -15,6 +15,10 @@ import {
   loadVocalTranscription,
   loadDropProposals,
   loadMoisesLyrics,
+  loadVocalPhrases,
+  loadReactiveBands,
+  loadGestures,
+  loadGrid,
 } from "./sparseArtifacts";
 import {
   parseBeats,
@@ -198,6 +202,10 @@ export const artifactLoaders = {
   mlEvents: loadMlEvents,
   symbolicPhrases: loadSymbolicPhrases,
   dropProposals: loadDropProposals,
+  vocalPhrases: loadVocalPhrases,
+  reactiveBands: loadReactiveBands,
+  gestures: loadGestures,
+  grid: loadGrid,
   allin1: loadAllin1,
   character: loadCharacter,
   vocalTranscription: loadVocalTranscription,

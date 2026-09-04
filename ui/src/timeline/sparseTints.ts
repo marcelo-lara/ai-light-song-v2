@@ -28,6 +28,14 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //                               human hints it is auditioned against
   dropProposalsMatched: [168, 60, 40], // muted teal — a proposal that already
   //                                      matches a hand-authored drop impact
+  // Wave-2 experiments (docs/experiments_pending.md, run orders 1-3, 6).
+  vocalPhrases: [340, 55, 46], // rose — distinct from moisesLyrics' slate blue
+  vocalPhrasesGap: [220, 10, 40], // near-grey — an instrumental (no-vocal) span
+  vocalPhrasesSustained: [280, 60, 48], // violet-pink — a held note marker
+  reactiveBands: [50, 85, 42], // warm gold-amber — MilkDrop-style band accents
+  gestures: [10, 75, 46], // burnt orange — sound-design device gestures
+  gridPhrase: [188, 50, 42], // slate cyan — resolved bar/phrase grid
+  gridDisputed: [0, 70, 40], // red — a song whose grid was NOT confidently resolved
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
   allin1Sections: [96, 60, 38], // green — next to the teal Sections lane it is
   //                               scored against, close enough to read as the
