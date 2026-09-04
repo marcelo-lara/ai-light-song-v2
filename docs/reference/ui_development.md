@@ -86,6 +86,7 @@ The debugger is read-only against generated data.
 - Do not write helper files to `data/analysis/`.
 - The only persisted helper UI edit path is `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
 - Lanes reading from `data/analysis/<Song - Artist>/reference/proposals/` are fed by unpromoted `experiments/` and carry a `ph-flask` badge in the lane head (and its events-panel header) to mark them non-production.
+- The Moises Lyrics lane reads `data/analysis/<Song - Artist>/reference/moises/lyrics.json` — an external, hand-supplied word-level lyric transcription. It is read-only ground truth in the same class as `reference/human/`, so it carries no `ph-flask` badge, and a song without the file renders an empty lane. Present only for the four gold-set songs; every other song shows the empty state (and logs a `404` for the missing file, as the `reference/proposals/` lanes already do).
 - `Cancel` must not update the file.
 - `Save` is the only action that may update the file.
 
@@ -106,13 +107,14 @@ The debugger now implements the full Epic 7 internal viewer surface in the stati
 - byte-range serving for mounted song files so browser audio seeks can land on the requested paused cursor position
 - browser-local shared cursor state that remains authoritative while paused and syncs from audio playback time during active playback
 - browser-decoded waveform anchor when the mounted song file is readable, with beat-pulse fallback when decoding is unavailable
-- DAW-style lane layout with fixed labels and a synchronized timeline region
+- DAW-style lane layout with fixed labels and a synchronized timeline region; each lane row is its own flex row, and the lane-label cell is `position: sticky` on both axes — pinned to the left column on horizontal scroll and, below the Segments + Bars header rows, held in view for as long as any part of its lane is on screen
 - browser-local lane enablement toggles
 - browser-local lane collapse toggles that reduce every collapsed lane, including RMS Loudness and Loudness Envelope, to the compact label-only row height
 - sparse lanes for sections, symbolic phrases grouped by `phrase_group_id`, chords, harmonic-pattern occurrences, machine event windows, and output-timeline helper windows
+- a Moises Lyrics lane directly under Human Hints (before the Drop Proposals lane): one block per token of `reference/moises/lyrics.json` — every sung word plus the `<SOL>` / `<EOL>` line markers, ungrouped and in time order — tinted on a green → amber → red ramp by the per-word confidence Moises reported, with a neutral tint for the markers
 - overlapping symbolic phrases use the same stacked compaction behavior as machine event windows
 - dense lanes for seven-band FFT activity, drum activity, and energy profile views
-- shared zoom across all lanes with coarse beat-grid reduction at distant zoom levels
+- shared zoom across all lanes (14–360 px/bar) with coarse beat-grid reduction at distant zoom levels; at the 360 px/bar maximum a long song's timeline exceeds the ~32k-pixel canvas ceiling, so the dense/canvas lanes hold their exact CSS width and downscale only the backing store
 - viewport-aware dense-lane rerendering on horizontal scroll
 - regression overlay lane for beat drift and machine-vs-exported event comparison
 - raw JSON inspection for any successfully loaded file

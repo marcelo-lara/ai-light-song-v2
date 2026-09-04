@@ -436,7 +436,9 @@ on CPU (`int8`/`float32`, CUDA-12 CTranslate2 unavailable on the CUDA-11.8
 base), so on `_test_song` only 2 of 7 lines matched and the section spans fell
 back to even spacing (`alignment: "unavailable"`, every span flagged `approx`).
 A real timing solution is **forced alignment of ACE-Step's own (good) transcript
-to the vocal stem** — not yet built.
+to the vocal stem** — not yet built, and now scoped as
+[Vocal phrase blocks](#vocal-phrase-blocks--the-boundaries-the-operator-actually-marks),
+run order 1 of this wave.
 
 **Structure vs the incumbent and allin1:** blocked by the timing problem. With
 the spans falling back to even spacing, ACE-Step's `[Section]` boundaries score
@@ -463,3 +465,722 @@ order: a forced-aligner against ACE-Step's transcript; the full 21-song run
 `allin1` and the incumbent on one axis. If it clears those, promotion adds a
 top-level `lyrics.json` (§9 contract change + MCP handoff) and its structure
 feeds section naming rather than shipping as its own file.
+
+
+## Vocal phrase blocks — the boundaries the operator actually marks
+
+<https://github.com/m-bain/whisperX>
+
+### Status
+
+**[PENDING] — run order 1 of 7.** New in this wave. No new model needed for the
+detector — it derives from `artifacts/stems/vocals.wav`, which is trusted
+phase-1 — and it now has clean ground truth: the operator rebuilt
+`_test_song`'s `reference/moises/lyrics.json` with genuine word-level timing on
+2026-09-04. The forced-aligner half of the entry also unblocks the ACE-Step
+Transcriber's one open problem.
+
+### Why? What for?
+
+The operator's hand-marked hints are the only statement in this repository of
+what a cue actually is, and **a large share of them are vocal-phrase edges, not
+arrangement edges**. Auditing every hint boundary in the gold set against the
+onset and offset of every sung line in `reference/moises/lyrics.json`:
+
+| song | hint boundaries within ±0.10 s of a vocal edge | vs. chance |
+| --- | --- | --- |
+| `_test_song` | **10 / 30 (33 %)** | 3 % |
+| `Titanium - David Guetta ft Sia` | 4 / 30 (13 %) | 6 % |
+| `Armin - Revolution` | 1 / 24 (4 %) | 2 % |
+| `Hideaway - Kiesza` | 0 / 10 (0 %) | 3 % |
+
+Chance is the fraction of the song covered by a ±0.10 s window around each
+vocal edge, so on `_test_song` the operator marks vocal edges at **eleven times**
+the rate a boundary placed at random would.
+
+The individual matches say what kind of fact this is. On `_test_song`:
+
+| hint | operator's boundary | vocal edge | Δ |
+| --- | --- | --- | --- |
+| `hint-006` "Vocal outro phrase 1.1" | 43.339 → 44.356 | line 4 on/off 43.36 → 44.39 | +0.021 / +0.034 |
+| `hint-009` "Synth Pad", *ambient melody* | 44.455 → 47.045 | the **gap** between lines 4 and 5 | −0.065 / +0.045 |
+| `hint-010` "Vocal outro 2" | 47.091 → 50.03 | line 5 onset 47.09 | −0.001 |
+| `hint-011` "Vocal Outro 3" | 50.076 → 54.576 | the 0.63 s breath **inside** line 5 (49.91 → 50.54) | — |
+| `hint-012` "prepare for end" | 54.606 | line 5 offset 54.68 | +0.074 |
+
+The whole outro — four consecutive looks with four distinct fixture behaviours —
+is *exactly* the vocal-activity timeline. `hint-009` is an instrumental block
+defined by nothing but the absence of voice; the `hint-010`/`hint-011` split is
+a breath inside a single lyric line, invisible to any section model. The same
+shape appears on `Titanium`, where six drop-phase boundaries sit on the last
+word of a sung line (`"You shoot me down, but I'm a bomb"` at 71.41 for the
+tension entry, `"I am titanium"` at 151.77 for the impact→release flip).
+
+Nothing in the pipeline emits this. `sections.json` cannot: a vocal phrase is
+sub-section, and the boundary that matters is a breath. The CLAP experiment
+found the character axis but not the edge — its `vocal` axis is explicitly
+*"weak where the vocal stem is unambiguous"*.
+
+**Ground-truth caveat, and it is the reason this entry is scoped the way it is.**
+Only `_test_song`'s word timings are genuinely word-level. On the other three,
+Moises stretches a line's last word across the following instrumental — `Armin`
+holds *"calling"* from 48.27 to 100.45 (52.2 s), `Hideaway` has a 29.3 s word,
+`Titanium` a 7.1 s one; between 5 % and 9 % of words per song run over 1.5 s and
+account for 50–88 s of "sung" time each. So **line onsets are usable corpus-wide,
+line offsets are usable on `_test_song` only** — which is precisely constitution
+§3.5's "use `_test_song` alone" case, and precisely why the second half of this
+entry is a forced aligner.
+
+### Experiment Plan
+
+Build as `experiments/vocal_phrases/`. Two halves, measured separately.
+
+**A — the detector (no model, no image).**
+
+- Read `artifacts/stems/vocals.wav` and `artifacts/essentia/rms_loudness.json`;
+  compute a vocal-activity envelope with hysteresis (separate on/off thresholds,
+  relative to the stem's own running level, not a whole-song percentile — the
+  same normalisation argument as the reactive-bands entry).
+- Emit `vocal_phrase` and `instrumental_gap` blocks, `{start, end, confidence}`,
+  with a **breath split**: a within-phrase silence longer than a swept threshold
+  (0.3–1.0 s) becomes a boundary, because `hint-010`/`hint-011` is a 0.63 s one.
+- Emit a `sustained_note` marker where a single vocal note holds past a swept
+  duration — `_test_song` holds *"show,"* for 2.78 s straight through the drop
+  build, and a held vocal over a build is a look in its own right.
+- Snap nothing to the bar grid (`CLAUDE.md`: downbeats are not trusted); report
+  the physical onset per §7.
+
+**B — real onsets for the transcript (whisperX / wav2vec2 forced alignment).**
+
+- Force-align ACE-Step Transcriber's transcript — measured at WER 0.04 and 0.23,
+  the best text available — to the vocal stem. This is the "not yet built" step
+  the ACE-Step entry's conclusion names as next, and it also repairs the lumped
+  Moises offsets so the other three gold songs become usable phrase truth.
+- Compare the aligner's word times to Moises on `_test_song`, where Moises is
+  now trustworthy, before trusting it anywhere else.
+
+**Measurement — fixed before the run (§3).**
+
+1. **Boundary hit-rate against the human hints** at ±0.10 / ±0.25 / ±0.50 s,
+   always reported with **boundaries per minute** — the same budget-aware framing
+   the allin1 entry uses, since a detector that fires constantly hits everything.
+2. **Incumbent:** the shipped `sections.json` boundaries, scored identically.
+   **Cheap baseline:** a fixed threshold on mix RMS with no stem and no
+   hysteresis.
+3. **Phrase-edge accuracy against `_test_song`'s lyrics** — MAE of detected
+   phrase on/off against line on/off, the reason the improved file matters.
+4. **Aligner check:** word-onset MAE vs Moises on `_test_song`; then the count of
+   >1.5 s "words" the aligner removes on the other three.
+
+Export `data/analysis/<song>/reference/proposals/vocal_phrases.json`; add a
+**Vocal Phrases** lane under Human Hints, beside the existing **Moises Lyrics**
+lane so a proposal, the transcript and the hand-marked truth stack vertically
+(§3.2).
+
+**Reach test (§1.3).** If promoted, `vocal_phrase` / `instrumental_gap` /
+`sustained_note` become events in `song_event_timeline.json`, which is already
+projected. Nothing new joins the top-level contract, and the reference lyrics
+themselves stay validation-only (§2) — the detector reads the stem, never
+`reference/`.
+
+### Results evidence
+
+*(to be filled by the run)*
+
+### Conclusion
+
+*(to be filled by the run)*
+
+---
+
+## Reactive band dynamics — MilkDrop's auto-gain normalisation instead of whole-song percentiles
+
+<https://www.geisswerks.com/milkdrop/milkdrop_preset_authoring.html>
+
+### Status
+
+**[PENDING] — run order 2 of 7.** No new model, no new container: derives
+entirely from trusted phase-1 artifacts. Cheapest entry in this wave and the one
+most likely to change what the authoring model actually sees.
+
+### Why? What for?
+
+Realtime music visualisers solved "make a rig look like it is listening" twenty
+years ago, and the feature set they solved it with is astonishingly small. The
+entire audio vocabulary a MilkDrop preset can read is `bass`, `mid`, `treb`,
+their damped twins `bass_att` / `mid_att` / `treb_att`, and `vol` — seven
+numbers per frame. projectM, which reimplements it, extracts the same three band
+amplitudes by FFT and passes them plus their attenuated forms to every shader.
+
+What makes those seven numbers work is **the normalisation, not the bands**.
+MilkDrop's variables are auto-gain adjusted against a *short running average*:
+`bass = instantaneous bass volume / smoothed average bass volume`, so `1` is
+normal, below ~`0.7` is quiet and above ~`1.3` is loud bass — and it reads the
+same whether the source is a CD or a radio stream. The question the number
+answers is "**is the bass hitting harder than it has been hitting lately?**"
+
+Our `artifacts/essentia/fft_bands.json` already has strictly more raw material —
+seven bands at 50 ms, plus `brightness_ratio`, `transient_strength` and
+`dropout_strength` — but it normalises with
+`per-song-per-band-log-power-percentile` over the 5th–95th percentile of the
+**whole song**. That answers a different and much less useful question: "is this
+loud *for this song*?" Inside a quiet breakdown every band sits near the bottom
+of the song-wide range, so a hit that is unmistakable to the ear is numerically
+invisible. A lighting cue in a breakdown is exactly the cue that must not be
+missed. And `fft_bands.json` is not on the MCP surface at all, so today the
+answer reaches nobody.
+
+The second thing MilkDrop gets right is **two timescales from one signal**. The
+attenuated variables drive what should move slowly — dimmer level, colour, pan
+and tilt on a moving head. The instantaneous variables drive what should snap —
+strobe, shutter, a colour flick on the accent. A single "energy" curve cannot
+serve both, and the pipeline currently emits neither.
+
+The deliverable: a compact, beat-synchronous, locally-normalised band stream the
+authoring model can read as "how hard, in what part of the spectrum, right now,
+relative to a moment ago" — plus a discrete accent list derived from it.
+
+### Experiment Plan
+
+Build as `experiments/reactive_bands/`, no new image (numpy over existing JSON).
+
+- **Inputs, all trusted phase-1:** `artifacts/essentia/fft_bands.json` (raw band
+  power before the percentile squash — recompute from audio in the experiment
+  rather than un-normalising), `artifacts/essentia/rms_loudness.json` (per-stem),
+  `beats.json`.
+- **Collapse to MilkDrop's three bands** (`bass` ≈ sub+bass, `mid` ≈
+  low_mid+mid, `treb` ≈ upper_mid+presence+brilliance) *and* keep the seven-band
+  form, so the ablation can say whether three is enough.
+- **Local auto-gain:** for each band, divide instantaneous power by an
+  exponentially-weighted running mean of that band. Sweep the averaging window —
+  1 s, 2 s, 4 s, 8 s, and a bar-length window — and pick by measurement, not by
+  taste. Emit both the raw ratio (`bass`) and a damped ratio (`bass_att`), the
+  damping constant also swept.
+- **Per-stem as well as per-mix.** MilkDrop had no stems; we do. A `vocals`
+  reactive curve and a `drums` reactive curve are strictly more informative than
+  the mix, and the stems are already trusted.
+- **Reduce for the token budget.** The projected form is per-beat and per-bar
+  aggregates (max and mean of the instantaneous ratio, mean of the attenuated
+  one), not a 20 Hz stream. State the byte cost per song in the results.
+- **Accents.** Where the instantaneous ratio crosses a threshold above its
+  attenuated twin, emit a discrete accent `{time, band, strength, beat, bar}`.
+  This is the transferable core of MilkDrop's beat detection, and unlike it we
+  can snap to the essentia beat grid, which is measured good.
+- Export `data/analysis/<song>/reference/proposals/reactive_bands.json`; add a
+  **Reactive Bands** lane (three curves plus accent ticks) under Human Hints,
+  copying the Drop Proposals lane (§3.2).
+
+**Measurement — fixed before the run (§3).**
+
+1. **Accents vs. ground truth.** Hit-rate of accent times against the 7
+   hand-marked drop impacts at ±0.25 / ±0.5 / ±1.0 s, reported with accents per
+   minute — a dense detector that hits everything proves nothing (this is the
+   same budget-aware framing the allin1 entry uses).
+2. **The ablation that justifies the whole entry:** identical detector, two
+   normalisations — local running mean vs. the incumbent whole-song percentile.
+   Report hit-rate overall *and* restricted to hints that fall inside
+   low-loudness passages, which is where the two should diverge.
+3. **Cheap baseline:** thresholded raw per-stem RMS from `rms_loudness.json`.
+4. **Window sweep table** — one row per averaging window, so the chosen constant
+   is defensible.
+
+**Reach test (§1.3) — which projected file this lands in.**
+
+A new dense artifact plus per-beat aggregates. The input guide explicitly
+invites this: *"If a new dense signal would be valuable (e.g. a spectral-flux or
+onset-strength stream), it is one registry entry in `detail.py` — propose it."*
+Accents additionally become `song_event_timeline.json` events with a real
+`intensity`.
+
+### Results evidence
+
+*(to be filled by the run)*
+
+### Conclusion
+
+*(to be filled by the run)*
+
+---
+
+## Transition-FX and gesture phases — riser, downlifter, snare roll, pre-drop gap, impact
+
+<https://www.ujam.com/tutorials/how-to-create-huge-edm-transitions/>
+
+### Status
+
+**[PENDING] — run order 3 of 7.** Deterministic derivation from trusted phase-1
+artifacts; no new model or image. Directly targets constitution §1.2's
+"composite gestures with internal phases", which nothing in the pipeline
+currently produces honestly.
+
+### Why? What for?
+
+Constitution §1.2 says a drop "has an approach, a build, a tension span, an
+impact and a release, and each phase becomes a different look", and that a flat
+list of independent events loses the thing that matters. The current
+`event_*` stack claims to do this and is measured at chance, because it infers
+gestures from raw features with no named structure to hang them on — the mistake
+§5.2 exists to prevent.
+
+But there is a route that needs neither the section labels nor a model. In the
+repertoire this corpus is made of, **producers construct these gestures out of a
+small, named, deliberately conspicuous set of sound-design devices**, and each
+one has a signal signature that is trivially detectable and essentially
+unambiguous:
+
+| device | what it is, in the producer's words | signature in our existing artifacts |
+| --- | --- | --- |
+| **uplifter / riser** | noise or pitch sweep climbing for 4–16 bars into the drop | high-band energy and spectral centroid rising near-monotonically over a bar-multiple span; no chord change; often no drums |
+| **downlifter** | the mirror, marking the *start* of the build | the same ramp, descending, immediately after a section edge |
+| **reverse cymbal / reverse reverb** | amplitude ramp terminating in a transient | envelope rising into a `transient_strength` spike |
+| **snare roll / drum build** | 1/4 → 1/8 → 1/16 → 1/32 subdivision doubling | onset density from `drum_events.json` doubling across consecutive bars |
+| **pre-drop gap** | one to two beats of near-silence before the hit | `dropout_strength` spike / broadband RMS collapse on a beat boundary |
+| **impact** | the crash-and-sub hit that lands the drop | simultaneous sub and brilliance transient on a downbeat |
+
+Layering these at different timescales is standard practice — a 16-bar noise
+sweep for macro tension, a 4-bar pitch riser under it, a 2-bar reverse reverb
+immediately before the hit. That layering *is* the phase structure the
+constitution asks for, and it is legible from the outside.
+
+The pre-drop gap deserves its own mention: a beat or two of silence followed by
+the impact is the single most reliable lighting moment in this repertoire —
+blackout, then everything. It is a `dropout_strength` spike we already compute
+and never report.
+
+### Experiment Plan
+
+Build as `experiments/gestures/`, numpy only.
+
+- **Inputs:** `fft_bands.json` (levels, `brightness_ratio`,
+  `transient_strength`, `dropout_strength`), `rms_loudness.json` (per stem),
+  `drum_events.json`, `beats.json`, and — if entry 1 has run — its locally
+  normalised bands, which should make every one of these rules easier to state.
+- **One detector per primitive**, each with an explicit written rule, a span, an
+  anchor beat/bar, and its own confidence derived from how well the observation
+  matched the rule (monotonicity of the ramp for a riser; the subdivision ratio
+  for a roll). No tuned global threshold that means different things per song —
+  thresholds relative to the song's own levels, as the CLAP character
+  experiment already does.
+- **Assembly into composite gestures.** Primitives that overlap or abut on the
+  bar grid merge into one gesture with named internal phases —
+  `approach → build → tension → impact → release` — each phase carrying its own
+  start, end and confidence. A gesture missing its impact is still emitted, with
+  the missing phase absent rather than guessed (§2: never invent a plausible
+  default).
+- **Explicitly do not name the section.** This experiment says *a build of this
+  shape happens here*; it does not say "this is the drop". Deriving `kind:
+  "drop"` needs the named section pair (§5.2, and the allin1 entry's refusal to
+  emit one on four label pairs).
+- Export `reference/proposals/gestures.json`; **Gestures** lane, rendered as
+  spans with phase sub-bars so the internal structure is auditionable.
+
+**Measurement — fixed before the run (§3).**
+
+1. **Impact phase vs. the 7 hand-marked drop impacts** at ±0.25 / ±0.5 / ±1.0 s,
+   with gestures per minute.
+2. **Build spans vs. the operator's non-drop hints** — `_test_song`'s `Spacer`
+   ("volume drops to restart melody"), `Outro start` ("drum and bass leaves"),
+   `prepare for end`; Armin's `Breath`. Report which hints a gesture covers and
+   which it misses.
+3. **Incumbent:** `song_event_timeline.json` events of type build/drop/impact on
+   the same songs, scored identically. **Cheap baseline:** a plain RMS-derivative
+   peak-picker at the same event budget.
+4. **Per-primitive precision**, hand-auditioned in the lane: for each detected
+   riser and gap, does it exist in the audio? Twenty or thirty spans across four
+   songs is small enough to check by ear, and precision is what matters here —
+   a phantom build fires a cue that contradicts the music.
+
+**Reach test (§1.3) — which projected file this lands in.**
+
+`song_event_timeline.json` — the phases become the tightly-timed, few,
+high-value discrete events the input guide asks for, with real `intensity` and
+an actionable `summary`. If promoted this is a phase-3 stage, and it is the
+first honest candidate to replace part of the `event_*` stack rather than add to
+it (§3.3 — promotion that only adds is usually a mistake).
+
+### Results evidence
+
+*(to be filled by the run)*
+
+### Conclusion
+
+*(to be filled by the run)*
+
+---
+
+## SongFormer — the current structure SOTA, measured against our own allin1 result
+
+<https://github.com/ASLP-lab/SongFormer>
+
+### Status
+
+**[PENDING] — run order 4 of 7.** Must run *before* any decision to promote
+allin1, because it may change which model gets promoted.
+
+### Why? What for?
+
+`allin1` is the best structural read this repository has measured — 4/7 impacts
+at ±1.0 s on 1.6 boundaries/min, against an incumbent that loses to evenly
+spaced guesses — and it is sitting unpromoted. SongFormer (ASLP-lab, 2025) is a
+multi-resolution self-supervised structure analyser that reports **HR.5F 0.703
+and ACC 0.807 on SongFormBench-HarmonixSet against All-In-One's 0.596** and
+LinkSeg's 0.630, on the same Harmonix vocabulary this project already targets.
+It ships checkpoints, one-click inference, and full training and evaluation
+code.
+
+If that margin survives contact with our four gold songs, promoting allin1 would
+be promoting the second-best available model into a pipeline whose whole
+structural read hangs off it. If it does not survive, that is itself the finding
+that clears allin1 for promotion — a negative result with real value.
+
+Worth a look in the same run: [EDMFormer](https://github.com/25ohms/EDMFormer),
+a SongFormer fork adapted for EDM specifically. This corpus is EDM-heavy and the
+one song `allin1` degenerates on is the synthetic excerpt; a genre-matched fork
+is cheap to try once the harness exists.
+
+### Experiment Plan
+
+Build as `experiments/songformer/`, **mirroring `experiments/allin1/`'s file
+layout exactly** — `model.py` (runs in its own sandbox image and caches raw
+output per song, cache committed so the numbers reproduce without a GPU),
+`features.py`, `export.py`, `score.py`, `run_in_container.sh`. Reusing that
+shape is the point: the two models must be scored by the same code.
+
+- **Reproducibility first.** `allin1`'s "degenerates on instrumental trance"
+  finding turned out to be unseeded demucs, not the model — it disagreed with
+  itself on 14 of 21 songs. Determine whether SongFormer demixes internally; if
+  it does, seed it with the pipeline's stems as we did for allin1. If it cannot
+  be seeded, run each gold song 3× and **report the disagreement rate before
+  reporting any accuracy number.**
+- **Do not use its beat or bar grid.** Same rule as allin1: take the structure,
+  keep essentia's grid.
+- **Degeneracy check** carried over from allin1 — a song that collapses to one
+  or two distinct labels is `unknown`, not a confident wrong name.
+- Export `reference/proposals/songformer.json`; **SongFormer Sections** lane
+  placed directly beside **allin1 Sections** so the two segmentations can be
+  A/B'd against the waveform, and **SongFormer Transitions** beside allin1's.
+
+**Measurement — fixed before the run (§3).**
+
+Reuse `experiments/allin1/score.py` verbatim so the table is directly
+comparable:
+
+| method | ±0.5 s | ±1.0 s | ±2.0 s | boundaries/min |
+| --- | --- | --- | --- | --- |
+| SongFormer transitions | | | | |
+| allin1 transitions (incumbent for this comparison) | 3/7 | 4/7 | 4/7 | 1.6 |
+| shipped `sections.json` | 0/7 | 0/7 | 1/7 | 3.6 |
+| evenly spaced grid, same budget (baseline) | 0/7 | 2/7 | 3/7 | 3.6 |
+
+Plus: label-sequence agreement with allin1 per song; distinct-label count per
+song across all 21; 3-run reproducibility; and — because 7 hand-clicked impacts
+**cannot** score a named segmentation, as the allin1 entry says outright — the
+full label sequence written out per song for the operator to audition by ear.
+Where the two models disagree on a boundary, that disagreement is the shortlist
+of places worth hand-labelling next.
+
+**Reach test (§1.3) — which projected file this lands in.**
+
+The top-level `sections.json` and `artifacts/section_segmentation/sections.json`
+— the highest-priority projected files. A promotion here deletes
+`src/analyzer/stages/sections/`.
+
+### Results evidence
+
+*(to be filled by the run)*
+
+### Conclusion
+
+*(to be filled by the run)*
+
+---
+
+## Section identity from an invariance-trained embedding — the target is MFCC 0.73
+
+<https://github.com/Liu-Feng-deeplearning/CoverHunter>
+
+### Status
+
+**[PENDING] — run order 5 of 7.** Reopens the one question the CLAP experiment
+closed negatively, with the representation class its own diagnosis pointed at.
+
+### Why? What for?
+
+Section identity is the measured, still-open gap. `sections/form.py` computes a
+`repetition_group`, `ui_data.py` copies it into the projected `sections.json`,
+and it is `null` on every section of all 21 songs — so nothing reaching the
+authoring model says that the chorus at 2:10 is the chorus from 0:55 returning.
+For a light show that is close to the most valuable single fact in the file: the
+returning part gets the returning look, and that recall is what makes a show
+read as designed rather than reactive. `allin1`'s `same_label_as` is label
+repetition ("both are called chorus"), not "this is the same music".
+
+The CLAP experiment measured the honest bar and failed to clear it: mean pair
+AUC — **MFCC 20: 0.73**, CLAP raw 0.68, chroma 0.62, CLAP centred 0.61. Twenty
+MFCC coefficients beat a 512-d general-purpose embedding. Its useful diagnosis:
+CLAP scores 0.83 at telling a section from *itself* but only 0.68 at matching
+two occurrences of the same part, so what is needed is a representation trained
+for **invariance between occurrences**, not a bigger general-purpose one.
+
+There is an entire task built on exactly that objective. Cover-song
+identification trains embeddings so that two renditions of the same song — a
+different key, tempo, arrangement, singer — land in the same place. That is a
+strictly harder invariance than "verse 2 versus verse 1", which differs only by
+an added layer or a vocal ad-lib. CoverHunter is the current SOTA, and it is
+**256-dimensional** against ByteCover2's 1536 — compact enough that per-section
+embeddings cost nothing.
+
+### Experiment Plan
+
+Build as `experiments/identity/`.
+
+- **Fix the harness first.** Reuse `experiments/clap/score.py`'s pair-AUC
+  protocol unchanged so every number is directly comparable to the 0.73 already
+  on record. Sections come from the best available segmentation at run time
+  (allin1's, or SongFormer's if entry 3 wins) — and the harness must be able to
+  re-run against either, since a bad segmentation makes every embedding look bad.
+- **Candidates, all through the same harness:**
+  1. **CoverHunter / ByteCover** embeddings over section-length crops — the
+     invariance-trained hypothesis.
+  2. **[MuQ](https://github.com/tencent-ailab/MuQ)** layer-wise. MuQ beats MERT
+     across nearly all MARBLE tasks, and the layer-wise investigation of SSL
+     music models finds structural information concentrated in particular
+     middle layers — so sweep layers, exactly as the MERT survey did here (MERT
+     layer 2 was the one that got 5/7).
+  3. **Beat-synchronous chroma with transposition search + DTW alignment cost** —
+     a *cheap classical* baseline much stronger than the plain chroma that
+     scored 0.62, and the one a promotion would have to beat on cost grounds.
+  4. **MFCC 20** — the incumbent to beat, plus the duration and time controls
+     (0.59 / 0.46) that establish the floor.
+- **Report the clustering, not only the AUC.** The deliverable is a
+  `repetition_group` per section; write out the actual grouping each method
+  produces per song, in the lane, so the operator can say by ear which one is
+  right. AUC over four songs is a thin number and should not be the only one.
+- Export `reference/proposals/identity.json`; **Identity** lane colouring each
+  section by its group, placed directly under the sections lanes.
+
+**Measurement — fixed before the run (§3).**
+
+Mean pair AUC over gold-set section pairs — **must beat 0.73** — plus the
+self-vs-other gap (CLAP's 0.83/0.68), plus per-song grouping tables.
+
+**State the noise floor.** Four songs is very few section pairs, and §3's rule
+is that a measurement at the noise floor of the labels means fixing the labels,
+not tuning against them. If the harness shows the AUC gap between methods is
+inside the noise, the honest output of this experiment is a request to the
+operator for hand-marked "these two are the same part" pairs across the corpus —
+which is cheap to mark and would make every future identity attempt scorable.
+
+**Reach test (§1.3) — which projected file this lands in.**
+
+`sections.json` `repetition_group`, currently null everywhere, and
+`get_song_brief`'s `similar_sections` grouping — which today is derived from
+`section_character` string equality, a proxy the input guide itself flags as
+approximate.
+
+### Results evidence
+
+*(to be filled by the run)*
+
+### Conclusion
+
+*(to be filled by the run)*
+
+---
+
+## Bar grid and phrase grid by musical consensus — repairing the foundation cues snap to
+
+<https://github.com/CPJKU/beat_this>
+
+### Status
+
+**[PENDING] — run order 6 of 7.** Addresses a limitation `CLAUDE.md` states
+outright and nothing currently owns.
+
+### Why? What for?
+
+Beat tracking here is good — 7/7 human impacts land within 0.25 s of an essentia
+beat. **Downbeats are not.** Three independent trackers (essentia, beat-this,
+allin1) hit 3/7, 3/7 and 4/7 and disagree with each other in different places,
+and `CLAUDE.md` says plainly: do not assume a correct bar grid.
+
+Everything downstream assumes one anyway. `beats.json` is a projected file whose
+`type: "downbeat"`, `bar` and `beat` fields the MCP server turns into the
+downbeat list, and the input guide says *"cue placement snaps to downbeats and
+bar numbers, so downbeat detection and bar numbering must be correct and
+continuous."* A half-bar phase error puts every cue in the show on the wrong
+beat — the failure is not subtle, it is the whole show being slightly wrong in a
+way an audience feels.
+
+There is also a stronger grid hiding above the bar. This repertoire is built in
+**8- and 16-bar phrases**, and a cue placed on a phrase boundary is right even
+when the section *label* is wrong. The allin1 experiment already measured this
+by accident: its raw, unmerged 8-bar phrase edges score 4/7 at ±1.0 s and
+**6/7 at ±2.0 s** — better recall than its own merged sections. Nobody has tried
+to derive that grid deliberately.
+
+### Experiment Plan
+
+Build as `experiments/grid_consensus/`, numpy over cached tracker outputs.
+
+- **Four hypotheses, not three votes.** Take the existing downbeat phases from
+  essentia, beat-this and allin1, and add a fourth derived from the audio
+  itself: the phase and period that maximise 4-beat and 8-bar periodicity in the
+  beat-synchronous band-energy novelty (an autocorrelation over the beat grid,
+  which is trusted).
+- **Resolve by musical evidence, not by majority.** A vote between three
+  trackers that are each ~45 % right is worth little. Score each candidate phase
+  against facts the pipeline already measures well: kick placement from
+  `drum_events.json`, chord-change positions from `harmonic.py` (harmonic rhythm
+  overwhelmingly lands on downbeats), section-boundary positions, and the gap /
+  impact positions from entry 2 if it has run. The phase that best explains the
+  music wins.
+- **Emit `unknown` when it is unknown.** Where the trackers disagree *and* the
+  musical evidence does not resolve them, the artifact says so rather than
+  snapping — constitution §7: *"Where the grid itself is uncertain, say so
+  rather than snapping and implying precision that isn't there."* A confidence
+  per downbeat, and a flagged span where the grid is untrustworthy, is far more
+  useful to a cue author than a continuous lie.
+- **Phrase grid as a first-class output:** the 8- and 16-bar phrase boundaries
+  with an explicit anchor bar and a confidence, plus the detected phrase length
+  per span (some songs switch).
+- Export `reference/proposals/grid.json`; **Phrase Grid** lane, with disputed
+  spans visibly marked.
+
+**Measurement — fixed before the run (§3).**
+
+1. **Downbeat phase** against the 7 hand-marked impacts (an impact is almost
+   always on a downbeat), and against each individual tracker's 3/7, 3/7, 4/7.
+2. **Phrase edges** vs. the impacts at ±0.5 / ±1.0 / ±2.0 s and at a stated
+   edges-per-minute budget, against allin1's unmerged phrase edges (3/7, 4/7,
+   6/7 at 3.3/min) and an evenly spaced grid at the same budget.
+3. **Disagreement and `unknown` rate across all 21 songs** — how often the
+   trackers conflict, and how often musical evidence resolves them. This is the
+   number that says whether the current `beats.json` is quietly wrong on most of
+   the corpus.
+4. **Cheap baseline:** essentia's downbeats alone, which is what ships today.
+
+**Reach test (§1.3) — which projected file this lands in.**
+
+`beats.json` — a top-level projected file, priority 4 in the input guide — and,
+if the phrase grid survives, a phrase-boundary hint category in `hints.json`
+(`phrase_boundary` is already in the input guide's suggested tag set and is
+never emitted).
+
+### Results evidence
+
+*(to be filled by the run)*
+
+### Conclusion
+
+*(to be filled by the run)*
+
+---
+
+## Music Flamingo — timestamped musical description, cross-checked against the stems
+
+<https://huggingface.co/nvidia/music-flamingo-hf>
+
+### Status
+
+**[PENDING] — run order 7 of 7.** The frontier entry: highest ceiling, highest
+risk, heaviest to run. Smoke on `_test_song` first (§3.5). Note the checkpoint
+is released for **non-commercial research only** — that constrains promotion,
+not experimentation, and should be settled with the operator before any
+promotion discussion.
+
+### Why? What for?
+
+The CLAP experiment established two things. First, the **character layer is
+real and wanted** — the operator's `Breath` block on `Armin - Revolution`
+(81.4–96.3 s, "Vocal - no intense section", lit as soft moving-head motion and
+slow violet parcan waves) is an undoubtable look that no verse/chorus label can
+express. Second, CLAP delivers **exactly one usable axis** — calm ↔ intense —
+and is confidently wrong about what is playing, reporting drums present where
+the drum stem sits at 0.03.
+
+What the pipeline actually wants is a reader that can describe a passage the way
+the operator's own hints describe it, with times. Music Flamingo is the first
+audio-language model built specifically for that: it is a music-specialised
+Audio Flamingo 3 with **Rotary Time Embeddings, which ground audio tokens to
+absolute time rather than sequence position — introduced explicitly for
+structural segmentation and mapping lyrics to form** — over full-length songs up
+to 20 minutes, with theory-aware captioning covering harmony, structure and
+timbre. Its sibling [Audio Flamingo
+Next](https://huggingface.co/nvidia/audio-flamingo-next-hf) adds Temporal Audio
+Chain-of-Thought, which grounds each intermediate reasoning step to a timestamp.
+
+If it works, one pass produces the character layer, candidate section names,
+*and* the one-sentence `description` and `summary` prose the input guide asks
+for and which the pipeline currently generates from templates.
+
+**The risk, stated up front: audio-LLMs hallucinate timestamps.** The ACE-Step
+experiment in this file already hit the same wall from the other side — correct
+structure, no usable times. So this experiment is designed as a *timing-honesty
+measurement* first and a capability demonstration second. If the times are not
+real, that is the result, and it is worth knowing before anyone builds on top of
+an LALM.
+
+### Experiment Plan
+
+Build as `experiments/music_flamingo/`, its own sandbox image.
+
+- **Two decoding modes, compared.**
+  1. *Whole song*: ask for a timestamped structural and character description in
+     one pass, leaning on RoTE.
+  2. *Window-anchored*: 15–30 s crops, each prompt stating the crop's absolute
+     offset, so the model only has to describe, never to count. Times come from
+     the crop boundary plus a within-crop position.
+  The delta between these two is the direct measurement of whether RoTE's
+  absolute-time grounding is real on our material.
+- **Ask it how things feel, never what is playing.** The CLAP finding
+  generalises and should be treated as a standing rule for any such model here:
+  perceptual and structural questions to the model, factual "is there a kick"
+  questions to the stems, which are exact and free.
+- **Cross-check every claim against phase-1 facts, and record the check.** If it
+  says "the drums drop out at 143 s", check the drum stem RMS in that window; if
+  it says "the vocal enters", check the vocal stem; if it says "quiet", check
+  loudness. Claims that survive are emitted with the check as provenance; claims
+  that fail are emitted as `unverified` or dropped, never silently kept. **This
+  grounding harness is the reusable deliverable of the experiment** — it applies
+  to any future audio-LLM, and it is the only way an LALM's output can enter a
+  pipeline governed by §2.
+- Export `reference/proposals/description.json`; render as a **Description**
+  lane of timestamped text spans, tinted by whether each claim passed its
+  cross-check, directly under the Character lane so the two can be compared.
+
+**Measurement — fixed before the run (§3).**
+
+1. **Timing honesty** — the headline number: what fraction of the model's
+   timestamped claims survive the stem cross-check, whole-song mode vs.
+   window-anchored mode. Report it before anything else.
+2. **Coverage of the 10 hand-marked non-drop hints**, against the CLAP character
+   detector's 7/10, and time error on the ones it does find.
+3. **Does it name `Breath`?** The Armin block is the reference case for the
+   whole character line of work. A description of 81–96 s that says "solo vocal,
+   drums out, spacious, calm" is the target; anything less specific is a miss.
+4. **Baselines:** the shipped `hints.json` inference hints (the thing this would
+   replace); the CLAP calm-axis character blocks; and a rules-only baseline of
+   stems + `fft_bands.json`, which the CLAP ablation already showed claims 73 %
+   of the corpus on its own — a description model has to be *more specific* than
+   that, not just correct.
+5. **Cost:** wall-clock per song and hardware needed, stated plainly. An 8 B
+   model with no GPU path on this box is a heavy production dependency, and the
+   ACE-Step entry is the cautionary precedent.
+
+**Reach test (§1.3) — which projected file this lands in.**
+
+`hints.json` (per-section, human-quality prose, short and concrete) and the
+`description` / `summary` fields of `sections.json` and
+`song_event_timeline.json` — all projected, all currently template-generated.
+Possibly a new character/texture file, which is the same contract change the
+CLAP entry flagged; the two should be resolved together rather than each adding
+a file.
+
+### Results evidence
+
+*(to be filled by the run)*
+
+### Conclusion
+
+*(to be filled by the run)*

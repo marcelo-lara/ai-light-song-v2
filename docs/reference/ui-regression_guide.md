@@ -46,9 +46,9 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `song-full` | Fully-populated song | `/?song=<full-fixture>` | All lanes present; primary baseline |
 | `song-partial` | Song missing core artifacts | `/?song=<partial-fixture>` | Core-artifact warning card visible |
 | `song-no-audio` | Song with no MP3 | `/?song=_test_song` | Waveform beat-pulse fallback, transport disabled (expected) |
-| `timeline-zoomed-in` | `song-full` after zoom-in to max | click zoom-in control N times | Dense-lane semantic zoom |
+| `timeline-zoomed-in` | `song-full` after zoom-in to max | click zoom-in control N times | Dense-lane semantic zoom; the max is 360 px/bar, past the ~32k canvas ceiling on a long song (dense lanes keep CSS width, downscale the backing store — `continuous-lanes-extent.spec.ts` allows this above `MAX_CANVAS_PX`) |
 | `timeline-zoomed-out` | `song-full` at min zoom | click zoom-out control N times | Whole-song overview |
-| `timeline-scrolled` | `song-full` scrolled to ~50% | set viewport scrollLeft | Marker + ruler alignment mid-song |
+| `timeline-scrolled` | `song-full` scrolled to ~50% | set viewport scrollLeft | Marker + ruler alignment mid-song; sticky `.tl-lane-head` cells stay pinned to the left column |
 | `sidebar-expanded` | `song-full` with sidebar open | click sidebar toggle | Path panel, file-status list, lane toggles. Dismissal (plan v1.5 item 2 / R4, R5): a `mousedown` anywhere outside the drawer and the burger closes it; an inside click never does; picking a song in the song picker closes it too. |
 | `lane-toggles-min` | `song-full` with only waveform + sections visible | toggle lanes off | Lane show/hide layout reflow |
 | `lane-events-panel` | `song-full` with the Human Hints lane's events panel open | click `lane-events-humanHints` | Stacked cards, no inter-card gap; non-modal (survives Play, timeline drag, scroll); `.app-rightpanel` |
@@ -80,7 +80,9 @@ Create `tests/ui-visual/fixtures/analysis/` containing 3 frozen song folders:
 
 - `RegFull - Fixture/` — every artifact the debugger loads
   (`ui/src/lib/config/artifactDefinitions.js` is the authoritative list), including
-  `reference/human/human_hints.json`.
+  `reference/human/human_hints.json` and `reference/moises/lyrics.json` (the
+  Moises Lyrics lane's source; all three fixture songs carry a copy so the lane
+  never 404s in the suite).
   - **`human_hints.json` frozen blocks (plan v2.1 item 10 drag targets).** Three
     non-overlapping blocks with an 4 s gap between each, well inside the 194.01 s
     duration:
@@ -272,9 +274,13 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 - footer zoom controls: `zoom-in`, `zoom-out`, `fit-to-width`;
 - lane list (`LaneList.tsx`): `lane-list` on the panel, `lane-list-hide-all` on
   the hide-all button;
-- timeline: `timeline-viewport` on the scroller; on every lane row (both the
-  label cell and the body cell) `data-lane="<laneId>"` and
-  `data-lane-collapsed="true" | "false"`; `lane-collapse-<laneId>` on the caret.
+- timeline: `timeline-viewport` on the scroller; each timeline row is a
+  `.app-timeline__row` flex row (`--row--pinned` for the two header rows,
+  `--row--lane` for every lane); on every lane row (both the label cell and the
+  body cell) `data-lane="<laneId>"` and `data-lane-collapsed="true" | "false"`;
+  `lane-collapse-<laneId>` on the caret. The `.tl-lane-head` label cell is
+  `position: sticky` on both axes (`left: 0`, `top: 56px`), so it stays visible
+  while its lane is scrolled through.
 - `humanHints` lane body (plan v2.1 item 10): `data-hint-drag-ready="1"` once the
   block drag hit-zones are registered (the executor waits on this, no timeout).
 - hint editor (plan v2.1 item 10): `hint-editor` on the editor panel root, with
@@ -292,7 +298,9 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
   `<span.tl-lane-head__name-text>`. Exactly five lanes — `dropProposals`,
   `allin1Transitions`, `allin1Sections`, `character`, `vocalTranscription`. The
   same badge precedes `.app-rightpanel__kicker` in that lane's events panel
-  header. `LaneList.tsx` is not badged.
+  header. `LaneList.tsx` is not badged. `moisesLyrics` is **not** badged — it
+  reads `reference/moises/`, not an `experiments/` sandbox, so it sits with
+  `humanHints` as external reference.
 - block inspector (plan v1.5 item 9): `promote-hint` on the `rows-plus-bottom`
   "Create human hint" action, rendered under `block-inspector__title` for every
   inspected event and in both transport states. A Human Hints block routes to
@@ -510,3 +518,29 @@ writable fixture file (plan v1.5 D15); it is still ~15 s.
 - [x] *(plan v1.5 item 9)* Baseline `inspector-promote.png` (`.app-rightpanel`,
       first `allin1Sections` block selected). No `.app-timeline__grid` baseline
       changes — the button lives only in the right panel.
+- [x] *(experiments-wave2 UI follow-ups)* Moises Lyrics lane, 360 px/bar max
+      zoom, sticky lane headers.
+      - **Moises Lyrics lane** — `moisesLyrics` in the registry between
+        `humanHints` and `dropProposals`, expanded by default. One
+        `SparseLane` block per token of `reference/moises/lyrics.json` (words +
+        `<SOL>`/`<EOL>` markers, ungrouped), tinted by per-word confidence
+        (`moisesLyricsHigh` ≥ 0.7 / `Mid` ≥ 0.4 / `Low` / `Unscored` /
+        `Marker`). Loader treats a `404` as an empty lane. `reference/moises/`
+        read path added to §"Data Access Rules" of `ui_development.md`; a
+        `lyrics.json` fixture added to all three fixture songs (§3.1).
+      - **Max zoom 14 → 360 px/bar** (`PX_PER_BAR_MAX` in `ui/src/timeline/zoom.ts`).
+        `continuous-lanes-extent.spec.ts` relaxed for the canvas-ceiling case:
+        above `MAX_CANVAS_PX` the dense-lane backing store may downscale while
+        CSS width stays exact.
+      - **Sticky lane headers** — `.app-timeline__grid` is now a flex column of
+        `.app-timeline__row` rows (`--row--pinned` × 2, `--row--lane` × N); the
+        `.tl-lane-head` cell gains `top: 56px` so it pins under the Segments +
+        Bars rows for as long as its lane is on screen. The two header rows keep
+        `tl-sticky-head` / `tl-sticky-body`.
+      - Baselines re-captured: `song-full`, `song-full-waveform`, `song-no-audio`,
+        `left-panel-open`, `lane-collapsed`, `timeline-scrolled-50`,
+        `timeline-zoom-min` (both snapshot dirs), `timeline-zoom-max`,
+        `inspector-promote`, `hint-drag-resized`. Justification: "Moises Lyrics
+        lane adds ~84 px to the default view; sticky lane-head refactor; wider
+        zoom range." Pre-existing `lane-events.spec.ts` right-panel width failure
+        is unrelated (fails on a clean branch too).
