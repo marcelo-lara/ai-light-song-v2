@@ -14,6 +14,7 @@ import {
   loadCharacter,
   loadVocalTranscription,
   loadDropProposals,
+  loadMoisesLyrics,
 } from "./sparseArtifacts";
 import {
   parseBeats,
@@ -210,6 +211,7 @@ export const artifactLoaders = {
   drums: loadDrumEvents,
   energy: loadEnergyLayer,
   humanHints: loadHumanHints,
+  moisesLyrics: loadMoisesLyrics,
   eventTimeline: loadEventTimeline,
   reviewQueue: loadReviewQueue,
   songFacts: loadSongFacts,

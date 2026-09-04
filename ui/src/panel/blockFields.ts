@@ -42,6 +42,7 @@ export const LANE_LABELS: Record<string, string> = {
   character: "Character",
   vocalTranscription: "Vocal Transcription",
   humanHints: "Human Hints",
+  moisesLyrics: "Moises Lyrics",
   chords: "Chord Regions",
   patterns: "Pattern Occurrences",
   identifierHints: "Identifier Hints",
@@ -176,6 +177,16 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
         if (Number.isFinite(n))
           out.push({ label: key.replace(/_/g, " "), value: roundNumber(n, 3) });
       }
+      break;
+    }
+    case "moisesLyrics": {
+      const text = str(r.text);
+      if (text) out.push({ label: "Token", value: text });
+      const lineId = str(r.line_id);
+      if (lineId) out.push({ label: "Line", value: lineId });
+      const conf = r.confidence;
+      if (conf != null && Number.isFinite(Number(conf)))
+        out.push({ label: "Confidence", value: roundNumber(Number(conf), 2) });
       break;
     }
     case "vocalTranscription": {

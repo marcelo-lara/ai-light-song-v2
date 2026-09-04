@@ -42,6 +42,12 @@ export const artifactPaths = {
   // by model, plus the shared whisper baseline row.
   vocalTranscription: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "vocal_transcription.json")),
+  // Moises' word-level sung-lyric export, delivered as external reference. A
+  // flat list of word tokens with `line_id`, `start`, `end`; `<SOL>` / `<EOL>`
+  // rows mark line boundaries. Read-only ground truth, never written by the
+  // pipeline.
+  moisesLyrics: (song: string) =>
+    encodePath(analysis(song, "reference", "moises", "lyrics.json")),
   sectionSegmentation: (song: string) =>
     encodePath(analysis(song, "artifacts", "section_segmentation", "sections.json")),
   fftBands: (song: string) =>

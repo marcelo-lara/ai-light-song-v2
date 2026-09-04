@@ -75,6 +75,7 @@ export function collapsedLaneHeight(): number {
 export const LANE_DEFS: readonly LaneDef[] = [
   { id: "waveform", label: "Waveform Anchor", sub: "decoded source mix", kind: "waveform", height: 84 },
   { id: "humanHints", label: "Human Hints", sub: "reference/human · human_hints", kind: "hints", height: 58 },
+  { id: "moisesLyrics", label: "Moises Lyrics", sub: "reference/moises · per-word tokens · tinted by confidence", kind: "lyrics", height: 84 },
   { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58, experiment: "drop_detection" },
   { id: "allin1Transitions", label: "allin1 Transitions", sub: "experiment · section changes · audition vs. Human Hints", kind: "allin1", height: 58, experiment: "allin1" },
   { id: "fftBands", label: "FFT Bands", sub: "essentia · 7 spectral bands", kind: "fft", height: 84 },
@@ -98,8 +99,8 @@ export const LANE_DEFS: readonly LaneDef[] = [
 /**
  * design notes §2: the five lanes expanded on first load, plus the two review
  * lanes that only exist to be compared against Human Hints while the song
- * plays — Drop Proposals and allin1 Transitions both sit directly under it and
- * open with it.
+ * plays — Moises Lyrics, Drop Proposals and allin1 Transitions all sit directly
+ * under it and open with it.
  *
  * `allin1Sections` is deliberately NOT here even though it is the headline of
  * the experiment: it belongs next to `sections`, the incumbent it is scored
@@ -110,6 +111,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
 export const DEFAULT_EXPANDED: readonly string[] = [
   "waveform",
   "humanHints",
+  "moisesLyrics",
   "dropProposals",
   "allin1Transitions",
   "fftBands",

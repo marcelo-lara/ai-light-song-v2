@@ -221,6 +221,10 @@ input[type="range"]:focus-visible {
  * its bounding box is identical expanded vs collapsed. */
 .app-timeline__lane-head.tl-lane-head {
   z-index: 10;
+  /* Pin the label below the two pinned header rows (Segments h26 + Bars h30)
+   * so it stays visible for as long as any part of its lane is on screen. Its
+   * `.app-timeline__row--lane` parent bounds the stick, so heads never pile. */
+  top: 56px;
   align-items: flex-start;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);

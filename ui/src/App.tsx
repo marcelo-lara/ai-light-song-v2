@@ -91,6 +91,8 @@ const TIMELINE_KEYS = [
   "drums",
   "energy",
   "humanHints",
+  // external word-level sung lyrics (reference/moises)
+  "moisesLyrics",
   // item 9 sparse lanes
   "patterns",
   "identifierHints",
@@ -110,6 +112,7 @@ const TIMELINE_KEYS = [
 /** sparse lane id → the single artifact key that backs it (drives empty-state). */
 const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   humanHints: "humanHints",
+  moisesLyrics: "moisesLyrics",
   dropProposals: "dropProposals",
   allin1Transitions: "allin1",
   allin1Sections: "allin1",
@@ -263,6 +266,7 @@ export function App(): React.JSX.Element {
   const laneContentSources = useMemo<LaneContentSources>(
     () => ({
       humanHints: humanHintsFile,
+      moisesLyrics: artifacts.moisesLyrics.data,
       dropProposals: artifacts.dropProposals.data,
       allin1: artifacts.allin1.data,
       character: artifacts.character.data,
@@ -277,6 +281,7 @@ export function App(): React.JSX.Element {
     }),
     [
       humanHintsFile,
+      artifacts.moisesLyrics.data,
       artifacts.dropProposals.data,
       artifacts.allin1.data,
       artifacts.character.data,

@@ -578,6 +578,63 @@ export function parseVocalTranscription(raw: unknown): VocalTranscriptionFile {
 }
 
 // ---------------------------------------------------------------------------
+// Moises lyrics — reference/moises/lyrics.json
+// ---------------------------------------------------------------------------
+//
+// An external, word-level sung-lyric export. The file is a flat array of word
+// tokens, each carrying a `line_id`, `start`, `end` and per-word `confidence`;
+// `<SOL>` / `<EOL>` marker rows delimit each line and carry no confidence. The
+// lane renders one block per token — words and markers alike, ungrouped — so
+// the raw transcription can be auditioned word by word against the audio.
+
+export type MoisesTokenKind = "word" | "sol" | "eol";
+
+export interface MoisesLyricToken {
+  id: string;
+  line_id: number;
+  start_s: number;
+  end_s: number;
+  text: string;
+  kind: MoisesTokenKind;
+  /** per-word confidence in [0, 1], or null for the line markers */
+  confidence: number | null;
+  raw: Record<string, unknown>;
+}
+
+export interface MoisesLyricsFile {
+  schema_version: string;
+  song_name: string;
+  tokens: MoisesLyricToken[];
+}
+
+const MOISES_MARKER_KIND: Record<string, MoisesTokenKind> = {
+  "<SOL>": "sol",
+  "<EOL>": "eol",
+};
+
+export function parseMoisesLyrics(raw: unknown): MoisesLyricsFile {
+  const tokens = arr(raw).map((row, i): MoisesLyricToken => {
+    const r = rec(row);
+    const text = st(r.text).trim();
+    const kind = MOISES_MARKER_KIND[text] ?? "word";
+    const start_s = num(r.start);
+    const conf = Number(r.confidence);
+    return {
+      id: st(r.id, `tok-${String(i + 1).padStart(4, "0")}`),
+      line_id: num(r.line_id, 0),
+      start_s,
+      end_s: Math.max(num(r.end, start_s), start_s),
+      text,
+      kind,
+      confidence: kind === "word" && Number.isFinite(conf) ? conf : null,
+      raw: r,
+    };
+  });
+  tokens.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: "", song_name: "", tokens };
+}
+
+// ---------------------------------------------------------------------------
 // loaders
 // ---------------------------------------------------------------------------
 
@@ -648,6 +705,25 @@ export async function loadVocalTranscription(
   }
   return result;
 }
+/**
+ * External reference, present only for songs Moises has been run over, so a 404
+ * resolves to an empty file. Every other failure still surfaces.
+ */
+export async function loadMoisesLyrics(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<MoisesLyricsFile>> {
+  const result = await loadJson(
+    artifactPaths.moisesLyrics(song),
+    parseMoisesLyrics,
+    f,
+  );
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, tokens: [] } };
+  }
+  return result;
+}
+
 /**
  * The proposals file is optional — it exists only for songs the drop-detection
  * exporter has been run over — so a 404 resolves to an empty file rather than a

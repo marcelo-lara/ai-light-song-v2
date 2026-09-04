@@ -50,6 +50,16 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //                                with sustained posterior mass
   // Vocal transcription: the whisper baseline is a warm neutral, the singing
   // models a brighter amber against it, structure tags a muted variant.
+  // Moises' external word-level lyrics. Each token is tinted by the confidence
+  // Moises reported for it, on a green → amber → red ramp, so shaky stretches
+  // of the transcription read at a glance; the line markers get a cool slate,
+  // and `moisesLyrics` is the lane's fallback base.
+  moisesLyrics: [210, 40, 44],
+  moisesLyricsHigh: [150, 60, 40],
+  moisesLyricsMid: [43, 88, 46],
+  moisesLyricsLow: [0, 72, 46],
+  moisesLyricsUnscored: [210, 12, 40],
+  moisesLyricsMarker: [210, 30, 34],
   vocalTranscription: [32, 45, 42],
   vocalTranscriptionBaseline: [28, 20, 40],
   vocalTranscriptionModel: [32, 80, 46],

@@ -14,6 +14,7 @@ import type {
   Allin1File,
   CharacterFile,
   DropProposalsFile,
+  MoisesLyricsFile,
   VocalTranscriptionFile,
   EventsFile,
   PatternsFile,
@@ -333,6 +334,63 @@ export function vocalTranscriptionContent(
   return out;
 }
 
+/**
+ * Which confidence-tint bucket a Moises token falls in. The `<SOL>` / `<EOL>`
+ * line markers carry no confidence and get their own neutral tint; every word
+ * is tinted on a green → amber → red ramp by the score Moises reported, so a
+ * glance at the lane shows where the transcription is shaky (dense or effected
+ * vocals) without reading a single number.
+ */
+function moisesTintId(kind: string, confidence: number | null): string {
+  if (kind !== "word") return "moisesLyricsMarker";
+  if (confidence == null) return "moisesLyricsUnscored";
+  if (confidence >= 0.7) return "moisesLyricsHigh";
+  if (confidence >= 0.4) return "moisesLyricsMid";
+  return "moisesLyricsLow";
+}
+
+/**
+ * Moises lyrics — the external word-level sung-lyric reference, one block per
+ * token: every word plus the `<SOL>` / `<EOL>` line markers, ungrouped and in
+ * time order. It sits directly under Human Hints so a hand-marked window
+ * ("Breath", "Vocal outro") can be checked against exactly which words are
+ * being sung when. Blocks are tinted by per-word confidence.
+ */
+export function moisesLyricsContent(file: MoisesLyricsFile | null): SparseBlock[] {
+  return (file?.tokens ?? []).map((t) => {
+    const text = t.text || "♪";
+    const marker = t.kind !== "word";
+    return {
+      id: t.id,
+      start_s: t.start_s,
+      end_s: t.end_s,
+      label: text.length > 24 ? `${text.slice(0, 23)}…` : text,
+      wideLabel: t.confidence != null ? `${text} · ${round(t.confidence)}` : text,
+      tintId: moisesTintId(t.kind, t.confidence),
+      laneLabel: "Moises Lyrics",
+      caption: `${formatRange(t.start_s, t.end_s)}${
+        t.confidence != null ? ` · conf ${round(t.confidence)}` : ""
+      }`,
+      reference: t.id,
+      detail: marker
+        ? t.kind === "sol"
+          ? "start of line"
+          : "end of line"
+        : `line ${t.line_id}`,
+      summary: marker
+        ? `Moises line marker \`${t.text}\` — ${
+            t.kind === "sol" ? "start" : "end"
+          } of line ${t.line_id}. External reference, read-only.`
+        : `Moises sung word "${t.text}" (line ${t.line_id})${
+            t.confidence != null
+              ? `, transcription confidence ${round(t.confidence)}`
+              : ", no confidence reported"
+          }. External reference — read-only ground truth, not a pipeline output.`,
+      raw: t.raw,
+    };
+  });
+}
+
 export function sectionsContent(rows: readonly SectionRow[]): SparseBlock[] {
   return rows.map((s, i) => ({
     id: s.section_id ?? `section-${String(i + 1).padStart(3, "0")}`,
@@ -449,6 +507,7 @@ export function phrasesContent(file: SymbolicPhrasesFile | null): SparseBlock[] 
 
 export interface LaneContentSources {
   humanHints?: HumanHintsFile | null;
+  moisesLyrics?: MoisesLyricsFile | null;
   dropProposals?: DropProposalsFile | null;
   sections?: readonly SectionRow[];
   harmonicLayer?: HarmonicLayer | null;
@@ -465,6 +524,7 @@ export interface LaneContentSources {
 /** the sparse (block) lane ids handled by this module, in registry order */
 export const SPARSE_LANE_IDS = [
   "humanHints",
+  "moisesLyrics",
   "dropProposals",
   "allin1Transitions",
   "sections",
@@ -488,6 +548,8 @@ export function buildLaneBlocks(
   switch (laneId) {
     case "humanHints":
       return humanHintsContent(s.humanHints ?? null);
+    case "moisesLyrics":
+      return moisesLyricsContent(s.moisesLyrics ?? null);
     case "dropProposals":
       return dropProposalsContent(s.dropProposals ?? null);
     case "allin1Transitions":

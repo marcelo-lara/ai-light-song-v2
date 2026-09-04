@@ -156,14 +156,33 @@
 }
 .app-timeline__grid {
   position: relative;
-  display: grid;
-  grid-template-columns: 212px max-content;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   min-width: 100%;
+}
+/* One flex row per timeline row (the two pinned header rows + every lane). Each
+ * lane row is its own positioned context so its sticky lane-head pins only
+ * while that lane is on screen — a section-header, not a pile at the top. */
+.app-timeline__row {
+  display: flex;
+  align-items: stretch;
+  min-width: 100%;
+}
+.app-timeline__row > * {
+  flex: none;
+}
+.app-timeline__row--lane {
+  position: relative;
+}
+.app-timeline__row--pinned {
+  position: sticky;
+  z-index: 11;
 }
 .app-timeline__lane-head {
   position: sticky;
   left: 0;
+  width: 212px;
   z-index: 6;
   display: flex;
   align-items: center;
