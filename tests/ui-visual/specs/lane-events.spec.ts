@@ -12,6 +12,7 @@ const HEAD_RIGHT_PADDING = 11.2; // --space-4
 
 const BLOCK_LANES = [
   "humanHints",
+  "moisesLyrics",
   "dropProposals",
   "allin1Transitions",
   "sections",
@@ -110,10 +111,14 @@ test("item 3 — lane events opener + stacked non-modal panel", async ({ page })
     expect(rects[i].y - (rects[i - 1].y + rects[i - 1].h)).toBeLessThanOrEqual(1.0);
   }
 
-  // 9. full-bleed — card width matches the panel width.
+  // 9. inset, not full-bleed — the card sits inside `.app-rightpanel`'s own
+  // padding (`--space-2` each side) rather than reaching its edge.
+  const RIGHTPANEL_PADDING = 5.6; // --space-2, each side
   const panelBox = await box(page, ".app-rightpanel");
   const cardBox = await box(page, ".lane-events__card");
-  expect(Math.abs(cardBox.width - panelBox.width)).toBeLessThanOrEqual(1.0);
+  expect(
+    Math.abs(panelBox.width - cardBox.width - 2 * RIGHTPANEL_PADDING),
+  ).toBeLessThanOrEqual(1.0);
 
   // 10. non-modal (D3): these interactions must not dismiss it.
   await page.getByTestId("timeline-viewport").click();

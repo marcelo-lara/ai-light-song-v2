@@ -52,7 +52,7 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `sidebar-expanded` | `song-full` with sidebar open | click sidebar toggle | Path panel, file-status list, lane toggles. Dismissal (plan v1.5 item 2 / R4, R5): a `mousedown` anywhere outside the drawer and the burger closes it; an inside click never does; picking a song in the song picker closes it too. |
 | `lane-toggles-min` | `song-full` with only waveform + sections visible | toggle lanes off | Lane show/hide layout reflow |
 | `lane-events-panel` | `song-full` with the Human Hints lane's events panel open | click `lane-events-humanHints` | Stacked cards, no inter-card gap; non-modal (survives Play, timeline drag, scroll); `.app-rightpanel` |
-| `lane-events-active` | `song-full` lane-events panel with the playhead inside a card | open `lane-events-humanHints`, click the `hint-003` card | Active card carries `data-active="true"` / `aria-current`: raised tint, accent left border, bright label; `.app-rightpanel` |
+| `lane-events-active` | `song-full` lane-events panel with the playhead inside a card | open `lane-events-humanHints`, click the `hint-003` card | Active card carries `data-active="true"` / `aria-current`: raised tint, accent left border, bright label; `.app-rightpanel`. Separately, every card whose window covers the playhead — active or not, and possibly more than one at once for overlapping blocks — carries `data-in-window="true"`: a 2px `--color-accent-300` inset left-edge marker |
 | `overlay-open` | Hovercard/selection overlay | click a sections-lane region | Overlay anchor + content |
 | `detail-inspector` | Raw JSON inspector | select an artifact in the inspector dropdown | Scroll region, formatting |
 | `human-hints-editor` | Right-side hint editor open | trigger "add hint" | Editor stays open; compact styling |
@@ -288,7 +288,13 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 - lane events panel (plan v1.5 item 3): `lane-events-<laneId>` on the
   `columns-plus-right` opener in every block lane's head (`aria-pressed`
   tracks the open panel); `lane-events-panel` on the stacked `<ol>` (with
-  `data-lane="<laneId>"`); `lane-event-<blockId>` on each card.
+  `data-lane="<laneId>"`); `lane-event-<blockId>` on each card. Each
+  `.lane-events__card` also carries `data-active="true"` for the single
+  innermost card covering the playhead (`activeBlockIndex`) and, independently,
+  `data-in-window="true"` on **every** card whose own window covers it — more
+  than one at once for overlapping blocks (`isInPlayheadWindow`, both in
+  `ui/src/panel/laneEvents.ts`). The card is inset within `.app-rightpanel`'s
+  own padding (`--space-2` each side), not full-bleed past it.
 - footer (plan v1.5 item 6): `follow-toggle` on the follow-playhead toggle
   button, immediately left of the `Lanes` button; `aria-pressed` tracks the
   persisted flag (default on).
@@ -544,3 +550,29 @@ writable fixture file (plan v1.5 D15); it is still ~15 s.
         lane adds ~84 px to the default view; sticky lane-head refactor; wider
         zoom range." Pre-existing `lane-events.spec.ts` right-panel width failure
         is unrelated (fails on a clean branch too).
+- [x] *(lane-events card redesign)* `.lane-events` dropped its full-bleed
+      negative horizontal margin; `.lane-events__card` dropped the matching
+      oversized padding for a uniform `--space-1` inset. The card now sits
+      inside `.app-rightpanel`'s own padding rather than reaching its edge.
+      Added a 2px `--color-accent-300` inset-left-edge playhead-window marker
+      (`box-shadow: inset 2px 0 0 0`, transparent when not in window) —
+      `data-in-window="true"` on every card whose window covers the playhead,
+      independent of and in addition to the single-winner `data-active`
+      highlight; unlike `data-active`, more than one card can carry it at once
+      for overlapping blocks. Pure rule: `isInPlayheadWindow` in
+      `ui/src/panel/laneEvents.ts` (`laneEvents.test.ts`); rendering asserted in
+      `LaneEventsPanel.test.tsx`.
+      - `tests/ui-visual/specs/lane-events.spec.ts` step 9 rewrote its
+        now-false "full-bleed — card width matches the panel width" assertion
+        to "inset — `panelBox.width - cardBox.width ≈ 2 × --space-2`"; this was
+        the "pre-existing … fails on a clean branch too" failure noted above,
+        now closed. `moisesLyrics` added to `BLOCK_LANES` (missed when the lane
+        shipped).
+      - `lane-events-panel.png` / `lane-events-active.png` are now stale (the
+        card is visibly narrower and no longer full-bleed) but **not**
+        re-captured here: as of this entry `lane-events.spec.ts`'s
+        `errors.list()` check fails on four unrelated `404`s —
+        `reference/proposals/{vocal_phrases,reactive_bands,gestures,grid}.json`
+        — from lanes already wired into `App.tsx`/`paths.ts` with no matching
+        fixture file yet. Re-capture these two baselines once those fixtures
+        land (or the lanes are reverted).

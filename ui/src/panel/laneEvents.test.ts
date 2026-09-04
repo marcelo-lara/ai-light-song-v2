@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { SparseBlock } from "../timeline/laneContent";
 
-import { activeBlockIndex } from "./laneEvents";
+import { activeBlockIndex, isInPlayheadWindow } from "./laneEvents";
 
 function block(over: Partial<SparseBlock> & { id: string }): SparseBlock {
   return {
@@ -72,5 +72,31 @@ describe("activeBlockIndex", () => {
     expect(activeBlockIndex(degenerate, 10)).toBe(-1);
     expect(activeBlockIndex(degenerate, 27)).toBe(-1);
     expect(activeBlockIndex(degenerate, 30)).toBe(-1);
+  });
+});
+
+describe("isInPlayheadWindow", () => {
+  it("is true inside [start_s, end_s) and false outside it", () => {
+    const b = block({ id: "a", start_s: 10, end_s: 20 });
+    expect(isInPlayheadWindow(b, 5)).toBe(false);
+    expect(isInPlayheadWindow(b, 10)).toBe(true);
+    expect(isInPlayheadWindow(b, 15)).toBe(true);
+    expect(isInPlayheadWindow(b, 20)).toBe(false);
+  });
+
+  it("multiple overlapping blocks can all be in-window at once", () => {
+    const outer = block({ id: "outer", start_s: 0, end_s: 100 });
+    const inner = block({ id: "inner", start_s: 40, end_s: 60 });
+    expect(isInPlayheadWindow(outer, 50)).toBe(true);
+    expect(isInPlayheadWindow(inner, 50)).toBe(true);
+  });
+
+  it("a degenerate block (end_s <= start_s) is never in-window (D5)", () => {
+    expect(isInPlayheadWindow(block({ id: "point", start_s: 10, end_s: 10 }), 10)).toBe(
+      false,
+    );
+    expect(
+      isInPlayheadWindow(block({ id: "reversed", start_s: 30, end_s: 25 }), 27),
+    ).toBe(false);
   });
 });

@@ -153,4 +153,38 @@ describe("LaneEventsPanel", () => {
       ),
     ).toEqual(["false", "false", "false"]);
   });
+
+  // playhead-window left-border marker: independent of `data-active`, and
+  // multiple overlapping cards can all carry it at once.
+  it("marks every card whose window covers currentTime, not just the active one", () => {
+    const OVERLAPPING = [
+      block({ id: "outer", start_s: 0, end_s: 100 }),
+      block({ id: "inner", start_s: 40, end_s: 60 }),
+    ];
+    const { container } = render(
+      <LaneEventsPanel {...base} blocks={OVERLAPPING} currentTime={50} />,
+    );
+    expect(
+      Array.from(
+        container.querySelectorAll(".lane-events__card"),
+        (c) => (c as HTMLElement).dataset.inWindow,
+      ),
+    ).toEqual(["true", "true"]);
+    // only the innermost is `data-active`.
+    expect(
+      container.querySelectorAll('.lane-events__card[data-active="true"]'),
+    ).toHaveLength(1);
+  });
+
+  it("marks no card in-window for a time in a gap", () => {
+    const { container } = render(
+      <LaneEventsPanel {...base} blocks={TIMED} currentTime={50} />,
+    );
+    expect(
+      Array.from(
+        container.querySelectorAll(".lane-events__card"),
+        (c) => (c as HTMLElement).dataset.inWindow,
+      ),
+    ).toEqual(["false", "false", "false"]);
+  });
 });
