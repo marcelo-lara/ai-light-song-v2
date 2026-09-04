@@ -221,6 +221,10 @@ input[type="range"]:focus-visible {
  * its bounding box is identical expanded vs collapsed. */
 .app-timeline__lane-head.tl-lane-head {
   z-index: 10;
+  /* Pin the label below the two pinned header rows (Segments h26 + Bars h30)
+   * so it stays visible for as long as any part of its lane is on screen. Its
+   * `.app-timeline__row--lane` parent bounds the stick, so heads never pile. */
+  top: 56px;
   align-items: flex-start;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
@@ -603,11 +607,13 @@ input[type="range"]:focus-visible {
   font: 400 10px/1 var(--font-body);
   color: var(--color-neutral-700);
 }
-/* The stacked list — full-bleed past `.app-rightpanel`'s padding, and R1's
- * "without intermediate spaces": no gap between cards. */
+/* The stacked list, R1's "without intermediate spaces": no gap between cards.
+ * No longer full-bleed — it used to reach past `.app-rightpanel`'s padding on
+ * a negative horizontal margin, matched by extra horizontal padding on the
+ * card below; both are gone, so the list now sits inside the panel's own
+ * padding like the rest of its content. */
 .lane-events {
   list-style: none;
-  margin: 0 calc(-1 * var(--space-6));
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -616,9 +622,9 @@ input[type="range"]:focus-visible {
 .lane-events__card {
   width: 100%;
   text-align: left;
-  /* horizontal padding offsets `.lane-events`'s negative full-bleed margin so the
-   * label/caption align with the rest of the panel's content. */
-  padding: var(--space-2) var(--space-6);
+  /* Uniform `--space-1` inset on every side — compact, and no longer sized to
+   * offset a full-bleed negative margin (see `.lane-events` above). */
+  padding: var(--space-1);
   border: 0;
   border-left: 3px solid; /* tint stroke, set inline */
   border-bottom: 1px solid var(--tl-border);
@@ -626,6 +632,16 @@ input[type="range"]:focus-visible {
   flex-direction: column;
   gap: 1px;
   cursor: pointer;
+  /* playhead-window marker (see [data-in-window] below) — a separate 2px
+   * accent stripe drawn inside the tint border-left, transparent by default so
+   * every card reserves the space and none of them shift when it appears. */
+  box-shadow: inset 2px 0 0 0 transparent;
+}
+/* the card covers `currentTime` — independent of `data-active`, so overlapping
+ * blocks can each carry this at once (unlike the single-winner highlight
+ * below). */
+.lane-events__card[data-in-window="true"] {
+  box-shadow: inset 2px 0 0 0 var(--color-accent-300);
 }
 /* label reuses `.tl-lane-head__name`'s font; caption `.tl-lane-head__sub`'s. */
 .lane-events__label {

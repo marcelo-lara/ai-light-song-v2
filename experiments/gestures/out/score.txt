@@ -1,0 +1,28 @@
+Gestures — score report
+============================================================
+
+Impact-phase recall vs 7 hand-marked drop impacts
+
+  method                               +-0.25    +-0.5    +-1.0  events/min
+  gesture impact phase                 2/7      4/7      4/7          14.05
+  incumbent (song_event_timeline impact/drop)   0/7      1/7      2/7           1.54
+  RMS-derivative peak-picker (baseline)   3/7      6/7      7/7          40.81
+
+Non-drop hint coverage — which operator hints a gesture phase overlaps
+
+
+_test_song:
+  Drum Hit                          7.44-   7.63  -> approach@7.4-11.0, approach@7.4-11.0, approach@7.4-11.0, approach@7.4-11.0, approach@7.4-11.0, build@2.8-32.2, build@2.8-32.2, build@2.8-32.2, build@2.8-32.2, build@2.8-32.2, build@2.8-32.2, build@2.8-32.2
+  Spacer                           36.50-  36.96  -> release@33.6-37.3, release@34.9-38.5, release@36.0-39.7, tension@35.6-37.1
+  Outro start                      42.48-  43.21  -> release@39.2-42.9
+  Vocal outro phrase 1.1           43.34-  44.36  -> MISS
+  Synth Pad                        44.45-  47.05  -> MISS
+  Vocal outro 2                    47.09-  50.03  -> MISS
+  Vocal Outro 3                    50.08-  54.58  -> MISS
+  prepare for end                  54.61-  55.00  -> MISS
+  Finale                           55.04-  55.92  -> MISS
+  High Energy                      29.59-  36.50  -> tension@29.6-29.9, impact@29.9-29.9, release@29.9-33.6, tension@29.6-31.1, impact@31.1-31.1, release@31.1-34.8, tension@31.4-32.3, impact@32.3-32.3, release@32.3-36.0, tension@31.9-33.6, impact@33.6-33.6, release@33.6-37.3, tension@33.8-34.9, build@2.8-32.2, impact@34.9-34.9, release@34.9-38.5, tension@35.6-36.0, build@2.8-32.2, impact@36.0-36.0, release@36.0-39.7, tension@35.6-37.1, build@2.8-32.2, build@2.8-32.2, build@2.8-32.2, build@2.8-32.2, build@2.8-32.2
+
+Armin - Revolution:
+  Breath                           81.39-  96.33  -> build@78.3-83.9, build@78.3-83.9, build@78.3-83.9, build@84.2-99.0, build@95.1-100.6, approach@79.5-87.0, build@95.1-100.6, approach@79.5-87.0, build@95.1-100.6, approach@79.5-87.0, build@95.1-100.6, approach@79.5-87.0, build@95.1-100.6, approach@79.5-87.0, build@95.1-100.6, approach@79.5-87.0, build@95.1-100.6, approach@79.5-87.0, build@95.1-100.6, approach@79.5-87.0, approach@84.2-99.0, approach@84.2-99.0, approach@84.2-99.0, approach@84.2-99.0
+  Vocal Phrase (filtered)          11.57-  15.23  -> build@7.9-13.4, build@7.9-13.4, build@0.0-29.6, build@0.0-29.6, build@0.0-29.6, build@0.0-29.6, approach@0.0-29.6, approach@0.0-29.6, approach@0.0-29.6, approach@0.0-29.6

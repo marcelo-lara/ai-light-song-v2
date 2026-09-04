@@ -28,3 +28,16 @@ export function activeBlockIndex(
   }
   return best;
 }
+
+/**
+ * Whether `time` falls inside this block's window — half-open [start_s, end_s),
+ * same convention as `activeBlockIndex`, and the same D5 rule that a
+ * degenerate block (end_s <= start_s) is never active. Unlike
+ * `activeBlockIndex`, this is evaluated per block rather than resolved to one
+ * "innermost" winner: overlapping blocks can all report `true` at once, which
+ * is what the card's left-border playhead marker is for.
+ */
+export function isInPlayheadWindow(block: SparseBlock, time: number): boolean {
+  if (block.end_s <= block.start_s) return false;
+  return time >= block.start_s && time < block.end_s;
+}

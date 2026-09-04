@@ -1,0 +1,40 @@
+Vocal phrase blocks — score vs incumbent + mix-RMS baseline
+============================================================
+
+_test_song  (30 hint boundaries, span 58.1s)
+  method                       +-0.1  +-0.25   +-0.5  bounds/min
+  vocal_phrases                11/30   14/30   20/30       20.65
+  shipped sections.json         4/30    4/30    6/30        3.10
+  mix-RMS baseline             12/30   16/30   23/30       47.49
+
+Hideaway - Kiesza  (10 hint boundaries, span 251.7s)
+  method                       +-0.1  +-0.25   +-0.5  bounds/min
+  vocal_phrases                 2/10    2/10    8/10       56.02
+  shipped sections.json         0/10    0/10    0/10        3.34
+  mix-RMS baseline              0/10    0/10    0/10       49.11
+
+Armin - Revolution  (24 hint boundaries, span 194.0s)
+  method                       +-0.1  +-0.25   +-0.5  bounds/min
+  vocal_phrases                 8/24   12/24   14/24       58.14
+  shipped sections.json         1/24    1/24    4/24        3.71
+  mix-RMS baseline              3/24    3/24    7/24       63.09
+
+Titanium - David Guetta ft Sia  (30 hint boundaries, span 232.4s)
+  method                       +-0.1  +-0.25   +-0.5  bounds/min
+  vocal_phrases                 7/30   14/30   24/30       44.92
+  shipped sections.json         0/30    0/30    0/30        4.13
+  mix-RMS baseline             10/30   18/30   21/30       85.19
+
+Aggregate across 4 songs, 94 hint boundaries:
+  method                       +-0.1  +-0.25   +-0.5  avg bounds/min
+  vocal_phrases                28/94   42/94   66/94           44.93
+  shipped sections.json         5/94    5/94   10/94            3.57
+  mix-RMS baseline             25/94   37/94   51/94           61.22
+
+breath_s sweep on _test_song, MAE against word-level line on/off:
+
+  breath_s     phrases   onset MAE  offset MAE
+  0.3               13       0.022       0.145
+  0.5                9       0.022       0.164
+  0.7                9       0.022       0.164
+  1.0                6       0.022       0.164

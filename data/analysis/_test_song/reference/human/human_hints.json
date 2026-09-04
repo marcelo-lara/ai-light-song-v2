@@ -4,8 +4,8 @@
     {
       "id": "hint-001",
       "title": "Drum Hit",
-      "start_time": 7.289,
-      "end_time": 7.633,
+      "start_time": 7.44,
+      "end_time": 7.626,
       "summary": "Drum Hit",
       "lighting_hint": "Intense strobe"
     },
@@ -46,12 +46,12 @@
       "title": "Vocal outro phrase 1.1",
       "start_time": 43.339,
       "end_time": 44.356,
-      "summary": "vocal slowdown",
+      "summary": "Intense vocal shout",
       "lighting_hint": "moving heads movement following vocal levels"
     },
     {
       "id": "hint-009",
-      "title": "Hint 8",
+      "title": "Synth Pad",
       "start_time": 44.455,
       "end_time": 47.045,
       "summary": "ambient melody",
@@ -109,8 +109,16 @@
       "id": "hint-016",
       "title": "drop release",
       "start_time": 29.125,
-      "end_time": 29.566036458333333,
+      "end_time": 29.566,
       "summary": "drop release",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-017",
+      "title": "High Energy",
+      "start_time": 29.594,
+      "end_time": 36.5,
+      "summary": "Full drum machine. acid synth bass.",
       "lighting_hint": ""
     }
   ]

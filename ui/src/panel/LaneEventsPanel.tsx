@@ -15,6 +15,12 @@
 // (per `activeBlockIndex`) gets `data-active="true"` / `aria-current`. While
 // `playing`, the active card is scrolled into view on every index change;
 // paused, the list never moves on its own, which keeps the screenshots stable.
+//
+// Separately, every card covering `currentTime` — not just the one
+// `activeBlockIndex` resolves to — gets `data-in-window="true"`, drawn as a 2px
+// accent-300 left-edge marker. Blocks in a lane can overlap, so more than one
+// card can carry this at once; `data-active` still names a single "primary"
+// card (raised tint, bright label) among however many are in-window.
 
 import { useEffect, useRef } from "react";
 
@@ -22,7 +28,7 @@ import type { ArtifactStatus } from "../data";
 import type { SparseBlock } from "../timeline/laneContent";
 import { sparseTint } from "../timeline/sparseTints";
 
-import { activeBlockIndex } from "./laneEvents";
+import { activeBlockIndex, isInPlayheadWindow } from "./laneEvents";
 import { RightPanel } from "./RightPanel";
 
 interface LaneEventsPanelProps {
@@ -98,6 +104,7 @@ export function LaneEventsPanel({
           {blocks.map((block, index) => {
             const tint = sparseTint(block.tintId ?? laneId);
             const active = index === activeIndex;
+            const inWindow = isInPlayheadWindow(block, currentTime);
             return (
               <li key={block.id}>
                 <button
@@ -107,6 +114,7 @@ export function LaneEventsPanel({
                   data-testid={`lane-event-${block.id}`}
                   data-block-id={block.id}
                   data-active={active}
+                  data-in-window={inWindow}
                   aria-current={active ? "true" : undefined}
                   style={{ background: tint.fill, borderLeftColor: tint.stroke }}
                   onClick={() => onSelectBlock(block)}

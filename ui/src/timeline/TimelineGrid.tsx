@@ -74,50 +74,53 @@ export function TimelineGrid({
   return (
     <div className="app-timeline tl" data-testid="timeline-viewport" ref={scrollerRef}>
       <div className="app-timeline__grid" style={{ position: "relative" }}>
-        {/* ---- Segments header (sticky, h26) ---- */}
-        <div
-          className="app-timeline__lane-head app-timeline__header-row tl-sticky-head"
-          style={{ top: 0, zIndex: 11, height: 26 }}
-        >
-          <i className="ph ph-flag" style={{ fontSize: 11 }} />
-          <span>Segments</span>
-        </div>
-        <div
-          className="app-timeline__header-row tl-sticky-body"
-          style={{ top: 0, zIndex: 8, height: 26, width: timelineW }}
-        >
-          {segments.map((seg) => (
-            <button
-              key={seg.key}
-              type="button"
-              className={`tl-seg-block${seg.accent ? " is-accent" : ""}`}
-              style={{ left: seg.left, width: seg.width }}
-              title={`${seg.name}${seg.barsText ? ` · ${seg.barsText}` : ""}`}
-              onClick={() => onSelectSegment?.(seg)}
-            >
-              {seg.showLabel && (
-                <>
-                  <span className="tl-seg-name">{seg.name}</span>
-                  {seg.barsText && <span className="tl-seg-len">{seg.barsText}</span>}
-                </>
-              )}
-            </button>
-          ))}
+        {/* ---- Segments header (sticky row, h26) ---- */}
+        <div className="app-timeline__row app-timeline__row--pinned" style={{ top: 0 }}>
+          <div
+            className="app-timeline__lane-head app-timeline__header-row tl-sticky-head"
+            style={{ height: 26 }}
+          >
+            <i className="ph ph-flag" style={{ fontSize: 11 }} />
+            <span>Segments</span>
+          </div>
+          <div
+            className="app-timeline__header-row tl-sticky-body"
+            style={{ height: 26, width: timelineW }}
+          >
+            {segments.map((seg) => (
+              <button
+                key={seg.key}
+                type="button"
+                className={`tl-seg-block${seg.accent ? " is-accent" : ""}`}
+                style={{ left: seg.left, width: seg.width }}
+                title={`${seg.name}${seg.barsText ? ` · ${seg.barsText}` : ""}`}
+                onClick={() => onSelectSegment?.(seg)}
+              >
+                {seg.showLabel && (
+                  <>
+                    <span className="tl-seg-name">{seg.name}</span>
+                    {seg.barsText && <span className="tl-seg-len">{seg.barsText}</span>}
+                  </>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* ---- Bars ruler (sticky, h30) ---- */}
-        <div
-          className="app-timeline__lane-head tl-ruler-head tl-sticky-head"
-          style={{ top: 26, zIndex: 11, height: 30 }}
-        >
-          <span>Bars</span>
-        </div>
-        <div
-          className="tl-ruler-body tl-sticky-body"
-          style={{ top: 26, zIndex: 8, height: 30, width: timelineW }}
-          onClick={seekFromEvent}
-          role="presentation"
-        >
+        {/* ---- Bars ruler (sticky row, h30) ---- */}
+        <div className="app-timeline__row app-timeline__row--pinned" style={{ top: 26 }}>
+          <div
+            className="app-timeline__lane-head tl-ruler-head tl-sticky-head"
+            style={{ height: 30 }}
+          >
+            <span>Bars</span>
+          </div>
+          <div
+            className="tl-ruler-body tl-sticky-body"
+            style={{ height: 30, width: timelineW }}
+            onClick={seekFromEvent}
+            role="presentation"
+          >
           {beatTicks.map((beat, i) => (
             <div
               key={`bt-${i}`}
@@ -146,6 +149,7 @@ export function TimelineGrid({
                 {line.bar}
               </div>
             ))}
+          </div>
         </div>
 
         {/* ---- Lanes ---- */}
@@ -268,7 +272,7 @@ function LaneRow({
 }: LaneRowProps): React.JSX.Element {
   const collapsed = lane.expanded ? "false" : "true";
   return (
-    <>
+    <div className="app-timeline__row app-timeline__row--lane" data-lane-row={lane.id}>
       <LaneHeader
         lane={lane}
         onToggleExpand={onToggleExpand}
@@ -290,6 +294,6 @@ function LaneRow({
         ))}
         {body}
       </div>
-    </>
+    </div>
   );
 }

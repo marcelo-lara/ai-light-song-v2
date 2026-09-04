@@ -88,6 +88,14 @@
       "end_time": 155.555,
       "summary": "drop impact",
       "lighting_hint": ""
+    },
+    {
+      "id": "hint-012",
+      "title": "Vocal Phrase (filtered)",
+      "start_time": 11.572,
+      "end_time": 15.23,
+      "summary": "We are the revolution, yeah",
+      "lighting_hint": ""
     }
   ]
 }

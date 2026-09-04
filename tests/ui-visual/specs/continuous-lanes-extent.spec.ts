@@ -62,8 +62,15 @@ async function expectFullExtent(page: import("@playwright/test").Page, lane: str
     Math.abs(backing!.styleW - ext.contentWidth),
     `${lane} canvas CSS width matches the timeline content width`,
   ).toBeLessThanOrEqual(1);
+  // The backing store spans the full content width — as long as that fits under
+  // Chrome's ~32k canvas ceiling. At the 360 px/bar max zoom a long song blows
+  // past it; CanvasLane then keeps the CSS width exact (asserted above) and
+  // downscales the backing store, so only require it to stay substantial.
+  const MAX_CANVAS_PX = 32000;
   expect(backing!.w, `${lane} canvas backing store is non-trivial`).toBeGreaterThan(
-    ext.contentWidth * 0.9,
+    ext.contentWidth > MAX_CANVAS_PX
+      ? MAX_CANVAS_PX / 2
+      : ext.contentWidth * 0.9,
   );
 
   const shortfall = ext.contentWidth - ext.lastNonEmptyX;

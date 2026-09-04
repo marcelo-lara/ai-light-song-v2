@@ -92,7 +92,7 @@ export function medianBarSeconds(
 export interface CoordsInput {
   beats: readonly BeatLike[];
   duration: number;
-  /** the zoom control value (14-180); drives pxPerSec via medianBarSeconds */
+  /** the zoom control value (14-360); drives pxPerSec via medianBarSeconds */
   pxPerBar: number;
 }
 

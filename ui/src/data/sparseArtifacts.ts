@@ -578,6 +578,63 @@ export function parseVocalTranscription(raw: unknown): VocalTranscriptionFile {
 }
 
 // ---------------------------------------------------------------------------
+// Moises lyrics — reference/moises/lyrics.json
+// ---------------------------------------------------------------------------
+//
+// An external, word-level sung-lyric export. The file is a flat array of word
+// tokens, each carrying a `line_id`, `start`, `end` and per-word `confidence`;
+// `<SOL>` / `<EOL>` marker rows delimit each line and carry no confidence. The
+// lane renders one block per token — words and markers alike, ungrouped — so
+// the raw transcription can be auditioned word by word against the audio.
+
+export type MoisesTokenKind = "word" | "sol" | "eol";
+
+export interface MoisesLyricToken {
+  id: string;
+  line_id: number;
+  start_s: number;
+  end_s: number;
+  text: string;
+  kind: MoisesTokenKind;
+  /** per-word confidence in [0, 1], or null for the line markers */
+  confidence: number | null;
+  raw: Record<string, unknown>;
+}
+
+export interface MoisesLyricsFile {
+  schema_version: string;
+  song_name: string;
+  tokens: MoisesLyricToken[];
+}
+
+const MOISES_MARKER_KIND: Record<string, MoisesTokenKind> = {
+  "<SOL>": "sol",
+  "<EOL>": "eol",
+};
+
+export function parseMoisesLyrics(raw: unknown): MoisesLyricsFile {
+  const tokens = arr(raw).map((row, i): MoisesLyricToken => {
+    const r = rec(row);
+    const text = st(r.text).trim();
+    const kind = MOISES_MARKER_KIND[text] ?? "word";
+    const start_s = num(r.start);
+    const conf = Number(r.confidence);
+    return {
+      id: st(r.id, `tok-${String(i + 1).padStart(4, "0")}`),
+      line_id: num(r.line_id, 0),
+      start_s,
+      end_s: Math.max(num(r.end, start_s), start_s),
+      text,
+      kind,
+      confidence: kind === "word" && Number.isFinite(conf) ? conf : null,
+      raw: r,
+    };
+  });
+  tokens.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: "", song_name: "", tokens };
+}
+
+// ---------------------------------------------------------------------------
 // loaders
 // ---------------------------------------------------------------------------
 
@@ -649,6 +706,25 @@ export async function loadVocalTranscription(
   return result;
 }
 /**
+ * External reference, present only for songs Moises has been run over, so a 404
+ * resolves to an empty file. Every other failure still surfaces.
+ */
+export async function loadMoisesLyrics(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<MoisesLyricsFile>> {
+  const result = await loadJson(
+    artifactPaths.moisesLyrics(song),
+    parseMoisesLyrics,
+    f,
+  );
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, tokens: [] } };
+  }
+  return result;
+}
+
+/**
  * The proposals file is optional — it exists only for songs the drop-detection
  * exporter has been run over — so a 404 resolves to an empty file rather than a
  * load error. Every other failure (network, bad JSON, wrong shape) still
@@ -674,6 +750,229 @@ export async function loadDropProposals(
         proposals: [],
       },
     };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// vocal phrase blocks — reference/proposals/vocal_phrases.json
+// ---------------------------------------------------------------------------
+//
+// Vocal-activity phrase / instrumental-gap / sustained-note blocks from
+// experiments/vocal_phrases (Part A: the local-auto-gain hysteresis detector
+// over the vocal stem; no model). Not ground truth — a proposal to audition
+// against Human Hints and Moises Lyrics, which sit directly above it.
+
+export interface VocalPhraseBlock {
+  start_s: number;
+  end_s: number;
+  confidence: number;
+  kind: "vocal_phrase" | "instrumental_gap" | "sustained_note";
+  note_hz?: number;
+}
+
+export interface VocalPhrasesFile {
+  schema_version: string;
+  song_name: string;
+  blocks: VocalPhraseBlock[];
+}
+
+export function parseVocalPhrases(raw: unknown): VocalPhrasesFile {
+  const o = asObject(raw, "reference/proposals/vocal_phrases.json");
+  const blocks: VocalPhraseBlock[] = [];
+  for (const row of arr(o.vocal_phrases)) {
+    const r = rec(row);
+    blocks.push({ start_s: num(r.start), end_s: num(r.end), confidence: num(r.confidence), kind: "vocal_phrase" });
+  }
+  for (const row of arr(o.instrumental_gaps)) {
+    const r = rec(row);
+    blocks.push({ start_s: num(r.start), end_s: num(r.end), confidence: num(r.confidence), kind: "instrumental_gap" });
+  }
+  for (const row of arr(o.sustained_notes)) {
+    const r = rec(row);
+    blocks.push({
+      start_s: num(r.start), end_s: num(r.end), confidence: num(r.confidence),
+      kind: "sustained_note", note_hz: num(r.note_hz),
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadVocalPhrases(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<VocalPhrasesFile>> {
+  const result = await loadJson(artifactPaths.vocalPhrases(song), parseVocalPhrases, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// reactive-band accents — reference/proposals/reactive_bands.json
+// ---------------------------------------------------------------------------
+//
+// experiments/reactive_bands: discrete accents (instantaneous band-power
+// ratio spiking above its own damped twin) from the locally auto-gained FFT
+// bands. The dense per-beat/per-bar bass/mid/treb stream this file also
+// carries is not rendered as its own lane — see the experiment's README.
+
+export interface ReactiveBandAccent {
+  time_s: number;
+  band: string;
+  strength: number;
+  beat: number | null;
+  bar: number | null;
+}
+
+export interface ReactiveBandsFile {
+  schema_version: string;
+  song_name: string;
+  accents: ReactiveBandAccent[];
+}
+
+export function parseReactiveBands(raw: unknown): ReactiveBandsFile {
+  const o = asObject(raw, "reference/proposals/reactive_bands.json");
+  const accents = arr(o.accents).map((row): ReactiveBandAccent => {
+    const r = rec(row);
+    return {
+      time_s: num(r.time),
+      band: st(r.band),
+      strength: num(r.strength),
+      beat: r.beat == null ? null : num(r.beat),
+      bar: r.bar == null ? null : num(r.bar),
+    };
+  });
+  accents.sort((a, b) => a.time_s - b.time_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), accents };
+}
+
+export async function loadReactiveBands(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<ReactiveBandsFile>> {
+  const result = await loadJson(artifactPaths.reactiveBands(song), parseReactiveBands, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, accents: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// gestures — reference/proposals/gestures.json
+// ---------------------------------------------------------------------------
+//
+// experiments/gestures: composite drop gestures (approach/build/tension/
+// impact/release) assembled from named sound-design primitive detectors.
+// Never names the section — it says "a build of this shape happens here".
+
+export interface GesturePhase {
+  name: string;
+  start_s: number;
+  end_s: number;
+  confidence: number;
+  from: string;
+}
+
+export interface GestureBlock {
+  id: string;
+  start_s: number;
+  end_s: number;
+  impact_time_s: number;
+  confidence: number;
+  phases: GesturePhase[];
+}
+
+export interface GesturesFile {
+  schema_version: string;
+  song_name: string;
+  gestures: GestureBlock[];
+}
+
+export function parseGestures(raw: unknown): GesturesFile {
+  const o = asObject(raw, "reference/proposals/gestures.json");
+  const gestures = arr(o.gestures).map((row, i): GestureBlock => {
+    const r = rec(row);
+    const phasesIn = rec(r.phases);
+    const phases: GesturePhase[] = Object.entries(phasesIn).map(([name, v]) => {
+      const pr = rec(v);
+      return { name, start_s: num(pr.start), end_s: num(pr.end), confidence: num(pr.confidence), from: st(pr.from) };
+    });
+    phases.sort((a, b) => a.start_s - b.start_s);
+    return {
+      id: `gesture-${String(i + 1).padStart(3, "0")}`,
+      start_s: num(r.start),
+      end_s: num(r.end),
+      impact_time_s: num(r.impact_time),
+      confidence: num(r.confidence),
+      phases,
+    };
+  });
+  gestures.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), gestures };
+}
+
+export async function loadGestures(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<GesturesFile>> {
+  const result = await loadJson(artifactPaths.gestures(song), parseGestures, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, gestures: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// grid consensus — reference/proposals/grid.json
+// ---------------------------------------------------------------------------
+//
+// experiments/grid_consensus: the resolved downbeat phase + derived phrase
+// grid. Only the phrase-grid boundaries are rendered as a lane (a per-beat
+// downbeat overlay would be too dense for a block lane); `status` is the
+// song-level "resolved" / "unknown" flag from the consensus.
+
+export interface PhraseGridBoundary {
+  bar: number;
+  time_s: number;
+  confidence: number;
+}
+
+export interface GridFile {
+  schema_version: string;
+  song_name: string;
+  status: string;
+  confidence: number;
+  phrase_length_bars: number | null;
+  boundaries: PhraseGridBoundary[];
+}
+
+export function parseGrid(raw: unknown): GridFile {
+  const o = asObject(raw, "reference/proposals/grid.json");
+  const phraseGrid = rec(o.phrase_grid);
+  const boundaries = arr(phraseGrid.boundaries).map((row): PhraseGridBoundary => {
+    const r = rec(row);
+    return { bar: num(r.bar), time_s: num(r.time), confidence: num(r.confidence) };
+  });
+  return {
+    schema_version: st(o.schema_version),
+    song_name: st(o.song_name),
+    status: st(o.status),
+    confidence: num(o.confidence),
+    phrase_length_bars: phraseGrid.phrase_length_bars == null ? null : num(phraseGrid.phrase_length_bars),
+    boundaries,
+  };
+}
+
+export async function loadGrid(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<GridFile>> {
+  const result = await loadJson(artifactPaths.grid(song), parseGrid, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, status: "", confidence: 0, phrase_length_bars: null, boundaries: [] } };
   }
   return result;
 }

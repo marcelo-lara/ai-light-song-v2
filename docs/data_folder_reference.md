@@ -731,6 +731,7 @@ LLM hint:
 - Combine: with vocal symbolic data for melody-aware lyric moments.
 - Use: derive beat- or line-aligned features such as lyric density, line starts, line ends, post-line tails, and confidence-weighted vocal-presence priors.
 - Optional promotion rule: if a Story explicitly allows it, this file may rescue low-confidence vocal timing or event timing only when the overlapping stem or energy evidence agrees and the promotion is recorded explicitly.
+- Debugger: shown as the read-only **Moises Lyrics** lane (directly under Human Hints), one block per token with the block tinted by each word's `confidence`.
 
 ## Practical Usage Patterns
 

@@ -91,6 +91,8 @@ const TIMELINE_KEYS = [
   "drums",
   "energy",
   "humanHints",
+  // external word-level sung lyrics (reference/moises)
+  "moisesLyrics",
   // item 9 sparse lanes
   "patterns",
   "identifierHints",
@@ -99,6 +101,11 @@ const TIMELINE_KEYS = [
   "symbolicPhrases",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",
+  // wave-2 experiments (docs/experiments_pending.md run orders 1-3, 6)
+  "vocalPhrases",
+  "reactiveBands",
+  "gestures",
+  "grid",
   // named song form under review (experiments/allin1)
   "allin1",
   // texture / character blocks under review (experiments/clap)
@@ -110,7 +117,12 @@ const TIMELINE_KEYS = [
 /** sparse lane id → the single artifact key that backs it (drives empty-state). */
 const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   humanHints: "humanHints",
+  moisesLyrics: "moisesLyrics",
   dropProposals: "dropProposals",
+  vocalPhrases: "vocalPhrases",
+  reactiveBands: "reactiveBands",
+  gestures: "gestures",
+  gridPhrase: "grid",
   allin1Transitions: "allin1",
   allin1Sections: "allin1",
   character: "character",
@@ -263,7 +275,12 @@ export function App(): React.JSX.Element {
   const laneContentSources = useMemo<LaneContentSources>(
     () => ({
       humanHints: humanHintsFile,
+      moisesLyrics: artifacts.moisesLyrics.data,
       dropProposals: artifacts.dropProposals.data,
+      vocalPhrases: artifacts.vocalPhrases.data,
+      reactiveBands: artifacts.reactiveBands.data,
+      gestures: artifacts.gestures.data,
+      grid: artifacts.grid.data,
       allin1: artifacts.allin1.data,
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
@@ -277,7 +294,12 @@ export function App(): React.JSX.Element {
     }),
     [
       humanHintsFile,
+      artifacts.moisesLyrics.data,
       artifacts.dropProposals.data,
+      artifacts.vocalPhrases.data,
+      artifacts.reactiveBands.data,
+      artifacts.gestures.data,
+      artifacts.grid.data,
       artifacts.allin1.data,
       artifacts.character.data,
       artifacts.vocalTranscription.data,

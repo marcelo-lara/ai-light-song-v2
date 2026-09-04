@@ -15,7 +15,7 @@ import {
 } from "./zoom";
 
 describe("clamp + zoom steps", () => {
-  it("clamps to the 14-180 range and rounds", () => {
+  it("clamps to the 14-360 range and rounds", () => {
     expect(clampPxPerBar(5)).toBe(PX_PER_BAR_MIN);
     expect(clampPxPerBar(999)).toBe(PX_PER_BAR_MAX);
     expect(clampPxPerBar(61.6)).toBe(62);

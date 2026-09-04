@@ -1,13 +1,13 @@
 // zoom.ts — the zoom control maths.
 //
-// `pxPerBar` (14-180) stays the user-facing zoom value and the footer label,
+// `pxPerBar` (14-360) stays the user-facing zoom value and the footer label,
 // exactly as the canvas mock. Internally it is converted to `pxPerSec` through
 // `medianBarSeconds` (see coords.ts) so the time-proportional timeline stays
 // tempo-accurate. `fitToWidth` back-solves a `pxPerBar` for the label from a
 // target `pxPerSec`.
 
 export const PX_PER_BAR_MIN = 14;
-export const PX_PER_BAR_MAX = 180;
+export const PX_PER_BAR_MAX = 360;
 export const ZOOM_FACTOR = 1.3;
 
 /** px reserved left of the body: 212 label column + 12 slack (canvas value). */

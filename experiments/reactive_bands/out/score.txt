@@ -1,0 +1,51 @@
+Reactive band dynamics — score report
+============================================================
+
+Accent-threshold calibration — bass band, mix source, local (2s) normalisation
+
+  threshold    hits @0.5   hits @1.0   accents/min avg
+  0.5            6/7         6/7                 91.39
+  0.8            5/7         6/7                 69.95
+  1.0            5/7         6/7                 59.52
+  1.3            5/7         6/7                 49.46
+  1.6            5/7         6/7                 38.93
+  2.0            5/7         6/7                 29.17  <- shipped default
+  2.5            4/7         6/7                 19.08
+  3.0            3/7         4/7                 13.78
+  4.0            3/7         3/7                  6.56
+  5.0            1/7         1/7                  2.75
+
+Window sweep — bass-band accents vs. 7 drop impacts, mix source
+
+  window_s     hits @0.5   accents/min avg
+  1.0            4/7                 24.19
+  2.0            5/7                 29.17
+  4.0            3/7                 29.42
+  8.0            3/7                 29.66
+
+  bar-length window (per-song median bar duration):
+  bar-len        5/7                 28.57
+
+Normalisation ablation — local running mean vs. whole-song percentile,
+BUDGET-MATCHED at ~29.0/min each (a shared absolute threshold is not a
+fair comparison — see docstring on _accents_at_target_rate). This replaced an
+earlier fixed-threshold version that made the percentile curve fire ~0
+accents purely because its scale is clipped to [0, 2] — an artifact of the
+threshold, not a finding about the normalisation.
+
+  normalisation                              +-0.25    +-0.5    +-1.0  accents/min
+  local running mean (2s) — all impacts                        2/7      4/7      5/7           29.22
+  local running mean (2s) — impacts in low-loudness passages (n=2)   1/2      2/2      2/2           29.22
+  whole-song percentile (incumbent) — all impacts              5/7      7/7      7/7           29.34
+  whole-song percentile (incumbent) — impacts in low-loudness passages (n=2)   0/2      2/2      2/2           29.34
+
+  NOTE: only 2 drop impacts fall in a low-loudness passage across the
+  gold set — too few to resolve the low-loudness hypothesis either way. This
+  is the constitution §3 noise-floor case: more hand-marked low-loudness
+  impacts are needed before this specific claim can be tested, not more tuning.
+
+Cheap baseline — thresholded raw drums-stem RMS (no band split, no auto-gain)
+
+  method                             +-0.25    +-0.5    +-1.0  accents/min
+  reactive-bands accents (bass, mix)   4/7      5/7      6/7           29.17
+  drums-RMS threshold baseline       3/7      4/7      4/7          129.96
