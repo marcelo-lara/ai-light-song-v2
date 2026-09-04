@@ -1,3 +1,393 @@
+# Wave-2 review — every experiment measured against the module it would replace
+
+*Written 2026-09-04, after the wave-2 batch. This section reads the entries
+below against `src/` as it stands today and says, per module, whether to
+**remove**, **replace**, **complement** or **keep**. It is advice, not a
+decision: nothing here has been promoted, and §3.3 still applies.*
+
+*Facts marked **(verified here)** were re-measured across all 21 analysed songs
+while writing this; everything else is cited from the entry below it.*
+
+## The one-line verdict
+
+**Roughly 6,000 of the analyzer's ~14,600 lines produce inference that is either
+measured at chance, measured at literally zero, or never projected to the
+authoring model — and the two projected files that carry the most weight
+(`sections.json`, `song_event_timeline.json`) are the two that measure worst.**
+Meanwhile the three facts a cue author most needs — *which part is this*, *is
+this part the earlier one returning*, *what does this passage feel like* — are
+each either missing or provably wrong. Processing time is not the problem. The
+problem is that the expensive half of the pipeline is spending it on claims
+nobody reads and claims that are wrong.
+
+## Module-by-module: what is measured, and what it costs
+
+| `src/` module | lines | writes | projected? | measured | verdict |
+| --- | --- | --- | --- | --- | --- |
+| `stems.py` | 198 | `stems/` | no (feeds all) | trusted | **keep** |
+| `timing.py` | 156 | `beats.json` | **yes (#4)** | beats 7/7 within 0.25 s; **downbeats 3/7** | **keep beats, replace downbeat phase** |
+| `loudness.py` | 160 | `rms_loudness.json` | **yes (detail)** | trusted | **keep** |
+| `fft_bands.py` | 138 | `essentia/fft_bands.json` | no | its whole-song percentile normalisation **won** the reactive-bands ablation 5/7 vs 2/7 @±0.25 s | **keep, vindicated** |
+| `drums.py` | 253 | `symbolic_transcription/drum_events.json` | **yes (detail)** | trusted | **keep** |
+| `genre.py` | 330 | `genre.json` | **yes** | honest confidences (`dance @ 0.27`) | **keep** |
+| `harmonic.py` | 736 | `layer_a_harmonic.json`, `hpcp.json` | **no** | trusted DSP, but its only consumer is the segmenter that measures at chance | **keep as input — but decide project-or-stop** |
+| `energy.py` | 302 | `layer_c_energy.json`, `energy_summary/` (4.0 MB/song) | **no** | never scored | **keep as input, stop publishing** |
+| `sections/` (`segmenter`+`form`+`utils`) | 1,403 | `sections.json`, `section_segmentation/` | **yes (#1)** | **0/7 @±1.0 s**, 1/7 @±2.0 s; loses to an evenly spaced grid (2/7) and to a 20-line librosa baseline | **REPLACE** |
+| `event_rules/` + `event_machine/` + `event_features/` | 2,447 | `event_inference/` (8.8 MB/song) | no | — | **REPLACE (with the stage below)** |
+| `event_timeline` + `event_review` + `event_identifiers` + `review_queue` + `event_contracts` | 1,352 | `song_event_timeline.json` | **yes (#2)** | **0/7 @±0.25 s, 1/7 @±0.5 s**; 2,395 events over 21 songs | **REPLACE** |
+| `event_ml.py` + `event_ml_train.py` + `event_ml_models.py` | 1,080 | `events.ml.json` | no | **0 events on 21 of 21 songs (verified here)** | **REMOVE** |
+| `event_benchmark.py` | 175 | `validation/event_benchmark.json` | no | **`status: "skipped"` on 21 of 21 — `benchmark_annotations/` does not exist in the tree (verified here)** | **REMOVE** |
+| `symbolic/` + `_basic_pitch*` + `_omnizart_runtime` | 1,341 | `layer_b_symbolic.json` (7.0 MB/song) | **no** | feeds only the templated `motif_recall` hints and the event features | **REMOVE (keep `drums.py`)** |
+| `patterns.py` + `validation/patterns.py` | 603 | `pattern_mining/chord_patterns.json`, `layer_d` | **no** | never scored, never projected | **REMOVE or project** |
+| `unified.py` + `validation/unified.py` | 351 | `music_feature_layers.json` | **no** | a re-packaging of files nothing reads | **REMOVE** |
+| `hints.py` | 365 | `hints.json` | **yes (#3)** | 877 hints, 4 templated categories, **`user_hint_count: 0` on all 21 songs (verified here)** | **REBUILD** |
+| `validation/` (rest) | ~1,700 | `validation/` | no | `form_score` `mode: "unlabelled"`, `labelled_boundary_count: 0` on 4/4; `drops_score` timed on 1 song | **cut to what has labels** |
+| `ui_data.py`, `hint_alignment.py` | 364 | debugger input | UI | — | **keep** |
+
+## 1. Remove — inference that returns nothing
+
+These are not close calls. None of them needs another experiment to settle;
+each is already measured at zero, or has no consumer at all.
+
+1. **The ML event stack — 1,080 lines, 0 events.** `events.ml.json` contains an
+   empty `events` array on **every one of the 21 analysed songs** (verified
+   here). Three modules, a training script, a seeded model directory and a
+   pipeline stage produce nothing at all. Delete outright.
+2. **`event_benchmark.py` — skipped 21/21.** It scores against
+   `benchmark_annotations/<song>.json`, a directory that **does not exist in the
+   repository**. Every run writes `status: "skipped", reason: "No benchmark
+   annotation file exists for this song."` This is a validation stage that has
+   never validated anything.
+3. **Half of `song_event_timeline.json` is beat-level arrangement noise.**
+   2,395 events across 21 songs, **114 per song, median duration 0.488 s** — one
+   beat. `layer_add` (655) and `layer_remove` (583) are **52 % of the file** and
+   both are a per-beat energy delta with a fixed sentence attached. There are
+   **46 distinct `summary` strings for 2,395 events**; the top three are
+   *"Arrangement appears to gain material at this beat."* (×655),
+   *"Arrangement appears to strip back at this beat."* (×583) and
+   *"Breakdown candidates are merged across adjacent negative-delta beats."*
+   (×258) — the last is an internal implementation note, and the input guide
+   names that exact failure ("*'Impact hits remain single-beat candidates' is an
+   internal note, not a cue hint*"; it appears 116 times). The concept pass sees
+   `type`, the window and `intensity` for all 114 of them.
+4. **Symbolic note transcription — 1,341 lines and 7.0 MB per song, for nothing
+   projected.** `basic_pitch` and `omnizart` pitch transcription reaches the
+   authoring model through exactly one route: the templated `motif_recall` hint
+   (*"Repeated material returns here through phrase groups …"*, 244 of the 877
+   hints, all the same sentence). Drum events — which *are* projected — come
+   from `drums.py`, not from here.
+5. **`unified.py` / `music_feature_layers.json`.** A merge of four layer files,
+   none of which is on the MCP surface. The merge is invisible squared.
+6. **`patterns.py`.** Chord-pattern mining is honest deterministic arithmetic
+   and it reaches nobody. Either promote a compact form of it into a projected
+   file or stop computing it; carrying it in between is the worst of both.
+7. **Drop detection from raw features — `event_identifiers.py`.** It picks drops
+   off bass-band transients directly. Constitution §5.2 says the opposite in as
+   many words: *a drop is derived from a named section pair, not detected*. The
+   result is **5 `drop` and 20 `fake_drop` events across the whole 21-song
+   corpus** against 7 hand-marked impacts on four songs — it is not finding
+   them.
+8. **Validation stages with no labels.** `form_score.json` exists on 4 songs and
+   reports `mode: "unlabelled"`, `labelled_boundary_count: 0` on all four;
+   `drops_score.json` is in `presence` mode on 3 of 4 and `timed` on one. These
+   files read as scores and contain no scoring. Keep the beat/chord validators,
+   which do compare against real reference data; drop the rest until labels
+   exist.
+
+**Rough total: ~4,000 lines and ~20 MB of per-song artifact, none of which
+changes a cue.**
+
+## 2. Replace — where an experiment beats the module it was built against
+
+### 2.1 `sections/` → `allin1` (gated on SongFormer)
+
+The incumbent is the highest-priority projected file in the contract and it is
+the worst-measured module in the tree.
+
+| method | ±0.5 s | ±1.0 s | ±2.0 s | boundaries/min |
+| --- | --- | --- | --- | --- |
+| **allin1 section transitions** | **3/7** | **4/7** | 4/7 | **1.6** |
+| shipped `sections.json` | 0/7 | 0/7 | 1/7 | 3.6 |
+| evenly spaced grid, same budget | 0/7 | 2/7 | 3/7 | 3.6 |
+
+allin1 also supplies what the incumbent structurally cannot: a *named*
+functional label (`intro verse chorus bridge inst break outro`) instead of an
+invented mood adjective, at **less than half** the boundary budget. Deletes
+`src/analyzer/stages/sections/` (1,403 lines) and changes `sections.json` plus
+`artifacts/section_segmentation/sections.json`.
+
+**Do not promote before the SongFormer entry runs.** SongFormer reports HR.5F
+0.703 against All-In-One's 0.596 on the same Harmonix vocabulary; promoting
+allin1 first risks wiring the pipeline's whole structural read to the
+second-best model. That run is cheap relative to the cost of getting it wrong.
+
+### 2.2 `beats.json` downbeats → allin1's downbeat phase
+
+Not a new experiment — it is the grid-consensus entry's own negative result read
+forwards. Consensus fusion ties two trackers and loses to the third:
+
+| downbeat phase | hits @ ±0.25 s |
+| --- | --- |
+| essentia (ships today) | 3/7 |
+| beat-this | 3/7 |
+| **allin1** | **4/7** |
+| grid-consensus fusion | 3/7 |
+
+If allin1 is promoted for structure it is already in the pipeline, so taking its
+downbeat *phase* over essentia's costs nothing and wins the only comparison
+that has been run. Keep essentia's beat *times* (7/7 within 0.25 s) — this is a
+phase swap, not a grid swap. The honest caveat carries too: on `_test_song` all
+four hypotheses agree at confidence 1.0 and still miss by 0.66 s, so a
+`confidence` per downbeat and an `unknown` span belong in `beats.json`
+regardless of which tracker wins.
+
+### 2.3 The `event_*` stack → the gestures stage
+
+| method | ±0.25 s | ±0.5 s | ±1.0 s | events/min |
+| --- | --- | --- | --- | --- |
+| gesture impact phase | 2/7 | 4/7 | 4/7 | 14.1 |
+| incumbent `song_event_timeline` | 0/7 | 1/7 | 2/7 | 1.5 |
+| RMS-derivative peak-picker (baseline) | 3/7 | 6/7 | 7/7 | 40.8 |
+
+Gestures beat the 3,800-line incumbent by a wide margin **and lose to a one-line
+peak-picker on recall**. The recall column is not what decides this: the
+peak-picker emits no phases, no evidence and no claim that can be wrong, and
+constitution §1.2 asks specifically for the approach/build/tension/impact/release
+structure the gestures stage is the only measured method that produces. But the
+entry's own honesty stands — **the per-primitive precision audit by ear was not
+done**, and a phantom riser fires a cue that contradicts the music. That audit,
+on 20–30 spans across four songs, is the cheapest high-value work in this whole
+file and should happen before any promotion talk.
+
+### 2.4 `hints.json` → merge the human hints, now
+
+This one needs no model. The input guide asks for
+`reference/human/human_hints.json` to be merged as `source: "human"`; four gold
+songs have that file; **`user_hint_count` is 0 on all 21 songs (verified
+here)**. The operator's own hand-marked, timed, lighting-specific hints — the
+single highest-signal text in the repository — do not reach the authoring model
+at all, while 877 generated sentences drawn from a pool of ~330 templates do.
+Merging them is a small change to `hints.py` and it is the largest quality gain
+per line in this review.
+
+## 3. Complement — signals the pipeline has no equivalent of
+
+### 3.1 Character blocks (stems + CLAP calm axis + allin1 shadow labels)
+
+The pipeline has no texture layer. The ablation is what justifies it:
+
+| rule | breath blocks | share of corpus claimed | finds the Armin `Breath` block |
+| --- | --- | --- | --- |
+| stems + CLAP calm | 28 | **41 %** | yes |
+| stems alone | 81 | 73 % | yes |
+
+CLAP contributes **exactly one axis** — calm ↔ intense — and is confidently
+wrong about what is playing (drums present where the drum stem sits at 0.03).
+Used that way it nearly halves the detector's false territory and covers 7 of
+the 10 hand-marked non-drop hints.
+
+**A suggestion that turns this from an addition into a replacement.** §3.3 warns
+that promotion which only adds is usually a mistake, and the CLAP entry concedes
+it deletes nothing. It does not have to: `section_character`'s 13-value
+controlled vocabulary is currently *derived from the segmenter that measures at
+chance*, and it is what `get_song_brief`'s `similar_sections` grouping runs on.
+Replacing that vocabulary with measured character blocks — voice present, drums
+out, calm; drums and bass out; full power — deletes a fabricated field instead
+of adding a file.
+
+### 3.2 Vocal phrase edges
+
+| method | ±0.1 s | ±0.25 s | ±0.5 s | bounds/min |
+| --- | --- | --- | --- | --- |
+| vocal_phrases | **28/94** | **42/94** | **66/94** | 44.9 |
+| shipped `sections.json` | 5/94 | 5/94 | 10/94 | 3.6 |
+| mix-RMS threshold (baseline) | 25/94 | 37/94 | 51/94 | 61.2 |
+
+A third of `_test_song`'s hand-marked boundaries are vocal-phrase edges, at
+eleven times chance. Nothing in the pipeline emits them, and they are
+sub-section by construction — `hint-010`/`hint-011` is split by a 0.63 s breath
+*inside a single lyric line*. Lands in `song_event_timeline.json`, which is
+already projected, so no contract change.
+
+**Not settled**: the budget-matched ablation against mix-RMS was never run, and
+the reactive-bands entry in this same file is the standing proof that omitting
+one can invert a result. Run the ablation before the promotion conversation, not
+during it.
+
+### 3.3 Section identity — the most valuable missing fact
+
+**Verified here: the `repetition_group` key is absent from all 290 sections of
+all 21 projected `sections.json` files.** `sections/form.py` computes it,
+`ui_data.py` copies it, it is `null` everywhere, and the key is dropped on
+write. So nothing reaching the authoring model says that the chorus at 2:10 is
+the chorus from 0:55 returning — which for a light show is close to the single
+most valuable fact in the file, because the returning look is what makes a show
+read as designed rather than reactive.
+
+The bar is measured and unmet: **MFCC 20 at pair AUC 0.73**, CLAP 0.68. Note
+that allin1 does *not* close this — `same_label_as` is label repetition ("both
+are called chorus"), not "this is the same music". The pending identity entry is
+the right shape (invariance-trained embeddings, cover-song objective), and its
+own noise-floor clause is the important part: four songs is very few section
+pairs, and the honest output may be a request for hand-marked "these two are the
+same part" pairs rather than another model.
+## 3.5 Addendum — `reference/moises/` is a bigger evaluation set than anything used so far
+
+*Added after the operator clarified what these files are: `reference/moises/*.json`
+is **Moises.ai inference**, not hand-labelling, and the curated rows are the ones
+marked `confidence: "0.99"` — a **string**, which is why a numeric scan for a
+confidence field finds nothing. Only `lyrics.json` carries the field at all;
+`beats.json`, `chords.json` and `segments.json` have no confidence key, so
+nothing in them is operator-curated. Scoring against them measures **agreement
+with another vendor's model**, not correctness — but it is 5–200× more signal
+than the 7 hand-clicked impacts every entry in this file is scored on.*
+
+Curated (`0.99`) lyric words: `_test_song` 24/34 (71 %), `Titanium` 40/287
+(14 %), `Armin` 32/96 (33 %), `Hideaway` 2/234 (1 %).
+
+**One claim in this file is now false and should be read as retracted.** The
+allin1 entry says *"nothing in the repo says where a verse ends"*.
+`reference/moises/segments.json` does, on all four gold songs — **42 named
+segments, 38 interior boundaries**, labelled `Intro / Verse / Chorus / Bridge /
+Instrumental`. That is the named-segmentation ground truth the entry said was
+missing, and re-scoring against it does not change the verdict — it sharpens it.
+
+### Structure, re-scored against 38 Moises boundaries instead of 7 impacts
+
+| method | recall @±1.0 s | **precision** | **F1** | bounds/min |
+| --- | --- | --- | --- | --- |
+| **allin1 phrase edges** | **0.84** | 0.76 | **0.80** | 3.4 |
+| **allin1 sections** | 0.53 | **0.91** | 0.67 | 1.8 |
+| shipped `sections.json` | 0.32 | 0.27 | 0.29 | 3.7 |
+| evenly spaced grid, same budget | 0.24 | — | — | 3.7 |
+
+The incumbent's F1 is **0.29 against allin1's 0.67–0.80** — a 2.3–2.8× gap on
+38 boundaries, where the previous evidence was 0/7 vs 4/7 on 7. Note *precision*
+in particular: **91 % of allin1's section boundaries are real boundaries**,
+against 27 % of the incumbent's. Per song the incumbent is 0/11 on `Hideaway`
+@±0.5 s where allin1 gets 5/11.
+
+### Downbeats, re-scored against 385 Moises downbeats instead of 7 impacts
+
+| method | F1 @±70 ms | songs it gets right |
+| --- | --- | --- |
+| essentia beat *times* (trusted, for contrast) | **0.59** (1.00 on 2 of 4; 0.98–0.99 at ±0.25 s on the others) | — |
+| **allin1 downbeats** | **0.59** | 3 of 4 |
+| essentia downbeats (**ships today**) | **0.16** | 1 of 4 |
+
+This is a far stronger version of §2.2's 4/7-vs-3/7. The failures are **whole-beat
+phase errors, not timing errors**: on `Titanium` essentia sits exactly **+1.00
+beats** off Moises's bar phase and allin1 **+1.96 beats** — three independent
+readings, three different phases, which is `Titanium`'s bar grid being genuinely
+unresolved rather than one tracker being sloppy. `Hideaway` is different again:
+essentia's *beats* are half a beat out (`+0.53`), so the problem there is the
+beat grid, not the phase. Both cases are §7's *"say so rather than snapping"* —
+`beats.json` needs a per-downbeat confidence and an `unknown` span.
+
+### Chords — never scored on a real song, and they agree with Moises about half the time
+
+| song | beats compared | exact (root+quality) | root only |
+| --- | --- | --- | --- |
+| `_test_song` | 125 | **1.00** | 1.00 |
+| `Titanium` | 473 | 0.69 | 0.69 |
+| `Armin - Revolution` | 369 | 0.51 | 0.71 |
+| `Hideaway - Kiesza` | 466 | **0.38** | 0.40 |
+
+Two models disagreeing on ~43 % of beats does not say which is wrong, and
+`Hideaway`'s number is partly the half-beat grid error above corrupting the
+alignment. But it is the first time `harmonic.py` has been measured on real
+music, and it does not support treating our chord labels as settled.
+
+**Why it was never measured: `validate-chords`, `validate-beats` and
+`validate-sections` are `skipped` on 20 of 21 songs, including three of the four
+gold songs that now have the files.** The Moises references for `Titanium`,
+`Hideaway` and `Armin` landed **2026-09-02**; their `phase_1_report.json` is
+from **2026-08-30**. Nobody has re-run the pipeline since the reference data
+arrived. **A plain re-run of the corpus turns 1 validated song into 4, for
+free** — that is the cheapest item anywhere in this review.
+
+**One code comment is now wrong and should be corrected in the refinement.**
+`phase_1_report.json`'s own notes say *"Chord validation treats reference chord
+files as authoritative human-validated comparison inputs when present."* They
+are not human-validated; they are Moises inference. A validator that calls its
+comparison input authoritative when it is a second opinion is exactly the
+overstatement §2 exists to prevent.
+
+### So: is there a better model than Moises?
+
+The operator's standing offer is to replace it. Per signal:
+
+- **Segments — yes, probably.** allin1 already produces a *named* segmentation
+  that agrees with Moises at F1 0.80 while adding an 8-bar phrase grid Moises
+  has no equivalent of, and SongFormer claims better still. Moises's own
+  segmentation is coarse on this repertoire — it labels 8 of 11 spans on `Armin`
+  and 8 of 12 on `Hideaway` simply `Instrumental`.
+- **Downbeats — yes.** allin1 at F1 0.59 vs essentia's 0.16.
+- **Beats — no.** essentia is already at or above Moises everywhere except
+  `Hideaway`, where both should be checked by ear before either is called wrong.
+- **Chords — unknown, and worth one experiment.** Nothing in this file has ever
+  tried a chord model; Moises is the only external opinion we have, and we agree
+  with it on ~57 % of beats over the three real songs. Note the reach test first:
+  **chords currently reach the authoring model in no file at all**, so a better
+  chord model changes nothing about the show until `harmonic.py` is either
+  projected or deleted. Decide that before spending a run on it.
+- **Lyrics — yes, on text; no, on time.** ACE-Step beats the whisper baseline on
+  `Titanium` (WER 0.23 vs 0.32), and Moises's own word offsets are unusable
+  (`Armin` holds one word for 52.2 s). Only the `0.99` words are truth, and on
+  `Hideaway` that is 2 words out of 234 — so a forced aligner is needed
+  regardless of which transcriber wins.
+- **Identity — nobody has it,** Moises included. Still the largest gap.
+
+## 4. Archive — measured, negative, do not reopen
+
+- **VocalParse** — hallucinated Mandarin on 3 of 4 gold songs (WER 1.00), melody
+  head degenerate on 4/4. Model-capability limit, not a decoding knob.
+- **Reactive bands** — the headline hypothesis came back inverted: at a matched
+  ~29 accents/min the **incumbent's whole-song percentile normalisation wins
+  5/7 vs 2/7** at ±0.25 s. The durable finding is methodological (two curves on
+  different scales cannot share a threshold) and the practical one is that
+  `fft_bands.py` is *validated*, not superseded.
+- **Grid consensus** — ties two trackers, loses to allin1, phrase grid clearly
+  worse (0/7 @±1.0 s vs allin1's 4/7). Two findings survive: kick placement
+  carries almost no downbeat-phase information in four-on-the-floor repertoire
+  (Titanium's histogram `[77, 76, 65, 86]`), and §2.2 above.
+
+## 5. Suggested refinement order
+
+Cheapest and most certain first; each step is independently useful.
+
+0. **Re-run the corpus.** The Moises references for three of the four gold
+   songs landed after the last full run, so `validate-beats`, `validate-chords`
+   and `validate-sections` are `skipped` on 20 of 21 songs. One run turns 1
+   validated song into 4 and costs nothing but time (§3.5).
+1. **Delete what is measured at zero** — the ML event stack, `event_benchmark`,
+   `unified`, symbolic note transcription, the label-less validation scores.
+   No experiment gates this; it is ~4,000 lines and ~20 MB/song of artifact.
+2. **Merge the human hints into `hints.json`** and cut the three templated hint
+   categories to the ones that name a moment. Small change, immediate reach.
+3. **Run SongFormer.** It gates the structural decision and nothing else can
+   proceed cleanly around it.
+4. **Do the gestures precision audit by ear** — 20–30 spans, four songs.
+5. **Run the vocal-phrases budget-matched ablation** against mix-RMS.
+6. Then the structural replacement lands as one change: named sections (allin1
+   or SongFormer) + allin1's downbeat phase + character blocks replacing
+   `section_character` + gesture phases replacing the event stack — deleting
+   `sections/` and `event_*` in the same commit, per §3.3.
+7. **Identity** last of the current queue, because a bad segmentation makes
+   every embedding look bad and it should be measured on the winning one.
+
+**Score everything from here on against the Moises boundaries as well as the
+impacts** (§3.5). Seven hand-clicked impacts is a thin metric that several
+entries in this file have already been unable to separate methods with; 38 named
+segment boundaries, 385 downbeats and 1,433 chord-beats are sitting unused in
+`reference/`, and they cost nothing to score against.
+
+Music Flamingo stays where it is — run order 7, highest ceiling, and the only
+candidate that could replace `hints.py`'s templated prose outright. Its
+grounding harness (every timestamped claim cross-checked against the stems) is
+the reusable part regardless of whether the model survives.
+
+---
 
 # Experiments to try
 
