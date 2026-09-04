@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 0 |
+| Done | 1 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -128,17 +128,17 @@ zero or has no consumer at all.
 
 ### 1. Delete the ML event stack
 
-- [ ] Delete `src/analyzer/stages/event_ml.py`, `src/analyzer/event_ml_train.py`,
+- [x] Delete `src/analyzer/stages/event_ml.py`, `src/analyzer/event_ml_train.py`,
       `src/analyzer/event_ml_models.py`, `src/scripts/train_event_classifier.py`.
-- [ ] Remove the `generate-ml-events` entry from `STAGE_PIPELINE_IDS`, its
+- [x] Remove the `generate-ml-events` entry from `STAGE_PIPELINE_IDS`, its
       import, its `_run_single_stage` branch and its `run_phase_1` call in
       `src/analyzer/pipeline.py`. Drop the unused `ml_events` local.
-- [ ] Remove `events.ml.json` from `info.json`'s `artifacts` block.
-- [ ] Delete `tests/test_event_ml.py` and `tests/test_event_ml_train.py`.
-- [ ] Remove the seeded model directory under `models/` if it exists and is used
+- [x] Remove `events.ml.json` from `info.json`'s `artifacts` block.
+- [x] Delete `tests/test_event_ml.py` and `tests/test_event_ml_train.py`.
+- [x] Remove the seeded model directory under `models/` if it exists and is used
       by nothing else.
-- [ ] Remove the **ML Events** lane (see *Removing a debugger lane*).
-- [ ] `docs/data_folder_reference.md`: delete the `events.ml.json` entry.
+- [x] Remove the **ML Events** lane (see *Removing a debugger lane*).
+- [x] `docs/data_folder_reference.md`: delete the `events.ml.json` entry.
       `docs/source_files_reference.md`: delete §4's Event Classifier row.
 
 **Tests:** `docker compose run --rm test` — full suite green with the two

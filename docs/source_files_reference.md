@@ -70,15 +70,10 @@ Each submodule exports its main generator function out of its `__init__.py`.
 
 ## 4. Machine Learning & Training
 * **Subprocess execution layers**: `_basic_pitch_subprocess.py`, `_omnizart_runtime.py`, `_stem_activity.py` encapsulate isolation logic for external Python ML environments.
-* **Event Classifier**: `src/analyzer/event_ml_models.py`, `event_ml_train.py` and `src/scripts/train_event_classifier.py` house the PyTorch/TensorFlow graphs and logic for training custom event recognizers.
 
 ---
 
 ## 5. Targeted Regression Tests
-
-| File | Purpose |
-|------|---------|
-| `tests/test_event_ml.py` | Verifies ML inference writes `events.ml.json`, saliency output, and penalty timeline/metadata artifacts under the Story 5.3 and 5.9 contract. |
 
 ---
 

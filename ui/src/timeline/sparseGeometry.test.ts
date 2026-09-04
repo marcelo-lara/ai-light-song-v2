@@ -63,7 +63,6 @@ describe("packRows — compact lane", () => {
     expect([...COMPACT_LANE_IDS].sort()).toEqual([
       "identifierHints",
       "machineEvents",
-      "mlEvents",
       "phrases",
     ]);
   });

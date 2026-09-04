@@ -22,7 +22,6 @@ export type LaneKind =
   | "patterns"
   | "identifiers"
   | "machine"
-  | "ml"
   | "phrases"
   | "proposals"
   | "allin1"
@@ -95,7 +94,6 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "patterns", label: "Pattern Occurrences", sub: "repeated harmonic patterns", kind: "patterns", height: 84 },
   { id: "identifierHints", label: "Identifier Hints", sub: "energy_summary · named events", kind: "identifiers", height: 84 },
   { id: "machineEvents", label: "Machine Events", sub: "rule + machine event windows", kind: "machine", height: 84 },
-  { id: "mlEvents", label: "ML Events", sub: "story 6.1 ML predictions", kind: "ml", height: 84 },
   { id: "drums", label: "Drum Density", sub: "kick / snare / hat activity", kind: "drums", height: 84 },
   { id: "phrases", label: "Symbolic Phrases", sub: "phrase groups · symbolic layer", kind: "phrases", height: 84 },
   { id: "energy", label: "Energy Profile", sub: "beat-aligned energy + accents", kind: "energy", height: 84 },

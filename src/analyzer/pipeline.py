@@ -12,7 +12,6 @@ from analyzer.exceptions import AnalysisError
 from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
 from analyzer.stages.event_benchmark import benchmark_event_outputs
-from analyzer.stages.event_ml import generate_ml_events
 from analyzer.stages.event_features import build_event_feature_layer
 from analyzer.stages.event_identifiers import infer_song_identifiers
 from analyzer.stages.event_machine import generate_machine_events
@@ -70,7 +69,6 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "build-event-feature-layer": "4.4",
     "infer-song-identifiers": "4.5",
     "generate-rule-candidates": "5.2",
-    "generate-ml-events": "5.3",
     "generate-machine-events": "5.4",
     "generate-event-review": "5.5",
     "benchmark-event-outputs": "5.5",
@@ -248,9 +246,6 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
             sections,
             genre_result,
         )
-        return 0
-    if stage_name == "generate-ml-events":
-        _run_stage(paths.song_name, "phase-1", stage_name, generate_ml_events, paths)
         return 0
     if stage_name == "generate-rule-candidates":
         event_features = _required_artifact_payload(paths, stage_name, "event_inference", "features.json")
@@ -530,7 +525,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             sections,
         )
         rule_candidates = _run_stage(paths.song_name, "phase-1", "generate-rule-candidates", generate_rule_candidates, paths, event_features, sections, genre_result)
-        ml_events = _run_stage(paths.song_name, "phase-1", "generate-ml-events", generate_ml_events, paths)
         machine_events = _run_stage(
             paths.song_name,
             "phase-1",

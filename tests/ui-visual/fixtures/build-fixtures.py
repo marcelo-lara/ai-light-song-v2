@@ -56,7 +56,6 @@ NEEDED = [
     "artifacts/layer_d_patterns.json",
     "artifacts/energy_summary/hints.json",
     "artifacts/event_inference/events.machine.json",
-    "artifacts/event_inference/events.ml.json",
     "artifacts/symbolic_transcription/drum_events.json",
     "artifacts/validation/review_queue.json",
 ]

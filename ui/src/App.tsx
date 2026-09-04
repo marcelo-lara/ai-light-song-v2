@@ -97,7 +97,6 @@ const TIMELINE_KEYS = [
   "patterns",
   "identifierHints",
   "machineEvents",
-  "mlEvents",
   "symbolicPhrases",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",
@@ -132,7 +131,6 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   patterns: "patterns",
   identifierHints: "identifierHints",
   machineEvents: "machineEvents",
-  mlEvents: "mlEvents",
   phrases: "symbolicPhrases",
 };
 
@@ -289,7 +287,6 @@ export function App(): React.JSX.Element {
       patterns: artifacts.patterns.data,
       identifierHints: artifacts.identifierHints.data,
       machineEvents: artifacts.machineEvents.data,
-      mlEvents: artifacts.mlEvents.data,
       symbolicPhrases: artifacts.symbolicPhrases.data,
     }),
     [
@@ -308,7 +305,6 @@ export function App(): React.JSX.Element {
       artifacts.patterns.data,
       artifacts.identifierHints.data,
       artifacts.machineEvents.data,
-      artifacts.mlEvents.data,
       artifacts.symbolicPhrases.data,
     ],
   );

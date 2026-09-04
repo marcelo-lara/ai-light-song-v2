@@ -5,7 +5,6 @@ import harmonic from "../data/__fixtures__/layer_a_harmonic.json";
 import patternsFix from "../data/__fixtures__/layer_d_patterns.json";
 import identifiersFix from "../data/__fixtures__/energy_summary_hints.json";
 import machineFix from "../data/__fixtures__/events_machine.json";
-import mlFix from "../data/__fixtures__/events_ml.json";
 import symbolicFix from "../data/__fixtures__/layer_b_symbolic.json";
 import dropProposalsFix from "../data/__fixtures__/drop_proposals.json";
 import allin1Fix from "../data/__fixtures__/allin1.json";
@@ -19,7 +18,6 @@ import {
   parseDropProposals,
   parseIdentifierHints,
   parseMachineEvents,
-  parseMlEvents,
   parsePatterns,
   parseSymbolicPhrases,
 } from "../data/sparseArtifacts";
@@ -35,7 +33,6 @@ import {
   humanHintsContent,
   identifierHintsContent,
   machineEventsContent,
-  mlEventsContent,
   patternsContent,
   phrasesContent,
   sectionsContent,
@@ -102,7 +99,7 @@ describe("patternsContent", () => {
   });
 });
 
-describe("identifier / machine / ml event content", () => {
+describe("identifier / machine event content", () => {
   it("identifierHints keeps the drop identifier", () => {
     const blocks = identifierHintsContent(parseIdentifierHints(identifiersFix));
     expect(blocks).toHaveLength(1);
@@ -115,10 +112,6 @@ describe("identifier / machine / ml event content", () => {
     expect(blocks.length).toBeGreaterThan(0);
     expect(blocks[0]!.end_s).toBeGreaterThanOrEqual(blocks[0]!.start_s);
     expect(blocks.every((b) => b.laneLabel === "Machine Events")).toBe(true);
-  });
-
-  it("mlEvents on an empty artifact yields no blocks", () => {
-    expect(mlEventsContent(parseMlEvents(mlFix))).toEqual([]);
   });
 });
 

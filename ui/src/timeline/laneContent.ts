@@ -485,9 +485,6 @@ export const identifierHintsContent = (file: EventsFile | null): SparseBlock[] =
 export const machineEventsContent = (file: EventsFile | null): SparseBlock[] =>
   eventContent(file, "Machine Events", "Rule / machine event window.");
 
-export const mlEventsContent = (file: EventsFile | null): SparseBlock[] =>
-  eventContent(file, "ML Events", "ML-predicted event window (Story 6.1).");
-
 export function phrasesContent(file: SymbolicPhrasesFile | null): SparseBlock[] {
   return (file?.phrases ?? []).map((p) => ({
     id: p.id,
@@ -631,7 +628,6 @@ export interface LaneContentSources {
   vocalTranscription?: VocalTranscriptionFile | null;
   identifierHints?: EventsFile | null;
   machineEvents?: EventsFile | null;
-  mlEvents?: EventsFile | null;
   symbolicPhrases?: SymbolicPhrasesFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
   reactiveBands?: ReactiveBandsFile | null;
@@ -657,7 +653,6 @@ export const SPARSE_LANE_IDS = [
   "patterns",
   "identifierHints",
   "machineEvents",
-  "mlEvents",
   "phrases",
 ] as const;
 
@@ -700,8 +695,6 @@ export function buildLaneBlocks(
       return identifierHintsContent(s.identifierHints ?? null);
     case "machineEvents":
       return machineEventsContent(s.machineEvents ?? null);
-    case "mlEvents":
-      return mlEventsContent(s.mlEvents ?? null);
     case "phrases":
       return phrasesContent(s.symbolicPhrases ?? null);
     default:

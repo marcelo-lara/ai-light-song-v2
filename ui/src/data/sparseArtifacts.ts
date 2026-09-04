@@ -159,10 +159,6 @@ export const parseMachineEvents = eventsParser(
   "event_inference/events.machine.json",
   "machine",
 );
-export const parseMlEvents = eventsParser(
-  "event_inference/events.ml.json",
-  "ml",
-);
 
 // ---------------------------------------------------------------------------
 // symbolic phrase windows — artifacts/layer_b_symbolic.json (phrase_windows)
@@ -644,8 +640,6 @@ export const loadIdentifierHints = (song: string, f?: typeof fetch): Promise<Loa
   loadJson(artifactPaths.identifierHints(song), parseIdentifierHints, f);
 export const loadMachineEvents = (song: string, f?: typeof fetch): Promise<LoadResult<EventsFile>> =>
   loadJson(artifactPaths.machineEvents(song), parseMachineEvents, f);
-export const loadMlEvents = (song: string, f?: typeof fetch): Promise<LoadResult<EventsFile>> =>
-  loadJson(artifactPaths.mlEvents(song), parseMlEvents, f);
 export const loadSymbolicPhrases = (song: string, f?: typeof fetch): Promise<LoadResult<SymbolicPhrasesFile>> =>
   loadJson(artifactPaths.symbolicLayer(song), parseSymbolicPhrases, f);
 

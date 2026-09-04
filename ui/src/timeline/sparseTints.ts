@@ -76,7 +76,6 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   patterns: [43, 96, 40], // gold    (the previous app rgba(202,138,4))
   identifierHints: [201, 96, 33], // blue    (the previous app rgba(3,105,161))
   machineEvents: [0, 74, 42], // red     (the previous app rgba(185,28,28))
-  mlEvents: [263, 70, 42], // violet  (the previous app rgba(91,33,182))
   phrases: [265, 68, 43], // deep violet (the previous app rgba(76,29,149))
 };
 

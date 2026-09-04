@@ -47,7 +47,6 @@ export const LANE_LABELS: Record<string, string> = {
   patterns: "Pattern Occurrences",
   identifierHints: "Identifier Hints",
   machineEvents: "Machine Events",
-  mlEvents: "ML Events",
   phrases: "Symbolic Phrases",
   drums: "Drum Density",
   energy: "Energy Profile",

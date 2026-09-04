@@ -10,7 +10,6 @@
 export const COMPACT_LANE_IDS: ReadonlySet<string> = new Set([
   "identifierHints",
   "machineEvents",
-  "mlEvents",
   "phrases",
 ]);
 

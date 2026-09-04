@@ -80,7 +80,7 @@ within 0.25 s of an essentia beat**.
 ### Not trusted — structure and everything downstream, roughly 5,900 lines
 
 `stages/sections/` plus the whole `event_*` stack (`event_rules/`,
-`event_machine/`, `event_ml*`, `event_features/`, `event_timeline`,
+`event_machine/`, `event_features/`, `event_timeline`,
 `event_review`, `event_identifiers`, `event_benchmark`).
 
 > The shipped `sections.json` boundaries land near a human-marked impact

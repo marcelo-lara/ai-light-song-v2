@@ -23,7 +23,6 @@ const BLOCK_LANES = [
   "patterns",
   "identifierHints",
   "machineEvents",
-  "mlEvents",
   "phrases",
 ] as const;
 
