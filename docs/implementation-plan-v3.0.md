@@ -881,3 +881,51 @@ refinement doc before planning: `patterns.py` → remove (item 4),
 `harmonic.py` → keep and project (item 13). A decision that surfaces during
 execution and genuinely blocks an item is added here as `D1`, `D2`, … and the
 run continues with the next independent item.
+
+### D1 — the visual-regression suite was already red at HEAD — **resolved**
+
+Measured before item 1 landed, on a clean tree at `6cc30dd`: the Playwright
+suite reports **26 failed, 3 passed, 1 did not run**. The identical counts come
+back with item 1's changes applied, so this release did not cause it. Two
+independent pre-existing causes:
+
+1. **Fixture gap.** The `NEEDED` list in
+   `tests/ui-visual/fixtures/build-fixtures.py` was never updated when four
+   lanes were added to the UI registry, so the frozen fixtures do not carry
+   `reference/proposals/{vocal_phrases,reactive_bands,gestures,grid}.json`. The
+   app 404s on all four, which trips R1 and R3 on every spec that asserts a
+   clean console.
+2. **Stale baselines.** `tests/ui-visual/__screenshots__/` was last captured
+   before those lanes existed — `song-full.png` expects 1280×1044 where the app
+   now renders 1280×1148.
+
+**Decision:** repair the harness in its own preparatory commit, *before* item 1,
+rather than logging it and continuing. Rationale: this plan gates eight items on
+a **Visual QA** block whose runtime assertions R1–R3 are defined as "zero
+console errors, zero 404s". Against a suite that is already failing those
+assertions for unrelated reasons, no item's block can distinguish a regression
+it caused from the standing red, so every Visual QA verdict in the run would be
+unfalsifiable. The repair touches only `tests/ui-visual/` — no `src/`, no
+`ui/src/` — so it changes no app behaviour and no item's scope. Item 16's own
+fixture rebuild and re-baseline still stands; this makes the intervening fifteen
+items checkable.
+
+**What the repair did.** Reconciling `NEEDED` against every URL the UI actually
+requests found **seven** missing entries, not the four that were 404-ing: the
+four proposal files above, plus `reference/human/song_facts.json` and
+`artifacts/validation/review_queue.json` (fetched by `ReviewQueuePanel.tsx`) and
+`reference/moises/lyrics.json`, which survived in the fixture tree only as a
+leftover from an older list — untracked, the next rebuild's `rmtree` would have
+deleted it silently. Ten baselines were re-captured. One further stale
+assertion surfaced: `experiment-badge.spec.ts` expected exactly five flask
+badges while `laneState.ts` tags nine. The **app is right and the spec was
+stale** — constitution §3.2 badges a lane while its experiment is unpromoted,
+and item 14's V14.2 requires seven of those nine to keep their badge; the two
+allin1 lanes it promotes are the other two. The spec was corrected to track the
+registry, `laneState.ts` was not touched. Suite now **30 passed, 0 failed**.
+
+**Note for item 16.** The rebuild also revealed that the source analysis data on
+disk still carries Epic-7 `lighting_events` / `beatdrop_visual_plan` fields in
+`info.json`, which CLAUDE.md says were deleted in 2026-09-02. That drift was
+reverted rather than frozen into the fixtures; item 16's corpus re-run is what
+actually clears it.

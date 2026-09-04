@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.1",
+  "song_name": "Armin - Revolution",
+  "facts": {
+    "has_drop": {
+      "value": true,
+      "provenance": "human-confirmed",
+      "confirmed_on": "2026-08-30",
+      "note": "Project owner confirms this track contains at least one real drop. Timed drop boundaries are not yet labelled (D1)."
+    }
+  }
+}

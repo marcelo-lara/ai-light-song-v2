@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/vocal_phrases",
+    "engine": "vocal_phrases.detector (local-auto-gain hysteresis over vocals stem, pYIN sustained-note pass)",
+    "source_stem": "/app/data/analysis/_test_song/artifacts/stems/vocals.wav",
+    "params": {
+      "on_ratio": 1.4,
+      "off_ratio": 0.9,
+      "breath_s": 0.5,
+      "sustain_s": 1.5,
+      "min_phrase_s": 0.15,
+      "running_mean_window_s": 2.0
+    },
+    "generated_at": "2026-09-04T02:44:48.547381Z"
+  },
+  "vocal_phrases": [
+    {
+      "start": 15.975,
+      "end": 18.123,
+      "confidence": 0.688
+    },
+    {
+      "start": 19.18,
+      "end": 22.384,
+      "confidence": 0.596
+    },
+    {
+      "start": 24.927,
+      "end": 25.623,
+      "confidence": 1.0
+    },
+    {
+      "start": 28.688,
+      "end": 29.594,
+      "confidence": 1.0
+    },
+    {
+      "start": 43.352,
+      "end": 44.373,
+      "confidence": 1.0
+    },
+    {
+      "start": 47.102,
+      "end": 47.787,
+      "confidence": 1.0
+    },
+    {
+      "start": 48.727,
+      "end": 49.784,
+      "confidence": 0.757
+    },
+    {
+      "start": 50.608,
+      "end": 52.465,
+      "confidence": 0.543
+    },
+    {
+      "start": 53.348,
+      "end": 54.532,
+      "confidence": 0.641
+    }
+  ],
+  "instrumental_gaps": [
+    {
+      "start": 0.0,
+      "end": 15.975,
+      "confidence": 1.0
+    },
+    {
+      "start": 18.123,
+      "end": 19.18,
+      "confidence": 1.0
+    },
+    {
+      "start": 22.384,
+      "end": 24.927,
+      "confidence": 1.0
+    },
+    {
+      "start": 25.623,
+      "end": 28.688,
+      "confidence": 1.0
+    },
+    {
+      "start": 29.594,
+      "end": 43.352,
+      "confidence": 1.0
+    },
+    {
+      "start": 44.373,
+      "end": 47.102,
+      "confidence": 1.0
+    },
+    {
+      "start": 47.787,
+      "end": 48.727,
+      "confidence": 1.0
+    },
+    {
+      "start": 49.784,
+      "end": 50.608,
+      "confidence": 1.0
+    },
+    {
+      "start": 52.465,
+      "end": 53.348,
+      "confidence": 1.0
+    },
+    {
+      "start": 54.532,
+      "end": 58.12,
+      "confidence": 1.0
+    }
+  ],
+  "sustained_notes": []
+}

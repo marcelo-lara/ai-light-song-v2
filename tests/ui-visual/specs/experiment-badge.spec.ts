@@ -5,15 +5,27 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // Plan v1.5 item 7 (R7): lanes fed by an unpromoted `experiments/` sandbox
 // (their proposal file lives under `reference/proposals/`) carry a quiet
 // `ph-flask` badge as the first child of `.tl-lane-head__name`, left of the
-// label text. D8 fixes the set to exactly five lanes; production `src/` lanes
-// are never badged, even the ones CLAUDE.md records as untrusted.
+// label text. Production `src/` lanes are never badged, even the ones
+// CLAUDE.md records as untrusted.
+//
+// The badged set currently has nine lanes — the original five plus the
+// wave-2 experiment lanes (`vocalPhrases`, `reactiveBands`, `gestures`,
+// `gridPhrase`) added alongside `laneState.ts`'s `experiment:` tags. This
+// list must track `ui/src/timeline/laneState.ts`'s tagged set exactly.
+// Plan v3.0 item 14 will shrink it back down when the two allin1 lanes
+// (`allin1Transitions`, `allin1Sections`) are promoted out of experiment
+// status — update this list again when that happens.
 
 const BADGED = [
   "dropProposals",
+  "vocalPhrases",
+  "reactiveBands",
+  "gestures",
+  "gridPhrase",
   "allin1Transitions",
-  "allin1Sections",
   "character",
   "vocalTranscription",
+  "allin1Sections",
 ] as const;
 
 const NOT_BADGED = [
@@ -43,7 +55,7 @@ test("item 7 — flask badge on unpromoted-experiment lane heads", async ({ page
 
   // 1. runtime assertions clean (re-checked at the end).
 
-  // 2. badged — exactly these five.
+  // 2. badged — exactly these nine.
   for (const id of BADGED) {
     expect(await flask(page, id).count()).toBe(1);
   }
@@ -53,8 +65,8 @@ test("item 7 — flask badge on unpromoted-experiment lane heads", async ({ page
     expect(await flask(page, id).count()).toBe(0);
   }
 
-  // 4. whole-document count is exactly five.
-  expect(await page.locator(".tl-lane-head__flask").count()).toBe(5);
+  // 4. whole-document count is exactly nine.
+  expect(await page.locator(".tl-lane-head__flask").count()).toBe(BADGED.length);
 
   // 5. left of the title (checked on `character`).
   const chFlask = flask(page, "character");

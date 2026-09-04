@@ -301,12 +301,15 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 - lane head (plan v1.5 item 7): a lane fed by an unpromoted `experiments/`
   sandbox carries `<i.ph.ph-flask.tl-lane-head__flask>` (`aria-label`
   `"Experimental lane"`) as the first child of `.tl-lane-head__name`, before
-  `<span.tl-lane-head__name-text>`. Exactly five lanes — `dropProposals`,
-  `allin1Transitions`, `allin1Sections`, `character`, `vocalTranscription`. The
-  same badge precedes `.app-rightpanel__kicker` in that lane's events panel
-  header. `LaneList.tsx` is not badged. `moisesLyrics` is **not** badged — it
-  reads `reference/moises/`, not an `experiments/` sandbox, so it sits with
-  `humanHints` as external reference.
+  `<span.tl-lane-head__name-text>`. Nine lanes carry it today — `dropProposals`,
+  `vocalPhrases`, `reactiveBands`, `gestures`, `gridPhrase`,
+  `allin1Transitions`, `character`, `vocalTranscription`, `allin1Sections`
+  (the original five plus the wave-2 experiment lanes). The same badge
+  precedes `.app-rightpanel__kicker` in that lane's events panel header.
+  `LaneList.tsx` is not badged. `moisesLyrics` is **not** badged — it reads
+  `reference/moises/`, not an `experiments/` sandbox, so it sits with
+  `humanHints` as external reference. This set will shrink again when plan
+  v3.0 item 14 promotes the two allin1 lanes out of experiment status.
 - block inspector (plan v1.5 item 9): `promote-hint` on the `rows-plus-bottom`
   "Create human hint" action, rendered under `block-inspector__title` for every
   inspected event and in both transport states. A Human Hints block routes to
@@ -576,3 +579,37 @@ writable fixture file (plan v1.5 D15); it is still ~15 s.
         — from lanes already wired into `App.tsx`/`paths.ts` with no matching
         fixture file yet. Re-capture these two baselines once those fixtures
         land (or the lanes are reverted).
+- [x] *(fixture/baseline repair — harness only)* `NEEDED` in
+      `tests/ui-visual/fixtures/build-fixtures.py` never picked up the four
+      lanes above, plus three more artifacts the UI already requests:
+      `reference/human/song_facts.json`, `reference/moises/lyrics.json` (present
+      in the fixture tree from an older, larger `NEEDED` but silently dropped by
+      any fresh rebuild since it wasn't tracked — a latent second gap) and
+      `artifacts/validation/review_queue.json` (absent on the source song;
+      rebuild skips it, as designed, until that artifact exists upstream). All
+      seven are now in `NEEDED`. A fresh rebuild also picked up unrelated drift
+      in already-tracked fixture files — hand-curated `human_hints.json`
+      (§3.1's three-block table), stale Epic-7 `generated_from` fields in
+      `info.json`, and content-only diffs in `vocal_transcription.json` and
+      several `_test_song` artifacts — all reverted with `git checkout --` to
+      keep the fixture diff to exactly the new files. All eleven baselines are
+      re-captured against the repaired fixtures (`song-full` grows to 1280×1148
+      with the four new lanes present). `lane-events-panel` / `lane-events-active`
+      matched their existing baselines pixel-for-pixel once the 404s were gone —
+      no re-capture needed after all.
+      - **Resolved:** `experiment-badge.spec.ts`'s "item 7 — flask badge…" test
+        used to hardcode `BADGED` to the original 5 lane ids and assert
+        `.tl-lane-head__flask` count `=== 5` (its own comment: "D8 fixes the set
+        to exactly five lanes"), stale since `ui/src/timeline/laneState.ts`
+        gained `experiment:` tags on `vocalPhrases`, `reactiveBands`, `gestures`
+        and `gridPhrase` (wave-2 experiment lanes). The app was correct and the
+        spec was stale — per constitution §3.2, a lane keeps its experiment
+        badge while its experiment is unpromoted, and `docs/implementation-plan-v3.0.md`
+        item 14 (check V14.2) expects all nine lanes badged today. The spec's
+        `BADGED` list and its `.tl-lane-head__flask` count assertion were
+        updated to the current 9-lane set (`dropProposals`, `vocalPhrases`,
+        `reactiveBands`, `gestures`, `gridPhrase`, `allin1Transitions`,
+        `character`, `vocalTranscription`, `allin1Sections`); no baseline
+        re-capture was needed. `laneState.ts` was not touched. The set will
+        shrink again when plan v3.0 item 14 promotes the two allin1 lanes —
+        update the spec's `BADGED` list at that time.

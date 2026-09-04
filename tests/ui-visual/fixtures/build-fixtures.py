@@ -37,10 +37,16 @@ NEEDED = [
     "sections.json",
     "song_event_timeline.json",
     "reference/human/human_hints.json",
+    "reference/human/song_facts.json",
+    "reference/moises/lyrics.json",
     "reference/proposals/drop_impacts.json",
     "reference/proposals/allin1.json",
     "reference/proposals/character.json",
     "reference/proposals/vocal_transcription.json",
+    "reference/proposals/vocal_phrases.json",
+    "reference/proposals/reactive_bands.json",
+    "reference/proposals/gestures.json",
+    "reference/proposals/grid.json",
     "artifacts/essentia/fft_bands.json",
     "artifacts/essentia/rms_loudness.json",
     "artifacts/essentia/loudness_envelope.json",
@@ -52,6 +58,7 @@ NEEDED = [
     "artifacts/event_inference/events.machine.json",
     "artifacts/event_inference/events.ml.json",
     "artifacts/symbolic_transcription/drum_events.json",
+    "artifacts/validation/review_queue.json",
 ]
 
 DENSE = {

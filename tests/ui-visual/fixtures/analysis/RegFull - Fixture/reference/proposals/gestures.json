@@ -1,0 +1,2896 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/gestures",
+    "engine": "gestures.primitives (rule-based sound-design device detectors) + gestures.assembly",
+    "generated_at": "2026-09-04T02:50:41.029791Z"
+  },
+  "primitives": {
+    "riser": [
+      {
+        "type": "riser",
+        "start": 0.0,
+        "end": 29.6,
+        "confidence": 0.714,
+        "anchor_beat": 4,
+        "anchor_bar": 16,
+        "evidence": "high-band r2=0.71 over 16 bars, delta=1.08x range"
+      },
+      {
+        "type": "riser",
+        "start": 38.85,
+        "end": 53.65,
+        "confidence": 0.53,
+        "anchor_beat": 4,
+        "anchor_bar": 29,
+        "evidence": "high-band r2=0.67 over 8 bars, delta=0.58x range"
+      },
+      {
+        "type": "riser",
+        "start": 84.175,
+        "end": 98.975,
+        "confidence": 0.482,
+        "anchor_beat": 1,
+        "anchor_bar": 54,
+        "evidence": "high-band r2=0.66 over 8 bars, delta=0.45x range"
+      },
+      {
+        "type": "riser",
+        "start": 110.075,
+        "end": 113.775,
+        "confidence": 0.499,
+        "anchor_beat": 1,
+        "anchor_bar": 62,
+        "evidence": "high-band r2=0.59 over 2 bars, delta=0.69x range"
+      },
+      {
+        "type": "riser",
+        "start": 128.575,
+        "end": 143.375,
+        "confidence": 0.407,
+        "anchor_beat": 1,
+        "anchor_bar": 78,
+        "evidence": "high-band r2=0.50 over 8 bars, delta=0.62x range"
+      },
+      {
+        "type": "riser",
+        "start": 156.325,
+        "end": 171.125,
+        "confidence": 0.418,
+        "anchor_beat": 4,
+        "anchor_bar": 92,
+        "evidence": "high-band r2=0.54 over 8 bars, delta=0.55x range"
+      }
+    ],
+    "downlifter": [
+      {
+        "type": "downlifter",
+        "start": 26.825,
+        "end": 34.225,
+        "confidence": 0.762,
+        "anchor_beat": 2,
+        "anchor_bar": 15,
+        "evidence": "high-band r2=0.76 over 4 bars, delta=1.03x range"
+      },
+      {
+        "type": "downlifter",
+        "start": 51.8,
+        "end": 59.2,
+        "confidence": 0.579,
+        "anchor_beat": 4,
+        "anchor_bar": 28,
+        "evidence": "high-band r2=0.68 over 4 bars, delta=0.69x range"
+      },
+      {
+        "type": "downlifter",
+        "start": 79.55,
+        "end": 86.95,
+        "confidence": 0.626,
+        "anchor_beat": 4,
+        "anchor_bar": 43,
+        "evidence": "high-band r2=0.71 over 4 bars, delta=0.76x range"
+      },
+      {
+        "type": "downlifter",
+        "start": 123.95,
+        "end": 127.65,
+        "confidence": 0.754,
+        "anchor_beat": 4,
+        "anchor_bar": 67,
+        "evidence": "high-band r2=0.81 over 2 bars, delta=0.85x range"
+      },
+      {
+        "type": "downlifter",
+        "start": 150.775,
+        "end": 158.175,
+        "confidence": 0.704,
+        "anchor_beat": 1,
+        "anchor_bar": 82,
+        "evidence": "high-band r2=0.80 over 4 bars, delta=0.75x range"
+      },
+      {
+        "type": "downlifter",
+        "start": 173.9,
+        "end": 181.3,
+        "confidence": 0.588,
+        "anchor_beat": 2,
+        "anchor_bar": 94,
+        "evidence": "high-band r2=0.70 over 4 bars, delta=0.67x range"
+      },
+      {
+        "type": "downlifter",
+        "start": 186.85,
+        "end": 190.55,
+        "confidence": 0.475,
+        "anchor_beat": 2,
+        "anchor_bar": 101,
+        "evidence": "high-band r2=0.62 over 2 bars, delta=0.52x range"
+      }
+    ],
+    "reverse_cymbal": [
+      {
+        "type": "reverse_cymbal",
+        "start": 9.905,
+        "end": 12.9,
+        "confidence": 0.761,
+        "anchor_beat": 4,
+        "anchor_bar": 7,
+        "evidence": "mix-RMS rise r2=0.76 into transient=0.16"
+      },
+      {
+        "type": "reverse_cymbal",
+        "start": 13.905,
+        "end": 16.9,
+        "confidence": 0.401,
+        "anchor_beat": 1,
+        "anchor_bar": 10,
+        "evidence": "mix-RMS rise r2=0.40 into transient=0.61"
+      }
+    ],
+    "snare_roll": [
+      {
+        "type": "snare_roll",
+        "start": 2.32,
+        "end": 7.86,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 5,
+        "evidence": "onset density 3->13 across bars 2-4"
+      },
+      {
+        "type": "snare_roll",
+        "start": 7.86,
+        "end": 13.4,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 8,
+        "evidence": "onset density 2->9 across bars 5-7"
+      },
+      {
+        "type": "snare_roll",
+        "start": 15.23,
+        "end": 20.78,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 12,
+        "evidence": "onset density 5->10 across bars 9-11"
+      },
+      {
+        "type": "snare_roll",
+        "start": 22.62,
+        "end": 28.17,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 16,
+        "evidence": "onset density 2->6 across bars 13-15"
+      },
+      {
+        "type": "snare_roll",
+        "start": 31.86,
+        "end": 37.4,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 21,
+        "evidence": "onset density 2->7 across bars 18-20"
+      },
+      {
+        "type": "snare_roll",
+        "start": 52.24,
+        "end": 57.97,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 32,
+        "evidence": "onset density 4->10 across bars 29-31"
+      },
+      {
+        "type": "snare_roll",
+        "start": 78.31,
+        "end": 83.89,
+        "confidence": 0.833,
+        "anchor_beat": 1,
+        "anchor_bar": 46,
+        "evidence": "onset density 6->11 across bars 43-45"
+      },
+      {
+        "type": "snare_roll",
+        "start": 95.09,
+        "end": 100.64,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 55,
+        "evidence": "onset density 5->10 across bars 52-54"
+      },
+      {
+        "type": "snare_roll",
+        "start": 119.1,
+        "end": 124.62,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 68,
+        "evidence": "onset density 4->8 across bars 65-67"
+      },
+      {
+        "type": "snare_roll",
+        "start": 124.62,
+        "end": 130.17,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 71,
+        "evidence": "onset density 6->14 across bars 68-70"
+      },
+      {
+        "type": "snare_roll",
+        "start": 137.56,
+        "end": 143.15,
+        "confidence": 0.857,
+        "anchor_beat": 1,
+        "anchor_bar": 78,
+        "evidence": "onset density 7->13 across bars 75-77"
+      },
+      {
+        "type": "snare_roll",
+        "start": 175.3,
+        "end": 180.94,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 98,
+        "evidence": "onset density 6->12 across bars 95-97"
+      }
+    ],
+    "impact": [
+      {
+        "type": "impact",
+        "start": 7.35,
+        "end": 7.35,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 4,
+        "on_downbeat": false,
+        "evidence": "transient=0.41, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 15.8,
+        "end": 15.8,
+        "confidence": 0.75,
+        "anchor_beat": 2,
+        "anchor_bar": 9,
+        "on_downbeat": false,
+        "evidence": "transient=0.12, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 16.9,
+        "end": 16.9,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 10,
+        "on_downbeat": true,
+        "evidence": "transient=0.61, sub-band elevated, on downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 30.9,
+        "end": 30.9,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 17,
+        "on_downbeat": false,
+        "evidence": "transient=0.32, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 32.75,
+        "end": 32.75,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 18,
+        "on_downbeat": false,
+        "evidence": "transient=0.27, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 34.6,
+        "end": 34.6,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 19,
+        "on_downbeat": false,
+        "evidence": "transient=0.27, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 36.45,
+        "end": 36.45,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 20,
+        "on_downbeat": false,
+        "evidence": "transient=0.23, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 38.3,
+        "end": 38.3,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 21,
+        "on_downbeat": false,
+        "evidence": "transient=0.18, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 40.15,
+        "end": 40.15,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 22,
+        "on_downbeat": false,
+        "evidence": "transient=0.13, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 41.95,
+        "end": 41.95,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 23,
+        "on_downbeat": false,
+        "evidence": "transient=0.11, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 43.8,
+        "end": 43.8,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 24,
+        "on_downbeat": false,
+        "evidence": "transient=0.14, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 45.2,
+        "end": 45.2,
+        "confidence": 0.75,
+        "anchor_beat": 2,
+        "anchor_bar": 25,
+        "on_downbeat": false,
+        "evidence": "transient=0.26, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 96.45,
+        "end": 96.45,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 52,
+        "on_downbeat": false,
+        "evidence": "transient=0.16, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 97.7,
+        "end": 97.7,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 53,
+        "on_downbeat": false,
+        "evidence": "transient=0.12, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 98.75,
+        "end": 98.75,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 54,
+        "on_downbeat": true,
+        "evidence": "transient=0.15, sub-band elevated, on downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 100.6,
+        "end": 100.6,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 55,
+        "on_downbeat": true,
+        "evidence": "transient=0.21, sub-band elevated, on downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 102.9,
+        "end": 102.9,
+        "confidence": 0.75,
+        "anchor_beat": 2,
+        "anchor_bar": 56,
+        "on_downbeat": false,
+        "evidence": "transient=0.38, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 104.05,
+        "end": 104.05,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 56,
+        "on_downbeat": false,
+        "evidence": "transient=0.12, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 105.2,
+        "end": 105.2,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 57,
+        "on_downbeat": false,
+        "evidence": "transient=0.35, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 106.35,
+        "end": 106.35,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 58,
+        "on_downbeat": true,
+        "evidence": "transient=0.20, sub-band elevated, on downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 107.5,
+        "end": 107.5,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 58,
+        "on_downbeat": false,
+        "evidence": "transient=0.41, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 111.65,
+        "end": 111.65,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 61,
+        "on_downbeat": true,
+        "evidence": "transient=0.82, sub-band elevated, on downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 112.8,
+        "end": 112.8,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 61,
+        "on_downbeat": false,
+        "evidence": "transient=0.21, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 113.95,
+        "end": 113.95,
+        "confidence": 0.75,
+        "anchor_beat": 2,
+        "anchor_bar": 62,
+        "on_downbeat": false,
+        "evidence": "transient=0.34, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 119.95,
+        "end": 119.95,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 65,
+        "on_downbeat": false,
+        "evidence": "transient=0.42, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 121.1,
+        "end": 121.1,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 66,
+        "on_downbeat": true,
+        "evidence": "transient=0.14, sub-band elevated, on downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 122.3,
+        "end": 122.3,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 66,
+        "on_downbeat": false,
+        "evidence": "transient=0.40, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 124.8,
+        "end": 124.8,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 68,
+        "on_downbeat": true,
+        "evidence": "transient=0.34, sub-band elevated, on downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 125.95,
+        "end": 125.95,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 68,
+        "on_downbeat": false,
+        "evidence": "transient=0.31, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 129.65,
+        "end": 129.65,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 70,
+        "on_downbeat": false,
+        "evidence": "transient=0.56, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 131.5,
+        "end": 131.5,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 71,
+        "on_downbeat": false,
+        "evidence": "transient=0.62, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 133.35,
+        "end": 133.35,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 72,
+        "on_downbeat": false,
+        "evidence": "transient=0.72, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 135.2,
+        "end": 135.2,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 73,
+        "on_downbeat": false,
+        "evidence": "transient=0.68, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 137.05,
+        "end": 137.05,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 74,
+        "on_downbeat": false,
+        "evidence": "transient=0.72, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 138.45,
+        "end": 138.45,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 75,
+        "on_downbeat": false,
+        "evidence": "transient=0.38, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 139.8,
+        "end": 139.8,
+        "confidence": 0.75,
+        "anchor_beat": 2,
+        "anchor_bar": 76,
+        "on_downbeat": false,
+        "evidence": "transient=0.34, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 141.05,
+        "end": 141.05,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 77,
+        "on_downbeat": true,
+        "evidence": "transient=0.41, sub-band elevated, on downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 142.3,
+        "end": 142.3,
+        "confidence": 0.75,
+        "anchor_beat": 3,
+        "anchor_bar": 77,
+        "on_downbeat": false,
+        "evidence": "transient=0.22, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 143.65,
+        "end": 143.65,
+        "confidence": 0.75,
+        "anchor_beat": 2,
+        "anchor_bar": 78,
+        "on_downbeat": false,
+        "evidence": "transient=0.12, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 144.8,
+        "end": 144.8,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 78,
+        "on_downbeat": false,
+        "evidence": "transient=0.23, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 145.8,
+        "end": 145.8,
+        "confidence": 0.75,
+        "anchor_beat": 2,
+        "anchor_bar": 79,
+        "on_downbeat": false,
+        "evidence": "transient=0.17, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 147.6,
+        "end": 147.6,
+        "confidence": 0.75,
+        "anchor_beat": 2,
+        "anchor_bar": 80,
+        "on_downbeat": false,
+        "evidence": "transient=0.18, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 148.95,
+        "end": 148.95,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 81,
+        "on_downbeat": true,
+        "evidence": "transient=0.22, sub-band elevated, on downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 178.6,
+        "end": 178.6,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 96,
+        "on_downbeat": false,
+        "evidence": "transient=0.28, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 180.45,
+        "end": 180.45,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 97,
+        "on_downbeat": false,
+        "evidence": "transient=0.24, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 182.3,
+        "end": 182.3,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 98,
+        "on_downbeat": false,
+        "evidence": "transient=0.22, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 184.15,
+        "end": 184.15,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 99,
+        "on_downbeat": false,
+        "evidence": "transient=0.17, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 186.0,
+        "end": 186.0,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 100,
+        "on_downbeat": false,
+        "evidence": "transient=0.15, sub-band elevated, off downbeat"
+      },
+      {
+        "type": "impact",
+        "start": 187.8,
+        "end": 187.8,
+        "confidence": 0.75,
+        "anchor_beat": 4,
+        "anchor_bar": 101,
+        "on_downbeat": false,
+        "evidence": "transient=0.14, sub-band elevated, off downbeat"
+      }
+    ],
+    "pre_drop_gap": [
+      {
+        "type": "pre_drop_gap",
+        "start": 15.25,
+        "end": 15.8,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 9,
+        "evidence": "dropout_strength peak 0.69 at 15.25s, 0.55s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 15.25,
+        "end": 16.9,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 9,
+        "evidence": "dropout_strength peak 0.69 at 15.25s, 1.65s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 29.1,
+        "end": 30.9,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 16,
+        "evidence": "dropout_strength peak 0.77 at 29.10s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 30.95,
+        "end": 32.75,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 17,
+        "evidence": "dropout_strength peak 0.25 at 30.95s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 32.8,
+        "end": 34.6,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 18,
+        "evidence": "dropout_strength peak 0.23 at 32.80s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 34.65,
+        "end": 36.45,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 19,
+        "evidence": "dropout_strength peak 0.20 at 34.65s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 36.5,
+        "end": 38.3,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 20,
+        "evidence": "dropout_strength peak 0.23 at 36.50s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 38.35,
+        "end": 40.15,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 21,
+        "evidence": "dropout_strength peak 0.23 at 38.35s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 40.2,
+        "end": 41.95,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 22,
+        "evidence": "dropout_strength peak 0.21 at 40.20s, 1.75s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 42.05,
+        "end": 43.8,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 23,
+        "evidence": "dropout_strength peak 0.23 at 42.05s, 1.75s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 43.2,
+        "end": 45.2,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 25,
+        "evidence": "dropout_strength peak 0.20 at 44.80s, 0.40s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 96.35,
+        "end": 96.45,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 52,
+        "evidence": "dropout_strength peak 0.22 at 96.40s, 0.05s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 96.95,
+        "end": 97.7,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 53,
+        "evidence": "dropout_strength peak 0.27 at 96.95s, 0.75s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 96.95,
+        "end": 98.75,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 53,
+        "evidence": "dropout_strength peak 0.27 at 96.95s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 98.8,
+        "end": 100.6,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 54,
+        "evidence": "dropout_strength peak 0.29 at 98.80s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 102.5,
+        "end": 102.9,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 56,
+        "evidence": "dropout_strength peak 0.37 at 102.50s, 0.40s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 102.5,
+        "end": 104.05,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 56,
+        "evidence": "dropout_strength peak 0.37 at 102.50s, 1.55s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 104.8,
+        "end": 105.2,
+        "confidence": 1.0,
+        "anchor_beat": 2,
+        "anchor_bar": 57,
+        "evidence": "dropout_strength peak 0.38 at 104.80s, 0.40s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 104.8,
+        "end": 106.35,
+        "confidence": 1.0,
+        "anchor_beat": 2,
+        "anchor_bar": 57,
+        "evidence": "dropout_strength peak 0.38 at 104.80s, 1.55s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 106.65,
+        "end": 107.5,
+        "confidence": 1.0,
+        "anchor_beat": 2,
+        "anchor_bar": 58,
+        "evidence": "dropout_strength peak 0.39 at 106.65s, 0.85s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 111.25,
+        "end": 111.65,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 60,
+        "evidence": "dropout_strength peak 1.00 at 111.25s, 0.40s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 111.25,
+        "end": 112.8,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 60,
+        "evidence": "dropout_strength peak 1.00 at 111.25s, 1.55s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 113.1,
+        "end": 113.95,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 61,
+        "evidence": "dropout_strength peak 0.68 at 113.10s, 0.85s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 119.1,
+        "end": 119.95,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 65,
+        "evidence": "dropout_strength peak 0.85 at 119.10s, 0.85s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 119.1,
+        "end": 121.1,
+        "confidence": 1.0,
+        "anchor_beat": 1,
+        "anchor_bar": 65,
+        "evidence": "dropout_strength peak 0.85 at 119.10s, 2.00s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 121.4,
+        "end": 122.3,
+        "confidence": 1.0,
+        "anchor_beat": 2,
+        "anchor_bar": 66,
+        "evidence": "dropout_strength peak 0.86 at 121.40s, 0.90s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 123.25,
+        "end": 124.8,
+        "confidence": 1.0,
+        "anchor_beat": 2,
+        "anchor_bar": 67,
+        "evidence": "dropout_strength peak 0.77 at 123.25s, 1.55s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 125.1,
+        "end": 125.95,
+        "confidence": 1.0,
+        "anchor_beat": 2,
+        "anchor_bar": 68,
+        "evidence": "dropout_strength peak 0.80 at 125.10s, 0.85s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 128.0,
+        "end": 129.65,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 69,
+        "evidence": "dropout_strength peak 0.17 at 128.05s, 1.60s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 129.7,
+        "end": 131.5,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 70,
+        "evidence": "dropout_strength peak 0.28 at 129.70s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 131.55,
+        "end": 133.35,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 71,
+        "evidence": "dropout_strength peak 0.35 at 131.55s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 133.4,
+        "end": 135.2,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 72,
+        "evidence": "dropout_strength peak 0.59 at 133.40s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 135.25,
+        "end": 137.05,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 73,
+        "evidence": "dropout_strength peak 0.64 at 135.25s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 137.1,
+        "end": 138.45,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 74,
+        "evidence": "dropout_strength peak 0.68 at 137.10s, 1.35s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 138.95,
+        "end": 139.8,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 75,
+        "evidence": "dropout_strength peak 0.56 at 138.95s, 0.85s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 140.8,
+        "end": 141.05,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 76,
+        "evidence": "dropout_strength peak 0.83 at 140.80s, 0.25s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 140.8,
+        "end": 142.3,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 76,
+        "evidence": "dropout_strength peak 0.83 at 140.80s, 1.50s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 142.05,
+        "end": 143.65,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 77,
+        "evidence": "dropout_strength peak 0.53 at 142.05s, 1.60s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 144.4,
+        "end": 144.8,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 78,
+        "evidence": "dropout_strength peak 0.43 at 144.40s, 0.40s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 144.4,
+        "end": 145.8,
+        "confidence": 1.0,
+        "anchor_beat": 3,
+        "anchor_bar": 78,
+        "evidence": "dropout_strength peak 0.43 at 144.40s, 1.40s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 145.6,
+        "end": 147.6,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 79,
+        "evidence": "dropout_strength peak 0.41 at 146.75s, 0.85s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 147.4,
+        "end": 148.95,
+        "confidence": 1.0,
+        "anchor_beat": 2,
+        "anchor_bar": 80,
+        "evidence": "dropout_strength peak 0.26 at 147.40s, 1.55s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 177.7,
+        "end": 178.6,
+        "confidence": 1.0,
+        "anchor_beat": 2,
+        "anchor_bar": 96,
+        "evidence": "dropout_strength peak 0.32 at 177.70s, 0.90s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 178.65,
+        "end": 180.45,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 96,
+        "evidence": "dropout_strength peak 0.24 at 178.65s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 180.5,
+        "end": 182.3,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 97,
+        "evidence": "dropout_strength peak 0.23 at 180.50s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 182.35,
+        "end": 184.15,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 98,
+        "evidence": "dropout_strength peak 0.24 at 182.35s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 184.2,
+        "end": 186.0,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 99,
+        "evidence": "dropout_strength peak 0.21 at 184.20s, 1.80s before impact"
+      },
+      {
+        "type": "pre_drop_gap",
+        "start": 186.05,
+        "end": 187.8,
+        "confidence": 1.0,
+        "anchor_beat": 4,
+        "anchor_bar": 100,
+        "evidence": "dropout_strength peak 0.23 at 186.05s, 1.75s before impact"
+      }
+    ]
+  },
+  "gestures": [
+    {
+      "start": 7.35,
+      "end": 11.05,
+      "impact_time": 7.35,
+      "phases": {
+        "impact": {
+          "start": 7.35,
+          "end": 7.35,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 7.35,
+          "end": 11.05,
+          "confidence": 0.628,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 7.86,
+      "end": 19.5,
+      "impact_time": 15.8,
+      "phases": {
+        "tension": {
+          "start": 15.25,
+          "end": 15.8,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 7.86,
+          "end": 13.4,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "impact": {
+          "start": 15.8,
+          "end": 15.8,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 15.8,
+          "end": 19.5,
+          "confidence": 0.661,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 7.86,
+      "end": 20.6,
+      "impact_time": 16.9,
+      "phases": {
+        "tension": {
+          "start": 15.25,
+          "end": 16.9,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 7.86,
+          "end": 13.4,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "impact": {
+          "start": 16.9,
+          "end": 16.9,
+          "confidence": 1.0,
+          "from": "impact"
+        },
+        "release": {
+          "start": 16.9,
+          "end": 20.6,
+          "confidence": 0.501,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 1.0
+    },
+    {
+      "start": 22.62,
+      "end": 30.9,
+      "impact_time": 30.9,
+      "phases": {
+        "tension": {
+          "start": 29.1,
+          "end": 30.9,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 22.62,
+          "end": 28.17,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "impact": {
+          "start": 30.9,
+          "end": 30.9,
+          "confidence": 0.75,
+          "from": "impact"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 0.0,
+      "end": 36.45,
+      "impact_time": 32.75,
+      "phases": {
+        "tension": {
+          "start": 30.95,
+          "end": 32.75,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 0.0,
+          "end": 29.6,
+          "confidence": 0.714,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 32.75,
+          "end": 32.75,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 32.75,
+          "end": 36.45,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 0.0,
+      "end": 38.3,
+      "impact_time": 34.6,
+      "phases": {
+        "tension": {
+          "start": 32.8,
+          "end": 34.6,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 0.0,
+          "end": 29.6,
+          "confidence": 0.714,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 34.6,
+          "end": 34.6,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 34.6,
+          "end": 38.3,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 0.0,
+      "end": 36.45,
+      "impact_time": 36.45,
+      "phases": {
+        "tension": {
+          "start": 34.65,
+          "end": 36.45,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 0.0,
+          "end": 29.6,
+          "confidence": 0.714,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 36.45,
+          "end": 36.45,
+          "confidence": 0.75,
+          "from": "impact"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 0.0,
+      "end": 42.0,
+      "impact_time": 38.3,
+      "phases": {
+        "tension": {
+          "start": 36.5,
+          "end": 38.3,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 0.0,
+          "end": 29.6,
+          "confidence": 0.714,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 38.3,
+          "end": 38.3,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 38.3,
+          "end": 42.0,
+          "confidence": 0.515,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 0.0,
+      "end": 43.85,
+      "impact_time": 40.15,
+      "phases": {
+        "tension": {
+          "start": 38.35,
+          "end": 40.15,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 31.86,
+          "end": 37.4,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 0.0,
+          "end": 29.6,
+          "confidence": 0.714,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 40.15,
+          "end": 40.15,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 40.15,
+          "end": 43.85,
+          "confidence": 0.527,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 0.0,
+      "end": 45.65,
+      "impact_time": 41.95,
+      "phases": {
+        "tension": {
+          "start": 40.2,
+          "end": 41.95,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 31.86,
+          "end": 37.4,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 0.0,
+          "end": 29.6,
+          "confidence": 0.714,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 41.95,
+          "end": 41.95,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 41.95,
+          "end": 45.65,
+          "confidence": 0.554,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 0.0,
+      "end": 47.5,
+      "impact_time": 43.8,
+      "phases": {
+        "tension": {
+          "start": 42.05,
+          "end": 43.8,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 31.86,
+          "end": 37.4,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 0.0,
+          "end": 29.6,
+          "confidence": 0.714,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 43.8,
+          "end": 43.8,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 43.8,
+          "end": 47.5,
+          "confidence": 0.575,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 0.0,
+      "end": 48.9,
+      "impact_time": 45.2,
+      "phases": {
+        "tension": {
+          "start": 43.2,
+          "end": 45.2,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 31.86,
+          "end": 37.4,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 0.0,
+          "end": 29.6,
+          "confidence": 0.714,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 45.2,
+          "end": 45.2,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 45.2,
+          "end": 48.9,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 78.31,
+      "end": 100.15,
+      "impact_time": 96.45,
+      "phases": {
+        "tension": {
+          "start": 96.35,
+          "end": 96.45,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 78.31,
+          "end": 83.89,
+          "confidence": 0.833,
+          "from": "snare_roll"
+        },
+        "impact": {
+          "start": 96.45,
+          "end": 96.45,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 96.45,
+          "end": 100.15,
+          "confidence": 0.546,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 78.31,
+      "end": 101.4,
+      "impact_time": 97.7,
+      "phases": {
+        "tension": {
+          "start": 96.95,
+          "end": 97.7,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 78.31,
+          "end": 83.89,
+          "confidence": 0.833,
+          "from": "snare_roll"
+        },
+        "impact": {
+          "start": 97.7,
+          "end": 97.7,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 97.7,
+          "end": 101.4,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 78.31,
+      "end": 102.45,
+      "impact_time": 98.75,
+      "phases": {
+        "tension": {
+          "start": 96.95,
+          "end": 98.75,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 78.31,
+          "end": 83.89,
+          "confidence": 0.833,
+          "from": "snare_roll"
+        },
+        "impact": {
+          "start": 98.75,
+          "end": 98.75,
+          "confidence": 1.0,
+          "from": "impact"
+        },
+        "release": {
+          "start": 98.75,
+          "end": 102.45,
+          "confidence": 0.512,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 1.0
+    },
+    {
+      "start": 84.175,
+      "end": 104.3,
+      "impact_time": 100.6,
+      "phases": {
+        "tension": {
+          "start": 98.8,
+          "end": 100.6,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 84.175,
+          "end": 98.975,
+          "confidence": 0.482,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 100.6,
+          "end": 100.6,
+          "confidence": 1.0,
+          "from": "impact"
+        },
+        "release": {
+          "start": 100.6,
+          "end": 104.3,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 1.0
+    },
+    {
+      "start": 79.55,
+      "end": 106.6,
+      "impact_time": 102.9,
+      "phases": {
+        "tension": {
+          "start": 102.5,
+          "end": 102.9,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 95.09,
+          "end": 100.64,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 79.55,
+          "end": 86.95,
+          "confidence": 0.626,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 102.9,
+          "end": 102.9,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 102.9,
+          "end": 106.6,
+          "confidence": 0.552,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 79.55,
+      "end": 107.75,
+      "impact_time": 104.05,
+      "phases": {
+        "tension": {
+          "start": 102.5,
+          "end": 104.05,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 95.09,
+          "end": 100.64,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 79.55,
+          "end": 86.95,
+          "confidence": 0.626,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 104.05,
+          "end": 104.05,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 104.05,
+          "end": 107.75,
+          "confidence": 0.551,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 79.55,
+      "end": 108.9,
+      "impact_time": 105.2,
+      "phases": {
+        "tension": {
+          "start": 104.8,
+          "end": 105.2,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 95.09,
+          "end": 100.64,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 79.55,
+          "end": 86.95,
+          "confidence": 0.626,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 105.2,
+          "end": 105.2,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 105.2,
+          "end": 108.9,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 79.55,
+      "end": 110.05,
+      "impact_time": 106.35,
+      "phases": {
+        "tension": {
+          "start": 104.8,
+          "end": 106.35,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 95.09,
+          "end": 100.64,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 79.55,
+          "end": 86.95,
+          "confidence": 0.626,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 106.35,
+          "end": 106.35,
+          "confidence": 1.0,
+          "from": "impact"
+        },
+        "release": {
+          "start": 106.35,
+          "end": 110.05,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 1.0
+    },
+    {
+      "start": 79.55,
+      "end": 107.5,
+      "impact_time": 107.5,
+      "phases": {
+        "tension": {
+          "start": 106.65,
+          "end": 107.5,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 95.09,
+          "end": 100.64,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 79.55,
+          "end": 86.95,
+          "confidence": 0.626,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 107.5,
+          "end": 107.5,
+          "confidence": 0.75,
+          "from": "impact"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 79.55,
+      "end": 115.35,
+      "impact_time": 111.65,
+      "phases": {
+        "tension": {
+          "start": 111.25,
+          "end": 111.65,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 95.09,
+          "end": 100.64,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 79.55,
+          "end": 86.95,
+          "confidence": 0.626,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 111.65,
+          "end": 111.65,
+          "confidence": 1.0,
+          "from": "impact"
+        },
+        "release": {
+          "start": 111.65,
+          "end": 115.35,
+          "confidence": 0.676,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 1.0
+    },
+    {
+      "start": 79.55,
+      "end": 116.5,
+      "impact_time": 112.8,
+      "phases": {
+        "tension": {
+          "start": 111.25,
+          "end": 112.8,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 95.09,
+          "end": 100.64,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 79.55,
+          "end": 86.95,
+          "confidence": 0.626,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 112.8,
+          "end": 112.8,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 112.8,
+          "end": 116.5,
+          "confidence": 0.509,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 79.55,
+      "end": 117.65,
+      "impact_time": 113.95,
+      "phases": {
+        "tension": {
+          "start": 113.1,
+          "end": 113.95,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 95.09,
+          "end": 100.64,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 79.55,
+          "end": 86.95,
+          "confidence": 0.626,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 113.95,
+          "end": 113.95,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 113.95,
+          "end": 117.65,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 84.175,
+      "end": 123.65,
+      "impact_time": 119.95,
+      "phases": {
+        "tension": {
+          "start": 119.1,
+          "end": 119.95,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "approach": {
+          "start": 84.175,
+          "end": 98.975,
+          "confidence": 0.482,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 119.95,
+          "end": 119.95,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 119.95,
+          "end": 123.65,
+          "confidence": 0.58,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 84.175,
+      "end": 124.8,
+      "impact_time": 121.1,
+      "phases": {
+        "tension": {
+          "start": 119.1,
+          "end": 121.1,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "approach": {
+          "start": 84.175,
+          "end": 98.975,
+          "confidence": 0.482,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 121.1,
+          "end": 121.1,
+          "confidence": 1.0,
+          "from": "impact"
+        },
+        "release": {
+          "start": 121.1,
+          "end": 124.8,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 1.0
+    },
+    {
+      "start": 84.175,
+      "end": 126.0,
+      "impact_time": 122.3,
+      "phases": {
+        "tension": {
+          "start": 121.4,
+          "end": 122.3,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "approach": {
+          "start": 84.175,
+          "end": 98.975,
+          "confidence": 0.482,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 122.3,
+          "end": 122.3,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 122.3,
+          "end": 126.0,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 84.175,
+      "end": 124.8,
+      "impact_time": 124.8,
+      "phases": {
+        "tension": {
+          "start": 123.25,
+          "end": 124.8,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "approach": {
+          "start": 84.175,
+          "end": 98.975,
+          "confidence": 0.482,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 124.8,
+          "end": 124.8,
+          "confidence": 1.0,
+          "from": "impact"
+        }
+      },
+      "confidence": 1.0
+    },
+    {
+      "start": 110.075,
+      "end": 125.95,
+      "impact_time": 125.95,
+      "phases": {
+        "tension": {
+          "start": 125.1,
+          "end": 125.95,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 119.1,
+          "end": 124.62,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 125.95,
+          "end": 125.95,
+          "confidence": 0.75,
+          "from": "impact"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 110.075,
+      "end": 133.35,
+      "impact_time": 129.65,
+      "phases": {
+        "tension": {
+          "start": 128.0,
+          "end": 129.65,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 119.1,
+          "end": 124.62,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 129.65,
+          "end": 129.65,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 129.65,
+          "end": 133.35,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 110.075,
+      "end": 135.2,
+      "impact_time": 131.5,
+      "phases": {
+        "tension": {
+          "start": 129.7,
+          "end": 131.5,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 119.1,
+          "end": 124.62,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 131.5,
+          "end": 131.5,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 131.5,
+          "end": 135.2,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 110.075,
+      "end": 137.05,
+      "impact_time": 133.35,
+      "phases": {
+        "tension": {
+          "start": 131.55,
+          "end": 133.35,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 124.62,
+          "end": 130.17,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 133.35,
+          "end": 133.35,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 133.35,
+          "end": 137.05,
+          "confidence": 0.574,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 110.075,
+      "end": 138.9,
+      "impact_time": 135.2,
+      "phases": {
+        "tension": {
+          "start": 133.4,
+          "end": 135.2,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 124.62,
+          "end": 130.17,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 135.2,
+          "end": 135.2,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 135.2,
+          "end": 138.9,
+          "confidence": 0.557,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 110.075,
+      "end": 140.75,
+      "impact_time": 137.05,
+      "phases": {
+        "tension": {
+          "start": 135.25,
+          "end": 137.05,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 124.62,
+          "end": 130.17,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 137.05,
+          "end": 137.05,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 137.05,
+          "end": 140.75,
+          "confidence": 0.534,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 110.075,
+      "end": 142.15,
+      "impact_time": 138.45,
+      "phases": {
+        "tension": {
+          "start": 137.1,
+          "end": 138.45,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 124.62,
+          "end": 130.17,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 138.45,
+          "end": 138.45,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 138.45,
+          "end": 142.15,
+          "confidence": 0.584,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 110.075,
+      "end": 143.5,
+      "impact_time": 139.8,
+      "phases": {
+        "tension": {
+          "start": 138.95,
+          "end": 139.8,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 124.62,
+          "end": 130.17,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 139.8,
+          "end": 139.8,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 139.8,
+          "end": 143.5,
+          "confidence": 0.556,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 110.075,
+      "end": 144.75,
+      "impact_time": 141.05,
+      "phases": {
+        "tension": {
+          "start": 140.8,
+          "end": 141.05,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 124.62,
+          "end": 130.17,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 141.05,
+          "end": 141.05,
+          "confidence": 1.0,
+          "from": "impact"
+        },
+        "release": {
+          "start": 141.05,
+          "end": 144.75,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 1.0
+    },
+    {
+      "start": 110.075,
+      "end": 142.3,
+      "impact_time": 142.3,
+      "phases": {
+        "tension": {
+          "start": 140.8,
+          "end": 142.3,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 124.62,
+          "end": 130.17,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 110.075,
+          "end": 113.775,
+          "confidence": 0.499,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 142.3,
+          "end": 142.3,
+          "confidence": 0.75,
+          "from": "impact"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 124.62,
+      "end": 147.35,
+      "impact_time": 143.65,
+      "phases": {
+        "tension": {
+          "start": 142.05,
+          "end": 143.65,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 124.62,
+          "end": 130.17,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "impact": {
+          "start": 143.65,
+          "end": 143.65,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 143.65,
+          "end": 147.35,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 123.95,
+      "end": 148.5,
+      "impact_time": 144.8,
+      "phases": {
+        "tension": {
+          "start": 144.4,
+          "end": 144.8,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 128.575,
+          "end": 143.375,
+          "confidence": 0.407,
+          "from": "riser"
+        },
+        "approach": {
+          "start": 123.95,
+          "end": 127.65,
+          "confidence": 0.754,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 144.8,
+          "end": 144.8,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 144.8,
+          "end": 148.5,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 123.95,
+      "end": 149.5,
+      "impact_time": 145.8,
+      "phases": {
+        "tension": {
+          "start": 144.4,
+          "end": 145.8,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 128.575,
+          "end": 143.375,
+          "confidence": 0.407,
+          "from": "riser"
+        },
+        "approach": {
+          "start": 123.95,
+          "end": 127.65,
+          "confidence": 0.754,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 145.8,
+          "end": 145.8,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 145.8,
+          "end": 149.5,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 123.95,
+      "end": 151.3,
+      "impact_time": 147.6,
+      "phases": {
+        "tension": {
+          "start": 145.6,
+          "end": 147.6,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 128.575,
+          "end": 143.375,
+          "confidence": 0.407,
+          "from": "riser"
+        },
+        "approach": {
+          "start": 123.95,
+          "end": 127.65,
+          "confidence": 0.754,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 147.6,
+          "end": 147.6,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 147.6,
+          "end": 151.3,
+          "confidence": 0.501,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 123.95,
+      "end": 152.65,
+      "impact_time": 148.95,
+      "phases": {
+        "tension": {
+          "start": 147.4,
+          "end": 148.95,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 128.575,
+          "end": 143.375,
+          "confidence": 0.407,
+          "from": "riser"
+        },
+        "approach": {
+          "start": 123.95,
+          "end": 127.65,
+          "confidence": 0.754,
+          "from": "downlifter"
+        },
+        "impact": {
+          "start": 148.95,
+          "end": 148.95,
+          "confidence": 1.0,
+          "from": "impact"
+        },
+        "release": {
+          "start": 148.95,
+          "end": 152.65,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 1.0
+    },
+    {
+      "start": 156.325,
+      "end": 182.3,
+      "impact_time": 178.6,
+      "phases": {
+        "tension": {
+          "start": 177.7,
+          "end": 178.6,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 156.325,
+          "end": 171.125,
+          "confidence": 0.418,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 178.6,
+          "end": 178.6,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 178.6,
+          "end": 182.3,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 156.325,
+      "end": 184.15,
+      "impact_time": 180.45,
+      "phases": {
+        "tension": {
+          "start": 178.65,
+          "end": 180.45,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 156.325,
+          "end": 171.125,
+          "confidence": 0.418,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 180.45,
+          "end": 180.45,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 180.45,
+          "end": 184.15,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 156.325,
+      "end": 186.0,
+      "impact_time": 182.3,
+      "phases": {
+        "tension": {
+          "start": 180.5,
+          "end": 182.3,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 156.325,
+          "end": 171.125,
+          "confidence": 0.418,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 182.3,
+          "end": 182.3,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 182.3,
+          "end": 186.0,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 156.325,
+      "end": 187.85,
+      "impact_time": 184.15,
+      "phases": {
+        "tension": {
+          "start": 182.35,
+          "end": 184.15,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 175.3,
+          "end": 180.94,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 156.325,
+          "end": 171.125,
+          "confidence": 0.418,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 184.15,
+          "end": 184.15,
+          "confidence": 0.75,
+          "from": "impact"
+        },
+        "release": {
+          "start": 184.15,
+          "end": 187.85,
+          "confidence": 0.5,
+          "from": "post-impact RMS plateau"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 156.325,
+      "end": 186.0,
+      "impact_time": 186.0,
+      "phases": {
+        "tension": {
+          "start": 184.2,
+          "end": 186.0,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 175.3,
+          "end": 180.94,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 156.325,
+          "end": 171.125,
+          "confidence": 0.418,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 186.0,
+          "end": 186.0,
+          "confidence": 0.75,
+          "from": "impact"
+        }
+      },
+      "confidence": 0.75
+    },
+    {
+      "start": 156.325,
+      "end": 187.8,
+      "impact_time": 187.8,
+      "phases": {
+        "tension": {
+          "start": 186.05,
+          "end": 187.8,
+          "confidence": 1.0,
+          "from": "pre_drop_gap"
+        },
+        "build": {
+          "start": 175.3,
+          "end": 180.94,
+          "confidence": 1.0,
+          "from": "snare_roll"
+        },
+        "approach": {
+          "start": 156.325,
+          "end": 171.125,
+          "confidence": 0.418,
+          "from": "riser"
+        },
+        "impact": {
+          "start": 187.8,
+          "end": 187.8,
+          "confidence": 0.75,
+          "from": "impact"
+        }
+      },
+      "confidence": 0.75
+    }
+  ]
+}
