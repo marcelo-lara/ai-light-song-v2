@@ -33,7 +33,6 @@ from analyzer.stages.symbolic import extract_symbolic_features
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import build_reference_timing_grid, extract_timing_grid
 from analyzer.stages.ui_data import build_ui_data
-from analyzer.stages.unified import assemble_music_feature_layers
 from analyzer.stages.validation import (
     build_validation_report,
     generate_timing_diagnosis,
@@ -74,7 +73,6 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "build-review-queue": "5.1",
     "classify-genre": "6.1",
     "generate-section-hints": "6.2",
-    "assemble-music-feature-layers": "7.1",
     "build-ui-data": "7.2",
     "build-human-hints-alignment": "8.8",
     "build-validation-report": "validation",
@@ -294,27 +292,6 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
         harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
         _run_stage(paths.song_name, "phase-1", stage_name, extract_chord_patterns, paths, timing, harmonic)
-        return 0
-    if stage_name == "assemble-music-feature-layers":
-        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
-        symbolic = _required_artifact_payload(paths, stage_name, "layer_b_symbolic.json")
-        energy = _required_artifact_payload(paths, stage_name, "layer_c_energy.json")
-        patterns = _required_artifact_payload(paths, stage_name, "layer_d_patterns.json")
-        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
-        _run_stage(
-            paths.song_name,
-            "phase-1",
-            stage_name,
-            assemble_music_feature_layers,
-            paths,
-            timing,
-            harmonic,
-            symbolic,
-            energy,
-            patterns,
-            sections,
-        )
         return 0
     if stage_name == "build-human-hints-alignment":
         _run_stage(paths.song_name, "phase-1", stage_name, build_human_hints_alignment, paths)
@@ -543,19 +520,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         )
         hints = _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, symbolic, sections)
         ui_outputs = _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
-        unified = _run_stage(
-            paths.song_name,
-            "phase-1",
-            "assemble-music-feature-layers",
-            assemble_music_feature_layers,
-            paths,
-            timing,
-            harmonic,
-            symbolic,
-            energy,
-            patterns,
-            sections,
-        )
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
         info_payload = {
@@ -592,7 +556,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 "sections": str(paths.artifact("section_segmentation", "sections.json")),
                 "patterns_layer": str(paths.artifact("layer_d_patterns.json")),
                 "pattern_mining": str(paths.artifact("pattern_mining", "chord_patterns.json")),
-                "music_feature_layers": str(paths.artifact("music_feature_layers.json")),
             },
             "generated_from": {
                 "source_song_path": str(paths.song_path),

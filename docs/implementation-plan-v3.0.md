@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 2 |
+| Done | 3 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -184,12 +184,12 @@ deleted test files gone. `docker compose run --rm app ./analyze --song
 
 ### 3. Delete `unified.py`
 
-- [ ] Delete `src/analyzer/stages/unified.py` and
+- [x] Delete `src/analyzer/stages/unified.py` and
       `src/analyzer/stages/validation/unified.py`.
-- [ ] Remove the `assemble-music-feature-layers` stage, the
+- [x] Remove the `assemble-music-feature-layers` stage, the
       `validate-unified` wiring in `src/analyzer/stages/validation/__init__.py`
       and `report.py`, and the `music_feature_layers` row from `info.json`.
-- [ ] Delete `music_feature_layers.json` from `docs/data_folder_reference.md`.
+- [x] Delete `music_feature_layers.json` from `docs/data_folder_reference.md`.
 
 **Tests:** `docker compose run --rm test`; a `_test_song` run writes no
 `artifacts/music_feature_layers.json`.

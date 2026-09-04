@@ -88,7 +88,6 @@ data/
         layer_b_symbolic.json
         layer_c_energy.json
         layer_d_patterns.json
-        music_feature_layers.json
   fixtures/
     fixtures.json
     pois.json
@@ -562,18 +561,6 @@ LLM hint:
 - Use: escalate later occurrences of the same pattern rather than inventing unrelated scenes.
 - Use: align callback timing to `start_s` and `end_s`, not rough section labels.
 
-### `data/analysis/<Song - Artist>/artifacts/music_feature_layers.json`
-
-Summary: unified cross-layer handoff. Merges timing, sections, phrases, harmonic content, symbolic summaries, energy windows, pattern occurrences, and lighting-facing callback anchors.
-
-Why it matters: best single machine-readable file for structured light show design.
-
-LLM hint:
-- See: `metadata`, `timeline`, `layers`, and `lighting_context`.
-- Use: this as the default starting file for structured cue generation.
-- Use: `lighting_context.cue_anchors` for deterministic cue times.
-- Use: phrase, motif, and pattern callbacks together so recurring musical structure leads to recurring visual structure.
-
 ### `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.json`
 
 Summary: machine-readable validation report comparing generated artifacts against reference material and internal consistency checks.
@@ -730,7 +717,7 @@ Open `data/analysis/<Song - Artist>/sections.json` first, then `data/analysis/<S
 
 ### For structured cue generation
 
-Open `data/analysis/<Song - Artist>/artifacts/music_feature_layers.json`, `layer_c_energy.json`, and `layer_d_patterns.json`.
+Open `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json` and `layer_d_patterns.json`.
 
 ### For harmonic color and scene-change logic
 
@@ -738,7 +725,7 @@ Open `layer_a_harmonic.json` and `essentia/beats.json`.
 
 ### For phrase and repetition callbacks
 
-Open `layer_b_symbolic.json` and `music_feature_layers.json`.
+Open `layer_b_symbolic.json`.
 
 ### For rig-aware targeting
 

@@ -19,7 +19,6 @@ from .drums import validate_drums
 from .energy import _validate_energy_layer
 from .beats import validate_beats
 from .events import _validate_event_outputs
-from .unified import _validate_unified_layer
 from .chords import validate_chords
 from .utils import ValidationResult, skipped_result
 from .sections import _validate_sections
@@ -52,7 +51,6 @@ def build_validation_report(
     event_timeline_path = paths.timeline_output_path
     patterns_path = paths.artifact("layer_d_patterns.json")
     symbolic_path = paths.artifact("layer_b_symbolic.json")
-    unified_path = paths.artifact("music_feature_layers.json")
     harmonic = read_json(harmonic_path)
     sections = read_json(sections_path)
     timing = read_json(beats_path)
@@ -79,15 +77,6 @@ def build_validation_report(
         ) if "events" in compare_targets else skipped_result(),
         "form": validate_form(paths) if "form" in compare_targets else skipped_result(),
         "drops": validate_drops(paths) if "drops" in compare_targets else skipped_result(),
-        "unified": _validate_unified_layer(
-            read_json(unified_path),
-            timing,
-            sections,
-            read_json(symbolic_path),
-            read_json(energy_path),
-            read_json(patterns_path),
-            paths,
-        ) if "unified" in compare_targets else skipped_result(),
     }
 
     # form/drops are advisory structural scores (plan item 0.3): they surface in
@@ -121,8 +110,6 @@ def build_validation_report(
         notes.append("Pattern validation checks window length, occurrence counts, and non-overlap rules inside Layer D.")
     if "events" in compare_targets:
         notes.append("Event validation checks Epic 5 artifact integrity and machine-review timeline consistency.")
-    if "unified" in compare_targets:
-        notes.append("Unified validation checks cross-layer references, phrase and accent timeline joins, and callback integrity.")
     if "form" in compare_targets:
         notes.append("Form validation scores section boundaries, form_role and form_family against reference/human labels; advisory only, and reports 'skipped' until the gold set is labelled (plan D1).")
     if "drops" in compare_targets:
@@ -156,7 +143,6 @@ def build_validation_report(
             "event_overrides_file": str(event_overrides_path),
             "event_timeline_file": str(event_timeline_path),
             "patterns_layer_file": str(patterns_path),
-            "music_feature_layers_file": str(unified_path),
             "sections_file": str(sections_path),
         },
         "validation": {key: asdict(value) for key, value in results.items()},

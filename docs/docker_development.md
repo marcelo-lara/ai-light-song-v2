@@ -123,7 +123,7 @@ Run the first-phase validation entry point:
 docker compose run --rm app \
   ./analyze \
   --song "/data/songs/_test_song.mp3" \
-  --compare beats,chords,drums,sections,energy,patterns,unified,events
+  --compare beats,chords,drums,sections,energy,patterns,events
 ```
 
 Batch mode is also supported for all mounted songs:
@@ -151,7 +151,7 @@ At minimum, developers should validate the following inside Docker:
 3. Core imports succeed for the selected toolchain.
 4. A sample song can be analyzed end to end without relying on host dependencies.
 5. Generated outputs are written to `data/analysis/<Song - Artist>/artifacts/` and `data/analysis/<Song - Artist>/`.
-6. The phase-1 validation CLI can compare inferred beats, chords, and sections against validation-only files in `data/analysis/<Song - Artist>/reference/`, and validate the generated energy, pattern, event, and unified artifacts for internal consistency.
+6. The phase-1 validation CLI can compare inferred beats, chords, and sections against validation-only files in `data/analysis/<Song - Artist>/reference/`, and validate the generated energy, pattern, and event artifacts for internal consistency.
 7. Inference still runs when those reference files are missing; comparison is optional and only happens when the relevant files are available.
 
 ## Smoke Test Expectations
