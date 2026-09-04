@@ -24,7 +24,7 @@ debugger (`ui/`), and the Docker environment.
 | Epic | Stage | Key output |
 | --- | --- | --- |
 | 1 | Preprocessing: stems, beats, tempo, bar grid, 7-band FFT | `essentia/beats.json`, `essentia/fft_bands.json` |
-| 2 | Harmonic: key, chords, HPCP, chord-pattern mining | `layer_a_harmonic.json`, `layer_d_patterns.json` |
+| 2 | Harmonic: key, chords, HPCP | `layer_a_harmonic.json` |
 | 3 | Structure: section segmentation, boundary audit, alignment | `section_segmentation/sections.json` |
 | 4 | Symbolic: note events, energy features, event-feature layer | `layer_b_symbolic.json`, `layer_c_energy.json` |
 | 5 | Events: vocabulary, rule baseline, ML classifier, review | `song_event_timeline.json` |
@@ -47,7 +47,7 @@ The structure is part of the contract.
   plus `artifacts/`. Do not add or remove files here without a contract change.
 - `data/analysis/<Song - Artist>/artifacts/` — intermediate artifacts, grouped
   by producer (`essentia/`, `section_segmentation/`, `energy_summary/`,
-  `event_inference/`, `pattern_mining/`, `validation/`, …), including
+  `event_inference/`, `validation/`, …), including
   `artifacts/stems/`.
 - `data/analysis/<Song - Artist>/reference/` — validation-only truth data
   (external tools, human hints). Scoring and comparison only.

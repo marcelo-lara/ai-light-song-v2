@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import humanHints from "../data/__fixtures__/human_hints.json";
 import harmonic from "../data/__fixtures__/layer_a_harmonic.json";
-import patternsFix from "../data/__fixtures__/layer_d_patterns.json";
 import identifiersFix from "../data/__fixtures__/energy_summary_hints.json";
 import machineFix from "../data/__fixtures__/events_machine.json";
 import symbolicFix from "../data/__fixtures__/layer_b_symbolic.json";
@@ -18,7 +17,6 @@ import {
   parseDropProposals,
   parseIdentifierHints,
   parseMachineEvents,
-  parsePatterns,
   parseSymbolicPhrases,
 } from "../data/sparseArtifacts";
 import { parseHarmonicLayer, parseHumanHints } from "../data/parsers";
@@ -33,7 +31,6 @@ import {
   humanHintsContent,
   identifierHintsContent,
   machineEventsContent,
-  patternsContent,
   phrasesContent,
   sectionsContent,
 } from "./laneContent";
@@ -89,16 +86,6 @@ describe("chordsContent", () => {
   });
 });
 
-describe("patternsContent", () => {
-  it("flattens occurrences and keeps occurrence index/count", () => {
-    const blocks = patternsContent(parsePatterns(patternsFix));
-    expect(blocks.length).toBe(27);
-    expect(blocks[0]!.label).toBe("Pattern A");
-    expect(blocks[0]!.reference).toBe("pattern_A");
-    expect(blocks[0]!.summary).toContain("Occurrence 1 of 27");
-  });
-});
-
 describe("identifier / machine event content", () => {
   it("identifierHints keeps the drop identifier", () => {
     const blocks = identifierHintsContent(parseIdentifierHints(identifiersFix));
@@ -129,7 +116,6 @@ describe("null inputs", () => {
   it("every adapter tolerates a missing artifact", () => {
     expect(humanHintsContent(null)).toEqual([]);
     expect(chordsContent(null)).toEqual([]);
-    expect(patternsContent(null)).toEqual([]);
     expect(phrasesContent(null)).toEqual([]);
   });
 });

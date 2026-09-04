@@ -31,8 +31,6 @@
     "human_hints_alignment": null,
     "human_hints_alignment_markdown": null,
     "sections": "/data/analysis/Armin - Revolution/artifacts/section_segmentation/sections.json",
-    "patterns_layer": "/data/analysis/Armin - Revolution/artifacts/layer_d_patterns.json",
-    "pattern_mining": "/data/analysis/Armin - Revolution/artifacts/pattern_mining/chord_patterns.json",
     "music_feature_layers": "/data/analysis/Armin - Revolution/artifacts/music_feature_layers.json"
   },
   "generated_from": {

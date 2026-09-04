@@ -123,7 +123,7 @@ Run the first-phase validation entry point:
 docker compose run --rm app \
   ./analyze \
   --song "/data/songs/_test_song.mp3" \
-  --compare beats,chords,drums,sections,energy,patterns,events
+  --compare beats,chords,drums,sections,energy,events
 ```
 
 Batch mode is also supported for all mounted songs:

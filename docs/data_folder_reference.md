@@ -55,8 +55,6 @@ data/
           features.json
           rule_candidates.json
           timeline_index.json
-        pattern_mining/
-          chord_patterns.json
         section_segmentation/
           sections.json
         symbolic_transcription/
@@ -87,7 +85,6 @@ data/
         genre.json
         layer_b_symbolic.json
         layer_c_energy.json
-        layer_d_patterns.json
   fixtures/
     fixtures.json
     pois.json
@@ -539,28 +536,6 @@ LLM hint:
 - Use: separate `hit` accents from `rise` accents; they should not look the same.
 - Use: keep outro restraint and chorus payoff aligned with section energy levels.
 
-### `data/analysis/<Song - Artist>/artifacts/pattern_mining/chord_patterns.json`
-
-Summary: producer-scoped repeated harmonic-pattern discovery output before promotion into Layer D.
-
-Why it matters: lower-level view of pattern detection details.
-
-LLM hint:
-- See: pattern bar spans, occurrence windows, and mismatch counts.
-- Use: inspect this when you need rawer pattern-discovery detail than the canonical Layer D summary exposes.
-
-### `data/analysis/<Song - Artist>/artifacts/layer_d_patterns.json`
-
-Summary: canonical repeated chord-pattern layer. Contains named pattern groups, representative sequences, and exact occurrence windows.
-
-Why it matters: strongest source for structural callback logic based on repeated progression blocks.
-
-LLM hint:
-- See: `patterns[]`, UI-facing `sequence`, bar-resolved `bar_sequence`, `occurrence_count`, and `occurrences[]`.
-- Use: repeat or evolve looks when the same harmonic loop returns.
-- Use: escalate later occurrences of the same pattern rather than inventing unrelated scenes.
-- Use: align callback timing to `start_s` and `end_s`, not rough section labels.
-
 ### `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.json`
 
 Summary: machine-readable validation report comparing generated artifacts against reference material and internal consistency checks.
@@ -717,7 +692,7 @@ Open `data/analysis/<Song - Artist>/sections.json` first, then `data/analysis/<S
 
 ### For structured cue generation
 
-Open `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json` and `layer_d_patterns.json`.
+Open `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`.
 
 ### For harmonic color and scene-change logic
 

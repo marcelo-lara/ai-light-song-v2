@@ -8,7 +8,6 @@ import {
   formatRange,
   selectionFromMarker,
   selectionFromSection,
-  type BlockSelection,
 } from "./blockFields";
 
 const val = (fields: { label: string; value: string }[], label: string) =>
@@ -146,26 +145,3 @@ describe("selectionFromMarker + blockFields — lane markers", () => {
   });
 });
 
-describe("blockFields — patterns extras", () => {
-  it("adds bars / occurrence / sequence", () => {
-    const sel: BlockSelection = {
-      laneId: "patterns",
-      laneLabel: "Pattern Occurrences",
-      label: "Pattern P1",
-      start_s: 0,
-      end_s: 8,
-      raw: {
-        pattern_id: "P1",
-        start_bar: 5,
-        end_bar: 8,
-        occurrence_index: 2,
-        occurrence_count: 4,
-        sequence: "I–V–vi–IV",
-      },
-    };
-    const fields = blockFields("patterns", sel);
-    expect(val(fields, "Bars")).toBe("5–8");
-    expect(val(fields, "Occurrence")).toBe("2 of 4");
-    expect(val(fields, "Sequence")).toBe("I–V–vi–IV");
-  });
-});

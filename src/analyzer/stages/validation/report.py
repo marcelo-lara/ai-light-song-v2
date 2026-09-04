@@ -9,12 +9,10 @@ from analyzer.exceptions import AnalysisError
 from analyzer.io import read_json, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
-from analyzer.stages.patterns import MAX_PATTERN_BARS, _build_bars, _build_beat_rows, _display_window, _pattern_sequence
 BEAT_MATCH_RATIO_THRESHOLD = 0.80
 CHORD_MATCH_RATIO_THRESHOLD = 0.85
 CHORD_MAX_LABEL_MISMATCHES = 0
 CHORD_MAX_TIMING_OVERLAP_FAILURES = 2
-from .patterns import _validate_patterns_layer
 from .drums import validate_drums
 from .energy import _validate_energy_layer
 from .beats import validate_beats
@@ -49,7 +47,6 @@ def build_validation_report(
     event_review_path = paths.review_json_path
     event_overrides_path = paths.overrides_path
     event_timeline_path = paths.timeline_output_path
-    patterns_path = paths.artifact("layer_d_patterns.json")
     symbolic_path = paths.artifact("layer_b_symbolic.json")
     harmonic = read_json(harmonic_path)
     sections = read_json(sections_path)
@@ -65,7 +62,6 @@ def build_validation_report(
         "drums": validate_drums(paths, timing) if "drums" in compare_targets else skipped_result(),
         "sections": _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
         "energy": _validate_energy_layer(read_json(energy_path), timing, sections) if "energy" in compare_targets else skipped_result(),
-        "patterns": _validate_patterns_layer(read_json(patterns_path), timing) if "patterns" in compare_targets else skipped_result(),
         "events": _validate_event_outputs(
             read_json(energy_identifiers_path),
             read_json(event_features_path),
@@ -106,8 +102,6 @@ def build_validation_report(
         notes.append("Section validation compares structural change points only; reference segment labels are advisory and do not affect pass/fail.")
     if "energy" in compare_targets:
         notes.append("Energy validation checks internal consistency between section windows, accent candidates, and the canonical beat timeline.")
-    if "patterns" in compare_targets:
-        notes.append("Pattern validation checks window length, occurrence counts, and non-overlap rules inside Layer D.")
     if "events" in compare_targets:
         notes.append("Event validation checks Epic 5 artifact integrity and machine-review timeline consistency.")
     if "form" in compare_targets:
@@ -142,7 +136,6 @@ def build_validation_report(
             "event_review_file": str(event_review_path),
             "event_overrides_file": str(event_overrides_path),
             "event_timeline_file": str(event_timeline_path),
-            "patterns_layer_file": str(patterns_path),
             "sections_file": str(sections_path),
         },
         "validation": {key: asdict(value) for key, value in results.items()},

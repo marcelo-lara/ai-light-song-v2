@@ -27,7 +27,6 @@ from analyzer.stages.harmonic import build_reference_harmonic_layer, extract_hpc
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.loudness import extract_mix_stem_loudness
-from analyzer.stages.patterns import extract_chord_patterns
 from analyzer.stages.sections import segment_sections
 from analyzer.stages.symbolic import extract_symbolic_features
 from analyzer.stages.stems import ensure_stems
@@ -58,7 +57,6 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "extract-hpcp-and-chords": "2.1-2.2",
     "build-reference-harmonic-layer": "2.1-2.2",
     "validate-chords": "2.2",
-    "extract-chord-patterns": "2.3",
     "extract-symbolic-features": "2.4-4.3",
     "extract-drum-events": "2.5",
     "extract-energy-features": "2.6",
@@ -288,11 +286,6 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         timeline = read_json(paths.timeline_output_path) if paths.timeline_output_path.exists() else {}
         _run_stage(paths.song_name, "phase-1", stage_name, build_review_queue, paths, sections, genre_result, timeline)
         return 0
-    if stage_name == "extract-chord-patterns":
-        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, extract_chord_patterns, paths, timing, harmonic)
-        return 0
     if stage_name == "build-human-hints-alignment":
         _run_stage(paths.song_name, "phase-1", stage_name, build_human_hints_alignment, paths)
         return 0
@@ -467,7 +460,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         sections = _run_stage(paths.song_name, "phase-1", "segment-sections", segment_sections, paths, timing, harmonic, energy_features)
         symbolic = _run_stage(paths.song_name, "phase-1", "extract-symbolic-features", extract_symbolic_features, paths, stems, timing, sections)
         drum_events = _run_stage(paths.song_name, "phase-1", "extract-drum-events", extract_drum_events, paths, stems, timing, sections)
-        patterns = _run_stage(paths.song_name, "phase-1", "extract-chord-patterns", extract_chord_patterns, paths, timing, harmonic)
         genre_result = _run_stage(paths.song_name, "phase-1", "classify-genre", classify_genre, paths)
         energy = _run_stage(paths.song_name, "phase-1", "derive-energy-layer", derive_energy_layer, paths, timing, energy_features, sections)
         event_features = _run_stage(
@@ -554,8 +546,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 "human_hints_alignment": human_hint_alignment["json_path"] if human_hint_alignment else None,
                 "human_hints_alignment_markdown": human_hint_alignment["markdown_path"] if human_hint_alignment else None,
                 "sections": str(paths.artifact("section_segmentation", "sections.json")),
-                "patterns_layer": str(paths.artifact("layer_d_patterns.json")),
-                "pattern_mining": str(paths.artifact("pattern_mining", "chord_patterns.json")),
             },
             "generated_from": {
                 "source_song_path": str(paths.song_path),
@@ -601,7 +591,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         if human_hint_alignment:
             report["generated_artifacts"]["human_hints_alignment_file"] = human_hint_alignment["json_path"]
             report["generated_artifacts"]["human_hints_alignment_markdown"] = human_hint_alignment["markdown_path"]
-            report["notes"].append("Human hint alignment review files compare narrative hint windows against generated sections, events, patterns, and harmonic events when human hints are available.")
+            report["notes"].append("Human hint alignment review files compare narrative hint windows against generated sections, events, and harmonic events when human hints are available.")
         _run_stage(paths.song_name, "phase-1", "write-validation-report", write_validation_report, report, config.report_json)
         _run_stage(paths.song_name, "phase-1", "write-validation-markdown", write_validation_markdown, report, config.report_md)
         return exit_code

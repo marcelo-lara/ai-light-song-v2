@@ -56,7 +56,7 @@ Recommended baseline command:
 ./analyze \
   --song "/data/songs/_test_song.mp3" \
   --analysis-root "/data/analysis" \
-  --compare beats,chords,drums,sections,energy,patterns,events
+  --compare beats,chords,drums,sections,energy,events
 ```
 
 Equivalent Python module form is the supported container entry point:
@@ -65,7 +65,7 @@ Equivalent Python module form is the supported container entry point:
 python -m analyzer \
   --song "/data/songs/_test_song.mp3" \
   --analysis-root "/data/analysis" \
-  --compare beats,chords,drums,sections,energy,patterns,events
+  --compare beats,chords,drums,sections,energy,events
 ```
 
 Batch mode analyzes every `.mp3` in `/data/songs` and writes canonical validation reports under each song artifact directory:
@@ -103,7 +103,7 @@ Recommended final validation command:
 ```bash
 python -m analyzer \
   --song "/data/songs/_test_song.mp3" \
-  --compare beats,chords,drums,sections,energy,patterns,events
+  --compare beats,chords,drums,sections,energy,events
 ```
 
 When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] _test_song | ensure-stems`.
@@ -116,11 +116,11 @@ The current batch implementation isolates each song run in a subprocess and reus
 - `--all-songs`: analyze every `.mp3` under `/data/songs` or the directory supplied by `--songs-root`.
 - `--songs-root`: optional directory override for batch mode. Defaults to the sibling `songs/` directory next to `--analysis-root`.
 - `--analysis-root`: optional root directory where inferred outputs are written. Defaults to `/data/analysis`. Validation-only reference files are read from `<analysis-root>/<Song - Artist>/reference/`; if missing, inference must still run and validation for those targets is skipped.
-- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `drums`, `sections`, `energy`, `patterns`, and `events`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/analysis/<Song - Artist>/reference/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. When that Moises reference file exists, the pipeline preserves the inferred beat grid separately and then promotes a canonical reference-derived beat grid for all downstream phases. The `drums` target validates `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json` as a producer-scoped review artifact generated from the `audiohacking/omnizart` fork: rows must be time-ordered, supported labels must be limited to `kick`, `snare`, `hat`, or unresolved, summary counts must match the event rows, raw Omnizart MIDI must be preserved, explicit debug source paths for the mix and drums stem must be recorded in metadata, and the report should call out whether the detected pattern on `_test_song.mp3` exposes a recognizable backbeat and hat pulse. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target validates the Epic 5 event chain across `event_inference/`, review outputs, and timeline exports.
+- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `drums`, `sections`, `energy`, and `events`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/analysis/<Song - Artist>/reference/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. When that Moises reference file exists, the pipeline preserves the inferred beat grid separately and then promotes a canonical reference-derived beat grid for all downstream phases. The `drums` target validates `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json` as a producer-scoped review artifact generated from the `audiohacking/omnizart` fork: rows must be time-ordered, supported labels must be limited to `kick`, `snare`, `hat`, or unresolved, summary counts must match the event rows, raw Omnizart MIDI must be preserved, explicit debug source paths for the mix and drums stem must be recorded in metadata, and the report should call out whether the detected pattern on `_test_song.mp3` exposes a recognizable backbeat and hat pulse. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target validates the Epic 5 event chain across `event_inference/`, review outputs, and timeline exports.
 - In the Docker runtime, Story 3.2 uses the installed Omnizart package checkpoint by default. `OMNIZART_DRUM_MODEL_PATH` remains an explicit override when a different drum model directory must be tested.
 - chord validation should use a stricter gate than the historical phase-1 default: materially low match ratio, persistent label mismatches, or repeated timing-overlap failures should count as a failed inferred harmonic result even if some overlap remains.
 - when a Moises chord reference exists, the analyzer preserves the inferred harmonic layer separately and promotes an explicit canonical harmonic layer rebuilt from the reference file for downstream phases.
-- when `data/analysis/<Song - Artist>/reference/human/human_hints.json` exists, the analyzer also writes review-only alignment files under `data/analysis/<Song - Artist>/artifacts/validation/` that compare those hint windows against generated sections, events, patterns, and harmonic events. These files aid issue triage and review; they do not replace generated outputs.
+- when `data/analysis/<Song - Artist>/reference/human/human_hints.json` exists, the analyzer also writes review-only alignment files under `data/analysis/<Song - Artist>/artifacts/validation/` that compare those hint windows against generated sections, events, and harmonic events. These files aid issue triage and review; they do not replace generated outputs.
 - machine-readable and markdown validation reports are always written automatically under `data/analysis/<Song - Artist>/artifacts/validation/` as `phase_1_report.json` and `phase_1_report.md`.
 - `--fail-on-mismatch`: optional flag causing the command to exit non-zero when validation thresholds are missed.
 - `--beat-tolerance-seconds`: optional float for beat-timestamp comparison tolerance. The phase-1 default is `0.10` seconds.
@@ -147,7 +147,7 @@ The phase 1 analyzer must:
 4. compare inferred chord outputs against `data/analysis/<Song - Artist>/reference/moises/chords.json` when that file is available
 5. validate `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json` for schema integrity, count consistency, and recognizable kick, snare, and hat pulse behavior on `_test_song.mp3`
 6. compare inferred section change points against `data/analysis/<Song - Artist>/reference/moises/segments.json` when that file is available
-7. validate canonical energy, pattern, and event feature artifacts for internal consistency
+7. validate canonical energy and event feature artifacts for internal consistency
 8. write a validation report under `data/analysis/<Song - Artist>/artifacts/validation/`
 9. exit with a documented success or failure status
 
@@ -186,7 +186,7 @@ At minimum:
 - Drum validation should report whether kick, snare, and hat detections remain plausible at the song level, and should flag unresolved or over-dense output explicitly instead of masking uncertainty.
 - Drum validation should also confirm that the artifact records explicit debug source paths for the full mix and drums stem rather than copying audio debug files into the artifact tree.
 - Section comparisons should use structural change-point alignment. Reference labels may be reported for review but should not control pass/fail.
-- **Spectral Alignment Check:** Cross-reference `sections.json` and `layer_d_patterns.json` against `essentia/fft_bands.json`. Report any "Ghost Latency" where a boundary misses a physical spectral onset.
+- **Spectral Alignment Check:** Cross-reference `sections.json` against `essentia/fft_bands.json`. Report any "Ghost Latency" where a boundary misses a physical spectral onset.
 - Chord comparisons should use time-aligned event comparison and label comparison.
 
 ## Recommended Report Contents

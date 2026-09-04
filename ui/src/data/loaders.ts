@@ -5,7 +5,6 @@
 import { ShapeError } from "./parse";
 import { artifactPaths } from "./paths";
 import {
-  loadPatterns,
   loadIdentifierHints,
   loadMachineEvents,
   loadSymbolicPhrases,
@@ -195,7 +194,6 @@ export const loadSongFacts = (song: string, f?: typeof fetch) =>
 
 export const artifactLoaders = {
   info: loadInfo,
-  patterns: loadPatterns,
   identifierHints: loadIdentifierHints,
   machineEvents: loadMachineEvents,
   symbolicPhrases: loadSymbolicPhrases,

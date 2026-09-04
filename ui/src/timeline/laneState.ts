@@ -19,7 +19,6 @@ export type LaneKind =
   | "hints"
   | "sections"
   | "chords"
-  | "patterns"
   | "identifiers"
   | "machine"
   | "phrases"
@@ -91,7 +90,6 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "vocalTranscription", label: "Vocal Transcription", sub: "experiment · sung lyrics + timing · VocalParse / ACE-Step / whisper", kind: "lyrics", height: 84, experiment: "vocalparse + acestep_transcriber" },
   { id: "allin1Sections", label: "allin1 Sections", sub: "experiment · named song form · compare with Sections", kind: "allin1", height: 84, experiment: "allin1" },
   { id: "chords", label: "Chord Regions", sub: "layer A harmonic", kind: "chords", height: 84 },
-  { id: "patterns", label: "Pattern Occurrences", sub: "repeated harmonic patterns", kind: "patterns", height: 84 },
   { id: "identifierHints", label: "Identifier Hints", sub: "energy_summary · named events", kind: "identifiers", height: 84 },
   { id: "machineEvents", label: "Machine Events", sub: "rule + machine event windows", kind: "machine", height: 84 },
   { id: "drums", label: "Drum Density", sub: "kick / snare / hat activity", kind: "drums", height: 84 },

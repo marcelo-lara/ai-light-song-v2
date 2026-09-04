@@ -20,7 +20,6 @@ const BLOCK_LANES = [
   "vocalTranscription",
   "allin1Sections",
   "chords",
-  "patterns",
   "identifierHints",
   "machineEvents",
   "phrases",

@@ -94,7 +94,6 @@ const TIMELINE_KEYS = [
   // external word-level sung lyrics (reference/moises)
   "moisesLyrics",
   // item 9 sparse lanes
-  "patterns",
   "identifierHints",
   "machineEvents",
   "symbolicPhrases",
@@ -128,7 +127,6 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   vocalTranscription: "vocalTranscription",
   sections: "sectionsTopLevel",
   chords: "harmonicLayer",
-  patterns: "patterns",
   identifierHints: "identifierHints",
   machineEvents: "machineEvents",
   phrases: "symbolicPhrases",
@@ -284,7 +282,6 @@ export function App(): React.JSX.Element {
       vocalTranscription: artifacts.vocalTranscription.data,
       sections,
       harmonicLayer: artifacts.harmonicLayer.data,
-      patterns: artifacts.patterns.data,
       identifierHints: artifacts.identifierHints.data,
       machineEvents: artifacts.machineEvents.data,
       symbolicPhrases: artifacts.symbolicPhrases.data,
@@ -302,7 +299,6 @@ export function App(): React.JSX.Element {
       artifacts.vocalTranscription.data,
       sections,
       artifacts.harmonicLayer.data,
-      artifacts.patterns.data,
       artifacts.identifierHints.data,
       artifacts.machineEvents.data,
       artifacts.symbolicPhrases.data,

@@ -33,7 +33,6 @@ const NOT_BADGED = [
   "humanHints",
   "sections",
   "chords",
-  "patterns",
   "identifierHints",
   "machineEvents",
   "phrases",

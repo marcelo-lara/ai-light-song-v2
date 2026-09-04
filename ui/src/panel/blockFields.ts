@@ -44,7 +44,6 @@ export const LANE_LABELS: Record<string, string> = {
   humanHints: "Human Hints",
   moisesLyrics: "Moises Lyrics",
   chords: "Chord Regions",
-  patterns: "Pattern Occurrences",
   identifierHints: "Identifier Hints",
   machineEvents: "Machine Events",
   phrases: "Symbolic Phrases",
@@ -214,18 +213,6 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
       const match = r.matches_human_impact;
       if (match != null)
         out.push({ label: "Matches human impact", value: `${roundNumber(match, 2)} s` });
-      break;
-    }
-    case "patterns": {
-      const sb = str(r.start_bar);
-      const eb = str(r.end_bar);
-      if (sb && eb) out.push({ label: "Bars", value: `${sb}–${eb}` });
-      const occ = str(r.occurrence_index);
-      const oc = str(r.occurrence_count);
-      if (occ && oc)
-        out.push({ label: "Occurrence", value: `${occ} of ${oc}` });
-      const seq = firstStr(r.sequence, r.bar_sequence);
-      if (seq) out.push({ label: "Sequence", value: seq });
       break;
     }
     case "chords": {

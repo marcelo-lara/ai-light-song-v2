@@ -84,8 +84,6 @@ export const artifactPaths = {
   reviewQueue: (song: string) =>
     encodePath(analysis(song, "artifacts", "validation", "review_queue.json")),
   // item 9 sparse lanes
-  patterns: (song: string) =>
-    encodePath(analysis(song, "artifacts", "layer_d_patterns.json")),
   symbolicLayer: (song: string) =>
     encodePath(analysis(song, "artifacts", "layer_b_symbolic.json")),
   identifierHints: (song: string) =>

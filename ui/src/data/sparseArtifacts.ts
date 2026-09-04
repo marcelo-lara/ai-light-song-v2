@@ -1,5 +1,5 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
-// artifacts consumed by item 9's SparseLane (patterns, identifier hints,
+// artifacts consumed by item 9's SparseLane (identifier hints,
 // machine / ML events, symbolic phrase windows).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
@@ -22,67 +22,6 @@ const st = (v: unknown, fallback = ""): string =>
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
 const rec = (v: unknown): Record<string, unknown> =>
   v && typeof v === "object" ? (v as Record<string, unknown>) : {};
-
-// ---------------------------------------------------------------------------
-// patterns — artifacts/layer_d_patterns.json
-// ---------------------------------------------------------------------------
-
-export interface PatternOccurrence {
-  id: string;
-  pattern_id: string;
-  label: string;
-  occurrence_index: number;
-  occurrence_count: number;
-  start_s: number;
-  end_s: number;
-  start_bar: number;
-  end_bar: number;
-  sequence: string;
-  bar_sequence: string;
-  mismatch_count: number;
-}
-
-export interface PatternsFile {
-  schema_version: string;
-  song_name: string;
-  occurrences: PatternOccurrence[];
-}
-
-export function parsePatterns(raw: unknown): PatternsFile {
-  const o = asObject(raw, "layer_d_patterns.json");
-  const occurrences: PatternOccurrence[] = [];
-  for (const p of arr(o.patterns)) {
-    const pr = rec(p);
-    const list = arr(pr.occurrences);
-    const patternId = st(pr.id, "pattern");
-    const label = st(pr.label, patternId);
-    list.forEach((occ, i) => {
-      const or = rec(occ);
-      const start_s = num(or.start_s ?? or.start_time ?? or.start);
-      const end_s = Math.max(num(or.end_s ?? or.end_time ?? or.end, start_s), start_s);
-      occurrences.push({
-        id: `${patternId}-${String(i + 1).padStart(3, "0")}`,
-        pattern_id: patternId,
-        label,
-        occurrence_index: i + 1,
-        occurrence_count: list.length,
-        start_s,
-        end_s,
-        start_bar: num(or.start_bar),
-        end_bar: num(or.end_bar),
-        sequence: st(or.sequence ?? pr.sequence),
-        bar_sequence: st(or.bar_sequence ?? pr.bar_sequence),
-        mismatch_count: num(or.mismatch_count),
-      });
-    });
-  }
-  occurrences.sort((a, b) => a.start_s - b.start_s);
-  return {
-    schema_version: st(o.schema_version),
-    song_name: st(o.song_name),
-    occurrences,
-  };
-}
 
 // ---------------------------------------------------------------------------
 // generic event rows — energy_summary/hints.json + event_inference/events.*.json
@@ -634,8 +573,6 @@ export function parseMoisesLyrics(raw: unknown): MoisesLyricsFile {
 // loaders
 // ---------------------------------------------------------------------------
 
-export const loadPatterns = (song: string, f?: typeof fetch): Promise<LoadResult<PatternsFile>> =>
-  loadJson(artifactPaths.patterns(song), parsePatterns, f);
 export const loadIdentifierHints = (song: string, f?: typeof fetch): Promise<LoadResult<EventsFile>> =>
   loadJson(artifactPaths.identifierHints(song), parseIdentifierHints, f);
 export const loadMachineEvents = (song: string, f?: typeof fetch): Promise<LoadResult<EventsFile>> =>

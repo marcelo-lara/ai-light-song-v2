@@ -53,7 +53,6 @@ NEEDED = [
     "artifacts/layer_a_harmonic.json",
     "artifacts/layer_b_symbolic.json",
     "artifacts/layer_c_energy.json",
-    "artifacts/layer_d_patterns.json",
     "artifacts/energy_summary/hints.json",
     "artifacts/event_inference/events.machine.json",
     "artifacts/symbolic_transcription/drum_events.json",

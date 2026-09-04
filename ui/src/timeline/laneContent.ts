@@ -17,7 +17,6 @@ import type {
   MoisesLyricsFile,
   VocalTranscriptionFile,
   EventsFile,
-  PatternsFile,
   SymbolicPhrasesFile,
   VocalPhrasesFile,
   ReactiveBandsFile,
@@ -437,22 +436,6 @@ export function chordsContent(harmonic: HarmonicLayer | null): SparseBlock[] {
   });
 }
 
-export function patternsContent(file: PatternsFile | null): SparseBlock[] {
-  return (file?.occurrences ?? []).map((p) => ({
-    id: p.id,
-    start_s: p.start_s,
-    end_s: p.end_s,
-    label: `Pattern ${p.label}`,
-    laneLabel: "Pattern Occurrences",
-    caption: `${formatRange(p.start_s, p.end_s)} · bars ${p.start_bar}-${p.end_bar}`,
-    reference: p.pattern_id,
-    detail: p.bar_sequence || p.sequence || `bars ${p.start_bar}-${p.end_bar}`,
-    summary: `Occurrence ${p.occurrence_index} of ${p.occurrence_count} for ${p.pattern_id} spans bars ${p.start_bar}-${p.end_bar}${
-      p.sequence ? ` with progression ${p.sequence}.` : "."
-    }`,
-    raw: p,
-  }));
-}
 
 function eventContent(
   file: EventsFile | null,
@@ -622,7 +605,6 @@ export interface LaneContentSources {
   dropProposals?: DropProposalsFile | null;
   sections?: readonly SectionRow[];
   harmonicLayer?: HarmonicLayer | null;
-  patterns?: PatternsFile | null;
   allin1?: Allin1File | null;
   character?: CharacterFile | null;
   vocalTranscription?: VocalTranscriptionFile | null;
@@ -650,7 +632,6 @@ export const SPARSE_LANE_IDS = [
   "vocalTranscription",
   "allin1Sections",
   "chords",
-  "patterns",
   "identifierHints",
   "machineEvents",
   "phrases",
@@ -689,8 +670,6 @@ export function buildLaneBlocks(
       return vocalTranscriptionContent(s.vocalTranscription ?? null);
     case "chords":
       return chordsContent(s.harmonicLayer ?? null);
-    case "patterns":
-      return patternsContent(s.patterns ?? null);
     case "identifierHints":
       return identifierHintsContent(s.identifierHints ?? null);
     case "machineEvents":

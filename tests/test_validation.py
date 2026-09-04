@@ -7,11 +7,9 @@ from pathlib import Path
 
 from analyzer.paths import SongPaths
 from analyzer.stages.harmonic import build_reference_harmonic_layer
-from analyzer.stages.patterns import extract_chord_patterns
 from analyzer.stages.validation.beats import validate_beats
 from analyzer.stages.validation.chords import _validate_chords
 from analyzer.stages.validation.drums import validate_drums
-from analyzer.stages.validation.patterns import _validate_patterns_layer, find_pattern_matches_for_bar_window
 from analyzer.stages.validation.sections import _validate_sections
 
 
@@ -295,63 +293,6 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         self.assertEqual([event["chord"] for event in payload["chords"]], ["C#", "D#", "Fm"])
         self.assertEqual(payload["generated_from"]["engine"], "reference.moises.chords.promotion")
         self.assertEqual(payload["generated_from"]["dependencies"]["inferred_harmonic_file"], "/tmp/inferred.json")
-
-    def test_validate_patterns_accepts_24_bar_occurrences(self) -> None:
-        timing = {
-            "bars": [{"bar": bar_number} for bar_number in range(1, 105)],
-        }
-        patterns = {
-            "pattern_count": 1,
-            "patterns": [
-                {
-                    "id": "pattern_A",
-                    "bar_count": 24,
-                    "occurrence_count": 4,
-                    "occurrences": [
-                        {"start_bar": 1, "end_bar": 24},
-                        {"start_bar": 25, "end_bar": 48},
-                        {"start_bar": 49, "end_bar": 72},
-                        {"start_bar": 73, "end_bar": 96},
-                    ],
-                }
-            ],
-        }
-
-        result = _validate_patterns_layer(patterns, timing)
-
-        self.assertEqual(result.status, "passed")
-
-    def test_find_pattern_matches_for_bar_window_matches_subspan_inside_occurrence(self) -> None:
-        phrase = ["C#", "C#", "D#", "D#", "Fm", "Fm", "D#", "D#"] * 3
-        bar_chords = phrase + phrase
-        timing = _build_timing(bar_chords)
-        harmonic = _build_harmonic(bar_chords)
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            paths = SongPaths(
-                song_path=root / "songs" / "_test_song.mp3",
-                analysis_root=root / "analysis",
-            )
-            patterns = extract_chord_patterns(paths, timing, harmonic)
-
-        matches = find_pattern_matches_for_bar_window(
-            patterns,
-            timing,
-            harmonic,
-            start_bar=9,
-            start_beat=1,
-            end_bar=16,
-            end_beat=4,
-        )
-
-        self.assertEqual(len(matches), 1)
-        self.assertEqual(matches[0]["pattern_id"], "pattern_A")
-        self.assertEqual(matches[0]["occurrence_start_bar"], 9)
-        self.assertEqual(matches[0]["occurrence_end_bar"], 16)
-        self.assertEqual(matches[0]["window_sequence"], "C#→D#→Fm→D#")
-        self.assertEqual(matches[0]["window_bar_sequence"], "C#|C#|D#|D#|Fm|Fm|D#|D#")
-
 
 if __name__ == "__main__":
     unittest.main()

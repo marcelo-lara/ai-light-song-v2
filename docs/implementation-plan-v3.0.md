@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 3 |
+| Done | 4 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -200,22 +200,22 @@ deleted test files gone. `docker compose run --rm app ./analyze --song
 
 ### 4. Delete `patterns.py`
 
-- [ ] Delete `src/analyzer/stages/patterns.py` and
+- [x] Delete `src/analyzer/stages/patterns.py` and
       `src/analyzer/stages/validation/patterns.py`.
-- [ ] Remove the `extract-chord-patterns` stage and the `patterns_layer` /
+- [x] Remove the `extract-chord-patterns` stage and the `patterns_layer` /
       `pattern_mining` rows from `info.json`.
-- [ ] **Clear the copy-pasted `from analyzer.stages.patterns import
+- [x] **Clear the copy-pasted `from analyzer.stages.patterns import
       MAX_PATTERN_BARS, _build_bars, _build_beat_rows, _display_window,
       _pattern_sequence` block from every module under
       `src/analyzer/stages/validation/`** (`sections.py`, `drums.py`,
       `energy.py`, `events.py`, and any other carrying it). Most are unused; any
       that is genuinely used moves with the helper into
       `validation/utils.py` rather than keeping `patterns.py` alive.
-- [ ] Delete `tests/test_patterns.py`.
-- [ ] Remove the **Pattern Occurrences** lane (see *Removing a debugger lane*),
+- [x] Delete `tests/test_patterns.py`.
+- [x] Remove the **Pattern Occurrences** lane (see *Removing a debugger lane*),
       including `parsePatterns` and the `PatternsFile` / `PatternOccurrence`
       types in `sparseArtifacts.ts`.
-- [ ] Delete the `layer_d_patterns.json` and `pattern_mining/chord_patterns.json`
+- [x] Delete the `layer_d_patterns.json` and `pattern_mining/chord_patterns.json`
       entries from `docs/data_folder_reference.md`.
 
 **Tests:** `docker compose run --rm test`; a `_test_song` run completes and
