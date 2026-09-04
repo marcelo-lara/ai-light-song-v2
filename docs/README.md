@@ -36,7 +36,15 @@ measurements say is broken.
 | [`experiments_pending.md`](experiments_pending.md) | The experiment queue (constitution §3.4). One entry per experiment, carrying its plan, its measured results and its conclusion. A concluded entry leaves this file only when the operator picks archive or promote. |
 | [`archive/experiments.md`](archive/experiments.md) | Concluded experiments and what they scored. The one archive file §4 permits. |
 
-No release worklist is open.
+## Open release — v3.0
+
+One refinement doc and one plan, per constitution §4.1. Both are open.
+
+| Doc | State |
+| --- | --- |
+| [`product-refinement-v3.0.md`](product-refinement-v3.0.md) | The scoped items behind the wave-2 module verdicts — what is deleted, what is replaced, the decisions taken and the risks accepted. |
+| [`implementation-plan-v3.0.md`](implementation-plan-v3.0.md) | The 16 ordered items that execute it. One commit per item, validated in the container before it is pushed. |
+| `contract-change-v3.0.md` | The downstream handoff note. Created by plan item 5 and extended as each contract-changing item lands. |
 
 ## Measured evidence
 
