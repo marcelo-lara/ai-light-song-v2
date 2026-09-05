@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 13 |
+| Done | 14 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -792,21 +792,21 @@ confidence is below the stage's stated threshold.
 
 Only the *promotions* remain — the removals landed with their items.
 
-- [ ] The **allin1 Sections** and **allin1 Transitions** experiment lanes are
+- [x] The **allin1 Sections** and **allin1 Transitions** experiment lanes are
       removed from the registry (constitution §3.2: a lane comes out when its
       experiment is promoted). Their content now lives in the production
       **Sections** lane from item 7 and the transition events in
       `song_event_timeline.json` from item 9.
-- [ ] The **Gestures** lane stops reading
+- [x] The **Gestures** lane stops reading
       `reference/proposals/gestures.json` and reads the production
       `song_event_timeline.json` instead. Remove `artifactPaths.gestures` and
       the `experiment:` marker from its registry row.
-- [ ] Remove `artifactPaths.allin1` and its parser.
-- [ ] **Leave untouched**: `Drop Proposals`, `Vocal Phrases`, `Reactive Bands`,
+- [x] Remove `artifactPaths.allin1` and its parser.
+- [x] **Leave untouched**: `Drop Proposals`, `Vocal Phrases`, `Reactive Bands`,
       `Phrase Grid`, `Character`, `Vocal Transcription`, `Moises Lyrics`. Those
       experiments are not promoted by this release.
-- [ ] Rebuild the frozen fixtures and re-capture the affected baselines.
-- [ ] `docs/reference/ui-regression_guide.md` §2: update the surface rows that
+- [x] Rebuild the frozen fixtures and re-capture the affected baselines.
+- [x] `docs/reference/ui-regression_guide.md` §2: update the surface rows that
       name a removed lane (`inspector-promote` names `allin1Sections` — repoint
       it at the production `sections` lane).
 

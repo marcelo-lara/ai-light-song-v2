@@ -5,7 +5,6 @@
 import { ShapeError } from "./parse";
 import { artifactPaths } from "./paths";
 import {
-  loadAllin1,
   loadCharacter,
   loadVocalTranscription,
   loadDropProposals,
@@ -194,7 +193,6 @@ export const artifactLoaders = {
   vocalPhrases: loadVocalPhrases,
   reactiveBands: loadReactiveBands,
   grid: loadGrid,
-  allin1: loadAllin1,
   character: loadCharacter,
   vocalTranscription: loadVocalTranscription,
   beats: loadBeats,

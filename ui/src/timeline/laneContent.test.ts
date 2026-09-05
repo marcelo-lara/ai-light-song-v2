@@ -4,12 +4,10 @@ import humanHints from "../data/__fixtures__/human_hints.json";
 import harmonic from "../data/__fixtures__/layer_a_harmonic.json";
 import timelineFixture from "../data/__fixtures__/song_event_timeline.json";
 import dropProposalsFix from "../data/__fixtures__/drop_proposals.json";
-import allin1Fix from "../data/__fixtures__/allin1.json";
 import characterFix from "../data/__fixtures__/character.json";
 import vocalFix from "../data/__fixtures__/vocal_transcription.json";
 
 import {
-  parseAllin1,
   parseCharacter,
   parseVocalTranscription,
   parseDropProposals,
@@ -17,8 +15,6 @@ import {
 import { parseEventTimeline, parseHarmonicLayer, parseHumanHints } from "../data/parsers";
 
 import {
-  allin1SectionsContent,
-  allin1TransitionsContent,
   characterContent,
   vocalTranscriptionContent,
   chordsContent,
@@ -172,73 +168,6 @@ describe("dropProposalsContent", () => {
       [...blocks.map((b) => b.start_s)].sort((a, b) => a - b),
     );
     expect(dropProposalsContent(null)).toEqual([]);
-  });
-});
-
-describe("allin1SectionsContent", () => {
-  const blocks = allin1SectionsContent(parseAllin1(allin1Fix));
-
-  it("names a returning section by its occurrence", () => {
-    expect(blocks.map((b) => b.label)).toContain("chorus 2");
-    expect(blocks.map((b) => b.label)).toContain("bridge");
-  });
-
-  it("says which earlier section carries the same label", () => {
-    const third = blocks.find((b) => b.id === "allin1-009");
-    expect(third?.detail).toBe("same label as allin1-003");
-    const first = blocks.find((b) => b.id === "allin1-003");
-    expect(first?.detail).toBe("1 of 3 chorus sections");
-  });
-
-  it("puts the bar span and phrase count in the wide label", () => {
-    const inst = blocks.find((b) => b.id === "allin1-004");
-    expect(inst?.wideLabel).toContain("bars 40–47");
-    expect(inst?.wideLabel).toContain("1 phrase");
-  });
-
-  it("marks every row unknown and mutes it when allin1 degenerated", () => {
-    const degenerate = allin1SectionsContent(
-      parseAllin1({
-        ...allin1Fix,
-        labelling: { status: "degenerate", reason: "only 2 distinct label(s)" },
-      }),
-    );
-    expect(degenerate[0]!.label).toMatch(/ \?$/);
-    expect(degenerate[0]!.tintId).toBe("allin1Unnamed");
-    expect(degenerate[0]!.summary).toContain("treat the boundary as the finding");
-  });
-
-  it("tolerates a missing file", () => {
-    expect(allin1SectionsContent(null)).toEqual([]);
-  });
-});
-
-describe("allin1TransitionsContent", () => {
-  const blocks = allin1TransitionsContent(parseAllin1(allin1Fix));
-
-  it("keeps the destination in the narrow label and the full pair in the wide one", () => {
-    const block = blocks.find((b) => b.id === "allin1-t-003");
-    expect(block?.label).toBe("? \u2192 inst");
-    expect(block?.wideLabel).toContain("chorus \u2192 inst");
-  });
-
-  it("marks and tints a transition that already matches a human impact", () => {
-    const matched = blocks.find((b) => b.id === "allin1-t-006");
-    expect(matched?.label).toMatch(/^\u2713 /);
-    expect(matched?.caption).toContain("matches human 151.26s");
-    expect(matched?.tintId).toBe("allin1TransitionsMatched");
-    expect(blocks.find((b) => b.id === "allin1-t-003")?.tintId).toBeUndefined();
-  });
-
-  it("reports the offset to the essentia beat grid cues snap to", () => {
-    expect(blocks.find((b) => b.id === "allin1-t-003")?.wideLabel).toMatch(/off beat/);
-  });
-
-  it("is ordered by time and tolerates a missing file", () => {
-    expect(blocks.map((b) => b.start_s)).toEqual(
-      [...blocks.map((b) => b.start_s)].sort((a, b) => a - b),
-    );
-    expect(allin1TransitionsContent(null)).toEqual([]);
   });
 });
 

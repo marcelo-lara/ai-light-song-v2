@@ -588,3 +588,35 @@ chord computation outright. Harmonic context is exactly the kind of fact a
 cue author needs to justify a colour choice, and an honest `null` where
 agreement is weak is worth more than a confident chord label the reference
 data contradicts on over 40% of a song (constitution §2).
+
+---
+
+## 14. Consolidate the debugger lanes
+
+**No analyzer output changes.** This item only touches `ui/` — the debugger's
+lane registry — not `src/analyzer` or any projected file.
+
+**UI.** The **allin1 Sections** and **allin1 Transitions** experiment lanes are
+removed from the debugger entirely (constitution §3.2: a lane comes out of the
+registry once its experiment is promoted). Their content already lives
+elsewhere: the functional labels are the production **Sections** lane from
+item 7, and the section-change events are the transition rows in
+`song_event_timeline.json` from item 9. `artifactPaths.allin1` and its parser
+are removed along with them, so the debugger no longer reads
+`reference/proposals/allin1.json` at all.
+
+The **Gestures** lane now reads the production `song_event_timeline.json`
+deliverable and is no longer marked as an experiment — it lost its
+`experiment` tag and flask badge when item 9 promoted the gestures stage;
+`artifactPaths.gestures` (the old `reference/proposals/gestures.json` path) is
+removed as dead weight in this change.
+
+**Left untouched.** `Drop Proposals`, `Vocal Phrases`, `Reactive Bands`,
+`Phrase Grid`, `Character`, `Vocal Transcription` and `Moises Lyrics` all keep
+their experiment badges and artifact paths — none of those experiments are
+promoted by this release.
+
+**Why:** `docs/implementation-plan-v3.0.md` item 14. Once an experiment's
+output is promoted into a production deliverable, keeping its old debugger
+lane around invites the two to drift apart and confuses which one the
+authoring model actually receives (constitution §3.2).

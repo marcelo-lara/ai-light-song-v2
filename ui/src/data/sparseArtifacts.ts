@@ -1,6 +1,6 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
-// artifacts consumed by SparseLane (drop proposals, allin1, character,
-// vocal transcription, vocal phrases, reactive bands, phrase grid).
+// artifacts consumed by SparseLane (drop proposals, character, vocal
+// transcription, vocal phrases, reactive bands, phrase grid).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -92,133 +92,6 @@ export function parseDropProposals(raw: unknown): DropProposalsFile {
       .map((v) => Number(v))
       .filter((v) => Number.isFinite(v)),
     proposals,
-  };
-}
-
-// ---------------------------------------------------------------------------
-// allin1 functional structure — reference/proposals/allin1.json
-// ---------------------------------------------------------------------------
-//
-// Named song form from the All-In-One model, exported by `experiments/allin1`.
-// Two lanes come out of this one file: the merged sections (what part of the
-// song this is) and the transitions between them (where a cue belongs, and
-// what kind of change it is). They are proposals — nothing in the pipeline
-// reads this file — so both lanes exist to be auditioned against the audio and
-// against the shipped Sections lane.
-//
-// `function_status` is the model's own honesty flag: on songs outside its
-// training distribution allin1 emits one or two labels for the whole track, and
-// the exporter marks every row `unknown` rather than letting a confident wrong
-// name through.
-
-export interface Allin1Section {
-  id: string;
-  /** Harmonix vocabulary: intro / verse / chorus / bridge / inst / solo / break / outro */
-  function: string;
-  /** display name — `chorus 2`, or just `bridge` when it occurs once */
-  name: string;
-  occurrence: number;
-  occurrence_count: number;
-  start_s: number;
-  end_s: number;
-  start_bar: number | null;
-  bars: number;
-  phrase_count: number;
-  /** id of the first section carrying the same label, or null when this is it */
-  same_label_as: string | null;
-  function_status: string;
-  raw: Record<string, unknown>;
-}
-
-export interface Allin1Transition {
-  id: string;
-  start_s: number;
-  end_s: number;
-  time_s: number;
-  from: string;
-  to: string;
-  /** `chorus → inst` */
-  pair: string;
-  /** lift / release / shift — a reading convention, not a measurement */
-  kind: string;
-  bar: number | null;
-  /** signed distance to the nearest essentia beat, the grid cues snap to */
-  essentia_beat_offset_s: number | null;
-  on_downbeat: boolean;
-  /** time of the hand-placed `drop impact` this matches, or null */
-  matches_human_impact: number | null;
-  function_status: string;
-  raw: Record<string, unknown>;
-}
-
-export interface Allin1File {
-  schema_version: string;
-  song_name: string;
-  /** "ok" | "degenerate" | "empty" */
-  labelling_status: string;
-  labelling_reason: string | null;
-  sections: Allin1Section[];
-  transitions: Allin1Transition[];
-}
-
-export function parseAllin1(raw: unknown): Allin1File {
-  const o = asObject(raw, "reference/proposals/allin1.json");
-  const labelling = rec(o.labelling);
-
-  const sections = arr(o.sections).map((row, i): Allin1Section => {
-    const r = rec(row);
-    const start_s = num(r.start_s);
-    const fn = st(r.function, "unknown");
-    return {
-      id: st(r.id, `allin1-${String(i + 1).padStart(3, "0")}`),
-      function: fn,
-      name: st(r.name, fn),
-      occurrence: num(r.occurrence, 1),
-      occurrence_count: num(r.occurrence_count, 1),
-      start_s,
-      end_s: Math.max(num(r.end_s, start_s), start_s),
-      start_bar: r.start_bar == null ? null : num(r.start_bar),
-      bars: num(r.bars),
-      phrase_count: num(r.phrase_count),
-      same_label_as: r.same_label_as == null ? null : st(r.same_label_as),
-      function_status: st(r.function_status, "named"),
-      raw: r,
-    };
-  });
-  sections.sort((a, b) => a.start_s - b.start_s);
-
-  const transitions = arr(o.transitions).map((row, i): Allin1Transition => {
-    const r = rec(row);
-    const time_s = num(r.time_s ?? r.start_s);
-    const start_s = num(r.start_s, time_s);
-    return {
-      id: st(r.id, `allin1-t-${String(i + 1).padStart(3, "0")}`),
-      start_s,
-      end_s: Math.max(num(r.end_s, start_s), start_s),
-      time_s,
-      from: st(r.from, "unknown"),
-      to: st(r.to, "unknown"),
-      pair: st(r.pair, `${st(r.from)} \u2192 ${st(r.to)}`),
-      kind: st(r.kind, "shift"),
-      bar: r.bar == null ? null : num(r.bar),
-      essentia_beat_offset_s:
-        r.essentia_beat_offset_s == null ? null : num(r.essentia_beat_offset_s),
-      on_downbeat: r.on_downbeat === true,
-      matches_human_impact:
-        r.matches_human_impact == null ? null : num(r.matches_human_impact),
-      function_status: st(r.function_status, "named"),
-      raw: r,
-    };
-  });
-  transitions.sort((a, b) => a.start_s - b.start_s);
-
-  return {
-    schema_version: st(o.schema_version),
-    song_name: st(o.song_name),
-    labelling_status: st(labelling.status, "unknown"),
-    labelling_reason: labelling.reason == null ? null : st(labelling.reason),
-    sections,
-    transitions,
   };
 }
 
@@ -455,32 +328,6 @@ export async function loadCharacter(
   const result = await loadJson(artifactPaths.character(song), parseCharacter, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
-  }
-  return result;
-}
-
-/**
- * Optional like the drop proposals: it exists only for songs the allin1
- * exporter has been run over, so a 404 resolves to an empty file. Every other
- * failure still surfaces.
- */
-export async function loadAllin1(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<Allin1File>> {
-  const result = await loadJson(artifactPaths.allin1(song), parseAllin1, f);
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return {
-      ok: true,
-      data: {
-        schema_version: "",
-        song_name: song,
-        labelling_status: "",
-        labelling_reason: null,
-        sections: [],
-        transitions: [],
-      },
-    };
   }
   return result;
 }

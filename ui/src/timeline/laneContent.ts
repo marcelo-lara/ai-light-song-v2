@@ -17,7 +17,6 @@ import type {
   SegmentationSection,
 } from "../data/types";
 import type {
-  Allin1File,
   CharacterFile,
   DropProposalsFile,
   MoisesLyricsFile,
@@ -40,8 +39,7 @@ export interface SparseBlock {
   /**
    * Optional per-block tint id, overriding the lane's own tint. Used by the
    * Drop Proposals lane to colour a candidate that already matches a human
-   * label differently from one still needing a decision, and by the allin1
-   * lanes to grey out rows whose section name the model cannot be trusted on.
+   * label differently from one still needing a decision.
    */
   tintId?: string;
   laneLabel: string;
@@ -134,91 +132,6 @@ export function dropProposalsContent(file: DropProposalsFile | null): SparseBloc
 }
 
 /**
- * allin1 functional sections — what part of the song this is.
- *
- * The label is the thing the shipped Sections lane has no equivalent of: a
- * returning chorus is named `chorus 2`, so the lane says which parts of the
- * song are the same part. When the exporter has marked the song degenerate
- * (allin1 outside its training distribution) the names are shown with a
- * trailing `?` and a muted tint — the boundary may still be right even where
- * the name is not.
- */
-export function allin1SectionsContent(file: Allin1File | null): SparseBlock[] {
-  const unnamed = file?.labelling_status === "degenerate";
-  return (file?.sections ?? []).map((s) => {
-    const bars = s.start_bar != null ? `bars ${s.start_bar}–${s.start_bar + s.bars - 1}` : `${s.bars} bars`;
-    const repeat =
-      s.occurrence_count > 1
-        ? `${s.occurrence} of ${s.occurrence_count} ${s.function} sections`
-        : `the only ${s.function}`;
-    return {
-      id: s.id,
-      start_s: s.start_s,
-      end_s: s.end_s,
-      label: unnamed ? `${s.name} ?` : s.name,
-      wideLabel: `${unnamed ? `${s.name} ?` : s.name} · ${bars} · ${s.phrase_count} phrase${
-        s.phrase_count === 1 ? "" : "s"
-      }`,
-      ...(unnamed ? { tintId: "allin1Unnamed" } : {}),
-      laneLabel: "allin1 Sections",
-      caption: `${formatRange(s.start_s, s.end_s)} · ${bars}`,
-      reference: s.id,
-      detail: s.same_label_as ? `same label as ${s.same_label_as}` : repeat,
-      summary: unnamed
-        ? `allin1 called this \`${s.function}\`, but it produced too few distinct labels on this song to be trusted — treat the boundary as the finding and the name as unknown.`
-        : `allin1 functional section \`${s.function}\` (${repeat}), ${bars}, built from ${s.phrase_count} 8-bar phrase${
-            s.phrase_count === 1 ? "" : "s"
-          }.`,
-      raw: s.raw,
-    };
-  });
-}
-
-/**
- * allin1 section transitions — where a cue belongs, and what kind of change it
- * is. A transition already matching a hand-placed `drop impact` leads with
- * `✓`; everything else is an open question to audition, exactly like the Drop
- * Proposals lane above it.
- */
-export function allin1TransitionsContent(file: Allin1File | null): SparseBlock[] {
-  return (file?.transitions ?? []).map((t) => {
-    const matched = t.matches_human_impact != null;
-    const offset =
-      t.essentia_beat_offset_s == null
-        ? "no beat grid"
-        : `${t.essentia_beat_offset_s > 0 ? "+" : ""}${round(t.essentia_beat_offset_s, 3)}s off beat`;
-    return {
-      id: t.id,
-      start_s: t.start_s,
-      end_s: t.end_s,
-      // A transition block is one bar wide, which at song-overview zoom is far
-      // too narrow for `chorus → inst`. The destination is the half that
-      // decides the next look, so the narrow label keeps that and the wide one
-      // carries the full pair.
-      label: `${matched ? "✓" : "?"} → ${t.to}`,
-      wideLabel: `${matched ? "✓" : "?"} ${t.pair} · ${t.kind}${
-        t.bar != null ? ` · bar ${t.bar}` : ""
-      } · ${offset}`,
-      ...(matched ? { tintId: "allin1TransitionsMatched" } : {}),
-      laneLabel: "allin1 Transitions",
-      caption: `${formatRange(t.start_s, t.end_s)} · ${t.kind}${
-        matched ? ` · matches human ${round(t.matches_human_impact, 2)}s` : ""
-      }`,
-      reference: t.id,
-      detail: t.on_downbeat ? "on a downbeat" : "off the downbeat",
-      summary: `Section change ${t.pair} at ${round(t.time_s, 2)}s (${offset}${
-        t.on_downbeat ? ", on an allin1 downbeat" : ""
-      }). ${
-        matched
-          ? `Within 0.5 s of the hand-placed drop impact at ${round(t.matches_human_impact, 2)}s.`
-          : "No hand-placed impact here — audition it: a transition is where a cue belongs whether or not anyone has labelled it."
-      }`,
-      raw: t.raw,
-    };
-  });
-}
-
-/**
  * Character blocks — what a passage is *like*, not where it sits in the form.
  *
  * The lane exists because the operator already works this way: `Armin -
@@ -273,7 +186,7 @@ export function characterContent(file: CharacterFile | null): SparseBlock[] {
  * emits trustworthy per-word seconds and the lane must not imply otherwise.
  *
  * ACE-Step's `[Section]` tags, when present, are appended as wide spans so its
- * form read can be eyeballed against Sections and allin1 Sections beside it.
+ * form read can be eyeballed against the Sections lane beside it.
  */
 export function vocalTranscriptionContent(
   file: VocalTranscriptionFile | null,
@@ -331,7 +244,7 @@ export function vocalTranscriptionContent(
         detail: `${short} structure`,
         summary: `${short} tagged this span \`${span.tag}\`${
           span.instruments ? ` (${span.instruments})` : ""
-        } — a form read to compare against Sections and allin1 Sections, derived from the lines it contains.`,
+        } — a form read to compare against the Sections lane, derived from the lines it contains.`,
         raw: span as unknown as Record<string, unknown>,
       });
     }
@@ -586,7 +499,6 @@ export interface LaneContentSources {
   sections?: readonly SectionRow[];
   sectionSegmentation?: readonly SegmentationSection[];
   harmonicLayer?: HarmonicLayer | null;
-  allin1?: Allin1File | null;
   character?: CharacterFile | null;
   vocalTranscription?: VocalTranscriptionFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
@@ -604,11 +516,9 @@ export const SPARSE_LANE_IDS = [
   "reactiveBands",
   "gestures",
   "gridPhrase",
-  "allin1Transitions",
   "sections",
   "character",
   "vocalTranscription",
-  "allin1Sections",
   "chords",
 ] as const;
 
@@ -633,12 +543,8 @@ export function buildLaneBlocks(
       return gesturesContent(s.gestures ?? null);
     case "gridPhrase":
       return gridPhraseContent(s.grid ?? null);
-    case "allin1Transitions":
-      return allin1TransitionsContent(s.allin1 ?? null);
     case "sections":
       return sectionsContent(s.sections ?? [], s.sectionSegmentation ?? []);
-    case "allin1Sections":
-      return allin1SectionsContent(s.allin1 ?? null);
     case "character":
       return characterContent(s.character ?? null);
     case "vocalTranscription":

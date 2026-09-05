@@ -14,11 +14,10 @@ const BLOCK_LANES = [
   "humanHints",
   "moisesLyrics",
   "dropProposals",
-  "allin1Transitions",
+  "gestures",
   "sections",
   "character",
   "vocalTranscription",
-  "allin1Sections",
   "chords",
 ] as const;
 
@@ -124,11 +123,11 @@ test("item 3 — lane events opener + stacked non-modal panel", async ({ page })
   await expect(page.getByTestId("lane-events-panel")).toHaveCount(1);
 
   // 11. replacement (R2) — never two panels.
-  await page.getByTestId("lane-events-allin1Sections").click();
+  await page.getByTestId("lane-events-gestures").click();
   await expect(page.getByTestId("lane-events-panel")).toHaveCount(1);
   await expect(page.getByTestId("lane-events-panel")).toHaveAttribute(
     "data-lane",
-    "allin1Sections",
+    "gestures",
   );
   await expect(page.getByTestId("lane-events-humanHints")).toHaveAttribute(
     "aria-pressed",
@@ -136,7 +135,7 @@ test("item 3 — lane events opener + stacked non-modal panel", async ({ page })
   );
 
   // 12. toggle off.
-  await page.getByTestId("lane-events-allin1Sections").click();
+  await page.getByTestId("lane-events-gestures").click();
   await expect(page.getByTestId("lane-events-panel")).toHaveCount(0);
 
   // 13. esc closes.

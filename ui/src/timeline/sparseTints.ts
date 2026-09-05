@@ -37,14 +37,6 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   gridPhrase: [188, 50, 42], // slate cyan — resolved bar/phrase grid
   gridDisputed: [0, 70, 40], // red — a song whose grid was NOT confidently resolved
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
-  allin1Sections: [96, 60, 38], // green — next to the teal Sections lane it is
-  //                               scored against, close enough to read as the
-  //                               same kind of thing, far enough to tell apart
-  allin1Transitions: [96, 60, 38], // same family as its sections lane
-  allin1TransitionsMatched: [168, 60, 40], // a transition already matching a
-  //                                          hand-placed drop impact
-  allin1Unnamed: [220, 6, 42], // near-grey — allin1 is out of distribution on
-  //                              this song, so the name carries no weight
   // Character blocks are tinted by *kind*, so a song's texture reads as a
   // colour strip before any label is. Violet for `breath` is not arbitrary —
   // it is the look the operator wrote for the block this lane was built to

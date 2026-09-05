@@ -20,7 +20,6 @@ export type LaneKind =
   | "sections"
   | "chords"
   | "proposals"
-  | "allin1"
   | "character"
   | "lyrics"
   | "gestures"
@@ -78,14 +77,12 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "reactiveBands", label: "Reactive Bands", sub: "experiment · locally auto-gained band-power accents", kind: "proposals", height: 58, experiment: "reactive_bands" },
   { id: "gestures", label: "Gestures", sub: "song_event_timeline · approach/build/tension/impact/release + section transitions", kind: "gestures", height: 58 },
   { id: "gridPhrase", label: "Phrase Grid", sub: "experiment · resolved downbeat phase · 8/16-bar edges", kind: "gridPhrase", height: 58, experiment: "grid_consensus" },
-  { id: "allin1Transitions", label: "allin1 Transitions", sub: "experiment · section changes · audition vs. Human Hints", kind: "allin1", height: 58, experiment: "allin1" },
   { id: "fftBands", label: "FFT Bands", sub: "essentia · 7 spectral bands", kind: "fft", height: 84 },
   { id: "rmsLoudness", label: "RMS Loudness", sub: "essentia · mix + 4 stems", kind: "rms", height: 112 },
   { id: "loudnessEnvelope", label: "Loudness Envelope", sub: "essentia · mix + 4 stems", kind: "env", height: 112 },
   { id: "sections", label: "Sections", sub: "artifact-first segmentation", kind: "sections", height: 84 },
   { id: "character", label: "Character", sub: "experiment · what this passage is like", kind: "character", height: 84, experiment: "clap" },
   { id: "vocalTranscription", label: "Vocal Transcription", sub: "experiment · sung lyrics + timing · VocalParse / ACE-Step / whisper", kind: "lyrics", height: 84, experiment: "vocalparse + acestep_transcriber" },
-  { id: "allin1Sections", label: "allin1 Sections", sub: "experiment · named song form · compare with Sections", kind: "allin1", height: 84, experiment: "allin1" },
   { id: "chords", label: "Chord Regions", sub: "layer A harmonic", kind: "chords", height: 84 },
   { id: "drums", label: "Drum Density", sub: "kick / snare / hat activity", kind: "drums", height: 84 },
   { id: "energy", label: "Energy Profile", sub: "beat-aligned energy + accents", kind: "energy", height: 84 },
@@ -93,23 +90,23 @@ export const LANE_DEFS: readonly LaneDef[] = [
 ];
 
 /**
- * design notes §2: the five lanes expanded on first load, plus the two review
+ * design notes §2: the five lanes expanded on first load, plus the review
  * lanes that only exist to be compared against Human Hints while the song
- * plays — Moises Lyrics, Drop Proposals and allin1 Transitions all sit directly
- * under it and open with it.
+ * plays — Moises Lyrics and Drop Proposals sit directly under it and open
+ * with it.
  *
- * `allin1Sections` is deliberately NOT here even though it is the headline of
- * the experiment: it belongs next to `sections`, the incumbent it is scored
- * against, and expanding that pair on load pushes the default view past the
- * fold. Expand them together when comparing. The experiment lanes come out of
- * the registry entirely when it is promoted or abandoned (constitution §3.2).
+ * The allin1 experiment lanes that used to sit here (`allin1Transitions`,
+ * `allin1Sections`) were promoted out of the registry entirely in plan v3.0
+ * item 14: their content now lives in the production `sections` lane and in
+ * `song_event_timeline.json` (the Gestures lane). The experiment lanes still
+ * left come out of the registry entirely when promoted or abandoned
+ * (constitution §3.2).
  */
 export const DEFAULT_EXPANDED: readonly string[] = [
   "waveform",
   "humanHints",
   "moisesLyrics",
   "dropProposals",
-  "allin1Transitions",
   "fftBands",
   "rmsLoudness",
   "loudnessEnvelope",

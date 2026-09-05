@@ -105,8 +105,6 @@ const TIMELINE_KEYS = [
   // lane's production data source.
   "eventTimeline",
   "grid",
-  // named song form under review (experiments/allin1)
-  "allin1",
   // texture / character blocks under review (experiments/clap)
   "character",
   // sung lyrics + timing under review (experiments/vocalparse, acestep_transcriber)
@@ -122,8 +120,6 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   reactiveBands: "reactiveBands",
   gestures: "eventTimeline",
   gridPhrase: "grid",
-  allin1Transitions: "allin1",
-  allin1Sections: "allin1",
   character: "character",
   vocalTranscription: "vocalTranscription",
   sections: "sectionsTopLevel",
@@ -279,7 +275,6 @@ export function App(): React.JSX.Element {
       reactiveBands: artifacts.reactiveBands.data,
       gestures: artifacts.eventTimeline.data,
       grid: artifacts.grid.data,
-      allin1: artifacts.allin1.data,
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
       sections,
@@ -294,7 +289,6 @@ export function App(): React.JSX.Element {
       artifacts.reactiveBands.data,
       artifacts.eventTimeline.data,
       artifacts.grid.data,
-      artifacts.allin1.data,
       artifacts.character.data,
       artifacts.vocalTranscription.data,
       sections,
