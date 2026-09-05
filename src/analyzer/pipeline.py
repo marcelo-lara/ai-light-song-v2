@@ -141,7 +141,8 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         return 0
     if stage_name == "validate-chords":
         harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, validate_chords, paths, harmonic, config.chord_min_overlap)
+        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, validate_chords, paths, harmonic, timing, config.chord_min_overlap)
         return 0
     if stage_name == "extract-energy-features":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
@@ -308,6 +309,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 validate_chords,
                 paths,
                 harmonic,
+                timing,
                 config.chord_min_overlap,
             )
             if "chords" in config.compare_targets

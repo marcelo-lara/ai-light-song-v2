@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 9 |
+| Done | 10 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -615,18 +615,18 @@ Both numbers in the commit message.
 
 Runs after item 9 so the validators die with their subjects.
 
-- [ ] Delete `src/analyzer/stages/validation/events.py` and
+- [x] Delete `src/analyzer/stages/validation/events.py` and
       `validation/energy.py` (`validation/patterns.py` and `validation/unified.py`
       went in items 4 and 3).
-- [ ] Reduce `src/analyzer/stages/validation/form_drops.py`: **delete the `form`
+- [x] Reduce `src/analyzer/stages/validation/form_drops.py`: **delete the `form`
       target** — it reports `mode: "unlabelled"`, `labelled_boundary_count: 0`
       on all four gold songs, and `validate-sections` against
       `reference/moises/segments.json` supersedes it. **Keep the `drops`
       target, timed-only**: where a song has no timed human drop hints it emits
       `skipped` with the reason, never the `presence` check that passes by
       construction. Rename the module `drops.py`.
-- [ ] Keep `validation/beats.py`, `chords.py`, `sections.py`, `drums.py`.
-- [ ] **Fix the `validate-chords` crash** logged in `docs/issues.md`.
+- [x] Keep `validation/beats.py`, `chords.py`, `sections.py`, `drums.py`.
+- [x] **Fix the `validate-chords` crash** logged in `docs/issues.md`.
       `validation/chords.py` lines 62-63 read `row["bar_num"]` and
       `row["beat_num"]` from `reference/moises/chords.json`, which carries
       neither — 487 of 487 rows on Titanium lack both, and the real schema is
@@ -639,12 +639,12 @@ Runs after item 9 so the validators die with their subjects.
       or state honestly that it cannot be computed — no invented default
       (constitution §2). Delete the `docs/issues.md` entry in the same commit
       that fixes it (constitution §4.2).
-- [ ] Rewire `validation/report.py` and `validation/__init__.py` to the surviving
+- [x] Rewire `validation/report.py` and `validation/__init__.py` to the surviving
       set; remove the dead `compare_targets` entries from
       `src/analyzer/config.py` and the CLI help in `src/analyzer/cli.py`.
-- [ ] Update `tests/test_validation.py` and `tests/test_validation_form_drops.py`
+- [x] Update `tests/test_validation.py` and `tests/test_validation_form_drops.py`
       (rename to match) to the reduced surface.
-- [ ] `docs/reference/phase_1_validation_cli.md`: update the compare-target list
+- [x] `docs/reference/phase_1_validation_cli.md`: update the compare-target list
       and the report shape. `docs/data_folder_reference.md`: delete the
       `form_score.json` entry and the deleted validators' outputs.
 

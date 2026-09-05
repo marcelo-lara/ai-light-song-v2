@@ -128,7 +128,7 @@ Each hint in `human_hints.json` carries `id`, `title`, `start_time`, `end_time`,
 - `artifacts/section_segmentation/sections.json` (`schema_version` `"1.1"`): new song-level `form_family` object; per-section `form_role` (primary label, gates the top-level `label`), `form_role_confidence`, `form_role_margin`, `energy_character` (former energy-shape label), `repetition_group` / `variant_of` / `similarity`, and `confidence_terms`. `confidence` now measures boundary/label certainty only and spans the full `[0, 1]` range.
 - Top-level `sections.json`: every row carries `section_id` (join key, item 3.2), plus `form_role`, `energy_character`, `repetition_group`, numeric `confidence`.
 - `song_event_timeline.json`: superseded again in plan v3.0 item 9 (`schema_version` `"2.0"`, the pipeline-wide `SCHEMA_VERSION`) -- see the file reference entry below for the current flat gesture-phase / section-transition shape. `artifacts/validation/review_queue.json` was removed in the same change.
-- `artifacts/validation/form_score.json`, `drops_score.json` (new): advisory `--compare form,drops` scores.
+- `artifacts/validation/drops_score.json` (new): advisory `--compare drops` score. Its sibling `form_score.json` and the `form` compare target were deleted in plan v3.0 item 10 — `form` reported `mode: "unlabelled"` on all four gold songs and `validate-sections` against `reference/moises/segments.json` supersedes it.
 
 ## File Reference
 

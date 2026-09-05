@@ -405,3 +405,74 @@ removed. The existing **Gestures** lane (previously an `experiments/gestures`
 sandbox lane reading `reference/proposals/gestures.json`) is promoted: its
 `experiment` tag is removed and it now reads the production
 `song_event_timeline.json` deliverable directly.
+
+---
+
+## 10. Cut validation to what has labels
+
+**`--compare` supports five targets, not eight.** `beats`, `chords`,
+`sections`, `drums`, `drops`. `energy`, `events`, `form`, `patterns` and
+`unified` are gone from `--compare`'s accepted values and from the default
+(`beats,chords,drums,sections,drops`); passing any of the removed names now
+fails CLI argument validation instead of silently returning `skipped`.
+`validation/events.py` and `validation/energy.py` are deleted outright —
+`validation/patterns.py` and `validation/unified.py` were already deleted in
+items 4 and 3. Neither had a real subject left: `events.py` validated the
+Epic-5 `event_*` outputs item 9 deleted, and `energy.py`'s internal-consistency
+check was never a musical claim.
+
+**The `form` target is deleted, not just skipped.** It scored section
+boundaries, `form_role` and `form_family` against
+`reference/human/human_hints.json` boundary labels, but those labels never
+landed: `mode: "unlabelled"`, `labelled_boundary_count: 0` on all four gold
+songs. `validate-sections` against `reference/moises/segments.json` covers the
+same ground with 38 real labelled interior boundaries across the same four
+songs — 5× the evidence the `form` target ever had. `score_form`,
+`labelled_boundaries`, `confidence_calibration`, `validate_form` and
+`load_song_facts`'s `form_family` reader are deleted with it, along with
+`artifacts/validation/form_score.json`.
+
+**The `drops` target survives, timed-only.** It still scores detected drops
+in `song_event_timeline.json` against timed drop hints in
+`reference/human/human_hints.json` (precision/recall at a 1.0 s tolerance,
+plus the "fake drops don't outnumber real drops" symmetry check). What it lost
+is the `presence` fallback: when a song had no timed drop hints but did have a
+song-level `has_drop` fact, the old code reported `presence_ok` — true whenever
+the detector fired at least once on a `has_drop: true` song, regardless of
+*when*. That passes by construction and asserted nothing about timing, so it
+is gone. A song with no timed drop hints (three of the four gold songs today)
+now reports `skipped` with `diagnostics.reason: "no timed human drop hints"`,
+same as a song with no reference file at all — never a check that cannot fail.
+The module is renamed `validation/drops.py` (was `form_drops.py`), and
+`_write_score_artifact` no longer writes `form_score.json`, only
+`drops_score.json`.
+
+**`validate-chords` no longer crashes on a real Moises chord reference.** The
+bug (`docs/issues.md`, closed in this change): `chords.py` read `row["bar_num"]`
+and `row["beat_num"]` from `reference/moises/chords.json` rows, which carry
+neither field — the real schema is `curr_beat_time`, `curr_beat`,
+`prev_chord`, `chord_complex_jazz`, `chord_simple_jazz`, `chord_complex_pop`,
+`chord_simple_pop` — raising `KeyError: 'bar_num'` on every one of Titanium's
+487 rows. `_validate_chords` (and the public `validate_chords`) now take the
+pipeline's own `essentia/beats.json` timing grid as an added parameter and
+derive each reference row's `bar` / `beat` by snapping `curr_beat_time` to the
+nearest beat in that grid (`bar`, `beat_in_bar`), the same nearest-beat
+convention `stages/drums.py::_nearest_beat_alignment` already uses. When the
+nearest beat is more than 0.2 s away — or the grid is empty — the position is
+reported as `None`/`None`, never a guessed `bar: 0` (constitution §2); nothing
+in the actual chord-matching logic depends on this field, since chords are
+matched by time overlap, so an unknown position only affects the diagnostic
+`bar`/`beat` recorded on each reference event, not the pass/fail outcome.
+
+**`report.py`'s `generated_artifacts` block is unchanged** — `energy_layer_file`
+and `event_timeline_file` are still generated artifacts (by `energy.py` and
+`gestures.py` respectively) and still listed there; only the `validation`
+block's target set shrank. `ADVISORY_TARGETS` (advisory scores that never flip
+the pipeline exit code under `--fail-on-mismatch`) is now `{"drops"}`, was
+`{"form", "drops"}`.
+
+**Contracts.** None of the projected deliverables change shape —
+`validation/` is not projected to the authoring model (§7 of CLAUDE.md's "what
+actually reaches the light show" list omits it entirely). This item only
+changes `phase_1_report.json`'s own shape (five `validation` keys instead of
+eight) and the `--compare`/CLI surface.

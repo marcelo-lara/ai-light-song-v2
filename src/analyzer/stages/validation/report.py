@@ -14,12 +14,11 @@ CHORD_MATCH_RATIO_THRESHOLD = 0.85
 CHORD_MAX_LABEL_MISMATCHES = 0
 CHORD_MAX_TIMING_OVERLAP_FAILURES = 2
 from .drums import validate_drums
-from .energy import _validate_energy_layer
 from .beats import validate_beats
 from .chords import validate_chords
 from .utils import ValidationResult, skipped_result
 from .sections import _validate_sections
-from .form_drops import validate_form, validate_drops
+from .drops import validate_drops
 
 
 def build_validation_report(
@@ -48,26 +47,17 @@ def build_validation_report(
             validate_beats(paths, timing, beat_tolerance_seconds) if "beats" in compare_targets else skipped_result()
         ),
         "chords": chord_validation if "chords" in compare_targets and chord_validation is not None else (
-            validate_chords(paths, harmonic, chord_min_overlap) if "chords" in compare_targets else skipped_result()
+            validate_chords(paths, harmonic, timing, chord_min_overlap) if "chords" in compare_targets else skipped_result()
         ),
         "drums": validate_drums(paths, timing) if "drums" in compare_targets else skipped_result(),
         "sections": _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
-        "energy": _validate_energy_layer(read_json(energy_path), timing, sections) if "energy" in compare_targets else skipped_result(),
-        # The event_* stack this check used to validate (event_inference/*,
-        # song_events.review.json, song_events.overrides.json) was retired in
-        # plan v3.0 item 9 and replaced by the gestures stage. Cutting
-        # validation down to what the new stage actually produces is item 10's
-        # job; until then "events" is always skipped rather than crashing on
-        # artifacts that no longer exist.
-        "events": skipped_result(),
-        "form": validate_form(paths) if "form" in compare_targets else skipped_result(),
         "drops": validate_drops(paths) if "drops" in compare_targets else skipped_result(),
     }
 
-    # form/drops are advisory structural scores (plan item 0.3): they surface in
-    # the report but never flip the pipeline exit code, even under
-    # --fail-on-mismatch, because their ground truth is an incomplete gold set.
-    ADVISORY_TARGETS = {"form", "drops"}
+    # drops is an advisory structural score (plan item 0.3): it surfaces in
+    # the report but never flips the pipeline exit code, even under
+    # --fail-on-mismatch, because its ground truth is an incomplete gold set.
+    ADVISORY_TARGETS = {"drops"}
     evaluated_results = [result for result in results.values() if result.status != "skipped"]
     gating_results = [
         result for key, result in results.items()
@@ -89,12 +79,8 @@ def build_validation_report(
         notes.append("Drum validation checks the producer-scoped drum_events.json artifact for structural integrity, Omnizart provenance, debug-source metadata, and song-level pulse plausibility.")
     if "sections" in compare_targets:
         notes.append("Section validation compares structural change points only; reference segment labels are advisory and do not affect pass/fail.")
-    if "energy" in compare_targets:
-        notes.append("Energy validation checks internal consistency between section windows, accent candidates, and the canonical beat timeline.")
-    if "form" in compare_targets:
-        notes.append("Form validation scores section boundaries, form_role and form_family against reference/human labels; advisory only, and reports 'skipped' until the gold set is labelled (plan D1).")
     if "drops" in compare_targets:
-        notes.append("Drop validation scores detected drops against timed human drop hints, or against the song-level has_drop fact when only that is available; advisory only.")
+        notes.append("Drop validation scores detected drops against timed human drop hints in reference/human/human_hints.json; advisory only, and reports 'skipped' when a song has no timed drop hints (plan v3.0 item 10 -- no presence-only fallback).")
 
     report = {
         "schema_version": SCHEMA_VERSION,

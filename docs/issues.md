@@ -43,37 +43,11 @@ or `CLAUDE.md` first; the issue text itself is scaffolding.
 
 ## Open queue
 
-### `validate-chords` crashes on every song that has a real Moises chord reference
-
-- **Status:** `pending`
-- **Found:** 2026-09-04, during plan v3.0 item 5. Not caused by it.
-- **Symptom:** `./analyze --song "Titanium - David Guetta ft Sia.mp3"` exits
-  non-zero after `extract-hpcp-and-chords` with `KeyError: 'bar_num'`.
-- **Cause:** `src/analyzer/stages/validation/chords.py` lines 62-63 read
-  `row["bar_num"]` and `row["beat_num"]` from `reference/moises/chords.json`.
-  The real file carries no such keys — its rows are
-  `curr_beat_time`, `curr_beat`, `prev_chord`, `chord_complex_jazz`,
-  `chord_simple_jazz`, `chord_complex_pop`, `chord_simple_pop`. On Titanium
-  **487 of 487 rows** lack both. Line 49 of the same function already reads
-  `curr_beat_time` correctly, so only those two lines are wrong: the validator
-  was written against a Moises schema that the files in `reference/` are not.
-- **Why it went unnoticed:** the now-deleted `build_reference_timing_grid` read
-  the same two fields defensively, as `int(row.get("bar_num") or 0)`, so it
-  never raised — it silently produced `bar: 0` for every row and then fell back
-  to the `((index - 1) // 4) + 1` modulo it was supposed to be replacing. The
-  validator uses direct subscripting and therefore fails loudly. Nothing had run
-  this path against real reference data before.
-- **Validation target:** `validate-chords` on the four gold songs.
-- **Success condition:** `./analyze` completes on all four gold songs with a
-  real chord-agreement number reported for each, and no song reports `skipped`
-  because of a schema mismatch. Reading `curr_beat` is not enough on its own —
-  the bar/beat position it needs must either be derived honestly from the
-  pipeline's own grid or the check must state that it cannot be computed.
-- **Blocks:** plan v3.0 item 16 (the corpus re-run). Scheduled into item 10,
-  which owns the validation surface.
-
-All ten issues raised so far were closed; their entries were removed in commit
-`c227bec` and remain recoverable there.
+Empty. All issues raised so far were closed; their entries were removed (most
+recently the `validate-chords` `KeyError: 'bar_num'` crash, closed in plan v3.0
+item 10 by deriving the reference row's bar/beat position from the pipeline's
+own beat grid instead of reading fields the Moises schema does not carry) and
+remain recoverable in git history (the first ten in commit `c227bec`).
 
 Worth knowing before adding the next one: the queue emptying does **not** mean
 the analysis is in good shape. The 2026-09 measurement in

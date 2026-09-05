@@ -4,7 +4,7 @@
   "command": "python -m analyzer",
   "status": "passed",
   "exit_code": 0,
-  "generated_at": "2026-09-05T05:47:21.798318+00:00",
+  "generated_at": "2026-09-05T15:54:18.414225+00:00",
   "inputs": {
     "song_path": "/data/songs/_test_song.mp3",
     "reference_chords": "/data/analysis/_test_song/reference/moises/chords.json",
@@ -982,7 +982,7 @@
           "reference": {
             "time": 0.06,
             "end_s": 46.2,
-            "bar": 25,
+            "bar": 23,
             "beat": 4,
             "chord": "D#m"
           },
@@ -1003,8 +1003,8 @@
           "reference": {
             "time": 46.2,
             "end_s": 48.04,
-            "bar": 26,
-            "beat": 4,
+            "bar": 24,
+            "beat": 3,
             "chord": "B"
           },
           "inferred_label_normalized": "B",
@@ -1024,8 +1024,8 @@
           "reference": {
             "time": 48.04,
             "end_s": 51.74,
-            "bar": 28,
-            "beat": 4,
+            "bar": null,
+            "beat": null,
             "chord": "F#"
           },
           "inferred_label_normalized": "F#",
@@ -1045,7 +1045,7 @@
           "reference": {
             "time": 51.74,
             "end_s": 57.28,
-            "bar": 32,
+            "bar": 29,
             "beat": 1,
             "chord": "D#m"
           },
@@ -1173,121 +1173,6 @@
         "dominant_snap_multiple_beats": null
       }
     },
-    "energy": {
-      "status": "passed",
-      "matched": 6,
-      "mismatched": 0,
-      "match_ratio": 1.0,
-      "details": [
-        {
-          "check": "global_energy_fields_present",
-          "passed": true
-        },
-        {
-          "check": "section_energy_count_matches_sections",
-          "passed": true,
-          "expected": 2,
-          "actual": 2
-        },
-        {
-          "check": "beat_energy_count_matches_timing",
-          "passed": true,
-          "expected": 115,
-          "actual": 115
-        },
-        {
-          "check": "accent_candidate_ids_unique",
-          "passed": true,
-          "expected": 10,
-          "actual": 10
-        },
-        {
-          "check": "accent_candidates_sorted_by_time",
-          "passed": true
-        },
-        {
-          "check": "accent_candidates_reference_valid_time_and_section",
-          "passed": true
-        }
-      ],
-      "reference_file": null,
-      "diagnostics": null
-    },
-    "events": {
-      "status": "skipped",
-      "matched": 0,
-      "mismatched": 0,
-      "match_ratio": null,
-      "details": [],
-      "reference_file": null,
-      "diagnostics": null
-    },
-    "form": {
-      "status": "skipped",
-      "matched": 0,
-      "mismatched": 0,
-      "match_ratio": null,
-      "details": [],
-      "reference_file": null,
-      "diagnostics": {
-        "reason": "no human labels",
-        "score": {
-          "target": "form",
-          "tolerance_seconds": 2.0,
-          "predicted_boundary_count": 1,
-          "labelled_boundary_count": 0,
-          "form_family_predicted": null,
-          "form_family_labelled": null,
-          "form_family_match": false,
-          "mode": "unlabelled",
-          "confidence_calibration": {
-            "buckets": [
-              {
-                "range": [
-                  0.0,
-                  0.2
-                ],
-                "section_count": 0,
-                "observed_alignment": null
-              },
-              {
-                "range": [
-                  0.2,
-                  0.4
-                ],
-                "section_count": 0,
-                "observed_alignment": null
-              },
-              {
-                "range": [
-                  0.4,
-                  0.6
-                ],
-                "section_count": 1,
-                "observed_alignment": null
-              },
-              {
-                "range": [
-                  0.6,
-                  0.8
-                ],
-                "section_count": 0,
-                "observed_alignment": null
-              },
-              {
-                "range": [
-                  0.8,
-                  1.01
-                ],
-                "section_count": 0,
-                "observed_alignment": null
-              }
-            ],
-            "predicted_spread": 0.0
-          }
-        }
-      }
-    },
     "drops": {
       "status": "failed",
       "matched": 1,
@@ -1340,9 +1225,7 @@
     "reference/moises/*.json is Moises.ai inference, not human ground truth. Only lyrics.json carries a confidence field, and only its \"0.99\" rows are operator-curated. Chord validation therefore measures agreement with a second model, not correctness.",
     "Drum validation checks the producer-scoped drum_events.json artifact for structural integrity, Omnizart provenance, debug-source metadata, and song-level pulse plausibility.",
     "Section validation compares structural change points only; reference segment labels are advisory and do not affect pass/fail.",
-    "Energy validation checks internal consistency between section windows, accent candidates, and the canonical beat timeline.",
-    "Form validation scores section boundaries, form_role and form_family against reference/human labels; advisory only, and reports 'skipped' until the gold set is labelled (plan D1).",
-    "Drop validation scores detected drops against timed human drop hints, or against the song-level has_drop fact when only that is available; advisory only.",
+    "Drop validation scores detected drops against timed human drop hints in reference/human/human_hints.json; advisory only, and reports 'skipped' when a song has no timed drop hints (plan v3.0 item 10 -- no presence-only fallback).",
     "Human hint alignment review files compare narrative hint windows against generated sections, events, and harmonic events when human hints are available."
   ]
 }

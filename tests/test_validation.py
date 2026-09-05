@@ -192,12 +192,14 @@ class ValidationDiagnosticsTests(unittest.TestCase):
                 song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
+            # Real reference/moises/chords.json rows carry no bar_num/beat_num
+            # of their own -- only curr_beat_time and the chord_* columns.
             reference_rows = [
-                {"curr_beat_time": 0.0, "bar_num": 1, "beat_num": 1, "chord_simple_pop": "C#:maj"},
-                {"curr_beat_time": 1.0, "bar_num": 1, "beat_num": 2, "chord_simple_pop": "C#:maj"},
-                {"curr_beat_time": 2.0, "bar_num": 1, "beat_num": 3, "chord_simple_pop": "D#:maj"},
-                {"curr_beat_time": 3.0, "bar_num": 1, "beat_num": 4, "chord_simple_pop": "D#:maj"},
-                {"curr_beat_time": 4.0, "bar_num": 2, "beat_num": 1, "chord_simple_pop": "D#:maj"},
+                {"curr_beat_time": 0.0, "chord_simple_pop": "C#:maj"},
+                {"curr_beat_time": 1.0, "chord_simple_pop": "C#:maj"},
+                {"curr_beat_time": 2.0, "chord_simple_pop": "D#:maj"},
+                {"curr_beat_time": 3.0, "chord_simple_pop": "D#:maj"},
+                {"curr_beat_time": 4.0, "chord_simple_pop": "D#:maj"},
             ]
             reference_chords_path = paths.reference("moises", "chords.json")
             assert reference_chords_path is not None
@@ -210,8 +212,9 @@ class ValidationDiagnosticsTests(unittest.TestCase):
                     {"time": 4.2, "end_s": 4.6, "bar": 2, "beat": 2, "chord": "D#"},
                 ]
             }
+            timing = _build_timing(["C#", "D#"])
 
-            result = _validate_chords(paths, harmonic, chord_min_overlap=0.75)
+            result = _validate_chords(paths, harmonic, timing, chord_min_overlap=0.75)
 
         self.assertEqual(result.status, "failed")
         self.assertIsNotNone(result.diagnostics)
@@ -220,6 +223,32 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         self.assertEqual(result.diagnostics["label_mismatch_count"], 1)
         self.assertEqual(result.diagnostics["timing_overlap_failure_count"], 1)
         self.assertEqual(result.diagnostics["no_reference_overlap_count"], 1)
+
+    def test_validate_chords_marks_unknown_position_when_grid_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "_test_song.mp3",
+                analysis_root=root / "analysis",
+            )
+            reference_rows = [
+                {"curr_beat_time": 0.0, "chord_simple_pop": "C#:maj"},
+                {"curr_beat_time": 2.0, "chord_simple_pop": "D#:maj"},
+            ]
+            reference_chords_path = paths.reference("moises", "chords.json")
+            assert reference_chords_path is not None
+            _write_json(reference_chords_path, reference_rows)
+            harmonic = {"chords": [{"time": 0.0, "end_s": 2.0, "bar": 1, "beat": 1, "chord": "C#"}]}
+
+            # No beats in the grid at all -- position is genuinely unknown, not
+            # invented as bar 0 / beat 0 (constitution SS2, no silent fallbacks).
+            result = _validate_chords(paths, harmonic, timing={"beats": []}, chord_min_overlap=0.75)
+
+        self.assertEqual(result.status, "passed")
+        matched_reference = result.details[0]["reference"]
+        self.assertIsNotNone(matched_reference)
+        self.assertIsNone(matched_reference["bar"])
+        self.assertIsNone(matched_reference["beat"])
 
     def test_validate_sections_reports_snap_like_boundary_offsets(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

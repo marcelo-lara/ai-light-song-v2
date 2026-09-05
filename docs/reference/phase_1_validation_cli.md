@@ -56,7 +56,7 @@ Recommended baseline command:
 ./analyze \
   --song "/data/songs/_test_song.mp3" \
   --analysis-root "/data/analysis" \
-  --compare beats,chords,drums,sections,energy,events
+  --compare beats,chords,drums,sections,drops
 ```
 
 Equivalent Python module form is the supported container entry point:
@@ -65,7 +65,7 @@ Equivalent Python module form is the supported container entry point:
 python -m analyzer \
   --song "/data/songs/_test_song.mp3" \
   --analysis-root "/data/analysis" \
-  --compare beats,chords,drums,sections,energy,events
+  --compare beats,chords,drums,sections,drops
 ```
 
 Batch mode analyzes every `.mp3` in `/data/songs` and writes canonical validation reports under each song artifact directory:
@@ -103,7 +103,7 @@ Recommended final validation command:
 ```bash
 python -m analyzer \
   --song "/data/songs/_test_song.mp3" \
-  --compare beats,chords,drums,sections,energy,events
+  --compare beats,chords,drums,sections,drops
 ```
 
 When batch mode is active, per-song progress lines include both the batch position and the pipeline story identifier when available, for example `[2/20][1.1] _test_song | ensure-stems`.
@@ -116,7 +116,7 @@ The current batch implementation isolates each song run in a subprocess and reus
 - `--all-songs`: analyze every `.mp3` under `/data/songs` or the directory supplied by `--songs-root`.
 - `--songs-root`: optional directory override for batch mode. Defaults to the sibling `songs/` directory next to `--analysis-root`.
 - `--analysis-root`: optional root directory where inferred outputs are written. Defaults to `/data/analysis`. Validation-only reference files are read from `<analysis-root>/<Song - Artist>/reference/`; if missing, inference must still run and validation for those targets is skipped.
-- `--compare`: optional list of validation targets for phase 1. Supported values include `beats`, `chords`, `drums`, `sections`, `energy`, and `events`. Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/analysis/<Song - Artist>/reference/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. When that Moises reference file exists, the pipeline preserves the inferred beat grid separately and then promotes a canonical reference-derived beat grid for all downstream phases. The `drums` target validates `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json` as a producer-scoped review artifact generated from the `audiohacking/omnizart` fork: rows must be time-ordered, supported labels must be limited to `kick`, `snare`, `hat`, or unresolved, summary counts must match the event rows, raw Omnizart MIDI must be preserved, explicit debug source paths for the mix and drums stem must be recorded in metadata, and the report should call out whether the detected pattern on `_test_song.mp3` exposes a recognizable backbeat and hat pulse. Other reference-backed targets use comparison files when available; the layer targets run internal consistency checks against generated artifacts. The `events` target's Epic-5 checks (`event_inference/`, review outputs) were retired in plan v3.0 item 9 along with the stack they validated; it currently always reports `skipped` until item 10 replaces it with a check against the `gestures` stage's output.
+- `--compare`: optional list of validation targets for phase 1. Supported values are `beats`, `chords`, `drums`, `sections`, and `drops` (plan v3.0 item 10 cut this list to only the targets that compare against real labels or perform a real internal-consistency check; `energy`, `events`, `form`, `patterns` and `unified` are gone — passing one of those names now fails CLI argument validation rather than silently reporting `skipped`). Beat validation runs immediately after timing inference and compares inferred beat timestamps against the beat times embedded in `data/analysis/<Song - Artist>/reference/moises/chords.json` when that file is available, using only the time span covered by the reference annotation. The `drums` target validates `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json` as a producer-scoped review artifact generated from the `audiohacking/omnizart` fork: rows must be time-ordered, supported labels must be limited to `kick`, `snare`, `hat`, or unresolved, summary counts must match the event rows, raw Omnizart MIDI must be preserved, explicit debug source paths for the mix and drums stem must be recorded in metadata, and the report should call out whether the detected pattern on `_test_song.mp3` exposes a recognizable backbeat and hat pulse. The `sections` target compares structural change points against `data/analysis/<Song - Artist>/reference/moises/segments.json`. The `drops` target is timed-only: it scores detected drops in `song_event_timeline.json` against timed drop hints in `data/analysis/<Song - Artist>/reference/human/human_hints.json` (precision/recall at a 1.0 s tolerance, plus a "fake drops don't outnumber real drops" symmetry check); a song with no timed drop hints reports `skipped` with the reason rather than falling back to a presence-only check that passes by construction. It is advisory and never flips the pipeline exit code.
 - In the Docker runtime, Story 3.2 uses the installed Omnizart package checkpoint by default. `OMNIZART_DRUM_MODEL_PATH` remains an explicit override when a different drum model directory must be tested.
 - chord validation should use a stricter gate than the historical phase-1 default: materially low match ratio, persistent label mismatches, or repeated timing-overlap failures should count as a failed inferred harmonic result even if some overlap remains.
 - when a Moises chord reference exists, the analyzer preserves the inferred harmonic layer separately and promotes an explicit canonical harmonic layer rebuilt from the reference file for downstream phases.
@@ -147,7 +147,7 @@ The phase 1 analyzer must:
 4. compare inferred chord outputs against `data/analysis/<Song - Artist>/reference/moises/chords.json` when that file is available
 5. validate `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json` for schema integrity, count consistency, and recognizable kick, snare, and hat pulse behavior on `_test_song.mp3`
 6. compare inferred section change points against `data/analysis/<Song - Artist>/reference/moises/segments.json` when that file is available
-7. validate canonical energy and event feature artifacts for internal consistency
+7. score detected drops against timed human drop hints in `data/analysis/<Song - Artist>/reference/human/human_hints.json` when they exist, reporting `skipped` otherwise (advisory, never gates exit status)
 8. write a validation report under `data/analysis/<Song - Artist>/artifacts/validation/`
 9. exit with a documented success or failure status
 
@@ -203,9 +203,7 @@ At minimum:
 - drum diagnostics that distinguish plausible backbeat/pulse detection from over-generated or sparse artifacts
 - section comparison summary
 - section boundary timing diagnostics that highlight snap-like offsets in beat units when reference beat annotations are available
-- energy-layer internal consistency summary
-- pattern-layer internal consistency summary
-- event-layer check (currently always `skipped` — retired with the Epic-5 event stack in plan v3.0 item 9, pending item 10's replacement)
+- drop comparison summary (timed-only; `skipped` with a reason when a song has no timed drop hints — advisory, never gates exit status)
 - mismatches and confidence notes
 - pass/fail summary
 
@@ -290,16 +288,30 @@ At minimum:
         "dominant_snap_multiple_beats": null
       }
     },
-    "events": {
+    "drops": {
       "status": "passed",
-      "machine_events_present": true,
-      "review_consistent": true,
-      "timeline_consistent": true
+      "matched": 3,
+      "mismatched": 0,
+      "match_ratio": 1.0,
+      "diagnostics": {
+        "score": {
+          "target": "drops",
+          "tolerance_seconds": 1.0,
+          "detected_count": 2,
+          "fake_drop_count": 0,
+          "labelled_count": 2,
+          "mode": "timed",
+          "metrics": {"true_positives": 2, "predicted": 2, "labelled": 2, "precision": 1.0, "recall": 1.0, "f1": 1.0},
+          "fake_outnumbers_drop": false
+        }
+      }
     }
   },
   "notes": []
 }
 ```
+
+`drops` reports `"status": "skipped"` with `"diagnostics": {"reason": "no timed human drop hints", ...}` on a song without timed drop labels (three of the four gold songs today) rather than the shape above.
 
 ## Phase 1 Success Criteria
 
