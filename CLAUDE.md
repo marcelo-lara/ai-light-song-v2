@@ -205,7 +205,7 @@ probes are confidently wrong where the stems are exact. allin1 contributes
 **shadow labels** here: with `include_activations=True` its frame-level
 posterior holds sustained mass on labels its own 8-bar segmentation never used,
 which is how a breakdown inside an `inst` stretch becomes visible. **Not in
-`src/` for v3.0** — see `docs/experiments_pending.md`, which keeps this as its
+`src/` for v3.0** — see `docs/experiments.md`, which keeps this as its
 own open entry (the CLAP experiment's *identity* result, immediately below,
 is archived as promoted; its character-layer idea is not).
 
@@ -222,7 +222,7 @@ identity needs a representation trained for invariance between occurrences —
 not a bigger general-purpose embedding. **MFCC 0.73 is the number any next
 attempt must beat.** This CLAP result is archived as concluded
 (`docs/archive/experiments.md`); a follow-on invariance-trained-embedding
-attempt is queued in `docs/experiments_pending.md`.
+attempt is queued in `docs/experiments.md`.
 
 ## Documentation conventions
 
@@ -231,7 +231,7 @@ attempt is queued in `docs/experiments_pending.md`.
 | `CLAUDE.md`, `README.md`, `docs/` | **Current** | Contracts. `docs/` holds current material only. Keep in sync with code; delete a doc in the change that makes it stale. |
 | `docs/issues.md` | **Open** | The issue queue — **pending issues only**; solving one means deleting the entry in the same change (§4.2). Currently empty. |
 | *(git history)* | **Historical** | Git history is the archive. 45 story specs, the release plans, the closed issues and the superseded worklist were deleted in `c227bec` and after. Recover with `git log --diff-filter=D --name-only` if you need one — but they are **not** specifications, and current behaviour is defined by `src/`. |
-| `docs/experiments_pending.md` | **Queue** | One entry per experiment — its plan, its measured results, its conclusion (constitution §3.4). A concluded entry leaves only when the operator picks archive or promote; `docs/archive/experiments.md` is where it goes, and is the one archive file the docs rule permits. |
+| `docs/experiments.md` | **Queue** | One entry per experiment — its plan, its measured results, its conclusion (constitution §3.4). A concluded entry leaves only when the operator picks archive or promote; `docs/archive/experiments.md` is where it goes, and is the one archive file the docs rule permits. |
 | `experiments/` | **Measured evidence** | Reproducible experiments and their outputs. The best available statement of what actually works. |
 
 `docs/constitution.md` was rewritten on 2026-09-02. Its former rules — *"if the
@@ -312,7 +312,7 @@ analyzer image: `experiments/drop_detection/research/run_in_container.sh`.
 | `experiments/drop_detection/` | Drop-detector experiment and the pretrained-model survey. |
 | `experiments/allin1/` | Named functional structure from All-In-One. **Promoted in v3.0** into `src/analyzer/stages/segmentation.py`; the experiment's own README and measurements stay as the record of how the promotion was justified. |
 | `experiments/gestures/` | Named gesture-phase detection (riser/downlifter/snare-roll/pre-drop-gap/impact primitives). **Promoted in v3.0** into `src/analyzer/stages/gestures.py`. |
-| `experiments/clap/` | Character blocks beyond the arrangement (stems + CLAP calm axis + allin1 shadow labels), and the negative identity result. The identity result is archived as concluded (`docs/archive/experiments.md`); the character-layer idea is still queued (`docs/experiments_pending.md`) and not in `src/`. |
+| `experiments/clap/` | Character blocks beyond the arrangement (stems + CLAP calm axis + allin1 shadow labels), and the negative identity result. The identity result is archived as concluded (`docs/archive/experiments.md`); the character-layer idea is still queued (`docs/experiments.md`) and not in `src/`. |
 
 ## What actually reaches the light show
 

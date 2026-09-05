@@ -854,13 +854,13 @@ Everything each item could not finish in its own commit.
       `data/fixtures/fixtures.json` and `data/fixtures/pois.json` entries: that
       folder has never existed in this repo and is out of scope per constitution
       §1.1.
-- [x] **`docs/experiments_pending.md`** — move the `allin1`, `CLAP` and
+- [x] **`docs/experiments.md`** — move the `allin1`, `CLAP` and
       `Transition-FX and gesture phases` entries, with their filled-in results
       and conclusions, to `docs/archive/experiments.md`, marked **promoted**
       (constitution §3.4). The CLAP entry is promoted only in part — its
       character layer is **not** in this release — so it moves marked
       *identity result archived, character layer still queued*, and the
-      character-layer question stays in `experiments_pending.md` as its own
+      character-layer question stays in `experiments.md` as its own
       entry. Add a line to the wave-2 review section saying which release
       executed its §1–§2 verdicts.
 - [x] **`experiments/allin1/README.md`** and **`experiments/gestures/README.md`**

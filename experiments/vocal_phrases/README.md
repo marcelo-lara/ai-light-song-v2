@@ -2,7 +2,7 @@
 
 **Status: measured, PART A only, not promoted.** Nothing in `src/` reads
 anything in here. Queue entry, with the same numbers in summary form:
-[`../../docs/experiments_pending.md`](../../docs/experiments_pending.md)
+[`../../docs/experiments.md`](../../docs/experiments.md)
 (constitution §3.4).
 
 ## The question
@@ -70,7 +70,7 @@ middle point, not a clear winner — a smaller breath threshold trades a few
 more (correctly split) phrases for a tighter offset.
 
 **A real, documented limitation:** `sustained_notes` came back empty on
-`_test_song`, where the manual audit (see `docs/experiments_pending.md`)
+`_test_song`, where the manual audit (see `docs/experiments.md`)
 notes a note held for 2.78 s straight through the drop build. Root cause,
 confirmed by inspection: the held note's own natural amplitude decay dips
 below the hysteresis OFF threshold mid-note, splitting the phrase — and

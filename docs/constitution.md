@@ -169,7 +169,7 @@ the sandbox is that the pipeline stays small.
 ### 3.4 The pending-experiments queue
 
 Experiments that have not started yet are queued in
-[`experiments_pending.md`](experiments_pending.md). The file as it currently
+[`experiments.md`](experiments.md). The file as it currently
 stands is the sample skeleton — copy one entry's shape for every new entry.
 
 - **Immediately after the entry's title comes the URL** to the model or repo the
@@ -187,7 +187,7 @@ stands is the sample skeleton — copy one entry's shape for every new entry.
 
 When an experiment is concluded, the assistant tells the operator it can be
 **archived** or **promoted** (promotion still follows §3.3). Once the operator
-picks one, the entry is removed from `experiments_pending.md` and moved, with its
+picks one, the entry is removed from `experiments.md` and moved, with its
 filled-in results and conclusion, to
 [`archive/experiments.md`](archive/experiments.md). This archive file is a
 deliberate, named exception to §4's "no archive folder" rule: it is the standing

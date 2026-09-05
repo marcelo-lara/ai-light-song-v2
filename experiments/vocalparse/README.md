@@ -3,7 +3,7 @@
 **Status: concluded, negative.** VocalParse hallucinates Mandarin on real
 non-Mandarin vocals and its melody head collapses on every song. Not usable for
 this corpus. Full write-up in the queue entry:
-[`../../docs/experiments_pending.md`](../../docs/experiments_pending.md)
+[`../../docs/experiments.md`](../../docs/experiments.md)
 (constitution §3.4). Nothing in `src/` reads anything here.
 
 ## Result (CPU run, four gold songs, vs. `reference/moises/lyrics.json`)

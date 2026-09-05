@@ -4,7 +4,7 @@ The standing record of which experiments were run and what they scored
 (constitution §3.4). This is a deliberate, named exception to §4's "no archive
 folder" rule. An entry lands here only after the operator has picked
 **archive** or **promote** for a concluded experiment in
-[`experiments_pending.md`](../experiments_pending.md); each entry below keeps
+[`experiments.md`](../experiments.md); each entry below keeps
 its measured results and conclusion exactly as reported there — measured
 evidence does not go stale (constitution §4).
 
@@ -78,7 +78,7 @@ less than half the incumbent's boundary budget, against an incumbent that lost
 to evenly spaced guesses. Promoted in v3.0 item 7. Section *identity*
 (`same_label_as` is label repetition, not acoustic identity) remained
 unresolved at promotion time and is tracked separately — see the CLAP entry
-below and the open identity entry in `experiments_pending.md`.
+below and the open identity entry in `experiments.md`.
 
 ---
 
@@ -169,7 +169,7 @@ MFCC baseline, so nothing from it was promoted into `src/` for identity. The
 **character-layer** idea (a texture/intensity axis beyond verse/chorus
 arrangement — see the pinned operator guidance on non-arrangement character
 blocks) is a **separate, still-open question** and was **not** decided in
-v3.0. It stays in [`experiments_pending.md`](../experiments_pending.md) as its
+v3.0. It stays in [`experiments.md`](../experiments.md) as its
 own entry rather than being archived with the identity result.
 
 ### Why? What for?
@@ -223,4 +223,4 @@ MFCC's 0.73.
 identity result — it is a genuinely different, still-open question (a new
 projected file would be needed; no file in
 `docs/reference/analysis-input-guide.md` carries texture today) and remains
-queued in `experiments_pending.md`.
+queued in `experiments.md`.

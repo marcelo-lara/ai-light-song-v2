@@ -3,7 +3,7 @@
 **Status: measured, negative-leaning on the headline hypothesis, not
 promoted.** Nothing in `src/` reads anything in here. Queue entry, with the
 same numbers in summary form:
-[`../../docs/experiments_pending.md`](../../docs/experiments_pending.md)
+[`../../docs/experiments.md`](../../docs/experiments.md)
 (constitution §3.4).
 
 ## The question

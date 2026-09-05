@@ -2,7 +2,7 @@
 
 **The release that acts on the wave-2 module verdicts.** Its source is the
 `Module-by-module: what is measured, and what it costs` table in
-[`experiments_pending.md`](experiments_pending.md); the operator has approved
+[`experiments.md`](experiments.md); the operator has approved
 that table's **verdict column** as the scope of this release, replacements
 included.
 
@@ -15,7 +15,7 @@ item is implemented.
 *Scope note.* §3 of the wave-2 review ("Complement — signals the pipeline has no
 equivalent of": vocal phrase edges, character blocks as a standalone layer,
 section identity) is **not** in this release. Those are queue entries in
-`experiments_pending.md`, not rows in the verdict table. The one place a §3
+`experiments.md`, not rows in the verdict table. The one place a §3
 signal is unavoidable is `section_character`, because deleting `sections/`
 deletes the field's producer — item 8 resolves that by replacing the field
 rather than refilling it.
@@ -451,7 +451,7 @@ it stale (constitution §4), not afterwards:
   describes stages this release deletes. Rewritten to the surviving tree.
 - **`CLAUDE.md`** — the "Not trusted" section, the line counts, the
   known-good-direction paragraph, and the "what reaches the light show" list.
-- **`docs/experiments_pending.md`** — the `allin1`, `clap` and `gestures`
+- **`docs/experiments.md`** — the `allin1`, `clap` and `gestures`
   entries move to `docs/archive/experiments.md` with their filled-in results,
   marked promoted (constitution §3.4). The wave-2 review section stays; its
   §1–§2 verdicts are now history and get a line saying which release executed

@@ -33,7 +33,7 @@ measurements say is broken.
 | Doc | State |
 | --- | --- |
 | [`issues.md`](issues.md) | The analysis-issue queue — **open issues only** (constitution §4.2). Currently empty. |
-| [`experiments_pending.md`](experiments_pending.md) | The experiment queue (constitution §3.4). One entry per experiment, carrying its plan, its measured results and its conclusion. A concluded entry leaves this file only when the operator picks archive or promote. |
+| [`experiments.md`](experiments.md) | The experiment queue (constitution §3.4). One entry per experiment, carrying its plan, its measured results and its conclusion. A concluded entry leaves this file only when the operator picks archive or promote. |
 | [`archive/experiments.md`](archive/experiments.md) | Concluded experiments and what they scored. The one archive file §4 permits. |
 
 ## Open release — v3.0
@@ -58,4 +58,4 @@ go stale with age (constitution §4).
 | [`../experiments/drop_detection/README.md`](../experiments/drop_detection/README.md) | The hand-built drop detector and the 2026-09 pretrained-model survey (`allin1`, MERT, CLAP, beat-this). |
 | [`../experiments/allin1/README.md`](../experiments/allin1/README.md) | Named functional structure from All-In-One, exported per song and rendered as two debugger lanes. Beat the incumbent segmentation at less than half its boundary budget. **Promoted in v3.0** into `src/analyzer/stages/segmentation.py` (item 7) and the downbeat phase in `beats.json` (item 8); its former debugger lanes were removed on promotion (item 14). |
 | [`../experiments/gestures/README.md`](../experiments/gestures/README.md) | Named gesture-phase detection (riser/downlifter/reverse-cymbal/snare-roll/pre-drop-gap/impact primitives assembled into approach/build/tension/impact/release phases). Beat the `event_*` stack it replaced; lost raw recall to a cheap RMS-peak baseline, with the per-primitive precision audit still open. **Promoted in v3.0** into `src/analyzer/stages/gestures.py` (item 9). |
-| [`../experiments/clap/README.md`](../experiments/clap/README.md) | What CLAP infers *beyond* the arrangement: a character layer (breath / void / vocal lead / full power) built from the stems, CLAP's calm axis and allin1's frame-level shadow labels; and section identity. The identity result is **archived, negative** (MFCC 20 beat CLAP; `docs/archive/experiments.md`). The character-layer idea is **not promoted** and stays open in [`experiments_pending.md`](experiments_pending.md). |
+| [`../experiments/clap/README.md`](../experiments/clap/README.md) | What CLAP infers *beyond* the arrangement: a character layer (breath / void / vocal lead / full power) built from the stems, CLAP's calm axis and allin1's frame-level shadow labels; and section identity. The identity result is **archived, negative** (MFCC 20 beat CLAP; `docs/archive/experiments.md`). The character-layer idea is **not promoted** and stays open in [`experiments.md`](experiments.md). |

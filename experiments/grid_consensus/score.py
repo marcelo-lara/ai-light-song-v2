@@ -139,7 +139,7 @@ def phrase_grid_table() -> str:
         h10 = _recall(boundaries, impacts, 1.0)
         h20 = _recall(boundaries, impacts, 2.0)
         lines.append(f"  {song:<32}{str(payload['phrase_grid']['phrase_length_bars']):>15}{len(boundaries):>8}{h5:>10}{h10:>10}{h20:>10}")
-    lines.append("\n  Reference (allin1 raw unmerged phrase edges, from docs/experiments_pending.md):")
+    lines.append("\n  Reference (allin1 raw unmerged phrase edges, from docs/experiments.md):")
     lines.append("  3/7 @0.5s, 4/7 @1.0s, 6/7 @2.0s at 3.3 boundaries/min")
     return "\n".join(lines)
 
