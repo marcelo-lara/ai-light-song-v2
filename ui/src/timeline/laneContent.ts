@@ -384,7 +384,8 @@ export function chordsContent(harmonic: HarmonicLayer | null): SparseBlock[] {
  * Vocal phrase / instrumental gap / sustained-note blocks from
  * `experiments/vocal_phrases` (Part A — no model, local-auto-gain hysteresis
  * over the vocal stem). A proposal to audition against Human Hints and
- * Moises Lyrics directly above it, per constitution §3.2.
+ * Moises Lyrics directly above it: experiment proposals sit under the
+ * hand-authored truth they are auditioned against.
  */
 export function vocalPhrasesContent(file: VocalPhrasesFile | null): SparseBlock[] {
   return (file?.blocks ?? []).map((b, i) => {
@@ -440,7 +441,7 @@ export function reactiveBandsContent(file: ReactiveBandsFile | null): SparseBloc
  * section-pair transitions ("<from> → <to>") from `song_event_timeline.json`
  * -- the production `gestures` stage (plan v3.0 item 9, replacing the
  * Machine Events / Identifier Hints lanes it superseded). Never claims a
- * "drop" by name (constitution §5.2); each row is already flat, so one block
+ * "drop" by name (a drop is derived from a named section pair, never detected); each row is already flat, so one block
  * is one phase or one transition, never a nested composite.
  */
 export function gesturesContent(file: EventTimeline | null): SparseBlock[] {
@@ -467,7 +468,7 @@ export function gesturesContent(file: EventTimeline | null): SparseBlock[] {
  * Phrase-grid boundaries from `experiments/grid_consensus` — the resolved
  * downbeat phase's derived 8/16-bar phrase edges. `status: "unknown"` marks
  * a song where trackers disagreed and musical evidence did not resolve it
- * (constitution §7 — say so rather than snapping); those blocks are tinted
+ * (say so rather than snapping, never imply precision that isn't there); those blocks are tinted
  * distinctly as disputed.
  */
 export function gridPhraseContent(file: GridFile | null): SparseBlock[] {

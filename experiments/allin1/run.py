@@ -99,7 +99,7 @@ def cmd_stability(argv: list[str]) -> int:
 
     Needs the allin1 sandbox image — it calls the model, not the cache. The
     first corpus run of this experiment came back different from an earlier one
-    on 14 of 21 songs, which is a promotion blocker under constitution §6, so
+    on 14 of 21 songs, which is a promotion blocker under the determinism rule, so
     the size of the disagreement is measured rather than assumed.
     """
     repeats = 3

@@ -241,7 +241,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             harmonic = {"chords": [{"time": 0.0, "end_s": 2.0, "bar": 1, "beat": 1, "chord": "C#"}]}
 
             # No beats in the grid at all -- position is genuinely unknown, not
-            # invented as bar 0 / beat 0 (constitution SS2, no silent fallbacks).
+            # invented as bar 0 / beat 0 (no silent fallbacks).
             result = _validate_chords(paths, harmonic, timing={"beats": []}, chord_min_overlap=0.75)
 
         self.assertEqual(result.status, "passed")

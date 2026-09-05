@@ -1,8 +1,8 @@
 // TS types for every artifact the UI reads.
 //
-// These mirror the artifact contracts documented in `docs/data_folder_reference.md`
-// and `docs/reference/analysis-input-guide.md`, grounded against the real
-// artifact shapes under `data/analysis/_test_song/`.
+// These mirror the artifact contracts documented in `docs/reference/artifacts.md`
+// and `docs/mcp-definition.md`, grounded against the real artifact shapes under
+// `data/analysis/_test_song/`.
 //
 // `sections.json` and `artifacts/section_segmentation/sections.json` carry the
 // v3.0 allin1 named-segmentation shape (plan v3.0 item 7): a `function` from
@@ -10,7 +10,7 @@
 // `"unknown"` when the song is outside allin1's training distribution, and
 // `same_label_as` linking repeated occurrences of the same function. The old
 // `section_character` / `energy_character` / `repetition_group` / `form_role`
-// fields are gone — see `docs/contract-change-v3.0.md`.
+// fields are gone — see `docs/analysis-definition.md`.
 
 // ---------------------------------------------------------------------------
 // info.json  (top-level UI contract)
@@ -287,7 +287,7 @@ export interface SongFactsFile {
 // ---------------------------------------------------------------------------
 
 /** A gesture-phase `type`, or a `"<from> → <to>"` section-pair transition
- * (never a literal drop -- constitution §5.2), so this stays open-ended. */
+ * (never a literal drop -- it is derived from a named section pair), so this stays open-ended. */
 export type EventPhaseName =
   | "approach"
   | "build"

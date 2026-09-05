@@ -3,7 +3,7 @@
 **Status: probed on 2 songs — strongly positive on lyrics + structure, timing
 unsolved.** Full write-up in the queue entry:
 [`../../docs/experiments.md`](../../docs/experiments.md)
-(constitution §3.4). Nothing in `src/` reads anything here.
+(docs/experiments.md). Nothing in `src/` reads anything here.
 
 ## Two-song probe result (CPU, thinker-only, bf16)
 
@@ -65,7 +65,7 @@ stage.
 | --- | --- | --- |
 | baseline | `whisper_baseline.py` | `whisper-large-v3`, `word_timestamps=True`, over the vocal stem — the lyric + timing floor to beat |
 | model | `model.py` | ACE-Step on the **mix** (it uses the backing track for structure); raw text cached, parsed to `{languages, sections:[{tag, instruments, lines}]}` |
-| align | `align.py` | monotonic text-similarity match of ACE-Step lines to Whisper line spans; `[Section]` spans derived from the lines they hold. Below 50 % line matches → `alignment: "unavailable"`, lines spread evenly with `approx: true` — flagged, never presented as measured (constitution §2) |
+| align | `align.py` | monotonic text-similarity match of ACE-Step lines to Whisper line spans; `[Section]` spans derived from the lines they hold. Below 50 % line matches → `alignment: "unavailable"`, lines spread evenly with `approx: true` — flagged, never presented as measured (no silent fallbacks — never guess to keep a run green) |
 | export | `export.py` | writes the `ACE-Step …` and `whisper-…` rows into `reference/proposals/vocal_transcription.json` (shared with `../vocalparse`, keyed by model) |
 | score | `score.py` | lyric WER vs `_test_song` Moises reference; `[Section]` boundary recall vs hand-marked drop impacts and vs `allin1` transitions, at ±1.0 s |
 
@@ -106,7 +106,7 @@ first if you want the structure comparison populated.
 ## Reach test
 
 If promoted, the lyric side adds a top-level `lyrics.json` to the deliverable
-contract (constitution §9) with an MCP handoff note. The structure side would
+contract (a change to the deliverable contract) with an MCP handoff note. The structure side would
 feed section *naming* rather than ship as its own file — it is a third form read
 next to the incumbent and `allin1`, not a new deliverable.
 

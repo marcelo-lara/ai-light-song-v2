@@ -50,7 +50,7 @@ def _beats(n_bars: int, bar_len: float = 2.0, beats_per_bar: int = 4) -> list[di
 
 
 class NoAudioReadTests(unittest.TestCase):
-    """Constitution §5.2: phase 3 ("relate") never opens the audio."""
+    """Phase 3 ("relate") never opens the audio."""
 
     def test_module_imports_no_audio_libraries(self) -> None:
         source = Path(gestures.__file__).read_text()
@@ -177,7 +177,7 @@ class AssembleGesturesTests(unittest.TestCase):
         self.assertIn("build", phases)
         self.assertIn("release", phases)
         # No pre-drop gap / reverse cymbal was supplied, so tension is absent
-        # rather than guessed (constitution §2).
+        # rather than guessed (no silent fallbacks — never guess to keep a run green).
         self.assertNotIn("tension", phases)
 
     def test_no_supporting_primitive_means_absent_not_guessed(self) -> None:

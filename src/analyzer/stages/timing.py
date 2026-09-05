@@ -28,7 +28,7 @@ phase-picking algorithm here — confirmed by direct inspection, not assumed:
   reference calls beat 3, and sitting near zero (~0.001–0.02) at the position
   the reference calls beat 1, the true downbeat — a confident, reproducible,
   roughly two-beats-off disagreement from allin1 itself, matching
-  `docs/product-refinement-v3.0.md`'s independent note that three trackers
+  the v3.0 refinement doc's independent note that three trackers
   give three different phases on this song ("allin1 +1.96" beats off).
 * **`Hideaway`.** Essentia's own beat *tracking* (unchanged by this item)
   finds a different underlying tempo than the reference — an interval of
@@ -37,10 +37,10 @@ phase-picking algorithm here — confirmed by direct inspection, not assumed:
   where essentia's beat tracker under-performs Moises's (`CLAUDE.md`,
   "Trusted").
 
-`docs/product-refinement-v3.0.md` §"Item 9" projected 0.59 combined from an
-earlier, exploratory measurement; this module's own docstring and
-`docs/contract-change-v3.0.md` §8 carry the number actually measured against
-this implementation, not that projection.
+The v3.0 refinement doc projected 0.59 combined from an earlier, exploratory
+measurement; this module's own docstring and `docs/analysis-definition.md`
+("Downbeats") carry the number actually measured against this implementation,
+not that projection.
 allin1's own beat *times* are never used — they sit a clean half-beat off
 essentia's on 4 of 21 corpus songs and halve the tempo on a 5th, so they are
 not a second opinion worth having. Only the *phase* (which quarter-beat
@@ -72,7 +72,7 @@ Algorithm.
    from "which position sits in the highest-energy region" — and lets the
    phase drift or reset between windows instead of being pinned to one global
    answer for the whole song.
-3. Honesty check (constitution §7 — say so rather than snapping). For each bar
+3. Honesty check (say so rather than snapping, never imply precision that isn't there). For each bar
    under its window's chosen phase, compare the assigned downbeat's score
    against the max score among the four beats making up that bar. If the
    arg-max beat in that bar is not the assigned downbeat, allin1's own

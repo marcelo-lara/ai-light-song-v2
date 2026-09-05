@@ -55,12 +55,12 @@ only"):
 - UI (`ui/`) changes: `docker compose run --rm --no-deps --entrypoint sh ui -c
   "npm run build && npm test"` at minimum; if the change is visual, consider
   whether the Playwright visual-regression suite
-  (`docs/reference/ui-regression_guide.md`) needs a run too.
+  (`docs/reference/ui-regression.md`) needs a run too.
 - Analyzer (`src/`) changes: `docker compose run --rm test`, or the narrower
-  `--stage` invocation from `docs/reference/phase_1_validation_cli.md` if only
+  `--stage` invocation from `docs/reference/cli.md` if only
   one stage is touched.
-- MCP server changes: whatever this repo's MCP test entry point is — check
-  `mcp/` for its own README/scripts before assuming.
+- MCP server changes: the server lives in a *separate* repo. What this repo owes
+  it is `docs/mcp-definition.md`; changing that contract needs a handoff note.
 
 Fix any breakage before moving on. Don't count a build-only pass as a smoke
 test if the project has real tests to run.
@@ -76,12 +76,12 @@ shape of the change needs to change).
 ## 5. Update the spec docs — as current definition, not a refinement entry
 
 Once confirmed, edit the *current* spec docs that describe this behavior
-directly in place — e.g. `docs/reference/ui_development.md`,
-`docs/reference/ui-regression_guide.md`, `docs/data_folder_reference.md`, or
+directly in place — e.g. `docs/ui-definition.md`,
+`docs/reference/ui-regression.md`, `docs/reference/artifacts.md`, or
 the analogous analyzer/MCP doc. This is a **definition update**: the doc
 should read as if it always described the shipped behavior, not as a dated
 changelog entry. Follow the repo's standing doc rules (`CLAUDE.md`,
-`docs/constitution.md`): `docs/` holds current material only, delete or
+`CLAUDE.md` "Rules that are load-bearing"): `docs/` holds current material only, delete or
 rewrite a section that's now wrong rather than appending a correction beside
 it, and never invent a new archive folder. Do not write this into
 `docs/experiments.md` or a `product-refinement-vX.Y.md` — those are

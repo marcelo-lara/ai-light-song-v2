@@ -203,8 +203,8 @@ def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> 
         reference_downbeats = [
             float(row["time"]) for row in moises_beat_rows if int(row.get("beatNum", 0)) == 1
         ]
-        # A `confidence: null` downbeat is an honest abstention (constitution
-        # §7 — "say so rather than snapping"), not a confident claim. Scoring
+        # A `confidence: null` downbeat is an honest abstention (no silent fallbacks
+        # "say so rather than snapping"), not a confident claim. Scoring
         # it as a prediction would charge the honesty mechanism itself: a
         # correct-but-unmarked-unknown guess would inflate precision, and a
         # wrong one would deflate it, for a row that never claimed to be

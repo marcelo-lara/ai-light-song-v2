@@ -4,7 +4,7 @@
 non-Mandarin vocals and its melody head collapses on every song. Not usable for
 this corpus. Full write-up in the queue entry:
 [`../../docs/experiments.md`](../../docs/experiments.md)
-(constitution §3.4). Nothing in `src/` reads anything here.
+(docs/experiments.md). Nothing in `src/` reads anything here.
 
 ## Result (CPU run, four gold songs, vs. `reference/moises/lyrics.json`)
 
@@ -58,7 +58,7 @@ stem, so:
 | --- | --- | --- |
 | baseline | `whisper_baseline.py` | `whisper-large-v3`, `word_timestamps=True`, prompt `"lyrics:"`, over `artifacts/stems/vocals.wav` — lyric lines with per-word onsets in seconds |
 | model | `model.py` | VocalParse on the same stem; raw string cached, parsed to `{lyrics, syllables:[{text,midi,note_value}], bpm}` |
-| align | `align.py` | VocalParse has no clock — its syllables are spread over the Whisper word timeline by sequence position. If VocalParse's text and Whisper's disagree (language mismatch, garbage), the row is marked `alignment: "span"` / `"unavailable"` and carries **no per-word times** (constitution §2 — no invented onsets) |
+| align | `align.py` | VocalParse has no clock — its syllables are spread over the Whisper word timeline by sequence position. If VocalParse's text and Whisper's disagree (language mismatch, garbage), the row is marked `alignment: "span"` / `"unavailable"` and carries **no per-word times** (no silent fallbacks — no invented onsets) |
 | export | `export.py` | writes the `VocalParse …` and `whisper-…` rows into `reference/proposals/vocal_transcription.json` (shared with `../acestep_transcriber`, keyed by model) |
 | score | `score.py` | lyric WER + word-onset MAE against `_test_song`'s `reference/moises/lyrics.json` |
 
@@ -89,7 +89,7 @@ lane (rendered directly before **allin1 Sections**).
 ## Reach test
 
 If promoted: a top-level `lyrics.json` joins the deliverable contract
-(constitution §9) with a handoff note to the MCP server, projected next to
+(a change to the deliverable contract) with a handoff note to the MCP server, projected next to
 `hints.json` in the section read. Melody, if it survives, is a second field on
 each line. Nothing here ships until then.
 

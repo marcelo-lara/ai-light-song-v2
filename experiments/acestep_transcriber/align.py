@@ -1,7 +1,7 @@
 """Put ACE-Step's lyric lines and section tags on a clock.
 
 The transcriber emits ordered lines and `[Section]` tags but not reliable
-seconds. Same rule as the VocalParse experiment (constitution §2): borrow the
+seconds. Same rule as the VocalParse experiment (no silent fallbacks — never guess to keep a run green): borrow the
 Whisper baseline's word timeline, and where the two transcripts disagree, refuse
 to invent timing.
 

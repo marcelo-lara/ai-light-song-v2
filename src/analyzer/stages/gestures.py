@@ -20,7 +20,7 @@ gold set (CLAUDE.md). Ported from `experiments/gestures/primitives.py` and
     the experiment scored recall of the bare impact instants and reported
     "gestures/min" from the *impact* count alone, never the exploded
     per-phase event list this production stage has to keep under budget
-    (constitution's input-guide §5 — "few high-value discrete events"). The
+    (the projection wants few high-value discrete events — docs/mcp-definition.md). The
     impact detector's own three constants (`_IMPACT_TRANSIENT_PERCENTILE`,
     `_IMPACT_SUB_PERCENTILE`, `_IMPACT_MIN_GAP_S`) sit at the loosest values
     that still clear the acceptance floor above — every value in the sweep
@@ -35,7 +35,7 @@ gold set (CLAUDE.md). Ported from `experiments/gestures/primitives.py` and
 This stage reads ONLY phase-1/2 artifacts -- `fft_bands.json`,
 `rms_loudness.json`, `drum_events.json`, the canonical timing grid
 (`essentia/beats.json`) and `section_segmentation/sections.json` -- and never
-opens the audio (constitution §5.2 -- phase 3 "relate" never touches audio).
+opens the audio (phase 3 "relate" never touches audio).
 
 Two kinds of named, timed thing are produced, both flattened into one event
 list for `song_event_timeline.json`:
@@ -49,9 +49,9 @@ list for `song_event_timeline.json`:
    before an impact). `assemble_gestures` anchors each gesture on a detected
    impact and fills approach/build/tension/release from whichever primitives
    fall in the preceding window. **A phase with no supporting primitive is
-   absent, never guessed** (constitution §2). A drop is never detected or
+   absent, never guessed** (no silent fallbacks — never guess to keep a run green). A drop is never detected or
    named directly -- this stage says "a build of this shape happens here", not
-   "this is the drop" (constitution §5.2).
+   "this is the drop" (a drop is derived from a named section pair, never detected).
 2. **Section-pair transitions**, one per boundary in
    `section_segmentation/sections.json` -- that stage already merges
    consecutive equal-labelled runs, so every remaining boundary is a change in
@@ -78,7 +78,7 @@ _SUB_BAND_IDX = 0
 #: Detector selectivity. An "impact" must be a rare, structurally significant
 #: moment (a handful per song), not every strong kick -- tuned on the gold set
 #: so the combined event stream stays well under 20 events/min (input-guide
-#: §5) while keeping the measured impact-phase recall (module docstring
+#: the projection wants few high-value discrete events) while keeping the measured impact-phase recall (module docstring
 #: table). Raising these numbers trades recall for a shorter, higher-value
 #: event list; the values below are the smallest that still clear the
 #: acceptance floor on the four gold songs.
@@ -383,7 +383,7 @@ def assemble_gestures(
 ) -> list[dict]:
     """Anchor each detected impact and fill approach/build/tension/release
     from whichever primitives fall in the preceding window. A phase with no
-    supporting primitive is simply absent -- never guessed (constitution §2).
+    supporting primitive is simply absent -- never guessed (no silent fallbacks — never guess to keep a run green).
     Returns a list of gestures, each `{"impact_time", "phases": {name: {...}}}`.
     """
     bar_len = _bar_length(beats)

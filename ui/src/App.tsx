@@ -98,7 +98,7 @@ const TIMELINE_KEYS = [
   "moisesLyrics",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",
-  // wave-2 experiments (docs/experiments_pending.md run orders 1-3, 6)
+  // wave-2 experiments (docs/experiments.md run orders 1-3, 6)
   "vocalPhrases",
   "reactiveBands",
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
@@ -396,7 +396,7 @@ export function App(): React.JSX.Element {
         : sel.start_s + 1.0;
     // D11: one readable string naming the lane the event came from. Label via
     // LANE_LABELS, experiment via LANE_DEFS; fall back to the raw lane id when
-    // the lane is in neither (constitution §2).
+    // the lane is in neither (no silent fallbacks — never guess to keep a run green).
     const laneLabel = LANE_LABELS[sel.laneId] ?? sel.laneId;
     const experiment = LANE_DEFS.find((d) => d.id === sel.laneId)?.experiment;
     const capturedFrom = experiment

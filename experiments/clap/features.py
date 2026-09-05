@@ -4,7 +4,7 @@ Three separable questions are asked of the same vectors:
 
 1. **Identity** — pooled inside a section, do two sections that are the same
    part of the song sit closer together than two that are not? This is the gap
-   §1.2 names and no shipped artifact fills: knowing a chorus has returned is
+   docs/product-definition.md names and no shipped artifact fills: knowing a chorus has returned is
    what lets a light show reuse a look.
 2. **Boundaries** — does the embedding change where the song changes?
 3. **Catalog similarity** — the whole-song vector, for song-to-song matching.

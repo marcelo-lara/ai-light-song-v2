@@ -40,7 +40,7 @@ export interface LaneDef {
    * `Experiment · experiments/<value> · not promoted to the pipeline` — a
    * human-readable source, not a path to resolve.
    *
-   * constitution §3.2: this field and the lanes that carry it leave the
+   * Experiment lanes: this field and the lanes that carry it leave the
    * registry together when the experiment is promoted into `src/` or abandoned.
    */
   experiment?: string;
@@ -100,7 +100,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
  * item 14: their content now lives in the production `sections` lane and in
  * `song_event_timeline.json` (the Gestures lane). The experiment lanes still
  * left come out of the registry entirely when promoted or abandoned
- * (constitution §3.2).
+ * (an experiment proposal, never a deliverable).
  */
 export const DEFAULT_EXPANDED: readonly string[] = [
   "waveform",

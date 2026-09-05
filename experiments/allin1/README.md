@@ -9,7 +9,7 @@ downbeat *phase* (never the beat times) from this same model's output for
 **allin1 Sections**) were removed from the registry once promoted (item 14) —
 their content now lives in the production **Sections** lane and in
 `song_event_timeline.json`'s transition events. The measurements below are
-kept exactly as run; they do not go stale (constitution §4). Archive entry:
+kept exactly as run; they do not go stale (measured evidence does not go stale). Archive entry:
 [`../../docs/archive/experiments.md`](../../docs/archive/experiments.md).
 
 ## The question
@@ -194,7 +194,7 @@ within 0.25 s of a beat.
 `python -m experiments.allin1.run export` writes one file per song to
 `data/analysis/<song>/reference/proposals/allin1.json` — a proposal, so it stays
 out of `artifacts/`, out of the stable top-level contract, and out of
-`reference/human/` (constitution §3.2). It carries every feature derivable from
+`reference/human/` — a proposal, never a deliverable. It carries every feature derivable from
 the model's four outputs:
 
 | key | what it is |
@@ -232,7 +232,7 @@ abandoned.
 
 ## What promotion would take, and what it would delete
 
-Not proposed yet — under constitution §3.3 that is a decision to ask for, and
+Not proposed yet — under the promotion gate that is a decision to ask for, and
 this is the material for the ask rather than the ask itself.
 
 A promotion would add a phase-2 segmentation stage seeded from the existing

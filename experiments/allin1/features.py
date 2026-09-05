@@ -15,7 +15,7 @@ Two derivations carry most of the value:
   *pair*. A cue is defined by a change, and the pair says what kind of change it
   is. This is the field the shipped `sections.json` has no equivalent of.
 
-Honesty (constitution §2): nothing here invents a label. Where allin1
+Honesty (no silent fallbacks — never guess to keep a run green): nothing here invents a label. Where allin1
 degenerates — instrumental tracks outside its Harmonix pop training
 distribution, where it emits one or two labels for the whole song — the
 derivation says so in `labelling.status` and every section is marked

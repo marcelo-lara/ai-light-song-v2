@@ -242,7 +242,7 @@ def catalog_table(songs: list[str] | None = None) -> str:
         "column is a ranking of noise; the centred column is the usable one.",
         "",
         "It also reaches nothing. No projected file carries a song-to-song relation",
-        "(constitution §1.3), so however good this is, it changes nothing about a light",
+        "(the reach test — docs/mcp-definition.md), so however good this is, it changes nothing about a light",
         "show authored for one song.",
         "",
     ]

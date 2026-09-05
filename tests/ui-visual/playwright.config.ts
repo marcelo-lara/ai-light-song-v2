@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 // Deterministic visual regression over the running `ui` container. Baselines are
 // OS/arch-specific and MUST be generated/verified inside the pinned Playwright
-// container image (see ../../docs/reference/ui-regression_guide.md §7).
+// container image (see ../../docs/reference/ui-regression.md §7).
 export default defineConfig({
   testDir: "./specs",
   snapshotDir: "./__screenshots__",

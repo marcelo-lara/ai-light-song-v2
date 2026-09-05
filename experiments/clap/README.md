@@ -3,7 +3,7 @@
 **Status: measured. Character layer works and is reviewable; section identity
 failed.** Nothing in `src/` reads anything in here. Queue entry:
 [`../../docs/experiments.md`](../../docs/experiments.md)
-(constitution §3.4).
+(docs/experiments.md).
 
 ## The question
 
@@ -148,7 +148,7 @@ five hand-marked outro hints. The model knew; the segment list could not say it.
 
 Before the question above was settled, the same embeddings were pointed at
 section *identity* — which arrangement sections are the same part. That failed
-and the lane built for it has been removed (§3.2). The numbers are worth
+and the lane built for it has been removed. The numbers are worth
 keeping, because the baseline they establish is the number any future identity
 attempt has to beat. Full table in [`out/score.txt`](out/score.txt).
 
@@ -171,7 +171,7 @@ Also measured and negative: CLAP semantic novelty places boundaries at 3/7
 impacts (±1.0 s) on twice allin1's budget — better than the incumbent, no better
 than an evenly spaced grid. And whole-song catalog matching works after corpus
 centring (raw, every song is every other song's neighbour at ~0.998, total
-spread 0.089) but reaches no projected file, so §1.3 rules it out.
+spread 0.089) but reaches no projected file, so the reach test rules it out.
 
 ## Review it
 

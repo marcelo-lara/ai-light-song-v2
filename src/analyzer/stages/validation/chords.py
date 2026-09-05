@@ -55,7 +55,7 @@ def _reference_grid_position(
     nearest beat in `essentia/beats.json` (`bar`, `beat_in_bar`). When the grid
     is empty or the nearest beat is farther than `tolerance_seconds`, the
     position genuinely cannot be computed and both values are `None` rather
-    than an invented default (constitution §2, no silent fallbacks).
+    than an invented default (no silent fallbacks).
     """
     if not grid_beats:
         return None, None

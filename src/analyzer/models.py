@@ -58,7 +58,7 @@ class BeatPoint:
     (`analyzer.stages.timing`, plan v3.0 item 8). It is `None` on `"beat"`
     rows, and `None` on a `"downbeat"` row where essentia's and allin1's
     phases disagree by a whole beat or more — the smallest honest encoding of
-    "the bar grid is unresolved here" (constitution §7)."""
+    "the bar grid is unresolved here" (the bar grid is honestly unresolved rather than snapped)."""
     index: int
     time: float
     bar: int

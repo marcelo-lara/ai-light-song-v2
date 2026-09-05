@@ -1,4 +1,83 @@
-# Current Experiments
+# Experiments
+
+One entry per experiment, carrying its plan, its measured results and its
+conclusion. A concluded entry leaves this file only when the operator picks
+**archive** or **promote**; archived ones go to
+[`archive/experiments.md`](archive/experiments.md).
+
+## How experiments work here
+
+Improving the musical read is research, not only engineering. Most attempts
+fail. These rules exist to make failing cheap and the failure *legible*, so the
+same dead end is not walked twice.
+
+- **`experiments/<topic>/` is a sandbox for anything** — other models, other
+  libraries, other container images, throwaway code, competing approaches side
+  by side. Nothing there is held to the pipeline's determinism, schema or style
+  rules, and **nothing in `src/` may import from it.** The reason is specific:
+  unproven work merged straight into `src/` is how the analyzer accumulated
+  several thousand lines of event machinery built on a segmentation that
+  measured at chance.
+- **State the question and the measurement before starting.** What would count
+  as better, on which songs, against which incumbent.
+- **Always measure against the thing you propose to replace, and against a cheap
+  classical baseline.** "It looked plausible" is not a result. MFCC-20 beating
+  CLAP at section identity is the standing example of why the baseline matters.
+- **A negative result is a deliverable.** Write down what was tried, what it
+  scored, and what specifically was wrong with it.
+- **Keep the record where the experiment lives** — `experiments/<topic>/README.md`,
+  alongside the numbers. That README is current material and stays in the tree
+  regardless of age; measured evidence does not go stale.
+- **Ground truth is precious and scarce.** When a measurement sits at the noise
+  floor of the labels, say so and fix the labels rather than tuning against them.
+
+### Run against the four gold songs
+
+`_test_song`, `Titanium - David Guetta ft Sia`, `Hideaway - Kiesza`,
+`Armin - Revolution` — the songs with hand-labelled ground truth, so the only
+place a measured comparison means anything. When an experiment is too heavy for
+all four, or is only a smoke test, use `_test_song` alone.
+
+### Make it reviewable — add a UI lane
+
+Musical output has to be *heard against the song*, not read as a table. Anything
+time-bearing — boundaries, regions, events, curves — gets its own lane in the
+debugger, played against the waveform and the human hints. The pattern to copy:
+`experiments/drop_detection` writes
+`data/analysis/<Song - Artist>/reference/proposals/drop_impacts.json`, and the UI
+renders it as the **Drop Proposals** lane directly beneath **Human Hints**.
+
+- Output goes under `reference/proposals/`, never into `artifacts/` and never
+  into the stable top-level contract. It is a proposal, not a deliverable.
+- It never overwrites `reference/human/` — hand-authored truth stays hand-authored.
+- The lane is registered like any other, and removed when the experiment is
+  abandoned or promoted.
+
+An experiment whose output cannot be placed on a timeline just reports numbers.
+
+### Promotion is asked for, never assumed
+
+When an experiment beats the incumbent, **stop and ask before moving anything
+into `src/`.** A better number is necessary, not sufficient; the cost of
+carrying another production stage is a judgement about the pipeline as a whole.
+
+A promotion proposal states: what it replaces, the metric and **both** numbers,
+what gets **deleted** from `src/` in the same change, and which projected file
+changes. Promotion that only adds is usually a mistake — the point of the
+sandbox is that the production pipeline stays small.
+
+### Entry shape
+
+Title, then the **URL** of the model or repo on the very next line (that link
+may carry its own instructions, so it is the first thing a reader follows), then
+`### Status`, `### Why? What for?` (the purpose in the operator's terms),
+`### Experiment Plan` (the implementation plan under `experiments/<topic>/`),
+`### Results evidence` (the gold-set comparison against the incumbent *and* the
+baseline) and `### Conclusion` (a short TLDR).
+
+---
+
+## The queue
 
 ## CLAP — character layer (calm/intense texture blocks)
 
@@ -19,7 +98,7 @@ reference case is the operator's own ground truth — `Armin - Revolution`
 `hint-006`, "Breath", 81.395–96.326, *"Vocal - no intense section"*, lighting
 *"soft motion of moving heads. parcans slow violet waves"*. An undoubtable
 voice block, worth its own look, and invisible to any verse/chorus label
-(constitution §1.2's "what happens inside a part"; see the pinned operator
+(the "what happens inside a part" deliverable (docs/product-definition.md); see the pinned operator
 guidance on non-arrangement character blocks). `_test_song` shows the same at
 finer grain: `Spacer`, `Outro start`, three `Vocal outro` phrases, `Finale`.
 
@@ -92,8 +171,8 @@ model cost.
 **Not decided in v3.0.** A promotion would add a **character layer** to the
 pipeline — stem-derived presence plus one CLAP axis plus allin1 shadow labels —
 and would need a new projected file, since no file in
-[`reference/analysis-input-guide.md`](reference/analysis-input-guide.md) carries
-texture today. It deletes nothing, which §3.3 warns is usually a mistake; the
+[`mcp-definition.md`](mcp-definition.md) carries
+texture today. It deletes nothing, which the promotion gate warns is usually a mistake; the
 honest counter is that the pipeline has no character layer at all to replace.
 Before that: the ground truth is 10 hand-marked blocks, 9 of them in a 58 s
 synthetic excerpt. More marked blocks across real tracks would settle the
@@ -111,7 +190,7 @@ thresholds that are currently set by hand.
 model) over the four gold songs, which now all carry Moises word-level lyric
 ground truth. VocalParse hallucinates Mandarin on real non-Mandarin vocals and
 its melody head collapses; it is not usable for this corpus. Awaiting the
-operator's archive-or-promote decision (§3.3) — recommendation: **archive**.
+operator's archive-or-promote decision — recommendation: **archive**.
 
 ### Why? What for?
 
@@ -154,7 +233,7 @@ outcome.
   When VocalParse's text and Whisper's text disagree beyond a threshold
   (different language, garbage output), emit `alignment: "unavailable"` and
   place the whole transcription as a single span — **never fabricate per-word
-  times** (constitution §2).
+  times** (no silent fallbacks — never guess to keep a run green).
 - **Derive note durations** as `note_value · 60 / bpm` for the melody signal,
   anchored to the aligned syllable onsets.
 - Export the `vocalparse` source into
@@ -363,7 +442,7 @@ no GPU path on the current box is a heavy production dependency. Next steps, in
 order: a forced-aligner against ACE-Step's transcript; the full 21-song run
 (needs a GPU or an overnight CPU batch); then score its structure against
 `allin1` and the incumbent on one axis. If it clears those, promotion adds a
-top-level `lyrics.json` (§9 contract change + MCP handoff) and its structure
+top-level `lyrics.json` (a deliverable-contract change + MCP handoff) and its structure
 feeds section naming rather than shipping as its own file.
 
 
@@ -378,7 +457,7 @@ operator's vocal-phrase edges 5–6× better than the shipped `sections.json`, b
 does not clearly beat a naive mix-RMS threshold once its firing rate is accounted
 for, and the two were never compared at a matched budget. Forced alignment
 (Part B) needs its own sandbox image and was not attempted. Awaiting the
-operator's archive-or-promote decision (§3.3).
+operator's archive-or-promote decision.
 
 ### Why? What for?
 
@@ -427,8 +506,8 @@ Moises stretches a line's last word across the following instrumental — `Armin
 holds *"calling"* from 48.27 to 100.45 (52.2 s), `Hideaway` has a 29.3 s word,
 `Titanium` a 7.1 s one; between 5 % and 9 % of words per song run over 1.5 s and
 account for 50–88 s of "sung" time each. So **line onsets are usable corpus-wide,
-line offsets are usable on `_test_song` only** — which is precisely constitution
-§3.5's "use `_test_song` alone" case, and precisely why the second half of this
+line offsets are usable on `_test_song` only** — which is precisely the
+"use `_test_song` alone" case, and precisely why the second half of this
 entry is a forced aligner.
 
 ### Experiment Plan
@@ -448,7 +527,7 @@ Build as `experiments/vocal_phrases/`. Two halves, measured separately.
   duration — `_test_song` holds *"show,"* for 2.78 s straight through the drop
   build, and a held vocal over a build is a look in its own right.
 - Snap nothing to the bar grid (`CLAUDE.md`: downbeats are not trusted); report
-  the physical onset per §7.
+  the physical onset — the transient wins over the nearest grid position.
 
 **B — real onsets for the transcript (whisperX / wav2vec2 forced alignment).**
 
@@ -459,7 +538,7 @@ Build as `experiments/vocal_phrases/`. Two halves, measured separately.
 - Compare the aligner's word times to Moises on `_test_song`, where Moises is
   now trustworthy, before trusting it anywhere else.
 
-**Measurement — fixed before the run (§3).**
+**Measurement — fixed before the run.**
 
 1. **Boundary hit-rate against the human hints** at ±0.10 / ±0.25 / ±0.50 s,
    always reported with **boundaries per minute** — the same budget-aware framing
@@ -475,12 +554,12 @@ Build as `experiments/vocal_phrases/`. Two halves, measured separately.
 Export `data/analysis/<song>/reference/proposals/vocal_phrases.json`; add a
 **Vocal Phrases** lane under Human Hints, beside the existing **Moises Lyrics**
 lane so a proposal, the transcript and the hand-marked truth stack vertically
-(§3.2).
+— a proposal lane, never a deliverable.
 
-**Reach test (§1.3).** If promoted, `vocal_phrase` / `instrumental_gap` /
+**Reach test.** If promoted, `vocal_phrase` / `instrumental_gap` /
 `sustained_note` become events in `song_event_timeline.json`, which is already
 projected. Nothing new joins the top-level contract, and the reference lyrics
-themselves stay validation-only (§2) — the detector reads the stem, never
+themselves stay validation-only — the detector reads the stem, never
 `reference/`.
 
 ### Results evidence
@@ -550,7 +629,7 @@ the incumbent's whole-song percentile normalisation **beats** the local auto-gai
 this entry was built to displace, for discrete accent extraction. The dense
 per-beat stream — the intended deliverable — was never measured separately and
 remains an untested claim. Awaiting the operator's archive-or-promote decision
-(§3.3).
+(promotion is asked for, never assumed).
 
 ### Why? What for?
 
@@ -617,9 +696,9 @@ Build as `experiments/reactive_bands/`, no new image (numpy over existing JSON).
   can snap to the essentia beat grid, which is measured good.
 - Export `data/analysis/<song>/reference/proposals/reactive_bands.json`; add a
   **Reactive Bands** lane (three curves plus accent ticks) under Human Hints,
-  copying the Drop Proposals lane (§3.2).
+  copying the Drop Proposals lane.
 
-**Measurement — fixed before the run (§3).**
+**Measurement — fixed before the run.**
 
 1. **Accents vs. ground truth.** Hit-rate of accent times against the 7
    hand-marked drop impacts at ±0.25 / ±0.5 / ±1.0 s, reported with accents per
@@ -633,7 +712,7 @@ Build as `experiments/reactive_bands/`, no new image (numpy over existing JSON).
 4. **Window sweep table** — one row per averaging window, so the chosen constant
    is defensible.
 
-**Reach test (§1.3) — which projected file this lands in.**
+**Reach test — which projected file this lands in.**
 
 A new dense artifact plus per-beat aggregates. The input guide explicitly
 invites this: *"If a new dense signal would be valuable (e.g. a spectral-flux or
@@ -669,7 +748,7 @@ entry's hypothesis, and it is the result.
 floor.** Whether local normalisation helps *specifically* inside quiet passages
 has **2** qualifying impacts in the whole gold set, and they tie either way (2/2
 at ±0.5 s both). Not resolved — this needs more hand-marked low-loudness impacts,
-not more tuning (§3, "ground truth is precious and scarce").
+not more tuning — ground truth is precious and scarce.
 
 **The discrete-accent measurement is itself unstable to how the threshold is
 set.** The same local detector scores 2/7 at ±0.25 s under per-song budget
@@ -773,7 +852,7 @@ shape is the point: the two models must be scored by the same code.
   placed directly beside **allin1 Sections** so the two segmentations can be
   A/B'd against the waveform, and **SongFormer Transitions** beside allin1's.
 
-**Measurement — fixed before the run (§3).**
+**Measurement — fixed before the run.**
 
 Reuse `experiments/allin1/score.py` verbatim so the table is directly
 comparable:
@@ -792,7 +871,7 @@ full label sequence written out per song for the operator to audition by ear.
 Where the two models disagree on a boundary, that disagreement is the shortlist
 of places worth hand-labelling next.
 
-**Reach test (§1.3) — which projected file this lands in.**
+**Reach test — which projected file this lands in.**
 
 The top-level `sections.json` and `artifacts/section_segmentation/sections.json`
 — the highest-priority projected files. A promotion here deletes
@@ -877,19 +956,19 @@ Build as `experiments/identity/`.
 - Export `reference/proposals/identity.json`; **Identity** lane colouring each
   section by its group, placed directly under the sections lanes.
 
-**Measurement — fixed before the run (§3).**
+**Measurement — fixed before the run.**
 
 Mean pair AUC over gold-set section pairs — **must beat 0.73** — plus the
 self-vs-other gap (CLAP's 0.83/0.68), plus per-song grouping tables.
 
-**State the noise floor.** Four songs is very few section pairs, and §3's rule
+**State the noise floor.** Four songs is very few section pairs, and the rule
 is that a measurement at the noise floor of the labels means fixing the labels,
 not tuning against them. If the harness shows the AUC gap between methods is
 inside the noise, the honest output of this experiment is a request to the
 operator for hand-marked "these two are the same part" pairs across the corpus —
 which is cheap to mark and would make every future identity attempt scorable.
 
-**Reach test (§1.3) — which projected file this lands in.**
+**Reach test — which projected file this lands in.**
 
 `sections.json` `repetition_group`, currently null everywhere, and
 `get_song_brief`'s `similar_sections` grouping — which today is derived from
@@ -916,7 +995,7 @@ approximate.
 kick placement — measured as a near-useless phase discriminator in this
 repertoire; the resulting consensus ties two of the three individual trackers and
 loses to the third, and its phrase grid loses clearly to allin1's. Awaiting the
-operator's archive-or-promote decision (§3.3).
+operator's archive-or-promote decision.
 
 ### Why? What for?
 
@@ -958,7 +1037,7 @@ Build as `experiments/grid_consensus/`, numpy over cached tracker outputs.
   music wins.
 - **Emit `unknown` when it is unknown.** Where the trackers disagree *and* the
   musical evidence does not resolve them, the artifact says so rather than
-  snapping — constitution §7: *"Where the grid itself is uncertain, say so
+  snapping — the standing rule *"where the grid itself is uncertain, say so
   rather than snapping and implying precision that isn't there."* A confidence
   per downbeat, and a flagged span where the grid is untrustworthy, is far more
   useful to a cue author than a continuous lie.
@@ -968,7 +1047,7 @@ Build as `experiments/grid_consensus/`, numpy over cached tracker outputs.
 - Export `reference/proposals/grid.json`; **Phrase Grid** lane, with disputed
   spans visibly marked.
 
-**Measurement — fixed before the run (§3).**
+**Measurement — fixed before the run.**
 
 1. **Downbeat phase** against the 7 hand-marked impacts (an impact is almost
    always on a downbeat), and against each individual tracker's 3/7, 3/7, 4/7.
@@ -981,7 +1060,7 @@ Build as `experiments/grid_consensus/`, numpy over cached tracker outputs.
    the corpus.
 4. **Cheap baseline:** essentia's downbeats alone, which is what ships today.
 
-**Reach test (§1.3) — which projected file this lands in.**
+**Reach test — which projected file this lands in.**
 
 `beats.json` — a top-level projected file, priority 4 in the input guide — and,
 if the phrase grid survives, a phrase-boundary hint category in `hints.json`
@@ -1040,7 +1119,7 @@ back `unknown`** under the shipped weighting, with at least one hypothesis
 disagreeing on 20 of 21. Of the resolved songs, musical evidence overrides
 essentia's own downbeat phase on 3/21. The high `unknown` rate is the most
 defensible thing here: it says chord-change evidence alone is often too sparse to
-resolve a song's phase, which is §7's "say so rather than snapping" applied
+resolve a song's phase, which is "say so rather than snapping" applied
 honestly rather than a confident wrong grid on fifteen songs.
 
 ### Conclusion
@@ -1065,7 +1144,7 @@ useful output this run produced.
 ### Status
 
 **[PENDING] — run order 7 of 7.** The frontier entry: highest ceiling, highest
-risk, heaviest to run. Smoke on `_test_song` first (§3.5). Note the checkpoint
+risk, heaviest to run. Smoke on `_test_song` first. Note the checkpoint
 is released for **non-commercial research only** — that constrains promotion,
 not experimentation, and should be settled with the operator before any
 promotion discussion.
@@ -1127,12 +1206,12 @@ Build as `experiments/music_flamingo/`, its own sandbox image.
   that fail are emitted as `unverified` or dropped, never silently kept. **This
   grounding harness is the reusable deliverable of the experiment** — it applies
   to any future audio-LLM, and it is the only way an LALM's output can enter a
-  pipeline governed by §2.
+  pipeline governed by the honesty rules.
 - Export `reference/proposals/description.json`; render as a **Description**
   lane of timestamped text spans, tinted by whether each claim passed its
   cross-check, directly under the Character lane so the two can be compared.
 
-**Measurement — fixed before the run (§3).**
+**Measurement — fixed before the run.**
 
 1. **Timing honesty** — the headline number: what fraction of the model's
    timestamped claims survive the stem cross-check, whole-song mode vs.
@@ -1151,7 +1230,7 @@ Build as `experiments/music_flamingo/`, its own sandbox image.
    model with no GPU path on this box is a heavy production dependency, and the
    ACE-Step entry is the cautionary precedent.
 
-**Reach test (§1.3) — which projected file this lands in.**
+**Reach test — which projected file this lands in.**
 
 `hints.json` (per-section, human-quality prose, short and concrete) and the
 `description` / `summary` fields of `sections.json` and

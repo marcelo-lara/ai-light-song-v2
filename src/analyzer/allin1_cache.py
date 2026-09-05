@@ -158,7 +158,7 @@ def _build_payload(paths: SongPaths, stems: dict[str, str], result: Any, seeded_
             "seeded_stems": seeded_stems,
             "seeding_note": (
                 "allin1 was seeded with the pipeline's own htdemucs stems rather than "
-                "separating the mix itself — mandatory for determinism (constitution §6)."
+                "separating the mix itself — mandatory for determinism (determinism: same input + engine version must give byte-identical artifacts)."
             ),
         },
         "fps": ACTIVATION_RATE_HZ,

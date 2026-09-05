@@ -28,7 +28,7 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //                               human hints it is auditioned against
   dropProposalsMatched: [168, 60, 40], // muted teal — a proposal that already
   //                                      matches a hand-authored drop impact
-  // Wave-2 experiments (docs/experiments_pending.md, run orders 1-3, 6).
+  // Wave-2 experiments (docs/experiments.md, run orders 1-3, 6).
   vocalPhrases: [340, 55, 46], // rose — distinct from moisesLyrics' slate blue
   vocalPhrasesGap: [220, 10, 40], // near-grey — an instrumental (no-vocal) span
   vocalPhrasesSustained: [280, 60, 48], // violet-pink — a held note marker

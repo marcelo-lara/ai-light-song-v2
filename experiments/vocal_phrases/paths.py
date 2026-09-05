@@ -17,8 +17,8 @@ CACHE_ROOT = Path(__file__).resolve().parent / "cache"
 OUT_ROOT = Path(__file__).resolve().parent / "out"
 
 #: The four songs carrying hand-placed ground truth — the only ones a measured
-#: comparison against the incumbent and a baseline means anything (constitution
-#: §3.5).
+#: comparison against the incumbent and a baseline means anything (no silent fallbacks
+#: the four gold songs).
 GOLD_SONGS = [
     "_test_song",
     "Hideaway - Kiesza",

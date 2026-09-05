@@ -6,10 +6,9 @@ from analyzer.io import read_json, write_json
 from analyzer.models import round_schema_float
 from analyzer.paths import SongPaths
 
-# Item 13 (docs/implementation-plan-v3.0.md) — thresholds for projecting a
-# compact harmonic form into sections.json.
+# Thresholds for projecting a compact harmonic form into sections.json.
 #
-# Measured on the four gold songs (docs/contract-change-v3.0.md #13): exact
+# Measured on the four gold songs (docs/analysis-definition.md): exact
 # root+quality agreement with Moises is 1.00 (_test_song) / 0.69 (Titanium) /
 # 0.51 (Armin - Revolution) / 0.38 (Hideaway - Kiesza). Per-song *mean* chord
 # confidence and the whole-song *global_key* confidence both cluster in a tight
@@ -81,7 +80,7 @@ def _format_section_label(section: dict) -> str:
     """`<index> <Label> (<confidence>)`, e.g. `"003 Chorus (0.80)"`.
 
     `function_status == "unknown"` means allin1's name for this section is not
-    trustworthy (constitution §2 — an honest `unknown` beats a confident wrong
+    trustworthy (an honest `unknown` beats a confident wrong
     label), so the raw, un-title-cased label token is shown with an explicit
     `[unverified]` marker rather than a polished name that would read as
     confident. `function_confidence` still displays — it is what made the name
@@ -175,8 +174,8 @@ def _dominant_cycle(labels: list[str], max_len: int) -> list[str]:
 
 def _section_chord_progression(start_s: float, end_s: float, chord_events: list[dict]) -> str | None:
     """The section's dominant repeating chord sequence, e.g. `"Am–F–C–G"`, or
-    `None` when confidence is too low to state one honestly (constitution
-    §2 — never an empty string or a placeholder). Gated by
+    `None` when confidence is too low to state one honestly (no silent fallbacks
+    no silent fallbacks — never an empty string or a placeholder). Gated by
     CHORD_EVENT_CONFIDENCE_THRESHOLD with a weakest-link rule: every chord
     event overlapping the section must individually clear the floor, not just
     the section's average. See the threshold comment above for the

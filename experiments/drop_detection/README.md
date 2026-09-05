@@ -155,7 +155,7 @@ verse/chorus vocal contrast — outside the Harmonix pop distribution the model
 was trained on. **This is detectable without labels** (count distinct labels,
 check the dominant label's share), so the artifact can honestly say
 `function: unknown` on those songs instead of writing `intro` nine times. That
-matches the constitution's "fail explicitly or mark `unknown`" rule.
+matches the "fail explicitly or mark `unknown`" rule.
 
 Armin is also the one song where the boundary is genuinely missed: the 57.83 s
 impact has no `allin1` boundary within 8.6 s. MERT layer 2 finds it at −1.78 s.

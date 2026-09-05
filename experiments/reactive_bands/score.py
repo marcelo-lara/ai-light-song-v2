@@ -211,7 +211,7 @@ def normalization_ablation_table(target_rate: float = 29.0) -> str:
     if n_low <= 3:
         lines.append(f"\n  NOTE: only {n_low} drop impacts fall in a low-loudness passage across the")
         lines.append("  gold set — too few to resolve the low-loudness hypothesis either way. This")
-        lines.append("  is the constitution §3 noise-floor case: more hand-marked low-loudness")
+        lines.append("  is the noise-floor case: more hand-marked low-loudness")
         lines.append("  impacts are needed before this specific claim can be tested, not more tuning.")
     return "\n".join(lines)
 

@@ -9,12 +9,12 @@ phases and section-pair transitions. The **Gestures** debugger lane was
 promoted alongside it (item 14) — it now reads the production
 `song_event_timeline.json` directly and lost its experiment badge. The
 measurements below are kept exactly as run, including the open per-primitive
-precision-audit gap; they do not go stale (constitution §4). Archive entry:
+precision-audit gap; they do not go stale (measured evidence does not go stale). Archive entry:
 [`../../docs/archive/experiments.md`](../../docs/archive/experiments.md).
 
 ## The question
 
-Constitution §1.2: a drop "has an approach, a build, a tension span, an
+docs/product-definition.md: a drop "has an approach, a build, a tension span, an
 impact and a release, and each phase becomes a different look." The current
 `event_*` stack claims this and is measured at chance (CLAUDE.md). But
 producers build these gestures out of a small, named, conspicuous set of
@@ -27,7 +27,7 @@ already trusts (`fft_bands.json`, `rms_loudness.json`, `drum_events.json`).
 > marks a drop better than the current event stack — and better than a plain
 > RMS-derivative peak-picker?
 
-This experiment explicitly does not name the section (§5.2) — it says "a
+This experiment explicitly does not name the section (naming stays with the section-pair transition) — it says "a
 build of this shape happens here", never "this is the drop".
 
 ## How to run it
@@ -45,7 +45,7 @@ sub-band + transient spike, pre-drop-gap via a `dropout_strength` spike
 immediately before an impact). `assembly.py` anchors each gesture on a
 detected impact and fills in approach/build/tension/release from whichever
 primitives fall in the preceding window; a phase with no supporting primitive
-is simply absent (constitution §2 — never guessed). `score` reproduces
+is simply absent (never guessed). `score` reproduces
 [`out/score.txt`](out/score.txt).
 
 ## Results
@@ -66,7 +66,7 @@ phases, no evidence, nothing auditable beyond "loudness went up here". This
 is an honest, humbling result for an eight-detector rule engine: on pure
 impact-instant recall, a peak-picker is competitive or better. What the
 gesture pipeline delivers that the peak-picker structurally cannot is the
-**named internal phase structure** the constitution actually asks for —
+**named internal phase structure** docs/product-definition.md actually asks for —
 `12 gestures / 35 primitives` on `_test_song` alone, each with per-primitive
 evidence strings auditable against the audio, not just a recall number.
 

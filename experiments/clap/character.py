@@ -9,7 +9,7 @@ worked example, and the thing this module is built to find, is `hint-006` of
     lighting: "soft motion of moving heads. parcans slow violet waves"
 
 That is not a verse/chorus fact. It is a texture fact, and it is the kind of
-fact §1.2 calls "what happens inside a part".
+fact docs/product-definition.md calls "what happens inside a part".
 
 Three sources contribute, on a shared 10 Hz grid, and each is used for what it
 is actually good at:

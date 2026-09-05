@@ -1,7 +1,7 @@
 """Write one reviewable proposal file per song, for the debugger's allin1 lanes.
 
 Output goes to `data/analysis/<song>/reference/proposals/allin1.json` —
-constitution §3.2: an experiment's output is a *proposal*, so it never lands in
+An experiment's output is a *proposal*, so it never lands in
 `artifacts/`, never joins the stable top-level contract, and never overwrites
 `reference/human/`, which stays purely hand-authored ground truth.
 

@@ -1,6 +1,6 @@
 """Write the `vocalparse` source into reference/proposals/vocal_transcription.json.
 
-Shared file (constitution §3.2 — a proposal, never a deliverable, never
+Shared file (a proposal, never a deliverable, never
 `artifacts/`). Its `sources` list is keyed by `model`; this experiment owns
 exactly the `VocalParse ...` entry and the `whisper-...` baseline entry, and
 rewrites only those, leaving any `acestep` entry from the sibling experiment

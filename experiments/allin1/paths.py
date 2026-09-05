@@ -60,7 +60,7 @@ def raw_cache_path(song: str) -> Path:
 
 
 def proposals_path(song: str) -> Path:
-    """The reviewable output — a proposal, never a deliverable (constitution §3.2)."""
+    """The reviewable output — a proposal, never a deliverable — a proposal, never a deliverable."""
     return ANALYSIS_ROOT / song / "reference" / "proposals" / "allin1.json"
 
 

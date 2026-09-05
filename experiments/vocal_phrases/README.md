@@ -3,7 +3,7 @@
 **Status: measured, PART A only, not promoted.** Nothing in `src/` reads
 anything in here. Queue entry, with the same numbers in summary form:
 [`../../docs/experiments.md`](../../docs/experiments.md)
-(constitution §3.4).
+(docs/experiments.md).
 
 ## The question
 

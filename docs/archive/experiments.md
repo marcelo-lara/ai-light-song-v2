@@ -1,12 +1,12 @@
 # Archive — concluded experiments
 
 The standing record of which experiments were run and what they scored
-(constitution §3.4). This is a deliberate, named exception to §4's "no archive
+(docs/experiments.md). This is a deliberate, named exception to the "no archive
 folder" rule. An entry lands here only after the operator has picked
 **archive** or **promote** for a concluded experiment in
 [`experiments.md`](../experiments.md); each entry below keeps
 its measured results and conclusion exactly as reported there — measured
-evidence does not go stale (constitution §4).
+evidence does not go stale (measured evidence does not go stale).
 
 ---
 
@@ -98,7 +98,7 @@ evidence: [`../../experiments/gestures/README.md`](../../experiments/gestures/RE
 
 ### Why? What for?
 
-Constitution §1.2: a drop "has an approach, a build, a tension span, an impact
+docs/product-definition.md: a drop "has an approach, a build, a tension span, an impact
 and a release, and each phase becomes a different look." The `event_*` stack
 claimed to do this and measured at chance, because it inferred gestures from
 raw features with no named structure to hang them on. This experiment builds
@@ -117,7 +117,7 @@ pre-drop gap via a `dropout_strength` spike). Assembly anchors each gesture on
 a detected impact and fills approach/build/tension/release from primitives in
 the preceding window; a phase with no supporting primitive is absent, never
 guessed. Explicitly does not name the section — a drop is derived from a named
-section pair, never detected directly (constitution §5.2).
+section pair, never detected directly (a drop is derived from a named section pair, never detected).
 
 ### Results evidence
 
@@ -151,7 +151,7 @@ Positive against the stack it replaced, negative against the cheapest
 baseline on raw recall, and the one thing it uniquely offered — named,
 evidenced, phase-structured gestures — is not captured by a recall-only
 metric at all. Promoted in v3.0 item 9 on the strength of the structural
-requirement (constitution §1.2) rather than the recall number alone. The
+requirement (docs/product-definition.md) rather than the recall number alone. The
 per-primitive precision audit remains open work for anyone extending the
 gesture detectors.
 
@@ -222,5 +222,5 @@ MFCC's 0.73.
 **Character: positive but not promoted in v3.0**, and not archived with the
 identity result — it is a genuinely different, still-open question (a new
 projected file would be needed; no file in
-`docs/reference/analysis-input-guide.md` carries texture today) and remains
+`docs/mcp-definition.md` carries texture today) and remains
 queued in `experiments.md`.

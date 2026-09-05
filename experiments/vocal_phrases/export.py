@@ -1,6 +1,6 @@
 """Write the detector's output to `reference/proposals/vocal_phrases.json`.
 
-Never `artifacts/`, never `reference/human/` (constitution §3.2/§9): this is a
+Never `artifacts/`, never `reference/human/` — a proposal, never a deliverable; this is a
 proposal, not a deliverable.
 """
 from __future__ import annotations

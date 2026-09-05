@@ -2,7 +2,7 @@
 phases (approach -> build -> tension -> impact -> release), anchored on each
 detected impact. This module explicitly does **not** name the section — it
 says "a build of this shape happens here", not "this is the drop"
-(constitution §5.2)."""
+— a drop is derived from a named section pair, never detected."""
 from __future__ import annotations
 
 import numpy as np

@@ -1,4 +1,4 @@
-"""The cheap classical baseline CLAP has to beat (constitution §3).
+"""The cheap classical baseline CLAP has to beat — docs/experiments.md.
 
 Same window grid, same pooling, same metric — the only thing that changes is
 what the window is described by. Two descriptors, both about twenty lines of

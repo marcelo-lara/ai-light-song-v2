@@ -1,6 +1,6 @@
 """Measure the proposal against the incumbent and against a cheap baseline.
 
-Constitution §3: an experiment states a question and a measurement up front and
+The experiment method (docs/experiments.md): an experiment states a question and a measurement up front and
 scores against the incumbent *and* a baseline. Here:
 
     question    Do allin1's named section boundaries land where a human marked a
@@ -102,7 +102,7 @@ def stability_table(runs: list[dict]) -> str:
     """How much does allin1 change its mind between two runs on the same audio?
 
     Written from `out/stability.json`, which `run.py stability` produces by
-    calling the model repeatedly. This is not a curiosity: constitution §6 makes
+    calling the model repeatedly. This is not a curiosity: the determinism rule makes
     byte-identical output for the same input a condition of being in `src/`, and
     a segmentation that moves between runs cannot anchor a light show.
     """

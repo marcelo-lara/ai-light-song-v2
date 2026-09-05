@@ -6,7 +6,7 @@ timeline. We take (b): it needs no extra model, and where VocalParse and Whisper
 disagree — a different language, or garbage — that disagreement is exactly the
 signal that the timing cannot be trusted.
 
-Rule (constitution §2 — no silent fallbacks):
+Rule (no silent fallbacks):
 
 - If VocalParse's lyric text and Whisper's transcript overlap enough
   (character-level similarity over the shared script), distribute VocalParse's

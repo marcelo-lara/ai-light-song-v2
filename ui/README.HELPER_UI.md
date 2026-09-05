@@ -4,7 +4,7 @@ Internal visual debugger for the analyzer's artifacts under
 `data/analysis/<Song - Artist>/artifacts/`. **Not** the production consumer UI.
 
 This is the from-scratch React + TypeScript + Vite rebuild
-(`docs/web-ui/ui-rebuild/`). The previous Preact/MUI app was kept as a reference copy as
+(deleted with its release; see `git log --diff-filter=D -- docs/`). The previous Preact/MUI app was kept as a reference copy as
 the behaviour reference until cutover (plan item 11), then deleted.
 
 ## Non-negotiable rules
@@ -34,7 +34,7 @@ the behaviour reference until cutover (plan item 11), then deleted.
   - Visual regression (Playwright): serve the frozen fixtures with
     `docker compose -f docker-compose.yml -f docker-compose.visual.yml up -d --build ui`,
     then run the suite in the pinned container per
-    `../docs/web-ui/ui-regression_guide.md` §6. The suite lives in
+    `../docs/reference/ui-regression.md` §6. The suite lives in
     `../tests/ui-visual/` (its own npm project — not part of `ui/`).
 
 ## Keyboard (plan item 10 / refinement §10)
@@ -73,7 +73,7 @@ non-modal nav — it takes initial focus on an open transition but is not trappe
 | `src/App.test.tsx` | Smoke tests for the shell (bands, four drawer entries, active Timeline, stub lanes) |
 | `src/test/setup.ts` | vitest setup — `@testing-library/jest-dom` matchers |
 | `src/vite-env.d.ts` | Vite client type reference |
-| `src/styles/nocturne.css` | Nocturne design-system tokens + component classes. Reproduced from `docs/web-ui/ui-rebuild/design/design-notes.md` §1 (the DS `styles.css` is not vendored in-repo). Treat as vendored — do not retune locally. |
+| `src/styles/nocturne.css` | Nocturne design-system tokens + component classes. Reproduced from the Nocturne design-system notes (not vendored in-repo). Treat as vendored — do not retune locally. |
 | `src/styles/daw.css` | Interface-local timeline classes (`.tp` / `.zbtn` / `.caret` / `.dr-item` / range + `.tl` scrollbar) ported from the design canvas `<style>` block to tokens, plus the `--tl-*` timeline-chrome locals |
 | `src/styles/app.css` | The fixed-band app-shell layout |
 | `src/styles/phosphor/` | Phosphor regular-weight `style.css` + `Phosphor.woff2/woff/ttf`, vendored (no unpkg at runtime) |
@@ -118,4 +118,4 @@ Items 1–10 are done: shell, data layer, timeline (coords / grid / zoom / follo
 transport / waveform / canvas + sparse lanes), right panel (inspector / hint /
 review), artifact inspector, and the keyboard model + non-happy-path states +
 focus management. Parity sign-off and removal of the previous app was item 11. See
-`docs/web-ui/ui-rebuild/implementation-plan.md`.
+the UI rebuild plan, deleted with its release (`git log --diff-filter=D -- docs/`).

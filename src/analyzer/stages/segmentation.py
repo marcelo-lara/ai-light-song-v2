@@ -22,7 +22,7 @@ Merged section runs are shipped, not raw phrase edges — a boundary the cue
 author can trust is worth more than one more recalled boundary, and merging
 equal-labelled neighbours is what turns an 8-bar phrase grid into song form.
 
-Determinism (constitution §6). allin1 shells out to `demucs` itself unless
+Determinism (determinism: same input + engine version must give byte-identical artifacts). allin1 shells out to `demucs` itself unless
 handed stems, and that separation is not reproducible run to run — the
 experiment's caches disagreed on 14 of 21 songs across two unseeded runs.
 Seeded with the pipeline's own htdemucs stems (`_seed_demix` in
@@ -31,7 +31,7 @@ three consecutive runs on every
 gold song. Seeding is therefore mandatory, not an optimisation, and this stage
 never falls back to letting allin1 separate the mix itself.
 
-Honesty (constitution §2 — no silent fallbacks). Where allin1 gives a song
+Honesty (no silent fallbacks). Where allin1 gives a song
 fewer than `MIN_DISTINCT_LABELS` distinct functional labels, or one label
 covers more than `DOMINANT_LABEL_MAX_SHARE` of the track, the *name* is not
 trustworthy — allin1 is outside the training distribution it was fit on (short
@@ -72,7 +72,7 @@ SENTINEL_LABELS = ("start", "end")
 HARMONIX_LABELS = ("start", "end", "intro", "outro", "break", "bridge", "inst", "solo", "verse", "chorus")
 MUSICAL_LABELS = tuple(label for label in HARMONIX_LABELS if label not in SENTINEL_LABELS)
 
-#: A song's functional *names* are untrustworthy (constitution §2 — an honest
+#: A song's functional *names* are untrustworthy (an honest
 #: `unknown` beats a confident wrong label) when allin1 gives it fewer than
 #: this many distinct labels, or one label covers more than this share of the
 #: track. Boundaries are unaffected — only `function` and `function_confidence`
@@ -258,7 +258,7 @@ def segment_sections(paths: SongPaths, stems: dict[str, str], timing: dict) -> d
             "seeded_stems": seeded_stems,
             "seeding_note": (
                 "allin1 was seeded with the pipeline's own htdemucs stems rather than "
-                "separating the mix itself — mandatory for determinism (constitution §6)."
+                "separating the mix itself — mandatory for determinism (determinism: same input + engine version must give byte-identical artifacts)."
             ),
             "merge_strategy": "consecutive equal-labelled 8-bar phrases merged into one section run",
             "function_confidence_strategy": "1 - normalised Shannon entropy of allin1's frame-level label posterior within the section span",

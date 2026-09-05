@@ -1,6 +1,6 @@
 """Write the `acestep` source into reference/proposals/vocal_transcription.json.
 
-Shared file (constitution §3.2). Rewrites only the `ACE-Step …` entry and the
+Shared file — experiment proposals only. Rewrites only the `ACE-Step …` entry and the
 `whisper-…` baseline row; any `VocalParse` entry from the sibling experiment is
 left untouched.
 """

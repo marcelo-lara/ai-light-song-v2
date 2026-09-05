@@ -4,7 +4,7 @@
 promoted.** Nothing in `src/` reads anything in here. Queue entry, with the
 same numbers in summary form:
 [`../../docs/experiments.md`](../../docs/experiments.md)
-(constitution §3.4).
+(docs/experiments.md).
 
 ## The question
 
@@ -60,12 +60,12 @@ rate) before comparing recall — the only fair comparison.
 
 **At a matched firing budget, the incumbent's normalisation wins the
 drop-impact recall comparison outright.** This is the opposite of the entry's
-headline hypothesis and is reported as such — the constitution values a
+headline hypothesis and is reported as such — this repo values a
 documented dead end over a repeated one. The low-loudness-passage hypothesis
 this entry was actually designed around — does local normalisation help
 *specifically* where the whole-song percentile should fail — has only **2**
 qualifying impacts across the whole gold set (both tie 2/2 either way); that
-is the constitution §3 noise-floor case, not resolved by this run either way.
+is the noise-floor case, not resolved by this run either way.
 
 **What still favours local normalisation:** the un-matched, "as shipped"
 comparison against a truly naive detector — thresholded raw drums-stem RMS,

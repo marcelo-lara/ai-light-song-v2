@@ -2,7 +2,7 @@
 
 `data/analysis/<song>/reference/proposals/character.json`, rendered by the
 debugger as the **Character** lane beneath **allin1 Sections**. A proposal,
-never a deliverable (constitution §3.2).
+never a deliverable.
 
 The lane answers a question the arrangement cannot: *what is this passage like?*
 A verse and a chorus can both be a voice over pads with the drums out, and they

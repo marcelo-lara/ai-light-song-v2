@@ -283,7 +283,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         # stems are already available from ensure-stems, so
         # `analyzer.allin1_cache.get_allin1_result` triggers the one allin1
         # run here and segment-sections reads the cache it wrote. See
-        # `docs/implementation-plan-v3.0.md` item 8's resolved ordering note.
+        # the v3.0 plan's item 8 resolved ordering note (plan deleted with the
+        # release; recoverable via `git log --diff-filter=D -- docs/`).
         timing = _run_stage(paths.song_name, "phase-1", "extract-timing-grid", extract_timing_grid, paths, stems)
         fft_bands = _run_stage(paths.song_name, "phase-1", "extract-fft-bands", extract_fft_bands, paths)
         loudness = _run_stage(paths.song_name, "phase-1", "extract-mix-stem-loudness", extract_mix_stem_loudness, paths, stems)

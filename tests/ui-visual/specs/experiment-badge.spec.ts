@@ -93,7 +93,7 @@ test("item 7 — flask badge on unpromoted-experiment lane heads", async ({ page
   ).toBe(1);
 
   // 9. baselines — the eleven `.app-timeline__grid` snapshots are re-captured by
-  //    the orchestrator (`--update-snapshots`), not this spec; see guide §9.
+  //    the orchestrator (`--update-snapshots`), not this spec; open items live in docs/issues.md.
 
   expect(errors.list()).toEqual([]);
 });
