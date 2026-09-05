@@ -96,7 +96,6 @@ const TIMELINE_KEYS = [
   // item 9 sparse lanes
   "identifierHints",
   "machineEvents",
-  "symbolicPhrases",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",
   // wave-2 experiments (docs/experiments_pending.md run orders 1-3, 6)
@@ -129,7 +128,6 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   chords: "harmonicLayer",
   identifierHints: "identifierHints",
   machineEvents: "machineEvents",
-  phrases: "symbolicPhrases",
 };
 
 /** lane id → (artifact key, canvas renderer kind) for the item-5 data lanes. */
@@ -284,7 +282,6 @@ export function App(): React.JSX.Element {
       harmonicLayer: artifacts.harmonicLayer.data,
       identifierHints: artifacts.identifierHints.data,
       machineEvents: artifacts.machineEvents.data,
-      symbolicPhrases: artifacts.symbolicPhrases.data,
     }),
     [
       humanHintsFile,
@@ -301,7 +298,6 @@ export function App(): React.JSX.Element {
       artifacts.harmonicLayer.data,
       artifacts.identifierHints.data,
       artifacts.machineEvents.data,
-      artifacts.symbolicPhrases.data,
     ],
   );
 

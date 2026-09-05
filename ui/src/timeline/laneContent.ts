@@ -17,7 +17,6 @@ import type {
   MoisesLyricsFile,
   VocalTranscriptionFile,
   EventsFile,
-  SymbolicPhrasesFile,
   VocalPhrasesFile,
   ReactiveBandsFile,
   GesturesFile,
@@ -468,25 +467,6 @@ export const identifierHintsContent = (file: EventsFile | null): SparseBlock[] =
 export const machineEventsContent = (file: EventsFile | null): SparseBlock[] =>
   eventContent(file, "Machine Events", "Rule / machine event window.");
 
-export function phrasesContent(file: SymbolicPhrasesFile | null): SparseBlock[] {
-  return (file?.phrases ?? []).map((p) => ({
-    id: p.id,
-    start_s: p.start_s,
-    end_s: p.end_s,
-    label: p.group_id || p.label,
-    laneLabel: "Symbolic Phrases",
-    caption: `${formatRange(p.start_s, p.end_s)}${
-      p.melodic_contour ? ` · ${p.melodic_contour}` : ""
-    }`,
-    reference: p.id,
-    detail: p.register_label ?? "-",
-    summary: `Phrase window ${p.label}${
-      p.group_id ? ` in ${p.group_id}` : ""
-    } from the symbolic layer${p.section_name ? ` (${p.section_name})` : ""}.`,
-    raw: p.raw ?? p,
-  }));
-}
-
 /**
  * Vocal phrase / instrumental gap / sustained-note blocks from
  * `experiments/vocal_phrases` (Part A — no model, local-auto-gain hysteresis
@@ -610,7 +590,6 @@ export interface LaneContentSources {
   vocalTranscription?: VocalTranscriptionFile | null;
   identifierHints?: EventsFile | null;
   machineEvents?: EventsFile | null;
-  symbolicPhrases?: SymbolicPhrasesFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
   reactiveBands?: ReactiveBandsFile | null;
   gestures?: GesturesFile | null;
@@ -634,7 +613,6 @@ export const SPARSE_LANE_IDS = [
   "chords",
   "identifierHints",
   "machineEvents",
-  "phrases",
 ] as const;
 
 export type SparseLaneId = (typeof SPARSE_LANE_IDS)[number];
@@ -674,8 +652,6 @@ export function buildLaneBlocks(
       return identifierHintsContent(s.identifierHints ?? null);
     case "machineEvents":
       return machineEventsContent(s.machineEvents ?? null);
-    case "phrases":
-      return phrasesContent(s.symbolicPhrases ?? null);
     default:
       return [];
   }

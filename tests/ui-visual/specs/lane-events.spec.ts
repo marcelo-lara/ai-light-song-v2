@@ -22,7 +22,6 @@ const BLOCK_LANES = [
   "chords",
   "identifierHints",
   "machineEvents",
-  "phrases",
 ] as const;
 
 const NON_BLOCK_LANES = [

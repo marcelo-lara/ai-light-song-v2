@@ -4,7 +4,6 @@ import humanHints from "../data/__fixtures__/human_hints.json";
 import harmonic from "../data/__fixtures__/layer_a_harmonic.json";
 import identifiersFix from "../data/__fixtures__/energy_summary_hints.json";
 import machineFix from "../data/__fixtures__/events_machine.json";
-import symbolicFix from "../data/__fixtures__/layer_b_symbolic.json";
 import dropProposalsFix from "../data/__fixtures__/drop_proposals.json";
 import allin1Fix from "../data/__fixtures__/allin1.json";
 import characterFix from "../data/__fixtures__/character.json";
@@ -17,7 +16,6 @@ import {
   parseDropProposals,
   parseIdentifierHints,
   parseMachineEvents,
-  parseSymbolicPhrases,
 } from "../data/sparseArtifacts";
 import { parseHarmonicLayer, parseHumanHints } from "../data/parsers";
 
@@ -31,7 +29,6 @@ import {
   humanHintsContent,
   identifierHintsContent,
   machineEventsContent,
-  phrasesContent,
   sectionsContent,
 } from "./laneContent";
 import { romanNumeral } from "./romanNumeral";
@@ -102,21 +99,10 @@ describe("identifier / machine event content", () => {
   });
 });
 
-
-describe("phrasesContent", () => {
-  it("labels phrase windows by group id", () => {
-    const blocks = phrasesContent(parseSymbolicPhrases(symbolicFix));
-    expect(blocks.length).toBe(6);
-    expect(blocks[0]!.label).toContain("phrase_group");
-    expect(blocks[0]!.laneLabel).toBe("Symbolic Phrases");
-  });
-});
-
 describe("null inputs", () => {
   it("every adapter tolerates a missing artifact", () => {
     expect(humanHintsContent(null)).toEqual([]);
     expect(chordsContent(null)).toEqual([]);
-    expect(phrasesContent(null)).toEqual([]);
   });
 });
 

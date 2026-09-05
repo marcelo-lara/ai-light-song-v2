@@ -27,7 +27,6 @@ from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.loudness import extract_mix_stem_loudness
 from analyzer.stages.sections import segment_sections
-from analyzer.stages.symbolic import extract_symbolic_features
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import extract_timing_grid
 from analyzer.stages.ui_data import build_ui_data
@@ -52,7 +51,6 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "extract-mix-stem-loudness": "1.4",
     "extract-hpcp-and-chords": "2.1-2.2",
     "validate-chords": "2.2",
-    "extract-symbolic-features": "2.4-4.3",
     "extract-drum-events": "2.5",
     "extract-energy-features": "2.6",
     "segment-sections": "3.1",
@@ -166,12 +164,6 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         energy_features = _required_artifact_payload(paths, stage_name, "energy_summary", "features.json")
         _run_stage(paths.song_name, "phase-1", stage_name, segment_sections, paths, timing, harmonic, energy_features)
         return 0
-    if stage_name == "extract-symbolic-features":
-        stems = _existing_stems(paths, stage_name)
-        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, extract_symbolic_features, paths, stems, timing, sections)
-        return 0
     if stage_name == "extract-drum-events":
         stems = _existing_stems(paths, stage_name)
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
@@ -179,9 +171,8 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         _run_stage(paths.song_name, "phase-1", stage_name, extract_drum_events, paths, stems, timing, sections)
         return 0
     if stage_name == "generate-section-hints":
-        symbolic = _required_artifact_payload(paths, stage_name, "layer_b_symbolic.json")
         sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, generate_section_hints, paths, symbolic, sections)
+        _run_stage(paths.song_name, "phase-1", stage_name, generate_section_hints, paths, sections)
         return 0
     if stage_name == "build-ui-data":
         _run_stage(paths.song_name, "phase-1", stage_name, build_ui_data, paths)
@@ -195,7 +186,11 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
     if stage_name == "build-event-feature-layer":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
         harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
-        symbolic = _required_artifact_payload(paths, stage_name, "layer_b_symbolic.json")
+        # The symbolic layer was deleted in v3.0 item 6; this event_* stack is
+        # superseded by the gestures stage (item 9) and is not otherwise
+        # touched here, so it is fed an empty symbolic layer rather than
+        # rewired.
+        symbolic: dict = {}
         energy_features = _required_artifact_payload(paths, stage_name, "energy_summary", "features.json")
         energy_layer = _required_artifact_payload(paths, stage_name, "layer_c_energy.json")
         sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
@@ -230,7 +225,8 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         event_features = _required_artifact_payload(paths, stage_name, "event_inference", "features.json")
         rule_candidates = _required_artifact_payload(paths, stage_name, "event_inference", "rule_candidates.json")
         event_identifiers = _required_artifact_payload(paths, stage_name, "energy_summary", "hints.json")
-        symbolic = _required_artifact_payload(paths, stage_name, "layer_b_symbolic.json")
+        # See the note above build-event-feature-layer: symbolic is gone.
+        symbolic = {}
         sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
         _run_stage(
             paths.song_name,
@@ -390,7 +386,12 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         )
         energy_features = _run_stage(paths.song_name, "phase-1", "extract-energy-features", extract_energy_features, paths, timing)
         sections = _run_stage(paths.song_name, "phase-1", "segment-sections", segment_sections, paths, timing, harmonic, energy_features)
-        symbolic = _run_stage(paths.song_name, "phase-1", "extract-symbolic-features", extract_symbolic_features, paths, stems, timing, sections)
+        # The symbolic note-transcription layer was deleted in v3.0 item 6.
+        # build-event-feature-layer and generate-machine-events still accept a
+        # symbolic layer positionally; that event_* stack is superseded by the
+        # gestures stage (item 9) and is not otherwise touched here, so it is
+        # fed an empty one rather than rewired.
+        symbolic: dict = {}
         drum_events = _run_stage(paths.song_name, "phase-1", "extract-drum-events", extract_drum_events, paths, stems, timing, sections)
         genre_result = _run_stage(paths.song_name, "phase-1", "classify-genre", classify_genre, paths)
         energy = _run_stage(paths.song_name, "phase-1", "derive-energy-layer", derive_energy_layer, paths, timing, energy_features, sections)
@@ -442,7 +443,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             genre_result,
             read_json(paths.timeline_output_path) if paths.timeline_output_path.exists() else {},
         )
-        hints = _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, symbolic, sections)
+        hints = _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, sections)
         ui_outputs = _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
@@ -458,11 +459,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 "genre": str(paths.artifact("genre.json")),
                 "hpcp": str(paths.artifact("essentia", "hpcp.json")),
                 "harmonic_layer": str(paths.artifact("layer_a_harmonic.json")),
-                "symbolic_layer": str(paths.artifact("layer_b_symbolic.json")),
                 "drum_events": str(paths.artifact("symbolic_transcription", "drum_events.json")),
                 "drum_midi": str(paths.artifact("symbolic_transcription", "omnizart", "drums.mid")),
-                "symbolic_hints": hints["symbolic_hints"],
-                "symbolic_validation": str(paths.artifact("symbolic_transcription", "validation.json")),
                 "energy_features": str(paths.artifact("energy_summary", "features.json")),
                 "energy_layer": str(paths.artifact("layer_c_energy.json")),
                 "energy_identifiers": str(paths.artifact("energy_summary", "hints.json")),

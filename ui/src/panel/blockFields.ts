@@ -46,7 +46,6 @@ export const LANE_LABELS: Record<string, string> = {
   chords: "Chord Regions",
   identifierHints: "Identifier Hints",
   machineEvents: "Machine Events",
-  phrases: "Symbolic Phrases",
   drums: "Drum Density",
   energy: "Energy Profile",
   validation: "Regression Overlay",
@@ -220,11 +219,6 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
       if (roman) out.push({ label: "Roman", value: roman });
       const name = firstStr(r.name, r.label);
       if (name) out.push({ label: "Chord", value: name });
-      break;
-    }
-    case "phrases": {
-      const grp = firstStr(r.group_id, r.id);
-      if (grp) out.push({ label: "Group", value: grp });
       break;
     }
     case "drums": {

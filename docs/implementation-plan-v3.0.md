@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 5 |
+| Done | 6 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -284,36 +284,36 @@ Moises chord reference: `docker compose run --rm app ./analyze --song
 
 ### 6. Delete symbolic note transcription
 
-- [ ] **First**, move `_nearest_beat_alignment` and `_section_for_time` from
+- [x] **First**, move `_nearest_beat_alignment` and `_section_for_time` from
       `src/analyzer/stages/symbolic/utils.py` into
       `src/analyzer/stages/drums.py` (or `validation/utils.py` where a validator
       also uses them), so `drums.py` no longer imports from `symbolic/`.
-- [ ] **Keep `src/analyzer/stages/_omnizart_runtime.py`.** `drums.py` needs
+- [x] **Keep `src/analyzer/stages/_omnizart_runtime.py`.** `drums.py` needs
       `resolve_omnizart_drum_model_path`. The verdict table lists it for removal;
       that is a table error, recorded in refinement §2.
-- [ ] Delete `src/analyzer/stages/symbolic/`,
+- [x] Delete `src/analyzer/stages/symbolic/`,
       `src/analyzer/stages/_basic_pitch_subprocess.py` and
       `src/analyzer/stages/_basic_pitch_runtime.py`.
-- [ ] Remove the `extract-symbolic-features` stage and every `symbolic` argument
+- [x] Remove the `extract-symbolic-features` stage and every `symbolic` argument
       threaded through `run_phase_1`. Remove the `symbolic_layer`,
       `symbolic_hints` and `symbolic_validation` rows from `info.json`.
-- [ ] `src/analyzer/stages/ui_data.py`: delete `_beat_aligned_bass_notes`,
+- [x] `src/analyzer/stages/ui_data.py`: delete `_beat_aligned_bass_notes`,
       `_pitch_to_note_name`, `NOTE_NAMES` and the `bass` key from each
       `beats.json` row. `chord` stays (it comes from `layer_a_harmonic.json`).
-- [ ] `src/analyzer/stages/hints.py`: drop its `symbolic` parameter and every
+- [x] `src/analyzer/stages/hints.py`: drop its `symbolic` parameter and every
       hint category that reads the symbolic layer — `motif_recall` above all.
       This is a partial cut; item 11 rebuilds the module.
-- [ ] Remove `basic-pitch` from `requirements.txt` and any basic-pitch-only
+- [x] Remove `basic-pitch` from `requirements.txt` and any basic-pitch-only
       install lines from `Dockerfile`. Leave omnizart and its drum checkpoint.
-- [ ] Delete `tests/` files whose subject is the symbolic layer; keep
+- [x] Delete `tests/` files whose subject is the symbolic layer; keep
       `tests/test_drums_transcription.py` and fix its imports.
-- [ ] Remove the **Symbolic Phrases** lane (see *Removing a debugger lane*).
-- [ ] `docs/data_folder_reference.md`: delete `layer_b_symbolic.json`,
+- [x] Remove the **Symbolic Phrases** lane (see *Removing a debugger lane*).
+- [x] `docs/data_folder_reference.md`: delete `layer_b_symbolic.json`,
       `symbolic_transcription/validation.json`,
       `symbolic_transcription/hints.json` and the whole
       `symbolic_transcription/basic_pitch/` block (8 entries). Keep
       `drum_events.json` and `omnizart/drums.mid`.
-- [ ] `contract-change-v3.0.md`: add the `beats.json` row — the `bass` field is
+- [x] `contract-change-v3.0.md`: add the `beats.json` row — the `bass` field is
       removed; `time`, `type`, `bar`, `beat` and `chord` are unchanged.
 
 **Tests:** `docker compose run --rm test`. A `_test_song` run completes, writes

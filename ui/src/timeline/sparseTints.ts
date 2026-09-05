@@ -2,8 +2,8 @@
 // `sparseLaneStyles` table).
 //
 // The hue assignments are carried over from the previous app — hints amber, sections
-// teal, chords cyan, identifiers blue, machine red, ml violet,
-// phrases deep-violet — but instead of hand-written rgba
+// teal, chords cyan, identifiers blue, machine red, ml violet —
+// but instead of hand-written rgba
 // quads the values are now derived from one documented base hue per lane
 // (`BASE_HUE`) plus a fixed alpha ramp (`FILL_A` / `STROKE_A`). Canvas needs
 // concrete colour strings, so these resolve to `hsl()` / `hsla()` here rather
@@ -75,7 +75,6 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   chords: [193, 82, 44], // cyan    (the previous app rgba(14,116,144))
   identifierHints: [201, 96, 33], // blue    (the previous app rgba(3,105,161))
   machineEvents: [0, 74, 42], // red     (the previous app rgba(185,28,28))
-  phrases: [265, 68, 43], // deep violet (the previous app rgba(76,29,149))
 };
 
 /** fixed alpha ramp shared by every lane */

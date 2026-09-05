@@ -20,7 +20,7 @@ scoped those reads hard, so the surface is now small and specific:
 | `get_analysis_detail(song, artifact, start_ms, end_ms)` | section pass, sub-section moments | **only** `artifacts/essentia/rms_loudness.json` and `artifacts/symbolic_transcription/drum_events.json` |
 
 **Everything else under `artifacts/` is invisible to cue authoring.** The
-layer files (`layer_a_harmonic`, `layer_b_symbolic`, `layer_c_energy`), the
+layer files (`layer_a_harmonic`, `layer_c_energy`), the
 `event_inference/` internals, and the `validation/`
 reports are not on the MCP surface. They can still be worth generating as
 *upstream inputs to the seven top-level files*, but polishing their prose or

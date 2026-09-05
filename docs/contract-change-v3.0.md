@@ -52,3 +52,56 @@ substituting Moises inference for the canonical grid."
 **Nothing else in this file's shape changed.** `beats.json` and
 `layer_a_harmonic.json` keep their existing field shapes; only which engine
 produces them, always, changed.
+
+---
+
+## 6. Delete symbolic note transcription
+
+`data/analysis/<Song - Artist>/beats.json` rows lose their `bass` field:
+
+**Before:**
+
+```json
+{ "time": 12.34, "beat": 1, "bar": 4, "bass": "D#", "chord": "D#m", "type": "downbeat" }
+```
+
+**After:**
+
+```json
+{ "time": 12.34, "beat": 1, "bar": 4, "chord": "D#m", "type": "downbeat" }
+```
+
+`time`, `type`, `bar`, `beat` and `chord` are unchanged; `chord` still comes
+from `layer_a_harmonic.json`, not from the deleted symbolic layer.
+
+`bass` was the beat-aligned note name nearest each beat, derived from Basic
+Pitch's transcription of the bass stem
+(`artifacts/symbolic_transcription/basic_pitch/bass.json`). Its only route to
+the authoring model was `beats.json` itself — the field is not in the
+projected `beats.json` contract in
+[`docs/reference/analysis-input-guide.md`](reference/analysis-input-guide.md),
+and per-beat symbolic features were never consumed downstream — so this is a
+contract narrowing, not a replacement.
+
+The symbolic note-transcription layer this fed from is gone entirely:
+`artifacts/layer_b_symbolic.json`, `artifacts/symbolic_transcription/basic_pitch/`
+(8 files), `artifacts/symbolic_transcription/validation.json` and
+`artifacts/symbolic_transcription/hints.json` are no longer produced, and the
+`symbolic_layer`, `symbolic_hints` and `symbolic_validation` rows are gone from
+`info.json`'s `artifacts` block. `artifacts/symbolic_transcription/drum_events.json`
+and `artifacts/symbolic_transcription/omnizart/drums.mid` are unaffected —
+`drums.py` never depended on the symbolic layer and keeps its own Omnizart
+transcription path.
+
+`hints.json`'s inference categories narrow to `transition_role` only;
+`section_shape`, `phrase_boundaries`, `motif_recall` and `variation_rule` (all
+derived from the deleted symbolic layer) are gone. `transition_role` depended
+only on section labels, not the symbolic layer, so it is unaffected. This is a
+partial cut — plan item 11 rebuilds `hints.json` around the human hints — so no
+new hint categories were added here.
+
+**Why:** refinement §3, "Item 5 — delete symbolic note transcription." The
+1,341-line `symbolic/` module's only route to the authoring model was the
+templated `motif_recall` hint sentence (244 of 877 generated hints, all
+identical), which item 11 deletes anyway; projected drum events come from
+`drums.py`, which keeps its own Omnizart path and is unaffected.

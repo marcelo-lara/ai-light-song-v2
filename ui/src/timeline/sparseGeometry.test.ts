@@ -53,7 +53,7 @@ describe("packRows — compact lane", () => {
 
   it("falls back to a single row when there is 0/1 block", () => {
     const packed = packRows([{ x: 0, width: 10 }], {
-      laneId: "phrases",
+      laneId: "machineEvents",
       laneHeight: 84,
     });
     expect(packed[0]!.height).toBe(72);
@@ -63,7 +63,6 @@ describe("packRows — compact lane", () => {
     expect([...COMPACT_LANE_IDS].sort()).toEqual([
       "identifierHints",
       "machineEvents",
-      "phrases",
     ]);
   });
 });

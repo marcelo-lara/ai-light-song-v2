@@ -23,37 +23,6 @@ class SectionHintsTests(unittest.TestCase):
                 analysis_root=root / "analysis",
             )
 
-            symbolic = {
-                "section_summaries": [
-                    {
-                        "section_id": "section-001",
-                        "texture": "layered",
-                        "melodic_contour": "falling",
-                        "density_mean": 6.0,
-                        "sustain_ratio": 0.03,
-                        "repetition_score": 0.05,
-                    },
-                    {
-                        "section_id": "section-002",
-                        "texture": "layered",
-                        "melodic_contour": "rising",
-                        "density_mean": 11.0,
-                        "sustain_ratio": 0.05,
-                        "repetition_score": 0.3,
-                    },
-                ],
-                "phrase_windows": [
-                    {
-                        "id": "phrase_group_A_1",
-                        "phrase_group_id": "phrase_group_A",
-                        "section_id": "section-002",
-                    }
-                ],
-                "motif_summary": {
-                    "repeated_phrase_groups": [],
-                    "motif_groups": [],
-                },
-            }
             sections_payload = {
                 "sections": [
                     {
@@ -101,13 +70,12 @@ class SectionHintsTests(unittest.TestCase):
                 },
             )
 
-            generate_section_hints(paths, symbolic, sections_payload)
+            generate_section_hints(paths, sections_payload)
 
             merged_payload = json.loads(paths.hints_output_path.read_text(encoding="utf-8"))
             section_two = next(section for section in merged_payload["sections"] if section["section_id"] == "section-002")
             categories = [hint["category"] for hint in section_two["hints"] if hint["source"] == "inference"]
             self.assertIn("transition_role", categories)
-            self.assertIn("section_shape", categories)
             self.assertEqual(section_two["hints"][0]["source"], "user")
             transition_hint = next(
                 hint for hint in section_two["hints"] if hint["source"] == "inference" and hint["category"] == "transition_role"

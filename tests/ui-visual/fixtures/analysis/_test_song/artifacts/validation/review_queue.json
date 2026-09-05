@@ -11,18 +11,26 @@
   "open_question_count": 1,
   "questions": [
     {
-      "field": "sections.section-002.form_role",
+      "field": "form_family",
       "candidates": [
         {
-          "value": "unknown",
-          "score": 0.7358
+          "value": "dance_form",
+          "score": 0.0
+        },
+        {
+          "value": "song_form",
+          "score": 0.0
+        },
+        {
+          "value": "hybrid",
+          "score": 0.0
         }
       ],
       "evidence_timestamps": [
-        14.82
+        0.06
       ],
-      "reason_low_confidence": "best-vs-second-best role margin 0.07 below 0.12",
-      "leverage": 0.3302
+      "reason_low_confidence": "inferred confidence 0.15 < 0.55; audio evidence for dance vs song form is close",
+      "leverage": 1.35
     }
   ]
 }

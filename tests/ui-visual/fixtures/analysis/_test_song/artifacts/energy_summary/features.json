@@ -40045,1003 +40045,923 @@
   "beat_features": [
     {
       "beat": 1,
-      "time": 0.06,
-      "loudness_avg": 0.298135,
-      "centroid_avg": 2525.654997,
-      "flux_avg": 0.391118,
-      "onset_density": 0.297672
+      "time": 0.510839,
+      "loudness_avg": 0.26541,
+      "centroid_avg": 2202.109796,
+      "flux_avg": 0.376941,
+      "onset_density": 0.264925
     },
     {
       "beat": 2,
-      "time": 0.52,
-      "loudness_avg": 0.257586,
-      "centroid_avg": 2253.20627,
-      "flux_avg": 0.382523,
-      "onset_density": 0.257097
+      "time": 1.044898,
+      "loudness_avg": 0.270619,
+      "centroid_avg": 1850.207256,
+      "flux_avg": 0.403381,
+      "onset_density": 0.270138
     },
     {
       "beat": 3,
-      "time": 0.98,
-      "loudness_avg": 0.287129,
-      "centroid_avg": 1849.854313,
-      "flux_avg": 0.40641,
-      "onset_density": 0.286659
+      "time": 1.567347,
+      "loudness_avg": 0.266915,
+      "centroid_avg": 1507.417932,
+      "flux_avg": 0.357779,
+      "onset_density": 0.266432
     },
     {
       "beat": 4,
-      "time": 1.44,
-      "loudness_avg": 0.256875,
-      "centroid_avg": 1625.070548,
-      "flux_avg": 0.363502,
-      "onset_density": 0.256385
+      "time": 2.089796,
+      "loudness_avg": 0.242415,
+      "centroid_avg": 1299.791869,
+      "flux_avg": 0.387307,
+      "onset_density": 0.241915
     },
     {
       "beat": 5,
-      "time": 1.9,
-      "loudness_avg": 0.259227,
-      "centroid_avg": 1365.035965,
-      "flux_avg": 0.37174,
-      "onset_density": 0.258739
+      "time": 2.612245,
+      "loudness_avg": 0.203778,
+      "centroid_avg": 1125.447558,
+      "flux_avg": 0.34165,
+      "onset_density": 0.203253
     },
     {
       "beat": 6,
-      "time": 2.36,
-      "loudness_avg": 0.226535,
-      "centroid_avg": 1208.046827,
-      "flux_avg": 0.367628,
-      "onset_density": 0.226025
+      "time": 3.227574,
+      "loudness_avg": 0.194925,
+      "centroid_avg": 972.501218,
+      "flux_avg": 0.350345,
+      "onset_density": 0.19457
     },
     {
       "beat": 7,
-      "time": 2.82,
-      "loudness_avg": 0.194874,
-      "centroid_avg": 1104.13404,
-      "flux_avg": 0.341061,
-      "onset_density": 0.194343
+      "time": 3.854512,
+      "loudness_avg": 0.182034,
+      "centroid_avg": 860.412033,
+      "flux_avg": 0.346962,
+      "onset_density": 0.182166
     },
     {
       "beat": 8,
-      "time": 3.28,
-      "loudness_avg": 0.195511,
-      "centroid_avg": 973.942109,
-      "flux_avg": 0.346173,
-      "onset_density": 0.195217
+      "time": 4.481451,
+      "loudness_avg": 0.169749,
+      "centroid_avg": 801.617553,
+      "flux_avg": 0.352828,
+      "onset_density": 0.169768
     },
     {
       "beat": 9,
-      "time": 3.74,
-      "loudness_avg": 0.18959,
-      "centroid_avg": 885.409688,
-      "flux_avg": 0.334931,
-      "onset_density": 0.189055
+      "time": 5.12,
+      "loudness_avg": 0.16948,
+      "centroid_avg": 757.466203,
+      "flux_avg": 0.358218,
+      "onset_density": 0.170593
     },
     {
       "beat": 10,
-      "time": 4.2,
-      "loudness_avg": 0.181418,
-      "centroid_avg": 822.021898,
-      "flux_avg": 0.368961,
-      "onset_density": 0.182424
+      "time": 5.758549,
+      "loudness_avg": 0.19465,
+      "centroid_avg": 727.68541,
+      "flux_avg": 0.345071,
+      "onset_density": 0.196526
     },
     {
       "beat": 11,
-      "time": 4.66,
-      "loudness_avg": 0.160405,
-      "centroid_avg": 810.018477,
-      "flux_avg": 0.346711,
-      "onset_density": 0.159996
+      "time": 6.385488,
+      "loudness_avg": 0.190128,
+      "centroid_avg": 732.131423,
+      "flux_avg": 0.381092,
+      "onset_density": 0.190861
     },
     {
       "beat": 12,
-      "time": 5.12,
-      "loudness_avg": 0.168284,
-      "centroid_avg": 754.848046,
-      "flux_avg": 0.354309,
-      "onset_density": 0.169476
+      "time": 6.989206,
+      "loudness_avg": 0.274082,
+      "centroid_avg": 2569.610047,
+      "flux_avg": 0.330251,
+      "onset_density": 0.273933
     },
     {
       "beat": 13,
-      "time": 5.58,
-      "loudness_avg": 0.178718,
-      "centroid_avg": 742.809947,
-      "flux_avg": 0.345673,
-      "onset_density": 0.1803
+      "time": 7.604535,
+      "loudness_avg": 0.263355,
+      "centroid_avg": 1371.395349,
+      "flux_avg": 0.40419,
+      "onset_density": 0.263142
     },
     {
       "beat": 14,
-      "time": 6.04,
-      "loudness_avg": 0.202575,
-      "centroid_avg": 724.28478,
-      "flux_avg": 0.375974,
-      "onset_density": 0.204038
+      "time": 8.219864,
+      "loudness_avg": 0.287614,
+      "centroid_avg": 1032.448409,
+      "flux_avg": 0.364817,
+      "onset_density": 0.287144
     },
     {
       "beat": 15,
-      "time": 6.5,
-      "loudness_avg": 0.188146,
-      "centroid_avg": 734.851871,
-      "flux_avg": 0.365869,
-      "onset_density": 0.18899
+      "time": 8.846803,
+      "loudness_avg": 0.276898,
+      "centroid_avg": 844.889454,
+      "flux_avg": 0.375772,
+      "onset_density": 0.276421
     },
     {
       "beat": 16,
-      "time": 6.96,
-      "loudness_avg": 0.240795,
-      "centroid_avg": 2510.562798,
-      "flux_avg": 0.328418,
-      "onset_density": 0.24072
+      "time": 9.462132,
+      "loudness_avg": 0.245251,
+      "centroid_avg": 832.15096,
+      "flux_avg": 0.417744,
+      "onset_density": 0.244753
     },
     {
       "beat": 17,
-      "time": 7.44,
-      "loudness_avg": 0.302745,
-      "centroid_avg": 1840.91497,
-      "flux_avg": 0.391587,
-      "onset_density": 0.302285
+      "time": 10.07746,
+      "loudness_avg": 0.215129,
+      "centroid_avg": 921.511233,
+      "flux_avg": 0.328866,
+      "onset_density": 0.214611
     },
     {
       "beat": 18,
-      "time": 7.9,
-      "loudness_avg": 0.262849,
-      "centroid_avg": 1211.894853,
-      "flux_avg": 0.400124,
-      "onset_density": 0.262725
+      "time": 10.681179,
+      "loudness_avg": 0.204614,
+      "centroid_avg": 1079.797706,
+      "flux_avg": 0.357242,
+      "onset_density": 0.204323
     },
     {
       "beat": 19,
-      "time": 8.36,
-      "loudness_avg": 0.291228,
-      "centroid_avg": 1001.19042,
-      "flux_avg": 0.353473,
-      "onset_density": 0.290761
+      "time": 11.284898,
+      "loudness_avg": 0.184064,
+      "centroid_avg": 1284.422876,
+      "flux_avg": 0.328,
+      "onset_density": 0.183601
     },
     {
       "beat": 20,
-      "time": 8.82,
-      "loudness_avg": 0.27824,
-      "centroid_avg": 872.985239,
-      "flux_avg": 0.351182,
-      "onset_density": 0.277764
+      "time": 11.877007,
+      "loudness_avg": 0.17379,
+      "centroid_avg": 1532.612427,
+      "flux_avg": 0.284268,
+      "onset_density": 0.173245
     },
     {
       "beat": 21,
-      "time": 9.28,
-      "loudness_avg": 0.262604,
-      "centroid_avg": 801.356998,
-      "flux_avg": 0.426541,
-      "onset_density": 0.262118
+      "time": 12.353016,
+      "loudness_avg": 0.226975,
+      "centroid_avg": 1710.747166,
+      "flux_avg": 0.274269,
+      "onset_density": 0.226465
     },
     {
       "beat": 22,
-      "time": 9.72,
-      "loudness_avg": 0.236088,
-      "centroid_avg": 849.77989,
-      "flux_avg": 0.394556,
-      "onset_density": 0.235584
+      "time": 12.840634,
+      "loudness_avg": 0.23992,
+      "centroid_avg": 2026.90074,
+      "flux_avg": 0.262235,
+      "onset_density": 0.239419
     },
     {
       "beat": 23,
-      "time": 10.2,
-      "loudness_avg": 0.211064,
-      "centroid_avg": 940.432863,
-      "flux_avg": 0.323399,
-      "onset_density": 0.210544
+      "time": 13.328254,
+      "loudness_avg": 0.168792,
+      "centroid_avg": 2743.363841,
+      "flux_avg": 0.200459,
+      "onset_density": 0.168244
     },
     {
       "beat": 24,
-      "time": 10.66,
-      "loudness_avg": 0.203511,
-      "centroid_avg": 1057.359396,
-      "flux_avg": 0.344201,
-      "onset_density": 0.202986
+      "time": 13.815873,
+      "loudness_avg": 0.181004,
+      "centroid_avg": 3327.704184,
+      "flux_avg": 0.200839,
+      "onset_density": 0.180464
     },
     {
       "beat": 25,
-      "time": 11.12,
-      "loudness_avg": 0.187786,
-      "centroid_avg": 1208.98871,
-      "flux_avg": 0.347053,
-      "onset_density": 0.187554
+      "time": 14.315102,
+      "loudness_avg": 0.236506,
+      "centroid_avg": 4295.32407,
+      "flux_avg": 0.19494,
+      "onset_density": 0.236003
     },
     {
       "beat": 26,
-      "time": 11.58,
-      "loudness_avg": 0.188189,
-      "centroid_avg": 1362.131185,
-      "flux_avg": 0.321126,
-      "onset_density": 0.187749
+      "time": 14.802721,
+      "loudness_avg": 0.359433,
+      "centroid_avg": 3466.363521,
+      "flux_avg": 0.265962,
+      "onset_density": 0.35901
     },
     {
       "beat": 27,
-      "time": 12.04,
-      "loudness_avg": 0.171241,
-      "centroid_avg": 1632.486065,
-      "flux_avg": 0.282756,
-      "onset_density": 0.170694
+      "time": 15.278729,
+      "loudness_avg": 0.238586,
+      "centroid_avg": 3208.157119,
+      "flux_avg": 0.26979,
+      "onset_density": 0.238084
     },
     {
       "beat": 28,
-      "time": 12.5,
-      "loudness_avg": 0.258631,
-      "centroid_avg": 1748.591037,
-      "flux_avg": 0.263443,
-      "onset_density": 0.258142
+      "time": 15.731519,
+      "loudness_avg": 0.279046,
+      "centroid_avg": 3982.564127,
+      "flux_avg": 0.258191,
+      "onset_density": 0.278571
     },
     {
       "beat": 29,
-      "time": 12.96,
-      "loudness_avg": 0.214456,
-      "centroid_avg": 2147.854036,
-      "flux_avg": 0.259317,
-      "onset_density": 0.213938
+      "time": 16.195917,
+      "loudness_avg": 0.268939,
+      "centroid_avg": 4003.908196,
+      "flux_avg": 0.262167,
+      "onset_density": 0.268457
     },
     {
       "beat": 30,
-      "time": 13.42,
-      "loudness_avg": 0.169921,
-      "centroid_avg": 2887.211465,
-      "flux_avg": 0.188283,
-      "onset_density": 0.169373
+      "time": 16.648706,
+      "loudness_avg": 0.337193,
+      "centroid_avg": 2663.228062,
+      "flux_avg": 0.276165,
+      "onset_density": 0.336756
     },
     {
       "beat": 31,
-      "time": 13.9,
-      "loudness_avg": 0.183109,
-      "centroid_avg": 3391.166346,
-      "flux_avg": 0.205117,
-      "onset_density": 0.182571
+      "time": 17.113106,
+      "loudness_avg": 0.27011,
+      "centroid_avg": 4427.891542,
+      "flux_avg": 0.224897,
+      "onset_density": 0.269629
     },
     {
       "beat": 32,
-      "time": 14.36,
-      "loudness_avg": 0.253783,
-      "centroid_avg": 4365.128969,
-      "flux_avg": 0.199561,
-      "onset_density": 0.253291
+      "time": 17.577505,
+      "loudness_avg": 0.271103,
+      "centroid_avg": 2018.115228,
+      "flux_avg": 0.285647,
+      "onset_density": 0.270623
     },
     {
       "beat": 33,
-      "time": 14.82,
-      "loudness_avg": 0.350771,
-      "centroid_avg": 3413.320553,
-      "flux_avg": 0.266765,
-      "onset_density": 0.350342
+      "time": 18.041904,
+      "loudness_avg": 0.224318,
+      "centroid_avg": 2100.991725,
+      "flux_avg": 0.272162,
+      "onset_density": 0.223806
     },
     {
       "beat": 34,
-      "time": 15.28,
-      "loudness_avg": 0.238348,
-      "centroid_avg": 3199.121834,
-      "flux_avg": 0.269621,
-      "onset_density": 0.237846
+      "time": 18.506304,
+      "loudness_avg": 0.168318,
+      "centroid_avg": 1635.308981,
+      "flux_avg": 0.285274,
+      "onset_density": 0.16817
     },
     {
       "beat": 35,
-      "time": 15.74,
-      "loudness_avg": 0.280156,
-      "centroid_avg": 4003.561561,
-      "flux_avg": 0.258012,
-      "onset_density": 0.279682
+      "time": 18.970703,
+      "loudness_avg": 0.292622,
+      "centroid_avg": 1980.059238,
+      "flux_avg": 0.32754,
+      "onset_density": 0.292284
     },
     {
       "beat": 36,
-      "time": 16.2,
-      "loudness_avg": 0.270571,
-      "centroid_avg": 3965.058049,
-      "flux_avg": 0.259734,
-      "onset_density": 0.27009
+      "time": 19.435102,
+      "loudness_avg": 0.265568,
+      "centroid_avg": 2748.573016,
+      "flux_avg": 0.309691,
+      "onset_density": 0.265084
     },
     {
       "beat": 37,
-      "time": 16.68,
-      "loudness_avg": 0.329776,
-      "centroid_avg": 2768.560592,
-      "flux_avg": 0.277934,
-      "onset_density": 0.329334
+      "time": 19.8995,
+      "loudness_avg": 0.267052,
+      "centroid_avg": 2817.771376,
+      "flux_avg": 0.30272,
+      "onset_density": 0.266568
     },
     {
       "beat": 38,
-      "time": 17.14,
-      "loudness_avg": 0.276386,
-      "centroid_avg": 4274.479515,
-      "flux_avg": 0.22559,
-      "onset_density": 0.275908
+      "time": 20.340679,
+      "loudness_avg": 0.294076,
+      "centroid_avg": 1941.060994,
+      "flux_avg": 0.298522,
+      "onset_density": 0.29361
     },
     {
       "beat": 39,
-      "time": 17.6,
-      "loudness_avg": 0.269101,
-      "centroid_avg": 2009.482986,
-      "flux_avg": 0.287914,
-      "onset_density": 0.268619
+      "time": 20.805079,
+      "loudness_avg": 0.269884,
+      "centroid_avg": 4376.31664,
+      "flux_avg": 0.218274,
+      "onset_density": 0.269403
     },
     {
       "beat": 40,
-      "time": 18.06,
-      "loudness_avg": 0.220315,
-      "centroid_avg": 2117.257083,
-      "flux_avg": 0.276841,
-      "onset_density": 0.220201
+      "time": 21.269478,
+      "loudness_avg": 0.308295,
+      "centroid_avg": 3033.304977,
+      "flux_avg": 0.254259,
+      "onset_density": 0.307839
     },
     {
       "beat": 41,
-      "time": 18.52,
-      "loudness_avg": 0.167916,
-      "centroid_avg": 1637.882843,
-      "flux_avg": 0.280746,
-      "onset_density": 0.167367
+      "time": 21.733877,
+      "loudness_avg": 0.336618,
+      "centroid_avg": 2895.891199,
+      "flux_avg": 0.221633,
+      "onset_density": 0.33618
     },
     {
       "beat": 42,
-      "time": 18.98,
-      "loudness_avg": 0.296764,
-      "centroid_avg": 1976.709443,
-      "flux_avg": 0.323413,
-      "onset_density": 0.296428
+      "time": 22.198277,
+      "loudness_avg": 0.47736,
+      "centroid_avg": 2519.216056,
+      "flux_avg": 0.272996,
+      "onset_density": 0.477015
     },
     {
       "beat": 43,
-      "time": 19.44,
-      "loudness_avg": 0.262435,
-      "centroid_avg": 2827.914768,
-      "flux_avg": 0.305956,
-      "onset_density": 0.261948
+      "time": 22.639456,
+      "loudness_avg": 0.404357,
+      "centroid_avg": 2679.010428,
+      "flux_avg": 0.236086,
+      "onset_density": 0.403964
     },
     {
       "beat": 44,
-      "time": 19.9,
-      "loudness_avg": 0.269501,
-      "centroid_avg": 2791.283308,
-      "flux_avg": 0.306131,
-      "onset_density": 0.26902
+      "time": 23.103855,
+      "loudness_avg": 0.38203,
+      "centroid_avg": 2703.338074,
+      "flux_avg": 0.232589,
+      "onset_density": 0.381622
     },
     {
       "beat": 45,
-      "time": 20.36,
-      "loudness_avg": 0.298924,
-      "centroid_avg": 1864.686443,
-      "flux_avg": 0.301233,
-      "onset_density": 0.298462
+      "time": 23.568254,
+      "loudness_avg": 0.358479,
+      "centroid_avg": 3043.559438,
+      "flux_avg": 0.214331,
+      "onset_density": 0.358055
     },
     {
       "beat": 46,
-      "time": 20.82,
-      "loudness_avg": 0.26456,
-      "centroid_avg": 4494.366901,
-      "flux_avg": 0.21304,
-      "onset_density": 0.264075
+      "time": 24.032652,
+      "loudness_avg": 0.320155,
+      "centroid_avg": 3063.81388,
+      "flux_avg": 0.213702,
+      "onset_density": 0.319707
     },
     {
       "beat": 47,
-      "time": 21.28,
-      "loudness_avg": 0.307559,
-      "centroid_avg": 2996.413507,
-      "flux_avg": 0.254118,
-      "onset_density": 0.307102
+      "time": 24.497051,
+      "loudness_avg": 0.264583,
+      "centroid_avg": 3394.469984,
+      "flux_avg": 0.222248,
+      "onset_density": 0.264098
     },
     {
       "beat": 48,
-      "time": 21.74,
-      "loudness_avg": 0.341931,
-      "centroid_avg": 2927.54202,
-      "flux_avg": 0.221409,
-      "onset_density": 0.341497
+      "time": 24.961451,
+      "loudness_avg": 0.350803,
+      "centroid_avg": 3280.344013,
+      "flux_avg": 0.222769,
+      "onset_density": 0.350375
     },
     {
       "beat": 49,
-      "time": 22.2,
-      "loudness_avg": 0.474019,
-      "centroid_avg": 2543.600288,
-      "flux_avg": 0.273692,
-      "onset_density": 0.473672
+      "time": 25.42585,
+      "loudness_avg": 0.28195,
+      "centroid_avg": 4364.603512,
+      "flux_avg": 0.189195,
+      "onset_density": 0.281476
     },
     {
       "beat": 50,
-      "time": 22.66,
-      "loudness_avg": 0.401212,
-      "centroid_avg": 2695.576938,
-      "flux_avg": 0.236321,
-      "onset_density": 0.400817
+      "time": 25.878639,
+      "loudness_avg": 0.375313,
+      "centroid_avg": 3845.605256,
+      "flux_avg": 0.218081,
+      "onset_density": 0.374901
     },
     {
       "beat": 51,
-      "time": 23.12,
-      "loudness_avg": 0.380953,
-      "centroid_avg": 2742.371701,
-      "flux_avg": 0.228965,
-      "onset_density": 0.380544
+      "time": 26.331429,
+      "loudness_avg": 0.386242,
+      "centroid_avg": 4137.738091,
+      "flux_avg": 0.186316,
+      "onset_density": 0.385837
     },
     {
       "beat": 52,
-      "time": 23.6,
-      "loudness_avg": 0.361013,
-      "centroid_avg": 3037.719163,
-      "flux_avg": 0.211328,
-      "onset_density": 0.360592
+      "time": 26.795828,
+      "loudness_avg": 0.397152,
+      "centroid_avg": 4454.74482,
+      "flux_avg": 0.178728,
+      "onset_density": 0.396754
     },
     {
       "beat": 53,
-      "time": 24.06,
-      "loudness_avg": 0.314718,
-      "centroid_avg": 3059.731386,
-      "flux_avg": 0.215577,
-      "onset_density": 0.314266
+      "time": 27.260227,
+      "loudness_avg": 0.34926,
+      "centroid_avg": 4778.673352,
+      "flux_avg": 0.189408,
+      "onset_density": 0.348831
     },
     {
       "beat": 54,
-      "time": 24.52,
-      "loudness_avg": 0.268002,
-      "centroid_avg": 3365.637456,
-      "flux_avg": 0.224136,
-      "onset_density": 0.267519
+      "time": 27.724625,
+      "loudness_avg": 0.386746,
+      "centroid_avg": 5054.849289,
+      "flux_avg": 0.179174,
+      "onset_density": 0.386342
     },
     {
       "beat": 55,
-      "time": 24.98,
-      "loudness_avg": 0.348105,
-      "centroid_avg": 3299.629156,
-      "flux_avg": 0.218516,
-      "onset_density": 0.347675
+      "time": 28.189024,
+      "loudness_avg": 0.411133,
+      "centroid_avg": 5232.711979,
+      "flux_avg": 0.16806,
+      "onset_density": 0.410744
     },
     {
       "beat": 56,
-      "time": 25.44,
-      "loudness_avg": 0.282265,
-      "centroid_avg": 4377.518457,
-      "flux_avg": 0.191172,
-      "onset_density": 0.281791
+      "time": 28.630203,
+      "loudness_avg": 0.33168,
+      "centroid_avg": 4777.029932,
+      "flux_avg": 0.241092,
+      "onset_density": 0.331239
     },
     {
       "beat": 57,
-      "time": 25.9,
-      "loudness_avg": 0.37807,
-      "centroid_avg": 3863.539554,
-      "flux_avg": 0.217272,
-      "onset_density": 0.37766
+      "time": 29.094603,
+      "loudness_avg": 0.45968,
+      "centroid_avg": 3967.60535,
+      "flux_avg": 0.225536,
+      "onset_density": 0.459324
     },
     {
       "beat": 58,
-      "time": 26.36,
-      "loudness_avg": 0.384546,
-      "centroid_avg": 4174.077594,
-      "flux_avg": 0.186517,
-      "onset_density": 0.38414
+      "time": 29.559002,
+      "loudness_avg": 0.643014,
+      "centroid_avg": 3817.125671,
+      "flux_avg": 0.303479,
+      "onset_density": 0.642779
     },
     {
       "beat": 59,
-      "time": 26.82,
-      "loudness_avg": 0.400013,
-      "centroid_avg": 4444.774632,
-      "flux_avg": 0.176255,
-      "onset_density": 0.399617
+      "time": 30.023401,
+      "loudness_avg": 0.658202,
+      "centroid_avg": 3766.023913,
+      "flux_avg": 0.340199,
+      "onset_density": 0.657977
     },
     {
       "beat": 60,
-      "time": 27.28,
-      "loudness_avg": 0.346915,
-      "centroid_avg": 4766.323498,
-      "flux_avg": 0.190884,
-      "onset_density": 0.346484
+      "time": 30.487801,
+      "loudness_avg": 0.652033,
+      "centroid_avg": 3934.510849,
+      "flux_avg": 0.324531,
+      "onset_density": 0.651804
     },
     {
       "beat": 61,
-      "time": 27.74,
-      "loudness_avg": 0.388696,
-      "centroid_avg": 5061.674621,
-      "flux_avg": 0.176969,
-      "onset_density": 0.388292
+      "time": 30.952198,
+      "loudness_avg": 0.652892,
+      "centroid_avg": 3582.678803,
+      "flux_avg": 0.326431,
+      "onset_density": 0.652663
     },
     {
       "beat": 62,
-      "time": 28.2,
-      "loudness_avg": 0.414385,
-      "centroid_avg": 5157.915795,
-      "flux_avg": 0.175457,
-      "onset_density": 0.413999
+      "time": 31.416597,
+      "loudness_avg": 0.65397,
+      "centroid_avg": 3670.118051,
+      "flux_avg": 0.33659,
+      "onset_density": 0.653742
     },
     {
       "beat": 63,
-      "time": 28.66,
-      "loudness_avg": 0.326937,
-      "centroid_avg": 4861.817631,
-      "flux_avg": 0.236831,
-      "onset_density": 0.326493
+      "time": 31.880997,
+      "loudness_avg": 0.636676,
+      "centroid_avg": 3549.858062,
+      "flux_avg": 0.34418,
+      "onset_density": 0.636436
     },
     {
       "beat": 64,
-      "time": 29.12,
-      "loudness_avg": 0.47127,
-      "centroid_avg": 3856.553334,
-      "flux_avg": 0.230558,
-      "onset_density": 0.470921
+      "time": 32.333786,
+      "loudness_avg": 0.669715,
+      "centroid_avg": 3742.148394,
+      "flux_avg": 0.335417,
+      "onset_density": 0.669497
     },
     {
       "beat": 65,
-      "time": 29.58,
-      "loudness_avg": 0.64755,
-      "centroid_avg": 3809.538873,
-      "flux_avg": 0.305959,
-      "onset_density": 0.647318
+      "time": 32.786575,
+      "loudness_avg": 0.666911,
+      "centroid_avg": 3621.926203,
+      "flux_avg": 0.33036,
+      "onset_density": 0.666691
     },
     {
       "beat": 66,
-      "time": 30.04,
-      "loudness_avg": 0.658663,
-      "centroid_avg": 3756.133558,
-      "flux_avg": 0.343449,
-      "onset_density": 0.658438
+      "time": 33.250973,
+      "loudness_avg": 0.636386,
+      "centroid_avg": 3239.595483,
+      "flux_avg": 0.335016,
+      "onset_density": 0.636146
     },
     {
       "beat": 67,
-      "time": 30.5,
-      "loudness_avg": 0.65859,
-      "centroid_avg": 3904.453878,
-      "flux_avg": 0.339699,
-      "onset_density": 0.658365
+      "time": 33.715374,
+      "loudness_avg": 0.647666,
+      "centroid_avg": 3259.473773,
+      "flux_avg": 0.362977,
+      "onset_density": 0.647433
     },
     {
       "beat": 68,
-      "time": 30.98,
-      "loudness_avg": 0.652445,
-      "centroid_avg": 3580.631416,
-      "flux_avg": 0.329153,
-      "onset_density": 0.652216
+      "time": 34.179771,
+      "loudness_avg": 0.656564,
+      "centroid_avg": 3879.725264,
+      "flux_avg": 0.32853,
+      "onset_density": 0.656337
     },
     {
       "beat": 69,
-      "time": 31.44,
-      "loudness_avg": 0.649437,
-      "centroid_avg": 3683.896914,
-      "flux_avg": 0.327672,
-      "onset_density": 0.649206
+      "time": 34.644173,
+      "loudness_avg": 0.63878,
+      "centroid_avg": 3500.516089,
+      "flux_avg": 0.330412,
+      "onset_density": 0.638542
     },
     {
       "beat": 70,
-      "time": 31.9,
-      "loudness_avg": 0.640304,
-      "centroid_avg": 3530.466996,
-      "flux_avg": 0.351494,
-      "onset_density": 0.640067
+      "time": 35.10857,
+      "loudness_avg": 0.663328,
+      "centroid_avg": 3651.353327,
+      "flux_avg": 0.341613,
+      "onset_density": 0.663106
     },
     {
       "beat": 71,
-      "time": 32.36,
-      "loudness_avg": 0.663419,
-      "centroid_avg": 3763.02521,
-      "flux_avg": 0.328402,
-      "onset_density": 0.663197
+      "time": 35.572971,
+      "loudness_avg": 0.642007,
+      "centroid_avg": 3576.250655,
+      "flux_avg": 0.344544,
+      "onset_density": 0.641771
     },
     {
       "beat": 72,
-      "time": 32.82,
-      "loudness_avg": 0.667822,
-      "centroid_avg": 3614.587191,
-      "flux_avg": 0.333607,
-      "onset_density": 0.667603
+      "time": 36.025761,
+      "loudness_avg": 0.669455,
+      "centroid_avg": 3974.219483,
+      "flux_avg": 0.289822,
+      "onset_density": 0.669237
     },
     {
       "beat": 73,
-      "time": 33.28,
-      "loudness_avg": 0.638889,
-      "centroid_avg": 3242.528026,
-      "flux_avg": 0.332368,
-      "onset_density": 0.638651
+      "time": 36.47855,
+      "loudness_avg": 0.328423,
+      "centroid_avg": 5145.842845,
+      "flux_avg": 0.177651,
+      "onset_density": 0.32798
     },
     {
       "beat": 74,
-      "time": 33.74,
-      "loudness_avg": 0.644605,
-      "centroid_avg": 3264.986538,
-      "flux_avg": 0.354629,
-      "onset_density": 0.644371
+      "time": 36.942947,
+      "loudness_avg": 0.635198,
+      "centroid_avg": 4084.055329,
+      "flux_avg": 0.298646,
+      "onset_density": 0.634957
     },
     {
       "beat": 75,
-      "time": 34.2,
-      "loudness_avg": 0.658114,
-      "centroid_avg": 3879.490016,
-      "flux_avg": 0.330133,
-      "onset_density": 0.657889
+      "time": 37.407345,
+      "loudness_avg": 0.655425,
+      "centroid_avg": 4051.934962,
+      "flux_avg": 0.306206,
+      "onset_density": 0.655197
     },
     {
       "beat": 76,
-      "time": 34.66,
-      "loudness_avg": 0.636131,
-      "centroid_avg": 3510.22246,
-      "flux_avg": 0.322666,
-      "onset_density": 0.635891
+      "time": 37.871746,
+      "loudness_avg": 0.646943,
+      "centroid_avg": 4042.944971,
+      "flux_avg": 0.315129,
+      "onset_density": 0.64671
     },
     {
       "beat": 77,
-      "time": 35.12,
-      "loudness_avg": 0.664385,
-      "centroid_avg": 3648.950715,
-      "flux_avg": 0.34267,
-      "onset_density": 0.664164
+      "time": 38.336143,
+      "loudness_avg": 0.662371,
+      "centroid_avg": 3747.734236,
+      "flux_avg": 0.299075,
+      "onset_density": 0.662148
     },
     {
       "beat": 78,
-      "time": 35.58,
-      "loudness_avg": 0.644186,
-      "centroid_avg": 3581.216384,
-      "flux_avg": 0.346754,
-      "onset_density": 0.643951
+      "time": 38.800545,
+      "loudness_avg": 0.646898,
+      "centroid_avg": 3774.908045,
+      "flux_avg": 0.334847,
+      "onset_density": 0.646665
     },
     {
       "beat": 79,
-      "time": 36.04,
-      "loudness_avg": 0.659784,
-      "centroid_avg": 4016.150138,
-      "flux_avg": 0.289008,
-      "onset_density": 0.65956
+      "time": 39.264942,
+      "loudness_avg": 0.639691,
+      "centroid_avg": 3703.642267,
+      "flux_avg": 0.308167,
+      "onset_density": 0.639453
     },
     {
       "beat": 80,
-      "time": 36.5,
-      "loudness_avg": 0.356966,
-      "centroid_avg": 5002.782868,
-      "flux_avg": 0.204148,
-      "onset_density": 0.356542
+      "time": 39.717731,
+      "loudness_avg": 0.649257,
+      "centroid_avg": 3926.504512,
+      "flux_avg": 0.321227,
+      "onset_density": 0.649026
     },
     {
       "beat": 81,
-      "time": 36.98,
-      "loudness_avg": 0.639022,
-      "centroid_avg": 4121.137955,
-      "flux_avg": 0.288537,
-      "onset_density": 0.638784
+      "time": 40.170521,
+      "loudness_avg": 0.663498,
+      "centroid_avg": 3722.747683,
+      "flux_avg": 0.303706,
+      "onset_density": 0.663276
     },
     {
       "beat": 82,
-      "time": 37.44,
-      "loudness_avg": 0.656746,
-      "centroid_avg": 4004.046803,
-      "flux_avg": 0.314179,
-      "onset_density": 0.656519
+      "time": 40.634918,
+      "loudness_avg": 0.646412,
+      "centroid_avg": 3571.899261,
+      "flux_avg": 0.32467,
+      "onset_density": 0.646179
     },
     {
       "beat": 83,
-      "time": 37.9,
-      "loudness_avg": 0.647488,
-      "centroid_avg": 4089.253113,
-      "flux_avg": 0.306608,
-      "onset_density": 0.647255
+      "time": 41.099319,
+      "loudness_avg": 0.635884,
+      "centroid_avg": 3592.059842,
+      "flux_avg": 0.329765,
+      "onset_density": 0.635644
     },
     {
       "beat": 84,
-      "time": 38.36,
-      "loudness_avg": 0.660771,
-      "centroid_avg": 3707.943305,
-      "flux_avg": 0.298769,
-      "onset_density": 0.660547
+      "time": 41.563717,
+      "loudness_avg": 0.655931,
+      "centroid_avg": 3870.892099,
+      "flux_avg": 0.33909,
+      "onset_density": 0.655703
     },
     {
       "beat": 85,
-      "time": 38.82,
-      "loudness_avg": 0.64742,
-      "centroid_avg": 3800.302448,
-      "flux_avg": 0.330115,
-      "onset_density": 0.647187
+      "time": 42.028118,
+      "loudness_avg": 0.646132,
+      "centroid_avg": 3645.313427,
+      "flux_avg": 0.304575,
+      "onset_density": 0.645898
     },
     {
       "beat": 86,
-      "time": 39.28,
-      "loudness_avg": 0.635825,
-      "centroid_avg": 3680.500076,
-      "flux_avg": 0.30598,
-      "onset_density": 0.635585
+      "time": 42.492516,
+      "loudness_avg": 0.217733,
+      "centroid_avg": 5207.259672,
+      "flux_avg": 0.178366,
+      "onset_density": 0.217217
     },
     {
       "beat": 87,
-      "time": 39.74,
-      "loudness_avg": 0.651409,
-      "centroid_avg": 3937.774958,
-      "flux_avg": 0.323907,
-      "onset_density": 0.65118
+      "time": 42.956917,
+      "loudness_avg": 0.255705,
+      "centroid_avg": 5142.425666,
+      "flux_avg": 0.196658,
+      "onset_density": 0.255214
     },
     {
       "beat": 88,
-      "time": 40.2,
-      "loudness_avg": 0.66145,
-      "centroid_avg": 3708.65,
-      "flux_avg": 0.315017,
-      "onset_density": 0.661227
+      "time": 43.421314,
+      "loudness_avg": 0.391039,
+      "centroid_avg": 5086.304794,
+      "flux_avg": 0.188372,
+      "onset_density": 0.390638
     },
     {
       "beat": 89,
-      "time": 40.66,
-      "loudness_avg": 0.646129,
-      "centroid_avg": 3593.006877,
-      "flux_avg": 0.311743,
-      "onset_density": 0.645896
+      "time": 43.885712,
+      "loudness_avg": 0.475216,
+      "centroid_avg": 4578.894411,
+      "flux_avg": 0.206342,
+      "onset_density": 0.47487
     },
     {
       "beat": 90,
-      "time": 41.12,
-      "loudness_avg": 0.636417,
-      "centroid_avg": 3572.466487,
-      "flux_avg": 0.328327,
-      "onset_density": 0.636177
+      "time": 44.350113,
+      "loudness_avg": 0.39786,
+      "centroid_avg": 3247.725023,
+      "flux_avg": 0.270176,
+      "onset_density": 0.397463
     },
     {
       "beat": 91,
-      "time": 41.58,
-      "loudness_avg": 0.659369,
-      "centroid_avg": 3881.279245,
-      "flux_avg": 0.338961,
-      "onset_density": 0.659144
+      "time": 44.83773,
+      "loudness_avg": 0.293065,
+      "centroid_avg": 2962.925596,
+      "flux_avg": 0.24641,
+      "onset_density": 0.292599
     },
     {
       "beat": 92,
-      "time": 42.04,
-      "loudness_avg": 0.633882,
-      "centroid_avg": 3669.442224,
-      "flux_avg": 0.303065,
-      "onset_density": 0.63364
+      "time": 45.325352,
+      "loudness_avg": 0.269034,
+      "centroid_avg": 2630.44535,
+      "flux_avg": 0.245394,
+      "onset_density": 0.268552
     },
     {
       "beat": 93,
-      "time": 42.5,
-      "loudness_avg": 0.21736,
-      "centroid_avg": 5213.916925,
-      "flux_avg": 0.175471,
-      "onset_density": 0.216843
+      "time": 45.824581,
+      "loudness_avg": 0.264894,
+      "centroid_avg": 2502.894695,
+      "flux_avg": 0.231066,
+      "onset_density": 0.264409
     },
     {
       "beat": 94,
-      "time": 42.98,
-      "loudness_avg": 0.268183,
-      "centroid_avg": 5104.637505,
-      "flux_avg": 0.199266,
-      "onset_density": 0.2677
+      "time": 46.393467,
+      "loudness_avg": 0.26178,
+      "centroid_avg": 2445.581304,
+      "flux_avg": 0.187816,
+      "onset_density": 0.261293
     },
     {
       "beat": 95,
-      "time": 43.44,
-      "loudness_avg": 0.387034,
-      "centroid_avg": 5117.946126,
-      "flux_avg": 0.183549,
-      "onset_density": 0.38663
+      "time": 46.973969,
+      "loudness_avg": 0.384006,
+      "centroid_avg": 2377.341498,
+      "flux_avg": 0.234172,
+      "onset_density": 0.3836
     },
     {
       "beat": 96,
-      "time": 43.9,
-      "loudness_avg": 0.475846,
-      "centroid_avg": 4549.798297,
-      "flux_avg": 0.209365,
-      "onset_density": 0.4755
+      "time": 47.542858,
+      "loudness_avg": 0.342202,
+      "centroid_avg": 3493.984429,
+      "flux_avg": 0.179907,
+      "onset_density": 0.341768
     },
     {
       "beat": 97,
-      "time": 44.36,
-      "loudness_avg": 0.397489,
-      "centroid_avg": 3230.241128,
-      "flux_avg": 0.271235,
-      "onset_density": 0.397091
+      "time": 48.088524,
+      "loudness_avg": 0.407082,
+      "centroid_avg": 2513.173277,
+      "flux_avg": 0.213664,
+      "onset_density": 0.406691
     },
     {
       "beat": 98,
-      "time": 44.82,
-      "loudness_avg": 0.299533,
-      "centroid_avg": 2968.218867,
-      "flux_avg": 0.249379,
-      "onset_density": 0.299071
+      "time": 48.657413,
+      "loudness_avg": 0.430704,
+      "centroid_avg": 2420.519711,
+      "flux_avg": 0.17155,
+      "onset_density": 0.430329
     },
     {
       "beat": 99,
-      "time": 45.28,
-      "loudness_avg": 0.267154,
-      "centroid_avg": 2677.784094,
-      "flux_avg": 0.238826,
-      "onset_density": 0.266671
+      "time": 49.226303,
+      "loudness_avg": 0.454604,
+      "centroid_avg": 2297.567707,
+      "flux_avg": 0.215983,
+      "onset_density": 0.454244
     },
     {
       "beat": 100,
-      "time": 45.74,
-      "loudness_avg": 0.253127,
-      "centroid_avg": 2467.618585,
-      "flux_avg": 0.245447,
-      "onset_density": 0.252634
+      "time": 49.806801,
+      "loudness_avg": 0.311726,
+      "centroid_avg": 2232.615893,
+      "flux_avg": 0.192671,
+      "onset_density": 0.311272
     },
     {
       "beat": 101,
-      "time": 46.2,
-      "loudness_avg": 0.265503,
-      "centroid_avg": 2597.620159,
-      "flux_avg": 0.199374,
-      "onset_density": 0.265018
+      "time": 50.387302,
+      "loudness_avg": 0.345395,
+      "centroid_avg": 2498.210479,
+      "flux_avg": 0.246248,
+      "onset_density": 0.344964
     },
     {
       "beat": 102,
-      "time": 46.66,
-      "loudness_avg": 0.29661,
-      "centroid_avg": 2315.577247,
-      "flux_avg": 0.201701,
-      "onset_density": 0.296146
+      "time": 50.979408,
+      "loudness_avg": 0.347668,
+      "centroid_avg": 2994.281572,
+      "flux_avg": 0.227352,
+      "onset_density": 0.347237
     },
     {
       "beat": 103,
-      "time": 47.12,
-      "loudness_avg": 0.397519,
-      "centroid_avg": 2406.080111,
-      "flux_avg": 0.22519,
-      "onset_density": 0.397122
+      "time": 51.548298,
+      "loudness_avg": 0.353481,
+      "centroid_avg": 2765.544844,
+      "flux_avg": 0.229473,
+      "onset_density": 0.353055
     },
     {
       "beat": 104,
-      "time": 47.58,
-      "loudness_avg": 0.330507,
-      "centroid_avg": 3625.22625,
-      "flux_avg": 0.1748,
-      "onset_density": 0.330066
+      "time": 52.140408,
+      "loudness_avg": 0.351247,
+      "centroid_avg": 3536.085138,
+      "flux_avg": 0.223029,
+      "onset_density": 0.350819
     },
     {
       "beat": 105,
-      "time": 48.04,
-      "loudness_avg": 0.39916,
-      "centroid_avg": 2598.964177,
-      "flux_avg": 0.232628,
-      "onset_density": 0.398764
+      "time": 52.732517,
+      "loudness_avg": 0.390035,
+      "centroid_avg": 2732.969275,
+      "flux_avg": 0.212058,
+      "onset_density": 0.389633
     },
     {
       "beat": 106,
-      "time": 48.52,
-      "loudness_avg": 0.451339,
-      "centroid_avg": 2375.647088,
-      "flux_avg": 0.171985,
-      "onset_density": 0.450977
+      "time": 53.313015,
+      "loudness_avg": 0.457816,
+      "centroid_avg": 2523.818512,
+      "flux_avg": 0.171968,
+      "onset_density": 0.457458
     },
     {
       "beat": 107,
-      "time": 48.98,
-      "loudness_avg": 0.433782,
-      "centroid_avg": 2428.067438,
-      "flux_avg": 0.161174,
-      "onset_density": 0.433408
+      "time": 53.789024,
+      "loudness_avg": 0.394632,
+      "centroid_avg": 2610.516117,
+      "flux_avg": 0.188474,
+      "onset_density": 0.394233
     },
     {
       "beat": 108,
-      "time": 49.44,
-      "loudness_avg": 0.426196,
-      "centroid_avg": 2238.501713,
-      "flux_avg": 0.241078,
-      "onset_density": 0.425818
+      "time": 54.265034,
+      "loudness_avg": 0.361801,
+      "centroid_avg": 2855.700858,
+      "flux_avg": 0.21333,
+      "onset_density": 0.36138
     },
     {
       "beat": 109,
-      "time": 49.9,
-      "loudness_avg": 0.299932,
-      "centroid_avg": 2245.804318,
-      "flux_avg": 0.189594,
-      "onset_density": 0.29947
+      "time": 54.752651,
+      "loudness_avg": 0.291349,
+      "centroid_avg": 3401.922084,
+      "flux_avg": 0.189221,
+      "onset_density": 0.290882
     },
     {
       "beat": 110,
-      "time": 50.36,
-      "loudness_avg": 0.352737,
-      "centroid_avg": 2436.948206,
-      "flux_avg": 0.245092,
-      "onset_density": 0.35231
+      "time": 55.217052,
+      "loudness_avg": 0.183267,
+      "centroid_avg": 3125.297637,
+      "flux_avg": 0.213654,
+      "onset_density": 0.185063
     },
     {
       "beat": 111,
-      "time": 50.82,
-      "loudness_avg": 0.304067,
-      "centroid_avg": 3101.40483,
-      "flux_avg": 0.234311,
-      "onset_density": 0.303608
+      "time": 55.693062,
+      "loudness_avg": 0.063074,
+      "centroid_avg": 1765.363583,
+      "flux_avg": 0.243236,
+      "onset_density": 0.089335
     },
     {
       "beat": 112,
-      "time": 51.3,
-      "loudness_avg": 0.368363,
-      "centroid_avg": 2754.735704,
-      "flux_avg": 0.217978,
-      "onset_density": 0.367947
+      "time": 56.169067,
+      "loudness_avg": 0.026804,
+      "centroid_avg": 1574.591432,
+      "flux_avg": 0.273329,
+      "onset_density": 0.098628
     },
     {
       "beat": 113,
-      "time": 51.74,
-      "loudness_avg": 0.365325,
-      "centroid_avg": 2640.620912,
-      "flux_avg": 0.241124,
-      "onset_density": 0.364906
+      "time": 56.633469,
+      "loudness_avg": 0.01154,
+      "centroid_avg": 1474.971801,
+      "flux_avg": 0.30258,
+      "onset_density": 0.1094
     },
     {
       "beat": 114,
-      "time": 52.22,
-      "loudness_avg": 0.354959,
-      "centroid_avg": 3775.548595,
-      "flux_avg": 0.212863,
-      "onset_density": 0.354533
+      "time": 57.109478,
+      "loudness_avg": 0.00446,
+      "centroid_avg": 1480.440851,
+      "flux_avg": 0.296132,
+      "onset_density": 0.107025
     },
     {
       "beat": 115,
-      "time": 52.68,
-      "loudness_avg": 0.369435,
-      "centroid_avg": 2831.036136,
-      "flux_avg": 0.223173,
-      "onset_density": 0.369019
-    },
-    {
-      "beat": 116,
-      "time": 53.14,
-      "loudness_avg": 0.464507,
-      "centroid_avg": 2479.191828,
-      "flux_avg": 0.182486,
-      "onset_density": 0.464153
-    },
-    {
-      "beat": 117,
-      "time": 53.6,
-      "loudness_avg": 0.397632,
-      "centroid_avg": 2600.624993,
-      "flux_avg": 0.173174,
-      "onset_density": 0.397235
-    },
-    {
-      "beat": 118,
-      "time": 54.06,
-      "loudness_avg": 0.405718,
-      "centroid_avg": 2655.766771,
-      "flux_avg": 0.21468,
-      "onset_density": 0.405326
-    },
-    {
-      "beat": 119,
-      "time": 54.52,
-      "loudness_avg": 0.309928,
-      "centroid_avg": 3114.577593,
-      "flux_avg": 0.197543,
-      "onset_density": 0.309473
-    },
-    {
-      "beat": 120,
-      "time": 54.98,
-      "loudness_avg": 0.2805,
-      "centroid_avg": 3937.652315,
-      "flux_avg": 0.185016,
-      "onset_density": 0.280026
-    },
-    {
-      "beat": 121,
-      "time": 55.44,
-      "loudness_avg": 0.087165,
-      "centroid_avg": 1995.129957,
-      "flux_avg": 0.242609,
-      "onset_density": 0.096583
-    },
-    {
-      "beat": 122,
-      "time": 55.9,
-      "loudness_avg": 0.045276,
-      "centroid_avg": 1667.697239,
-      "flux_avg": 0.250924,
-      "onset_density": 0.090844
-    },
-    {
-      "beat": 123,
-      "time": 56.36,
-      "loudness_avg": 0.01902,
-      "centroid_avg": 1511.726343,
-      "flux_avg": 0.287027,
-      "onset_density": 0.103672
-    },
-    {
-      "beat": 124,
-      "time": 56.82,
-      "loudness_avg": 0.007914,
-      "centroid_avg": 1475.455769,
-      "flux_avg": 0.304627,
-      "onset_density": 0.110153
-    },
-    {
-      "beat": 125,
-      "time": 57.28,
-      "loudness_avg": 0.002159,
-      "centroid_avg": 1522.575167,
-      "flux_avg": 0.304773,
-      "onset_density": 0.110207
+      "time": 57.585487,
+      "loudness_avg": 0.001274,
+      "centroid_avg": 1551.325747,
+      "flux_avg": 0.311442,
+      "onset_density": 0.112663
     }
   ],
   "onset_peaks": [

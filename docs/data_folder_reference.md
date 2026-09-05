@@ -58,22 +58,9 @@ data/
         section_segmentation/
           sections.json
         symbolic_transcription/
-          basic_pitch/
-            bass.json
-            bass.mid
-            drums.json
-            drums.mid
-            full_mix.json
-            full_mix.mid
-            harmonic.json
-            harmonic.mid
-            vocals.json
-            vocals.mid
           drum_events.json
           omnizart/
             drums.mid
-          hints.json
-          validation.json
         validation/
           phase_1_report.json
           phase_1_report.md
@@ -83,7 +70,6 @@ data/
           song_events.review.md
         layer_a_harmonic.json
         genre.json
-        layer_b_symbolic.json
         layer_c_energy.json
   fixtures/
     fixtures.json
@@ -106,9 +92,8 @@ If you only open a few files, start here in this order:
 
 These are also, near enough, the files the downstream MCP server actually
 projects — see [`reference/analysis-input-guide.md`](reference/analysis-input-guide.md).
-9. `data/analysis/<Song - Artist>/artifacts/layer_b_symbolic.json`
-10. `data/fixtures/fixtures.json`
-11. `data/fixtures/pois.json`
+8. `data/fixtures/fixtures.json`
+9. `data/fixtures/pois.json`
 
 For internal debugger work, invert that priority: start with `data/analysis/<Song - Artist>/artifacts/` layer and validation files first, then use `data/analysis/<Song - Artist>/` only as compact helper projections.
 
@@ -122,7 +107,7 @@ LLM note: this folder is useful for provenance, but the structured design work s
 
 ### `data/analysis/<Song - Artist>/artifacts/stems/`
 
-Per-song separated audio stems and lightweight stem metadata. These are derived from the source song and used by harmonic and symbolic stages.
+Per-song separated audio stems and lightweight stem metadata. These are derived from the source song and used by the harmonic and drum-transcription stages.
 
 ### `data/analysis/<Song - Artist>/artifacts/`
 
@@ -205,13 +190,13 @@ LLM hint:
 
 Summary: isolated bass stem audio.
 
-Why it matters: upstream source for bass-oriented symbolic analysis and bass note extraction.
+Why it matters: upstream source for bass-oriented loudness analysis.
 
 ### `data/analysis/<Song - Artist>/artifacts/stems/drums.wav`
 
 Summary: isolated drums stem audio.
 
-Why it matters: upstream source for rhythm- and hit-oriented symbolic review and drum-hit transcription.
+Why it matters: upstream source for drum-hit transcription and rhythm review.
 
 ### `data/analysis/<Song - Artist>/artifacts/stems/harmonic.wav`
 
@@ -223,7 +208,7 @@ Why it matters: upstream source for chord and harmony extraction.
 
 Summary: isolated vocal stem audio.
 
-Why it matters: upstream source for lyric-adjacent phrasing and melodic symbolic analysis.
+Why it matters: upstream source for vocal-adjacent loudness and lyric alignment.
 
 ### `data/analysis/<Song - Artist>/artifacts/essentia/beats.json`
 
@@ -364,39 +349,16 @@ LLM hint:
 - Use: group phrase-level callbacks under stable section identity.
 - Treat labels as helpful but secondary to the actual time windows.
 
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/validation.json`
-
-Summary: source-level validation and promotion report for symbolic transcription. Explains which transcription sources were promoted into the final symbolic layer.
-
-Why it matters: trust and provenance check for note-driven features.
-
-LLM hint:
-- See: `sources[]`, `decision`, `promote_to_final`, `reason`, and `promoted_sources`.
-- Use: judge whether bass, vocals, or full-mix notes are reliable enough to drive visible effects.
-- Use: explain confidence limits when symbolic content feels noisy or sparse.
-- Avoid: treating rejected or auxiliary-only sources as equal to promoted sources.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/hints.json`
-
-Summary: producer-scoped inferred section hints derived from the aligned symbolic timeline.
-
-Why it matters: provenance layer for editable hint generation.
-
-LLM hint:
-- See: `sections[].section_id`, `label`, and `hints[]`.
-- Use: inspect which hints were inferred deterministically before any user edits were merged.
-- Avoid: treating this producer-scoped file as the user-editable source; use `data/analysis/<Song - Artist>/hints.json` for that.
-
 ### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json`
 
 Summary: simple producer-scoped drum-hit review artifact containing kick, snare, and hat event rows plus summary counts.
 
-Why it matters: fastest way to inspect rhythmic pulse and debug drum-hit translation without opening note-heavy symbolic layers first.
+Why it matters: fastest way to inspect rhythmic pulse and debug drum-hit translation.
 
 LLM hint:
 - See: `events[].time`, `event_type`, `confidence`, and the `summary` counts.
 - Use: inspect whether kick, snare, and hat placements support the intended rhythmic reading of the song.
-- Avoid: treating this phase-1 review artifact as a full replacement for the canonical symbolic layer.
+- Avoid: treating this phase-1 review artifact as more than a drum-hit summary; it carries no harmonic or vocal information.
 
 ### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/omnizart/drums.mid`
 
@@ -408,85 +370,6 @@ LLM hint:
 - See: GM drum note pitches such as 35, 38, and 42 to confirm kick, snare, and hat placements.
 - Use: compare raw Omnizart output against the normalized review artifact when unsupported or unresolved events appear.
 - Avoid: treating the raw MIDI as the final review contract; `drum_events.json` is the normalized producer-scoped artifact.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/bass.json`
-
-Summary: raw Basic Pitch note cache for the bass stem. Includes note timing, MIDI pitch, confidence, and alignment metadata.
-
-Why it matters: direct source for the compact `bass` field in output beat rows.
-
-LLM hint:
-- See: `notes[].time`, `end_s`, `pitch`, `confidence`, and alignment fields.
-- Use: inspect specific bass entries when debugging pulse logic or bass-driven movement.
-- Use: recover more granular bass-note timing than the output beat projection preserves.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/bass.mid`
-
-Summary: MIDI export of the bass stem transcription.
-
-Why it matters: convenient for DAW inspection or external MIDI tools.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/drums.json`
-
-Summary: raw Basic Pitch note cache for the drums stem.
-
-Why it matters: mostly auxiliary review data because drums are not promoted by default in the current symbolic assembly.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/drums.mid`
-
-Summary: MIDI export of the drums stem transcription.
-
-Why it matters: useful for manual review, not usually a primary lighting-design input.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/full_mix.json`
-
-Summary: raw Basic Pitch note cache for the full mix.
-
-Why it matters: fills gaps left by stem-only transcription and can explain why a note appears in the final symbolic layer.
-
-LLM hint:
-- See: `notes[]` when a phrase or motif seems present in the final symbolic layer but not obvious in stem-specific caches.
-- Use: as a recovery path for missing melodic texture, not as the first symbolic file to read.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/full_mix.mid`
-
-Summary: MIDI export of the full-mix transcription.
-
-Why it matters: external review aid.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/harmonic.json`
-
-Summary: raw Basic Pitch note cache for the harmonic stem.
-
-Why it matters: dense pitched texture source that feeds the final symbolic layer.
-
-LLM hint:
-- See: `notes[]` around phrase starts and section changes.
-- Use: understand register spread and harmonic-note density when building wash complexity or texture-linked movement.
-- Use: cross-check motif claims from `layer_b_symbolic.json` against raw note timing.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/harmonic.mid`
-
-Summary: MIDI export of the harmonic stem transcription.
-
-Why it matters: external review aid.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/vocals.json`
-
-Summary: raw Basic Pitch note cache for the vocal stem.
-
-Why it matters: melodic source for vocal contour and phrase emphasis.
-
-LLM hint:
-- See: vocal note timing around lyrical phrases or refrain entries.
-- Use: support follow-spot style entries, vocal-led accents, or melody-aware beam lifts.
-- Combine: with `reference/moises/lyrics.json` if you want word-driven or line-driven moments.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/vocals.mid`
-
-Summary: MIDI export of the vocal stem transcription.
-
-Why it matters: external review aid.
 
 ### `data/analysis/<Song - Artist>/artifacts/layer_a_harmonic.json`
 
@@ -511,18 +394,6 @@ LLM hint:
 - Use: as advisory context when reviewing likely structural or stylistic cues.
 - Use: treat `unknown` as an explicit valid outcome.
 - Avoid: inventing a genre from heuristics when the artifact says `unknown`.
-
-### `data/analysis/<Song - Artist>/artifacts/layer_b_symbolic.json`
-
-Summary: canonical symbolic layer. Contains note events, density views, phrase windows, motif groups, repetition summaries, and a human-readable description.
-
-Why it matters: best source for phrase structure, rhythmic density, melodic contour, and repetition-driven callbacks.
-
-LLM hint:
-- See: `symbolic_summary`, `density_per_beat`, `density_per_bar`, `phrase_windows`, and `motif_summary`.
-- Use: scale effect density with note density.
-- Use: tie repeated motifs to repeatable looks with controlled variation.
-- Use: reserve more articulate motion for dense, active passages and simplify looks when symbolic activity drops.
 
 ### `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`
 
@@ -569,14 +440,13 @@ LLM hint:
 
 ### `data/analysis/<Song - Artist>/beats.json`
 
-Summary: compact UI-facing beat timeline with beat time, beat number, bar number, active chord, and beat-aligned bass note.
+Summary: compact UI-facing beat timeline with beat time, beat number, bar number, and active chord.
 
 Why it matters: compact timing sheet for downstream consumers.
 
 LLM hint:
-- See: `time`, `beat`, `bar`, `chord`, `bass`, and `type`.
+- See: `time`, `beat`, `bar`, `chord`, and `type`.
 - Use: for lightweight cue grids, timeline tables, or beat-synced storyboard prompts.
-- Use: `bass` as a simplified pulse hint, not as a replacement for full symbolic detail.
 
 ### `data/analysis/<Song - Artist>/sections.json`
 
@@ -679,7 +549,6 @@ Why it matters: strongest text-based source for lyric-synced visual moments.
 LLM hint:
 - See: `text`, `start`, `end`, `line_id`, and markers like `<SOL>` and `<EOL>`.
 - Use: align spotlight moments, text-reactive effects, or visual punctuation to words and line starts.
-- Combine: with vocal symbolic data for melody-aware lyric moments.
 - Use: derive beat- or line-aligned features such as lyric density, line starts, line ends, post-line tails, and confidence-weighted vocal-presence priors.
 - Optional promotion rule: if a Story explicitly allows it, this file may rescue low-confidence vocal timing or event timing only when the overlapping stem or energy evidence agrees and the promotion is recorded explicitly.
 - Debugger: shown as the read-only **Moises Lyrics** lane (directly under Human Hints), one block per token with the block tinted by each word's `confidence`.
@@ -697,10 +566,6 @@ Open `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`.
 ### For harmonic color and scene-change logic
 
 Open `layer_a_harmonic.json` and `essentia/beats.json`.
-
-### For phrase and repetition callbacks
-
-Open `layer_b_symbolic.json`.
 
 ### For rig-aware targeting
 

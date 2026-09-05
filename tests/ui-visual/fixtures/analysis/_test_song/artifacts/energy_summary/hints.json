@@ -18,15 +18,15 @@
     {
       "id": "event_drop_001",
       "identifier": "drop",
-      "time_s": 29.58,
-      "start_s": 29.58,
-      "end_s": 33.58,
+      "time_s": 29.559002,
+      "start_s": 29.559002,
+      "end_s": 33.559002,
       "section_id": "section-002",
-      "confidence": 1.0,
+      "confidence": 0.993795,
       "audit": {
-        "alignment_score": 0.6,
-        "nearest_transient_delta_ms": 20.0,
-        "is_transient_locked": true,
+        "alignment_score": 0.18004,
+        "nearest_transient_delta_ms": 40.998,
+        "is_transient_locked": false,
         "transient_sources": [
           "fft_bands",
           "bass_att"
@@ -34,21 +34,21 @@
         "mismatch_flag": false,
         "support": {
           "bass_att": 0.905887,
-          "bass_att_lma": 0.580195,
-          "spectral_flux": 0.41661,
-          "spectral_flux_lma": 0.237201,
-          "bass_ratio": 1.561349,
-          "flux_ratio": 1.756359
+          "bass_att_lma": 0.55775,
+          "spectral_flux": 0.434375,
+          "spectral_flux_lma": 0.234542,
+          "bass_ratio": 1.624181,
+          "flux_ratio": 1.852014
         }
       },
       "evidence": {
-        "loudness_delta": 0.17628,
-        "onset_density_delta": 0.176397,
-        "spectral_centroid_delta": -47.014461,
+        "loudness_delta": 0.183334,
+        "onset_density_delta": 0.183455,
+        "spectral_centroid_delta": -150.479679,
         "bass_energy_delta": 0.0
       },
       "notes": [
-        "Transition anchors to vocal_spotlight (section-002).",
+        "Transition anchors to ambient_opening (section-002).",
         "Coordinated loudness and rhythmic activation increase support a release event."
       ],
       "created_by": "analyzer_energy_identifier"

@@ -51,7 +51,6 @@ NEEDED = [
     "artifacts/essentia/rms_loudness.json",
     "artifacts/essentia/loudness_envelope.json",
     "artifacts/layer_a_harmonic.json",
-    "artifacts/layer_b_symbolic.json",
     "artifacts/layer_c_energy.json",
     "artifacts/energy_summary/hints.json",
     "artifacts/event_inference/events.machine.json",
@@ -100,13 +99,6 @@ def copy_song(src_name: str, out_name: str, *, drop: set[str] = frozenset()):
         if rel in DENSE:
             doc = json.loads(s.read_text())
             d.write_text(json.dumps(decimate(doc)))
-        elif rel.endswith("layer_b_symbolic.json"):
-            # the Symbolic Phrases lane only reads `phrase_windows`; the 4k-entry
-            # `note_events` array is 3.5 MB of dead weight in a fixture.
-            doc = json.loads(s.read_text())
-            if isinstance(doc.get("note_events"), list):
-                doc["note_events"] = doc["note_events"][:40]
-            d.write_text(json.dumps(doc))
         else:
             shutil.copy2(s, d)
     print(f"  wrote {out_name}")
@@ -120,7 +112,6 @@ def copy_test_song():
     shutil.copytree(src, dst)
     # drop bulk the UI never loads (stems, midi transcription, reference dumps).
     for junk in ("artifacts/stems",
-                 "artifacts/symbolic_transcription/basic_pitch",
                  "artifacts/symbolic_transcription/omnizart",
                  "reference/moises"):
         p = dst / junk

@@ -333,9 +333,8 @@ class ConsoleMarkerTests(unittest.TestCase):
             chord_validation = ValidationResult(status="passed", matched=4, mismatched=0, match_ratio=1.0, details=[], reference_file=str(reference_path), diagnostics=None)
             sections_payload = {"sections": [{"section_id": "section-001", "start": 1.5, "end": 3.5, "label": "reference_section", "confidence": 0.9}]}
             ui_outputs = {"beats": str(paths.beats_output_path), "sections": str(paths.sections_output_path)}
-            hints_payload = {"hints": str(paths.hints_output_path), "symbolic_hints": []}
+            hints_payload = {"hints": str(paths.hints_output_path)}
             energy_features = {"beat_features": []}
-            symbolic = {"phrase_windows": [], "motif_summary": {"repeated_phrase_groups": []}}
             drum_events = {"generated_from": {"engine": "audiohacking.omnizart.drum"}}
             energy = {"sections": []}
             event_features = {"features": []}
@@ -362,7 +361,6 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.validate_chords", return_value=chord_validation))
                 stack.enter_context(patch("analyzer.pipeline.extract_energy_features", return_value=energy_features))
                 mock_segment_sections = stack.enter_context(patch("analyzer.pipeline.segment_sections", return_value=sections_payload))
-                stack.enter_context(patch("analyzer.pipeline.extract_symbolic_features", return_value=symbolic))
                 stack.enter_context(patch("analyzer.pipeline.extract_drum_events", return_value=drum_events))
                 stack.enter_context(patch("analyzer.pipeline.generate_section_hints", return_value=hints_payload))
                 stack.enter_context(patch("analyzer.pipeline.build_ui_data", return_value=ui_outputs))

@@ -11,13 +11,31 @@ from analyzer.io import ensure_directory, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
 from analyzer.stages._omnizart_runtime import resolve_omnizart_drum_model_path
-from analyzer.stages.symbolic.utils import _nearest_beat_alignment, _section_for_time
 
 
 SUPPORTED_EVENT_TYPES = ["kick", "snare", "hat", "unresolved"]
 KICK_PITCHES = {35, 36}
 SNARE_PITCHES = {37, 38, 39, 40}
 HAT_PITCHES = {42, 44, 46}
+
+
+def _nearest_beat_alignment(time_s: float, beat_times: list[float], tolerance_seconds: float = 0.2) -> tuple[int | None, float | None]:
+    if not beat_times:
+        return None, None
+    beat_index = min(range(len(beat_times)), key=lambda index: abs(beat_times[index] - time_s))
+    delta = float(time_s - beat_times[beat_index])
+    if abs(delta) > tolerance_seconds:
+        return None, delta
+    return beat_index, delta
+
+
+def _section_for_time(time_s: float, sections: list[dict]) -> dict | None:
+    for section in sections:
+        if float(section["start"]) <= time_s < float(section["end"]):
+            return section
+    if sections and time_s >= float(sections[-1]["start"]):
+        return sections[-1]
+    return None
 
 
 def _event_type_for_pitch(pitch: int) -> str:
@@ -218,8 +236,6 @@ def extract_drum_events(paths: SongPaths, stems: dict[str, str], timing: dict, s
         transcription_error = str(exc)
         events = []
 
-    auxiliary_cache_path = paths.artifact("symbolic_transcription", "basic_pitch", "drums.json")
-
     payload = {
         "schema_version": SCHEMA_VERSION,
         "song_name": paths.song_name,
@@ -232,7 +248,6 @@ def extract_drum_events(paths: SongPaths, stems: dict[str, str], timing: dict, s
                 "raw_midi_cache": str(midi_path),
                 "model_path": str(model_path) if model_path is not None else None,
                 "model_source": model_source,
-                "auxiliary_note_cache": str(auxiliary_cache_path) if auxiliary_cache_path.exists() else None,
             },
             "debug_sources": {
                 "full_mix": str(paths.song_path),

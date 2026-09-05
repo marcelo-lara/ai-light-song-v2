@@ -4,7 +4,7 @@
   "command": "python -m analyzer",
   "status": "passed",
   "exit_code": 0,
-  "generated_at": "2026-08-30T16:34:08.146290+00:00",
+  "generated_at": "2026-09-04T23:51:11.076850+00:00",
   "inputs": {
     "song_path": "/data/songs/_test_song.mp3",
     "reference_chords": "/data/analysis/_test_song/reference/moises/chords.json",
@@ -13,7 +13,6 @@
   "generated_artifacts": {
     "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
     "harmonic_layer_file": "/data/analysis/_test_song/artifacts/layer_a_harmonic.json",
-    "symbolic_layer_file": "/data/analysis/_test_song/artifacts/layer_b_symbolic.json",
     "drum_events_file": "/data/analysis/_test_song/artifacts/symbolic_transcription/drum_events.json",
     "drum_midi_file": "/data/analysis/_test_song/artifacts/symbolic_transcription/omnizart/drums.mid",
     "energy_layer_file": "/data/analysis/_test_song/artifacts/layer_c_energy.json",
@@ -25,12 +24,7 @@
     "event_review_file": "/data/analysis/_test_song/artifacts/validation/song_events.review.json",
     "event_overrides_file": "/data/analysis/_test_song/artifacts/validation/song_events.overrides.json",
     "event_timeline_file": "/data/analysis/_test_song/song_event_timeline.json",
-    "event_benchmark_file": "/data/analysis/_test_song/artifacts/validation/event_benchmark.json",
-    "patterns_layer_file": "/data/analysis/_test_song/artifacts/layer_d_patterns.json",
-    "music_feature_layers_file": "/data/analysis/_test_song/artifacts/music_feature_layers.json",
     "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
-    "inferred_beats_file": "/data/analysis/_test_song/artifacts/essentia/beats_inferred.json",
-    "inferred_harmonic_file": "/data/analysis/_test_song/artifacts/harmonic_inference/layer_a_harmonic.inferred.json",
     "human_hints_alignment_file": "/data/analysis/_test_song/artifacts/validation/human_hints_alignment.json",
     "human_hints_alignment_markdown": "/data/analysis/_test_song/artifacts/validation/human_hints_alignment.md"
   },
@@ -976,12 +970,12 @@
       "details": [
         {
           "inferred": {
-            "time": 0.06,
-            "end_s": 46.2,
+            "time": 0.510839,
+            "end_s": 46.393467,
             "bar": 1,
             "beat": 1,
             "chord": "D#m",
-            "confidence": 0.852469
+            "confidence": 0.849954
           },
           "reference": {
             "time": 0.06,
@@ -992,17 +986,17 @@
           },
           "inferred_label_normalized": "D#m",
           "reference_label_normalized": "D#m",
-          "overlap_ratio": 1.0,
+          "overlap_ratio": 0.995783,
           "result": "matched"
         },
         {
           "inferred": {
-            "time": 46.2,
-            "end_s": 48.04,
-            "bar": 26,
-            "beat": 1,
+            "time": 46.393467,
+            "end_s": 48.088524,
+            "bar": 24,
+            "beat": 2,
             "chord": "B",
-            "confidence": 0.919112
+            "confidence": 0.917239
           },
           "reference": {
             "time": 46.2,
@@ -1013,17 +1007,17 @@
           },
           "inferred_label_normalized": "B",
           "reference_label_normalized": "B",
-          "overlap_ratio": 1.0,
+          "overlap_ratio": 0.971373,
           "result": "matched"
         },
         {
           "inferred": {
-            "time": 48.04,
-            "end_s": 51.74,
-            "bar": 27,
+            "time": 48.088524,
+            "end_s": 51.548298,
+            "bar": 25,
             "beat": 1,
             "chord": "F#",
-            "confidence": 0.927244
+            "confidence": 0.930625
           },
           "reference": {
             "time": 48.04,
@@ -1039,12 +1033,12 @@
         },
         {
           "inferred": {
-            "time": 51.74,
-            "end_s": 57.74,
-            "bar": 29,
-            "beat": 1,
+            "time": 51.548298,
+            "end_s": 58.049888,
+            "bar": 26,
+            "beat": 3,
             "chord": "D#m",
-            "confidence": 0.948858
+            "confidence": 0.951396
           },
           "reference": {
             "time": 51.74,
@@ -1055,7 +1049,7 @@
           },
           "inferred_label_normalized": "D#m",
           "reference_label_normalized": "D#m",
-          "overlap_ratio": 0.923333,
+          "overlap_ratio": 0.852099,
           "result": "matched"
         }
       ],
@@ -1065,7 +1059,7 @@
         "timing_overlap_failure_count": 0,
         "label_mismatch_count": 0,
         "no_reference_overlap_count": 0,
-        "median_overlap_ratio": 1.0
+        "median_overlap_ratio": 0.983578
       }
     },
     "drums": {
@@ -1119,8 +1113,8 @@
         "snare_count": 57,
         "hat_count": 179,
         "unresolved_count": 0,
-        "aligned_event_ratio": 0.804094,
-        "reference_beat_interval_seconds": 0.46,
+        "aligned_event_ratio": 0.748538,
+        "reference_beat_interval_seconds": 0.464401,
         "median_hat_interval_seconds": 0.229546,
         "recognizable_backbeat": true,
         "recognizable_hat_pulse": true,
@@ -1138,7 +1132,7 @@
           "inferred": {
             "time": 14.82,
             "section_id": "section-002",
-            "label": "vocal_spotlight"
+            "label": "intro"
           },
           "reference": {
             "time": 14.82,
@@ -1150,15 +1144,15 @@
         {
           "match_type": "matched_boundary",
           "inferred": {
-            "time": 29.605442,
+            "time": 29.58,
             "section_id": "section-003",
-            "label": "momentum_lift"
+            "label": "outro"
           },
           "reference": {
             "time": 29.58,
             "label": "Chorus"
           },
-          "delta_seconds": 0.025442,
+          "delta_seconds": 0.0,
           "within_tolerance": true
         },
         {
@@ -1166,7 +1160,7 @@
           "inferred": {
             "time": 44.36,
             "section_id": "section-004",
-            "label": "release_tail"
+            "label": "outro"
           },
           "reference": {
             "time": 44.36,
@@ -1204,14 +1198,14 @@
         {
           "check": "beat_energy_count_matches_timing",
           "passed": true,
-          "expected": 125,
-          "actual": 125
+          "expected": 115,
+          "actual": 115
         },
         {
           "check": "accent_candidate_ids_unique",
           "passed": true,
-          "expected": 9,
-          "actual": 9
+          "expected": 10,
+          "actual": 10
         },
         {
           "check": "accent_candidates_sorted_by_time",
@@ -1225,50 +1219,11 @@
       "reference_file": null,
       "diagnostics": null
     },
-    "patterns": {
-      "status": "failed",
-      "matched": 5,
-      "mismatched": 1,
-      "match_ratio": 0.8333333333333334,
-      "details": [
-        {
-          "check": "pattern_count_matches_rows",
-          "passed": true,
-          "expected": 1,
-          "actual": 1
-        },
-        {
-          "check": "pattern_ids_unique",
-          "passed": true
-        },
-        {
-          "check": "pattern_A_bar_count_range",
-          "passed": false,
-          "bar_count": 1
-        },
-        {
-          "check": "pattern_A_occurrence_count_matches_rows",
-          "passed": true,
-          "expected": 27,
-          "actual": 27
-        },
-        {
-          "check": "pattern_A_occurrence_lengths_match_bar_count",
-          "passed": true
-        },
-        {
-          "check": "pattern_A_occurrences_non_overlapping",
-          "passed": true
-        }
-      ],
-      "reference_file": null,
-      "diagnostics": null
-    },
     "events": {
-      "status": "passed",
-      "matched": 9,
-      "mismatched": 0,
-      "match_ratio": 1.0,
+      "status": "failed",
+      "matched": 6,
+      "mismatched": 1,
+      "match_ratio": 0.8571428571428571,
       "details": [
         {
           "check": "drop_identifier_supported",
@@ -1277,17 +1232,17 @@
         {
           "check": "event_feature_rows_present",
           "passed": true,
-          "count": 125
+          "count": 115
         },
         {
           "check": "rule_candidates_present",
           "passed": true,
-          "count": 7
+          "count": 52
         },
         {
           "check": "machine_events_present",
           "passed": true,
-          "count": 35
+          "count": 63
         },
         {
           "check": "review_summary_present",
@@ -1299,95 +1254,140 @@
         },
         {
           "check": "timeline_matches_merged_review_count",
-          "passed": true,
-          "timeline_count": 35,
-          "merged_count": 35
-        },
-        {
-          "check": "benchmark_report_written",
-          "passed": true,
-          "status": "skipped"
-        },
-        {
-          "check": "benchmark_failure_only_counts_when_report_exists",
-          "passed": true,
-          "status": "skipped"
+          "passed": false,
+          "timeline_count": 62,
+          "merged_count": 63
         }
       ],
       "reference_file": null,
       "diagnostics": null
     },
-    "unified": {
-      "status": "passed",
-      "matched": 11,
+    "form": {
+      "status": "skipped",
+      "matched": 0,
       "mismatched": 0,
-      "match_ratio": 1.0,
+      "match_ratio": null,
+      "details": [],
+      "reference_file": null,
+      "diagnostics": {
+        "reason": "no human labels",
+        "score": {
+          "target": "form",
+          "tolerance_seconds": 2.0,
+          "predicted_boundary_count": 3,
+          "labelled_boundary_count": 0,
+          "form_family_predicted": "unknown",
+          "form_family_labelled": null,
+          "form_family_match": false,
+          "mode": "unlabelled",
+          "confidence_calibration": {
+            "buckets": [
+              {
+                "range": [
+                  0.0,
+                  0.2
+                ],
+                "section_count": 0,
+                "observed_alignment": null
+              },
+              {
+                "range": [
+                  0.2,
+                  0.4
+                ],
+                "section_count": 0,
+                "observed_alignment": null
+              },
+              {
+                "range": [
+                  0.4,
+                  0.6
+                ],
+                "section_count": 2,
+                "observed_alignment": null
+              },
+              {
+                "range": [
+                  0.6,
+                  0.8
+                ],
+                "section_count": 0,
+                "observed_alignment": null
+              },
+              {
+                "range": [
+                  0.8,
+                  1.01
+                ],
+                "section_count": 1,
+                "observed_alignment": null
+              }
+            ],
+            "predicted_spread": 0.35
+          }
+        }
+      }
+    },
+    "drops": {
+      "status": "failed",
+      "matched": 2,
+      "mismatched": 1,
+      "match_ratio": 0.6666666666666666,
       "details": [
         {
-          "check": "generated_from_files_exist",
-          "passed": true
+          "check": "drop recall >= 0.5",
+          "passed": false,
+          "recall": 0.2
         },
         {
-          "check": "timeline_phrases_match_symbolic_phrase_windows",
+          "check": "drop precision >= 0.5",
           "passed": true,
-          "expected_count": 9,
-          "actual_count": 9
+          "precision": 1.0
         },
         {
-          "check": "accent_windows_match_energy_candidates",
+          "check": "fake_drop does not outnumber drop",
           "passed": true,
-          "expected_count": 9,
-          "actual_count": 9
-        },
-        {
-          "check": "unified_pattern_ids_match_layer_d",
-          "passed": true
-        },
-        {
-          "check": "cue_anchors_sorted_by_time",
-          "passed": true
-        },
-        {
-          "check": "pattern_callbacks_reference_existing_patterns",
-          "passed": true
-        },
-        {
-          "check": "pattern_callbacks_reference_valid_sections",
-          "passed": true
-        },
-        {
-          "check": "motif_callbacks_reference_existing_motifs",
-          "passed": true
-        },
-        {
-          "check": "motif_callbacks_reference_existing_phrase_groups",
-          "passed": true
-        },
-        {
-          "check": "motif_callbacks_reference_valid_sections",
-          "passed": true
-        },
-        {
-          "check": "metadata_duration_matches_timing",
-          "passed": true
+          "fake": 0,
+          "drop": 1
         }
       ],
-      "reference_file": null,
-      "diagnostics": null
+      "reference_file": "/data/analysis/_test_song/reference/human/human_hints.json",
+      "diagnostics": {
+        "score": {
+          "target": "drops",
+          "tolerance_seconds": 1.0,
+          "detected_count": 1,
+          "fake_drop_count": 0,
+          "detected_times": [
+            30.023
+          ],
+          "labelled_count": 5,
+          "metrics": {
+            "true_positives": 1,
+            "predicted": 1,
+            "labelled": 5,
+            "precision": 1.0,
+            "recall": 0.2,
+            "f1": 0.3333
+          },
+          "match_deltas": [
+            0.898
+          ],
+          "mode": "timed",
+          "fake_outnumbers_drop": false
+        }
+      }
     }
   },
   "notes": [
     "Beat validation compares inferred beat times against the beat timestamps embedded in the reference chord annotation when present.",
-    "Chord validation treats reference chord files as authoritative human-validated comparison inputs when present.",
+    "reference/moises/*.json is Moises.ai inference, not human ground truth. Only lyrics.json carries a confidence field, and only its \"0.99\" rows are operator-curated. Chord validation therefore measures agreement with a second model, not correctness.",
     "Drum validation checks the producer-scoped drum_events.json artifact for structural integrity, Omnizart provenance, debug-source metadata, and song-level pulse plausibility.",
     "Section validation compares structural change points only; reference segment labels are advisory and do not affect pass/fail.",
     "Energy validation checks internal consistency between section windows, accent candidates, and the canonical beat timeline.",
-    "Pattern validation checks window length, occurrence counts, and non-overlap rules inside Layer D.",
-    "Event validation checks Epic 5 artifact integrity, machine-review timeline consistency, and benchmark status when reviewed annotations exist.",
-    "Unified validation checks cross-layer references, phrase and accent timeline joins, and callback integrity.",
-    "Story 1.2 beat validation failed against reference data, so downstream phases used a canonical timing grid rebuilt from the reference beat annotations.",
-    "Moises chord reference data was present, so downstream phases used the canonical beat grid rebuilt from that reference while preserving the inferred beat grid separately for diagnostics.",
-    "Moises chord reference data was present, so downstream phases used the canonical harmonic layer rebuilt from that reference while preserving the inferred harmonic layer separately for diagnostics.",
-    "Human hint alignment review files compare narrative hint windows against generated sections, events, patterns, and harmonic events when human hints are available."
+    "Event validation checks Epic 5 artifact integrity and machine-review timeline consistency.",
+    "Form validation scores section boundaries, form_role and form_family against reference/human labels; advisory only, and reports 'skipped' until the gold set is labelled (plan D1).",
+    "Drop validation scores detected drops against timed human drop hints, or against the song-level has_drop fact when only that is available; advisory only.",
+    "Human hint alignment review files compare narrative hint windows against generated sections, events, and harmonic events when human hints are available."
   ]
 }

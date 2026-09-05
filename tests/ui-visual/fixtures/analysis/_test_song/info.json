@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "song_name": "_test_song",
-  "bpm": 130.43,
+  "bpm": 129.31,
   "duration": 58.12,
   "song_path": "/data/songs/_test_song.mp3",
   "artifacts": {
@@ -12,11 +12,8 @@
     "genre": "/data/analysis/_test_song/artifacts/genre.json",
     "hpcp": "/data/analysis/_test_song/artifacts/essentia/hpcp.json",
     "harmonic_layer": "/data/analysis/_test_song/artifacts/layer_a_harmonic.json",
-    "symbolic_layer": "/data/analysis/_test_song/artifacts/layer_b_symbolic.json",
     "drum_events": "/data/analysis/_test_song/artifacts/symbolic_transcription/drum_events.json",
     "drum_midi": "/data/analysis/_test_song/artifacts/symbolic_transcription/omnizart/drums.mid",
-    "symbolic_hints": "/data/analysis/_test_song/artifacts/symbolic_transcription/hints.json",
-    "symbolic_validation": "/data/analysis/_test_song/artifacts/symbolic_transcription/validation.json",
     "energy_features": "/data/analysis/_test_song/artifacts/energy_summary/features.json",
     "energy_layer": "/data/analysis/_test_song/artifacts/layer_c_energy.json",
     "energy_identifiers": "/data/analysis/_test_song/artifacts/energy_summary/hints.json",
@@ -27,11 +24,11 @@
     "event_review": "/data/analysis/_test_song/artifacts/validation/song_events.review.json",
     "event_overrides": "/data/analysis/_test_song/artifacts/validation/song_events.overrides.json",
     "event_timeline_markdown": "/data/analysis/_test_song/artifacts/validation/song_event_timeline.md",
-    "event_benchmark": "/data/analysis/_test_song/artifacts/validation/event_benchmark.json",
+    "review_queue": "/data/analysis/_test_song/artifacts/validation/review_queue.json",
+    "song_facts": "/data/analysis/_test_song/reference/human/song_facts.json",
     "human_hints_alignment": "/data/analysis/_test_song/artifacts/validation/human_hints_alignment.json",
     "human_hints_alignment_markdown": "/data/analysis/_test_song/artifacts/validation/human_hints_alignment.md",
-    "sections": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
-    "music_feature_layers": "/data/analysis/_test_song/artifacts/music_feature_layers.json"
+    "sections": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json"
   },
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",

@@ -6,160 +6,115 @@
     "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
     "harmonic_layer_file": "/data/analysis/_test_song/artifacts/layer_a_harmonic.json",
     "energy_features_file": "/data/analysis/_test_song/artifacts/energy_summary/features.json",
-    "engine": "deterministic.section_segmentation.v3",
-    "snapping_rule": "coarse section starts snap to the nearest bar boundary; inferred timing may refine those starts to nearby beat boundaries when novelty contrast is materially stronger, while reference-promoted timing keeps section starts on canonical bar anchors",
-    "label_strategy": "context-aware musical-state section_character labels from section-scale energy, motion, repetition, and contrast cues",
-    "annotation_strategy": "structural change windows are primary; section_character labels are auxiliary lighting metadata",
+    "reference_segments_file": "/data/analysis/_test_song/reference/moises/segments.json",
+    "engine": "reference.moises.segments.promotion",
+    "dependencies": {
+      "reference_segments": "/data/analysis/_test_song/reference/moises/segments.json",
+      "inferred_sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.inferred.json"
+    },
     "promotion_gate": {
       "type": "section_boundary_reference_rescue",
       "tolerance_seconds": 2.0,
-      "match_ratio": 1.0,
-      "validation_status": "passed",
+      "match_ratio": 0.0,
+      "validation_status": "failed",
       "snap_like_boundary_count": 0,
-      "low_confidence_boundary_count": 3,
-      "boundary_offset_direction": "aligned",
-      "rescue_applied": false
-    }
+      "low_confidence_boundary_count": 1,
+      "boundary_offset_direction": null,
+      "rescue_applied": true
+    },
+    "label_strategy": "reference boundaries with inferred section_character carry-over from the dominant overlapping inferred window",
+    "annotation_strategy": "canonical boundaries may be reference-promoted while labels remain inference-driven"
   },
   "sections": [
     {
       "section_id": "section-001",
-      "start": 0.0,
+      "start": 0.06,
       "end": 14.82,
       "label": "intro",
       "confidence": 0.9,
       "section_character": "ambient_opening",
       "onset_anchored": false,
       "form_role": "intro",
-      "form_role_confidence": 0.924371,
-      "form_role_margin": 0.331236,
+      "form_role_confidence": 0.95,
+      "form_role_margin": 0.65,
       "energy_character": "ambient_opening",
       "repetition_group": "A",
       "variant_of": null,
       "similarity": 1.0,
-      "confidence_terms": {
-        "reason": "first section start is fixed at 0.0"
-      }
+      "confidence_terms": null
     },
     {
       "section_id": "section-002",
       "start": 14.82,
-      "end": 29.605442,
-      "label": "unknown",
-      "confidence": 0.135042,
-      "section_character": "vocal_spotlight",
+      "end": 29.58,
+      "label": "intro",
+      "confidence": 0.9,
+      "section_character": "ambient_opening",
       "onset_anchored": false,
-      "form_role": "unknown",
-      "form_role_confidence": 0.735777,
-      "form_role_margin": 0.069832,
-      "energy_character": "vocal_spotlight",
+      "form_role": "intro",
+      "form_role_confidence": 0.95,
+      "form_role_margin": 0.65,
+      "energy_character": "ambient_opening",
       "repetition_group": "A",
-      "variant_of": "section-001",
-      "similarity": 0.868002,
-      "confidence_terms": {
-        "channel_strengths": {
-          "energy": 0.0,
-          "timbral": 0.001683,
-          "harmonic": 0.0
-        },
-        "mean_strength": 0.000561,
-        "detector_agreement": 0.00056,
-        "novelty_sharpness": 0.0,
-        "transient_aligned": false,
-        "bar_grid_alignment": 1.0,
-        "form_role_margin": 0.17458
-      }
+      "variant_of": null,
+      "similarity": 1.0,
+      "confidence_terms": null
     },
     {
       "section_id": "section-003",
-      "start": 29.605442,
+      "start": 29.58,
       "end": 44.36,
-      "label": "drop",
-      "confidence": 0.231702,
-      "section_character": "momentum_lift",
-      "onset_anchored": true,
-      "form_role": "drop",
-      "form_role_confidence": 0.909385,
-      "form_role_margin": 0.208923,
-      "energy_character": "momentum_lift",
+      "label": "outro",
+      "confidence": 0.55,
+      "section_character": "release_tail",
+      "onset_anchored": false,
+      "form_role": "outro",
+      "form_role_confidence": 0.95,
+      "form_role_margin": 0.65,
+      "energy_character": "release_tail",
       "repetition_group": "A",
       "variant_of": "section-001",
-      "similarity": 0.856762,
-      "confidence_terms": {
-        "channel_strengths": {
-          "energy": 0.0,
-          "timbral": 2.3e-05,
-          "harmonic": 0.0
-        },
-        "mean_strength": 8e-06,
-        "detector_agreement": 8e-06,
-        "novelty_sharpness": 0.0,
-        "transient_aligned": true,
-        "bar_grid_alignment": 0.944691,
-        "form_role_margin": 0.522307
-      }
+      "similarity": 0.965948,
+      "confidence_terms": null
     },
     {
       "section_id": "section-004",
       "start": 44.36,
-      "end": 57.74,
+      "end": 57.28,
       "label": "outro",
-      "confidence": 0.172544,
+      "confidence": 0.55,
       "section_character": "release_tail",
       "onset_anchored": false,
       "form_role": "outro",
-      "form_role_confidence": 0.920784,
-      "form_role_margin": 0.319279,
+      "form_role_confidence": 0.95,
+      "form_role_margin": 0.65,
       "energy_character": "release_tail",
       "repetition_group": "A",
       "variant_of": "section-001",
-      "similarity": 0.853543,
-      "confidence_terms": {
-        "channel_strengths": {
-          "energy": 0.0,
-          "timbral": 0.014883,
-          "harmonic": 0.0
-        },
-        "mean_strength": 0.004961,
-        "detector_agreement": 0.004862,
-        "novelty_sharpness": 0.0,
-        "transient_aligned": false,
-        "bar_grid_alignment": 1.0,
-        "form_role_margin": 0.798197
-      }
+      "similarity": 0.965948,
+      "confidence_terms": null
     }
   ],
-  "micro_breaks": [
-    {
-      "start_s": 22.2,
-      "end_s": 24.06,
-      "bar_count": 1,
-      "break_type": "pause_break"
-    },
-    {
-      "start_s": 55.44,
-      "end_s": 57.74,
-      "bar_count": 2,
-      "break_type": "pause_break"
-    }
-  ],
+  "micro_breaks": [],
   "metadata": {
-    "promotion_applied": false
+    "promotion_applied": true,
+    "inferred_section_count": 2,
+    "promoted_section_count": 4
   },
   "form_family": {
-    "value": "hybrid",
-    "confidence": 0.785,
+    "value": "unknown",
+    "confidence": 0.15,
     "provenance": "inferred",
     "evidence": {
-      "tempo_cv": 0.013676,
-      "tempo_stable": true,
+      "tempo_cv": 0.117449,
+      "tempo_stable": false,
       "steady_kick": false,
-      "has_bass_dropout": true,
-      "bass_range": 0.74061,
-      "recurring_vocal_sections": true,
-      "vocal_section_count": 2,
-      "dance_score": 0.67,
-      "song_score": 1.0
+      "has_bass_dropout": false,
+      "bass_range": 0.177818,
+      "recurring_vocal_sections": false,
+      "vocal_section_count": 0,
+      "dance_score": 0.0,
+      "song_score": 0.0
     }
   }
 }

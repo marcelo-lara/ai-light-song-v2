@@ -35,7 +35,6 @@ const NOT_BADGED = [
   "chords",
   "identifierHints",
   "machineEvents",
-  "phrases",
   "fftBands",
   "rmsLoudness",
   "loudnessEnvelope",

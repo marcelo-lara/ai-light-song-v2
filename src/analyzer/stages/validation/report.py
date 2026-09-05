@@ -47,7 +47,6 @@ def build_validation_report(
     event_review_path = paths.review_json_path
     event_overrides_path = paths.overrides_path
     event_timeline_path = paths.timeline_output_path
-    symbolic_path = paths.artifact("layer_b_symbolic.json")
     harmonic = read_json(harmonic_path)
     sections = read_json(sections_path)
     timing = read_json(beats_path)
@@ -124,7 +123,6 @@ def build_validation_report(
         "generated_artifacts": {
             "beats_file": str(beats_path),
             "harmonic_layer_file": str(harmonic_path),
-            "symbolic_layer_file": str(symbolic_path),
             "drum_events_file": str(drum_events_path),
             "drum_midi_file": str(drum_midi_path),
             "energy_layer_file": str(energy_path),

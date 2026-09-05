@@ -20,6 +20,5 @@ vamp>=1.1.0
 torch==2.1.2
 torchaudio==2.1.2
 demucs
-basic-pitch
 git+https://github.com/audiohacking/omnizart.git
 tensorflow==2.12.1

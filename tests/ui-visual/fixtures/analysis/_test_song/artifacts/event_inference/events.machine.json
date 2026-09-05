@@ -13,20 +13,20 @@
   },
   "events": [
     {
-      "id": "machine_drop_001",
-      "type": "drop",
-      "start_time": 30.04,
-      "end_time": 30.5,
-      "confidence": 0.888186,
+      "id": "machine_pause_break_001",
+      "type": "pause_break",
+      "start_time": 0.510839,
+      "end_time": 1.044898,
+      "confidence": 0.556812,
       "intensity": 1.0,
       "evidence": {
-        "summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 30.04,
-            "end_time": 30.5,
-            "ref": "beats:66-66",
+            "start_time": 0.510839,
+            "end_time": 1.044898,
+            "ref": "beats:1-1",
             "metric_names": [
               "energy_score",
               "symbolic_density",
@@ -35,7 +35,2431 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.605442,
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 0.534059,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.396346,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_002",
+      "type": "pause_break",
+      "start_time": 1.044898,
+      "end_time": 1.567347,
+      "confidence": 0.661302,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 1.044898,
+            "end_time": 1.567347,
+            "ref": "beats:2-2",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 1.056508,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.319251,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_003",
+      "type": "pause_break",
+      "start_time": 1.567347,
+      "end_time": 2.089796,
+      "confidence": 0.765791,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 1.567347,
+            "end_time": 2.089796,
+            "ref": "beats:3-3",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 1.578957,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.423191,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_004",
+      "type": "pause_break",
+      "start_time": 2.089796,
+      "end_time": 2.612245,
+      "confidence": 0.870281,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 2.089796,
+            "end_time": 2.612245,
+            "ref": "beats:4-4",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 2.101406,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.503805,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_005",
+      "type": "pause_break",
+      "start_time": 2.612245,
+      "end_time": 3.227574,
+      "confidence": 0.993347,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 2.612245,
+            "end_time": 3.227574,
+            "ref": "beats:5-5",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 2.716735,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.799943,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_006",
+      "type": "pause_break",
+      "start_time": 3.227574,
+      "end_time": 3.854512,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 3.227574,
+            "end_time": 3.854512,
+            "ref": "beats:6-6",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 3.343673,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.832373,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_007",
+      "type": "pause_break",
+      "start_time": 3.854512,
+      "end_time": 4.481451,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 3.854512,
+            "end_time": 4.481451,
+            "ref": "beats:7-7",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 3.970612,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.908552,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_008",
+      "type": "pause_break",
+      "start_time": 4.481451,
+      "end_time": 5.12,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 4.481451,
+            "end_time": 5.12,
+            "ref": "beats:8-8",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 4.609161,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.965547,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_009",
+      "type": "pause_break",
+      "start_time": 5.12,
+      "end_time": 5.758549,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 5.12,
+            "end_time": 5.758549,
+            "ref": "beats:9-9",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 5.24771,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.955145,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_010",
+      "type": "pause_break",
+      "start_time": 5.758549,
+      "end_time": 6.385488,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 5.758549,
+            "end_time": 6.385488,
+            "ref": "beats:10-10",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 5.874649,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.839462,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_011",
+      "type": "pause_break",
+      "start_time": 6.385488,
+      "end_time": 6.989206,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 6.385488,
+            "end_time": 6.989206,
+            "ref": "beats:11-11",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 6.478367,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.800405,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_012",
+      "type": "pause_break",
+      "start_time": 6.989206,
+      "end_time": 7.604535,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 6.989206,
+            "end_time": 7.604535,
+            "ref": "beats:12-12",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 7.093696,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.433622,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_013",
+      "type": "pause_break",
+      "start_time": 7.604535,
+      "end_time": 8.219864,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 7.604535,
+            "end_time": 8.219864,
+            "ref": "beats:13-13",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 7.709025,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.357209,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_014",
+      "type": "pause_break",
+      "start_time": 8.846803,
+      "end_time": 9.462132,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 8.846803,
+            "end_time": 9.462132,
+            "ref": "beats:15-15",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 8.951293,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.33532,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_015",
+      "type": "pause_break",
+      "start_time": 9.462132,
+      "end_time": 10.07746,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 9.462132,
+            "end_time": 10.07746,
+            "ref": "beats:16-16",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 9.566621,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.432427,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_016",
+      "type": "pause_break",
+      "start_time": 10.07746,
+      "end_time": 10.681179,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 10.07746,
+            "end_time": 10.681179,
+            "ref": "beats:17-17",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 10.17034,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.760952,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_017",
+      "type": "pause_break",
+      "start_time": 10.681179,
+      "end_time": 11.284898,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 10.681179,
+            "end_time": 11.284898,
+            "ref": "beats:18-18",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 10.774059,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.766347,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_018",
+      "type": "energy_reset",
+      "start_time": 11.284898,
+      "end_time": 11.877007,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 11.284898,
+            "end_time": 11.877007,
+            "ref": "beats:19-19",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 11.366168,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.933234,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.738103,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_019",
+      "type": "energy_reset",
+      "start_time": 11.877007,
+      "end_time": 12.353016,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 11.877007,
+            "end_time": 12.353016,
+            "ref": "beats:20-20",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 11.842177,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -1.070014,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.738103,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_020",
+      "type": "energy_reset",
+      "start_time": 12.353016,
+      "end_time": 12.840634,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 12.353016,
+            "end_time": 12.840634,
+            "ref": "beats:21-21",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 12.329795,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.795867,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.752197,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_021",
+      "type": "energy_reset",
+      "start_time": 12.840634,
+      "end_time": 13.328254,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 12.840634,
+            "end_time": 13.328254,
+            "ref": "beats:22-22",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 12.817415,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.746731,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.746737,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_022",
+      "type": "energy_reset",
+      "start_time": 13.328254,
+      "end_time": 13.815873,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 13.328254,
+            "end_time": 13.815873,
+            "ref": "beats:23-23",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 13.305034,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -1.251085,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.759714,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_023",
+      "type": "energy_reset",
+      "start_time": 13.815873,
+      "end_time": 14.315102,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 13.815873,
+            "end_time": 14.315102,
+            "ref": "beats:24-24",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 13.804263,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -1.183234,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.752175,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_pause_break_024",
+      "type": "pause_break",
+      "start_time": 14.315102,
+      "end_time": 14.802721,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 14.315102,
+            "end_time": 14.802721,
+            "ref": "beats:25-25",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 0.06,
+            "end_time": 14.82,
+            "ref": "section-001",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 14.291882,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.888833,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-001",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_025",
+      "type": "pause_break",
+      "start_time": 15.278729,
+      "end_time": 15.731519,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 15.278729,
+            "end_time": 15.731519,
+            "ref": "beats:27-27",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 15.22068,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.740228,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_026",
+      "type": "pause_break",
+      "start_time": 15.731519,
+      "end_time": 16.195917,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 15.731519,
+            "end_time": 16.195917,
+            "ref": "beats:28-28",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 15.685078,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.538984,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_027",
+      "type": "pause_break",
+      "start_time": 16.195917,
+      "end_time": 16.648706,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 16.195917,
+            "end_time": 16.648706,
+            "ref": "beats:29-29",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 16.137867,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.587284,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_028",
+      "type": "pause_break",
+      "start_time": 17.113106,
+      "end_time": 17.577505,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 17.113106,
+            "end_time": 17.577505,
+            "ref": "beats:31-31",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 17.066666,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.649139,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_029",
+      "type": "pause_break",
+      "start_time": 17.577505,
+      "end_time": 18.041904,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 17.577505,
+            "end_time": 18.041904,
+            "ref": "beats:32-32",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 17.531065,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.53235,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_030",
+      "type": "energy_reset",
+      "start_time": 18.041904,
+      "end_time": 18.506304,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 18.041904,
+            "end_time": 18.506304,
+            "ref": "beats:33-33",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 17.995465,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.81434,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.788072,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_031",
+      "type": "energy_reset",
+      "start_time": 18.506304,
+      "end_time": 18.970703,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 18.506304,
+            "end_time": 18.970703,
+            "ref": "beats:34-34",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 18.459864,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -1.097525,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.788072,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_pause_break_032",
+      "type": "pause_break",
+      "start_time": 19.435102,
+      "end_time": 19.8995,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 19.435102,
+            "end_time": 19.8995,
+            "ref": "beats:36-36",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 19.388661,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.518722,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_033",
+      "type": "pause_break",
+      "start_time": 19.8995,
+      "end_time": 20.340679,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 19.8995,
+            "end_time": 20.340679,
+            "ref": "beats:37-37",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 19.82984,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.52334,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_034",
+      "type": "energy_reset",
+      "start_time": 20.805079,
+      "end_time": 21.269478,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 20.805079,
+            "end_time": 21.269478,
+            "ref": "beats:39-39",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 20.758639,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.662525,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.740701,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_pause_break_035",
+      "type": "pause_break",
+      "start_time": 24.497051,
+      "end_time": 24.961451,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 24.497051,
+            "end_time": 24.961451,
+            "ref": "beats:47-47",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 24.450612,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.684392,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_energy_reset_036",
+      "type": "energy_reset",
+      "start_time": 25.42585,
+      "end_time": 25.878639,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 25.42585,
+            "end_time": 25.878639,
+            "ref": "beats:49-49",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 14.82,
+            "end_time": 29.58,
+            "ref": "section-002",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 25.3678,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.649462,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "ambient_opening",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.854648,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_drop_037",
+      "type": "drop",
+      "start_time": 30.023401,
+      "end_time": 30.487801,
+      "confidence": 0.850544,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 30.023401,
+            "end_time": 30.487801,
+            "ref": "beats:59-59",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 29.58,
             "end_time": 44.36,
             "ref": "section-003",
             "metric_names": [
@@ -47,42 +2471,42 @@
         "metrics": [
           {
             "name": "drop_evidence_score",
-            "value": 0.753983,
+            "value": 0.759425,
             "threshold": 0.5,
             "comparator": ">=",
             "source_layer": "event_features"
           },
           {
             "name": "bass_reentry",
-            "value": 0.97417,
+            "value": 0.976455,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
           },
           {
             "name": "bass_stem_rel",
-            "value": 0.975044,
+            "value": 0.977433,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
           },
           {
             "name": "energy_delta",
-            "value": 0.06711,
+            "value": 0.075406,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
           },
           {
             "name": "spectral_flux_rel",
-            "value": 0.815618,
+            "value": 0.817723,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
           },
           {
             "name": "onset_density_rel",
-            "value": 0.99885,
+            "value": 0.997452,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
@@ -96,14 +2520,14 @@
           },
           {
             "name": "bass_att_ratio",
-            "value": 0.202935,
+            "value": 0.241136,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
           },
           {
             "name": "alignment_score",
-            "value": 0.6,
+            "value": 0.18004,
             "source_layer": "energy_identifiers"
           },
           {
@@ -122,37 +2546,37 @@
           "drop_evidence": {
             "profile": "stem_relative_weighted_v1",
             "decision_threshold": 0.5,
-            "score": 0.753983,
+            "score": 0.759425,
             "contributions": [
               {
                 "name": "bass_reentry",
-                "sub_score": 0.97417,
+                "sub_score": 0.976455,
                 "weight": 0.28,
-                "weighted": 0.272768
+                "weighted": 0.273407
               },
               {
                 "name": "bass_stem_rel",
-                "sub_score": 0.975044,
+                "sub_score": 0.977433,
                 "weight": 0.14,
-                "weighted": 0.136506
+                "weighted": 0.136841
               },
               {
                 "name": "energy_delta",
-                "sub_score": 0.06711,
+                "sub_score": 0.075406,
                 "weight": 0.16,
-                "weighted": 0.010738
+                "weighted": 0.012065
               },
               {
                 "name": "spectral_flux_rel",
-                "sub_score": 0.815618,
+                "sub_score": 0.817723,
                 "weight": 0.12,
-                "weighted": 0.097874
+                "weighted": 0.098127
               },
               {
                 "name": "onset_density_rel",
-                "sub_score": 0.99885,
+                "sub_score": 0.997452,
                 "weight": 0.12,
-                "weighted": 0.119862
+                "weighted": 0.119694
               },
               {
                 "name": "accent_intensity",
@@ -162,17 +2586,17 @@
               },
               {
                 "name": "bass_att_ratio",
-                "sub_score": 0.202935,
+                "sub_score": 0.241136,
                 "weight": 0.08,
-                "weighted": 0.016235
+                "weighted": 0.019291
               }
             ]
           }
         }
       },
-      "notes": "Weighted-evidence drop; contributing features: bass_reentry, bass_stem_rel, energy_delta, spectral_flux_rel, onset_density_rel, accent_intensity, bass_att_ratio. Subtype evidence is not decisive enough; keeping parent drop label. Identifier audit alignment_score=0.600.",
+      "notes": "Weighted-evidence drop; contributing features: bass_reentry, bass_stem_rel, energy_delta, spectral_flux_rel, onset_density_rel, accent_intensity, bass_att_ratio. Subtype evidence is not decisive enough; keeping parent drop label. Identifier audit alignment_score=0.180.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "momentum_lift",
+      "section_name": "release_tail",
       "section_id": "section-003",
       "source_layers": [
         "event_features",
@@ -192,21 +2616,21 @@
         },
         {
           "type": "drop_groove",
-          "confidence": 1.0,
+          "confidence": 0.83764,
           "notes": "Sustained bass-led release with groove continuity."
         },
         {
           "type": "soft_release",
-          "confidence": 0.628144,
+          "confidence": 0.593712,
           "notes": "Release resolves tension with softer attack and less explosive accent."
         }
       ]
     },
     {
-      "id": "machine_impact_hit_002",
+      "id": "machine_impact_hit_038",
       "type": "impact_hit",
-      "start_time": 30.04,
-      "end_time": 30.5,
+      "start_time": 30.023401,
+      "end_time": 30.487801,
       "confidence": 1.0,
       "intensity": 1.0,
       "evidence": {
@@ -214,9 +2638,9 @@
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 30.04,
-            "end_time": 30.5,
-            "ref": "beats:66-66",
+            "start_time": 30.023401,
+            "end_time": 30.487801,
+            "ref": "beats:59-59",
             "metric_names": [
               "energy_score",
               "symbolic_density",
@@ -225,7 +2649,7 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.605442,
+            "start_time": 29.58,
             "end_time": 44.36,
             "ref": "section-003",
             "metric_names": [
@@ -237,14 +2661,14 @@
         "metrics": [
           {
             "name": "accent_intensity",
-            "value": 3.577611,
+            "value": 3.226048,
             "threshold": 0.65,
             "comparator": ">=",
             "source_layer": "event_features"
           },
           {
             "name": "impact_support_ratio",
-            "value": 1.230123,
+            "value": 1.241136,
             "threshold": 1.15,
             "comparator": ">=",
             "source_layer": "event_features"
@@ -259,7 +2683,7 @@
       },
       "notes": "Impact hits remain single-beat candidates.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "momentum_lift",
+      "section_name": "release_tail",
       "section_id": "section-003",
       "source_layers": [
         "event_features",
@@ -267,96 +2691,20 @@
       ]
     },
     {
-      "id": "machine_energy_reset_003",
-      "type": "energy_reset",
-      "start_time": 36.5,
-      "end_time": 36.98,
-      "confidence": 1.0,
-      "intensity": 1.0,
-      "evidence": {
-        "summary": "Energy and symbolic density both drop sharply across this window.",
-        "source_windows": [
-          {
-            "layer": "event_features",
-            "start_time": 36.5,
-            "end_time": 36.98,
-            "ref": "beats:80-80",
-            "metric_names": [
-              "energy_score",
-              "symbolic_density",
-              "harmonic_tension_proxy"
-            ]
-          },
-          {
-            "layer": "sections",
-            "start_time": 29.605442,
-            "end_time": 44.36,
-            "ref": "section-003",
-            "metric_names": [
-              "section_character",
-              "confidence"
-            ]
-          }
-        ],
-        "metrics": [
-          {
-            "name": "energy_delta",
-            "value": -1.882501,
-            "threshold": -0.5701840134265567,
-            "comparator": "<=",
-            "source_layer": "event_features"
-          },
-          {
-            "name": "density_delta",
-            "value": -0.791495,
-            "threshold": -0.15,
-            "comparator": "<=",
-            "source_layer": "event_features"
-          }
-        ],
-        "reasons": [
-          "Energy and symbolic density both drop sharply across this window."
-        ],
-        "rule_names": [
-          "breakdown_dual_drop"
-        ]
-      },
-      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
-      "created_by": "analyzer_event_classifier",
-      "section_name": "momentum_lift",
-      "section_id": "section-003",
-      "source_layers": [
-        "event_features",
-        "sections"
-      ],
-      "candidates": [
-        {
-          "type": "energy_reset",
-          "confidence": 0.787379,
-          "notes": "Energy rebuild follows the negative-space window."
-        },
-        {
-          "type": "breakdown",
-          "confidence": 1.0,
-          "notes": "Parent transition remains a valid fallback."
-        }
-      ]
-    },
-    {
-      "id": "machine_drop_004",
-      "type": "drop",
-      "start_time": 36.98,
-      "end_time": 37.44,
-      "confidence": 0.844078,
+      "id": "machine_soft_release_039",
+      "type": "soft_release",
+      "start_time": 36.942947,
+      "end_time": 37.407345,
+      "confidence": 0.760088,
       "intensity": 1.0,
       "evidence": {
         "summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 36.98,
-            "end_time": 37.44,
-            "ref": "beats:81-81",
+            "start_time": 36.942947,
+            "end_time": 37.407345,
+            "ref": "beats:74-74",
             "metric_names": [
               "energy_score",
               "symbolic_density",
@@ -365,7 +2713,7 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.605442,
+            "start_time": 29.58,
             "end_time": 44.36,
             "ref": "section-003",
             "metric_names": [
@@ -377,42 +2725,42 @@
         "metrics": [
           {
             "name": "drop_evidence_score",
-            "value": 0.698848,
+            "value": 0.656439,
             "threshold": 0.5,
             "comparator": ">=",
             "source_layer": "event_features"
           },
           {
             "name": "bass_reentry",
-            "value": 0.837296,
+            "value": 0.633288,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
           },
           {
             "name": "bass_stem_rel",
-            "value": 1.0,
+            "value": 0.970681,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
           },
           {
             "name": "energy_delta",
-            "value": 0.88178,
+            "value": 0.954364,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
           },
           {
             "name": "spectral_flux_rel",
-            "value": 0.547514,
+            "value": 0.606882,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
           },
           {
             "name": "onset_density_rel",
-            "value": 0.958841,
+            "value": 0.950568,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
@@ -426,14 +2774,14 @@
           },
           {
             "name": "bass_att_ratio",
-            "value": 0.031965,
+            "value": 0.04539,
             "threshold": 0.0,
             "comparator": ">",
             "source_layer": "event_features"
           },
           {
             "name": "alignment_score",
-            "value": 0.6,
+            "value": 0.18004,
             "source_layer": "energy_identifiers"
           },
           {
@@ -452,37 +2800,37 @@
           "drop_evidence": {
             "profile": "stem_relative_weighted_v1",
             "decision_threshold": 0.5,
-            "score": 0.698848,
+            "score": 0.656439,
             "contributions": [
               {
                 "name": "bass_reentry",
-                "sub_score": 0.837296,
+                "sub_score": 0.633288,
                 "weight": 0.28,
-                "weighted": 0.234443
+                "weighted": 0.177321
               },
               {
                 "name": "bass_stem_rel",
-                "sub_score": 1.0,
+                "sub_score": 0.970681,
                 "weight": 0.14,
-                "weighted": 0.14
+                "weighted": 0.135895
               },
               {
                 "name": "energy_delta",
-                "sub_score": 0.88178,
+                "sub_score": 0.954364,
                 "weight": 0.16,
-                "weighted": 0.141085
+                "weighted": 0.152698
               },
               {
                 "name": "spectral_flux_rel",
-                "sub_score": 0.547514,
+                "sub_score": 0.606882,
                 "weight": 0.12,
-                "weighted": 0.065702
+                "weighted": 0.072826
               },
               {
                 "name": "onset_density_rel",
-                "sub_score": 0.958841,
+                "sub_score": 0.950568,
                 "weight": 0.12,
-                "weighted": 0.115061
+                "weighted": 0.114068
               },
               {
                 "name": "accent_intensity",
@@ -492,17 +2840,17 @@
               },
               {
                 "name": "bass_att_ratio",
-                "sub_score": 0.031965,
+                "sub_score": 0.04539,
                 "weight": 0.08,
-                "weighted": 0.002557
+                "weighted": 0.003631
               }
             ]
           }
         }
       },
-      "notes": "Weighted-evidence drop; contributing features: bass_reentry, bass_stem_rel, energy_delta, spectral_flux_rel, onset_density_rel, bass_att_ratio. Subtype evidence is not decisive enough; keeping parent drop label. Identifier audit alignment_score=0.600.",
+      "notes": "Weighted-evidence drop; contributing features: bass_reentry, bass_stem_rel, energy_delta, spectral_flux_rel, onset_density_rel, bass_att_ratio. Release resolves tension with softer attack and less explosive accent. Identifier audit alignment_score=0.180.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "momentum_lift",
+      "section_name": "release_tail",
       "section_id": "section-003",
       "source_layers": [
         "event_features",
@@ -511,42 +2859,42 @@
       ],
       "candidates": [
         {
-          "type": "drop_groove",
-          "confidence": 1.0,
-          "notes": "Sustained bass-led release with groove continuity."
-        },
-        {
           "type": "soft_release",
-          "confidence": 0.964059,
+          "confidence": 0.946221,
           "notes": "Release resolves tension with softer attack and less explosive accent."
         },
         {
+          "type": "drop_groove",
+          "confidence": 0.881118,
+          "notes": "Sustained bass-led release with groove continuity."
+        },
+        {
           "type": "drop_explode",
-          "confidence": 0.380095,
+          "confidence": 0.353181,
           "notes": "Explosive release with strong accent and spectral opening."
         },
         {
           "type": "drop_punch",
-          "confidence": 0.160729,
+          "confidence": 0.145703,
           "notes": "Compact high-impact release with punch-forward attack."
         }
       ]
     },
     {
-      "id": "machine_energy_reset_005",
+      "id": "machine_energy_reset_040",
       "type": "energy_reset",
-      "start_time": 42.5,
-      "end_time": 42.98,
+      "start_time": 42.492516,
+      "end_time": 42.956917,
       "confidence": 1.0,
       "intensity": 1.0,
       "evidence": {
-        "summary": "Energy and symbolic density both drop sharply across this window.",
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 42.5,
-            "end_time": 42.98,
-            "ref": "beats:93-93",
+            "start_time": 42.492516,
+            "end_time": 42.956917,
+            "ref": "beats:86-86",
             "metric_names": [
               "energy_score",
               "symbolic_density",
@@ -555,7 +2903,7 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.605442,
+            "start_time": 29.58,
             "end_time": 44.36,
             "ref": "section-003",
             "metric_names": [
@@ -566,30 +2914,30 @@
         ],
         "metrics": [
           {
-            "name": "energy_delta",
-            "value": -2.609947,
-            "threshold": -0.5701840134265567,
-            "comparator": "<=",
+            "name": "silence_gap_seconds",
+            "value": 42.446078,
+            "threshold": 0.5,
+            "comparator": ">=",
             "source_layer": "event_features"
           },
           {
-            "name": "density_delta",
-            "value": -0.351775,
-            "threshold": -0.15,
+            "name": "energy_score",
+            "value": -1.022446,
+            "threshold": 0.4,
             "comparator": "<=",
             "source_layer": "event_features"
           }
         ],
         "reasons": [
-          "Energy and symbolic density both drop sharply across this window."
+          "Silence gap duration and low energy indicate a pause or stop-time break."
         ],
         "rule_names": [
-          "breakdown_dual_drop"
+          "pause_gap_low_energy"
         ]
       },
-      "notes": "Breakdown candidates are merged across adjacent negative-delta beats. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "momentum_lift",
+      "section_name": "release_tail",
       "section_id": "section-003",
       "source_layers": [
         "event_features",
@@ -598,31 +2946,31 @@
       "candidates": [
         {
           "type": "energy_reset",
-          "confidence": 0.740572,
+          "confidence": 0.733399,
           "notes": "Energy rebuild follows the negative-space window."
         },
         {
-          "type": "breakdown",
+          "type": "pause_break",
           "confidence": 1.0,
           "notes": "Parent transition remains a valid fallback."
         }
       ]
     },
     {
-      "id": "machine_tension_hold_006",
-      "type": "tension_hold",
-      "start_time": 44.36,
-      "end_time": 57.74,
-      "confidence": 0.593103,
-      "intensity": 0.551724,
+      "id": "machine_energy_reset_041",
+      "type": "energy_reset",
+      "start_time": 42.956917,
+      "end_time": 43.421314,
+      "confidence": 1.0,
+      "intensity": 1.0,
       "evidence": {
-        "summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 44.36,
-            "end_time": 57.74,
-            "ref": "beats:97-125",
+            "start_time": 42.956917,
+            "end_time": 43.421314,
+            "ref": "beats:87-87",
             "metric_names": [
               "energy_score",
               "symbolic_density",
@@ -631,9 +2979,9 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.74,
-            "ref": "section-004",
+            "start_time": 29.58,
+            "end_time": 44.36,
+            "ref": "section-003",
             "metric_names": [
               "section_character",
               "confidence"
@@ -642,290 +2990,804 @@
         ],
         "metrics": [
           {
-            "name": "tension_mean",
-            "value": 0.551724,
-            "threshold": 0.5504162264103712,
+            "name": "silence_gap_seconds",
+            "value": 42.910475,
+            "threshold": 0.5,
             "comparator": ">=",
             "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.780114,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
           }
         ],
         "reasons": [
-          "Sustained harmonic tension stays elevated across the section without a qualifying release."
+          "Silence gap duration and low energy indicate a pause or stop-time break."
         ],
         "rule_names": [
-          "tension_hold_section_state"
+          "pause_gap_low_energy"
         ]
       },
-      "notes": "Held-state candidate preserved even when overlapping build windows exist.",
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
       "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_id": "section-003",
       "source_layers": [
         "event_features",
         "sections"
-      ]
-    },
-    {
-      "id": "machine_breakdown_007",
-      "type": "breakdown",
-      "start_time": 44.82,
-      "end_time": 45.28,
-      "confidence": 0.713931,
-      "intensity": 0.59835,
-      "evidence": {
-        "summary": "Energy and symbolic density both drop sharply across this window.",
-        "source_windows": [
-          {
-            "layer": "event_features",
-            "start_time": 44.82,
-            "end_time": 45.28,
-            "ref": "beats:98-98",
-            "metric_names": [
-              "energy_score",
-              "symbolic_density",
-              "harmonic_tension_proxy"
-            ]
-          },
-          {
-            "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.74,
-            "ref": "section-004",
-            "metric_names": [
-              "section_character",
-              "confidence"
-            ]
-          }
-        ],
-        "metrics": [
-          {
-            "name": "energy_delta",
-            "value": -0.59835,
-            "threshold": -0.5701840134265567,
-            "comparator": "<=",
-            "source_layer": "event_features"
-          },
-          {
-            "name": "density_delta",
-            "value": -0.42213,
-            "threshold": -0.15,
-            "comparator": "<=",
-            "source_layer": "event_features"
-          }
-        ],
-        "reasons": [
-          "Energy and symbolic density both drop sharply across this window."
-        ],
-        "rule_names": [
-          "breakdown_dual_drop"
-        ]
-      },
-      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
-      "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
-      "source_layers": [
-        "event_features",
-        "sections"
-      ]
-    },
-    {
-      "id": "machine_breakdown_008",
-      "type": "breakdown",
-      "start_time": 54.52,
-      "end_time": 54.98,
-      "confidence": 0.820124,
-      "intensity": 0.577098,
-      "evidence": {
-        "summary": "Energy and symbolic density both drop sharply across this window.",
-        "source_windows": [
-          {
-            "layer": "event_features",
-            "start_time": 54.52,
-            "end_time": 54.98,
-            "ref": "beats:119-119",
-            "metric_names": [
-              "energy_score",
-              "symbolic_density",
-              "harmonic_tension_proxy"
-            ]
-          },
-          {
-            "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.74,
-            "ref": "section-004",
-            "metric_names": [
-              "section_character",
-              "confidence"
-            ]
-          }
-        ],
-        "metrics": [
-          {
-            "name": "energy_delta",
-            "value": -0.577098,
-            "threshold": -0.5701840134265567,
-            "comparator": "<=",
-            "source_layer": "event_features"
-          },
-          {
-            "name": "density_delta",
-            "value": -0.984971,
-            "threshold": -0.15,
-            "comparator": "<=",
-            "source_layer": "event_features"
-          }
-        ],
-        "reasons": [
-          "Energy and symbolic density both drop sharply across this window."
-        ],
-        "rule_names": [
-          "breakdown_dual_drop"
-        ]
-      },
-      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
-      "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
-      "source_layers": [
-        "event_features",
-        "sections"
-      ]
-    },
-    {
-      "id": "machine_breakdown_009",
-      "type": "breakdown",
-      "start_time": 55.44,
-      "end_time": 55.9,
-      "confidence": 0.853901,
-      "intensity": 0.971109,
-      "evidence": {
-        "summary": "Energy and symbolic density both drop sharply across this window.",
-        "source_windows": [
-          {
-            "layer": "event_features",
-            "start_time": 55.44,
-            "end_time": 55.9,
-            "ref": "beats:121-121",
-            "metric_names": [
-              "energy_score",
-              "symbolic_density",
-              "harmonic_tension_proxy"
-            ]
-          },
-          {
-            "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.74,
-            "ref": "section-004",
-            "metric_names": [
-              "section_character",
-              "confidence"
-            ]
-          }
-        ],
-        "metrics": [
-          {
-            "name": "energy_delta",
-            "value": -0.971109,
-            "threshold": -0.5701840134265567,
-            "comparator": "<=",
-            "source_layer": "event_features"
-          },
-          {
-            "name": "density_delta",
-            "value": -0.56284,
-            "threshold": -0.15,
-            "comparator": "<=",
-            "source_layer": "event_features"
-          }
-        ],
-        "reasons": [
-          "Energy and symbolic density both drop sharply across this window."
-        ],
-        "rule_names": [
-          "breakdown_dual_drop"
-        ]
-      },
-      "notes": "Breakdown candidates are merged across adjacent negative-delta beats.",
-      "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
-      "source_layers": [
-        "event_features",
-        "sections"
-      ]
-    },
-    {
-      "id": "machine_hook_phrase_001",
-      "type": "hook_phrase",
-      "start_time": 22.2,
-      "end_time": 29.58,
-      "confidence": 0.645958,
-      "intensity": 0.75318,
-      "evidence": {
-        "summary": "Repeated phrase-group activity and vocal presence indicate a hook phrase.",
-        "source_windows": [
-          {
-            "layer": "symbolic",
-            "start_time": 22.2,
-            "end_time": 29.58,
-            "ref": "phrase_group_A_3",
-            "metric_names": [
-              "phrase_window_id",
-              "phrase_group_id"
-            ]
-          },
-          {
-            "layer": "event_features",
-            "start_time": 22.2,
-            "end_time": 29.58,
-            "ref": "beats:49-64",
-            "metric_names": [
-              "vocal_presence_score",
-              "energy_mean"
-            ]
-          }
-        ],
-        "metrics": [
-          {
-            "name": "vocal_presence_mean",
-            "value": 0.75318,
-            "source_layer": "event_features"
-          },
-          {
-            "name": "energy_mean",
-            "value": -0.088273,
-            "source_layer": "event_features"
-          }
-        ],
-        "reasons": [
-          "Repeated phrase-group activity and vocal presence indicate a hook phrase."
-        ],
-        "rule_names": [
-          "hook_phrase_phrase_classifier"
-        ]
-      },
-      "notes": "Phrase group repeats 3 time(s), making the phrase a stable hook candidate.",
-      "created_by": "analyzer_phrase_classifier",
-      "section_id": "section-002",
-      "source_layers": [
-        "symbolic",
-        "event_features"
       ],
       "candidates": [
         {
-          "type": "anthem_call",
-          "confidence": 0.75318,
-          "notes": "Strong vocals could also read as a call moment."
+          "type": "energy_reset",
+          "confidence": 0.797744,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
         }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_042",
+      "type": "energy_reset",
+      "start_time": 44.83773,
+      "end_time": 45.325352,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 44.83773,
+            "end_time": 45.325352,
+            "ref": "beats:91-91",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 44.814513,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.483484,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.730164,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_043",
+      "type": "energy_reset",
+      "start_time": 45.325352,
+      "end_time": 45.824581,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 45.325352,
+            "end_time": 45.824581,
+            "ref": "beats:92-92",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 45.313742,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.617494,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.730164,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_044",
+      "type": "energy_reset",
+      "start_time": 45.824581,
+      "end_time": 46.393467,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 45.824581,
+            "end_time": 46.393467,
+            "ref": "beats:93-93",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 45.882628,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.66652,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.765581,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_energy_reset_045",
+      "type": "energy_reset",
+      "start_time": 46.393467,
+      "end_time": 46.973969,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 46.393467,
+            "end_time": 46.973969,
+            "ref": "beats:94-94",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 46.46313,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.762909,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ],
+      "candidates": [
+        {
+          "type": "energy_reset",
+          "confidence": 0.796379,
+          "notes": "Energy rebuild follows the negative-space window."
+        },
+        {
+          "type": "pause_break",
+          "confidence": 1.0,
+          "notes": "Parent transition remains a valid fallback."
+        }
+      ]
+    },
+    {
+      "id": "machine_pause_break_046",
+      "type": "pause_break",
+      "start_time": 54.752651,
+      "end_time": 55.217052,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 54.752651,
+            "end_time": 55.217052,
+            "ref": "beats:109-109",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 54.706213,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -0.59773,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_047",
+      "type": "pause_break",
+      "start_time": 55.217052,
+      "end_time": 55.693062,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 55.217052,
+            "end_time": 55.693062,
+            "ref": "beats:110-110",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 55.182223,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -1.143026,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_048",
+      "type": "pause_break",
+      "start_time": 55.693062,
+      "end_time": 56.169067,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 55.693062,
+            "end_time": 56.169067,
+            "ref": "beats:111-111",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 55.658228,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -1.704785,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_049",
+      "type": "pause_break",
+      "start_time": 56.169067,
+      "end_time": 56.633469,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 56.169067,
+            "end_time": 56.633469,
+            "ref": "beats:112-112",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 56.12263,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -1.765548,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_050",
+      "type": "pause_break",
+      "start_time": 56.633469,
+      "end_time": 57.109478,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 56.633469,
+            "end_time": 57.109478,
+            "ref": "beats:113-113",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 56.598639,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -1.748145,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_051",
+      "type": "pause_break",
+      "start_time": 57.109478,
+      "end_time": 57.585487,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 57.109478,
+            "end_time": 57.585487,
+            "ref": "beats:114-114",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 57.074648,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -1.790267,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_pause_break_052",
+      "type": "pause_break",
+      "start_time": 57.585487,
+      "end_time": 58.049888,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 57.585487,
+            "end_time": 58.049888,
+            "ref": "beats:115-115",
+            "metric_names": [
+              "energy_score",
+              "symbolic_density",
+              "harmonic_tension_proxy"
+            ]
+          },
+          {
+            "layer": "sections",
+            "start_time": 44.36,
+            "end_time": 57.28,
+            "ref": "section-004",
+            "metric_names": [
+              "section_character",
+              "confidence"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "silence_gap_seconds",
+            "value": 57.539049,
+            "threshold": 0.5,
+            "comparator": ">=",
+            "source_layer": "event_features"
+          },
+          {
+            "name": "energy_score",
+            "value": -1.763554,
+            "threshold": 0.4,
+            "comparator": "<=",
+            "source_layer": "event_features"
+          }
+        ],
+        "reasons": [
+          "Silence gap duration and low energy indicate a pause or stop-time break."
+        ],
+        "rule_names": [
+          "pause_gap_low_energy"
+        ]
+      },
+      "notes": "Pause candidates are kept even when they may precede a later release.",
+      "created_by": "analyzer_event_classifier",
+      "section_name": "release_tail",
+      "section_id": "section-004",
+      "source_layers": [
+        "event_features",
+        "sections"
       ]
     },
     {
       "id": "machine_instrumental_bed_001",
       "type": "instrumental_bed",
-      "start_time": 29.605442,
+      "start_time": 29.58,
       "end_time": 44.36,
       "confidence": 1.0,
       "intensity": 1.0,
@@ -934,9 +3796,9 @@
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "beats:65-96",
+            "start_time": 29.559002,
+            "end_time": 44.83773,
+            "ref": "beats:58-90",
             "metric_names": [
               "vocal_focus_score",
               "percussion_focus_score",
@@ -947,17 +3809,17 @@
         "metrics": [
           {
             "name": "vocal_focus_mean",
-            "value": -0.652965,
+            "value": -0.237114,
             "source_layer": "event_features"
           },
           {
             "name": "percussion_focus_mean",
-            "value": 0.563044,
+            "value": 0.50904,
             "source_layer": "event_features"
           },
           {
             "name": "instrumental_focus_mean",
-            "value": 1.438495,
+            "value": 1.38369,
             "source_layer": "event_features"
           }
         ],
@@ -977,144 +3839,20 @@
       ]
     },
     {
-      "id": "machine_call_response_001",
-      "type": "call_response",
-      "start_time": 14.82,
-      "end_time": 29.58,
-      "confidence": 0.602957,
-      "intensity": 0.75318,
-      "evidence": {
-        "summary": "Adjacent vocal phrases with different phrase-group identities indicate a call-and-response exchange.",
-        "source_windows": [
-          {
-            "layer": "symbolic",
-            "start_time": 14.82,
-            "end_time": 22.2,
-            "ref": "phrase_group_C_1",
-            "metric_names": [
-              "phrase_group_id"
-            ]
-          },
-          {
-            "layer": "symbolic",
-            "start_time": 22.2,
-            "end_time": 29.58,
-            "ref": "phrase_group_A_3",
-            "metric_names": [
-              "phrase_group_id"
-            ]
-          }
-        ],
-        "metrics": [
-          {
-            "name": "left_vocal_presence_mean",
-            "value": 0.406577,
-            "source_layer": "event_features"
-          },
-          {
-            "name": "right_vocal_presence_mean",
-            "value": 0.75318,
-            "source_layer": "event_features"
-          }
-        ],
-        "reasons": [
-          "Sequential vocal phrases remain distinct but similarly prominent."
-        ],
-        "rule_names": [
-          "call_response_phrase_pair"
-        ]
-      },
-      "notes": "Adjacent phrase groups suggest an answer phrase instead of a single repeated hook.",
-      "created_by": "analyzer_phrase_classifier",
-      "section_id": "section-002",
-      "source_layers": [
-        "symbolic",
-        "event_features"
-      ]
-    },
-    {
-      "id": "machine_vocal_tail_001",
-      "type": "vocal_tail",
-      "start_time": 29.58,
-      "end_time": 32.36,
-      "confidence": 1.0,
-      "intensity": 1.0,
-      "evidence": {
-        "summary": "Vocal energy falls away after the phrase while accompaniment remains active, indicating a vocal tail or handoff.",
-        "source_windows": [
-          {
-            "layer": "symbolic",
-            "start_time": 22.2,
-            "end_time": 29.58,
-            "ref": "phrase_group_A_3",
-            "metric_names": [
-              "phrase_group_id"
-            ]
-          },
-          {
-            "layer": "event_features",
-            "start_time": 29.58,
-            "end_time": 32.36,
-            "ref": "beats:65-70",
-            "metric_names": [
-              "vocals_stem_score",
-              "harmonic_stem_score",
-              "drums_stem_score"
-            ]
-          }
-        ],
-        "metrics": [
-          {
-            "name": "phrase_vocal_focus_mean",
-            "value": 0.56377,
-            "source_layer": "event_features"
-          },
-          {
-            "name": "followup_vocals_mean",
-            "value": -0.685207,
-            "source_layer": "event_features"
-          },
-          {
-            "name": "followup_harmonic_mean",
-            "value": 1.222573,
-            "source_layer": "event_features"
-          },
-          {
-            "name": "followup_drums_mean",
-            "value": 1.761865,
-            "source_layer": "event_features"
-          }
-        ],
-        "reasons": [
-          "Vocal phrase decays while accompaniment persists."
-        ],
-        "rule_names": [
-          "vocal_tail_transition_rule"
-        ]
-      },
-      "notes": "Phrase decays into the underlying bed instead of ending with a hard stop.",
-      "created_by": "analyzer_context_classifier",
-      "section_id": "section-002",
-      "source_layers": [
-        "symbolic",
-        "event_features"
-      ]
-    },
-    {
       "id": "machine_vocal_spotlight_001",
       "type": "vocal_spotlight",
       "start_time": 15.92,
       "end_time": 18.21,
-      "confidence": 0.870599,
-      "intensity": 0.833869,
+      "confidence": 0.833381,
+      "intensity": 0.824002,
       "evidence": {
         "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 15.74,
-            "end_time": 18.52,
-            "ref": "beats:35-40",
+            "start_time": 15.731519,
+            "end_time": 18.506304,
+            "ref": "beats:28-33",
             "metric_names": [
               "vocals_stem_score",
               "vocal_focus_score",
@@ -1125,21 +3863,21 @@
         "metrics": [
           {
             "name": "lyric_line_confidence",
-            "value": 0.918
+            "value": 0.99
           },
           {
             "name": "vocals_stem_mean",
-            "value": 0.833869,
+            "value": 0.824002,
             "source_layer": "event_features"
           },
           {
             "name": "vocal_focus_mean",
-            "value": 0.496187,
+            "value": 0.370801,
             "source_layer": "event_features"
           },
           {
             "name": "drums_stem_mean",
-            "value": -0.570933,
+            "value": -0.612108,
             "source_layer": "event_features"
           },
           {
@@ -1177,16 +3915,16 @@
       "type": "vocal_spotlight",
       "start_time": 19.16,
       "end_time": 21.83,
-      "confidence": 1.0,
+      "confidence": 0.939088,
       "intensity": 1.0,
       "evidence": {
         "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 18.98,
-            "end_time": 22.2,
-            "ref": "beats:42-48",
+            "start_time": 18.970703,
+            "end_time": 22.198277,
+            "ref": "beats:35-41",
             "metric_names": [
               "vocals_stem_score",
               "vocal_focus_score",
@@ -1197,21 +3935,21 @@
         "metrics": [
           {
             "name": "lyric_line_confidence",
-            "value": 0.788333
+            "value": 0.99
           },
           {
             "name": "vocals_stem_mean",
-            "value": 1.133679,
+            "value": 1.119687,
             "source_layer": "event_features"
           },
           {
             "name": "vocal_focus_mean",
-            "value": 0.899532,
+            "value": 0.503859,
             "source_layer": "event_features"
           },
           {
             "name": "drums_stem_mean",
-            "value": -0.502507,
+            "value": -0.546569,
             "source_layer": "event_features"
           },
           {
@@ -1248,7 +3986,7 @@
       "id": "machine_vocal_tail_003",
       "type": "vocal_tail",
       "start_time": 21.83,
-      "end_time": 24.52,
+      "end_time": 24.497051,
       "confidence": 1.0,
       "intensity": 1.0,
       "evidence": {
@@ -1256,9 +3994,9 @@
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 18.98,
-            "end_time": 24.52,
-            "ref": "beats:42-53",
+            "start_time": 18.970703,
+            "end_time": 24.497051,
+            "ref": "beats:35-46",
             "metric_names": [
               "vocals_stem_score",
               "harmonic_stem_score",
@@ -1269,26 +4007,26 @@
         "metrics": [
           {
             "name": "lyric_line_confidence",
-            "value": 0.788333
+            "value": 0.99
           },
           {
             "name": "line_vocals_mean",
-            "value": 1.133679,
+            "value": 1.119687,
             "source_layer": "event_features"
           },
           {
             "name": "followup_vocals_mean",
-            "value": -0.17198,
+            "value": -0.176759,
             "source_layer": "event_features"
           },
           {
             "name": "followup_harmonic_mean",
-            "value": 0.466379,
+            "value": 0.451497,
             "source_layer": "event_features"
           },
           {
             "name": "followup_drums_mean",
-            "value": 0.42209,
+            "value": 0.368257,
             "source_layer": "event_features"
           },
           {
@@ -1325,17 +4063,17 @@
       "id": "machine_vocal_spotlight_004",
       "type": "vocal_spotlight",
       "start_time": 24.94,
-      "end_time": 29.22,
-      "confidence": 1.0,
+      "end_time": 29.61,
+      "confidence": 0.970594,
       "intensity": 1.0,
       "evidence": {
         "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 24.52,
-            "end_time": 29.58,
-            "ref": "beats:54-64",
+            "start_time": 24.497051,
+            "end_time": 30.023401,
+            "ref": "beats:47-58",
             "metric_names": [
               "vocals_stem_score",
               "vocal_focus_score",
@@ -1346,21 +4084,21 @@
         "metrics": [
           {
             "name": "lyric_line_confidence",
-            "value": 0.7175
+            "value": 0.99
           },
           {
             "name": "vocals_stem_mean",
-            "value": 1.367998,
+            "value": 1.207815,
             "source_layer": "event_features"
           },
           {
             "name": "vocal_focus_mean",
-            "value": 0.873042,
+            "value": 0.543517,
             "source_layer": "event_features"
           },
           {
             "name": "drums_stem_mean",
-            "value": -0.129436,
+            "value": -0.023725,
             "source_layer": "event_features"
           },
           {
@@ -1376,7 +4114,7 @@
         ],
         "metadata": {
           "lyric_line_id": 3,
-          "lyric_text": "Light show, light show",
+          "lyric_text": "Light show, light show!",
           "rescue": {
             "kind": "vocal_spotlight_timing",
             "confidence_gate": 0.7,
@@ -1394,20 +4132,97 @@
       ]
     },
     {
-      "id": "machine_vocal_spotlight_005",
+      "id": "machine_vocal_tail_005",
+      "type": "vocal_tail",
+      "start_time": 29.61,
+      "end_time": 32.333786,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 24.497051,
+            "end_time": 32.333786,
+            "ref": "beats:47-63",
+            "metric_names": [
+              "vocals_stem_score",
+              "harmonic_stem_score",
+              "drums_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "lyric_line_confidence",
+            "value": 0.99
+          },
+          {
+            "name": "line_vocals_mean",
+            "value": 1.207815,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_vocals_mean",
+            "value": -0.6573,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_harmonic_mean",
+            "value": 1.179417,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "followup_drums_mean",
+            "value": 1.673528,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "rescued_inferred_confidence",
+            "value": 0.0
+          }
+        ],
+        "reasons": [
+          "Lyric line 3 ends as the vocal stem decays and the backing bed persists."
+        ],
+        "rule_names": [
+          "lyric_guided_vocal_tail_rule"
+        ],
+        "metadata": {
+          "lyric_line_id": 3,
+          "lyric_text": "Light show, light show!",
+          "rescue": {
+            "kind": "vocal_tail_timing",
+            "confidence_gate": 0.7,
+            "replaced_event": null,
+            "had_overlapping_inferred_event": false
+          }
+        }
+      },
+      "notes": "Timed lyric ending rescues a weak or missing inferred vocal tail and snaps it to a clearer phrase handoff.",
+      "created_by": "analyzer_lyric_rescue_classifier",
+      "section_id": "section-002",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
+    },
+    {
+      "id": "machine_vocal_spotlight_006",
       "type": "vocal_spotlight",
       "start_time": 43.36,
-      "end_time": 43.99,
-      "confidence": 0.876503,
-      "intensity": 1.0,
+      "end_time": 44.39,
+      "confidence": 0.83245,
+      "intensity": 0.821398,
       "evidence": {
         "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 42.98,
-            "end_time": 44.36,
-            "ref": "beats:94-96",
+            "start_time": 42.956917,
+            "end_time": 44.83773,
+            "ref": "beats:87-90",
             "metric_names": [
               "vocals_stem_score",
               "vocal_focus_score",
@@ -1418,21 +4233,21 @@
         "metrics": [
           {
             "name": "lyric_line_confidence",
-            "value": 0.685
+            "value": 0.99
           },
           {
             "name": "vocals_stem_mean",
-            "value": 1.270685,
+            "value": 0.821398,
             "source_layer": "event_features"
           },
           {
             "name": "vocal_focus_mean",
-            "value": 0.343331,
+            "value": 0.369629,
             "source_layer": "event_features"
           },
           {
             "name": "drums_stem_mean",
-            "value": 0.031277,
+            "value": 0.050562,
             "source_layer": "event_features"
           },
           {
@@ -1448,7 +4263,7 @@
         ],
         "metadata": {
           "lyric_line_id": 4,
-          "lyric_text": "Light show",
+          "lyric_text": "Light show!",
           "rescue": {
             "kind": "vocal_spotlight_timing",
             "confidence_gate": 0.7,
@@ -1466,10 +4281,10 @@
       ]
     },
     {
-      "id": "machine_vocal_tail_006",
+      "id": "machine_vocal_tail_007",
       "type": "vocal_tail",
-      "start_time": 43.99,
-      "end_time": 46.66,
+      "start_time": 44.39,
+      "end_time": 46.973969,
       "confidence": 1.0,
       "intensity": 1.0,
       "evidence": {
@@ -1477,9 +4292,9 @@
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 42.98,
-            "end_time": 46.66,
-            "ref": "beats:94-101",
+            "start_time": 42.956917,
+            "end_time": 46.973969,
+            "ref": "beats:87-94",
             "metric_names": [
               "vocals_stem_score",
               "harmonic_stem_score",
@@ -1490,26 +4305,26 @@
         "metrics": [
           {
             "name": "lyric_line_confidence",
-            "value": 0.685
+            "value": 0.99
           },
           {
             "name": "line_vocals_mean",
-            "value": 1.270685,
+            "value": 0.821398,
             "source_layer": "event_features"
           },
           {
             "name": "followup_vocals_mean",
-            "value": -0.202932,
+            "value": -0.654949,
             "source_layer": "event_features"
           },
           {
             "name": "followup_harmonic_mean",
-            "value": 0.618625,
+            "value": 0.580952,
             "source_layer": "event_features"
           },
           {
             "name": "followup_drums_mean",
-            "value": -0.193682,
+            "value": -0.298634,
             "source_layer": "event_features"
           },
           {
@@ -1525,7 +4340,7 @@
         ],
         "metadata": {
           "lyric_line_id": 4,
-          "lyric_text": "Light show",
+          "lyric_text": "Light show!",
           "rescue": {
             "kind": "vocal_tail_timing",
             "confidence_gate": 0.7,
@@ -1543,10 +4358,10 @@
       ]
     },
     {
-      "id": "machine_vocal_spotlight_007",
+      "id": "machine_vocal_spotlight_008",
       "type": "vocal_spotlight",
       "start_time": 47.09,
-      "end_time": 53.18,
+      "end_time": 54.68,
       "confidence": 1.0,
       "intensity": 1.0,
       "evidence": {
@@ -1554,9 +4369,9 @@
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 46.66,
-            "end_time": 53.6,
-            "ref": "beats:102-116",
+            "start_time": 46.973969,
+            "end_time": 54.752651,
+            "ref": "beats:95-108",
             "metric_names": [
               "vocals_stem_score",
               "vocal_focus_score",
@@ -1567,21 +4382,21 @@
         "metrics": [
           {
             "name": "lyric_line_confidence",
-            "value": 0.787143
+            "value": 0.99
           },
           {
             "name": "vocals_stem_mean",
-            "value": 1.317472,
+            "value": 1.425334,
             "source_layer": "event_features"
           },
           {
             "name": "vocal_focus_mean",
-            "value": 0.657518,
+            "value": 0.63923,
             "source_layer": "event_features"
           },
           {
             "name": "drums_stem_mean",
-            "value": -0.810718,
+            "value": -0.857497,
             "source_layer": "event_features"
           },
           {
@@ -1597,7 +4412,7 @@
         ],
         "metadata": {
           "lyric_line_id": 5,
-          "lyric_text": "Light show, welcome to dark blue studio",
+          "lyric_text": "Light show welcome to dark blue studio",
           "rescue": {
             "kind": "vocal_spotlight_timing",
             "confidence_gate": 0.7,
@@ -1615,97 +4430,20 @@
       ]
     },
     {
-      "id": "machine_vocal_tail_008",
-      "type": "vocal_tail",
-      "start_time": 53.18,
-      "end_time": 55.9,
-      "confidence": 0.739219,
-      "intensity": 0.437282,
-      "evidence": {
-        "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
-        "source_windows": [
-          {
-            "layer": "event_features",
-            "start_time": 46.66,
-            "end_time": 55.9,
-            "ref": "beats:102-121",
-            "metric_names": [
-              "vocals_stem_score",
-              "harmonic_stem_score",
-              "drums_stem_score"
-            ]
-          }
-        ],
-        "metrics": [
-          {
-            "name": "lyric_line_confidence",
-            "value": 0.787143
-          },
-          {
-            "name": "line_vocals_mean",
-            "value": 1.317472,
-            "source_layer": "event_features"
-          },
-          {
-            "name": "followup_vocals_mean",
-            "value": 0.88019,
-            "source_layer": "event_features"
-          },
-          {
-            "name": "followup_harmonic_mean",
-            "value": 0.130472,
-            "source_layer": "event_features"
-          },
-          {
-            "name": "followup_drums_mean",
-            "value": -0.822905,
-            "source_layer": "event_features"
-          },
-          {
-            "name": "rescued_inferred_confidence",
-            "value": 0.0
-          }
-        ],
-        "reasons": [
-          "Lyric line 5 ends as the vocal stem decays and the backing bed persists."
-        ],
-        "rule_names": [
-          "lyric_guided_vocal_tail_rule"
-        ],
-        "metadata": {
-          "lyric_line_id": 5,
-          "lyric_text": "Light show, welcome to dark blue studio",
-          "rescue": {
-            "kind": "vocal_tail_timing",
-            "confidence_gate": 0.7,
-            "replaced_event": null,
-            "had_overlapping_inferred_event": false
-          }
-        }
-      },
-      "notes": "Timed lyric ending rescues a weak or missing inferred vocal tail and snaps it to a clearer phrase handoff.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "section_id": "section-004",
-      "source_layers": [
-        "event_features",
-        "sections"
-      ]
-    },
-    {
       "id": "machine_percussion_break_001",
       "type": "percussion_break",
-      "start_time": 42.483051,
-      "end_time": 43.205556,
-      "confidence": 0.864465,
-      "intensity": 0.562158,
+      "start_time": 42.483,
+      "end_time": 43.206,
+      "confidence": 0.825015,
+      "intensity": 0.490456,
       "evidence": {
         "summary": "Hint-guided percussion pocket confirmed by drum-dominant stem activity and reduced vocal presence.",
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 42.04,
-            "end_time": 43.44,
-            "ref": "beats:92-94",
+            "start_time": 42.028118,
+            "end_time": 43.421314,
+            "ref": "beats:85-87",
             "metric_names": [
               "drums_stem_score",
               "percussion_focus_score",
@@ -1716,17 +4454,17 @@
         "metrics": [
           {
             "name": "drums_stem_mean",
-            "value": 0.562158,
+            "value": 0.490456,
             "source_layer": "event_features"
           },
           {
             "name": "percussion_focus_mean",
-            "value": 0.456543,
+            "value": 0.420668,
             "source_layer": "event_features"
           },
           {
             "name": "hint_window_duration",
-            "value": 0.7225047080979294
+            "value": 0.7230000000000061
           }
         ],
         "reasons": [
@@ -1747,24 +4485,81 @@
         "event_features",
         "sections"
       ]
+    },
+    {
+      "id": "machine_percussion_break_002",
+      "type": "percussion_break",
+      "start_time": 29.594,
+      "end_time": 36.5,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "evidence": {
+        "summary": "Hint-guided percussion pocket confirmed by drum-dominant stem activity and reduced vocal presence.",
+        "source_windows": [
+          {
+            "layer": "event_features",
+            "start_time": 29.559002,
+            "end_time": 36.942947,
+            "ref": "beats:58-73",
+            "metric_names": [
+              "drums_stem_score",
+              "percussion_focus_score",
+              "vocals_stem_score"
+            ]
+          }
+        ],
+        "metrics": [
+          {
+            "name": "drums_stem_mean",
+            "value": 1.581812,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "percussion_focus_mean",
+            "value": 0.348796,
+            "source_layer": "event_features"
+          },
+          {
+            "name": "hint_window_duration",
+            "value": 6.905999999999999
+          }
+        ],
+        "reasons": [
+          "Human hint hint-017 suggested a percussion-only pocket and the stem evidence is compatible."
+        ],
+        "rule_names": [
+          "hint_guided_percussion_break_rule"
+        ],
+        "metadata": {
+          "hint_id": "hint-017",
+          "hint_title": "High Energy"
+        }
+      },
+      "notes": "Human hint and stem evidence both point to a drum-led break rather than a full-band event.",
+      "created_by": "analyzer_hint_guided_classifier",
+      "section_id": "section-003",
+      "source_layers": [
+        "event_features",
+        "sections"
+      ]
     }
   ],
   "review_status": "machine",
   "threshold_profile": "default",
   "notes": "Machine-refined event set with fallback candidates preserved for review.",
   "metadata": {
-    "event_count": 22,
-    "source_rule_event_count": 9,
+    "event_count": 63,
+    "source_rule_event_count": 52,
     "lyric_rescue_confidence_gate": 0.7,
     "texture_summary": [
       {
         "section_id": "section-001",
-        "start_time": 0.0,
+        "start_time": 0.06,
         "stem_activity": {
-          "bass": 0.4714,
-          "drums": 0.0728,
-          "harmonic": 0.1389,
-          "vocals": 0.002
+          "bass": 0.4652,
+          "drums": 0.0702,
+          "harmonic": 0.2353,
+          "vocals": 0.0017
         },
         "stems_entering": [],
         "stems_leaving": []
@@ -1773,10 +4568,10 @@
         "section_id": "section-002",
         "start_time": 14.82,
         "stem_activity": {
-          "bass": 0.0991,
-          "drums": 0.2551,
-          "harmonic": 0.4372,
-          "vocals": 0.5669
+          "bass": 0.0942,
+          "drums": 0.257,
+          "harmonic": 0.4582,
+          "vocals": 0.5837
         },
         "stems_entering": [
           "drums",
@@ -1789,12 +4584,12 @@
       },
       {
         "section_id": "section-003",
-        "start_time": 29.605442,
+        "start_time": 29.58,
         "stem_activity": {
-          "bass": 0.8372,
-          "drums": 0.8833,
-          "harmonic": 0.7952,
-          "vocals": 0.0822
+          "bass": 0.83,
+          "drums": 0.863,
+          "harmonic": 0.8037,
+          "vocals": 0.0827
         },
         "stems_entering": [
           "bass"
@@ -1807,10 +4602,10 @@
         "section_id": "section-004",
         "start_time": 44.36,
         "stem_activity": {
-          "bass": 0.3572,
-          "drums": 0.0425,
-          "harmonic": 0.5026,
-          "vocals": 0.4995
+          "bass": 0.3524,
+          "drums": 0.0291,
+          "harmonic": 0.5167,
+          "vocals": 0.4984
         },
         "stems_entering": [
           "vocals"

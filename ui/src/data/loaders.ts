@@ -7,7 +7,6 @@ import { artifactPaths } from "./paths";
 import {
   loadIdentifierHints,
   loadMachineEvents,
-  loadSymbolicPhrases,
   loadAllin1,
   loadCharacter,
   loadVocalTranscription,
@@ -196,7 +195,6 @@ export const artifactLoaders = {
   info: loadInfo,
   identifierHints: loadIdentifierHints,
   machineEvents: loadMachineEvents,
-  symbolicPhrases: loadSymbolicPhrases,
   dropProposals: loadDropProposals,
   vocalPhrases: loadVocalPhrases,
   reactiveBands: loadReactiveBands,
