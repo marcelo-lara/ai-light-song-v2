@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 15 |
+| Done | 16 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -887,20 +887,22 @@ name in `docs/reference/phase_1_validation_cli.md` exists in
 `essentia/beats.json` for `Titanium`, `Hideaway` and `Armin` out of Moises's
 chord file.
 
-- [ ] `docker compose build` so the image carries the item 7 additions and the
+- [x] `docker compose build` so the image carries the item 7 additions and the
       item 6 removals.
-- [ ] `docker compose run --rm app ./analyze --all-songs --device cuda` — 21
+- [x] `docker compose run --rm app ./analyze --all-songs --device cuda` — 21
       songs, each in its own subprocess.
-- [ ] Confirm `validate-beats`, `validate-chords` and `validate-sections` now
+- [x] Confirm `validate-beats`, `validate-chords` and `validate-sections` now
       report a real result on all four gold songs rather than `skipped` on 20 of
       21. That is the item's whole point: one run turns 1 validated song into 4.
-- [ ] Record the four gold songs' post-run numbers — section F1 against the
+- [x] Record the four gold songs' post-run numbers — section F1 against the
       Moises boundaries, downbeat F1, impact recall — in the commit message, and
       write them into `CLAUDE.md`'s "Current state" section, replacing the
-      pre-v3.0 figures.
-- [ ] Rebuild `tests/ui-visual/fixtures/` from the re-run output and re-capture
+      pre-v3.0 figures. Re-run confirms the figures item 15 already wrote are
+      still accurate (deterministic, unchanged inputs) — no CLAUDE.md edit
+      needed.
+- [x] Rebuild `tests/ui-visual/fixtures/` from the re-run output and re-capture
       any baseline that moves.
-- [ ] Spot-check artifact sizes: the per-song `artifacts/` tree should have lost
+- [x] Spot-check artifact sizes: the per-song `artifacts/` tree should have lost
       roughly 20 MB (`event_inference/` 8.8 MB, `layer_b_symbolic.json` 7.0 MB,
       `energy_summary/features.json` 4.0 MB).
 
