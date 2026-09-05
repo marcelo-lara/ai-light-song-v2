@@ -159,6 +159,11 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
       // visible on the first Sections block, not only on a repeat.
       const sameAs = str(r.same_label_as);
       out.push({ label: "same_label_as", value: sameAs || "null" });
+      // v3.0 item 13: key + chord_progression, projected from
+      // layer_a_harmonic.json. Always shown, `null` included verbatim, since
+      // an honest null here is a pass, not an absence of data.
+      out.push({ label: "key", value: str(r.key) || "null" });
+      out.push({ label: "chord_progression", value: str(r.chord_progression) || "null" });
       break;
     }
     case "allin1Sections": {

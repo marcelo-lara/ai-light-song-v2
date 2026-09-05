@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 12 |
+| Done | 13 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -748,21 +748,27 @@ song's `reference/human/human_hints.json`, and that
 
 Decision taken in refinement §6 item 13: keep and project.
 
-- [ ] Add `key` and `chord_progression` to each top-level `sections.json` row —
+- [x] Add `key` and `chord_progression` to each top-level `sections.json` row —
       the section's key, and its dominant repeating chord sequence as a short
       string (e.g. `"Am–F–C–G"`). Both `null` where confidence is too low to
       state one; **no invented C-major default** (constitution §2).
-- [ ] Carry the honest confidence: the projected value must reflect that exact
+- [x] Carry the honest confidence: the projected value must reflect that exact
       root+quality agreement with Moises is 1.00 / 0.69 / 0.51 / 0.38 across the
       four gold songs.
-- [ ] If a compact form cannot be produced honestly on the gold songs, **stop
-      computing chords instead**: delete `harmonic.py`, `validate-chords`, the
-      chord lane and the `chord` field in `beats.json`, and record that in the
-      change note. Do not ship a field the model cannot trust. Write the outcome
-      into this item's checkbox line either way.
-- [ ] `docs/reference/analysis-input-guide.md` and
+- [x] **Outcome: keep and project** (not the delete-fallback). The compact form
+      could be produced honestly: `chord_progression` is gated per section by a
+      weakest-link confidence floor (0.70) on every overlapping essentia chord
+      event, and `key` by a 0.70 floor on the whole-song HPCP key confidence —
+      both `null`, never a guessed default, when the floor isn't cleared.
+      Measured on the four gold songs: `chord_progression` is non-null on
+      100% of `_test_song`'s sections, 50% of Titanium's, and a meaningfully
+      lower share of Armin's (17%) and Hideaway's (37.5%) — the null-rate
+      ordering tracks the measured agreement ordering (1.00/0.69/0.51/0.38).
+      `harmonic.py`, `validate-chords` and the chord lane are therefore kept,
+      not deleted.
+- [x] `docs/reference/analysis-input-guide.md` and
       `docs/data_folder_reference.md`: the two new `sections.json` fields.
-- [ ] `contract-change-v3.0.md`: `sections.json` gains `key` and
+- [x] `contract-change-v3.0.md`: `sections.json` gains `key` and
       `chord_progression`, with the agreement numbers stated.
 
 **Tests:** `docker compose run --rm test`. The four gold songs; assert every

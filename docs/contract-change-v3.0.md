@@ -524,3 +524,67 @@ exactly the signal `hints.json` exists to carry to the authoring model — but
 no code path ever merged them in, so `user_hint_count` measured `0` on all 21
 songs. This closes that gap without inventing a category the source data
 doesn't honestly support.
+
+---
+
+## 13. `harmonic.py` — project a compact form
+
+**Top-level `sections.json` gains two fields: `key` and `chord_progression`.**
+Both are derived purely from `artifacts/layer_a_harmonic.json`, which
+`harmonic.py` already computed and which previously reached no projected
+file at all — `validate-chords`, the debugger's chord lane and the per-beat
+`chord` field in `beats.json` were its only consumers, and the input guide
+already states per-beat features are not consumed. No new model, no new
+dependency, no change to chord detection itself.
+
+`key` is the whole-song key label from essentia's HPCP estimate
+(`global_key.label`, e.g. `"C# major"`), gated on `global_key.confidence`
+against a floor of **0.70**. It is one value for the whole song — every
+section row carries the same string, or the same `null`. `chord_progression`
+is a section's dominant repeating chord sequence, e.g. `"Am–F–C–G"`: every
+essentia chord event overlapping the section's `[start, end)` window is
+collected, and if every one of them clears a per-event confidence floor of
+**0.70**, the distinct-consecutive chord labels are reduced to their shortest
+clean repeating cycle (falling back to the first 8 distinct chords when no
+clean cycle exists) and joined with an en dash. If a section has no
+overlapping chord events, or even one of them falls below the floor, the
+whole progression is `null` — a weakest-link gate, not an average, because a
+single unreliable chord inside an otherwise-clean run makes the whole stated
+sequence untrustworthy.
+
+**The two fields are gated independently and on different scales.** Whole-song
+`global_key.confidence` and per-song *mean* chord-event confidence both
+cluster tightly (0.75–0.85 and 0.73–0.80 respectively) across all four gold
+songs regardless of how well those songs' chords actually agree with an
+independent reference — so neither a key-confidence threshold nor a
+per-song-mean chord threshold would produce a sensible split. What does
+separate them is the *minimum* per-chord-event confidence within a song:
+Hideaway dips to 0.459, Armin to 0.531, while `_test_song`'s minimum is 0.850
+and Titanium's (0.685) sits in between. 0.70 was chosen as the per-chord-event
+floor because it sits in that gap. `key`'s 0.70 floor is real (it would null
+out a genuinely weak future estimate) but is not tied to the per-chord floor:
+a global key estimate is a single, more robust measurement aggregated over
+the whole track, not a per-beat label, so a section's shaky local chords do
+not automatically make the song's key claim unsupported.
+
+**Measured, and stated here because it is unflattering:** exact root+quality
+chord agreement against Moises is **1.00** on `_test_song`, **0.69** on
+`Titanium - David Guetta ft Sia`, **0.51** on `Armin - Revolution`, and
+**0.38** on `Hideaway - Kiesza`. Two independent chord estimates disagreeing
+on that much of a track does not say which one is wrong, but it does say the
+labels are not settled, and the 0.70 per-event floor is what keeps that
+uncertainty from reaching the authoring model as false confidence. Verified
+on the four gold songs after landing: `chord_progression` is non-null on
+100% of `_test_song`'s sections, ~50% of Titanium's, and a meaningfully lower
+share of Armin's and Hideaway's (both well under `_test_song`'s rate) — the
+null-rate ordering tracks the measured agreement ordering. `key` is non-null
+on all four gold songs (their `global_key.confidence` values, 0.749–0.851,
+all clear the 0.70 floor); the floor exists to null out a future song whose
+key estimate is weaker, not to discriminate among these four.
+
+**Why:** `docs/implementation-plan-v3.0.md` item 13, decided in refinement
+§6 item 13: keep `harmonic.py` and project a compact form rather than delete
+chord computation outright. Harmonic context is exactly the kind of fact a
+cue author needs to justify a colour choice, and an honest `null` where
+agreement is weak is worth more than a confident chord label the reference
+data contradicts on over 40% of a song (constitution §2).

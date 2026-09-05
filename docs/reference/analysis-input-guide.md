@@ -77,11 +77,23 @@ in full.
 ### `sections.json` (top-level, JSON array) — highest priority
 
 One row per section, in time order. Consumed fields: `start`, `end`,
-`label`, `description`.
+`label`, `description`, `key`, `chord_progression`.
 
 - `description`: **one sentence**, concrete and lighting-relevant ("Energy
   and motion climb together into a more assertive forward push"). This is the
   concept pass's main per-section signal. Not a paragraph.
+- `key`: the whole-song key (e.g. `"C# major"`), from essentia's HPCP key
+  estimate, or `null` when that estimate's confidence is too low to state
+  honestly. It is one value for the whole song — every row carries the same
+  string or the same `null`, never a per-section key.
+- `chord_progression`: the section's dominant repeating chord sequence as a
+  short string (e.g. `"Am–F–C–G"`), or `null` when any chord event
+  overlapping the section falls below the stage's confidence floor. **`null`
+  here is an honest, expected outcome on low-agreement songs, not a bug** —
+  chord detection agreement with an independent reference measures 1.00/0.69/
+  0.51/0.38 across the four gold songs (see
+  `docs/contract-change-v3.0.md` #13), and a section is only given a
+  progression when every chord backing it individually clears the floor.
 - Row order and count must equal `artifacts/section_segmentation/sections.json`.
 
 ### `artifacts/section_segmentation/sections.json` — highest priority

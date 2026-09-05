@@ -388,8 +388,9 @@ Summary: compact UI-facing section timeline with presentation-friendly labels.
 Why it matters: quick section overview without opening the fuller artifact files.
 
 LLM hint:
-- See: `section_id`, `start`, `end`, `label`, `description`, and `confidence`. `label` embeds the numeric section id prefix, a title-cased `function`, and a confidence suffix such as `003 Chorus (0.81)` — or, when allin1's labelling is degenerate for the song, the raw label token marked `[unverified]`.
+- See: `section_id`, `start`, `end`, `label`, `description`, `key`, `chord_progression`, and `confidence`. `label` embeds the numeric section id prefix, a title-cased `function`, and a confidence suffix such as `003 Chorus (0.81)` — or, when allin1's labelling is degenerate for the song, the raw label token marked `[unverified]`.
 - See: `description` — one sentence built from the section's own measured shape (its ordinal occurrence of its `function`, its duration, and `same_label_as` where it repeats a label).
+- See: `key` (one whole-song HPCP key estimate, same value on every row) and `chord_progression` (the section's dominant repeating chord sequence, e.g. `"Am–F–C–G"`), both projected from `artifacts/layer_a_harmonic.json` (plan v3.0 item 13). **`null` on either field is expected and honest, not a bug** — chord-event confidence is gated per section, and root+quality agreement with an independent reference varies widely across songs (measured 1.00/0.69/0.51/0.38 on the four gold songs; see `docs/contract-change-v3.0.md`).
 - Use: for fast section summaries, section cue lists, and high-level show pacing.
 - Avoid: treating `hints` here as the authoritative editable hint contract; use `data/analysis/<Song - Artist>/hints.json`.
 

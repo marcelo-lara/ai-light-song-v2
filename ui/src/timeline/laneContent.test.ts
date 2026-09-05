@@ -51,6 +51,8 @@ describe("sectionsContent", () => {
         label: "001 Verse (0.66)",
         description: "x",
         confidence: 0.66,
+        key: null,
+        chord_progression: null,
       },
     ]);
     expect(blocks[0]!.label).toBe("001 Verse (0.66)");
@@ -69,6 +71,8 @@ describe("sectionsContent", () => {
           label: "002 Chorus (0.91)",
           description: "y",
           confidence: 0.91,
+          key: null,
+          chord_progression: null,
         },
       ],
       [

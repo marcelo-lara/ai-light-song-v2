@@ -113,6 +113,8 @@ function parseSectionRow(raw: unknown, ctx: string): SectionRow {
     label: asString(o.label, `${ctx}.label`),
     description: stringOrNull(o.description, `${ctx}.description`),
     confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
+    key: stringOrNull(o.key, `${ctx}.key`),
+    chord_progression: stringOrNull(o.chord_progression, `${ctx}.chord_progression`),
   };
 }
 

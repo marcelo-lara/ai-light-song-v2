@@ -5,7 +5,9 @@
     "end": 30.0,
     "label": "001 Intro (0.44)",
     "description": "The 1st intro, 30.0s long.",
-    "confidence": 0.9
+    "confidence": 0.9,
+    "key": "F# minor",
+    "chord_progression": null
   },
   {
     "section_id": "section-002",
@@ -13,7 +15,9 @@
     "end": 44.76,
     "label": "002 Verse (0.19)",
     "description": "The 1st verse, 14.8s long.",
-    "confidence": 0.187426
+    "confidence": 0.187426,
+    "key": "F# minor",
+    "chord_progression": null
   },
   {
     "section_id": "section-003",
@@ -21,7 +25,9 @@
     "end": 81.76,
     "label": "003 Inst (0.19)",
     "description": "The 1st inst, 37.0s long.",
-    "confidence": 0.193769
+    "confidence": 0.193769,
+    "key": "F# minor",
+    "chord_progression": null
   },
   {
     "section_id": "section-004",
@@ -29,7 +35,9 @@
     "end": 96.46,
     "label": "004 Verse (0.19)",
     "description": "The 2nd verse, 14.7s long, same label as the first verse.",
-    "confidence": 0.194511
+    "confidence": 0.194511,
+    "key": "F# minor",
+    "chord_progression": "F#m\u2013E"
   },
   {
     "section_id": "section-005",
@@ -37,7 +45,9 @@
     "end": 111.23,
     "label": "005 Chorus (0.33)",
     "description": "The 1st chorus, 14.8s long.",
-    "confidence": 0.331459
+    "confidence": 0.331459,
+    "key": "F# minor",
+    "chord_progression": null
   },
   {
     "section_id": "section-006",
@@ -45,6 +55,8 @@
     "end": 193.85,
     "label": "006 Inst (0.14)",
     "description": "The 2nd inst, 82.6s long, same label as the first inst.",
-    "confidence": 0.144056
+    "confidence": 0.144056,
+    "key": "F# minor",
+    "chord_progression": null
   }
 ]

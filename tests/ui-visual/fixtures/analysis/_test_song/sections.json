@@ -5,7 +5,9 @@
     "end": 14.82,
     "label": "001 intro [unverified] (0.34)",
     "description": "Unverified section, 14.8s \u2014 allin1's label for this song is not trustworthy.",
-    "confidence": 0.9
+    "confidence": 0.9,
+    "key": "D# minor",
+    "chord_progression": "D#m"
   },
   {
     "section_id": "section-002",
@@ -13,6 +15,8 @@
     "end": 58.05,
     "label": "002 chorus [unverified] (0.45)",
     "description": "Unverified section, 43.2s \u2014 allin1's label for this song is not trustworthy.",
-    "confidence": 0.446144
+    "confidence": 0.446144,
+    "key": "D# minor",
+    "chord_progression": "D#m\u2013B\u2013F#\u2013D#m"
   }
 ]

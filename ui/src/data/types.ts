@@ -60,6 +60,15 @@ export interface SectionRow {
   label: string;
   description: string | null;
   confidence: number | null;
+  /** Whole-song HPCP key estimate (e.g. "C# major"), same value on every
+   * row, or `null` when essentia's key confidence is too low to state one
+   * honestly (plan v3.0 item 13). */
+  key: string | null;
+  /** The section's dominant repeating chord sequence (e.g. "Am–F–C–G"), or
+   * `null` when any chord event overlapping the section falls below the
+   * stage's confidence floor (plan v3.0 item 13) — an honest, expected
+   * outcome on low-agreement songs, not a bug. */
+  chord_progression: string | null;
 }
 
 export type SectionsTopLevel = SectionRow[];

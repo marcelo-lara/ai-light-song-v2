@@ -30,6 +30,8 @@ describe("selectionFromSection", () => {
     label: "003 Chorus (0.80)",
     description: "energy rises into the chorus",
     confidence: 0.8,
+    key: null,
+    chord_progression: null,
   };
   const block = { section } as { section: SectionRow };
 
@@ -109,6 +111,7 @@ describe("blockFields — segments / sections", () => {
 
   it("still shows same_label_as on a section's first occurrence, where it is null", () => {
     const sel = {
+      laneId: "sections",
       laneLabel: "Sections",
       label: "Intro",
       start_s: 0,
@@ -127,6 +130,8 @@ describe("blockFields — segments / sections", () => {
         label: "001 Intro (0.44)",
         description: null,
         confidence: 0.9,
+        key: null,
+        chord_progression: null,
         function: "intro",
         function_confidence: 0.44,
         function_status: "known",
@@ -136,6 +141,45 @@ describe("blockFields — segments / sections", () => {
     const fields = blockFields("sections", sel);
     expect(fields.some((f) => f.label === "same_label_as")).toBe(true);
     expect(val(fields, "same_label_as")).toBe("null");
+  });
+
+  it("shows key and chord_progression, null included verbatim (item 13)", () => {
+    const sel = {
+      laneId: "sections",
+      laneLabel: "Sections",
+      label: "Chorus",
+      start_s: 12,
+      end_s: 30,
+      confidence: 0.8,
+      reference: "S3",
+      detail: null,
+      section_id: "S3",
+      created_by: null,
+      caption: "",
+      summary: null,
+      raw: {
+        section_id: "S3",
+        start: 12,
+        end: 30,
+        label: "003 Chorus (0.80)",
+        description: null,
+        confidence: 0.8,
+        key: "C# major",
+        chord_progression: "Am–F–C–G",
+        function: "chorus",
+        function_confidence: 0.8,
+        function_status: "known",
+        same_label_as: "S1",
+      },
+    };
+    const fields = blockFields("sections", sel);
+    expect(val(fields, "key")).toBe("C# major");
+    expect(val(fields, "chord_progression")).toBe("Am–F–C–G");
+
+    const nullSel = { ...sel, raw: { ...sel.raw, key: null, chord_progression: null } };
+    const nullFields = blockFields("sections", nullSel);
+    expect(val(nullFields, "key")).toBe("null");
+    expect(val(nullFields, "chord_progression")).toBe("null");
   });
 });
 
