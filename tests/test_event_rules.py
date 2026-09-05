@@ -113,9 +113,9 @@ class EventRuleCandidatesTests(unittest.TestCase):
             }
             sections = {
                 "sections": [
-                    {"section_id": "section-001", "start": 0.0, "end": 2.0, "label": "tense_transition", "section_character": "tense_transition", "confidence": 0.8},
-                    {"section_id": "section-002", "start": 2.0, "end": 3.0, "label": "steady_flow", "section_character": "steady_flow", "confidence": 0.85},
-                    {"section_id": "section-003", "start": 3.0, "end": 5.0, "label": "driving_pulse", "section_character": "driving_pulse", "confidence": 0.9},
+                    {"section_id": "section-001", "start": 0.0, "end": 2.0, "function": "tense_transition", "confidence": 0.8},
+                    {"section_id": "section-002", "start": 2.0, "end": 3.0, "function": "steady_flow", "confidence": 0.85},
+                    {"section_id": "section-003", "start": 3.0, "end": 5.0, "function": "driving_pulse", "confidence": 0.9},
                 ]
             }
 
@@ -166,7 +166,7 @@ class EventRuleCandidatesTests(unittest.TestCase):
             rows.append(beat(9, bass_rel=0.95, flux_rel=0.9, onset_rel=0.9, e_delta=1.6, accent=0.9, ratio=2.2))
             rows.append(beat(10, bass_rel=0.9, flux_rel=0.8, onset_rel=0.8, e_delta=0.2, accent=0.6, ratio=1.4))
 
-            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 10.0, "label": "x", "section_character": "x", "confidence": 0.8}]}
+            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "x", "confidence": 0.8}]}
             payload = generate_rule_candidates(paths, {"features": rows}, sections, {"genres": ["dance"]})
 
             drops = [e for e in payload["events"] if e["type"] == "drop"]
@@ -197,7 +197,7 @@ class EventRuleCandidatesTests(unittest.TestCase):
                 }
                 for n in range(1, 11)
             ]
-            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 10.0, "label": "x", "section_character": "x", "confidence": 0.8}]}
+            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "x", "confidence": 0.8}]}
             payload = generate_rule_candidates(paths, {"features": rows}, sections, {"genres": ["dance"]})
             self.assertEqual([e for e in payload["events"] if e["type"] == "drop"], [])
 
@@ -274,7 +274,7 @@ class EventRuleCandidatesTests(unittest.TestCase):
                 },
                 "rolling": {"local": {"energy_mean": 0.12, "harmonic_tension_mean": 0.75}},
             })
-        sections = {"sections": [{"section_id": "s1", "start": 0.0, "end": 18.0, "label": "x", "section_character": "x", "confidence": 0.8}]}
+        sections = {"sections": [{"section_id": "s1", "start": 0.0, "end": 18.0, "function": "x", "confidence": 0.8}]}
         return {"features": rows}, sections
 
     def _run(self, features, sections):

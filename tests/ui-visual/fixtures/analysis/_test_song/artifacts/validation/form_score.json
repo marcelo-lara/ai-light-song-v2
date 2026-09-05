@@ -3,9 +3,9 @@
   "song_name": "_test_song",
   "target": "form",
   "tolerance_seconds": 2.0,
-  "predicted_boundary_count": 3,
+  "predicted_boundary_count": 1,
   "labelled_boundary_count": 0,
-  "form_family_predicted": "unknown",
+  "form_family_predicted": null,
   "form_family_labelled": null,
   "form_family_match": false,
   "mode": "unlabelled",
@@ -32,7 +32,7 @@
           0.4,
           0.6
         ],
-        "section_count": 2,
+        "section_count": 1,
         "observed_alignment": null
       },
       {
@@ -48,10 +48,10 @@
           0.8,
           1.01
         ],
-        "section_count": 1,
+        "section_count": 0,
         "observed_alignment": null
       }
     ],
-    "predicted_spread": 0.35
+    "predicted_spread": 0.0
   }
 }

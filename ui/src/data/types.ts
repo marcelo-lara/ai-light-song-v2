@@ -1,15 +1,16 @@
 // TS types for every artifact the UI reads.
 //
-// These mirror the v1.1 artifact contracts documented in
-// `docs/web-ui/7.2.build_ui_data_story.md` and
-// `docs/source references/contract-change-v1.1.md`, grounded against the real
+// These mirror the artifact contracts documented in `docs/data_folder_reference.md`
+// and `docs/reference/analysis-input-guide.md`, grounded against the real
 // artifact shapes under `data/analysis/_test_song/`.
 //
-// Fields that v1.1 added to a pre-existing file (e.g. `section_id`, `form_role`
-// on the top-level sections list) are typed as `T | null`: a not-yet-reanalysed
-// song still carries the older shape, and the parsers coerce a missing field to
-// `null` rather than rejecting the file. Quality of the structural read comes
-// first, but the UI must not hard-fail on a v1.0 song.
+// `sections.json` and `artifacts/section_segmentation/sections.json` carry the
+// v3.0 allin1 named-segmentation shape (plan v3.0 item 7): a `function` from
+// allin1's Harmonix vocabulary, its confidence, a `function_status` that reads
+// `"unknown"` when the song is outside allin1's training distribution, and
+// `same_label_as` linking repeated occurrences of the same function. The old
+// `section_character` / `energy_character` / `repetition_group` / `form_role`
+// fields are gone — see `docs/contract-change-v3.0.md`.
 
 // ---------------------------------------------------------------------------
 // info.json  (top-level UI contract)
@@ -51,79 +52,40 @@ export type Beats = BeatRow[];
 // ---------------------------------------------------------------------------
 
 export interface SectionRow {
+  section_id: string;
   start: number;
   end: number;
-  /** e.g. "003 Verse (0.76)" */
+  /** e.g. "003 Chorus (0.80)" */
   label: string;
   description: string | null;
-  /** placeholder array kept for compatibility; never the editable hint store */
-  hints: unknown[];
-  // --- v1.1 additions (projected through from the segmentation artifact) ---
-  section_id: string | null;
-  form_role: string | null;
-  energy_character: string | null;
-  repetition_group: string | null;
   confidence: number | null;
 }
 
 export type SectionsTopLevel = SectionRow[];
 
 // ---------------------------------------------------------------------------
-// artifacts/section_segmentation/sections.json  (v1.1)
+// artifacts/section_segmentation/sections.json  (v3.0 — allin1 named
+// segmentation, replacing the old dance/song-form + mood-vocabulary shape)
 // ---------------------------------------------------------------------------
-
-export type FormFamilyValue =
-  | "dance_form"
-  | "song_form"
-  | "hybrid"
-  | "unknown"
-  | (string & {});
-
-export interface FormFamily {
-  value: FormFamilyValue;
-  confidence: number;
-  provenance: "inferred" | "human-confirmed" | (string & {});
-  evidence: Record<string, unknown> | null;
-}
-
-export type FormRole =
-  | "intro"
-  | "verse"
-  | "pre_chorus"
-  | "chorus"
-  | "hook"
-  | "bridge"
-  | "breakdown"
-  | "build"
-  | "drop"
-  | "post_drop"
-  | "instrumental"
-  | "outro"
-  | "unknown"
-  | (string & {});
 
 export interface SegmentationSection {
   section_id: string;
   start: number;
   end: number;
-  label: string;
+  /** allin1's Harmonix-vocabulary functional label, e.g. "chorus"; null when unresolved */
+  function: string | null;
+  /** 1 - normalised entropy of allin1's frame-level label posterior over the span */
+  function_confidence: number | null;
+  /** "unknown" when the song is outside allin1's training distribution — the boundary may still be right */
+  function_status: string | null;
+  /** section_id of the first earlier section sharing this `function`, else null */
+  same_label_as: string | null;
   confidence: number | null;
-  section_character: string | null;
-  onset_anchored: boolean | null;
-  form_role: FormRole | null;
-  form_role_confidence: number | null;
-  form_role_margin: number | null;
-  energy_character: string | null;
-  repetition_group: string | null;
-  variant_of: string | null;
-  similarity: number | null;
-  confidence_terms: Record<string, unknown> | null;
 }
 
 export interface SectionSegmentation {
   schema_version: string;
   song_name: string;
-  form_family: FormFamily | null;
   generated_from: Record<string, unknown> | null;
   sections: SegmentationSection[];
 }

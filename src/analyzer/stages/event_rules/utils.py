@@ -80,7 +80,7 @@ def _event_window_refs(rows: list[dict], section: dict | None = None) -> list[di
                 "start_time": round(float(section["start"]), 6),
                 "end_time": round(float(section["end"]), 6),
                 "ref": str(section["section_id"]),
-                "metric_names": ["section_character", "confidence"],
+                "metric_names": ["function", "confidence"],
             }
         )
     return references
@@ -120,7 +120,7 @@ def _build_event(
     }
     if section is not None:
         event["section_id"] = section.get("section_id")
-        event["section_name"] = section.get("section_character") or section.get("label")
+        event["section_name"] = section.get("function")
     if candidates:
         event["candidates"] = candidates
     return event

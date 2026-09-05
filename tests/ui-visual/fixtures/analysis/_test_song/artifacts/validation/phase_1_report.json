@@ -1,10 +1,10 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "command": "python -m analyzer",
   "status": "passed",
   "exit_code": 0,
-  "generated_at": "2026-09-04T23:51:11.076850+00:00",
+  "generated_at": "2026-09-05T00:58:24.333413+00:00",
   "inputs": {
     "song_path": "/data/songs/_test_song.mp3",
     "reference_chords": "/data/analysis/_test_song/reference/moises/chords.json",
@@ -1122,17 +1122,17 @@
       }
     },
     "sections": {
-      "status": "passed",
-      "matched": 3,
-      "mismatched": 0,
-      "match_ratio": 1.0,
+      "status": "failed",
+      "matched": 1,
+      "mismatched": 2,
+      "match_ratio": 0.3333333333333333,
       "details": [
         {
           "match_type": "matched_boundary",
           "inferred": {
             "time": 14.82,
             "section_id": "section-002",
-            "label": "intro"
+            "label": "chorus"
           },
           "reference": {
             "time": 14.82,
@@ -1142,32 +1142,24 @@
           "within_tolerance": true
         },
         {
-          "match_type": "matched_boundary",
-          "inferred": {
-            "time": 29.58,
-            "section_id": "section-003",
-            "label": "outro"
-          },
+          "match_type": "missed_reference_boundary",
+          "inferred": null,
           "reference": {
             "time": 29.58,
             "label": "Chorus"
           },
-          "delta_seconds": 0.0,
-          "within_tolerance": true
+          "delta_seconds": null,
+          "within_tolerance": false
         },
         {
-          "match_type": "matched_boundary",
-          "inferred": {
-            "time": 44.36,
-            "section_id": "section-004",
-            "label": "outro"
-          },
+          "match_type": "missed_reference_boundary",
+          "inferred": null,
           "reference": {
             "time": 44.36,
             "label": "Outro"
           },
-          "delta_seconds": 0.0,
-          "within_tolerance": true
+          "delta_seconds": null,
+          "within_tolerance": false
         }
       ],
       "reference_file": "/data/analysis/_test_song/reference/moises/segments.json",
@@ -1192,8 +1184,8 @@
         {
           "check": "section_energy_count_matches_sections",
           "passed": true,
-          "expected": 4,
-          "actual": 4
+          "expected": 2,
+          "actual": 2
         },
         {
           "check": "beat_energy_count_matches_timing",
@@ -1274,9 +1266,9 @@
         "score": {
           "target": "form",
           "tolerance_seconds": 2.0,
-          "predicted_boundary_count": 3,
+          "predicted_boundary_count": 1,
           "labelled_boundary_count": 0,
-          "form_family_predicted": "unknown",
+          "form_family_predicted": null,
           "form_family_labelled": null,
           "form_family_match": false,
           "mode": "unlabelled",
@@ -1303,7 +1295,7 @@
                   0.4,
                   0.6
                 ],
-                "section_count": 2,
+                "section_count": 1,
                 "observed_alignment": null
               },
               {
@@ -1319,11 +1311,11 @@
                   0.8,
                   1.01
                 ],
-                "section_count": 1,
+                "section_count": 0,
                 "observed_alignment": null
               }
             ],
-            "predicted_spread": 0.35
+            "predicted_spread": 0.0
           }
         }
       }

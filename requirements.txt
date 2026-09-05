@@ -22,3 +22,5 @@ torchaudio==2.1.2
 demucs
 git+https://github.com/audiohacking/omnizart.git
 tensorflow==2.12.1
+natten==0.15.1+torch210cu121
+allin1

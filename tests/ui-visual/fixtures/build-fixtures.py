@@ -52,6 +52,7 @@ NEEDED = [
     "artifacts/essentia/loudness_envelope.json",
     "artifacts/layer_a_harmonic.json",
     "artifacts/layer_c_energy.json",
+    "artifacts/section_segmentation/sections.json",
     "artifacts/energy_summary/hints.json",
     "artifacts/event_inference/events.machine.json",
     "artifacts/symbolic_transcription/drum_events.json",

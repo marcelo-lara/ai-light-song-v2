@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
@@ -705,31 +705,17 @@
   "sections": [
     {
       "section_id": "section-001",
-      "section_name": "ambient_opening",
-      "start_time": 0.06,
+      "section_name": "intro",
+      "start_time": 0.0,
       "end_time": 14.82,
       "confidence": 0.9
     },
     {
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "start_time": 14.82,
-      "end_time": 29.58,
-      "confidence": 0.9
-    },
-    {
-      "section_id": "section-003",
-      "section_name": "release_tail",
-      "start_time": 29.58,
-      "end_time": 44.36,
-      "confidence": 0.55
-    },
-    {
-      "section_id": "section-004",
-      "section_name": "release_tail",
-      "start_time": 44.36,
-      "end_time": 57.28,
-      "confidence": 0.55
+      "end_time": 58.049888,
+      "confidence": 0.446144
     }
   ],
   "phrases": [],

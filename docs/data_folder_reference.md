@@ -339,15 +339,15 @@ LLM hint:
 
 ### `data/analysis/<Song - Artist>/artifacts/section_segmentation/sections.json`
 
-Summary: canonical structural windows with section ids, start and end times, labels, and confidence scores.
+Summary: canonical structural windows from allin1's named segmentation — section ids, start and end times, a Harmonix functional label, and confidence scores.
 
 Why it matters: section boundaries are a primary backbone for large cue changes.
 
 LLM hint:
-- See: `section_id`, `start`, `end`, `label`, and `confidence`.
+- See: `section_id`, `start`, `end`, `function`, `function_confidence`, `function_status`, `same_label_as`, and `confidence`.
 - Use: define section-scoped looks, transitions, and intensity arcs.
-- Use: group phrase-level callbacks under stable section identity.
-- Treat labels as helpful but secondary to the actual time windows.
+- Use: group same-`function` sections chained through `same_label_as` under stable section identity — but treat `same_label_as` as label repetition ("the third thing called a chorus"), never as verified acoustic identity.
+- Treat `function` as helpful but secondary to the actual time windows, and treat it as unverified wherever `function_status` is `"unknown"`.
 
 ### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json`
 
@@ -455,7 +455,8 @@ Summary: compact UI-facing section timeline with presentation-friendly labels.
 Why it matters: quick section overview without opening the fuller artifact files.
 
 LLM hint:
-- See: `start`, `end`, and `label`, where `label` embeds the numeric section id prefix and a confidence suffix such as `001 Intro (0.74)`.
+- See: `section_id`, `start`, `end`, `label`, `description`, and `confidence`. `label` embeds the numeric section id prefix, a title-cased `function`, and a confidence suffix such as `003 Chorus (0.81)` — or, when allin1's labelling is degenerate for the song, the raw label token marked `[unverified]`.
+- See: `description` — one sentence built from the section's own measured shape (its ordinal occurrence of its `function`, its duration, and `same_label_as` where it repeats a label).
 - Use: for fast section summaries, section cue lists, and high-level show pacing.
 - Avoid: treating `hints` here as the authoritative editable hint contract; use `data/analysis/<Song - Artist>/hints.json`.
 

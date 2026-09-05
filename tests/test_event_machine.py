@@ -87,7 +87,7 @@ class EventMachineTests(unittest.TestCase):
                 ],
                 "motif_summary": {"repeated_phrase_groups": [{"id": "group-001", "phrase_window_ids": ["phrase-001", "phrase-003"]}]},
             }
-            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 4.0, "label": "peak_lift", "section_character": "peak_lift", "confidence": 0.9}]}
+            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 4.0, "function": "peak_lift", "confidence": 0.9}]}
 
             payload = generate_machine_events(paths, event_features, rule_candidates, identifier_payload, symbolic, sections)
 
@@ -153,7 +153,7 @@ class EventMachineTests(unittest.TestCase):
             }
             identifier_payload = {"events": []}
             symbolic = {"phrase_windows": [], "motif_summary": {"repeated_phrase_groups": []}}
-            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 8.0, "label": "groove_plateau", "section_character": "groove_plateau", "confidence": 0.9}]}
+            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 8.0, "function": "groove_plateau", "confidence": 0.9}]}
 
             payload = generate_machine_events(paths, event_features, rule_candidates, identifier_payload, symbolic, sections)
 
@@ -217,8 +217,8 @@ class EventMachineTests(unittest.TestCase):
             }
             sections = {
                 "sections": [
-                    {"section_id": "section-001", "start": 0.0, "end": 2.0, "label": "vocal_spotlight", "section_character": "vocal_spotlight", "confidence": 0.9},
-                    {"section_id": "section-002", "start": 2.0, "end": 4.0, "label": "percussion_break", "section_character": "percussion_break", "confidence": 0.9},
+                    {"section_id": "section-001", "start": 0.0, "end": 2.0, "function": "vocal_spotlight", "confidence": 0.9},
+                    {"section_id": "section-002", "start": 2.0, "end": 4.0, "function": "percussion_break", "confidence": 0.9},
                 ]
             }
 
@@ -295,7 +295,7 @@ class EventMachineTests(unittest.TestCase):
             symbolic = {"phrase_windows": [], "motif_summary": {"repeated_phrase_groups": []}}
             sections = {
                 "sections": [
-                    {"section_id": "section-001", "start": 10.0, "end": 14.0, "label": "vocal_lift", "section_character": "vocal_lift", "confidence": 0.88},
+                    {"section_id": "section-001", "start": 10.0, "end": 14.0, "function": "vocal_lift", "confidence": 0.88},
                 ]
             }
 
@@ -377,7 +377,7 @@ class EventMachineTests(unittest.TestCase):
             symbolic = {"phrase_windows": [], "motif_summary": {"repeated_phrase_groups": []}}
             sections = {
                 "sections": [
-                    {"section_id": "section-001", "start": 10.0, "end": 14.0, "label": "vocal_spotlight", "section_character": "vocal_spotlight", "confidence": 0.88},
+                    {"section_id": "section-001", "start": 10.0, "end": 14.0, "function": "vocal_spotlight", "confidence": 0.88},
                 ]
             }
 

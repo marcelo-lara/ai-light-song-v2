@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
@@ -9,38 +9,36 @@
     }
   },
   "summary": {
-    "section_count": 4,
-    "inference_hint_count": 0,
+    "section_count": 2,
+    "inference_hint_count": 1,
     "user_hint_count": 0
   },
   "sections": [
     {
       "section_id": "section-001",
-      "label": "ambient_opening",
-      "start": 0.06,
+      "label": "intro",
+      "start": 0.0,
       "end": 14.82,
       "hints": []
     },
     {
       "section_id": "section-002",
-      "label": "ambient_opening",
+      "label": "chorus",
       "start": 14.82,
-      "end": 29.58,
-      "hints": []
-    },
-    {
-      "section_id": "section-003",
-      "label": "release_tail",
-      "start": 29.58,
-      "end": 44.36,
-      "hints": []
-    },
-    {
-      "section_id": "section-004",
-      "label": "release_tail",
-      "start": 44.36,
-      "end": 57.28,
-      "hints": []
+      "end": 58.049888,
+      "hints": [
+        {
+          "id": "section-002-inference-transition_role",
+          "source": "inference",
+          "category": "transition_role",
+          "text": "Treat 14.82s as the main cue reset into this chorus; let the new focal state land on the boundary instead of drifting late.",
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          }
+        }
+      ]
     }
   ]
 }

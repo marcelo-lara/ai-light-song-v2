@@ -1,10 +1,10 @@
 {
   "schema_version": "1.1",
-  "song_name": "_test_song",
+  "song_name": "Armin - Revolution",
   "generated_from": {
-    "source_song_path": "/data/songs/_test_song.mp3",
-    "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
-    "genre_file": "/data/analysis/_test_song/artifacts/genre.json",
+    "source_song_path": "/data/songs/Armin - Revolution.mp3",
+    "sections_file": "/data/analysis/Armin - Revolution/artifacts/section_segmentation/sections.json",
+    "genre_file": "/data/analysis/Armin - Revolution/artifacts/genre.json",
     "engine": "deterministic.review_queue.v1"
   },
   "direction_of_flow": "analyzer proposes here; a human disposes into reference/human/song_facts.json",

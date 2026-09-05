@@ -167,7 +167,7 @@ def _build_events(midi: object, timing: dict, sections_payload: dict) -> list[di
                 "beat_time_delta": round(float(beat_delta), 6) if beat_delta is not None else None,
                 "alignment_resolved": aligned_beat_index is not None,
                 "section_id": section.get("section_id") if section else None,
-                "section_name": (section.get("section_character") or section.get("label")) if section else None,
+                "section_name": section.get("function") if section else None,
             }
         )
     return events

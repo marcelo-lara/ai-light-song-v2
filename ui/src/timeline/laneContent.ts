@@ -9,7 +9,12 @@
 // `buildLaneBlocks(laneId, sources)` dispatches to the right adapter; the
 // individual adapters are exported for unit tests against artifact fixtures.
 
-import type { HumanHintsFile, HarmonicLayer, SectionRow } from "../data/types";
+import type {
+  HumanHintsFile,
+  HarmonicLayer,
+  SectionRow,
+  SegmentationSection,
+} from "../data/types";
 import type {
   Allin1File,
   CharacterFile,
@@ -393,23 +398,50 @@ export function moisesLyricsContent(file: MoisesLyricsFile | null): SparseBlock[
   });
 }
 
-export function sectionsContent(rows: readonly SectionRow[]): SparseBlock[] {
-  return rows.map((s, i) => ({
-    id: s.section_id ?? `section-${String(i + 1).padStart(3, "0")}`,
-    start_s: s.start,
-    end_s: s.end,
-    label: s.form_role ?? s.label,
-    laneLabel: "Sections",
-    caption: `${formatRange(s.start, s.end)}${
-      s.confidence != null ? ` · conf ${round(s.confidence)}` : ""
-    }`,
-    reference: s.section_id ?? "-",
-    detail: s.energy_character ?? s.repetition_group ?? "-",
-    summary:
-      s.description ||
-      "Section navigation stays browser-local and moves only the shared playback cursor.",
-    raw: s,
-  }));
+/**
+ * Top-level Sections lane — the projected `sections.json` rows, each labelled
+ * `NNN Function (confidence)` straight from the backend (plan v3.0 item 7).
+ * The inspector's functional detail (`function`, `function_confidence`,
+ * `function_status`, `same_label_as`) lives only on the artifact-scoped
+ * `section_segmentation/sections.json`, so it is joined in here by
+ * `section_id` and merged into `raw` for the block inspector to read.
+ */
+export function sectionsContent(
+  rows: readonly SectionRow[],
+  segmentation?: readonly SegmentationSection[],
+): SparseBlock[] {
+  const bySectionId = new Map<string, SegmentationSection>(
+    (segmentation ?? []).map((s) => [s.section_id, s]),
+  );
+  return rows.map((s, i) => {
+    const seg = bySectionId.get(s.section_id);
+    return {
+      id: s.section_id ?? `section-${String(i + 1).padStart(3, "0")}`,
+      start_s: s.start,
+      end_s: s.end,
+      label: s.label,
+      laneLabel: "Sections",
+      caption: `${formatRange(s.start, s.end)}${
+        s.confidence != null ? ` · conf ${round(s.confidence)}` : ""
+      }`,
+      reference: s.section_id ?? "-",
+      detail: seg?.same_label_as
+        ? `same label as ${seg.same_label_as}`
+        : (seg?.function_status ?? "-"),
+      summary:
+        s.description ||
+        "Section navigation stays browser-local and moves only the shared playback cursor.",
+      raw: seg
+        ? {
+            ...s,
+            function: seg.function,
+            function_confidence: seg.function_confidence,
+            function_status: seg.function_status,
+            same_label_as: seg.same_label_as,
+          }
+        : s,
+    };
+  });
 }
 
 export function chordsContent(harmonic: HarmonicLayer | null): SparseBlock[] {
@@ -584,6 +616,7 @@ export interface LaneContentSources {
   moisesLyrics?: MoisesLyricsFile | null;
   dropProposals?: DropProposalsFile | null;
   sections?: readonly SectionRow[];
+  sectionSegmentation?: readonly SegmentationSection[];
   harmonicLayer?: HarmonicLayer | null;
   allin1?: Allin1File | null;
   character?: CharacterFile | null;
@@ -639,7 +672,7 @@ export function buildLaneBlocks(
     case "allin1Transitions":
       return allin1TransitionsContent(s.allin1 ?? null);
     case "sections":
-      return sectionsContent(s.sections ?? []);
+      return sectionsContent(s.sections ?? [], s.sectionSegmentation ?? []);
     case "allin1Sections":
       return allin1SectionsContent(s.allin1 ?? null);
     case "character":

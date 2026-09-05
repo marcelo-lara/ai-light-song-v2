@@ -1,120 +1,49 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
-    "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
-    "harmonic_layer_file": "/data/analysis/_test_song/artifacts/layer_a_harmonic.json",
-    "energy_features_file": "/data/analysis/_test_song/artifacts/energy_summary/features.json",
-    "reference_segments_file": "/data/analysis/_test_song/reference/moises/segments.json",
-    "engine": "reference.moises.segments.promotion",
+    "engine": "allin1.harmonix-all.section_segmentation.v1",
     "dependencies": {
-      "reference_segments": "/data/analysis/_test_song/reference/moises/segments.json",
-      "inferred_sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.inferred.json"
+      "stems": {
+        "bass": "/data/analysis/_test_song/artifacts/stems/bass.wav",
+        "drums": "/data/analysis/_test_song/artifacts/stems/drums.wav",
+        "harmonic": "/data/analysis/_test_song/artifacts/stems/harmonic.wav",
+        "vocals": "/data/analysis/_test_song/artifacts/stems/vocals.wav"
+      }
     },
-    "promotion_gate": {
-      "type": "section_boundary_reference_rescue",
-      "tolerance_seconds": 2.0,
-      "match_ratio": 0.0,
-      "validation_status": "failed",
-      "snap_like_boundary_count": 0,
-      "low_confidence_boundary_count": 1,
-      "boundary_offset_direction": null,
-      "rescue_applied": true
-    },
-    "label_strategy": "reference boundaries with inferred section_character carry-over from the dominant overlapping inferred window",
-    "annotation_strategy": "canonical boundaries may be reference-promoted while labels remain inference-driven"
+    "seeded_stems": [
+      "bass",
+      "drums",
+      "other",
+      "vocals"
+    ],
+    "seeding_note": "allin1 was seeded with the pipeline's own htdemucs stems rather than separating the mix itself \u2014 mandatory for determinism (constitution \u00a76).",
+    "merge_strategy": "consecutive equal-labelled 8-bar phrases merged into one section run",
+    "function_confidence_strategy": "1 - normalised Shannon entropy of allin1's frame-level label posterior within the section span",
+    "labelling_status": "unknown",
+    "phrase_count": 4
   },
   "sections": [
     {
       "section_id": "section-001",
-      "start": 0.06,
+      "start": 0.0,
       "end": 14.82,
-      "label": "intro",
-      "confidence": 0.9,
-      "section_character": "ambient_opening",
-      "onset_anchored": false,
-      "form_role": "intro",
-      "form_role_confidence": 0.95,
-      "form_role_margin": 0.65,
-      "energy_character": "ambient_opening",
-      "repetition_group": "A",
-      "variant_of": null,
-      "similarity": 1.0,
-      "confidence_terms": null
+      "function": "intro",
+      "function_confidence": 0.343031,
+      "function_status": "unknown",
+      "same_label_as": null,
+      "confidence": 0.9
     },
     {
       "section_id": "section-002",
       "start": 14.82,
-      "end": 29.58,
-      "label": "intro",
-      "confidence": 0.9,
-      "section_character": "ambient_opening",
-      "onset_anchored": false,
-      "form_role": "intro",
-      "form_role_confidence": 0.95,
-      "form_role_margin": 0.65,
-      "energy_character": "ambient_opening",
-      "repetition_group": "A",
-      "variant_of": null,
-      "similarity": 1.0,
-      "confidence_terms": null
-    },
-    {
-      "section_id": "section-003",
-      "start": 29.58,
-      "end": 44.36,
-      "label": "outro",
-      "confidence": 0.55,
-      "section_character": "release_tail",
-      "onset_anchored": false,
-      "form_role": "outro",
-      "form_role_confidence": 0.95,
-      "form_role_margin": 0.65,
-      "energy_character": "release_tail",
-      "repetition_group": "A",
-      "variant_of": "section-001",
-      "similarity": 0.965948,
-      "confidence_terms": null
-    },
-    {
-      "section_id": "section-004",
-      "start": 44.36,
-      "end": 57.28,
-      "label": "outro",
-      "confidence": 0.55,
-      "section_character": "release_tail",
-      "onset_anchored": false,
-      "form_role": "outro",
-      "form_role_confidence": 0.95,
-      "form_role_margin": 0.65,
-      "energy_character": "release_tail",
-      "repetition_group": "A",
-      "variant_of": "section-001",
-      "similarity": 0.965948,
-      "confidence_terms": null
+      "end": 58.049888,
+      "function": "chorus",
+      "function_confidence": 0.446144,
+      "function_status": "unknown",
+      "same_label_as": null,
+      "confidence": 0.446144
     }
-  ],
-  "micro_breaks": [],
-  "metadata": {
-    "promotion_applied": true,
-    "inferred_section_count": 2,
-    "promoted_section_count": 4
-  },
-  "form_family": {
-    "value": "unknown",
-    "confidence": 0.15,
-    "provenance": "inferred",
-    "evidence": {
-      "tempo_cv": 0.117449,
-      "tempo_stable": false,
-      "steady_kick": false,
-      "has_bass_dropout": false,
-      "bass_range": 0.177818,
-      "recurring_vocal_sections": false,
-      "vocal_section_count": 0,
-      "dance_score": 0.0,
-      "song_score": 0.0
-    }
-  }
+  ]
 }

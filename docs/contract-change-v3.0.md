@@ -105,3 +105,127 @@ new hint categories were added here.
 templated `motif_recall` hint sentence (244 of 877 generated hints, all
 identical), which item 11 deletes anyway; projected drum events come from
 `drums.py`, which keeps its own Omnizart path and is unaffected.
+
+---
+
+## 7. Replace `sections/` with allin1 named segmentation
+
+**The MCP server's `get_song_brief` `similar_sections` grouping — owned by the
+separate `ai-dmx-light-render` repo, not this one — must move from
+`section_character` equality to `function` + `same_label_as` grouping.** That
+field no longer exists once this lands, so the current grouping code will
+either error or silently stop grouping anything; it needs to read the new
+fields instead. `same_label_as` means label repetition — "the third thing
+allin1 called a chorus" — **not** acoustic identity ("the same music as the
+first chorus"); grouping on it must not be described to an operator or a cue
+author as identity.
+
+Both `data/analysis/<Song - Artist>/sections.json` (the projected file) and
+`artifacts/section_segmentation/sections.json` (the artifact it is built from)
+change shape. The segmenter itself changes too: `stages/sections/`
+(`segmenter.py`, `form.py`, `utils.py` — 1,403 lines of deterministic-DSP phrase
+detection plus a 13-value invented `section_character` mood vocabulary) is
+replaced by `stages/segmentation.py`, which runs All-In-One (Kim & Nam, ISMIR
+2023) seeded with the pipeline's own stems and merges its 8-bar phrase
+segments into song-form section runs. Full rationale, the merge strategy and
+the measured numbers: [`product-refinement-v3.0.md`](product-refinement-v3.0.md)
+§5, "Item 8 — `sections/` → allin1 named segmentation."
+
+**`artifacts/section_segmentation/sections.json` row fields:**
+
+| field | change |
+| --- | --- |
+| `section_character` | **removed** — a 13-value invented vocabulary (`ambient_opening`, `vocal_spotlight`, `groove_plateau`, …) derived from a segmenter that measured 0.29 F1 against `reference/moises/segments.json`, worse than an evenly spaced grid at the same boundary budget |
+| `form_role`, `form_role_confidence`, `form_role_margin` | **removed** — the same deterministic-DSP role classifier the boundaries came from |
+| `energy_character`, `repetition_group`, `variant_of`, `similarity` | **removed** — `repetition_group` in particular was `null` on every section of all 21 shipped songs; nothing downstream ever read a real value out of it |
+| `function` | **added** — the Harmonix functional label allin1 predicts: `intro`, `verse`, `chorus`, `bridge`, `inst`, `solo`, `break`, `outro` |
+| `function_confidence` | **added** — `1 −` normalised Shannon entropy of allin1's frame-level label posterior across the section's own time span |
+| `function_status` | **added** — `"known"` or `"unknown"`; `"unknown"` on every row of a song where allin1 gives fewer than 3 distinct labels or one label covers more than 90% of the track (the model is outside the distribution it can reliably name — see the module docstring in `stages/segmentation.py`). The boundary stays as measured; only the name is untrusted |
+| `same_label_as` | **added** — the `section_id` of the first section carrying this same `function` label, or `null` for a first occurrence. **Label repetition, not acoustic identity** |
+| `section_id`, `start`, `end`, `confidence` | unchanged in name and meaning; `section_id` remains the join key to the projected `sections.json` |
+
+**Before** (`artifacts/section_segmentation/sections.json` row):
+
+```json
+{
+  "section_id": "section-003",
+  "start": 64.0,
+  "end": 96.0,
+  "label": "chorus",
+  "section_character": "focal_lift",
+  "confidence": 0.62,
+  "form_role": "chorus",
+  "form_role_confidence": 0.71,
+  "form_role_margin": 0.18,
+  "energy_character": "focal_lift",
+  "repetition_group": null,
+  "variant_of": null,
+  "similarity": null
+}
+```
+
+**After:**
+
+```json
+{
+  "section_id": "section-003",
+  "start": 64.0,
+  "end": 96.0,
+  "function": "chorus",
+  "function_confidence": 0.81,
+  "function_status": "known",
+  "same_label_as": null,
+  "confidence": 0.81
+}
+```
+
+**Top-level `data/analysis/<Song - Artist>/sections.json` row fields:** the
+`form_role`, `energy_character` and `repetition_group` passthrough fields and
+the `hints` array are gone from this row shape; `label` and `description` are
+now generated from `function` and the section's own measured shape instead of
+the deleted `SECTION_DESCRIPTIONS` 13-value lookup table.
+
+**Before:**
+
+```json
+{
+  "section_id": "section-003",
+  "start": 64.0,
+  "end": 96.0,
+  "label": "3 Focal Lift (0.62)",
+  "form_role": "chorus",
+  "energy_character": "focal_lift",
+  "repetition_group": null,
+  "confidence": 0.62,
+  "description": "Payoff section where energy, repetition, or phrasing converge into the strongest focal state.",
+  "hints": []
+}
+```
+
+**After:**
+
+```json
+{
+  "section_id": "section-003",
+  "start": 64.0,
+  "end": 96.0,
+  "label": "003 Chorus (0.81)",
+  "description": "The 2nd chorus, 32.0s long, same label as the first chorus.",
+  "confidence": 0.81
+}
+```
+
+A song where allin1's labelling is degenerate (`function_status: "unknown"`)
+shows the raw label token with an explicit marker instead of a polished,
+confident-looking name, e.g. `"003 inst [unverified] (0.24)"` — never a
+plausible-sounding name coined for a label the pipeline has already flagged
+untrustworthy.
+
+**Why:** refinement §5, "Item 8 — `sections/` → allin1 named segmentation."
+Measured against `reference/moises/segments.json` across the four gold songs,
+the merged allin1 section runs land 0.53 recall / 0.91 precision / 0.67 F1 at
+±1.0s, against the old segmenter's 0.32 / 0.27 / 0.29 — worse than an evenly
+spaced grid at the same boundary budget. `section_character` and
+`repetition_group` carried no ground truth and, in `repetition_group`'s case,
+no real value on any shipped song; `function` is the named part constitution
+§1.2 asks the structural read to carry.

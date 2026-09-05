@@ -71,47 +71,44 @@ describe("parseBeats", () => {
 });
 
 describe("parseSectionsTopLevel", () => {
-  it("tolerates the pre-v1.1 shape (no section_id / form_role)", () => {
+  it("parses the v3.0 allin1 named-segmentation projection", () => {
     const sections = parseSectionsTopLevel(sectionsFixture);
     expect(sections.length).toBe(4);
     expect(sections[0]!.label).toMatch(/^\d{3} /);
-    expect(sections[0]!.section_id).toBeNull();
-    expect(sections[0]!.form_role).toBeNull();
-    expect(Array.isArray(sections[0]!.hints)).toBe(true);
+    expect(sections[0]!.section_id).toBe("section-001");
+    expect(sections[0]!.confidence).toBe(0.9);
   });
 
-  it("carries v1.1 fields through when present", () => {
+  it("carries the exact row shape through: section_id, start, end, label, description, confidence", () => {
     const raw = [
       {
+        section_id: "section-001",
         start: 0,
         end: 10,
-        label: "001 Intro (0.9)",
-        section_id: "section-001",
-        form_role: "intro",
-        energy_character: "ambient_opening",
-        repetition_group: "A",
+        label: "001 Intro (0.90)",
+        description: "Opening section, 10.0s.",
         confidence: 0.9,
       },
     ];
     const [row] = parseSectionsTopLevel(raw);
     expect(row).toMatchObject({
       section_id: "section-001",
-      form_role: "intro",
+      label: "001 Intro (0.90)",
       confidence: 0.9,
     });
   });
 });
 
 describe("parseSectionSegmentation", () => {
-  it("parses form_family and per-section form_role", () => {
+  it("parses the v3.0 per-section function fields", () => {
     const seg = parseSectionSegmentation(segFixture);
-    expect(seg.schema_version).toBe("1.1");
-    expect(seg.form_family?.value).toBe("hybrid");
-    expect(seg.sections[0]!.form_role).toBe("intro");
-    expect(seg.sections[0]!.repetition_group).toBe("A");
+    expect(seg.schema_version).toBe("3.0");
+    expect(seg.sections[0]!.function).toBe("intro");
+    expect(seg.sections[0]!.function_status).toBe("ok");
+    expect(seg.sections[0]!.same_label_as).toBeNull();
   });
 
-  it("fails loudly on a duplicate section_id (v1.1 B5 join key)", () => {
+  it("fails loudly on a duplicate section_id (join key)", () => {
     const dup = {
       ...segFixture,
       sections: [segFixture.sections[0], segFixture.sections[0]],

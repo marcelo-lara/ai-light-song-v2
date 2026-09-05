@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
@@ -35,11 +35,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -69,7 +69,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -99,11 +99,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -133,7 +133,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -163,11 +163,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -197,7 +197,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -227,11 +227,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -261,7 +261,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -291,11 +291,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -325,7 +325,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -355,11 +355,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -389,7 +389,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -419,11 +419,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -453,7 +453,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -483,11 +483,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -517,7 +517,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -547,11 +547,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -581,7 +581,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -611,11 +611,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -645,7 +645,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -675,11 +675,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -709,7 +709,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -739,11 +739,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -773,7 +773,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -803,11 +803,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -837,7 +837,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -867,11 +867,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -901,7 +901,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -931,11 +931,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -965,7 +965,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -995,11 +995,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1029,7 +1029,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1059,11 +1059,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1093,7 +1093,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1123,11 +1123,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1157,7 +1157,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1199,11 +1199,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1233,7 +1233,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1275,11 +1275,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1309,7 +1309,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1351,11 +1351,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1385,7 +1385,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1427,11 +1427,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1461,7 +1461,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1503,11 +1503,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1537,7 +1537,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1579,11 +1579,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1613,7 +1613,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1644,10 +1644,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1677,7 +1677,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -1708,10 +1708,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1741,7 +1741,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -1772,10 +1772,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1805,7 +1805,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -1836,10 +1836,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1869,7 +1869,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -1900,10 +1900,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1933,7 +1933,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -1964,10 +1964,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1997,7 +1997,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2040,10 +2040,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2073,7 +2073,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2116,10 +2116,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2149,7 +2149,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2180,10 +2180,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2213,7 +2213,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2244,10 +2244,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2277,7 +2277,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2320,10 +2320,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2353,7 +2353,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2384,10 +2384,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2417,7 +2417,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2459,11 +2459,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "section-003",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2596,8 +2596,8 @@
       },
       "notes": "Weighted-evidence drop; contributing features: bass_reentry, bass_stem_rel, energy_delta, spectral_flux_rel, onset_density_rel, accent_intensity, bass_att_ratio. Subtype evidence is not decisive enough; keeping parent drop label. Identifier audit alignment_score=0.180.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-003",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections",
@@ -2649,11 +2649,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "section-003",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2683,8 +2683,8 @@
       },
       "notes": "Impact hits remain single-beat candidates.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-003",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -2713,11 +2713,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "section-003",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2850,8 +2850,8 @@
       },
       "notes": "Weighted-evidence drop; contributing features: bass_reentry, bass_stem_rel, energy_delta, spectral_flux_rel, onset_density_rel, bass_att_ratio. Release resolves tension with softer attack and less explosive accent. Identifier audit alignment_score=0.180.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-003",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections",
@@ -2903,11 +2903,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "section-003",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2937,8 +2937,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-003",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -2979,11 +2979,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "section-003",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3013,8 +3013,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-003",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3055,11 +3055,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3089,8 +3089,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3131,11 +3131,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3165,8 +3165,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3207,11 +3207,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3241,8 +3241,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3283,11 +3283,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3317,8 +3317,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release. Follow-up energy rise indicates a reset-and-reentry mechanic.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3359,11 +3359,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3393,8 +3393,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3423,11 +3423,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3457,8 +3457,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3487,11 +3487,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3521,8 +3521,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3551,11 +3551,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3585,8 +3585,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3615,11 +3615,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3649,8 +3649,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3679,11 +3679,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3713,8 +3713,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3743,11 +3743,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3777,8 +3777,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_event_classifier",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3787,18 +3787,18 @@
     {
       "id": "machine_instrumental_bed_001",
       "type": "instrumental_bed",
-      "start_time": 29.58,
-      "end_time": 44.36,
-      "confidence": 1.0,
-      "intensity": 1.0,
+      "start_time": 14.82,
+      "end_time": 58.049888,
+      "confidence": 0.681976,
+      "intensity": 0.579939,
       "evidence": {
         "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
         "source_windows": [
           {
             "layer": "event_features",
-            "start_time": 29.559002,
-            "end_time": 44.83773,
-            "ref": "beats:58-90",
+            "start_time": 14.802721,
+            "end_time": 58.049888,
+            "ref": "beats:26-115",
             "metric_names": [
               "vocal_focus_score",
               "percussion_focus_score",
@@ -3809,17 +3809,17 @@
         "metrics": [
           {
             "name": "vocal_focus_mean",
-            "value": -0.237114,
+            "value": 0.092915,
             "source_layer": "event_features"
           },
           {
             "name": "percussion_focus_mean",
-            "value": 0.50904,
+            "value": 0.194544,
             "source_layer": "event_features"
           },
           {
             "name": "instrumental_focus_mean",
-            "value": 1.38369,
+            "value": 0.579939,
             "source_layer": "event_features"
           }
         ],
@@ -3832,7 +3832,7 @@
       },
       "notes": "Instrumental support is the main driver of this section rather than a lead-vocal phrase.",
       "created_by": "analyzer_context_classifier",
-      "section_id": "section-003",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -4274,7 +4274,7 @@
       },
       "notes": "Timed lyric line rescues a weak or missing inferred vocal spotlight and anchors it to a lyric-aligned phrase window.",
       "created_by": "analyzer_lyric_rescue_classifier",
-      "section_id": "section-003",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -4351,7 +4351,7 @@
       },
       "notes": "Timed lyric ending rescues a weak or missing inferred vocal tail and snaps it to a clearer phrase handoff.",
       "created_by": "analyzer_lyric_rescue_classifier",
-      "section_id": "section-003",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -4423,7 +4423,7 @@
       },
       "notes": "Timed lyric line rescues a weak or missing inferred vocal spotlight and anchors it to a lyric-aligned phrase window.",
       "created_by": "analyzer_lyric_rescue_classifier",
-      "section_id": "section-004",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -4480,7 +4480,7 @@
       },
       "notes": "Human hint and stem evidence both point to a drum-led break rather than a full-band event.",
       "created_by": "analyzer_hint_guided_classifier",
-      "section_id": "section-003",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -4537,7 +4537,7 @@
       },
       "notes": "Human hint and stem evidence both point to a drum-led break rather than a full-band event.",
       "created_by": "analyzer_hint_guided_classifier",
-      "section_id": "section-003",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -4554,7 +4554,7 @@
     "texture_summary": [
       {
         "section_id": "section-001",
-        "start_time": 0.06,
+        "start_time": 0.0,
         "stem_activity": {
           "bass": 0.4652,
           "drums": 0.0702,
@@ -4568,51 +4568,17 @@
         "section_id": "section-002",
         "start_time": 14.82,
         "stem_activity": {
-          "bass": 0.0942,
-          "drums": 0.257,
-          "harmonic": 0.4582,
-          "vocals": 0.5837
+          "bass": 0.4273,
+          "drums": 0.4105,
+          "harmonic": 0.5931,
+          "vocals": 0.374
         },
         "stems_entering": [
           "drums",
           "harmonic",
           "vocals"
         ],
-        "stems_leaving": [
-          "bass"
-        ]
-      },
-      {
-        "section_id": "section-003",
-        "start_time": 29.58,
-        "stem_activity": {
-          "bass": 0.83,
-          "drums": 0.863,
-          "harmonic": 0.8037,
-          "vocals": 0.0827
-        },
-        "stems_entering": [
-          "bass"
-        ],
-        "stems_leaving": [
-          "vocals"
-        ]
-      },
-      {
-        "section_id": "section-004",
-        "start_time": 44.36,
-        "stem_activity": {
-          "bass": 0.3524,
-          "drums": 0.0291,
-          "harmonic": 0.5167,
-          "vocals": 0.4984
-        },
-        "stems_entering": [
-          "vocals"
-        ],
-        "stems_leaving": [
-          "drums"
-        ]
+        "stems_leaving": []
       }
     ]
   }

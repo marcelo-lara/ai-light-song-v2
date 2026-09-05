@@ -382,9 +382,8 @@ class ConsoleMarkerTests(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         # The presence of a Moises chord reference must not substitute the
         # canonical grid: segment-sections still runs on the pipeline's own
-        # inferred timing and harmonic layer, not a reference-rebuilt one.
-        self.assertEqual(mock_segment_sections.call_args.args[2], inferred_harmonic)
-        self.assertEqual(mock_segment_sections.call_args.args[1], inferred_timing)
+        # inferred timing, not a reference-rebuilt one.
+        self.assertEqual(mock_segment_sections.call_args.args[2], inferred_timing)
         self.assertFalse(paths.artifact("essentia", "beats_inferred.json").exists())
         self.assertFalse(paths.artifact("harmonic_inference", "layer_a_harmonic.inferred.json").exists())
         self.assertEqual(info_payload["artifacts"]["fft_bands"], str(paths.artifact("essentia", "fft_bands.json")))

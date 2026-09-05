@@ -31,7 +31,7 @@ def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: floa
         {
             "time": float(section["start"]),
             "section_id": section.get("section_id"),
-            "label": section.get("label"),
+            "label": section.get("function"),
         }
         for section in inferred_sections[1:]
     ]

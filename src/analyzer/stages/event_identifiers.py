@@ -144,7 +144,7 @@ def infer_song_identifiers(
 
             notes = ["Coordinated loudness and rhythmic activation increase support a release event."]
             if section:
-                charsc = section.get("section_character") or section.get("label", "")
+                charsc = section.get("function", "")
                 sid = section.get("section_id", "")
                 notes.insert(0, f"Transition anchors to {charsc} ({sid}).")
             if centroid_delta > 0.0:

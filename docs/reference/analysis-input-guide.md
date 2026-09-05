@@ -37,10 +37,11 @@ Requirements:
 
 - **`artifacts/section_segmentation/sections.json` is the only file that
   carries `section_id`.** Its `sections[]` rows must each have
-  `section_id`, `section_character`, `confidence`, `start`, `end`.
+  `section_id`, `function`, `function_confidence`, `function_status`,
+  `same_label_as`, `confidence`, `start`, `end`.
 - The top-level `sections.json` list is **matched to the segmentation list by
   array index** — same count, same order. A mismatch silently misaligns
-  every section's character and confidence.
+  every section's label and confidence.
 - `hints.json` `sections[].section_id` and every
   `song_event_timeline.json` event's `section_id` must use these exact ids.
   An event or hint whose `section_id` does not resolve is dropped from the
@@ -53,9 +54,9 @@ never premise**. The MCP server enforces this structurally, and the pipeline
 must feed it:
 
 - **Confidence is always its own numeric field.** Never fold it into a
-  display string. The legacy `sections.json` `label` (`"003 Vocal Spotlight
-  (0.75)"`) is kept only for back-compat; the real value must also exist as
-  the segmentation row's `confidence: 0.75`.
+  display string. The top-level `sections.json` `label` (`"003 Chorus
+  (0.81)"`) is a display convenience only; the real value must also exist as
+  the segmentation row's `function_confidence: 0.81`.
 - **Pass through the source's own `guidance` prose.** `genre.json`'s
   `guidance` array is surfaced verbatim; keep writing it, and add the
   equivalent to any other inferred artifact.
@@ -86,21 +87,28 @@ One row per section, in time order. Consumed fields: `start`, `end`,
 
 ### `artifacts/section_segmentation/sections.json` — highest priority
 
-`sections[]` with `section_id`, `section_character`, `confidence`, `start`,
-`end`.
+`sections[]` with `section_id`, `function`, `function_confidence`,
+`function_status`, `same_label_as`, `confidence`, `start`, `end`.
 
-- `section_character` must come from this **controlled vocabulary** (the 13
-  values currently in the tree). Extend it only when a genuinely new
-  character is needed, and coordinate — the MCP guide's tag index is built
-  from it:
-  `ambient_opening`, `arpeggiated_lift`, `breath_space`, `contrast_bridge`,
-  `flowing_plateau`, `focal_lift`, `groove_plateau`, `instrumental_bed`,
-  `momentum_lift`, `percussion_break`, `release_tail`, `vocal_lift`,
-  `vocal_spotlight`.
-- `section_character` drives `get_song_brief`'s `similar_sections` grouping
-  (sections sharing a character are proposed as reusable look pairs). Two
-  sections that genuinely resemble each other should share a character; two
-  that only loosely rhyme should not.
+- `function` is the Harmonix functional label allin1 predicts:
+  `intro`, `verse`, `chorus`, `bridge`, `inst`, `solo`, `break`, `outro`. It is
+  a fixed model vocabulary, not an editable tag set — do not extend it by hand.
+- `function_confidence` is `1 −` normalised entropy of allin1's own frame-level
+  label posterior across the section's span — how certain the model itself
+  was about this name, independent of `confidence`.
+- `function_status` is `"known"` or `"unknown"`. `"unknown"` means allin1's
+  labelling for the *whole song* is outside the distribution it can reliably
+  name (too few distinct labels, or one label dominating the track); the
+  section's boundary is still usable, its name is not. Treat an `"unknown"`
+  row's `function` as unverified, never as a confident label.
+- `function` + `same_label_as` drives `get_song_brief`'s `similar_sections`
+  grouping (sections sharing a `function`, chained through `same_label_as`,
+  are proposed as reusable look pairs). **`same_label_as` names label
+  repetition, not acoustic identity** — it points at the first section
+  allin1 gave the same functional label, which says "the third thing it
+  called a chorus," not "the same music as the first chorus." Surface it to an
+  operator or a cue author with that caveat; do not describe grouped sections
+  as verified-identical.
 
 ### `song_event_timeline.json` (top-level) — high priority
 
@@ -187,8 +195,9 @@ The **only** two dense artifacts a section pass can pull, and only in windows
 
 ## 5. Priorities for the ML module
 
-1. **Section boundaries + `section_id` + `section_character` + honest
-   `confidence` + a one-line `description`.** Everything hangs off this.
+1. **Section boundaries + `section_id` + `function` + honest
+   `function_confidence` / `confidence` + a one-line `description`.**
+   Everything hangs off this.
 2. **`song_event_timeline.json`:** a lean set of well-timed discrete events
    with `intensity`, honest `confidence`, `section_id`, and an actionable
    `summary`.

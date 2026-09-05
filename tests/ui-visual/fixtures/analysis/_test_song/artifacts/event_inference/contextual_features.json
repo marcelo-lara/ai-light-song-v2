@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
@@ -42,7 +42,7 @@
       "time_s": 0.0,
       "source_beat": 1,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.582961,
         "onset_density": -0.625947,
@@ -134,7 +134,7 @@
       "time_s": 0.1,
       "source_beat": 1,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.582961,
         "onset_density": -0.625947,
@@ -226,7 +226,7 @@
       "time_s": 0.2,
       "source_beat": 1,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.582961,
         "onset_density": -0.625947,
@@ -318,7 +318,7 @@
       "time_s": 0.3,
       "source_beat": 1,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.582961,
         "onset_density": -0.625947,
@@ -410,7 +410,7 @@
       "time_s": 0.4,
       "source_beat": 1,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.582961,
         "onset_density": -0.625947,
@@ -502,7 +502,7 @@
       "time_s": 0.5,
       "source_beat": 1,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.582961,
         "onset_density": -0.625947,
@@ -594,7 +594,7 @@
       "time_s": 0.6,
       "source_beat": 1,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.582961,
         "onset_density": -0.625947,
@@ -686,7 +686,7 @@
       "time_s": 0.7,
       "source_beat": 1,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.582961,
         "onset_density": -0.625947,
@@ -778,7 +778,7 @@
       "time_s": 0.8,
       "source_beat": 2,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.553942,
         "onset_density": -0.595845,
@@ -870,7 +870,7 @@
       "time_s": 0.9,
       "source_beat": 2,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.553942,
         "onset_density": -0.595845,
@@ -962,7 +962,7 @@
       "time_s": 1.0,
       "source_beat": 2,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.553942,
         "onset_density": -0.595845,
@@ -1054,7 +1054,7 @@
       "time_s": 1.1,
       "source_beat": 2,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.553942,
         "onset_density": -0.595845,
@@ -1146,7 +1146,7 @@
       "time_s": 1.2,
       "source_beat": 2,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.553942,
         "onset_density": -0.595845,
@@ -1238,7 +1238,7 @@
       "time_s": 1.3,
       "source_beat": 2,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.553942,
         "onset_density": -0.595845,
@@ -1330,7 +1330,7 @@
       "time_s": 1.4,
       "source_beat": 3,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.574577,
         "onset_density": -0.617245,
@@ -1422,7 +1422,7 @@
       "time_s": 1.5,
       "source_beat": 3,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.574577,
         "onset_density": -0.617245,
@@ -1514,7 +1514,7 @@
       "time_s": 1.6,
       "source_beat": 3,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.574577,
         "onset_density": -0.617245,
@@ -1606,7 +1606,7 @@
       "time_s": 1.7,
       "source_beat": 3,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.574577,
         "onset_density": -0.617245,
@@ -1698,7 +1698,7 @@
       "time_s": 1.8,
       "source_beat": 3,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.574577,
         "onset_density": -0.617245,
@@ -1790,7 +1790,7 @@
       "time_s": 1.9,
       "source_beat": 4,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.711063,
         "onset_density": -0.758818,
@@ -1882,7 +1882,7 @@
       "time_s": 2.0,
       "source_beat": 4,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.711063,
         "onset_density": -0.758818,
@@ -1974,7 +1974,7 @@
       "time_s": 2.1,
       "source_beat": 4,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.711063,
         "onset_density": -0.758818,
@@ -2066,7 +2066,7 @@
       "time_s": 2.2,
       "source_beat": 4,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.711063,
         "onset_density": -0.758818,
@@ -2158,7 +2158,7 @@
       "time_s": 2.3,
       "source_beat": 4,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.711063,
         "onset_density": -0.758818,
@@ -2250,7 +2250,7 @@
       "time_s": 2.4,
       "source_beat": 5,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.926303,
         "onset_density": -0.98207,
@@ -2342,7 +2342,7 @@
       "time_s": 2.5,
       "source_beat": 5,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.926303,
         "onset_density": -0.98207,
@@ -2434,7 +2434,7 @@
       "time_s": 2.6,
       "source_beat": 5,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.926303,
         "onset_density": -0.98207,
@@ -2526,7 +2526,7 @@
       "time_s": 2.7,
       "source_beat": 5,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.926303,
         "onset_density": -0.98207,
@@ -2618,7 +2618,7 @@
       "time_s": 2.8,
       "source_beat": 5,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.926303,
         "onset_density": -0.98207,
@@ -2710,7 +2710,7 @@
       "time_s": 2.9,
       "source_beat": 5,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.926303,
         "onset_density": -0.98207,
@@ -2802,7 +2802,7 @@
       "time_s": 3.0,
       "source_beat": 6,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.975622,
         "onset_density": -1.03221,
@@ -2894,7 +2894,7 @@
       "time_s": 3.1,
       "source_beat": 6,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.975622,
         "onset_density": -1.03221,
@@ -2986,7 +2986,7 @@
       "time_s": 3.2,
       "source_beat": 6,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.975622,
         "onset_density": -1.03221,
@@ -3078,7 +3078,7 @@
       "time_s": 3.3,
       "source_beat": 6,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.975622,
         "onset_density": -1.03221,
@@ -3170,7 +3170,7 @@
       "time_s": 3.4,
       "source_beat": 6,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.975622,
         "onset_density": -1.03221,
@@ -3262,7 +3262,7 @@
       "time_s": 3.5,
       "source_beat": 6,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.975622,
         "onset_density": -1.03221,
@@ -3354,7 +3354,7 @@
       "time_s": 3.6,
       "source_beat": 7,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.047436,
         "onset_density": -1.103837,
@@ -3446,7 +3446,7 @@
       "time_s": 3.7,
       "source_beat": 7,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.047436,
         "onset_density": -1.103837,
@@ -3538,7 +3538,7 @@
       "time_s": 3.8,
       "source_beat": 7,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.047436,
         "onset_density": -1.103837,
@@ -3630,7 +3630,7 @@
       "time_s": 3.9,
       "source_beat": 7,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.047436,
         "onset_density": -1.103837,
@@ -3722,7 +3722,7 @@
       "time_s": 4.0,
       "source_beat": 7,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.047436,
         "onset_density": -1.103837,
@@ -3814,7 +3814,7 @@
       "time_s": 4.1,
       "source_beat": 7,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.047436,
         "onset_density": -1.103837,
@@ -3906,7 +3906,7 @@
       "time_s": 4.2,
       "source_beat": 8,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.115874,
         "onset_density": -1.175428,
@@ -3998,7 +3998,7 @@
       "time_s": 4.3,
       "source_beat": 8,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.115874,
         "onset_density": -1.175428,
@@ -4090,7 +4090,7 @@
       "time_s": 4.4,
       "source_beat": 8,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.115874,
         "onset_density": -1.175428,
@@ -4182,7 +4182,7 @@
       "time_s": 4.5,
       "source_beat": 8,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.115874,
         "onset_density": -1.175428,
@@ -4274,7 +4274,7 @@
       "time_s": 4.6,
       "source_beat": 8,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.115874,
         "onset_density": -1.175428,
@@ -4366,7 +4366,7 @@
       "time_s": 4.7,
       "source_beat": 8,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.115874,
         "onset_density": -1.175428,
@@ -4458,7 +4458,7 @@
       "time_s": 4.8,
       "source_beat": 8,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.115874,
         "onset_density": -1.175428,
@@ -4550,7 +4550,7 @@
       "time_s": 4.9,
       "source_beat": 9,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.117372,
         "onset_density": -1.170665,
@@ -4642,7 +4642,7 @@
       "time_s": 5.0,
       "source_beat": 9,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.117372,
         "onset_density": -1.170665,
@@ -4734,7 +4734,7 @@
       "time_s": 5.1,
       "source_beat": 9,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.117372,
         "onset_density": -1.170665,
@@ -4826,7 +4826,7 @@
       "time_s": 5.2,
       "source_beat": 9,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.117372,
         "onset_density": -1.170665,
@@ -4918,7 +4918,7 @@
       "time_s": 5.3,
       "source_beat": 9,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.117372,
         "onset_density": -1.170665,
@@ -5010,7 +5010,7 @@
       "time_s": 5.4,
       "source_beat": 9,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.117372,
         "onset_density": -1.170665,
@@ -5102,7 +5102,7 @@
       "time_s": 5.5,
       "source_beat": 10,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.977154,
         "onset_density": -1.020915,
@@ -5194,7 +5194,7 @@
       "time_s": 5.6,
       "source_beat": 10,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.977154,
         "onset_density": -1.020915,
@@ -5286,7 +5286,7 @@
       "time_s": 5.7,
       "source_beat": 10,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.977154,
         "onset_density": -1.020915,
@@ -5378,7 +5378,7 @@
       "time_s": 5.8,
       "source_beat": 10,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.977154,
         "onset_density": -1.020915,
@@ -5470,7 +5470,7 @@
       "time_s": 5.9,
       "source_beat": 10,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.977154,
         "onset_density": -1.020915,
@@ -5562,7 +5562,7 @@
       "time_s": 6.0,
       "source_beat": 10,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.977154,
         "onset_density": -1.020915,
@@ -5654,7 +5654,7 @@
       "time_s": 6.1,
       "source_beat": 11,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.002345,
         "onset_density": -1.053628,
@@ -5746,7 +5746,7 @@
       "time_s": 6.2,
       "source_beat": 11,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.002345,
         "onset_density": -1.053628,
@@ -5838,7 +5838,7 @@
       "time_s": 6.3,
       "source_beat": 11,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.002345,
         "onset_density": -1.053628,
@@ -5930,7 +5930,7 @@
       "time_s": 6.4,
       "source_beat": 11,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.002345,
         "onset_density": -1.053628,
@@ -6022,7 +6022,7 @@
       "time_s": 6.5,
       "source_beat": 11,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.002345,
         "onset_density": -1.053628,
@@ -6114,7 +6114,7 @@
       "time_s": 6.6,
       "source_beat": 11,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.002345,
         "onset_density": -1.053628,
@@ -6206,7 +6206,7 @@
       "time_s": 6.7,
       "source_beat": 12,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.534651,
         "onset_density": -0.573931,
@@ -6298,7 +6298,7 @@
       "time_s": 6.8,
       "source_beat": 12,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.534651,
         "onset_density": -0.573931,
@@ -6390,7 +6390,7 @@
       "time_s": 6.9,
       "source_beat": 12,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.534651,
         "onset_density": -0.573931,
@@ -6482,7 +6482,7 @@
       "time_s": 7.0,
       "source_beat": 12,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.534651,
         "onset_density": -0.573931,
@@ -6574,7 +6574,7 @@
       "time_s": 7.1,
       "source_beat": 12,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.534651,
         "onset_density": -0.573931,
@@ -6666,7 +6666,7 @@
       "time_s": 7.2,
       "source_beat": 12,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.534651,
         "onset_density": -0.573931,
@@ -6758,7 +6758,7 @@
       "time_s": 7.3,
       "source_beat": 13,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.594409,
         "onset_density": -0.636243,
@@ -6850,7 +6850,7 @@
       "time_s": 7.4,
       "source_beat": 13,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.594409,
         "onset_density": -0.636243,
@@ -6942,7 +6942,7 @@
       "time_s": 7.5,
       "source_beat": 13,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.594409,
         "onset_density": -0.636243,
@@ -7034,7 +7034,7 @@
       "time_s": 7.6,
       "source_beat": 13,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.594409,
         "onset_density": -0.636243,
@@ -7126,7 +7126,7 @@
       "time_s": 7.7,
       "source_beat": 13,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.594409,
         "onset_density": -0.636243,
@@ -7218,7 +7218,7 @@
       "time_s": 7.8,
       "source_beat": 13,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.594409,
         "onset_density": -0.636243,
@@ -7310,7 +7310,7 @@
       "time_s": 7.9,
       "source_beat": 13,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.594409,
         "onset_density": -0.636243,
@@ -7402,7 +7402,7 @@
       "time_s": 8.0,
       "source_beat": 14,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.459266,
         "onset_density": -0.497644,
@@ -7494,7 +7494,7 @@
       "time_s": 8.1,
       "source_beat": 14,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.459266,
         "onset_density": -0.497644,
@@ -7586,7 +7586,7 @@
       "time_s": 8.2,
       "source_beat": 14,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.459266,
         "onset_density": -0.497644,
@@ -7678,7 +7678,7 @@
       "time_s": 8.3,
       "source_beat": 14,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.459266,
         "onset_density": -0.497644,
@@ -7770,7 +7770,7 @@
       "time_s": 8.4,
       "source_beat": 14,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.459266,
         "onset_density": -0.497644,
@@ -7862,7 +7862,7 @@
       "time_s": 8.5,
       "source_beat": 14,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.459266,
         "onset_density": -0.497644,
@@ -7954,7 +7954,7 @@
       "time_s": 8.6,
       "source_beat": 15,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.518963,
         "onset_density": -0.559564,
@@ -8046,7 +8046,7 @@
       "time_s": 8.7,
       "source_beat": 15,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.518963,
         "onset_density": -0.559564,
@@ -8138,7 +8138,7 @@
       "time_s": 8.8,
       "source_beat": 15,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.518963,
         "onset_density": -0.559564,
@@ -8230,7 +8230,7 @@
       "time_s": 8.9,
       "source_beat": 15,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.518963,
         "onset_density": -0.559564,
@@ -8322,7 +8322,7 @@
       "time_s": 9.0,
       "source_beat": 15,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.518963,
         "onset_density": -0.559564,
@@ -8414,7 +8414,7 @@
       "time_s": 9.1,
       "source_beat": 15,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.518963,
         "onset_density": -0.559564,
@@ -8506,7 +8506,7 @@
       "time_s": 9.2,
       "source_beat": 16,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.695264,
         "onset_density": -0.74243,
@@ -8598,7 +8598,7 @@
       "time_s": 9.3,
       "source_beat": 16,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.695264,
         "onset_density": -0.74243,
@@ -8690,7 +8690,7 @@
       "time_s": 9.4,
       "source_beat": 16,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.695264,
         "onset_density": -0.74243,
@@ -8782,7 +8782,7 @@
       "time_s": 9.5,
       "source_beat": 16,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.695264,
         "onset_density": -0.74243,
@@ -8874,7 +8874,7 @@
       "time_s": 9.6,
       "source_beat": 16,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.695264,
         "onset_density": -0.74243,
@@ -8966,7 +8966,7 @@
       "time_s": 9.7,
       "source_beat": 16,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.695264,
         "onset_density": -0.74243,
@@ -9058,7 +9058,7 @@
       "time_s": 9.8,
       "source_beat": 17,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.863069,
         "onset_density": -0.916484,
@@ -9150,7 +9150,7 @@
       "time_s": 9.9,
       "source_beat": 17,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.863069,
         "onset_density": -0.916484,
@@ -9242,7 +9242,7 @@
       "time_s": 10.0,
       "source_beat": 17,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.863069,
         "onset_density": -0.916484,
@@ -9334,7 +9334,7 @@
       "time_s": 10.1,
       "source_beat": 17,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.863069,
         "onset_density": -0.916484,
@@ -9426,7 +9426,7 @@
       "time_s": 10.2,
       "source_beat": 17,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.863069,
         "onset_density": -0.916484,
@@ -9518,7 +9518,7 @@
       "time_s": 10.3,
       "source_beat": 17,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.863069,
         "onset_density": -0.916484,
@@ -9610,7 +9610,7 @@
       "time_s": 10.4,
       "source_beat": 18,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.921646,
         "onset_density": -0.975892,
@@ -9702,7 +9702,7 @@
       "time_s": 10.5,
       "source_beat": 18,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.921646,
         "onset_density": -0.975892,
@@ -9794,7 +9794,7 @@
       "time_s": 10.6,
       "source_beat": 18,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.921646,
         "onset_density": -0.975892,
@@ -9886,7 +9886,7 @@
       "time_s": 10.7,
       "source_beat": 18,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.921646,
         "onset_density": -0.975892,
@@ -9978,7 +9978,7 @@
       "time_s": 10.8,
       "source_beat": 18,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.921646,
         "onset_density": -0.975892,
@@ -10070,7 +10070,7 @@
       "time_s": 10.9,
       "source_beat": 18,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.921646,
         "onset_density": -0.975892,
@@ -10162,7 +10162,7 @@
       "time_s": 11.0,
       "source_beat": 19,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.036127,
         "onset_density": -1.09555,
@@ -10254,7 +10254,7 @@
       "time_s": 11.1,
       "source_beat": 19,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.036127,
         "onset_density": -1.09555,
@@ -10346,7 +10346,7 @@
       "time_s": 11.2,
       "source_beat": 19,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.036127,
         "onset_density": -1.09555,
@@ -10438,7 +10438,7 @@
       "time_s": 11.3,
       "source_beat": 19,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.036127,
         "onset_density": -1.09555,
@@ -10530,7 +10530,7 @@
       "time_s": 11.4,
       "source_beat": 19,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.036127,
         "onset_density": -1.09555,
@@ -10622,7 +10622,7 @@
       "time_s": 11.5,
       "source_beat": 19,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.036127,
         "onset_density": -1.09555,
@@ -10714,7 +10714,7 @@
       "time_s": 11.6,
       "source_beat": 20,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.093362,
         "onset_density": -1.155351,
@@ -10806,7 +10806,7 @@
       "time_s": 11.7,
       "source_beat": 20,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.093362,
         "onset_density": -1.155351,
@@ -10898,7 +10898,7 @@
       "time_s": 11.8,
       "source_beat": 20,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.093362,
         "onset_density": -1.155351,
@@ -10990,7 +10990,7 @@
       "time_s": 11.9,
       "source_beat": 20,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.093362,
         "onset_density": -1.155351,
@@ -11082,7 +11082,7 @@
       "time_s": 12.0,
       "source_beat": 20,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.093362,
         "onset_density": -1.155351,
@@ -11174,7 +11174,7 @@
       "time_s": 12.1,
       "source_beat": 20,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.093362,
         "onset_density": -1.155351,
@@ -11266,7 +11266,7 @@
       "time_s": 12.2,
       "source_beat": 21,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.797076,
         "onset_density": -0.848033,
@@ -11358,7 +11358,7 @@
       "time_s": 12.3,
       "source_beat": 21,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.797076,
         "onset_density": -0.848033,
@@ -11450,7 +11450,7 @@
       "time_s": 12.4,
       "source_beat": 21,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.797076,
         "onset_density": -0.848033,
@@ -11542,7 +11542,7 @@
       "time_s": 12.5,
       "source_beat": 21,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.797076,
         "onset_density": -0.848033,
@@ -11634,7 +11634,7 @@
       "time_s": 12.6,
       "source_beat": 22,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.724962,
         "onset_density": -0.773231,
@@ -11726,7 +11726,7 @@
       "time_s": 12.7,
       "source_beat": 22,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.724962,
         "onset_density": -0.773231,
@@ -11818,7 +11818,7 @@
       "time_s": 12.8,
       "source_beat": 22,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.724962,
         "onset_density": -0.773231,
@@ -11910,7 +11910,7 @@
       "time_s": 12.9,
       "source_beat": 22,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.724962,
         "onset_density": -0.773231,
@@ -12002,7 +12002,7 @@
       "time_s": 13.0,
       "source_beat": 22,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.724962,
         "onset_density": -0.773231,
@@ -12094,7 +12094,7 @@
       "time_s": 13.1,
       "source_beat": 23,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.121205,
         "onset_density": -1.184229,
@@ -12186,7 +12186,7 @@
       "time_s": 13.2,
       "source_beat": 23,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.121205,
         "onset_density": -1.184229,
@@ -12278,7 +12278,7 @@
       "time_s": 13.3,
       "source_beat": 23,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.121205,
         "onset_density": -1.184229,
@@ -12370,7 +12370,7 @@
       "time_s": 13.4,
       "source_beat": 23,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.121205,
         "onset_density": -1.184229,
@@ -12462,7 +12462,7 @@
       "time_s": 13.5,
       "source_beat": 23,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.121205,
         "onset_density": -1.184229,
@@ -12554,7 +12554,7 @@
       "time_s": 13.6,
       "source_beat": 24,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.053174,
         "onset_density": -1.113665,
@@ -12646,7 +12646,7 @@
       "time_s": 13.7,
       "source_beat": 24,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.053174,
         "onset_density": -1.113665,
@@ -12738,7 +12738,7 @@
       "time_s": 13.8,
       "source_beat": 24,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.053174,
         "onset_density": -1.113665,
@@ -12830,7 +12830,7 @@
       "time_s": 13.9,
       "source_beat": 24,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.053174,
         "onset_density": -1.113665,
@@ -12922,7 +12922,7 @@
       "time_s": 14.0,
       "source_beat": 24,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -1.053174,
         "onset_density": -1.113665,
@@ -13014,7 +13014,7 @@
       "time_s": 14.1,
       "source_beat": 25,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.743981,
         "onset_density": -0.792956,
@@ -13106,7 +13106,7 @@
       "time_s": 14.2,
       "source_beat": 25,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.743981,
         "onset_density": -0.792956,
@@ -13198,7 +13198,7 @@
       "time_s": 14.3,
       "source_beat": 25,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.743981,
         "onset_density": -0.792956,
@@ -13290,7 +13290,7 @@
       "time_s": 14.4,
       "source_beat": 25,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.743981,
         "onset_density": -0.792956,
@@ -13382,7 +13382,7 @@
       "time_s": 14.5,
       "source_beat": 25,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "normalized": {
         "loudness_avg": -0.743981,
         "onset_density": -0.792956,
@@ -13474,7 +13474,7 @@
       "time_s": 14.6,
       "source_beat": 26,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.059174,
         "onset_density": -0.082656,
@@ -13566,7 +13566,7 @@
       "time_s": 14.7,
       "source_beat": 26,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.059174,
         "onset_density": -0.082656,
@@ -13658,7 +13658,7 @@
       "time_s": 14.8,
       "source_beat": 26,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.059174,
         "onset_density": -0.082656,
@@ -13750,7 +13750,7 @@
       "time_s": 14.9,
       "source_beat": 26,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.059174,
         "onset_density": -0.082656,
@@ -13842,7 +13842,7 @@
       "time_s": 15.0,
       "source_beat": 26,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.059174,
         "onset_density": -0.082656,
@@ -13934,7 +13934,7 @@
       "time_s": 15.1,
       "source_beat": 27,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.732393,
         "onset_density": -0.78094,
@@ -14026,7 +14026,7 @@
       "time_s": 15.2,
       "source_beat": 27,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.732393,
         "onset_density": -0.78094,
@@ -14118,7 +14118,7 @@
       "time_s": 15.3,
       "source_beat": 27,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.732393,
         "onset_density": -0.78094,
@@ -14210,7 +14210,7 @@
       "time_s": 15.4,
       "source_beat": 27,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.732393,
         "onset_density": -0.78094,
@@ -14302,7 +14302,7 @@
       "time_s": 15.5,
       "source_beat": 27,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.732393,
         "onset_density": -0.78094,
@@ -14394,7 +14394,7 @@
       "time_s": 15.6,
       "source_beat": 28,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.506997,
         "onset_density": -0.547149,
@@ -14486,7 +14486,7 @@
       "time_s": 15.7,
       "source_beat": 28,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.506997,
         "onset_density": -0.547149,
@@ -14578,7 +14578,7 @@
       "time_s": 15.8,
       "source_beat": 28,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.506997,
         "onset_density": -0.547149,
@@ -14670,7 +14670,7 @@
       "time_s": 15.9,
       "source_beat": 28,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.506997,
         "onset_density": -0.547149,
@@ -14762,7 +14762,7 @@
       "time_s": 16.0,
       "source_beat": 29,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.563302,
         "onset_density": -0.605552,
@@ -14854,7 +14854,7 @@
       "time_s": 16.1,
       "source_beat": 29,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.563302,
         "onset_density": -0.605552,
@@ -14946,7 +14946,7 @@
       "time_s": 16.2,
       "source_beat": 29,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.563302,
         "onset_density": -0.605552,
@@ -15038,7 +15038,7 @@
       "time_s": 16.3,
       "source_beat": 29,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.563302,
         "onset_density": -0.605552,
@@ -15130,7 +15130,7 @@
       "time_s": 16.4,
       "source_beat": 29,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.563302,
         "onset_density": -0.605552,
@@ -15222,7 +15222,7 @@
       "time_s": 16.5,
       "source_beat": 30,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.183069,
         "onset_density": -0.211161,
@@ -15314,7 +15314,7 @@
       "time_s": 16.6,
       "source_beat": 30,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.183069,
         "onset_density": -0.211161,
@@ -15406,7 +15406,7 @@
       "time_s": 16.7,
       "source_beat": 30,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.183069,
         "onset_density": -0.211161,
@@ -15498,7 +15498,7 @@
       "time_s": 16.8,
       "source_beat": 30,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.183069,
         "onset_density": -0.211161,
@@ -15590,7 +15590,7 @@
       "time_s": 16.9,
       "source_beat": 31,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.556778,
         "onset_density": -0.598784,
@@ -15682,7 +15682,7 @@
       "time_s": 17.0,
       "source_beat": 31,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.556778,
         "onset_density": -0.598784,
@@ -15774,7 +15774,7 @@
       "time_s": 17.1,
       "source_beat": 31,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.556778,
         "onset_density": -0.598784,
@@ -15866,7 +15866,7 @@
       "time_s": 17.2,
       "source_beat": 31,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.556778,
         "onset_density": -0.598784,
@@ -15958,7 +15958,7 @@
       "time_s": 17.3,
       "source_beat": 31,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.556778,
         "onset_density": -0.598784,
@@ -16050,7 +16050,7 @@
       "time_s": 17.4,
       "source_beat": 32,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.551246,
         "onset_density": -0.593044,
@@ -16142,7 +16142,7 @@
       "time_s": 17.5,
       "source_beat": 32,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.551246,
         "onset_density": -0.593044,
@@ -16234,7 +16234,7 @@
       "time_s": 17.6,
       "source_beat": 32,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.551246,
         "onset_density": -0.593044,
@@ -16326,7 +16326,7 @@
       "time_s": 17.7,
       "source_beat": 32,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.551246,
         "onset_density": -0.593044,
@@ -16418,7 +16418,7 @@
       "time_s": 17.8,
       "source_beat": 32,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.551246,
         "onset_density": -0.593044,
@@ -16510,7 +16510,7 @@
       "time_s": 17.9,
       "source_beat": 33,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.811878,
         "onset_density": -0.863388,
@@ -16602,7 +16602,7 @@
       "time_s": 18.0,
       "source_beat": 33,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.811878,
         "onset_density": -0.863388,
@@ -16694,7 +16694,7 @@
       "time_s": 18.1,
       "source_beat": 33,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.811878,
         "onset_density": -0.863388,
@@ -16786,7 +16786,7 @@
       "time_s": 18.2,
       "source_beat": 33,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.811878,
         "onset_density": -0.863388,
@@ -16878,7 +16878,7 @@
       "time_s": 18.3,
       "source_beat": 34,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.123845,
         "onset_density": -1.184656,
@@ -16970,7 +16970,7 @@
       "time_s": 18.4,
       "source_beat": 34,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.123845,
         "onset_density": -1.184656,
@@ -17062,7 +17062,7 @@
       "time_s": 18.5,
       "source_beat": 34,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.123845,
         "onset_density": -1.184656,
@@ -17154,7 +17154,7 @@
       "time_s": 18.6,
       "source_beat": 34,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.123845,
         "onset_density": -1.184656,
@@ -17246,7 +17246,7 @@
       "time_s": 18.7,
       "source_beat": 34,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.123845,
         "onset_density": -1.184656,
@@ -17338,7 +17338,7 @@
       "time_s": 18.8,
       "source_beat": 35,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.431367,
         "onset_density": -0.467963,
@@ -17430,7 +17430,7 @@
       "time_s": 18.9,
       "source_beat": 35,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.431367,
         "onset_density": -0.467963,
@@ -17522,7 +17522,7 @@
       "time_s": 19.0,
       "source_beat": 35,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.431367,
         "onset_density": -0.467963,
@@ -17614,7 +17614,7 @@
       "time_s": 19.1,
       "source_beat": 35,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.431367,
         "onset_density": -0.467963,
@@ -17706,7 +17706,7 @@
       "time_s": 19.2,
       "source_beat": 35,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.431367,
         "onset_density": -0.467963,
@@ -17798,7 +17798,7 @@
       "time_s": 19.3,
       "source_beat": 36,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.582081,
         "onset_density": -0.625029,
@@ -17890,7 +17890,7 @@
       "time_s": 19.4,
       "source_beat": 36,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.582081,
         "onset_density": -0.625029,
@@ -17982,7 +17982,7 @@
       "time_s": 19.5,
       "source_beat": 36,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.582081,
         "onset_density": -0.625029,
@@ -18074,7 +18074,7 @@
       "time_s": 19.6,
       "source_beat": 36,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.582081,
         "onset_density": -0.625029,
@@ -18166,7 +18166,7 @@
       "time_s": 19.7,
       "source_beat": 37,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.573814,
         "onset_density": -0.61646,
@@ -18258,7 +18258,7 @@
       "time_s": 19.8,
       "source_beat": 37,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.573814,
         "onset_density": -0.61646,
@@ -18350,7 +18350,7 @@
       "time_s": 19.9,
       "source_beat": 37,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.573814,
         "onset_density": -0.61646,
@@ -18442,7 +18442,7 @@
       "time_s": 20.0,
       "source_beat": 37,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.573814,
         "onset_density": -0.61646,
@@ -18534,7 +18534,7 @@
       "time_s": 20.1,
       "source_beat": 37,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.573814,
         "onset_density": -0.61646,
@@ -18626,7 +18626,7 @@
       "time_s": 20.2,
       "source_beat": 38,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.423267,
         "onset_density": -0.460306,
@@ -18718,7 +18718,7 @@
       "time_s": 20.3,
       "source_beat": 38,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.423267,
         "onset_density": -0.460306,
@@ -18810,7 +18810,7 @@
       "time_s": 20.4,
       "source_beat": 38,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.423267,
         "onset_density": -0.460306,
@@ -18902,7 +18902,7 @@
       "time_s": 20.5,
       "source_beat": 38,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.423267,
         "onset_density": -0.460306,
@@ -18994,7 +18994,7 @@
       "time_s": 20.6,
       "source_beat": 39,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.558037,
         "onset_density": -0.600089,
@@ -19086,7 +19086,7 @@
       "time_s": 20.7,
       "source_beat": 39,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.558037,
         "onset_density": -0.600089,
@@ -19178,7 +19178,7 @@
       "time_s": 20.8,
       "source_beat": 39,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.558037,
         "onset_density": -0.600089,
@@ -19270,7 +19270,7 @@
       "time_s": 20.9,
       "source_beat": 39,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.558037,
         "onset_density": -0.600089,
@@ -19362,7 +19362,7 @@
       "time_s": 21.0,
       "source_beat": 39,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.558037,
         "onset_density": -0.600089,
@@ -19454,7 +19454,7 @@
       "time_s": 21.1,
       "source_beat": 40,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.344055,
         "onset_density": -0.378141,
@@ -19546,7 +19546,7 @@
       "time_s": 21.2,
       "source_beat": 40,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.344055,
         "onset_density": -0.378141,
@@ -19638,7 +19638,7 @@
       "time_s": 21.3,
       "source_beat": 40,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.344055,
         "onset_density": -0.378141,
@@ -19730,7 +19730,7 @@
       "time_s": 21.4,
       "source_beat": 40,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.344055,
         "onset_density": -0.378141,
@@ -19822,7 +19822,7 @@
       "time_s": 21.5,
       "source_beat": 40,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.344055,
         "onset_density": -0.378141,
@@ -19914,7 +19914,7 @@
       "time_s": 21.6,
       "source_beat": 41,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.186272,
         "onset_density": -0.214487,
@@ -20006,7 +20006,7 @@
       "time_s": 21.7,
       "source_beat": 41,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.186272,
         "onset_density": -0.214487,
@@ -20098,7 +20098,7 @@
       "time_s": 21.8,
       "source_beat": 41,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.186272,
         "onset_density": -0.214487,
@@ -20190,7 +20190,7 @@
       "time_s": 21.9,
       "source_beat": 41,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.186272,
         "onset_density": -0.214487,
@@ -20282,7 +20282,7 @@
       "time_s": 22.0,
       "source_beat": 42,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.597779,
         "onset_density": 0.598761,
@@ -20374,7 +20374,7 @@
       "time_s": 22.1,
       "source_beat": 42,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.597779,
         "onset_density": 0.598761,
@@ -20466,7 +20466,7 @@
       "time_s": 22.2,
       "source_beat": 42,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.597779,
         "onset_density": 0.598761,
@@ -20558,7 +20558,7 @@
       "time_s": 22.3,
       "source_beat": 42,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.597779,
         "onset_density": 0.598761,
@@ -20650,7 +20650,7 @@
       "time_s": 22.4,
       "source_beat": 42,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.597779,
         "onset_density": 0.598761,
@@ -20742,7 +20742,7 @@
       "time_s": 22.5,
       "source_beat": 43,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.191091,
         "onset_density": 0.17693,
@@ -20834,7 +20834,7 @@
       "time_s": 22.6,
       "source_beat": 43,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.191091,
         "onset_density": 0.17693,
@@ -20926,7 +20926,7 @@
       "time_s": 22.7,
       "source_beat": 43,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.191091,
         "onset_density": 0.17693,
@@ -21018,7 +21018,7 @@
       "time_s": 22.8,
       "source_beat": 43,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.191091,
         "onset_density": 0.17693,
@@ -21110,7 +21110,7 @@
       "time_s": 22.9,
       "source_beat": 44,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.066711,
         "onset_density": 0.047917,
@@ -21202,7 +21202,7 @@
       "time_s": 23.0,
       "source_beat": 44,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.066711,
         "onset_density": 0.047917,
@@ -21294,7 +21294,7 @@
       "time_s": 23.1,
       "source_beat": 44,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.066711,
         "onset_density": 0.047917,
@@ -21386,7 +21386,7 @@
       "time_s": 23.2,
       "source_beat": 44,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.066711,
         "onset_density": 0.047917,
@@ -21478,7 +21478,7 @@
       "time_s": 23.3,
       "source_beat": 44,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.066711,
         "onset_density": 0.047917,
@@ -21570,7 +21570,7 @@
       "time_s": 23.4,
       "source_beat": 45,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.064488,
         "onset_density": -0.08817,
@@ -21662,7 +21662,7 @@
       "time_s": 23.5,
       "source_beat": 45,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.064488,
         "onset_density": -0.08817,
@@ -21754,7 +21754,7 @@
       "time_s": 23.6,
       "source_beat": 45,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.064488,
         "onset_density": -0.08817,
@@ -21846,7 +21846,7 @@
       "time_s": 23.7,
       "source_beat": 45,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.064488,
         "onset_density": -0.08817,
@@ -21938,7 +21938,7 @@
       "time_s": 23.8,
       "source_beat": 45,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.064488,
         "onset_density": -0.08817,
@@ -22030,7 +22030,7 @@
       "time_s": 23.9,
       "source_beat": 46,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.277985,
         "onset_density": -0.30961,
@@ -22122,7 +22122,7 @@
       "time_s": 24.0,
       "source_beat": 46,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.277985,
         "onset_density": -0.30961,
@@ -22214,7 +22214,7 @@
       "time_s": 24.1,
       "source_beat": 46,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.277985,
         "onset_density": -0.30961,
@@ -22306,7 +22306,7 @@
       "time_s": 24.2,
       "source_beat": 46,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.277985,
         "onset_density": -0.30961,
@@ -22398,7 +22398,7 @@
       "time_s": 24.3,
       "source_beat": 47,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.587568,
         "onset_density": -0.630723,
@@ -22490,7 +22490,7 @@
       "time_s": 24.4,
       "source_beat": 47,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.587568,
         "onset_density": -0.630723,
@@ -22582,7 +22582,7 @@
       "time_s": 24.5,
       "source_beat": 47,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.587568,
         "onset_density": -0.630723,
@@ -22674,7 +22674,7 @@
       "time_s": 24.6,
       "source_beat": 47,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.587568,
         "onset_density": -0.630723,
@@ -22766,7 +22766,7 @@
       "time_s": 24.7,
       "source_beat": 47,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.587568,
         "onset_density": -0.630723,
@@ -22858,7 +22858,7 @@
       "time_s": 24.8,
       "source_beat": 48,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.10725,
         "onset_density": -0.132518,
@@ -22950,7 +22950,7 @@
       "time_s": 24.9,
       "source_beat": 48,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.10725,
         "onset_density": -0.132518,
@@ -23042,7 +23042,7 @@
       "time_s": 25.0,
       "source_beat": 48,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.10725,
         "onset_density": -0.132518,
@@ -23134,7 +23134,7 @@
       "time_s": 25.1,
       "source_beat": 48,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.10725,
         "onset_density": -0.132518,
@@ -23226,7 +23226,7 @@
       "time_s": 25.2,
       "source_beat": 49,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.490819,
         "onset_density": -0.530374,
@@ -23318,7 +23318,7 @@
       "time_s": 25.3,
       "source_beat": 49,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.490819,
         "onset_density": -0.530374,
@@ -23410,7 +23410,7 @@
       "time_s": 25.4,
       "source_beat": 49,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.490819,
         "onset_density": -0.530374,
@@ -23502,7 +23502,7 @@
       "time_s": 25.5,
       "source_beat": 49,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.490819,
         "onset_density": -0.530374,
@@ -23594,7 +23594,7 @@
       "time_s": 25.6,
       "source_beat": 49,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.490819,
         "onset_density": -0.530374,
@@ -23686,7 +23686,7 @@
       "time_s": 25.7,
       "source_beat": 50,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.029292,
         "onset_density": 0.009106,
@@ -23778,7 +23778,7 @@
       "time_s": 25.8,
       "source_beat": 50,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.029292,
         "onset_density": 0.009106,
@@ -23870,7 +23870,7 @@
       "time_s": 25.9,
       "source_beat": 50,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.029292,
         "onset_density": 0.009106,
@@ -23962,7 +23962,7 @@
       "time_s": 26.0,
       "source_beat": 50,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.029292,
         "onset_density": 0.009106,
@@ -24054,7 +24054,7 @@
       "time_s": 26.1,
       "source_beat": 50,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.029292,
         "onset_density": 0.009106,
@@ -24146,7 +24146,7 @@
       "time_s": 26.2,
       "source_beat": 51,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.090175,
         "onset_density": 0.072256,
@@ -24238,7 +24238,7 @@
       "time_s": 26.3,
       "source_beat": 51,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.090175,
         "onset_density": 0.072256,
@@ -24330,7 +24330,7 @@
       "time_s": 26.4,
       "source_beat": 51,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.090175,
         "onset_density": 0.072256,
@@ -24422,7 +24422,7 @@
       "time_s": 26.5,
       "source_beat": 51,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.090175,
         "onset_density": 0.072256,
@@ -24514,7 +24514,7 @@
       "time_s": 26.6,
       "source_beat": 52,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.150953,
         "onset_density": 0.135296,
@@ -24606,7 +24606,7 @@
       "time_s": 26.7,
       "source_beat": 52,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.150953,
         "onset_density": 0.135296,
@@ -24698,7 +24698,7 @@
       "time_s": 26.8,
       "source_beat": 52,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.150953,
         "onset_density": 0.135296,
@@ -24790,7 +24790,7 @@
       "time_s": 26.9,
       "source_beat": 52,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.150953,
         "onset_density": 0.135296,
@@ -24882,7 +24882,7 @@
       "time_s": 27.0,
       "source_beat": 52,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.150953,
         "onset_density": 0.135296,
@@ -24974,7 +24974,7 @@
       "time_s": 27.1,
       "source_beat": 53,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.115846,
         "onset_density": -0.141434,
@@ -25066,7 +25066,7 @@
       "time_s": 27.2,
       "source_beat": 53,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.115846,
         "onset_density": -0.141434,
@@ -25158,7 +25158,7 @@
       "time_s": 27.3,
       "source_beat": 53,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.115846,
         "onset_density": -0.141434,
@@ -25250,7 +25250,7 @@
       "time_s": 27.4,
       "source_beat": 53,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.115846,
         "onset_density": -0.141434,
@@ -25342,7 +25342,7 @@
       "time_s": 27.5,
       "source_beat": 54,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.092983,
         "onset_density": 0.075172,
@@ -25434,7 +25434,7 @@
       "time_s": 27.6,
       "source_beat": 54,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.092983,
         "onset_density": 0.075172,
@@ -25526,7 +25526,7 @@
       "time_s": 27.7,
       "source_beat": 54,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.092983,
         "onset_density": 0.075172,
@@ -25618,7 +25618,7 @@
       "time_s": 27.8,
       "source_beat": 54,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.092983,
         "onset_density": 0.075172,
@@ -25710,7 +25710,7 @@
       "time_s": 27.9,
       "source_beat": 54,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.092983,
         "onset_density": 0.075172,
@@ -25802,7 +25802,7 @@
       "time_s": 28.0,
       "source_beat": 55,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.228839,
         "onset_density": 0.216081,
@@ -25894,7 +25894,7 @@
       "time_s": 28.1,
       "source_beat": 55,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.228839,
         "onset_density": 0.216081,
@@ -25986,7 +25986,7 @@
       "time_s": 28.2,
       "source_beat": 55,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.228839,
         "onset_density": 0.216081,
@@ -26078,7 +26078,7 @@
       "time_s": 28.3,
       "source_beat": 55,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.228839,
         "onset_density": 0.216081,
@@ -26170,7 +26170,7 @@
       "time_s": 28.4,
       "source_beat": 55,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.228839,
         "onset_density": 0.216081,
@@ -26262,7 +26262,7 @@
       "time_s": 28.5,
       "source_beat": 56,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.213781,
         "onset_density": -0.243019,
@@ -26354,7 +26354,7 @@
       "time_s": 28.6,
       "source_beat": 56,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.213781,
         "onset_density": -0.243019,
@@ -26446,7 +26446,7 @@
       "time_s": 28.7,
       "source_beat": 56,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.213781,
         "onset_density": -0.243019,
@@ -26538,7 +26538,7 @@
       "time_s": 28.8,
       "source_beat": 56,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.213781,
         "onset_density": -0.243019,
@@ -26630,7 +26630,7 @@
       "time_s": 28.9,
       "source_beat": 57,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.499287,
         "onset_density": 0.496605,
@@ -26722,7 +26722,7 @@
       "time_s": 29.0,
       "source_beat": 57,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.499287,
         "onset_density": 0.496605,
@@ -26814,7 +26814,7 @@
       "time_s": 29.1,
       "source_beat": 57,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.499287,
         "onset_density": 0.496605,
@@ -26906,7 +26906,7 @@
       "time_s": 29.2,
       "source_beat": 57,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.499287,
         "onset_density": 0.496605,
@@ -26998,7 +26998,7 @@
       "time_s": 29.3,
       "source_beat": 57,
       "section_id": "section-002",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.499287,
         "onset_density": 0.496605,
@@ -27089,8 +27089,8 @@
     {
       "time_s": 29.4,
       "source_beat": 58,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.520612,
         "onset_density": 1.55596,
@@ -27181,8 +27181,8 @@
     {
       "time_s": 29.5,
       "source_beat": 58,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.520612,
         "onset_density": 1.55596,
@@ -27273,8 +27273,8 @@
     {
       "time_s": 29.6,
       "source_beat": 58,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.520612,
         "onset_density": 1.55596,
@@ -27365,8 +27365,8 @@
     {
       "time_s": 29.7,
       "source_beat": 58,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.520612,
         "onset_density": 1.55596,
@@ -27457,8 +27457,8 @@
     {
       "time_s": 29.8,
       "source_beat": 59,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.605222,
         "onset_density": 1.643721,
@@ -27549,8 +27549,8 @@
     {
       "time_s": 29.9,
       "source_beat": 59,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.605222,
         "onset_density": 1.643721,
@@ -27641,8 +27641,8 @@
     {
       "time_s": 30.0,
       "source_beat": 59,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.605222,
         "onset_density": 1.643721,
@@ -27733,8 +27733,8 @@
     {
       "time_s": 30.1,
       "source_beat": 59,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.605222,
         "onset_density": 1.643721,
@@ -27825,8 +27825,8 @@
     {
       "time_s": 30.2,
       "source_beat": 59,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.605222,
         "onset_density": 1.643721,
@@ -27917,8 +27917,8 @@
     {
       "time_s": 30.3,
       "source_beat": 60,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.570856,
         "onset_density": 1.608075,
@@ -28009,8 +28009,8 @@
     {
       "time_s": 30.4,
       "source_beat": 60,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.570856,
         "onset_density": 1.608075,
@@ -28101,8 +28101,8 @@
     {
       "time_s": 30.5,
       "source_beat": 60,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.570856,
         "onset_density": 1.608075,
@@ -28193,8 +28193,8 @@
     {
       "time_s": 30.6,
       "source_beat": 60,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.570856,
         "onset_density": 1.608075,
@@ -28285,8 +28285,8 @@
     {
       "time_s": 30.7,
       "source_beat": 60,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.570856,
         "onset_density": 1.608075,
@@ -28377,8 +28377,8 @@
     {
       "time_s": 30.8,
       "source_beat": 61,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.575641,
         "onset_density": 1.613035,
@@ -28469,8 +28469,8 @@
     {
       "time_s": 30.9,
       "source_beat": 61,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.575641,
         "onset_density": 1.613035,
@@ -28561,8 +28561,8 @@
     {
       "time_s": 31.0,
       "source_beat": 61,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.575641,
         "onset_density": 1.613035,
@@ -28653,8 +28653,8 @@
     {
       "time_s": 31.1,
       "source_beat": 61,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.575641,
         "onset_density": 1.613035,
@@ -28745,8 +28745,8 @@
     {
       "time_s": 31.2,
       "source_beat": 62,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.581646,
         "onset_density": 1.619266,
@@ -28837,8 +28837,8 @@
     {
       "time_s": 31.3,
       "source_beat": 62,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.581646,
         "onset_density": 1.619266,
@@ -28929,8 +28929,8 @@
     {
       "time_s": 31.4,
       "source_beat": 62,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.581646,
         "onset_density": 1.619266,
@@ -29021,8 +29021,8 @@
     {
       "time_s": 31.5,
       "source_beat": 62,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.581646,
         "onset_density": 1.619266,
@@ -29113,8 +29113,8 @@
     {
       "time_s": 31.6,
       "source_beat": 62,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.581646,
         "onset_density": 1.619266,
@@ -29205,8 +29205,8 @@
     {
       "time_s": 31.7,
       "source_beat": 63,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.485304,
         "onset_density": 1.519333,
@@ -29297,8 +29297,8 @@
     {
       "time_s": 31.8,
       "source_beat": 63,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.485304,
         "onset_density": 1.519333,
@@ -29389,8 +29389,8 @@
     {
       "time_s": 31.9,
       "source_beat": 63,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.485304,
         "onset_density": 1.519333,
@@ -29481,8 +29481,8 @@
     {
       "time_s": 32.0,
       "source_beat": 63,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.485304,
         "onset_density": 1.519333,
@@ -29573,8 +29573,8 @@
     {
       "time_s": 32.1,
       "source_beat": 63,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.485304,
         "onset_density": 1.519333,
@@ -29665,8 +29665,8 @@
     {
       "time_s": 32.2,
       "source_beat": 64,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.669359,
         "onset_density": 1.710243,
@@ -29757,8 +29757,8 @@
     {
       "time_s": 32.3,
       "source_beat": 64,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.669359,
         "onset_density": 1.710243,
@@ -29849,8 +29849,8 @@
     {
       "time_s": 32.4,
       "source_beat": 64,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.669359,
         "onset_density": 1.710243,
@@ -29941,8 +29941,8 @@
     {
       "time_s": 32.5,
       "source_beat": 64,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.669359,
         "onset_density": 1.710243,
@@ -30033,8 +30033,8 @@
     {
       "time_s": 32.6,
       "source_beat": 65,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.653739,
         "onset_density": 1.69404,
@@ -30125,8 +30125,8 @@
     {
       "time_s": 32.7,
       "source_beat": 65,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.653739,
         "onset_density": 1.69404,
@@ -30217,8 +30217,8 @@
     {
       "time_s": 32.8,
       "source_beat": 65,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.653739,
         "onset_density": 1.69404,
@@ -30309,8 +30309,8 @@
     {
       "time_s": 32.9,
       "source_beat": 65,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.653739,
         "onset_density": 1.69404,
@@ -30401,8 +30401,8 @@
     {
       "time_s": 33.0,
       "source_beat": 65,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.653739,
         "onset_density": 1.69404,
@@ -30493,8 +30493,8 @@
     {
       "time_s": 33.1,
       "source_beat": 66,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.483689,
         "onset_density": 1.517658,
@@ -30585,8 +30585,8 @@
     {
       "time_s": 33.2,
       "source_beat": 66,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.483689,
         "onset_density": 1.517658,
@@ -30677,8 +30677,8 @@
     {
       "time_s": 33.3,
       "source_beat": 66,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.483689,
         "onset_density": 1.517658,
@@ -30769,8 +30769,8 @@
     {
       "time_s": 33.4,
       "source_beat": 66,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.483689,
         "onset_density": 1.517658,
@@ -30861,8 +30861,8 @@
     {
       "time_s": 33.5,
       "source_beat": 67,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.546528,
         "onset_density": 1.582835,
@@ -30953,8 +30953,8 @@
     {
       "time_s": 33.6,
       "source_beat": 67,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.546528,
         "onset_density": 1.582835,
@@ -31045,8 +31045,8 @@
     {
       "time_s": 33.7,
       "source_beat": 67,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.546528,
         "onset_density": 1.582835,
@@ -31137,8 +31137,8 @@
     {
       "time_s": 33.8,
       "source_beat": 67,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.546528,
         "onset_density": 1.582835,
@@ -31229,8 +31229,8 @@
     {
       "time_s": 33.9,
       "source_beat": 67,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.546528,
         "onset_density": 1.582835,
@@ -31321,8 +31321,8 @@
     {
       "time_s": 34.0,
       "source_beat": 68,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.596097,
         "onset_density": 1.634251,
@@ -31413,8 +31413,8 @@
     {
       "time_s": 34.1,
       "source_beat": 68,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.596097,
         "onset_density": 1.634251,
@@ -31505,8 +31505,8 @@
     {
       "time_s": 34.2,
       "source_beat": 68,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.596097,
         "onset_density": 1.634251,
@@ -31597,8 +31597,8 @@
     {
       "time_s": 34.3,
       "source_beat": 68,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.596097,
         "onset_density": 1.634251,
@@ -31689,8 +31689,8 @@
     {
       "time_s": 34.4,
       "source_beat": 68,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.596097,
         "onset_density": 1.634251,
@@ -31781,8 +31781,8 @@
     {
       "time_s": 34.5,
       "source_beat": 69,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.497025,
         "onset_density": 1.531494,
@@ -31873,8 +31873,8 @@
     {
       "time_s": 34.6,
       "source_beat": 69,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.497025,
         "onset_density": 1.531494,
@@ -31965,8 +31965,8 @@
     {
       "time_s": 34.7,
       "source_beat": 69,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.497025,
         "onset_density": 1.531494,
@@ -32057,8 +32057,8 @@
     {
       "time_s": 34.8,
       "source_beat": 69,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.497025,
         "onset_density": 1.531494,
@@ -32149,8 +32149,8 @@
     {
       "time_s": 34.9,
       "source_beat": 70,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.633778,
         "onset_density": 1.673338,
@@ -32241,8 +32241,8 @@
     {
       "time_s": 35.0,
       "source_beat": 70,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.633778,
         "onset_density": 1.673338,
@@ -32333,8 +32333,8 @@
     {
       "time_s": 35.1,
       "source_beat": 70,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.633778,
         "onset_density": 1.673338,
@@ -32425,8 +32425,8 @@
     {
       "time_s": 35.2,
       "source_beat": 70,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.633778,
         "onset_density": 1.673338,
@@ -32517,8 +32517,8 @@
     {
       "time_s": 35.3,
       "source_beat": 70,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.633778,
         "onset_density": 1.673338,
@@ -32609,8 +32609,8 @@
     {
       "time_s": 35.4,
       "source_beat": 71,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.515002,
         "onset_density": 1.55014,
@@ -32701,8 +32701,8 @@
     {
       "time_s": 35.5,
       "source_beat": 71,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.515002,
         "onset_density": 1.55014,
@@ -32793,8 +32793,8 @@
     {
       "time_s": 35.6,
       "source_beat": 71,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.515002,
         "onset_density": 1.55014,
@@ -32885,8 +32885,8 @@
     {
       "time_s": 35.7,
       "source_beat": 71,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.515002,
         "onset_density": 1.55014,
@@ -32977,8 +32977,8 @@
     {
       "time_s": 35.8,
       "source_beat": 72,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.667911,
         "onset_density": 1.708741,
@@ -33069,8 +33069,8 @@
     {
       "time_s": 35.9,
       "source_beat": 72,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.667911,
         "onset_density": 1.708741,
@@ -33161,8 +33161,8 @@
     {
       "time_s": 36.0,
       "source_beat": 72,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.667911,
         "onset_density": 1.708741,
@@ -33253,8 +33253,8 @@
     {
       "time_s": 36.1,
       "source_beat": 72,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.667911,
         "onset_density": 1.708741,
@@ -33345,8 +33345,8 @@
     {
       "time_s": 36.2,
       "source_beat": 72,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.667911,
         "onset_density": 1.708741,
@@ -33437,8 +33437,8 @@
     {
       "time_s": 36.3,
       "source_beat": 73,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.231925,
         "onset_density": -0.261838,
@@ -33529,8 +33529,8 @@
     {
       "time_s": 36.4,
       "source_beat": 73,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.231925,
         "onset_density": -0.261838,
@@ -33621,8 +33621,8 @@
     {
       "time_s": 36.5,
       "source_beat": 73,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.231925,
         "onset_density": -0.261838,
@@ -33713,8 +33713,8 @@
     {
       "time_s": 36.6,
       "source_beat": 73,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.231925,
         "onset_density": -0.261838,
@@ -33805,8 +33805,8 @@
     {
       "time_s": 36.7,
       "source_beat": 73,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.231925,
         "onset_density": -0.261838,
@@ -33897,8 +33897,8 @@
     {
       "time_s": 36.8,
       "source_beat": 74,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.47707,
         "onset_density": 1.510792,
@@ -33989,8 +33989,8 @@
     {
       "time_s": 36.9,
       "source_beat": 74,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.47707,
         "onset_density": 1.510792,
@@ -34081,8 +34081,8 @@
     {
       "time_s": 37.0,
       "source_beat": 74,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.47707,
         "onset_density": 1.510792,
@@ -34173,8 +34173,8 @@
     {
       "time_s": 37.1,
       "source_beat": 74,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.47707,
         "onset_density": 1.510792,
@@ -34265,8 +34265,8 @@
     {
       "time_s": 37.2,
       "source_beat": 75,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.589752,
         "onset_density": 1.627668,
@@ -34357,8 +34357,8 @@
     {
       "time_s": 37.3,
       "source_beat": 75,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.589752,
         "onset_density": 1.627668,
@@ -34449,8 +34449,8 @@
     {
       "time_s": 37.4,
       "source_beat": 75,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.589752,
         "onset_density": 1.627668,
@@ -34541,8 +34541,8 @@
     {
       "time_s": 37.5,
       "source_beat": 75,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.589752,
         "onset_density": 1.627668,
@@ -34633,8 +34633,8 @@
     {
       "time_s": 37.6,
       "source_beat": 75,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.589752,
         "onset_density": 1.627668,
@@ -34725,8 +34725,8 @@
     {
       "time_s": 37.7,
       "source_beat": 76,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.5425,
         "onset_density": 1.57866,
@@ -34817,8 +34817,8 @@
     {
       "time_s": 37.8,
       "source_beat": 76,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.5425,
         "onset_density": 1.57866,
@@ -34909,8 +34909,8 @@
     {
       "time_s": 37.9,
       "source_beat": 76,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.5425,
         "onset_density": 1.57866,
@@ -35001,8 +35001,8 @@
     {
       "time_s": 38.0,
       "source_beat": 76,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.5425,
         "onset_density": 1.57866,
@@ -35093,8 +35093,8 @@
     {
       "time_s": 38.1,
       "source_beat": 76,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.5425,
         "onset_density": 1.57866,
@@ -35185,8 +35185,8 @@
     {
       "time_s": 38.2,
       "source_beat": 77,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.628447,
         "onset_density": 1.667806,
@@ -35277,8 +35277,8 @@
     {
       "time_s": 38.3,
       "source_beat": 77,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.628447,
         "onset_density": 1.667806,
@@ -35369,8 +35369,8 @@
     {
       "time_s": 38.4,
       "source_beat": 77,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.628447,
         "onset_density": 1.667806,
@@ -35461,8 +35461,8 @@
     {
       "time_s": 38.5,
       "source_beat": 77,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.628447,
         "onset_density": 1.667806,
@@ -35553,8 +35553,8 @@
     {
       "time_s": 38.6,
       "source_beat": 78,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.542249,
         "onset_density": 1.5784,
@@ -35645,8 +35645,8 @@
     {
       "time_s": 38.7,
       "source_beat": 78,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.542249,
         "onset_density": 1.5784,
@@ -35737,8 +35737,8 @@
     {
       "time_s": 38.8,
       "source_beat": 78,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.542249,
         "onset_density": 1.5784,
@@ -35829,8 +35829,8 @@
     {
       "time_s": 38.9,
       "source_beat": 78,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.542249,
         "onset_density": 1.5784,
@@ -35921,8 +35921,8 @@
     {
       "time_s": 39.0,
       "source_beat": 78,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.542249,
         "onset_density": 1.5784,
@@ -36013,8 +36013,8 @@
     {
       "time_s": 39.1,
       "source_beat": 79,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.5021,
         "onset_density": 1.536755,
@@ -36105,8 +36105,8 @@
     {
       "time_s": 39.2,
       "source_beat": 79,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.5021,
         "onset_density": 1.536755,
@@ -36197,8 +36197,8 @@
     {
       "time_s": 39.3,
       "source_beat": 79,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.5021,
         "onset_density": 1.536755,
@@ -36289,8 +36289,8 @@
     {
       "time_s": 39.4,
       "source_beat": 79,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.5021,
         "onset_density": 1.536755,
@@ -36381,8 +36381,8 @@
     {
       "time_s": 39.5,
       "source_beat": 80,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.555391,
         "onset_density": 1.592034,
@@ -36473,8 +36473,8 @@
     {
       "time_s": 39.6,
       "source_beat": 80,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.555391,
         "onset_density": 1.592034,
@@ -36565,8 +36565,8 @@
     {
       "time_s": 39.7,
       "source_beat": 80,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.555391,
         "onset_density": 1.592034,
@@ -36657,8 +36657,8 @@
     {
       "time_s": 39.8,
       "source_beat": 80,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.555391,
         "onset_density": 1.592034,
@@ -36749,8 +36749,8 @@
     {
       "time_s": 39.9,
       "source_beat": 80,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.555391,
         "onset_density": 1.592034,
@@ -36841,8 +36841,8 @@
     {
       "time_s": 40.0,
       "source_beat": 81,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.634725,
         "onset_density": 1.67432,
@@ -36933,8 +36933,8 @@
     {
       "time_s": 40.1,
       "source_beat": 81,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.634725,
         "onset_density": 1.67432,
@@ -37025,8 +37025,8 @@
     {
       "time_s": 40.2,
       "source_beat": 81,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.634725,
         "onset_density": 1.67432,
@@ -37117,8 +37117,8 @@
     {
       "time_s": 40.3,
       "source_beat": 81,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.634725,
         "onset_density": 1.67432,
@@ -37209,8 +37209,8 @@
     {
       "time_s": 40.4,
       "source_beat": 81,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.634725,
         "onset_density": 1.67432,
@@ -37301,8 +37301,8 @@
     {
       "time_s": 40.5,
       "source_beat": 82,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.539542,
         "onset_density": 1.575594,
@@ -37393,8 +37393,8 @@
     {
       "time_s": 40.6,
       "source_beat": 82,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.539542,
         "onset_density": 1.575594,
@@ -37485,8 +37485,8 @@
     {
       "time_s": 40.7,
       "source_beat": 82,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.539542,
         "onset_density": 1.575594,
@@ -37577,8 +37577,8 @@
     {
       "time_s": 40.8,
       "source_beat": 82,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.539542,
         "onset_density": 1.575594,
@@ -37669,8 +37669,8 @@
     {
       "time_s": 40.9,
       "source_beat": 83,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.480892,
         "onset_density": 1.51476,
@@ -37761,8 +37761,8 @@
     {
       "time_s": 41.0,
       "source_beat": 83,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.480892,
         "onset_density": 1.51476,
@@ -37853,8 +37853,8 @@
     {
       "time_s": 41.1,
       "source_beat": 83,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.480892,
         "onset_density": 1.51476,
@@ -37945,8 +37945,8 @@
     {
       "time_s": 41.2,
       "source_beat": 83,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.480892,
         "onset_density": 1.51476,
@@ -38037,8 +38037,8 @@
     {
       "time_s": 41.3,
       "source_beat": 83,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.480892,
         "onset_density": 1.51476,
@@ -38129,8 +38129,8 @@
     {
       "time_s": 41.4,
       "source_beat": 84,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.592571,
         "onset_density": 1.63059,
@@ -38221,8 +38221,8 @@
     {
       "time_s": 41.5,
       "source_beat": 84,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.592571,
         "onset_density": 1.63059,
@@ -38313,8 +38313,8 @@
     {
       "time_s": 41.6,
       "source_beat": 84,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.592571,
         "onset_density": 1.63059,
@@ -38405,8 +38405,8 @@
     {
       "time_s": 41.7,
       "source_beat": 84,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.592571,
         "onset_density": 1.63059,
@@ -38497,8 +38497,8 @@
     {
       "time_s": 41.8,
       "source_beat": 85,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.537982,
         "onset_density": 1.573971,
@@ -38589,8 +38589,8 @@
     {
       "time_s": 41.9,
       "source_beat": 85,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.537982,
         "onset_density": 1.573971,
@@ -38681,8 +38681,8 @@
     {
       "time_s": 42.0,
       "source_beat": 85,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.537982,
         "onset_density": 1.573971,
@@ -38773,8 +38773,8 @@
     {
       "time_s": 42.1,
       "source_beat": 85,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.537982,
         "onset_density": 1.573971,
@@ -38865,8 +38865,8 @@
     {
       "time_s": 42.2,
       "source_beat": 85,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 1.537982,
         "onset_density": 1.573971,
@@ -38957,8 +38957,8 @@
     {
       "time_s": 42.3,
       "source_beat": 86,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.848562,
         "onset_density": -0.901436,
@@ -39049,8 +39049,8 @@
     {
       "time_s": 42.4,
       "source_beat": 86,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.848562,
         "onset_density": -0.901436,
@@ -39141,8 +39141,8 @@
     {
       "time_s": 42.5,
       "source_beat": 86,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.848562,
         "onset_density": -0.901436,
@@ -39233,8 +39233,8 @@
     {
       "time_s": 42.6,
       "source_beat": 86,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.848562,
         "onset_density": -0.901436,
@@ -39325,8 +39325,8 @@
     {
       "time_s": 42.7,
       "source_beat": 86,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.848562,
         "onset_density": -0.901436,
@@ -39417,8 +39417,8 @@
     {
       "time_s": 42.8,
       "source_beat": 87,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.637026,
         "onset_density": -0.682023,
@@ -39509,8 +39509,8 @@
     {
       "time_s": 42.9,
       "source_beat": 87,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.637026,
         "onset_density": -0.682023,
@@ -39601,8 +39601,8 @@
     {
       "time_s": 43.0,
       "source_beat": 87,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.637026,
         "onset_density": -0.682023,
@@ -39693,8 +39693,8 @@
     {
       "time_s": 43.1,
       "source_beat": 87,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.637026,
         "onset_density": -0.682023,
@@ -39785,8 +39785,8 @@
     {
       "time_s": 43.2,
       "source_beat": 88,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.116899,
         "onset_density": 0.099979,
@@ -39877,8 +39877,8 @@
     {
       "time_s": 43.3,
       "source_beat": 88,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.116899,
         "onset_density": 0.099979,
@@ -39969,8 +39969,8 @@
     {
       "time_s": 43.4,
       "source_beat": 88,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.116899,
         "onset_density": 0.099979,
@@ -40061,8 +40061,8 @@
     {
       "time_s": 43.5,
       "source_beat": 88,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.116899,
         "onset_density": 0.099979,
@@ -40153,8 +40153,8 @@
     {
       "time_s": 43.6,
       "source_beat": 88,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.116899,
         "onset_density": 0.099979,
@@ -40245,8 +40245,8 @@
     {
       "time_s": 43.7,
       "source_beat": 89,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.585836,
         "onset_density": 0.586375,
@@ -40337,8 +40337,8 @@
     {
       "time_s": 43.8,
       "source_beat": 89,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.585836,
         "onset_density": 0.586375,
@@ -40429,8 +40429,8 @@
     {
       "time_s": 43.9,
       "source_beat": 89,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.585836,
         "onset_density": 0.586375,
@@ -40521,8 +40521,8 @@
     {
       "time_s": 44.0,
       "source_beat": 89,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.585836,
         "onset_density": 0.586375,
@@ -40613,8 +40613,8 @@
     {
       "time_s": 44.1,
       "source_beat": 89,
-      "section_id": "section-003",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.585836,
         "onset_density": 0.586375,
@@ -40705,8 +40705,8 @@
     {
       "time_s": 44.2,
       "source_beat": 90,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.154897,
         "onset_density": 0.13939,
@@ -40797,8 +40797,8 @@
     {
       "time_s": 44.3,
       "source_beat": 90,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.154897,
         "onset_density": 0.13939,
@@ -40889,8 +40889,8 @@
     {
       "time_s": 44.4,
       "source_beat": 90,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.154897,
         "onset_density": 0.13939,
@@ -40981,8 +40981,8 @@
     {
       "time_s": 44.5,
       "source_beat": 90,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.154897,
         "onset_density": 0.13939,
@@ -41073,8 +41073,8 @@
     {
       "time_s": 44.6,
       "source_beat": 91,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.428899,
         "onset_density": -0.466144,
@@ -41165,8 +41165,8 @@
     {
       "time_s": 44.7,
       "source_beat": 91,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.428899,
         "onset_density": -0.466144,
@@ -41257,8 +41257,8 @@
     {
       "time_s": 44.8,
       "source_beat": 91,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.428899,
         "onset_density": -0.466144,
@@ -41349,8 +41349,8 @@
     {
       "time_s": 44.9,
       "source_beat": 91,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.428899,
         "onset_density": -0.466144,
@@ -41441,8 +41441,8 @@
     {
       "time_s": 45.0,
       "source_beat": 91,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.428899,
         "onset_density": -0.466144,
@@ -41533,8 +41533,8 @@
     {
       "time_s": 45.1,
       "source_beat": 92,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.562772,
         "onset_density": -0.605003,
@@ -41625,8 +41625,8 @@
     {
       "time_s": 45.2,
       "source_beat": 92,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.562772,
         "onset_density": -0.605003,
@@ -41717,8 +41717,8 @@
     {
       "time_s": 45.3,
       "source_beat": 92,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.562772,
         "onset_density": -0.605003,
@@ -41809,8 +41809,8 @@
     {
       "time_s": 45.4,
       "source_beat": 92,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.562772,
         "onset_density": -0.605003,
@@ -41901,8 +41901,8 @@
     {
       "time_s": 45.5,
       "source_beat": 92,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.562772,
         "onset_density": -0.605003,
@@ -41993,8 +41993,8 @@
     {
       "time_s": 45.6,
       "source_beat": 93,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.585836,
         "onset_density": -0.628927,
@@ -42085,8 +42085,8 @@
     {
       "time_s": 45.7,
       "source_beat": 93,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.585836,
         "onset_density": -0.628927,
@@ -42177,8 +42177,8 @@
     {
       "time_s": 45.8,
       "source_beat": 93,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.585836,
         "onset_density": -0.628927,
@@ -42269,8 +42269,8 @@
     {
       "time_s": 45.9,
       "source_beat": 93,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.585836,
         "onset_density": -0.628927,
@@ -42361,8 +42361,8 @@
     {
       "time_s": 46.0,
       "source_beat": 93,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.585836,
         "onset_density": -0.628927,
@@ -42453,8 +42453,8 @@
     {
       "time_s": 46.1,
       "source_beat": 93,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.585836,
         "onset_density": -0.628927,
@@ -42545,8 +42545,8 @@
     {
       "time_s": 46.2,
       "source_beat": 94,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.603183,
         "onset_density": -0.64692,
@@ -42637,8 +42637,8 @@
     {
       "time_s": 46.3,
       "source_beat": 94,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.603183,
         "onset_density": -0.64692,
@@ -42729,8 +42729,8 @@
     {
       "time_s": 46.4,
       "source_beat": 94,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.603183,
         "onset_density": -0.64692,
@@ -42821,8 +42821,8 @@
     {
       "time_s": 46.5,
       "source_beat": 94,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.603183,
         "onset_density": -0.64692,
@@ -42913,8 +42913,8 @@
     {
       "time_s": 46.6,
       "source_beat": 94,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.603183,
         "onset_density": -0.64692,
@@ -43005,8 +43005,8 @@
     {
       "time_s": 46.7,
       "source_beat": 95,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.077719,
         "onset_density": 0.059338,
@@ -43097,8 +43097,8 @@
     {
       "time_s": 46.8,
       "source_beat": 95,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.077719,
         "onset_density": 0.059338,
@@ -43189,8 +43189,8 @@
     {
       "time_s": 46.9,
       "source_beat": 95,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.077719,
         "onset_density": 0.059338,
@@ -43281,8 +43281,8 @@
     {
       "time_s": 47.0,
       "source_beat": 95,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.077719,
         "onset_density": 0.059338,
@@ -43373,8 +43373,8 @@
     {
       "time_s": 47.1,
       "source_beat": 95,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.077719,
         "onset_density": 0.059338,
@@ -43465,8 +43465,8 @@
     {
       "time_s": 47.2,
       "source_beat": 95,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.077719,
         "onset_density": 0.059338,
@@ -43557,8 +43557,8 @@
     {
       "time_s": 47.3,
       "source_beat": 96,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.155165,
         "onset_density": -0.182219,
@@ -43649,8 +43649,8 @@
     {
       "time_s": 47.4,
       "source_beat": 96,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.155165,
         "onset_density": -0.182219,
@@ -43741,8 +43741,8 @@
     {
       "time_s": 47.5,
       "source_beat": 96,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.155165,
         "onset_density": -0.182219,
@@ -43833,8 +43833,8 @@
     {
       "time_s": 47.6,
       "source_beat": 96,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.155165,
         "onset_density": -0.182219,
@@ -43925,8 +43925,8 @@
     {
       "time_s": 47.7,
       "source_beat": 96,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.155165,
         "onset_density": -0.182219,
@@ -44017,8 +44017,8 @@
     {
       "time_s": 47.8,
       "source_beat": 96,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.155165,
         "onset_density": -0.182219,
@@ -44109,8 +44109,8 @@
     {
       "time_s": 47.9,
       "source_beat": 97,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.206272,
         "onset_density": 0.192677,
@@ -44201,8 +44201,8 @@
     {
       "time_s": 48.0,
       "source_beat": 97,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.206272,
         "onset_density": 0.192677,
@@ -44293,8 +44293,8 @@
     {
       "time_s": 48.1,
       "source_beat": 97,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.206272,
         "onset_density": 0.192677,
@@ -44385,8 +44385,8 @@
     {
       "time_s": 48.2,
       "source_beat": 97,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.206272,
         "onset_density": 0.192677,
@@ -44477,8 +44477,8 @@
     {
       "time_s": 48.3,
       "source_beat": 97,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.206272,
         "onset_density": 0.192677,
@@ -44569,8 +44569,8 @@
     {
       "time_s": 48.4,
       "source_beat": 98,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.337866,
         "onset_density": 0.329174,
@@ -44661,8 +44661,8 @@
     {
       "time_s": 48.5,
       "source_beat": 98,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.337866,
         "onset_density": 0.329174,
@@ -44753,8 +44753,8 @@
     {
       "time_s": 48.6,
       "source_beat": 98,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.337866,
         "onset_density": 0.329174,
@@ -44845,8 +44845,8 @@
     {
       "time_s": 48.7,
       "source_beat": 98,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.337866,
         "onset_density": 0.329174,
@@ -44937,8 +44937,8 @@
     {
       "time_s": 48.8,
       "source_beat": 98,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.337866,
         "onset_density": 0.329174,
@@ -45029,8 +45029,8 @@
     {
       "time_s": 48.9,
       "source_beat": 98,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.337866,
         "onset_density": 0.329174,
@@ -45121,8 +45121,8 @@
     {
       "time_s": 49.0,
       "source_beat": 99,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.471009,
         "onset_density": 0.46727,
@@ -45213,8 +45213,8 @@
     {
       "time_s": 49.1,
       "source_beat": 99,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.471009,
         "onset_density": 0.46727,
@@ -45305,8 +45305,8 @@
     {
       "time_s": 49.2,
       "source_beat": 99,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.471009,
         "onset_density": 0.46727,
@@ -45397,8 +45397,8 @@
     {
       "time_s": 49.3,
       "source_beat": 99,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.471009,
         "onset_density": 0.46727,
@@ -45489,8 +45489,8 @@
     {
       "time_s": 49.4,
       "source_beat": 99,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.471009,
         "onset_density": 0.46727,
@@ -45581,8 +45581,8 @@
     {
       "time_s": 49.5,
       "source_beat": 99,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.471009,
         "onset_density": 0.46727,
@@ -45673,8 +45673,8 @@
     {
       "time_s": 49.6,
       "source_beat": 100,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.324942,
         "onset_density": -0.358318,
@@ -45765,8 +45765,8 @@
     {
       "time_s": 49.7,
       "source_beat": 100,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.324942,
         "onset_density": -0.358318,
@@ -45857,8 +45857,8 @@
     {
       "time_s": 49.8,
       "source_beat": 100,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.324942,
         "onset_density": -0.358318,
@@ -45949,8 +45949,8 @@
     {
       "time_s": 49.9,
       "source_beat": 100,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.324942,
         "onset_density": -0.358318,
@@ -46041,8 +46041,8 @@
     {
       "time_s": 50.0,
       "source_beat": 100,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.324942,
         "onset_density": -0.358318,
@@ -46133,8 +46133,8 @@
     {
       "time_s": 50.1,
       "source_beat": 101,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.137377,
         "onset_density": -0.163764,
@@ -46225,8 +46225,8 @@
     {
       "time_s": 50.2,
       "source_beat": 101,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.137377,
         "onset_density": -0.163764,
@@ -46317,8 +46317,8 @@
     {
       "time_s": 50.3,
       "source_beat": 101,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.137377,
         "onset_density": -0.163764,
@@ -46409,8 +46409,8 @@
     {
       "time_s": 50.4,
       "source_beat": 101,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.137377,
         "onset_density": -0.163764,
@@ -46501,8 +46501,8 @@
     {
       "time_s": 50.5,
       "source_beat": 101,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.137377,
         "onset_density": -0.163764,
@@ -46593,8 +46593,8 @@
     {
       "time_s": 50.6,
       "source_beat": 101,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.137377,
         "onset_density": -0.163764,
@@ -46685,8 +46685,8 @@
     {
       "time_s": 50.7,
       "source_beat": 102,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.124714,
         "onset_density": -0.150639,
@@ -46777,8 +46777,8 @@
     {
       "time_s": 50.8,
       "source_beat": 102,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.124714,
         "onset_density": -0.150639,
@@ -46869,8 +46869,8 @@
     {
       "time_s": 50.9,
       "source_beat": 102,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.124714,
         "onset_density": -0.150639,
@@ -46961,8 +46961,8 @@
     {
       "time_s": 51.0,
       "source_beat": 102,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.124714,
         "onset_density": -0.150639,
@@ -47053,8 +47053,8 @@
     {
       "time_s": 51.1,
       "source_beat": 102,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.124714,
         "onset_density": -0.150639,
@@ -47145,8 +47145,8 @@
     {
       "time_s": 51.2,
       "source_beat": 102,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.124714,
         "onset_density": -0.150639,
@@ -47237,8 +47237,8 @@
     {
       "time_s": 51.3,
       "source_beat": 103,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.092331,
         "onset_density": -0.117043,
@@ -47329,8 +47329,8 @@
     {
       "time_s": 51.4,
       "source_beat": 103,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.092331,
         "onset_density": -0.117043,
@@ -47421,8 +47421,8 @@
     {
       "time_s": 51.5,
       "source_beat": 103,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.092331,
         "onset_density": -0.117043,
@@ -47513,8 +47513,8 @@
     {
       "time_s": 51.6,
       "source_beat": 103,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.092331,
         "onset_density": -0.117043,
@@ -47605,8 +47605,8 @@
     {
       "time_s": 51.7,
       "source_beat": 103,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.092331,
         "onset_density": -0.117043,
@@ -47697,8 +47697,8 @@
     {
       "time_s": 51.8,
       "source_beat": 103,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.092331,
         "onset_density": -0.117043,
@@ -47789,8 +47789,8 @@
     {
       "time_s": 51.9,
       "source_beat": 104,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.104776,
         "onset_density": -0.129954,
@@ -47881,8 +47881,8 @@
     {
       "time_s": 52.0,
       "source_beat": 104,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.104776,
         "onset_density": -0.129954,
@@ -47973,8 +47973,8 @@
     {
       "time_s": 52.1,
       "source_beat": 104,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.104776,
         "onset_density": -0.129954,
@@ -48065,8 +48065,8 @@
     {
       "time_s": 52.2,
       "source_beat": 104,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.104776,
         "onset_density": -0.129954,
@@ -48157,8 +48157,8 @@
     {
       "time_s": 52.3,
       "source_beat": 104,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.104776,
         "onset_density": -0.129954,
@@ -48249,8 +48249,8 @@
     {
       "time_s": 52.4,
       "source_beat": 104,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.104776,
         "onset_density": -0.129954,
@@ -48341,8 +48341,8 @@
     {
       "time_s": 52.5,
       "source_beat": 105,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.111305,
         "onset_density": 0.094176,
@@ -48433,8 +48433,8 @@
     {
       "time_s": 52.6,
       "source_beat": 105,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.111305,
         "onset_density": 0.094176,
@@ -48525,8 +48525,8 @@
     {
       "time_s": 52.7,
       "source_beat": 105,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.111305,
         "onset_density": 0.094176,
@@ -48617,8 +48617,8 @@
     {
       "time_s": 52.8,
       "source_beat": 105,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.111305,
         "onset_density": 0.094176,
@@ -48709,8 +48709,8 @@
     {
       "time_s": 52.9,
       "source_beat": 105,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.111305,
         "onset_density": 0.094176,
@@ -48801,8 +48801,8 @@
     {
       "time_s": 53.0,
       "source_beat": 105,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.111305,
         "onset_density": 0.094176,
@@ -48893,8 +48893,8 @@
     {
       "time_s": 53.1,
       "source_beat": 106,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.488903,
         "onset_density": 0.485829,
@@ -48985,8 +48985,8 @@
     {
       "time_s": 53.2,
       "source_beat": 106,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.488903,
         "onset_density": 0.485829,
@@ -49077,8 +49077,8 @@
     {
       "time_s": 53.3,
       "source_beat": 106,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.488903,
         "onset_density": 0.485829,
@@ -49169,8 +49169,8 @@
     {
       "time_s": 53.4,
       "source_beat": 106,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.488903,
         "onset_density": 0.485829,
@@ -49261,8 +49261,8 @@
     {
       "time_s": 53.5,
       "source_beat": 106,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.488903,
         "onset_density": 0.485829,
@@ -49353,8 +49353,8 @@
     {
       "time_s": 53.6,
       "source_beat": 107,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.136915,
         "onset_density": 0.120738,
@@ -49445,8 +49445,8 @@
     {
       "time_s": 53.7,
       "source_beat": 107,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.136915,
         "onset_density": 0.120738,
@@ -49537,8 +49537,8 @@
     {
       "time_s": 53.8,
       "source_beat": 107,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.136915,
         "onset_density": 0.120738,
@@ -49629,8 +49629,8 @@
     {
       "time_s": 53.9,
       "source_beat": 107,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.136915,
         "onset_density": 0.120738,
@@ -49721,8 +49721,8 @@
     {
       "time_s": 54.0,
       "source_beat": 107,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": 0.136915,
         "onset_density": 0.120738,
@@ -49813,8 +49813,8 @@
     {
       "time_s": 54.1,
       "source_beat": 108,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.045982,
         "onset_density": -0.06897,
@@ -49905,8 +49905,8 @@
     {
       "time_s": 54.2,
       "source_beat": 108,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.045982,
         "onset_density": -0.06897,
@@ -49997,8 +49997,8 @@
     {
       "time_s": 54.3,
       "source_beat": 108,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.045982,
         "onset_density": -0.06897,
@@ -50089,8 +50089,8 @@
     {
       "time_s": 54.4,
       "source_beat": 108,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.045982,
         "onset_density": -0.06897,
@@ -50181,8 +50181,8 @@
     {
       "time_s": 54.5,
       "source_beat": 108,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.045982,
         "onset_density": -0.06897,
@@ -50273,8 +50273,8 @@
     {
       "time_s": 54.6,
       "source_beat": 109,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.438459,
         "onset_density": -0.476059,
@@ -50365,8 +50365,8 @@
     {
       "time_s": 54.7,
       "source_beat": 109,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.438459,
         "onset_density": -0.476059,
@@ -50457,8 +50457,8 @@
     {
       "time_s": 54.8,
       "source_beat": 109,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.438459,
         "onset_density": -0.476059,
@@ -50549,8 +50549,8 @@
     {
       "time_s": 54.9,
       "source_beat": 109,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -0.438459,
         "onset_density": -0.476059,
@@ -50641,8 +50641,8 @@
     {
       "time_s": 55.0,
       "source_beat": 110,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.040567,
         "onset_density": -1.087108,
@@ -50733,8 +50733,8 @@
     {
       "time_s": 55.1,
       "source_beat": 110,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.040567,
         "onset_density": -1.087108,
@@ -50825,8 +50825,8 @@
     {
       "time_s": 55.2,
       "source_beat": 110,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.040567,
         "onset_density": -1.087108,
@@ -50917,8 +50917,8 @@
     {
       "time_s": 55.3,
       "source_beat": 110,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.040567,
         "onset_density": -1.087108,
@@ -51009,8 +51009,8 @@
     {
       "time_s": 55.4,
       "source_beat": 110,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.040567,
         "onset_density": -1.087108,
@@ -51101,8 +51101,8 @@
     {
       "time_s": 55.5,
       "source_beat": 111,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.710143,
         "onset_density": -1.639887,
@@ -51193,8 +51193,8 @@
     {
       "time_s": 55.6,
       "source_beat": 111,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.710143,
         "onset_density": -1.639887,
@@ -51285,8 +51285,8 @@
     {
       "time_s": 55.7,
       "source_beat": 111,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.710143,
         "onset_density": -1.639887,
@@ -51377,8 +51377,8 @@
     {
       "time_s": 55.8,
       "source_beat": 111,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.710143,
         "onset_density": -1.639887,
@@ -51469,8 +51469,8 @@
     {
       "time_s": 55.9,
       "source_beat": 111,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.710143,
         "onset_density": -1.639887,
@@ -51561,8 +51561,8 @@
     {
       "time_s": 56.0,
       "source_beat": 112,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.912198,
         "onset_density": -1.586224,
@@ -51653,8 +51653,8 @@
     {
       "time_s": 56.1,
       "source_beat": 112,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.912198,
         "onset_density": -1.586224,
@@ -51745,8 +51745,8 @@
     {
       "time_s": 56.2,
       "source_beat": 112,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.912198,
         "onset_density": -1.586224,
@@ -51837,8 +51837,8 @@
     {
       "time_s": 56.3,
       "source_beat": 112,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.912198,
         "onset_density": -1.586224,
@@ -51929,8 +51929,8 @@
     {
       "time_s": 56.4,
       "source_beat": 112,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.912198,
         "onset_density": -1.586224,
@@ -52021,8 +52021,8 @@
     {
       "time_s": 56.5,
       "source_beat": 113,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.997231,
         "onset_density": -1.524022,
@@ -52113,8 +52113,8 @@
     {
       "time_s": 56.6,
       "source_beat": 113,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.997231,
         "onset_density": -1.524022,
@@ -52205,8 +52205,8 @@
     {
       "time_s": 56.7,
       "source_beat": 113,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.997231,
         "onset_density": -1.524022,
@@ -52297,8 +52297,8 @@
     {
       "time_s": 56.8,
       "source_beat": 113,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -1.997231,
         "onset_density": -1.524022,
@@ -52389,8 +52389,8 @@
     {
       "time_s": 56.9,
       "source_beat": 114,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.036673,
         "onset_density": -1.537736,
@@ -52481,8 +52481,8 @@
     {
       "time_s": 57.0,
       "source_beat": 114,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.036673,
         "onset_density": -1.537736,
@@ -52573,8 +52573,8 @@
     {
       "time_s": 57.1,
       "source_beat": 114,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.036673,
         "onset_density": -1.537736,
@@ -52665,8 +52665,8 @@
     {
       "time_s": 57.2,
       "source_beat": 114,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.036673,
         "onset_density": -1.537736,
@@ -52757,8 +52757,8 @@
     {
       "time_s": 57.3,
       "source_beat": 114,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.036673,
         "onset_density": -1.537736,
@@ -52849,8 +52849,8 @@
     {
       "time_s": 57.4,
       "source_beat": 115,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.054422,
         "onset_density": -1.50518,
@@ -52941,8 +52941,8 @@
     {
       "time_s": 57.5,
       "source_beat": 115,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.054422,
         "onset_density": -1.50518,
@@ -53033,8 +53033,8 @@
     {
       "time_s": 57.6,
       "source_beat": 115,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.054422,
         "onset_density": -1.50518,
@@ -53125,8 +53125,8 @@
     {
       "time_s": 57.7,
       "source_beat": 115,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.054422,
         "onset_density": -1.50518,
@@ -53217,8 +53217,8 @@
     {
       "time_s": 57.8,
       "source_beat": 115,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.054422,
         "onset_density": -1.50518,
@@ -53309,8 +53309,8 @@
     {
       "time_s": 57.9,
       "source_beat": 115,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.054422,
         "onset_density": -1.50518,
@@ -53401,8 +53401,8 @@
     {
       "time_s": 58.0,
       "source_beat": 115,
-      "section_id": "section-004",
-      "section_name": "release_tail",
+      "section_id": "section-002",
+      "section_name": "chorus",
       "normalized": {
         "loudness_avg": -2.054422,
         "onset_density": -1.50518,

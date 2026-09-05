@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
@@ -77,11 +77,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -111,7 +111,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -148,11 +148,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -182,7 +182,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -219,11 +219,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -253,7 +253,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -290,11 +290,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -324,7 +324,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -361,11 +361,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -395,7 +395,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -432,11 +432,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -466,7 +466,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -503,11 +503,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -537,7 +537,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -574,11 +574,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -608,7 +608,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -645,11 +645,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -679,7 +679,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -716,11 +716,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -750,7 +750,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -787,11 +787,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -821,7 +821,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -858,11 +858,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -892,7 +892,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -929,11 +929,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -963,7 +963,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1000,11 +1000,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1034,7 +1034,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1071,11 +1071,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1105,7 +1105,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1142,11 +1142,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1176,7 +1176,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1213,11 +1213,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1247,7 +1247,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1284,11 +1284,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1318,7 +1318,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1355,11 +1355,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1389,7 +1389,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1426,11 +1426,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1460,7 +1460,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1497,11 +1497,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1531,7 +1531,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1568,11 +1568,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1602,7 +1602,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1639,11 +1639,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1673,7 +1673,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1710,11 +1710,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 0.06,
+            "start_time": 0.0,
             "end_time": 14.82,
             "ref": "section-001",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1744,7 +1744,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "section_id": "section-001",
       "source_layers": [
         "event_features",
@@ -1782,10 +1782,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1815,7 +1815,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -1853,10 +1853,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1886,7 +1886,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -1924,10 +1924,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -1957,7 +1957,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -1995,10 +1995,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2028,7 +2028,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2066,10 +2066,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2099,7 +2099,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2137,10 +2137,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2170,7 +2170,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2208,10 +2208,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2241,7 +2241,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2279,10 +2279,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2312,7 +2312,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2350,10 +2350,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2383,7 +2383,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2421,10 +2421,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2454,7 +2454,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2492,10 +2492,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2525,7 +2525,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2563,10 +2563,10 @@
           {
             "layer": "sections",
             "start_time": 14.82,
-            "end_time": 29.58,
+            "end_time": 58.049888,
             "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2596,7 +2596,7 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "ambient_opening",
+      "section_name": "chorus",
       "section_id": "section-002",
       "source_layers": [
         "event_features",
@@ -2633,11 +2633,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "section-003",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2760,8 +2760,8 @@
       },
       "notes": "Weighted-evidence drop; contributing features: bass_reentry, bass_stem_rel, energy_delta, spectral_flux_rel, onset_density_rel, accent_intensity, bass_att_ratio.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-003",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -2797,11 +2797,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "section-003",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2831,8 +2831,8 @@
       },
       "notes": "Impact hits remain single-beat candidates.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-003",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -2861,11 +2861,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "section-003",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -2988,8 +2988,8 @@
       },
       "notes": "Weighted-evidence drop; contributing features: bass_reentry, bass_stem_rel, energy_delta, spectral_flux_rel, onset_density_rel, bass_att_ratio.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-003",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3025,11 +3025,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "section-003",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3059,8 +3059,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-003",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3096,11 +3096,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 29.58,
-            "end_time": 44.36,
-            "ref": "section-003",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3130,8 +3130,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-003",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3167,11 +3167,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3201,8 +3201,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3238,11 +3238,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3272,8 +3272,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3309,11 +3309,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3343,8 +3343,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3380,11 +3380,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3414,8 +3414,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3451,11 +3451,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3485,8 +3485,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3522,11 +3522,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3556,8 +3556,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3593,11 +3593,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3627,8 +3627,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3664,11 +3664,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3698,8 +3698,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3735,11 +3735,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3769,8 +3769,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3806,11 +3806,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3840,8 +3840,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"
@@ -3877,11 +3877,11 @@
           },
           {
             "layer": "sections",
-            "start_time": 44.36,
-            "end_time": 57.28,
-            "ref": "section-004",
+            "start_time": 14.82,
+            "end_time": 58.049888,
+            "ref": "section-002",
             "metric_names": [
-              "section_character",
+              "function",
               "confidence"
             ]
           }
@@ -3911,8 +3911,8 @@
       },
       "notes": "Pause candidates are kept even when they may precede a later release.",
       "created_by": "analyzer_rule_engine",
-      "section_name": "release_tail",
-      "section_id": "section-004",
+      "section_name": "chorus",
+      "section_id": "section-002",
       "source_layers": [
         "event_features",
         "sections"

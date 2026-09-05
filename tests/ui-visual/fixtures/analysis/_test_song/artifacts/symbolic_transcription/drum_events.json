@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
@@ -50,7 +50,7 @@
       "beat_time_delta": -0.108566,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00002",
@@ -69,7 +69,7 @@
       "beat_time_delta": -0.035839,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00003",
@@ -88,7 +88,7 @@
       "beat_time_delta": 0.036888,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00004",
@@ -107,7 +107,7 @@
       "beat_time_delta": 0.261888,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00005",
@@ -126,7 +126,7 @@
       "beat_time_delta": -0.119898,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00006",
@@ -145,7 +145,7 @@
       "beat_time_delta": 0.032375,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00007",
@@ -164,7 +164,7 @@
       "beat_time_delta": 0.257375,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00008",
@@ -183,7 +183,7 @@
       "beat_time_delta": -0.11962,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00009",
@@ -202,7 +202,7 @@
       "beat_time_delta": 0.025835,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00010",
@@ -221,7 +221,7 @@
       "beat_time_delta": 0.169017,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00011",
@@ -240,7 +240,7 @@
       "beat_time_delta": 0.010204,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00012",
@@ -259,7 +259,7 @@
       "beat_time_delta": 0.228386,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00013",
@@ -278,7 +278,7 @@
       "beat_time_delta": 0.021846,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00014",
@@ -297,7 +297,7 @@
       "beat_time_delta": -0.268483,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00015",
@@ -316,7 +316,7 @@
       "beat_time_delta": 0.117881,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00016",
@@ -335,7 +335,7 @@
       "beat_time_delta": 0.115943,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00017",
@@ -354,7 +354,7 @@
       "beat_time_delta": 0.275033,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00018",
@@ -373,7 +373,7 @@
       "beat_time_delta": -0.110996,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00019",
@@ -392,7 +392,7 @@
       "beat_time_delta": 0.048094,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00020",
@@ -411,7 +411,7 @@
       "beat_time_delta": 0.048094,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00021",
@@ -430,7 +430,7 @@
       "beat_time_delta": -0.115455,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00022",
@@ -449,7 +449,7 @@
       "beat_time_delta": 0.109545,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00023",
@@ -468,7 +468,7 @@
       "beat_time_delta": 0.259545,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00024",
@@ -487,7 +487,7 @@
       "beat_time_delta": -0.149458,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00025",
@@ -506,7 +506,7 @@
       "beat_time_delta": 0.00736,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00026",
@@ -525,7 +525,7 @@
       "beat_time_delta": 0.086906,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00027",
@@ -544,7 +544,7 @@
       "beat_time_delta": 0.243724,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00028",
@@ -563,7 +563,7 @@
       "beat_time_delta": -0.226397,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00029",
@@ -582,7 +582,7 @@
       "beat_time_delta": -0.226397,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00030",
@@ -601,7 +601,7 @@
       "beat_time_delta": -0.067306,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00031",
@@ -620,7 +620,7 @@
       "beat_time_delta": 0.089512,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00032",
@@ -639,7 +639,7 @@
       "beat_time_delta": -0.277842,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00033",
@@ -658,7 +658,7 @@
       "beat_time_delta": -0.118751,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00034",
@@ -677,7 +677,7 @@
       "beat_time_delta": 0.206249,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00035",
@@ -696,7 +696,7 @@
       "beat_time_delta": -0.163626,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00036",
@@ -715,7 +715,7 @@
       "beat_time_delta": -0.163626,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00037",
@@ -734,7 +734,7 @@
       "beat_time_delta": 1e-05,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00038",
@@ -753,7 +753,7 @@
       "beat_time_delta": 0.16592,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00039",
@@ -772,7 +772,7 @@
       "beat_time_delta": -0.285773,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00040",
@@ -791,7 +791,7 @@
       "beat_time_delta": -0.119864,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00041",
@@ -810,7 +810,7 @@
       "beat_time_delta": 0.032409,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00042",
@@ -829,7 +829,7 @@
       "beat_time_delta": -0.062712,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00043",
@@ -848,7 +848,7 @@
       "beat_time_delta": 0.085015,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00044",
@@ -867,7 +867,7 @@
       "beat_time_delta": 0.232742,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00045",
@@ -886,7 +886,7 @@
       "beat_time_delta": -0.234859,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00046",
@@ -905,7 +905,7 @@
       "beat_time_delta": -0.084859,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00047",
@@ -924,7 +924,7 @@
       "beat_time_delta": -0.234278,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00048",
@@ -943,7 +943,7 @@
       "beat_time_delta": -0.009278,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00049",
@@ -962,7 +962,7 @@
       "beat_time_delta": 0.211176,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00050",
@@ -981,7 +981,7 @@
       "beat_time_delta": -0.172088,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00051",
@@ -1000,7 +1000,7 @@
       "beat_time_delta": -0.172088,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00052",
@@ -1019,7 +1019,7 @@
       "beat_time_delta": -0.010724,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00053",
@@ -1038,7 +1038,7 @@
       "beat_time_delta": 0.227912,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00054",
@@ -1057,7 +1057,7 @@
       "beat_time_delta": -0.293989,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00055",
@@ -1076,7 +1076,7 @@
       "beat_time_delta": -0.214443,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00056",
@@ -1095,7 +1095,7 @@
       "beat_time_delta": -0.134898,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00057",
@@ -1114,7 +1114,7 @@
       "beat_time_delta": 0.010557,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00058",
@@ -1133,7 +1133,7 @@
       "beat_time_delta": 0.228738,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00059",
@@ -1152,7 +1152,7 @@
       "beat_time_delta": -0.147462,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00060",
@@ -1171,7 +1171,7 @@
       "beat_time_delta": -0.147462,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00061",
@@ -1190,7 +1190,7 @@
       "beat_time_delta": 0.168448,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00062",
@@ -1209,7 +1209,7 @@
       "beat_time_delta": -0.150743,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00063",
@@ -1228,7 +1228,7 @@
       "beat_time_delta": 0.006075,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00064",
@@ -1247,7 +1247,7 @@
       "beat_time_delta": -0.233816,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00065",
@@ -1266,7 +1266,7 @@
       "beat_time_delta": -0.067907,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00066",
@@ -1285,7 +1285,7 @@
       "beat_time_delta": -0.067907,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00067",
@@ -1304,7 +1304,7 @@
       "beat_time_delta": -0.157799,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00068",
@@ -1323,7 +1323,7 @@
       "beat_time_delta": -0.007799,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00069",
@@ -1342,7 +1342,7 @@
       "beat_time_delta": 0.142201,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00070",
@@ -1361,7 +1361,7 @@
       "beat_time_delta": -0.1136,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00071",
@@ -1380,7 +1380,7 @@
       "beat_time_delta": 0.215945,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00072",
@@ -1399,7 +1399,7 @@
       "beat_time_delta": 0.00637,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00073",
@@ -1418,7 +1418,7 @@
       "beat_time_delta": -0.115093,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00074",
@@ -1437,7 +1437,7 @@
       "beat_time_delta": 0.000816,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00075",
@@ -1456,7 +1456,7 @@
       "beat_time_delta": 0.018481,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00076",
@@ -1475,7 +1475,7 @@
       "beat_time_delta": 0.018481,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00077",
@@ -1494,7 +1494,7 @@
       "beat_time_delta": 0.013174,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00078",
@@ -1513,7 +1513,7 @@
       "beat_time_delta": -0.207797,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00079",
@@ -1532,7 +1532,7 @@
       "beat_time_delta": -0.207797,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00080",
@@ -1551,7 +1551,7 @@
       "beat_time_delta": 0.021749,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00081",
@@ -1570,7 +1570,7 @@
       "beat_time_delta": 0.021749,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00082",
@@ -1589,7 +1589,7 @@
       "beat_time_delta": -0.213106,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00083",
@@ -1608,7 +1608,7 @@
       "beat_time_delta": 0.016439,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00084",
@@ -1627,7 +1627,7 @@
       "beat_time_delta": 0.016439,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00085",
@@ -1646,7 +1646,7 @@
       "beat_time_delta": -0.211596,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00086",
@@ -1665,7 +1665,7 @@
       "beat_time_delta": 0.022495,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00087",
@@ -1684,7 +1684,7 @@
       "beat_time_delta": 0.022495,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00088",
@@ -1703,7 +1703,7 @@
       "beat_time_delta": 0.017187,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00089",
@@ -1722,7 +1722,7 @@
       "beat_time_delta": 0.014151,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00090",
@@ -1741,7 +1741,7 @@
       "beat_time_delta": 0.014151,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00091",
@@ -1760,7 +1760,7 @@
       "beat_time_delta": -0.220703,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00092",
@@ -1779,7 +1779,7 @@
       "beat_time_delta": 0.008842,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00093",
@@ -1798,7 +1798,7 @@
       "beat_time_delta": 0.005807,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00094",
@@ -1817,7 +1817,7 @@
       "beat_time_delta": 0.005807,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00095",
@@ -1836,7 +1836,7 @@
       "beat_time_delta": 0.0005,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00096",
@@ -1855,7 +1855,7 @@
       "beat_time_delta": 0.0005,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00097",
@@ -1874,7 +1874,7 @@
       "beat_time_delta": 0.018412,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00098",
@@ -1893,7 +1893,7 @@
       "beat_time_delta": 0.018412,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00099",
@@ -1912,7 +1912,7 @@
       "beat_time_delta": -0.21417,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00100",
@@ -1931,7 +1931,7 @@
       "beat_time_delta": 0.015376,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00101",
@@ -1950,7 +1950,7 @@
       "beat_time_delta": 0.015376,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00102",
@@ -1969,7 +1969,7 @@
       "beat_time_delta": 0.010067,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00103",
@@ -1988,7 +1988,7 @@
       "beat_time_delta": 0.010067,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00104",
@@ -2007,7 +2007,7 @@
       "beat_time_delta": 0.007032,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00105",
@@ -2026,7 +2026,7 @@
       "beat_time_delta": 0.007032,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00106",
@@ -2045,7 +2045,7 @@
       "beat_time_delta": -0.171004,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00107",
@@ -2064,7 +2064,7 @@
       "beat_time_delta": 0.001723,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00108",
@@ -2083,7 +2083,7 @@
       "beat_time_delta": 0.001723,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00109",
@@ -2102,7 +2102,7 @@
       "beat_time_delta": 0.001723,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00110",
@@ -2121,7 +2121,7 @@
       "beat_time_delta": -0.209911,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00111",
@@ -2140,7 +2140,7 @@
       "beat_time_delta": -0.209911,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00112",
@@ -2159,7 +2159,7 @@
       "beat_time_delta": 0.019635,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00113",
@@ -2178,7 +2178,7 @@
       "beat_time_delta": 0.019635,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00114",
@@ -2197,7 +2197,7 @@
       "beat_time_delta": -0.212946,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00115",
@@ -2216,7 +2216,7 @@
       "beat_time_delta": -0.212946,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00116",
@@ -2235,7 +2235,7 @@
       "beat_time_delta": 0.0166,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00117",
@@ -2254,7 +2254,7 @@
       "beat_time_delta": 0.0166,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00118",
@@ -2273,7 +2273,7 @@
       "beat_time_delta": 0.0166,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00119",
@@ -2292,7 +2292,7 @@
       "beat_time_delta": -0.213709,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00120",
@@ -2311,7 +2311,7 @@
       "beat_time_delta": -0.213709,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00121",
@@ -2330,7 +2330,7 @@
       "beat_time_delta": 0.022655,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00122",
@@ -2349,7 +2349,7 @@
       "beat_time_delta": 0.022655,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00123",
@@ -2368,7 +2368,7 @@
       "beat_time_delta": 0.022655,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00124",
@@ -2387,7 +2387,7 @@
       "beat_time_delta": -0.212197,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00125",
@@ -2406,7 +2406,7 @@
       "beat_time_delta": -0.212197,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00126",
@@ -2425,7 +2425,7 @@
       "beat_time_delta": -0.098561,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00127",
@@ -2444,7 +2444,7 @@
       "beat_time_delta": 0.017348,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00128",
@@ -2463,7 +2463,7 @@
       "beat_time_delta": 0.017348,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00129",
@@ -2482,7 +2482,7 @@
       "beat_time_delta": 0.017348,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00130",
@@ -2501,7 +2501,7 @@
       "beat_time_delta": -0.217506,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00131",
@@ -2520,7 +2520,7 @@
       "beat_time_delta": -0.217506,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00132",
@@ -2539,7 +2539,7 @@
       "beat_time_delta": -0.217506,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00133",
@@ -2558,7 +2558,7 @@
       "beat_time_delta": 0.01204,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00134",
@@ -2577,7 +2577,7 @@
       "beat_time_delta": 0.01204,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00135",
@@ -2596,7 +2596,7 @@
       "beat_time_delta": 0.01204,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00136",
@@ -2615,7 +2615,7 @@
       "beat_time_delta": -0.220542,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00137",
@@ -2634,7 +2634,7 @@
       "beat_time_delta": -0.220542,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00138",
@@ -2653,7 +2653,7 @@
       "beat_time_delta": 0.009004,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00139",
@@ -2672,7 +2672,7 @@
       "beat_time_delta": 0.009004,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00140",
@@ -2691,7 +2691,7 @@
       "beat_time_delta": -0.22585,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00141",
@@ -2710,7 +2710,7 @@
       "beat_time_delta": -0.22585,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00142",
@@ -2729,7 +2729,7 @@
       "beat_time_delta": -0.109941,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00143",
@@ -2748,7 +2748,7 @@
       "beat_time_delta": 0.003695,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00144",
@@ -2767,7 +2767,7 @@
       "beat_time_delta": 0.003695,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00145",
@@ -2786,7 +2786,7 @@
       "beat_time_delta": 0.003695,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00146",
@@ -2805,7 +2805,7 @@
       "beat_time_delta": 0.119605,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00147",
@@ -2824,7 +2824,7 @@
       "beat_time_delta": -0.219548,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00148",
@@ -2843,7 +2843,7 @@
       "beat_time_delta": -0.219548,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00149",
@@ -2862,7 +2862,7 @@
       "beat_time_delta": -0.103639,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00150",
@@ -2881,7 +2881,7 @@
       "beat_time_delta": -0.103639,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00151",
@@ -2900,7 +2900,7 @@
       "beat_time_delta": 0.01227,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00152",
@@ -2919,7 +2919,7 @@
       "beat_time_delta": 0.01227,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00153",
@@ -2938,7 +2938,7 @@
       "beat_time_delta": 0.125906,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00154",
@@ -2957,7 +2957,7 @@
       "beat_time_delta": 0.125906,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00155",
@@ -2976,7 +2976,7 @@
       "beat_time_delta": -0.210974,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00156",
@@ -2995,7 +2995,7 @@
       "beat_time_delta": -0.210974,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00157",
@@ -3014,7 +3014,7 @@
       "beat_time_delta": -0.097338,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00158",
@@ -3033,7 +3033,7 @@
       "beat_time_delta": -0.097338,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00159",
@@ -3052,7 +3052,7 @@
       "beat_time_delta": 0.018571,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00160",
@@ -3071,7 +3071,7 @@
       "beat_time_delta": 0.018571,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00161",
@@ -3090,7 +3090,7 @@
       "beat_time_delta": 0.136753,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00162",
@@ -3109,7 +3109,7 @@
       "beat_time_delta": 0.136753,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00163",
@@ -3128,7 +3128,7 @@
       "beat_time_delta": -0.211737,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00164",
@@ -3147,7 +3147,7 @@
       "beat_time_delta": -0.211737,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00165",
@@ -3166,7 +3166,7 @@
       "beat_time_delta": -0.093555,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00166",
@@ -3185,7 +3185,7 @@
       "beat_time_delta": -0.093555,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00167",
@@ -3204,7 +3204,7 @@
       "beat_time_delta": 0.024627,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00168",
@@ -3223,7 +3223,7 @@
       "beat_time_delta": 0.024627,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00169",
@@ -3242,7 +3242,7 @@
       "beat_time_delta": 0.138263,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00170",
@@ -3261,7 +3261,7 @@
       "beat_time_delta": 0.138263,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00171",
@@ -3280,7 +3280,7 @@
       "beat_time_delta": -0.210227,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00172",
@@ -3299,7 +3299,7 @@
       "beat_time_delta": -0.210227,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00173",
@@ -3318,7 +3318,7 @@
       "beat_time_delta": -0.094318,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00174",
@@ -3337,7 +3337,7 @@
       "beat_time_delta": -0.094318,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00175",
@@ -3356,7 +3356,7 @@
       "beat_time_delta": 0.019318,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00176",
@@ -3375,7 +3375,7 @@
       "beat_time_delta": 0.135228,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00177",
@@ -3394,7 +3394,7 @@
       "beat_time_delta": 0.135228,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00178",
@@ -3413,7 +3413,7 @@
       "beat_time_delta": -0.215534,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00179",
@@ -3432,7 +3432,7 @@
       "beat_time_delta": -0.215534,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00180",
@@ -3451,7 +3451,7 @@
       "beat_time_delta": -0.099625,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00181",
@@ -3470,7 +3470,7 @@
       "beat_time_delta": -0.099625,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00182",
@@ -3489,7 +3489,7 @@
       "beat_time_delta": 0.016284,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00183",
@@ -3508,7 +3508,7 @@
       "beat_time_delta": 0.12992,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00184",
@@ -3527,7 +3527,7 @@
       "beat_time_delta": 0.010976,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00185",
@@ -3546,7 +3546,7 @@
       "beat_time_delta": -0.203694,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00186",
@@ -3565,7 +3565,7 @@
       "beat_time_delta": -0.203694,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00187",
@@ -3584,7 +3584,7 @@
       "beat_time_delta": 0.025852,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00188",
@@ -3603,7 +3603,7 @@
       "beat_time_delta": 0.025852,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00189",
@@ -3622,7 +3622,7 @@
       "beat_time_delta": -0.204457,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "ambient_opening"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00190",
@@ -3640,8 +3640,8 @@
       "aligned_bar": 15,
       "beat_time_delta": 0.031907,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00191",
@@ -3659,8 +3659,8 @@
       "aligned_bar": 15,
       "beat_time_delta": 0.031907,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00192",
@@ -3678,8 +3678,8 @@
       "aligned_bar": 15,
       "beat_time_delta": -0.146128,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00193",
@@ -3697,8 +3697,8 @@
       "aligned_bar": 15,
       "beat_time_delta": 0.026599,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00194",
@@ -3716,8 +3716,8 @@
       "aligned_bar": 15,
       "beat_time_delta": 0.026599,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00195",
@@ -3735,8 +3735,8 @@
       "aligned_bar": 15,
       "beat_time_delta": 0.199326,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00196",
@@ -3754,8 +3754,8 @@
       "aligned_bar": 15,
       "beat_time_delta": -0.149165,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00197",
@@ -3773,8 +3773,8 @@
       "aligned_bar": 15,
       "beat_time_delta": 0.02129,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00198",
@@ -3792,8 +3792,8 @@
       "aligned_bar": 15,
       "beat_time_delta": 0.02129,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00199",
@@ -3811,8 +3811,8 @@
       "aligned_bar": 15,
       "beat_time_delta": -0.211289,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00200",
@@ -3830,8 +3830,8 @@
       "aligned_bar": 16,
       "beat_time_delta": -0.097653,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00201",
@@ -3849,8 +3849,8 @@
       "aligned_bar": 16,
       "beat_time_delta": -0.097653,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00202",
@@ -3868,8 +3868,8 @@
       "aligned_bar": 16,
       "beat_time_delta": 0.018257,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00203",
@@ -3887,8 +3887,8 @@
       "aligned_bar": 16,
       "beat_time_delta": 0.018257,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00204",
@@ -3906,8 +3906,8 @@
       "aligned_bar": 16,
       "beat_time_delta": -0.100688,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00205",
@@ -3925,8 +3925,8 @@
       "aligned_bar": 16,
       "beat_time_delta": 0.012948,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00206",
@@ -3944,8 +3944,8 @@
       "aligned_bar": 16,
       "beat_time_delta": 0.012948,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00207",
@@ -3963,8 +3963,8 @@
       "aligned_bar": 16,
       "beat_time_delta": -0.162815,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00208",
@@ -3982,8 +3982,8 @@
       "aligned_bar": 16,
       "beat_time_delta": 0.009912,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00209",
@@ -4001,8 +4001,8 @@
       "aligned_bar": 16,
       "beat_time_delta": 0.009912,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00210",
@@ -4020,8 +4020,8 @@
       "aligned_bar": 16,
       "beat_time_delta": 0.182639,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00211",
@@ -4039,8 +4039,8 @@
       "aligned_bar": 16,
       "beat_time_delta": -0.099695,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00212",
@@ -4058,8 +4058,8 @@
       "aligned_bar": 16,
       "beat_time_delta": 0.016214,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00213",
@@ -4077,8 +4077,8 @@
       "aligned_bar": 16,
       "beat_time_delta": 0.016214,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00214",
@@ -4096,8 +4096,8 @@
       "aligned_bar": 17,
       "beat_time_delta": -0.143393,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00215",
@@ -4115,8 +4115,8 @@
       "aligned_bar": 17,
       "beat_time_delta": 0.03388,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00216",
@@ -4134,8 +4134,8 @@
       "aligned_bar": 17,
       "beat_time_delta": 0.03388,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00217",
@@ -4153,8 +4153,8 @@
       "aligned_bar": 17,
       "beat_time_delta": -0.144155,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00218",
@@ -4172,8 +4172,8 @@
       "aligned_bar": 17,
       "beat_time_delta": 0.028572,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00219",
@@ -4191,8 +4191,8 @@
       "aligned_bar": 17,
       "beat_time_delta": 0.028572,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00220",
@@ -4210,8 +4210,8 @@
       "aligned_bar": 17,
       "beat_time_delta": 0.025535,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00221",
@@ -4229,8 +4229,8 @@
       "aligned_bar": 17,
       "beat_time_delta": 0.025535,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00222",
@@ -4248,8 +4248,8 @@
       "aligned_bar": 17,
       "beat_time_delta": -0.09568,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00223",
@@ -4267,8 +4267,8 @@
       "aligned_bar": 17,
       "beat_time_delta": 0.020229,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00224",
@@ -4286,8 +4286,8 @@
       "aligned_bar": 17,
       "beat_time_delta": 0.020229,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00225",
@@ -4305,8 +4305,8 @@
       "aligned_bar": 18,
       "beat_time_delta": -0.098718,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00226",
@@ -4324,8 +4324,8 @@
       "aligned_bar": 18,
       "beat_time_delta": 0.014918,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00227",
@@ -4343,8 +4343,8 @@
       "aligned_bar": 18,
       "beat_time_delta": 0.014918,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00228",
@@ -4362,8 +4362,8 @@
       "aligned_bar": 18,
       "beat_time_delta": 0.014918,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00229",
@@ -4381,8 +4381,8 @@
       "aligned_bar": 18,
       "beat_time_delta": -0.104025,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00230",
@@ -4400,8 +4400,8 @@
       "aligned_bar": 18,
       "beat_time_delta": 0.011885,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00231",
@@ -4419,8 +4419,8 @@
       "aligned_bar": 18,
       "beat_time_delta": -0.107062,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00232",
@@ -4438,8 +4438,8 @@
       "aligned_bar": 18,
       "beat_time_delta": 0.006574,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00233",
@@ -4457,8 +4457,8 @@
       "aligned_bar": 18,
       "beat_time_delta": 0.006574,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00234",
@@ -4476,8 +4476,8 @@
       "aligned_bar": 18,
       "beat_time_delta": 0.024239,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00235",
@@ -4495,8 +4495,8 @@
       "aligned_bar": 18,
       "beat_time_delta": 0.024239,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00236",
@@ -4514,8 +4514,8 @@
       "aligned_bar": 19,
       "beat_time_delta": -0.083095,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00237",
@@ -4533,8 +4533,8 @@
       "aligned_bar": 19,
       "beat_time_delta": 0.030541,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00238",
@@ -4552,8 +4552,8 @@
       "aligned_bar": 19,
       "beat_time_delta": 0.030541,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00239",
@@ -4571,8 +4571,8 @@
       "aligned_bar": 19,
       "beat_time_delta": 0.203268,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00240",
@@ -4590,8 +4590,8 @@
       "aligned_bar": 19,
       "beat_time_delta": -0.14522,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00241",
@@ -4609,8 +4609,8 @@
       "aligned_bar": 19,
       "beat_time_delta": 0.027508,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00242",
@@ -4628,8 +4628,8 @@
       "aligned_bar": 19,
       "beat_time_delta": 0.027508,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00243",
@@ -4647,8 +4647,8 @@
       "aligned_bar": 19,
       "beat_time_delta": -0.207345,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00244",
@@ -4666,8 +4666,8 @@
       "aligned_bar": 19,
       "beat_time_delta": 0.0222,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00245",
@@ -4685,8 +4685,8 @@
       "aligned_bar": 19,
       "beat_time_delta": 0.0222,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00246",
@@ -4704,8 +4704,8 @@
       "aligned_bar": 19,
       "beat_time_delta": -0.212655,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00247",
@@ -4723,8 +4723,8 @@
       "aligned_bar": 19,
       "beat_time_delta": 0.019163,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00248",
@@ -4742,8 +4742,8 @@
       "aligned_bar": 19,
       "beat_time_delta": 0.019163,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00249",
@@ -4761,8 +4761,8 @@
       "aligned_bar": 19,
       "beat_time_delta": -0.215688,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00250",
@@ -4780,8 +4780,8 @@
       "aligned_bar": 20,
       "beat_time_delta": 0.013857,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00251",
@@ -4799,8 +4799,8 @@
       "aligned_bar": 20,
       "beat_time_delta": 0.013857,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00252",
@@ -4818,8 +4818,8 @@
       "aligned_bar": 20,
       "beat_time_delta": -0.216454,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00253",
@@ -4837,8 +4837,8 @@
       "aligned_bar": 20,
       "beat_time_delta": 0.01991,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00254",
@@ -4856,8 +4856,8 @@
       "aligned_bar": 20,
       "beat_time_delta": 0.01991,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00255",
@@ -4875,8 +4875,8 @@
       "aligned_bar": 20,
       "beat_time_delta": -0.214942,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00256",
@@ -4894,8 +4894,8 @@
       "aligned_bar": 20,
       "beat_time_delta": 0.014603,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00257",
@@ -4913,8 +4913,8 @@
       "aligned_bar": 20,
       "beat_time_delta": 0.014603,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00258",
@@ -4932,8 +4932,8 @@
       "aligned_bar": 20,
       "beat_time_delta": -0.20864,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00259",
@@ -4951,8 +4951,8 @@
       "aligned_bar": 20,
       "beat_time_delta": 0.023178,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00260",
@@ -4970,8 +4970,8 @@
       "aligned_bar": 20,
       "beat_time_delta": 0.023178,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00261",
@@ -4989,8 +4989,8 @@
       "aligned_bar": 20,
       "beat_time_delta": -0.200066,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00262",
@@ -5008,8 +5008,8 @@
       "aligned_bar": 21,
       "beat_time_delta": 0.029479,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00263",
@@ -5027,8 +5027,8 @@
       "aligned_bar": 21,
       "beat_time_delta": 0.029479,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00264",
@@ -5046,8 +5046,8 @@
       "aligned_bar": 21,
       "beat_time_delta": 0.029479,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00265",
@@ -5065,8 +5065,8 @@
       "aligned_bar": 21,
       "beat_time_delta": -0.205373,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00266",
@@ -5084,8 +5084,8 @@
       "aligned_bar": 21,
       "beat_time_delta": 0.024173,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00267",
@@ -5103,8 +5103,8 @@
       "aligned_bar": 21,
       "beat_time_delta": 0.024173,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00268",
@@ -5122,8 +5122,8 @@
       "aligned_bar": 21,
       "beat_time_delta": -0.20841,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00269",
@@ -5141,8 +5141,8 @@
       "aligned_bar": 21,
       "beat_time_delta": 0.021136,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00270",
@@ -5160,8 +5160,8 @@
       "aligned_bar": 21,
       "beat_time_delta": 0.021136,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00271",
@@ -5179,8 +5179,8 @@
       "aligned_bar": 21,
       "beat_time_delta": -0.213717,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00272",
@@ -5198,8 +5198,8 @@
       "aligned_bar": 21,
       "beat_time_delta": 0.015828,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00273",
@@ -5217,8 +5217,8 @@
       "aligned_bar": 21,
       "beat_time_delta": 0.015828,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00274",
@@ -5236,8 +5236,8 @@
       "aligned_bar": 21,
       "beat_time_delta": -0.212209,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00275",
@@ -5255,8 +5255,8 @@
       "aligned_bar": 22,
       "beat_time_delta": 0.021882,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00276",
@@ -5274,8 +5274,8 @@
       "aligned_bar": 22,
       "beat_time_delta": 0.021882,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00277",
@@ -5293,8 +5293,8 @@
       "aligned_bar": 22,
       "beat_time_delta": -0.212971,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00278",
@@ -5312,8 +5312,8 @@
       "aligned_bar": 22,
       "beat_time_delta": 0.016575,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00279",
@@ -5331,8 +5331,8 @@
       "aligned_bar": 22,
       "beat_time_delta": 0.016575,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00280",
@@ -5350,8 +5350,8 @@
       "aligned_bar": 22,
       "beat_time_delta": -0.216008,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00281",
@@ -5369,8 +5369,8 @@
       "aligned_bar": 22,
       "beat_time_delta": 0.013538,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00282",
@@ -5388,8 +5388,8 @@
       "aligned_bar": 22,
       "beat_time_delta": 0.013538,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00283",
@@ -5407,8 +5407,8 @@
       "aligned_bar": 22,
       "beat_time_delta": -0.221314,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00284",
@@ -5426,8 +5426,8 @@
       "aligned_bar": 22,
       "beat_time_delta": -0.105405,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00285",
@@ -5445,8 +5445,8 @@
       "aligned_bar": 22,
       "beat_time_delta": 0.008231,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00286",
@@ -5464,8 +5464,8 @@
       "aligned_bar": 22,
       "beat_time_delta": 0.126413,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00287",
@@ -5483,8 +5483,8 @@
       "aligned_bar": 22,
       "beat_time_delta": 0.126413,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00288",
@@ -5502,8 +5502,8 @@
       "aligned_bar": 22,
       "beat_time_delta": -0.219803,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00289",
@@ -5521,8 +5521,8 @@
       "aligned_bar": 22,
       "beat_time_delta": -0.219803,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00290",
@@ -5540,8 +5540,8 @@
       "aligned_bar": 23,
       "beat_time_delta": -0.103894,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00291",
@@ -5559,8 +5559,8 @@
       "aligned_bar": 23,
       "beat_time_delta": 0.014288,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00292",
@@ -5578,8 +5578,8 @@
       "aligned_bar": 23,
       "beat_time_delta": 0.014288,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00293",
@@ -5597,8 +5597,8 @@
       "aligned_bar": 23,
       "beat_time_delta": -0.220568,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00294",
@@ -5616,8 +5616,8 @@
       "aligned_bar": 23,
       "beat_time_delta": -0.220568,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00295",
@@ -5635,8 +5635,8 @@
       "aligned_bar": 23,
       "beat_time_delta": 0.008978,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00296",
@@ -5654,8 +5654,8 @@
       "aligned_bar": 23,
       "beat_time_delta": 0.008978,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00297",
@@ -5673,8 +5673,8 @@
       "aligned_bar": 23,
       "beat_time_delta": -0.183185,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00298",
@@ -5692,8 +5692,8 @@
       "aligned_bar": 23,
       "beat_time_delta": -0.067275,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00299",
@@ -5711,8 +5711,8 @@
       "aligned_bar": 23,
       "beat_time_delta": 0.169088,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00300",
@@ -5730,8 +5730,8 @@
       "aligned_bar": 23,
       "beat_time_delta": -0.084443,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00301",
@@ -5749,8 +5749,8 @@
       "aligned_bar": 24,
       "beat_time_delta": -0.179126,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00302",
@@ -5768,8 +5768,8 @@
       "aligned_bar": 24,
       "beat_time_delta": 0.111783,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00303",
@@ -5787,8 +5787,8 @@
       "aligned_bar": 24,
       "beat_time_delta": -0.163922,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00304",
@@ -5806,8 +5806,8 @@
       "aligned_bar": 24,
       "beat_time_delta": -0.18306,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00305",
@@ -5825,8 +5825,8 @@
       "aligned_bar": 24,
       "beat_time_delta": -0.151949,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00306",
@@ -5844,8 +5844,8 @@
       "aligned_bar": 24,
       "beat_time_delta": 0.027597,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00307",
@@ -5863,8 +5863,8 @@
       "aligned_bar": 24,
       "beat_time_delta": 0.148051,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00308",
@@ -5882,8 +5882,8 @@
       "aligned_bar": 24,
       "beat_time_delta": 0.261687,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00309",
@@ -5901,8 +5901,8 @@
       "aligned_bar": 25,
       "beat_time_delta": -0.054433,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00310",
@@ -5920,8 +5920,8 @@
       "aligned_bar": 25,
       "beat_time_delta": 0.061476,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00311",
@@ -5939,8 +5939,8 @@
       "aligned_bar": 25,
       "beat_time_delta": 0.245567,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00312",
@@ -5958,8 +5958,8 @@
       "aligned_bar": 25,
       "beat_time_delta": -0.200595,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00313",
@@ -5977,8 +5977,8 @@
       "aligned_bar": 25,
       "beat_time_delta": -0.200595,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00314",
@@ -5996,8 +5996,8 @@
       "aligned_bar": 25,
       "beat_time_delta": 0.099405,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00315",
@@ -6015,8 +6015,8 @@
       "aligned_bar": 25,
       "beat_time_delta": -0.17403,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00316",
@@ -6034,8 +6034,8 @@
       "aligned_bar": 25,
       "beat_time_delta": -0.277256,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00317",
@@ -6053,8 +6053,8 @@
       "aligned_bar": 25,
       "beat_time_delta": -0.154528,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00318",
@@ -6072,8 +6072,8 @@
       "aligned_bar": 25,
       "beat_time_delta": -0.029528,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00319",
@@ -6091,8 +6091,8 @@
       "aligned_bar": 25,
       "beat_time_delta": 0.095472,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00320",
@@ -6110,8 +6110,8 @@
       "aligned_bar": 25,
       "beat_time_delta": 0.095472,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00321",
@@ -6129,8 +6129,8 @@
       "aligned_bar": 25,
       "beat_time_delta": 0.284108,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00322",
@@ -6148,8 +6148,8 @@
       "aligned_bar": 26,
       "beat_time_delta": -0.116847,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00323",
@@ -6167,8 +6167,8 @@
       "aligned_bar": 26,
       "beat_time_delta": -0.108953,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00324",
@@ -6186,8 +6186,8 @@
       "aligned_bar": 26,
       "beat_time_delta": 0.243319,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00325",
@@ -6205,8 +6205,8 @@
       "aligned_bar": 26,
       "beat_time_delta": -0.096025,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00326",
@@ -6224,8 +6224,8 @@
       "aligned_bar": 26,
       "beat_time_delta": 0.089137,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00327",
@@ -6243,8 +6243,8 @@
       "aligned_bar": 27,
       "beat_time_delta": -0.141608,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00328",
@@ -6262,8 +6262,8 @@
       "aligned_bar": 27,
       "beat_time_delta": 0.158392,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00329",
@@ -6281,8 +6281,8 @@
       "aligned_bar": 27,
       "beat_time_delta": 0.217483,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00330",
@@ -6300,8 +6300,8 @@
       "aligned_bar": 27,
       "beat_time_delta": -0.122106,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00331",
@@ -6319,8 +6319,8 @@
       "aligned_bar": 27,
       "beat_time_delta": 0.11653,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00332",
@@ -6338,8 +6338,8 @@
       "aligned_bar": 27,
       "beat_time_delta": -0.179933,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00333",
@@ -6357,8 +6357,8 @@
       "aligned_bar": 27,
       "beat_time_delta": 0.060976,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00334",
@@ -6376,8 +6376,8 @@
       "aligned_bar": 27,
       "beat_time_delta": 0.181431,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00335",
@@ -6395,8 +6395,8 @@
       "aligned_bar": 27,
       "beat_time_delta": -0.171852,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00336",
@@ -6414,8 +6414,8 @@
       "aligned_bar": 27,
       "beat_time_delta": -0.049125,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00337",
@@ -6433,8 +6433,8 @@
       "aligned_bar": 27,
       "beat_time_delta": 0.073602,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00338",
@@ -6452,8 +6452,8 @@
       "aligned_bar": 28,
       "beat_time_delta": -0.16856,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00339",
@@ -6471,8 +6471,8 @@
       "aligned_bar": 28,
       "beat_time_delta": -0.146597,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00340",
@@ -6490,8 +6490,8 @@
       "aligned_bar": 28,
       "beat_time_delta": 0.032948,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00341",
@@ -6509,8 +6509,8 @@
       "aligned_bar": 28,
       "beat_time_delta": 0.212493,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00342",
@@ -6528,8 +6528,8 @@
       "aligned_bar": 28,
       "beat_time_delta": -0.202153,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     }
   ]
 }

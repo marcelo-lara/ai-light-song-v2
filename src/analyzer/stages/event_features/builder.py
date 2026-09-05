@@ -184,7 +184,7 @@ def build_event_feature_layer(
                 "start_time": round(start_s, 6),
                 "end_time": round(end_s, 6),
                 "section_id": section.get("section_id") if section else None,
-                "section_name": (section.get("section_character") or section.get("label")) if section else None,
+                "section_name": section.get("function") if section else None,
                 "phrase_window_id": phrase.get("id") if phrase else None,
                 "phrase_group_id": phrase.get("phrase_group_id") if phrase else None,
                 "chord": chord_label,

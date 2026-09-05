@@ -29,15 +29,13 @@ class SectionHintsTests(unittest.TestCase):
                         "section_id": "section-001",
                         "start": 0.0,
                         "end": 10.0,
-                        "label": "contrast_bridge",
-                        "section_character": "contrast_bridge",
+                        "function": "intro",
                     },
                     {
                         "section_id": "section-002",
                         "start": 10.0,
                         "end": 20.0,
-                        "label": "groove_plateau",
-                        "section_character": "groove_plateau",
+                        "function": "chorus",
                     },
                 ]
             }
@@ -49,7 +47,7 @@ class SectionHintsTests(unittest.TestCase):
                     "sections": [
                         {
                             "section_id": "section-002",
-                            "label": "groove_plateau",
+                            "label": "chorus",
                             "start": 10.0,
                             "end": 20.0,
                             "hints": [
@@ -81,7 +79,7 @@ class SectionHintsTests(unittest.TestCase):
                 hint for hint in section_two["hints"] if hint["source"] == "inference" and hint["category"] == "transition_role"
             )
             self.assertIn("10.00s", transition_hint["text"])
-            self.assertIn("groove plateau", transition_hint["text"])
+            self.assertIn("chorus", transition_hint["text"])
 
 
 if __name__ == "__main__":

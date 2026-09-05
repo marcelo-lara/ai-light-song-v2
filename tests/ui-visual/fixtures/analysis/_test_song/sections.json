@@ -1,50 +1,18 @@
 [
   {
     "section_id": "section-001",
-    "start": 0.06,
+    "start": 0.0,
     "end": 14.82,
-    "label": "001 Intro (0.90)",
-    "form_role": "intro",
-    "energy_character": "ambient_opening",
-    "repetition_group": "A",
-    "confidence": 0.9,
-    "description": "Restrained opening space with low-volatility motion and room for atmosphere.",
-    "hints": []
+    "label": "001 intro [unverified] (0.34)",
+    "description": "Unverified section, 14.8s \u2014 allin1's label for this song is not trustworthy.",
+    "confidence": 0.9
   },
   {
     "section_id": "section-002",
     "start": 14.82,
-    "end": 29.58,
-    "label": "002 Intro (0.90)",
-    "form_role": "intro",
-    "energy_character": "ambient_opening",
-    "repetition_group": "A",
-    "confidence": 0.9,
-    "description": "Restrained opening space with low-volatility motion and room for atmosphere.",
-    "hints": []
-  },
-  {
-    "section_id": "section-003",
-    "start": 29.58,
-    "end": 44.36,
-    "label": "003 Outro (0.55)",
-    "form_role": "outro",
-    "energy_character": "release_tail",
-    "repetition_group": "A",
-    "confidence": 0.55,
-    "description": "Closing release state where energy tapers and the track settles out.",
-    "hints": []
-  },
-  {
-    "section_id": "section-004",
-    "start": 44.36,
-    "end": 57.28,
-    "label": "004 Outro (0.55)",
-    "form_role": "outro",
-    "energy_character": "release_tail",
-    "repetition_group": "A",
-    "confidence": 0.55,
-    "description": "Closing release state where energy tapers and the track settles out.",
-    "hints": []
+    "end": 58.05,
+    "label": "002 chorus [unverified] (0.45)",
+    "description": "Unverified section, 43.2s \u2014 allin1's label for this song is not trustworthy.",
+    "confidence": 0.446144
   }
 ]

@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "Armin - Revolution",
   "generated_from": {
     "source_song_path": "/data/songs/Armin - Revolution.mp3",
@@ -18,170 +18,79 @@
   "section_energy": [
     {
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "start_s": 0.0,
-      "end_s": 15.23229,
+      "end_s": 30.0,
       "bar_start": 1,
-      "bar_end": 8,
-      "mean": 0.3479,
-      "peak": 0.506941,
-      "transient_density": 0.377235,
+      "bar_end": 16,
+      "mean": 0.418217,
+      "peak": 0.553184,
+      "transient_density": 0.446679,
       "level": "medium",
-      "trend": "wave"
+      "trend": "build"
     },
     {
       "section_id": "section-002",
-      "section_name": "instrumental_bed",
-      "start_s": 15.23229,
-      "end_s": 30.209161,
-      "bar_start": 9,
-      "bar_end": 17,
-      "mean": 0.486975,
-      "peak": 0.553184,
-      "transient_density": 0.513338,
-      "level": "high",
+      "section_name": "verse",
+      "start_s": 30.0,
+      "end_s": 44.76,
+      "bar_start": 17,
+      "bar_end": 24,
+      "mean": 0.405602,
+      "peak": 0.492839,
+      "transient_density": 0.39656,
+      "level": "medium",
       "trend": "wave"
     },
     {
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
-      "start_s": 30.209161,
-      "end_s": 59.837822,
-      "bar_start": 17,
-      "bar_end": 32,
-      "mean": 0.379547,
-      "peak": 0.494962,
-      "transient_density": 0.376235,
-      "level": "medium",
+      "section_name": "inst",
+      "start_s": 44.76,
+      "end_s": 81.76,
+      "bar_start": 25,
+      "bar_end": 44,
+      "mean": 0.336275,
+      "peak": 0.523656,
+      "transient_density": 0.339934,
+      "level": "low",
       "trend": "wave"
     },
     {
       "section_id": "section-004",
-      "section_name": "breath_space",
-      "start_s": 59.837822,
-      "end_s": 74.605713,
-      "bar_start": 33,
-      "bar_end": 40,
-      "mean": 0.291723,
-      "peak": 0.392302,
-      "transient_density": 0.299082,
-      "level": "low",
-      "trend": "build"
+      "section_name": "verse",
+      "start_s": 81.76,
+      "end_s": 96.46,
+      "bar_start": 45,
+      "bar_end": 52,
+      "mean": 0.405153,
+      "peak": 0.473039,
+      "transient_density": 0.395895,
+      "level": "medium",
+      "trend": "wave"
     },
     {
       "section_id": "section-005",
-      "section_name": "flowing_plateau",
-      "start_s": 74.605713,
-      "end_s": 88.13134,
-      "bar_start": 41,
-      "bar_end": 48,
-      "mean": 0.393639,
-      "peak": 0.523656,
-      "transient_density": 0.38924,
-      "level": "medium",
+      "section_name": "chorus",
+      "start_s": 96.46,
+      "end_s": 111.23,
+      "bar_start": 52,
+      "bar_end": 60,
+      "mean": 0.48359,
+      "peak": 0.553565,
+      "transient_density": 0.495192,
+      "level": "high",
       "trend": "wave"
     },
     {
       "section_id": "section-006",
-      "section_name": "momentum_lift",
-      "start_s": 88.13134,
-      "end_s": 103.851247,
-      "bar_start": 48,
-      "bar_end": 56,
-      "mean": 0.442404,
-      "peak": 0.533394,
-      "transient_density": 0.440645,
-      "level": "high",
-      "trend": "build"
-    },
-    {
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
-      "start_s": 103.851247,
-      "end_s": 118.619138,
-      "bar_start": 56,
-      "bar_end": 64,
-      "mean": 0.477314,
-      "peak": 0.553565,
-      "transient_density": 0.496615,
-      "level": "high",
-      "trend": "wave"
-    },
-    {
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
-      "start_s": 118.619138,
-      "end_s": 133.863037,
-      "bar_start": 64,
-      "bar_end": 72,
-      "mean": 0.423823,
-      "peak": 0.529269,
-      "transient_density": 0.432904,
-      "level": "medium",
-      "trend": "release"
-    },
-    {
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
-      "start_s": 133.863037,
-      "end_s": 150.999359,
-      "bar_start": 73,
-      "bar_end": 81,
-      "mean": 0.410217,
-      "peak": 0.50095,
-      "transient_density": 0.41377,
-      "level": "medium",
-      "trend": "wave"
-    },
-    {
-      "section_id": "section-010",
-      "section_name": "breath_space",
-      "start_s": 150.999359,
-      "end_s": 156.746307,
-      "bar_start": 82,
-      "bar_end": 84,
-      "mean": 0.330643,
-      "peak": 0.400623,
-      "transient_density": 0.331547,
-      "level": "low",
-      "trend": "release"
-    },
-    {
-      "section_id": "section-011",
-      "section_name": "breath_space",
-      "start_s": 156.746307,
-      "end_s": 162.30748,
-      "bar_start": 85,
-      "bar_end": 87,
-      "mean": 0.239944,
-      "peak": 0.287281,
-      "transient_density": 0.2685,
-      "level": "low",
-      "trend": "plateau"
-    },
-    {
-      "section_id": "section-012",
-      "section_name": "breath_space",
-      "start_s": 162.30748,
-      "end_s": 177.899683,
-      "bar_start": 88,
-      "bar_end": 96,
-      "mean": 0.323743,
-      "peak": 0.434294,
-      "transient_density": 0.311053,
-      "level": "low",
-      "trend": "wave"
-    },
-    {
-      "section_id": "section-013",
-      "section_name": "release_tail",
-      "start_s": 177.899683,
+      "section_name": "inst",
+      "start_s": 111.23,
       "end_s": 193.851791,
-      "bar_start": 96,
+      "bar_start": 61,
       "bar_end": 104,
-      "mean": 0.353729,
-      "peak": 0.511095,
-      "transient_density": 0.36874,
+      "mean": 0.373124,
+      "peak": 0.529269,
+      "transient_density": 0.379925,
       "level": "medium",
       "trend": "release"
     }
@@ -195,7 +104,7 @@
       "bar": 2,
       "beat": 4,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "id": "accent_002",
@@ -204,8 +113,8 @@
       "intensity": 0.571763,
       "bar": 9,
       "beat": 2,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_003",
@@ -214,8 +123,8 @@
       "intensity": 0.532702,
       "bar": 10,
       "beat": 2,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_004",
@@ -224,8 +133,8 @@
       "intensity": 0.581071,
       "bar": 10,
       "beat": 4,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_005",
@@ -234,8 +143,8 @@
       "intensity": 0.525337,
       "bar": 11,
       "beat": 2,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_006",
@@ -244,8 +153,8 @@
       "intensity": 0.522516,
       "bar": 12,
       "beat": 2,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_007",
@@ -254,8 +163,8 @@
       "intensity": 0.535595,
       "bar": 13,
       "beat": 4,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_008",
@@ -264,8 +173,8 @@
       "intensity": 0.586058,
       "bar": 14,
       "beat": 4,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_009",
@@ -274,8 +183,8 @@
       "intensity": 0.53339,
       "bar": 15,
       "beat": 3,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_010",
@@ -284,8 +193,8 @@
       "intensity": 0.542886,
       "bar": 16,
       "beat": 2,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_011",
@@ -294,8 +203,8 @@
       "intensity": 0.563416,
       "bar": 44,
       "beat": 3,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau"
+      "section_id": "section-003",
+      "section_name": "inst"
     },
     {
       "id": "accent_012",
@@ -304,8 +213,8 @@
       "intensity": 0.551186,
       "bar": 56,
       "beat": 3,
-      "section_id": "section-006",
-      "section_name": "momentum_lift"
+      "section_id": "section-005",
+      "section_name": "chorus"
     },
     {
       "id": "accent_013",
@@ -314,8 +223,8 @@
       "intensity": 0.576511,
       "bar": 57,
       "beat": 2,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "section_id": "section-005",
+      "section_name": "chorus"
     },
     {
       "id": "accent_014",
@@ -324,8 +233,8 @@
       "intensity": 0.555786,
       "bar": 57,
       "beat": 4,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "section_id": "section-005",
+      "section_name": "chorus"
     },
     {
       "id": "accent_015",
@@ -334,8 +243,8 @@
       "intensity": 0.580614,
       "bar": 58,
       "beat": 3,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "section_id": "section-005",
+      "section_name": "chorus"
     },
     {
       "id": "accent_016",
@@ -344,8 +253,8 @@
       "intensity": 0.54368,
       "bar": 59,
       "beat": 2,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "section_id": "section-005",
+      "section_name": "chorus"
     },
     {
       "id": "accent_017",
@@ -354,8 +263,8 @@
       "intensity": 0.537687,
       "bar": 61,
       "beat": 1,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_018",
@@ -364,8 +273,8 @@
       "intensity": 0.549555,
       "bar": 61,
       "beat": 4,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_019",
@@ -374,8 +283,8 @@
       "intensity": 0.54774,
       "bar": 62,
       "beat": 3,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_020",
@@ -384,8 +293,8 @@
       "intensity": 0.539148,
       "bar": 66,
       "beat": 1,
-      "section_id": "section-008",
-      "section_name": "groove_plateau"
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_021",
@@ -394,8 +303,8 @@
       "intensity": 0.559741,
       "bar": 66,
       "beat": 3,
-      "section_id": "section-008",
-      "section_name": "groove_plateau"
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_022",
@@ -404,8 +313,8 @@
       "intensity": 0.565852,
       "bar": 67,
       "beat": 4,
-      "section_id": "section-008",
-      "section_name": "groove_plateau"
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_023",
@@ -414,8 +323,8 @@
       "intensity": 0.526275,
       "bar": 76,
       "beat": 3,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau"
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_024",
@@ -424,8 +333,8 @@
       "intensity": 0.523457,
       "bar": 77,
       "beat": 2,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau"
+      "section_id": "section-006",
+      "section_name": "inst"
     }
   ],
   "beat_energy": [
@@ -440,7 +349,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.406288,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -454,7 +363,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.481012,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -468,7 +377,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.346005,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -482,7 +391,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.278537,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -496,7 +405,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.27244,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -510,7 +419,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.254457,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -524,7 +433,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.363032,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -538,7 +447,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.506941,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -552,7 +461,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.255401,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -566,7 +475,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.252816,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -580,7 +489,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.264408,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -594,7 +503,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.256441,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -608,7 +517,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.25468,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -622,7 +531,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.271523,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -636,7 +545,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.3494,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -650,7 +559,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.453429,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -664,7 +573,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.292369,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -678,7 +587,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.285445,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -692,7 +601,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.285716,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -706,7 +615,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.277169,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -720,7 +629,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.285446,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -734,7 +643,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.303969,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -748,7 +657,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.326188,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -762,7 +671,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.372417,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -776,7 +685,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.442377,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -790,7 +699,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.474266,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -804,7 +713,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.493482,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -818,7 +727,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.442191,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -832,7 +741,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.373954,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -846,7 +755,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.429072,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -860,7 +769,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.395402,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -874,7 +783,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.386541,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -887,8 +796,8 @@
       "bar": 9,
       "beat_in_bar": 1,
       "energy_score": 0.464552,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -901,8 +810,8 @@
       "bar": 9,
       "beat_in_bar": 2,
       "energy_score": 0.534452,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -915,8 +824,8 @@
       "bar": 9,
       "beat_in_bar": 3,
       "energy_score": 0.50806,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -929,8 +838,8 @@
       "bar": 9,
       "beat_in_bar": 4,
       "energy_score": 0.500275,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -943,8 +852,8 @@
       "bar": 10,
       "beat_in_bar": 1,
       "energy_score": 0.494823,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -957,8 +866,8 @@
       "bar": 10,
       "beat_in_bar": 2,
       "energy_score": 0.500663,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -971,8 +880,8 @@
       "bar": 10,
       "beat_in_bar": 3,
       "energy_score": 0.502605,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -985,8 +894,8 @@
       "bar": 10,
       "beat_in_bar": 4,
       "energy_score": 0.549511,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -999,8 +908,8 @@
       "bar": 11,
       "beat_in_bar": 1,
       "energy_score": 0.460563,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1013,8 +922,8 @@
       "bar": 11,
       "beat_in_bar": 2,
       "energy_score": 0.491822,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1027,8 +936,8 @@
       "bar": 11,
       "beat_in_bar": 3,
       "energy_score": 0.49134,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1041,8 +950,8 @@
       "bar": 11,
       "beat_in_bar": 4,
       "energy_score": 0.483101,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1055,8 +964,8 @@
       "bar": 12,
       "beat_in_bar": 1,
       "energy_score": 0.484009,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1069,8 +978,8 @@
       "bar": 12,
       "beat_in_bar": 2,
       "energy_score": 0.48993,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1083,8 +992,8 @@
       "bar": 12,
       "beat_in_bar": 3,
       "energy_score": 0.471914,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1097,8 +1006,8 @@
       "bar": 12,
       "beat_in_bar": 4,
       "energy_score": 0.426617,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -1111,8 +1020,8 @@
       "bar": 13,
       "beat_in_bar": 1,
       "energy_score": 0.420861,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -1125,8 +1034,8 @@
       "bar": 13,
       "beat_in_bar": 2,
       "energy_score": 0.470673,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1139,8 +1048,8 @@
       "bar": 13,
       "beat_in_bar": 3,
       "energy_score": 0.481766,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1153,8 +1062,8 @@
       "bar": 13,
       "beat_in_bar": 4,
       "energy_score": 0.502485,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1167,8 +1076,8 @@
       "bar": 14,
       "beat_in_bar": 1,
       "energy_score": 0.481397,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1181,8 +1090,8 @@
       "bar": 14,
       "beat_in_bar": 2,
       "energy_score": 0.48096,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1195,8 +1104,8 @@
       "bar": 14,
       "beat_in_bar": 3,
       "energy_score": 0.496567,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1209,8 +1118,8 @@
       "bar": 14,
       "beat_in_bar": 4,
       "energy_score": 0.553184,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1223,8 +1132,8 @@
       "bar": 15,
       "beat_in_bar": 1,
       "energy_score": 0.483491,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1237,8 +1146,8 @@
       "bar": 15,
       "beat_in_bar": 2,
       "energy_score": 0.47999,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1251,8 +1160,8 @@
       "bar": 15,
       "beat_in_bar": 3,
       "energy_score": 0.498862,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1265,8 +1174,8 @@
       "bar": 15,
       "beat_in_bar": 4,
       "energy_score": 0.497691,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1279,8 +1188,8 @@
       "bar": 16,
       "beat_in_bar": 1,
       "energy_score": 0.492641,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1293,8 +1202,8 @@
       "bar": 16,
       "beat_in_bar": 2,
       "energy_score": 0.508463,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1307,8 +1216,8 @@
       "bar": 16,
       "beat_in_bar": 3,
       "energy_score": 0.497636,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1321,8 +1230,8 @@
       "bar": 16,
       "beat_in_bar": 4,
       "energy_score": 0.432188,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1336,7 +1245,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.437068,
       "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1349,8 +1258,8 @@
       "bar": 17,
       "beat_in_bar": 2,
       "energy_score": 0.492839,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1363,8 +1272,8 @@
       "bar": 17,
       "beat_in_bar": 3,
       "energy_score": 0.416082,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1377,8 +1286,8 @@
       "bar": 17,
       "beat_in_bar": 4,
       "energy_score": 0.367632,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1391,8 +1300,8 @@
       "bar": 18,
       "beat_in_bar": 1,
       "energy_score": 0.46598,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1405,8 +1314,8 @@
       "bar": 18,
       "beat_in_bar": 2,
       "energy_score": 0.453785,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1419,8 +1328,8 @@
       "bar": 18,
       "beat_in_bar": 3,
       "energy_score": 0.374404,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1433,8 +1342,8 @@
       "bar": 18,
       "beat_in_bar": 4,
       "energy_score": 0.437937,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1447,8 +1356,8 @@
       "bar": 19,
       "beat_in_bar": 1,
       "energy_score": 0.403529,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1461,8 +1370,8 @@
       "bar": 19,
       "beat_in_bar": 2,
       "energy_score": 0.438636,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1475,8 +1384,8 @@
       "bar": 19,
       "beat_in_bar": 3,
       "energy_score": 0.41894,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1489,8 +1398,8 @@
       "bar": 19,
       "beat_in_bar": 4,
       "energy_score": 0.409781,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1503,8 +1412,8 @@
       "bar": 20,
       "beat_in_bar": 1,
       "energy_score": 0.442352,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1517,8 +1426,8 @@
       "bar": 20,
       "beat_in_bar": 2,
       "energy_score": 0.422429,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1531,8 +1440,8 @@
       "bar": 20,
       "beat_in_bar": 3,
       "energy_score": 0.356451,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1545,8 +1454,8 @@
       "bar": 20,
       "beat_in_bar": 4,
       "energy_score": 0.382054,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1559,8 +1468,8 @@
       "bar": 21,
       "beat_in_bar": 1,
       "energy_score": 0.389464,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1573,8 +1482,8 @@
       "bar": 21,
       "beat_in_bar": 2,
       "energy_score": 0.41738,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1587,8 +1496,8 @@
       "bar": 21,
       "beat_in_bar": 3,
       "energy_score": 0.323364,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "low"
     },
     {
@@ -1601,8 +1510,8 @@
       "bar": 21,
       "beat_in_bar": 4,
       "energy_score": 0.340931,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "low"
     },
     {
@@ -1615,8 +1524,8 @@
       "bar": 22,
       "beat_in_bar": 1,
       "energy_score": 0.430595,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1629,8 +1538,8 @@
       "bar": 22,
       "beat_in_bar": 2,
       "energy_score": 0.4349,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1643,8 +1552,8 @@
       "bar": 22,
       "beat_in_bar": 3,
       "energy_score": 0.370881,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1657,8 +1566,8 @@
       "bar": 22,
       "beat_in_bar": 4,
       "energy_score": 0.399369,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1671,8 +1580,8 @@
       "bar": 23,
       "beat_in_bar": 1,
       "energy_score": 0.383897,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1685,8 +1594,8 @@
       "bar": 23,
       "beat_in_bar": 2,
       "energy_score": 0.394802,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1699,8 +1608,8 @@
       "bar": 23,
       "beat_in_bar": 3,
       "energy_score": 0.357409,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1713,8 +1622,8 @@
       "bar": 23,
       "beat_in_bar": 4,
       "energy_score": 0.354775,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1727,8 +1636,8 @@
       "bar": 24,
       "beat_in_bar": 1,
       "energy_score": 0.400212,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1741,8 +1650,8 @@
       "bar": 24,
       "beat_in_bar": 2,
       "energy_score": 0.413325,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1755,8 +1664,8 @@
       "bar": 24,
       "beat_in_bar": 3,
       "energy_score": 0.396095,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1769,8 +1678,8 @@
       "bar": 24,
       "beat_in_bar": 4,
       "energy_score": 0.451958,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1784,7 +1693,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.414849,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1798,7 +1707,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.459575,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -1812,7 +1721,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.438808,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -1826,7 +1735,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.331631,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -1840,7 +1749,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.35887,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1854,7 +1763,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.350455,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1868,7 +1777,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.363975,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1882,7 +1791,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.335514,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -1896,7 +1805,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.43962,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -1910,7 +1819,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.410865,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1924,7 +1833,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.373635,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1938,7 +1847,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.361513,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1952,7 +1861,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.387127,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1966,7 +1875,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.376092,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1980,7 +1889,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.422754,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1994,7 +1903,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.48356,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2008,7 +1917,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.494962,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2022,7 +1931,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.456876,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2036,7 +1945,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.403978,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2050,7 +1959,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.36581,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2064,7 +1973,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.361866,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2078,7 +1987,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.394131,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2092,7 +2001,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.411547,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2106,7 +2015,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.345743,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2120,7 +2029,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.246838,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2134,7 +2043,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.239939,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2148,7 +2057,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.240927,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2162,7 +2071,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.202427,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2176,7 +2085,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.179891,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2190,7 +2099,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.215898,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2204,7 +2113,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.258595,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2218,7 +2127,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.240977,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2231,8 +2140,8 @@
       "bar": 33,
       "beat_in_bar": 1,
       "energy_score": 0.25756,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2245,8 +2154,8 @@
       "bar": 33,
       "beat_in_bar": 2,
       "energy_score": 0.248275,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2259,8 +2168,8 @@
       "bar": 33,
       "beat_in_bar": 3,
       "energy_score": 0.221772,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2273,8 +2182,8 @@
       "bar": 33,
       "beat_in_bar": 4,
       "energy_score": 0.266721,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2287,8 +2196,8 @@
       "bar": 34,
       "beat_in_bar": 1,
       "energy_score": 0.236484,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2301,8 +2210,8 @@
       "bar": 34,
       "beat_in_bar": 2,
       "energy_score": 0.246632,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2315,8 +2224,8 @@
       "bar": 34,
       "beat_in_bar": 3,
       "energy_score": 0.219132,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2329,8 +2238,8 @@
       "bar": 34,
       "beat_in_bar": 4,
       "energy_score": 0.291423,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2343,8 +2252,8 @@
       "bar": 35,
       "beat_in_bar": 1,
       "energy_score": 0.257929,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2357,8 +2266,8 @@
       "bar": 35,
       "beat_in_bar": 2,
       "energy_score": 0.251209,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2371,8 +2280,8 @@
       "bar": 35,
       "beat_in_bar": 3,
       "energy_score": 0.223052,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2385,8 +2294,8 @@
       "bar": 35,
       "beat_in_bar": 4,
       "energy_score": 0.278716,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2399,8 +2308,8 @@
       "bar": 36,
       "beat_in_bar": 1,
       "energy_score": 0.228322,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2413,8 +2322,8 @@
       "bar": 36,
       "beat_in_bar": 2,
       "energy_score": 0.249262,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2427,8 +2336,8 @@
       "bar": 36,
       "beat_in_bar": 3,
       "energy_score": 0.302708,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2441,8 +2350,8 @@
       "bar": 36,
       "beat_in_bar": 4,
       "energy_score": 0.362797,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2455,8 +2364,8 @@
       "bar": 37,
       "beat_in_bar": 1,
       "energy_score": 0.313925,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2469,8 +2378,8 @@
       "bar": 37,
       "beat_in_bar": 2,
       "energy_score": 0.308372,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2483,8 +2392,8 @@
       "bar": 37,
       "beat_in_bar": 3,
       "energy_score": 0.285359,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2497,8 +2406,8 @@
       "bar": 37,
       "beat_in_bar": 4,
       "energy_score": 0.327454,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2511,8 +2420,8 @@
       "bar": 38,
       "beat_in_bar": 1,
       "energy_score": 0.323933,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2525,8 +2434,8 @@
       "bar": 38,
       "beat_in_bar": 2,
       "energy_score": 0.30492,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2539,8 +2448,8 @@
       "bar": 38,
       "beat_in_bar": 3,
       "energy_score": 0.274998,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2553,8 +2462,8 @@
       "bar": 38,
       "beat_in_bar": 4,
       "energy_score": 0.352408,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2567,8 +2476,8 @@
       "bar": 39,
       "beat_in_bar": 1,
       "energy_score": 0.336868,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2581,8 +2490,8 @@
       "bar": 39,
       "beat_in_bar": 2,
       "energy_score": 0.305896,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2595,8 +2504,8 @@
       "bar": 39,
       "beat_in_bar": 3,
       "energy_score": 0.29183,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2609,8 +2518,8 @@
       "bar": 39,
       "beat_in_bar": 4,
       "energy_score": 0.343278,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2623,8 +2532,8 @@
       "bar": 40,
       "beat_in_bar": 1,
       "energy_score": 0.312198,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2637,8 +2546,8 @@
       "bar": 40,
       "beat_in_bar": 2,
       "energy_score": 0.332896,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2651,8 +2560,8 @@
       "bar": 40,
       "beat_in_bar": 3,
       "energy_score": 0.386514,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2665,8 +2574,8 @@
       "bar": 40,
       "beat_in_bar": 4,
       "energy_score": 0.392302,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2679,8 +2588,8 @@
       "bar": 41,
       "beat_in_bar": 1,
       "energy_score": 0.37124,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2693,8 +2602,8 @@
       "bar": 41,
       "beat_in_bar": 2,
       "energy_score": 0.341255,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2707,8 +2616,8 @@
       "bar": 41,
       "beat_in_bar": 3,
       "energy_score": 0.323717,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2721,8 +2630,8 @@
       "bar": 41,
       "beat_in_bar": 4,
       "energy_score": 0.361723,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2735,8 +2644,8 @@
       "bar": 42,
       "beat_in_bar": 1,
       "energy_score": 0.348364,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2749,8 +2658,8 @@
       "bar": 42,
       "beat_in_bar": 2,
       "energy_score": 0.331055,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2763,8 +2672,8 @@
       "bar": 42,
       "beat_in_bar": 3,
       "energy_score": 0.318076,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2777,8 +2686,8 @@
       "bar": 42,
       "beat_in_bar": 4,
       "energy_score": 0.382876,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2791,8 +2700,8 @@
       "bar": 43,
       "beat_in_bar": 1,
       "energy_score": 0.359067,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2805,8 +2714,8 @@
       "bar": 43,
       "beat_in_bar": 2,
       "energy_score": 0.337838,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2819,8 +2728,8 @@
       "bar": 43,
       "beat_in_bar": 3,
       "energy_score": 0.346743,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2833,8 +2742,8 @@
       "bar": 43,
       "beat_in_bar": 4,
       "energy_score": 0.458969,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2847,8 +2756,8 @@
       "bar": 44,
       "beat_in_bar": 1,
       "energy_score": 0.441066,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2861,8 +2770,8 @@
       "bar": 44,
       "beat_in_bar": 2,
       "energy_score": 0.482409,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2875,8 +2784,8 @@
       "bar": 44,
       "beat_in_bar": 3,
       "energy_score": 0.523656,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2889,8 +2798,8 @@
       "bar": 44,
       "beat_in_bar": 4,
       "energy_score": 0.469585,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2903,8 +2812,8 @@
       "bar": 45,
       "beat_in_bar": 1,
       "energy_score": 0.463255,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -2917,8 +2826,8 @@
       "bar": 45,
       "beat_in_bar": 2,
       "energy_score": 0.421758,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -2931,8 +2840,8 @@
       "bar": 45,
       "beat_in_bar": 3,
       "energy_score": 0.444033,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -2945,8 +2854,8 @@
       "bar": 45,
       "beat_in_bar": 4,
       "energy_score": 0.42094,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -2959,8 +2868,8 @@
       "bar": 46,
       "beat_in_bar": 1,
       "energy_score": 0.415924,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -2973,8 +2882,8 @@
       "bar": 46,
       "beat_in_bar": 2,
       "energy_score": 0.395976,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -2987,8 +2896,8 @@
       "bar": 46,
       "beat_in_bar": 3,
       "energy_score": 0.360032,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3001,8 +2910,8 @@
       "bar": 46,
       "beat_in_bar": 4,
       "energy_score": 0.336017,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "low"
     },
     {
@@ -3015,8 +2924,8 @@
       "bar": 47,
       "beat_in_bar": 1,
       "energy_score": 0.392111,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3029,8 +2938,8 @@
       "bar": 47,
       "beat_in_bar": 2,
       "energy_score": 0.391881,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3043,8 +2952,8 @@
       "bar": 47,
       "beat_in_bar": 3,
       "energy_score": 0.402268,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3057,8 +2966,8 @@
       "bar": 47,
       "beat_in_bar": 4,
       "energy_score": 0.378877,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3071,8 +2980,8 @@
       "bar": 48,
       "beat_in_bar": 1,
       "energy_score": 0.394809,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3085,8 +2994,8 @@
       "bar": 48,
       "beat_in_bar": 2,
       "energy_score": 0.387513,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3099,8 +3008,8 @@
       "bar": 48,
       "beat_in_bar": 3,
       "energy_score": 0.342601,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "low"
     },
     {
@@ -3113,8 +3022,8 @@
       "bar": 48,
       "beat_in_bar": 4,
       "energy_score": 0.349138,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3127,8 +3036,8 @@
       "bar": 49,
       "beat_in_bar": 1,
       "energy_score": 0.403609,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3141,8 +3050,8 @@
       "bar": 49,
       "beat_in_bar": 2,
       "energy_score": 0.400788,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3155,8 +3064,8 @@
       "bar": 49,
       "beat_in_bar": 3,
       "energy_score": 0.429861,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3169,8 +3078,8 @@
       "bar": 49,
       "beat_in_bar": 4,
       "energy_score": 0.418494,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3183,8 +3092,8 @@
       "bar": 50,
       "beat_in_bar": 1,
       "energy_score": 0.41931,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3197,8 +3106,8 @@
       "bar": 50,
       "beat_in_bar": 2,
       "energy_score": 0.406249,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3211,8 +3120,8 @@
       "bar": 50,
       "beat_in_bar": 3,
       "energy_score": 0.349683,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3225,8 +3134,8 @@
       "bar": 50,
       "beat_in_bar": 4,
       "energy_score": 0.385841,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3239,8 +3148,8 @@
       "bar": 51,
       "beat_in_bar": 1,
       "energy_score": 0.389609,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3253,8 +3162,8 @@
       "bar": 51,
       "beat_in_bar": 2,
       "energy_score": 0.420458,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3267,8 +3176,8 @@
       "bar": 51,
       "beat_in_bar": 3,
       "energy_score": 0.453702,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3281,8 +3190,8 @@
       "bar": 51,
       "beat_in_bar": 4,
       "energy_score": 0.429326,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3295,8 +3204,8 @@
       "bar": 52,
       "beat_in_bar": 1,
       "energy_score": 0.430375,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3309,8 +3218,8 @@
       "bar": 52,
       "beat_in_bar": 2,
       "energy_score": 0.452273,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3323,8 +3232,8 @@
       "bar": 52,
       "beat_in_bar": 3,
       "energy_score": 0.473039,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3337,8 +3246,8 @@
       "bar": 52,
       "beat_in_bar": 4,
       "energy_score": 0.475149,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3351,8 +3260,8 @@
       "bar": 53,
       "beat_in_bar": 1,
       "energy_score": 0.477192,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3365,8 +3274,8 @@
       "bar": 53,
       "beat_in_bar": 2,
       "energy_score": 0.471737,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3379,8 +3288,8 @@
       "bar": 53,
       "beat_in_bar": 3,
       "energy_score": 0.467489,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3393,8 +3302,8 @@
       "bar": 53,
       "beat_in_bar": 4,
       "energy_score": 0.452811,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3407,8 +3316,8 @@
       "bar": 54,
       "beat_in_bar": 1,
       "energy_score": 0.471091,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3421,8 +3330,8 @@
       "bar": 54,
       "beat_in_bar": 2,
       "energy_score": 0.478918,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3435,8 +3344,8 @@
       "bar": 54,
       "beat_in_bar": 3,
       "energy_score": 0.503134,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3449,8 +3358,8 @@
       "bar": 54,
       "beat_in_bar": 4,
       "energy_score": 0.466638,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3463,8 +3372,8 @@
       "bar": 55,
       "beat_in_bar": 1,
       "energy_score": 0.465504,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3477,8 +3386,8 @@
       "bar": 55,
       "beat_in_bar": 2,
       "energy_score": 0.491329,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3491,8 +3400,8 @@
       "bar": 55,
       "beat_in_bar": 3,
       "energy_score": 0.490139,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3505,8 +3414,8 @@
       "bar": 55,
       "beat_in_bar": 4,
       "energy_score": 0.495467,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3519,8 +3428,8 @@
       "bar": 56,
       "beat_in_bar": 1,
       "energy_score": 0.491976,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3533,8 +3442,8 @@
       "bar": 56,
       "beat_in_bar": 2,
       "energy_score": 0.467903,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3547,8 +3456,8 @@
       "bar": 56,
       "beat_in_bar": 3,
       "energy_score": 0.533394,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3561,8 +3470,8 @@
       "bar": 56,
       "beat_in_bar": 4,
       "energy_score": 0.523389,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3575,8 +3484,8 @@
       "bar": 57,
       "beat_in_bar": 1,
       "energy_score": 0.520628,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3589,8 +3498,8 @@
       "bar": 57,
       "beat_in_bar": 2,
       "energy_score": 0.553565,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3603,8 +3512,8 @@
       "bar": 57,
       "beat_in_bar": 3,
       "energy_score": 0.532247,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3617,8 +3526,8 @@
       "bar": 57,
       "beat_in_bar": 4,
       "energy_score": 0.536386,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3631,8 +3540,8 @@
       "bar": 58,
       "beat_in_bar": 1,
       "energy_score": 0.529626,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3645,8 +3554,8 @@
       "bar": 58,
       "beat_in_bar": 2,
       "energy_score": 0.530713,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3659,8 +3568,8 @@
       "bar": 58,
       "beat_in_bar": 3,
       "energy_score": 0.550183,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3673,8 +3582,8 @@
       "bar": 58,
       "beat_in_bar": 4,
       "energy_score": 0.47324,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3687,8 +3596,8 @@
       "bar": 59,
       "beat_in_bar": 1,
       "energy_score": 0.473102,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3701,8 +3610,8 @@
       "bar": 59,
       "beat_in_bar": 2,
       "energy_score": 0.517109,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3715,8 +3624,8 @@
       "bar": 59,
       "beat_in_bar": 3,
       "energy_score": 0.509965,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3729,8 +3638,8 @@
       "bar": 59,
       "beat_in_bar": 4,
       "energy_score": 0.340971,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "low"
     },
     {
@@ -3743,8 +3652,8 @@
       "bar": 60,
       "beat_in_bar": 1,
       "energy_score": 0.39324,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "medium"
     },
     {
@@ -3757,8 +3666,8 @@
       "bar": 60,
       "beat_in_bar": 2,
       "energy_score": 0.359886,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "medium"
     },
     {
@@ -3771,8 +3680,8 @@
       "bar": 60,
       "beat_in_bar": 3,
       "energy_score": 0.475037,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3785,8 +3694,8 @@
       "bar": 60,
       "beat_in_bar": 4,
       "energy_score": 0.439322,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3799,8 +3708,8 @@
       "bar": 61,
       "beat_in_bar": 1,
       "energy_score": 0.508221,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3813,8 +3722,8 @@
       "bar": 61,
       "beat_in_bar": 2,
       "energy_score": 0.461279,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3827,8 +3736,8 @@
       "bar": 61,
       "beat_in_bar": 3,
       "energy_score": 0.50343,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3841,8 +3750,8 @@
       "bar": 61,
       "beat_in_bar": 4,
       "energy_score": 0.513022,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3855,8 +3764,8 @@
       "bar": 62,
       "beat_in_bar": 1,
       "energy_score": 0.490262,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3869,8 +3778,8 @@
       "bar": 62,
       "beat_in_bar": 2,
       "energy_score": 0.467122,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3883,8 +3792,8 @@
       "bar": 62,
       "beat_in_bar": 3,
       "energy_score": 0.520128,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3897,8 +3806,8 @@
       "bar": 62,
       "beat_in_bar": 4,
       "energy_score": 0.423015,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -3911,8 +3820,8 @@
       "bar": 63,
       "beat_in_bar": 1,
       "energy_score": 0.455753,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3925,8 +3834,8 @@
       "bar": 63,
       "beat_in_bar": 2,
       "energy_score": 0.427101,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -3939,8 +3848,8 @@
       "bar": 63,
       "beat_in_bar": 3,
       "energy_score": 0.485995,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3953,8 +3862,8 @@
       "bar": 63,
       "beat_in_bar": 4,
       "energy_score": 0.473851,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3967,8 +3876,8 @@
       "bar": 64,
       "beat_in_bar": 1,
       "energy_score": 0.462061,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3981,8 +3890,8 @@
       "bar": 64,
       "beat_in_bar": 2,
       "energy_score": 0.440539,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3995,8 +3904,8 @@
       "bar": 64,
       "beat_in_bar": 3,
       "energy_score": 0.383654,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4009,8 +3918,8 @@
       "bar": 64,
       "beat_in_bar": 4,
       "energy_score": 0.424403,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4023,8 +3932,8 @@
       "bar": 65,
       "beat_in_bar": 1,
       "energy_score": 0.485555,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4037,8 +3946,8 @@
       "bar": 65,
       "beat_in_bar": 2,
       "energy_score": 0.471602,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4051,8 +3960,8 @@
       "bar": 65,
       "beat_in_bar": 3,
       "energy_score": 0.490304,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4065,8 +3974,8 @@
       "bar": 65,
       "beat_in_bar": 4,
       "energy_score": 0.502211,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4079,8 +3988,8 @@
       "bar": 66,
       "beat_in_bar": 1,
       "energy_score": 0.507154,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4093,8 +4002,8 @@
       "bar": 66,
       "beat_in_bar": 2,
       "energy_score": 0.491838,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4107,8 +4016,8 @@
       "bar": 66,
       "beat_in_bar": 3,
       "energy_score": 0.529269,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4121,8 +4030,8 @@
       "bar": 66,
       "beat_in_bar": 4,
       "energy_score": 0.435814,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4135,8 +4044,8 @@
       "bar": 67,
       "beat_in_bar": 1,
       "energy_score": 0.457634,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4149,8 +4058,8 @@
       "bar": 67,
       "beat_in_bar": 2,
       "energy_score": 0.430079,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4163,8 +4072,8 @@
       "bar": 67,
       "beat_in_bar": 3,
       "energy_score": 0.480158,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4177,8 +4086,8 @@
       "bar": 67,
       "beat_in_bar": 4,
       "energy_score": 0.527151,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4191,8 +4100,8 @@
       "bar": 68,
       "beat_in_bar": 1,
       "energy_score": 0.495557,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4205,8 +4114,8 @@
       "bar": 68,
       "beat_in_bar": 2,
       "energy_score": 0.45953,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4219,8 +4128,8 @@
       "bar": 68,
       "beat_in_bar": 3,
       "energy_score": 0.418207,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4233,8 +4142,8 @@
       "bar": 68,
       "beat_in_bar": 4,
       "energy_score": 0.436959,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4247,8 +4156,8 @@
       "bar": 69,
       "beat_in_bar": 1,
       "energy_score": 0.347221,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4261,8 +4170,8 @@
       "bar": 69,
       "beat_in_bar": 2,
       "energy_score": 0.299915,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4275,8 +4184,8 @@
       "bar": 69,
       "beat_in_bar": 3,
       "energy_score": 0.337463,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4289,8 +4198,8 @@
       "bar": 69,
       "beat_in_bar": 4,
       "energy_score": 0.43827,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4303,8 +4212,8 @@
       "bar": 70,
       "beat_in_bar": 1,
       "energy_score": 0.403777,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4317,8 +4226,8 @@
       "bar": 70,
       "beat_in_bar": 2,
       "energy_score": 0.344089,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4331,8 +4240,8 @@
       "bar": 70,
       "beat_in_bar": 3,
       "energy_score": 0.418942,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4345,8 +4254,8 @@
       "bar": 70,
       "beat_in_bar": 4,
       "energy_score": 0.382574,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4359,8 +4268,8 @@
       "bar": 71,
       "beat_in_bar": 1,
       "energy_score": 0.372399,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4373,8 +4282,8 @@
       "bar": 71,
       "beat_in_bar": 2,
       "energy_score": 0.387839,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4387,8 +4296,8 @@
       "bar": 71,
       "beat_in_bar": 3,
       "energy_score": 0.382186,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4401,8 +4310,8 @@
       "bar": 71,
       "beat_in_bar": 4,
       "energy_score": 0.438696,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4415,8 +4324,8 @@
       "bar": 72,
       "beat_in_bar": 1,
       "energy_score": 0.341987,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4429,8 +4338,8 @@
       "bar": 72,
       "beat_in_bar": 2,
       "energy_score": 0.316942,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4443,8 +4352,8 @@
       "bar": 72,
       "beat_in_bar": 3,
       "energy_score": 0.34337,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4457,8 +4366,8 @@
       "bar": 72,
       "beat_in_bar": 4,
       "energy_score": 0.387062,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4471,8 +4380,8 @@
       "bar": 73,
       "beat_in_bar": 1,
       "energy_score": 0.351808,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4485,8 +4394,8 @@
       "bar": 73,
       "beat_in_bar": 2,
       "energy_score": 0.363702,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4499,8 +4408,8 @@
       "bar": 73,
       "beat_in_bar": 3,
       "energy_score": 0.339097,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4513,8 +4422,8 @@
       "bar": 73,
       "beat_in_bar": 4,
       "energy_score": 0.400423,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4527,8 +4436,8 @@
       "bar": 74,
       "beat_in_bar": 1,
       "energy_score": 0.372293,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4541,8 +4450,8 @@
       "bar": 74,
       "beat_in_bar": 2,
       "energy_score": 0.387729,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4555,8 +4464,8 @@
       "bar": 74,
       "beat_in_bar": 3,
       "energy_score": 0.394323,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4569,8 +4478,8 @@
       "bar": 74,
       "beat_in_bar": 4,
       "energy_score": 0.372746,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4583,8 +4492,8 @@
       "bar": 75,
       "beat_in_bar": 1,
       "energy_score": 0.390694,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4597,8 +4506,8 @@
       "bar": 75,
       "beat_in_bar": 2,
       "energy_score": 0.391656,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4611,8 +4520,8 @@
       "bar": 75,
       "beat_in_bar": 3,
       "energy_score": 0.394506,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4625,8 +4534,8 @@
       "bar": 75,
       "beat_in_bar": 4,
       "energy_score": 0.409698,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4639,8 +4548,8 @@
       "bar": 76,
       "beat_in_bar": 1,
       "energy_score": 0.40601,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4653,8 +4562,8 @@
       "bar": 76,
       "beat_in_bar": 2,
       "energy_score": 0.434413,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4667,8 +4576,8 @@
       "bar": 76,
       "beat_in_bar": 3,
       "energy_score": 0.499978,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4681,8 +4590,8 @@
       "bar": 76,
       "beat_in_bar": 4,
       "energy_score": 0.458559,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4695,8 +4604,8 @@
       "bar": 77,
       "beat_in_bar": 1,
       "energy_score": 0.481685,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4709,8 +4618,8 @@
       "bar": 77,
       "beat_in_bar": 2,
       "energy_score": 0.50095,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4723,8 +4632,8 @@
       "bar": 77,
       "beat_in_bar": 3,
       "energy_score": 0.425466,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4737,8 +4646,8 @@
       "bar": 77,
       "beat_in_bar": 4,
       "energy_score": 0.419339,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4751,8 +4660,8 @@
       "bar": 78,
       "beat_in_bar": 1,
       "energy_score": 0.41837,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4765,8 +4674,8 @@
       "bar": 78,
       "beat_in_bar": 2,
       "energy_score": 0.418299,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4779,8 +4688,8 @@
       "bar": 78,
       "beat_in_bar": 3,
       "energy_score": 0.423057,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4793,8 +4702,8 @@
       "bar": 78,
       "beat_in_bar": 4,
       "energy_score": 0.414291,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4807,8 +4716,8 @@
       "bar": 79,
       "beat_in_bar": 1,
       "energy_score": 0.415792,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4821,8 +4730,8 @@
       "bar": 79,
       "beat_in_bar": 2,
       "energy_score": 0.416462,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4835,8 +4744,8 @@
       "bar": 79,
       "beat_in_bar": 3,
       "energy_score": 0.40189,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4849,8 +4758,8 @@
       "bar": 79,
       "beat_in_bar": 4,
       "energy_score": 0.404358,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4863,8 +4772,8 @@
       "bar": 80,
       "beat_in_bar": 1,
       "energy_score": 0.410238,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4877,8 +4786,8 @@
       "bar": 80,
       "beat_in_bar": 2,
       "energy_score": 0.41019,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4891,8 +4800,8 @@
       "bar": 80,
       "beat_in_bar": 3,
       "energy_score": 0.406897,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4905,8 +4814,8 @@
       "bar": 80,
       "beat_in_bar": 4,
       "energy_score": 0.414672,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4919,8 +4828,8 @@
       "bar": 81,
       "beat_in_bar": 1,
       "energy_score": 0.395813,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4933,8 +4842,8 @@
       "bar": 81,
       "beat_in_bar": 2,
       "energy_score": 0.408546,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4947,8 +4856,8 @@
       "bar": 81,
       "beat_in_bar": 3,
       "energy_score": 0.401082,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4961,8 +4870,8 @@
       "bar": 81,
       "beat_in_bar": 4,
       "energy_score": 0.412785,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4975,8 +4884,8 @@
       "bar": 82,
       "beat_in_bar": 1,
       "energy_score": 0.400623,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4989,8 +4898,8 @@
       "bar": 82,
       "beat_in_bar": 2,
       "energy_score": 0.393174,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5003,8 +4912,8 @@
       "bar": 82,
       "beat_in_bar": 3,
       "energy_score": 0.337426,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5017,8 +4926,8 @@
       "bar": 82,
       "beat_in_bar": 4,
       "energy_score": 0.342183,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5031,8 +4940,8 @@
       "bar": 83,
       "beat_in_bar": 1,
       "energy_score": 0.350614,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5045,8 +4954,8 @@
       "bar": 83,
       "beat_in_bar": 2,
       "energy_score": 0.317547,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5059,8 +4968,8 @@
       "bar": 83,
       "beat_in_bar": 3,
       "energy_score": 0.337223,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5073,8 +4982,8 @@
       "bar": 83,
       "beat_in_bar": 4,
       "energy_score": 0.355788,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5087,8 +4996,8 @@
       "bar": 84,
       "beat_in_bar": 1,
       "energy_score": 0.334477,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5101,8 +5010,8 @@
       "bar": 84,
       "beat_in_bar": 2,
       "energy_score": 0.329726,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5115,8 +5024,8 @@
       "bar": 84,
       "beat_in_bar": 3,
       "energy_score": 0.229217,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5129,8 +5038,8 @@
       "bar": 84,
       "beat_in_bar": 4,
       "energy_score": 0.239712,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5143,8 +5052,8 @@
       "bar": 85,
       "beat_in_bar": 1,
       "energy_score": 0.222535,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5157,8 +5066,8 @@
       "bar": 85,
       "beat_in_bar": 2,
       "energy_score": 0.235539,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5171,8 +5080,8 @@
       "bar": 85,
       "beat_in_bar": 3,
       "energy_score": 0.223174,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5185,8 +5094,8 @@
       "bar": 85,
       "beat_in_bar": 4,
       "energy_score": 0.224446,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5199,8 +5108,8 @@
       "bar": 86,
       "beat_in_bar": 1,
       "energy_score": 0.216712,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5213,8 +5122,8 @@
       "bar": 86,
       "beat_in_bar": 2,
       "energy_score": 0.260589,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5227,8 +5136,8 @@
       "bar": 86,
       "beat_in_bar": 3,
       "energy_score": 0.241946,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5241,8 +5150,8 @@
       "bar": 86,
       "beat_in_bar": 4,
       "energy_score": 0.235398,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5255,8 +5164,8 @@
       "bar": 87,
       "beat_in_bar": 1,
       "energy_score": 0.223062,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5269,8 +5178,8 @@
       "bar": 87,
       "beat_in_bar": 2,
       "energy_score": 0.287281,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5283,8 +5192,8 @@
       "bar": 87,
       "beat_in_bar": 3,
       "energy_score": 0.24183,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5297,8 +5206,8 @@
       "bar": 87,
       "beat_in_bar": 4,
       "energy_score": 0.266818,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5311,8 +5220,8 @@
       "bar": 88,
       "beat_in_bar": 1,
       "energy_score": 0.307822,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5325,8 +5234,8 @@
       "bar": 88,
       "beat_in_bar": 2,
       "energy_score": 0.301293,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5339,8 +5248,8 @@
       "bar": 88,
       "beat_in_bar": 3,
       "energy_score": 0.291894,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5353,8 +5262,8 @@
       "bar": 88,
       "beat_in_bar": 4,
       "energy_score": 0.279702,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5367,8 +5276,8 @@
       "bar": 89,
       "beat_in_bar": 1,
       "energy_score": 0.29443,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5381,8 +5290,8 @@
       "bar": 89,
       "beat_in_bar": 2,
       "energy_score": 0.280644,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5395,8 +5304,8 @@
       "bar": 89,
       "beat_in_bar": 3,
       "energy_score": 0.295593,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5409,8 +5318,8 @@
       "bar": 89,
       "beat_in_bar": 4,
       "energy_score": 0.27357,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5423,8 +5332,8 @@
       "bar": 90,
       "beat_in_bar": 1,
       "energy_score": 0.284883,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5437,8 +5346,8 @@
       "bar": 90,
       "beat_in_bar": 2,
       "energy_score": 0.312177,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5451,8 +5360,8 @@
       "bar": 90,
       "beat_in_bar": 3,
       "energy_score": 0.310793,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5465,8 +5374,8 @@
       "bar": 90,
       "beat_in_bar": 4,
       "energy_score": 0.297121,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5479,8 +5388,8 @@
       "bar": 91,
       "beat_in_bar": 1,
       "energy_score": 0.30905,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5493,8 +5402,8 @@
       "bar": 91,
       "beat_in_bar": 2,
       "energy_score": 0.343069,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5507,8 +5416,8 @@
       "bar": 91,
       "beat_in_bar": 3,
       "energy_score": 0.31864,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5521,8 +5430,8 @@
       "bar": 91,
       "beat_in_bar": 4,
       "energy_score": 0.337385,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5535,8 +5444,8 @@
       "bar": 92,
       "beat_in_bar": 1,
       "energy_score": 0.396536,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5549,8 +5458,8 @@
       "bar": 92,
       "beat_in_bar": 2,
       "energy_score": 0.366451,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5563,8 +5472,8 @@
       "bar": 92,
       "beat_in_bar": 3,
       "energy_score": 0.343939,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5577,8 +5486,8 @@
       "bar": 92,
       "beat_in_bar": 4,
       "energy_score": 0.331604,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5591,8 +5500,8 @@
       "bar": 93,
       "beat_in_bar": 1,
       "energy_score": 0.334225,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5605,8 +5514,8 @@
       "bar": 93,
       "beat_in_bar": 2,
       "energy_score": 0.330252,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5619,8 +5528,8 @@
       "bar": 93,
       "beat_in_bar": 3,
       "energy_score": 0.329489,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5633,8 +5542,8 @@
       "bar": 93,
       "beat_in_bar": 4,
       "energy_score": 0.315453,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5647,8 +5556,8 @@
       "bar": 94,
       "beat_in_bar": 1,
       "energy_score": 0.324982,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5661,8 +5570,8 @@
       "bar": 94,
       "beat_in_bar": 2,
       "energy_score": 0.357165,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5675,8 +5584,8 @@
       "bar": 94,
       "beat_in_bar": 3,
       "energy_score": 0.343248,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5689,8 +5598,8 @@
       "bar": 94,
       "beat_in_bar": 4,
       "energy_score": 0.334539,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5703,8 +5612,8 @@
       "bar": 95,
       "beat_in_bar": 1,
       "energy_score": 0.364094,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5717,8 +5626,8 @@
       "bar": 95,
       "beat_in_bar": 2,
       "energy_score": 0.33202,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5731,8 +5640,8 @@
       "bar": 95,
       "beat_in_bar": 3,
       "energy_score": 0.273058,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5745,8 +5654,8 @@
       "bar": 95,
       "beat_in_bar": 4,
       "energy_score": 0.336867,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5759,8 +5668,8 @@
       "bar": 96,
       "beat_in_bar": 1,
       "energy_score": 0.320987,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5773,8 +5682,8 @@
       "bar": 96,
       "beat_in_bar": 2,
       "energy_score": 0.434294,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5787,8 +5696,8 @@
       "bar": 96,
       "beat_in_bar": 3,
       "energy_score": 0.511095,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5801,8 +5710,8 @@
       "bar": 96,
       "beat_in_bar": 4,
       "energy_score": 0.424372,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5815,8 +5724,8 @@
       "bar": 97,
       "beat_in_bar": 1,
       "energy_score": 0.318532,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5829,8 +5738,8 @@
       "bar": 97,
       "beat_in_bar": 2,
       "energy_score": 0.438555,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5843,8 +5752,8 @@
       "bar": 97,
       "beat_in_bar": 3,
       "energy_score": 0.430209,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5857,8 +5766,8 @@
       "bar": 97,
       "beat_in_bar": 4,
       "energy_score": 0.359702,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5871,8 +5780,8 @@
       "bar": 98,
       "beat_in_bar": 1,
       "energy_score": 0.449078,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5885,8 +5794,8 @@
       "bar": 98,
       "beat_in_bar": 2,
       "energy_score": 0.403135,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5899,8 +5808,8 @@
       "bar": 98,
       "beat_in_bar": 3,
       "energy_score": 0.396904,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5913,8 +5822,8 @@
       "bar": 98,
       "beat_in_bar": 4,
       "energy_score": 0.378371,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5927,8 +5836,8 @@
       "bar": 99,
       "beat_in_bar": 1,
       "energy_score": 0.384897,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5941,8 +5850,8 @@
       "bar": 99,
       "beat_in_bar": 2,
       "energy_score": 0.429767,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5955,8 +5864,8 @@
       "bar": 99,
       "beat_in_bar": 3,
       "energy_score": 0.410165,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5969,8 +5878,8 @@
       "bar": 99,
       "beat_in_bar": 4,
       "energy_score": 0.340839,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5983,8 +5892,8 @@
       "bar": 100,
       "beat_in_bar": 1,
       "energy_score": 0.388346,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5997,8 +5906,8 @@
       "bar": 100,
       "beat_in_bar": 2,
       "energy_score": 0.368215,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6011,8 +5920,8 @@
       "bar": 100,
       "beat_in_bar": 3,
       "energy_score": 0.381517,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6025,8 +5934,8 @@
       "bar": 100,
       "beat_in_bar": 4,
       "energy_score": 0.307199,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6039,8 +5948,8 @@
       "bar": 101,
       "beat_in_bar": 1,
       "energy_score": 0.341611,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6053,8 +5962,8 @@
       "bar": 101,
       "beat_in_bar": 2,
       "energy_score": 0.40802,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6067,8 +5976,8 @@
       "bar": 101,
       "beat_in_bar": 3,
       "energy_score": 0.412568,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6081,8 +5990,8 @@
       "bar": 101,
       "beat_in_bar": 4,
       "energy_score": 0.352765,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6095,8 +6004,8 @@
       "bar": 102,
       "beat_in_bar": 1,
       "energy_score": 0.378138,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6109,8 +6018,8 @@
       "bar": 102,
       "beat_in_bar": 2,
       "energy_score": 0.291248,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6123,8 +6032,8 @@
       "bar": 102,
       "beat_in_bar": 3,
       "energy_score": 0.333465,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6137,8 +6046,8 @@
       "bar": 102,
       "beat_in_bar": 4,
       "energy_score": 0.324528,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6151,8 +6060,8 @@
       "bar": 103,
       "beat_in_bar": 1,
       "energy_score": 0.333395,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6165,8 +6074,8 @@
       "bar": 103,
       "beat_in_bar": 2,
       "energy_score": 0.318845,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6179,8 +6088,8 @@
       "bar": 103,
       "beat_in_bar": 3,
       "energy_score": 0.283283,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6193,8 +6102,8 @@
       "bar": 103,
       "beat_in_bar": 4,
       "energy_score": 0.228671,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6207,8 +6116,8 @@
       "bar": 104,
       "beat_in_bar": 1,
       "energy_score": 0.195505,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6221,8 +6130,8 @@
       "bar": 104,
       "beat_in_bar": 2,
       "energy_score": 0.178425,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6235,8 +6144,8 @@
       "bar": 104,
       "beat_in_bar": 3,
       "energy_score": 0.171676,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     }
   ],

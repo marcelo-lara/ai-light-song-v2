@@ -201,17 +201,17 @@ def _classify_plateau_variant(rule_event: dict, feature_rows: list[dict], sectio
         for row in feature_rows
     ])
     onset_mean = _mean([float(row["normalized"].get("onset_density", 0.0)) for row in feature_rows])
-    section_character = str((section or {}).get("section_character") or (section or {}).get("label") or "")
+    section_function = str((section or {}).get("function") or "")
 
     scores = [
         (
             "groove_loop",
-            0.3 * bass_mean + 0.25 * energy_mean + 0.2 * onset_mean + 0.15 * min(1.0, duration / 16.0) + 0.1 * (1.0 if "groove" in section_character else 0.0),
+            0.3 * bass_mean + 0.25 * energy_mean + 0.2 * onset_mean + 0.15 * min(1.0, duration / 16.0) + 0.1 * (1.0 if "groove" in section_function else 0.0),
             "Stable bass-led pulse and sustained motion support a groove-loop interpretation.",
         ),
         (
             "atmospheric_plateau",
-            0.32 * max(0.0, 0.6 - onset_mean) + 0.22 * max(0.0, 0.55 - bass_mean) + 0.18 * max(0.0, 0.5 - energy_mean) + 0.18 * min(1.0, duration / 16.0) + 0.1 * (1.0 if "ambient" in section_character or "breath" in section_character else 0.0),
+            0.32 * max(0.0, 0.6 - onset_mean) + 0.22 * max(0.0, 0.55 - bass_mean) + 0.18 * max(0.0, 0.5 - energy_mean) + 0.18 * min(1.0, duration / 16.0) + 0.1 * (1.0 if "ambient" in section_function or "breath" in section_function else 0.0),
             "Lower-volatility texture and sustained space support an atmospheric plateau.",
         ),
         (

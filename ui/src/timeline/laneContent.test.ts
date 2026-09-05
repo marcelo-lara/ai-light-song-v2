@@ -46,24 +46,53 @@ describe("humanHintsContent", () => {
 });
 
 describe("sectionsContent", () => {
-  it("labels by form_role when present, else the projection label", () => {
+  it("renders the projected label as-is, unjoined", () => {
     const blocks = sectionsContent([
       {
+        section_id: "section-001",
         start: 0,
         end: 10,
-        label: "001 Ambient Opening (0.66)",
+        label: "001 Verse (0.66)",
         description: "x",
-        hints: [],
-        section_id: "section-001",
-        form_role: null,
-        energy_character: "low",
-        repetition_group: null,
         confidence: 0.66,
       },
     ]);
-    expect(blocks[0]!.label).toBe("001 Ambient Opening (0.66)");
+    expect(blocks[0]!.label).toBe("001 Verse (0.66)");
     expect(blocks[0]!.reference).toBe("section-001");
     expect(blocks[0]!.caption).toContain("conf 0.66");
+    expect(blocks[0]!.detail).toBe("-");
+  });
+
+  it("joins the section_segmentation artifact by section_id for the inspector's function detail", () => {
+    const blocks = sectionsContent(
+      [
+        {
+          section_id: "section-002",
+          start: 10,
+          end: 20,
+          label: "002 Chorus (0.91)",
+          description: "y",
+          confidence: 0.91,
+        },
+      ],
+      [
+        {
+          section_id: "section-002",
+          start: 10,
+          end: 20,
+          function: "chorus",
+          function_confidence: 0.91,
+          function_status: "ok",
+          same_label_as: null,
+          confidence: 0.91,
+        },
+      ],
+    );
+    const raw = blocks[0]!.raw as Record<string, unknown>;
+    expect(raw.function).toBe("chorus");
+    expect(raw.function_confidence).toBe(0.91);
+    expect(raw.function_status).toBe("ok");
+    expect(raw.same_label_as).toBeNull();
   });
 });
 

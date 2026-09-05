@@ -7,22 +7,6 @@ from analyzer.models import round_schema_float
 from analyzer.paths import SongPaths
 
 
-SECTION_DESCRIPTIONS = {
-    "ambient_opening": "Restrained opening space with low-volatility motion and room for atmosphere.",
-    "vocal_spotlight": "Voice-led section where the vocal contour carries most of the attention and motion.",
-    "vocal_lift": "Vocal-led section with stronger energy and emotional lift than a simple spotlight moment.",
-    "momentum_lift": "Energy and motion climb together into a more assertive forward push.",
-    "flowing_plateau": "Stable mid-energy passage with continuous motion but limited structural shock.",
-    "groove_plateau": "Pulse-led section with sustained rhythmic momentum and repeat-driven stability.",
-    "instrumental_bed": "Instrument-led passage where accompaniment or synth texture carries the section more than the voice.",
-    "percussion_break": "Percussion-dominant pocket with reduced harmonic or vocal material.",
-    "contrast_bridge": "Contrast-focused transition where texture or pressure shifts before the next settled state.",
-    "focal_lift": "Payoff section where energy, repetition, or phrasing converge into the strongest focal state.",
-    "breath_space": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
-    "release_tail": "Closing release state where energy tapers and the track settles out.",
-}
-
-
 def _resolve_chord_for_time(time_s: float, chord_events: list[dict]) -> str | None:
     previous_label: str | None = None
     for event in chord_events:
@@ -38,18 +22,26 @@ def _resolve_chord_for_time(time_s: float, chord_events: list[dict]) -> str | No
     return previous_label or (str(chord_events[0]["chord"]) if chord_events else None)
 
 
-def _format_section_label(
-    label: str | None,
-    section_id: str | None,
-    confidence: float | None,
-) -> str:
-    label_text = str(label).replace("_", " ").title() if label else "Unlabeled"
+def _section_index_prefix(section_id: str | None) -> str:
+    if not section_id:
+        return ""
+    match = re.search(r"(\d+)", str(section_id))
+    return f"{match.group(1)} " if match else ""
 
-    prefix = ""
-    if section_id:
-        match = re.search(r"(\d+)", str(section_id))
-        if match:
-            prefix = f"{match.group(1)} "
+
+def _format_section_label(section: dict) -> str:
+    """`<index> <Label> (<confidence>)`, e.g. `"003 Chorus (0.80)"`.
+
+    `function_status == "unknown"` means allin1's name for this section is not
+    trustworthy (constitution §2 — an honest `unknown` beats a confident wrong
+    label), so the raw, un-title-cased label token is shown with an explicit
+    `[unverified]` marker rather than a polished name that would read as
+    confident. `function_confidence` still displays — it is what made the name
+    untrustworthy in aggregate, not a claim being retracted here.
+    """
+    prefix = _section_index_prefix(section.get("section_id"))
+    function = section.get("function")
+    confidence = section.get("function_confidence")
 
     suffix = ""
     if confidence is not None:
@@ -58,12 +50,41 @@ def _format_section_label(
         except (TypeError, ValueError):
             suffix = ""
 
+    if section.get("function_status") == "unknown":
+        label_text = f"{function or 'unlabeled'} [unverified]"
+        return f"{prefix}{label_text}{suffix}"
+
+    label_text = str(function).replace("_", " ").title() if function else "Unlabeled"
     return f"{prefix}{label_text}{suffix}"
 
 
-def _section_description(section: dict) -> str:
-    key = str(section.get("section_character") or section.get("label") or "")
-    return SECTION_DESCRIPTIONS.get(key, "")
+def _ordinal(n: int) -> str:
+    if 10 <= n % 100 <= 20:
+        suffix = "th"
+    else:
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
+
+
+def _section_description(section: dict, occurrence: int) -> str:
+    """One sentence built only from this section's own measured fields — its
+    functional label, its position among same-labelled sections, its duration,
+    and `same_label_as` — never an invented mood or energy claim."""
+    function = section.get("function")
+    try:
+        duration_s = round(float(section["end"]) - float(section["start"]), 1)
+    except (TypeError, ValueError, KeyError):
+        duration_s = None
+    duration_text = f"{duration_s:.1f}s" if duration_s is not None else "of unknown length"
+
+    if not function or section.get("function_status") == "unknown":
+        return f"Unverified section, {duration_text} — allin1's label for this song is not trustworthy."
+
+    label_text = str(function).replace("_", " ")
+    ordinal = _ordinal(occurrence)
+    if section.get("same_label_as") is None:
+        return f"The {ordinal} {label_text}, {duration_text} long."
+    return f"The {ordinal} {label_text}, {duration_text} long, same label as the first {label_text}."
 
 
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
@@ -93,25 +114,23 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         }
         for beat in beat_points
     ]
-    section_rows = [
-        {
-            "section_id": section["section_id"],
-            "start": round_schema_float(float(section["start"])),
-            "end": round_schema_float(float(section["end"])),
-            "label": _format_section_label(
-                section.get("form_role") or section.get("section_character") or section.get("label"),
-                section.get("section_id"),
-                section.get("confidence"),
-            ),
-            "form_role": section.get("form_role"),
-            "energy_character": section.get("energy_character") or section.get("section_character"),
-            "repetition_group": section.get("repetition_group"),
-            "confidence": section.get("confidence"),
-            "description": _section_description(section),
-            "hints": [],
-        }
-        for section in raw_sections
-    ]
+
+    occurrence_counts: dict[str, int] = {}
+    section_rows = []
+    for section in raw_sections:
+        function = section.get("function")
+        if function:
+            occurrence_counts[function] = occurrence_counts.get(function, 0) + 1
+        section_rows.append(
+            {
+                "section_id": section["section_id"],
+                "start": round_schema_float(float(section["start"])),
+                "end": round_schema_float(float(section["end"])),
+                "label": _format_section_label(section),
+                "description": _section_description(section, occurrence_counts.get(function, 0)),
+                "confidence": section.get("confidence"),
+            }
+        )
 
     beats_output_path = paths.beats_output_path
     sections_output_path = paths.sections_output_path

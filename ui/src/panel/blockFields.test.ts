@@ -24,66 +24,118 @@ describe("formatRange", () => {
 
 describe("selectionFromSection", () => {
   const section: SectionRow = {
+    section_id: "S3",
     start: 12,
     end: 30,
-    label: "003 Momentum Lift (0.80)",
+    label: "003 Chorus (0.80)",
     description: "energy rises into the chorus",
-    hints: [],
-    section_id: "S3",
-    form_role: "chorus",
-    energy_character: "high",
-    repetition_group: "A",
     confidence: 0.8,
   };
   const block = { section } as { section: SectionRow };
 
-  it("normalises name, window, confidence, reference", () => {
+  it("normalises name, window, confidence, reference from the projected label", () => {
     const sel = selectionFromSection(block, "segments");
-    expect(sel.label).toBe("chorus");
+    expect(sel.label).toBe("Chorus");
     expect(sel.start_s).toBe(12);
     expect(sel.end_s).toBe(30);
     expect(sel.confidence).toBe(0.8);
     expect(sel.reference).toBe("S3");
     expect(sel.summary).toBe("energy rises into the chorus");
   });
-
-  it("cleans a projection label when there is no form_role", () => {
-    const sel = selectionFromSection(
-      { section: { ...section, form_role: null } } as { section: SectionRow },
-      "segments",
-    );
-    expect(sel.label).toBe("Momentum Lift");
-  });
 });
 
 describe("blockFields — segments / sections", () => {
-  const sel = selectionFromSection(
-    {
-      section: {
-        start: 12,
-        end: 30,
-        label: "Chorus",
-        description: null,
-        hints: [],
-        section_id: "S3",
-        form_role: "chorus",
-        energy_character: "high",
-        repetition_group: "A",
-        confidence: 0.812,
-      },
-    } as { section: SectionRow },
-    "segments",
-  );
-
-  it("emits the shared rows in buildSelectionFields order + lane extras", () => {
+  it("emits the shared rows in buildSelectionFields order (plain SectionRow, no join)", () => {
+    const sel = selectionFromSection(
+      {
+        section: {
+          section_id: "S3",
+          start: 12,
+          end: 30,
+          label: "003 Chorus (0.81)",
+          description: null,
+          confidence: 0.812,
+        },
+      } as { section: SectionRow },
+      "segments",
+    );
     const fields = blockFields("segments", sel);
     expect(fields[0]).toEqual({ label: "Lane", value: "Segments" });
     expect(val(fields, "Window")).toBe("0:12.0–0:30.0");
     expect(val(fields, "Confidence")).toBe("0.81");
     expect(val(fields, "Reference")).toBe("S3");
     expect(val(fields, "Section")).toBe("S3");
-    expect(val(fields, "Form role")).toBe("chorus");
-    expect(val(fields, "Repetition group")).toBe("A");
+  });
+
+  it("V7.3: shows the joined allin1 function detail by exact field name, never section_character/repetition_group", () => {
+    // The Sections sparse lane joins `artifacts/section_segmentation/sections.json`
+    // onto the block's raw payload by section_id (laneContent.ts sectionsContent).
+    const sel = {
+      laneId: "sections" as const,
+      laneLabel: "Sections",
+      label: "Chorus",
+      start_s: 12,
+      end_s: 30,
+      confidence: 0.812,
+      reference: "S3",
+      detail: null,
+      section_id: "S3",
+      created_by: null,
+      caption: "",
+      summary: null,
+      raw: {
+        section_id: "S3",
+        start: 12,
+        end: 30,
+        label: "003 Chorus (0.81)",
+        description: null,
+        confidence: 0.812,
+        function: "chorus",
+        function_confidence: 0.91,
+        function_status: "ok",
+        same_label_as: "S1",
+      },
+    };
+    const fields = blockFields("sections", sel);
+    expect(val(fields, "function")).toBe("chorus");
+    expect(val(fields, "function_confidence")).toBe("0.91");
+    expect(val(fields, "function_status")).toBe("ok");
+    expect(val(fields, "same_label_as")).toBe("S1");
+    expect(fields.some((f) => f.label === "section_character")).toBe(false);
+    expect(fields.some((f) => f.label === "repetition_group")).toBe(false);
+    expect(fields.some((f) => f.label === "Form role")).toBe(false);
+    expect(fields.some((f) => f.label === "Repetition group")).toBe(false);
+  });
+
+  it("still shows same_label_as on a section's first occurrence, where it is null", () => {
+    const sel = {
+      laneLabel: "Sections",
+      label: "Intro",
+      start_s: 0,
+      end_s: 30,
+      confidence: 0.9,
+      reference: "S1",
+      detail: null,
+      section_id: "S1",
+      created_by: null,
+      caption: "",
+      summary: null,
+      raw: {
+        section_id: "S1",
+        start: 0,
+        end: 30,
+        label: "001 Intro (0.44)",
+        description: null,
+        confidence: 0.9,
+        function: "intro",
+        function_confidence: 0.44,
+        function_status: "known",
+        same_label_as: null,
+      },
+    };
+    const fields = blockFields("sections", sel);
+    expect(fields.some((f) => f.label === "same_label_as")).toBe(true);
+    expect(val(fields, "same_label_as")).toBe("null");
   });
 });
 

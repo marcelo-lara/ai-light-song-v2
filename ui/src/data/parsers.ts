@@ -10,7 +10,6 @@ import {
   asObject,
   asString,
   booleanOr,
-  booleanOrNull,
   numberArray,
   numberOr,
   numberOrNull,
@@ -31,7 +30,6 @@ import type {
   FftBands,
   FftBand,
   FftFrame,
-  FormFamily,
   HarmonicChord,
   HarmonicLayer,
   HumanHint,
@@ -121,21 +119,11 @@ export function parseBeats(raw: unknown): Beats {
 function parseSectionRow(raw: unknown, ctx: string): SectionRow {
   const o = asObject(raw, ctx);
   return {
+    section_id: asString(o.section_id, `${ctx}.section_id`),
     start: asNumber(o.start, `${ctx}.start`),
     end: asNumber(o.end, `${ctx}.end`),
     label: asString(o.label, `${ctx}.label`),
     description: stringOrNull(o.description, `${ctx}.description`),
-    hints: Array.isArray(o.hints) ? o.hints : [],
-    section_id: stringOrNull(o.section_id, `${ctx}.section_id`),
-    form_role: stringOrNull(o.form_role, `${ctx}.form_role`),
-    energy_character: stringOrNull(
-      o.energy_character,
-      `${ctx}.energy_character`,
-    ),
-    repetition_group: stringOrNull(
-      o.repetition_group,
-      `${ctx}.repetition_group`,
-    ),
     confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
   };
 }
@@ -148,16 +136,6 @@ export function parseSectionsTopLevel(raw: unknown): SectionsTopLevel {
 
 // ---------------------------------------------------------------------------
 
-function parseFormFamily(raw: unknown, ctx: string): FormFamily {
-  const o = asObject(raw, ctx);
-  return {
-    value: asString(o.value, `${ctx}.value`),
-    confidence: numberOr(o.confidence, 0, `${ctx}.confidence`),
-    provenance: stringOr(o.provenance, "inferred", `${ctx}.provenance`),
-    evidence: objectOrNull(o.evidence, `${ctx}.evidence`),
-  };
-}
-
 function parseSegmentationSection(
   raw: unknown,
   ctx: string,
@@ -167,36 +145,17 @@ function parseSegmentationSection(
     section_id: asString(o.section_id, `${ctx}.section_id`),
     start: asNumber(o.start, `${ctx}.start`),
     end: asNumber(o.end, `${ctx}.end`),
-    label: asString(o.label, `${ctx}.label`),
+    function: stringOrNull(o.function, `${ctx}.function`),
+    function_confidence: numberOrNull(
+      o.function_confidence,
+      `${ctx}.function_confidence`,
+    ),
+    function_status: stringOrNull(
+      o.function_status,
+      `${ctx}.function_status`,
+    ),
+    same_label_as: stringOrNull(o.same_label_as, `${ctx}.same_label_as`),
     confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
-    section_character: stringOrNull(
-      o.section_character,
-      `${ctx}.section_character`,
-    ),
-    onset_anchored: booleanOrNull(o.onset_anchored, `${ctx}.onset_anchored`),
-    form_role: stringOrNull(o.form_role, `${ctx}.form_role`),
-    form_role_confidence: numberOrNull(
-      o.form_role_confidence,
-      `${ctx}.form_role_confidence`,
-    ),
-    form_role_margin: numberOrNull(
-      o.form_role_margin,
-      `${ctx}.form_role_margin`,
-    ),
-    energy_character: stringOrNull(
-      o.energy_character,
-      `${ctx}.energy_character`,
-    ),
-    repetition_group: stringOrNull(
-      o.repetition_group,
-      `${ctx}.repetition_group`,
-    ),
-    variant_of: stringOrNull(o.variant_of, `${ctx}.variant_of`),
-    similarity: numberOrNull(o.similarity, `${ctx}.similarity`),
-    confidence_terms: objectOrNull(
-      o.confidence_terms,
-      `${ctx}.confidence_terms`,
-    ),
   };
 }
 
@@ -222,10 +181,6 @@ export function parseSectionSegmentation(raw: unknown): SectionSegmentation {
   return {
     schema_version: stringOr(o.schema_version, "", "segmentation.schema_version"),
     song_name: stringOr(o.song_name, "", "segmentation.song_name"),
-    form_family:
-      o.form_family === undefined || o.form_family === null
-        ? null
-        : parseFormFamily(o.form_family, "segmentation.form_family"),
     generated_from: objectOrNull(
       o.generated_from,
       "segmentation.generated_from",

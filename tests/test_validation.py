@@ -249,9 +249,9 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             )
             sections = {
                 "sections": [
-                    {"section_id": "section-001", "start": 0.0, "end": 5.0, "label": "opening"},
-                    {"section_id": "section-002", "start": 5.0, "end": 9.0, "label": "lift"},
-                    {"section_id": "section-003", "start": 9.0, "end": 12.0, "label": "tail"},
+                    {"section_id": "section-001", "start": 0.0, "end": 5.0, "function": "opening"},
+                    {"section_id": "section-002", "start": 5.0, "end": 9.0, "function": "lift"},
+                    {"section_id": "section-003", "start": 9.0, "end": 12.0, "function": "tail"},
                 ]
             }
 

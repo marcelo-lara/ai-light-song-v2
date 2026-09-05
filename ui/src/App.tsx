@@ -84,6 +84,9 @@ const TIMELINE_KEYS = [
   "info",
   "beats",
   "sectionsTopLevel",
+  // artifact-scoped detail (function / function_confidence / function_status /
+  // same_label_as) joined into the Sections lane inspector by section_id.
+  "sectionSegmentation",
   "harmonicLayer",
   "fftBands",
   "rmsLoudness",
@@ -252,6 +255,10 @@ export function App(): React.JSX.Element {
     () => artifacts.sectionsTopLevel.data ?? [],
     [artifacts.sectionsTopLevel.data],
   );
+  const sectionSegmentation = useMemo(
+    () => artifacts.sectionSegmentation.data?.sections ?? [],
+    [artifacts.sectionSegmentation.data],
+  );
   const estimatedDuration = info?.duration ?? beats.at(-1)?.time ?? 0;
 
   const coords = useMemo(
@@ -279,6 +286,7 @@ export function App(): React.JSX.Element {
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
       sections,
+      sectionSegmentation,
       harmonicLayer: artifacts.harmonicLayer.data,
       identifierHints: artifacts.identifierHints.data,
       machineEvents: artifacts.machineEvents.data,
@@ -295,6 +303,7 @@ export function App(): React.JSX.Element {
       artifacts.character.data,
       artifacts.vocalTranscription.data,
       sections,
+      sectionSegmentation,
       artifacts.harmonicLayer.data,
       artifacts.identifierHints.data,
       artifacts.machineEvents.data,

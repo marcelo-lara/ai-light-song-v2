@@ -145,10 +145,22 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
   switch (laneId) {
     case "segments":
     case "sections": {
-      const role = firstStr(r.form_role, r.energy_character);
-      if (role) out.push({ label: "Form role", value: role });
-      const rep = str(r.repetition_group);
-      if (rep) out.push({ label: "Repetition group", value: rep });
+      // v3.0 item 7: the allin1 functional-segmentation detail, joined onto
+      // the block's raw payload by `section_id` from
+      // `artifacts/section_segmentation/sections.json`. Field labels are the
+      // artifact's own field names, not a friendlified label (plan V7.3).
+      const fn = str(r.function);
+      if (fn) out.push({ label: "function", value: fn });
+      const fnConf = r.function_confidence;
+      if (fnConf != null && Number.isFinite(Number(fnConf)))
+        out.push({ label: "function_confidence", value: roundNumber(fnConf, 2) });
+      const fnStatus = str(r.function_status);
+      if (fnStatus) out.push({ label: "function_status", value: fnStatus });
+      // Always shown, even for a section's first occurrence (r.same_label_as
+      // is null there) — plan v3.0 item 7 V7.3 requires the field name to be
+      // visible on the first Sections block, not only on a repeat.
+      const sameAs = str(r.same_label_as);
+      out.push({ label: "same_label_as", value: sameAs || "null" });
       break;
     }
     case "allin1Sections": {
@@ -264,7 +276,7 @@ export function selectionFromSection(
   return {
     laneId,
     laneLabel: LANE_LABELS[laneId]!,
-    label: s.form_role ?? cleanLabel(s.label),
+    label: cleanLabel(s.label),
     start_s: s.start,
     end_s: s.end,
     confidence: s.confidence,

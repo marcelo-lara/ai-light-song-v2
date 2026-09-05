@@ -76,7 +76,7 @@ class EventContractsTests(unittest.TestCase):
 
     def test_validate_song_event_payload_accepts_collection(self) -> None:
         payload = {
-            "schema_version": "1.0",
+            "schema_version": "2.0",
             "song_name": "_test_song",
             "generated_from": {"source_song_path": "/data/songs/_test_song.mp3"},
             "events": [_sample_event()],

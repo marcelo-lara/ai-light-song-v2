@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 6 |
+| Done | 7 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -345,14 +345,14 @@ Moises chord reference: `docker compose run --rm app ./analyze --song
 
 The largest item. Refinement §5 item 8 carries the numbers and the reasoning.
 
-- [ ] **Image.** Add to `Dockerfile`, after the existing torch install:
+- [x] **Image.** Add to `Dockerfile`, after the existing torch install:
       `natten==0.15.1+torch210cu121` from
       `https://shi-labs.com/natten/wheels/cu121/torch2.1.0/index.html`
       (`--trusted-host shi-labs.com`), then `allin1`. Copy the pinning comment
       from `experiments/drop_detection/research/Dockerfile.allin1` — it is the
       one place the reason is written down. Verify `docker compose build`
       succeeds and `import allin1` works inside the `app` service.
-- [ ] **New stage** `src/analyzer/stages/segmentation.py` (phase 2), stage id
+- [x] **New stage** `src/analyzer/stages/segmentation.py` (phase 2), stage id
       `segment-sections`, replacing the old one at the same point in
       `run_phase_1`. It:
       - runs `allin1.analyze(..., include_activations=True)` **seeded with the
@@ -370,15 +370,15 @@ The largest item. Refinement §5 item 8 carries the numbers and the reasoning.
         the same label, else `null`;
       - **does not** use allin1's beat or downbeat times here — item 8 handles
         the downbeat phase separately, and its beat times are never used.
-- [ ] Delete `src/analyzer/stages/sections/` entirely (`segmenter.py`,
+- [x] Delete `src/analyzer/stages/sections/` entirely (`segmenter.py`,
       `form.py`, `utils.py`, `__init__.py`).
-- [ ] Delete `src/analyzer/stages/_stem_activity.py` **if** `event_features/` is
+- [x] Delete `src/analyzer/stages/_stem_activity.py` **if** `event_features/` is
       already gone; otherwise it goes in item 9.
-- [ ] `artifacts/section_segmentation/sections.json` rows become:
+- [x] `artifacts/section_segmentation/sections.json` rows become:
       `section_id`, `start`, `end`, `function`, `function_confidence`,
       `function_status`, `same_label_as`, `confidence`. **`section_character` is
       removed.**
-- [ ] `src/analyzer/stages/ui_data.py`: delete the `SECTION_DESCRIPTIONS` map
+- [x] `src/analyzer/stages/ui_data.py`: delete the `SECTION_DESCRIPTIONS` map
       keyed by the old 13-value vocabulary and the `energy_character` /
       `repetition_group` / `form_role` fields. Top-level `sections.json` rows
       become `start`, `end`, `label` (from `function` + index + confidence, same
@@ -386,24 +386,24 @@ The largest item. Refinement §5 item 8 carries the numbers and the reasoning.
       functional label and the section's own measured shape), `section_id`,
       `confidence`. Keep the existing `section_id` join validation — it is the
       MCP join key and must not regress.
-- [ ] Bump `SCHEMA_VERSION` in `src/analyzer/models.py`.
-- [ ] Rewrite `tests/test_sections_v2.py` and `tests/test_form_labelling.py`
+- [x] Bump `SCHEMA_VERSION` in `src/analyzer/models.py`.
+- [x] Rewrite `tests/test_sections_v2.py` and `tests/test_form_labelling.py`
       against the new stage, or delete them and add
       `tests/test_segmentation.py`. Fix `tests/test_ui_data_section_join.py`.
-- [ ] **Determinism check** — run `segment-sections` three times on
+- [x] **Determinism check** — run `segment-sections` three times on
       `_test_song` and assert byte-identical
       `artifacts/section_segmentation/sections.json`. This is the check that
       catches an unseeded demux.
-- [ ] `contract-change-v3.0.md`: a `sections.json` section with one row per
+- [x] `contract-change-v3.0.md`: a `sections.json` section with one row per
       change (`section_character` removed; `function`,
       `function_confidence`, `function_status`, `same_label_as` added), the
       concrete new row shape, and an explicit statement that
       **`get_song_brief`'s `similar_sections` grouping must move from
       `section_character` equality to `function` + `same_label_as`** — naming
       the consumer operation, per the handoff rules.
-- [ ] `docs/reference/analysis-input-guide.md`: replace the `section_character`
+- [x] `docs/reference/analysis-input-guide.md`: replace the `section_character`
       controlled-vocabulary block and the `similar_sections` paragraph.
-- [ ] `docs/data_folder_reference.md`: update both `sections.json` entries.
+- [x] `docs/data_folder_reference.md`: update both `sections.json` entries.
 
 **Tests:** `docker compose run --rm test`. Then all four gold songs:
 `docker compose run --rm app ./analyze --song "/data/songs/<song>.mp3"` for

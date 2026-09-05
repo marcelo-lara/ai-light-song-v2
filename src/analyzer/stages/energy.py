@@ -200,7 +200,7 @@ def derive_energy_layer(paths: SongPaths, timing: dict, energy_features: dict, s
             "beat_in_bar": beat_to_beat_in_bar.get(beat_index),
             "energy_score": score,
             "section_id": section.get("section_id") if section else None,
-            "section_name": (section.get("section_character") or section.get("label")) if section else None,
+            "section_name": section.get("function") if section else None,
         }
         enriched_beats.append(enriched)
         energy_scores.append(score)
@@ -227,7 +227,7 @@ def derive_energy_layer(paths: SongPaths, timing: dict, energy_features: dict, s
         section_energy.append(
             {
                 "section_id": section["section_id"],
-                "section_name": section.get("section_character") or section.get("label"),
+                "section_name": section.get("function"),
                 "start_s": round(start_s, 6),
                 "end_s": round(end_s, 6),
                 "bar_start": min(local_bars) if local_bars else None,

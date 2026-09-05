@@ -8,7 +8,7 @@ from analyzer.paths import SongPaths
 
 
 def _section_label(section: dict) -> str:
-    label = section.get("section_character") or section.get("label") or section.get("section_id")
+    label = section.get("function") or section.get("label") or section.get("section_id")
     return str(label)
 
 
@@ -30,14 +30,14 @@ def _build_inference_hint(section_id: str, category: str, text: str) -> dict:
     }
 
 
-def _transition_role_phrase(section_name: str) -> str:
-    if section_name in {"groove_plateau", "momentum_lift", "flowing_plateau"}:
-        return "new pulse state"
-    if section_name in {"focal_lift", "vocal_lift", "vocal_spotlight"}:
+def _transition_role_phrase(section_function: str) -> str:
+    if section_function in {"chorus", "hook"}:
         return "new focal state"
-    if section_name == "instrumental_bed":
+    if section_function == "verse":
+        return "new pulse state"
+    if section_function in {"inst", "solo"}:
         return "new accompaniment-led state"
-    if section_name == "percussion_break":
+    if section_function == "bridge":
         return "new drum-led state"
     return "new section state"
 
@@ -50,18 +50,9 @@ def _transition_role_hint(section: dict, previous_section: dict | None) -> dict 
     current_label = _section_label(section)
     if previous_label == current_label:
         return None
-    if previous_label not in {"contrast_bridge", "breath_space", "ambient_opening"}:
+    if previous_label not in {"intro", "break", "outro"}:
         return None
-    if current_label not in {
-        "groove_plateau",
-        "momentum_lift",
-        "flowing_plateau",
-        "instrumental_bed",
-        "focal_lift",
-        "vocal_lift",
-        "vocal_spotlight",
-        "percussion_break",
-    }:
+    if current_label not in {"verse", "chorus", "bridge", "inst", "solo"}:
         return None
 
     start_s = round_schema_float(float(section["start"]), digits=2)

@@ -1,93 +1,50 @@
 [
   {
+    "section_id": "section-001",
     "start": 0.0,
-    "end": 15.23,
-    "label": "001 Ambient Opening (0.73)",
-    "description": "Restrained opening space with low-volatility motion and room for atmosphere.",
-    "hints": []
+    "end": 30.0,
+    "label": "001 Intro (0.44)",
+    "description": "The 1st intro, 30.0s long.",
+    "confidence": 0.9
   },
   {
-    "start": 15.23,
-    "end": 30.21,
-    "label": "002 Instrumental Bed (0.82)",
-    "description": "Instrument-led passage where accompaniment or synth texture carries the section more than the voice.",
-    "hints": []
+    "section_id": "section-002",
+    "start": 30.0,
+    "end": 44.76,
+    "label": "002 Verse (0.19)",
+    "description": "The 1st verse, 14.8s long.",
+    "confidence": 0.187426
   },
   {
-    "start": 30.21,
-    "end": 59.84,
-    "label": "003 Vocal Spotlight (0.75)",
-    "description": "Voice-led section where the vocal contour carries most of the attention and motion.",
-    "hints": []
+    "section_id": "section-003",
+    "start": 44.76,
+    "end": 81.76,
+    "label": "003 Inst (0.19)",
+    "description": "The 1st inst, 37.0s long.",
+    "confidence": 0.193769
   },
   {
-    "start": 59.84,
-    "end": 74.61,
-    "label": "004 Breath Space (0.72)",
-    "description": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
-    "hints": []
+    "section_id": "section-004",
+    "start": 81.76,
+    "end": 96.46,
+    "label": "004 Verse (0.19)",
+    "description": "The 2nd verse, 14.7s long, same label as the first verse.",
+    "confidence": 0.194511
   },
   {
-    "start": 74.61,
-    "end": 88.13,
-    "label": "005 Flowing Plateau (0.76)",
-    "description": "Stable mid-energy passage with continuous motion but limited structural shock.",
-    "hints": []
+    "section_id": "section-005",
+    "start": 96.46,
+    "end": 111.23,
+    "label": "005 Chorus (0.33)",
+    "description": "The 1st chorus, 14.8s long.",
+    "confidence": 0.331459
   },
   {
-    "start": 88.13,
-    "end": 103.85,
-    "label": "006 Momentum Lift (0.79)",
-    "description": "Energy and motion climb together into a more assertive forward push.",
-    "hints": []
-  },
-  {
-    "start": 103.85,
-    "end": 118.62,
-    "label": "007 Instrumental Bed (0.80)",
-    "description": "Instrument-led passage where accompaniment or synth texture carries the section more than the voice.",
-    "hints": []
-  },
-  {
-    "start": 118.62,
-    "end": 133.86,
-    "label": "008 Groove Plateau (0.78)",
-    "description": "Pulse-led section with sustained rhythmic momentum and repeat-driven stability.",
-    "hints": []
-  },
-  {
-    "start": 133.86,
-    "end": 151.0,
-    "label": "009 Flowing Plateau (0.73)",
-    "description": "Stable mid-energy passage with continuous motion but limited structural shock.",
-    "hints": []
-  },
-  {
-    "start": 151.0,
-    "end": 156.75,
-    "label": "010 Breath Space (0.73)",
-    "description": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
-    "hints": []
-  },
-  {
-    "start": 156.75,
-    "end": 162.31,
-    "label": "011 Breath Space (0.58)",
-    "description": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
-    "hints": []
-  },
-  {
-    "start": 162.31,
-    "end": 177.9,
-    "label": "012 Breath Space (0.73)",
-    "description": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
-    "hints": []
-  },
-  {
-    "start": 177.9,
+    "section_id": "section-006",
+    "start": 111.23,
     "end": 193.85,
-    "label": "013 Release Tail (0.71)",
-    "description": "Closing release state where energy tapers and the track settles out.",
-    "hints": []
+    "label": "006 Inst (0.14)",
+    "description": "The 2nd inst, 82.6s long, same label as the first inst.",
+    "confidence": 0.144056
   }
 ]

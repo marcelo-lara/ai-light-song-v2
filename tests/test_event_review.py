@@ -12,7 +12,7 @@ from analyzer.stages.event_review import apply_event_overrides, generate_event_r
 class EventReviewTests(unittest.TestCase):
     def test_apply_event_overrides_relabels_and_confirms(self) -> None:
         machine_payload = {
-            "schema_version": "1.0",
+            "schema_version": "2.0",
             "song_name": "_test_song",
             "generated_from": {"source_song_path": "/data/songs/_test_song.mp3"},
             "review_status": "machine",
@@ -52,7 +52,7 @@ class EventReviewTests(unittest.TestCase):
                 analysis_root=root / "analysis",
             )
             machine_payload = {
-                "schema_version": "1.0",
+                "schema_version": "2.0",
                 "song_name": "_test_song",
                 "generated_from": {"source_song_path": str(paths.song_path)},
                 "review_status": "machine",

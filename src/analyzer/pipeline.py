@@ -26,7 +26,7 @@ from analyzer.stages.harmonic import extract_hpcp_and_chords
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.loudness import extract_mix_stem_loudness
-from analyzer.stages.sections import segment_sections
+from analyzer.stages.segmentation import segment_sections
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import extract_timing_grid
 from analyzer.stages.ui_data import build_ui_data
@@ -159,10 +159,9 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         _run_stage(paths.song_name, "phase-1", stage_name, extract_energy_features, paths, timing)
         return 0
     if stage_name == "segment-sections":
+        stems = _existing_stems(paths, stage_name)
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
-        energy_features = _required_artifact_payload(paths, stage_name, "energy_summary", "features.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, segment_sections, paths, timing, harmonic, energy_features)
+        _run_stage(paths.song_name, "phase-1", stage_name, segment_sections, paths, stems, timing)
         return 0
     if stage_name == "extract-drum-events":
         stems = _existing_stems(paths, stage_name)
@@ -385,7 +384,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             else skipped_result()
         )
         energy_features = _run_stage(paths.song_name, "phase-1", "extract-energy-features", extract_energy_features, paths, timing)
-        sections = _run_stage(paths.song_name, "phase-1", "segment-sections", segment_sections, paths, timing, harmonic, energy_features)
+        sections = _run_stage(paths.song_name, "phase-1", "segment-sections", segment_sections, paths, stems, timing)
         # The symbolic note-transcription layer was deleted in v3.0 item 6.
         # build-event-feature-layer and generate-machine-events still accept a
         # symbolic layer positionally; that event_* stack is superseded by the

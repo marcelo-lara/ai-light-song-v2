@@ -36,7 +36,7 @@ def _build_timeline_index(
         "sections": [
             {
                 "section_id": section["section_id"],
-                "section_name": section.get("section_character") or section.get("label"),
+                "section_name": section.get("function"),
                 "start_time": round(float(section["start"]), 6),
                 "end_time": round(float(section["end"]), 6),
                 "confidence": round(float(section["confidence"]), 6),
