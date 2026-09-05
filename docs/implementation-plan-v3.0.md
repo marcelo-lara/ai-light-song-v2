@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 10 |
+| Done | 11 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -668,26 +668,26 @@ no target reporting `mode: "unlabelled"`.
 
 ### 11. Rebuild `hints.json` around the human hints
 
-- [ ] Merge `reference/human/human_hints.json` into `hints.json` as
+- [x] Merge `reference/human/human_hints.json` into `hints.json` as
       `source: "human"` hints under the matching `section_id`. Reuse the window
       → section matching already in `src/analyzer/stages/hint_alignment.py`
       rather than writing a second one.
-- [ ] `summary.user_hint_count` must be **> 0 on every song that has a
+- [x] `summary.user_hint_count` must be **> 0 on every song that has a
       `reference/human/human_hints.json`** — four gold songs today. It is 0 on
       all 21 right now; that is the defect this item closes.
-- [ ] Cut the generated hints to those that name a moment, a contrast or an
+- [x] Cut the generated hints to those that name a moment, a contrast or an
       intent. Delete every category whose text is a shape description
       ("layered section with undulating contour, dense activity"). `motif_recall`
       is already gone with item 6.
-- [ ] `category` stays a short tag from `strobe`, `movement`, `intensity`,
+- [x] `category` stays a short tag from `strobe`, `movement`, `intensity`,
       `transition`, `color`, `phrase_boundary`.
-- [ ] Drop any hint whose `text` is empty.
-- [ ] Rewrite `tests/test_hints.py`; add a case asserting `user_hint_count`
+- [x] Drop any hint whose `text` is empty.
+- [x] Rewrite `tests/test_hints.py`; add a case asserting `user_hint_count`
       is non-zero for a fixture song carrying human hints, and a case asserting
       a human hint's `text` reaches `hints.json` verbatim.
-- [ ] **Never write to `reference/human/`** (constitution §9). This item reads
+- [x] **Never write to `reference/human/`** (constitution §9). This item reads
       it only.
-- [ ] `docs/reference/analysis-input-guide.md`: update the `hints.json` category
+- [x] `docs/reference/analysis-input-guide.md`: update the `hints.json` category
       list. `contract-change-v3.0.md`: the `hints.json` section — human hints now
       present, removed inference categories listed by name.
 

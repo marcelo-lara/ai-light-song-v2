@@ -170,19 +170,32 @@ The editable-merge document (`engine: editable-hints-merge-v1`):
 category, text, anchor_refs }`, plus `summary.user_hint_count` /
 `inference_hint_count`.
 
-- `source` distinguishes `"inference"` from human hints. **Merge
-  `data/analysis/<song>/reference/human/human_hints.json` in as
-  `source: "human"` hints** under the matching section — the human hints are
-  timed, specific, and high-signal (this is already done for
-  `human_hints_alignment.json`; extend it to the consumer `hints.json`).
+- `source` distinguishes `"inference"` from human hints. `reference/human/human_hints.json`
+  is now merged in as `source: "human"` hints under the matching `section_id` —
+  matched by the same window→section overlap logic
+  `hint_alignment.py::find_primary_section` already used for
+  `human_hints_alignment.json` (now the single implementation; `hints.py`
+  imports and reuses it rather than re-matching). This is what makes
+  `summary.user_hint_count` non-zero: it counts `source: "user"` (editable
+  round-trip hints) **or** `source: "human"` hints, and is `> 0` on every song
+  carrying `reference/human/human_hints.json`.
 - Keep inference hints **few and concrete**. Vague shape descriptions
   ("layered section with undulating contour, dense activity") cost tokens and
   rarely change a cue. A hint earns its place if it names a moment, a
   contrast, or an intent.
 - `category` should be a short tag (`strobe`, `movement`, `intensity`,
-  `transition`, `color`, `phrase_boundary`, `motif_recall`).
-- Drop hints with an empty `lighting_hint` / `text`; fold any useful
-  `summary` into `text`.
+  `transition`, `color`, `phrase_boundary`) — **inference hints only**. Human
+  hints never carry `category`: they span everything from a drop impact to a
+  calm vocal passage ("Breath"), and none of the six tags honestly fits that
+  range, so the key is omitted rather than guessed (constitution §2, no
+  silent fallbacks).
+- A human hint's `text` is its `summary`, verbatim, falling back to `title`
+  when `summary` is empty. A human hint is dropped only when both are empty —
+  never for having no overlapping section (it lands under a synthetic
+  `"unsectioned"` section instead) and never for an empty `lighting_hint`.
+  `lighting_hint` passes through as its own field, verbatim, only when the
+  operator supplied one. `title`, `start_time` and `end_time` are also carried
+  through as their own fields.
 
 ### `info.json` (top-level)
 

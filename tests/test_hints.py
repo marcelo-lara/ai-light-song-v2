@@ -73,13 +73,71 @@ class SectionHintsTests(unittest.TestCase):
             merged_payload = json.loads(paths.hints_output_path.read_text(encoding="utf-8"))
             section_two = next(section for section in merged_payload["sections"] if section["section_id"] == "section-002")
             categories = [hint["category"] for hint in section_two["hints"] if hint["source"] == "inference"]
-            self.assertIn("transition_role", categories)
+            self.assertIn("transition", categories)
             self.assertEqual(section_two["hints"][0]["source"], "user")
             transition_hint = next(
-                hint for hint in section_two["hints"] if hint["source"] == "inference" and hint["category"] == "transition_role"
+                hint for hint in section_two["hints"] if hint["source"] == "inference" and hint["category"] == "transition"
             )
             self.assertIn("10.00s", transition_hint["text"])
             self.assertIn("chorus", transition_hint["text"])
+
+    def test_generate_section_hints_merges_human_hints_and_counts_them(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "_test_song.mp3",
+                analysis_root=root / "analysis",
+            )
+
+            sections_payload = {
+                "sections": [
+                    {
+                        "section_id": "section-001",
+                        "start": 0.0,
+                        "end": 10.0,
+                        "function": "intro",
+                    },
+                    {
+                        "section_id": "section-002",
+                        "start": 10.0,
+                        "end": 100.0,
+                        "function": "verse",
+                    },
+                ]
+            }
+
+            _write_json(
+                paths.reference("human", "human_hints.json"),
+                {
+                    "song_name": "_test_song",
+                    "human_hints": [
+                        {
+                            "id": "hint-006",
+                            "title": "Breath",
+                            "start_time": 81.395,
+                            "end_time": 96.326,
+                            "summary": "Vocal - no intense section",
+                            "lighting_hint": "soft motion of moving heads.\nparcans slow violet waves",
+                        }
+                    ],
+                },
+            )
+
+            merged_payload_paths = generate_section_hints(paths, sections_payload)
+            self.assertIn("hints", merged_payload_paths)
+
+            merged_payload = json.loads(paths.hints_output_path.read_text(encoding="utf-8"))
+            self.assertGreater(merged_payload["summary"]["user_hint_count"], 0)
+
+            section_two = next(section for section in merged_payload["sections"] if section["section_id"] == "section-002")
+            human_hint = next(hint for hint in section_two["hints"] if hint["source"] == "human")
+            self.assertEqual(human_hint["text"], "Vocal - no intense section")
+            self.assertNotIn("category", human_hint)
+            self.assertEqual(human_hint["title"], "Breath")
+            self.assertEqual(
+                human_hint["lighting_hint"],
+                "soft motion of moving heads.\nparcans slow violet waves",
+            )
 
 
 if __name__ == "__main__":

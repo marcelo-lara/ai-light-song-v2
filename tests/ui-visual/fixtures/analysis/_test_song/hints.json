@@ -5,13 +5,14 @@
     "source_song_path": "/data/songs/_test_song.mp3",
     "engine": "editable-hints-merge-v1",
     "dependencies": {
-      "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json"
+      "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
+      "human_hints_file": "/data/analysis/_test_song/reference/human/human_hints.json"
     }
   },
   "summary": {
     "section_count": 2,
     "inference_hint_count": 1,
-    "user_hint_count": 0
+    "user_hint_count": 15
   },
   "sections": [
     {
@@ -19,7 +20,22 @@
       "label": "intro",
       "start": 0.0,
       "end": 14.82,
-      "hints": []
+      "hints": [
+        {
+          "id": "section-001-human-hint-001",
+          "source": "human",
+          "text": "Drum Hit",
+          "title": "Drum Hit",
+          "start_time": 7.44,
+          "end_time": 7.626,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          },
+          "lighting_hint": "Intense strobe"
+        }
+      ]
     },
     {
       "section_id": "section-002",
@@ -28,9 +44,199 @@
       "end": 58.049888,
       "hints": [
         {
-          "id": "section-002-inference-transition_role",
+          "id": "section-002-human-hint-002",
+          "source": "human",
+          "text": "drop approach",
+          "title": "drop approach",
+          "start_time": 22.179,
+          "end_time": 25.02,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          },
+          "lighting_hint": "strobes, slow to fast"
+        },
+        {
+          "id": "section-002-human-hint-003",
+          "source": "human",
+          "text": "drop build",
+          "title": "drop build",
+          "start_time": 25.02,
+          "end_time": 27.646,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-002-human-hint-004",
+          "source": "human",
+          "text": "Volume drops to restart melody",
+          "title": "Spacer",
+          "start_time": 36.5,
+          "end_time": 36.958,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          },
+          "lighting_hint": "dim intensity close to 0"
+        },
+        {
+          "id": "section-002-human-hint-005",
+          "source": "human",
+          "text": "Drum and bass leaves",
+          "title": "Outro start",
+          "start_time": 42.483,
+          "end_time": 43.206,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          },
+          "lighting_hint": "stop moving effects, prepare for next effect."
+        },
+        {
+          "id": "section-002-human-hint-006",
+          "source": "human",
+          "text": "Intense vocal shout",
+          "title": "Vocal outro phrase 1.1",
+          "start_time": 43.339,
+          "end_time": 44.356,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          },
+          "lighting_hint": "moving heads movement following vocal levels"
+        },
+        {
+          "id": "section-002-human-hint-009",
+          "source": "human",
+          "text": "ambient melody",
+          "title": "Synth Pad",
+          "start_time": 44.455,
+          "end_time": 47.045,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          },
+          "lighting_hint": "minimal moving head intensity / movements"
+        },
+        {
+          "id": "section-002-human-hint-010",
+          "source": "human",
+          "text": "Soft vocal outro (part 2)",
+          "title": "Vocal outro 2",
+          "start_time": 47.091,
+          "end_time": 50.03,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          },
+          "lighting_hint": "moving heads long travels, parcans with violet gradient chase"
+        },
+        {
+          "id": "section-002-human-hint-011",
+          "source": "human",
+          "text": "Soft vocal outro (part 3)",
+          "title": "Vocal Outro 3",
+          "start_time": 50.076,
+          "end_time": 54.576,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          },
+          "lighting_hint": "moving heads circle around the table center with violet or indigo"
+        },
+        {
+          "id": "section-002-human-hint-012",
+          "source": "human",
+          "text": "moving heads dim close to 0, move to table.",
+          "title": "prepare for end",
+          "start_time": 54.606,
+          "end_time": 55.0,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-002-human-hint-013",
+          "source": "human",
+          "text": "finale",
+          "title": "Finale",
+          "start_time": 55.038,
+          "end_time": 55.917,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          },
+          "lighting_hint": "all fixtures to max intensity. prism on. quickly fadeout."
+        },
+        {
+          "id": "section-002-human-hint-014",
+          "source": "human",
+          "text": "drop tension",
+          "title": "drop tension",
+          "start_time": 27.646,
+          "end_time": 28.396,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-002-human-hint-015",
+          "source": "human",
+          "text": "drop impact",
+          "title": "drop impact",
+          "start_time": 28.396,
+          "end_time": 29.125,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-002-human-hint-016",
+          "source": "human",
+          "text": "drop release",
+          "title": "drop release",
+          "start_time": 29.125,
+          "end_time": 29.566,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-002-human-hint-017",
+          "source": "human",
+          "text": "Full drum machine. acid synth bass.",
+          "title": "High Energy",
+          "start_time": 29.594,
+          "end_time": 36.5,
+          "anchor_refs": {
+            "phrase_window_ids": [],
+            "phrase_group_ids": [],
+            "motif_group_ids": []
+          }
+        },
+        {
+          "id": "section-002-inference-transition",
           "source": "inference",
-          "category": "transition_role",
+          "category": "transition",
           "text": "Treat 14.82s as the main cue reset into this chorus; let the new focal state land on the boundary instead of drifting late.",
           "anchor_refs": {
             "phrase_window_ids": [],

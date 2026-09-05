@@ -476,3 +476,51 @@ the pipeline exit code under `--fail-on-mismatch`) is now `{"drops"}`, was
 actually reaches the light show" list omits it entirely). This item only
 changes `phase_1_report.json`'s own shape (five `validation` keys instead of
 eight) and the `--compare`/CLI surface.
+
+---
+
+## 11. Rebuild `hints.json` around the human hints
+
+**`hints.json` now merges in `source: "human"` hints.** Each entry in
+`reference/human/human_hints.json` is matched to a section via the same
+window→section overlap logic `hint_alignment.py` already used for
+`human_hints_alignment.json` — now extracted into a single public function,
+`find_primary_section`, that both call. A human hint with no overlapping
+section lands under a synthetic `section_id: "unsectioned"` section rather
+than being dropped.
+
+**The one surviving inference category is renamed.** `transition_role` (the
+only inference category item 6 left standing) is now `transition` — one of
+the six allowed tags (`strobe`, `movement`, `intensity`, `transition`,
+`color`, `phrase_boundary`). No further categories were cut in this item;
+`transition`/`transition_role` already named a moment and an intent and
+passed this item's own bar.
+
+**`summary.user_hint_count` now counts `source: "user"` or `source: "human"`
+hints** — was `source: "user"` only, which meant it read `0` on every song
+because no code path ever wrote a human hint into `hints.json`. It is now
+`> 0` on every song carrying `reference/human/human_hints.json` (four of the
+21 gold-set songs today). No new `human_hint_count` key was added;
+`user_hint_count` broadens to mean "not machine-generated."
+
+**New per-hint fields, human hints only:** `title` (always present, verbatim
+from the source), `lighting_hint` (verbatim, only when the operator supplied
+a non-empty one), `start_time` / `end_time` (verbatim, rounded to the same
+6-digit precision as section boundaries elsewhere in this file). `category`
+is **absent**, not `null`, on every human hint — a drop impact and a calm
+vocal passage ("Breath") cannot both honestly take one of the six inference
+tags, and constitution §2 forbids inventing a plausible one.
+
+**`text`** for a human hint is its `summary`, verbatim, falling back to
+`title` when `summary` is empty; the hint is dropped only when both are
+empty. Note this is a stricter drop condition than the old
+"empty `lighting_hint` / `text`" language in the input guide — a human hint
+is never dropped for having no `lighting_hint`, nor for landing outside every
+detected section.
+
+**Why:** `docs/implementation-plan-v3.0.md` item 11. The human hints in
+`reference/human/human_hints.json` are timed, specific and hand-authored —
+exactly the signal `hints.json` exists to carry to the authoring model — but
+no code path ever merged them in, so `user_hint_count` measured `0` on all 21
+songs. This closes that gap without inventing a category the source data
+doesn't honestly support.

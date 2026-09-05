@@ -17,6 +17,21 @@ def _load_json_if_exists(path: Path) -> dict | list | None:
     return read_json(path)
 
 
+def find_primary_section(sections: list[dict], start_time: float, end_time: float) -> dict | None:
+    best = None
+    best_overlap = 0.0
+    for section in sections:
+        section_start = float(section["start"])
+        section_end = float(section["end"])
+        overlap = _overlap_seconds(start_time, end_time, section_start, section_end)
+        if overlap <= 0:
+            continue
+        if best is None or overlap > best_overlap:
+            best = section
+            best_overlap = overlap
+    return best
+
+
 def build_human_hints_alignment(paths: SongPaths) -> dict | None:
     reference_path = paths.reference("human", "human_hints.json")
     if not reference_path.exists():
@@ -96,7 +111,16 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
         if overlapping_chords:
             with_chord_overlap += 1
 
-        primary_section = max(overlapping_sections, key=lambda row: row["overlap_seconds"], default=None)
+        primary_section_full = find_primary_section(sections, hint_start, hint_end)
+        primary_section = (
+            {
+                "label": primary_section_full.get("label"),
+                "start": round(float(primary_section_full["start"]), 6),
+                "end": round(float(primary_section_full["end"]), 6),
+            }
+            if primary_section_full is not None
+            else None
+        )
         alignment_rows.append({
             "hint_id": hint.get("id"),
             "title": hint.get("title", ""),
