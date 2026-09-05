@@ -322,3 +322,86 @@ first pays the model's runtime cost — `extract-timing-grid` already runs after
 `ensure-stems` in `run_phase_1`, so seeded stems are available in time. Both
 stages' own outputs are otherwise unaffected; see
 `docs/implementation-plan-v3.0.md` item 8 for the full resolution note.
+
+## 9. Replace the `event_*` stack with the gestures stage
+
+**`song_event_timeline.json` is a different shape.** The whole Epic-5
+`event_*` chain (`event_rules/`, `event_machine/`, `event_features/`,
+`event_timeline.py`, `event_review.py`, `event_identifiers.py`,
+`review_queue.py`, `event_contracts.py`, `_stem_activity.py`) is deleted —
+measured at chance against the gold set (CLAUDE.md) — and replaced by one
+phase-3 stage, `src/analyzer/stages/gestures.py`, ported from
+`experiments/gestures/primitives.py` + `assembly.py`. It reads only trusted
+phase-1/2 artifacts (`fft_bands.json`, `rms_loudness.json`, `drum_events.json`,
+the canonical timing grid, `section_segmentation/sections.json`) and never
+opens the audio (constitution §5.2).
+
+**Removed event types.** The entire Epic-5 vocabulary is gone: `drop`,
+`drop_explode`, `drop_groove`, `drop_punch`, `soft_release`,
+`no_drop_plateau`, `fake_drop`, `tension_hold`, `pause_break`, `anthem_call`,
+`call_response`, `hook_phrase`, `vocal_spotlight`, `vocal_tail`,
+`energy_reset`, `layer_add`, `layer_remove`, `impact_hit`, `stinger`,
+`groove_loop`, `atmospheric_plateau`, `percussion_break`, `instrumental_bed`,
+`heartbeat_pattern`, `four_on_the_floor` — along with the composite-row shape
+(`composite`, `phases[]`, `member_event_ids`, `evidence_ref`, `lighting_hint`,
+`created_by`) and `texture_summary[]`.
+
+**New phase vocabulary.** Every event is now a **flat** row — `type`,
+`start_time`, `end_time`, `confidence`, `intensity`, `section_id`,
+`section_name`, `provenance`, `summary`, `evidence_summary` — and `type` is
+one of two shapes:
+
+1. A gesture phase: `approach`, `build`, `tension`, `impact`, `release`.
+   Anchored on a detected impact (simultaneous sub-band + transient spike);
+   the other phases are filled from whichever named sound-design primitive
+   (riser, downlifter, reverse cymbal, snare roll, pre-drop gap) falls in the
+   preceding window. **A phase absent for a gesture means no supporting
+   primitive was found — never guessed** (constitution §2).
+2. A section-pair transition, `"<from_label> → <to_label>"` — one per
+   boundary already present in `section_segmentation/sections.json` (that
+   stage already merges consecutive equal-labelled runs, so every remaining
+   boundary is already a change in `function`). The transition carries that
+   boundary's own `confidence` unchanged; this stage adds no independent
+   opinion about whether the boundary is real.
+
+**A drop is never named directly.** Constitution §5.2 — the vocabulary can
+only say "a build of this shape happens here," never "this is the drop."
+
+**Removed file set.** `artifacts/event_inference/` (`features.json`,
+`timeline_index.json`, `rule_candidates.json`, `events.machine.json`),
+`artifacts/energy_summary/hints.json`, `artifacts/validation/song_events.review.json`
+(+ `.md`), `artifacts/validation/song_events.overrides.json`, and
+`artifacts/validation/review_queue.json` are no longer produced.
+`song_event_timeline.md` is also no longer produced (the old export stage
+wrote it; the new stage does not). `info.json`'s `artifacts` block drops the
+corresponding rows (`event_features`, `event_timeline_index`,
+`event_rule_candidates`, `event_machine`, `event_review`, `event_overrides`,
+`event_timeline_markdown`, `review_queue`, `energy_identifiers`).
+
+**Contracts.** `src/analyzer/contracts/event_vocabulary.json` and
+`song_event_schema.json` are rewritten to the phase/transition vocabulary
+above; `event_threshold_profiles.json` and `contracts/song_event_timeline.json`
+(the example-payload contract file, not the generated per-song deliverable of
+the same base name) are deleted. Nothing in `src/` loads these contract files
+at runtime any more — `event_contracts.py`, their only reader, is deleted with
+the rest of the stack — so they now serve as documentation only.
+
+**Validation.** `validation/events.py`'s `_validate_event_outputs` check is
+retired to `skipped_result()` in `build_validation_report` — its inputs
+(`event_inference/*`, `song_events.review.json`, `song_events.overrides.json`)
+no longer exist. Cutting the validation surface down properly to what the
+gestures stage actually produces is plan item 10's job, not this one's.
+
+**Acceptance metric.** Impact-phase recall of the 7 hand-marked drop impacts
+across the four gold songs: **4/7 @ ±1.0 s, 2/7 @ ±0.25 s** (3 hits from
+`Titanium - David Guetta ft Sia`, 1 from `Hideaway - Kiesza`, at ±1.0 s;
+1 of each at ±0.25 s), against the incumbent `event_*` stack's measured
+**2/7 @ ±1.0 s, 0/7 @ ±0.25 s** (`experiments/drop_detection/README.md`).
+`events/min` (all event types combined) is 9.5-18.6/min across the four gold
+songs, under the 20/min input-guide ceiling.
+
+**UI.** The **Machine Events** and **Identifier Hints** debugger lanes are
+removed. The existing **Gestures** lane (previously an `experiments/gestures`
+sandbox lane reading `reference/proposals/gestures.json`) is promoted: its
+`experiment` tag is removed and it now reads the production
+`song_event_timeline.json` deliverable directly.

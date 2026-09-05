@@ -1,3148 +1,714 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "2.0",
   "song_name": "Armin - Revolution",
   "generated_from": {
     "source_song_path": "/data/songs/Armin - Revolution.mp3",
-    "engine": "llm-friendly-event-timeline-v2",
+    "engine": "gestures.primitives (rule-based sound-design device detectors) + gestures.assembly + section-transition detector",
     "dependencies": {
-      "machine_events_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json",
-      "review_file": "/data/analysis/Armin - Revolution/artifacts/validation/song_events.review.json",
-      "overrides_file": "/data/analysis/Armin - Revolution/artifacts/validation/song_events.overrides.json"
-    }
+      "fft_bands_file": "/data/analysis/Armin - Revolution/artifacts/essentia/fft_bands.json",
+      "rms_loudness_file": "/data/analysis/Armin - Revolution/artifacts/essentia/rms_loudness.json",
+      "drum_events_file": "/data/analysis/Armin - Revolution/artifacts/symbolic_transcription/drum_events.json",
+      "beats_file": "/data/analysis/Armin - Revolution/artifacts/essentia/beats.json",
+      "sections_file": "/data/analysis/Armin - Revolution/artifacts/section_segmentation/sections.json"
+    },
+    "gesture_count": 31
   },
   "events": [
     {
-      "id": "machine_instrumental_bed_001",
-      "type": "instrumental_bed",
-      "start_time": 0.0,
-      "end_time": 30.0,
-      "confidence": 0.686678,
-      "intensity": 0.536678,
-      "section_id": "section-001",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
-      "created_by": "analyzer_context_classifier",
-      "evidence_summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
-      "lighting_hint": "Treat the section as accompaniment-led space with texture and support rather than lead-vocal focus.",
-      "evidence_ref": {
-        "machine_event_id": "machine_instrumental_bed_001",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_no_drop_plateau_001",
-      "type": "no_drop_plateau",
-      "start_time": 0.464399,
-      "end_time": 30.000181,
-      "confidence": 0.589278,
-      "intensity": 0.394697,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "Build evidence is present, but the section settles into a plateau without a qualifying drop.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Build evidence is present, but the section settles into a plateau without a qualifying drop.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_no_drop_plateau_001",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_002",
-      "type": "energy_reset",
-      "start_time": 1.857596,
-      "end_time": 2.321995,
-      "confidence": 0.821519,
-      "intensity": 0.35,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_002",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_003",
-      "type": "energy_reset",
-      "start_time": 2.321995,
-      "end_time": 2.786395,
-      "confidence": 0.914399,
-      "intensity": 0.35,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_003",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_004",
-      "type": "energy_reset",
-      "start_time": 2.786395,
-      "end_time": 3.250794,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_004",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "composite_machine_fake_drop_006",
-      "type": "fake_drop",
-      "start_time": 3.703583,
-      "end_time": 11.099138,
-      "confidence": 0.774661,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "Composite build with no resolving drop (withheld release).",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_006",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      },
-      "composite": true,
-      "phases": [
-        {
-          "phase": "build",
-          "start_time": 3.703583,
-          "end_time": 4.156372,
-          "intensity": 0.7
-        },
-        {
-          "phase": "tension",
-          "start_time": 4.156372,
-          "end_time": 4.156372,
-          "intensity": 0.8
-        }
-      ],
-      "member_event_ids": [
-        "machine_build_005",
-        "machine_fake_drop_006",
-        "machine_energy_reset_009",
-        "machine_energy_reset_011",
-        "machine_energy_reset_013",
-        "machine_energy_reset_015",
-        "machine_energy_reset_017",
-        "machine_energy_reset_019",
-        "machine_energy_reset_021",
-        "machine_energy_reset_023",
-        "machine_energy_reset_025",
-        "machine_energy_reset_027",
-        "machine_energy_reset_028",
-        "machine_energy_reset_029"
-      ]
-    },
-    {
-      "id": "machine_energy_reset_007",
-      "type": "energy_reset",
-      "start_time": 4.156372,
-      "end_time": 4.620771,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_007",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_fake_drop_008",
-      "type": "fake_drop",
-      "start_time": 4.620771,
-      "end_time": 5.08517,
-      "confidence": 0.7,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_008",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_fake_drop_010",
-      "type": "fake_drop",
-      "start_time": 5.08517,
-      "end_time": 5.549569,
-      "confidence": 0.7,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_010",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_fake_drop_012",
-      "type": "fake_drop",
-      "start_time": 5.549569,
-      "end_time": 6.013968,
-      "confidence": 0.7,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_012",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_fake_drop_014",
-      "type": "fake_drop",
-      "start_time": 6.013968,
-      "end_time": 6.478367,
-      "confidence": 0.7,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_014",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_fake_drop_016",
-      "type": "fake_drop",
-      "start_time": 6.478367,
-      "end_time": 6.942766,
-      "confidence": 0.7,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_016",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_fake_drop_018",
-      "type": "fake_drop",
-      "start_time": 7.859954,
-      "end_time": 8.312743,
-      "confidence": 0.7,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_018",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_fake_drop_020",
-      "type": "fake_drop",
-      "start_time": 8.312743,
-      "end_time": 8.777143,
-      "confidence": 0.7,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_020",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_fake_drop_022",
-      "type": "fake_drop",
-      "start_time": 8.777143,
-      "end_time": 9.241542,
-      "confidence": 0.817951,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_022",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_fake_drop_024",
-      "type": "fake_drop",
-      "start_time": 9.241542,
-      "end_time": 9.705941,
-      "confidence": 0.717951,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_024",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_fake_drop_026",
-      "type": "fake_drop",
-      "start_time": 9.705941,
-      "end_time": 10.17034,
-      "confidence": 0.717951,
-      "intensity": 0.7,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "A build sets up a release, but the expected drop never arrives in the window that follows.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_fake_drop_026",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_impact_hit_030",
-      "type": "impact_hit",
-      "start_time": 15.696689,
-      "end_time": 16.161089,
-      "confidence": 1.0,
-      "intensity": 0.95,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "Accent intensity crosses the impact threshold on this beat.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Accent intensity crosses the impact threshold on this beat.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_impact_hit_030",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_impact_hit_031",
-      "type": "impact_hit",
-      "start_time": 25.855419,
-      "end_time": 26.308208,
-      "confidence": 1.0,
-      "intensity": 0.95,
-      "section_id": "section-001",
-      "section_name": "intro",
-      "provenance": "machine-only",
-      "summary": "Accent intensity crosses the impact threshold on this beat.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Accent intensity crosses the impact threshold on this beat.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_impact_hit_031",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_tension_hold_032",
-      "type": "tension_hold",
-      "start_time": 30.000181,
-      "end_time": 44.779682,
-      "confidence": 0.704581,
-      "intensity": 0.567558,
-      "section_id": "section-002",
-      "section_name": "verse",
-      "provenance": "machine-only",
-      "summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_tension_hold_032",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_033",
-      "type": "energy_reset",
-      "start_time": 36.47855,
-      "end_time": 36.942947,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-002",
-      "section_name": "verse",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_033",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_034",
-      "type": "energy_reset",
-      "start_time": 38.312923,
-      "end_time": 38.777325,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-002",
-      "section_name": "verse",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_034",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_035",
-      "type": "energy_reset",
-      "start_time": 38.777325,
-      "end_time": 39.241722,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-002",
-      "section_name": "verse",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_035",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_spotlight_001",
-      "type": "vocal_spotlight",
-      "start_time": 42.91,
-      "end_time": 43.69,
-      "confidence": 0.919559,
-      "intensity": 0.65,
-      "section_id": "section-002",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "evidence_summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "lighting_hint": "Keep the visual focus intimate and voice-led rather than rhythm-led.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_spotlight_001",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_tail_002",
-      "type": "vocal_tail",
-      "start_time": 43.69,
-      "end_time": 46.625668,
-      "confidence": 0.644868,
-      "intensity": 0.392268,
-      "section_id": "section-002",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "evidence_summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
-      "lighting_hint": "Let the cue decay or hand off gently as the vocal energy falls away.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_tail_002",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_036",
-      "type": "energy_reset",
-      "start_time": 46.16127,
-      "end_time": 46.625668,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_036",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_037",
-      "type": "energy_reset",
-      "start_time": 47.090069,
-      "end_time": 47.554466,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_037",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_038",
-      "type": "energy_reset",
-      "start_time": 48.018864,
-      "end_time": 48.483265,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_038",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_039",
-      "type": "pause_break",
-      "start_time": 55.576962,
-      "end_time": 56.052971,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_039",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_040",
-      "type": "pause_break",
-      "start_time": 56.052971,
-      "end_time": 56.52898,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_040",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_041",
-      "type": "pause_break",
-      "start_time": 56.52898,
-      "end_time": 57.004986,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_041",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_042",
-      "type": "energy_reset",
-      "start_time": 57.004986,
-      "end_time": 57.480995,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_042",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_043",
-      "type": "energy_reset",
-      "start_time": 57.480995,
-      "end_time": 57.968616,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_043",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_044",
-      "type": "energy_reset",
-      "start_time": 57.968616,
-      "end_time": 58.444626,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_044",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_045",
-      "type": "pause_break",
-      "start_time": 58.444626,
-      "end_time": 58.909023,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_045",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_046",
-      "type": "energy_reset",
-      "start_time": 58.909023,
-      "end_time": 59.373425,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_046",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_047",
-      "type": "energy_reset",
-      "start_time": 59.373425,
-      "end_time": 59.837822,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_047",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_048",
-      "type": "pause_break",
-      "start_time": 59.837822,
-      "end_time": 60.302219,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_048",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_049",
-      "type": "pause_break",
-      "start_time": 60.302219,
-      "end_time": 60.766621,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_049",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_050",
-      "type": "energy_reset",
-      "start_time": 60.766621,
-      "end_time": 61.231018,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_050",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_051",
-      "type": "energy_reset",
-      "start_time": 61.231018,
-      "end_time": 61.683807,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_051",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_052",
-      "type": "energy_reset",
-      "start_time": 61.683807,
-      "end_time": 62.136597,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_052",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_053",
-      "type": "energy_reset",
-      "start_time": 62.136597,
-      "end_time": 62.600998,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_053",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_054",
-      "type": "energy_reset",
-      "start_time": 62.600998,
-      "end_time": 63.065395,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_054",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_055",
-      "type": "energy_reset",
-      "start_time": 63.065395,
-      "end_time": 63.529797,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_055",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_056",
-      "type": "energy_reset",
-      "start_time": 63.529797,
-      "end_time": 63.994194,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_056",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_057",
-      "type": "energy_reset",
-      "start_time": 63.994194,
-      "end_time": 64.458595,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_057",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_058",
-      "type": "energy_reset",
-      "start_time": 64.458595,
-      "end_time": 64.922989,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_058",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_059",
-      "type": "energy_reset",
-      "start_time": 64.922989,
-      "end_time": 65.375778,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_059",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_060",
-      "type": "energy_reset",
-      "start_time": 65.375778,
-      "end_time": 65.840179,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_060",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_061",
-      "type": "energy_reset",
-      "start_time": 65.840179,
-      "end_time": 66.304581,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_061",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_062",
-      "type": "energy_reset",
-      "start_time": 66.304581,
-      "end_time": 66.768982,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_062",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_063",
-      "type": "pause_break",
-      "start_time": 67.233376,
-      "end_time": 67.697777,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_063",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_064",
-      "type": "pause_break",
-      "start_time": 67.697777,
-      "end_time": 68.150566,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_064",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_065",
-      "type": "energy_reset",
-      "start_time": 68.150566,
-      "end_time": 68.614967,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_065",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_066",
-      "type": "pause_break",
-      "start_time": 68.614967,
-      "end_time": 69.079361,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_066",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_067",
-      "type": "energy_reset",
-      "start_time": 69.079361,
-      "end_time": 69.543762,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_067",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_068",
-      "type": "energy_reset",
-      "start_time": 69.543762,
-      "end_time": 70.008163,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_068",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_069",
-      "type": "energy_reset",
-      "start_time": 70.008163,
-      "end_time": 70.472565,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_069",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_070",
-      "type": "pause_break",
-      "start_time": 70.925346,
-      "end_time": 71.378136,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_070",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_071",
-      "type": "pause_break",
-      "start_time": 71.378136,
-      "end_time": 71.842537,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_071",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_072",
-      "type": "energy_reset",
-      "start_time": 71.842537,
-      "end_time": 72.306938,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_072",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_073",
-      "type": "pause_break",
-      "start_time": 72.306938,
-      "end_time": 72.771339,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_073",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_074",
-      "type": "pause_break",
-      "start_time": 72.771339,
-      "end_time": 73.235733,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_074",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_075",
-      "type": "pause_break",
-      "start_time": 73.235733,
-      "end_time": 73.688522,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_075",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_076",
-      "type": "pause_break",
-      "start_time": 75.070114,
-      "end_time": 75.534508,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_076",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_077",
-      "type": "energy_reset",
-      "start_time": 75.534508,
-      "end_time": 75.998909,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_077",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_078",
-      "type": "energy_reset",
-      "start_time": 76.46331,
-      "end_time": 76.927711,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_078",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_079",
-      "type": "energy_reset",
-      "start_time": 76.927711,
-      "end_time": 77.392105,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_079",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_080",
-      "type": "energy_reset",
-      "start_time": 77.392105,
-      "end_time": 77.856506,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_080",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_081",
-      "type": "energy_reset",
-      "start_time": 78.762085,
-      "end_time": 79.226486,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_081",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_082",
-      "type": "energy_reset",
-      "start_time": 79.226486,
-      "end_time": 79.69088,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-003",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_082",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_083",
-      "type": "energy_reset",
-      "start_time": 85.286888,
-      "end_time": 85.751289,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-004",
-      "section_name": "verse",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_083",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_084",
-      "type": "pause_break",
-      "start_time": 88.607346,
-      "end_time": 89.071747,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-004",
-      "section_name": "verse",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_084",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_085",
-      "type": "pause_break",
-      "start_time": 89.071747,
-      "end_time": 89.53614,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-004",
-      "section_name": "verse",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_085",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_086",
-      "type": "energy_reset",
-      "start_time": 92.310928,
-      "end_time": 92.77533,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-004",
-      "section_name": "verse",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_086",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_instrumental_bed_002",
-      "type": "instrumental_bed",
-      "start_time": 96.46,
-      "end_time": 111.23,
-      "confidence": 1.0,
-      "intensity": 0.7,
-      "section_id": "section-005",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
-      "created_by": "analyzer_context_classifier",
-      "evidence_summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
-      "lighting_hint": "Treat the section as accompaniment-led space with texture and support rather than lead-vocal focus.",
-      "evidence_ref": {
-        "machine_event_id": "machine_instrumental_bed_002",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_soft_release_087",
-      "type": "soft_release",
-      "start_time": 96.931702,
-      "end_time": 97.396095,
-      "confidence": 0.678806,
-      "intensity": 0.7,
-      "section_id": "section-005",
-      "section_name": "chorus",
-      "provenance": "machine-only",
-      "summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
-      "lighting_hint": "Use a smoother landing with controlled intensity and less abrupt contrast.",
-      "evidence_ref": {
-        "machine_event_id": "machine_soft_release_087",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "composite_machine_drop_088",
-      "type": "drop",
-      "start_time": 104.791656,
-      "end_time": 109.853607,
-      "confidence": 0.792082,
-      "intensity": 1.0,
-      "section_id": "section-005",
-      "section_name": "chorus",
-      "provenance": "machine-only",
-      "summary": "Composite drop gesture: impact \u2192 release",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_drop_088",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      },
-      "composite": true,
-      "phases": [
-        {
-          "phase": "impact",
-          "start_time": 104.791656,
-          "end_time": 105.244446,
-          "intensity": 1.0
-        },
-        {
-          "phase": "release",
-          "start_time": 109.389206,
-          "end_time": 109.853607,
-          "intensity": 0.35
-        }
-      ],
-      "member_event_ids": [
-        "machine_drop_088",
-        "machine_energy_reset_089"
-      ]
-    },
-    {
-      "id": "composite_machine_drop_092",
-      "type": "drop",
-      "start_time": 110.77079,
-      "end_time": 112.152382,
-      "confidence": 0.705302,
-      "intensity": 1.0,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Composite drop gesture: build \u2192 tension \u2192 impact",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_drop_092",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      },
-      "composite": true,
-      "phases": [
-        {
-          "phase": "build",
-          "start_time": 110.77079,
-          "end_time": 111.223579,
-          "intensity": 0.7
-        },
-        {
-          "phase": "tension",
-          "start_time": 111.223579,
-          "end_time": 111.687981,
-          "intensity": 1.0
-        },
-        {
-          "phase": "impact",
-          "start_time": 111.687981,
-          "end_time": 112.152382,
-          "intensity": 1.0
-        }
-      ],
-      "member_event_ids": [
-        "machine_build_090",
-        "machine_drop_092"
-      ]
-    },
-    {
-      "id": "machine_instrumental_bed_003",
-      "type": "instrumental_bed",
-      "start_time": 111.23,
-      "end_time": 193.851791,
-      "confidence": 0.645578,
-      "intensity": 0.495578,
-      "section_id": "section-006",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
-      "created_by": "analyzer_context_classifier",
-      "evidence_summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
-      "lighting_hint": "Treat the section as accompaniment-led space with texture and support rather than lead-vocal focus.",
-      "evidence_ref": {
-        "machine_event_id": "machine_instrumental_bed_003",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_build_091",
       "type": "build",
-      "start_time": 111.687981,
-      "end_time": 112.152382,
-      "confidence": 1.0,
-      "intensity": 0.7,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Rising short-window energy and harmonic tension indicate an obvious build phase.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Rising short-window energy and harmonic tension indicate an obvious build phase.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_build_091",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_build_093",
-      "type": "build",
-      "start_time": 116.308754,
-      "end_time": 116.773148,
-      "confidence": 1.0,
-      "intensity": 0.7,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Rising short-window energy and harmonic tension indicate an obvious build phase.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Rising short-window energy and harmonic tension indicate an obvious build phase.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_build_093",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_094",
-      "type": "energy_reset",
-      "start_time": 126.467484,
-      "end_time": 126.931877,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_094",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_095",
-      "type": "energy_reset",
-      "start_time": 126.931877,
-      "end_time": 127.396278,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_095",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_096",
-      "type": "energy_reset",
-      "start_time": 127.396278,
-      "end_time": 127.849068,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_096",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_097",
-      "type": "energy_reset",
-      "start_time": 128.777863,
-      "end_time": 129.242264,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_097",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_098",
-      "type": "energy_reset",
-      "start_time": 132.028656,
-      "end_time": 132.493057,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_098",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_099",
-      "type": "energy_reset",
-      "start_time": 132.493057,
-      "end_time": 132.945847,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_099",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_100",
-      "type": "energy_reset",
-      "start_time": 132.945847,
-      "end_time": 133.398636,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_100",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "composite_machine_drop_103",
-      "type": "drop",
-      "start_time": 133.863037,
-      "end_time": 142.175781,
-      "confidence": 0.766545,
-      "intensity": 1.0,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Composite drop gesture: approach \u2192 approach \u2192 impact",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_drop_103",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      },
-      "composite": true,
-      "phases": [
-        {
-          "phase": "approach",
-          "start_time": 133.863037,
-          "end_time": 134.327438,
-          "intensity": 0.3
-        },
-        {
-          "phase": "approach",
-          "start_time": 134.780228,
-          "end_time": 135.233017,
-          "intensity": 0.3
-        },
-        {
-          "phase": "impact",
-          "start_time": 141.71138,
-          "end_time": 142.175781,
-          "intensity": 1.0
-        }
-      ],
-      "member_event_ids": [
-        "machine_pause_break_101",
-        "machine_pause_break_102",
-        "machine_drop_103"
-      ]
-    },
-    {
-      "id": "machine_pause_break_104",
-      "type": "pause_break",
-      "start_time": 151.962997,
-      "end_time": 152.438995,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_104",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_105",
-      "type": "pause_break",
-      "start_time": 152.438995,
-      "end_time": 152.915009,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_105",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_106",
-      "type": "pause_break",
-      "start_time": 152.915009,
-      "end_time": 153.391022,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_106",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_107",
-      "type": "pause_break",
-      "start_time": 153.391022,
-      "end_time": 153.878632,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_107",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_108",
-      "type": "pause_break",
-      "start_time": 153.878632,
-      "end_time": 154.366257,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_108",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_109",
-      "type": "pause_break",
-      "start_time": 154.84227,
-      "end_time": 155.318268,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_109",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_110",
-      "type": "pause_break",
-      "start_time": 155.318268,
-      "end_time": 155.794281,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_110",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_111",
-      "type": "pause_break",
-      "start_time": 155.794281,
-      "end_time": 156.270294,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_111",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_112",
-      "type": "pause_break",
-      "start_time": 156.270294,
-      "end_time": 156.746307,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_112",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_113",
-      "type": "pause_break",
-      "start_time": 156.746307,
-      "end_time": 157.222305,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_113",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_114",
-      "type": "pause_break",
-      "start_time": 157.222305,
-      "end_time": 157.686707,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_114",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_115",
-      "type": "pause_break",
-      "start_time": 157.686707,
-      "end_time": 158.151108,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_115",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_116",
-      "type": "energy_reset",
-      "start_time": 158.151108,
-      "end_time": 158.615509,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_116",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_117",
-      "type": "energy_reset",
-      "start_time": 158.615509,
-      "end_time": 159.068298,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_117",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_118",
-      "type": "pause_break",
-      "start_time": 159.068298,
-      "end_time": 159.521088,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_118",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_119",
-      "type": "pause_break",
-      "start_time": 159.521088,
-      "end_time": 159.985489,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_119",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_120",
-      "type": "energy_reset",
-      "start_time": 159.985489,
-      "end_time": 160.44989,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_120",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_121",
-      "type": "energy_reset",
-      "start_time": 160.44989,
-      "end_time": 160.914276,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_121",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_122",
-      "type": "pause_break",
-      "start_time": 160.914276,
-      "end_time": 161.378677,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_122",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_123",
-      "type": "pause_break",
-      "start_time": 161.378677,
-      "end_time": 161.843079,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_123",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_124",
-      "type": "pause_break",
-      "start_time": 161.843079,
-      "end_time": 162.30748,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_124",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_125",
-      "type": "pause_break",
-      "start_time": 162.30748,
-      "end_time": 162.771881,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_125",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_126",
-      "type": "pause_break",
-      "start_time": 162.771881,
-      "end_time": 163.236282,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_126",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_127",
-      "type": "pause_break",
-      "start_time": 163.236282,
-      "end_time": 163.700684,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_127",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_128",
-      "type": "pause_break",
-      "start_time": 163.700684,
-      "end_time": 164.16507,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_128",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_129",
-      "type": "pause_break",
-      "start_time": 164.16507,
-      "end_time": 164.629471,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_129",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_130",
-      "type": "pause_break",
-      "start_time": 164.629471,
-      "end_time": 165.08226,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_130",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_131",
-      "type": "pause_break",
-      "start_time": 165.08226,
-      "end_time": 165.535049,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_131",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_132",
-      "type": "energy_reset",
-      "start_time": 165.535049,
-      "end_time": 165.999451,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_132",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_133",
-      "type": "energy_reset",
-      "start_time": 165.999451,
-      "end_time": 166.463852,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_133",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_134",
-      "type": "pause_break",
-      "start_time": 166.463852,
-      "end_time": 166.928253,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_134",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_135",
-      "type": "pause_break",
-      "start_time": 166.928253,
-      "end_time": 167.392654,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_135",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_136",
-      "type": "pause_break",
-      "start_time": 167.392654,
-      "end_time": 167.857056,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_136",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_137",
-      "type": "pause_break",
-      "start_time": 167.857056,
-      "end_time": 168.309845,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_137",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_138",
-      "type": "pause_break",
-      "start_time": 168.309845,
-      "end_time": 168.762634,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_138",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_139",
-      "type": "pause_break",
-      "start_time": 168.762634,
-      "end_time": 169.22702,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_139",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_140",
-      "type": "pause_break",
-      "start_time": 169.22702,
-      "end_time": 169.691422,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_140",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_141",
-      "type": "pause_break",
-      "start_time": 170.620224,
-      "end_time": 171.084625,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_141",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_142",
-      "type": "pause_break",
-      "start_time": 171.084625,
-      "end_time": 171.549026,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_142",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_143",
-      "type": "pause_break",
-      "start_time": 171.549026,
-      "end_time": 172.013428,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_143",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_144",
-      "type": "pause_break",
-      "start_time": 172.013428,
-      "end_time": 172.477814,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_144",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_145",
-      "type": "energy_reset",
-      "start_time": 172.477814,
-      "end_time": 172.942215,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_145",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_146",
-      "type": "energy_reset",
-      "start_time": 172.942215,
-      "end_time": 173.406616,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_146",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_147",
-      "type": "energy_reset",
-      "start_time": 173.406616,
-      "end_time": 173.871017,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_147",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_148",
-      "type": "energy_reset",
-      "start_time": 174.347031,
-      "end_time": 174.823029,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_148",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_149",
-      "type": "energy_reset",
-      "start_time": 174.823029,
-      "end_time": 175.299042,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_149",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_150",
-      "type": "energy_reset",
-      "start_time": 175.775055,
-      "end_time": 176.251068,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_150",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_151",
-      "type": "energy_reset",
-      "start_time": 176.251068,
-      "end_time": 176.727066,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_151",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_152",
-      "type": "energy_reset",
-      "start_time": 176.727066,
-      "end_time": 177.203079,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_152",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_153",
-      "type": "energy_reset",
-      "start_time": 177.203079,
-      "end_time": 177.679092,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_153",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_154",
-      "type": "energy_reset",
-      "start_time": 179.095505,
-      "end_time": 179.559906,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_154",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_155",
-      "type": "energy_reset",
-      "start_time": 184.180679,
-      "end_time": 184.645081,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_155",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_156",
-      "type": "energy_reset",
-      "start_time": 186.038269,
-      "end_time": 186.514282,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_156",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_energy_reset_157",
-      "type": "energy_reset",
-      "start_time": 186.514282,
-      "end_time": 186.978683,
-      "confidence": 1.0,
-      "intensity": 0.35,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_energy_reset_157",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_158",
-      "type": "pause_break",
-      "start_time": 187.930695,
-      "end_time": 188.406708,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_158",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_159",
-      "type": "pause_break",
-      "start_time": 188.882721,
-      "end_time": 189.358734,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_159",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_160",
-      "type": "pause_break",
-      "start_time": 189.358734,
-      "end_time": 189.846344,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_160",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_161",
-      "type": "pause_break",
-      "start_time": 189.846344,
-      "end_time": 190.357178,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_161",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_162",
-      "type": "pause_break",
-      "start_time": 190.868027,
-      "end_time": 191.37886,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_162",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_163",
-      "type": "pause_break",
-      "start_time": 191.37886,
-      "end_time": 191.878098,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_163",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_164",
-      "type": "pause_break",
-      "start_time": 191.878098,
-      "end_time": 192.377319,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_164",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_165",
-      "type": "pause_break",
-      "start_time": 192.377319,
-      "end_time": 192.876556,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_165",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_166",
-      "type": "pause_break",
-      "start_time": 192.876556,
-      "end_time": 193.38739,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_166",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_pause_break_167",
-      "type": "pause_break",
-      "start_time": 193.38739,
-      "end_time": 193.851791,
-      "confidence": 1.0,
-      "intensity": 0.3,
-      "section_id": "section-006",
-      "section_name": "inst",
-      "provenance": "machine-only",
-      "summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Silence gap duration and low energy indicate a pause or stop-time break.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_pause_break_167",
-        "machine_file": "/data/analysis/Armin - Revolution/artifacts/event_inference/events.machine.json"
-      }
-    }
-  ],
-  "texture_summary": [
-    {
+      "start_time": 9.288,
+      "end_time": 13.003,
+      "confidence": 0.771,
+      "intensity": 0.772,
       "section_id": "section-001",
-      "start_time": 0.0,
-      "stem_activity": {
-        "bass": 0.0088,
-        "drums": 0.2285,
-        "harmonic": 0.5667,
-        "vocals": 0.3283
-      },
-      "stems_entering": [],
-      "stems_leaving": []
+      "section_name": "intro",
+      "provenance": "machine-only",
+      "summary": "A rising riser builds toward the impact at 15.95s.",
+      "evidence_summary": "high-band r2=0.87 over 2 bars, delta=0.77x range"
     },
     {
-      "section_id": "section-002",
+      "type": "approach",
+      "start_time": 9.288,
+      "end_time": 13.003,
+      "confidence": 0.771,
+      "intensity": 0.772,
+      "section_id": "section-001",
+      "section_name": "intro",
+      "provenance": "machine-only",
+      "summary": "An early riser begins shaping the run-up toward the impact at 30.90s.",
+      "evidence_summary": "high-band r2=0.87 over 2 bars, delta=0.77x range"
+    },
+    {
+      "type": "build",
+      "start_time": 15.232,
+      "end_time": 20.782,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-001",
+      "section_name": "intro",
+      "provenance": "machine-only",
+      "summary": "A rising snare roll builds toward the impact at 30.90s.",
+      "evidence_summary": "onset density 5->10 across bars 9-11"
+    },
+    {
+      "type": "impact",
+      "start_time": 15.95,
+      "end_time": 15.95,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-001",
+      "section_name": "intro",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.37, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "release",
+      "start_time": 15.95,
+      "end_time": 19.665,
+      "confidence": 0.631,
+      "intensity": 0.261,
+      "section_id": "section-001",
+      "section_name": "intro",
+      "provenance": "machine-only",
+      "summary": "The mix stays elevated after the impact at 15.95s, sustaining the release.",
+      "evidence_summary": "post-impact mix-RMS median 0.0546 vs pre-impact 0.0433"
+    },
+    {
+      "type": "impact",
+      "start_time": 17.05,
+      "end_time": 17.05,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-001",
+      "section_name": "intro",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.68, sub-band elevated, on downbeat"
+    },
+    {
+      "type": "tension",
+      "start_time": 29.1,
+      "end_time": 30.9,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-001",
+      "section_name": "intro",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 30.90s.",
+      "evidence_summary": "dropout_strength peak 0.77 at 29.10s, 1.80s before impact"
+    },
+    {
+      "type": "intro \u2192 verse",
       "start_time": 30.0,
-      "stem_activity": {
-        "bass": 0.0131,
-        "drums": 0.5435,
-        "harmonic": 0.0568,
-        "vocals": 0.865
-      },
-      "stems_entering": [
-        "drums"
-      ],
-      "stems_leaving": [
-        "harmonic"
-      ]
+      "end_time": 30.0,
+      "confidence": 0.187426,
+      "intensity": 0.187426,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "The song moves from intro into verse here.",
+      "evidence_summary": "allin1 section boundary: function changes from 'intro' to 'verse' (boundary confidence 0.19)."
     },
     {
-      "section_id": "section-003",
+      "type": "impact",
+      "start_time": 30.9,
+      "end_time": 30.9,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.32, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "build",
+      "start_time": 31.858,
+      "end_time": 37.396,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "A rising snare roll builds toward the impact at 45.20s.",
+      "evidence_summary": "onset density 3->6 across bars 18-20"
+    },
+    {
+      "type": "impact",
+      "start_time": 32.75,
+      "end_time": 32.75,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.27, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 34.6,
+      "end_time": 34.6,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.27, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 36.45,
+      "end_time": 36.45,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.23, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "verse \u2192 inst",
       "start_time": 44.76,
-      "stem_activity": {
-        "bass": 0.0827,
-        "drums": 0.2294,
-        "harmonic": 0.4131,
-        "vocals": 0.2991
-      },
-      "stems_entering": [
-        "harmonic"
-      ],
-      "stems_leaving": [
-        "drums"
-      ]
+      "end_time": 44.76,
+      "confidence": 0.193769,
+      "intensity": 0.193769,
+      "section_id": "section-003",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "The song moves from verse into inst here.",
+      "evidence_summary": "allin1 section boundary: function changes from 'verse' to 'inst' (boundary confidence 0.19)."
     },
     {
-      "section_id": "section-004",
+      "type": "impact",
+      "start_time": 45.2,
+      "end_time": 45.2,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-003",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.26, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "inst \u2192 verse",
       "start_time": 81.76,
-      "stem_activity": {
-        "bass": 0.0043,
-        "drums": 0.092,
-        "harmonic": 0.5848,
-        "vocals": 0.4951
-      },
-      "stems_entering": [],
-      "stems_leaving": []
+      "end_time": 81.76,
+      "confidence": 0.194511,
+      "intensity": 0.194511,
+      "section_id": "section-004",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "The song moves from inst into verse here.",
+      "evidence_summary": "allin1 section boundary: function changes from 'inst' to 'verse' (boundary confidence 0.19)."
     },
     {
-      "section_id": "section-005",
+      "type": "build",
+      "start_time": 89.072,
+      "end_time": 94.621,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-004",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "A rising snare roll builds toward the impact at 96.90s.",
+      "evidence_summary": "onset density 7->24 across bars 48-50"
+    },
+    {
+      "type": "build",
+      "start_time": 94.621,
+      "end_time": 100.171,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-004",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "A rising snare roll builds toward the impact at 101.05s.",
+      "evidence_summary": "onset density 4->10 across bars 51-53"
+    },
+    {
+      "type": "verse \u2192 chorus",
       "start_time": 96.46,
-      "stem_activity": {
-        "bass": 0.6069,
-        "drums": 0.5584,
-        "harmonic": 0.6795,
-        "vocals": 0.3381
-      },
-      "stems_entering": [
-        "bass",
-        "drums"
-      ],
-      "stems_leaving": []
+      "end_time": 96.46,
+      "confidence": 0.331459,
+      "intensity": 0.331459,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "The song moves from verse into chorus here.",
+      "evidence_summary": "allin1 section boundary: function changes from 'verse' to 'chorus' (boundary confidence 0.33)."
     },
     {
-      "section_id": "section-006",
+      "type": "impact",
+      "start_time": 96.9,
+      "end_time": 96.9,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.25, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 99.2,
+      "end_time": 99.2,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.26, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 101.05,
+      "end_time": 101.05,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.26, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 102.9,
+      "end_time": 102.9,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.38, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 104.75,
+      "end_time": 104.75,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.45, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 106.6,
+      "end_time": 106.6,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.40, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 108.2,
+      "end_time": 108.2,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.29, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "tension",
+      "start_time": 109.4,
+      "end_time": 111.2,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 111.20s.",
+      "evidence_summary": "dropout_strength peak 0.89 at 109.40s, 1.80s before impact"
+    },
+    {
+      "type": "impact",
+      "start_time": 111.2,
+      "end_time": 111.2,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.53, sub-band elevated, on downbeat"
+    },
+    {
+      "type": "release",
+      "start_time": 111.2,
+      "end_time": 114.915,
+      "confidence": 0.778,
+      "intensity": 0.556,
+      "section_id": "section-005",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "The mix stays elevated after the impact at 111.20s, sustaining the release.",
+      "evidence_summary": "post-impact mix-RMS median 0.0529 vs pre-impact 0.0340"
+    },
+    {
+      "type": "chorus \u2192 inst",
       "start_time": 111.23,
-      "stem_activity": {
-        "bass": 0.1366,
-        "drums": 0.3263,
-        "harmonic": 0.4181,
-        "vocals": 0.381
-      },
-      "stems_entering": [],
-      "stems_leaving": [
-        "bass"
-      ]
+      "end_time": 111.23,
+      "confidence": 0.144056,
+      "intensity": 0.144056,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "The song moves from chorus into inst here.",
+      "evidence_summary": "allin1 section boundary: function changes from 'chorus' to 'inst' (boundary confidence 0.14)."
+    },
+    {
+      "type": "tension",
+      "start_time": 111.25,
+      "end_time": 112.6,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 112.60s.",
+      "evidence_summary": "dropout_strength peak 1.00 at 111.25s, 1.35s before impact"
+    },
+    {
+      "type": "impact",
+      "start_time": 112.6,
+      "end_time": 112.6,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.72, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 113.75,
+      "end_time": 113.75,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.50, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 114.9,
+      "end_time": 114.9,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.60, sub-band elevated, on downbeat"
+    },
+    {
+      "type": "build",
+      "start_time": 114.939,
+      "end_time": 120.465,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "A rising snare roll builds toward the impact at 121.35s.",
+      "evidence_summary": "onset density 3->8 across bars 62-64"
+    },
+    {
+      "type": "tension",
+      "start_time": 119.1,
+      "end_time": 119.95,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 119.95s.",
+      "evidence_summary": "dropout_strength peak 0.85 at 119.10s, 0.85s before impact"
+    },
+    {
+      "type": "impact",
+      "start_time": 119.95,
+      "end_time": 119.95,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.42, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "release",
+      "start_time": 119.95,
+      "end_time": 123.665,
+      "confidence": 0.58,
+      "intensity": 0.16,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "The mix stays elevated after the impact at 119.95s, sustaining the release.",
+      "evidence_summary": "post-impact mix-RMS median 0.0522 vs pre-impact 0.0450"
+    },
+    {
+      "type": "tension",
+      "start_time": 120.5,
+      "end_time": 121.35,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 121.35s.",
+      "evidence_summary": "dropout_strength peak 0.76 at 120.50s, 0.85s before impact"
+    },
+    {
+      "type": "impact",
+      "start_time": 121.35,
+      "end_time": 121.35,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.92, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "tension",
+      "start_time": 123.25,
+      "end_time": 125.05,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 125.05s.",
+      "evidence_summary": "dropout_strength peak 0.77 at 123.25s, 1.80s before impact"
+    },
+    {
+      "type": "build",
+      "start_time": 124.157,
+      "end_time": 129.707,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "A rising snare roll builds toward the impact at 135.20s.",
+      "evidence_summary": "onset density 4->12 across bars 67-69"
+    },
+    {
+      "type": "impact",
+      "start_time": 125.05,
+      "end_time": 125.05,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.63, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 135.2,
+      "end_time": 135.2,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.68, sub-band elevated, on downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 137.05,
+      "end_time": 137.05,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.72, sub-band elevated, on downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 138.45,
+      "end_time": 138.45,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.38, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "release",
+      "start_time": 138.45,
+      "end_time": 142.165,
+      "confidence": 0.585,
+      "intensity": 0.169,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "The mix stays elevated after the impact at 138.45s, sustaining the release.",
+      "evidence_summary": "post-impact mix-RMS median 0.0463 vs pre-impact 0.0396"
+    },
+    {
+      "type": "impact",
+      "start_time": 139.8,
+      "end_time": 139.8,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.34, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "tension",
+      "start_time": 140.8,
+      "end_time": 141.05,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 141.05s.",
+      "evidence_summary": "dropout_strength peak 0.83 at 140.80s, 0.25s before impact"
+    },
+    {
+      "type": "tension",
+      "start_time": 140.8,
+      "end_time": 142.3,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 142.30s.",
+      "evidence_summary": "dropout_strength peak 0.83 at 140.80s, 1.50s before impact"
+    },
+    {
+      "type": "impact",
+      "start_time": 141.05,
+      "end_time": 141.05,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.41, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 142.3,
+      "end_time": 142.3,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.22, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 144.1,
+      "end_time": 144.1,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.28, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "approach",
+      "start_time": 151.394,
+      "end_time": 158.824,
+      "confidence": 0.71,
+      "intensity": 0.765,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An early downlifter begins shaping the run-up toward the impact at 178.60s.",
+      "evidence_summary": "high-band r2=0.80 over 4 bars, delta=0.77x range"
+    },
+    {
+      "type": "build",
+      "start_time": 175.775,
+      "end_time": 181.394,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "A rising snare roll builds toward the impact at 182.30s.",
+      "evidence_summary": "onset density 7->15 across bars 95-97"
+    },
+    {
+      "type": "impact",
+      "start_time": 178.6,
+      "end_time": 178.6,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.28, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 180.45,
+      "end_time": 180.45,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.24, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 182.3,
+      "end_time": 182.3,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-006",
+      "section_name": "inst",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.22, sub-band elevated, off downbeat"
     }
   ]
 }

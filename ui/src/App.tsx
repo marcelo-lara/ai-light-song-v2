@@ -96,15 +96,14 @@ const TIMELINE_KEYS = [
   "humanHints",
   // external word-level sung lyrics (reference/moises)
   "moisesLyrics",
-  // item 9 sparse lanes
-  "identifierHints",
-  "machineEvents",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",
   // wave-2 experiments (docs/experiments_pending.md run orders 1-3, 6)
   "vocalPhrases",
   "reactiveBands",
-  "gestures",
+  // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
+  // lane's production data source.
+  "eventTimeline",
   "grid",
   // named song form under review (experiments/allin1)
   "allin1",
@@ -121,7 +120,7 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   dropProposals: "dropProposals",
   vocalPhrases: "vocalPhrases",
   reactiveBands: "reactiveBands",
-  gestures: "gestures",
+  gestures: "eventTimeline",
   gridPhrase: "grid",
   allin1Transitions: "allin1",
   allin1Sections: "allin1",
@@ -129,8 +128,6 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   vocalTranscription: "vocalTranscription",
   sections: "sectionsTopLevel",
   chords: "harmonicLayer",
-  identifierHints: "identifierHints",
-  machineEvents: "machineEvents",
 };
 
 /** lane id → (artifact key, canvas renderer kind) for the item-5 data lanes. */
@@ -280,7 +277,7 @@ export function App(): React.JSX.Element {
       dropProposals: artifacts.dropProposals.data,
       vocalPhrases: artifacts.vocalPhrases.data,
       reactiveBands: artifacts.reactiveBands.data,
-      gestures: artifacts.gestures.data,
+      gestures: artifacts.eventTimeline.data,
       grid: artifacts.grid.data,
       allin1: artifacts.allin1.data,
       character: artifacts.character.data,
@@ -288,8 +285,6 @@ export function App(): React.JSX.Element {
       sections,
       sectionSegmentation,
       harmonicLayer: artifacts.harmonicLayer.data,
-      identifierHints: artifacts.identifierHints.data,
-      machineEvents: artifacts.machineEvents.data,
     }),
     [
       humanHintsFile,
@@ -297,7 +292,7 @@ export function App(): React.JSX.Element {
       artifacts.dropProposals.data,
       artifacts.vocalPhrases.data,
       artifacts.reactiveBands.data,
-      artifacts.gestures.data,
+      artifacts.eventTimeline.data,
       artifacts.grid.data,
       artifacts.allin1.data,
       artifacts.character.data,
@@ -305,8 +300,6 @@ export function App(): React.JSX.Element {
       sections,
       sectionSegmentation,
       artifacts.harmonicLayer.data,
-      artifacts.identifierHints.data,
-      artifacts.machineEvents.data,
     ],
   );
 

@@ -45,16 +45,10 @@ data/
           vocals.wav
         energy_summary/
           features.json
-          hints.json
         essentia/
           beats.json
           fft_bands.json
           hpcp.json
-        event_inference/
-          events.machine.json
-          features.json
-          rule_candidates.json
-          timeline_index.json
         section_segmentation/
           sections.json
         symbolic_transcription/
@@ -64,10 +58,6 @@ data/
         validation/
           phase_1_report.json
           phase_1_report.md
-          song_event_timeline.md
-          song_events.overrides.json
-          song_events.review.json
-          song_events.review.md
         layer_a_harmonic.json
         genre.json
         layer_c_energy.json
@@ -137,8 +127,7 @@ Each hint in `human_hints.json` carries `id`, `title`, `start_time`, `end_time`,
 
 - `artifacts/section_segmentation/sections.json` (`schema_version` `"1.1"`): new song-level `form_family` object; per-section `form_role` (primary label, gates the top-level `label`), `form_role_confidence`, `form_role_margin`, `energy_character` (former energy-shape label), `repetition_group` / `variant_of` / `similarity`, and `confidence_terms`. `confidence` now measures boundary/label certainty only and spans the full `[0, 1]` range.
 - Top-level `sections.json`: every row carries `section_id` (join key, item 3.2), plus `form_role`, `energy_character`, `repetition_group`, numeric `confidence`.
-- `song_event_timeline.json` (`schema_version` `"1.1"`): composite events with `phases[]`; `layer_add`/`layer_remove` removed and replaced by `texture_summary[]`; `intensity` is an absolute cross-song scale.
-- `artifacts/validation/review_queue.json` (new): ranked open questions for a human to answer into `song_facts.json`.
+- `song_event_timeline.json`: superseded again in plan v3.0 item 9 (`schema_version` `"2.0"`, the pipeline-wide `SCHEMA_VERSION`) -- see the file reference entry below for the current flat gesture-phase / section-transition shape. `artifacts/validation/review_queue.json` was removed in the same change.
 - `artifacts/validation/form_score.json`, `drops_score.json` (new): advisory `--compare form,drops` scores.
 
 ## File Reference
@@ -295,61 +284,6 @@ LLM hint:
 - Use: compare broad per-source dynamics against sections, phrases, and machine-event boundaries.
 - Avoid: assuming this file replaces the denser RMS file when you need short transient detail.
 
-### `data/analysis/<Song - Artist>/artifacts/energy_summary/hints.json`
-
-Summary: producer-scoped named energy-event identifiers such as drops and other later-defined song moments.
-
-Why it matters: this is the contract for event-level energy semantics that go beyond generic accent candidates.
-
-LLM hint:
-- See: `supported_identifiers` and `events[]`.
-- Use: detect whether a named moment such as `drop` has already been inferred from the energy layer.
-- Use: distinguish broad section energy from sharper named event moments.
-- Avoid: inventing undocumented identifier labels when this file is absent or incomplete.
-
-### `data/analysis/<Song - Artist>/artifacts/event_inference/features.json`
-
-Summary: normalized event-feature rows aligned to the shared beat, bar, section, and phrase timeline.
-
-Why it matters: this is the canonical feature surface behind rule candidates and machine event inference.
-
-LLM hint:
-- See: per-window feature values, timing anchors, and normalized feature names.
-- Use: understand why later event stages promoted or rejected a candidate window.
-- Use: audit whether a claimed drop, build, or break has support in the upstream normalized features.
-
-### `data/analysis/<Song - Artist>/artifacts/event_inference/timeline_index.json`
-
-Summary: helper index that maps event-analysis windows back to shared timing anchors and upstream layer references.
-
-Why it matters: quickest way to explain where an event window sits in relation to beats, sections, and phrases.
-
-LLM hint:
-- See: anchor ids, section ids, and time-window references.
-- Use: cross-reference event windows without recomputing alignment logic from multiple source files.
-
-### `data/analysis/<Song - Artist>/artifacts/event_inference/rule_candidates.json`
-
-Summary: baseline rule-generated event candidates before review merging or final machine-event promotion.
-
-Why it matters: this shows the first explicit event hypotheses the pipeline generated.
-
-LLM hint:
-- See: candidate labels, supporting features, confidence values, and timing windows.
-- Use: inspect why the baseline detector believed a moment might be a drop, build, or other supported event.
-- Avoid: treating every rule candidate as final; the reviewed export is the downstream contract.
-
-### `data/analysis/<Song - Artist>/artifacts/event_inference/events.machine.json`
-
-Summary: canonical machine-generated event set after the Epic 5 inference chain applies schema normalization and confidence handling.
-
-Why it matters: this is the structured source for reviewed event exports and lighting-facing event timing.
-
-LLM hint:
-- See: canonical event ids, event types, start and end times, confidence, and provenance fields.
-- Use: build event-aware cue logic from this file when you need the machine view before human review merges.
-- Use: cross-check event provenance against `rule_candidates.json`, `features.json`, and `energy_summary/hints.json`.
-
 ### `data/analysis/<Song - Artist>/artifacts/section_segmentation/sections.json`
 
 Summary: canonical structural windows from allin1's named segmentation — section ids, start and end times, a Harmonix functional label, and confidence scores.
@@ -485,50 +419,36 @@ LLM hint:
 - Use: match hints by `section_id` instead of relying on repeated section labels alone.
 - Avoid: using this file as the canonical store for event windows such as drops or builds; prefer the reviewed event files and event timeline for that role.
 
-### `data/analysis/<Song - Artist>/artifacts/validation/song_events.review.json`
-
-Summary: merged review surface that combines machine-generated event rows with any preserved user-authored review decisions.
-
-Why it matters: this is the main reviewed event contract before timeline export.
-
-LLM hint:
-- See: reviewed events, review status fields, and any preserved manual decisions.
-- Use: confirm which machine events survived review and which rows need operator attention.
-- Use: prefer this file over `events.machine.json` when downstream behavior should reflect the current reviewed state.
-
-### `data/analysis/<Song - Artist>/artifacts/validation/song_events.review.md`
-
-Summary: human-readable companion to the reviewed event JSON payload.
-
-Why it matters: fastest way to scan reviewed event timing and status without opening raw JSON.
-
-### `data/analysis/<Song - Artist>/artifacts/validation/song_events.overrides.json`
-
-Summary: persisted override store for user-authored event edits and suppressions.
-
-Why it matters: preserves manual corrections across reruns of the event inference pipeline.
-
-LLM hint:
-- See: override keys, explicit replacements, and suppressed event ids.
-- Use: explain why a reviewed event differs from the machine event source.
-
 ### `data/analysis/<Song - Artist>/song_event_timeline.json`
 
-Summary: compact LLM-friendly export of the reviewed event timeline.
+Summary (plan v3.0 item 9, `schema_version` `"2.0"`): flat gesture-phase and
+section-transition events produced by the phase-3 `gestures` stage
+(`src/analyzer/stages/gestures.py`) from the trusted phase-1/2 artifacts only
+-- never from the audio. Replaces the whole Epic-5 `event_*` chain (rule
+candidates, machine events, human review/overrides, composite build/drop/
+post_drop rows with nested `phases[]`), which was measured at chance against
+the gold set (CLAUDE.md) and deleted in the same change, along with its
+`artifacts/event_inference/`, `artifacts/validation/song_events.*` and
+`artifacts/validation/review_queue.json` outputs.
 
-Why it matters: best single structured event file for downstream lighting logic and prompt-based planning.
+Why it matters: best single structured event file for downstream lighting
+logic and prompt-based planning. A drop is never named directly -- it only
+ever appears as gesture phases (`approach`/`build`/`tension`/`impact`/
+`release`) anchored on a detected impact, or as a `"<from> → <to>"`
+section-pair transition (constitution §5.2).
 
 LLM hint:
-- See: canonical event rows, exact timing windows, and any human-readable summary fields.
-- Use: drive event-aware cue planning, especially when fixture overlays or focal changes should line up with drops and other named moments.
-- Use: preserve canonical event ids when translating this file into prose or cue sheets.
-- Use: preserve the explicit `created_by` provenance on each inferred event row.
-
-### `data/analysis/<Song - Artist>/artifacts/validation/song_event_timeline.md`
-
-Summary: human-readable companion to the reviewed event timeline export.
-
-Why it matters: quick event briefing for review or operator-facing discussion.
+- See: `events[]`, each carrying `type`, `start_time`, `end_time`,
+  `confidence`, `intensity`, `section_id`, `section_name`, `provenance`,
+  `summary`, and `evidence_summary`.
+- Use: drive event-aware cue planning from the named phase a moment belongs
+  to, not from an invented "drop" label.
+- Use: a phase absent from a gesture (e.g. no `tension` row) means no
+  supporting sound-design primitive was found for it -- never guessed
+  (constitution §2).
+- Avoid: expecting nested `phases[]`, `composite`, `member_event_ids`, or a
+  separate `events.machine.json` to cross-reference -- every row here is
+  already flat and already carries its own evidence.
 
 ### `data/analysis/<Song - Artist>/reference/moises/chords.json`
 

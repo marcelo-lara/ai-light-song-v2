@@ -10,13 +10,7 @@ from analyzer.io import ensure_directory, read_json, write_json
 from analyzer.exceptions import AnalysisError
 from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
 from analyzer.paths import SongPaths
-from analyzer.stages.event_features import build_event_feature_layer
-from analyzer.stages.event_identifiers import infer_song_identifiers
-from analyzer.stages.event_machine import generate_machine_events
-from analyzer.stages.event_rules import generate_rule_candidates
-from analyzer.stages.event_review import generate_event_review
-from analyzer.stages.event_timeline import export_event_timeline
-from analyzer.stages.review_queue import build_review_queue
+from analyzer.stages.gestures import build_gestures
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.genre import classify_genre
@@ -55,13 +49,7 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "extract-energy-features": "2.6",
     "segment-sections": "3.1",
     "derive-energy-layer": "4.1",
-    "build-event-feature-layer": "4.4",
-    "infer-song-identifiers": "4.5",
-    "generate-rule-candidates": "5.2",
-    "generate-machine-events": "5.4",
-    "generate-event-review": "5.5",
-    "export-event-timeline": "5.6",
-    "build-review-queue": "5.1",
+    "build-gestures": "5.0",
     "classify-genre": "6.1",
     "generate-section-hints": "6.2",
     "build-ui-data": "7.2",
@@ -183,78 +171,13 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
         _run_stage(paths.song_name, "phase-1", stage_name, derive_energy_layer, paths, timing, energy_features, sections)
         return 0
-    if stage_name == "build-event-feature-layer":
+    if stage_name == "build-gestures":
+        fft_bands = _required_artifact_payload(paths, stage_name, "essentia", "fft_bands.json")
+        rms_loudness = _required_artifact_payload(paths, stage_name, "essentia", "rms_loudness.json")
+        drum_events = _required_artifact_payload(paths, stage_name, "symbolic_transcription", "drum_events.json")
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
-        # The symbolic layer was deleted in v3.0 item 6; this event_* stack is
-        # superseded by the gestures stage (item 9) and is not otherwise
-        # touched here, so it is fed an empty symbolic layer rather than
-        # rewired.
-        symbolic: dict = {}
-        energy_features = _required_artifact_payload(paths, stage_name, "energy_summary", "features.json")
-        energy_layer = _required_artifact_payload(paths, stage_name, "layer_c_energy.json")
         sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
-        genre_result = _optional_artifact_payload(paths, "genre.json")
-        _run_stage(
-            paths.song_name,
-            "phase-1",
-            stage_name,
-            build_event_feature_layer,
-            paths,
-            timing,
-            harmonic,
-            symbolic,
-            energy_features,
-            energy_layer,
-            sections,
-            genre_result,
-        )
-        return 0
-    if stage_name == "generate-rule-candidates":
-        event_features = _required_artifact_payload(paths, stage_name, "event_inference", "features.json")
-        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
-        genre_result = _optional_artifact_payload(paths, "genre.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, generate_rule_candidates, paths, event_features, sections, genre_result)
-        return 0
-    if stage_name == "infer-song-identifiers":
-        energy_layer = _required_artifact_payload(paths, stage_name, "layer_c_energy.json")
-        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, infer_song_identifiers, paths, energy_layer, sections)
-        return 0
-    if stage_name == "generate-machine-events":
-        event_features = _required_artifact_payload(paths, stage_name, "event_inference", "features.json")
-        rule_candidates = _required_artifact_payload(paths, stage_name, "event_inference", "rule_candidates.json")
-        event_identifiers = _required_artifact_payload(paths, stage_name, "energy_summary", "hints.json")
-        # See the note above build-event-feature-layer: symbolic is gone.
-        symbolic = {}
-        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
-        _run_stage(
-            paths.song_name,
-            "phase-1",
-            stage_name,
-            generate_machine_events,
-            paths,
-            event_features,
-            rule_candidates,
-            event_identifiers,
-            symbolic,
-            sections,
-        )
-        return 0
-    if stage_name == "generate-event-review":
-        machine_events = _required_artifact_payload(paths, stage_name, "event_inference", "events.machine.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, generate_event_review, paths, machine_events)
-        return 0
-    if stage_name == "export-event-timeline":
-        machine_events = _required_artifact_payload(paths, stage_name, "event_inference", "events.machine.json")
-        review_outputs = _run_stage(paths.song_name, "phase-1", "generate-event-review", generate_event_review, paths, machine_events)
-        _run_stage(paths.song_name, "phase-1", stage_name, export_event_timeline, paths, review_outputs["merged_payload"])
-        return 0
-    if stage_name == "build-review-queue":
-        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
-        genre_result = _optional_artifact_payload(paths, "genre.json")
-        timeline = read_json(paths.timeline_output_path) if paths.timeline_output_path.exists() else {}
-        _run_stage(paths.song_name, "phase-1", stage_name, build_review_queue, paths, sections, genre_result, timeline)
+        _run_stage(paths.song_name, "phase-1", stage_name, build_gestures, paths, fft_bands, rms_loudness, drum_events, timing, sections)
         return 0
     if stage_name == "build-human-hints-alignment":
         _run_stage(paths.song_name, "phase-1", stage_name, build_human_hints_alignment, paths)
@@ -392,62 +315,20 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         )
         energy_features = _run_stage(paths.song_name, "phase-1", "extract-energy-features", extract_energy_features, paths, timing)
         sections = _run_stage(paths.song_name, "phase-1", "segment-sections", segment_sections, paths, stems, timing)
-        # The symbolic note-transcription layer was deleted in v3.0 item 6.
-        # build-event-feature-layer and generate-machine-events still accept a
-        # symbolic layer positionally; that event_* stack is superseded by the
-        # gestures stage (item 9) and is not otherwise touched here, so it is
-        # fed an empty one rather than rewired.
-        symbolic: dict = {}
         drum_events = _run_stage(paths.song_name, "phase-1", "extract-drum-events", extract_drum_events, paths, stems, timing, sections)
         genre_result = _run_stage(paths.song_name, "phase-1", "classify-genre", classify_genre, paths)
         energy = _run_stage(paths.song_name, "phase-1", "derive-energy-layer", derive_energy_layer, paths, timing, energy_features, sections)
-        event_features = _run_stage(
+        event_timeline = _run_stage(
             paths.song_name,
             "phase-1",
-            "build-event-feature-layer",
-            build_event_feature_layer,
+            "build-gestures",
+            build_gestures,
             paths,
+            fft_bands,
+            loudness["rms_loudness"],
+            drum_events,
             timing,
-            harmonic,
-            symbolic,
-            energy_features,
-            energy,
             sections,
-            genre_result,
-        )
-        event_identifiers = _run_stage(
-            paths.song_name,
-            "phase-1",
-            "infer-song-identifiers",
-            infer_song_identifiers,
-            paths,
-            energy,
-            sections,
-        )
-        rule_candidates = _run_stage(paths.song_name, "phase-1", "generate-rule-candidates", generate_rule_candidates, paths, event_features, sections, genre_result)
-        machine_events = _run_stage(
-            paths.song_name,
-            "phase-1",
-            "generate-machine-events",
-            generate_machine_events,
-            paths,
-            event_features,
-            rule_candidates,
-            event_identifiers,
-            symbolic,
-            sections,
-        )
-        review_outputs = _run_stage(paths.song_name, "phase-1", "generate-event-review", generate_event_review, paths, machine_events)
-        event_timeline = _run_stage(paths.song_name, "phase-1", "export-event-timeline", export_event_timeline, paths, review_outputs["merged_payload"])
-        _run_stage(
-            paths.song_name,
-            "phase-1",
-            "build-review-queue",
-            build_review_queue,
-            paths,
-            sections,
-            genre_result,
-            read_json(paths.timeline_output_path) if paths.timeline_output_path.exists() else {},
         )
         hints = _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, sections)
         ui_outputs = _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
@@ -469,15 +350,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 "drum_midi": str(paths.artifact("symbolic_transcription", "omnizart", "drums.mid")),
                 "energy_features": str(paths.artifact("energy_summary", "features.json")),
                 "energy_layer": str(paths.artifact("layer_c_energy.json")),
-                "energy_identifiers": str(paths.artifact("energy_summary", "hints.json")),
-                "event_features": str(paths.artifact("event_inference", "features.json")),
-                "event_timeline_index": str(paths.artifact("event_inference", "timeline_index.json")),
-                "event_rule_candidates": str(paths.artifact("event_inference", "rule_candidates.json")),
-                "event_machine": str(paths.artifact("event_inference", "events.machine.json")),
-                "event_review": str(paths.review_json_path),
-                "event_overrides": str(paths.overrides_path),
-                "event_timeline_markdown": str(paths.timeline_md_path),
-                "review_queue": str(paths.artifact("validation", "review_queue.json")),
                 "song_facts": str(paths.reference("human", "song_facts.json")),
                 "human_hints_alignment": human_hint_alignment["json_path"] if human_hint_alignment else None,
                 "human_hints_alignment_markdown": human_hint_alignment["markdown_path"] if human_hint_alignment else None,

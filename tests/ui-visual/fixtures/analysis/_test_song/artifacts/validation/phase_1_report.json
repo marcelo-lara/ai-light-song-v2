@@ -4,7 +4,7 @@
   "command": "python -m analyzer",
   "status": "passed",
   "exit_code": 0,
-  "generated_at": "2026-09-05T02:16:01.862076+00:00",
+  "generated_at": "2026-09-05T05:47:21.798318+00:00",
   "inputs": {
     "song_path": "/data/songs/_test_song.mp3",
     "reference_chords": "/data/analysis/_test_song/reference/moises/chords.json",
@@ -16,13 +16,6 @@
     "drum_events_file": "/data/analysis/_test_song/artifacts/symbolic_transcription/drum_events.json",
     "drum_midi_file": "/data/analysis/_test_song/artifacts/symbolic_transcription/omnizart/drums.mid",
     "energy_layer_file": "/data/analysis/_test_song/artifacts/layer_c_energy.json",
-    "energy_identifiers_file": "/data/analysis/_test_song/artifacts/energy_summary/hints.json",
-    "event_features_file": "/data/analysis/_test_song/artifacts/event_inference/features.json",
-    "event_timeline_index_file": "/data/analysis/_test_song/artifacts/event_inference/timeline_index.json",
-    "event_rule_candidates_file": "/data/analysis/_test_song/artifacts/event_inference/rule_candidates.json",
-    "event_machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json",
-    "event_review_file": "/data/analysis/_test_song/artifacts/validation/song_events.review.json",
-    "event_overrides_file": "/data/analysis/_test_song/artifacts/validation/song_events.overrides.json",
     "event_timeline_file": "/data/analysis/_test_song/song_event_timeline.json",
     "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
     "human_hints_alignment_file": "/data/analysis/_test_song/artifacts/validation/human_hints_alignment.json",
@@ -961,12 +954,12 @@
         "residual_spread_seconds": 0.224196,
         "reference_beat_interval_seconds": 0.46,
         "downbeat_f1_diagnostics": {
-          "downbeat_true_positives": 17,
-          "downbeat_predicted_count": 29,
+          "downbeat_true_positives": 16,
+          "downbeat_predicted_count": 21,
           "downbeat_reference_count": 32,
-          "downbeat_precision": 0.586207,
-          "downbeat_recall": 0.53125,
-          "downbeat_f1": 0.557377,
+          "downbeat_precision": 0.761905,
+          "downbeat_recall": 0.5,
+          "downbeat_f1": 0.603774,
           "downbeat_tolerance_seconds": 0.07
         }
       }
@@ -1221,45 +1214,11 @@
       "diagnostics": null
     },
     "events": {
-      "status": "failed",
-      "matched": 6,
-      "mismatched": 1,
-      "match_ratio": 0.8571428571428571,
-      "details": [
-        {
-          "check": "drop_identifier_supported",
-          "passed": true
-        },
-        {
-          "check": "event_feature_rows_present",
-          "passed": true,
-          "count": 115
-        },
-        {
-          "check": "rule_candidates_present",
-          "passed": true,
-          "count": 52
-        },
-        {
-          "check": "machine_events_present",
-          "passed": true,
-          "count": 63
-        },
-        {
-          "check": "review_summary_present",
-          "passed": true
-        },
-        {
-          "check": "overrides_operations_list_present",
-          "passed": true
-        },
-        {
-          "check": "timeline_matches_merged_review_count",
-          "passed": false,
-          "timeline_count": 62,
-          "merged_count": 63
-        }
-      ],
+      "status": "skipped",
+      "matched": 0,
+      "mismatched": 0,
+      "match_ratio": null,
+      "details": [],
       "reference_file": null,
       "diagnostics": null
     },
@@ -1331,25 +1290,25 @@
     },
     "drops": {
       "status": "failed",
-      "matched": 2,
-      "mismatched": 1,
-      "match_ratio": 0.6666666666666666,
+      "matched": 1,
+      "mismatched": 2,
+      "match_ratio": 0.3333333333333333,
       "details": [
         {
           "check": "drop recall >= 0.5",
           "passed": false,
-          "recall": 0.2
+          "recall": 0.0
         },
         {
           "check": "drop precision >= 0.5",
-          "passed": true,
-          "precision": 1.0
+          "passed": false,
+          "precision": null
         },
         {
           "check": "fake_drop does not outnumber drop",
           "passed": true,
           "fake": 0,
-          "drop": 1
+          "drop": 0
         }
       ],
       "reference_file": "/data/analysis/_test_song/reference/human/human_hints.json",
@@ -1357,23 +1316,19 @@
         "score": {
           "target": "drops",
           "tolerance_seconds": 1.0,
-          "detected_count": 1,
+          "detected_count": 0,
           "fake_drop_count": 0,
-          "detected_times": [
-            30.023
-          ],
+          "detected_times": [],
           "labelled_count": 5,
           "metrics": {
-            "true_positives": 1,
-            "predicted": 1,
+            "true_positives": 0,
+            "predicted": 0,
             "labelled": 5,
-            "precision": 1.0,
-            "recall": 0.2,
-            "f1": 0.3333
+            "precision": null,
+            "recall": 0.0,
+            "f1": 0.0
           },
-          "match_deltas": [
-            0.898
-          ],
+          "match_deltas": [],
           "mode": "timed",
           "fake_outnumbers_drop": false
         }
@@ -1386,7 +1341,6 @@
     "Drum validation checks the producer-scoped drum_events.json artifact for structural integrity, Omnizart provenance, debug-source metadata, and song-level pulse plausibility.",
     "Section validation compares structural change points only; reference segment labels are advisory and do not affect pass/fail.",
     "Energy validation checks internal consistency between section windows, accent candidates, and the canonical beat timeline.",
-    "Event validation checks Epic 5 artifact integrity and machine-review timeline consistency.",
     "Form validation scores section boundaries, form_role and form_family against reference/human labels; advisory only, and reports 'skipped' until the gold set is labelled (plan D1).",
     "Drop validation scores detected drops against timed human drop hints, or against the song-level has_drop fact when only that is available; advisory only.",
     "Human hint alignment review files compare narrative hint windows against generated sections, events, and harmonic events when human hints are available."

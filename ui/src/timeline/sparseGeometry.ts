@@ -8,8 +8,7 @@
 // The label/caption visibility thresholds match the old canvas painter.
 
 export const COMPACT_LANE_IDS: ReadonlySet<string> = new Set([
-  "identifierHints",
-  "machineEvents",
+  "gestures",
 ]);
 
 /** vertical inset of the block band inside the lane body */

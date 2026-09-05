@@ -9,12 +9,10 @@ import {
   asNumber,
   asObject,
   asString,
-  booleanOr,
   numberArray,
   numberOr,
   numberOrNull,
   objectOrNull,
-  stringArray,
   stringOr,
   stringOrNull,
 } from "./parse";
@@ -47,9 +45,7 @@ import type {
   SongFact,
   SongFactsFile,
   SongInfo,
-  TextureSummary,
   TimelineEvent,
-  EventPhase,
 } from "./types";
 
 function stringRecord(value: unknown, ctx: string): Record<string, string> {
@@ -61,15 +57,6 @@ function stringRecord(value: unknown, ctx: string): Record<string, string> {
     // document — an absent path is simply an absent entry.
     if (entry === null || entry === undefined) continue;
     out[key] = asString(entry, `${ctx}.${key}`);
-  }
-  return out;
-}
-
-function numberRecord(value: unknown, ctx: string): Record<string, number> {
-  const obj = asObject(value, ctx);
-  const out: Record<string, number> = {};
-  for (const [key, entry] of Object.entries(obj)) {
-    out[key] = asNumber(entry, `${ctx}.${key}`);
   }
   return out;
 }
@@ -448,20 +435,9 @@ export function parseEnergyLayer(raw: unknown): EnergyLayer {
 
 // ---------------------------------------------------------------------------
 
-function parseEventPhase(raw: unknown, ctx: string): EventPhase {
-  const o = asObject(raw, ctx);
-  return {
-    phase: asString(o.phase, `${ctx}.phase`),
-    start_time: asNumber(o.start_time, `${ctx}.start_time`),
-    end_time: asNumber(o.end_time, `${ctx}.end_time`),
-    intensity: numberOr(o.intensity, 0, `${ctx}.intensity`),
-  };
-}
-
 function parseTimelineEvent(raw: unknown, ctx: string): TimelineEvent {
   const o = asObject(raw, ctx);
   return {
-    id: asString(o.id, `${ctx}.id`),
     type: asString(o.type, `${ctx}.type`),
     start_time: asNumber(o.start_time, `${ctx}.start_time`),
     end_time: asNumber(o.end_time, `${ctx}.end_time`),
@@ -471,38 +447,10 @@ function parseTimelineEvent(raw: unknown, ctx: string): TimelineEvent {
     section_name: stringOrNull(o.section_name, `${ctx}.section_name`),
     provenance: stringOrNull(o.provenance, `${ctx}.provenance`),
     summary: stringOrNull(o.summary, `${ctx}.summary`),
-    created_by: stringOrNull(o.created_by, `${ctx}.created_by`),
     evidence_summary: stringOrNull(
       o.evidence_summary,
       `${ctx}.evidence_summary`,
     ),
-    lighting_hint: stringOrNull(o.lighting_hint, `${ctx}.lighting_hint`),
-    evidence_ref: objectOrNull(o.evidence_ref, `${ctx}.evidence_ref`),
-    composite: booleanOr(o.composite, false, `${ctx}.composite`),
-    phases:
-      o.phases === undefined || o.phases === null
-        ? null
-        : asArray(o.phases, `${ctx}.phases`).map((p, i) =>
-            parseEventPhase(p, `${ctx}.phases[${i}]`),
-          ),
-    member_event_ids:
-      o.member_event_ids === undefined || o.member_event_ids === null
-        ? null
-        : stringArray(o.member_event_ids, `${ctx}.member_event_ids`),
-  };
-}
-
-function parseTextureSummary(raw: unknown, ctx: string): TextureSummary {
-  const o = asObject(raw, ctx);
-  return {
-    section_id: asString(o.section_id, `${ctx}.section_id`),
-    start_time: asNumber(o.start_time, `${ctx}.start_time`),
-    stem_activity: numberRecord(o.stem_activity ?? {}, `${ctx}.stem_activity`),
-    stems_entering: stringArray(
-      o.stems_entering ?? [],
-      `${ctx}.stems_entering`,
-    ),
-    stems_leaving: stringArray(o.stems_leaving ?? [], `${ctx}.stems_leaving`),
   };
 }
 
@@ -515,10 +463,6 @@ export function parseEventTimeline(raw: unknown): EventTimeline {
     events: asArray(o.events, "timeline.events").map((e, i) =>
       parseTimelineEvent(e, `timeline.events[${i}]`),
     ),
-    texture_summary: asArray(
-      o.texture_summary ?? [],
-      "timeline.texture_summary",
-    ).map((t, i) => parseTextureSummary(t, `timeline.texture_summary[${i}]`)),
   };
 }
 

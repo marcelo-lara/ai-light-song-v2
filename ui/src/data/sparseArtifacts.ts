@@ -1,6 +1,6 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
-// artifacts consumed by item 9's SparseLane (identifier hints,
-// machine / ML events).
+// artifacts consumed by SparseLane (drop proposals, allin1, character,
+// vocal transcription, vocal phrases, reactive bands, phrase grid).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -8,6 +8,12 @@
 // missing optional field. Quality of the structural read comes first, and a
 // half-populated artifact should still render its blocks rather than hard-fail
 // the whole lane (matches the previous app's `buildTimelineData` behaviour).
+//
+// The production Gestures lane reads `song_event_timeline.json` instead
+// (typed `EventTimeline` in `./parsers` / `./types`, loaded via
+// `loadEventTimeline`) -- plan v3.0 item 9 promoted it out of this file's
+// generic tolerant-event machinery, which existed to also back the since-
+// removed Machine Events / Identifier Hints lanes.
 
 import { asObject } from "./parse";
 import { artifactPaths } from "./paths";
@@ -22,82 +28,6 @@ const st = (v: unknown, fallback = ""): string =>
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
 const rec = (v: unknown): Record<string, unknown> =>
   v && typeof v === "object" ? (v as Record<string, unknown>) : {};
-
-// ---------------------------------------------------------------------------
-// generic event rows — energy_summary/hints.json + event_inference/events.*.json
-// ---------------------------------------------------------------------------
-
-export interface AnalysisEvent {
-  id: string;
-  label: string;
-  start_s: number;
-  end_s: number;
-  confidence: number | null;
-  intensity: number | null;
-  section_id: string | null;
-  section_name: string | null;
-  created_by: string | null;
-  model_name: string | null;
-  notes: string;
-  evidence_summary: string;
-  raw: Record<string, unknown>;
-}
-
-function parseEventRow(raw: unknown, i: number, fallbackCreatedBy: string): AnalysisEvent {
-  const r = rec(raw);
-  const start_s = num(r.start_s ?? r.start_time ?? r.start ?? r.time_s ?? r.time);
-  const end_s = Math.max(
-    num(r.end_s ?? r.end_time ?? r.end, start_s),
-    start_s,
-  );
-  const notesRaw = r.notes ?? r.summary ?? r.evidence_summary;
-  const evidence = rec(r.evidence);
-  const explanation = rec(r.explanation);
-  const saliency = rec(r.saliency);
-  return {
-    id: st(r.id ?? r.event_id, `event-${String(i + 1).padStart(3, "0")}`),
-    label: st(r.label ?? r.type ?? r.identifier, "event"),
-    start_s,
-    end_s,
-    confidence:
-      r.confidence == null ? null : num(r.confidence),
-    intensity: r.intensity == null ? null : num(r.intensity),
-    section_id: r.section_id == null ? null : st(r.section_id),
-    section_name: r.section_name == null ? null : st(r.section_name),
-    created_by: st(r.created_by ?? r.model_name, fallbackCreatedBy) || null,
-    model_name: r.model_name == null ? null : st(r.model_name),
-    notes: Array.isArray(notesRaw) ? notesRaw.join(" ") : st(notesRaw),
-    evidence_summary: st(
-      explanation.summary ?? saliency.summary ?? evidence.summary,
-    ),
-    raw: r,
-  };
-}
-
-export interface EventsFile {
-  schema_version: string;
-  song_name: string;
-  events: AnalysisEvent[];
-}
-
-const eventsParser =
-  (file: string, fallbackCreatedBy: string) =>
-  (raw: unknown): EventsFile => {
-    const o = asObject(raw, file);
-    const events = arr(o.events)
-      .map((e, i) => parseEventRow(e, i, fallbackCreatedBy))
-      .sort((a, b) => a.start_s - b.start_s);
-    return { schema_version: st(o.schema_version), song_name: st(o.song_name), events };
-  };
-
-export const parseIdentifierHints = eventsParser(
-  "energy_summary/hints.json",
-  "energy_identifier",
-);
-export const parseMachineEvents = eventsParser(
-  "event_inference/events.machine.json",
-  "machine",
-);
 
 // ---------------------------------------------------------------------------
 // drop-impact proposals — reference/proposals/drop_impacts.json
@@ -517,11 +447,6 @@ export function parseMoisesLyrics(raw: unknown): MoisesLyricsFile {
 // loaders
 // ---------------------------------------------------------------------------
 
-export const loadIdentifierHints = (song: string, f?: typeof fetch): Promise<LoadResult<EventsFile>> =>
-  loadJson(artifactPaths.identifierHints(song), parseIdentifierHints, f);
-export const loadMachineEvents = (song: string, f?: typeof fetch): Promise<LoadResult<EventsFile>> =>
-  loadJson(artifactPaths.machineEvents(song), parseMachineEvents, f);
-
 /** As above: absent until the exporter has been run over the song. */
 export async function loadCharacter(
   song: string,
@@ -729,71 +654,6 @@ export async function loadReactiveBands(
   const result = await loadJson(artifactPaths.reactiveBands(song), parseReactiveBands, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, accents: [] } };
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// gestures — reference/proposals/gestures.json
-// ---------------------------------------------------------------------------
-//
-// experiments/gestures: composite drop gestures (approach/build/tension/
-// impact/release) assembled from named sound-design primitive detectors.
-// Never names the section — it says "a build of this shape happens here".
-
-export interface GesturePhase {
-  name: string;
-  start_s: number;
-  end_s: number;
-  confidence: number;
-  from: string;
-}
-
-export interface GestureBlock {
-  id: string;
-  start_s: number;
-  end_s: number;
-  impact_time_s: number;
-  confidence: number;
-  phases: GesturePhase[];
-}
-
-export interface GesturesFile {
-  schema_version: string;
-  song_name: string;
-  gestures: GestureBlock[];
-}
-
-export function parseGestures(raw: unknown): GesturesFile {
-  const o = asObject(raw, "reference/proposals/gestures.json");
-  const gestures = arr(o.gestures).map((row, i): GestureBlock => {
-    const r = rec(row);
-    const phasesIn = rec(r.phases);
-    const phases: GesturePhase[] = Object.entries(phasesIn).map(([name, v]) => {
-      const pr = rec(v);
-      return { name, start_s: num(pr.start), end_s: num(pr.end), confidence: num(pr.confidence), from: st(pr.from) };
-    });
-    phases.sort((a, b) => a.start_s - b.start_s);
-    return {
-      id: `gesture-${String(i + 1).padStart(3, "0")}`,
-      start_s: num(r.start),
-      end_s: num(r.end),
-      impact_time_s: num(r.impact_time),
-      confidence: num(r.confidence),
-      phases,
-    };
-  });
-  gestures.sort((a, b) => a.start_s - b.start_s);
-  return { schema_version: st(o.schema_version), song_name: st(o.song_name), gestures };
-}
-
-export async function loadGestures(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<GesturesFile>> {
-  const result = await loadJson(artifactPaths.gestures(song), parseGestures, f);
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return { ok: true, data: { schema_version: "", song_name: song, gestures: [] } };
   }
   return result;
 }

@@ -510,7 +510,7 @@ writable fixture file (plan v1.5 D15); it is still ~15 s.
       `ui/src/panel/HintEditorPanel.test.tsx`. No baseline pixels change.
 - [x] *(plan v1.5 item 9)* `tests/ui-visual/specs/promote-hint.spec.ts` — the
       block inspector's `promote-hint` action: absent before a selection, present
-      (count 1) for every inspected event (`allin1Sections`, `machineEvents`, a
+      (count 1) for every inspected event (`allin1Sections`, `gestures`, a
       Segments block) and in both transport states, absent on a `humanHints`
       block (routed to the hint editor). Clicking it opens the hint editor on a
       pre-filled unsaved draft (title + start/end from the block, `Captured from

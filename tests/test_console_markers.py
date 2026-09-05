@@ -337,11 +337,6 @@ class ConsoleMarkerTests(unittest.TestCase):
             energy_features = {"beat_features": []}
             drum_events = {"generated_from": {"engine": "audiohacking.omnizart.drum"}}
             energy = {"sections": []}
-            event_features = {"features": []}
-            rule_candidates = {"events": []}
-            event_identifiers = {"events": []}
-            machine_events = {"events": []}
-            review_outputs = {"merged_payload": {"events": []}}
             event_timeline = {"events": []}
             fft_bands = {"bands": [{"id": "sub"}, {"id": "bass"}, {"id": "low_mid"}, {"id": "mid"}, {"id": "upper_mid"}, {"id": "presence"}, {"id": "brilliance"}]}
             loudness = {
@@ -365,12 +360,7 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.generate_section_hints", return_value=hints_payload))
                 stack.enter_context(patch("analyzer.pipeline.build_ui_data", return_value=ui_outputs))
                 stack.enter_context(patch("analyzer.pipeline.derive_energy_layer", return_value=energy))
-                stack.enter_context(patch("analyzer.pipeline.build_event_feature_layer", return_value=event_features))
-                stack.enter_context(patch("analyzer.pipeline.generate_rule_candidates", return_value=rule_candidates))
-                stack.enter_context(patch("analyzer.pipeline.infer_song_identifiers", return_value=event_identifiers))
-                stack.enter_context(patch("analyzer.pipeline.generate_machine_events", return_value=machine_events))
-                stack.enter_context(patch("analyzer.pipeline.generate_event_review", return_value=review_outputs))
-                stack.enter_context(patch("analyzer.pipeline.export_event_timeline", return_value=event_timeline))
+                stack.enter_context(patch("analyzer.pipeline.build_gestures", return_value=event_timeline))
                 stack.enter_context(patch("analyzer.pipeline.build_human_hints_alignment", return_value=None))
                 stack.enter_context(patch("analyzer.pipeline.build_validation_report", return_value=(report, 0)))
                 stack.enter_context(patch("analyzer.pipeline.write_validation_report"))

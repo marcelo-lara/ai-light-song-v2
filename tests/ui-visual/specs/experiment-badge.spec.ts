@@ -8,19 +8,18 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // label text. Production `src/` lanes are never badged, even the ones
 // CLAUDE.md records as untrusted.
 //
-// The badged set currently has nine lanes — the original five plus the
-// wave-2 experiment lanes (`vocalPhrases`, `reactiveBands`, `gestures`,
-// `gridPhrase`) added alongside `laneState.ts`'s `experiment:` tags. This
-// list must track `ui/src/timeline/laneState.ts`'s tagged set exactly.
-// Plan v3.0 item 14 will shrink it back down when the two allin1 lanes
-// (`allin1Transitions`, `allin1Sections`) are promoted out of experiment
-// status — update this list again when that happens.
+// The badged set currently has eight lanes. Plan v3.0 item 9 promoted
+// `gestures` out of this set: it used to be an `experiments/gestures`
+// sandbox lane and now reads the production `song_event_timeline.json`
+// deliverable. This list must track `ui/src/timeline/laneState.ts`'s tagged
+// set exactly. Plan v3.0 item 14 will shrink it further when the two allin1
+// lanes (`allin1Transitions`, `allin1Sections`) are promoted out of
+// experiment status — update this list again when that happens.
 
 const BADGED = [
   "dropProposals",
   "vocalPhrases",
   "reactiveBands",
-  "gestures",
   "gridPhrase",
   "allin1Transitions",
   "character",
@@ -33,8 +32,7 @@ const NOT_BADGED = [
   "humanHints",
   "sections",
   "chords",
-  "identifierHints",
-  "machineEvents",
+  "gestures",
   "fftBands",
   "rmsLoudness",
   "loudnessEnvelope",
@@ -52,7 +50,7 @@ test("item 7 — flask badge on unpromoted-experiment lane heads", async ({ page
 
   // 1. runtime assertions clean (re-checked at the end).
 
-  // 2. badged — exactly these nine.
+  // 2. badged — exactly these eight.
   for (const id of BADGED) {
     expect(await flask(page, id).count()).toBe(1);
   }
@@ -62,7 +60,7 @@ test("item 7 — flask badge on unpromoted-experiment lane heads", async ({ page
     expect(await flask(page, id).count()).toBe(0);
   }
 
-  // 4. whole-document count is exactly nine.
+  // 4. whole-document count is exactly eight.
   expect(await page.locator(".tl-lane-head__flask").count()).toBe(BADGED.length);
 
   // 5. left of the title (checked on `character`).

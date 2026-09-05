@@ -53,10 +53,7 @@ NEEDED = [
     "artifacts/layer_a_harmonic.json",
     "artifacts/layer_c_energy.json",
     "artifacts/section_segmentation/sections.json",
-    "artifacts/energy_summary/hints.json",
-    "artifacts/event_inference/events.machine.json",
     "artifacts/symbolic_transcription/drum_events.json",
-    "artifacts/validation/review_queue.json",
 ]
 
 DENSE = {
@@ -115,6 +112,7 @@ def copy_test_song():
     for junk in ("artifacts/stems",
                  "artifacts/symbolic_transcription/omnizart",
                  "artifacts/allin1",
+                 "artifacts/event_inference",
                  "reference/moises"):
         p = dst / junk
         if p.exists():

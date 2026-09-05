@@ -52,11 +52,6 @@ export const artifactPaths = {
   // not rendered as its own lane, see the experiment's README).
   reactiveBands: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "reactive_bands.json")),
-  // Written by experiments/gestures (`run export`). Composite drop gestures
-  // (approach/build/tension/impact/release) assembled from named sound-design
-  // primitive detectors.
-  gestures: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "gestures.json")),
   // Written by experiments/grid_consensus (`run export`). The resolved
   // downbeat phase + derived phrase grid.
   grid: (song: string) =>
@@ -83,11 +78,6 @@ export const artifactPaths = {
     encodePath(analysis(song, "artifacts", "layer_c_energy.json")),
   reviewQueue: (song: string) =>
     encodePath(analysis(song, "artifacts", "validation", "review_queue.json")),
-  // item 9 sparse lanes
-  identifierHints: (song: string) =>
-    encodePath(analysis(song, "artifacts", "energy_summary", "hints.json")),
-  machineEvents: (song: string) =>
-    encodePath(analysis(song, "artifacts", "event_inference", "events.machine.json")),
   audio: (song: string) => encodePath(["data", "songs", `${song}.mp3`]),
 } as const;
 

@@ -273,54 +273,32 @@ export interface SongFactsFile {
 }
 
 // ---------------------------------------------------------------------------
-// song_event_timeline.json  (v1.1 — composite events + texture_summary)
+// song_event_timeline.json  (plan v3.0 item 9 — flat gesture-phase /
+// section-transition events, replacing the Epic-5 composite event_* stack)
 // ---------------------------------------------------------------------------
 
+/** A gesture-phase `type`, or a `"<from> → <to>"` section-pair transition
+ * (never a literal drop -- constitution §5.2), so this stays open-ended. */
 export type EventPhaseName =
   | "approach"
   | "build"
   | "tension"
   | "impact"
   | "release"
-  | "recovery"
   | (string & {});
 
-export interface EventPhase {
-  phase: EventPhaseName;
-  start_time: number;
-  end_time: number;
-  intensity: number;
-}
-
 export interface TimelineEvent {
-  id: string;
-  type: string;
+  type: EventPhaseName;
   start_time: number;
   end_time: number;
   confidence: number;
-  /** v1.1: absolute magnitude within a fixed per-type band, not per-song norm */
+  /** absolute magnitude within a fixed per-type band, not per-song norm */
   intensity: number;
   section_id: string | null;
   section_name: string | null;
   provenance: string | null;
   summary: string | null;
-  created_by: string | null;
   evidence_summary: string | null;
-  lighting_hint: string | null;
-  evidence_ref: Record<string, unknown> | null;
-  /** v1.1: true when this row folds a build → drop → post_drop run */
-  composite: boolean;
-  /** ordered sub-phases of a composite gesture; null for a plain event */
-  phases: EventPhase[] | null;
-  member_event_ids: string[] | null;
-}
-
-export interface TextureSummary {
-  section_id: string;
-  start_time: number;
-  stem_activity: Record<string, number>;
-  stems_entering: string[];
-  stems_leaving: string[];
 }
 
 export interface EventTimeline {
@@ -328,8 +306,6 @@ export interface EventTimeline {
   song_name: string;
   generated_from: Record<string, unknown> | null;
   events: TimelineEvent[];
-  /** v1.1: replaces the removed layer_add / layer_remove events */
-  texture_summary: TextureSummary[];
 }
 
 // ---------------------------------------------------------------------------

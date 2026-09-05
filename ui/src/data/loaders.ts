@@ -5,8 +5,6 @@
 import { ShapeError } from "./parse";
 import { artifactPaths } from "./paths";
 import {
-  loadIdentifierHints,
-  loadMachineEvents,
   loadAllin1,
   loadCharacter,
   loadVocalTranscription,
@@ -14,7 +12,6 @@ import {
   loadMoisesLyrics,
   loadVocalPhrases,
   loadReactiveBands,
-  loadGestures,
   loadGrid,
 } from "./sparseArtifacts";
 import {
@@ -193,12 +190,9 @@ export const loadSongFacts = (song: string, f?: typeof fetch) =>
 
 export const artifactLoaders = {
   info: loadInfo,
-  identifierHints: loadIdentifierHints,
-  machineEvents: loadMachineEvents,
   dropProposals: loadDropProposals,
   vocalPhrases: loadVocalPhrases,
   reactiveBands: loadReactiveBands,
-  gestures: loadGestures,
   grid: loadGrid,
   allin1: loadAllin1,
   character: loadCharacter,

@@ -16,7 +16,6 @@ CHORD_MAX_TIMING_OVERLAP_FAILURES = 2
 from .drums import validate_drums
 from .energy import _validate_energy_layer
 from .beats import validate_beats
-from .events import _validate_event_outputs
 from .chords import validate_chords
 from .utils import ValidationResult, skipped_result
 from .sections import _validate_sections
@@ -39,13 +38,6 @@ def build_validation_report(
     drum_events_path = paths.artifact("symbolic_transcription", "drum_events.json")
     drum_midi_path = paths.artifact("symbolic_transcription", "omnizart", "drums.mid")
     energy_path = paths.artifact("layer_c_energy.json")
-    energy_identifiers_path = paths.artifact("energy_summary", "hints.json")
-    event_features_path = paths.artifact("event_inference", "features.json")
-    timeline_index_path = paths.artifact("event_inference", "timeline_index.json")
-    rule_candidates_path = paths.artifact("event_inference", "rule_candidates.json")
-    machine_events_path = paths.artifact("event_inference", "events.machine.json")
-    event_review_path = paths.review_json_path
-    event_overrides_path = paths.overrides_path
     event_timeline_path = paths.timeline_output_path
     harmonic = read_json(harmonic_path)
     sections = read_json(sections_path)
@@ -61,15 +53,13 @@ def build_validation_report(
         "drums": validate_drums(paths, timing) if "drums" in compare_targets else skipped_result(),
         "sections": _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
         "energy": _validate_energy_layer(read_json(energy_path), timing, sections) if "energy" in compare_targets else skipped_result(),
-        "events": _validate_event_outputs(
-            read_json(energy_identifiers_path),
-            read_json(event_features_path),
-            read_json(rule_candidates_path),
-            read_json(machine_events_path),
-            read_json(event_review_path),
-            read_json(event_overrides_path),
-            read_json(event_timeline_path),
-        ) if "events" in compare_targets else skipped_result(),
+        # The event_* stack this check used to validate (event_inference/*,
+        # song_events.review.json, song_events.overrides.json) was retired in
+        # plan v3.0 item 9 and replaced by the gestures stage. Cutting
+        # validation down to what the new stage actually produces is item 10's
+        # job; until then "events" is always skipped rather than crashing on
+        # artifacts that no longer exist.
+        "events": skipped_result(),
         "form": validate_form(paths) if "form" in compare_targets else skipped_result(),
         "drops": validate_drops(paths) if "drops" in compare_targets else skipped_result(),
     }
@@ -101,8 +91,6 @@ def build_validation_report(
         notes.append("Section validation compares structural change points only; reference segment labels are advisory and do not affect pass/fail.")
     if "energy" in compare_targets:
         notes.append("Energy validation checks internal consistency between section windows, accent candidates, and the canonical beat timeline.")
-    if "events" in compare_targets:
-        notes.append("Event validation checks Epic 5 artifact integrity and machine-review timeline consistency.")
     if "form" in compare_targets:
         notes.append("Form validation scores section boundaries, form_role and form_family against reference/human labels; advisory only, and reports 'skipped' until the gold set is labelled (plan D1).")
     if "drops" in compare_targets:
@@ -126,13 +114,6 @@ def build_validation_report(
             "drum_events_file": str(drum_events_path),
             "drum_midi_file": str(drum_midi_path),
             "energy_layer_file": str(energy_path),
-            "energy_identifiers_file": str(energy_identifiers_path),
-            "event_features_file": str(event_features_path),
-            "event_timeline_index_file": str(timeline_index_path),
-            "event_rule_candidates_file": str(rule_candidates_path),
-            "event_machine_file": str(machine_events_path),
-            "event_review_file": str(event_review_path),
-            "event_overrides_file": str(event_overrides_path),
             "event_timeline_file": str(event_timeline_path),
             "sections_file": str(sections_path),
         },

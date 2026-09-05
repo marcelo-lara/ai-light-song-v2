@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 8 |
+| Done | 9 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -523,12 +523,12 @@ stages' own outputs are unaffected by this refactor.
 
 ### 9. Replace the `event_*` stack with the gestures stage
 
-- [ ] **New stage** `src/analyzer/stages/gestures.py` (phase 3), porting
+- [x] **New stage** `src/analyzer/stages/gestures.py` (phase 3), porting
       `experiments/gestures/primitives.py` and `assembly.py`. It reads only
       phase-1/2 artifacts — `fft_bands.json`, `rms_loudness.json`,
       `drum_events.json`, `beats.json`, `section_segmentation/sections.json` —
       and **never opens the audio** (constitution §5.2).
-- [ ] Detectors: riser and downlifter (sliding-window linear regression on
+- [x] Detectors: riser and downlifter (sliding-window linear regression on
       high-band energy), reverse cymbal (rising mix-RMS ramp into a
       `transient_strength` spike), snare roll (per-bar onset-density doubling in
       `drum_events.json`), impact (simultaneous sub-band + transient spike),
@@ -536,7 +536,7 @@ stages' own outputs are unaffected by this refactor.
       Assembly anchors each gesture on a detected impact and fills
       approach / build / tension / release from the primitives in the preceding
       window. **A phase with no supporting primitive is absent, never guessed.**
-- [ ] Delete `src/analyzer/stages/event_rules/`,
+- [x] Delete `src/analyzer/stages/event_rules/`,
       `src/analyzer/stages/event_machine/`,
       `src/analyzer/stages/event_features/`,
       `src/analyzer/stages/event_timeline.py`,
@@ -545,17 +545,17 @@ stages' own outputs are unaffected by this refactor.
       `src/analyzer/stages/review_queue.py`,
       `src/analyzer/event_contracts.py`, and
       `src/analyzer/stages/_stem_activity.py` if item 7 left it.
-- [ ] Remove the stages `build-event-feature-layer`, `infer-song-identifiers`,
+- [x] Remove the stages `build-event-feature-layer`, `infer-song-identifiers`,
       `generate-rule-candidates`, `generate-machine-events`,
       `generate-event-review`, `export-event-timeline`, `build-review-queue`
       from `pipeline.py`, and the eight `event_*` / `review_queue` /
       `energy_identifiers` rows from `info.json`.
-- [ ] Rewrite `src/analyzer/contracts/song_event_schema.json` and
+- [x] Rewrite `src/analyzer/contracts/song_event_schema.json` and
       `event_vocabulary.json` to the gesture-phase vocabulary
       (`approach`, `build`, `tension`, `impact`, `release`, plus section
       transitions). Delete `contracts/event_threshold_profiles.json` and
       `contracts/song_event_timeline.json`.
-- [ ] **`song_event_timeline.json` is rebuilt** from gesture phases plus item 7's
+- [x] **`song_event_timeline.json` is rebuilt** from gesture phases plus item 7's
       section transitions. Each event carries `type`, `start_time`, `end_time`,
       `confidence`, `intensity`, `section_id`, `section_name`, `provenance`,
       `summary`, and `evidence_summary` holding the per-primitive evidence that
@@ -563,21 +563,21 @@ stages' own outputs are unaffected by this refactor.
       implementation notes in `summary` — the string
       `"Breakdown candidates are merged across adjacent negative-delta beats."`
       must not appear in any output.
-- [ ] A drop is **never** detected directly; naming stays with the section-pair
+- [x] A drop is **never** detected directly; naming stays with the section-pair
       transition (constitution §5.2). The gesture stage says "a build of this
       shape happens here", not "this is the drop".
-- [ ] Delete `tests/test_event_features.py`, `test_event_identifiers.py`,
+- [x] Delete `tests/test_event_features.py`, `test_event_identifiers.py`,
       `test_event_machine.py`, `test_event_rules.py`, `test_event_review.py`,
       `test_event_timeline.py`, `test_event_contracts.py`,
       `test_review_queue.py`. Add `tests/test_gestures.py`.
-- [ ] Remove the **Machine Events** and **Identifier Hints** lanes (see
+- [x] Remove the **Machine Events** and **Identifier Hints** lanes (see
       *Removing a debugger lane*).
-- [ ] `docs/data_folder_reference.md`: delete the whole `event_inference/` block
+- [x] `docs/data_folder_reference.md`: delete the whole `event_inference/` block
       and `energy_summary/hints.json`; rewrite the
       `song_event_timeline.json` entry.
-- [ ] `docs/reference/analysis-input-guide.md`: rewrite the
+- [x] `docs/reference/analysis-input-guide.md`: rewrite the
       `song_event_timeline.json` contract's event vocabulary.
-- [ ] `contract-change-v3.0.md`: the `song_event_timeline.json` section —
+- [x] `contract-change-v3.0.md`: the `song_event_timeline.json` section —
       removed event types, the new phase vocabulary, the removed
       `event_inference/` file set.
 

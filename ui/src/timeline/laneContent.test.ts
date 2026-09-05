@@ -2,8 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import humanHints from "../data/__fixtures__/human_hints.json";
 import harmonic from "../data/__fixtures__/layer_a_harmonic.json";
-import identifiersFix from "../data/__fixtures__/energy_summary_hints.json";
-import machineFix from "../data/__fixtures__/events_machine.json";
+import timelineFixture from "../data/__fixtures__/song_event_timeline.json";
 import dropProposalsFix from "../data/__fixtures__/drop_proposals.json";
 import allin1Fix from "../data/__fixtures__/allin1.json";
 import characterFix from "../data/__fixtures__/character.json";
@@ -14,10 +13,8 @@ import {
   parseCharacter,
   parseVocalTranscription,
   parseDropProposals,
-  parseIdentifierHints,
-  parseMachineEvents,
 } from "../data/sparseArtifacts";
-import { parseHarmonicLayer, parseHumanHints } from "../data/parsers";
+import { parseEventTimeline, parseHarmonicLayer, parseHumanHints } from "../data/parsers";
 
 import {
   allin1SectionsContent,
@@ -26,9 +23,8 @@ import {
   vocalTranscriptionContent,
   chordsContent,
   dropProposalsContent,
+  gesturesContent,
   humanHintsContent,
-  identifierHintsContent,
-  machineEventsContent,
   sectionsContent,
 } from "./laneContent";
 import { romanNumeral } from "./romanNumeral";
@@ -112,19 +108,22 @@ describe("chordsContent", () => {
   });
 });
 
-describe("identifier / machine event content", () => {
-  it("identifierHints keeps the drop identifier", () => {
-    const blocks = identifierHintsContent(parseIdentifierHints(identifiersFix));
-    expect(blocks).toHaveLength(1);
-    expect(blocks[0]!.label).toBe("drop");
-    expect(blocks[0]!.laneLabel).toBe("Identifier Hints");
+describe("gesturesContent", () => {
+  it("renders one block per flat gesture-phase / transition event", () => {
+    const blocks = gesturesContent(parseEventTimeline(timelineFixture));
+    expect(blocks.length).toBeGreaterThan(0);
+    expect(blocks.every((b) => b.laneLabel === "Gestures")).toBe(true);
+    expect(blocks.every((b) => b.end_s >= b.start_s)).toBe(true);
+    const labels = blocks.map((b) => b.label);
+    expect(labels.some((l) => l.includes("→"))).toBe(true);
+    expect(labels.some((l) => l === "impact")).toBe(true);
+    for (const b of blocks) {
+      expect(b.summary).toBeTruthy();
+    }
   });
 
-  it("machineEvents surfaces evidence summaries", () => {
-    const blocks = machineEventsContent(parseMachineEvents(machineFix));
-    expect(blocks.length).toBeGreaterThan(0);
-    expect(blocks[0]!.end_s).toBeGreaterThanOrEqual(blocks[0]!.start_s);
-    expect(blocks.every((b) => b.laneLabel === "Machine Events")).toBe(true);
+  it("tolerates a missing artifact", () => {
+    expect(gesturesContent(null)).toEqual([]);
   });
 });
 

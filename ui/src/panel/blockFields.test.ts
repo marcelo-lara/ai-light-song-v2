@@ -170,30 +170,30 @@ describe("selectionFromMarker + blockFields — lane markers", () => {
     expect(val(fields, "Kind")).toBe("impact");
   });
 
-  it("machine event with nested evidence summary + section_id", () => {
+  it("gesture-phase event with nested evidence summary + section_id", () => {
     const marker: LaneMarker = {
-      laneId: "machineEvents",
+      laneId: "gestures",
       id: "m-1",
       time: 20,
-      kind: "machine",
+      kind: "gestures",
       raw: {
         id: "m-1",
-        label: "riser",
+        label: "build",
         start_s: 20,
         end_s: 24,
         confidence: 0.66,
         section_id: "S2",
-        created_by: "rule:riser",
+        created_by: "gestures",
         evidence: { summary: "spectral flux ramp" },
       },
     };
     const sel = selectionFromMarker(marker);
     expect(sel.summary).toBe("spectral flux ramp");
-    const fields = blockFields("machineEvents", sel);
+    const fields = blockFields("gestures", sel);
     expect(val(fields, "Window")).toBe("0:20.0–0:24.0");
     expect(val(fields, "Confidence")).toBe("0.66");
     expect(val(fields, "Section")).toBe("S2");
-    expect(val(fields, "Created by")).toBe("rule:riser");
+    expect(val(fields, "Created by")).toBe("gestures");
   });
 });
 

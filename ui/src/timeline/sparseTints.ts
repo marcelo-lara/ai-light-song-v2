@@ -73,8 +73,6 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalTranscriptionModel: [32, 80, 46],
   vocalTranscriptionStructure: [32, 30, 34],
   chords: [193, 82, 44], // cyan    (the previous app rgba(14,116,144))
-  identifierHints: [201, 96, 33], // blue    (the previous app rgba(3,105,161))
-  machineEvents: [0, 74, 42], // red     (the previous app rgba(185,28,28))
 };
 
 /** fixed alpha ramp shared by every lane */

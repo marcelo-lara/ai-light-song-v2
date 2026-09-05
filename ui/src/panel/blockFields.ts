@@ -44,8 +44,6 @@ export const LANE_LABELS: Record<string, string> = {
   humanHints: "Human Hints",
   moisesLyrics: "Moises Lyrics",
   chords: "Chord Regions",
-  identifierHints: "Identifier Hints",
-  machineEvents: "Machine Events",
   drums: "Drum Density",
   energy: "Energy Profile",
   validation: "Regression Overlay",

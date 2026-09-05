@@ -10,6 +10,7 @@
 // individual adapters are exported for unit tests against artifact fixtures.
 
 import type {
+  EventTimeline,
   HumanHintsFile,
   HarmonicLayer,
   SectionRow,
@@ -21,10 +22,8 @@ import type {
   DropProposalsFile,
   MoisesLyricsFile,
   VocalTranscriptionFile,
-  EventsFile,
   VocalPhrasesFile,
   ReactiveBandsFile,
-  GesturesFile,
   GridFile,
 } from "../data/sparseArtifacts";
 
@@ -468,37 +467,6 @@ export function chordsContent(harmonic: HarmonicLayer | null): SparseBlock[] {
 }
 
 
-function eventContent(
-  file: EventsFile | null,
-  laneLabel: string,
-  fallbackSummary: string,
-): SparseBlock[] {
-  return (file?.events ?? []).map((e) => ({
-    id: e.id,
-    start_s: e.start_s,
-    end_s: e.end_s,
-    label: String(e.label),
-    laneLabel,
-    caption: `${formatRange(e.start_s, e.end_s)}${
-      e.confidence != null ? ` · conf ${round(e.confidence)}` : ""
-    }`,
-    reference: e.id,
-    detail: e.section_id ?? e.created_by ?? "-",
-    summary: e.evidence_summary || e.notes || fallbackSummary,
-    raw: e.raw ?? e,
-  }));
-}
-
-export const identifierHintsContent = (file: EventsFile | null): SparseBlock[] =>
-  eventContent(
-    file,
-    "Identifier Hints",
-    "Named energy-event identifier from the energy summary layer.",
-  );
-
-export const machineEventsContent = (file: EventsFile | null): SparseBlock[] =>
-  eventContent(file, "Machine Events", "Rule / machine event window.");
-
 /**
  * Vocal phrase / instrumental gap / sustained-note blocks from
  * `experiments/vocal_phrases` (Part A — no model, local-auto-gain hysteresis
@@ -555,29 +523,29 @@ export function reactiveBandsContent(file: ReactiveBandsFile | null): SparseBloc
 }
 
 /**
- * Composite drop gestures from `experiments/gestures` — approach/build/
- * tension/impact/release assembled from named sound-design primitive
- * detectors. Never claims a section name (§5.2); the phase breakdown is
- * folded into the caption/summary text rather than drawn as sub-bars (a
- * simplification — see the experiment's README).
+ * Named gesture phases (approach/build/tension/impact/release) and
+ * section-pair transitions ("<from> → <to>") from `song_event_timeline.json`
+ * -- the production `gestures` stage (plan v3.0 item 9, replacing the
+ * Machine Events / Identifier Hints lanes it superseded). Never claims a
+ * "drop" by name (constitution §5.2); each row is already flat, so one block
+ * is one phase or one transition, never a nested composite.
  */
-export function gesturesContent(file: GesturesFile | null): SparseBlock[] {
-  return (file?.gestures ?? []).map((g) => {
-    const phaseNames = g.phases.map((p) => p.name).join(" → ") || "impact only";
+export function gesturesContent(file: EventTimeline | null): SparseBlock[] {
+  return (file?.events ?? []).map((e, i) => {
+    const id = `gesture-event-${String(i + 1).padStart(3, "0")}`;
+    const end_s = Math.max(e.end_time, e.start_time + 0.1);
     return {
-      id: g.id,
-      start_s: g.start_s,
-      end_s: Math.max(g.end_s, g.start_s + 0.1),
-      label: phaseNames,
-      wideLabel: `${phaseNames} · impact ${round(g.impact_time_s, 2)}s · conf ${round(g.confidence, 2)}`,
+      id,
+      start_s: e.start_time,
+      end_s,
+      label: e.type,
+      wideLabel: `${e.type} · conf ${round(e.confidence, 2)} · intensity ${round(e.intensity, 2)}`,
       laneLabel: "Gestures",
-      caption: `${formatRange(g.start_s, g.end_s)} · phases: ${phaseNames}`,
-      reference: g.id,
-      detail: g.phases.map((p) => `${p.name} (${p.from})`).join(", ") || "impact only",
-      summary: `experiments/gestures — a composite gesture anchored on an impact at ${round(
-        g.impact_time_s, 2,
-      )}s, phases: ${g.phases.map((p) => `${p.name} ${formatRange(p.start_s, p.end_s)} from ${p.from}`).join("; ") || "impact only"}.`,
-      raw: g,
+      caption: `${formatRange(e.start_time, e.end_time)} · conf ${round(e.confidence, 2)}`,
+      reference: id,
+      detail: e.section_id ?? "-",
+      summary: e.summary || e.evidence_summary || `${e.type} at ${round(e.start_time, 2)}s.`,
+      raw: e,
     };
   });
 }
@@ -621,11 +589,9 @@ export interface LaneContentSources {
   allin1?: Allin1File | null;
   character?: CharacterFile | null;
   vocalTranscription?: VocalTranscriptionFile | null;
-  identifierHints?: EventsFile | null;
-  machineEvents?: EventsFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
   reactiveBands?: ReactiveBandsFile | null;
-  gestures?: GesturesFile | null;
+  gestures?: EventTimeline | null;
   grid?: GridFile | null;
 }
 
@@ -644,8 +610,6 @@ export const SPARSE_LANE_IDS = [
   "vocalTranscription",
   "allin1Sections",
   "chords",
-  "identifierHints",
-  "machineEvents",
 ] as const;
 
 export type SparseLaneId = (typeof SPARSE_LANE_IDS)[number];
@@ -681,10 +645,6 @@ export function buildLaneBlocks(
       return vocalTranscriptionContent(s.vocalTranscription ?? null);
     case "chords":
       return chordsContent(s.harmonicLayer ?? null);
-    case "identifierHints":
-      return identifierHintsContent(s.identifierHints ?? null);
-    case "machineEvents":
-      return machineEventsContent(s.machineEvents ?? null);
     default:
       return [];
   }

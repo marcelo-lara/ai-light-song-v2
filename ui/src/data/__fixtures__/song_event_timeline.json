@@ -1,104 +1,66 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
-    "engine": "llm-friendly-event-timeline-v2",
+    "engine": "gestures.primitives (rule-based sound-design device detectors) + gestures.assembly + section-transition detector",
     "dependencies": {
-      "machine_events_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json",
-      "review_file": "/data/analysis/_test_song/artifacts/validation/song_events.review.json",
-      "overrides_file": "/data/analysis/_test_song/artifacts/validation/song_events.overrides.json"
-    }
+      "fft_bands_file": "/data/analysis/_test_song/artifacts/essentia/fft_bands.json",
+      "rms_loudness_file": "/data/analysis/_test_song/artifacts/essentia/rms_loudness.json",
+      "drum_events_file": "/data/analysis/_test_song/artifacts/symbolic_transcription/drum_events.json",
+      "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
+      "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json"
+    },
+    "gesture_count": 1
   },
   "events": [
     {
-      "id": "machine_call_response_001",
-      "type": "call_response",
+      "type": "intro → verse",
       "start_time": 14.82,
-      "end_time": 29.58,
-      "confidence": 0.602957,
-      "intensity": 0.601272,
+      "end_time": 14.82,
+      "confidence": 0.6,
+      "intensity": 0.6,
       "section_id": "section-002",
-      "section_name": null,
+      "section_name": "verse",
       "provenance": "machine-only",
-      "summary": "Adjacent vocal phrases with different phrase-group identities indicate a call-and-response exchange.",
-      "created_by": "analyzer_phrase_classifier",
-      "evidence_summary": "Adjacent vocal phrases with different phrase-group identities indicate a call-and-response exchange.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_call_response_001",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
+      "summary": "The song moves from intro into verse here.",
+      "evidence_summary": "allin1 section boundary: function changes from 'intro' to 'verse' (boundary confidence 0.60)."
     },
     {
-      "id": "composite_machine_drop_001",
-      "type": "drop",
+      "type": "build",
+      "start_time": 26.0,
+      "end_time": 30.0,
+      "confidence": 0.7,
+      "intensity": 0.65,
+      "section_id": "section-003",
+      "section_name": "momentum_lift",
+      "provenance": "machine-only",
+      "summary": "A rising riser builds toward the impact at 30.04s.",
+      "evidence_summary": "high-band r2=0.82 over 4 bars, delta=0.65x range"
+    },
+    {
+      "type": "impact",
       "start_time": 30.04,
-      "end_time": 36.98,
-      "confidence": 0.888186,
+      "end_time": 30.04,
+      "confidence": 0.89,
       "intensity": 1.0,
       "section_id": "section-003",
       "section_name": "momentum_lift",
       "provenance": "machine-only",
-      "summary": "Composite drop gesture: impact \u2192 release",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_drop_001",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      },
-      "composite": true,
-      "phases": [
-        {
-          "phase": "impact",
-          "start_time": 30.04,
-          "end_time": 30.5,
-          "intensity": 1.0
-        },
-        {
-          "phase": "release",
-          "start_time": 36.5,
-          "end_time": 36.98,
-          "intensity": 0.35
-        }
-      ],
-      "member_event_ids": [
-        "machine_drop_001",
-        "machine_energy_reset_003"
-      ]
-    }
-  ],
-  "texture_summary": [
-    {
-      "section_id": "section-001",
-      "start_time": 0.0,
-      "stem_activity": {
-        "bass": 0.4714,
-        "drums": 0.0728,
-        "harmonic": 0.1389,
-        "vocals": 0.002
-      },
-      "stems_entering": [],
-      "stems_leaving": []
+      "summary": "An impact lands here (simultaneous sub-band and transient spike on the downbeat).",
+      "evidence_summary": "transient=1.00, sub-band elevated, on downbeat"
     },
     {
-      "section_id": "section-002",
-      "start_time": 14.82,
-      "stem_activity": {
-        "bass": 0.0991,
-        "drums": 0.2551,
-        "harmonic": 0.4372,
-        "vocals": 0.5669
-      },
-      "stems_entering": [
-        "drums",
-        "harmonic",
-        "vocals"
-      ],
-      "stems_leaving": [
-        "bass"
-      ]
+      "type": "release",
+      "start_time": 30.04,
+      "end_time": 36.98,
+      "confidence": 0.68,
+      "intensity": 0.35,
+      "section_id": "section-003",
+      "section_name": "momentum_lift",
+      "provenance": "machine-only",
+      "summary": "The mix stays elevated after the impact at 30.04s, sustaining the release.",
+      "evidence_summary": "post-impact mix-RMS median 0.6100 vs pre-impact 0.4500"
     }
   ]
 }

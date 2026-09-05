@@ -119,7 +119,7 @@ async function clickFirstBlock(page: Page, laneId: string): Promise<void> {
 
 /**
  * Expand `laneId`, find the widest tinted run's mid-x and the vertical centre
- * of the filled pixels there, and click that point. Lanes like `machineEvents`
+ * of the filled pixels there, and click that point. Lanes like `gestures`
  * pack short blocks into stacked sub-rows, so a blind mid-height click misses.
  */
 async function clickWidestBlock(page: Page, laneId: string): Promise<void> {
@@ -152,14 +152,28 @@ async function clickWidestBlock(page: Page, laneId: string): Promise<void> {
       .sort((a, b) => b[1] - b[0] - (a[1] - a[0]))[0];
     if (!wide) return null;
     const cx = Math.round((wide[0] + wide[1]) / 2);
-    const ys: number[] = [];
-    for (let y = 0; y < h; y++) if (data[(y * w + cx) * 4 + 3] !== 0) ys.push(y);
-    if (!ys.length) return null;
+    // A compact (row-packed) lane can have several disjoint filled bands in
+    // the same column (one per stacked row), separated by a gap. Averaging
+    // the overall min/max y can land the click in that gap. Pick the
+    // midpoint of the largest contiguous filled run instead.
+    const yRuns: Array<[number, number]> = [];
+    let ys = -1;
+    for (let y = 0; y < h; y++) {
+      const filled = data[(y * w + cx) * 4 + 3] !== 0;
+      if (filled && ys < 0) ys = y;
+      if (!filled && ys >= 0) {
+        yRuns.push([ys, y - 1]);
+        ys = -1;
+      }
+    }
+    if (ys >= 0) yRuns.push([ys, h - 1]);
+    if (!yRuns.length) return null;
+    const tallest = yRuns.sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]))[0];
     const cssW = canvas.getBoundingClientRect().width || w;
     const cssH = canvas.getBoundingClientRect().height || h;
     return {
       localX: (cx / w) * cssW,
-      localY: ((ys[0] + ys[ys.length - 1]) / 2 / h) * cssH,
+      localY: ((tallest[0] + tallest[1]) / 2 / h) * cssH,
     };
   }, canvasContainerSel(laneId));
   if (!hit) throw new Error(`no block found on the ${laneId} lane`);
@@ -236,7 +250,7 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
     // 5. present for every inspected event (D12), in both transport states.
     await clickBlockAtTime(page, "allin1Sections", 15);
     await expect(promote).toHaveCount(1);
-    await clickWidestBlock(page, "machineEvents");
+    await clickWidestBlock(page, "gestures");
     await expect(promote).toHaveCount(1);
     await page.locator(".tl-seg-block").nth(1).click();
     await expect(promote).toHaveCount(1);

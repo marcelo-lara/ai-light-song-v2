@@ -167,15 +167,16 @@ describe("parseHumanHints", () => {
 });
 
 describe("parseEventTimeline", () => {
-  it("distinguishes composite gestures with phases from plain events", () => {
+  it("parses flat gesture-phase and section-transition events", () => {
     const tl = parseEventTimeline(timelineFixture);
-    expect(tl.schema_version).toBe("1.1");
-    const composite = tl.events.find((e) => e.composite);
-    const plain = tl.events.find((e) => !e.composite);
-    expect(composite?.phases?.length).toBeGreaterThan(0);
-    expect(composite?.member_event_ids?.length).toBeGreaterThan(0);
-    expect(plain?.phases).toBeNull();
-    expect(tl.texture_summary[0]!.section_id).toMatch(/^section-/);
+    expect(tl.schema_version).toBe("2.0");
+    const transition = tl.events.find((e) => e.type.includes("→"));
+    const phase = tl.events.find((e) => e.type === "impact");
+    expect(transition?.summary).toBeTruthy();
+    expect(phase?.evidence_summary).toBeTruthy();
+    for (const event of tl.events) {
+      expect(event.section_id).toMatch(/^section-/);
+    }
   });
 });
 

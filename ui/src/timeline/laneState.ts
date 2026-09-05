@@ -19,8 +19,6 @@ export type LaneKind =
   | "hints"
   | "sections"
   | "chords"
-  | "identifiers"
-  | "machine"
   | "proposals"
   | "allin1"
   | "character"
@@ -78,7 +76,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58, experiment: "drop_detection" },
   { id: "vocalPhrases", label: "Vocal Phrases", sub: "experiment · phrase / gap / sustained-note blocks over the vocal stem", kind: "proposals", height: 58, experiment: "vocal_phrases" },
   { id: "reactiveBands", label: "Reactive Bands", sub: "experiment · locally auto-gained band-power accents", kind: "proposals", height: 58, experiment: "reactive_bands" },
-  { id: "gestures", label: "Gestures", sub: "experiment · approach/build/tension/impact/release", kind: "gestures", height: 58, experiment: "gestures" },
+  { id: "gestures", label: "Gestures", sub: "song_event_timeline · approach/build/tension/impact/release + section transitions", kind: "gestures", height: 58 },
   { id: "gridPhrase", label: "Phrase Grid", sub: "experiment · resolved downbeat phase · 8/16-bar edges", kind: "gridPhrase", height: 58, experiment: "grid_consensus" },
   { id: "allin1Transitions", label: "allin1 Transitions", sub: "experiment · section changes · audition vs. Human Hints", kind: "allin1", height: 58, experiment: "allin1" },
   { id: "fftBands", label: "FFT Bands", sub: "essentia · 7 spectral bands", kind: "fft", height: 84 },
@@ -89,8 +87,6 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "vocalTranscription", label: "Vocal Transcription", sub: "experiment · sung lyrics + timing · VocalParse / ACE-Step / whisper", kind: "lyrics", height: 84, experiment: "vocalparse + acestep_transcriber" },
   { id: "allin1Sections", label: "allin1 Sections", sub: "experiment · named song form · compare with Sections", kind: "allin1", height: 84, experiment: "allin1" },
   { id: "chords", label: "Chord Regions", sub: "layer A harmonic", kind: "chords", height: 84 },
-  { id: "identifierHints", label: "Identifier Hints", sub: "energy_summary · named events", kind: "identifiers", height: 84 },
-  { id: "machineEvents", label: "Machine Events", sub: "rule + machine event windows", kind: "machine", height: 84 },
   { id: "drums", label: "Drum Density", sub: "kick / snare / hat activity", kind: "drums", height: 84 },
   { id: "energy", label: "Energy Profile", sub: "beat-aligned energy + accents", kind: "energy", height: 84 },
   { id: "validation", label: "Regression Overlay", sub: "beat drift + event comparison", kind: "validation", height: 84 },
