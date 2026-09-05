@@ -4,7 +4,7 @@
   "command": "python -m analyzer",
   "status": "passed",
   "exit_code": 0,
-  "generated_at": "2026-09-05T15:54:18.414225+00:00",
+  "generated_at": "2026-09-05T17:06:07.620466+00:00",
   "inputs": {
     "song_path": "/data/songs/_test_song.mp3",
     "reference_chords": "/data/analysis/_test_song/reference/moises/chords.json",

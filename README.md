@@ -46,7 +46,7 @@ The structure is part of the contract.
   `song_event_timeline.json`,
   plus `artifacts/`. Do not add or remove files here without a contract change.
 - `data/analysis/<Song - Artist>/artifacts/` — intermediate artifacts, grouped
-  by producer (`essentia/`, `section_segmentation/`, `energy_summary/`,
+  by producer (`essentia/`, `section_segmentation/`,
   `event_inference/`, `validation/`, …), including
   `artifacts/stems/`.
 - `data/analysis/<Song - Artist>/reference/` — validation-only truth data

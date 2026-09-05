@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 11 |
+| Done | 12 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -717,12 +717,12 @@ song's `reference/human/human_hints.json`, and that
 
 ### 12. `energy.py` — keep the computation, stop publishing it
 
-- [ ] `extract_energy_features` stops writing
+- [x] `extract_energy_features` stops writing
       `artifacts/energy_summary/features.json` (4.0 MB/song) and returns its
       payload in memory to `derive_energy_layer`.
-- [ ] `derive_energy_layer` keeps writing `layer_c_energy.json` — small, and the
+- [x] `derive_energy_layer` keeps writing `layer_c_energy.json` — small, and the
       debugger's **Energy Profile** lane reads it.
-- [ ] Remove the `energy_features` row from `info.json` and the
+- [x] Remove the `energy_features` row from `info.json` and the
       `energy_summary/features.json` entry from
       `docs/data_folder_reference.md`. Fix the two `_run_single_stage` branches
       that load `energy_summary/features.json` from disk: single-stage execution

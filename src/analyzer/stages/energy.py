@@ -174,9 +174,7 @@ def extract_energy_features(paths: SongPaths, timing: dict) -> dict:
             "normalization_scope": "per-song",
         },
     }
-    payload = to_jsonable(payload)
-    write_json(paths.artifact("energy_summary", "features.json"), payload)
-    return payload
+    return to_jsonable(payload)
 
 
 def derive_energy_layer(paths: SongPaths, timing: dict, energy_features: dict, sections_payload: dict) -> dict:
@@ -285,7 +283,7 @@ def derive_energy_layer(paths: SongPaths, timing: dict, energy_features: dict, s
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "beats_file": str(paths.artifact("essentia", "beats.json")),
-            "energy_features_file": str(paths.artifact("energy_summary", "features.json")),
+            "energy_features": "computed in memory by extract_energy_features, not persisted",
             "sections_file": str(paths.artifact("section_segmentation", "sections.json")),
             "engine": "rule-based-energy-derivation",
         },

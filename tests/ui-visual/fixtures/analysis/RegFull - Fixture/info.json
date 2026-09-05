@@ -14,7 +14,6 @@
     "harmonic_layer": "/data/analysis/Armin - Revolution/artifacts/layer_a_harmonic.json",
     "drum_events": "/data/analysis/Armin - Revolution/artifacts/symbolic_transcription/drum_events.json",
     "drum_midi": "/data/analysis/Armin - Revolution/artifacts/symbolic_transcription/omnizart/drums.mid",
-    "energy_features": "/data/analysis/Armin - Revolution/artifacts/energy_summary/features.json",
     "energy_layer": "/data/analysis/Armin - Revolution/artifacts/layer_c_energy.json",
     "song_facts": "/data/analysis/Armin - Revolution/reference/human/song_facts.json",
     "human_hints_alignment": "/data/analysis/Armin - Revolution/artifacts/validation/human_hints_alignment.json",

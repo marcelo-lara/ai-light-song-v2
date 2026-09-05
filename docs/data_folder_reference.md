@@ -43,8 +43,6 @@ data/
           harmonic.wav
           metadata.json
           vocals.wav
-        energy_summary/
-          features.json
         essentia/
           beats.json
           fft_bands.json
@@ -235,18 +233,6 @@ LLM hint:
 - Use: only when you need lower-level harmonic evidence beyond the resolved chord labels.
 - Use: estimate tonal brightness, harmonic ambiguity, or chromatic tension where the chord track feels too coarse.
 - Avoid: starting here if `layer_a_harmonic.json` already answers the question.
-
-### `data/analysis/<Song - Artist>/artifacts/energy_summary/features.json`
-
-Summary: dense frame-level energy features including loudness, spectral centroid, spectral flux, and onset strength.
-
-Why it matters: raw support signal behind section energy and accent candidates.
-
-LLM hint:
-- See: frame-level `loudness`, `spectral_centroid`, `spectral_flux`, and `onset_strength`.
-- Use: design custom micro-accents, motion-speed changes, or brightness sweeps when section-level summaries are too coarse.
-- Use: audit whether a proposed cue pattern matches the actual transient behavior.
-- Avoid: treating this as the first file for section planning; use `layer_c_energy.json` first.
 
 ### `data/analysis/<Song - Artist>/artifacts/essentia/fft_bands.json`
 

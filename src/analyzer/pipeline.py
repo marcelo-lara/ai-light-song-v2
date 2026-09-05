@@ -168,7 +168,7 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         return 0
     if stage_name == "derive-energy-layer":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        energy_features = _required_artifact_payload(paths, stage_name, "energy_summary", "features.json")
+        energy_features = _run_stage(paths.song_name, "phase-1", "extract-energy-features", extract_energy_features, paths, timing)
         sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
         _run_stage(paths.song_name, "phase-1", stage_name, derive_energy_layer, paths, timing, energy_features, sections)
         return 0
@@ -350,7 +350,6 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
                 "harmonic_layer": str(paths.artifact("layer_a_harmonic.json")),
                 "drum_events": str(paths.artifact("symbolic_transcription", "drum_events.json")),
                 "drum_midi": str(paths.artifact("symbolic_transcription", "omnizart", "drums.mid")),
-                "energy_features": str(paths.artifact("energy_summary", "features.json")),
                 "energy_layer": str(paths.artifact("layer_c_energy.json")),
                 "song_facts": str(paths.reference("human", "song_facts.json")),
                 "human_hints_alignment": human_hint_alignment["json_path"] if human_hint_alignment else None,

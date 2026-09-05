@@ -4,7 +4,7 @@
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
     "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
-    "energy_features_file": "/data/analysis/_test_song/artifacts/energy_summary/features.json",
+    "energy_features": "computed in memory by extract_energy_features, not persisted",
     "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
     "engine": "rule-based-energy-derivation"
   },
