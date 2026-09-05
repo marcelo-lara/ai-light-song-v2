@@ -27,9 +27,51 @@ data/
       proposals/        <experiment output — not a contract>
 ```
 
-The five top-level files plus `artifacts/` are **exactly** the per-song
-contract. Adding or removing one is a contract change. `data/fixtures/` does not
-exist and never has — do not create it (fixture orchestration is out of scope).
+## Two tiers, and the boundary is the directory level
+
+| Tier | Who may read it |
+| --- | --- |
+| `data/analysis/<Song - Artist>/*.json` | the `mcp/` server, the analyzer, the debugger UI |
+| `…/artifacts/**`, `…/reference/**` | **the analyzer and the debugger UI only** |
+
+The restriction binds `mcp/` alone. **The debugger reads anything under `data/`
+at any depth** — a file it cannot open is a bug it cannot diagnose.
+
+The top-level files are the delivery surface; adding or removing one is a
+contract change. Inner folders are the raw material phase 4 uses to build them
+and are never exposed downstream, whatever their quality.
+
+`data/fixtures/` does not exist and never has — do not create it (fixture
+orchestration is out of scope).
+
+## Attribution on the delivery surface
+
+Top-level files are **fused** from several producers, not copied from one
+artifact each — see [`../analysis-definition.md`](../analysis-definition.md)
+"Phase 4 fuses; it does not copy". Every published value therefore says where it
+came from, in two parts:
+
+| Where | What |
+| --- | --- |
+| file header — `field_sources` | the default producer for each field, declared once |
+| row — `source` | present **only** where that row took a different producer than the header declares |
+
+`beats.json` and `sections.json` are **objects**, not bare arrays — an array
+cannot carry a header. Their rows sit under `beats` / `sections` respectively.
+`info.json`, `hints.json` and `song_event_timeline.json` were already objects.
+
+So the common case costs one small header block, and a row that departs from the
+default is visible precisely because it is the only kind of row that carries a
+`source`.
+
+The producer vocabulary is closed: `essentia`, `allin1`, `harmonic`, `omnizart`,
+`demucs`, `gestures`, `genre`, `human`, `inference`. `unknown` is legal and
+means no producer cleared its confidence floor — it is never a synonym for
+"we didn't record it".
+
+`source` (which producer) is distinct from `provenance` (how much human review a
+claim has had: `machine-only`, `reviewed`, `human-confirmed`). A row can carry
+both.
 
 ## Top-level deliverables
 

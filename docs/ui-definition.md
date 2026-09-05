@@ -1,24 +1,52 @@
 # UI definition — the artifact debugger
 
-`ui/` is an **internal engineering tool** for inspecting pipeline output against
-the song. It is not a product surface, and it must not redefine the stable
-contract under `data/analysis/<Song - Artist>/`.
+`ui/` is an **internal engineering tool**, played against the song. It is not a
+product surface, and it must not redefine the stable contract under
+`data/analysis/<Song - Artist>/`.
 
 Runbook for the visual regression suite:
 [`reference/ui-regression.md`](reference/ui-regression.md).
 
-## What it is for
+## The two purposes
 
-| In scope | Out of scope |
+Everything the debugger does serves one of these. A proposed feature that serves
+neither does not belong here.
+
+### 1. Debug and review findings
+
+Inspect what the pipeline claimed, against the audio, at the instant it claims
+it. Timing, confidence and provenance inspection; artifact-to-artifact
+comparison; raw JSON; auditioning unpromoted experiment proposals beside
+hand-authored truth.
+
+### 2. Author time-synced human hints
+
+The debugger is where a human hint comes into existence. Three routes in, all
+producing the same kind of hint:
+
+| Route | What happens |
 | --- | --- |
-| Read-only visualization of generated artifacts | Writing files into `data/analysis/` (one exception below) |
-| Timing, validation and provenance inspection | Authoring or editing lighting output |
-| Artifact-to-artifact comparison | Acting as an end-user playback product |
-| Raw JSON inspection | Redefining the top-level artifact contract |
-| Audio playback for review context | |
-| Auditioning experiment proposals against the song | |
+| **Promoted from an inference** | a block in an inference or experiment lane is turned into a hint — the operator heard it, agrees, and keeps it |
+| **Human-reviewed** | an existing hint is corrected — its span dragged, its text rewritten |
+| **Created by ear** | a hint marked from scratch against the waveform, backed by nothing the pipeline found |
+
+This is the only place the operator's ground truth is authored, which makes it
+the origin of everything downstream that carries `source: "human"`.
+
+Out of scope: authoring or editing lighting output, acting as an end-user
+playback product, and redefining the top-level artifact contract.
 
 Debugger browser code lives in `ui/` only — never under `src/`.
+
+## Reads: unrestricted
+
+**The debugger may read anything it wants** — anywhere under `data/`, at any
+depth: `artifacts/`, `reference/`, the source audio, intermediates nothing else
+consumes. It is a debugger; a file it cannot open is a bug it cannot diagnose.
+
+The exposure rule that confines the `mcp/` server to top-level `*.json` does
+**not** apply here, and the lane table below is a description of what it reads
+today, never a list of what it is allowed to read.
 
 ## Runtime
 
@@ -54,10 +82,32 @@ The only two writable paths, and only on an explicit `Save`:
 mount level. A future workflow needing persisted review data must be documented
 as a new contract, not added implicitly.
 
+### A promoted hint is indistinguishable from a hand-marked one
+
+`human_hints.json` is the operator's own hand-authored ground truth and must keep
+reading that way, whichever of the three routes produced an entry.
+
+- **Prefer no field at all** — a hint's content is the hint.
+- Where something genuinely must be recorded, it is **one human-readable string
+  aimed at the person who opens the file**, not a structured object aimed at a
+  script. `captured_from` (e.g. `"allin1 Sections · experiments/allin1"`) is that
+  field, and the only one.
+- The key is **omitted entirely** on hand-authored hints, so their shape is
+  unchanged.
+- No analyzer code reads it. Do not design a field here around a machine
+  consumer.
+
+**The `field_sources` / `source` attribution on the generated delivery surface
+stops at this file.** That convention exists so a *fused, machine-written* value
+can say which producer won. `reference/human/` has exactly one producer — the
+operator — and adding provenance machinery to it would answer a question nobody
+is asking while making the file harder to read by hand.
+
 ## Lanes
 
-Lanes are the review surface, and any time-bearing experiment output requires
-experiment output to get one. Current lanes:
+Lanes are the review surface, and any time-bearing experiment output gets one.
+This table is **current state, not a permitted-reads list** — see "Reads:
+unrestricted" above.
 
 | Lane | Reads | Notes |
 | --- | --- | --- |

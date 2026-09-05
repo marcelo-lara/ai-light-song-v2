@@ -25,15 +25,19 @@ Read the one that answers your question. Do not re-derive this from `src/`.
 | --- | --- |
 | [`docs/product-definition.md`](docs/product-definition.md) | what the system is for, and what it is explicitly not for |
 | [`docs/analysis-definition.md`](docs/analysis-definition.md) | every stage, which phase it is in, **and how good it measures**. Read before trusting any output |
-| [`docs/ui-definition.md`](docs/ui-definition.md) | the debugger, its lanes, and the one thing it may write |
-| [`docs/mcp-definition.md`](docs/mcp-definition.md) | what reaches the authoring model — the contract quality is judged against |
+| [`docs/ui-definition.md`](docs/ui-definition.md) | the debugger: reviewing findings, authoring human hints, and the two files it may write |
+| [`docs/mcp-definition.md`](docs/mcp-definition.md) | the in-repo `mcp/` song-comprehension server — purpose, hard boundary, tool surface. **Specified, not built** |
 
 Lookups, not reading: [`docs/reference/`](docs/reference/) —
 [`artifacts.md`](docs/reference/artifacts.md) (every `data/` file),
+[`downstream-contract.md`](docs/reference/downstream-contract.md) (what the external cue-authoring server consumes),
 [`source-map.md`](docs/reference/source-map.md) (every `src/` file),
 [`cli.md`](docs/reference/cli.md) (`./analyze` flags),
 [`docker.md`](docs/reference/docker.md) (runtime and version pins),
-[`ui-regression.md`](docs/reference/ui-regression.md) (visual QA runbook).
+[`ui-regression.md`](docs/reference/ui-regression.md) (visual QA runbook),
+[`mcp-regression.md`](docs/reference/mcp-regression.md) (`smoke-test` and `full-regression` for the MCP server).
+
+Open release: [`docs/implementation-plan-v3.1.md`](docs/implementation-plan-v3.1.md) — build the `mcp/` module and the delivery surface it needs.
 
 Queues: [`docs/issues.md`](docs/issues.md) (open issues only),
 [`docs/experiments.md`](docs/experiments.md) (one entry per experiment),
@@ -90,6 +94,12 @@ breaking it has already cost this repo something.
   Before building, name the projected file the signal lands in — the list is in
   [`docs/mcp-definition.md`](docs/mcp-definition.md). Improving an artifact
   nothing projects changes nothing about the show.
+- **Only top-level song JSON is exposable.** The MCP server reads
+  `data/analysis/<Song - Artist>/*.json` and nothing else. `artifacts/` and
+  `reference/` are readable by **the analyzer and the debugger UI only** — they
+  are the raw material phase 4 uses to build the top-level files, never a
+  delivery surface. A signal reaches the model only by being published at top
+  level.
 - **Musical correctness outranks compatibility.** Propose changing the schema,
   field names or file set rather than building a workaround or a shim.
 - **Delete dead code rather than keeping it working.** A stage with no consumer
@@ -143,7 +153,9 @@ any prose. Flags: [`docs/reference/cli.md`](docs/reference/cli.md).
 | --- | --- |
 | `src/analyzer/pipeline.py` | stage registry and orchestration — start here for execution order |
 | `src/analyzer/stages/` | one file per stage; each carries its measured numbers in its own docstring |
-| `data/analysis/<Song - Artist>/` | exactly five top-level files plus `artifacts/` |
-| `data/analysis/<Song - Artist>/reference/` | human and external ground truth. Read-only to the pipeline |
-| `ui/` | read-only artifact debugger (Preact + TS + Vite) |
+| `data/analysis/<Song - Artist>/*.json` | the delivery surface — the only files the MCP server may read |
+| `data/analysis/<Song - Artist>/artifacts/` | intermediates. Analyzer and debugger UI only |
+| `data/analysis/<Song - Artist>/reference/` | human and external ground truth. Read-only to the pipeline; never exposed |
+| `ui/` | the debugger (Preact + TS + Vite). Reads anything under `data/`; writes only `reference/human/` |
+| `mcp/` | the song-comprehension MCP server. Reads top-level song JSON only — never `artifacts/` or `reference/` |
 | `experiments/` | the sandbox. `src/` never imports from it |

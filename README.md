@@ -64,7 +64,7 @@ The structure is part of the contract.
 | `data/analysis/<Song - Artist>/` | stable deliverables: exactly five files plus `artifacts/` |
 | `…/artifacts/` | intermediates, grouped by producer (`essentia/`, `allin1/`, `section_segmentation/`, …) |
 | `…/reference/` | validation-only truth (human hints, external tools). Never a generation input |
-| `src/`, `ui/` | analyzer and read-only debugger |
+| `src/`, `ui/`, `mcp/` | analyzer, read-only debugger, song-comprehension MCP server |
 | `experiments/` | sandbox — `src/` never imports from it |
 | `docs/` | current contracts only; superseded docs are deleted, not archived |
 
@@ -76,8 +76,9 @@ The structure is part of the contract.
 | [docs/product-definition.md](docs/product-definition.md) | what this is for |
 | [docs/analysis-definition.md](docs/analysis-definition.md) | the pipeline, and how good each part measures |
 | [docs/ui-definition.md](docs/ui-definition.md) | the artifact debugger |
-| [docs/mcp-definition.md](docs/mcp-definition.md) | what the downstream server consumes |
-| [docs/reference/](docs/reference/) | lookup tables: `data/` files, `src/` map, CLI flags, Docker, UI QA |
+| [docs/mcp-definition.md](docs/mcp-definition.md) | the in-repo `mcp/` song-comprehension server |
+| [docs/reference/downstream-contract.md](docs/reference/downstream-contract.md) | what the external cue-authoring server consumes |
+| [docs/reference/](docs/reference/) | lookup tables: `data/` files, `src/` map, CLI flags, Docker, UI QA, MCP regression |
 | [experiments/drop_detection/README.md](experiments/drop_detection/README.md) | measured evaluation of the structural stages |
 
 ## Development

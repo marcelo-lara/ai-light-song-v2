@@ -54,3 +54,34 @@ Current focus song: `_test_song`
 - **Success condition:** all three resolved, or the suite's scope explicitly
   narrowed to exclude them.
 
+### Delivery surface — four MCP-projected signals still live inside `artifacts/`
+
+- **Status:** `pending`
+- **Raised:** 2026-09-05, when the operator set the exposure rule: MCP-exposed
+  JSON lives only at `data/analysis/<Song - Artist>/*.json`, and `artifacts/` /
+  `reference/` are readable by the analyzer and the debugger UI alone.
+- **Problem:** phase 4 does not yet publish everything the projection needs, so
+  [`mcp-definition.md`](mcp-definition.md) currently documents the target rather
+  than what the pipeline emits. Four signals are affected:
+
+  | Signal | Today | Needs |
+  | --- | --- | --- |
+  | section `function`, `function_confidence`, `function_status`, `same_label_as` | `artifacts/section_segmentation/sections.json`, index-matched to the top-level row | merge onto the top-level `sections.json` row |
+  | genre | `artifacts/genre.json` (4 KB, self-contained) | publish as top-level `genre.json` |
+  | drum events | `artifacts/symbolic_transcription/drum_events.json` (600 KB, 1,164 events) | publish as top-level `drum_events.json` |
+  | loudness | `artifacts/essentia/rms_loudness.json` — **18 MB/song**, 19,401 frames at 10 ms across 5 sources, and it embeds absolute host paths (`/data/songs/…`, `/data/analysis/…/stems/…`) | publish a top-level `loudness.json` at a chosen floor interval, with no host paths; never copy the 10 ms file to the delivery surface |
+
+- **Why the merge is a win beyond compliance:** the top-level `sections.json`
+  and the segmentation file are currently matched **by array index** — same
+  count, same order. A mismatch silently misaligns every section's label and
+  confidence across the whole song. Merging the fields dissolves that failure
+  mode.
+- **Decided:** the published floor for `loudness.json` is **20 ms** (~9 MB/song;
+  250 frames x 5 sources at the 5 s window cap). `interval_ms` is a request
+  parameter and the server decimates per read, so 20 ms is the finest a client
+  may ask for, not what every read returns.
+- **Open decision:** whether the stem set stays at five sources on the delivery
+  surface.
+- **Success condition:** the MCP server can satisfy every read in
+  `mcp-definition.md` using only `data/analysis/<Song - Artist>/*.json`, and
+  no top-level file embeds an absolute host path.

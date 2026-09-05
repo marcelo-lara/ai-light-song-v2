@@ -44,7 +44,53 @@ Four rules govern the phases:
    later phase can silently overwrite an earlier one, it stops being possible to
    say which stage was wrong.
 4. **Phase 4 publishes everything that ships, and nothing else.** A signal that
-   reaches no projected file did not ship, whatever earlier phases computed.
+   reaches no top-level file did not ship, whatever earlier phases computed.
+   Phase 4 is also the only writer of the delivery surface: MCP-exposed JSON
+   lives exclusively at `data/analysis/<Song - Artist>/*.json`, and `artifacts/`
+   is readable only by the analyzer and the debugger UI.
+
+## Phase 4 fuses; it does not copy
+
+A published file is **not** a projection of one artifact. It is assembled from
+whichever producers are most trustworthy for each field, and **which producer
+wins can differ per song and per row.** Publishing is therefore a decision, and
+like every decision in this pipeline it has to be recorded.
+
+**Every published value carries a `source`.** The value alone is not enough,
+because the reader cannot otherwise tell whether a number came from the trusted
+beat tracker or from a model measuring 0.226 F1.
+
+This is already true and currently unrecorded. One `beats.json` row fuses three
+producers:
+
+| Field | Producer | Trust |
+| --- | --- | --- |
+| `time` | essentia `RhythmExtractor2013` | trusted — 7/7 impacts within 0.25 s |
+| `type`, `bar`, `beat` | allin1 downbeat activation | 0.226 F1, short of target |
+| `chord` | HPCP chord decoding | 1.00–0.38 agreement by song |
+
+and its single `confidence` describes **only the downbeat phase**, not the beat
+time — so the row reads as though a trusted field carried a weak confidence. A
+`sections.json` row likewise fuses allin1's boundaries and labels with the
+harmonic stage's `key` and `chord_progression`, gated on a different producer's
+confidence than the row's own `confidence` field.
+
+`hints.json` is the one file that already gets this right: every hint carries
+`source: "human" | "inference"`. That is the pattern to generalise.
+
+The rules that follow from it:
+
+- **A confidence is attached to the thing it measures**, never to a row
+  generically. A row fusing two producers needs two named confidences, or
+  per-field attribution.
+- **Attribution is declared cheaply** — the default producer per field once at
+  file level, with a per-row override only where a row actually took a different
+  producer. Repeating an identical source map on every one of 500 beat rows is
+  pure token cost.
+- **Fusion draws only from generated artifacts.** It never reads `reference/`,
+  which stays validation-only.
+- **If no producer clears its floor, the answer is `unknown` or `null` with the
+  reason** — never the least-bad guess.
 
 Re-filing existing stages is not the point and is not worth doing on its own.
 The phases are the shape a *rewrite* takes: replacement structural inference
@@ -89,6 +135,10 @@ which is exactly the ambiguity that made past chord issues hard to attribute.
 | --- | --- |
 | `hints.py` | `hints.json` — inference hints merged with `reference/human/human_hints.json` |
 | `ui_data.py` | `sections.json`, `beats.json`, `info.json` — the compact top-level deliverables |
+
+Phase 4 does not yet publish everything the delivery surface needs: section
+function fields, genre, loudness and drum events still live only under
+`artifacts/`. See [`issues.md`](issues.md).
 
 ### Validation — orthogonal to all four
 
