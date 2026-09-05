@@ -38,13 +38,14 @@ measurements say is broken.
 
 ## Open release — v3.0
 
-One refinement doc and one plan, per constitution §4.1. Both are open.
+One refinement doc and one plan, per constitution §4.1. Both are open until
+item 16 (the corpus re-run and re-baseline) lands.
 
 | Doc | State |
 | --- | --- |
 | [`product-refinement-v3.0.md`](product-refinement-v3.0.md) | The scoped items behind the wave-2 module verdicts — what is deleted, what is replaced, the decisions taken and the risks accepted. |
-| [`implementation-plan-v3.0.md`](implementation-plan-v3.0.md) | The 16 ordered items that execute it. One commit per item, validated in the container before it is pushed. |
-| `contract-change-v3.0.md` | The downstream handoff note. Created by plan item 5 and extended as each contract-changing item lands. |
+| [`implementation-plan-v3.0.md`](implementation-plan-v3.0.md) | The 16 ordered items that execute it. One commit per item, validated in the container before it is pushed. 15 of 16 done. |
+| [`contract-change-v3.0.md`](contract-change-v3.0.md) | The downstream handoff note. Created by plan item 5 and extended as each contract-changing item landed; finalised in item 15 with a **New files** table and an **Unchanged for v3.0** section. |
 
 ## Measured evidence
 
@@ -55,5 +56,6 @@ go stale with age (constitution §4).
 | Experiment | What it establishes |
 | --- | --- |
 | [`../experiments/drop_detection/README.md`](../experiments/drop_detection/README.md) | The hand-built drop detector and the 2026-09 pretrained-model survey (`allin1`, MERT, CLAP, beat-this). |
-| [`../experiments/allin1/README.md`](../experiments/allin1/README.md) | Named functional structure from All-In-One, exported per song and rendered as two debugger lanes. Beats the incumbent segmentation at less than half its boundary budget. **Not promoted.** |
-| [`../experiments/clap/README.md`](../experiments/clap/README.md) | What CLAP infers *beyond* the arrangement: a character layer (breath / void / vocal lead / full power) built from the stems, CLAP's calm axis and allin1's frame-level shadow labels. Also the negative identity result that sets the MFCC baseline. **Not promoted.** |
+| [`../experiments/allin1/README.md`](../experiments/allin1/README.md) | Named functional structure from All-In-One, exported per song and rendered as two debugger lanes. Beat the incumbent segmentation at less than half its boundary budget. **Promoted in v3.0** into `src/analyzer/stages/segmentation.py` (item 7) and the downbeat phase in `beats.json` (item 8); its former debugger lanes were removed on promotion (item 14). |
+| [`../experiments/gestures/README.md`](../experiments/gestures/README.md) | Named gesture-phase detection (riser/downlifter/reverse-cymbal/snare-roll/pre-drop-gap/impact primitives assembled into approach/build/tension/impact/release phases). Beat the `event_*` stack it replaced; lost raw recall to a cheap RMS-peak baseline, with the per-primitive precision audit still open. **Promoted in v3.0** into `src/analyzer/stages/gestures.py` (item 9). |
+| [`../experiments/clap/README.md`](../experiments/clap/README.md) | What CLAP infers *beyond* the arrangement: a character layer (breath / void / vocal lead / full power) built from the stems, CLAP's calm axis and allin1's frame-level shadow labels; and section identity. The identity result is **archived, negative** (MFCC 20 beat CLAP; `docs/archive/experiments.md`). The character-layer idea is **not promoted** and stays open in [`experiments_pending.md`](experiments_pending.md). |

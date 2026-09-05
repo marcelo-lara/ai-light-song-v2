@@ -21,20 +21,25 @@ debugger (`ui/`), and the Docker environment.
 
 ## Pipeline
 
-| Epic | Stage | Key output |
-| --- | --- | --- |
-| 1 | Preprocessing: stems, beats, tempo, bar grid, 7-band FFT | `essentia/beats.json`, `essentia/fft_bands.json` |
-| 2 | Harmonic: key, chords, HPCP | `layer_a_harmonic.json` |
-| 3 | Structure: section segmentation, boundary audit, alignment | `section_segmentation/sections.json` |
-| 4 | Symbolic: note events, energy features, event-feature layer | `layer_b_symbolic.json`, `layer_c_energy.json` |
-| 5 | Events: vocabulary, rule baseline, ML classifier, review | `song_event_timeline.json` |
-| 6 | Guidance: genre, section hints, LLM-friendly song map | `hints.json` |
-| 7 | Feature-layer assembly (`music_feature_layers.json`); ~~fixture score~~ removed | Lighting/fixture output is out of scope — constitution §1.1 |
-| 8 | Internal read-only artifact debugger (`ui/`) | — |
+Organised by the four phases in [`docs/constitution.md`](docs/constitution.md)
+§5 — measure, interpret, relate, publish — not by historical epic. The stage
+list is the shipped shape, not a quality claim; see [CLAUDE.md](CLAUDE.md) for
+which stages are trusted and how each replacement in the v3.0 release is
+measured. Full stage registry, authoritative over this table:
+`STAGE_PIPELINE_IDS` in [`src/analyzer/pipeline.py`](src/analyzer/pipeline.py).
 
-The stage list above is the shipped shape, not a quality claim — see
-[CLAUDE.md](CLAUDE.md) for which stages are trusted and which are measured as
-not working.
+| Phase | Stage | Key output |
+| --- | --- | --- |
+| 1 measure | Stems, beat grid + downbeat phase, 7-band FFT, loudness | `essentia/beats.json`, `essentia/fft_bands.json`, `rms_loudness.json` |
+| 2 interpret | Harmonic (key, chords, HPCP), drum-hit transcription, genre, named functional segmentation (All-In-One) | `layer_a_harmonic.json`, `symbolic_transcription/drum_events.json`, `genre.json`, `section_segmentation/sections.json` |
+| 3 relate | Gesture phases (riser/build/tension/impact/release) and section-pair transitions | `song_event_timeline.json` |
+| 4 publish | Section/beat/hint packing for the debugger and MCP projection | `sections.json`, `beats.json`, `hints.json` |
+| — | Internal read-only artifact debugger (`ui/`) | — |
+
+For the full status of this release — what was deleted, what replaced it, and
+the measured numbers behind each replacement — see
+[`docs/implementation-plan-v3.0.md`](docs/implementation-plan-v3.0.md) rather
+than this table.
 
 ## Repository layout
 
@@ -46,9 +51,8 @@ The structure is part of the contract.
   `song_event_timeline.json`,
   plus `artifacts/`. Do not add or remove files here without a contract change.
 - `data/analysis/<Song - Artist>/artifacts/` — intermediate artifacts, grouped
-  by producer (`essentia/`, `section_segmentation/`,
-  `event_inference/`, `validation/`, …), including
-  `artifacts/stems/`.
+  by producer (`essentia/`, `section_segmentation/`, `allin1/`,
+  `validation/`, …), including `artifacts/stems/`.
 - `data/analysis/<Song - Artist>/reference/` — validation-only truth data
   (external tools, human hints). Scoring and comparison only.
 - `docs/` — current contracts and reference, and nothing else. Superseded

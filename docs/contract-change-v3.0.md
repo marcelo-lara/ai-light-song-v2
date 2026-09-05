@@ -620,3 +620,54 @@ promoted by this release.
 output is promoted into a production deliverable, keeping its old debugger
 lane around invites the two to drift apart and confuses which one the
 authoring model actually receives (constitution §3.2).
+
+---
+
+## 15. Documentation sweep and experiment archival
+
+No consumer-facing artifact changes in this item — it is the documentation
+catch-up for items 1-14. Two things worth a downstream consumer's attention
+anyway:
+
+### New files
+
+| File | Introduced by | What it is |
+| --- | --- | --- |
+| `artifacts/allin1/raw.json` | item 8 (`analyzer.allin1_cache`) | allin1's raw segment list plus its `downbeat` and `label` frame activations at 100 Hz, cached once per song so `extract-timing-grid` (1.2) and `segment-sections` (3.1) share one model invocation instead of each running it. **Not a stable contract file** — internal to the shared cache module; no other stage and no UI lane reads it. |
+
+No other new top-level or `artifacts/` file was introduced across items 1-14;
+every other change in this document either removes a file, reshapes an
+existing one in place, or changes which engine produces an unchanged shape.
+
+### Unchanged for v3.0
+
+Four files a consumer might reasonably expect to have moved, given how much of
+the pipeline underneath them changed, and did not:
+
+- **`info.json`** — same top-level shape (`bpm`, `duration`, `artifacts`,
+  `outputs`) throughout the release. Its `artifacts` block lost rows as items
+  1-9 deleted their producing stages (`events.ml.json`, `event_benchmark`,
+  `music_feature_layers`, `patterns_layer`/`pattern_mining`,
+  `symbolic_layer`/`symbolic_hints`/`symbolic_validation`, the eight
+  `event_*`/`review_queue`/`energy_identifiers` rows, `energy_features`), but
+  the file's own schema and the meaning of every surviving key are unchanged.
+- **`artifacts/genre.json`** — untouched by every item in this release.
+  `genre.py` was never a deletion, replacement, or publishing target this
+  wave; it keeps its `genres`, `confidence`, `top_predictions[]`, `guidance[]`
+  shape from v2.1.
+- **`artifacts/essentia/rms_loudness.json`** — untouched. `loudness.py` was
+  not in scope for any item 1-14; the one MCP `get_analysis_detail` dense
+  artifact keeps its `metadata.interval_ms` / `sources[]` / `frames[]` shape.
+- **`artifacts/symbolic_transcription/drum_events.json`** — untouched, and
+  deliberately survived the item-6 deletion of the rest of the
+  `symbolic_transcription/` tree: `drums.py` never depended on Basic Pitch or
+  the deleted `symbolic/` package, and keeps its own Omnizart transcription
+  path with the same `events[] {time, event_type, confidence}` shape plus
+  summary counts.
+
+**Why call these out:** items 1-14 together touched `sections.json`,
+`beats.json`, `hints.json` and `song_event_timeline.json` — four of the seven
+files a consumer reads — which is most of the projected surface. A consumer
+diffing this release against v2.1 should not have to independently verify that
+the other three kept their shape; this section is that verification, done
+once, here.

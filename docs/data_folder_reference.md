@@ -14,8 +14,11 @@ Use this as a navigation guide first, then open the referenced files for the act
 - Do not add or remove the top-level files under `data/analysis/<Song - Artist>/` unless a UI contract change makes that strictly required.
 - The internal debugger served from `/ui/` primarily reads `data/analysis/<Song - Artist>/artifacts/` directly and uses the top-level `data/analysis/<Song - Artist>/` files only as supporting context when useful.
 - The debugger is read-only against generated data and must not write files into `data/analysis/`, with the single exception below.
-- Story 7.8 allows the helper UI to update only `data/analysis/<Song - Artist>/reference/human/human_hints.json` on explicit save.
-- `data/fixtures/` contains rig and focus-point context.
+- The debugger's "Create human hint" action updates only `data/analysis/<Song - Artist>/reference/human/human_hints.json` and (for song-level facts) `reference/human/song_facts.json`, on explicit save.
+- `data/fixtures/` **does not exist in this repository** and never has. Do not
+  create it or plan around it — fixture-aware orchestration is out of scope
+  (constitution §1.1). Earlier drafts of this document described a
+  `data/fixtures/` folder that was never built.
 - `data/songs/` contains source audio. `data/analysis/<Song - Artist>/artifacts/stems/` contains stem-separated audio derived from those songs.
 
 ## Folder Structure
@@ -27,15 +30,18 @@ data/
       beats.json
       hints.json
       info.json
-        song_event_timeline.json
       sections.json
+      song_event_timeline.json
       reference/
         human/
           human_hints.json
+          song_facts.json
         moises/
           chords.json
           lyrics.json
           segments.json
+        proposals/
+          <experiment output — not a stable contract; see the source experiment's README>
       artifacts/
         stems/
           bass.wav
@@ -47,6 +53,10 @@ data/
           beats.json
           fft_bands.json
           hpcp.json
+          rms_loudness.json
+          loudness_envelope.json
+        allin1/
+          raw.json
         section_segmentation/
           sections.json
         symbolic_transcription/
@@ -59,9 +69,6 @@ data/
         layer_a_harmonic.json
         genre.json
         layer_c_energy.json
-  fixtures/
-    fixtures.json
-    pois.json
   songs/
     <Song - Artist>.mp3
 ```
@@ -80,8 +87,6 @@ If you only open a few files, start here in this order:
 
 These are also, near enough, the files the downstream MCP server actually
 projects — see [`reference/analysis-input-guide.md`](reference/analysis-input-guide.md).
-8. `data/fixtures/fixtures.json`
-9. `data/fixtures/pois.json`
 
 For internal debugger work, invert that priority: start with `data/analysis/<Song - Artist>/artifacts/` layer and validation files first, then use `data/analysis/<Song - Artist>/` only as compact helper projections.
 
@@ -109,10 +114,6 @@ Per-song consumer-facing outputs, living alongside (but outside) the nested `art
 
 The internal debugger may read selected files here for quick navigation or compact comparisons, but it must not treat this folder as its primary source of truth and must not write additional files into it.
 
-### `data/fixtures/`
-
-Lighting rig metadata and point-of-interest targeting data.
-
 ### `data/analysis/<Song - Artist>/reference/`
 
 Reference and curated external material, nested under each song's analysis folder, including Moises-style chord, segment, and lyric references for validation and review plus the helper UI human-hints file at `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
@@ -129,30 +130,6 @@ Each hint in `human_hints.json` carries `id`, `title`, `start_time`, `end_time`,
 - `artifacts/validation/drops_score.json` (new): advisory `--compare drops` score. Its sibling `form_score.json` and the `form` compare target were deleted in plan v3.0 item 10 — `form` reported `mode: "unlabelled"` on all four gold songs and `validate-sections` against `reference/moises/segments.json` supersedes it.
 
 ## File Reference
-
-### `data/fixtures/fixtures.json`
-
-Summary: rig inventory. Each row identifies a fixture, its fixture type, DMX base channel, and normalized stage location.
-
-Why it matters: this is the main file for understanding what hardware exists and where it sits.
-
-LLM hint:
-- See: `id`, `fixture`, `base_channel`, and `location`.
-- Use: map abstract looks onto real fixture roles such as key mover, mirrored FX heads, center wash, and edge wash.
-- Use: keep repeated callbacks on stable fixture groups so motifs feel intentional.
-- Avoid: inventing fixture capabilities that are not implied by the fixture type.
-
-### `data/fixtures/pois.json`
-
-Summary: named points of interest with precomputed pan and tilt values for compatible moving fixtures.
-
-Why it matters: this is the fastest way to target real scenic locations without solving pan and tilt yourself.
-
-LLM hint:
-- See: `id`, `name`, and `fixtures.<fixture_id>.pan` and `tilt`.
-- Use: snap spotlight moments, lyric callouts, or instrumental solos to named stage targets.
-- Use: keep focus recalls repeatable across sections by referencing the same POI ids.
-- Avoid: inferring geometry from the shared `location` alone when direct pan and tilt values are already provided.
 
 ### `data/songs/<Song - Artist>.mp3`
 
@@ -487,10 +464,6 @@ Open `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`.
 ### For harmonic color and scene-change logic
 
 Open `layer_a_harmonic.json` and `essentia/beats.json`.
-
-### For rig-aware targeting
-
-Open `data/fixtures/fixtures.json` and `data/fixtures/pois.json`.
 
 ### For trust and QA review
 

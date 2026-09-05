@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 14 |
+| Done | 15 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -837,24 +837,24 @@ Only the *promotions* remain — the removals landed with their items.
 
 Everything each item could not finish in its own commit.
 
-- [ ] **`docs/contract-change-v3.0.md`** — finalise. Cross-check every item above
+- [x] **`docs/contract-change-v3.0.md`** — finalise. Cross-check every item above
       marked done: each one that changed a consumer-facing surface must be
       traceable to a row. Add the **New files** table and an **Unchanged for
       v3.0** section naming the surfaces a consumer might expect to have changed
       and did not (`info.json`, `genre.json`, `rms_loudness.json`,
       `drum_events.json`).
-- [ ] **`CLAUDE.md`** — rewrite "Current state — what to trust": the "Not
+- [x] **`CLAUDE.md`** — rewrite "Current state — what to trust": the "Not
       trusted, roughly 5,900 lines" section is now the deleted set; the line
       counts, the "known-good direction (researched, not yet implemented)"
       paragraph and the "what actually reaches the light show" file list all
       change.
-- [ ] **`docs/source_files_reference.md`** — currently maps `src/` by Epic and
+- [x] **`docs/source_files_reference.md`** — currently maps `src/` by Epic and
       describes stages this release deleted. Rewrite it to the surviving tree.
-- [ ] **`docs/data_folder_reference.md`** — final pass. Also delete the
+- [x] **`docs/data_folder_reference.md`** — final pass. Also delete the
       `data/fixtures/fixtures.json` and `data/fixtures/pois.json` entries: that
       folder has never existed in this repo and is out of scope per constitution
       §1.1.
-- [ ] **`docs/experiments_pending.md`** — move the `allin1`, `CLAP` and
+- [x] **`docs/experiments_pending.md`** — move the `allin1`, `CLAP` and
       `Transition-FX and gesture phases` entries, with their filled-in results
       and conclusions, to `docs/archive/experiments.md`, marked **promoted**
       (constitution §3.4). The CLAP entry is promoted only in part — its
@@ -863,11 +863,11 @@ Everything each item could not finish in its own commit.
       character-layer question stays in `experiments_pending.md` as its own
       entry. Add a line to the wave-2 review section saying which release
       executed its §1–§2 verdicts.
-- [ ] **`experiments/allin1/README.md`** and **`experiments/gestures/README.md`**
+- [x] **`experiments/allin1/README.md`** and **`experiments/gestures/README.md`**
       — change the status line from "not promoted" to naming this release. The
       measurements stay: measured evidence does not go stale (constitution §4).
-- [ ] **`docs/README.md`** — the "Open work" and "Measured evidence" tables.
-- [ ] **Root `README.md`** — its "Pipeline" table lists the Epic 2 pattern
+- [x] **`docs/README.md`** — the "Open work" and "Measured evidence" tables.
+- [x] **Root `README.md`** — its "Pipeline" table lists the Epic 2 pattern
       mining, Epic 4 symbolic layer, Epic 5 ML classifier and Epic 7
       feature-layer assembly, all of which this release deletes. Rewrite the
       table to the surviving stages. Any status line points at this plan rather

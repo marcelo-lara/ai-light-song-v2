@@ -387,34 +387,46 @@ candidate that could replace `hints.py`'s templated prose outright. Its
 grounding harness (every timestamped claim cross-checked against the stems) is
 the reusable part regardless of whether the model survives.
 
+**v3.0 executed this review's §1 and §2 verdicts.**
+[`implementation-plan-v3.0.md`](implementation-plan-v3.0.md) deleted every
+item in §1 ("Remove — inference that returns nothing": the ML event stack,
+`event_benchmark.py`, `unified.py`, symbolic note transcription, the
+label-less validation targets, `patterns.py`) and promoted both §2 entries
+("Replace — where an experiment beats the module it was built against"):
+`sections/` → allin1 (item 7), `beats.json` downbeats → allin1's downbeat
+phase (item 8), and the `event_*` stack → the gestures stage (item 9, listed
+under §2.3 here). §2.4 (merge the human hints) landed as item 11. The §3
+"Complement" entries — character blocks, vocal phrase edges, section
+identity — were **not** acted on in v3.0 and remain open below, except section
+identity's CLAP measurement, which concluded negative and is archived
+(`archive/experiments.md`).
+
 ---
 
 # Experiments to try
 
-## CLAP
+## CLAP — character layer (calm/intense texture blocks)
 
 <https://github.com/LAION-AI/CLAP>
 
 ### Status
 
-[DONE] — concluded. The character layer works and is reviewable in the debugger;
-section identity failed. Awaiting the operator's archive-or-promote decision
-(§3.3).
+**[OPEN] — split from the concluded CLAP experiment.** CLAP's *section-identity*
+result (measured, negative: MFCC 20 beats CLAP) is concluded and archived —
+[`archive/experiments.md`](archive/experiments.md). This entry is the other,
+**still-open** half: a character/texture layer beyond verse-chorus arrangement.
+It is not decided or promoted in v3.0 and stays queued here.
 
 ### Why? What for?
 
-- it is used by Audio Vectors:
-"""
-AudioVector turns your tracks into 512-dimensional Microsoft CLAP audio embeddings — dense AI audio vectors for semantic similarity search, catalog matching, and recommendation pipelines.
-""""
-
-**What the experiment is actually for:** to see what CLAP can infer *beyond the
-song arrangement sections*. The reference case is the operator's own ground
-truth — `Armin - Revolution` `hint-006`, "Breath", 81.395–96.326,
-*"Vocal - no intense section"*, lighting *"soft motion of moving heads. parcans
-slow violet waves"*. An undoubtable voice block, worth its own look, and
-invisible to any verse/chorus label. `_test_song` shows the same at finer grain:
-`Spacer`, `Outro start`, three `Vocal outro` phrases, `Finale`.
+To see what CLAP can infer *beyond the song arrangement sections*. The
+reference case is the operator's own ground truth — `Armin - Revolution`
+`hint-006`, "Breath", 81.395–96.326, *"Vocal - no intense section"*, lighting
+*"soft motion of moving heads. parcans slow violet waves"*. An undoubtable
+voice block, worth its own look, and invisible to any verse/chorus label
+(constitution §1.2's "what happens inside a part"; see the pinned operator
+guidance on non-arrangement character blocks). `_test_song` shows the same at
+finer grain: `Spacer`, `Outro start`, three `Vocal outro` phrases, `Finale`.
 
 ### Experiment Plan
 
@@ -470,29 +482,21 @@ where the drum stem falls to 0.011 — a breakdown the 8-bar argmax could not
 express. Per-section posterior entropy averages 0.78 on that song: it names the
 form while being nearly opinion-less about it.
 
-**Section identity failed** (measured before the redirection, kept for the
-baseline it establishes): mean pair AUC — MFCC 20 **0.73**, CLAP raw 0.68,
-chroma 0.62, CLAP centred 0.61, duration control 0.59, time control 0.46. Twenty
-MFCC coefficients beat the 512-d embedding. CLAP scores 0.83 at telling a
-section from *itself* and 0.68 at matching two occurrences of the same part, so
-identity needs a representation trained for invariance between occurrences. The
-lane built for it was removed (§3.2).
-
 ### Conclusion
 
 CLAP is worth keeping for exactly one thing: **a perceptual intensity axis**. It
-cannot say what is playing — the stems do that better and for free — and it
-cannot recognise a returning part. It can say whether a passage feels calm or
-intense, which is the axis the operator's hints are actually written in, and
-combined with the stems it nearly halves a texture detector's false territory.
+cannot say what is playing — the stems do that better and for free. It can say
+whether a passage feels calm or intense, which is the axis the operator's hints
+are actually written in, and combined with the stems it nearly halves a texture
+detector's false territory.
 
 The unexpected result is on the allin1 side: its frame-level posterior finds
 breakdowns and outros its own published segmentation cannot name, at no extra
 model cost.
 
-A promotion would add a **character layer** to the pipeline — stem-derived
-presence plus one CLAP axis plus allin1 shadow labels — and would need a new
-projected file, since no file in
+**Not decided in v3.0.** A promotion would add a **character layer** to the
+pipeline — stem-derived presence plus one CLAP axis plus allin1 shadow labels —
+and would need a new projected file, since no file in
 [`reference/analysis-input-guide.md`](reference/analysis-input-guide.md) carries
 texture today. It deletes nothing, which §3.3 warns is usually a mistake; the
 honest counter is that the pipeline has no character layer at all to replace.
@@ -501,95 +505,6 @@ synthetic excerpt. More marked blocks across real tracks would settle the
 thresholds that are currently set by hand.
 
 ---
-
-## All-In-One (`allin1`)
-
-<https://github.com/mir-aidj/all-in-one>
-
-### Status
-
-[DONE] — concluded, awaiting the operator's archive-or-promote decision (§3.3).
-
-### Why? What for?
-
-Named song form. The shipped segmentation labels sections with invented mood
-adjectives ("Momentum Lift", "Vocal Spotlight"), so nothing in the artifact says
-*which part of the song* a section is, or that a returning chorus is the same
-part as the first one — and its boundaries are measured at chance. `allin1` is
-the one model in the 2026-09 survey that outputs *named* functional structure
-(Harmonix vocabulary: `intro verse chorus bridge inst solo break outro`) in a
-single multi-task model trained on pop/EDM, the repertoire this project targets.
-
-The ask: extract everything it produces — segments included — and put it on the
-timeline so it can be validated against the song by ear.
-
-### Experiment Plan
-
-Built as [`experiments/allin1/`](../experiments/allin1/README.md).
-
-- `model.py` runs the model in the existing `ai-light-song-v2-allin1:dev`
-  sandbox and caches its raw output per song; the cache is committed so every
-  number is reproducible without a GPU. The model is seeded with the pipeline's
-  own demucs stems rather than letting it separate for itself.
-- `features.py` derives everything obtainable from its four outputs: merged
-  **sections** (song form, with `chorus 2` numbering and `same_label_as`), the
-  **transitions** between them (label pair, bar, offset to the essentia beat,
-  `on_downbeat`), the raw 8-bar **phrase** grid, the **bar grid**, **tempo**, a
-  **beat-grid comparison** against essentia, and a **degeneracy check** that
-  marks a song `unknown` rather than emitting a confident wrong name.
-- `export.py` writes one proposal per song to
-  `data/analysis/<song>/reference/proposals/allin1.json` (§3.2 — never
-  `artifacts/`, never `reference/human/`).
-- `score.py` measures against the incumbent `sections.json` **and** against an
-  evenly spaced grid at the same boundary budget.
-- Two debugger lanes: **allin1 Transitions** beneath Human Hints and Drop
-  Proposals, **allin1 Sections** beneath Sections.
-
-### Results evidence
-
-Gold set: 4 songs, 7 hand-placed `drop impact` marks. Full tables in
-[`experiments/allin1/out/score.txt`](../experiments/allin1/out/score.txt).
-
-| method | ±0.5 s | ±1.0 s | ±2.0 s | boundaries/min |
-| --- | --- | --- | --- | --- |
-| **allin1 section transitions** | **3/7** | **4/7** | 4/7 | **1.6** |
-| allin1 phrase edges (unmerged) | 3/7 | 4/7 | 6/7 | 3.3 |
-| shipped `sections.json` (incumbent) | 0/7 | 0/7 | 1/7 | 3.6 |
-| evenly spaced grid, same budget (baseline) | 0/7 | 2/7 | 3/7 | 3.6 |
-
-- All three Titanium hits are `chorus → inst` / `chorus → outro`: the drop **is**
-  the section change, and the label pair says what kind of change it is.
-- The incumbent does not beat evenly spaced guesses.
-- **Reproducibility:** `allin1` runs `demucs` itself unless handed stems, and
-  demucs is not reproducible. Seeded with the pipeline's stems it is stable —
-  3/3 identical runs on every gold song. Unseeded it disagrees with itself on
-  **14 of 21** songs, and that, not the model, is what produced the survey's
-  "degenerates on instrumental trance" finding: Armin recovers a full
-  `intro verse inst verse chorus inst` read and Chimera goes from 2 distinct
-  labels to 6.
-- **Labelling health:** degenerate on 1 of 21 (`_test_song`, a 58 s excerpt);
-  every other song gets 3–6 distinct labels.
-- **Its beat grid is not usable:** 16 of 21 agree with essentia to within 7 % of
-  a beat, 4 sit a clean half-beat out of phase, and `Sash - Raindrops` halves the
-  tempo. Take the structure, keep essentia's grid.
-
-### Conclusion
-
-`allin1` supplies the named structure the pipeline has no equivalent of, and does
-it with **less than half** the incumbent's boundary budget — against an incumbent
-that loses to evenly spaced guesses. Adopting it would mean deleting
-`src/analyzer/stages/sections/` and changing the projected `sections.json`.
-
-Three things are unresolved and none of them are settled by more modelling:
-the ground truth is the wrong shape (7 hand-clicked impacts cannot score a
-*named* segmentation — nothing in the repo says where a verse ends); section
-**identity** is still missing (`same_label_as` is label repetition, not "the same
-music"); and Armin and `_test_song` are still missed by 13 s and more, which the
-first item would tell us how to read. No `kind: "drop"` is emitted: four label
-pairs across the gold set cannot justify a rule applied to eighteen unlabelled
-songs.
-
-
 
 ## VocalParse — singing voice transcription (lyrics + melody)
 
@@ -1201,164 +1116,6 @@ replacement accent detector. The durable finding for anyone who tries this again
 is the methodological one: two curves on different scales cannot share a
 threshold, and the unfair version of this comparison looked like a strong
 positive.
-
----
-
-## Transition-FX and gesture phases — riser, downlifter, snare roll, pre-drop gap, impact
-
-<https://www.ujam.com/tutorials/how-to-create-huge-edm-transitions/>
-
-### Status
-
-**[DONE] — concluded, mixed.** Beats the `event_*` stack it was built to replace
-by a wide margin, and is the only method measured here that emits named phase
-structure — but it loses on raw impact recall to a one-line RMS-derivative
-peak-picker, and the per-primitive precision audit the plan named as the thing
-that matters was not done. Awaiting the operator's archive-or-promote decision
-(§3.3).
-
-### Why? What for?
-
-Constitution §1.2 says a drop "has an approach, a build, a tension span, an
-impact and a release, and each phase becomes a different look", and that a flat
-list of independent events loses the thing that matters. The current
-`event_*` stack claims to do this and is measured at chance, because it infers
-gestures from raw features with no named structure to hang them on — the mistake
-§5.2 exists to prevent.
-
-But there is a route that needs neither the section labels nor a model. In the
-repertoire this corpus is made of, **producers construct these gestures out of a
-small, named, deliberately conspicuous set of sound-design devices**, and each
-one has a signal signature that is trivially detectable and essentially
-unambiguous:
-
-| device | what it is, in the producer's words | signature in our existing artifacts |
-| --- | --- | --- |
-| **uplifter / riser** | noise or pitch sweep climbing for 4–16 bars into the drop | high-band energy and spectral centroid rising near-monotonically over a bar-multiple span; no chord change; often no drums |
-| **downlifter** | the mirror, marking the *start* of the build | the same ramp, descending, immediately after a section edge |
-| **reverse cymbal / reverse reverb** | amplitude ramp terminating in a transient | envelope rising into a `transient_strength` spike |
-| **snare roll / drum build** | 1/4 → 1/8 → 1/16 → 1/32 subdivision doubling | onset density from `drum_events.json` doubling across consecutive bars |
-| **pre-drop gap** | one to two beats of near-silence before the hit | `dropout_strength` spike / broadband RMS collapse on a beat boundary |
-| **impact** | the crash-and-sub hit that lands the drop | simultaneous sub and brilliance transient on a downbeat |
-
-Layering these at different timescales is standard practice — a 16-bar noise
-sweep for macro tension, a 4-bar pitch riser under it, a 2-bar reverse reverb
-immediately before the hit. That layering *is* the phase structure the
-constitution asks for, and it is legible from the outside.
-
-The pre-drop gap deserves its own mention: a beat or two of silence followed by
-the impact is the single most reliable lighting moment in this repertoire —
-blackout, then everything. It is a `dropout_strength` spike we already compute
-and never report.
-
-### Experiment Plan
-
-Build as `experiments/gestures/`, numpy only.
-
-- **Inputs:** `fft_bands.json` (levels, `brightness_ratio`,
-  `transient_strength`, `dropout_strength`), `rms_loudness.json` (per stem),
-  `drum_events.json`, `beats.json`, and — if entry 1 has run — its locally
-  normalised bands, which should make every one of these rules easier to state.
-- **One detector per primitive**, each with an explicit written rule, a span, an
-  anchor beat/bar, and its own confidence derived from how well the observation
-  matched the rule (monotonicity of the ramp for a riser; the subdivision ratio
-  for a roll). No tuned global threshold that means different things per song —
-  thresholds relative to the song's own levels, as the CLAP character
-  experiment already does.
-- **Assembly into composite gestures.** Primitives that overlap or abut on the
-  bar grid merge into one gesture with named internal phases —
-  `approach → build → tension → impact → release` — each phase carrying its own
-  start, end and confidence. A gesture missing its impact is still emitted, with
-  the missing phase absent rather than guessed (§2: never invent a plausible
-  default).
-- **Explicitly do not name the section.** This experiment says *a build of this
-  shape happens here*; it does not say "this is the drop". Deriving `kind:
-  "drop"` needs the named section pair (§5.2, and the allin1 entry's refusal to
-  emit one on four label pairs).
-- Export `reference/proposals/gestures.json`; **Gestures** lane, rendered as
-  spans with phase sub-bars so the internal structure is auditionable.
-
-**Measurement — fixed before the run (§3).**
-
-1. **Impact phase vs. the 7 hand-marked drop impacts** at ±0.25 / ±0.5 / ±1.0 s,
-   with gestures per minute.
-2. **Build spans vs. the operator's non-drop hints** — `_test_song`'s `Spacer`
-   ("volume drops to restart melody"), `Outro start` ("drum and bass leaves"),
-   `prepare for end`; Armin's `Breath`. Report which hints a gesture covers and
-   which it misses.
-3. **Incumbent:** `song_event_timeline.json` events of type build/drop/impact on
-   the same songs, scored identically. **Cheap baseline:** a plain RMS-derivative
-   peak-picker at the same event budget.
-4. **Per-primitive precision**, hand-auditioned in the lane: for each detected
-   riser and gap, does it exist in the audio? Twenty or thirty spans across four
-   songs is small enough to check by ear, and precision is what matters here —
-   a phantom build fires a cue that contradicts the music.
-
-**Reach test (§1.3) — which projected file this lands in.**
-
-`song_event_timeline.json` — the phases become the tightly-timed, few,
-high-value discrete events the input guide asks for, with real `intensity` and
-an actionable `summary`. If promoted this is a phase-3 stage, and it is the
-first honest candidate to replace part of the `event_*` stack rather than add to
-it (§3.3 — promotion that only adds is usually a mistake).
-
-### Results evidence
-
-Built as [`experiments/gestures/`](../experiments/gestures/README.md) — one
-detector per device (riser, downlifter, reverse cymbal, snare roll, impact,
-pre-drop gap), assembled into gestures anchored on a detected impact, with any
-phase lacking a supporting primitive simply absent (§2). Full tables in
-[`out/score.txt`](../experiments/gestures/out/score.txt). Gold set, 7 drop
-impacts.
-
-| method | ±0.25 s | ±0.5 s | ±1.0 s | events/min |
-| --- | --- | --- | --- | --- |
-| gesture impact phase | 2/7 | 4/7 | 4/7 | 14.1 |
-| incumbent `song_event_timeline` build/drop/impact | 0/7 | 1/7 | 2/7 | 1.5 |
-| **RMS-derivative peak-picker (baseline)** | **3/7** | **6/7** | **7/7** | 40.8 |
-
-**The incumbent row is a direct confirmation of `CLAUDE.md`'s "measured at
-chance"** — on the metric its own event stack exists to own, it lands 0/7 at
-±0.25 s. **The baseline row is the humbling one**: an eight-detector rule engine
-does not beat a one-line peak-picker on impact-instant recall. The peak-picker
-fires ~3× as often and says nothing — no phases, no evidence, no claim that can
-be wrong — which is why recall alone cannot settle this comparison in either
-direction.
-
-**What the gestures deliver that the baseline structurally cannot**: 12 gestures
-assembled from 35 primitives on `_test_song` alone, each phase carrying its own
-span, confidence and a per-primitive evidence string auditable against the audio.
-That is constitution §1.2's composite gesture, and no recall number scores it.
-
-**Non-drop hint coverage is where the limits show, and the coverage criterion is
-generous.** Overlap-based coverage credits `_test_song`'s `Drum Hit`
-(7.44–7.63 s, 0.19 s long) to a `build` spanning **2.8–32.2 s**, and Armin's
-`Breath` (81.4–96.3) to builds and approaches spanning 78–100 s. A 29-second
-build overlapping a fifth-of-a-second hint is not evidence the detector found it.
-The one convincing case is `_test_song`'s `High Energy` (29.6–36.5), covered by a
-dense and plausibly-timed tension/impact/release chain. It **misses outright**
-all three `Vocal outro` phrases, `Synth Pad`, `prepare for end` and `Finale` —
-every vocal- and texture-driven block, none of which has a riser, roll or
-transient to detect. That is the vocal-phrase entry's territory rather than a bug
-here; the two signals are complementary.
-
-**The measurement the plan called for was not run.** Per-primitive precision —
-does each detected riser, roll and gap actually exist in the audio, hand-audited
-over 20–30 spans across four songs — is the number that decides whether these are
-real, and only spot-checking against the score tables was done. A phantom build
-fires a cue that contradicts the music, and nothing measured here rules that out.
-
-### Conclusion
-
-Positive against the stack it was built to replace, negative against the cheapest
-possible baseline on the only metric measured, and the one thing it uniquely
-offers — named, evidenced, phase-structured gestures — is not scored by that
-metric at all. The honest reading is that this is not yet a settled result so
-much as a working detector with one number attached. Before a promotion
-discussion: the precision audit by ear, and a baseline made to say something
-structured, so that it can be wrong too. If promoted this would be a phase-3
-stage and the first honest candidate to **delete** part of the `event_*` stack
-rather than sit beside it.
 
 ---
 
