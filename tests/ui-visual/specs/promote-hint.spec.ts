@@ -18,12 +18,12 @@ const HINTS_FIXTURE = path.join(
   process.cwd(),
   "fixtures/analysis/RegFull - Fixture/reference/human/human_hints.json",
 );
-const ALLIN1_FIXTURE = path.join(
+const SECTIONS_FIXTURE = path.join(
   process.cwd(),
-  "fixtures/analysis/RegFull - Fixture/reference/proposals/allin1.json",
+  "fixtures/analysis/RegFull - Fixture/sections.json",
 );
 let hintsFixtureBackup = "";
-let allin1FixtureBackup = "";
+let sectionsFixtureBackup = "";
 
 // Only the humanHints SparseLane carries `data-lane` on the `.tl-canvas-lane`
 // container (drag is enabled there only); every other sparse lane is reached
@@ -119,7 +119,7 @@ async function clickFirstBlock(page: Page, laneId: string): Promise<void> {
 
 /**
  * Expand `laneId`, find the widest tinted run's mid-x and the vertical centre
- * of the filled pixels there, and click that point. Lanes like `machineEvents`
+ * of the filled pixels there, and click that point. Lanes like `gestures`
  * pack short blocks into stacked sub-rows, so a blind mid-height click misses.
  */
 async function clickWidestBlock(page: Page, laneId: string): Promise<void> {
@@ -152,14 +152,28 @@ async function clickWidestBlock(page: Page, laneId: string): Promise<void> {
       .sort((a, b) => b[1] - b[0] - (a[1] - a[0]))[0];
     if (!wide) return null;
     const cx = Math.round((wide[0] + wide[1]) / 2);
-    const ys: number[] = [];
-    for (let y = 0; y < h; y++) if (data[(y * w + cx) * 4 + 3] !== 0) ys.push(y);
-    if (!ys.length) return null;
+    // A compact (row-packed) lane can have several disjoint filled bands in
+    // the same column (one per stacked row), separated by a gap. Averaging
+    // the overall min/max y can land the click in that gap. Pick the
+    // midpoint of the largest contiguous filled run instead.
+    const yRuns: Array<[number, number]> = [];
+    let ys = -1;
+    for (let y = 0; y < h; y++) {
+      const filled = data[(y * w + cx) * 4 + 3] !== 0;
+      if (filled && ys < 0) ys = y;
+      if (!filled && ys >= 0) {
+        yRuns.push([ys, y - 1]);
+        ys = -1;
+      }
+    }
+    if (ys >= 0) yRuns.push([ys, h - 1]);
+    if (!yRuns.length) return null;
+    const tallest = yRuns.sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]))[0];
     const cssW = canvas.getBoundingClientRect().width || w;
     const cssH = canvas.getBoundingClientRect().height || h;
     return {
       localX: (cx / w) * cssW,
-      localY: ((ys[0] + ys[ys.length - 1]) / 2 / h) * cssH,
+      localY: ((tallest[0] + tallest[1]) / 2 / h) * cssH,
     };
   }, canvasContainerSel(laneId));
   if (!hit) throw new Error(`no block found on the ${laneId} lane`);
@@ -184,7 +198,7 @@ async function totalSeconds(page: Page): Promise<number> {
 }
 
 /** Expand `laneId` and click the block covering time `t` (seconds). Used for
- *  `allin1Sections`, whose contiguous sections form one filled canvas run. */
+ *  `sections`, whose contiguous sections form one filled canvas run. */
 async function clickBlockAtTime(page: Page, laneId: string, t: number): Promise<void> {
   await expandLane(page, laneId);
   const canvas = await page.locator(`${canvasContainerSel(laneId)} canvas`).boundingBox();
@@ -198,7 +212,7 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
 
   test.beforeAll(() => {
     hintsFixtureBackup = fs.readFileSync(HINTS_FIXTURE, "utf-8");
-    allin1FixtureBackup = fs.readFileSync(ALLIN1_FIXTURE, "utf-8");
+    sectionsFixtureBackup = fs.readFileSync(SECTIONS_FIXTURE, "utf-8");
   });
   test.afterAll(() => {
     if (hintsFixtureBackup) fs.writeFileSync(HINTS_FIXTURE, hintsFixtureBackup);
@@ -222,8 +236,8 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
     // 2. nothing before a selection.
     await expect(promote).toHaveCount(0);
 
-    // 3. the inspector offers it for an allin1Sections block.
-    await clickBlockAtTime(page, "allin1Sections", 15);
+    // 3. the inspector offers it for a Sections block.
+    await clickBlockAtTime(page, "sections", 15);
     await expect(page.locator(".block-inspector")).toBeVisible();
     await expect(promote).toHaveCount(1);
     await expect(promote).toHaveAccessibleName(/Create human hint/);
@@ -234,15 +248,15 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
     await expect(promote).toHaveCount(0);
 
     // 5. present for every inspected event (D12), in both transport states.
-    await clickBlockAtTime(page, "allin1Sections", 15);
+    await clickBlockAtTime(page, "sections", 15);
     await expect(promote).toHaveCount(1);
-    await clickWidestBlock(page, "machineEvents");
+    await clickWidestBlock(page, "gestures");
     await expect(promote).toHaveCount(1);
     await page.locator(".tl-seg-block").nth(1).click();
     await expect(promote).toHaveCount(1);
 
-    // 6. it opens a pre-filled, unsaved draft — from the allin1Sections block.
-    await clickBlockAtTime(page, "allin1Sections", 15);
+    // 6. it opens a pre-filled, unsaved draft — from the Sections block.
+    await clickBlockAtTime(page, "sections", 15);
     const title = await page.locator(".block-inspector__title").textContent();
     const clockBefore = await page.locator(".app-header__time").textContent();
     await promote.click();
@@ -251,20 +265,22 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
     await expect(editor).toBeVisible();
     await expect(page.locator("#hint-title")).toHaveValue(title ?? "");
 
-    const allin1 = JSON.parse(allin1FixtureBackup) as {
-      sections: Array<{ id: string; start_s: number; end_s: number }>;
-    };
-    const first = [...allin1.sections].sort((a, b) => a.start_s - b.start_s)[0]!;
+    const sectionsFixture = JSON.parse(sectionsFixtureBackup) as Array<{
+      section_id: string;
+      start: number;
+      end: number;
+    }>;
+    const first = [...sectionsFixture].sort((a, b) => a.start - b.start)[0]!;
     expect(
-      Math.abs(Number(await page.locator("#hint-start").inputValue()) - first.start_s),
+      Math.abs(Number(await page.locator("#hint-start").inputValue()) - first.start),
     ).toBeLessThanOrEqual(0.01);
     expect(
-      Math.abs(Number(await page.locator("#hint-end").inputValue()) - first.end_s),
+      Math.abs(Number(await page.locator("#hint-end").inputValue()) - first.end),
     ).toBeLessThanOrEqual(0.01);
 
-    await expect(
-      editor.getByText("Captured from allin1 Sections · experiments/allin1"),
-    ).toHaveCount(1);
+    // Sections is a production lane (no `experiment` tag), so `captured_from`
+    // is the bare lane label — no "· experiments/<name>" suffix.
+    await expect(editor.getByText("Captured from Sections")).toHaveCount(1);
     // promoting never seeks.
     expect(await page.locator(".app-header__time").textContent()).toBe(clockBefore);
 
@@ -279,7 +295,7 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
     ]);
 
     // 8. the source artifact is untouched (D13).
-    expect(fs.readFileSync(ALLIN1_FIXTURE, "utf-8")).toBe(allin1FixtureBackup);
+    expect(fs.readFileSync(SECTIONS_FIXTURE, "utf-8")).toBe(sectionsFixtureBackup);
 
     // 9. saving writes it, with the note.
     const put = page
@@ -299,9 +315,9 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
     expect(afterSave.human_hints).toHaveLength(4);
     const promoted = afterSave.human_hints[3]!;
     expect(promoted.title).toBe(title);
-    expect(Math.abs(Number(promoted.start_time) - first.start_s)).toBeLessThanOrEqual(0.01);
-    expect(Math.abs(Number(promoted.end_time) - first.end_s)).toBeLessThanOrEqual(0.01);
-    expect(promoted.captured_from).toBe("allin1 Sections · experiments/allin1");
+    expect(Math.abs(Number(promoted.start_time) - first.start)).toBeLessThanOrEqual(0.01);
+    expect(Math.abs(Number(promoted.end_time) - first.end)).toBeLessThanOrEqual(0.01);
+    expect(promoted.captured_from).toBe("Sections");
     for (const h of afterSave.human_hints.slice(0, 3)) {
       expect(h).not.toHaveProperty("captured_from");
     }
@@ -320,7 +336,7 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
     const errors = assertNoRuntimeErrors(page);
     fs.writeFileSync(HINTS_FIXTURE, hintsFixtureBackup);
 
-    await clickBlockAtTime(page, "allin1Sections", 15);
+    await clickBlockAtTime(page, "sections", 15);
     await expect(page.getByTestId("promote-hint")).toHaveCount(1);
     await expect(page.locator(".app-rightpanel")).toHaveScreenshot(
       "inspector-promote.png",

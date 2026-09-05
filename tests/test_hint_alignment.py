@@ -67,21 +67,6 @@ class HumanHintsAlignmentTests(unittest.TestCase):
                 },
             )
             _write_json(
-                paths.artifact("layer_d_patterns.json"),
-                {
-                    "patterns": [
-                        {
-                            "id": "pattern_A",
-                            "label": "A",
-                            "sequence": "C#|D#",
-                            "occurrences": [
-                                {"start_s": 9.5, "end_s": 13.5, "sequence": "C#|D#", "mismatch_count": 0}
-                            ],
-                        }
-                    ]
-                },
-            )
-            _write_json(
                 paths.artifact("layer_a_harmonic.json"),
                 {
                     "chords": [
@@ -99,7 +84,6 @@ class HumanHintsAlignmentTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["hint_count"], 1)
         self.assertEqual(payload["summary"]["hints_with_section_overlap"], 1)
         self.assertEqual(payload["summary"]["hints_with_event_overlap"], 1)
-        self.assertEqual(payload["summary"]["hints_with_pattern_overlap"], 1)
         self.assertEqual(payload["summary"]["hints_with_chord_overlap"], 1)
         alignment = payload["alignments"][0]
         self.assertEqual(alignment["primary_section_label"], "Ambient Opening")

@@ -9,7 +9,6 @@ from analyzer.exceptions import AnalysisError
 from analyzer.io import read_json, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
-from analyzer.stages.patterns import MAX_PATTERN_BARS, _build_bars, _build_beat_rows, _display_window, _pattern_sequence
 BEAT_MATCH_RATIO_THRESHOLD = 0.80
 CHORD_MATCH_RATIO_THRESHOLD = 0.85
 CHORD_MAX_LABEL_MISMATCHES = 0
@@ -32,7 +31,7 @@ def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: floa
         {
             "time": float(section["start"]),
             "section_id": section.get("section_id"),
-            "label": section.get("label"),
+            "label": section.get("function"),
         }
         for section in inferred_sections[1:]
     ]

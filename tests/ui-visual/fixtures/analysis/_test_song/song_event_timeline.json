@@ -1,497 +1,234 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
-    "engine": "llm-friendly-event-timeline-v2",
+    "engine": "gestures.primitives (rule-based sound-design device detectors) + gestures.assembly + section-transition detector",
     "dependencies": {
-      "machine_events_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json",
-      "review_file": "/data/analysis/_test_song/artifacts/validation/song_events.review.json",
-      "overrides_file": "/data/analysis/_test_song/artifacts/validation/song_events.overrides.json"
-    }
+      "fft_bands_file": "/data/analysis/_test_song/artifacts/essentia/fft_bands.json",
+      "rms_loudness_file": "/data/analysis/_test_song/artifacts/essentia/rms_loudness.json",
+      "drum_events_file": "/data/analysis/_test_song/artifacts/symbolic_transcription/drum_events.json",
+      "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
+      "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json"
+    },
+    "gesture_count": 10
   },
   "events": [
     {
-      "id": "machine_call_response_001",
-      "type": "call_response",
-      "start_time": 14.82,
-      "end_time": 29.58,
-      "confidence": 0.602957,
-      "intensity": 0.601272,
-      "section_id": "section-002",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Adjacent vocal phrases with different phrase-group identities indicate a call-and-response exchange.",
-      "created_by": "analyzer_phrase_classifier",
-      "evidence_summary": "Adjacent vocal phrases with different phrase-group identities indicate a call-and-response exchange.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_call_response_001",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_spotlight_001",
-      "type": "vocal_spotlight",
-      "start_time": 15.92,
-      "end_time": 18.21,
-      "confidence": 0.870599,
-      "intensity": 0.600161,
-      "section_id": "section-002",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "evidence_summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "lighting_hint": "Keep the visual focus intimate and voice-led rather than rhythm-led.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_spotlight_001",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_spotlight_002",
-      "type": "vocal_spotlight",
-      "start_time": 19.16,
-      "end_time": 21.83,
-      "confidence": 1.0,
-      "intensity": 0.65,
-      "section_id": "section-002",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "evidence_summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "lighting_hint": "Keep the visual focus intimate and voice-led rather than rhythm-led.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_spotlight_002",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_tail_003",
-      "type": "vocal_tail",
-      "start_time": 21.83,
-      "end_time": 24.52,
-      "confidence": 1.0,
-      "intensity": 0.7,
-      "section_id": "section-002",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "evidence_summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
-      "lighting_hint": "Let the cue decay or hand off gently as the vocal energy falls away.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_tail_003",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_hook_phrase_001",
-      "type": "hook_phrase",
-      "start_time": 22.2,
-      "end_time": 29.58,
-      "confidence": 0.645958,
-      "intensity": 0.601272,
-      "section_id": "section-002",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Repeated phrase-group activity and vocal presence indicate a hook phrase.",
-      "created_by": "analyzer_phrase_classifier",
-      "evidence_summary": "Repeated phrase-group activity and vocal presence indicate a hook phrase.",
-      "lighting_hint": "Support recognisable phrase recall with repeatable but still editable cue language.",
-      "evidence_ref": {
-        "machine_event_id": "machine_hook_phrase_001",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_spotlight_004",
-      "type": "vocal_spotlight",
-      "start_time": 24.94,
-      "end_time": 29.22,
-      "confidence": 1.0,
-      "intensity": 0.65,
-      "section_id": "section-002",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "evidence_summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "lighting_hint": "Keep the visual focus intimate and voice-led rather than rhythm-led.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_spotlight_004",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_tail_001",
-      "type": "vocal_tail",
-      "start_time": 29.58,
-      "end_time": 32.36,
-      "confidence": 1.0,
-      "intensity": 0.7,
-      "section_id": "section-002",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Vocal energy falls away after the phrase while accompaniment remains active, indicating a vocal tail or handoff.",
-      "created_by": "analyzer_context_classifier",
-      "evidence_summary": "Vocal energy falls away after the phrase while accompaniment remains active, indicating a vocal tail or handoff.",
-      "lighting_hint": "Let the cue decay or hand off gently as the vocal energy falls away.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_tail_001",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_instrumental_bed_001",
-      "type": "instrumental_bed",
-      "start_time": 29.605442,
-      "end_time": 44.36,
-      "confidence": 1.0,
-      "intensity": 0.7,
-      "section_id": "section-003",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
-      "created_by": "analyzer_context_classifier",
-      "evidence_summary": "Instrumental stems carry the section while the vocal stem stays secondary, indicating an accompaniment-led bed.",
-      "lighting_hint": "Treat the section as accompaniment-led space with texture and support rather than lead-vocal focus.",
-      "evidence_ref": {
-        "machine_event_id": "machine_instrumental_bed_001",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "composite_machine_drop_001",
-      "type": "drop",
-      "start_time": 30.04,
-      "end_time": 36.98,
-      "confidence": 0.888186,
-      "intensity": 1.0,
-      "section_id": "section-003",
-      "section_name": "momentum_lift",
-      "provenance": "machine-only",
-      "summary": "Composite drop gesture: impact \u2192 release",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_drop_001",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      },
-      "composite": true,
-      "phases": [
-        {
-          "phase": "impact",
-          "start_time": 30.04,
-          "end_time": 30.5,
-          "intensity": 1.0
-        },
-        {
-          "phase": "release",
-          "start_time": 36.5,
-          "end_time": 36.98,
-          "intensity": 0.35
-        }
-      ],
-      "member_event_ids": [
-        "machine_drop_001",
-        "machine_energy_reset_003"
-      ]
-    },
-    {
-      "id": "machine_impact_hit_002",
-      "type": "impact_hit",
-      "start_time": 30.04,
-      "end_time": 30.5,
-      "confidence": 1.0,
-      "intensity": 0.95,
-      "section_id": "section-003",
-      "section_name": "momentum_lift",
-      "provenance": "machine-only",
-      "summary": "Accent intensity crosses the impact threshold on this beat.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Accent intensity crosses the impact threshold on this beat.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_impact_hit_002",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "composite_machine_drop_004",
-      "type": "drop",
-      "start_time": 36.98,
-      "end_time": 42.98,
-      "confidence": 0.844078,
-      "intensity": 1.0,
-      "section_id": "section-003",
-      "section_name": "momentum_lift",
-      "provenance": "machine-only",
-      "summary": "Composite drop gesture: impact \u2192 release",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Accumulated stem-relative evidence (bass re-entry, energy jump, spectral flux, onset density) crosses the drop decision threshold.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_drop_004",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      },
-      "composite": true,
-      "phases": [
-        {
-          "phase": "impact",
-          "start_time": 36.98,
-          "end_time": 37.44,
-          "intensity": 1.0
-        },
-        {
-          "phase": "release",
-          "start_time": 42.5,
-          "end_time": 42.98,
-          "intensity": 0.35
-        }
-      ],
-      "member_event_ids": [
-        "machine_drop_004",
-        "machine_energy_reset_005"
-      ]
-    },
-    {
-      "id": "machine_percussion_break_001",
-      "type": "percussion_break",
-      "start_time": 42.483051,
-      "end_time": 43.205556,
-      "confidence": 0.864465,
-      "intensity": 0.524863,
-      "section_id": "section-003",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Hint-guided percussion pocket confirmed by drum-dominant stem activity and reduced vocal presence.",
-      "created_by": "analyzer_hint_guided_classifier",
-      "evidence_summary": "Hint-guided percussion pocket confirmed by drum-dominant stem activity and reduced vocal presence.",
-      "lighting_hint": "Lean into drum-led motion and keep harmonic color restrained while percussion carries the scene.",
-      "evidence_ref": {
-        "machine_event_id": "machine_percussion_break_001",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_spotlight_005",
-      "type": "vocal_spotlight",
-      "start_time": 43.36,
-      "end_time": 43.99,
-      "confidence": 0.876503,
-      "intensity": 0.65,
-      "section_id": "section-003",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "evidence_summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "lighting_hint": "Keep the visual focus intimate and voice-led rather than rhythm-led.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_spotlight_005",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_tail_006",
-      "type": "vocal_tail",
-      "start_time": 43.99,
-      "end_time": 46.66,
-      "confidence": 1.0,
-      "intensity": 0.7,
-      "section_id": "section-003",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "evidence_summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
-      "lighting_hint": "Let the cue decay or hand off gently as the vocal energy falls away.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_tail_006",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_tension_hold_006",
-      "type": "tension_hold",
-      "start_time": 44.36,
-      "end_time": 57.74,
-      "confidence": 0.593103,
-      "intensity": 0.487931,
-      "section_id": "section-004",
-      "section_name": "release_tail",
-      "provenance": "machine-only",
-      "summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Sustained harmonic tension stays elevated across the section without a qualifying release.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_tension_hold_006",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_breakdown_007",
-      "type": "breakdown",
-      "start_time": 44.82,
-      "end_time": 45.28,
-      "confidence": 0.713931,
-      "intensity": 0.329505,
-      "section_id": "section-004",
-      "section_name": "release_tail",
-      "provenance": "machine-only",
-      "summary": "Energy and symbolic density both drop sharply across this window.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Energy and symbolic density both drop sharply across this window.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_breakdown_007",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_spotlight_007",
-      "type": "vocal_spotlight",
-      "start_time": 47.09,
-      "end_time": 53.18,
-      "confidence": 1.0,
-      "intensity": 0.65,
-      "section_id": "section-004",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "evidence_summary": "Lyric line timing aligns with vocal-dominant stem activity, indicating a vocal-led phrase window.",
-      "lighting_hint": "Keep the visual focus intimate and voice-led rather than rhythm-led.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_spotlight_007",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_vocal_tail_008",
-      "type": "vocal_tail",
-      "start_time": 53.18,
-      "end_time": 55.9,
-      "confidence": 0.739219,
-      "intensity": 0.474913,
-      "section_id": "section-004",
-      "section_name": null,
-      "provenance": "machine-only",
-      "summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
-      "created_by": "analyzer_lyric_rescue_classifier",
-      "evidence_summary": "Lyric line ends before vocal stem energy drops into an active accompaniment bed, indicating a vocal tail.",
-      "lighting_hint": "Let the cue decay or hand off gently as the vocal energy falls away.",
-      "evidence_ref": {
-        "machine_event_id": "machine_vocal_tail_008",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_breakdown_008",
-      "type": "breakdown",
-      "start_time": 54.52,
-      "end_time": 54.98,
-      "confidence": 0.820124,
-      "intensity": 0.323129,
-      "section_id": "section-004",
-      "section_name": "release_tail",
-      "provenance": "machine-only",
-      "summary": "Energy and symbolic density both drop sharply across this window.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Energy and symbolic density both drop sharply across this window.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_breakdown_008",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    },
-    {
-      "id": "machine_breakdown_009",
-      "type": "breakdown",
-      "start_time": 55.44,
-      "end_time": 55.9,
-      "confidence": 0.853901,
-      "intensity": 0.441333,
-      "section_id": "section-004",
-      "section_name": "release_tail",
-      "provenance": "machine-only",
-      "summary": "Energy and symbolic density both drop sharply across this window.",
-      "created_by": "analyzer_event_classifier",
-      "evidence_summary": "Energy and symbolic density both drop sharply across this window.",
-      "lighting_hint": "Use the event as a high-level musical cue, not a fixture-specific instruction.",
-      "evidence_ref": {
-        "machine_event_id": "machine_breakdown_009",
-        "machine_file": "/data/analysis/_test_song/artifacts/event_inference/events.machine.json"
-      }
-    }
-  ],
-  "texture_summary": [
-    {
+      "type": "build",
+      "start_time": 2.786,
+      "end_time": 32.508,
+      "confidence": 0.715,
+      "intensity": 0.874,
       "section_id": "section-001",
-      "start_time": 0.0,
-      "stem_activity": {
-        "bass": 0.4714,
-        "drums": 0.0728,
-        "harmonic": 0.1389,
-        "vocals": 0.002
-      },
-      "stems_entering": [],
-      "stems_leaving": []
+      "section_name": "intro",
+      "provenance": "machine-only",
+      "summary": "A rising riser builds toward the impact at 33.00s.",
+      "evidence_summary": "high-band r2=0.76 over 16 bars, delta=0.87x range"
     },
     {
-      "section_id": "section-002",
+      "type": "intro \u2192 chorus",
       "start_time": 14.82,
-      "stem_activity": {
-        "bass": 0.0991,
-        "drums": 0.2551,
-        "harmonic": 0.4372,
-        "vocals": 0.5669
-      },
-      "stems_entering": [
-        "drums",
-        "harmonic",
-        "vocals"
-      ],
-      "stems_leaving": [
-        "bass"
-      ]
+      "end_time": 14.82,
+      "confidence": 0.446144,
+      "intensity": 0.446144,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "The song moves from intro into chorus here (the new section's name is unverified).",
+      "evidence_summary": "allin1 section boundary: function changes from 'intro' to 'chorus' (boundary confidence 0.45)."
     },
     {
-      "section_id": "section-003",
-      "start_time": 29.605442,
-      "stem_activity": {
-        "bass": 0.8372,
-        "drums": 0.8833,
-        "harmonic": 0.7952,
-        "vocals": 0.0822
-      },
-      "stems_entering": [
-        "bass"
-      ],
-      "stems_leaving": [
-        "vocals"
-      ]
+      "type": "build",
+      "start_time": 20.341,
+      "end_time": 25.879,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "A rising snare roll builds toward the impact at 29.55s.",
+      "evidence_summary": "onset density 5->14 across bars 10-12"
     },
     {
-      "section_id": "section-004",
-      "start_time": 44.36,
-      "stem_activity": {
-        "bass": 0.3572,
-        "drums": 0.0425,
-        "harmonic": 0.5026,
-        "vocals": 0.4995
-      },
-      "stems_entering": [
-        "vocals"
-      ],
-      "stems_leaving": [
-        "drums"
-      ]
+      "type": "impact",
+      "start_time": 29.55,
+      "end_time": 29.55,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.50, sub-band elevated, on downbeat"
+    },
+    {
+      "type": "release",
+      "start_time": 29.55,
+      "end_time": 33.265,
+      "confidence": 0.799,
+      "intensity": 0.599,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "The mix stays elevated after the impact at 29.55s, sustaining the release.",
+      "evidence_summary": "post-impact mix-RMS median 0.2781 vs pre-impact 0.1739"
+    },
+    {
+      "type": "impact",
+      "start_time": 30.7,
+      "end_time": 30.7,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.35, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "release",
+      "start_time": 30.7,
+      "end_time": 34.415,
+      "confidence": 0.602,
+      "intensity": 0.203,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "The mix stays elevated after the impact at 30.70s, sustaining the release.",
+      "evidence_summary": "post-impact mix-RMS median 0.2748 vs pre-impact 0.2283"
+    },
+    {
+      "type": "impact",
+      "start_time": 31.85,
+      "end_time": 31.85,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.55, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 33.0,
+      "end_time": 33.0,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.42, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 34.15,
+      "end_time": 34.15,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.43, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 35.55,
+      "end_time": 35.55,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.56, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 37.85,
+      "end_time": 37.85,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.51, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "tension",
+      "start_time": 38.15,
+      "end_time": 39.0,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 39.00s.",
+      "evidence_summary": "dropout_strength peak 0.97 at 38.15s, 0.85s before impact"
+    },
+    {
+      "type": "tension",
+      "start_time": 38.15,
+      "end_time": 40.15,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 40.15s.",
+      "evidence_summary": "dropout_strength peak 0.97 at 38.15s, 2.00s before impact"
+    },
+    {
+      "type": "impact",
+      "start_time": 39.0,
+      "end_time": 39.0,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.59, sub-band elevated, on downbeat"
+    },
+    {
+      "type": "tension",
+      "start_time": 40.0,
+      "end_time": 41.3,
+      "confidence": 1.0,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "A pre drop gap holds tension immediately before the impact at 41.30s.",
+      "evidence_summary": "dropout_strength peak 0.94 at 40.00s, 1.30s before impact"
+    },
+    {
+      "type": "impact",
+      "start_time": 40.15,
+      "end_time": 40.15,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.46, sub-band elevated, off downbeat"
+    },
+    {
+      "type": "impact",
+      "start_time": 41.3,
+      "end_time": 41.3,
+      "confidence": 0.75,
+      "intensity": 1.0,
+      "section_id": "section-002",
+      "section_name": "chorus",
+      "provenance": "machine-only",
+      "summary": "An impact lands here (simultaneous sub-band and transient spike).",
+      "evidence_summary": "transient=0.46, sub-band elevated, off downbeat"
     }
   ]
 }

@@ -297,7 +297,7 @@ class ConsoleMarkerTests(unittest.TestCase):
 
         mock_stage_marker.assert_called_once_with("_test_song", "phase-1", "ensure-stems")
 
-    def test_run_phase_1_uses_reference_timing_and_harmonic_when_moises_exists(self) -> None:
+    def test_run_phase_1_never_substitutes_moises_reference_when_it_exists(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paths = SongPaths(
@@ -328,36 +328,16 @@ class ConsoleMarkerTests(unittest.TestCase):
                 "beats": [{"index": 1, "time": 0.5, "bar": 1, "beat_in_bar": 1, "type": "downbeat"}],
                 "bars": [{"bar": 1, "start_s": 0.5, "end_s": 2.5}],
             }
-            reference_timing = {
-                "bpm": 123.0,
-                "duration": 10.0,
-                "generated_from": {"engine": "reference.moises.chords", "dependencies": {"inferred_beats_file": str(paths.artifact("essentia", "beats_inferred.json"))}},
-                "beats": [{"index": 1, "time": 1.5, "bar": 1, "beat_in_bar": 1, "type": "downbeat"}],
-                "bars": [{"bar": 1, "start_s": 1.5, "end_s": 3.5}],
-            }
             inferred_harmonic = {"chords": [{"time": 0.5, "end_s": 2.5, "bar": 1, "beat": 1, "chord": "C"}]}
-            reference_harmonic = {
-                "generated_from": {"engine": "reference.moises.chords.promotion", "dependencies": {"inferred_harmonic_file": str(paths.artifact("harmonic_inference", "layer_a_harmonic.inferred.json"))}},
-                "chords": [{"time": 1.5, "end_s": 3.5, "bar": 1, "beat": 1, "chord": "D"}],
-            }
             beat_validation = ValidationResult(status="passed", matched=4, mismatched=0, match_ratio=1.0, details=[], reference_file=str(reference_path), diagnostics=None)
             chord_validation = ValidationResult(status="passed", matched=4, mismatched=0, match_ratio=1.0, details=[], reference_file=str(reference_path), diagnostics=None)
             sections_payload = {"sections": [{"section_id": "section-001", "start": 1.5, "end": 3.5, "label": "reference_section", "confidence": 0.9}]}
             ui_outputs = {"beats": str(paths.beats_output_path), "sections": str(paths.sections_output_path)}
-            hints_payload = {"hints": str(paths.hints_output_path), "symbolic_hints": []}
+            hints_payload = {"hints": str(paths.hints_output_path)}
             energy_features = {"beat_features": []}
-            symbolic = {"phrase_windows": [], "motif_summary": {"repeated_phrase_groups": []}}
             drum_events = {"generated_from": {"engine": "audiohacking.omnizart.drum"}}
             energy = {"sections": []}
-            event_features = {"features": []}
-            rule_candidates = {"events": []}
-            event_identifiers = {"events": []}
-            machine_events = {"events": []}
-            review_outputs = {"merged_payload": {"events": []}}
             event_timeline = {"events": []}
-            event_benchmark = {"status": "ok"}
-            patterns = {"patterns": []}
-            unified = {"sections": []}
             fft_bands = {"bands": [{"id": "sub"}, {"id": "bass"}, {"id": "low_mid"}, {"id": "mid"}, {"id": "upper_mid"}, {"id": "presence"}, {"id": "brilliance"}]}
             loudness = {
                 "rms_loudness": {"sources": [{"id": "mix"}, {"id": "bass"}, {"id": "drums"}, {"id": "harmonic"}, {"id": "vocals"}]},
@@ -371,27 +351,16 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.extract_fft_bands", return_value=fft_bands))
                 stack.enter_context(patch("analyzer.pipeline.extract_mix_stem_loudness", return_value=loudness))
                 stack.enter_context(patch("analyzer.pipeline.validate_beats", return_value=beat_validation))
-                mock_reference_timing = stack.enter_context(patch("analyzer.pipeline.build_reference_timing_grid", return_value=reference_timing))
                 stack.enter_context(patch("analyzer.pipeline.classify_genre", return_value={"genres": []}))
                 stack.enter_context(patch("analyzer.pipeline.extract_hpcp_and_chords", return_value=({}, inferred_harmonic)))
                 stack.enter_context(patch("analyzer.pipeline.validate_chords", return_value=chord_validation))
-                mock_reference_harmonic = stack.enter_context(patch("analyzer.pipeline.build_reference_harmonic_layer", return_value=reference_harmonic))
                 stack.enter_context(patch("analyzer.pipeline.extract_energy_features", return_value=energy_features))
                 mock_segment_sections = stack.enter_context(patch("analyzer.pipeline.segment_sections", return_value=sections_payload))
-                stack.enter_context(patch("analyzer.pipeline.extract_symbolic_features", return_value=symbolic))
                 stack.enter_context(patch("analyzer.pipeline.extract_drum_events", return_value=drum_events))
                 stack.enter_context(patch("analyzer.pipeline.generate_section_hints", return_value=hints_payload))
                 stack.enter_context(patch("analyzer.pipeline.build_ui_data", return_value=ui_outputs))
                 stack.enter_context(patch("analyzer.pipeline.derive_energy_layer", return_value=energy))
-                stack.enter_context(patch("analyzer.pipeline.build_event_feature_layer", return_value=event_features))
-                stack.enter_context(patch("analyzer.pipeline.generate_rule_candidates", return_value=rule_candidates))
-                stack.enter_context(patch("analyzer.pipeline.infer_song_identifiers", return_value=event_identifiers))
-                stack.enter_context(patch("analyzer.pipeline.generate_machine_events", return_value=machine_events))
-                stack.enter_context(patch("analyzer.pipeline.generate_event_review", return_value=review_outputs))
-                stack.enter_context(patch("analyzer.pipeline.export_event_timeline", return_value=event_timeline))
-                stack.enter_context(patch("analyzer.pipeline.benchmark_event_outputs", return_value=event_benchmark))
-                stack.enter_context(patch("analyzer.pipeline.extract_chord_patterns", return_value=patterns))
-                stack.enter_context(patch("analyzer.pipeline.assemble_music_feature_layers", return_value=unified))
+                stack.enter_context(patch("analyzer.pipeline.build_gestures", return_value=event_timeline))
                 stack.enter_context(patch("analyzer.pipeline.build_human_hints_alignment", return_value=None))
                 stack.enter_context(patch("analyzer.pipeline.build_validation_report", return_value=(report, 0)))
                 stack.enter_context(patch("analyzer.pipeline.write_validation_report"))
@@ -401,10 +370,12 @@ class ConsoleMarkerTests(unittest.TestCase):
             info_payload = json.loads(paths.info_output_path.read_text(encoding="utf-8"))
 
         self.assertEqual(exit_code, 0)
-        mock_reference_timing.assert_called_once()
-        mock_reference_harmonic.assert_called_once()
-        self.assertEqual(mock_segment_sections.call_args.args[2], reference_harmonic)
-        self.assertEqual(mock_segment_sections.call_args.args[1], reference_timing)
+        # The presence of a Moises chord reference must not substitute the
+        # canonical grid: segment-sections still runs on the pipeline's own
+        # inferred timing, not a reference-rebuilt one.
+        self.assertEqual(mock_segment_sections.call_args.args[2], inferred_timing)
+        self.assertFalse(paths.artifact("essentia", "beats_inferred.json").exists())
+        self.assertFalse(paths.artifact("harmonic_inference", "layer_a_harmonic.inferred.json").exists())
         self.assertEqual(info_payload["artifacts"]["fft_bands"], str(paths.artifact("essentia", "fft_bands.json")))
         self.assertEqual(info_payload["artifacts"]["rms_loudness"], str(paths.artifact("essentia", "rms_loudness.json")))
         self.assertEqual(info_payload["artifacts"]["loudness_envelope"], str(paths.artifact("essentia", "loudness_envelope.json")))

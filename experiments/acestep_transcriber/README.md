@@ -2,7 +2,7 @@
 
 **Status: probed on 2 songs — strongly positive on lyrics + structure, timing
 unsolved.** Full write-up in the queue entry:
-[`../../docs/experiments_pending.md`](../../docs/experiments_pending.md)
+[`../../docs/experiments.md`](../../docs/experiments.md)
 (constitution §3.4). Nothing in `src/` reads anything here.
 
 ## Two-song probe result (CPU, thinker-only, bf16)

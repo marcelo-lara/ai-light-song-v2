@@ -17,6 +17,21 @@ def _load_json_if_exists(path: Path) -> dict | list | None:
     return read_json(path)
 
 
+def find_primary_section(sections: list[dict], start_time: float, end_time: float) -> dict | None:
+    best = None
+    best_overlap = 0.0
+    for section in sections:
+        section_start = float(section["start"])
+        section_end = float(section["end"])
+        overlap = _overlap_seconds(start_time, end_time, section_start, section_end)
+        if overlap <= 0:
+            continue
+        if best is None or overlap > best_overlap:
+            best = section
+            best_overlap = overlap
+    return best
+
+
 def build_human_hints_alignment(paths: SongPaths) -> dict | None:
     reference_path = paths.reference("human", "human_hints.json")
     if not reference_path.exists():
@@ -25,19 +40,16 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
     hints_payload = read_json(reference_path)
     sections_payload = _load_json_if_exists(paths.sections_output_path) or []
     timeline_payload = _load_json_if_exists(paths.timeline_output_path) or {"events": []}
-    patterns_payload = _load_json_if_exists(paths.artifact("layer_d_patterns.json")) or {"patterns": []}
     harmonic_payload = _load_json_if_exists(paths.artifact("layer_a_harmonic.json")) or {"chords": []}
 
     hints = hints_payload.get("human_hints", [])
     sections = sections_payload if isinstance(sections_payload, list) else sections_payload.get("sections", [])
     events = timeline_payload.get("events", []) if isinstance(timeline_payload, dict) else []
-    patterns = patterns_payload.get("patterns", []) if isinstance(patterns_payload, dict) else []
     chords = harmonic_payload.get("chords", []) if isinstance(harmonic_payload, dict) else []
 
     alignment_rows = []
     with_section_overlap = 0
     with_event_overlap = 0
-    with_pattern_overlap = 0
     with_chord_overlap = 0
 
     for hint in hints:
@@ -77,24 +89,6 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
                 "overlap_seconds": round(overlap, 6),
             })
 
-        overlapping_patterns = []
-        for pattern in patterns:
-            for occurrence in pattern.get("occurrences", []):
-                occurrence_start = float(occurrence["start_s"])
-                occurrence_end = float(occurrence["end_s"])
-                overlap = _overlap_seconds(hint_start, hint_end, occurrence_start, occurrence_end)
-                if overlap <= 0:
-                    continue
-                overlapping_patterns.append({
-                    "pattern_id": pattern.get("id"),
-                    "pattern_label": pattern.get("label"),
-                    "sequence": occurrence.get("sequence") or pattern.get("sequence"),
-                    "start_s": round(occurrence_start, 6),
-                    "end_s": round(occurrence_end, 6),
-                    "mismatch_count": occurrence.get("mismatch_count"),
-                    "overlap_seconds": round(overlap, 6),
-                })
-
         overlapping_chords = []
         for chord in chords:
             chord_start = float(chord["time"])
@@ -114,12 +108,19 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
             with_section_overlap += 1
         if overlapping_events:
             with_event_overlap += 1
-        if overlapping_patterns:
-            with_pattern_overlap += 1
         if overlapping_chords:
             with_chord_overlap += 1
 
-        primary_section = max(overlapping_sections, key=lambda row: row["overlap_seconds"], default=None)
+        primary_section_full = find_primary_section(sections, hint_start, hint_end)
+        primary_section = (
+            {
+                "label": primary_section_full.get("label"),
+                "start": round(float(primary_section_full["start"]), 6),
+                "end": round(float(primary_section_full["end"]), 6),
+            }
+            if primary_section_full is not None
+            else None
+        )
         alignment_rows.append({
             "hint_id": hint.get("id"),
             "title": hint.get("title", ""),
@@ -130,12 +131,10 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
             "primary_section_label": primary_section.get("label") if primary_section else None,
             "section_overlap_count": len(overlapping_sections),
             "event_overlap_count": len(overlapping_events),
-            "pattern_overlap_count": len(overlapping_patterns),
             "chord_overlap_count": len(overlapping_chords),
             "event_type_counts": event_type_counts,
             "overlapping_sections": overlapping_sections,
             "overlapping_events": overlapping_events[:12],
-            "overlapping_patterns": overlapping_patterns[:12],
             "overlapping_chords": overlapping_chords[:12],
         })
 
@@ -146,17 +145,14 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
             "human_hints_file": str(reference_path),
             "sections_file": str(paths.sections_output_path),
             "event_timeline_file": str(paths.timeline_output_path),
-            "patterns_file": str(paths.artifact("layer_d_patterns.json")),
             "harmonic_layer_file": str(paths.artifact("layer_a_harmonic.json")),
         },
         "summary": {
             "hint_count": len(alignment_rows),
             "hints_with_section_overlap": with_section_overlap,
             "hints_with_event_overlap": with_event_overlap,
-            "hints_with_pattern_overlap": with_pattern_overlap,
             "hints_with_chord_overlap": with_chord_overlap,
             "hints_without_event_overlap": [row["hint_id"] for row in alignment_rows if row["event_overlap_count"] == 0],
-            "hints_without_pattern_overlap": [row["hint_id"] for row in alignment_rows if row["pattern_overlap_count"] == 0],
         },
         "alignments": alignment_rows,
     }
@@ -171,7 +167,6 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
         f"Hints reviewed: {len(alignment_rows)}",
         f"Hints with overlapping sections: {with_section_overlap}",
         f"Hints with overlapping events: {with_event_overlap}",
-        f"Hints with overlapping patterns: {with_pattern_overlap}",
         f"Hints with overlapping chords: {with_chord_overlap}",
         "",
     ]
@@ -182,7 +177,6 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
         if row["primary_section_label"]:
             lines.append(f"- Primary section: {row['primary_section_label']}")
         lines.append(f"- Event overlap count: {row['event_overlap_count']}")
-        lines.append(f"- Pattern overlap count: {row['pattern_overlap_count']}")
         lines.append(f"- Chord overlap count: {row['chord_overlap_count']}")
         if row["event_type_counts"]:
             lines.append(f"- Event types: {row['event_type_counts']}")

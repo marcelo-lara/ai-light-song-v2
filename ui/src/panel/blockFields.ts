@@ -37,18 +37,11 @@ export const LANE_LABELS: Record<string, string> = {
   segments: "Segments",
   sections: "Sections",
   dropProposals: "Drop Proposals",
-  allin1Sections: "allin1 Sections",
-  allin1Transitions: "allin1 Transitions",
   character: "Character",
   vocalTranscription: "Vocal Transcription",
   humanHints: "Human Hints",
   moisesLyrics: "Moises Lyrics",
   chords: "Chord Regions",
-  patterns: "Pattern Occurrences",
-  identifierHints: "Identifier Hints",
-  machineEvents: "Machine Events",
-  mlEvents: "ML Events",
-  phrases: "Symbolic Phrases",
   drums: "Drum Density",
   energy: "Energy Profile",
   validation: "Regression Overlay",
@@ -148,22 +141,27 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
   switch (laneId) {
     case "segments":
     case "sections": {
-      const role = firstStr(r.form_role, r.energy_character);
-      if (role) out.push({ label: "Form role", value: role });
-      const rep = str(r.repetition_group);
-      if (rep) out.push({ label: "Repetition group", value: rep });
-      break;
-    }
-    case "allin1Sections": {
-      const bar = str(r.start_bar);
-      const bars = str(r.bars);
-      if (bar && bars) out.push({ label: "Bars", value: `${bar} +${bars}` });
-      const phrases = str(r.phrase_count);
-      if (phrases) out.push({ label: "8-bar phrases", value: phrases });
-      const same = str(r.same_label_as);
-      if (same) out.push({ label: "Same label as", value: same });
-      const status = str(r.function_status);
-      if (status) out.push({ label: "Function", value: status });
+      // v3.0 item 7: the allin1 functional-segmentation detail, joined onto
+      // the block's raw payload by `section_id` from
+      // `artifacts/section_segmentation/sections.json`. Field labels are the
+      // artifact's own field names, not a friendlified label (plan V7.3).
+      const fn = str(r.function);
+      if (fn) out.push({ label: "function", value: fn });
+      const fnConf = r.function_confidence;
+      if (fnConf != null && Number.isFinite(Number(fnConf)))
+        out.push({ label: "function_confidence", value: roundNumber(fnConf, 2) });
+      const fnStatus = str(r.function_status);
+      if (fnStatus) out.push({ label: "function_status", value: fnStatus });
+      // Always shown, even for a section's first occurrence (r.same_label_as
+      // is null there) — plan v3.0 item 7 V7.3 requires the field name to be
+      // visible on the first Sections block, not only on a repeat.
+      const sameAs = str(r.same_label_as);
+      out.push({ label: "same_label_as", value: sameAs || "null" });
+      // v3.0 item 13: key + chord_progression, projected from
+      // layer_a_harmonic.json. Always shown, `null` included verbatim, since
+      // an honest null here is a pass, not an absence of data.
+      out.push({ label: "key", value: str(r.key) || "null" });
+      out.push({ label: "chord_progression", value: str(r.chord_progression) || "null" });
       break;
     }
     case "character": {
@@ -203,42 +201,11 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
       if (instr) out.push({ label: "Instruments", value: instr });
       break;
     }
-    case "allin1Transitions": {
-      const pair = str(r.pair);
-      if (pair) out.push({ label: "Label pair", value: pair });
-      const kind = str(r.kind);
-      if (kind) out.push({ label: "Kind", value: kind });
-      const offset = r.essentia_beat_offset_s;
-      if (offset != null)
-        out.push({ label: "Offset to essentia beat", value: `${roundNumber(offset, 3)} s` });
-      out.push({ label: "On downbeat", value: r.on_downbeat === true ? "yes" : "no" });
-      const match = r.matches_human_impact;
-      if (match != null)
-        out.push({ label: "Matches human impact", value: `${roundNumber(match, 2)} s` });
-      break;
-    }
-    case "patterns": {
-      const sb = str(r.start_bar);
-      const eb = str(r.end_bar);
-      if (sb && eb) out.push({ label: "Bars", value: `${sb}–${eb}` });
-      const occ = str(r.occurrence_index);
-      const oc = str(r.occurrence_count);
-      if (occ && oc)
-        out.push({ label: "Occurrence", value: `${occ} of ${oc}` });
-      const seq = firstStr(r.sequence, r.bar_sequence);
-      if (seq) out.push({ label: "Sequence", value: seq });
-      break;
-    }
     case "chords": {
       const roman = str(r.roman);
       if (roman) out.push({ label: "Roman", value: roman });
       const name = firstStr(r.name, r.label);
       if (name) out.push({ label: "Chord", value: name });
-      break;
-    }
-    case "phrases": {
-      const grp = firstStr(r.group_id, r.id);
-      if (grp) out.push({ label: "Group", value: grp });
       break;
     }
     case "drums": {
@@ -284,7 +251,7 @@ export function selectionFromSection(
   return {
     laneId,
     laneLabel: LANE_LABELS[laneId]!,
-    label: s.form_role ?? cleanLabel(s.label),
+    label: cleanLabel(s.label),
     start_s: s.start,
     end_s: s.end,
     confidence: s.confidence,

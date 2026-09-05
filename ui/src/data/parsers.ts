@@ -9,13 +9,10 @@ import {
   asNumber,
   asObject,
   asString,
-  booleanOr,
-  booleanOrNull,
   numberArray,
   numberOr,
   numberOrNull,
   objectOrNull,
-  stringArray,
   stringOr,
   stringOrNull,
 } from "./parse";
@@ -31,7 +28,6 @@ import type {
   FftBands,
   FftBand,
   FftFrame,
-  FormFamily,
   HarmonicChord,
   HarmonicLayer,
   HumanHint,
@@ -49,9 +45,7 @@ import type {
   SongFact,
   SongFactsFile,
   SongInfo,
-  TextureSummary,
   TimelineEvent,
-  EventPhase,
 } from "./types";
 
 function stringRecord(value: unknown, ctx: string): Record<string, string> {
@@ -63,15 +57,6 @@ function stringRecord(value: unknown, ctx: string): Record<string, string> {
     // document — an absent path is simply an absent entry.
     if (entry === null || entry === undefined) continue;
     out[key] = asString(entry, `${ctx}.${key}`);
-  }
-  return out;
-}
-
-function numberRecord(value: unknown, ctx: string): Record<string, number> {
-  const obj = asObject(value, ctx);
-  const out: Record<string, number> = {};
-  for (const [key, entry] of Object.entries(obj)) {
-    out[key] = asNumber(entry, `${ctx}.${key}`);
   }
   return out;
 }
@@ -107,6 +92,7 @@ function parseBeatRow(raw: unknown, ctx: string): BeatRow {
     bass: stringOrNull(o.bass, `${ctx}.bass`),
     chord: stringOrNull(o.chord, `${ctx}.chord`),
     type: stringOr(o.type, "beat", `${ctx}.type`),
+    confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
   };
 }
 
@@ -121,22 +107,14 @@ export function parseBeats(raw: unknown): Beats {
 function parseSectionRow(raw: unknown, ctx: string): SectionRow {
   const o = asObject(raw, ctx);
   return {
+    section_id: asString(o.section_id, `${ctx}.section_id`),
     start: asNumber(o.start, `${ctx}.start`),
     end: asNumber(o.end, `${ctx}.end`),
     label: asString(o.label, `${ctx}.label`),
     description: stringOrNull(o.description, `${ctx}.description`),
-    hints: Array.isArray(o.hints) ? o.hints : [],
-    section_id: stringOrNull(o.section_id, `${ctx}.section_id`),
-    form_role: stringOrNull(o.form_role, `${ctx}.form_role`),
-    energy_character: stringOrNull(
-      o.energy_character,
-      `${ctx}.energy_character`,
-    ),
-    repetition_group: stringOrNull(
-      o.repetition_group,
-      `${ctx}.repetition_group`,
-    ),
     confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
+    key: stringOrNull(o.key, `${ctx}.key`),
+    chord_progression: stringOrNull(o.chord_progression, `${ctx}.chord_progression`),
   };
 }
 
@@ -148,16 +126,6 @@ export function parseSectionsTopLevel(raw: unknown): SectionsTopLevel {
 
 // ---------------------------------------------------------------------------
 
-function parseFormFamily(raw: unknown, ctx: string): FormFamily {
-  const o = asObject(raw, ctx);
-  return {
-    value: asString(o.value, `${ctx}.value`),
-    confidence: numberOr(o.confidence, 0, `${ctx}.confidence`),
-    provenance: stringOr(o.provenance, "inferred", `${ctx}.provenance`),
-    evidence: objectOrNull(o.evidence, `${ctx}.evidence`),
-  };
-}
-
 function parseSegmentationSection(
   raw: unknown,
   ctx: string,
@@ -167,36 +135,17 @@ function parseSegmentationSection(
     section_id: asString(o.section_id, `${ctx}.section_id`),
     start: asNumber(o.start, `${ctx}.start`),
     end: asNumber(o.end, `${ctx}.end`),
-    label: asString(o.label, `${ctx}.label`),
+    function: stringOrNull(o.function, `${ctx}.function`),
+    function_confidence: numberOrNull(
+      o.function_confidence,
+      `${ctx}.function_confidence`,
+    ),
+    function_status: stringOrNull(
+      o.function_status,
+      `${ctx}.function_status`,
+    ),
+    same_label_as: stringOrNull(o.same_label_as, `${ctx}.same_label_as`),
     confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
-    section_character: stringOrNull(
-      o.section_character,
-      `${ctx}.section_character`,
-    ),
-    onset_anchored: booleanOrNull(o.onset_anchored, `${ctx}.onset_anchored`),
-    form_role: stringOrNull(o.form_role, `${ctx}.form_role`),
-    form_role_confidence: numberOrNull(
-      o.form_role_confidence,
-      `${ctx}.form_role_confidence`,
-    ),
-    form_role_margin: numberOrNull(
-      o.form_role_margin,
-      `${ctx}.form_role_margin`,
-    ),
-    energy_character: stringOrNull(
-      o.energy_character,
-      `${ctx}.energy_character`,
-    ),
-    repetition_group: stringOrNull(
-      o.repetition_group,
-      `${ctx}.repetition_group`,
-    ),
-    variant_of: stringOrNull(o.variant_of, `${ctx}.variant_of`),
-    similarity: numberOrNull(o.similarity, `${ctx}.similarity`),
-    confidence_terms: objectOrNull(
-      o.confidence_terms,
-      `${ctx}.confidence_terms`,
-    ),
   };
 }
 
@@ -222,10 +171,6 @@ export function parseSectionSegmentation(raw: unknown): SectionSegmentation {
   return {
     schema_version: stringOr(o.schema_version, "", "segmentation.schema_version"),
     song_name: stringOr(o.song_name, "", "segmentation.song_name"),
-    form_family:
-      o.form_family === undefined || o.form_family === null
-        ? null
-        : parseFormFamily(o.form_family, "segmentation.form_family"),
     generated_from: objectOrNull(
       o.generated_from,
       "segmentation.generated_from",
@@ -492,20 +437,9 @@ export function parseEnergyLayer(raw: unknown): EnergyLayer {
 
 // ---------------------------------------------------------------------------
 
-function parseEventPhase(raw: unknown, ctx: string): EventPhase {
-  const o = asObject(raw, ctx);
-  return {
-    phase: asString(o.phase, `${ctx}.phase`),
-    start_time: asNumber(o.start_time, `${ctx}.start_time`),
-    end_time: asNumber(o.end_time, `${ctx}.end_time`),
-    intensity: numberOr(o.intensity, 0, `${ctx}.intensity`),
-  };
-}
-
 function parseTimelineEvent(raw: unknown, ctx: string): TimelineEvent {
   const o = asObject(raw, ctx);
   return {
-    id: asString(o.id, `${ctx}.id`),
     type: asString(o.type, `${ctx}.type`),
     start_time: asNumber(o.start_time, `${ctx}.start_time`),
     end_time: asNumber(o.end_time, `${ctx}.end_time`),
@@ -515,38 +449,10 @@ function parseTimelineEvent(raw: unknown, ctx: string): TimelineEvent {
     section_name: stringOrNull(o.section_name, `${ctx}.section_name`),
     provenance: stringOrNull(o.provenance, `${ctx}.provenance`),
     summary: stringOrNull(o.summary, `${ctx}.summary`),
-    created_by: stringOrNull(o.created_by, `${ctx}.created_by`),
     evidence_summary: stringOrNull(
       o.evidence_summary,
       `${ctx}.evidence_summary`,
     ),
-    lighting_hint: stringOrNull(o.lighting_hint, `${ctx}.lighting_hint`),
-    evidence_ref: objectOrNull(o.evidence_ref, `${ctx}.evidence_ref`),
-    composite: booleanOr(o.composite, false, `${ctx}.composite`),
-    phases:
-      o.phases === undefined || o.phases === null
-        ? null
-        : asArray(o.phases, `${ctx}.phases`).map((p, i) =>
-            parseEventPhase(p, `${ctx}.phases[${i}]`),
-          ),
-    member_event_ids:
-      o.member_event_ids === undefined || o.member_event_ids === null
-        ? null
-        : stringArray(o.member_event_ids, `${ctx}.member_event_ids`),
-  };
-}
-
-function parseTextureSummary(raw: unknown, ctx: string): TextureSummary {
-  const o = asObject(raw, ctx);
-  return {
-    section_id: asString(o.section_id, `${ctx}.section_id`),
-    start_time: asNumber(o.start_time, `${ctx}.start_time`),
-    stem_activity: numberRecord(o.stem_activity ?? {}, `${ctx}.stem_activity`),
-    stems_entering: stringArray(
-      o.stems_entering ?? [],
-      `${ctx}.stems_entering`,
-    ),
-    stems_leaving: stringArray(o.stems_leaving ?? [], `${ctx}.stems_leaving`),
   };
 }
 
@@ -559,10 +465,6 @@ export function parseEventTimeline(raw: unknown): EventTimeline {
     events: asArray(o.events, "timeline.events").map((e, i) =>
       parseTimelineEvent(e, `timeline.events[${i}]`),
     ),
-    texture_summary: asArray(
-      o.texture_summary ?? [],
-      "timeline.texture_summary",
-    ).map((t, i) => parseTextureSummary(t, `timeline.texture_summary[${i}]`)),
   };
 }
 

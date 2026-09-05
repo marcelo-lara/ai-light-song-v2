@@ -1,10 +1,16 @@
 # Experiment — `allin1` for named song form
 
-**Status: measured, not promoted.** Nothing in `src/` reads anything in here.
-The output is reviewable in the debugger UI as two lanes; see *Review it* below.
-Queue entry, with the same numbers in summary form:
-[`../../docs/experiments_pending.md`](../../docs/experiments_pending.md)
-(constitution §3.4).
+**Status: promoted in v3.0.** `docs/implementation-plan-v3.0.md` item 7 shipped
+this into `src/analyzer/stages/segmentation.py`, replacing
+`src/analyzer/stages/sections/` and changing the projected `sections.json` and
+`artifacts/section_segmentation/sections.json`; item 8 additionally took the
+downbeat *phase* (never the beat times) from this same model's output for
+`beats.json`. The two debugger lanes described below (**allin1 Transitions**,
+**allin1 Sections**) were removed from the registry once promoted (item 14) —
+their content now lives in the production **Sections** lane and in
+`song_event_timeline.json`'s transition events. The measurements below are
+kept exactly as run; they do not go stale (constitution §4). Archive entry:
+[`../../docs/archive/experiments.md`](../../docs/archive/experiments.md).
 
 ## The question
 

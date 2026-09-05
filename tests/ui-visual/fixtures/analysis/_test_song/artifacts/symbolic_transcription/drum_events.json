@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "_test_song",
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
@@ -9,8 +9,7 @@
       "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
       "raw_midi_cache": "/data/analysis/_test_song/artifacts/symbolic_transcription/omnizart/drums.mid",
       "model_path": "/usr/local/lib/python3.10/dist-packages/omnizart/checkpoints/drum/drum_keras",
-      "model_source": "package",
-      "auxiliary_note_cache": "/data/analysis/_test_song/artifacts/symbolic_transcription/basic_pitch/drums.json"
+      "model_source": "package"
     },
     "debug_sources": {
       "full_mix": "/data/songs/_test_song.mp3",
@@ -45,13 +44,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 2,
+      "aligned_beat": 4,
+      "aligned_beat_global": 1,
       "aligned_bar": 1,
-      "beat_time_delta": -0.117727,
+      "beat_time_delta": -0.108566,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00002",
@@ -64,13 +63,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 2,
+      "aligned_beat": 4,
+      "aligned_beat_global": 1,
       "aligned_bar": 1,
-      "beat_time_delta": -0.045,
+      "beat_time_delta": -0.035839,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00003",
@@ -83,13 +82,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 2,
+      "aligned_beat": 4,
+      "aligned_beat_global": 1,
       "aligned_bar": 1,
-      "beat_time_delta": 0.027727,
+      "beat_time_delta": 0.036888,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00004",
@@ -104,11 +103,11 @@
       "source_note_pitch": 35,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 1,
-      "beat_time_delta": -0.207273,
+      "aligned_bar": null,
+      "beat_time_delta": 0.261888,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00005",
@@ -121,13 +120,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 3,
-      "aligned_beat_global": 3,
+      "aligned_beat": 1,
+      "aligned_beat_global": 2,
       "aligned_bar": 1,
-      "beat_time_delta": -0.055,
+      "beat_time_delta": -0.119898,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00006",
@@ -140,13 +139,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 3,
-      "aligned_beat_global": 3,
+      "aligned_beat": 1,
+      "aligned_beat_global": 2,
       "aligned_bar": 1,
-      "beat_time_delta": 0.097273,
+      "beat_time_delta": 0.032375,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00007",
@@ -159,13 +158,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 4,
-      "aligned_beat_global": 4,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
       "aligned_bar": 1,
-      "beat_time_delta": -0.137727,
-      "alignment_resolved": true,
+      "beat_time_delta": 0.257375,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00008",
@@ -178,13 +177,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 4,
-      "aligned_beat_global": 4,
+      "aligned_beat": 2,
+      "aligned_beat_global": 3,
       "aligned_bar": 1,
-      "beat_time_delta": 0.007727,
+      "beat_time_delta": -0.11962,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00009",
@@ -197,13 +196,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 4,
-      "aligned_beat_global": 4,
+      "aligned_beat": 2,
+      "aligned_beat_global": 3,
       "aligned_bar": 1,
-      "beat_time_delta": 0.153182,
+      "beat_time_delta": 0.025835,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00010",
@@ -216,13 +215,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 1,
-      "aligned_beat_global": 5,
-      "aligned_bar": 2,
-      "beat_time_delta": -0.163636,
+      "aligned_beat": 2,
+      "aligned_beat_global": 3,
+      "aligned_bar": 1,
+      "beat_time_delta": 0.169017,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00011",
@@ -235,13 +234,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": null,
-      "aligned_beat_global": null,
-      "aligned_bar": 2,
-      "beat_time_delta": 0.2,
-      "alignment_resolved": false,
+      "aligned_beat": 3,
+      "aligned_beat_global": 4,
+      "aligned_bar": 1,
+      "beat_time_delta": 0.010204,
+      "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00012",
@@ -254,13 +253,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 6,
-      "aligned_bar": 2,
-      "beat_time_delta": -0.041818,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 1,
+      "beat_time_delta": 0.228386,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00013",
@@ -273,13 +272,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 3,
-      "aligned_beat_global": 7,
-      "aligned_bar": 2,
-      "beat_time_delta": -0.185909,
+      "aligned_beat": 4,
+      "aligned_beat_global": 5,
+      "aligned_bar": 1,
+      "beat_time_delta": 0.021846,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00014",
@@ -292,13 +291,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 3,
-      "aligned_beat_global": 7,
-      "aligned_bar": 2,
-      "beat_time_delta": 0.139091,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 1,
+      "beat_time_delta": -0.268483,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00015",
@@ -311,13 +310,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 4,
-      "aligned_beat_global": 8,
+      "aligned_beat": 1,
+      "aligned_beat_global": 6,
       "aligned_bar": 2,
-      "beat_time_delta": 0.065455,
+      "beat_time_delta": 0.117881,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00016",
@@ -330,13 +329,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": null,
-      "aligned_beat_global": null,
-      "aligned_bar": 3,
-      "beat_time_delta": -0.229545,
-      "alignment_resolved": false,
+      "aligned_beat": 2,
+      "aligned_beat_global": 7,
+      "aligned_bar": 2,
+      "beat_time_delta": 0.115943,
+      "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00017",
@@ -349,13 +348,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 10,
-      "aligned_bar": 3,
-      "beat_time_delta": -0.070455,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 2,
+      "beat_time_delta": 0.275033,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00018",
@@ -368,13 +367,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 10,
-      "aligned_bar": 3,
-      "beat_time_delta": 0.170455,
+      "aligned_beat": 3,
+      "aligned_beat_global": 8,
+      "aligned_bar": 2,
+      "beat_time_delta": -0.110996,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00019",
@@ -388,12 +387,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 11,
-      "aligned_bar": 3,
-      "beat_time_delta": -0.130455,
+      "aligned_beat_global": 8,
+      "aligned_bar": 2,
+      "beat_time_delta": 0.048094,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00020",
@@ -407,12 +406,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 11,
-      "aligned_bar": 3,
-      "beat_time_delta": -0.130455,
+      "aligned_beat_global": 8,
+      "aligned_bar": 2,
+      "beat_time_delta": 0.048094,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00021",
@@ -426,12 +425,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 12,
-      "aligned_bar": 3,
+      "aligned_beat_global": 9,
+      "aligned_bar": 2,
       "beat_time_delta": -0.115455,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00022",
@@ -445,12 +444,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 12,
-      "aligned_bar": 3,
+      "aligned_beat_global": 9,
+      "aligned_bar": 2,
       "beat_time_delta": 0.109545,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00023",
@@ -465,11 +464,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 3,
-      "beat_time_delta": -0.200455,
+      "aligned_bar": 2,
+      "beat_time_delta": 0.259545,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00024",
@@ -483,12 +482,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 13,
-      "aligned_bar": 4,
-      "beat_time_delta": 0.029091,
+      "aligned_beat_global": 10,
+      "aligned_bar": 3,
+      "beat_time_delta": -0.149458,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00025",
@@ -502,12 +501,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 13,
-      "aligned_bar": 4,
-      "beat_time_delta": 0.185909,
+      "aligned_beat_global": 10,
+      "aligned_bar": 3,
+      "beat_time_delta": 0.00736,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00026",
@@ -520,13 +519,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 14,
-      "aligned_bar": 4,
-      "beat_time_delta": -0.194545,
+      "aligned_beat": 1,
+      "aligned_beat_global": 10,
+      "aligned_bar": 3,
+      "beat_time_delta": 0.086906,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00027",
@@ -539,13 +538,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 14,
-      "aligned_bar": 4,
-      "beat_time_delta": -0.037727,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 3,
+      "beat_time_delta": 0.243724,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00028",
@@ -558,13 +557,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 14,
-      "aligned_bar": 4,
-      "beat_time_delta": 0.119091,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 3,
+      "beat_time_delta": -0.226397,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00029",
@@ -577,13 +576,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 14,
-      "aligned_bar": 4,
-      "beat_time_delta": 0.119091,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 3,
+      "beat_time_delta": -0.226397,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00030",
@@ -596,13 +595,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 3,
-      "aligned_beat_global": 15,
-      "aligned_bar": 4,
-      "beat_time_delta": -0.181818,
+      "aligned_beat": 2,
+      "aligned_beat_global": 11,
+      "aligned_bar": 3,
+      "beat_time_delta": -0.067306,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00031",
@@ -615,13 +614,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 3,
-      "aligned_beat_global": 15,
-      "aligned_bar": 4,
-      "beat_time_delta": -0.025,
+      "aligned_beat": 2,
+      "aligned_beat_global": 11,
+      "aligned_bar": 3,
+      "beat_time_delta": 0.089512,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00032",
@@ -636,11 +635,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 4,
-      "beat_time_delta": 0.211364,
+      "aligned_bar": 3,
+      "beat_time_delta": -0.277842,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00033",
@@ -653,13 +652,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 16,
-      "aligned_bar": 4,
-      "beat_time_delta": -0.089545,
+      "aligned_beat": 3,
+      "aligned_beat_global": 12,
+      "aligned_bar": 3,
+      "beat_time_delta": -0.118751,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00034",
@@ -674,11 +673,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 4,
-      "beat_time_delta": 0.235455,
+      "aligned_bar": 3,
+      "beat_time_delta": 0.206249,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00035",
@@ -691,13 +690,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 1,
-      "aligned_beat_global": 17,
-      "aligned_bar": 5,
-      "beat_time_delta": 0.000909,
+      "aligned_beat": 4,
+      "aligned_beat_global": 13,
+      "aligned_bar": 3,
+      "beat_time_delta": -0.163626,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00036",
@@ -710,13 +709,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 1,
-      "aligned_beat_global": 17,
-      "aligned_bar": 5,
-      "beat_time_delta": 0.000909,
+      "aligned_beat": 4,
+      "aligned_beat_global": 13,
+      "aligned_bar": 3,
+      "beat_time_delta": -0.163626,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00037",
@@ -729,13 +728,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 1,
-      "aligned_beat_global": 17,
-      "aligned_bar": 5,
-      "beat_time_delta": 0.164545,
+      "aligned_beat": 4,
+      "aligned_beat_global": 13,
+      "aligned_bar": 3,
+      "beat_time_delta": 1e-05,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00038",
@@ -748,13 +747,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 18,
-      "aligned_bar": 5,
-      "beat_time_delta": -0.129545,
+      "aligned_beat": 4,
+      "aligned_beat_global": 13,
+      "aligned_bar": 3,
+      "beat_time_delta": 0.16592,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00039",
@@ -767,13 +766,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 18,
-      "aligned_bar": 5,
-      "beat_time_delta": 0.034091,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 3,
+      "beat_time_delta": -0.285773,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00040",
@@ -786,13 +785,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 18,
-      "aligned_bar": 5,
-      "beat_time_delta": 0.2,
+      "aligned_beat": 1,
+      "aligned_beat_global": 14,
+      "aligned_bar": 4,
+      "beat_time_delta": -0.119864,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00041",
@@ -805,13 +804,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 3,
-      "aligned_beat_global": 19,
-      "aligned_bar": 5,
-      "beat_time_delta": -0.107727,
+      "aligned_beat": 1,
+      "aligned_beat_global": 14,
+      "aligned_bar": 4,
+      "beat_time_delta": 0.032409,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00042",
@@ -824,13 +823,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 4,
-      "aligned_beat_global": 20,
-      "aligned_bar": 5,
-      "beat_time_delta": -0.035909,
+      "aligned_beat": 2,
+      "aligned_beat_global": 15,
+      "aligned_bar": 4,
+      "beat_time_delta": -0.062712,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00043",
@@ -843,13 +842,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 4,
-      "aligned_beat_global": 20,
-      "aligned_bar": 5,
-      "beat_time_delta": 0.111818,
+      "aligned_beat": 2,
+      "aligned_beat_global": 15,
+      "aligned_bar": 4,
+      "beat_time_delta": 0.085015,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00044",
@@ -864,11 +863,11 @@
       "source_note_pitch": 35,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 5,
-      "beat_time_delta": -0.200455,
+      "aligned_bar": 4,
+      "beat_time_delta": 0.232742,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00045",
@@ -881,13 +880,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 1,
-      "aligned_beat_global": 21,
-      "aligned_bar": 6,
-      "beat_time_delta": -0.052727,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 4,
+      "beat_time_delta": -0.234859,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00046",
@@ -900,13 +899,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 1,
-      "aligned_beat_global": 21,
-      "aligned_bar": 6,
-      "beat_time_delta": 0.097273,
+      "aligned_beat": 3,
+      "aligned_beat_global": 16,
+      "aligned_bar": 4,
+      "beat_time_delta": -0.084859,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00047",
@@ -919,13 +918,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 22,
-      "aligned_bar": 6,
-      "beat_time_delta": 0.123182,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 4,
+      "beat_time_delta": -0.234278,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00048",
@@ -938,13 +937,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 3,
-      "aligned_beat_global": 23,
-      "aligned_bar": 6,
-      "beat_time_delta": -0.131818,
+      "aligned_beat": 4,
+      "aligned_beat_global": 17,
+      "aligned_bar": 4,
+      "beat_time_delta": -0.009278,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00049",
@@ -957,13 +956,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 3,
-      "aligned_beat_global": 23,
-      "aligned_bar": 6,
-      "beat_time_delta": 0.088636,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 4,
+      "beat_time_delta": 0.211176,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00050",
@@ -976,13 +975,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 4,
-      "aligned_beat_global": 24,
-      "aligned_bar": 6,
-      "beat_time_delta": -0.150909,
+      "aligned_beat": 1,
+      "aligned_beat_global": 18,
+      "aligned_bar": 5,
+      "beat_time_delta": -0.172088,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00051",
@@ -995,13 +994,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 24,
-      "aligned_bar": 6,
-      "beat_time_delta": -0.150909,
+      "aligned_beat": 1,
+      "aligned_beat_global": 18,
+      "aligned_bar": 5,
+      "beat_time_delta": -0.172088,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00052",
@@ -1014,13 +1013,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 24,
-      "aligned_bar": 6,
-      "beat_time_delta": 0.010455,
+      "aligned_beat": 1,
+      "aligned_beat_global": 18,
+      "aligned_bar": 5,
+      "beat_time_delta": -0.010724,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00053",
@@ -1035,11 +1034,11 @@
       "source_note_pitch": 35,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 6,
-      "beat_time_delta": -0.210909,
+      "aligned_bar": 5,
+      "beat_time_delta": 0.227912,
       "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00054",
@@ -1052,13 +1051,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 1,
-      "aligned_beat_global": 25,
-      "aligned_bar": 7,
-      "beat_time_delta": -0.129091,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 5,
+      "beat_time_delta": -0.293989,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00055",
@@ -1071,13 +1070,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 1,
-      "aligned_beat_global": 25,
-      "aligned_bar": 7,
-      "beat_time_delta": -0.049545,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 5,
+      "beat_time_delta": -0.214443,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00056",
@@ -1090,13 +1089,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 1,
-      "aligned_beat_global": 25,
-      "aligned_bar": 7,
-      "beat_time_delta": 0.03,
+      "aligned_beat": 2,
+      "aligned_beat_global": 19,
+      "aligned_bar": 5,
+      "beat_time_delta": -0.134898,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00057",
@@ -1109,13 +1108,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 1,
-      "aligned_beat_global": 25,
-      "aligned_bar": 7,
-      "beat_time_delta": 0.175455,
+      "aligned_beat": 2,
+      "aligned_beat_global": 19,
+      "aligned_bar": 5,
+      "beat_time_delta": 0.010557,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00058",
@@ -1128,13 +1127,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 26,
-      "aligned_bar": 7,
-      "beat_time_delta": -0.066364,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 5,
+      "beat_time_delta": 0.228738,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00059",
@@ -1147,13 +1146,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 2,
-      "aligned_beat_global": 26,
-      "aligned_bar": 7,
-      "beat_time_delta": 0.149545,
+      "aligned_beat": 3,
+      "aligned_beat_global": 20,
+      "aligned_bar": 5,
+      "beat_time_delta": -0.147462,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00060",
@@ -1166,13 +1165,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 26,
-      "aligned_bar": 7,
-      "beat_time_delta": 0.149545,
+      "aligned_beat": 3,
+      "aligned_beat_global": 20,
+      "aligned_bar": 5,
+      "beat_time_delta": -0.147462,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00061",
@@ -1186,12 +1185,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 27,
-      "aligned_bar": 7,
-      "beat_time_delta": 0.005455,
+      "aligned_beat_global": 20,
+      "aligned_bar": 5,
+      "beat_time_delta": 0.168448,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00062",
@@ -1204,13 +1203,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 3,
-      "aligned_beat_global": 27,
-      "aligned_bar": 7,
-      "beat_time_delta": 0.162273,
+      "aligned_beat": 4,
+      "aligned_beat_global": 21,
+      "aligned_bar": 5,
+      "beat_time_delta": -0.150743,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00063",
@@ -1224,12 +1223,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 28,
-      "aligned_bar": 7,
-      "beat_time_delta": -0.140909,
+      "aligned_beat_global": 21,
+      "aligned_bar": 5,
+      "beat_time_delta": 0.006075,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00064",
@@ -1242,13 +1241,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 28,
-      "aligned_bar": 7,
-      "beat_time_delta": 0.106818,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 5,
+      "beat_time_delta": -0.233816,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00065",
@@ -1262,12 +1261,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 29,
-      "aligned_bar": 8,
-      "beat_time_delta": -0.187273,
+      "aligned_beat_global": 22,
+      "aligned_bar": 6,
+      "beat_time_delta": -0.067907,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00066",
@@ -1281,12 +1280,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 29,
-      "aligned_bar": 8,
-      "beat_time_delta": -0.187273,
+      "aligned_beat_global": 22,
+      "aligned_bar": 6,
+      "beat_time_delta": -0.067907,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00067",
@@ -1299,13 +1298,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": null,
-      "aligned_beat_global": null,
-      "aligned_bar": 8,
-      "beat_time_delta": 0.210455,
-      "alignment_resolved": false,
+      "aligned_beat": 2,
+      "aligned_beat_global": 23,
+      "aligned_bar": 6,
+      "beat_time_delta": -0.157799,
+      "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00068",
@@ -1319,12 +1318,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 30,
-      "aligned_bar": 8,
-      "beat_time_delta": -0.099545,
+      "aligned_beat_global": 23,
+      "aligned_bar": 6,
+      "beat_time_delta": -0.007799,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00069",
@@ -1338,12 +1337,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 30,
-      "aligned_bar": 8,
-      "beat_time_delta": 0.050455,
+      "aligned_beat_global": 23,
+      "aligned_bar": 6,
+      "beat_time_delta": 0.142201,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00070",
@@ -1357,12 +1356,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 31,
-      "aligned_bar": 8,
-      "beat_time_delta": -0.197727,
+      "aligned_beat_global": 24,
+      "aligned_bar": 6,
+      "beat_time_delta": -0.1136,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00071",
@@ -1375,13 +1374,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 3,
-      "aligned_beat_global": 31,
-      "aligned_bar": 8,
-      "beat_time_delta": 0.131818,
-      "alignment_resolved": true,
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 6,
+      "beat_time_delta": 0.215945,
+      "alignment_resolved": false,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00072",
@@ -1395,12 +1394,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 33,
-      "aligned_bar": 9,
-      "beat_time_delta": -0.010909,
+      "aligned_beat_global": 26,
+      "aligned_bar": 7,
+      "beat_time_delta": 0.00637,
       "alignment_resolved": true,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "event_id": "drum-event-00073",
@@ -1414,12 +1413,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 34,
-      "aligned_bar": 9,
-      "beat_time_delta": -0.116364,
+      "aligned_beat_global": 27,
+      "aligned_bar": 7,
+      "beat_time_delta": -0.115093,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00074",
@@ -1433,12 +1432,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 34,
-      "aligned_bar": 9,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 27,
+      "aligned_bar": 7,
+      "beat_time_delta": 0.000816,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00075",
@@ -1452,12 +1451,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 35,
-      "aligned_bar": 9,
-      "beat_time_delta": 0.01,
+      "aligned_beat_global": 28,
+      "aligned_bar": 7,
+      "beat_time_delta": 0.018481,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00076",
@@ -1471,12 +1470,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 35,
-      "aligned_bar": 9,
-      "beat_time_delta": 0.01,
+      "aligned_beat_global": 28,
+      "aligned_bar": 7,
+      "beat_time_delta": 0.018481,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00077",
@@ -1490,12 +1489,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 36,
-      "aligned_bar": 9,
-      "beat_time_delta": 0.009091,
+      "aligned_beat_global": 29,
+      "aligned_bar": 7,
+      "beat_time_delta": 0.013174,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00078",
@@ -1510,11 +1509,11 @@
       "source_note_pitch": 35,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 9,
-      "beat_time_delta": -0.239091,
+      "aligned_bar": 7,
+      "beat_time_delta": -0.207797,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00079",
@@ -1529,11 +1528,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 9,
-      "beat_time_delta": -0.239091,
+      "aligned_bar": 7,
+      "beat_time_delta": -0.207797,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00080",
@@ -1547,12 +1546,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 37,
-      "aligned_bar": 10,
-      "beat_time_delta": -0.009545,
+      "aligned_beat_global": 30,
+      "aligned_bar": 8,
+      "beat_time_delta": 0.021749,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00081",
@@ -1566,12 +1565,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 37,
-      "aligned_bar": 10,
-      "beat_time_delta": -0.009545,
+      "aligned_beat_global": 30,
+      "aligned_bar": 8,
+      "beat_time_delta": 0.021749,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00082",
@@ -1586,11 +1585,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 10,
-      "beat_time_delta": 0.22,
+      "aligned_bar": 8,
+      "beat_time_delta": -0.213106,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00083",
@@ -1604,12 +1603,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 38,
-      "aligned_bar": 10,
-      "beat_time_delta": -0.010455,
+      "aligned_beat_global": 31,
+      "aligned_bar": 8,
+      "beat_time_delta": 0.016439,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00084",
@@ -1623,12 +1622,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 38,
-      "aligned_bar": 10,
-      "beat_time_delta": -0.010455,
+      "aligned_beat_global": 31,
+      "aligned_bar": 8,
+      "beat_time_delta": 0.016439,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00085",
@@ -1643,11 +1642,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 10,
-      "beat_time_delta": 0.225909,
+      "aligned_bar": 8,
+      "beat_time_delta": -0.211596,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00086",
@@ -1661,12 +1660,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 39,
-      "aligned_bar": 10,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 32,
+      "aligned_bar": 8,
+      "beat_time_delta": 0.022495,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00087",
@@ -1680,12 +1679,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 39,
-      "aligned_bar": 10,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 32,
+      "aligned_bar": 8,
+      "beat_time_delta": 0.022495,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00088",
@@ -1699,12 +1698,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 40,
-      "aligned_bar": 10,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 33,
+      "aligned_bar": 8,
+      "beat_time_delta": 0.017187,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00089",
@@ -1718,12 +1717,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 41,
-      "aligned_bar": 11,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 34,
+      "aligned_bar": 9,
+      "beat_time_delta": 0.014151,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00090",
@@ -1737,12 +1736,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 41,
-      "aligned_bar": 11,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 34,
+      "aligned_bar": 9,
+      "beat_time_delta": 0.014151,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00091",
@@ -1757,11 +1756,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 11,
-      "beat_time_delta": 0.23,
+      "aligned_bar": 9,
+      "beat_time_delta": -0.220703,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00092",
@@ -1775,12 +1774,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 42,
-      "aligned_bar": 11,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 35,
+      "aligned_bar": 9,
+      "beat_time_delta": 0.008842,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00093",
@@ -1794,12 +1793,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 43,
-      "aligned_bar": 11,
-      "beat_time_delta": 0.000909,
+      "aligned_beat_global": 36,
+      "aligned_bar": 9,
+      "beat_time_delta": 0.005807,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00094",
@@ -1813,12 +1812,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 43,
-      "aligned_bar": 11,
-      "beat_time_delta": 0.000909,
+      "aligned_beat_global": 36,
+      "aligned_bar": 9,
+      "beat_time_delta": 0.005807,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00095",
@@ -1832,12 +1831,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 44,
-      "aligned_bar": 11,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 37,
+      "aligned_bar": 9,
+      "beat_time_delta": 0.0005,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00096",
@@ -1851,12 +1850,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 44,
-      "aligned_bar": 11,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 37,
+      "aligned_bar": 9,
+      "beat_time_delta": 0.0005,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00097",
@@ -1870,12 +1869,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 45,
-      "aligned_bar": 12,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 38,
+      "aligned_bar": 10,
+      "beat_time_delta": 0.018412,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00098",
@@ -1889,12 +1888,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 45,
-      "aligned_bar": 12,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 38,
+      "aligned_bar": 10,
+      "beat_time_delta": 0.018412,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00099",
@@ -1909,11 +1908,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 12,
-      "beat_time_delta": -0.229091,
+      "aligned_bar": 10,
+      "beat_time_delta": -0.21417,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00100",
@@ -1927,12 +1926,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 46,
-      "aligned_bar": 12,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 39,
+      "aligned_bar": 10,
+      "beat_time_delta": 0.015376,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00101",
@@ -1946,12 +1945,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 46,
-      "aligned_bar": 12,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 39,
+      "aligned_bar": 10,
+      "beat_time_delta": 0.015376,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00102",
@@ -1965,12 +1964,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 47,
-      "aligned_bar": 12,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 40,
+      "aligned_bar": 10,
+      "beat_time_delta": 0.010067,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00103",
@@ -1984,12 +1983,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 47,
-      "aligned_bar": 12,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 40,
+      "aligned_bar": 10,
+      "beat_time_delta": 0.010067,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00104",
@@ -2003,12 +2002,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 48,
-      "aligned_bar": 12,
-      "beat_time_delta": 0.000909,
+      "aligned_beat_global": 41,
+      "aligned_bar": 10,
+      "beat_time_delta": 0.007032,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00105",
@@ -2022,12 +2021,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 48,
-      "aligned_bar": 12,
-      "beat_time_delta": 0.000909,
+      "aligned_beat_global": 41,
+      "aligned_bar": 10,
+      "beat_time_delta": 0.007032,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00106",
@@ -2041,12 +2040,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 49,
-      "aligned_bar": 13,
-      "beat_time_delta": -0.172727,
+      "aligned_beat_global": 42,
+      "aligned_bar": 11,
+      "beat_time_delta": -0.171004,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00107",
@@ -2060,12 +2059,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 49,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 42,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.001723,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00108",
@@ -2079,12 +2078,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 1,
-      "aligned_beat_global": 49,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 42,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.001723,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00109",
@@ -2098,12 +2097,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 49,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 42,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.001723,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00110",
@@ -2118,11 +2117,11 @@
       "source_note_pitch": 35,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.229545,
+      "aligned_bar": 11,
+      "beat_time_delta": -0.209911,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00111",
@@ -2137,11 +2136,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.229545,
+      "aligned_bar": 11,
+      "beat_time_delta": -0.209911,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00112",
@@ -2155,12 +2154,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 50,
-      "aligned_bar": 13,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 43,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.019635,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00113",
@@ -2174,12 +2173,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 50,
-      "aligned_bar": 13,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 43,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.019635,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00114",
@@ -2194,11 +2193,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 13,
-      "beat_time_delta": -0.229091,
+      "aligned_bar": 11,
+      "beat_time_delta": -0.212946,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00115",
@@ -2213,11 +2212,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 13,
-      "beat_time_delta": -0.229091,
+      "aligned_bar": 11,
+      "beat_time_delta": -0.212946,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00116",
@@ -2231,12 +2230,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 51,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 44,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.0166,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00117",
@@ -2250,12 +2249,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 3,
-      "aligned_beat_global": 51,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 44,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.0166,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00118",
@@ -2269,12 +2268,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 51,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 44,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.0166,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00119",
@@ -2289,11 +2288,11 @@
       "source_note_pitch": 35,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.234545,
+      "aligned_bar": 11,
+      "beat_time_delta": -0.213709,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00120",
@@ -2308,11 +2307,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.234545,
+      "aligned_bar": 11,
+      "beat_time_delta": -0.213709,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00121",
@@ -2326,12 +2325,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 52,
-      "aligned_bar": 13,
-      "beat_time_delta": -0.009091,
+      "aligned_beat_global": 45,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.022655,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00122",
@@ -2345,12 +2344,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 52,
-      "aligned_bar": 13,
-      "beat_time_delta": -0.009091,
+      "aligned_beat_global": 45,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.022655,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00123",
@@ -2364,12 +2363,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 52,
-      "aligned_bar": 13,
-      "beat_time_delta": -0.009091,
+      "aligned_beat_global": 45,
+      "aligned_bar": 11,
+      "beat_time_delta": 0.022655,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00124",
@@ -2384,11 +2383,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.220455,
+      "aligned_bar": 11,
+      "beat_time_delta": -0.212197,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00125",
@@ -2403,11 +2402,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 13,
-      "beat_time_delta": 0.220455,
+      "aligned_bar": 11,
+      "beat_time_delta": -0.212197,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00126",
@@ -2421,12 +2420,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 1,
-      "aligned_beat_global": 53,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.125909,
+      "aligned_beat_global": 46,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.098561,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00127",
@@ -2440,12 +2439,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 53,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.01,
+      "aligned_beat_global": 46,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.017348,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00128",
@@ -2459,12 +2458,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 1,
-      "aligned_beat_global": 53,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.01,
+      "aligned_beat_global": 46,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.017348,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00129",
@@ -2478,12 +2477,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 53,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.01,
+      "aligned_beat_global": 46,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.017348,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00130",
@@ -2498,11 +2497,11 @@
       "source_note_pitch": 35,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 14,
-      "beat_time_delta": 0.219545,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.217506,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00131",
@@ -2517,11 +2516,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 14,
-      "beat_time_delta": 0.219545,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.217506,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00132",
@@ -2536,11 +2535,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 14,
-      "beat_time_delta": 0.219545,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.217506,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00133",
@@ -2554,12 +2553,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 54,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.010909,
+      "aligned_beat_global": 47,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.01204,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00134",
@@ -2573,12 +2572,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 2,
-      "aligned_beat_global": 54,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.010909,
+      "aligned_beat_global": 47,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.01204,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00135",
@@ -2592,12 +2591,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 54,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.010909,
+      "aligned_beat_global": 47,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.01204,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00136",
@@ -2612,11 +2611,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 14,
-      "beat_time_delta": 0.220909,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.220542,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00137",
@@ -2631,11 +2630,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 14,
-      "beat_time_delta": 0.220909,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.220542,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00138",
@@ -2649,12 +2648,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 3,
-      "aligned_beat_global": 55,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.009545,
+      "aligned_beat_global": 48,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.009004,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00139",
@@ -2668,12 +2667,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 55,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.009545,
+      "aligned_beat_global": 48,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.009004,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00140",
@@ -2688,11 +2687,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 14,
-      "beat_time_delta": 0.22,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.22585,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00141",
@@ -2707,11 +2706,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 14,
-      "beat_time_delta": 0.22,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.22585,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00142",
@@ -2725,12 +2724,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 56,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.124091,
+      "aligned_beat_global": 49,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.109941,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00143",
@@ -2744,12 +2743,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 56,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.010455,
+      "aligned_beat_global": 49,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.003695,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00144",
@@ -2763,12 +2762,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 56,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.010455,
+      "aligned_beat_global": 49,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.003695,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00145",
@@ -2782,12 +2781,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 56,
-      "aligned_bar": 14,
-      "beat_time_delta": -0.010455,
+      "aligned_beat_global": 49,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.003695,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00146",
@@ -2801,12 +2800,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 56,
-      "aligned_bar": 14,
-      "beat_time_delta": 0.105455,
+      "aligned_beat_global": 49,
+      "aligned_bar": 12,
+      "beat_time_delta": 0.119605,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00147",
@@ -2821,11 +2820,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 14,
-      "beat_time_delta": 0.219091,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.219548,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00148",
@@ -2840,11 +2839,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 14,
-      "beat_time_delta": 0.219091,
+      "aligned_bar": 12,
+      "beat_time_delta": -0.219548,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00149",
@@ -2858,12 +2857,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 1,
-      "aligned_beat_global": 57,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.125,
+      "aligned_beat_global": 50,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.103639,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00150",
@@ -2877,12 +2876,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 57,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.125,
+      "aligned_beat_global": 50,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.103639,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00151",
@@ -2896,12 +2895,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 1,
-      "aligned_beat_global": 57,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.009091,
+      "aligned_beat_global": 50,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.01227,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00152",
@@ -2915,12 +2914,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 57,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.009091,
+      "aligned_beat_global": 50,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.01227,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00153",
@@ -2934,12 +2933,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 1,
-      "aligned_beat_global": 57,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.104545,
+      "aligned_beat_global": 50,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.125906,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00154",
@@ -2953,12 +2952,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 57,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.104545,
+      "aligned_beat_global": 50,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.125906,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00155",
@@ -2973,11 +2972,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.220455,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.210974,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00156",
@@ -2992,11 +2991,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.220455,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.210974,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00157",
@@ -3010,12 +3009,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 2,
-      "aligned_beat_global": 58,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.125909,
+      "aligned_beat_global": 51,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.097338,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00158",
@@ -3029,12 +3028,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 58,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.125909,
+      "aligned_beat_global": 51,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.097338,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00159",
@@ -3048,12 +3047,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 2,
-      "aligned_beat_global": 58,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.01,
+      "aligned_beat_global": 51,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.018571,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00160",
@@ -3067,12 +3066,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 58,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.01,
+      "aligned_beat_global": 51,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.018571,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00161",
@@ -3086,12 +3085,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 2,
-      "aligned_beat_global": 58,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.108182,
+      "aligned_beat_global": 51,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.136753,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00162",
@@ -3105,12 +3104,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 58,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.108182,
+      "aligned_beat_global": 51,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.136753,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00163",
@@ -3125,11 +3124,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.224091,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.211737,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00164",
@@ -3144,11 +3143,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.224091,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.211737,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00165",
@@ -3162,12 +3161,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 3,
-      "aligned_beat_global": 59,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.117727,
+      "aligned_beat_global": 52,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.093555,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00166",
@@ -3181,12 +3180,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 59,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.117727,
+      "aligned_beat_global": 52,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.093555,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00167",
@@ -3200,12 +3199,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 3,
-      "aligned_beat_global": 59,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 52,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.024627,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00168",
@@ -3219,12 +3218,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 59,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 52,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.024627,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00169",
@@ -3238,12 +3237,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 3,
-      "aligned_beat_global": 59,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.114091,
+      "aligned_beat_global": 52,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.138263,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00170",
@@ -3257,12 +3256,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 59,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.114091,
+      "aligned_beat_global": 52,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.138263,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00171",
@@ -3277,11 +3276,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.23,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.210227,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00172",
@@ -3296,11 +3295,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.23,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.210227,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00173",
@@ -3314,12 +3313,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 60,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.114091,
+      "aligned_beat_global": 53,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.094318,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00174",
@@ -3333,12 +3332,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 60,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.114091,
+      "aligned_beat_global": 53,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.094318,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00175",
@@ -3352,12 +3351,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 60,
-      "aligned_bar": 15,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 53,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.019318,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00176",
@@ -3371,12 +3370,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 60,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.115455,
+      "aligned_beat_global": 53,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.135228,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00177",
@@ -3390,12 +3389,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 60,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.115455,
+      "aligned_beat_global": 53,
+      "aligned_bar": 13,
+      "beat_time_delta": 0.135228,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00178",
@@ -3410,11 +3409,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.229091,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.215534,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00179",
@@ -3429,11 +3428,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 15,
-      "beat_time_delta": 0.229091,
+      "aligned_bar": 13,
+      "beat_time_delta": -0.215534,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00180",
@@ -3447,12 +3446,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 1,
-      "aligned_beat_global": 61,
-      "aligned_bar": 16,
-      "beat_time_delta": -0.115,
+      "aligned_beat_global": 54,
+      "aligned_bar": 14,
+      "beat_time_delta": -0.099625,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00181",
@@ -3466,12 +3465,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 61,
-      "aligned_bar": 16,
-      "beat_time_delta": -0.115,
+      "aligned_beat_global": 54,
+      "aligned_bar": 14,
+      "beat_time_delta": -0.099625,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00182",
@@ -3485,12 +3484,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 1,
-      "aligned_beat_global": 61,
-      "aligned_bar": 16,
-      "beat_time_delta": 0.000909,
+      "aligned_beat_global": 54,
+      "aligned_bar": 14,
+      "beat_time_delta": 0.016284,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00183",
@@ -3504,12 +3503,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 1,
-      "aligned_beat_global": 61,
-      "aligned_bar": 16,
-      "beat_time_delta": 0.114545,
+      "aligned_beat_global": 54,
+      "aligned_bar": 14,
+      "beat_time_delta": 0.12992,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00184",
@@ -3523,12 +3522,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 2,
-      "aligned_beat_global": 62,
-      "aligned_bar": 16,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 55,
+      "aligned_bar": 14,
+      "beat_time_delta": 0.010976,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00185",
@@ -3543,11 +3542,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 16,
-      "beat_time_delta": -0.229091,
+      "aligned_bar": 14,
+      "beat_time_delta": -0.203694,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00186",
@@ -3562,11 +3561,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 16,
-      "beat_time_delta": -0.229091,
+      "aligned_bar": 14,
+      "beat_time_delta": -0.203694,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00187",
@@ -3580,12 +3579,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 64,
-      "aligned_bar": 16,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 57,
+      "aligned_bar": 14,
+      "beat_time_delta": 0.025852,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00188",
@@ -3599,12 +3598,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 64,
-      "aligned_bar": 16,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 57,
+      "aligned_bar": 14,
+      "beat_time_delta": 0.025852,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00189",
@@ -3619,11 +3618,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 16,
-      "beat_time_delta": -0.225455,
+      "aligned_bar": 14,
+      "beat_time_delta": -0.204457,
       "alignment_resolved": false,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00190",
@@ -3637,12 +3636,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 65,
-      "aligned_bar": 17,
-      "beat_time_delta": 0.010909,
+      "aligned_beat_global": 58,
+      "aligned_bar": 15,
+      "beat_time_delta": 0.031907,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00191",
@@ -3656,12 +3655,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 65,
-      "aligned_bar": 17,
-      "beat_time_delta": 0.010909,
+      "aligned_beat_global": 58,
+      "aligned_bar": 15,
+      "beat_time_delta": 0.031907,
       "alignment_resolved": true,
       "section_id": "section-002",
-      "section_name": "vocal_spotlight"
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00192",
@@ -3675,12 +3674,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 66,
-      "aligned_bar": 17,
-      "beat_time_delta": -0.162727,
+      "aligned_beat_global": 59,
+      "aligned_bar": 15,
+      "beat_time_delta": -0.146128,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00193",
@@ -3694,12 +3693,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 66,
-      "aligned_bar": 17,
-      "beat_time_delta": 0.01,
+      "aligned_beat_global": 59,
+      "aligned_bar": 15,
+      "beat_time_delta": 0.026599,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00194",
@@ -3713,12 +3712,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 66,
-      "aligned_bar": 17,
-      "beat_time_delta": 0.01,
+      "aligned_beat_global": 59,
+      "aligned_bar": 15,
+      "beat_time_delta": 0.026599,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00195",
@@ -3732,12 +3731,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 66,
-      "aligned_bar": 17,
-      "beat_time_delta": 0.182727,
+      "aligned_beat_global": 59,
+      "aligned_bar": 15,
+      "beat_time_delta": 0.199326,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00196",
@@ -3751,12 +3750,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 67,
-      "aligned_bar": 17,
-      "beat_time_delta": -0.161364,
+      "aligned_beat_global": 60,
+      "aligned_bar": 15,
+      "beat_time_delta": -0.149165,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00197",
@@ -3770,12 +3769,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 67,
-      "aligned_bar": 17,
-      "beat_time_delta": 0.009091,
+      "aligned_beat_global": 60,
+      "aligned_bar": 15,
+      "beat_time_delta": 0.02129,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00198",
@@ -3789,12 +3788,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 67,
-      "aligned_bar": 17,
-      "beat_time_delta": 0.009091,
+      "aligned_beat_global": 60,
+      "aligned_bar": 15,
+      "beat_time_delta": 0.02129,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00199",
@@ -3809,11 +3808,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 17,
-      "beat_time_delta": -0.239091,
+      "aligned_bar": 15,
+      "beat_time_delta": -0.211289,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00200",
@@ -3827,12 +3826,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 68,
-      "aligned_bar": 17,
-      "beat_time_delta": -0.125455,
+      "aligned_beat_global": 61,
+      "aligned_bar": 15,
+      "beat_time_delta": -0.097653,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00201",
@@ -3846,12 +3845,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 68,
-      "aligned_bar": 17,
-      "beat_time_delta": -0.125455,
+      "aligned_beat_global": 61,
+      "aligned_bar": 15,
+      "beat_time_delta": -0.097653,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00202",
@@ -3865,12 +3864,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 68,
-      "aligned_bar": 17,
-      "beat_time_delta": -0.009545,
+      "aligned_beat_global": 61,
+      "aligned_bar": 15,
+      "beat_time_delta": 0.018257,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00203",
@@ -3884,12 +3883,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 68,
-      "aligned_bar": 17,
-      "beat_time_delta": -0.009545,
+      "aligned_beat_global": 61,
+      "aligned_bar": 15,
+      "beat_time_delta": 0.018257,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00204",
@@ -3903,12 +3902,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 69,
-      "aligned_bar": 18,
-      "beat_time_delta": -0.124091,
+      "aligned_beat_global": 62,
+      "aligned_bar": 16,
+      "beat_time_delta": -0.100688,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00205",
@@ -3922,12 +3921,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 69,
-      "aligned_bar": 18,
-      "beat_time_delta": -0.010455,
+      "aligned_beat_global": 62,
+      "aligned_bar": 16,
+      "beat_time_delta": 0.012948,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00206",
@@ -3941,12 +3940,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 69,
-      "aligned_bar": 18,
-      "beat_time_delta": -0.010455,
+      "aligned_beat_global": 62,
+      "aligned_bar": 16,
+      "beat_time_delta": 0.012948,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00207",
@@ -3960,12 +3959,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 70,
-      "aligned_bar": 18,
-      "beat_time_delta": -0.181818,
+      "aligned_beat_global": 63,
+      "aligned_bar": 16,
+      "beat_time_delta": -0.162815,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00208",
@@ -3979,12 +3978,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 70,
-      "aligned_bar": 18,
-      "beat_time_delta": -0.009091,
+      "aligned_beat_global": 63,
+      "aligned_bar": 16,
+      "beat_time_delta": 0.009912,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00209",
@@ -3998,12 +3997,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 70,
-      "aligned_bar": 18,
-      "beat_time_delta": -0.009091,
+      "aligned_beat_global": 63,
+      "aligned_bar": 16,
+      "beat_time_delta": 0.009912,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00210",
@@ -4017,12 +4016,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 70,
-      "aligned_bar": 18,
-      "beat_time_delta": 0.163636,
+      "aligned_beat_global": 63,
+      "aligned_bar": 16,
+      "beat_time_delta": 0.182639,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00211",
@@ -4036,12 +4035,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 71,
-      "aligned_bar": 18,
-      "beat_time_delta": -0.125909,
+      "aligned_beat_global": 64,
+      "aligned_bar": 16,
+      "beat_time_delta": -0.099695,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00212",
@@ -4055,12 +4054,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 71,
-      "aligned_bar": 18,
-      "beat_time_delta": -0.01,
+      "aligned_beat_global": 64,
+      "aligned_bar": 16,
+      "beat_time_delta": 0.016214,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00213",
@@ -4074,12 +4073,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 71,
-      "aligned_bar": 18,
-      "beat_time_delta": -0.01,
+      "aligned_beat_global": 64,
+      "aligned_bar": 16,
+      "beat_time_delta": 0.016214,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00214",
@@ -4093,12 +4092,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 72,
-      "aligned_bar": 18,
-      "beat_time_delta": -0.176818,
+      "aligned_beat_global": 65,
+      "aligned_bar": 16,
+      "beat_time_delta": -0.143393,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00215",
@@ -4112,12 +4111,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 72,
-      "aligned_bar": 18,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 65,
+      "aligned_bar": 16,
+      "beat_time_delta": 0.03388,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00216",
@@ -4131,12 +4130,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 72,
-      "aligned_bar": 18,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 65,
+      "aligned_bar": 16,
+      "beat_time_delta": 0.03388,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00217",
@@ -4150,12 +4149,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 73,
-      "aligned_bar": 19,
-      "beat_time_delta": -0.173182,
+      "aligned_beat_global": 66,
+      "aligned_bar": 17,
+      "beat_time_delta": -0.144155,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00218",
@@ -4169,12 +4168,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 73,
-      "aligned_bar": 19,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 66,
+      "aligned_bar": 17,
+      "beat_time_delta": 0.028572,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00219",
@@ -4188,12 +4187,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 73,
-      "aligned_bar": 19,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 66,
+      "aligned_bar": 17,
+      "beat_time_delta": 0.028572,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00220",
@@ -4207,12 +4206,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 74,
-      "aligned_bar": 19,
-      "beat_time_delta": 0.000909,
+      "aligned_beat_global": 67,
+      "aligned_bar": 17,
+      "beat_time_delta": 0.025535,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00221",
@@ -4226,12 +4225,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 74,
-      "aligned_bar": 19,
-      "beat_time_delta": 0.000909,
+      "aligned_beat_global": 67,
+      "aligned_bar": 17,
+      "beat_time_delta": 0.025535,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00222",
@@ -4245,12 +4244,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 75,
-      "aligned_bar": 19,
-      "beat_time_delta": -0.115909,
+      "aligned_beat_global": 68,
+      "aligned_bar": 17,
+      "beat_time_delta": -0.09568,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00223",
@@ -4264,12 +4263,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 75,
-      "aligned_bar": 19,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 68,
+      "aligned_bar": 17,
+      "beat_time_delta": 0.020229,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00224",
@@ -4283,12 +4282,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 75,
-      "aligned_bar": 19,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 68,
+      "aligned_bar": 17,
+      "beat_time_delta": 0.020229,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00225",
@@ -4302,12 +4301,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 76,
-      "aligned_bar": 19,
-      "beat_time_delta": -0.114545,
+      "aligned_beat_global": 69,
+      "aligned_bar": 17,
+      "beat_time_delta": -0.098718,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00226",
@@ -4321,12 +4320,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 76,
-      "aligned_bar": 19,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 69,
+      "aligned_bar": 17,
+      "beat_time_delta": 0.014918,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00227",
@@ -4340,12 +4339,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 76,
-      "aligned_bar": 19,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 69,
+      "aligned_bar": 17,
+      "beat_time_delta": 0.014918,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00228",
@@ -4359,12 +4358,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 76,
-      "aligned_bar": 19,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 69,
+      "aligned_bar": 17,
+      "beat_time_delta": 0.014918,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00229",
@@ -4378,12 +4377,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 77,
-      "aligned_bar": 20,
-      "beat_time_delta": -0.115455,
+      "aligned_beat_global": 70,
+      "aligned_bar": 18,
+      "beat_time_delta": -0.104025,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00230",
@@ -4397,12 +4396,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 77,
-      "aligned_bar": 20,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 70,
+      "aligned_bar": 18,
+      "beat_time_delta": 0.011885,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00231",
@@ -4416,12 +4415,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 2,
-      "aligned_beat_global": 78,
-      "aligned_bar": 20,
-      "beat_time_delta": -0.114091,
+      "aligned_beat_global": 71,
+      "aligned_bar": 18,
+      "beat_time_delta": -0.107062,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00232",
@@ -4435,12 +4434,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 78,
-      "aligned_bar": 20,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 71,
+      "aligned_bar": 18,
+      "beat_time_delta": 0.006574,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00233",
@@ -4454,12 +4453,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 78,
-      "aligned_bar": 20,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 71,
+      "aligned_bar": 18,
+      "beat_time_delta": 0.006574,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00234",
@@ -4473,12 +4472,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 79,
-      "aligned_bar": 20,
-      "beat_time_delta": 0.01,
+      "aligned_beat_global": 72,
+      "aligned_bar": 18,
+      "beat_time_delta": 0.024239,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00235",
@@ -4492,12 +4491,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 79,
-      "aligned_bar": 20,
-      "beat_time_delta": 0.01,
+      "aligned_beat_global": 72,
+      "aligned_bar": 18,
+      "beat_time_delta": 0.024239,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00236",
@@ -4511,12 +4510,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 80,
-      "aligned_bar": 20,
-      "beat_time_delta": -0.104545,
+      "aligned_beat_global": 73,
+      "aligned_bar": 18,
+      "beat_time_delta": -0.083095,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00237",
@@ -4530,12 +4529,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 80,
-      "aligned_bar": 20,
-      "beat_time_delta": 0.009091,
+      "aligned_beat_global": 73,
+      "aligned_bar": 18,
+      "beat_time_delta": 0.030541,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00238",
@@ -4549,12 +4548,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 80,
-      "aligned_bar": 20,
-      "beat_time_delta": 0.009091,
+      "aligned_beat_global": 73,
+      "aligned_bar": 18,
+      "beat_time_delta": 0.030541,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00239",
@@ -4567,13 +4566,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 80,
-      "aligned_bar": 20,
-      "beat_time_delta": 0.181818,
-      "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 18,
+      "beat_time_delta": 0.203268,
+      "alignment_resolved": false,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00240",
@@ -4587,12 +4586,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 81,
-      "aligned_bar": 21,
-      "beat_time_delta": -0.182273,
+      "aligned_beat_global": 74,
+      "aligned_bar": 19,
+      "beat_time_delta": -0.14522,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00241",
@@ -4606,12 +4605,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 81,
-      "aligned_bar": 21,
-      "beat_time_delta": -0.009545,
+      "aligned_beat_global": 74,
+      "aligned_bar": 19,
+      "beat_time_delta": 0.027508,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00242",
@@ -4625,12 +4624,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 81,
-      "aligned_bar": 21,
-      "beat_time_delta": -0.009545,
+      "aligned_beat_global": 74,
+      "aligned_bar": 19,
+      "beat_time_delta": 0.027508,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00243",
@@ -4645,11 +4644,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 21,
-      "beat_time_delta": 0.22,
+      "aligned_bar": 19,
+      "beat_time_delta": -0.207345,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00244",
@@ -4663,12 +4662,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 82,
-      "aligned_bar": 21,
-      "beat_time_delta": -0.010455,
+      "aligned_beat_global": 75,
+      "aligned_bar": 19,
+      "beat_time_delta": 0.0222,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00245",
@@ -4682,12 +4681,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 82,
-      "aligned_bar": 21,
-      "beat_time_delta": -0.010455,
+      "aligned_beat_global": 75,
+      "aligned_bar": 19,
+      "beat_time_delta": 0.0222,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00246",
@@ -4702,11 +4701,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 21,
-      "beat_time_delta": 0.219091,
+      "aligned_bar": 19,
+      "beat_time_delta": -0.212655,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00247",
@@ -4720,12 +4719,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 83,
-      "aligned_bar": 21,
-      "beat_time_delta": -0.009091,
+      "aligned_beat_global": 76,
+      "aligned_bar": 19,
+      "beat_time_delta": 0.019163,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00248",
@@ -4739,12 +4738,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 83,
-      "aligned_bar": 21,
-      "beat_time_delta": -0.009091,
+      "aligned_beat_global": 76,
+      "aligned_bar": 19,
+      "beat_time_delta": 0.019163,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00249",
@@ -4759,11 +4758,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 21,
-      "beat_time_delta": 0.220455,
+      "aligned_bar": 19,
+      "beat_time_delta": -0.215688,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00250",
@@ -4777,12 +4776,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 84,
-      "aligned_bar": 21,
-      "beat_time_delta": -0.01,
+      "aligned_beat_global": 77,
+      "aligned_bar": 19,
+      "beat_time_delta": 0.013857,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00251",
@@ -4796,12 +4795,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 84,
-      "aligned_bar": 21,
-      "beat_time_delta": -0.01,
+      "aligned_beat_global": 77,
+      "aligned_bar": 19,
+      "beat_time_delta": 0.013857,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00252",
@@ -4816,11 +4815,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 21,
-      "beat_time_delta": 0.224091,
+      "aligned_bar": 19,
+      "beat_time_delta": -0.216454,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00253",
@@ -4834,12 +4833,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 85,
-      "aligned_bar": 22,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 78,
+      "aligned_bar": 20,
+      "beat_time_delta": 0.01991,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00254",
@@ -4853,12 +4852,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 85,
-      "aligned_bar": 22,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 78,
+      "aligned_bar": 20,
+      "beat_time_delta": 0.01991,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00255",
@@ -4873,11 +4872,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 22,
-      "beat_time_delta": 0.23,
+      "aligned_bar": 20,
+      "beat_time_delta": -0.214942,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00256",
@@ -4891,12 +4890,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 86,
-      "aligned_bar": 22,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 79,
+      "aligned_bar": 20,
+      "beat_time_delta": 0.014603,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00257",
@@ -4910,12 +4909,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 86,
-      "aligned_bar": 22,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 79,
+      "aligned_bar": 20,
+      "beat_time_delta": 0.014603,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00258",
@@ -4930,11 +4929,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 22,
-      "beat_time_delta": 0.229091,
+      "aligned_bar": 20,
+      "beat_time_delta": -0.20864,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00259",
@@ -4948,12 +4947,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 87,
-      "aligned_bar": 22,
-      "beat_time_delta": 0.000909,
+      "aligned_beat_global": 80,
+      "aligned_bar": 20,
+      "beat_time_delta": 0.023178,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00260",
@@ -4967,12 +4966,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 87,
-      "aligned_bar": 22,
-      "beat_time_delta": 0.000909,
+      "aligned_beat_global": 80,
+      "aligned_bar": 20,
+      "beat_time_delta": 0.023178,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00261",
@@ -4987,11 +4986,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 22,
-      "beat_time_delta": -0.229545,
+      "aligned_bar": 20,
+      "beat_time_delta": -0.200066,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00262",
@@ -5005,12 +5004,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 88,
-      "aligned_bar": 22,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 81,
+      "aligned_bar": 20,
+      "beat_time_delta": 0.029479,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00263",
@@ -5024,12 +5023,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 88,
-      "aligned_bar": 22,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 81,
+      "aligned_bar": 20,
+      "beat_time_delta": 0.029479,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00264",
@@ -5043,12 +5042,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 88,
-      "aligned_bar": 22,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 81,
+      "aligned_bar": 20,
+      "beat_time_delta": 0.029479,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00265",
@@ -5063,11 +5062,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 22,
-      "beat_time_delta": 0.229545,
+      "aligned_bar": 20,
+      "beat_time_delta": -0.205373,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00266",
@@ -5081,12 +5080,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 89,
-      "aligned_bar": 23,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 82,
+      "aligned_bar": 21,
+      "beat_time_delta": 0.024173,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00267",
@@ -5100,12 +5099,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 89,
-      "aligned_bar": 23,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 82,
+      "aligned_bar": 21,
+      "beat_time_delta": 0.024173,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00268",
@@ -5120,11 +5119,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 23,
-      "beat_time_delta": -0.229091,
+      "aligned_bar": 21,
+      "beat_time_delta": -0.20841,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00269",
@@ -5138,12 +5137,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 90,
-      "aligned_bar": 23,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 83,
+      "aligned_bar": 21,
+      "beat_time_delta": 0.021136,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00270",
@@ -5157,12 +5156,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 90,
-      "aligned_bar": 23,
-      "beat_time_delta": 0.000455,
+      "aligned_beat_global": 83,
+      "aligned_bar": 21,
+      "beat_time_delta": 0.021136,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00271",
@@ -5177,11 +5176,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 23,
-      "beat_time_delta": -0.23,
+      "aligned_bar": 21,
+      "beat_time_delta": -0.213717,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00272",
@@ -5195,12 +5194,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 91,
-      "aligned_bar": 23,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 84,
+      "aligned_bar": 21,
+      "beat_time_delta": 0.015828,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00273",
@@ -5214,12 +5213,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 91,
-      "aligned_bar": 23,
-      "beat_time_delta": -0.000455,
+      "aligned_beat_global": 84,
+      "aligned_bar": 21,
+      "beat_time_delta": 0.015828,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00274",
@@ -5234,11 +5233,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 23,
-      "beat_time_delta": -0.224091,
+      "aligned_bar": 21,
+      "beat_time_delta": -0.212209,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00275",
@@ -5252,12 +5251,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 92,
-      "aligned_bar": 23,
-      "beat_time_delta": 0.01,
+      "aligned_beat_global": 85,
+      "aligned_bar": 21,
+      "beat_time_delta": 0.021882,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00276",
@@ -5271,12 +5270,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 92,
-      "aligned_bar": 23,
-      "beat_time_delta": 0.01,
+      "aligned_beat_global": 85,
+      "aligned_bar": 21,
+      "beat_time_delta": 0.021882,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00277",
@@ -5291,11 +5290,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 23,
-      "beat_time_delta": -0.220455,
+      "aligned_bar": 21,
+      "beat_time_delta": -0.212971,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00278",
@@ -5309,12 +5308,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 1,
-      "aligned_beat_global": 93,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.009091,
+      "aligned_beat_global": 86,
+      "aligned_bar": 22,
+      "beat_time_delta": 0.016575,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00279",
@@ -5328,12 +5327,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 93,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.009091,
+      "aligned_beat_global": 86,
+      "aligned_bar": 22,
+      "beat_time_delta": 0.016575,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00280",
@@ -5348,11 +5347,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 24,
-      "beat_time_delta": -0.239091,
+      "aligned_bar": 22,
+      "beat_time_delta": -0.216008,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00281",
@@ -5366,12 +5365,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 2,
-      "aligned_beat_global": 94,
-      "aligned_bar": 24,
-      "beat_time_delta": -0.009545,
+      "aligned_beat_global": 87,
+      "aligned_bar": 22,
+      "beat_time_delta": 0.013538,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00282",
@@ -5385,12 +5384,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 94,
-      "aligned_bar": 24,
-      "beat_time_delta": -0.009545,
+      "aligned_beat_global": 87,
+      "aligned_bar": 22,
+      "beat_time_delta": 0.013538,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00283",
@@ -5405,11 +5404,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.22,
+      "aligned_bar": 22,
+      "beat_time_delta": -0.221314,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00284",
@@ -5423,12 +5422,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 3,
-      "aligned_beat_global": 95,
-      "aligned_bar": 24,
-      "beat_time_delta": -0.124091,
+      "aligned_beat_global": 88,
+      "aligned_bar": 22,
+      "beat_time_delta": -0.105405,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00285",
@@ -5442,12 +5441,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 3,
-      "aligned_beat_global": 95,
-      "aligned_bar": 24,
-      "beat_time_delta": -0.010455,
+      "aligned_beat_global": 88,
+      "aligned_bar": 22,
+      "beat_time_delta": 0.008231,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00286",
@@ -5461,12 +5460,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 3,
-      "aligned_beat_global": 95,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.107727,
+      "aligned_beat_global": 88,
+      "aligned_bar": 22,
+      "beat_time_delta": 0.126413,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00287",
@@ -5480,12 +5479,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 95,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.107727,
+      "aligned_beat_global": 88,
+      "aligned_bar": 22,
+      "beat_time_delta": 0.126413,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00288",
@@ -5500,11 +5499,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.225909,
+      "aligned_bar": 22,
+      "beat_time_delta": -0.219803,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00289",
@@ -5519,11 +5518,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.225909,
+      "aligned_bar": 22,
+      "beat_time_delta": -0.219803,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00290",
@@ -5537,12 +5536,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 96,
-      "aligned_bar": 24,
-      "beat_time_delta": -0.118182,
+      "aligned_beat_global": 89,
+      "aligned_bar": 22,
+      "beat_time_delta": -0.103894,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00291",
@@ -5556,12 +5555,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
       "aligned_beat": 4,
-      "aligned_beat_global": 96,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 89,
+      "aligned_bar": 22,
+      "beat_time_delta": 0.014288,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00292",
@@ -5575,12 +5574,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 4,
-      "aligned_beat_global": 96,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.0,
+      "aligned_beat_global": 89,
+      "aligned_bar": 22,
+      "beat_time_delta": 0.014288,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00293",
@@ -5595,11 +5594,11 @@
       "source_note_pitch": 38,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.229545,
+      "aligned_bar": 22,
+      "beat_time_delta": -0.220568,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00294",
@@ -5614,11 +5613,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 24,
-      "beat_time_delta": 0.229545,
+      "aligned_bar": 22,
+      "beat_time_delta": -0.220568,
       "alignment_resolved": false,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00295",
@@ -5632,12 +5631,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 97,
-      "aligned_bar": 25,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 90,
+      "aligned_bar": 23,
+      "beat_time_delta": 0.008978,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00296",
@@ -5651,12 +5650,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 97,
-      "aligned_bar": 25,
-      "beat_time_delta": -0.000909,
+      "aligned_beat_global": 90,
+      "aligned_bar": 23,
+      "beat_time_delta": 0.008978,
       "alignment_resolved": true,
-      "section_id": "section-003",
-      "section_name": "momentum_lift"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00297",
@@ -5670,12 +5669,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 98,
-      "aligned_bar": 25,
-      "beat_time_delta": -0.165455,
+      "aligned_beat_global": 91,
+      "aligned_bar": 23,
+      "beat_time_delta": -0.183185,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00298",
@@ -5689,12 +5688,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 98,
-      "aligned_bar": 25,
-      "beat_time_delta": -0.049545,
+      "aligned_beat_global": 91,
+      "aligned_bar": 23,
+      "beat_time_delta": -0.067275,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00299",
@@ -5708,12 +5707,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 98,
-      "aligned_bar": 25,
-      "beat_time_delta": 0.186818,
+      "aligned_beat_global": 91,
+      "aligned_bar": 23,
+      "beat_time_delta": 0.169088,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00300",
@@ -5727,12 +5726,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 3,
-      "aligned_beat_global": 99,
-      "aligned_bar": 25,
-      "beat_time_delta": -0.039091,
+      "aligned_beat_global": 92,
+      "aligned_bar": 23,
+      "beat_time_delta": -0.084443,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00301",
@@ -5746,12 +5745,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 100,
-      "aligned_bar": 25,
-      "beat_time_delta": -0.094545,
+      "aligned_beat_global": 93,
+      "aligned_bar": 23,
+      "beat_time_delta": -0.179126,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00302",
@@ -5765,12 +5764,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 4,
-      "aligned_beat_global": 100,
-      "aligned_bar": 25,
-      "beat_time_delta": 0.196364,
+      "aligned_beat_global": 93,
+      "aligned_bar": 23,
+      "beat_time_delta": 0.111783,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00303",
@@ -5784,12 +5783,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 1,
-      "aligned_beat_global": 101,
-      "aligned_bar": 26,
-      "beat_time_delta": 0.029545,
+      "aligned_beat_global": 94,
+      "aligned_bar": 24,
+      "beat_time_delta": -0.163922,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00304",
@@ -5803,12 +5802,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
       "aligned_beat": 2,
-      "aligned_beat_global": 102,
-      "aligned_bar": 26,
-      "beat_time_delta": 0.130909,
+      "aligned_beat_global": 95,
+      "aligned_bar": 24,
+      "beat_time_delta": -0.18306,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00305",
@@ -5821,13 +5820,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 4,
-      "aligned_beat_global": 104,
-      "aligned_bar": 26,
-      "beat_time_delta": -0.189091,
+      "aligned_beat": 3,
+      "aligned_beat_global": 96,
+      "aligned_bar": 24,
+      "beat_time_delta": -0.151949,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00306",
@@ -5840,13 +5839,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 4,
-      "aligned_beat_global": 104,
-      "aligned_bar": 26,
-      "beat_time_delta": -0.009545,
+      "aligned_beat": 3,
+      "aligned_beat_global": 96,
+      "aligned_bar": 24,
+      "beat_time_delta": 0.027597,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00307",
@@ -5859,13 +5858,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 104,
-      "aligned_bar": 26,
-      "beat_time_delta": 0.110909,
+      "aligned_beat": 3,
+      "aligned_beat_global": 96,
+      "aligned_bar": 24,
+      "beat_time_delta": 0.148051,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00308",
@@ -5880,11 +5879,11 @@
       "source_note_pitch": 42,
       "aligned_beat": null,
       "aligned_beat_global": null,
-      "aligned_bar": 26,
-      "beat_time_delta": 0.224545,
+      "aligned_bar": 24,
+      "beat_time_delta": 0.261687,
       "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00309",
@@ -5897,13 +5896,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 1,
-      "aligned_beat_global": 105,
-      "aligned_bar": 27,
-      "beat_time_delta": -0.005909,
+      "aligned_beat": 4,
+      "aligned_beat_global": 97,
+      "aligned_bar": 24,
+      "beat_time_delta": -0.054433,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00310",
@@ -5916,13 +5915,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 1,
-      "aligned_beat_global": 105,
-      "aligned_bar": 27,
-      "beat_time_delta": 0.11,
+      "aligned_beat": 4,
+      "aligned_beat_global": 97,
+      "aligned_bar": 24,
+      "beat_time_delta": 0.061476,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00311",
@@ -5935,13 +5934,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 106,
-      "aligned_bar": 27,
-      "beat_time_delta": -0.185909,
-      "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 24,
+      "beat_time_delta": 0.245567,
+      "alignment_resolved": false,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00312",
@@ -5954,13 +5953,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
-      "aligned_beat": 2,
-      "aligned_beat_global": 106,
-      "aligned_bar": 27,
-      "beat_time_delta": -0.063182,
-      "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 24,
+      "beat_time_delta": -0.200595,
+      "alignment_resolved": false,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00313",
@@ -5973,13 +5972,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 106,
-      "aligned_bar": 27,
-      "beat_time_delta": -0.063182,
-      "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 24,
+      "beat_time_delta": -0.200595,
+      "alignment_resolved": false,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00314",
@@ -5992,13 +5991,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": null,
-      "aligned_beat_global": null,
-      "aligned_bar": 27,
-      "beat_time_delta": -0.223182,
-      "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": 1,
+      "aligned_beat_global": 98,
+      "aligned_bar": 25,
+      "beat_time_delta": 0.099405,
+      "alignment_resolved": true,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00315",
@@ -6011,13 +6010,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 3,
-      "aligned_beat_global": 107,
-      "aligned_bar": 27,
-      "beat_time_delta": 0.072273,
+      "aligned_beat": 2,
+      "aligned_beat_global": 99,
+      "aligned_bar": 25,
+      "beat_time_delta": -0.17403,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00316",
@@ -6030,13 +6029,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 108,
-      "aligned_bar": 27,
-      "beat_time_delta": 0.089545,
-      "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 25,
+      "beat_time_delta": -0.277256,
+      "alignment_resolved": false,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00317",
@@ -6049,13 +6048,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": null,
-      "aligned_beat_global": null,
-      "aligned_bar": 27,
-      "beat_time_delta": 0.212273,
-      "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": 3,
+      "aligned_beat_global": 100,
+      "aligned_bar": 25,
+      "beat_time_delta": -0.154528,
+      "alignment_resolved": true,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00318",
@@ -6068,13 +6067,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 1,
-      "aligned_beat_global": 109,
-      "aligned_bar": 28,
-      "beat_time_delta": -0.122727,
+      "aligned_beat": 3,
+      "aligned_beat_global": 100,
+      "aligned_bar": 25,
+      "beat_time_delta": -0.029528,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00319",
@@ -6087,13 +6086,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
-      "aligned_beat": 1,
-      "aligned_beat_global": 109,
-      "aligned_bar": 28,
-      "beat_time_delta": 0.002273,
+      "aligned_beat": 3,
+      "aligned_beat_global": 100,
+      "aligned_bar": 25,
+      "beat_time_delta": 0.095472,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00320",
@@ -6106,13 +6105,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 1,
-      "aligned_beat_global": 109,
-      "aligned_bar": 28,
-      "beat_time_delta": 0.002273,
+      "aligned_beat": 3,
+      "aligned_beat_global": 100,
+      "aligned_bar": 25,
+      "beat_time_delta": 0.095472,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00321",
@@ -6125,13 +6124,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 35,
-      "aligned_beat": 1,
-      "aligned_beat_global": 109,
-      "aligned_bar": 28,
-      "beat_time_delta": 0.190909,
-      "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 25,
+      "beat_time_delta": 0.284108,
+      "alignment_resolved": false,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00322",
@@ -6144,13 +6143,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 110,
-      "aligned_bar": 28,
-      "beat_time_delta": -0.089545,
+      "aligned_beat": 4,
+      "aligned_beat_global": 101,
+      "aligned_bar": 25,
+      "beat_time_delta": -0.116847,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00323",
@@ -6163,13 +6162,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 3,
-      "aligned_beat_global": 111,
-      "aligned_bar": 28,
-      "beat_time_delta": 0.050455,
+      "aligned_beat": 1,
+      "aligned_beat_global": 102,
+      "aligned_bar": 26,
+      "beat_time_delta": -0.108953,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00324",
@@ -6182,13 +6181,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 112,
-      "aligned_bar": 28,
-      "beat_time_delta": -0.077273,
-      "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 26,
+      "beat_time_delta": 0.243319,
+      "alignment_resolved": false,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00325",
@@ -6201,13 +6200,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 112,
-      "aligned_bar": 28,
-      "beat_time_delta": 0.152273,
+      "aligned_beat": 2,
+      "aligned_beat_global": 103,
+      "aligned_bar": 26,
+      "beat_time_delta": -0.096025,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00326",
@@ -6220,13 +6219,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 114,
-      "aligned_bar": 29,
-      "beat_time_delta": 0.009545,
+      "aligned_beat": 3,
+      "aligned_beat_global": 104,
+      "aligned_bar": 26,
+      "beat_time_delta": 0.089137,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00327",
@@ -6239,13 +6238,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 3,
-      "aligned_beat_global": 115,
-      "aligned_bar": 29,
-      "beat_time_delta": -0.089091,
+      "aligned_beat": 4,
+      "aligned_beat_global": 105,
+      "aligned_bar": 26,
+      "beat_time_delta": -0.141608,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00328",
@@ -6258,13 +6257,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
-      "aligned_beat": null,
-      "aligned_beat_global": null,
-      "aligned_bar": 29,
-      "beat_time_delta": 0.210909,
-      "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": 4,
+      "aligned_beat_global": 105,
+      "aligned_bar": 26,
+      "beat_time_delta": 0.158392,
+      "alignment_resolved": true,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00329",
@@ -6277,13 +6276,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 116,
-      "aligned_bar": 29,
-      "beat_time_delta": -0.19,
-      "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 26,
+      "beat_time_delta": 0.217483,
+      "alignment_resolved": false,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00330",
@@ -6296,13 +6295,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 116,
-      "aligned_bar": 29,
-      "beat_time_delta": 0.050909,
+      "aligned_beat": 1,
+      "aligned_beat_global": 106,
+      "aligned_bar": 27,
+      "beat_time_delta": -0.122106,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00331",
@@ -6316,12 +6315,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 117,
-      "aligned_bar": 30,
-      "beat_time_delta": -0.170455,
+      "aligned_beat_global": 106,
+      "aligned_bar": 27,
+      "beat_time_delta": 0.11653,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00332",
@@ -6334,13 +6333,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 1,
-      "aligned_beat_global": 117,
-      "aligned_bar": 30,
-      "beat_time_delta": 0.009091,
+      "aligned_beat": 2,
+      "aligned_beat_global": 107,
+      "aligned_bar": 27,
+      "beat_time_delta": -0.179933,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00333",
@@ -6353,13 +6352,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": null,
-      "aligned_beat_global": null,
-      "aligned_bar": 30,
-      "beat_time_delta": -0.21,
-      "alignment_resolved": false,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": 2,
+      "aligned_beat_global": 107,
+      "aligned_bar": 27,
+      "beat_time_delta": 0.060976,
+      "alignment_resolved": true,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00334",
@@ -6373,12 +6372,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 2,
-      "aligned_beat_global": 118,
-      "aligned_bar": 30,
-      "beat_time_delta": -0.089545,
+      "aligned_beat_global": 107,
+      "aligned_bar": 27,
+      "beat_time_delta": 0.181431,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00335",
@@ -6391,13 +6390,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 118,
-      "aligned_bar": 30,
-      "beat_time_delta": 0.033182,
+      "aligned_beat": 3,
+      "aligned_beat_global": 108,
+      "aligned_bar": 27,
+      "beat_time_delta": -0.171852,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00336",
@@ -6410,13 +6409,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 2,
-      "aligned_beat_global": 118,
-      "aligned_bar": 30,
-      "beat_time_delta": 0.155909,
+      "aligned_beat": 3,
+      "aligned_beat_global": 108,
+      "aligned_bar": 27,
+      "beat_time_delta": -0.049125,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00337",
@@ -6430,12 +6429,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 3,
-      "aligned_beat_global": 119,
-      "aligned_bar": 30,
-      "beat_time_delta": -0.181364,
+      "aligned_beat_global": 108,
+      "aligned_bar": 27,
+      "beat_time_delta": 0.073602,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00338",
@@ -6448,13 +6447,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 3,
-      "aligned_beat_global": 119,
-      "aligned_bar": 30,
-      "beat_time_delta": 0.064091,
+      "aligned_beat": 4,
+      "aligned_beat_global": 109,
+      "aligned_bar": 27,
+      "beat_time_delta": -0.16856,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00339",
@@ -6467,13 +6466,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 4,
-      "aligned_beat_global": 120,
-      "aligned_bar": 30,
-      "beat_time_delta": 0.090455,
+      "aligned_beat": 1,
+      "aligned_beat_global": 110,
+      "aligned_bar": 28,
+      "beat_time_delta": -0.146597,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00340",
@@ -6487,12 +6486,12 @@
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
       "aligned_beat": 1,
-      "aligned_beat_global": 121,
-      "aligned_bar": 31,
-      "beat_time_delta": -0.19,
+      "aligned_beat_global": 110,
+      "aligned_bar": 28,
+      "beat_time_delta": 0.032948,
       "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00341",
@@ -6505,13 +6504,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 42,
-      "aligned_beat": 1,
-      "aligned_beat_global": 121,
-      "aligned_bar": 31,
-      "beat_time_delta": -0.010455,
-      "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 28,
+      "beat_time_delta": 0.212493,
+      "alignment_resolved": false,
+      "section_id": "section-002",
+      "section_name": "chorus"
     },
     {
       "event_id": "drum-event-00342",
@@ -6524,13 +6523,13 @@
       "source": "drums_stem",
       "transcription_engine": "omnizart",
       "source_note_pitch": 38,
-      "aligned_beat": 1,
-      "aligned_beat_global": 121,
-      "aligned_bar": 31,
-      "beat_time_delta": 0.050909,
-      "alignment_resolved": true,
-      "section_id": "section-004",
-      "section_name": "release_tail"
+      "aligned_beat": null,
+      "aligned_beat_global": null,
+      "aligned_bar": 28,
+      "beat_time_delta": -0.202153,
+      "alignment_resolved": false,
+      "section_id": "section-002",
+      "section_name": "chorus"
     }
   ]
 }

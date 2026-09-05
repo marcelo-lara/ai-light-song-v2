@@ -1,108 +1,384 @@
 {
   "schema_version": "1.0",
   "song_name": "_test_song",
-  "note": "Vocal transcription proposals from experiments/vocalparse and experiments/acestep_transcriber. Lyric lines with timing, for review \u2014 nothing in src/ reads this file.",
+  "note": "Vocal transcription proposals from experiments/vocalparse and experiments/acestep_transcriber. Lyric lines with timing, for review — nothing in src/ reads this file. Timing on the model rows is borrowed from the whisper baseline row (see each row's `alignment` field); a row marked `alignment: span` or `unavailable` has no trustworthy per-line timing.",
   "sources": [
     {
       "model": "whisper-large-v3 (baseline, vocal stem)",
       "kind": "baseline",
+      "device": "cpu",
+      "compute_type": "float32",
       "language": "en",
+      "language_confidence": 0.932,
       "word_timestamps": true,
       "lines": [
         {
           "id": "w001",
-          "start_s": 15.92,
-          "end_s": 18.21,
-          "text": "This is a test song",
+          "start_s": 14.74,
+          "end_s": 21.54,
+          "text": "this is a test song welcome to dark blue studio",
           "words": [
             {
+              "t": 14.74,
+              "d": 1.18,
+              "w": "this",
+              "p": 0.064
+            },
+            {
               "t": 15.92,
-              "d": 0.2,
-              "w": "This",
-              "p": 0.72
-            },
-            {
-              "t": 16.23,
-              "d": 0.17,
+              "d": 0.34,
               "w": "is",
-              "p": 0.98
+              "p": 0.994
             },
             {
-              "t": 16.4,
-              "d": 0.1,
+              "t": 16.26,
+              "d": 0.2,
               "w": "a",
-              "p": 0.98
+              "p": 0.992
             },
             {
-              "t": 16.61,
-              "d": 0.7,
+              "t": 16.46,
+              "d": 0.3,
               "w": "test",
-              "p": 0.95
+              "p": 0.929
             },
             {
-              "t": 17.35,
-              "d": 0.86,
+              "t": 16.76,
+              "d": 0.66,
               "w": "song",
-              "p": 0.96
+              "p": 0.986
+            },
+            {
+              "t": 17.42,
+              "d": 1.88,
+              "w": "welcome",
+              "p": 0.761
+            },
+            {
+              "t": 19.3,
+              "d": 0.64,
+              "w": "to",
+              "p": 0.999
+            },
+            {
+              "t": 19.94,
+              "d": 0.54,
+              "w": "dark",
+              "p": 0.897
+            },
+            {
+              "t": 20.48,
+              "d": 0.38,
+              "w": "blue",
+              "p": 0.966
+            },
+            {
+              "t": 20.86,
+              "d": 0.68,
+              "w": "studio",
+              "p": 0.974
             }
           ],
-          "confidence": -0.18
+          "confidence": -0.431
         },
         {
           "id": "w002",
-          "start_s": 19.16,
-          "end_s": 21.83,
-          "text": "Welcome to the dark blue studio",
+          "start_s": 23.6,
+          "end_s": 25.9,
+          "text": "Light Show",
           "words": [
             {
-              "t": 19.16,
-              "d": 0.62,
-              "w": "Welcome",
-              "p": 0.96
+              "t": 23.6,
+              "d": 1.4,
+              "w": "Light",
+              "p": 0.121
             },
             {
-              "t": 19.89,
-              "d": 0.13,
-              "w": "to",
-              "p": 0.99
+              "t": 25.0,
+              "d": 0.9,
+              "w": "Show",
+              "p": 0.591
             }
           ],
-          "confidence": -0.25
+          "confidence": -0.737
+        },
+        {
+          "id": "w003",
+          "start_s": 26.42,
+          "end_s": 29.16,
+          "text": "Light Show",
+          "words": [
+            {
+              "t": 26.42,
+              "d": 2.06,
+              "w": "Light",
+              "p": 0.284
+            },
+            {
+              "t": 28.48,
+              "d": 0.68,
+              "w": "Show",
+              "p": 0.987
+            }
+          ],
+          "confidence": -0.737
+        },
+        {
+          "id": "w004",
+          "start_s": 42.18,
+          "end_s": 43.94,
+          "text": "Light Show",
+          "words": [
+            {
+              "t": 42.18,
+              "d": 1.4,
+              "w": "Light",
+              "p": 0.807
+            },
+            {
+              "t": 43.58,
+              "d": 0.36,
+              "w": "Show",
+              "p": 0.995
+            }
+          ],
+          "confidence": -0.737
+        },
+        {
+          "id": "w005",
+          "start_s": 43.94,
+          "end_s": 48.06,
+          "text": "Light Show",
+          "words": [
+            {
+              "t": 43.94,
+              "d": 0.84,
+              "w": "Light",
+              "p": 0.902
+            },
+            {
+              "t": 44.78,
+              "d": 3.28,
+              "w": "Show",
+              "p": 0.996
+            }
+          ],
+          "confidence": -0.737
+        },
+        {
+          "id": "w006",
+          "start_s": 48.06,
+          "end_s": 52.8,
+          "text": "Welcome to Dark Blue Studio",
+          "words": [
+            {
+              "t": 48.06,
+              "d": 2.3,
+              "w": "Welcome",
+              "p": 0.726
+            },
+            {
+              "t": 50.36,
+              "d": 0.94,
+              "w": "to",
+              "p": 0.991
+            },
+            {
+              "t": 51.3,
+              "d": 0.58,
+              "w": "Dark",
+              "p": 0.738
+            },
+            {
+              "t": 51.88,
+              "d": 0.38,
+              "w": "Blue",
+              "p": 0.833
+            },
+            {
+              "t": 52.26,
+              "d": 0.54,
+              "w": "Studio",
+              "p": 0.887
+            }
+          ],
+          "confidence": -0.394
         }
       ]
     },
     {
       "model": "ACE-Step Transcriber (ACE-Step/acestep-transcriber)",
       "kind": "singing-transcription",
-      "alignment": "words",
-      "alignment_reason": "3/3 lines matched to whisper",
-      "language": "en",
-      "bpm": null,
+      "alignment": "unavailable",
+      "alignment_reason": "only 2/7 lines matched — timing is approximate",
+      "languages": [
+        "en"
+      ],
       "structure": [
         {
           "id": "aces001",
+          "tag": "Intro",
+          "instruments": null,
+          "start_s": 14.74,
+          "end_s": 14.74,
+          "line_count": 0,
+          "approx": true
+        },
+        {
+          "id": "aces002",
+          "tag": "Atmospheric synth pads and arpeggio",
+          "instruments": null,
+          "start_s": 14.74,
+          "end_s": 14.74,
+          "line_count": 0,
+          "approx": true
+        },
+        {
+          "id": "aces003",
           "tag": "Verse 1",
           "instruments": null,
-          "start_s": 15.92,
-          "end_s": 29.22
+          "start_s": 14.74,
+          "end_s": 25.614,
+          "line_count": 2,
+          "approx": true
+        },
+        {
+          "id": "aces004",
+          "tag": "Build-up",
+          "instruments": null,
+          "start_s": 25.614,
+          "end_s": 36.489,
+          "line_count": 2,
+          "approx": true
+        },
+        {
+          "id": "aces005",
+          "tag": "Drop 1",
+          "instruments": null,
+          "start_s": 36.489,
+          "end_s": 36.489,
+          "line_count": 0,
+          "approx": true
+        },
+        {
+          "id": "aces006",
+          "tag": "Instrumental",
+          "instruments": null,
+          "start_s": 36.489,
+          "end_s": 36.489,
+          "line_count": 0,
+          "approx": true
+        },
+        {
+          "id": "aces007",
+          "tag": "Chorus",
+          "instruments": null,
+          "start_s": 36.489,
+          "end_s": 52.8,
+          "line_count": 3,
+          "approx": true
+        },
+        {
+          "id": "aces008",
+          "tag": "Outro",
+          "instruments": null,
+          "start_s": 52.8,
+          "end_s": 52.8,
+          "line_count": 0,
+          "approx": true
+        },
+        {
+          "id": "aces009",
+          "tag": "Synth pads fade out",
+          "instruments": null,
+          "start_s": 52.8,
+          "end_s": 52.8,
+          "line_count": 0,
+          "approx": true
         }
       ],
       "lines": [
         {
           "id": "ace001",
-          "start_s": 15.92,
-          "end_s": 18.21,
+          "start_s": 14.74,
+          "end_s": 20.177,
           "text": "This is a test song",
           "words": [],
-          "confidence": null
+          "confidence": null,
+          "approx": true
         },
         {
           "id": "ace002",
-          "start_s": 19.16,
-          "end_s": 21.83,
-          "text": "Welcome to the dark blue studio",
+          "start_s": 20.177,
+          "end_s": 25.614,
+          "text": "Welcome to Dark Blue Studio",
           "words": [],
-          "confidence": null
+          "confidence": null,
+          "approx": true
+        },
+        {
+          "id": "ace003",
+          "start_s": 25.614,
+          "end_s": 31.051,
+          "text": "Light show!",
+          "words": [],
+          "confidence": null,
+          "approx": true
+        },
+        {
+          "id": "ace004",
+          "start_s": 31.051,
+          "end_s": 36.489,
+          "text": "Light show!",
+          "words": [],
+          "confidence": null,
+          "approx": true
+        },
+        {
+          "id": "ace005",
+          "start_s": 36.489,
+          "end_s": 41.926,
+          "text": "Light show!",
+          "words": [],
+          "confidence": null,
+          "approx": true
+        },
+        {
+          "id": "ace006",
+          "start_s": 41.926,
+          "end_s": 47.363,
+          "text": "Light show!",
+          "words": [],
+          "confidence": null,
+          "approx": true
+        },
+        {
+          "id": "ace007",
+          "start_s": 47.363,
+          "end_s": 52.8,
+          "text": "Welcome to Dark Blue Studio",
+          "words": [],
+          "confidence": null,
+          "approx": true
+        }
+      ]
+    },
+    {
+      "model": "VocalParse (pymaster/VocalParse)",
+      "kind": "singing-transcription",
+      "alignment": "span",
+      "alignment_reason": "melody span empty/degenerate",
+      "bpm": null,
+      "lyrics": "This is a test song welcome to dark blue studio light show light show light show welcome to dark blue studio",
+      "lines": [
+        {
+          "id": "vp001",
+          "start_s": 14.74,
+          "end_s": 52.8,
+          "text": "This is a test song welcome to dark blue studio light show light show light show welcome to dark blue studio",
+          "words": [],
+          "confidence": null,
+          "melody": []
         }
       ]
     }

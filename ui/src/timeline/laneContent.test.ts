@@ -2,42 +2,25 @@ import { describe, expect, it } from "vitest";
 
 import humanHints from "../data/__fixtures__/human_hints.json";
 import harmonic from "../data/__fixtures__/layer_a_harmonic.json";
-import patternsFix from "../data/__fixtures__/layer_d_patterns.json";
-import identifiersFix from "../data/__fixtures__/energy_summary_hints.json";
-import machineFix from "../data/__fixtures__/events_machine.json";
-import mlFix from "../data/__fixtures__/events_ml.json";
-import symbolicFix from "../data/__fixtures__/layer_b_symbolic.json";
+import timelineFixture from "../data/__fixtures__/song_event_timeline.json";
 import dropProposalsFix from "../data/__fixtures__/drop_proposals.json";
-import allin1Fix from "../data/__fixtures__/allin1.json";
 import characterFix from "../data/__fixtures__/character.json";
 import vocalFix from "../data/__fixtures__/vocal_transcription.json";
 
 import {
-  parseAllin1,
   parseCharacter,
   parseVocalTranscription,
   parseDropProposals,
-  parseIdentifierHints,
-  parseMachineEvents,
-  parseMlEvents,
-  parsePatterns,
-  parseSymbolicPhrases,
 } from "../data/sparseArtifacts";
-import { parseHarmonicLayer, parseHumanHints } from "../data/parsers";
+import { parseEventTimeline, parseHarmonicLayer, parseHumanHints } from "../data/parsers";
 
 import {
-  allin1SectionsContent,
-  allin1TransitionsContent,
   characterContent,
   vocalTranscriptionContent,
   chordsContent,
   dropProposalsContent,
+  gesturesContent,
   humanHintsContent,
-  identifierHintsContent,
-  machineEventsContent,
-  mlEventsContent,
-  patternsContent,
-  phrasesContent,
   sectionsContent,
 } from "./laneContent";
 import { romanNumeral } from "./romanNumeral";
@@ -55,24 +38,57 @@ describe("humanHintsContent", () => {
 });
 
 describe("sectionsContent", () => {
-  it("labels by form_role when present, else the projection label", () => {
+  it("renders the projected label as-is, unjoined", () => {
     const blocks = sectionsContent([
       {
+        section_id: "section-001",
         start: 0,
         end: 10,
-        label: "001 Ambient Opening (0.66)",
+        label: "001 Verse (0.66)",
         description: "x",
-        hints: [],
-        section_id: "section-001",
-        form_role: null,
-        energy_character: "low",
-        repetition_group: null,
         confidence: 0.66,
+        key: null,
+        chord_progression: null,
       },
     ]);
-    expect(blocks[0]!.label).toBe("001 Ambient Opening (0.66)");
+    expect(blocks[0]!.label).toBe("001 Verse (0.66)");
     expect(blocks[0]!.reference).toBe("section-001");
     expect(blocks[0]!.caption).toContain("conf 0.66");
+    expect(blocks[0]!.detail).toBe("-");
+  });
+
+  it("joins the section_segmentation artifact by section_id for the inspector's function detail", () => {
+    const blocks = sectionsContent(
+      [
+        {
+          section_id: "section-002",
+          start: 10,
+          end: 20,
+          label: "002 Chorus (0.91)",
+          description: "y",
+          confidence: 0.91,
+          key: null,
+          chord_progression: null,
+        },
+      ],
+      [
+        {
+          section_id: "section-002",
+          start: 10,
+          end: 20,
+          function: "chorus",
+          function_confidence: 0.91,
+          function_status: "ok",
+          same_label_as: null,
+          confidence: 0.91,
+        },
+      ],
+    );
+    const raw = blocks[0]!.raw as Record<string, unknown>;
+    expect(raw.function).toBe("chorus");
+    expect(raw.function_confidence).toBe(0.91);
+    expect(raw.function_status).toBe("ok");
+    expect(raw.same_label_as).toBeNull();
   });
 });
 
@@ -92,43 +108,22 @@ describe("chordsContent", () => {
   });
 });
 
-describe("patternsContent", () => {
-  it("flattens occurrences and keeps occurrence index/count", () => {
-    const blocks = patternsContent(parsePatterns(patternsFix));
-    expect(blocks.length).toBe(27);
-    expect(blocks[0]!.label).toBe("Pattern A");
-    expect(blocks[0]!.reference).toBe("pattern_A");
-    expect(blocks[0]!.summary).toContain("Occurrence 1 of 27");
-  });
-});
-
-describe("identifier / machine / ml event content", () => {
-  it("identifierHints keeps the drop identifier", () => {
-    const blocks = identifierHintsContent(parseIdentifierHints(identifiersFix));
-    expect(blocks).toHaveLength(1);
-    expect(blocks[0]!.label).toBe("drop");
-    expect(blocks[0]!.laneLabel).toBe("Identifier Hints");
-  });
-
-  it("machineEvents surfaces evidence summaries", () => {
-    const blocks = machineEventsContent(parseMachineEvents(machineFix));
+describe("gesturesContent", () => {
+  it("renders one block per flat gesture-phase / transition event", () => {
+    const blocks = gesturesContent(parseEventTimeline(timelineFixture));
     expect(blocks.length).toBeGreaterThan(0);
-    expect(blocks[0]!.end_s).toBeGreaterThanOrEqual(blocks[0]!.start_s);
-    expect(blocks.every((b) => b.laneLabel === "Machine Events")).toBe(true);
+    expect(blocks.every((b) => b.laneLabel === "Gestures")).toBe(true);
+    expect(blocks.every((b) => b.end_s >= b.start_s)).toBe(true);
+    const labels = blocks.map((b) => b.label);
+    expect(labels.some((l) => l.includes("→"))).toBe(true);
+    expect(labels.some((l) => l === "impact")).toBe(true);
+    for (const b of blocks) {
+      expect(b.summary).toBeTruthy();
+    }
   });
 
-  it("mlEvents on an empty artifact yields no blocks", () => {
-    expect(mlEventsContent(parseMlEvents(mlFix))).toEqual([]);
-  });
-});
-
-
-describe("phrasesContent", () => {
-  it("labels phrase windows by group id", () => {
-    const blocks = phrasesContent(parseSymbolicPhrases(symbolicFix));
-    expect(blocks.length).toBe(6);
-    expect(blocks[0]!.label).toContain("phrase_group");
-    expect(blocks[0]!.laneLabel).toBe("Symbolic Phrases");
+  it("tolerates a missing artifact", () => {
+    expect(gesturesContent(null)).toEqual([]);
   });
 });
 
@@ -136,8 +131,6 @@ describe("null inputs", () => {
   it("every adapter tolerates a missing artifact", () => {
     expect(humanHintsContent(null)).toEqual([]);
     expect(chordsContent(null)).toEqual([]);
-    expect(patternsContent(null)).toEqual([]);
-    expect(phrasesContent(null)).toEqual([]);
   });
 });
 
@@ -175,73 +168,6 @@ describe("dropProposalsContent", () => {
       [...blocks.map((b) => b.start_s)].sort((a, b) => a - b),
     );
     expect(dropProposalsContent(null)).toEqual([]);
-  });
-});
-
-describe("allin1SectionsContent", () => {
-  const blocks = allin1SectionsContent(parseAllin1(allin1Fix));
-
-  it("names a returning section by its occurrence", () => {
-    expect(blocks.map((b) => b.label)).toContain("chorus 2");
-    expect(blocks.map((b) => b.label)).toContain("bridge");
-  });
-
-  it("says which earlier section carries the same label", () => {
-    const third = blocks.find((b) => b.id === "allin1-009");
-    expect(third?.detail).toBe("same label as allin1-003");
-    const first = blocks.find((b) => b.id === "allin1-003");
-    expect(first?.detail).toBe("1 of 3 chorus sections");
-  });
-
-  it("puts the bar span and phrase count in the wide label", () => {
-    const inst = blocks.find((b) => b.id === "allin1-004");
-    expect(inst?.wideLabel).toContain("bars 40–47");
-    expect(inst?.wideLabel).toContain("1 phrase");
-  });
-
-  it("marks every row unknown and mutes it when allin1 degenerated", () => {
-    const degenerate = allin1SectionsContent(
-      parseAllin1({
-        ...allin1Fix,
-        labelling: { status: "degenerate", reason: "only 2 distinct label(s)" },
-      }),
-    );
-    expect(degenerate[0]!.label).toMatch(/ \?$/);
-    expect(degenerate[0]!.tintId).toBe("allin1Unnamed");
-    expect(degenerate[0]!.summary).toContain("treat the boundary as the finding");
-  });
-
-  it("tolerates a missing file", () => {
-    expect(allin1SectionsContent(null)).toEqual([]);
-  });
-});
-
-describe("allin1TransitionsContent", () => {
-  const blocks = allin1TransitionsContent(parseAllin1(allin1Fix));
-
-  it("keeps the destination in the narrow label and the full pair in the wide one", () => {
-    const block = blocks.find((b) => b.id === "allin1-t-003");
-    expect(block?.label).toBe("? \u2192 inst");
-    expect(block?.wideLabel).toContain("chorus \u2192 inst");
-  });
-
-  it("marks and tints a transition that already matches a human impact", () => {
-    const matched = blocks.find((b) => b.id === "allin1-t-006");
-    expect(matched?.label).toMatch(/^\u2713 /);
-    expect(matched?.caption).toContain("matches human 151.26s");
-    expect(matched?.tintId).toBe("allin1TransitionsMatched");
-    expect(blocks.find((b) => b.id === "allin1-t-003")?.tintId).toBeUndefined();
-  });
-
-  it("reports the offset to the essentia beat grid cues snap to", () => {
-    expect(blocks.find((b) => b.id === "allin1-t-003")?.wideLabel).toMatch(/off beat/);
-  });
-
-  it("is ordered by time and tolerates a missing file", () => {
-    expect(blocks.map((b) => b.start_s)).toEqual(
-      [...blocks.map((b) => b.start_s)].sort((a, b) => a - b),
-    );
-    expect(allin1TransitionsContent(null)).toEqual([]);
   });
 });
 

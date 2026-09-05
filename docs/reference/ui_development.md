@@ -57,15 +57,12 @@ The UI should support direct reads from at least:
 - `layer_b_symbolic.json`
 - `layer_c_energy.json`
 - `essentia/fft_bands.json`
-- `layer_d_patterns.json`
 - `section_segmentation/sections.json`
 - `symbolic_transcription/drum_events.json`
 - `event_inference/features.json`
 - `event_inference/timeline_index.json`
 - `event_inference/rule_candidates.json`
 - `event_inference/events.machine.json`
-- `pattern_mining/chord_patterns.json`
-- `music_feature_layers.json`
 - `validation/phase_1_report.json`
 
 Secondary helper inputs may be read from `data/analysis/<Song - Artist>/` when compact projections are useful for navigation or comparison, for example:

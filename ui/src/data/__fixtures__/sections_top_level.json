@@ -1,30 +1,34 @@
 [
   {
+    "section_id": "section-001",
     "start": 0.0,
     "end": 14.82,
-    "label": "001 Ambient Opening (0.66)",
-    "description": "Restrained opening space with low-volatility motion and room for atmosphere.",
-    "hints": []
+    "label": "001 Intro (0.90)",
+    "description": "Opening section, 14.8s.",
+    "confidence": 0.9
   },
   {
+    "section_id": "section-002",
     "start": 14.82,
     "end": 29.61,
-    "label": "002 Vocal Spotlight (0.71)",
-    "description": "Voice-led section where the vocal contour carries most of the attention and motion.",
-    "hints": []
+    "label": "002 Verse (0.71)",
+    "description": "Verse section, 14.8s.",
+    "confidence": 0.71
   },
   {
+    "section_id": "section-003",
     "start": 29.61,
     "end": 44.36,
-    "label": "003 Momentum Lift (0.80)",
-    "description": "Energy and motion climb together into a more assertive forward push.",
-    "hints": []
+    "label": "003 Chorus (0.80)",
+    "description": "Chorus section, 14.8s.",
+    "confidence": 0.8
   },
   {
+    "section_id": "section-004",
     "start": 44.36,
     "end": 57.74,
-    "label": "004 Release Tail (0.69)",
-    "description": "Closing release state where energy tapers and the track settles out.",
-    "hints": []
+    "label": "004 Outro (0.69)",
+    "description": "Outro section, 13.4s.",
+    "confidence": 0.69
   }
 ]

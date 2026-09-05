@@ -40,7 +40,7 @@ describe("packRows — compact lane", () => {
         { x: 30, width: 100 }, // overlaps both -> row 2
         { x: 200, width: 50 }, // clear -> back to row 0
       ],
-      { laneId: "machineEvents", laneHeight: 84 },
+      { laneId: "gestures", laneHeight: 84 },
     );
     const byX = new Map(packed.map((p) => [p.x, p.rowIndex]));
     expect(byX.get(0)).toBe(0);
@@ -53,19 +53,14 @@ describe("packRows — compact lane", () => {
 
   it("falls back to a single row when there is 0/1 block", () => {
     const packed = packRows([{ x: 0, width: 10 }], {
-      laneId: "phrases",
+      laneId: "gestures",
       laneHeight: 84,
     });
     expect(packed[0]!.height).toBe(72);
   });
 
-  it("registers the compact lane ids the old canvas painter used", () => {
-    expect([...COMPACT_LANE_IDS].sort()).toEqual([
-      "identifierHints",
-      "machineEvents",
-      "mlEvents",
-      "phrases",
-    ]);
+  it("registers the compact lane ids", () => {
+    expect([...COMPACT_LANE_IDS].sort()).toEqual(["gestures"]);
   });
 });
 

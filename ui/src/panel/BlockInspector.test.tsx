@@ -7,18 +7,18 @@ import type { BlockSelection } from "./blockFields";
 import { BlockInspector } from "./BlockInspector";
 
 const selection: BlockSelection = {
-  laneId: "allin1Sections",
-  laneLabel: "allin1 Sections",
+  laneId: "sections",
+  laneLabel: "Sections",
   label: "intro",
   start_s: 0.01,
   end_s: 30.0,
   confidence: null,
-  reference: "allin1-001",
+  reference: "section-001",
   detail: null,
   section_id: null,
   created_by: null,
   caption: "0:00.0–0:30.0",
-  summary: "allin1 functional section `intro`.",
+  summary: "Functional section `intro`.",
   raw: { name: "intro", start_s: 0.01, end_s: 30.0 },
 };
 

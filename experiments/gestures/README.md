@@ -1,9 +1,16 @@
 # Experiment — Transition-FX and gesture phases
 
-**Status: measured, mixed, not promoted.** Nothing in `src/` reads anything
-in here. Queue entry, with the same numbers in summary form:
-[`../../docs/experiments_pending.md`](../../docs/experiments_pending.md)
-(constitution §3.4).
+**Status: promoted in v3.0.** `docs/implementation-plan-v3.0.md` item 9 shipped
+this into `src/analyzer/stages/gestures.py`, replacing the whole `event_*`
+stack (`event_rules/`, `event_machine/`, `event_features/`, `event_timeline.py`,
+`event_review.py`, `event_identifiers.py`, `review_queue.py`,
+`event_contracts.py`) and rebuilding `song_event_timeline.json` around gesture
+phases and section-pair transitions. The **Gestures** debugger lane was
+promoted alongside it (item 14) — it now reads the production
+`song_event_timeline.json` directly and lost its experiment badge. The
+measurements below are kept exactly as run, including the open per-primitive
+precision-audit gap; they do not go stale (constitution §4). Archive entry:
+[`../../docs/archive/experiments.md`](../../docs/archive/experiments.md).
 
 ## The question
 

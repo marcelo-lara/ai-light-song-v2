@@ -28,7 +28,7 @@ or `CLAUDE.md` first; the issue text itself is scaffolding.
 - Scope each issue to one concrete problem, one validation target, and one success condition — and make the success condition mean the stage improved, not that one song stopped complaining.
 - Prefer evidence from generated artifacts and documented reference files.
 - Treat `data/analysis/<Song - Artist>/reference/` as read-only validation input.
-- For chord truth, treat `data/analysis/<Song - Artist>/reference/moises/chords.json` as authoritative when it exists.
+- `data/analysis/<Song - Artist>/reference/moises/chords.json` is Moises.ai inference, not chord truth: it carries no confidence field, so a chord comparison against it measures agreement with a second model, not correctness.
 - For section semantics, prefer context-aware musical-state labels over generic form labels like `intro`, `verse`, or `chorus` unless a separate structural contract explicitly requires those labels.
 - Human storytelling hints are review guidance. They are not direct replacements for harmonic, symbolic, or energy truth.
 
@@ -43,10 +43,11 @@ or `CLAUDE.md` first; the issue text itself is scaffolding.
 
 ## Open queue
 
-*Empty.*
-
-All ten issues raised so far were closed; their entries were removed in commit
-`c227bec` and remain recoverable there.
+Empty. All issues raised so far were closed; their entries were removed (most
+recently the `validate-chords` `KeyError: 'bar_num'` crash, closed in plan v3.0
+item 10 by deriving the reference row's bar/beat position from the pipeline's
+own beat grid instead of reading fields the Moises schema does not carry) and
+remain recoverable in git history (the first ten in commit `c227bec`).
 
 Worth knowing before adding the next one: the queue emptying does **not** mean
 the analysis is in good shape. The 2026-09 measurement in

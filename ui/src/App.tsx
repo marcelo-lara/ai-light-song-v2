@@ -84,6 +84,9 @@ const TIMELINE_KEYS = [
   "info",
   "beats",
   "sectionsTopLevel",
+  // artifact-scoped detail (function / function_confidence / function_status /
+  // same_label_as) joined into the Sections lane inspector by section_id.
+  "sectionSegmentation",
   "harmonicLayer",
   "fftBands",
   "rmsLoudness",
@@ -93,21 +96,15 @@ const TIMELINE_KEYS = [
   "humanHints",
   // external word-level sung lyrics (reference/moises)
   "moisesLyrics",
-  // item 9 sparse lanes
-  "patterns",
-  "identifierHints",
-  "machineEvents",
-  "mlEvents",
-  "symbolicPhrases",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",
   // wave-2 experiments (docs/experiments_pending.md run orders 1-3, 6)
   "vocalPhrases",
   "reactiveBands",
-  "gestures",
+  // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
+  // lane's production data source.
+  "eventTimeline",
   "grid",
-  // named song form under review (experiments/allin1)
-  "allin1",
   // texture / character blocks under review (experiments/clap)
   "character",
   // sung lyrics + timing under review (experiments/vocalparse, acestep_transcriber)
@@ -121,19 +118,12 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   dropProposals: "dropProposals",
   vocalPhrases: "vocalPhrases",
   reactiveBands: "reactiveBands",
-  gestures: "gestures",
+  gestures: "eventTimeline",
   gridPhrase: "grid",
-  allin1Transitions: "allin1",
-  allin1Sections: "allin1",
   character: "character",
   vocalTranscription: "vocalTranscription",
   sections: "sectionsTopLevel",
   chords: "harmonicLayer",
-  patterns: "patterns",
-  identifierHints: "identifierHints",
-  machineEvents: "machineEvents",
-  mlEvents: "mlEvents",
-  phrases: "symbolicPhrases",
 };
 
 /** lane id → (artifact key, canvas renderer kind) for the item-5 data lanes. */
@@ -258,6 +248,10 @@ export function App(): React.JSX.Element {
     () => artifacts.sectionsTopLevel.data ?? [],
     [artifacts.sectionsTopLevel.data],
   );
+  const sectionSegmentation = useMemo(
+    () => artifacts.sectionSegmentation.data?.sections ?? [],
+    [artifacts.sectionSegmentation.data],
+  );
   const estimatedDuration = info?.duration ?? beats.at(-1)?.time ?? 0;
 
   const coords = useMemo(
@@ -279,18 +273,13 @@ export function App(): React.JSX.Element {
       dropProposals: artifacts.dropProposals.data,
       vocalPhrases: artifacts.vocalPhrases.data,
       reactiveBands: artifacts.reactiveBands.data,
-      gestures: artifacts.gestures.data,
+      gestures: artifacts.eventTimeline.data,
       grid: artifacts.grid.data,
-      allin1: artifacts.allin1.data,
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
       sections,
+      sectionSegmentation,
       harmonicLayer: artifacts.harmonicLayer.data,
-      patterns: artifacts.patterns.data,
-      identifierHints: artifacts.identifierHints.data,
-      machineEvents: artifacts.machineEvents.data,
-      mlEvents: artifacts.mlEvents.data,
-      symbolicPhrases: artifacts.symbolicPhrases.data,
     }),
     [
       humanHintsFile,
@@ -298,18 +287,13 @@ export function App(): React.JSX.Element {
       artifacts.dropProposals.data,
       artifacts.vocalPhrases.data,
       artifacts.reactiveBands.data,
-      artifacts.gestures.data,
+      artifacts.eventTimeline.data,
       artifacts.grid.data,
-      artifacts.allin1.data,
       artifacts.character.data,
       artifacts.vocalTranscription.data,
       sections,
+      sectionSegmentation,
       artifacts.harmonicLayer.data,
-      artifacts.patterns.data,
-      artifacts.identifierHints.data,
-      artifacts.machineEvents.data,
-      artifacts.mlEvents.data,
-      artifacts.symbolicPhrases.data,
     ],
   );
 

@@ -1,41 +1,28 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "3.0",
   "contract": "song_event_schema",
-  "description": "Strict event payload contract for Epic 5 detection, review, and export artifacts.",
+  "description": "Payload contract for the generated deliverable data/analysis/<song>/song_event_timeline.json, produced by the phase-3 gestures stage (src/analyzer/stages/gestures.py, plan v3.0 item 9). Replaces the Epic-5 song_event_schema (composite build/drop/post_drop rows with nested phases[], member_event_ids, lighting_hint, evidence_ref) -- that stack was measured at chance against the gold set and deleted in the same change. Nothing in src/ loads this file at runtime any more -- it is documentation of the contract.",
   "top_level": {
     "required": [
       "schema_version",
       "song_name",
       "generated_from",
       "events"
-    ],
-    "optional": [
-      "review_status",
-      "notes",
-      "threshold_profile",
-      "metadata"
     ]
   },
   "event": {
+    "description": "One flat row per gesture phase or per section-pair transition -- never a composite with nested sub-phases. See event_vocabulary.json for the two `type` shapes.",
     "required": [
-      "id",
       "type",
       "start_time",
       "end_time",
       "confidence",
       "intensity",
-      "evidence",
-      "notes"
-    ],
-    "optional": [
-      "created_by",
-      "section_name",
       "section_id",
-      "source_layers",
-      "human_override",
-      "lighting_hints",
-      "candidates",
-      "metadata"
+      "section_name",
+      "provenance",
+      "summary",
+      "evidence_summary"
     ],
     "numeric_ranges": {
       "confidence": {
@@ -47,110 +34,13 @@
         "maximum": 1.0
       }
     },
-    "source_layers_enum": [
-      "timing",
-      "sections",
-      "harmonic",
-      "symbolic",
-      "energy",
-      "genre",
-      "event_features",
-      "rule_candidates",
-      "energy_identifiers",
-      "event_machine",
-      "event_review",
-      "user_override"
-    ]
-  },
-  "evidence": {
-    "allowed": [
-      "summary",
-      "source_windows",
-      "metrics",
-      "reasons",
-      "rule_names",
-      "model",
-      "metadata"
+    "type_enum_note": "Either a gesture phase name from event_vocabulary.json's phase_vocabulary (approach, build, tension, impact, release), or a '<from_label> → <to_label>' section-pair transition.",
+    "provenance_enum": [
+      "machine-only"
     ],
-    "required_at_least_one_of": [
-      "summary",
-      "source_windows",
-      "metrics",
-      "reasons",
-      "rule_names",
-      "model"
-    ]
+    "summary_note": "Natural descriptive prose, e.g. 'a rising riser builds into an impact here'. Must never equal any retired Epic-5 boilerplate string (constitution §2 -- no internal implementation notes leak into a projected field)."
   },
-  "source_window": {
-    "required": [
-      "layer",
-      "start_time",
-      "end_time"
-    ],
-    "optional": [
-      "ref",
-      "metric_names",
-      "notes"
-    ]
-  },
-  "metric": {
-    "required": [
-      "name",
-      "value"
-    ],
-    "optional": [
-      "unit",
-      "threshold",
-      "comparator",
-      "source_layer",
-      "notes"
-    ]
-  },
-  "model": {
-    "required": [
-      "name"
-    ],
-    "optional": [
-      "version",
-      "confidence_delta",
-      "notes"
-    ]
-  },
-  "human_override": {
-    "required": [
-      "status"
-    ],
-    "optional": [
-      "editor",
-      "reason",
-      "updated_type",
-      "updated_start_time",
-      "updated_end_time",
-      "notes"
-    ],
-    "status_enum": [
-      "confirmed",
-      "deleted",
-      "retimed",
-      "relabeled",
-      "annotated"
-    ]
-  },
-  "lighting_hints": {
-    "allowed": [
-      "cue_style",
-      "energy_profile",
-      "notes",
-      "editable"
-    ]
-  },
-  "candidate": {
-    "required": [
-      "type",
-      "confidence"
-    ],
-    "optional": [
-      "notes"
-    ]
+  "removed_in_v3_0_item_9": {
+    "description": "The composite-row shape (composite, phases[], member_event_ids, evidence_ref, lighting_hint, created_by, id) and the layer_add/layer_remove per-beat delta events and texture_summary[] are gone. Every event this stage emits is already flat and already carries its own evidence_summary; there is no separate machine-events file to cross-reference."
   }
 }

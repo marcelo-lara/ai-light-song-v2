@@ -14,8 +14,11 @@ Use this as a navigation guide first, then open the referenced files for the act
 - Do not add or remove the top-level files under `data/analysis/<Song - Artist>/` unless a UI contract change makes that strictly required.
 - The internal debugger served from `/ui/` primarily reads `data/analysis/<Song - Artist>/artifacts/` directly and uses the top-level `data/analysis/<Song - Artist>/` files only as supporting context when useful.
 - The debugger is read-only against generated data and must not write files into `data/analysis/`, with the single exception below.
-- Story 7.8 allows the helper UI to update only `data/analysis/<Song - Artist>/reference/human/human_hints.json` on explicit save.
-- `data/fixtures/` contains rig and focus-point context.
+- The debugger's "Create human hint" action updates only `data/analysis/<Song - Artist>/reference/human/human_hints.json` and (for song-level facts) `reference/human/song_facts.json`, on explicit save.
+- `data/fixtures/` **does not exist in this repository** and never has. Do not
+  create it or plan around it — fixture-aware orchestration is out of scope
+  (constitution §1.1). Earlier drafts of this document described a
+  `data/fixtures/` folder that was never built.
 - `data/songs/` contains source audio. `data/analysis/<Song - Artist>/artifacts/stems/` contains stem-separated audio derived from those songs.
 
 ## Folder Structure
@@ -27,15 +30,18 @@ data/
       beats.json
       hints.json
       info.json
-        song_event_timeline.json
       sections.json
+      song_event_timeline.json
       reference/
         human/
           human_hints.json
+          song_facts.json
         moises/
           chords.json
           lyrics.json
           segments.json
+        proposals/
+          <experiment output — not a stable contract; see the source experiment's README>
       artifacts/
         stems/
           bass.wav
@@ -43,56 +49,26 @@ data/
           harmonic.wav
           metadata.json
           vocals.wav
-        energy_summary/
-          features.json
-          hints.json
         essentia/
           beats.json
           fft_bands.json
           hpcp.json
-        event_inference/
-          events.machine.json
-          features.json
-          rule_candidates.json
-          timeline_index.json
-        pattern_mining/
-          chord_patterns.json
+          rms_loudness.json
+          loudness_envelope.json
+        allin1/
+          raw.json
         section_segmentation/
           sections.json
         symbolic_transcription/
-          basic_pitch/
-            bass.json
-            bass.mid
-            drums.json
-            drums.mid
-            full_mix.json
-            full_mix.mid
-            harmonic.json
-            harmonic.mid
-            vocals.json
-            vocals.mid
           drum_events.json
           omnizart/
             drums.mid
-          hints.json
-          validation.json
         validation/
-          event_benchmark.json
           phase_1_report.json
           phase_1_report.md
-          song_event_timeline.md
-          song_events.overrides.json
-          song_events.review.json
-          song_events.review.md
         layer_a_harmonic.json
         genre.json
-        layer_b_symbolic.json
         layer_c_energy.json
-        layer_d_patterns.json
-        music_feature_layers.json
-  fixtures/
-    fixtures.json
-    pois.json
   songs/
     <Song - Artist>.mp3
 ```
@@ -111,9 +87,6 @@ If you only open a few files, start here in this order:
 
 These are also, near enough, the files the downstream MCP server actually
 projects — see [`reference/analysis-input-guide.md`](reference/analysis-input-guide.md).
-9. `data/analysis/<Song - Artist>/artifacts/layer_b_symbolic.json`
-10. `data/fixtures/fixtures.json`
-11. `data/fixtures/pois.json`
 
 For internal debugger work, invert that priority: start with `data/analysis/<Song - Artist>/artifacts/` layer and validation files first, then use `data/analysis/<Song - Artist>/` only as compact helper projections.
 
@@ -127,7 +100,7 @@ LLM note: this folder is useful for provenance, but the structured design work s
 
 ### `data/analysis/<Song - Artist>/artifacts/stems/`
 
-Per-song separated audio stems and lightweight stem metadata. These are derived from the source song and used by harmonic and symbolic stages.
+Per-song separated audio stems and lightweight stem metadata. These are derived from the source song and used by the harmonic and drum-transcription stages.
 
 ### `data/analysis/<Song - Artist>/artifacts/`
 
@@ -141,10 +114,6 @@ Per-song consumer-facing outputs, living alongside (but outside) the nested `art
 
 The internal debugger may read selected files here for quick navigation or compact comparisons, but it must not treat this folder as its primary source of truth and must not write additional files into it.
 
-### `data/fixtures/`
-
-Lighting rig metadata and point-of-interest targeting data.
-
 ### `data/analysis/<Song - Artist>/reference/`
 
 Reference and curated external material, nested under each song's analysis folder, including Moises-style chord, segment, and lyric references for validation and review plus the helper UI human-hints file at `data/analysis/<Song - Artist>/reference/human/human_hints.json`.
@@ -157,35 +126,10 @@ Each hint in `human_hints.json` carries `id`, `title`, `start_time`, `end_time`,
 
 - `artifacts/section_segmentation/sections.json` (`schema_version` `"1.1"`): new song-level `form_family` object; per-section `form_role` (primary label, gates the top-level `label`), `form_role_confidence`, `form_role_margin`, `energy_character` (former energy-shape label), `repetition_group` / `variant_of` / `similarity`, and `confidence_terms`. `confidence` now measures boundary/label certainty only and spans the full `[0, 1]` range.
 - Top-level `sections.json`: every row carries `section_id` (join key, item 3.2), plus `form_role`, `energy_character`, `repetition_group`, numeric `confidence`.
-- `song_event_timeline.json` (`schema_version` `"1.1"`): composite events with `phases[]`; `layer_add`/`layer_remove` removed and replaced by `texture_summary[]`; `intensity` is an absolute cross-song scale.
-- `artifacts/validation/review_queue.json` (new): ranked open questions for a human to answer into `song_facts.json`.
-- `artifacts/validation/form_score.json`, `drops_score.json` (new): advisory `--compare form,drops` scores.
+- `song_event_timeline.json`: superseded again in plan v3.0 item 9 (`schema_version` `"2.0"`, the pipeline-wide `SCHEMA_VERSION`) -- see the file reference entry below for the current flat gesture-phase / section-transition shape. `artifacts/validation/review_queue.json` was removed in the same change.
+- `artifacts/validation/drops_score.json` (new): advisory `--compare drops` score. Its sibling `form_score.json` and the `form` compare target were deleted in plan v3.0 item 10 — `form` reported `mode: "unlabelled"` on all four gold songs and `validate-sections` against `reference/moises/segments.json` supersedes it.
 
 ## File Reference
-
-### `data/fixtures/fixtures.json`
-
-Summary: rig inventory. Each row identifies a fixture, its fixture type, DMX base channel, and normalized stage location.
-
-Why it matters: this is the main file for understanding what hardware exists and where it sits.
-
-LLM hint:
-- See: `id`, `fixture`, `base_channel`, and `location`.
-- Use: map abstract looks onto real fixture roles such as key mover, mirrored FX heads, center wash, and edge wash.
-- Use: keep repeated callbacks on stable fixture groups so motifs feel intentional.
-- Avoid: inventing fixture capabilities that are not implied by the fixture type.
-
-### `data/fixtures/pois.json`
-
-Summary: named points of interest with precomputed pan and tilt values for compatible moving fixtures.
-
-Why it matters: this is the fastest way to target real scenic locations without solving pan and tilt yourself.
-
-LLM hint:
-- See: `id`, `name`, and `fixtures.<fixture_id>.pan` and `tilt`.
-- Use: snap spotlight moments, lyric callouts, or instrumental solos to named stage targets.
-- Use: keep focus recalls repeatable across sections by referencing the same POI ids.
-- Avoid: inferring geometry from the shared `location` alone when direct pan and tilt values are already provided.
 
 ### `data/songs/<Song - Artist>.mp3`
 
@@ -210,13 +154,13 @@ LLM hint:
 
 Summary: isolated bass stem audio.
 
-Why it matters: upstream source for bass-oriented symbolic analysis and bass note extraction.
+Why it matters: upstream source for bass-oriented loudness analysis.
 
 ### `data/analysis/<Song - Artist>/artifacts/stems/drums.wav`
 
 Summary: isolated drums stem audio.
 
-Why it matters: upstream source for rhythm- and hit-oriented symbolic review and drum-hit transcription.
+Why it matters: upstream source for drum-hit transcription and rhythm review.
 
 ### `data/analysis/<Song - Artist>/artifacts/stems/harmonic.wav`
 
@@ -228,7 +172,7 @@ Why it matters: upstream source for chord and harmony extraction.
 
 Summary: isolated vocal stem audio.
 
-Why it matters: upstream source for lyric-adjacent phrasing and melodic symbolic analysis.
+Why it matters: upstream source for vocal-adjacent loudness and lyric alignment.
 
 ### `data/analysis/<Song - Artist>/artifacts/essentia/beats.json`
 
@@ -237,10 +181,23 @@ Summary: canonical timing grid. Contains BPM, duration, and a beat-by-beat timel
 Why it matters: this is the main timing spine for almost every other artifact.
 
 LLM hint:
-- See: `beats[].time`, `bar`, `beat_in_bar`, and `type`.
+- See: `beats[].time`, `bar`, `beat_in_bar`, `type`, and `confidence`.
 - Use: place cues on exact beat or downbeat times.
 - Use: convert structural ideas like “every bar” or “beat 4 pickup” into deterministic timestamps.
 - Use: align accents, blackout hits, chase resets, and camera-style punctuation to the shared grid.
+- `beat_in_bar`/`type: "downbeat"` phase now comes from allin1's downbeat frame
+  activation (plan v3.0 item 8), not a fixed modulo; `confidence` is that
+  activation's strength on a downbeat row, or `null` when essentia's and
+  allin1's phases disagree by a whole beat or more for that bar. Always `null`
+  on `type: "beat"` rows. Beat *times* are still essentia's alone.
+
+### `data/analysis/<Song - Artist>/artifacts/allin1/raw.json`
+
+Summary: allin1's raw segment list plus its `downbeat` and `label` frame
+activations (100 Hz), cached once per song. Not a stable contract file — it
+exists so `extract-timing-grid` (1.2) and `segment-sections` (3.1) share one
+allin1 invocation per pipeline pass instead of each running the model. Internal
+to `analyzer.allin1_cache`; no other stage or the UI reads it.
 
 ### `data/analysis/<Song - Artist>/artifacts/essentia/hpcp.json`
 
@@ -253,18 +210,6 @@ LLM hint:
 - Use: only when you need lower-level harmonic evidence beyond the resolved chord labels.
 - Use: estimate tonal brightness, harmonic ambiguity, or chromatic tension where the chord track feels too coarse.
 - Avoid: starting here if `layer_a_harmonic.json` already answers the question.
-
-### `data/analysis/<Song - Artist>/artifacts/energy_summary/features.json`
-
-Summary: dense frame-level energy features including loudness, spectral centroid, spectral flux, and onset strength.
-
-Why it matters: raw support signal behind section energy and accent candidates.
-
-LLM hint:
-- See: frame-level `loudness`, `spectral_centroid`, `spectral_flux`, and `onset_strength`.
-- Use: design custom micro-accents, motion-speed changes, or brightness sweeps when section-level summaries are too coarse.
-- Use: audit whether a proposed cue pattern matches the actual transient behavior.
-- Avoid: treating this as the first file for section planning; use `layer_c_energy.json` first.
 
 ### `data/analysis/<Song - Artist>/artifacts/essentia/fft_bands.json`
 
@@ -302,106 +247,28 @@ LLM hint:
 - Use: compare broad per-source dynamics against sections, phrases, and machine-event boundaries.
 - Avoid: assuming this file replaces the denser RMS file when you need short transient detail.
 
-### `data/analysis/<Song - Artist>/artifacts/energy_summary/hints.json`
-
-Summary: producer-scoped named energy-event identifiers such as drops and other later-defined song moments.
-
-Why it matters: this is the contract for event-level energy semantics that go beyond generic accent candidates.
-
-LLM hint:
-- See: `supported_identifiers` and `events[]`.
-- Use: detect whether a named moment such as `drop` has already been inferred from the energy layer.
-- Use: distinguish broad section energy from sharper named event moments.
-- Avoid: inventing undocumented identifier labels when this file is absent or incomplete.
-
-### `data/analysis/<Song - Artist>/artifacts/event_inference/features.json`
-
-Summary: normalized event-feature rows aligned to the shared beat, bar, section, and phrase timeline.
-
-Why it matters: this is the canonical feature surface behind rule candidates and machine event inference.
-
-LLM hint:
-- See: per-window feature values, timing anchors, and normalized feature names.
-- Use: understand why later event stages promoted or rejected a candidate window.
-- Use: audit whether a claimed drop, build, or break has support in the upstream normalized features.
-
-### `data/analysis/<Song - Artist>/artifacts/event_inference/timeline_index.json`
-
-Summary: helper index that maps event-analysis windows back to shared timing anchors and upstream layer references.
-
-Why it matters: quickest way to explain where an event window sits in relation to beats, sections, and phrases.
-
-LLM hint:
-- See: anchor ids, section ids, and time-window references.
-- Use: cross-reference event windows without recomputing alignment logic from multiple source files.
-
-### `data/analysis/<Song - Artist>/artifacts/event_inference/rule_candidates.json`
-
-Summary: baseline rule-generated event candidates before review merging or final machine-event promotion.
-
-Why it matters: this shows the first explicit event hypotheses the pipeline generated.
-
-LLM hint:
-- See: candidate labels, supporting features, confidence values, and timing windows.
-- Use: inspect why the baseline detector believed a moment might be a drop, build, or other supported event.
-- Avoid: treating every rule candidate as final; the reviewed export is the downstream contract.
-
-### `data/analysis/<Song - Artist>/artifacts/event_inference/events.machine.json`
-
-Summary: canonical machine-generated event set after the Epic 5 inference chain applies schema normalization and confidence handling.
-
-Why it matters: this is the structured source for reviewed event exports and lighting-facing event timing.
-
-LLM hint:
-- See: canonical event ids, event types, start and end times, confidence, and provenance fields.
-- Use: build event-aware cue logic from this file when you need the machine view before human review merges.
-- Use: cross-check event provenance against `rule_candidates.json`, `features.json`, and `energy_summary/hints.json`.
-
 ### `data/analysis/<Song - Artist>/artifacts/section_segmentation/sections.json`
 
-Summary: canonical structural windows with section ids, start and end times, labels, and confidence scores.
+Summary: canonical structural windows from allin1's named segmentation — section ids, start and end times, a Harmonix functional label, and confidence scores.
 
 Why it matters: section boundaries are a primary backbone for large cue changes.
 
 LLM hint:
-- See: `section_id`, `start`, `end`, `label`, and `confidence`.
+- See: `section_id`, `start`, `end`, `function`, `function_confidence`, `function_status`, `same_label_as`, and `confidence`.
 - Use: define section-scoped looks, transitions, and intensity arcs.
-- Use: group phrase-level callbacks under stable section identity.
-- Treat labels as helpful but secondary to the actual time windows.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/validation.json`
-
-Summary: source-level validation and promotion report for symbolic transcription. Explains which transcription sources were promoted into the final symbolic layer.
-
-Why it matters: trust and provenance check for note-driven features.
-
-LLM hint:
-- See: `sources[]`, `decision`, `promote_to_final`, `reason`, and `promoted_sources`.
-- Use: judge whether bass, vocals, or full-mix notes are reliable enough to drive visible effects.
-- Use: explain confidence limits when symbolic content feels noisy or sparse.
-- Avoid: treating rejected or auxiliary-only sources as equal to promoted sources.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/hints.json`
-
-Summary: producer-scoped inferred section hints derived from the aligned symbolic timeline.
-
-Why it matters: provenance layer for editable hint generation.
-
-LLM hint:
-- See: `sections[].section_id`, `label`, and `hints[]`.
-- Use: inspect which hints were inferred deterministically before any user edits were merged.
-- Avoid: treating this producer-scoped file as the user-editable source; use `data/analysis/<Song - Artist>/hints.json` for that.
+- Use: group same-`function` sections chained through `same_label_as` under stable section identity — but treat `same_label_as` as label repetition ("the third thing called a chorus"), never as verified acoustic identity.
+- Treat `function` as helpful but secondary to the actual time windows, and treat it as unverified wherever `function_status` is `"unknown"`.
 
 ### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/drum_events.json`
 
 Summary: simple producer-scoped drum-hit review artifact containing kick, snare, and hat event rows plus summary counts.
 
-Why it matters: fastest way to inspect rhythmic pulse and debug drum-hit translation without opening note-heavy symbolic layers first.
+Why it matters: fastest way to inspect rhythmic pulse and debug drum-hit translation.
 
 LLM hint:
 - See: `events[].time`, `event_type`, `confidence`, and the `summary` counts.
 - Use: inspect whether kick, snare, and hat placements support the intended rhythmic reading of the song.
-- Avoid: treating this phase-1 review artifact as a full replacement for the canonical symbolic layer.
+- Avoid: treating this phase-1 review artifact as more than a drum-hit summary; it carries no harmonic or vocal information.
 
 ### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/omnizart/drums.mid`
 
@@ -413,85 +280,6 @@ LLM hint:
 - See: GM drum note pitches such as 35, 38, and 42 to confirm kick, snare, and hat placements.
 - Use: compare raw Omnizart output against the normalized review artifact when unsupported or unresolved events appear.
 - Avoid: treating the raw MIDI as the final review contract; `drum_events.json` is the normalized producer-scoped artifact.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/bass.json`
-
-Summary: raw Basic Pitch note cache for the bass stem. Includes note timing, MIDI pitch, confidence, and alignment metadata.
-
-Why it matters: direct source for the compact `bass` field in output beat rows.
-
-LLM hint:
-- See: `notes[].time`, `end_s`, `pitch`, `confidence`, and alignment fields.
-- Use: inspect specific bass entries when debugging pulse logic or bass-driven movement.
-- Use: recover more granular bass-note timing than the output beat projection preserves.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/bass.mid`
-
-Summary: MIDI export of the bass stem transcription.
-
-Why it matters: convenient for DAW inspection or external MIDI tools.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/drums.json`
-
-Summary: raw Basic Pitch note cache for the drums stem.
-
-Why it matters: mostly auxiliary review data because drums are not promoted by default in the current symbolic assembly.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/drums.mid`
-
-Summary: MIDI export of the drums stem transcription.
-
-Why it matters: useful for manual review, not usually a primary lighting-design input.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/full_mix.json`
-
-Summary: raw Basic Pitch note cache for the full mix.
-
-Why it matters: fills gaps left by stem-only transcription and can explain why a note appears in the final symbolic layer.
-
-LLM hint:
-- See: `notes[]` when a phrase or motif seems present in the final symbolic layer but not obvious in stem-specific caches.
-- Use: as a recovery path for missing melodic texture, not as the first symbolic file to read.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/full_mix.mid`
-
-Summary: MIDI export of the full-mix transcription.
-
-Why it matters: external review aid.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/harmonic.json`
-
-Summary: raw Basic Pitch note cache for the harmonic stem.
-
-Why it matters: dense pitched texture source that feeds the final symbolic layer.
-
-LLM hint:
-- See: `notes[]` around phrase starts and section changes.
-- Use: understand register spread and harmonic-note density when building wash complexity or texture-linked movement.
-- Use: cross-check motif claims from `layer_b_symbolic.json` against raw note timing.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/harmonic.mid`
-
-Summary: MIDI export of the harmonic stem transcription.
-
-Why it matters: external review aid.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/vocals.json`
-
-Summary: raw Basic Pitch note cache for the vocal stem.
-
-Why it matters: melodic source for vocal contour and phrase emphasis.
-
-LLM hint:
-- See: vocal note timing around lyrical phrases or refrain entries.
-- Use: support follow-spot style entries, vocal-led accents, or melody-aware beam lifts.
-- Combine: with `reference/moises/lyrics.json` if you want word-driven or line-driven moments.
-
-### `data/analysis/<Song - Artist>/artifacts/symbolic_transcription/basic_pitch/vocals.mid`
-
-Summary: MIDI export of the vocal stem transcription.
-
-Why it matters: external review aid.
 
 ### `data/analysis/<Song - Artist>/artifacts/layer_a_harmonic.json`
 
@@ -517,18 +305,6 @@ LLM hint:
 - Use: treat `unknown` as an explicit valid outcome.
 - Avoid: inventing a genre from heuristics when the artifact says `unknown`.
 
-### `data/analysis/<Song - Artist>/artifacts/layer_b_symbolic.json`
-
-Summary: canonical symbolic layer. Contains note events, density views, phrase windows, motif groups, repetition summaries, and a human-readable description.
-
-Why it matters: best source for phrase structure, rhythmic density, melodic contour, and repetition-driven callbacks.
-
-LLM hint:
-- See: `symbolic_summary`, `density_per_beat`, `density_per_bar`, `phrase_windows`, and `motif_summary`.
-- Use: scale effect density with note density.
-- Use: tie repeated motifs to repeatable looks with controlled variation.
-- Use: reserve more articulate motion for dense, active passages and simplify looks when symbolic activity drops.
-
 ### `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`
 
 Summary: canonical energy layer. Contains global energy state, per-section energy cards, and accent candidates.
@@ -540,40 +316,6 @@ LLM hint:
 - Use: drive intensity, strobe decisions, movement speed, and contrast from actual energy behavior.
 - Use: separate `hit` accents from `rise` accents; they should not look the same.
 - Use: keep outro restraint and chorus payoff aligned with section energy levels.
-
-### `data/analysis/<Song - Artist>/artifacts/pattern_mining/chord_patterns.json`
-
-Summary: producer-scoped repeated harmonic-pattern discovery output before promotion into Layer D.
-
-Why it matters: lower-level view of pattern detection details.
-
-LLM hint:
-- See: pattern bar spans, occurrence windows, and mismatch counts.
-- Use: inspect this when you need rawer pattern-discovery detail than the canonical Layer D summary exposes.
-
-### `data/analysis/<Song - Artist>/artifacts/layer_d_patterns.json`
-
-Summary: canonical repeated chord-pattern layer. Contains named pattern groups, representative sequences, and exact occurrence windows.
-
-Why it matters: strongest source for structural callback logic based on repeated progression blocks.
-
-LLM hint:
-- See: `patterns[]`, UI-facing `sequence`, bar-resolved `bar_sequence`, `occurrence_count`, and `occurrences[]`.
-- Use: repeat or evolve looks when the same harmonic loop returns.
-- Use: escalate later occurrences of the same pattern rather than inventing unrelated scenes.
-- Use: align callback timing to `start_s` and `end_s`, not rough section labels.
-
-### `data/analysis/<Song - Artist>/artifacts/music_feature_layers.json`
-
-Summary: unified cross-layer handoff. Merges timing, sections, phrases, harmonic content, symbolic summaries, energy windows, pattern occurrences, and lighting-facing callback anchors.
-
-Why it matters: best single machine-readable file for structured light show design.
-
-LLM hint:
-- See: `metadata`, `timeline`, `layers`, and `lighting_context`.
-- Use: this as the default starting file for structured cue generation.
-- Use: `lighting_context.cue_anchors` for deterministic cue times.
-- Use: phrase, motif, and pattern callbacks together so recurring musical structure leads to recurring visual structure.
 
 ### `data/analysis/<Song - Artist>/artifacts/validation/phase_1_report.json`
 
@@ -596,16 +338,6 @@ LLM hint:
 - Use: as a quick trust summary before consuming lower-level artifacts.
 - Use: especially when deciding whether chord-driven or section-driven cues should be treated as high-confidence.
 
-### `data/analysis/<Song - Artist>/artifacts/validation/event_benchmark.json`
-
-Summary: event-specific benchmark and status report for the Epic 5 output chain.
-
-Why it matters: quickest way to confirm whether machine events, review outputs, and timeline exports were produced coherently enough to trust downstream.
-
-LLM hint:
-- See: benchmark status, required file paths, and event-count summaries.
-- Use: decide whether the reviewed event surface is ready to drive event-aware fixture overlays or whether manual review is still needed.
-
 ### `data/analysis/<Song - Artist>/info.json`
 
 Summary: output-side index file. Stores song metadata and paths to major artifacts and outputs.
@@ -618,14 +350,13 @@ LLM hint:
 
 ### `data/analysis/<Song - Artist>/beats.json`
 
-Summary: compact UI-facing beat timeline with beat time, beat number, bar number, active chord, and beat-aligned bass note.
+Summary: compact UI-facing beat timeline with beat time, beat number, bar number, and active chord.
 
 Why it matters: compact timing sheet for downstream consumers.
 
 LLM hint:
-- See: `time`, `beat`, `bar`, `chord`, `bass`, and `type`.
+- See: `time`, `beat`, `bar`, `chord`, and `type`.
 - Use: for lightweight cue grids, timeline tables, or beat-synced storyboard prompts.
-- Use: `bass` as a simplified pulse hint, not as a replacement for full symbolic detail.
 
 ### `data/analysis/<Song - Artist>/sections.json`
 
@@ -634,7 +365,9 @@ Summary: compact UI-facing section timeline with presentation-friendly labels.
 Why it matters: quick section overview without opening the fuller artifact files.
 
 LLM hint:
-- See: `start`, `end`, and `label`, where `label` embeds the numeric section id prefix and a confidence suffix such as `001 Intro (0.74)`.
+- See: `section_id`, `start`, `end`, `label`, `description`, `key`, `chord_progression`, and `confidence`. `label` embeds the numeric section id prefix, a title-cased `function`, and a confidence suffix such as `003 Chorus (0.81)` — or, when allin1's labelling is degenerate for the song, the raw label token marked `[unverified]`.
+- See: `description` — one sentence built from the section's own measured shape (its ordinal occurrence of its `function`, its duration, and `same_label_as` where it repeats a label).
+- See: `key` (one whole-song HPCP key estimate, same value on every row) and `chord_progression` (the section's dominant repeating chord sequence, e.g. `"Am–F–C–G"`), both projected from `artifacts/layer_a_harmonic.json` (plan v3.0 item 13). **`null` on either field is expected and honest, not a bug** — chord-event confidence is gated per section, and root+quality agreement with an independent reference varies widely across songs (measured 1.00/0.69/0.51/0.38 on the four gold songs; see `docs/contract-change-v3.0.md`).
 - Use: for fast section summaries, section cue lists, and high-level show pacing.
 - Avoid: treating `hints` here as the authoritative editable hint contract; use `data/analysis/<Song - Artist>/hints.json`.
 
@@ -650,74 +383,60 @@ LLM hint:
 - Use: match hints by `section_id` instead of relying on repeated section labels alone.
 - Avoid: using this file as the canonical store for event windows such as drops or builds; prefer the reviewed event files and event timeline for that role.
 
-### `data/analysis/<Song - Artist>/artifacts/validation/song_events.review.json`
-
-Summary: merged review surface that combines machine-generated event rows with any preserved user-authored review decisions.
-
-Why it matters: this is the main reviewed event contract before timeline export.
-
-LLM hint:
-- See: reviewed events, review status fields, and any preserved manual decisions.
-- Use: confirm which machine events survived review and which rows need operator attention.
-- Use: prefer this file over `events.machine.json` when downstream behavior should reflect the current reviewed state.
-
-### `data/analysis/<Song - Artist>/artifacts/validation/song_events.review.md`
-
-Summary: human-readable companion to the reviewed event JSON payload.
-
-Why it matters: fastest way to scan reviewed event timing and status without opening raw JSON.
-
-### `data/analysis/<Song - Artist>/artifacts/validation/song_events.overrides.json`
-
-Summary: persisted override store for user-authored event edits and suppressions.
-
-Why it matters: preserves manual corrections across reruns of the event inference pipeline.
-
-LLM hint:
-- See: override keys, explicit replacements, and suppressed event ids.
-- Use: explain why a reviewed event differs from the machine event source.
-
 ### `data/analysis/<Song - Artist>/song_event_timeline.json`
 
-Summary: compact LLM-friendly export of the reviewed event timeline.
+Summary (plan v3.0 item 9, `schema_version` `"2.0"`): flat gesture-phase and
+section-transition events produced by the phase-3 `gestures` stage
+(`src/analyzer/stages/gestures.py`) from the trusted phase-1/2 artifacts only
+-- never from the audio. Replaces the whole Epic-5 `event_*` chain (rule
+candidates, machine events, human review/overrides, composite build/drop/
+post_drop rows with nested `phases[]`), which was measured at chance against
+the gold set (CLAUDE.md) and deleted in the same change, along with its
+`artifacts/event_inference/`, `artifacts/validation/song_events.*` and
+`artifacts/validation/review_queue.json` outputs.
 
-Why it matters: best single structured event file for downstream lighting logic and prompt-based planning.
+Why it matters: best single structured event file for downstream lighting
+logic and prompt-based planning. A drop is never named directly -- it only
+ever appears as gesture phases (`approach`/`build`/`tension`/`impact`/
+`release`) anchored on a detected impact, or as a `"<from> → <to>"`
+section-pair transition (constitution §5.2).
 
 LLM hint:
-- See: canonical event rows, exact timing windows, and any human-readable summary fields.
-- Use: drive event-aware cue planning, especially when fixture overlays or focal changes should line up with drops and other named moments.
-- Use: preserve canonical event ids when translating this file into prose or cue sheets.
-- Use: preserve the explicit `created_by` provenance on each inferred event row.
-
-### `data/analysis/<Song - Artist>/artifacts/validation/song_event_timeline.md`
-
-Summary: human-readable companion to the reviewed event timeline export.
-
-Why it matters: quick event briefing for review or operator-facing discussion.
+- See: `events[]`, each carrying `type`, `start_time`, `end_time`,
+  `confidence`, `intensity`, `section_id`, `section_name`, `provenance`,
+  `summary`, and `evidence_summary`.
+- Use: drive event-aware cue planning from the named phase a moment belongs
+  to, not from an invented "drop" label.
+- Use: a phase absent from a gesture (e.g. no `tension` row) means no
+  supporting sound-design primitive was found for it -- never guessed
+  (constitution §2).
+- Avoid: expecting nested `phases[]`, `composite`, `member_event_ids`, or a
+  separate `events.machine.json` to cross-reference -- every row here is
+  already flat and already carries its own evidence.
 
 ### `data/analysis/<Song - Artist>/reference/moises/chords.json`
 
-Summary: read-only chord comparison file from the reference set. Stores beat-like chord rows and multiple chord label formats.
+Summary: read-only chord comparison file from Moises.ai. This is a second model's **inference**, not human ground truth — it carries no confidence field, so none of its rows are curated. Stores beat-like chord rows and multiple chord label formats.
 
-Why it matters: external chord truth source for validation.
+Why it matters: a second model's chord opinion, used to measure agreement, not correctness.
 
 LLM hint:
 - See: chord label variants such as jazz, pop, and Nashville forms.
-- Use: compare against `layer_a_harmonic.json` when checking harmonic plausibility.
-- Use: as validation or review input, not as a fallback generation source.
+- Use: compare against `layer_a_harmonic.json` to measure agreement with a second model — not as a correctness check.
+- Use: as validation or review input, never as a fallback or takeover source for a generated artifact.
 
 ### `data/analysis/<Song - Artist>/reference/moises/segments.json`
 
-Summary: read-only reference structural segments with start, end, and human labels.
+Summary: read-only structural segments from Moises.ai, with start, end, and labels. This is model inference, not hand-labelled ground truth — it carries no confidence field.
 
-Why it matters: external structural guidance for validation.
+Why it matters: a second model's structural opinion, used for offline boundary-quality comparison, not as external truth.
 
 LLM hint:
 - See: segment boundaries and labels.
 - Use: compare against `section_segmentation/sections.json` to sanity-check large structural changes.
 - Treat labels as advisory. The important part is the boundary timing.
 - Use: derive offline boundary-quality metrics such as over-segmentation, under-segmentation, and snap-like late or early offsets.
-- Optional promotion rule: if a Story explicitly allows it, this file may rescue low-confidence or clearly failed inferred section boundaries, but only through an explicit confidence gate with preserved inferred output and provenance.
+- Never promote or substitute: `reference/` is validation-only (constitution §2). No pipeline stage takes over a canonical artifact from this file.
 
 ### `data/analysis/<Song - Artist>/reference/moises/lyrics.json`
 
@@ -728,7 +447,6 @@ Why it matters: strongest text-based source for lyric-synced visual moments.
 LLM hint:
 - See: `text`, `start`, `end`, `line_id`, and markers like `<SOL>` and `<EOL>`.
 - Use: align spotlight moments, text-reactive effects, or visual punctuation to words and line starts.
-- Combine: with vocal symbolic data for melody-aware lyric moments.
 - Use: derive beat- or line-aligned features such as lyric density, line starts, line ends, post-line tails, and confidence-weighted vocal-presence priors.
 - Optional promotion rule: if a Story explicitly allows it, this file may rescue low-confidence vocal timing or event timing only when the overlapping stem or energy evidence agrees and the promotion is recorded explicitly.
 - Debugger: shown as the read-only **Moises Lyrics** lane (directly under Human Hints), one block per token with the block tinted by each word's `confidence`.
@@ -741,19 +459,11 @@ Open `data/analysis/<Song - Artist>/sections.json` first, then `data/analysis/<S
 
 ### For structured cue generation
 
-Open `data/analysis/<Song - Artist>/artifacts/music_feature_layers.json`, `layer_c_energy.json`, and `layer_d_patterns.json`.
+Open `data/analysis/<Song - Artist>/artifacts/layer_c_energy.json`.
 
 ### For harmonic color and scene-change logic
 
 Open `layer_a_harmonic.json` and `essentia/beats.json`.
-
-### For phrase and repetition callbacks
-
-Open `layer_b_symbolic.json` and `music_feature_layers.json`.
-
-### For rig-aware targeting
-
-Open `data/fixtures/fixtures.json` and `data/fixtures/pois.json`.
 
 ### For trust and QA review
 

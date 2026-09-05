@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "Armin - Revolution",
   "generated_from": {
     "source_song_path": "/data/songs/Armin - Revolution.mp3",
@@ -140,31 +140,31 @@
       "time": 74.152924,
       "end_s": 80.619682,
       "bar": 40,
-      "beat": 4,
+      "beat": 1,
       "chord": "F#",
       "confidence": 0.731482
     },
     {
       "time": 80.619682,
       "end_s": 86.227303,
-      "bar": 44,
-      "beat": 2,
+      "bar": 43,
+      "beat": 3,
       "chord": "F#m",
       "confidence": 0.916565
     },
     {
       "time": 86.227303,
       "end_s": 87.655327,
-      "bar": 47,
-      "beat": 2,
+      "bar": 46,
+      "beat": 3,
       "chord": "E",
       "confidence": 0.751632
     },
     {
       "time": 87.655327,
       "end_s": 102.005257,
-      "bar": 48,
-      "beat": 1,
+      "bar": 47,
+      "beat": 2,
       "chord": "F#m",
       "confidence": 0.816558
     },
@@ -172,7 +172,7 @@
       "time": 102.005257,
       "end_s": 103.862854,
       "bar": 55,
-      "beat": 4,
+      "beat": 1,
       "chord": "Bm",
       "confidence": 0.769505
     },
@@ -180,15 +180,15 @@
       "time": 103.862854,
       "end_s": 108.472015,
       "bar": 56,
-      "beat": 4,
+      "beat": 1,
       "chord": "F#m",
       "confidence": 0.899642
     },
     {
       "time": 108.472015,
       "end_s": 109.389206,
-      "bar": 59,
-      "beat": 2,
+      "bar": 58,
+      "beat": 3,
       "chord": "E",
       "confidence": 0.616022
     },
@@ -196,23 +196,23 @@
       "time": 109.389206,
       "end_s": 113.545578,
       "bar": 59,
-      "beat": 4,
+      "beat": 1,
       "chord": "F#m",
       "confidence": 0.700529
     },
     {
       "time": 113.545578,
       "end_s": 116.308754,
-      "bar": 62,
-      "beat": 1,
+      "bar": 61,
+      "beat": 2,
       "chord": "D",
       "confidence": 0.771183
     },
     {
       "time": 116.308754,
       "end_s": 118.630745,
-      "bar": 63,
-      "beat": 3,
+      "bar": 62,
+      "beat": 4,
       "chord": "Bm",
       "confidence": 0.678465
     },
@@ -220,15 +220,15 @@
       "time": 118.630745,
       "end_s": 139.85379,
       "bar": 64,
-      "beat": 4,
+      "beat": 1,
       "chord": "F#m",
       "confidence": 0.772598
     },
     {
       "time": 139.85379,
       "end_s": 151.962997,
-      "bar": 76,
-      "beat": 2,
+      "bar": 75,
+      "beat": 3,
       "chord": "A",
       "confidence": 0.823716
     },
@@ -236,7 +236,7 @@
       "time": 151.962997,
       "end_s": 162.771881,
       "bar": 82,
-      "beat": 3,
+      "beat": 2,
       "chord": "F#m",
       "confidence": 0.701479
     },
@@ -244,7 +244,7 @@
       "time": 162.771881,
       "end_s": 163.700684,
       "bar": 88,
-      "beat": 2,
+      "beat": 1,
       "chord": "F#",
       "confidence": 0.740596
     },
@@ -252,15 +252,15 @@
       "time": 163.700684,
       "end_s": 169.691422,
       "bar": 88,
-      "beat": 4,
+      "beat": 3,
       "chord": "F#m",
       "confidence": 0.714156
     },
     {
       "time": 169.691422,
       "end_s": 175.775055,
-      "bar": 92,
-      "beat": 1,
+      "bar": 91,
+      "beat": 4,
       "chord": "F#",
       "confidence": 0.787774
     },
@@ -268,7 +268,7 @@
       "time": 175.775055,
       "end_s": 176.727066,
       "bar": 95,
-      "beat": 2,
+      "beat": 1,
       "chord": "D",
       "confidence": 0.654715
     },
@@ -276,7 +276,7 @@
       "time": 176.727066,
       "end_s": 183.251877,
       "bar": 95,
-      "beat": 4,
+      "beat": 3,
       "chord": "F#",
       "confidence": 0.79775
     },
@@ -284,7 +284,7 @@
       "time": 183.251877,
       "end_s": 185.109482,
       "bar": 99,
-      "beat": 2,
+      "beat": 1,
       "chord": "Em",
       "confidence": 0.530695
     },
@@ -292,7 +292,7 @@
       "time": 185.109482,
       "end_s": 186.978683,
       "bar": 100,
-      "beat": 2,
+      "beat": 1,
       "chord": "F#",
       "confidence": 0.692821
     },
@@ -300,15 +300,15 @@
       "time": 186.978683,
       "end_s": 192.377319,
       "bar": 101,
-      "beat": 2,
+      "beat": 1,
       "chord": "A#m",
       "confidence": 0.734371
     },
     {
       "time": 192.377319,
       "end_s": 193.851791,
-      "bar": 104,
-      "beat": 1,
+      "bar": 103,
+      "beat": 4,
       "chord": "F#",
       "confidence": 0.722365
     }

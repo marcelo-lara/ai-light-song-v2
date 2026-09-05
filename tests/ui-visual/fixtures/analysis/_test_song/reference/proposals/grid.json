@@ -1,0 +1,254 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/grid_consensus",
+    "engine": "grid_consensus.consensus (musical-evidence phase resolution over essentia/beat-this/allin1)",
+    "generated_at": "2026-09-04T02:57:06.454125Z"
+  },
+  "winning_phase": 0,
+  "confidence": 1.0,
+  "margin": 1.0,
+  "status": "resolved",
+  "votes": {
+    "essentia_own": 0,
+    "beat_this": 0,
+    "allin1": 0,
+    "audio_kick_density": 0
+  },
+  "vote_compatibility": {
+    "beat_this": 1.0,
+    "allin1": 1.0
+  },
+  "agreeing_hypotheses": [
+    "essentia_own",
+    "beat_this",
+    "allin1",
+    "audio_kick_density"
+  ],
+  "disagreeing_hypotheses": [],
+  "downbeats": [
+    {
+      "time": 0.06,
+      "bar_beat_index": 0,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 1.9,
+      "bar_beat_index": 4,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 3.74,
+      "bar_beat_index": 8,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 5.58,
+      "bar_beat_index": 12,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 7.44,
+      "bar_beat_index": 16,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 9.28,
+      "bar_beat_index": 20,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 11.12,
+      "bar_beat_index": 24,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 12.96,
+      "bar_beat_index": 28,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 14.82,
+      "bar_beat_index": 32,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 16.68,
+      "bar_beat_index": 36,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 18.52,
+      "bar_beat_index": 40,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 20.36,
+      "bar_beat_index": 44,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 22.2,
+      "bar_beat_index": 48,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 24.06,
+      "bar_beat_index": 52,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 25.9,
+      "bar_beat_index": 56,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 27.74,
+      "bar_beat_index": 60,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 29.58,
+      "bar_beat_index": 64,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 31.44,
+      "bar_beat_index": 68,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 33.28,
+      "bar_beat_index": 72,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 35.12,
+      "bar_beat_index": 76,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 36.98,
+      "bar_beat_index": 80,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 38.82,
+      "bar_beat_index": 84,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 40.66,
+      "bar_beat_index": 88,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 42.5,
+      "bar_beat_index": 92,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 44.36,
+      "bar_beat_index": 96,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 46.2,
+      "bar_beat_index": 100,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 48.04,
+      "bar_beat_index": 104,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 49.9,
+      "bar_beat_index": 108,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 51.74,
+      "bar_beat_index": 112,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 53.6,
+      "bar_beat_index": 116,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 55.44,
+      "bar_beat_index": 120,
+      "confidence": 1.0,
+      "status": "resolved"
+    },
+    {
+      "time": 57.28,
+      "bar_beat_index": 124,
+      "confidence": 1.0,
+      "status": "resolved"
+    }
+  ],
+  "phrase_grid": {
+    "phrase_length_bars": 8,
+    "boundaries": [
+      {
+        "bar": 1,
+        "time": 0.06,
+        "confidence": 0.567
+      },
+      {
+        "bar": 9,
+        "time": 14.82,
+        "confidence": 0.567
+      },
+      {
+        "bar": 17,
+        "time": 29.58,
+        "confidence": 0.567
+      },
+      {
+        "bar": 25,
+        "time": 44.36,
+        "confidence": 0.567
+      }
+    ],
+    "length_scores": {
+      "8": 0.26666666666666666,
+      "16": 0.13333333333333333
+    },
+    "confidence": 0.567
+  }
+}

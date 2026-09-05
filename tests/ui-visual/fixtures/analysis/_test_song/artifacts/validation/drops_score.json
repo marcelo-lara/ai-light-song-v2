@@ -3,18 +3,15 @@
   "song_name": "_test_song",
   "target": "drops",
   "tolerance_seconds": 1.0,
-  "detected_count": 2,
+  "detected_count": 0,
   "fake_drop_count": 0,
-  "detected_times": [
-    30.04,
-    36.98
-  ],
-  "labelled_count": 1,
+  "detected_times": [],
+  "labelled_count": 5,
   "metrics": {
     "true_positives": 0,
-    "predicted": 2,
-    "labelled": 1,
-    "precision": 0.0,
+    "predicted": 0,
+    "labelled": 5,
+    "precision": null,
     "recall": 0.0,
     "f1": 0.0
   },

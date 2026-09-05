@@ -1,30 +1,22 @@
 [
   {
+    "section_id": "section-001",
     "start": 0.0,
     "end": 14.82,
-    "label": "001 Ambient Opening (0.66)",
-    "description": "Restrained opening space with low-volatility motion and room for atmosphere.",
-    "hints": []
+    "label": "001 intro [unverified] (0.34)",
+    "description": "Unverified section, 14.8s \u2014 allin1's label for this song is not trustworthy.",
+    "confidence": 0.9,
+    "key": "D# minor",
+    "chord_progression": "D#m"
   },
   {
+    "section_id": "section-002",
     "start": 14.82,
-    "end": 29.61,
-    "label": "002 Vocal Spotlight (0.71)",
-    "description": "Voice-led section where the vocal contour carries most of the attention and motion.",
-    "hints": []
-  },
-  {
-    "start": 29.61,
-    "end": 44.36,
-    "label": "003 Momentum Lift (0.80)",
-    "description": "Energy and motion climb together into a more assertive forward push.",
-    "hints": []
-  },
-  {
-    "start": 44.36,
-    "end": 57.74,
-    "label": "004 Release Tail (0.69)",
-    "description": "Closing release state where energy tapers and the track settles out.",
-    "hints": []
+    "end": 58.05,
+    "label": "002 chorus [unverified] (0.45)",
+    "description": "Unverified section, 43.2s \u2014 allin1's label for this song is not trustworthy.",
+    "confidence": 0.446144,
+    "key": "D# minor",
+    "chord_progression": "D#m\u2013B\u2013F#\u2013D#m"
   }
 ]

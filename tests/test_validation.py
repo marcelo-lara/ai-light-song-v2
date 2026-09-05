@@ -6,12 +6,9 @@ import unittest
 from pathlib import Path
 
 from analyzer.paths import SongPaths
-from analyzer.stages.harmonic import build_reference_harmonic_layer
-from analyzer.stages.patterns import extract_chord_patterns
 from analyzer.stages.validation.beats import validate_beats
 from analyzer.stages.validation.chords import _validate_chords
 from analyzer.stages.validation.drums import validate_drums
-from analyzer.stages.validation.patterns import _validate_patterns_layer, find_pattern_matches_for_bar_window
 from analyzer.stages.validation.sections import _validate_sections
 
 
@@ -195,12 +192,14 @@ class ValidationDiagnosticsTests(unittest.TestCase):
                 song_path=root / "songs" / "_test_song.mp3",
                 analysis_root=root / "analysis",
             )
+            # Real reference/moises/chords.json rows carry no bar_num/beat_num
+            # of their own -- only curr_beat_time and the chord_* columns.
             reference_rows = [
-                {"curr_beat_time": 0.0, "bar_num": 1, "beat_num": 1, "chord_simple_pop": "C#:maj"},
-                {"curr_beat_time": 1.0, "bar_num": 1, "beat_num": 2, "chord_simple_pop": "C#:maj"},
-                {"curr_beat_time": 2.0, "bar_num": 1, "beat_num": 3, "chord_simple_pop": "D#:maj"},
-                {"curr_beat_time": 3.0, "bar_num": 1, "beat_num": 4, "chord_simple_pop": "D#:maj"},
-                {"curr_beat_time": 4.0, "bar_num": 2, "beat_num": 1, "chord_simple_pop": "D#:maj"},
+                {"curr_beat_time": 0.0, "chord_simple_pop": "C#:maj"},
+                {"curr_beat_time": 1.0, "chord_simple_pop": "C#:maj"},
+                {"curr_beat_time": 2.0, "chord_simple_pop": "D#:maj"},
+                {"curr_beat_time": 3.0, "chord_simple_pop": "D#:maj"},
+                {"curr_beat_time": 4.0, "chord_simple_pop": "D#:maj"},
             ]
             reference_chords_path = paths.reference("moises", "chords.json")
             assert reference_chords_path is not None
@@ -213,8 +212,9 @@ class ValidationDiagnosticsTests(unittest.TestCase):
                     {"time": 4.2, "end_s": 4.6, "bar": 2, "beat": 2, "chord": "D#"},
                 ]
             }
+            timing = _build_timing(["C#", "D#"])
 
-            result = _validate_chords(paths, harmonic, chord_min_overlap=0.75)
+            result = _validate_chords(paths, harmonic, timing, chord_min_overlap=0.75)
 
         self.assertEqual(result.status, "failed")
         self.assertIsNotNone(result.diagnostics)
@@ -223,6 +223,32 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         self.assertEqual(result.diagnostics["label_mismatch_count"], 1)
         self.assertEqual(result.diagnostics["timing_overlap_failure_count"], 1)
         self.assertEqual(result.diagnostics["no_reference_overlap_count"], 1)
+
+    def test_validate_chords_marks_unknown_position_when_grid_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "_test_song.mp3",
+                analysis_root=root / "analysis",
+            )
+            reference_rows = [
+                {"curr_beat_time": 0.0, "chord_simple_pop": "C#:maj"},
+                {"curr_beat_time": 2.0, "chord_simple_pop": "D#:maj"},
+            ]
+            reference_chords_path = paths.reference("moises", "chords.json")
+            assert reference_chords_path is not None
+            _write_json(reference_chords_path, reference_rows)
+            harmonic = {"chords": [{"time": 0.0, "end_s": 2.0, "bar": 1, "beat": 1, "chord": "C#"}]}
+
+            # No beats in the grid at all -- position is genuinely unknown, not
+            # invented as bar 0 / beat 0 (constitution SS2, no silent fallbacks).
+            result = _validate_chords(paths, harmonic, timing={"beats": []}, chord_min_overlap=0.75)
+
+        self.assertEqual(result.status, "passed")
+        matched_reference = result.details[0]["reference"]
+        self.assertIsNotNone(matched_reference)
+        self.assertIsNone(matched_reference["bar"])
+        self.assertIsNone(matched_reference["beat"])
 
     def test_validate_sections_reports_snap_like_boundary_offsets(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -252,9 +278,9 @@ class ValidationDiagnosticsTests(unittest.TestCase):
             )
             sections = {
                 "sections": [
-                    {"section_id": "section-001", "start": 0.0, "end": 5.0, "label": "opening"},
-                    {"section_id": "section-002", "start": 5.0, "end": 9.0, "label": "lift"},
-                    {"section_id": "section-003", "start": 9.0, "end": 12.0, "label": "tail"},
+                    {"section_id": "section-001", "start": 0.0, "end": 5.0, "function": "opening"},
+                    {"section_id": "section-002", "start": 5.0, "end": 9.0, "function": "lift"},
+                    {"section_id": "section-003", "start": 9.0, "end": 12.0, "function": "tail"},
                 ]
             }
 
@@ -266,92 +292,6 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         self.assertEqual(result.diagnostics["dominant_snap_multiple_beats"], 1)
         self.assertEqual(result.diagnostics["snap_like_boundary_count"], 2)
         self.assertEqual(result.diagnostics["boundary_offset_direction"], "late")
-
-    def test_build_reference_harmonic_layer_promotes_reference_chords(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            paths = SongPaths(
-                song_path=root / "songs" / "_test_song.mp3",
-                analysis_root=root / "analysis",
-            )
-            reference_chords_path = paths.reference("moises", "chords.json")
-            assert reference_chords_path is not None
-            _write_json(
-                reference_chords_path,
-                [
-                    {"curr_beat_time": 0.5, "bar_num": 1, "beat_num": 1, "chord_simple_pop": "C#:maj"},
-                    {"curr_beat_time": 1.0, "bar_num": 1, "beat_num": 2, "chord_simple_pop": "C#:maj"},
-                    {"curr_beat_time": 1.5, "bar_num": 1, "beat_num": 3, "chord_simple_pop": "D#:maj"},
-                    {"curr_beat_time": 2.0, "bar_num": 1, "beat_num": 4, "chord_simple_pop": "Fm:add9"},
-                ],
-            )
-            timing = {
-                "bars": [{"bar": 1, "start_s": 0.5, "end_s": 2.5}],
-                "beats": [],
-            }
-
-            payload = build_reference_harmonic_layer(paths, timing, inferred_harmonic_path="/tmp/inferred.json")
-
-        self.assertEqual([event["chord"] for event in payload["chords"]], ["C#", "D#", "Fm"])
-        self.assertEqual(payload["generated_from"]["engine"], "reference.moises.chords.promotion")
-        self.assertEqual(payload["generated_from"]["dependencies"]["inferred_harmonic_file"], "/tmp/inferred.json")
-
-    def test_validate_patterns_accepts_24_bar_occurrences(self) -> None:
-        timing = {
-            "bars": [{"bar": bar_number} for bar_number in range(1, 105)],
-        }
-        patterns = {
-            "pattern_count": 1,
-            "patterns": [
-                {
-                    "id": "pattern_A",
-                    "bar_count": 24,
-                    "occurrence_count": 4,
-                    "occurrences": [
-                        {"start_bar": 1, "end_bar": 24},
-                        {"start_bar": 25, "end_bar": 48},
-                        {"start_bar": 49, "end_bar": 72},
-                        {"start_bar": 73, "end_bar": 96},
-                    ],
-                }
-            ],
-        }
-
-        result = _validate_patterns_layer(patterns, timing)
-
-        self.assertEqual(result.status, "passed")
-
-    def test_find_pattern_matches_for_bar_window_matches_subspan_inside_occurrence(self) -> None:
-        phrase = ["C#", "C#", "D#", "D#", "Fm", "Fm", "D#", "D#"] * 3
-        bar_chords = phrase + phrase
-        timing = _build_timing(bar_chords)
-        harmonic = _build_harmonic(bar_chords)
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            paths = SongPaths(
-                song_path=root / "songs" / "_test_song.mp3",
-                analysis_root=root / "analysis",
-            )
-            patterns = extract_chord_patterns(paths, timing, harmonic)
-
-        matches = find_pattern_matches_for_bar_window(
-            patterns,
-            timing,
-            harmonic,
-            start_bar=9,
-            start_beat=1,
-            end_bar=16,
-            end_beat=4,
-        )
-
-        self.assertEqual(len(matches), 1)
-        self.assertEqual(matches[0]["pattern_id"], "pattern_A")
-        self.assertEqual(matches[0]["occurrence_start_bar"], 9)
-        self.assertEqual(matches[0]["occurrence_end_bar"], 16)
-        self.assertEqual(matches[0]["window_sequence"], "C#→D#→Fm→D#")
-        self.assertEqual(matches[0]["window_bar_sequence"], "C#|C#|D#|D#|Fm|Fm|D#|D#")
-
 
 if __name__ == "__main__":
     unittest.main()

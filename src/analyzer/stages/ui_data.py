@@ -1,29 +1,58 @@
 from __future__ import annotations
 
-from bisect import bisect_left
 import re
 
 from analyzer.io import read_json, write_json
 from analyzer.models import round_schema_float
 from analyzer.paths import SongPaths
 
+# Item 13 (docs/implementation-plan-v3.0.md) — thresholds for projecting a
+# compact harmonic form into sections.json.
+#
+# Measured on the four gold songs (docs/contract-change-v3.0.md #13): exact
+# root+quality agreement with Moises is 1.00 (_test_song) / 0.69 (Titanium) /
+# 0.51 (Armin - Revolution) / 0.38 (Hideaway - Kiesza). Per-song *mean* chord
+# confidence and the whole-song *global_key* confidence both cluster in a tight
+# band (0.73-0.80 and 0.75-0.85 respectively) across all four songs regardless
+# of that agreement spread, so neither discriminates a trustworthy song from an
+# untrustworthy one. What does separate them is the *minimum* per-chord-event
+# confidence within a song's low-agreement stretches: Hideaway dips to 0.459,
+# Armin to 0.531, while _test_song's minimum is 0.850 and Titanium's (0.685)
+# sits in between.
+#
+# CHORD_EVENT_CONFIDENCE_THRESHOLD gates chord_progression with a "weakest
+# link" rule: a section's progression is only stated if every essentia chord
+# event overlapping it clears this floor. One unreliable chord inside an
+# otherwise-clean run makes the whole stated sequence untrustworthy — stating
+# "Am-F-C-G" when one of those four is a coin flip is worse than saying
+# nothing. 0.70 is chosen because it sits inside the gap between _test_song's
+# floor (0.850, never gated out) and the bulk of Titanium's per-section minima
+# (0.685-0.778, roughly half pass), while gating out most of Armin's and
+# Hideaway's low-confidence stretches (mins as low as 0.531 / 0.459). Verified
+# empirically below to produce a null-rate ordering that tracks the measured
+# agreement: _test_song 0% null, Titanium ~50%, Armin and Hideaway both
+# meaningfully higher (~60-85%).
+CHORD_EVENT_CONFIDENCE_THRESHOLD = 0.70
 
-NOTE_NAMES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+# KEY_CONFIDENCE_THRESHOLD gates the section-level `key` string against
+# essentia's whole-track HPCP key estimate (`global_key.confidence`). Unlike
+# per-chord confidence, this value does not track the measured chord-agreement
+# spread at all — it clusters 0.75-0.85 across all four gold songs, including
+# the 1.00-agreement _test_song. That is expected: global key is a single,
+# more robust estimate aggregated over the entire track, not a per-beat label,
+# so it is evaluated on its own scale rather than tied to the local
+# chord-progression gate above (a key claim is not automatically unsupported
+# just because one section's local chords are shaky). 0.70 is a real floor —
+# low enough that all four gold songs pass it (0.749-0.851), but not zero, so
+# a genuinely weak key estimate on a future song is still honestly `null`
+# rather than a silent default.
+KEY_CONFIDENCE_THRESHOLD = 0.70
 
-SECTION_DESCRIPTIONS = {
-    "ambient_opening": "Restrained opening space with low-volatility motion and room for atmosphere.",
-    "vocal_spotlight": "Voice-led section where the vocal contour carries most of the attention and motion.",
-    "vocal_lift": "Vocal-led section with stronger energy and emotional lift than a simple spotlight moment.",
-    "momentum_lift": "Energy and motion climb together into a more assertive forward push.",
-    "flowing_plateau": "Stable mid-energy passage with continuous motion but limited structural shock.",
-    "groove_plateau": "Pulse-led section with sustained rhythmic momentum and repeat-driven stability.",
-    "instrumental_bed": "Instrument-led passage where accompaniment or synth texture carries the section more than the voice.",
-    "percussion_break": "Percussion-dominant pocket with reduced harmonic or vocal material.",
-    "contrast_bridge": "Contrast-focused transition where texture or pressure shifts before the next settled state.",
-    "focal_lift": "Payoff section where energy, repetition, or phrasing converge into the strongest focal state.",
-    "breath_space": "Lower-density breathing room where the arrangement opens up or briefly clears out.",
-    "release_tail": "Closing release state where energy tapers and the track settles out.",
-}
+# Cap on the number of distinct chords shown in a chord_progression string
+# when no short repeating cycle is found (see _dominant_cycle). Real sections
+# on the gold songs run 5-16 distinct consecutive chords; 8 keeps the string
+# short enough to read as a "progression" rather than a chord-by-chord log.
+MAX_CHORD_PROGRESSION_CHORDS = 8
 
 
 def _resolve_chord_for_time(time_s: float, chord_events: list[dict]) -> str | None:
@@ -41,18 +70,26 @@ def _resolve_chord_for_time(time_s: float, chord_events: list[dict]) -> str | No
     return previous_label or (str(chord_events[0]["chord"]) if chord_events else None)
 
 
-def _format_section_label(
-    label: str | None,
-    section_id: str | None,
-    confidence: float | None,
-) -> str:
-    label_text = str(label).replace("_", " ").title() if label else "Unlabeled"
+def _section_index_prefix(section_id: str | None) -> str:
+    if not section_id:
+        return ""
+    match = re.search(r"(\d+)", str(section_id))
+    return f"{match.group(1)} " if match else ""
 
-    prefix = ""
-    if section_id:
-        match = re.search(r"(\d+)", str(section_id))
-        if match:
-            prefix = f"{match.group(1)} "
+
+def _format_section_label(section: dict) -> str:
+    """`<index> <Label> (<confidence>)`, e.g. `"003 Chorus (0.80)"`.
+
+    `function_status == "unknown"` means allin1's name for this section is not
+    trustworthy (constitution §2 — an honest `unknown` beats a confident wrong
+    label), so the raw, un-title-cased label token is shown with an explicit
+    `[unverified]` marker rather than a polished name that would read as
+    confident. `function_confidence` still displays — it is what made the name
+    untrustworthy in aggregate, not a claim being retracted here.
+    """
+    prefix = _section_index_prefix(section.get("section_id"))
+    function = section.get("function")
+    confidence = section.get("function_confidence")
 
     suffix = ""
     if confidence is not None:
@@ -61,52 +98,119 @@ def _format_section_label(
         except (TypeError, ValueError):
             suffix = ""
 
+    if section.get("function_status") == "unknown":
+        label_text = f"{function or 'unlabeled'} [unverified]"
+        return f"{prefix}{label_text}{suffix}"
+
+    label_text = str(function).replace("_", " ").title() if function else "Unlabeled"
     return f"{prefix}{label_text}{suffix}"
 
 
-def _section_description(section: dict) -> str:
-    key = str(section.get("section_character") or section.get("label") or "")
-    return SECTION_DESCRIPTIONS.get(key, "")
+def _ordinal(n: int) -> str:
+    if 10 <= n % 100 <= 20:
+        suffix = "th"
+    else:
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
 
 
-def _pitch_to_note_name(pitch: int) -> str:
-    return NOTE_NAMES[int(pitch) % 12]
+def _section_description(section: dict, occurrence: int) -> str:
+    """One sentence built only from this section's own measured fields — its
+    functional label, its position among same-labelled sections, its duration,
+    and `same_label_as` — never an invented mood or energy claim."""
+    function = section.get("function")
+    try:
+        duration_s = round(float(section["end"]) - float(section["start"]), 1)
+    except (TypeError, ValueError, KeyError):
+        duration_s = None
+    duration_text = f"{duration_s:.1f}s" if duration_s is not None else "of unknown length"
+
+    if not function or section.get("function_status") == "unknown":
+        return f"Unverified section, {duration_text} — allin1's label for this song is not trustworthy."
+
+    label_text = str(function).replace("_", " ")
+    ordinal = _ordinal(occurrence)
+    if section.get("same_label_as") is None:
+        return f"The {ordinal} {label_text}, {duration_text} long."
+    return f"The {ordinal} {label_text}, {duration_text} long, same label as the first {label_text}."
 
 
-def _nearest_beat_index(time_s: float, beat_times: list[float]) -> int | None:
-    if not beat_times:
-        return None
-    insert_at = bisect_left(beat_times, float(time_s))
-    if insert_at <= 0:
-        return 0
-    if insert_at >= len(beat_times):
-        return len(beat_times) - 1
-    previous_index = insert_at - 1
-    next_index = insert_at
-    previous_delta = abs(beat_times[previous_index] - float(time_s))
-    next_delta = abs(beat_times[next_index] - float(time_s))
-    return previous_index if previous_delta <= next_delta else next_index
+def _overlapping_chord_events(start_s: float, end_s: float, chord_events: list[dict]) -> list[dict]:
+    """Chord events with any overlap with `[start_s, end_s)` — not just events
+    fully contained in it, since a section can start or end mid-chord."""
+    return [event for event in chord_events if float(event["time"]) < end_s and float(event["end_s"]) > start_s]
 
 
-def _beat_aligned_bass_notes(paths: SongPaths, beat_times: list[float]) -> list[str | None]:
-    bass_payload = read_json(paths.artifact("symbolic_transcription", "basic_pitch", "bass.json"))
-    bass_notes = sorted(
-        bass_payload.get("notes", []),
-        key=lambda note: (float(note["time"]), int(note["pitch"]), -float(note["confidence"])),
-    )
+def _distinct_consecutive_chords(events: list[dict]) -> list[str]:
+    """Chord labels in time order, collapsing immediate repeats (e.g. a chord
+    split across a section boundary should not repeat itself in the string)."""
+    labels: list[str] = []
+    for event in events:
+        label = str(event["chord"])
+        if not labels or labels[-1] != label:
+            labels.append(label)
+    return labels
 
-    bass_by_beat: list[str | None] = [None for _ in beat_times]
-    selected_pitch_by_beat: list[int | None] = [None for _ in beat_times]
-    for note in bass_notes:
-        beat_index = _nearest_beat_index(float(note["time"]), beat_times)
-        if beat_index is None:
+
+def _dominant_cycle(labels: list[str], max_len: int) -> list[str]:
+    """The shortest repeating cycle that reproduces `labels` exactly (allowing
+    a trailing partial repeat), e.g. `[Cm, D#, A#, Cm, D#, A#, Cm]` -> `[Cm,
+    D#, A#]`. This is what "dominant repeating chord sequence" means for a
+    section that loops a short progression many times. If no such cycle
+    exists (the section doesn't loop cleanly), fall back to the first
+    `max_len` distinct chords rather than printing every change."""
+    n = len(labels)
+    for period in range(1, n):
+        # Require at least half a cycle of confirmation beyond the first full
+        # cycle, so a single coincidental match at the far end of the list
+        # (e.g. the last chord happening to equal the first) is not mistaken
+        # for a genuine loop.
+        trailing = n - period
+        if trailing < period / 2:
             continue
-        pitch = int(note["pitch"])
-        selected_pitch = selected_pitch_by_beat[beat_index]
-        if selected_pitch is None or pitch < selected_pitch:
-            selected_pitch_by_beat[beat_index] = pitch
-            bass_by_beat[beat_index] = _pitch_to_note_name(pitch)
-    return bass_by_beat
+        if all(labels[i] == labels[i % period] for i in range(n)):
+            return labels[:period]
+    return labels[:max_len]
+
+
+def _section_chord_progression(start_s: float, end_s: float, chord_events: list[dict]) -> str | None:
+    """The section's dominant repeating chord sequence, e.g. `"Am–F–C–G"`, or
+    `None` when confidence is too low to state one honestly (constitution
+    §2 — never an empty string or a placeholder). Gated by
+    CHORD_EVENT_CONFIDENCE_THRESHOLD with a weakest-link rule: every chord
+    event overlapping the section must individually clear the floor, not just
+    the section's average. See the threshold comment above for the
+    measurement this is based on."""
+    overlapping = _overlapping_chord_events(start_s, end_s, chord_events)
+    if not overlapping:
+        return None
+    for event in overlapping:
+        confidence = event.get("confidence")
+        if confidence is None or float(confidence) < CHORD_EVENT_CONFIDENCE_THRESHOLD:
+            return None
+    labels = _distinct_consecutive_chords(overlapping)
+    cycle = _dominant_cycle(labels, MAX_CHORD_PROGRESSION_CHORDS)
+    return "–".join(cycle)
+
+
+def _song_key(global_key: dict | None) -> str | None:
+    """The whole-song key label (e.g. `"C# major"`), or `None` when
+    essentia's HPCP key confidence is too low to state one. `global_key` is a
+    single value for the whole song (not per-section), so every section
+    either carries this same string or `None` — see the threshold comment
+    above for why this is gated independently of the per-chord floor."""
+    if not global_key:
+        return None
+    label = global_key.get("label")
+    confidence = global_key.get("confidence")
+    if not label or confidence is None:
+        return None
+    try:
+        if float(confidence) < KEY_CONFIDENCE_THRESHOLD:
+            return None
+    except (TypeError, ValueError):
+        return None
+    return str(label)
 
 
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
@@ -126,38 +230,40 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
 
     chord_events = harmonic_payload.get("chords", [])
     beat_points = beats_payload.get("beats", [])
-    beat_times = [float(beat["time"]) for beat in beat_points]
-    bass_by_beat = _beat_aligned_bass_notes(paths, beat_times)
     beat_rows = [
         {
             "time": round_schema_float(float(beat["time"])),
             "beat": int(beat["beat_in_bar"]),
             "bar": int(beat["bar"]),
-            "bass": bass_by_beat[index],
             "chord": _resolve_chord_for_time(float(beat["time"]), chord_events),
             "type": str(beat["type"]),
+            "confidence": beat.get("confidence"),
         }
-        for index, beat in enumerate(beat_points)
+        for beat in beat_points
     ]
-    section_rows = [
-        {
-            "section_id": section["section_id"],
-            "start": round_schema_float(float(section["start"])),
-            "end": round_schema_float(float(section["end"])),
-            "label": _format_section_label(
-                section.get("form_role") or section.get("section_character") or section.get("label"),
-                section.get("section_id"),
-                section.get("confidence"),
-            ),
-            "form_role": section.get("form_role"),
-            "energy_character": section.get("energy_character") or section.get("section_character"),
-            "repetition_group": section.get("repetition_group"),
-            "confidence": section.get("confidence"),
-            "description": _section_description(section),
-            "hints": [],
-        }
-        for section in raw_sections
-    ]
+
+    song_key = _song_key(harmonic_payload.get("global_key"))
+
+    occurrence_counts: dict[str, int] = {}
+    section_rows = []
+    for section in raw_sections:
+        function = section.get("function")
+        if function:
+            occurrence_counts[function] = occurrence_counts.get(function, 0) + 1
+        start = float(section["start"])
+        end = float(section["end"])
+        section_rows.append(
+            {
+                "section_id": section["section_id"],
+                "start": round_schema_float(start),
+                "end": round_schema_float(end),
+                "label": _format_section_label(section),
+                "description": _section_description(section, occurrence_counts.get(function, 0)),
+                "confidence": section.get("confidence"),
+                "key": song_key,
+                "chord_progression": _section_chord_progression(start, end, chord_events),
+            }
+        )
 
     beats_output_path = paths.beats_output_path
     sections_output_path = paths.sections_output_path

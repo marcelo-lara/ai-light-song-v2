@@ -45,12 +45,22 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 WORKDIR /tmp/build
 COPY requirements.txt ./requirements.txt
 
+# allin1 (section segmentation, v3.0 item 7) calls the pre-0.17 NATTEN API
+# (`natten.functional.natten1dqkrpb`), which needs natten 0.15.1, which is
+# only built against torch 2.1 — the version this image already installs
+# below, so allin1 and its NATTEN dependency go straight into the analyzer
+# image rather than a separate sidecar (no dependency conflict here, unlike
+# `beat_this` in the research sandboxes, which pulls in torch 2.13).
 RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     python3 -m pip install --upgrade pip setuptools wheel poetry-core Cython && \
     python3 -m pip install 'numpy<2' && \
-    grep -Ev '^(git\+https://github.com/audiohacking/omnizart.git|torch==2.1.2|torchaudio==2.1.2)$' requirements.txt > /tmp/build/requirements.core.txt && \
+    grep -Ev '^(git\+https://github.com/audiohacking/omnizart.git|torch==2.1.2|torchaudio==2.1.2|natten==0.15.1\+torch210cu121|allin1)$' requirements.txt > /tmp/build/requirements.core.txt && \
     python3 -m pip install --no-build-isolation -r /tmp/build/requirements.core.txt && \
     python3 -m pip install --index-url https://download.pytorch.org/whl/cu118 torch==2.1.2 torchaudio==2.1.2 && \
+    python3 -m pip install --no-cache-dir "natten==0.15.1+torch210cu121" \
+        -f https://shi-labs.com/natten/wheels/cu121/torch2.1.0/index.html \
+        --trusted-host shi-labs.com && \
+    python3 -m pip install --no-cache-dir allin1 && \
     python3 -m pip install --no-deps git+https://github.com/audiohacking/omnizart.git && \
     python3 -m pip install --no-deps resampy==0.4.3 && \
     PYTHON_SITE_PACKAGES="$(python3 -c 'import sysconfig; print(sysconfig.get_path("purelib"))')" && \

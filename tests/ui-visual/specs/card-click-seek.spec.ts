@@ -101,11 +101,13 @@ test.describe("plan v1.5 item 1 — a card click never moves the playhead while 
     await expect.poll(() => clockText(page)).toBe("1:04.0");
 
     // 5 — a segment card seeks too. The first .tl-seg-block starts at 0.0 where
-    // the playhead may already sit, so click the second.
+    // the playhead may already sit, so click the second. Its start time comes
+    // from the allin1-based segmentation stage (plan v3.0 item 7) and no
+    // longer matches the old segmenter's boundary.
     const seg = page.locator(".tl-seg-block").nth(1);
     await seg.scrollIntoViewIfNeeded();
     await seg.click();
-    await expect.poll(() => clockText(page)).toBe("0:15.2");
+    await expect.poll(() => clockText(page)).toBe("0:30.0");
 
     // 6 — background clicks still seek: click the Bars ruler at the horizontal
     // centre of the *visible* timeline. Position-relative clicks land off-screen

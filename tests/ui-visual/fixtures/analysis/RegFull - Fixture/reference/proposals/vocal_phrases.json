@@ -1,0 +1,958 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/vocal_phrases",
+    "engine": "vocal_phrases.detector (local-auto-gain hysteresis over vocals stem, pYIN sustained-note pass)",
+    "source_stem": "/app/data/analysis/Armin - Revolution/artifacts/stems/vocals.wav",
+    "params": {
+      "on_ratio": 1.4,
+      "off_ratio": 0.9,
+      "breath_s": 0.5,
+      "sustain_s": 1.5,
+      "min_phrase_s": 0.15,
+      "running_mean_window_s": 2.0
+    },
+    "generated_at": "2026-09-04T02:44:48.607751Z"
+  },
+  "vocal_phrases": [
+    {
+      "start": 0.29,
+      "end": 0.464,
+      "confidence": 1.0
+    },
+    {
+      "start": 1.022,
+      "end": 1.196,
+      "confidence": 0.903
+    },
+    {
+      "start": 1.904,
+      "end": 3.448,
+      "confidence": 0.716
+    },
+    {
+      "start": 4.214,
+      "end": 5.039,
+      "confidence": 0.893
+    },
+    {
+      "start": 6.757,
+      "end": 7.721,
+      "confidence": 0.44
+    },
+    {
+      "start": 8.603,
+      "end": 8.975,
+      "confidence": 0.583
+    },
+    {
+      "start": 10.24,
+      "end": 10.797,
+      "confidence": 0.462
+    },
+    {
+      "start": 11.575,
+      "end": 12.26,
+      "confidence": 0.642
+    },
+    {
+      "start": 14.036,
+      "end": 14.768,
+      "confidence": 0.999
+    },
+    {
+      "start": 18.483,
+      "end": 18.994,
+      "confidence": 1.0
+    },
+    {
+      "start": 20.248,
+      "end": 20.782,
+      "confidence": 0.28
+    },
+    {
+      "start": 21.757,
+      "end": 22.256,
+      "confidence": 0.13
+    },
+    {
+      "start": 24.137,
+      "end": 24.915,
+      "confidence": 0.648
+    },
+    {
+      "start": 25.809,
+      "end": 26.343,
+      "confidence": 1.0
+    },
+    {
+      "start": 27.341,
+      "end": 27.701,
+      "confidence": 0.819
+    },
+    {
+      "start": 28.421,
+      "end": 28.99,
+      "confidence": 0.704
+    },
+    {
+      "start": 33.344,
+      "end": 33.669,
+      "confidence": 0.807
+    },
+    {
+      "start": 34.667,
+      "end": 35.84,
+      "confidence": 0.369
+    },
+    {
+      "start": 37.071,
+      "end": 37.28,
+      "confidence": 0.652
+    },
+    {
+      "start": 40.867,
+      "end": 41.157,
+      "confidence": 0.583
+    },
+    {
+      "start": 44.408,
+      "end": 44.78,
+      "confidence": 0.686
+    },
+    {
+      "start": 46.068,
+      "end": 46.231,
+      "confidence": 0.545
+    },
+    {
+      "start": 51.978,
+      "end": 52.291,
+      "confidence": 0.823
+    },
+    {
+      "start": 55.008,
+      "end": 55.983,
+      "confidence": 0.827
+    },
+    {
+      "start": 58.944,
+      "end": 63.46,
+      "confidence": 0.279
+    },
+    {
+      "start": 64.389,
+      "end": 64.621,
+      "confidence": 1.0
+    },
+    {
+      "start": 65.736,
+      "end": 66.188,
+      "confidence": 1.0
+    },
+    {
+      "start": 67.094,
+      "end": 68.209,
+      "confidence": 0.906
+    },
+    {
+      "start": 68.986,
+      "end": 69.59,
+      "confidence": 1.0
+    },
+    {
+      "start": 70.275,
+      "end": 71.39,
+      "confidence": 0.515
+    },
+    {
+      "start": 72.052,
+      "end": 72.469,
+      "confidence": 1.0
+    },
+    {
+      "start": 73.015,
+      "end": 73.491,
+      "confidence": 1.0
+    },
+    {
+      "start": 74.826,
+      "end": 76.614,
+      "confidence": 0.392
+    },
+    {
+      "start": 77.23,
+      "end": 77.857,
+      "confidence": 0.735
+    },
+    {
+      "start": 78.797,
+      "end": 79.714,
+      "confidence": 0.907
+    },
+    {
+      "start": 80.573,
+      "end": 80.782,
+      "confidence": 1.0
+    },
+    {
+      "start": 81.734,
+      "end": 84.428,
+      "confidence": 0.447
+    },
+    {
+      "start": 85.531,
+      "end": 86.785,
+      "confidence": 0.504
+    },
+    {
+      "start": 88.642,
+      "end": 88.863,
+      "confidence": 0.565
+    },
+    {
+      "start": 89.629,
+      "end": 89.884,
+      "confidence": 0.395
+    },
+    {
+      "start": 90.593,
+      "end": 91.045,
+      "confidence": 0.589
+    },
+    {
+      "start": 92.729,
+      "end": 93.46,
+      "confidence": 0.658
+    },
+    {
+      "start": 94.726,
+      "end": 95.434,
+      "confidence": 0.894
+    },
+    {
+      "start": 96.235,
+      "end": 98.22,
+      "confidence": 0.443
+    },
+    {
+      "start": 99.347,
+      "end": 100.171,
+      "confidence": 0.581
+    },
+    {
+      "start": 100.751,
+      "end": 101.564,
+      "confidence": 0.619
+    },
+    {
+      "start": 102.191,
+      "end": 103.526,
+      "confidence": 0.581
+    },
+    {
+      "start": 104.478,
+      "end": 104.768,
+      "confidence": 0.587
+    },
+    {
+      "start": 105.535,
+      "end": 106.185,
+      "confidence": 1.0
+    },
+    {
+      "start": 108.054,
+      "end": 108.437,
+      "confidence": 1.0
+    },
+    {
+      "start": 109.424,
+      "end": 110.701,
+      "confidence": 1.0
+    },
+    {
+      "start": 113.325,
+      "end": 113.58,
+      "confidence": 1.0
+    },
+    {
+      "start": 114.602,
+      "end": 115.101,
+      "confidence": 1.0
+    },
+    {
+      "start": 117.075,
+      "end": 117.238,
+      "confidence": 0.858
+    },
+    {
+      "start": 118.967,
+      "end": 119.652,
+      "confidence": 1.0
+    },
+    {
+      "start": 120.546,
+      "end": 121.034,
+      "confidence": 1.0
+    },
+    {
+      "start": 121.998,
+      "end": 122.346,
+      "confidence": 1.0
+    },
+    {
+      "start": 123.472,
+      "end": 124.157,
+      "confidence": 0.861
+    },
+    {
+      "start": 124.923,
+      "end": 125.295,
+      "confidence": 1.0
+    },
+    {
+      "start": 127.652,
+      "end": 128.685,
+      "confidence": 0.395
+    },
+    {
+      "start": 129.347,
+      "end": 129.753,
+      "confidence": 0.95
+    },
+    {
+      "start": 130.647,
+      "end": 131.193,
+      "confidence": 0.621
+    },
+    {
+      "start": 133.074,
+      "end": 133.387,
+      "confidence": 0.651
+    },
+    {
+      "start": 135.779,
+      "end": 136.162,
+      "confidence": 0.603
+    },
+    {
+      "start": 136.998,
+      "end": 137.183,
+      "confidence": 0.628
+    },
+    {
+      "start": 138.286,
+      "end": 139.413,
+      "confidence": 0.451
+    },
+    {
+      "start": 140.887,
+      "end": 141.154,
+      "confidence": 0.655
+    },
+    {
+      "start": 141.909,
+      "end": 142.303,
+      "confidence": 0.707
+    },
+    {
+      "start": 143.105,
+      "end": 143.302,
+      "confidence": 0.572
+    },
+    {
+      "start": 143.824,
+      "end": 144.08,
+      "confidence": 0.811
+    },
+    {
+      "start": 144.951,
+      "end": 146.53,
+      "confidence": 0.179
+    },
+    {
+      "start": 147.737,
+      "end": 148.108,
+      "confidence": 0.459
+    },
+    {
+      "start": 148.654,
+      "end": 148.886,
+      "confidence": 0.515
+    },
+    {
+      "start": 150.047,
+      "end": 150.326,
+      "confidence": 0.605
+    },
+    {
+      "start": 151.731,
+      "end": 153.17,
+      "confidence": 0.49
+    },
+    {
+      "start": 154.947,
+      "end": 155.539,
+      "confidence": 1.0
+    },
+    {
+      "start": 157.222,
+      "end": 157.977,
+      "confidence": 0.666
+    },
+    {
+      "start": 159.324,
+      "end": 159.568,
+      "confidence": 0.834
+    },
+    {
+      "start": 160.926,
+      "end": 162.145,
+      "confidence": 0.396
+    },
+    {
+      "start": 165.338,
+      "end": 165.849,
+      "confidence": 0.224
+    },
+    {
+      "start": 166.417,
+      "end": 166.603,
+      "confidence": 1.0
+    },
+    {
+      "start": 167.625,
+      "end": 168.449,
+      "confidence": 0.294
+    },
+    {
+      "start": 169.227,
+      "end": 169.39,
+      "confidence": 0.822
+    },
+    {
+      "start": 170.852,
+      "end": 172.013,
+      "confidence": 0.45
+    },
+    {
+      "start": 172.884,
+      "end": 173.093,
+      "confidence": 0.461
+    },
+    {
+      "start": 175.195,
+      "end": 175.833,
+      "confidence": 0.933
+    },
+    {
+      "start": 177.807,
+      "end": 178.55,
+      "confidence": 0.759
+    },
+    {
+      "start": 179.664,
+      "end": 180.117,
+      "confidence": 0.53
+    },
+    {
+      "start": 181.058,
+      "end": 181.452,
+      "confidence": 0.906
+    },
+    {
+      "start": 182.927,
+      "end": 183.136,
+      "confidence": 0.458
+    },
+    {
+      "start": 184.633,
+      "end": 185.075,
+      "confidence": 0.613
+    },
+    {
+      "start": 186.05,
+      "end": 186.212,
+      "confidence": 0.563
+    },
+    {
+      "start": 188.697,
+      "end": 188.906,
+      "confidence": 0.567
+    }
+  ],
+  "instrumental_gaps": [
+    {
+      "start": 0.0,
+      "end": 0.29,
+      "confidence": 1.0
+    },
+    {
+      "start": 0.464,
+      "end": 1.022,
+      "confidence": 1.0
+    },
+    {
+      "start": 1.196,
+      "end": 1.904,
+      "confidence": 1.0
+    },
+    {
+      "start": 3.448,
+      "end": 4.214,
+      "confidence": 1.0
+    },
+    {
+      "start": 5.039,
+      "end": 6.757,
+      "confidence": 1.0
+    },
+    {
+      "start": 7.721,
+      "end": 8.603,
+      "confidence": 1.0
+    },
+    {
+      "start": 8.975,
+      "end": 10.24,
+      "confidence": 1.0
+    },
+    {
+      "start": 10.797,
+      "end": 11.575,
+      "confidence": 1.0
+    },
+    {
+      "start": 12.26,
+      "end": 14.036,
+      "confidence": 1.0
+    },
+    {
+      "start": 14.768,
+      "end": 18.483,
+      "confidence": 1.0
+    },
+    {
+      "start": 18.994,
+      "end": 20.248,
+      "confidence": 1.0
+    },
+    {
+      "start": 20.782,
+      "end": 21.757,
+      "confidence": 1.0
+    },
+    {
+      "start": 22.256,
+      "end": 24.137,
+      "confidence": 1.0
+    },
+    {
+      "start": 24.915,
+      "end": 25.809,
+      "confidence": 1.0
+    },
+    {
+      "start": 26.343,
+      "end": 27.341,
+      "confidence": 1.0
+    },
+    {
+      "start": 27.701,
+      "end": 28.421,
+      "confidence": 1.0
+    },
+    {
+      "start": 28.99,
+      "end": 33.344,
+      "confidence": 1.0
+    },
+    {
+      "start": 33.669,
+      "end": 34.667,
+      "confidence": 1.0
+    },
+    {
+      "start": 35.84,
+      "end": 37.071,
+      "confidence": 1.0
+    },
+    {
+      "start": 37.28,
+      "end": 40.867,
+      "confidence": 1.0
+    },
+    {
+      "start": 41.157,
+      "end": 44.408,
+      "confidence": 1.0
+    },
+    {
+      "start": 44.78,
+      "end": 46.068,
+      "confidence": 1.0
+    },
+    {
+      "start": 46.231,
+      "end": 51.978,
+      "confidence": 1.0
+    },
+    {
+      "start": 52.291,
+      "end": 55.008,
+      "confidence": 1.0
+    },
+    {
+      "start": 55.983,
+      "end": 58.944,
+      "confidence": 1.0
+    },
+    {
+      "start": 63.46,
+      "end": 64.389,
+      "confidence": 1.0
+    },
+    {
+      "start": 64.621,
+      "end": 65.736,
+      "confidence": 1.0
+    },
+    {
+      "start": 66.188,
+      "end": 67.094,
+      "confidence": 1.0
+    },
+    {
+      "start": 68.209,
+      "end": 68.986,
+      "confidence": 1.0
+    },
+    {
+      "start": 69.59,
+      "end": 70.275,
+      "confidence": 1.0
+    },
+    {
+      "start": 71.39,
+      "end": 72.052,
+      "confidence": 1.0
+    },
+    {
+      "start": 72.469,
+      "end": 73.015,
+      "confidence": 1.0
+    },
+    {
+      "start": 73.491,
+      "end": 74.826,
+      "confidence": 1.0
+    },
+    {
+      "start": 76.614,
+      "end": 77.23,
+      "confidence": 1.0
+    },
+    {
+      "start": 77.857,
+      "end": 78.797,
+      "confidence": 1.0
+    },
+    {
+      "start": 79.714,
+      "end": 80.573,
+      "confidence": 1.0
+    },
+    {
+      "start": 80.782,
+      "end": 81.734,
+      "confidence": 1.0
+    },
+    {
+      "start": 84.428,
+      "end": 85.531,
+      "confidence": 1.0
+    },
+    {
+      "start": 86.785,
+      "end": 88.642,
+      "confidence": 1.0
+    },
+    {
+      "start": 88.863,
+      "end": 89.629,
+      "confidence": 1.0
+    },
+    {
+      "start": 89.884,
+      "end": 90.593,
+      "confidence": 1.0
+    },
+    {
+      "start": 91.045,
+      "end": 92.729,
+      "confidence": 1.0
+    },
+    {
+      "start": 93.46,
+      "end": 94.726,
+      "confidence": 1.0
+    },
+    {
+      "start": 95.434,
+      "end": 96.235,
+      "confidence": 1.0
+    },
+    {
+      "start": 98.22,
+      "end": 99.347,
+      "confidence": 1.0
+    },
+    {
+      "start": 100.171,
+      "end": 100.751,
+      "confidence": 1.0
+    },
+    {
+      "start": 101.564,
+      "end": 102.191,
+      "confidence": 1.0
+    },
+    {
+      "start": 103.526,
+      "end": 104.478,
+      "confidence": 1.0
+    },
+    {
+      "start": 104.768,
+      "end": 105.535,
+      "confidence": 1.0
+    },
+    {
+      "start": 106.185,
+      "end": 108.054,
+      "confidence": 1.0
+    },
+    {
+      "start": 108.437,
+      "end": 109.424,
+      "confidence": 1.0
+    },
+    {
+      "start": 110.701,
+      "end": 113.325,
+      "confidence": 1.0
+    },
+    {
+      "start": 113.58,
+      "end": 114.602,
+      "confidence": 1.0
+    },
+    {
+      "start": 115.101,
+      "end": 117.075,
+      "confidence": 1.0
+    },
+    {
+      "start": 117.238,
+      "end": 118.967,
+      "confidence": 1.0
+    },
+    {
+      "start": 119.652,
+      "end": 120.546,
+      "confidence": 1.0
+    },
+    {
+      "start": 121.034,
+      "end": 121.998,
+      "confidence": 1.0
+    },
+    {
+      "start": 122.346,
+      "end": 123.472,
+      "confidence": 1.0
+    },
+    {
+      "start": 124.157,
+      "end": 124.923,
+      "confidence": 1.0
+    },
+    {
+      "start": 125.295,
+      "end": 127.652,
+      "confidence": 1.0
+    },
+    {
+      "start": 128.685,
+      "end": 129.347,
+      "confidence": 1.0
+    },
+    {
+      "start": 129.753,
+      "end": 130.647,
+      "confidence": 1.0
+    },
+    {
+      "start": 131.193,
+      "end": 133.074,
+      "confidence": 1.0
+    },
+    {
+      "start": 133.387,
+      "end": 135.779,
+      "confidence": 1.0
+    },
+    {
+      "start": 136.162,
+      "end": 136.998,
+      "confidence": 1.0
+    },
+    {
+      "start": 137.183,
+      "end": 138.286,
+      "confidence": 1.0
+    },
+    {
+      "start": 139.413,
+      "end": 140.887,
+      "confidence": 1.0
+    },
+    {
+      "start": 141.154,
+      "end": 141.909,
+      "confidence": 1.0
+    },
+    {
+      "start": 142.303,
+      "end": 143.105,
+      "confidence": 1.0
+    },
+    {
+      "start": 143.302,
+      "end": 143.824,
+      "confidence": 1.0
+    },
+    {
+      "start": 144.08,
+      "end": 144.951,
+      "confidence": 1.0
+    },
+    {
+      "start": 146.53,
+      "end": 147.737,
+      "confidence": 1.0
+    },
+    {
+      "start": 148.108,
+      "end": 148.654,
+      "confidence": 1.0
+    },
+    {
+      "start": 148.886,
+      "end": 150.047,
+      "confidence": 1.0
+    },
+    {
+      "start": 150.326,
+      "end": 151.731,
+      "confidence": 1.0
+    },
+    {
+      "start": 153.17,
+      "end": 154.947,
+      "confidence": 1.0
+    },
+    {
+      "start": 155.539,
+      "end": 157.222,
+      "confidence": 1.0
+    },
+    {
+      "start": 157.977,
+      "end": 159.324,
+      "confidence": 1.0
+    },
+    {
+      "start": 159.568,
+      "end": 160.926,
+      "confidence": 1.0
+    },
+    {
+      "start": 162.145,
+      "end": 165.338,
+      "confidence": 1.0
+    },
+    {
+      "start": 165.849,
+      "end": 166.417,
+      "confidence": 1.0
+    },
+    {
+      "start": 166.603,
+      "end": 167.625,
+      "confidence": 1.0
+    },
+    {
+      "start": 168.449,
+      "end": 169.227,
+      "confidence": 1.0
+    },
+    {
+      "start": 169.39,
+      "end": 170.852,
+      "confidence": 1.0
+    },
+    {
+      "start": 172.013,
+      "end": 172.884,
+      "confidence": 1.0
+    },
+    {
+      "start": 173.093,
+      "end": 175.195,
+      "confidence": 1.0
+    },
+    {
+      "start": 175.833,
+      "end": 177.807,
+      "confidence": 1.0
+    },
+    {
+      "start": 178.55,
+      "end": 179.664,
+      "confidence": 1.0
+    },
+    {
+      "start": 180.117,
+      "end": 181.058,
+      "confidence": 1.0
+    },
+    {
+      "start": 181.452,
+      "end": 182.927,
+      "confidence": 1.0
+    },
+    {
+      "start": 183.136,
+      "end": 184.633,
+      "confidence": 1.0
+    },
+    {
+      "start": 185.075,
+      "end": 186.05,
+      "confidence": 1.0
+    },
+    {
+      "start": 186.212,
+      "end": 188.697,
+      "confidence": 1.0
+    },
+    {
+      "start": 188.906,
+      "end": 194.003,
+      "confidence": 1.0
+    }
+  ],
+  "sustained_notes": []
+}

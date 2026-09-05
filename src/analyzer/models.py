@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from analyzer.paths import SongPaths
 
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "2.0"
 
 
 def round_schema_float(value: float, digits: int = 2) -> float:
@@ -53,11 +53,18 @@ class GeneratedFrom:
 
 @dataclass(slots=True)
 class BeatPoint:
+    """`confidence` is populated only on `type == "downbeat"` rows, from
+    allin1's downbeat-activation strength at that beat time
+    (`analyzer.stages.timing`, plan v3.0 item 8). It is `None` on `"beat"`
+    rows, and `None` on a `"downbeat"` row where essentia's and allin1's
+    phases disagree by a whole beat or more — the smallest honest encoding of
+    "the bar grid is unresolved here" (constitution §7)."""
     index: int
     time: float
     bar: int
     beat_in_bar: int
     type: str
+    confidence: float | None = None
 
 
 @dataclass(slots=True)
@@ -98,23 +105,17 @@ class EnergyBeat:
 
 
 @dataclass(slots=True)
-class SectionWindow:
+class SectionSegment:
+    """One merged, equal-labelled run from the allin1 segmentation stage
+    (`analyzer.stages.segmentation`). See that module's docstring for how each
+    field is computed. `function` is the Harmonix functional label; `same_label_as`
+    is label repetition ("the third thing allin1 called a chorus"), not acoustic
+    identity — never read it as "the same music as"."""
     section_id: str
     start: float
     end: float
-    label: str | None
+    function: str | None
+    function_confidence: float | None
+    function_status: str
+    same_label_as: str | None
     confidence: float
-    section_character: str | None = None
-    onset_anchored: bool = False
-    # v1.1 item 2.2 — musical form function (primary label). `energy_character`
-    # keeps the existing 13-value energy-shape vocabulary as secondary metadata.
-    form_role: str | None = None
-    form_role_confidence: float | None = None
-    form_role_margin: float | None = None
-    energy_character: str | None = None
-    # v1.1 item 2.3 — repetition identity from material self-similarity.
-    repetition_group: str | None = None
-    variant_of: str | None = None
-    similarity: float | None = None
-    # v1.1 item 3.1 — inspectable boundary/label evidence behind `confidence`.
-    confidence_terms: dict | None = None

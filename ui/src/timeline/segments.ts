@@ -1,21 +1,25 @@
 // segments.ts — the Segments header blocks, ported from the canvas
 // `buildSegments`: HTML blocks positioned by start/end seconds -> x, tinted by
-// `form_role` family (chorus / drop / hook = accent ramp, else neutral ramp),
-// labelled `form_role` + "N bars" with the label hidden when the block is
-// narrow (width < SEGMENT_LABEL_MIN_WIDTH).
+// the allin1 functional label (chorus = accent ramp, else neutral ramp),
+// labelled with the cleaned functional name + "N bars" with the label hidden
+// when the block is narrow (width < SEGMENT_LABEL_MIN_WIDTH).
 
 import type { SectionRow } from "../data/types";
 
 import type { Coords } from "./coords";
 import { SEGMENT_LABEL_MIN_WIDTH } from "./zoom";
 
-const ACCENT_ROLES = new Set(["chorus", "drop", "hook"]);
+// allin1's Harmonix vocabulary has no "drop"/"hook" label — only "chorus"
+// reads as the natural accent among `intro verse chorus bridge inst break
+// outro solo start end` (plan v3.0 item 7).
+const ACCENT_ROLES = new Set(["chorus"]);
 
 export interface SegmentBlock {
   key: string;
   sectionId: string | null;
-  formRole: string | null;
-  /** display name: form_role, else a cleaned-up projection label */
+  /** the cleaned functional name parsed off the projected `label`, e.g. "Chorus" */
+  functionName: string | null;
+  /** display name: the cleaned-up projection label */
   name: string;
   /** "N bars" or "" when the block is too narrow */
   barsText: string;
@@ -39,7 +43,7 @@ export function cleanLabel(label: string): string {
 }
 
 export function displayRole(section: SectionRow): string {
-  return section.form_role ?? cleanLabel(section.label);
+  return cleanLabel(section.label);
 }
 
 /** real bar count inside [start, end), from the coords bar lines */
@@ -58,9 +62,8 @@ export function buildSegments(
   return sections.map((section, index) => {
     const left = coords.timeToX(section.start);
     const width = Math.max(coords.timeToX(section.end) - left - 2, 2);
-    const accent = section.form_role
-      ? ACCENT_ROLES.has(section.form_role)
-      : false;
+    const functionName = cleanLabel(section.label);
+    const accent = ACCENT_ROLES.has(functionName.toLowerCase());
     const bars = countBars(coords, section.start, section.end);
     const showLabel = width >= 34;
     const barsText =
@@ -68,7 +71,7 @@ export function buildSegments(
     return {
       key: section.section_id ?? `seg-${index}`,
       sectionId: section.section_id,
-      formRole: section.form_role,
+      functionName,
       name: displayRole(section),
       barsText,
       left,

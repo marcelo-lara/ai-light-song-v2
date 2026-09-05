@@ -78,8 +78,7 @@ class DrumTranscriptionTests(unittest.TestCase):
                         "section_id": "section-001",
                         "start": 0.0,
                         "end": 4.0,
-                        "label": "intro",
-                        "section_character": "intro",
+                        "function": "intro",
                     }
                 ]
             }

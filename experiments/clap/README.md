@@ -2,7 +2,7 @@
 
 **Status: measured. Character layer works and is reviewable; section identity
 failed.** Nothing in `src/` reads anything in here. Queue entry:
-[`../../docs/experiments_pending.md`](../../docs/experiments_pending.md)
+[`../../docs/experiments.md`](../../docs/experiments.md)
 (constitution §3.4).
 
 ## The question

@@ -1,0 +1,89 @@
+{
+  "schema_version": "2.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "source_song_path": "/data/songs/Armin - Revolution.mp3",
+    "engine": "allin1.harmonix-all.section_segmentation.v1",
+    "dependencies": {
+      "stems": {
+        "bass": "/data/analysis/Armin - Revolution/artifacts/stems/bass.wav",
+        "drums": "/data/analysis/Armin - Revolution/artifacts/stems/drums.wav",
+        "harmonic": "/data/analysis/Armin - Revolution/artifacts/stems/harmonic.wav",
+        "vocals": "/data/analysis/Armin - Revolution/artifacts/stems/vocals.wav"
+      }
+    },
+    "seeded_stems": [
+      "bass",
+      "drums",
+      "other",
+      "vocals"
+    ],
+    "seeding_note": "allin1 was seeded with the pipeline's own htdemucs stems rather than separating the mix itself \u2014 mandatory for determinism (constitution \u00a76).",
+    "merge_strategy": "consecutive equal-labelled 8-bar phrases merged into one section run",
+    "function_confidence_strategy": "1 - normalised Shannon entropy of allin1's frame-level label posterior within the section span",
+    "labelling_status": "known",
+    "phrase_count": 11
+  },
+  "sections": [
+    {
+      "section_id": "section-001",
+      "start": 0.0,
+      "end": 30.0,
+      "function": "intro",
+      "function_confidence": 0.441519,
+      "function_status": "known",
+      "same_label_as": null,
+      "confidence": 0.9
+    },
+    {
+      "section_id": "section-002",
+      "start": 30.0,
+      "end": 44.76,
+      "function": "verse",
+      "function_confidence": 0.187426,
+      "function_status": "known",
+      "same_label_as": null,
+      "confidence": 0.187426
+    },
+    {
+      "section_id": "section-003",
+      "start": 44.76,
+      "end": 81.76,
+      "function": "inst",
+      "function_confidence": 0.193769,
+      "function_status": "known",
+      "same_label_as": null,
+      "confidence": 0.193769
+    },
+    {
+      "section_id": "section-004",
+      "start": 81.76,
+      "end": 96.46,
+      "function": "verse",
+      "function_confidence": 0.194511,
+      "function_status": "known",
+      "same_label_as": "section-002",
+      "confidence": 0.194511
+    },
+    {
+      "section_id": "section-005",
+      "start": 96.46,
+      "end": 111.23,
+      "function": "chorus",
+      "function_confidence": 0.331459,
+      "function_status": "known",
+      "same_label_as": null,
+      "confidence": 0.331459
+    },
+    {
+      "section_id": "section-006",
+      "start": 111.23,
+      "end": 193.851791,
+      "function": "inst",
+      "function_confidence": 0.144056,
+      "function_status": "known",
+      "same_label_as": "section-003",
+      "confidence": 0.144056
+    }
+  ]
+}

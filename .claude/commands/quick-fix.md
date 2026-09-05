@@ -84,7 +84,7 @@ changelog entry. Follow the repo's standing doc rules (`CLAUDE.md`,
 `docs/constitution.md`): `docs/` holds current material only, delete or
 rewrite a section that's now wrong rather than appending a correction beside
 it, and never invent a new archive folder. Do not write this into
-`docs/experiments_pending.md` or a `product-refinement-vX.Y.md` — those are
+`docs/experiments.md` or a `product-refinement-vX.Y.md` — those are
 for different-shaped work (experiments, and larger refinement-tracked
 features), not this loop.
 

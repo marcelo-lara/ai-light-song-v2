@@ -27,11 +27,6 @@ export const artifactPaths = {
   // ground truth stays a purely hand-authored file.
   dropProposals: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "drop_impacts.json")),
-  // Written by experiments/allin1 (`run export`), never by the pipeline. Same
-  // rule as the drop proposals above: an experiment's output is a proposal, so
-  // it stays out of `artifacts/` and out of `reference/human/`.
-  allin1: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "allin1.json")),
   // Written by experiments/clap (`run character`). Texture blocks — what a
   // passage is *like* — merged from the stems, CLAP's calm axis, and allin1's
   // frame-level shadow labels.
@@ -52,11 +47,6 @@ export const artifactPaths = {
   // not rendered as its own lane, see the experiment's README).
   reactiveBands: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "reactive_bands.json")),
-  // Written by experiments/gestures (`run export`). Composite drop gestures
-  // (approach/build/tension/impact/release) assembled from named sound-design
-  // primitive detectors.
-  gestures: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "gestures.json")),
   // Written by experiments/grid_consensus (`run export`). The resolved
   // downbeat phase + derived phrase grid.
   grid: (song: string) =>
@@ -83,17 +73,6 @@ export const artifactPaths = {
     encodePath(analysis(song, "artifacts", "layer_c_energy.json")),
   reviewQueue: (song: string) =>
     encodePath(analysis(song, "artifacts", "validation", "review_queue.json")),
-  // item 9 sparse lanes
-  patterns: (song: string) =>
-    encodePath(analysis(song, "artifacts", "layer_d_patterns.json")),
-  symbolicLayer: (song: string) =>
-    encodePath(analysis(song, "artifacts", "layer_b_symbolic.json")),
-  identifierHints: (song: string) =>
-    encodePath(analysis(song, "artifacts", "energy_summary", "hints.json")),
-  machineEvents: (song: string) =>
-    encodePath(analysis(song, "artifacts", "event_inference", "events.machine.json")),
-  mlEvents: (song: string) =>
-    encodePath(analysis(song, "artifacts", "event_inference", "events.ml.json")),
   audio: (song: string) => encodePath(["data", "songs", `${song}.mp3`]),
 } as const;
 

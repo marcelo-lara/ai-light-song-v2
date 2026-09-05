@@ -1,10 +1,10 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "song_name": "Armin - Revolution",
   "generated_from": {
     "source_song_path": "/data/songs/Armin - Revolution.mp3",
     "beats_file": "/data/analysis/Armin - Revolution/artifacts/essentia/beats.json",
-    "energy_features_file": "/data/analysis/Armin - Revolution/artifacts/energy_summary/features.json",
+    "energy_features": "computed in memory by extract_energy_features, not persisted",
     "sections_file": "/data/analysis/Armin - Revolution/artifacts/section_segmentation/sections.json",
     "engine": "rule-based-energy-derivation"
   },
@@ -18,170 +18,79 @@
   "section_energy": [
     {
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "start_s": 0.0,
-      "end_s": 15.23229,
+      "end_s": 30.0,
       "bar_start": 1,
-      "bar_end": 8,
-      "mean": 0.3479,
-      "peak": 0.506941,
-      "transient_density": 0.377235,
+      "bar_end": 16,
+      "mean": 0.418217,
+      "peak": 0.553184,
+      "transient_density": 0.446679,
       "level": "medium",
-      "trend": "wave"
+      "trend": "build"
     },
     {
       "section_id": "section-002",
-      "section_name": "instrumental_bed",
-      "start_s": 15.23229,
-      "end_s": 30.209161,
-      "bar_start": 9,
-      "bar_end": 17,
-      "mean": 0.486975,
-      "peak": 0.553184,
-      "transient_density": 0.513338,
-      "level": "high",
+      "section_name": "verse",
+      "start_s": 30.0,
+      "end_s": 44.76,
+      "bar_start": 17,
+      "bar_end": 24,
+      "mean": 0.405602,
+      "peak": 0.492839,
+      "transient_density": 0.39656,
+      "level": "medium",
       "trend": "wave"
     },
     {
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
-      "start_s": 30.209161,
-      "end_s": 59.837822,
-      "bar_start": 17,
-      "bar_end": 32,
-      "mean": 0.379547,
-      "peak": 0.494962,
-      "transient_density": 0.376235,
-      "level": "medium",
+      "section_name": "inst",
+      "start_s": 44.76,
+      "end_s": 81.76,
+      "bar_start": 25,
+      "bar_end": 44,
+      "mean": 0.336275,
+      "peak": 0.523656,
+      "transient_density": 0.339934,
+      "level": "low",
       "trend": "wave"
     },
     {
       "section_id": "section-004",
-      "section_name": "breath_space",
-      "start_s": 59.837822,
-      "end_s": 74.605713,
-      "bar_start": 33,
-      "bar_end": 40,
-      "mean": 0.291723,
-      "peak": 0.392302,
-      "transient_density": 0.299082,
-      "level": "low",
-      "trend": "build"
+      "section_name": "verse",
+      "start_s": 81.76,
+      "end_s": 96.46,
+      "bar_start": 44,
+      "bar_end": 51,
+      "mean": 0.405153,
+      "peak": 0.473039,
+      "transient_density": 0.395895,
+      "level": "medium",
+      "trend": "wave"
     },
     {
       "section_id": "section-005",
-      "section_name": "flowing_plateau",
-      "start_s": 74.605713,
-      "end_s": 88.13134,
-      "bar_start": 41,
-      "bar_end": 48,
-      "mean": 0.393639,
-      "peak": 0.523656,
-      "transient_density": 0.38924,
-      "level": "medium",
+      "section_name": "chorus",
+      "start_s": 96.46,
+      "end_s": 111.23,
+      "bar_start": 52,
+      "bar_end": 60,
+      "mean": 0.48359,
+      "peak": 0.553565,
+      "transient_density": 0.495192,
+      "level": "high",
       "trend": "wave"
     },
     {
       "section_id": "section-006",
-      "section_name": "momentum_lift",
-      "start_s": 88.13134,
-      "end_s": 103.851247,
-      "bar_start": 48,
-      "bar_end": 56,
-      "mean": 0.442404,
-      "peak": 0.533394,
-      "transient_density": 0.440645,
-      "level": "high",
-      "trend": "build"
-    },
-    {
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
-      "start_s": 103.851247,
-      "end_s": 118.619138,
-      "bar_start": 56,
-      "bar_end": 64,
-      "mean": 0.477314,
-      "peak": 0.553565,
-      "transient_density": 0.496615,
-      "level": "high",
-      "trend": "wave"
-    },
-    {
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
-      "start_s": 118.619138,
-      "end_s": 133.863037,
-      "bar_start": 64,
-      "bar_end": 72,
-      "mean": 0.423823,
-      "peak": 0.529269,
-      "transient_density": 0.432904,
-      "level": "medium",
-      "trend": "release"
-    },
-    {
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
-      "start_s": 133.863037,
-      "end_s": 150.999359,
-      "bar_start": 73,
-      "bar_end": 81,
-      "mean": 0.410217,
-      "peak": 0.50095,
-      "transient_density": 0.41377,
-      "level": "medium",
-      "trend": "wave"
-    },
-    {
-      "section_id": "section-010",
-      "section_name": "breath_space",
-      "start_s": 150.999359,
-      "end_s": 156.746307,
-      "bar_start": 82,
-      "bar_end": 84,
-      "mean": 0.330643,
-      "peak": 0.400623,
-      "transient_density": 0.331547,
-      "level": "low",
-      "trend": "release"
-    },
-    {
-      "section_id": "section-011",
-      "section_name": "breath_space",
-      "start_s": 156.746307,
-      "end_s": 162.30748,
-      "bar_start": 85,
-      "bar_end": 87,
-      "mean": 0.239944,
-      "peak": 0.287281,
-      "transient_density": 0.2685,
-      "level": "low",
-      "trend": "plateau"
-    },
-    {
-      "section_id": "section-012",
-      "section_name": "breath_space",
-      "start_s": 162.30748,
-      "end_s": 177.899683,
-      "bar_start": 88,
-      "bar_end": 96,
-      "mean": 0.323743,
-      "peak": 0.434294,
-      "transient_density": 0.311053,
-      "level": "low",
-      "trend": "wave"
-    },
-    {
-      "section_id": "section-013",
-      "section_name": "release_tail",
-      "start_s": 177.899683,
+      "section_name": "inst",
+      "start_s": 111.23,
       "end_s": 193.851791,
-      "bar_start": 96,
+      "bar_start": 60,
       "bar_end": 104,
-      "mean": 0.353729,
-      "peak": 0.511095,
-      "transient_density": 0.36874,
+      "mean": 0.373124,
+      "peak": 0.529269,
+      "transient_density": 0.379925,
       "level": "medium",
       "trend": "release"
     }
@@ -195,7 +104,7 @@
       "bar": 2,
       "beat": 4,
       "section_id": "section-001",
-      "section_name": "ambient_opening"
+      "section_name": "intro"
     },
     {
       "id": "accent_002",
@@ -204,8 +113,8 @@
       "intensity": 0.571763,
       "bar": 9,
       "beat": 2,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_003",
@@ -214,8 +123,8 @@
       "intensity": 0.532702,
       "bar": 10,
       "beat": 2,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_004",
@@ -224,8 +133,8 @@
       "intensity": 0.581071,
       "bar": 10,
       "beat": 4,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_005",
@@ -234,8 +143,8 @@
       "intensity": 0.525337,
       "bar": 11,
       "beat": 2,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_006",
@@ -244,8 +153,8 @@
       "intensity": 0.522516,
       "bar": 12,
       "beat": 2,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_007",
@@ -254,8 +163,8 @@
       "intensity": 0.535595,
       "bar": 13,
       "beat": 4,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_008",
@@ -264,8 +173,8 @@
       "intensity": 0.586058,
       "bar": 14,
       "beat": 4,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_009",
@@ -274,8 +183,8 @@
       "intensity": 0.53339,
       "bar": 15,
       "beat": 3,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_010",
@@ -284,38 +193,38 @@
       "intensity": 0.542886,
       "bar": 16,
       "beat": 2,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed"
+      "section_id": "section-001",
+      "section_name": "intro"
     },
     {
       "id": "accent_011",
       "time": 81.084084,
       "kind": "hit",
       "intensity": 0.563416,
-      "bar": 44,
-      "beat": 3,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau"
+      "bar": 43,
+      "beat": 4,
+      "section_id": "section-003",
+      "section_name": "inst"
     },
     {
       "id": "accent_012",
       "time": 103.398453,
       "kind": "hit",
       "intensity": 0.551186,
-      "bar": 56,
-      "beat": 3,
-      "section_id": "section-006",
-      "section_name": "momentum_lift"
+      "bar": 55,
+      "beat": 4,
+      "section_id": "section-005",
+      "section_name": "chorus"
     },
     {
       "id": "accent_013",
       "time": 104.791656,
       "kind": "hit",
       "intensity": 0.576511,
-      "bar": 57,
-      "beat": 2,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "bar": 56,
+      "beat": 3,
+      "section_id": "section-005",
+      "section_name": "chorus"
     },
     {
       "id": "accent_014",
@@ -323,39 +232,39 @@
       "kind": "hit",
       "intensity": 0.555786,
       "bar": 57,
-      "beat": 4,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "beat": 1,
+      "section_id": "section-005",
+      "section_name": "chorus"
     },
     {
       "id": "accent_015",
       "time": 107.090431,
       "kind": "hit",
       "intensity": 0.580614,
-      "bar": 58,
-      "beat": 3,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "bar": 57,
+      "beat": 4,
+      "section_id": "section-005",
+      "section_name": "chorus"
     },
     {
       "id": "accent_016",
       "time": 108.472015,
       "kind": "hit",
       "intensity": 0.54368,
-      "bar": 59,
-      "beat": 2,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "bar": 58,
+      "beat": 3,
+      "section_id": "section-005",
+      "section_name": "chorus"
     },
     {
       "id": "accent_017",
       "time": 111.687981,
       "kind": "hit",
       "intensity": 0.537687,
-      "bar": 61,
-      "beat": 1,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "bar": 60,
+      "beat": 2,
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_018",
@@ -363,39 +272,39 @@
       "kind": "hit",
       "intensity": 0.549555,
       "bar": 61,
-      "beat": 4,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "beat": 1,
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_019",
       "time": 114.474373,
       "kind": "hit",
       "intensity": 0.54774,
-      "bar": 62,
-      "beat": 3,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed"
+      "bar": 61,
+      "beat": 4,
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_020",
       "time": 120.92952,
       "kind": "hit",
       "intensity": 0.539148,
-      "bar": 66,
-      "beat": 1,
-      "section_id": "section-008",
-      "section_name": "groove_plateau"
+      "bar": 65,
+      "beat": 2,
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_021",
       "time": 121.858322,
       "kind": "hit",
       "intensity": 0.559741,
-      "bar": 66,
-      "beat": 3,
-      "section_id": "section-008",
-      "section_name": "groove_plateau"
+      "bar": 65,
+      "beat": 4,
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_022",
@@ -403,29 +312,29 @@
       "kind": "hit",
       "intensity": 0.565852,
       "bar": 67,
-      "beat": 4,
-      "section_id": "section-008",
-      "section_name": "groove_plateau"
+      "beat": 1,
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_023",
       "time": 140.318176,
       "kind": "hit",
       "intensity": 0.526275,
-      "bar": 76,
-      "beat": 3,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau"
+      "bar": 75,
+      "beat": 4,
+      "section_id": "section-006",
+      "section_name": "inst"
     },
     {
       "id": "accent_024",
       "time": 141.71138,
       "kind": "hit",
       "intensity": 0.523457,
-      "bar": 77,
-      "beat": 2,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau"
+      "bar": 76,
+      "beat": 3,
+      "section_id": "section-006",
+      "section_name": "inst"
     }
   ],
   "beat_energy": [
@@ -440,7 +349,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.406288,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -454,7 +363,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.481012,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -468,7 +377,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.346005,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -482,7 +391,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.278537,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -496,7 +405,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.27244,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -510,7 +419,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.254457,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -524,7 +433,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.363032,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -538,7 +447,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.506941,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -552,7 +461,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.255401,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -566,7 +475,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.252816,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -580,7 +489,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.264408,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -594,7 +503,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.256441,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -608,7 +517,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.25468,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -622,7 +531,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.271523,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -636,7 +545,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.3494,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -650,7 +559,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.453429,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -664,7 +573,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.292369,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -678,7 +587,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.285445,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -692,7 +601,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.285716,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -706,7 +615,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.277169,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -720,7 +629,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.285446,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -734,7 +643,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.303969,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -748,7 +657,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.326188,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "low"
     },
     {
@@ -762,7 +671,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.372417,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -776,7 +685,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.442377,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -790,7 +699,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.474266,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -804,7 +713,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.493482,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -818,7 +727,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.442191,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -832,7 +741,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.373954,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -846,7 +755,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.429072,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -860,7 +769,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.395402,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -874,7 +783,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.386541,
       "section_id": "section-001",
-      "section_name": "ambient_opening",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -887,8 +796,8 @@
       "bar": 9,
       "beat_in_bar": 1,
       "energy_score": 0.464552,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -901,8 +810,8 @@
       "bar": 9,
       "beat_in_bar": 2,
       "energy_score": 0.534452,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -915,8 +824,8 @@
       "bar": 9,
       "beat_in_bar": 3,
       "energy_score": 0.50806,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -929,8 +838,8 @@
       "bar": 9,
       "beat_in_bar": 4,
       "energy_score": 0.500275,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -943,8 +852,8 @@
       "bar": 10,
       "beat_in_bar": 1,
       "energy_score": 0.494823,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -957,8 +866,8 @@
       "bar": 10,
       "beat_in_bar": 2,
       "energy_score": 0.500663,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -971,8 +880,8 @@
       "bar": 10,
       "beat_in_bar": 3,
       "energy_score": 0.502605,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -985,8 +894,8 @@
       "bar": 10,
       "beat_in_bar": 4,
       "energy_score": 0.549511,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -999,8 +908,8 @@
       "bar": 11,
       "beat_in_bar": 1,
       "energy_score": 0.460563,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1013,8 +922,8 @@
       "bar": 11,
       "beat_in_bar": 2,
       "energy_score": 0.491822,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1027,8 +936,8 @@
       "bar": 11,
       "beat_in_bar": 3,
       "energy_score": 0.49134,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1041,8 +950,8 @@
       "bar": 11,
       "beat_in_bar": 4,
       "energy_score": 0.483101,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1055,8 +964,8 @@
       "bar": 12,
       "beat_in_bar": 1,
       "energy_score": 0.484009,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1069,8 +978,8 @@
       "bar": 12,
       "beat_in_bar": 2,
       "energy_score": 0.48993,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1083,8 +992,8 @@
       "bar": 12,
       "beat_in_bar": 3,
       "energy_score": 0.471914,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1097,8 +1006,8 @@
       "bar": 12,
       "beat_in_bar": 4,
       "energy_score": 0.426617,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -1111,8 +1020,8 @@
       "bar": 13,
       "beat_in_bar": 1,
       "energy_score": 0.420861,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "medium"
     },
     {
@@ -1125,8 +1034,8 @@
       "bar": 13,
       "beat_in_bar": 2,
       "energy_score": 0.470673,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1139,8 +1048,8 @@
       "bar": 13,
       "beat_in_bar": 3,
       "energy_score": 0.481766,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1153,8 +1062,8 @@
       "bar": 13,
       "beat_in_bar": 4,
       "energy_score": 0.502485,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1167,8 +1076,8 @@
       "bar": 14,
       "beat_in_bar": 1,
       "energy_score": 0.481397,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1181,8 +1090,8 @@
       "bar": 14,
       "beat_in_bar": 2,
       "energy_score": 0.48096,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1195,8 +1104,8 @@
       "bar": 14,
       "beat_in_bar": 3,
       "energy_score": 0.496567,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1209,8 +1118,8 @@
       "bar": 14,
       "beat_in_bar": 4,
       "energy_score": 0.553184,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1223,8 +1132,8 @@
       "bar": 15,
       "beat_in_bar": 1,
       "energy_score": 0.483491,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1237,8 +1146,8 @@
       "bar": 15,
       "beat_in_bar": 2,
       "energy_score": 0.47999,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1251,8 +1160,8 @@
       "bar": 15,
       "beat_in_bar": 3,
       "energy_score": 0.498862,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1265,8 +1174,8 @@
       "bar": 15,
       "beat_in_bar": 4,
       "energy_score": 0.497691,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1279,8 +1188,8 @@
       "bar": 16,
       "beat_in_bar": 1,
       "energy_score": 0.492641,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1293,8 +1202,8 @@
       "bar": 16,
       "beat_in_bar": 2,
       "energy_score": 0.508463,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1307,8 +1216,8 @@
       "bar": 16,
       "beat_in_bar": 3,
       "energy_score": 0.497636,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1321,8 +1230,8 @@
       "bar": 16,
       "beat_in_bar": 4,
       "energy_score": 0.432188,
-      "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_id": "section-001",
+      "section_name": "intro",
       "level": "high"
     },
     {
@@ -1336,7 +1245,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.437068,
       "section_id": "section-002",
-      "section_name": "instrumental_bed",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1349,8 +1258,8 @@
       "bar": 17,
       "beat_in_bar": 2,
       "energy_score": 0.492839,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1363,8 +1272,8 @@
       "bar": 17,
       "beat_in_bar": 3,
       "energy_score": 0.416082,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1377,8 +1286,8 @@
       "bar": 17,
       "beat_in_bar": 4,
       "energy_score": 0.367632,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1391,8 +1300,8 @@
       "bar": 18,
       "beat_in_bar": 1,
       "energy_score": 0.46598,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1405,8 +1314,8 @@
       "bar": 18,
       "beat_in_bar": 2,
       "energy_score": 0.453785,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1419,8 +1328,8 @@
       "bar": 18,
       "beat_in_bar": 3,
       "energy_score": 0.374404,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1433,8 +1342,8 @@
       "bar": 18,
       "beat_in_bar": 4,
       "energy_score": 0.437937,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1447,8 +1356,8 @@
       "bar": 19,
       "beat_in_bar": 1,
       "energy_score": 0.403529,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1461,8 +1370,8 @@
       "bar": 19,
       "beat_in_bar": 2,
       "energy_score": 0.438636,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1475,8 +1384,8 @@
       "bar": 19,
       "beat_in_bar": 3,
       "energy_score": 0.41894,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1489,8 +1398,8 @@
       "bar": 19,
       "beat_in_bar": 4,
       "energy_score": 0.409781,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1503,8 +1412,8 @@
       "bar": 20,
       "beat_in_bar": 1,
       "energy_score": 0.442352,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1517,8 +1426,8 @@
       "bar": 20,
       "beat_in_bar": 2,
       "energy_score": 0.422429,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1531,8 +1440,8 @@
       "bar": 20,
       "beat_in_bar": 3,
       "energy_score": 0.356451,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1545,8 +1454,8 @@
       "bar": 20,
       "beat_in_bar": 4,
       "energy_score": 0.382054,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1559,8 +1468,8 @@
       "bar": 21,
       "beat_in_bar": 1,
       "energy_score": 0.389464,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1573,8 +1482,8 @@
       "bar": 21,
       "beat_in_bar": 2,
       "energy_score": 0.41738,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1587,8 +1496,8 @@
       "bar": 21,
       "beat_in_bar": 3,
       "energy_score": 0.323364,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "low"
     },
     {
@@ -1601,8 +1510,8 @@
       "bar": 21,
       "beat_in_bar": 4,
       "energy_score": 0.340931,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "low"
     },
     {
@@ -1615,8 +1524,8 @@
       "bar": 22,
       "beat_in_bar": 1,
       "energy_score": 0.430595,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1629,8 +1538,8 @@
       "bar": 22,
       "beat_in_bar": 2,
       "energy_score": 0.4349,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1643,8 +1552,8 @@
       "bar": 22,
       "beat_in_bar": 3,
       "energy_score": 0.370881,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1657,8 +1566,8 @@
       "bar": 22,
       "beat_in_bar": 4,
       "energy_score": 0.399369,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1671,8 +1580,8 @@
       "bar": 23,
       "beat_in_bar": 1,
       "energy_score": 0.383897,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1685,8 +1594,8 @@
       "bar": 23,
       "beat_in_bar": 2,
       "energy_score": 0.394802,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1699,8 +1608,8 @@
       "bar": 23,
       "beat_in_bar": 3,
       "energy_score": 0.357409,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1713,8 +1622,8 @@
       "bar": 23,
       "beat_in_bar": 4,
       "energy_score": 0.354775,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1727,8 +1636,8 @@
       "bar": 24,
       "beat_in_bar": 1,
       "energy_score": 0.400212,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1741,8 +1650,8 @@
       "bar": 24,
       "beat_in_bar": 2,
       "energy_score": 0.413325,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1755,8 +1664,8 @@
       "bar": 24,
       "beat_in_bar": 3,
       "energy_score": 0.396095,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -1769,8 +1678,8 @@
       "bar": 24,
       "beat_in_bar": 4,
       "energy_score": 0.451958,
-      "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_id": "section-002",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -1784,7 +1693,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.414849,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1798,7 +1707,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.459575,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -1812,7 +1721,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.438808,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -1826,7 +1735,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.331631,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -1840,7 +1749,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.35887,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1854,7 +1763,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.350455,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1868,7 +1777,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.363975,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1882,7 +1791,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.335514,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -1896,7 +1805,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.43962,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -1910,7 +1819,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.410865,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1924,7 +1833,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.373635,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1938,7 +1847,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.361513,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1952,7 +1861,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.387127,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1966,7 +1875,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.376092,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1980,7 +1889,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.422754,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -1994,7 +1903,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.48356,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2008,7 +1917,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.494962,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2022,7 +1931,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.456876,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2036,7 +1945,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.403978,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2050,7 +1959,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.36581,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2064,7 +1973,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.361866,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2078,7 +1987,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.394131,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2092,7 +2001,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.411547,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2106,7 +2015,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.345743,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2120,7 +2029,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.246838,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2134,7 +2043,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.239939,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2148,7 +2057,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.240927,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2162,7 +2071,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.202427,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2176,7 +2085,7 @@
       "beat_in_bar": 1,
       "energy_score": 0.179891,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2190,7 +2099,7 @@
       "beat_in_bar": 2,
       "energy_score": 0.215898,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2204,7 +2113,7 @@
       "beat_in_bar": 3,
       "energy_score": 0.258595,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2218,7 +2127,7 @@
       "beat_in_bar": 4,
       "energy_score": 0.240977,
       "section_id": "section-003",
-      "section_name": "vocal_spotlight",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2228,11 +2137,11 @@
       "centroid_avg": 4773.79115,
       "flux_avg": 0.269249,
       "onset_density": 0.261268,
-      "bar": 33,
-      "beat_in_bar": 1,
+      "bar": 32,
+      "beat_in_bar": 2,
       "energy_score": 0.25756,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2242,11 +2151,11 @@
       "centroid_avg": 4479.770286,
       "flux_avg": 0.276124,
       "onset_density": 0.271063,
-      "bar": 33,
-      "beat_in_bar": 2,
+      "bar": 32,
+      "beat_in_bar": 3,
       "energy_score": 0.248275,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2256,11 +2165,11 @@
       "centroid_avg": 4570.477888,
       "flux_avg": 0.296888,
       "onset_density": 0.275927,
-      "bar": 33,
-      "beat_in_bar": 3,
+      "bar": 32,
+      "beat_in_bar": 4,
       "energy_score": 0.221772,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2271,10 +2180,10 @@
       "flux_avg": 0.27054,
       "onset_density": 0.267117,
       "bar": 33,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.266721,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2284,11 +2193,11 @@
       "centroid_avg": 4396.518219,
       "flux_avg": 0.290355,
       "onset_density": 0.267132,
-      "bar": 34,
-      "beat_in_bar": 1,
+      "bar": 33,
+      "beat_in_bar": 2,
       "energy_score": 0.236484,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2298,11 +2207,11 @@
       "centroid_avg": 4262.172305,
       "flux_avg": 0.303196,
       "onset_density": 0.28701,
-      "bar": 34,
-      "beat_in_bar": 2,
+      "bar": 33,
+      "beat_in_bar": 3,
       "energy_score": 0.246632,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2312,11 +2221,11 @@
       "centroid_avg": 4202.536252,
       "flux_avg": 0.316853,
       "onset_density": 0.292352,
-      "bar": 34,
-      "beat_in_bar": 3,
+      "bar": 33,
+      "beat_in_bar": 4,
       "energy_score": 0.219132,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2327,10 +2236,10 @@
       "flux_avg": 0.27207,
       "onset_density": 0.3114,
       "bar": 34,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.291423,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2340,11 +2249,11 @@
       "centroid_avg": 4714.962638,
       "flux_avg": 0.266561,
       "onset_density": 0.264498,
-      "bar": 35,
-      "beat_in_bar": 1,
+      "bar": 34,
+      "beat_in_bar": 2,
       "energy_score": 0.257929,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2354,11 +2263,11 @@
       "centroid_avg": 4192.327067,
       "flux_avg": 0.298606,
       "onset_density": 0.286786,
-      "bar": 35,
-      "beat_in_bar": 2,
+      "bar": 34,
+      "beat_in_bar": 3,
       "energy_score": 0.251209,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2368,11 +2277,11 @@
       "centroid_avg": 4448.265947,
       "flux_avg": 0.309115,
       "onset_density": 0.288875,
-      "bar": 35,
-      "beat_in_bar": 3,
+      "bar": 34,
+      "beat_in_bar": 4,
       "energy_score": 0.223052,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2383,10 +2292,10 @@
       "flux_avg": 0.249211,
       "onset_density": 0.27766,
       "bar": 35,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.278716,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2396,11 +2305,11 @@
       "centroid_avg": 4665.075247,
       "flux_avg": 0.274148,
       "onset_density": 0.249541,
-      "bar": 36,
-      "beat_in_bar": 1,
+      "bar": 35,
+      "beat_in_bar": 2,
       "energy_score": 0.228322,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2410,11 +2319,11 @@
       "centroid_avg": 4224.060752,
       "flux_avg": 0.292717,
       "onset_density": 0.277459,
-      "bar": 36,
-      "beat_in_bar": 2,
+      "bar": 35,
+      "beat_in_bar": 3,
       "energy_score": 0.249262,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2424,11 +2333,11 @@
       "centroid_avg": 5917.5965,
       "flux_avg": 0.24088,
       "onset_density": 0.286757,
-      "bar": 36,
-      "beat_in_bar": 3,
+      "bar": 35,
+      "beat_in_bar": 4,
       "energy_score": 0.302708,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2439,10 +2348,10 @@
       "flux_avg": 0.253193,
       "onset_density": 0.358745,
       "bar": 36,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.362797,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2452,11 +2361,11 @@
       "centroid_avg": 5313.752169,
       "flux_avg": 0.263349,
       "onset_density": 0.298647,
-      "bar": 37,
-      "beat_in_bar": 1,
+      "bar": 36,
+      "beat_in_bar": 2,
       "energy_score": 0.313925,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2466,11 +2375,11 @@
       "centroid_avg": 4506.361497,
       "flux_avg": 0.284217,
       "onset_density": 0.305919,
-      "bar": 37,
-      "beat_in_bar": 2,
+      "bar": 36,
+      "beat_in_bar": 3,
       "energy_score": 0.308372,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2480,11 +2389,11 @@
       "centroid_avg": 5459.19435,
       "flux_avg": 0.269433,
       "onset_density": 0.269857,
-      "bar": 37,
-      "beat_in_bar": 3,
+      "bar": 36,
+      "beat_in_bar": 4,
       "energy_score": 0.285359,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2495,10 +2404,10 @@
       "flux_avg": 0.273603,
       "onset_density": 0.322121,
       "bar": 37,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.327454,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2508,11 +2417,11 @@
       "centroid_avg": 5135.809817,
       "flux_avg": 0.273624,
       "onset_density": 0.309691,
-      "bar": 38,
-      "beat_in_bar": 1,
+      "bar": 37,
+      "beat_in_bar": 2,
       "energy_score": 0.323933,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2522,11 +2431,11 @@
       "centroid_avg": 4666.460497,
       "flux_avg": 0.28967,
       "onset_density": 0.307209,
-      "bar": 38,
-      "beat_in_bar": 2,
+      "bar": 37,
+      "beat_in_bar": 3,
       "energy_score": 0.30492,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2536,11 +2445,11 @@
       "centroid_avg": 5566.297822,
       "flux_avg": 0.265925,
       "onset_density": 0.259274,
-      "bar": 38,
-      "beat_in_bar": 3,
+      "bar": 37,
+      "beat_in_bar": 4,
       "energy_score": 0.274998,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2551,10 +2460,10 @@
       "flux_avg": 0.260668,
       "onset_density": 0.350069,
       "bar": 38,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.352408,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2564,11 +2473,11 @@
       "centroid_avg": 5163.354554,
       "flux_avg": 0.2689,
       "onset_density": 0.322236,
-      "bar": 39,
-      "beat_in_bar": 1,
+      "bar": 38,
+      "beat_in_bar": 2,
       "energy_score": 0.336868,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2578,11 +2487,11 @@
       "centroid_avg": 4685.04245,
       "flux_avg": 0.283832,
       "onset_density": 0.300227,
-      "bar": 39,
-      "beat_in_bar": 2,
+      "bar": 38,
+      "beat_in_bar": 3,
       "energy_score": 0.305896,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2592,11 +2501,11 @@
       "centroid_avg": 5446.077376,
       "flux_avg": 0.262481,
       "onset_density": 0.270128,
-      "bar": 39,
-      "beat_in_bar": 3,
+      "bar": 38,
+      "beat_in_bar": 4,
       "energy_score": 0.29183,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2607,10 +2516,10 @@
       "flux_avg": 0.258261,
       "onset_density": 0.337656,
       "bar": 39,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.343278,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2620,11 +2529,11 @@
       "centroid_avg": 5288.759812,
       "flux_avg": 0.258448,
       "onset_density": 0.293347,
-      "bar": 40,
-      "beat_in_bar": 1,
+      "bar": 39,
+      "beat_in_bar": 2,
       "energy_score": 0.312198,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2634,11 +2543,11 @@
       "centroid_avg": 4667.780233,
       "flux_avg": 0.284766,
       "onset_density": 0.321406,
-      "bar": 40,
-      "beat_in_bar": 2,
+      "bar": 39,
+      "beat_in_bar": 3,
       "energy_score": 0.332896,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2648,11 +2557,11 @@
       "centroid_avg": 5715.142735,
       "flux_avg": 0.249592,
       "onset_density": 0.387746,
-      "bar": 40,
-      "beat_in_bar": 3,
+      "bar": 39,
+      "beat_in_bar": 4,
       "energy_score": 0.386514,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2663,10 +2572,10 @@
       "flux_avg": 0.261928,
       "onset_density": 0.3915,
       "bar": 40,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.392302,
-      "section_id": "section-004",
-      "section_name": "breath_space",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2676,11 +2585,11 @@
       "centroid_avg": 5144.36669,
       "flux_avg": 0.272649,
       "onset_density": 0.361717,
-      "bar": 41,
-      "beat_in_bar": 1,
+      "bar": 40,
+      "beat_in_bar": 2,
       "energy_score": 0.37124,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2690,11 +2599,11 @@
       "centroid_avg": 4843.139886,
       "flux_avg": 0.288255,
       "onset_density": 0.326502,
-      "bar": 41,
-      "beat_in_bar": 2,
+      "bar": 40,
+      "beat_in_bar": 3,
       "energy_score": 0.341255,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2704,11 +2613,11 @@
       "centroid_avg": 5431.137347,
       "flux_avg": 0.264569,
       "onset_density": 0.305543,
-      "bar": 41,
-      "beat_in_bar": 3,
+      "bar": 40,
+      "beat_in_bar": 4,
       "energy_score": 0.323717,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2719,10 +2628,10 @@
       "flux_avg": 0.268862,
       "onset_density": 0.355186,
       "bar": 41,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.361723,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2732,11 +2641,11 @@
       "centroid_avg": 5174.120659,
       "flux_avg": 0.272728,
       "onset_density": 0.334031,
-      "bar": 42,
-      "beat_in_bar": 1,
+      "bar": 41,
+      "beat_in_bar": 2,
       "energy_score": 0.348364,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2746,11 +2655,11 @@
       "centroid_avg": 4837.785919,
       "flux_avg": 0.272673,
       "onset_density": 0.315358,
-      "bar": 42,
-      "beat_in_bar": 2,
+      "bar": 41,
+      "beat_in_bar": 3,
       "energy_score": 0.331055,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2760,11 +2669,11 @@
       "centroid_avg": 5473.718778,
       "flux_avg": 0.268257,
       "onset_density": 0.297498,
-      "bar": 42,
-      "beat_in_bar": 3,
+      "bar": 41,
+      "beat_in_bar": 4,
       "energy_score": 0.318076,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2775,10 +2684,10 @@
       "flux_avg": 0.263613,
       "onset_density": 0.379165,
       "bar": 42,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.382876,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2788,11 +2697,11 @@
       "centroid_avg": 5280.272746,
       "flux_avg": 0.261146,
       "onset_density": 0.350215,
-      "bar": 43,
-      "beat_in_bar": 1,
+      "bar": 42,
+      "beat_in_bar": 2,
       "energy_score": 0.359067,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -2802,11 +2711,11 @@
       "centroid_avg": 4985.766688,
       "flux_avg": 0.271899,
       "onset_density": 0.323536,
-      "bar": 43,
-      "beat_in_bar": 2,
+      "bar": 42,
+      "beat_in_bar": 3,
       "energy_score": 0.337838,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2816,11 +2725,11 @@
       "centroid_avg": 5538.638759,
       "flux_avg": 0.254064,
       "onset_density": 0.337159,
-      "bar": 43,
-      "beat_in_bar": 3,
+      "bar": 42,
+      "beat_in_bar": 4,
       "energy_score": 0.346743,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -2831,10 +2740,10 @@
       "flux_avg": 0.237822,
       "onset_density": 0.481025,
       "bar": 43,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.458969,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2844,11 +2753,11 @@
       "centroid_avg": 6376.362259,
       "flux_avg": 0.227294,
       "onset_density": 0.462132,
-      "bar": 44,
-      "beat_in_bar": 1,
+      "bar": 43,
+      "beat_in_bar": 2,
       "energy_score": 0.441066,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2858,11 +2767,11 @@
       "centroid_avg": 5995.223195,
       "flux_avg": 0.240538,
       "onset_density": 0.509184,
-      "bar": 44,
-      "beat_in_bar": 2,
+      "bar": 43,
+      "beat_in_bar": 3,
       "energy_score": 0.482409,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2872,11 +2781,11 @@
       "centroid_avg": 6589.971185,
       "flux_avg": 0.230187,
       "onset_density": 0.563416,
-      "bar": 44,
-      "beat_in_bar": 3,
+      "bar": 43,
+      "beat_in_bar": 4,
       "energy_score": 0.523656,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2887,10 +2796,10 @@
       "flux_avg": 0.266307,
       "onset_density": 0.485349,
       "bar": 44,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.469585,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-003",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -2900,11 +2809,11 @@
       "centroid_avg": 4048.368209,
       "flux_avg": 0.298312,
       "onset_density": 0.467618,
-      "bar": 45,
-      "beat_in_bar": 1,
+      "bar": 44,
+      "beat_in_bar": 2,
       "energy_score": 0.463255,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -2914,11 +2823,11 @@
       "centroid_avg": 3641.891829,
       "flux_avg": 0.308498,
       "onset_density": 0.414641,
-      "bar": 45,
-      "beat_in_bar": 2,
+      "bar": 44,
+      "beat_in_bar": 3,
       "energy_score": 0.421758,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -2928,11 +2837,11 @@
       "centroid_avg": 3406.801045,
       "flux_avg": 0.302484,
       "onset_density": 0.444217,
-      "bar": 45,
-      "beat_in_bar": 3,
+      "bar": 44,
+      "beat_in_bar": 4,
       "energy_score": 0.444033,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -2943,10 +2852,10 @@
       "flux_avg": 0.304214,
       "onset_density": 0.414835,
       "bar": 45,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.42094,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -2956,11 +2865,11 @@
       "centroid_avg": 3117.775708,
       "flux_avg": 0.334088,
       "onset_density": 0.405686,
-      "bar": 46,
-      "beat_in_bar": 1,
+      "bar": 45,
+      "beat_in_bar": 2,
       "energy_score": 0.415924,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -2970,11 +2879,11 @@
       "centroid_avg": 2624.245762,
       "flux_avg": 0.350502,
       "onset_density": 0.384731,
-      "bar": 46,
-      "beat_in_bar": 2,
+      "bar": 45,
+      "beat_in_bar": 3,
       "energy_score": 0.395976,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -2984,11 +2893,11 @@
       "centroid_avg": 2406.733966,
       "flux_avg": 0.340534,
       "onset_density": 0.352195,
-      "bar": 46,
-      "beat_in_bar": 3,
+      "bar": 45,
+      "beat_in_bar": 4,
       "energy_score": 0.360032,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -2999,10 +2908,10 @@
       "flux_avg": 0.340314,
       "onset_density": 0.337277,
       "bar": 46,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.336017,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "low"
     },
     {
@@ -3012,11 +2921,11 @@
       "centroid_avg": 3269.381015,
       "flux_avg": 0.323045,
       "onset_density": 0.386573,
-      "bar": 47,
-      "beat_in_bar": 1,
+      "bar": 46,
+      "beat_in_bar": 2,
       "energy_score": 0.392111,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3026,11 +2935,11 @@
       "centroid_avg": 2926.930585,
       "flux_avg": 0.363291,
       "onset_density": 0.371809,
-      "bar": 47,
-      "beat_in_bar": 2,
+      "bar": 46,
+      "beat_in_bar": 3,
       "energy_score": 0.391881,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3040,11 +2949,11 @@
       "centroid_avg": 3341.512823,
       "flux_avg": 0.35875,
       "onset_density": 0.393187,
-      "bar": 47,
-      "beat_in_bar": 3,
+      "bar": 46,
+      "beat_in_bar": 4,
       "energy_score": 0.402268,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3055,10 +2964,10 @@
       "flux_avg": 0.342983,
       "onset_density": 0.357802,
       "bar": 47,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.378877,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3068,11 +2977,11 @@
       "centroid_avg": 2742.832282,
       "flux_avg": 0.352535,
       "onset_density": 0.370375,
-      "bar": 48,
-      "beat_in_bar": 1,
+      "bar": 47,
+      "beat_in_bar": 2,
       "energy_score": 0.394809,
-      "section_id": "section-005",
-      "section_name": "flowing_plateau",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3082,11 +2991,11 @@
       "centroid_avg": 2473.914053,
       "flux_avg": 0.362368,
       "onset_density": 0.373806,
-      "bar": 48,
-      "beat_in_bar": 2,
+      "bar": 47,
+      "beat_in_bar": 3,
       "energy_score": 0.387513,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3096,11 +3005,11 @@
       "centroid_avg": 3424.673847,
       "flux_avg": 0.329572,
       "onset_density": 0.324286,
-      "bar": 48,
-      "beat_in_bar": 3,
+      "bar": 47,
+      "beat_in_bar": 4,
       "energy_score": 0.342601,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "low"
     },
     {
@@ -3111,10 +3020,10 @@
       "flux_avg": 0.317529,
       "onset_density": 0.329687,
       "bar": 48,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.349138,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3124,11 +3033,11 @@
       "centroid_avg": 3599.112134,
       "flux_avg": 0.33521,
       "onset_density": 0.390383,
-      "bar": 49,
-      "beat_in_bar": 1,
+      "bar": 48,
+      "beat_in_bar": 2,
       "energy_score": 0.403609,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3138,11 +3047,11 @@
       "centroid_avg": 3559.843333,
       "flux_avg": 0.338352,
       "onset_density": 0.385812,
-      "bar": 49,
-      "beat_in_bar": 2,
+      "bar": 48,
+      "beat_in_bar": 3,
       "energy_score": 0.400788,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3152,11 +3061,11 @@
       "centroid_avg": 3217.325183,
       "flux_avg": 0.329084,
       "onset_density": 0.417459,
-      "bar": 49,
-      "beat_in_bar": 3,
+      "bar": 48,
+      "beat_in_bar": 4,
       "energy_score": 0.429861,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3167,10 +3076,10 @@
       "flux_avg": 0.309254,
       "onset_density": 0.40962,
       "bar": 49,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.418494,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3180,11 +3089,11 @@
       "centroid_avg": 2967.333628,
       "flux_avg": 0.311478,
       "onset_density": 0.412044,
-      "bar": 50,
-      "beat_in_bar": 1,
+      "bar": 49,
+      "beat_in_bar": 2,
       "energy_score": 0.41931,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3194,11 +3103,11 @@
       "centroid_avg": 2714.264638,
       "flux_avg": 0.342463,
       "onset_density": 0.403279,
-      "bar": 50,
-      "beat_in_bar": 2,
+      "bar": 49,
+      "beat_in_bar": 3,
       "energy_score": 0.406249,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3208,11 +3117,11 @@
       "centroid_avg": 2944.130405,
       "flux_avg": 0.328657,
       "onset_density": 0.336201,
-      "bar": 50,
-      "beat_in_bar": 3,
+      "bar": 49,
+      "beat_in_bar": 4,
       "energy_score": 0.349683,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3223,10 +3132,10 @@
       "flux_avg": 0.321967,
       "onset_density": 0.376218,
       "bar": 50,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.385841,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3236,11 +3145,11 @@
       "centroid_avg": 3971.27249,
       "flux_avg": 0.281266,
       "onset_density": 0.382626,
-      "bar": 51,
-      "beat_in_bar": 1,
+      "bar": 50,
+      "beat_in_bar": 2,
       "energy_score": 0.389609,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3250,11 +3159,11 @@
       "centroid_avg": 3597.514725,
       "flux_avg": 0.321348,
       "onset_density": 0.407546,
-      "bar": 51,
-      "beat_in_bar": 2,
+      "bar": 50,
+      "beat_in_bar": 3,
       "energy_score": 0.420458,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "medium"
     },
     {
@@ -3264,11 +3173,11 @@
       "centroid_avg": 3203.511858,
       "flux_avg": 0.327445,
       "onset_density": 0.446789,
-      "bar": 51,
-      "beat_in_bar": 3,
+      "bar": 50,
+      "beat_in_bar": 4,
       "energy_score": 0.453702,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3279,10 +3188,10 @@
       "flux_avg": 0.320197,
       "onset_density": 0.419261,
       "bar": 51,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.429326,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3292,11 +3201,11 @@
       "centroid_avg": 3379.146677,
       "flux_avg": 0.314746,
       "onset_density": 0.421857,
-      "bar": 52,
-      "beat_in_bar": 1,
+      "bar": 51,
+      "beat_in_bar": 2,
       "energy_score": 0.430375,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3306,11 +3215,11 @@
       "centroid_avg": 3354.898732,
       "flux_avg": 0.317884,
       "onset_density": 0.447978,
-      "bar": 52,
-      "beat_in_bar": 2,
+      "bar": 51,
+      "beat_in_bar": 3,
       "energy_score": 0.452273,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3320,11 +3229,11 @@
       "centroid_avg": 4177.271896,
       "flux_avg": 0.275002,
       "onset_density": 0.486933,
-      "bar": 52,
-      "beat_in_bar": 3,
+      "bar": 51,
+      "beat_in_bar": 4,
       "energy_score": 0.473039,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-004",
+      "section_name": "verse",
       "level": "high"
     },
     {
@@ -3335,10 +3244,10 @@
       "flux_avg": 0.286141,
       "onset_density": 0.486098,
       "bar": 52,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.475149,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3348,11 +3257,11 @@
       "centroid_avg": 3847.94996,
       "flux_avg": 0.312427,
       "onset_density": 0.480496,
-      "bar": 53,
-      "beat_in_bar": 1,
+      "bar": 52,
+      "beat_in_bar": 2,
       "energy_score": 0.477192,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3362,11 +3271,11 @@
       "centroid_avg": 3568.086072,
       "flux_avg": 0.292074,
       "onset_density": 0.480041,
-      "bar": 53,
-      "beat_in_bar": 2,
+      "bar": 52,
+      "beat_in_bar": 3,
       "energy_score": 0.471737,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3376,11 +3285,11 @@
       "centroid_avg": 3731.832438,
       "flux_avg": 0.291379,
       "onset_density": 0.475001,
-      "bar": 53,
-      "beat_in_bar": 3,
+      "bar": 52,
+      "beat_in_bar": 4,
       "energy_score": 0.467489,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3391,10 +3300,10 @@
       "flux_avg": 0.303457,
       "onset_density": 0.453106,
       "bar": 53,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.452811,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3404,11 +3313,11 @@
       "centroid_avg": 3589.678936,
       "flux_avg": 0.306472,
       "onset_density": 0.474789,
-      "bar": 54,
-      "beat_in_bar": 1,
+      "bar": 53,
+      "beat_in_bar": 2,
       "energy_score": 0.471091,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3418,11 +3327,11 @@
       "centroid_avg": 4215.762394,
       "flux_avg": 0.281333,
       "onset_density": 0.492248,
-      "bar": 54,
-      "beat_in_bar": 2,
+      "bar": 53,
+      "beat_in_bar": 3,
       "energy_score": 0.478918,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3432,11 +3341,11 @@
       "centroid_avg": 3814.467314,
       "flux_avg": 0.291393,
       "onset_density": 0.519096,
-      "bar": 54,
-      "beat_in_bar": 3,
+      "bar": 53,
+      "beat_in_bar": 4,
       "energy_score": 0.503134,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3447,10 +3356,10 @@
       "flux_avg": 0.30176,
       "onset_density": 0.470737,
       "bar": 54,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.466638,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3460,11 +3369,11 @@
       "centroid_avg": 3857.365136,
       "flux_avg": 0.301162,
       "onset_density": 0.46952,
-      "bar": 55,
-      "beat_in_bar": 1,
+      "bar": 54,
+      "beat_in_bar": 2,
       "energy_score": 0.465504,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3474,11 +3383,11 @@
       "centroid_avg": 3694.095372,
       "flux_avg": 0.308324,
       "onset_density": 0.499254,
-      "bar": 55,
-      "beat_in_bar": 2,
+      "bar": 54,
+      "beat_in_bar": 3,
       "energy_score": 0.491329,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3488,11 +3397,11 @@
       "centroid_avg": 3635.524781,
       "flux_avg": 0.319066,
       "onset_density": 0.494459,
-      "bar": 55,
-      "beat_in_bar": 3,
+      "bar": 54,
+      "beat_in_bar": 4,
       "energy_score": 0.490139,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3503,10 +3412,10 @@
       "flux_avg": 0.317423,
       "onset_density": 0.50156,
       "bar": 55,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.495467,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3516,11 +3425,11 @@
       "centroid_avg": 3541.360089,
       "flux_avg": 0.323947,
       "onset_density": 0.495222,
-      "bar": 56,
-      "beat_in_bar": 1,
+      "bar": 55,
+      "beat_in_bar": 2,
       "energy_score": 0.491976,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3530,11 +3439,11 @@
       "centroid_avg": 3731.627491,
       "flux_avg": 0.317845,
       "onset_density": 0.467327,
-      "bar": 56,
-      "beat_in_bar": 2,
+      "bar": 55,
+      "beat_in_bar": 3,
       "energy_score": 0.467903,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3544,11 +3453,11 @@
       "centroid_avg": 3561.716221,
       "flux_avg": 0.308681,
       "onset_density": 0.551186,
-      "bar": 56,
-      "beat_in_bar": 3,
+      "bar": 55,
+      "beat_in_bar": 4,
       "energy_score": 0.533394,
-      "section_id": "section-006",
-      "section_name": "momentum_lift",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3559,10 +3468,10 @@
       "flux_avg": 0.326338,
       "onset_density": 0.533346,
       "bar": 56,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.523389,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3572,11 +3481,11 @@
       "centroid_avg": 3515.343429,
       "flux_avg": 0.319821,
       "onset_density": 0.531947,
-      "bar": 57,
-      "beat_in_bar": 1,
+      "bar": 56,
+      "beat_in_bar": 2,
       "energy_score": 0.520628,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3586,11 +3495,11 @@
       "centroid_avg": 3603.758451,
       "flux_avg": 0.307482,
       "onset_density": 0.576511,
-      "bar": 57,
-      "beat_in_bar": 2,
+      "bar": 56,
+      "beat_in_bar": 3,
       "energy_score": 0.553565,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3600,11 +3509,11 @@
       "centroid_avg": 3631.062307,
       "flux_avg": 0.308202,
       "onset_density": 0.549915,
-      "bar": 57,
-      "beat_in_bar": 3,
+      "bar": 56,
+      "beat_in_bar": 4,
       "energy_score": 0.532247,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3615,10 +3524,10 @@
       "flux_avg": 0.305777,
       "onset_density": 0.555786,
       "bar": 57,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.536386,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3628,11 +3537,11 @@
       "centroid_avg": 3733.74502,
       "flux_avg": 0.304473,
       "onset_density": 0.547825,
-      "bar": 58,
-      "beat_in_bar": 1,
+      "bar": 57,
+      "beat_in_bar": 2,
       "energy_score": 0.529626,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3642,11 +3551,11 @@
       "centroid_avg": 3957.090091,
       "flux_avg": 0.287495,
       "onset_density": 0.554422,
-      "bar": 58,
-      "beat_in_bar": 2,
+      "bar": 57,
+      "beat_in_bar": 3,
       "energy_score": 0.530713,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3656,11 +3565,11 @@
       "centroid_avg": 3669.407728,
       "flux_avg": 0.280692,
       "onset_density": 0.580614,
-      "bar": 58,
-      "beat_in_bar": 3,
+      "bar": 57,
+      "beat_in_bar": 4,
       "energy_score": 0.550183,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3671,10 +3580,10 @@
       "flux_avg": 0.281597,
       "onset_density": 0.485141,
       "bar": 58,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.47324,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3684,11 +3593,11 @@
       "centroid_avg": 4335.766819,
       "flux_avg": 0.271987,
       "onset_density": 0.487943,
-      "bar": 59,
-      "beat_in_bar": 1,
+      "bar": 58,
+      "beat_in_bar": 2,
       "energy_score": 0.473102,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3698,11 +3607,11 @@
       "centroid_avg": 4459.621946,
       "flux_avg": 0.267808,
       "onset_density": 0.54368,
-      "bar": 59,
-      "beat_in_bar": 2,
+      "bar": 58,
+      "beat_in_bar": 3,
       "energy_score": 0.517109,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3712,11 +3621,11 @@
       "centroid_avg": 4820.551432,
       "flux_avg": 0.256385,
       "onset_density": 0.538374,
-      "bar": 59,
-      "beat_in_bar": 3,
+      "bar": 58,
+      "beat_in_bar": 4,
       "energy_score": 0.509965,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3727,10 +3636,10 @@
       "flux_avg": 0.332394,
       "onset_density": 0.338801,
       "bar": 59,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.340971,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "low"
     },
     {
@@ -3740,11 +3649,11 @@
       "centroid_avg": 3508.020537,
       "flux_avg": 0.391804,
       "onset_density": 0.414397,
-      "bar": 60,
-      "beat_in_bar": 1,
+      "bar": 59,
+      "beat_in_bar": 2,
       "energy_score": 0.39324,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "medium"
     },
     {
@@ -3754,11 +3663,11 @@
       "centroid_avg": 4346.356259,
       "flux_avg": 0.346854,
       "onset_density": 0.358458,
-      "bar": 60,
-      "beat_in_bar": 2,
+      "bar": 59,
+      "beat_in_bar": 3,
       "energy_score": 0.359886,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "medium"
     },
     {
@@ -3768,11 +3677,11 @@
       "centroid_avg": 5567.875236,
       "flux_avg": 0.286267,
       "onset_density": 0.490629,
-      "bar": 60,
-      "beat_in_bar": 3,
+      "bar": 59,
+      "beat_in_bar": 4,
       "energy_score": 0.475037,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3783,10 +3692,10 @@
       "flux_avg": 0.280863,
       "onset_density": 0.443406,
       "bar": 60,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.439322,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-005",
+      "section_name": "chorus",
       "level": "high"
     },
     {
@@ -3796,11 +3705,11 @@
       "centroid_avg": 5618.466427,
       "flux_avg": 0.251633,
       "onset_density": 0.537687,
-      "bar": 61,
-      "beat_in_bar": 1,
+      "bar": 60,
+      "beat_in_bar": 2,
       "energy_score": 0.508221,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3810,11 +3719,11 @@
       "centroid_avg": 5436.500065,
       "flux_avg": 0.252429,
       "onset_density": 0.479365,
-      "bar": 61,
-      "beat_in_bar": 2,
+      "bar": 60,
+      "beat_in_bar": 3,
       "energy_score": 0.461279,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3824,11 +3733,11 @@
       "centroid_avg": 5847.927577,
       "flux_avg": 0.232178,
       "onset_density": 0.537776,
-      "bar": 61,
-      "beat_in_bar": 3,
+      "bar": 60,
+      "beat_in_bar": 4,
       "energy_score": 0.50343,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3839,10 +3748,10 @@
       "flux_avg": 0.232463,
       "onset_density": 0.549555,
       "bar": 61,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.513022,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3852,11 +3761,11 @@
       "centroid_avg": 5692.085551,
       "flux_avg": 0.235831,
       "onset_density": 0.520356,
-      "bar": 62,
-      "beat_in_bar": 1,
+      "bar": 61,
+      "beat_in_bar": 2,
       "energy_score": 0.490262,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3866,11 +3775,11 @@
       "centroid_avg": 5852.153405,
       "flux_avg": 0.230441,
       "onset_density": 0.493395,
-      "bar": 62,
-      "beat_in_bar": 2,
+      "bar": 61,
+      "beat_in_bar": 3,
       "energy_score": 0.467122,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3880,11 +3789,11 @@
       "centroid_avg": 4785.921227,
       "flux_avg": 0.266758,
       "onset_density": 0.54774,
-      "bar": 62,
-      "beat_in_bar": 3,
+      "bar": 61,
+      "beat_in_bar": 4,
       "energy_score": 0.520128,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3895,10 +3804,10 @@
       "flux_avg": 0.245675,
       "onset_density": 0.434114,
       "bar": 62,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.423015,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -3908,11 +3817,11 @@
       "centroid_avg": 5801.210612,
       "flux_avg": 0.234734,
       "onset_density": 0.478001,
-      "bar": 63,
-      "beat_in_bar": 1,
+      "bar": 62,
+      "beat_in_bar": 2,
       "energy_score": 0.455753,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3922,11 +3831,11 @@
       "centroid_avg": 5480.648904,
       "flux_avg": 0.245287,
       "onset_density": 0.43929,
-      "bar": 63,
-      "beat_in_bar": 2,
+      "bar": 62,
+      "beat_in_bar": 3,
       "energy_score": 0.427101,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -3936,11 +3845,11 @@
       "centroid_avg": 6094.769942,
       "flux_avg": 0.230601,
       "onset_density": 0.516694,
-      "bar": 63,
-      "beat_in_bar": 3,
+      "bar": 62,
+      "beat_in_bar": 4,
       "energy_score": 0.485995,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3951,10 +3860,10 @@
       "flux_avg": 0.240931,
       "onset_density": 0.498475,
       "bar": 63,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.473851,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3964,11 +3873,11 @@
       "centroid_avg": 6102.722766,
       "flux_avg": 0.230599,
       "onset_density": 0.487084,
-      "bar": 64,
-      "beat_in_bar": 1,
+      "bar": 63,
+      "beat_in_bar": 2,
       "energy_score": 0.462061,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3978,11 +3887,11 @@
       "centroid_avg": 5346.904472,
       "flux_avg": 0.240315,
       "onset_density": 0.457452,
-      "bar": 64,
-      "beat_in_bar": 2,
+      "bar": 63,
+      "beat_in_bar": 3,
       "energy_score": 0.440539,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -3992,11 +3901,11 @@
       "centroid_avg": 5787.80258,
       "flux_avg": 0.251832,
       "onset_density": 0.383514,
-      "bar": 64,
-      "beat_in_bar": 3,
+      "bar": 63,
+      "beat_in_bar": 4,
       "energy_score": 0.383654,
-      "section_id": "section-007",
-      "section_name": "instrumental_bed",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4007,10 +3916,10 @@
       "flux_avg": 0.267174,
       "onset_density": 0.429182,
       "bar": 64,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.424403,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4020,11 +3929,11 @@
       "centroid_avg": 5623.578295,
       "flux_avg": 0.235416,
       "onset_density": 0.514661,
-      "bar": 65,
-      "beat_in_bar": 1,
+      "bar": 64,
+      "beat_in_bar": 2,
       "energy_score": 0.485555,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4034,11 +3943,11 @@
       "centroid_avg": 5359.128116,
       "flux_avg": 0.244157,
       "onset_density": 0.494695,
-      "bar": 65,
-      "beat_in_bar": 2,
+      "bar": 64,
+      "beat_in_bar": 3,
       "energy_score": 0.471602,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4048,11 +3957,11 @@
       "centroid_avg": 5942.276357,
       "flux_avg": 0.23568,
       "onset_density": 0.520454,
-      "bar": 65,
-      "beat_in_bar": 3,
+      "bar": 64,
+      "beat_in_bar": 4,
       "energy_score": 0.490304,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4063,10 +3972,10 @@
       "flux_avg": 0.231973,
       "onset_density": 0.536332,
       "bar": 65,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.502211,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4076,11 +3985,11 @@
       "centroid_avg": 5664.573838,
       "flux_avg": 0.242643,
       "onset_density": 0.539148,
-      "bar": 66,
-      "beat_in_bar": 1,
+      "bar": 65,
+      "beat_in_bar": 2,
       "energy_score": 0.507154,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4090,11 +3999,11 @@
       "centroid_avg": 5593.976519,
       "flux_avg": 0.232442,
       "onset_density": 0.523353,
-      "bar": 66,
-      "beat_in_bar": 2,
+      "bar": 65,
+      "beat_in_bar": 3,
       "energy_score": 0.491838,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4104,11 +4013,11 @@
       "centroid_avg": 4816.026596,
       "flux_avg": 0.264519,
       "onset_density": 0.559741,
-      "bar": 66,
-      "beat_in_bar": 3,
+      "bar": 65,
+      "beat_in_bar": 4,
       "energy_score": 0.529269,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4119,10 +4028,10 @@
       "flux_avg": 0.250407,
       "onset_density": 0.448485,
       "bar": 66,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.435814,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4132,11 +4041,11 @@
       "centroid_avg": 6213.515582,
       "flux_avg": 0.231668,
       "onset_density": 0.481277,
-      "bar": 67,
-      "beat_in_bar": 1,
+      "bar": 66,
+      "beat_in_bar": 2,
       "energy_score": 0.457634,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4146,11 +4055,11 @@
       "centroid_avg": 5647.556521,
       "flux_avg": 0.252502,
       "onset_density": 0.440743,
-      "bar": 67,
-      "beat_in_bar": 2,
+      "bar": 66,
+      "beat_in_bar": 3,
       "energy_score": 0.430079,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4160,11 +4069,11 @@
       "centroid_avg": 6269.51588,
       "flux_avg": 0.225873,
       "onset_density": 0.510935,
-      "bar": 67,
-      "beat_in_bar": 3,
+      "bar": 66,
+      "beat_in_bar": 4,
       "energy_score": 0.480158,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4175,10 +4084,10 @@
       "flux_avg": 0.236291,
       "onset_density": 0.565852,
       "bar": 67,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.527151,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4188,11 +4097,11 @@
       "centroid_avg": 5655.292118,
       "flux_avg": 0.231211,
       "onset_density": 0.528336,
-      "bar": 68,
-      "beat_in_bar": 1,
+      "bar": 67,
+      "beat_in_bar": 2,
       "energy_score": 0.495557,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4202,11 +4111,11 @@
       "centroid_avg": 5200.37394,
       "flux_avg": 0.242506,
       "onset_density": 0.48027,
-      "bar": 68,
-      "beat_in_bar": 2,
+      "bar": 67,
+      "beat_in_bar": 3,
       "energy_score": 0.45953,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4216,11 +4125,11 @@
       "centroid_avg": 5384.083833,
       "flux_avg": 0.240244,
       "onset_density": 0.429846,
-      "bar": 68,
-      "beat_in_bar": 3,
+      "bar": 67,
+      "beat_in_bar": 4,
       "energy_score": 0.418207,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4231,10 +4140,10 @@
       "flux_avg": 0.248277,
       "onset_density": 0.450561,
       "bar": 68,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.436959,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4244,11 +4153,11 @@
       "centroid_avg": 4220.091051,
       "flux_avg": 0.276444,
       "onset_density": 0.332096,
-      "bar": 69,
-      "beat_in_bar": 1,
+      "bar": 68,
+      "beat_in_bar": 2,
       "energy_score": 0.347221,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4258,11 +4167,11 @@
       "centroid_avg": 3297.661662,
       "flux_avg": 0.294094,
       "onset_density": 0.285189,
-      "bar": 69,
-      "beat_in_bar": 2,
+      "bar": 68,
+      "beat_in_bar": 3,
       "energy_score": 0.299915,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4272,11 +4181,11 @@
       "centroid_avg": 3048.131657,
       "flux_avg": 0.348626,
       "onset_density": 0.341138,
-      "bar": 69,
-      "beat_in_bar": 3,
+      "bar": 68,
+      "beat_in_bar": 4,
       "energy_score": 0.337463,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4287,10 +4196,10 @@
       "flux_avg": 0.268655,
       "onset_density": 0.44588,
       "bar": 69,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.43827,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4300,11 +4209,11 @@
       "centroid_avg": 3441.926385,
       "flux_avg": 0.322664,
       "onset_density": 0.388265,
-      "bar": 70,
-      "beat_in_bar": 1,
+      "bar": 69,
+      "beat_in_bar": 2,
       "energy_score": 0.403777,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4314,11 +4223,11 @@
       "centroid_avg": 2708.319782,
       "flux_avg": 0.316396,
       "onset_density": 0.328409,
-      "bar": 70,
-      "beat_in_bar": 2,
+      "bar": 69,
+      "beat_in_bar": 3,
       "energy_score": 0.344089,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4328,11 +4237,11 @@
       "centroid_avg": 2502.92531,
       "flux_avg": 0.387745,
       "onset_density": 0.411809,
-      "bar": 70,
-      "beat_in_bar": 3,
+      "bar": 69,
+      "beat_in_bar": 4,
       "energy_score": 0.418942,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4343,10 +4252,10 @@
       "flux_avg": 0.258987,
       "onset_density": 0.379965,
       "bar": 70,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.382574,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4356,11 +4265,11 @@
       "centroid_avg": 3375.030438,
       "flux_avg": 0.287749,
       "onset_density": 0.359831,
-      "bar": 71,
-      "beat_in_bar": 1,
+      "bar": 70,
+      "beat_in_bar": 2,
       "energy_score": 0.372399,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4370,11 +4279,11 @@
       "centroid_avg": 2436.924132,
       "flux_avg": 0.309448,
       "onset_density": 0.372561,
-      "bar": 71,
-      "beat_in_bar": 2,
+      "bar": 70,
+      "beat_in_bar": 3,
       "energy_score": 0.387839,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4384,11 +4293,11 @@
       "centroid_avg": 2516.766225,
       "flux_avg": 0.373635,
       "onset_density": 0.384153,
-      "bar": 71,
-      "beat_in_bar": 3,
+      "bar": 70,
+      "beat_in_bar": 4,
       "energy_score": 0.382186,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4399,10 +4308,10 @@
       "flux_avg": 0.264454,
       "onset_density": 0.448109,
       "bar": 71,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.438696,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4412,11 +4321,11 @@
       "centroid_avg": 3448.878713,
       "flux_avg": 0.296635,
       "onset_density": 0.32112,
-      "bar": 72,
-      "beat_in_bar": 1,
+      "bar": 71,
+      "beat_in_bar": 2,
       "energy_score": 0.341987,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4426,11 +4335,11 @@
       "centroid_avg": 2718.027831,
       "flux_avg": 0.302873,
       "onset_density": 0.297922,
-      "bar": 72,
-      "beat_in_bar": 2,
+      "bar": 71,
+      "beat_in_bar": 3,
       "energy_score": 0.316942,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4440,11 +4349,11 @@
       "centroid_avg": 2627.392916,
       "flux_avg": 0.345704,
       "onset_density": 0.349303,
-      "bar": 72,
-      "beat_in_bar": 3,
+      "bar": 71,
+      "beat_in_bar": 4,
       "energy_score": 0.34337,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4455,10 +4364,10 @@
       "flux_avg": 0.256753,
       "onset_density": 0.386209,
       "bar": 72,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.387062,
-      "section_id": "section-008",
-      "section_name": "groove_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4468,11 +4377,11 @@
       "centroid_avg": 3911.94458,
       "flux_avg": 0.284252,
       "onset_density": 0.33664,
-      "bar": 73,
-      "beat_in_bar": 1,
+      "bar": 72,
+      "beat_in_bar": 2,
       "energy_score": 0.351808,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4482,11 +4391,11 @@
       "centroid_avg": 4779.890631,
       "flux_avg": 0.251223,
       "onset_density": 0.359019,
-      "bar": 73,
-      "beat_in_bar": 2,
+      "bar": 72,
+      "beat_in_bar": 3,
       "energy_score": 0.363702,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4496,11 +4405,11 @@
       "centroid_avg": 3907.637335,
       "flux_avg": 0.283842,
       "onset_density": 0.325889,
-      "bar": 73,
-      "beat_in_bar": 3,
+      "bar": 72,
+      "beat_in_bar": 4,
       "energy_score": 0.339097,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -4511,10 +4420,10 @@
       "flux_avg": 0.269162,
       "onset_density": 0.3989,
       "bar": 73,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.400423,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4524,11 +4433,11 @@
       "centroid_avg": 3730.855417,
       "flux_avg": 0.307616,
       "onset_density": 0.356114,
-      "bar": 74,
-      "beat_in_bar": 1,
+      "bar": 73,
+      "beat_in_bar": 2,
       "energy_score": 0.372293,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4538,11 +4447,11 @@
       "centroid_avg": 4642.471541,
       "flux_avg": 0.261294,
       "onset_density": 0.38563,
-      "bar": 74,
-      "beat_in_bar": 2,
+      "bar": 73,
+      "beat_in_bar": 3,
       "energy_score": 0.387729,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4552,11 +4461,11 @@
       "centroid_avg": 3622.631325,
       "flux_avg": 0.281229,
       "onset_density": 0.389028,
-      "bar": 74,
-      "beat_in_bar": 3,
+      "bar": 73,
+      "beat_in_bar": 4,
       "energy_score": 0.394323,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4567,10 +4476,10 @@
       "flux_avg": 0.251672,
       "onset_density": 0.370068,
       "bar": 74,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.372746,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4580,11 +4489,11 @@
       "centroid_avg": 4848.66109,
       "flux_avg": 0.261505,
       "onset_density": 0.389232,
-      "bar": 75,
-      "beat_in_bar": 1,
+      "bar": 74,
+      "beat_in_bar": 2,
       "energy_score": 0.390694,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4594,11 +4503,11 @@
       "centroid_avg": 4805.861504,
       "flux_avg": 0.257845,
       "onset_density": 0.391554,
-      "bar": 75,
-      "beat_in_bar": 2,
+      "bar": 74,
+      "beat_in_bar": 3,
       "energy_score": 0.391656,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4608,11 +4517,11 @@
       "centroid_avg": 4801.232511,
       "flux_avg": 0.266341,
       "onset_density": 0.392453,
-      "bar": 75,
-      "beat_in_bar": 3,
+      "bar": 74,
+      "beat_in_bar": 4,
       "energy_score": 0.394506,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4623,10 +4532,10 @@
       "flux_avg": 0.264628,
       "onset_density": 0.411778,
       "bar": 75,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.409698,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4636,11 +4545,11 @@
       "centroid_avg": 4719.3007,
       "flux_avg": 0.269316,
       "onset_density": 0.405764,
-      "bar": 76,
-      "beat_in_bar": 1,
+      "bar": 75,
+      "beat_in_bar": 2,
       "energy_score": 0.40601,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4650,11 +4559,11 @@
       "centroid_avg": 4640.989452,
       "flux_avg": 0.266355,
       "onset_density": 0.44182,
-      "bar": 76,
-      "beat_in_bar": 2,
+      "bar": 75,
+      "beat_in_bar": 3,
       "energy_score": 0.434413,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4664,11 +4573,11 @@
       "centroid_avg": 4814.846778,
       "flux_avg": 0.255557,
       "onset_density": 0.526275,
-      "bar": 76,
-      "beat_in_bar": 3,
+      "bar": 75,
+      "beat_in_bar": 4,
       "energy_score": 0.499978,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4679,10 +4588,10 @@
       "flux_avg": 0.25379,
       "onset_density": 0.475579,
       "bar": 76,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.458559,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4692,11 +4601,11 @@
       "centroid_avg": 4816.242385,
       "flux_avg": 0.268024,
       "onset_density": 0.499787,
-      "bar": 77,
-      "beat_in_bar": 1,
+      "bar": 76,
+      "beat_in_bar": 2,
       "energy_score": 0.481685,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4706,11 +4615,11 @@
       "centroid_avg": 4655.79189,
       "flux_avg": 0.268558,
       "onset_density": 0.523457,
-      "bar": 77,
-      "beat_in_bar": 2,
+      "bar": 76,
+      "beat_in_bar": 3,
       "energy_score": 0.50095,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -4720,11 +4629,11 @@
       "centroid_avg": 4694.593645,
       "flux_avg": 0.26153,
       "onset_density": 0.432243,
-      "bar": 77,
-      "beat_in_bar": 3,
+      "bar": 76,
+      "beat_in_bar": 4,
       "energy_score": 0.425466,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4735,10 +4644,10 @@
       "flux_avg": 0.258327,
       "onset_density": 0.425653,
       "bar": 77,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.419339,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4748,11 +4657,11 @@
       "centroid_avg": 4702.850374,
       "flux_avg": 0.258454,
       "onset_density": 0.424416,
-      "bar": 78,
-      "beat_in_bar": 1,
+      "bar": 77,
+      "beat_in_bar": 2,
       "energy_score": 0.41837,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4762,11 +4671,11 @@
       "centroid_avg": 4974.647957,
       "flux_avg": 0.252759,
       "onset_density": 0.42609,
-      "bar": 78,
-      "beat_in_bar": 2,
+      "bar": 77,
+      "beat_in_bar": 3,
       "energy_score": 0.418299,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4776,11 +4685,11 @@
       "centroid_avg": 5056.80559,
       "flux_avg": 0.249218,
       "onset_density": 0.433071,
-      "bar": 78,
-      "beat_in_bar": 3,
+      "bar": 77,
+      "beat_in_bar": 4,
       "energy_score": 0.423057,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4791,10 +4700,10 @@
       "flux_avg": 0.25749,
       "onset_density": 0.419667,
       "bar": 78,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.414291,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4804,11 +4713,11 @@
       "centroid_avg": 5100.830517,
       "flux_avg": 0.252557,
       "onset_density": 0.42305,
-      "bar": 79,
-      "beat_in_bar": 1,
+      "bar": 78,
+      "beat_in_bar": 2,
       "energy_score": 0.415792,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4818,11 +4727,11 @@
       "centroid_avg": 4894.114421,
       "flux_avg": 0.254955,
       "onset_density": 0.423138,
-      "bar": 79,
-      "beat_in_bar": 2,
+      "bar": 78,
+      "beat_in_bar": 3,
       "energy_score": 0.416462,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4832,11 +4741,11 @@
       "centroid_avg": 4856.188352,
       "flux_avg": 0.256313,
       "onset_density": 0.404689,
-      "bar": 79,
-      "beat_in_bar": 3,
+      "bar": 78,
+      "beat_in_bar": 4,
       "energy_score": 0.40189,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4847,10 +4756,10 @@
       "flux_avg": 0.258482,
       "onset_density": 0.407072,
       "bar": 79,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.404358,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4860,11 +4769,11 @@
       "centroid_avg": 4999.409508,
       "flux_avg": 0.255003,
       "onset_density": 0.415423,
-      "bar": 80,
-      "beat_in_bar": 1,
+      "bar": 79,
+      "beat_in_bar": 2,
       "energy_score": 0.410238,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4874,11 +4783,11 @@
       "centroid_avg": 5147.384482,
       "flux_avg": 0.251447,
       "onset_density": 0.416463,
-      "bar": 80,
-      "beat_in_bar": 2,
+      "bar": 79,
+      "beat_in_bar": 3,
       "energy_score": 0.41019,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4888,11 +4797,11 @@
       "centroid_avg": 4943.282567,
       "flux_avg": 0.258876,
       "onset_density": 0.410091,
-      "bar": 80,
-      "beat_in_bar": 3,
+      "bar": 79,
+      "beat_in_bar": 4,
       "energy_score": 0.406897,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4903,10 +4812,10 @@
       "flux_avg": 0.257386,
       "onset_density": 0.420171,
       "bar": 80,
-      "beat_in_bar": 4,
+      "beat_in_bar": 1,
       "energy_score": 0.414672,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4916,11 +4825,11 @@
       "centroid_avg": 5219.251727,
       "flux_avg": 0.254726,
       "onset_density": 0.397662,
-      "bar": 81,
-      "beat_in_bar": 1,
+      "bar": 80,
+      "beat_in_bar": 4,
       "energy_score": 0.395813,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4931,10 +4840,10 @@
       "flux_avg": 0.251627,
       "onset_density": 0.414374,
       "bar": 81,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.408546,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4945,10 +4854,10 @@
       "flux_avg": 0.258648,
       "onset_density": 0.402967,
       "bar": 81,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.401082,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4959,10 +4868,10 @@
       "flux_avg": 0.248809,
       "onset_density": 0.420489,
       "bar": 81,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.412785,
-      "section_id": "section-009",
-      "section_name": "flowing_plateau",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4972,11 +4881,11 @@
       "centroid_avg": 5696.381499,
       "flux_avg": 0.244595,
       "onset_density": 0.406746,
-      "bar": 82,
-      "beat_in_bar": 1,
+      "bar": 81,
+      "beat_in_bar": 4,
       "energy_score": 0.400623,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -4987,10 +4896,10 @@
       "flux_avg": 0.229672,
       "onset_density": 0.402146,
       "bar": 82,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.393174,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5001,10 +4910,10 @@
       "flux_avg": 0.228688,
       "onset_density": 0.33348,
       "bar": 82,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.337426,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5015,10 +4924,10 @@
       "flux_avg": 0.231713,
       "onset_density": 0.33843,
       "bar": 82,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.342183,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5028,11 +4937,11 @@
       "centroid_avg": 6603.747503,
       "flux_avg": 0.234778,
       "onset_density": 0.347913,
-      "bar": 83,
-      "beat_in_bar": 1,
+      "bar": 82,
+      "beat_in_bar": 4,
       "energy_score": 0.350614,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5043,10 +4952,10 @@
       "flux_avg": 0.23786,
       "onset_density": 0.30605,
       "bar": 83,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.317547,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5057,10 +4966,10 @@
       "flux_avg": 0.23047,
       "onset_density": 0.332678,
       "bar": 83,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.337223,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5071,10 +4980,10 @@
       "flux_avg": 0.234816,
       "onset_density": 0.354302,
       "bar": 83,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.355788,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5084,11 +4993,11 @@
       "centroid_avg": 6659.506867,
       "flux_avg": 0.241632,
       "onset_density": 0.32867,
-      "bar": 84,
-      "beat_in_bar": 1,
+      "bar": 83,
+      "beat_in_bar": 4,
       "energy_score": 0.334477,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5099,10 +5008,10 @@
       "flux_avg": 0.328035,
       "onset_density": 0.323618,
       "bar": 84,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.329726,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5113,10 +5022,10 @@
       "flux_avg": 0.264818,
       "onset_density": 0.242021,
       "bar": 84,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.229217,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5127,10 +5036,10 @@
       "flux_avg": 0.287283,
       "onset_density": 0.262513,
       "bar": 84,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.239712,
-      "section_id": "section-010",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5140,11 +5049,11 @@
       "centroid_avg": 4567.715305,
       "flux_avg": 0.285955,
       "onset_density": 0.264097,
-      "bar": 85,
-      "beat_in_bar": 1,
+      "bar": 84,
+      "beat_in_bar": 4,
       "energy_score": 0.222535,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5155,10 +5064,10 @@
       "flux_avg": 0.266884,
       "onset_density": 0.260063,
       "bar": 85,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.235539,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5169,10 +5078,10 @@
       "flux_avg": 0.279651,
       "onset_density": 0.262184,
       "bar": 85,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.223174,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5183,10 +5092,10 @@
       "flux_avg": 0.28839,
       "onset_density": 0.264411,
       "bar": 85,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.224446,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5196,11 +5105,11 @@
       "centroid_avg": 4509.112291,
       "flux_avg": 0.288111,
       "onset_density": 0.263947,
-      "bar": 86,
-      "beat_in_bar": 1,
+      "bar": 85,
+      "beat_in_bar": 4,
       "energy_score": 0.216712,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5211,10 +5120,10 @@
       "flux_avg": 0.278037,
       "onset_density": 0.275804,
       "bar": 86,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.260589,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5225,10 +5134,10 @@
       "flux_avg": 0.27581,
       "onset_density": 0.25716,
       "bar": 86,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.241946,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5239,10 +5148,10 @@
       "flux_avg": 0.296403,
       "onset_density": 0.271698,
       "bar": 86,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.235398,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5252,11 +5161,11 @@
       "centroid_avg": 4508.895571,
       "flux_avg": 0.290947,
       "onset_density": 0.272532,
-      "bar": 87,
-      "beat_in_bar": 1,
+      "bar": 86,
+      "beat_in_bar": 4,
       "energy_score": 0.223062,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5267,10 +5176,10 @@
       "flux_avg": 0.246754,
       "onset_density": 0.284427,
       "bar": 87,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.287281,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5281,10 +5190,10 @@
       "flux_avg": 0.279224,
       "onset_density": 0.254711,
       "bar": 87,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.24183,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5295,10 +5204,10 @@
       "flux_avg": 0.291309,
       "onset_density": 0.290967,
       "bar": 87,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.266818,
-      "section_id": "section-011",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5308,11 +5217,11 @@
       "centroid_avg": 5873.916531,
       "flux_avg": 0.247322,
       "onset_density": 0.291491,
-      "bar": 88,
-      "beat_in_bar": 1,
+      "bar": 87,
+      "beat_in_bar": 4,
       "energy_score": 0.307822,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5323,10 +5232,10 @@
       "flux_avg": 0.250097,
       "onset_density": 0.289206,
       "bar": 88,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.301293,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5337,10 +5246,10 @@
       "flux_avg": 0.261465,
       "onset_density": 0.271557,
       "bar": 88,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.291894,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5351,10 +5260,10 @@
       "flux_avg": 0.282658,
       "onset_density": 0.273252,
       "bar": 88,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.279702,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5364,11 +5273,11 @@
       "centroid_avg": 5428.870922,
       "flux_avg": 0.26905,
       "onset_density": 0.277056,
-      "bar": 89,
-      "beat_in_bar": 1,
+      "bar": 88,
+      "beat_in_bar": 4,
       "energy_score": 0.29443,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5379,10 +5288,10 @@
       "flux_avg": 0.267437,
       "onset_density": 0.279981,
       "bar": 89,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.280644,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5393,10 +5302,10 @@
       "flux_avg": 0.267332,
       "onset_density": 0.277129,
       "bar": 89,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.295593,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5407,10 +5316,10 @@
       "flux_avg": 0.284708,
       "onset_density": 0.270271,
       "bar": 89,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.27357,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5420,11 +5329,11 @@
       "centroid_avg": 5377.926821,
       "flux_avg": 0.265846,
       "onset_density": 0.267697,
-      "bar": 90,
-      "beat_in_bar": 1,
+      "bar": 89,
+      "beat_in_bar": 4,
       "energy_score": 0.284883,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5435,10 +5344,10 @@
       "flux_avg": 0.258659,
       "onset_density": 0.300995,
       "bar": 90,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.312177,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5449,10 +5358,10 @@
       "flux_avg": 0.263865,
       "onset_density": 0.290929,
       "bar": 90,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.310793,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5463,10 +5372,10 @@
       "flux_avg": 0.286194,
       "onset_density": 0.285691,
       "bar": 90,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.297121,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5476,11 +5385,11 @@
       "centroid_avg": 5438.43645,
       "flux_avg": 0.26218,
       "onset_density": 0.291489,
-      "bar": 91,
-      "beat_in_bar": 1,
+      "bar": 90,
+      "beat_in_bar": 4,
       "energy_score": 0.30905,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5491,10 +5400,10 @@
       "flux_avg": 0.258516,
       "onset_density": 0.337098,
       "bar": 91,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.343069,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5505,10 +5414,10 @@
       "flux_avg": 0.262409,
       "onset_density": 0.300056,
       "bar": 91,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.31864,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5519,10 +5428,10 @@
       "flux_avg": 0.282979,
       "onset_density": 0.326503,
       "bar": 91,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.337385,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5532,11 +5441,11 @@
       "centroid_avg": 5696.720845,
       "flux_avg": 0.250002,
       "onset_density": 0.400017,
-      "bar": 92,
-      "beat_in_bar": 1,
+      "bar": 91,
+      "beat_in_bar": 4,
       "energy_score": 0.396536,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5547,10 +5456,10 @@
       "flux_avg": 0.261117,
       "onset_density": 0.361095,
       "bar": 92,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.366451,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5561,10 +5470,10 @@
       "flux_avg": 0.265851,
       "onset_density": 0.330044,
       "bar": 92,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.343939,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5575,10 +5484,10 @@
       "flux_avg": 0.284785,
       "onset_density": 0.315121,
       "bar": 92,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.331604,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5588,11 +5497,11 @@
       "centroid_avg": 5524.537746,
       "flux_avg": 0.262011,
       "onset_density": 0.319416,
-      "bar": 93,
-      "beat_in_bar": 1,
+      "bar": 92,
+      "beat_in_bar": 4,
       "energy_score": 0.334225,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5603,10 +5512,10 @@
       "flux_avg": 0.271779,
       "onset_density": 0.316599,
       "bar": 93,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.330252,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5617,10 +5526,10 @@
       "flux_avg": 0.267405,
       "onset_density": 0.312087,
       "bar": 93,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.329489,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5631,10 +5540,10 @@
       "flux_avg": 0.273023,
       "onset_density": 0.29636,
       "bar": 93,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.315453,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5644,11 +5553,11 @@
       "centroid_avg": 5513.311972,
       "flux_avg": 0.262378,
       "onset_density": 0.307665,
-      "bar": 94,
-      "beat_in_bar": 1,
+      "bar": 93,
+      "beat_in_bar": 4,
       "energy_score": 0.324982,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5659,10 +5568,10 @@
       "flux_avg": 0.263074,
       "onset_density": 0.347537,
       "bar": 94,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.357165,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5673,10 +5582,10 @@
       "flux_avg": 0.260385,
       "onset_density": 0.33088,
       "bar": 94,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.343248,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5687,10 +5596,10 @@
       "flux_avg": 0.273406,
       "onset_density": 0.319654,
       "bar": 94,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.334539,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5700,11 +5609,11 @@
       "centroid_avg": 5731.936167,
       "flux_avg": 0.250656,
       "onset_density": 0.359678,
-      "bar": 95,
-      "beat_in_bar": 1,
+      "bar": 94,
+      "beat_in_bar": 4,
       "energy_score": 0.364094,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5715,10 +5624,10 @@
       "flux_avg": 0.263823,
       "onset_density": 0.317774,
       "bar": 95,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.33202,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5729,10 +5638,10 @@
       "flux_avg": 0.2656,
       "onset_density": 0.252718,
       "bar": 95,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.273058,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5743,10 +5652,10 @@
       "flux_avg": 0.263726,
       "onset_density": 0.322824,
       "bar": 95,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.336867,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5756,11 +5665,11 @@
       "centroid_avg": 5227.126628,
       "flux_avg": 0.266461,
       "onset_density": 0.308859,
-      "bar": 96,
-      "beat_in_bar": 1,
+      "bar": 95,
+      "beat_in_bar": 4,
       "energy_score": 0.320987,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5771,10 +5680,10 @@
       "flux_avg": 0.313987,
       "onset_density": 0.427071,
       "bar": 96,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.434294,
-      "section_id": "section-012",
-      "section_name": "breath_space",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5785,10 +5694,10 @@
       "flux_avg": 0.373442,
       "onset_density": 0.505039,
       "bar": 96,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.511095,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5799,10 +5708,10 @@
       "flux_avg": 0.297868,
       "onset_density": 0.421022,
       "bar": 96,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.424372,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5812,11 +5721,11 @@
       "centroid_avg": 3392.528692,
       "flux_avg": 0.319731,
       "onset_density": 0.311484,
-      "bar": 97,
-      "beat_in_bar": 1,
+      "bar": 96,
+      "beat_in_bar": 4,
       "energy_score": 0.318532,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5827,10 +5736,10 @@
       "flux_avg": 0.414158,
       "onset_density": 0.422475,
       "bar": 97,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.438555,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5841,10 +5750,10 @@
       "flux_avg": 0.426401,
       "onset_density": 0.430482,
       "bar": 97,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.430209,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5855,10 +5764,10 @@
       "flux_avg": 0.321696,
       "onset_density": 0.353791,
       "bar": 97,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.359702,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5868,11 +5777,11 @@
       "centroid_avg": 2582.019931,
       "flux_avg": 0.395213,
       "onset_density": 0.438145,
-      "bar": 98,
-      "beat_in_bar": 1,
+      "bar": 97,
+      "beat_in_bar": 4,
       "energy_score": 0.449078,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5883,10 +5792,10 @@
       "flux_avg": 0.310115,
       "onset_density": 0.389783,
       "bar": 98,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.403135,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5897,10 +5806,10 @@
       "flux_avg": 0.371269,
       "onset_density": 0.381288,
       "bar": 98,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.396904,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5911,10 +5820,10 @@
       "flux_avg": 0.312472,
       "onset_density": 0.362682,
       "bar": 98,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.378371,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5924,11 +5833,11 @@
       "centroid_avg": 2583.097269,
       "flux_avg": 0.382014,
       "onset_density": 0.379727,
-      "bar": 99,
-      "beat_in_bar": 1,
+      "bar": 98,
+      "beat_in_bar": 4,
       "energy_score": 0.384897,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5939,10 +5848,10 @@
       "flux_avg": 0.404742,
       "onset_density": 0.415049,
       "bar": 99,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.429767,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "high"
     },
     {
@@ -5953,10 +5862,10 @@
       "flux_avg": 0.421575,
       "onset_density": 0.418506,
       "bar": 99,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.410165,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5967,10 +5876,10 @@
       "flux_avg": 0.30627,
       "onset_density": 0.330345,
       "bar": 99,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.340839,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -5980,11 +5889,11 @@
       "centroid_avg": 3513.874459,
       "flux_avg": 0.313449,
       "onset_density": 0.371377,
-      "bar": 100,
-      "beat_in_bar": 1,
+      "bar": 99,
+      "beat_in_bar": 4,
       "energy_score": 0.388346,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -5995,10 +5904,10 @@
       "flux_avg": 0.306076,
       "onset_density": 0.353835,
       "bar": 100,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.368215,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6009,10 +5918,10 @@
       "flux_avg": 0.376289,
       "onset_density": 0.381128,
       "bar": 100,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.381517,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6023,10 +5932,10 @@
       "flux_avg": 0.303012,
       "onset_density": 0.303811,
       "bar": 100,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.307199,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6036,11 +5945,11 @@
       "centroid_avg": 3126.264923,
       "flux_avg": 0.364697,
       "onset_density": 0.352629,
-      "bar": 101,
-      "beat_in_bar": 1,
+      "bar": 100,
+      "beat_in_bar": 4,
       "energy_score": 0.341611,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6051,10 +5960,10 @@
       "flux_avg": 0.32462,
       "onset_density": 0.393751,
       "bar": 101,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.40802,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6065,10 +5974,10 @@
       "flux_avg": 0.377617,
       "onset_density": 0.404646,
       "bar": 101,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.412568,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6079,10 +5988,10 @@
       "flux_avg": 0.347319,
       "onset_density": 0.345527,
       "bar": 101,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.352765,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6092,11 +6001,11 @@
       "centroid_avg": 2485.513131,
       "flux_avg": 0.342121,
       "onset_density": 0.356661,
-      "bar": 102,
-      "beat_in_bar": 1,
+      "bar": 101,
+      "beat_in_bar": 4,
       "energy_score": 0.378138,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "medium"
     },
     {
@@ -6107,10 +6016,10 @@
       "flux_avg": 0.360121,
       "onset_density": 0.337172,
       "bar": 102,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.291248,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6121,10 +6030,10 @@
       "flux_avg": 0.36828,
       "onset_density": 0.346577,
       "bar": 102,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.333465,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6135,10 +6044,10 @@
       "flux_avg": 0.380275,
       "onset_density": 0.358087,
       "bar": 102,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.324528,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6148,11 +6057,11 @@
       "centroid_avg": 2307.942679,
       "flux_avg": 0.387866,
       "onset_density": 0.371435,
-      "bar": 103,
-      "beat_in_bar": 1,
+      "bar": 102,
+      "beat_in_bar": 4,
       "energy_score": 0.333395,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6163,10 +6072,10 @@
       "flux_avg": 0.37962,
       "onset_density": 0.357371,
       "bar": 103,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.318845,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6177,10 +6086,10 @@
       "flux_avg": 0.342103,
       "onset_density": 0.319489,
       "bar": 103,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.283283,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6191,10 +6100,10 @@
       "flux_avg": 0.334998,
       "onset_density": 0.311149,
       "bar": 103,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "energy_score": 0.228671,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6204,11 +6113,11 @@
       "centroid_avg": 2955.804224,
       "flux_avg": 0.330367,
       "onset_density": 0.306351,
-      "bar": 104,
-      "beat_in_bar": 1,
+      "bar": 103,
+      "beat_in_bar": 4,
       "energy_score": 0.195505,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6219,10 +6128,10 @@
       "flux_avg": 0.338142,
       "onset_density": 0.314405,
       "bar": 104,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "energy_score": 0.178425,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     },
     {
@@ -6233,10 +6142,10 @@
       "flux_avg": 0.346623,
       "onset_density": 0.32319,
       "bar": 104,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "energy_score": 0.171676,
-      "section_id": "section-013",
-      "section_name": "release_tail",
+      "section_id": "section-006",
+      "section_name": "inst",
       "level": "low"
     }
   ],
