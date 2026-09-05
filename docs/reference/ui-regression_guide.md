@@ -606,8 +606,8 @@ writable fixture file (plan v1.5 D15); it is still ~15 s.
         gained `experiment:` tags on `vocalPhrases`, `reactiveBands`, `gestures`
         and `gridPhrase` (wave-2 experiment lanes). The app was correct and the
         spec was stale — per constitution §3.2, a lane keeps its experiment
-        badge while its experiment is unpromoted, and `docs/implementation-plan-v3.0.md`
-        item 14 (check V14.2) expects all nine lanes badged today. The spec's
+        badge while its experiment is unpromoted, and v3.0 plan
+        item 14 (check V14.2) expected all nine lanes badged. The spec's
         `BADGED` list and its `.tl-lane-head__flask` count assertion were
         updated to the current 9-lane set (`dropProposals`, `vocalPhrases`,
         `reactiveBands`, `gestures`, `gridPhrase`, `allin1Transitions`,

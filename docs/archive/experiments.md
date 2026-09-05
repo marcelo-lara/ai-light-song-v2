@@ -16,7 +16,7 @@ evidence does not go stale (constitution §4).
 
 ### Disposition
 
-**Promoted**, in `docs/implementation-plan-v3.0.md` item 7. Replaced
+**Promoted**, in v3.0 plan item 7. Replaced
 `src/analyzer/stages/sections/` (the 1,403-line deterministic-DSP segmenter
 plus its 13-value invented `section_character` vocabulary) with
 `src/analyzer/stages/segmentation.py`. Changed the projected `sections.json`
@@ -88,7 +88,7 @@ below and the open identity entry in `experiments.md`.
 
 ### Disposition
 
-**Promoted**, in `docs/implementation-plan-v3.0.md` item 9. Replaced the whole
+**Promoted**, in v3.0 plan item 9. Replaced the whole
 Epic-5 `event_*` stack (`event_rules/`, `event_machine/`, `event_features/`,
 `event_timeline.py`, `event_review.py`, `event_identifiers.py`,
 `review_queue.py`, `event_contracts.py`, ~3,800 lines) with

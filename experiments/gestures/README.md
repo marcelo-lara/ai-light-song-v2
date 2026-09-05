@@ -1,6 +1,6 @@
 # Experiment — Transition-FX and gesture phases
 
-**Status: promoted in v3.0.** `docs/implementation-plan-v3.0.md` item 9 shipped
+**Status: promoted in v3.0.** Plan item 9 shipped
 this into `src/analyzer/stages/gestures.py`, replacing the whole `event_*`
 stack (`event_rules/`, `event_machine/`, `event_features/`, `event_timeline.py`,
 `event_review.py`, `event_identifiers.py`, `review_queue.py`,

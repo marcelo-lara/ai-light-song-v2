@@ -43,7 +43,31 @@ or `CLAUDE.md` first; the issue text itself is scaffolding.
 
 ## Open queue
 
-Empty. All issues raised so far were closed; their entries were removed (most
+### `gestures` — per-primitive precision has never been audited by ear
+
+- **Status:** `pending`
+- **Raised:** 2026-09-05, on closing the v3.0 release docs. This was the one
+  risk the release accepted and did not discharge, and it is the largest
+  unmeasured risk in the shipped pipeline.
+- **Problem:** the gestures stage is scored on impact *recall* against seven
+  hand-clicked impacts. A phantom primitive — a riser, a build or a tension
+  span asserted where the music has none — does not move that metric at all,
+  yet it fires a cue that contradicts the song. Nothing currently measures how
+  often that happens.
+- **Evidence to use:** every gesture phase in `song_event_timeline.json`
+  carries its per-primitive evidence string, so the audit is possible against
+  the shipped artifacts without re-running anything.
+- **Validation target:** the four gold songs (`Titanium - David Guetta ft Sia`,
+  `Armin - Revolution`, `Hideaway - Kiesza`, `_test_song`), auditioned in the
+  debugger against the waveform.
+- **Success condition:** a per-primitive precision figure exists for each
+  gesture phase across the gold set, and either the false-positive rate is
+  written into `CLAUDE.md` as a known bound, or the primitives responsible for
+  the phantoms are tightened until it is.
+
+---
+
+All earlier issues were closed; their entries were removed (most
 recently the `validate-chords` `KeyError: 'bar_num'` crash, closed in plan v3.0
 item 10 by deriving the reference row's bar/beat position from the pipeline's
 own beat grid instead of reading fields the Moises schema does not carry) and

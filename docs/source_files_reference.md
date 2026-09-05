@@ -6,7 +6,8 @@
 
 This guide maps `src/` for the `ai-light-song-v2` analyzer pipeline as it
 stands after the v3.0 cleanup
-([`implementation-plan-v3.0.md`](implementation-plan-v3.0.md)). It describes
+([`contract-change-v3.0.md`](contract-change-v3.0.md) is that release's
+surviving record). It describes
 the surviving tree only — this release deleted roughly 6,000 lines (the ML
 event stack, `event_benchmark.py`, `unified.py`, `patterns.py`, symbolic note
 transcription, the old `sections/` segmenter, and the whole `event_*` chain).

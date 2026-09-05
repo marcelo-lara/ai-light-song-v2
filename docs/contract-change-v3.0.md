@@ -1,8 +1,9 @@
 # Contract change — v2.1 → v3.0
 
 This is the downstream handoff note for the v3.0 release
-([`implementation-plan-v3.0.md`](implementation-plan-v3.0.md), executing
-[`product-refinement-v3.0.md`](product-refinement-v3.0.md)). Compatibility with
+(closed 2026-09-05; its refinement doc and implementation plan were deleted
+with the release, per constitution §4 — `git log --diff-filter=D --name-only --
+docs/` recovers them). Compatibility with
 v2.1 is explicitly not a constraint on this release (constitution §10) —
 documenting what changed for anyone consuming the analyzer's output is. Each
 section below is added by the plan item that makes the change, in the order
@@ -45,9 +46,9 @@ confidence-gated, provenance-recorded promotion, and this takeover had none of
 that. It also made chord validation circular (the harmonic layer was rebuilt
 from Moises, then validated against Moises), and it contradicted the measured
 verdict that essentia's own beat tracker is at or above Moises everywhere
-except one gold song. Full reasoning in
-[`product-refinement-v3.0.md`](product-refinement-v3.0.md) §4, "Item 7 — stop
-substituting Moises inference for the canonical grid."
+except one gold song. The reasoning was set out in
+the v3.0 refinement doc, "Item 7 — stop substituting Moises inference for the
+canonical grid" (recoverable from git history).
 
 **Nothing else in this file's shape changed.** `beats.json` and
 `layer_a_harmonic.json` keep their existing field shapes; only which engine
@@ -128,8 +129,9 @@ detection plus a 13-value invented `section_character` mood vocabulary) is
 replaced by `stages/segmentation.py`, which runs All-In-One (Kim & Nam, ISMIR
 2023) seeded with the pipeline's own stems and merges its 8-bar phrase
 segments into song-form section runs. Full rationale, the merge strategy and
-the measured numbers: [`product-refinement-v3.0.md`](product-refinement-v3.0.md)
-§5, "Item 8 — `sections/` → allin1 named segmentation."
+the measured numbers: [`../experiments/allin1/README.md`](../experiments/allin1/README.md),
+and the v3.0 refinement doc's "Item 8 — `sections/` → allin1 named
+segmentation" in git history.
 
 **`artifacts/section_segmentation/sections.json` row fields:**
 
@@ -321,7 +323,7 @@ cache) before `segment-sections` (3.1) does, reversing which of the two stages
 first pays the model's runtime cost — `extract-timing-grid` already runs after
 `ensure-stems` in `run_phase_1`, so seeded stems are available in time. Both
 stages' own outputs are otherwise unaffected; see
-`docs/implementation-plan-v3.0.md` item 8 for the full resolution note.
+the v3.0 plan's item 8 (in git history) for the full resolution note.
 
 ## 9. Replace the `event_*` stack with the gestures stage
 
@@ -518,7 +520,7 @@ empty. Note this is a stricter drop condition than the old
 is never dropped for having no `lighting_hint`, nor for landing outside every
 detected section.
 
-**Why:** `docs/implementation-plan-v3.0.md` item 11. The human hints in
+**Why:** v3.0 plan item 11. The human hints in
 `reference/human/human_hints.json` are timed, specific and hand-authored —
 exactly the signal `hints.json` exists to carry to the authoring model — but
 no code path ever merged them in, so `user_hint_count` measured `0` on all 21
@@ -582,7 +584,7 @@ on all four gold songs (their `global_key.confidence` values, 0.749–0.851,
 all clear the 0.70 floor); the floor exists to null out a future song whose
 key estimate is weaker, not to discriminate among these four.
 
-**Why:** `docs/implementation-plan-v3.0.md` item 13, decided in refinement
+**Why:** v3.0 plan item 13, decided in refinement
 §6 item 13: keep `harmonic.py` and project a compact form rather than delete
 chord computation outright. Harmonic context is exactly the kind of fact a
 cue author needs to justify a colour choice, and an honest `null` where
@@ -616,7 +618,7 @@ removed as dead weight in this change.
 their experiment badges and artifact paths — none of those experiments are
 promoted by this release.
 
-**Why:** `docs/implementation-plan-v3.0.md` item 14. Once an experiment's
+**Why:** v3.0 plan item 14. Once an experiment's
 output is promoted into a production deliverable, keeping its old debugger
 lane around invites the two to drift apart and confuses which one the
 authoring model actually receives (constitution §3.2).

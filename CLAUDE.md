@@ -72,7 +72,7 @@ inference, not ground truth, but 5-200× more evaluation signal, see
 and reproduction in
 [`experiments/drop_detection/README.md`](experiments/drop_detection/README.md).
 This section was rewritten for v3.0
-([`docs/implementation-plan-v3.0.md`](docs/implementation-plan-v3.0.md)) — the
+([`docs/contract-change-v3.0.md`](docs/contract-change-v3.0.md)) — the
 segmenter and event stack it used to describe as "not trusted" are deleted, and
 the two stages that replaced them carry their own honest, mixed measurements
 below rather than a bare "not trusted" label.
@@ -160,8 +160,9 @@ detected impact.
 ### Removed in v3.0
 
 Roughly 6,000 lines and ~20 MB/song of per-song artifact left `src/` in this
-release (full list and rationale: `docs/implementation-plan-v3.0.md`,
-`docs/product-refinement-v3.0.md`):
+release (per-file consequences: `docs/contract-change-v3.0.md`; the
+release's refinement doc and plan were deleted when v3.0 closed and are
+recoverable with `git log --diff-filter=D --name-only -- docs/`):
 
 - **The ML event stack** (`event_ml.py` + training script + seeded models,
   1,080 lines) — 0 events on 21 of 21 songs.

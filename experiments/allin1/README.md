@@ -1,6 +1,6 @@
 # Experiment — `allin1` for named song form
 
-**Status: promoted in v3.0.** `docs/implementation-plan-v3.0.md` item 7 shipped
+**Status: promoted in v3.0.** Plan item 7 shipped
 this into `src/analyzer/stages/segmentation.py`, replacing
 `src/analyzer/stages/sections/` and changing the projected `sections.json` and
 `artifacts/section_segmentation/sections.json`; item 8 additionally took the

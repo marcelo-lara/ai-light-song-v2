@@ -36,10 +36,11 @@ measured. Full stage registry, authoritative over this table:
 | 4 publish | Section/beat/hint packing for the debugger and MCP projection | `sections.json`, `beats.json`, `hints.json` |
 | — | Internal read-only artifact debugger (`ui/`) | — |
 
-For the full status of this release — what was deleted, what replaced it, and
-the measured numbers behind each replacement — see
-[`docs/implementation-plan-v3.0.md`](docs/implementation-plan-v3.0.md) rather
-than this table.
+For the full status of the v3.0 release — what was deleted, what replaced it,
+and the measured numbers behind each replacement — see
+[`CLAUDE.md`](CLAUDE.md) "Current state" and the handoff note
+[`docs/contract-change-v3.0.md`](docs/contract-change-v3.0.md) rather than this
+table.
 
 ## Repository layout
 

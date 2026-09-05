@@ -32,20 +32,23 @@ measurements say is broken.
 
 | Doc | State |
 | --- | --- |
-| [`issues.md`](issues.md) | The analysis-issue queue — **open issues only** (constitution §4.2). Currently empty. |
+| [`issues.md`](issues.md) | The analysis-issue queue — **open issues only** (constitution §4.2). |
 | [`experiments.md`](experiments.md) | The experiment queue (constitution §3.4). One entry per experiment, carrying its plan, its measured results and its conclusion. A concluded entry leaves this file only when the operator picks archive or promote. |
 | [`archive/experiments.md`](archive/experiments.md) | Concluded experiments and what they scored. The one archive file §4 permits. |
 
-## Open release — v3.0
+## Shipped release — v3.0
 
-One refinement doc and one plan, per constitution §4.1. Both are open until
-item 16 (the corpus re-run and re-baseline) lands.
+**Closed on 2026-09-05.** All 16 plan items landed, and the refinement doc and
+the implementation plan were deleted in the same change (constitution §4: git
+history is the archive). Recover either with
+`git log --diff-filter=D --name-only -- docs/`.
 
 | Doc | State |
 | --- | --- |
-| [`product-refinement-v3.0.md`](product-refinement-v3.0.md) | The scoped items behind the wave-2 module verdicts — what is deleted, what is replaced, the decisions taken and the risks accepted. |
-| [`implementation-plan-v3.0.md`](implementation-plan-v3.0.md) | The 16 ordered items that execute it. One commit per item, validated in the container before it is pushed. 15 of 16 done. |
-| [`contract-change-v3.0.md`](contract-change-v3.0.md) | The downstream handoff note. Created by plan item 5 and extended as each contract-changing item landed; finalised in item 15 with a **New files** table and an **Unchanged for v3.0** section. |
+| [`contract-change-v3.0.md`](contract-change-v3.0.md) | The one v3.0 document that stays. It is the downstream handoff note — every contract change the release made, per projected file, plus a **New files** table and an **Unchanged for v3.0** section. Read it before changing anything the MCP server or the debugger consumes. |
+
+No release is open. The next one opens with a new `product-refinement-vX.Y.md`,
+sourced from [`experiments.md`](experiments.md).
 
 ## Measured evidence
 
