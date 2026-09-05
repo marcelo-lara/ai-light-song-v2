@@ -20,7 +20,7 @@
       "time": 0.510839,
       "end_s": 46.393467,
       "bar": 1,
-      "beat": 1,
+      "beat": 4,
       "chord": "D#m",
       "confidence": 0.849954
     },
@@ -28,15 +28,15 @@
       "time": 46.393467,
       "end_s": 48.088524,
       "bar": 24,
-      "beat": 2,
+      "beat": 1,
       "chord": "B",
       "confidence": 0.917239
     },
     {
       "time": 48.088524,
       "end_s": 51.548298,
-      "bar": 25,
-      "beat": 1,
+      "bar": 24,
+      "beat": 4,
       "chord": "F#",
       "confidence": 0.930625
     },
@@ -44,7 +44,7 @@
       "time": 51.548298,
       "end_s": 58.049888,
       "bar": 26,
-      "beat": 3,
+      "beat": 2,
       "chord": "D#m",
       "confidence": 0.951396
     }

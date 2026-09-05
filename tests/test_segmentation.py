@@ -39,9 +39,11 @@ class _FakeResult:
 
 
 def _uniform_activations(n_frames: int, dominant_index: int | None = None, dominant_share: float = 0.9) -> dict[str, np.ndarray]:
-    """A (10, T) softmax-like activation matrix over HARMONIX_LABELS. If
-    `dominant_index` is given, that label carries `dominant_share` of the mass
-    on every frame; otherwise mass is split evenly across the musical labels."""
+    """A (10, T) softmax-like activation matrix over HARMONIX_LABELS, plus a
+    `(T,)` `downbeat` stream this stage never reads (item 8 owns it) but
+    `analyzer.allin1_cache` requires to be present. If `dominant_index` is
+    given, that label carries `dominant_share` of the mass on every frame;
+    otherwise mass is split evenly across the musical labels."""
     matrix = np.zeros((len(HARMONIX_LABELS), n_frames), dtype=np.float32)
     musical_indices = [i for i, label in enumerate(HARMONIX_LABELS) if label in MUSICAL_LABELS]
     if dominant_index is not None:
@@ -52,7 +54,7 @@ def _uniform_activations(n_frames: int, dominant_index: int | None = None, domin
         share = 1.0 / len(musical_indices)
         for i in musical_indices:
             matrix[i, :] = share
-    return {"label": matrix}
+    return {"label": matrix, "downbeat": np.zeros(n_frames, dtype=np.float32)}
 
 
 class MergeEqualLabelledRunsTests(unittest.TestCase):
@@ -228,7 +230,7 @@ class SegmentSectionsTests(unittest.TestCase):
             result = _FakeResult(segments=segments, activations=_uniform_activations(n_frames, dominant_index=None))
             analyze_mock = _install_fake_allin1(result)
 
-            with patch("analyzer.stages.segmentation.DEMIX_DIR", Path(tmp) / "demix"):
+            with patch("analyzer.allin1_cache.DEMIX_DIR", Path(tmp) / "demix"):
                 segment_sections(paths, stems, timing)
                 linked_other = Path(tmp) / "demix" / "htdemucs" / paths.song_path.stem / "other.wav"
                 linked_vocals = Path(tmp) / "demix" / "htdemucs" / paths.song_path.stem / "vocals.wav"

@@ -53,11 +53,18 @@ class GeneratedFrom:
 
 @dataclass(slots=True)
 class BeatPoint:
+    """`confidence` is populated only on `type == "downbeat"` rows, from
+    allin1's downbeat-activation strength at that beat time
+    (`analyzer.stages.timing`, plan v3.0 item 8). It is `None` on `"beat"`
+    rows, and `None` on a `"downbeat"` row where essentia's and allin1's
+    phases disagree by a whole beat or more — the smallest honest encoding of
+    "the bar grid is unresolved here" (constitution §7)."""
     index: int
     time: float
     bar: int
     beat_in_bar: int
     type: str
+    confidence: float | None = None
 
 
 @dataclass(slots=True)

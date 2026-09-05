@@ -129,7 +129,8 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         _run_stage(paths.song_name, "phase-1", stage_name, ensure_stems, paths)
         return 0
     if stage_name == "extract-timing-grid":
-        _run_stage(paths.song_name, "phase-1", stage_name, extract_timing_grid, paths)
+        stems = _existing_stems(paths, stage_name)
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_timing_grid, paths, stems)
         return 0
     if stage_name == "validate-beats":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
@@ -353,7 +354,13 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
 
         ensure_directory(paths.song_artifacts_dir)
         stems = _run_stage(paths.song_name, "phase-1", "ensure-stems", ensure_stems, paths)
-        timing = _run_stage(paths.song_name, "phase-1", "extract-timing-grid", extract_timing_grid, paths)
+        # extract-timing-grid (1.2) now needs allin1's downbeat activation
+        # (item 8) before segment-sections (3.1) runs later in this function —
+        # stems are already available from ensure-stems, so
+        # `analyzer.allin1_cache.get_allin1_result` triggers the one allin1
+        # run here and segment-sections reads the cache it wrote. See
+        # `docs/implementation-plan-v3.0.md` item 8's resolved ordering note.
+        timing = _run_stage(paths.song_name, "phase-1", "extract-timing-grid", extract_timing_grid, paths, stems)
         fft_bands = _run_stage(paths.song_name, "phase-1", "extract-fft-bands", extract_fft_bands, paths)
         loudness = _run_stage(paths.song_name, "phase-1", "extract-mix-stem-loudness", extract_mix_stem_loudness, paths, stems)
         beat_validation = (

@@ -111,6 +111,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
             "bar": int(beat["bar"]),
             "chord": _resolve_chord_for_time(float(beat["time"]), chord_events),
             "type": str(beat["type"]),
+            "confidence": beat.get("confidence"),
         }
         for beat in beat_points
     ]

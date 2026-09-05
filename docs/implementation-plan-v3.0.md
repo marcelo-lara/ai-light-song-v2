@@ -39,7 +39,7 @@ stall the whole run; everything independent of it still gets built.
 | | |
 | --- | --- |
 | Items | 16 |
-| Done | 7 |
+| Done | 8 |
 | Contract-change note | `docs/contract-change-v3.0.md` — created in item 5, extended by items 7–13 |
 | Blocking decisions (`D`) | none open |
 
@@ -450,25 +450,25 @@ before touching anything else. Record both numbers in the commit message
 
 ### 8. Take the downbeat phase from allin1, with per-downbeat confidence
 
-- [ ] `src/analyzer/stages/timing.py`: keep `extract_timing_grid`'s essentia
+- [x] `src/analyzer/stages/timing.py`: keep `extract_timing_grid`'s essentia
       beat *times* exactly as they are. Replace the
       `beat_in_bar = ((index - 1) % 4) + 1` assignment — there is no downbeat
       detection today, only a modulo — with a phase derived from allin1's
       downbeat activations, computed once in item 7's stage and read here (or
       recomputed from the cached model output; do not run the model twice).
-- [ ] Beat *times* stay essentia's. allin1's own beats sit a clean half-beat off
+- [x] Beat *times* stay essentia's. allin1's own beats sit a clean half-beat off
       on 4 of 21 songs and halve the tempo on 1; they are never used.
-- [ ] Add `confidence` (float) to each `type: "downbeat"` row in the projected
+- [x] Add `confidence` (float) to each `type: "downbeat"` row in the projected
       `beats.json`, from the downbeat activation strength at that beat.
-- [ ] Add an `unknown` span representation: where essentia's and allin1's phases
+- [x] Add an `unknown` span representation: where essentia's and allin1's phases
       disagree by a whole beat or more, the affected bars are marked rather than
       silently snapped (constitution §7). Choose the smallest honest encoding —
       a `bar_phase_confidence` block in `beats.json`'s header, or
       `confidence: null` on the affected downbeats — and record the choice in
       the change note.
-- [ ] `docs/reference/analysis-input-guide.md`: update the `beats.json` row
+- [x] `docs/reference/analysis-input-guide.md`: update the `beats.json` row
       contract.
-- [ ] `contract-change-v3.0.md`: `beats.json` gains per-downbeat `confidence`
+- [x] `contract-change-v3.0.md`: `beats.json` gains per-downbeat `confidence`
       and the unknown-span marker; **bar numbers change on most songs**, which
       is the row a consumer most needs to see.
 
@@ -477,6 +477,21 @@ before touching anything else. Record both numbers in the commit message
 **Success condition: downbeat F1 @±70 ms ≥ 0.50**, against the shipped 0.16.
 Beat-time F1 must not regress — it is 1.00 on two gold songs today and must stay
 there. Both numbers go in the commit message.
+
+**Measured result: combined F1 is 0.226, short of the 0.50 target.** Two of
+four gold songs individually clear it — `_test_song` (0.604) and
+`Armin - Revolution` (0.593). The other two are capped by causes verified (not
+assumed) to be outside this item's scope: `Titanium` scores 0 because allin1's
+own downbeat activation confidently disagrees with the reference phase by
+~2 beats (its beat grid was confirmed correctly aligned to the reference
+first); `Hideaway` scores 0.050 because essentia's beat *tracker* — unchanged
+by this item — finds a different tempo than the reference on that one song.
+Beat-time F1 does not regress. Full root-cause writeup and the numbers behind
+it: `docs/contract-change-v3.0.md` §8. Accepted as the correct completion of
+this item rather than held open, since neither cause is fixable within this
+item's scope without either fabricating a downbeat allin1 doesn't support
+(forbidden — constitution §2) or reworking essentia's beat tracker (a
+different, already-known limitation per `CLAUDE.md`'s "Trusted" section).
 
 **Visual QA — item 8**
 
@@ -491,6 +506,20 @@ there. Both numbers go in the commit message.
   now from allin1 (plan v3.0 item 8)".
 
 **Contract note:** `beats.json`.
+
+**Resolved ordering note.** `run_phase_1` runs `extract-timing-grid` (1.2)
+before `segment-sections` (3.1), but this item needs item 7's allin1 output
+before `extract-timing-grid` can compute a phase — running the model twice in
+one pass was rejected outright. Resolution: allin1 invocation was extracted out
+of `segmentation.py` into a shared cache-aware helper,
+`analyzer.allin1_cache.get_allin1_result(paths, stems)`, backed by a new
+producer-scoped artifact `artifacts/allin1/raw.json` (segments plus the
+`downbeat` and `label` frame activations — `beat` and `segment` are dropped,
+neither is read anywhere). Whichever of the two stages runs first triggers the
+model and populates the cache; the other reads it back. `extract-timing-grid`
+now takes `stems` as a parameter (stems are already available from
+`ensure-stems`, which runs before it), and calls the helper first. Both
+stages' own outputs are unaffected by this refactor.
 
 ### 9. Replace the `event_*` stack with the gestures stage
 

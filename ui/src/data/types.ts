@@ -43,6 +43,7 @@ export interface BeatRow {
   bass: string | null;
   chord: string | null;
   type: BeatType;
+  confidence: number | null;
 }
 
 export type Beats = BeatRow[];

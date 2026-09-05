@@ -114,6 +114,7 @@ def copy_test_song():
     # drop bulk the UI never loads (stems, midi transcription, reference dumps).
     for junk in ("artifacts/stems",
                  "artifacts/symbolic_transcription/omnizart",
+                 "artifacts/allin1",
                  "reference/moises"):
         p = dst / junk
         if p.exists():

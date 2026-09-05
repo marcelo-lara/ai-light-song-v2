@@ -248,7 +248,7 @@
     {
       "beat": 1,
       "bar": 1,
-      "beat_in_bar": 1,
+      "beat_in_bar": 4,
       "start_time": 0.510839,
       "end_time": 1.044898,
       "section_id": "section-001",
@@ -351,7 +351,7 @@
     {
       "beat": 2,
       "bar": 1,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 1.044898,
       "end_time": 1.567347,
       "section_id": "section-001",
@@ -454,7 +454,7 @@
     {
       "beat": 3,
       "bar": 1,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 1.567347,
       "end_time": 2.089796,
       "section_id": "section-001",
@@ -557,7 +557,7 @@
     {
       "beat": 4,
       "bar": 1,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 2.089796,
       "end_time": 2.612245,
       "section_id": "section-001",
@@ -659,8 +659,8 @@
     },
     {
       "beat": 5,
-      "bar": 2,
-      "beat_in_bar": 1,
+      "bar": 1,
+      "beat_in_bar": 4,
       "start_time": 2.612245,
       "end_time": 3.227574,
       "section_id": "section-001",
@@ -763,7 +763,7 @@
     {
       "beat": 6,
       "bar": 2,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 3.227574,
       "end_time": 3.854512,
       "section_id": "section-001",
@@ -866,7 +866,7 @@
     {
       "beat": 7,
       "bar": 2,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 3.854512,
       "end_time": 4.481451,
       "section_id": "section-001",
@@ -969,7 +969,7 @@
     {
       "beat": 8,
       "bar": 2,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 4.481451,
       "end_time": 5.12,
       "section_id": "section-001",
@@ -1071,8 +1071,8 @@
     },
     {
       "beat": 9,
-      "bar": 3,
-      "beat_in_bar": 1,
+      "bar": 2,
+      "beat_in_bar": 4,
       "start_time": 5.12,
       "end_time": 5.758549,
       "section_id": "section-001",
@@ -1175,7 +1175,7 @@
     {
       "beat": 10,
       "bar": 3,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 5.758549,
       "end_time": 6.385488,
       "section_id": "section-001",
@@ -1278,7 +1278,7 @@
     {
       "beat": 11,
       "bar": 3,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 6.385488,
       "end_time": 6.989206,
       "section_id": "section-001",
@@ -1381,7 +1381,7 @@
     {
       "beat": 12,
       "bar": 3,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 6.989206,
       "end_time": 7.604535,
       "section_id": "section-001",
@@ -1483,8 +1483,8 @@
     },
     {
       "beat": 13,
-      "bar": 4,
-      "beat_in_bar": 1,
+      "bar": 3,
+      "beat_in_bar": 4,
       "start_time": 7.604535,
       "end_time": 8.219864,
       "section_id": "section-001",
@@ -1587,7 +1587,7 @@
     {
       "beat": 14,
       "bar": 4,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 8.219864,
       "end_time": 8.846803,
       "section_id": "section-001",
@@ -1690,7 +1690,7 @@
     {
       "beat": 15,
       "bar": 4,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 8.846803,
       "end_time": 9.462132,
       "section_id": "section-001",
@@ -1793,7 +1793,7 @@
     {
       "beat": 16,
       "bar": 4,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 9.462132,
       "end_time": 10.07746,
       "section_id": "section-001",
@@ -1895,8 +1895,8 @@
     },
     {
       "beat": 17,
-      "bar": 5,
-      "beat_in_bar": 1,
+      "bar": 4,
+      "beat_in_bar": 4,
       "start_time": 10.07746,
       "end_time": 10.681179,
       "section_id": "section-001",
@@ -1999,7 +1999,7 @@
     {
       "beat": 18,
       "bar": 5,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 10.681179,
       "end_time": 11.284898,
       "section_id": "section-001",
@@ -2102,7 +2102,7 @@
     {
       "beat": 19,
       "bar": 5,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 11.284898,
       "end_time": 11.877007,
       "section_id": "section-001",
@@ -2205,7 +2205,7 @@
     {
       "beat": 20,
       "bar": 5,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 11.877007,
       "end_time": 12.353016,
       "section_id": "section-001",
@@ -2307,8 +2307,8 @@
     },
     {
       "beat": 21,
-      "bar": 6,
-      "beat_in_bar": 1,
+      "bar": 5,
+      "beat_in_bar": 4,
       "start_time": 12.353016,
       "end_time": 12.840634,
       "section_id": "section-001",
@@ -2411,7 +2411,7 @@
     {
       "beat": 22,
       "bar": 6,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 12.840634,
       "end_time": 13.328254,
       "section_id": "section-001",
@@ -2514,7 +2514,7 @@
     {
       "beat": 23,
       "bar": 6,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 13.328254,
       "end_time": 13.815873,
       "section_id": "section-001",
@@ -2617,7 +2617,7 @@
     {
       "beat": 24,
       "bar": 6,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 13.815873,
       "end_time": 14.315102,
       "section_id": "section-001",
@@ -2719,8 +2719,8 @@
     },
     {
       "beat": 25,
-      "bar": 7,
-      "beat_in_bar": 1,
+      "bar": 6,
+      "beat_in_bar": 4,
       "start_time": 14.315102,
       "end_time": 14.802721,
       "section_id": "section-001",
@@ -2823,7 +2823,7 @@
     {
       "beat": 26,
       "bar": 7,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 14.802721,
       "end_time": 15.278729,
       "section_id": "section-002",
@@ -2926,7 +2926,7 @@
     {
       "beat": 27,
       "bar": 7,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 15.278729,
       "end_time": 15.731519,
       "section_id": "section-002",
@@ -3029,7 +3029,7 @@
     {
       "beat": 28,
       "bar": 7,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 15.731519,
       "end_time": 16.195917,
       "section_id": "section-002",
@@ -3131,8 +3131,8 @@
     },
     {
       "beat": 29,
-      "bar": 8,
-      "beat_in_bar": 1,
+      "bar": 7,
+      "beat_in_bar": 4,
       "start_time": 16.195917,
       "end_time": 16.648706,
       "section_id": "section-002",
@@ -3235,7 +3235,7 @@
     {
       "beat": 30,
       "bar": 8,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 16.648706,
       "end_time": 17.113106,
       "section_id": "section-002",
@@ -3338,7 +3338,7 @@
     {
       "beat": 31,
       "bar": 8,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 17.113106,
       "end_time": 17.577505,
       "section_id": "section-002",
@@ -3441,7 +3441,7 @@
     {
       "beat": 32,
       "bar": 8,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 17.577505,
       "end_time": 18.041904,
       "section_id": "section-002",
@@ -3543,8 +3543,8 @@
     },
     {
       "beat": 33,
-      "bar": 9,
-      "beat_in_bar": 1,
+      "bar": 8,
+      "beat_in_bar": 4,
       "start_time": 18.041904,
       "end_time": 18.506304,
       "section_id": "section-002",
@@ -3647,7 +3647,7 @@
     {
       "beat": 34,
       "bar": 9,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 18.506304,
       "end_time": 18.970703,
       "section_id": "section-002",
@@ -3750,7 +3750,7 @@
     {
       "beat": 35,
       "bar": 9,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 18.970703,
       "end_time": 19.435102,
       "section_id": "section-002",
@@ -3853,7 +3853,7 @@
     {
       "beat": 36,
       "bar": 9,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 19.435102,
       "end_time": 19.8995,
       "section_id": "section-002",
@@ -3955,8 +3955,8 @@
     },
     {
       "beat": 37,
-      "bar": 10,
-      "beat_in_bar": 1,
+      "bar": 9,
+      "beat_in_bar": 4,
       "start_time": 19.8995,
       "end_time": 20.340679,
       "section_id": "section-002",
@@ -4059,7 +4059,7 @@
     {
       "beat": 38,
       "bar": 10,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 20.340679,
       "end_time": 20.805079,
       "section_id": "section-002",
@@ -4162,7 +4162,7 @@
     {
       "beat": 39,
       "bar": 10,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 20.805079,
       "end_time": 21.269478,
       "section_id": "section-002",
@@ -4265,7 +4265,7 @@
     {
       "beat": 40,
       "bar": 10,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 21.269478,
       "end_time": 21.733877,
       "section_id": "section-002",
@@ -4367,8 +4367,8 @@
     },
     {
       "beat": 41,
-      "bar": 11,
-      "beat_in_bar": 1,
+      "bar": 10,
+      "beat_in_bar": 4,
       "start_time": 21.733877,
       "end_time": 22.198277,
       "section_id": "section-002",
@@ -4471,7 +4471,7 @@
     {
       "beat": 42,
       "bar": 11,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 22.198277,
       "end_time": 22.639456,
       "section_id": "section-002",
@@ -4574,7 +4574,7 @@
     {
       "beat": 43,
       "bar": 11,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 22.639456,
       "end_time": 23.103855,
       "section_id": "section-002",
@@ -4677,7 +4677,7 @@
     {
       "beat": 44,
       "bar": 11,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 23.103855,
       "end_time": 23.568254,
       "section_id": "section-002",
@@ -4779,8 +4779,8 @@
     },
     {
       "beat": 45,
-      "bar": 12,
-      "beat_in_bar": 1,
+      "bar": 11,
+      "beat_in_bar": 4,
       "start_time": 23.568254,
       "end_time": 24.032652,
       "section_id": "section-002",
@@ -4883,7 +4883,7 @@
     {
       "beat": 46,
       "bar": 12,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 24.032652,
       "end_time": 24.497051,
       "section_id": "section-002",
@@ -4986,7 +4986,7 @@
     {
       "beat": 47,
       "bar": 12,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 24.497051,
       "end_time": 24.961451,
       "section_id": "section-002",
@@ -5089,7 +5089,7 @@
     {
       "beat": 48,
       "bar": 12,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 24.961451,
       "end_time": 25.42585,
       "section_id": "section-002",
@@ -5191,8 +5191,8 @@
     },
     {
       "beat": 49,
-      "bar": 13,
-      "beat_in_bar": 1,
+      "bar": 12,
+      "beat_in_bar": 4,
       "start_time": 25.42585,
       "end_time": 25.878639,
       "section_id": "section-002",
@@ -5295,7 +5295,7 @@
     {
       "beat": 50,
       "bar": 13,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 25.878639,
       "end_time": 26.331429,
       "section_id": "section-002",
@@ -5398,7 +5398,7 @@
     {
       "beat": 51,
       "bar": 13,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 26.331429,
       "end_time": 26.795828,
       "section_id": "section-002",
@@ -5501,7 +5501,7 @@
     {
       "beat": 52,
       "bar": 13,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 26.795828,
       "end_time": 27.260227,
       "section_id": "section-002",
@@ -5603,8 +5603,8 @@
     },
     {
       "beat": 53,
-      "bar": 14,
-      "beat_in_bar": 1,
+      "bar": 13,
+      "beat_in_bar": 4,
       "start_time": 27.260227,
       "end_time": 27.724625,
       "section_id": "section-002",
@@ -5707,7 +5707,7 @@
     {
       "beat": 54,
       "bar": 14,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 27.724625,
       "end_time": 28.189024,
       "section_id": "section-002",
@@ -5810,7 +5810,7 @@
     {
       "beat": 55,
       "bar": 14,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 28.189024,
       "end_time": 28.630203,
       "section_id": "section-002",
@@ -5913,7 +5913,7 @@
     {
       "beat": 56,
       "bar": 14,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 28.630203,
       "end_time": 29.094603,
       "section_id": "section-002",
@@ -6015,8 +6015,8 @@
     },
     {
       "beat": 57,
-      "bar": 15,
-      "beat_in_bar": 1,
+      "bar": 14,
+      "beat_in_bar": 4,
       "start_time": 29.094603,
       "end_time": 29.559002,
       "section_id": "section-002",
@@ -6119,7 +6119,7 @@
     {
       "beat": 58,
       "bar": 15,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 29.559002,
       "end_time": 30.023401,
       "section_id": "section-002",
@@ -6222,7 +6222,7 @@
     {
       "beat": 59,
       "bar": 15,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 30.023401,
       "end_time": 30.487801,
       "section_id": "section-002",
@@ -6325,7 +6325,7 @@
     {
       "beat": 60,
       "bar": 15,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 30.487801,
       "end_time": 30.952198,
       "section_id": "section-002",
@@ -6427,8 +6427,8 @@
     },
     {
       "beat": 61,
-      "bar": 16,
-      "beat_in_bar": 1,
+      "bar": 15,
+      "beat_in_bar": 4,
       "start_time": 30.952198,
       "end_time": 31.416597,
       "section_id": "section-002",
@@ -6531,7 +6531,7 @@
     {
       "beat": 62,
       "bar": 16,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 31.416597,
       "end_time": 31.880997,
       "section_id": "section-002",
@@ -6634,7 +6634,7 @@
     {
       "beat": 63,
       "bar": 16,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 31.880997,
       "end_time": 32.333786,
       "section_id": "section-002",
@@ -6737,7 +6737,7 @@
     {
       "beat": 64,
       "bar": 16,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 32.333786,
       "end_time": 32.786575,
       "section_id": "section-002",
@@ -6839,8 +6839,8 @@
     },
     {
       "beat": 65,
-      "bar": 17,
-      "beat_in_bar": 1,
+      "bar": 16,
+      "beat_in_bar": 4,
       "start_time": 32.786575,
       "end_time": 33.250973,
       "section_id": "section-002",
@@ -6943,7 +6943,7 @@
     {
       "beat": 66,
       "bar": 17,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 33.250973,
       "end_time": 33.715374,
       "section_id": "section-002",
@@ -7046,7 +7046,7 @@
     {
       "beat": 67,
       "bar": 17,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 33.715374,
       "end_time": 34.179771,
       "section_id": "section-002",
@@ -7149,7 +7149,7 @@
     {
       "beat": 68,
       "bar": 17,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 34.179771,
       "end_time": 34.644173,
       "section_id": "section-002",
@@ -7251,8 +7251,8 @@
     },
     {
       "beat": 69,
-      "bar": 18,
-      "beat_in_bar": 1,
+      "bar": 17,
+      "beat_in_bar": 4,
       "start_time": 34.644173,
       "end_time": 35.10857,
       "section_id": "section-002",
@@ -7355,7 +7355,7 @@
     {
       "beat": 70,
       "bar": 18,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 35.10857,
       "end_time": 35.572971,
       "section_id": "section-002",
@@ -7458,7 +7458,7 @@
     {
       "beat": 71,
       "bar": 18,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 35.572971,
       "end_time": 36.025761,
       "section_id": "section-002",
@@ -7561,7 +7561,7 @@
     {
       "beat": 72,
       "bar": 18,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 36.025761,
       "end_time": 36.47855,
       "section_id": "section-002",
@@ -7663,8 +7663,8 @@
     },
     {
       "beat": 73,
-      "bar": 19,
-      "beat_in_bar": 1,
+      "bar": 18,
+      "beat_in_bar": 4,
       "start_time": 36.47855,
       "end_time": 36.942947,
       "section_id": "section-002",
@@ -7767,7 +7767,7 @@
     {
       "beat": 74,
       "bar": 19,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 36.942947,
       "end_time": 37.407345,
       "section_id": "section-002",
@@ -7870,7 +7870,7 @@
     {
       "beat": 75,
       "bar": 19,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 37.407345,
       "end_time": 37.871746,
       "section_id": "section-002",
@@ -7973,7 +7973,7 @@
     {
       "beat": 76,
       "bar": 19,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 37.871746,
       "end_time": 38.336143,
       "section_id": "section-002",
@@ -8075,8 +8075,8 @@
     },
     {
       "beat": 77,
-      "bar": 20,
-      "beat_in_bar": 1,
+      "bar": 19,
+      "beat_in_bar": 4,
       "start_time": 38.336143,
       "end_time": 38.800545,
       "section_id": "section-002",
@@ -8179,7 +8179,7 @@
     {
       "beat": 78,
       "bar": 20,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 38.800545,
       "end_time": 39.264942,
       "section_id": "section-002",
@@ -8282,7 +8282,7 @@
     {
       "beat": 79,
       "bar": 20,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 39.264942,
       "end_time": 39.717731,
       "section_id": "section-002",
@@ -8385,7 +8385,7 @@
     {
       "beat": 80,
       "bar": 20,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 39.717731,
       "end_time": 40.170521,
       "section_id": "section-002",
@@ -8487,8 +8487,8 @@
     },
     {
       "beat": 81,
-      "bar": 21,
-      "beat_in_bar": 1,
+      "bar": 20,
+      "beat_in_bar": 4,
       "start_time": 40.170521,
       "end_time": 40.634918,
       "section_id": "section-002",
@@ -8591,7 +8591,7 @@
     {
       "beat": 82,
       "bar": 21,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 40.634918,
       "end_time": 41.099319,
       "section_id": "section-002",
@@ -8694,7 +8694,7 @@
     {
       "beat": 83,
       "bar": 21,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 41.099319,
       "end_time": 41.563717,
       "section_id": "section-002",
@@ -8797,7 +8797,7 @@
     {
       "beat": 84,
       "bar": 21,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 41.563717,
       "end_time": 42.028118,
       "section_id": "section-002",
@@ -8899,8 +8899,8 @@
     },
     {
       "beat": 85,
-      "bar": 22,
-      "beat_in_bar": 1,
+      "bar": 21,
+      "beat_in_bar": 4,
       "start_time": 42.028118,
       "end_time": 42.492516,
       "section_id": "section-002",
@@ -9003,7 +9003,7 @@
     {
       "beat": 86,
       "bar": 22,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 42.492516,
       "end_time": 42.956917,
       "section_id": "section-002",
@@ -9106,7 +9106,7 @@
     {
       "beat": 87,
       "bar": 22,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 42.956917,
       "end_time": 43.421314,
       "section_id": "section-002",
@@ -9209,7 +9209,7 @@
     {
       "beat": 88,
       "bar": 22,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 43.421314,
       "end_time": 43.885712,
       "section_id": "section-002",
@@ -9311,8 +9311,8 @@
     },
     {
       "beat": 89,
-      "bar": 23,
-      "beat_in_bar": 1,
+      "bar": 22,
+      "beat_in_bar": 4,
       "start_time": 43.885712,
       "end_time": 44.350113,
       "section_id": "section-002",
@@ -9415,7 +9415,7 @@
     {
       "beat": 90,
       "bar": 23,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 44.350113,
       "end_time": 44.83773,
       "section_id": "section-002",
@@ -9518,7 +9518,7 @@
     {
       "beat": 91,
       "bar": 23,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 44.83773,
       "end_time": 45.325352,
       "section_id": "section-002",
@@ -9621,7 +9621,7 @@
     {
       "beat": 92,
       "bar": 23,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 45.325352,
       "end_time": 45.824581,
       "section_id": "section-002",
@@ -9723,8 +9723,8 @@
     },
     {
       "beat": 93,
-      "bar": 24,
-      "beat_in_bar": 1,
+      "bar": 23,
+      "beat_in_bar": 4,
       "start_time": 45.824581,
       "end_time": 46.393467,
       "section_id": "section-002",
@@ -9827,7 +9827,7 @@
     {
       "beat": 94,
       "bar": 24,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 46.393467,
       "end_time": 46.973969,
       "section_id": "section-002",
@@ -9930,7 +9930,7 @@
     {
       "beat": 95,
       "bar": 24,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 46.973969,
       "end_time": 47.542858,
       "section_id": "section-002",
@@ -10033,7 +10033,7 @@
     {
       "beat": 96,
       "bar": 24,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 47.542858,
       "end_time": 48.088524,
       "section_id": "section-002",
@@ -10135,8 +10135,8 @@
     },
     {
       "beat": 97,
-      "bar": 25,
-      "beat_in_bar": 1,
+      "bar": 24,
+      "beat_in_bar": 4,
       "start_time": 48.088524,
       "end_time": 48.657413,
       "section_id": "section-002",
@@ -10239,7 +10239,7 @@
     {
       "beat": 98,
       "bar": 25,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 48.657413,
       "end_time": 49.226303,
       "section_id": "section-002",
@@ -10342,7 +10342,7 @@
     {
       "beat": 99,
       "bar": 25,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 49.226303,
       "end_time": 49.806801,
       "section_id": "section-002",
@@ -10445,7 +10445,7 @@
     {
       "beat": 100,
       "bar": 25,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 49.806801,
       "end_time": 50.387302,
       "section_id": "section-002",
@@ -10547,8 +10547,8 @@
     },
     {
       "beat": 101,
-      "bar": 26,
-      "beat_in_bar": 1,
+      "bar": 25,
+      "beat_in_bar": 4,
       "start_time": 50.387302,
       "end_time": 50.979408,
       "section_id": "section-002",
@@ -10651,7 +10651,7 @@
     {
       "beat": 102,
       "bar": 26,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 50.979408,
       "end_time": 51.548298,
       "section_id": "section-002",
@@ -10754,7 +10754,7 @@
     {
       "beat": 103,
       "bar": 26,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 51.548298,
       "end_time": 52.140408,
       "section_id": "section-002",
@@ -10857,7 +10857,7 @@
     {
       "beat": 104,
       "bar": 26,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 52.140408,
       "end_time": 52.732517,
       "section_id": "section-002",
@@ -10959,8 +10959,8 @@
     },
     {
       "beat": 105,
-      "bar": 27,
-      "beat_in_bar": 1,
+      "bar": 26,
+      "beat_in_bar": 4,
       "start_time": 52.732517,
       "end_time": 53.313015,
       "section_id": "section-002",
@@ -11063,7 +11063,7 @@
     {
       "beat": 106,
       "bar": 27,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 53.313015,
       "end_time": 53.789024,
       "section_id": "section-002",
@@ -11166,7 +11166,7 @@
     {
       "beat": 107,
       "bar": 27,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 53.789024,
       "end_time": 54.265034,
       "section_id": "section-002",
@@ -11269,7 +11269,7 @@
     {
       "beat": 108,
       "bar": 27,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 54.265034,
       "end_time": 54.752651,
       "section_id": "section-002",
@@ -11371,8 +11371,8 @@
     },
     {
       "beat": 109,
-      "bar": 28,
-      "beat_in_bar": 1,
+      "bar": 27,
+      "beat_in_bar": 4,
       "start_time": 54.752651,
       "end_time": 55.217052,
       "section_id": "section-002",
@@ -11475,7 +11475,7 @@
     {
       "beat": 110,
       "bar": 28,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 55.217052,
       "end_time": 55.693062,
       "section_id": "section-002",
@@ -11578,7 +11578,7 @@
     {
       "beat": 111,
       "bar": 28,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 55.693062,
       "end_time": 56.169067,
       "section_id": "section-002",
@@ -11681,7 +11681,7 @@
     {
       "beat": 112,
       "bar": 28,
-      "beat_in_bar": 4,
+      "beat_in_bar": 3,
       "start_time": 56.169067,
       "end_time": 56.633469,
       "section_id": "section-002",
@@ -11783,8 +11783,8 @@
     },
     {
       "beat": 113,
-      "bar": 29,
-      "beat_in_bar": 1,
+      "bar": 28,
+      "beat_in_bar": 4,
       "start_time": 56.633469,
       "end_time": 57.109478,
       "section_id": "section-002",
@@ -11887,7 +11887,7 @@
     {
       "beat": 114,
       "bar": 29,
-      "beat_in_bar": 2,
+      "beat_in_bar": 1,
       "start_time": 57.109478,
       "end_time": 57.585487,
       "section_id": "section-002",
@@ -11990,7 +11990,7 @@
     {
       "beat": 115,
       "bar": 29,
-      "beat_in_bar": 3,
+      "beat_in_bar": 2,
       "start_time": 57.585487,
       "end_time": 58.049888,
       "section_id": "section-002",

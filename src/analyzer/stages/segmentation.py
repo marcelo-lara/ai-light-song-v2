@@ -25,8 +25,9 @@ equal-labelled neighbours is what turns an 8-bar phrase grid into song form.
 Determinism (constitution §6). allin1 shells out to `demucs` itself unless
 handed stems, and that separation is not reproducible run to run — the
 experiment's caches disagreed on 14 of 21 songs across two unseeded runs.
-Seeded with the pipeline's own htdemucs stems (`_seed_demix`, below) it
-produced byte-identical section sequences over three consecutive runs on every
+Seeded with the pipeline's own htdemucs stems (`_seed_demix` in
+`analyzer.allin1_cache`) it produced byte-identical section sequences over
+three consecutive runs on every
 gold song. Seeding is therefore mandatory, not an optimisation, and this stage
 never falls back to letting allin1 separate the mix itself.
 
@@ -40,18 +41,26 @@ because a degenerate label set says nothing about whether the boundary
 timing is wrong.
 
 Scope. This stage never reads allin1's own beat or downbeat times — only its
-segment/label output. The downbeat *phase* is a separate, later pipeline item;
-allin1's own beat grid sits a clean half-beat off essentia's on several corpus
-songs and is not a second opinion worth having here.
+segment/label output. The downbeat *phase* is a separate, later pipeline item
+(`stages/timing.py`, item 8); allin1's own beat grid sits a clean half-beat off
+essentia's on several corpus songs and is not a second opinion worth having
+here.
+
+allin1 itself is invoked through `analyzer.allin1_cache`, not directly — that
+module is the single call site shared with `stages/timing.py`, which also
+needs allin1's frame activations (its `downbeat` stream) and would otherwise
+force the model to run twice in one pipeline pass. See that module's docstring
+for the caching contract; this stage's own behaviour and output are unchanged
+by that refactor.
 """
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any
 
 import numpy as np
 
-from analyzer.exceptions import AnalysisError, DependencyError
+from analyzer.allin1_cache import ACTIVATION_RATE_HZ, get_allin1_result
+from analyzer.exceptions import AnalysisError
 from analyzer.io import write_json
 from analyzer.models import SCHEMA_VERSION, SectionSegment, to_jsonable
 from analyzer.paths import SongPaths
@@ -63,10 +72,6 @@ SENTINEL_LABELS = ("start", "end")
 HARMONIX_LABELS = ("start", "end", "intro", "outro", "break", "bridge", "inst", "solo", "verse", "chorus")
 MUSICAL_LABELS = tuple(label for label in HARMONIX_LABELS if label not in SENTINEL_LABELS)
 
-#: allin1's frame-level activations are emitted at a fixed 100 Hz
-#: (`allin1.config` `fps: int = 100`), independent of song content.
-ACTIVATION_RATE_HZ = 100.0
-
 #: A song's functional *names* are untrustworthy (constitution §2 — an honest
 #: `unknown` beats a confident wrong label) when allin1 gives it fewer than
 #: this many distinct labels, or one label covers more than this share of the
@@ -75,67 +80,13 @@ ACTIVATION_RATE_HZ = 100.0
 MIN_DISTINCT_LABELS = 3
 DOMINANT_LABEL_MAX_SHARE = 0.90
 
-#: allin1 checks this directory for existing htdemucs separations before
-#: running demucs itself — the seeding hook.
-DEMIX_DIR = Path("/tmp/allin1_demix")
-SPEC_DIR = "/tmp/allin1_spec"
-
 
 def _round(value: float, digits: int = 6) -> float:
     return round(float(value), digits)
 
 
-def _seed_demix(paths: SongPaths, stems: dict[str, str]) -> list[str]:
-    """Point allin1 at the stems the pipeline already produced.
-
-    Left to itself allin1 shells out to `demucs.separate`, and that separation
-    is not reproducible run to run. The pipeline's stems are htdemucs output
-    already (44.1 kHz stereo), the same thing allin1 would compute — so they
-    are symlinked into the cache layout allin1's own demix step checks before
-    separating, `harmonic` standing in for htdemucs's `other`. Ported from
-    `experiments/allin1/model.py::_seed_demix`.
-
-    Returns the stem names that were linked, recorded in `generated_from` so a
-    run can be told apart from one that (incorrectly) let allin1 separate.
-    """
-    out = DEMIX_DIR / "htdemucs" / paths.song_path.stem
-    out.mkdir(parents=True, exist_ok=True)
-    linked: list[str] = []
-    for target, source in (("bass", "bass"), ("drums", "drums"), ("other", "harmonic"), ("vocals", "vocals")):
-        link = out / f"{target}.wav"
-        source_path = Path(stems[source])
-        if not source_path.exists():
-            raise AnalysisError(
-                f"{paths.song_name}: missing stem {source_path} for allin1 seeding — run ensure-stems first"
-            )
-        if link.exists() or link.is_symlink():
-            link.unlink()
-        link.symlink_to(source_path)
-        linked.append(target)
-    return linked
-
-
 def _run_allin1(paths: SongPaths, stems: dict[str, str]) -> tuple[Any, list[str]]:
-    try:
-        import allin1
-    except ImportError as exc:
-        raise DependencyError("allin1 is required for section segmentation") from exc
-
-    seeded = _seed_demix(paths, stems)
-    try:
-        result = allin1.analyze(
-            str(paths.song_path),
-            demix_dir=str(DEMIX_DIR),
-            spec_dir=SPEC_DIR,
-            include_activations=True,
-            keep_byproducts=True,
-        )
-    except Exception as exc:  # pragma: no cover - depends on the external model runtime
-        raise AnalysisError(f"allin1 segmentation failed for {paths.song_name}: {exc}") from exc
-
-    if result is None or not getattr(result, "segments", None):
-        raise AnalysisError(f"allin1 returned no segments for {paths.song_name}")
-    return result, seeded
+    return get_allin1_result(paths, stems)
 
 
 def _phrase_rows(result: Any) -> list[dict[str, Any]]:

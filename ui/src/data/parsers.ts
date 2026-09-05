@@ -105,6 +105,7 @@ function parseBeatRow(raw: unknown, ctx: string): BeatRow {
     bass: stringOrNull(o.bass, `${ctx}.bass`),
     chord: stringOrNull(o.chord, `${ctx}.chord`),
     type: stringOr(o.type, "beat", `${ctx}.type`),
+    confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
   };
 }
 

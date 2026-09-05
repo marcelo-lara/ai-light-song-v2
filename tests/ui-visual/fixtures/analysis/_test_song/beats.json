@@ -1,807 +1,922 @@
 [
   {
     "time": 0.51,
-    "beat": 1,
+    "beat": 4,
     "bar": 1,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 1.04,
-    "beat": 2,
+    "beat": 1,
     "bar": 1,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": null
   },
   {
     "time": 1.57,
-    "beat": 3,
+    "beat": 2,
     "bar": 1,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 2.09,
-    "beat": 4,
+    "beat": 3,
     "bar": 1,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 2.61,
-    "beat": 1,
-    "bar": 2,
+    "beat": 4,
+    "bar": 1,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 3.23,
-    "beat": 2,
+    "beat": 1,
     "bar": 2,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.02462
   },
   {
     "time": 3.85,
-    "beat": 3,
+    "beat": 2,
     "bar": 2,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 4.48,
-    "beat": 4,
+    "beat": 3,
     "bar": 2,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 5.12,
-    "beat": 1,
-    "bar": 3,
+    "beat": 4,
+    "bar": 2,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 5.76,
-    "beat": 2,
+    "beat": 1,
     "bar": 3,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.005639
   },
   {
     "time": 6.39,
-    "beat": 3,
+    "beat": 2,
     "bar": 3,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 6.99,
-    "beat": 4,
+    "beat": 3,
     "bar": 3,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 7.6,
-    "beat": 1,
-    "bar": 4,
+    "beat": 4,
+    "bar": 3,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 8.22,
-    "beat": 2,
+    "beat": 1,
     "bar": 4,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": null
   },
   {
     "time": 8.85,
-    "beat": 3,
+    "beat": 2,
     "bar": 4,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 9.46,
-    "beat": 4,
+    "beat": 3,
     "bar": 4,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 10.08,
-    "beat": 1,
-    "bar": 5,
+    "beat": 4,
+    "bar": 4,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 10.68,
-    "beat": 2,
+    "beat": 1,
     "bar": 5,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.126122
   },
   {
     "time": 11.28,
-    "beat": 3,
+    "beat": 2,
     "bar": 5,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 11.88,
-    "beat": 4,
+    "beat": 3,
     "bar": 5,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 12.35,
-    "beat": 1,
-    "bar": 6,
+    "beat": 4,
+    "bar": 5,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 12.84,
-    "beat": 2,
+    "beat": 1,
     "bar": 6,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.000952
   },
   {
     "time": 13.33,
-    "beat": 3,
+    "beat": 2,
     "bar": 6,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 13.82,
-    "beat": 4,
+    "beat": 3,
     "bar": 6,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 14.32,
-    "beat": 1,
-    "bar": 7,
+    "beat": 4,
+    "bar": 6,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 14.8,
-    "beat": 2,
+    "beat": 1,
     "bar": 7,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.294635
   },
   {
     "time": 15.28,
-    "beat": 3,
+    "beat": 2,
     "bar": 7,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 15.73,
-    "beat": 4,
+    "beat": 3,
     "bar": 7,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 16.2,
-    "beat": 1,
-    "bar": 8,
+    "beat": 4,
+    "bar": 7,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 16.65,
-    "beat": 2,
+    "beat": 1,
     "bar": 8,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": null
   },
   {
     "time": 17.11,
-    "beat": 3,
+    "beat": 2,
     "bar": 8,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 17.58,
-    "beat": 4,
+    "beat": 3,
     "bar": 8,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 18.04,
-    "beat": 1,
-    "bar": 9,
+    "beat": 4,
+    "bar": 8,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 18.51,
-    "beat": 2,
+    "beat": 1,
     "bar": 9,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.379317
   },
   {
     "time": 18.97,
-    "beat": 3,
+    "beat": 2,
     "bar": 9,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 19.44,
-    "beat": 4,
+    "beat": 3,
     "bar": 9,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 19.9,
-    "beat": 1,
-    "bar": 10,
+    "beat": 4,
+    "bar": 9,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 20.34,
-    "beat": 2,
+    "beat": 1,
     "bar": 10,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.223534
   },
   {
     "time": 20.81,
-    "beat": 3,
+    "beat": 2,
     "bar": 10,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 21.27,
-    "beat": 4,
+    "beat": 3,
     "bar": 10,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 21.73,
-    "beat": 1,
-    "bar": 11,
+    "beat": 4,
+    "bar": 10,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 22.2,
-    "beat": 2,
+    "beat": 1,
     "bar": 11,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.46335
   },
   {
     "time": 22.64,
-    "beat": 3,
+    "beat": 2,
     "bar": 11,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 23.1,
-    "beat": 4,
+    "beat": 3,
     "bar": 11,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 23.57,
-    "beat": 1,
-    "bar": 12,
+    "beat": 4,
+    "bar": 11,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 24.03,
-    "beat": 2,
+    "beat": 1,
     "bar": 12,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.173006
   },
   {
     "time": 24.5,
-    "beat": 3,
+    "beat": 2,
     "bar": 12,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 24.96,
-    "beat": 4,
+    "beat": 3,
     "bar": 12,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 25.43,
-    "beat": 1,
-    "bar": 13,
+    "beat": 4,
+    "bar": 12,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 25.88,
-    "beat": 2,
+    "beat": 1,
     "bar": 13,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.202603
   },
   {
     "time": 26.33,
-    "beat": 3,
+    "beat": 2,
     "bar": 13,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 26.8,
-    "beat": 4,
+    "beat": 3,
     "bar": 13,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 27.26,
-    "beat": 1,
-    "bar": 14,
+    "beat": 4,
+    "bar": 13,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 27.72,
-    "beat": 2,
+    "beat": 1,
     "bar": 14,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.12483
   },
   {
     "time": 28.19,
-    "beat": 3,
+    "beat": 2,
     "bar": 14,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 28.63,
-    "beat": 4,
+    "beat": 3,
     "bar": 14,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 29.09,
-    "beat": 1,
-    "bar": 15,
+    "beat": 4,
+    "bar": 14,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 29.56,
-    "beat": 2,
+    "beat": 1,
     "bar": 15,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.085796
   },
   {
     "time": 30.02,
-    "beat": 3,
+    "beat": 2,
     "bar": 15,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 30.49,
-    "beat": 4,
+    "beat": 3,
     "bar": 15,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 30.95,
-    "beat": 1,
-    "bar": 16,
+    "beat": 4,
+    "bar": 15,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 31.42,
-    "beat": 2,
+    "beat": 1,
     "bar": 16,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.312154
   },
   {
     "time": 31.88,
-    "beat": 3,
+    "beat": 2,
     "bar": 16,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 32.33,
-    "beat": 4,
+    "beat": 3,
     "bar": 16,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 32.79,
-    "beat": 1,
-    "bar": 17,
+    "beat": 4,
+    "bar": 16,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 33.25,
-    "beat": 2,
+    "beat": 1,
     "bar": 17,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.040763
   },
   {
     "time": 33.72,
-    "beat": 3,
+    "beat": 2,
     "bar": 17,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 34.18,
-    "beat": 4,
+    "beat": 3,
     "bar": 17,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 34.64,
-    "beat": 1,
-    "bar": 18,
+    "beat": 4,
+    "bar": 17,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 35.11,
-    "beat": 2,
+    "beat": 1,
     "bar": 18,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.27305
   },
   {
     "time": 35.57,
-    "beat": 3,
+    "beat": 2,
     "bar": 18,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 36.03,
-    "beat": 4,
+    "beat": 3,
     "bar": 18,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 36.48,
-    "beat": 1,
-    "bar": 19,
+    "beat": 4,
+    "bar": 18,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 36.94,
-    "beat": 2,
+    "beat": 1,
     "bar": 19,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.023742
   },
   {
     "time": 37.41,
-    "beat": 3,
+    "beat": 2,
     "bar": 19,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 37.87,
-    "beat": 4,
+    "beat": 3,
     "bar": 19,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 38.34,
-    "beat": 1,
-    "bar": 20,
+    "beat": 4,
+    "bar": 19,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 38.8,
-    "beat": 2,
+    "beat": 1,
     "bar": 20,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.198869
   },
   {
     "time": 39.26,
-    "beat": 3,
+    "beat": 2,
     "bar": 20,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 39.72,
-    "beat": 4,
+    "beat": 3,
     "bar": 20,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 40.17,
-    "beat": 1,
-    "bar": 21,
+    "beat": 4,
+    "bar": 20,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 40.63,
-    "beat": 2,
+    "beat": 1,
     "bar": 21,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.024565
   },
   {
     "time": 41.1,
-    "beat": 3,
+    "beat": 2,
     "bar": 21,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 41.56,
-    "beat": 4,
+    "beat": 3,
     "bar": 21,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 42.03,
-    "beat": 1,
-    "bar": 22,
+    "beat": 4,
+    "bar": 21,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 42.49,
-    "beat": 2,
+    "beat": 1,
     "bar": 22,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.221294
   },
   {
     "time": 42.96,
-    "beat": 3,
+    "beat": 2,
     "bar": 22,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 43.42,
-    "beat": 4,
+    "beat": 3,
     "bar": 22,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 43.89,
-    "beat": 1,
-    "bar": 23,
+    "beat": 4,
+    "bar": 22,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 44.35,
-    "beat": 2,
+    "beat": 1,
     "bar": 23,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.417354
   },
   {
     "time": 44.84,
-    "beat": 3,
+    "beat": 2,
     "bar": 23,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 45.33,
-    "beat": 4,
+    "beat": 3,
     "bar": 23,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 45.82,
-    "beat": 1,
-    "bar": 24,
+    "beat": 4,
+    "bar": 23,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 46.39,
-    "beat": 2,
+    "beat": 1,
     "bar": 24,
     "chord": "B",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": null
   },
   {
     "time": 46.97,
-    "beat": 3,
+    "beat": 2,
     "bar": 24,
     "chord": "B",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 47.54,
-    "beat": 4,
+    "beat": 3,
     "bar": 24,
     "chord": "B",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 48.09,
-    "beat": 1,
-    "bar": 25,
+    "beat": 4,
+    "bar": 24,
     "chord": "F#",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 48.66,
-    "beat": 2,
+    "beat": 1,
     "bar": 25,
     "chord": "F#",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": null
   },
   {
     "time": 49.23,
-    "beat": 3,
+    "beat": 2,
     "bar": 25,
     "chord": "F#",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 49.81,
-    "beat": 4,
+    "beat": 3,
     "bar": 25,
     "chord": "F#",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 50.39,
-    "beat": 1,
-    "bar": 26,
+    "beat": 4,
+    "bar": 25,
     "chord": "F#",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 50.98,
-    "beat": 2,
+    "beat": 1,
     "bar": 26,
     "chord": "F#",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": null
   },
   {
     "time": 51.55,
-    "beat": 3,
+    "beat": 2,
     "bar": 26,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 52.14,
-    "beat": 4,
+    "beat": 3,
     "bar": 26,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 52.73,
-    "beat": 1,
-    "bar": 27,
+    "beat": 4,
+    "bar": 26,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 53.31,
-    "beat": 2,
+    "beat": 1,
     "bar": 27,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": 0.001583
   },
   {
     "time": 53.79,
-    "beat": 3,
+    "beat": 2,
     "bar": 27,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 54.27,
-    "beat": 4,
+    "beat": 3,
     "bar": 27,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 54.75,
-    "beat": 1,
-    "bar": 28,
+    "beat": 4,
+    "bar": 27,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 55.22,
-    "beat": 2,
+    "beat": 1,
     "bar": 28,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": null
   },
   {
     "time": 55.69,
-    "beat": 3,
+    "beat": 2,
     "bar": 28,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 56.17,
-    "beat": 4,
+    "beat": 3,
     "bar": 28,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 56.63,
-    "beat": 1,
-    "bar": 29,
+    "beat": 4,
+    "bar": 28,
     "chord": "D#m",
-    "type": "downbeat"
+    "type": "beat",
+    "confidence": null
   },
   {
     "time": 57.11,
-    "beat": 2,
+    "beat": 1,
     "bar": 29,
     "chord": "D#m",
-    "type": "beat"
+    "type": "downbeat",
+    "confidence": null
   },
   {
     "time": 57.59,
-    "beat": 3,
+    "beat": 2,
     "bar": 29,
     "chord": "D#m",
-    "type": "beat"
+    "type": "beat",
+    "confidence": null
   }
 ]

@@ -229,3 +229,96 @@ spaced grid at the same boundary budget. `section_character` and
 `repetition_group` carried no ground truth and, in `repetition_group`'s case,
 no real value on any shipped song; `function` is the named part constitution
 §1.2 asks the structural read to carry.
+
+---
+
+## 8. Downbeat phase from allin1, with per-downbeat confidence
+
+**Bar numbers change on most songs.** This is the line a downstream consumer
+most needs to see: `beats.json`'s `bar` field is no longer
+`((index - 1) // 4) + 1` counted off array position — it now counts off
+*measured* downbeats, so any consumer caching or diffing against a
+previously-generated `beats.json` should expect the whole bar grid to shift,
+not just gain a field. `time` and `beat` (`beat_in_bar`) values for beats that
+were already correctly phased are unaffected; only which beat of every four is
+called `"downbeat"`, and therefore how bars are numbered, can move.
+
+**Before** (`beats.json` row):
+
+```json
+{ "time": 12.34, "beat": 1, "bar": 4, "chord": "D#m", "type": "downbeat" }
+```
+
+**After:**
+
+```json
+{ "time": 12.34, "beat": 1, "bar": 4, "chord": "D#m", "type": "downbeat", "confidence": 0.81 }
+```
+
+`confidence` is new on every row. It is `null` on `type: "beat"` rows always.
+On a `type: "downbeat"` row it is allin1's downbeat-activation strength
+(`[0, 1]`) at that beat time, **except** where essentia's beat grid and
+allin1's downbeat activation disagree by a whole beat or more for that bar —
+there it is `null` too, rather than a number that would look as trustworthy as
+a real measurement.
+
+**Unknown-span encoding decision:** a per-downbeat `confidence: null` was
+chosen over a separate `bar_phase_confidence` header block in `beats.json` —
+the smallest honest encoding; it reuses the field this item already adds
+instead of introducing a second, header-level marker for the same fact.
+`validate_beats`'s downbeat F1 scoring excludes `confidence: null` rows from
+the predicted set entirely — an abstention is not a claim, so it is scored
+only as a potential recall miss on the reference side, never as a right-or-
+wrong prediction. Scoring an honest "we don't know" as if it were a confident
+guess would let a correct-but-unmarked-unknown inflate precision and a
+wrong-but-unmarked-unknown deflate it, for a row that never claimed to be
+right either way.
+
+**Why:** refinement §5, "Item 9 — downbeat phase from allin1, with honest
+confidence." The old `beat_in_bar` assignment was pure modulo — there was no
+downbeat *detection* in this pipeline at all — and measured 0.16 F1 @±70 ms
+against 385 Moises-labelled downbeats across the four gold songs, with only 1
+of 4 songs landing a correct phase. Taking the phase (never the beat times)
+from allin1's own `downbeat` frame activation — already computed once per song
+by the `segment-sections` stage (item 7) and read here from the shared
+`analyzer.allin1_cache`, never re-run — reaches **0.226 combined F1** measured
+against this implementation, not the 0.59 the refinement doc projected from an
+earlier exploratory measurement. A single song-wide phase offset (a magnitude
+sum across the whole song) was tried first and scored worse than the shipped
+modulo baseline on more than one gold song — a region of generally elevated
+activation out-voted the region that actually peaks at the true downbeat — so
+the phase is instead chosen by a majority vote of local arg-maxes inside
+16-bar windows, letting it drift or reset across a song rather than committing
+to one global answer (`stages/timing.py` module docstring has the full
+algorithm).
+
+Two of the four gold songs individually clear the 0.50 target —
+`_test_song` (0.604) and `Armin - Revolution` (0.593). The other two are
+capped by problems this item does not touch, not by the phase algorithm or a
+scoring bug — both were verified by direct inspection, not assumed:
+`Titanium - David Guetta ft Sia` scores 0 (0 true positives) because allin1's
+own downbeat activation confidently disagrees with the reference phase. Its
+beat grid was confirmed correctly aligned to the reference first (each
+essentia beat lands within ~10 ms of the corresponding Moises beat, so this is
+not a beat-time or frame-indexing bug); sampling allin1's `downbeat` activation
+at those same times shows it consistently peaking (0.24–0.47) at the position
+the reference calls beat 3 and sitting near zero (~0.001–0.02) at the true
+downbeat, beat 1 — a reproducible ~two-beat disagreement, matching refinement
+§4's independent note that three trackers give three different phases on this
+song ("allin1 +1.96" beats off). `Hideaway - Kiesza` scores 0.050 because
+essentia's own beat *tracking* — unchanged by this item — finds a different
+underlying tempo than the reference on that song (~0.66 s intervals against
+the reference's ~0.48 s), the one gold song where essentia's beat tracker
+under-performs Moises's (`CLAUDE.md`, "Trusted"). No downbeat-phase choice on
+top of a wrong-tempo grid can land within ±70 ms. Beat *times* are unaffected
+everywhere: essentia's tracker remains the trusted one (7/7 human-marked drop
+impacts land within 0.25 s of an essentia beat), and allin1's own beat grid
+sits a clean half-beat off essentia's on 4 of 21 corpus songs and halves the
+tempo on a 5th, so it is never used.
+
+**Ordering note.** `extract-timing-grid` (1.2) now runs allin1 (via the shared
+cache) before `segment-sections` (3.1) does, reversing which of the two stages
+first pays the model's runtime cost — `extract-timing-grid` already runs after
+`ensure-stems` in `run_phase_1`, so seeded stems are available in time. Both
+stages' own outputs are otherwise unaffected; see
+`docs/implementation-plan-v3.0.md` item 8 for the full resolution note.

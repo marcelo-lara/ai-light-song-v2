@@ -11,7 +11,61 @@ BEAT_MATCH_RATIO_THRESHOLD = 0.80
 CHORD_MATCH_RATIO_THRESHOLD = 0.85
 CHORD_MAX_LABEL_MISMATCHES = 0
 CHORD_MAX_TIMING_OVERLAP_FAILURES = 2
+
+#: The plan v3.0 item 8 acceptance metric is stated at this tolerance
+#: specifically (independent of `--beat-tolerance-seconds`, which defaults to
+#: 100 ms and scores beat *times*, not the downbeat *phase*).
+DOWNBEAT_F1_TOLERANCE_SECONDS = 0.07
+
 from .utils import ValidationResult, skipped_result, _median, _mean_abs, _round_or_none, _window, _timing_direction, _estimate_reference_beat_interval
+
+
+def _score_downbeats(predicted_times: list[float], reference_times: list[float], tolerance_seconds: float) -> dict:
+    """Precision/recall/F1 of predicted downbeat times against a reference set,
+    at `tolerance_seconds`, via greedy nearest-neighbour one-to-one matching
+    (each reference downbeat claims at most one predicted downbeat, and vice
+    versa). This is the item 8 acceptance metric: downbeat F1 @±70 ms against
+    `reference/moises/beats.json`, required to reach 0.50 against the shipped
+    modulo assignment's measured 0.16.
+
+    `predicted_times` is expected to already exclude `confidence: null`
+    downbeats (the caller filters them out) — an abstention is not a
+    prediction, so it is neither a potential true/false positive here, only a
+    potential false negative via the reference side it fails to cover. See the
+    filtering comment at this function's call site in `validate_beats`.
+    """
+    predicted_sorted = sorted(predicted_times)
+    reference_sorted = sorted(reference_times)
+    used_predicted: set[int] = set()
+    true_positives = 0
+    for reference_time in reference_sorted:
+        best_index = None
+        best_delta = tolerance_seconds
+        for index, predicted_time in enumerate(predicted_sorted):
+            if index in used_predicted:
+                continue
+            delta = abs(predicted_time - reference_time)
+            if delta <= best_delta:
+                best_delta = delta
+                best_index = index
+        if best_index is not None:
+            used_predicted.add(best_index)
+            true_positives += 1
+
+    precision = true_positives / len(predicted_sorted) if predicted_sorted else None
+    recall = true_positives / len(reference_sorted) if reference_sorted else None
+    f1 = None
+    if precision is not None and recall is not None and (precision + recall) > 0:
+        f1 = 2 * precision * recall / (precision + recall)
+    return {
+        "downbeat_true_positives": true_positives,
+        "downbeat_predicted_count": len(predicted_sorted),
+        "downbeat_reference_count": len(reference_sorted),
+        "downbeat_precision": _round_or_none(precision),
+        "downbeat_recall": _round_or_none(recall),
+        "downbeat_f1": _round_or_none(f1),
+        "downbeat_tolerance_seconds": tolerance_seconds,
+    }
 
 
 def _build_beat_timing_diagnostics(
@@ -138,6 +192,38 @@ def validate_beats(paths: SongPaths, timing: dict, tolerance_seconds: float) -> 
     ratio = matched / total if total else None
     status = "passed" if ratio is None or ratio >= BEAT_MATCH_RATIO_THRESHOLD else "failed"
     diagnostics = _build_beat_timing_diagnostics(details, tolerance_seconds, reference_times)
+
+    # Downbeat *phase* F1 (plan v3.0 item 8) — a separate reference file from
+    # the beat-time comparison above: `reference/moises/beats.json` carries an
+    # explicit `beatNum` (1 == downbeat) that `reference/moises/chords.json`
+    # does not.
+    downbeat_reference_path = paths.reference("moises", "beats.json")
+    if downbeat_reference_path.exists():
+        moises_beat_rows = read_json(downbeat_reference_path)
+        reference_downbeats = [
+            float(row["time"]) for row in moises_beat_rows if int(row.get("beatNum", 0)) == 1
+        ]
+        # A `confidence: null` downbeat is an honest abstention (constitution
+        # §7 — "say so rather than snapping"), not a confident claim. Scoring
+        # it as a prediction would charge the honesty mechanism itself: a
+        # correct-but-unmarked-unknown guess would inflate precision, and a
+        # wrong one would deflate it, for a row that never claimed to be
+        # right. Only confidence-bearing downbeats are scored as predictions;
+        # an abstained-on reference downbeat still counts against recall
+        # (nothing was claimed there), which is the honest outcome.
+        predicted_downbeats = [
+            float(beat["time"])
+            for beat in timing.get("beats", [])
+            if str(beat.get("type")) == "downbeat"
+            and beat.get("confidence") is not None
+            and reference_start <= float(beat["time"]) <= reference_end
+        ]
+        if reference_downbeats and predicted_downbeats:
+            diagnostics = dict(diagnostics or {})
+            diagnostics["downbeat_f1_diagnostics"] = _score_downbeats(
+                predicted_downbeats, reference_downbeats, DOWNBEAT_F1_TOLERANCE_SECONDS
+            )
+
     return ValidationResult(
         status=status,
         matched=matched,

@@ -217,10 +217,23 @@ Summary: canonical timing grid. Contains BPM, duration, and a beat-by-beat timel
 Why it matters: this is the main timing spine for almost every other artifact.
 
 LLM hint:
-- See: `beats[].time`, `bar`, `beat_in_bar`, and `type`.
+- See: `beats[].time`, `bar`, `beat_in_bar`, `type`, and `confidence`.
 - Use: place cues on exact beat or downbeat times.
 - Use: convert structural ideas like “every bar” or “beat 4 pickup” into deterministic timestamps.
 - Use: align accents, blackout hits, chase resets, and camera-style punctuation to the shared grid.
+- `beat_in_bar`/`type: "downbeat"` phase now comes from allin1's downbeat frame
+  activation (plan v3.0 item 8), not a fixed modulo; `confidence` is that
+  activation's strength on a downbeat row, or `null` when essentia's and
+  allin1's phases disagree by a whole beat or more for that bar. Always `null`
+  on `type: "beat"` rows. Beat *times* are still essentia's alone.
+
+### `data/analysis/<Song - Artist>/artifacts/allin1/raw.json`
+
+Summary: allin1's raw segment list plus its `downbeat` and `label` frame
+activations (100 Hz), cached once per song. Not a stable contract file — it
+exists so `extract-timing-grid` (1.2) and `segment-sections` (3.1) share one
+allin1 invocation per pipeline pass instead of each running the model. Internal
+to `analyzer.allin1_cache`; no other stage or the UI reads it.
 
 ### `data/analysis/<Song - Artist>/artifacts/essentia/hpcp.json`
 

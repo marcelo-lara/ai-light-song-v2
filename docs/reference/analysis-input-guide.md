@@ -135,8 +135,21 @@ optionally `lighting_hint`, `evidence_summary`.
 
 ### `beats.json` (top-level, JSON array) — high priority
 
-One row per beat: `time`, `type` (`"beat"` / `"downbeat"`), `bar`, `beat`.
+One row per beat: `time`, `type` (`"beat"` / `"downbeat"`), `bar`, `beat`,
+`confidence`.
 
+- Beat *times* are essentia's (`RhythmExtractor2013`); the downbeat *phase* —
+  which beat of every four is `type: "downbeat"` — comes from allin1's
+  `downbeat` frame activation (plan v3.0 item 8), not a modulo. **Bar numbers
+  therefore shifted on most songs** when this changed; do not assume
+  continuity with an artifact generated before this item.
+- `confidence` is `null` on `"beat"` rows. On a `"downbeat"` row it is the
+  activation strength at that beat **unless** essentia's beat grid and
+  allin1's downbeat activation disagree by a whole beat or more for that bar,
+  in which case it is `null` — the smallest honest way to say "this bar's
+  phase is unresolved" rather than reporting a number that looks trustworthy.
+  A consumer that needs a numeric confidence to rank cue placements should
+  treat `null` as "do not snap a cue to this downbeat with confidence."
 - The default projection derives tempo, `beats_per_bar`, `bar_count`, and
   the **downbeat list**. Cue placement snaps to downbeats and bar numbers, so
   downbeat detection and bar numbering must be correct and continuous.
