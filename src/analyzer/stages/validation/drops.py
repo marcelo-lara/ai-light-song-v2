@@ -1,25 +1,29 @@
-"""Scoring harness for the v1.1 `form` and `drops` compare targets.
+"""Scoring harness for the `drops` compare target.
 
-These two targets score the structural read of a song against hand-authored
-ground truth in ``reference/human/``:
+Precision/recall of detected drops against timed human drop hints in
+``reference/human/human_hints.json``, with a bar-scale onset tolerance.
 
-* ``drops`` — precision/recall of detected drops against timed human drop hints,
-  with a bar-scale onset tolerance. When only the song-level ``has_drop`` fact is
-  available (no timed hints yet), it degrades to a presence check.
-* ``form`` — section-boundary F-measure, ``form_role`` accuracy over matched
-  boundaries, ``form_family`` exact match, and a confidence-calibration table.
+Timed-only: the target used to degrade to a `presence` check against the
+song-level `has_drop` fact when no timed hints existed, but that check passes
+by construction (any detector that fires at least once "matches" a
+`has_drop: true` song) and asserted nothing about *when*. Plan v3.0 item 10
+removed it. A song with no timed drop hints now reports `skipped` with the
+reason, same as a song with no reference file at all.
 
-Both targets are advisory: like ``sections`` they never flip the pipeline exit
-code. They exist so that a later human labelling pass (plan item 0.2 / D1) can
-retroactively validate items 1.x–3.x. Until labels land, the targets report
-``skipped`` with the reason.
+The sibling `form` target (section-boundary F-measure against
+`reference/human/human_hints.json` boundary labels) is gone as of the same
+item: it reported `mode: "unlabelled"`, `labelled_boundary_count: 0` on all
+four gold songs, and `validate-sections` against
+`reference/moises/segments.json` supersedes it with real labelled evidence.
+
+This target is advisory: like `sections` it never flips the pipeline exit
+code (its ground truth is an incomplete gold set).
 """
 
 from __future__ import annotations
 
 import re
 from dataclasses import replace
-from pathlib import Path
 
 from analyzer.io import read_json, write_json
 from analyzer.paths import SongPaths
@@ -30,38 +34,16 @@ from .utils import ValidationResult, skipped_result
 # 120 BPM in 4/4 is 2.0 s; ±1.0 s is half a bar, tight enough to be meaningful
 # without punishing sub-beat detector jitter.
 DROP_TOLERANCE_SECONDS = 1.0
-# Section-boundary match tolerance. Matches the analyzer's --tolerance-seconds
-# default so `form` and `sections` agree on what "the same boundary" means.
-BOUNDARY_TOLERANCE_SECONDS = 2.0
 
 _DROP_TYPES = {"drop", "beat_drop", "bass_drop", "drop_hit"}
 _FAKE_DROP_TYPES = {"fake_drop", "false_drop"}
 _DROP_WORD = re.compile(r"\bdrop\b", re.IGNORECASE)
 _FAKE_WORD = re.compile(r"\bfake\b|\bfalse\b|\bwithheld\b", re.IGNORECASE)
 
-CONFIDENCE_BUCKETS = ((0.0, 0.2), (0.2, 0.4), (0.4, 0.6), (0.6, 0.8), (0.8, 1.01))
-
 
 # --------------------------------------------------------------------------- #
 # Ground-truth loading
 # --------------------------------------------------------------------------- #
-
-def load_song_facts(paths: SongPaths) -> dict:
-    """Return the ``facts`` map from ``reference/human/song_facts.json`` or {}."""
-    path = paths.reference("human", "song_facts.json")
-    if not path.exists():
-        return {}
-    payload = read_json(path)
-    facts = payload.get("facts") if isinstance(payload, dict) else None
-    return facts if isinstance(facts, dict) else {}
-
-
-def _fact_value(facts: dict, name: str):
-    entry = facts.get(name)
-    if isinstance(entry, dict):
-        return entry.get("value")
-    return entry
-
 
 def load_human_hints(paths: SongPaths) -> list[dict]:
     path = paths.reference("human", "human_hints.json")
@@ -85,26 +67,6 @@ def labelled_drop_times(hints: list[dict]) -> list[float]:
     return sorted(times)
 
 
-def labelled_boundaries(hints: list[dict]) -> list[dict]:
-    """Section-boundary labels.
-
-    A boundary label is a hint carrying an explicit ``form_role`` (the intended
-    role of the section that *starts* at ``start_time``) or ``section_boundary:
-    true``. This is the shape plan item 0.2 writes; three of the four gold tracks
-    do not have it yet.
-    """
-    boundaries: list[dict] = []
-    for hint in hints:
-        role = hint.get("form_role")
-        if role is None and not hint.get("section_boundary"):
-            continue
-        try:
-            boundaries.append({"time": float(hint["start_time"]), "form_role": role})
-        except (KeyError, TypeError, ValueError):
-            continue
-    return sorted(boundaries, key=lambda row: row["time"])
-
-
 # --------------------------------------------------------------------------- #
 # Detected-output loading
 # --------------------------------------------------------------------------- #
@@ -119,7 +81,6 @@ def detected_drops(timeline: dict) -> list[dict]:
     out: list[dict] = []
     for event in _iter_timeline_events(timeline):
         etype = str(event.get("type", "")).lower()
-        summary = str(event.get("summary", ""))
         is_drop = etype in _DROP_TYPES or (_DROP_WORD.search(etype.replace("_", " ")) and etype not in _FAKE_DROP_TYPES)
         if etype in _FAKE_DROP_TYPES:
             continue
@@ -144,11 +105,6 @@ def detected_fake_drops(timeline: dict) -> list[dict]:
         for e in _iter_timeline_events(timeline)
         if str(e.get("type", "")).lower() in _FAKE_DROP_TYPES
     ]
-
-
-def _sections_list(sections: dict) -> list[dict]:
-    rows = sections.get("sections", []) if isinstance(sections, dict) else []
-    return [row for row in rows if isinstance(row, dict)]
 
 
 # --------------------------------------------------------------------------- #
@@ -197,12 +153,11 @@ def _round(value, digits: int = 4):
     return None if value is None else round(float(value), digits)
 
 
-def score_drops(timeline: dict, hints: list[dict], facts: dict,
+def score_drops(timeline: dict, hints: list[dict],
                 tolerance: float = DROP_TOLERANCE_SECONDS) -> dict:
     detected = detected_drops(timeline)
     fake = detected_fake_drops(timeline)
     labels = labelled_drop_times(hints)
-    has_drop = _fact_value(facts, "has_drop")
 
     result: dict = {
         "target": "drops",
@@ -218,12 +173,10 @@ def score_drops(timeline: dict, hints: list[dict], facts: dict,
         result["metrics"] = _prf(len(matches), len(detected), len(labels))
         result["match_deltas"] = [round(delta, 3) for _, _, delta in matches]
         result["mode"] = "timed"
-    elif has_drop is not None:
-        result["mode"] = "presence"
-        result["presence_expected"] = bool(has_drop)
-        result["presence_detected"] = len(detected) > 0
-        result["presence_ok"] = bool(has_drop) == (len(detected) > 0)
     else:
+        # Timed-only (plan v3.0 item 10): no `has_drop`-fact presence fallback
+        # here — a detector that fires once on any `has_drop: true` song would
+        # pass that check by construction without ever being scored on *when*.
         result["mode"] = "unlabelled"
 
     # B3 symmetry check: fake_drop must not outnumber drop.
@@ -231,119 +184,21 @@ def score_drops(timeline: dict, hints: list[dict], facts: dict,
     return result
 
 
-def score_form(sections: dict, hints: list[dict], facts: dict,
-               tolerance: float = BOUNDARY_TOLERANCE_SECONDS) -> dict:
-    rows = _sections_list(sections)
-    # Boundary = start of every section after the first.
-    predicted_boundaries = [float(row.get("start", row.get("start_time", 0.0))) for row in rows[1:]]
-    predicted_roles = [row.get("form_role") for row in rows[1:]]
-
-    labelled = labelled_boundaries(hints)
-    label_times = [row["time"] for row in labelled]
-
-    family_pred = sections.get("form_family")
-    if isinstance(family_pred, dict):
-        family_pred = family_pred.get("value") or family_pred.get("family")
-    family_label = _fact_value(facts, "form_family")
-
-    result: dict = {
-        "target": "form",
-        "tolerance_seconds": tolerance,
-        "predicted_boundary_count": len(predicted_boundaries),
-        "labelled_boundary_count": len(label_times),
-        "form_family_predicted": family_pred,
-        "form_family_labelled": family_label,
-        "form_family_match": (family_label is not None and family_pred == family_label),
-    }
-
-    if label_times:
-        matches = _greedy_match(predicted_boundaries, label_times, tolerance)
-        result["boundary_metrics"] = _prf(len(matches), len(predicted_boundaries), len(label_times))
-        # form_role accuracy over matched boundaries
-        role_hits = 0
-        role_total = 0
-        for pi, li, _ in matches:
-            labelled_role = labelled[li].get("form_role")
-            if labelled_role is None:
-                continue
-            role_total += 1
-            if predicted_roles[pi] == labelled_role:
-                role_hits += 1
-        result["form_role"] = {
-            "matched_boundaries_with_role": role_total,
-            "correct": role_hits,
-            "accuracy": _round(role_hits / role_total) if role_total else None,
-        }
-        result["role_mode"] = "labelled"
-
-    result["mode"] = "labelled" if (label_times or family_label is not None) else "unlabelled"
-    result["confidence_calibration"] = confidence_calibration(rows, label_times, tolerance)
-    return result
-
-
-def confidence_calibration(rows: list[dict], label_times: list[float],
-                           tolerance: float = BOUNDARY_TOLERANCE_SECONDS) -> dict:
-    """Bucket sections by predicted boundary confidence and report observed
-    accuracy (fraction whose start aligns to a labelled boundary) per bucket.
-
-    Only meaningful once boundary labels exist; with no labels the observed
-    column is null but the predicted distribution is still reported (it shows
-    whether item 3.1 spread confidence across its range).
-    """
-    buckets: list[dict] = []
-    for low, high in CONFIDENCE_BUCKETS:
-        members = [
-            row for row in rows[1:]
-            if low <= float(row.get("confidence", 0.0)) < high
-        ]
-        observed = None
-        if label_times and members:
-            aligned = sum(
-                1 for row in members
-                if any(abs(float(row.get("start", row.get("start_time", 0.0))) - lt) <= tolerance
-                       for lt in label_times)
-            )
-            observed = round(aligned / len(members), 4)
-        buckets.append({
-            "range": [low, round(high, 2)],
-            "section_count": len(members),
-            "observed_alignment": observed,
-        })
-    confidences = [float(row.get("confidence", 0.0)) for row in rows[1:]]
-    spread = (max(confidences) - min(confidences)) if confidences else 0.0
-    return {"buckets": buckets, "predicted_spread": round(spread, 4)}
-
-
 # --------------------------------------------------------------------------- #
-# ValidationResult adapters + artifact
+# ValidationResult adapter + artifact
 # --------------------------------------------------------------------------- #
 
 def _result_from_score(score: dict, reference_file: str | None) -> ValidationResult:
-    mode = score.get("mode")
-    if mode in {"unlabelled", None}:
-        return replace(skipped_result(), diagnostics={"reason": "no human labels", "score": score})
+    if score.get("mode") != "timed":
+        return replace(skipped_result(), diagnostics={"reason": "no timed human drop hints", "score": score})
 
-    checks: list[dict] = []
-    if score["target"] == "drops":
-        if mode == "timed":
-            m = score["metrics"]
-            checks.append({"check": "drop recall >= 0.5", "passed": (m["recall"] or 0) >= 0.5, "recall": m["recall"]})
-            checks.append({"check": "drop precision >= 0.5", "passed": (m["precision"] or 0) >= 0.5, "precision": m["precision"]})
-        elif mode == "presence":
-            checks.append({"check": "drop presence matches human fact", "passed": score["presence_ok"],
-                           "expected": score["presence_expected"], "detected": score["presence_detected"]})
-        checks.append({"check": "fake_drop does not outnumber drop", "passed": not score["fake_outnumbers_drop"],
-                       "fake": score["fake_drop_count"], "drop": score["detected_count"]})
-    else:  # form
-        if score.get("form_family_labelled") is not None:
-            checks.append({"check": "form_family exact match", "passed": score["form_family_match"],
-                           "predicted": score["form_family_predicted"], "labelled": score["form_family_labelled"]})
-        bm = score.get("boundary_metrics")
-        if bm:
-            checks.append({"check": "boundary F1 >= 0.6", "passed": (bm["f1"] or 0) >= 0.6, "f1": bm["f1"]})
-        fr = score.get("form_role")
-        if fr and fr.get("accuracy") is not None:
-            checks.append({"check": "form_role accuracy >= 0.6", "passed": fr["accuracy"] >= 0.6, "accuracy": fr["accuracy"]})
+    m = score["metrics"]
+    checks = [
+        {"check": "drop recall >= 0.5", "passed": (m["recall"] or 0) >= 0.5, "recall": m["recall"]},
+        {"check": "drop precision >= 0.5", "passed": (m["precision"] or 0) >= 0.5, "precision": m["precision"]},
+        {"check": "fake_drop does not outnumber drop", "passed": not score["fake_outnumbers_drop"],
+         "fake": score["fake_drop_count"], "drop": score["detected_count"]},
+    ]
 
     matched = sum(1 for c in checks if c["passed"])
     mismatched = len(checks) - matched
@@ -364,22 +219,9 @@ def validate_drops(paths: SongPaths) -> ValidationResult:
         return skipped_result()
     timeline = read_json(timeline_path)
     hints = load_human_hints(paths)
-    facts = load_song_facts(paths)
-    score = score_drops(timeline, hints, facts)
+    score = score_drops(timeline, hints)
     _write_score_artifact(paths, "drops", score)
     return _result_from_score(score, str(paths.reference("human", "human_hints.json")))
-
-
-def validate_form(paths: SongPaths) -> ValidationResult:
-    sections_path = paths.artifact("section_segmentation", "sections.json")
-    if not sections_path.exists():
-        return skipped_result()
-    sections = read_json(sections_path)
-    hints = load_human_hints(paths)
-    facts = load_song_facts(paths)
-    score = score_form(sections, hints, facts)
-    _write_score_artifact(paths, "form", score)
-    return _result_from_score(score, str(paths.reference("human", "song_facts.json")))
 
 
 def _write_score_artifact(paths: SongPaths, target: str, score: dict) -> None:
