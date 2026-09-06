@@ -1,0 +1,66 @@
+Margin-db sweep — filtering detect() changes by margin_db >= threshold
+==============================================================================
+
+## threshold >= 0 dB
+   song                                 n   F1@0.5s
+   _test_song                          17   0.59
+   Hideaway - Kiesza                   57   0.13
+   Armin - Revolution                  53   0.20
+   Titanium - David Guetta ft Sia      44   0.07
+   pooled corpus               @0.5s P 0.13 R 0.43 F1 0.20   @1.0s P 0.16 R 0.53 F1 0.25
+
+## threshold >= 2 dB
+   song                                 n   F1@0.5s
+   _test_song                          14   0.62
+   Hideaway - Kiesza                   44   0.16
+   Armin - Revolution                  44   0.19
+   Titanium - David Guetta ft Sia      39   0.04
+   pooled corpus               @0.5s P 0.14 R 0.36 F1 0.20   @1.0s P 0.18 R 0.47 F1 0.26
+
+## threshold >= 4 dB
+   song                                 n   F1@0.5s
+   _test_song                          11   0.62
+   Hideaway - Kiesza                   37   0.14
+   Armin - Revolution                  29   0.18
+   Titanium - David Guetta ft Sia      32   0.00
+   pooled corpus               @0.5s P 0.14 R 0.30 F1 0.19   @1.0s P 0.17 R 0.43 F1 0.25
+
+## threshold >= 6 dB
+   song                                 n   F1@0.5s
+   _test_song                           9   0.58
+   Hideaway - Kiesza                   27   0.12
+   Armin - Revolution                  21   0.15
+   Titanium - David Guetta ft Sia      26   0.00
+   pooled corpus               @0.5s P 0.14 R 0.23 F1 0.18   @1.0s P 0.18 R 0.34 F1 0.24
+
+## threshold >= 8 dB
+   song                                 n   F1@0.5s
+   _test_song                           7   0.55
+   Hideaway - Kiesza                   23   0.14
+   Armin - Revolution                  16   0.10
+   Titanium - David Guetta ft Sia      22   0.00
+   pooled corpus               @0.5s P 0.15 R 0.19 F1 0.17   @1.0s P 0.18 R 0.28 F1 0.22
+
+## threshold >= 10 dB
+   song                                 n   F1@0.5s
+   _test_song                           7   0.55
+   Hideaway - Kiesza                   18   0.09
+   Armin - Revolution                  15   0.10
+   Titanium - David Guetta ft Sia      20   0.00
+   pooled corpus               @0.5s P 0.15 R 0.17 F1 0.16   @1.0s P 0.18 R 0.26 F1 0.21
+
+## threshold >= 12 dB
+   song                                 n   F1@0.5s
+   _test_song                           4   0.32
+   Hideaway - Kiesza                   13   0.11
+   Armin - Revolution                  13   0.08
+   Titanium - David Guetta ft Sia      19   0.00
+   pooled corpus               @0.5s P 0.10 R 0.11 F1 0.10   @1.0s P 0.14 R 0.19 F1 0.16
+
+## threshold >= 15 dB
+   song                                 n   F1@0.5s
+   _test_song                           4   0.32
+   Hideaway - Kiesza                    4   0.00
+   Armin - Revolution                  10   0.09
+   Titanium - David Guetta ft Sia      13   0.00
+   pooled corpus               @0.5s P 0.13 R 0.09 F1 0.10   @1.0s P 0.19 R 0.17 F1 0.18

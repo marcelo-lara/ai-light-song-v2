@@ -1,0 +1,10 @@
+Ablation — persistence gate vs duty-cycle smoothing, on _test_song
+==============================================================================
+
+   variant                                                      n           P/R/F1 @0.5s           P/R/F1 @1.0s
+   persistence gate, fine edge reported (detect)               17    0.59/0.60/0.59    0.76/0.73/0.75
+   +-1s duty-cycle smoothing + hysteresis (detect_smoothed)    15    0.27/0.27/0.27    0.60/0.60/0.60
+
+   Spacer hint boundary error (nearest detection per variant)
+     persistence gate, fine edge reported (detect)              nearest   36.50  d= +0.00  |d|=0.00
+     +-1s duty-cycle smoothing + hysteresis (detect_smoothed)   nearest   30.50  d= -6.00  |d|=6.00

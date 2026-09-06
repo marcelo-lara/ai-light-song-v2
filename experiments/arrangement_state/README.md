@@ -74,20 +74,34 @@ docker compose run --rm --no-deps -T --entrypoint python app \
   -m experiments.arrangement_state.run score            # gold set, vs incumbent + baseline
 docker compose run --rm --no-deps -T --entrypoint python app \
   -m experiments.arrangement_state.run export           # reference/proposals/arrangement_state.json
+docker compose run --rm --no-deps -T --entrypoint python app \
+  -m experiments.arrangement_state.run ablation         # out/ablation.txt — Measurement 1
+docker compose run --rm --no-deps -T --entrypoint python app \
+  -m experiments.arrangement_state.run margin-sweep     # out/margin_sweep.txt — margin_db sweep
+docker compose run --rm --no-deps -T --entrypoint python app \
+  -m experiments.arrangement_state.run breath-compare   # out/breath_compare.txt — Measurement 3
 ```
 
-[`out/score.txt`](out/score.txt) is the committed evidence.
+[`out/score.txt`](out/score.txt), [`out/ablation.txt`](out/ablation.txt),
+[`out/margin_sweep.txt`](out/margin_sweep.txt) and
+[`out/breath_compare.txt`](out/breath_compare.txt) are the committed evidence —
+every table below is regenerated from one of these four commands, not asserted.
 
 ## Measurement 1 — smoothing is what destroys this, and it is not a small effect
 
 The obvious way to clean up a noisy presence signal is to smooth it before
-thresholding. It costs the boundary. Same detector, same song, ±1 s smoothing
-of the presence fractions instead of persistence gating:
+thresholding. `detect_smoothed()` in [`detector.py`](detector.py) implements
+that alternative explicitly, as a documented ablation, not a throwaway script:
+same 250 ms windows and per-stem thresholds as the shipped `detect()`, but a
+duty cycle (mean raw presence fraction over the ±1.0 s / 9-window neighbourhood)
+gated by hysteresis (on above 0.35, off below 0.15) instead of the persistence
+gate, with detections closer than 0.5 s merged. `run ablation` runs both on
+`_test_song` and scores each against the hand-marked hint starts:
 
-| variant | P / R / F1 @ 0.5 s on `_test_song` | `Spacer` boundary error |
-| --- | --- | --- |
-| **persistence gate, fine edge reported** | **0.59 / 0.60 / 0.59** | **0.00 s** |
-| ±1 s smoothing before threshold | 0.27 / 0.27 / 0.27 | 6.0 s |
+| variant | n | P / R / F1 @ 0.5 s on `_test_song` | `Spacer` boundary error |
+| --- | --- | --- | --- |
+| **persistence gate, fine edge reported (shipped `detect`)** | 17 | **0.59 / 0.60 / 0.59** | **0.00 s** |
+| ±1 s duty-cycle smoothing + hysteresis (`detect_smoothed`) | 15 | 0.27 / 0.27 / 0.27 | 6.00 s |
 
 Smoothing more than halves F1 *and* displaces a hand-marked boundary by six
 seconds. This is the repository's "the physical onset wins over the nearest grid
@@ -141,25 +155,44 @@ for the others.
 ## Measurement 3 — the Armin "Breath" block, without a model
 
 The block the CLAP experiment was built to find. Hand-marked 81.39–96.33,
-*"Vocal - no intense section"*.
+*"Vocal - no intense section"*. `run breath-compare` computes every number in
+this section at run time — the hand-marked span from
+`reference/human/human_hints.json`, the arrangement-state block from
+`detector.blocks()`, and the CLAP row by reading
+`data/analysis/Armin - Revolution/reference/proposals/character.json` block
+`char-004`. Nothing here is hardcoded.
 
 | source | block | start error | end error |
 | --- | --- | --- | --- |
 | hand-marked | 81.39 – 96.33 | — | — |
-| **arrangement state (stems only)** | **81.50 – 95.50** | **+0.11 s** | **−0.83 s** |
-| CLAP character layer (`stems+clap`) | 83.50 – 95.00 | +2.11 s | −1.33 s |
+| **arrangement state (stems only)** | **83.00 – 95.50** | **+1.61 s** | **−0.83 s** |
+| CLAP character layer (`stems+clap`, `char-004`) | 83.50 – 95.00 | +2.11 s | −1.33 s |
 
 ```
+ 81.25  +drums    -> [drums,harmonic]          margin +18.1 dB
  81.50  +vocals   -> [drums,harmonic,vocals]   margin +10.5 dB
  83.00  -drums    -> [harmonic,vocals]         margin  +5.2 dB
  95.50  +drums    -> [drums,harmonic,vocals]   margin +11.5 dB
 ```
 
-Tighter on both edges than the GPU pass, from a JSON file. This does not make
-CLAP worthless — the CLAP ablation's finding stands, that the calm/intense axis
-is what cuts a texture detector's *false territory* from 73 % of the corpus to
-41 %. It relocates the division of labour exactly where that experiment already
-concluded it belonged: **the stems say what is playing; CLAP says how it feels.**
+**This number changed from an earlier draft of this table**, and the change is
+itself informative. A brief drum re-entry at 81.25–83.0 s — audible under the
+vocal, before it drops back out — splits what a human eye reads as one
+continuous "vocal only" block into two discrete detector blocks: `81.50–83.00`
+(vocals *and* drums) and `83.00–95.50` (vocals alone, no drums). The block that
+actually matches "no intense section" is the second one, `83.00–95.50`, not
+`81.50–95.50` — the earlier table quietly merged across that blip by hand. The
+mechanical, regenerable answer is a looser start (+1.61 s instead of +0.11 s)
+than previously claimed, though the end edge (−0.83 s) is unchanged and it is
+still tighter on both edges than the CLAP pass (whose `smooth_s: 2.0` erases
+the same 1.75 s blip rather than reporting around it).
+
+Still tighter than the GPU pass, from a JSON file, but by a smaller margin than
+first claimed. This does not make CLAP worthless — the CLAP ablation's finding
+stands, that the calm/intense axis is what cuts a texture detector's *false
+territory* from 73 % of the corpus to 41 %. It relocates the division of labour
+exactly where that experiment already concluded it belonged: **the stems say
+what is playing; CLAP says how it feels.**
 
 ## Measurement 4 — the corpus, and why its number measures the labels
 
@@ -188,11 +221,18 @@ This is the "ground truth is precious and scarce" rule firing: the measurement
 sits at the noise floor of the labels, so **the next move is to mark texture
 blocks on the other three gold songs, not to tune the detector against drops.**
 
-Confirming that tuning is not the answer: gating changes by `margin_db` trades
-recall for precision without ever improving corpus F1 — 0.20 at 0 dB, 0.20 at
-2 dB, 0.19 at 4 dB, 0.18 at 6 dB, 0.10 at 12 dB. The margin is a good
-confidence and a poor filter, which is the expected shape for a detector whose
-false positives are mostly unlabelled true positives.
+Confirming that tuning is not the answer — `run margin-sweep`
+([`out/margin_sweep.txt`](out/margin_sweep.txt)) filters `detect()`'s own
+changes to `margin_db >= threshold` and rescoring at each step: gating trades
+recall for precision without ever improving corpus F1 @0.5 s:
+
+| min `margin_db` | 0 | 2 | 4 | 6 | 8 | 10 | 12 | 15 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| pooled F1 @0.5 s | 0.20 | 0.20 | 0.19 | 0.18 | 0.17 | 0.16 | 0.10 | 0.10 |
+| pooled F1 @1.0 s | 0.25 | 0.26 | 0.25 | 0.24 | 0.22 | 0.21 | 0.16 | 0.18 |
+
+The margin is a good confidence and a poor filter, which is the expected shape
+for a detector whose false positives are mostly unlabelled true positives.
 
 ## Review it
 
@@ -205,11 +245,11 @@ lane belongs directly beneath **Human Hints**, next to **Drop Proposals**.
 
 ## Conclusion
 
-**The contrast the operator sees in the UI is recoverable to ±0.1 s by
-arithmetic over a file the pipeline already publishes, and no shipped stage
-looks for it.** On the only song labelled densely enough to measure, it scores
-F1 0.59 @0.5 s where `sections.json` scores 0.00, and it finds the reference
-`Breath` block more tightly than a CLAP forward pass.
+**The contrast the operator sees in the UI is recoverable by arithmetic over a
+file the pipeline already publishes, and no shipped stage looks for it.** On
+the only song labelled densely enough to measure, it scores F1 0.59 @0.5 s
+where `sections.json` scores 0.00 — median hit error 0.07 s — and it finds the
+reference `Breath` block tighter on both edges than a CLAP forward pass.
 
 Two things are needed before promotion is worth discussing: the UI lane, and
 texture hints on the other three gold songs so the corpus number means

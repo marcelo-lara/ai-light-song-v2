@@ -1,0 +1,7 @@
+Breath compare — hand-marked "Breath" vs arrangement state vs CLAP, on Armin - Revolution
+==============================================================================
+
+   source                                 start       end   start err   end err
+   hand-marked                            81.39     96.33                      
+   arrangement state (own block)          83.00     95.50       +1.61     -0.83
+   CLAP block (char-004)                  83.50     95.00       +2.11     -1.33

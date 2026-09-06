@@ -75,7 +75,13 @@ def _percentile(values: list[float], p: float) -> float:
     return s[f] + (s[min(f + 1, len(s) - 1)] - s[f]) * (k - f)
 
 
-def detect(song: str) -> Result:
+def _windows(song: str) -> tuple[list[str], float, list[float], list[list[float]], list[list[float]], dict[str, float]]:
+    """Shared windowing/threshold computation for `detect` and `detect_smoothed`.
+
+    Returns (order, duration, win_times, presence, margin, thresholds_db) —
+    everything downstream of the raw per-stem dB series and before either
+    gate (persistence, or duty-cycle + hysteresis) is applied.
+    """
     doc = json.loads(paths.loudness_path(song).read_text())
     order: list[str] = doc["metadata"]["source_order"]
     duration: float = doc["metadata"]["duration"]
@@ -110,6 +116,12 @@ def detect(song: str) -> Result:
         margin.append(
             [max(db[i][k] for k in idx) - thresholds[order[i]] for i in range(len(order))]
         )
+
+    return order, duration, win_times, presence, margin, thresholds
+
+
+def detect(song: str) -> Result:
+    order, duration, win_times, presence, margin, thresholds = _windows(song)
 
     hold = max(1, int(round(HOLD_S / WINDOW_S)))
     n = len(win_times)
@@ -151,6 +163,82 @@ def detect(song: str) -> Result:
         presence=presence,
         thresholds_db={k: round(v, 2) for k, v in thresholds.items()},
         changes=changes,
+        duration=duration,
+    )
+
+
+def detect_smoothed(song: str) -> Result:
+    """Documented ablation only — the shipped detector is `detect()`.
+
+    Same windows and thresholds as `detect()`, but gates on a ±1.0 s duty-cycle
+    (a 9-window moving average of raw presence) with hysteresis, instead of the
+    persistence gate. Kept here so the smoothing cost measured in the README
+    ("Measurement 1") can be reproduced from this module rather than asserted.
+    """
+    order, duration, win_times, presence, margin, thresholds = _windows(song)
+    n = len(win_times)
+    n_stems = len(order)
+
+    duty = [[0.0] * n_stems for _ in range(n)]
+    for w in range(n):
+        lo, hi = max(0, w - 4), min(n - 1, w + 4)
+        span = presence[lo : hi + 1]
+        for i in range(n_stems):
+            duty[w][i] = sum(row[i] for row in span) / len(span)
+
+    state = [[False] * n_stems for _ in range(n)]
+    for i in range(n_stems):
+        cur = duty[0][i] > 0.3
+        state[0][i] = cur
+        for w in range(1, n):
+            if cur:
+                if duty[w][i] < 0.15:
+                    cur = False
+            else:
+                if duty[w][i] > 0.35:
+                    cur = True
+            state[w][i] = cur
+
+    raw_changes: list[Change] = []
+    for w in range(1, n):
+        entered, left, margins = [], [], []
+        for i, stem in enumerate(order):
+            if stem == "mix" or state[w][i] == state[w - 1][i]:
+                continue
+            (entered if state[w][i] else left).append(stem)
+            margins.append(abs(margin[w][i]))
+        if entered or left:
+            raw_changes.append(
+                Change(
+                    time=round(win_times[w], 3),
+                    entered=entered,
+                    left=left,
+                    state={s: state[w][i] for i, s in enumerate(order) if s != "mix"},
+                    margin_db=round(min(margins), 2),
+                )
+            )
+
+    merged: list[Change] = []
+    for c in raw_changes:
+        if merged and c.time - merged[-1].time < 0.5:
+            prev = merged[-1]
+            merged[-1] = Change(
+                time=prev.time,
+                entered=sorted(set(prev.entered) | set(c.entered)),
+                left=sorted(set(prev.left) | set(c.left)),
+                state=c.state,
+                margin_db=round(min(prev.margin_db, c.margin_db), 2),
+            )
+        else:
+            merged.append(c)
+
+    return Result(
+        song=song,
+        stems=[s for s in order if s != "mix"],
+        times=win_times,
+        presence=presence,
+        thresholds_db={k: round(v, 2) for k, v in thresholds.items()},
+        changes=merged,
         duration=duration,
     )
 

@@ -51,3 +51,8 @@ def hints_path(song: str) -> Path:
 
 def proposals_path(song: str) -> Path:
     return ANALYSIS_ROOT / song / "reference" / "proposals" / "arrangement_state.json"
+
+
+def character_proposal_path(song: str) -> Path:
+    """The CLAP character-block proposal (`experiments/clap`), read-only here."""
+    return ANALYSIS_ROOT / song / "reference" / "proposals" / "character.json"
