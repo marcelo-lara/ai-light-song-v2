@@ -333,59 +333,29 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             timing,
             sections,
         )
-        hints = _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, sections)
-        ui_outputs = _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
+        # These stages write their own top-level files (hints.json; beats.json /
+        # sections.json / song_event_timeline.json). Their return values are no
+        # longer read here — v3.1 item 8 dropped the info.json `outputs` manifest
+        # that used them.
+        _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, sections)
+        _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
         # v3.1 item 2 — attribution header. `bpm` and `duration` are essentia's
-        # (the timing stage). `song_path`/`artifacts`/`outputs`/`debug` are
-        # orchestration metadata, not fused delivery-surface values, and item 8
-        # removes them — exempted here rather than force-fit to a producer.
+        # (the timing stage). v3.1 item 8 removed `song_path` / `artifacts` /
+        # `outputs` / `debug` / `generated_from`: they embedded absolute host
+        # paths and a stale per-song file manifest that no consumer needs — a
+        # client discovers a song's files from the fixed top-level layout, not a
+        # manifest. Nothing is exempted now because nothing path-bearing remains.
         info_field_sources = validate_field_sources(
             {"bpm": "essentia", "duration": "essentia"},
             ("bpm", "duration"),
             file="info.json",
-            exempt=("song_path", "artifacts", "outputs", "debug"),
         )
         info_payload = {
             "schema_version": SCHEMA_VERSION,
             **build_song_schema_fields(paths, bpm=timing["bpm"], duration=timing["duration"]),
             "field_sources": info_field_sources,
-            "song_path": str(paths.song_path),
-            "artifacts": {
-                "beats": str(paths.artifact("essentia", "beats.json")),
-                "fft_bands": str(paths.artifact("essentia", "fft_bands.json")),
-                "rms_loudness": str(paths.artifact("essentia", "rms_loudness.json")),
-                "loudness_envelope": str(paths.artifact("essentia", "loudness_envelope.json")),
-                "genre": str(paths.artifact("genre.json")),
-                "hpcp": str(paths.artifact("essentia", "hpcp.json")),
-                "harmonic_layer": str(paths.artifact("layer_a_harmonic.json")),
-                "drum_events": str(paths.artifact("symbolic_transcription", "drum_events.json")),
-                "drum_midi": str(paths.artifact("symbolic_transcription", "omnizart", "drums.mid")),
-                "energy_layer": str(paths.artifact("layer_c_energy.json")),
-                "song_facts": str(paths.reference("human", "song_facts.json")),
-                "human_hints_alignment": human_hint_alignment["json_path"] if human_hint_alignment else None,
-                "human_hints_alignment_markdown": human_hint_alignment["markdown_path"] if human_hint_alignment else None,
-                "sections": str(paths.artifact("section_segmentation", "sections.json")),
-            },
-            "generated_from": {
-                "source_song_path": str(paths.song_path),
-                "timing_grid": str(paths.artifact("essentia", "beats.json")),
-                "fft_bands_file": str(paths.artifact("essentia", "fft_bands.json")),
-                "rms_loudness_file": str(paths.artifact("essentia", "rms_loudness.json")),
-                "loudness_envelope_file": str(paths.artifact("essentia", "loudness_envelope.json")),
-            },
-            "outputs": {
-                "beats": ui_outputs["beats"],
-                "hints": hints["hints"],
-                "sections": ui_outputs["sections"],
-                "song_event_timeline": str(paths.timeline_output_path),
-            },
-            "debug": {
-                "fft_band_count": len(fft_bands.get("bands", [])),
-                "loudness_source_count": len(loudness["rms_loudness"].get("sources", [])),
-                "drum_events_engine": drum_events["generated_from"]["engine"],
-            },
         }
         write_json(paths.info_output_path, info_payload)
 

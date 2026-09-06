@@ -70,14 +70,7 @@ export function parseInfo(raw: unknown): SongInfo {
     song_name: asString(o.song_name, "info.song_name"),
     bpm: numberOr(o.bpm, 0, "info.bpm"),
     duration: asNumber(o.duration, "info.duration"),
-    song_path: stringOr(o.song_path, "", "info.song_path"),
-    artifacts: stringRecord(o.artifacts ?? {}, "info.artifacts"),
-    outputs:
-      o.outputs === undefined || o.outputs === null
-        ? null
-        : stringRecord(o.outputs, "info.outputs"),
-    generated_from: objectOrNull(o.generated_from, "info.generated_from"),
-    debug: objectOrNull(o.debug, "info.debug"),
+    field_sources: stringRecord(o.field_sources ?? {}, "info.field_sources"),
   };
 }
 

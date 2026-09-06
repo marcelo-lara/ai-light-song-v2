@@ -94,7 +94,7 @@ stall the whole run; everything independent of it still gets built.
 | Items | 11 (1 scaffold, 7 delivery surface, 2 tools, 1 closure) |
 | Items with a Visual QA block | 4 (items 2, 3, 4, 8) |
 | MCP regression | `smoke-test` from item 1 onward; `full-regression` at item 11 ([`reference/mcp-regression.md`](reference/mcp-regression.md)) |
-| Done | 7 |
+| Done | 8 |
 | Contract-change note | `docs/contract-change-v3.1.md` — created in item 2, extended by items 3–8 |
 | Blocking decisions (`D`) | none open |
 
@@ -159,7 +159,7 @@ Full runbook: [`reference/ui-regression.md`](reference/ui-regression.md).
 | 2 | every top-level file | **the big one.** `beats.json` / `sections.json` become objects, so `parsers.ts` must unwrap them; `confidence` becomes `downbeat_confidence`; `types.ts` gains `field_sources` / `source`; `parsers.test.ts` updated; fixtures rebuilt; baselines re-verified |
 | 3 | `sections.json` | `types.ts` gains the four fields; fixtures rebuilt; baselines re-verified |
 | 4 | `song_event_timeline.json` | `types.ts` gains `gesture_id`; fixtures rebuilt; baselines re-verified |
-| 8 | `info.json` | `types.ts`, **`ui/src/data/parsers.ts`** (drops `song_path`, `artifacts`, `outputs`), **`ui/src/data/parsers.test.ts`** (its `expect(info.outputs).not.toBeNull()` assertion); fixtures rebuilt; baselines re-verified |
+| 8 | `info.json` | `types.ts`, **`ui/src/data/parsers.ts`** (drops `song_path`, `artifacts`, `outputs`, `generated_from`, `debug`), **`ui/src/data/parsers.test.ts`** (the `info.artifacts` / `info.outputs` assertions); fixtures rebuilt; baselines re-verified |
 
 The shared steps for each of those items:
 
@@ -488,24 +488,23 @@ The deepest UI change in the plan, and nothing downstream depends on it — so i
 sits last in the phase where a problem cannot block anything else. Unlike items
 2 and 3 this one **removes** fields the debugger actively parses.
 
-- [ ] `ui_data.py`: `info.json` drops `song_path`, `artifacts`, `outputs`,
-      `debug` and `generated_from`, or replaces them with paths relative to the
-      song directory. **`song_name`, `bpm`, `duration` and `schema_version`
-      stay** — item 1's `list_songs()` reads `bpm` and `duration`, and removing
-      them would break a shipped, tested capability.
-- [ ] `ui/src/data/parsers.ts` — remove the `song_path`, `artifacts` and
-      `outputs` extractions from `parseInfo`. They are defensive
-      (`stringOr(..., "")`, `o.artifacts ?? {}`), so the parser will not throw on
-      the new shape, but leaving them declares a contract that no longer exists.
-- [ ] `ui/src/data/parsers.test.ts` — drop
-      `expect(typeof info.artifacts).toBe("object")` and
-      `expect(info.outputs).not.toBeNull()`. These fail once the fixture's
-      `info.json` is rebuilt, and they are the reason this item cannot be a
-      pipeline-only change.
-- [ ] `ui/src/data/types.ts` — remove the three fields from the info type.
-- [ ] `docs/reference/artifacts.md` — the `info.json` row.
-- [ ] `docs/contract-change-v3.1.md`. Flag this one prominently: it is the only
-      item in the release that **removes** fields a consumer may read today.
+- [x] `info.json` is assembled in `pipeline.py` (orchestration, not a stage): it
+      drops `song_path`, `artifacts`, `outputs`, `debug` **and** `generated_from`
+      — all host-path or stale-manifest fields (D24: removed outright, not made
+      relative). **`song_name`, `bpm`, `duration`, `schema_version` and
+      `field_sources` stay** — item 1's `list_songs()` reads `bpm` and
+      `duration`. The `validate_field_sources` `exempt` arg for `info.json` is
+      gone (nothing path-bearing left to exempt).
+- [x] `ui/src/data/parsers.ts` — `parseInfo` returns
+      `schema_version` / `song_name` / `bpm` / `duration` / `field_sources`
+      only; the `song_path` / `artifacts` / `outputs` / `generated_from` / `debug`
+      extractions are removed.
+- [x] `ui/src/data/parsers.test.ts` — the `info.artifacts` / `info.outputs`
+      assertions dropped; replaced with a `field_sources` assertion.
+- [x] `ui/src/data/types.ts` — `SongInfo` reduced to the five kept fields
+      (`field_sources` added).
+- [x] `docs/reference/artifacts.md` — the `info.json` row + `field_sources` row.
+- [x] `docs/contract-change-v3.1.md` — section 8, flagged as the only removal.
 
 **Tests:** rebuild the MCP fixtures, then `smoke-test`; plus
 `docker compose run --rm test`, the UI suite
@@ -641,7 +640,8 @@ None open. Decisions already taken and folded into the items above:
 | D13 | (item 1, resolved) Required top-level files today = `info/beats/sections/song_event_timeline/hints`. `genre/drum_events/loudness` are present in the Full/Degenerate fixtures but not yet required (mid-migration; items 5–7 publish them). `McpPartial - Fixture` omits `sections.json`. |
 | D14 | (item 1, resolved) Item-1 fixtures use the **current committed shape** (bare arrays for `beats`/`sections`) to keep item 1 isolated; item 2 rebuilds them into the `field_sources`-header object shape. Noted in the fixture README. |
 | D16 | (item 2, resolved) `field_sources` coverage is checked as **header ⊇ emitted keys** (coverage, not strict equality), so a field that appears on only some rows — `gesture_id` on gesture-phase rows but not transition rows — does not break the check. Four keys are reserved and need no entry: `schema_version`, `generated_from`, `field_sources`, `song_name` (identity/provenance metadata, not fused values). |
-| D17 | (item 2, resolved) `info.json`'s `field_sources` covers `bpm` / `duration` (→ `essentia`) only. `song_path` / `artifacts` / `outputs` / `debug` are orchestration metadata, not fused delivery-surface values, and are passed as an explicit `exempt` set to the validator rather than force-fit to a producer — item 8 removes them outright. |
+| D17 | (item 2, resolved; superseded by D24) `info.json`'s `field_sources` covers `bpm` / `duration` (→ `essentia`) only. `song_path` / `artifacts` / `outputs` / `debug` were passed as an explicit `exempt` set to the validator rather than force-fit to a producer. Item 8 (D24) removed those fields outright, so the `exempt` arg for `info.json` is gone. |
+| D24 | (item 8, resolved) `info.json`'s `song_path` / `artifacts` / `outputs` / `debug` / `generated_from` are **removed**, not rewritten as song-relative paths. They were a host-path leak plus a stale per-song file manifest; a client discovers a song's files from the fixed top-level layout, and the manifest pointed into `artifacts/` which the MCP server may not read anyway. `info.json` is now `{schema_version, song_name, bpm, duration, field_sources}`. `parseInfo` / `SongInfo` reduced to match, with `field_sources` added to `SongInfo`. |
 | D18 | (item 3, resolved) The top-level → `section_segmentation` **array-index match was already gone** — `ui_data.build_ui_data` builds section rows straight from the segmentation list joined on `section_id` (v1.1 item 3.2 guard). Item 3's fix is therefore to **emit `function` / `function_confidence` / `function_status` / `same_label_as` on the top-level row** so no consumer ever needs to open the artifact; the UI's `sectionsContent` still accepts the segmentation list as an optional second arg (a `section_id` join, not index) and is left as-is since the UI may read `artifacts/`. |
 | D19 | (item 3, resolved) `function_status` on a top-level row defaults to `"unknown"` when the segmentation row omits it (honest default, matches how `_format_section_label` already reads it) — never a guessed `"known"`. |
 | D20 | (item 4, resolved) The pre-existing exact-`(type, start, end)` dedup in `build_gestures` can collapse a primitive shared by two nearby impacts into one row, so a gesture may lose a phase; grouping by `gesture_id` then yields time-ordered, non-overlapping runs (verified on all four gold songs) but not always all five phases. That is existing dedup behaviour, not introduced here. |

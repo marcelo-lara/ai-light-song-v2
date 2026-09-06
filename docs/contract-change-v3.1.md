@@ -191,3 +191,38 @@ song. The 10 ms artifact is unchanged and stays the debugger's source.
   calibrated LUFS. `history` (rolling windows), `frame_index`, `start_s` and
   `end_s` are not published — a caller computes windows from the series it asks
   for.
+
+---
+
+## 8. 🚨 `info.json` — fields REMOVED (the only removal in the release)
+
+Every other v3.1 item **adds** fields. This one **removes** five that a consumer
+may read today. A consumer that reads any of them must stop.
+
+`info.json` is now **only** song metadata:
+
+```json
+{
+  "schema_version": "3.0",
+  "song_name": "Armin - Revolution",
+  "bpm": 129.41,
+  "duration": 194.01,
+  "field_sources": { "bpm": "essentia", "duration": "essentia" }
+}
+```
+
+| Field | Status | Why |
+| --- | --- | --- |
+| `schema_version`, `song_name`, `bpm`, `duration` | **kept** | `bpm` / `duration` are a shipped, tested contract (`list_songs()` reads them) |
+| `field_sources` | kept (added in item 2) | attribution header |
+| `song_path` | **removed** | absolute host path (`/data/songs/…`) |
+| `artifacts` | **removed** | a per-song `{name: absolute host path}` manifest of `artifacts/` files — all `/data/analysis/…` host paths, and pointing into `artifacts/` which the MCP server may not read anyway |
+| `outputs` | **removed** | absolute host paths to the other top-level files |
+| `generated_from` | **removed** | absolute host paths to input artifacts |
+| `debug` | **removed** | internal counters (`fft_band_count`, …), never a consumer contract |
+
+**Consumer action:** discover a song's files from the fixed top-level layout
+(`data/analysis/{song}/{info,beats,sections,hints,song_event_timeline,genre,drum_events,loudness}.json`)
+— there is no per-song manifest to read, and there is no host path anywhere in
+`info.json`. `list_songs()` continues to return `song_name` + `bpm` + `duration`
+unchanged.

@@ -78,7 +78,7 @@ both.
 
 | File | Contents | Open it to |
 | --- | --- | --- |
-| `info.json` | song metadata; `artifacts` / `outputs` path manifest | discover a song's canonical files; read `bpm`, `duration` |
+| `info.json` | `{ schema_version, song_name, bpm, duration, field_sources }` — song metadata only | read `bpm`, `duration`, `song_name`. v3.1 item 8 removed `song_path` / `artifacts` / `outputs` / `debug` / `generated_from`: they embedded absolute host paths and a per-song file manifest — a client discovers a song's files from the fixed top-level layout, not a manifest |
 | `beats.json` | `{ field_sources, beats[] }`; each beat `time`, `type`, `bar`, `beat`, `chord`, `downbeat_confidence` | place cues on exact beat/downbeat times. `downbeat_confidence` (renamed from `confidence`) is allin1's downbeat-phase strength — `null` on `"beat"` rows and on unresolved downbeats, never the beat time's confidence |
 | `sections.json` | `{ field_sources, sections[] }`; each section `section_id`, `start`, `end`, `label`, `description`, `function`, `function_confidence`, `function_status`, `same_label_as`, `key`, `chord_progression`, `confidence` | fast section summaries and show pacing. Section names are on the row (`function` + `function_confidence` + `function_status`) — read them here, never from `section_segmentation/sections.json`. `label` is `"003 Chorus (0.81)"`, or the raw token marked `[unverified]` when `function_status` is `"unknown"`. `same_label_as` is label repetition, not acoustic identity |
 | `hints.json` | `field_sources`; `sections[].hints[]` of `{ id, source, category, text, anchor_refs }` | per-section guidance; match by `section_id`, never by repeated labels |
@@ -95,7 +95,7 @@ does (a repeated per-row map would be pure token cost).
 
 | File | `field_sources` |
 | --- | --- |
-| `info.json` | `bpm`, `duration` → `essentia`. `song_path` / `artifacts` / `outputs` / `debug` are orchestration metadata, not fused values, and carry no entry (removed in a later v3.1 item) |
+| `info.json` | `bpm`, `duration` → `essentia`. No other fused fields — `song_path` / `artifacts` / `outputs` / `debug` / `generated_from` were removed in v3.1 item 8 |
 | `beats.json` | `time`, `beat`, `bar`, `type` → `essentia`; `chord` → `harmonic`; `downbeat_confidence` → `allin1` |
 | `sections.json` | `section_id`, `start`, `end`, `function`, `function_confidence`, `function_status`, `same_label_as`, `confidence` → `allin1`; `label`, `description` → `human`; `key`, `chord_progression` → `harmonic` |
 | `hints.json` | `summary`, `sections` → `inference` (each hint row also carries its own `source`: `human` \| `inference` \| `user`) |

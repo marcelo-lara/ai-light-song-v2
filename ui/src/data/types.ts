@@ -21,13 +21,12 @@ export interface SongInfo {
   song_name: string;
   bpm: number;
   duration: number;
-  song_path: string;
-  /** absolute `/data/...` paths to producer artifacts, keyed by short name */
-  artifacts: Record<string, string>;
-  /** absolute `/data/...` paths to the top-level UI outputs */
-  outputs: Record<string, string> | null;
-  generated_from: Record<string, unknown> | null;
-  debug: Record<string, unknown> | null;
+  /** v3.1 item 2 attribution header — `bpm` / `duration` → `essentia`.
+   *  v3.1 item 8 removed `song_path`, `artifacts`, `outputs`, `debug` and
+   *  `generated_from`: they embedded absolute host paths and a per-song file
+   *  manifest no consumer needs (files are discovered from the fixed top-level
+   *  layout). */
+  field_sources: Record<string, string>;
 }
 
 // ---------------------------------------------------------------------------

@@ -376,14 +376,15 @@ class ConsoleMarkerTests(unittest.TestCase):
         self.assertEqual(mock_segment_sections.call_args.args[2], inferred_timing)
         self.assertFalse(paths.artifact("essentia", "beats_inferred.json").exists())
         self.assertFalse(paths.artifact("harmonic_inference", "layer_a_harmonic.inferred.json").exists())
-        self.assertEqual(info_payload["artifacts"]["fft_bands"], str(paths.artifact("essentia", "fft_bands.json")))
-        self.assertEqual(info_payload["artifacts"]["rms_loudness"], str(paths.artifact("essentia", "rms_loudness.json")))
-        self.assertEqual(info_payload["artifacts"]["loudness_envelope"], str(paths.artifact("essentia", "loudness_envelope.json")))
-        self.assertEqual(info_payload["generated_from"]["fft_bands_file"], str(paths.artifact("essentia", "fft_bands.json")))
-        self.assertEqual(info_payload["generated_from"]["rms_loudness_file"], str(paths.artifact("essentia", "rms_loudness.json")))
-        self.assertEqual(info_payload["generated_from"]["loudness_envelope_file"], str(paths.artifact("essentia", "loudness_envelope.json")))
-        self.assertEqual(info_payload["debug"]["loudness_source_count"], 5)
-        self.assertEqual(info_payload["debug"]["fft_band_count"], 7)
+        # v3.1 item 8 — info.json is song metadata only: no host-path or
+        # file-manifest fields remain.
+        self.assertEqual(
+            set(info_payload),
+            {"schema_version", "song_name", "bpm", "duration", "field_sources"},
+        )
+        self.assertEqual(info_payload["song_name"], paths.song_name)
+        self.assertEqual(info_payload["field_sources"], {"bpm": "essentia", "duration": "essentia"})
+        self.assertNotIn("/data/", json.dumps(info_payload))
 
 
 if __name__ == "__main__":

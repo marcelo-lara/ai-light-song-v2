@@ -33,21 +33,18 @@ describe("parseInfo", () => {
     const info = parseInfo(infoFixture);
     expect(info.song_name).toBe("_test_song");
     expect(info.duration).toBeGreaterThan(0);
-    expect(typeof info.artifacts).toBe("object");
-    expect(info.outputs).not.toBeNull();
+    expect(info.bpm).toBeGreaterThan(0);
+    // v3.1 item 8 removed song_path / artifacts / outputs / debug / generated_from.
+    expect(info.field_sources).toEqual({ bpm: "essentia", duration: "essentia" });
   });
 
   it("throws on a missing required field", () => {
     expect(() => parseInfo({ song_name: "x" })).toThrow(ShapeError);
   });
 
-  it("tolerates null-valued artifact entries (unproduced artifacts)", () => {
-    const info = parseInfo({
-      song_name: "x",
-      duration: 10,
-      artifacts: { beats: "/p/beats.json", human_hints_alignment: null },
-    });
-    expect(info.artifacts).toEqual({ beats: "/p/beats.json" });
+  it("defaults field_sources to an empty object when absent", () => {
+    const info = parseInfo({ song_name: "x", duration: 10 });
+    expect(info.field_sources).toEqual({});
   });
 });
 
