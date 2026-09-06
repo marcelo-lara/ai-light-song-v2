@@ -1,0 +1,17 @@
+[
+  {
+    "song_name": "McpDegenerate - Fixture",
+    "bpm": 120.0,
+    "duration": 24.0
+  },
+  {
+    "song_name": "McpFull - Fixture",
+    "bpm": 120.0,
+    "duration": 24.0
+  },
+  {
+    "song_name": "McpPartial - Fixture",
+    "bpm": 120.0,
+    "duration": 24.0
+  }
+]

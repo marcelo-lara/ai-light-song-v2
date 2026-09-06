@@ -1,0 +1,13 @@
+{
+  "schema_version": "2.0",
+  "song_name": "McpDegenerate - Fixture",
+  "generated_from": {
+    "engine": "mcp regression fixture generator"
+  },
+  "summary": {
+    "section_count": 3,
+    "inference_hint_count": 0,
+    "user_hint_count": 0
+  },
+  "sections": []
+}

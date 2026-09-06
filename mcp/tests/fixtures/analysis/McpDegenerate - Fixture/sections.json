@@ -1,0 +1,44 @@
+[
+  {
+    "section_id": "section-001",
+    "start": 0.0,
+    "end": 8.0,
+    "label": "001 Unknown",
+    "description": "The 1st intro, 8.0s long.",
+    "function": null,
+    "function_confidence": null,
+    "function_status": "unknown",
+    "same_label_as": null,
+    "confidence": null,
+    "key": "C major",
+    "chord_progression": null
+  },
+  {
+    "section_id": "section-002",
+    "start": 8.0,
+    "end": 16.0,
+    "label": "002 Unknown",
+    "description": "The 1st verse, 8.0s long.",
+    "function": null,
+    "function_confidence": null,
+    "function_status": "unknown",
+    "same_label_as": null,
+    "confidence": null,
+    "key": "C major",
+    "chord_progression": null
+  },
+  {
+    "section_id": "section-003",
+    "start": 16.0,
+    "end": 24.0,
+    "label": "003 Unknown",
+    "description": "The 1st chorus, 8.0s long.",
+    "function": null,
+    "function_confidence": null,
+    "function_status": "unknown",
+    "same_label_as": null,
+    "confidence": null,
+    "key": "C major",
+    "chord_progression": null
+  }
+]

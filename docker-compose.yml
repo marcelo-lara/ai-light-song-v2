@@ -30,6 +30,23 @@ services:
       NVIDIA_VISIBLE_DEVICES: all
       NVIDIA_DRIVER_CAPABILITIES: compute,utility
 
+  mcp:
+    # Own image — never the analyzer image. stdio server: the MCP client spawns
+    # it with `docker compose run --rm -T mcp` (see docs/mcp-definition.md).
+    build:
+      context: ./mcp
+      dockerfile: Dockerfile
+    image: ai-light-song-v2-mcp:dev
+    working_dir: /app
+    stdin_open: true
+    # No tty: a TTY corrupts stdio framing (`-T` on `run` also enforces this).
+    volumes:
+      - .:/app:ro
+      - ./data:/data:ro
+    environment:
+      MCP_ANALYSIS_ROOT: /data/analysis
+    command: ["python", "/app/mcp/server.py"]
+
   ui:
     build:
       context: ./ui

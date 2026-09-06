@@ -1,0 +1,79 @@
+{
+  "schema_version": "2.0",
+  "song_name": "McpPartial - Fixture",
+  "generated_from": {
+    "engine": "mcp regression fixture generator",
+    "gesture_count": 1
+  },
+  "events": [
+    {
+      "type": "approach",
+      "gesture_id": "gesture-001",
+      "start_time": 9.0,
+      "end_time": 10.0,
+      "confidence": 0.8,
+      "intensity": 0.3,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "The approach phase of gesture-001."
+    },
+    {
+      "type": "build",
+      "gesture_id": "gesture-001",
+      "start_time": 10.0,
+      "end_time": 12.0,
+      "confidence": 0.8,
+      "intensity": 0.55,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "The build phase of gesture-001."
+    },
+    {
+      "type": "tension",
+      "gesture_id": "gesture-001",
+      "start_time": 12.0,
+      "end_time": 13.5,
+      "confidence": 0.8,
+      "intensity": 0.75,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "The tension phase of gesture-001."
+    },
+    {
+      "type": "impact",
+      "gesture_id": "gesture-001",
+      "start_time": 13.5,
+      "end_time": 14.0,
+      "confidence": 0.8,
+      "intensity": 0.95,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "The impact phase of gesture-001."
+    },
+    {
+      "type": "release",
+      "gesture_id": "gesture-001",
+      "start_time": 14.0,
+      "end_time": 16.0,
+      "confidence": 0.8,
+      "intensity": 0.4,
+      "section_id": "section-002",
+      "section_name": "verse",
+      "provenance": "machine-only",
+      "summary": "The release phase of gesture-001."
+    },
+    {
+      "type": "verse → chorus",
+      "start_time": 16.0,
+      "end_time": 16.0,
+      "confidence": 0.7,
+      "section_id": "section-003",
+      "provenance": "machine-only",
+      "summary": "Transition from verse into chorus."
+    }
+  ]
+}

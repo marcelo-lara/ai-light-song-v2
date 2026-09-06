@@ -94,7 +94,7 @@ stall the whole run; everything independent of it still gets built.
 | Items | 11 (1 scaffold, 7 delivery surface, 2 tools, 1 closure) |
 | Items with a Visual QA block | 4 (items 2, 3, 4, 8) |
 | MCP regression | `smoke-test` from item 1 onward; `full-regression` at item 11 ([`reference/mcp-regression.md`](reference/mcp-regression.md)) |
-| Done | 0 |
+| Done | 1 |
 | Contract-change note | `docs/contract-change-v3.1.md` — created in item 2, extended by items 3–8 |
 | Blocking decisions (`D`) | none open |
 
@@ -196,52 +196,52 @@ cheaper to find now than after six items of publishing work.
 It serves no musical content yet beyond song discovery. That is the point: the
 basics are testable on their own.
 
-- [ ] `mcp/` at the repo root: `pyproject.toml` (or `requirements.txt`, matching
+- [x] `mcp/` at the repo root: `pyproject.toml` (or `requirements.txt`, matching
       repo convention), `mcp/server.py`, `mcp/loaders.py`, `mcp/tests/`.
       Unit tests live **inside** `mcp/`, colocated, not in the root `tests/`.
       **No `serializers.py` yet** — response shaping is items 9–10. Keeping the
       volatile half out of this item is what makes a later tool-surface change
       cheap.
-- [ ] Official `mcp` SDK, stdio transport, read-only. The server never writes,
+- [x] Official `mcp` SDK, stdio transport, read-only. The server never writes,
       and holds no state between calls.
-- [ ] `mcp/loaders.py` resolves a song by directory name under
+- [x] `mcp/loaders.py` resolves a song by directory name under
       `data/analysis/` and loads top-level `*.json` only. It must expose **no**
       function capable of reaching into `artifacts/` or `reference/`.
-- [ ] Implement **`list_songs()`** in full — every analysable song directory with
+- [x] Implement **`list_songs()`** in full — every analysable song directory with
       its `song_name`, `bpm` and `duration` from `info.json`. It is small, it is
       genuinely needed (a client cannot guess directory names), and it makes the
       round-trip provable without stubbing anything.
-- [ ] Register `get_song_overview` and `get_detail` as declared tools that return
+- [x] Register `get_song_overview` and `get_detail` as declared tools that return
       an explicit "not implemented yet" error. A declared-but-unimplemented tool
       is honest; a tool returning a plausible empty payload is not.
-- [ ] A song directory missing a required top-level file produces an explicit
+- [x] A song directory missing a required top-level file produces an explicit
       error naming the file — never a partial response with silent gaps.
-- [ ] `docker-compose.yml`: an `mcp` service on its own image. It must not reuse
+- [x] `docker-compose.yml`: an `mcp` service on its own image. It must not reuse
       the analyzer image, and it mounts `./data:/data` **read-only** — the mount
       itself enforces the read-only rule rather than trusting the code.
-- [ ] **The invocation contract.** This is a stdio server: the *client* spawns
+- [x] **The invocation contract.** This is a stdio server: the *client* spawns
       it, so `docker compose up mcp` is not how it runs. The client's config
       names `docker compose run --rm -T mcp` as its command — `-T` is required,
       since without it Compose allocates a TTY and corrupts the stdio framing.
       Document the exact client-config snippet in `docs/mcp-definition.md`, and
       accept per-session container startup as the cost of keeping the runtime in
       Docker.
-- [ ] `mcp/tests/test_exposure.py`: a guard test that greps the module's own
+- [x] `mcp/tests/test_exposure.py`: a guard test that greps the module's own
       source for `artifacts/` and `reference/` and fails on any hit. This makes
       the exposure rule a failing test rather than a convention.
-- [ ] **Build the regression harness** per
+- [x] **Build the regression harness** per
       [`reference/mcp-regression.md`](reference/mcp-regression.md): the three
       committed fixtures under `mcp/tests/fixtures/analysis/`
       (`McpFull`, `McpDegenerate`, `McpPartial`) and their generator script, plus
       `smoke-test` and `full-regression` as **named entry points** an executor
       can invoke by name. Keep the fixtures small — a short song, so
       `loudness.json` at the 20 ms floor is a few thousand frames.
-- [ ] Fixtures carry the top-level file set **only** — no `artifacts/`, no
+- [x] Fixtures carry the top-level file set **only** — no `artifacts/`, no
       `reference/`. A fixture containing them would hide an exposure violation
       rather than expose it.
-- [ ] Tick the harness boxes in `reference/mcp-regression.md` "Outstanding
+- [x] Tick the harness boxes in `reference/mcp-regression.md` "Outstanding
       harness work" as they land.
-- [ ] `docs/mcp-definition.md`: change the status banner from "specified, not
+- [x] `docs/mcp-definition.md`: change the status banner from "specified, not
       built" to "scaffold built; `get_song_overview` and `get_detail` pending".
 
 **Tests — this is the "basics work" gate.** In the container:
@@ -427,7 +427,7 @@ none. Extend `tests/test_gestures.py`.
 
 ### 5. Publish top-level `genre.json`
 
-- [ ] `ui_data.py` writes `data/analysis/<Song - Artist>/genre.json` carrying
+- [ ] `ui_data.py` writes `data/analysis/{song}/genre.json` carrying
       `genres`, `confidence`, `top_predictions[]`, `guidance[]`, minus
       `generated_from` host paths, plus the `field_sources` header from item 2
       (`genre` for every field today).
@@ -446,7 +446,7 @@ exists, parses, and contains no string beginning `/data/`.
 
 ### 6. Publish top-level `drum_events.json`
 
-- [ ] `ui_data.py` writes `data/analysis/<Song - Artist>/drum_events.json` with
+- [ ] `ui_data.py` writes `data/analysis/{song}/drum_events.json` with
       `events[] { time, event_type, confidence }` and the summary counts.
       600 KB / ~1,164 events per song is acceptable as-is; no decimation.
 - [ ] Strip `generated_from` host paths; add the item-2 `field_sources` header
@@ -463,7 +463,7 @@ The one item with a real size decision, already made: **20 ms** (~9 MB/song;
 parameter and the server decimates per read, so 20 ms is the finest a caller may
 ask for, not what every read returns.
 
-- [ ] `ui_data.py` writes `data/analysis/<Song - Artist>/loudness.json` by
+- [ ] `ui_data.py` writes `data/analysis/{song}/loudness.json` by
       decimating `artifacts/essentia/rms_loudness.json` from 10 ms to 20 ms.
       Decimate by **averaging pairs**, not by dropping every other frame — a
       dropped-frame series loses transient peaks, which is exactly what a drop
@@ -636,6 +636,11 @@ None open. Decisions already taken and folded into the items above:
 | D9 | `beats.json` and `sections.json` **become objects** so they can carry a `field_sources` header. Self-description beats compatibility here, and both files are already being reshaped this release. |
 | D10 | The server is invoked by its client as **`docker compose run --rm -T mcp`** over stdio. `-T` is mandatory — a TTY corrupts stdio framing. |
 | D8 | `beats.json`'s `confidence` is renamed **`downbeat_confidence`**. It measures allin1's downbeat phase (0.226 F1), not essentia's beat time (trusted), and the unqualified name invites reading it as the wrong producer's number. |
+| D11 | (item 1, resolved) `mcp==2.1.1` is the official SDK — the v2 stable line on PyPI; its API is snake_case (`from mcp.server import MCPServer`, `server.run(transport="stdio")`). No import shim: `mcp/` has no `__init__.py`, so the site-packages `mcp` package wins `import mcp`, and `server.py` runs as a script so `import loaders` resolves locally. `server_sdk.py`, `server_impl.py`, `mcp/client/` deleted as dead. |
+| D12 | (item 1, resolved) The not-implemented tools raise `mcp.server.mcpserver.exceptions.ToolError` (a deep, non-re-exported import) so the message survives to the client as `is_error=True`; a bare exception is laundered by the SDK and the text is lost. Both tools validate `song` first, so unknown-song / missing-file are real testable errors from item 1 onward. |
+| D13 | (item 1, resolved) Required top-level files today = `info/beats/sections/song_event_timeline/hints`. `genre/drum_events/loudness` are present in the Full/Degenerate fixtures but not yet required (mid-migration; items 5–7 publish them). `McpPartial - Fixture` omits `sections.json`. |
+| D14 | (item 1, resolved) Item-1 fixtures use the **current committed shape** (bare arrays for `beats`/`sections`) to keep item 1 isolated; item 2 rebuilds them into the `field_sources`-header object shape. Noted in the fixture README. |
+| D15 | (item 1, resolved) smoke-test checks S2.6 / S2.7 (and full-regression F2–F4) are reported `DEFER` with the observed not-implemented error text — never pass, never silently skipped — until serializers land in items 9–10. Recorded in `docs/reference/mcp-regression.md` under S2. |
 
 Still open, deliberately deferred out of this release:
 

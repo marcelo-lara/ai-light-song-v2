@@ -1,0 +1,31 @@
+{
+  "schema_version": "2.0",
+  "song_name": "McpFull - Fixture",
+  "generated_from": {
+    "engine": "mcp regression fixture generator"
+  },
+  "summary": {
+    "section_count": 3,
+    "inference_hint_count": 0,
+    "user_hint_count": 1
+  },
+  "sections": [
+    {
+      "section_id": "section-002",
+      "label": "verse",
+      "start": 8.0,
+      "end": 16.0,
+      "hints": [
+        {
+          "id": "section-002-human-hint-001",
+          "source": "human",
+          "text": "Vocal - no intense section",
+          "title": "Breath",
+          "start_time": 8.5,
+          "end_time": 15.5,
+          "lighting_hint": "soft motion of moving heads. parcans slow violet waves."
+        }
+      ]
+    }
+  ]
+}

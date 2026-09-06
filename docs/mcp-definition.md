@@ -5,10 +5,12 @@ read-only MCP server that helps a reasoning model understand a song's mood,
 sections and dynamics — **drop sequences especially** — while spending as few
 tokens as possible.
 
-> **Status: specified, not built.** No `mcp/` directory exists yet. The plan is
-> [`implementation-plan-v3.1.md`](implementation-plan-v3.1.md), whose **first
-> item is the scaffold** — the module, its Compose service and a proven stdio
-> round-trip — so the plumbing is validated before any data work.
+> **Status: scaffold built; `get_song_overview` and `get_detail` pending.**
+> The stdio/Compose plumbing, song discovery (`list_songs`), the exposure guard
+> and the fixture-based regression harness (`smoke-test` / `full-regression`) are
+> in place and green. The two substantive tools are registered but validate
+> arguments and then raise an explicit not-implemented error — response shaping
+> and top-level publishing of the delivery surface are the remaining v3.1 items.
 
 - How to prove it still works: [`reference/mcp-regression.md`](reference/mcp-regression.md)
 - What the analyzer produces for it: [`analysis-definition.md`](analysis-definition.md)
@@ -47,11 +49,11 @@ translation.
 
 ## The exposure rule
 
-> **This server reads `data/analysis/<Song - Artist>/*.json` and nothing else.**
+> **This server reads `data/analysis/{song}/*.json` and nothing else.**
 
 | Tier | Who may read it |
 | --- | --- |
-| `data/analysis/<Song - Artist>/*.json` — top level | `mcp/`, `src/analyzer/`, `ui/` |
+| `data/analysis/{song}/*.json` — top level | `mcp/`, `src/analyzer/`, `ui/` |
 | `…/artifacts/**`, `…/reference/**` | **`src/analyzer/` and `ui/` only** |
 
 Inner folders are the raw material phase 4 uses to build the top-level files.
@@ -88,8 +90,10 @@ A stdio server is **spawned by its client**, so there is no `docker compose up`
 for this service. The client's MCP config names the command:
 
 ```json
-{ "command": "docker",
-  "args": ["compose", "run", "--rm", "-T", "mcp"] }
+{
+  "command": "docker",
+  "args": ["compose", "run", "--rm", "-T", "mcp"]
+}
 ```
 
 `-T` is mandatory — without it Compose allocates a TTY and corrupts the stdio
@@ -105,7 +109,7 @@ call they both need. Everything else is out of scope for v1.
 Every analysable song directory under `data/analysis/`, with `song_name`, `bpm`
 and `duration`. Deliberately trivial, and not optional: a client cannot guess
 directory names, and without this the caller must be told the exact
-`"<Song - Artist>"` string out of band. It is also what makes the scaffold
+`"{song}"` string out of band. It is also what makes the scaffold
 end-to-end testable without stubbing a response.
 
 ### `get_song_overview(song)`

@@ -84,6 +84,12 @@ Fast, and the gate on every item. Nothing here needs the full corpus.
 7. `get_detail("McpFull - Fixture", start_ms=0, end_ms=3000, interval_ms=20)`
    returns dense frames.
 
+> **Checks 6-7 are DEFERRED until response shaping ships (v3.1 items 9-10).**
+> Until then both tools are registered but validate their arguments and raise an
+> explicit not-implemented error. The harness reports them as `DEFER` with the
+> observed error text — never as pass, never silently skipped. Checks 8 and 9
+> (honest failure) do run now, because argument validation happens first.
+
 ### S3 — it fails honestly
 
 8. An unknown song name errors, and the message contains the name asked for.
@@ -97,7 +103,12 @@ Fast, and the gate on every item. Nothing here needs the full corpus.
 11. Writing to the mounted `/data` fails — the read-only bind is real, not
     assumed.
 
-**Pass condition:** all eleven, with observed values reported.
+**Pass condition:** every check reported with its observed value; no `FAIL`.
+Checks 6 and 7 are `DEFER` until v3.1 items 9-10 and do not gate.
+
+Run it: `docker compose run --rm --no-deps -T --entrypoint python mcp
+mcp/tests/run.py smoke-test` (exit 0 = no `FAIL`). `full-regression` adds the
+determinism and snapshot checks and marks F2-F4 `DEFER` for the same reason.
 
 ---
 
@@ -186,9 +197,11 @@ routine:
 
 Tracked here until done; the suites are not fully runnable while any box is open.
 
-- [ ] Build `mcp/tests/fixtures/analysis/` and its generator script.
-- [ ] Capture the initial golden snapshots.
-- [ ] Wire `smoke-test` and `full-regression` as named entry points so an
+- [x] Build `mcp/tests/fixtures/analysis/` and its generator script.
+- [x] Capture the initial golden snapshots.
+- [x] Wire `smoke-test` and `full-regression` as named entry points so an
       executor can invoke them by name rather than assembling checks by hand.
-- [ ] Decide whether `full-regression` also runs against the four gold songs in
-      a developer's local `data/analysis/`, in addition to the fixtures.
+- [x] Keep `full-regression` fixture-based by default; the suite is intentionally
+      deterministic and the committed fixtures are the validation source of truth.
+      A local `data/analysis/` run is optional developer-only context, not a
+      required regression gate.

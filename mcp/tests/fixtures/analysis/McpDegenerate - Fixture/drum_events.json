@@ -1,0 +1,366 @@
+{
+  "schema_version": "2.0",
+  "song_name": "McpDegenerate - Fixture",
+  "events": [
+    {
+      "time": 0.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 0.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 0.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 1.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 1.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 1.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 2.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 2.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 2.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 3.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 3.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 3.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 4.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 4.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 4.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 5.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 5.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 5.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 6.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 6.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 6.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 7.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 7.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 7.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 8.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 8.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 8.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 9.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 9.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 9.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 10.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 10.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 10.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 11.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 11.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 11.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 12.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 12.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 12.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 13.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 13.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 13.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 14.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 14.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 14.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 15.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 15.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 15.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 16.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 16.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 16.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 17.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 17.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 17.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 18.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 18.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 18.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 19.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 19.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 19.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 20.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 20.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 20.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 21.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 21.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 21.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 22.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 22.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 22.5,
+      "instrument": "snare",
+      "velocity": 90
+    },
+    {
+      "time": 23.0,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 23.5,
+      "instrument": "kick",
+      "velocity": 100
+    },
+    {
+      "time": 23.5,
+      "instrument": "snare",
+      "velocity": 90
+    }
+  ]
+}
