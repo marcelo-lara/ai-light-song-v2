@@ -9,6 +9,7 @@ Never propose host-installed Python or audio tooling. The root
 | Service | Backed by | Role |
 | --- | --- | --- |
 | `app` | root `Dockerfile` | analyzer and validation runtime; the only supported runtime for inference and GPU work |
+| `mcp` | `mcp/Dockerfile` | read-only stdio song-comprehension server over top-level analysis JSON |
 | `ui` | `ui/Dockerfile` | artifact debugger; never an analyzer runtime |
 | `test` | root `Dockerfile` | the test suite |
 
@@ -16,8 +17,10 @@ Never propose host-installed Python or audio tooling. The root
 
 ```bash
 docker compose build              # build the analyzer image
+docker compose build mcp          # build the MCP server image
 docker compose build ui           # build the debugger image
 docker compose run --rm app       # interactive shell in the analyzer
+docker compose run --rm -T mcp    # stdio MCP server session
 docker compose run --rm test      # tests
 docker compose up ui              # debugger at http://localhost:9090
 ```
@@ -82,7 +85,7 @@ memory retention on long runs.
 ## Smoke test
 
 A working container can: see the GPU, import the analysis libraries, read a song
-from `data/songs/`, write to `data/analysis/<Song - Artist>/artifacts/`, and emit
+from `data/songs/`, write to `data/analysis/{song}/artifacts/`, and emit
 `artifacts/validation/phase_1_report.json`.
 
 ## Experiment images

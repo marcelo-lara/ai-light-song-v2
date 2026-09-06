@@ -1,8 +1,31 @@
 # Contract changes — v3.1 delivery surface
 
+> **Handoff note for `ai-dmx-light-render` — delivery pending; remove once the
+> downstream consumer has migrated.**
+
 Handoff note for the external cue-authoring consumer (`ai-dmx-light-render`).
-One section per Phase B item of [`implementation-plan-v3.1.md`](implementation-plan-v3.1.md).
-`SCHEMA_VERSION` moves `2.0` → `3.0` in this release (bumped once, in item 2).
+One section per delivery-surface change in the v3.1 release (see git history for
+the implementation plan). `SCHEMA_VERSION` moves `2.0` → `3.0` in this release
+(bumped once, with the attribution convention in section 2).
+
+## What changed, shortest form
+
+- **`beats.json` and `sections.json` are now objects, not bare arrays** — read
+  `doc["beats"]` / `doc["sections"]`. This breaks an iterating consumer silently.
+  (§2)
+- Every top-level file carries a `field_sources` header; a row carries `source`
+  only where it departs from the header default. (§2)
+- `beats.json`: `confidence` → `downbeat_confidence` (it measures allin1's
+  downbeat phase, not the beat time). (§2)
+- `sections.json` rows gain `function`, `function_confidence`, `function_status`,
+  `same_label_as` — **stop reading
+  `artifacts/section_segmentation/sections.json`**. (§3)
+- `song_event_timeline.json` rows gain `gesture_id` grouping phases of one
+  composite gesture. (§4)
+- Three new top-level files: `genre.json`, `drum_events.json`, `loudness.json`.
+  (§5–7)
+- `info.json` loses `song_path`, `artifacts`, `outputs`, `generated_from`,
+  `debug` — the only removals in the release. (§8)
 
 ---
 

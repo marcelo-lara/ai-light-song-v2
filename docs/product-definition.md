@@ -11,25 +11,28 @@ and what "good" means for the thing we emit. Rules are in
   data/songs/*.mp3
         │
         ▼
-  ┌──────────────────────┐   data/analysis/<Song - Artist>/
+  ┌──────────────────────┐   data/analysis/{song}/
   │ 1. ANALYSIS  (here)  │ ─────────────────────────────────►┐
-  │  src/ + ui/          │   5 top-level files + artifacts/  │
+  │  src/ + ui/          │   8 top-level files + artifacts/  │
   └──────────────────────┘                                   │
                                                              ▼
                                           ┌──────────────────────────────┐
-                                          │ 2. MCP SERVER  (other repo)  │
+                                          │ 2. MCP SERVER  (here, mcp/)  │
                                           │  token-budgeted projections  │
                                           └──────────────────────────────┘
                                                              │
                                                              ▼
-                                          ┌──────────────────────────────┐
-                                          │ 3. CUE AUTHORING  (a model)  │
-                                          │  moving-head light show      │
-                                          └──────────────────────────────┘
+                                          ┌────────────────────────────────┐
+                                          │ 3. CUE AUTHORING  (other repo)  │
+                                          │  a model + ai-dmx-light-render  │
+                                          │  → moving-head light show       │
+                                          └────────────────────────────────┘
 ```
 
-**This repo is part 1 only.** It turns a song into structured musical analysis.
-It never sees a fixture, a rig, a cue or a DMX universe.
+**This repo owns parts 1 and 2** — the analysis and the read-only
+song-comprehension MCP server over it. It turns a song into structured musical
+analysis and projects token-budgeted views of it. It never sees a fixture, a
+rig, a cue or a DMX universe; that is part 3, in `ai-dmx-light-render`.
 
 The lighting target is **moving-head fixtures**, which is why gestures with
 internal phases matter more than isolated events: a moving head needs to know it
@@ -92,8 +95,12 @@ changes nothing about the show.
 | --- | --- |
 | Which fixture does what, when, in what colour | part 3 |
 | Cue lists, lighting-design documents, DMX | part 3 |
-| Token budgeting and projection shape | part 2 |
+| Rig configs, fixture lists, POIs, `.cue.json` | part 3 |
 | Screen visualizers | nobody — deleted 2026-09-02 |
+
+Part 2 — the `mcp/` server's token-budgeted projection shape — **is** ours, and
+is covered by [`mcp-definition.md`](mcp-definition.md). Its hard boundary is the
+same as part 1's: it describes the music and never authors a cue.
 
 `lighting_score.md`, `lighting_events.json`, `beatdrop_visual_plan.json` and
 their three stages were removed on 2026-09-02. None had a consumer;

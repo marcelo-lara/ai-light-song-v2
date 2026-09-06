@@ -2,7 +2,7 @@
 
 `ui/` is an **internal engineering tool**, played against the song. It is not a
 product surface, and it must not redefine the stable contract under
-`data/analysis/<Song - Artist>/`.
+`data/analysis/{song}/`.
 
 Runbook for the visual regression suite:
 [`reference/ui-regression.md`](reference/ui-regression.md).
@@ -75,8 +75,8 @@ no derived JSON, no overrides, no helper files into `data/analysis/`.
 
 The only two writable paths, and only on an explicit `Save`:
 
-- `data/analysis/<Song - Artist>/reference/human/human_hints.json`
-- `data/analysis/<Song - Artist>/reference/human/song_facts.json`
+- `data/analysis/{song}/reference/human/human_hints.json`
+- `data/analysis/{song}/reference/human/song_facts.json`
 
 `Cancel` must never update either file. The dev-server API enforces this at the
 mount level. A future workflow needing persisted review data must be documented

@@ -37,6 +37,55 @@ Current focus song: `_test_song`
   written into `CLAUDE.md` as a known bound, or the primitives responsible for
   the phantoms are tightened until it is.
 
+### `get_song_overview` — prose budget on gesture-dense songs
+
+- **Status:** `pending`
+- **Raised:** 2026-09-06, closing v3.1 (decision D25, resolved-as-accepted).
+- **Problem:** the committed token-budget gate is fixture-based — the
+  `McpFull - Fixture` overview is 4283 bytes, under the 6144-byte ceiling. Real
+  gesture-dense songs run larger: `Titanium` 13981 B, `Armin - Revolution`
+  12644 B, `Hideaway` 10025 B, `_test_song` 7936 B — all over the 6 KB
+  real-song target the plan set.
+- **Why it was accepted, not fixed:** the size is driven by *structure*, not
+  prose. On `Armin` the 31 grouped gesture rows are ~6.8 KB on their own —
+  already over the target — and the 13 human-hint rows (~2.2 KB) are verbatim
+  ground truth that the honesty rules forbid trimming. The genre `guidance` and
+  section `description` prose is already short (~180 / ~30 chars); clipping it
+  saves under 300 bytes and does not change the picture. Getting near 6 KB would
+  mean cutting gesture structure or truncating hints, both of which the plan
+  ruled out.
+- **Options for a real fix:** a phase-code legend replacing repeated
+  `phases_present` / `phases_absent` arrays; a compact gesture encoding; or
+  making the overview paginate gestures and expose the rest via `get_detail`.
+- **Success condition:** a gesture-dense gold song's `get_song_overview` is at
+  or under 6 KB with every human hint still verbatim and every composite gesture
+  still individually addressable — or the 6 KB target is formally replaced with
+  a structure-aware budget in `mcp-definition.md`.
+
+### Delivery surface — `hints.json` / `song_event_timeline.json` still embed host paths
+
+- **Status:** `pending`
+- **Raised:** 2026-09-06, phase-D handoff gate for v3.1. Found by re-running
+  `build-ui-data` across all 21 songs and scanning every top-level file.
+- **Problem:** the standing rule is "no absolute host path in any top-level
+  file". v3.1 item 7 fixed `loudness.json` and item 8 fixed `info.json`, but two
+  top-level files were never in a v3.1 item's scope and still carry a
+  `generated_from` block with `/data/songs/…` and `/data/analysis/…/artifacts/…`
+  paths: `hints.json` (written by `hints.py`) and `song_event_timeline.json`
+  (written by `gestures.py`).
+- **Not a response leak:** the `mcp/` serializers do not copy `generated_from`
+  into any payload — `full-regression` F4.21 ("no string beginning `/data/`")
+  passes. The committed fixtures are host-path-free, so the suites stay green.
+  The leak is only in the raw published files a future consumer might read
+  directly.
+- **Fix:** the publish path for both files drops `generated_from` (matching item
+  8's `info.json` decision — a client discovers files from the fixed layout, and
+  the block pointed into `artifacts/` which is not exposable anyway), or rewrites
+  it song-relative. Rebuild the MCP fixtures and re-run `full-regression`.
+- **Success condition:** every top-level file across all 21 songs contains no
+  string beginning `/data/`, asserted in `full-regression` against a fixture
+  that would actually catch a regression.
+
 ### `ui-visual` — three items left open from the regression-suite handoff
 
 - **Status:** `pending`
@@ -54,34 +103,3 @@ Current focus song: `_test_song`
 - **Success condition:** all three resolved, or the suite's scope explicitly
   narrowed to exclude them.
 
-### Delivery surface — four MCP-projected signals still live inside `artifacts/`
-
-- **Status:** `pending`
-- **Raised:** 2026-09-05, when the operator set the exposure rule: MCP-exposed
-  JSON lives only at `data/analysis/<Song - Artist>/*.json`, and `artifacts/` /
-  `reference/` are readable by the analyzer and the debugger UI alone.
-- **Problem:** phase 4 does not yet publish everything the projection needs, so
-  [`mcp-definition.md`](mcp-definition.md) currently documents the target rather
-  than what the pipeline emits. Four signals are affected:
-
-  | Signal | Today | Needs |
-  | --- | --- | --- |
-  | section `function`, `function_confidence`, `function_status`, `same_label_as` | `artifacts/section_segmentation/sections.json`, index-matched to the top-level row | merge onto the top-level `sections.json` row |
-  | genre | `artifacts/genre.json` (4 KB, self-contained) | publish as top-level `genre.json` |
-  | drum events | `artifacts/symbolic_transcription/drum_events.json` (600 KB, 1,164 events) | publish as top-level `drum_events.json` |
-  | loudness | `artifacts/essentia/rms_loudness.json` — **18 MB/song**, 19,401 frames at 10 ms across 5 sources, and it embeds absolute host paths (`/data/songs/…`, `/data/analysis/…/stems/…`) | publish a top-level `loudness.json` at a chosen floor interval, with no host paths; never copy the 10 ms file to the delivery surface |
-
-- **Why the merge is a win beyond compliance:** the top-level `sections.json`
-  and the segmentation file are currently matched **by array index** — same
-  count, same order. A mismatch silently misaligns every section's label and
-  confidence across the whole song. Merging the fields dissolves that failure
-  mode.
-- **Decided:** the published floor for `loudness.json` is **20 ms** (~9 MB/song;
-  250 frames x 5 sources at the 5 s window cap). `interval_ms` is a request
-  parameter and the server decimates per read, so 20 ms is the finest a client
-  may ask for, not what every read returns.
-- **Open decision:** whether the stem set stays at five sources on the delivery
-  surface.
-- **Success condition:** the MCP server can satisfy every read in
-  `mcp-definition.md` using only `data/analysis/<Song - Artist>/*.json`, and
-  no top-level file embeds an absolute host path.

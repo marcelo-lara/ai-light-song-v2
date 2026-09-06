@@ -9,8 +9,8 @@ tokens as possible.
 > The stdio/Compose plumbing, song discovery, the exposure guard, the
 > fixture-based regression harness (`smoke-test` / `full-regression`, no
 > deferrals), the whole-song overview and the on-demand `get_detail` dense read
-> are all in place. What remains is v3.1 phase D — the docs sweep and issue
-> closure.
+> are all in place. Shipped in v3.1; `docs/contract-change-v3.1.md` is the
+> pending handoff note to the downstream cue-authoring consumer.
 
 - How to prove it still works: [`reference/mcp-regression.md`](reference/mcp-regression.md)
 - What the analyzer produces for it: [`analysis-definition.md`](analysis-definition.md)
@@ -66,9 +66,14 @@ depth, by design ([`ui-definition.md`](ui-definition.md)); it is a diagnostic
 tool, not a delivery surface.
 
 A corollary worth stating: **no top-level file may embed an absolute host path.**
-Several do today (`info.json`'s `song_path` / `generated_from` / `artifacts` /
-`outputs`, `rms_loudness.json`'s `sources[].path`). Those are internal
-filesystem details and must not cross to a delivery surface.
+The v3.1 work removed them from `info.json` (`song_path` / `generated_from` /
+`artifacts` / `outputs`, item 8) and the published `loudness.json`
+(`sources[].path`, item 7). Two top-level files still carry host paths in a
+`generated_from` provenance block — `hints.json` and `song_event_timeline.json`
+— a pre-existing leak the serializers do not propagate into responses (the
+`full-regression` F4.21 check confirms this) but which the publish stage should
+strip at source; tracked in [`issues.md`](issues.md). The `artifacts/`
+originals keep these internal filesystem details and must never be exposed.
 
 ## Runtime
 

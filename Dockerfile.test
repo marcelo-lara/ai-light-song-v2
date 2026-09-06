@@ -2,7 +2,9 @@
 # same container the analyzer runs in (constitution: always test in container).
 FROM ai-light-song-v2:dev
 
-RUN python3 -m pip install --no-cache-dir pytest==8.3.4 pytest-timeout==2.3.1
+COPY mcp/requirements.txt /tmp/mcp-requirements.txt
+RUN python3 -m pip install --no-cache-dir pytest==8.3.4 pytest-timeout==2.3.1 && \
+    python3 -m pip install --no-cache-dir -r /tmp/mcp-requirements.txt
 
 WORKDIR /app
 CMD ["python3", "-m", "pytest", "tests/", "-q"]

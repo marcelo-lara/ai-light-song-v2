@@ -81,7 +81,7 @@ Batch progress lines carry both positions: `[2/20][1.1] _test_song | ensure-stem
 
 Always written:
 
-- artifacts under `data/analysis/<Song - Artist>/artifacts/`
+- artifacts under `data/analysis/{song}/artifacts/`
 - `artifacts/validation/phase_1_report.json` and `.md`
 - `artifacts/symbolic_transcription/omnizart/drums.mid` when drums run
 

@@ -200,18 +200,11 @@ routine:
    guide that documents behaviour the server no longer has is worse than no
    guide.
 
-## Outstanding harness work
+## Harness status
 
-Tracked here until done; the suites are not fully runnable while any box is open.
-
-- [x] Build `mcp/tests/fixtures/analysis/` and its generator script.
-- [x] Capture the initial golden snapshots.
-- [x] Wire `smoke-test` and `full-regression` as named entry points so an
-      executor can invoke them by name rather than assembling checks by hand.
-- [x] Keep `full-regression` fixture-based by default; the suite is intentionally
-      deterministic and the committed fixtures are the validation source of truth.
-      A local `data/analysis/` run is optional developer-only context, not a
-      required regression gate.
-- [x] Flip `S2.6` / `S2.7` and the `F2`–`F4` checks from `DEFER` to real
-      PASS/FAIL once `get_song_overview` / `get_detail` return payloads
-      (v3.1 items 9-10). Done — no deferrals remain.
+The harness is complete: the three committed fixtures under
+`mcp/tests/fixtures/analysis/` and their generator, `smoke-test` and
+`full-regression` as named entry points, and the golden snapshots are all in
+place. Every `smoke-test` and `full-regression` check runs — there are no
+deferrals. Both suites are fixture-based by default; a local `data/analysis/`
+run is optional developer-only context, never a required gate.

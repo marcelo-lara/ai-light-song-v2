@@ -34,10 +34,14 @@ docker compose run --rm app ./analyze --clean-generated-data
 
 docker compose run --rm test     # tests
 docker compose up ui             # debugger at http://localhost:9090
+
+# song-comprehension MCP server — a stdio server its client spawns (-T is mandatory)
+docker compose build mcp
+docker compose run --rm -T mcp
 ```
 
-Each run writes intermediates under `data/analysis/<Song - Artist>/artifacts/`,
-the stable deliverables at `data/analysis/<Song - Artist>/`, and validation
+Each run writes intermediates under `data/analysis/{song}/artifacts/`,
+the stable deliverables at `data/analysis/{song}/`, and validation
 reports at `artifacts/validation/phase_1_report.{json,md}`.
 
 ## The pipeline
@@ -52,7 +56,10 @@ actually measures.
 | 1 measure | stems, beat grid + downbeat phase, 7-band FFT, loudness | `essentia/beats.json`, `essentia/fft_bands.json`, `rms_loudness.json` |
 | 2 interpret | harmonic (key, chords, HPCP), drum transcription, genre, named segmentation (All-In-One) | `layer_a_harmonic.json`, `symbolic_transcription/drum_events.json`, `genre.json`, `section_segmentation/sections.json` |
 | 3 relate | gesture phases and section-pair transitions | `song_event_timeline.json` |
-| 4 publish | section / beat / hint packing | `sections.json`, `beats.json`, `hints.json`, `info.json` |
+| 4 publish | fuse + pack the top-level deliverables | `info.json`, `beats.json`, `sections.json`, `hints.json`, `genre.json`, `drum_events.json`, `loudness.json` |
+
+The eight top-level files per song — the seven above plus phase 3's
+`song_event_timeline.json` — are the delivery surface the `mcp/` server reads.
 
 ## Layout
 
@@ -61,7 +68,7 @@ The structure is part of the contract.
 | Path | Contents |
 | --- | --- |
 | `data/songs/` | source `.mp3` inputs |
-| `data/analysis/<Song - Artist>/` | stable deliverables: exactly five files plus `artifacts/` |
+| `data/analysis/{song}/` | stable deliverables: top-level JSON plus `artifacts/` and `reference/` |
 | `…/artifacts/` | intermediates, grouped by producer (`essentia/`, `allin1/`, `section_segmentation/`, …) |
 | `…/reference/` | validation-only truth (human hints, external tools). Never a generation input |
 | `src/`, `ui/`, `mcp/` | analyzer, read-only debugger, song-comprehension MCP server |

@@ -14,7 +14,7 @@ Field-level detail for each file: [`artifacts.md`](artifacts.md).
 
 ## The exposure rule
 
-> **Exposed JSON lives only at `data/analysis/<Song - Artist>/*.json`.**
+> **Exposed JSON lives only at `data/analysis/{song}/*.json`.**
 > Nothing inside `artifacts/` or `reference/` is ever projected — to this
 > consumer or any other.
 
@@ -22,7 +22,7 @@ There are exactly two tiers, and the boundary is the directory level:
 
 | Tier | Who may read it |
 | --- | --- |
-| `data/analysis/<Song - Artist>/*.json` — top level | the MCP server, the analyzer, the debugger UI |
+| `data/analysis/{song}/*.json` — top level | the MCP server, the analyzer, the debugger UI |
 | `…/artifacts/**`, `…/reference/**` | **the analyzer and the debugger UI only** |
 
 Inner folders exist to *produce* the usable top-level files. They are raw

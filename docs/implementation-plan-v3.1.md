@@ -94,7 +94,7 @@ stall the whole run; everything independent of it still gets built.
 | Items | 11 (1 scaffold, 7 delivery surface, 2 tools, 1 closure) |
 | Items with a Visual QA block | 4 (items 2, 3, 4, 8) |
 | MCP regression | `smoke-test` from item 1 onward; `full-regression` at item 11 ([`reference/mcp-regression.md`](reference/mcp-regression.md)) |
-| Done | 10 |
+| Done | 11 |
 | Contract-change note | `docs/contract-change-v3.1.md` — created in item 2, extended by items 3–8 |
 | Blocking decisions (`D`) | none open |
 
@@ -598,29 +598,45 @@ from item 7).
 
 ### 11. Docs sweep and issue closure
 
-- [ ] Delete the "Delivery surface — four MCP-projected signals" entry from
+- [x] Delete the "Delivery surface — four MCP-projected signals" entry from
       [`issues.md`](issues.md); items 3–8 close it. Any part still outstanding
-      stays as a narrowed entry rather than being deleted wholesale.
-- [ ] `CLAUDE.md`: add `mcp/` to "Where things live" and to the module list;
-      update the top-level file set (now eight files, not five).
-- [ ] `README.md`: add the `mcp` service to the quick-start block and the layout
-      table.
-- [ ] `docs/reference/artifacts.md`: the layout tree gains `genre.json`,
-      `drum_events.json`, `loudness.json`.
-- [ ] `docs/reference/source-map.md`: add the `mcp/` module — `server.py`,
+      stays as a narrowed entry rather than being deleted wholesale. *(Deleted;
+      no part outstanding — the four signals all ship at top level now.)*
+- [x] `CLAUDE.md`: add `mcp/` to "Where things live" and to the module list;
+      update the top-level file set (now eight files, not five). *(Module list +
+      "Where things live" row already present; added a "Current state" row, an
+      "mcp/" run block, fixed the "specified, not built" banner and the stale
+      "separate MCP server (another repo)" line, dropped the open-release
+      pointer.)*
+- [x] `README.md`: add the `mcp` service to the quick-start block and the layout
+      table. *(Quick-start block + phase-4 output list updated; layout table row
+      `src/`, `ui/`, `mcp/` already present.)*
+- [x] `docs/reference/artifacts.md`: the layout tree gains `genre.json`,
+      `drum_events.json`, `loudness.json`. *(Done in Phase B; verified — tree
+      line 14 and per-file sections all present and correct.)*
+- [x] `docs/reference/source-map.md`: add the `mcp/` module — `server.py`,
       `loaders.py`, `serializers.py` — and note that `src/` never imports it.
-- [ ] `docs/reference/docker.md`: add the `mcp` service to the services table
-      and its build command.
-- [ ] `docs/analysis-definition.md`: remove the "phase 4 does not yet publish
-      everything" note added when the exposure rule landed.
-- [ ] `docs/contract-change-v3.1.md`: final read-through as the handoff note to
-      `ai-dmx-light-render`. Deliver it, then delete it in the change that closes
-      the release.
-- [ ] Archive or delete this plan per the release-closure rule — one plan in
-      `docs/` at a time.
-
-- [ ] `docs/reference/mcp-regression.md`: close every box in "Outstanding
+      *(Given its own section; the stale "raises not-implemented until item 10"
+      line fixed.)*
+- [x] `docs/reference/docker.md`: add the `mcp` service to the services table
+      and its build command. *(Draft in tree — verified: services row + build +
+      run commands present.)*
+- [x] `docs/analysis-definition.md`: remove the "phase 4 does not yet publish
+      everything" note added when the exposure rule landed. *(Removed; phase-4
+      module table now lists the six `ui_data.py` deliverables and the eight-file
+      surface.)*
+- [x] `docs/contract-change-v3.1.md`: final read-through as the handoff note to
+      `ai-dmx-light-render`. **NOT deleted** — the downstream consumer has not
+      migrated yet (D28). A pending-delivery banner was added at the top; a
+      "shortest form" summary was added; the plan link was replaced with a
+      git-history pointer.
+- [x] Delete this plan per the release-closure rule — one plan in `docs/` at a
+      time. *(Done in the final commit of the item-11 sweep, after this checklist
+      and `Done | 11` were captured in git.)*
+- [x] `docs/reference/mcp-regression.md`: close every box in "Outstanding
       harness work", or narrow the ones that remain rather than deleting them.
+      *(All boxes were ticked; the section is replaced with a short "Harness
+      status" paragraph — git history holds the checklist.)*
 
 **Tests — the handoff gate.** `docker compose run --rm test`, the UI suite, and
 a full `--all-songs` run to confirm the eight-file contract holds across all 21
@@ -660,7 +676,8 @@ None open. Decisions already taken and folded into the items above:
 | D22 | (item 7, resolved) The published `loudness.json` frame keeps `time` / `values` / `normalized_values` only; the artifact's `frame_index` / `start_s` / `end_s` and the rolling-`history` windows are dropped — a caller computes windows from the series it requests, and the 10 ms artifact remains for anything finer. An unpaired trailing frame (odd source-frame count) is dropped so every published interval is exactly 20 ms. |
 | D23 | (items 5-7, resolved) `genre` / `drum_events` / `loudness` stay **optional** in `mcp/loaders.py`'s `REQUIRED_TOP_LEVEL_FILES` this release (as D13 set): the fixtures carry them, but a degenerate real song may lag a pipeline rerun, and a missing-file hard error there would be a worse failure than their absence. Revisit when the tools (items 9-10) actually consume them. |
 | D15 | (item 1, resolved) smoke-test checks S2.6 / S2.7 (and full-regression F2–F4) are reported `DEFER` with the observed not-implemented error text — never pass, never silently skipped — until serializers land in items 9–10. Recorded in `docs/reference/mcp-regression.md` under S2. (Closed by items 9-10: every check now runs, no deferrals.) |
-| D25 | (item 9, resolved) The committed overview token-budget assert is **fixture-based** — `McpFull - Fixture` serialized overview is 4283 bytes, under the 6144-byte ceiling. `Armin - Revolution` locally is 19089 bytes (31 grouped gestures, 13 verbatim hints, section prose), over the 6 KB real-song target; a compaction pass (phase-code legend, hint trimming) is a phase-D follow-up, tracked in the item-9 notes. |
+| D25 | (item 9; **resolved-as-accepted in phase D**) The committed overview token-budget assert is **fixture-based** — `McpFull - Fixture` serialized overview is 4283 bytes, under the 6144-byte ceiling. Real gold songs re-measured in phase D: `Titanium` 13981 B, `Armin - Revolution` 12644 B, `Hideaway` 10025 B, `_test_song` 7936 B — all over the 6 KB real-song target. Phase D's bounded compaction attempt found the overage is **structural, not prose**: on `Armin` the 31 grouped gesture rows are ~6.8 KB alone (already over target) and the 13 human-hint rows (~2.2 KB) are verbatim ground truth the honesty rules forbid trimming; genre `guidance` / section `description` prose is already short and clipping it saves <300 B. Per item 9's rule ("cut prose before structure") and the phase-D brief ("STOP if you can't get near 6 KB without cutting structure or truncating hints"), the serializer was **left as-is**. A narrow follow-up — `get_song_overview` prose budget on gesture-dense songs — is filed in [`issues.md`](issues.md). |
+| D28 | (item 11, resolved) `docs/contract-change-v3.1.md` is **not deleted** at release close, unlike the implementation plan. The external consumer `ai-dmx-light-render` has not yet received or migrated to the v3.1 delivery-surface contract (array→object reshape, `downbeat_confidence` rename, `field_sources`/`source`, the four section function fields, `gesture_id`, three new top-level files, the `info.json` removals). A one-line pending-delivery banner was added at the top of the note; it is removed once the downstream consumer has migrated. This is the one exception to the release-closure "delete the doc with its subject" rule, because the doc's subject — the handoff — has not happened. |
 | D26 | (item 10, resolved) `get_detail` drops the free-text `scope` string the scaffold sketched; the scope is expressed directly by which selector is passed — `section_id`, `gesture_id`, or `start_ms`+`end_ms` — exactly one, zero or two an error. One fewer redundant argument, and the selector *is* the scope kind so nothing can disagree. |
 | D27 | (item 10, resolved) Over-cap detail returns `dense: null` plus a `dense_withheld` block (`reason`, `cap_seconds`) and the full structural view; `interval_ms` decimates by whole-chunk averaging (`factor = interval_ms // 20`), an unfilled trailing chunk dropped so every emitted interval is exactly `factor * 20` ms — mirrors D22. |
 

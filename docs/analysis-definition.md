@@ -46,7 +46,7 @@ Four rules govern the phases:
 4. **Phase 4 publishes everything that ships, and nothing else.** A signal that
    reaches no top-level file did not ship, whatever earlier phases computed.
    Phase 4 is also the only writer of the delivery surface: MCP-exposed JSON
-   lives exclusively at `data/analysis/<Song - Artist>/*.json`, and `artifacts/`
+   lives exclusively at `data/analysis/{song}/*.json`, and `artifacts/`
    is readable only by the analyzer and the debugger UI.
 
 ## Phase 4 fuses; it does not copy
@@ -134,11 +134,11 @@ which is exactly the ambiguity that made past chord issues hard to attribute.
 | Module | Produces |
 | --- | --- |
 | `hints.py` | `hints.json` — inference hints merged with `reference/human/human_hints.json` |
-| `ui_data.py` | `sections.json`, `beats.json`, `info.json` — the compact top-level deliverables |
+| `ui_data.py` | `sections.json`, `beats.json`, `info.json`, `genre.json`, `drum_events.json`, `loudness.json` — the compact top-level deliverables, each fused from its producers with a `field_sources` header |
 
-Phase 4 does not yet publish everything the delivery surface needs: section
-function fields, genre, loudness and drum events still live only under
-`artifacts/`. See [`issues.md`](issues.md).
+Together with `hints.py`'s `hints.json` and phase 3's `song_event_timeline.json`,
+these are the eight top-level files the `mcp/` server reads. Nothing the delivery
+surface needs still lives only under `artifacts/`.
 
 ### Validation — orthogonal to all four
 

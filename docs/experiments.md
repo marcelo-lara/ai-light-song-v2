@@ -44,7 +44,7 @@ Musical output has to be *heard against the song*, not read as a table. Anything
 time-bearing — boundaries, regions, events, curves — gets its own lane in the
 debugger, played against the waveform and the human hints. The pattern to copy:
 `experiments/drop_detection` writes
-`data/analysis/<Song - Artist>/reference/proposals/drop_impacts.json`, and the UI
+`data/analysis/{song}/reference/proposals/drop_impacts.json`, and the UI
 renders it as the **Drop Proposals** lane directly beneath **Human Hints**.
 
 - Output goes under `reference/proposals/`, never into `artifacts/` and never

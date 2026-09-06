@@ -7,16 +7,25 @@ is authoritative over any prose here.
 Stage responsibilities and their measured quality:
 [`../analysis-definition.md`](../analysis-definition.md).
 
+## `mcp/` — the song-comprehension server
+
+A separate top-level module beside `src/`. **`src/` never imports from `mcp/`,
+and `mcp/` never imports from `src/`** — the only channel between them is the
+top-level `data/analysis/{song}/*.json` files.
+
+| File | Purpose |
+| --- | --- |
+| `mcp/server.py` | stdio MCP server entry point — registers `list_songs`, `get_song_overview` and `get_detail`, all three returning real payloads |
+| `mcp/loaders.py` | song discovery, top-level file access, exposure enforcement (no code path reaches an inner folder) — the *stable* half |
+| `mcp/serializers.py` | response shaping for `get_song_overview` / `get_detail` — the *volatile* half; a tool-surface reshape touches this file and its snapshots only |
+| `mcp/tests/run.py` | `smoke-test` / `full-regression` named entry points |
+| `mcp/tests/fixtures/build_fixtures.py` | deterministic generator for the three committed regression fixtures |
+| `mcp/tests/` | exposure guard, scaffold checks, tool-surface checks, committed fixtures |
+
 ## Core
 
 | File | Purpose |
 | --- | --- |
-| `mcp/server.py` | stdio MCP server entry point — registers `list_songs` and `get_song_overview` (implemented); `get_detail` registered, raises not-implemented until item 10 |
-| `mcp/loaders.py` | song discovery, top-level file access, exposure enforcement (no code path reaches an inner folder) — the *stable* half |
-| `mcp/serializers.py` | response shaping for `get_song_overview` / `get_detail` — the *volatile* half; a tool-surface reshape touches this file and its snapshots only. `src/` never imports it |
-| `mcp/tests/run.py` | `smoke-test` / `full-regression` named entry points |
-| `mcp/tests/fixtures/build_fixtures.py` | deterministic generator for the three committed regression fixtures |
-| `mcp/tests/` | exposure guard, scaffold checks, tool-surface checks, committed fixtures |
 | `analyzer/cli.py` | CLI entry for `analyze` / `python -m analyzer` |
 | `analyzer/pipeline.py` | the stage DAG; `STAGE_PIPELINE_IDS` is the authoritative stage list — **start here** to understand execution order |
 | `analyzer/allin1_cache.py` | one cache-aware All-In-One invocation per song, seeded with the pipeline's own stems, persisted to `artifacts/allin1/raw.json`. Both `stages/segmentation.py` (3.1) and `stages/timing.py`'s downbeat phase (1.2) read it, so neither re-runs the model |
