@@ -1246,3 +1246,189 @@ a file.
 ### Conclusion
 
 *(to be filled by the run)*
+
+---
+
+## Arrangement state — *who is playing*, from a file we already publish
+
+No model, no repo. The detector is arithmetic over
+`data/analysis/{song}/loudness.json`:
+[`../experiments/arrangement_state/README.md`](../experiments/arrangement_state/README.md)
+
+### Status
+
+**[OPEN] — measured on the gold set.** Decisive on `_test_song`, and
+unmeasurable on the other three gold songs because their hand-marked hints are
+almost entirely drop stages. Nothing in `src/` reads it. Two things are needed
+before promotion is worth discussing: the UI review lane, and texture hints on
+the other three gold songs.
+
+Adjacent and unresolved together: the **CLAP character layer** entry above wants
+the same contract change (a character/texture surface). These two should be
+settled in one decision, not two files.
+
+### Why? What for?
+
+It began as a question about the debugger. Reading `_test_song`'s per-stem RMS
+lane, the operator said:
+
+> bars 7–15 there is a voice approach to a high energy region from bar 15–22 …
+> we do not want the exact name, but something to tell "something is happening
+> here, that is different to other region". Why is it so hard for models to
+> infer something there?
+
+Everything the authoring model is told about those fifteen seconds is one row:
+
+```
+section-002   14.82 → 58.05   "chorus [unverified]"   confidence 0.446
+```
+
+A single 43-second section covering the vocal approach, the drop, the
+high-energy region, the spacer and the whole outro. The model is not failing to
+infer a contrast — the surface it reads has no contrast on it.
+
+And the reason is structural, not acoustic. Every producer of published
+structure reads something other than the stems: `segmentation.py` reads a mix
+spectrogram and quantises to 8 bars (≈14.8 s on this song — longer than the
+entire high-energy region it would need to name); `harmonic.py` reads HPCP, and
+the chord is `D#m` on both sides of every boundary in question; `gestures.py`
+reads mix FFT and drum onsets and emits *events*, never a state. The one stage
+that reads the stems, `loudness.py`, publishes the series and draws no
+conclusion from it.
+
+So the signal is already in the delivery surface, as numbers, and nothing turns
+it into a fact. This is a plumbing gap, not a perception problem — which is
+exactly why it is worth an experiment rather than a model.
+
+### Experiment Plan
+
+Under [`../experiments/arrangement_state/`](../experiments/arrangement_state/),
+stdlib only, run in the ordinary `app` service:
+
+```bash
+docker compose run --rm --no-deps -T --entrypoint python app \
+  -m experiments.arrangement_state.run score
+docker compose run --rm --no-deps -T --entrypoint python app \
+  -m experiments.arrangement_state.run export
+```
+
+`detector.py` reads the **published** `loudness.json` — not the artifact — so
+the result also demonstrates that a phase-3 stage could produce this without
+touching audio. Three decisions carry it:
+
+1. **Per-stem, per-song thresholds.** A stem sounds when it is within 18 dB of
+   its own 98th percentile in this song. Nothing absolute, nothing shared
+   between stems or songs.
+2. **Detect at 250 ms, gate on persistence (1.5 s), report the fine edge.** The
+   reported time is never a smoothed centre.
+3. **The mix channel never triggers a change** — it is a sum of the stems.
+
+Every change carries `margin_db`, the smallest dB headroom among the stems that
+flipped: a measured distance from the decision boundary rather than a tuned
+score, and the natural confidence for a published row.
+
+**Measured against** the shipped `sections.json` boundaries (the incumbent) and
+an evenly spaced grid given the same detection budget (the baseline that killed
+CLAP semantic novelty). **Ground truth** is the start time of every hint in
+`reference/human/human_hints.json` — the operator's own answer to "something
+different starts here".
+
+**Reach test — which projected file this lands in.** Not yet decided, and it is
+the open contract question: either new rows in `sections.json` distinguished by
+kind, or a new top-level character/texture file. Whichever is chosen must serve
+the CLAP entry too. Nothing here is worth building into `src/` until that is
+settled.
+
+**Still to do:** the UI lane (`reference/proposals/arrangement_state.json` is
+written and unrendered — this cannot be judged by ear until it exists), and
+texture hints on `Hideaway`, `Armin` and `Titanium`.
+
+### Results evidence
+
+Full report: [`../experiments/arrangement_state/out/score.txt`](../experiments/arrangement_state/out/score.txt).
+
+**`_test_song` — the one song labelled densely enough to measure.** 15 hints in
+58 s:
+
+| method | n | P / R / F1 @ 0.5 s | @ 1.0 s |
+| --- | --- | --- | --- |
+| **arrangement state** | 17 | **0.59 / 0.60 / 0.59** | **0.76 / 0.73 / 0.75** |
+| shipped `sections.json` (incumbent) | 1 | 0.00 / 0.00 / 0.00 | 0.00 / 0.00 / 0.00 |
+| even grid, same budget (baseline) | 17 | 0.18 / 0.27 / 0.21 | 0.47 / 0.73 / 0.57 |
+
+Median absolute error over the nine hits is **0.07 s**. The operator's two named
+boundaries land at `29.75 +bass -vocals` (hint `High Energy`, 29.59, d=+0.16)
+and `42.50 -bass` (hint `Outro start`, 42.48, d=+0.02).
+
+The six misses partition cleanly and **none belong to this detector**: `Drum
+Hit` (a 186 ms one-shot → `gestures.py`), the three drop stages at 27.6–29.1
+(sub-bar gesture internals → `gestures.py`), `Vocal Outro 3` (a phrase split
+inside continuous vocals → the vocal-phrase entry above) and `prepare for end`
+(a fade, not a stem flip → an envelope-slope term nobody has built). The four
+together account for 15/15, and three already exist.
+
+**The Armin `Breath` block, without a model.** The reference case for the whole
+character line of work:
+
+| source | block | start error | end error |
+| --- | --- | --- | --- |
+| hand-marked | 81.39 – 96.33 | — | — |
+| **arrangement state (stems only)** | **81.50 – 95.50** | **+0.11 s** | **−0.83 s** |
+| CLAP character layer (`stems+clap`) | 83.50 – 95.00 | +2.11 s | −1.33 s |
+
+Tighter on both edges than the GPU pass. This does not overturn the CLAP
+ablation — the calm/intense axis still cuts a texture detector's false territory
+from 73 % to 41 % — it confirms that experiment's own division of labour: the
+stems say *what is playing*, CLAP says *how it feels*.
+
+**Smoothing is the failure mode, and it is not a small effect.** Replacing the
+persistence gate with ±1 s smoothing of the presence signal, same song:
+
+| variant | P / R / F1 @ 0.5 s | `Spacer` boundary error |
+| --- | --- | --- |
+| **persistence gate, fine edge reported** | **0.59 / 0.60 / 0.59** | **0.00 s** |
+| ±1 s smoothing before threshold | 0.27 / 0.27 / 0.27 | 6.0 s |
+
+This is "the physical onset wins over the nearest grid position" as a number,
+and it explains a known result: the CLAP character layer's `smooth_s: 2.0` is
+why it emits three blocks on `_test_song`, missing the 16 s vocal entry, the
+`Spacer` and the whole outro.
+
+**The corpus — and why its number measures the labels, not the detector.**
+
+| song | hints | state F1 @0.5 s | incumbent F1 @0.5 s | grid F1 @0.5 s |
+| --- | --- | --- | --- | --- |
+| `_test_song` | 15 | **0.59** | 0.00 | 0.21 |
+| `Hideaway - Kiesza` | 5 | 0.13 | **0.33** | 0.00 |
+| `Armin - Revolution` | 12 | 0.20 | **0.24** | 0.09 |
+| `Titanium - David Guetta ft Sia` | 15 | 0.07 | **0.33** | 0.07 |
+| **corpus (pooled)** | 47 | **0.20** (R 0.43) | **0.24** (R 0.19) | 0.08 (R 0.19) |
+
+Read straight, the detector loses to the incumbent on pooled F1 while more than
+doubling its recall. Both halves are real, and the cause is the label set:
+**32 of the 47 corpus hints are the five stages of a drop** — Hideaway 5 of 5,
+Titanium 15 of 15, Armin 10 of 12. Those belong to `gestures.py`. Outside
+`_test_song` the corpus holds exactly **two** texture hints. So on three of four
+gold songs every genuine arrangement change is scored as a false positive by
+construction.
+
+Tuning does not rescue it, which is the confirming check: gating by `margin_db`
+trades recall for precision and never improves corpus F1 — 0.20 at 0 dB, 0.20 at
+2 dB, 0.19 at 4 dB, 0.18 at 6 dB, 0.10 at 12 dB. That is the expected shape for
+a detector whose false positives are mostly unlabelled true positives.
+
+### Conclusion
+
+**The contrast the operator can read off the UI in one glance is recoverable to
+±0.1 s by arithmetic over a file the pipeline already publishes, and no shipped
+stage looks for it.** F1 0.59 @0.5 s on `_test_song` where `sections.json`
+scores 0.00, and the reference `Breath` block found more tightly than a CLAP
+forward pass.
+
+The honest limit is the ground truth, not the method: the corpus score is
+measuring an absence of texture labels on three of the four gold songs. **Mark
+texture blocks there before tuning anything.** Then the UI lane, then the
+contract decision shared with the CLAP entry — which is the only thing standing
+between this and reaching the authoring model.
+
+Not promoted; nothing in `src/` reads it.

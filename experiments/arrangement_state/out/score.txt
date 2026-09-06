@@ -1,0 +1,280 @@
+Arrangement-state changes vs hand-marked hint starts
+==============================================================================
+
+## _test_song   (58.1s, 15 hints)
+   thresholds dB: {'mix': -26.19, 'bass': -25.46, 'drums': -27.3, 'harmonic': -32.68, 'vocals': -29.16}
+
+   method                         n           P/R/F1 @0.5s           P/R/F1 @1.0s
+   arrangement state             17    0.59/0.60/0.59    0.76/0.73/0.75
+   shipped sections (incumbent)   1    0.00/0.00/0.00    0.00/0.00/0.00
+   even grid (baseline)          17    0.18/0.27/0.21    0.47/0.73/0.57
+
+   per-hint (arrangement state, tol 0.5s):
+        7.44  Drum Hit                             nearest   16.00  d= +8.56  miss
+       22.18  drop approach                        nearest   22.25  d= +0.07  HIT 
+       25.02  drop build                           nearest   25.00  d= -0.02  HIT 
+       27.65  drop tension                         nearest   29.75  d= +2.10  miss
+       28.40  drop impact                          nearest   29.75  d= +1.35  miss
+       29.12  drop release                         nearest   29.75  d= +0.62  miss
+       29.59  High Energy                          nearest   29.75  d= +0.16  HIT 
+       36.50  Spacer                               nearest   36.50  d= +0.00  HIT 
+       42.48  Outro start                          nearest   42.50  d= +0.02  HIT 
+       43.34  Vocal outro phrase 1.1               nearest   43.25  d= -0.09  HIT 
+       44.45  Synth Pad                            nearest   44.50  d= +0.05  HIT 
+       47.09  Vocal outro 2                        nearest   47.00  d= -0.09  HIT 
+       50.08  Vocal Outro 3                        nearest   47.00  d= -3.08  miss
+       54.61  prepare for end                      nearest   55.25  d= +0.64  miss
+       55.04  Finale                               nearest   55.25  d= +0.21  HIT 
+
+   changes:
+       16.00  +vocals                      -> [bass,harmonic,vocals]  margin +16.3 dB
+       16.75  -bass                        -> [harmonic,vocals]  margin +0.8 dB
+       22.25  +drums                       -> [drums,harmonic,vocals]  margin +11.8 dB
+       22.75  -vocals                      -> [drums,harmonic]  margin +5.1 dB
+       23.75  +bass                        -> [bass,drums,harmonic]  margin +2.6 dB
+       24.50  -drums                       -> [bass,harmonic]  margin +7.3 dB
+       25.00  +vocals -bass                -> [harmonic,vocals]  margin +2.0 dB
+       29.75  +bass -vocals                -> [bass,harmonic]  margin +11.9 dB
+       36.50  +drums                       -> [bass,drums,harmonic]  margin +7.7 dB
+       42.50  -bass                        -> [drums,harmonic]  margin +11.2 dB
+       43.25  +vocals                      -> [drums,harmonic,vocals]  margin +20.0 dB
+       44.50  +bass -vocals                -> [bass,drums,harmonic]  margin +4.2 dB
+       45.25  -drums                       -> [bass,harmonic]  margin +3.0 dB
+       47.00  +vocals                      -> [bass,harmonic,vocals]  margin +18.0 dB
+       55.25  -vocals                      -> [bass,harmonic]  margin +0.8 dB
+       55.50  -bass                        -> [harmonic]  margin +24.3 dB
+       56.25  -harmonic                    -> [(silence)]  margin +0.2 dB
+
+## Hideaway - Kiesza   (251.7s, 5 hints)
+   thresholds dB: {'mix': -38.59, 'bass': -49.97, 'drums': -45.52, 'harmonic': -37.03, 'vocals': -45.09}
+
+   method                         n           P/R/F1 @0.5s           P/R/F1 @1.0s
+   arrangement state             57    0.07/0.60/0.13    0.07/0.80/0.13
+   shipped sections (incumbent)   7    0.29/0.40/0.33    0.29/0.60/0.39
+   even grid (baseline)          57    0.00/0.00/0.00    0.02/0.20/0.03
+
+   per-hint (arrangement state, tol 0.5s):
+       47.20  drop approach                        nearest   47.00  d= -0.20  HIT 
+       54.11  drop build                           nearest   54.00  d= -0.11  HIT 
+       59.22  drop tension                         nearest   62.00  d= +2.78  miss
+       62.41  drop impact                          nearest   62.00  d= -0.41  HIT 
+       62.95  drop release                         nearest   62.00  d= -0.95  miss
+
+   changes:
+        7.00  +vocals                      -> [harmonic,vocals]  margin +9.1 dB
+       10.00  +bass -vocals                -> [bass,harmonic]  margin +1.5 dB
+       11.25  +vocals                      -> [bass,harmonic,vocals]  margin +8.2 dB
+       13.50  -bass                        -> [harmonic,vocals]  margin +21.8 dB
+       14.00  -vocals                      -> [harmonic]  margin +0.8 dB
+       16.00  +vocals                      -> [harmonic,vocals]  margin +14.2 dB
+       25.50  -vocals                      -> [harmonic]  margin +6.0 dB
+       26.75  +vocals                      -> [harmonic,vocals]  margin +10.1 dB
+       29.00  -vocals                      -> [harmonic]  margin +4.7 dB
+       31.50  +vocals                      -> [harmonic,vocals]  margin +12.8 dB
+       38.50  +drums                       -> [drums,harmonic,vocals]  margin +17.8 dB
+       46.75  +bass                        -> [bass,drums,harmonic,vocals]  margin +13.9 dB
+       47.00  -harmonic                    -> [bass,drums,vocals]  margin +2.1 dB
+       49.50  -drums                       -> [bass,vocals]  margin +1.8 dB
+       54.00  +drums                       -> [bass,drums,vocals]  margin +9.2 dB
+       55.50  -vocals                      -> [bass,drums]  margin +5.4 dB
+       62.00  +vocals                      -> [bass,drums,vocals]  margin +4.3 dB
+       77.50  -bass                        -> [drums,vocals]  margin +4.8 dB
+       77.75  +harmonic                    -> [drums,harmonic,vocals]  margin +8.6 dB
+       84.75  -vocals                      -> [drums,harmonic]  margin +2.9 dB
+       87.75  +vocals                      -> [drums,harmonic,vocals]  margin +14.8 dB
+       94.00  -harmonic                    -> [drums,vocals]  margin +0.3 dB
+       94.50  +bass                        -> [bass,drums,vocals]  margin +7.8 dB
+       99.75  -vocals                      -> [bass,drums]  margin +0.3 dB
+      101.00  +vocals                      -> [bass,drums,vocals]  margin +12.8 dB
+      122.75  -drums                       -> [bass,vocals]  margin +1.9 dB
+      123.00  -bass                        -> [vocals]  margin +13.6 dB
+      124.25  +drums                       -> [drums,vocals]  margin +11.1 dB
+      125.00  +harmonic                    -> [drums,harmonic,vocals]  margin +8.2 dB
+      156.00  -drums                       -> [harmonic,vocals]  margin +3.2 dB
+      156.50  -vocals                      -> [harmonic]  margin +6.2 dB
+      157.25  +drums                       -> [drums,harmonic]  margin +5.7 dB
+      158.00  +bass                        -> [bass,drums,harmonic]  margin +7.4 dB
+      162.25  -drums                       -> [bass,harmonic]  margin +2.4 dB
+      163.50  +vocals                      -> [bass,harmonic,vocals]  margin +12.5 dB
+      165.50  -bass                        -> [harmonic,vocals]  margin +4.6 dB
+      169.50  -vocals                      -> [harmonic]  margin +3.6 dB
+      171.50  +vocals                      -> [harmonic,vocals]  margin +5.8 dB
+      186.25  -vocals                      -> [harmonic]  margin +2.1 dB
+      187.50  +vocals                      -> [harmonic,vocals]  margin +12.4 dB
+      195.25  +drums                       -> [drums,harmonic,vocals]  margin +14.9 dB
+      195.50  -vocals                      -> [drums,harmonic]  margin +0.7 dB
+      196.75  +vocals                      -> [drums,harmonic,vocals]  margin +26.4 dB
+      203.00  +bass                        -> [bass,drums,harmonic,vocals]  margin +10.5 dB
+      203.50  -harmonic                    -> [bass,drums,vocals]  margin +0.3 dB
+      205.50  -drums                       -> [bass,vocals]  margin +0.4 dB
+      210.50  +drums                       -> [bass,drums,vocals]  margin +10.7 dB
+      210.75  +harmonic                    -> [bass,drums,harmonic,vocals]  margin +4.1 dB
+      211.00  -vocals                      -> [bass,drums,harmonic]  margin +0.9 dB
+      216.50  +vocals                      -> [bass,drums,harmonic,vocals]  margin +5.4 dB
+      218.00  -harmonic                    -> [bass,drums,vocals]  margin +2.2 dB
+      233.75  +harmonic                    -> [bass,drums,harmonic,vocals]  margin +17.3 dB
+      235.25  -bass                        -> [drums,harmonic,vocals]  margin +10.7 dB
+      246.50  +bass                        -> [bass,drums,harmonic,vocals]  margin +6.2 dB
+      250.00  -harmonic -vocals            -> [bass,drums]  margin +0.6 dB
+      250.50  -drums                       -> [bass]  margin +0.9 dB
+      251.25  -bass                        -> [(silence)]  margin +1.1 dB
+
+## Armin - Revolution   (194.0s, 12 hints)
+   thresholds dB: {'mix': -41.91, 'bass': -45.01, 'drums': -37.73, 'harmonic': -36.38, 'vocals': -34.41}
+
+   method                         n           P/R/F1 @0.5s           P/R/F1 @1.0s
+   arrangement state             53    0.13/0.42/0.20    0.13/0.42/0.20
+   shipped sections (incumbent)   5    0.40/0.17/0.24    0.40/0.17/0.24
+   even grid (baseline)          53    0.06/0.25/0.09    0.11/0.50/0.18
+
+   per-hint (arrangement state, tol 0.5s):
+       11.57  Vocal Phrase (filtered)              nearest   13.00  d= +1.43  miss
+       44.83  drop approach                        nearest   43.00  d= -1.83  miss
+       51.33  drop build                           nearest   55.75  d= +4.42  miss
+       55.82  drop tension                         nearest   55.75  d= -0.07  HIT 
+       57.83  drop impact                          nearest   56.25  d= -1.58  miss
+       59.55  drop release                         nearest   56.25  d= -3.30  miss
+       81.39  Breath                               nearest   81.50  d= +0.11  HIT 
+      126.10  drop approach                        nearest  122.00  d= -4.10  miss
+      133.36  drop build                           nearest  140.50  d= +7.14  miss
+      151.86  drop tension                         nearest  152.00  d= +0.14  HIT 
+      153.96  drop impact                          nearest  153.50  d= -0.46  HIT 
+      155.56  drop release                         nearest  155.50  d= -0.06  HIT 
+
+   changes:
+        0.50  +drums                       -> [drums,harmonic]  margin +19.5 dB
+        1.75  +vocals                      -> [drums,harmonic,vocals]  margin +7.3 dB
+        3.25  -drums                       -> [harmonic,vocals]  margin +3.8 dB
+        7.25  +drums                       -> [drums,harmonic,vocals]  margin +17.8 dB
+        8.75  -drums                       -> [harmonic,vocals]  margin +1.8 dB
+       13.00  -harmonic                    -> [vocals]  margin +0.1 dB
+       14.50  +harmonic                    -> [harmonic,vocals]  margin +5.9 dB
+       14.75  +drums                       -> [drums,harmonic,vocals]  margin +15.0 dB
+       15.25  -vocals                      -> [drums,harmonic]  margin +3.0 dB
+       19.00  -drums                       -> [harmonic]  margin +4.7 dB
+       24.00  +vocals                      -> [harmonic,vocals]  margin +4.8 dB
+       30.00  +drums                       -> [drums,harmonic,vocals]  margin +22.6 dB
+       40.75  -harmonic                    -> [drums,vocals]  margin +0.1 dB
+       43.00  +harmonic                    -> [drums,harmonic,vocals]  margin +6.7 dB
+       55.75  -drums                       -> [harmonic,vocals]  margin +4.4 dB
+       56.25  -vocals                      -> [harmonic]  margin +3.4 dB
+       68.75  +vocals                      -> [harmonic,vocals]  margin +6.8 dB
+       70.50  -vocals                      -> [harmonic]  margin +4.0 dB
+       74.50  +vocals                      -> [harmonic,vocals]  margin +3.9 dB
+       79.75  -vocals                      -> [harmonic]  margin +0.7 dB
+       81.25  +drums                       -> [drums,harmonic]  margin +18.1 dB
+       81.50  +vocals                      -> [drums,harmonic,vocals]  margin +10.5 dB
+       83.00  -drums                       -> [harmonic,vocals]  margin +5.2 dB
+       95.50  +drums                       -> [drums,harmonic,vocals]  margin +11.5 dB
+       96.75  +bass                        -> [bass,drums,harmonic,vocals]  margin +17.9 dB
+      100.25  -bass                        -> [drums,harmonic,vocals]  margin +2.7 dB
+      103.50  -vocals                      -> [drums,harmonic]  margin +4.1 dB
+      103.75  +bass                        -> [bass,drums,harmonic]  margin +17.1 dB
+      107.50  +vocals                      -> [bass,drums,harmonic,vocals]  margin +4.8 dB
+      108.75  -drums                       -> [bass,harmonic,vocals]  margin +7.0 dB
+      109.50  -bass -harmonic              -> [vocals]  margin +2.3 dB
+      110.50  +drums                       -> [drums,vocals]  margin +14.6 dB
+      110.75  +harmonic -vocals            -> [drums,harmonic]  margin +2.3 dB
+      111.25  +bass                        -> [bass,drums,harmonic]  margin +15.4 dB
+      112.75  -bass                        -> [drums,harmonic]  margin +1.8 dB
+      115.00  -drums                       -> [harmonic]  margin +4.2 dB
+      121.75  +drums                       -> [drums,harmonic]  margin +12.6 dB
+      122.00  +vocals                      -> [drums,harmonic,vocals]  margin +17.9 dB
+      140.50  +bass                        -> [bass,drums,harmonic,vocals]  margin +3.1 dB
+      145.00  -drums                       -> [bass,harmonic,vocals]  margin +9.6 dB
+      146.50  +drums                       -> [bass,drums,harmonic,vocals]  margin +3.0 dB
+      147.75  -bass                        -> [drums,harmonic,vocals]  margin +0.5 dB
+      152.00  -drums                       -> [harmonic,vocals]  margin +6.8 dB
+      153.50  -vocals                      -> [harmonic]  margin +0.9 dB
+      155.50  +bass                        -> [bass,harmonic]  margin +2.9 dB
+      161.50  -bass                        -> [harmonic]  margin +2.4 dB
+      170.25  +vocals                      -> [harmonic,vocals]  margin +3.4 dB
+      176.00  -vocals                      -> [harmonic]  margin +3.0 dB
+      177.50  +drums                       -> [drums,harmonic]  margin +15.8 dB
+      177.75  +vocals                      -> [drums,harmonic,vocals]  margin +15.2 dB
+      187.75  -harmonic                    -> [drums,vocals]  margin +2.6 dB
+      188.00  -drums                       -> [vocals]  margin +1.5 dB
+      193.00  -vocals                      -> [(silence)]  margin +0.8 dB
+
+## Titanium - David Guetta ft Sia   (232.4s, 15 hints)
+   thresholds dB: {'mix': -32.9, 'bass': -25.82, 'drums': -26.83, 'harmonic': -33.11, 'vocals': -30.6}
+
+   method                         n           P/R/F1 @0.5s           P/R/F1 @1.0s
+   arrangement state             44    0.05/0.20/0.07    0.09/0.33/0.14
+   shipped sections (incumbent)   9    0.33/0.33/0.33    0.33/0.40/0.36
+   even grid (baseline)          44    0.05/0.13/0.07    0.11/0.40/0.18
+
+   per-hint (arrangement state, tol 0.5s):
+       51.93  drop approach                        nearest   45.50  d= -6.43  miss
+       59.59  drop build                           nearest   73.25  d=+13.66  miss
+       71.47  drop tension                         nearest   73.25  d= +1.78  miss
+       74.66  drop impact                          nearest   75.25  d= +0.59  miss
+       75.20  drop release                         nearest   75.25  d= +0.05  HIT 
+      128.53  drop approach                        nearest  121.75  d= -6.78  miss
+      136.19  drop build                           nearest  149.50  d=+13.31  miss
+      148.07  drop tension                         nearest  149.50  d= +1.43  miss
+      151.26  drop impact                          nearest  151.50  d= +0.24  HIT 
+      151.80  drop release                         nearest  151.50  d= -0.30  HIT 
+      189.28  drop approach                        nearest  185.00  d= -4.28  miss
+      196.94  drop build                           nearest  185.00  d=-11.94  miss
+      208.82  drop tension                         nearest  210.50  d= +1.68  miss
+      212.01  drop impact                          nearest  213.50  d= +1.49  miss
+      212.55  drop release                         nearest  213.50  d= +0.95  miss
+
+   changes:
+        0.25  +harmonic                    -> [harmonic]  margin +16.3 dB
+       14.00  +bass                        -> [bass,harmonic]  margin +18.9 dB
+       15.00  +vocals                      -> [bass,harmonic,vocals]  margin +18.1 dB
+       26.50  -vocals                      -> [bass,harmonic]  margin +8.9 dB
+       28.00  +drums                       -> [bass,drums,harmonic]  margin +18.2 dB
+       30.25  +vocals                      -> [bass,drums,harmonic,vocals]  margin +18.6 dB
+       41.25  -vocals                      -> [bass,drums,harmonic]  margin +4.4 dB
+       44.75  -bass                        -> [drums,harmonic]  margin +16.0 dB
+       45.50  +vocals -drums               -> [harmonic,vocals]  margin +0.5 dB
+       73.25  +drums                       -> [drums,harmonic,vocals]  margin +13.1 dB
+       75.25  -vocals                      -> [drums,harmonic]  margin +2.4 dB
+       76.00  +bass                        -> [bass,drums,harmonic]  margin +16.9 dB
+       90.00  -bass                        -> [drums,harmonic]  margin +7.1 dB
+       90.25  -drums                       -> [harmonic]  margin +3.1 dB
+       91.00  +vocals                      -> [harmonic,vocals]  margin +4.0 dB
+       97.00  +drums                       -> [drums,harmonic,vocals]  margin +4.6 dB
+       99.75  -drums                       -> [harmonic,vocals]  margin +12.2 dB
+      102.25  -vocals                      -> [harmonic]  margin +2.1 dB
+      105.75  +bass +drums                 -> [bass,drums,harmonic]  margin +14.3 dB
+      106.00  +vocals                      -> [bass,drums,harmonic,vocals]  margin +5.0 dB
+      117.75  -vocals                      -> [bass,drums,harmonic]  margin +6.6 dB
+      121.00  -bass                        -> [drums,harmonic]  margin +35.3 dB
+      121.75  +vocals -drums               -> [harmonic,vocals]  margin +3.2 dB
+      149.50  +drums                       -> [drums,harmonic,vocals]  margin +11.2 dB
+      151.50  +bass -vocals                -> [bass,drums,harmonic]  margin +0.1 dB
+      156.25  +vocals                      -> [bass,drums,harmonic,vocals]  margin +14.6 dB
+      161.00  -vocals                      -> [bass,drums,harmonic]  margin +6.5 dB
+      162.75  -drums                       -> [bass,harmonic]  margin +31.0 dB
+      163.50  +vocals                      -> [bass,harmonic,vocals]  margin +8.7 dB
+      165.25  +drums                       -> [bass,drums,harmonic,vocals]  margin +6.8 dB
+      165.75  -bass                        -> [drums,harmonic,vocals]  margin +15.7 dB
+      167.50  -drums                       -> [harmonic,vocals]  margin +3.1 dB
+      180.75  +drums                       -> [drums,harmonic,vocals]  margin +4.2 dB
+      182.25  -drums                       -> [harmonic,vocals]  margin +1.7 dB
+      182.75  +bass                        -> [bass,harmonic,vocals]  margin +4.6 dB
+      185.00  -bass                        -> [harmonic,vocals]  margin +2.9 dB
+      210.50  +drums                       -> [drums,harmonic,vocals]  margin +12.7 dB
+      213.50  +bass                        -> [bass,drums,harmonic,vocals]  margin +17.3 dB
+      214.00  -vocals                      -> [bass,drums,harmonic]  margin +0.2 dB
+      223.50  -drums                       -> [bass,harmonic]  margin +15.1 dB
+      224.75  +vocals                      -> [bass,harmonic,vocals]  margin +13.4 dB
+      227.75  -bass                        -> [harmonic,vocals]  margin +36.5 dB
+      229.75  -harmonic                    -> [vocals]  margin +2.1 dB
+      230.25  -vocals                      -> [(silence)]  margin +1.2 dB
+
+==============================================================================
+## Corpus totals (hits pooled across songs)
+
+   arrangement state              R@0.5s 0.43 (20/47)   R@1.0s 0.53 (25/47)
+   shipped sections (incumbent)   R@0.5s 0.19 (9/47)   R@1.0s 0.23 (11/47)
+   even grid (baseline)           R@0.5s 0.19 (9/47)   R@1.0s 0.51 (24/47)
+
+   pooled precision (matched detections / all detections)
+   arrangement state              P@0.5s 0.13  F1 0.20   P@1.0s 0.16  F1 0.25
+   shipped sections (incumbent)   P@0.5s 0.32  F1 0.24   P@1.0s 0.32  F1 0.27
+   even grid (baseline)           P@0.5s 0.05  F1 0.08   P@1.0s 0.12  F1 0.19

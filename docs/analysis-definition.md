@@ -207,6 +207,10 @@ Honest caveats that ship with it:
   frame-level label posterior over the section's span — how sure the *model* was.
 - `same_label_as` means **label repetition** — "the third thing allin1 called a
   chorus" — never verified acoustic identity. See "Known gaps".
+- Boundaries are quantised to **8 bars**. At `_test_song`'s ~1.85 s/bar that is
+  a 14.8 s floor, so nothing shorter can be expressed however clearly it is
+  audible. This is the origin of the intra-section gap below, and it is a
+  property of allin1's output, not a tuning choice.
 
 ### Downbeats — honest, and short of target
 
@@ -269,6 +273,56 @@ bigger general-purpose embedding. **MFCC 0.73 is the number any next attempt
 must beat.** Archived as concluded; a follow-on is queued in
 [`experiments.md`](experiments.md).
 
+### Nothing describes what happens *inside* a section
+
+Distinct from the identity gap above, and the one an operator hits first. On
+`_test_song` the entire delivery surface says this about 43 of its 58 seconds:
+
+```
+section-002   14.82 → 58.05   "chorus [unverified]"   confidence 0.446
+```
+
+One row covering a vocal approach, a drop, a high-energy region, a spacer and
+the whole outro — regions the operator distinguishes at a glance from the
+debugger's per-stem RMS lane, and has hand-marked as fifteen separate hints.
+
+The cause is structural, not acoustic, and it is worth stating precisely because
+the instinct is to blame the model that reads the output:
+
+| producer | reads | therefore cannot see |
+| --- | --- | --- |
+| `segmentation.py` | mix spectrogram, argmax over 10 labels, 8-bar quantised | any change shorter than ~15 s on a mid-tempo track |
+| `harmonic.py` | HPCP | anything that is not pitch — the chord is `D#m` on both sides of every boundary above |
+| `gestures.py` | mix FFT + drum onsets | a *state*; it emits build/impact/release events, never "who is playing now" |
+| `loudness.py` | per-stem RMS ✅ | — it publishes the series and draws no conclusion from it |
+
+**The signal is already on the delivery surface as numbers, and no stage turns
+it into a fact.** That is the shape of this gap: a plumbing gap, not a
+perception one. It also means the fix is cheap —
+[`../experiments/arrangement_state/README.md`](../experiments/arrangement_state/README.md)
+recovers 9 of `_test_song`'s 15 hand-marked boundaries to a **median 0.07 s**
+(F1 0.59 @±0.5 s, where the shipped `sections.json` scores 0.00) from arithmetic
+over the published `loudness.json`, with no model and no audio read. It finds
+the Armin `Breath` block at 81.50–95.50 against 81.39–96.33 hand-marked —
+tighter on both edges than the CLAP forward pass.
+
+Three findings from that work that generalise beyond it:
+
+- **Smoothing a presence signal before thresholding destroys the boundary.**
+  F1 0.59 → 0.27 with ±1 s smoothing, and a hand-marked boundary displaced by
+  6 s. Detect fine, gate on persistence, and report the unsmoothed edge — this
+  is "the physical onset wins over the nearest grid position" as a measurement.
+- **These boundaries are a family, not one detector.** `_test_song`'s fifteen
+  hints split into arrangement-state changes, gesture internals (`gestures.py`),
+  vocal-phrase splits (the vocal-phrase experiment) and one fade. Together the
+  four account for all fifteen; three already exist. No single stage should be
+  expected to find them all.
+- **The gold corpus cannot currently measure this.** 32 of its 47 hand-marked
+  hints are the five stages of a drop; outside `_test_song` there are exactly
+  two texture hints. Any texture detector scored corpus-wide is being scored
+  against an absence of labels. **Mark texture blocks on the other three gold
+  songs before tuning anything against this corpus.**
+
 ### Character blocks — measured, not shipped
 
 The operator's hand-marked texture blocks (`Armin - Revolution` `hint-006`,
@@ -282,6 +336,13 @@ exact. And allin1 contributes **shadow labels**: with `include_activations=True`
 its frame-level posterior holds sustained mass on labels its own 8-bar
 segmentation never used, which is how a breakdown inside an `inst` stretch
 becomes visible. Not in `src/`; open in [`experiments.md`](experiments.md).
+
+A third rule, added by the arrangement-state work above: **CLAP is not needed to
+find the block at all.** The stems locate `Breath` more tightly than CLAP does.
+What the calm/intense axis earns is *specificity* — cutting the detector's
+claimed territory from 73% of the corpus to 41%. The two experiments want the
+same contract change, a character/texture surface at top level, and should be
+settled in one decision rather than each adding a file.
 
 ### Gesture precision has never been audited
 
