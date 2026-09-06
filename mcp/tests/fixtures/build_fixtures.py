@@ -253,8 +253,13 @@ GENRE_FIELD_SOURCES = {
     "guidance": "genre",
 }
 
-
 DRUM_FIELD_SOURCES = {"time": "omnizart", "event_type": "omnizart", "confidence": "omnizart"}
+
+LOUDNESS_FIELD_SOURCES = {
+    "time": "essentia",
+    "values": "essentia",
+    "normalized_values": "essentia",
+}
 
 
 def genre(song_name: str, *, degenerate: bool) -> dict:
@@ -283,21 +288,42 @@ def genre(song_name: str, *, degenerate: bool) -> dict:
 
 
 def loudness(song_name: str) -> dict:
-    interval_ms = 50
-    n = int(DURATION_S * 1000 / interval_ms)  # 480 frames
-    series = []
+    interval_ms = 20
+    n = int(DURATION_S * 1000 / interval_ms)  # 1200 frames at the 20 ms floor
+    frames = []
     for i in range(n):
-        t = i * interval_ms / 1000.0
-        # Smooth deterministic ramp with a peak near the impact at ~13.7 s.
+        t = _round(i * interval_ms / 1000.0 + interval_ms / 2000.0, 4)
         base = 0.2 + 0.5 * (t / DURATION_S)
         bump = 0.3 if 13.0 <= t <= 14.0 else 0.0
-        series.append(_round(base + bump, 4))
+        mix = _round(base + bump, 6)
+        frames.append(
+            {
+                "time": t,
+                "values": [mix, _round(mix * 0.6, 6), _round(mix * 0.8, 6),
+                           _round(mix * 0.5, 6), _round(mix * 0.3, 6)],
+                "normalized_values": [_round(min(1.0, mix * 1.1), 6)] * 5,
+            }
+        )
     return {
         "schema_version": "3.0",
         "song_name": song_name,
-        "interval_ms": interval_ms,
-        "unit": "rms_normalized",
-        "series": series,
+        "field_sources": LOUDNESS_FIELD_SOURCES,
+        "metadata": {
+            "sample_rate": 44100,
+            "duration": DURATION_S,
+            "normalization_scope": "per-song-per-source-peak-rms",
+            "source_order": ["mix", "bass", "drums", "harmonic", "vocals"],
+            "interval_ms": interval_ms,
+            "total_frames": n,
+        },
+        "sources": [
+            {"id": "mix", "label": "Mix", "kind": "mix"},
+            {"id": "bass", "label": "Bass", "kind": "stem"},
+            {"id": "drums", "label": "Drums", "kind": "stem"},
+            {"id": "harmonic", "label": "Harmonic", "kind": "stem"},
+            {"id": "vocals", "label": "Vocals", "kind": "stem"},
+        ],
+        "frames": frames,
     }
 
 

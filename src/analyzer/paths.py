@@ -70,6 +70,10 @@ class SongPaths:
         return self.song_output_dir / "drum_events.json"
 
     @property
+    def loudness_output_path(self) -> Path:
+        return self.song_output_dir / "loudness.json"
+
+    @property
     def review_json_path(self) -> Path:
         return self.song_validation_dir / "song_events.review.json"
 

@@ -303,6 +303,69 @@ def _publish_drum_events(paths: SongPaths) -> str:
     return str(paths.drum_events_output_path)
 
 
+def _decimate_loudness_pairs(frames: list[dict]) -> list[dict]:
+    """10 ms → 20 ms by AVERAGING consecutive pairs, not dropping every other
+    frame: a dropped-frame series loses transient peaks, which is exactly what a
+    drop impact is. An unpaired trailing frame (odd source count) is dropped so
+    every published interval is a clean 20 ms — at most 10 ms is lost at the very
+    end of the song, never a mid-song transient."""
+    out: list[dict] = []
+    for i in range(0, len(frames) - 1, 2):
+        pair = frames[i : i + 2]
+        times = [float(f["time"]) for f in pair]
+        values = [f["values"] for f in pair]
+        normalized = [f["normalized_values"] for f in pair]
+        out.append(
+            {
+                "time": round(sum(times) / len(times), 4),
+                "values": [round(sum(col) / len(col), 6) for col in zip(*values)],
+                "normalized_values": [round(sum(col) / len(col), 6) for col in zip(*normalized)],
+            }
+        )
+    return out
+
+
+def _publish_loudness(paths: SongPaths) -> str:
+    artifact = read_json(paths.artifact("essentia", "rms_loudness.json"))
+    frames = _decimate_loudness_pairs(artifact.get("frames", []))
+    meta = artifact.get("metadata", {})
+    # `sources[]` here means STEMS, not producers — do not overload it with the
+    # item-2 producer attribution. It only loses its `path` field (the host-path
+    # leak).
+    sources = [
+        {"id": s["id"], "label": s["label"], "kind": s["kind"]}
+        for s in artifact.get("sources", [])
+    ]
+    field_sources = validate_field_sources(
+        _fuse(
+            {
+                "time": [("essentia", True)],
+                "values": [("essentia", True)],
+                "normalized_values": [("essentia", True)],
+            }
+        ),
+        frames[0].keys() if frames else ("time", "values", "normalized_values"),
+        file="loudness.json",
+    )
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "field_sources": field_sources,
+        "metadata": {
+            "sample_rate": meta.get("sample_rate"),
+            "duration": meta.get("duration"),
+            "normalization_scope": meta.get("normalization_scope"),
+            "source_order": meta.get("source_order"),
+            "interval_ms": 20,
+            "total_frames": len(frames),
+        },
+        "sources": sources,
+        "frames": frames,
+    }
+    write_json(paths.loudness_output_path, payload)
+    return str(paths.loudness_output_path)
+
+
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
     beats_payload = read_json(paths.artifact("essentia", "beats.json"))
     harmonic_payload = read_json(paths.artifact("layer_a_harmonic.json"))
@@ -412,14 +475,16 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     write_json(beats_output_path, beats_output)
     write_json(sections_output_path, sections_output)
 
-    # v3.1 item 5 — publish a top-level fused view of genre. The artifact under
-    # artifacts/ is untouched.
+    # v3.1 items 5-7 — publish top-level fused views of genre, drum events and
+    # loudness. The artifacts under artifacts/ are untouched.
     genre_output = _publish_genre(paths)
     drum_events_output = _publish_drum_events(paths)
+    loudness_output = _publish_loudness(paths)
 
     return {
         "beats": str(beats_output_path),
         "sections": str(sections_output_path),
         "genre": genre_output,
         "drum_events": drum_events_output,
+        "loudness": loudness_output,
     }

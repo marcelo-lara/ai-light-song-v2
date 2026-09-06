@@ -94,7 +94,7 @@ stall the whole run; everything independent of it still gets built.
 | Items | 11 (1 scaffold, 7 delivery surface, 2 tools, 1 closure) |
 | Items with a Visual QA block | 4 (items 2, 3, 4, 8) |
 | MCP regression | `smoke-test` from item 1 onward; `full-regression` at item 11 ([`reference/mcp-regression.md`](reference/mcp-regression.md)) |
-| Done | 6 |
+| Done | 7 |
 | Contract-change note | `docs/contract-change-v3.1.md` — created in item 2, extended by items 3–8 |
 | Blocking decisions (`D`) | none open |
 
@@ -463,18 +463,18 @@ The one item with a real size decision, already made: **20 ms** (~9 MB/song;
 parameter and the server decimates per read, so 20 ms is the finest a caller may
 ask for, not what every read returns.
 
-- [ ] `ui_data.py` writes `data/analysis/{song}/loudness.json` by
+- [x] `ui_data.py` writes `data/analysis/{song}/loudness.json` by
       decimating `artifacts/essentia/rms_loudness.json` from 10 ms to 20 ms.
       Decimate by **averaging pairs**, not by dropping every other frame — a
       dropped-frame series loses transient peaks, which is exactly what a drop
       impact is.
-- [ ] `metadata.interval_ms: 20`, and `sources[]` reduced to
+- [x] `metadata.interval_ms: 20`, and `sources[]` reduced to
       `{ id, label, kind }` — **the `path` field is dropped**, it is the host-path
       leak. Note the name collision: this file's `sources[]` means *stems*, not
       producers. Keep the item-2 producer attribution in `field_sources` and do
       not overload `sources[]`.
-- [ ] The 10 ms artifact is unchanged and stays the UI's source.
-- [ ] `docs/reference/artifacts.md` + `docs/contract-change-v3.1.md`.
+- [x] The 10 ms artifact is unchanged and stays the UI's source.
+- [x] `docs/reference/artifacts.md` + `docs/contract-change-v3.1.md`.
 
 **Tests:** rebuild the MCP fixtures, then `smoke-test`; plus
 `docker compose run --rm test` and one gold song. Assert: frame count is within
@@ -646,6 +646,7 @@ None open. Decisions already taken and folded into the items above:
 | D19 | (item 3, resolved) `function_status` on a top-level row defaults to `"unknown"` when the segmentation row omits it (honest default, matches how `_format_section_label` already reads it) — never a guessed `"known"`. |
 | D20 | (item 4, resolved) The pre-existing exact-`(type, start, end)` dedup in `build_gestures` can collapse a primitive shared by two nearby impacts into one row, so a gesture may lose a phase; grouping by `gesture_id` then yields time-ordered, non-overlapping runs (verified on all four gold songs) but not always all five phases. That is existing dedup behaviour, not introduced here. |
 | D21 | (items 5-7, resolved) `field_sources` coverage on the new list/frame files (`drum_events.json`, `loudness.json`) is checked against the **repeating row/frame keys** — matching the `beats.json` precedent — while file-level aggregate blocks (`summary`, `supported_event_types`, `metadata`, `sources`) are provenance-exempt, like `schema_version`. They describe the file, not a fused per-row value. |
+| D22 | (item 7, resolved) The published `loudness.json` frame keeps `time` / `values` / `normalized_values` only; the artifact's `frame_index` / `start_s` / `end_s` and the rolling-`history` windows are dropped — a caller computes windows from the series it requests, and the 10 ms artifact remains for anything finer. An unpaired trailing frame (odd source-frame count) is dropped so every published interval is exactly 20 ms. |
 | D23 | (items 5-7, resolved) `genre` / `drum_events` / `loudness` stay **optional** in `mcp/loaders.py`'s `REQUIRED_TOP_LEVEL_FILES` this release (as D13 set): the fixtures carry them, but a degenerate real song may lag a pipeline rerun, and a missing-file hard error there would be a worse failure than their absence. Revisit when the tools (items 9-10) actually consume them. |
 | D15 | (item 1, resolved) smoke-test checks S2.6 / S2.7 (and full-regression F2–F4) are reported `DEFER` with the observed not-implemented error text — never pass, never silently skipped — until serializers land in items 9–10. Recorded in `docs/reference/mcp-regression.md` under S2. |
 

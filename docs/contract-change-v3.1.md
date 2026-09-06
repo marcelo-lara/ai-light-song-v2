@@ -155,3 +155,39 @@ are gone; per-event rows are trimmed to the three fields a cue author needs.
 `summary` and `supported_event_types` are file-level aggregates and carry no
 `field_sources` entry (provenance-exempt, like `schema_version`). `confidence` is
 `null` on every row today — Omnizart does not emit a per-event confidence.
+
+---
+
+## 7. New top-level file: `loudness.json`
+
+`data/analysis/{song}/loudness.json` — `artifacts/essentia/rms_loudness.json`
+**decimated 10 ms → 20 ms by averaging consecutive pairs** (not by dropping every
+other frame: a dropped-frame series loses the transient peaks that a drop impact
+*is*). An unpaired trailing frame (odd source count) is dropped so every
+published interval is exactly 20 ms — at most 10 ms is lost at the end of the
+song. The 10 ms artifact is unchanged and stays the debugger's source.
+
+```json
+{
+  "schema_version": "3.0",
+  "song_name": "...",
+  "field_sources": { "time": "essentia", "values": "essentia", "normalized_values": "essentia" },
+  "metadata": { "sample_rate": 44100, "duration": 194.0,
+                "normalization_scope": "per-song-per-source-peak-rms",
+                "source_order": ["mix","bass","drums","harmonic","vocals"],
+                "interval_ms": 20, "total_frames": 9700 },
+  "sources": [ { "id": "mix", "label": "Mix", "kind": "mix" }, ... ],
+  "frames": [ { "time": 0.01, "values": [ ...5 ], "normalized_values": [ ...5 ] }, ... ]
+}
+```
+
+- `metadata.interval_ms` is `20` — the **floor** a caller may request, not what
+  every read returns. `get_detail`'s `interval_ms` parameter decimates this
+  series further per request; a request finer than 20 ms is an error.
+- `sources[]` here means **stems**, not producers. Its `path` field (a host-path
+  leak) is dropped. Producer attribution stays in `field_sources`; `sources[]` is
+  not overloaded with it.
+- `frames[]` values are per-song display values in `source_order`, not
+  calibrated LUFS. `history` (rolling windows), `frame_index`, `start_s` and
+  `end_s` are not published — a caller computes windows from the series it asks
+  for.

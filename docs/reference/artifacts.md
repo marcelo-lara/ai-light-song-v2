@@ -11,7 +11,7 @@ data/
   songs/{song}.mp3
   analysis/{song}/
     info.json  beats.json  hints.json  sections.json  song_event_timeline.json
-    genre.json  drum_events.json
+    genre.json  drum_events.json  loudness.json
     artifacts/
       stems/            bass.wav drums.wav harmonic.wav vocals.wav metadata.json
       essentia/         beats.json fft_bands.json hpcp.json
@@ -85,6 +85,7 @@ both.
 | `song_event_timeline.json` | `field_sources`; flat `events[]`: gesture phases + section transitions, `schema_version` `"3.0"` | event-aware cue planning. Gesture-phase rows sharing one composite gesture carry the same `gesture_id` (`"gesture-003"`); section-transition rows carry no `gesture_id`. No nested `phases[]`, no `composite`, no `member_event_ids` — every row is flat and carries its own `evidence_summary` |
 | `genre.json` | `field_sources`; `genres`, `confidence`, `top_predictions[]`, `guidance[]` | advisory style context. A **fused view** of `artifacts/genre.json` with host paths stripped — the artifact stays for the analyzer and the debugger. `genres: ["unknown"]` is a valid outcome |
 | `drum_events.json` | `field_sources`; `events[]` of `{ time, event_type, confidence }`; `summary` counts; `supported_event_types` | rhythmic pulse. Kick/snare/hat only. A fused view of `artifacts/symbolic_transcription/drum_events.json` — full event list, no decimation (~1,164 events/song); `summary` and `supported_event_types` are file-level and provenance-exempt |
+| `loudness.json` | `field_sources`; `metadata.interval_ms` `20`; `sources[]` of `{ id, label, kind }` (stems, not producers); `frames[]` of `{ time, values, normalized_values }` | fine-resolution per-source loudness. `artifacts/essentia/rms_loudness.json` decimated 10 ms → 20 ms by **averaging pairs** (transient peaks preserved; an unpaired trailing frame is dropped). 20 ms is the floor a caller may request, not what every read returns. The `path` field is dropped from `sources[]` |
 
 ### `field_sources` per file
 
@@ -101,6 +102,7 @@ does (a repeated per-row map would be pure token cost).
 | `song_event_timeline.json` | all event fields (`gesture_id` included) → `gestures`, except `section_id` / `section_name` → `allin1` |
 | `genre.json` | `genres`, `confidence`, `top_predictions`, `guidance` → `genre` (`unknown` where the estimate is absent) |
 | `drum_events.json` | `time`, `event_type`, `confidence` → `omnizart`. `summary` / `supported_event_types` are file-level aggregates, provenance-exempt like `schema_version` |
+| `loudness.json` | `time`, `values`, `normalized_values` → `essentia`. `metadata` / `sources` are file-level, provenance-exempt |
 
 ## Artifacts
 

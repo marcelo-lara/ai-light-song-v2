@@ -1,6 +1,7 @@
-"""v3.1 items 5 & 6 — top-level genre.json and drum_events.json are published
-fused views of the artifacts/ originals: no host paths, a field_sources header
-covering every emitted field, and counts identical to the artifact."""
+"""v3.1 items 5-7 — top-level genre.json / drum_events.json / loudness.json are
+published fused views of the artifacts/ originals: no host paths, a
+field_sources header covering every emitted field, and counts identical to the
+artifact. (loudness has its own dedicated suite in test_loudness_publish.py.)"""
 
 from __future__ import annotations
 
@@ -63,6 +64,15 @@ def _setup(tmp: str) -> SongPaths:
     paths.artifact("genre.json").write_text(json.dumps(GENRE_ARTIFACT))
     paths.artifact("symbolic_transcription").mkdir(parents=True, exist_ok=True)
     paths.artifact("symbolic_transcription", "drum_events.json").write_text(json.dumps(DRUM_ARTIFACT))
+    paths.artifact("essentia", "rms_loudness.json").write_text(json.dumps({
+        "sources": [{"id": "mix", "label": "Mix", "path": "/data/x.mp3", "kind": "mix"}],
+        "metadata": {"sample_rate": 44100, "duration": 0.02, "normalization_scope": "x",
+                     "source_order": ["mix"], "interval_ms": 10},
+        "frames": [
+            {"time": 0.005, "values": [0.1], "normalized_values": [0.2]},
+            {"time": 0.015, "values": [0.3], "normalized_values": [0.4]},
+        ],
+    }))
     paths.sections_output_path.parent.mkdir(parents=True, exist_ok=True)
     return paths
 

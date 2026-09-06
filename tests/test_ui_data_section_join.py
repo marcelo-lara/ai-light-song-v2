@@ -17,7 +17,7 @@ def _setup(tmp: str, sections: list[dict]) -> SongPaths:
     paths.artifact("layer_a_harmonic.json").write_text(json.dumps({"chords": []}))
     paths.artifact("section_segmentation").mkdir(parents=True, exist_ok=True)
     paths.artifact("section_segmentation", "sections.json").write_text(json.dumps({"sections": sections}))
-    # v3.1 items 5-6 — build_ui_data now also publishes top-level views of these.
+    # v3.1 items 5-7 — build_ui_data now also publishes top-level views of these.
     paths.artifact("genre.json").write_text(json.dumps({
         "genres": ["electronic"], "confidence": 0.42,
         "top_predictions": [{"label": "electronic", "confidence": 0.42}],
@@ -30,6 +30,17 @@ def _setup(tmp: str, sections: list[dict]) -> SongPaths:
         "events": [
             {"time": 0.5, "event_type": "kick", "confidence": None},
             {"time": 1.0, "event_type": "snare", "confidence": None},
+        ],
+    }))
+    paths.artifact("essentia", "rms_loudness.json").write_text(json.dumps({
+        "sources": [{"id": "mix", "label": "Mix", "path": "/data/x.mp3", "kind": "mix"}],
+        "metadata": {"sample_rate": 44100, "duration": 0.04, "normalization_scope": "x",
+                     "source_order": ["mix"], "interval_ms": 10},
+        "frames": [
+            {"time": 0.005, "values": [0.1], "normalized_values": [0.2]},
+            {"time": 0.015, "values": [0.3], "normalized_values": [0.4]},
+            {"time": 0.025, "values": [0.5], "normalized_values": [0.6]},
+            {"time": 0.035, "values": [0.7], "normalized_values": [0.8]},
         ],
     }))
     paths.sections_output_path.parent.mkdir(parents=True, exist_ok=True)
