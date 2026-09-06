@@ -471,6 +471,8 @@ function parseTimelineEvent(raw: unknown, ctx: string): TimelineEvent {
     intensity: numberOr(o.intensity, 0, `${ctx}.intensity`),
     section_id: stringOrNull(o.section_id, `${ctx}.section_id`),
     section_name: stringOrNull(o.section_name, `${ctx}.section_name`),
+    // v3.1 item 4 — present only on gesture-phase rows, absent on transitions.
+    ...(typeof o.gesture_id === "string" ? { gesture_id: o.gesture_id } : {}),
     provenance: stringOrNull(o.provenance, `${ctx}.provenance`),
     summary: stringOrNull(o.summary, `${ctx}.summary`),
     evidence_summary: stringOrNull(

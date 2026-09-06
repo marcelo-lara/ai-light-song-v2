@@ -187,6 +187,25 @@ class AssembleGesturesTests(unittest.TestCase):
         phases = gestures_out[0]["phases"]
         self.assertEqual(set(phases.keys()), {"impact"})
 
+    def test_assemble_gestures_assigns_shared_gesture_id(self) -> None:
+        beats = _beats(n_bars=30, bar_len=2.0)
+        impacts = [
+            {"start": 30.0, "end": 30.0, "confidence": 0.9, "intensity": 0.9, "evidence": "impact a"},
+            {"start": 50.0, "end": 50.0, "confidence": 0.9, "intensity": 0.9, "evidence": "impact b"},
+        ]
+        risers = [
+            {"type": "riser", "start": 22.0, "end": 29.9, "confidence": 0.7, "intensity": 0.6, "evidence": "riser a"},
+            {"type": "riser", "start": 42.0, "end": 49.9, "confidence": 0.7, "intensity": 0.6, "evidence": "riser b"},
+        ]
+        rms_times = np.arange(0.0, 60.0, 0.1)
+        rms_mix = np.full(rms_times.shape, 0.2)
+        gestures_out = assemble_gestures(impacts, risers, [], [], [], beats, rms_times, rms_mix)
+        self.assertEqual(len(gestures_out), 2)
+        ids = [g["gesture_id"] for g in gestures_out]
+        self.assertEqual(ids, ["gesture-001", "gesture-002"])
+        for g in gestures_out:
+            self.assertRegex(g["gesture_id"], r"^gesture-\d{3}$")
+
 
 class DetectSectionTransitionsTests(unittest.TestCase):
     def test_one_transition_per_boundary(self) -> None:
@@ -284,6 +303,58 @@ class BuildGesturesEndToEndTests(unittest.TestCase):
             # At least one phase event and one transition event were produced.
             self.assertTrue(any(e["type"] in phase_types for e in payload["events"]))
             self.assertTrue(any(" → " in e["type"] for e in payload["events"]))
+
+    def test_build_gestures_marks_phase_rows_with_gesture_id_and_transition_rows_without(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(song_path=root / "songs" / "_song.mp3", analysis_root=root / "analysis")
+            beats = _beats(n_bars=20, bar_len=2.0)
+            timing = {"beats": beats, "bars": [{"bar": b, "start_s": (b - 1) * 2.0, "end_s": b * 2.0} for b in range(1, 21)]}
+            fft_times = np.arange(0.0, 40.0, 0.1)
+            n = len(fft_times)
+            levels = np.full((n, 7), 0.2)
+            transient = np.zeros(n)
+            dropout = np.zeros(n)
+            impact_time = 30.0
+            impact_idx = int(np.argmin(np.abs(fft_times - impact_time)))
+            riser_mask = (fft_times >= 22.0) & (fft_times < impact_time)
+            ramp = np.linspace(0.1, 0.9, riser_mask.sum())
+            for band in (4, 5, 6):
+                levels[riser_mask, band] = ramp
+            levels[impact_idx - 1 : impact_idx + 2, 0] = 0.95
+            transient[impact_idx] = 1.0
+            gap_mask = (fft_times >= impact_time - 1.5) & (fft_times < impact_time)
+            dropout[gap_mask] = 0.9
+            fft_bands = {
+                "bands": [{"id": "sub"}, {"id": "bass"}, {"id": "low_mid"}, {"id": "mid"}, {"id": "upper_mid"}, {"id": "presence"}, {"id": "brilliance"}],
+                "frames": [{"time": float(fft_times[i]), "levels": levels[i].tolist(), "transient_strength": float(transient[i]), "dropout_strength": float(dropout[i])} for i in range(n)],
+            }
+            rms_times = np.arange(0.0, 40.0, 0.1)
+            rms_mix = np.where(rms_times < impact_time, 0.2, 0.6)
+            rms_loudness = {"sources": [{"id": "mix"}], "frames": [{"time": float(rms_times[i]), "values": [float(rms_mix[i])]} for i in range(len(rms_times))]}
+            drum_events = {"events": []}
+            sections_payload = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 20.0, "function": "verse", "function_status": "known", "confidence": 0.9}, {"section_id": "section-002", "start": 20.0, "end": 40.0, "function": "chorus", "function_status": "known", "confidence": 0.85}]}
+            payload = build_gestures(paths, fft_bands, rms_loudness, drum_events, timing, sections_payload)
+            phase_events = [e for e in payload["events"] if e["type"] in {"approach", "build", "tension", "impact", "release"}]
+            transition_events = [e for e in payload["events"] if " → " in e["type"]]
+            self.assertTrue(phase_events)
+            self.assertTrue(transition_events)
+            for event in phase_events:
+                self.assertIn("gesture_id", event)
+                self.assertRegex(event["gesture_id"], r"^gesture-\d{3}$")
+            for event in transition_events:
+                self.assertNotIn("gesture_id", event)
+
+            # Grouping by gesture_id yields runs whose phase rows are
+            # time-ordered and non-overlapping.
+            by_gesture: dict[str, list[dict]] = {}
+            for event in phase_events:
+                by_gesture.setdefault(event["gesture_id"], []).append(event)
+            for run in by_gesture.values():
+                run_sorted = sorted(run, key=lambda e: e["start_time"])
+                self.assertEqual(run, sorted(run, key=lambda e: (e["start_time"], e["end_time"])))
+                for earlier, later in zip(run_sorted, run_sorted[1:]):
+                    self.assertLessEqual(earlier["end_time"], later["start_time"] + 1e-6)
 
 
 if __name__ == "__main__":

@@ -388,7 +388,7 @@ def assemble_gestures(
     """
     bar_len = _bar_length(beats)
     gestures = []
-    for impact in impacts:
+    for gesture_index, impact in enumerate(impacts, start=1):
         t_impact = impact["start"]
         window_start = t_impact - 16 * bar_len
 
@@ -465,7 +465,7 @@ def assemble_gestures(
                         "evidence": f"post-impact mix-RMS median {post_level:.4f} vs pre-impact {pre_level:.4f}",
                     }
 
-        gestures.append({"impact_time": round(t_impact, 3), "phases": phases})
+        gestures.append({"gesture_id": f"gesture-{gesture_index:03d}", "impact_time": round(t_impact, 3), "phases": phases})
     return gestures
 
 
@@ -593,6 +593,7 @@ def build_gestures(
                     "intensity": round(float(phase["intensity"]), 6),
                     "section_id": phase_section.get("section_id") if phase_section else None,
                     "section_name": phase_section.get("function") if phase_section else None,
+                    "gesture_id": gesture["gesture_id"],
                     "provenance": "machine-only",
                     "summary": _phase_summary(phase_name, phase, impact_time),
                     "evidence_summary": phase["evidence"],

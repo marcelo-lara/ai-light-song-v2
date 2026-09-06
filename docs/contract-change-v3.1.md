@@ -89,3 +89,17 @@ Before / after one row:
 delivery surface and the MCP server cannot serve it. The old array-index match
 between the two files is dissolved: the top-level row now carries the join key
 and the names together.
+
+---
+
+## 4. `gesture_id` added to `song_event_timeline.json`
+
+Every gesture-phase row (`approach` / `build` / `tension` / `impact` /
+`release`) belonging to one composite gesture now carries a shared
+`gesture_id` string, e.g. `"gesture-003"` (source: `gestures`). Section-pair
+transition rows carry **no** `gesture_id` key at all.
+
+Consumers can now reconstruct "a drop's five-phase envelope" by grouping rows on
+`gesture_id` without re-deriving the gesture assembly. Rows sharing a
+`gesture_id` are time-ordered and non-overlapping. No field is removed; a
+consumer that ignores `gesture_id` is unaffected.

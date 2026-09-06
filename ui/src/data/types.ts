@@ -324,6 +324,9 @@ export interface TimelineEvent {
   intensity: number;
   section_id: string | null;
   section_name: string | null;
+  /** v3.1 item 4 — shared by every gesture-phase row of one composite gesture
+   * (e.g. "gesture-003"); absent on section-pair transition rows. */
+  gesture_id?: string;
   provenance: string | null;
   summary: string | null;
   evidence_summary: string | null;

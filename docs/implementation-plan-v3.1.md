@@ -94,7 +94,7 @@ stall the whole run; everything independent of it still gets built.
 | Items | 11 (1 scaffold, 7 delivery surface, 2 tools, 1 closure) |
 | Items with a Visual QA block | 4 (items 2, 3, 4, 8) |
 | MCP regression | `smoke-test` from item 1 onward; `full-regression` at item 11 ([`reference/mcp-regression.md`](reference/mcp-regression.md)) |
-| Done | 3 |
+| Done | 4 |
 | Contract-change note | `docs/contract-change-v3.1.md` — created in item 2, extended by items 3–8 |
 | Blocking decisions (`D`) | none open |
 
@@ -398,14 +398,14 @@ artifact one-for-one; a song flagged degenerate (`_test_song`) has
 `get_detail`'s `gesture_id` scope and `get_song_overview`'s gesture grouping
 both depend on this, so it lands early in the phase rather than late.
 
-- [ ] `src/analyzer/stages/gestures.py`: assign every phase row belonging to one
+- [x] `src/analyzer/stages/gestures.py`: assign every phase row belonging to one
       composite gesture a shared `gesture_id` (e.g. `"gesture-003"`), and leave
       section-pair transition rows without one. Today the file is 58 flat rows
       with 31 impacts and no grouping key, so "a drop's five-phase envelope"
       cannot be read without the server re-deriving the grouping — which would
       put gesture assembly logic in two places.
-- [ ] `docs/reference/artifacts.md` — the `song_event_timeline.json` row.
-- [ ] `docs/contract-change-v3.1.md` — `gesture_id` added.
+- [x] `docs/reference/artifacts.md` — the `song_event_timeline.json` row.
+- [x] `docs/contract-change-v3.1.md` — `gesture_id` added.
 
 **Tests:** rebuild the MCP fixtures, then `smoke-test`; plus
 `docker compose run --rm test`, the UI suite, and all four gold songs. Assert: every gesture-phase row has a `gesture_id`; grouping by it yields
@@ -644,6 +644,7 @@ None open. Decisions already taken and folded into the items above:
 | D17 | (item 2, resolved) `info.json`'s `field_sources` covers `bpm` / `duration` (→ `essentia`) only. `song_path` / `artifacts` / `outputs` / `debug` are orchestration metadata, not fused delivery-surface values, and are passed as an explicit `exempt` set to the validator rather than force-fit to a producer — item 8 removes them outright. |
 | D18 | (item 3, resolved) The top-level → `section_segmentation` **array-index match was already gone** — `ui_data.build_ui_data` builds section rows straight from the segmentation list joined on `section_id` (v1.1 item 3.2 guard). Item 3's fix is therefore to **emit `function` / `function_confidence` / `function_status` / `same_label_as` on the top-level row** so no consumer ever needs to open the artifact; the UI's `sectionsContent` still accepts the segmentation list as an optional second arg (a `section_id` join, not index) and is left as-is since the UI may read `artifacts/`. |
 | D19 | (item 3, resolved) `function_status` on a top-level row defaults to `"unknown"` when the segmentation row omits it (honest default, matches how `_format_section_label` already reads it) — never a guessed `"known"`. |
+| D20 | (item 4, resolved) The pre-existing exact-`(type, start, end)` dedup in `build_gestures` can collapse a primitive shared by two nearby impacts into one row, so a gesture may lose a phase; grouping by `gesture_id` then yields time-ordered, non-overlapping runs (verified on all four gold songs) but not always all five phases. That is existing dedup behaviour, not introduced here. |
 | D15 | (item 1, resolved) smoke-test checks S2.6 / S2.7 (and full-regression F2–F4) are reported `DEFER` with the observed not-implemented error text — never pass, never silently skipped — until serializers land in items 9–10. Recorded in `docs/reference/mcp-regression.md` under S2. |
 
 Still open, deliberately deferred out of this release:

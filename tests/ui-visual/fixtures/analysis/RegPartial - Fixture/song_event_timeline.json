@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.0",
+  "schema_version": "3.0",
   "song_name": "Armin - Revolution",
   "field_sources": {
     "type": "gestures",
@@ -35,6 +35,7 @@
       "intensity": 0.772,
       "section_id": "section-001",
       "section_name": "intro",
+      "gesture_id": "gesture-001",
       "provenance": "machine-only",
       "summary": "A rising riser builds toward the impact at 15.95s.",
       "evidence_summary": "high-band r2=0.87 over 2 bars, delta=0.77x range"
@@ -47,6 +48,7 @@
       "intensity": 0.772,
       "section_id": "section-001",
       "section_name": "intro",
+      "gesture_id": "gesture-003",
       "provenance": "machine-only",
       "summary": "An early riser begins shaping the run-up toward the impact at 30.90s.",
       "evidence_summary": "high-band r2=0.87 over 2 bars, delta=0.77x range"
@@ -59,6 +61,7 @@
       "intensity": 1.0,
       "section_id": "section-001",
       "section_name": "intro",
+      "gesture_id": "gesture-003",
       "provenance": "machine-only",
       "summary": "A rising snare roll builds toward the impact at 30.90s.",
       "evidence_summary": "onset density 5->10 across bars 9-11"
@@ -71,6 +74,7 @@
       "intensity": 1.0,
       "section_id": "section-001",
       "section_name": "intro",
+      "gesture_id": "gesture-001",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.37, sub-band elevated, off downbeat"
@@ -83,6 +87,7 @@
       "intensity": 0.261,
       "section_id": "section-001",
       "section_name": "intro",
+      "gesture_id": "gesture-001",
       "provenance": "machine-only",
       "summary": "The mix stays elevated after the impact at 15.95s, sustaining the release.",
       "evidence_summary": "post-impact mix-RMS median 0.0546 vs pre-impact 0.0433"
@@ -95,6 +100,7 @@
       "intensity": 1.0,
       "section_id": "section-001",
       "section_name": "intro",
+      "gesture_id": "gesture-002",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.68, sub-band elevated, on downbeat"
@@ -107,12 +113,13 @@
       "intensity": 1.0,
       "section_id": "section-001",
       "section_name": "intro",
+      "gesture_id": "gesture-003",
       "provenance": "machine-only",
       "summary": "A pre drop gap holds tension immediately before the impact at 30.90s.",
       "evidence_summary": "dropout_strength peak 0.77 at 29.10s, 1.80s before impact"
     },
     {
-      "type": "intro → verse",
+      "type": "intro \u2192 verse",
       "start_time": 30.0,
       "end_time": 30.0,
       "confidence": 0.187426,
@@ -131,6 +138,7 @@
       "intensity": 1.0,
       "section_id": "section-002",
       "section_name": "verse",
+      "gesture_id": "gesture-003",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.32, sub-band elevated, off downbeat"
@@ -143,6 +151,7 @@
       "intensity": 1.0,
       "section_id": "section-002",
       "section_name": "verse",
+      "gesture_id": "gesture-007",
       "provenance": "machine-only",
       "summary": "A rising snare roll builds toward the impact at 45.20s.",
       "evidence_summary": "onset density 3->6 across bars 18-20"
@@ -155,6 +164,7 @@
       "intensity": 1.0,
       "section_id": "section-002",
       "section_name": "verse",
+      "gesture_id": "gesture-004",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.27, sub-band elevated, off downbeat"
@@ -167,6 +177,7 @@
       "intensity": 1.0,
       "section_id": "section-002",
       "section_name": "verse",
+      "gesture_id": "gesture-005",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.27, sub-band elevated, off downbeat"
@@ -179,12 +190,13 @@
       "intensity": 1.0,
       "section_id": "section-002",
       "section_name": "verse",
+      "gesture_id": "gesture-006",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.23, sub-band elevated, off downbeat"
     },
     {
-      "type": "verse → inst",
+      "type": "verse \u2192 inst",
       "start_time": 44.76,
       "end_time": 44.76,
       "confidence": 0.193769,
@@ -203,12 +215,13 @@
       "intensity": 1.0,
       "section_id": "section-003",
       "section_name": "inst",
+      "gesture_id": "gesture-007",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.26, sub-band elevated, off downbeat"
     },
     {
-      "type": "inst → verse",
+      "type": "inst \u2192 verse",
       "start_time": 81.76,
       "end_time": 81.76,
       "confidence": 0.194511,
@@ -227,6 +240,7 @@
       "intensity": 1.0,
       "section_id": "section-004",
       "section_name": "verse",
+      "gesture_id": "gesture-008",
       "provenance": "machine-only",
       "summary": "A rising snare roll builds toward the impact at 96.90s.",
       "evidence_summary": "onset density 7->24 across bars 48-50"
@@ -239,12 +253,13 @@
       "intensity": 1.0,
       "section_id": "section-004",
       "section_name": "verse",
+      "gesture_id": "gesture-010",
       "provenance": "machine-only",
       "summary": "A rising snare roll builds toward the impact at 101.05s.",
       "evidence_summary": "onset density 4->10 across bars 51-53"
     },
     {
-      "type": "verse → chorus",
+      "type": "verse \u2192 chorus",
       "start_time": 96.46,
       "end_time": 96.46,
       "confidence": 0.331459,
@@ -263,6 +278,7 @@
       "intensity": 1.0,
       "section_id": "section-005",
       "section_name": "chorus",
+      "gesture_id": "gesture-008",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.25, sub-band elevated, off downbeat"
@@ -275,6 +291,7 @@
       "intensity": 1.0,
       "section_id": "section-005",
       "section_name": "chorus",
+      "gesture_id": "gesture-009",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.26, sub-band elevated, off downbeat"
@@ -287,6 +304,7 @@
       "intensity": 1.0,
       "section_id": "section-005",
       "section_name": "chorus",
+      "gesture_id": "gesture-010",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.26, sub-band elevated, off downbeat"
@@ -299,6 +317,7 @@
       "intensity": 1.0,
       "section_id": "section-005",
       "section_name": "chorus",
+      "gesture_id": "gesture-011",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.38, sub-band elevated, off downbeat"
@@ -311,6 +330,7 @@
       "intensity": 1.0,
       "section_id": "section-005",
       "section_name": "chorus",
+      "gesture_id": "gesture-012",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.45, sub-band elevated, off downbeat"
@@ -323,6 +343,7 @@
       "intensity": 1.0,
       "section_id": "section-005",
       "section_name": "chorus",
+      "gesture_id": "gesture-013",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.40, sub-band elevated, off downbeat"
@@ -335,6 +356,7 @@
       "intensity": 1.0,
       "section_id": "section-005",
       "section_name": "chorus",
+      "gesture_id": "gesture-014",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.29, sub-band elevated, off downbeat"
@@ -347,6 +369,7 @@
       "intensity": 1.0,
       "section_id": "section-005",
       "section_name": "chorus",
+      "gesture_id": "gesture-015",
       "provenance": "machine-only",
       "summary": "A pre drop gap holds tension immediately before the impact at 111.20s.",
       "evidence_summary": "dropout_strength peak 0.89 at 109.40s, 1.80s before impact"
@@ -359,6 +382,7 @@
       "intensity": 1.0,
       "section_id": "section-005",
       "section_name": "chorus",
+      "gesture_id": "gesture-015",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.53, sub-band elevated, on downbeat"
@@ -371,12 +395,13 @@
       "intensity": 0.556,
       "section_id": "section-005",
       "section_name": "chorus",
+      "gesture_id": "gesture-015",
       "provenance": "machine-only",
       "summary": "The mix stays elevated after the impact at 111.20s, sustaining the release.",
       "evidence_summary": "post-impact mix-RMS median 0.0529 vs pre-impact 0.0340"
     },
     {
-      "type": "chorus → inst",
+      "type": "chorus \u2192 inst",
       "start_time": 111.23,
       "end_time": 111.23,
       "confidence": 0.144056,
@@ -395,6 +420,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-016",
       "provenance": "machine-only",
       "summary": "A pre drop gap holds tension immediately before the impact at 112.60s.",
       "evidence_summary": "dropout_strength peak 1.00 at 111.25s, 1.35s before impact"
@@ -407,6 +433,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-016",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.72, sub-band elevated, off downbeat"
@@ -419,6 +446,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-017",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.50, sub-band elevated, off downbeat"
@@ -431,6 +459,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-018",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.60, sub-band elevated, on downbeat"
@@ -443,6 +472,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-020",
       "provenance": "machine-only",
       "summary": "A rising snare roll builds toward the impact at 121.35s.",
       "evidence_summary": "onset density 3->8 across bars 62-64"
@@ -455,6 +485,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-019",
       "provenance": "machine-only",
       "summary": "A pre drop gap holds tension immediately before the impact at 119.95s.",
       "evidence_summary": "dropout_strength peak 0.85 at 119.10s, 0.85s before impact"
@@ -467,6 +498,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-019",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.42, sub-band elevated, off downbeat"
@@ -479,6 +511,7 @@
       "intensity": 0.16,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-019",
       "provenance": "machine-only",
       "summary": "The mix stays elevated after the impact at 119.95s, sustaining the release.",
       "evidence_summary": "post-impact mix-RMS median 0.0522 vs pre-impact 0.0450"
@@ -491,6 +524,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-020",
       "provenance": "machine-only",
       "summary": "A pre drop gap holds tension immediately before the impact at 121.35s.",
       "evidence_summary": "dropout_strength peak 0.76 at 120.50s, 0.85s before impact"
@@ -503,6 +537,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-020",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.92, sub-band elevated, off downbeat"
@@ -515,6 +550,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-021",
       "provenance": "machine-only",
       "summary": "A pre drop gap holds tension immediately before the impact at 125.05s.",
       "evidence_summary": "dropout_strength peak 0.77 at 123.25s, 1.80s before impact"
@@ -527,6 +563,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-022",
       "provenance": "machine-only",
       "summary": "A rising snare roll builds toward the impact at 135.20s.",
       "evidence_summary": "onset density 4->12 across bars 67-69"
@@ -539,6 +576,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-021",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.63, sub-band elevated, off downbeat"
@@ -551,6 +589,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-022",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.68, sub-band elevated, on downbeat"
@@ -563,6 +602,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-023",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.72, sub-band elevated, on downbeat"
@@ -575,6 +615,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-024",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.38, sub-band elevated, off downbeat"
@@ -587,6 +628,7 @@
       "intensity": 0.169,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-024",
       "provenance": "machine-only",
       "summary": "The mix stays elevated after the impact at 138.45s, sustaining the release.",
       "evidence_summary": "post-impact mix-RMS median 0.0463 vs pre-impact 0.0396"
@@ -599,6 +641,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-025",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.34, sub-band elevated, off downbeat"
@@ -611,6 +654,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-026",
       "provenance": "machine-only",
       "summary": "A pre drop gap holds tension immediately before the impact at 141.05s.",
       "evidence_summary": "dropout_strength peak 0.83 at 140.80s, 0.25s before impact"
@@ -623,6 +667,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-027",
       "provenance": "machine-only",
       "summary": "A pre drop gap holds tension immediately before the impact at 142.30s.",
       "evidence_summary": "dropout_strength peak 0.83 at 140.80s, 1.50s before impact"
@@ -635,6 +680,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-026",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.41, sub-band elevated, off downbeat"
@@ -647,6 +693,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-027",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.22, sub-band elevated, off downbeat"
@@ -659,6 +706,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-028",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.28, sub-band elevated, off downbeat"
@@ -671,6 +719,7 @@
       "intensity": 0.765,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-029",
       "provenance": "machine-only",
       "summary": "An early downlifter begins shaping the run-up toward the impact at 178.60s.",
       "evidence_summary": "high-band r2=0.80 over 4 bars, delta=0.77x range"
@@ -683,6 +732,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-031",
       "provenance": "machine-only",
       "summary": "A rising snare roll builds toward the impact at 182.30s.",
       "evidence_summary": "onset density 7->15 across bars 95-97"
@@ -695,6 +745,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-029",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.28, sub-band elevated, off downbeat"
@@ -707,6 +758,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-030",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.24, sub-band elevated, off downbeat"
@@ -719,6 +771,7 @@
       "intensity": 1.0,
       "section_id": "section-006",
       "section_name": "inst",
+      "gesture_id": "gesture-031",
       "provenance": "machine-only",
       "summary": "An impact lands here (simultaneous sub-band and transient spike).",
       "evidence_summary": "transient=0.22, sub-band elevated, off downbeat"
