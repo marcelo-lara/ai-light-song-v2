@@ -10,6 +10,7 @@ import {
   loadDropProposals,
   loadMoisesLyrics,
   loadVocalPhrases,
+  loadArrangementState,
   loadReactiveBands,
   loadGrid,
 } from "./sparseArtifacts";
@@ -191,6 +192,7 @@ export const artifactLoaders = {
   info: loadInfo,
   dropProposals: loadDropProposals,
   vocalPhrases: loadVocalPhrases,
+  arrangementState: loadArrangementState,
   reactiveBands: loadReactiveBands,
   grid: loadGrid,
   character: loadCharacter,

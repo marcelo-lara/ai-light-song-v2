@@ -22,6 +22,7 @@ import type {
   MoisesLyricsFile,
   VocalTranscriptionFile,
   VocalPhrasesFile,
+  ArrangementStateFile,
   ReactiveBandsFile,
   GridFile,
 } from "../data/sparseArtifacts";
@@ -412,6 +413,55 @@ export function vocalPhrasesContent(file: VocalPhrasesFile | null): SparseBlock[
 }
 
 /**
+ * Who-is-playing state-change blocks from `experiments/arrangement_state`
+ * (no audio, no model — derived from the published per-stem RMS series). A
+ * proposal to audition against Human Hints directly above it (this lane sits
+ * below Moises Lyrics, above Drop Proposals).
+ *
+ * `label` is kept short for a narrow block: the change itself when there is
+ * one (`+drums`, `-bass -vocals`, space-joined tokens for multiple stems), or
+ * initials of the stems currently playing (`b+d+h+v`) for the leading block,
+ * which has no prior state to diff against.
+ */
+export function arrangementStateContent(file: ArrangementStateFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => {
+    const changeTokens = [
+      ...b.entered.map((s) => `+${s}`),
+      ...b.left.map((s) => `-${s}`),
+    ];
+    const isInitial = b.entered.length === 0 && b.left.length === 0;
+    const label = changeTokens.length > 0
+      ? changeTokens.join(" ")
+      : isInitial
+        ? b.playing.map((s) => s[0]).join("+") || "silence"
+        : "no change";
+    const marginClause = b.margin_db != null ? ` · margin ${round(b.margin_db, 1)}dB` : "";
+    const playingList = b.playing.length > 0 ? b.playing.join(", ") : "nothing";
+    const changeSummary = changeTokens.length > 0
+      ? `${changeTokens.join(" ")} at this block's start.`
+      : isInitial
+        ? "the leading span, before the first detected change."
+        : "no change at this block's start.";
+    return {
+      id: `arrangement-state-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label,
+      ...(b.playing.length <= 1 ? { tintId: "arrangementStateSparse" } : {}),
+      wideLabel: `${changeTokens.length > 0 ? `${changeTokens.join(" ")} · ` : ""}${playingList}${marginClause}`,
+      laneLabel: "Arrangement State",
+      caption: `${formatRange(b.start_s, b.end_s)} · playing: ${playingList}${
+        b.margin_db != null ? marginClause : " · initial state"
+      }`,
+      reference: `arrangement-state-${i + 1}`,
+      detail: `playing: ${playingList}`,
+      summary: `experiments/arrangement_state (no model) — who is playing over this span, derived from the published per-stem RMS. ${changeSummary}`,
+      raw: b,
+    };
+  });
+}
+
+/**
  * Discrete accents from `experiments/reactive_bands` — locally auto-gained
  * band-power spikes, budget-matched and threshold-calibrated (see the
  * experiment's README, which reports the local-normalisation ablation coming
@@ -503,6 +553,7 @@ export interface LaneContentSources {
   character?: CharacterFile | null;
   vocalTranscription?: VocalTranscriptionFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
+  arrangementState?: ArrangementStateFile | null;
   reactiveBands?: ReactiveBandsFile | null;
   gestures?: EventTimeline | null;
   grid?: GridFile | null;
@@ -512,6 +563,7 @@ export interface LaneContentSources {
 export const SPARSE_LANE_IDS = [
   "humanHints",
   "moisesLyrics",
+  "arrangementState",
   "dropProposals",
   "vocalPhrases",
   "reactiveBands",
@@ -534,6 +586,8 @@ export function buildLaneBlocks(
       return humanHintsContent(s.humanHints ?? null);
     case "moisesLyrics":
       return moisesLyricsContent(s.moisesLyrics ?? null);
+    case "arrangementState":
+      return arrangementStateContent(s.arrangementState ?? null);
     case "dropProposals":
       return dropProposalsContent(s.dropProposals ?? null);
     case "vocalPhrases":

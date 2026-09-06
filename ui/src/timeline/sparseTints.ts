@@ -32,6 +32,11 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalPhrases: [340, 55, 46], // rose — distinct from moisesLyrics' slate blue
   vocalPhrasesGap: [220, 10, 40], // near-grey — an instrumental (no-vocal) span
   vocalPhrasesSustained: [280, 60, 48], // violet-pink — a held note marker
+  arrangementState: [95, 55, 44], // olive-lime — distinct from vocalPhrases' rose
+  //                                 (340), dropProposals' magenta (318) and
+  //                                 reactiveBands' gold (50)
+  arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a
+  //                                       block where one stem or fewer is playing
   reactiveBands: [50, 85, 42], // warm gold-amber — MilkDrop-style band accents
   gestures: [10, 75, 46], // burnt orange — sound-design device gestures
   gridPhrase: [188, 50, 42], // slate cyan — resolved bar/phrase grid

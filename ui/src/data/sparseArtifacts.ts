@@ -1,6 +1,6 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (drop proposals, character, vocal
-// transcription, vocal phrases, reactive bands, phrase grid).
+// transcription, vocal phrases, arrangement state, reactive bands, phrase grid).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -449,6 +449,59 @@ export async function loadVocalPhrases(
   f?: typeof fetch,
 ): Promise<LoadResult<VocalPhrasesFile>> {
   const result = await loadJson(artifactPaths.vocalPhrases(song), parseVocalPhrases, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// arrangement state — reference/proposals/arrangement_state.json
+// ---------------------------------------------------------------------------
+//
+// Who-is-playing state-change blocks from experiments/arrangement_state,
+// derived from the published per-stem RMS series — no audio, no model. Not
+// ground truth — a proposal to audition against Human Hints, which sits
+// directly above it (below Moises Lyrics, above Drop Proposals).
+
+export interface ArrangementStateBlock {
+  start_s: number;
+  end_s: number;
+  playing: string[];
+  entered: string[];
+  left: string[];
+  margin_db: number | null;
+}
+
+export interface ArrangementStateFile {
+  schema_version: string;
+  song_name: string;
+  blocks: ArrangementStateBlock[];
+}
+
+export function parseArrangementState(raw: unknown): ArrangementStateFile {
+  const o = asObject(raw, "reference/proposals/arrangement_state.json");
+  const blocks: ArrangementStateBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    const marginRaw = r.margin_db;
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      playing: arr(r.playing).map((x) => st(x)),
+      entered: arr(r.entered).map((x) => st(x)),
+      left: arr(r.left).map((x) => st(x)),
+      margin_db: typeof marginRaw === "number" && Number.isFinite(marginRaw) ? marginRaw : null,
+    });
+  }
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadArrangementState(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<ArrangementStateFile>> {
+  const result = await loadJson(artifactPaths.arrangementState(song), parseArrangementState, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
   }

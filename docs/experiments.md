@@ -1259,9 +1259,10 @@ No model, no repo. The detector is arithmetic over
 
 **[OPEN] — measured on the gold set.** Decisive on `_test_song`, and
 unmeasurable on the other three gold songs because their hand-marked hints are
-almost entirely drop stages. Nothing in `src/` reads it. Two things are needed
-before promotion is worth discussing: the UI review lane, and texture hints on
-the other three gold songs.
+almost entirely drop stages. Nothing in `src/` reads it. The UI lane is built —
+"Arrangement State" in the timeline debugger, positioned below Moises Lyrics
+and above Drop Proposals. The one thing outstanding before promotion is worth
+discussing is texture hints on the other three gold songs.
 
 Adjacent and unresolved together: the **CLAP character layer** entry above wants
 the same contract change (a character/texture surface). These two should be
@@ -1349,9 +1350,11 @@ kind, or a new top-level character/texture file. Whichever is chosen must serve
 the CLAP entry too. Nothing here is worth building into `src/` until that is
 settled.
 
-**Still to do:** the UI lane (`reference/proposals/arrangement_state.json` is
-written and unrendered — this cannot be judged by ear until it exists), and
-texture hints on `Hideaway`, `Armin` and `Titanium`.
+**Still to do:** the UI lane is built (`reference/proposals/arrangement_state.json`
+renders as the "Arrangement State" lane in `ui/src/timeline/laneState.ts`,
+positioned below Moises Lyrics / above Drop Proposals, so this can now be
+judged by ear against Human Hints). The one thing outstanding is texture hints
+on `Hideaway`, `Armin` and `Titanium`.
 
 ### Results evidence
 

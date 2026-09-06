@@ -42,6 +42,11 @@ export const artifactPaths = {
   // "vocal phrase blocks" wave-2 entry.
   vocalPhrases: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "vocal_phrases.json")),
+  // Written by experiments/arrangement_state (`run export`). Who-is-playing
+  // state-change blocks derived from the published per-stem RMS series —
+  // no audio, no model.
+  arrangementState: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "arrangement_state.json")),
   // Written by experiments/reactive_bands (`run export`). Locally auto-gained
   // FFT band accents (the discrete list only — the dense per-beat stream is
   // not rendered as its own lane, see the experiment's README).

@@ -239,9 +239,11 @@ for a detector whose false positives are mostly unlabelled true positives.
 `run export` writes
 `data/analysis/{song}/reference/proposals/arrangement_state.json` — one block
 per span, each naming the stems playing, the stems that entered and left at its
-start, and the `margin_db` behind that decision. **The UI lane that renders it
-is not built yet**, and this experiment cannot be judged by ear until it is; the
-lane belongs directly beneath **Human Hints**, next to **Drop Proposals**.
+start, and the `margin_db` behind that decision. **The UI lane is built**: it is
+named "Arrangement State", registered in `ui/src/timeline/laneState.ts`
+directly below **Moises Lyrics** and directly above **Drop Proposals**, and
+renders as an experiment ("proposals") lane carrying the flask badge. This
+experiment can now be audited by ear against Human Hints.
 
 ## Conclusion
 
@@ -251,9 +253,9 @@ the only song labelled densely enough to measure, it scores F1 0.59 @0.5 s
 where `sections.json` scores 0.00 — median hit error 0.07 s — and it finds the
 reference `Breath` block tighter on both edges than a CLAP forward pass.
 
-Two things are needed before promotion is worth discussing: the UI lane, and
-texture hints on the other three gold songs so the corpus number means
-something. Not promoted; nothing in `src/` reads this.
+The UI lane is built; the one thing outstanding before promotion is worth
+discussing is texture hints on the other three gold songs, so the corpus
+number means something. Not promoted; nothing in `src/` reads this.
 
 ## Negative results worth not rediscovering
 

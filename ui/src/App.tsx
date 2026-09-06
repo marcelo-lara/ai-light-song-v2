@@ -96,6 +96,9 @@ const TIMELINE_KEYS = [
   "humanHints",
   // external word-level sung lyrics (reference/moises)
   "moisesLyrics",
+  // who-is-playing state changes from the published per-stem RMS
+  // (experiments/arrangement_state)
+  "arrangementState",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",
   // wave-2 experiments (docs/experiments.md run orders 1-3, 6)
@@ -115,6 +118,7 @@ const TIMELINE_KEYS = [
 const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   humanHints: "humanHints",
   moisesLyrics: "moisesLyrics",
+  arrangementState: "arrangementState",
   dropProposals: "dropProposals",
   vocalPhrases: "vocalPhrases",
   reactiveBands: "reactiveBands",
@@ -270,6 +274,7 @@ export function App(): React.JSX.Element {
     () => ({
       humanHints: humanHintsFile,
       moisesLyrics: artifacts.moisesLyrics.data,
+      arrangementState: artifacts.arrangementState.data,
       dropProposals: artifacts.dropProposals.data,
       vocalPhrases: artifacts.vocalPhrases.data,
       reactiveBands: artifacts.reactiveBands.data,
@@ -284,6 +289,7 @@ export function App(): React.JSX.Element {
     [
       humanHintsFile,
       artifacts.moisesLyrics.data,
+      artifacts.arrangementState.data,
       artifacts.dropProposals.data,
       artifacts.vocalPhrases.data,
       artifacts.reactiveBands.data,

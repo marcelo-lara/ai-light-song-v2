@@ -15,6 +15,7 @@ import {
 import { parseEventTimeline, parseHarmonicLayer, parseHumanHints } from "../data/parsers";
 
 import {
+  arrangementStateContent,
   characterContent,
   vocalTranscriptionContent,
   chordsContent,
@@ -23,6 +24,7 @@ import {
   humanHintsContent,
   sectionsContent,
 } from "./laneContent";
+import type { ArrangementStateFile } from "../data/sparseArtifacts";
 import { romanNumeral } from "./romanNumeral";
 
 describe("humanHintsContent", () => {
@@ -176,6 +178,40 @@ describe("dropProposalsContent", () => {
       [...blocks.map((b) => b.start_s)].sort((a, b) => a - b),
     );
     expect(dropProposalsContent(null)).toEqual([]);
+  });
+});
+
+describe("arrangementStateContent", () => {
+  const file: ArrangementStateFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start_s: 0.0, end_s: 16.0, playing: ["bass", "drums", "harmonic", "vocals"], entered: [], left: [], margin_db: null },
+      { start_s: 16.0, end_s: 16.75, playing: ["bass", "harmonic", "vocals"], entered: [], left: ["drums"], margin_db: 16.28 },
+    ],
+  };
+  const blocks = arrangementStateContent(file);
+
+  it("labels a change block with the entered/left tokens and carries the margin", () => {
+    const changed = blocks[1]!;
+    expect(changed.label).toBe("-drums");
+    expect(changed.caption).toContain("bass, harmonic, vocals");
+    expect(changed.caption).toContain("margin 16.3dB");
+    expect(changed.wideLabel).toContain("-drums");
+    expect(changed.wideLabel).toContain("margin 16.3dB");
+    expect(changed.summary).toContain("-drums at this block's start.");
+  });
+
+  it("renders the leading block honestly, with no change and no invented margin", () => {
+    const first = blocks[0]!;
+    expect(first.caption).toContain("initial state");
+    expect(first.caption).not.toMatch(/margin/);
+    expect(first.summary).toContain("the leading span, before the first detected change.");
+    expect(first.label).toBe("b+d+h+v");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(arrangementStateContent(null)).toEqual([]);
   });
 });
 
