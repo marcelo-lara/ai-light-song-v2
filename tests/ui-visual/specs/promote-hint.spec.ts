@@ -265,12 +265,11 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
     await expect(editor).toBeVisible();
     await expect(page.locator("#hint-title")).toHaveValue(title ?? "");
 
-    const sectionsFixture = JSON.parse(sectionsFixtureBackup) as Array<{
-      section_id: string;
-      start: number;
-      end: number;
-    }>;
-    const first = [...sectionsFixture].sort((a, b) => a.start - b.start)[0]!;
+    // sections.json is an object with a field_sources header since v3.1 item 2.
+    const sectionsDoc = JSON.parse(sectionsFixtureBackup) as {
+      sections: Array<{ section_id: string; start: number; end: number }>;
+    };
+    const first = [...sectionsDoc.sections].sort((a, b) => a.start - b.start)[0]!;
     expect(
       Math.abs(Number(await page.locator("#hint-start").inputValue()) - first.start),
     ).toBeLessThanOrEqual(0.01);

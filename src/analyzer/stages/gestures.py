@@ -66,7 +66,7 @@ from typing import Any
 import numpy as np
 
 from analyzer.io import write_json
-from analyzer.models import SCHEMA_VERSION
+from analyzer.models import SCHEMA_VERSION, validate_field_sources
 from analyzer.paths import SongPaths
 
 #: Ordered sub-phases of a composite gesture (event_vocabulary.json).
@@ -631,9 +631,30 @@ def build_gestures(
 
     events.sort(key=lambda e: (e["start_time"], e["end_time"]))
 
+    # v3.1 item 2 — attribution header. Every event field is the gestures stage's
+    # own output except `section_id` / `section_name`, which it copies from the
+    # allin1 segmentation to locate each event.
+    timeline_field_sources = validate_field_sources(
+        {
+            "type": "gestures",
+            "start_time": "gestures",
+            "end_time": "gestures",
+            "confidence": "gestures",
+            "intensity": "gestures",
+            "section_id": "allin1",
+            "section_name": "allin1",
+            "gesture_id": "gestures",
+            "provenance": "gestures",
+            "summary": "gestures",
+            "evidence_summary": "gestures",
+        },
+        {key for event in events for key in event},
+        file="song_event_timeline.json",
+    )
     payload = {
         "schema_version": SCHEMA_VERSION,
         "song_name": paths.song_name,
+        "field_sources": timeline_field_sources,
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "engine": "gestures.primitives (rule-based sound-design device detectors) + gestures.assembly + section-transition detector",

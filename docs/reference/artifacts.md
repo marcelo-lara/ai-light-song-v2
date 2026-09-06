@@ -8,8 +8,8 @@ Governance rules are in [`../../CLAUDE.md`](../../CLAUDE.md).
 
 ```text
 data/
-  songs/<Song - Artist>.mp3
-  analysis/<Song - Artist>/
+  songs/{song}.mp3
+  analysis/{song}/
     info.json  beats.json  hints.json  sections.json  song_event_timeline.json
     artifacts/
       stems/            bass.wav drums.wav harmonic.wav vocals.wav metadata.json
@@ -31,7 +31,7 @@ data/
 
 | Tier | Who may read it |
 | --- | --- |
-| `data/analysis/<Song - Artist>/*.json` | the `mcp/` server, the analyzer, the debugger UI |
+| `data/analysis/{song}/*.json` | the `mcp/` server, the analyzer, the debugger UI |
 | `…/artifacts/**`, `…/reference/**` | **the analyzer and the debugger UI only** |
 
 The restriction binds `mcp/` alone. **The debugger reads anything under `data/`
@@ -78,10 +78,24 @@ both.
 | File | Contents | Open it to |
 | --- | --- | --- |
 | `info.json` | song metadata; `artifacts` / `outputs` path manifest | discover a song's canonical files; read `bpm`, `duration` |
-| `beats.json` | `time`, `type`, `bar`, `beat`, `chord`, `confidence` per beat | place cues on exact beat/downbeat times. `confidence` is `null` on `"beat"` rows and on unresolved downbeats |
-| `sections.json` | `section_id`, `start`, `end`, `label`, `description`, `key`, `chord_progression`, `confidence` | fast section summaries and show pacing. `label` is `"003 Chorus (0.81)"`, or the raw token marked `[unverified]` when allin1's labelling is degenerate |
-| `hints.json` | `sections[].hints[]` of `{ id, source, category, text, anchor_refs }` | per-section guidance; match by `section_id`, never by repeated labels |
-| `song_event_timeline.json` | flat `events[]`: gesture phases + section transitions, `schema_version` `"2.0"` | event-aware cue planning. No nested `phases[]`, no `composite`, no `member_event_ids` — every row is flat and carries its own `evidence_summary` |
+| `beats.json` | `{ field_sources, beats[] }`; each beat `time`, `type`, `bar`, `beat`, `chord`, `downbeat_confidence` | place cues on exact beat/downbeat times. `downbeat_confidence` (renamed from `confidence`) is allin1's downbeat-phase strength — `null` on `"beat"` rows and on unresolved downbeats, never the beat time's confidence |
+| `sections.json` | `{ field_sources, sections[] }`; each section `section_id`, `start`, `end`, `label`, `description`, `key`, `chord_progression`, `confidence` | fast section summaries and show pacing. `label` is `"003 Chorus (0.81)"`, or the raw token marked `[unverified]` when allin1's labelling is degenerate |
+| `hints.json` | `field_sources`; `sections[].hints[]` of `{ id, source, category, text, anchor_refs }` | per-section guidance; match by `section_id`, never by repeated labels |
+| `song_event_timeline.json` | `field_sources`; flat `events[]`: gesture phases + section transitions, `schema_version` `"3.0"` | event-aware cue planning. No nested `phases[]`, no `composite`, no `member_event_ids` — every row is flat and carries its own `evidence_summary` |
+
+### `field_sources` per file
+
+Default producer per field, declared once in each file's header. A row overrides
+it with `source` only where it departs from the default; no `beats.json` row
+does (a repeated per-row map would be pure token cost).
+
+| File | `field_sources` |
+| --- | --- |
+| `info.json` | `bpm`, `duration` → `essentia`. `song_path` / `artifacts` / `outputs` / `debug` are orchestration metadata, not fused values, and carry no entry (removed in a later v3.1 item) |
+| `beats.json` | `time`, `beat`, `bar`, `type` → `essentia`; `chord` → `harmonic`; `downbeat_confidence` → `allin1` |
+| `sections.json` | `section_id`, `start`, `end`, `confidence` → `allin1`; `label`, `description` → `human`; `key`, `chord_progression` → `harmonic` |
+| `hints.json` | `summary`, `sections` → `inference` (each hint row also carries its own `source`: `human` \| `inference` \| `user`) |
+| `song_event_timeline.json` | all event fields → `gestures`, except `section_id` / `section_name` → `allin1` |
 
 ## Artifacts
 

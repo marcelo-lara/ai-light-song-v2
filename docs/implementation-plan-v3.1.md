@@ -94,7 +94,7 @@ stall the whole run; everything independent of it still gets built.
 | Items | 11 (1 scaffold, 7 delivery surface, 2 tools, 1 closure) |
 | Items with a Visual QA block | 4 (items 2, 3, 4, 8) |
 | MCP regression | `smoke-test` from item 1 onward; `full-regression` at item 11 ([`reference/mcp-regression.md`](reference/mcp-regression.md)) |
-| Done | 1 |
+| Done | 2 |
 | Contract-change note | `docs/contract-change-v3.1.md` — created in item 2, extended by items 3–8 |
 | Blocking decisions (`D`) | none open |
 
@@ -287,41 +287,41 @@ Rationale and the two-part encoding:
 [`reference/artifacts.md`](reference/artifacts.md) "Attribution on the delivery
 surface".
 
-- [ ] Bump `SCHEMA_VERSION` in `src/analyzer/models.py` — this is the release's
+- [x] Bump `SCHEMA_VERSION` in `src/analyzer/models.py` — this is the release's
       single bump, and this is the first item to reshape a projected file.
-- [ ] `src/analyzer/models.py`: a closed producer vocabulary — `essentia`,
+- [x] `src/analyzer/models.py`: a closed producer vocabulary — `essentia`,
       `allin1`, `harmonic`, `omnizart`, `demucs`, `gestures`, `genre`, `human`,
       `inference`, `unknown`. An unrecognised producer is an error, not a
       passthrough string.
-- [ ] Every top-level file gains a `field_sources` header: the default producer
+- [x] Every top-level file gains a `field_sources` header: the default producer
       per field, declared once. A row carries its own `source` **only** where it
       departs from that default — so the common case costs one small block, and
       a departure is visible precisely because it is the only kind of row that
       carries one.
-- [ ] **`beats.json` and `sections.json` are bare JSON arrays today and become
+- [x] **`beats.json` and `sections.json` are bare JSON arrays today and become
       objects** — `{ "field_sources": {…}, "beats": [ … ] }` and
       `{ "field_sources": {…}, "sections": [ … ] }`. An array cannot carry a
       header, and a file that cannot say where its values came from defeats the
       convention. `info.json`, `hints.json` and `song_event_timeline.json` are
       already objects and need no reshaping.
-- [ ] This is the **widest-blast-radius change in the release.** Every consumer
+- [x] This is the **widest-blast-radius change in the release.** Every consumer
       that iterates those two files breaks: `ui/src/data/parsers.ts` and its
       tests, the fixture builder, and the external cue-authoring server. Update
       the first three here; the last gets a prominent
       `docs/contract-change-v3.1.md` entry.
-- [ ] **Fix `beats.json`'s ambiguous confidence.** Its `confidence` describes
+- [x] **Fix `beats.json`'s ambiguous confidence.** Its `confidence` describes
       the downbeat phase (allin1, 0.226 F1), not the beat time (essentia,
       trusted). Rename it `downbeat_confidence` so the field says what it
       measures. This is the clearest present instance of a fused row whose
       numbers read as belonging to the wrong producer.
-- [ ] **Do not** add a per-row source map to `beats.json`. At ~500 rows a
+- [x] **Do not** add a per-row source map to `beats.json`. At ~500 rows a
       repeated identical map is pure token cost against the very budget the
       `mcp/` server exists to protect.
-- [ ] Fusion reads **generated artifacts only**. Add a test asserting no
+- [x] Fusion reads **generated artifacts only**. Add a test asserting no
       publishing code path reads `reference/` — it stays validation-only, and
       this item is exactly where that could quietly slip.
-- [ ] `docs/reference/artifacts.md` — the per-file `field_sources` values.
-- [ ] `docs/contract-change-v3.1.md` — create it; first section records
+- [x] `docs/reference/artifacts.md` — the per-file `field_sources` values.
+- [x] `docs/contract-change-v3.1.md` — create it; first section records
       `field_sources`, the `source` override, the `confidence` →
       `downbeat_confidence` rename, and the **array → object** reshaping of
       `beats.json` and `sections.json`. Flag the reshaping first and loudest: it
@@ -640,6 +640,8 @@ None open. Decisions already taken and folded into the items above:
 | D12 | (item 1, resolved) The not-implemented tools raise `mcp.server.mcpserver.exceptions.ToolError` (a deep, non-re-exported import) so the message survives to the client as `is_error=True`; a bare exception is laundered by the SDK and the text is lost. Both tools validate `song` first, so unknown-song / missing-file are real testable errors from item 1 onward. |
 | D13 | (item 1, resolved) Required top-level files today = `info/beats/sections/song_event_timeline/hints`. `genre/drum_events/loudness` are present in the Full/Degenerate fixtures but not yet required (mid-migration; items 5–7 publish them). `McpPartial - Fixture` omits `sections.json`. |
 | D14 | (item 1, resolved) Item-1 fixtures use the **current committed shape** (bare arrays for `beats`/`sections`) to keep item 1 isolated; item 2 rebuilds them into the `field_sources`-header object shape. Noted in the fixture README. |
+| D16 | (item 2, resolved) `field_sources` coverage is checked as **header ⊇ emitted keys** (coverage, not strict equality), so a field that appears on only some rows — `gesture_id` on gesture-phase rows but not transition rows — does not break the check. Four keys are reserved and need no entry: `schema_version`, `generated_from`, `field_sources`, `song_name` (identity/provenance metadata, not fused values). |
+| D17 | (item 2, resolved) `info.json`'s `field_sources` covers `bpm` / `duration` (→ `essentia`) only. `song_path` / `artifacts` / `outputs` / `debug` are orchestration metadata, not fused delivery-surface values, and are passed as an explicit `exempt` set to the validator rather than force-fit to a producer — item 8 removes them outright. |
 | D15 | (item 1, resolved) smoke-test checks S2.6 / S2.7 (and full-regression F2–F4) are reported `DEFER` with the observed not-implemented error text — never pass, never silently skipped — until serializers land in items 9–10. Recorded in `docs/reference/mcp-regression.md` under S2. |
 
 Still open, deliberately deferred out of this release:

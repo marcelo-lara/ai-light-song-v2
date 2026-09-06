@@ -8,7 +8,7 @@ from typing import TypeVar
 from analyzer.config import ValidationConfig
 from analyzer.io import ensure_directory, read_json, write_json
 from analyzer.exceptions import AnalysisError
-from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
+from analyzer.models import SCHEMA_VERSION, build_song_schema_fields, validate_field_sources
 from analyzer.paths import SongPaths
 from analyzer.stages.gestures import build_gestures
 from analyzer.stages.energy import extract_energy_features
@@ -337,9 +337,20 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         ui_outputs = _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
+        # v3.1 item 2 — attribution header. `bpm` and `duration` are essentia's
+        # (the timing stage). `song_path`/`artifacts`/`outputs`/`debug` are
+        # orchestration metadata, not fused delivery-surface values, and item 8
+        # removes them — exempted here rather than force-fit to a producer.
+        info_field_sources = validate_field_sources(
+            {"bpm": "essentia", "duration": "essentia"},
+            ("bpm", "duration"),
+            file="info.json",
+            exempt=("song_path", "artifacts", "outputs", "debug"),
+        )
         info_payload = {
             "schema_version": SCHEMA_VERSION,
             **build_song_schema_fields(paths, bpm=timing["bpm"], duration=timing["duration"]),
+            "field_sources": info_field_sources,
             "song_path": str(paths.song_path),
             "artifacts": {
                 "beats": str(paths.artifact("essentia", "beats.json")),

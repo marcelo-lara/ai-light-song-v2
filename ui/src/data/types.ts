@@ -40,10 +40,14 @@ export interface BeatRow {
   time: number;
   beat: number;
   bar: number;
-  bass: string | null;
   chord: string | null;
   type: BeatType;
-  confidence: number | null;
+  downbeat_confidence: number | null;
+}
+
+export interface BeatsFile {
+  field_sources: Record<string, string>;
+  beats: BeatRow[];
 }
 
 export type Beats = BeatRow[];
@@ -69,6 +73,11 @@ export interface SectionRow {
    * stage's confidence floor (plan v3.0 item 13) — an honest, expected
    * outcome on low-agreement songs, not a bug. */
   chord_progression: string | null;
+}
+
+export interface SectionsFile {
+  field_sources: Record<string, string>;
+  sections: SectionRow[];
 }
 
 export type SectionsTopLevel = SectionRow[];

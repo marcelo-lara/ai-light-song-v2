@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass, field, is_dataclass
+from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -9,7 +11,65 @@ if TYPE_CHECKING:
     from analyzer.paths import SongPaths
 
 
-SCHEMA_VERSION = "2.0"
+SCHEMA_VERSION = "3.0"
+
+
+class Producer(str, Enum):
+    """Closed vocabulary for the `field_sources` attribution header on every
+    top-level (delivery-surface) file. A published value's `source` — file-level
+    default or per-row override — must be one of these. An unrecognised producer
+    string is an error, never a passthrough: see `validate_field_sources`."""
+
+    ESSENTIA = "essentia"
+    ALLIN1 = "allin1"
+    HARMONIC = "harmonic"
+    OMNIZART = "omnizart"
+    DEMUCS = "demucs"
+    GESTURES = "gestures"
+    GENRE = "genre"
+    HUMAN = "human"
+    INFERENCE = "inference"
+    UNKNOWN = "unknown"
+
+
+PRODUCERS: frozenset[str] = frozenset(p.value for p in Producer)
+
+# Keys that a top-level payload may carry without a `field_sources` entry: they
+# are identity/provenance metadata, not fused musical values.
+_FIELD_SOURCES_RESERVED: frozenset[str] = frozenset(
+    {"schema_version", "generated_from", "field_sources", "song_name"}
+)
+
+
+def validate_field_sources(
+    field_sources: dict[str, str],
+    emitted_keys: Iterable[str],
+    *,
+    file: str,
+    exempt: Iterable[str] = (),
+) -> dict[str, str]:
+    """Enforce the attribution convention for one top-level file:
+
+    - every `field_sources` value is a known `Producer` (unknown => error);
+    - the header covers every emitted key except reserved metadata and the
+      caller-supplied `exempt` set.
+
+    Returns `field_sources` unchanged so it can be used inline when building a
+    payload.
+    """
+    bad = sorted(v for v in field_sources.values() if v not in PRODUCERS)
+    if bad:
+        raise ValueError(
+            f"{file}: field_sources has producer(s) outside the closed vocabulary: "
+            f"{bad}. Allowed: {sorted(PRODUCERS)}"
+        )
+    covered = set(field_sources) | _FIELD_SOURCES_RESERVED | set(exempt)
+    missing = sorted(k for k in emitted_keys if k not in covered)
+    if missing:
+        raise ValueError(
+            f"{file}: field_sources header does not cover emitted field(s): {missing}"
+        )
+    return field_sources
 
 
 def round_schema_float(value: float, digits: int = 2) -> float:

@@ -3,7 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 
 from analyzer.io import ensure_directory, read_json, write_json
-from analyzer.models import SCHEMA_VERSION, build_song_schema_fields, round_schema_float
+from analyzer.models import (
+    SCHEMA_VERSION,
+    build_song_schema_fields,
+    round_schema_float,
+    validate_field_sources,
+)
 from analyzer.paths import SongPaths
 from analyzer.stages.hint_alignment import find_primary_section
 
@@ -244,9 +249,19 @@ def generate_section_hints(paths: SongPaths, sections_payload: dict) -> dict[str
     ensure_directory(paths.song_output_dir)
     existing_output = _load_existing_output(output_path)
     merged_sections = _merge_sections(inferred_sections, existing_output, human_hints_by_section)
+    # v3.1 item 2 — attribution header. The default producer is `inference`;
+    # each merged hint additionally carries its own `source`
+    # (`human` | `inference` | `user`), the per-row override the convention
+    # generalises from.
+    hints_field_sources = validate_field_sources(
+        {"summary": "inference", "sections": "inference"},
+        ("summary", "sections"),
+        file="hints.json",
+    )
     merged_payload = {
         "schema_version": SCHEMA_VERSION,
         **build_song_schema_fields(paths),
+        "field_sources": hints_field_sources,
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "engine": "editable-hints-merge-v1",

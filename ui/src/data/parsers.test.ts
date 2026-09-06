@@ -62,7 +62,7 @@ describe("parseBeats", () => {
       bar: expect.any(Number),
       type: expect.any(String),
     });
-    expect(["string", "object"]).toContain(typeof first.bass); // string | null
+    expect(first.downbeat_confidence).toBeNull();
   });
 
   it("rejects a non-array", () => {

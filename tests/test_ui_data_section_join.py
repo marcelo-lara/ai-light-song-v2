@@ -34,7 +34,9 @@ class SectionJoinTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             paths = _setup(tmp, sections)
             build_ui_data(paths)
-            rows = json.loads(paths.sections_output_path.read_text())
+            payload = json.loads(paths.sections_output_path.read_text())
+            rows = payload["sections"]
+        self.assertIn("field_sources", payload)
         self.assertEqual([r["section_id"] for r in rows], ["section-001", "section-002"])
         self.assertEqual(rows[0]["label"], "001 Intro (0.90)")
         self.assertEqual(rows[1]["label"], "002 Chorus (0.40)")
@@ -51,7 +53,9 @@ class SectionJoinTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             paths = _setup(tmp, sections)
             build_ui_data(paths)
-            rows = json.loads(paths.sections_output_path.read_text())
+            payload = json.loads(paths.sections_output_path.read_text())
+            rows = payload["sections"]
+        self.assertIn("field_sources", payload)
         self.assertIn("[unverified]", rows[0]["label"])
         self.assertIn("not trustworthy", rows[0]["description"])
 
@@ -70,6 +74,32 @@ class SectionJoinTests(unittest.TestCase):
             paths = _setup(tmp, sections)
             with self.assertRaises(ValueError):
                 build_ui_data(paths)
+
+    def test_beats_and_sections_are_objects_with_field_sources_headers(self) -> None:
+        sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "intro",
+             "function_confidence": 0.9, "function_status": "known", "same_label_as": None,
+             "confidence": 0.9},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, sections)
+            build_ui_data(paths)
+            beats_payload = json.loads(paths.beats_output_path.read_text())
+            sections_payload = json.loads(paths.sections_output_path.read_text())
+
+        # Object shape, not a bare array.
+        self.assertIsInstance(beats_payload, dict)
+        self.assertIsInstance(sections_payload, dict)
+
+        # The header covers every field each row emits.
+        beat_row = beats_payload["beats"][0]
+        self.assertLessEqual(set(beat_row), set(beats_payload["field_sources"]))
+        section_row = sections_payload["sections"][0]
+        self.assertLessEqual(set(section_row), set(sections_payload["field_sources"]))
+
+        # The ambiguous `confidence` is gone from beats rows.
+        self.assertNotIn("confidence", beat_row)
+        self.assertIn("downbeat_confidence", beat_row)
 
 
 if __name__ == "__main__":

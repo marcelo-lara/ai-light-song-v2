@@ -41,7 +41,32 @@ def _round(value: float, places: int = 3) -> float:
     return round(value + 0.0, places)
 
 
-def beats(*, all_confidence_null: bool) -> list[dict]:
+BEATS_FIELD_SOURCES = {
+    "time": "essentia",
+    "beat": "essentia",
+    "bar": "essentia",
+    "chord": "harmonic",
+    "type": "essentia",
+    "downbeat_confidence": "allin1",
+}
+
+SECTIONS_FIELD_SOURCES = {
+    "section_id": "allin1",
+    "start": "allin1",
+    "end": "allin1",
+    "label": "human",
+    "description": "human",
+    "confidence": "allin1",
+    "key": "harmonic",
+    "chord_progression": "harmonic",
+    "function": "allin1",
+    "function_confidence": "allin1",
+    "function_status": "allin1",
+    "same_label_as": "allin1",
+}
+
+
+def beats(*, all_confidence_null: bool) -> dict:
     rows: list[dict] = []
     n = int(DURATION_S / BEAT_S)  # 48
     for i in range(n):
@@ -59,13 +84,13 @@ def beats(*, all_confidence_null: bool) -> list[dict]:
                 "bar": i // BEATS_PER_BAR + 1,
                 "chord": "C" if (i // BEATS_PER_BAR) % 2 == 0 else "G",
                 "type": "downbeat" if is_downbeat else "beat",
-                "confidence": confidence,
+                "downbeat_confidence": confidence,
             }
         )
-    return rows
+    return {"field_sources": BEATS_FIELD_SOURCES, "beats": rows}
 
 
-def sections(*, degenerate: bool) -> list[dict]:
+def sections(*, degenerate: bool) -> dict:
     spec = [
         ("section-001", 0.0, 8.0, "intro", "verse", None,
          "The 1st intro, 8.0s long."),
@@ -104,7 +129,7 @@ def sections(*, degenerate: bool) -> list[dict]:
                 "chord_progression": None,
             }
         )
-    return rows
+    return {"field_sources": SECTIONS_FIELD_SOURCES, "sections": rows}
 
 
 def _phase_event(gesture_id: str, phase: str, start: float, end: float,
@@ -148,8 +173,21 @@ def timeline(song_name: str, *, degenerate: bool) -> dict:
         ]
         gesture_count = 1
     return {
-        "schema_version": "2.0",
+        "schema_version": "3.0",
         "song_name": song_name,
+        "field_sources": {
+            "type": "gestures",
+            "start_time": "gestures",
+            "end_time": "gestures",
+            "confidence": "gestures",
+            "intensity": "gestures",
+            "section_id": "allin1",
+            "section_name": "allin1",
+            "gesture_id": "gestures",
+            "provenance": "gestures",
+            "summary": "gestures",
+            "evidence_summary": "gestures",
+        },
         "generated_from": {
             "engine": "mcp regression fixture generator",
             "gesture_count": gesture_count,
@@ -184,8 +222,9 @@ def hints(song_name: str, *, degenerate: bool) -> dict:
         ]
         user_hint_count = 1
     return {
-        "schema_version": "2.0",
+        "schema_version": "3.0",
         "song_name": song_name,
+        "field_sources": {"summary": "inference", "sections": "inference"},
         "generated_from": {"engine": "mcp regression fixture generator"},
         "summary": {
             "section_count": 3,
@@ -199,8 +238,9 @@ def hints(song_name: str, *, degenerate: bool) -> dict:
 def info(song_name: str) -> dict:
     # No absolute host paths — a delivery-surface file must not embed them.
     return {
-        "schema_version": "2.0",
+        "schema_version": "3.0",
         "song_name": song_name,
+        "field_sources": {"bpm": "essentia", "duration": "essentia"},
         "bpm": BPM,
         "duration": DURATION_S,
     }
@@ -209,14 +249,14 @@ def info(song_name: str) -> dict:
 def genre(song_name: str, *, degenerate: bool) -> dict:
     if degenerate:
         return {
-            "schema_version": "2.0",
+            "schema_version": "3.0",
             "song_name": song_name,
             "genre": "unknown",
             "confidence": 0.11,
             "guidance": ["Genre estimate too weak to state — do not corroborate."],
         }
     return {
-        "schema_version": "2.0",
+        "schema_version": "3.0",
         "song_name": song_name,
         "genre": "house",
         "confidence": 0.62,
@@ -235,7 +275,7 @@ def loudness(song_name: str) -> dict:
         bump = 0.3 if 13.0 <= t <= 14.0 else 0.0
         series.append(_round(base + bump, 4))
     return {
-        "schema_version": "2.0",
+        "schema_version": "3.0",
         "song_name": song_name,
         "interval_ms": interval_ms,
         "unit": "rms_normalized",
@@ -253,7 +293,7 @@ def drum_events(song_name: str) -> dict:
         if i % 2 == 1:
             events.append({"time": t, "instrument": "snare", "velocity": 90})
     return {
-        "schema_version": "2.0",
+        "schema_version": "3.0",
         "song_name": song_name,
         "events": events,
     }

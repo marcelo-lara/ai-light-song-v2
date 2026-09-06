@@ -1,6 +1,19 @@
 {
   "schema_version": "2.0",
   "song_name": "Armin - Revolution",
+  "field_sources": {
+    "type": "gestures",
+    "start_time": "gestures",
+    "end_time": "gestures",
+    "confidence": "gestures",
+    "intensity": "gestures",
+    "section_id": "allin1",
+    "section_name": "allin1",
+    "gesture_id": "gestures",
+    "provenance": "gestures",
+    "summary": "gestures",
+    "evidence_summary": "gestures"
+  },
   "generated_from": {
     "source_song_path": "/data/songs/Armin - Revolution.mp3",
     "engine": "gestures.primitives (rule-based sound-design device detectors) + gestures.assembly + section-transition detector",
@@ -99,7 +112,7 @@
       "evidence_summary": "dropout_strength peak 0.77 at 29.10s, 1.80s before impact"
     },
     {
-      "type": "intro \u2192 verse",
+      "type": "intro → verse",
       "start_time": 30.0,
       "end_time": 30.0,
       "confidence": 0.187426,
@@ -171,7 +184,7 @@
       "evidence_summary": "transient=0.23, sub-band elevated, off downbeat"
     },
     {
-      "type": "verse \u2192 inst",
+      "type": "verse → inst",
       "start_time": 44.76,
       "end_time": 44.76,
       "confidence": 0.193769,
@@ -195,7 +208,7 @@
       "evidence_summary": "transient=0.26, sub-band elevated, off downbeat"
     },
     {
-      "type": "inst \u2192 verse",
+      "type": "inst → verse",
       "start_time": 81.76,
       "end_time": 81.76,
       "confidence": 0.194511,
@@ -231,7 +244,7 @@
       "evidence_summary": "onset density 4->10 across bars 51-53"
     },
     {
-      "type": "verse \u2192 chorus",
+      "type": "verse → chorus",
       "start_time": 96.46,
       "end_time": 96.46,
       "confidence": 0.331459,
@@ -363,7 +376,7 @@
       "evidence_summary": "post-impact mix-RMS median 0.0529 vs pre-impact 0.0340"
     },
     {
-      "type": "chorus \u2192 inst",
+      "type": "chorus → inst",
       "start_time": 111.23,
       "end_time": 111.23,
       "confidence": 0.144056,

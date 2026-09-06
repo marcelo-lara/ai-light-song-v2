@@ -15,6 +15,8 @@ They describe a 24 s, 120 BPM song so the dense files (`loudness.json` at a
 | `McpDegenerate - Fixture` | honest-uncertainty path: `function_status: "unknown"` on every section, every beat `confidence` null, empty gesture/hint lists, genre below its floor. |
 | `McpPartial - Fixture` | explicit-error path: the required top-level `sections.json` is absent. |
 
-`beats.json` and `sections.json` are **bare arrays** — the shape the pipeline
-commits today. v3.1 item 2 wraps them in objects with a `field_sources` header
-and renames the beats `confidence` field; the fixtures are rebuilt in that item.
+`beats.json` and `sections.json` are **objects** — `{ "field_sources": {…},
+"beats": [...] }` / `{ "field_sources": {…}, "sections": [...] }` — since v3.1
+item 2. Every top-level file carries a `field_sources` header (default producer
+per field, closed vocabulary), and the beats `confidence` field is
+`downbeat_confidence`. `schema_version` is `"3.0"`.

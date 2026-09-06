@@ -1,6 +1,19 @@
 {
-  "schema_version": "2.0",
+  "schema_version": "3.0",
   "song_name": "McpDegenerate - Fixture",
+  "field_sources": {
+    "type": "gestures",
+    "start_time": "gestures",
+    "end_time": "gestures",
+    "confidence": "gestures",
+    "intensity": "gestures",
+    "section_id": "allin1",
+    "section_name": "allin1",
+    "gesture_id": "gestures",
+    "provenance": "gestures",
+    "summary": "gestures",
+    "evidence_summary": "gestures"
+  },
   "generated_from": {
     "engine": "mcp regression fixture generator",
     "gesture_count": 0

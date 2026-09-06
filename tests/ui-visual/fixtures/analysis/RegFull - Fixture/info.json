@@ -3,6 +3,10 @@
   "song_name": "Armin - Revolution",
   "bpm": 129.41,
   "duration": 194.01,
+  "field_sources": {
+    "bpm": "essentia",
+    "duration": "essentia"
+  },
   "song_path": "/data/songs/Armin - Revolution.mp3",
   "artifacts": {
     "beats": "/data/analysis/Armin - Revolution/artifacts/essentia/beats.json",

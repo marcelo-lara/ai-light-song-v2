@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from analyzer.io import read_json, write_json
-from analyzer.models import round_schema_float
+from analyzer.models import round_schema_float, validate_field_sources
 from analyzer.paths import SongPaths
 
 # Thresholds for projecting a compact harmonic form into sections.json.
@@ -236,7 +236,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
             "bar": int(beat["bar"]),
             "chord": _resolve_chord_for_time(float(beat["time"]), chord_events),
             "type": str(beat["type"]),
-            "confidence": beat.get("confidence"),
+            "downbeat_confidence": beat.get("confidence"),
         }
         for beat in beat_points
     ]
@@ -264,10 +264,48 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
             }
         )
 
+    # v3.1 item 2 — the attribution convention. Each top-level file carries a
+    # `field_sources` header: the default producer per field, declared once. A
+    # row overrides it with its own `source` only where it departs from the
+    # default (no beats.json row does — a repeated per-row map would be pure
+    # token cost against the budget the mcp/ server exists to protect).
+    #
+    # `downbeat_confidence` (renamed from the ambiguous `confidence`) measures
+    # allin1's downbeat-phase strength (0.226 F1), not essentia's trusted beat
+    # time — the name now says which producer's number it is.
+    beats_field_sources = validate_field_sources(
+        {
+            "time": "essentia",
+            "beat": "essentia",
+            "bar": "essentia",
+            "chord": "harmonic",
+            "type": "essentia",
+            "downbeat_confidence": "allin1",
+        },
+        beat_rows[0].keys() if beat_rows else (),
+        file="beats.json",
+    )
+    sections_field_sources = validate_field_sources(
+        {
+            "section_id": "allin1",
+            "start": "allin1",
+            "end": "allin1",
+            "label": "human",
+            "description": "human",
+            "confidence": "allin1",
+            "key": "harmonic",
+            "chord_progression": "harmonic",
+        },
+        section_rows[0].keys() if section_rows else (),
+        file="sections.json",
+    )
+    beats_output = {"field_sources": beats_field_sources, "beats": beat_rows}
+    sections_output = {"field_sources": sections_field_sources, "sections": section_rows}
+
     beats_output_path = paths.beats_output_path
     sections_output_path = paths.sections_output_path
-    write_json(beats_output_path, beat_rows)
-    write_json(sections_output_path, section_rows)
+    write_json(beats_output_path, beats_output)
+    write_json(sections_output_path, sections_output)
     return {
         "beats": str(beats_output_path),
         "sections": str(sections_output_path),

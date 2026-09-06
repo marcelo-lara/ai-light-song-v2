@@ -1,6 +1,10 @@
 {
   "schema_version": "2.0",
   "song_name": "_test_song",
+  "field_sources": {
+    "summary": "inference",
+    "sections": "inference"
+  },
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
     "engine": "editable-hints-merge-v1",

@@ -1,6 +1,19 @@
 {
   "schema_version": "2.0",
   "song_name": "_test_song",
+  "field_sources": {
+    "type": "gestures",
+    "start_time": "gestures",
+    "end_time": "gestures",
+    "confidence": "gestures",
+    "intensity": "gestures",
+    "section_id": "allin1",
+    "section_name": "allin1",
+    "gesture_id": "gestures",
+    "provenance": "gestures",
+    "summary": "gestures",
+    "evidence_summary": "gestures"
+  },
   "generated_from": {
     "source_song_path": "/data/songs/_test_song.mp3",
     "engine": "gestures.primitives (rule-based sound-design device detectors) + gestures.assembly + section-transition detector",
@@ -27,7 +40,7 @@
       "evidence_summary": "high-band r2=0.76 over 16 bars, delta=0.87x range"
     },
     {
-      "type": "intro \u2192 chorus",
+      "type": "intro → chorus",
       "start_time": 14.82,
       "end_time": 14.82,
       "confidence": 0.446144,

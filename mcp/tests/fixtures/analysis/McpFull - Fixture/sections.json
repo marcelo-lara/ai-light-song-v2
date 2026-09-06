@@ -1,44 +1,60 @@
-[
-  {
-    "section_id": "section-001",
-    "start": 0.0,
-    "end": 8.0,
-    "label": "001 Intro (0.60)",
-    "description": "The 1st intro, 8.0s long.",
-    "function": "intro",
-    "function_confidence": 0.6,
-    "function_status": "known",
-    "same_label_as": null,
-    "confidence": 0.55,
-    "key": "C major",
-    "chord_progression": null
+{
+  "field_sources": {
+    "section_id": "allin1",
+    "start": "allin1",
+    "end": "allin1",
+    "label": "human",
+    "description": "human",
+    "confidence": "allin1",
+    "key": "harmonic",
+    "chord_progression": "harmonic",
+    "function": "allin1",
+    "function_confidence": "allin1",
+    "function_status": "allin1",
+    "same_label_as": "allin1"
   },
-  {
-    "section_id": "section-002",
-    "start": 8.0,
-    "end": 16.0,
-    "label": "002 Verse (0.70)",
-    "description": "The 1st verse, 8.0s long.",
-    "function": "verse",
-    "function_confidence": 0.7,
-    "function_status": "known",
-    "same_label_as": null,
-    "confidence": 0.65,
-    "key": "C major",
-    "chord_progression": null
-  },
-  {
-    "section_id": "section-003",
-    "start": 16.0,
-    "end": 24.0,
-    "label": "003 Chorus (0.80)",
-    "description": "The 1st chorus, 8.0s long.",
-    "function": "chorus",
-    "function_confidence": 0.8,
-    "function_status": "known",
-    "same_label_as": null,
-    "confidence": 0.75,
-    "key": "C major",
-    "chord_progression": null
-  }
-]
+  "sections": [
+    {
+      "section_id": "section-001",
+      "start": 0.0,
+      "end": 8.0,
+      "label": "001 Intro (0.60)",
+      "description": "The 1st intro, 8.0s long.",
+      "function": "intro",
+      "function_confidence": 0.6,
+      "function_status": "known",
+      "same_label_as": null,
+      "confidence": 0.55,
+      "key": "C major",
+      "chord_progression": null
+    },
+    {
+      "section_id": "section-002",
+      "start": 8.0,
+      "end": 16.0,
+      "label": "002 Verse (0.70)",
+      "description": "The 1st verse, 8.0s long.",
+      "function": "verse",
+      "function_confidence": 0.7,
+      "function_status": "known",
+      "same_label_as": null,
+      "confidence": 0.65,
+      "key": "C major",
+      "chord_progression": null
+    },
+    {
+      "section_id": "section-003",
+      "start": 16.0,
+      "end": 24.0,
+      "label": "003 Chorus (0.80)",
+      "description": "The 1st chorus, 8.0s long.",
+      "function": "chorus",
+      "function_confidence": 0.8,
+      "function_status": "known",
+      "same_label_as": null,
+      "confidence": 0.75,
+      "key": "C major",
+      "chord_progression": null
+    }
+  ]
+}

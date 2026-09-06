@@ -3,6 +3,10 @@
   "song_name": "_test_song",
   "bpm": 129.31,
   "duration": 58.12,
+  "field_sources": {
+    "bpm": "essentia",
+    "duration": "essentia"
+  },
   "song_path": "/data/songs/_test_song.mp3",
   "artifacts": {
     "beats": "/data/analysis/_test_song/artifacts/essentia/beats.json",

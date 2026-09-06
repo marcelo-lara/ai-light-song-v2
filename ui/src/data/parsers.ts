@@ -89,14 +89,22 @@ function parseBeatRow(raw: unknown, ctx: string): BeatRow {
     time: asNumber(o.time, `${ctx}.time`),
     beat: asNumber(o.beat, `${ctx}.beat`),
     bar: asNumber(o.bar, `${ctx}.bar`),
-    bass: stringOrNull(o.bass, `${ctx}.bass`),
     chord: stringOrNull(o.chord, `${ctx}.chord`),
     type: stringOr(o.type, "beat", `${ctx}.type`),
-    confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
+    downbeat_confidence: numberOrNull(
+      o.downbeat_confidence ?? o.confidence,
+      `${ctx}.downbeat_confidence`,
+    ),
   };
 }
 
 export function parseBeats(raw: unknown): Beats {
+  if (typeof raw === "object" && raw !== null && "beats" in raw) {
+    const o = asObject(raw, "beats.json");
+    return asArray(o.beats, "beats.json.beats").map((row, i) =>
+      parseBeatRow(row, `beats[${i}]`),
+    );
+  }
   return asArray(raw, "beats.json").map((row, i) =>
     parseBeatRow(row, `beats[${i}]`),
   );
@@ -119,6 +127,12 @@ function parseSectionRow(raw: unknown, ctx: string): SectionRow {
 }
 
 export function parseSectionsTopLevel(raw: unknown): SectionsTopLevel {
+  if (typeof raw === "object" && raw !== null && "sections" in raw) {
+    const o = asObject(raw, "sections.json");
+    return asArray(o.sections, "sections.json.sections").map((row, i) =>
+      parseSectionRow(row, `sections[${i}]`),
+    );
+  }
   return asArray(raw, "sections.json").map((row, i) =>
     parseSectionRow(row, `sections[${i}]`),
   );
