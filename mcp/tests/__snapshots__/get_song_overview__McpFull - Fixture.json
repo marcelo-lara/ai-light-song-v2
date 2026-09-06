@@ -1,0 +1,167 @@
+{
+  "song_name": "McpFull - Fixture",
+  "identity": {
+    "song_name": "McpFull - Fixture",
+    "bpm": 120.0,
+    "duration": 24.0,
+    "key": "C major",
+    "genre": {
+      "genres": [
+        "house",
+        "dance"
+      ],
+      "confidence": 0.62,
+      "guidance": [
+        "Four-on-the-floor, steady 120 BPM — drive the grid."
+      ]
+    },
+    "field_sources": {
+      "bpm": "essentia",
+      "duration": "essentia",
+      "key": "harmonic",
+      "genre": "genre"
+    }
+  },
+  "grid": {
+    "tempo": 120.0,
+    "beats_per_bar": 4,
+    "bar_count": 12,
+    "downbeat_count": 12,
+    "downbeats_null_confidence": 0,
+    "downbeat_note": "All 12 downbeats carry a downbeat_confidence (allin1 downbeat phase, ~0.226 F1) — treat bar numbers as approximate.",
+    "field_sources": {
+      "time": "essentia",
+      "beat": "essentia",
+      "bar": "essentia",
+      "chord": "harmonic",
+      "type": "essentia",
+      "downbeat_confidence": "allin1"
+    }
+  },
+  "sections": {
+    "caveat": "same_label_as is label repetition, not acoustic identity",
+    "rows": [
+      {
+        "section_id": "section-001",
+        "start": 0.0,
+        "end": 8.0,
+        "function": "intro",
+        "function_confidence": 0.6,
+        "function_status": "known",
+        "same_label_as": null,
+        "description": "The 1st intro, 8.0s long.",
+        "confidence": 0.55
+      },
+      {
+        "section_id": "section-002",
+        "start": 8.0,
+        "end": 16.0,
+        "function": "verse",
+        "function_confidence": 0.7,
+        "function_status": "known",
+        "same_label_as": null,
+        "description": "The 1st verse, 8.0s long.",
+        "confidence": 0.65
+      },
+      {
+        "section_id": "section-003",
+        "start": 16.0,
+        "end": 24.0,
+        "function": "chorus",
+        "function_confidence": 0.8,
+        "function_status": "known",
+        "same_label_as": null,
+        "description": "The 1st chorus, 8.0s long.",
+        "confidence": 0.75
+      }
+    ],
+    "field_sources": {
+      "section_id": "allin1",
+      "start": "allin1",
+      "end": "allin1",
+      "label": "human",
+      "description": "human",
+      "confidence": "allin1",
+      "key": "harmonic",
+      "chord_progression": "harmonic",
+      "function": "allin1",
+      "function_confidence": "allin1",
+      "function_status": "allin1",
+      "same_label_as": "allin1"
+    }
+  },
+  "gestures": {
+    "phase_legend": "a=approach b=build t=tension i=impact r=release",
+    "rows": [
+      {
+        "gesture_id": "gesture-001",
+        "start": 9.0,
+        "end": 16.0,
+        "section_id": "section-002",
+        "peak_intensity": 0.95,
+        "phases_present": [
+          "approach",
+          "build",
+          "tension",
+          "impact",
+          "release"
+        ],
+        "phases_absent": []
+      }
+    ],
+    "field_sources": {
+      "type": "gestures",
+      "start_time": "gestures",
+      "end_time": "gestures",
+      "confidence": "gestures",
+      "intensity": "gestures",
+      "section_id": "allin1",
+      "section_name": "allin1",
+      "gesture_id": "gestures",
+      "provenance": "gestures",
+      "summary": "gestures",
+      "evidence_summary": "gestures"
+    }
+  },
+  "transitions": {
+    "rows": [
+      {
+        "transition": "verse → chorus",
+        "time": 16.0,
+        "confidence": 0.7,
+        "section_id": "section-003"
+      }
+    ],
+    "field_sources": {
+      "type": "gestures",
+      "start_time": "gestures",
+      "end_time": "gestures",
+      "confidence": "gestures",
+      "intensity": "gestures",
+      "section_id": "allin1",
+      "section_name": "allin1",
+      "gesture_id": "gestures",
+      "provenance": "gestures",
+      "summary": "gestures",
+      "evidence_summary": "gestures"
+    }
+  },
+  "human_hints": {
+    "rows": [
+      {
+        "section_id": "section-002",
+        "title": "Breath",
+        "text": "Vocal - no intense section",
+        "start_time": 8.5,
+        "end_time": 15.5,
+        "source": "human",
+        "lighting_hint": "soft motion of moving heads. parcans slow violet waves."
+      }
+    ],
+    "field_sources": {
+      "summary": "inference",
+      "sections": "inference"
+    },
+    "note": "human hints are ground truth and outrank every inferred field above"
+  }
+}

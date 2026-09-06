@@ -1,9 +1,10 @@
 """Read-only stdio MCP server for song comprehension.
 
-Scaffold stage (v3.1 item 1): `list_songs` is fully implemented; `get_song_overview`
-and `get_detail` are registered as declared tools that validate their arguments
-and then fail with an explicit "not implemented yet" message. Response shaping
-lands in a later plan item (serializers, items 9-10).
+`list_songs` and `get_song_overview` are implemented; `get_detail` validates its
+argument and raises an explicit not-implemented error (lands in v3.1 item 10).
+Song discovery and top-level file access live in `loaders.py` (stable); response
+shaping lives in `serializers.py` (volatile — a tool-surface reshape touches
+that file and its snapshots only).
 
 The repo directory is named `mcp/` but is never imported as the `mcp` package:
 `mcp/` has no `__init__.py`, so `import mcp` resolves to the installed SDK
@@ -29,6 +30,7 @@ from loaders import (
     list_songs as _list_songs,
     resolve_song_dir,
 )
+from serializers import build_song_overview
 
 server = MCPServer("ai-light-song-v2-mcp", version="0.1.0")
 
@@ -57,12 +59,12 @@ def list_songs() -> list[dict[str, Any]]:
 def get_song_overview(song: str) -> dict[str, Any]:
     """Whole-song overview (identity, grid, sections, gestures, transitions, hints).
 
-    Not implemented yet: the argument is validated (an unknown song, or a song
-    missing a required top-level file, errors here) and then an explicit
-    not-implemented error is raised.
+    One small call, whole song. The grid is a summary with an honest downbeat
+    note — never the beat list. Gestures are grouped one row per composite
+    gesture. Human hints are verbatim and outrank every inferred field.
     """
     _validate_song(song)
-    raise ToolError(f"get_song_overview is not implemented yet — {_NOT_READY}")
+    return build_song_overview(song)
 
 
 @server.tool(name="get_detail")

@@ -11,8 +11,9 @@ Stage responsibilities and their measured quality:
 
 | File | Purpose |
 | --- | --- |
-| `mcp/server.py` | stdio MCP server entry point — registers `list_songs` (implemented), `get_song_overview` and `get_detail` (registered, raise not-implemented until items 9-10) |
-| `mcp/loaders.py` | song discovery, top-level file access, exposure enforcement (no code path reaches an inner folder) |
+| `mcp/server.py` | stdio MCP server entry point — registers `list_songs` and `get_song_overview` (implemented); `get_detail` registered, raises not-implemented until item 10 |
+| `mcp/loaders.py` | song discovery, top-level file access, exposure enforcement (no code path reaches an inner folder) — the *stable* half |
+| `mcp/serializers.py` | response shaping for `get_song_overview` / `get_detail` — the *volatile* half; a tool-surface reshape touches this file and its snapshots only. `src/` never imports it |
 | `mcp/tests/run.py` | `smoke-test` / `full-regression` named entry points |
 | `mcp/tests/fixtures/build_fixtures.py` | deterministic generator for the three committed regression fixtures |
 | `mcp/tests/` | exposure guard, scaffold checks, tool-surface checks, committed fixtures |

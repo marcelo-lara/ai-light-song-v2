@@ -38,9 +38,11 @@ def _point_at_fixtures(monkeypatch):
     monkeypatch.setenv("MCP_ANALYSIS_ROOT", str(FIXTURE_ROOT))
 
 
-def test_get_song_overview_not_implemented_for_valid_song() -> None:
-    with pytest.raises(ToolError, match="not implemented yet"):
-        server.get_song_overview("McpFull - Fixture")
+def test_get_song_overview_returns_a_payload_for_valid_song() -> None:
+    ov = server.get_song_overview("McpFull - Fixture")
+    assert ov["song_name"] == "McpFull - Fixture"
+    assert ov["grid"]["bar_count"] > 0
+    assert "beats" not in ov["grid"]
 
 
 def test_get_detail_not_implemented_for_valid_song() -> None:
@@ -48,7 +50,7 @@ def test_get_detail_not_implemented_for_valid_song() -> None:
         server.get_detail("McpFull - Fixture", scope="time_window")
 
 
-def test_get_song_overview_validates_before_reporting_not_implemented() -> None:
+def test_get_song_overview_validates_song_first() -> None:
     with pytest.raises(ToolError, match="mystery-song"):
         server.get_song_overview("mystery-song")
     with pytest.raises(ToolError, match="sections.json"):

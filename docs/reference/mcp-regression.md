@@ -84,11 +84,10 @@ Fast, and the gate on every item. Nothing here needs the full corpus.
 7. `get_detail("McpFull - Fixture", start_ms=0, end_ms=3000, interval_ms=20)`
    returns dense frames.
 
-> **Checks 6-7 are DEFERRED until response shaping ships (v3.1 items 9-10).**
-> Until then both tools are registered but validate their arguments and raise an
-> explicit not-implemented error. The harness reports them as `DEFER` with the
-> observed error text — never as pass, never silently skipped. Checks 8 and 9
-> (honest failure) do run now, because argument validation happens first.
+> **Check 6 runs (v3.1 item 9).** `get_song_overview` returns a real payload.
+> **Check 7 is DEFERRED until v3.1 item 10** — `get_detail` still validates its
+> arguments and raises an explicit not-implemented error; the harness reports it
+> as `DEFER` with the observed error text, never as pass. Checks 8 and 9 run.
 
 ### S3 — it fails honestly
 
@@ -119,10 +118,17 @@ unless a check names one.
 
 ### F1 — snapshots and determinism
 
-1. Every golden snapshot in `mcp/tests/__snapshots__/` matches byte for byte.
+1. Every golden snapshot in `mcp/tests/__snapshots__/` matches byte for byte —
+   `list_songs__fixture_root.json` (F1.1) and
+   `get_song_overview__{McpFull,McpDegenerate} - Fixture.json` (F1.3).
 2. Each tool called twice with identical arguments returns **byte-identical**
    output.
 3. Snapshot coverage: every tool × every scope it accepts × each fixture.
+
+> Snapshots are **regenerated, not defended** — regenerate them inside the
+> container (`MCP_REGEN_SNAPSHOTS=1 pytest mcp/tests/test_overview.py` for the
+> overview, or capture `run.py`'s serializer output) so byte-for-byte equality
+> holds against the runtime, then commit with one line of justification each.
 
 ### F2 — the honesty obligations
 

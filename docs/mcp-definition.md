@@ -5,12 +5,12 @@ read-only MCP server that helps a reasoning model understand a song's mood,
 sections and dynamics — **drop sequences especially** — while spending as few
 tokens as possible.
 
-> **Status: scaffold built; `get_song_overview` and `get_detail` pending.**
-> The stdio/Compose plumbing, song discovery (`list_songs`), the exposure guard
-> and the fixture-based regression harness (`smoke-test` / `full-regression`) are
-> in place and green. The two substantive tools are registered but validate
-> arguments and then raise an explicit not-implemented error — response shaping
-> and top-level publishing of the delivery surface are the remaining v3.1 items.
+> **Status: `list_songs` and `get_song_overview` built; `get_detail` pending.**
+> The stdio/Compose plumbing, song discovery, the exposure guard, the
+> fixture-based regression harness (`smoke-test` / `full-regression`) and the
+> whole-song overview are in place and green. `get_detail` is registered but
+> validates arguments and then raises an explicit not-implemented error —
+> response shaping for it is the last v3.1 tool-surface item.
 
 - How to prove it still works: [`reference/mcp-regression.md`](reference/mcp-regression.md)
 - What the analyzer produces for it: [`analysis-definition.md`](analysis-definition.md)

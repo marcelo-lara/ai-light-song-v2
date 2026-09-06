@@ -1,0 +1,133 @@
+{
+  "song_name": "McpDegenerate - Fixture",
+  "identity": {
+    "song_name": "McpDegenerate - Fixture",
+    "bpm": 120.0,
+    "duration": 24.0,
+    "key": "C major",
+    "genre": {
+      "genres": [
+        "unknown"
+      ],
+      "confidence": 0.11,
+      "guidance": [
+        "Genre estimate too weak to state — do not corroborate."
+      ]
+    },
+    "field_sources": {
+      "bpm": "essentia",
+      "duration": "essentia",
+      "key": "harmonic",
+      "genre": "genre"
+    }
+  },
+  "grid": {
+    "tempo": 120.0,
+    "beats_per_bar": 4,
+    "bar_count": 12,
+    "downbeat_count": 12,
+    "downbeats_null_confidence": 12,
+    "downbeat_note": "All 12 downbeats carry a null downbeat_confidence (allin1 downbeat phase, ~0.226 F1) — the bar phase is unresolved; do not trust bar numbers on this song.",
+    "field_sources": {
+      "time": "essentia",
+      "beat": "essentia",
+      "bar": "essentia",
+      "chord": "harmonic",
+      "type": "essentia",
+      "downbeat_confidence": "allin1"
+    }
+  },
+  "sections": {
+    "caveat": "same_label_as is label repetition, not acoustic identity",
+    "rows": [
+      {
+        "section_id": "section-001",
+        "start": 0.0,
+        "end": 8.0,
+        "function": null,
+        "function_confidence": null,
+        "function_status": "unknown",
+        "same_label_as": null,
+        "description": "The 1st intro, 8.0s long.",
+        "confidence": null
+      },
+      {
+        "section_id": "section-002",
+        "start": 8.0,
+        "end": 16.0,
+        "function": null,
+        "function_confidence": null,
+        "function_status": "unknown",
+        "same_label_as": null,
+        "description": "The 1st verse, 8.0s long.",
+        "confidence": null
+      },
+      {
+        "section_id": "section-003",
+        "start": 16.0,
+        "end": 24.0,
+        "function": null,
+        "function_confidence": null,
+        "function_status": "unknown",
+        "same_label_as": null,
+        "description": "The 1st chorus, 8.0s long.",
+        "confidence": null
+      }
+    ],
+    "field_sources": {
+      "section_id": "allin1",
+      "start": "allin1",
+      "end": "allin1",
+      "label": "human",
+      "description": "human",
+      "confidence": "allin1",
+      "key": "harmonic",
+      "chord_progression": "harmonic",
+      "function": "allin1",
+      "function_confidence": "allin1",
+      "function_status": "allin1",
+      "same_label_as": "allin1"
+    }
+  },
+  "gestures": {
+    "phase_legend": "a=approach b=build t=tension i=impact r=release",
+    "rows": [],
+    "field_sources": {
+      "type": "gestures",
+      "start_time": "gestures",
+      "end_time": "gestures",
+      "confidence": "gestures",
+      "intensity": "gestures",
+      "section_id": "allin1",
+      "section_name": "allin1",
+      "gesture_id": "gestures",
+      "provenance": "gestures",
+      "summary": "gestures",
+      "evidence_summary": "gestures"
+    }
+  },
+  "transitions": {
+    "rows": [],
+    "field_sources": {
+      "type": "gestures",
+      "start_time": "gestures",
+      "end_time": "gestures",
+      "confidence": "gestures",
+      "intensity": "gestures",
+      "section_id": "allin1",
+      "section_name": "allin1",
+      "gesture_id": "gestures",
+      "provenance": "gestures",
+      "summary": "gestures",
+      "evidence_summary": "gestures"
+    }
+  },
+  "human_hints": {
+    "rows": [],
+    "field_sources": {
+      "summary": "inference",
+      "sections": "inference"
+    },
+    "note": "human hints are ground truth and outrank every inferred field above"
+  }
+}
