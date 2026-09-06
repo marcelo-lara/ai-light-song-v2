@@ -94,7 +94,7 @@ stall the whole run; everything independent of it still gets built.
 | Items | 11 (1 scaffold, 7 delivery surface, 2 tools, 1 closure) |
 | Items with a Visual QA block | 4 (items 2, 3, 4, 8) |
 | MCP regression | `smoke-test` from item 1 onward; `full-regression` at item 11 ([`reference/mcp-regression.md`](reference/mcp-regression.md)) |
-| Done | 4 |
+| Done | 5 |
 | Contract-change note | `docs/contract-change-v3.1.md` — created in item 2, extended by items 3–8 |
 | Blocking decisions (`D`) | none open |
 
@@ -427,18 +427,18 @@ none. Extend `tests/test_gestures.py`.
 
 ### 5. Publish top-level `genre.json`
 
-- [ ] `ui_data.py` writes `data/analysis/{song}/genre.json` carrying
+- [x] `ui_data.py` writes `data/analysis/{song}/genre.json` carrying
       `genres`, `confidence`, `top_predictions[]`, `guidance[]`, minus
       `generated_from` host paths, plus the `field_sources` header from item 2
       (`genre` for every field today).
-- [ ] `artifacts/genre.json` stays where it is; the analyzer and the UI keep
+- [x] `artifacts/genre.json` stays where it is; the analyzer and the UI keep
       reading it. This publishes a fused view, it does not move the artifact.
-- [ ] **Write the selection as a fusion even though there is one producer.** The
+- [x] **Write the selection as a fusion even though there is one producer.** The
       publisher asks "which producer wins this field" and today gets one answer.
       A `genre.json` written as a straight copy is a publisher a second producer
       cannot be added to without a rewrite.
-- [ ] `docs/reference/artifacts.md`: add the top-level row.
-- [ ] `docs/contract-change-v3.1.md`: new-file entry.
+- [x] `docs/reference/artifacts.md`: add the top-level row.
+- [x] `docs/contract-change-v3.1.md`: new-file entry.
 
 **Tests:** rebuild the MCP fixtures, then `smoke-test`; plus
 `docker compose run --rm test` and one gold song. Assert the top-level file
@@ -645,6 +645,8 @@ None open. Decisions already taken and folded into the items above:
 | D18 | (item 3, resolved) The top-level → `section_segmentation` **array-index match was already gone** — `ui_data.build_ui_data` builds section rows straight from the segmentation list joined on `section_id` (v1.1 item 3.2 guard). Item 3's fix is therefore to **emit `function` / `function_confidence` / `function_status` / `same_label_as` on the top-level row** so no consumer ever needs to open the artifact; the UI's `sectionsContent` still accepts the segmentation list as an optional second arg (a `section_id` join, not index) and is left as-is since the UI may read `artifacts/`. |
 | D19 | (item 3, resolved) `function_status` on a top-level row defaults to `"unknown"` when the segmentation row omits it (honest default, matches how `_format_section_label` already reads it) — never a guessed `"known"`. |
 | D20 | (item 4, resolved) The pre-existing exact-`(type, start, end)` dedup in `build_gestures` can collapse a primitive shared by two nearby impacts into one row, so a gesture may lose a phase; grouping by `gesture_id` then yields time-ordered, non-overlapping runs (verified on all four gold songs) but not always all five phases. That is existing dedup behaviour, not introduced here. |
+| D21 | (items 5-7, resolved) `field_sources` coverage on the new list/frame files (`drum_events.json`, `loudness.json`) is checked against the **repeating row/frame keys** — matching the `beats.json` precedent — while file-level aggregate blocks (`summary`, `supported_event_types`, `metadata`, `sources`) are provenance-exempt, like `schema_version`. They describe the file, not a fused per-row value. |
+| D23 | (items 5-7, resolved) `genre` / `drum_events` / `loudness` stay **optional** in `mcp/loaders.py`'s `REQUIRED_TOP_LEVEL_FILES` this release (as D13 set): the fixtures carry them, but a degenerate real song may lag a pipeline rerun, and a missing-file hard error there would be a worse failure than their absence. Revisit when the tools (items 9-10) actually consume them. |
 | D15 | (item 1, resolved) smoke-test checks S2.6 / S2.7 (and full-regression F2–F4) are reported `DEFER` with the observed not-implemented error text — never pass, never silently skipped — until serializers land in items 9–10. Recorded in `docs/reference/mcp-regression.md` under S2. |
 
 Still open, deliberately deferred out of this release:

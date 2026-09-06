@@ -11,6 +11,7 @@ data/
   songs/{song}.mp3
   analysis/{song}/
     info.json  beats.json  hints.json  sections.json  song_event_timeline.json
+    genre.json
     artifacts/
       stems/            bass.wav drums.wav harmonic.wav vocals.wav metadata.json
       essentia/         beats.json fft_bands.json hpcp.json
@@ -82,6 +83,7 @@ both.
 | `sections.json` | `{ field_sources, sections[] }`; each section `section_id`, `start`, `end`, `label`, `description`, `function`, `function_confidence`, `function_status`, `same_label_as`, `key`, `chord_progression`, `confidence` | fast section summaries and show pacing. Section names are on the row (`function` + `function_confidence` + `function_status`) — read them here, never from `section_segmentation/sections.json`. `label` is `"003 Chorus (0.81)"`, or the raw token marked `[unverified]` when `function_status` is `"unknown"`. `same_label_as` is label repetition, not acoustic identity |
 | `hints.json` | `field_sources`; `sections[].hints[]` of `{ id, source, category, text, anchor_refs }` | per-section guidance; match by `section_id`, never by repeated labels |
 | `song_event_timeline.json` | `field_sources`; flat `events[]`: gesture phases + section transitions, `schema_version` `"3.0"` | event-aware cue planning. Gesture-phase rows sharing one composite gesture carry the same `gesture_id` (`"gesture-003"`); section-transition rows carry no `gesture_id`. No nested `phases[]`, no `composite`, no `member_event_ids` — every row is flat and carries its own `evidence_summary` |
+| `genre.json` | `field_sources`; `genres`, `confidence`, `top_predictions[]`, `guidance[]` | advisory style context. A **fused view** of `artifacts/genre.json` with host paths stripped — the artifact stays for the analyzer and the debugger. `genres: ["unknown"]` is a valid outcome |
 
 ### `field_sources` per file
 
@@ -96,6 +98,7 @@ does (a repeated per-row map would be pure token cost).
 | `sections.json` | `section_id`, `start`, `end`, `function`, `function_confidence`, `function_status`, `same_label_as`, `confidence` → `allin1`; `label`, `description` → `human`; `key`, `chord_progression` → `harmonic` |
 | `hints.json` | `summary`, `sections` → `inference` (each hint row also carries its own `source`: `human` \| `inference` \| `user`) |
 | `song_event_timeline.json` | all event fields (`gesture_id` included) → `gestures`, except `section_id` / `section_name` → `allin1` |
+| `genre.json` | `genres`, `confidence`, `top_predictions`, `guidance` → `genre` (`unknown` where the estimate is absent) |
 
 ## Artifacts
 

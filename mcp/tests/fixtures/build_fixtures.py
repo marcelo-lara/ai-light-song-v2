@@ -246,20 +246,35 @@ def info(song_name: str) -> dict:
     }
 
 
+GENRE_FIELD_SOURCES = {
+    "genres": "genre",
+    "confidence": "genre",
+    "top_predictions": "genre",
+    "guidance": "genre",
+}
+
+
 def genre(song_name: str, *, degenerate: bool) -> dict:
     if degenerate:
         return {
             "schema_version": "3.0",
             "song_name": song_name,
-            "genre": "unknown",
+            "field_sources": GENRE_FIELD_SOURCES,
+            "genres": ["unknown"],
             "confidence": 0.11,
+            "top_predictions": [{"label": "unknown", "confidence": 0.11}],
             "guidance": ["Genre estimate too weak to state — do not corroborate."],
         }
     return {
         "schema_version": "3.0",
         "song_name": song_name,
-        "genre": "house",
+        "field_sources": GENRE_FIELD_SOURCES,
+        "genres": ["house", "dance"],
         "confidence": 0.62,
+        "top_predictions": [
+            {"label": "house", "confidence": 0.62},
+            {"label": "dance", "confidence": 0.21},
+        ],
         "guidance": ["Four-on-the-floor, steady 120 BPM — drive the grid."],
     }
 

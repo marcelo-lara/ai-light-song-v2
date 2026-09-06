@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from analyzer.io import read_json, write_json
-from analyzer.models import round_schema_float, validate_field_sources
+from analyzer.models import SCHEMA_VERSION, round_schema_float, validate_field_sources
 from analyzer.paths import SongPaths
 
 # Thresholds for projecting a compact harmonic form into sections.json.
@@ -212,6 +212,60 @@ def _song_key(global_key: dict | None) -> str | None:
     return str(label)
 
 
+# v3.1 items 5-7 — publish top-level views of three signals that live only under
+# artifacts/ today (genre, drum events, loudness). These are FUSED VIEWS, not
+# moves: the artifact stays put for the analyzer and the debugger, and the
+# top-level file is rebuilt from it each run with a `field_sources` header and no
+# host paths. The selection goes through `_fuse` — "which producer wins this
+# field" — even though one producer answers every field today, so a second
+# producer can be added without rewriting the publisher (plan D4).
+
+
+def _fuse(field_candidates: dict[str, list[tuple[str, bool]]]) -> dict[str, str]:
+    """For each field, the first candidate producer whose value is present wins.
+
+    `field_candidates` maps a field name to an ordered list of
+    `(producer, is_available)` pairs. Today every list has one entry; the shape
+    is what lets a higher-confidence second producer slot in later. A field with
+    no available producer resolves to `"unknown"` — an honest gap, never a guess.
+    """
+    return {
+        field: next((producer for producer, available in candidates if available), "unknown")
+        for field, candidates in field_candidates.items()
+    }
+
+
+def _publish_genre(paths: SongPaths) -> str:
+    artifact = read_json(paths.artifact("genre.json"))
+
+    def _present(key: str) -> bool:
+        return artifact.get(key) is not None
+
+    field_sources = validate_field_sources(
+        _fuse(
+            {
+                "genres": [("genre", _present("genres"))],
+                "confidence": [("genre", _present("confidence"))],
+                "top_predictions": [("genre", _present("top_predictions"))],
+                "guidance": [("genre", _present("guidance"))],
+            }
+        ),
+        ("genres", "confidence", "top_predictions", "guidance"),
+        file="genre.json",
+    )
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "field_sources": field_sources,
+        "genres": artifact.get("genres"),
+        "confidence": artifact.get("confidence"),
+        "top_predictions": artifact.get("top_predictions"),
+        "guidance": artifact.get("guidance"),
+    }
+    write_json(paths.genre_output_path, payload)
+    return str(paths.genre_output_path)
+
+
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
     beats_payload = read_json(paths.artifact("essentia", "beats.json"))
     harmonic_payload = read_json(paths.artifact("layer_a_harmonic.json"))
@@ -320,7 +374,13 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     sections_output_path = paths.sections_output_path
     write_json(beats_output_path, beats_output)
     write_json(sections_output_path, sections_output)
+
+    # v3.1 item 5 — publish a top-level fused view of genre. The artifact under
+    # artifacts/ is untouched.
+    genre_output = _publish_genre(paths)
+
     return {
         "beats": str(beats_output_path),
         "sections": str(sections_output_path),
+        "genre": genre_output,
     }

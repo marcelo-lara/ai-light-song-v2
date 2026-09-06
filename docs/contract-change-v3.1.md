@@ -103,3 +103,30 @@ Consumers can now reconstruct "a drop's five-phase envelope" by grouping rows on
 `gesture_id` without re-deriving the gesture assembly. Rows sharing a
 `gesture_id` are time-ordered and non-overlapping. No field is removed; a
 consumer that ignores `gesture_id` is unaffected.
+
+---
+
+## 5. New top-level file: `genre.json`
+
+`data/analysis/{song}/genre.json` is now published — a **fused view** of
+`artifacts/genre.json` with the `generated_from` host-path block stripped and a
+`field_sources` header added. The artifact is untouched (the analyzer and the
+debugger keep reading it); the MCP server reads only the top-level file.
+
+```json
+{
+  "schema_version": "3.0",
+  "song_name": "...",
+  "field_sources": { "genres": "genre", "confidence": "genre",
+                     "top_predictions": "genre", "guidance": "genre" },
+  "genres": ["electronic", "dance"],
+  "confidence": 0.38,
+  "top_predictions": [ { "label": "electronic", "confidence": 0.38 }, ... ],
+  "guidance": [ "..." ]
+}
+```
+
+`genres: ["unknown"]` with a low `confidence` is a valid honest outcome. The
+value is written through a per-field fusion path (one producer, `genre`, today)
+so a second producer can join without a rewrite.
+

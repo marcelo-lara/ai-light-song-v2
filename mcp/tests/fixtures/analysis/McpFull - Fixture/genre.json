@@ -1,8 +1,27 @@
 {
   "schema_version": "3.0",
   "song_name": "McpFull - Fixture",
-  "genre": "house",
+  "field_sources": {
+    "genres": "genre",
+    "confidence": "genre",
+    "top_predictions": "genre",
+    "guidance": "genre"
+  },
+  "genres": [
+    "house",
+    "dance"
+  ],
   "confidence": 0.62,
+  "top_predictions": [
+    {
+      "label": "house",
+      "confidence": 0.62
+    },
+    {
+      "label": "dance",
+      "confidence": 0.21
+    }
+  ],
   "guidance": [
     "Four-on-the-floor, steady 120 BPM — drive the grid."
   ]

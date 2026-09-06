@@ -17,6 +17,12 @@ def _setup(tmp: str, sections: list[dict]) -> SongPaths:
     paths.artifact("layer_a_harmonic.json").write_text(json.dumps({"chords": []}))
     paths.artifact("section_segmentation").mkdir(parents=True, exist_ok=True)
     paths.artifact("section_segmentation", "sections.json").write_text(json.dumps({"sections": sections}))
+    # v3.1 item 5 — build_ui_data now also publishes a top-level view of genre.
+    paths.artifact("genre.json").write_text(json.dumps({
+        "genres": ["electronic"], "confidence": 0.42,
+        "top_predictions": [{"label": "electronic", "confidence": 0.42}],
+        "guidance": ["advisory only"],
+    }))
     paths.sections_output_path.parent.mkdir(parents=True, exist_ok=True)
     return paths
 
