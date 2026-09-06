@@ -36,6 +36,7 @@ Lookups, not reading: [`docs/reference/`](docs/reference/) —
 [`cli.md`](docs/reference/cli.md) (`./analyze` flags),
 [`docker.md`](docs/reference/docker.md) (runtime and version pins),
 [`ui-regression.md`](docs/reference/ui-regression.md) (visual QA runbook),
+[`ui-development.md`](docs/reference/ui-development.md) (adding/removing a UI lane and other repetitive `ui/` changes),
 [`mcp-regression.md`](docs/reference/mcp-regression.md) (`smoke-test` and `full-regression` for the MCP server).
 
 No open release. The `mcp/` module and its delivery surface shipped in v3.1
