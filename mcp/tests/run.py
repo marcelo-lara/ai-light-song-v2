@@ -99,11 +99,16 @@ async def _run_stdio_checks() -> None:
 
             det = await session.call_tool(
                 "get_detail",
-                {"song": "McpFull - Fixture", "scope": "time_window",
+                {"song": "McpFull - Fixture", "start_ms": 0, "end_ms": 3000,
                  "interval_ms": 20},
             )
-            record("S2.7 get_detail(McpFull, window) returns dense frames",
-                   "DEFER", f"not-implemented until item 10 — {_tool_text(det)!r}")
+            frames = 0
+            if not det.is_error:
+                dense = (_tool_json(det) or {}).get("dense") or {}
+                frames = dense.get("frame_count", 0)
+            status = "PASS" if not det.is_error and frames > 0 else "FAIL"
+            record("S2.7 get_detail(McpFull, 0-3000ms, 20ms) returns dense frames",
+                   status, f"is_error={det.is_error} frame_count={frames}")
 
             unknown = await session.call_tool("get_song_overview",
                                               {"song": "no-such-song-xyz"})
@@ -195,6 +200,94 @@ def _check_overview_snapshots() -> None:
         current = _overview_text(song)
         status = "PASS" if current == snap.read_text(encoding="utf-8") else "FAIL"
         record(f"F1.3 snapshot get_song_overview__{song}", status, f"{len(current)} bytes")
+
+
+_DETAIL_SNAP_CASES = {
+    "section_scope": dict(section_id="section-002"),
+    "gesture_scope": dict(gesture_id="gesture-001"),
+    "window_3s_20ms": dict(start_ms=0, end_ms=3000, interval_ms=20),
+    "window_3s_100ms": dict(start_ms=0, end_ms=3000, interval_ms=100),
+    "window_over_cap": dict(start_ms=0, end_ms=6000),
+}
+
+
+def _check_detail_snapshots() -> None:
+    from serializers import build_detail
+
+    for name, kwargs in _DETAIL_SNAP_CASES.items():
+        snap = MCP_DIR / "tests" / "__snapshots__" / f"get_detail__{name}.json"
+        if not snap.is_file():
+            record(f"F1.4 snapshot get_detail__{name}", "FAIL", f"missing {snap}")
+            continue
+        payload = build_detail("McpFull - Fixture", root=FIXTURE_ROOT, **kwargs)
+        current = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+        status = "PASS" if current == snap.read_text(encoding="utf-8") else "FAIL"
+        record(f"F1.4 snapshot get_detail__{name}", status, f"{len(current)} bytes")
+
+
+def _check_f3_detail() -> None:
+    from serializers import DetailScopeError, build_detail
+
+    def _d(**kw):
+        return build_detail("McpFull - Fixture", root=FIXTURE_ROOT, **kw)
+
+    # F3.13 — a span over 5 s returns the structural view, no dense frames, cap named.
+    over = _d(start_ms=0, end_ms=6000)
+    ok = (
+        over["dense"] is None
+        and "dense_withheld" in over
+        and "5" in over["dense_withheld"]["reason"]
+        and bool(over["structural"]["sections"]["rows"])
+    )
+    record("F3.13 over-cap span -> structural view, no dense frames, cap named",
+           "PASS" if ok else "FAIL",
+           f"dense={over['dense']} reason={over.get('dense_withheld', {}).get('reason', '')!r}")
+
+    # F3.14 — a span at exactly 5 s is accepted.
+    exact = _d(start_ms=0, end_ms=5000)
+    record("F3.14 a span at exactly 5 s is accepted (dense frames returned)",
+           "PASS" if exact["dense"] and exact["dense"]["frame_count"] > 0 else "FAIL",
+           f"frame_count={(exact['dense'] or {}).get('frame_count')}")
+
+    # F3.15 — interval finer than the floor errors, naming it.
+    try:
+        _d(start_ms=0, end_ms=3000, interval_ms=10)
+        record("F3.15 interval_ms below the 20 ms floor errors, naming the floor",
+               "FAIL", "no error raised")
+    except DetailScopeError as exc:
+        record("F3.15 interval_ms below the 20 ms floor errors, naming the floor",
+               "PASS" if "20" in str(exc) else "FAIL", repr(str(exc)))
+
+    # F3.16 — interval_ms=100 returns one fifth the frames of interval_ms=20.
+    fine = _d(start_ms=0, end_ms=3000, interval_ms=20)["dense"]["frame_count"]
+    coarse = _d(start_ms=0, end_ms=3000, interval_ms=100)["dense"]["frame_count"]
+    record("F3.16 interval_ms=100 returns one fifth the frames of interval_ms=20",
+           "PASS" if coarse == fine // 5 else "FAIL", f"20ms={fine} 100ms={coarse}")
+
+    # F3.17 — decimation preserves the transient peak (chunk-averaging, not dropping).
+    win = dict(start_ms=12500, end_ms=14500)
+    raw_peak = max(f["values"][0] for f in _d(**win, interval_ms=20)["dense"]["frames"])
+    coarse_dense = _d(**win, interval_ms=100)["dense"]
+    coarse_peak = max(f["values"][0] for f in coarse_dense["frames"])
+    ok = coarse_dense["decimation"] == "pair-averaging" and coarse_peak >= raw_peak * 0.99
+    record("F3.17 decimation preserves the window's transient peak (averaging)",
+           "PASS" if ok else "FAIL",
+           f"raw_peak={raw_peak} decimated_peak={coarse_peak} mode={coarse_dense['decimation']}")
+
+    # F3.18 — zero or two scopes error, no precedence rule.
+    n_err = 0
+    for kw in ({}, dict(section_id="section-002", gesture_id="gesture-001")):
+        try:
+            _d(**kw)
+        except DetailScopeError:
+            n_err += 1
+    record("F3.18 zero or two scope selectors error (no precedence rule)",
+           "PASS" if n_err == 2 else "FAIL", f"{n_err}/2 raised")
+
+    # F3.19 — sources narrows the stem set, returned in the published order.
+    got = _d(start_ms=0, end_ms=3000, sources=["vocals", "bass"])["dense"]["sources"]
+    record("F3.19 sources narrowing returns the requested stems in stable order",
+           "PASS" if got == ["bass", "vocals"] else "FAIL", str(got))
 
 
 def _check_f2_honesty() -> None:
@@ -314,11 +407,10 @@ def full_regression() -> int:
     _check_determinism()
     _check_snapshot()
     _check_overview_snapshots()
+    _check_detail_snapshots()
     _check_f2_honesty()
+    _check_f3_detail()
     _check_f4_budget()
-    # F3 detail-read contract checks require get_detail — v3.1 item 10.
-    record("F3 detail-read contract checks (get_detail)", "DEFER",
-           "require get_detail payloads — v3.1 item 10")
     return _finish()
 
 

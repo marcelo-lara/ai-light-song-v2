@@ -1,0 +1,146 @@
+{
+  "song_name": "McpFull - Fixture",
+  "scope": {
+    "kind": "section",
+    "section_id": "section-002"
+  },
+  "span": {
+    "start": 8.0,
+    "end": 16.0,
+    "duration": 8.0
+  },
+  "structural": {
+    "sections": {
+      "rows": [
+        {
+          "section_id": "section-002",
+          "start": 8.0,
+          "end": 16.0,
+          "function": "verse",
+          "function_status": "known",
+          "same_label_as": null
+        }
+      ],
+      "field_sources": {
+        "section_id": "allin1",
+        "start": "allin1",
+        "end": "allin1",
+        "label": "human",
+        "description": "human",
+        "confidence": "allin1",
+        "key": "harmonic",
+        "chord_progression": "harmonic",
+        "function": "allin1",
+        "function_confidence": "allin1",
+        "function_status": "allin1",
+        "same_label_as": "allin1"
+      }
+    },
+    "phases": {
+      "rows": [
+        {
+          "type": "approach",
+          "gesture_id": "gesture-001",
+          "start": 9.0,
+          "end": 10.0,
+          "intensity": 0.3,
+          "confidence": 0.8
+        },
+        {
+          "type": "build",
+          "gesture_id": "gesture-001",
+          "start": 10.0,
+          "end": 12.0,
+          "intensity": 0.55,
+          "confidence": 0.8
+        },
+        {
+          "type": "tension",
+          "gesture_id": "gesture-001",
+          "start": 12.0,
+          "end": 13.5,
+          "intensity": 0.75,
+          "confidence": 0.8
+        },
+        {
+          "type": "impact",
+          "gesture_id": "gesture-001",
+          "start": 13.5,
+          "end": 14.0,
+          "intensity": 0.95,
+          "confidence": 0.8
+        },
+        {
+          "type": "release",
+          "gesture_id": "gesture-001",
+          "start": 14.0,
+          "end": 16.0,
+          "intensity": 0.4,
+          "confidence": 0.8
+        }
+      ],
+      "field_sources": {
+        "type": "gestures",
+        "start_time": "gestures",
+        "end_time": "gestures",
+        "confidence": "gestures",
+        "intensity": "gestures",
+        "section_id": "allin1",
+        "section_name": "allin1",
+        "gesture_id": "gestures",
+        "provenance": "gestures",
+        "summary": "gestures",
+        "evidence_summary": "gestures"
+      }
+    },
+    "transitions": {
+      "rows": [
+        {
+          "transition": "verse → chorus",
+          "time": 16.0,
+          "confidence": 0.7,
+          "section_id": "section-003"
+        }
+      ],
+      "field_sources": {
+        "type": "gestures",
+        "start_time": "gestures",
+        "end_time": "gestures",
+        "confidence": "gestures",
+        "intensity": "gestures",
+        "section_id": "allin1",
+        "section_name": "allin1",
+        "gesture_id": "gestures",
+        "provenance": "gestures",
+        "summary": "gestures",
+        "evidence_summary": "gestures"
+      }
+    },
+    "hints": {
+      "rows": [
+        {
+          "section_id": "section-002",
+          "title": "Breath",
+          "text": "Vocal - no intense section",
+          "start_time": 8.5,
+          "end_time": 15.5,
+          "source": "human",
+          "lighting_hint": "soft motion of moving heads. parcans slow violet waves."
+        }
+      ],
+      "field_sources": {
+        "summary": "inference",
+        "sections": "inference"
+      }
+    },
+    "aggregate_intensity": {
+      "peak": 0.95,
+      "mean": 0.59
+    }
+  },
+  "dense": null,
+  "dense_withheld": {
+    "reason": "resolved span 8.000 s exceeds the 5 s dense-series cap (a maximum, not a default) — request a window of 5 s or less for dense frames",
+    "cap_seconds": 5.0
+  }
+}

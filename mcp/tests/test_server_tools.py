@@ -1,9 +1,7 @@
-"""The two substantive tools are registered but must NOT return a payload yet.
-
-Response shaping (serializers) is v3.1 items 9-10. For the scaffold the honest
-behaviour is: validate arguments, then fail with an explicit not-implemented
-message (a `ToolError`, so the caller reads the message rather than a generic
-crash string).
+"""Server-level behaviour of the three tools: argument validation, error
+translation, and the payloads `get_song_overview` / `get_detail` now return
+(v3.1 items 9-10). A discovery failure or an invalid scope is translated into a
+readable `ToolError` so the caller reads the message, not a generic crash string.
 """
 
 from __future__ import annotations
@@ -45,9 +43,19 @@ def test_get_song_overview_returns_a_payload_for_valid_song() -> None:
     assert "beats" not in ov["grid"]
 
 
-def test_get_detail_not_implemented_for_valid_song() -> None:
-    with pytest.raises(ToolError, match="not implemented yet"):
-        server.get_detail("McpFull - Fixture", scope="time_window")
+def test_get_detail_returns_dense_frames_for_a_window() -> None:
+    resp = server.get_detail("McpFull - Fixture", start_ms=0, end_ms=3000, interval_ms=20)
+    assert resp["dense"]["frame_count"] > 0
+    assert resp["span"]["duration"] == 3.0
+
+
+def test_get_detail_errors_on_zero_or_two_scopes() -> None:
+    with pytest.raises(ToolError):
+        server.get_detail("McpFull - Fixture")
+    with pytest.raises(ToolError):
+        server.get_detail(
+            "McpFull - Fixture", section_id="section-002", gesture_id="gesture-001"
+        )
 
 
 def test_get_song_overview_validates_song_first() -> None:

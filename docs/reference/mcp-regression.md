@@ -84,10 +84,9 @@ Fast, and the gate on every item. Nothing here needs the full corpus.
 7. `get_detail("McpFull - Fixture", start_ms=0, end_ms=3000, interval_ms=20)`
    returns dense frames.
 
-> **Check 6 runs (v3.1 item 9).** `get_song_overview` returns a real payload.
-> **Check 7 is DEFERRED until v3.1 item 10** — `get_detail` still validates its
-> arguments and raises an explicit not-implemented error; the harness reports it
-> as `DEFER` with the observed error text, never as pass. Checks 8 and 9 run.
+> **Checks 6 and 7 run (v3.1 items 9-10).** `get_song_overview` and `get_detail`
+> both return real payloads; check 7 asserts `dense.frame_count > 0` for the
+> 0-3000 ms / 20 ms window. Checks 8 and 9 run.
 
 ### S3 — it fails honestly
 
@@ -103,11 +102,11 @@ Fast, and the gate on every item. Nothing here needs the full corpus.
     assumed.
 
 **Pass condition:** every check reported with its observed value; no `FAIL`.
-Checks 6 and 7 are `DEFER` until v3.1 items 9-10 and do not gate.
+As of v3.1 items 9-10 every `smoke-test` check runs — there are no deferrals.
 
 Run it: `docker compose run --rm --no-deps -T --entrypoint python mcp
 mcp/tests/run.py smoke-test` (exit 0 = no `FAIL`). `full-regression` adds the
-determinism and snapshot checks and marks F2-F4 `DEFER` for the same reason.
+determinism, snapshot, honesty (F2), detail-read (F3) and budget (F4) checks.
 
 ---
 
@@ -119,8 +118,10 @@ unless a check names one.
 ### F1 — snapshots and determinism
 
 1. Every golden snapshot in `mcp/tests/__snapshots__/` matches byte for byte —
-   `list_songs__fixture_root.json` (F1.1) and
-   `get_song_overview__{McpFull,McpDegenerate} - Fixture.json` (F1.3).
+   `list_songs__fixture_root.json` (F1.1),
+   `get_song_overview__{McpFull,McpDegenerate} - Fixture.json` (F1.3), and the
+   five `get_detail__*.json` (F1.4: `section_scope`, `gesture_scope`,
+   `window_3s_20ms`, `window_3s_100ms`, `window_over_cap`).
 2. Each tool called twice with identical arguments returns **byte-identical**
    output.
 3. Snapshot coverage: every tool × every scope it accepts × each fixture.
@@ -211,3 +212,6 @@ Tracked here until done; the suites are not fully runnable while any box is open
       deterministic and the committed fixtures are the validation source of truth.
       A local `data/analysis/` run is optional developer-only context, not a
       required regression gate.
+- [x] Flip `S2.6` / `S2.7` and the `F2`–`F4` checks from `DEFER` to real
+      PASS/FAIL once `get_song_overview` / `get_detail` return payloads
+      (v3.1 items 9-10). Done — no deferrals remain.

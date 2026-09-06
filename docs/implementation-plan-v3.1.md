@@ -94,7 +94,7 @@ stall the whole run; everything independent of it still gets built.
 | Items | 11 (1 scaffold, 7 delivery surface, 2 tools, 1 closure) |
 | Items with a Visual QA block | 4 (items 2, 3, 4, 8) |
 | MCP regression | `smoke-test` from item 1 onward; `full-regression` at item 11 ([`reference/mcp-regression.md`](reference/mcp-regression.md)) |
-| Done | 9 |
+| Done | 10 |
 | Contract-change note | `docs/contract-change-v3.1.md` — created in item 2, extended by items 3–8 |
 | Blocking decisions (`D`) | none open |
 
@@ -566,20 +566,25 @@ entries; the size assertion above.
 
 ### 10. `get_detail`
 
-- [ ] The three scopes — `section_id`, `gesture_id`, `start_ms`+`end_ms` —
-      exactly one required. Two or zero is an error, not a precedence rule.
-- [ ] **Dense cap: 5 s, a maximum not a default.** A resolved span over 5 s
-      returns the structural view and withholds dense frames, stating that it
-      did and naming the cap. Never truncate, never silently downsample to fit.
-- [ ] `interval_ms` is caller-chosen; the server decimates the published 20 ms
-      series. A request finer than 20 ms is an error naming the floor, not a
-      silent upsample.
-- [ ] `sources` narrows the stem set; default all five.
-- [ ] Replace the item-1 not-implemented error with the real handler, and update
-      the status banner in `docs/mcp-definition.md` — with this item the server
-      is built, not scaffolded.
-- [ ] Golden snapshots for: a section scope, a gesture scope, a 3 s window at
-      20 ms, the same window at 100 ms, and an over-cap span.
+- [x] The three scopes — `section_id`, `gesture_id`, `start_ms`+`end_ms` —
+      exactly one required. Two or zero raises `DetailScopeError` → `ToolError`
+      (D26: the `scope` string is dropped; the selector *is* the scope kind).
+- [x] **Dense cap: 5 s, a maximum not a default.** A resolved span over 5 s
+      returns `dense: null` + a `dense_withheld` block (`reason`, `cap_seconds`)
+      plus the full structural view. A span at exactly 5 s is accepted. Never
+      truncates, never silently downsamples (D27).
+- [x] `interval_ms` is caller-chosen; the server decimates the published 20 ms
+      series by whole-chunk averaging. A request finer than 20 ms raises
+      `DetailScopeError` naming the 20 ms floor. `interval_ms=100` returns
+      exactly one fifth the frames of `interval_ms=20` over the same window; the
+      13-14 s fixture transient survives decimation (peak within 1 %).
+- [x] `sources` narrows the stem set; default all five, returned in the
+      published order (`mix, bass, drums, harmonic, vocals`).
+- [x] Replace the item-1 not-implemented error with the real handler; status
+      banner in `docs/mcp-definition.md` updated to "built and green".
+- [x] Golden snapshots (`mcp/tests/__snapshots__/get_detail__*.json`):
+      `section_scope`, `gesture_scope`, `window_3s_20ms`, `window_3s_100ms`,
+      `window_over_cap`. `mcp/tests/test_detail.py` + run.py F1.4 / F3.13-F3.19.
 
 **Tests:** `smoke-test`, then the `mcp` suite. Assert: the over-cap response
 contains no dense frames and does contain the stated reason; `interval_ms=100` returns one fifth
@@ -654,7 +659,10 @@ None open. Decisions already taken and folded into the items above:
 | D21 | (items 5-7, resolved) `field_sources` coverage on the new list/frame files (`drum_events.json`, `loudness.json`) is checked against the **repeating row/frame keys** — matching the `beats.json` precedent — while file-level aggregate blocks (`summary`, `supported_event_types`, `metadata`, `sources`) are provenance-exempt, like `schema_version`. They describe the file, not a fused per-row value. |
 | D22 | (item 7, resolved) The published `loudness.json` frame keeps `time` / `values` / `normalized_values` only; the artifact's `frame_index` / `start_s` / `end_s` and the rolling-`history` windows are dropped — a caller computes windows from the series it requests, and the 10 ms artifact remains for anything finer. An unpaired trailing frame (odd source-frame count) is dropped so every published interval is exactly 20 ms. |
 | D23 | (items 5-7, resolved) `genre` / `drum_events` / `loudness` stay **optional** in `mcp/loaders.py`'s `REQUIRED_TOP_LEVEL_FILES` this release (as D13 set): the fixtures carry them, but a degenerate real song may lag a pipeline rerun, and a missing-file hard error there would be a worse failure than their absence. Revisit when the tools (items 9-10) actually consume them. |
-| D15 | (item 1, resolved) smoke-test checks S2.6 / S2.7 (and full-regression F2–F4) are reported `DEFER` with the observed not-implemented error text — never pass, never silently skipped — until serializers land in items 9–10. Recorded in `docs/reference/mcp-regression.md` under S2. |
+| D15 | (item 1, resolved) smoke-test checks S2.6 / S2.7 (and full-regression F2–F4) are reported `DEFER` with the observed not-implemented error text — never pass, never silently skipped — until serializers land in items 9–10. Recorded in `docs/reference/mcp-regression.md` under S2. (Closed by items 9-10: every check now runs, no deferrals.) |
+| D25 | (item 9, resolved) The committed overview token-budget assert is **fixture-based** — `McpFull - Fixture` serialized overview is 4283 bytes, under the 6144-byte ceiling. `Armin - Revolution` locally is 19089 bytes (31 grouped gestures, 13 verbatim hints, section prose), over the 6 KB real-song target; a compaction pass (phase-code legend, hint trimming) is a phase-D follow-up, tracked in the item-9 notes. |
+| D26 | (item 10, resolved) `get_detail` drops the free-text `scope` string the scaffold sketched; the scope is expressed directly by which selector is passed — `section_id`, `gesture_id`, or `start_ms`+`end_ms` — exactly one, zero or two an error. One fewer redundant argument, and the selector *is* the scope kind so nothing can disagree. |
+| D27 | (item 10, resolved) Over-cap detail returns `dense: null` plus a `dense_withheld` block (`reason`, `cap_seconds`) and the full structural view; `interval_ms` decimates by whole-chunk averaging (`factor = interval_ms // 20`), an unfilled trailing chunk dropped so every emitted interval is exactly `factor * 20` ms — mirrors D22. |
 
 Still open, deliberately deferred out of this release:
 

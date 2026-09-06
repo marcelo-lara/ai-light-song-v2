@@ -5,12 +5,12 @@ read-only MCP server that helps a reasoning model understand a song's mood,
 sections and dynamics — **drop sequences especially** — while spending as few
 tokens as possible.
 
-> **Status: `list_songs` and `get_song_overview` built; `get_detail` pending.**
+> **Status: built and green — all three tools return real payloads.**
 > The stdio/Compose plumbing, song discovery, the exposure guard, the
-> fixture-based regression harness (`smoke-test` / `full-regression`) and the
-> whole-song overview are in place and green. `get_detail` is registered but
-> validates arguments and then raises an explicit not-implemented error —
-> response shaping for it is the last v3.1 tool-surface item.
+> fixture-based regression harness (`smoke-test` / `full-regression`, no
+> deferrals), the whole-song overview and the on-demand `get_detail` dense read
+> are all in place. What remains is v3.1 phase D — the docs sweep and issue
+> closure.
 
 - How to prove it still works: [`reference/mcp-regression.md`](reference/mcp-regression.md)
 - What the analyzer produces for it: [`analysis-definition.md`](analysis-definition.md)
@@ -136,11 +136,12 @@ Returns:
   `lighting_hint` where one exists. These are ground truth and outrank every
   inferred field in the response.
 
-### `get_detail(song, scope, interval_ms=None, sources=None)`
+### `get_detail(song, section_id=None, gesture_id=None, start_ms=None, end_ms=None, interval_ms=None, sources=None)`
 
-On-demand detail for one span. `scope` selects it, exactly one of:
+On-demand detail for one span. Exactly one scope selector is required — zero or
+two is an error, with no precedence rule:
 
-| Scope | Span |
+| Scope selector | Span |
 | --- | --- |
 | `section_id` | that section |
 | `gesture_id` | that gesture's full `approach → release` envelope |
@@ -154,9 +155,11 @@ never silently downsamples to fit.
 
 **`interval_ms` is the caller's choice.** The server decimates the published
 series per request; it is not a resolution baked in at publish time. The
-published floor is **20 ms** — the finest a caller may request. A concept pass
-wanting a coarse envelope and a section pass chasing a transient are the same
-file read at two resolutions.
+published floor is **20 ms** — the finest a caller may request; a finer
+`interval_ms` is an error naming the floor, never a silent upsample. Decimation
+is chunk-averaging, not frame-dropping, so a transient in the window is not lost.
+A concept pass wanting a coarse envelope and a section pass chasing a transient
+are the same file read at two resolutions.
 
 `sources` optionally narrows the stem set (mix, drums, bass, harmonic, vocals);
 the default is all five.

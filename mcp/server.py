@@ -1,7 +1,6 @@
 """Read-only stdio MCP server for song comprehension.
 
-`list_songs` and `get_song_overview` are implemented; `get_detail` validates its
-argument and raises an explicit not-implemented error (lands in v3.1 item 10).
+`list_songs`, `get_song_overview` and `get_detail` are all implemented.
 Song discovery and top-level file access live in `loaders.py` (stable); response
 shaping lives in `serializers.py` (volatile — a tool-surface reshape touches
 that file and its snapshots only).
@@ -30,11 +29,9 @@ from loaders import (
     list_songs as _list_songs,
     resolve_song_dir,
 )
-from serializers import build_song_overview
+from serializers import DetailScopeError, build_detail, build_song_overview
 
 server = MCPServer("ai-light-song-v2-mcp", version="0.1.0")
-
-_NOT_READY = "response shaping lands in a later v3.1 plan item"
 
 
 def _validate_song(song: str) -> None:
@@ -70,17 +67,36 @@ def get_song_overview(song: str) -> dict[str, Any]:
 @server.tool(name="get_detail")
 def get_detail(
     song: str,
-    scope: str,
+    section_id: str | None = None,
+    gesture_id: str | None = None,
+    start_ms: int | None = None,
+    end_ms: int | None = None,
     interval_ms: int | None = None,
     sources: list[str] | None = None,
 ) -> dict[str, Any]:
     """On-demand dense detail for one resolved span.
 
-    Not implemented yet: the song argument is validated and then an explicit
-    not-implemented error is raised.
+    Exactly one scope selector is required: ``section_id``, ``gesture_id``, or
+    ``start_ms`` + ``end_ms``. Zero or two is an error — there is no precedence
+    rule. A resolved span over the 5 s cap (a maximum, not a default) returns the
+    structural view with the dense frames withheld and the cap named.
+    ``interval_ms`` is caller-chosen and decimates the published 20 ms series by
+    chunk-averaging; finer than 20 ms is an error, never a silent upsample.
+    ``sources`` narrows the stem set (default all five, stable order).
     """
     _validate_song(song)
-    raise ToolError(f"get_detail is not implemented yet — {_NOT_READY}")
+    try:
+        return build_detail(
+            song,
+            section_id=section_id,
+            gesture_id=gesture_id,
+            start_ms=start_ms,
+            end_ms=end_ms,
+            interval_ms=interval_ms,
+            sources=sources,
+        )
+    except DetailScopeError as exc:
+        raise ToolError(str(exc)) from exc
 
 
 if __name__ == "__main__":
