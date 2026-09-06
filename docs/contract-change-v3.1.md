@@ -130,3 +130,28 @@ debugger keep reading it); the MCP server reads only the top-level file.
 value is written through a per-field fusion path (one producer, `genre`, today)
 so a second producer can join without a rewrite.
 
+
+---
+
+## 6. New top-level file: `drum_events.json`
+
+`data/analysis/{song}/drum_events.json` — a fused view of
+`artifacts/symbolic_transcription/drum_events.json`. The full event list, **no
+decimation** (~1,164 events / ~600 KB per song). Host paths in `generated_from`
+are gone; per-event rows are trimmed to the three fields a cue author needs.
+
+```json
+{
+  "schema_version": "3.0",
+  "song_name": "...",
+  "field_sources": { "time": "omnizart", "event_type": "omnizart", "confidence": "omnizart" },
+  "summary": { "event_count": 1164, "kick_count": 326, "snare_count": 182,
+               "hat_count": 656, "unresolved_count": 0 },
+  "supported_event_types": ["kick", "snare", "hat", "unresolved"],
+  "events": [ { "time": 0.19, "event_type": "hat", "confidence": null }, ... ]
+}
+```
+
+`summary` and `supported_event_types` are file-level aggregates and carry no
+`field_sources` entry (provenance-exempt, like `schema_version`). `confidence` is
+`null` on every row today — Omnizart does not emit a per-event confidence.

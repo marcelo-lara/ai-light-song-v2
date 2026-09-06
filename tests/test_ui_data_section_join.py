@@ -17,11 +17,20 @@ def _setup(tmp: str, sections: list[dict]) -> SongPaths:
     paths.artifact("layer_a_harmonic.json").write_text(json.dumps({"chords": []}))
     paths.artifact("section_segmentation").mkdir(parents=True, exist_ok=True)
     paths.artifact("section_segmentation", "sections.json").write_text(json.dumps({"sections": sections}))
-    # v3.1 item 5 — build_ui_data now also publishes a top-level view of genre.
+    # v3.1 items 5-6 — build_ui_data now also publishes top-level views of these.
     paths.artifact("genre.json").write_text(json.dumps({
         "genres": ["electronic"], "confidence": 0.42,
         "top_predictions": [{"label": "electronic", "confidence": 0.42}],
         "guidance": ["advisory only"],
+    }))
+    paths.artifact("symbolic_transcription").mkdir(parents=True, exist_ok=True)
+    paths.artifact("symbolic_transcription", "drum_events.json").write_text(json.dumps({
+        "summary": {"event_count": 2, "kick_count": 1, "snare_count": 1, "hat_count": 0, "unresolved_count": 0},
+        "supported_event_types": ["kick", "snare", "hat", "unresolved"],
+        "events": [
+            {"time": 0.5, "event_type": "kick", "confidence": None},
+            {"time": 1.0, "event_type": "snare", "confidence": None},
+        ],
     }))
     paths.sections_output_path.parent.mkdir(parents=True, exist_ok=True)
     return paths

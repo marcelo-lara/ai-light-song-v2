@@ -266,6 +266,43 @@ def _publish_genre(paths: SongPaths) -> str:
     return str(paths.genre_output_path)
 
 
+def _publish_drum_events(paths: SongPaths) -> str:
+    artifact = read_json(paths.artifact("symbolic_transcription", "drum_events.json"))
+    events = [
+        {
+            "time": round_schema_float(float(event["time"]), 3),
+            "event_type": str(event["event_type"]),
+            "confidence": event.get("confidence"),
+        }
+        for event in artifact.get("events", [])
+    ]
+    row_keys = events[0].keys() if events else ("time", "event_type", "confidence")
+    field_sources = validate_field_sources(
+        _fuse(
+            {
+                "time": [("omnizart", True)],
+                "event_type": [("omnizart", True)],
+                "confidence": [("omnizart", True)],
+            }
+        ),
+        row_keys,
+        file="drum_events.json",
+    )
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "field_sources": field_sources,
+        # File-level aggregate blocks (counts, the supported-type list) are
+        # provenance-exempt like `schema_version` — they describe the file, not a
+        # fused per-row value. Every row is omnizart's (plan D21).
+        "summary": artifact.get("summary"),
+        "supported_event_types": artifact.get("supported_event_types"),
+        "events": events,
+    }
+    write_json(paths.drum_events_output_path, payload)
+    return str(paths.drum_events_output_path)
+
+
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
     beats_payload = read_json(paths.artifact("essentia", "beats.json"))
     harmonic_payload = read_json(paths.artifact("layer_a_harmonic.json"))
@@ -378,9 +415,11 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     # v3.1 item 5 — publish a top-level fused view of genre. The artifact under
     # artifacts/ is untouched.
     genre_output = _publish_genre(paths)
+    drum_events_output = _publish_drum_events(paths)
 
     return {
         "beats": str(beats_output_path),
         "sections": str(sections_output_path),
         "genre": genre_output,
+        "drum_events": drum_events_output,
     }

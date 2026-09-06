@@ -1,366 +1,384 @@
 {
   "schema_version": "3.0",
   "song_name": "McpFull - Fixture",
+  "field_sources": {
+    "time": "omnizart",
+    "event_type": "omnizart",
+    "confidence": "omnizart"
+  },
+  "summary": {
+    "event_count": 72,
+    "kick_count": 48,
+    "snare_count": 24,
+    "hat_count": 0,
+    "unresolved_count": 0
+  },
+  "supported_event_types": [
+    "kick",
+    "snare",
+    "hat",
+    "unresolved"
+  ],
   "events": [
     {
       "time": 0.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 0.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 0.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 1.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 1.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 1.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 2.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 2.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 2.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 3.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 3.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 3.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 4.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 4.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 4.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 5.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 5.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 5.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 6.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 6.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 6.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 7.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 7.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 7.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 8.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 8.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 8.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 9.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 9.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 9.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 10.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 10.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 10.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 11.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 11.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 11.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 12.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 12.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 12.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 13.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 13.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 13.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 14.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 14.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 14.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 15.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 15.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 15.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 16.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 16.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 16.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 17.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 17.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 17.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 18.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 18.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 18.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 19.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 19.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 19.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 20.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 20.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 20.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 21.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 21.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 21.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 22.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 22.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 22.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     },
     {
       "time": 23.0,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 23.5,
-      "instrument": "kick",
-      "velocity": 100
+      "event_type": "kick",
+      "confidence": null
     },
     {
       "time": 23.5,
-      "instrument": "snare",
-      "velocity": 90
+      "event_type": "snare",
+      "confidence": null
     }
   ]
 }

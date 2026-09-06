@@ -254,6 +254,9 @@ GENRE_FIELD_SOURCES = {
 }
 
 
+DRUM_FIELD_SOURCES = {"time": "omnizart", "event_type": "omnizart", "confidence": "omnizart"}
+
+
 def genre(song_name: str, *, degenerate: bool) -> dict:
     if degenerate:
         return {
@@ -302,14 +305,26 @@ def drum_events(song_name: str) -> dict:
     events = []
     step = 0.5
     n = int(DURATION_S / step)
+    kick = snare = 0
     for i in range(n):
         t = _round(i * step, 3)
-        events.append({"time": t, "instrument": "kick", "velocity": 100})
+        events.append({"time": t, "event_type": "kick", "confidence": None})
+        kick += 1
         if i % 2 == 1:
-            events.append({"time": t, "instrument": "snare", "velocity": 90})
+            events.append({"time": t, "event_type": "snare", "confidence": None})
+            snare += 1
     return {
         "schema_version": "3.0",
         "song_name": song_name,
+        "field_sources": DRUM_FIELD_SOURCES,
+        "summary": {
+            "event_count": len(events),
+            "kick_count": kick,
+            "snare_count": snare,
+            "hat_count": 0,
+            "unresolved_count": 0,
+        },
+        "supported_event_types": ["kick", "snare", "hat", "unresolved"],
         "events": events,
     }
 

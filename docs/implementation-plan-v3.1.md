@@ -94,7 +94,7 @@ stall the whole run; everything independent of it still gets built.
 | Items | 11 (1 scaffold, 7 delivery surface, 2 tools, 1 closure) |
 | Items with a Visual QA block | 4 (items 2, 3, 4, 8) |
 | MCP regression | `smoke-test` from item 1 onward; `full-regression` at item 11 ([`reference/mcp-regression.md`](reference/mcp-regression.md)) |
-| Done | 5 |
+| Done | 6 |
 | Contract-change note | `docs/contract-change-v3.1.md` — created in item 2, extended by items 3–8 |
 | Blocking decisions (`D`) | none open |
 
@@ -446,12 +446,12 @@ exists, parses, and contains no string beginning `/data/`.
 
 ### 6. Publish top-level `drum_events.json`
 
-- [ ] `ui_data.py` writes `data/analysis/{song}/drum_events.json` with
+- [x] `ui_data.py` writes `data/analysis/{song}/drum_events.json` with
       `events[] { time, event_type, confidence }` and the summary counts.
       600 KB / ~1,164 events per song is acceptable as-is; no decimation.
-- [ ] Strip `generated_from` host paths; add the item-2 `field_sources` header
+- [x] Strip `generated_from` host paths; add the item-2 `field_sources` header
       (`omnizart` today). Same fusion-shaped selection as item 5.
-- [ ] `docs/reference/artifacts.md` + `docs/contract-change-v3.1.md`.
+- [x] `docs/reference/artifacts.md` + `docs/contract-change-v3.1.md`.
 
 **Tests:** as item 5 (including the fixture rebuild and `smoke-test`), plus:
 event count and per-type counts equal the artifact's.
