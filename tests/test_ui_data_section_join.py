@@ -59,6 +59,52 @@ class SectionJoinTests(unittest.TestCase):
         self.assertIn("[unverified]", rows[0]["label"])
         self.assertIn("not trustworthy", rows[0]["description"])
 
+    def test_every_row_carries_function_fields_and_matches_segmentation_order(self) -> None:
+        seg_sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "intro",
+             "function_confidence": 0.8, "function_status": "known", "same_label_as": None,
+             "confidence": 0.8},
+            {"section_id": "section-002", "start": 10.0, "end": 20.0, "function": "verse",
+             "function_confidence": 0.6, "function_status": "known", "same_label_as": None,
+             "confidence": 0.6},
+            {"section_id": "section-003", "start": 20.0, "end": 30.0, "function": "verse",
+             "function_confidence": 0.55, "function_status": "known", "same_label_as": "section-002",
+             "confidence": 0.55},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, seg_sections)
+            build_ui_data(paths)
+            rows = json.loads(paths.sections_output_path.read_text())["sections"]
+            seg = json.loads(
+                paths.artifact("section_segmentation", "sections.json").read_text()
+            )["sections"]
+        for row in rows:
+            self.assertIn("function", row)
+            self.assertIn("function_status", row)
+        # section_id sequence matches the segmentation artifact one-for-one.
+        self.assertEqual(
+            [r["section_id"] for r in rows], [s["section_id"] for s in seg]
+        )
+        self.assertEqual(rows[2]["function"], "verse")
+        self.assertEqual(rows[2]["same_label_as"], "section-002")
+
+    def test_degenerate_song_has_unknown_function_status_on_every_row(self) -> None:
+        seg_sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": None,
+             "function_confidence": None, "function_status": "unknown", "same_label_as": None,
+             "confidence": 0.3},
+            {"section_id": "section-002", "start": 10.0, "end": 20.0, "function": None,
+             "function_confidence": None, "function_status": "unknown", "same_label_as": None,
+             "confidence": 0.3},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, seg_sections)
+            build_ui_data(paths)
+            rows = json.loads(paths.sections_output_path.read_text())["sections"]
+        self.assertTrue(rows)
+        for row in rows:
+            self.assertEqual(row["function_status"], "unknown")
+
     def test_missing_section_id_fails_loudly(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             paths = _setup(tmp, [{"start": 0.0, "end": 10.0, "function": "intro"}])

@@ -52,3 +52,40 @@ allin1's phases disagree by a whole beat or more.
 
 The publish path never reads `reference/` (a test enforces this on the fusion
 stage). `reference/` stays validation-only.
+
+---
+
+## 3. Section function fields merged into top-level `sections.json`
+
+Each `sections[]` row gains four fields, read from the allin1 segmentation at
+build time and joined on `section_id` (never array position):
+
+| Field | Source | Meaning |
+| --- | --- | --- |
+| `function` | `allin1` | Harmonix functional label (`verse`, `chorus`, …), or `null` |
+| `function_confidence` | `allin1` | numeric confidence in that label, or `null` |
+| `function_status` | `allin1` | `"known"` or `"unknown"` — treat `function` as unverified when `"unknown"` |
+| `same_label_as` | `allin1` | `section_id` of the first section allin1 gave the same label; **label repetition, not acoustic identity** |
+
+Before / after one row:
+
+```
+// before
+{ "section_id": "section-003", "start": 41.2, "end": 66.8, "label": "003 Chorus (0.81)",
+  "description": "...", "confidence": 0.81, "key": "C# minor", "chord_progression": "..." }
+// after
+{ "section_id": "section-003", "start": 41.2, "end": 66.8, "label": "003 Chorus (0.81)",
+  "description": "...", "function": "chorus", "function_confidence": 0.81,
+  "function_status": "known", "same_label_as": "section-002",
+  "confidence": 0.81, "key": "C# minor", "chord_progression": "..." }
+```
+
+`label`, `description`, `key`, `chord_progression`, `confidence`, `section_id`,
+`start`, `end` are unchanged.
+
+**Consumer action:** a consumer may now read section names from the top-level
+`sections.json` alone and **must stop reading
+`artifacts/section_segmentation/sections.json`** — that inner file is not on the
+delivery surface and the MCP server cannot serve it. The old array-index match
+between the two files is dissolved: the top-level row now carries the join key
+and the names together.

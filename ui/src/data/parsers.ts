@@ -120,6 +120,16 @@ function parseSectionRow(raw: unknown, ctx: string): SectionRow {
     end: asNumber(o.end, `${ctx}.end`),
     label: asString(o.label, `${ctx}.label`),
     description: stringOrNull(o.description, `${ctx}.description`),
+    function: stringOrNull(o.function, `${ctx}.function`),
+    function_confidence: numberOrNull(
+      o.function_confidence,
+      `${ctx}.function_confidence`,
+    ),
+    function_status: asString(
+      o.function_status ?? "unknown",
+      `${ctx}.function_status`,
+    ),
+    same_label_as: stringOrNull(o.same_label_as, `${ctx}.same_label_as`),
     confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
     key: stringOrNull(o.key, `${ctx}.key`),
     chord_progression: stringOrNull(o.chord_progression, `${ctx}.chord_progression`),

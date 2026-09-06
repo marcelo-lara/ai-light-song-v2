@@ -5,6 +5,10 @@
     "end": "allin1",
     "label": "human",
     "description": "human",
+    "function": "allin1",
+    "function_confidence": "allin1",
+    "function_status": "allin1",
+    "same_label_as": "allin1",
     "confidence": "allin1",
     "key": "harmonic",
     "chord_progression": "harmonic"
@@ -15,7 +19,11 @@
       "start": 0.0,
       "end": 14.82,
       "label": "001 intro [unverified] (0.34)",
-      "description": "Unverified section, 14.8s — allin1's label for this song is not trustworthy.",
+      "description": "Unverified section, 14.8s \u2014 allin1's label for this song is not trustworthy.",
+      "function": "intro",
+      "function_confidence": 0.343031,
+      "function_status": "unknown",
+      "same_label_as": null,
       "confidence": 0.9,
       "key": "D# minor",
       "chord_progression": "D#m"
@@ -25,10 +33,14 @@
       "start": 14.82,
       "end": 58.05,
       "label": "002 chorus [unverified] (0.45)",
-      "description": "Unverified section, 43.2s — allin1's label for this song is not trustworthy.",
+      "description": "Unverified section, 43.2s \u2014 allin1's label for this song is not trustworthy.",
+      "function": "chorus",
+      "function_confidence": 0.446144,
+      "function_status": "unknown",
+      "same_label_as": null,
       "confidence": 0.446144,
       "key": "D# minor",
-      "chord_progression": "D#m–B–F#–D#m"
+      "chord_progression": "D#m\u2013B\u2013F#\u2013D#m"
     }
   ]
 }

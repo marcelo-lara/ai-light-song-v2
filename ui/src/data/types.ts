@@ -63,6 +63,16 @@ export interface SectionRow {
   /** e.g. "003 Chorus (0.80)" */
   label: string;
   description: string | null;
+  /** allin1's Harmonix-vocabulary functional label (e.g. "chorus"), or `null`.
+   * v3.1 item 3 — merged onto the top-level row so a consumer never opens
+   * artifacts/section_segmentation/sections.json. */
+  function: string | null;
+  function_confidence: number | null;
+  /** "known" or "unknown" — treat `function` as unverified when "unknown". */
+  function_status: string;
+  /** section_id of the first section allin1 gave the same label; label
+   * repetition, not acoustic identity. */
+  same_label_as: string | null;
   confidence: number | null;
   /** Whole-song HPCP key estimate (e.g. "C# major"), same value on every
    * row, or `null` when essentia's key confidence is too low to state one

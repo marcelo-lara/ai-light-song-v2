@@ -258,6 +258,16 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
                 "end": round_schema_float(end),
                 "label": _format_section_label(section),
                 "description": _section_description(section, occurrence_counts.get(function, 0)),
+                # v3.1 item 3 — the allin1 section-function fields are now on the
+                # top-level row. A consumer reads section names from here alone
+                # and never opens artifacts/section_segmentation/sections.json.
+                # The row is built directly from the segmentation list (joined on
+                # section_id, never array position), so there is no second list
+                # to misalign.
+                "function": function,
+                "function_confidence": section.get("function_confidence"),
+                "function_status": section.get("function_status", "unknown"),
+                "same_label_as": section.get("same_label_as"),
                 "confidence": section.get("confidence"),
                 "key": song_key,
                 "chord_progression": _section_chord_progression(start, end, chord_events),
@@ -292,6 +302,10 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
             "end": "allin1",
             "label": "human",
             "description": "human",
+            "function": "allin1",
+            "function_confidence": "allin1",
+            "function_status": "allin1",
+            "same_label_as": "allin1",
             "confidence": "allin1",
             "key": "harmonic",
             "chord_progression": "harmonic",

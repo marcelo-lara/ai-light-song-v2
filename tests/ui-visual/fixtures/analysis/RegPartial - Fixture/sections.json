@@ -5,6 +5,10 @@
     "end": "allin1",
     "label": "human",
     "description": "human",
+    "function": "allin1",
+    "function_confidence": "allin1",
+    "function_status": "allin1",
+    "same_label_as": "allin1",
     "confidence": "allin1",
     "key": "harmonic",
     "chord_progression": "harmonic"
@@ -16,6 +20,10 @@
       "end": 30.0,
       "label": "001 Intro (0.44)",
       "description": "The 1st intro, 30.0s long.",
+      "function": "intro",
+      "function_confidence": 0.441519,
+      "function_status": "known",
+      "same_label_as": null,
       "confidence": 0.9,
       "key": "F# minor",
       "chord_progression": null
@@ -26,6 +34,10 @@
       "end": 44.76,
       "label": "002 Verse (0.19)",
       "description": "The 1st verse, 14.8s long.",
+      "function": "verse",
+      "function_confidence": 0.187426,
+      "function_status": "known",
+      "same_label_as": null,
       "confidence": 0.187426,
       "key": "F# minor",
       "chord_progression": null
@@ -36,6 +48,10 @@
       "end": 81.76,
       "label": "003 Inst (0.19)",
       "description": "The 1st inst, 37.0s long.",
+      "function": "inst",
+      "function_confidence": 0.193769,
+      "function_status": "known",
+      "same_label_as": null,
       "confidence": 0.193769,
       "key": "F# minor",
       "chord_progression": null
@@ -46,9 +62,13 @@
       "end": 96.46,
       "label": "004 Verse (0.19)",
       "description": "The 2nd verse, 14.7s long, same label as the first verse.",
+      "function": "verse",
+      "function_confidence": 0.194511,
+      "function_status": "known",
+      "same_label_as": "section-002",
       "confidence": 0.194511,
       "key": "F# minor",
-      "chord_progression": "F#m–E"
+      "chord_progression": "F#m\u2013E"
     },
     {
       "section_id": "section-005",
@@ -56,6 +76,10 @@
       "end": 111.23,
       "label": "005 Chorus (0.33)",
       "description": "The 1st chorus, 14.8s long.",
+      "function": "chorus",
+      "function_confidence": 0.331459,
+      "function_status": "known",
+      "same_label_as": null,
       "confidence": 0.331459,
       "key": "F# minor",
       "chord_progression": null
@@ -66,6 +90,10 @@
       "end": 193.85,
       "label": "006 Inst (0.14)",
       "description": "The 2nd inst, 82.6s long, same label as the first inst.",
+      "function": "inst",
+      "function_confidence": 0.144056,
+      "function_status": "known",
+      "same_label_as": "section-003",
       "confidence": 0.144056,
       "key": "F# minor",
       "chord_progression": null

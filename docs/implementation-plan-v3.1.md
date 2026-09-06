@@ -94,7 +94,7 @@ stall the whole run; everything independent of it still gets built.
 | Items | 11 (1 scaffold, 7 delivery surface, 2 tools, 1 closure) |
 | Items with a Visual QA block | 4 (items 2, 3, 4, 8) |
 | MCP regression | `smoke-test` from item 1 onward; `full-regression` at item 11 ([`reference/mcp-regression.md`](reference/mcp-regression.md)) |
-| Done | 2 |
+| Done | 3 |
 | Contract-change note | `docs/contract-change-v3.1.md` — created in item 2, extended by items 3–8 |
 | Blocking decisions (`D`) | none open |
 
@@ -359,17 +359,17 @@ The join fix as much as the exposure fix. Today `sections.json` and
 same count, same order — and a mismatch silently misaligns every section's label
 and confidence across the whole song.
 
-- [ ] `src/analyzer/stages/ui_data.py`: add `function`, `function_confidence`,
+- [x] `src/analyzer/stages/ui_data.py`: add `function`, `function_confidence`,
       `function_status` and `same_label_as` to each top-level `sections.json`
       row, read from the segmentation artifact at build time.
-- [ ] Keep `label`, `description`, `key`, `chord_progression`, `confidence`,
+- [x] Keep `label`, `description`, `key`, `chord_progression`, `confidence`,
       `section_id`, `start`, `end` exactly as they are. `label` stays a display
       convenience; the numeric `function_confidence` is now on the row beside it.
-- [ ] Delete the index-matching assumption from the join: rows are built from the
+- [x] Delete the index-matching assumption from the join: rows are built from the
       segmentation list directly, so there is no second list to misalign. Keep
       and extend `tests/test_ui_data_section_join.py`.
-- [ ] `docs/reference/artifacts.md`: update the `sections.json` row.
-- [ ] `docs/contract-change-v3.1.md`: create it; first section records the four
+- [x] `docs/reference/artifacts.md`: update the `sections.json` row.
+- [x] `docs/contract-change-v3.1.md`: create it; first section records the four
       added fields, the before/after row, and an explicit note that a consumer
       may now read section names from the top-level file alone and **must stop
       reading `artifacts/section_segmentation/sections.json`.**
@@ -642,6 +642,8 @@ None open. Decisions already taken and folded into the items above:
 | D14 | (item 1, resolved) Item-1 fixtures use the **current committed shape** (bare arrays for `beats`/`sections`) to keep item 1 isolated; item 2 rebuilds them into the `field_sources`-header object shape. Noted in the fixture README. |
 | D16 | (item 2, resolved) `field_sources` coverage is checked as **header ⊇ emitted keys** (coverage, not strict equality), so a field that appears on only some rows — `gesture_id` on gesture-phase rows but not transition rows — does not break the check. Four keys are reserved and need no entry: `schema_version`, `generated_from`, `field_sources`, `song_name` (identity/provenance metadata, not fused values). |
 | D17 | (item 2, resolved) `info.json`'s `field_sources` covers `bpm` / `duration` (→ `essentia`) only. `song_path` / `artifacts` / `outputs` / `debug` are orchestration metadata, not fused delivery-surface values, and are passed as an explicit `exempt` set to the validator rather than force-fit to a producer — item 8 removes them outright. |
+| D18 | (item 3, resolved) The top-level → `section_segmentation` **array-index match was already gone** — `ui_data.build_ui_data` builds section rows straight from the segmentation list joined on `section_id` (v1.1 item 3.2 guard). Item 3's fix is therefore to **emit `function` / `function_confidence` / `function_status` / `same_label_as` on the top-level row** so no consumer ever needs to open the artifact; the UI's `sectionsContent` still accepts the segmentation list as an optional second arg (a `section_id` join, not index) and is left as-is since the UI may read `artifacts/`. |
+| D19 | (item 3, resolved) `function_status` on a top-level row defaults to `"unknown"` when the segmentation row omits it (honest default, matches how `_format_section_label` already reads it) — never a guessed `"known"`. |
 | D15 | (item 1, resolved) smoke-test checks S2.6 / S2.7 (and full-regression F2–F4) are reported `DEFER` with the observed not-implemented error text — never pass, never silently skipped — until serializers land in items 9–10. Recorded in `docs/reference/mcp-regression.md` under S2. |
 
 Still open, deliberately deferred out of this release:

@@ -79,7 +79,7 @@ both.
 | --- | --- | --- |
 | `info.json` | song metadata; `artifacts` / `outputs` path manifest | discover a song's canonical files; read `bpm`, `duration` |
 | `beats.json` | `{ field_sources, beats[] }`; each beat `time`, `type`, `bar`, `beat`, `chord`, `downbeat_confidence` | place cues on exact beat/downbeat times. `downbeat_confidence` (renamed from `confidence`) is allin1's downbeat-phase strength — `null` on `"beat"` rows and on unresolved downbeats, never the beat time's confidence |
-| `sections.json` | `{ field_sources, sections[] }`; each section `section_id`, `start`, `end`, `label`, `description`, `key`, `chord_progression`, `confidence` | fast section summaries and show pacing. `label` is `"003 Chorus (0.81)"`, or the raw token marked `[unverified]` when allin1's labelling is degenerate |
+| `sections.json` | `{ field_sources, sections[] }`; each section `section_id`, `start`, `end`, `label`, `description`, `function`, `function_confidence`, `function_status`, `same_label_as`, `key`, `chord_progression`, `confidence` | fast section summaries and show pacing. Section names are on the row (`function` + `function_confidence` + `function_status`) — read them here, never from `section_segmentation/sections.json`. `label` is `"003 Chorus (0.81)"`, or the raw token marked `[unverified]` when `function_status` is `"unknown"`. `same_label_as` is label repetition, not acoustic identity |
 | `hints.json` | `field_sources`; `sections[].hints[]` of `{ id, source, category, text, anchor_refs }` | per-section guidance; match by `section_id`, never by repeated labels |
 | `song_event_timeline.json` | `field_sources`; flat `events[]`: gesture phases + section transitions, `schema_version` `"3.0"` | event-aware cue planning. No nested `phases[]`, no `composite`, no `member_event_ids` — every row is flat and carries its own `evidence_summary` |
 
@@ -93,7 +93,7 @@ does (a repeated per-row map would be pure token cost).
 | --- | --- |
 | `info.json` | `bpm`, `duration` → `essentia`. `song_path` / `artifacts` / `outputs` / `debug` are orchestration metadata, not fused values, and carry no entry (removed in a later v3.1 item) |
 | `beats.json` | `time`, `beat`, `bar`, `type` → `essentia`; `chord` → `harmonic`; `downbeat_confidence` → `allin1` |
-| `sections.json` | `section_id`, `start`, `end`, `confidence` → `allin1`; `label`, `description` → `human`; `key`, `chord_progression` → `harmonic` |
+| `sections.json` | `section_id`, `start`, `end`, `function`, `function_confidence`, `function_status`, `same_label_as`, `confidence` → `allin1`; `label`, `description` → `human`; `key`, `chord_progression` → `harmonic` |
 | `hints.json` | `summary`, `sections` → `inference` (each hint row also carries its own `source`: `human` \| `inference` \| `user`) |
 | `song_event_timeline.json` | all event fields → `gestures`, except `section_id` / `section_name` → `allin1` |
 
