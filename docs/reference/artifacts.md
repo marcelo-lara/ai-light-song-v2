@@ -130,6 +130,13 @@ does (a repeated per-row map would be pure token cost).
 **Never a generation input** (`reference/` is validation-only). No pipeline stage takes over
 a canonical artifact from any of these.
 
+**Every file here is optional.** Moises files exist only for the gold songs, and
+human hints only after someone has reviewed a song in the debugger. A song with
+neither must analyze identically: validation reports `skipped` for the domains
+that lost their reference, and the first run infers every value it can so there
+is something to review. A score computed from these files covers only the songs
+that have them — say which.
+
 | File | What it is | Use it to |
 | --- | --- | --- |
 | `human/human_hints.json` | hand-authored ground truth: `id`, `title`, `start_time`, `end_time`, `summary`, `lighting_hint`, optional `captured_from` | the only real ground truth. `captured_from` is informative-only prose written by the debugger; no analyzer code reads it |

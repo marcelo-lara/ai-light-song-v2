@@ -45,8 +45,9 @@ the downstream cue-authoring consumer.
 
 Queues: [`docs/issues.md`](docs/issues.md) (open issues only),
 [`docs/experiments.md`](docs/experiments.md) (one entry per experiment),
-[`docs/archive/experiments.md`](docs/archive/experiments.md) (concluded ones —
-the only archive file that exists).
+[`docs/archive/experiments_promoted.md`](docs/archive/experiments_promoted.md)
+and [`docs/archive/experiments_discarded.md`](docs/archive/experiments_discarded.md)
+(what shipped, and what did not — TLDRs; the only archive files that exist).
 
 Measured evidence lives with the experiment: `experiments/*/README.md`. That is
 the best account of what actually works, and it does not go stale with age.
@@ -126,7 +127,8 @@ breaking it has already cost this repo something.
   carries how it was arrived at.
 - **Docs hold current material only.** Delete a doc in the change that makes it
   stale — git history is the archive. No numbered story files, no archive folder
-  (`docs/archive/experiments.md` is the sole exception). If intent and behaviour
+  (`docs/archive/experiments_promoted.md` and
+  `docs/archive/experiments_discarded.md` are the sole exception). If intent and behaviour
   disagree, that is a defect to fix now, not a precedence rule to invoke.
 - Clean up temporary scripts; use the session scratchpad, not the repo.
 

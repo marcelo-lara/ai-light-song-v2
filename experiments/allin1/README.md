@@ -10,7 +10,7 @@ downbeat *phase* (never the beat times) from this same model's output for
 their content now lives in the production **Sections** lane and in
 `song_event_timeline.json`'s transition events. The measurements below are
 kept exactly as run; they do not go stale (measured evidence does not go stale). Archive entry:
-[`../../docs/archive/experiments.md`](../../docs/archive/experiments.md).
+[`../../docs/archive/experiments_promoted.md`](../../docs/archive/experiments_promoted.md).
 
 ## The question
 
