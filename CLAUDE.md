@@ -58,7 +58,7 @@ the best account of what actually works, and it does not go stale with age.
 | --- | --- | --- |
 | 1 **measure** | audio | facts that cannot be musically wrong — beat grid, loudness, spectra, chroma, stems |
 | 2 **interpret** | phase 1 + audio | claims — chords, key, sections and their names, drum events, genre |
-| 3 **relate** | phase 2 only, **never audio** | identity, repetition, transitions, composite gestures |
+| 3 **relate** | phases 1-2, **never audio** | identity, repetition, transitions, composite gestures |
 | 4 **publish** | phases 1-3 | the projected deliverables, and nothing else |
 
 The 1/2 line is **not** DSP vs. ML — it is *does this stage assert something
@@ -80,7 +80,8 @@ Full numbers, per-song breakdowns and root causes:
 | Gestures (`gestures.py`) | **better than what it replaced**: 4/7 @±1.0 s vs 2/7. Per-primitive *precision* has never been audited — see `docs/issues.md` |
 | Section identity | **not shipped.** MFCC 0.73 is the number any attempt must beat |
 | Character blocks (texture, not arrangement) | **measured in `experiments/clap/`, not shipped** |
-| `mcp/` server + delivery surface | **built and green.** Three tools (`list_songs`, `get_song_overview`, `get_detail`); eight top-level files per song (`info`, `beats`, `hints`, `sections`, `song_event_timeline`, `genre`, `drum_events`, `loudness`), each carrying a `field_sources` attribution header |
+| Arrangement state (`detect-arrangement-state`, phase 3) | informative on `_test_song` (F1 0.59 vs `sections.json` 0.00), unmeasured elsewhere; honest `null` confidence off the margin |
+| `mcp/` server + delivery surface | **built and green.** Three tools (`list_songs`, `get_song_overview`, `get_detail`); nine top-level files per song (`info`, `beats`, `hints`, `sections`, `song_event_timeline`, `genre`, `drum_events`, `loudness`, `arrangement_state`), each carrying a `field_sources` attribution header |
 
 ## Rules that are load-bearing
 

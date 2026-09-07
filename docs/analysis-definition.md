@@ -32,7 +32,8 @@ Four rules govern the phases:
    uncertain about. From phase 2 onward, confidence and provenance are mandatory.
 2. **Phase 3 is defined by its input, not its determinism.** Chord-pattern
    mining is deterministic arithmetic and still belongs in phase 3. The rule is
-   structural: phase 3 reads phase 2's output and **never opens the audio**.
+   structural: phase 3 reads earlier phases' output — phase 2's claims, and
+   phase-1 series such as `loudness.json` — and **never opens the audio**.
    That is what makes it the layer where the show gets its shape — which
    sections are the same one returning, that a transition is `chorus → inst`,
    that a **drop is derived from a named section pair rather than detected**.
@@ -122,12 +123,21 @@ Chroma extraction and chord decoding stay **two stages, not one** — fusing the
 would make a chroma bug and a decoding bug indistinguishable in the artifact,
 which is exactly the ambiguity that made past chord issues hard to attribute.
 
-### Phase 3 — relate (phase 2 only, **never audio**)
+### Phase 3 — relate (phases 1-2, **never audio**)
 
 | Module | Produces |
 | --- | --- |
 | `gestures.py` | `song_event_timeline.json` — gesture phases + section-pair transitions |
+| `arrangement_state.py` | `artifacts/arrangement_state.json` — per-stem RMS state blocks: who is playing, and where that changes |
 | `hint_alignment.py` | `find_primary_section`, the shared window→section matcher |
+
+`arrangement_state.py` (`detect-arrangement-state`) reads the published
+`loudness.json` — a phase-1 series, not audio — and asserts *who is playing* and
+where a stem enters or leaves. It measures F1 0.59 @0.5 s / 0.75 @1.0 s on
+`_test_song` against `sections.json`'s 0.00; corpus-wide it sits at the noise
+floor of the labels (32 of 47 gold hints are drop stages `gestures.py` owns).
+`confidence` is dB headroom at the stem flip (`margin_db`-derived), not a trained
+score, and is `null` for the leading block that has no flip.
 
 ### Phase 4 — publish
 
@@ -296,15 +306,16 @@ the instinct is to blame the model that reads the output:
 | `gestures.py` | mix FFT + drum onsets | a *state*; it emits build/impact/release events, never "who is playing now" |
 | `loudness.py` | per-stem RMS ✅ | — it publishes the series and draws no conclusion from it |
 
-**The signal is already on the delivery surface as numbers, and no stage turns
-it into a fact.** That is the shape of this gap: a plumbing gap, not a
-perception one. It also means the fix is cheap —
-[`../experiments/arrangement_state/README.md`](../experiments/arrangement_state/README.md)
-recovers 9 of `_test_song`'s 15 hand-marked boundaries to a **median 0.07 s**
-(F1 0.59 @±0.5 s, where the shipped `sections.json` scores 0.00) from arithmetic
-over the published `loudness.json`, with no model and no audio read. It finds
-the Armin `Breath` block at 81.50–95.50 against 81.39–96.33 hand-marked —
-tighter on both edges than the CLAP forward pass.
+**The signal is already on the delivery surface as numbers.** This was a
+plumbing gap, not a perception one, and v3.2 closed it for the arrangement axis:
+`arrangement_state.py` (`detect-arrangement-state`, phase 3) turns the published
+`loudness.json` into per-stem state blocks and publishes them as top-level
+`arrangement_state.json`. It recovers 9 of `_test_song`'s 15 hand-marked
+boundaries to a **median 0.07 s** (F1 0.59 @±0.5 s, where `sections.json` scores
+0.00), with no model and no audio read, and finds the Armin `Breath` block at
+83.00–95.50 against 81.39–96.33 hand-marked — tighter on both edges than the
+CLAP forward pass. Full measured record:
+[`archive/experiments_promoted.md`](archive/experiments_promoted.md).
 
 Three findings from that work that generalise beyond it:
 

@@ -198,11 +198,14 @@ enriches a row the pipeline is already publishing.
 
 What stands between it and that promotion is the ground truth, and only that.
 The thresholds are hand-set against 10 blocks in a 58-second synthetic excerpt.
-Mark texture on `Titanium` and `Hideaway` first; the arrangement-state entry is
-blocked on exactly the same labels, and one marking session unblocks both.
+Mark texture on `Titanium` and `Hideaway` first; the shipped
+`detect-arrangement-state` stage's corpus number is stuck at the same label
+noise floor ([`issues.md`](issues.md)), and one marking session unblocks both.
 
-One warning for whoever tunes this next, from `arrangement_state`'s
-Measurement 1: this experiment's `smooth_s: 2.0` / `min_block_s: 4.0` is why it
+One warning for whoever tunes this next, from the shipped
+`detect-arrangement-state` stage's Measurement 1
+([`archive/experiments_promoted.md`](archive/experiments_promoted.md)): this
+experiment's `smooth_s: 2.0` / `min_block_s: 4.0` is why it
 emits only three blocks on `_test_song` and misses the 16 s vocal entry, the
 36.5 s `Spacer` and the whole outro structure. **The smoothing was the cost, not
 the stems.**
@@ -455,17 +458,17 @@ naive mix-RMS threshold once its firing rate is accounted for, and the two were
 never compared at a matched budget. Part B (forced alignment) was never built.
 
 **Do not build the budget-matched ablation this entry asked for.** A cheaper
-test now exists and probably settles it. `arrangement_state` — promoted into the
-pipeline in v3.2 as the `detect-arrangement-state` stage — emits
-`+vocals` / `-vocals` edges from the same per-stem RMS series, and its
-Measurement 1 shows that hysteresis-plus-smoothing, which is exactly this
-entry's method, **halves** F1 on `_test_song` (0.59 → 0.27) and displaces a
-hand-marked boundary by 6 s. So the decision path is:
+test now exists and probably settles it. `arrangement_state` — shipped in v3.2 as
+the `detect-arrangement-state` phase-3 stage — emits `+vocals` / `-vocals` edges
+from the same per-stem RMS series, and its Measurement 1
+([`archive/experiments_promoted.md`](archive/experiments_promoted.md)) shows that
+hysteresis-plus-smoothing, which is exactly this entry's method, **halves** F1 on
+`_test_song` (0.59 → 0.27) and displaces a hand-marked boundary by 6 s. So the
+decision path is:
 
 > Score the shipped `detect-arrangement-state` stage's vocal edges against this
-> entry's existing 94-boundary scorer. If the stage that is being promoted
-> anyway matches or beats this detector, this entry archives with **zero** new
-> production code.
+> entry's existing 94-boundary scorer. If the stage that shipped anyway matches
+> or beats this detector, this entry archives with **zero** new production code.
 
 Only if the standalone detector wins that comparison is the budget-matched
 ablation against mix-RMS worth running.
@@ -728,232 +731,6 @@ The top-level `sections.json` and `artifacts/section_segmentation/sections.json`
 
 ---
 
-## Arrangement state — *who is playing*, from a file we already publish
-
-No model, no repo. The detector is arithmetic over
-`data/analysis/{song}/loudness.json`:
-[`../experiments/arrangement_state/README.md`](../experiments/arrangement_state/README.md)
-
-### Status
-
-**[PROMOTING] — v3.2, plan written.** The v3.2 implementation plan promotes the
-detector into a phase-3 `detect-arrangement-state` stage and publishes a new
-top-level `arrangement_state.json`. This entry is retired by that plan's item 5,
-which deletes `experiments/arrangement_state/` and moves this text to the
-archive; it stays here until the production path is proven.
-
-Promoted on `_test_song` evidence alone, knowingly: F1 0.59 @0.5 s (median hit
-error 0.07 s) where `sections.json` scores 0.00, and unmeasurable on the other
-three gold songs because their hand-marked hints are almost entirely drop
-stages. That is a limit of the labels, not of the detector — see
-[Loose ends](#loose-ends).
-
-The file is shaped so the **CLAP character layer** can fuse a `feel` field into
-the same rows later without a rewrite: the stems say what is playing, CLAP says
-how it feels. The two entries' shared contract question is therefore settled by
-this plan, not left open.
-
-### Why? What for?
-
-It began as a question about the debugger. Reading `_test_song`'s per-stem RMS
-lane, the operator said:
-
-> bars 7–15 there is a voice approach to a high energy region from bar 15–22 …
-> we do not want the exact name, but something to tell "something is happening
-> here, that is different to other region". Why is it so hard for models to
-> infer something there?
-
-Everything the authoring model is told about those fifteen seconds is one row:
-
-```
-section-002   14.82 → 58.05   "chorus [unverified]"   confidence 0.446
-```
-
-A single 43-second section covering the vocal approach, the drop, the
-high-energy region, the spacer and the whole outro. The model is not failing to
-infer a contrast — the surface it reads has no contrast on it.
-
-And the reason is structural, not acoustic. Every producer of published
-structure reads something other than the stems: `segmentation.py` reads a mix
-spectrogram and quantises to 8 bars (≈14.8 s on this song — longer than the
-entire high-energy region it would need to name); `harmonic.py` reads HPCP, and
-the chord is `D#m` on both sides of every boundary in question; `gestures.py`
-reads mix FFT and drum onsets and emits *events*, never a state. The one stage
-that reads the stems, `loudness.py`, publishes the series and draws no
-conclusion from it.
-
-So the signal is already in the delivery surface, as numbers, and nothing turns
-it into a fact. This is a plumbing gap, not a perception problem — which is
-exactly why it is worth an experiment rather than a model.
-
-### Experiment Plan
-
-Under [`../experiments/arrangement_state/`](../experiments/arrangement_state/),
-stdlib only, run in the ordinary `app` service:
-
-```bash
-docker compose run --rm --no-deps -T --entrypoint python app \
-  -m experiments.arrangement_state.run score
-docker compose run --rm --no-deps -T --entrypoint python app \
-  -m experiments.arrangement_state.run export
-docker compose run --rm --no-deps -T --entrypoint python app \
-  -m experiments.arrangement_state.run ablation
-docker compose run --rm --no-deps -T --entrypoint python app \
-  -m experiments.arrangement_state.run margin-sweep
-docker compose run --rm --no-deps -T --entrypoint python app \
-  -m experiments.arrangement_state.run breath-compare
-```
-
-Every table below regenerates from one of these five commands into
-`experiments/arrangement_state/out/*.txt` — none of the numbers in this entry
-are asserted.
-
-`detector.py` reads the **published** `loudness.json` — not the artifact — so
-the result also demonstrates that a phase-3 stage could produce this without
-touching audio. Three decisions carry it:
-
-1. **Per-stem, per-song thresholds.** A stem sounds when it is within 18 dB of
-   its own 98th percentile in this song. Nothing absolute, nothing shared
-   between stems or songs.
-2. **Detect at 250 ms, gate on persistence (1.5 s), report the fine edge.** The
-   reported time is never a smoothed centre.
-3. **The mix channel never triggers a change** — it is a sum of the stems.
-
-Every change carries `margin_db`, the smallest dB headroom among the stems that
-flipped: a measured distance from the decision boundary rather than a tuned
-score, and the natural confidence for a published row.
-
-**Measured against** the shipped `sections.json` boundaries (the incumbent) and
-an evenly spaced grid given the same detection budget (the baseline that killed
-CLAP semantic novelty). **Ground truth** is the start time of every hint in
-`reference/human/human_hints.json` — the operator's own answer to "something
-different starts here".
-
-**Reach test — which projected file this lands in.** Not yet decided, and it is
-the open contract question: either new rows in `sections.json` distinguished by
-kind, or a new top-level character/texture file. Whichever is chosen must serve
-the CLAP entry too. Nothing here is worth building into `src/` until that is
-settled.
-
-**Still to do:** the UI lane is built (`reference/proposals/arrangement_state.json`
-renders as the "Arrangement State" lane in `ui/src/timeline/laneState.ts`,
-positioned below Moises Lyrics / above Drop Proposals, so this can now be
-judged by ear against Human Hints). The one thing outstanding is texture hints
-on `Hideaway`, `Armin` and `Titanium`.
-
-### Results evidence
-
-Full report: [`../experiments/arrangement_state/out/score.txt`](../experiments/arrangement_state/out/score.txt).
-
-**`_test_song` — the one song labelled densely enough to measure.** 15 hints in
-58 s:
-
-| method | n | P / R / F1 @ 0.5 s | @ 1.0 s |
-| --- | --- | --- | --- |
-| **arrangement state** | 17 | **0.59 / 0.60 / 0.59** | **0.76 / 0.73 / 0.75** |
-| shipped `sections.json` (incumbent) | 1 | 0.00 / 0.00 / 0.00 | 0.00 / 0.00 / 0.00 |
-| even grid, same budget (baseline) | 17 | 0.18 / 0.27 / 0.21 | 0.47 / 0.73 / 0.57 |
-
-Median absolute error over the nine hits is **0.07 s**. The operator's two named
-boundaries land at `29.75 +bass -vocals` (hint `High Energy`, 29.59, d=+0.16)
-and `42.50 -bass` (hint `Outro start`, 42.48, d=+0.02).
-
-The six misses partition cleanly and **none belong to this detector**: `Drum
-Hit` (a 186 ms one-shot → `gestures.py`), the three drop stages at 27.6–29.1
-(sub-bar gesture internals → `gestures.py`), `Vocal Outro 3` (a phrase split
-inside continuous vocals → the vocal-phrase entry above) and `prepare for end`
-(a fade, not a stem flip → an envelope-slope term nobody has built). The four
-together account for 15/15, and three already exist.
-
-**The Armin `Breath` block, without a model.** The reference case for the whole
-character line of work. `run breath-compare` computes every cell from files at
-run time — the hand-marked span from `human_hints.json`, the arrangement-state
-block from `detector.blocks()`, and the CLAP row from
-`reference/proposals/character.json` block `char-004`:
-
-| source | block | start error | end error |
-| --- | --- | --- | --- |
-| hand-marked | 81.39 – 96.33 | — | — |
-| **arrangement state (stems only)** | **83.00 – 95.50** | **+1.61 s** | **−0.83 s** |
-| CLAP character layer (`stems+clap`, `char-004`) | 83.50 – 95.00 | +2.11 s | −1.33 s |
-
-**Correction from an earlier draft of this table:** the arrangement-state start
-was previously reported as `81.50` (+0.11 s), which merged by hand across a
-1.75 s drum re-entry at 81.25–83.0 s that the detector reports as its own
-block. The mechanically-correct block matching "no intense section" is
-`83.00–95.50`; the earlier number was not reproducible from the committed
-detector and has been replaced. It is still tighter than the GPU pass on both
-edges, by a smaller margin than first claimed. This does not overturn the CLAP
-ablation — the calm/intense axis still cuts a texture detector's false territory
-from 73 % to 41 % — it confirms that experiment's own division of labour: the
-stems say *what is playing*, CLAP says *how it feels*.
-
-**Smoothing is the failure mode, and it is not a small effect.** `detector.py`
-now implements the smoothed variant explicitly as `detect_smoothed()`, so
-`run ablation` regenerates this table rather than asserting it — duty cycle
-(mean presence over the ±1.0 s neighbourhood) gated by hysteresis, in place of
-the persistence gate, same song:
-
-| variant | n | P / R / F1 @ 0.5 s | `Spacer` boundary error |
-| --- | --- | --- | --- |
-| **persistence gate, fine edge reported (shipped)** | 17 | **0.59 / 0.60 / 0.59** | **0.00 s** |
-| ±1 s duty-cycle smoothing + hysteresis | 15 | 0.27 / 0.27 / 0.27 | 6.00 s |
-
-This is "the physical onset wins over the nearest grid position" as a number,
-and it explains a known result: the CLAP character layer's `smooth_s: 2.0` is
-why it emits three blocks on `_test_song`, missing the 16 s vocal entry, the
-`Spacer` and the whole outro.
-
-**The corpus — and why its number measures the labels, not the detector.**
-
-| song | hints | state F1 @0.5 s | incumbent F1 @0.5 s | grid F1 @0.5 s |
-| --- | --- | --- | --- | --- |
-| `_test_song` | 15 | **0.59** | 0.00 | 0.21 |
-| `Hideaway - Kiesza` | 5 | 0.13 | **0.33** | 0.00 |
-| `Armin - Revolution` | 12 | 0.20 | **0.24** | 0.09 |
-| `Titanium - David Guetta ft Sia` | 15 | 0.07 | **0.33** | 0.07 |
-| **corpus (pooled)** | 47 | **0.20** (R 0.43) | **0.24** (R 0.19) | 0.08 (R 0.19) |
-
-Read straight, the detector loses to the incumbent on pooled F1 while more than
-doubling its recall. Both halves are real, and the cause is the label set:
-**32 of the 47 corpus hints are the five stages of a drop** — Hideaway 5 of 5,
-Titanium 15 of 15, Armin 10 of 12. Those belong to `gestures.py`. Outside
-`_test_song` the corpus holds exactly **two** texture hints. So on three of four
-gold songs every genuine arrangement change is scored as a false positive by
-construction.
-
-Tuning does not rescue it, which is the confirming check: `run margin-sweep`
-filters `detect()`'s own changes to `margin_db >= threshold` and rescores —
-gating trades recall for precision and never improves pooled corpus F1 @0.5 s:
-
-| min `margin_db` | 0 | 2 | 4 | 6 | 8 | 10 | 12 | 15 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| pooled F1 @0.5 s | 0.20 | 0.20 | 0.19 | 0.18 | 0.17 | 0.16 | 0.10 | 0.10 |
-
-That is the expected shape for a detector whose false positives are mostly
-unlabelled true positives.
-
-### Conclusion
-
-**The contrast the operator can read off the UI in one glance is recoverable by
-arithmetic over a file the pipeline already publishes, and no shipped stage
-looks for it.** F1 0.59 @0.5 s on `_test_song` where `sections.json` scores
-0.00 (median hit error 0.07 s), and the reference `Breath` block found tighter
-on both edges than a CLAP forward pass.
-
-The honest limit is the ground truth, not the method: the corpus score is
-measuring an absence of texture labels on three of the four gold songs. **Mark
-texture blocks there before tuning anything** — the detector is being promoted
-on one song's evidence, which is a knowing bet, not a measured corpus result.
-See [Loose ends](#loose-ends).
-
-Both things this conclusion once listed as outstanding are done: the UI lane is
-built, and the contract decision shared with the CLAP entry is taken — a new
-top-level `arrangement_state.json`, with room for a CLAP `feel` field on the
-same rows.
-
----
-
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.
@@ -962,27 +739,13 @@ task.
 
 ### The gold set has almost no non-drop ground truth
 
-Counted directly from `reference/human/human_hints.json` on 2026-09-06:
-
-| song | drop-stage hints | everything else |
-| --- | --- | --- |
-| `_test_song` (58 s, synthetic) | 5 | **10** |
-| `Titanium - David Guetta ft Sia` | 15 | **0** |
-| `Hideaway - Kiesza` | 5 | **0** |
-| `Armin - Revolution` | 10 | **2** |
-
-**12 non-drop hints in the whole gold set, 10 of them inside one 58-second
-synthetic excerpt.** Every open entry that is not about drops is being scored
-against labels that mostly do not exist — which is why `arrangement_state` is
-promotable on `_test_song` alone and unmeasurable elsewhere, and why the CLAP
-character thresholds are hand-set.
-
-This is the standing rule "ground truth is precious and scarce — when a
-measurement sits at the noise floor of the labels, say so and fix the labels
-rather than tuning against them" coming due. **Marking texture blocks on
-`Titanium` and `Hideaway` in the debugger unblocks three entries at once** and
-is worth more than any method work currently queued. It is an operator task: the
-hints are hand-authored truth and nothing in the pipeline may write them.
+The counted table now lives in [`issues.md`](issues.md) ("Texture hints missing
+on three gold songs"): 12 non-drop hints in the whole gold set, 10 of them inside
+the 58-second synthetic `_test_song`. This loose end stays here because the gap
+still blocks the **CLAP character layer** entry above — its thresholds are
+hand-set against those absent labels, and it does not disappear now that
+`arrangement_state` has left the queue. One texture-marking session on
+`Titanium` and `Hideaway` unblocks both.
 
 ### One sandbox image unblocks the two best open entries
 
@@ -1005,7 +768,7 @@ promoted, and three are now stranded by the 2026-09-06 archive decisions:
 | `reactive_bands` | experiment archived — **retire** |
 | `grid` | experiment archived — **retire** |
 | `vocal_transcription` | VocalParse archived, but **keep** — shared with the open ACE-Step entry |
-| `arrangement_state` | promoted by v3.2 item 4 to read the top-level file instead |
+| `arrangement_state` | promoted — lane repointed to the top-level file in v3.2 item 4, **done** |
 | `character`, `vocal_phrases` | entries still open — keep |
 | `drop_impacts` | see below |
 

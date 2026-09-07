@@ -112,10 +112,10 @@ stall the whole run; everything independent of it still gets built.
 | Analyzer tests | `docker compose run --rm test` on every item that touches `src/` |
 | MCP regression | `smoke-test` on item 3; `full-regression` on items 3 and 5 |
 | UI tests | `npm run test` + `npm run build` on item 4 |
-| Done | 4 (items 1-4; item 4 non-visual — screenshot QA pending) |
+| Done | 5 |
 | Contract-change note | [`contract-change-v3.1.md`](contract-change-v3.1.md) — extended by item 2 (new `§9`) |
 | New pipeline stages | 2 — `detect-arrangement-state` (3.2), `publish-arrangement-state` (7.3) |
-| Blocking decisions (`D`) | none open — D1–D8 all resolved in this document |
+| Blocking decisions (`D`) | none open — D1–D9 all resolved in this document |
 
 ---
 
@@ -455,7 +455,7 @@ below are sequenced, not a set. `experiments/arrangement_state/README.md` holds
 content that exists nowhere else, and deleting it before lifting that content
 out destroys measured evidence permanently.
 
-- [ ] **Archive the queue entry — and lift the README's findings into it.** Move
+- [x] **Archive the queue entry — and lift the README's findings into it.** Move
   the [`docs/experiments.md`](experiments.md) "Arrangement state" section to
   [`docs/archive/experiments_promoted.md`](archive/experiments_promoted.md),
   rewritten in the past
@@ -489,7 +489,7 @@ out destroys measured evidence permanently.
   `Titanium` are still unmarked, so the corpus number stays uninformative, and
   point at the [`issues.md`](issues.md) entry the next-but-one bullet creates.
   Remove the section from `docs/experiments.md`.
-- [ ] **Add the headline row** to the summary table at the top of
+- [x] **Add the headline row** to the summary table at the top of
   [`experiments_promoted.md`](archive/experiments_promoted.md), in its existing
   `experiment | replaced | headline` shape:
 
@@ -498,73 +498,73 @@ out destroys measured evidence permanently.
   ```
 
   A reader who only reads that table must still see that this entry exists.
-- [ ] **Delete `experiments/arrangement_state/`** in full — `detector.py`,
+- [x] **Delete `experiments/arrangement_state/`** in full — `detector.py`,
   `export.py`, `score.py`, `run.py`, `paths.py`, `__init__.py`, `out/`,
   `README.md`. **Only after the bullet above has landed the README's findings in
   the archive.** The commit message states where the content now lives:
   `src/analyzer/stages/arrangement_state.py` (detection), the top-level
   `arrangement_state.json` (delivery surface), and
   `docs/archive/experiments_promoted.md` (the measured record).
-- [ ] **`docs/issues.md`** — add a pending issue: "Texture hints missing on
+- [x] **`docs/issues.md`** — add a pending issue: "Texture hints missing on
   three gold songs — `arrangement_state` corpus F1 measures the label absence,
   not the detector" with the success condition (texture blocks marked, corpus
   re-scored). Give it the counted table from `docs/experiments.md`
   "Loose ends" — 12 non-drop hints across the gold set, 10 of them inside the
   58-second synthetic `_test_song`.
-- [ ] **`docs/experiments.md` "Loose ends"** — the ground-truth gap now has one
+- [x] **`docs/experiments.md` "Loose ends"** — the ground-truth gap now has one
   home, and it is `issues.md`. Replace the "The gold set has almost no non-drop
   ground truth" subsection's body with a one-line pointer to that issue, keeping
   the sentence that says the gap still blocks the **CLAP character layer**
   entry, which is why the loose end does not disappear when this entry leaves
   the queue.
-- [ ] **`docs/experiments.md` — the Vocal-phrase entry's `[OPEN]` status.** It
+- [x] **`docs/experiments.md` — the Vocal-phrase entry's `[OPEN]` status.** It
   already says `arrangement_state` is "promoted into the pipeline in v3.2 as the
   `detect-arrangement-state` stage" and hangs its whole decision path on that
   experiment's Measurement 1. Repoint that citation at the archived entry in
   `experiments_promoted.md` — the README it implicitly leans on is gone — and
   make the tense match reality (shipped, not pending). Do **not** change the
   decision the entry records.
-- [ ] **`CLAUDE.md`** — add the phase-3 `detect-arrangement-state` stage to the
+- [x] **`CLAUDE.md`** — add the phase-3 `detect-arrangement-state` stage to the
   "Current state" table (a new row: *"informative on `_test_song` (F1 0.59 vs
   0.00), unmeasured elsewhere; honest `null` confidence off the margin"*); update
   the `mcp/` row to "nine top-level files" and add `arrangement_state` to the
   list.
-- [ ] **`CLAUDE.md` — the four-phases table.** Phase 3's "Reads" cell says
+- [x] **`CLAUDE.md` — the four-phases table.** Phase 3's "Reads" cell says
   *"phase 2 only, **never audio**"*. `detect-arrangement-state` reads
   `loudness.json`, a **phase-1** published series, so that cell becomes
   *"phases 1-2, **never audio**"*. The load-bearing half of the rule is "never
   audio" and it still holds — the stage touches no audio, no spectrogram and no
   model. Make this edit; do not treat the mismatch as a blocker.
-- [ ] **`docs/analysis-definition.md`** — document the new stage: what it reads
+- [x] **`docs/analysis-definition.md`** — document the new stage: what it reads
   (`loudness.json`), what it asserts (who is playing, and where that changes),
   how it measures (`_test_song` F1 0.59 @0.5 s / 0.75 @1.0 s vs `sections.json`
   0.00; corpus at the label noise floor), and that `confidence` is dB headroom
   at the stem flip, not a trained score. Place it in phase 3 beside
   `segmentation.py`.
-- [ ] **`docs/mcp-definition.md`** — confirm the status banner and file count
+- [x] **`docs/mcp-definition.md`** — confirm the status banner and file count
   match items 2–3 (fold in here if item 3 left anything).
-- [ ] **`ui/src/timeline/laneState.ts` comment** — the block comment listing
+- [x] **`ui/src/timeline/laneState.ts` comment** — the block comment listing
   "experiment lanes still left" no longer includes `arrangementState`; verify
   item 4 removed it and fix here if not.
 
 **Validation**
 
-- [ ] `docker compose run --rm test` green.
-- [ ] `docker compose run --rm ui npm run test && docker compose run --rm ui npm run build` clean.
-- [ ] `full-regression` for `mcp/` green.
-- [ ] `grep -rn "arrangement_state\|arrangementState" experiments` returns
+- [x] `docker compose run --rm test` green.
+- [x] `docker compose run --rm ui npm run test && docker compose run --rm ui npm run build` clean.
+- [x] `full-regression` for `mcp/` green.
+- [x] `grep -rn "arrangement_state\|arrangementState" experiments` returns
   nothing.
-- [ ] **Evidence survived the delete.** `grep -n "Negative results worth not
+- [x] **Evidence survived the delete.** `grep -n "Negative results worth not
   rediscovering" docs/archive/experiments_promoted.md` matches, and the four
   findings
   under it are present. This check exists because the delete is irreversible and
   the list had exactly one copy before this item ran.
-- [ ] `grep -rn "implementation-plan-v3.2" docs/ CLAUDE.md` returns nothing
+- [x] `grep -rn "implementation-plan-v3.2" docs/ CLAUDE.md` returns nothing
   outside the plan file itself — no doc may link a plan that is deleted when the
   release closes.
-- [ ] The ground-truth gap appears in `docs/issues.md` and is *pointed at*, not
+- [x] The ground-truth gap appears in `docs/issues.md` and is *pointed at*, not
   restated, from `docs/experiments.md` "Loose ends".
-- [ ] `docker compose run --rm app ./analyze --song "/data/songs/_test_song.mp3"`
+- [x] `docker compose run --rm app ./analyze --song "/data/songs/_test_song.mp3"`
   end to end; `arrangement_state.json` present and valid; validation report not
   regressed.
 

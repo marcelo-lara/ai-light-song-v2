@@ -103,3 +103,34 @@ Current focus song: `_test_song`
 - **Success condition:** all three resolved, or the suite's scope explicitly
   narrowed to exclude them.
 
+### Texture hints missing on three gold songs — `arrangement_state` corpus F1 measures the label absence, not the detector
+
+- **Status:** `pending`
+- **Raised:** 2026-09-07, on promoting `arrangement_state` into the pipeline
+  (v3.2). The stage shipped on `_test_song` evidence alone, knowingly.
+- **Problem:** `detect-arrangement-state` scores F1 0.59 @0.5 s on `_test_song`
+  vs `sections.json`'s 0.00, but corpus-wide sits at 0.20 pooled — *below* the
+  incumbent — because the gold hints are almost all drop stages, which
+  `gestures.py` owns. Counted from `reference/human/human_hints.json`:
+
+  | song | drop-stage hints | everything else |
+  | --- | --- | --- |
+  | `_test_song` (58 s, synthetic) | 5 | **10** |
+  | `Titanium - David Guetta ft Sia` | 15 | **0** |
+  | `Hideaway - Kiesza` | 5 | **0** |
+  | `Armin - Revolution` | 10 | **2** |
+
+  12 non-drop hints in the whole gold set, 10 of them inside one 58-second
+  synthetic excerpt. On three of four gold songs every genuine arrangement
+  change the detector finds is scored as a false positive by construction.
+  `margin-sweep` confirms tuning does not help — gating `margin_db` 0 → 15 dB
+  never improves pooled F1.
+- **Validation target:** `Hideaway - Kiesza`, `Armin - Revolution`,
+  `Titanium - David Guetta ft Sia`, marked in the debugger against the waveform.
+- **Success condition:** texture blocks are marked on all three in
+  `reference/human/human_hints.json` and the `arrangement_state` corpus F1 is
+  re-scored against them — so the number measures the detector, not the labels.
+  Marking the same blocks also unblocks the **CLAP character layer** entry in
+  `docs/experiments.md`. It is an operator task: the hints are hand-authored
+  truth and nothing in the pipeline may write them.
+
