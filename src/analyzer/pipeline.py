@@ -25,7 +25,7 @@ from analyzer.stages.loudness import extract_mix_stem_loudness
 from analyzer.stages.segmentation import segment_sections
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import extract_timing_grid
-from analyzer.stages.ui_data import build_ui_data
+from analyzer.stages.ui_data import build_ui_data, publish_arrangement_state
 from analyzer.stages.validation import (
     build_validation_report,
     skipped_result,
@@ -51,6 +51,7 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "extract-energy-features": "2.6",
     "segment-sections": "3.1",
     "detect-arrangement-state": "3.2",
+    "publish-arrangement-state": "7.3",
     "derive-energy-layer": "4.1",
     "build-gestures": "5.0",
     "classify-genre": "6.1",
@@ -190,6 +191,10 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
     if stage_name == "detect-arrangement-state":
         _required_output_payload(paths, stage_name, paths.loudness_output_path)
         _run_stage(paths.song_name, "phase-1", stage_name, detect_arrangement_state, paths)
+        return 0
+    if stage_name == "publish-arrangement-state":
+        _required_artifact_payload(paths, stage_name, "arrangement_state.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, publish_arrangement_state, paths)
         return 0
     if stage_name == "derive-energy-layer":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
@@ -368,6 +373,10 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         # build-ui-data has just published — it runs immediately after, never
         # earlier (D4). Run order has never matched id order.
         _run_stage(paths.song_name, "phase-1", "detect-arrangement-state", detect_arrangement_state, paths)
+        # publish-arrangement-state (7.3) fuses the artifact just written into the
+        # top-level arrangement_state.json (D4) — publishing outside build-ui-data,
+        # like generate-section-hints already does for hints.json.
+        _run_stage(paths.song_name, "phase-1", "publish-arrangement-state", publish_arrangement_state, paths)
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
         # v3.1 item 2 — attribution header. `bpm` and `duration` are essentia's

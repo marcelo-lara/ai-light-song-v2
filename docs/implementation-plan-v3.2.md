@@ -112,10 +112,10 @@ stall the whole run; everything independent of it still gets built.
 | Analyzer tests | `docker compose run --rm test` on every item that touches `src/` |
 | MCP regression | `smoke-test` on item 3; `full-regression` on items 3 and 5 |
 | UI tests | `npm run test` + `npm run build` on item 4 |
-| Done | 1 (item 1) |
+| Done | 2 (items 1-2) |
 | Contract-change note | [`contract-change-v3.1.md`](contract-change-v3.1.md) — extended by item 2 (new `§9`) |
 | New pipeline stages | 2 — `detect-arrangement-state` (3.2), `publish-arrangement-state` (7.3) |
-| Blocking decisions (`D`) | none open — D1–D4 all resolved in this document |
+| Blocking decisions (`D`) | none open — D1–D6 all resolved in this document |
 
 ---
 
@@ -226,9 +226,9 @@ stall the whole run; everything independent of it still gets built.
 
 ## Item 2 — `publish-arrangement-state` stage, top-level `arrangement_state.json`
 
-- [ ] **`paths.py` accessor.** `arrangement_state_output_path` on `SongPaths`,
+- [x] **`paths.py` accessor.** `arrangement_state_output_path` on `SongPaths`,
   beside `loudness_output_path`.
-- [ ] **`publish_arrangement_state(paths)`** in
+- [x] **`publish_arrangement_state(paths)`** in
   [`src/analyzer/stages/ui_data.py`](../src/analyzer/stages/ui_data.py), beside
   `_publish_genre` / `_publish_loudness`. Public, not `_`-prefixed, because a
   second module calls it — it is **not** called from `build_ui_data`, which has
@@ -255,21 +255,21 @@ stall the whole run; everything independent of it still gets built.
   }
   ```
 
-- [ ] **Register `publish-arrangement-state` (7.3)** in
+- [x] **Register `publish-arrangement-state` (7.3)** in
   [`pipeline.py`](../src/analyzer/pipeline.py), immediately after
   `detect-arrangement-state`, calling `publish_arrangement_state`. Its
   single-stage branch requires `artifacts/arrangement_state.json` through the
   existing `_required_artifact_payload`. Insert
   `publish-arrangement-state | 7.3` after the `build-ui-data` row of the
   `docs/reference/cli.md` stage table.
-- [ ] **Confidence per D1** — `confidence = round(1 - exp(-margin_db / 6.0), 3)`
+- [x] **Confidence per D1** — `confidence = round(1 - exp(-margin_db / 6.0), 3)`
   when `margin_db` is a number, `null` when it is `null`. `stems` is a
   file-level aggregate (the stem vocabulary), provenance-exempt like
   `schema_version`.
-- [ ] **Fuse, don't copy.** Build `field_sources` through `_fuse(...)` with one
+- [x] **Fuse, don't copy.** Build `field_sources` through `_fuse(...)` with one
   candidate producer per field, so a later CLAP `feel` field is a second
   candidate, not a rewrite. Run it through `validate_field_sources`.
-- [ ] **Contract note — new `§9`** in
+- [x] **Contract note — new `§9`** in
   [`contract-change-v3.1.md`](contract-change-v3.1.md): "New top-level file:
   `arrangement_state.json`". State the shape, that `confidence` measures dB
   headroom at the stem flip (not a tuned score), that a block with `margin_db:
@@ -278,22 +278,22 @@ stall the whole run; everything independent of it still gets built.
   must treat its absence as "no arrangement-state read", never an error. Update
   the "What changed, shortest form" list and the "Three new top-level files"
   line (now four).
-- [ ] **`reference/artifacts.md`** — add the `arrangement_state.json` entry
+- [x] **`reference/artifacts.md`** — add the `arrangement_state.json` entry
   (every field, its type, its meaning) and its row in the "`field_sources` per
   file" table. Note the intended CLAP `feel` extension point.
 
 **Validation**
 
-- [ ] `docker compose run --rm test` green, including the fusion-never-reads-
+- [x] `docker compose run --rm test` green, including the fusion-never-reads-
   `reference/` test extended to the new publisher.
-- [ ] New test in `tests/test_publish_views.py` (or a new
+- [x] New test in `tests/test_publish_views.py` (or a new
   `tests/test_arrangement_state_publish.py`): on a synthetic
   `artifacts/arrangement_state.json` written into a `tempfile` song dir — same
   construction as `tests/test_loudness_publish.py`, since no analysis data is
   committed — `publish_arrangement_state` emits every block, `confidence` is
   monotone in `margin_db`, and the leading block carries
   `margin_db: null` / `confidence: null`.
-- [ ] Full pipeline run on `_test_song` writes
+- [x] Full pipeline run on `_test_song` writes
   `data/analysis/_test_song/arrangement_state.json` and it validates against the
   documented shape.
 
@@ -662,3 +662,20 @@ Rejected:
 - **Hoist `_publish_loudness` into its own earlier stage.** Refactors shipped,
   green publishing code to accommodate a new consumer. The two-stage answer
   touches nothing that already works.
+
+### D6 — `stems` on the artifact — resolved as: `detect-arrangement-state` writes `stems: result.stems` into `artifacts/arrangement_state.json`; the publisher copies it as a file-level aggregate
+
+The plan's documented top-level `arrangement_state.json` carries
+`"stems": ["bass","drums","harmonic","vocals"]`, but the artifact written by
+`detect_arrangement_state()` (item 1) had shape
+`{schema_version, generated_from, blocks}` — no top-level `stems`.
+
+**Resolved:** `detect_arrangement_state()` now writes `"stems": result.stems`
+(the `Result.stems` field already excludes `"mix"`) into the artifact, between
+`generated_from` and `blocks`. `publish_arrangement_state` copies that list
+verbatim as a file-level aggregate (provenance-exempt, like `schema_version` —
+no `field_sources` entry). This keeps the publisher a pure fuse-and-strip step:
+it never re-derives the stem vocabulary. Item 1's checkboxes are unchanged; the
+only effect on item 1's output is that the artifact shape gained a `stems` key.
+
+*Not blocking.*

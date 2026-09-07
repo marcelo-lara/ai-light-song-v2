@@ -226,6 +226,10 @@ def detect_arrangement_state(paths: SongPaths) -> dict:
             "hold_s": HOLD_S,
             "hold_agreement": HOLD_AGREEMENT,
         },
+        # Stem vocabulary (excludes "mix"). Copied verbatim by the publish stage
+        # as a file-level aggregate — the publisher stays a pure fuse-and-strip
+        # step and never re-derives it (plan D6).
+        "stems": result.stems,
         "blocks": blocks(result),
     }
     write_json(paths.artifact("arrangement_state.json"), payload)

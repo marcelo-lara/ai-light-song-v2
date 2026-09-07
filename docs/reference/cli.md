@@ -68,6 +68,7 @@ is authoritative over this list.
 | `classify-genre` | 6.1 |
 | `generate-section-hints` | 6.2 |
 | `build-ui-data` | 7.2 |
+| `publish-arrangement-state` | 7.3 |
 | `build-human-hints-alignment` | 8.8 |
 | `build-validation-report`, `write-validation-report`, `write-validation-markdown` | validation |
 

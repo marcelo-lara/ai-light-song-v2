@@ -360,6 +360,7 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.generate_section_hints", return_value=hints_payload))
                 stack.enter_context(patch("analyzer.pipeline.build_ui_data", return_value=ui_outputs))
                 stack.enter_context(patch("analyzer.pipeline.detect_arrangement_state", return_value={"blocks": []}))
+                stack.enter_context(patch("analyzer.pipeline.publish_arrangement_state", return_value="arrangement_state.json"))
                 stack.enter_context(patch("analyzer.pipeline.derive_energy_layer", return_value=energy))
                 stack.enter_context(patch("analyzer.pipeline.build_gestures", return_value=event_timeline))
                 stack.enter_context(patch("analyzer.pipeline.build_human_hints_alignment", return_value=None))

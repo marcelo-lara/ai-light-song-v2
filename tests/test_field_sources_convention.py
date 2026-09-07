@@ -78,6 +78,10 @@ class TopLevelFileHeaderTests(unittest.TestCase):
             text = (repo / rel).read_text()
             self.assertIn("validate_field_sources", text, rel)
 
+    def test_publish_arrangement_state_validates_its_header(self) -> None:
+        src = inspect.getsource(ui_data.publish_arrangement_state)
+        self.assertIn("validate_field_sources", src)
+
 
 if __name__ == "__main__":
     unittest.main()

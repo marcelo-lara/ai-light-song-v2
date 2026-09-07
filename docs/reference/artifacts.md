@@ -11,7 +11,7 @@ data/
   songs/{song}.mp3
   analysis/{song}/
     info.json  beats.json  hints.json  sections.json  song_event_timeline.json
-    genre.json  drum_events.json  loudness.json
+    genre.json  drum_events.json  loudness.json  arrangement_state.json
     artifacts/
       stems/            bass.wav drums.wav harmonic.wav vocals.wav metadata.json
       essentia/         beats.json fft_bands.json hpcp.json
@@ -87,6 +87,7 @@ both.
 | `genre.json` | `field_sources`; `genres`, `confidence`, `top_predictions[]`, `guidance[]` | advisory style context. A **fused view** of `artifacts/genre.json` with host paths stripped — the artifact stays for the analyzer and the debugger. `genres: ["unknown"]` is a valid outcome |
 | `drum_events.json` | `field_sources`; `events[]` of `{ time, event_type, confidence }`; `summary` counts; `supported_event_types` | rhythmic pulse. Kick/snare/hat only. A fused view of `artifacts/symbolic_transcription/drum_events.json` — full event list, no decimation (~1,164 events/song); `summary` and `supported_event_types` are file-level and provenance-exempt |
 | `loudness.json` | `field_sources`; `metadata.interval_ms` `20`; `sources[]` of `{ id, label, kind }` (stems, not producers); `frames[]` of `{ time, values, normalized_values }` | fine-resolution per-source loudness. `artifacts/essentia/rms_loudness.json` decimated 10 ms → 20 ms by **averaging pairs** (transient peaks preserved; an unpaired trailing frame is dropped). 20 ms is the floor a caller may request, not what every read returns. The `path` field is dropped from `sources[]` |
+| `arrangement_state.json` | `field_sources`; `stems[]` (stem vocabulary, file-level); `blocks[]` of `{ start_s, end_s, playing[], entered[], left[], margin_db, confidence }` | who is playing and where that changes (sub-section stem-state spans). Fused view of `artifacts/arrangement_state.json` (phase-3 `detect-arrangement-state`, reads only published `loudness.json`). `confidence` is `1 - exp(-margin_db/6)` — dB headroom at the stem flip, not a tuned score. Leading block carries `margin_db: null` / `confidence: null`. **Optional** — absent on pre-v3.2 songs. Intended extension point: a CLAP `feel` field fused into the same rows later |
 
 ### `field_sources` per file
 
@@ -104,6 +105,7 @@ does (a repeated per-row map would be pure token cost).
 | `genre.json` | `genres`, `confidence`, `top_predictions`, `guidance` → `genre` (`unknown` where the estimate is absent) |
 | `drum_events.json` | `time`, `event_type`, `confidence` → `omnizart`. `summary` / `supported_event_types` are file-level aggregates, provenance-exempt like `schema_version` |
 | `loudness.json` | `time`, `values`, `normalized_values` → `essentia`. `metadata` / `sources` are file-level, provenance-exempt |
+| `arrangement_state.json` | `start_s`, `end_s`, `playing`, `entered`, `left`, `margin_db`, `confidence` → `arrangement_state`. `stems` is a file-level aggregate, provenance-exempt like `schema_version` |
 
 ## Artifacts
 

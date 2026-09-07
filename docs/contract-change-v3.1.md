@@ -22,8 +22,8 @@ the implementation plan). `SCHEMA_VERSION` moves `2.0` → `3.0` in this release
   `artifacts/section_segmentation/sections.json`**. (§3)
 - `song_event_timeline.json` rows gain `gesture_id` grouping phases of one
   composite gesture. (§4)
-- Three new top-level files: `genre.json`, `drum_events.json`, `loudness.json`.
-  (§5–7)
+- Four new top-level files: `genre.json`, `drum_events.json`, `loudness.json`,
+  `arrangement_state.json`. (§5–7, §9)
 - `info.json` loses `song_path`, `artifacts`, `outputs`, `generated_from`,
   `debug` — the only removals in the release. (§8)
 
@@ -250,3 +250,42 @@ may read today. A consumer that reads any of them must stop.
 — there is no per-song manifest to read, and there is no host path anywhere in
 `info.json`. `list_songs()` continues to return `song_name` + `bpm` + `duration`
 unchanged.
+
+---
+
+## 9. New top-level file: `arrangement_state.json`
+
+`data/analysis/{song}/arrangement_state.json` — a fused view of
+`artifacts/arrangement_state.json` (phase-3 `detect-arrangement-state`, which
+reads only the published `loudness.json`, never audio). Sub-section stem-state
+spans: who is playing, and where that changes.
+
+```json
+{
+  "schema_version": "3.0",
+  "song_name": "...",
+  "field_sources": { "start_s": "arrangement_state", "end_s": "arrangement_state",
+                     "playing": "arrangement_state", "entered": "arrangement_state",
+                     "left": "arrangement_state", "margin_db": "arrangement_state",
+                     "confidence": "arrangement_state" },
+  "stems": ["bass", "drums", "harmonic", "vocals"],
+  "blocks": [
+    { "start_s": 0.0, "end_s": 22.25, "playing": ["bass","drums","harmonic","vocals"],
+      "entered": [], "left": [], "margin_db": null, "confidence": null },
+    { "start_s": 22.25, "end_s": 25.0, "playing": ["bass","drums","harmonic"],
+      "entered": [], "left": ["vocals"], "margin_db": 6.1, "confidence": 0.64 }
+  ]
+}
+```
+
+- `stems` is the stem vocabulary — a file-level aggregate, provenance-exempt like
+  `schema_version` (no `field_sources` entry).
+- `confidence = round(1 - exp(-margin_db / 6.0), 3)` — a monotone report of the
+  dB headroom of the smallest stem flip at the block boundary, **not a tuned
+  score**. `margin_db` fails as a precision gate (experiment `margin-sweep`), so
+  it is reported, never gated. Raw `margin_db` stays on every row for a
+  consumer's own threshold.
+- The leading span (before the first stem change) has no flip: `margin_db: null`
+  and `confidence: null` — never a filled default.
+- **The file is OPTIONAL.** A song analysed before v3.2 will not have it. The
+  consumer treats its absence as "no arrangement-state read", never an error.

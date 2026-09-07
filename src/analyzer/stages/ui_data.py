@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import re
 
 from analyzer.io import read_json, write_json
@@ -364,6 +365,60 @@ def _publish_loudness(paths: SongPaths) -> str:
     }
     write_json(paths.loudness_output_path, payload)
     return str(paths.loudness_output_path)
+
+
+def publish_arrangement_state(paths: SongPaths) -> str:
+    """v3.2 item 2 — publish the top-level fused view of
+    `artifacts/arrangement_state.json` (phase-3 `detect-arrangement-state`, which
+    reads only the published `loudness.json`).
+
+    A pure fuse-and-strip step: every row field is `arrangement_state`'s today,
+    but the selection goes through `_fuse` so a later CLAP `feel` field slots in
+    as a second candidate without touching the caller. `confidence` is a monotone
+    report of the dB headroom of the smallest stem flip at the block boundary
+    (`1 - exp(-margin_db / 6)`), not a tuned gate — `margin_db` fails as a
+    precision filter (experiment `margin-sweep`), so it is reported, never gated.
+    The leading span before the first stem change has no flip: `margin_db` and
+    `confidence` are both `null`, never a filled default.
+    """
+    artifact = read_json(paths.artifact("arrangement_state.json"))
+    raw_blocks = artifact.get("blocks", [])
+
+    def _confidence(margin_db: object) -> float | None:
+        if isinstance(margin_db, (int, float)) and not isinstance(margin_db, bool):
+            return round(1 - math.exp(-float(margin_db) / 6.0), 3)
+        return None
+
+    blocks = [
+        {
+            "start_s": block["start_s"],
+            "end_s": block["end_s"],
+            "playing": block["playing"],
+            "entered": block["entered"],
+            "left": block["left"],
+            "margin_db": block["margin_db"],
+            "confidence": _confidence(block["margin_db"]),
+        }
+        for block in raw_blocks
+    ]
+
+    row_keys = ("start_s", "end_s", "playing", "entered", "left", "margin_db", "confidence")
+    field_sources = validate_field_sources(
+        _fuse({key: [("arrangement_state", True)] for key in row_keys}),
+        row_keys,
+        file="arrangement_state.json",
+    )
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "field_sources": field_sources,
+        # File-level aggregate (the stem vocabulary), provenance-exempt like
+        # `schema_version` — it describes the file, not a fused per-row value.
+        "stems": artifact.get("stems"),
+        "blocks": blocks,
+    }
+    write_json(paths.arrangement_state_output_path, payload)
+    return str(paths.arrangement_state_output_path)
 
 
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
