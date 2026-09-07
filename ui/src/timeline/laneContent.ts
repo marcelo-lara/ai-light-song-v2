@@ -413,10 +413,11 @@ export function vocalPhrasesContent(file: VocalPhrasesFile | null): SparseBlock[
 }
 
 /**
- * Who-is-playing state-change blocks from `experiments/arrangement_state`
- * (no audio, no model — derived from the published per-stem RMS series). A
- * proposal to audition against Human Hints directly above it (this lane sits
- * below Moises Lyrics, above Drop Proposals).
+ * Who-is-playing state-change blocks from the top-level published
+ * `arrangement_state.json` (the `detect-arrangement-state` stage — no audio,
+ * no model, derived from the published per-stem RMS series). Auditioned
+ * against Human Hints directly above it (this lane sits below Moises Lyrics,
+ * above Drop Proposals).
  *
  * `label` is kept short for a narrow block: the change itself when there is
  * one (`+drums`, `-bass -vocals`, space-joined tokens for multiple stems), or
@@ -455,7 +456,7 @@ export function arrangementStateContent(file: ArrangementStateFile | null): Spar
       }`,
       reference: `arrangement-state-${i + 1}`,
       detail: `playing: ${playingList}`,
-      summary: `experiments/arrangement_state (no model) — who is playing over this span, derived from the published per-stem RMS. ${changeSummary}`,
+      summary: `arrangement_state.json — who is playing over this span, derived from the published per-stem RMS (no model). ${changeSummary}`,
       raw: b,
     };
   });

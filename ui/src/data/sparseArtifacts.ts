@@ -1,6 +1,7 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (drop proposals, character, vocal
-// transcription, vocal phrases, arrangement state, reactive bands, phrase grid).
+// transcription, vocal phrases, reactive bands, phrase grid, and the
+// top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -456,13 +457,16 @@ export async function loadVocalPhrases(
 }
 
 // ---------------------------------------------------------------------------
-// arrangement state — reference/proposals/arrangement_state.json
+// arrangement state — arrangement_state.json (top-level, published)
 // ---------------------------------------------------------------------------
 //
-// Who-is-playing state-change blocks from experiments/arrangement_state,
-// derived from the published per-stem RMS series — no audio, no model. Not
-// ground truth — a proposal to audition against Human Hints, which sits
-// directly above it (below Moises Lyrics, above Drop Proposals).
+// Who-is-playing state-change blocks from the production
+// `detect-arrangement-state` stage, published to the top-level
+// `arrangement_state.json` — derived from the published per-stem RMS series,
+// no audio, no model. `margin_db` is the dB headroom at the stem flip and
+// `confidence` is its bounded-exponential squash; both are `null` on the
+// leading block, which has no flip. Optional per song (a pre-v3.2 analysis
+// will not have the file).
 
 export interface ArrangementStateBlock {
   start_s: number;
@@ -471,6 +475,7 @@ export interface ArrangementStateBlock {
   entered: string[];
   left: string[];
   margin_db: number | null;
+  confidence: number | null;
 }
 
 export interface ArrangementStateFile {
@@ -480,11 +485,12 @@ export interface ArrangementStateFile {
 }
 
 export function parseArrangementState(raw: unknown): ArrangementStateFile {
-  const o = asObject(raw, "reference/proposals/arrangement_state.json");
+  const o = asObject(raw, "arrangement_state.json");
   const blocks: ArrangementStateBlock[] = [];
   for (const row of arr(o.blocks)) {
     const r = rec(row);
     const marginRaw = r.margin_db;
+    const confRaw = r.confidence;
     blocks.push({
       start_s: num(r.start_s),
       end_s: num(r.end_s),
@@ -492,6 +498,7 @@ export function parseArrangementState(raw: unknown): ArrangementStateFile {
       entered: arr(r.entered).map((x) => st(x)),
       left: arr(r.left).map((x) => st(x)),
       margin_db: typeof marginRaw === "number" && Number.isFinite(marginRaw) ? marginRaw : null,
+      confidence: typeof confRaw === "number" && Number.isFinite(confRaw) ? confRaw : null,
     });
   }
   return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };

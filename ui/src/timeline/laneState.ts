@@ -72,7 +72,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "waveform", label: "Waveform Anchor", sub: "decoded source mix", kind: "waveform", height: 84 },
   { id: "humanHints", label: "Human Hints", sub: "reference/human · human_hints", kind: "hints", height: 58 },
   { id: "moisesLyrics", label: "Moises Lyrics", sub: "reference/moises · per-word tokens · tinted by confidence", kind: "lyrics", height: 84 },
-  { id: "arrangementState", label: "Arrangement State", sub: "experiment · who is playing, from the published per-stem RMS", kind: "proposals", height: 58, experiment: "arrangement_state" },
+  { id: "arrangementState", label: "Arrangement State", sub: "arrangement_state · who is playing, per-stem RMS state changes", kind: "proposals", height: 58 },
   { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58, experiment: "drop_detection" },
   { id: "vocalPhrases", label: "Vocal Phrases", sub: "experiment · phrase / gap / sustained-note blocks over the vocal stem", kind: "proposals", height: 58, experiment: "vocal_phrases" },
   { id: "reactiveBands", label: "Reactive Bands", sub: "experiment · locally auto-gained band-power accents", kind: "proposals", height: 58, experiment: "reactive_bands" },
@@ -96,12 +96,11 @@ export const LANE_DEFS: readonly LaneDef[] = [
  * plays — Moises Lyrics and Drop Proposals sit directly under it and open
  * with it.
  *
- * The allin1 experiment lanes that used to sit here (`allin1Transitions`,
- * `allin1Sections`) were promoted out of the registry entirely in plan v3.0
- * item 14: their content now lives in the production `sections` lane and in
- * `song_event_timeline.json` (the Gestures lane). The experiment lanes still
- * left come out of the registry entirely when promoted or abandoned
- * (an experiment proposal, never a deliverable).
+ * Experiment lanes leave the registry when promoted or abandoned: the allin1
+ * lanes (`allin1Transitions`, `allin1Sections`) went in plan v3.0 item 14
+ * (content now in the production `sections` lane and `song_event_timeline.json`);
+ * `arrangementState` was promoted in plan v3.2 (it now reads the top-level
+ * published `arrangement_state.json` and carries no flask badge).
  */
 export const DEFAULT_EXPANDED: readonly string[] = [
   "waveform",

@@ -112,10 +112,10 @@ stall the whole run; everything independent of it still gets built.
 | Analyzer tests | `docker compose run --rm test` on every item that touches `src/` |
 | MCP regression | `smoke-test` on item 3; `full-regression` on items 3 and 5 |
 | UI tests | `npm run test` + `npm run build` on item 4 |
-| Done | 3 (items 1-3) |
+| Done | 4 (items 1-4; item 4 non-visual — screenshot QA pending) |
 | Contract-change note | [`contract-change-v3.1.md`](contract-change-v3.1.md) — extended by item 2 (new `§9`) |
 | New pipeline stages | 2 — `detect-arrangement-state` (3.2), `publish-arrangement-state` (7.3) |
-| Blocking decisions (`D`) | none open — D1–D7 all resolved in this document |
+| Blocking decisions (`D`) | none open — D1–D8 all resolved in this document |
 
 ---
 
@@ -356,36 +356,36 @@ The lane already exists as an experiment lane
 flask badge — it stays a sparse lane, so this is not a Recipe B removal. Follow
 [`reference/ui-development.md`](reference/ui-development.md) Recipe D rows plus:
 
-- [ ] **`ui/src/data/paths.ts`** — repoint `artifactPaths.arrangementState` from
+- [x] **`ui/src/data/paths.ts`** — repoint `artifactPaths.arrangementState` from
   `analysis(song, "reference", "proposals", "arrangement_state.json")` to the
   top-level `analysis(song, "arrangement_state.json")`. Update the comment (no
   longer "Written by experiments/…").
-- [ ] **`ui/src/data/sparseArtifacts.ts`** — the parser now reads the published
+- [x] **`ui/src/data/sparseArtifacts.ts`** — the parser now reads the published
   shape: `doc["blocks"]` with `start_s`/`end_s` (not the experiment's key
   names if they differ), `playing`, `entered`, `left`, `margin_db`,
   `confidence`. Keep it tolerant (never throw; missing optional → stated gap).
   Update the `asObject(...)` label string and the header-comment mention.
-- [ ] **`ui/src/data/loaders.ts`** — `loadArrangementState` must still map 404 →
+- [x] **`ui/src/data/loaders.ts`** — `loadArrangementState` must still map 404 →
   empty (a pre-v3.2 song has no file), per invariant 1.
-- [ ] **`tests/ui-visual/fixtures/build-fixtures.py`** — add
+- [x] **`tests/ui-visual/fixtures/build-fixtures.py`** — add
   `"arrangement_state.json"` to `NEEDED`. It is block data, so do **not** add it
   to `DENSE`. Regenerate the three fixture songs; their source songs must have
   been analysed with items 1-2 in place, or the file will simply be absent and
   the 200-check below fails. The lane has never had fixture data at all — the
   experiment's `reference/proposals/arrangement_state.json` is not in `NEEDED`
   either, which is why this bullet is new work rather than a repoint.
-- [ ] **`ui/src/timeline/laneState.ts`** — remove `experiment: "arrangement_state"`
+- [x] **`ui/src/timeline/laneState.ts`** — remove `experiment: "arrangement_state"`
   from the `arrangementState` `LANE_DEFS` row (this removes the flask badge and
   the "not promoted" tooltip); rewrite `sub` to a production caption, e.g.
   `"arrangement_state · who is playing, per-stem RMS state changes"`. Do **not**
   change the lane `id`.
-- [ ] **`ui/src/timeline/laneContent.ts`** — update `arrangementStateContent`'s
+- [x] **`ui/src/timeline/laneContent.ts`** — update `arrangementStateContent`'s
   `summary` string: drop `experiments/arrangement_state (no model)` framing,
   describe it as the published `arrangement_state.json`. Keep the
   `arrangementStateSparse` tint for single-stem blocks.
-- [ ] **`ui/src/timeline/laneContent.test.ts`** — update the `describe` block for
+- [x] **`ui/src/timeline/laneContent.test.ts`** — update the `describe` block for
   the new shape / summary text.
-- [ ] **Docs** — Recipe A step 9's four doc touchpoints, in reverse: remove the
+- [x] **Docs** — Recipe A step 9's four doc touchpoints, in reverse: remove the
   lane from any "experiment lanes" enumeration in `ui-definition.md`; add it to
   the production-lane list.
 
@@ -427,13 +427,24 @@ pinning: [`reference/ui-regression.md`](reference/ui-regression.md). Run
 
 **Validation**
 
-- [ ] `docker compose run --rm ui npm run test` green.
-- [ ] `docker compose run --rm ui npm run build` clean.
-- [ ] `docker compose run --rm test` — analyzer baseline unchanged.
-- [ ] `grep -rn "arrangement_state" ui/src` shows no remaining
+- [x] `docker compose run --rm ui npm run test` green.
+- [x] `docker compose run --rm ui npm run build` clean.
+- [x] `docker compose run --rm test` — analyzer baseline unchanged.
+- [x] `grep -rn "arrangement_state" ui/src` shows no remaining
   `reference/proposals` path and no `experiment:` wiring for the lane.
-- [ ] Visual QA block above: every check passes; the updated baseline is in the
-  commit.
+- [x] Visual QA block above: every check passes; the updated baseline is in the
+  commit. **D9** — the full Playwright suite (`tests/ui-visual/`) was the
+  executor. Ten `toHaveScreenshot` baselines shifted by a uniform ~26 px height
+  increase: the `arrangementState` lane had no fixture data before this item and
+  did not render a row at all, so giving it fixture data adds one lane row to
+  every full-timeline capture. No functional assertion failed; the runtime-error
+  and 200-for-`arrangement_state.json` checks pass; `experiment-badge.spec.ts`
+  still counts exactly six flask badges (the lane carries none). All ten
+  baselines regenerated with `--update-snapshots`; suite is 30/30 green.
+  Justification: "arrangement_state lane promoted: badge removed, caption
+  reworded, lane row now populated". The plan's original bullet anticipated only
+  a lane-head change; the lane-row addition is the expected consequence of the
+  "lane has never had fixture data" bullet and is in scope for this item.
 
 ---
 
@@ -705,5 +716,36 @@ only effect on item 1's output is that the artifact shape gained a `stems` key.
   `arrangement_state.json`, which is the optional-path coverage. Justification
   per file: "v3.2 item 3 — new optional `arrangement` block in the overview /
   structural view". Overview size 5410 B, under the 6144 budget.
+
+*Not blocking.*
+
+### D8 — item-4 UI-lane promotion notes (non-blocking, resolved in place)
+
+- **Lane `sub` caption** is
+  `"arrangement_state · who is playing, per-stem RMS state changes"` (the plan's
+  suggested string). The `experiment:` key was removed from the `LANE_DEFS` row,
+  so the flask badge and the "not promoted" tooltip are gone; the lane `id`
+  (`arrangementState`) and `kind: "proposals"` are unchanged — it stays a sparse
+  block lane, no Recipe B removal.
+- **Parser gained a `confidence` field** (`number | null`, tolerant coerce)
+  beside `margin_db`; `ArrangementStateBlock` now carries both. `asObject` label
+  and the module header comment were repointed from
+  `reference/proposals/arrangement_state.json` to the top-level
+  `arrangement_state.json`. `loadArrangementState` still maps 404 → empty.
+- **`build-fixtures.py`** — `arrangement_state.json` added to `NEEDED` (a
+  top-level file, not `DENSE`). Fixture regen ran in the `app` Compose service
+  via `--entrypoint python` (the host has no project Python). The three fixture
+  songs' source analyses were given the file first: `_test_song` already had it;
+  `Armin - Revolution` (source of `RegFull`/`RegPartial`) was run through
+  `--stage detect-arrangement-state` then `--stage publish-arrangement-state`.
+  All three fixtures now carry `arrangement_state.json`. The regen's incidental
+  churn (hand-curated `human_hints.json` / `lyrics.json`, and unrelated new
+  top-level files the `_test_song` copytree picked up) was reverted so the
+  change is exactly the three new files.
+- **`docs/reference/ui-regression.md` §5.5** flask-lane count dropped 7 → 6
+  (list loses `arrangementState`); `docs/ui-definition.md` Lanes table gains an
+  "Arrangement State" production row (it never had one as an experiment row).
+- **Docs `analysis-definition.md` / `CLAUDE.md` / experiment retirement** are
+  item 5's job, not touched here.
 
 *Not blocking.*

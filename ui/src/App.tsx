@@ -97,7 +97,7 @@ const TIMELINE_KEYS = [
   // external word-level sung lyrics (reference/moises)
   "moisesLyrics",
   // who-is-playing state changes from the published per-stem RMS
-  // (experiments/arrangement_state)
+  // (top-level arrangement_state.json)
   "arrangementState",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",

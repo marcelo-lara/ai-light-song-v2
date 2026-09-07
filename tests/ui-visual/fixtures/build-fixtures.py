@@ -36,6 +36,7 @@ NEEDED = [
     "beats.json",
     "sections.json",
     "song_event_timeline.json",
+    "arrangement_state.json",
     "reference/human/human_hints.json",
     "reference/human/song_facts.json",
     "reference/moises/lyrics.json",

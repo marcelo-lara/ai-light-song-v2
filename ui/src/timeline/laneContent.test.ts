@@ -182,12 +182,15 @@ describe("dropProposalsContent", () => {
 });
 
 describe("arrangementStateContent", () => {
+  // The published top-level `arrangement_state.json` shape: blocks carry
+  // `margin_db` (dB headroom at the flip) and its `confidence` squash, both
+  // null on the leading block.
   const file: ArrangementStateFile = {
-    schema_version: "1.0",
+    schema_version: "3.0",
     song_name: "_test_song",
     blocks: [
-      { start_s: 0.0, end_s: 16.0, playing: ["bass", "drums", "harmonic", "vocals"], entered: [], left: [], margin_db: null },
-      { start_s: 16.0, end_s: 16.75, playing: ["bass", "harmonic", "vocals"], entered: [], left: ["drums"], margin_db: 16.28 },
+      { start_s: 0.0, end_s: 16.0, playing: ["bass", "drums", "harmonic", "vocals"], entered: [], left: [], margin_db: null, confidence: null },
+      { start_s: 16.0, end_s: 16.75, playing: ["bass", "harmonic", "vocals"], entered: [], left: ["drums"], margin_db: 16.28, confidence: 0.935 },
     ],
   };
   const blocks = arrangementStateContent(file);
@@ -200,6 +203,7 @@ describe("arrangementStateContent", () => {
     expect(changed.wideLabel).toContain("-drums");
     expect(changed.wideLabel).toContain("margin 16.3dB");
     expect(changed.summary).toContain("-drums at this block's start.");
+    expect(changed.summary).toContain("arrangement_state.json");
   });
 
   it("renders the leading block honestly, with no change and no invented margin", () => {
@@ -207,6 +211,7 @@ describe("arrangementStateContent", () => {
     expect(first.caption).toContain("initial state");
     expect(first.caption).not.toMatch(/margin/);
     expect(first.summary).toContain("the leading span, before the first detected change.");
+    expect(first.summary).not.toContain("experiments/");
     expect(first.label).toBe("b+d+h+v");
   });
 

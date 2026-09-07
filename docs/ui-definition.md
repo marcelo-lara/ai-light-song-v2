@@ -114,6 +114,7 @@ unrestricted" above.
 | Sections | `artifacts/section_segmentation/sections.json` | |
 | Chord Regions | `artifacts/layer_a_harmonic.json` | |
 | Gestures | `song_event_timeline.json` | |
+| Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |
 | Human Hints | `reference/human/human_hints.json` | writable |
 | Moises Lyrics | `reference/moises/lyrics.json` | read-only ground truth; blocks tinted by per-word confidence |
 | Drop Proposals | `reference/proposals/drop_impacts.json` | experiment |
