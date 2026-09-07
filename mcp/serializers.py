@@ -20,6 +20,9 @@ obligations" and the MCP regression guide's F2-F4 checks):
   section-pair transition;
 - `field_sources` / `source` are passed through (summarised once per block from
   the file header, never dropped);
+- the optional `arrangement_state.json` is surfaced when present and omitted
+  when absent — a leading block's `null` `margin_db` / `confidence` pass through
+  untouched, never filled in;
 - no full beat list ever leaves this module.
 """
 
@@ -75,6 +78,7 @@ def build_song_overview(song: str, root: str | Path | None = None) -> dict[str, 
     timeline_doc = load_top_level_json(song_dir, "song_event_timeline.json")
     hints_doc = load_top_level_json(song_dir, "hints.json")
     genre_doc = _maybe_load(song_dir, "genre.json")
+    arrangement_doc = _maybe_load(song_dir, "arrangement_state.json")
 
     beats = beats_doc.get("beats", [])
     sections = sections_doc.get("sections", [])
@@ -83,15 +87,19 @@ def build_song_overview(song: str, root: str | Path | None = None) -> dict[str, 
     # Each block carries its own `field_sources` summary, drawn once from the
     # file header it came from — never repeated per row, never a redundant
     # response-level copy.
-    return {
+    overview: dict[str, Any] = {
         "song_name": info.get("song_name"),
         "identity": _identity_block(info, sections, genre_doc),
         "grid": _grid_block(info, beats_doc, beats),
         "sections": _sections_block(sections_doc, sections),
         "gestures": {"phase_legend": PHASE_LEGEND, **_gestures_block(timeline_doc, events)},
-        "transitions": _transitions_block(timeline_doc, events),
-        "human_hints": _hints_block(hints_doc),
     }
+    # Optional (pre-v3.2 songs lack the file) — omit the key entirely when absent.
+    if arrangement_doc is not None:
+        overview["arrangement"] = _arrangement_block(arrangement_doc)
+    overview["transitions"] = _transitions_block(timeline_doc, events)
+    overview["human_hints"] = _hints_block(hints_doc)
+    return overview
 
 
 def _r(value: Any, places: int = 3) -> Any:
@@ -245,6 +253,31 @@ def _gestures_block(timeline_doc: dict, events: list[dict]) -> dict[str, Any]:
     }
 
 
+def _arrangement_block(doc: dict) -> dict[str, Any]:
+    """Compact per-block stem-state view from the optional top-level
+    arrangement_state.json. One row per block, `start`/`end` to match the
+    sibling sections/gestures rows. `confidence` (and the leading block's
+    `null`) is passed through as-is; `margin_db` and per-row sources are left to
+    get_detail's structural view."""
+    blocks = doc.get("blocks", [])
+    rows = [
+        {
+            "start": b.get("start_s"),
+            "end": b.get("end_s"),
+            "playing": b.get("playing", []),
+            "entered": b.get("entered", []),
+            "left": b.get("left", []),
+            "confidence": b.get("confidence"),
+        }
+        for b in blocks
+    ]
+    return {
+        "block_count": len(blocks),
+        "blocks": rows,
+        "field_sources": doc.get("field_sources"),
+    }
+
+
 def _transitions_block(timeline_doc: dict, events: list[dict]) -> dict[str, Any]:
     rows = [
         {
@@ -312,6 +345,7 @@ def build_detail(
     sections_doc = load_top_level_json(song_dir, "sections.json")
     timeline_doc = load_top_level_json(song_dir, "song_event_timeline.json")
     hints_doc = load_top_level_json(song_dir, "hints.json")
+    arrangement_doc = _maybe_load(song_dir, "arrangement_state.json")
 
     scope, span_start, span_end = _resolve_span(
         section_id=section_id,
@@ -339,7 +373,8 @@ def build_detail(
         "scope": scope,
         "span": {"start": span_start, "end": span_end, "duration": duration},
         "structural": _structural_view(
-            span_start, span_end, sections_doc, timeline_doc, hints_doc, events
+            span_start, span_end, sections_doc, timeline_doc, hints_doc,
+            arrangement_doc, events
         ),
     }
 
@@ -451,6 +486,7 @@ def _structural_view(
     sections_doc: dict,
     timeline_doc: dict,
     hints_doc: dict,
+    arrangement_doc: dict | None,
     events: list[dict],
 ) -> dict[str, Any]:
     section_rows = [
@@ -539,8 +575,34 @@ def _structural_view(
             "rows": hint_rows,
             "field_sources": hints_doc.get("field_sources"),
         },
+        "arrangement": _arrangement_structural(arrangement_doc, span_start, span_end),
         "aggregate_intensity": aggregate,
     }
+
+
+def _arrangement_structural(
+    doc: dict | None, span_start: float, span_end: float
+) -> dict[str, Any]:
+    """Overlapping arrangement_state blocks for the resolved span. Structural
+    block data — no decimation, no dense cap — so it is present in the
+    structural view even when the span exceeds DENSE_CAP_S. Absent file ->
+    rows: [] (the tolerant pattern the other sub-blocks use)."""
+    if doc is None:
+        return {"rows": [], "field_sources": None}
+    rows = [
+        {
+            "start_s": b.get("start_s"),
+            "end_s": b.get("end_s"),
+            "playing": b.get("playing", []),
+            "entered": b.get("entered", []),
+            "left": b.get("left", []),
+            "margin_db": b.get("margin_db"),
+            "confidence": b.get("confidence"),
+        }
+        for b in doc.get("blocks", [])
+        if _overlaps(span_start, span_end, float(b["start_s"]), float(b["end_s"]))
+    ]
+    return {"rows": rows, "field_sources": doc.get("field_sources")}
 
 
 def _dense_frames(

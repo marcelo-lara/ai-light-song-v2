@@ -147,6 +147,20 @@ def test_detail_sources_narrows_and_keeps_published_order() -> None:
     assert all(len(f["values"]) == 2 for f in resp["dense"]["frames"])
 
 
+def test_detail_lists_overlapping_arrangement_blocks() -> None:
+    # section-002 spans 8-16 s; fixture arrangement blocks are 0-8 / 8-16 / 16-24.
+    rows = _detail(section_id="section-002")["structural"]["arrangement"]["rows"]
+    assert rows
+    assert all(r["end_s"] > 8.0 and r["start_s"] < 16.0 for r in rows)
+    assert any(r["margin_db"] is not None for r in rows)
+
+
+def test_detail_over_cap_still_includes_arrangement_structural() -> None:
+    resp = _detail(start_ms=0, end_ms=6000)
+    assert resp["dense"] is None  # dense withheld over the 5 s cap
+    assert resp["structural"]["arrangement"]["rows"]
+
+
 def test_detail_no_host_paths() -> None:
     for kwargs in SNAPSHOT_CASES.values():
         assert "/data/" not in _serialize(_detail(**kwargs))

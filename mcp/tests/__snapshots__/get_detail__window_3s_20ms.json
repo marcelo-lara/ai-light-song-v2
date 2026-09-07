@@ -76,6 +76,33 @@
         "sections": "inference"
       }
     },
+    "arrangement": {
+      "rows": [
+        {
+          "start_s": 0.0,
+          "end_s": 8.0,
+          "playing": [
+            "bass",
+            "drums",
+            "harmonic",
+            "vocals"
+          ],
+          "entered": [],
+          "left": [],
+          "margin_db": null,
+          "confidence": null
+        }
+      ],
+      "field_sources": {
+        "start_s": "arrangement_state",
+        "end_s": "arrangement_state",
+        "playing": "arrangement_state",
+        "entered": "arrangement_state",
+        "left": "arrangement_state",
+        "margin_db": "arrangement_state",
+        "confidence": "arrangement_state"
+      }
+    },
     "aggregate_intensity": null
   },
   "dense": {

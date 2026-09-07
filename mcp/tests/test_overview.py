@@ -117,6 +117,29 @@ def test_overview_human_hint_verbatim_with_lighting() -> None:
     assert rows[0]["lighting_hint"].startswith("soft motion")
 
 
+_FIELD_SOURCE_VOCAB = {
+    "essentia", "allin1", "harmonic", "omnizart", "demucs", "gestures",
+    "genre", "human", "inference", "unknown", "arrangement_state",
+}
+
+
+def test_overview_full_carries_arrangement_block() -> None:
+    ov = _overview("McpFull - Fixture")
+    blocks = json.loads(
+        (FIXTURE_ROOT / "McpFull - Fixture" / "arrangement_state.json").read_text()
+    )["blocks"]
+    arr = ov["arrangement"]
+    assert arr["block_count"] == len(blocks)
+    assert arr["blocks"][0]["confidence"] is None
+    assert arr["field_sources"]
+    assert all(v in _FIELD_SOURCE_VOCAB for v in arr["field_sources"].values())
+
+
+def test_overview_omits_arrangement_when_file_absent() -> None:
+    # McpDegenerate has no arrangement_state.json — the key must be absent.
+    assert "arrangement" not in _overview("McpDegenerate - Fixture")
+
+
 def test_overview_partial_still_errors() -> None:
     from loaders import MissingTopLevelFileError
 

@@ -136,6 +136,10 @@ Returns:
 - **Gestures** — one row per composite gesture, not per phase: its span, its
   peak intensity, its `section_id`, and which phases are present. A song with 31
   impact rows must not return 31 unrelated events.
+- **Arrangement** — one row per `arrangement_state` block: who is `playing`,
+  who `entered`, who `left`, and the block `confidence` (a leading block carries
+  `null`). From the optional top-level `arrangement_state.json`; the whole block
+  is omitted for a song analysed before v3.2.
 - **Transitions** — the `"<from> → <to>"` rows, with times.
 - **Human hints** — the operator's own marks, verbatim, with their
   `lighting_hint` where one exists. These are ground truth and outrank every
@@ -154,8 +158,10 @@ two is an error, with no precedence rule:
 
 **The dense-series cap is 5 seconds — a maximum, not a default.** When the
 resolved span exceeds 5 s the call returns the structural view (phases,
-transitions, hints, aggregate intensity) and **withholds the dense frames**,
-saying so explicitly and naming the cap. It never silently truncates, and it
+transitions, hints, aggregate intensity, and the overlapping `arrangement_state`
+blocks — structural block data, listed with no decimation and present even when
+the dense frames are withheld) and **withholds the dense frames**, saying so
+explicitly and naming the cap. It never silently truncates, and it
 never silently downsamples to fit.
 
 **`interval_ms` is the caller's choice.** The server decimates the published

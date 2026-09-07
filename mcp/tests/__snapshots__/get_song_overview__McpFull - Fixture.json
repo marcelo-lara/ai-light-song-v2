@@ -123,6 +123,62 @@
       "evidence_summary": "gestures"
     }
   },
+  "arrangement": {
+    "block_count": 3,
+    "blocks": [
+      {
+        "start": 0.0,
+        "end": 8.0,
+        "playing": [
+          "bass",
+          "drums",
+          "harmonic",
+          "vocals"
+        ],
+        "entered": [],
+        "left": [],
+        "confidence": null
+      },
+      {
+        "start": 8.0,
+        "end": 16.0,
+        "playing": [
+          "bass",
+          "drums",
+          "harmonic"
+        ],
+        "entered": [],
+        "left": [
+          "vocals"
+        ],
+        "confidence": 0.632
+      },
+      {
+        "start": 16.0,
+        "end": 24.0,
+        "playing": [
+          "bass",
+          "drums",
+          "harmonic",
+          "vocals"
+        ],
+        "entered": [
+          "vocals"
+        ],
+        "left": [],
+        "confidence": 0.875
+      }
+    ],
+    "field_sources": {
+      "start_s": "arrangement_state",
+      "end_s": "arrangement_state",
+      "playing": "arrangement_state",
+      "entered": "arrangement_state",
+      "left": "arrangement_state",
+      "margin_db": "arrangement_state",
+      "confidence": "arrangement_state"
+    }
+  },
   "transitions": {
     "rows": [
       {

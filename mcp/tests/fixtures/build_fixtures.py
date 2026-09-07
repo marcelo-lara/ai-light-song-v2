@@ -20,6 +20,7 @@ stay small.
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 
 FIXTURE_ROOT = Path(__file__).resolve().parent / "analysis"
@@ -287,6 +288,64 @@ def genre(song_name: str, *, degenerate: bool) -> dict:
     }
 
 
+ARRANGEMENT_STATE_FIELD_SOURCES = {
+    "start_s": "arrangement_state",
+    "end_s": "arrangement_state",
+    "playing": "arrangement_state",
+    "entered": "arrangement_state",
+    "left": "arrangement_state",
+    "margin_db": "arrangement_state",
+    "confidence": "arrangement_state",
+}
+
+ARRANGEMENT_STEMS = ["bass", "drums", "harmonic", "vocals"]
+
+
+def _arr_confidence(margin_db: float) -> float:
+    # Matches the publisher: round(1 - exp(-margin_db / 6.0), 3).
+    return round(1 - math.exp(-margin_db / 6.0), 3)
+
+
+def arrangement_state(song_name: str) -> dict:
+    # Leading block: no measured margin -> margin_db / confidence stay null.
+    blocks = [
+        {
+            "start_s": 0.0,
+            "end_s": 8.0,
+            "playing": list(ARRANGEMENT_STEMS),
+            "entered": [],
+            "left": [],
+            "margin_db": None,
+            "confidence": None,
+        },
+        {
+            "start_s": 8.0,
+            "end_s": 16.0,
+            "playing": ["bass", "drums", "harmonic"],
+            "entered": [],
+            "left": ["vocals"],
+            "margin_db": 6.0,
+            "confidence": _arr_confidence(6.0),
+        },
+        {
+            "start_s": 16.0,
+            "end_s": 24.0,
+            "playing": list(ARRANGEMENT_STEMS),
+            "entered": ["vocals"],
+            "left": [],
+            "margin_db": 12.5,
+            "confidence": _arr_confidence(12.5),
+        },
+    ]
+    return {
+        "schema_version": "3.0",
+        "song_name": song_name,
+        "field_sources": ARRANGEMENT_STATE_FIELD_SOURCES,
+        "stems": list(ARRANGEMENT_STEMS),
+        "blocks": blocks,
+    }
+
+
 def loudness(song_name: str) -> dict:
     interval_ms = 20
     n = int(DURATION_S * 1000 / interval_ms)  # 1200 frames at the 20 ms floor
@@ -365,6 +424,9 @@ def build_full() -> None:
     _write(song, "genre.json", genre(song, degenerate=False))
     _write(song, "loudness.json", loudness(song))
     _write(song, "drum_events.json", drum_events(song))
+    # Optional file — only the full fixture carries it; its absence on the other
+    # two fixtures exercises the optional-file path in the serializer.
+    _write(song, "arrangement_state.json", arrangement_state(song))
 
 
 def build_degenerate() -> None:

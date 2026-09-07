@@ -294,7 +294,7 @@ def _check_f2_honesty() -> None:
     from serializers import build_song_overview
 
     VOCAB = {"essentia", "allin1", "harmonic", "omnizart", "demucs", "gestures",
-             "genre", "human", "inference", "unknown"}
+             "genre", "human", "inference", "unknown", "arrangement_state"}
 
     full = build_song_overview("McpFull - Fixture", root=FIXTURE_ROOT)
     degen = build_song_overview("McpDegenerate - Fixture", root=FIXTURE_ROOT)
@@ -302,11 +302,12 @@ def _check_f2_honesty() -> None:
     # F2.4 — field_sources present per published block, values in the vocabulary.
     fs_blocks = [full["identity"]["field_sources"], full["grid"]["field_sources"],
                  full["sections"]["field_sources"], full["gestures"]["field_sources"],
+                 full["arrangement"]["field_sources"],
                  full["human_hints"]["field_sources"]]
     bad = [v for fs in fs_blocks for v in (fs or {}).values() if v not in VOCAB]
     record("F2.4 overview field_sources present, values in vocabulary",
            "PASS" if all(fs_blocks) and not bad else "FAIL",
-           f"blocks={sum(1 for b in fs_blocks if b)}/5 bad_values={bad}")
+           f"blocks={sum(1 for b in fs_blocks if b)}/6 bad_values={bad}")
 
     # F2.6 — function_status "unknown" surfaced on the degenerate song.
     st = [r["function_status"] for r in degen["sections"]["rows"]]

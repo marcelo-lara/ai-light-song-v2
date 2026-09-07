@@ -49,6 +49,18 @@ def test_get_detail_returns_dense_frames_for_a_window() -> None:
     assert resp["span"]["duration"] == 3.0
 
 
+def test_get_song_overview_carries_arrangement_block() -> None:
+    ov = server.get_song_overview("McpFull - Fixture")
+    assert ov["arrangement"]["block_count"] >= 3
+
+
+def test_get_detail_structural_view_carries_arrangement() -> None:
+    resp = server.get_detail(
+        "McpFull - Fixture", start_ms=0, end_ms=3000, interval_ms=20
+    )
+    assert "arrangement" in resp["structural"]
+
+
 def test_get_detail_errors_on_zero_or_two_scopes() -> None:
     with pytest.raises(ToolError):
         server.get_detail("McpFull - Fixture")

@@ -112,10 +112,10 @@ stall the whole run; everything independent of it still gets built.
 | Analyzer tests | `docker compose run --rm test` on every item that touches `src/` |
 | MCP regression | `smoke-test` on item 3; `full-regression` on items 3 and 5 |
 | UI tests | `npm run test` + `npm run build` on item 4 |
-| Done | 2 (items 1-2) |
+| Done | 3 (items 1-3) |
 | Contract-change note | [`contract-change-v3.1.md`](contract-change-v3.1.md) — extended by item 2 (new `§9`) |
 | New pipeline stages | 2 — `detect-arrangement-state` (3.2), `publish-arrangement-state` (7.3) |
-| Blocking decisions (`D`) | none open — D1–D6 all resolved in this document |
+| Blocking decisions (`D`) | none open — D1–D7 all resolved in this document |
 
 ---
 
@@ -301,24 +301,24 @@ stall the whole run; everything independent of it still gets built.
 
 ## Item 3 — MCP exposure
 
-- [ ] **Load it optionally — `loaders.py` needs no change.** Do **not** add
+- [x] **Load it optionally — `loaders.py` needs no change.** Do **not** add
   `arrangement_state.json` to `REQUIRED_TOP_LEVEL_FILES` in
   [`mcp/loaders.py`](../mcp/loaders.py): that list is a hard gate and every
   pre-v3.2 song would start erroring. Read the file through the existing
   `_maybe_load(song_dir, filename)` helper in
   [`mcp/serializers.py`](../mcp/serializers.py) — the one `genre.json` uses,
   which returns `None` on `FileNotFoundError`.
-- [ ] **`get_song_overview`** — a new compact `arrangement` block in
+- [x] **`get_song_overview`** — a new compact `arrangement` block in
   [`mcp/serializers.py`](../mcp/serializers.py): the block count, and one row
   per block with `start`, `end`, `playing`, `entered`, `left`, `confidence`.
   Carry the file's `field_sources` summary once (per the honesty rule — `source`
   is never dropped). Omit the block entirely when the file is absent. Keep it
   compact — this rides in context for the whole session.
-- [ ] **`get_detail`** — for a resolved span, list the `arrangement_state`
+- [x] **`get_detail`** — for a resolved span, list the `arrangement_state`
   blocks that overlap it (structural, not dense — it is already block data, no
   decimation). Include it in the structural view returned even when the 5 s
   dense cap withholds frames.
-- [ ] **Fixtures.** The MCP fixtures are hand-synthesized, not copied from a
+- [x] **Fixtures.** The MCP fixtures are hand-synthesized, not copied from a
   real run: add an `arrangement_state(song_name)` builder to
   [`mcp/tests/fixtures/build_fixtures.py`](../mcp/tests/fixtures/build_fixtures.py)
   beside `loudness` / `drum_events`, and write it **only in `build_full()`**.
@@ -328,22 +328,22 @@ stall the whole run; everything independent of it still gets built.
   blocks, one of them a leading block with `margin_db: null` /
   `confidence: null`, so the honest-`null` path is in a snapshot. Re-run the
   builder and commit the regenerated fixtures.
-- [ ] **Snapshots + expectations.** Re-record the golden snapshots
+- [x] **Snapshots + expectations.** Re-record the golden snapshots
   (`get_song_overview__*`, `get_detail__*`) in this commit with a one-line
   justification per changed file, per
   [`reference/mcp-regression.md`](reference/mcp-regression.md) §F1 — they are
   regenerated, not defended. Update `mcp/tests/test_overview.py`,
   `test_detail.py`, `test_exposure.py`, `test_server_tools.py` and
   `mcp/tests/run.py`'s expectations.
-- [ ] **`mcp-definition.md`** — add `arrangement` to the `get_song_overview`
+- [x] **`mcp-definition.md`** — add `arrangement` to the `get_song_overview`
   returns list and the `get_detail` structural view; note the file is optional.
   Update the status banner's "eight top-level files" to nine.
 
 **Validation**
 
-- [ ] `docker compose run --rm --no-deps -T --entrypoint python mcp mcp/tests/run.py smoke-test` — no failures, no deferrals.
-- [ ] `full-regression` per [`reference/mcp-regression.md`](reference/mcp-regression.md) green.
-- [ ] A fixture song with **no** `arrangement_state.json` still returns a valid
+- [x] `docker compose run --rm --no-deps -T --entrypoint python mcp mcp/tests/run.py smoke-test` — no failures, no deferrals.
+- [x] `full-regression` per [`reference/mcp-regression.md`](reference/mcp-regression.md) green.
+- [x] A fixture song with **no** `arrangement_state.json` still returns a valid
   overview and detail (the block is simply absent).
 
 ---
@@ -677,5 +677,33 @@ verbatim as a file-level aggregate (provenance-exempt, like `schema_version` —
 no `field_sources` entry). This keeps the publisher a pure fuse-and-strip step:
 it never re-derives the stem vocabulary. Item 1's checkboxes are unchanged; the
 only effect on item 1's output is that the artifact shape gained a `stems` key.
+
+*Not blocking.*
+
+### D7 — item-3 MCP exposure notes (non-blocking, resolved in place)
+
+- **Overview key name** is `arrangement` (parallel to `sections` / `gestures`),
+  inserted after `gestures` and before `transitions`. Per-block rows carry
+  `start` / `end` (not `start_s` / `end_s`, matching the sibling overview rows),
+  `playing` / `entered` / `left` / `confidence`, plus `block_count` and the
+  file's `field_sources` once. `margin_db` is dropped from the overview to keep
+  it compact — it stays in the `get_detail` structural rows.
+- **`get_detail` structural shape when the file is absent** is
+  `{"rows": [], "field_sources": null}`, not an omitted key, so a consumer
+  always finds `structural["arrangement"]["rows"]`. Overview omits the
+  `arrangement` key entirely when the file is absent (the compact payload should
+  not carry empty scaffolding).
+- **`docs/mcp-definition.md` file-count banner** was not edited: the file has no
+  literal "eight top-level files" phrase (the word "eight" appears only in
+  "eight bars to travel"). The count bump lands in `CLAUDE.md` — Item 5's job.
+- **Fixture regen ran in the `test` Compose service, not `mcp`** — the `mcp`
+  service mounts `/app` and `/data` read-only, so `build_fixtures.py` and
+  `MCP_REGEN_SNAPSHOTS=1` snapshot regen cannot write there.
+- Regenerated: `get_song_overview__McpFull - Fixture.json` and the five
+  `get_detail__*.json`. `get_song_overview__McpDegenerate - Fixture.json` and
+  `list_songs__fixture_root.json` are unchanged — the degenerate fixture has no
+  `arrangement_state.json`, which is the optional-path coverage. Justification
+  per file: "v3.2 item 3 — new optional `arrangement` block in the overview /
+  structural view". Overview size 5410 B, under the 6144 budget.
 
 *Not blocking.*
