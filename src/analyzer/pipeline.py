@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import gc
 import sys
+from pathlib import Path
 from typing import TypeVar
 
 from analyzer.config import ValidationConfig
@@ -10,6 +11,7 @@ from analyzer.io import ensure_directory, read_json, write_json
 from analyzer.exceptions import AnalysisError
 from analyzer.models import SCHEMA_VERSION, build_song_schema_fields, validate_field_sources
 from analyzer.paths import SongPaths
+from analyzer.stages.arrangement_state import detect_arrangement_state
 from analyzer.stages.gestures import build_gestures
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
@@ -48,6 +50,7 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "extract-drum-events": "2.5",
     "extract-energy-features": "2.6",
     "segment-sections": "3.1",
+    "detect-arrangement-state": "3.2",
     "derive-energy-layer": "4.1",
     "build-gestures": "5.0",
     "classify-genre": "6.1",
@@ -83,6 +86,24 @@ def _required_artifact_payload(paths: SongPaths, stage_name: str, *artifact_part
     if not isinstance(payload, dict):
         joined = "/".join(artifact_parts)
         raise AnalysisError(f"Artifact '{joined}' must contain a JSON object payload.")
+    return payload
+
+
+def _required_output_payload(paths: SongPaths, stage_name: str, path: Path) -> dict:
+    """Existence gate for a single-stage run that reads a *published top-level*
+    file rather than an artifact. `_required_artifact_payload` cannot express
+    this — it resolves under `artifacts/`. No fallback to
+    `artifacts/essentia/rms_loudness.json`: that is a different (pre-decimation)
+    series and would silently change every measured number."""
+    if not path.exists():
+        raise AnalysisError(
+            f"Single-stage execution for '{stage_name}' requires the published top-level "
+            f"file '{path.name}'. Run 'build-ui-data' first (it publishes {path.name}), "
+            "or execute the full pipeline once."
+        )
+    payload = read_json(path)
+    if not isinstance(payload, dict):
+        raise AnalysisError(f"Top-level file '{path.name}' must contain a JSON object payload.")
     return payload
 
 
@@ -165,6 +186,10 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         return 0
     if stage_name == "build-ui-data":
         _run_stage(paths.song_name, "phase-1", stage_name, build_ui_data, paths)
+        return 0
+    if stage_name == "detect-arrangement-state":
+        _required_output_payload(paths, stage_name, paths.loudness_output_path)
+        _run_stage(paths.song_name, "phase-1", stage_name, detect_arrangement_state, paths)
         return 0
     if stage_name == "derive-energy-layer":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
@@ -339,6 +364,10 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         # that used them.
         _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, sections)
         _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
+        # detect-arrangement-state (3.2) reads the top-level loudness.json that
+        # build-ui-data has just published — it runs immediately after, never
+        # earlier (D4). Run order has never matched id order.
+        _run_stage(paths.song_name, "phase-1", "detect-arrangement-state", detect_arrangement_state, paths)
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
         # v3.1 item 2 — attribution header. `bpm` and `duration` are essentia's

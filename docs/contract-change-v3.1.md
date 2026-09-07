@@ -53,7 +53,8 @@ producer for each field, declared once**. A row carries its own `source` string
 repeated per-row map on ~500 rows is pure token cost).
 
 The producer vocabulary is **closed**: `essentia`, `allin1`, `harmonic`,
-`omnizart`, `demucs`, `gestures`, `genre`, `human`, `inference`, `unknown`. An
+`omnizart`, `demucs`, `gestures`, `arrangement_state`, `genre`, `human`,
+`inference`, `unknown`. An
 unrecognised producer is a pipeline error, not a passthrough string. `unknown`
 means no producer cleared its confidence floor — never "we didn't record it".
 

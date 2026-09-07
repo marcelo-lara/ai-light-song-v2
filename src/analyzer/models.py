@@ -26,6 +26,7 @@ class Producer(str, Enum):
     OMNIZART = "omnizart"
     DEMUCS = "demucs"
     GESTURES = "gestures"
+    ARRANGEMENT_STATE = "arrangement_state"
     GENRE = "genre"
     HUMAN = "human"
     INFERENCE = "inference"

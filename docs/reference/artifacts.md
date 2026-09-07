@@ -66,7 +66,8 @@ default is visible precisely because it is the only kind of row that carries a
 `source`.
 
 The producer vocabulary is closed: `essentia`, `allin1`, `harmonic`, `omnizart`,
-`demucs`, `gestures`, `genre`, `human`, `inference`. `unknown` is legal and
+`demucs`, `gestures`, `arrangement_state`, `genre`, `human`, `inference`.
+`unknown` is legal and
 means no producer cleared its confidence floor — it is never a synonym for
 "we didn't record it".
 

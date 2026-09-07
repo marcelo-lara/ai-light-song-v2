@@ -62,6 +62,7 @@ is authoritative over this list.
 | `extract-drum-events` | 2.5 |
 | `extract-energy-features` | 2.6 |
 | `segment-sections` | 3.1 |
+| `detect-arrangement-state` | 3.2 |
 | `derive-energy-layer` | 4.1 |
 | `build-gestures` | 5.0 |
 | `classify-genre` | 6.1 |
@@ -69,6 +70,9 @@ is authoritative over this list.
 | `build-ui-data` | 7.2 |
 | `build-human-hints-alignment` | 8.8 |
 | `build-validation-report`, `write-validation-report`, `write-validation-markdown` | validation |
+
+The table is ordered by id, and run order differs — `detect-arrangement-state`
+runs after `build-ui-data`, which publishes the `loudness.json` it reads.
 
 Batch progress lines carry both positions: `[2/20][1.1] _test_song | ensure-stems`.
 

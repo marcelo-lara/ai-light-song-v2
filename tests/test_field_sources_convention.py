@@ -27,6 +27,7 @@ class ProducerVocabularyTests(unittest.TestCase):
                 "omnizart",
                 "demucs",
                 "gestures",
+                "arrangement_state",
                 "genre",
                 "human",
                 "inference",

@@ -112,7 +112,7 @@ stall the whole run; everything independent of it still gets built.
 | Analyzer tests | `docker compose run --rm test` on every item that touches `src/` |
 | MCP regression | `smoke-test` on item 3; `full-regression` on items 3 and 5 |
 | UI tests | `npm run test` + `npm run build` on item 4 |
-| Done | 0 |
+| Done | 1 (item 1) |
 | Contract-change note | [`contract-change-v3.1.md`](contract-change-v3.1.md) — extended by item 2 (new `§9`) |
 | New pipeline stages | 2 — `detect-arrangement-state` (3.2), `publish-arrangement-state` (7.3) |
 | Blocking decisions (`D`) | none open — D1–D4 all resolved in this document |
@@ -150,49 +150,49 @@ stall the whole run; everything independent of it still gets built.
 
 ## Item 1 — `detect-arrangement-state` stage (phase 3)
 
-- [ ] **Port the detector.** New `src/analyzer/stages/arrangement_state.py`,
+- [x] **Port the detector.** New `src/analyzer/stages/arrangement_state.py`,
   carrying `detect()` and `blocks()` from
   [`experiments/arrangement_state/detector.py`](../experiments/arrangement_state/detector.py)
   and their module constants (`WINDOW_S`, `PRESENT_DB_BELOW_P98`,
   `PRESENT_FRACTION`, `HOLD_S`, `HOLD_AGREEMENT`). **Drop `detect_smoothed()`** —
   it is a documented ablation, not production code; its finding stays recorded in
   the experiment README until item 5 archives it.
-- [ ] **Read the published series, not the artifact.** The stage reads
+- [x] **Read the published series, not the artifact.** The stage reads
   `data/analysis/{song}/loudness.json` (the 20 ms published file), proving a
   phase-3 stage can produce this without touching audio. Use `SongPaths`
   (`paths.loudness_output_path`), not the experiment's bare `paths` helper.
   The stage's own docstring carries its measured numbers, per repo convention.
-- [ ] **Emit the artifact.** Write `artifacts/arrangement_state.json`:
+- [x] **Emit the artifact.** Write `artifacts/arrangement_state.json`:
   `schema_version`, `generated_from` (naming `loudness.json` as the input and
   the engine string), and `blocks` from `blocks()` — each block
   `{start_s, end_s, playing, entered, left, margin_db}`. This is the
   intermediate; item 2 builds the fused top-level view from it.
-- [ ] **Register the stage.** In [`src/analyzer/pipeline.py`](../src/analyzer/pipeline.py):
+- [x] **Register the stage.** In [`src/analyzer/pipeline.py`](../src/analyzer/pipeline.py):
   add `"detect-arrangement-state": "3.2"` to `STAGE_PIPELINE_IDS`; import
   `detect_arrangement_state`; add the `run_phase_1` call **immediately after
   `build-ui-data`** — that stage is what writes the top-level `loudness.json`
   this one reads, so any earlier position fails on the first analysis of a song
   (D4).
-- [ ] **Single-stage branch.** `--stage detect-arrangement-state` needs the
+- [x] **Single-stage branch.** `--stage detect-arrangement-state` needs the
   top-level `loudness.json`, which `_required_artifact_payload` cannot express
   (it resolves under `artifacts/`). Add a sibling helper
   `_required_output_payload(paths, stage_name, path)` that raises the same
   explicit `AnalysisError`, naming `loudness.json` and telling the caller to run
   `build-ui-data` first. No fallback to `artifacts/essentia/rms_loudness.json`.
-- [ ] **`docs/reference/cli.md`** — insert `detect-arrangement-state | 3.2`
+- [x] **`docs/reference/cli.md`** — insert `detect-arrangement-state | 3.2`
   after the `segment-sections` row (the table is id-ordered), and add one
   sentence under the table: the table is ordered by id, and run order differs —
   `detect-arrangement-state` runs after `build-ui-data`, which publishes the
   `loudness.json` it reads.
-- [ ] **Add the producer.** `Producer.ARRANGEMENT_STATE = "arrangement_state"`
+- [x] **Add the producer.** `Producer.ARRANGEMENT_STATE = "arrangement_state"`
   in [`src/analyzer/models.py`](../src/analyzer/models.py), extending the closed
   vocabulary. Update the vocabulary list wherever it is restated in prose
   (`contract-change-v3.1.md §2`, `reference/artifacts.md`).
 
 **Validation**
 
-- [ ] `docker compose run --rm test` green.
-- [ ] **New unit test `tests/test_arrangement_state.py`, on a synthetic
+- [x] `docker compose run --rm test` green.
+- [x] **New unit test `tests/test_arrangement_state.py`, on a synthetic
   `loudness.json`.** `data/analysis/**` is gitignored (only `reference/human/`
   is tracked), so there is no committed `_test_song` input a test can read —
   build the frames in-process in a `tempfile` song dir, the way
@@ -200,7 +200,7 @@ stall the whole run; everything independent of it still gets built.
   behaviours that carry the result: a flip that does not hold for `HOLD_S`
   produces no block; a flip that does is reported at the **unsmoothed** edge,
   not the window centre; a flip on the `mix` channel alone produces no block.
-- [ ] **Pin the port against the experiment once, by hand, before item 5 deletes
+- [x] **Pin the port against the experiment once, by hand, before item 5 deletes
   it.** Run the experiment and the stage on `_test_song` and confirm the stage
   reproduces these nine edges (experiment README, Measurement 2) to the frame:
 
@@ -219,7 +219,7 @@ stall the whole run; everything independent of it still gets built.
   Record the observed edges in the item-1 commit message. This table is the only
   check the port has against the experiment's own numbers once
   `experiments/arrangement_state/` is gone.
-- [ ] `docker compose run --rm app ./analyze --song "/data/songs/_test_song.mp3"`
+- [x] `docker compose run --rm app ./analyze --song "/data/songs/_test_song.mp3"`
   runs end to end and the validation report is not regressed.
 
 ---
@@ -609,6 +609,26 @@ top-level file), and leaves room for the CLAP `feel` field to appear in the
 same block later.
 
 *Not blocking.*
+
+### D5 — item-1 implementation notes (non-blocking, resolved in place)
+
+- **Artifact `schema_version`** is `"3.0"` (`models.SCHEMA_VERSION`), matching
+  every other generated file. `generated_from` is
+  `{engine, reads: "loudness.json", window_s, present_db_below_p98,
+  present_fraction, hold_s, hold_agreement}`.
+- **`_required_output_payload(paths, stage_name, path)`** is written generic over
+  the top-level filename (`path.name`), not hard-coded to `loudness.json`, so a
+  future top-level-reading stage reuses it. Its `AnalysisError` names the file
+  and says "Run 'build-ui-data' first".
+- **Two existing tests updated** (in scope — adding a producer + a stage):
+  `tests/test_field_sources_convention.py` closed-vocabulary set gains
+  `arrangement_state`; `tests/test_console_markers.py`
+  `test_run_phase_1_never_substitutes_moises_reference_when_it_exists` patches
+  `analyzer.pipeline.detect_arrangement_state` alongside the other stage patches.
+- **Port verified byte-identical** to `experiments/arrangement_state` on
+  `_test_song`: all 17 detected edges (18 blocks) reproduce exactly, including
+  the plan's nine-edge table. `detect_smoothed()` and the experiment's bare
+  `paths` helper were dropped; `_windows`/`detect` now take `SongPaths`.
 
 ### D4 — where the two new stages run — resolved as: both after `build-ui-data`, publish in its own stage
 
