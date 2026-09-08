@@ -114,6 +114,22 @@ for this service. The client's MCP config names the command:
 }
 ```
 
+The canonical invocation topology (D3.1) for remote clients is *remote Docker
+over SSH*: the caller SSHes to the host running the Compose stack and invokes
+Compose there, passing an absolute path to the repository's `docker-compose.yml`.
+Example canonical command:
+
+```sh
+ssh s2.local -T -- docker compose -f /absolute/path/to/repo/docker-compose.yml run --rm -T mcp
+```
+
+When the caller and the Compose host are the same machine the equivalent local
+invocation is acceptable:
+
+```sh
+docker compose -f /absolute/path/to/repo/docker-compose.yml run --rm -T mcp
+```
+
 `-T` is mandatory — without it Compose allocates a TTY and corrupts the stdio
 framing. The container lives for the session and exits with it.
 
