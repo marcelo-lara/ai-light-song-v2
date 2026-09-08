@@ -177,6 +177,27 @@ well-formed and still lie. Each maps to an obligation in
 20. The serialized `get_song_overview` for `McpFull - Fixture` is under its
     stated budget. Record the observed size in bytes on every run — a budget
     silently creeping upward is the failure this catches.
+
+
+
+**Measuring baseline sizes**
+
+A small helper script generates a repeatable baseline and writes it to
+`docs/reference/mcp-token-baseline-v3.3.md`. Run it inside the repository or
+inside the regression container:
+
+- Container (recommended):
+
+    docker compose run --rm --no-deps -T -e MCP_ANALYSIS_ROOT=/data/analysis \
+      --entrypoint python mcp mcp/tests/measure_tokens.py
+
+- Local (uses committed fixtures under `mcp/tests/fixtures/analysis`):
+
+    python mcp/tests/measure_tokens.py
+
+The script records: overview chars & approx tokens, a structural-detail case
+(section) and a dense-detail case (gesture). The output file is intended to be
+committed with the observed values for v3.3's baseline.
 21. No response embeds an absolute host path (no string beginning `/data/`).
 22. `get_song_overview` never returns the full beat list.
 

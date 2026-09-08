@@ -28,6 +28,7 @@ REQUIRED_TOP_LEVEL_FILES: tuple[str, ...] = (
     "sections.json",
     "song_event_timeline.json",
     "hints.json",
+    "drum_events.json",
 )
 
 

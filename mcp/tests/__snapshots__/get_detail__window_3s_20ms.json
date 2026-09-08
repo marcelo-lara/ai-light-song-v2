@@ -103,6 +103,73 @@
         "confidence": "arrangement_state"
       }
     },
+    "drum_events": {
+      "rows": [
+        {
+          "time": 0.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 0.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 0.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 1.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 1.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 1.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 2.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 2.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 2.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 3.0,
+          "event_type": "kick",
+          "confidence": null
+        }
+      ],
+      "field_sources": {
+        "time": "omnizart",
+        "event_type": "omnizart",
+        "confidence": "omnizart"
+      },
+      "summary": {
+        "event_count": 72,
+        "kick_count": 48,
+        "snare_count": 24,
+        "hat_count": 0,
+        "unresolved_count": 0
+      },
+      "available": true
+    },
     "aggregate_intensity": null
   },
   "dense": {

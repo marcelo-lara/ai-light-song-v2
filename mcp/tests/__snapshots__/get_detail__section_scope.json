@@ -161,6 +161,148 @@
         "confidence": "arrangement_state"
       }
     },
+    "drum_events": {
+      "rows": [
+        {
+          "time": 8.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 8.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 8.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 9.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 9.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 9.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 10.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 10.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 10.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 11.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 11.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 11.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 12.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 12.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 12.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 13.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 13.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 13.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 14.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 14.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 14.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 15.0,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 15.5,
+          "event_type": "kick",
+          "confidence": null
+        },
+        {
+          "time": 15.5,
+          "event_type": "snare",
+          "confidence": null
+        },
+        {
+          "time": 16.0,
+          "event_type": "kick",
+          "confidence": null
+        }
+      ],
+      "field_sources": {
+        "time": "omnizart",
+        "event_type": "omnizart",
+        "confidence": "omnizart"
+      },
+      "summary": {
+        "event_count": 72,
+        "kick_count": 48,
+        "snare_count": 24,
+        "hat_count": 0,
+        "unresolved_count": 0
+      },
+      "available": true
+    },
     "aggregate_intensity": {
       "peak": 0.95,
       "mean": 0.59

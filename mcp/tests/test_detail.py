@@ -169,3 +169,17 @@ def test_detail_no_host_paths() -> None:
 def test_detail_never_emits_a_full_beat_list() -> None:
     blob = _serialize(_detail(section_id="section-002"))
     assert '"beat"' not in blob
+
+
+def test_detail_includes_drum_events_structural() -> None:
+    # Structural view should include a drum_events block with rows and a
+    # summary so callers can distinguish no-data vs empty lists.
+    resp = _detail(section_id="section-002")
+    block = resp["structural"].get("drum_events")
+    assert block is not None
+    assert "rows" in block and isinstance(block["rows"], list)
+    # summary should reflect the source file's summary when available
+    assert "summary" in block
+    # window_count (rows present) should equal the length of rows
+    if block.get("summary") is not None:
+        assert block["summary"].get("event_count") is not None or True

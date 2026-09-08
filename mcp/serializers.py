@@ -346,6 +346,9 @@ def build_detail(
     timeline_doc = load_top_level_json(song_dir, "song_event_timeline.json")
     hints_doc = load_top_level_json(song_dir, "hints.json")
     arrangement_doc = _maybe_load(song_dir, "arrangement_state.json")
+    # drum events are a new required top-level signal for detail structural
+    # exposure (Item 1). They live at the top-level as `drum_events.json`.
+    drum_doc = load_top_level_json(song_dir, "drum_events.json")
 
     scope, span_start, span_end = _resolve_span(
         section_id=section_id,
@@ -374,7 +377,7 @@ def build_detail(
         "span": {"start": span_start, "end": span_end, "duration": duration},
         "structural": _structural_view(
             span_start, span_end, sections_doc, timeline_doc, hints_doc,
-            arrangement_doc, events
+            arrangement_doc, drum_doc, events
         ),
     }
 
@@ -487,6 +490,7 @@ def _structural_view(
     timeline_doc: dict,
     hints_doc: dict,
     arrangement_doc: dict | None,
+    drum_doc: dict | None,
     events: list[dict],
 ) -> dict[str, Any]:
     section_rows = [
@@ -558,6 +562,26 @@ def _structural_view(
     else:
         aggregate = None
 
+    # Drum events: structural rows overlapping the window, plus a window
+    # summary so callers can distinguish no-data from an empty event list.
+    drum_rows: list[dict] = []
+    drum_summary = None
+    if drum_doc is None:
+        drum_block = {"rows": [], "field_sources": None, "summary": None, "available": False}
+    else:
+        for e in drum_doc.get("events", []):
+            t = e.get("time")
+            if t is None:
+                continue
+            if span_start <= float(t) <= span_end:
+                drum_rows.append({
+                    "time": t,
+                    "event_type": e.get("event_type"),
+                    "confidence": e.get("confidence"),
+                })
+        drum_summary = drum_doc.get("summary")
+        drum_block = {"rows": drum_rows, "field_sources": drum_doc.get("field_sources"), "summary": drum_summary, "available": True}
+
     return {
         "sections": {
             "rows": section_rows,
@@ -576,6 +600,7 @@ def _structural_view(
             "field_sources": hints_doc.get("field_sources"),
         },
         "arrangement": _arrangement_structural(arrangement_doc, span_start, span_end),
+        "drum_events": drum_block,
         "aggregate_intensity": aggregate,
     }
 
