@@ -14,8 +14,9 @@ Usage (container):
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import sys
 
 MCP_DIR = Path(__file__).resolve().parents[1]
@@ -54,6 +55,9 @@ ROOT = _find_fixtures_root()
 # prefer the env var when resolving songs; the script defaults to the discovered ROOT.
 
 def _find_output_path() -> Path:
+    override = os.getenv("MCP_TOKEN_BASELINE_OUT")
+    if override:
+        return Path(override)
     p = Path(__file__).resolve()
     for up in range(0, 6):
         repo_root = p.parents[up]
@@ -134,7 +138,7 @@ def measure_song(song_name: str, root: Path) -> dict:
 
 def main() -> int:
     root = ROOT
-    if not root.is_dir():
+    if root is None or not root.is_dir():
         print(f"Analysis root not found at {root}. Try setting MCP_ANALYSIS_ROOT or run inside the container.")
         return 2
 
@@ -151,11 +155,17 @@ def main() -> int:
     names = [s["song_name"] for s in songs]
     test_song = "_test_song"
     if test_song not in names:
-        # prefer McpDegenerate then McpPartial
-        for cand in ("McpDegenerate - Fixture", "McpPartial - Fixture", "McpFull - Fixture"):
-            if cand in names:
+        # prefer known fixtures but avoid duplicating longest and avoid invalid fixture
+        for cand in ("McpFull - Fixture", "McpDegenerate - Fixture", "McpPartial - Fixture"):
+            if cand in names and cand != longest_name:
+                try:
+                    _ = resolve_song_dir(cand, root=root)
+                except Exception:
+                    continue
                 test_song = cand
                 break
+        else:
+            test_song = next((n for n in names if n != longest_name), longest_name)
 
     measured = []
     for s in (longest_name, test_song):
@@ -168,7 +178,7 @@ def main() -> int:
             measured.append({"song": s, "error": str(exc)})
 
     # write report
-    now = datetime.utcnow().isoformat() + "Z"
+    now = datetime.now(timezone.utc).isoformat()
     lines = [f"# MCP token baseline v3.3\n\nGenerated: {now}\n\n"]
     for r in measured:
         lines.append(f"## {r.get('song')}\n")
