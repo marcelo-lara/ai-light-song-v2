@@ -53,15 +53,15 @@ def list_songs() -> list[dict[str, Any]]:
 
 
 @server.tool(name="get_song_overview")
-def get_song_overview(song: str) -> dict[str, Any]:
+def get_song_overview(song: str, scope: str | None = None) -> dict[str, Any]:
     """Whole-song overview (identity, grid, sections, gestures, transitions, hints).
 
-    One small call, whole song. The grid is a summary with an honest downbeat
-    note — never the beat list. Gestures are grouped one row per composite
-    gesture. Human hints are verbatim and outrank every inferred field.
+    One small call, whole song. Optionally accepts scope="brief" to return a
+    compact overview suitable for the concept-pass read (D3.3). The default
+    is the full overview.
     """
     _validate_song(song)
-    return build_song_overview(song)
+    return build_song_overview(song, scope=scope)
 
 
 @server.tool(name="get_detail")
