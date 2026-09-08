@@ -47,6 +47,19 @@ capability here, the answer is that it goes in the other repo — see
 The server describes the *music*. A downstream host owns the lighting
 translation.
 
+Reciprocal boundary statement
+
+- Downstream services (the cue-authoring server and its siblings) must not read
+  the `data/analysis/` top-level files directly. They operate on the compact
+ , reviewed tool-surface this project publishes. In short: the boundary is
+  enforced both ways — this server does not author cues, and downstream cue
+  authoring does not reach back into analyzer internals.
+
+Consequence: any top-level signal not published into the delivery surface will
+not reach cue authoring. If a signal is kept only in inner artifact folders or
+never published at top level, it cannot be consumed by downstream cue authors.
+To make a signal available for lighting translation, the analyzer must publish
+it as a top-level file (phase 4).
 ## The exposure rule
 
 > **This server reads `data/analysis/{song}/*.json` and nothing else.**

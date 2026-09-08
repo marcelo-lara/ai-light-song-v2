@@ -10,6 +10,13 @@ Not to be confused with [`../mcp-definition.md`](../mcp-definition.md), which
 defines the **in-repo `mcp/` module** — a different server with a different
 purpose. Both read the same top-level files; only this one authors cues.
 
+Reciprocal boundary: downstream authors must not reach into analyzer internals.
+Downstream services (the cue-authoring server and its siblings) must consume
+only the published top-level delivery surface (`data/analysis/{song}/*.json`) and
+must not directly read files under `artifacts/` or other analyzer internals. The
+contract is enforced both ways: this repo publishes the delivery surface and
+downstream services consume it, not the other way around.
+
 Field-level detail for each file: [`artifacts.md`](artifacts.md).
 
 ## The exposure rule
