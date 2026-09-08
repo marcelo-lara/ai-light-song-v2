@@ -1,13 +1,16 @@
 # Contract changes — v3.1 delivery surface
 
-> **Handoff note for `ai-dmx-light-render` — delivery pending; remove once the
-> downstream consumer has migrated.**
+> **Superseded — v3.1 delivery surface handoff.**
 
-Handoff note for the external cue-authoring consumer (`ai-dmx-light-render`).
-One section per delivery-surface change in the v3.1 release (see git history for
-the implementation plan). `SCHEMA_VERSION` moves `2.0` → `3.0` in this release
-(bumped once, with the attribution convention in section 2).
+This handoff note is superseded. The downstream consumer (`ai-dmx-light-render`)
+chose not to migrate file readers into the delivery surface; v3.1's delivery
+surface is therefore the canonical outcome and this note is archived. See
+`docs/archive/contract-change-v3.1-superseded.md` for the archival summary and
+rationale.
 
+This document records the v3.1 surface changes for historical traceability and
+is kept for audit purposes; the archived summary contains the final outcome and
+links to the decisions that closed the handoff.
 ## What changed, shortest form
 
 - **`beats.json` and `sections.json` are now objects, not bare arrays** — read
