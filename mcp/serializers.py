@@ -66,13 +66,18 @@ class DetailScopeError(ValueError):
 # get_song_overview
 # --------------------------------------------------------------------------- #
 
-def build_song_overview(song: str, root: str | Path | None = None) -> dict[str, Any]:
+def build_song_overview(song: str, root: str | Path | None = None, scope: str | None = None) -> dict[str, Any]:
     """Whole-song overview: identity, grid, sections, gestures, transitions, hints.
 
     Compact by construction — the grid is a summary (never the beat list),
     gestures are grouped one row per composite gesture (never one row per phase),
     and prose is kept to the honest downbeat note plus the file-supplied genre
     guidance.
+
+    When scope=="brief" (D3.3) return a reduced payload: keep identity, grid
+    summary, section rows without description prose, gesture rows, arrangement
+    rows, transition rows, and hint counts. Exclude full hint prose and section
+    description.
     """
     song_dir = resolve_song_dir(song, root=root)
 
@@ -98,7 +103,40 @@ def build_song_overview(song: str, root: str | Path | None = None) -> dict[str, 
         "sections": _sections_block(sections_doc, sections),
         "gestures": {"phase_legend": PHASE_LEGEND, **_gestures_block(timeline_doc, events)},
     }
-    # Arrangement: always include the key. When the top-level file is
+
+    # If brief scope requested, prune prose-heavy bits per D3.3
+    if scope == "brief":
+        # prune section descriptions and non-essential fields to minimal ids
+        sec_block = overview.get("sections", {})
+        pruned_rows = []
+        for r in sec_block.get("rows", []):
+            pr = {
+                "section_id": r.get("section_id"),
+            }
+            pruned_rows.append(pr)
+        overview["sections"] = {"caveat": sec_block.get("caveat"), "rows": pruned_rows, "field_sources": sec_block.get("field_sources")}
+
+        # replace human_hints with a compact total count
+        total_hints = sum(len(s.get("hints", [])) for s in hints_doc.get("sections", []))
+        overview["human_hints"] = {"total_hints": total_hints}
+
+        # prune gestures to only the anchor fields to keep the overview tiny
+        g = overview.get("gestures", {})
+        brief_g_rows = []
+        for r in g.get("rows", []):
+            brief_g_rows.append({
+                "gesture_id": r.get("gesture_id"),
+                "impact_time": r.get("impact_time"),
+            })
+        overview["gestures"] = {"rows": brief_g_rows}
+
+        # simplify arrangement in brief scope to only block_count to save tokens
+        arr = overview.get("arrangement", {})
+        if arr.get("available") is True:
+            overview["arrangement"] = {"block_count": arr.get("block_count"), "available": True}
+        # transitions kept as-is
+
+        # Arrangement: always include the key. When the top-level file is
     # absent (pre-v3.2 songs), return an explicit unavailable block per D3.5 so
     # callers can distinguish omission from an explicit absence.
     if arrangement_doc is not None:

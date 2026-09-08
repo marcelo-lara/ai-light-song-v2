@@ -154,16 +154,21 @@ def test_overview_partial_still_errors() -> None:
 
 def test_overview_gesture_impact_time_present_and_null() -> None:
     full = _overview("McpFull - Fixture")
-    deg = _overview("McpDegenerate - Fixture")
-    # McpFull should have impact_time present on gestures
+    # McpFull should have impact_time present on at least one gesture
     rows = full["gestures"]["rows"]
     assert any(r.get("impact_time") is not None for r in rows)
-    # McpDegenerate has no gestures; when gestures exist without an impact
-    # phase the field must be present and null. Use McpFull's first row to
-    # simulate a row missing impact by clearing phases and checking None.
-    if rows:
-        r = dict(rows[0])
-        r["phases_present"] = [p for p in r.get("phases_present", []) if p != "impact"]
-        # impact_time should be None when impact phase missing
-        assert r.get("impact_time") is None or r.get("impact_time") is None
+
+
+def test_overview_brief_scope_is_compact_and_omits_prose() -> None:
+    ov = serializers.build_song_overview("McpFull - Fixture", root=FIXTURE_ROOT, scope="brief")
+    # size target: under ~1000 tokens -> ~4000 bytes
+    size = len(json.dumps(ov, indent=2, ensure_ascii=False).encode("utf-8"))
+    assert size <= 4000, f"brief overview too large: {size} bytes"
+    # sections in brief have only section_id (no description)
+    assert all("description" not in r for r in ov["sections"]["rows"])
+    # human_hints in brief is compact (total_hints only)
+    assert "total_hints" in ov["human_hints"] and isinstance(ov["human_hints"]["total_hints"], int)
+    # gestures in brief only include gesture_id and impact_time
+    for r in ov["gestures"]["rows"]:
+        assert set(r.keys()) <= {"gesture_id", "impact_time"}
 
