@@ -93,6 +93,9 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
     sections = sections_doc.get("sections", [])
     events = timeline_doc.get("events", [])
 
+    # precompute total hints for brief-scope compacting
+    total_hints = sum(len(s.get("hints", [])) for s in hints_doc.get("sections", []))
+
     # Each block carries its own `field_sources` summary, drawn once from the
     # file header it came from — never repeated per row, never a redundant
     # response-level copy.
@@ -116,10 +119,6 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
             pruned_rows.append(pr)
         overview["sections"] = {"caveat": sec_block.get("caveat"), "rows": pruned_rows, "field_sources": sec_block.get("field_sources")}
 
-        # replace human_hints with a compact total count
-        total_hints = sum(len(s.get("hints", [])) for s in hints_doc.get("sections", []))
-        overview["human_hints"] = {"total_hints": total_hints}
-
         # prune gestures to only the anchor fields to keep the overview tiny
         g = overview.get("gestures", {})
         brief_g_rows = []
@@ -136,7 +135,7 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
             overview["arrangement"] = {"block_count": arr.get("block_count"), "available": True}
         # transitions kept as-is
 
-        # Arrangement: always include the key. When the top-level file is
+    # Arrangement: always include the key. When the top-level file is
     # absent (pre-v3.2 songs), return an explicit unavailable block per D3.5 so
     # callers can distinguish omission from an explicit absence.
     if arrangement_doc is not None:
@@ -151,7 +150,13 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
         }
 
     overview["transitions"] = _transitions_block(timeline_doc, events)
-    overview["human_hints"] = _hints_block(hints_doc)
+
+    # human_hints: brief scope gets only the total count, otherwise the full block
+    if scope == "brief":
+        overview["human_hints"] = {"total_hints": total_hints}
+    else:
+        overview["human_hints"] = _hints_block(hints_doc)
+
     return overview
 
 
