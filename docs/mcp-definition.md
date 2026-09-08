@@ -120,14 +120,14 @@ Compose there, passing an absolute path to the repository's `docker-compose.yml`
 Example canonical command:
 
 ```sh
-ssh s2.local -T -- docker compose -f /absolute/path/to/repo/docker-compose.yml run --rm -T mcp
+ssh s2.local -T -- docker compose -f <absolute-repo-path>/docker-compose.yml run --rm -T mcp
 ```
 
 When the caller and the Compose host are the same machine the equivalent local
 invocation is acceptable:
 
 ```sh
-docker compose -f /absolute/path/to/repo/docker-compose.yml run --rm -T mcp
+docker compose -f <absolute-repo-path>/docker-compose.yml run --rm -T mcp
 ```
 
 `-T` is mandatory — without it Compose allocates a TTY and corrupts the stdio
