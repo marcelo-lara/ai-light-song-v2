@@ -106,7 +106,8 @@
           "impact",
           "release"
         ],
-        "phases_absent": []
+        "phases_absent": [],
+        "impact_time": 13.5
       }
     ],
     "field_sources": {

@@ -237,6 +237,9 @@ def _gestures_block(timeline_doc: dict, events: list[dict]) -> dict[str, Any]:
     for gid, phase_rows in _group_gestures(events):
         present = list(dict.fromkeys(r.get("type") for r in phase_rows))
         absent = [p for p in GESTURE_PHASES if p not in present]
+        # determine impact_time if an impact phase exists
+        impact_row = next((r for r in phase_rows if r.get("type") == "impact"), None)
+        impact_time = impact_row.get("start_time") if impact_row is not None else None
         rows.append(
             {
                 "gesture_id": gid,
@@ -249,6 +252,7 @@ def _gestures_block(timeline_doc: dict, events: list[dict]) -> dict[str, Any]:
                 ),
                 "phases_present": present,
                 "phases_absent": absent,
+                "impact_time": impact_time,
             }
         )
     return {

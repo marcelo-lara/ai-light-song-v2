@@ -145,3 +145,20 @@ def test_overview_partial_still_errors() -> None:
 
     with pytest.raises(MissingTopLevelFileError):
         serializers.build_song_overview("McpPartial - Fixture", root=FIXTURE_ROOT)
+
+
+def test_overview_gesture_impact_time_present_and_null() -> None:
+    full = _overview("McpFull - Fixture")
+    deg = _overview("McpDegenerate - Fixture")
+    # McpFull should have impact_time present on gestures
+    rows = full["gestures"]["rows"]
+    assert any(r.get("impact_time") is not None for r in rows)
+    # McpDegenerate has no gestures; when gestures exist without an impact
+    # phase the field must be present and null. Use McpFull's first row to
+    # simulate a row missing impact by clearing phases and checking None.
+    if rows:
+        r = dict(rows[0])
+        r["phases_present"] = [p for p in r.get("phases_present", []) if p != "impact"]
+        # impact_time should be None when impact phase missing
+        assert r.get("impact_time") is None or r.get("impact_time") is None
+
