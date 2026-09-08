@@ -98,9 +98,20 @@ def build_song_overview(song: str, root: str | Path | None = None) -> dict[str, 
         "sections": _sections_block(sections_doc, sections),
         "gestures": {"phase_legend": PHASE_LEGEND, **_gestures_block(timeline_doc, events)},
     }
-    # Optional (pre-v3.2 songs lack the file) — omit the key entirely when absent.
+    # Arrangement: always include the key. When the top-level file is
+    # absent (pre-v3.2 songs), return an explicit unavailable block per D3.5 so
+    # callers can distinguish omission from an explicit absence.
     if arrangement_doc is not None:
         overview["arrangement"] = _arrangement_block(arrangement_doc)
+    else:
+        overview["arrangement"] = {
+            "available": False,
+            "reason": "missing_top_level_file",
+            "missing_file": "arrangement_state.json",
+            "note": "song analysed before v3.2; re-run pipeline to populate",
+            "field_sources": None,
+        }
+
     overview["transitions"] = _transitions_block(timeline_doc, events)
     overview["human_hints"] = _hints_block(hints_doc)
     return overview

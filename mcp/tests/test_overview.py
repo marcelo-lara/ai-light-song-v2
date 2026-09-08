@@ -136,8 +136,13 @@ def test_overview_full_carries_arrangement_block() -> None:
 
 
 def test_overview_omits_arrangement_when_file_absent() -> None:
-    # McpDegenerate has no arrangement_state.json — the key must be absent.
-    assert "arrangement" not in _overview("McpDegenerate - Fixture")
+    # McpDegenerate has no arrangement_state.json — the overview must include
+    # an explicit unavailable block rather than omitting the key entirely.
+    ov = _overview("McpDegenerate - Fixture")
+    assert "arrangement" in ov
+    arr = ov["arrangement"]
+    assert arr.get("available") is False
+    assert arr.get("missing_file") == "arrangement_state.json"
 
 
 def test_overview_partial_still_errors() -> None:

@@ -106,6 +106,13 @@
       "evidence_summary": "gestures"
     }
   },
+  "arrangement": {
+    "available": false,
+    "reason": "missing_top_level_file",
+    "missing_file": "arrangement_state.json",
+    "note": "song analysed before v3.2; re-run pipeline to populate",
+    "field_sources": null
+  },
   "transitions": {
     "rows": [],
     "field_sources": {
