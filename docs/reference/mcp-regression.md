@@ -159,6 +159,20 @@ well-formed and still lie. Each maps to an obligation in
 
 ### F3 — the detail-read contract
 
+The detail-read contract now distinguishes dense-series caps from sparse-event caps.
+
+A few important checks added here:
+
+- A resolved span over 5 s returns the structural view and withholds the dense
+  frames (the DENSE_CAP_S behavior). Sparse-event blocks (for example,
+  drum_events) remain present in the structural view when available.
+- Sparse-event blocks are subject to a separate row cap (D3.4). When a
+  sparse block's observed rows exceed the cap, the response includes an
+  explicit `sparse_withheld` object naming the cap and the observed row count
+  rather than silently truncating.
+
+### F3 — the detail-read contract
+
 13. A resolved span **over 5 s** returns the structural view, contains **no**
     dense frames, and states the cap. It never truncates and never silently
     downsamples.

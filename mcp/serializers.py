@@ -47,6 +47,10 @@ LOUDNESS_FLOOR_MS = 20
 # longer than this returns the structural view with the dense frames withheld.
 DENSE_CAP_S = 5.0
 
+# Sparse-event row cap (D3.4): applies per-sparse block (e.g., drum events),
+# independent of the dense-series DENSE_CAP_S.
+SPARSE_ROW_CAP = 512
+
 # Default stem set for get_detail, in a stable order.
 DEFAULT_SOURCES: tuple[str, ...] = ("mix", "bass", "drums", "harmonic", "vocals")
 
@@ -580,7 +584,26 @@ def _structural_view(
                     "confidence": e.get("confidence"),
                 })
         drum_summary = drum_doc.get("summary")
-        drum_block = {"rows": drum_rows, "field_sources": drum_doc.get("field_sources"), "summary": drum_summary, "available": True}
+        # Apply sparse-row cap: if there are more rows than SPARSE_ROW_CAP, do not
+        # silently truncate. Instead present an explicit withheld block so callers
+        # can distinguish a data cap from an empty result.
+        if len(drum_rows) > SPARSE_ROW_CAP:
+            drum_block = {
+                "rows": [],
+                "field_sources": drum_doc.get("field_sources"),
+                "summary": drum_summary,
+                "available": True,
+                "sparse_withheld": {
+                    "reason": (
+                        f"sparse event cap exceeded: observed {len(drum_rows)} rows, "
+                        f"cap {SPARSE_ROW_CAP} rows"
+                    ),
+                    "observed_rows": len(drum_rows),
+                    "cap_rows": SPARSE_ROW_CAP,
+                },
+            }
+        else:
+            drum_block = {"rows": drum_rows, "field_sources": drum_doc.get("field_sources"), "summary": drum_summary, "available": True}
 
     return {
         "sections": {
