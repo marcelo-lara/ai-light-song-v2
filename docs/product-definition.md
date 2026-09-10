@@ -34,6 +34,14 @@ song-comprehension MCP server over it. It turns a song into structured musical
 analysis and projects token-budgeted views of it. It never sees a fixture, a
 rig, a cue or a DMX universe; that is part 3, in `ai-dmx-light-render`.
 
+**Part 2 is the only path from analysis to cue authoring.** As of v3.3 the
+downstream server no longer reads `data/analysis/` at all — it deleted its own
+`get_analysis*` tools, `song://` resources and the windowed `artifacts/` door.
+There is no second route to a musical fact: a signal phase 4 does not publish at
+top level, and this server therefore cannot project, reaches the light show
+nowhere. The reciprocal boundary is stated in
+[`mcp-definition.md`](mcp-definition.md).
+
 The lighting target is **moving-head fixtures**, which is why gestures with
 internal phases matter more than isolated events: a moving head needs to know it
 has eight bars to travel, not just that something loud happened.

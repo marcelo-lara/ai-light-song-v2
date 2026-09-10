@@ -25,7 +25,7 @@ Implications
 
 Links and provenance
 
-- Implementation plan: `docs/implementation-plan-v3.3.md`
+- Implementation plan: v3.3 (completed and closed 2026-09-08; see git history)
 - Regression guide and checks: `docs/reference/mcp-regression.md`
 - Original handoff note (historical): `docs/contract-change-v3.1.md` (this file)
 
