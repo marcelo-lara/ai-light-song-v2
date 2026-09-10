@@ -137,7 +137,11 @@ breaking it has already cost this repo something.
 ## Running things
 
 ```bash
-docker compose build
+docker compose build app mcp ui   # `build` alone builds only `ui`; the rest are on-demand
+
+# `docker compose up` (no service) starts ONLY the `ui` debugger. `app`, `mcp`
+# and `test` carry the `ondemand` profile — `docker compose run` still starts
+# them, or `docker compose --profile ondemand up` brings the whole set up.
 
 # full pipeline + validation report for one song
 docker compose run --rm app ./analyze --song "/data/songs/YOUR_SONG.mp3"

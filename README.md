@@ -18,7 +18,7 @@ trusted, and what the measurements say is broken.
 Prerequisite: Docker with NVIDIA GPU support.
 
 ```bash
-docker compose build
+docker compose build app mcp ui   # `build` alone builds only `ui` (the rest are on-demand)
 
 # one song: full pipeline + validation report
 docker compose run --rm app ./analyze --song "/data/songs/YOUR_SONG.mp3"
@@ -33,7 +33,7 @@ docker compose run --rm app ./analyze --song "/data/songs/YOUR_SONG.mp3" --stage
 docker compose run --rm app ./analyze --clean-generated-data
 
 docker compose run --rm test     # tests
-docker compose up ui             # debugger at http://localhost:9090
+docker compose up                # debugger only (the sole service `up` starts)
 
 # song-comprehension MCP server — a stdio server its client spawns (-T is mandatory)
 docker compose build mcp

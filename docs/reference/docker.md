@@ -6,23 +6,32 @@ Never propose host-installed Python or audio tooling. The root
 
 ## Services
 
-| Service | Backed by | Role |
-| --- | --- | --- |
-| `app` | root `Dockerfile` | analyzer and validation runtime; the only supported runtime for inference and GPU work |
-| `mcp` | `mcp/Dockerfile` | read-only stdio song-comprehension server over top-level analysis JSON |
-| `ui` | `ui/Dockerfile` | artifact debugger; never an analyzer runtime |
-| `test` | root `Dockerfile` | the test suite |
+| Service | Backed by | Role | Profile |
+| --- | --- | --- | --- |
+| `ui` | `ui/Dockerfile` | artifact debugger; never an analyzer runtime | *(none — the only service `docker compose up` starts)* |
+| `app` | root `Dockerfile` | analyzer and validation runtime; the only supported runtime for inference and GPU work | `ondemand` |
+| `mcp` | `mcp/Dockerfile` | read-only stdio song-comprehension server over top-level analysis JSON | `ondemand` |
+| `test` | root `Dockerfile` | the test suite | `ondemand` |
+
+`docker compose up` (no service named) starts **only `ui`**. `app`, `mcp` and
+`test` carry the `ondemand` profile and start only when named. `docker compose
+run` auto-enables a service's own profile, so the `run` commands below are
+unaffected. To bring everything up at once: `docker compose --profile ondemand
+up`. `docker compose build` with no service named builds only `ui`; name the
+others (or pass `--profile ondemand`) to build their images.
 
 ## Commands
 
 ```bash
-docker compose build              # build the analyzer image
+docker compose build app mcp ui   # build the on-demand images + the debugger
+docker compose build app          # build the analyzer image
 docker compose build mcp          # build the MCP server image
 docker compose build ui           # build the debugger image
 docker compose run --rm app       # interactive shell in the analyzer
 docker compose run --rm -T mcp    # stdio MCP server session
 docker compose run --rm test      # tests
-docker compose up ui              # debugger at http://localhost:9090
+docker compose up                 # debugger only, at http://localhost:9090
+docker compose up ui              # same — debugger at http://localhost:9090
 ```
 
 Long batch run, detached, logged:

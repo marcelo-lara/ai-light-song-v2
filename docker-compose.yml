@@ -1,5 +1,13 @@
 services:
+  # `docker compose up` starts ONLY `ui` (it has no profile). Every other
+  # service carries the `ondemand` profile, so it starts only when named
+  # explicitly — `docker compose run --rm app …` / `run --rm -T mcp` /
+  # `run --rm test` auto-enable a service's own profile, and
+  # `docker compose --profile ondemand up` brings the whole set up at once.
+  # `docker compose build` still needs those services named (or
+  # `--profile ondemand`) to build their images.
   app:
+    profiles: ["ondemand"]
     build:
       context: .
       dockerfile: Dockerfile
@@ -17,6 +25,7 @@ services:
     gpus: all
 
   test:
+    profiles: ["ondemand"]
     build:
       context: .
       dockerfile: Dockerfile.test
@@ -33,6 +42,7 @@ services:
   mcp:
     # Own image — never the analyzer image. stdio server: the MCP client spawns
     # it with `docker compose run --rm -T mcp` (see docs/mcp-definition.md).
+    profiles: ["ondemand"]
     build:
       context: ./mcp
       dockerfile: Dockerfile
