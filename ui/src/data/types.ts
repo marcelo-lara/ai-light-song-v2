@@ -305,6 +305,34 @@ export interface SongFactsFile {
 }
 
 // ---------------------------------------------------------------------------
+// reference/human/block_energy.json  (v3.4 item 4 — operator block ratings)
+// ---------------------------------------------------------------------------
+// The operator's two-axis rating of each `human_hints.json` block: `energy` and
+// `tension`, each an integer 1-5, joined to the hint by `hint_id` at read time.
+// A block is unrated when it is absent from `ratings`. The two axes are
+// deliberately independent (a "close to silence" block is lowest-energy,
+// highest-tension). SCOPE GUARD: nothing in `src/` or `mcp/` reads this file —
+// it is `reference/human/` material like the hints, with one producer (the
+// operator) and no `field_sources` / `source` attribution machinery.
+//
+// D4.2 (resolved, implementation): an entry may carry one axis or both. The
+// schema's "energy: 1-5, tension: 1-5" is kept as "each axis, when present, is
+// an integer 1-5"; a missing axis is omitted rather than defaulted (no silent
+// fallbacks). A block counts as fully rated only when both axes are set.
+
+export interface BlockEnergyRating {
+  hint_id: string;
+  energy?: number;
+  tension?: number;
+}
+
+export interface BlockEnergyFile {
+  schema_version: string;
+  song_name: string;
+  ratings: BlockEnergyRating[];
+}
+
+// ---------------------------------------------------------------------------
 // song_event_timeline.json  (plan v3.0 item 9 — flat gesture-phase /
 // section-transition events, replacing the Epic-5 composite event_* stack)
 // ---------------------------------------------------------------------------

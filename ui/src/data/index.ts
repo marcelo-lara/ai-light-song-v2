@@ -23,4 +23,11 @@ export type {
   SongFactsPayload,
   WholeSongFactField,
 } from "./saveSongFacts";
+export {
+  buildBlockEnergyPayload,
+  saveBlockEnergy,
+  BLOCK_ENERGY_MIN,
+  BLOCK_ENERGY_MAX,
+} from "./saveBlockEnergy";
+export type { BlockEnergyDraft } from "./saveBlockEnergy";
 export { artifactPaths, listingPaths, encodePath } from "./paths";

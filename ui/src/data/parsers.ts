@@ -19,6 +19,8 @@ import {
 import type {
   Beats,
   BeatRow,
+  BlockEnergyFile,
+  BlockEnergyRating,
   DrumEvent,
   DrumEventsFile,
   EnergyAccent,
@@ -381,6 +383,54 @@ export function parseHumanHints(raw: unknown): HumanHintsFile {
     human_hints: list.map((h, i) =>
       parseHumanHint(h, `human_hints.human_hints[${i}]`),
     ),
+  };
+}
+
+// ---------------------------------------------------------------------------
+
+// v3.4 item 4 — reference/human/block_energy.json. The operator's 1-5 energy /
+// tension rating for each human_hints.json block, joined by hint_id at read
+// time. Deliberately tolerant: a malformed, out-of-range or non-integer axis is
+// dropped rather than failing the whole file — the only writer is the
+// debugger's Human Hints events panel, which validates on Save
+// (`saveBlockEnergy.ts`) and the dev-server handler rejects bad payloads.
+//
+// SCOPE GUARD: nothing in src/ or mcp/ reads this file. It is reference/human/
+// material like the hints themselves — one producer (the operator), so there is
+// no field_sources / source attribution here (ui-definition.md "The write
+// rule"; the human-hints-file-stays-simple rule).
+function blockEnergyAxis(value: unknown): number | undefined {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= 1 &&
+    value <= 5
+    ? value
+    : undefined;
+}
+
+export function parseBlockEnergy(raw: unknown): BlockEnergyFile {
+  const o = asObject(raw, "block_energy.json");
+  const ratings: BlockEnergyRating[] = [];
+  for (const entry of asArray(o.ratings ?? [], "block_energy.ratings")) {
+    const e =
+      entry && typeof entry === "object"
+        ? (entry as Record<string, unknown>)
+        : {};
+    const hintId = typeof e.hint_id === "string" ? e.hint_id.trim() : "";
+    if (!hintId) continue;
+    const energy = blockEnergyAxis(e.energy);
+    const tension = blockEnergyAxis(e.tension);
+    if (energy === undefined && tension === undefined) continue;
+    ratings.push({
+      hint_id: hintId,
+      ...(energy !== undefined ? { energy } : {}),
+      ...(tension !== undefined ? { tension } : {}),
+    });
+  }
+  return {
+    schema_version: stringOr(o.schema_version, "", "block_energy.schema_version"),
+    song_name: stringOr(o.song_name, "", "block_energy.song_name"),
+    ratings,
   };
 }
 

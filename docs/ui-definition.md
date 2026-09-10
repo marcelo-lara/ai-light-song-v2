@@ -73,14 +73,25 @@ docker compose build ui         # production image
 **The debugger is read-only against generated data.** No snapshots, no caches,
 no derived JSON, no overrides, no helper files into `data/analysis/`.
 
-The only two writable paths, and only on an explicit `Save`:
+The only three writable paths, and only on an explicit `Save`:
 
 - `data/analysis/{song}/reference/human/human_hints.json`
 - `data/analysis/{song}/reference/human/song_facts.json`
+- `data/analysis/{song}/reference/human/block_energy.json` — the operator's
+  1–5 `energy` / `tension` rating per `human_hints.json` block, joined by
+  `hint_id`, edited in the Human Hints events panel (v3.4 item 4). Two
+  independent axes: a "close to silence" block is lowest-energy,
+  highest-tension. A block is unrated when it is absent from `ratings`; the
+  segmented selectors show an explicit no-segment-pressed state, never a
+  defaulted `1`. Written by `PUT /api/block-energy/<song>` (dev-server only,
+  like the hint editor — production Nginx has no handler). Nothing in `src/` or
+  `mcp/` reads it.
 
-`Cancel` must never update either file. The dev-server API enforces this at the
-mount level. A future workflow needing persisted review data must be documented
-as a new contract, not added implicitly.
+(v3.4 item 5 raises this list to four with `reference/human/lyric_validations.json`.)
+
+`Cancel` / closing a panel must never update any of these files. The dev-server
+API enforces this at the mount level. A future workflow needing persisted
+review data must be documented as a new contract, not added implicitly.
 
 ### A promoted hint is indistinguishable from a hand-marked one
 
@@ -98,10 +109,11 @@ reading that way, whichever of the three routes produced an entry.
   consumer.
 
 **The `field_sources` / `source` attribution on the generated delivery surface
-stops at this file.** That convention exists so a *fused, machine-written* value
-can say which producer won. `reference/human/` has exactly one producer — the
-operator — and adding provenance machinery to it would answer a question nobody
-is asking while making the file harder to read by hand.
+stops at these files.** That convention exists so a *fused, machine-written*
+value can say which producer won. `reference/human/` has exactly one producer —
+the operator — and adding provenance machinery to it (to `human_hints.json`,
+`song_facts.json` or `block_energy.json`) would answer a question nobody is
+asking while making the file harder to read by hand.
 
 ## Lanes
 
@@ -115,7 +127,7 @@ unrestricted" above.
 | Chord Regions | `artifacts/layer_a_harmonic.json` | |
 | Gestures | `song_event_timeline.json` | |
 | Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |
-| Human Hints | `reference/human/human_hints.json` | writable |
+| Human Hints | `reference/human/human_hints.json` (+ `reference/human/block_energy.json` for the per-block `energy`/`tension` rating controls in its events panel) | writable |
 | Moises Lyrics | `reference/moises/lyrics.json` | read-only ground truth; blocks tinted by per-word confidence |
 | Drop Proposals | `reference/proposals/drop_impacts.json` | experiment |
 | Character, Shadow | `reference/proposals/character.json` | experiment |

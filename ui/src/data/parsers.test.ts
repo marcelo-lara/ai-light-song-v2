@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { ShapeError } from "./parse";
 import {
   parseBeats,
+  parseBlockEnergy,
   parseEventTimeline,
   parseFftBands,
   parseHarmonicLayer,
@@ -213,5 +214,43 @@ describe("parseSongFacts", () => {
 
   it("throws on a non-object root", () => {
     expect(() => parseSongFacts([])).toThrow(ShapeError);
+  });
+});
+
+describe("parseBlockEnergy", () => {
+  it("reads full and partial ratings joined by hint_id", () => {
+    const file = parseBlockEnergy({
+      schema_version: "1.0",
+      song_name: "_test_song",
+      ratings: [
+        { hint_id: "hint-001", energy: 5, tension: 4 },
+        { hint_id: "hint-002", energy: 3 },
+      ],
+    });
+    expect(file.schema_version).toBe("1.0");
+    expect(file.ratings).toEqual([
+      { hint_id: "hint-001", energy: 5, tension: 4 },
+      { hint_id: "hint-002", energy: 3 },
+    ]);
+  });
+
+  it("drops out-of-range, non-integer, id-less and fully-empty entries", () => {
+    const file = parseBlockEnergy({
+      ratings: [
+        { hint_id: "a", energy: 9, tension: 2 }, // energy dropped, tension kept
+        { hint_id: "b", energy: 3.5 }, // dropped entirely
+        { hint_id: "", energy: 4, tension: 4 }, // no id
+        { hint_id: "d" }, // no axes
+      ],
+    });
+    expect(file.ratings).toEqual([{ hint_id: "a", tension: 2 }]);
+  });
+
+  it("tolerates a missing ratings array (404 -> empty stands in for this)", () => {
+    expect(parseBlockEnergy({ song_name: "s" }).ratings).toEqual([]);
+  });
+
+  it("throws on a non-object root", () => {
+    expect(() => parseBlockEnergy([])).toThrow(ShapeError);
   });
 });

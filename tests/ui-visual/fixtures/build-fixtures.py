@@ -13,6 +13,11 @@ not exist in the real track. Re-running this script overwrites them with the liv
 values and breaks that spec, so `git checkout` those three files (or re-curate
 them) after any rebuild.
 
+`reference/human/block_energy.json` (v3.4 item 4) is likewise synthetic — it
+rates the hand-curated hint-001 `{energy:5, tension:4}` and leaves hint-002 /
+hint-003 unrated, which `block-energy-rating.spec.ts` asserts ("1 / 3 blocks
+rated"). It is (re)written by `inject_block_energy` below.
+
 Dense per-frame arrays (fft_bands / rms_loudness / loudness_envelope) are
 decimated to ~60 evenly spaced frames, keeping the first and last frame so the
 song's full duration is still represented. info.json / beats.json are copied
@@ -168,19 +173,49 @@ def inject_section_contest(out_name: str):
     print(f"  patched {out_name}/sections.json — 1 contested section")
 
 
+def inject_block_energy(out_name: str, *, rated: bool = True):
+    """v3.4 item 4 — write the synthetic block_energy.json.
+
+    `RegFull - Fixture` gets hint-001 rated {energy:5, tension:4}, hint-002 /
+    hint-003 left unrated (absent from `ratings`), so the panel header reads
+    `1 / 3 blocks rated`. The other fixtures get an empty `ratings` array — the
+    file must still exist so the app's song-load fetch does not 404 (the visual
+    suite fails any run with a failed network response, ui-regression §3)."""
+    hints = json.loads(
+        (OUT / out_name / "reference/human/human_hints.json").read_text()
+    )
+    song_name = hints.get("song_name", REG_SOURCE)
+    p = OUT / out_name / "reference/human/block_energy.json"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    ratings = (
+        [{"hint_id": "hint-001", "energy": 5, "tension": 4}] if rated else []
+    )
+    p.write_text(
+        json.dumps(
+            {"schema_version": "1.0", "song_name": song_name, "ratings": ratings},
+            indent=2,
+        )
+        + "\n"
+    )
+    print(f"  wrote {out_name}/reference/human/block_energy.json")
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     OUT_SONGS.mkdir(parents=True, exist_ok=True)
     print("building fixtures:")
     copy_song(REG_SOURCE, "RegFull - Fixture")
     inject_section_contest("RegFull - Fixture")
+    inject_block_energy("RegFull - Fixture")
     copy_song(REG_SOURCE, "RegPartial - Fixture",
               drop={"artifacts/essentia/fft_bands.json",
                     "artifacts/essentia/fft_bands.bass.json",
                     "artifacts/essentia/fft_bands.drums.json",
                     "artifacts/essentia/fft_bands.harmonic.json",
                     "artifacts/essentia/fft_bands.vocals.json"})
+    inject_block_energy("RegPartial - Fixture", rated=False)
     copy_test_song()
+    inject_block_energy("_test_song", rated=False)
     # audio: ship the real mp3 for RegFull (real decode path). RegPartial reuses
     # it; _test_song intentionally has none.
     mp3 = SRC_SONGS / f"{REG_SOURCE}.mp3"

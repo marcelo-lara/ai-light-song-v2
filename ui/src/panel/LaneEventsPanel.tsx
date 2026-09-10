@@ -21,15 +21,35 @@
 // accent-300 left-edge marker. Blocks in a lane can overlap, so more than one
 // card can carry this at once; `data-active` still names a single "primary"
 // card (raised tint, bright label) among however many are in-window.
+//
+// v3.4 item 4 (D4.1): when `blockEnergy` is supplied — only for the Human Hints
+// events panel — each card also carries two 1-5 segmented-button selectors
+// (`energy`, `tension`) pre-filled from `reference/human/block_energy.json`,
+// with an explicit "unrated" state (no segment pressed — never a defaulted 1).
+// A panel-level Save persists every rating via the client; closing / Cancel
+// does not write. The card is restructured to a wrapper `<div>` with the seek
+// button and the rating controls as siblings so no `<button>` is nested inside
+// another.
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { ArtifactStatus } from "../data";
+import type { BlockEnergyDraft } from "../data/saveBlockEnergy";
+import type { BlockEnergyFile } from "../data/types";
 import type { SparseBlock } from "../timeline/laneContent";
 import { sparseTint } from "../timeline/sparseTints";
 
 import { activeBlockIndex, isInPlayheadWindow } from "./laneEvents";
 import { RightPanel } from "./RightPanel";
+
+type RatingAxis = "energy" | "tension";
+
+export interface BlockEnergyPanelProps {
+  /** the loaded (or empty) ratings file, joined to the cards by `hint_id` */
+  file: BlockEnergyFile | null;
+  /** persist every card's rating via `saveBlockEnergy` (explicit Save only) */
+  onSave: (drafts: BlockEnergyDraft[]) => Promise<void>;
+}
 
 interface LaneEventsPanelProps {
   laneId: string;
@@ -43,6 +63,61 @@ interface LaneEventsPanelProps {
   playing: boolean;
   onClose: () => void;
   onSelectBlock: (block: SparseBlock) => void;
+  /** v3.4 item 4 — supplied only for the Human Hints panel */
+  blockEnergy?: BlockEnergyPanelProps | undefined;
+}
+
+type AxisPair = { energy: number | null; tension: number | null };
+type RatingState = Record<string, AxisPair>;
+type SaveState = "idle" | "saving" | "saved" | "error";
+
+function seedRatings(file: BlockEnergyFile | null): RatingState {
+  const out: RatingState = {};
+  for (const r of file?.ratings ?? []) {
+    out[r.hint_id] = { energy: r.energy ?? null, tension: r.tension ?? null };
+  }
+  return out;
+}
+
+function SegmentedRating({
+  axis,
+  hintId,
+  value,
+  onPick,
+}: {
+  axis: RatingAxis;
+  hintId: string;
+  value: number | null;
+  onPick: (hintId: string, axis: RatingAxis, v: number) => void;
+}): React.JSX.Element {
+  return (
+    <div
+      className="seg-rating"
+      data-axis={axis}
+      data-value={value ?? "unrated"}
+    >
+      <span className="seg-rating__label">{axis}</span>
+      <div
+        className="seg-rating__buttons"
+        role="group"
+        aria-label={`${axis} rating`}
+      >
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button
+            key={n}
+            type="button"
+            className="seg-rating__btn"
+            data-testid={`block-energy-${hintId}-${axis}-${n}`}
+            aria-pressed={value === n}
+            aria-label={`${axis} ${n}`}
+            onClick={() => onPick(hintId, axis, n)}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export function LaneEventsPanel({
@@ -56,9 +131,65 @@ export function LaneEventsPanel({
   playing,
   onClose,
   onSelectBlock,
+  blockEnergy,
 }: LaneEventsPanelProps): React.JSX.Element {
   const activeIndex = activeBlockIndex(blocks, currentTime);
   const activeCardRef = useRef<HTMLButtonElement | null>(null);
+
+  const rating = laneId === "humanHints" ? blockEnergy : undefined;
+  const [ratings, setRatings] = useState<RatingState>(() =>
+    seedRatings(rating?.file ?? null),
+  );
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  // Reseed from the on-disk file whenever it changes (song switch, a Save that
+  // returns the server-normalised file). An unsaved click never changes
+  // `rating.file`, so this does not fight the local edits.
+  useEffect(() => {
+    if (!rating) return;
+    setRatings(seedRatings(rating.file ?? null));
+    setSaveState("idle");
+    setSaveError(null);
+  }, [rating?.file]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const setAxis = useCallback(
+    (hintId: string, axis: RatingAxis, v: number) => {
+      setRatings((cur) => {
+        const prev = cur[hintId] ?? { energy: null, tension: null };
+        // Clicking the pressed segment again clears the axis back to "unrated".
+        const next = prev[axis] === v ? null : v;
+        return { ...cur, [hintId]: { ...prev, [axis]: next } };
+      });
+      setSaveState("idle");
+    },
+    [],
+  );
+
+  const ratedCount = blocks.filter((b) => {
+    const r = ratings[b.id];
+    return !!r && r.energy != null && r.tension != null;
+  }).length;
+
+  const doSave = useCallback(async () => {
+    if (!rating) return;
+    setSaveState("saving");
+    setSaveError(null);
+    try {
+      const drafts: BlockEnergyDraft[] = blocks.map((b) => ({
+        hint_id: b.id,
+        energy: ratings[b.id]?.energy ?? null,
+        tension: ratings[b.id]?.tension ?? null,
+      }));
+      await rating.onSave(drafts);
+      setSaveState("saved");
+    } catch (err) {
+      setSaveState("error");
+      setSaveError(
+        err instanceof Error ? err.message : "Unable to save ratings.",
+      );
+    }
+  }, [rating, blocks, ratings]);
 
   // Follow: keep the active card visible while playing. Guarded so jsdom
   // (no `scrollIntoView`) does not throw.
@@ -94,7 +225,38 @@ export function LaneEventsPanel({
           )}
           <span className="app-rightpanel__kicker">{laneLabel}</span>
           <span className="lane-events__count">{blocks.length} events</span>
+          {rating && (
+            <span
+              className="lane-events__rated"
+              data-testid="block-energy-count"
+            >
+              {ratedCount} / {blocks.length} blocks rated
+            </span>
+          )}
         </>
+      }
+      footer={
+        rating ? (
+          <div className="lane-events__ratings-footer">
+            {saveState === "error" && (
+              <p className="lane-events__save-status is-error">{saveError}</p>
+            )}
+            {saveState === "saved" && (
+              <p className="lane-events__save-status is-ok">
+                Saved to block_energy.json.
+              </p>
+            )}
+            <button
+              type="button"
+              className="btn btn-primary"
+              data-testid="block-energy-save"
+              disabled={saveState === "saving"}
+              onClick={() => void doSave()}
+            >
+              {saveState === "saving" ? "Saving…" : "Save ratings"}
+            </button>
+          </div>
+        ) : undefined
       }
     >
       {state ? (
@@ -105,23 +267,47 @@ export function LaneEventsPanel({
             const tint = sparseTint(block.tintId ?? laneId);
             const active = index === activeIndex;
             const inWindow = isInPlayheadWindow(block, currentTime);
+            const pair = ratings[block.id];
             return (
               <li key={block.id}>
-                <button
-                  ref={active ? activeCardRef : undefined}
-                  type="button"
+                <div
                   className="lane-events__card"
-                  data-testid={`lane-event-${block.id}`}
                   data-block-id={block.id}
                   data-active={active}
                   data-in-window={inWindow}
                   aria-current={active ? "true" : undefined}
                   style={{ background: tint.fill, borderLeftColor: tint.stroke }}
-                  onClick={() => onSelectBlock(block)}
                 >
-                  <span className="lane-events__label">{block.label}</span>
-                  <span className="lane-events__caption">{block.caption}</span>
-                </button>
+                  <button
+                    ref={active ? activeCardRef : undefined}
+                    type="button"
+                    className="lane-events__cardmain"
+                    data-testid={`lane-event-${block.id}`}
+                    onClick={() => onSelectBlock(block)}
+                  >
+                    <span className="lane-events__label">{block.label}</span>
+                    <span className="lane-events__caption">{block.caption}</span>
+                  </button>
+                  {rating && (
+                    <div
+                      className="lane-events__rating"
+                      data-testid={`block-energy-${block.id}`}
+                    >
+                      <SegmentedRating
+                        axis="energy"
+                        hintId={block.id}
+                        value={pair?.energy ?? null}
+                        onPick={setAxis}
+                      />
+                      <SegmentedRating
+                        axis="tension"
+                        hintId={block.id}
+                        value={pair?.tension ?? null}
+                        onPick={setAxis}
+                      />
+                    </div>
+                  )}
+                </div>
               </li>
             );
           })}

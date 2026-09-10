@@ -622,16 +622,14 @@ input[type="range"]:focus-visible {
 .lane-events__card {
   width: 100%;
   text-align: left;
-  /* Uniform `--space-1` inset on every side — compact, and no longer sized to
-   * offset a full-bleed negative margin (see `.lane-events` above). */
-  padding: var(--space-1);
+  /* v3.4 item 4 — the card is a wrapper now; its inner `.lane-events__cardmain`
+   * button carries the `--space-1` inset the card used to. */
   border: 0;
   border-left: 3px solid; /* tint stroke, set inline */
   border-bottom: 1px solid var(--tl-border);
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  cursor: pointer;
+  gap: 0;
   /* playhead-window marker (see [data-in-window] below) — a separate 2px
    * accent stripe drawn inside the tint border-left, transparent by default so
    * every card reserves the space and none of them shift when it appears. */
@@ -662,6 +660,109 @@ input[type="range"]:focus-visible {
 }
 .lane-events__card[data-active="true"] .lane-events__label {
   color: var(--color-neutral-100);
+}
+
+/* ---- Block energy / tension ratings (v3.4 item 4, D4.1) ------------------ */
+
+/* The card is now a wrapper: the seek button and the rating controls are
+ * siblings so no <button> is nested inside another. The tint background /
+ * borders / playhead marker stay on `.lane-events__card`; the seek button
+ * carries the padding the card used to. */
+.lane-events__cardmain {
+  width: 100%;
+  text-align: left;
+  padding: var(--space-1);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  cursor: pointer;
+}
+.lane-events__cardmain:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+/* `N / M blocks rated`, beside the `N events` count in the panel header. */
+.lane-events__rated {
+  font: 500 10px/1 var(--font-body);
+  color: var(--color-accent-300);
+}
+.lane-events__rating {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 0 var(--space-1) var(--space-1);
+}
+.seg-rating {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.seg-rating__label {
+  flex: 0 0 46px;
+  font: 500 8px/1 var(--font-body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+/* Segmented buttons — same visual family as `.zbtn` / `.tp` panel controls:
+ * a bordered strip of five cells, the picked one filled with the accent. No
+ * novel visual design. */
+.seg-rating__buttons {
+  display: flex;
+  border: 1px solid var(--color-neutral-800);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.seg-rating__btn {
+  width: 22px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-left: 1px solid var(--color-neutral-800);
+  background: transparent;
+  color: var(--color-neutral-400);
+  font: 500 10px/1 var(--font-body);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.seg-rating__btn:first-child {
+  border-left: 0;
+}
+.seg-rating__btn:hover {
+  color: var(--color-accent-300);
+  background: var(--color-accent-900);
+}
+.seg-rating__btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+.seg-rating__btn[aria-pressed="true"] {
+  background: var(--color-accent-800);
+  color: var(--color-accent-100);
+}
+.lane-events__ratings-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.lane-events__ratings-footer .btn {
+  width: 100%;
+}
+.lane-events__save-status {
+  margin: 0;
+  font: 400 11px/1.4 var(--font-body);
+  color: var(--color-neutral-500);
+}
+.lane-events__save-status.is-error {
+  color: var(--color-accent-200);
+}
+.lane-events__save-status.is-ok {
+  color: var(--color-neutral-400);
 }
 
 /* ---- Block inspector ---- */

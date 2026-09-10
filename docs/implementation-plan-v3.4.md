@@ -86,7 +86,7 @@ Never fix across item boundaries in one commit.
 | New dense lanes | 4 (item 1) |
 | New proposal lanes | 3 (items 6, 7, 8) |
 | Blocking decisions (`D`) | none open |
-| Done | 3 |
+| Done | 4 |
 
 ---
 
@@ -505,56 +505,73 @@ any song (refinement item 1). The two axes must stay separate: `hint-007` "close
 to silence" is a lowest-energy, highest-tension block — any single scalar ranks
 the operator's best lighting moments at the bottom.
 
-- [ ] **Schema** (refinement item 1): `{ schema_version: "1.0", song_name,
+- [x] **Schema** (refinement item 1): `{ schema_version: "1.0", song_name,
   ratings: [{ hint_id, energy: 1–5, tension: 1–5 }] }`. A block may be unrated
-  (absent from `ratings`). Integers only; reject out-of-range.
-- [ ] **Dev-server `PUT /api/block-energy/<song>` handler** in
+  (absent from `ratings`). Integers only; reject out-of-range. **D4.2** relaxes
+  "both axes" to "each axis when present" — a partial rating carries only the
+  set axis, never a defaulted one.
+- [x] **Dev-server `PUT /api/block-energy/<song>` handler** in
   `ui/vite.config.ts`, next to the human-hints and song-facts handlers: same
-  path-escape guard (`referenceHumanFilePath(song, "block_energy.json")`), same
-  400-on-bad-payload shape, writes pretty JSON + trailing newline. Production
-  Nginx has no handler — the rating UI is dev-only, exactly like the hint
-  editor. Save cadence follows the hints pattern: an explicit **Save**, not
-  per-click (contrast item 5, which is per-click by `D6`).
-- [ ] **Save client** `ui/src/data/saveBlockEnergy.ts` + tests, mirroring
-  `saveHumanHints.ts` (validate/normalise → `PUT` → return server-normalised
-  file as new source of truth).
-- [ ] **Loader + parser** for `block_energy.json` (tolerant, 404 → empty
-  `{ ratings: [] }`), wired into the song load so the ratings are available
-  beside the hints.
-- [ ] **Rating controls in the Human Hints events panel.** Each hint card
-  (`LaneEventsPanel` / `BlockInspector`) gains two 1–5 selectors (segmented
-  buttons or a 5-dot control) for `energy` and `tension`, pre-filled from
-  `block_energy.json`, with a clear "unrated" state. A panel-level **Save**
-  button persists all ratings via the client. `Cancel`/navigation away does not
-  write.
-- [ ] **Unrated count.** The Human Hints lane head or panel header shows
-  `N / M blocks rated` so a pass can be driven to completion (refinement item 1
-  "Done when").
-- [ ] **Writable-path list → three.** Update **in this item's commit**:
-  [`ui-definition.md`](../docs/ui-definition.md) "The write rule" (three paths,
-  and invariant #4 in [`reference/ui-development.md`](reference/ui-development.md)),
-  [`reference/artifacts.md`](reference/artifacts.md) (new `reference/human/`
-  file), [`reference/ui-development.md`](reference/ui-development.md) invariant #4
-  list. Note that item 5 will raise the count to four.
-- [ ] **Scope guard, stated in the parser comment and `ui-definition.md`:**
-  nothing in `src/` or `mcp/` reads `block_energy.json`; it is `reference/human/`
-  material like the hints themselves. No `field_sources`/`source` machinery — one
-  producer, the operator (`ui-definition.md` "The `field_sources` / `source`
-  attribution … stops at this file"; the `human-hints-file-stays-simple` rule).
+  `referenceHumanFilePath(song, "block_energy.json")` guard, 400-on-bad-payload,
+  pretty JSON + trailing newline, dev-only. Explicit **Save**, not per-click.
+- [x] **Save client** `ui/src/data/saveBlockEnergy.ts` + tests
+  (`saveBlockEnergy.test.ts`), mirroring `saveHumanHints.ts`.
+- [x] **Loader + tolerant parser** for `block_energy.json` (`parseBlockEnergy`;
+  404 → empty `{ schema_version: "", song_name, ratings: [] }`), registered as
+  the `blockEnergy` artifact key and added to `TIMELINE_KEYS` so it loads beside
+  the hints.
+- [x] **Rating controls in the Human Hints events panel** (`LaneEventsPanel`,
+  supplied a `blockEnergy` prop only for `laneId === "humanHints"`). Each card
+  gains two 1–5 **segmented-button** selectors for `energy` / `tension`
+  (D-fork removed: segmented buttons, not a dot control; styled off `daw.css`
+  panel controls). Pre-filled from `block_energy.json`; explicit unrated state
+  is no segment pressed (clicking the pressed segment clears it). The card was
+  restructured to a wrapper `<div>` with the seek `<button>` and the rating
+  controls as siblings — no nested `<button>`. A panel-level **Save ratings**
+  button persists all ratings via the client; closing / Cancel does not write.
+- [x] **Unrated count.** The panel header shows `N / M blocks rated` beside the
+  `N events` count.
+- [x] **Writable-path list → three.** Updated in this item's commit:
+  `ui-definition.md` "The write rule" (+ Lanes table + `field_sources` note),
+  `reference/ui-development.md` invariant #4, `reference/artifacts.md` (tree +
+  table row). Each notes item 5 will raise the count to four.
+- [x] **Scope guard** stated in the parser comment, `types.ts`, `saveBlockEnergy.ts`,
+  the vite handler and `ui-definition.md`: nothing in `src/` or `mcp/` reads
+  `block_energy.json`; no `field_sources`/`source` machinery — one producer, the
+  operator.
 
 **D4.1 (resolved).** Rating controls live in the **Human Hints events panel**
 (the existing per-block review surface), not a new standalone panel. Rejected: a
 dedicated "Ratings" panel — it would split the operator's attention from the
 block text and waveform they are rating against.
 
+**D4.2 (resolved, 2026-09-10, during implementation).** A `block_energy.json`
+`ratings` entry may carry **one axis or both** (`{ hint_id, energy?, tension? }`),
+not strictly both. The plan's literal `energy: 1–5, tension: 1–5` is kept as
+"each axis, when present, is an integer 1–5"; a missing axis is omitted, never
+defaulted (the no-silent-fallbacks rule). Forced by the item's own Visual QA
+check "clicking energy `3` on `hint-002` then Save issues exactly one `PUT` …
+200" — with a both-required rule that Save would either throw or fabricate a
+tension value. A block counts as fully rated (the `N / M` header) only when both
+axes are set; the client, the dev handler and the parser all enforce
+integer-1–5-or-absent.
+
 ### Validation
 
-- [ ] `docker compose run --rm ui npm run test` — `saveBlockEnergy` client
-  tests, parser tests, panel component test (renders selectors, reflects loaded
-  ratings, "unrated" state, Save calls the client, Cancel does not).
-- [ ] `docker compose run --rm ui npm run build` clean.
-- [ ] Manual (documented in the commit): rate two blocks, Save, reload — ratings
-  persist; `git diff` shows only `reference/human/block_energy.json` changed.
+- [x] `docker compose run --rm ui npm run test` — 339 passed (was 314):
+  `saveBlockEnergy.test.ts` (build/validate/PUT), `parsers.test.ts`
+  `parseBlockEnergy` (full + partial + drop-invalid + 404-empty + non-object),
+  `loaders.test.ts` `loadBlockEnergy` (404 → empty, real failure surfaces,
+  real file), `LaneEventsPanel.test.tsx` block-energy describe (renders both
+  selectors, pre-fills from the file, explicit unrated state, `N / M` header,
+  Save calls the client with a draft per block, clear-on-repeat-click, close
+  does not write, no controls without the prop).
+- [x] `docker compose run --rm ui npm run build` clean (`tsc --noEmit` + vite).
+- [x] `docker compose run --rm test` — 122 passed; analyzer baseline unchanged
+  (nothing in `src/` touched).
+- [x] Round-trip persistence is asserted by `block-energy-rating.spec.ts`
+  (snapshot-and-restore of the writable fixture, like `promote-hint.spec.ts`);
+  the orchestrator runs the Playwright suite + captures the baseline.
 
 ### Visual QA
 
@@ -911,6 +928,7 @@ no current code path that can regenerate it.
 | D3.3 | resolved | New `Producer.SECTION_FUNCTION`; `sections.json` header switches `function_status` to it (and adds `contested_by`) only on a song with a contested row. |
 | D3.4 | resolved | Contradiction is not corpus-wide (4 sections / 2 of 23 songs) — rule ships conservative: chorus→{verse,bridge}, drums ≥ 3 dB louder, mix not > 1.5 dB quieter, `function_confidence` ≤ 0.9. |
 | D4.1 | resolved | Block ratings live in the Human Hints events panel, not a standalone panel. |
+| D4.2 | resolved | `block_energy.json` `ratings` entry carries one axis or both (`{ hint_id, energy?, tension? }`); a missing axis is omitted, never defaulted. "Fully rated" (the `N / M` count) needs both. |
 | D5.1 | resolved | Lyric validation persists per-click, no Save button. |
 | D9.1 | **raised for the operator** | Do not resurrect Basic Pitch symbolic transcription in v3.4; blocks nothing. |
 

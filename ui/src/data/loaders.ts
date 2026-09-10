@@ -16,6 +16,7 @@ import {
 } from "./sparseArtifacts";
 import {
   parseBeats,
+  parseBlockEnergy,
   parseDrumEvents,
   parseEnergyLayer,
   parseEventTimeline,
@@ -32,6 +33,7 @@ import {
 } from "./parsers";
 import type {
   Beats,
+  BlockEnergyFile,
   DrumEventsFile,
   EnergyLayer,
   EventTimeline,
@@ -186,6 +188,31 @@ export const loadEnergyLayer = (song: string, f?: typeof fetch) =>
 export const loadHumanHints = (song: string, f?: typeof fetch) =>
   loadJson<HumanHintsFile>(artifactPaths.humanHints(song), parseHumanHints, f);
 
+// v3.4 item 4 — reference/human/block_energy.json is optional (absent until the
+// operator rates a block), so a 404 resolves to an empty file. Every other
+// failure still surfaces.
+export const loadBlockEnergy = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<BlockEnergyFile>> => {
+  const result = await loadJson<BlockEnergyFile>(
+    artifactPaths.blockEnergy(song),
+    parseBlockEnergy,
+    f,
+  );
+  if (
+    !result.ok &&
+    result.error.kind === "http" &&
+    result.error.status === 404
+  ) {
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, ratings: [] },
+    };
+  }
+  return result;
+};
+
 export const loadEventTimeline = (song: string, f?: typeof fetch) =>
   loadJson<EventTimeline>(
     artifactPaths.eventTimeline(song),
@@ -224,6 +251,7 @@ export const artifactLoaders = {
   drums: loadDrumEvents,
   energy: loadEnergyLayer,
   humanHints: loadHumanHints,
+  blockEnergy: loadBlockEnergy,
   moisesLyrics: loadMoisesLyrics,
   eventTimeline: loadEventTimeline,
   reviewQueue: loadReviewQueue,

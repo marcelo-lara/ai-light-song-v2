@@ -22,6 +22,11 @@ export const artifactPaths = {
     encodePath(analysis(song, "reference", "human", "human_hints.json")),
   songFacts: (song: string) =>
     encodePath(analysis(song, "reference", "human", "song_facts.json")),
+  // v3.4 item 4 — operator's 1-5 energy/tension rating per human_hints.json
+  // block, joined by hint_id. Writable (debugger only), reference/human/
+  // material; nothing in src/ or mcp/ reads it.
+  blockEnergy: (song: string) =>
+    encodePath(analysis(song, "reference", "human", "block_energy.json")),
   // Written by experiments/drop_detection (`run export`), never by the pipeline
   // and never by a human. Kept out of `reference/human/` so the drop-impact
   // ground truth stays a purely hand-authored file.

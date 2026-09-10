@@ -13,7 +13,11 @@ import react from "@vitejs/plugin-react";
 // The dev-server `/data` static mount + directory listing and the
 // `PUT /api/human-hints/<song>` handler below are ported byte-for-byte (in
 // behaviour) from the previous app's vite.config.js, plan item 2. The `PUT
-// /api/song-facts/<song>` handler is added by plan item 7.
+// /api/song-facts/<song>` handler is added by plan item 7. The `PUT
+// /api/block-energy/<song>` handler (v3.4 item 4) mirrors both: same
+// path-escape guard, 400-on-bad-payload, pretty JSON + trailing newline,
+// dev-only (production Nginx has no handler — the rating UI is dev-only, like
+// the hint editor).
 
 const dataRoot = "/data";
 const analysisRoot = path.join(dataRoot, "analysis");
@@ -153,6 +157,75 @@ function humanHintsFilePath(song: unknown): string {
 // `reference/`. Only the whole-song review-queue answers land here.
 function songFactsFilePath(song: unknown): string {
   return referenceHumanFilePath(song, "song_facts.json");
+}
+
+// v3.4 item 4 — block_energy.json is written ONLY by an explicit human Save in
+// the Human Hints events panel (the same rule human hints / song facts follow);
+// the analyzer never writes `reference/`. One producer (the operator), so there
+// is no `field_sources` / `source` attribution here. Nothing in `src/` or
+// `mcp/` reads it. Production Nginx has no handler — the rating UI is dev-only,
+// exactly like the hint editor.
+function blockEnergyFilePath(song: unknown): string {
+  return referenceHumanFilePath(song, "block_energy.json");
+}
+
+// Each axis, when present, is an integer 1-5 (D4.2); a missing axis is omitted,
+// never defaulted. An out-of-range or non-integer axis is rejected (400).
+function normalizeBlockEnergyAxis(
+  value: unknown,
+  axis: string,
+  hintId: string,
+): number | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (
+    typeof value !== "number" ||
+    !Number.isInteger(value) ||
+    value < 1 ||
+    value > 5
+  ) {
+    throw new Error(`Block "${hintId}" ${axis} must be an integer 1-5.`);
+  }
+  return value;
+}
+
+function normalizeBlockEnergyPayload(payload: unknown): {
+  schema_version: string;
+  song_name: string;
+  ratings: Array<{ hint_id: string; energy?: number; tension?: number }>;
+} {
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Block energy payload must be a JSON object.");
+  }
+  const record = payload as Record<string, unknown>;
+  const ratingsIn = Array.isArray(record.ratings) ? record.ratings : null;
+  if (!ratingsIn) {
+    throw new Error("Block energy payload must include a ratings array.");
+  }
+  const ratings: Array<{ hint_id: string; energy?: number; tension?: number }> =
+    [];
+  for (const entry of ratingsIn) {
+    const e = (entry && typeof entry === "object" ? entry : {}) as Record<
+      string,
+      unknown
+    >;
+    const hintId = String(e.hint_id ?? "").trim();
+    if (!hintId) {
+      throw new Error("Each block-energy rating must include a hint_id.");
+    }
+    const energy = normalizeBlockEnergyAxis(e.energy, "energy", hintId);
+    const tension = normalizeBlockEnergyAxis(e.tension, "tension", hintId);
+    if (energy === undefined && tension === undefined) continue;
+    ratings.push({
+      hint_id: hintId,
+      ...(energy !== undefined ? { energy } : {}),
+      ...(tension !== undefined ? { tension } : {}),
+    });
+  }
+  return {
+    schema_version: "1.0",
+    song_name: String(record.song_name || ""),
+    ratings,
+  };
 }
 
 // Whole-song review-queue fields that disposition into song_facts.json.
@@ -344,6 +417,40 @@ function dataMountPlugin(): Plugin {
             response.setHeader("Content-Type", "text/plain; charset=utf-8");
             response.end(
               error instanceof Error ? error.message : "Unable to save song facts.",
+            );
+          }
+          return;
+        }
+
+        if (
+          requestUrl &&
+          request.method === "PUT" &&
+          requestUrl.pathname.startsWith("/api/block-energy/")
+        ) {
+          try {
+            const song = decodeURIComponent(
+              requestUrl.pathname.replace("/api/block-energy/", ""),
+            );
+            const payload = normalizeBlockEnergyPayload(
+              await readJsonBody(request),
+            );
+            const filePath = blockEnergyFilePath(song);
+            await fsp.mkdir(path.dirname(filePath), { recursive: true });
+            await fsp.writeFile(
+              filePath,
+              JSON.stringify(payload, null, 2) + "\n",
+              "utf-8",
+            );
+            response.statusCode = 200;
+            response.setHeader("Content-Type", "application/json; charset=utf-8");
+            response.end(JSON.stringify(payload));
+          } catch (error) {
+            response.statusCode = 400;
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            response.end(
+              error instanceof Error
+                ? error.message
+                : "Unable to save block energy.",
             );
           }
           return;

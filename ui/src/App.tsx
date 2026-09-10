@@ -1,8 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { artifactPaths, discoverSongs, useSong } from "./data";
-import type { HumanHintsFile, SectionRow } from "./data/types";
+import type {
+  BlockEnergyFile,
+  HumanHintsFile,
+  SectionRow,
+} from "./data/types";
 import { buildHumanHintsPayload, saveHumanHints } from "./data/saveHumanHints";
+import {
+  buildBlockEnergyPayload,
+  saveBlockEnergy,
+  type BlockEnergyDraft,
+} from "./data/saveBlockEnergy";
 import { draftToHint, hintToDraft } from "./panel/hintDraft";
 import {
   BlockInspector,
@@ -99,6 +108,9 @@ const TIMELINE_KEYS = [
   "drums",
   "energy",
   "humanHints",
+  // v3.4 item 4 — operator's per-block energy/tension ratings, joined to the
+  // Human Hints events panel by hint_id (reference/human, writable).
+  "blockEnergy",
   // external word-level sung lyrics (reference/moises)
   "moisesLyrics",
   // who-is-playing state changes from the published per-stem RMS
@@ -179,6 +191,11 @@ export function App(): React.JSX.Element {
   const [eventsLaneId, setEventsLaneId] = useState<string | null>(null);
   const [activeHintRef, setActiveHintRef] = useState<string | null>(null);
   const [hintsOverride, setHintsOverride] = useState<HumanHintsFile | null>(null);
+  // v3.4 item 4: the server-normalised block_energy.json returned by a Save,
+  // applied in place so the Human Hints panel reflects it without a full reload
+  // (same reasoning as `hintsOverride`).
+  const [blockEnergyOverride, setBlockEnergyOverride] =
+    useState<BlockEnergyFile | null>(null);
   // A pending "open the hint editor on a pre-filled draft" request — from a
   // double-click on the Human Hints lane (item 8) or the block inspector's
   // "Create human hint" action (item 9). `nonce` makes each request distinct so
@@ -277,6 +294,7 @@ export function App(): React.JSX.Element {
   const duration = transport.duration || estimatedDuration;
 
   const humanHintsFile = hintsOverride ?? artifacts.humanHints.data;
+  const blockEnergyFile = blockEnergyOverride ?? artifacts.blockEnergy.data;
 
   // item 9: block lists for every sparse lane, rebuilt when a source changes.
   const laneContentSources = useMemo<LaneContentSources>(
@@ -318,6 +336,7 @@ export function App(): React.JSX.Element {
     setSelection(null);
     setActiveHintRef(null);
     setHintsOverride(null);
+    setBlockEnergyOverride(null);
     setHintSeed(null);
     setEventsLaneId(null);
   }, [song]);
@@ -455,6 +474,24 @@ export function App(): React.JSX.Element {
   const handleSaveHints = useCallback((file: HumanHintsFile) => {
     setHintsOverride(file);
   }, []);
+
+  // v3.4 item 4: persist every Human Hints block's energy/tension rating on an
+  // explicit panel Save. Builds + validates the whole file through the same
+  // client the tests exercise, then applies the server-normalised result in
+  // place (no full reload — see `handleSaveHints`). Rejects on failure so the
+  // panel can surface the error and keep the unsaved edits.
+  const handleSaveBlockEnergy = useCallback(
+    async (drafts: BlockEnergyDraft[]) => {
+      if (!song) throw new Error("No song selected.");
+      const payload = buildBlockEnergyPayload(
+        blockEnergyFile?.song_name || song,
+        drafts,
+      );
+      const written = await saveBlockEnergy(song, payload);
+      setBlockEnergyOverride(written);
+    },
+    [song, blockEnergyFile],
+  );
 
   // item 10: persist a humanHints block's new start/end after a timeline drag.
   // Builds the full file from the current hints (only the dragged one's times
@@ -1018,6 +1055,11 @@ export function App(): React.JSX.Element {
             playing={transport.isPlaying}
             onClose={closePanel}
             onSelectBlock={handleSelectBlock}
+            blockEnergy={
+              eventsPanel.laneId === "humanHints"
+                ? { file: blockEnergyFile, onSave: handleSaveBlockEnergy }
+                : undefined
+            }
           />
         )}
 
