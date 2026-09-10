@@ -1,0 +1,68 @@
+STRUCTURAL vs MICRO — block-kind agreement with operator hints
+======================================================================
+
+_test_song
+  method               acc  macroF1       struct P/R/F1        micro P/R/F1
+  phrase-grid         0.27     0.25   0.25/0.11/0.15       0.27/0.50/0.35
+  duration-only       0.80     0.80   1.00/0.67/0.80       0.67/1.00/0.80
+
+Titanium - David Guetta ft Sia
+  method               acc  macroF1       struct P/R/F1        micro P/R/F1
+  phrase-grid         0.47     0.46   0.40/0.67/0.50       0.60/0.33/0.43
+  duration-only       0.80     0.80   0.67/1.00/0.80       1.00/0.67/0.80
+
+Hideaway - Kiesza
+  method               acc  macroF1       struct P/R/F1        micro P/R/F1
+  phrase-grid         0.40     0.29   0.00/0.00/0.00       0.50/0.67/0.57
+  duration-only       0.80     0.80   0.67/1.00/0.80       1.00/0.67/0.80
+
+Armin - Revolution
+  method               acc  macroF1       struct P/R/F1        micro P/R/F1
+  phrase-grid         0.60     0.58   1.00/0.33/0.50       0.50/1.00/0.67
+  duration-only       0.80     0.76   0.75/1.00/0.86       1.00/0.50/0.67
+
+POOLED (4 gold songs)
+  method               acc  macroF1       struct P/R/F1        micro P/R/F1   support s/m
+  phrase-grid         0.42     0.41   0.41/0.30/0.35       0.43/0.55/0.48       23/22
+  duration-only       0.80     0.80   0.77/0.87/0.82       0.84/0.73/0.78       23/22
+
+KILL CONDITION — phrase-grid must beat the duration-only baseline (pooled macro-F1)
+  phrase-grid macro-F1 = 0.415   duration-only macro-F1 = 0.798
+  OUTCOME: FAIL — does not beat the baseline; kept for one review pass, NOT tuned
+
+PHRASE-GRID PRIOR vs CHANCE  (all operator edges, per song)
+----------------------------------------------------------------------
+  chance lock-rate = 2 * 0.12 / 4 = 0.060
+
+  _test_song                         lock-rate 0.133   x chance = 2.22
+  Titanium - David Guetta ft Sia     lock-rate 0.400   x chance = 6.67
+  Hideaway - Kiesza                  lock-rate 0.100   x chance = 1.67
+  Armin - Revolution                 lock-rate 0.100   x chance = 1.67
+  Queen of Kings - Alessandra        lock-rate 0.406   x chance = 6.77
+
+  range: 1.67x - 6.77x  (mean 3.80x) — a weak prior, not a precision filter
+
+QUEEN OF KINGS — operator edge vs the fitted 4-bar phrase grid
+======================================================================
+  bar_len=1.910s  phrase_len=7.640s  grid phase=0.898s  (structural threshold 0.12 bars)
+
+   edge (s)  fit (bars)        kind   context
+       1.11       0.111  structural   Fairytale like intro
+      16.32       0.075  structural   Fairytale like intro
+      23.94       0.064  structural   Post-Intro
+      31.57       0.059  structural   Post-Intro + Harmony
+      39.21       0.059  structural   Melodic Vocal bridge
+      45.00       0.909       micro   Vocal tension build
+      46.52       0.112  structural   Pre-drop phrase
+      47.20       0.244       micro   pre-drop tension
+      48.72       1.038       micro   Vocal tension phrase
+      52.11       1.186       micro   Main chorus section
+      52.52       0.973       micro   Micro break
+      55.86       0.776       micro   Main chorus section (continues)
+      56.33       1.022       micro   'Hey' phrase
+      59.90       1.109       micro   Main chorus section (continues)
+      62.16       0.074  structural   Main chorus exit phrase
+      63.95       1.012       micro   Final chorus exit
+
+  7 of 16 operator edges lock to the 4-bar grid
+

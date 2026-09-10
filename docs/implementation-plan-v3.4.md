@@ -86,7 +86,7 @@ Never fix across item boundaries in one commit.
 | New dense lanes | 4 (item 1) |
 | New proposal lanes | 3 (items 6, 7, 8) |
 | Blocking decisions (`D`) | none open |
-| Done | 7 |
+| Done | 8 |
 
 ---
 
@@ -842,39 +842,64 @@ classify what kind of passage it is?
 own claim with its own error mode — a boundary mislabelled `structural` when it
 is a micro-cue is a wrong answer neither parent lane's metric catches.
 
-- [ ] **`experiments/structural_vs_micro/`** — same structure; it *reads* the
-  `reference/proposals/` outputs of items 6 and 7 (or recomputes from the same
-  inputs), it does not import their code.
-- [ ] **Method** (refinement item 4): fit a 4-bar phrase grid to the boundary
-  set; every proposed block gets `kind: "structural" | "micro"` decided by
-  phrase-grid fit, **plus the fit error in bars** so a reviewer sees how marginal
-  a call was. On `Queen of Kings` 6 of 16 operator edges lock to the 4-bar grid
-  within ≈ 0.1 s; the 9 that miss are the sub-bar micro-events.
-- [ ] **Cheap baseline:** block duration alone (`< 1 bar ⇒ micro`).
-- [ ] **Metric:** agreement with the operator's own hints, split by `kind`, on
-  the four gold songs.
-- [ ] **Lane output:** `reference/proposals/structural_vs_micro.json` — blocks
-  with `kind` and `grid_fit_bars`.
-- [ ] **Proposal lane** (Recipe A): id `structuralVsMicro`, label **`4.
-  Structural vs Micro`**, under Human Hints, flask badge,
-  `experiment: "structural_vs_micro"`. Per-block tint override so `micro` and
-  `structural` blocks read differently (`structuralVsMicroMicro` key). Full
-  Recipe A.
-- [ ] **`docs/experiments.md`** — new queue entry. Note explicitly (refinement
-  item 4): this is **not** a precision filter for item 6 — the phrase-grid prior
-  beats chance by only 1.3–2.25× averaged over all edges; it is a two-class split
-  the pipeline currently cannot express.
-- [ ] **Do not re-open** `vocal_phrases`, `grid_consensus`, `reactive_bands` —
-  measured, none promoted, out of scope here (refinement item 4).
-- [ ] **Kill condition:** fails to beat the duration-only baseline.
+- [x] **`experiments/structural_vs_micro/`** — `run.py` (compute/export/score),
+  `paths.py`, `grid.py`, `truth.py`, `features.py`, `export.py`, `score.py`,
+  `README.md` (Entry-shape), committed `cache/`, `out/score.txt`. `compute`
+  **reads** items 6+7's `reference/proposals/{texture_novelty,phrase_periodicity}.json`
+  — it does not import their code. `src/` does not import it.
+- [x] **Method** (refinement item 4): 4-bar phrase grid fit by sweeping the phase
+  offset to minimise the median edge-to-line distance over the union of items 6+7
+  boundary edges; each operator block → `kind` (`structural` if the better edge
+  is ≤ 0.12 bars from a grid line) + `grid_fit_bars`. On `Queen of Kings` **7 of
+  16** operator edges lock (the 6 the refinement doc names at 0.06–0.11 bars, +
+  46.52 s marginal at exactly 0.12); the 9 misses are the sub-bar micro-events.
+- [x] **Cheap baseline:** block duration alone (`< 1 bar ⇒ micro`), `grid.baseline_kind`.
+- [x] **Metric:** per-class P/R/F1 + accuracy vs a hand-checked title-keyword +
+  duration truth map (`truth.py`), pooled over the four gold songs. Tabulated in
+  the README.
+- [x] **Lane output:** `export` writes `reference/proposals/structural_vs_micro.json`
+  — `blocks[]` each with `kind` and `grid_fit_bars`.
+- [x] **Proposal lane** (Recipe A): id `structuralVsMicro`, label **`4.
+  Structural vs Micro`**, below `phrasePeriodicity` in `LANE_DEFS`, flask badge,
+  `experiment: "structural_vs_micro"`. Adapter emits `tintId:
+  "structuralVsMicroMicro"` for `micro` blocks; both `structuralVsMicro`
+  (indigo 245) and `structuralVsMicroMicro` (magenta-purple 300) in
+  `sparseTints.ts`. Events-panel card prints `kind` + `grid fit N.NN bars`. 8
+  wiring files (grep check = exactly 8) + 4 doc edits (`ui-definition.md`,
+  `ui-regression.md` §5.5 flask count 8→9, `experiments.md`, README).
+- [x] **`docs/experiments.md`** — new queue entry states explicitly: **not** a
+  precision filter for item 6 (phrase-grid prior beats chance by ~1.7–2.25×
+  averaged over all edges); a two-class split the pipeline cannot express. Does
+  **not** re-open `vocal_phrases` / `grid_consensus` / `reactive_bands`.
+- [x] **Do not re-open** `vocal_phrases`, `grid_consensus`, `reactive_bands` —
+  untouched.
+- [x] **Kill condition — OUTCOME: FAIL.** phrase-grid pooled macro-F1 **0.415**
+  vs duration-only **0.798**. Recorded FAIL in README + `experiments.md`. Lane
+  **kept for one operator review pass**, kill candidate; **not tuned**.
+
+**D8.1 (resolved, 2026-09-10, during implementation).** The plan says the
+experiment "reads the `reference/proposals/` outputs of items 6 and 7 (or
+recomputes)". Resolution: `compute` reads both files and takes the **union of
+their block edges (merged within 0.5 s)** as the boundary set the 4-bar grid
+phase is fit against — this is the "combination of items 6 and 7" the refinement
+doc describes (item 6's boundary set + item 7's bar grid). Where a parent file is
+absent (`Queen of Kings` has no `texture_novelty.json`) it falls back to the
+operator block edges. Operator-truth `kind` is a hand-checked title-keyword map
+(`tension`/`impact`/`release`/`pre-drop`/`micro`/`'hey'` → micro; `intro`/`verse`/
+`chorus`/`drop approach`/… → structural) with a `< 1 bar` duration fallback —
+the keyword layer is the only thing that separates the phrase-grid predictor
+from the duration baseline. Rejected: importing items 6/7 modules (sandbox rule);
+classifying edges rather than blocks (refinement doc says "every proposed block
+gets `kind`").
 
 ### Validation
 
-- [ ] `compute` / `export` / `score` succeed; `score` reproduces the README
-  table split by `kind`.
-- [ ] `docker compose run --rm test` — analyzer baseline unchanged.
-- [ ] `docker compose run --rm ui npm run test` + `npm run build` clean; grep
-  check lists exactly 8 Recipe-A files for `structuralVsMicro`.
+- [x] `compute` / `export` / `score` succeed; `score` reproduces `out/score.txt`
+  byte-identically on a re-run.
+- [x] `docker compose run --rm test` — **122 passed**, analyzer baseline unchanged
+  (nothing in `src/` touched).
+- [x] `docker compose run --rm ui npm run test` (**368 passed**) + `npm run build`
+  clean; grep check lists exactly the 8 Recipe-A files for `structuralVsMicro`.
 
 ### Visual QA
 
@@ -954,6 +979,7 @@ no current code path that can regenerate it.
 | D5.1 | resolved | Lyric validation persists per-click, no Save button. |
 | D5.2 | resolved | No card re-restructure (item 4 did it); ✔ is a 3rd sibling button, `position:absolute` top-right, `stopPropagation()`. State owned by `App`; new tint `moisesLyricsValidated = hsl(265,80%,56%)`. |
 | D6.1 | resolved | Texture Novelty feature set 2 computes chroma with librosa on the mix, not the harmonic-stem `hpcp.json` (which the plan's own text forbids). Kill condition FAILED — lane kept for one review pass, kill candidate. |
+| D8.1 | resolved | Structural vs Micro's boundary set = union of items 6+7 proposal-block edges (merged 0.5 s), fallback to operator edges; truth `kind` = title-keyword map + `< 1 bar` fallback; classify blocks not edges. **Kill condition FAILED** (phrase-grid macro-F1 0.415 < duration-only 0.798) — lane kept for one review pass, not tuned. |
 | D7.1 | resolved | Phrase-length envelope is `fft_bands.<stem>.json` broadband energy (mean of the 7 normalised band levels), not `loudness.json` RMS: the raw-vs-z ablation and the kill-condition separation only reproduce the refinement doc's finding on the spectral envelope. `Chimera - Hana` had mix-only FFT, so `./analyze --stage extract-fft-bands` was run for it (the plan sanctions this). `loudness.json` per-stem RMS kept as the documented fallback. Autocorrelation is cosine similarity (no re-centring) so the per-bar z-normalisation is what makes shape agreement visible — on the raw envelope no phrase is found on any song. **Kill condition PASSED** (min known-8-bar prominence +0.118 > max rest +0.081). |
 | D9.1 | **raised for the operator** | Do not resurrect Basic Pitch symbolic transcription in v3.4; blocks nothing. |
 

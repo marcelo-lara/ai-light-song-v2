@@ -1,7 +1,8 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (drop proposals, character, vocal
 // transcription, vocal phrases, reactive bands, texture novelty, phrase
-// periodicity, phrase grid, and the top-level published arrangement state).
+// periodicity, structural-vs-micro, phrase grid, and the top-level published
+// arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -718,6 +719,68 @@ export async function loadPhrasePeriodicity(
   f?: typeof fetch,
 ): Promise<LoadResult<PhrasePeriodicityFile>> {
   const result = await loadJson(artifactPaths.phrasePeriodicity(song), parsePhrasePeriodicity, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// structuralVsMicro — reference/proposals/structural_vs_micro.json
+// ---------------------------------------------------------------------------
+//
+// One block per operator hint (or published section) from
+// experiments/structural_vs_micro: a 4-bar phrase grid is fit to items 6+7's
+// boundary edges, then each block is labelled `kind` "structural" | "micro" by
+// how well its edges lock to that grid, carrying `grid_fit_bars` (the fit error
+// in bars) so a reviewer sees how marginal the call was. NOT a precision filter
+// for Texture Novelty — a two-class split the pipeline cannot otherwise express.
+// A proposal to audition against Human Hints, not ground truth. The experiment
+// FAILED its kill condition (did not beat a duration-only baseline); lane kept
+// for one review pass.
+
+export interface StructuralVsMicroBlock {
+  start_s: number;
+  end_s: number;
+  title: string;
+  /** "structural" (edge locks to the 4-bar phrase grid) | "micro" */
+  kind: string;
+  /** better-locking edge's distance to the nearest phrase-grid line, in bars */
+  grid_fit_bars: number | null;
+}
+
+export interface StructuralVsMicroFile {
+  schema_version: string;
+  song_name: string;
+  blocks: StructuralVsMicroBlock[];
+}
+
+export function parseStructuralVsMicro(raw: unknown): StructuralVsMicroFile {
+  const o = asObject(raw, "reference/proposals/structural_vs_micro.json");
+  const blocks: StructuralVsMicroBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      title: st(r.title),
+      kind: st(r.kind),
+      grid_fit_bars: r.grid_fit_bars == null ? null : num(r.grid_fit_bars),
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadStructuralVsMicro(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<StructuralVsMicroFile>> {
+  const result = await loadJson(
+    artifactPaths.structuralVsMicro(song),
+    parseStructuralVsMicro,
+    f,
+  );
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
   }

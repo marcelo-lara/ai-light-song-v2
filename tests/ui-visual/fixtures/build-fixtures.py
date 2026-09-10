@@ -59,6 +59,7 @@ NEEDED = [
     "reference/proposals/reactive_bands.json",
     "reference/proposals/texture_novelty.json",
     "reference/proposals/phrase_periodicity.json",
+    "reference/proposals/structural_vs_micro.json",
     "reference/proposals/grid.json",
     "artifacts/essentia/fft_bands.json",
     "artifacts/essentia/fft_bands.bass.json",
@@ -261,6 +262,43 @@ def inject_phrase_periodicity(out_name: str):
     print(f"  wrote {out_name}/reference/proposals/phrase_periodicity.json")
 
 
+def inject_structural_vs_micro(out_name: str):
+    """v3.4 item 8 — write a small deterministic structural_vs_micro.json (one
+    `structural` block, grid_fit_bars 0.04; one `micro` block, grid_fit_bars
+    1.12) so `structural-vs-micro.spec.ts` can assert the two tints differ and
+    that each card prints its `kind` + `grid_fit_bars`, without depending on the
+    experiment's real output. The experiment FAILED its kill condition (lane
+    kept for one review pass). The file must exist on every fixture so the
+    song-load fetch never 404s (ui-regression §3)."""
+    hints_path = OUT / out_name / "reference/human/human_hints.json"
+    song_name = REG_SOURCE
+    if hints_path.exists():
+        song_name = json.loads(hints_path.read_text()).get("song_name", REG_SOURCE)
+    p = OUT / out_name / "reference/proposals/structural_vs_micro.json"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(
+        json.dumps(
+            {
+                "schema_version": "1.0",
+                "song_name": song_name,
+                "generated_from": {
+                    "experiment": "experiments/structural_vs_micro",
+                    "engine": "4-bar phrase grid fit to items 6+7 boundary edges; block kind by grid lock",
+                },
+                "blocks": [
+                    {"start_s": 0.0, "end_s": 8.0, "title": "Intro",
+                     "kind": "structural", "grid_fit_bars": 0.04},
+                    {"start_s": 20.0, "end_s": 20.6, "title": "Pre-drop",
+                     "kind": "micro", "grid_fit_bars": 1.12},
+                ],
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    print(f"  wrote {out_name}/reference/proposals/structural_vs_micro.json")
+
+
 def inject_block_energy(out_name: str, *, rated: bool = True):
     """v3.4 item 4 — write the synthetic block_energy.json.
 
@@ -324,6 +362,7 @@ def main():
     inject_section_contest("RegFull - Fixture")
     inject_texture_novelty("RegFull - Fixture")
     inject_phrase_periodicity("RegFull - Fixture")
+    inject_structural_vs_micro("RegFull - Fixture")
     inject_block_energy("RegFull - Fixture")
     inject_lyric_validations("RegFull - Fixture", validated=True)
     copy_song(REG_SOURCE, "RegPartial - Fixture",
@@ -334,11 +373,13 @@ def main():
                     "artifacts/essentia/fft_bands.vocals.json"})
     inject_texture_novelty("RegPartial - Fixture")
     inject_phrase_periodicity("RegPartial - Fixture")
+    inject_structural_vs_micro("RegPartial - Fixture")
     inject_block_energy("RegPartial - Fixture", rated=False)
     inject_lyric_validations("RegPartial - Fixture")
     copy_test_song()
     inject_texture_novelty("_test_song")
     inject_phrase_periodicity("_test_song")
+    inject_structural_vs_micro("_test_song")
     inject_block_energy("_test_song", rated=False)
     inject_lyric_validations("_test_song")
     # audio: ship the real mp3 for RegFull (real decode path). RegPartial reuses

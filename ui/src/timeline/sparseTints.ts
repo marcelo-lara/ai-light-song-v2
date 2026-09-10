@@ -44,6 +44,13 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   phrasePeriodicity: [130, 55, 40], // emerald — distinct from textureNovelty's
   //   chartreuse (70) and arrangementState's olive-lime (95); v3.4 item 7
   //   experiment lane (passed its kill condition)
+  structuralVsMicro: [245, 50, 52], // indigo — a `structural` block (edge locks
+  //   to the 4-bar phrase grid). Distinct from every neighbour hue: textureNovelty
+  //   70, phrasePeriodicity 130, moisesLyrics 210, character 275; v3.4 item 8
+  //   experiment lane (failed its kill condition, kept for one review pass)
+  structuralVsMicroMicro: [300, 62, 52], // magenta-purple — a `micro` cue that
+  //   lives inside a phrase. Per-block tint override the adapter emits for
+  //   kind === "micro"; precedent dropProposalsMatched / gridDisputed
   gestures: [10, 75, 46], // burnt orange — sound-design device gestures
   gridPhrase: [188, 50, 42], // slate cyan — resolved bar/phrase grid
   gridDisputed: [0, 70, 40], // red — a song whose grid was NOT confidently resolved

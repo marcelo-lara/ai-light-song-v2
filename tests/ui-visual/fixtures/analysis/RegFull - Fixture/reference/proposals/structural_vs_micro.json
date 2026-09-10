@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/structural_vs_micro",
+    "engine": "4-bar phrase grid fit to items 6+7 boundary edges; block kind by grid lock"
+  },
+  "blocks": [
+    {
+      "start_s": 0.0,
+      "end_s": 8.0,
+      "title": "Intro",
+      "kind": "structural",
+      "grid_fit_bars": 0.04
+    },
+    {
+      "start_s": 20.0,
+      "end_s": 20.6,
+      "title": "Pre-drop",
+      "kind": "micro",
+      "grid_fit_bars": 1.12
+    }
+  ]
+}

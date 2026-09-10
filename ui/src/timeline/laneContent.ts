@@ -26,6 +26,7 @@ import type {
   ReactiveBandsFile,
   TextureNoveltyFile,
   PhrasePeriodicityFile,
+  StructuralVsMicroFile,
   GridFile,
 } from "../data/sparseArtifacts";
 
@@ -601,6 +602,40 @@ export function phrasePeriodicityContent(file: PhrasePeriodicityFile | null): Sp
 }
 
 /**
+ * Per-block `structural` | `micro` split from `experiments/structural_vs_micro`:
+ * a 4-bar phrase grid is fit to items 6+7's boundary edges, and each operator
+ * block is labelled by how well its edges lock to it, carrying `grid_fit_bars`
+ * (the fit error in bars) so a reviewer sees how marginal the call was. `micro`
+ * blocks get a distinct tint (`structuralVsMicroMicro`). NOT a precision filter
+ * for Texture Novelty — a two-class split the pipeline cannot otherwise express.
+ * FAILED its kill condition; lane kept for one review pass.
+ */
+export function structuralVsMicroContent(
+  file: StructuralVsMicroFile | null,
+): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => {
+    const fitText =
+      b.grid_fit_bars == null
+        ? "grid fit unknown"
+        : `grid fit ${b.grid_fit_bars.toFixed(2)} bars`;
+    return {
+      id: `structural-vs-micro-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: "",
+      wideLabel: b.kind,
+      ...(b.kind === "micro" ? { tintId: "structuralVsMicroMicro" } : {}),
+      laneLabel: "4. Structural vs Micro",
+      caption: `${formatRange(b.start_s, b.end_s)} · ${b.kind} · ${fitText}`,
+      reference: `structural-vs-micro-${i + 1}`,
+      detail: b.title || "",
+      summary: `experiments/structural_vs_micro — ${b.kind}; ${fitText}. A structural edge locks to the 4-bar phrase grid; a micro cue lives inside a phrase. Failed its kill condition (did not beat a duration-only baseline).`,
+      raw: b,
+    };
+  });
+}
+
+/**
  * Named gesture phases (approach/build/tension/impact/release) and
  * section-pair transitions ("<from> → <to>") from `song_event_timeline.json`
  * -- the production `gestures` stage (plan v3.0 item 9, replacing the
@@ -674,6 +709,7 @@ export interface LaneContentSources {
   reactiveBands?: ReactiveBandsFile | null;
   textureNovelty?: TextureNoveltyFile | null;
   phrasePeriodicity?: PhrasePeriodicityFile | null;
+  structuralVsMicro?: StructuralVsMicroFile | null;
   gestures?: EventTimeline | null;
   grid?: GridFile | null;
 }
@@ -688,6 +724,7 @@ export const SPARSE_LANE_IDS = [
   "reactiveBands",
   "textureNovelty",
   "phrasePeriodicity",
+  "structuralVsMicro",
   "gestures",
   "gridPhrase",
   "sections",
@@ -719,6 +756,8 @@ export function buildLaneBlocks(
       return textureNoveltyContent(s.textureNovelty ?? null);
     case "phrasePeriodicity":
       return phrasePeriodicityContent(s.phrasePeriodicity ?? null);
+    case "structuralVsMicro":
+      return structuralVsMicroContent(s.structuralVsMicro ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
     case "gridPhrase":

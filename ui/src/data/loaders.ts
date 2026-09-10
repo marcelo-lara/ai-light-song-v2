@@ -14,6 +14,7 @@ import {
   loadReactiveBands,
   loadTextureNovelty,
   loadPhrasePeriodicity,
+  loadStructuralVsMicro,
   loadGrid,
 } from "./sparseArtifacts";
 import {
@@ -265,6 +266,7 @@ export const artifactLoaders = {
   reactiveBands: loadReactiveBands,
   textureNovelty: loadTextureNovelty,
   phrasePeriodicity: loadPhrasePeriodicity,
+  structuralVsMicro: loadStructuralVsMicro,
   grid: loadGrid,
   character: loadCharacter,
   vocalTranscription: loadVocalTranscription,

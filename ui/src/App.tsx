@@ -135,6 +135,10 @@ const TIMELINE_KEYS = [
   // phrase repetition regime + period (experiments/phrase_periodicity,
   // v3.4 item 7 — passed its kill condition)
   "phrasePeriodicity",
+  // structural vs micro block kind by 4-bar phrase-grid fit
+  // (experiments/structural_vs_micro, v3.4 item 8 — failed its kill condition,
+  // lane kept for one review pass)
+  "structuralVsMicro",
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
   // lane's production data source.
   "eventTimeline",
@@ -155,6 +159,7 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   reactiveBands: "reactiveBands",
   textureNovelty: "textureNovelty",
   phrasePeriodicity: "phrasePeriodicity",
+  structuralVsMicro: "structuralVsMicro",
   gestures: "eventTimeline",
   gridPhrase: "grid",
   character: "character",
@@ -336,6 +341,7 @@ export function App(): React.JSX.Element {
       reactiveBands: artifacts.reactiveBands.data,
       textureNovelty: artifacts.textureNovelty.data,
       phrasePeriodicity: artifacts.phrasePeriodicity.data,
+      structuralVsMicro: artifacts.structuralVsMicro.data,
       gestures: artifacts.eventTimeline.data,
       grid: artifacts.grid.data,
       character: artifacts.character.data,
@@ -354,6 +360,7 @@ export function App(): React.JSX.Element {
       artifacts.reactiveBands.data,
       artifacts.textureNovelty.data,
       artifacts.phrasePeriodicity.data,
+      artifacts.structuralVsMicro.data,
       artifacts.eventTimeline.data,
       artifacts.grid.data,
       artifacts.character.data,

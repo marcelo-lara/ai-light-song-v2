@@ -27,11 +27,13 @@ import {
   sectionsContent,
   textureNoveltyContent,
   phrasePeriodicityContent,
+  structuralVsMicroContent,
 } from "./laneContent";
 import type {
   ArrangementStateFile,
   TextureNoveltyFile,
   PhrasePeriodicityFile,
+  StructuralVsMicroFile,
 } from "../data/sparseArtifacts";
 import { romanNumeral } from "./romanNumeral";
 
@@ -440,5 +442,43 @@ describe("phrasePeriodicityContent", () => {
 
   it("never throws on a missing file", () => {
     expect(phrasePeriodicityContent(null)).toEqual([]);
+  });
+});
+
+describe("structuralVsMicroContent", () => {
+  const file: StructuralVsMicroFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start_s: 0, end_s: 16, title: "Intro", kind: "structural", grid_fit_bars: 0.04 },
+      { start_s: 16, end_s: 16.6, title: "Pre-drop", kind: "micro", grid_fit_bars: 1.12 },
+    ],
+  };
+  const blocks = structuralVsMicroContent(file);
+
+  it("labels a structural block and prints its grid_fit_bars", () => {
+    expect(blocks[0]!.wideLabel).toBe("structural");
+    expect(blocks[0]!.caption).toContain("grid fit 0.04 bars");
+    expect(blocks[0]!.tintId).toBeUndefined();
+  });
+
+  it("gives a micro block the per-block tint override", () => {
+    expect(blocks[1]!.wideLabel).toBe("micro");
+    expect(blocks[1]!.tintId).toBe("structuralVsMicroMicro");
+    expect(blocks[1]!.caption).toContain("micro");
+  });
+
+  it("renders a null grid_fit_bars honestly", () => {
+    const b = structuralVsMicroContent({
+      schema_version: "1.0",
+      song_name: "x",
+      blocks: [{ start_s: 0, end_s: 1, title: "", kind: "micro", grid_fit_bars: null }],
+    });
+    expect(b[0]!.caption).toContain("grid fit unknown");
+    expect(b[0]!.caption).not.toMatch(/NaN|0\.00 bars/);
+  });
+
+  it("never throws on a missing file", () => {
+    expect(structuralVsMicroContent(null)).toEqual([]);
   });
 });

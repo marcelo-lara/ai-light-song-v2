@@ -925,6 +925,86 @@ Hints.
 
 ---
 
+## Structural vs Micro — 4-bar phrase-grid fit of the operator's block edges
+
+*(no external model or repo — classical 4-bar phrase-grid fit, numpy)*
+
+### Status
+
+**[CLOSED — FAILED kill condition, kill candidate].** v3.4 item 8. Built as
+[`../experiments/structural_vs_micro/`](../experiments/structural_vs_micro/README.md).
+The debugger lane exists — **`4. Structural vs Micro`**, under Human Hints, flask
+badge, reads `reference/proposals/structural_vs_micro.json`; `micro` blocks carry
+a distinct per-block tint. Kept for **one operator review pass**, then removed by
+Recipe B if the operator agrees. **Do not tune to manufacture a pass.**
+
+**This is NOT a precision filter for item 6 (Texture Novelty).** Averaged over
+all operator edges the phrase-grid prior beats chance by only ~1.7–2.25×
+(refinement doc item 4; this run measured 1.7–6.8× per song, mean 3.8×, the two
+Eurovision-shaped songs pulling the top). It is a **two-class split the pipeline
+currently cannot express**: a structural boundary that lands on the phrase grid
+vs a micro cue that lives inside a phrase. **Do not re-open** `vocal_phrases`,
+`grid_consensus` or `reactive_bands` — measured, none promoted, out of scope.
+
+### Why? What for?
+
+The operator marks both structural section edges and sub-bar micro-cues (a
+pre-drop, a near-silence, a 'hey', the tension/impact/release gesture phases) in
+one `human_hints.json`, and nothing downstream tells the two apart. Question:
+
+> Does a 4-bar phrase-grid fit label operator blocks `structural` vs `micro`
+> better than block duration alone?
+
+### Experiment Plan
+
+Method held fixed, not swept. Bar length = median downbeat spacing
+(`beats.json`). Boundary set = union of items 6 + 7 proposal-block edges (the
+"combination" of the two parent lanes), merged within 0.5 s. A 4-bar phrase grid
+is fit by sweeping the phase offset to minimise the median edge-to-line distance
+over that set. Each operator block → `kind` (`structural` if the better-locking
+edge is ≤ 0.12 bars from a grid line, else `micro`) + `grid_fit_bars`. Cheap
+baseline: block duration alone (`< 1 bar ⇒ micro`). Operator-truth `kind` from a
+hand-checked title-keyword map with a duration fallback (`truth.py`). Metric:
+per-class P/R/F1 + accuracy, pooled over the four gold songs. `Queen of Kings`
+reported separately (the edge-lock table).
+
+### Results evidence
+
+Full tables: [`../experiments/structural_vs_micro/out/score.txt`](../experiments/structural_vs_micro/out/score.txt),
+reproduced by `run score`. 45 pooled operator blocks (23 structural / 22 micro).
+
+**Block-kind agreement — pooled, 4 gold songs:**
+
+| method | acc | macro-F1 | structural P/R/F1 | micro P/R/F1 |
+| --- | --- | --- | --- | --- |
+| phrase-grid (4-bar fit) | 0.42 | **0.41** | 0.41 / 0.30 / 0.35 | 0.43 / 0.55 / 0.48 |
+| duration-only (`< 1 bar ⇒ micro`) | 0.80 | **0.80** | 0.77 / 0.87 / 0.82 | 0.84 / 0.73 / 0.78 |
+
+Per-song phrase-grid accuracy: `_test_song` 0.27, `Titanium` 0.47, `Hideaway`
+0.40, `Armin` 0.60 — the baseline is 0.80 on all four.
+
+**`Queen of Kings` — 7 of 16 operator edges lock to the fitted 4-bar grid**
+(`bar_len` 1.910 s, `phrase_len` 7.640 s): the six edges the refinement doc
+names (1.11, 16.32, 23.94, 31.57, 39.21, 62.16 s) lock at 0.06–0.11 bars; a
+seventh (46.52 s) is marginal at exactly the 0.12 threshold; the nine misses are
+the sub-bar micro-events, as predicted.
+
+**Kill condition — FAIL.** phrase-grid pooled macro-F1 0.415 < duration-only
+0.798. The distinction is real on `Queen of Kings`, but on the gold corpus the
+operator's block *lengths* already carry it — a micro-event is short, and that is
+enough. The phrase grid adds a weak prior that, pooled, hurts more than it helps.
+
+### Conclusion
+
+Killed on the metric. The 4-bar phrase-grid fit does not beat block duration at
+labelling operator blocks `structural`/`micro` (macro-F1 0.42 vs 0.80). What
+survives review: `grid_fit_bars` is an honest per-edge signal, and the
+`Queen of Kings` edge-lock table reproduces the refinement doc's finding.
+Neither is promotable on this result. Lane kept for one review pass; **not
+tuned**.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

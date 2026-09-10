@@ -8,8 +8,8 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // label text. Production `src/` lanes are never badged, even the ones
 // CLAUDE.md records as untrusted.
 //
-// The badged set currently has eight lanes (v3.4 item 7 added
-// `phrasePeriodicity`). Plan v3.0 item 9 promoted
+// The badged set currently has nine lanes (v3.4 item 8 added
+// `structuralVsMicro`). Plan v3.0 item 9 promoted
 // `gestures` out of this set: it used to be an `experiments/gestures`
 // sandbox lane and now reads the production `song_event_timeline.json`
 // deliverable. Plan v3.0 item 14 promoted the two allin1 lanes
@@ -24,6 +24,7 @@ const BADGED = [
   "reactiveBands",
   "textureNovelty",
   "phrasePeriodicity",
+  "structuralVsMicro",
   "gridPhrase",
   "character",
   "vocalTranscription",
@@ -56,7 +57,7 @@ test("item 7 — flask badge on unpromoted-experiment lane heads", async ({ page
 
   // 1. runtime assertions clean (re-checked at the end).
 
-  // 2. badged — exactly these eight.
+  // 2. badged — exactly these nine.
   for (const id of BADGED) {
     expect(await flask(page, id).count()).toBe(1);
   }

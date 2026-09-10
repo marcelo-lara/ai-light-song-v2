@@ -74,6 +74,13 @@ export const artifactPaths = {
   // Human Hints — passed its kill condition.
   phrasePeriodicity: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "phrase_periodicity.json")),
+  // Written by experiments/structural_vs_micro (`run export`). One block per
+  // operator hint, each carrying `kind` ("structural" | "micro", by 4-bar
+  // phrase-grid fit) + `grid_fit_bars` (the fit error in bars). A proposal to
+  // audition against Human Hints — failed its kill condition, kept for one
+  // review pass.
+  structuralVsMicro: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "structural_vs_micro.json")),
   // Written by experiments/grid_consensus (`run export`). The resolved
   // downbeat phase + derived phrase grid.
   grid: (song: string) =>
