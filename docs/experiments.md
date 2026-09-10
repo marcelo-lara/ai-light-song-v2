@@ -1033,21 +1033,16 @@ turns the queue's highest-ceiling result into something measurable.
 
 ### Debugger lanes outlive their experiments
 
-`ui/src/data/sparseArtifacts.ts` carries seven `reference/proposals/` lanes. The
-UI-lane rule above says a lane is removed when its experiment is abandoned or
-promoted, and three are now stranded by the 2026-09-06 archive decisions:
+The UI-lane rule above says a lane is removed when its experiment is abandoned or
+promoted. The two lanes stranded by the 2026-09-06 archive decisions —
+`reactive_bands` and `grid_consensus` — were retired via Recipe B in git history.
+The remaining `reference/proposals/` lanes are all wanted:
 
 | lane | state |
 | --- | --- |
-| `reactive_bands` | experiment archived — **retire** |
-| `grid` | experiment archived — **retire** |
 | `vocal_transcription` | VocalParse archived, but **keep** — shared with the open ACE-Step entry |
-| `arrangement_state` | promoted — lane repointed to the top-level file in v3.2 item 4, **done** |
 | `character`, `vocal_phrases` | entries still open — keep |
 | `drop_impacts` | see below |
-
-Retiring the two is a `ui/` change with its own tests, not a docs edit, so it is
-not done here. Procedure: [`reference/ui-development.md`](reference/ui-development.md).
 
 ### `drop_impacts` may be an orphan lane
 

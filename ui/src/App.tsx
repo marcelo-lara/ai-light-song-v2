@@ -128,7 +128,6 @@ const TIMELINE_KEYS = [
   "dropProposals",
   // wave-2 experiments (docs/experiments.md run orders 1-3, 6)
   "vocalPhrases",
-  "reactiveBands",
   // texture-novelty segments (experiments/texture_novelty, v3.4 item 6 —
   // failed kill condition, lane kept for one review pass)
   "textureNovelty",
@@ -142,7 +141,6 @@ const TIMELINE_KEYS = [
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
   // lane's production data source.
   "eventTimeline",
-  "grid",
   // texture / character blocks under review (experiments/clap)
   "character",
   // sung lyrics + timing under review (experiments/vocalparse, acestep_transcriber)
@@ -156,12 +154,10 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   arrangementState: "arrangementState",
   dropProposals: "dropProposals",
   vocalPhrases: "vocalPhrases",
-  reactiveBands: "reactiveBands",
   textureNovelty: "textureNovelty",
   phrasePeriodicity: "phrasePeriodicity",
   structuralVsMicro: "structuralVsMicro",
   gestures: "eventTimeline",
-  gridPhrase: "grid",
   character: "character",
   vocalTranscription: "vocalTranscription",
   sections: "sectionsTopLevel",
@@ -338,12 +334,10 @@ export function App(): React.JSX.Element {
       arrangementState: artifacts.arrangementState.data,
       dropProposals: artifacts.dropProposals.data,
       vocalPhrases: artifacts.vocalPhrases.data,
-      reactiveBands: artifacts.reactiveBands.data,
       textureNovelty: artifacts.textureNovelty.data,
       phrasePeriodicity: artifacts.phrasePeriodicity.data,
       structuralVsMicro: artifacts.structuralVsMicro.data,
       gestures: artifacts.eventTimeline.data,
-      grid: artifacts.grid.data,
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
       sections,
@@ -357,12 +351,10 @@ export function App(): React.JSX.Element {
       artifacts.arrangementState.data,
       artifacts.dropProposals.data,
       artifacts.vocalPhrases.data,
-      artifacts.reactiveBands.data,
       artifacts.textureNovelty.data,
       artifacts.phrasePeriodicity.data,
       artifacts.structuralVsMicro.data,
       artifacts.eventTimeline.data,
-      artifacts.grid.data,
       artifacts.character.data,
       artifacts.vocalTranscription.data,
       sections,

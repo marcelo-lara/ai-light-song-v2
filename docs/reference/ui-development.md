@@ -170,10 +170,10 @@ hand-authored lanes they are auditioned against (`humanHints`, `moisesLyrics`).
   <laneId>: [<hue>, <sat>, <light>], // <colour name> — distinct from <neighbour hues>
 ```
 
-Existing hues to avoid colliding with: humanHints 35, reactiveBands 50,
+Existing hues to avoid colliding with: humanHints 35, gestures 10,
 arrangementState 95, characterShadow 96, vocalPhrasesSustained 280,
-dropProposals 318, vocalPhrases 340, sections 174, chords 193, gridPhrase 188,
-moisesLyrics 210, character 275, gestures 10.
+dropProposals 318, vocalPhrases 340, sections 174, chords 193,
+moisesLyrics 210, character 275, textureNovelty 70, phrasePeriodicity 130.
 
 Add a second entry (e.g. `<laneId>Disputed`) for every `tintId` the adapter emits.
 

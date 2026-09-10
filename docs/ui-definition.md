@@ -142,8 +142,6 @@ unrestricted" above.
 | Moises Lyrics | `reference/moises/lyrics.json` (+ `reference/human/lyric_validations.json` overlay) | read-only ground truth; blocks tinted by per-word confidence. Each word-token card in its events panel has a ✔ button (v3.4 item 5); a validated token shows at confidence `1` with the distinct `moisesLyricsValidated` tint in both the panel and the lane. `lyric_validations.json` is writable (per-click); `reference/moises/lyrics.json` is never edited |
 | Drop Proposals | `reference/proposals/drop_impacts.json` | experiment |
 | Character, Shadow | `reference/proposals/character.json` | experiment |
-| Phrase Grid | `reference/proposals/grid.json` | experiment |
-| Reactive Bands | `reference/proposals/reactive_bands.json` | experiment |
 | 2. Texture Novelty | `reference/proposals/texture_novelty.json` | experiment (v3.4 item 6 — failed its kill condition, kept for one review pass) |
 | 3. Phrase Periodicity | `reference/proposals/phrase_periodicity.json` | experiment (v3.4 item 7 — passed its kill condition) |
 | 4. Structural vs Micro | `reference/proposals/structural_vs_micro.json` | experiment (v3.4 item 8 — failed its kill condition, kept for one review pass) |

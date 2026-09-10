@@ -1,8 +1,7 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (drop proposals, character, vocal
-// transcription, vocal phrases, reactive bands, texture novelty, phrase
-// periodicity, structural-vs-micro, phrase grid, and the top-level published
-// arrangement state).
+// transcription, vocal phrases, texture novelty, phrase periodicity,
+// structural-vs-micro, and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -512,108 +511,6 @@ export async function loadArrangementState(
   const result = await loadJson(artifactPaths.arrangementState(song), parseArrangementState, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// reactive-band accents — reference/proposals/reactive_bands.json
-// ---------------------------------------------------------------------------
-//
-// experiments/reactive_bands: discrete accents (instantaneous band-power
-// ratio spiking above its own damped twin) from the locally auto-gained FFT
-// bands. The dense per-beat/per-bar bass/mid/treb stream this file also
-// carries is not rendered as its own lane — see the experiment's README.
-
-export interface ReactiveBandAccent {
-  time_s: number;
-  band: string;
-  strength: number;
-  beat: number | null;
-  bar: number | null;
-}
-
-export interface ReactiveBandsFile {
-  schema_version: string;
-  song_name: string;
-  accents: ReactiveBandAccent[];
-}
-
-export function parseReactiveBands(raw: unknown): ReactiveBandsFile {
-  const o = asObject(raw, "reference/proposals/reactive_bands.json");
-  const accents = arr(o.accents).map((row): ReactiveBandAccent => {
-    const r = rec(row);
-    return {
-      time_s: num(r.time),
-      band: st(r.band),
-      strength: num(r.strength),
-      beat: r.beat == null ? null : num(r.beat),
-      bar: r.bar == null ? null : num(r.bar),
-    };
-  });
-  accents.sort((a, b) => a.time_s - b.time_s);
-  return { schema_version: st(o.schema_version), song_name: st(o.song_name), accents };
-}
-
-export async function loadReactiveBands(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<ReactiveBandsFile>> {
-  const result = await loadJson(artifactPaths.reactiveBands(song), parseReactiveBands, f);
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return { ok: true, data: { schema_version: "", song_name: song, accents: [] } };
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// grid consensus — reference/proposals/grid.json
-// ---------------------------------------------------------------------------
-//
-// experiments/grid_consensus: the resolved downbeat phase + derived phrase
-// grid. Only the phrase-grid boundaries are rendered as a lane (a per-beat
-// downbeat overlay would be too dense for a block lane); `status` is the
-// song-level "resolved" / "unknown" flag from the consensus.
-
-export interface PhraseGridBoundary {
-  bar: number;
-  time_s: number;
-  confidence: number;
-}
-
-export interface GridFile {
-  schema_version: string;
-  song_name: string;
-  status: string;
-  confidence: number;
-  phrase_length_bars: number | null;
-  boundaries: PhraseGridBoundary[];
-}
-
-export function parseGrid(raw: unknown): GridFile {
-  const o = asObject(raw, "reference/proposals/grid.json");
-  const phraseGrid = rec(o.phrase_grid);
-  const boundaries = arr(phraseGrid.boundaries).map((row): PhraseGridBoundary => {
-    const r = rec(row);
-    return { bar: num(r.bar), time_s: num(r.time), confidence: num(r.confidence) };
-  });
-  return {
-    schema_version: st(o.schema_version),
-    song_name: st(o.song_name),
-    status: st(o.status),
-    confidence: num(o.confidence),
-    phrase_length_bars: phraseGrid.phrase_length_bars == null ? null : num(phraseGrid.phrase_length_bars),
-    boundaries,
-  };
-}
-
-export async function loadGrid(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<GridFile>> {
-  const result = await loadJson(artifactPaths.grid(song), parseGrid, f);
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return { ok: true, data: { schema_version: "", song_name: song, status: "", confidence: 0, phrase_length_bars: null, boundaries: [] } };
   }
   return result;
 }

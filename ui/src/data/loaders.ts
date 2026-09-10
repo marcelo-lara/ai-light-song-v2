@@ -11,11 +11,9 @@ import {
   loadMoisesLyrics,
   loadVocalPhrases,
   loadArrangementState,
-  loadReactiveBands,
   loadTextureNovelty,
   loadPhrasePeriodicity,
   loadStructuralVsMicro,
-  loadGrid,
 } from "./sparseArtifacts";
 import {
   parseBeats,
@@ -263,11 +261,9 @@ export const artifactLoaders = {
   dropProposals: loadDropProposals,
   vocalPhrases: loadVocalPhrases,
   arrangementState: loadArrangementState,
-  reactiveBands: loadReactiveBands,
   textureNovelty: loadTextureNovelty,
   phrasePeriodicity: loadPhrasePeriodicity,
   structuralVsMicro: loadStructuralVsMicro,
-  grid: loadGrid,
   character: loadCharacter,
   vocalTranscription: loadVocalTranscription,
   beats: loadBeats,

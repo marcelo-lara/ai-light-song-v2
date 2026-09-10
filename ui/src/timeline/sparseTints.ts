@@ -33,13 +33,11 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalPhrasesGap: [220, 10, 40], // near-grey — an instrumental (no-vocal) span
   vocalPhrasesSustained: [280, 60, 48], // violet-pink — a held note marker
   arrangementState: [95, 55, 44], // olive-lime — distinct from vocalPhrases' rose
-  //                                 (340), dropProposals' magenta (318) and
-  //                                 reactiveBands' gold (50)
+  //                                 (340) and dropProposals' magenta (318)
   arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a
   //                                       block where one stem or fewer is playing
-  reactiveBands: [50, 85, 42], // warm gold-amber — MilkDrop-style band accents
-  textureNovelty: [70, 60, 44], // chartreuse — distinct from reactiveBands' gold
-  //   (50) and arrangementState's olive-lime (95); v3.4 item 6 experiment lane
+  textureNovelty: [70, 60, 44], // chartreuse — distinct from arrangementState's
+  //   olive-lime (95); v3.4 item 6 experiment lane
   //   (failed kill condition, kept for one review pass)
   phrasePeriodicity: [130, 55, 40], // emerald — distinct from textureNovelty's
   //   chartreuse (70) and arrangementState's olive-lime (95); v3.4 item 7
@@ -50,15 +48,13 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //   experiment lane (failed its kill condition, kept for one review pass)
   structuralVsMicroMicro: [300, 62, 52], // magenta-purple — a `micro` cue that
   //   lives inside a phrase. Per-block tint override the adapter emits for
-  //   kind === "micro"; precedent dropProposalsMatched / gridDisputed
+  //   kind === "micro"; precedent dropProposalsMatched
   gestures: [10, 75, 46], // burnt orange — sound-design device gestures
-  gridPhrase: [188, 50, 42], // slate cyan — resolved bar/phrase grid
-  gridDisputed: [0, 70, 40], // red — a song whose grid was NOT confidently resolved
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
   sectionsContested: [28, 90, 50], // vivid orange — a section whose allin1
   //   `function` label is kept but contradicted by the energy contest (v3.4
   //   item 3). Reads clearly against the Sections lane's teal blocks; precedent
-  //   is `gridDisputed`.
+  //   is `dropProposalsMatched`.
   // Character blocks are tinted by *kind*, so a song's texture reads as a
   // colour strip before any label is. Violet for `breath` is not arbitrary —
   // it is the look the operator wrote for the block this lane was built to

@@ -23,11 +23,9 @@ import type {
   VocalTranscriptionFile,
   VocalPhrasesFile,
   ArrangementStateFile,
-  ReactiveBandsFile,
   TextureNoveltyFile,
   PhrasePeriodicityFile,
   StructuralVsMicroFile,
-  GridFile,
 } from "../data/sparseArtifacts";
 
 import { romanNumeral } from "./romanNumeral";
@@ -517,31 +515,6 @@ export function arrangementStateContent(file: ArrangementStateFile | null): Spar
 }
 
 /**
- * Discrete accents from `experiments/reactive_bands` — locally auto-gained
- * band-power spikes, budget-matched and threshold-calibrated (see the
- * experiment's README, which reports the local-normalisation ablation coming
- * back *against* the headline hypothesis once measured fairly). The dense
- * per-beat bass/mid/treb stream this experiment also produces is not
- * rendered here — see the README.
- */
-export function reactiveBandsContent(file: ReactiveBandsFile | null): SparseBlock[] {
-  return (file?.accents ?? []).map((a, i) => ({
-    id: `reactive-accent-${i + 1}`,
-    start_s: a.time_s,
-    end_s: a.time_s + 0.05,
-    label: `${a.band} ${round(a.strength, 1)}`,
-    laneLabel: "Reactive Bands",
-    caption: `${formatRange(a.time_s, a.time_s)} · ${a.band} band, strength ${round(a.strength, 2)}${
-      a.bar != null ? ` · bar ${a.bar} beat ${a.beat}` : ""
-    }`,
-    reference: `reactive-accent-${i + 1}`,
-    detail: a.band,
-    summary: `experiments/reactive_bands — an instantaneous ${a.band}-band power spike above its own damped (locally auto-gained) twin.`,
-    raw: a,
-  }));
-}
-
-/**
  * Segments between self-similarity-novelty texture boundaries from
  * `experiments/texture_novelty` (cosine SSM + Foote checkerboard, 1.0 s
  * half-window). A proposal to audition against Human Hints directly above it —
@@ -663,33 +636,6 @@ export function gesturesContent(file: EventTimeline | null): SparseBlock[] {
   });
 }
 
-/**
- * Phrase-grid boundaries from `experiments/grid_consensus` — the resolved
- * downbeat phase's derived 8/16-bar phrase edges. `status: "unknown"` marks
- * a song where trackers disagreed and musical evidence did not resolve it
- * (say so rather than snapping, never imply precision that isn't there); those blocks are tinted
- * distinctly as disputed.
- */
-export function gridPhraseContent(file: GridFile | null): SparseBlock[] {
-  const disputed = file?.status === "unknown";
-  return (file?.boundaries ?? []).map((b, i) => ({
-    id: `phrase-grid-${i + 1}`,
-    start_s: b.time_s,
-    end_s: b.time_s + 0.1,
-    label: `bar ${b.bar}`,
-    ...(disputed ? { tintId: "gridDisputed" } : {}),
-    wideLabel: `phrase boundary · bar ${b.bar} · conf ${round(b.confidence, 2)}${disputed ? " · DISPUTED" : ""}`,
-    laneLabel: "Phrase Grid",
-    caption: `${formatRange(b.time_s, b.time_s)} · bar ${b.bar}${disputed ? " · disputed grid" : ""}`,
-    reference: `phrase-grid-${i + 1}`,
-    detail: disputed ? "grid status: unknown" : "grid status: resolved",
-    summary: `experiments/grid_consensus — an ${file?.phrase_length_bars ?? "?"}-bar phrase boundary at bar ${b.bar}${
-      disputed ? "; this song's downbeat phase was not confidently resolved (trackers disagreed, evidence inconclusive) — treat the whole grid on this song with caution" : ""
-    }.`,
-    raw: b,
-  }));
-}
-
 // -- dispatch -------------------------------------------------------------
 
 export interface LaneContentSources {
@@ -706,12 +652,10 @@ export interface LaneContentSources {
   vocalTranscription?: VocalTranscriptionFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
   arrangementState?: ArrangementStateFile | null;
-  reactiveBands?: ReactiveBandsFile | null;
   textureNovelty?: TextureNoveltyFile | null;
   phrasePeriodicity?: PhrasePeriodicityFile | null;
   structuralVsMicro?: StructuralVsMicroFile | null;
   gestures?: EventTimeline | null;
-  grid?: GridFile | null;
 }
 
 /** the sparse (block) lane ids handled by this module, in registry order */
@@ -721,12 +665,10 @@ export const SPARSE_LANE_IDS = [
   "arrangementState",
   "dropProposals",
   "vocalPhrases",
-  "reactiveBands",
   "textureNovelty",
   "phrasePeriodicity",
   "structuralVsMicro",
   "gestures",
-  "gridPhrase",
   "sections",
   "character",
   "vocalTranscription",
@@ -750,8 +692,6 @@ export function buildLaneBlocks(
       return dropProposalsContent(s.dropProposals ?? null);
     case "vocalPhrases":
       return vocalPhrasesContent(s.vocalPhrases ?? null);
-    case "reactiveBands":
-      return reactiveBandsContent(s.reactiveBands ?? null);
     case "textureNovelty":
       return textureNoveltyContent(s.textureNovelty ?? null);
     case "phrasePeriodicity":
@@ -760,8 +700,6 @@ export function buildLaneBlocks(
       return structuralVsMicroContent(s.structuralVsMicro ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
-    case "gridPhrase":
-      return gridPhraseContent(s.grid ?? null);
     case "sections":
       return sectionsContent(s.sections ?? [], s.sectionSegmentation ?? []);
     case "character":

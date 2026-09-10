@@ -58,11 +58,6 @@ export const artifactPaths = {
   // derived from the published per-stem RMS series — no audio, no model.
   arrangementState: (song: string) =>
     encodePath(analysis(song, "arrangement_state.json")),
-  // Written by experiments/reactive_bands (`run export`). Locally auto-gained
-  // FFT band accents (the discrete list only — the dense per-beat stream is
-  // not rendered as its own lane, see the experiment's README).
-  reactiveBands: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "reactive_bands.json")),
   // Written by experiments/texture_novelty (`run export`). Segments between
   // self-similarity-novelty texture boundaries. A proposal to audition against
   // Human Hints — failed its kill condition, kept for one review pass.
@@ -81,10 +76,6 @@ export const artifactPaths = {
   // review pass.
   structuralVsMicro: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "structural_vs_micro.json")),
-  // Written by experiments/grid_consensus (`run export`). The resolved
-  // downbeat phase + derived phrase grid.
-  grid: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "grid.json")),
   // Moises' word-level sung-lyric export, delivered as external reference. A
   // flat list of word tokens with `line_id`, `start`, `end`; `<SOL>` / `<EOL>`
   // rows mark line boundaries. Read-only ground truth, never written by the

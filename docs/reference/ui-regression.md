@@ -301,9 +301,9 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 - lane head (plan v1.5 item 7): a lane fed by an unpromoted `experiments/`
   sandbox carries `<i.ph.ph-flask.tl-lane-head__flask>` (`aria-label`
   `"Experimental lane"`) as the first child of `.tl-lane-head__name`, before
-  `<span.tl-lane-head__name-text>`. Nine lanes carry it after v3.4 item 8 —
-  `dropProposals`, `vocalPhrases`, `reactiveBands`, `textureNovelty`,
-  `phrasePeriodicity`, `structuralVsMicro`, `gridPhrase`, `character`,
+  `<span.tl-lane-head__name-text>`. Seven lanes carry it —
+  `dropProposals`, `vocalPhrases`, `textureNovelty`,
+  `phrasePeriodicity`, `structuralVsMicro`, `character`,
   `vocalTranscription`. The same badge precedes
   `.app-rightpanel__kicker` in
   that lane's events panel header. `LaneList.tsx` is not badged. `moisesLyrics`
