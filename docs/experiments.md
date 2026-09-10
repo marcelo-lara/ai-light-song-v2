@@ -49,10 +49,35 @@ all four, or is only a smoke test, use `_test_song` alone.
 
 Musical output has to be *heard against the song*, not read as a table. Anything
 time-bearing — boundaries, regions, events, curves — gets its own lane in the
-debugger, played against the waveform and the human hints. The pattern to copy:
-`experiments/drop_detection` writes
-`data/analysis/{song}/reference/proposals/drop_impacts.json`, and the UI
-renders it as the **Drop Proposals** lane directly beneath **Human Hints**.
+debugger, played against the waveform and the human hints. The mechanics to
+copy: `experiments/drop_detection` writes
+`data/analysis/{song}/reference/proposals/drop_impacts.json`, and the UI renders
+it as a lane directly beneath **Human Hints**.
+
+- **The lane title must match the experiment that writes it.** Either identical
+  short names — `experiments/phrase_periodicity` renders as *Phrase
+  Periodicity* — or the lane title carries the experiment's item number in
+  front: *3. Phrase Periodicity*. The directory name, the experiment's own
+  header and the lane label are **one name written three places**; rename them
+  together or not at all.
+
+  This is a strict rule, and `drop_detection` is the counter-example that
+  prompted it: its lane reads **Drop Proposals**, which points at no directory.
+  A reviewer who hears something wrong in a lane should never have to search
+  `experiments/` to find out what produced it.
+
+- **One lane per distinct claim — never consolidate.** If a signal can be
+  independently right or wrong, it gets its own lane. Do not fold a derived
+  output into a related lane as an extra field, do not merge lanes to reduce
+  clutter, and do not hide variants behind a selector. Producing four per-stem
+  artifacts means adding four lanes, not enriching one. Combining is allowed
+  only where *strictly* necessary, and that has to be argued rather than
+  assumed.
+
+  The reason is the debugger's whole purpose: it is the only instrument for
+  judging whether a claim is correct. A classification folded in as a field
+  rides along invisibly inside a lane whose own numbers look fine, and nobody
+  ever catches it being wrong. Screen space is cheaper than an unaudited claim.
 
 - Output goes under `reference/proposals/`, never into `artifacts/` and never
   into the stable top-level contract. It is a proposal, not a deliverable.

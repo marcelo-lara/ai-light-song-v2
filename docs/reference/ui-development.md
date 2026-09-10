@@ -33,7 +33,7 @@ step; the lane silently renders empty if one is missed.
 | `<Type>` | PascalCase type prefix | `FooBar` |
 | `<file>.json` | filename under `reference/proposals/` | `foo_bar.json` |
 | `<experiment>` | dir name under `experiments/` | `foo_bar` |
-| `<Label>` | human lane label | `Foo Bar` |
+| `<Label>` | human lane label — **must match `<experiment>`**: same short name, or the experiment's item number in front. Never a free-choice prose label. | `Foo Bar` or `3. Foo Bar` for `experiments/foo_bar` |
 
 ### 1. `ui/src/data/paths.ts` — add to `artifactPaths`
 
