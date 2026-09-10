@@ -26,6 +26,10 @@ export interface HintDraft {
 /**
  * Validate + normalise draft hints into the on-disk payload shape.
  * Throws `Error` with the same messages the old editor showed.
+ *
+ * On save the hints are sorted ascending by `start_time` (ties keep their
+ * editor order) and their `id`s are reassigned `hint-001`, `hint-002`, … in
+ * that order, so the file always reads front-to-back along the timeline.
  */
 export function buildHumanHintsPayload(
   songName: string,
@@ -59,6 +63,12 @@ export function buildHumanHintsPayload(
       // Emitted only for a non-empty note; hand-authored hints omit the key.
       ...(capturedFrom ? { captured_from: capturedFrom } : {}),
     };
+  });
+
+  // Array.prototype.sort is stable, so equal start_times keep their editor order.
+  human_hints.sort((a, b) => a.start_time - b.start_time);
+  human_hints.forEach((hint, index) => {
+    hint.id = `hint-${String(index + 1).padStart(3, "0")}`;
   });
 
   return { song_name: String(songName || ""), human_hints };

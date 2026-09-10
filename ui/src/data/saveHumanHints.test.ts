@@ -30,6 +30,32 @@ describe("buildHumanHintsPayload", () => {
     });
   });
 
+  it("sorts hints by start_time and renumbers ids to match", () => {
+    const payload = buildHumanHintsPayload("s", [
+      draft({ id: "hint-042", title: "late", start_time: 90, end_time: 92 }),
+      draft({ id: "x", title: "early", start_time: 5, end_time: 6 }),
+      draft({ id: "hint-007", title: "mid", start_time: 30, end_time: 31 }),
+    ]);
+    expect(
+      payload.human_hints.map((h) => [h.id, h.title, h.start_time]),
+    ).toEqual([
+      ["hint-001", "early", 5],
+      ["hint-002", "mid", 30],
+      ["hint-003", "late", 90],
+    ]);
+  });
+
+  it("keeps editor order for equal start_times", () => {
+    const payload = buildHumanHintsPayload("s", [
+      draft({ id: "a", title: "first", start_time: 10, end_time: 11 }),
+      draft({ id: "b", title: "second", start_time: 10, end_time: 11 }),
+    ]);
+    expect(payload.human_hints.map((h) => [h.id, h.title])).toEqual([
+      ["hint-001", "first"],
+      ["hint-002", "second"],
+    ]);
+  });
+
   it("requires an id", () => {
     expect(() => buildHumanHintsPayload("s", [draft({ id: "  " })])).toThrow(
       /must include an id/,

@@ -48,8 +48,10 @@ describe("draft <-> hint mapping (design notes §4)", () => {
       musical: "big build then release",
       lighting: "strobe on the downbeat",
     });
+    // buildHumanHintsPayload renumbers ids by timeline position, so a lone
+    // hint always lands on hint-001 regardless of its draft id.
     const payload = buildHumanHintsPayload("song", [draftToHint(draft)]);
-    expect(payload.human_hints[0]).toEqual(hint);
+    expect(payload.human_hints[0]).toEqual({ ...hint, id: "hint-001" });
   });
 
   it("carries captured_from through hintToDraft / draftToHint untouched", () => {
