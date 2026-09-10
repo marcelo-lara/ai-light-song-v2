@@ -756,6 +756,85 @@ The top-level `sections.json` and `artifacts/section_segmentation/sections.json`
 
 ---
 
+## Texture Novelty — self-similarity novelty over spectral features
+
+*(no external model — classical cosine SSM + Foote checkerboard novelty)*
+
+### Status
+
+**[CLOSED — FAILED kill condition, kill candidate].** v3.4 item 6. Built as
+[`../experiments/texture_novelty/`](../experiments/texture_novelty/README.md).
+The debugger lane exists — **`2. Texture Novelty`**, under Human Hints, flask
+badge, reads `reference/proposals/texture_novelty.json` — kept for **one
+operator review pass**, then removed by Recipe B if the operator agrees. Do not
+tune to manufacture a pass.
+
+### Why? What for?
+
+`sections.json` has no boundary at the `Queen of Kings` 48.7 s drop, and its
+boundary F1 vs operator hints is weak corpus-wide. The refinement doc (item 2)
+measured that self-similarity novelty over the 7 FFT bands has recall 0.80–1.00
+against operator hints on every gold song but precision 0.05–0.50 (64–114 fires
+per song). Question: does a *feature choice* keep the recall and lift precision
+above 0.5 — beating `sections.json` and `arrangement_state.json`?
+
+### Experiment Plan
+
+Method held fixed: cosine self-similarity matrix → Foote checkerboard novelty
+kernel, 1.0 s half-window → peak-pick (`mean + 1·std`, ≥ 2.0 s apart). Only the
+feature changes. Feature sets, tried IN ORDER: (1) raw 7-band mix vector from
+`fft_bands.json` — the measured baseline; (2) librosa chroma on the **mix**
+(never the harmonic-stem `hpcp.json` — D6.1) concatenated with the mix's
+percussive-band weight; (3) per-stem band weight, 28-dim, from
+`fft_bands.<stem>.json` (item 1). Cheap baselines: mix-RMS delta, MFCC novelty.
+Metric: boundary F1 @ ±1.0 s vs `human_hints.json` block edges on the four gold
+songs.
+
+### Results evidence
+
+Full tables: [`../experiments/texture_novelty/out/score.txt`](../experiments/texture_novelty/out/score.txt),
+reproduced by `run score`. 48 pooled human-hint block edges.
+
+**Pooled (4 gold songs), boundary F1 @ ±1.0 s:**
+
+| method | P | R | F1 |
+| --- | --- | --- | --- |
+| feat 1 — raw 7-band MIX vector | 0.12 | 0.19 | 0.14 |
+| feat 2 — chroma(MIX) + percussive weight | 0.12 | 0.23 | 0.16 |
+| feat 3 — per-stem band weight (28-dim) | 0.20 | 0.35 | 0.26 |
+| baseline — mix-RMS delta | 0.15 | 0.42 | 0.22 |
+| baseline — MFCC novelty | 0.21 | 0.38 | 0.27 |
+| incumbent — `sections.json` | 0.31 | 0.17 | 0.22 |
+| incumbent — `arrangement_state.json` | 0.14 | 0.44 | 0.22 |
+
+**Per-song F1 (the three feature sets vs incumbents):**
+
+| song | feat 1 | feat 2 | feat 3 | `sections.json` | `arrangement_state` |
+| --- | --- | --- | --- | --- | --- |
+| `_test_song` | 0.44 | 0.29 | 0.64 | 0.00 | 0.62 |
+| `Titanium` | 0.06 | 0.00 | 0.10 | 0.24 | 0.08 |
+| `Hideaway` | 0.09 | 0.11 | 0.11 | 0.31 | 0.12 |
+| `Armin` | 0.13 | 0.34 | 0.33 | 0.30 | 0.23 |
+
+**Kill condition (precision > 0.5 at recall ≥ 0.8): FAIL for every feature set**,
+pooled and per song. Best pooled precision is feat 3 at 0.20. The one strong
+cell — feat 3 on the synthetic `_test_song` (P 0.88 / R 0.50) — does not
+generalise (F1 0.10–0.33 on the three real songs). Loosening the peak-picker
+back toward the refinement doc's dense regime trades precision down toward 0.05
+as recall rises — the refinement doc's own finding, reconfirmed. On the two real
+vocal-pop songs `sections.json` is the best method in the table.
+
+### Conclusion
+
+Killed on the metric. The failure is structural: the texture-change signal is
+real everywhere, which is exactly why precision cannot rise — it changes at
+non-boundaries just as often. This reconfirms the refinement doc's measurement
+rather than overturning it. Lane kept for one review pass; if anything survives
+it is the per-stem feature direction (feat 3), which belongs to Structural vs
+Micro (item 8), not here.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

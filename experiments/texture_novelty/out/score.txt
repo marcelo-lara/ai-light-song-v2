@@ -1,0 +1,59 @@
+Texture Novelty — boundary F1 @ +-1.0 s vs human-hint block edges
+==========================================================================
+
+_test_song
+  method                                           P     R    F1   tp  pred  ref
+  feat 1 — raw 7-band MIX vector (measured baseline)  1.00  0.29  0.44    4     4   14
+  feat 2 — chroma(MIX) + percussive-band weight  0.43  0.21  0.29    3     7   14
+  feat 3 — per-stem band weight (28-dim)        0.88  0.50  0.64    7     8   14
+  baseline — mix-RMS delta                      0.73  0.57  0.64    8    11   14
+  baseline — MFCC novelty                       0.83  0.36  0.50    5     6   14
+  incumbent — sections.json                     0.00  0.00  0.00    0     2   14
+  incumbent — arrangement_state.json            0.60  0.64  0.62    9    15   14
+
+Titanium - David Guetta ft Sia
+  method                                           P     R    F1   tp  pred  ref
+  feat 1 — raw 7-band MIX vector (measured baseline)  0.05  0.07  0.06    1    19   15
+  feat 2 — chroma(MIX) + percussive-band weight  0.00  0.00  0.00    0    30   15
+  feat 3 — per-stem band weight (28-dim)        0.08  0.13  0.10    2    24   15
+  baseline — mix-RMS delta                      0.12  0.33  0.18    5    41   15
+  baseline — MFCC novelty                       0.13  0.33  0.19    5    38   15
+  incumbent — sections.json                     0.30  0.20  0.24    3    10   15
+  incumbent — arrangement_state.json            0.05  0.13  0.08    2    38   15
+
+Hideaway - Kiesza
+  method                                           P     R    F1   tp  pred  ref
+  feat 1 — raw 7-band MIX vector (measured baseline)  0.05  0.40  0.09    2    38    5
+  feat 2 — chroma(MIX) + percussive-band weight  0.06  0.40  0.11    2    33    5
+  feat 3 — per-stem band weight (28-dim)        0.07  0.40  0.11    2    30    5
+  baseline — mix-RMS delta                      0.04  0.40  0.08    2    45    5
+  baseline — MFCC novelty                       0.11  0.40  0.17    2    19    5
+  incumbent — sections.json                     0.25  0.40  0.31    2     8    5
+  incumbent — arrangement_state.json            0.07  0.60  0.12    3    46    5
+
+Armin - Revolution
+  method                                           P     R    F1   tp  pred  ref
+  feat 1 — raw 7-band MIX vector (measured baseline)  0.12  0.14  0.13    2    17   14
+  feat 2 — chroma(MIX) + percussive-band weight  0.29  0.43  0.34    6    21   14
+  feat 3 — per-stem band weight (28-dim)        0.27  0.43  0.33    6    22   14
+  baseline — mix-RMS delta                      0.12  0.36  0.19    5    40   14
+  baseline — MFCC novelty                       0.27  0.43  0.33    6    22   14
+  incumbent — sections.json                     0.50  0.21  0.30    3     6   14
+  incumbent — arrangement_state.json            0.15  0.50  0.23    7    46   14
+
+POOLED (4 gold songs)
+  method                                           P     R    F1   tp  pred  ref
+  feat 1 — raw 7-band MIX vector (measured baseline)  0.12  0.19  0.14    9    78   48
+  feat 2 — chroma(MIX) + percussive-band weight  0.12  0.23  0.16   11    91   48
+  feat 3 — per-stem band weight (28-dim)        0.20  0.35  0.26   17    84   48
+  baseline — mix-RMS delta                      0.15  0.42  0.22   20   137   48
+  baseline — MFCC novelty                       0.21  0.38  0.27   18    85   48
+  incumbent — sections.json                     0.31  0.17  0.22    8    26   48
+  incumbent — arrangement_state.json            0.14  0.44  0.22   21   145   48
+
+KILL CONDITION — a feature set passes iff precision > 0.5 at recall >= 0.8
+  feat 1 — raw 7-band MIX vector (measured baseline) pooled P=0.12 R=0.19 -> fail
+  feat 2 — chroma(MIX) + percussive-band weight pooled P=0.12 R=0.23 -> fail
+  feat 3 — per-stem band weight (28-dim)       pooled P=0.20 R=0.35 -> fail
+
+  OUTCOME: FAIL — no feature set clears the bar; kill candidate

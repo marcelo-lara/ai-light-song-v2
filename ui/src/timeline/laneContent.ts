@@ -24,6 +24,7 @@ import type {
   VocalPhrasesFile,
   ArrangementStateFile,
   ReactiveBandsFile,
+  TextureNoveltyFile,
   GridFile,
 } from "../data/sparseArtifacts";
 
@@ -539,6 +540,37 @@ export function reactiveBandsContent(file: ReactiveBandsFile | null): SparseBloc
 }
 
 /**
+ * Segments between self-similarity-novelty texture boundaries from
+ * `experiments/texture_novelty` (cosine SSM + Foote checkerboard, 1.0 s
+ * half-window). A proposal to audition against Human Hints directly above it —
+ * the experiment FAILED its kill condition and this lane is kept for one
+ * operator review pass only.
+ */
+export function textureNoveltyContent(file: TextureNoveltyFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => ({
+    id: `texture-novelty-${i + 1}`,
+    start_s: b.start_s,
+    end_s: b.end_s,
+    label: "",
+    wideLabel:
+      b.edge_strength == null
+        ? "first segment"
+        : `edge ${round(b.edge_strength, 2)}`,
+    laneLabel: "2. Texture Novelty",
+    caption: `${formatRange(b.start_s, b.end_s)} · ${
+      b.edge_strength == null
+        ? "first segment (no left edge)"
+        : `left-edge novelty ${round(b.edge_strength, 2)}`
+    }`,
+    reference: `texture-novelty-${i + 1}`,
+    detail: b.edge_strength == null ? "initial segment" : `edge ${round(b.edge_strength, 3)}`,
+    summary:
+      "experiments/texture_novelty — a texture segment bounded by cosine self-similarity novelty peaks (feature set 1, raw 7-band mix). Failed its kill condition; kept for one review pass.",
+    raw: b,
+  }));
+}
+
+/**
  * Named gesture phases (approach/build/tension/impact/release) and
  * section-pair transitions ("<from> → <to>") from `song_event_timeline.json`
  * -- the production `gestures` stage (plan v3.0 item 9, replacing the
@@ -610,6 +642,7 @@ export interface LaneContentSources {
   vocalPhrases?: VocalPhrasesFile | null;
   arrangementState?: ArrangementStateFile | null;
   reactiveBands?: ReactiveBandsFile | null;
+  textureNovelty?: TextureNoveltyFile | null;
   gestures?: EventTimeline | null;
   grid?: GridFile | null;
 }
@@ -622,6 +655,7 @@ export const SPARSE_LANE_IDS = [
   "dropProposals",
   "vocalPhrases",
   "reactiveBands",
+  "textureNovelty",
   "gestures",
   "gridPhrase",
   "sections",
@@ -649,6 +683,8 @@ export function buildLaneBlocks(
       return vocalPhrasesContent(s.vocalPhrases ?? null);
     case "reactiveBands":
       return reactiveBandsContent(s.reactiveBands ?? null);
+    case "textureNovelty":
+      return textureNoveltyContent(s.textureNovelty ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
     case "gridPhrase":

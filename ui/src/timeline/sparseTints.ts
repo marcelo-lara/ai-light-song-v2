@@ -38,6 +38,9 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a
   //                                       block where one stem or fewer is playing
   reactiveBands: [50, 85, 42], // warm gold-amber — MilkDrop-style band accents
+  textureNovelty: [70, 60, 44], // chartreuse — distinct from reactiveBands' gold
+  //   (50) and arrangementState's olive-lime (95); v3.4 item 6 experiment lane
+  //   (failed kill condition, kept for one review pass)
   gestures: [10, 75, 46], // burnt orange — sound-design device gestures
   gridPhrase: [188, 50, 42], // slate cyan — resolved bar/phrase grid
   gridDisputed: [0, 70, 40], // red — a song whose grid was NOT confidently resolved

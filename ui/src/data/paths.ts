@@ -63,6 +63,11 @@ export const artifactPaths = {
   // not rendered as its own lane, see the experiment's README).
   reactiveBands: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "reactive_bands.json")),
+  // Written by experiments/texture_novelty (`run export`). Segments between
+  // self-similarity-novelty texture boundaries. A proposal to audition against
+  // Human Hints — failed its kill condition, kept for one review pass.
+  textureNovelty: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "texture_novelty.json")),
   // Written by experiments/grid_consensus (`run export`). The resolved
   // downbeat phase + derived phrase grid.
   grid: (song: string) =>

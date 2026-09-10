@@ -25,8 +25,9 @@ import {
   humanHintsContent,
   moisesLyricsContent,
   sectionsContent,
+  textureNoveltyContent,
 } from "./laneContent";
-import type { ArrangementStateFile } from "../data/sparseArtifacts";
+import type { ArrangementStateFile, TextureNoveltyFile } from "../data/sparseArtifacts";
 import { romanNumeral } from "./romanNumeral";
 
 describe("humanHintsContent", () => {
@@ -382,5 +383,31 @@ describe("moisesLyricsContent — v3.4 item 5 validation overlay", () => {
     const blocks = moisesLyricsContent(file, new Set([2]));
     const are = blocks.find((b) => b.lyricTokenId === 3)!;
     expect(are.tintId).toBe("moisesLyricsHigh");
+  });
+});
+
+describe("textureNoveltyContent", () => {
+  const file: TextureNoveltyFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start_s: 0, end_s: 7.15, edge_strength: null },
+      { start_s: 7.15, end_s: 29.1, edge_strength: 0.2888 },
+    ],
+  };
+  const blocks = textureNoveltyContent(file);
+
+  it("labels a normal block with its left-edge novelty", () => {
+    expect(blocks[1]!.caption).toContain("left-edge novelty 0.29");
+    expect(blocks[1]!.wideLabel).toBe("edge 0.29");
+  });
+
+  it("renders the first block's null edge honestly", () => {
+    expect(blocks[0]!.caption).toContain("first segment (no left edge)");
+    expect(blocks[0]!.caption).not.toMatch(/novelty \d/);
+  });
+
+  it("never throws on a missing file", () => {
+    expect(textureNoveltyContent(null)).toEqual([]);
   });
 });

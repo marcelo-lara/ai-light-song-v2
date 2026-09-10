@@ -144,6 +144,7 @@ unrestricted" above.
 | Character, Shadow | `reference/proposals/character.json` | experiment |
 | Phrase Grid | `reference/proposals/grid.json` | experiment |
 | Reactive Bands | `reference/proposals/reactive_bands.json` | experiment |
+| 2. Texture Novelty | `reference/proposals/texture_novelty.json` | experiment (v3.4 item 6 — failed its kill condition, kept for one review pass) |
 | Vocal Phrases, Vocal Transcription | `reference/proposals/vocal_*.json` | experiment |
 | Dense lanes | `essentia/fft_bands.json`, `essentia/fft_bands.bass.json`, `essentia/fft_bands.drums.json`, `essentia/fft_bands.harmonic.json`, `essentia/fft_bands.vocals.json`, `essentia/rms_loudness.json`, `essentia/loudness_envelope.json`, `symbolic_transcription/drum_events.json`, `artifacts/layer_c_energy.json` | four per-stem FFT lanes beside the mix lane; each fails loudly on a missing artifact |
 

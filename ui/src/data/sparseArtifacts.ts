@@ -1,7 +1,7 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (drop proposals, character, vocal
-// transcription, vocal phrases, reactive bands, phrase grid, and the
-// top-level published arrangement state).
+// transcription, vocal phrases, reactive bands, texture novelty, phrase grid,
+// and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -613,6 +613,56 @@ export async function loadGrid(
   const result = await loadJson(artifactPaths.grid(song), parseGrid, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, status: "", confidence: 0, phrase_length_bars: null, boundaries: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// textureNovelty — reference/proposals/texture_novelty.json
+// ---------------------------------------------------------------------------
+//
+// Segments between self-similarity-novelty texture boundaries from
+// experiments/texture_novelty (cosine SSM + Foote checkerboard, 1.0 s
+// half-window, feature set 1 — raw 7-band mix vector). A proposal to audition
+// against Human Hints, not ground truth. The experiment FAILED its kill
+// condition (precision > 0.5 at recall >= 0.8) and the lane is kept for one
+// operator review pass only.
+
+export interface TextureNoveltyBlock {
+  start_s: number;
+  end_s: number;
+  /** peak novelty at this block's left edge (0..1); null on the first block */
+  edge_strength: number | null;
+}
+
+export interface TextureNoveltyFile {
+  schema_version: string;
+  song_name: string;
+  blocks: TextureNoveltyBlock[];
+}
+
+export function parseTextureNovelty(raw: unknown): TextureNoveltyFile {
+  const o = asObject(raw, "reference/proposals/texture_novelty.json");
+  const blocks: TextureNoveltyBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      edge_strength: r.edge_strength == null ? null : num(r.edge_strength),
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadTextureNovelty(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<TextureNoveltyFile>> {
+  const result = await loadJson(artifactPaths.textureNovelty(song), parseTextureNovelty, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
   }
   return result;
 }

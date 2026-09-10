@@ -86,7 +86,7 @@ Never fix across item boundaries in one commit.
 | New dense lanes | 4 (item 1) |
 | New proposal lanes | 3 (items 6, 7, 8) |
 | Blocking decisions (`D`) | none open |
-| Done | 5 |
+| Done | 6 |
 
 ---
 
@@ -710,45 +710,50 @@ Moises confidence hue (green 150 / amber 43 / red 0 / slate 210).
 **Question.** Does self-similarity novelty over spectral features locate operator
 hint boundaries better than `sections.json` and `arrangement_state.json`?
 
-- [ ] **`experiments/texture_novelty/`** — `run.py` with `compute` / `export` /
+- [x] **`experiments/texture_novelty/`** — `run.py` with `compute` / `export` /
   `score` subcommands (match `experiments/reactive_bands/` structure), a
   `README.md` with the entry shape from `docs/experiments.md` §"Entry shape", and
-  `paths.py` / feature / scoring modules. `src/` does not import it.
-- [ ] **Feature sets, tried in order** (refinement item 2): (1) the raw 7-band
-  mix vector — the measured baseline (recall 0.80–1.00, precision 0.05–0.50);
-  (2) **chroma/HPCP on the mix against percussive-band weight** — never the
-  harmonic stem (0.009 RMS at the `Queen of Kings` drop); (3) per-stem band
-  weight from item 1's `fft_bands.<stem>.json`.
-- [ ] **Method:** cosine self-similarity matrix, checkerboard novelty kernel,
-  1.0 s half-window (the measured baseline config). Report per feature set.
-- [ ] **Baselines:** mix-RMS delta and MFCC novelty (the cheap classical
-  baselines `docs/experiments.md` requires).
-- [ ] **Metric:** boundary F1 @ ±1.0 s vs `reference/human/human_hints.json`
-  block edges, on the four gold songs. Compare against `sections.json` F1 and
-  `arrangement_state` (0.59 on `_test_song`, 0.20 pooled).
-- [ ] **Lane output:** `export` writes
-  `reference/proposals/texture_novelty.json` (blocks or boundary markers).
-- [ ] **Proposal lane** via [`reference/ui-development.md`](reference/ui-development.md)
-  Recipe A: lane id `textureNovelty`, label **`2. Texture Novelty`**, under
-  **Human Hints**, `ph-flask` badge, `experiment: "texture_novelty"`. All 9
-  wiring files + 4 doc edits (Recipe A step 9). Pick a `sparseTints` hue not in
-  the existing collision list.
-- [ ] **`docs/experiments.md`** — new queue entry (full entry shape); the
-  entry's `### Results evidence` carries the measured table.
-- [ ] **Kill condition** (record the outcome in the README + `experiments.md`
-  regardless): no feature set lifts precision above 0.5 at recall ≥ 0.8. If
-  killed, the lane is still added for one review pass, then removed by Recipe B
-  in the same item if the operator agrees — otherwise it stays for auditioning.
+  `paths.py` / `features.py` / `novelty.py` / `score.py` / `export.py` modules.
+  `src/` does not import it.
+- [x] **Feature sets, tried in order** (refinement item 2): (1) raw 7-band mix
+  vector from `fft_bands.json` — the measured baseline; (2) librosa chroma on the
+  **mix** + percussive-band weight — **not** the harmonic-stem `hpcp.json` (D6.1);
+  (3) per-stem band weight, 28-dim, from item 1's `fft_bands.<stem>.json`. Ran
+  `extract-fft-bands` on `Titanium` / `Hideaway` first (per-stem FFT was absent).
+- [x] **Method:** cosine self-similarity matrix, checkerboard novelty kernel,
+  1.0 s half-window. Held fixed; only the feature changes. Reported per feature set.
+- [x] **Baselines:** mix-RMS delta and MFCC novelty.
+- [x] **Metric:** boundary F1 @ ±1.0 s vs `human_hints.json` block edges on the
+  four gold songs, tabulated against `sections.json` and `arrangement_state`.
+- [x] **Lane output:** `export` writes `reference/proposals/texture_novelty.json`
+  (`blocks[]` — segments between predicted boundaries, each with `edge_strength`).
+- [x] **Proposal lane** via Recipe A: lane id `textureNovelty`, label
+  **`2. Texture Novelty`**, below `humanHints`, `ph-flask` badge,
+  `experiment: "texture_novelty"`. 8 wiring files + 4 doc edits. `sparseTints`
+  hue 70 (chartreuse — not in the collision list).
+- [x] **`docs/experiments.md`** — new queue entry with the measured
+  `### Results evidence` table; says the lane exists.
+- [x] **Kill condition — OUTCOME: FAIL.** No feature set lifts precision above
+  0.5 at recall ≥ 0.8 (pooled or per song; best pooled precision 0.20, feat 3).
+  Recorded in the README and the `experiments.md` entry as a **kill candidate**.
+  Lane kept for one operator review pass; not removed here.
+
+**D6.1 (resolved, during implementation).** The plan says "chroma/HPCP on the
+MIX (`artifacts/essentia/hpcp.json`)… NEVER the harmonic stem" — but the
+published `hpcp.json` *is* harmonic-stem-derived (`generated_from.harmonic_stem`
+is set), so the two halves contradict. Resolved by honouring the intent: feature
+set 2 computes chroma with librosa on the mix audio, not `hpcp.json`. Rejected:
+using `hpcp.json` as-is — it is exactly the harmonic-stem signal the refinement
+doc warns reads 0.009 RMS at the `Queen of Kings` drop.
 
 ### Validation
 
-- [ ] `docker compose run --rm --no-deps app python -m experiments.texture_novelty.run compute`
-  then `export` then `score` — all succeed; `score` reproduces the README table.
-- [ ] `docker compose run --rm test` — analyzer baseline unchanged (nothing in
-  `src/` touched).
-- [ ] `docker compose run --rm ui npm run test` + `npm run build` clean;
-  `grep -rn "textureNovelty" ui/src --include=*.ts --include=*.tsx | cut -d: -f1 | sort -u`
-  lists exactly the 8 Recipe-A files.
+- [x] `docker compose run --rm --no-deps app python -m experiments.texture_novelty.run compute`
+  then `export` then `score` — all succeed; `score` writes/reproduces
+  `out/score.txt`.
+- [x] `docker compose run --rm test` — 122 passed, analyzer baseline unchanged.
+- [x] `docker compose run --rm ui npm run test` (361 passed) + `npm run build`
+  clean; the grep check lists exactly the 8 Recipe-A files.
 
 ### Visual QA
 
@@ -948,6 +953,7 @@ no current code path that can regenerate it.
 | D4.2 | resolved | `block_energy.json` `ratings` entry carries one axis or both (`{ hint_id, energy?, tension? }`); a missing axis is omitted, never defaulted. "Fully rated" (the `N / M` count) needs both. |
 | D5.1 | resolved | Lyric validation persists per-click, no Save button. |
 | D5.2 | resolved | No card re-restructure (item 4 did it); ✔ is a 3rd sibling button, `position:absolute` top-right, `stopPropagation()`. State owned by `App`; new tint `moisesLyricsValidated = hsl(265,80%,56%)`. |
+| D6.1 | resolved | Texture Novelty feature set 2 computes chroma with librosa on the mix, not the harmonic-stem `hpcp.json` (which the plan's own text forbids). Kill condition FAILED — lane kept for one review pass, kill candidate. |
 | D9.1 | **raised for the operator** | Do not resurrect Basic Pitch symbolic transcription in v3.4; blocks nothing. |
 
 ## Open questions blocking implementation

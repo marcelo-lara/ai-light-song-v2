@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/texture_novelty",
+    "engine": "cosine self-similarity + Foote checkerboard novelty (1.0 s half-window)",
+    "feature_set": "raw 7-band MIX vector"
+  },
+  "blocks": [
+    { "start_s": 0.0, "end_s": 8.0, "edge_strength": null },
+    { "start_s": 8.0, "end_s": 20.0, "edge_strength": 0.71 },
+    { "start_s": 20.0, "end_s": 32.0, "edge_strength": 0.46 }
+  ]
+}

@@ -76,6 +76,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58, experiment: "drop_detection" },
   { id: "vocalPhrases", label: "Vocal Phrases", sub: "experiment · phrase / gap / sustained-note blocks over the vocal stem", kind: "proposals", height: 58, experiment: "vocal_phrases" },
   { id: "reactiveBands", label: "Reactive Bands", sub: "experiment · locally auto-gained band-power accents", kind: "proposals", height: 58, experiment: "reactive_bands" },
+  { id: "textureNovelty", label: "2. Texture Novelty", sub: "experiment · self-similarity novelty texture segments", kind: "proposals", height: 58, experiment: "texture_novelty" },
   { id: "gestures", label: "Gestures", sub: "song_event_timeline · approach/build/tension/impact/release + section transitions", kind: "gestures", height: 58 },
   { id: "gridPhrase", label: "Phrase Grid", sub: "experiment · resolved downbeat phase · 8/16-bar edges", kind: "gridPhrase", height: 58, experiment: "grid_consensus" },
   { id: "fftBands", label: "FFT Bands", sub: "essentia · 7 spectral bands", kind: "fft", height: 84 },

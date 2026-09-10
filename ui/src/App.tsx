@@ -129,6 +129,9 @@ const TIMELINE_KEYS = [
   // wave-2 experiments (docs/experiments.md run orders 1-3, 6)
   "vocalPhrases",
   "reactiveBands",
+  // texture-novelty segments (experiments/texture_novelty, v3.4 item 6 —
+  // failed kill condition, lane kept for one review pass)
+  "textureNovelty",
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
   // lane's production data source.
   "eventTimeline",
@@ -147,6 +150,7 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   dropProposals: "dropProposals",
   vocalPhrases: "vocalPhrases",
   reactiveBands: "reactiveBands",
+  textureNovelty: "textureNovelty",
   gestures: "eventTimeline",
   gridPhrase: "grid",
   character: "character",
@@ -326,6 +330,7 @@ export function App(): React.JSX.Element {
       dropProposals: artifacts.dropProposals.data,
       vocalPhrases: artifacts.vocalPhrases.data,
       reactiveBands: artifacts.reactiveBands.data,
+      textureNovelty: artifacts.textureNovelty.data,
       gestures: artifacts.eventTimeline.data,
       grid: artifacts.grid.data,
       character: artifacts.character.data,
@@ -342,6 +347,7 @@ export function App(): React.JSX.Element {
       artifacts.dropProposals.data,
       artifacts.vocalPhrases.data,
       artifacts.reactiveBands.data,
+      artifacts.textureNovelty.data,
       artifacts.eventTimeline.data,
       artifacts.grid.data,
       artifacts.character.data,
