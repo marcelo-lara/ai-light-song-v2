@@ -68,6 +68,12 @@ export const artifactPaths = {
   // Human Hints — failed its kill condition, kept for one review pass.
   textureNovelty: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "texture_novelty.json")),
+  // Written by experiments/phrase_periodicity (`run export`). One block per
+  // operator hint, each carrying a repetition `regime` + `period` (bars, or
+  // null → "no phrase structure detected"). A proposal to audition against
+  // Human Hints — passed its kill condition.
+  phrasePeriodicity: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "phrase_periodicity.json")),
   // Written by experiments/grid_consensus (`run export`). The resolved
   // downbeat phase + derived phrase grid.
   grid: (song: string) =>

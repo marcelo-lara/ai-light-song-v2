@@ -26,8 +26,13 @@ import {
   moisesLyricsContent,
   sectionsContent,
   textureNoveltyContent,
+  phrasePeriodicityContent,
 } from "./laneContent";
-import type { ArrangementStateFile, TextureNoveltyFile } from "../data/sparseArtifacts";
+import type {
+  ArrangementStateFile,
+  TextureNoveltyFile,
+  PhrasePeriodicityFile,
+} from "../data/sparseArtifacts";
 import { romanNumeral } from "./romanNumeral";
 
 describe("humanHintsContent", () => {
@@ -409,5 +414,31 @@ describe("textureNoveltyContent", () => {
 
   it("never throws on a missing file", () => {
     expect(textureNoveltyContent(null)).toEqual([]);
+  });
+});
+
+describe("phrasePeriodicityContent", () => {
+  const file: PhrasePeriodicityFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start_s: 0, end_s: 16, title: "Intro", regime: "through-composed", period: null, n_bars: 8 },
+      { start_s: 16, end_s: 24, title: "Loop", regime: "bar-loop", period: 1, n_bars: 4 },
+    ],
+  };
+  const blocks = phrasePeriodicityContent(file);
+
+  it("labels a bar-loop block with its period", () => {
+    expect(blocks[1]!.wideLabel).toBe("bar-loop");
+    expect(blocks[1]!.caption).toContain("repeat unit 1 bar");
+  });
+
+  it("renders a null period honestly", () => {
+    expect(blocks[0]!.caption).toContain("no phrase structure detected");
+    expect(blocks[0]!.caption).not.toMatch(/repeat unit/);
+  });
+
+  it("never throws on a missing file", () => {
+    expect(phrasePeriodicityContent(null)).toEqual([]);
   });
 });

@@ -13,6 +13,7 @@ import {
   loadArrangementState,
   loadReactiveBands,
   loadTextureNovelty,
+  loadPhrasePeriodicity,
   loadGrid,
 } from "./sparseArtifacts";
 import {
@@ -263,6 +264,7 @@ export const artifactLoaders = {
   arrangementState: loadArrangementState,
   reactiveBands: loadReactiveBands,
   textureNovelty: loadTextureNovelty,
+  phrasePeriodicity: loadPhrasePeriodicity,
   grid: loadGrid,
   character: loadCharacter,
   vocalTranscription: loadVocalTranscription,

@@ -86,7 +86,7 @@ Never fix across item boundaries in one commit.
 | New dense lanes | 4 (item 1) |
 | New proposal lanes | 3 (items 6, 7, 8) |
 | Blocking decisions (`D`) | none open |
-| Done | 6 |
+| Done | 7 |
 
 ---
 
@@ -780,43 +780,43 @@ doc warns reads 0.009 RMS at the `Queen of Kings` drop.
 **Question.** What is the repetition period of a passage, and does its strength
 classify what kind of passage it is?
 
-- [ ] **`experiments/phrase_periodicity/`** — same structure as item 6.
-- [ ] **Method** (refinement item 3): collapse each bar to a 16-slot energy
+- [x] **`experiments/phrase_periodicity/`** — same structure as item 6.
+- [x] **Method** (refinement item 3): collapse each bar to a 16-slot energy
   profile per stem, **z-normalise per bar** (shape not level — the normalisation
   is load-bearing: on `Chimera - Hana` it sharpens the 8-bar peak from +0.056 to
   +0.325), then autocorrelate the bar sequence at 1–16 bar lags. **Period, not
   phase** — independent of the downbeat-phase weakness. Bar grid from
   `beats.json`; per-stem envelope from `loudness.json` (20 ms per-stem RMS) or
   item 1's per-stem bands.
-- [ ] **Cheap baseline:** raw-envelope autocorrelation without the
+- [x] **Cheap baseline:** raw-envelope autocorrelation without the
   z-normalisation (the ablation the refinement doc names).
-- [ ] **Two outputs, both measured:**
+- [x] **Two outputs, both measured:**
   - **phrase length** per song/stem with prominence-over-neighbouring-lags as an
     honest confidence; where prominence ≈ 0 the output is
     `"no phrase structure detected"`, never a forced number.
   - **block regime** (`through-composed` / `bar-loop` / `half-bar-loop`) per
     operator block, from `rep@bar` / `rep@beat`.
-- [ ] **Metric:** phrase length vs operator-stated truth (`Chimera - Hana` bass =
+- [x] **Metric:** phrase length vs operator-stated truth (`Chimera - Hana` bass =
   8 bars "almost exact"; two stems must find it independently); regime
   separation vs the marked blocks on `Queen of Kings`.
-- [ ] **Lane output:** `reference/proposals/phrase_periodicity.json`.
-- [ ] **Proposal lane** (Recipe A): id `phrasePeriodicity`, label **`3. Phrase
+- [x] **Lane output:** `reference/proposals/phrase_periodicity.json`.
+- [x] **Proposal lane** (Recipe A): id `phrasePeriodicity`, label **`3. Phrase
   Periodicity`**, under Human Hints, flask badge,
   `experiment: "phrase_periodicity"`. Full Recipe A.
-- [ ] **`docs/experiments.md`** — new queue entry; the CLAP-adjacent
+- [x] **`docs/experiments.md`** — new queue entry; the CLAP-adjacent
   "Phrase Periodicity" reference in the refinement doc is this entry.
-- [ ] **Known limit, stated in the README:** needs ≥ 1 bar, ideally 2 — 7 of the
+- [x] **Known limit, stated in the README:** needs ≥ 1 bar, ideally 2 — 7 of the
   16 `Queen of Kings` blocks are shorter (all four micro-events). This classifies
   block *character*; sub-second cues are item 8's job.
-- [ ] **Kill condition:** prominence fails to separate the known-8-bar songs
+- [x] **Kill condition:** prominence fails to separate the known-8-bar songs
   (`Chimera - Hana`, `Hideaway` bass) from the rest.
 
 ### Validation
 
-- [ ] `compute` / `export` / `score` all succeed; `score` reproduces the README
+- [x] `compute` / `export` / `score` all succeed; `score` reproduces the README
   tables (phrase-length + regime).
-- [ ] `docker compose run --rm test` — analyzer baseline unchanged.
-- [ ] `docker compose run --rm ui npm run test` + `npm run build` clean; the
+- [x] `docker compose run --rm test` — analyzer baseline unchanged.
+- [x] `docker compose run --rm ui npm run test` + `npm run build` clean; the
   grep check lists exactly 8 Recipe-A files for `phrasePeriodicity`.
 
 ### Visual QA
@@ -954,6 +954,7 @@ no current code path that can regenerate it.
 | D5.1 | resolved | Lyric validation persists per-click, no Save button. |
 | D5.2 | resolved | No card re-restructure (item 4 did it); ✔ is a 3rd sibling button, `position:absolute` top-right, `stopPropagation()`. State owned by `App`; new tint `moisesLyricsValidated = hsl(265,80%,56%)`. |
 | D6.1 | resolved | Texture Novelty feature set 2 computes chroma with librosa on the mix, not the harmonic-stem `hpcp.json` (which the plan's own text forbids). Kill condition FAILED — lane kept for one review pass, kill candidate. |
+| D7.1 | resolved | Phrase-length envelope is `fft_bands.<stem>.json` broadband energy (mean of the 7 normalised band levels), not `loudness.json` RMS: the raw-vs-z ablation and the kill-condition separation only reproduce the refinement doc's finding on the spectral envelope. `Chimera - Hana` had mix-only FFT, so `./analyze --stage extract-fft-bands` was run for it (the plan sanctions this). `loudness.json` per-stem RMS kept as the documented fallback. Autocorrelation is cosine similarity (no re-centring) so the per-bar z-normalisation is what makes shape agreement visible — on the raw envelope no phrase is found on any song. **Kill condition PASSED** (min known-8-bar prominence +0.118 > max rest +0.081). |
 | D9.1 | **raised for the operator** | Do not resurrect Basic Pitch symbolic transcription in v3.4; blocks nothing. |
 
 ## Open questions blocking implementation

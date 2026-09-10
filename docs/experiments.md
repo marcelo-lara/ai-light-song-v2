@@ -835,6 +835,96 @@ Micro (item 8), not here.
 
 ---
 
+## Phrase Periodicity — bar-sequence autocorrelation of per-stem energy shape
+
+*(no external model or repo — classical bar-sequence autocorrelation, numpy)*
+
+### Status
+
+**[OPEN — PASSED its kill condition].** v3.4 item 7. Built as
+[`../experiments/phrase_periodicity/`](../experiments/phrase_periodicity/README.md).
+Nothing in `src/` reads anything here. The debugger lane exists —
+**`3. Phrase Periodicity`**, under Human Hints, flask badge, reads
+`reference/proposals/phrase_periodicity.json`.
+
+### Why? What for?
+
+The pipeline emits **no periodicity signal at all**. Question: what is the
+repetition period of a passage, and does its strength classify what kind of
+passage it is (drumless long-phrase / bar loop / dense half-bar loop)?
+
+### Experiment Plan
+
+Method held fixed, not swept:
+
+1. bar grid from `beats.json` downbeats — **period only, never phase**.
+2. per-stem envelope: `fft_bands.<stem>.json` broadband energy (mean of the 7
+   per-song-normalised band levels); documented fallback `loudness.json` 20 ms
+   per-stem RMS where a song lacks per-stem FFT (`Chimera - Hana` needed
+   `--stage extract-fft-bands` first).
+3. collapse each bar to a 16-slot energy profile; **z-normalise per bar** (shape
+   not level — load-bearing).
+4. cosine-similarity autocorrelation of the bar sequence at 1–16 bar lags.
+   Phrase length = peak lag in 2–16; `prominence` = peak minus neighbouring
+   lags (honest confidence); prominence `< 0.05` ⇒ "no phrase structure
+   detected". Regime per operator block from `rep@bar` / `rep@beat` on the
+   4-stem composite.
+
+**Cheap baseline (named ablation):** same pipeline, step 3 removed (raw
+envelope). **Songs:** the four gold songs + `Chimera - Hana` + `Queen of Kings`.
+
+### Results evidence
+
+Full tables: [`../experiments/phrase_periodicity/out/score.txt`](../experiments/phrase_periodicity/out/score.txt),
+reproduced by `run score`.
+
+**Phrase length — z-norm vs the raw ablation (bass, prominence):**
+
+| song | z-norm period | z-norm prom | raw prom |
+| --- | --- | --- | --- |
+| `Chimera - Hana` | **8** | **+0.168** | +0.004 |
+| `Hideaway - Kiesza` | 2 | **+0.118** | +0.007 |
+| `Armin - Revolution` | 2 | +0.081 | +0.008 |
+| `Queen of Kings` | — | +0.041 | +0.007 |
+| `Titanium` | — | +0.028 | +0.002 |
+| `_test_song` | — | +0.005 | +0.004 |
+
+The raw-envelope ablation finds **no phrase on any stem of any song** (every
+prominence ≤ 0.03) — the per-bar z-normalisation is the whole method.
+`Chimera - Hana`'s operator-stated 8-bar bass phrase is recovered on **three
+stems independently** (bass +0.168, harmonic +0.101, vocals +0.248).
+`Hideaway` bass reports 2 bars: the 8-bar phrase is a weaker secondary local
+max, a 2-bar sub-loop dominates the curve — the experiment does not force the
+operator's number.
+
+**Kill condition — PASS.** `min(known 8-bar prominence) = +0.118 (Hideaway) >
+max(rest) = +0.081 (Armin)` — prominence separates `Chimera - Hana` and
+`Hideaway` bass from the four songs with no such phrase.
+
+**Block regime — `Queen of Kings`, 3/7 marked blocks:** the two intro/bridge
+blocks (through-composed) and the first percussion loop (bar-loop) classify
+correctly; `Post-Intro + Harmony` reads half-bar (rep@beat 0.60) where the
+operator marked bar-loop; the three ~3.4 s chorus blocks read through-composed
+because each is ≈ 1.7 bars — below the ≥ 2 bars `rep@bar` needs.
+
+### Known limit
+
+Needs **≥ 1 bar, ideally 2**. Seven of the sixteen `Queen of Kings` blocks are
+shorter (all four micro-events). This classifies block **character**, not
+sub-second cues — that is item 8 (`structural_vs_micro`).
+
+### Conclusion
+
+**Passed on the metric.** z-normalised bar-sequence autocorrelation recovers the
+operator-stated 8-bar bass phrase on `Chimera - Hana` (three stems) and phrase
+prominence cleanly separates the two known-8-bar songs from the rest; the raw
+ablation finds nothing. Regime classification works on blocks ≥ 2 bars and
+degrades to through-composed on shorter ones, as the known limit predicts. Not
+promoted, no top-level file. Kept as a proposal lane to audition against Human
+Hints.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

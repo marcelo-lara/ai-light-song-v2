@@ -1,7 +1,7 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (drop proposals, character, vocal
-// transcription, vocal phrases, reactive bands, texture novelty, phrase grid,
-// and the top-level published arrangement state).
+// transcription, vocal phrases, reactive bands, texture novelty, phrase
+// periodicity, phrase grid, and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -661,6 +661,63 @@ export async function loadTextureNovelty(
   f?: typeof fetch,
 ): Promise<LoadResult<TextureNoveltyFile>> {
   const result = await loadJson(artifactPaths.textureNovelty(song), parseTextureNovelty, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// phrasePeriodicity — reference/proposals/phrase_periodicity.json
+// ---------------------------------------------------------------------------
+//
+// One block per operator hint (or published section) from
+// experiments/phrase_periodicity: z-normalised per-bar 16-slot energy profiles
+// autocorrelated over 1-16 bar lags (period only, never phase). Each block
+// carries a repetition `regime` and a `period` in bars — `period` is null when
+// no repeat structure was detected, and renders as "no phrase structure
+// detected", never a fabricated number. A proposal to audition against Human
+// Hints, not ground truth. The experiment PASSED its kill condition.
+
+export interface PhrasePeriodicityBlock {
+  start_s: number;
+  end_s: number;
+  title: string;
+  regime: string;
+  /** repeat unit in bars (1 / 0.5), or null when no phrase structure detected */
+  period: number | null;
+  n_bars: number;
+}
+
+export interface PhrasePeriodicityFile {
+  schema_version: string;
+  song_name: string;
+  blocks: PhrasePeriodicityBlock[];
+}
+
+export function parsePhrasePeriodicity(raw: unknown): PhrasePeriodicityFile {
+  const o = asObject(raw, "reference/proposals/phrase_periodicity.json");
+  const blocks: PhrasePeriodicityBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      title: st(r.title),
+      regime: st(r.regime),
+      period: r.period == null ? null : num(r.period),
+      n_bars: num(r.n_bars),
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadPhrasePeriodicity(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<PhrasePeriodicityFile>> {
+  const result = await loadJson(artifactPaths.phrasePeriodicity(song), parsePhrasePeriodicity, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
   }

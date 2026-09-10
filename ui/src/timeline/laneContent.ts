@@ -25,6 +25,7 @@ import type {
   ArrangementStateFile,
   ReactiveBandsFile,
   TextureNoveltyFile,
+  PhrasePeriodicityFile,
   GridFile,
 } from "../data/sparseArtifacts";
 
@@ -571,6 +572,35 @@ export function textureNoveltyContent(file: TextureNoveltyFile | null): SparseBl
 }
 
 /**
+ * Per-block repetition regime + period from `experiments/phrase_periodicity`
+ * (z-normalised per-bar 16-slot autocorrelation, period only — never phase). A
+ * proposal to audition against Human Hints directly above it. `period` is null
+ * when no repeat structure was detected — printed as "no phrase structure
+ * detected", never a fabricated number.
+ */
+export function phrasePeriodicityContent(file: PhrasePeriodicityFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => {
+    const periodText =
+      b.period == null
+        ? "no phrase structure detected"
+        : `repeat unit ${b.period} bar`;
+    return {
+      id: `phrase-periodicity-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: "",
+      wideLabel: b.regime,
+      laneLabel: "3. Phrase Periodicity",
+      caption: `${formatRange(b.start_s, b.end_s)} · ${b.regime} · ${periodText}`,
+      reference: `phrase-periodicity-${i + 1}`,
+      detail: b.title ? `${b.title} · ${b.n_bars} bar${b.n_bars === 1 ? "" : "s"}` : "",
+      summary: `experiments/phrase_periodicity — ${b.regime}; ${periodText}. Regime needs a block ≥ 2 bars; shorter blocks read through-composed (known limit).`,
+      raw: b,
+    };
+  });
+}
+
+/**
  * Named gesture phases (approach/build/tension/impact/release) and
  * section-pair transitions ("<from> → <to>") from `song_event_timeline.json`
  * -- the production `gestures` stage (plan v3.0 item 9, replacing the
@@ -643,6 +673,7 @@ export interface LaneContentSources {
   arrangementState?: ArrangementStateFile | null;
   reactiveBands?: ReactiveBandsFile | null;
   textureNovelty?: TextureNoveltyFile | null;
+  phrasePeriodicity?: PhrasePeriodicityFile | null;
   gestures?: EventTimeline | null;
   grid?: GridFile | null;
 }
@@ -656,6 +687,7 @@ export const SPARSE_LANE_IDS = [
   "vocalPhrases",
   "reactiveBands",
   "textureNovelty",
+  "phrasePeriodicity",
   "gestures",
   "gridPhrase",
   "sections",
@@ -685,6 +717,8 @@ export function buildLaneBlocks(
       return reactiveBandsContent(s.reactiveBands ?? null);
     case "textureNovelty":
       return textureNoveltyContent(s.textureNovelty ?? null);
+    case "phrasePeriodicity":
+      return phrasePeriodicityContent(s.phrasePeriodicity ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
     case "gridPhrase":

@@ -41,6 +41,9 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   textureNovelty: [70, 60, 44], // chartreuse — distinct from reactiveBands' gold
   //   (50) and arrangementState's olive-lime (95); v3.4 item 6 experiment lane
   //   (failed kill condition, kept for one review pass)
+  phrasePeriodicity: [130, 55, 40], // emerald — distinct from textureNovelty's
+  //   chartreuse (70) and arrangementState's olive-lime (95); v3.4 item 7
+  //   experiment lane (passed its kill condition)
   gestures: [10, 75, 46], // burnt orange — sound-design device gestures
   gridPhrase: [188, 50, 42], // slate cyan — resolved bar/phrase grid
   gridDisputed: [0, 70, 40], // red — a song whose grid was NOT confidently resolved

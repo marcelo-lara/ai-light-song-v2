@@ -132,6 +132,9 @@ const TIMELINE_KEYS = [
   // texture-novelty segments (experiments/texture_novelty, v3.4 item 6 —
   // failed kill condition, lane kept for one review pass)
   "textureNovelty",
+  // phrase repetition regime + period (experiments/phrase_periodicity,
+  // v3.4 item 7 — passed its kill condition)
+  "phrasePeriodicity",
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
   // lane's production data source.
   "eventTimeline",
@@ -151,6 +154,7 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   vocalPhrases: "vocalPhrases",
   reactiveBands: "reactiveBands",
   textureNovelty: "textureNovelty",
+  phrasePeriodicity: "phrasePeriodicity",
   gestures: "eventTimeline",
   gridPhrase: "grid",
   character: "character",
@@ -331,6 +335,7 @@ export function App(): React.JSX.Element {
       vocalPhrases: artifacts.vocalPhrases.data,
       reactiveBands: artifacts.reactiveBands.data,
       textureNovelty: artifacts.textureNovelty.data,
+      phrasePeriodicity: artifacts.phrasePeriodicity.data,
       gestures: artifacts.eventTimeline.data,
       grid: artifacts.grid.data,
       character: artifacts.character.data,
@@ -348,6 +353,7 @@ export function App(): React.JSX.Element {
       artifacts.vocalPhrases.data,
       artifacts.reactiveBands.data,
       artifacts.textureNovelty.data,
+      artifacts.phrasePeriodicity.data,
       artifacts.eventTimeline.data,
       artifacts.grid.data,
       artifacts.character.data,

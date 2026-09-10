@@ -58,6 +58,7 @@ NEEDED = [
     "reference/proposals/vocal_phrases.json",
     "reference/proposals/reactive_bands.json",
     "reference/proposals/texture_novelty.json",
+    "reference/proposals/phrase_periodicity.json",
     "reference/proposals/grid.json",
     "artifacts/essentia/fft_bands.json",
     "artifacts/essentia/fft_bands.bass.json",
@@ -218,6 +219,48 @@ def inject_texture_novelty(out_name: str):
     print(f"  wrote {out_name}/reference/proposals/texture_novelty.json")
 
 
+def inject_phrase_periodicity(out_name: str):
+    """v3.4 item 7 — write a small deterministic phrase_periodicity.json (3
+    blocks: one through-composed with period null, one bar-loop, one
+    half-bar-loop) so `phrase-periodicity.spec.ts` can assert the null-period
+    "no phrase structure detected" string and block edges against the ruler
+    without depending on the experiment's real output. The experiment PASSED
+    its kill condition. The file must exist on every fixture so the song-load
+    fetch never 404s (ui-regression §3)."""
+    hints_path = OUT / out_name / "reference/human/human_hints.json"
+    song_name = REG_SOURCE
+    if hints_path.exists():
+        song_name = json.loads(hints_path.read_text()).get("song_name", REG_SOURCE)
+    p = OUT / out_name / "reference/proposals/phrase_periodicity.json"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(
+        json.dumps(
+            {
+                "schema_version": "1.0",
+                "song_name": song_name,
+                "generated_from": {
+                    "experiment": "experiments/phrase_periodicity",
+                    "engine": "per-bar 16-slot z-normalised energy profile -> bar-sequence autocorrelation (period only)",
+                },
+                "phrase_lengths": {
+                    "bass": {"phrase_bars": 8, "prominence": 0.168, "detected": True},
+                },
+                "blocks": [
+                    {"start_s": 0.0, "end_s": 8.0, "title": "Intro",
+                     "regime": "through-composed", "period": None, "n_bars": 4},
+                    {"start_s": 8.0, "end_s": 20.0, "title": "Groove",
+                     "regime": "bar-loop", "period": 1.0, "n_bars": 6},
+                    {"start_s": 20.0, "end_s": 32.0, "title": "Chorus",
+                     "regime": "half-bar-loop", "period": 0.5, "n_bars": 6},
+                ],
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    print(f"  wrote {out_name}/reference/proposals/phrase_periodicity.json")
+
+
 def inject_block_energy(out_name: str, *, rated: bool = True):
     """v3.4 item 4 — write the synthetic block_energy.json.
 
@@ -280,6 +323,7 @@ def main():
     copy_song(REG_SOURCE, "RegFull - Fixture")
     inject_section_contest("RegFull - Fixture")
     inject_texture_novelty("RegFull - Fixture")
+    inject_phrase_periodicity("RegFull - Fixture")
     inject_block_energy("RegFull - Fixture")
     inject_lyric_validations("RegFull - Fixture", validated=True)
     copy_song(REG_SOURCE, "RegPartial - Fixture",
@@ -289,10 +333,12 @@ def main():
                     "artifacts/essentia/fft_bands.harmonic.json",
                     "artifacts/essentia/fft_bands.vocals.json"})
     inject_texture_novelty("RegPartial - Fixture")
+    inject_phrase_periodicity("RegPartial - Fixture")
     inject_block_energy("RegPartial - Fixture", rated=False)
     inject_lyric_validations("RegPartial - Fixture")
     copy_test_song()
     inject_texture_novelty("_test_song")
+    inject_phrase_periodicity("_test_song")
     inject_block_energy("_test_song", rated=False)
     inject_lyric_validations("_test_song")
     # audio: ship the real mp3 for RegFull (real decode path). RegPartial reuses
