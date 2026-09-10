@@ -264,7 +264,9 @@ def detect_snare_roll(drum_events: list[dict], beats: list[dict]) -> list[dict]:
     bar_end = {bars[i]: bar_times.get(bars[i + 1], bar_times[bars[i]] + 2.0) for i in range(len(bars) - 1)}
     bar_end[bars[-1]] = bar_times[bars[-1]] + 2.0
 
-    snare_hat_times = sorted(e["time"] for e in drum_events if e.get("event_type") in ("snare", "hat"))
+    # "crash" is a v3.4 brilliance-gated split of pitch-42 hat events; it still
+    # contributes onset density to a fill, so keep it in this set.
+    snare_hat_times = sorted(e["time"] for e in drum_events if e.get("event_type") in ("snare", "hat", "crash"))
     counts: dict[int, int] = {}
     for bar in bars:
         t0, t1 = bar_times[bar], bar_end[bar]

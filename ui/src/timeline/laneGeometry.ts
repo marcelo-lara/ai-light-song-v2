@@ -173,7 +173,7 @@ export function bucketLevels(
 export interface DrumBucket {
   start_s: number;
   end_s: number;
-  byType: { kick: number; snare: number; hat: number };
+  byType: { kick: number; snare: number; hat: number; crash: number };
   count: number;
 }
 
@@ -194,13 +194,18 @@ export function bucketDrums(
       bucket = {
         start_s: index * secondsPerBucket,
         end_s: (index + 1) * secondsPerBucket,
-        byType: { kick: 0, snare: 0, hat: 0 },
+        byType: { kick: 0, snare: 0, hat: 0, crash: 0 },
         count: 0,
       };
       buckets.set(index, bucket);
     }
     bucket.count += 1;
-    if (ev.event_type === "kick" || ev.event_type === "snare" || ev.event_type === "hat") {
+    if (
+      ev.event_type === "kick" ||
+      ev.event_type === "snare" ||
+      ev.event_type === "hat" ||
+      ev.event_type === "crash"
+    ) {
       bucket.byType[ev.event_type] += 1;
     }
   }

@@ -114,7 +114,7 @@ No `confidence` field anywhere in phase 1 — there is nothing to be uncertain a
 | Module | Produces |
 | --- | --- |
 | `harmonic.py` | `artifacts/essentia/hpcp.json`, `artifacts/layer_a_harmonic.json` — HPCP, global key, chord events; also projects compact `key` / `chord_progression` into `sections.json` |
-| `drums.py` | `artifacts/symbolic_transcription/drum_events.json` — Omnizart drum hits on the isolated drums stem |
+| `drums.py` | `artifacts/symbolic_transcription/drum_events.json` — Omnizart drum hits on the isolated drums stem; GM 35/38/42 only, plus a v3.4 `crash`/`hat` split on pitch 42 from the drums-stem brilliance band |
 | `genre.py` | `artifacts/genre.json` — genre with honest confidences and `guidance` prose |
 | `segmentation.py` | `artifacts/section_segmentation/sections.json` — All-In-One named functional segmentation |
 | `energy.py` | `artifacts/layer_c_energy.json` — energy states, per-section cards, accent candidates |
@@ -195,6 +195,22 @@ checked.
   Moises varies widely by song: **1.00 / 0.69 / 0.51 / 0.38** across the four
   gold songs. `sections.json`'s `chord_progression` is confidence-gated on
   exactly this uncertainty, and `null` there is honest, not a bug.
+- **The drum vocabulary is bounded, and the bound is written down.** Omnizart
+  emits three GM pitches only — 35 (kick), 38 (snare), 42 (hi-hat). `velocity`
+  is a constant 100 and is **not published** (a zero-information column is worse
+  than its absence). `confidence` is `null` — Omnizart exposes no per-hit score.
+  Toms and congas are folded into kick or snare: a *known* wrong label, not a
+  silent one. **v3.4 crash/hat split:** a pitch-42 event is relabelled
+  `hat` → `crash` when the drums-stem 6–16 kHz brilliance band in
+  `fft_bands.drums.json` shows a sustained wash (normalized level ≥ 0.90) *and*
+  a strong broadband onset (`transient_strength` ≥ 0.40) within ±0.12 s of the
+  event. Constants are measured, not per-song tuned (see `drums.py` docstring).
+  Measured split: `Armin - Revolution` 10 / 656 (2%); `Queen of Kings -
+  Alessandra` 43 / 476 (9%), with a `crash` 0.08 s from the operator-marked
+  48.7 s drop; `_test_song` 35 / 179 (20%, synthetic). `Titanium` / `Hideaway`
+  measurement-pending (no `fft_bands.drums.json` yet; Omnizart is CPU-only
+  here). If `fft_bands.drums.json` is absent the stage fails (`DependencyError`)
+  — there is no fallback to "everything is hat".
 
 ### Structure — `segmentation.py`, a real improvement, not solved
 

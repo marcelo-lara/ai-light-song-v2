@@ -48,7 +48,7 @@ only surviving package.
 | 1 | `fft_bands.py` | 7 spectral bands / 50 ms — five artifacts: the mix (`fft_bands.json`) plus one per Demucs stem (`fft_bands.{bass,drums,harmonic,vocals}.json`), each normalised against its own percentiles; a missing stem WAV raises `DependencyError` |
 | 1 | `loudness.py` | RMS (10 ms) and envelope (200 ms), per source |
 | 2 | `harmonic.py` | HPCP, global key, chord decoding; projects `key` / `chord_progression` into `sections.json`, confidence-gated |
-| 2 | `drums.py` | Omnizart drum transcription on the drums stem; owns `resolve_omnizart_drum_model_path` and the beat/section alignment helpers |
+| 2 | `drums.py` | Omnizart drum transcription on the drums stem (GM 35/38/42); owns `resolve_omnizart_drum_model_path`, the beat/section alignment helpers, and the v3.4 `crash`/`hat` split on pitch 42 — reads `essentia/fft_bands.drums.json`, raises `DependencyError` if absent |
 | 2 | `genre.py` | genre classification with honest confidences and `guidance` prose |
 | 2 | `segmentation.py` | All-In-One named segmentation; merges 8-bar phrases into song-form runs, computes `function_confidence` from posterior entropy, flags degenerate songs `function_status: "unknown"`, sets `same_label_as` |
 | 2 | `energy.py` | `layer_c_energy.json`. Its 4 MB/song feature intermediate is computed in memory and never written |

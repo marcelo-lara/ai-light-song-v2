@@ -182,6 +182,10 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         stems = _existing_stems(paths, stage_name)
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
         sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        # v3.4: the crash/hat split reads the drums-stem brilliance band.
+        # extract-fft-bands runs before extract-drum-events in the full
+        # pipeline; gate the single-stage path on the same prerequisite.
+        _required_artifact_payload(paths, stage_name, "essentia", "fft_bands.drums.json")
         _run_stage(paths.song_name, "phase-1", stage_name, extract_drum_events, paths, stems, timing, sections)
         return 0
     if stage_name == "generate-section-hints":

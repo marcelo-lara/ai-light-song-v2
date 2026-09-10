@@ -35,8 +35,8 @@ DRUM_ARTIFACT = {
         "engine": "audiohacking.omnizart.drum",
         "dependencies": {"drums_stem": "/data/analysis/_test_song/artifacts/stems/drums.wav"},
     },
-    "supported_event_types": ["kick", "snare", "hat", "unresolved"],
-    "summary": {"event_count": 3, "kick_count": 2, "snare_count": 1, "hat_count": 0, "unresolved_count": 0},
+    "supported_event_types": ["kick", "snare", "hat", "crash", "unresolved"],
+    "summary": {"event_count": 3, "kick_count": 2, "snare_count": 1, "hat_count": 0, "crash_count": 0, "unresolved_count": 0},
     "quality_flags": [],
     "events": [
         {"event_id": "drum-event-00001", "time": 0.19, "event_type": "kick", "confidence": None,

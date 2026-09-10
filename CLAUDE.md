@@ -74,6 +74,7 @@ Full numbers, per-song breakdowns and root causes:
 | Area | State |
 | --- | --- |
 | Stems, beat *times*, FFT, loudness, HPCP, drums, energy | **trusted.** 7/7 human impacts within 0.25 s of an essentia beat |
+| Drum vocabulary (`drums.py`) | **bounded and written down.** Omnizart emits GM pitches 35/38/42 only; `velocity` is a constant 100 (not published); `confidence` is `null`; toms/congas fold into kick/snare — a *known* wrong label. v3.4 adds a `crash`/`hat` split on pitch 42 (drums-stem 6–16 kHz brilliance gate), nothing else in the taxonomy widened |
 | Chord labels | **informative, not settled.** Agreement with a second model: 1.00 / 0.69 / 0.51 / 0.38 across the gold songs |
 | Structure (`segmentation.py`) | **improved, not solved.** F1 0.67 vs the old segmenter's 0.29. `function_status: "unknown"` is set honestly, and `same_label_as` is label repetition, not identity |
 | Downbeats / bar numbers | **short of target — 0.226 F1** against a 0.50 goal. **Do not assume bar numbers are correct.** A `null` confidence is an honest "we don't know", not a guess |

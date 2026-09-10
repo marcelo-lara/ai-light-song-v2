@@ -99,6 +99,7 @@ class ValidationDiagnosticsTests(unittest.TestCase):
                         "kick_count": 1,
                         "snare_count": 1,
                         "hat_count": 2,
+                        "crash_count": 0,
                         "unresolved_count": 0,
                     },
                     "events": [

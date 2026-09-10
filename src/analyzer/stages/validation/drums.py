@@ -23,6 +23,7 @@ def _validate_drums_summary(summary: dict, events: list[dict]) -> bool:
         "kick_count": event_types.count("kick"),
         "snare_count": event_types.count("snare"),
         "hat_count": event_types.count("hat"),
+        "crash_count": event_types.count("crash"),
         "unresolved_count": event_types.count("unresolved"),
     }
 
@@ -61,6 +62,7 @@ def _drum_diagnostics(events: list[dict], timing: dict) -> dict:
         "kick_count": event_types.count("kick"),
         "snare_count": event_types.count("snare"),
         "hat_count": event_types.count("hat"),
+        "crash_count": event_types.count("crash"),
         "unresolved_count": event_types.count("unresolved"),
         "aligned_event_ratio": _round_or_none(aligned_event_ratio),
         "reference_beat_interval_seconds": _round_or_none(beat_interval),
@@ -101,7 +103,7 @@ def validate_drums(paths: SongPaths, timing: dict) -> ValidationResult:
         },
         {
             "check": "event_types_supported",
-            "passed": all(str(event.get("event_type")) in {"kick", "snare", "hat", "unresolved"} for event in events),
+            "passed": all(str(event.get("event_type")) in {"kick", "snare", "hat", "crash", "unresolved"} for event in events),
         },
         {
             "check": "summary_counts_match_event_rows",

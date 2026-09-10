@@ -36,7 +36,7 @@ than silently reporting `skipped`.
 | `beats` | inferred beat times, over the reference-covered span only | beat times embedded in `reference/moises/chords.json` |
 | `chords` | time-aligned chord events and labels | `reference/moises/chords.json` |
 | `sections` | structural change points | `reference/moises/segments.json` |
-| `drums` | internal consistency: time-ordering, label set (`kick`/`snare`/`hat`/unresolved), summary-count match, MIDI preservation, recorded debug source paths, recognizable backbeat and hat pulse | itself |
+| `drums` | internal consistency: time-ordering, label set (`kick`/`snare`/`hat`/`crash`/unresolved), summary-count match, MIDI preservation, recorded debug source paths, recognizable backbeat and hat pulse | itself |
 | `drops` | detected drop impacts, precision/recall @ 1.0 s, plus a "fake drops don't outnumber real drops" check | timed drop hints in `reference/human/human_hints.json` |
 
 `drops` is **advisory** and never flips the exit code. A song with no timed drop
@@ -74,6 +74,11 @@ is authoritative over this list.
 
 The table is ordered by id, and run order differs — `detect-arrangement-state`
 runs after `build-ui-data`, which publishes the `loudness.json` it reads.
+
+`extract-fft-bands` (1.3) must run before `extract-drum-events` (2.5): the
+crash/hat split reads `essentia/fft_bands.drums.json`. The full pipeline already
+orders them this way; a single `--stage extract-drum-events` run gates on the
+artifact and fails (`DependencyError`) if `extract-fft-bands` has not run.
 
 Batch progress lines carry both positions: `[2/20][1.1] _test_song | ensure-stems`.
 

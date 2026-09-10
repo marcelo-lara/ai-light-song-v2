@@ -89,7 +89,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "character", label: "Character", sub: "experiment · what this passage is like", kind: "character", height: 84, experiment: "clap" },
   { id: "vocalTranscription", label: "Vocal Transcription", sub: "experiment · sung lyrics + timing · VocalParse / ACE-Step / whisper", kind: "lyrics", height: 84, experiment: "vocalparse + acestep_transcriber" },
   { id: "chords", label: "Chord Regions", sub: "layer A harmonic", kind: "chords", height: 84 },
-  { id: "drums", label: "Drum Density", sub: "kick / snare / hat activity", kind: "drums", height: 84 },
+  { id: "drums", label: "Drum Density", sub: "kick / snare / hat / crash activity", kind: "drums", height: 84 },
   { id: "energy", label: "Energy Profile", sub: "beat-aligned energy + accents", kind: "energy", height: 84 },
   { id: "validation", label: "Regression Overlay", sub: "beat drift + event comparison", kind: "validation", height: 84 },
 ];

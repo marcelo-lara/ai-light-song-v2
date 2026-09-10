@@ -250,11 +250,14 @@ export function drawDrums(
   const hits: HitRegion[] = [];
   ctx.save();
   if (rc.pxPerSec >= DRUM_MARKER_PXPERSEC) {
-    const typeY: Record<string, number> = { kick: 58, snare: 38, hat: 18, unresolved: 68 };
+    // `crash` is the v3.4 brilliance-gated split of pitch-42 `hat` events — it
+    // shares the hi-hat row but gets a distinct fuchsia tint and a thicker tick.
+    const typeY: Record<string, number> = { kick: 58, snare: 38, hat: 18, crash: 18, unresolved: 68 };
     const typeColor: Record<string, string> = {
       kick: "rgba(15, 118, 110, 0.9)",
       snare: "rgba(185, 28, 28, 0.9)",
       hat: "rgba(202, 138, 4, 0.9)",
+      crash: "rgba(217, 70, 239, 0.95)",
       unresolved: "rgba(107, 114, 128, 0.8)",
     };
     for (const ev of events) {
@@ -262,10 +265,12 @@ export function drawDrums(
       const x = rc.timeToX(ev.time);
       const cy = typeY[ev.event_type] ?? 68;
       ctx.strokeStyle = typeColor[ev.event_type] ?? typeColor.unresolved!;
+      ctx.lineWidth = ev.event_type === "crash" ? 2.5 : 1;
       ctx.beginPath();
       ctx.moveTo(x, cy - 10);
       ctx.lineTo(x, cy + 10);
       ctx.stroke();
+      ctx.lineWidth = 1;
       hits.push({
         x1: x - 4,
         x2: x + 4,
@@ -286,12 +291,16 @@ export function drawDrums(
     const kickH = (bucket.byType.kick / maxCount) * 24;
     const snareH = (bucket.byType.snare / maxCount) * 18;
     const hatH = (bucket.byType.hat / maxCount) * 16;
+    const crashH = (bucket.byType.crash / maxCount) * 16;
     ctx.fillStyle = "rgba(15, 118, 110, 0.85)";
     ctx.fillRect(left, 78 - kickH, w, kickH);
     ctx.fillStyle = "rgba(185, 28, 28, 0.82)";
     ctx.fillRect(left, 52 - snareH, w, snareH);
     ctx.fillStyle = "rgba(202, 138, 4, 0.84)";
     ctx.fillRect(left, 28 - hatH, w, hatH);
+    // crash stacked above the hi-hat bar in its own fuchsia tint
+    ctx.fillStyle = "rgba(217, 70, 239, 0.9)";
+    ctx.fillRect(left, 28 - hatH - crashH, w, crashH);
   }
   ctx.restore();
   return hits;

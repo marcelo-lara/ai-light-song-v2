@@ -99,17 +99,18 @@ describe("bucketLevels", () => {
 });
 
 describe("bucketDrums", () => {
-  it("counts kick / snare / hat per window", () => {
+  it("counts kick / snare / hat / crash per window", () => {
     const events = [
       { time: 0.1, event_type: "kick" },
       { time: 0.2, event_type: "hat" },
+      { time: 0.3, event_type: "crash" },
       { time: 0.9, event_type: "kick" },
       { time: 1.1, event_type: "snare" },
     ];
     const buckets = bucketDrums(events, 1, -1, 10);
     expect(buckets).toHaveLength(2);
-    expect(buckets[0]!.byType).toEqual({ kick: 2, snare: 0, hat: 1 });
-    expect(buckets[0]!.count).toBe(3);
-    expect(buckets[1]!.byType).toEqual({ kick: 0, snare: 1, hat: 0 });
+    expect(buckets[0]!.byType).toEqual({ kick: 2, snare: 0, hat: 1, crash: 1 });
+    expect(buckets[0]!.count).toBe(4);
+    expect(buckets[1]!.byType).toEqual({ kick: 0, snare: 1, hat: 0, crash: 0 });
   });
 });
