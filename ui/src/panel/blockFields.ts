@@ -152,6 +152,9 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
         out.push({ label: "function_confidence", value: roundNumber(fnConf, 2) });
       const fnStatus = str(r.function_status);
       if (fnStatus) out.push({ label: "function_status", value: fnStatus });
+      // v3.4 item 3 — only present on a `function_status: "contested"` row.
+      const contestedBy = str(r.contested_by);
+      if (contestedBy) out.push({ label: "contested_by", value: contestedBy });
       // Always shown, even for a section's first occurrence (r.same_label_as
       // is null there) — plan v3.0 item 7 V7.3 requires the field name to be
       // visible on the first Sections block, not only on a repeat.

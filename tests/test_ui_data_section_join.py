@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 from analyzer.paths import SongPaths
-from analyzer.stages.ui_data import build_ui_data
+from analyzer.stages.ui_data import apply_section_function_contest, build_ui_data
 
 
 def _setup(tmp: str, sections: list[dict]) -> SongPaths:
@@ -130,6 +130,57 @@ class SectionJoinTests(unittest.TestCase):
         self.assertTrue(rows)
         for row in rows:
             self.assertEqual(row["function_status"], "unknown")
+
+    def test_section_function_contest_is_a_noop_without_the_artifact(self) -> None:
+        # v3.4 item 3 — apply_section_function_contest runs after the phase-3
+        # stage. With no artifacts/section_function_contest.json it must leave
+        # sections.json byte-identical to build_ui_data's output.
+        sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "chorus",
+             "function_confidence": 0.5, "function_status": "known", "same_label_as": None,
+             "confidence": 0.5},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, sections)
+            build_ui_data(paths)
+            before = paths.sections_output_path.read_text()
+            apply_section_function_contest(paths)
+            after = paths.sections_output_path.read_text()
+        self.assertEqual(before, after)
+        payload = json.loads(after)
+        self.assertNotIn("contested_by", payload["field_sources"])
+        self.assertNotIn("contested_by", payload["sections"][0])
+
+    def test_section_function_contest_flags_a_row_from_the_artifact(self) -> None:
+        sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "chorus",
+             "function_confidence": 0.5, "function_status": "known", "same_label_as": None,
+             "confidence": 0.5},
+            {"section_id": "section-002", "start": 10.0, "end": 20.0, "function": "verse",
+             "function_confidence": 0.8, "function_status": "known", "same_label_as": None,
+             "confidence": 0.8},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, sections)
+            build_ui_data(paths)
+            paths.artifact("section_function_contest.json").write_text(json.dumps({
+                "schema_version": "3.0", "generated_from": {},
+                "sections": [
+                    {"section_id": "section-001", "function": "chorus", "contested": True,
+                     "contested_by": "energy", "margin": 6.2},
+                    {"section_id": "section-002", "function": "verse", "contested": False,
+                     "contested_by": None, "margin": None},
+                ],
+            }))
+            apply_section_function_contest(paths)
+            payload = json.loads(paths.sections_output_path.read_text())
+        rows = {r["section_id"]: r for r in payload["sections"]}
+        self.assertEqual(rows["section-001"]["function_status"], "contested")
+        self.assertEqual(rows["section-001"]["contested_by"], "energy")
+        self.assertEqual(rows["section-001"]["function"], "chorus")
+        self.assertNotIn("contested_by", rows["section-002"])
+        self.assertEqual(payload["field_sources"]["function_status"], "section_function")
+        self.assertEqual(payload["field_sources"]["contested_by"], "section_function")
 
     def test_missing_section_id_fails_loudly(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

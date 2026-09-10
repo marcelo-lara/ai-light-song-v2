@@ -7,7 +7,8 @@
     "description": "human",
     "function": "allin1",
     "function_confidence": "allin1",
-    "function_status": "allin1",
+    "function_status": "section_function",
+    "contested_by": "section_function",
     "same_label_as": "allin1",
     "confidence": "allin1",
     "key": "harmonic",
@@ -78,11 +79,12 @@
       "description": "The 1st chorus, 14.8s long.",
       "function": "chorus",
       "function_confidence": 0.331459,
-      "function_status": "known",
+      "function_status": "contested",
       "same_label_as": null,
       "confidence": 0.331459,
       "key": "F# minor",
-      "chord_progression": null
+      "chord_progression": null,
+      "contested_by": "energy"
     },
     {
       "section_id": "section-006",

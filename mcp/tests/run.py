@@ -294,7 +294,8 @@ def _check_f2_honesty() -> None:
     from serializers import build_song_overview
 
     VOCAB = {"essentia", "allin1", "harmonic", "omnizart", "demucs", "gestures",
-             "genre", "human", "inference", "unknown", "arrangement_state"}
+             "genre", "human", "inference", "unknown", "arrangement_state",
+             "section_function"}
 
     full = build_song_overview("McpFull - Fixture", root=FIXTURE_ROOT)
     degen = build_song_overview("McpDegenerate - Fixture", root=FIXTURE_ROOT)

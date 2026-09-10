@@ -237,6 +237,20 @@ Honest caveats that ship with it:
   a 14.8 s floor, so nothing shorter can be expressed however clearly it is
   audible. This is the origin of the intra-section gap below, and it is a
   property of allin1's output, not a tuning choice.
+- allin1's `chorus` prior can invert against energy. The phase-3
+  `contest-section-function` stage (`section_function.py`) cross-checks each
+  `function` against the published `loudness.json` + `arrangement_state.json`
+  and, where a `chorus` is quieter and thinner than the `verse` / `bridge` that
+  follows, **keeps the label and flags it** `function_status: "contested"` +
+  `contested_by: "energy"` in `sections.json` — it never flips (refinement
+  `D5`). Measured across all 23 analysed songs
+  (`experiments/section_function_contest/measurement.md`): the contradiction is
+  **not corpus-wide** — 4 sections across 2 songs (`Queen of Kings` ×3, `It's a
+  fine day - Opus III` ×1), the other 21 flag nothing. So the rule ships
+  conservative (next-section drums ≥ 3 dB louder, mix not > 1.5 dB quieter,
+  arrangement_state stem count not clearly thinner, allin1
+  `function_confidence` ≤ 0.9). On a normal song `sections.json` is
+  byte-identical to before.
 
 ### Downbeats — honest, and short of target
 

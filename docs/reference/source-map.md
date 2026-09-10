@@ -54,8 +54,9 @@ only surviving package.
 | 2 | `energy.py` | `layer_c_energy.json`. Its 4 MB/song feature intermediate is computed in memory and never written |
 | 3 | `gestures.py` | named primitives → gesture phases anchored on a detected impact, plus one event per section-pair transition. Reads phase-1/2 artifacts only, never audio |
 | 3 | `hint_alignment.py` | `find_primary_section` — the shared window→section matcher used by `hints.py` and the alignment review artifact |
+| 3 | `section_function.py` | `contest-section-function` — cross-checks each allin1 `function` against the published `loudness.json` + `arrangement_state.json`; writes `artifacts/section_function_contest.json` and re-fuses `function_status: "contested"` / `contested_by` into `sections.json`. Never audio. Measured scope: `experiments/section_function_contest/measurement.md` |
 | 4 | `hints.py` | `hints.json`: inference hints merged with `reference/human/human_hints.json` by `section_id` |
-| 4 | `ui_data.py` | packs the compact top-level deliverables |
+| 4 | `ui_data.py` | packs the compact top-level deliverables; `apply_section_function_contest` re-publishes `sections.json` for the phase-3 contest |
 
 `segmentation.py`, `gestures.py` and `timing.py` carry their promotion numbers
 and honest caveats **in their own module docstrings** — read those first.

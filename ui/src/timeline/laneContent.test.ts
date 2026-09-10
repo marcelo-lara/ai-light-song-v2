@@ -100,6 +100,55 @@ describe("sectionsContent", () => {
     expect(raw.function_status).toBe("ok");
     expect(raw.same_label_as).toBeNull();
   });
+
+  it("gives a contested section the sectionsContested tint and card text", () => {
+    const blocks = sectionsContent([
+      {
+        section_id: "section-002",
+        start: 3,
+        end: 15,
+        label: "002 Chorus (0.54)",
+        description: "x",
+        function: "chorus",
+        function_confidence: 0.54,
+        function_status: "contested",
+        contested_by: "energy",
+        same_label_as: null,
+        confidence: 0.54,
+        key: null,
+        chord_progression: null,
+      },
+    ]);
+    const b = blocks[0]!;
+    expect(b.tintId).toBe("sectionsContested");
+    expect(b.detail).toBe(
+      "function_status: contested · contested_by: energy",
+    );
+    const raw = b.raw as Record<string, unknown>;
+    expect(raw.function).toBe("chorus"); // label kept, not flipped
+    expect(raw.function_status).toBe("contested");
+    expect(raw.contested_by).toBe("energy");
+  });
+
+  it("leaves an uncontested section untinted", () => {
+    const blocks = sectionsContent([
+      {
+        section_id: "section-001",
+        start: 0,
+        end: 10,
+        label: "001 Verse (0.66)",
+        description: "x",
+        function: "verse",
+        function_confidence: 0.66,
+        function_status: "known",
+        same_label_as: null,
+        confidence: 0.66,
+        key: null,
+        chord_progression: null,
+      },
+    ]);
+    expect(blocks[0]!.tintId).toBeUndefined();
+  });
 });
 
 describe("chordsContent", () => {

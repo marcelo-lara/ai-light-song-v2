@@ -421,6 +421,72 @@ def publish_arrangement_state(paths: SongPaths) -> str:
     return str(paths.arrangement_state_output_path)
 
 
+def _load_section_contest(paths: SongPaths) -> dict[str, dict]:
+    """`{section_id: contest_row}` for the rows the phase-3 contest flagged, or
+    `{}` when `artifacts/section_function_contest.json` has not been written yet
+    (a fresh run publishes `sections.json` first, then the contest stage
+    re-fuses it — see `apply_section_function_contest`)."""
+    artifact_path = paths.artifact("section_function_contest.json")
+    if not artifact_path.exists():
+        return {}
+    doc = read_json(artifact_path)
+    return {
+        row["section_id"]: row
+        for row in doc.get("sections", [])
+        if row.get("contested")
+    }
+
+
+def apply_section_function_contest(paths: SongPaths) -> str:
+    """v3.4 item 3 — re-fuse the published `sections.json` after the phase-3
+    `contest-section-function` stage has written
+    `artifacts/section_function_contest.json`.
+
+    A flagged row gains two fields: `function_status: "contested"` (a NEW third
+    enum value beside `known` / `unknown`) and `contested_by: "energy"`.
+    `function` and `function_confidence` are untouched — the label is kept, only
+    flagged (refinement D5; the phase-3 stage never mutates `sections.json`, the
+    publisher fuses). A row the contest does not flag is byte-identical to
+    `build_ui_data`'s output. The `function_status` producer goes through
+    `_fuse`: `allin1`'s where the row is `known` / `unknown`,
+    `section_function`'s where it is `contested`, so the header records which
+    producer had the final say.
+    """
+    contested = _load_section_contest(paths)
+    payload = read_json(paths.sections_output_path)
+    rows = payload["sections"]
+    any_contested = False
+    for row in rows:
+        if row["section_id"] in contested:
+            row["function_status"] = "contested"
+            row["contested_by"] = "energy"
+            any_contested = True
+        else:
+            row.pop("contested_by", None)
+
+    header = dict(payload.get("field_sources", {}))
+    if any_contested:
+        header.update(
+            _fuse(
+                {
+                    "function_status": [("section_function", True), ("allin1", True)],
+                    "contested_by": [("section_function", True)],
+                }
+            )
+        )
+    else:
+        header.pop("contested_by", None)
+
+    emitted_keys: set[str] = set()
+    for row in rows:
+        emitted_keys.update(row.keys())
+    payload["field_sources"] = validate_field_sources(
+        header, emitted_keys, file="sections.json"
+    )
+    write_json(paths.sections_output_path, payload)
+    return str(paths.sections_output_path)
+
+
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
     beats_payload = read_json(paths.artifact("essentia", "beats.json"))
     harmonic_payload = read_json(paths.artifact("layer_a_harmonic.json"))

@@ -111,7 +111,7 @@ unrestricted" above.
 
 | Lane | Reads | Notes |
 | --- | --- | --- |
-| Sections | `artifacts/section_segmentation/sections.json` | |
+| Sections | `sections.json` + `artifacts/section_segmentation/sections.json` | a `function_status: "contested"` section (v3.4 phase-3 energy contest) gets a distinct orange per-block tint (`sectionsContested`); its inspector card prints `function_status: contested` + `contested_by: energy` |
 | Chord Regions | `artifacts/layer_a_harmonic.json` | |
 | Gestures | `song_event_timeline.json` | |
 | Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |

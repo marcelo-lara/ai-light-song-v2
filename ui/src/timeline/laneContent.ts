@@ -328,31 +328,44 @@ export function sectionsContent(
   );
   return rows.map((s, i) => {
     const seg = bySectionId.get(s.section_id);
+    // v3.4 item 3 — the phase-3 energy contest flags (never flips) a `chorus`
+    // that is quieter/thinner than the following section. The flag lands on the
+    // top-level row's `function_status`, so it wins over the artifact's value.
+    const contested = s.function_status === "contested";
+    const functionStatus = contested
+      ? "contested"
+      : (seg?.function_status ?? s.function_status);
     return {
       id: s.section_id ?? `section-${String(i + 1).padStart(3, "0")}`,
       start_s: s.start,
       end_s: s.end,
       label: s.label,
+      ...(contested ? { tintId: "sectionsContested" } : {}),
       laneLabel: "Sections",
       caption: `${formatRange(s.start, s.end)}${
         s.confidence != null ? ` · conf ${round(s.confidence)}` : ""
-      }`,
+      }${contested ? ` · contested (${s.contested_by ?? "energy"})` : ""}`,
       reference: s.section_id ?? "-",
-      detail: seg?.same_label_as
-        ? `same label as ${seg.same_label_as}`
-        : (seg?.function_status ?? "-"),
+      detail: contested
+        ? `function_status: contested · contested_by: ${s.contested_by ?? "energy"}`
+        : seg?.same_label_as
+          ? `same label as ${seg.same_label_as}`
+          : (seg?.function_status ?? "-"),
       summary:
         s.description ||
         "Section navigation stays browser-local and moves only the shared playback cursor.",
-      raw: seg
-        ? {
-            ...s,
-            function: seg.function,
-            function_confidence: seg.function_confidence,
-            function_status: seg.function_status,
-            same_label_as: seg.same_label_as,
-          }
-        : s,
+      raw: {
+        ...s,
+        ...(seg
+          ? {
+              function: seg.function,
+              function_confidence: seg.function_confidence,
+              same_label_as: seg.same_label_as,
+            }
+          : {}),
+        function_status: functionStatus,
+        ...(contested ? { contested_by: s.contested_by ?? "energy" } : {}),
+      },
     };
   });
 }

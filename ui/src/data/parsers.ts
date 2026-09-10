@@ -123,6 +123,7 @@ function parseSectionRow(raw: unknown, ctx: string): SectionRow {
       `${ctx}.function_status`,
     ),
     same_label_as: stringOrNull(o.same_label_as, `${ctx}.same_label_as`),
+    contested_by: stringOrNull(o.contested_by, `${ctx}.contested_by`),
     confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
     key: stringOrNull(o.key, `${ctx}.key`),
     chord_progression: stringOrNull(o.chord_progression, `${ctx}.chord_progression`),

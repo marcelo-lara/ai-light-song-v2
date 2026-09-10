@@ -22,6 +22,7 @@ from analyzer.stages.harmonic import extract_hpcp_and_chords
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.loudness import extract_mix_stem_loudness
+from analyzer.stages.section_function import contest_section_function
 from analyzer.stages.segmentation import segment_sections
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import extract_timing_grid
@@ -52,6 +53,7 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "segment-sections": "3.1",
     "detect-arrangement-state": "3.2",
     "publish-arrangement-state": "7.3",
+    "contest-section-function": "3.3",
     "derive-energy-layer": "4.1",
     "build-gestures": "5.0",
     "classify-genre": "6.1",
@@ -202,6 +204,16 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
     if stage_name == "publish-arrangement-state":
         _required_artifact_payload(paths, stage_name, "arrangement_state.json")
         _run_stage(paths.song_name, "phase-1", stage_name, publish_arrangement_state, paths)
+        return 0
+    if stage_name == "contest-section-function":
+        # Phase 3 — reads the published top-level sections.json,
+        # arrangement_state.json and loudness.json (never audio). All three are
+        # published by build-ui-data / publish-arrangement-state, which run
+        # earlier in the full pipeline.
+        _required_output_payload(paths, stage_name, paths.sections_output_path)
+        _required_output_payload(paths, stage_name, paths.arrangement_state_output_path)
+        _required_output_payload(paths, stage_name, paths.loudness_output_path)
+        _run_stage(paths.song_name, "phase-1", stage_name, contest_section_function, paths)
         return 0
     if stage_name == "derive-energy-layer":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
@@ -386,6 +398,13 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         # top-level arrangement_state.json (D4) — publishing outside build-ui-data,
         # like generate-section-hints already does for hints.json.
         _run_stage(paths.song_name, "phase-1", "publish-arrangement-state", publish_arrangement_state, paths)
+        # contest-section-function (3.3) is phase 3 — it cross-checks each allin1
+        # `function` against the published loudness.json + arrangement_state.json
+        # and flags (never flips) a `chorus` that is quieter and thinner than the
+        # `verse`/`bridge` that follows. It re-fuses the two contest fields into
+        # the already-published sections.json. Runs after build-ui-data and
+        # publish-arrangement-state, which publish everything it reads.
+        _run_stage(paths.song_name, "phase-1", "contest-section-function", contest_section_function, paths)
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
         # v3.1 item 2 — attribution header. `bpm` and `duration` are essentia's

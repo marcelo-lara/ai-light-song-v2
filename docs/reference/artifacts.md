@@ -22,6 +22,7 @@ data/
       validation/       phase_1_report.{json,md}  human_hints_alignment.{json,md}
                         drops_score.json
       layer_a_harmonic.json  layer_c_energy.json  genre.json
+      section_function_contest.json
     reference/
       human/            human_hints.json  song_facts.json
       moises/           chords.json  lyrics.json  segments.json
@@ -66,7 +67,8 @@ default is visible precisely because it is the only kind of row that carries a
 `source`.
 
 The producer vocabulary is closed: `essentia`, `allin1`, `harmonic`, `omnizart`,
-`demucs`, `gestures`, `arrangement_state`, `genre`, `human`, `inference`.
+`demucs`, `gestures`, `arrangement_state`, `section_function`, `genre`, `human`,
+`inference`.
 `unknown` is legal and
 means no producer cleared its confidence floor — it is never a synonym for
 "we didn't record it".
@@ -81,7 +83,7 @@ both.
 | --- | --- | --- |
 | `info.json` | `{ schema_version, song_name, bpm, duration, field_sources }` — song metadata only | read `bpm`, `duration`, `song_name`. v3.1 item 8 removed `song_path` / `artifacts` / `outputs` / `debug` / `generated_from`: they embedded absolute host paths and a per-song file manifest — a client discovers a song's files from the fixed top-level layout, not a manifest |
 | `beats.json` | `{ field_sources, beats[] }`; each beat `time`, `type`, `bar`, `beat`, `chord`, `downbeat_confidence` | place cues on exact beat/downbeat times. `downbeat_confidence` (renamed from `confidence`) is allin1's downbeat-phase strength — `null` on `"beat"` rows and on unresolved downbeats, never the beat time's confidence |
-| `sections.json` | `{ field_sources, sections[] }`; each section `section_id`, `start`, `end`, `label`, `description`, `function`, `function_confidence`, `function_status`, `same_label_as`, `key`, `chord_progression`, `confidence` | fast section summaries and show pacing. Section names are on the row (`function` + `function_confidence` + `function_status`) — read them here, never from `section_segmentation/sections.json`. `label` is `"003 Chorus (0.81)"`, or the raw token marked `[unverified]` when `function_status` is `"unknown"`. `same_label_as` is label repetition, not acoustic identity |
+| `sections.json` | `{ field_sources, sections[] }`; each section `section_id`, `start`, `end`, `label`, `description`, `function`, `function_confidence`, `function_status`, `same_label_as`, `key`, `chord_progression`, `confidence` | fast section summaries and show pacing. Section names are on the row (`function` + `function_confidence` + `function_status`) — read them here, never from `section_segmentation/sections.json`. `label` is `"003 Chorus (0.81)"`, or the raw token marked `[unverified]` when `function_status` is `"unknown"`. `function_status` is `"known"` / `"unknown"` / `"contested"` — `"contested"` (v3.4, phase-3 `contest-section-function`) means allin1's label is kept but its measured energy contradicts the following section; such a row also carries `contested_by: "energy"`. `same_label_as` is label repetition, not acoustic identity |
 | `hints.json` | `field_sources`; `sections[].hints[]` of `{ id, source, category, text, anchor_refs }` | per-section guidance; match by `section_id`, never by repeated labels |
 | `song_event_timeline.json` | `field_sources`; flat `events[]`: gesture phases + section transitions, `schema_version` `"3.0"` | event-aware cue planning. Gesture-phase rows sharing one composite gesture carry the same `gesture_id` (`"gesture-003"`); section-transition rows carry no `gesture_id`. No nested `phases[]`, no `composite`, no `member_event_ids` — every row is flat and carries its own `evidence_summary` |
 | `genre.json` | `field_sources`; `genres`, `confidence`, `top_predictions[]`, `guidance[]` | advisory style context. A **fused view** of `artifacts/genre.json` with host paths stripped — the artifact stays for the analyzer and the debugger. `genres: ["unknown"]` is a valid outcome |
@@ -99,7 +101,7 @@ does (a repeated per-row map would be pure token cost).
 | --- | --- |
 | `info.json` | `bpm`, `duration` → `essentia`. No other fused fields — `song_path` / `artifacts` / `outputs` / `debug` / `generated_from` were removed in v3.1 item 8 |
 | `beats.json` | `time`, `beat`, `bar`, `type` → `essentia`; `chord` → `harmonic`; `downbeat_confidence` → `allin1` |
-| `sections.json` | `section_id`, `start`, `end`, `function`, `function_confidence`, `function_status`, `same_label_as`, `confidence` → `allin1`; `label`, `description` → `human`; `key`, `chord_progression` → `harmonic` |
+| `sections.json` | `section_id`, `start`, `end`, `function`, `function_confidence`, `function_status`, `same_label_as`, `confidence` → `allin1`; `label`, `description` → `human`; `key`, `chord_progression` → `harmonic`. On a song with a contested row: `function_status` → `section_function` and `contested_by` → `section_function` (present only on contested rows); byte-identical header otherwise |
 | `hints.json` | `summary`, `sections` → `inference` (each hint row also carries its own `source`: `human` \| `inference` \| `user`) |
 | `song_event_timeline.json` | all event fields (`gesture_id` included) → `gestures`, except `section_id` / `section_name` → `allin1` |
 | `genre.json` | `genres`, `confidence`, `top_predictions`, `guidance` → `genre` (`unknown` where the estimate is absent) |
@@ -128,6 +130,7 @@ does (a repeated per-row map would be pure token cost).
 | `layer_a_harmonic.json` | `global_key`, `chords[]` | chord-change timing and tonal identity |
 | `layer_c_energy.json` | `global_energy`, `section_energy[]`, `accent_candidates[]` | macro intensity and accent timing. `hit` and `rise` accents should not look the same |
 | `genre.json` | `genres`, `confidence`, `top_predictions[]`, `guidance[]` | advisory style context. `unknown` is a valid outcome — never invent a genre from heuristics |
+| `section_function_contest.json` | `schema_version`, `generated_from` (thresholds + the 3 published inputs), `sections[]` of `{ section_id, function, contested, contested_by, margin }` (`margin` = dB gap of the next section's drums, `null` on the last section) | phase-3 `contest-section-function` scratch output. The `contested` rows are fused into the top-level `sections.json` as `function_status: "contested"` + `contested_by: "energy"` — read them there, not here |
 | `validation/phase_1_report.{json,md}` | per-domain scores and mismatch detail | judge where output is trustworthy. Mismatch rows are caution signals, never generation input |
 | `validation/human_hints_alignment.{json,md}` | hint windows vs. generated sections/events | issue triage; written only when human hints exist |
 | `validation/drops_score.json` | advisory `--compare drops` score | never gates the exit code |

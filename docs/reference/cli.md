@@ -63,6 +63,7 @@ is authoritative over this list.
 | `extract-energy-features` | 2.6 |
 | `segment-sections` | 3.1 |
 | `detect-arrangement-state` | 3.2 |
+| `contest-section-function` | 3.3 |
 | `derive-energy-layer` | 4.1 |
 | `build-gestures` | 5.0 |
 | `classify-genre` | 6.1 |
@@ -74,6 +75,13 @@ is authoritative over this list.
 
 The table is ordered by id, and run order differs — `detect-arrangement-state`
 runs after `build-ui-data`, which publishes the `loudness.json` it reads.
+`contest-section-function` (3.3) runs later still, after `build-ui-data` **and**
+`publish-arrangement-state`: it reads the published `sections.json`,
+`arrangement_state.json` and `loudness.json`, writes
+`artifacts/section_function_contest.json`, and re-fuses the two contest fields
+(`function_status: "contested"`, `contested_by`) into `sections.json`. A single
+`--stage contest-section-function` run gates on all three published files and
+fails (`AnalysisError`) if `build-ui-data` has not run.
 
 `extract-fft-bands` (1.3) must run before `extract-drum-events` (2.5): the
 crash/hat split reads `essentia/fft_bands.drums.json`. The full pipeline already

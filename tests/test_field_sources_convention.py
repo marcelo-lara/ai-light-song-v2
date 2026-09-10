@@ -28,6 +28,7 @@ class ProducerVocabularyTests(unittest.TestCase):
                 "demucs",
                 "gestures",
                 "arrangement_state",
+                "section_function",
                 "genre",
                 "human",
                 "inference",

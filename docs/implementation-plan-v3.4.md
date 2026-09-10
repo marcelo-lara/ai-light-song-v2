@@ -86,7 +86,7 @@ Never fix across item boundaries in one commit.
 | New dense lanes | 4 (item 1) |
 | New proposal lanes | 3 (items 6, 7, 8) |
 | Blocking decisions (`D`) | none open |
-| Done | 2 |
+| Done | 3 |
 
 ---
 
@@ -376,7 +376,7 @@ calmest passage in a Eurovision-shaped song like a climax (refinement item 7 /
 claim from a thin heuristic — a confident wrong answer costs the show
 (refinement `D5`).
 
-- [ ] **Measure first (sets scope, not design).** Before building the rule,
+- [x] **Measure first (sets scope, not design).** Before building the rule,
   produce the per-section stem-RMS table across all 23 songs (mean mix + per-stem
   RMS from `loudness.json` per allin1 section, with its `function`). Save it to
   `experiments/section_function_contest/measurement.md` (a scratch measurement,
@@ -384,7 +384,7 @@ claim from a thin heuristic — a confident wrong answer costs the show
   ships corpus-wide; if it is `Queen of Kings`-specific, the rule ships
   conservative (a wider margin before flagging) and says so. A rule tuned on one
   song is how the old segmenter reached F1 0.29.
-- [ ] **New phase-3 stage `contest-section-function`.** New
+- [x] **New phase-3 stage `contest-section-function`.** New
   `src/analyzer/stages/section_function.py` reading the **published**
   `sections.json`, `arrangement_state.json` and `loudness.json` (phase 3 never
   reads audio). For each section, compare its energy (mix RMS + drums RMS +
@@ -392,14 +392,14 @@ claim from a thin heuristic — a confident wrong answer costs the show
   `artifacts/section_function_contest.json`: `schema_version`, `generated_from`
   (naming the three inputs + engine), and per-section
   `{section_id, function, contested: bool, contested_by: "energy" | null, margin}`.
-- [ ] **Register the stage** in
+- [x] **Register the stage** in
   [`src/analyzer/pipeline.py`](../src/analyzer/pipeline.py): add
   `"contest-section-function": "3.3"` to `STAGE_PIPELINE_IDS`; run it **after
   `build-ui-data`** (which publishes the `sections.json` / `loudness.json` it
   reads) and after `detect-arrangement-state` — mirror the v3.2 pattern for
   `detect-arrangement-state`. Add a `_required_output_payload` gate for the
   single-stage branch.
-- [ ] **Fuse into the published `sections.json`.** In
+- [x] **Fuse into the published `sections.json`.** In
   [`src/analyzer/stages/ui_data.py`](../src/analyzer/stages/ui_data.py), the
   sections publisher adds two fields to a row when the contest artifact marks it:
   `function_status: "contested"` (a **new enum value** beside `known`/`unknown`)
@@ -409,21 +409,21 @@ claim from a thin heuristic — a confident wrong answer costs the show
   `arrangement_state`+`loudness` as the producer of `function_status` when it is
   `contested`. Per the phase rule, phase 3 writes a new artifact and the
   publisher fuses — the phase-3 stage never mutates `sections.json` in place.
-- [ ] **`Producer` vocabulary.** If a new `Producer` member is needed for the
+- [x] **`Producer` vocabulary.** If a new `Producer` member is needed for the
   `field_sources` attribution, add it to
   [`src/analyzer/models.py`](../src/analyzer/models.py) and update the vocabulary
   list wherever prose restates it (`reference/artifacts.md`).
-- [ ] **Contract-change note.** The v3.1 note is archived/superseded, so write a
+- [x] **Contract-change note.** The v3.1 note is archived/superseded, so write a
   new [`contract-change-v3.4.md`](contract-change-v3.4.md) (TLDR shape — see
   `contract-change-v3.1.md` for the format): `sections.json` `function_status`
   gains the value `"contested"`; rows may carry `contested_by: "energy"`; a
   consumer treating `function_status` as a two-value field must add the third.
   No other v3.4 change reaches the delivery surface.
-- [ ] **`docs/analysis-definition.md`** — the segmentation row notes the phase-3
+- [x] **`docs/analysis-definition.md`** — the segmentation row notes the phase-3
   contest and the measurement outcome from step 1.
-- [ ] **`docs/reference/cli.md`** — add the `contest-section-function | 3.3` row
+- [x] **`docs/reference/cli.md`** — add the `contest-section-function | 3.3` row
   and note it runs after `build-ui-data`.
-- [ ] **Sections lane** (`ui/`) — the existing **Sections** lane shows a
+- [x] **Sections lane** (`ui/`) — the existing **Sections** lane shows a
   `contested` section distinctly (a per-block tint override `sectionsContested`
   via `laneContent.ts` + `sparseTints.ts`, precedent `gridDisputed`), and its
   event-panel card prints `function_status: contested · contested_by: energy`.
@@ -433,18 +433,49 @@ separate boolean field. Rejected: a `contested: true` sibling — it would leave
 `function_status` reading `"known"` on a row the pipeline is explicitly unsure
 about, which is the misread this item exists to prevent.
 
+**D3.2 (resolved, 2026-09-10, during implementation).** The contest stage runs
+*after* `build-ui-data` (it reads the published `sections.json` /
+`loudness.json` / `arrangement_state.json`), so the two contest fields cannot be
+fused during the first publish. Resolution: the phase-3 stage
+(`section_function.py`) writes only its artifact, then calls a new
+`ui_data.apply_section_function_contest(paths)` that re-reads the published
+`sections.json` and rewrites it with `function_status: "contested"` +
+`contested_by` on flagged rows. Fusion logic stays in `ui_data.py`; unflagged
+rows and the whole file on an unflagged song are byte-identical to
+`build-ui-data`'s output. Rejected: `build_ui_data` reading the artifact
+directly — the artifact does not exist on a fresh run and a stale one from a
+previous run would make `build_ui_data`'s own output non-deterministic mid-run.
+
+**D3.3 (resolved, 2026-09-10, during implementation).** A dedicated
+`Producer.SECTION_FUNCTION = "section_function"` is added rather than reusing
+`arrangement_state`. The contest's inputs are loudness (essentia) +
+arrangement_state + sections (allin1); no single existing producer is honest for
+"where did the `contested` flag come from". The `sections.json` header sets
+`function_status` → `section_function` (and adds `contested_by` →
+`section_function`) only on a song that actually has a contested row; every
+other song's header is byte-identical to v3.3.
+
+**D3.4 (resolved, 2026-09-10, during implementation).** Rule scope and margin
+set by `experiments/section_function_contest/measurement.md`: the "chorus
+quieter than the following verse" contradiction is **not corpus-wide** (4
+sections / 2 of 23 songs — `Queen of Kings` ×3, `It's a fine day - Opus III`
+×1), so the rule ships **conservative**: `chorus` → `{verse, bridge}` only,
+next-section drums ≥ 3 dB louder, mix not > 1.5 dB quieter, arrangement_state
+stem count not clearly thinner, and allin1 `function_confidence` ≤ 0.9. On the
+other 21 songs it flags nothing and `sections.json` is unchanged.
+
 ### Validation
 
-- [ ] `docker compose run --rm app ./analyze --song "/data/songs/Queen of Kings - Alessandra.mp3"`
+- [x] `docker compose run --rm app ./analyze --song "/data/songs/Queen of Kings - Alessandra.mp3"`
   — the 3–15 s `chorus` section carries `function_status: "contested"`,
   `contested_by: "energy"`; a normal song's sections are unchanged.
-- [ ] `docker compose run --rm test` green; new `tests/test_section_function.py`
+- [x] `docker compose run --rm test` green; new `tests/test_section_function.py`
   on a synthetic `sections.json`/`loudness.json`/`arrangement_state.json`: a
   quiet-chorus-before-loud-verse case flags; a loud-chorus case does not; the
   publisher writes the two fields only for flagged rows and leaves
   `field_sources` correct. Extend `tests/test_field_sources_convention.py` and
   `tests/test_ui_data_section_join.py` as needed.
-- [ ] `docker compose run --rm ui npm run test` + `npm run build` clean.
+- [x] `docker compose run --rm ui npm run test` + `npm run build` clean.
 
 ### Visual QA
 
@@ -876,6 +907,9 @@ no current code path that can regenerate it.
 | D2.1 | resolved | Crash gate = `transient_strength ≥ 0.40` & brilliance `levels[6] ≥ 0.90` within ±0.12 s (lowered from 0.50 / widened from 0.02 s to catch the `Queen of Kings` 48.7 s drop). |
 | D2.2 | resolved | Drums lane is canvas-only (no events panel); the `crash` "legend" is the lane-head sub-caption, not a new component. |
 | D3.1 | resolved | `function_status: "contested"` is a third enum value, not a boolean sibling. |
+| D3.2 | resolved | Contest runs after `build-ui-data`; `section_function.py` writes its artifact then calls `ui_data.apply_section_function_contest` to re-fuse `sections.json`. `build_ui_data` never reads the artifact. |
+| D3.3 | resolved | New `Producer.SECTION_FUNCTION`; `sections.json` header switches `function_status` to it (and adds `contested_by`) only on a song with a contested row. |
+| D3.4 | resolved | Contradiction is not corpus-wide (4 sections / 2 of 23 songs) — rule ships conservative: chorus→{verse,bridge}, drums ≥ 3 dB louder, mix not > 1.5 dB quieter, `function_confidence` ≤ 0.9. |
 | D4.1 | resolved | Block ratings live in the Human Hints events panel, not a standalone panel. |
 | D5.1 | resolved | Lyric validation persists per-click, no Save button. |
 | D9.1 | **raised for the operator** | Do not resurrect Basic Pitch symbolic transcription in v3.4; blocks nothing. |

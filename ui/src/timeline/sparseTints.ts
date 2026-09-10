@@ -42,6 +42,10 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   gridPhrase: [188, 50, 42], // slate cyan — resolved bar/phrase grid
   gridDisputed: [0, 70, 40], // red — a song whose grid was NOT confidently resolved
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
+  sectionsContested: [28, 90, 50], // vivid orange — a section whose allin1
+  //   `function` label is kept but contradicted by the energy contest (v3.4
+  //   item 3). Reads clearly against the Sections lane's teal blocks; precedent
+  //   is `gridDisputed`.
   // Character blocks are tinted by *kind*, so a song's texture reads as a
   // colour strip before any label is. Violet for `breath` is not arbitrary —
   // it is the look the operator wrote for the block this lane was built to

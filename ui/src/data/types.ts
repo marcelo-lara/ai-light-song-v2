@@ -67,8 +67,13 @@ export interface SectionRow {
    * artifacts/section_segmentation/sections.json. */
   function: string | null;
   function_confidence: number | null;
-  /** "known" or "unknown" — treat `function` as unverified when "unknown". */
+  /** "known" / "unknown" / "contested" — treat `function` as unverified when
+   * "unknown"; "contested" (v3.4) means allin1's label is kept but its energy
+   * contradicts a following section (see `contested_by`). */
   function_status: string;
+  /** set only on a `function_status: "contested"` row — the signal that
+   * contradicts the label. `"energy"` today. Absent otherwise. */
+  contested_by?: string | null;
   /** section_id of the first section allin1 gave the same label; label
    * repetition, not acoustic identity. */
   same_label_as: string | null;

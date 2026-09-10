@@ -144,11 +144,36 @@ def copy_test_song():
     print("  wrote _test_song")
 
 
+def inject_section_contest(out_name: str):
+    """v3.4 item 3 — the `REG_SOURCE` song has no energy-contested section, so
+    synthesize one: mark section-005 (a `chorus`) `function_status: "contested"`
+    + `contested_by: "energy"` and switch the `sections.json` header the way
+    `ui_data.apply_section_function_contest` does on a real contested song."""
+    p = OUT / out_name / "sections.json"
+    doc = json.loads(p.read_text())
+    fs = doc["field_sources"]
+    new_fs: dict = {}
+    for k, v in fs.items():
+        new_fs[k] = "section_function" if k == "function_status" else v
+        if k == "function_status":
+            new_fs["contested_by"] = "section_function"
+    doc["field_sources"] = new_fs
+    marked = False
+    for s in doc["sections"]:
+        if s.get("function") == "chorus" and not marked:
+            s["function_status"] = "contested"
+            s["contested_by"] = "energy"
+            marked = True
+    p.write_text(json.dumps(doc, indent=2) + "\n")
+    print(f"  patched {out_name}/sections.json — 1 contested section")
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     OUT_SONGS.mkdir(parents=True, exist_ok=True)
     print("building fixtures:")
     copy_song(REG_SOURCE, "RegFull - Fixture")
+    inject_section_contest("RegFull - Fixture")
     copy_song(REG_SOURCE, "RegPartial - Fixture",
               drop={"artifacts/essentia/fft_bands.json",
                     "artifacts/essentia/fft_bands.bass.json",
