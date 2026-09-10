@@ -86,7 +86,7 @@ Never fix across item boundaries in one commit.
 | New dense lanes | 4 (item 1) |
 | New proposal lanes | 3 (items 6, 7, 8) |
 | Blocking decisions (`D`) | none open |
-| Done | 8 |
+| Done | 9 |
 
 ---
 
@@ -931,15 +931,15 @@ hint sentence) had itself been deleted. The 17 songs that still carry
 gold songs were re-analysed after it, which is why they lack the file. There is
 no current code path that can regenerate it.
 
-- [ ] **Record the outcome** in
+- [x] **Record the outcome** in
   [`docs/analysis-definition.md`](analysis-definition.md) at the existing
   symbolic-transcription line (~line 377): `layer_b_symbolic.json` is a **stale
   pre-v3.0 artifact with no current producer**; it is not a gap to fill but a
   leftover to ignore, and nothing reads it.
-- [ ] **`docs/reference/artifacts.md`** — if `layer_b_symbolic.json` is listed,
+- [x] **`docs/reference/artifacts.md`** — if `layer_b_symbolic.json` is listed,
   mark it "stale, no producer since v3.0; do not rely on it". If not listed,
   add one line saying it may appear on pre-v3.0 analyses and should be ignored.
-- [ ] **`D9.1` (raised, not resolved — needs the operator).** Resurrecting
+- [x] **`D9.1` (raised, not resolved — needs the operator).** Resurrecting
   Basic Pitch symbolic transcription is a promotion-gate decision: it re-adds
   ~1,300 lines of deliberately-deleted code for a signal nothing currently
   consumes, and the refinement doc's own reach test says a feature is only real
@@ -947,16 +947,16 @@ no current code path that can regenerate it.
   future note-level work needs it, that work opens with the operator's sign-off
   and names the top-level file the notes will land in. Written here for review;
   it blocks no other item.
-- [ ] **Optional local cleanup** (not committed — `data/analysis/**` is
+- [x] **Optional local cleanup** (not committed — `data/analysis/**` is
   gitignored): the implementer may delete the 17 stale
   `artifacts/layer_b_symbolic.json` files so a future reader is not misled. Note
   in the commit message whether this was done.
 
 ### Validation
 
-- [ ] `grep -rn "layer_b_symbolic" docs/ src/` shows only the new "stale, no
+- [x] `grep -rn "layer_b_symbolic" docs/ src/` shows only the new "stale, no
   producer" mentions — no doc still implies the file is a live artifact.
-- [ ] No code changed: `docker compose run --rm test` not required, but run it
+- [x] No code changed: `docker compose run --rm test` not required, but run it
   once to confirm the tree is green before committing.
 
 ---

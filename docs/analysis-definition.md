@@ -404,7 +404,7 @@ Recover any of it with `git log --diff-filter=D --name-only`.
 | `event_benchmark.py` | `status: "skipped"` on 21 of 21 songs; the annotation directory it scored against never existed |
 | `unified.py` (`music_feature_layers.json`) | a re-packaging of files nothing downstream read |
 | `patterns.py` | chord-pattern mining that reached no projected file |
-| Symbolic note transcription (`symbolic/`, Basic Pitch, ~1,341 lines, 7.0 MB/song) | its only route to the model was a templated `motif_recall` hint sentence, itself deleted. `drums.py` and its Omnizart path are unaffected |
+| Symbolic note transcription (`symbolic/`, Basic Pitch, ~1,341 lines, 7.0 MB/song) | its only route to the model was a templated `motif_recall` hint sentence, itself deleted. `drums.py` and its Omnizart path are unaffected. **`artifacts/layer_b_symbolic.json` on ~17 pre-v3.0 analyses is a stale leftover with no current producer** — nothing reads it, and the four gold songs never had it because they were re-analysed after `58b9764` (2026-09-05). v3.4 confirmed it cannot be regenerated without resurrecting the deleted module, which is a promotion-gate decision left to the operator |
 | The whole `event_*` stack (~3,800 lines) | measured at chance — see Gestures above |
 | The old `stages/sections/` segmenter (1,403 lines) | measured at chance — see Structure above |
 | The Moises takeover of the canonical grid | `run_phase_1` no longer substitutes `reference/`-derived beats or chords. `reference/` is validation-only |
