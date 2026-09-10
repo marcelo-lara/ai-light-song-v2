@@ -45,7 +45,7 @@ only surviving package.
 | --- | --- | --- |
 | 1 | `stems.py` | Demucs separation, seeded |
 | 1 | `timing.py` | canonical beat grid; essentia beat *times* plus allin1-derived downbeat *phase* with per-downbeat confidence. Module docstring carries the phase-selection algorithm |
-| 1 | `fft_bands.py` | 7 spectral bands / 50 ms |
+| 1 | `fft_bands.py` | 7 spectral bands / 50 ms — five artifacts: the mix (`fft_bands.json`) plus one per Demucs stem (`fft_bands.{bass,drums,harmonic,vocals}.json`), each normalised against its own percentiles; a missing stem WAV raises `DependencyError` |
 | 1 | `loudness.py` | RMS (10 ms) and envelope (200 ms), per source |
 | 2 | `harmonic.py` | HPCP, global key, chord decoding; projects `key` / `chord_progression` into `sections.json`, confidence-gated |
 | 2 | `drums.py` | Omnizart drum transcription on the drums stem; owns `resolve_omnizart_drum_model_path` and the beat/section alignment helpers |

@@ -66,6 +66,17 @@ export const artifactPaths = {
     encodePath(analysis(song, "artifacts", "section_segmentation", "sections.json")),
   fftBands: (song: string) =>
     encodePath(analysis(song, "artifacts", "essentia", "fft_bands.json")),
+  // Per-stem 7-band spectra (analyzer stages/fft_bands.py). Same schema as the
+  // mix file; each normalised against its own stem's percentiles. Inherits
+  // Demucs separation error — reviewed by eye in its own dense lane.
+  fftBandsBass: (song: string) =>
+    encodePath(analysis(song, "artifacts", "essentia", "fft_bands.bass.json")),
+  fftBandsDrums: (song: string) =>
+    encodePath(analysis(song, "artifacts", "essentia", "fft_bands.drums.json")),
+  fftBandsHarmonic: (song: string) =>
+    encodePath(analysis(song, "artifacts", "essentia", "fft_bands.harmonic.json")),
+  fftBandsVocals: (song: string) =>
+    encodePath(analysis(song, "artifacts", "essentia", "fft_bands.vocals.json")),
   rmsLoudness: (song: string) =>
     encodePath(analysis(song, "artifacts", "essentia", "rms_loudness.json")),
   loudnessEnvelope: (song: string) =>

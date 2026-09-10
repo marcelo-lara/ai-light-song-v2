@@ -89,6 +89,11 @@ const TIMELINE_KEYS = [
   "sectionSegmentation",
   "harmonicLayer",
   "fftBands",
+  // per-stem 7-band spectra — one dense lane each, beside the mix FFT lane
+  "fftBandsBass",
+  "fftBandsDrums",
+  "fftBandsHarmonic",
+  "fftBandsVocals",
   "rmsLoudness",
   "loudnessEnvelope",
   "drums",
@@ -133,6 +138,10 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
 /** lane id → (artifact key, canvas renderer kind) for the item-5 data lanes. */
 const CANVAS_LANES: Record<string, { key: (typeof TIMELINE_KEYS)[number]; kind: CanvasLaneSource["kind"] }> = {
   fftBands: { key: "fftBands", kind: "fft" },
+  fftBandsBass: { key: "fftBandsBass", kind: "fft" },
+  fftBandsDrums: { key: "fftBandsDrums", kind: "fft" },
+  fftBandsHarmonic: { key: "fftBandsHarmonic", kind: "fft" },
+  fftBandsVocals: { key: "fftBandsVocals", kind: "fft" },
   rmsLoudness: { key: "rmsLoudness", kind: "rms" },
   loudnessEnvelope: { key: "loudnessEnvelope", kind: "env" },
   drums: { key: "drums", kind: "drums" },

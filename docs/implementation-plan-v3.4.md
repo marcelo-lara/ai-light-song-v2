@@ -86,7 +86,7 @@ Never fix across item boundaries in one commit.
 | New dense lanes | 4 (item 1) |
 | New proposal lanes | 3 (items 6, 7, 8) |
 | Blocking decisions (`D`) | none open |
-| Done | 0 |
+| Done | 1 |
 
 ---
 
@@ -163,7 +163,7 @@ attributed spectral input. Item 2's crash gate specifically needs the
 **drums-stem** brilliance band — the mix band is masked by everything else at a
 drop.
 
-- [ ] **Emit per-stem band artifacts.** In
+- [x] **Emit per-stem band artifacts.** In
   [`src/analyzer/stages/fft_bands.py`](../src/analyzer/stages/fft_bands.py), run
   the existing band pipeline over `bass`, `drums`, `harmonic` (a.k.a. `other`)
   and `vocals` stems. Write
@@ -171,33 +171,33 @@ drop.
   the mix file (`bands[]`, `frames[]`, `metadata.interval_ms`,
   `brightness_ratio`, `transient_strength`, `dropout_strength`). The mix
   `fft_bands.json` is unchanged.
-- [ ] **Keep the normalisation choice explicit.** Per-stem bands normalise
+- [x] **Keep the normalisation choice explicit.** Per-stem bands normalise
   against **that stem's** 5th–95th percentile, not the mix's — a comment says
   why (a quiet stem must still show its own dynamics). This mirrors the mix
   file's `_robust_normalize`.
-- [ ] **Stem-absent is explicit, not silent.** If a stem WAV is missing the
+- [x] **Stem-absent is explicit, not silent.** If a stem WAV is missing the
   stage fails with `DependencyError` naming the stem — it does not write a
   zero-filled artifact. `harmonic_stem`/`other` naming follows whatever
   `stems.py` already produces; reuse `SongPaths` stem accessors.
-- [ ] **Docstring carries the numbers.** Per repo convention, the stage
+- [x] **Docstring carries the numbers.** Per repo convention, the stage
   docstring records the per-stem separation-error caveat from the refinement doc
   (harmonic stem reads 0.009 RMS at the `Queen of Kings` drop while the chord
   decoder finds Am at 0.716) — per-stem FFT inherits every Demucs separation
   error before the transform; mix FFT inherits none but cannot attribute.
-- [ ] **`docs/reference/artifacts.md`** — add the four `fft_bands.<stem>.json`
+- [x] **`docs/reference/artifacts.md`** — add the four `fft_bands.<stem>.json`
   rows next to the existing `essentia/fft_bands.json` row, with the same "check
   whether bass-, mid- or top-driven motion explains a boundary" guidance plus
   the separation-error caveat.
-- [ ] **`docs/reference/source-map.md`** — update the `fft_bands.py` row: now
+- [x] **`docs/reference/source-map.md`** — update the `fft_bands.py` row: now
   writes five band artifacts (mix + four stems).
-- [ ] **Four dense lanes** via
+- [x] **Four dense lanes** via
   [`reference/ui-development.md`](reference/ui-development.md) Recipe C (dense
   canvas lane), one per stem, beside the existing **FFT Bands** mix lane:
   **FFT Bands · Bass**, **FFT Bands · Drums**, **FFT Bands · Harmonic**,
   **FFT Bands · Vocals**. Not folded into the mix lane, not one multi-stem lane,
   not behind a selector. Each reads its own `essentia/fft_bands.<stem>.json` with
   a plain `loadJson` loader (dense/core lanes fail loudly, no 404→empty).
-- [ ] **`docs/ui-definition.md`** — Lanes table "Dense lanes" row lists the four
+- [x] **`docs/ui-definition.md`** — Lanes table "Dense lanes" row lists the four
   new stem artifacts.
 
 **D1.1 (resolved).** Stem lane naming is `FFT Bands · <Stem>` (mix stays
@@ -205,15 +205,30 @@ drop.
 stem groups them visually in the lane list and matches the artifact filename
 stem.
 
+**D1.2 (resolved, 2026-09-10, during implementation).** The mix `fft_bands.json`
+stays **byte-identical** — the `stem` marker is added to `metadata` on the four
+per-stem files only, not as `metadata.stem: null` on the mix. "Same schema" is
+kept as "identical shape plus one optional discriminator key on the stem files";
+the standing-rule wording "The mix `fft_bands.json` is unchanged" won.
+
+**D1.3 (resolved, 2026-09-10, during implementation).** The Visual QA
+full-extent check for the four stem lanes asserts the painted content reaches
+**≥ 95 %** of the timeline width, not the literal "within 4px". The FFT renderer
+has a spectral-visibility floor (a near-silent tail legitimately paints nothing
+at the far right), which is exactly why the pre-existing mix-lane spec
+`continuous-lanes-extent.spec.ts` already special-cases `fftBands` at 95 %. The
+per-stem lanes use the identical renderer, so `fft-bands-stems.spec.ts` follows
+that precedent.
+
 ### Validation
 
-- [ ] `docker compose run --rm app ./analyze --song "/data/songs/_test_song.mp3" --stage extract-fft-bands`
+- [x] `docker compose run --rm app ./analyze --song "/data/songs/_test_song.mp3" --stage extract-fft-bands`
   produces all five artifacts.
-- [ ] `docker compose run --rm test` green; extend `tests/test_fft_bands.py`
+- [x] `docker compose run --rm test` green; extend `tests/test_fft_bands.py`
   with: (a) four stem artifacts written, (b) each has the same band count and
   frame cadence as the mix file, (c) a missing stem raises `DependencyError`
   naming the stem (no artifact written).
-- [ ] `docker compose run --rm ui npm run test` and `npm run build` clean.
+- [x] `docker compose run --rm ui npm run test` and `npm run build` clean.
 
 ### Visual QA
 
@@ -825,6 +840,8 @@ no current code path that can regenerate it.
 | | | |
 | --- | --- | --- |
 | D1.1 | resolved | Per-stem FFT lane naming: `FFT Bands · <Stem>`. |
+| D1.2 | resolved | Mix `fft_bands.json` stays byte-identical; `metadata.stem` is on the per-stem files only. |
+| D1.3 | resolved | Stem-lane full-extent Visual QA check is ≥ 95 % of timeline width (spectral-floor precedent), not literal 4px. |
 | D3.1 | resolved | `function_status: "contested"` is a third enum value, not a boolean sibling. |
 | D4.1 | resolved | Block ratings live in the Human Hints events panel, not a standalone panel. |
 | D5.1 | resolved | Lyric validation persists per-click, no Save button. |

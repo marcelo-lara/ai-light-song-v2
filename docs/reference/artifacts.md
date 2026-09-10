@@ -14,8 +14,8 @@ data/
     genre.json  drum_events.json  loudness.json  arrangement_state.json
     artifacts/
       stems/            bass.wav drums.wav harmonic.wav vocals.wav metadata.json
-      essentia/         beats.json fft_bands.json hpcp.json
-                        rms_loudness.json loudness_envelope.json
+      essentia/         beats.json fft_bands.json fft_bands.{bass,drums,harmonic,vocals}.json
+                        hpcp.json rms_loudness.json loudness_envelope.json
       allin1/           raw.json
       section_segmentation/  sections.json
       symbolic_transcription/  drum_events.json  omnizart/drums.mid
@@ -114,7 +114,11 @@ does (a repeated per-row map would be pure token cost).
 | `stems/*.wav` + `metadata.json` | Demucs output; `generated_from.engine` and stem paths | confirm which isolated sources exist before trusting stem-specific analysis |
 | `essentia/beats.json` | canonical timing grid: BPM, duration, `beats[]` with `time`, `bar`, `beat_in_bar`, `type`, `confidence` | the timing spine for everything else |
 | `essentia/hpcp.json` | `hpcp_by_beat[].vector` — 12-bin chroma per beat | lower-level harmonic evidence when chord labels feel too coarse. Skip if `layer_a_harmonic.json` answers it |
-| `essentia/fft_bands.json` | `bands[]`, `frames[]`, `metadata.interval_ms` — 7 bands / 50 ms | check whether bass-, mid- or top-driven motion explains a boundary |
+| `essentia/fft_bands.json` | `bands[]`, `frames[]`, `metadata.interval_ms` — 7 bands / 50 ms, mix only | check whether bass-, mid- or top-driven motion explains a boundary |
+| `essentia/fft_bands.bass.json` | same schema + `metadata.stem: "bass"` — FFT of the Demucs bass stem, normalised against that stem's own 5th–95th percentile | check whether bass-driven motion explains a boundary, attributed to the stem. Inherits Demucs separation error before the transform — the mix file cannot attribute but inherits none |
+| `essentia/fft_bands.drums.json` | same schema + `metadata.stem: "drums"` | drums-stem sub-band (kick weight) and brilliance (hat vs. crash) — the only route to "how hard was this hit" (drum events carry constant velocity). Separation-error caveat as above |
+| `essentia/fft_bands.harmonic.json` | same schema + `metadata.stem: "harmonic"` (Demucs `other`) | mid/top-driven motion attributed to the harmonic bed. Separation-error caveat as above: the harmonic stem reads ~0.009 RMS through the `Queen of Kings` drop where the chord decoder still finds Am at 0.716 |
+| `essentia/fft_bands.vocals.json` | same schema + `metadata.stem: "vocals"` | presence/upper-mid motion attributed to the vocal. Separation-error caveat as above |
 | `essentia/rms_loudness.json` | `sources[]`, `frames[]`, 10 ms | which source is physically active at fine resolution. Values are per-song display values, not calibrated LUFS |
 | `essentia/loudness_envelope.json` | same shape, 200 ms windows | macro-dynamics against section transitions |
 | `allin1/raw.json` | allin1 segments + `downbeat`/`label` frame activations at 100 Hz | internal cache only. Written by `analyzer.allin1_cache` so `timing.py` and `segmentation.py` share one model run. Not a contract; nothing else reads it |

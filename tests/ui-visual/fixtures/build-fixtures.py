@@ -47,6 +47,10 @@ NEEDED = [
     "reference/proposals/reactive_bands.json",
     "reference/proposals/grid.json",
     "artifacts/essentia/fft_bands.json",
+    "artifacts/essentia/fft_bands.bass.json",
+    "artifacts/essentia/fft_bands.drums.json",
+    "artifacts/essentia/fft_bands.harmonic.json",
+    "artifacts/essentia/fft_bands.vocals.json",
     "artifacts/essentia/rms_loudness.json",
     "artifacts/essentia/loudness_envelope.json",
     "artifacts/layer_a_harmonic.json",
@@ -57,6 +61,10 @@ NEEDED = [
 
 DENSE = {
     "artifacts/essentia/fft_bands.json",
+    "artifacts/essentia/fft_bands.bass.json",
+    "artifacts/essentia/fft_bands.drums.json",
+    "artifacts/essentia/fft_bands.harmonic.json",
+    "artifacts/essentia/fft_bands.vocals.json",
     "artifacts/essentia/rms_loudness.json",
     "artifacts/essentia/loudness_envelope.json",
 }
@@ -124,6 +132,10 @@ def copy_test_song():
         wav.unlink()
     # decimate the synthetic dense arrays too, if present
     for rel in ("artifacts/essentia/fft_bands.json",
+                "artifacts/essentia/fft_bands.bass.json",
+                "artifacts/essentia/fft_bands.drums.json",
+                "artifacts/essentia/fft_bands.harmonic.json",
+                "artifacts/essentia/fft_bands.vocals.json",
                 "artifacts/essentia/rms_loudness.json",
                 "artifacts/essentia/loudness_envelope.json"):
         p = dst / rel
@@ -138,7 +150,11 @@ def main():
     print("building fixtures:")
     copy_song(REG_SOURCE, "RegFull - Fixture")
     copy_song(REG_SOURCE, "RegPartial - Fixture",
-              drop={"artifacts/essentia/fft_bands.json"})
+              drop={"artifacts/essentia/fft_bands.json",
+                    "artifacts/essentia/fft_bands.bass.json",
+                    "artifacts/essentia/fft_bands.drums.json",
+                    "artifacts/essentia/fft_bands.harmonic.json",
+                    "artifacts/essentia/fft_bands.vocals.json"})
     copy_test_song()
     # audio: ship the real mp3 for RegFull (real decode path). RegPartial reuses
     # it; _test_song intentionally has none.

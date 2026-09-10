@@ -147,6 +147,19 @@ export const loadSectionSegmentation = (song: string, f?: typeof fetch) =>
 export const loadFftBands = (song: string, f?: typeof fetch) =>
   loadJson<FftBands>(artifactPaths.fftBands(song), parseFftBands, f);
 
+// Per-stem FFT bands — dense/core lanes, fail loudly (no 404 → empty).
+export const loadFftBandsBass = (song: string, f?: typeof fetch) =>
+  loadJson<FftBands>(artifactPaths.fftBandsBass(song), parseFftBands, f);
+
+export const loadFftBandsDrums = (song: string, f?: typeof fetch) =>
+  loadJson<FftBands>(artifactPaths.fftBandsDrums(song), parseFftBands, f);
+
+export const loadFftBandsHarmonic = (song: string, f?: typeof fetch) =>
+  loadJson<FftBands>(artifactPaths.fftBandsHarmonic(song), parseFftBands, f);
+
+export const loadFftBandsVocals = (song: string, f?: typeof fetch) =>
+  loadJson<FftBands>(artifactPaths.fftBandsVocals(song), parseFftBands, f);
+
 export const loadRmsLoudness = (song: string, f?: typeof fetch) =>
   loadJson<RmsLoudness>(artifactPaths.rmsLoudness(song), parseRmsLoudness, f);
 
@@ -201,6 +214,10 @@ export const artifactLoaders = {
   sectionsTopLevel: loadSectionsTopLevel,
   sectionSegmentation: loadSectionSegmentation,
   fftBands: loadFftBands,
+  fftBandsBass: loadFftBandsBass,
+  fftBandsDrums: loadFftBandsDrums,
+  fftBandsHarmonic: loadFftBandsHarmonic,
+  fftBandsVocals: loadFftBandsVocals,
   rmsLoudness: loadRmsLoudness,
   loudnessEnvelope: loadLoudnessEnvelope,
   harmonicLayer: loadHarmonicLayer,

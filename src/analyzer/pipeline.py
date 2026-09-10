@@ -147,6 +147,9 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         _run_stage(paths.song_name, "phase-1", stage_name, validate_beats, paths, timing, config.beat_tolerance_seconds)
         return 0
     if stage_name == "extract-fft-bands":
+        # Reads paths.song_path (mix) and the four stem WAVs from disk. Stems
+        # must already exist (run 'ensure-stems' first); the stage raises
+        # DependencyError naming any stem that is missing.
         _run_stage(paths.song_name, "phase-1", stage_name, extract_fft_bands, paths)
         return 0
     if stage_name == "extract-mix-stem-loudness":
@@ -316,6 +319,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         # the v3.0 plan's item 8 resolved ordering note (plan deleted with the
         # release; recoverable via `git log --diff-filter=D -- docs/`).
         timing = _run_stage(paths.song_name, "phase-1", "extract-timing-grid", extract_timing_grid, paths, stems)
+        # extract-fft-bands reads the mix and all four stem WAVs (written by
+        # ensure-stems above) and emits fft_bands.json + fft_bands.<stem>.json x4.
         fft_bands = _run_stage(paths.song_name, "phase-1", "extract-fft-bands", extract_fft_bands, paths)
         loudness = _run_stage(paths.song_name, "phase-1", "extract-mix-stem-loudness", extract_mix_stem_loudness, paths, stems)
         beat_validation = (
