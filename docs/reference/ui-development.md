@@ -296,11 +296,12 @@ Rare. Body is `CanvasLane` + a draw function in `timeline/laneRenderers.ts`.
    producers joins them inside the adapter from two `LaneContentSources` fields
    (precedent: `sectionsContent` joins `sections` + `sectionSegmentation` by
    `section_id`).
-4. **The debugger writes only** `reference/human/human_hints.json`,
-   `reference/human/song_facts.json` and `reference/human/block_energy.json`
-   (the last is the Human Hints panel's per-block `energy`/`tension` rating,
-   `PUT /api/block-energy/<song>`, v3.4 item 4), on explicit Save. Nothing in
-   `src/` or `mcp/` reads any of them. Any other write is a new contract — stop
-   and ask. (v3.4 item 5 adds `reference/human/lyric_validations.json` as a
-   fourth.)
+4. **The debugger writes only** four `reference/human/` files:
+   `human_hints.json`, `song_facts.json`, `block_energy.json` (the Human Hints
+   panel's per-block `energy`/`tension` rating, `PUT /api/block-energy/<song>`,
+   v3.4 item 4) — all three on explicit Save — and `lyric_validations.json`
+   (the Moises Lyrics panel's ✔ token-timing overlay, `PUT
+   /api/lyric-validations/<song>`, v3.4 item 5), which writes **per-click**, not
+   on Save (D5.1). Nothing in `src/` or `mcp/` reads any of them. Any other
+   write is a new contract — stop and ask.
 5. **Docs update in the same change** as the code (Recipe A step 9).

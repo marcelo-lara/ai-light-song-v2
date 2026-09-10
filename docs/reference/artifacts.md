@@ -24,7 +24,7 @@ data/
       layer_a_harmonic.json  layer_c_energy.json  genre.json
       section_function_contest.json
     reference/
-      human/            human_hints.json  song_facts.json  block_energy.json
+      human/            human_hints.json  song_facts.json  block_energy.json  lyric_validations.json
       moises/           chords.json  lyrics.json  segments.json
       proposals/        <experiment output — not a contract>
 ```
@@ -152,9 +152,10 @@ that have them — say which.
 | `human/human_hints.json` | hand-authored ground truth: `id`, `title`, `start_time`, `end_time`, `summary`, `lighting_hint`, optional `captured_from` | the only real ground truth. `captured_from` is informative-only prose written by the debugger; no analyzer code reads it |
 | `human/song_facts.json` | song-level human-confirmed `genre`, `form_family`, `has_drop`, each `{ value, provenance, confirmed_on }` | written **only** by the debugger on explicit save |
 | `human/block_energy.json` | operator's 1–5 `energy` / `tension` rating per `human_hints.json` block: `{ schema_version, song_name, ratings: [{ hint_id, energy?, tension? }] }`, joined by `hint_id`; unrated ⇒ absent from `ratings` (v3.4 item 4) | written **only** by the debugger's Human Hints events panel on explicit Save (`PUT /api/block-energy/<song>`, dev-only). One producer (the operator) — no `field_sources`/`source`. Nothing in `src/` or `mcp/` reads it |
+| `human/lyric_validations.json` | operator's hand-verification of Moises lyric-token timing: `{ schema_version, song_name, validated_ids: [int] }` — the ids of `moises/lyrics.json` word tokens checked against the waveform (v3.4 item 5) | written **per-click** (not on Save — D5.1) by the debugger's Moises Lyrics events panel ✔ button (`PUT /api/lyric-validations/<song>`, dev-only). An **overlay**: the lane shows a listed token at confidence `1` with a distinct tint; `moises/lyrics.json` is never edited. One producer (the operator) — no `field_sources`/`source`. Nothing in `src/` or `mcp/` reads it |
 | `moises/chords.json` | Moises.ai **inference**, not human truth — no confidence field, so no row is curated | measure *agreement with a second model*, never correctness |
 | `moises/segments.json` | Moises.ai inference — no confidence field | boundary-quality comparison. Labels advisory; the boundary timing is the point |
-| `moises/lyrics.json` | word-level timing with `text`, `start`, `end`, `line_id`, `<SOL>`/`<EOL>` markers and per-word confidence | lyric-synced moments; vocal-presence priors. **Only `"0.99"`-confidence rows are operator-curated** |
+| `moises/lyrics.json` | word-level timing with `text`, `start`, `end`, `line_id`, `<SOL>`/`<EOL>` markers and per-word confidence | lyric-synced moments; vocal-presence priors. **Only `"0.99"`-confidence rows are operator-curated.** Read-only, inference-only — operator timing checks are recorded in `human/lyric_validations.json` (v3.4 item 5 / D6), never by editing this file |
 | `proposals/*.json` | unpromoted experiment output | audition against the song in the debugger. Not a contract; see the source experiment's README |
 
 ## Where to start

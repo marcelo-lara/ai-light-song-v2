@@ -86,7 +86,7 @@ Never fix across item boundaries in one commit.
 | New dense lanes | 4 (item 1) |
 | New proposal lanes | 3 (items 6, 7, 8) |
 | Blocking decisions (`D`) | none open |
-| Done | 4 |
+| Done | 5 |
 
 ---
 
@@ -614,12 +614,12 @@ indistinguishable from Moises' own 0.99 scores (refinement item 9); and
 rule — though `D6` supersedes the "0.99 by hand-edit" convention with this
 overlay).
 
-- [ ] **Card DOM change.** `lane-events__card` is itself a `<button>` (it seeks
+- [x] **Card DOM change.** `lane-events__card` is itself a `<button>` (it seeks
   on click). A nested `<button>` is invalid — restructure to a wrapper `<div>`
   with the seek button and the ✔ button as siblings, the ✔ calling
   `stopPropagation()` so it does not seek. Markers (`<SOL>`/`<EOL>`, confidence
   `null`) get **no** button.
-- [ ] **Per-click persistence** (`D6` "For the planning phase to resolve" —
+- [x] **Per-click persistence** (`D6` "For the planning phase to resolve" —
   resolved here as **each click writes**). New
   `PUT /api/lyric-validations/<song>` handler in `ui/vite.config.ts`
   (`referenceHumanFilePath(song, "lyric_validations.json")`, path-escape guard,
@@ -628,21 +628,21 @@ overlay).
   `ui-definition.md` that this writer diverges from the explicit-Save pattern the
   other `reference/human/` writers use — a rapid per-token workflow should not
   need a Save button.
-- [ ] **Loader + parser** for `lyric_validations.json` (tolerant, 404 → empty
+- [x] **Loader + parser** for `lyric_validations.json` (tolerant, 404 → empty
   `{ validated_ids: [] }`). The Moises Lyrics lane adapter substitutes confidence
   `1` for any token whose `id` is in the list — at read time, source file
   untouched.
-- [ ] **Distinct tint** for a validated token in **both** the panel card and the
+- [x] **Distinct tint** for a validated token in **both** the panel card and the
   timeline lane — not the existing `≥ 0.7` "High" bucket (a new
   `moisesLyricsValidated` key in `sparseTints.ts`; the adapter emits
   `tintId: "moisesLyricsValidated"` for validated tokens). A validated token
   reads as validated at a glance, distinct from Moises' own 0.99s.
-- [ ] **Writable-path list → four.** Update in this item's commit:
+- [x] **Writable-path list → four.** Update in this item's commit:
   `ui-definition.md`, `reference/artifacts.md`, `reference/ui-development.md`
   invariant #4 — all four paths listed (`human_hints.json`, `song_facts.json`,
   `block_energy.json`, `lyric_validations.json`). This item raises the count item
   4 set to three.
-- [ ] **Scope guard** (parser comment + `ui-definition.md`): nothing in `src/` or
+- [x] **Scope guard** (parser comment + `ui-definition.md`): nothing in `src/` or
   `mcp/` reads `lyric_validations.json`.
 
 **D5.1 (resolved).** Per-click writes, no debounce beyond what prevents a
@@ -650,14 +650,31 @@ double-fire from one click. Rejected: batching toggles behind a Save — `D6`'s
 "For the planning phase to resolve" note explicitly wants immediate persistence
 for a rapid token-by-token pass.
 
+**D5.2 (resolved, 2026-09-10, during implementation).** The "Card DOM change"
+bullet is already satisfied by item 4, which restructured `.lane-events__card`
+into a wrapper `<div>` + inner `.lane-events__cardmain` seek `<button>` +
+sibling `.lane-events__rating`. Item 5 does **not** re-restructure — the ✔ is a
+third sibling `<button class="lane-events__validate">`, `position: absolute`
+top-right of the card, `stopPropagation()` in its handler, shown only when the
+panel is the `moisesLyrics` lane and the block is a word token
+(`lyricValidatable` + `lyricTokenId`, set by the adapter; markers get neither).
+The refinement doc's "to the right of `lane-events__label`" is met as the
+card's top-right corner. State is owned by `App` (a `lyricValidationsOverride`
+mirroring `blockEnergyOverride` / `hintsOverride`), not the panel — the panel is
+pure props; the per-click write + the double-fire guard live in
+`handleToggleLyricValidation` (a `savingLyricRef` in-flight latch) plus a
+300 ms per-token latch in the panel. New tint
+`moisesLyricsValidated = hsl(265, 80%, 56%)` (blue-violet) — outside every
+Moises confidence hue (green 150 / amber 43 / red 0 / slate 210).
+
 ### Validation
 
-- [ ] `docker compose run --rm ui npm run test` — parser/loader tests, adapter
+- [x] `docker compose run --rm ui npm run test` — parser/loader tests, adapter
   test (validated id → confidence 1 + `moisesLyricsValidated` tint; marker gets
   no button), client test (toggle → `PUT` with full array), card component test
   (no nested button; ✔ click does not seek).
-- [ ] `docker compose run --rm ui npm run build` clean.
-- [ ] Manual (in the commit note): validate a token, reload — persists;
+- [x] `docker compose run --rm ui npm run build` clean.
+- [x] Manual (in the commit note): validate a token, reload — persists;
   un-validate — removed; `git diff` shows only `lyric_validations.json`.
 
 ### Visual QA
@@ -930,6 +947,7 @@ no current code path that can regenerate it.
 | D4.1 | resolved | Block ratings live in the Human Hints events panel, not a standalone panel. |
 | D4.2 | resolved | `block_energy.json` `ratings` entry carries one axis or both (`{ hint_id, energy?, tension? }`); a missing axis is omitted, never defaulted. "Fully rated" (the `N / M` count) needs both. |
 | D5.1 | resolved | Lyric validation persists per-click, no Save button. |
+| D5.2 | resolved | No card re-restructure (item 4 did it); ✔ is a 3rd sibling button, `position:absolute` top-right, `stopPropagation()`. State owned by `App`; new tint `moisesLyricsValidated = hsl(265,80%,56%)`. |
 | D9.1 | **raised for the operator** | Do not resurrect Basic Pitch symbolic transcription in v3.4; blocks nothing. |
 
 ## Open questions blocking implementation

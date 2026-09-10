@@ -24,6 +24,7 @@ import {
   parseHarmonicLayer,
   parseHumanHints,
   parseInfo,
+  parseLyricValidations,
   parseLoudnessEnvelope,
   parseReviewQueue,
   parseSongFacts,
@@ -40,6 +41,7 @@ import type {
   FftBands,
   HarmonicLayer,
   HumanHintsFile,
+  LyricValidationsFile,
   LoudnessEnvelope,
   ReviewQueue,
   RmsLoudness,
@@ -213,6 +215,31 @@ export const loadBlockEnergy = async (
   return result;
 };
 
+// v3.4 item 5 — reference/human/lyric_validations.json is optional (absent
+// until the operator validates a token), so a 404 resolves to an empty file.
+// Every other failure still surfaces.
+export const loadLyricValidations = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<LyricValidationsFile>> => {
+  const result = await loadJson<LyricValidationsFile>(
+    artifactPaths.lyricValidations(song),
+    parseLyricValidations,
+    f,
+  );
+  if (
+    !result.ok &&
+    result.error.kind === "http" &&
+    result.error.status === 404
+  ) {
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, validated_ids: [] },
+    };
+  }
+  return result;
+};
+
 export const loadEventTimeline = (song: string, f?: typeof fetch) =>
   loadJson<EventTimeline>(
     artifactPaths.eventTimeline(song),
@@ -252,6 +279,7 @@ export const artifactLoaders = {
   energy: loadEnergyLayer,
   humanHints: loadHumanHints,
   blockEnergy: loadBlockEnergy,
+  lyricValidations: loadLyricValidations,
   moisesLyrics: loadMoisesLyrics,
   eventTimeline: loadEventTimeline,
   reviewQueue: loadReviewQueue,

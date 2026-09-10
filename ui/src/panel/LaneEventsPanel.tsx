@@ -31,6 +31,13 @@
 // button and the rating controls as siblings so no `<button>` is nested inside
 // another.
 
+// v3.4 item 5: for the Moises Lyrics events panel only, each **word-token**
+// card also carries a ✔ button (a sibling of the seek button, not nested in
+// it — `stopPropagation()` so it never seeks). Clicking it toggles the token's
+// human-validated state, which persists per-click via
+// `PUT /api/lyric-validations/<song>` (D5.1 — no Save button, unlike the other
+// reference/human/ writers). `<SOL>`/`<EOL>` markers get no button.
+
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { ArtifactStatus } from "../data";
@@ -51,6 +58,13 @@ export interface BlockEnergyPanelProps {
   onSave: (drafts: BlockEnergyDraft[]) => Promise<void>;
 }
 
+export interface LyricValidationPanelProps {
+  /** Moises word-token ids the operator has hand-verified */
+  validatedIds: ReadonlySet<number>;
+  /** persist a toggle immediately (per-click, no Save — D5.1) */
+  onToggle: (tokenId: number, nextValidated: boolean) => void;
+}
+
 interface LaneEventsPanelProps {
   laneId: string;
   laneLabel: string;
@@ -65,6 +79,8 @@ interface LaneEventsPanelProps {
   onSelectBlock: (block: SparseBlock) => void;
   /** v3.4 item 4 — supplied only for the Human Hints panel */
   blockEnergy?: BlockEnergyPanelProps | undefined;
+  /** v3.4 item 5 — supplied only for the Moises Lyrics panel */
+  lyricValidation?: LyricValidationPanelProps | undefined;
 }
 
 type AxisPair = { energy: number | null; tension: number | null };
@@ -132,11 +148,27 @@ export function LaneEventsPanel({
   onClose,
   onSelectBlock,
   blockEnergy,
+  lyricValidation,
 }: LaneEventsPanelProps): React.JSX.Element {
   const activeIndex = activeBlockIndex(blocks, currentTime);
   const activeCardRef = useRef<HTMLButtonElement | null>(null);
 
   const rating = laneId === "humanHints" ? blockEnergy : undefined;
+  const lyric = laneId === "moisesLyrics" ? lyricValidation : undefined;
+
+  // D5.1 — guard against a double-fire from one click only (a rapid genuine
+  // second toggle is still honoured after the short window).
+  const lastToggleRef = useRef<Map<number, number>>(new Map());
+  const toggleValidated = useCallback(
+    (tokenId: number, currentlyValidated: boolean) => {
+      if (!lyric) return;
+      const now = Date.now();
+      if (now - (lastToggleRef.current.get(tokenId) ?? 0) < 300) return;
+      lastToggleRef.current.set(tokenId, now);
+      lyric.onToggle(tokenId, !currentlyValidated);
+    },
+    [lyric],
+  );
   const [ratings, setRatings] = useState<RatingState>(() =>
     seedRatings(rating?.file ?? null),
   );
@@ -288,6 +320,35 @@ export function LaneEventsPanel({
                     <span className="lane-events__label">{block.label}</span>
                     <span className="lane-events__caption">{block.caption}</span>
                   </button>
+                  {lyric &&
+                    block.lyricValidatable &&
+                    block.lyricTokenId != null && (
+                      <button
+                        type="button"
+                        className="lane-events__validate"
+                        data-testid={`lyric-validate-${block.id}`}
+                        aria-pressed={lyric.validatedIds.has(block.lyricTokenId)}
+                        aria-label={
+                          lyric.validatedIds.has(block.lyricTokenId)
+                            ? "Un-validate token timing"
+                            : "Validate token timing"
+                        }
+                        title={
+                          lyric.validatedIds.has(block.lyricTokenId)
+                            ? "Human-validated — click to undo"
+                            : "Mark this token's timing human-validated"
+                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleValidated(
+                            block.lyricTokenId!,
+                            lyric.validatedIds.has(block.lyricTokenId!),
+                          );
+                        }}
+                      >
+                        ✔
+                      </button>
+                    )}
                   {rating && (
                     <div
                       className="lane-events__rating"

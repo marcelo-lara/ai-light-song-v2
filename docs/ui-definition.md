@@ -73,23 +73,34 @@ docker compose build ui         # production image
 **The debugger is read-only against generated data.** No snapshots, no caches,
 no derived JSON, no overrides, no helper files into `data/analysis/`.
 
-The only three writable paths, and only on an explicit `Save`:
+The only four writable paths:
 
-- `data/analysis/{song}/reference/human/human_hints.json`
-- `data/analysis/{song}/reference/human/song_facts.json`
-- `data/analysis/{song}/reference/human/block_energy.json` — the operator's
-  1–5 `energy` / `tension` rating per `human_hints.json` block, joined by
-  `hint_id`, edited in the Human Hints events panel (v3.4 item 4). Two
+- `data/analysis/{song}/reference/human/human_hints.json` — explicit `Save`
+- `data/analysis/{song}/reference/human/song_facts.json` — explicit `Save`
+- `data/analysis/{song}/reference/human/block_energy.json` — explicit `Save`.
+  The operator's 1–5 `energy` / `tension` rating per `human_hints.json` block,
+  joined by `hint_id`, edited in the Human Hints events panel (v3.4 item 4). Two
   independent axes: a "close to silence" block is lowest-energy,
   highest-tension. A block is unrated when it is absent from `ratings`; the
   segmented selectors show an explicit no-segment-pressed state, never a
   defaulted `1`. Written by `PUT /api/block-energy/<song>` (dev-server only,
   like the hint editor — production Nginx has no handler). Nothing in `src/` or
   `mcp/` reads it.
+- `data/analysis/{song}/reference/human/lyric_validations.json` — **per-click**,
+  not `Save` (v3.4 item 5 / D6). `{ schema_version, song_name, validated_ids:
+  [int] }`: the ids of the Moises word tokens whose timing the operator has
+  hand-verified with the ✔ button in the Moises Lyrics events panel. An
+  **overlay** on `reference/moises/lyrics.json` — the lane shows a listed token
+  at confidence `1` (a value Moises never emits) with a distinct tint; the
+  Moises file itself is never edited and stays inference-only. Written by
+  `PUT /api/lyric-validations/<song>` (dev-server only), which sends the full
+  `validated_ids` array on each toggle and replaces the file. The per-click
+  cadence is a deliberate divergence from the explicit-`Save` pattern the other
+  three writers use — a rapid token-by-token pass should not need a Save button.
+  Nothing in `src/` or `mcp/` reads it.
 
-(v3.4 item 5 raises this list to four with `reference/human/lyric_validations.json`.)
-
-`Cancel` / closing a panel must never update any of these files. The dev-server
+`Cancel` / closing a panel must never update the three explicit-`Save` files.
+The dev-server
 API enforces this at the mount level. A future workflow needing persisted
 review data must be documented as a new contract, not added implicitly.
 
@@ -112,8 +123,8 @@ reading that way, whichever of the three routes produced an entry.
 stops at these files.** That convention exists so a *fused, machine-written*
 value can say which producer won. `reference/human/` has exactly one producer —
 the operator — and adding provenance machinery to it (to `human_hints.json`,
-`song_facts.json` or `block_energy.json`) would answer a question nobody is
-asking while making the file harder to read by hand.
+`song_facts.json`, `block_energy.json` or `lyric_validations.json`) would answer
+a question nobody is asking while making the file harder to read by hand.
 
 ## Lanes
 
@@ -128,7 +139,7 @@ unrestricted" above.
 | Gestures | `song_event_timeline.json` | |
 | Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |
 | Human Hints | `reference/human/human_hints.json` (+ `reference/human/block_energy.json` for the per-block `energy`/`tension` rating controls in its events panel) | writable |
-| Moises Lyrics | `reference/moises/lyrics.json` | read-only ground truth; blocks tinted by per-word confidence |
+| Moises Lyrics | `reference/moises/lyrics.json` (+ `reference/human/lyric_validations.json` overlay) | read-only ground truth; blocks tinted by per-word confidence. Each word-token card in its events panel has a ✔ button (v3.4 item 5); a validated token shows at confidence `1` with the distinct `moisesLyricsValidated` tint in both the panel and the lane. `lyric_validations.json` is writable (per-click); `reference/moises/lyrics.json` is never edited |
 | Drop Proposals | `reference/proposals/drop_impacts.json` | experiment |
 | Character, Shadow | `reference/proposals/character.json` | experiment |
 | Phrase Grid | `reference/proposals/grid.json` | experiment |

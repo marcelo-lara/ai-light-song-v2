@@ -4,6 +4,7 @@ import { artifactPaths, discoverSongs, useSong } from "./data";
 import type {
   BlockEnergyFile,
   HumanHintsFile,
+  LyricValidationsFile,
   SectionRow,
 } from "./data/types";
 import { buildHumanHintsPayload, saveHumanHints } from "./data/saveHumanHints";
@@ -12,6 +13,10 @@ import {
   saveBlockEnergy,
   type BlockEnergyDraft,
 } from "./data/saveBlockEnergy";
+import {
+  buildLyricValidationsPayload,
+  saveLyricValidations,
+} from "./data/saveLyricValidations";
 import { draftToHint, hintToDraft } from "./panel/hintDraft";
 import {
   BlockInspector,
@@ -113,6 +118,9 @@ const TIMELINE_KEYS = [
   "blockEnergy",
   // external word-level sung lyrics (reference/moises)
   "moisesLyrics",
+  // v3.4 item 5 — operator's per-token timing validations, overlaid on the
+  // Moises Lyrics lane by token id (reference/human, writable, per-click)
+  "lyricValidations",
   // who-is-playing state changes from the published per-stem RMS
   // (top-level arrangement_state.json)
   "arrangementState",
@@ -196,6 +204,12 @@ export function App(): React.JSX.Element {
   // (same reasoning as `hintsOverride`).
   const [blockEnergyOverride, setBlockEnergyOverride] =
     useState<BlockEnergyFile | null>(null);
+  // v3.4 item 5: the server-normalised lyric_validations.json returned by a
+  // per-click ✔ toggle, applied in place (same reasoning as the two above).
+  const [lyricValidationsOverride, setLyricValidationsOverride] =
+    useState<LyricValidationsFile | null>(null);
+  // Guards a double-fire from one ✔ click (D5.1) at the write layer too.
+  const savingLyricRef = useRef(false);
   // A pending "open the hint editor on a pre-filled draft" request — from a
   // double-click on the Human Hints lane (item 8) or the block inspector's
   // "Create human hint" action (item 9). `nonce` makes each request distinct so
@@ -295,12 +309,19 @@ export function App(): React.JSX.Element {
 
   const humanHintsFile = hintsOverride ?? artifacts.humanHints.data;
   const blockEnergyFile = blockEnergyOverride ?? artifacts.blockEnergy.data;
+  const lyricValidationsFile =
+    lyricValidationsOverride ?? artifacts.lyricValidations.data;
+  const validatedLyricIds = useMemo(
+    () => new Set(lyricValidationsFile?.validated_ids ?? []),
+    [lyricValidationsFile],
+  );
 
   // item 9: block lists for every sparse lane, rebuilt when a source changes.
   const laneContentSources = useMemo<LaneContentSources>(
     () => ({
       humanHints: humanHintsFile,
       moisesLyrics: artifacts.moisesLyrics.data,
+      lyricValidations: validatedLyricIds,
       arrangementState: artifacts.arrangementState.data,
       dropProposals: artifacts.dropProposals.data,
       vocalPhrases: artifacts.vocalPhrases.data,
@@ -316,6 +337,7 @@ export function App(): React.JSX.Element {
     [
       humanHintsFile,
       artifacts.moisesLyrics.data,
+      validatedLyricIds,
       artifacts.arrangementState.data,
       artifacts.dropProposals.data,
       artifacts.vocalPhrases.data,
@@ -337,6 +359,7 @@ export function App(): React.JSX.Element {
     setActiveHintRef(null);
     setHintsOverride(null);
     setBlockEnergyOverride(null);
+    setLyricValidationsOverride(null);
     setHintSeed(null);
     setEventsLaneId(null);
   }, [song]);
@@ -491,6 +514,32 @@ export function App(): React.JSX.Element {
       setBlockEnergyOverride(written);
     },
     [song, blockEnergyFile],
+  );
+
+  // v3.4 item 5 (D5.1): a ✔ toggle in the Moises Lyrics panel persists
+  // immediately — no Save button. Sends the FULL validated-id list; the handler
+  // replaces the file. Applies the server-normalised result in place (no full
+  // reload — see `handleSaveHints`). `savingLyricRef` drops a second toggle
+  // that lands while a write is still in flight.
+  const handleToggleLyricValidation = useCallback(
+    async (tokenId: number, nextValidated: boolean) => {
+      if (!song || savingLyricRef.current) return;
+      savingLyricRef.current = true;
+      try {
+        const ids = new Set(lyricValidationsFile?.validated_ids ?? []);
+        if (nextValidated) ids.add(tokenId);
+        else ids.delete(tokenId);
+        const payload = buildLyricValidationsPayload(
+          lyricValidationsFile?.song_name || song,
+          [...ids],
+        );
+        const written = await saveLyricValidations(song, payload);
+        setLyricValidationsOverride(written);
+      } finally {
+        savingLyricRef.current = false;
+      }
+    },
+    [song, lyricValidationsFile],
   );
 
   // item 10: persist a humanHints block's new start/end after a timeline drag.
@@ -1058,6 +1107,14 @@ export function App(): React.JSX.Element {
             blockEnergy={
               eventsPanel.laneId === "humanHints"
                 ? { file: blockEnergyFile, onSave: handleSaveBlockEnergy }
+                : undefined
+            }
+            lyricValidation={
+              eventsPanel.laneId === "moisesLyrics"
+                ? {
+                    validatedIds: validatedLyricIds,
+                    onToggle: handleToggleLyricValidation,
+                  }
                 : undefined
             }
           />

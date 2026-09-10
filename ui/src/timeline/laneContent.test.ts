@@ -11,6 +11,7 @@ import {
   parseCharacter,
   parseVocalTranscription,
   parseDropProposals,
+  parseMoisesLyrics,
 } from "../data/sparseArtifacts";
 import { parseEventTimeline, parseHarmonicLayer, parseHumanHints } from "../data/parsers";
 
@@ -22,6 +23,7 @@ import {
   dropProposalsContent,
   gesturesContent,
   humanHintsContent,
+  moisesLyricsContent,
   sectionsContent,
 } from "./laneContent";
 import type { ArrangementStateFile } from "../data/sparseArtifacts";
@@ -347,5 +349,38 @@ describe("vocalTranscriptionContent", () => {
       [...blocks.map((b) => b.start_s)].sort((a, b) => a - b),
     );
     expect(vocalTranscriptionContent(null)).toEqual([]);
+  });
+});
+
+describe("moisesLyricsContent — v3.4 item 5 validation overlay", () => {
+  const file = parseMoisesLyrics([
+    { id: 1, line_id: 1, start: 1.0, end: 1.0, text: "<SOL>", confidence: null },
+    { id: 2, line_id: 1, start: 1.0, end: 1.2, text: "We", confidence: "0.23" },
+    { id: 3, line_id: 1, start: 1.2, end: 1.4, text: "are", confidence: "0.81" },
+  ]);
+
+  it("word tokens are validatable and carry their numeric id; markers are not", () => {
+    const [sol, we] = moisesLyricsContent(file);
+    expect(sol!.lyricValidatable).toBeUndefined();
+    expect(sol!.lyricTokenId).toBeUndefined();
+    expect(we!.lyricValidatable).toBe(true);
+    expect(we!.lyricTokenId).toBe(2);
+  });
+
+  it("substitutes confidence 1 + the validated tint for a listed id, source untouched", () => {
+    const blocks = moisesLyricsContent(file, new Set([2, 3]));
+    const we = blocks.find((b) => b.lyricTokenId === 2)!;
+    const are = blocks.find((b) => b.lyricTokenId === 3)!;
+    expect(we.tintId).toBe("moisesLyricsValidated");
+    expect(we.caption).toContain("conf 1.00");
+    expect(we.caption).toContain("human-validated");
+    // an id-3 token would normally be the ≥0.7 "High" bucket — validation wins.
+    expect(are.tintId).toBe("moisesLyricsValidated");
+  });
+
+  it("leaves an unlisted token on its Moises confidence bucket", () => {
+    const blocks = moisesLyricsContent(file, new Set([2]));
+    const are = blocks.find((b) => b.lyricTokenId === 3)!;
+    expect(are.tintId).toBe("moisesLyricsHigh");
   });
 });

@@ -34,6 +34,7 @@ import type {
   HarmonicLayer,
   HumanHint,
   HumanHintsFile,
+  LyricValidationsFile,
   LoudnessFrame,
   LoudnessHistory,
   LoudnessSeries,
@@ -431,6 +432,37 @@ export function parseBlockEnergy(raw: unknown): BlockEnergyFile {
     schema_version: stringOr(o.schema_version, "", "block_energy.schema_version"),
     song_name: stringOr(o.song_name, "", "block_energy.song_name"),
     ratings,
+  };
+}
+
+// ---------------------------------------------------------------------------
+
+// v3.4 item 5 / D6 — reference/human/lyric_validations.json. The ids of the
+// Moises word tokens whose timing the operator has hand-verified; the Moises
+// Lyrics lane substitutes confidence `1` for a listed token at read time
+// (source file untouched). Deliberately tolerant: a non-integer / non-finite
+// id is dropped and duplicates are collapsed rather than failing the file —
+// the only writer is the debugger's ✔ button, validated on the client
+// (`saveLyricValidations.ts`) and again in the dev-server handler.
+//
+// SCOPE GUARD: nothing in src/ or mcp/ reads this file. It is reference/human/
+// material like the hints — one producer (the operator), no field_sources /
+// source attribution (ui-definition.md "The write rule").
+export function parseLyricValidations(raw: unknown): LyricValidationsFile {
+  const o = asObject(raw, "lyric_validations.json");
+  const seen = new Set<number>();
+  const validated_ids: number[] = [];
+  for (const entry of asArray(o.validated_ids ?? [], "lyric_validations.validated_ids")) {
+    if (typeof entry !== "number" || !Number.isInteger(entry) || seen.has(entry)) {
+      continue;
+    }
+    seen.add(entry);
+    validated_ids.push(entry);
+  }
+  return {
+    schema_version: stringOr(o.schema_version, "", "lyric_validations.schema_version"),
+    song_name: stringOr(o.song_name, "", "lyric_validations.song_name"),
+    validated_ids,
   };
 }
 

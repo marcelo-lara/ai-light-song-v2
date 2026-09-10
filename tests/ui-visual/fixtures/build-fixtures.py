@@ -18,6 +18,13 @@ rates the hand-curated hint-001 `{energy:5, tension:4}` and leaves hint-002 /
 hint-003 unrated, which `block-energy-rating.spec.ts` asserts ("1 / 3 blocks
 rated"). It is (re)written by `inject_block_energy` below.
 
+`reference/human/lyric_validations.json` (v3.4 item 5) is also synthetic —
+`RegFull` gets `validated_ids: [2, 3]` (the Moises word tokens "We" / "are"),
+which `lyric-validation.spec.ts` asserts; the other two fixtures get an empty
+list. The file must exist on every fixture so the song-load fetch never 404s
+(the visual suite fails any run with a failed network response). Written by
+`inject_lyric_validations` below.
+
 Dense per-frame arrays (fft_bands / rms_loudness / loudness_envelope) are
 decimated to ~60 evenly spaced frames, keeping the first and last frame so the
 song's full duration is still represented. info.json / beats.json are copied
@@ -200,6 +207,34 @@ def inject_block_energy(out_name: str, *, rated: bool = True):
     print(f"  wrote {out_name}/reference/human/block_energy.json")
 
 
+def inject_lyric_validations(out_name: str, *, validated: bool = False):
+    """v3.4 item 5 — write the synthetic lyric_validations.json overlay.
+
+    `RegFull - Fixture` gets `validated_ids: [2, 3]` (the Moises word tokens
+    with id 2 / 3 in `reference/moises/lyrics.json`), which
+    `lyric-validation.spec.ts` asserts render with the `moisesLyricsValidated`
+    tint. The other fixtures get an empty list — the file must still exist so
+    the app's song-load fetch does not 404 (ui-regression §3)."""
+    hints_path = OUT / out_name / "reference/human/human_hints.json"
+    song_name = REG_SOURCE
+    if hints_path.exists():
+        song_name = json.loads(hints_path.read_text()).get("song_name", REG_SOURCE)
+    p = OUT / out_name / "reference/human/lyric_validations.json"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(
+        json.dumps(
+            {
+                "schema_version": "1.0",
+                "song_name": song_name,
+                "validated_ids": [2, 3] if validated else [],
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    print(f"  wrote {out_name}/reference/human/lyric_validations.json")
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     OUT_SONGS.mkdir(parents=True, exist_ok=True)
@@ -207,6 +242,7 @@ def main():
     copy_song(REG_SOURCE, "RegFull - Fixture")
     inject_section_contest("RegFull - Fixture")
     inject_block_energy("RegFull - Fixture")
+    inject_lyric_validations("RegFull - Fixture", validated=True)
     copy_song(REG_SOURCE, "RegPartial - Fixture",
               drop={"artifacts/essentia/fft_bands.json",
                     "artifacts/essentia/fft_bands.bass.json",
@@ -214,8 +250,10 @@ def main():
                     "artifacts/essentia/fft_bands.harmonic.json",
                     "artifacts/essentia/fft_bands.vocals.json"})
     inject_block_energy("RegPartial - Fixture", rated=False)
+    inject_lyric_validations("RegPartial - Fixture")
     copy_test_song()
     inject_block_energy("_test_song", rated=False)
+    inject_lyric_validations("_test_song")
     # audio: ship the real mp3 for RegFull (real decode path). RegPartial reuses
     # it; _test_song intentionally has none.
     mp3 = SRC_SONGS / f"{REG_SOURCE}.mp3"

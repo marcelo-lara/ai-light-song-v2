@@ -69,6 +69,12 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   moisesLyricsLow: [0, 72, 46],
   moisesLyricsUnscored: [210, 12, 40],
   moisesLyricsMarker: [210, 30, 34],
+  // v3.4 item 5 — a token the operator has hand-verified. Deliberately NOT the
+  // `≥ 0.7` "High" bucket (150, green): a bright indigo, unlike every Moises
+  // confidence tint, so a validated token reads as validated at a glance and
+  // is never mistaken for Moises' own 0.99s. Applies in both the panel card
+  // and the timeline lane.
+  moisesLyricsValidated: [265, 80, 56],
   vocalTranscription: [32, 45, 42],
   vocalTranscriptionBaseline: [28, 20, 40],
   vocalTranscriptionModel: [32, 80, 46],

@@ -284,4 +284,71 @@ describe("LaneEventsPanel", () => {
       expect(container.querySelector('[data-testid="block-energy-save"]')).toBeNull();
     });
   });
+
+  // v3.4 item 5 — the ✔ token-validation button, shown only for the Moises
+  // Lyrics panel's word-token cards.
+  describe("Moises lyric-token validation", () => {
+    const LYRIC_BLOCKS: SparseBlock[] = [
+      block({ id: "1", label: "<SOL>", laneLabel: "Moises Lyrics" }),
+      block({
+        id: "2",
+        label: "We",
+        laneLabel: "Moises Lyrics",
+        lyricValidatable: true,
+        lyricTokenId: 2,
+      }),
+      block({
+        id: "3",
+        label: "are",
+        laneLabel: "Moises Lyrics",
+        tintId: "moisesLyricsValidated",
+        lyricValidatable: true,
+        lyricTokenId: 3,
+      }),
+    ];
+    const lyricBase = { ...base, laneId: "moisesLyrics", laneLabel: "Moises Lyrics" };
+
+    const withLyric = (validatedIds = new Set<number>([3])) => {
+      const onToggle = vi.fn();
+      const onSelectBlock = vi.fn();
+      const utils = render(
+        <LaneEventsPanel
+          {...lyricBase}
+          blocks={LYRIC_BLOCKS}
+          onSelectBlock={onSelectBlock}
+          lyricValidation={{ validatedIds, onToggle }}
+        />,
+      );
+      return { ...utils, onToggle, onSelectBlock };
+    };
+
+    it("gives every word token exactly one ✔ button and the marker none", () => {
+      const { container } = withLyric();
+      expect(container.querySelectorAll(".lane-events__validate")).toHaveLength(2);
+      const solCard = container.querySelector('[data-block-id="1"]')!;
+      expect(solCard.querySelector(".lane-events__validate")).toBeNull();
+    });
+
+    it("reflects the validated state via aria-pressed", () => {
+      const { getByTestId } = withLyric();
+      expect(getByTestId("lyric-validate-2").getAttribute("aria-pressed")).toBe("false");
+      expect(getByTestId("lyric-validate-3").getAttribute("aria-pressed")).toBe("true");
+    });
+
+    it("clicking ✔ toggles via onToggle and never seeks", () => {
+      const { getByTestId, onToggle, onSelectBlock } = withLyric();
+      fireEvent.click(getByTestId("lyric-validate-2"));
+      expect(onToggle).toHaveBeenCalledWith(2, true);
+      fireEvent.click(getByTestId("lyric-validate-3"));
+      expect(onToggle).toHaveBeenCalledWith(3, false);
+      expect(onSelectBlock).not.toHaveBeenCalled();
+    });
+
+    it("renders no ✔ button without the lyricValidation prop", () => {
+      const { container } = render(
+        <LaneEventsPanel {...lyricBase} blocks={LYRIC_BLOCKS} />,
+      );
+      expect(container.querySelector(".lane-events__validate")).toBeNull();
+    });
+  });
 });

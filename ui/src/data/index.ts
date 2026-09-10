@@ -30,4 +30,8 @@ export {
   BLOCK_ENERGY_MAX,
 } from "./saveBlockEnergy";
 export type { BlockEnergyDraft } from "./saveBlockEnergy";
+export {
+  buildLyricValidationsPayload,
+  saveLyricValidations,
+} from "./saveLyricValidations";
 export { artifactPaths, listingPaths, encodePath } from "./paths";

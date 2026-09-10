@@ -17,7 +17,9 @@ import react from "@vitejs/plugin-react";
 // /api/block-energy/<song>` handler (v3.4 item 4) mirrors both: same
 // path-escape guard, 400-on-bad-payload, pretty JSON + trailing newline,
 // dev-only (production Nginx has no handler — the rating UI is dev-only, like
-// the hint editor).
+// the hint editor). The `PUT /api/lyric-validations/<song>` handler (v3.4 item
+// 5) mirrors the guard/400/pretty-JSON shape but writes PER-CLICK, not on an
+// explicit Save (D5.1) — a rapid token-by-token verification pass.
 
 const dataRoot = "/data";
 const analysisRoot = path.join(dataRoot, "analysis");
@@ -225,6 +227,47 @@ function normalizeBlockEnergyPayload(payload: unknown): {
     schema_version: "1.0",
     song_name: String(record.song_name || ""),
     ratings,
+  };
+}
+
+// v3.4 item 5 — lyric_validations.json is written PER-CLICK by the Moises
+// Lyrics events panel's ✔ button (D5.1 / D6). This diverges from the
+// explicit-Save pattern the other reference/human/ writers (human hints, song
+// facts, block energy) use: a rapid token-by-token verification pass should not
+// need a Save button. Each toggle PUTs the FULL `validated_ids` array and this
+// handler replaces the file. Overlay only — nothing here touches
+// reference/moises/lyrics.json, which stays read-only. Dev-only (production
+// Nginx has no handler). Nothing in src/ or mcp/ reads the file.
+function lyricValidationsFilePath(song: unknown): string {
+  return referenceHumanFilePath(song, "lyric_validations.json");
+}
+
+function normalizeLyricValidationsPayload(payload: unknown): {
+  schema_version: string;
+  song_name: string;
+  validated_ids: number[];
+} {
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Lyric validations payload must be a JSON object.");
+  }
+  const record = payload as Record<string, unknown>;
+  const idsIn = Array.isArray(record.validated_ids) ? record.validated_ids : null;
+  if (!idsIn) {
+    throw new Error(
+      "Lyric validations payload must include a validated_ids array.",
+    );
+  }
+  const seen = new Set<number>();
+  for (const value of idsIn) {
+    if (typeof value !== "number" || !Number.isInteger(value)) {
+      throw new Error("Each validated_id must be an integer.");
+    }
+    seen.add(value);
+  }
+  return {
+    schema_version: "1.0",
+    song_name: String(record.song_name || ""),
+    validated_ids: [...seen].sort((a, b) => a - b),
   };
 }
 
@@ -451,6 +494,40 @@ function dataMountPlugin(): Plugin {
               error instanceof Error
                 ? error.message
                 : "Unable to save block energy.",
+            );
+          }
+          return;
+        }
+
+        if (
+          requestUrl &&
+          request.method === "PUT" &&
+          requestUrl.pathname.startsWith("/api/lyric-validations/")
+        ) {
+          try {
+            const song = decodeURIComponent(
+              requestUrl.pathname.replace("/api/lyric-validations/", ""),
+            );
+            const payload = normalizeLyricValidationsPayload(
+              await readJsonBody(request),
+            );
+            const filePath = lyricValidationsFilePath(song);
+            await fsp.mkdir(path.dirname(filePath), { recursive: true });
+            await fsp.writeFile(
+              filePath,
+              JSON.stringify(payload, null, 2) + "\n",
+              "utf-8",
+            );
+            response.statusCode = 200;
+            response.setHeader("Content-Type", "application/json; charset=utf-8");
+            response.end(JSON.stringify(payload));
+          } catch (error) {
+            response.statusCode = 400;
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            response.end(
+              error instanceof Error
+                ? error.message
+                : "Unable to save lyric validations.",
             );
           }
           return;

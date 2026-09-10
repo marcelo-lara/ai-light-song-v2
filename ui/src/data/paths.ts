@@ -27,6 +27,12 @@ export const artifactPaths = {
   // material; nothing in src/ or mcp/ reads it.
   blockEnergy: (song: string) =>
     encodePath(analysis(song, "reference", "human", "block_energy.json")),
+  // v3.4 item 5 — ids of the Moises lyric tokens the operator has hand-verified.
+  // An overlay on reference/moises/lyrics.json (never an edit to it). Writable
+  // (debugger only, per-click), reference/human/ material; nothing in src/ or
+  // mcp/ reads it.
+  lyricValidations: (song: string) =>
+    encodePath(analysis(song, "reference", "human", "lyric_validations.json")),
   // Written by experiments/drop_detection (`run export`), never by the pipeline
   // and never by a human. Kept out of `reference/human/` so the drop-impact
   // ground truth stays a purely hand-authored file.

@@ -4,6 +4,7 @@ import { ShapeError } from "./parse";
 import {
   parseBeats,
   parseBlockEnergy,
+  parseLyricValidations,
   parseEventTimeline,
   parseFftBands,
   parseHarmonicLayer,
@@ -252,5 +253,32 @@ describe("parseBlockEnergy", () => {
 
   it("throws on a non-object root", () => {
     expect(() => parseBlockEnergy([])).toThrow(ShapeError);
+  });
+});
+
+describe("parseLyricValidations", () => {
+  it("reads the validated_ids list", () => {
+    const file = parseLyricValidations({
+      schema_version: "1.0",
+      song_name: "s",
+      validated_ids: [2, 3, 7],
+    });
+    expect(file.schema_version).toBe("1.0");
+    expect(file.validated_ids).toEqual([2, 3, 7]);
+  });
+
+  it("drops non-integer / non-finite ids and collapses duplicates", () => {
+    expect(
+      parseLyricValidations({ validated_ids: [2, 2, 3.5, "x", null, 4] })
+        .validated_ids,
+    ).toEqual([2, 4]);
+  });
+
+  it("tolerates a missing validated_ids array (404 -> empty stands in)", () => {
+    expect(parseLyricValidations({ song_name: "s" }).validated_ids).toEqual([]);
+  });
+
+  it("throws on a non-object root", () => {
+    expect(() => parseLyricValidations([])).toThrow(ShapeError);
   });
 });

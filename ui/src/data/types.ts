@@ -333,6 +333,30 @@ export interface BlockEnergyFile {
 }
 
 // ---------------------------------------------------------------------------
+// reference/human/lyric_validations.json  (v3.4 item 5 / D6 — operator's
+// hand-verification of Moises lyric-token timing)
+// ---------------------------------------------------------------------------
+// An overlay on `reference/moises/lyrics.json`: the ids of the Moises word
+// tokens whose timing the operator has personally checked against the
+// waveform. The Moises Lyrics lane substitutes confidence `1` for a listed
+// token at read time — a value Moises itself never emits — so a validated
+// token is unambiguous. `reference/moises/lyrics.json` is never edited; it
+// stays read-only, inference-only.
+//
+// SCOPE GUARD: nothing in `src/` or `mcp/` reads this file. It is
+// `reference/human/` material like the hints — one producer (the operator),
+// no `field_sources` / `source` attribution. Written per-click by
+// `PUT /api/lyric-validations/<song>` (dev-server only), which diverges from
+// the explicit-Save pattern the other `reference/human/` writers use (D5.1 —
+// a rapid token-by-token pass should not need a Save button).
+
+export interface LyricValidationsFile {
+  schema_version: string;
+  song_name: string;
+  validated_ids: number[];
+}
+
+// ---------------------------------------------------------------------------
 // song_event_timeline.json  (plan v3.0 item 9 — flat gesture-phase /
 // section-transition events, replacing the Epic-5 composite event_* stack)
 // ---------------------------------------------------------------------------

@@ -43,6 +43,14 @@ export interface SparseBlock {
    * label differently from one still needing a decision.
    */
   tintId?: string;
+  /**
+   * v3.4 item 5 — the Moises lyric-token id this block represents, when the
+   * block is a validatable **word** token (not a `<SOL>`/`<EOL>` marker). The
+   * Moises Lyrics events panel renders a ✔ validation button only for a block
+   * carrying both this and `lyricValidatable: true`.
+   */
+  lyricTokenId?: number;
+  lyricValidatable?: boolean;
   laneLabel: string;
   caption: string;
   reference: string;
@@ -261,8 +269,16 @@ export function vocalTranscriptionContent(
  * glance at the lane shows where the transcription is shaky (dense or effected
  * vocals) without reading a single number.
  */
-function moisesTintId(kind: string, confidence: number | null): string {
+function moisesTintId(
+  kind: string,
+  confidence: number | null,
+  validated: boolean,
+): string {
   if (kind !== "word") return "moisesLyricsMarker";
+  // v3.4 item 5 — a hand-verified token reads as validated at a glance, never
+  // as one of Moises' own confidence buckets (in particular not the `≥ 0.7`
+  // "High" bucket alongside Moises' 0.99s).
+  if (validated) return "moisesLyricsValidated";
   if (confidence == null) return "moisesLyricsUnscored";
   if (confidence >= 0.7) return "moisesLyricsHigh";
   if (confidence >= 0.4) return "moisesLyricsMid";
@@ -275,22 +291,42 @@ function moisesTintId(kind: string, confidence: number | null): string {
  * time order. It sits directly under Human Hints so a hand-marked window
  * ("Breath", "Vocal outro") can be checked against exactly which words are
  * being sung when. Blocks are tinted by per-word confidence.
+ *
+ * v3.4 item 5 — `validatedIds` is the read-time overlay from
+ * `reference/human/lyric_validations.json`: a word token whose id is listed is
+ * shown at confidence `1` (a value Moises never emits) with the distinct
+ * `moisesLyricsValidated` tint. The source file is untouched. Word tokens
+ * carry `lyricTokenId` + `lyricValidatable: true` so the events panel can draw
+ * a ✔ button for them; markers get neither.
  */
-export function moisesLyricsContent(file: MoisesLyricsFile | null): SparseBlock[] {
+export function moisesLyricsContent(
+  file: MoisesLyricsFile | null,
+  validatedIds?: ReadonlySet<number> | null,
+): SparseBlock[] {
   return (file?.tokens ?? []).map((t) => {
     const text = t.text || "♪";
     const marker = t.kind !== "word";
+    const tokenId = Number(t.id);
+    const hasId = Number.isInteger(tokenId) && Number.isFinite(tokenId);
+    const validated = !marker && hasId && !!validatedIds?.has(tokenId);
+    const shownConf = validated ? 1 : t.confidence;
     return {
       id: t.id,
       start_s: t.start_s,
       end_s: t.end_s,
       label: text.length > 24 ? `${text.slice(0, 23)}…` : text,
-      wideLabel: t.confidence != null ? `${text} · ${round(t.confidence)}` : text,
-      tintId: moisesTintId(t.kind, t.confidence),
+      wideLabel:
+        shownConf != null
+          ? `${text} · ${round(shownConf)}${validated ? " · validated" : ""}`
+          : text,
+      tintId: moisesTintId(t.kind, t.confidence, validated),
+      ...(marker || !hasId
+        ? {}
+        : { lyricTokenId: tokenId, lyricValidatable: true }),
       laneLabel: "Moises Lyrics",
       caption: `${formatRange(t.start_s, t.end_s)}${
-        t.confidence != null ? ` · conf ${round(t.confidence)}` : ""
-      }`,
+        shownConf != null ? ` · conf ${round(shownConf)}` : ""
+      }${validated ? " · human-validated" : ""}`,
       reference: t.id,
       detail: marker
         ? t.kind === "sol"
@@ -301,11 +337,13 @@ export function moisesLyricsContent(file: MoisesLyricsFile | null): SparseBlock[
         ? `Moises line marker \`${t.text}\` — ${
             t.kind === "sol" ? "start" : "end"
           } of line ${t.line_id}. External reference, read-only.`
-        : `Moises sung word "${t.text}" (line ${t.line_id})${
-            t.confidence != null
-              ? `, transcription confidence ${round(t.confidence)}`
-              : ", no confidence reported"
-          }. External reference — read-only ground truth, not a pipeline output.`,
+        : validated
+          ? `Moises sung word "${t.text}" (line ${t.line_id}) — timing hand-verified by the operator, shown at confidence 1. Overlay from reference/human/lyric_validations.json; reference/moises/lyrics.json is untouched.`
+          : `Moises sung word "${t.text}" (line ${t.line_id})${
+              t.confidence != null
+                ? `, transcription confidence ${round(t.confidence)}`
+                : ", no confidence reported"
+            }. External reference — read-only ground truth, not a pipeline output.`,
       raw: t.raw,
     };
   });
@@ -560,6 +598,9 @@ export function gridPhraseContent(file: GridFile | null): SparseBlock[] {
 export interface LaneContentSources {
   humanHints?: HumanHintsFile | null;
   moisesLyrics?: MoisesLyricsFile | null;
+  /** v3.4 item 5 — read-time overlay: Moises word-token ids the operator has
+   *  hand-verified (from reference/human/lyric_validations.json). */
+  lyricValidations?: ReadonlySet<number> | null;
   dropProposals?: DropProposalsFile | null;
   sections?: readonly SectionRow[];
   sectionSegmentation?: readonly SegmentationSection[];
@@ -599,7 +640,7 @@ export function buildLaneBlocks(
     case "humanHints":
       return humanHintsContent(s.humanHints ?? null);
     case "moisesLyrics":
-      return moisesLyricsContent(s.moisesLyrics ?? null);
+      return moisesLyricsContent(s.moisesLyrics ?? null, s.lyricValidations ?? null);
     case "arrangementState":
       return arrangementStateContent(s.arrangementState ?? null);
     case "dropProposals":
