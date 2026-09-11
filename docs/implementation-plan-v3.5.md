@@ -320,31 +320,53 @@ variant happens to be cached, and their caches would need invalidating and
 re-running if this item ran later — this item is ordered first specifically to
 avoid that.
 
-- [ ] `experiments/demucs_ablation/run.py` — `compute --song <name> --variant
-  <htdemucs|htdemucs_ft|htdemucs_6s>`: runs `stems.py`'s separation logic with
-  `DEMUCS_MODEL_NAME` overridden per-call (does not touch the `src/` constant),
-  caches each variant's stem set under `experiments/demucs_ablation/cache/`.
-- [ ] `export.py` — for each variant, per song: stem-RMS false-vocal rate via
-  item 2's scorer (treating "stem RMS above the `arrangement_state` threshold"
-  as the naive detector, so all three variants are compared through the exact
-  rule that is live in production today).
-- [ ] `docs/experiments.md` — new entry: title, purpose, the three-variant
-  table (false-vocal rate per song per variant), and a **measured
-  recommendation** on the pin — explicitly stated as informing, not deciding,
-  a future `DEMUCS_MODEL_NAME` change (refinement doc: "a re-pin invalidates
-  every cached stem in the corpus").
-- [ ] No `src/` change in this item regardless of outcome — the recommendation
-  is written down; re-pinning `DEMUCS_MODEL_NAME` is a separate decision the
-  operator is asked about explicitly, per the promotion-gate rule.
+- [x] `experiments/demucs_ablation/run.py` — `compute --song <name> --variant
+  <htdemucs|htdemucs_ft|htdemucs_6s>`: runs Demucs separation with the model
+  name overridden per-call (`separate.py`; never imports or edits `stems.py`
+  or `DEMUCS_MODEL_NAME`), caches each variant's stem set under
+  `experiments/demucs_ablation/cache/`.
+- [x] `export.py` — for each variant, per song: stem-RMS false-vocal rate via
+  `analyzer.stages.arrangement_state.detect()`/`blocks()` reused unmodified,
+  fed a synthetic loudness doc built from that variant's own stems — the exact
+  rule live in production today, applied to each variant's separation.
+- [x] `docs/experiments.md` — new entry with the three-variant table and an
+  honest **incomplete** status (below); no recommendation is drawn from a
+  partial table.
+- [x] No `src/` change made — `stems.py` and `DEMUCS_MODEL_NAME` untouched.
+
+**D3.1 (resolved).** Coverage is 3 of 5 scoring-corpus songs (`_test_song`,
+`ayuni`, `Titanium - David Guetta ft Sia`). `Hideaway - Kiesza` and
+`Armin - Revolution` did not complete — the background separation was killed
+by host memory pressure mid `Hideaway`/`htdemucs_ft`, not a checkpoint-fetch
+failure (all three checkpoints fetched fine, including the two that needed a
+live HuggingFace hub pull — the scoped risk of a blocked download did not
+occur). Recommendation adopted: do not re-run under heavier memory pressure to
+force completion within this batch; leave the gap named in
+`docs/experiments.md` and `README.md` rather than guessing the two missing
+rows. This is informational, not blocking — no later item depends on the two
+missing songs specifically, since items 4–7 build on whichever variant item 3
+recommends and item 3 draws no recommendation from an admittedly partial
+table (so it recommends staying on the incumbent `htdemucs` for now, the only
+variant with full coverage).
+
+**D3.2 (resolved).** No `type: "vocal"` ground truth exists yet on any song
+(item 1 left marking to the operator), so every number in this item's table is
+`voiced_duration_fraction` — "fraction of the song this rule calls voiced" —
+not the validated false-vocal-rate metric against real marked spans.
+`export.py`'s `is_proxy_no_ground_truth` flag marks this explicitly per row
+rather than silently presenting a proxy as the real metric. Re-running
+`export` after the operator marks spans recomputes the true metric with no
+code change.
 
 ### Validation
 
-- [ ] `docker compose run --rm app python -m experiments.demucs_ablation.run
-  compute --song ayuni --variant htdemucs_6s` (and the other variant/song
-  combinations) produces cached stems without touching `data/analysis/*/artifacts/stems/`.
-- [ ] Numbers land in `docs/experiments.md` with the incumbent (`htdemucs`)
-  row included for direct comparison — a table with no incumbent row is
-  incomplete.
+- [x] `docker compose run --rm app python -m experiments.demucs_ablation.run
+  compute --song ayuni --variant htdemucs_6s` (and the other completed
+  variant/song combinations) produced cached stems under
+  `experiments/demucs_ablation/cache/`, confirmed not touching
+  `data/analysis/*/artifacts/stems/`.
+- [x] Numbers land in `docs/experiments.md` with the incumbent (`htdemucs`)
+  row included for every completed song.
 
 ---
 

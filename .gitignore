@@ -234,3 +234,6 @@ experiments/clap/cache/
 experiments/vocalparse/cache/
 experiments/acestep_transcriber/cache/
 experiments/.whisper_baseline_cache/
+
+# Demucs variant ablation: regenerable raw separated-stem WAVs (1.3G+)
+experiments/demucs_ablation/cache/

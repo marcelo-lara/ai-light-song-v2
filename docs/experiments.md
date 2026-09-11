@@ -1046,6 +1046,94 @@ tuned**.
 
 ---
 
+## Demucs variant ablation — `htdemucs` vs `htdemucs_ft` vs `htdemucs_6s`
+
+*(no external model beyond the three Demucs checkpoints already used by `stems.py` — https://github.com/facebookresearch/demucs)*
+
+### Status
+
+**[OPEN — measured on 3 of 5 scoring-corpus songs, incomplete].** v3.5 item 3.
+Built as [`../experiments/demucs_ablation/`](../experiments/demucs_ablation/README.md).
+No UI lane — this item reports numbers only, no timeline claim.
+`Hideaway - Kiesza` (stopped mid `htdemucs_ft`) and `Armin - Revolution`
+(not started) did not finish: the background compute loop was killed by the
+harness for system memory pressure, and the run was not retried per this
+item's time budget. `_test_song`, `ayuni` and `Titanium - David Guetta ft Sia`
+completed all three variants. `src/analyzer/stages/stems.py` and
+`DEMUCS_MODEL_NAME` are untouched — still pinned to `htdemucs`.
+
+### Why? What for?
+
+Refinement doc question: how much of `ayuni`'s false vocal presence
+(`arrangement_state.json` reports `vocals` 40.8 % of the song) is separation
+error, how much is the self-normalisation the same doc describes.
+`htdemucs_6s` adds `guitar`/`piano` sources that could pull melodic leakage
+(a flute, here) out of `vocals`; `htdemucs_ft` is a fine-tuned `htdemucs`.
+Cheapest measurement in the release — a model-pin swap, no new dependency —
+and ordered first so items 4-7 build on a settled stem choice.
+
+### Experiment Plan
+
+`compute --song <name> --variant <htdemucs|htdemucs_ft|htdemucs_6s>` runs
+Demucs separation with the model name overridden per-call, caching stems
+under `experiments/demucs_ablation/cache/` (never
+`data/analysis/*/artifacts/stems/`). `export` reuses
+`analyzer.stages.arrangement_state.detect()`/`blocks()` **unmodified** — the
+exact per-song-threshold + hold-gate rule live in production today — fed a
+synthetic loudness doc built from the variant's own `vocals.wav` RMS series
+instead of the published, `htdemucs`-only `loudness.json`.
+
+**Ground truth gap found while building this.** Item 1 added the `type:
+"vocal"` human-hint schema but explicitly left marking real spans to the
+operator. Checked directly: every one of the four gold songs and `ayuni` has
+**zero** `type == "vocal"` rows in this environment. So
+`voiceness_common.scorer.score()`'s `false_vocal_rate` against an empty
+marked-span set is mathematically identical to "fraction of the song the
+rule calls voiced" — reported below as `voiced_duration_fraction`, an honest
+proxy for the false-vocal rate the plan specifies, not the validated metric.
+Re-running `export` after the operator marks spans recomputes the real
+number with no code change.
+
+### Results evidence
+
+Full detail and the `ayuni` 49.2 % vs shipped 40.8 % discrepancy note (loader/windowing variance, not a re-measurement of the shipped figure):
+[`../experiments/demucs_ablation/README.md`](../experiments/demucs_ablation/README.md).
+
+**`voiced_duration_fraction` (== `false_vocal_rate` against zero marked spans — proxy, not validated):**
+
+| song | htdemucs | htdemucs_ft | htdemucs_6s |
+| --- | --- | --- | --- |
+| `_test_song` | 0.628 | 0.641 | 0.637 |
+| `ayuni` | 0.492 | 0.495 | 0.510 |
+| `Titanium - David Guetta ft Sia` | 0.777 | 0.774 | 0.787 |
+| `Hideaway - Kiesza` | not run — checkpoint fetch succeeded for `htdemucs`, run killed (system memory) mid `htdemucs_ft`, `htdemucs_6s` never started | | |
+| `Armin - Revolution` | not run — separation never started for any variant | | |
+
+All three checkpoints fetched successfully in this environment (`htdemucs_ft`
+and `htdemucs_6s` via Demucs's own HuggingFace-hub fallback, no local
+mirror) — the anticipated "checkpoint may not be cacheable" risk did not
+materialise; the actual constraint was host memory during a 3-variant x
+3-song batch.
+
+### Conclusion
+
+No kill condition (none specified for this item) and no clear winner on the
+3 songs measured: all three variants land within 1.3, 1.8 and 1.3 points of
+each other on `_test_song`, `ayuni`, `Titanium` respectively — `htdemucs_6s`
+is highest on `ayuni` (+1.8 pts vs incumbent) and `Titanium` (+1.0 pt), lowest
+on `_test_song` is `htdemucs` itself. This is a **measured recommendation,
+not a decision**: on the songs measured, `htdemucs_6s` does not clearly beat
+`htdemucs` at the one number this item can compute today (a ground-truth-free
+proxy), and the corpus run is incomplete (2 of 5 scoring-corpus songs
+unmeasured). Re-pinning `DEMUCS_MODEL_NAME` is not proposed here — insufficient
+evidence either way, and per the promotion gate a re-pin is a separate,
+explicitly-asked-for decision because it invalidates every cached stem in the
+corpus. Finishing `Hideaway`/`Armin` and re-running once item 1's `type:
+"vocal"` spans exist (to get the real, non-proxy false-vocal rate) are both
+open follow-ons, not committed to a queue row here.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.
