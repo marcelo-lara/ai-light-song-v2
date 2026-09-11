@@ -1,10 +1,11 @@
 # Implementation plan — v3.4
 
-Turns [`product-refinement-v3.4.md`](product-refinement-v3.4.md) into an ordered
-worklist. The refinement doc carries the measured evidence and the resolved
-decisions (`D1`–`D6`); this plan does not restate them — it records only what
-each item builds, how it is checked, and what breaks if a later session reverses
-it.
+**Status: complete — all 10 items done.** Turned the v3.4 refinement doc (now
+deleted; in git history) into an ordered worklist. That doc carried the measured
+evidence and the resolved decisions (`D1`–`D6`); this plan does not restate them
+— it records only what each item built, how it was checked, and what breaks if a
+later session reverses it. The open worklist is
+[`product-refinement-v3.5.md`](product-refinement-v3.5.md).
 
 **v3.4 answers one question: can this repo measure how a passage *behaves*, and
 be measured on it?** Two `ui/` labelling surfaces give the operator something to
@@ -68,8 +69,8 @@ only the items that genuinely depend on it.
 a backend/analysis defect → `docs/issues.md` (`ISS-NNN`, pending/solved,
 evidence, success condition); a `ui/` defect → the frontend issue log
 (`docs/web-ui/ui-issues.md`; create it if absent, matching that reference's
-shape); a defect needing a design decision → a `BUG` entry in
-`product-refinement-v3.4.md` annotated with the plan item that will address it.
+shape); a defect needing a design decision → a `BUG` entry in the current
+product-refinement doc, annotated with the plan item that will address it.
 Never fix across item boundaries in one commit.
 
 ---
