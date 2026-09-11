@@ -813,3 +813,80 @@ export async function loadClapVoiceness(
   }
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// svdTagger — reference/proposals/svd_tagger.json
+// ---------------------------------------------------------------------------
+//
+// v3.5 item 6: PANNs' `Singing` class head (AudioSet-527, index 27), run on
+// BOTH the vocal stem and the mix — the only voiceness candidate (items 4-7)
+// that runs more than one producer over the same song. Every frame/phrase
+// row carries an explicit `channel: "stem" | "mix"` (see
+// `voiceness_common.schema`'s `channel` field and `export.py`'s docstring —
+// the "published files are fused from many producers, and say which one
+// won" convention, generalised to a proposal file). `interval_ms` is 1000,
+// same PANNs-window-grid honesty as clapVoiceness. Kill condition
+// unevaluable until item 1's `type: "vocal"` ground truth exists — and,
+// per the plan, this candidate must additionally beat item 4 given its new
+// image/pin cost.
+
+export interface SvdTaggerFrameRow extends VoicenessFrameRow {
+  channel: "stem" | "mix" | null;
+}
+
+export interface SvdTaggerFile {
+  schema_version: string;
+  song_name: string;
+  interval_ms: number;
+  frames: SvdTaggerFrameRow[];
+  vocal_phrase: { start_s: number; end_s: number; confidence: number | null; channel: "stem" | "mix" | null }[];
+}
+
+function parseChannel(v: unknown): "stem" | "mix" | null {
+  return v === "stem" || v === "mix" ? v : null;
+}
+
+export function parseSvdTagger(raw: unknown): SvdTaggerFile {
+  const o = asObject(raw, "reference/proposals/svd_tagger.json");
+  const meta = rec(o.metadata);
+  const frames = arr(o.frames).map((row): SvdTaggerFrameRow => {
+    const r = rec(row);
+    return {
+      time_s: num(r.time),
+      voiceness: num(r.voiceness),
+      confidence: r.confidence == null ? null : num(r.confidence),
+      channel: parseChannel(r.channel),
+    };
+  });
+  const vocal_phrase = arr(o.vocal_phrase).map((row) => {
+    const r = rec(row);
+    const start_s = num(r.start);
+    return {
+      start_s,
+      end_s: Math.max(num(r.end, start_s), start_s),
+      confidence: r.confidence == null ? null : num(r.confidence),
+      channel: parseChannel(r.channel),
+    };
+  });
+  return {
+    schema_version: st(o.schema_version),
+    song_name: st(o.song_name),
+    interval_ms: num(meta.interval_ms, 1000),
+    frames,
+    vocal_phrase,
+  };
+}
+
+export async function loadSvdTagger(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<SvdTaggerFile>> {
+  const result = await loadJson(artifactPaths.svdTagger(song), parseSvdTagger, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, interval_ms: 1000, frames: [], vocal_phrase: [] },
+    };
+  }
+  return result;
+}

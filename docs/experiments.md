@@ -1300,6 +1300,75 @@ then re-run `score` with no code change.
 
 ---
 
+## SVD Tagger — PANNs `Singing` class, stem vs mix
+
+*(PANNs Cnn14 AudioSet-527 tagger — NEW sandbox image + NEW model pin, the
+highest-cost candidate in the false-vocal family)*
+
+### Status
+
+**BLOCKED — scaffold complete, image build attempted once, timed out
+mid-download. Not run.** v3.5 item 6. Built as
+[`../experiments/svd_tagger/`](../experiments/svd_tagger/README.md): `model.py`
+/ `export.py` / `score.py` / `run.py`, `Dockerfile`, `run_in_container.sh`,
+debugger lane `6. SVD Tagger` (both stem/mix channels as two curves in one
+lane, never a toggle). **No `compute`/`export`/`score` run has happened —
+the image was never produced.**
+
+### Cost, up front
+
+The only item 4-7 candidate needing both a new sandbox image (torch 2.4 CPU
++ `panns_inference`) **and** a new model pin (327 MB PANNs checkpoint,
+sha256-verified at build time). The kill condition is explicitly
+cost-weighted: does not beat item 4 on `ayuni`'s false-vocal rate, *given
+this cost* — items 4/5 pay no image/pin cost at all.
+
+### What was attempted, exactly
+
+Per the task's bounded-effort guidance (one attempt, ≤ 15 min, no retry
+loop): `docker build -f experiments/svd_tagger/Dockerfile ...` was run once
+under `timeout 900`. Every `pip install` layer (torch 2.4.1 CPU,
+`panns-inference==0.1.1`, `librosa`, `soundfile`) **completed successfully**.
+The build reached its final layer — `curl`-fetching the pinned checkpoint
+from Zenodo (record 3987831, `Cnn14_mAP=0.431.pth`, 327,428,481 bytes,
+sha256 `0dc499e...e34b31`, verified first-hand by downloading the file
+directly on the host, 2m1s, ~2.7 MB/s) — and stalled there: inside the build
+container `curl` ran at **~154 KB/s** (ETA ~34 min), only 376 KB in before
+the 15-minute budget killed the build (`docker buildx history logs`: `#7
+CANCELED`). Not a dead URL or a bad pin (fast from the host, same URL) — a
+build-network throughput constraint specific to this environment's Docker
+build path. **Not retried**, per instruction. Step 3 (`_test_song`
+compute/export) was never reached — no image exists to run it in.
+
+### Results evidence
+
+**None.** No `compute` has run; `experiments/svd_tagger/cache/` is empty.
+An honest `unknown`, not an invented number (CLAUDE.md: no silent
+fallbacks).
+
+### D6.2 (open — for the operator)
+
+Either (a) `COPY` a pre-fetched, host-verified checkpoint into the image
+instead of an in-build `curl` (trades away the "still no network dependency
+at build either" property for staging a 312 MB file outside git next to the
+Dockerfile), or (b) retry the build with a longer bound or on a host with a
+faster build-network path — the `pip install` layers already prove the rest
+of the Dockerfile correct, only the checkpoint fetch is blocked.
+
+### Conclusion
+
+Scaffold complete and matches `clap_voiceness`'s (item 5) shape, including
+plugging into `voiceness_common.schema`/`scorer`/`incumbents` the same way —
+`schema.py`'s `VoicenessFrame`/`VocalPhrase` gained an optional `channel`
+field for this item's two-producer case (stem vs mix in one proposal file,
+each row attributed — the "published files are fused, say which producer
+won" convention generalised, not a new pattern). **Kill condition
+unevaluated, not passed or failed** — the image never built inside budget.
+Legitimate, expected, pre-anticipated outcome per the plan's own kill-
+condition framing ("given its image and pin cost").
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

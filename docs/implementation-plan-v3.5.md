@@ -549,27 +549,24 @@ badge, full-extent + zoom checks, negative checks, one new baseline.
 **What changes.** A pretrained audio tagger's `Singing`/`Singing voice` head
 (PANNs or BEATs), run on the vocal stem and on the mix, both reported.
 
-- [ ] New sandbox image, pattern of `experiments/drop_detection/research/Dockerfile.vocalparse`
+- [x] New sandbox image, pattern of `experiments/drop_detection/research/Dockerfile.vocalparse`
   / `Dockerfile.acestep`: `experiments/svd_tagger/Dockerfile`, pinned model
-  checkpoint fetched and checksummed at image build time — no mid-run download.
-  `run_in_container.sh` mirrors `experiments/clap/run_in_container.sh`.
-- [ ] `experiments/svd_tagger/` — `model.py` (loads the tagger, runs both
-  channels), `export.py` (writes both channels' scores into the shared schema,
-  tagging which channel — `stem` vs `mix` — a row's `voiceness` came from, via
-  a `field_sources`-style attribution *within the proposal file itself*, not
-  just at file level, since the two channels are genuinely different
-  producers), `README.md`.
-- [ ] Debugger lane: `6. SVD Tagger`, under Human Hints, with both channels
-  visible (two curves or a toggle — resolve at implementation time; default to
-  two curves, since "no hiding behind a selector" is the standing rule and a
-  toggle would violate it).
-- [ ] `queue.toml` row — `image` names the new sandbox service; if it is not
-  addable to `docker-compose.yml`'s `app`-only runner (per D10.1 in
-  `queue.toml`'s own comment, only `image = "app"` is honored), the row is
-  recorded `skipped(needs image svd_tagger — run via run_in_container.sh)`,
-  matching how `clap` is already handled.
-- [ ] `docs/experiments.md` entry with the cost called out explicitly (new
-  image, new pin) beside the score.
+  checkpoint (PANNs `Cnn14_mAP=0.431.pth`, sha256 recorded in the Dockerfile)
+  — see D6.2, build did not complete. `run_in_container.sh` mirrors
+  `experiments/clap/run_in_container.sh`.
+- [x] `experiments/svd_tagger/` — `model.py` (loads the tagger, runs both
+  channels), `export.py` (writes both channels' scores into the shared schema
+  via a new optional `channel: "stem" | "mix"` field on `voiceness_common`'s
+  `VoicenessFrame`/`VocalPhrase` — a per-row attribution, not just file-level,
+  since stem and mix are genuinely different producers), `README.md`.
+- [x] Debugger lane: `6. SVD Tagger`, under Human Hints, both channels visible
+  as two independent curves in one lane (stacked by `SparseLane`'s own
+  row-packing) — no toggle, no selector.
+- [x] `queue.toml` row — `image = "svd-research"`, recorded
+  `skipped(needs image svd-research — run via run_in_container.sh)`, same
+  precedent as `clap_voiceness` (item 5's D5.1).
+- [x] `docs/experiments.md` entry — status **BLOCKED**, cost and the exact
+  failure called out explicitly; no score exists to report beside it.
 
 ### D6.1 (resolved)
 
@@ -579,15 +576,42 @@ narrower dependency footprint than BEATs' fairseq-adjacent stack. Revisit only
 if PANNs' checkpoint proves unavailable or its class set lacks a clean singing
 label at implementation time.
 
+### D6.2 (resolved — outcome, not a design choice)
+
+**The image build did not complete in this environment.** All `pip install`
+layers succeeded (torch 2.4.1 CPU, `panns-inference==0.1.1`, librosa,
+soundfile). The build stalled fetching the pinned checkpoint from Zenodo
+(327,428,481 bytes, sha256 `0dc499e40e9761ef5ea061ffc77697697f277f6a960894903df3ada000e34b31`,
+verified first-hand at ~2.7 MB/s from the host in 2m1s) — inside the build
+container the same URL ran at ~154 KB/s (ETA ~34 min); only 376 KB had
+transferred when a 15-minute budget expired. Not retried, per this plan's
+resource-budget guidance. `_test_song` compute/export was never reached.
+
+**Recommendation for whoever picks this up next**: `COPY` a pre-fetched,
+host-verified checkpoint file into the image (the sha256 above) rather than
+`curl`-ing it inside the build — the network path into the build container is
+the bottleneck, not the checkpoint itself, and this matches how a slow
+in-container fetch is typically worked around in this kind of build. Not
+implemented here — left as the next concrete step, not a redesign.
+
 ### Validation
 
-- [ ] Sandbox image builds and the checksum step is verified.
+- [ ] Sandbox image builds and the checksum step is verified. **Not done** —
+  see D6.2.
 - [ ] `compute`/`export`/`score` run inside the new image via
-  `run_in_container.sh` on the scoring corpus.
-- [ ] `docker compose run --rm ui npm run test` + `npm run build`.
+  `run_in_container.sh` on the scoring corpus. **Not done** — blocked on the
+  image build.
+- [x] `docker compose run --rm ui npm run test` (391/392 — same pre-existing,
+  unrelated `App.tsx` regression as items 4/5, confirmed still untouched) +
+  `npm run build` clean. The UI wiring and shared-schema changes are
+  independently valid even though the model itself never ran.
 
-**Kill condition.** Does not beat item 4 on `ayuni`'s false-vocal rate, given
-its image and pin cost → negative result, lane kept for one review pass.
+**Kill condition.** Unevaluated, and this item's own text anticipated exactly
+this outcome ("given its image and pin cost"): the image never finished
+building, so there is no score to compare against item 4. Negative-by-cost
+result, written up honestly in `docs/experiments.md` — no number is guessed.
+Lane is kept, dark/empty until the image builds, per the standing "one review
+pass" convention.
 
 ### Visual QA
 

@@ -93,6 +93,14 @@ export const artifactPaths = {
   // ground truth exists.
   clapVoiceness: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "clap_voiceness.json")),
+  // Written by experiments/svd_tagger (`run export`). PANNs' `Singing` class
+  // head (AudioSet-527, index 27) run on BOTH the vocal stem and the mix —
+  // every row carries `channel: "stem" | "mix"` (the only voiceness
+  // candidate that fuses two producers into one file). `interval_ms: 1000`,
+  // same PANNs-window-grid honesty as clapVoiceness. Kill condition
+  // unevaluable until item 1's `type: "vocal"` ground truth exists.
+  svdTagger: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "svd_tagger.json")),
   // Moises' word-level sung-lyric export, delivered as external reference. A
   // flat list of word tokens with `line_id`, `start`, `end`; `<SOL>` / `<EOL>`
   // rows mark line boundaries. Read-only ground truth, never written by the

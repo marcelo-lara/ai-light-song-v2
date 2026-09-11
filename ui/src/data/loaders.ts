@@ -16,6 +16,7 @@ import {
   loadStructuralVsMicro,
   loadVocalVoiceness,
   loadClapVoiceness,
+  loadSvdTagger,
 } from "./sparseArtifacts";
 import {
   parseBeats,
@@ -268,6 +269,7 @@ export const artifactLoaders = {
   structuralVsMicro: loadStructuralVsMicro,
   vocalVoiceness: loadVocalVoiceness,
   clapVoiceness: loadClapVoiceness,
+  svdTagger: loadSvdTagger,
   character: loadCharacter,
   vocalTranscription: loadVocalTranscription,
   beats: loadBeats,

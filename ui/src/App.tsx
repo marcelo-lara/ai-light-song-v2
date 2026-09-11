@@ -148,6 +148,12 @@ const TIMELINE_KEYS = [
   // condition unevaluable until item 1's `type: "vocal"` ground truth
   // exists)
   "clapVoiceness",
+  // PANNs `Singing`-class voiceness curve, stem + mix channels, rendered as
+  // two curves in one lane, never a toggle (experiments/svd_tagger, v3.5
+  // item 6 — new sandbox image + new model pin; kill condition unevaluable
+  // until item 1's `type: "vocal"` ground truth exists, and must
+  // additionally beat item 4 given its image/pin cost)
+  "svdTagger",
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
   // lane's production data source.
   "eventTimeline",
@@ -169,6 +175,7 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   structuralVsMicro: "structuralVsMicro",
   vocalVoiceness: "vocalVoiceness",
   clapVoiceness: "clapVoiceness",
+  svdTagger: "svdTagger",
   gestures: "eventTimeline",
   character: "character",
   vocalTranscription: "vocalTranscription",
@@ -351,6 +358,7 @@ export function App(): React.JSX.Element {
       structuralVsMicro: artifacts.structuralVsMicro.data,
       vocalVoiceness: artifacts.vocalVoiceness.data,
       clapVoiceness: artifacts.clapVoiceness.data,
+      svdTagger: artifacts.svdTagger.data,
       gestures: artifacts.eventTimeline.data,
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
@@ -370,6 +378,7 @@ export function App(): React.JSX.Element {
       artifacts.structuralVsMicro.data,
       artifacts.vocalVoiceness.data,
       artifacts.clapVoiceness.data,
+      artifacts.svdTagger.data,
       artifacts.eventTimeline.data,
       artifacts.character.data,
       artifacts.vocalTranscription.data,

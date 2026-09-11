@@ -65,6 +65,27 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   clapVoicenessHigh: [55, 80, 46],
   clapVoicenessVeryHigh: [55, 95, 54],
   clapVoicenessPhrase: [325, 60, 44],
+  // v3.5 item 6 — PANNs `Singing`-class voiceness, run on BOTH the vocal
+  // stem and the mix, rendered as two curves in the SAME lane (never a
+  // toggle — the standing "no hiding a signal behind a selector" rule).
+  // Two distinct base hues so the stem/mix curves read as two series at a
+  // glance: stem 105 (spring-green, clear of arrangementState's 95 and
+  // textureNovelty's 70), mix 235 (blue, clear of structuralVsMicro's 245
+  // and vocalPhrasesGap's 220). Each ramped by intensity like the sibling
+  // voiceness lanes; the two phrase-overlay hues (50, 185) sit in the same
+  // gaps, clear of every neighbour.
+  svdTaggerStemVeryLow: [105, 20, 20],
+  svdTaggerStemLow: [105, 38, 28],
+  svdTaggerStemMid: [105, 55, 38],
+  svdTaggerStemHigh: [105, 75, 46],
+  svdTaggerStemVeryHigh: [105, 92, 54],
+  svdTaggerStemPhrase: [50, 65, 44],
+  svdTaggerMixVeryLow: [235, 20, 22],
+  svdTaggerMixLow: [235, 38, 32],
+  svdTaggerMixMid: [235, 58, 44],
+  svdTaggerMixHigh: [235, 75, 54],
+  svdTaggerMixVeryHigh: [235, 90, 62],
+  svdTaggerMixPhrase: [185, 60, 42],
   arrangementState: [95, 55, 44], // olive-lime — distinct from vocalPhrases' rose
   //                                 (340) and dropProposals' magenta (318)
   arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a

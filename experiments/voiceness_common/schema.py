@@ -28,11 +28,20 @@ SCHEMA_VERSION = "1.0"
 class VoicenessFrame:
     """One 50ms-grid sample. `voiceness` is a score in [0, 1] (a hard
     detector emits 0.0/1.0); `confidence` is `None` when the producer has no
-    honest confidence to report — never guessed (no silent fallbacks)."""
+    honest confidence to report — never guessed (no silent fallbacks).
+
+    `channel` is `None` for a single-producer candidate (items 4/5/7); a
+    candidate that runs more than one genuinely different producer over the
+    same song (item 6 — `svd_tagger`, the same tagger run on the vocal stem
+    AND the mix) sets it per row (`"stem"` / `"mix"`), so the fused file says
+    where each row's value actually came from — the `source`/attribution
+    convention this repo's publish layer already uses, generalised here
+    because two rows in one file can legitimately disagree."""
 
     time_s: float
     voiceness: float
     confidence: float | None = None
+    channel: str | None = None
 
     def as_tuple(self) -> tuple[float, float]:
         """The `(time_s, voiceness_bool_or_score)` shape `scorer.py` reads."""
@@ -44,13 +53,19 @@ class VocalPhrase:
     start: float
     end: float
     confidence: float | None = None
+    #: see `VoicenessFrame.channel` — `None` unless the candidate runs more
+    #: than one producer over the same song.
+    channel: str | None = None
 
     def to_dict(self) -> dict:
-        return {
+        d = {
             "start": round(float(self.start), 3),
             "end": round(float(self.end), 3),
             "confidence": None if self.confidence is None else round(float(self.confidence), 3),
         }
+        if self.channel is not None:
+            d["channel"] = self.channel
+        return d
 
 
 @dataclass
@@ -95,6 +110,7 @@ class VoicenessProposal:
                     "time": round(f.time_s, 3),
                     "voiceness": round(float(f.voiceness), 4),
                     "confidence": None if f.confidence is None else round(float(f.confidence), 3),
+                    **({"channel": f.channel} if f.channel is not None else {}),
                 }
                 for f in self.frames
             ],

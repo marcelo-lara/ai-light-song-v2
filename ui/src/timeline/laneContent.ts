@@ -28,6 +28,7 @@ import type {
   StructuralVsMicroFile,
   VocalVoicenessFile,
   ClapVoicenessFile,
+  SvdTaggerFile,
 } from "../data/sparseArtifacts";
 
 import { romanNumeral } from "./romanNumeral";
@@ -811,6 +812,112 @@ export function clapVoicenessContent(file: ClapVoicenessFile | null): SparseBloc
   return out;
 }
 
+const SVD_TAGGER_STEM_BUCKET_TINT: Record<VoicenessBucket, string> = {
+  veryLow: "svdTaggerStemVeryLow",
+  low: "svdTaggerStemLow",
+  mid: "svdTaggerStemMid",
+  high: "svdTaggerStemHigh",
+  veryHigh: "svdTaggerStemVeryHigh",
+};
+
+const SVD_TAGGER_MIX_BUCKET_TINT: Record<VoicenessBucket, string> = {
+  veryLow: "svdTaggerMixVeryLow",
+  low: "svdTaggerMixLow",
+  mid: "svdTaggerMixMid",
+  high: "svdTaggerMixHigh",
+  veryHigh: "svdTaggerMixVeryHigh",
+};
+
+/**
+ * PANNs `Singing`-class curve, run on BOTH the vocal stem and the mix
+ * (`experiments/svd_tagger/model.py`) — the only voiceness candidate (items
+ * 4-7) that fuses two producers into one file, so every row from
+ * `SvdTaggerFile` carries its own `channel: "stem" | "mix"`.
+ *
+ * **Both channels render as two separate curves in this ONE lane — never a
+ * toggle.** This repo's standing rule ("every artifact gets its own visible
+ * lane"/"no hiding a signal behind a selector") rules out a channel picker;
+ * each channel is bucket-run-merged independently (same technique as
+ * `vocalVoicenessContent`/`clapVoicenessContent`) and both sets of blocks are
+ * appended to the same lane — SparseLane's own row-packing stacks the two
+ * time-overlapping curves into separate rows automatically, exactly as it
+ * already does for a voiceness curve plus its overlaid `vocal_phrase` spans.
+ */
+export function svdTaggerContent(file: SvdTaggerFile | null): SparseBlock[] {
+  const out: SparseBlock[] = [];
+  const intervalS = (file?.interval_ms ?? 1000) / 1000;
+
+  for (const channel of ["stem", "mix"] as const) {
+    const frames = (file?.frames ?? []).filter((f) => f.channel === channel);
+    const tint = channel === "stem" ? SVD_TAGGER_STEM_BUCKET_TINT : SVD_TAGGER_MIX_BUCKET_TINT;
+    const phraseTint = channel === "stem" ? "svdTaggerStemPhrase" : "svdTaggerMixPhrase";
+    const laneLabel = `6. SVD Tagger (${channel})`;
+
+    let runStart: number | null = null;
+    let runBucket: VoicenessBucket | null = null;
+    let runSum = 0;
+    let runN = 0;
+    let runIdx = 0;
+    const flush = (endTime: number) => {
+      if (runStart == null || runBucket == null || runN === 0) return;
+      const avg = runSum / runN;
+      runIdx += 1;
+      out.push({
+        id: `svd-tagger-${channel}-${runIdx}`,
+        start_s: runStart,
+        end_s: endTime,
+        label: "",
+        wideLabel: `${channel} voiceness ${avg.toFixed(2)}`,
+        tintId: tint[runBucket],
+        laneLabel,
+        caption: `${formatRange(runStart, endTime)} · ${channel} avg voiceness ${avg.toFixed(2)}`,
+        reference: `svd-tagger-${channel}-${runIdx}`,
+        detail: `${runN} window${runN === 1 ? "" : "s"}`,
+        summary: `experiments/svd_tagger — PANNs "Singing" class, ${channel} channel, averaging ${avg.toFixed(2)} across this run.`,
+        raw: { channel, avg_voiceness: avg, n_frames: runN },
+      });
+    };
+
+    for (const f of frames) {
+      const bucket = voicenessBucket(f.voiceness);
+      if (runBucket !== bucket) {
+        flush(f.time_s);
+        runStart = f.time_s;
+        runBucket = bucket;
+        runSum = 0;
+        runN = 0;
+      }
+      runSum += f.voiceness;
+      runN += 1;
+    }
+    if (frames.length > 0) {
+      flush(frames[frames.length - 1]!.time_s + intervalS);
+    }
+
+    (file?.vocal_phrase ?? [])
+      .filter((p) => p.channel === channel)
+      .forEach((p, i) => {
+        out.push({
+          id: `svd-tagger-${channel}-phrase-${i + 1}`,
+          start_s: p.start_s,
+          end_s: p.end_s,
+          label: "phrase",
+          wideLabel: `${channel} phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
+          tintId: phraseTint,
+          laneLabel,
+          caption: `${formatRange(p.start_s, p.end_s)} · ${channel} phrase (not boundary-scored)`,
+          reference: `svd-tagger-${channel}-phrase-${i + 1}`,
+          detail: "vocal_phrase",
+          summary: `experiments/svd_tagger — a vocal_phrase span thresholded from the PANNs ${channel}-channel differential. Reported for review only; never scored on boundary F1 (5s window is too coarse to time an edge).`,
+          raw: p,
+        });
+      });
+  }
+
+  out.sort((a, b) => a.start_s - b.start_s);
+  return out;
+}
+
 /**
  * Named gesture phases (approach/build/tension/impact/release) and
  * section-pair transitions ("<from> → <to>") from `song_event_timeline.json`
@@ -860,6 +967,7 @@ export interface LaneContentSources {
   structuralVsMicro?: StructuralVsMicroFile | null;
   vocalVoiceness?: VocalVoicenessFile | null;
   clapVoiceness?: ClapVoicenessFile | null;
+  svdTagger?: SvdTaggerFile | null;
   gestures?: EventTimeline | null;
 }
 
@@ -875,6 +983,7 @@ export const SPARSE_LANE_IDS = [
   "structuralVsMicro",
   "vocalVoiceness",
   "clapVoiceness",
+  "svdTagger",
   "gestures",
   "sections",
   "character",
@@ -909,6 +1018,8 @@ export function buildLaneBlocks(
       return vocalVoicenessContent(s.vocalVoiceness ?? null);
     case "clapVoiceness":
       return clapVoicenessContent(s.clapVoiceness ?? null);
+    case "svdTagger":
+      return svdTaggerContent(s.svdTagger ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
     case "sections":
