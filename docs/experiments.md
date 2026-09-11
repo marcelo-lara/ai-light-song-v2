@@ -855,9 +855,15 @@ vocal-pop songs `sections.json` is the best method in the table.
 Killed on the metric. The failure is structural: the texture-change signal is
 real everywhere, which is exactly why precision cannot rise — it changes at
 non-boundaries just as often. This reconfirms the refinement doc's measurement
-rather than overturning it. Lane kept for one review pass; if anything survives
-it is the per-stem feature direction (feat 3), which belongs to Structural vs
-Micro (item 8), not here.
+rather than overturning it. Lane kept for one review pass.
+
+Two follow-ups were measured and **also failed** — per-stem novelty as four
+separate curves (every stem scores below the fused feat 3; cross-stem agreement
+at ≥ 3 stems fires 2.8×/song at F1 0.03, so the peaks do not co-occur) and
+symbolic drum loop-lock from `drum_events.json` (25–32 state flips per song,
+gold F1 ≤ 0.10 vs `sections.json` 0.30). Six methods now share one failure: the
+base rate, not the feature. Tables in the experiment README before re-proposing
+either.
 
 ---
 
