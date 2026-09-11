@@ -74,16 +74,13 @@ songs, greedy one-to-one matching. Tabulated against `sections.json` and
 **Kill condition:** a feature set passes only if it lifts **precision > 0.5 at
 recall ≥ 0.8** (pooled over the four gold songs).
 
-### D6.1 (resolved during implementation)
+### Why feature set 2 uses librosa, not `hpcp.json`
 
-The plan text says "chroma/HPCP on the MIX (`artifacts/essentia/hpcp.json`)…
-NEVER the harmonic stem". The published `hpcp.json` **is** computed on the
-harmonic stem (`generated_from.harmonic_stem` is set) — the two halves of that
-sentence contradict. Resolved by honouring the intent ("on the MIX", "never the
-harmonic stem"): feature set 2 computes chroma with librosa on the mix audio,
-not `hpcp.json`. Recorded as a `D` in
-[`../../docs/implementation-plan-v3.4.md`](../../docs/implementation-plan-v3.4.md)
-item 6.
+The published `hpcp.json` is computed on the **harmonic stem**
+(`generated_from.harmonic_stem` is set), which is exactly the signal to avoid —
+the harmonic stem reads ~0.009 RMS through the `Queen of Kings` drop where the
+chord decoder still finds Am at 0.716. So feature set 2 computes chroma with
+librosa on the **mix** audio instead.
 
 ## Results evidence
 

@@ -48,8 +48,7 @@ Near-misses deliberately not flagged (conservative choice):
 ## Margin chosen, and why conservative
 
 Because the contradiction is essentially `Queen of Kings`-specific, the rule
-ships **conservative** (`docs/implementation-plan-v3.4.md` item 3 step 1: "if it
-is Queen-of-Kings-specific, the rule ships conservative"):
+ships **conservative** rather than corpus-wide:
 
 | constant | value | rationale |
 | --- | --- | --- |
