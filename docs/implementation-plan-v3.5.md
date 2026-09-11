@@ -232,7 +232,7 @@ code, and — per the refinement doc's own citation of `vocal_phrases` and
 different rates. A budget-matched comparison becomes impossible after the
 fact.
 
-- [ ] `experiments/voiceness_common/` (new shared package — not itself in the
+- [x] `experiments/voiceness_common/` (new shared package — not itself in the
   UI-lane sense, since it renders nothing): `schema.py` defining the proposal
   shape — a per-50ms-frame `voiceness` series with `confidence`, plus derived
   `vocal_phrase: [{start, end, confidence}]` blocks; `scorer.py` implementing:
@@ -241,20 +241,21 @@ fact.
     `type: "vocal"` span),
   - boundary F1 @ ±0.25 / ±0.5 / ±1.0 s (greedy one-to-one match),
   - `bounds/min` reported beside every F1.
-- [ ] `scorer.py` reads `reference/human/human_hints.json`, filters to
+- [x] `scorer.py` reads `reference/human/human_hints.json`, filters to
   `type == "vocal"` only — never `"hint"` or `"review"`.
-- [ ] Incumbents scored identically, as named producers in the same table:
+- [x] Incumbents scored identically, as named producers in the same table:
   `arrangement_state` (`vocals` in `playing`, from the already-published
   `arrangement_state.json`), `vocal_phrases` (reuse
   `experiments/vocal_phrases/detector.py`'s output), and a naive mix-RMS
   threshold (new, minimal — one function).
-- [ ] Unit tests for the scorer itself (`experiments/voiceness_common/`
-  colocated tests, run via `docker compose run --rm test` if the test runner
-  picks up `experiments/`, else via `docker compose run --rm app python -m
-  pytest experiments/voiceness_common`): synthetic marked spans + synthetic
-  predictions with known F1, confirming the scorer's arithmetic before any real
-  candidate depends on it.
-- [ ] `docs/experiments.md` — no new top-level entry (this is scaffolding, not
+- [x] Unit tests for the scorer itself (`experiments/voiceness_common/`
+  colocated tests). The `app` image has no pytest installed (only the `test`
+  image does, layered on top of it — `Dockerfile.test`), so the working
+  command is `docker compose run --rm test pytest experiments/voiceness_common
+  -v`, not `app`: synthetic marked spans + synthetic predictions with known
+  F1, confirming the scorer's arithmetic before any real candidate depends on
+  it.
+- [x] `docs/experiments.md` — no new top-level entry (this is scaffolding, not
   an experiment with its own conclusion); a one-line mention under a "Loose
   ends" or inline note that `voiceness_common` is the shared scorer items 4–7
   cite, so a future reader does not duplicate it.
@@ -267,15 +268,40 @@ importable package, not itself queued in `queue.toml` (it has no `compute`/
 anything" latitude in `docs/experiments.md`; `src/` still never imports from
 it.
 
+### D2.2 (resolved)
+
+Five implementation choices the plan text left open, all adopted as
+implemented and not revisited unless a later item's scoring shows they're
+wrong:
+
+- **Proposal JSON shape.** Mirrors `loudness.json`'s
+  `metadata{interval_ms,total_frames}` + `frames[]` convention for the dense
+  series, plus the plan's literal `vocal_phrase` key for derived spans.
+- **False-vocal-rate denominator is all frames**, not just frames outside a
+  span — confirmed by reproducing `ayuni`'s cited 40.8 % exactly in the
+  degenerate (no ground truth yet) case.
+- **`mix_rms_baseline_incumbent` threshold is a fixed constant (0.10)** against
+  the already per-song-normalized `normalized_values` — never tuned per song,
+  since it exists to be beaten, not to win.
+- **`vocal_phrases_incumbent` recomputes fresh** (calls `detector.compute_envelope`
+  directly) rather than depending on that experiment's own `cache/` being
+  populated — no hidden coupling to another experiment's run state.
+- **Test file is colocated** (`experiments/voiceness_common/test_scorer.py`,
+  no `tests/` subfolder), matching `vocal_phrases`/`texture_novelty`
+  convention.
+
 ### Validation
 
-- [ ] `docker compose run --rm app python -m pytest experiments/voiceness_common`
-  green.
-- [ ] Manual: run the scorer against the mix-RMS baseline and the incumbent
-  `arrangement_state` channel on `ayuni` once item 1's marking exists (may slip
-  to after item 1's corpus-marking sub-item lands; do not block this item's
-  commit on that — the scorer is complete when its unit tests pass and its
-  incumbents are wired, even if the real number isn't produced yet).
+- [x] `docker compose run --rm test pytest experiments/voiceness_common -v`
+  green — 6/6 (`app` has no pytest; `test` is the working command).
+- [x] Manual: ran all three incumbents on `ayuni` and `_test_song` — all
+  execute without crashing. `ayuni` has no `type: "vocal"` hints yet (item 1's
+  marking of it was left undone by design), so `marked_vocal_spans` returns
+  `[]` and false-vocal rate degenerates to "fraction of the song called
+  voiced" — which reproduces the refinement doc's cited number exactly:
+  `arrangement_state_incumbent` on `ayuni` scores false-vocal rate **0.408**,
+  matching the doc's 40.8% figure. Confirms the metric definition is correct;
+  the real (non-degenerate) number needs item 1's `ayuni` marking to exist.
 
 ---
 

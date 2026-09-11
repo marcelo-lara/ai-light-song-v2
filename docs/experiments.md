@@ -12,6 +12,15 @@ implied as a result. Both files are TLDRs: the full writeup stays in
 [Loose ends](#loose-ends) at the foot of this file holds the open questions the
 queue *depends* on but which are not themselves experiments.
 
+`experiments/voiceness_common/` is shared scaffolding, not an experiment: one
+proposal schema and one scorer (frame voiceness accuracy, false-vocal rate,
+boundary F1 @ ±0.25/0.5/1.0 s, bounds/min) against `type: "vocal"` human
+hints, plus the three incumbents (`arrangement_state`, `vocal_phrases`,
+mix-RMS baseline) every candidate is measured against. `vocal_voiceness`,
+`clap_voiceness`, `svd_tagger` and `whisperx_vad` (implementation-plan-v3.5
+items 4-7) all import it directly — check there before writing another
+scorer for the same metric.
+
 ## How experiments work here
 
 Improving the musical read is research, not only engineering. Most attempts
