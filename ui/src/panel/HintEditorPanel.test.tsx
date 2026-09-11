@@ -54,3 +54,21 @@ describe("HintEditorPanel — captured_from note", () => {
     expect(queryByText(/^Captured from/)).toBeNull();
   });
 });
+
+describe("HintEditorPanel — type dropdown", () => {
+  it("defaults to 'review' for a captured hint and 'hint' for a hand-authored one", () => {
+    const { getByLabelText, rerender } = render(
+      <HintEditorPanel
+        {...base}
+        file={fileWith("allin1 Sections · experiments/allin1")}
+        activeReference="hint-001"
+      />,
+    );
+    expect((getByLabelText("Type") as HTMLSelectElement).value).toBe("review");
+
+    rerender(
+      <HintEditorPanel {...base} file={fileWith()} activeReference="hint-001" />,
+    );
+    expect((getByLabelText("Type") as HTMLSelectElement).value).toBe("hint");
+  });
+});

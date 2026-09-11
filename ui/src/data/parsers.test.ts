@@ -163,6 +163,37 @@ describe("parseHumanHints", () => {
   it("accepts an empty / missing human_hints array", () => {
     expect(parseHumanHints({ song_name: "x" }).human_hints).toEqual([]);
   });
+
+  it("carries captured_from and type through, so they survive a reload", () => {
+    const hints = parseHumanHints({
+      song_name: "x",
+      human_hints: [
+        {
+          id: "hint-001",
+          title: "T",
+          start_time: 0,
+          end_time: 1,
+          captured_from: "allin1 Sections · experiments/allin1",
+          type: "review",
+        },
+      ],
+    }).human_hints;
+    expect(hints[0]!.captured_from).toBe(
+      "allin1 Sections · experiments/allin1",
+    );
+    expect(hints[0]!.type).toBe("review");
+  });
+
+  it("omits captured_from and type when absent or unrecognised", () => {
+    const hints = parseHumanHints({
+      song_name: "x",
+      human_hints: [
+        { id: "hint-001", title: "T", start_time: 0, end_time: 1, type: "bogus" },
+      ],
+    }).human_hints;
+    expect(hints[0]!).not.toHaveProperty("captured_from");
+    expect(hints[0]!).not.toHaveProperty("type");
+  });
 });
 
 describe("parseEventTimeline", () => {

@@ -879,6 +879,10 @@ input[type="range"]:focus-visible {
   color: var(--color-neutral-600);
   margin: 0 0 var(--space-2);
 }
+/* Type select tint matches the Human Hints lane's per-type block colour
+   (sparseTints.ts: humanHints amber / humanHintsReview azure). */
+.hint-editor__type--hint { border-color: hsla(35, 92%, 48%, 0.5); }
+.hint-editor__type--review { border-color: hsla(205, 80%, 55%, 0.5); }
 .btn-sm { padding: var(--space-1) var(--space-3); font-size: 10px; }
 
 /* ---- Review queue editor (item 7) ---- */

@@ -47,6 +47,41 @@ describe("humanHintsContent", () => {
     expect(first.end_s).toBeGreaterThan(first.start_s);
     expect(first.caption).toContain("Intense strobe");
   });
+
+  it("leaves a hand-authored (or untyped) hint with no tintId override", () => {
+    const blocks = humanHintsContent({
+      song_name: "s",
+      human_hints: [
+        {
+          id: "hint-001",
+          title: "T",
+          start_time: 0,
+          end_time: 1,
+          summary: "",
+          lighting_hint: "",
+        },
+      ],
+    });
+    expect(blocks[0]!.tintId).toBeUndefined();
+  });
+
+  it("tints a review-type hint distinctly from the lane's default", () => {
+    const blocks = humanHintsContent({
+      song_name: "s",
+      human_hints: [
+        {
+          id: "hint-001",
+          title: "T",
+          start_time: 0,
+          end_time: 1,
+          summary: "",
+          lighting_hint: "",
+          type: "review",
+        },
+      ],
+    });
+    expect(blocks[0]!.tintId).toBe("humanHintsReview");
+  });
 });
 
 describe("sectionsContent", () => {

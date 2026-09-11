@@ -47,6 +47,7 @@ describe("draft <-> hint mapping (design notes §4)", () => {
       end: "78",
       musical: "big build then release",
       lighting: "strobe on the downbeat",
+      type: "hint",
     });
     // buildHumanHintsPayload renumbers ids by timeline position, so a lone
     // hint always lands on hint-001 regardless of its draft id.
@@ -54,7 +55,7 @@ describe("draft <-> hint mapping (design notes §4)", () => {
     expect(payload.human_hints[0]).toEqual({ ...hint, id: "hint-001" });
   });
 
-  it("carries captured_from through hintToDraft / draftToHint untouched", () => {
+  it("carries captured_from through hintToDraft / draftToHint untouched, and defaults type to review", () => {
     const captured = {
       ...hint,
       id: "hint-003",
@@ -62,17 +63,19 @@ describe("draft <-> hint mapping (design notes §4)", () => {
     };
     const draft = hintToDraft(captured);
     expect(draft.capturedFrom).toBe("allin1 Sections · experiments/allin1");
+    expect(draft.type).toBe("review");
     const out = buildHumanHintsPayload("song", [draftToHint(draft)])
       .human_hints[0]!;
     expect(out.captured_from).toBe("allin1 Sections · experiments/allin1");
+    expect(out.type).toBe("review");
   });
 
-  it("omits capturedFrom on a hand-authored hint", () => {
+  it("omits capturedFrom and type on a hand-authored hint", () => {
     expect(hintToDraft(hint)).not.toHaveProperty("capturedFrom");
-    expect(
-      buildHumanHintsPayload("song", [draftToHint(hintToDraft(hint))])
-        .human_hints[0]!,
-    ).not.toHaveProperty("captured_from");
+    const out = buildHumanHintsPayload("song", [draftToHint(hintToDraft(hint))])
+      .human_hints[0]!;
+    expect(out).not.toHaveProperty("captured_from");
+    expect(out).not.toHaveProperty("type");
   });
 
   it("maps musical->summary and lighting->lighting_hint", () => {
@@ -83,6 +86,7 @@ describe("draft <-> hint mapping (design notes §4)", () => {
       end: "1:10",
       musical: "M",
       lighting: "L",
+      type: "hint",
     };
     const out = buildHumanHintsPayload("s", [draftToHint(draft)]).human_hints[0]!;
     expect(out.start_time).toBe(60);
@@ -100,6 +104,7 @@ describe("validation surfaced from buildHumanHintsPayload", () => {
     end: "20",
     musical: "",
     lighting: "",
+    type: "hint",
   };
   const build = (d: HintDraftFields) =>
     buildHumanHintsPayload("s", [draftToHint(d)]);
@@ -180,14 +185,18 @@ describe("hintDraftFromSeed (plan v1.5 item 9)", () => {
     expect(d.musical).toBe("the opening bars");
     expect(d.capturedFrom).toBe("allin1 Sections · experiments/allin1");
     expect(d.lighting).toBe("");
+    expect(d.type).toBe("review");
   });
-  it("omits capturedFrom when the seed carries none or an empty string", () => {
-    expect(
-      hintDraftFromSeed({ start: 0, end: 0, nonce: 7 }, []),
-    ).not.toHaveProperty("capturedFrom");
-    expect(
-      hintDraftFromSeed({ start: 0, end: 0, capturedFrom: "  ", nonce: 8 }, []),
-    ).not.toHaveProperty("capturedFrom");
+  it("omits capturedFrom when the seed carries none or an empty string, defaulting type to hint", () => {
+    const noNote = hintDraftFromSeed({ start: 0, end: 0, nonce: 7 }, []);
+    expect(noNote).not.toHaveProperty("capturedFrom");
+    expect(noNote.type).toBe("hint");
+    const blankNote = hintDraftFromSeed(
+      { start: 0, end: 0, capturedFrom: "  ", nonce: 8 },
+      [],
+    );
+    expect(blankNote).not.toHaveProperty("capturedFrom");
+    expect(blankNote.type).toBe("hint");
   });
 });
 

@@ -319,6 +319,21 @@ export function HintEditorPanel({
           </div>
 
           <div className="field">
+            <label htmlFor="hint-type">Type</label>
+            <select
+              id="hint-type"
+              className={`input hint-editor__type hint-editor__type--${active.type}`}
+              value={active.type}
+              onChange={(e) =>
+                patchActive({ type: e.target.value as HintDraftFields["type"] })
+              }
+            >
+              <option value="hint">Hint (from scratch)</option>
+              <option value="review">Review (from a finding)</option>
+            </select>
+          </div>
+
+          <div className="field">
             <label htmlFor="hint-musical">Musical hint</label>
             <textarea
               id="hint-musical"

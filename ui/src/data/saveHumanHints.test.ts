@@ -108,6 +108,30 @@ describe("buildHumanHintsPayload", () => {
         .human_hints[0]!,
     ).not.toHaveProperty("captured_from");
   });
+
+  it("omits type for a hand-authored hint with no explicit type", () => {
+    const hint = buildHumanHintsPayload("s", [draft()]).human_hints[0]!;
+    expect(hint).not.toHaveProperty("type");
+  });
+
+  it("defaults type to review when the draft carries a captured_from note", () => {
+    const hint = buildHumanHintsPayload("s", [
+      draft({ captured_from: "allin1 Sections · experiments/allin1" }),
+    ]).human_hints[0]!;
+    expect(hint.type).toBe("review");
+  });
+
+  it("honours an explicit type over the captured_from-derived default", () => {
+    const reviewOverride = buildHumanHintsPayload("s", [
+      draft({ type: "hint", captured_from: "allin1 Sections · experiments/allin1" }),
+    ]).human_hints[0]!;
+    expect(reviewOverride).not.toHaveProperty("type");
+
+    const hintOverride = buildHumanHintsPayload("s", [
+      draft({ type: "review" }),
+    ]).human_hints[0]!;
+    expect(hintOverride.type).toBe("review");
+  });
 });
 
 describe("saveHumanHints", () => {

@@ -113,11 +113,17 @@ reading that way, whichever of the three routes produced an entry.
 - Where something genuinely must be recorded, it is **one human-readable string
   aimed at the person who opens the file**, not a structured object aimed at a
   script. `captured_from` (e.g. `"allin1 Sections · experiments/allin1"`) is that
-  field, and the only one.
-- The key is **omitted entirely** on hand-authored hints, so their shape is
-  unchanged.
-- No analyzer code reads it. Do not design a field here around a machine
-  consumer.
+  field.
+- `type` (`"hint"` | `"review"`) names which of the two the entry is: `"hint"`
+  for one authored from scratch, `"review"` for one seeded from an
+  experiment/event block to review or annotate a finding. It is editable in
+  the hint editor's Type dropdown — not a hard link to the origin, just a
+  reviewer-facing label — and tints the Human Hints lane block so a review
+  entry reads apart from a hand-authored one on the timeline.
+- Both keys are **omitted entirely** on a hand-authored hint with no note, so
+  its shape is unchanged.
+- No analyzer code reads either field. Do not design a field here around a
+  machine consumer.
 
 **The `field_sources` / `source` attribution on the generated delivery surface
 stops at these files.** That convention exists so a *fused, machine-written*

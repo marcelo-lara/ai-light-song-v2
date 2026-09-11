@@ -278,6 +278,13 @@ export interface HumanHint {
    * hand-authored hints (plan v1.5 D11).
    */
   captured_from?: string;
+  /**
+   * "review" when the hint originated from an experiment/event block seeded
+   * for review or annotation; absent (equivalent to "hint") for a
+   * hand-authored one. Editable in the hint editor; defaults from whether the
+   * hint carries a `captured_from` note.
+   */
+  type?: "hint" | "review";
 }
 
 export interface HumanHintsFile {

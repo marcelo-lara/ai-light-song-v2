@@ -24,6 +24,9 @@ export interface SparseTint {
 /** documented base hue (deg) + saturation (%) per lane id */
 const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   humanHints: [35, 92, 48], // amber   (the previous app rgba(217,119,6))
+  humanHintsReview: [205, 80, 55], // azure — a hint seeded from an
+  //   experiment/event block for review, distinct from a hand-authored
+  //   hint's amber
   dropProposals: [318, 72, 46], // magenta — deliberately unlike the amber of the
   //                               human hints it is auditioned against
   dropProposalsMatched: [168, 60, 40], // muted teal — a proposal that already

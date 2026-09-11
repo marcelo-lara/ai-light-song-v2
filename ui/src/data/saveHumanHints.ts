@@ -21,6 +21,13 @@ export interface HintDraft {
    * (plan v1.5 D11).
    */
   captured_from?: string;
+  /**
+   * "hint" (hand-authored, from scratch) or "review" (seeded from an
+   * experiment/event block to review or annotate a finding). Editable in the
+   * editor; defaults to "review" when the draft carries a `captured_from`
+   * note, "hint" otherwise.
+   */
+  type?: "hint" | "review";
 }
 
 /**
@@ -53,6 +60,7 @@ export function buildHumanHintsPayload(
       );
     }
     const capturedFrom = (hint.captured_from ?? "").trim();
+    const type = hint.type ?? (capturedFrom ? "review" : "hint");
     return {
       id: hint.id.trim(),
       title: hint.title.trim(),
@@ -62,6 +70,8 @@ export function buildHumanHintsPayload(
       lighting_hint: (hint.lighting_hint ?? "").trim(),
       // Emitted only for a non-empty note; hand-authored hints omit the key.
       ...(capturedFrom ? { captured_from: capturedFrom } : {}),
+      // Omitted for the "hint" default so hand-authored entries stay unchanged.
+      ...(type === "review" ? { type } : {}),
     };
   });
 
