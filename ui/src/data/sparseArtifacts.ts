@@ -890,3 +890,64 @@ export async function loadSvdTagger(
   }
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// whisperxVad — reference/proposals/whisperx_vad.json
+// ---------------------------------------------------------------------------
+//
+// v3.5 item 7: whisperX's VAD front-end (speech-domain, not music or a
+// general audio-tagging class), run over the vocal stem only. Same shared
+// `voiceness_common.schema` shape as `vocalVoiceness`/`clapVoiceness` — no
+// `channel` field, single producer. `interval_ms` is 50, not 1000: VAD spans
+// carry real sub-second onsets/offsets (a hysteresis binarizer over the
+// segmentation model's own ~17ms frames), so unlike `clapVoiceness`/
+// `svdTagger`, this candidate's `vocal_phrase` boundaries are genuinely
+// timed, not a 5s clip-window approximation. Diarization was NOT attempted
+// (no HF_TOKEN in this environment, and a live-token dependency at analysis
+// time is an automatic kill regardless of score) — no diarization field
+// exists in this file at all, never a stubbed-out null.
+
+export type WhisperxVadFile = VocalVoicenessFile;
+
+export function parseWhisperxVad(raw: unknown): WhisperxVadFile {
+  const o = asObject(raw, "reference/proposals/whisperx_vad.json");
+  const meta = rec(o.metadata);
+  const frames = arr(o.frames).map((row): VoicenessFrameRow => {
+    const r = rec(row);
+    return {
+      time_s: num(r.time),
+      voiceness: num(r.voiceness),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    };
+  });
+  const vocal_phrase = arr(o.vocal_phrase).map((row) => {
+    const r = rec(row);
+    const start_s = num(r.start);
+    return {
+      start_s,
+      end_s: Math.max(num(r.end, start_s), start_s),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    };
+  });
+  return {
+    schema_version: st(o.schema_version),
+    song_name: st(o.song_name),
+    interval_ms: num(meta.interval_ms, 50),
+    frames,
+    vocal_phrase,
+  };
+}
+
+export async function loadWhisperxVad(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<WhisperxVadFile>> {
+  const result = await loadJson(artifactPaths.whisperxVad(song), parseWhisperxVad, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, interval_ms: 50, frames: [], vocal_phrase: [] },
+    };
+  }
+  return result;
+}

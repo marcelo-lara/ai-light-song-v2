@@ -101,6 +101,16 @@ export const artifactPaths = {
   // unevaluable until item 1's `type: "vocal"` ground truth exists.
   svdTagger: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "svd_tagger.json")),
+  // Written by experiments/whisperx_vad (`run export`). The same shared
+  // voiceness_common.schema proposal shape as vocalVoiceness/clapVoiceness
+  // (no `channel` — single producer, vocal stem only), but from whisperX's
+  // VAD front-end (speech-domain) instead of DSP cues or a perceptual-audio
+  // model. `interval_ms: 50` — VAD's own sub-second onsets are real, unlike
+  // clapVoiceness/svdTagger's 1000ms clip windows, so its `vocal_phrase`
+  // boundaries are genuinely scoreable, not just reported. Diarization was
+  // not attempted (no HF_TOKEN in this environment) — VAD-only.
+  whisperxVad: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "whisperx_vad.json")),
   // Moises' word-level sung-lyric export, delivered as external reference. A
   // flat list of word tokens with `line_id`, `start`, `end`; `<SOL>` / `<EOL>`
   // rows mark line boundaries. Read-only ground truth, never written by the

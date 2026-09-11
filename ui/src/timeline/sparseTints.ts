@@ -86,6 +86,21 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   svdTaggerMixHigh: [235, 75, 54],
   svdTaggerMixVeryHigh: [235, 90, 62],
   svdTaggerMixPhrase: [185, 60, 42],
+  // v3.5 item 7 — whisperX's VAD front-end (speech-domain, VAD-only —
+  // diarization not attempted, no HF_TOKEN in this environment). Hue 20
+  // (amber-orange) sits between gestures' burnt orange (10) and humanHints'
+  // amber (35) — distinguished from both by this lane's own intensity ramp
+  // and by never co-occurring with either lane's block shape. The overlaid
+  // `vocal_phrase` hue (80, yellow-green) sits between textureNovelty (70)
+  // and arrangementState (95) for the same reason. Unlike clapVoiceness/
+  // svdTagger, this candidate's phrase spans carry real sub-second onsets
+  // (Binarize hysteresis, not a 5s clip window) — see model.py.
+  whisperxVadVeryLow: [20, 20, 20],
+  whisperxVadLow: [20, 40, 28],
+  whisperxVadMid: [20, 60, 38],
+  whisperxVadHigh: [20, 80, 46],
+  whisperxVadVeryHigh: [20, 95, 54],
+  whisperxVadPhrase: [80, 60, 42],
   arrangementState: [95, 55, 44], // olive-lime — distinct from vocalPhrases' rose
   //                                 (340) and dropProposals' magenta (318)
   arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a

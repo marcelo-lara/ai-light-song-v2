@@ -1255,7 +1255,6 @@ export function App(): React.JSX.Element {
           onClick={() => setLaneListOpen((open) => !open)}
         >
           <i className="ph ph-sliders-horizontal" />
-          Lanes
         </button>
       </footer>
     </div>

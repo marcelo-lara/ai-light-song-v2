@@ -652,6 +652,19 @@ input[type="range"]:focus-visible {
   font: 400 9.5px/1.35 var(--font-body);
   color: var(--color-neutral-700);
 }
+.lane-events__captionrow {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+.lane-events__blockid {
+  margin-left: auto;
+  font: 500 9px/1.35 var(--font-code);
+  color: var(--color-neutral-600);
+  text-align: right;
+  white-space: nowrap;
+}
 /* item 4 / R1: the card covering the playhead. Unmistakable at a glance in a
  * 296px column — the tint is raised, the left border widens to the accent, and
  * the label ink goes bright. */

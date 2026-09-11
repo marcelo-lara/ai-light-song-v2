@@ -104,6 +104,13 @@ function seedRatings(file: BlockEnergyFile | null): RatingState {
   return out;
 }
 
+function displayBlockId(blockId: string): string {
+  const split = blockId.lastIndexOf("-");
+  if (split < 0) return blockId;
+  const suffix = blockId.slice(split + 1).trim();
+  return /^\d+$/.test(suffix) ? suffix : blockId;
+}
+
 function SegmentedRating({
   axis,
   hintId,
@@ -329,7 +336,12 @@ export function LaneEventsPanel({
                     onDoubleClick={() => onSelectMarker(markerFor(block, laneId))}
                   >
                     <span className="lane-events__label">{block.label}</span>
-                    <span className="lane-events__caption">{block.caption}</span>
+                    <span className="lane-events__captionrow">
+                      <span className="lane-events__caption">{block.caption}</span>
+                      <span className="lane-events__blockid">
+                        {displayBlockId(block.id)}
+                      </span>
+                    </span>
                   </button>
                   {lyric &&
                     block.lyricValidatable &&

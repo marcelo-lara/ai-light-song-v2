@@ -97,6 +97,7 @@ type NormalizedHint = {
   summary: string;
   lighting_hint: string;
   captured_from?: string;
+  type?: "hint" | "review" | "vocal";
 };
 
 function normalizeHumanHintPayload(payload: unknown): {
@@ -121,6 +122,10 @@ function normalizeHumanHintPayload(payload: unknown): {
       >;
       const capturedFrom =
         typeof h.captured_from === "string" ? h.captured_from.trim() : "";
+      const hintType =
+        h.type === "hint" || h.type === "review" || h.type === "vocal"
+          ? h.type
+          : undefined;
       return {
         id: String(h.id ?? `human-hint-${index + 1}`),
         title: String(h.title ?? h.label ?? `Hint ${index + 1}`),
@@ -130,6 +135,9 @@ function normalizeHumanHintPayload(payload: unknown): {
         lighting_hint: typeof h.lighting_hint === "string" ? h.lighting_hint : "",
         // Informative note (plan v1.5 D11) — pass through only when non-empty.
         ...(capturedFrom ? { captured_from: capturedFrom } : {}),
+        // Keep explicit non-default types (e.g. "review", "vocal") on save;
+        // omit "hint" for canonical parity with the editor payload.
+        ...(hintType && hintType !== "hint" ? { type: hintType } : {}),
       };
     }),
   };

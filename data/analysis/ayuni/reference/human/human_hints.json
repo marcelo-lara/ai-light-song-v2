@@ -1,0 +1,105 @@
+{
+  "song_name": "ayuni",
+  "human_hints": [
+    {
+      "id": "hint-001",
+      "title": "Rythmic intro",
+      "start_time": 0,
+      "end_time": 7.64,
+      "summary": "No Vocals",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-002",
+      "title": "Rythmic intro +",
+      "start_time": 7.912,
+      "end_time": 13.55,
+      "summary": "No Vocals. Percussive intro with a saw padded bass",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-003",
+      "title": "Vocal phrase",
+      "start_time": 13.55,
+      "end_time": 15.52,
+      "summary": "",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-004",
+      "title": "Indian like percussion",
+      "start_time": 15.76,
+      "end_time": 33.22,
+      "summary": "No vocals. flute melody notes plus a cymbal like percussion (not heavy)",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-005",
+      "title": "Indian like percussion + Crescendo filtered vocal",
+      "start_time": 33.22,
+      "end_time": 46.99,
+      "summary": "FILTERED VOCALS. Continued from previous (no vocal), but a filtered vocal slowly rises volume at the end of this span",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-006",
+      "title": "Vocal phrase pre-drop",
+      "start_time": 46.99,
+      "end_time": 55.046,
+      "summary": "A solo male vocal lead unfiltered sings a phrase",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-007",
+      "title": "EDM",
+      "start_time": 55.046,
+      "end_time": 84.37,
+      "summary": "No vocals. EDM Groove, with a sitar like instrument as melody.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-008",
+      "title": "Vocal phrase",
+      "start_time": 84.403,
+      "end_time": 86.474,
+      "summary": "Filtered soft vocal phrase (male)",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-009",
+      "title": "Vocal Stem noise",
+      "start_time": 86.474,
+      "end_time": 102.238,
+      "summary": "No vocals. A flute leaks into the voice stem.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-010",
+      "title": "Vocal phrase",
+      "start_time": 102.44,
+      "end_time": 110.184,
+      "summary": "Lead vocal, percussive ethnic background.",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-011",
+      "title": "Vocal phrase + padded bass",
+      "start_time": 110.184,
+      "end_time": 118.161,
+      "summary": "Same previous vocal phrase with an extra padded bass.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-012",
+      "title": "Hint 12",
+      "start_time": 121.66,
+      "end_time": 122.66,
+      "summary": "fdsfdsf",
+      "lighting_hint": ""
+    }
+  ]
+}

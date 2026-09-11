@@ -81,6 +81,18 @@ describe("LaneEventsPanel", () => {
     ).toEqual(["0:40.0–0:48.0", "0:52.0–1:00.0", "1:04.0–1:12.0"]);
   });
 
+  it("shows the right-side id as the numeric suffix after the last dash", () => {
+    const { container } = render(
+      <LaneEventsPanel {...base} blocks={BLOCKS} />,
+    );
+    expect(
+      Array.from(
+        container.querySelectorAll(".lane-events__blockid"),
+        (n) => n.textContent,
+      ),
+    ).toEqual(["001", "002", "003"]);
+  });
+
   it("clicking a card calls onSelectBlock with that block", () => {
     const onSelectBlock = vi.fn();
     const { container } = render(
