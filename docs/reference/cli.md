@@ -24,6 +24,7 @@ docker compose run --rm app ./analyze --song "/data/songs/_test_song.mp3"
 | `--device` | auto | `cuda` or `cpu`; prefer GPU |
 | `--verbose` | off | detailed logging |
 | `--clean-generated-data` | — | delete generated per-song directories only; never touches `data/songs/` or `reference/` |
+| `--include-experiments` | off | after the pipeline finishes for a song, run the experiment queue (`experiments/queue.toml`) against it; allowed only with `--song` or `--all-songs`, rejected with `--stage`. Advisory — never changes the analyzer exit code |
 
 ## Compare targets
 
@@ -131,6 +132,40 @@ replacement for generated output.
 | `drums` | time-ordering, summary-count match, recognizable backbeat, hat pulse, over-dense regions |
 | `sections` | boundary offset and direction, snap-like boundary count, dominant snap multiple in beats |
 | `drops` | tolerance, detected/labelled counts, precision/recall/F1, `fake_outnumbers_drop`, or `mode: "skipped"` with a reason |
+
+## Experiment queue
+
+`experiments/queue.toml` lists the experiments that regenerate their
+`reference/proposals/<name>.json` lane per song. One row per experiment:
+
+```toml
+[[experiment]]
+name = "texture_novelty"
+command = "python -m experiments.texture_novelty.run compute --song {song_name} && python -m experiments.texture_novelty.run export --song {song_name}"
+image = "app"
+enabled = true
+```
+
+`command` placeholders: `{song_name}`, `{analysis_dir}`
+(`<analysis-root>/<song_name>`), `{song_path}` (the `.mp3`). ` && ` chains steps.
+Only `image = "app"` runs in-container; other images are skipped with a reason.
+
+Run it:
+
+```bash
+docker compose run --rm app ./experiment --song "/data/songs/_test_song.mp3"
+docker compose run --rm app ./experiment --all-songs
+docker compose run --rm app ./experiment --song "/data/songs/_test_song.mp3" --only texture_novelty
+```
+
+`./experiment` takes `--song` xor `--all-songs`, plus `--analysis-root`,
+`--songs-root`, `--only NAME[,NAME...]`. Same pass runs automatically after each
+song when `./analyze --include-experiments` is used.
+
+Every `experiment x song` pair is isolated: a non-zero exit is recorded
+`failed(code)`, a disabled or wrong-image row `skipped(reason)`, never raised. A
+summary table prints at the end. `./experiment` exits non-zero only if *every*
+attempted pair failed; the pass never affects the `./analyze` exit code.
 
 ## The rule that governs all of it
 

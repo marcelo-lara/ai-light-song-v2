@@ -1,0 +1,44 @@
+# Experiment queue — one table per experiment, consumed by
+# experiments/run_queue.py (`./experiment`, or `./analyze --include-experiments`).
+#
+# Fields
+#   name     required. Must equal the experiment directory name AND its UI lane
+#            title (memory: lane-title-matches-experiment-name).
+#   command  required. Template run once per song. Placeholders, substituted
+#            per-token AFTER the command is tokenised (so a song name with
+#            spaces stays one argument):
+#              {song_name}     the song's dir name under the analysis root
+#              {analysis_dir}   <analysis-root>/<song_name>
+#              {song_path}      the source .mp3 path
+#            A template may chain steps with ` && ` — each side is tokenised and
+#            run as its own subprocess (no shell). Non-zero on any step fails
+#            the whole row for that song.
+#   image    compose service the command belongs to. D10.1: the runner executes
+#            in the `app` container, so only `image = "app"` is honored here;
+#            any other value is recorded skipped(needs image X ...), never run.
+#   enabled  bool. A disabled row is listed skipped(disabled) and not run.
+#
+# Convention for the seeded rows: each experiment's run.py exposes
+# `compute` then `export` subcommands keyed by `--song <name>`; `export` reads
+# the cache `compute` writes. So one song = `compute && export`, regenerating
+# that experiment's reference/proposals/<name>.json for the song.
+#
+# Adding or removing an experiment from the queue is a one-row edit here.
+
+[[experiment]]
+name = "texture_novelty"
+command = "python -m experiments.texture_novelty.run compute --song {song_name} && python -m experiments.texture_novelty.run export --song {song_name}"
+image = "app"
+enabled = true
+
+[[experiment]]
+name = "phrase_periodicity"
+command = "python -m experiments.phrase_periodicity.run compute --song {song_name} && python -m experiments.phrase_periodicity.run export --song {song_name}"
+image = "app"
+enabled = true
+
+[[experiment]]
+name = "structural_vs_micro"
+command = "python -m experiments.structural_vs_micro.run compute --song {song_name} && python -m experiments.structural_vs_micro.run export --song {song_name}"
+image = "app"
+enabled = true

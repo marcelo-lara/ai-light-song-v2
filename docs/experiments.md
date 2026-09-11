@@ -45,6 +45,12 @@ same dead end is not walked twice.
 place a measured comparison means anything. When an experiment is too heavy for
 all four, or is only a smoke test, use `_test_song` alone.
 
+The queue runner (`./analyze --include-experiments`, or `./experiment`) runs an
+experiment's `compute`/`export` for any song, so its `reference/proposals/` lane
+becomes reviewable across the whole corpus — useful for eyeballing behaviour.
+*Scoring* still only means something on the four gold songs; the rest have no
+ground truth to compare against.
+
 ### Make it reviewable — add a UI lane
 
 Musical output has to be *heard against the song*, not read as a table. Anything
@@ -110,6 +116,26 @@ baseline) and `### Conclusion` (a short TLDR).
 ---
 
 ## The queue
+
+### The queue runner
+
+`experiments/queue.toml` is the list the queue runner walks. One `[[experiment]]`
+table per experiment:
+
+| Field | Meaning |
+| --- | --- |
+| `name` | experiment dir name, also its UI lane title |
+| `command` | template run once per song; placeholders `{song_name}`, `{analysis_dir}`, `{song_path}`; ` && ` chains steps; runs as subprocesses, no shell |
+| `image` | compose service the command belongs to; only `app` runs in-container, others are `skipped(reason)` |
+| `enabled` | bool; a disabled row is listed `skipped(disabled)` |
+
+Seeded convention: each experiment's `run.py` has `compute` then `export`
+subcommands keyed by `--song <name>`, so a row is
+`... compute --song {song_name} && ... export --song {song_name}`.
+
+Adding or removing an experiment from the queue is a one-row edit to
+`queue.toml` — no code change. Runner usage and failure semantics:
+[`reference/cli.md`](reference/cli.md#experiment-queue).
 
 ## CLAP — character layer (calm/intense texture blocks)
 

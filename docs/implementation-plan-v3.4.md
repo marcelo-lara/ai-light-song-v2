@@ -10,7 +10,8 @@ it.
 be measured on it?** Two `ui/` labelling surfaces give the operator something to
 score against; three experiment lanes compete against the incumbent; four `src/`
 fixes make that competition fair (per-stem spectra, a documented drum-vocabulary
-bound, a section-label/energy contest). Nothing here reaches the authoring model
+bound, a section-label/energy contest); item 10 is a queue runner that puts the
+experiment lanes on any song, not only the gold four. Nothing here reaches the authoring model
 except item 3's `function_status` flag — publishing the experiment layers is a
 phase-4 decision that follows their result, by design (refinement doc, "What
 this release does not do").
@@ -28,11 +29,13 @@ this release does not do").
 | 7 Phrase Periodicity experiment + lane | 3 | `experiments/` + proposal lane | 1 |
 | 8 Structural vs Micro experiment + lane | 4 | `experiments/` + proposal lane | 6, 7 |
 | 9 `layer_b_symbolic.json` — record the gap | 8 | docs only | — |
+| 10 Experiment queue runner | 10 | `src/` CLI + `experiments/` + docs | 6, 7, 8 |
 
 Items 4 and 5 both add a `reference/human/` writable path; item 4 raises the
 documented count from two to three, item 5 from three to four. Items 6–8 need
 item 1's per-stem spectra. Item 8 combines items 6 and 7 but is its own lane with
-its own error mode (refinement item 4).
+its own error mode (refinement item 4). Item 10 is supporting tooling — a queue
+that runs items 6–8 on any song, not just the gold four; it lands after them.
 
 ---
 
@@ -75,7 +78,7 @@ Never fix across item boundaries in one commit.
 
 | | |
 | --- | --- |
-| Items | 9 (3 `src/`, 2 `ui/`, 3 `experiments/`, 1 docs) |
+| Items | 10 (3 `src/`, 2 `ui/`, 3 `experiments/`, 1 docs, 1 tooling) |
 | Items with a Visual QA block | 6 (items 1, 4, 5, 6, 7, 8 — every lane/panel change; item 2 conditionally) |
 | Analyzer tests | `docker compose run --rm test` on items 1, 2, 3 |
 | UI tests | `npm run test` + `npm run build` on items 1, 4, 5, 6, 7, 8 |
@@ -86,7 +89,7 @@ Never fix across item boundaries in one commit.
 | New dense lanes | 4 (item 1) |
 | New proposal lanes | 3 (items 6, 7, 8) |
 | Blocking decisions (`D`) | none open |
-| Done | 9 |
+| Done | 10 |
 
 ---
 
@@ -961,6 +964,102 @@ no current code path that can regenerate it.
 
 ---
 
+## Item 10 — Experiment queue runner
+
+*Refinement item 10 / `D7`, `D8`. `src/` CLI + `experiments/` + docs. Depends on
+items 6–8 (the experiments it seeds the queue with).*
+
+**What changes.** `./analyze` gains `--include-experiments`. After the pipeline
+completes for a song, every enabled row of `experiments/queue.toml` runs against
+that song's analysis dir, failures isolated, a summary printed. A standalone
+`./experiment` runs the same pass without the pipeline.
+
+**What breaks if reversed.** The three v3.4 experiment lanes stay reviewable only
+on the four gold songs — the operator cannot eyeball them against the rest of the
+corpus (refinement item 10). Adding an experiment goes back to hand-writing a
+bespoke invocation.
+
+- [x] **`experiments/queue.toml`** — array of tables, one per experiment: `name`
+  (== dir == lane title), `command` (template with `{analysis_dir}` /
+  `{song_path}`), `image` (compose service — only `app` honored in-container,
+  D10.1), `enabled`. Seed with `texture_novelty`, `phrase_periodicity`,
+  `structural_vs_micro`, all `enabled = true`, `image = "app"`.
+- [x] **`experiments/run_queue.py`** — standalone
+  (`python -m experiments.run_queue`, and via `./experiment`). Parses
+  `queue.toml` with `tomllib`. Args: `--song` | `--all-songs` (+ `--analysis-root`,
+  `--songs-root`), `--only <name>[,<name>]` for a subset. For each
+  (experiment, song): substitute the template, run as a subprocess, capture exit
+  code + stderr tail. `src/` does **not** import this; it may import
+  `analyzer.config` for song discovery (that direction is allowed — it is not
+  `src/` → `experiments/`).
+- [x] **Failure isolation + summary.** A non-zero exit or an unusable `image` is
+  recorded, never raised; the run continues. End-of-run table to stdout:
+  `experiment × song → ok | failed(code) | skipped(reason)`. `run_queue.py`
+  exits non-zero only if *every* pair failed; otherwise `0`. It never blocks
+  `./analyze`.
+- [x] **`--include-experiments` flag** in
+  [`src/analyzer/cli.py`](../src/analyzer/cli.py). Valid only with `--song` or
+  `--all-songs` (reject with `--stage` and with a bare `--clean-generated-data`).
+  In `_single_song_command` it propagates to each `--all-songs` child, so every
+  child runs its own experiment pass after its own pipeline. In
+  `_run_single_song`, after `run_phase_1`, if set,
+  `subprocess.run([sys.executable, "-m", "experiments.run_queue", "--song", …])`.
+  The pass's exit code is logged, never merged into the analyzer exit code
+  (mirrors the advisory `drops` compare target).
+- [x] **`./experiment`** — root wrapper mirroring `./analyze`
+  (`exec python -m experiments.run_queue "$@"`), so
+  `docker compose run --rm app ./experiment --all-songs` works.
+- [x] **`docs/reference/cli.md`** — `--include-experiments` row in the flags
+  table; a short "Experiment queue" subsection: `queue.toml` shape, `./experiment`
+  usage, failures advisory and summarised. Written for the weak-LLM audience the
+  reference docs target (terse, literal).
+- [x] **`docs/experiments.md`** — the "Run against the four gold songs" section
+  gains a paragraph: the queue runner makes every experiment's proposal lane
+  reviewable on any song (`--include-experiments` / `./experiment`); *scoring*
+  still only means something on the gold four. New short "The queue runner"
+  section: `queue.toml` fields and the one-row add/remove workflow.
+
+**D10.1 (resolved).** `./analyze` runs inside the `app` container, so the queue
+runner (also in `app`) executes each `command` as a subprocess **in the current
+environment**, not via `docker compose run`. The `image` field is recorded for a
+future host-side dispatcher, but in-container only `image = "app"` is honored;
+any other value is a recorded `skipped(needs image X — run ./experiment from the
+host)`, never a silent skip. The three seeded experiments all run in `app` (items
+6–8 validation commands confirm), matching `D8`. Rejected: a docker-socket mount
+for docker-in-docker — a large permission surface for a need that does not exist
+yet.
+
+### Validation
+
+- [x] `./analyze --include-experiments` flag path: rejected with `--stage`
+  (`UsageError`), accepted with `--song`, propagated by `_single_song_command`
+  to `--all-songs` children (verified directly; a full `_test_song` pipeline run
+  was not re-run — it has no phase-1 artifacts and the dispatch is a plain
+  subprocess call already covered by the CLI tests).
+- [x] `docker compose run --rm app ./experiment --song "/data/songs/Armin - Revolution.mp3"`
+  — the experiment pass, no pipeline; all three `ok`,
+  `reference/proposals/{texture_novelty,phrase_periodicity,structural_vs_micro}.json`
+  refreshed. (`_test_song` has no analysis data; a gold song with artifacts was
+  used instead.)
+- [x] `./experiment --song "…/Armin - Revolution.mp3" --only texture_novelty`
+  — only that experiment runs.
+- [x] Failure isolation: a temporary `command = "false"` row → summary shows it
+  `failed(1)`, the other three `ok`, the run exits `0`. Row removed, not
+  committed.
+- [x] `docker compose run --rm test` green (136 passed) — new
+  `tests/test_run_queue.py` (substitution, seeded-queue parse, `--only`,
+  failing-row-recorded, partial vs total-failure exit code, non-app-image skip,
+  disabled skip) and CLI tests in `tests/test_console_markers.py`
+  (`--include-experiments` rejected with `--stage`, accepted with
+  `--song` / `--all-songs`, propagated in `_single_song_command`, triggers the
+  queue subprocess).
+- [x] `grep -rn "import experiments\|from experiments" src/` is empty — dispatch
+  is subprocess-only.
+
+No Visual QA — no `ui/` change.
+
+---
+
 ## Decisions resolved in this plan
 
 | | | |
@@ -982,6 +1081,8 @@ no current code path that can regenerate it.
 | D8.1 | resolved | Structural vs Micro's boundary set = union of items 6+7 proposal-block edges (merged 0.5 s), fallback to operator edges; truth `kind` = title-keyword map + `< 1 bar` fallback; classify blocks not edges. **Kill condition FAILED** (phrase-grid macro-F1 0.415 < duration-only 0.798) — lane kept for one review pass, not tuned. |
 | D7.1 | resolved | Phrase-length envelope is `fft_bands.<stem>.json` broadband energy (mean of the 7 normalised band levels), not `loudness.json` RMS: the raw-vs-z ablation and the kill-condition separation only reproduce the refinement doc's finding on the spectral envelope. `Chimera - Hana` had mix-only FFT, so `./analyze --stage extract-fft-bands` was run for it (the plan sanctions this). `loudness.json` per-stem RMS kept as the documented fallback. Autocorrelation is cosine similarity (no re-centring) so the per-bar z-normalisation is what makes shape agreement visible — on the raw envelope no phrase is found on any song. **Kill condition PASSED** (min known-8-bar prominence +0.118 > max rest +0.081). |
 | D9.1 | **raised for the operator** | Do not resurrect Basic Pitch symbolic transcription in v3.4; blocks nothing. |
+| D10.1 | resolved | Queue runner executes each `command` as a subprocess in the current `app` environment, not `docker compose run`; only `image = "app"` honored in-container, other images `skipped` with a reason. The three seeded experiments all run in `app`. |
+| D10.2 | resolved (impl) | The three experiment `run.py` CLIs key on `--song <name>` (dir name), not a path or dir, and need `compute` then `export` in sequence. So `command` templates add a third placeholder `{song_name}` alongside `{analysis_dir}`/`{song_path}`, chain the two steps with ` && `, and the runner substitutes placeholders per-token *after* tokenising so a spaced song name stays one arg. The dev image is Python 3.10 (not 3.11+): `run_queue.py` imports `tomllib` with a `tomli` fallback (already in the image, identical API). |
 
 ## Open questions blocking implementation
 

@@ -8,8 +8,9 @@ from contextlib import ExitStack
 from pathlib import Path
 from unittest.mock import call, patch
 
-from analyzer.cli import SONG_SEPARATOR_WIDTH, _clean_generated_song_data, _print_song_header, _run_single_song, _single_song_command, main
+from analyzer.cli import SONG_SEPARATOR_WIDTH, _clean_generated_song_data, _print_song_header, _run_single_song, _single_song_command, _validate_args, main
 from analyzer.config import ValidationConfig
+from analyzer.exceptions import UsageError
 from analyzer.paths import SongPaths
 from analyzer.pipeline import _print_phase_marker, _print_stage_marker, clear_batch_progress, run_phase_1, set_batch_progress
 from analyzer.stages.validation.utils import ValidationResult
@@ -171,6 +172,75 @@ class ConsoleMarkerTests(unittest.TestCase):
         )
         self.assertIn("--stage", command)
         self.assertIn("extract-fft-bands", command)
+
+    @staticmethod
+    def _experiments_args(**overrides) -> argparse.Namespace:
+        base = dict(
+            song="/tmp/_test_song.mp3",
+            all_songs=False,
+            compare="beats",
+            stage=None,
+            include_experiments=True,
+        )
+        base.update(overrides)
+        return argparse.Namespace(**base)
+
+    def test_include_experiments_rejected_with_stage(self) -> None:
+        args = self._experiments_args(stage="extract-fft-bands")
+        with self.assertRaises(UsageError):
+            _validate_args(args, {"beats"})
+
+    def test_include_experiments_accepted_with_song(self) -> None:
+        args = self._experiments_args()
+        self.assertEqual(_validate_args(args, {"beats"}), ("beats",))
+
+    def test_include_experiments_accepted_with_all_songs(self) -> None:
+        args = self._experiments_args(song=None, all_songs=True)
+        self.assertEqual(_validate_args(args, {"beats"}), ("beats",))
+
+    def test_single_song_command_includes_include_experiments_flag(self) -> None:
+        args = argparse.Namespace(
+            analysis_root="/tmp/analysis",
+            compare="beats",
+            fail_on_mismatch=False,
+            beat_tolerance_seconds=0.1,
+            tolerance_seconds=2.0,
+            chord_min_overlap=0.5,
+            device=None,
+            verbose=False,
+            stage=None,
+            include_experiments=True,
+        )
+        command = _single_song_command(args, Path("/tmp/_test_song.mp3"))
+        self.assertIn("--include-experiments", command)
+
+    def test_run_single_song_runs_experiment_queue_when_requested(self) -> None:
+        args = argparse.Namespace(
+            song="/tmp/_test_song.mp3",
+            analysis_root="/tmp/analysis",
+            fail_on_mismatch=False,
+            beat_tolerance_seconds=0.1,
+            tolerance_seconds=2.0,
+            chord_min_overlap=0.5,
+            device=None,
+            verbose=False,
+            stage=None,
+            include_experiments=True,
+            batch_song_index=None,
+            batch_song_total=None,
+        )
+        paths = SongPaths(song_path=Path("/tmp/_test_song.mp3"), analysis_root=Path("/tmp/analysis"))
+        with patch("analyzer.cli.build_song_paths", return_value=paths), patch(
+            "analyzer.cli.default_validation_report_paths",
+            return_value=(Path("/tmp/report.json"), Path("/tmp/report.md")),
+        ), patch("analyzer.cli._print_song_header"), patch(
+            "analyzer.cli.run_phase_1", return_value=0
+        ), patch("analyzer.cli.subprocess.run") as mock_run:
+            mock_run.return_value.returncode = 0
+            exit_code = _run_single_song(args, ("beats",))
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("experiments.run_queue", mock_run.call_args.args[0])
 
     def test_clean_generated_song_data_removes_generated_data_but_keeps_reference(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

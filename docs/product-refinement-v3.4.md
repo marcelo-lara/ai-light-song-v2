@@ -8,7 +8,9 @@ refinements, collected item by item. Nothing here is done by writing it down.
 driven by melody and harmony dynamics set against the drums. Reviewing it
 against `Queen of Kings - Alessandra` found it partly right, found that the
 instruments meant to test it are lying, and found there are no labels to score
-anything against. Three experiment lanes and two `ui/` labelling surfaces follow from that.
+anything against. Three experiment lanes and two `ui/` labelling surfaces follow
+from that; item 10 is supporting tooling — a queue that runs the experiment lanes
+on any song, not only the gold four.
 
 Evidence base, with the numbers:
 [`alessandra_findings.md`](alessandra_findings.md).
@@ -22,8 +24,9 @@ Evidence base, with the numbers:
 Today `layer_c_energy.json` asserts a `level` per section and per beat, nothing
 publishes it, and nothing has ever checked it against a human. The pipeline
 emits no periodicity signal at all. This release adds two `ui/` labelling
-surfaces, three experiment lanes that compete against the incumbent, and fixes
-the instruments that make the competition unfair.
+surfaces, three experiment lanes that compete against the incumbent, fixes
+the instruments that make the competition unfair, and adds a queue runner
+(item 10) so those lanes are reviewable on the whole corpus.
 
 ### What the review established
 
@@ -466,10 +469,87 @@ distinct from Moises-scored ones.
 
 ---
 
+## 10. An experiment queue that runs on any song — tooling
+
+**Current behaviour.** Every experiment is a bespoke entrypoint —
+`experiments/<topic>/run.py`, `run_in_container.sh`, its own Dockerfile, its own
+CLI. There is no way to run "all experiments" against a song, and
+`docs/experiments.md` scopes runs to the four gold songs because that is where a
+*scored* comparison means something. The operator wants the experiment
+**proposal lanes** visible on any song — the debugger is the only instrument for
+judging a claim, and it should work on the whole corpus, not just gold.
+
+**Change.** A `--include-experiments` switch on `./analyze` that, after the
+pipeline finishes, runs every enabled experiment over the same song set the run
+already targets (`--song` or `--all-songs`). A queue manifest lists the
+experiments; adding or removing one is a one-line edit.
+
+**Keeping `src/` clean.** `src/analyzer` must not import experiment code — that
+rule cost this repo ~6,000 lines once. `./analyze` recognises the flag and
+**dispatches to a separate runner as a subprocess** (`experiments/run_queue.py`,
+also runnable standalone as `./experiment --song … | --all-songs` so a lane can
+be regenerated without re-running the pipeline). The runner is the only thing
+that imports experiment code.
+
+**The manifest.** `experiments/queue.toml`, one row per experiment:
+
+```toml
+[[experiment]]
+name    = "texture_novelty"          # == dir == lane title (one name, three places)
+command = "python experiments/texture_novelty/run.py --analysis-dir {analysis_dir}"
+image   = "app"                      # compose service, or a per-experiment Dockerfile tag
+enabled = true
+```
+
+`command` is a template; the runner substitutes `{analysis_dir}` (and
+`{song_path}`) per song and runs it via `docker compose run` against `image`. No
+uniform Python signature is imposed — the template absorbs each experiment's
+existing CLI, so adding an experiment that already runs is just a row.
+
+**Failure isolation.** One experiment crashing on song 14 of 22 must not kill
+the batch or the other experiments. Each experiment-song pair runs in its own
+subprocess; the runner catches non-zero exits, records them, and prints an
+end-of-run summary (`experiment × song → ok | failed | no-op`). A missing
+per-experiment image is a recorded failure with a clear message, never a silent
+skip.
+
+**Exit code.** Experiments are advisory, like the `drops` compare target — a
+failed experiment is in the summary but does **not** flip `./analyze`'s exit
+code, which continues to reflect the pipeline and its validation only.
+
+**Scoring stays inside each experiment.** Experiments always *run* and write
+their `reference/proposals/*.json` lane on whatever songs the run targets;
+gold-set *scoring* is each experiment's own internal concern and no-ops silently
+where there is no ground truth. The manifest carries no per-song filter.
+
+### Decisions taken (2026-09-11, with the operator)
+
+| | | |
+| --- | --- | --- |
+| D7 | **resolved** | Runtime cost is not a constraint — a full `--all-songs --include-experiments` run may take hours. The heavy experiments (ACE-Step, ~22 GB weights) are not filtered out; the operator will leave the run going. |
+| D8 | **resolved** | `queue.toml` starts with only the experiments whose entrypoint already runs unattended (`texture_novelty`, `phrase_periodicity`, `structural_vs_micro` from this release). Others are added row-by-row as their entrypoint is made queue-runnable — that per-experiment adaptation is out of scope for this item. |
+
+**Docs that change in the same item.** `docs/reference/cli.md` (the new flag),
+`docs/experiments.md` (the "Run against the four gold songs" section gains: lanes
+are reviewable on any song via the queue; scoring still means gold only), and a
+new short "Queue runner" section in `docs/experiments.md` documenting
+`queue.toml` and `./experiment`.
+
+**Scope guard.** The runner writes nothing the experiments do not already write
+— `reference/proposals/` only, never `artifacts/`, never the top-level contract,
+never `reference/human/`. No promotion, no MCP change.
+
+**Done when** `./analyze --song "…" --include-experiments` runs the three v3.4
+experiment lanes and prints a summary, `./analyze --all-songs
+--include-experiments` does the same across the corpus with per-pair failure
+isolation, and adding a fourth experiment is a single `queue.toml` row.
+
+---
+
 ## Open questions blocking implementation
 
 **None.** `D4`, `D5` and `D6` were resolved with the operator on 2026-09-10;
-all nine items are unblocked.
+`D7` and `D8` on 2026-09-11. All ten items are unblocked.
 
 One measurement is outstanding but blocks nothing: the corpus-wide check on
 item 7's label/energy contradiction, which sets that item's scope rather than

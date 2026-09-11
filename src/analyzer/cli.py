@@ -54,6 +54,15 @@ def build_parser() -> argparse.ArgumentParser:
         choices=SINGLE_STAGE_NAMES,
         help="Run only one pipeline stage using existing prerequisite artifacts when needed.",
     )
+    parser.add_argument(
+        "--include-experiments",
+        action="store_true",
+        help=(
+            "After the pipeline completes for a song, run every enabled row of "
+            "experiments/queue.toml against it (failures advisory, summarised, "
+            "never merged into the analyzer exit code). Not allowed with --stage."
+        ),
+    )
     parser.add_argument("--batch-song-index", type=int, help=argparse.SUPPRESS)
     parser.add_argument("--batch-song-total", type=int, help=argparse.SUPPRESS)
     return parser
@@ -86,6 +95,8 @@ def _validate_args(args: argparse.Namespace, supported_targets: set[str]) -> tup
         raise UsageError(f"Unsupported compare target. Supported values: {sorted(supported_targets)}")
     if bool(args.song) == bool(args.all_songs):
         raise UsageError("Pass exactly one of --song or --all-songs.")
+    if getattr(args, "include_experiments", False) and args.stage:
+        raise UsageError("--include-experiments cannot be combined with --stage.")
     return compare_targets
 
 
@@ -109,9 +120,30 @@ def _run_single_song(args: argparse.Namespace, compare_targets: tuple[str, ...])
             report_json,
             report_md,
         )
-        return run_phase_1(paths, config, stage_name=args.stage)
+        exit_code = run_phase_1(paths, config, stage_name=args.stage)
+        if getattr(args, "include_experiments", False):
+            _run_experiment_queue(args)
+        return exit_code
     finally:
         clear_batch_progress()
+
+
+def _run_experiment_queue(args: argparse.Namespace) -> None:
+    """Run the experiment queue for one song as a subprocess. Its exit code is
+    logged, never merged into the analyzer exit code (mirrors the advisory
+    `drops` compare target). Dispatch is subprocess-only — this module never
+    imports the experiments package."""
+    command = [
+        sys.executable,
+        "-m",
+        "experiments.run_queue",
+        "--song",
+        str(args.song),
+        "--analysis-root",
+        str(args.analysis_root),
+    ]
+    completed = subprocess.run(command, check=False)
+    print(f"[experiments] queue pass exited {completed.returncode}", flush=True)
 
 
 def _batch_exit_code(exit_codes: list[int]) -> int:
@@ -153,6 +185,8 @@ def _single_song_command(
         command.append("--verbose")
     if args.stage:
         command.extend(["--stage", str(args.stage)])
+    if getattr(args, "include_experiments", False):
+        command.append("--include-experiments")
     if batch_song_index is not None or batch_song_total is not None:
         if batch_song_index is None or batch_song_total is None:
             raise ValueError("batch_song_index and batch_song_total must be provided together")
