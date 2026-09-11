@@ -70,6 +70,15 @@ describe("draft <-> hint mapping (design notes §4)", () => {
     expect(out.type).toBe("review");
   });
 
+  it("carries an explicit vocal type through hintToDraft / draftToHint untouched", () => {
+    const vocal = { ...hint, id: "hint-004", type: "vocal" as const };
+    const draft = hintToDraft(vocal);
+    expect(draft.type).toBe("vocal");
+    const out = buildHumanHintsPayload("song", [draftToHint(draft)])
+      .human_hints[0]!;
+    expect(out.type).toBe("vocal");
+  });
+
   it("omits capturedFrom and type on a hand-authored hint", () => {
     expect(hintToDraft(hint)).not.toHaveProperty("capturedFrom");
     const out = buildHumanHintsPayload("song", [draftToHint(hintToDraft(hint))])

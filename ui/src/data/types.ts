@@ -280,11 +280,13 @@ export interface HumanHint {
   captured_from?: string;
   /**
    * "review" when the hint originated from an experiment/event block seeded
-   * for review or annotation; absent (equivalent to "hint") for a
-   * hand-authored one. Editable in the hint editor; defaults from whether the
-   * hint carries a `captured_from` note.
+   * for review or annotation; "vocal" when a voice sounds continuously across
+   * the span (only ever chosen explicitly by the operator, never inferred);
+   * absent (equivalent to "hint") for a hand-authored one. Editable in the
+   * hint editor; "review" defaults from whether the hint carries a
+   * `captured_from` note, "vocal" never defaults.
    */
-  type?: "hint" | "review";
+  type?: "hint" | "review" | "vocal";
 }
 
 export interface HumanHintsFile {

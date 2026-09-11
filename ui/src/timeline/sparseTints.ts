@@ -27,6 +27,11 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   humanHintsReview: [205, 80, 55], // azure — a hint seeded from an
   //   experiment/event block for review, distinct from a hand-authored
   //   hint's amber
+  humanHintsVocal: [118, 65, 36], // warm green — a voice sounds continuously
+  //   across the span (voice = alive/present); distinct from humanHints'
+  //   amber (35), humanHintsReview's azure (205), and every green-ish hue
+  //   elsewhere in this file (arrangementState 95, phrasePeriodicity 130,
+  //   characterVocalLead/moisesLyricsHigh 150)
   dropProposals: [318, 72, 46], // magenta — deliberately unlike the amber of the
   //                               human hints it is auditioned against
   dropProposalsMatched: [168, 60, 40], // muted teal — a proposal that already

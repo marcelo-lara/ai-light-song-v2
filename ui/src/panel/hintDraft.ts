@@ -29,11 +29,13 @@ export interface HintDraftFields {
    */
   capturedFrom?: string;
   /**
-   * "hint" (from scratch) or "review" (seeded from an experiment/event block
-   * to review or annotate a finding). Editable in the form; defaults from
-   * whether the draft carries a `capturedFrom` note.
+   * "hint" (from scratch), "review" (seeded from an experiment/event block
+   * to review or annotate a finding), or "vocal" (a voice sounds continuously
+   * across the span). Editable in the form; "review" defaults from whether
+   * the draft carries a `capturedFrom` note; "vocal" is never inferred, only
+   * chosen explicitly via the dropdown.
    */
-  type: "hint" | "review";
+  type: "hint" | "review" | "vocal";
 }
 
 /** Accept "83.4" or "1:23.4" -> canonical seconds string ("83.4"). Empty and

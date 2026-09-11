@@ -330,6 +330,7 @@ export function HintEditorPanel({
             >
               <option value="hint">Hint (from scratch)</option>
               <option value="review">Review (from a finding)</option>
+              <option value="vocal">Vocal (voice sounds here)</option>
             </select>
           </div>
 

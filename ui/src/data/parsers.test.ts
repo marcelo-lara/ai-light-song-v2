@@ -184,6 +184,22 @@ describe("parseHumanHints", () => {
     expect(hints[0]!.type).toBe("review");
   });
 
+  it("carries a vocal type through, so it survives a reload", () => {
+    const hints = parseHumanHints({
+      song_name: "x",
+      human_hints: [
+        {
+          id: "hint-001",
+          title: "T",
+          start_time: 0,
+          end_time: 1,
+          type: "vocal",
+        },
+      ],
+    }).human_hints;
+    expect(hints[0]!.type).toBe("vocal");
+  });
+
   it("omits captured_from and type when absent or unrecognised", () => {
     const hints = parseHumanHints({
       song_name: "x",

@@ -132,6 +132,13 @@ describe("buildHumanHintsPayload", () => {
     ]).human_hints[0]!;
     expect(hintOverride.type).toBe("review");
   });
+
+  it("writes an explicit vocal type verbatim (never inferred, never dropped)", () => {
+    const hint = buildHumanHintsPayload("s", [
+      draft({ type: "vocal" }),
+    ]).human_hints[0]!;
+    expect(hint.type).toBe("vocal");
+  });
 });
 
 describe("saveHumanHints", () => {

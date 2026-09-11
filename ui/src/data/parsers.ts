@@ -355,7 +355,10 @@ export function parseHarmonicLayer(raw: unknown): HarmonicLayer {
 export function parseHumanHint(raw: unknown, ctx = "human_hint"): HumanHint {
   const o = asObject(raw, ctx);
   const capturedFrom = stringOr(o.captured_from, "", `${ctx}.captured_from`);
-  const type = o.type === "hint" || o.type === "review" ? o.type : undefined;
+  const type =
+    o.type === "hint" || o.type === "review" || o.type === "vocal"
+      ? o.type
+      : undefined;
   return {
     id: asString(o.id, `${ctx}.id`),
     title: stringOr(

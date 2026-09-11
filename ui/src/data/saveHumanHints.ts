@@ -22,12 +22,13 @@ export interface HintDraft {
    */
   captured_from?: string;
   /**
-   * "hint" (hand-authored, from scratch) or "review" (seeded from an
-   * experiment/event block to review or annotate a finding). Editable in the
-   * editor; defaults to "review" when the draft carries a `captured_from`
-   * note, "hint" otherwise.
+   * "hint" (hand-authored, from scratch), "review" (seeded from an
+   * experiment/event block to review or annotate a finding), or "vocal" (a
+   * voice sounds continuously across the span). Editable in the editor;
+   * defaults to "review" when the draft carries a `captured_from` note,
+   * "hint" otherwise — "vocal" is never a default, only an explicit choice.
    */
-  type?: "hint" | "review";
+  type?: "hint" | "review" | "vocal";
 }
 
 /**
@@ -70,8 +71,9 @@ export function buildHumanHintsPayload(
       lighting_hint: (hint.lighting_hint ?? "").trim(),
       // Emitted only for a non-empty note; hand-authored hints omit the key.
       ...(capturedFrom ? { captured_from: capturedFrom } : {}),
-      // Omitted for the "hint" default so hand-authored entries stay unchanged.
-      ...(type === "review" ? { type } : {}),
+      // Omitted for the "hint" default so hand-authored entries stay unchanged;
+      // any other explicit type (e.g. "review", "vocal") is written verbatim.
+      ...(type !== "hint" ? { type } : {}),
     };
   });
 

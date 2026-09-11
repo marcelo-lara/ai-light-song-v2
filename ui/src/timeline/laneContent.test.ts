@@ -82,6 +82,24 @@ describe("humanHintsContent", () => {
     });
     expect(blocks[0]!.tintId).toBe("humanHintsReview");
   });
+
+  it("tints a vocal-type hint distinctly from the lane's default and from review", () => {
+    const blocks = humanHintsContent({
+      song_name: "s",
+      human_hints: [
+        {
+          id: "hint-001",
+          title: "T",
+          start_time: 0,
+          end_time: 1,
+          summary: "",
+          lighting_hint: "",
+          type: "vocal",
+        },
+      ],
+    });
+    expect(blocks[0]!.tintId).toBe("humanHintsVocal");
+  });
 });
 
 describe("sectionsContent", () => {

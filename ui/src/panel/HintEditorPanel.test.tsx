@@ -16,7 +16,10 @@ const base = {
   onScrollToTime: () => {},
 };
 
-function fileWith(capturedFrom?: string): HumanHintsFile {
+function fileWith(
+  capturedFrom?: string,
+  type?: "hint" | "review" | "vocal",
+): HumanHintsFile {
   return {
     song_name: "RegFull - Fixture",
     human_hints: [
@@ -28,6 +31,7 @@ function fileWith(capturedFrom?: string): HumanHintsFile {
         summary: "",
         lighting_hint: "",
         ...(capturedFrom ? { captured_from: capturedFrom } : {}),
+        ...(type ? { type } : {}),
       },
     ],
   };
@@ -70,5 +74,22 @@ describe("HintEditorPanel — type dropdown", () => {
       <HintEditorPanel {...base} file={fileWith()} activeReference="hint-001" />,
     );
     expect((getByLabelText("Type") as HTMLSelectElement).value).toBe("hint");
+  });
+
+  it("offers exactly the hint/review/vocal options, and shows 'vocal' for an explicitly-typed hint", () => {
+    const { getByLabelText } = render(
+      <HintEditorPanel
+        {...base}
+        file={fileWith(undefined, "vocal")}
+        activeReference="hint-001"
+      />,
+    );
+    const select = getByLabelText("Type") as HTMLSelectElement;
+    expect(Array.from(select.options).map((o) => o.value)).toEqual([
+      "hint",
+      "review",
+      "vocal",
+    ]);
+    expect(select.value).toBe("vocal");
   });
 });

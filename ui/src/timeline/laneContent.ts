@@ -94,9 +94,11 @@ export function humanHintsContent(file: HumanHintsFile | null): SparseBlock[] {
     detail: h.lighting_hint || "-",
     summary: h.summary || "Reference hint window from human annotation.",
     // The lane's own "humanHints" amber tint applies for a "hint" (or absent)
-    // type; a "review" hint gets a distinct tint so it reads apart on the
-    // timeline.
+    // type; a "review" hint gets a distinct tint, and a "vocal" hint (a voice
+    // sounds continuously across the span) gets its own, so each reads apart
+    // on the timeline.
     ...(h.type === "review" ? { tintId: "humanHintsReview" } : {}),
+    ...(h.type === "vocal" ? { tintId: "humanHintsVocal" } : {}),
     raw: h,
   }));
 }
