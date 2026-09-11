@@ -89,7 +89,7 @@ function trimText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
 }
 
 /** marker payload merged so the item-6 inspector sees both adapter + raw fields */
-function markerFor(block: SparseBlock, laneId: string): LaneMarker {
+export function markerFor(block: SparseBlock, laneId: string): LaneMarker {
   const base =
     block.raw && typeof block.raw === "object"
       ? (block.raw as Record<string, unknown>)

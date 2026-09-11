@@ -7,9 +7,14 @@
 // `aria-modal`, no outside-click dismissal; it closes via its ✕, `esc`, its
 // lane's opener button, or a song change.
 //
-// A card click seeks (only when paused — item 1 / D1) and does nothing else
-// (D2): the panel stays on the same lane. Card colour comes from the same
-// `sparseTint` source the timeline blocks use so the two read as one thing.
+// A card click seeks (only when paused — item 1 / D1), scrolling the
+// timeline to keep the playhead visible if the seek target falls outside the
+// current scroll window, and does nothing else (D2): the panel stays on the
+// same lane. A card double-click seeks the same way and additionally opens
+// the item-6 block inspector for that event (the humanHints lane opens the
+// hint editor instead, same routing as a canvas double-click). Card colour
+// comes from the same `sparseTint` source the timeline blocks use so the two
+// read as one thing.
 //
 // item 4 / R1 "highlight the active card": the card covering `currentTime`
 // (per `activeBlockIndex`) gets `data-active="true"` / `aria-current`. While
@@ -43,7 +48,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ArtifactStatus } from "../data";
 import type { BlockEnergyDraft } from "../data/saveBlockEnergy";
 import type { BlockEnergyFile } from "../data/types";
+import type { LaneMarker } from "../timeline/laneRenderers";
 import type { SparseBlock } from "../timeline/laneContent";
+import { markerFor } from "../timeline/SparseLane";
 import { sparseTint } from "../timeline/sparseTints";
 
 import { activeBlockIndex, isInPlayheadWindow } from "./laneEvents";
@@ -77,6 +84,8 @@ interface LaneEventsPanelProps {
   playing: boolean;
   onClose: () => void;
   onSelectBlock: (block: SparseBlock) => void;
+  /** double-click a card -> open the item-6 block inspector for it */
+  onSelectMarker: (marker: LaneMarker) => void;
   /** v3.4 item 4 — supplied only for the Human Hints panel */
   blockEnergy?: BlockEnergyPanelProps | undefined;
   /** v3.4 item 5 — supplied only for the Moises Lyrics panel */
@@ -147,6 +156,7 @@ export function LaneEventsPanel({
   playing,
   onClose,
   onSelectBlock,
+  onSelectMarker,
   blockEnergy,
   lyricValidation,
 }: LaneEventsPanelProps): React.JSX.Element {
@@ -316,6 +326,7 @@ export function LaneEventsPanel({
                     className="lane-events__cardmain"
                     data-testid={`lane-event-${block.id}`}
                     onClick={() => onSelectBlock(block)}
+                    onDoubleClick={() => onSelectMarker(markerFor(block, laneId))}
                   >
                     <span className="lane-events__label">{block.label}</span>
                     <span className="lane-events__caption">{block.caption}</span>

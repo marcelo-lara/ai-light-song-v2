@@ -418,16 +418,6 @@ export function App(): React.JSX.Element {
     };
   }, [panelMode, eventsLaneId, artifacts, laneContentSources]);
 
-  // R3/D1 + D2: a lane-events card click seeks (only when paused) and nothing
-  // else — the panel stays on the same lane.
-  const handleSelectBlock = useCallback(
-    (block: SparseBlock) => {
-      const seekTo = seekTimeForCardClick(transport.isPlaying, block.start_s);
-      if (seekTo !== null) transport.seekTo(seekTo);
-    },
-    [transport],
-  );
-
   const scrollTimelineToTime = useCallback(
     (seconds: number) => {
       const el = scrollerRef.current;
@@ -437,6 +427,32 @@ export function App(): React.JSX.Element {
       el.scrollLeft = Math.max(0, Math.min(target, max));
     },
     [coords],
+  );
+
+  // whether `seconds`' playhead x-position currently sits inside the
+  // scroller's visible window (label column excluded).
+  const isTimeVisible = useCallback(
+    (seconds: number) => {
+      const el = scrollerRef.current;
+      if (!el) return true;
+      const x = LABEL_WIDTH + coords.timeToX(seconds);
+      return x >= el.scrollLeft + LABEL_WIDTH && x <= el.scrollLeft + el.clientWidth;
+    },
+    [coords],
+  );
+
+  // R3/D1 + D2: a lane-events card click seeks (only when paused) and scrolls
+  // the playhead into view when it's off-screen — the panel stays on the same
+  // lane.
+  const handleSelectBlock = useCallback(
+    (block: SparseBlock) => {
+      const seekTo = seekTimeForCardClick(transport.isPlaying, block.start_s);
+      if (seekTo !== null) {
+        transport.seekTo(seekTo);
+        if (!isTimeVisible(seekTo)) scrollTimelineToTime(seekTo);
+      }
+    },
+    [transport, isTimeVisible, scrollTimelineToTime],
   );
 
   const openHintEditor = useCallback((reference: string | null) => {
@@ -487,7 +503,12 @@ export function App(): React.JSX.Element {
     (marker: LaneMarker) => {
       // R3/D1: a card click never moves the playhead while playing.
       const seekTo = seekTimeForCardClick(transport.isPlaying, marker.time);
-      if (seekTo !== null) transport.seekTo(seekTo);
+      if (seekTo !== null) {
+        transport.seekTo(seekTo);
+        // scroll the playhead into view only when it's out of the current
+        // window — never yank the timeline when it's already visible.
+        if (!isTimeVisible(seekTo)) scrollTimelineToTime(seekTo);
+      }
       if (marker.laneId === "humanHints") {
         openHintEditor(marker.id);
         return;
@@ -496,7 +517,7 @@ export function App(): React.JSX.Element {
       setSelection(selectionFromMarker(marker));
       setPanelMode("inspector");
     },
-    [transport, openHintEditor],
+    [transport, openHintEditor, isTimeVisible, scrollTimelineToTime],
   );
 
   // item 7 (ui-issues finding 7): the server-normalised file returned by the
@@ -1115,6 +1136,7 @@ export function App(): React.JSX.Element {
             playing={transport.isPlaying}
             onClose={closePanel}
             onSelectBlock={handleSelectBlock}
+            onSelectMarker={handleSelectMarker}
             blockEnergy={
               eventsPanel.laneId === "humanHints"
                 ? { file: blockEnergyFile, onSave: handleSaveBlockEnergy }

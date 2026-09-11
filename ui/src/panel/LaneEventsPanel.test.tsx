@@ -39,6 +39,7 @@ const base = {
   playing: false,
   onClose: () => {},
   onSelectBlock: () => {},
+  onSelectMarker: () => {},
 };
 
 describe("LaneEventsPanel", () => {
@@ -91,6 +92,21 @@ describe("LaneEventsPanel", () => {
       ) as HTMLElement,
     );
     expect(onSelectBlock).toHaveBeenCalledWith(BLOCKS[1]);
+  });
+
+  it("double-clicking a card calls onSelectMarker with a marker for that block", () => {
+    const onSelectMarker = vi.fn();
+    const { container } = render(
+      <LaneEventsPanel {...base} blocks={BLOCKS} onSelectMarker={onSelectMarker} />,
+    );
+    fireEvent.dblClick(
+      container.querySelector(
+        '[data-testid="lane-event-hint-002"]',
+      ) as HTMLElement,
+    );
+    expect(onSelectMarker).toHaveBeenCalledWith(
+      expect.objectContaining({ laneId: base.laneId, id: "hint-002" }),
+    );
   });
 
   it("renders the loading state string", () => {
