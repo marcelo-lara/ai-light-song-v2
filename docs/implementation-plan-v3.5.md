@@ -380,7 +380,7 @@ width/regularity, portamento, sibilance (4–10 kHz bursts), combined into a
 per-frame voiceness score. Reuses `experiments/vocal_phrases/`'s cached pYIN
 f0 track rather than recomputing it.
 
-- [ ] `experiments/vocal_voiceness/` — `features.py` (vibrato, portamento,
+- [x] `experiments/vocal_voiceness/` — `features.py` (vibrato, portamento,
   sibilance extractors reading `artifacts/stems/vocals.wav` +
   `artifacts/essentia/fft_bands.vocals.json` from item 3's chosen stem
   variant), `model.py` (combines the three cues, no ML weights — hand-combined
@@ -390,34 +390,72 @@ f0 track rather than recomputing it.
   subcommands, item-2 convention), `score.py` (wraps
   `voiceness_common.scorer`), `README.md` (entry shape per
   `docs/experiments.md`).
-- [ ] **Bridge the known `sustained_notes` gap.** `vocal_phrases`'s hysteresis
+- [x] **Bridge the known `sustained_notes` gap.** `vocal_phrases`'s hysteresis
   drops a held note mid-decay; this item's continuous f0 track is used to
   bridge across that dip (pitch continuity, not just level) — implement this
   explicitly rather than inheriting the gap silently.
-- [ ] Debugger lane: `4. Vocal Voiceness`, under Human Hints, reads
+- [x] Debugger lane: `4. Vocal Voiceness`, under Human Hints, reads
   `reference/proposals/vocal_voiceness.json` — per-frame voiceness rendered as
   a dense curve (mirrors `Character`'s rendering pattern) plus `vocal_phrase`
   blocks as discrete spans.
-- [ ] `queue.toml` — new `[[experiment]]` row, `image = "app"` (no new image
+- [x] `queue.toml` — new `[[experiment]]` row, `image = "app"` (no new image
   needed — same image as `vocal_phrases`).
-- [ ] `docs/experiments.md` — new entry with the four-column comparison table
-  (this item vs `arrangement_state`, `vocal_phrases`, mix-RMS) at a matched
-  budget.
+- [x] `docs/experiments.md` — new entry with the comparison table (this item vs
+  `arrangement_state`, `vocal_phrases`, mix-RMS) — as the "matched budget"
+  proxy metric per D3.2 (no `type: "vocal"` ground truth exists yet).
+
+**D4.1 (resolved).** No literal dense-curve renderer exists in this UI —
+`SparseLane` draws blocks only. The dense voiceness curve is approximated by
+merging consecutive same-bucket 50 ms frames (5 intensity buckets, one hue
+ramped by lightness) into run-blocks, matching the existing technique
+`Moises Lyrics`' confidence-bucket tinting already uses. Revisit only if a
+true continuous-curve renderer is built for another lane later.
+
+**D4.2 (resolved).** The `sustained_notes` bridge fix is implemented and
+verified real (2 of 37 `ayuni` gaps exceed the stock 0.5 s breath threshold
+and merge only via pitch continuity) but still produces zero `sustained_note`
+rows anywhere — a separate, still-open limit in the sustain scan's own
+pitch-tolerance gate. Reported as a known remaining gap, not claimed fixed;
+worth a follow-up issue once ground truth exists to tune against.
+
+**D4.3 (resolved).** Noisy-OR combination weights (sibilance 0.80 / vibrato
+0.55 / portamento 0.35) and all vibrato/portamento/bridge thresholds are
+documented judgement calls in `model.py`'s docstring, not fit to any corpus —
+there is no ground truth yet to fit against. Revisit once item 1's marking
+exists.
 
 ### Validation
 
-- [ ] `docker compose run --rm app python -m experiments.vocal_voiceness.run
-  compute --song ayuni && ... export --song ayuni` produces
-  `reference/proposals/vocal_voiceness.json`.
-- [ ] `docker compose run --rm app python -m experiments.vocal_voiceness.score`
-  reports the matched-budget table against item 2's incumbents on the scoring
-  corpus.
-- [ ] `docker compose run --rm ui npm run test` + `npm run build`.
+- [x] `docker compose run --rm app python -m experiments.vocal_voiceness.run
+  compute --song ayuni && ... export --song ayuni` (and all 5
+  scoring-corpus songs — `_test_song`, `ayuni`, `Hideaway - Kiesza`,
+  `Armin - Revolution`, `Titanium - David Guetta ft Sia`) produced
+  `reference/proposals/vocal_voiceness.json` for each.
+- [x] `docker compose run --rm app python -m experiments.vocal_voiceness.score`
+  ran the full corpus; `out/score.txt` populated.
+- [x] `docker compose run --rm ui npm run test` (387/388 — the one failure is
+  a pre-existing, unrelated accessible-name regression on the "Lanes" toggle
+  button, introduced outside this item's diff; see the note below) +
+  `npm run build` clean.
 
-**Kill condition.** Does not cut the false-vocal rate on `ayuni` below the
-`arrangement_state` incumbent at a matched budget → written up as a negative
-result in `docs/experiments.md`, lane kept for one operator review pass per the
-standing convention, item 8 does not treat this as the winner.
+**Note on the pre-existing `ui/src/App.tsx` "Lanes" button regression.** A
+concurrent, unrelated edit to `App.tsx` (removing the button's visible
+"Lanes" text, breaking its accessible name) was present in the working tree
+alongside this item's changes but is not part of this item's diff — isolated
+via hunk-level staging so this commit carries only the `vocalVoiceness`
+artifact-wiring lines. The regression itself is left as-is in the working
+tree (not reverted, not committed) since its origin and intent are unknown;
+if it persists, it should be logged to a `ui/` issue tracker separately from
+this plan.
+
+**Kill condition — unevaluable, not failed.** With zero `type: "vocal"`
+ground truth marked anywhere in this environment (item 1 left marking to the
+operator), the aggregate proxy metric favors `vocal_voiceness`
+(false-vocal-rate proxy 0.179) over `arrangement_state` (0.596) on every song
+including `ayuni` (0.180 vs 0.408) — but this is a firing-rate proxy, not the
+validated metric, so it is **not** scored as a pass of the kill condition.
+Re-run `score` once item 1's marking exists; do not treat this proxy result as
+a promotion signal for item 8.
 
 ### Visual QA
 

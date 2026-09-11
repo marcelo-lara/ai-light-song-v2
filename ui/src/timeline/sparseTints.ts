@@ -40,6 +40,17 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalPhrases: [340, 55, 46], // rose — distinct from moisesLyrics' slate blue
   vocalPhrasesGap: [220, 10, 40], // near-grey — an instrumental (no-vocal) span
   vocalPhrasesSustained: [280, 60, 48], // violet-pink — a held note marker
+  // v3.5 item 4 — per-frame voiceness curve (vibrato+portamento+sibilance,
+  // noisy-OR), one hue (260, violet-blue) ramped by intensity so the lane
+  // reads as a curve rather than a qualitative label; `vocalVoicenessPhrase`
+  // is a distinct hue for the overlaid bridged `vocal_phrase` spans.
+  vocalVoicenessVeryLow: [260, 20, 22],
+  vocalVoicenessLow: [260, 35, 30],
+  vocalVoicenessMid: [260, 55, 40],
+  vocalVoicenessHigh: [260, 75, 48],
+  vocalVoicenessVeryHigh: [260, 90, 56],
+  vocalVoicenessPhrase: [200, 65, 44], // distinct from the curve's 260 hue and
+  //   from vocalPhrases' rose (340)
   arrangementState: [95, 55, 44], // olive-lime — distinct from vocalPhrases' rose
   //                                 (340) and dropProposals' magenta (318)
   arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a

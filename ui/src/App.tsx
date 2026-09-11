@@ -138,6 +138,10 @@ const TIMELINE_KEYS = [
   // (experiments/structural_vs_micro, v3.4 item 8 — failed its kill condition,
   // lane kept for one review pass)
   "structuralVsMicro",
+  // per-frame voiceness (vibrato+portamento+sibilance) + bridged phrase
+  // blocks (experiments/vocal_voiceness, v3.5 item 4 — kill condition
+  // unevaluable until item 1's `type: "vocal"` ground truth exists)
+  "vocalVoiceness",
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
   // lane's production data source.
   "eventTimeline",
@@ -157,6 +161,7 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   textureNovelty: "textureNovelty",
   phrasePeriodicity: "phrasePeriodicity",
   structuralVsMicro: "structuralVsMicro",
+  vocalVoiceness: "vocalVoiceness",
   gestures: "eventTimeline",
   character: "character",
   vocalTranscription: "vocalTranscription",
@@ -337,6 +342,7 @@ export function App(): React.JSX.Element {
       textureNovelty: artifacts.textureNovelty.data,
       phrasePeriodicity: artifacts.phrasePeriodicity.data,
       structuralVsMicro: artifacts.structuralVsMicro.data,
+      vocalVoiceness: artifacts.vocalVoiceness.data,
       gestures: artifacts.eventTimeline.data,
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
@@ -354,6 +360,7 @@ export function App(): React.JSX.Element {
       artifacts.textureNovelty.data,
       artifacts.phrasePeriodicity.data,
       artifacts.structuralVsMicro.data,
+      artifacts.vocalVoiceness.data,
       artifacts.eventTimeline.data,
       artifacts.character.data,
       artifacts.vocalTranscription.data,

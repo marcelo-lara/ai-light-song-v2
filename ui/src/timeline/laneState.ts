@@ -74,6 +74,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "arrangementState", label: "Arrangement State", sub: "arrangement_state · who is playing, per-stem RMS state changes", kind: "proposals", height: 58 },
   { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58, experiment: "drop_detection" },
   { id: "vocalPhrases", label: "Vocal Phrases", sub: "experiment · phrase / gap / sustained-note blocks over the vocal stem", kind: "proposals", height: 58, experiment: "vocal_phrases" },
+  { id: "vocalVoiceness", label: "4. Vocal Voiceness", sub: "experiment · per-frame voiceness (vibrato + portamento + sibilance) + bridged phrase blocks", kind: "proposals", height: 84, experiment: "vocal_voiceness" },
   { id: "textureNovelty", label: "2. Texture Novelty", sub: "experiment · self-similarity novelty texture segments", kind: "proposals", height: 58, experiment: "texture_novelty" },
   { id: "phrasePeriodicity", label: "3. Phrase Periodicity", sub: "experiment · per-bar autocorrelation regime + period", kind: "proposals", height: 58, experiment: "phrase_periodicity" },
   { id: "structuralVsMicro", label: "4. Structural vs Micro", sub: "experiment · 4-bar phrase-grid fit · structural vs micro block kind", kind: "proposals", height: 58, experiment: "structural_vs_micro" },

@@ -683,3 +683,73 @@ export async function loadStructuralVsMicro(
   }
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// vocalVoiceness — reference/proposals/vocal_voiceness.json
+// ---------------------------------------------------------------------------
+//
+// The `voiceness_common.schema` proposal shape shared by every voiceness
+// candidate (items 4-7 — this file is item 4, `experiments/vocal_voiceness`):
+// a per-50ms-frame `voiceness` score in [0,1] (vibrato + portamento +
+// sibilance, noisy-OR combined — see the experiment's `model.py`) plus
+// `vocal_phrase` spans derived with a pitch-continuity bridge over
+// `vocal_phrases`' known `sustained_notes` gap. Not ground truth — a
+// proposal to audition against Human Hints; kill condition unevaluable until
+// item 1's `type: "vocal"` ground truth exists (see the experiment README).
+
+export interface VoicenessFrameRow {
+  time_s: number;
+  voiceness: number;
+  confidence: number | null;
+}
+
+export interface VocalVoicenessFile {
+  schema_version: string;
+  song_name: string;
+  interval_ms: number;
+  frames: VoicenessFrameRow[];
+  vocal_phrase: { start_s: number; end_s: number; confidence: number | null }[];
+}
+
+export function parseVocalVoiceness(raw: unknown): VocalVoicenessFile {
+  const o = asObject(raw, "reference/proposals/vocal_voiceness.json");
+  const meta = rec(o.metadata);
+  const frames = arr(o.frames).map((row): VoicenessFrameRow => {
+    const r = rec(row);
+    return {
+      time_s: num(r.time),
+      voiceness: num(r.voiceness),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    };
+  });
+  const vocal_phrase = arr(o.vocal_phrase).map((row) => {
+    const r = rec(row);
+    const start_s = num(r.start);
+    return {
+      start_s,
+      end_s: Math.max(num(r.end, start_s), start_s),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    };
+  });
+  return {
+    schema_version: st(o.schema_version),
+    song_name: st(o.song_name),
+    interval_ms: num(meta.interval_ms, 50),
+    frames,
+    vocal_phrase,
+  };
+}
+
+export async function loadVocalVoiceness(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<VocalVoicenessFile>> {
+  const result = await loadJson(artifactPaths.vocalVoiceness(song), parseVocalVoiceness, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, interval_ms: 50, frames: [], vocal_phrase: [] },
+    };
+  }
+  return result;
+}

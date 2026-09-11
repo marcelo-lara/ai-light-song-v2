@@ -1134,6 +1134,85 @@ open follow-ons, not committed to a queue row here.
 
 ---
 
+## Vocal voiceness — vibrato + portamento + sibilance timbre discriminator
+
+*(no external model — classical DSP: pitch/vibrato/portamento/sibilance features)*
+
+### Status
+
+**OPEN — built and running, kill condition unevaluable until item 1's ground
+truth exists.** v3.5 item 4. Built as
+[`../experiments/vocal_voiceness/`](../experiments/vocal_voiceness/README.md).
+`compute`/`export`/`score` run green on all 5 scoring-corpus songs
+(`_test_song`, `ayuni`, `Hideaway - Kiesza`, `Armin - Revolution`,
+`Titanium - David Guetta ft Sia`). Debugger lane `4. Vocal Voiceness` wired in
+under Human Hints. No song in this environment carries `type: "vocal"` ground
+truth (same finding as item 3), so the kill condition — beat
+`arrangement_state`'s false-vocal rate on `ayuni` at a matched budget —
+cannot actually be evaluated; `score.py` reports an honest proxy instead.
+
+### Why? What for?
+
+Can pitch-contour + spectral cues (vibrato width, portamento glide, sibilance
+bursts) separate a sung phrase from a pitched-instrument leak where a level
+gate cannot? `arrangement_state` reports `vocals` present 40.8% of `ayuni` —
+the false-vocal question items 3-7 chase from different angles.
+
+### Experiment Plan
+
+Three per-50ms-frame cues (vibrato depth×rate, portamento slope×fit,
+sibilance band-level×transient burst — the last read straight off the
+published `fft_bands.vocals.json`, no new FFT), combined by **noisy-OR**
+(`voiceness = 1 - Π(1 - wᵢ·cueᵢ)`, weights sibilance 0.80 / vibrato 0.55 /
+portamento 0.35 — documented judgement, not corpus-fit), scored via
+`voiceness_common.scorer` against all three shared incumbents. Also
+implements the **pitch-continuity bridge** over `vocal_phrases`' documented
+`sustained_notes` gap (a held note's amplitude decay drops the hysteresis
+gate mid-note): bridges word-level runs across gaps ≤0.6s that stay within 60
+cents.
+
+### Results evidence
+
+Full tables: [`../experiments/vocal_voiceness/README.md`](../experiments/vocal_voiceness/README.md).
+
+**Bridge measurably adds value beyond `vocal_phrases`' own 0.5s breath merge**
+— on `ayuni`, 2 of 37 bridged gaps exceed 0.5s (0.557s, 0.592s; pitch-continuous
+within 0-5 cents) and would not have merged otherwise. But `sustained_notes`
+is still **0** on every tested song even after bridging — a separate,
+unfixed limit in the sustain scan's own pitch-tolerance/duration gate, not the
+amplitude-gate fragmentation this item targeted.
+
+Aggregate proxy `false_vocal_rate` / `bounds_per_min` across all 5
+scoring-corpus songs (0 marked ground-truth spans on every song — see caveat
+below): **vocal_voiceness 0.179 / 46.4** vs `arrangement_state` 0.596 / 6.9,
+`vocal_phrases` 0.293 / 46.6, mix-RMS baseline 0.922 / 29.0. On `ayuni`
+specifically (the plan's kill-condition song): vocal_voiceness 0.180 vs
+arrangement_state 0.408 — lower on the literal proxy number.
+
+**No ground truth exists yet** — every scoring-corpus song has zero
+`type == "vocal"` hints in this environment (item 3's finding, confirmed
+again here). So every `false_vocal_rate` above is "fraction of frames called
+voiced," not a validated correctness measure — a candidate that fires less
+often always scores better on this proxy, so `vocal_voiceness` reading lower
+than `arrangement_state` on `ayuni` is **not** a pass of the kill condition.
+`is_proxy_no_ground_truth` flags every row.
+
+### Conclusion
+
+Built, green end-to-end on all 5 scoring-corpus songs. The pitch-continuity
+bridge is real and demonstrated (concrete evidence on `ayuni`: 2 of 37
+bridged gaps exceed the stock 0.5s breath threshold), but has not yet
+produced a single `sustained_notes` row anywhere — a genuinely separate gap
+from the one this item fixed. The false-vocal-rate table favours
+`vocal_voiceness` over every incumbent on every song, consistently, but with
+zero ground truth that is a firing-rate proxy, not a correctness win —
+**not a promotion candidate on current evidence**, and the kill condition is
+explicitly unevaluable, not passed or failed. Next step: mark `type: "vocal"`
+spans on `ayuni` (item 1's open follow-on), then re-run `score` with no code
+change.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

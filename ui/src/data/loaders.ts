@@ -14,6 +14,7 @@ import {
   loadTextureNovelty,
   loadPhrasePeriodicity,
   loadStructuralVsMicro,
+  loadVocalVoiceness,
 } from "./sparseArtifacts";
 import {
   parseBeats,
@@ -264,6 +265,7 @@ export const artifactLoaders = {
   textureNovelty: loadTextureNovelty,
   phrasePeriodicity: loadPhrasePeriodicity,
   structuralVsMicro: loadStructuralVsMicro,
+  vocalVoiceness: loadVocalVoiceness,
   character: loadCharacter,
   vocalTranscription: loadVocalTranscription,
   beats: loadBeats,

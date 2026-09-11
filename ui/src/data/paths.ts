@@ -76,6 +76,13 @@ export const artifactPaths = {
   // review pass.
   structuralVsMicro: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "structural_vs_micro.json")),
+  // Written by experiments/vocal_voiceness (`run export`). A shared
+  // voiceness_common.schema proposal: per-50ms-frame voiceness score
+  // (vibrato + portamento + sibilance, noisy-OR combined) plus bridged
+  // vocal_phrase spans. A proposal to audition against Human Hints — kill
+  // condition unevaluable until item 1's `type: "vocal"` ground truth exists.
+  vocalVoiceness: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "vocal_voiceness.json")),
   // Moises' word-level sung-lyric export, delivered as external reference. A
   // flat list of word tokens with `line_id`, `start`, `end`; `<SOL>` / `<EOL>`
   // rows mark line boundaries. Read-only ground truth, never written by the

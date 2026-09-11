@@ -1,0 +1,44 @@
+Vocal voiceness — vs arrangement_state / vocal_phrases / mix-RMS
+==================================================================
+
+_test_song  (0 marked vocal spans)
+  candidate             false_vocal_rate  bounds/min   F1@0.5s
+  vocal_voiceness                 0.1454       22.74     0.000  (proxy — no ground truth)
+  arrangement_state               0.3787       10.34     0.000  (proxy — no ground truth)
+  vocal_phrases                   0.3830       22.74     0.000  (proxy — no ground truth)
+  mix_rms_baseline                0.9535        6.20     0.000  (proxy — no ground truth)
+
+Hideaway - Kiesza  (0 marked vocal spans)
+  candidate             false_vocal_rate  bounds/min   F1@0.5s
+  vocal_voiceness                 0.2219       54.36     0.000  (proxy — no ground truth)
+  arrangement_state               0.8343        6.68     0.000  (proxy — no ground truth)
+  vocal_phrases                   0.3182       54.84     0.000  (proxy — no ground truth)
+  mix_rms_baseline                0.8401       39.10     0.000  (proxy — no ground truth)
+
+Armin - Revolution  (0 marked vocal spans)
+  candidate             false_vocal_rate  bounds/min   F1@0.5s
+  vocal_voiceness                 0.0564       55.68     0.000  (proxy — no ground truth)
+  arrangement_state               0.6418        5.57     0.000  (proxy — no ground truth)
+  vocal_phrases                   0.2314       55.68     0.000  (proxy — no ground truth)
+  mix_rms_baseline                0.9794       10.52     0.000  (proxy — no ground truth)
+
+Titanium - David Guetta ft Sia  (0 marked vocal spans)
+  candidate             false_vocal_rate  bounds/min   F1@0.5s
+  vocal_voiceness                 0.2930       45.97     0.000  (proxy — no ground truth)
+  arrangement_state               0.7143        5.16     0.000  (proxy — no ground truth)
+  vocal_phrases                   0.2868       46.48     0.000  (proxy — no ground truth)
+  mix_rms_baseline                0.9602       18.59     0.000  (proxy — no ground truth)
+
+ayuni  (0 marked vocal spans)
+  candidate             false_vocal_rate  bounds/min   F1@0.5s
+  vocal_voiceness                 0.1800       53.19     0.000  (proxy — no ground truth)
+  arrangement_state               0.4082        6.56     0.000  (proxy — no ground truth)
+  vocal_phrases                   0.2449       53.19     0.000  (proxy — no ground truth)
+  mix_rms_baseline                0.8765       70.67     0.000  (proxy — no ground truth)
+
+Aggregate across 5 songs:
+  candidate             avg false_vocal_rate  avg bounds/min
+  vocal_voiceness                     0.1793           46.39
+  arrangement_state                   0.5955            6.86
+  vocal_phrases                       0.2929           46.59
+  mix_rms_baseline                    0.9219           29.02

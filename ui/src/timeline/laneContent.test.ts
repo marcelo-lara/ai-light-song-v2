@@ -28,12 +28,14 @@ import {
   textureNoveltyContent,
   phrasePeriodicityContent,
   structuralVsMicroContent,
+  vocalVoicenessContent,
 } from "./laneContent";
 import type {
   ArrangementStateFile,
   TextureNoveltyFile,
   PhrasePeriodicityFile,
   StructuralVsMicroFile,
+  VocalVoicenessFile,
 } from "../data/sparseArtifacts";
 import { romanNumeral } from "./romanNumeral";
 
@@ -495,6 +497,52 @@ describe("phrasePeriodicityContent", () => {
 
   it("never throws on a missing file", () => {
     expect(phrasePeriodicityContent(null)).toEqual([]);
+  });
+});
+
+describe("vocalVoicenessContent", () => {
+  const file: VocalVoicenessFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    interval_ms: 50,
+    frames: [
+      { time_s: 0.0, voiceness: 0.05, confidence: 0.9 },
+      { time_s: 0.05, voiceness: 0.08, confidence: 0.84 },
+      { time_s: 0.1, voiceness: 0.72, confidence: 0.44 },
+      { time_s: 0.15, voiceness: 0.81, confidence: 0.62 },
+      { time_s: 0.2, voiceness: 0.79, confidence: 0.58 },
+    ],
+    vocal_phrase: [{ start_s: 0.1, end_s: 0.25, confidence: 0.6 }],
+  };
+  const blocks = vocalVoicenessContent(file);
+
+  it("merges consecutive same-bucket frames into one run block", () => {
+    // frames 0-1 are both "veryLow" (< 0.2) -> one merged run
+    const veryLowRun = blocks.find((b) => b.tintId === "vocalVoicenessVeryLow");
+    expect(veryLowRun).toBeDefined();
+    expect(veryLowRun!.start_s).toBe(0.0);
+    expect(veryLowRun!.end_s).toBe(0.1);
+    expect(veryLowRun!.detail).toBe("2 frames");
+  });
+
+  it("starts a new run when the bucket changes", () => {
+    // frame index 2 (0.72, "high") differs from frame index 3/4 ("veryHigh")
+    const highRun = blocks.find((b) => b.tintId === "vocalVoicenessHigh");
+    expect(highRun).toBeDefined();
+    expect(highRun!.start_s).toBe(0.1);
+    expect(highRun!.end_s).toBe(0.15);
+  });
+
+  it("appends vocal_phrase spans as their own tinted blocks", () => {
+    const phraseBlock = blocks.find((b) => b.tintId === "vocalVoicenessPhrase");
+    expect(phraseBlock).toBeDefined();
+    expect(phraseBlock!.start_s).toBe(0.1);
+    expect(phraseBlock!.end_s).toBe(0.25);
+    expect(phraseBlock!.wideLabel).toContain("bridged phrase");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(vocalVoicenessContent(null)).toEqual([]);
   });
 });
 

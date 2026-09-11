@@ -26,6 +26,7 @@ import type {
   TextureNoveltyFile,
   PhrasePeriodicityFile,
   StructuralVsMicroFile,
+  VocalVoicenessFile,
 } from "../data/sparseArtifacts";
 
 import { romanNumeral } from "./romanNumeral";
@@ -615,6 +616,113 @@ export function structuralVsMicroContent(
 }
 
 /**
+ * Which intensity bucket a voiceness frame falls in — the SparseLane block
+ * primitive has no continuous-curve renderer, so the "dense curve" this lane
+ * needs is approximated by merging consecutive same-bucket frames (at the
+ * file's native 50ms grid) into a run block, tinted on a single-hue ramp
+ * (`sparseTints.ts`, hue 260) so a glance across the lane reads as a curve's
+ * shape rather than five discrete colours. Bucket edges are round numbers,
+ * not fit to any ground truth (none exists yet — see the experiment README).
+ */
+type VoicenessBucket = "veryLow" | "low" | "mid" | "high" | "veryHigh";
+
+function voicenessBucket(v: number): VoicenessBucket {
+  if (v >= 0.8) return "veryHigh";
+  if (v >= 0.6) return "high";
+  if (v >= 0.4) return "mid";
+  if (v >= 0.2) return "low";
+  return "veryLow";
+}
+
+const VOICENESS_BUCKET_TINT: Record<VoicenessBucket, string> = {
+  veryLow: "vocalVoicenessVeryLow",
+  low: "vocalVoicenessLow",
+  mid: "vocalVoicenessMid",
+  high: "vocalVoicenessHigh",
+  veryHigh: "vocalVoicenessVeryHigh",
+};
+
+/**
+ * Per-frame voiceness curve (vibrato + portamento + sibilance, noisy-OR
+ * combined — `experiments/vocal_voiceness/model.py`) plus the bridged
+ * `vocal_phrase` spans, from the shared `voiceness_common.schema` proposal.
+ * A proposal to audition against Human Hints, not ground truth — kill
+ * condition unevaluable until item 1's `type: "vocal"` ground truth exists.
+ *
+ * Consecutive frames sharing an intensity bucket are merged into one run
+ * block (see `voicenessBucket`) so the curve doesn't render one block per
+ * 50ms frame; `vocal_phrase` spans are appended as their own, differently
+ * tinted blocks so SparseLane's row-packing stacks them below the curve.
+ */
+export function vocalVoicenessContent(file: VocalVoicenessFile | null): SparseBlock[] {
+  const out: SparseBlock[] = [];
+  const frames = file?.frames ?? [];
+  const intervalS = (file?.interval_ms ?? 50) / 1000;
+
+  let runStart: number | null = null;
+  let runBucket: VoicenessBucket | null = null;
+  let runSum = 0;
+  let runN = 0;
+  let runIdx = 0;
+  const flush = (endTime: number) => {
+    if (runStart == null || runBucket == null || runN === 0) return;
+    const avg = runSum / runN;
+    runIdx += 1;
+    out.push({
+      id: `voiceness-${runIdx}`,
+      start_s: runStart,
+      end_s: endTime,
+      label: "",
+      wideLabel: `voiceness ${avg.toFixed(2)}`,
+      tintId: VOICENESS_BUCKET_TINT[runBucket],
+      laneLabel: "4. Vocal Voiceness",
+      caption: `${formatRange(runStart, endTime)} · avg voiceness ${avg.toFixed(2)}`,
+      reference: `voiceness-${runIdx}`,
+      detail: `${runN} frame${runN === 1 ? "" : "s"}`,
+      summary: `experiments/vocal_voiceness — per-frame voiceness averaging ${avg.toFixed(2)} across this run (vibrato+portamento+sibilance, noisy-OR combined).`,
+      raw: { avg_voiceness: avg, n_frames: runN },
+    });
+  };
+
+  for (const f of frames) {
+    const bucket = voicenessBucket(f.voiceness);
+    if (runBucket !== bucket) {
+      flush(f.time_s);
+      runStart = f.time_s;
+      runBucket = bucket;
+      runSum = 0;
+      runN = 0;
+    }
+    runSum += f.voiceness;
+    runN += 1;
+  }
+  if (frames.length > 0) {
+    flush(frames[frames.length - 1]!.time_s + intervalS);
+  }
+
+  (file?.vocal_phrase ?? []).forEach((p, i) => {
+    out.push({
+      id: `voiceness-phrase-${i + 1}`,
+      start_s: p.start_s,
+      end_s: p.end_s,
+      label: "phrase",
+      wideLabel: `bridged phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
+      tintId: "vocalVoicenessPhrase",
+      laneLabel: "4. Vocal Voiceness",
+      caption: `${formatRange(p.start_s, p.end_s)} · bridged phrase`,
+      reference: `voiceness-phrase-${i + 1}`,
+      detail: "vocal_phrase",
+      summary:
+        "experiments/vocal_voiceness — a vocal_phrase span derived with the pitch-continuity bridge over vocal_phrases' known sustained_notes gap.",
+      raw: p,
+    });
+  });
+
+  out.sort((a, b) => a.start_s - b.start_s);
+  return out;
+}
+
+/**
  * Named gesture phases (approach/build/tension/impact/release) and
  * section-pair transitions ("<from> → <to>") from `song_event_timeline.json`
  * -- the production `gestures` stage (plan v3.0 item 9, replacing the
@@ -661,6 +769,7 @@ export interface LaneContentSources {
   textureNovelty?: TextureNoveltyFile | null;
   phrasePeriodicity?: PhrasePeriodicityFile | null;
   structuralVsMicro?: StructuralVsMicroFile | null;
+  vocalVoiceness?: VocalVoicenessFile | null;
   gestures?: EventTimeline | null;
 }
 
@@ -674,6 +783,7 @@ export const SPARSE_LANE_IDS = [
   "textureNovelty",
   "phrasePeriodicity",
   "structuralVsMicro",
+  "vocalVoiceness",
   "gestures",
   "sections",
   "character",
@@ -704,6 +814,8 @@ export function buildLaneBlocks(
       return phrasePeriodicityContent(s.phrasePeriodicity ?? null);
     case "structuralVsMicro":
       return structuralVsMicroContent(s.structuralVsMicro ?? null);
+    case "vocalVoiceness":
+      return vocalVoicenessContent(s.vocalVoiceness ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
     case "sections":

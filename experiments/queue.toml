@@ -42,3 +42,9 @@ name = "structural_vs_micro"
 command = "python -m experiments.structural_vs_micro.run compute --song {song_name} && python -m experiments.structural_vs_micro.run export --song {song_name}"
 image = "app"
 enabled = true
+
+[[experiment]]
+name = "vocal_voiceness"
+command = "python -m experiments.vocal_voiceness.run compute --song {song_name} && python -m experiments.vocal_voiceness.run export --song {song_name}"
+image = "app"
+enabled = true
