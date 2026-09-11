@@ -83,6 +83,16 @@ export const artifactPaths = {
   // condition unevaluable until item 1's `type: "vocal"` ground truth exists.
   vocalVoiceness: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "vocal_voiceness.json")),
+  // Written by experiments/clap_voiceness (`run export`). The same shared
+  // voiceness_common.schema proposal shape as vocalVoiceness, but from a
+  // CLAP audio-text contrastive differential ("a person singing" vs "a
+  // flute, a synth lead") instead of DSP cues — an independent second
+  // opinion on the frame-level call, not a boundary competitor (its 5s
+  // window is too coarse to time an edge; interval_ms reflects that, at
+  // 1000, not 50). Kill condition unevaluable until item 1's `type: "vocal"`
+  // ground truth exists.
+  clapVoiceness: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "clap_voiceness.json")),
   // Moises' word-level sung-lyric export, delivered as external reference. A
   // flat list of word tokens with `line_id`, `start`, `end`; `<SOL>` / `<EOL>`
   // rows mark line boundaries. Read-only ground truth, never written by the

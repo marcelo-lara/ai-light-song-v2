@@ -482,30 +482,57 @@ image.*
 flute, a synth lead"* — read as a differential, following the two centrings
 `experiments/clap/` already established as mandatory for usable readings.
 
-- [ ] `experiments/clap_voiceness/` — reuses `experiments/clap/probes.py` and
+- [x] `experiments/clap_voiceness/` — reuses `experiments/clap/probes.py` and
   `experiments/clap/model.py` (import from the sibling experiment package is
   fine; both are `experiments/`, the `src/`-import rule doesn't apply between
   experiments) for the CLAP forward pass and centring; `export.py` writes the
   differential score into the shared schema (item 2), reporting **frame
   voiceness accuracy and false-vocal rate only** — boundary F1 is reported but
   explicitly not scored, since CLAP's 5 s window is too coarse to time an edge.
-- [ ] `README.md` states plainly: this candidate is an independent second
+- [x] `README.md` states plainly: this candidate is an independent second
   opinion on the frame-level call, not a boundary competitor.
-- [ ] Debugger lane: `5. CLAP Voiceness`, under Human Hints.
-- [ ] `queue.toml` row, `image = "app"` (existing `ai-light-song-v2-research:dev`
-  image, no new pin).
-- [ ] `docs/experiments.md` entry, explicitly cross-referencing the existing
+- [x] Debugger lane: `5. CLAP Voiceness`, under Human Hints.
+- [x] `queue.toml` row — see D5.1 (`image = "clap-research"`, not `"app"`).
+- [x] `docs/experiments.md` entry, explicitly cross-referencing the existing
   CLAP character entry's "weak vocal axis" finding and explaining why this
   differential pair is not contradicted by it (that was an absolute reading;
   this is a pair).
 
+**D5.1 (resolved).** The plan text said `image = "app"`, but CLAP needs
+`transformers`, which lives only in the research sandbox
+(`experiments/clap/run_in_container.sh`), not the `app` image. Used
+`image = "clap-research"` instead — any non-`"app"` value makes the queue
+runner honestly record `skipped(needs image clap-research — run via
+run_in_container.sh)` per its own documented behavior, rather than falsely
+claiming `"app"` and having `compute` crash. Matches `experiments/clap/`'s own
+precedent of staying out of `queue.toml`'s auto-run path entirely.
+
+**D5.2 (resolved).** Output grid is CLAP's native ~1 Hz (`interval_ms: 1000`),
+not upsampled to the other candidates' 50 ms — upsampling would imply false
+precision from a 5 s analysis window. `voiceness_common.scorer` handles
+mixed-grid inputs already (per its design); this is a deliberate choice, not
+an oversight.
+
+**D5.3 (resolved).** Phrase derivation: threshold 0.5, gap-merge ≤ 1 s,
+min-duration 2.0 s (a CLAP window is 5 s wide) — not corpus-tuned, a
+documented judgement call pending ground truth. Confidence reuses item 4's
+`|voiceness − 0.5| × 2` decision-margin heuristic for consistency across
+voiceness candidates.
+
 ### Validation
 
-- [ ] `compute`/`export`/`score` subcommands run on the scoring corpus.
-- [ ] `docker compose run --rm ui npm run test` + `npm run build`.
+- [x] `compute`/`export`/`score` subcommands run on all 5 scoring-corpus songs.
+- [x] `docker compose run --rm ui npm run test` (391/392 — the same
+  pre-existing, unrelated `App.tsx` "Lanes" accessible-name regression as item
+  4, confirmed unrelated by diff inspection and left untouched again) +
+  `npm run build` clean.
 
-**Kill condition.** Does not agree with the marked spans better than chance on
-`ayuni` → negative result, lane kept for one review pass.
+**Kill condition — unevaluable, not failed.** Same as item 4: zero
+`type: "vocal"` ground truth exists anywhere, so "agrees with the marked spans
+better than chance" cannot be evaluated yet. Aggregate proxy frame accuracy:
+`clap_voiceness` 0.4826 vs `arrangement_state` 0.4045 vs `vocal_phrases`
+0.7071 vs mix-RMS 0.0781 — reported honestly as a proxy, not treated as a
+pass. Re-run `score` once item 1's marking exists.
 
 ### Visual QA
 

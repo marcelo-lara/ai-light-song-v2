@@ -1,0 +1,46 @@
+CLAP voiceness — vs arrangement_state / vocal_phrases / mix-RMS
+==================================================================
+
+_test_song  (0 marked vocal spans)
+  candidate             frame_acc  false_vocal_rate  bounds/min   F1@0.5s
+  clap_voiceness           0.5091            0.4909       12.74    0.000*  (proxy — no ground truth)
+  arrangement_state        0.6213            0.3787       10.34     0.000  (proxy — no ground truth)
+  vocal_phrases            0.6170            0.3830       22.74     0.000  (proxy — no ground truth)
+  mix_rms_baseline         0.0465            0.9535        6.20     0.000  (proxy — no ground truth)
+
+Hideaway - Kiesza  (0 marked vocal spans)
+  candidate             frame_acc  false_vocal_rate  bounds/min   F1@0.5s
+  clap_voiceness           0.4274            0.5726        7.70    0.000*  (proxy — no ground truth)
+  arrangement_state        0.1657            0.8343        6.68     0.000  (proxy — no ground truth)
+  vocal_phrases            0.6818            0.3182       54.84     0.000  (proxy — no ground truth)
+  mix_rms_baseline         0.1599            0.8401       39.10     0.000  (proxy — no ground truth)
+
+Armin - Revolution  (0 marked vocal spans)
+  candidate             frame_acc  false_vocal_rate  bounds/min   F1@0.5s
+  clap_voiceness           0.5236            0.4764        4.99    0.000*  (proxy — no ground truth)
+  arrangement_state        0.3582            0.6418        5.57     0.000  (proxy — no ground truth)
+  vocal_phrases            0.7686            0.2314       55.68     0.000  (proxy — no ground truth)
+  mix_rms_baseline         0.0206            0.9794       10.52     0.000  (proxy — no ground truth)
+
+Titanium - David Guetta ft Sia  (0 marked vocal spans)
+  candidate             frame_acc  false_vocal_rate  bounds/min   F1@0.5s
+  clap_voiceness           0.4498            0.5502        6.77    0.000*  (proxy — no ground truth)
+  arrangement_state        0.2857            0.7143        5.16     0.000  (proxy — no ground truth)
+  vocal_phrases            0.7132            0.2868       46.48     0.000  (proxy — no ground truth)
+  mix_rms_baseline         0.0398            0.9602       18.59     0.000  (proxy — no ground truth)
+
+ayuni  (0 marked vocal spans)
+  candidate             frame_acc  false_vocal_rate  bounds/min   F1@0.5s
+  clap_voiceness           0.5031            0.4969        6.65    0.000*  (proxy — no ground truth)
+  arrangement_state        0.5918            0.4082        6.56     0.000  (proxy — no ground truth)
+  vocal_phrases            0.7551            0.2449       53.19     0.000  (proxy — no ground truth)
+  mix_rms_baseline         0.1235            0.8765       70.67     0.000  (proxy — no ground truth)
+
+* clap_voiceness's F1@0.5s is REPORTED, NOT SCORED — a 5s CLAP window cannot time a phrase edge to sub-second tolerance. Frame voiceness accuracy and false_vocal_rate are the metrics this candidate is actually measured on.
+
+Aggregate across 5 songs:
+  candidate             avg frame_acc  avg false_vocal_rate  avg bounds/min
+  clap_voiceness               0.4826                0.5174            7.77
+  arrangement_state            0.4045                0.5955            6.86
+  vocal_phrases                0.7071                0.2929           46.59
+  mix_rms_baseline             0.0781                0.9219           29.02

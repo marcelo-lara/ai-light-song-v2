@@ -753,3 +753,63 @@ export async function loadVocalVoiceness(
   }
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// clapVoiceness — reference/proposals/clap_voiceness.json
+// ---------------------------------------------------------------------------
+//
+// The same `voiceness_common.schema` proposal shape as vocalVoiceness (item
+// 4), but from `experiments/clap_voiceness` (item 5): a CLAP audio-text
+// contrastive differential ("a person singing" vs "a flute, a synth lead",
+// read after the two centrings `experiments/clap/` established as
+// mandatory) instead of DSP cues. `interval_ms` is 1000, not 50 — CLAP's
+// native ~1Hz grid, reported honestly rather than upsampled to a fake finer
+// resolution. An independent second opinion on the frame-level call, not a
+// boundary competitor: `vocal_phrase` spans are present for the timeline,
+// but the experiment never scores boundary F1 against them (a 5s CLAP
+// window is too coarse to time an edge — see the experiment README).
+
+export type ClapVoicenessFile = VocalVoicenessFile;
+
+export function parseClapVoiceness(raw: unknown): ClapVoicenessFile {
+  const o = asObject(raw, "reference/proposals/clap_voiceness.json");
+  const meta = rec(o.metadata);
+  const frames = arr(o.frames).map((row): VoicenessFrameRow => {
+    const r = rec(row);
+    return {
+      time_s: num(r.time),
+      voiceness: num(r.voiceness),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    };
+  });
+  const vocal_phrase = arr(o.vocal_phrase).map((row) => {
+    const r = rec(row);
+    const start_s = num(r.start);
+    return {
+      start_s,
+      end_s: Math.max(num(r.end, start_s), start_s),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    };
+  });
+  return {
+    schema_version: st(o.schema_version),
+    song_name: st(o.song_name),
+    interval_ms: num(meta.interval_ms, 1000),
+    frames,
+    vocal_phrase,
+  };
+}
+
+export async function loadClapVoiceness(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<ClapVoicenessFile>> {
+  const result = await loadJson(artifactPaths.clapVoiceness(song), parseClapVoiceness, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, interval_ms: 1000, frames: [], vocal_phrase: [] },
+    };
+  }
+  return result;
+}

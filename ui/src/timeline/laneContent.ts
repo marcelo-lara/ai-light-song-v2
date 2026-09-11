@@ -27,6 +27,7 @@ import type {
   PhrasePeriodicityFile,
   StructuralVsMicroFile,
   VocalVoicenessFile,
+  ClapVoicenessFile,
 } from "../data/sparseArtifacts";
 
 import { romanNumeral } from "./romanNumeral";
@@ -722,6 +723,94 @@ export function vocalVoicenessContent(file: VocalVoicenessFile | null): SparseBl
   return out;
 }
 
+const CLAP_VOICENESS_BUCKET_TINT: Record<VoicenessBucket, string> = {
+  veryLow: "clapVoicenessVeryLow",
+  low: "clapVoicenessLow",
+  mid: "clapVoicenessMid",
+  high: "clapVoicenessHigh",
+  veryHigh: "clapVoicenessVeryHigh",
+};
+
+/**
+ * Per-window CLAP contrastive-differential curve ("a person singing" vs "a
+ * flute, a synth lead", two centrings + sigmoid — `experiments/clap_voiceness/
+ * model.py`) plus its `vocal_phrase` spans, from the same shared
+ * `voiceness_common.schema` proposal shape as `vocalVoicenessContent`.
+ *
+ * An independent second opinion on the frame-level call, not a boundary
+ * competitor: the file's native grid is ~1Hz (`interval_ms: 1000`, a 5s CLAP
+ * window), so runs here are coarser and the bridged `vocal_phrase` spans are
+ * never scored on boundary F1 by the experiment (see its README/score.py) —
+ * only rendered for review.
+ */
+export function clapVoicenessContent(file: ClapVoicenessFile | null): SparseBlock[] {
+  const out: SparseBlock[] = [];
+  const frames = file?.frames ?? [];
+  const intervalS = (file?.interval_ms ?? 1000) / 1000;
+
+  let runStart: number | null = null;
+  let runBucket: VoicenessBucket | null = null;
+  let runSum = 0;
+  let runN = 0;
+  let runIdx = 0;
+  const flush = (endTime: number) => {
+    if (runStart == null || runBucket == null || runN === 0) return;
+    const avg = runSum / runN;
+    runIdx += 1;
+    out.push({
+      id: `clap-voiceness-${runIdx}`,
+      start_s: runStart,
+      end_s: endTime,
+      label: "",
+      wideLabel: `voiceness ${avg.toFixed(2)}`,
+      tintId: CLAP_VOICENESS_BUCKET_TINT[runBucket],
+      laneLabel: "5. CLAP Voiceness",
+      caption: `${formatRange(runStart, endTime)} · avg voiceness ${avg.toFixed(2)}`,
+      reference: `clap-voiceness-${runIdx}`,
+      detail: `${runN} window${runN === 1 ? "" : "s"}`,
+      summary: `experiments/clap_voiceness — CLAP contrastive differential ("a person singing" vs "a flute, a synth lead") averaging ${avg.toFixed(2)} across this run. Independent second opinion, not a boundary read.`,
+      raw: { avg_voiceness: avg, n_frames: runN },
+    });
+  };
+
+  for (const f of frames) {
+    const bucket = voicenessBucket(f.voiceness);
+    if (runBucket !== bucket) {
+      flush(f.time_s);
+      runStart = f.time_s;
+      runBucket = bucket;
+      runSum = 0;
+      runN = 0;
+    }
+    runSum += f.voiceness;
+    runN += 1;
+  }
+  if (frames.length > 0) {
+    flush(frames[frames.length - 1]!.time_s + intervalS);
+  }
+
+  (file?.vocal_phrase ?? []).forEach((p, i) => {
+    out.push({
+      id: `clap-voiceness-phrase-${i + 1}`,
+      start_s: p.start_s,
+      end_s: p.end_s,
+      label: "phrase",
+      wideLabel: `CLAP phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
+      tintId: "clapVoicenessPhrase",
+      laneLabel: "5. CLAP Voiceness",
+      caption: `${formatRange(p.start_s, p.end_s)} · CLAP phrase (not boundary-scored)`,
+      reference: `clap-voiceness-phrase-${i + 1}`,
+      detail: "vocal_phrase",
+      summary:
+        "experiments/clap_voiceness — a vocal_phrase span thresholded from the CLAP differential. Reported for review only; the experiment never scores this against boundary F1 (5s window is too coarse to time an edge).",
+      raw: p,
+    });
+  });
+
+  out.sort((a, b) => a.start_s - b.start_s);
+  return out;
+}
+
 /**
  * Named gesture phases (approach/build/tension/impact/release) and
  * section-pair transitions ("<from> → <to>") from `song_event_timeline.json`
@@ -770,6 +859,7 @@ export interface LaneContentSources {
   phrasePeriodicity?: PhrasePeriodicityFile | null;
   structuralVsMicro?: StructuralVsMicroFile | null;
   vocalVoiceness?: VocalVoicenessFile | null;
+  clapVoiceness?: ClapVoicenessFile | null;
   gestures?: EventTimeline | null;
 }
 
@@ -784,6 +874,7 @@ export const SPARSE_LANE_IDS = [
   "phrasePeriodicity",
   "structuralVsMicro",
   "vocalVoiceness",
+  "clapVoiceness",
   "gestures",
   "sections",
   "character",
@@ -816,6 +907,8 @@ export function buildLaneBlocks(
       return structuralVsMicroContent(s.structuralVsMicro ?? null);
     case "vocalVoiceness":
       return vocalVoicenessContent(s.vocalVoiceness ?? null);
+    case "clapVoiceness":
+      return clapVoicenessContent(s.clapVoiceness ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
     case "sections":

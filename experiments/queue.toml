@@ -48,3 +48,19 @@ name = "vocal_voiceness"
 command = "python -m experiments.vocal_voiceness.run compute --song {song_name} && python -m experiments.vocal_voiceness.run export --song {song_name}"
 image = "app"
 enabled = true
+
+[[experiment]]
+name = "clap_voiceness"
+# `compute` needs `transformers`, only installed in the research sandbox
+# image (ai-light-song-v2-research:dev, experiments/clap/'s own image) — not
+# the `app` image this runner executes in, and the runner only ever honors
+# "app" (see the field comment above). `image` is deliberately not "app", so
+# this whole row is recorded skipped(needs image clap-research...) every run
+# rather than silently failing `compute` inside `app` for lacking
+# `transformers` — matches experiments/clap/'s own precedent of staying out
+# of this file for the same reason. Run both steps by hand instead:
+#   ./experiments/clap/run_in_container.sh python -m experiments.clap_voiceness.run compute --song {song_name}
+#   docker compose run --rm app python -m experiments.clap_voiceness.run export --song {song_name}
+command = "python -m experiments.clap_voiceness.run compute --song {song_name} && python -m experiments.clap_voiceness.run export --song {song_name}"
+image = "clap-research"
+enabled = true

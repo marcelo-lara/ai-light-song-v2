@@ -1213,6 +1213,93 @@ change.
 
 ---
 
+## CLAP voiceness — contrastive differential ("singing" vs "flute, synth")
+
+*(CLAP audio-text model — reuses `experiments/clap/`'s audio tower and
+two-centring formula; no new pin)*
+
+**This candidate is an independent second opinion on the frame-level call,
+not a boundary competitor** — CLAP's ~5s window cannot time a phrase edge.
+
+### Status
+
+**OPEN — built and running, kill condition unevaluable until item 1's ground
+truth exists.** v3.5 item 5. Built as
+[`../experiments/clap_voiceness/`](../experiments/clap_voiceness/README.md).
+`compute`/`export`/`score` run green on the full 5-song scoring corpus.
+Debugger lane `5. CLAP Voiceness` wired in under Human Hints. No song in this
+environment carries `type: "vocal"` ground truth (same finding as items
+3-4), so the kill condition — "does not agree with the marked spans better
+than chance on `ayuni`" — is unevaluable.
+
+### Why? What for?
+
+Does a contrastive CLAP pair distinguish a sung phrase from a flute where
+CLAP's own absolute vocal axis could not? Same false-vocal question items 3-7
+chase from different angles, here via a perceptual-audio model instead of DSP
+cues (item 4).
+
+### Experiment Plan
+
+One pair — *"a person singing"* vs *"a flute, a synth lead"* — read as a
+differential after the two centrings `experiments/clap/probes.py` established
+as mandatory. Audio tower and centring formula reused verbatim/adapted from
+that module; `voiceness = sigmoid(z)`; `vocal_phrase` spans thresholded +
+merged + min-2s-filtered on CLAP's native ~1Hz grid. `interval_ms: 1000` in
+the exported proposal (not `50`) — the file's own grid, not upsampled.
+**Scored: frame voiceness accuracy, false_vocal_rate. Boundary F1 computed
+and reported, never scored** — a 5s window can't time an edge to the
+0.25/0.5/1.0s tolerances `voiceness_common.scorer` uses.
+
+**Not run by the queue.** `compute` needs `transformers` (research sandbox
+image), not the `app` image the queue runner executes in; the `queue.toml`
+row uses a non-`app` `image` value so it is honestly recorded
+`skipped(needs image ...)`, matching `experiments/clap/`'s own precedent of
+staying out of the queue for the same reason.
+
+### Why this doesn't contradict the CLAP character entry's "weak vocal axis" finding
+
+Above, Measurement 1 found CLAP's `vocal` axis **weak** (+0.36…+1.18) against
+the vocal stem's unambiguous reading — **a different pair**
+(*"a singer singing a melody..."* vs *"purely instrumental music..."*), one of
+six axes pooled over allin1 section windows for the character layer. This
+item uses a narrower pair built for the actual confusion
+`arrangement_state`'s false-vocal rate chases — singing against *pitched
+instruments that could be mistaken for it* — computed per-window on its own
+grid, still read only as a per-song differential. A weak reading on one pair,
+in one framing, is not evidence against a different, more targeted pair;
+whether it actually helps is exactly what the unevaluable kill condition
+would settle.
+
+### Results evidence
+
+Full tables: [`../experiments/clap_voiceness/README.md`](../experiments/clap_voiceness/README.md).
+
+Aggregate proxy frame_accuracy / false_vocal_rate / bounds_per_min across all
+5 scoring-corpus songs (0 marked ground-truth spans on every song):
+**clap_voiceness 0.4826 / 0.5174 / 7.8** vs `arrangement_state` 0.4045 /
+0.5955 / 6.9, `vocal_phrases` 0.7071 / 0.2929 / 46.6, mix-RMS baseline 0.0781
+/ 0.9219 / 29.0. `clap_voiceness` beats `arrangement_state` on this proxy but
+trails `vocal_phrases` (item 4's DSP candidate).
+
+**No ground truth exists yet** — every scoring-corpus song has zero
+`type == "vocal"` hints in this environment (items 3-4's finding, confirmed
+again here). Every accuracy/rate above is a firing-rate proxy against an
+empty marked-span set, not a validated correctness measure.
+`is_proxy_no_ground_truth` flags every row.
+
+### Conclusion
+
+Built, green end-to-end on the full 5-song scoring corpus, reusing
+`experiments/clap/`'s audio tower and centring formula with no new model or
+pin. The proxy table places `clap_voiceness` between `arrangement_state` and
+`vocal_phrases` on frame accuracy — **not a promotion candidate on current
+evidence**, and the kill condition is explicitly unevaluable, not passed or
+failed. Same next step as items 3-4: mark `type: "vocal"` spans on `ayuni`,
+then re-run `score` with no code change.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

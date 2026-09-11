@@ -142,6 +142,12 @@ const TIMELINE_KEYS = [
   // blocks (experiments/vocal_voiceness, v3.5 item 4 — kill condition
   // unevaluable until item 1's `type: "vocal"` ground truth exists)
   "vocalVoiceness",
+  // CLAP contrastive-differential voiceness curve + phrase blocks
+  // (experiments/clap_voiceness, v3.5 item 5 — an independent second
+  // opinion on the frame-level call, not a boundary competitor; kill
+  // condition unevaluable until item 1's `type: "vocal"` ground truth
+  // exists)
+  "clapVoiceness",
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
   // lane's production data source.
   "eventTimeline",
@@ -162,6 +168,7 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   phrasePeriodicity: "phrasePeriodicity",
   structuralVsMicro: "structuralVsMicro",
   vocalVoiceness: "vocalVoiceness",
+  clapVoiceness: "clapVoiceness",
   gestures: "eventTimeline",
   character: "character",
   vocalTranscription: "vocalTranscription",
@@ -343,6 +350,7 @@ export function App(): React.JSX.Element {
       phrasePeriodicity: artifacts.phrasePeriodicity.data,
       structuralVsMicro: artifacts.structuralVsMicro.data,
       vocalVoiceness: artifacts.vocalVoiceness.data,
+      clapVoiceness: artifacts.clapVoiceness.data,
       gestures: artifacts.eventTimeline.data,
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
@@ -361,6 +369,7 @@ export function App(): React.JSX.Element {
       artifacts.phrasePeriodicity.data,
       artifacts.structuralVsMicro.data,
       artifacts.vocalVoiceness.data,
+      artifacts.clapVoiceness.data,
       artifacts.eventTimeline.data,
       artifacts.character.data,
       artifacts.vocalTranscription.data,

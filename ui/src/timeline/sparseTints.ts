@@ -51,6 +51,20 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalVoicenessVeryHigh: [260, 90, 56],
   vocalVoicenessPhrase: [200, 65, 44], // distinct from the curve's 260 hue and
   //   from vocalPhrases' rose (340)
+  // v3.5 item 5 — CLAP contrastive-differential curve (singing vs
+  // flute/synth), same ramp-by-intensity shape as vocalVoiceness but a
+  // distinct hue (55, golden-yellow — clear of humanHints' amber 35,
+  // textureNovelty's chartreuse 70, and vocalVoiceness' violet-blue 260) so
+  // the two voiceness candidates never look like one lane at a glance;
+  // clapVoicenessPhrase a separate hue (325) for the overlaid
+  // (non-boundary-scored) vocal_phrase spans, clear of vocalPhrases' rose
+  // (340) and dropProposals' magenta (318).
+  clapVoicenessVeryLow: [55, 20, 20],
+  clapVoicenessLow: [55, 40, 28],
+  clapVoicenessMid: [55, 60, 38],
+  clapVoicenessHigh: [55, 80, 46],
+  clapVoicenessVeryHigh: [55, 95, 54],
+  clapVoicenessPhrase: [325, 60, 44],
   arrangementState: [95, 55, 44], // olive-lime — distinct from vocalPhrases' rose
   //                                 (340) and dropProposals' magenta (318)
   arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a
