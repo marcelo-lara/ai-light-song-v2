@@ -85,7 +85,7 @@ Never fix across item boundaries in one commit.
 | UI tests | `npm run test` + `npm run build` on items 1, 4, 5, 6, 7, 8 |
 | Visual regression | `tests/ui-visual` suite on items 1, 4, 5, 6, 7, 8 |
 | MCP regression | none — no item touches `mcp/` (refinement doc: "No MCP change") |
-| Contract-change note | new [`contract-change-v3.4.md`](contract-change-v3.4.md), written by item 3 (the v3.1 note is archived/superseded) |
+| Contract-change note | item 3's `function_status: "contested"` + `contested_by` and the `crash` event type are folded into [`downstream-contract.md`](reference/downstream-contract.md) as current state; no standalone handoff note kept |
 | New pipeline stages | 1 — `contest-section-function` (phase 3), item 3 |
 | New dense lanes | 4 (item 1) |
 | New proposal lanes | 3 (items 6, 7, 8) |
@@ -417,12 +417,12 @@ claim from a thin heuristic — a confident wrong answer costs the show
   `field_sources` attribution, add it to
   [`src/analyzer/models.py`](../src/analyzer/models.py) and update the vocabulary
   list wherever prose restates it (`reference/artifacts.md`).
-- [x] **Contract-change note.** The v3.1 note is archived/superseded, so write a
-  new [`contract-change-v3.4.md`](contract-change-v3.4.md) (TLDR shape — see
-  `contract-change-v3.1.md` for the format): `sections.json` `function_status`
-  gains the value `"contested"`; rows may carry `contested_by: "energy"`; a
-  consumer treating `function_status` as a two-value field must add the third.
-  No other v3.4 change reaches the delivery surface.
+- [x] **Contract update.** `sections.json` `function_status` gains the value
+  `"contested"`; rows may carry `contested_by: "energy"`; a consumer treating
+  `function_status` as a two-value field must add the third. Folded directly
+  into [`reference/downstream-contract.md`](reference/downstream-contract.md)
+  as current state rather than a separate handoff note. No other v3.4 change
+  reaches the delivery surface.
 - [x] **`docs/analysis-definition.md`** — the segmentation row notes the phase-3
   contest and the measurement outcome from step 1.
 - [x] **`docs/reference/cli.md`** — add the `contest-section-function | 3.3` row

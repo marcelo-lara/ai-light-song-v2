@@ -9,8 +9,11 @@ tokens as possible.
 > The stdio/Compose plumbing, song discovery, the exposure guard, the
 > fixture-based regression harness (`smoke-test` / `full-regression`, no
 > deferrals), the whole-song overview and the on-demand `get_detail` dense read
-> are all in place. Shipped in v3.1. The v3.1 handoff note to the downstream cue-
-> authoring consumer was superseded; see `docs/archive/contract-change-v3.1-superseded.md` for the archival summary.
+> are all in place. Shipped in v3.1. The downstream cue-authoring consumer kept
+> consuming the published delivery surface rather than migrating to read
+> analyzer internals directly — see
+> [`reference/downstream-contract.md`](reference/downstream-contract.md) for the
+> current contract.
 
 - How to prove it still works: [`reference/mcp-regression.md`](reference/mcp-regression.md)
 - What the analyzer produces for it: [`analysis-definition.md`](analysis-definition.md)

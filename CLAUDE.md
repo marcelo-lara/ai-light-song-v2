@@ -40,8 +40,8 @@ Lookups, not reading: [`docs/reference/`](docs/reference/) —
 [`mcp-regression.md`](docs/reference/mcp-regression.md) (`smoke-test` and `full-regression` for the MCP server).
 
 No open release. The `mcp/` module and its delivery surface shipped in v3.1
-(see git history); `docs/contract-change-v3.1.md` is the pending handoff note to
-the downstream cue-authoring consumer.
+(see git history); the current contract with the downstream cue-authoring
+consumer is [`docs/reference/downstream-contract.md`](docs/reference/downstream-contract.md).
 
 Queues: [`docs/issues.md`](docs/issues.md) (open issues only),
 [`docs/experiments.md`](docs/experiments.md) (one entry per experiment),
