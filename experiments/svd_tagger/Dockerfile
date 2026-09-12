@@ -16,8 +16,10 @@
 # The checkpoint is fetched and sha256-checksummed HERE, at image build time.
 # No download ever happens at analysis time — `model.py` loads the
 # checkpoint from the fixed path this Dockerfile bakes in
-# (/app/models/panns/Cnn14_mAP=0.431.pth) and fails loudly if it is missing,
-# never falls back to `panns_inference`'s own auto-download.
+# (/opt/panns/Cnn14_mAP=0.431.pth) and fails loudly if it is missing, never
+# falls back to `panns_inference`'s own auto-download. Deliberately outside
+# /app: `run_in_container.sh` bind-mounts the host repo onto /app, which
+# would otherwise shadow anything baked into that path at build time.
 FROM ai-light-song-v2:dev
 
 ENV PYTHONPATH=/app \
@@ -45,6 +47,20 @@ RUN pip install --no-cache-dir \
 # this session — not copied from a third party's claim, verified first-hand.
 ARG PANNS_CHECKPOINT_URL="https://zenodo.org/records/3987831/files/Cnn14_mAP=0.431.pth"
 ARG PANNS_CHECKPOINT_SHA256="0dc499e40e9761ef5ea061ffc77697697f277f6a960894903df3ada000e34b31"
-RUN mkdir -p /app/models/panns \
- && curl -fL --retry 3 -o "/app/models/panns/Cnn14_mAP=0.431.pth" "$PANNS_CHECKPOINT_URL" \
- && echo "${PANNS_CHECKPOINT_SHA256}  /app/models/panns/Cnn14_mAP=0.431.pth" | sha256sum -c -
+RUN mkdir -p /opt/panns \
+ && curl -fL --retry 3 -o "/opt/panns/Cnn14_mAP=0.431.pth" "$PANNS_CHECKPOINT_URL" \
+ && echo "${PANNS_CHECKPOINT_SHA256}  /opt/panns/Cnn14_mAP=0.431.pth" | sha256sum -c -
+
+# --- pinned AudioSet-527 label index, fetched + checksummed at BUILD time ---
+# `panns_inference.config` reads this from `~/panns_data/class_labels_indices.csv`
+# and, if absent, shells out to `wget` (not installed in this image, and a
+# mid-run download either way) to fetch it from the same Google Research URL
+# pinned here. Baking it in at build time matches the checkpoint above and
+# keeps analysis-time behavior offline and deterministic. Hash verified
+# directly (not copied from a third party's claim) — see `model.py`'s
+# "Class index" docstring section for the row-27 "Singing" cross-check.
+ARG PANNS_LABELS_URL="http://storage.googleapis.com/us_audioset/youtube_corpus/v1/csv/class_labels_indices.csv"
+ARG PANNS_LABELS_SHA256="cdd1049833c4b86127c2773ac0d14a2754b6a6d0d1798002ed5c66e699708429"
+RUN mkdir -p /root/panns_data \
+ && curl -fL --retry 3 -o "/root/panns_data/class_labels_indices.csv" "$PANNS_LABELS_URL" \
+ && echo "${PANNS_LABELS_SHA256}  /root/panns_data/class_labels_indices.csv" | sha256sum -c -

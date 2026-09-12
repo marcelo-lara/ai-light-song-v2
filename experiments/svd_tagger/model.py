@@ -51,7 +51,7 @@ MIN_PHRASE_S = 2.0
 def _load(device: str = "cpu"):
     from panns_inference import AudioTagging
 
-    checkpoint_path = "/app/models/panns/Cnn14_mAP=0.431.pth"
+    checkpoint_path = "/opt/panns/Cnn14_mAP=0.431.pth"
     tagger = AudioTagging(checkpoint_path=checkpoint_path, device=device)
     return tagger
 
