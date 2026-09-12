@@ -88,8 +88,8 @@ Never fix across item boundaries in one commit.
 | New sandbox images | 2 (items 6, 7) |
 | New `src/` stages | 0 unless item 8 ships (modifies `detect_arrangement_state` / `publish_arrangement_state` in place, no new stage) |
 | New proposal lanes | 4 (items 4–7) |
-| Blocking decisions (`D`) | none open |
-| Done | 0 |
+| Blocking decisions (`D`) | 1 open — D8.1, the operator's by-ear review of the winning voiceness lane, required before item 8 starts |
+| Done | 7 of 9 (items 8-9 remaining; item 8 paused on D8.1) |
 
 ---
 
@@ -455,7 +455,11 @@ operator), the aggregate proxy metric favors `vocal_voiceness`
 including `ayuni` (0.180 vs 0.408) — but this is a firing-rate proxy, not the
 validated metric, so it is **not** scored as a pass of the kill condition.
 Re-run `score` once item 1's marking exists; do not treat this proxy result as
-a promotion signal for item 8.
+a promotion signal for item 8. **Superseded by D8.1**: real ground truth
+landed on `ayuni`/`Armin - Revolution` mid-run — `vocal_voiceness` beats the
+incumbent's false-vocal rate on both (0.1090 vs 0.2898; 0.0505 vs 0.4598) but
+its boundary F1 is weak (0.078 / 0.134) against `whisperx_vad`'s (0.583 /
+0.136). See item 8's D8.1 for the full table and the pending operator review.
 
 ### Visual QA
 
@@ -532,7 +536,10 @@ voiceness candidates.
 better than chance" cannot be evaluated yet. Aggregate proxy frame accuracy:
 `clap_voiceness` 0.4826 vs `arrangement_state` 0.4045 vs `vocal_phrases`
 0.7071 vs mix-RMS 0.0781 — reported honestly as a proxy, not treated as a
-pass. Re-run `score` once item 1's marking exists.
+pass. Re-run `score` once item 1's marking exists. **Superseded by D8.1**:
+real ground truth landed mid-run — `clap_voiceness` fails the kill condition
+on both `ayuni` and `Armin - Revolution` (false-vocal rate 0.4845/0.3455,
+worse than the incumbent's 0.2898/0.4598). See item 8's D8.1.
 
 ### Visual QA
 
@@ -693,6 +700,53 @@ behind a selector), one new baseline.
 the incumbent on item 2's scorer at a matched budget, and the operator has
 reviewed the winning lane by ear. If none wins, this item is skipped and the
 plan proceeds to item 9 with that outcome recorded.*
+
+### D8.1 — real ground truth landed mid-run; re-scored; a winner exists, but the by-ear review is the operator's, not this run's to skip
+
+While items 1-7 were running, a separate commit (`fcb5130`, authored by the
+operator in this same working tree) added real `type: "vocal"` human hints:
+**4 spans on `ayuni`, 7 on `Armin - Revolution`** (the other three
+scoring-corpus songs still carry none). This is exactly item 1's outstanding
+dependency and turns items 3-7's "unevaluable" proxy numbers into real ones on
+these two songs. Re-scored directly against `reference/human/human_hints.json`
+(bypassing the experiments' own `score.py`, which attempted a full feature
+recompute and was killed for host memory pressure — same failure class as item
+3; the re-score below reads only already-exported/cached output, no
+recomputation):
+
+| song | candidate | false_vocal_rate | frame_acc | F1@0.5s |
+| --- | --- | --- | --- | --- |
+| `ayuni` (4 spans) | `arrangement_state` (incumbent) | 0.2898 | 0.7080 | 0.385 |
+| | `vocal_voiceness` (item 4) | **0.1090** | 0.8416 | 0.078 |
+| | `clap_voiceness` (item 5) | 0.4845 | 0.4037 | 0.077 |
+| | `whisperx_vad` (item 7) | **0.1195** | 0.8777 | **0.583** |
+| `Armin - Revolution` (7 spans) | `arrangement_state` (incumbent) | 0.4598 | 0.5402 | 0.125 |
+| | `vocal_voiceness` (item 4) | **0.0505** | 0.7735 | 0.134 |
+| | `clap_voiceness` (item 5) | 0.3455 | 0.6021 | 0.067 |
+| | `whisperx_vad` (item 7) | **0.1201** | 0.7477 | **0.136** |
+
+`svd_tagger` (item 6) has no exported proposal — its image never built — and
+is excluded, not scored as a loss.
+
+**Both `vocal_voiceness` and `whisperx_vad` beat the incumbent's false-vocal
+rate on `ayuni`** (the kill condition's literal test), on both songs.
+`clap_voiceness` fails it on both. `whisperx_vad` additionally wins boundary
+F1 by a wide margin on both songs — expected, since its phrase edges carry
+real sub-second onsets while `vocal_voiceness`'s bridged phrases and
+`clap_voiceness`'s clip-window phrases do not. This is only 2 songs and 11
+marked spans total — thin evidence, not a corpus-wide result — but it is the
+first real (non-proxy) evidence this release has produced.
+
+**This finding does not resolve item 8's gate by itself.** The gate's own
+text requires "the operator has reviewed the winning lane by ear" before item
+8 starts — a human-judgment checkpoint this run cannot perform or waive on
+the operator's behalf. Recommendation, for the operator's review: **`whisperx_vad`**
+as the candidate to audition first — it wins on the metric that actually times
+a phrase edge, not just on raw false-vocal reduction. `vocal_voiceness` is the
+cheaper fallback (no new image, no model pin) if the operator's ear disagrees
+with the F1 table. Item 8 is paused here, pending that review, and the run
+continues to item 9 in the meantime since item 9's doc corrections hold
+regardless of which detector (if any) item 8 eventually picks.
 
 **What changes.** `detect_arrangement_state`'s `vocals` channel
 (`src/analyzer/stages/arrangement_state.py`) additionally requires agreement
