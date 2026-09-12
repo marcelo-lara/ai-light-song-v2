@@ -154,6 +154,13 @@ const TIMELINE_KEYS = [
   // until item 1's `type: "vocal"` ground truth exists, and must
   // additionally beat item 4 given its image/pin cost)
   "svdTagger",
+  // whisperX's VAD front-end (speech-domain), voiceness + phrase spans with
+  // real sub-second onsets (experiments/whisperx_vad, v3.5 item 7 — new
+  // sandbox image, locally-bundled non-gated checkpoint, no live token at
+  // analysis time; diarization not attempted — no HF_TOKEN in this
+  // environment; kill condition unevaluable until item 1's `type: "vocal"`
+  // ground truth exists)
+  "whisperxVad",
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
   // lane's production data source.
   "eventTimeline",
@@ -176,6 +183,7 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   vocalVoiceness: "vocalVoiceness",
   clapVoiceness: "clapVoiceness",
   svdTagger: "svdTagger",
+  whisperxVad: "whisperxVad",
   gestures: "eventTimeline",
   character: "character",
   vocalTranscription: "vocalTranscription",
@@ -359,6 +367,7 @@ export function App(): React.JSX.Element {
       vocalVoiceness: artifacts.vocalVoiceness.data,
       clapVoiceness: artifacts.clapVoiceness.data,
       svdTagger: artifacts.svdTagger.data,
+      whisperxVad: artifacts.whisperxVad.data,
       gestures: artifacts.eventTimeline.data,
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
@@ -379,6 +388,7 @@ export function App(): React.JSX.Element {
       artifacts.vocalVoiceness.data,
       artifacts.clapVoiceness.data,
       artifacts.svdTagger.data,
+      artifacts.whisperxVad.data,
       artifacts.eventTimeline.data,
       artifacts.character.data,
       artifacts.vocalTranscription.data,
