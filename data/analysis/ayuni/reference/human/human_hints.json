@@ -132,12 +132,21 @@
       "id": "hint-016",
       "title": "EDM sitar groove",
       "start_time": 145.549,
-      "end_time": 161.159,
+      "end_time": 159.13,
       "summary": "No vocals. EDM Groove, with a sitar like instrument as melody.",
       "lighting_hint": ""
     },
     {
       "id": "hint-017",
+      "title": "Main (with filtered vocals)",
+      "start_time": 159.13,
+      "end_time": 161.159,
+      "summary": "",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-018",
       "title": "Outro fade out",
       "start_time": 161.159,
       "end_time": 164.757,
