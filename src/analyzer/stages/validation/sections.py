@@ -124,3 +124,126 @@ def _validate_sections(paths: SongPaths, sections: dict, tolerance_seconds: floa
         diagnostics=diagnostics,
     )
 
+
+def _validate_human_segments(paths: SongPaths, sections: dict, tolerance_seconds: float) -> ValidationResult:
+    """v3.5 item 10 — boundary recall/precision/F1 against the hand-marked
+    `reference/human/segments.json`, advisory alongside the moises comparison
+    above (same greedy nearest-boundary matching at `tolerance_seconds`, ported
+    unchanged from `_validate_sections`). `skipped` on every song that does not
+    carry the file — it is optional and gold-song-only."""
+    reference_path = paths.reference("human", "segments.json")
+    if not reference_path.exists():
+        return skipped_result()
+
+    reference_rows = read_json(reference_path)
+    inferred_sections = sections.get("sections", [])
+    inferred_boundaries = [
+        {
+            "time": float(section["start"]),
+            "section_id": section.get("section_id"),
+            "label": section.get("function"),
+        }
+        for section in inferred_sections[1:]
+    ]
+    reference_boundaries = [
+        {
+            "time": float(reference["start"]),
+            "label": reference.get("label"),
+        }
+        for reference in reference_rows[1:]
+    ]
+
+    matched = 0
+    details: list[dict] = []
+    inferred_index = 0
+    reference_index = 0
+    while inferred_index < len(inferred_boundaries) and reference_index < len(reference_boundaries):
+        inferred_boundary = inferred_boundaries[inferred_index]
+        reference_boundary = reference_boundaries[reference_index]
+        delta_seconds = float(inferred_boundary["time"] - reference_boundary["time"])
+        if abs(delta_seconds) <= tolerance_seconds:
+            matched += 1
+            details.append(
+                {
+                    "match_type": "matched_boundary",
+                    "inferred": inferred_boundary,
+                    "reference": reference_boundary,
+                    "delta_seconds": round(delta_seconds, 6),
+                    "within_tolerance": True,
+                }
+            )
+            inferred_index += 1
+            reference_index += 1
+            continue
+        if inferred_boundary["time"] < reference_boundary["time"]:
+            details.append(
+                {
+                    "match_type": "extra_inferred_boundary",
+                    "inferred": inferred_boundary,
+                    "reference": None,
+                    "delta_seconds": None,
+                    "within_tolerance": False,
+                }
+            )
+            inferred_index += 1
+            continue
+        details.append(
+            {
+                "match_type": "missed_reference_boundary",
+                "inferred": None,
+                "reference": reference_boundary,
+                "delta_seconds": None,
+                "within_tolerance": False,
+            }
+        )
+        reference_index += 1
+
+    for inferred_boundary in inferred_boundaries[inferred_index:]:
+        details.append(
+            {
+                "match_type": "extra_inferred_boundary",
+                "inferred": inferred_boundary,
+                "reference": None,
+                "delta_seconds": None,
+                "within_tolerance": False,
+            }
+        )
+    for reference_boundary in reference_boundaries[reference_index:]:
+        details.append(
+            {
+                "match_type": "missed_reference_boundary",
+                "inferred": None,
+                "reference": reference_boundary,
+                "delta_seconds": None,
+                "within_tolerance": False,
+            }
+        )
+
+    mismatched = len(details) - matched
+    recall = matched / len(reference_boundaries) if reference_boundaries else None
+    precision = matched / len(inferred_boundaries) if inferred_boundaries else None
+    f1 = (
+        2 * precision * recall / (precision + recall)
+        if precision is not None and recall is not None and (precision + recall) > 0
+        else None
+    )
+    denominator = max(len(inferred_boundaries), len(reference_boundaries))
+    ratio = matched / denominator if denominator else None
+    status = "passed" if ratio is None or ratio >= 0.75 else "failed"
+    diagnostics = _build_section_timing_diagnostics(details, tolerance_seconds, reference_times=[])
+    diagnostics = {
+        "recall": round(recall, 6) if recall is not None else None,
+        "precision": round(precision, 6) if precision is not None else None,
+        "f1": round(f1, 6) if f1 is not None else None,
+        **(diagnostics or {}),
+    }
+    return ValidationResult(
+        status=status,
+        matched=matched,
+        mismatched=mismatched,
+        match_ratio=ratio,
+        details=details,
+        reference_file=str(reference_path),
+        diagnostics=diagnostics,
+    )
+

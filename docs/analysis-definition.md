@@ -282,6 +282,22 @@ Honest caveats that ship with it:
   `function_confidence` ≤ 0.9). On a normal song `sections.json` is
   byte-identical to before.
 
+**v3.5 item 10 — `reference/human/segments.json` and the vocabulary switch.**
+A new optional, gold-song-only reference file (`_test_song`, `ayuni`, `"What
+a Feeling - Courtney Storm"` carry it today): a flat `[{start, end, label}]`
+list. Where it exists for a song, `ui_data.build_ui_data` rebuilds
+`sections.json` from its spans outright — boundaries/label/description/
+confidence (fixed `0.8`) come from it; `function_confidence`/
+`function_status`/`same_label_as` are still inherited from whichever allin1
+section overlaps most, never invented. Scored separately in the phase-1
+report (`human_segments`, same recall/precision/F1 method as the `moises`
+comparison above, advisory). Also switches the `function` vocabulary itself,
+for every song regardless of whether it carries this file: allin1's Harmonix
+set (`intro outro break bridge inst solo verse chorus`) is mapped onto
+`docs/segments-vocabulary.md` terms by `section_vocabulary.py` before
+`function` leaves `segmentation.py` — `same_label_as` identity is still keyed
+on allin1's raw token, computed before that mapping.
+
 ### Downbeats — honest, and short of target
 
 The old `beat_in_bar` was pure modulo: there was no downbeat *detection* at all,

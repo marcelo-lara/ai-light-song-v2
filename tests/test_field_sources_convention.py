@@ -3,7 +3,12 @@
 Every top-level (delivery-surface) file carries a `field_sources` header whose
 keys cover every field it emits, and every producer named — in a header or a
 per-row `source` override — is in the closed vocabulary. Fusion reads generated
-artifacts only: no publishing code path reads `reference/`.
+artifacts only: no publishing code path reads `reference/`, with one explicit,
+plan-approved exception (v3.5 item 10) — `reference/human/segments.json`, an
+optional hand-marked gold reference `ui_data.build_ui_data` fuses into
+`sections.json` exactly like `human_hints.json` already fuses into
+`hints.json`. Any other `reference/` read from a publishing path is still a
+bug this guard catches.
 """
 
 from __future__ import annotations
@@ -56,10 +61,15 @@ class ProducerVocabularyTests(unittest.TestCase):
 
 
 class ReferenceGuardTests(unittest.TestCase):
-    def test_fusion_stage_never_reads_reference(self) -> None:
+    def test_fusion_stage_reads_no_reference_file_but_the_one_sanctioned_exception(self) -> None:
+        # v3.5 item 10 — the only allowed reference() call in ui_data.py is
+        # the human segments gold file it fuses into sections.json. Strip
+        # that one exact call out of the source and the blanket ban still
+        # holds for everything else.
         src = inspect.getsource(ui_data)
-        self.assertNotIn(".reference(", src)
-        self.assertNotIn("reference/", src)
+        sanctioned = 'paths.reference("human", "segments.json")'
+        self.assertIn(sanctioned, src)
+        self.assertEqual(src.count(".reference("), src.count(sanctioned))
         self.assertNotIn("read_reference", src)
 
 

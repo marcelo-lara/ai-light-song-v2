@@ -48,15 +48,11 @@ Here is a genre-neutral list of section names you can use to tag song arrangemen
 
 ## 🔥 High-Energy Peak Sections
 
-* **Drop 1** — The first main high-energy chorus/peak of the track.
+* **Drop** — A main high-energy chorus/peak of the track.
   * 128 BPM House: 16 or 32 bars (House grooves roll out longer to establish a hypnotic rhythm)
   * 140 BPM Dubstep: 16 bars (Dubstep relies on rapid variation; 16 bars at 140 BPM is standard double-time length)
 
-* **Drop 2** — The second main peak, often with a slight variation in the bassline or lead.
-  * 128 BPM House: 16 or 32 bars
-  * 140 BPM Dubstep: 16 bars (frequently alters the synth patches or rhythm pattern from Drop 1)
-
-* **Drop 3 / Extended Drop** — Common in longer club formats or specific genres like Trance.
+* **Extended Drop** — Common in longer club formats or specific genres like Trance.
   * 128 BPM House: 16 bars (rarely used unless it's a long progressive house track)
   * 140 BPM Dubstep: 8 or 16 bars (often acts as a shorter "VIP" or final energetic push)
 

@@ -9,7 +9,7 @@ from analyzer.paths import SongPaths
 from analyzer.stages.validation.beats import validate_beats
 from analyzer.stages.validation.chords import _validate_chords
 from analyzer.stages.validation.drums import validate_drums
-from analyzer.stages.validation.sections import _validate_sections
+from analyzer.stages.validation.sections import _validate_sections, _validate_human_segments
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -293,6 +293,46 @@ class ValidationDiagnosticsTests(unittest.TestCase):
         self.assertEqual(result.diagnostics["dominant_snap_multiple_beats"], 1)
         self.assertEqual(result.diagnostics["snap_like_boundary_count"], 2)
         self.assertEqual(result.diagnostics["boundary_offset_direction"], "late")
+
+    def test_validate_human_segments_skips_when_file_absent(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
+            sections = {"sections": [{"section_id": "section-001", "start": 0.0, "end": 5.0, "function": "Intro"}]}
+            result = _validate_human_segments(paths, sections, tolerance_seconds=1.0)
+        self.assertEqual(result.status, "skipped")
+
+    def test_validate_human_segments_reports_recall_precision_f1(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
+            _write_json(
+                paths.reference("human", "segments.json"),
+                [
+                    {"start": 0.0, "end": 10.0, "label": "Intro"},
+                    {"start": 10.0, "end": 20.0, "label": "Verse"},
+                    {"start": 20.0, "end": 30.0, "label": "Chorus"},
+                ],
+            )
+            sections = {
+                "sections": [
+                    {"section_id": "section-001", "start": 0.0, "end": 10.05, "function": "Intro"},
+                    {"section_id": "section-002", "start": 10.05, "end": 25.0, "function": "Verse"},
+                    {"section_id": "section-003", "start": 25.0, "end": 30.0, "function": "Chorus"},
+                ]
+            }
+            result = _validate_human_segments(paths, sections, tolerance_seconds=1.0)
+        # Boundaries at 0.0 are the leading sentinel and excluded on both
+        # sides ([1:] slicing), same as _validate_sections. Reference has 2
+        # scored boundaries (10.0, 20.0); inferred has 2 (10.05, 25.0). Only
+        # 10.05 is within 1.0s of 10.0.
+        self.assertIsNotNone(result.diagnostics)
+        assert result.diagnostics is not None
+        self.assertEqual(result.matched, 1)
+        self.assertAlmostEqual(result.diagnostics["recall"], 0.5)
+        self.assertAlmostEqual(result.diagnostics["precision"], 0.5)
+        self.assertAlmostEqual(result.diagnostics["f1"], 0.5)
+
 
 if __name__ == "__main__":
     unittest.main()

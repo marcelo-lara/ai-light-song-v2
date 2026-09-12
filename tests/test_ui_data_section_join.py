@@ -224,6 +224,74 @@ class SectionJoinTests(unittest.TestCase):
         self.assertNotIn("confidence", beat_row)
         self.assertIn("downbeat_confidence", beat_row)
 
+    def test_human_segments_replace_allin1_boundaries_when_present(self) -> None:
+        # v3.5 item 10 — reference/human/segments.json present: boundaries,
+        # label, description and confidence come from it; function_confidence
+        # / function_status / same_label_as are inherited from whichever
+        # allin1 section overlaps most.
+        sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 15.0, "function": "intro",
+             "function_confidence": 0.9, "function_status": "known", "same_label_as": None,
+             "confidence": 0.9},
+            {"section_id": "section-002", "start": 15.0, "end": 30.0, "function": "chorus",
+             "function_confidence": 0.7, "function_status": "known", "same_label_as": None,
+             "confidence": 0.7},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, sections)
+            human_path = paths.reference("human", "segments.json")
+            human_path.parent.mkdir(parents=True, exist_ok=True)
+            human_path.write_text(json.dumps([
+                {"start": 0.0, "end": 14.0, "label": "Intro"},
+                {"start": 14.0, "end": 30.0, "label": "Chorus"},
+            ]))
+            build_ui_data(paths)
+            payload = json.loads(paths.sections_output_path.read_text())
+            rows = payload["sections"]
+
+        self.assertEqual([r["section_id"] for r in rows], ["section-001", "section-002"])
+        self.assertEqual(rows[0]["start"], 0.0)
+        self.assertEqual(rows[0]["end"], 14.0)
+        self.assertEqual(rows[1]["start"], 14.0)
+        self.assertEqual(rows[1]["end"], 30.0)
+        self.assertEqual(rows[0]["function"], "Intro")
+        self.assertEqual(rows[1]["function"], "Chorus")
+        # Boundary confidence is fixed at 0.8 for a human-drawn row, not
+        # inherited from allin1.
+        self.assertEqual(rows[0]["confidence"], 0.8)
+        self.assertEqual(rows[1]["confidence"], 0.8)
+        # function_confidence/function_status/same_label_as are inherited by
+        # best time-overlap with the allin1 artifact, never invented.
+        self.assertEqual(rows[0]["function_confidence"], 0.9)
+        self.assertEqual(rows[1]["function_confidence"], 0.7)
+        self.assertEqual(payload["field_sources"]["start"], "human")
+        self.assertEqual(payload["field_sources"]["confidence"], "human")
+        # function's own value is human-sourced (the human label text) when
+        # the file exists; only its confidence/status/identity metadata stay
+        # allin1's.
+        self.assertEqual(payload["field_sources"]["function"], "human")
+        self.assertEqual(payload["field_sources"]["function_confidence"], "allin1")
+        self.assertEqual(payload["field_sources"]["key"], "harmonic")
+
+    def test_sections_field_sources_default_to_allin1_without_human_file(self) -> None:
+        # v3.5 item 10 — no reference/human/segments.json for this song: the
+        # file-level default reverts to allin1 (previously hardcoded to
+        # "human" even without a backing file).
+        sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "intro",
+             "function_confidence": 0.9, "function_status": "known", "same_label_as": None,
+             "confidence": 0.9},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, sections)
+            build_ui_data(paths)
+            payload = json.loads(paths.sections_output_path.read_text())
+        self.assertEqual(payload["field_sources"]["label"], "allin1")
+        self.assertEqual(payload["field_sources"]["description"], "allin1")
+        self.assertEqual(payload["field_sources"]["start"], "allin1")
+        self.assertEqual(payload["field_sources"]["confidence"], "allin1")
+        self.assertEqual(payload["field_sources"]["function"], "allin1")
+
 
 if __name__ == "__main__":
     unittest.main()

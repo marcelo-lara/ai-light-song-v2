@@ -18,6 +18,12 @@ the experiment's own comparison there:
     | allin1 raw phrase edges     | 0.84          | 0.76      | 0.80 | 3.4        |
     | old sections/ segmenter     | 0.32          | 0.27      | 0.29 | 3.7        |
 
+v3.5 item 10 — the emitted `function` field is passed through
+`section_vocabulary.normalize_allin1_label` before it leaves this stage, so
+every section's name is a `docs/segments-vocabulary.md` term, never a raw
+Harmonix token. Identity (`same_label_as`) is still keyed on the raw token,
+computed before this mapping — see that module's docstring for why.
+
 Merged section runs are shipped, not raw phrase edges — a boundary the cue
 author can trust is worth more than one more recalled boundary, and merging
 equal-labelled neighbours is what turns an 8-bar phrase grid into song form.
@@ -64,6 +70,7 @@ from analyzer.exceptions import AnalysisError
 from analyzer.io import write_json
 from analyzer.models import SCHEMA_VERSION, SectionSegment, to_jsonable
 from analyzer.paths import SongPaths
+from analyzer.section_vocabulary import normalize_allin1_label
 
 #: allin1's fixed label order (`allin1.config.HARMONIX_LABELS`). `start` and
 #: `end` are edge sentinels the model emits at the very start/end of the
@@ -227,18 +234,23 @@ def segment_sections(paths: SongPaths, stems: dict[str, str], timing: dict) -> d
     sections: list[SectionSegment] = []
     for index, run in enumerate(merged_runs):
         section_id = f"section-{index + 1:03d}"
-        function = run["function"]
+        # Identity (`same_label_as`) is keyed on allin1's own raw Harmonix
+        # token, not the displayed vocabulary term below — see
+        # `section_vocabulary`'s module docstring: `inst` and `solo` both
+        # display as "Main" and must not therefore be claimed as the same
+        # label.
+        raw_function = run["function"]
         function_confidence = round(_function_confidence_for_span(labels, posterior, run["start"], run["end"]), 6)
-        same_label_as = first_section_id_by_function.get(function)
+        same_label_as = first_section_id_by_function.get(raw_function)
         if same_label_as is None:
-            first_section_id_by_function[function] = section_id
+            first_section_id_by_function[raw_function] = section_id
         confidence = round(_boundary_confidence(function_confidence, index), 6)
         sections.append(
             SectionSegment(
                 section_id=section_id,
                 start=_round(run["start"]),
                 end=_round(run["end"]),
-                function=function,
+                function=normalize_allin1_label(raw_function),
                 function_confidence=function_confidence,
                 function_status=status,
                 same_label_as=same_label_as,

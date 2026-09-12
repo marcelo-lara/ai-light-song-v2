@@ -31,12 +31,15 @@ the two docs that currently assert the wrong thing.
 | 7 `whisperx_vad` (D) | `experiments/` + lane, new image | 1, 2, 3 |
 | 8 `arrangement_state` gates `vocals` on voiceness | `src/` + contract | one of 4–7 beats the incumbent (gate) |
 | 9 Correct the recorded conclusion | docs | 3, 4–7, 8 |
+| 10 Hand-marked section segments | `src/` + docs | — (independent track) |
 
 Item 1 unblocks *scoring*, not building — items 3–7 can run and produce
 proposal lanes without it, but no number in this plan means anything until it
 lands, so it stays first. Item 8 does not start until its gate is met; if none
 of items 4–7 wins, item 8 does not ship and the plan closes at item 9 with four
-measured negatives (refinement doc, item 8's "Gate").
+measured negatives (refinement doc, item 8's "Gate"). Item 10 is a separate
+track (section segmentation, not voice presence) and can be worked in any
+order relative to items 1–9.
 
 ---
 
@@ -78,7 +81,7 @@ Never fix across item boundaries in one commit.
 
 | | |
 | --- | --- |
-| Items | 9 (1 `ui/`, 5 `experiments/`, 1 `src/`, 1 gate, 1 docs) — item 2 is a scaffold, not counted twice |
+| Items | 10 (1 `ui/`, 5 `experiments/`, 2 `src/`, 1 gate, 2 docs) — item 2 is a scaffold, not counted twice; item 10 counts once toward both `src/` and docs |
 | Items with a Visual QA block | 5 (items 1, 4, 5, 6, 7 — every item that adds/renders a lane) |
 | Analyzer tests | `docker compose run --rm test` on item 8 |
 | UI tests | `npm run test` + `npm run build` on items 1, 4, 5, 6, 7 |
@@ -89,7 +92,7 @@ Never fix across item boundaries in one commit.
 | New `src/` stages | 0 unless item 8 ships (modifies `detect_arrangement_state` / `publish_arrangement_state` in place, no new stage) |
 | New proposal lanes | 4 (items 4–7) |
 | Blocking decisions (`D`) | 1 open — D8.1, the operator's by-ear review of the winning voiceness lane, required before item 8 starts |
-| Done | 7 of 9 (items 8-9 remaining; item 8 paused on D8.1) |
+| Done | 8 of 10 (items 8-9 remaining on the voiceness track, item 8 paused on D8.1; item 10 done) |
 
 ---
 
@@ -833,3 +836,99 @@ loses its only vocal-phrase events.
 - [x] Read both corrected docs end to end; confirmed no remaining sentence in
   either asserts stem RMS alone is sufficient for vocal presence on every
   song — both now state the gold-song/`ayuni` split explicitly.
+
+---
+
+## Item 10 — Hand-marked section segments — a new gold reference
+
+*Refinement item 10. `src/` + docs. Independent of items 1–9 (a different
+track — section segmentation, not voice presence); does not depend on the
+voiceness gate and nothing in items 1–9 depends on it.*
+
+**What changes.** A new optional file, `reference/human/segments.json` — a
+flat `{start, end, label}` list — becomes a validation and publish-fusion
+input for `sections.json`, same tier as `human_hints.json` and
+`reference/moises/*`. Two songs already carry it
+(`"What a Feeling - Courtney Storm"`, `_test_song`, `ayuni`). Where present for
+a song, its spans **replace allin1's boundaries outright**: `start`/`end`/
+`label` come from producer `"human"` at fixed confidence `0.8`; allin1 still
+supplies `function_confidence`/`confidence`/`same_label_as` by matching its
+own sections against the human boundaries. Where absent, allin1 stays the sole
+producer, unchanged. The `function`/label vocabulary itself switches from
+allin1's Harmonix set to `docs/segments-vocabulary.md`, for human-marked and
+allin1-derived rows alike.
+
+**What breaks if reversed.** `sections.json` goes back to trusting allin1
+alone even on songs the operator has hand-corrected, and a future session
+would need to rediscover the Harmonix→convention mapping instead of finding it
+already in `src/`.
+
+- [x] `paths.py` — no dedicated wrapper added; `paths.reference("human",
+  "segments.json")` (the existing generic accessor) is already the repo's
+  convention for every other reference-file call site, confirmed by grepping
+  every `reference/human`/`reference/moises` usage before deciding.
+- [x] New module `src/analyzer/section_vocabulary.py` — `HARMONIX_TO_VOCABULARY`
+  maps allin1's eight Harmonix labels onto `docs/segments-vocabulary.md`
+  terms (`inst`/`solo` → `Main`, the vocabulary doc's own term for a
+  non-verse/chorus musical section); `normalize_allin1_label` raises on an
+  unrecognized token (allin1's vocabulary is closed and versioned — no silent
+  fallback); `normalize_human_label` fixes case/whitespace against the
+  canonical terms plus a small alias table for known non-canonical synonyms
+  found in real data (`"Instrumental"` → `Main`, same target/rationale as
+  `inst`), and passes through a genuinely novel human label unchanged rather
+  than guessing. `segmentation.py` and `ui_data.py` both import this.
+- [x] `ui_data.py`'s `build_ui_data` — when `reference/human/segments.json`
+  exists: `section_rows` are rebuilt from its spans (`section_id` regenerated
+  sequentially, `confidence` fixed `0.8`); `function_confidence`/
+  `function_status`/`same_label_as` are inherited from whichever allin1
+  section overlaps most (honest `null`/`"unknown"` on no overlap, never
+  invented); `key`/`chord_progression` still come from the harmonic stage
+  either way. `field_sources` is built via the existing `_fuse` convention:
+  `"human"` for `section_id`/`start`/`end`/`label`/`description`/`function`/
+  `confidence` when the file exists, `"allin1"` otherwise —
+  `function_confidence`/`function_status`/`same_label_as` stay `"allin1"`
+  regardless. Fixed a pre-existing bug in the same change: `label`/
+  `description` were previously hardcoded to `"human"` even for songs with no
+  human file; now correctly `"allin1"` in that case (verified byte-identical
+  row content on a real no-human-file song, only the two header strings
+  changed).
+- [x] `validation/report.py` — new `human_segments` result (a
+  `reference_human_segments` path entry alongside the existing moises
+  `reference_sections` row, and a boundary recall/precision/F1 score in
+  `validation/sections.py`'s `_validate_human_segments`, same greedy
+  nearest-boundary matcher as the existing moises comparison). Added to
+  `ADVISORY_TARGETS` — never flips the pipeline's exit code, since only three
+  songs carry the file so far. `skipped` where the file is absent.
+- [x] `docs/reference/artifacts.md` — new `human/segments.json` entry, matching
+  the existing entries' shape/tone.
+- [x] `docs/analysis-definition.md` — new short note in the segmentation
+  section naming the file as a validation/fusion input and recording the
+  Harmonix → `docs/segments-vocabulary.md` switch.
+
+**Resolved judgement calls, recorded here:**
+
+- `inst`/`solo` both display as `Main` (no dedicated vocabulary term for
+  either); `same_label_as` identity is computed from allin1's *raw* token
+  before this mapping, so the two are never falsely claimed identical.
+- A human label with no vocabulary or alias match (none exist in this repo's
+  three marked songs today) passes through stripped, unchanged — it is the
+  operator's own ground truth, not a guess this module may overwrite.
+
+### Validation
+
+- [x] `docker compose run --rm test` — 146 passed, 1 failed; the failure
+  (`test_run_queue.py::test_seeded_queue_parses_with_three_enabled_app_rows`)
+  is confirmed pre-existing and unrelated via `git stash` (fails identically
+  with none of this item's changes applied — a stale fixture from the
+  already-committed voiceness experiments, items 4–7).
+- [x] Ran `build_ui_data` directly against real data for `_test_song` and
+  `"What a Feeling - Courtney Storm"`: `sections.json` boundaries match
+  `reference/human/segments.json` exactly for both, every `function` value is
+  a `docs/segments-vocabulary.md` term (including the `Instrumental` → `Main`
+  case), and `field_sources` correctly attributes every field.
+- [x] Ran the same check on `"Armin - Revolution"` (no human file): row
+  content is unchanged from before this item, confirming the no-human-file
+  path stays byte-identical.
+- [x] Validation report (`_test_song`, via `--compare sections`) carries a
+  correct `human_segments` recall/precision/F1 block without affecting the
+  overall exit status.
