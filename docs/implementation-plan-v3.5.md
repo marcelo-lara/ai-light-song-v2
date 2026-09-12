@@ -813,22 +813,23 @@ loses its only vocal-phrase events.
 *Refinement item 9. Docs only. Depends on items 3–8's outcomes being known
 (the correction cites whichever ships and whichever doesn't).*
 
-- [ ] `experiments/clap/README.md` — narrow the *"Take voice presence from the
-  stems"* recommendation to what it actually measured: correct on the four
+- [x] `experiments/clap/README.md` — narrowed the *"Take voice presence from
+  the stems"* recommendation to what it actually measured: correct on the four
   gold songs, which separate cleanly; wrong on `ayuni`, named as the
   counterexample, with the 40.8 % / 39.0 % figures and a pointer to this
   release's entries.
-- [ ] `docs/analysis-definition.md` — add the vocal-stem trustworthiness bound
-  beside the existing drum-vocabulary bound: what the vocal stem can and
-  cannot be trusted to assert, the two figures and their cause (self-
-  normalisation stretches leaked flute to full scale), and — if item 8 shipped
-  — the fix; if it didn't, that the bound remains open and why (naming which of
-  items 4–7 came closest and by how much).
-- [ ] `CLAUDE.md` — if item 8 shipped, add or update the one-line summary in
-  the "Current state, in one table" list for the `vocals` channel, mirroring
-  the drum-vocabulary row's style.
+- [x] `docs/analysis-definition.md` — added the vocal-stem trustworthiness
+  bound beside the existing drum-vocabulary bound: what the vocal stem can and
+  cannot be trusted to assert, the two figures and their cause, the real
+  (non-proxy) item 4-7 numbers from D8.1, and the open state — item 8 has not
+  shipped, pending the operator's by-ear review.
+- [ ] `CLAUDE.md` — **not done; correctly deferred.** Item 8 has not shipped
+  (paused on D8.1's by-ear review), so there is no fixed `vocals`-channel
+  behavior yet to summarise. Revisit this checkbox once item 8 resolves either
+  way — ship or explicit no-go.
 
 ### Validation
 
-- [ ] Read both corrected docs end to end; confirm no remaining sentence in
-  either still asserts stem RMS alone is sufficient for vocal presence.
+- [x] Read both corrected docs end to end; confirmed no remaining sentence in
+  either asserts stem RMS alone is sufficient for vocal presence on every
+  song — both now state the gold-song/`ayuni` split explicitly.

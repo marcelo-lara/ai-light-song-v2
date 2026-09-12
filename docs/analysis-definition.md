@@ -211,6 +211,36 @@ checked.
   measurement-pending (no `fft_bands.drums.json` yet; Omnizart is CPU-only
   here). If `fft_bands.drums.json` is absent the stage fails (`DependencyError`)
   — there is no fallback to "everything is hat".
+- **The vocal stem's RMS level is not a trustworthy voice-presence signal on
+  every song, and the bound is written down.** `arrangement_state.json`'s
+  `vocals` channel (and `fft_bands.vocals`/`loudness.json`'s per-stem RMS more
+  generally) reads energy in Demucs's `vocals.wav`, which on most of this
+  corpus tracks a sung voice well — but on `ayuni` the stem is largely leaked
+  flute, and the rule reports `vocals` present for **40.8 % of the song
+  (67.2 s of 164.8 s)**. **Self-normalisation is the mechanism, not a level
+  problem**: the stem spans 34.7 dB from its own p50 to p98, and **39.0 %** of
+  its 20 ms frames sit within 18 dB of p98 — exactly the presence rule's own
+  threshold — so whatever is in the stem (voice or flute) gets stretched to
+  full scale. `fft_bands._robust_normalize` (per-source 5th–95th percentile)
+  and `loudness.json`'s `normalization_scope: per-song-per-source-peak-rms`
+  apply the identical stretch and inherit the identical caveat; no cleaner
+  level fixes it, and a flute is not noise a filter can remove without also
+  removing vocal energy (implementation-plan-v3.5, product-refinement §review).
+  **Not yet fixed in `src/`.** Four competing voiceness detectors
+  (`experiments/vocal_voiceness`, `clap_voiceness`, `svd_tagger`,
+  `whisperx_vad` — `docs/experiments.md`) were built and measured against a
+  shared scorer. On the two songs carrying real `type: "vocal"` ground truth
+  so far (`ayuni`, 4 spans; `Armin - Revolution`, 7 spans — the other three
+  scoring-corpus songs carry none yet), `vocal_voiceness` and `whisperx_vad`
+  both cut the false-vocal rate below the incumbent's (`ayuni`: 0.109 / 0.120
+  vs 0.290; `Armin`: 0.051 / 0.120 vs 0.460), and `whisperx_vad` additionally
+  wins boundary F1 by a wide margin (`ayuni` 0.583 vs the incumbent's 0.385).
+  `clap_voiceness` does not beat the incumbent on either song.
+  **`svd_tagger` is unmeasured** — its sandbox image never finished building
+  in this environment (a checkpoint-fetch throughput issue, not a dead pin).
+  This is two songs and eleven marked spans, not a corpus-wide result, and a
+  gating fix into `src/` awaits the operator's by-ear review of the winning
+  lane — see implementation-plan-v3.5.md item 8's `D8.1`.
 
 ### Structure — `segmentation.py`, a real improvement, not solved
 

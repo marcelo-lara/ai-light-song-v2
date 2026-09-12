@@ -98,8 +98,15 @@ spanning half the song covers everything — so the per-axis table in
   precisely the two hints whose lighting note is "max intensity". One clear
   miss: `Vocal Outro 3` reads −1.11 where it should be calm.
 * CLAP's **vocal** axis is weak (+0.36 … +1.18 on the three vocal outros) while
-  the **vocal stem** is unambiguous (+1.5, +1.6, +1.2). Take voice presence from
-  the stems.
+  the **vocal stem** is unambiguous (+1.5, +1.6, +1.2) — **on these four gold
+  songs, which separate cleanly.** This does not generalise: `ayuni`
+  (implementation-plan-v3.5 item 9) is the counterexample, where the vocal
+  stem is largely leaked flute and the same stem-RMS rule `arrangement_state`
+  ships reports `vocals` present for 40.8 % of the song (39.0 % of the stem's
+  20 ms frames sit within 18 dB of its own p98 — the rule's own presence
+  threshold). See [`docs/analysis-definition.md`](../../docs/analysis-definition.md)'s
+  vocal-stem trustworthiness bound and `docs/experiments.md`'s voiceness
+  entries (items 4-7) for the measured follow-up.
 * CLAP's **drums** and **bass** axes are wrong. It reports drums *present*
   through the Armin block (+0.77) where the drum stem sits at 0.03 of its own
   loud level. Do not ask CLAP what is playing.
