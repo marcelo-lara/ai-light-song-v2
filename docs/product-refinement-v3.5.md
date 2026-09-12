@@ -357,11 +357,62 @@ building a voice-presence rule has every reason to believe it.
 
 ---
 
+## 10. Hand-marked section segments — a new gold reference — `src/`
+
+**Current behaviour.** `sections.json` boundaries, labels and function names
+come from allin1 alone (see item table in `field_sources`). `reference/human/`
+already holds `human_hints.json` (point/span annotations) and, for gold songs,
+`reference/moises/segments.json` (Moises inference, validation-only). Neither
+is a hand-marked segmentation an operator trusts more than allin1.
+
+**Change.** A new optional file, `reference/human/segments.json` — a flat list
+of `{start, end, label}` spans, hand-marked by the operator. Two now exist:
+`"What a Feeling - Courtney Storm"` and `_test_song`. Same tier as
+`human_hints.json` and `reference/moises/*`: optional, gold-song-only,
+validation- and publish-fusion input, never read by an interpret/relate stage.
+
+**Validate.** Scored the same way `reference/moises/segments.json` already is
+in `segmentation.py`'s docstring — boundary recall/precision/F1 against it,
+reported per song, alongside allin1's existing number.
+
+**Fuse into `sections.json`.** Treated as producer `"human"`, fixed confidence
+`0.8` — the operator's own estimate, not a ceiling, since hand-marked timing
+and labels can be off. Confidence stays numeric and per-field, never folded
+into a display string, so `0.8` is directly comparable to allin1's
+`function_confidence`/`confidence` (often 0.15–0.26 in the corpus). Where a
+song has a human `segments.json`, its spans **replace allin1's boundaries
+outright** for that song — `start`/`end`/`label` all come from `"human"`, with
+`field_sources` recording the per-song override; allin1 still supplies
+`function_confidence`/`confidence`/`same_label_as` by matching its own
+sections against the human boundaries it was replaced by. Where no human
+`segments.json` exists, allin1 stays the sole producer, unchanged.
+
+**Label vocabulary.** The function vocabulary stops being allin1's Harmonix
+set (`intro outro break bridge inst solo verse chorus`). `docs/
+segments-vocabulary.md` is the vocabulary for `function`/label going forward —
+for human-marked rows and allin1-derived rows alike — replacing the Harmonix
+set repo-wide rather than running two vocabularies side by side. allin1's
+raw output is mapped onto the closest convention term at publish time.
+
+**Docs.** `docs/reference/artifacts.md` gets an entry for
+`reference/human/segments.json`, and `docs/analysis-definition.md`'s
+segmentation section names it as a new validation/fusion input and records
+the vocabulary switch.
+
+| | |
+| --- | --- |
+| Reads | `reference/human/segments.json` (optional, per song) |
+| Writes | validation report (new boundary F1 row); `sections.json` (fused `start`/`end`/`label`/`description`/`confidence`/`source`) |
+| Kill condition | none — an honest `unknown`/allin1-only fallback stands when the file is absent |
+
+---
+
 ## Open questions blocking implementation
 
 **None.** The scoring corpus, the discriminator choice, the Demucs ablation
 ordering and the `arrangement_state` gating were resolved with the operator on
-2026-09-11. All nine items are unblocked.
+2026-09-11; the segments.json fusion rule, vocabulary and docs scope were
+resolved 2026-09-12. All ten items are unblocked.
 
 One dependency is outstanding but blocks only item 8: the operator's `ayuni`
 vocal marking (item 1), without which items 3–7 can run but cannot be scored.

@@ -1,0 +1,82 @@
+[
+    {
+        "start": 0.06,
+        "end": 13.55,
+        "label": "Intro"
+    },
+    {
+        "start": 13.55,
+        "end": 15.52,
+        "label": "Refrain"
+    },
+    {
+        "start": 15.52,
+        "end": 39.13,
+        "label": "Verse"
+    },
+    {
+        "start": 39.13,
+        "end": 46.99,
+        "label": "Build"
+    },
+    {
+        "start": 46.99,
+        "end": 54.87,
+        "label": "Pre-Drop"
+    },
+    {
+        "start": 54.87,
+        "end": 84.37,
+        "label": "Drop"
+    },
+    {
+        "start": 84.37,
+        "end": 86.50,
+        "label": "Refrain"
+    },
+    {
+        "start": 86.50,
+        "end": 98.63,
+        "label": "Main"
+    },
+    {
+        "start": 98.63,
+        "end": 102.26,
+        "label": "Build"
+    },
+    {
+        "start": 102.26,
+        "end": 118.11,
+        "label": "Breakdown"
+    },
+    {
+        "start": 118.11,
+        "end": 133.75,
+        "label": "Pre-Build"
+    },
+    {
+        "start": 133.75,
+        "end": 137.57,
+        "label": "Break"
+    },
+    {
+        "start": 137.57,
+        "end": 143.39,
+        "label": "Build"
+    },
+    {
+        "start": 143.39,
+        "end": 145.55,
+        "label": "Pre-Drop"
+    },
+    {
+        "start": 145.55,
+        "end": 161.09,
+        "label": "Drop"
+    },
+    {
+        "start": 161.09,
+        "end": 164.74,
+        "label": "Outro"
+    }
+]

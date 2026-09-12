@@ -115,12 +115,21 @@
       "id": "hint-014",
       "title": "Sitar phrase",
       "start_time": 137.566,
-      "end_time": 145.36,
+      "end_time": 143.39,
       "summary": "fast sitar phrases, NO vocals, NO drums",
       "lighting_hint": ""
     },
     {
       "id": "hint-015",
+      "title": "Refrain",
+      "start_time": 143.39,
+      "end_time": 145.36,
+      "summary": "Male vocal lead",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-016",
       "title": "EDM sitar groove",
       "start_time": 145.549,
       "end_time": 161.159,
@@ -128,7 +137,7 @@
       "lighting_hint": ""
     },
     {
-      "id": "hint-016",
+      "id": "hint-017",
       "title": "Outro fade out",
       "start_time": 161.159,
       "end_time": 164.757,

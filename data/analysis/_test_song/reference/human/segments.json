@@ -1,0 +1,22 @@
+[
+    {
+        "start": 0.06,
+        "end": 14.82,
+        "label": "Intro"
+    },
+    {
+        "start": 14.82,
+        "end": 29.58,
+        "label": "Verse"
+    },
+    {
+        "start": 29.58,
+        "end": 44.36,
+        "label": "Chorus"
+    },
+    {
+        "start": 44.36,
+        "end": 57.28,
+        "label": "Outro"
+    }
+]
