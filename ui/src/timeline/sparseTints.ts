@@ -101,6 +101,9 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   whisperxVadHigh: [20, 80, 46],
   whisperxVadVeryHigh: [20, 95, 54],
   whisperxVadPhrase: [80, 60, 42],
+  voiceMultiplicity: [145, 60, 44], // sea-green — solo/stacked voice blocks,
+  //                                   distinct from phrasePeriodicity's 130,
+  //                                   moisesLyricsHigh's 150
   arrangementState: [95, 55, 44], // olive-lime — distinct from vocalPhrases' rose
   //                                 (340) and dropProposals' magenta (318)
   arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a

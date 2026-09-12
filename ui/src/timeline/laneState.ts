@@ -78,6 +78,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "clapVoiceness", label: "5. CLAP Voiceness", sub: "experiment · CLAP contrastive differential (singing vs flute/synth) — independent second opinion, not a boundary read", kind: "proposals", height: 84, experiment: "clap_voiceness" },
   { id: "svdTagger", label: "6. SVD Tagger", sub: "experiment · PANNs Singing-class voiceness, stem + mix channels (two curves, no toggle)", kind: "proposals", height: 112, experiment: "svd_tagger" },
   { id: "whisperxVad", label: "7. WhisperX VAD", sub: "experiment · speech-domain VAD voiceness + phrase spans with real sub-second onsets (diarization not attempted — no HF_TOKEN)", kind: "proposals", height: 64, experiment: "whisperx_vad" },
+  { id: "voiceMultiplicity", label: "Voice Multiplicity", sub: "experiment · solo/stacked voice blocks from stereo width and L-R correlation", kind: "proposals", height: 58, experiment: "voice_multiplicity" },
   { id: "textureNovelty", label: "2. Texture Novelty", sub: "experiment · self-similarity novelty texture segments", kind: "proposals", height: 58, experiment: "texture_novelty" },
   { id: "phrasePeriodicity", label: "3. Phrase Periodicity", sub: "experiment · per-bar autocorrelation regime + period", kind: "proposals", height: 58, experiment: "phrase_periodicity" },
   { id: "structuralVsMicro", label: "4. Structural vs Micro", sub: "experiment · 4-bar phrase-grid fit · structural vs micro block kind", kind: "proposals", height: 58, experiment: "structural_vs_micro" },

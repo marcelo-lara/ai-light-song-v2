@@ -30,6 +30,7 @@ import type {
   ClapVoicenessFile,
   SvdTaggerFile,
   WhisperxVadFile,
+  VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
 
 import { romanNumeral } from "./romanNumeral";
@@ -1007,6 +1008,26 @@ export function whisperxVadContent(file: WhisperxVadFile | null): SparseBlock[] 
 }
 
 /**
+ * Solo/stacked voice blocks from stereo vocal stem width and L-R correlation,
+ * per-song z-scored. A proposal to audition against Human Hints, not ground truth.
+ */
+export function voiceMultiplicityContent(file: VoiceMultiplicityFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => ({
+    id: `voiceMultiplicity-${i + 1}`,
+    start_s: b.start,
+    end_s: b.end,
+    label: b.kind,
+    wideLabel: `${b.kind}${b.mean_multiplicity != null ? ` · ${round(b.mean_multiplicity, 2)}` : ""}`,
+    laneLabel: "Voice Multiplicity",
+    caption: `${formatRange(b.start, b.end)} · ${b.kind}${b.mean_multiplicity != null ? ` (${round(b.mean_multiplicity, 2)})` : ""}`,
+    reference: `voiceMultiplicity-${i + 1}`,
+    detail: b.kind,
+    summary: `experiments/voice_multiplicity — ${b.kind} vocal region${b.confidence != null ? ` · confidence ${round(b.confidence, 2)}` : ""}`,
+    raw: b,
+  }));
+}
+
+/**
  * Named gesture phases (approach/build/tension/impact/release) and
  * section-pair transitions ("<from> → <to>") from `song_event_timeline.json`
  * -- the production `gestures` stage (plan v3.0 item 9, replacing the
@@ -1057,6 +1078,7 @@ export interface LaneContentSources {
   clapVoiceness?: ClapVoicenessFile | null;
   svdTagger?: SvdTaggerFile | null;
   whisperxVad?: WhisperxVadFile | null;
+  voiceMultiplicity?: VoiceMultiplicityFile | null;
   gestures?: EventTimeline | null;
 }
 
@@ -1073,6 +1095,8 @@ export const SPARSE_LANE_IDS = [
   "vocalVoiceness",
   "clapVoiceness",
   "svdTagger",
+  "whisperxVad",
+  "voiceMultiplicity",
   "gestures",
   "sections",
   "character",
@@ -1111,6 +1135,8 @@ export function buildLaneBlocks(
       return svdTaggerContent(s.svdTagger ?? null);
     case "whisperxVad":
       return whisperxVadContent(s.whisperxVad ?? null);
+    case "voiceMultiplicity":
+      return voiceMultiplicityContent(s.voiceMultiplicity ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
     case "sections":

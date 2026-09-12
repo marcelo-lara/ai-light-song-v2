@@ -30,6 +30,7 @@ import {
   structuralVsMicroContent,
   vocalVoicenessContent,
   clapVoicenessContent,
+  voiceMultiplicityContent,
 } from "./laneContent";
 import type {
   ArrangementStateFile,
@@ -38,6 +39,7 @@ import type {
   StructuralVsMicroFile,
   VocalVoicenessFile,
   ClapVoicenessFile,
+  VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
 import { romanNumeral } from "./romanNumeral";
 
@@ -630,5 +632,34 @@ describe("structuralVsMicroContent", () => {
 
   it("never throws on a missing file", () => {
     expect(structuralVsMicroContent(null)).toEqual([]);
+  });
+});
+
+describe("voiceMultiplicityContent", () => {
+  const file: VoiceMultiplicityFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start: 1.0, end: 5.0, kind: "solo", mean_multiplicity: -0.82, confidence: 0.41 },
+      { start: 6.0, end: 10.0, kind: "stacked", mean_multiplicity: 0.55, confidence: 0.28 },
+    ],
+  };
+
+  it("labels a solo block with its kind", () => {
+    const blocks = voiceMultiplicityContent(file);
+    expect(blocks[0]!.label).toBe("solo");
+  });
+
+  it("renders a null mean_multiplicity honestly", () => {
+    const b = voiceMultiplicityContent({
+      schema_version: "1.0",
+      song_name: "_test_song",
+      blocks: [{ start: 0, end: 1, kind: "solo", mean_multiplicity: null, confidence: null }],
+    });
+    expect(b[0]!.caption).not.toMatch(/null/);
+  });
+
+  it("never throws on a missing file", () => {
+    expect(voiceMultiplicityContent(null)).toEqual([]);
   });
 });

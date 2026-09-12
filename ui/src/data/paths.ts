@@ -111,6 +111,10 @@ export const artifactPaths = {
   // not attempted (no HF_TOKEN in this environment) — VAD-only.
   whisperxVad: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "whisperx_vad.json")),
+  // Written by experiments/voice_multiplicity (`run export`). Solo/stacked voice
+  // blocks from stereo vocal stem width and L-R correlation.
+  voiceMultiplicity: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "voice_multiplicity.json")),
   // Moises' word-level sung-lyric export, delivered as external reference. A
   // flat list of word tokens with `line_id`, `start`, `end`; `<SOL>` / `<EOL>`
   // rows mark line boundaries. Read-only ground truth, never written by the

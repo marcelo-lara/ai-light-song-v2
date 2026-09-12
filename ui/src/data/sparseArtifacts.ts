@@ -1,7 +1,8 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (drop proposals, character, vocal
 // transcription, vocal phrases, texture novelty, phrase periodicity,
-// structural-vs-micro, and the top-level published arrangement state).
+// structural-vs-micro, whisperx vad, voice multiplicity, and the top-level published
+// arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -948,6 +949,60 @@ export async function loadWhisperxVad(
       ok: true,
       data: { schema_version: "", song_name: song, interval_ms: 50, frames: [], vocal_phrase: [] },
     };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// voiceMultiplicity — reference/proposals/voice_multiplicity.json
+// ---------------------------------------------------------------------------
+//
+// Solo vs stacked voice blocks from stereo vocal stem width and L-R correlation.
+// Per-song z-scored (absolute width is not comparable across songs). A proposal
+// to audition against Human Hints, not ground truth.
+
+export interface VoiceMultiplicityBlock {
+  start: number;
+  end: number;
+  kind: string;
+  mean_multiplicity: number | null;
+  confidence: number | null;
+}
+
+export interface VoiceMultiplicityFile {
+  schema_version: string;
+  song_name: string;
+  blocks: VoiceMultiplicityBlock[];
+}
+
+export function parseVoiceMultiplicity(raw: unknown): VoiceMultiplicityFile {
+  const o = asObject(raw, "reference/proposals/voice_multiplicity.json");
+  const blocks: VoiceMultiplicityBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    blocks.push({
+      start: num(r.start),
+      end: num(r.end),
+      kind: st(r.kind),
+      mean_multiplicity: r.mean_multiplicity == null ? null : num(r.mean_multiplicity),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    });
+  }
+  blocks.sort((a, b) => a.start - b.start);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadVoiceMultiplicity(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<VoiceMultiplicityFile>> {
+  const result = await loadJson(
+    artifactPaths.voiceMultiplicity(song),
+    parseVoiceMultiplicity,
+    f,
+  );
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
   }
   return result;
 }

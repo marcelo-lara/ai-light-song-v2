@@ -79,7 +79,7 @@
     {
       "id": "hint-010",
       "title": "Vocal phrase",
-      "start_time": 102.44,
+      "start_time": 102.238,
       "end_time": 110.184,
       "summary": "Lead vocal, percussive ethnic background.",
       "lighting_hint": "",
@@ -91,14 +91,48 @@
       "start_time": 110.184,
       "end_time": 118.161,
       "summary": "Same previous vocal phrase with an extra padded bass.",
-      "lighting_hint": ""
+      "lighting_hint": "",
+      "type": "vocal"
     },
     {
       "id": "hint-012",
-      "title": "Hint 12",
-      "start_time": 121.66,
-      "end_time": 122.66,
-      "summary": "fdsfdsf",
+      "title": "Vocal tension build",
+      "start_time": 118.161,
+      "end_time": 133.749,
+      "summary": "(filtered) Vocal as loop for pre-drop",
+      "lighting_hint": "",
+      "type": "review"
+    },
+    {
+      "id": "hint-013",
+      "title": "Tension break",
+      "start_time": 133.749,
+      "end_time": 137.566,
+      "summary": "close to zero sound (pre drop init)",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-014",
+      "title": "Sitar phrase",
+      "start_time": 137.566,
+      "end_time": 145.36,
+      "summary": "fast sitar phrases, NO vocals, NO drums",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-015",
+      "title": "EDM sitar groove",
+      "start_time": 145.549,
+      "end_time": 161.159,
+      "summary": "No vocals. EDM Groove, with a sitar like instrument as melody.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-016",
+      "title": "Outro fade out",
+      "start_time": 161.159,
+      "end_time": 164.757,
+      "summary": "FADEOUT. No vocals. EDM Groove, with a sitar like instrument as melody.",
       "lighting_hint": ""
     }
   ]
