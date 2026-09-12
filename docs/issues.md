@@ -15,6 +15,36 @@ Current focus song: `_test_song`
 
 ## Open queue
 
+### Items 4-7 voiceness numbers predate the three-class scorer and `ayuni`'s current marking
+
+- **Status:** `pending`
+- **Raised:** 2026-09-12, when the operator finished marking `ayuni` and
+  `Cinderella - Ella Lee` for v3.5 item 1.
+- **What was fixed already:** `scorer.py` scored the ground truth as two
+  classes — every frame outside a `type: "vocal"` span was a hard negative, so
+  residual-vocal spans were charged as false vocals and unreviewed time was
+  charged the same way. It now takes a `GroundTruth` from `ground_truth()`,
+  built against `experiments/voiceness_common/vocal_ground_truth.json` — the
+  declared per-song, per-hint class map, because residual/negative/unknown
+  exist only as prose in `human_hints.json` and defeat keyword matching
+  (`ayuni` hint-005 reads "(no vocal)" and is residual). `ayuni`,
+  `Cinderella - Ella Lee` and `Armin - Revolution` are seeded; an unclassified
+  hint fails loud. 12 unit tests green.
+- **What is still open:** every items 4-7 number in `docs/experiments.md` was
+  produced by the old scorer, with the residual class hand-corrected outside
+  it, and against `ayuni`'s earlier marking (5 vocal spans / 28.0 s, now 7 /
+  32.0 s). Three denominators also changed — `frame_accuracy` and
+  `false_vocal_rate` are over evaluable non-residual frames, `bounds_per_min`
+  over evaluable duration — so the recorded values are not comparable with
+  anything the scorer produces today.
+- **Validation target:** the four items 4-7 candidates rescored on `ayuni` and
+  `Cinderella - Ella Lee`, which is where the vocal-stem-leak negatives live.
+- **Success condition:** every number in `docs/experiments.md`'s items 4-7
+  tables comes straight out of `scorer.py` with no hand-correction step, each
+  table states the ground-truth revision it was measured against, and any
+  movement from the previously recorded values (whisperX's 0.919 included) is
+  explained rather than assumed to reproduce.
+
 ### `gestures` — per-primitive precision has never been audited by ear
 
 - **Status:** `pending`

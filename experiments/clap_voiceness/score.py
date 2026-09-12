@@ -12,14 +12,17 @@ stays one comparable shape) but is explicitly NOT a scored comparison for
 false` and the printed table stars them, so a reader cannot mistake the
 column for a claim this candidate makes.
 
-**No ground truth exists yet.** Same finding as items 3-4: every song in
-`paths.SCORING_CORPUS` has zero `type == "vocal"` rows in
-`reference/human/human_hints.json` in this environment. So `false_vocal_rate`
-against an empty marked-span set is mathematically "fraction of frames this
-candidate calls voiced" — reported honestly below, `is_proxy_no_ground_truth`
-flagged per row, not dressed up as the validated metric. Re-running `score`
-after the operator marks `type: "vocal"` spans recomputes the real number
-with no code change.
+**Three-class ground truth** (`voiceness_common.scorer.ground_truth`,
+declared per-song in `voiceness_common/vocal_ground_truth.json`): positive
+(`type: "vocal"`), residual (excluded from every scored metric, its firing
+rate reported separately) and negative (hard error) spans, resolved against
+an `evaluable` region — everything else is unreviewed and excluded entirely.
+A song with a hint that is neither `type: "vocal"` nor classified in the map
+raises `ValueError` rather than being silently treated as a negative or
+skipped.
+
+`is_proxy_no_ground_truth` (kept per row) now means "zero evaluable
+non-residual frames".
 """
 from __future__ import annotations
 
@@ -52,26 +55,37 @@ def _candidate_frames_phrases(name: str, song: str):
     raise ValueError(name)
 
 
-def score_song(song: str) -> dict:
+def _load_ground_truth(song: str) -> voiceness_scorer.GroundTruth:
     hints_path = paths.hints_path(song)
-    marked_spans: list[tuple[float, float]] = []
-    if hints_path.exists():
-        marked_spans = voiceness_scorer.marked_vocal_spans(json.loads(hints_path.read_text()))
+    hints_doc = json.loads(hints_path.read_text()) if hints_path.exists() else {"human_hints": []}
+    class_map = voiceness_scorer.load_class_map()
+    return voiceness_scorer.ground_truth(hints_doc, song, class_map)
 
-    out = {"song": song, "n_marked_vocal_spans": len(marked_spans), "candidates": {}}
+
+def score_song(song: str) -> dict:
+    truth = _load_ground_truth(song)
+
+    out = {
+        "song": song,
+        "n_positive_spans": len(truth.positive),
+        "n_residual_spans": len(truth.residual),
+        "n_negative_spans": len(truth.negative),
+        "candidates": {},
+    }
     for name in CANDIDATES:
         frames, phrases = _candidate_frames_phrases(name, song)
         duration = max((t for t, _ in frames), default=0.0)
-        result = voiceness_scorer.score(frames, phrases, marked_spans, duration_s=duration)
+        result = voiceness_scorer.score(frames, phrases, truth, duration_s=duration)
         out["candidates"][name] = {
             "frame_accuracy": round(result.frame_accuracy, 4),
             "false_vocal_rate": round(result.false_vocal_rate, 4),
+            "residual_firing_rate": round(result.residual_firing_rate, 4),
             "bounds_per_min": round(result.bounds_per_min, 2),
             "boundary_f1": {str(t): round(b.f1, 3) for t, b in result.boundary.items()},
             # only clap_voiceness's own boundary read is unscored — the
             # incumbents keep whatever standing they already have elsewhere.
             "boundary_f1_scored": name != "clap_voiceness",
-            "is_proxy_no_ground_truth": len(marked_spans) == 0,
+            "is_proxy_no_ground_truth": result.n_frames_evaluable == result.n_frames_residual,
         }
     return out
 
@@ -84,10 +98,13 @@ def gold_table(songs: list[str]) -> str:
 
     for song in songs:
         row = score_song(song)
-        lines.append(f"\n{song}  ({row['n_marked_vocal_spans']} marked vocal spans)")
+        lines.append(
+            f"\n{song}  ({row['n_positive_spans']} positive / "
+            f"{row['n_residual_spans']} residual / {row['n_negative_spans']} negative spans)"
+        )
         header = (
             f"  {'candidate':<20}{'frame_acc':>11}{'false_vocal_rate':>18}"
-            f"{'bounds/min':>12}{'F1@0.5s':>10}"
+            f"{'residual_firing':>16}{'bounds/min':>12}{'F1@0.5s':>10}"
         )
         lines.append(header)
         for name in CANDIDATES:
@@ -97,8 +114,8 @@ def gold_table(songs: list[str]) -> str:
                 f1_str += "*"
             lines.append(
                 f"  {name:<20}{c['frame_accuracy']:>11.4f}{c['false_vocal_rate']:>18.4f}"
-                f"{c['bounds_per_min']:>12.2f}{f1_str:>10}"
-                f"{'  (proxy — no ground truth)' if c['is_proxy_no_ground_truth'] else ''}"
+                f"{c['residual_firing_rate']:>16.4f}{c['bounds_per_min']:>12.2f}{f1_str:>10}"
+                f"{'  (proxy — no evaluable ground truth)' if c['is_proxy_no_ground_truth'] else ''}"
             )
             agg_acc[name].append(c["frame_accuracy"])
             agg_false_vocal[name].append(c["false_vocal_rate"])

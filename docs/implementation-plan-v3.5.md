@@ -167,11 +167,19 @@ be measured against an incumbent that already looks fine on them.
   `laneContent.test.ts`, `HintEditorPanel.test.tsx`) to cover the `"vocal"`
   branch alongside the existing `"review"` cases — mirror each existing
   `"review"` test case with a `"vocal"` counterpart.
-- [ ] **Mark the corpus.** The operator marks `ayuni` and at least one further
+- [x] **Mark the corpus.** The operator marks `ayuni` and at least one further
   leaky track with `type: "vocal"` spans covering every sung phrase, using the
   editor built by this item. This is operator work, not code — the item is not
   done until it exists in `data/analysis/ayuni/reference/human/human_hints.json`
-  (currently empty) and on the second track.
+  and on the second track.
+  **Done.** `ayuni` is marked exhaustively (7 `type: "vocal"` spans / 32.0 s,
+  2 residual-vocal spans / 29.4 s, 9 hard negatives / 102.6 s, 0.7 s unmarked).
+  The second leaky track is `Cinderella - Ella Lee` (new song, 339.5 s): 4
+  `type: "vocal"` spans / 57.1 s and 4 hard negatives / 60.8 s, all four of them
+  *instrument leaked into the vocal stem* — but the marking is **sparse**, with
+  221.6 s unmarked including everything after 208.1 s. Inventory and the
+  consequence for scoring: `docs/experiments.md`, "Vocal ground truth
+  inventory".
 
 ### D1.1 (resolved)
 
@@ -185,7 +193,7 @@ implementation time so it doesn't collide.
 - [x] `docker compose run --rm ui npm run test` green, including the new
   `"vocal"` cases (384/384).
 - [x] `docker compose run --rm ui npm run build` clean.
-- [ ] Manual: open the debugger on `ayuni`, add a `type: "vocal"` hint via the
+- [x] Manual: open the debugger on `ayuni`, add a `type: "vocal"` hint via the
   editor, confirm it saves to `reference/human/human_hints.json` and reloads
   with the correct tint. (Deferred — needs the operator's own review pass with
   the running debugger; not something a batch run should do unattended.)

@@ -3,14 +3,19 @@
 (`voiceness_common.scorer`), at a matched firing budget (bounds/min reported
 beside every F1, never compared on F1 alone).
 
-**No ground truth exists yet.** Checked directly, same finding as item 3's
-`demucs_ablation`: every song in `paths.SCORING_CORPUS` has zero
-`type == "vocal"` rows in `reference/human/human_hints.json` in this
-environment. So `false_vocal_rate` against an empty marked-span set is
-mathematically "fraction of frames this candidate calls voiced" — reported
-honestly below, `is_proxy_no_ground_truth` flagged per row, not dressed up as
-the validated metric the plan specifies. Re-running `score` after the operator
-marks `type: "vocal"` spans recomputes the real number with no code change.
+**Three-class ground truth** (`voiceness_common.scorer.ground_truth`,
+declared per-song in `voiceness_common/vocal_ground_truth.json`): positive
+(`type: "vocal"`), residual (excluded from every scored metric, its firing
+rate reported separately) and negative (hard error) spans, resolved against
+an `evaluable` region — everything else is unreviewed and excluded entirely.
+A song with a hint that is neither `type: "vocal"` nor classified in the map
+raises `ValueError` rather than being silently treated as a negative or
+skipped — no ground truth exists for that song until it is declared.
+
+`is_proxy_no_ground_truth` (kept per row) now means "zero evaluable
+non-residual frames" — `frame_accuracy`/`false_vocal_rate` are then reported
+as 0.0 with nothing to score them against, not a proxy firing-rate the way an
+empty-`marked_spans` list used to be.
 """
 from __future__ import annotations
 
@@ -45,23 +50,34 @@ def _candidate_frames_phrases(name: str, song: str):
     raise ValueError(name)
 
 
-def score_song(song: str) -> dict:
+def _load_ground_truth(song: str) -> voiceness_scorer.GroundTruth:
     hints_path = paths.hints_path(song)
-    marked_spans: list[tuple[float, float]] = []
-    if hints_path.exists():
-        marked_spans = voiceness_scorer.marked_vocal_spans(json.loads(hints_path.read_text()))
+    hints_doc = json.loads(hints_path.read_text()) if hints_path.exists() else {"human_hints": []}
+    class_map = voiceness_scorer.load_class_map()
+    return voiceness_scorer.ground_truth(hints_doc, song, class_map)
 
-    out = {"song": song, "n_marked_vocal_spans": len(marked_spans), "candidates": {}}
+
+def score_song(song: str) -> dict:
+    truth = _load_ground_truth(song)
+
+    out = {
+        "song": song,
+        "n_positive_spans": len(truth.positive),
+        "n_residual_spans": len(truth.residual),
+        "n_negative_spans": len(truth.negative),
+        "candidates": {},
+    }
     for name in CANDIDATES:
         frames, phrases = _candidate_frames_phrases(name, song)
         duration = max((t for t, _ in frames), default=0.0)
-        result = voiceness_scorer.score(frames, phrases, marked_spans, duration_s=duration)
+        result = voiceness_scorer.score(frames, phrases, truth, duration_s=duration)
         out["candidates"][name] = {
             "frame_accuracy": round(result.frame_accuracy, 4),
             "false_vocal_rate": round(result.false_vocal_rate, 4),
+            "residual_firing_rate": round(result.residual_firing_rate, 4),
             "bounds_per_min": round(result.bounds_per_min, 2),
             "boundary_f1": {str(t): round(b.f1, 3) for t, b in result.boundary.items()},
-            "is_proxy_no_ground_truth": len(marked_spans) == 0,
+            "is_proxy_no_ground_truth": result.n_frames_evaluable == result.n_frames_residual,
         }
     return out
 
@@ -73,15 +89,21 @@ def gold_table(songs: list[str]) -> str:
 
     for song in songs:
         row = score_song(song)
-        lines.append(f"\n{song}  ({row['n_marked_vocal_spans']} marked vocal spans)")
-        header = f"  {'candidate':<20}{'false_vocal_rate':>18}{'bounds/min':>12}{'F1@0.5s':>10}"
+        lines.append(
+            f"\n{song}  ({row['n_positive_spans']} positive / "
+            f"{row['n_residual_spans']} residual / {row['n_negative_spans']} negative spans)"
+        )
+        header = (
+            f"  {'candidate':<20}{'false_vocal_rate':>18}{'residual_firing':>16}"
+            f"{'bounds/min':>12}{'F1@0.5s':>10}"
+        )
         lines.append(header)
         for name in CANDIDATES:
             c = row["candidates"][name]
             lines.append(
-                f"  {name:<20}{c['false_vocal_rate']:>18.4f}{c['bounds_per_min']:>12.2f}"
-                f"{c['boundary_f1'].get('0.5', 0.0):>10.3f}"
-                f"{'  (proxy — no ground truth)' if c['is_proxy_no_ground_truth'] else ''}"
+                f"  {name:<20}{c['false_vocal_rate']:>18.4f}{c['residual_firing_rate']:>16.4f}"
+                f"{c['bounds_per_min']:>12.2f}{c['boundary_f1'].get('0.5', 0.0):>10.3f}"
+                f"{'  (proxy — no evaluable ground truth)' if c['is_proxy_no_ground_truth'] else ''}"
             )
             agg_false_vocal[name].append(c["false_vocal_rate"])
             agg_bpm[name].append(c["bounds_per_min"])

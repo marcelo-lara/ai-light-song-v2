@@ -1691,7 +1691,8 @@ environment carries `type: "vocal"` ground truth" claim repeated in items 3-7.
 
 | song | source | content |
 | --- | --- | --- |
-| `ayuni` | `human_hints.json` | 5 `type: "vocal"` spans (28.0 s), explicit "no vocals" negatives (106.6 s), 2 residual-vocal spans (29.4 s) |
+| `ayuni` | `human_hints.json` | 7 `type: "vocal"` spans (32.0 s), explicit "no vocals" negatives (102.6 s), 2 residual-vocal spans (29.4 s). **Exhaustive** — 0.7 s of the 164.8 s is unmarked |
+| `Cinderella - Ella Lee` | `human_hints.json` | 4 `type: "vocal"` spans (57.1 s) and 4 hard negatives (60.8 s), every one of them an *instrument leaked into the vocal stem* case — the failure mode items 3-7 exist to catch. **Sparse**: 221.6 s of the 339.5 s is unmarked, including everything after 208.1 s, so unmarked time is not confirmed instrumental and its FP column is an upper bound |
 | `Armin - Revolution` | `human_hints.json` | 7 `type: "vocal"` spans (35.3 s); male 30.0-55.8 s, female 81.6-88.0 s. No "no vocals" hints — unlabelled time is **not** confirmed instrumental, so its FP column is an upper bound |
 | `Queen of Kings - Alessandra` | `reference/moises/lyrics.json` | curated word timings, **trust window 0-127.2 s only**; lead-vs-chorus in hint prose |
 | `_test_song` | `reference/moises/lyrics.json` | curated, 24 words / 5 lines, 15.9-54.7 s; 36 s of real instrumental including deliberate traps (an acid-synth-bass block, an ambient pad between two vocal lines) |
@@ -1706,8 +1707,14 @@ includes **"vocal stem noise"**, which means instrument bleed with *no voice at
 all*.
 
 Scoring the residual class as negatives moves the numbers materially: on
-`ayuni` those spans are 29.4 s against 28.0 s of true vocal, and correcting the
-error raised whisperX's F1 from 0.822 to 0.919.
+`ayuni` those spans are 29.4 s against 32.0 s of true vocal, and correcting the
+error raised whisperX's F1 from 0.822 to 0.919. Those two figures were measured
+against the earlier 28.0 s marking (5 spans); the operator has since added two
+~2 s vocal spans, and `scorer.py` has since been rewritten to the three-class
+contract (residual excluded, unreviewed time excluded, `frame_accuracy` /
+`false_vocal_rate` / `bounds_per_min` denominators all narrowed to the evaluable
+region). **Every items 4-7 number below therefore needs a rescore before it is
+quoted again** — see `docs/issues.md`.
 
 ### `confidence: "0.99"` marks curation only when the whole file carries it
 

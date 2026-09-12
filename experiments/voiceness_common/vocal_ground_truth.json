@@ -1,0 +1,36 @@
+{
+  "_note": "human_hints.json only declares type: \"vocal\" (positive). The other two scored classes — residual (an inferable-but-not-lead vocal construct: filtered/looped/sampled, excluded from precision/recall, firing rate reported as a diagnostic only) and negative (operator's explicit \"no vocals\", including instrument bleed into the vocal stem) — live only in hint prose, which defeats keyword matching (e.g. ayuni hint-005's summary contains the string \"no vocal\" but is residual). So classification for every non-vocal hint is declared here per song, not guessed. `unknown` marks a hint that has been reviewed but asserts nothing about vocal presence (e.g. Armin's drop-gesture hints) — same as unreviewed time: excluded entirely, neither credit nor error. A hint id absent from both `type: \"vocal\"` and this map fails loud in scorer.ground_truth(). Positives are never listed here — they come from type == \"vocal\" in human_hints.json itself. See docs/issues.md and docs/experiments.md 'Ground truth is three classes, not two'.",
+  "ayuni": {
+    "hint-005": "residual",
+    "hint-012": "residual",
+    "hint-001": "negative",
+    "hint-002": "negative",
+    "hint-004": "negative",
+    "hint-007": "negative",
+    "hint-009": "negative",
+    "hint-013": "negative",
+    "hint-014": "negative",
+    "hint-016": "negative",
+    "hint-018": "negative"
+  },
+  "Cinderella - Ella Lee": {
+    "hint-003": "negative",
+    "hint-005": "negative",
+    "hint-006": "negative",
+    "hint-008": "negative"
+  },
+  "Armin - Revolution": {
+    "hint-007": "unknown",
+    "hint-008": "unknown",
+    "hint-009": "unknown",
+    "hint-010": "unknown",
+    "hint-011": "unknown",
+    "hint-012": "unknown",
+    "hint-013": "unknown",
+    "hint-015": "unknown",
+    "hint-016": "unknown",
+    "hint-017": "unknown",
+    "hint-018": "unknown",
+    "hint-019": "unknown"
+  }
+}

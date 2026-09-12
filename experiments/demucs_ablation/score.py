@@ -14,19 +14,16 @@ loudness-shaped doc from that variant's own `vocals.wav` RMS series
 (10 ms windows, matching `loudness.py::RMS_INTERVAL_MS`) and feed it through
 the same `detect()`/`blocks()` call.
 
-**No ground truth exists yet.** Item 1 added the `type: "vocal"` human-hint
-schema but explicitly left marking real spans to the operator
-("docs/implementation-plan-v3.5.md` item 1: "Marking real spans on `ayuni`
-and a second leaky track is left to the operator"). Checked directly: every
-one of the four gold songs and `ayuni` has zero `type == "vocal"` rows in
-`reference/human/human_hints.json` in this environment. So
-`voiceness_common.scorer.score()`'s `false_vocal_rate` against an EMPTY
-marked-span list is mathematically just "fraction of frames the rule calls
-voiced" for every song — there is no marked truth to be false *against* yet.
-We report that number honestly as `voiced_frame_fraction` (a proxy) rather
-than dressing it up as the validated `false_vocal_rate` the plan specifies;
-once the operator marks `type: "vocal"` spans, re-running `export` recomputes
-the real metric with no code change.
+**Three-class ground truth** (`voiceness_common.scorer.ground_truth`,
+declared per-song in `voiceness_common/vocal_ground_truth.json`): positive
+(`type: "vocal"`), residual (excluded from every scored metric, its firing
+rate reported separately) and negative (hard error) spans, resolved against
+an `evaluable` region — everything else is unreviewed and excluded entirely.
+`ayuni` and `Cinderella - Ella Lee` now carry declared ground truth; the
+remaining gold songs do not, so scoring them raises `ValueError` unless
+every one of their hints is `type: "vocal"` (fail loud, not a silent
+zero-span proxy). `false_vocal_rate` is 0.0 with `is_proxy_no_ground_truth`
+set when a song has zero evaluable non-residual frames.
 """
 from __future__ import annotations
 
@@ -114,11 +111,11 @@ def voiced_blocks_for_variant(song: str, variant: str) -> tuple[list[dict], floa
 
 
 def score_variant(song: str, variant: str) -> dict:
-    """One song x one variant: voiced-frame fraction (== `false_vocal_rate`
-    against whatever `type: "vocal"` spans exist today — empty for every
-    song in this environment, so this is currently a proxy; see module
-    docstring), plus the block-level voiced-duration fraction the refinement
-    doc's `ayuni` 40.8 % figure was computed the same way."""
+    """One song x one variant: `false_vocal_rate` against declared three-class
+    ground truth (see module docstring), plus the block-level voiced-duration
+    fraction the refinement doc's `ayuni` 40.8 % figure was computed the same
+    way (that figure used all frames outside every vocal span, not the
+    evaluable-region denominator below — see `voiceness_common.scorer`)."""
     blocks, duration_s = voiced_blocks_for_variant(song, variant)
 
     voiced_duration = sum(b["end_s"] - b["start_s"] for b in blocks if "vocals" in b["playing"])
@@ -135,21 +132,27 @@ def score_variant(song: str, variant: str) -> dict:
         frames.append((t, 1.0 if voiced else 0.0))
 
     hints_path = paths.hints_path(song)
-    marked_spans: list[tuple[float, float]] = []
     if hints_path.exists():
         import json
 
-        marked_spans = voiceness_scorer.marked_vocal_spans(json.loads(hints_path.read_text()))
+        hints_doc = json.loads(hints_path.read_text())
+    else:
+        hints_doc = {"human_hints": []}
+    class_map = voiceness_scorer.load_class_map()
+    truth = voiceness_scorer.ground_truth(hints_doc, song, class_map)
 
-    result = voiceness_scorer.score(frames, phrases=[], marked_spans=marked_spans, duration_s=duration_s)
+    result = voiceness_scorer.score(frames, phrases=[], truth=truth, duration_s=duration_s)
 
     return {
         "song": song,
         "variant": variant,
         "duration_s": round(duration_s, 3),
-        "n_marked_vocal_spans": len(marked_spans),
+        "n_positive_spans": len(truth.positive),
+        "n_residual_spans": len(truth.residual),
+        "n_negative_spans": len(truth.negative),
         "voiced_duration_fraction": round(voiced_duration_fraction, 4),
         "false_vocal_rate": round(result.false_vocal_rate, 4),
-        "is_proxy_no_ground_truth": len(marked_spans) == 0,
+        "residual_firing_rate": round(result.residual_firing_rate, 4),
+        "is_proxy_no_ground_truth": result.n_frames_evaluable == result.n_frames_residual,
         "n_blocks": len(blocks),
     }
