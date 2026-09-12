@@ -237,3 +237,9 @@ experiments/.whisper_baseline_cache/
 
 # Demucs variant ablation: regenerable raw separated-stem WAVs (1.3G+)
 experiments/demucs_ablation/cache/
+
+# whisperX VAD: pinned checkpoint, pre-fetched + sha256-verified per
+# experiments/whisperx_vad/README.md — never committed, matching the
+# no-binary-checkpoints convention `models/` already establishes. Re-fetch
+# with the URL/hash recorded in the README before building the Dockerfile.
+experiments/whisperx_vad/vad_pytorch_model.bin

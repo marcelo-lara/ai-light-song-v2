@@ -29,6 +29,7 @@ import type {
   VocalVoicenessFile,
   ClapVoicenessFile,
   SvdTaggerFile,
+  WhisperxVadFile,
 } from "../data/sparseArtifacts";
 
 import { romanNumeral } from "./romanNumeral";
@@ -918,6 +919,93 @@ export function svdTaggerContent(file: SvdTaggerFile | null): SparseBlock[] {
   return out;
 }
 
+const WHISPERX_VAD_BUCKET_TINT: Record<VoicenessBucket, string> = {
+  veryLow: "whisperxVadVeryLow",
+  low: "whisperxVadLow",
+  mid: "whisperxVadMid",
+  high: "whisperxVadHigh",
+  veryHigh: "whisperxVadVeryHigh",
+};
+
+/**
+ * whisperX's VAD front-end (speech-domain, `pyannote.audio` segmentation
+ * model bundled locally — no gated checkpoint, no live token at analysis
+ * time) over the vocal stem, from the same shared `voiceness_common.schema`
+ * proposal shape as `vocalVoicenessContent`/`clapVoicenessContent`. Unlike
+ * those two, this candidate's `vocal_phrase` spans carry real sub-second
+ * onsets (a hysteresis binarizer over the segmentation model's own ~17ms
+ * frames), not a clip-window approximation — see `experiments/whisperx_vad/
+ * model.py`. Diarization was not attempted (no HF_TOKEN in this
+ * environment); this file carries no diarization field at all.
+ */
+export function whisperxVadContent(file: WhisperxVadFile | null): SparseBlock[] {
+  const out: SparseBlock[] = [];
+  const frames = file?.frames ?? [];
+  const intervalS = (file?.interval_ms ?? 50) / 1000;
+
+  let runStart: number | null = null;
+  let runBucket: VoicenessBucket | null = null;
+  let runSum = 0;
+  let runN = 0;
+  let runIdx = 0;
+  const flush = (endTime: number) => {
+    if (runStart == null || runBucket == null || runN === 0) return;
+    const avg = runSum / runN;
+    runIdx += 1;
+    out.push({
+      id: `whisperx-vad-${runIdx}`,
+      start_s: runStart,
+      end_s: endTime,
+      label: "",
+      wideLabel: `voiceness ${avg.toFixed(2)}`,
+      tintId: WHISPERX_VAD_BUCKET_TINT[runBucket],
+      laneLabel: "7. WhisperX VAD",
+      caption: `${formatRange(runStart, endTime)} · avg voiceness ${avg.toFixed(2)}`,
+      reference: `whisperx-vad-${runIdx}`,
+      detail: `${runN} frame${runN === 1 ? "" : "s"}`,
+      summary: `experiments/whisperx_vad — whisperX VAD voiceness averaging ${avg.toFixed(2)} across this run.`,
+      raw: { avg_voiceness: avg, n_frames: runN },
+    });
+  };
+
+  for (const f of frames) {
+    const bucket = voicenessBucket(f.voiceness);
+    if (runBucket !== bucket) {
+      flush(f.time_s);
+      runStart = f.time_s;
+      runBucket = bucket;
+      runSum = 0;
+      runN = 0;
+    }
+    runSum += f.voiceness;
+    runN += 1;
+  }
+  if (frames.length > 0) {
+    flush(frames[frames.length - 1]!.time_s + intervalS);
+  }
+
+  (file?.vocal_phrase ?? []).forEach((p, i) => {
+    out.push({
+      id: `whisperx-vad-phrase-${i + 1}`,
+      start_s: p.start_s,
+      end_s: p.end_s,
+      label: "phrase",
+      wideLabel: `VAD phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
+      tintId: "whisperxVadPhrase",
+      laneLabel: "7. WhisperX VAD",
+      caption: `${formatRange(p.start_s, p.end_s)} · VAD phrase`,
+      reference: `whisperx-vad-phrase-${i + 1}`,
+      detail: "vocal_phrase",
+      summary:
+        "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      raw: p,
+    });
+  });
+
+  out.sort((a, b) => a.start_s - b.start_s);
+  return out;
+}
+
 /**
  * Named gesture phases (approach/build/tension/impact/release) and
  * section-pair transitions ("<from> → <to>") from `song_event_timeline.json`
@@ -968,6 +1056,7 @@ export interface LaneContentSources {
   vocalVoiceness?: VocalVoicenessFile | null;
   clapVoiceness?: ClapVoicenessFile | null;
   svdTagger?: SvdTaggerFile | null;
+  whisperxVad?: WhisperxVadFile | null;
   gestures?: EventTimeline | null;
 }
 
@@ -1020,6 +1109,8 @@ export function buildLaneBlocks(
       return clapVoicenessContent(s.clapVoiceness ?? null);
     case "svdTagger":
       return svdTaggerContent(s.svdTagger ?? null);
+    case "whisperxVad":
+      return whisperxVadContent(s.whisperxVad ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
     case "sections":

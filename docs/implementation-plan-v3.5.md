@@ -629,42 +629,55 @@ curves each pass the full-extent/zoom checks, one new baseline.
 `vocal_phrase` proposals in the shared schema. Diarization is a second,
 optional pass, scored separately and never folded into the voiceness call.
 
-- [ ] New sandbox image (same pattern as item 6): `experiments/whisperx_vad/Dockerfile`
-  — `transformers` + whisperX + (optionally) `pyannote.audio`, pinned
-  versions, `torchaudio`/`torch` compatibility checked explicitly (the
-  refinement doc names the `app` image's existing CUDA mismatch as the reason
-  a new image is needed at all).
-- [ ] **pyannote checkpoint determinism.** If diarization is attempted: the
-  gated Hugging Face checkpoint is fetched and checksummed at image build time
-  using a token supplied as a build secret, never fetched at analysis time. If
-  that is not achievable within this item's scope, diarization is **not
-  attempted** and the item ships VAD-only — say so plainly in the README rather
-  than discovering it at the promotion gate (refinement doc, item 7).
-- [ ] `experiments/whisperx_vad/` — `model.py`, `export.py` (VAD spans →
-  `vocal_phrase` blocks in the shared schema; diarization output, if built,
-  reported as a lead/backing/other split in a separate field, scored
-  separately by `score.py`), `README.md` recording the three objections from
-  the refinement doc (flute misclassified as a speaker; sustained vowels with
-  no consonants are the VAD's classic miss; lead-vs-backing is its weakest
-  axis) as expected, named risks rather than surprises discovered after the
-  run.
-- [ ] Debugger lane: `7. WhisperX VAD`, under Human Hints.
-- [ ] `queue.toml` row, same `skipped(needs image ...)` handling as item 6 if
-  it can't run through the `app`-only runner.
-- [ ] `docs/experiments.md` entry.
+- [x] New sandbox image (same pattern as item 6, but avoiding its failure
+  mode — see D7.1): `experiments/whisperx_vad/Dockerfile` —
+  `transformers` + whisperX 3.8.6 (VAD front-end only), `torchaudio`/`torch`
+  compatibility checked explicitly in the Dockerfile's own comments.
+- [x] **pyannote checkpoint determinism.** `HF_TOKEN` was checked
+  (`echo $HF_TOKEN`, `~/.cache/huggingface/token`) and is **not available** in
+  this environment. Diarization was therefore **not attempted** — not built,
+  not stubbed with nulls — and the item ships VAD-only, stated plainly in the
+  README rather than discovered at the promotion gate.
+- [x] `experiments/whisperx_vad/` — `model.py`, `export.py` (VAD spans →
+  `vocal_phrase` blocks in the shared schema; no diarization field exists in
+  the file at all, since diarization was never attempted), `README.md`
+  recording the three objections from the refinement doc as expected, named
+  risks.
+- [x] Debugger lane: `7. WhisperX VAD`, under Human Hints.
+- [x] `queue.toml` row — `image = "whisperx-research"`, recorded
+  `skipped(needs image whisperx-research — run via run_in_container.sh)`,
+  same precedent as items 5/6.
+- [x] `docs/experiments.md` entry.
+
+**D7.1 (resolved).** The VAD checkpoint (17.7 MB, whisperX's own bundled
+segmentation model — distinct from the gated `pyannote/speaker-diarization-3.1`)
+was pre-fetched and sha256-verified **from the host**, then `COPY`'d into the
+image — never `curl`'d inside the build — applying item 6's checkpoint-fetch
+lesson directly. The pre-fetched file itself is **not committed to git**
+(`.gitignore`: no binary model checkpoints, matching the repo-wide `models/`
+convention); the Dockerfile documents the exact `curl` + sha256 command to
+reproduce it. This worked: the image built successfully inside budget, unlike
+item 6's.
 
 ### Validation
 
-- [ ] Sandbox image builds; checksum step verified; if diarization was
-  attempted, confirm no token is required at analysis time (rebuild the image
-  from a clean cache with the build secret removed and confirm inference still
-  runs against the baked-in checkpoint).
-- [ ] `compute`/`export`/`score` on the scoring corpus.
-- [ ] `docker compose run --rm ui npm run test` + `npm run build`.
+- [x] Sandbox image builds; checksum step verified (see D7.1). No live token
+  is required at analysis time — the baked-in checkpoint loads from a fixed
+  path, never whisperX's own bundled copy or any Hugging Face URL.
+- [x] `compute`/`export`/`score` ran on the full 5-song scoring corpus.
+- [x] `docker compose run --rm ui npm run test` (392/393 — the one failure is
+  the same pre-existing `App.tsx` accessible-name issue noted in items 4-6,
+  now itself committed to `HEAD` by a separate change, so no longer "stray" —
+  just a standing, unrelated gap) + `npm run build` clean.
 
-**Kill condition.** Does not beat item 4 on `ayuni`'s false-vocal rate, or
-cannot run without a mid-run gated download → negative result (the second
-clause is an automatic kill regardless of score, per the refinement doc).
+**Kill condition.** On the firing-rate proxy (no ground truth existed at the
+time this item ran), `whisperx_vad` beats `arrangement_state` on every song
+(aggregate false-vocal rate 0.3270 vs 0.5955) but does not clearly beat item
+4's `vocal_voiceness` (0.1790 — see item 4's own numbers) on the same proxy.
+No mid-run gated download was needed, so the automatic-kill clause does not
+apply. **Superseded by D8.1** below, once real `type: "vocal"` ground truth
+landed on `ayuni`/`Armin - Revolution` partway through this plan's run — see
+the re-scoring pass ahead of item 8's gate decision.
 
 ### Visual QA
 

@@ -80,3 +80,19 @@ name = "svd_tagger"
 command = "python -m experiments.svd_tagger.run compute --song {song_name} && python -m experiments.svd_tagger.run export --song {song_name}"
 image = "svd-research"
 enabled = true
+
+[[experiment]]
+name = "whisperx_vad"
+# `compute` needs `torch`/`whisperx`, only installed in the new
+# whisperx-research sandbox image (ai-light-song-v2-whisperx-research:dev,
+# experiments/whisperx_vad/Dockerfile — its own new image + pinned whisperX
+# VAD checkpoint) — not the `app` image this runner executes in, and the
+# runner only ever honors "app" (see the field comment above). `image` is
+# deliberately not "app", so this whole row is recorded skipped(needs image
+# whisperx-research...) every run, matching clap_voiceness/svd_tagger's own
+# precedent. Run both steps by hand instead:
+#   ./experiments/whisperx_vad/run_in_container.sh python -m experiments.whisperx_vad.run compute --song {song_name}
+#   docker compose run --rm app python -m experiments.whisperx_vad.run export --song {song_name}
+command = "python -m experiments.whisperx_vad.run compute --song {song_name} && python -m experiments.whisperx_vad.run export --song {song_name}"
+image = "whisperx-research"
+enabled = true

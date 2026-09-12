@@ -1369,6 +1369,90 @@ condition framing ("given its image and pin cost").
 
 ---
 
+## WhisperX VAD — a speech-stack's VAD front-end over the vocal stem
+
+*(whisperX 3.8.6's `pyannote.audio`-based VAD front-end — NEW sandbox image,
+NEW checkpoint pin; diarization NOT attempted, VAD-only)*
+
+**This candidate is the only one of items 4-7 whose `vocal_phrase` spans
+carry real sub-second onsets** — boundary F1 is scored, not just reported,
+unlike the two window-based candidates (items 5/6).
+
+### Status
+
+**OPEN — built and running, kill condition unevaluable until item 1's ground
+truth exists.** v3.5 item 7. Built as
+[`../experiments/whisperx_vad/`](../experiments/whisperx_vad/README.md).
+`compute`/`export`/`score` run green on the full 5-song scoring corpus.
+Debugger lane `7. WhisperX VAD` wired in under Human Hints. No song in this
+environment carries `type: "vocal"` ground truth (same finding as items
+3-6), so the kill condition is unevaluable.
+
+### Why? What for?
+
+Does a **speech-trained** VAD — built to find "someone is talking" in
+call-center and meeting audio — transfer to "someone is singing" at all, and
+if so, is it cheap and reliable enough to justify the image it costs? The last
+and most domain-mismatched candidate in the false-vocal family (items 4-7),
+built anyway so the comparison happens by ear and by number rather than by
+assumption. Three objections (diarization inherits the VAD's own false
+positives; sustained vowels are the VAD's classic miss, pitched instruments
+its classic false accept; lead-vs-backing is its weakest axis) are recorded
+in the README as expected risks, not discovered after the fact.
+
+### Experiment Plan
+
+whisperX's VAD front-end (`whisperx.vads.pyannote.Pyannote`) over
+`artifacts/stems/vocals.wav` only — no ASR, no diarization. **Checkpoint
+pre-fetched and sha256-verified from the host, `COPY`'d into the image, never
+`curl`'d at build time** — applying item 6's own lesson directly (its in-build
+`curl` of a 327 MB checkpoint stalled at ~154 KB/s and never completed; this
+item's 17.7 MB checkpoint was pre-fetched in 2.8s and the image built
+successfully). Frame curve: the segmentation model's raw activation,
+resampled to the shared 50ms grid; phrase spans: whisperX's own `Binarize`
+hysteresis at library-default thresholds (not swept or corpus-fit).
+**Diarization not attempted** — `echo $HF_TOKEN` and
+`~/.cache/huggingface/token` were both checked before any code was written;
+no token is available, and `pyannote/speaker-diarization-3.1` is a gated
+checkpoint that cannot be baked into an image without one. Not stubbed with
+nulls — the schema carries no diarization field at all. **Determinism**: the
+VAD checkpoint triggers no live-token clause (bundled in `whisperx` itself,
+plus this item's own independently-verified copy); only diarization would
+have, which is exactly why it was not attempted.
+
+**Not run by the queue** — same `skipped(needs image whisperx-research ...)`
+precedent as `clap_voiceness`/`svd_tagger`.
+
+### Results evidence
+
+Full table in [`../experiments/whisperx_vad/README.md`](../experiments/whisperx_vad/README.md).
+Aggregate proxy false_vocal_rate / bounds_per_min across all 5 scoring-corpus
+songs (0 marked ground-truth spans on every song): **whisperx_vad 0.3270 /
+9.5** vs `arrangement_state` 0.5955 / 6.9, `vocal_phrases` 0.2929 / 46.6,
+mix-RMS baseline 0.9219 / 29.0. `whisperx_vad` beats `arrangement_state` on
+every song individually but trails `vocal_phrases`, which fires far more
+often — on an unmarked proxy that inflates apparent rate, not correctness.
+Boundary F1 reads 0.000 across the board because the ground-truth span set is
+empty, not because of a detector failure.
+
+**No ground truth exists yet** — same finding as items 3-6.
+`is_proxy_no_ground_truth` flags every row.
+
+### Conclusion
+
+**Built, green end-to-end on the full 5-song scoring corpus** — the only one
+of the two new-image candidates (items 6-7) whose image actually finished
+building, by applying item 6's own lesson. No live token needed at analysis
+time; diarization deliberately not attempted and documented rather than
+discovered at the promotion gate. The proxy table places `whisperx_vad` ahead
+of `arrangement_state` on every song and second to `vocal_phrases` in
+aggregate — **not a promotion candidate on current evidence**, and the kill
+condition is explicitly unevaluable, not passed or failed. Same next step as
+every other item-4-7 candidate: mark `type: "vocal"` spans on `ayuni`, then
+re-run `score` with no code change.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.
