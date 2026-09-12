@@ -215,6 +215,10 @@ function formatClock(seconds: number): string {
   return `${m}:${s < 10 ? "0" : ""}${s.toFixed(1)}`;
 }
 
+function formatSecondsFixed(seconds: number): string {
+  return Math.max(0, seconds || 0).toFixed(2);
+}
+
 export function App(): React.JSX.Element {
   // Left panel (drawer): collapsed by default on first load (plan item 4 / R2),
   // open/closed persisted per session.
@@ -1063,7 +1067,7 @@ export function App(): React.JSX.Element {
           <div>
             <span className="app-header__time">{formatClock(transport.currentTime)}</span>
             <span className="app-header__time-sep"> / </span>
-            <span className="app-header__total">{formatClock(duration)}</span>
+            <span className="app-header__time_s">{formatSecondsFixed(transport.currentTime)}</span>
           </div>
           <div className="app-header__divider" />
           <span className="app-header__barbeat">
