@@ -37,16 +37,28 @@ class SubstitutionTests(unittest.TestCase):
 
 
 class QueueFileTests(unittest.TestCase):
-    def test_seeded_queue_parses_with_three_enabled_app_rows(self) -> None:
+    def test_seeded_queue_parses_with_four_enabled_app_rows(self) -> None:
         rows = run_queue.load_queue()
         names = [r["name"] for r in rows]
         self.assertEqual(
             sorted(names),
-            ["phrase_periodicity", "structural_vs_micro", "texture_novelty"],
+            [
+                "clap_voiceness",
+                "phrase_periodicity",
+                "structural_vs_micro",
+                "svd_tagger",
+                "texture_novelty",
+                "vocal_voiceness",
+                "whisperx_vad",
+            ],
+        )
+        app_rows = [row for row in rows if row["image"] == "app"]
+        self.assertEqual(
+            sorted(row["name"] for row in app_rows),
+            ["phrase_periodicity", "structural_vs_micro", "texture_novelty", "vocal_voiceness"],
         )
         for row in rows:
             self.assertTrue(row["enabled"])
-            self.assertEqual(row["image"], "app")
             self.assertEqual(row["name"], row["name"].strip())
 
     def test_missing_queue_file_raises_queue_error(self) -> None:
