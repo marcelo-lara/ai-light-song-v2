@@ -168,3 +168,11 @@ Zoom, playhead, lane visibility, lane collapse and region selection are
 **browser-local only**. Shared zoom spans 14–360 px/bar; at maximum zoom a long
 song exceeds the ~32k-pixel canvas ceiling, so dense lanes hold their CSS width
 and downscale the backing store instead.
+
+The playhead stays visible across both zoom and playback. During playback, a
+footer toggle ("Follow playhead", on by default) auto-scrolls to keep it
+onscreen, and turns itself off the moment the reviewer scrolls manually.
+While paused, zooming (buttons, slider or keyboard shortcut) keeps the
+playhead pinned to the same screen pixel it occupied before the zoom, rather
+than letting it drift off-screen; fit-to-width instead just scrolls the
+playhead back into view if the new zoom pushed it out.

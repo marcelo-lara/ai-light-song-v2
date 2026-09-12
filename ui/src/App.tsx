@@ -745,6 +745,22 @@ export function App(): React.JSX.Element {
   followPlayheadRef.current = followPlayhead;
   const playingRef = useRef(transport.isPlaying);
   playingRef.current = transport.isPlaying;
+  const currentTimeRef = useRef(transport.currentTime);
+  currentTimeRef.current = transport.currentTime;
+
+  // Zoom anchoring: record the playhead's on-screen pixel position right
+  // before a zoom change, so the effect below can restore that same screen
+  // position under the new px/bar instead of leaving the scroll wherever it
+  // lands. Captured in the click/change handlers (pre-update coords), read
+  // and cleared by the effect once pxPerBar has actually changed.
+  const zoomAnchorRef = useRef<{ time: number; screenX: number } | null>(null);
+  const captureZoomAnchor = useCallback(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const t = currentTimeRef.current;
+    const x = LABEL_WIDTH + coords.timeToX(t);
+    zoomAnchorRef.current = { time: t, screenX: x - el.scrollLeft };
+  }, [coords]);
 
   // Track the timeline scroll offset + viewport width for the canvas lanes
   // (sub-labels are anchored to the viewport's left edge). rAF-coalesced.
@@ -797,6 +813,32 @@ export function App(): React.JSX.Element {
       el.scrollLeft = next;
     }
   }, [transport.currentTime, transport.isPlaying, followPlayhead, coords]);
+
+  // Zooming changes each bar's pixel width, which otherwise scrolls the
+  // playhead out from under the viewport with no way back short of a manual
+  // scroll. While paused (the follow effect above already covers playback):
+  // if a zoom control captured an anchor, pin the playhead to the same
+  // screen pixel it occupied before the zoom; otherwise (e.g. fit-to-width)
+  // just make sure it's still visible.
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    if (playingRef.current) {
+      zoomAnchorRef.current = null;
+      return;
+    }
+    const anchor = zoomAnchorRef.current;
+    zoomAnchorRef.current = null;
+    if (anchor) {
+      const playheadX = LABEL_WIDTH + coords.timeToX(anchor.time);
+      const max = el.scrollWidth - el.clientWidth;
+      el.scrollLeft = Math.max(0, Math.min(playheadX - anchor.screenX, max));
+      return;
+    }
+    if (!isTimeVisible(currentTimeRef.current)) {
+      scrollTimelineToTime(currentTimeRef.current);
+    }
+  }, [pxPerBar, coords, isTimeVisible, scrollTimelineToTime]);
 
   const fitToWidth = useCallback(() => {
     const el = scrollerRef.current;
@@ -853,9 +895,11 @@ export function App(): React.JSX.Element {
           stepBar(1);
           break;
         case "zoomIn":
+          captureZoomAnchor();
           setPxPerBar((v) => zoomInPxPerBar(v));
           break;
         case "zoomOut":
+          captureZoomAnchor();
           setPxPerBar((v) => zoomOutPxPerBar(v));
           break;
         case "fitToWidth":
@@ -865,7 +909,16 @@ export function App(): React.JSX.Element {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeView, song, transport, stepBeat, stepBar, fitToWidth, closeOverlay]);
+  }, [
+    activeView,
+    song,
+    transport,
+    stepBeat,
+    stepBar,
+    fitToWidth,
+    closeOverlay,
+    captureZoomAnchor,
+  ]);
 
   // Move focus into the drawer when it opens (non-modal — no trap).
   const drawerRef = useRef<HTMLElement>(null);
@@ -1227,7 +1280,10 @@ export function App(): React.JSX.Element {
             className="zic"
             data-testid="zoom-out"
             aria-label="Zoom out"
-            onClick={() => setPxPerBar((v) => zoomOutPxPerBar(v))}
+            onClick={() => {
+              captureZoomAnchor();
+              setPxPerBar((v) => zoomOutPxPerBar(v));
+            }}
           >
             <i className="ph ph-magnifying-glass-minus" />
           </button>
@@ -1238,14 +1294,20 @@ export function App(): React.JSX.Element {
             value={pxPerBar}
             aria-label="Zoom (px per bar)"
             style={{ width: 148 }}
-            onChange={(event) => setPxPerBar(clampPxPerBar(Number(event.target.value)))}
+            onChange={(event) => {
+              captureZoomAnchor();
+              setPxPerBar(clampPxPerBar(Number(event.target.value)));
+            }}
           />
           <button
             type="button"
             className="zic"
             data-testid="zoom-in"
             aria-label="Zoom in"
-            onClick={() => setPxPerBar((v) => zoomInPxPerBar(v))}
+            onClick={() => {
+              captureZoomAnchor();
+              setPxPerBar((v) => zoomInPxPerBar(v));
+            }}
           >
             <i className="ph ph-magnifying-glass-plus" />
           </button>
