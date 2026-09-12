@@ -1,0 +1,26 @@
+Voice Multiplicity — mean scores vs human hints with `voices` field
+==========================================================================
+
+Armin - Revolution: no `voices` labels — unscored
+Best Friend - Sofi Tukker: no `voices` labels — unscored
+Charli-Guess: no `voices` labels — unscored
+Charli-VonDutch: no `voices` labels — unscored
+Chimera - Hana: no `voices` labels — unscored
+Cinderella - Ella Lee: no `voices` labels — unscored
+CruelSummer - Malvina: no `voices` labels — unscored
+Fascination (The Droyds One Armed Remix): no `voices` labels — unscored
+Gabry Ponte - Tutta L'Italia: no `voices` labels — unscored
+Hideaway - Kiesza: no `voices` labels — unscored
+In da name of love - Anita and Ray: no `voices` labels — unscored
+It's a fine day - Opus III: no `voices` labels — unscored
+Only this moment - royksopp: no `voices` labels — unscored
+Pet Shop Boys - I'm not scared: no `voices` labels — unscored
+Queen of Kings - Alessandra: no `voices` labels — unscored
+Rapture - Nadia Ali: no `voices` labels — unscored
+Sash - Raindrops: no `voices` labels — unscored
+Titanium - David Guetta ft Sia: no `voices` labels — unscored
+Underworld - Born Slippy: no `voices` labels — unscored
+What a Feeling - Courtney Storm: no `voices` labels — unscored
+Yonaka - Seize the Power: no `voices` labels — unscored
+_test_song: no `voices` labels — unscored
+ayuni: no `voices` labels — unscored
