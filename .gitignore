@@ -222,21 +222,14 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# drop-detection exploration: regenerable feature cache
-experiments/drop_detection/cache/
-experiments/drop_detection/research/cache/mert/
-experiments/drop_detection/research/cache/clap*/
-
-# CLAP experiment: regenerable embedding + baseline feature caches
-experiments/clap/cache/
-
-# singing-voice-transcription experiments: regenerable raw model output caches
-experiments/vocalparse/cache/
-experiments/acestep_transcriber/cache/
+# Every experiment's cache/ is regenerable raw feature/model output (npz,
+# json, wavs, embeddings) reproduced by that experiment's own `run.py
+# compute` — never hand-authored, so it never belongs in git. Keep only each
+# experiment's scripts and docs (README.md, out/score.txt and friends, which
+# carry the measured evidence itself and are not regenerable from cache).
+experiments/*/cache/
+experiments/*/research/cache/
 experiments/.whisper_baseline_cache/
-
-# Demucs variant ablation: regenerable raw separated-stem WAVs (1.3G+)
-experiments/demucs_ablation/cache/
 
 # whisperX VAD: pinned checkpoint, pre-fetched + sha256-verified per
 # experiments/whisperx_vad/README.md — never committed, matching the
