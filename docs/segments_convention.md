@@ -1,6 +1,6 @@
-# EDM Section name convention
+# Song Section Name Convention
 
-Here is a comprehensive list of section names you can use to tag your EDM track, grouped by their function in the arrangement. Typical bar lengths are included for 128 BPM House and 140 BPM Dubstep where defined.
+Here is a genre-neutral list of section names you can use to tag song arrangements. EDM-specific sections are retained where useful, but conventional Pop and song-form sections are kept distinct. Typical bar lengths are included for 128 BPM House and 140 BPM Dubstep where defined.
 
 ## 🛠️ Mixing & DJ Utility Sections
 
@@ -12,11 +12,23 @@ Here is a comprehensive list of section names you can use to tag your EDM track,
   * 128 BPM House: 16 or 32 bars
   * 140 BPM Dubstep: 8 or 16 bars
 
-## 📈 Tension Building Sections
+## 📈 Core & Tension-Building Sections
 
-* **Verse / Main** — Introduces the core musical ideas, pads, or vocals.
+* **Verse** — A recurring narrative or thematic section, typically lower in energy and focused on developing the song’s lyrical or musical idea.
   * 128 BPM House: 16 bars
   * 140 BPM Dubstep: 16 bars (often carries the main vocal story)
+
+* **Main** — A primary musical section in arrangements that do not follow a conventional verse/chorus structure; useful for EDM and other groove-based forms.
+  * 128 BPM House: 16 bars
+  * 140 BPM Dubstep: 16 bars
+
+* **Pre-Chorus** — A transitional section that builds anticipation and leads into the chorus.
+
+* **Chorus** — The main recurring hook or payoff section of a song.
+
+* **Post-Chorus** — A section immediately following the chorus, often extending its hook or energy without functioning as a full chorus.
+
+* **Refrain** — A recurring lyrical or musical phrase that may function as a hook without constituting a full chorus.
 
 * **Breakdown / Break** — Drops the drums and bass out completely; focuses on melody, chords, and emotion.
   * 128 BPM House: 8 or 16 bars
@@ -50,10 +62,9 @@ Here is a comprehensive list of section names you can use to tag your EDM track,
 
 ## 🔄 Transition Sections
 
-* **Bridge** — A short connecting section between a drop and the next breakdown.
+* **Bridge** — A contrasting section that connects major parts of the song, often appearing later in the arrangement.
   * 128 BPM House: 4 or 8 bars
   * 140 BPM Dubstep: 4 or 8 bars
-
 * **Mid-Intro** — Used in extended club mixes, a transition section after the first drop before the main breakdown.
   * 128 BPM House: 16 bars
   * 140 BPM Dubstep: 8 or 16 bars

@@ -75,6 +75,12 @@ shape of the change needs to change).
 
 ## 5. Update the spec docs — as current definition, not a refinement entry
 
+The goal of this step: a code agent with no memory of this session, reading
+only the docs, must be able to reconstruct and reproduce the feature or
+behavior you just changed — its concrete shape, not just the fact that it
+exists. A doc that only gestures at the change ("the header now shows time
+differently") fails this step even if it's technically updated.
+
 Once confirmed, edit the *current* spec docs that describe this behavior
 directly in place — e.g. `docs/ui-definition.md`,
 `docs/reference/ui-regression.md`, `docs/reference/artifacts.md`, or
@@ -87,6 +93,13 @@ it, and never invent a new archive folder. Do not write this into
 `docs/experiments.md` or a `product-refinement-vX.Y.md` — those are
 for different-shaped work (experiments, and larger refinement-tracked
 features), not this loop.
+
+**If no existing doc or section covers this area at all** — not even loosely —
+do not silently invent a new doc file, and do not skip this step either.
+Tell the user concretely what's undocumented and where you'd add it (which
+file, or a new one and why), and ask before creating it. Once they agree,
+write it to the same bar as the rest of this step: concrete enough to rebuild
+from, not a one-line mention.
 
 ## 6. Commit
 

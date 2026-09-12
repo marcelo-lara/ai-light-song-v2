@@ -4,8 +4,8 @@
     {
       "id": "hint-001",
       "title": "Chatter",
-      "start_time": 2.128,
-      "end_time": 3.128,
+      "start_time": 3.27,
+      "end_time": 4.2700000000000005,
       "summary": "People talking about peaceful and heavenly places (like a seashore table)",
       "lighting_hint": "",
       "type": "vocal"
@@ -13,8 +13,8 @@
     {
       "id": "hint-002",
       "title": "chatt",
-      "start_time": 3.098,
-      "end_time": 4.098,
+      "start_time": 34.231,
+      "end_time": 35.231,
       "summary": "",
       "lighting_hint": ""
     }

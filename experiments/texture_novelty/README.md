@@ -140,8 +140,75 @@ measurement rather than overturning it.
 Per the plan, the lane is **kept for one operator review pass** so the proposal
 blocks can be auditioned against Human Hints on the waveform, then removed by
 Recipe B if the operator agrees. **Do not tune the peak-picker to manufacture a
-pass.** If anything here is worth carrying forward it is the per-stem feature
-direction (feat 3), and that belongs to Structural vs Micro (item 8), not here.
+pass.** The per-stem direction that looked most promising here (feat 3) was
+followed up and also failed — see the next section before re-proposing it.
+
+## Follow-ups after the kill — both also negative
+
+Two directions proposed after the result above. Measured, both fail; recorded so
+neither is re-proposed. Scored the same way (boundary F1 @ ±1.0 s vs
+`reference/human/human_hints.json` edges, gold songs).
+
+### Per-stem novelty, and cross-stem agreement
+
+Four *separate* novelty curves (one per stem, 7 bands each) instead of feat 3's
+one fused 28-dim curve — plus an agreement filter keeping only peaks where ≥ k
+stems fire within ±0.25 s. Reuses `cache/*.npz` (`stems28`), no audio, no GPU.
+
+| method | P | R | F1 | fires/song |
+| --- | --- | --- | --- | --- |
+| stem: bass | 0.30 | 0.23 | 0.22 | 13.8 |
+| stem: drums | 0.20 | 0.16 | 0.17 | 12.5 |
+| stem: harmonic | 0.34 | 0.36 | 0.23 | 19.5 |
+| stem: vocals | 0.19 | 0.16 | 0.15 | 14.5 |
+| agree ≥ 2 stems | 0.25 | 0.11 | 0.15 | 9.5 |
+| agree ≥ 3 stems | 0.08 | 0.02 | 0.03 | 2.0 |
+| agree ≥ 4 stems | 0.00 | 0.00 | 0.00 | 1.0 |
+| feat 3 (28-dim fused) | 0.32 | 0.35 | **0.28** | 21.0 |
+
+- **Splitting loses.** Every per-stem curve scores below the fused feature it was
+  split out of — 7 dims per decision instead of 28.
+- **The stems do not co-occur**, and that is the load-bearing finding. Agreement
+  was the only mechanism that could have lifted precision; ≥ 3 stems fires 2.8
+  times per song across 13 songs at F1 0.03, ≥ 4 fires 0.6 times and never
+  matches a hint. Peaks that tracked real structure would align. These are close
+  to independent noise.
+
+### Drum loop-lock (symbolic, bar-quantised)
+
+Not a novelty curve: per-bar binary 16th-grid pattern per drum type from
+top-level `drum_events.json`, state `locked` if Jaccard ≥ thr to bar−1 **or**
+bar−4, `absent` if the bar has no events, else `varying`; predictions are the
+state transitions. Bar grid from `beats.json` downbeats — phase error is
+harmless here, only the period matters.
+
+| thr | 0.40 | 0.50 | 0.60 | 0.70 |
+| --- | --- | --- | --- | --- |
+| transitions/song, 14 songs | 25.0 | 26.9 | 32.1 | 28.7 |
+| gold F1 | 0.05 | 0.10 | 0.00 | 0.00 |
+
+Best operating point is thr 0.5 at **P 0.09 / R 0.11**.
+
+`sections.json` scores F1 0.30 on the same two songs. The state flickers bar to
+bar rather than persisting, so the hoped-for "a state cannot fire 100 times"
+argument does not hold. Hysteresis (N consecutive bars before a flip, as
+`arrangement_state` does with `HOLD_AGREEMENT`) is untested, but the signal is
+failing by an order of magnitude, not a factor.
+
+**Gold coverage is n=2, not n=4:** `_test_song` and `Titanium - David Guetta ft
+Sia` publish no `drum_events.json` or `beats.json`. `Charli-VonDutch` has **zero
+drum events for the whole song** — omnizart transcribed nothing, hence its 0
+transitions at every threshold. Both are data defects independent of this
+result.
+
+### What both share
+
+The signal is genuinely present at the operator's boundaries — on `Cinderella -
+Ella Lee` the loop-lock collapse lands on bars 40 and 45, exactly where the
+operator reads a break off the spectrogram. It is also present at 25–30 places
+that are not boundaries. That is now confirmed on six methods (mix 7-band,
+chroma+percussive, 28-dim fused, four per-stem curves, cross-stem agreement,
+symbolic loop-lock): **the base rate, not the feature, is what fails.**
 
 ## Reach test
 

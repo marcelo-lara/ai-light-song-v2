@@ -162,17 +162,64 @@ empty lane (and logs a `404`) rather than failing.
 
 A lane is removed when its experiment is abandoned or promoted.
 
+## Header
+
+Fixed top bar, three groups, left to right:
+
+| Group | Element | Behavior |
+| --- | --- | --- |
+| Left | burger button | toggles the drawer (`app-drawer`) open/closed |
+| Left | transport strip | to-start, previous bar, previous beat, play/pause, next beat, next bar — each seeks or steps `transport`/the bar-beat grid, does not change zoom or scroll |
+| Center | `app-header__time` | playhead position as a clock, `M:SS.s` (one decimal), via `formatClock` |
+| Center | `app-header__time_s` | the same playhead position as plain seconds with two fixed decimals, e.g. `112.21`, via `formatSecondsFixed` |
+| Center | `app-header__barbeat` | current `bar.beat` (e.g. `12.3`), from `coords.timeToBarBeat(transport.currentTime)` against the beat grid |
+| Right | song title + subtitle | song name, or "No song selected" / "Select a song from the drawer" when none is loaded |
+| Right | BPM tag | `info.bpm` rounded, or `— BPM` when absent |
+| Right | key tag | the resolved key label |
+
+All three time/bar-beat readouts track `transport.currentTime` live during
+playback and seeking; none of them show song duration.
+
+## Footer
+
+Fixed bottom bar, left to right:
+
+| Element | Behavior |
+| --- | --- |
+| Zoom out / zoom in buttons | multiply/divide `pxPerBar` by `ZOOM_FACTOR` (1.3), clamped to `PX_PER_BAR_MIN`–`PX_PER_BAR_MAX` (14–360) |
+| Zoom slider | sets `pxPerBar` directly, same 14–360 range |
+| `app-footer__ppb` label | live `"<pxPerBar> px/bar"` string |
+| Fit-to-width button | sets `pxPerBar` so the whole song fills the visible scroll width (`fitToWidthPxPerBar`, driven by song duration and the median bar length) |
+| Follow-playhead toggle (`follow-toggle`) | on by default, persisted per browser (`localStorage`); while on and playing, auto-scrolls the timeline to keep the playhead onscreen; turns itself off the instant the reviewer scrolls manually during playback |
+| Lane-visibility toggle | opens/closes the lane list panel |
+
 ## Interaction state
 
-Zoom, playhead, lane visibility, lane collapse and region selection are
-**browser-local only**. Shared zoom spans 14–360 px/bar; at maximum zoom a long
-song exceeds the ~32k-pixel canvas ceiling, so dense lanes hold their CSS width
-and downscale the backing store instead.
+Zoom, playhead position, lane visibility, lane collapse and region selection
+are **browser-local only** and not persisted, except the follow-playhead flag
+(`localStorage`, per browser). Shared zoom spans 14–360 px/bar; at maximum
+zoom a long song exceeds the ~32k-pixel canvas ceiling, so dense lanes hold
+their CSS width and downscale the backing store instead.
 
-The playhead stays visible across both zoom and playback. During playback, a
-footer toggle ("Follow playhead", on by default) auto-scrolls to keep it
-onscreen, and turns itself off the moment the reviewer scrolls manually.
-While paused, zooming (buttons, slider or keyboard shortcut) keeps the
-playhead pinned to the same screen pixel it occupied before the zoom, rather
-than letting it drift off-screen; fit-to-width instead just scrolls the
-playhead back into view if the new zoom pushed it out.
+**Zoom keeps the playhead anchored.** While paused, zooming (the footer
+buttons, the slider, or a keyboard shortcut) pins the playhead to the same
+screen pixel it occupied before the zoom — the pixel position is captured
+before the `pxPerBar` change and the scroll offset is recomputed to restore it
+after, rather than leaving the scroll wherever the new scale happens to land.
+Fit-to-width does not anchor to a pixel; it only scrolls the playhead back
+into view afterward if the resize pushed it off-screen. During playback, zoom
+anchoring is skipped entirely — the follow-playhead behavior above already
+keeps the playhead onscreen every frame.
+
+**Keyboard shortcuts** (ignored while typing in a text field, except Escape;
+ignored with any Ctrl/Meta/Alt chord held):
+
+| Key(s) | Action |
+| --- | --- |
+| Space | play / pause |
+| ← / → | step one beat back / forward |
+| Shift+← / Shift+→ | step one bar back / forward |
+| `+` `=` `]` | zoom in |
+| `-` `_` `[` | zoom out |
+| `f` / `F` | fit to width |
+| Escape | close the open overlay/panel |
