@@ -115,7 +115,10 @@ titled:
 ```
 
 followed by a short body if the change needs one line more than the title
-gives it.
+gives it. The `[quick-fix]` tag is the only session marker the message
+carries — never describe the change as part of a product-refinement doc,
+version, or branch, and never name the branch it landed on. This holds
+regardless of what the current branch happens to be called.
 
 ## 7. Restart or close
 
