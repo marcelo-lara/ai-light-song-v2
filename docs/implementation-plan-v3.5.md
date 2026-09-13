@@ -1,6 +1,7 @@
 # Implementation plan — v3.5
 
-**Status: open, nothing implemented.** Turns
+**Status: closed for the experiment track; two items handed off (see
+"Handoff" below).** Turns
 [`product-refinement-v3.5.md`](product-refinement-v3.5.md) into an ordered
 worklist. That doc carries the measured evidence (the 40.8 % / 39.0 % `ayuni`
 numbers) and the resolved decisions; this plan does not restate them — it
@@ -92,9 +93,64 @@ Never fix across item boundaries in one commit.
 | New `src/` stages | 0 unless item 8 ships (modifies `detect_arrangement_state` / `publish_arrangement_state` in place, no new stage) |
 | New proposal lanes | 4 (items 4–7) |
 | Blocking decisions (`D`) | 1 open — D8.1, the operator's by-ear review of the winning voiceness lane, required before item 8 starts |
-| Done | 8 of 10 (items 8-9 remaining on the voiceness track, item 8 paused on D8.1; item 10 done) |
+| Done | 8 of 10. Items 1-7 and 10 are concluded — item 4 partially promoted (sibilance only), item 5 discarded, item 6 open but out of this plan's scope, item 7 promoted. Items 8 and 9 are **handed off**, not done — see "Handoff" |
 
 ---
+
+---
+
+## Handoff
+
+**2026-09-13.** This plan is done as a plan. Items 1-7 and 10 reached
+outcomes; items 8 and 9 did not, and are handed to the living docs rather than
+left pending in a plan nobody re-reads. Nothing below is lost — each line says
+where it now lives.
+
+### What shipped, and what that changed for consumers
+
+Items 4 and 7 shipped, but **not in the shape this plan proposed**. The plan's
+item 8 was "gate `arrangement_state`'s `vocals` channel on a voiceness track";
+what actually shipped was *additive* — `arrangement_state.json` gained a
+separate `vocals_phrase[]` field and left `blocks[]` untouched. That is a
+smaller, safer change than item 8, and it is **not a substitute for it**: the
+`vocals` entry inside `playing[]` is still the RMS-only claim with the
+false-vocal rate this whole release was opened to fix.
+
+The contract change is recorded in
+[`reference/downstream-contract.md`](reference/downstream-contract.md) —
+`vocals_phrase[]`, its always-`1.0` confidence, the `null` vs `[]` distinction,
+and `sibilance` / `vocals_sibilance_song_mean`. Per this repo's convention the
+contract doc *is* the handoff; there is no standalone note.
+
+### Item 8 — still open, now reframed
+
+The original gate ("one of items 4-7 beats the incumbent, and the operator has
+reviewed the winning lane by ear") was half-met: `whisperx_vad` beat the
+incumbent decisively on `ayuni` and lost on `Cinderella - Ella Lee`, and the
+by-ear review in D8.1 never happened. Since then item 4's sibilance cue shipped
+as a per-phrase discriminator, which is exactly the signal D8.1's Cinderella
+questions were about — so the by-ear listen should now be re-posed against
+sibilance, not against whisperX alone.
+
+**Moved to [`issues.md`](issues.md).** D8.1's four-span listen table goes with
+it; it is the actionable part.
+
+### Item 9 — one checkbox
+
+`CLAUDE.md`'s summary of the `vocals`-channel behaviour was correctly deferred
+because item 8 never resolved. **Moved to [`issues.md`](issues.md)**, attached
+to the same entry, so it closes when item 8 closes either way.
+
+### Out of this plan entirely
+
+`8. Singer Identity` (`experiments/singer_identity/`) postdates this plan and
+was never one of its items. Its state lives in
+[`experiments.md`](experiments.md) and its README, like every other
+experiment. Item 6's open question (per-song rescale, then rescore) likewise
+lives in `experiments.md` — this plan records item 6 as concluded *for the
+plan's purposes* (measured, not promoted), which is not the same as the
+experiment being finished.
+
 
 ## Standing rules for every item
 

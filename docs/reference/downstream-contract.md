@@ -271,6 +271,37 @@ resolutions.
   threshold reads raw `margin_db`. The leading block (before the first stem
   change) carries `margin_db: null` / `confidence: null`, never a filled
   default.
+
+  **New in v3.5**, alongside `blocks[]` and independent of it:
+  `vocals_phrase[] { start_s, end_s, confidence, sibilance }` — a second,
+  separate read on the vocals stem from the promoted `whisperx_vad` detector,
+  and `vocals_sibilance_song_mean` (a float, or `null`). These do **not**
+  modify `blocks[]`: the `vocals` entry inside `playing[]` is still the
+  RMS-derived claim it always was, with the false-vocal rate that implies. Two
+  independent reads are published precisely so a wrong call by one never masks
+  the other — a consumer wanting high confidence that a voice is audible
+  should require both to agree, and should not read `vocals_phrase` as a
+  correction to `blocks[]`.
+
+  - `confidence` on a phrase is **always exactly `1.0`** — an operator
+    directive, not a measurement: a detected phrase is asserted certain and
+    the detector's own graded per-span confidence is discarded at publish.
+    Do not weight phrases by it; it carries no information. It is the one
+    place in this contract where a confidence is not a graded score, and it is
+    deliberate.
+  - `vocals_phrase: null` means **the song has no pre-computed proposal**, not
+    "no vocals". The detector's compute step cannot run inside the analyzer
+    image (an incompatible torch pin against the natten ABI lock) and runs
+    out-of-band, so `./analyze` alone does not produce it. An empty list `[]`
+    is the distinct, real claim "ran, found no phrases".
+  - `sibilance` is a **relative** stem-bleed discriminator and is meaningless
+    read absolutely — compare it against the sibling
+    `vocals_sibilance_song_mean`, which is the same cue's per-song noise
+    floor. A phrase well below the song mean is the vocal detector firing on
+    instrument bleed rather than a voice. **No gate is applied at publish
+    time**: the value is reported and the judgement is the consumer's.
+    `sibilance: null` on a phrase means the span covered no analysed frame —
+    never 0.0, which would read as "measured, and silent".
 - A new dense signal (spectral flux, onset strength) needs a top-level file and
   a registry entry in the server's `detail.py` — **propose it** rather than
   hoping a layer file gets read.
@@ -286,7 +317,8 @@ resolutions.
 5. **`loudness.json` + `drum_events.json`** — accurate, regular, complete.
 6. **`genre.json`** — honest, with the guidance prose kept.
 7. **`arrangement_state.json`** — optional; when present, accurate stem
-   entered/left spans with honest `confidence`/`margin_db`.
+   entered/left spans with honest `confidence`/`margin_db`, plus the
+   independent `vocals_phrase[]` read described above.
 
 ## Not worth optimizing for this consumer
 

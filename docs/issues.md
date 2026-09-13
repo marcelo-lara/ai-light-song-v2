@@ -45,6 +45,50 @@ Current focus song: `_test_song`
   movement from the previously recorded values (whisperX's 0.919 included) is
   explained rather than assumed to reproduce.
 
+### `arrangement_state`'s `vocals` channel is still an RMS-only claim (v3.5 item 8, handed off)
+
+- **Status:** `pending` — blocked on an operator by-ear review, which nothing
+  in the pipeline may perform or waive.
+- **Raised:** 2026-09-13, closing
+  [`implementation-plan-v3.5.md`](implementation-plan-v3.5.md) (its "Handoff"
+  section). Carries over that plan's item 8 and its D8.1 decision.
+- **Problem:** v3.5 promoted `whisperx_vad` and item 4's sibilance cue
+  *additively* — `arrangement_state.json` gained a separate `vocals_phrase[]`
+  field. The `vocals` entry inside each block's `playing[]` was never touched
+  and is still derived from stem RMS alone, which is the 40.8 % false-vocal
+  rate on `ayuni` that opened this release. A consumer reading `playing[]`
+  today gets the defect; only a consumer that additionally reads
+  `vocals_phrase[]` and ANDs the two gets the improvement, and nothing tells
+  it to.
+- **Why it is not just "finish item 8":** `whisperx_vad` beat the incumbent
+  decisively on `ayuni` (frame_acc 0.9881 vs 0.9042, false_vocal 0.0056 vs
+  0.0891, at a lower firing budget) but **lost on `Cinderella - Ella Lee`**
+  (0.8427 vs 0.9321) — that song's leaks are plucked and rhythmic, which a
+  speech VAD reads as consonants. Gating on it would trade one song's defect
+  for another's. Since then the sibilance discriminator shipped per-phrase,
+  which addresses exactly the Cinderella failure, so the question to answer is
+  now "does whisperX AND sibilance clear Cinderella", not "does whisperX win".
+- **The by-ear review, unchanged from D8.1** — four spans where the candidate
+  rules disagree most, in the debugger against the audio:
+
+  | song | span | what to decide |
+  | --- | --- | --- |
+  | `ayuni` | 86.5-102.2 s (hint-009) | stem level says 57 % voiced, whisperX says 0.076. Is there really no voice? |
+  | `Cinderella` | 25.0-31.4 s (hint-003) | whisperX says 0.536 mean. Is that plucked material truly voiceless? |
+  | `Cinderella` | 45.8-53.6 s (hint-005) | same question at 0.336 — and 38.5 % of it is above the -38 dB floor |
+  | `Armin` | 44.7-55.8 s (hint-006) | filtered looped "oh, oh" — whisperX @0.5 misses 73 % of it, @0.2 catches it |
+
+- **Validation target:** `ayuni` and `Cinderella - Ella Lee` — the two songs
+  carrying vocal-stem-leak negatives.
+- **Success condition:** either the `vocals` channel requires detector
+  agreement and reports `"unknown"` (never an RMS fallback) below the
+  detector's floor, with `ayuni`'s `vocals`-present fraction down from 40.8 %
+  and `Cinderella` not regressed; **or** a recorded decision that it ships
+  additively on purpose, with the contract saying so. Either outcome also
+  closes v3.5 item 9's last checkbox — `CLAUDE.md`'s one-line summary of the
+  `vocals`-channel behaviour, correctly deferred until there is a behaviour to
+  summarise.
+
 ### `gestures` — per-primitive precision has never been audited by ear
 
 - **Status:** `pending`
