@@ -15,6 +15,48 @@ Current focus song: `_test_song`
 
 ## Open queue
 
+### Waveform/playhead drift — up to 600ms, root cause not yet located
+
+- **Status:** `pending` — reported by the operator as "the waveform is not
+  aligned with playback", triaged this session, not fixed.
+- **Raised:** 2026-09-13.
+- **Ruled out by measurement**, so the next session shouldn't re-check these:
+  - Shared playhead (`TimelineGrid`'s `.tl-playhead`) vs. wavesurfer's own
+    played/progress edge (pierced its shadow DOM): agreed within 0–8px
+    (sub-100ms) across two songs, multiple playback times, after zoom, after
+    fit-to-width, in this session's own headless-browser probe. Not the
+    "whole waveform looks played" effect it first appeared to be in a
+    screenshot — that was two similar purple hues (`WAVE_COLOR` #968ae0 vs
+    `WAVE_PROGRESS_COLOR` #d2cefd) misread at small scale; a zoomed crop
+    showed the transition sitting exactly on the playhead.
+  - Waveform content vs. the analysis timeline (the thing that positions bar
+    lines / drives `timeToX`), at t≈0: decoded Cinderella's mp3 in a real
+    browser via `AudioContext.decodeAudioData` (the same path `wavesurfer.js`
+    uses for peaks), built a 10ms RMS envelope, cross-correlated it against
+    `artifacts/essentia/rms_loudness.json`'s own mix-channel RMS envelope —
+    best lag **0ms** at the start of the file. No encoder-delay / decode-path
+    offset there.
+  - **Neither measurement caught the real bug** — both were near t=0 / short
+    playback windows. The operator confirms the actual drift reaches **up to
+    600ms**, and separately, that **the waveform can be out of alignment with
+    the bar grid AND with timed events (hints/sections/lane markers)
+    simultaneously** — i.e. not only a playhead-vs-audio question, but the
+    bar lines and event blocks (independently positioned via the same
+    `coords.timeToX`) can also disagree with what the waveform picture shows.
+    That rules out an isolated seek-lag theory and points more at something
+    session-duration- or drift-dependent (possibly `coords`/`pxPerSec`
+    recomputing as beats stream in and the wavesurfer instance not
+    re-anchoring cleanly — unconfirmed) rather than a one-shot async-seek
+    race.
+- **Validation target:** any song with audio; reproduce with a *longer*
+  playback session (this session's probes only ran ~30–40s) and check
+  alignment against bar lines and Human Hints / Human Sections blocks, not
+  just the playhead.
+- **Success condition:** the drift is reproduced and measured directly (not
+  inferred from a short probe), its growth condition identified (time
+  elapsed? a specific action — seek, zoom, scroll, lane toggle? artifact
+  arriving late and shifting `coords`?), and then closed.
+
 ### `arrangement_state`'s `vocals` channel is still an RMS-only claim (v3.5 item 8, handed off)
 
 - **Status:** `pending` — blocked on an operator by-ear review, which nothing
