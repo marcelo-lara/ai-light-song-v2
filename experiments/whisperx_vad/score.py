@@ -88,6 +88,7 @@ def score_song(song: str) -> dict:
 
 def gold_table(songs: list[str]) -> str:
     lines = []
+    agg_acc: dict[str, list[float]] = {c: [] for c in CANDIDATES}
     agg_false_vocal: dict[str, list[float]] = {c: [] for c in CANDIDATES}
     agg_bpm: dict[str, list[float]] = {c: [] for c in CANDIDATES}
 
@@ -98,26 +99,28 @@ def gold_table(songs: list[str]) -> str:
             f"{row['n_residual_spans']} residual / {row['n_negative_spans']} negative spans)"
         )
         header = (
-            f"  {'candidate':<20}{'false_vocal_rate':>18}{'residual_firing':>16}"
-            f"{'bounds/min':>12}{'F1@0.5s':>10}"
+            f"  {'candidate':<20}{'frame_acc':>11}{'false_vocal_rate':>18}"
+            f"{'residual_firing':>16}{'bounds/min':>12}{'F1@0.5s':>10}"
         )
         lines.append(header)
         for name in CANDIDATES:
             c = row["candidates"][name]
             lines.append(
-                f"  {name:<20}{c['false_vocal_rate']:>18.4f}{c['residual_firing_rate']:>16.4f}"
-                f"{c['bounds_per_min']:>12.2f}{c['boundary_f1'].get('0.5', 0.0):>10.3f}"
+                f"  {name:<20}{c['frame_accuracy']:>11.4f}{c['false_vocal_rate']:>18.4f}"
+                f"{c['residual_firing_rate']:>16.4f}{c['bounds_per_min']:>12.2f}{c['boundary_f1'].get('0.5', 0.0):>10.3f}"
                 f"{'  (proxy — no evaluable ground truth)' if c['is_proxy_no_ground_truth'] else ''}"
             )
+            agg_acc[name].append(c["frame_accuracy"])
             agg_false_vocal[name].append(c["false_vocal_rate"])
             agg_bpm[name].append(c["bounds_per_min"])
 
     lines.append(f"\nAggregate across {len(songs)} songs:")
-    header = f"  {'candidate':<20}{'avg false_vocal_rate':>22}{'avg bounds/min':>16}"
+    header = f"  {'candidate':<20}{'avg frame_acc':>15}{'avg false_vocal_rate':>22}{'avg bounds/min':>16}"
     lines.append(header)
     for name in CANDIDATES:
         lines.append(
-            f"  {name:<20}{statistics.mean(agg_false_vocal[name]):>22.4f}"
+            f"  {name:<20}{statistics.mean(agg_acc[name]):>15.4f}"
+            f"{statistics.mean(agg_false_vocal[name]):>22.4f}"
             f"{statistics.mean(agg_bpm[name]):>16.2f}"
         )
     return "\n".join(lines)

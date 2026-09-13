@@ -237,6 +237,12 @@ sub-second onsets unlike items 5/6's window-based edges.
 
 ## Usage
 
+**Update (2026-09-13):** the image now installs torch/torchaudio/torchvision
+2.8.0/2.8.0/0.23.0 from the `cu126` CUDA wheel index rather than the CPU
+index, and `CUDA_VISIBLE_DEVICES`/`WHISPERX_VAD_DEVICE` no longer force CPU
+at the container level. GPU is opt-in via `--device cuda` (default stays
+`cpu`).
+
 ```bash
 # build the sandbox image once (see Dockerfile for the checkpoint pin)
 docker build -f experiments/whisperx_vad/Dockerfile -t ai-light-song-v2-whisperx-research:dev .

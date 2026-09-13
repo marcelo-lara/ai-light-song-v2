@@ -554,8 +554,9 @@ worse than the incumbent's 0.2898/0.4598). See item 8's D8.1.
 
 ### Visual QA
 
-Same shape as item 4's block: lane head `data-lane="clapVoiceness"`, flask
-badge, full-extent + zoom checks, negative checks, one new baseline.
+Same shape as item 4's block: lane head `data-lane` attribute, flask
+badge, full-extent + zoom checks, negative checks, one new baseline. (Lane
+since removed — discarded, see `docs/archive/experiments_discarded.md`.)
 
 ---
 
@@ -712,52 +713,41 @@ the incumbent on item 2's scorer at a matched budget, and the operator has
 reviewed the winning lane by ear. If none wins, this item is skipped and the
 plan proceeds to item 9 with that outcome recorded.*
 
-### D8.1 — real ground truth landed mid-run; re-scored; a winner exists, but the by-ear review is the operator's, not this run's to skip
+### D8.1 — rescored 2026-09-12; still the operator's by-ear call, now a 4-span listen
 
-While items 1-7 were running, a separate commit (`fcb5130`, authored by the
-operator in this same working tree) added real `type: "vocal"` human hints:
-**4 spans on `ayuni`, 7 on `Armin - Revolution`** (the other three
-scoring-corpus songs still carry none). This is exactly item 1's outstanding
-dependency and turns items 3-7's "unevaluable" proxy numbers into real ones on
-these two songs. Re-scored directly against `reference/human/human_hints.json`
-(bypassing the experiments' own `score.py`, which attempted a full feature
-recompute and was killed for host memory pressure — same failure class as item
-3; the re-score below reads only already-exported/cached output, no
-recomputation):
+Superseded once already: the first D8.1 table scored 4 `ayuni` spans with the
+binary scorer. `ayuni` now carries 7 spans / 32.0 s, `Cinderella - Ella Lee`
+is marked, and `scorer.py` scores three classes. Current numbers, per-hint
+diagnostics and the fusion sweep: `docs/experiments.md`, "Rescored 2026-09-12
+on the three-class scorer" and the section after it. In one line each:
 
-| song | candidate | false_vocal_rate | frame_acc | F1@0.5s |
-| --- | --- | --- | --- | --- |
-| `ayuni` (4 spans) | `arrangement_state` (incumbent) | 0.2898 | 0.7080 | 0.385 |
-| | `vocal_voiceness` (item 4) | **0.1090** | 0.8416 | 0.078 |
-| | `clap_voiceness` (item 5) | 0.4845 | 0.4037 | 0.077 |
-| | `whisperx_vad` (item 7) | **0.1195** | 0.8777 | **0.583** |
-| `Armin - Revolution` (7 spans) | `arrangement_state` (incumbent) | 0.4598 | 0.5402 | 0.125 |
-| | `vocal_voiceness` (item 4) | **0.0505** | 0.7735 | 0.134 |
-| | `clap_voiceness` (item 5) | 0.3455 | 0.6021 | 0.067 |
-| | `whisperx_vad` (item 7) | **0.1201** | 0.7477 | **0.136** |
+- **`whisperx_vad` wins `ayuni` decisively** — frame_acc 0.9881 vs the
+  incumbent's 0.9042, false_vocal 0.0056 vs 0.0891, at a *lower* firing budget,
+  and it stratifies the residual class (0.24 firing vs 0.82).
+- **It loses `Cinderella`** — 0.8427 vs 0.9321 — because that song's leaks are
+  plucked and rhythmic, which a speech VAD reads as consonants. hint-003
+  "Rythm NO VOCALS" scores mean 0.536, above true-vocal hint-004's 0.505.
+- **`whisperX >= 0.2 AND stem >= -38 dBFS` is the best rule measured**, and is
+  the recommended shape for this item: Cinderella +0.039 frame_acc / +0.062
+  recall, `Armin` recall 0.273 → 0.836, `ayuni` −0.004 frame_acc. The floor is
+  fit to three songs and must be revalidated as more are marked.
+- `svd_tagger` emits an all-zero series (image never built) — excluded, not a
+  loss. `clap_voiceness` fails on both songs.
 
-`svd_tagger` (item 6) has no exported proposal — its image never built — and
-is excluded, not scored as a loss.
+**The gate is still unmet, and only the operator can meet it.** The by-ear
+review is now a short, specific listen — the four spans where the two rules
+disagree most, in the debugger against the audio:
 
-**Both `vocal_voiceness` and `whisperx_vad` beat the incumbent's false-vocal
-rate on `ayuni`** (the kill condition's literal test), on both songs.
-`clap_voiceness` fails it on both. `whisperx_vad` additionally wins boundary
-F1 by a wide margin on both songs — expected, since its phrase edges carry
-real sub-second onsets while `vocal_voiceness`'s bridged phrases and
-`clap_voiceness`'s clip-window phrases do not. This is only 2 songs and 11
-marked spans total — thin evidence, not a corpus-wide result — but it is the
-first real (non-proxy) evidence this release has produced.
+| song | span | what to decide |
+| --- | --- | --- |
+| `ayuni` | 86.5-102.2 s (hint-009) | stem level says 57 % voiced, whisperX says 0.076. Is there really no voice? |
+| `Cinderella` | 25.0-31.4 s (hint-003) | whisperX says 0.536 mean. Is that plucked material truly voiceless? |
+| `Cinderella` | 45.8-53.6 s (hint-005) | same question at 0.336 — and 38.5 % of it is above the -38 dB floor |
+| `Armin` | 44.7-55.8 s (hint-006) | filtered looped "oh, oh" — whisperX @0.5 misses 73 % of it, @0.2 catches it |
 
-**This finding does not resolve item 8's gate by itself.** The gate's own
-text requires "the operator has reviewed the winning lane by ear" before item
-8 starts — a human-judgment checkpoint this run cannot perform or waive on
-the operator's behalf. Recommendation, for the operator's review: **`whisperx_vad`**
-as the candidate to audition first — it wins on the metric that actually times
-a phrase edge, not just on raw false-vocal reduction. `vocal_voiceness` is the
-cheaper fallback (no new image, no model pin) if the operator's ear disagrees
-with the F1 table. Item 8 is paused here, pending that review, and the run
-continues to item 9 in the meantime since item 9's doc corrections hold
-regardless of which detector (if any) item 8 eventually picks.
+If the operator's ear agrees with whisperX on all four, this item ships the
+fusion rule below. If it disagrees on the Cinderella pair, the honest outcome is
+that no candidate ships and item 9 records two measured negatives.
 
 **What changes.** `detect_arrangement_state`'s `vocals` channel
 (`src/analyzer/stages/arrangement_state.py`) additionally requires agreement

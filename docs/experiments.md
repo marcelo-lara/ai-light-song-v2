@@ -1140,12 +1140,30 @@ open follow-ons, not committed to a queue row here.
 
 ### Status
 
-**OPEN — scored against real ground truth. Kept, and reframed.** v3.5 item 4.
-Built as
+**PARTIALLY PROMOTED 2026-09-13 — the sibilance cue only. The entry stays open
+for the rest.** v3.5 item 4. Built as
 [`../experiments/vocal_voiceness/`](../experiments/vocal_voiceness/README.md).
 Debugger lane `4. Vocal Voiceness` wired in under Human Hints. Ground truth now
 exists (see "Vocal ground truth inventory" below), so every proxy number in this
 entry is superseded.
+
+**What was promoted, and what was not.** On the operator's instruction, only
+the **sibilance** cue went into `src/` — as `vocals_phrase[].sibilance` plus
+`vocals_sibilance_song_mean` on the top-level `arrangement_state.json`, the
+stem-bleed discriminator next to the promoted `whisperx_vad` phrase spans
+(`src/analyzer/stages/ui_data.py::_sibilance_curve`, ported verbatim — `src/`
+never imports from `experiments/`). **Vibrato and portamento were deliberately
+NOT promoted**, and neither was the noisy-OR that combines all three: this
+entry's own finding is that the combination dilutes the one strong cue with two
+weak ones (separability AUC — sibilance 0.990/0.959/0.813, vibrato
+0.700/0.815/0.656, portamento 0.718/0.800/0.650). The remaining open question
+is the rework *around* sibilance that finding calls for, which is why this
+entry is not archived.
+
+Verified at the promoted granularity on `ayuni`: per-phrase sibilance separates
+true-vocal phrases (mean 0.317, range 0.218-0.416) from residual/bleed phrases
+(mean 0.178, range 0.135-0.222) against a song mean of 0.169 — every real
+phrase above the mean, both bleed phrases at it.
 
 It is **not** a rival to `whisperx_vad`. The two work at different
 granularities, consistently on every song checked:
@@ -1242,100 +1260,6 @@ means anything.
 
 ---
 
-## CLAP voiceness — contrastive differential ("singing" vs "flute, synth")
-
-*(CLAP audio-text model — reuses `experiments/clap/`'s audio tower and
-two-centring formula; no new pin)*
-
-**This candidate is an independent second opinion on the frame-level call,
-not a boundary competitor** — CLAP's ~5s window cannot time a phrase edge.
-
-### Status
-
-**OPEN — scored against real ground truth on three songs. Recommend closing;
-not closed without the operator's agreement.** v3.5 item 5. Built as
-[`../experiments/clap_voiceness/`](../experiments/clap_voiceness/README.md).
-Debugger lane `5. CLAP Voiceness` wired in under Human Hints.
-
-### Why? What for?
-
-Does a contrastive CLAP pair distinguish a sung phrase from a flute where
-CLAP's own absolute vocal axis could not? Same false-vocal question items 3-7
-chase from different angles, here via a perceptual-audio model instead of DSP
-cues (item 4).
-
-### Experiment Plan
-
-One pair — *"a person singing"* vs *"a flute, a synth lead"* — read as a
-differential after the two centrings `experiments/clap/probes.py` established
-as mandatory. Audio tower and centring formula reused verbatim/adapted from
-that module; `voiceness = sigmoid(z)`; `vocal_phrase` spans thresholded +
-merged + min-2s-filtered on CLAP's native ~1Hz grid. `interval_ms: 1000` in
-the exported proposal (not `50`) — the file's own grid, not upsampled.
-**Scored: frame voiceness accuracy, false_vocal_rate. Boundary F1 computed
-and reported, never scored** — a 5s window can't time an edge to the
-0.25/0.5/1.0s tolerances `voiceness_common.scorer` uses.
-
-**Not run by the queue.** `compute` needs `transformers` (research sandbox
-image), not the `app` image the queue runner executes in; the `queue.toml`
-row uses a non-`app` `image` value so it is honestly recorded
-`skipped(needs image ...)`, matching `experiments/clap/`'s own precedent of
-staying out of the queue for the same reason.
-
-### Why this doesn't contradict the CLAP character entry's "weak vocal axis" finding
-
-Above, Measurement 1 found CLAP's `vocal` axis **weak** (+0.36…+1.18) against
-the vocal stem's unambiguous reading — **a different pair**
-(*"a singer singing a melody..."* vs *"purely instrumental music..."*), one of
-six axes pooled over allin1 section windows for the character layer. This
-item uses a narrower pair built for the actual confusion
-`arrangement_state`'s false-vocal rate chases — singing against *pitched
-instruments that could be mistaken for it* — computed per-window on its own
-grid, still read only as a per-song differential. A weak reading on one pair,
-in one framing, is not evidence against a different, more targeted pair;
-whether it actually helps is exactly what the unevaluable kill condition
-would settle.
-
-### Results evidence
-
-Full tables: [`../experiments/clap_voiceness/README.md`](../experiments/clap_voiceness/README.md).
-
-Aggregate proxy frame_accuracy / false_vocal_rate / bounds_per_min across all
-5 scoring-corpus songs (0 marked ground-truth spans on every song):
-**clap_voiceness 0.4826 / 0.5174 / 7.8** vs `arrangement_state` 0.4045 /
-0.5955 / 6.9, `vocal_phrases` 0.7071 / 0.2929 / 46.6, mix-RMS baseline 0.0781
-/ 0.9219 / 29.0. `clap_voiceness` beats `arrangement_state` on this proxy but
-trails `vocal_phrases` (item 4's DSP candidate).
-
-**No ground truth exists yet** — every scoring-corpus song has zero
-`type == "vocal"` hints in this environment (items 3-4's finding, confirmed
-again here). Every accuracy/rate above is a firing-rate proxy against an
-empty marked-span set, not a validated correctness measure.
-`is_proxy_no_ground_truth` flags every row.
-
-### Conclusion
-
-**Recommend closing.** Balanced accuracy against ground truth:
-
-| | `_test_song` | `ayuni` | `Queen of Kings` | mean |
-| --- | --- | --- | --- | --- |
-| `clap_voiceness` | 0.723 | 0.219 | 0.409 | **0.451** |
-
-Below the 0.500 chance line on average. On `ayuni` the cue runs monotonically
-**backwards** across the three ground-truth classes — true vocal 0.298,
-residual 0.479, no-voice 0.559 — so this is not a polarity or threshold fix.
-Inverting the sign gives F1 0.477, still under the `arrangement_state`
-incumbent's 0.581. The sign convention in `model.py` was checked and is correct
-as written, so the inversion is CLAP's reading, not a code defect.
-
-The honest case against it is **unpredictability**, not uniform failure: at a
-matched firing budget on `Armin - Revolution` it reaches recall 0.714 at FP-ub
-0.423, within 0.13 of whisperX. A candidate that is competitive on one song and
-below chance on another cannot be trusted per-song, which is the property that
-matters here.
-
----
-
 ## SVD Tagger — PANNs `Singing` class, stem vs mix
 
 *(PANNs Cnn14 AudioSet-527 tagger — NEW sandbox image + NEW model pin, the
@@ -1378,9 +1302,32 @@ compute/export) was never reached — no image exists to run it in.
 
 ### Results evidence
 
-**None.** No `compute` has run; `experiments/svd_tagger/cache/` is empty.
-An honest `unknown`, not an invented number (CLAUDE.md: no silent
-fallbacks).
+**Superseded 2026-09-13 — the image was built and the corpus was run.** The
+earlier "none, no compute has run" record is obsolete; D6.2's option (a) was
+taken (pre-fetched, host-verified checkpoint `COPY`'d in) and `compute`/`export`
+have since run over all 23 songs.
+
+**It discriminates; it does not fire.** Measured against the three-class ground
+truth:
+
+| song | AUC pos-vs-neg | AUC pos-vs-residual | mean on vocal | mean on no-voice |
+| --- | --- | --- | --- | --- |
+| `ayuni` | **0.907** | 0.780 | 0.087 | 0.014 |
+| `Cinderella - Ella Lee` | **0.937** | — | 0.077 | 0.012 |
+
+The *ranking* is sound — vocal frames score reliably above non-vocal ones. The
+**scale** is not: peak output is 0.2967 on `ayuni`, 0.5039 on `Cinderella` and
+0.1438 on `Armin - Revolution`, so a 0.5 threshold never fires once. That is
+where this candidate's 0.00 bounds/min, 0.0000 false-vocal-rate and its
+apparent frame accuracy (0.7538 / 0.5169 — exactly the negative-class fraction)
+all come from: it is never wrong because it never speaks. PANNs' `Singing`
+posterior is simply low-magnitude on a separated vocal stem, which is
+out-of-distribution against the AudioSet material it was trained on.
+
+**Do not read the all-zero-looking score table as "infers nothing".** It infers;
+its calibration is off by roughly 5x. What it would need is a per-song rescale
+(e.g. against its own high percentile, the way `arrangement_state` thresholds
+each stem against its own p98), not a threshold nudge.
 
 ### D6.2 (open — for the operator)
 
@@ -1398,153 +1345,94 @@ plugging into `voiceness_common.schema`/`scorer`/`incumbents` the same way —
 `schema.py`'s `VoicenessFrame`/`VocalPhrase` gained an optional `channel`
 field for this item's two-producer case (stem vs mix in one proposal file,
 each row attributed — the "published files are fused, say which producer
-won" convention generalised, not a new pattern). **Kill condition
-unevaluated, not passed or failed** — the image never built inside budget.
-Legitimate, expected, pre-anticipated outcome per the plan's own kill-
-condition framing ("given its image and pin cost").
+won" convention generalised, not a new pattern).
+
+**OPEN — no promotion case, but not a kill either.** Its AUC never beats
+`whisperx_vad` (0.998 / 0.948) on either scored song, so it adds nothing the
+promoted detector does not already provide, and there is no reason to promote
+it. But it is a genuine, correctly-ordered signal rather than a dead end, and
+the one cheap experiment that would settle it — rescale per song, then rescore —
+has not been run. Kill only after that.
 
 ---
 
-## WhisperX VAD — a speech-stack's VAD front-end over the vocal stem
+## Singer Identity — open speaker embeddings for "is this a voice, and whose?"
 
-*(whisperX 3.8.6's `pyannote.audio`-based VAD front-end — NEW sandbox image,
-NEW checkpoint pin; diarization NOT attempted, VAD-only)*
+**Status: proposed, not built.** Raised by the operator 2026-09-12 ("apply the
+whisper Speaker A - Speaker B diarization, not only overlapping, try to find
+speakers/singers"). Implement with Sonnet; smoke test on `_test_song` only.
 
-**This candidate is the only one of items 4-7 whose `vocal_phrase` spans
-carry real sub-second onsets** — boundary F1 is scored, not just reported,
-unlike the two window-based candidates (items 5/6).
+### The question, and why it is not a duplicate of items 4-7
 
-### Status
+Two outputs from one pass:
 
-**OPEN — the strongest candidate and the only promotion candidate, but not yet
-promotable.** v3.5 item 7. Built as
-[`../experiments/whisperx_vad/`](../experiments/whisperx_vad/README.md).
-Debugger lane `7. WhisperX VAD` wired in under Human Hints. Scored against real
-ground truth on four songs.
+1. **`voice_similarity`** — per-frame cosine similarity to the song's nearest
+   voice centroid. A leaked flute or plucked guitar should sit far from any
+   voice centroid even when it is loud and transient-rich, which is exactly
+   where `whisperx_vad` fails: on `Cinderella - Ella Lee` it scores frame_acc
+   0.8427 / false_vocal 0.0589, and reads mean 0.536 on hint-003 "Rythm NO
+   VOCALS" against 0.505 on true-vocal hint-004. **That pair of numbers is the
+   target to beat**, without falling below whisperX's `ayuni` 0.9881 / 0.0056.
+2. **`singer_change`** — change points where the embedding jumps to a different
+   cluster. A duet handoff or a lead-to-stacked-chorus change is a real
+   moving-head cue, which nothing in the pipeline currently produces.
 
-### Why? What for?
+### Method
 
-Does a **speech-trained** VAD — built to find "someone is talking" in
-call-center and meeting audio — transfer to "someone is singing" at all, and
-if so, is it cheap and reliable enough to justify the image it costs? The last
-and most domain-mismatched candidate in the false-vocal family (items 4-7),
-built anyway so the comparison happens by ear and by number rather than by
-assumption. Three objections (diarization inherits the VAD's own false
-positives; sustained vowels are the VAD's classic miss, pitched instruments
-its classic false accept; lead-vs-backing is its weakest axis) are recorded
-in the README as expected risks, not discovered after the fact.
+- **Voiced candidate regions**: reuse `whisperx_vad`'s cached activation at
+  `>= 0.2` (its cache is per-song `.npz`, already computed for the whole
+  corpus). Embedding non-voiced frames wastes compute and pollutes the
+  clusters.
+- **Embeddings**: ECAPA-TDNN (`speechbrain/spkrec-ecapa-voxceleb`) over 1.5 s
+  windows, 0.25 s hop, on the vocal stem. WeSpeaker or NeMo TitaNet-large are
+  acceptable substitutes — the requirement is only that the checkpoint is
+  **not gated**, which is why `pyannote/speaker-diarization-3.1` is excluded:
+  it needs an HF token, none exists in this environment, and a checkpoint
+  fetched at analysis time cannot be promoted
+  (`experiments/whisperx_vad/README.md`, "Diarization: not attempted").
+  Fetch and checksum at **image build** time, never mid-run.
+- **Clustering**: agglomerative, cosine, on the voiced windows only; pick the
+  cluster count by silhouette over k = 1…4. Report k as part of the proposal —
+  k = 1 is a legitimate answer and means "one singer".
+- **Shape to copy**: `experiments/whisperx_vad/` exactly — `paths.py`,
+  `model.py`, `features.py`, `export.py`, `score.py`, `run.py` with `compute`
+  / `export` / `score`, a new compose service with a pinned image, and a
+  `queue.toml` row (it will list as `skipped(<service>)` until run by hand,
+  like the other non-`app` rows).
+- **Proposal file**: `reference/proposals/singer_identity.json` via
+  `voiceness_common.schema`, so `voiceness_common.scorer` scores output 1 with
+  no new scoring code. Output 2 rides along as `singer_change: [{time,
+  from_cluster, to_cluster, confidence}]`.
+- **UI lane**: `Singer Identity`, its own lane, no consolidation.
 
-### Experiment Plan
+### Scoring
 
-whisperX's VAD front-end (`whisperx.vads.pyannote.Pyannote`) over
-`artifacts/stems/vocals.wav` only — no ASR, no diarization. **Checkpoint
-pre-fetched and sha256-verified from the host, `COPY`'d into the image, never
-`curl`'d at build time** — applying item 6's own lesson directly (its in-build
-`curl` of a 327 MB checkpoint stalled at ~154 KB/s and never completed; this
-item's 17.7 MB checkpoint was pre-fetched in 2.8s and the image built
-successfully). Frame curve: the segmentation model's raw activation,
-resampled to the shared 50ms grid; phrase spans: whisperX's own `Binarize`
-hysteresis at library-default thresholds (not swept or corpus-fit).
-**Diarization not attempted** — `echo $HF_TOKEN` and
-`~/.cache/huggingface/token` were both checked before any code was written;
-no token is available, and `pyannote/speaker-diarization-3.1` is a gated
-checkpoint that cannot be baked into an image without one. Not stubbed with
-nulls — the schema carries no diarization field at all. **Determinism**: the
-VAD checkpoint triggers no live-token clause (bundled in `whisperx` itself,
-plus this item's own independently-verified copy); only diarization would
-have, which is exactly why it was not attempted.
+- Output 1: `voiceness_common.scorer` on `ayuni`, `Cinderella - Ella Lee` and
+  `Armin - Revolution`, in the same table as whisperX and the incumbents.
+- Output 2: change points against `Armin - Revolution`'s male → female handoff
+  (male 30.0-55.8 s, female 81.6-88.0 s — the only marked singer change in the
+  corpus) at ±1.0 s, and reported-not-scored elsewhere.
 
-**Not run by the queue** — same `skipped(needs image whisperx-research ...)`
-precedent as `clap_voiceness`/`svd_tagger`.
+### Two decisions the first build left open (resolved 2026-09-12)
 
-### Results evidence
+- **Grid.** `voice_similarity` is exported on the shared **50 ms grid** by
+  nearest-window hold, not its native 0.25 s hop, because the point of the
+  fusion rule is a per-frame AND with whisperX and every sibling proposal is
+  50 ms. `generated_from` must record the true underlying resolution (1.5 s
+  window / 0.25 s hop) so no reader takes 50 ms of precision that is not there.
+- **`singer_change` scoring.** Stays a **manual ear check**, not a scorer. The
+  corpus contains exactly one marked singer change (`Armin - Revolution`, male
+  → female at ~81.6 s); a metric over one event measures nothing. Revisit if
+  more handoffs get marked.
 
-Full table in [`../experiments/whisperx_vad/README.md`](../experiments/whisperx_vad/README.md).
-Aggregate proxy false_vocal_rate / bounds_per_min across all 5 scoring-corpus
-songs (0 marked ground-truth spans on every song): **whisperx_vad 0.3270 /
-9.5** vs `arrangement_state` 0.5955 / 6.9, `vocal_phrases` 0.2929 / 46.6,
-mix-RMS baseline 0.9219 / 29.0. `whisperx_vad` beats `arrangement_state` on
-every song individually but trails `vocal_phrases`, which fires far more
-often — on an unmarked proxy that inflates apparent rate, not correctness.
-Boundary F1 reads 0.000 across the board because the ground-truth span set is
-empty, not because of a detector failure.
+### Kill condition, and the failure to expect
 
-**No ground truth exists yet** — same finding as items 3-6.
-`is_proxy_no_ground_truth` flags every row.
-
-### Conclusion
-
-**Best candidate by a wide margin. Promotion blocked on a weakness tuning
-cannot fix.** Balanced accuracy against ground truth:
-
-| | `_test_song` | `ayuni` | `Queen of Kings`* |
-| --- | --- | --- | --- |
-| `whisperx_vad` | 0.866 | **0.971** | 0.699 |
-| `arrangement_state` (shipped) | 0.942 | 0.921 | 0.495 |
-
-\* `Queen of Kings` is 89% sung, so it measures recall only — `mix_rms_baseline`
-scores 0.980 F1 there by calling vocal everywhere. **Never report F1 on that
-song.**
-
-`ayuni` is the discriminating song (106.6 s of varied negatives, including the
-flute-leak trap where `arrangement_state` reports 0.57 voiced against an
-operator-confirmed *no voice at all*, and whisperX reports 0.00).
-
-### The shipped 0.500 threshold is a speech default and is wrong for singing
-
-Recall at threshold 0.5 → 0.2:
-
-| song | 0.5 | 0.2 | what it recovers |
-| --- | --- | --- | --- |
-| `Armin - Revolution` | **0.273** | **0.843** | filtered and long-note spans |
-| `_test_song` | 0.791 | 0.919 | held and soft vocals |
-| `Queen of Kings` | 0.894 | 0.990 | the `la la la` outro, held `us?` |
-| `ayuni` | 0.984 | 0.996 | — |
-
-The cost is small and measured: false positives on **real instrumental** move
-only 0.032→0.081 (`_test_song`) and 0.041→0.059 (`ayuni`) across 143 s of it.
-The rest of the rise is bridging breath gaps, which for a sustained lighting
-cue is arguably correct behaviour.
-
-### But the phrase spans must stay at library defaults
-
-Sweeping onset, and separately offset with onset pinned, degrades boundary F1
-monotonically on both labelled songs — at onset 0.2 `Queen of Kings` collapses
-to a single 110 s span. Best boundary F1 is the shipped 0.500/0.363: `ayuni`
-0.583, `Queen of Kings` 0.435. **The frame curve and the phrase spans need
-different operating points and cannot share one threshold.** Publish the
-continuous curve; derive spans at the default.
-
-### The curve already carries the three-level reading
-
-On `ayuni`, raw activation separates all three ground-truth classes: true vocal
-vs no-voice AUC 0.994, **true vocal vs residual 0.987**, residual vs no-voice
-0.864 (means 0.951 / 0.293 / 0.070). The operator's "audible but not a vocal
-part" class is in the curve already — collapsing it to a boolean throws it away.
-
-### Two weaknesses, each confirmed on more than one song
-
-1. **Sustained and filtered vocals.** Every miss ≥0.4 s on `Queen of Kings` is
-   a held vowel; on `Armin` every collapse is a *filtered* or *long-note* span.
-   Band-limiting strips the consonant energy a speech VAD keys on. This is a
-   property of speech pretraining, not a parameter.
-2. **Background chatter defeats it entirely.** On
-   `What a Feeling - Courtney Storm` it fires 0.45 on a candidate chatter span
-   and 0.18 on a candidate lead span. Chatter *is* speech.
-
-### Diarization stays not-attempted, and the reasons have strengthened
-
-`pyannote/speaker-diarization-3.1` is gated (no HF token here; a fetch at
-analysis time breaks determinism). Beyond the gate: diarization assumes
-turn-taking, where lead-plus-backing is fully simultaneous, and a
-double-tracked lead is the *same* singer — speaker embeddings cannot separate a
-voice from itself. Hosted third-party "Whisper + speaker detection" services
-are disqualified outright: they send audio off-machine, cannot run in Compose,
-and are not deterministic.
-
-This entry's recorded objection #1 ("diarization will assign a speaker to the
-flute") is **overstated and should be softened** — whisperX's FP rate on `ayuni`
-is 0.041, and it reads 0.00 across the flute-leak span itself.
+Killed if output 1 neither beats whisperX on `Cinderella` nor matches it on
+`ayuni`. Output 2 is reported as a **negative** if it splits one singer's
+registers more often than it finds a real singer change — the expected failure,
+since these models are speech-trained and on singing they cluster by timbre
+*and* pitch register. That makes it a change-point signal first and an identity
+signal only if the clusters survive an ear check.
 
 ---
 
@@ -1696,6 +1584,8 @@ environment carries `type: "vocal"` ground truth" claim repeated in items 3-7.
 | `Armin - Revolution` | `human_hints.json` | 7 `type: "vocal"` spans (35.3 s); male 30.0-55.8 s, female 81.6-88.0 s. No "no vocals" hints — unlabelled time is **not** confirmed instrumental, so its FP column is an upper bound |
 | `Queen of Kings - Alessandra` | `reference/moises/lyrics.json` | curated word timings, **trust window 0-127.2 s only**; lead-vs-chorus in hint prose |
 | `_test_song` | `reference/moises/lyrics.json` | curated, 24 words / 5 lines, 15.9-54.7 s; 36 s of real instrumental including deliberate traps (an acid-synth-bass block, an ambient pad between two vocal lines) |
+| `In da name of love - Anita and Ray` | `human_hints.json` | 11 hints, 10 of them `type: "vocal"`; 1 residual (hint-008, a vocal loop). **No hard negatives** — unmarked time is not confirmed instrumental. Classified 2026-09-13; also the corpus's only declared 2-singer song |
+| `What a Feeling - Courtney Storm` | `human_hints.json` | 2 hints only — 1 `type: "vocal"`, 1 residual (hint-002, sampled chatter). Very sparse; useful for the residual firing rate, not for recall |
 
 ### Ground truth is three classes, not two
 
@@ -1716,6 +1606,47 @@ contract (residual excluded, unreviewed time excluded, `frame_accuracy` /
 region). **Every items 4-7 number below therefore needs a rescore before it is
 quoted again** — see `docs/issues.md`.
 
+### A level gate cannot separate the leak — and the shipped threshold is already optimal
+
+Measured 2026-09-12 on the vocal stem (`artifacts/stems/vocals.wav`, 50 ms
+frames, mono sum), classified by the three-class ground truth above. This
+settles the recurring "remove anything below X dB" proposal.
+
+| | `ayuni` | `Cinderella - Ella Lee` |
+| --- | --- | --- |
+| vocal-stem dBFS median — positive / residual / negative | -24.7 / -31.2 / **-69.3** | -24.0 / — / **-69.6** |
+| level-only AUC, positive vs negative | 0.960 | 0.968 |
+| best single threshold (oracle) | **-38.1 dB** | -35.3 dB |
+| balanced accuracy at that threshold | 0.927 | 0.895 |
+| `arrangement_state`'s own threshold (p98 - 18 dB) | **-38.2 dB** | -31.5 dB |
+
+**On `ayuni` the shipped per-song rule already sits 0.1 dB from the best single
+threshold that exists.** There is no threshold left to find: 0.927 balanced
+accuracy is the *ceiling* for any level rule on that song, and the rule reaching
+it still calls 40.2 % of frames voiced (the shipped 40.8 % figure).
+
+Where a gate fails, per hint, as % of frames above the oracle threshold:
+
+| hint | class | % above gate | max dBFS | note |
+| --- | --- | --- | --- | --- |
+| `ayuni` hint-009 "Vocal Stem noise" | negative | **54.6 %** | **-14.8** | the flute leak — louder than hint-008 (-27.7 median) and hint-017 (-28.9), both true vocal |
+| `ayuni` hint-013 "Tension break" | negative | 51.9 % | -24.0 | "close to zero sound" by ear, -37.5 median in the stem |
+| `Cinderella` hint-005 "Plucked guitar" | negative | 38.5 % | -28.3 | overlaps hint-001's vocal median (-29.3) |
+| `Cinderella` hint-001 "Cinderella sample" | positive | 71.5 % | -13.5 | so a gate also **silences 28.5 % of a real vocal** |
+
+Two things follow, and they point in opposite directions:
+
+- **No gate, at any level, separates an audible leak from a voice.** The loud
+  tail of the negative class overlaps the quiet half of the positive class on
+  both songs. whisperX reports 0.00 on `ayuni`'s flute span, so timbre already
+  solves what level provably cannot.
+- **An absolute floor is still worth publishing** — not as a stem rewrite (the
+  stem is never rewritten) but as a cheap "is there audible content in this stem
+  at all" precondition. 9 of the 13 negative spans sit at -60…-78 dB, i.e. most
+  negative *time* is sub-audible bleed, and the two songs' oracle thresholds
+  differ by only 2.8 dB against a per-song rule whose own docstring says nothing
+  transfers between songs.
+
 ### `confidence: "0.99"` marks curation only when the whole file carries it
 
 `Queen of Kings` (all 235 rows) and `_test_song` qualify. `Hideaway - Kiesza`
@@ -1728,6 +1659,36 @@ Moises rows are a comparison baseline and never a label: `'let'` spans
 **29.33 s** at its own confidence 0.93, six words exceed 5 s, and coverage is
 49% of the song. Beating it there is a real but low bar — `vocal_voiceness` and
 `whisperx_vad` both do.
+
+### Singer ground truth — declared lead-vocalist counts
+
+Declared by the operator by ear, 2026-09-13, for item 8 (`Singer Identity`).
+Machine-readable copy: `experiments/singer_identity/singer_ground_truth.json`
+— declared data, exactly like `voiceness_common/vocal_ground_truth.json`, never
+inferred and never extended from a model's own output.
+
+| song | lead voices | note |
+| --- | --- | --- |
+| `Charli-VonDutch` | 1 | |
+| `Chimera - Hana` | 1 | |
+| `Titanium - David Guetta ft Sia` | 1 | |
+| `Sash - Raindrops` | 1 | |
+| `Rapture - Nadia Ali` | 1 | |
+| `Underworld - Born Slippy` | 1 | only male lead vocal |
+| `Charli-Guess` | 2 | 2 female lead vocals |
+| `In da name of love - Anita and Ray` | 2 | 1 female vocal, 1 male rap vocal |
+| `Only this moment - royksopp` | 2 | 1 female vocal, 1 male vocal |
+| `What a Feeling - Courtney Storm` | 1 + samples | one female lead, sampled chatters |
+| `Cinderella - Ella Lee` | 1 + samples | movie samples, one female lead |
+
+The last two are scored apart: non-lead sampled speech is real material in the
+vocal stem, so a clustering model splitting it out is defensible there — a `k`
+*above* the lead count is not automatically wrong, a `k` *below* it is.
+
+**The other 12 songs are unscoreable, not negative.** The operator's own caveat:
+they may carry back vocals, so a wrong inference on them would not be
+representative. Judge item 8 on the 11 declared songs and report the rest as
+observation only.
 
 ---
 

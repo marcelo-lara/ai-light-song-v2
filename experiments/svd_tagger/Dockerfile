@@ -7,11 +7,17 @@
 # Singing/Music output classes, narrower dependency footprint than BEATs'
 # fairseq-adjacent stack.
 #
-# Same CPU-torch pattern as the sibling Dockerfile.vocalparse /
-# Dockerfile.acestep sandboxes: the base image's CUDA 11.8 / torch 2.1 is
-# fine for Cnn14 (81M params, small by this repo's standards), but running
-# on CPU sidesteps any torch/CUDA compatibility question entirely — this
-# item's job is to prove the pipeline works, not to be fast.
+# Originally pinned to the CPU wheel index — running on CPU sidesteps any
+# torch/CUDA compatibility question entirely, and this item's job was to
+# prove the pipeline works, not to be fast. Switched to the CUDA 12.1 wheel
+# (`cu121`, verified present for torch/torchaudio 2.4.1 at
+# download.pytorch.org/whl/torch/) to speed up the corpus-wide run on the
+# host's GTX 1650 (Turing, sm_75 — supported by every cu11x/cu12x torch
+# build). Same exact torch/torchaudio version (2.4.1) either way — only the
+# wheel variant changed. GPU is opt-in via `--device cuda` (see run.py); the
+# default stays "cpu" so existing CPU-only invocations are unaffected.
+# `CUDA_VISIBLE_DEVICES`/`SVD_TAGGER_DEVICE` no longer hard-disable the GPU
+# at the container level (removed below).
 #
 # The checkpoint is fetched and sha256-checksummed HERE, at image build time.
 # No download ever happens at analysis time — `model.py` loads the
@@ -23,11 +29,9 @@
 FROM ai-light-song-v2:dev
 
 ENV PYTHONPATH=/app \
-    TOKENIZERS_PARALLELISM=false \
-    SVD_TAGGER_DEVICE=cpu \
-    CUDA_VISIBLE_DEVICES=""
+    TOKENIZERS_PARALLELISM=false
 
-RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cu121 \
       "torch==2.4.1" "torchaudio==2.4.1"
 
 RUN pip install --no-cache-dir \
@@ -36,7 +40,7 @@ RUN pip install --no-cache-dir \
       "librosa>=0.10" \
       "soundfile" \
  && pip install --no-cache-dir --force-reinstall \
-      --index-url https://download.pytorch.org/whl/cpu "torch==2.4.1" "torchaudio==2.4.1" \
+      --index-url https://download.pytorch.org/whl/cu121 "torch==2.4.1" "torchaudio==2.4.1" \
  && pip install --no-cache-dir --force-reinstall "numpy<2"
 
 # --- pinned checkpoint, fetched + checksummed at BUILD time -----------------

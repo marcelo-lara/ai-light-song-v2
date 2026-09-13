@@ -1,44 +1,23 @@
 WhisperX VAD — vs arrangement_state / vocal_phrases / mix-RMS
 ==================================================================
 
-_test_song  (0 marked vocal spans)
-  candidate             false_vocal_rate  bounds/min   F1@0.5s
-  whisperx_vad                    0.2863       12.39     0.000  (proxy — no ground truth)
-  arrangement_state               0.3787       10.34     0.000  (proxy — no ground truth)
-  vocal_phrases                   0.3830       22.74     0.000  (proxy — no ground truth)
-  mix_rms_baseline                0.9535        6.20     0.000  (proxy — no ground truth)
+ayuni  (7 positive / 2 residual / 9 negative spans)
+  candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
+  whisperx_vad             0.9881            0.0056          0.2423        5.12     0.643
+  arrangement_state        0.9042            0.0891          0.8208        6.58     0.563
+  vocal_phrases            0.7038            0.1514          0.2491       53.04     0.138
+  mix_rms_baseline         0.3263            0.6585          0.8515       69.87     0.039
 
-Hideaway - Kiesza  (0 marked vocal spans)
-  candidate             false_vocal_rate  bounds/min   F1@0.5s
-  whisperx_vad                    0.2822       11.92     0.000  (proxy — no ground truth)
-  arrangement_state               0.8343        6.68     0.000  (proxy — no ground truth)
-  vocal_phrases                   0.3182       54.84     0.000  (proxy — no ground truth)
-  mix_rms_baseline                0.8401       39.10     0.000  (proxy — no ground truth)
+Cinderella - Ella Lee  (4 positive / 0 residual / 4 negative spans)
+  candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
+  whisperx_vad             0.8426            0.0590          0.0000       12.72     0.121
+  arrangement_state        0.9321            0.0038          0.0000        4.58     0.235
+  vocal_phrases            0.5034            0.1556          0.0000       37.15     0.123
+  mix_rms_baseline         0.4784            0.4623          0.0000       68.20     0.056
 
-Armin - Revolution  (0 marked vocal spans)
-  candidate             false_vocal_rate  bounds/min   F1@0.5s
-  whisperx_vad                    0.1695        9.28     0.000  (proxy — no ground truth)
-  arrangement_state               0.6418        5.57     0.000  (proxy — no ground truth)
-  vocal_phrases                   0.2314       55.68     0.000  (proxy — no ground truth)
-  mix_rms_baseline                0.9794       10.52     0.000  (proxy — no ground truth)
-
-Titanium - David Guetta ft Sia  (0 marked vocal spans)
-  candidate             false_vocal_rate  bounds/min   F1@0.5s
-  whisperx_vad                    0.6599        8.26     0.000  (proxy — no ground truth)
-  arrangement_state               0.7143        5.16     0.000  (proxy — no ground truth)
-  vocal_phrases                   0.2868       46.48     0.000  (proxy — no ground truth)
-  mix_rms_baseline                0.9602       18.59     0.000  (proxy — no ground truth)
-
-ayuni  (0 marked vocal spans)
-  candidate             false_vocal_rate  bounds/min   F1@0.5s
-  whisperx_vad                    0.2373        5.83     0.000  (proxy — no ground truth)
-  arrangement_state               0.4082        6.56     0.000  (proxy — no ground truth)
-  vocal_phrases                   0.2449       53.19     0.000  (proxy — no ground truth)
-  mix_rms_baseline                0.8765       70.67     0.000  (proxy — no ground truth)
-
-Aggregate across 5 songs:
-  candidate             avg false_vocal_rate  avg bounds/min
-  whisperx_vad                        0.3270            9.54
-  arrangement_state                   0.5955            6.86
-  vocal_phrases                       0.2929           46.59
-  mix_rms_baseline                    0.9219           29.02
+Aggregate across 2 songs:
+  candidate             avg frame_acc  avg false_vocal_rate  avg bounds/min
+  whisperx_vad                 0.9153                0.0323            8.92
+  arrangement_state            0.9182                0.0464            5.58
+  vocal_phrases                0.6036                0.1535           45.09
+  mix_rms_baseline             0.4023                0.5604           69.03

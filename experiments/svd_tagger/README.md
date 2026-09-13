@@ -130,6 +130,11 @@ budget given, honestly, not by faking a number.
 
 ## Usage
 
+**Update (2026-09-13):** the image now installs torch/torchaudio 2.4.1 from
+the `cu121` CUDA wheel index rather than the CPU index, and
+`CUDA_VISIBLE_DEVICES`/`SVD_TAGGER_DEVICE` no longer force CPU at the
+container level. GPU is opt-in via `--device cuda` (default stays `cpu`).
+
 ```bash
 # build the sandbox image once (see Dockerfile for the checkpoint pin)
 docker build -f experiments/svd_tagger/Dockerfile -t ai-light-song-v2-svd-research:dev .
