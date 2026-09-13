@@ -16,8 +16,11 @@
   "Cinderella - Ella Lee": {
     "hint-003": "negative",
     "hint-005": "negative",
-    "hint-006": "negative",
-    "hint-008": "negative"
+    "hint-007": "negative",
+    "hint-009": "unknown",
+    "hint-011": "unknown",
+    "hint-012": "negative",
+    "hint-014": "negative"
   },
   "Armin - Revolution": {
     "hint-007": "unknown",
@@ -32,5 +35,11 @@
     "hint-017": "unknown",
     "hint-018": "unknown",
     "hint-019": "unknown"
+  },
+  "In da name of love - Anita and Ray": {
+    "hint-008": "residual"
+  },
+  "What a Feeling - Courtney Storm": {
+    "hint-002": "residual"
   }
 }

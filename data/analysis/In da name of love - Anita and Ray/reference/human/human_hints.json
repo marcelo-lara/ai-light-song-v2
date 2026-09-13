@@ -1,0 +1,103 @@
+{
+  "song_name": "In da name of love - Anita and Ray",
+  "human_hints": [
+    {
+      "id": "hint-001",
+      "title": "Anita Sing",
+      "start_time": 7.761,
+      "end_time": 14.81,
+      "summary": "",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-002",
+      "title": "Anita Sing",
+      "start_time": 15.09,
+      "end_time": 20.224780441810346,
+      "summary": "",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-003",
+      "title": "Ray rap",
+      "start_time": 29.622,
+      "end_time": 52.31,
+      "summary": "",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-004",
+      "title": "Ray Rap 2 (filtered)",
+      "start_time": 52.534,
+      "end_time": 66.906,
+      "summary": "",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-005",
+      "title": "Anita Sing",
+      "start_time": 66.906,
+      "end_time": 96.695,
+      "summary": "Female vocal lead sing",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-006",
+      "title": "Anita Sing",
+      "start_time": 96.695,
+      "end_time": 111.999,
+      "summary": "Female lead rhythmic",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-007",
+      "title": "Ray rap (filtered)",
+      "start_time": 111.999,
+      "end_time": 126.615,
+      "summary": "Male vocal lead (filtered)",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-008",
+      "title": "Break",
+      "start_time": 126.615,
+      "end_time": 133.693,
+      "summary": "Vocal loop (vocal stem could have something)",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-009",
+      "title": "Anita Sing",
+      "start_time": 134.42,
+      "end_time": 163.94,
+      "summary": "Female vocal lead",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-010",
+      "title": "Anita Sing",
+      "start_time": 163.94,
+      "end_time": 178.83,
+      "summary": "Rhythmic Female vocal lead",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-011",
+      "title": "Ray rap (filtered)",
+      "start_time": 178.83,
+      "end_time": 193.72,
+      "summary": "",
+      "lighting_hint": "",
+      "type": "vocal"
+    }
+  ]
+}
