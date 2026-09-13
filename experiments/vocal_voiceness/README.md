@@ -85,37 +85,19 @@ Scored against `voiceness_common`'s three incumbents (`arrangement_state`,
 `vocal_phrases`, mix-RMS baseline) via the shared scorer, matched-budget
 (`bounds_per_min` reported beside every rate, never compared alone).
 
-**No ground truth exists yet** — checked directly, same finding as item 3:
-every song in the scoring corpus (`_test_song`, `ayuni`, and the three
-remaining gold songs) has zero `type == "vocal"` rows in
-`reference/human/human_hints.json` in this environment. So
-`false_vocal_rate` against an empty marked-span set is mathematically
-"fraction of frames this candidate calls voiced" — an honest proxy, not the
-validated metric, flagged `is_proxy_no_ground_truth` per row in
-`out/score.txt`. Re-running `score` after the operator marks spans
-recomputes the real number with no code change.
-
-Full 5-song scoring corpus (proxy numbers, 0 marked spans on every song),
-`false_vocal_rate` (proxy) / `bounds_per_min`:
+**Rescored 2026-09-13** — v3.5 corpus rebuild, three-class scorer, the 5 songs
+declared in `voiceness_common/vocal_ground_truth.json`. Full output:
+[`out/score.txt`](out/score.txt). frame_acc / false_vocal_rate / bounds/min on
+the two songs that declare negatives (the other three cannot rank detectors):
 
 | song | vocal_voiceness | arrangement_state | vocal_phrases | mix_rms_baseline |
 | --- | --- | --- | --- | --- |
-| `_test_song` | 0.1454 / 22.74 | 0.3787 / 10.34 | 0.3830 / 22.74 | 0.9535 / 6.20 |
-| `Hideaway - Kiesza` | 0.2219 / 54.36 | 0.8343 / 6.68 | 0.3182 / 54.84 | 0.8401 / 39.10 |
-| `Armin - Revolution` | 0.0564 / 55.68 | 0.6418 / 5.57 | 0.2314 / 55.68 | 0.9794 / 10.52 |
-| `Titanium - David Guetta ft Sia` | 0.2930 / 45.97 | 0.7143 / 5.16 | 0.2868 / 46.48 | 0.9602 / 18.59 |
-| `ayuni` | 0.1800 / 53.19 | 0.4082 / 6.56 | 0.2449 / 53.19 | 0.8765 / 70.67 |
-| **aggregate avg** | **0.1793 / 46.39** | 0.5955 / 6.86 | 0.2929 / 46.59 | 0.9219 / 29.02 |
+| `ayuni` | 0.8708 / 0.0323 / 53.0 | 0.9042 / 0.0891 / 6.6 | 0.7038 / 0.1514 / 53.0 | 0.3263 / 0.6585 / 69.9 |
+| `Cinderella - Ella Lee` | 0.6450 / 0.0176 / 37.0 | 0.9369 / 0.0040 / 5.7 | 0.5022 / 0.1347 / 37.0 | 0.5143 / 0.4163 / 73.1 |
 
-Full output: [`out/score.txt`](out/score.txt) (measured this session, all 5
-scoring-corpus songs).
-
-**This lower proxy false_vocal_rate is not evidence of a real win.** Every
-number above is "fraction of frames called voiced" with no ground truth to
-check it against — a candidate that fires *less* often scores better on this
-proxy regardless of whether its calls are actually correct. The kill
-condition genuinely cannot be evaluated until item 1's `type: "vocal"` hints
-exist.
+`ayuni` reproduced its pre-rebuild row exactly; `Cinderella` moved 0.6760 →
+0.6450 against the repaired class map. Promoted whisperX scores 0.9881 / 0.8134
+on the same two songs.
 
 ## Usage
 
@@ -138,19 +120,9 @@ bridge is demonstrably real — `ayuni` shows two gaps merged that the stock
 produced a single `sustained_notes` row on any tested song, a separate,
 unfixed gap in the sustain scan's own pitch-tolerance criterion.
 
-On the plan's own kill-condition song, `ayuni`'s proxy `false_vocal_rate` is
-lower for `vocal_voiceness` (0.180) than `arrangement_state` (0.408) — on the
-literal proxy number this "beats the incumbent." **This is not a pass of the
-kill condition**: with zero `type: "vocal"` ground truth on every scoring-corpus
-song, `false_vocal_rate` here is mathematically "fraction of frames called
-voiced," and `vocal_voiceness` calling fewer frames voiced is not evidence
-those calls are more *correct* — a candidate that fires less can always win
-this proxy regardless of accuracy. Aggregate across all 5 songs:
-`vocal_voiceness` 0.179 vs `arrangement_state` 0.596, `vocal_phrases` 0.293,
-mix-RMS 0.922 — the ranking is consistent song to song, which is at least
-evidence the candidate isn't wildly unstable, but stability of a
-ground-truth-free proxy is not the same claim as the kill condition. **Not a
-promotion candidate on current evidence**, and the kill condition is
-explicitly unevaluable, not passed or failed. Next step is the same one item
-3 named: mark `type: "vocal"` spans on `ayuni` (and ideally a second leaky
-track), then re-run `score` with no code change.
+Against real ground truth it trails both incumbents on frame accuracy on both
+discriminating songs (`ayuni` 0.8708 vs RMS 0.9042 and whisperX 0.9881;
+`Cinderella` 0.6450 vs 0.9369 / 0.8134), at `vocal_phrases`' word-level firing
+budget. Its lasting value is the **sibilance cue**, already promoted as
+`vocals_phrase[].sibilance` — see `docs/experiments.md` for the per-cue AUCs.
+The noisy-OR of all three cues is not a promotion candidate.

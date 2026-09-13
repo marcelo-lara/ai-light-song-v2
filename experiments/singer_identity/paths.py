@@ -15,18 +15,17 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from experiments.voiceness_common.scorer import scoreable_songs
+
 REPO_ROOT = Path(os.environ.get("SINGER_IDENTITY_EXP_REPO", Path(__file__).resolve().parents[2]))
 ANALYSIS_ROOT = REPO_ROOT / "data" / "analysis"
 SONGS_ROOT = REPO_ROOT / "data" / "songs"
 CACHE_ROOT = Path(__file__).resolve().parent / "cache"
 OUT_ROOT = Path(__file__).resolve().parent / "out"
 
-#: The only three songs in this environment carrying three-class vocal
-#: ground truth (`experiments/voiceness_common/vocal_ground_truth.json`) —
-#: matches the spec's own scoring corpus for output 1, not the item 4-7
-#: family's four-gold-song `GOLD_SONGS` (none of which have entries in that
-#: map).
-SCORING_CORPUS = ["ayuni", "Cinderella - Ella Lee", "Armin - Revolution"]
+#: Songs whose vocal ground truth is fully declared in
+#: `voiceness_common/vocal_ground_truth.json` — shared by every voiceness sibling.
+SCORING_CORPUS = scoreable_songs()
 
 #: The one marked singer change in the corpus (`docs/experiments.md`,
 #: "Scoring" — Armin - Revolution's male -> female handoff), for output 2.

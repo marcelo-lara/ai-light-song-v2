@@ -1,6 +1,34 @@
 Vocal voiceness — vs arrangement_state / vocal_phrases / mix-RMS
 ==================================================================
 
+Armin - Revolution  (7 positive / 0 residual / 0 negative spans)
+  candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
+  vocal_voiceness          0.0326            0.0000          0.0000       42.50     0.462
+  arrangement_state        1.0000            0.0000          0.0000        0.00     0.000
+  vocal_phrases            0.1997            0.0000          0.0000       39.10     0.486
+  mix_rms_baseline         1.0000            0.0000          0.0000        0.00     0.000
+
+Cinderella - Ella Lee  (7 positive / 0 residual / 5 negative spans)
+  candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
+  vocal_voiceness          0.6450            0.0176          0.0000       37.00     0.163
+  arrangement_state        0.9369            0.0040          0.0000        5.73     0.519
+  vocal_phrases            0.5022            0.1347          0.0000       37.00     0.163
+  mix_rms_baseline         0.5143            0.4163          0.0000       73.11     0.078
+
+In da name of love - Anita and Ray  (10 positive / 1 residual / 0 negative spans)
+  candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
+  vocal_voiceness          0.1578            0.0000          0.0000       51.33     0.071
+  arrangement_state        0.9926            0.0000          0.1560        1.03     0.087
+  vocal_phrases            0.2736            0.0000          0.1986       52.02     0.070
+  mix_rms_baseline         0.9970            0.0000          1.0000        5.48     0.000
+
+What a Feeling - Courtney Storm  (1 positive / 1 residual / 0 negative spans)
+  candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
+  vocal_voiceness          0.0000            0.0000          0.1500       60.00     0.500
+  arrangement_state        0.0500            0.0000          0.7500       60.00     0.500
+  vocal_phrases            0.2000            0.0000          0.4500       60.00     0.500
+  mix_rms_baseline         1.0000            0.0000          1.0000        0.00     0.000
+
 ayuni  (7 positive / 2 residual / 9 negative spans)
   candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
   vocal_voiceness          0.8708            0.0323          0.2099       53.04     0.138
@@ -8,16 +36,9 @@ ayuni  (7 positive / 2 residual / 9 negative spans)
   vocal_phrases            0.7038            0.1514          0.2491       53.04     0.138
   mix_rms_baseline         0.3263            0.6585          0.8515       69.87     0.039
 
-Cinderella - Ella Lee  (4 positive / 0 residual / 4 negative spans)
-  candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
-  vocal_voiceness          0.6760            0.0191          0.0000       37.15     0.123
-  arrangement_state        0.9321            0.0038          0.0000        4.58     0.235
-  vocal_phrases            0.5034            0.1556          0.0000       37.15     0.123
-  mix_rms_baseline         0.4784            0.4623          0.0000       68.20     0.056
-
-Aggregate across 2 songs:
+Aggregate across 5 songs:
   candidate             avg frame_acc  avg false_vocal_rate  avg bounds/min
-  vocal_voiceness              0.7734                0.0257           45.09
-  arrangement_state            0.9182                0.0464            5.58
-  vocal_phrases                0.6036                0.1535           45.09
-  mix_rms_baseline             0.4023                0.5604           69.03
+  vocal_voiceness              0.3412                0.0100           48.77
+  arrangement_state            0.7767                0.0186           14.67
+  vocal_phrases                0.3759                0.0572           48.23
+  mix_rms_baseline             0.7675                0.2150           29.69

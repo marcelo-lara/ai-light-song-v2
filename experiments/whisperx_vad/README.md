@@ -11,18 +11,13 @@ comparison happens by ear rather than by assumption.
 
 ## Status
 
-**OPEN — built and running, kill condition unevaluable until item 1's ground
-truth exists.** v3.5 item 7. All Python (`model.py`, `export.py`, `run.py`,
-`score.py`), the `Dockerfile`, and `run_in_container.sh` are written, follow
-`svd_tagger`'s (item 6) shape, and plug into the shared
-`voiceness_common.schema`/`scorer`/`incumbents`. The VAD checkpoint was
-pre-fetched and sha256-verified from the host **before** any Docker build was
-attempted, applying item 6's own lesson (its in-build `curl` of a 327 MB file
-stalled at ~154 KB/s and never completed) — this time the image built
-successfully. `compute`/`export`/`score` ran green on the full 5-song scoring
-corpus. Debugger lane `7. WhisperX VAD` wired in under Human Hints. No song in
-this environment carries `type: "vocal"` ground truth (same finding as items
-3-6), so the kill condition is unevaluable.
+**PROMOTED 2026-09-13** (operator decision) as `arrangement_state.json`'s
+`vocals_phrase` — TLDR in
+[`docs/archive/experiments_promoted.md`](../../docs/archive/experiments_promoted.md).
+v3.5 item 7. Compute stays out-of-band in this sandbox image (whisperX pins a
+torch the `app` image cannot take); `src/` reads the exported proposal. The VAD
+checkpoint is pre-fetched, sha256-verified and `COPY`'d in — item 6's lesson.
+Debugger lane `7. WhisperX VAD`.
 
 ## Why? What for?
 
@@ -193,47 +188,36 @@ assuming.
 
 ## Results evidence
 
-Full table in [`out/score.txt`](out/score.txt). Aggregate across the 5
-scoring-corpus songs (0 marked ground-truth spans on every song):
+Full table in [`out/score.txt`](out/score.txt). **Rescored 2026-09-13** on the
+v3.5 corpus rebuild, three-class scorer, the 5 songs declared in
+`voiceness_common/vocal_ground_truth.json`. frame_acc / false_vocal_rate:
 
-| candidate | avg false_vocal_rate | avg bounds/min |
-| --- | --- | --- |
-| **whisperx_vad** | **0.3270** | 9.54 |
-| `arrangement_state` | 0.5955 | 6.86 |
-| `vocal_phrases` | 0.2929 | 46.59 |
-| mix-RMS baseline | 0.9219 | 29.02 |
+| song (evaluable: pos / res / neg s) | `whisperx_vad` | `arrangement_state` | `vocal_phrases` | mix-RMS |
+| --- | --- | --- | --- | --- |
+| `ayuni` (32.0 / 29.4 / 102.6) | **0.9881 / 0.0056** | 0.9042 / 0.0891 | 0.7038 / 0.1514 | 0.3263 / 0.6585 |
+| `Cinderella` (70.8 / 0 / 65.4) | 0.8134 / 0.0510 | **0.9369 / 0.0040** | 0.5022 / 0.1347 | 0.5143 / 0.4163 |
+| `In da name of love` (168.3 / 7.1 / 0) | 0.6013 / — | 0.9926 / — | 0.2736 / — | 0.9970 / — |
+| `Armin` (35.3 / 0 / 0) | 0.2730 / — | 1.0000 / — | 0.1997 / — | 1.0000 / — |
+| `What a Feeling` (1.0 / 1.0 / 0) | 0.5500 / — | 0.0500 / — | 0.2000 / — | 1.0000 / — |
 
-`whisperx_vad` beats `arrangement_state` on this proxy on every song
-individually (e.g. `Hideaway - Kiesza` 0.2822 vs 0.8343; `Armin - Revolution`
-0.1695 vs 0.6418), but trails `vocal_phrases` in aggregate — `vocal_phrases`
-fires far more often (46.6 bounds/min vs 9.5), which on an unmarked proxy
-metric inflates its apparent rate advantage rather than proving it's more
-correct. Boundary F1 is reported at 0.000 across the board because the
-ground-truth span set is empty (0 marked spans, not a detector failure) — the
-scorer cannot match a boundary to nothing.
+Residual firing on `ayuni` (flute / plucked-guitar bleed): whisperX 0.24,
+`arrangement_state` 0.82.
 
-**No ground truth exists yet** — same finding as items 3-6: every
-scoring-corpus song has zero `type == "vocal"` hints in this environment.
-Every rate above is a firing-rate proxy against an empty marked-span set, not
-a validated correctness measure. `is_proxy_no_ground_truth` flags every row.
+**Only `ayuni` and `Cinderella` can separate detectors.** Three songs declare no
+negative span, so frame_acc there is recall alone and an always-on detector
+scores 1.0; `What a Feeling` has 2 s evaluable. The 5-song mean therefore ranks
+mix-RMS (0.7675) above whisperX (0.6452) — read the per-song rows, not the
+aggregate. On the two discriminating songs whisperX wins `ayuni` outright and
+loses `Cinderella` to the RMS incumbent. `ayuni` reproduced the pre-rebuild
+0.9881 / 0.0056 exactly.
 
 ## Conclusion
 
-**Built, green end-to-end on the full 5-song scoring corpus** — the only one
-of the two new-sandbox-image candidates (items 6-7) whose image actually
-finished building, by applying item 6's own lesson (pre-fetch + `COPY` instead
-of an in-build `curl`). No live token is needed at analysis time (VAD
-checkpoint is bundled in `whisperx` itself, plus this item's own
-independently-verified copy baked into the image); diarization was
-deliberately not attempted given the absent `HF_TOKEN`, documented rather than
-discovered at the promotion gate. The proxy table places `whisperx_vad` ahead
-of `arrangement_state` on every song and second to `vocal_phrases` in
-aggregate — **not a promotion candidate on current evidence**, and the kill
-condition is explicitly unevaluable, not passed or failed. Same next step as
-every other item-4-7 candidate: mark `type: "vocal"` spans on `ayuni`, then
-re-run `score` with no code change — at that point boundary F1 becomes a real
-number for this candidate specifically, since its phrase spans carry genuine
-sub-second onsets unlike items 5/6's window-based edges.
+**Promoted.** Best items 4-7 candidate on the leak-heavy song (`ayuni` 0.9881 /
+0.0056, residual firing 0.24 vs the RMS incumbent's 0.82). Known weaknesses stay
+real: rhythmic plucked-string leaks (`Cinderella` 0.8134 vs RMS 0.9369),
+sustained/filtered vocals, and background chatter. No token needed at analysis
+time; diarization deliberately not attempted (see above).
 
 ## Usage
 

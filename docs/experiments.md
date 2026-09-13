@@ -828,33 +828,34 @@ songs.
 ### Results evidence
 
 Full tables: [`../experiments/texture_novelty/out/score.txt`](../experiments/texture_novelty/out/score.txt),
-reproduced by `run score`. 48 pooled human-hint block edges.
+reproduced by `run score`. **Rescored 2026-09-13 on the v3.5 corpus rebuild**
+— 54 pooled human-hint block edges (was 48; `Armin` gained 6 marked edges).
 
 **Pooled (4 gold songs), boundary F1 @ ±1.0 s:**
 
 | method | P | R | F1 |
 | --- | --- | --- | --- |
-| feat 1 — raw 7-band MIX vector | 0.12 | 0.19 | 0.14 |
-| feat 2 — chroma(MIX) + percussive weight | 0.12 | 0.23 | 0.16 |
-| feat 3 — per-stem band weight (28-dim) | 0.20 | 0.35 | 0.26 |
-| baseline — mix-RMS delta | 0.15 | 0.42 | 0.22 |
-| baseline — MFCC novelty | 0.21 | 0.38 | 0.27 |
-| incumbent — `sections.json` | 0.31 | 0.17 | 0.22 |
-| incumbent — `arrangement_state.json` | 0.14 | 0.44 | 0.22 |
+| feat 1 — raw 7-band MIX vector | 0.17 | 0.24 | 0.20 |
+| feat 2 — chroma(MIX) + percussive weight | 0.14 | 0.24 | 0.18 |
+| feat 3 — per-stem band weight (28-dim) | 0.24 | 0.37 | 0.29 |
+| baseline — mix-RMS delta | 0.16 | 0.41 | 0.23 |
+| baseline — MFCC novelty | 0.25 | 0.39 | 0.30 |
+| incumbent — `sections.json` | 0.39 | 0.20 | 0.27 |
+| incumbent — `arrangement_state.json` | 0.14 | 0.41 | 0.21 |
 
 **Per-song F1 (the three feature sets vs incumbents):**
 
 | song | feat 1 | feat 2 | feat 3 | `sections.json` | `arrangement_state` |
 | --- | --- | --- | --- | --- | --- |
-| `_test_song` | 0.44 | 0.29 | 0.64 | 0.00 | 0.62 |
-| `Titanium` | 0.06 | 0.00 | 0.10 | 0.24 | 0.08 |
-| `Hideaway` | 0.09 | 0.11 | 0.11 | 0.31 | 0.12 |
-| `Armin` | 0.13 | 0.34 | 0.33 | 0.30 | 0.23 |
+| `_test_song` | 0.44 | 0.29 | 0.64 | 0.22 | 0.52 |
+| `Titanium` | 0.06 | 0.00 | 0.15 | 0.24 | 0.07 |
+| `Hideaway` | 0.09 | 0.11 | 0.11 | 0.31 | 0.11 |
+| `Armin` | 0.32 | 0.39 | 0.39 | 0.31 | 0.27 |
 
 **Kill condition (precision > 0.5 at recall ≥ 0.8): FAIL for every feature set**,
-pooled and per song. Best pooled precision is feat 3 at 0.20. The one strong
+pooled and per song. Best pooled precision is feat 3 at 0.24. The one strong
 cell — feat 3 on the synthetic `_test_song` (P 0.88 / R 0.50) — does not
-generalise (F1 0.10–0.33 on the three real songs). Loosening the peak-picker
+generalise (F1 0.11–0.39 on the three real songs). Loosening the peak-picker
 back toward the refinement doc's dense regime trades precision down toward 0.05
 as recall rises — the refinement doc's own finding, reconfirmed. On the two real
 vocal-pop songs `sections.json` is the best method in the table.
@@ -917,29 +918,29 @@ envelope). **Songs:** the four gold songs + `Chimera - Hana` + `Queen of Kings`.
 ### Results evidence
 
 Full tables: [`../experiments/phrase_periodicity/out/score.txt`](../experiments/phrase_periodicity/out/score.txt),
-reproduced by `run score`.
+reproduced by `run score`. **Rescored 2026-09-13 on the v3.5 corpus rebuild.**
 
 **Phrase length — z-norm vs the raw ablation (bass, prominence):**
 
 | song | z-norm period | z-norm prom | raw prom |
 | --- | --- | --- | --- |
-| `Chimera - Hana` | **8** | **+0.168** | +0.004 |
-| `Hideaway - Kiesza` | 2 | **+0.118** | +0.007 |
-| `Armin - Revolution` | 2 | +0.081 | +0.008 |
-| `Queen of Kings` | — | +0.041 | +0.007 |
-| `Titanium` | — | +0.028 | +0.002 |
-| `_test_song` | — | +0.005 | +0.004 |
+| `Chimera - Hana` | **8** | **+0.158** | +0.004 |
+| `Hideaway - Kiesza` | 2 | **+0.125** | +0.006 |
+| `Armin - Revolution` | 2 | +0.075 | +0.006 |
+| `Queen of Kings` | — | +0.035 | +0.006 |
+| `Titanium` | — | +0.016 | +0.001 |
+| `_test_song` | — | +0.005 | +0.000 |
 
 The raw-envelope ablation finds **no phrase on any stem of any song** (every
 prominence ≤ 0.03) — the per-bar z-normalisation is the whole method.
 `Chimera - Hana`'s operator-stated 8-bar bass phrase is recovered on **three
-stems independently** (bass +0.168, harmonic +0.101, vocals +0.248).
+stems independently** (bass +0.158, harmonic +0.106, vocals +0.226).
 `Hideaway` bass reports 2 bars: the 8-bar phrase is a weaker secondary local
 max, a 2-bar sub-loop dominates the curve — the experiment does not force the
 operator's number.
 
-**Kill condition — PASS.** `min(known 8-bar prominence) = +0.118 (Hideaway) >
-max(rest) = +0.081 (Armin)` — prominence separates `Chimera - Hana` and
+**Kill condition — PASS.** `min(known 8-bar prominence) = +0.125 (Hideaway) >
+max(rest) = +0.075 (Armin)` — prominence separates `Chimera - Hana` and
 `Hideaway` bass from the four songs with no such phrase.
 
 **Block regime — `Queen of Kings`, 3/7 marked blocks:** the two intro/bridge
@@ -981,8 +982,8 @@ Recipe B if the operator agrees. **Do not tune to manufacture a pass.**
 
 **This is NOT a precision filter for item 6 (Texture Novelty).** Averaged over
 all operator edges the phrase-grid prior beats chance by only ~1.7–2.25×
-(refinement doc item 4; this run measured 1.7–6.8× per song, mean 3.8×, the two
-Eurovision-shaped songs pulling the top). It is a **two-class split the pipeline
+(refinement doc item 4; the 2026-09-13 rebuild measured 0.00–6.67× per song,
+mean 2.31×, down from 1.67–6.77× / 3.80×). It is a **two-class split the pipeline
 currently cannot express**: a structural boundary that lands on the phrase grid
 vs a micro cue that lives inside a phrase. **Do not re-open** `vocal_phrases`,
 `grid_consensus` or `reactive_bands` — measured, none promoted, out of scope.
@@ -1012,36 +1013,42 @@ reported separately (the edge-lock table).
 ### Results evidence
 
 Full tables: [`../experiments/structural_vs_micro/out/score.txt`](../experiments/structural_vs_micro/out/score.txt),
-reproduced by `run score`. 45 pooled operator blocks (23 structural / 22 micro).
+reproduced by `run score`. **Rescored 2026-09-13 on the v3.5 corpus rebuild** —
+52 pooled operator blocks (29 structural / 23 micro; was 45, `Armin` re-marked).
 
 **Block-kind agreement — pooled, 4 gold songs:**
 
 | method | acc | macro-F1 | structural P/R/F1 | micro P/R/F1 |
 | --- | --- | --- | --- | --- |
-| phrase-grid (4-bar fit) | 0.42 | **0.41** | 0.41 / 0.30 / 0.35 | 0.43 / 0.55 / 0.48 |
-| duration-only (`< 1 bar ⇒ micro`) | 0.80 | **0.80** | 0.77 / 0.87 / 0.82 | 0.84 / 0.73 / 0.78 |
+| phrase-grid (4-bar fit) | 0.38 | **0.38** | 0.41 / 0.24 / 0.30 | 0.37 / 0.57 / 0.45 |
+| duration-only (`< 1 bar ⇒ micro`) | 0.83 | **0.82** | 0.81 / 0.90 / 0.85 | 0.85 / 0.74 / 0.79 |
 
 Per-song phrase-grid accuracy: `_test_song` 0.27, `Titanium` 0.47, `Hideaway`
-0.40, `Armin` 0.60 — the baseline is 0.80 on all four.
+0.40, `Armin` 0.41 (was 0.60) — the baseline is 0.80, 0.80, 0.80, 0.88.
 
-**`Queen of Kings` — 7 of 16 operator edges lock to the fitted 4-bar grid**
-(`bar_len` 1.910 s, `phrase_len` 7.640 s): the six edges the refinement doc
-names (1.11, 16.32, 23.94, 31.57, 39.21, 62.16 s) lock at 0.06–0.11 bars; a
-seventh (46.52 s) is marginal at exactly the 0.12 threshold; the nine misses are
-the sub-bar micro-events, as predicted.
+**`Queen of Kings` — 0 of 16 operator edges lock to the fitted 4-bar grid on the
+rebuild (was 7 of 16).** `bar_len` 1.910 s and `phrase_len` 7.640 s are
+unchanged; the fitted grid **phase moved 0.898 s → 1.948 s** (≈ 0.55 bar), so
+the six edges the refinement doc names (1.11, 16.32, 23.94, 31.57, 39.21,
+62.16 s), which previously locked at 0.06–0.11 bars, now sit 0.44–0.49 bars off.
+The phase is fit to the union of the rebuilt `texture_novelty` +
+`phrase_periodicity` proposal edges, so the regression came from those inputs,
+not from this method's code. **Unexplained — not investigated further, and the
+refinement doc's edge-lock finding no longer reproduces from this pipeline.**
 
-**Kill condition — FAIL.** phrase-grid pooled macro-F1 0.415 < duration-only
-0.798. The distinction is real on `Queen of Kings`, but on the gold corpus the
+**Kill condition — FAIL.** phrase-grid pooled macro-F1 0.376 < duration-only
+0.822. The distinction is real on `Queen of Kings`, but on the gold corpus the
 operator's block *lengths* already carry it — a micro-event is short, and that is
 enough. The phrase grid adds a weak prior that, pooled, hurts more than it helps.
 
 ### Conclusion
 
 Killed on the metric. The 4-bar phrase-grid fit does not beat block duration at
-labelling operator blocks `structural`/`micro` (macro-F1 0.42 vs 0.80). What
-survives review: `grid_fit_bars` is an honest per-edge signal, and the
-`Queen of Kings` edge-lock table reproduces the refinement doc's finding.
-Neither is promotable on this result. Lane kept for one review pass; **not
+labelling operator blocks `structural`/`micro` (macro-F1 0.38 vs 0.82). What
+survives review: `grid_fit_bars` is an honest per-edge signal. The
+`Queen of Kings` edge-lock table reproduced the refinement doc's finding before
+the rebuild and does not after it (7/16 → 0/16) — a grid phase fit off detector
+edges is not stable across recomputes. Neither is promotable on this result. Lane kept for one review pass; **not
 tuned**.
 
 ---
@@ -1211,20 +1218,26 @@ is still **0** on every tested song even after bridging — a separate,
 unfixed limit in the sustain scan's own pitch-tolerance/duration gate, not the
 amplitude-gate fragmentation this item targeted.
 
-Aggregate proxy `false_vocal_rate` / `bounds_per_min` across all 5
-scoring-corpus songs (0 marked ground-truth spans on every song — see caveat
-below): **vocal_voiceness 0.179 / 46.4** vs `arrangement_state` 0.596 / 6.9,
-`vocal_phrases` 0.293 / 46.6, mix-RMS baseline 0.922 / 29.0. On `ayuni`
-specifically (the plan's kill-condition song): vocal_voiceness 0.180 vs
-arrangement_state 0.408 — lower on the literal proxy number.
+**Rescored 2026-09-13** — v3.5 corpus rebuild, three-class scorer, the 5 songs
+declared in `voiceness_common/vocal_ground_truth.json`
+([`out/score.txt`](../experiments/vocal_voiceness/out/score.txt)). Only `ayuni`
+and `Cinderella` declare negatives, so only they separate detectors.
+frame_acc / false_vocal_rate / residual firing:
 
-**No ground truth exists yet** — every scoring-corpus song has zero
-`type == "vocal"` hints in this environment (item 3's finding, confirmed
-again here). So every `false_vocal_rate` above is "fraction of frames called
-voiced," not a validated correctness measure — a candidate that fires less
-often always scores better on this proxy, so `vocal_voiceness` reading lower
-than `arrangement_state` on `ayuni` is **not** a pass of the kill condition.
-`is_proxy_no_ground_truth` flags every row.
+| candidate | `ayuni` | `Cinderella` |
+| --- | --- | --- |
+| `vocal_voiceness` | 0.8708 / 0.0323 / 0.21 | 0.6450 / 0.0176 / — |
+| `whisperx_vad` (promoted) | **0.9881 / 0.0056** / 0.24 | 0.8134 / 0.0510 / — |
+| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | **0.9369 / 0.0040** / — |
+| `vocal_phrases` | 0.7038 / 0.1514 / 0.25 | 0.5022 / 0.1347 / — |
+| mix-RMS baseline | 0.3263 / 0.6585 / 0.85 | 0.5143 / 0.4163 / — |
+
+`ayuni` reproduced its pre-rebuild row exactly; `Cinderella` moved 0.6760 →
+0.6450 against the repaired class map (4/4 → 7/5 spans). It fires at
+`vocal_phrases`' budget (37-53 bounds/min) — word/syllable granularity, below —
+and trails both incumbents on frame accuracy on both songs. The 5-song mean
+(0.3412) is not comparable: three songs declare no negatives, so an always-on
+detector scores 1.0 there.
 
 ### Conclusion
 
@@ -1603,8 +1616,12 @@ against the earlier 28.0 s marking (5 spans); the operator has since added two
 ~2 s vocal spans, and `scorer.py` has since been rewritten to the three-class
 contract (residual excluded, unreviewed time excluded, `frame_accuracy` /
 `false_vocal_rate` / `bounds_per_min` denominators all narrowed to the evaluable
-region). **Every items 4-7 number below therefore needs a rescore before it is
-quoted again** — see `docs/issues.md`.
+region). **Rescored 2026-09-13** on the three-class scorer and the 5 declared
+songs: whisperX `ayuni` frame_acc 0.9881 / false_vocal 0.0056, residual firing
+0.24 — the per-item tables above carry the current numbers. Only `ayuni` and
+`Cinderella` declare negatives; `Armin` and `In da name of love` declare none
+and `What a Feeling` has 2 s evaluable, so a 5-song mean rewards an always-on
+detector and must not be quoted.
 
 ### A level gate cannot separate the leak — and the shipped threshold is already optimal
 

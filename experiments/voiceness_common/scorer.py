@@ -180,6 +180,13 @@ def load_class_map(path: Path | None = None) -> dict:
     return json.loads(p.read_text())
 
 
+def scoreable_songs(path: Path | None = None) -> list[str]:
+    """The voiceness scoring corpus: exactly the songs whose non-vocal hints
+    are declared in the class map. Any other song raises in `ground_truth()`,
+    so the corpus is the declared data rather than a hand-kept list."""
+    return sorted(song for song in load_class_map(path) if not song.startswith("_note"))
+
+
 def ground_truth(human_hints_doc: dict, song: str, class_map: dict) -> GroundTruth:
     """Builds `GroundTruth` for `song` from `human_hints_doc` (the parsed
     `human_hints.json`) and `class_map` (the parsed `vocal_ground_truth.json`,

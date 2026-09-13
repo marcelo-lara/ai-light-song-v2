@@ -10,28 +10,17 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from experiments.voiceness_common.scorer import scoreable_songs
+
 REPO_ROOT = Path(os.environ.get("VOCAL_VOICENESS_EXP_REPO", Path(__file__).resolve().parents[2]))
 ANALYSIS_ROOT = REPO_ROOT / "data" / "analysis"
 SONGS_ROOT = REPO_ROOT / "data" / "songs"
 CACHE_ROOT = Path(__file__).resolve().parent / "cache"
 OUT_ROOT = Path(__file__).resolve().parent / "out"
 
-#: The four songs carrying hand-placed ground truth, matching every sibling
-#: voiceness experiment (item 2's corpus) — the only songs a measured
-#: comparison against the incumbents means anything for once ground truth
-#: exists.
-GOLD_SONGS = [
-    "_test_song",
-    "Hideaway - Kiesza",
-    "Armin - Revolution",
-    "Titanium - David Guetta ft Sia",
-]
-
-#: `ayuni` is the song that surfaced the false-vocal question this item chases
-#: (refinement doc: `arrangement_state.json` reports `vocals` 40.8% of the
-#: song). Scoring corpus = gold songs + ayuni, matching demucs_ablation's
-#: convention.
-SCORING_CORPUS = GOLD_SONGS + ["ayuni"]
+#: Songs whose vocal ground truth is fully declared in
+#: `voiceness_common/vocal_ground_truth.json` — shared by every voiceness sibling.
+SCORING_CORPUS = scoreable_songs()
 
 
 def vocals_stem_path(song: str) -> Path:

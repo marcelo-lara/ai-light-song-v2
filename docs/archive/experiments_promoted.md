@@ -252,9 +252,13 @@ bleed as clearly not-speech where an RMS threshold cannot. Two known,
 un-fixed weaknesses stay real: sustained/filtered vocals (band-limiting strips
 consonant energy) and background chatter (which genuinely is speech).
 `Cinderella - Ella Lee`'s rhythmic plucked-string leaks were its one loss
-(frame_acc 0.8427) — an absolute stem-floor fusion (`whisperX >= 0.2 AND stem
+(frame_acc 0.8427; **0.8134 / false_vocal 0.0510** rescored 2026-09-13 against
+the repaired 7-positive / 5-negative class map, where `arrangement_state` scores
+0.9369 / 0.0040) — an absolute stem-floor fusion (`whisperX >= 0.2 AND stem
 >= -38 dBFS`) fixes it (+0.039 frame_acc) but was fit to 3 songs and not
-carried into the promotion.
+carried into the promotion. The other three scoreable songs cannot separate
+detectors: `Armin` and `In da name of love` declare no negatives and
+`What a Feeling` has 2 s evaluable — see `experiments/whisperx_vad/out/score.txt`.
 
 **Promoted shape**: `arrangement_state.json`'s new `vocals_phrase` field —
 whisperX's phrase spans (library-default hysteresis, never swept — sweeping
