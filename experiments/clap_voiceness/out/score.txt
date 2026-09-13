@@ -1,46 +1,25 @@
 CLAP voiceness — vs arrangement_state / vocal_phrases / mix-RMS
 ==================================================================
 
-_test_song  (0 marked vocal spans)
-  candidate             frame_acc  false_vocal_rate  bounds/min   F1@0.5s
-  clap_voiceness           0.5091            0.4909       12.74    0.000*  (proxy — no ground truth)
-  arrangement_state        0.6213            0.3787       10.34     0.000  (proxy — no ground truth)
-  vocal_phrases            0.6170            0.3830       22.74     0.000  (proxy — no ground truth)
-  mix_rms_baseline         0.0465            0.9535        6.20     0.000  (proxy — no ground truth)
+ayuni  (7 positive / 2 residual / 9 negative spans)
+  candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
+  clap_voiceness           0.3077            0.4846          0.3667        6.22    0.129*
+  arrangement_state        0.9042            0.0891          0.8208        6.58     0.563
+  vocal_phrases            0.7038            0.1514          0.2491       53.04     0.138
+  mix_rms_baseline         0.3263            0.6585          0.8515       69.87     0.039
 
-Hideaway - Kiesza  (0 marked vocal spans)
-  candidate             frame_acc  false_vocal_rate  bounds/min   F1@0.5s
-  clap_voiceness           0.4274            0.5726        7.70    0.000*  (proxy — no ground truth)
-  arrangement_state        0.1657            0.8343        6.68     0.000  (proxy — no ground truth)
-  vocal_phrases            0.6818            0.3182       54.84     0.000  (proxy — no ground truth)
-  mix_rms_baseline         0.1599            0.8401       39.10     0.000  (proxy — no ground truth)
-
-Armin - Revolution  (0 marked vocal spans)
-  candidate             frame_acc  false_vocal_rate  bounds/min   F1@0.5s
-  clap_voiceness           0.5236            0.4764        4.99    0.000*  (proxy — no ground truth)
-  arrangement_state        0.3582            0.6418        5.57     0.000  (proxy — no ground truth)
-  vocal_phrases            0.7686            0.2314       55.68     0.000  (proxy — no ground truth)
-  mix_rms_baseline         0.0206            0.9794       10.52     0.000  (proxy — no ground truth)
-
-Titanium - David Guetta ft Sia  (0 marked vocal spans)
-  candidate             frame_acc  false_vocal_rate  bounds/min   F1@0.5s
-  clap_voiceness           0.4498            0.5502        6.77    0.000*  (proxy — no ground truth)
-  arrangement_state        0.2857            0.7143        5.16     0.000  (proxy — no ground truth)
-  vocal_phrases            0.7132            0.2868       46.48     0.000  (proxy — no ground truth)
-  mix_rms_baseline         0.0398            0.9602       18.59     0.000  (proxy — no ground truth)
-
-ayuni  (0 marked vocal spans)
-  candidate             frame_acc  false_vocal_rate  bounds/min   F1@0.5s
-  clap_voiceness           0.5031            0.4969        6.65    0.000*  (proxy — no ground truth)
-  arrangement_state        0.5918            0.4082        6.56     0.000  (proxy — no ground truth)
-  vocal_phrases            0.7551            0.2449       53.19     0.000  (proxy — no ground truth)
-  mix_rms_baseline         0.1235            0.8765       70.67     0.000  (proxy — no ground truth)
+Cinderella - Ella Lee  (4 positive / 0 residual / 4 negative spans)
+  candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
+  clap_voiceness           0.5000            0.2458          0.0000        6.62    0.000*
+  arrangement_state        0.9321            0.0038          0.0000        4.58     0.235
+  vocal_phrases            0.5034            0.1556          0.0000       37.15     0.123
+  mix_rms_baseline         0.4784            0.4623          0.0000       68.20     0.056
 
 * clap_voiceness's F1@0.5s is REPORTED, NOT SCORED — a 5s CLAP window cannot time a phrase edge to sub-second tolerance. Frame voiceness accuracy and false_vocal_rate are the metrics this candidate is actually measured on.
 
-Aggregate across 5 songs:
+Aggregate across 2 songs:
   candidate             avg frame_acc  avg false_vocal_rate  avg bounds/min
-  clap_voiceness               0.4826                0.5174            7.77
-  arrangement_state            0.4045                0.5955            6.86
-  vocal_phrases                0.7071                0.2929           46.59
-  mix_rms_baseline             0.0781                0.9219           29.02
+  clap_voiceness               0.4038                0.3652            6.42
+  arrangement_state            0.9182                0.0464            5.58
+  vocal_phrases                0.6036                0.1535           45.09
+  mix_rms_baseline             0.4023                0.5604           69.03

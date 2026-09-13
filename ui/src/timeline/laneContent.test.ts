@@ -29,7 +29,7 @@ import {
   phrasePeriodicityContent,
   structuralVsMicroContent,
   vocalVoicenessContent,
-  clapVoicenessContent,
+  singerIdentityContent,
   voiceMultiplicityContent,
 } from "./laneContent";
 import type {
@@ -38,7 +38,7 @@ import type {
   PhrasePeriodicityFile,
   StructuralVsMicroFile,
   VocalVoicenessFile,
-  ClapVoicenessFile,
+  SingerIdentityFile,
   VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
 import { romanNumeral } from "./romanNumeral";
@@ -550,50 +550,43 @@ describe("vocalVoicenessContent", () => {
   });
 });
 
-describe("clapVoicenessContent", () => {
-  const file: ClapVoicenessFile = {
+describe("singerIdentityContent", () => {
+  const file: SingerIdentityFile = {
     schema_version: "1.0",
     song_name: "_test_song",
-    interval_ms: 1000,
+    interval_ms: 50,
     frames: [
-      { time_s: 2.5, voiceness: 0.05, confidence: 0.9 },
-      { time_s: 3.5, voiceness: 0.08, confidence: 0.84 },
-      { time_s: 4.5, voiceness: 0.72, confidence: 0.44 },
-      { time_s: 5.5, voiceness: 0.81, confidence: 0.62 },
-      { time_s: 6.5, voiceness: 0.79, confidence: 0.58 },
+      { time_s: 0.0, voiceness: 0.05, confidence: null },
+      { time_s: 0.05, voiceness: 0.08, confidence: null },
+      { time_s: 0.1, voiceness: 0.72, confidence: null },
+      { time_s: 0.15, voiceness: 0.81, confidence: null },
     ],
-    vocal_phrase: [{ start_s: 4.5, end_s: 7.5, confidence: 0.6 }],
+    vocal_phrase: [],
+    singer_change: [
+      { time: 0.12, from_cluster: 0, to_cluster: 1, confidence: 0.66 },
+    ],
   };
-  const blocks = clapVoicenessContent(file);
+  const blocks = singerIdentityContent(file);
 
-  it("merges consecutive same-bucket frames into one run block, on the file's own interval", () => {
-    // frames 0-1 are both "veryLow" (< 0.2) -> one merged run, ending one
-    // hop (1s, from interval_ms) after the last frame in the run
-    const veryLowRun = blocks.find((b) => b.tintId === "clapVoicenessVeryLow");
+  it("merges consecutive same-bucket frames into one run block", () => {
+    const veryLowRun = blocks.find((b) => b.tintId === "singerIdentityVeryLow");
     expect(veryLowRun).toBeDefined();
-    expect(veryLowRun!.start_s).toBe(2.5);
-    expect(veryLowRun!.end_s).toBe(4.5);
-    expect(veryLowRun!.detail).toBe("2 windows");
+    expect(veryLowRun!.start_s).toBe(0.0);
+    expect(veryLowRun!.end_s).toBe(0.1);
   });
 
-  it("starts a new run when the bucket changes", () => {
-    const highRun = blocks.find((b) => b.tintId === "clapVoicenessHigh");
-    expect(highRun).toBeDefined();
-    expect(highRun!.start_s).toBe(4.5);
-    expect(highRun!.end_s).toBe(5.5);
-  });
-
-  it("appends vocal_phrase spans as their own tinted blocks, captioned as not boundary-scored", () => {
-    const phraseBlock = blocks.find((b) => b.tintId === "clapVoicenessPhrase");
-    expect(phraseBlock).toBeDefined();
-    expect(phraseBlock!.start_s).toBe(4.5);
-    expect(phraseBlock!.end_s).toBe(7.5);
-    expect(phraseBlock!.wideLabel).toContain("CLAP phrase");
-    expect(phraseBlock!.caption).toContain("not boundary-scored");
+  it("renders singer_change as its own marker block, distinct from the voiceness curve", () => {
+    const changeBlock = blocks.find((b) => b.tintId === "singerChange");
+    expect(changeBlock).toBeDefined();
+    expect(changeBlock!.raw).toEqual(file.singer_change[0]);
+    expect(changeBlock!.wideLabel).toContain("cluster 0→1");
+    expect(changeBlock!.caption).toContain("singer change");
+    // never merged into a voiceness-bucket block
+    expect(changeBlock!.tintId).not.toMatch(/^singerIdentity(Very)?(Low|Mid|High)$/);
   });
 
   it("never throws on a missing file", () => {
-    expect(clapVoicenessContent(null)).toEqual([]);
+    expect(singerIdentityContent(null)).toEqual([]);
   });
 });
 

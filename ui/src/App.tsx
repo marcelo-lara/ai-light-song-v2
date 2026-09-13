@@ -142,12 +142,6 @@ const TIMELINE_KEYS = [
   // blocks (experiments/vocal_voiceness, v3.5 item 4 — kill condition
   // unevaluable until item 1's `type: "vocal"` ground truth exists)
   "vocalVoiceness",
-  // CLAP contrastive-differential voiceness curve + phrase blocks
-  // (experiments/clap_voiceness, v3.5 item 5 — an independent second
-  // opinion on the frame-level call, not a boundary competitor; kill
-  // condition unevaluable until item 1's `type: "vocal"` ground truth
-  // exists)
-  "clapVoiceness",
   // PANNs `Singing`-class voiceness curve, stem + mix channels, rendered as
   // two curves in one lane, never a toggle (experiments/svd_tagger, v3.5
   // item 6 — new sandbox image + new model pin; kill condition unevaluable
@@ -161,6 +155,12 @@ const TIMELINE_KEYS = [
   // environment; kill condition unevaluable until item 1's `type: "vocal"`
   // ground truth exists)
   "whisperxVad",
+  // ECAPA-TDNN speaker-embedding similarity to the nearest voice-cluster
+  // centroid, plus singer_change cluster-switch markers
+  // (experiments/singer_identity, v3.5 item 8 — built and smoke-tested,
+  // not yet scored; singer_change stays a manual ear check permanently,
+  // not a scorer — see the experiment README)
+  "singerIdentity",
   // solo/stacked voice blocks from stereo width and L-R correlation
   // (experiments/voice_multiplicity)
   "voiceMultiplicity",
@@ -184,9 +184,9 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   phrasePeriodicity: "phrasePeriodicity",
   structuralVsMicro: "structuralVsMicro",
   vocalVoiceness: "vocalVoiceness",
-  clapVoiceness: "clapVoiceness",
   svdTagger: "svdTagger",
   whisperxVad: "whisperxVad",
+  singerIdentity: "singerIdentity",
   voiceMultiplicity: "voiceMultiplicity",
   gestures: "eventTimeline",
   character: "character",
@@ -373,9 +373,9 @@ export function App(): React.JSX.Element {
       phrasePeriodicity: artifacts.phrasePeriodicity.data,
       structuralVsMicro: artifacts.structuralVsMicro.data,
       vocalVoiceness: artifacts.vocalVoiceness.data,
-      clapVoiceness: artifacts.clapVoiceness.data,
       svdTagger: artifacts.svdTagger.data,
       whisperxVad: artifacts.whisperxVad.data,
+      singerIdentity: artifacts.singerIdentity.data,
       voiceMultiplicity: artifacts.voiceMultiplicity.data,
       gestures: artifacts.eventTimeline.data,
       character: artifacts.character.data,
@@ -395,9 +395,9 @@ export function App(): React.JSX.Element {
       artifacts.phrasePeriodicity.data,
       artifacts.structuralVsMicro.data,
       artifacts.vocalVoiceness.data,
-      artifacts.clapVoiceness.data,
       artifacts.svdTagger.data,
       artifacts.whisperxVad.data,
+      artifacts.singerIdentity.data,
       artifacts.voiceMultiplicity.data,
       artifacts.eventTimeline.data,
       artifacts.character.data,

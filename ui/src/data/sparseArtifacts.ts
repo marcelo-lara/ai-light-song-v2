@@ -756,66 +756,6 @@ export async function loadVocalVoiceness(
 }
 
 // ---------------------------------------------------------------------------
-// clapVoiceness — reference/proposals/clap_voiceness.json
-// ---------------------------------------------------------------------------
-//
-// The same `voiceness_common.schema` proposal shape as vocalVoiceness (item
-// 4), but from `experiments/clap_voiceness` (item 5): a CLAP audio-text
-// contrastive differential ("a person singing" vs "a flute, a synth lead",
-// read after the two centrings `experiments/clap/` established as
-// mandatory) instead of DSP cues. `interval_ms` is 1000, not 50 — CLAP's
-// native ~1Hz grid, reported honestly rather than upsampled to a fake finer
-// resolution. An independent second opinion on the frame-level call, not a
-// boundary competitor: `vocal_phrase` spans are present for the timeline,
-// but the experiment never scores boundary F1 against them (a 5s CLAP
-// window is too coarse to time an edge — see the experiment README).
-
-export type ClapVoicenessFile = VocalVoicenessFile;
-
-export function parseClapVoiceness(raw: unknown): ClapVoicenessFile {
-  const o = asObject(raw, "reference/proposals/clap_voiceness.json");
-  const meta = rec(o.metadata);
-  const frames = arr(o.frames).map((row): VoicenessFrameRow => {
-    const r = rec(row);
-    return {
-      time_s: num(r.time),
-      voiceness: num(r.voiceness),
-      confidence: r.confidence == null ? null : num(r.confidence),
-    };
-  });
-  const vocal_phrase = arr(o.vocal_phrase).map((row) => {
-    const r = rec(row);
-    const start_s = num(r.start);
-    return {
-      start_s,
-      end_s: Math.max(num(r.end, start_s), start_s),
-      confidence: r.confidence == null ? null : num(r.confidence),
-    };
-  });
-  return {
-    schema_version: st(o.schema_version),
-    song_name: st(o.song_name),
-    interval_ms: num(meta.interval_ms, 1000),
-    frames,
-    vocal_phrase,
-  };
-}
-
-export async function loadClapVoiceness(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<ClapVoicenessFile>> {
-  const result = await loadJson(artifactPaths.clapVoiceness(song), parseClapVoiceness, f);
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return {
-      ok: true,
-      data: { schema_version: "", song_name: song, interval_ms: 1000, frames: [], vocal_phrase: [] },
-    };
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
 // svdTagger — reference/proposals/svd_tagger.json
 // ---------------------------------------------------------------------------
 //
@@ -826,7 +766,7 @@ export async function loadClapVoiceness(
 // `voiceness_common.schema`'s `channel` field and `export.py`'s docstring —
 // the "published files are fused from many producers, and say which one
 // won" convention, generalised to a proposal file). `interval_ms` is 1000,
-// same PANNs-window-grid honesty as clapVoiceness. Kill condition
+// PANNs' own native window grid, reported honestly. Kill condition
 // unevaluable until item 1's `type: "vocal"` ground truth exists — and,
 // per the plan, this candidate must additionally beat item 4 given its new
 // image/pin cost.
@@ -898,10 +838,10 @@ export async function loadSvdTagger(
 //
 // v3.5 item 7: whisperX's VAD front-end (speech-domain, not music or a
 // general audio-tagging class), run over the vocal stem only. Same shared
-// `voiceness_common.schema` shape as `vocalVoiceness`/`clapVoiceness` — no
+// `voiceness_common.schema` shape as `vocalVoiceness` — no
 // `channel` field, single producer. `interval_ms` is 50, not 1000: VAD spans
 // carry real sub-second onsets/offsets (a hysteresis binarizer over the
-// segmentation model's own ~17ms frames), so unlike `clapVoiceness`/
+// segmentation model's own ~17ms frames), so unlike
 // `svdTagger`, this candidate's `vocal_phrase` boundaries are genuinely
 // timed, not a 5s clip-window approximation. Diarization was NOT attempted
 // (no HF_TOKEN in this environment, and a live-token dependency at analysis
@@ -948,6 +888,97 @@ export async function loadWhisperxVad(
     return {
       ok: true,
       data: { schema_version: "", song_name: song, interval_ms: 50, frames: [], vocal_phrase: [] },
+    };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// singerIdentity — reference/proposals/singer_identity.json
+// ---------------------------------------------------------------------------
+//
+// v3.5 item 8: ECAPA-TDNN speaker-embedding cosine similarity to the song's
+// nearest voice-cluster centroid (`voice_similarity`), written into the same
+// shared `voiceness_common.schema` proposal shape as `whisperxVad` — single
+// producer, vocal stem only, `interval_ms: 50` (a nearest-window hold onto
+// whisperx_vad's own 50ms grid, not interpolation — the value is constant
+// across each native 1.5s/0.25s-hop window). `vocal_phrase` is always empty:
+// this candidate does not derive its own phrase segmentation.
+//
+// `singer_change` is a second, genuinely different output — cluster-switch
+// points between consecutive embedded windows (a duet handoff or
+// lead-to-stacked-chorus change) — and rides as its own top-level array
+// alongside the shared shape (`experiments/singer_identity/export.py`), not
+// folded into the frame curve: per this repo's rule that every artifact gets
+// its own visible signal, it is rendered here as its own marker blocks, never
+// merged into the voiceness curve for tidiness.
+
+export interface SingerChangePoint {
+  time: number;
+  from_cluster: number;
+  to_cluster: number;
+  confidence: number | null;
+}
+
+export interface SingerIdentityFile extends VocalVoicenessFile {
+  singer_change: SingerChangePoint[];
+}
+
+export function parseSingerIdentity(raw: unknown): SingerIdentityFile {
+  const o = asObject(raw, "reference/proposals/singer_identity.json");
+  const meta = rec(o.metadata);
+  const frames = arr(o.frames).map((row): VoicenessFrameRow => {
+    const r = rec(row);
+    return {
+      time_s: num(r.time),
+      voiceness: num(r.voiceness),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    };
+  });
+  const vocal_phrase = arr(o.vocal_phrase).map((row) => {
+    const r = rec(row);
+    const start_s = num(r.start);
+    return {
+      start_s,
+      end_s: Math.max(num(r.end, start_s), start_s),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    };
+  });
+  const singer_change = arr(o.singer_change).map((row): SingerChangePoint => {
+    const r = rec(row);
+    return {
+      time: num(r.time),
+      from_cluster: num(r.from_cluster),
+      to_cluster: num(r.to_cluster),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    };
+  });
+  return {
+    schema_version: st(o.schema_version),
+    song_name: st(o.song_name),
+    interval_ms: num(meta.interval_ms, 50),
+    frames,
+    vocal_phrase,
+    singer_change,
+  };
+}
+
+export async function loadSingerIdentity(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<SingerIdentityFile>> {
+  const result = await loadJson(artifactPaths.singerIdentity(song), parseSingerIdentity, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return {
+      ok: true,
+      data: {
+        schema_version: "",
+        song_name: song,
+        interval_ms: 50,
+        frames: [],
+        vocal_phrase: [],
+        singer_change: [],
+      },
     };
   }
   return result;

@@ -43,8 +43,8 @@ class QueueFileTests(unittest.TestCase):
         self.assertEqual(
             sorted(names),
             [
-                "clap_voiceness",
                 "phrase_periodicity",
+                "singer_identity",
                 "structural_vs_micro",
                 "svd_tagger",
                 "texture_novelty",

@@ -14,7 +14,9 @@ against, but boundary F1 is reported, never scored, for this candidate.
 truth exists.** v3.5 item 5. `compute`/`export`/`score` all run green on the
 full 5-song scoring corpus (`_test_song`, `ayuni`, `Hideaway - Kiesza`,
 `Armin - Revolution`, `Titanium - David Guetta ft Sia`). Debugger lane
-`5. CLAP Voiceness` wired in, under Human Hints. No song in this environment
+`5. CLAP Voiceness` has been removed from the debugger (discarded — see
+`docs/archive/experiments_discarded.md`); it is no longer wired into the UI.
+No song in this environment
 carries `type: "vocal"` ground truth (same finding as items 3-4), so the kill
 condition — "does not agree with the marked spans better than chance on
 `ayuni`" — **cannot be evaluated: unevaluable, not passed or failed.**

@@ -83,34 +83,34 @@ export const artifactPaths = {
   // condition unevaluable until item 1's `type: "vocal"` ground truth exists.
   vocalVoiceness: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "vocal_voiceness.json")),
-  // Written by experiments/clap_voiceness (`run export`). The same shared
-  // voiceness_common.schema proposal shape as vocalVoiceness, but from a
-  // CLAP audio-text contrastive differential ("a person singing" vs "a
-  // flute, a synth lead") instead of DSP cues — an independent second
-  // opinion on the frame-level call, not a boundary competitor (its 5s
-  // window is too coarse to time an edge; interval_ms reflects that, at
-  // 1000, not 50). Kill condition unevaluable until item 1's `type: "vocal"`
-  // ground truth exists.
-  clapVoiceness: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "clap_voiceness.json")),
   // Written by experiments/svd_tagger (`run export`). PANNs' `Singing` class
   // head (AudioSet-527, index 27) run on BOTH the vocal stem and the mix —
   // every row carries `channel: "stem" | "mix"` (the only voiceness
   // candidate that fuses two producers into one file). `interval_ms: 1000`,
-  // same PANNs-window-grid honesty as clapVoiceness. Kill condition
+  // PANNs' own native window grid, reported honestly. Kill condition
   // unevaluable until item 1's `type: "vocal"` ground truth exists.
   svdTagger: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "svd_tagger.json")),
   // Written by experiments/whisperx_vad (`run export`). The same shared
-  // voiceness_common.schema proposal shape as vocalVoiceness/clapVoiceness
+  // voiceness_common.schema proposal shape as vocalVoiceness
   // (no `channel` — single producer, vocal stem only), but from whisperX's
   // VAD front-end (speech-domain) instead of DSP cues or a perceptual-audio
   // model. `interval_ms: 50` — VAD's own sub-second onsets are real, unlike
-  // clapVoiceness/svdTagger's 1000ms clip windows, so its `vocal_phrase`
+  // svdTagger's 1000ms clip windows, so its `vocal_phrase`
   // boundaries are genuinely scoreable, not just reported. Diarization was
   // not attempted (no HF_TOKEN in this environment) — VAD-only.
   whisperxVad: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "whisperx_vad.json")),
+  // Written by experiments/singer_identity (`run export`). Item 8: ECAPA-TDNN
+  // speaker-embedding cosine similarity to the song's nearest voice-cluster
+  // centroid (`voice_similarity`, in the shared `voiceness` field — same
+  // proposal shape as whisperxVad, single producer, vocal stem only,
+  // `interval_ms: 50` by nearest-window hold onto whisperx_vad's own grid),
+  // plus a top-level `singer_change` array (cluster-switch points between
+  // consecutive embedded windows) that rides outside the shared schema since
+  // it has no incumbent to be scored against.
+  singerIdentity: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "singer_identity.json")),
   // Written by experiments/voice_multiplicity (`run export`). Solo/stacked voice
   // blocks from stereo vocal stem width and L-R correlation.
   voiceMultiplicity: (song: string) =>

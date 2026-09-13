@@ -50,22 +50,6 @@ image = "app"
 enabled = true
 
 [[experiment]]
-name = "clap_voiceness"
-# `compute` needs `transformers`, only installed in the research sandbox
-# image (ai-light-song-v2-research:dev, experiments/clap/'s own image) — not
-# the `app` image this runner executes in, and the runner only ever honors
-# "app" (see the field comment above). `image` is deliberately not "app", so
-# this whole row is recorded skipped(needs image clap-research...) every run
-# rather than silently failing `compute` inside `app` for lacking
-# `transformers` — matches experiments/clap/'s own precedent of staying out
-# of this file for the same reason. Run both steps by hand instead:
-#   ./experiments/clap/run_in_container.sh python -m experiments.clap_voiceness.run compute --song {song_name}
-#   docker compose run --rm app python -m experiments.clap_voiceness.run export --song {song_name}
-command = "python -m experiments.clap_voiceness.run compute --song {song_name} && python -m experiments.clap_voiceness.run export --song {song_name}"
-image = "clap-research"
-enabled = true
-
-[[experiment]]
 name = "svd_tagger"
 # `compute` needs `torch`/`panns_inference`, only installed in the new
 # svd-research sandbox image (ai-light-song-v2-svd-research:dev,
@@ -95,4 +79,22 @@ name = "whisperx_vad"
 #   docker compose run --rm app python -m experiments.whisperx_vad.run export --song {song_name}
 command = "python -m experiments.whisperx_vad.run compute --song {song_name} && python -m experiments.whisperx_vad.run export --song {song_name}"
 image = "whisperx-research"
+enabled = true
+
+[[experiment]]
+name = "singer_identity"
+# `compute` needs `speechbrain`/`scikit-learn`, only installed in the new
+# singer-identity-research sandbox image (docker-compose.yml service
+# "singer-identity", experiments/singer_identity/Dockerfile — its own new
+# image + pinned ECAPA-TDNN checkpoint) — not the `app` image this runner
+# executes in, and the runner only ever honors "app" (see the field comment
+# above). `image` is deliberately not "app", so this whole row is recorded
+# skipped(needs image singer-identity...) every run, matching
+# clap_voiceness/svd_tagger/whisperx_vad's own precedent. It also depends on
+# experiments/whisperx_vad's own cache already existing for the song (reused,
+# never recomputed) — run all three steps by hand instead:
+#   docker compose run --rm --no-deps -T singer-identity python -m experiments.singer_identity.run compute --song {song_name}
+#   docker compose run --rm app python -m experiments.singer_identity.run export --song {song_name}
+command = "python -m experiments.singer_identity.run compute --song {song_name} && python -m experiments.singer_identity.run export --song {song_name}"
+image = "singer-identity"
 enabled = true

@@ -51,20 +51,6 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalVoicenessVeryHigh: [260, 90, 56],
   vocalVoicenessPhrase: [200, 65, 44], // distinct from the curve's 260 hue and
   //   from vocalPhrases' rose (340)
-  // v3.5 item 5 — CLAP contrastive-differential curve (singing vs
-  // flute/synth), same ramp-by-intensity shape as vocalVoiceness but a
-  // distinct hue (55, golden-yellow — clear of humanHints' amber 35,
-  // textureNovelty's chartreuse 70, and vocalVoiceness' violet-blue 260) so
-  // the two voiceness candidates never look like one lane at a glance;
-  // clapVoicenessPhrase a separate hue (325) for the overlaid
-  // (non-boundary-scored) vocal_phrase spans, clear of vocalPhrases' rose
-  // (340) and dropProposals' magenta (318).
-  clapVoicenessVeryLow: [55, 20, 20],
-  clapVoicenessLow: [55, 40, 28],
-  clapVoicenessMid: [55, 60, 38],
-  clapVoicenessHigh: [55, 80, 46],
-  clapVoicenessVeryHigh: [55, 95, 54],
-  clapVoicenessPhrase: [325, 60, 44],
   // v3.5 item 6 — PANNs `Singing`-class voiceness, run on BOTH the vocal
   // stem and the mix, rendered as two curves in the SAME lane (never a
   // toggle — the standing "no hiding a signal behind a selector" rule).
@@ -92,7 +78,7 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   // amber (35) — distinguished from both by this lane's own intensity ramp
   // and by never co-occurring with either lane's block shape. The overlaid
   // `vocal_phrase` hue (80, yellow-green) sits between textureNovelty (70)
-  // and arrangementState (95) for the same reason. Unlike clapVoiceness/
+  // and arrangementState (95) for the same reason. Unlike
   // svdTagger, this candidate's phrase spans carry real sub-second onsets
   // (Binarize hysteresis, not a 5s clip window) — see model.py.
   whisperxVadVeryLow: [20, 20, 20],
@@ -101,6 +87,21 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   whisperxVadHigh: [20, 80, 46],
   whisperxVadVeryHigh: [20, 95, 54],
   whisperxVadPhrase: [80, 60, 42],
+  // v3.5 item 8 — ECAPA-TDNN speaker-embedding similarity to the nearest
+  // voice-cluster centroid. Hue 275 (violet) sits away from every other
+  // voiceness candidate's hue (vocalVoiceness 260-adjacent via its own ramp,
+  // svdTagger/whisperxVad at 235/20) so the curve reads as its
+  // own lane at a glance. `singerChange` is a distinct hue (350, magenta-red)
+  // for the cluster-switch marker blocks — deliberately NOT folded into the
+  // curve's own hue, since it is a different kind of claim (a discrete event,
+  // not a continuous score) that must stay visually separable.
+  singerIdentityVeryLow: [275, 20, 20],
+  singerIdentityLow: [275, 40, 28],
+  singerIdentityMid: [275, 60, 38],
+  singerIdentityHigh: [275, 80, 46],
+  singerIdentityVeryHigh: [275, 95, 54],
+  singerIdentityPhrase: [275, 30, 60],
+  singerChange: [350, 85, 50],
   voiceMultiplicity: [145, 60, 44], // sea-green — solo/stacked voice blocks,
   //                                   distinct from phrasePeriodicity's 130,
   //                                   moisesLyricsHigh's 150
