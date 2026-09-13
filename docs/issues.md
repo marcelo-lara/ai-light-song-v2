@@ -203,3 +203,8 @@ Current focus song: `_test_song`
   `docs/experiments.md`. It is an operator task: the hints are hand-authored
   truth and nothing in the pipeline may write them.
 
+### UI Canvas Performance
+
+- **Status:** `pending`
+- **Raised:** 2026-09-13
+- **Problem:** When expanding the canvas to >200px/bar the width contains excesive information that is not visible, flooding the browser memory; The solution could be to narrow the loaded information only to the visible portion, plus a buffer of half screen before and after to improve the ux; (lazy loading vs eagaer loading)
