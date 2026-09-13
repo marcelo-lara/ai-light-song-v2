@@ -1,7 +1,7 @@
 # Product refinement — v3.5
 
-**Status: open, nothing implemented.** A scoped worklist of concrete
-refinements, collected item by item. Nothing here is done by writing it down.
+**Status: closing.** Items 1-7 and 10 are implemented; items 11-14 close the
+release (see the implementation plan).
 
 **v3.5 is scoped to one question: does a voice actually sound here?** Reviewing
 `ayuni` found the pipeline reporting a vocal for 40.8 % of a song whose vocal
@@ -407,12 +407,31 @@ the vocabulary switch.
 
 ---
 
+## 11. Discard `8. Singer Identity` — `experiments/` + `ui/`
+
+Failed: declared lead-vocalist counts add noise to validation (4/9 on declared
+songs; voiceness below whisperX on `Cinderella`). Directory, lane, image and
+ground-truth file are deleted; a TLDR goes to the discarded archive.
+
+## 12. Cinderella class map + rescore — `experiments/`
+
+The operator's re-mark renumbered `Cinderella`'s hints; the class map is
+updated and every voiceness candidate rescored, with whisperX's recall flagged
+as circular where positives came from its own lane.
+
+## 13. Resolve the `vocals` channel — `src/` or docs
+
+Items 8-9 close on item 12's numbers: gate `playing[]`'s `vocals` on a detector,
+or document `vocals_phrase[]` as the channel to trust.
+
+## 14. Retire the v3.5 docs — docs
+
+This doc and its plan are deleted; references repointed to the living docs.
+
+---
+
 ## Open questions blocking implementation
 
-**None.** The scoring corpus, the discriminator choice, the Demucs ablation
-ordering and the `arrangement_state` gating were resolved with the operator on
-2026-09-11; the segments.json fusion rule, vocabulary and docs scope were
-resolved 2026-09-12. All ten items are unblocked.
-
-One dependency is outstanding but blocks only item 8: the operator's `ayuni`
-vocal marking (item 1), without which items 3–7 can run but cannot be scored.
+**None.** D12.1 (hint classes), D13.1 (by-ear review) and D13.2 (build both
+variants, curated hints on `ayuni` + `Cinderella` pick the winner) are
+resolved in the plan.

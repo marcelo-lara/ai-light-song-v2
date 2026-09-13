@@ -44,7 +44,6 @@ class QueueFileTests(unittest.TestCase):
             sorted(names),
             [
                 "phrase_periodicity",
-                "singer_identity",
                 "structural_vs_micro",
                 "svd_tagger",
                 "texture_novelty",

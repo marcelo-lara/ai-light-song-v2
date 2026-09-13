@@ -78,7 +78,6 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "vocalVoiceness", label: "4. Vocal Voiceness", sub: "experiment · per-frame voiceness (vibrato + portamento + sibilance) + bridged phrase blocks", kind: "proposals", height: 84, experiment: "vocal_voiceness" },
   { id: "svdTagger", label: "6. SVD Tagger", sub: "experiment · PANNs Singing-class voiceness, stem + mix channels (two curves, no toggle)", kind: "proposals", height: 112, experiment: "svd_tagger" },
   { id: "whisperxVad", label: "7. WhisperX VAD", sub: "experiment · speech-domain VAD voiceness + phrase spans with real sub-second onsets (diarization not attempted — no HF_TOKEN)", kind: "proposals", height: 64, experiment: "whisperx_vad" },
-  { id: "singerIdentity", label: "8. Singer Identity", sub: "experiment · ECAPA-TDNN speaker-embedding similarity to nearest voice-cluster centroid + singer/speaker change points", kind: "proposals", height: 64, experiment: "singer_identity" },
   { id: "voiceMultiplicity", label: "Voice Multiplicity", sub: "experiment · solo/stacked voice blocks from stereo width and L-R correlation", kind: "proposals", height: 58, experiment: "voice_multiplicity" },
   { id: "textureNovelty", label: "2. Texture Novelty", sub: "experiment · self-similarity novelty texture segments", kind: "proposals", height: 58, experiment: "texture_novelty" },
   { id: "phrasePeriodicity", label: "3. Phrase Periodicity", sub: "experiment · per-bar autocorrelation regime + period", kind: "proposals", height: 58, experiment: "phrase_periodicity" },

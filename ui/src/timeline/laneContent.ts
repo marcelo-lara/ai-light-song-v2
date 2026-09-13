@@ -30,7 +30,6 @@ import type {
   VocalVoicenessFile,
   SvdTaggerFile,
   WhisperxVadFile,
-  SingerIdentityFile,
   VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
 
@@ -951,117 +950,6 @@ export function whisperxVadContent(file: WhisperxVadFile | null): SparseBlock[] 
   return out;
 }
 
-const SINGER_IDENTITY_BUCKET_TINT: Record<VoicenessBucket, string> = {
-  veryLow: "singerIdentityVeryLow",
-  low: "singerIdentityLow",
-  mid: "singerIdentityMid",
-  high: "singerIdentityHigh",
-  veryHigh: "singerIdentityVeryHigh",
-};
-
-/**
- * ECAPA-TDNN speaker-embedding cosine similarity to the song's nearest
- * voice-cluster centroid (`voice_similarity`, in the shared `voiceness`
- * field), from the same shared `voiceness_common.schema` proposal shape as
- * `whisperxVadContent` — `experiments/singer_identity` (v3.5 item 8).
- * `vocal_phrase` is always empty for this candidate (it derives no phrase
- * segmentation of its own).
- *
- * `singer_change` — cluster-switch points between consecutive embedded
- * windows (a duet handoff or lead-to-stacked-chorus change) — is a second,
- * genuinely different output and is rendered as its own small marker blocks,
- * never folded into the continuous voiceness curve: every artifact gets its
- * own visible signal, not merged into another lane's shape for tidiness.
- */
-export function singerIdentityContent(file: SingerIdentityFile | null): SparseBlock[] {
-  const out: SparseBlock[] = [];
-  const frames = file?.frames ?? [];
-  const intervalS = (file?.interval_ms ?? 50) / 1000;
-
-  let runStart: number | null = null;
-  let runBucket: VoicenessBucket | null = null;
-  let runSum = 0;
-  let runN = 0;
-  let runIdx = 0;
-  const flush = (endTime: number) => {
-    if (runStart == null || runBucket == null || runN === 0) return;
-    const avg = runSum / runN;
-    runIdx += 1;
-    out.push({
-      id: `singer-identity-${runIdx}`,
-      start_s: runStart,
-      end_s: endTime,
-      label: "",
-      wideLabel: `voiceness ${avg.toFixed(2)}`,
-      tintId: SINGER_IDENTITY_BUCKET_TINT[runBucket],
-      laneLabel: "8. Singer Identity",
-      caption: `${formatRange(runStart, endTime)} · avg voice_similarity ${avg.toFixed(2)}`,
-      reference: `singer-identity-${runIdx}`,
-      detail: `${runN} frame${runN === 1 ? "" : "s"}`,
-      summary: `experiments/singer_identity — ECAPA-TDNN voice_similarity to the nearest voice-cluster centroid, averaging ${avg.toFixed(2)} across this run.`,
-      raw: { avg_voiceness: avg, n_frames: runN },
-    });
-  };
-
-  for (const f of frames) {
-    const bucket = voicenessBucket(f.voiceness);
-    if (runBucket !== bucket) {
-      flush(f.time_s);
-      runStart = f.time_s;
-      runBucket = bucket;
-      runSum = 0;
-      runN = 0;
-    }
-    runSum += f.voiceness;
-    runN += 1;
-  }
-  if (frames.length > 0) {
-    flush(frames[frames.length - 1]!.time_s + intervalS);
-  }
-
-  (file?.vocal_phrase ?? []).forEach((p, i) => {
-    out.push({
-      id: `singer-identity-phrase-${i + 1}`,
-      start_s: p.start_s,
-      end_s: p.end_s,
-      label: "phrase",
-      wideLabel: `phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
-      tintId: "singerIdentityPhrase",
-      laneLabel: "8. Singer Identity",
-      caption: `${formatRange(p.start_s, p.end_s)} · phrase`,
-      reference: `singer-identity-phrase-${i + 1}`,
-      detail: "vocal_phrase",
-      summary: "experiments/singer_identity — vocal_phrase span (this candidate derives no phrase segmentation of its own; always empty in practice).",
-      raw: p,
-    });
-  });
-
-  // singer_change: discrete cluster-switch points, a real, different output
-  // from the continuous voiceness curve above — rendered as their own small
-  // marker blocks (a short span centered on the change time), never merged
-  // into the curve.
-  const MARKER_HALF_WIDTH_S = 0.15;
-  (file?.singer_change ?? []).forEach((c, i) => {
-    out.push({
-      id: `singer-change-${i + 1}`,
-      start_s: Math.max(0, c.time - MARKER_HALF_WIDTH_S),
-      end_s: c.time + MARKER_HALF_WIDTH_S,
-      label: "↔",
-      wideLabel: `singer change · cluster ${c.from_cluster}→${c.to_cluster}${c.confidence != null ? ` · conf ${round(c.confidence, 2)}` : ""}`,
-      tintId: "singerChange",
-      laneLabel: "8. Singer Identity",
-      caption: `${c.time.toFixed(2)}s · singer change · cluster ${c.from_cluster}→${c.to_cluster}`,
-      reference: `singer-change-${i + 1}`,
-      detail: "singer_change",
-      summary: `experiments/singer_identity — a cluster-switch point between consecutive embedded windows (cluster ${c.from_cluster} → ${c.to_cluster}), confidence the lower of the two windows' own nearest-centroid similarities. Not scored (manual ear check only — see the experiment README).`,
-      raw: c,
-    });
-  });
-
-  out.sort((a, b) => a.start_s - b.start_s);
-  return out;
-}
-
 /**
  * Solo/stacked voice blocks from stereo vocal stem width and L-R correlation,
  * per-song z-scored. A proposal to audition against Human Hints, not ground truth.
@@ -1133,7 +1021,6 @@ export interface LaneContentSources {
   vocalVoiceness?: VocalVoicenessFile | null;
   svdTagger?: SvdTaggerFile | null;
   whisperxVad?: WhisperxVadFile | null;
-  singerIdentity?: SingerIdentityFile | null;
   voiceMultiplicity?: VoiceMultiplicityFile | null;
   gestures?: EventTimeline | null;
 }
@@ -1152,7 +1039,6 @@ export const SPARSE_LANE_IDS = [
   "vocalVoiceness",
   "svdTagger",
   "whisperxVad",
-  "singerIdentity",
   "voiceMultiplicity",
   "gestures",
   "sections",
@@ -1192,8 +1078,6 @@ export function buildLaneBlocks(
       return svdTaggerContent(s.svdTagger ?? null);
     case "whisperxVad":
       return whisperxVadContent(s.whisperxVad ?? null);
-    case "singerIdentity":
-      return singerIdentityContent(s.singerIdentity ?? null);
     case "voiceMultiplicity":
       return voiceMultiplicityContent(s.voiceMultiplicity ?? null);
     case "gestures":

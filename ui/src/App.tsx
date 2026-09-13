@@ -166,12 +166,6 @@ const TIMELINE_KEYS = [
   // environment; kill condition unevaluable until item 1's `type: "vocal"`
   // ground truth exists)
   "whisperxVad",
-  // ECAPA-TDNN speaker-embedding similarity to the nearest voice-cluster
-  // centroid, plus singer_change cluster-switch markers
-  // (experiments/singer_identity, v3.5 item 8 — built and smoke-tested,
-  // not yet scored; singer_change stays a manual ear check permanently,
-  // not a scorer — see the experiment README)
-  "singerIdentity",
   // solo/stacked voice blocks from stereo width and L-R correlation
   // (experiments/voice_multiplicity)
   "voiceMultiplicity",
@@ -198,7 +192,6 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   vocalVoiceness: "vocalVoiceness",
   svdTagger: "svdTagger",
   whisperxVad: "whisperxVad",
-  singerIdentity: "singerIdentity",
   voiceMultiplicity: "voiceMultiplicity",
   gestures: "eventTimeline",
   character: "character",
@@ -396,7 +389,6 @@ export function App(): React.JSX.Element {
       vocalVoiceness: artifacts.vocalVoiceness.data,
       svdTagger: artifacts.svdTagger.data,
       whisperxVad: artifacts.whisperxVad.data,
-      singerIdentity: artifacts.singerIdentity.data,
       voiceMultiplicity: artifacts.voiceMultiplicity.data,
       gestures: artifacts.eventTimeline.data,
       character: artifacts.character.data,
@@ -419,7 +411,6 @@ export function App(): React.JSX.Element {
       artifacts.vocalVoiceness.data,
       artifacts.svdTagger.data,
       artifacts.whisperxVad.data,
-      artifacts.singerIdentity.data,
       artifacts.voiceMultiplicity.data,
       artifacts.eventTimeline.data,
       artifacts.character.data,

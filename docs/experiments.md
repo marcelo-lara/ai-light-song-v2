@@ -1298,8 +1298,8 @@ this cost* — items 4/5 pay no image/pin cost at all.
 the 327 MB checkpoint with an in-build `curl`, sha256-checked (`0dc499e...e34b31`).
 The first attempt ran at ~154 KB/s inside the Docker build network against
 ~2.7 MB/s from the host and was killed at its 15-minute bound; a later build
-completed with the same `curl`. `whisperx_vad` and `singer_identity` avoid the
-risk by pre-fetching on the host and `COPY`-ing the checkpoint in.
+completed with the same `curl`. `whisperx_vad` avoids the risk by pre-fetching
+on the host and `COPY`-ing the checkpoint in.
 
 ### Results evidence
 
@@ -1356,101 +1356,6 @@ experiment left — was run and does not close the gap: best frame_acc 0.8538
 (`ayuni`) / 0.5328 (`Cinderella`) against whisperX's 0.9881 / 0.8134. What it
 uniquely shows is a low residual-construct firing rate (0.07 on `ayuni`), from
 a model that costs its own image and a 327 MB pin.
-
----
-
-## Singer Identity — open speaker embeddings for "is this a voice, and whose?"
-
-**Status: OPEN — built, run over all 23 songs, calibrated 2026-09-13.** v3.5
-item 8. Built as
-[`../experiments/singer_identity/`](../experiments/singer_identity/README.md).
-Raised by the operator 2026-09-12 ("apply the whisper Speaker A - Speaker B
-diarization, not only overlapping, try to find speakers/singers"). Keep/kill
-and any threshold change are the operator's.
-
-**Results, TLDR** (full tables and the sweep in the README):
-
-- **Output 1 (voiceness) meets its kill condition.** `Cinderella` 0.5918 /
-  0.0925 against whisperX 0.8134 / 0.0510; `ayuni` 0.8905 against 0.9881.
-- **Output 2 (singer count) is 4/9 on the declared songs.** All five misses are
-  one-singer songs over-split (`Titanium` k=3, still 10.07 changes/min); none
-  reaches either gate (max centroid similarity 0.33-0.48, silhouette
-  0.12-0.35). A reported sweep gets 8/9 at `MERGE_SIMILARITY` 0.15-0.25, but the
-  duet `Only this moment` (0.438) then collapses — constants unchanged.
-- **The corpus's one marked handoff is missed:** `Armin`'s change points are at
-  12.6 s and 14.1 s, the handoff is at ~81.6 s.
-
-### The question, and why it is not a duplicate of items 4-7
-
-Two outputs from one pass:
-
-1. **`voice_similarity`** — per-frame cosine similarity to the song's nearest
-   voice centroid. A leaked flute or plucked guitar should sit far from any
-   voice centroid even when it is loud and transient-rich, which is exactly
-   where `whisperx_vad` fails: on `Cinderella - Ella Lee` it scores frame_acc
-   0.8427 / false_vocal 0.0589, and reads mean 0.536 on hint-003 "Rythm NO
-   VOCALS" against 0.505 on true-vocal hint-004. **That pair of numbers is the
-   target to beat**, without falling below whisperX's `ayuni` 0.9881 / 0.0056.
-2. **`singer_change`** — change points where the embedding jumps to a different
-   cluster. A duet handoff or a lead-to-stacked-chorus change is a real
-   moving-head cue, which nothing in the pipeline currently produces.
-
-### Method
-
-- **Voiced candidate regions**: reuse `whisperx_vad`'s cached activation at
-  `>= 0.2` (its cache is per-song `.npz`, already computed for the whole
-  corpus). Embedding non-voiced frames wastes compute and pollutes the
-  clusters.
-- **Embeddings**: ECAPA-TDNN (`speechbrain/spkrec-ecapa-voxceleb`) over 1.5 s
-  windows, 0.25 s hop, on the vocal stem. WeSpeaker or NeMo TitaNet-large are
-  acceptable substitutes — the requirement is only that the checkpoint is
-  **not gated**, which is why `pyannote/speaker-diarization-3.1` is excluded:
-  it needs an HF token, none exists in this environment, and a checkpoint
-  fetched at analysis time cannot be promoted
-  (`experiments/whisperx_vad/README.md`, "Diarization: not attempted").
-  Fetch and checksum at **image build** time, never mid-run.
-- **Clustering**: agglomerative, cosine, on the voiced windows only; pick the
-  cluster count by silhouette over k = 1…4. Report k as part of the proposal —
-  k = 1 is a legitimate answer and means "one singer".
-- **Shape to copy**: `experiments/whisperx_vad/` exactly — `paths.py`,
-  `model.py`, `features.py`, `export.py`, `score.py`, `run.py` with `compute`
-  / `export` / `score`, a new compose service with a pinned image, and a
-  `queue.toml` row (it will list as `skipped(<service>)` until run by hand,
-  like the other non-`app` rows).
-- **Proposal file**: `reference/proposals/singer_identity.json` via
-  `voiceness_common.schema`, so `voiceness_common.scorer` scores output 1 with
-  no new scoring code. Output 2 rides along as `singer_change: [{time,
-  from_cluster, to_cluster, confidence}]`.
-- **UI lane**: `Singer Identity`, its own lane, no consolidation.
-
-### Scoring
-
-- Output 1: `voiceness_common.scorer` on `ayuni`, `Cinderella - Ella Lee` and
-  `Armin - Revolution`, in the same table as whisperX and the incumbents.
-- Output 2: change points against `Armin - Revolution`'s male → female handoff
-  (male 30.0-55.8 s, female 81.6-88.0 s — the only marked singer change in the
-  corpus) at ±1.0 s, and reported-not-scored elsewhere.
-
-### Two decisions the first build left open (resolved 2026-09-12)
-
-- **Grid.** `voice_similarity` is exported on the shared **50 ms grid** by
-  nearest-window hold, not its native 0.25 s hop, because the point of the
-  fusion rule is a per-frame AND with whisperX and every sibling proposal is
-  50 ms. `generated_from` must record the true underlying resolution (1.5 s
-  window / 0.25 s hop) so no reader takes 50 ms of precision that is not there.
-- **`singer_change` scoring.** Stays a **manual ear check**, not a scorer. The
-  corpus contains exactly one marked singer change (`Armin - Revolution`, male
-  → female at ~81.6 s); a metric over one event measures nothing. Revisit if
-  more handoffs get marked.
-
-### Kill condition, and the failure to expect
-
-Killed if output 1 neither beats whisperX on `Cinderella` nor matches it on
-`ayuni`. Output 2 is reported as a **negative** if it splits one singer's
-registers more often than it finds a real singer change — the expected failure,
-since these models are speech-trained and on singing they cluster by timbre
-*and* pitch register. That makes it a change-point signal first and an identity
-signal only if the clusters survive an ear check.
 
 ---
 
@@ -1681,38 +1586,6 @@ Moises rows are a comparison baseline and never a label: `'let'` spans
 **29.33 s** at its own confidence 0.93, six words exceed 5 s, and coverage is
 49% of the song. Beating it there is a real but low bar — `vocal_voiceness` and
 `whisperx_vad` both do.
-
-### Singer ground truth — declared lead-vocalist counts
-
-Declared by the operator by ear, 2026-09-13, for item 8 (`Singer Identity`).
-Machine-readable copy: `experiments/singer_identity/singer_ground_truth.json`
-— declared data, exactly like `voiceness_common/vocal_ground_truth.json`, never
-inferred and never extended from a model's own output.
-
-| song | lead voices | note |
-| --- | --- | --- |
-| `Charli-VonDutch` | 1 | |
-| `Chimera - Hana` | 1 | |
-| `Titanium - David Guetta ft Sia` | 1 | |
-| `Sash - Raindrops` | 1 | |
-| `Rapture - Nadia Ali` | 1 | |
-| `Underworld - Born Slippy` | 1 | only male lead vocal |
-| `Charli-Guess` | 2 | 2 female lead vocals |
-| `In da name of love - Anita and Ray` | 2 | 1 female vocal, 1 male rap vocal |
-| `Only this moment - royksopp` | 2 | 1 female vocal, 1 male vocal |
-| `What a Feeling - Courtney Storm` | 1 + samples | one female lead, sampled chatters |
-| `Cinderella - Ella Lee` | 1 + samples | movie samples, one female lead |
-
-The last two are scored apart: non-lead sampled speech is real material in the
-vocal stem, so a clustering model splitting it out is defensible there — a `k`
-*above* the lead count is not automatically wrong, a `k` *below* it is.
-
-**The other 12 songs are unscoreable, not negative.** The operator's own caveat:
-they may carry back vocals, so a wrong inference on them would not be
-representative. Judge item 8 on the 11 declared songs and report the rest as
-observation only.
-
----
 
 ## Loose ends
 

@@ -57,29 +57,6 @@ services:
       MCP_ANALYSIS_ROOT: /data/analysis
     command: ["python", "/app/mcp/server.py"]
 
-  singer-identity:
-    # Research sandbox for experiments/singer_identity (docs/experiments.md
-    # "Singer Identity") — speechbrain/scikit-learn are absent from the `app`
-    # image, so `compute` needs this own image (experiments/singer_identity/
-    # Dockerfile). Listed in `queue.toml` with `image = "singer-identity"`
-    # (not "app"), so the queue runner honestly records it
-    # `skipped(needs image singer-identity ...)`, matching
-    # clap_voiceness/svd_tagger/whisperx_vad's own precedent — run by hand:
-    #   docker compose run --rm --no-deps -T singer-identity \
-    #     python -m experiments.singer_identity.run compute --song <name>
-    #   docker compose run --rm app \
-    #     python -m experiments.singer_identity.run export --song <name>
-    profiles: ["ondemand"]
-    build:
-      context: .
-      dockerfile: experiments/singer_identity/Dockerfile
-    image: ai-light-song-v2-singer-identity-research:dev
-    working_dir: /app
-    volumes:
-      - .:/app
-      - ./data:/data
-      - /home/darkangel/ai-dmx-light-render/data/songs:/data/songs
-
   ui:
     build:
       context: ./ui

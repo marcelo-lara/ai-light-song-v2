@@ -91,21 +91,6 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   whisperxVadHigh: [20, 80, 46],
   whisperxVadVeryHigh: [20, 95, 54],
   whisperxVadPhrase: [80, 60, 42],
-  // v3.5 item 8 — ECAPA-TDNN speaker-embedding similarity to the nearest
-  // voice-cluster centroid. Hue 275 (violet) sits away from every other
-  // voiceness candidate's hue (vocalVoiceness 260-adjacent via its own ramp,
-  // svdTagger/whisperxVad at 235/20) so the curve reads as its
-  // own lane at a glance. `singerChange` is a distinct hue (350, magenta-red)
-  // for the cluster-switch marker blocks — deliberately NOT folded into the
-  // curve's own hue, since it is a different kind of claim (a discrete event,
-  // not a continuous score) that must stay visually separable.
-  singerIdentityVeryLow: [275, 20, 20],
-  singerIdentityLow: [275, 40, 28],
-  singerIdentityMid: [275, 60, 38],
-  singerIdentityHigh: [275, 80, 46],
-  singerIdentityVeryHigh: [275, 95, 54],
-  singerIdentityPhrase: [275, 30, 60],
-  singerChange: [350, 85, 50],
   voiceMultiplicity: [145, 60, 44], // sea-green — solo/stacked voice blocks,
   //                                   distinct from phrasePeriodicity's 130,
   //                                   moisesLyricsHigh's 150

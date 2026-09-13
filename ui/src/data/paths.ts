@@ -107,16 +107,6 @@ export const artifactPaths = {
   // not attempted (no HF_TOKEN in this environment) — VAD-only.
   whisperxVad: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "whisperx_vad.json")),
-  // Written by experiments/singer_identity (`run export`). Item 8: ECAPA-TDNN
-  // speaker-embedding cosine similarity to the song's nearest voice-cluster
-  // centroid (`voice_similarity`, in the shared `voiceness` field — same
-  // proposal shape as whisperxVad, single producer, vocal stem only,
-  // `interval_ms: 50` by nearest-window hold onto whisperx_vad's own grid),
-  // plus a top-level `singer_change` array (cluster-switch points between
-  // consecutive embedded windows) that rides outside the shared schema since
-  // it has no incumbent to be scored against.
-  singerIdentity: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "singer_identity.json")),
   // Written by experiments/voice_multiplicity (`run export`). Solo/stacked voice
   // blocks from stereo vocal stem width and L-R correlation.
   voiceMultiplicity: (song: string) =>

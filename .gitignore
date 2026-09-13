@@ -236,10 +236,3 @@ experiments/.whisper_baseline_cache/
 # no-binary-checkpoints convention `models/` already establishes. Re-fetch
 # with the URL/hash recorded in the README before building the Dockerfile.
 experiments/whisperx_vad/vad_pytorch_model.bin
-
-# Singer Identity: pinned ECAPA-TDNN checkpoint (speechbrain/spkrec-ecapa-
-# voxceleb), pre-fetched + sha256-verified per
-# experiments/singer_identity/README.md — same no-binary-checkpoints
-# convention as whisperx_vad above. Re-fetch with the URLs/hashes recorded in
-# the README before building the Dockerfile.
-experiments/singer_identity/ecapa_checkpoint/

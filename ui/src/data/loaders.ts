@@ -17,7 +17,6 @@ import {
   loadVocalVoiceness,
   loadSvdTagger,
   loadWhisperxVad,
-  loadSingerIdentity,
   loadVoiceMultiplicity,
 } from "./sparseArtifacts";
 import {
@@ -296,7 +295,6 @@ export const artifactLoaders = {
   vocalVoiceness: loadVocalVoiceness,
   svdTagger: loadSvdTagger,
   whisperxVad: loadWhisperxVad,
-  singerIdentity: loadSingerIdentity,
   voiceMultiplicity: loadVoiceMultiplicity,
   character: loadCharacter,
   vocalTranscription: loadVocalTranscription,

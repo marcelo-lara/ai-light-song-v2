@@ -237,7 +237,6 @@ checked.
   | incumbent RMS `arrangement_state` | 0.9042 / 0.0891 | **0.9369 / 0.0040** |
   | `whisperx_vad` (promoted) | **0.9881 / 0.0056** | 0.8134 / 0.0510 |
   | `vocal_voiceness` | 0.8708 / 0.0323 | 0.6450 / 0.0176 |
-  | `singer_identity` | 0.8905 / 0.0160 | 0.5918 / 0.0925 |
   | `svd_tagger` mix, per-song p98 rescale | 0.8538 / 0.0077 | 0.5328 / 0.0000 |
 
   whisperX fixes the flute/guitar leak (`ayuni` residual firing 0.24 vs RMS

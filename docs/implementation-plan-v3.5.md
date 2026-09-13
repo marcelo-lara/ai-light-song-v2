@@ -1,7 +1,7 @@
 # Implementation plan — v3.5
 
-**Status: closed for the experiment track; two items handed off (see
-"Handoff" below).** Turns
+**Status: closing — items 11-14 close the release (see "Close-out"
+below).** Turns
 [`product-refinement-v3.5.md`](product-refinement-v3.5.md) into an ordered
 worklist. That doc carries the measured evidence (the 40.8 % / 39.0 % `ayuni`
 numbers) and the resolved decisions; this plan does not restate them — it
@@ -33,6 +33,10 @@ the two docs that currently assert the wrong thing.
 | 8 `arrangement_state` gates `vocals` on voiceness | `src/` + contract | one of 4–7 beats the incumbent (gate) |
 | 9 Correct the recorded conclusion | docs | 3, 4–7, 8 |
 | 10 Hand-marked section segments | `src/` + docs | — (independent track) |
+| 11 Discard `8. Singer Identity` | `experiments/` + `ui/` + docs | — |
+| 12 Cinderella class map + rescore | `experiments/` + docs | D12.1, 11 |
+| 13 Resolve the `vocals` channel (items 8, 9) | `src/` + contract, or docs only | D13.1, D13.2, 12 |
+| 14 Retire the v3.5 docs | docs | 11-13 |
 
 Item 1 unblocks *scoring*, not building — items 3–7 can run and produce
 proposal lanes without it, but no number in this plan means anything until it
@@ -92,8 +96,8 @@ Never fix across item boundaries in one commit.
 | New sandbox images | 2 (items 6, 7) |
 | New `src/` stages | 0 unless item 8 ships (modifies `detect_arrangement_state` / `publish_arrangement_state` in place, no new stage) |
 | New proposal lanes | 4 (items 4–7) |
-| Blocking decisions (`D`) | 1 open — D8.1, the operator's by-ear review of the winning voiceness lane, required before item 8 starts |
-| Done | 8 of 10. Items 1-7 and 10 are concluded — item 4 partially promoted (sibilance only), item 5 discarded, item 6 open but out of this plan's scope, item 7 promoted. Items 8 and 9 are **handed off**, not done — see "Handoff" |
+| Blocking decisions (`D`) | none — D12.1, D13.1, D13.2 resolved |
+| Done | 8 of 14. Items 1-7 and 10 concluded — item 4 partially promoted (sibilance only), item 5 discarded, item 6 measured not promoted, item 7 promoted. Items 8-9 are absorbed by item 13; 11-14 open |
 
 ---
 
@@ -143,13 +147,11 @@ to the same entry, so it closes when item 8 closes either way.
 
 ### Out of this plan entirely
 
-`8. Singer Identity` (`experiments/singer_identity/`) postdates this plan and
-was never one of its items. Its state lives in
-[`experiments.md`](experiments.md) and its README, like every other
-experiment. Item 6's open question (per-song rescale, then rescore) likewise
-lives in `experiments.md` — this plan records item 6 as concluded *for the
-plan's purposes* (measured, not promoted), which is not the same as the
-experiment being finished.
+Item 6's open question (per-song rescale, then rescore) lives in
+`experiments.md` — this plan records item 6 as concluded *for the plan's
+purposes* (measured, not promoted), which is not the same as the experiment
+being finished. `8. Singer Identity` postdates the original items; its discard
+is item 11.
 
 
 ## Standing rules for every item
@@ -986,3 +988,181 @@ already in `src/`.
 - [x] Validation report (`_test_song`, via `--compare sections`) carries a
   correct `human_segments` recall/precision/F1 block without affecting the
   overall exit status.
+
+---
+
+## Close-out
+
+Items 11-14 close v3.5. They supersede the "Handoff" section's routing of
+items 8-9 to `issues.md`: that entry is resolved by item 13, not left open.
+
+## Item 11 — Discard `8. Singer Identity`
+
+*Refinement item 11. `experiments/` + `ui/` + docs.*
+
+**Discarded as failed.** The operator judged the declared lead-vocalist counts
+useless — they add noise to validation. Measured: singer count **4/9** on
+declared songs, all 5 misses one-singer songs over-split (`Titanium` k=3,
+10.07 changes/min); `Armin`'s marked handoff (~81.6 s) missed (change points at
+12.6 s / 14.1 s); voiceness `Cinderella` 0.5918 / 0.0925 vs whisperX
+0.8134 / 0.0510 — its own kill condition.
+
+**What breaks if reversed.** A re-run reintroduces singer counts as ground
+truth; the archive entry is what stops that.
+
+- [x] `docs/archive/experiments_discarded.md` — summary-table row (`ran,
+  negative`) and a TLDR entry carrying the numbers above, since the directory
+  is deleted and git history is the only other copy. Finding to keep:
+  declared singer counts are not usable validation data.
+- [x] Delete `experiments/singer_identity/` — tracked files including
+  `singer_ground_truth.json`, and the untracked `cache/` + `ecapa_checkpoint/`.
+- [x] Delete `data/analysis/*/reference/proposals/singer_identity.json`
+  (untracked, 10 songs).
+- [x] `docker-compose.yml` — remove the `singer-identity` service.
+  `.gitignore` — remove the `ecapa_checkpoint/` rule and its comment.
+- [x] `experiments/queue.toml` — remove the `singer_identity` row;
+  `tests/test_run_queue.py` — remove the name from the expected list.
+- [x] Remove the `8. Singer Identity` lane per
+  [`reference/ui-development.md`](reference/ui-development.md) Recipe B (lane
+  id `singerIdentity`; tints `singerIdentity*` and `singerChange`).
+- [x] `docs/experiments.md` — delete the "Singer Identity" entry, the "Singer
+  ground truth — declared lead-vocalist counts" section, and the
+  `singer_identity` mention near the checkpoint-download note.
+- [x] `docs/analysis-definition.md` — drop the `singer_identity` row from the
+  voiceness table.
+
+### Validation
+
+- [x] `grep -rn -i "singer_identity\|singerIdentity\|singerChange\|singer_ground_truth"
+  ui/src docs experiments tests docker-compose.yml .gitignore` returns only
+  `docs/archive/experiments_discarded.md` and this plan.
+- [x] `docker compose run --rm test` green.
+- [x] `docker compose run --rm ui npm run test` + `npm run build` clean.
+
+### Visual QA
+
+- Surface: `/?song=ayuni`. The lane list contains no `data-lane="singerIdentity"`
+  element (count = 0) and no lane head labelled `8. Singer Identity`.
+- Negative checks: no `console.error`/`console.warn`, no `pageerror`, no failed
+  request for `singer_identity.json`.
+- No baseline image is lane-specific; none to update.
+- Operator step (not a checkbox): `docker image rm
+  ai-light-song-v2-singer-identity-research:dev`.
+
+---
+
+## Item 12 — Cinderella class map + rescore
+
+*Refinement item 12. `experiments/` + docs. Depends on item 11 (no
+`singer_identity` row in the rescored tables).*
+
+The operator re-marked `Cinderella - Ella Lee` (hints now `hint-001`…`hint-030`,
+IDs renumbered). `experiments/voiceness_common/vocal_ground_truth.json` names
+the old IDs, so `scorer.ground_truth()` raises (unclassified `hint-013`,
+`hint-015`, `hint-023`) — correct behaviour, stale data.
+
+### D12.1 (resolved 2026-09-13, operator)
+
+`hint-013` "Breakdown — Vocal delay tail" (80.32-82.80 s) is `unknown`, like
+`hint-009` "maybe delay tail". `hint-030` "movie voice samples" (315.64-330.07 s)
+stays a positive — it is voice.
+
+- [ ] Class map for `Cinderella - Ella Lee`: keep `hint-003`/`005`/`007`
+  negative, `hint-009`/`011` unknown; **remove** `hint-012`, `hint-014` (now
+  typed vocal); **add** `hint-013` unknown, `hint-015` negative (plucked guitar
+  93.19-100.93 s), `hint-023` negative (162.16-207.61 s).
+- [ ] Re-run `score` for `vocal_voiceness`, `whisperx_vad`, `svd_tagger` and the
+  incumbents, plus the fusion sweep (`whisperX >= 0.2 AND stem >= -38 dBFS`) and
+  **`whisperX AND sibilance`** — the rule `issues.md` says item 13 must be
+  decided on.
+- [ ] Every rescored `Cinderella` table must state the caveat: ~15 of the new
+  positives were captured from `whisperx_vad`'s own lane, so whisperX's recall
+  and F1@0.5s there are **circular**; only `false_vocal_rate` on the
+  operator's own negatives is a fair comparison.
+- [ ] Update `docs/experiments.md` (the ground-truth corpus row — no longer
+  sparse — and the Cinderella columns), `docs/analysis-definition.md`'s
+  voiceness table, and `issues.md`'s D8.1 table (the plucked-guitar span is
+  `hint-007`, not `hint-005`).
+
+### Validation
+
+- [ ] `docker compose run --rm test` and the `voiceness_common` scorer tests
+  green; `ground_truth()` builds `Cinderella` without raising.
+
+---
+
+## Item 13 — Resolve the `vocals` channel (items 8, 9)
+
+*Refinement item 13. Depends on item 12's numbers. Closes `issues.md`
+"`arrangement_state`'s `vocals` channel is still an RMS-only claim" either
+way.*
+
+### D13.1 (resolved 2026-09-13, operator by ear) — the marks stand
+
+| song | span | ruling |
+| --- | --- | --- |
+| `Cinderella` | hint-003 25.0-31.4 s, hint-007 45.8-53.6 s | no voice — whisperX firing there is an error |
+| `ayuni` | 86.5-102.2 s (hint-009) | no voice — the stem's 57 % is leak; whisperX (0.076) is right |
+| `Armin` | 44.7-55.8 s (hint-006) | real vocal — whisperX @0.2 is right, @0.5 misses it |
+
+The by-ear gate from item 8 is therefore met; only D13.2 remains.
+
+### D13.2 (resolved 2026-09-13, operator) — test both, the curated hints decide
+
+Both variants are built and scored on `ayuni` and `Cinderella - Ella Lee`
+against the curated `human_hints.json` (three-class scorer, item 12's class
+map), and the measured winner ships:
+
+- **Gate:** `vocals` in `playing[]` requires agreement from item 12's best
+  fusion rule (candidates: `whisperX >= 0.2 AND stem >= -38 dBFS`,
+  `whisperX AND sibilance`) — own named confidence in `field_sources`,
+  `"unknown"` below the detector's floor (never an RMS fallback);
+  `downstream-contract.md`, `artifacts.md`, `mcp-definition.md` updated; item 8's
+  validation block (incl. MCP smoke test) applies.
+- **Additive on purpose:** `playing[]` stays RMS-only; `downstream-contract.md`
+  states that `vocals_phrase[]` is the channel to trust for voice presence and
+  that `playing[]`'s `vocals` is a stem-energy reading.
+
+**Decision rule (fixed before measuring):** the published `vocals` channel of
+each variant — `playing[]` under gate, `playing[]` RMS under additive — is
+scored frame-wise with `voiceness_common.scorer`. Gate ships only if it lowers
+`false_vocal_rate` on **both** songs and loses no more than 0.01 `frame_acc` on
+either; otherwise additive ships. Whisper recall on `Cinderella` is circular
+(item 12) and does not count toward the decision.
+
+- [ ] Build both variants behind one switch in `arrangement_state.py` for the
+  measurement only; score both on the two songs; record the table and the
+  outcome in this item and in `docs/analysis-definition.md`.
+- [ ] Ship the winner; delete the losing variant's code path (no switch left
+  behind).
+- [ ] `CLAUDE.md` — one line in "Current state" for the `vocals` channel
+  (item 9's deferred checkbox).
+- [ ] `docs/issues.md` — delete the `vocals`-channel entry.
+
+### Validation
+
+- [ ] Gate: item 8's validation block. Additive: `docker compose run --rm test`
+  green and the contract text reviewed against `arrangement_state.json`.
+
+---
+
+## Item 14 — Retire the v3.5 docs
+
+*Refinement item 14. Docs only. Last.*
+
+Docs hold current material only; git history is the archive (no
+`docs/archive/v3.5/`).
+
+- [ ] Delete `docs/product-refinement-v3.5.md` and this plan.
+- [ ] Repoint every reference to either file at the living doc that now holds
+  the content (`experiments.md`, `analysis-definition.md`, the experiment's own
+  README) or drop it: `experiments/svd_tagger/README.md` + `model.py`,
+  `experiments/whisperx_vad/README.md` + `model.py`,
+  `experiments/voiceness_common/__init__.py` + `scorer.py`,
+  `experiments/clap/README.md`, `docs/experiments.md`,
+  `docs/analysis-definition.md`, `docs/issues.md`.
+
+### Validation
+
+- [ ] `grep -rn "implementation-plan-v3.5\|product-refinement-v3.5" --exclude-dir=node_modules --exclude-dir=.git .`
+  returns nothing.

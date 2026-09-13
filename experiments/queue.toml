@@ -80,21 +80,3 @@ name = "whisperx_vad"
 command = "python -m experiments.whisperx_vad.run compute --song {song_name} && python -m experiments.whisperx_vad.run export --song {song_name}"
 image = "whisperx-research"
 enabled = true
-
-[[experiment]]
-name = "singer_identity"
-# `compute` needs `speechbrain`/`scikit-learn`, only installed in the new
-# singer-identity-research sandbox image (docker-compose.yml service
-# "singer-identity", experiments/singer_identity/Dockerfile — its own new
-# image + pinned ECAPA-TDNN checkpoint) — not the `app` image this runner
-# executes in, and the runner only ever honors "app" (see the field comment
-# above). `image` is deliberately not "app", so this whole row is recorded
-# skipped(needs image singer-identity...) every run, matching
-# clap_voiceness/svd_tagger/whisperx_vad's own precedent. It also depends on
-# experiments/whisperx_vad's own cache already existing for the song (reused,
-# never recomputed) — run all three steps by hand instead:
-#   docker compose run --rm --no-deps -T singer-identity python -m experiments.singer_identity.run compute --song {song_name}
-#   docker compose run --rm app python -m experiments.singer_identity.run export --song {song_name}
-command = "python -m experiments.singer_identity.run compute --song {song_name} && python -m experiments.singer_identity.run export --song {song_name}"
-image = "singer-identity"
-enabled = true

@@ -29,7 +29,6 @@ import {
   phrasePeriodicityContent,
   structuralVsMicroContent,
   vocalVoicenessContent,
-  singerIdentityContent,
   voiceMultiplicityContent,
 } from "./laneContent";
 import type {
@@ -38,7 +37,6 @@ import type {
   PhrasePeriodicityFile,
   StructuralVsMicroFile,
   VocalVoicenessFile,
-  SingerIdentityFile,
   VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
 import { romanNumeral } from "./romanNumeral";
@@ -547,46 +545,6 @@ describe("vocalVoicenessContent", () => {
 
   it("never throws on a missing file", () => {
     expect(vocalVoicenessContent(null)).toEqual([]);
-  });
-});
-
-describe("singerIdentityContent", () => {
-  const file: SingerIdentityFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    interval_ms: 50,
-    frames: [
-      { time_s: 0.0, voiceness: 0.05, confidence: null },
-      { time_s: 0.05, voiceness: 0.08, confidence: null },
-      { time_s: 0.1, voiceness: 0.72, confidence: null },
-      { time_s: 0.15, voiceness: 0.81, confidence: null },
-    ],
-    vocal_phrase: [],
-    singer_change: [
-      { time: 0.12, from_cluster: 0, to_cluster: 1, confidence: 0.66 },
-    ],
-  };
-  const blocks = singerIdentityContent(file);
-
-  it("merges consecutive same-bucket frames into one run block", () => {
-    const veryLowRun = blocks.find((b) => b.tintId === "singerIdentityVeryLow");
-    expect(veryLowRun).toBeDefined();
-    expect(veryLowRun!.start_s).toBe(0.0);
-    expect(veryLowRun!.end_s).toBe(0.1);
-  });
-
-  it("renders singer_change as its own marker block, distinct from the voiceness curve", () => {
-    const changeBlock = blocks.find((b) => b.tintId === "singerChange");
-    expect(changeBlock).toBeDefined();
-    expect(changeBlock!.raw).toEqual(file.singer_change[0]);
-    expect(changeBlock!.wideLabel).toContain("cluster 0→1");
-    expect(changeBlock!.caption).toContain("singer change");
-    // never merged into a voiceness-bucket block
-    expect(changeBlock!.tintId).not.toMatch(/^singerIdentity(Very)?(Low|Mid|High)$/);
-  });
-
-  it("never throws on a missing file", () => {
-    expect(singerIdentityContent(null)).toEqual([]);
   });
 });
 
