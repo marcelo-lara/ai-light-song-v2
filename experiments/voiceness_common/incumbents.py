@@ -31,7 +31,7 @@ from .schema import VocalPhrase, VoicenessFrame
 
 FRAME_INTERVAL_S = 0.05  # the shared 50ms grid every incumbent (and future candidate) reports on
 
-#: D2.2 (resolved): fixed, never swept per-song. The naive baseline exists to
+#: Fixed, never swept per-song. The naive baseline exists to
 #: be beaten, not tuned — a threshold chosen per song would stop being a
 #: baseline. Picked against the already per-song-normalized
 #: (`per-song-per-source-peak-rms`) `normalized_values` series, so one

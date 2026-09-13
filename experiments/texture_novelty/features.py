@@ -153,7 +153,7 @@ def feature_matrix(cache: dict, feature_set: int) -> np.ndarray:
     if feature_set == 2:
         # (2) chroma/HPCP on the MIX against percussive-band weight. NEVER the
         # harmonic stem (0.009 RMS at the Queen of Kings drop) — chroma here is
-        # librosa chroma_cqt on the mix, not the harmonic-stem hpcp.json (D6.1).
+        # librosa chroma_cqt on the mix, not the harmonic-stem hpcp.json.
         chroma = _l2(cache["chroma_mix"])
         w = _unit(cache["perc_weight"])[:, None]
         return np.hstack([chroma, w])

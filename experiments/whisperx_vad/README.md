@@ -32,8 +32,7 @@ worth the new image it costs?
 
 ## Three recorded objections — expected risks, not surprises
 
-Per the product-refinement doc (`docs/product-refinement-v3.5.md`, §7), this
-item is built anyway so these show up in the numbers rather than being
+This item is built anyway so these show up in the numbers rather than being
 argued about in the abstract:
 
 1. **Diarization answers *which speaker*, and on music it will assign a

@@ -27,9 +27,8 @@ false-vocal confusion: pitched instruments vs. a real vocal, un-stemmed).
 ## Method
 
 1. **Model**: PANNs (Kong et al., <https://arxiv.org/abs/1912.10211>) Cnn14,
-   checkpoint `Cnn14_mAP=0.431.pth` — D6.1 in the implementation plan
-   resolved PANNs over BEATs (smaller, stable checkpoint, narrower dependency
-   footprint).
+   checkpoint `Cnn14_mAP=0.431.pth` — chosen over BEATs (smaller, stable
+   checkpoint, narrower dependency footprint).
 2. **Class**: AudioSet-527's `"Singing"` class, index 27 (0-indexed; verified
    directly against `class_labels_indices.csv` from
    `qiuqiangkong/audioset_tagging_cnn` this session — see `model.py`
@@ -55,8 +54,7 @@ false-vocal confusion: pitched instruments vs. a real vocal, un-stemmed).
 This is the only item 4-7 candidate needing a **new sandbox image** (torch
 2.4 CPU + `panns_inference`, ~2-3 GB image) **and a new model pin** (a
 327 MB checkpoint, sha256-verified at image build time, never at analysis
-time — see `Dockerfile`). The kill condition
-(`docs/implementation-plan-v3.5.md`, D6.1 area) is explicitly: does not beat
+time — see `Dockerfile`). The kill condition is explicitly: does not beat
 item 4 on `ayuni`'s false-vocal rate, **given this cost** — a technically-equal
 score is not a win here, because items 4/5 pay no image/pin cost at all.
 

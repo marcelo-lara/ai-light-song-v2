@@ -17,9 +17,8 @@ proposal schema and one scorer (frame voiceness accuracy, false-vocal rate,
 boundary F1 @ ±0.25/0.5/1.0 s, bounds/min) against `type: "vocal"` human
 hints, plus the three incumbents (`arrangement_state`, `vocal_phrases`,
 mix-RMS baseline) every candidate is measured against. `vocal_voiceness`,
-`clap_voiceness`, `svd_tagger` and `whisperx_vad` (implementation-plan-v3.5
-items 4-7) all import it directly — check there before writing another
-scorer for the same metric.
+`clap_voiceness`, `svd_tagger` and `whisperx_vad` all import it directly —
+check there before writing another scorer for the same metric.
 
 ## How experiments work here
 
@@ -819,7 +818,7 @@ Method held fixed: cosine self-similarity matrix → Foote checkerboard novelty
 kernel, 1.0 s half-window → peak-pick (`mean + 1·std`, ≥ 2.0 s apart). Only the
 feature changes. Feature sets, tried IN ORDER: (1) raw 7-band mix vector from
 `fft_bands.json` — the measured baseline; (2) librosa chroma on the **mix**
-(never the harmonic-stem `hpcp.json` — D6.1) concatenated with the mix's
+(never the harmonic-stem `hpcp.json`) concatenated with the mix's
 percussive-band weight; (3) per-stem band weight, 28-dim, from
 `fft_bands.<stem>.json` (item 1). Cheap baselines: mix-RMS delta, MFCC novelty.
 Metric: boundary F1 @ ±1.0 s vs `human_hints.json` block edges on the four gold

@@ -1,8 +1,8 @@
 """PANNs (Kong et al., *"PANNs: Large-Scale Pretrained Audio Neural Networks
 for Audio Pattern Recognition"*, <https://arxiv.org/abs/1912.10211>) — the
 `Singing` head of its AudioSet-527 tagger, run on the vocal stem and on the
-mix, both reported. D6.1 in `docs/implementation-plan-v3.5.md` resolved
-PANNs over BEATs (smaller, stable checkpoint, narrower dependency footprint).
+mix, both reported. PANNs was chosen over BEATs (smaller, stable checkpoint,
+narrower dependency footprint).
 
 **Checkpoint.** `Cnn14_mAP=0.431.pth`
 (<https://zenodo.org/records/3987831/files/Cnn14_mAP=0.431.pth>), fetched and

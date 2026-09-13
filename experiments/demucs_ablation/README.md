@@ -1,6 +1,6 @@
 # Demucs variant ablation
 
-Implementation-plan-v3.5 item 3. Re-runs stem separation under three Demucs
+v3.5 item 3. Re-runs stem separation under three Demucs
 variants and reports the false-vocal rate the way `arrangement_state`
 computes it in production today (stem RMS above a per-song threshold =
 voiced), against each variant's own stems.

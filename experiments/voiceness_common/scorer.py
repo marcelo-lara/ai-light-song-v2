@@ -36,9 +36,10 @@ denominator below is restated in terms of it:
                           "all frames" (or "all frames outside every vocal
                           span") to "evaluable, non-residual frames" — so this
                           number is NOT directly comparable with the 40.8%
-                          figure quoted in `docs/product-refinement-v3.5.md`,
-                          which was computed against all frames outside every
-                          vocal span, unmarked time included.
+                          `ayuni` figure in `docs/analysis-definition.md`
+                          (vocal-stem trustworthiness bound), which was
+                          computed against all frames outside every vocal
+                          span, unmarked time included.
     residual_firing_rate  fraction of residual frames called voiced — the
                           diagnostic the three-class rule asks for. Never
                           scored as an error or a credit.

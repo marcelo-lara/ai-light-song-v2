@@ -1,6 +1,6 @@
 """whisperX's VAD front-end (Max Bain et al., <https://github.com/m-bain/whisperX>,
 <https://arxiv.org/abs/2303.00747>) — pinned `whisperx==3.8.6` — run over the
-vocal stem only. v3.5 item 7 in `docs/implementation-plan-v3.5.md`.
+vocal stem only.
 
 **VAD only. Diarization was not attempted** — see the module-level note at
 the bottom of this docstring and `README.md`'s "Diarization" section for why.

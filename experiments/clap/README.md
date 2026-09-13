@@ -99,8 +99,8 @@ spanning half the song covers everything — so the per-axis table in
   miss: `Vocal Outro 3` reads −1.11 where it should be calm.
 * CLAP's **vocal** axis is weak (+0.36 … +1.18 on the three vocal outros) while
   the **vocal stem** is unambiguous (+1.5, +1.6, +1.2) — **on these four gold
-  songs, which separate cleanly.** This does not generalise: `ayuni`
-  (implementation-plan-v3.5 item 9) is the counterexample, where the vocal
+  songs, which separate cleanly.** This does not generalise: `ayuni` is the
+  counterexample, where the vocal
   stem is largely leaked flute and the same stem-RMS rule `arrangement_state`
   ships reports `vocals` present for 40.8 % of the song (39.0 % of the stem's
   20 ms frames sit within 18 dB of its own p98 — the rule's own presence

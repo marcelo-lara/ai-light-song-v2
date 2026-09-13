@@ -58,7 +58,7 @@ the feature changes, because the kill condition is about the feature.
 2. **chroma(MIX) + percussive-band weight** — librosa `chroma_cqt` on the mix
    (12-dim), L2-normalised, concatenated with the mix's upper-mid/presence/
    brilliance band weight (z-scored). **Never the harmonic-stem `hpcp.json`**
-   (D6.1 below) — it reads 0.009 RMS at the `Queen of Kings` drop.
+   (never swept in) — it reads 0.009 RMS at the `Queen of Kings` drop.
 3. **per-stem band weight** — the 7 `levels` of each of `bass`/`drums`/
    `harmonic`/`vocals` `fft_bands.<stem>.json`, stacked to 28 dims.
 

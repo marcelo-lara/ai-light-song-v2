@@ -225,8 +225,8 @@ checked.
   and `loudness.json`'s `normalization_scope: per-song-per-source-peak-rms`
   apply the identical stretch and inherit the identical caveat; no cleaner
   level fixes it, and a flute is not noise a filter can remove without also
-  removing vocal energy (implementation-plan-v3.5, product-refinement §review).
-  **Resolved, additive (item 13, 2026-09-13): `blocks[].playing`'s `vocals`
+  removing vocal energy.
+  **Resolved, additive (2026-09-13): `blocks[].playing`'s `vocals`
   stays RMS-only; `vocals_phrase[]` is the channel to trust for voice
   presence.** Five voiceness detectors were built and scored on one
   three-class scorer (`docs/experiments.md`); `whisperx_vad` was promoted as
@@ -241,14 +241,14 @@ checked.
   | `vocal_voiceness` | 0.8708 / 0.0323 | 0.5480 / 0.0106 |
   | `svd_tagger` mix, per-song p98 rescale | 0.8538 / 0.0077 | 0.5125 / 0.0000 |
 
-  `Cinderella` rescored 2026-09-13 against v3.5 item 12's repaired class map
+  `Cinderella` rescored 2026-09-13 against the repaired Cinderella class map
   (22 positive / 5 negative spans, was 4/4); ~15 of the 22 positives were
   captured from `whisperx_vad`'s own lane, so whisperX's recall there is
   circular — only `false_vocal_rate` (the second number) compares fairly.
 
   whisperX fixes the flute/guitar leak (`ayuni` residual firing 0.24 vs RMS
   0.82) and loses to RMS on rhythmic plucked-string leaks. No detector wins
-  both songs, so item 13 tested *gating* `playing`'s `vocals` on whisperX
+  both songs, so the gate was tested — *gating* `playing`'s `vocals` on whisperX
   agreement instead of switching to it outright — `vocals` present only where
   RMS AND the detector rule both agree, published `blocks[]` scored
   frame-wise against the curated hints:
@@ -307,7 +307,7 @@ Honest caveats that ship with it:
   `function_confidence` ≤ 0.9). On a normal song `sections.json` is
   byte-identical to before.
 
-**v3.5 item 10 — `reference/human/segments.json` and the vocabulary switch.**
+**v3.5 — `reference/human/segments.json` and the vocabulary switch.**
 A new optional, gold-song-only reference file (`_test_song`, `ayuni`, `"What
 a Feeling - Courtney Storm"` carry it today): a flat `[{start, end, label}]`
 list. Where it exists for a song, `ui_data.build_ui_data` rebuilds

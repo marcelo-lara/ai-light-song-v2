@@ -1,5 +1,4 @@
-# Research sandbox for the WhisperX VAD experiment (v3.5 item 7 —
-# implementation-plan-v3.5.md "whisperx_vad").
+# Research sandbox for the WhisperX VAD experiment ("whisperx_vad", v3.5).
 #
 # whisperX (Max Bain et al., https://github.com/m-bain/whisperX) pinned at
 # 3.8.6 — its VAD front-end only, never its ASR/alignment/diarization path.

@@ -1,8 +1,7 @@
-# Research sandbox for the SVD Tagger experiment (v3.5 item 6 —
-# implementation-plan-v3.5.md "svd_tagger").
+# Research sandbox for the SVD Tagger experiment ("svd_tagger", v3.5).
 #
 # PANNs (Kong et al., Cnn14) — a general AudioSet-527 tagger's `Singing`
-# class head, run on the vocal stem and on the mix. D6.1 resolved PANNs over
+# class head, run on the vocal stem and on the mix. PANNs was chosen over
 # BEATs: smaller, a stable pretrained checkpoint, well-documented
 # Singing/Music output classes, narrower dependency footprint than BEATs'
 # fairseq-adjacent stack.
