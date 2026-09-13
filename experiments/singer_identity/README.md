@@ -285,20 +285,68 @@ singer-identity)` on every queue run.
 
 ## Results evidence
 
-**Not yet run.** Per the operator's rule, running the experiment on the
-scoring corpus and scoring it is a separate later step. This smoke test only
-confirmed `compute`/`export` run clean on `_test_song` (see "Smoke test"
-below) — `_test_song` has no `type: "vocal"` hints and is absent from
-`vocal_ground_truth.json`, so `score` fails loud on it, correctly, and was
-not run.
+Measured 2026-09-13 on the v3.5 corpus rebuild (all 23 songs recomputed on the
+fixed k gate). Full tables: [`out/score.txt`](out/score.txt),
+[`out/singer_count_calibration.txt`](out/singer_count_calibration.txt).
 
-| candidate | avg frame_acc | avg false_vocal_rate | avg bounds/min | singer_change @ Armin handoff |
-| --- | --- | --- | --- | --- |
-| `singer_identity` | — | — | — | — |
-| `whisperx_vad` | — | — | — | n/a |
-| `arrangement_state` | — | — | — | n/a |
-| `vocal_phrases` | — | — | — | n/a |
-| mix-RMS baseline | — | — | — | n/a |
+### Output 1 — `voice_similarity` as voiceness
+
+frame_acc / false_vocal_rate. Only `ayuni` and `Cinderella` declare negatives,
+so only they separate detectors:
+
+| candidate | `ayuni` | `Cinderella` |
+| --- | --- | --- |
+| `singer_identity` | 0.8905 / 0.0160 | 0.5918 / 0.0925 |
+| `whisperx_vad` | **0.9881 / 0.0056** | 0.8134 / 0.0510 |
+| `arrangement_state` | 0.9042 / 0.0891 | **0.9369 / 0.0040** |
+
+**Kill condition for output 1 is met:** it neither beats whisperX on
+`Cinderella` (0.5918 vs 0.8134, and a higher false-vocal rate) nor matches it
+on `ayuni` (0.8905 vs 0.9881). Reported — the kill decision is the operator's,
+and output 2 is a separate signal.
+
+### Output 2 — singer count (`run.py calibrate`, shipped constants)
+
+| song | declared | k | silhouette | max centroid sim | changes/min |
+| --- | --- | --- | --- | --- | --- |
+| `Charli-VonDutch` | 1 | 1 | 0.113 | — | 0.00 |
+| `Chimera - Hana` | 1 | **2** | 0.350 | 0.405 | 0.57 |
+| `Titanium` | 1 | **3** | 0.140 | 0.479 | 10.07 |
+| `Sash - Raindrops` | 1 | **2** | 0.197 | 0.416 | 0.62 |
+| `Rapture - Nadia Ali` | 1 | **2** | 0.198 | 0.381 | 9.47 |
+| `Underworld - Born Slippy` | 1 | **2** | 0.120 | 0.331 | 2.32 |
+| `Charli-Guess` | 2 | 2 | 0.124 | 0.147 | 0.85 |
+| `In da name of love` | 2 | 2 | 0.296 | 0.131 | 0.61 |
+| `Only this moment` | 2 | 2 | 0.201 | 0.438 | 8.41 |
+| *extra_speech:* `What a Feeling` | 1 | 1 | 0.098 | — | 0.00 |
+| *extra_speech:* `Cinderella` | 1 | 2 (ok, ≥) | 0.149 | 0.368 | 2.12 |
+
+**4/9.** Every miss is a one-singer song over-split, and none reaches either
+gate: max centroid similarity 0.33-0.48 (merge needs > 0.5), silhouette
+0.12-0.35 (floor 0.1). `Titanium` still flaps at 10.07 changes/min — the k=1
+fix made k=1 reachable, but on these constants it does not reach it here. The
+duet `Only this moment` (0.438) sits inside the solo misses' similarity range,
+so no single `MERGE_SIMILARITY` separates all nine.
+
+**Sensitivity sweep — evidence only, constants NOT changed.** k re-derived
+from the cached embeddings with the shipped `_cluster()` (the 0.5 / 0.1 row
+reproduces `calibrate` exactly). Hits out of 9; both extra_speech songs stay
+acceptable at every value:
+
+| `MERGE_SIMILARITY` (floor 0.1) | 0.10 | 0.15-0.25 | 0.30 | 0.35 | 0.40 | 0.45-0.50 | 0.60 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| hits | 6 | **8** (miss: `Only this moment` → 1) | 7 | 6 | 5 | 4 | 3 |
+
+| `SILHOUETTE_FLOOR` (merge 0.5) | 0.10 | 0.15 | 0.20 | 0.25 | 0.30-0.35 | 0.40 |
+| --- | --- | --- | --- | --- | --- | --- |
+| hits | 4 | 5 | **7** | 6 | 5 | 6 |
+
+A value picked from this table is fit to 9 songs and would make every later
+singer-count number meaningless; moving the constants is the operator's call.
+
+**The one marked handoff is missed.** `Armin - Revolution` (male 30.0-55.8 s →
+female 81.6-88.0 s) gets k=2, but its only two change points are at 12.6 s and
+14.1 s — nowhere near the handoff. Manual ear check per the plan; no score.
 
 ## Smoke test
 

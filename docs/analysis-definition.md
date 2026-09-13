@@ -226,21 +226,28 @@ checked.
   apply the identical stretch and inherit the identical caveat; no cleaner
   level fixes it, and a flute is not noise a filter can remove without also
   removing vocal energy (implementation-plan-v3.5, product-refinement §review).
-  **Not yet fixed in `src/`.** Four competing voiceness detectors
-  (`experiments/vocal_voiceness`, `clap_voiceness`, `svd_tagger`,
-  `whisperx_vad` — `docs/experiments.md`) were built and measured against a
-  shared scorer. On the two songs carrying real `type: "vocal"` ground truth
-  so far (`ayuni`, 4 spans; `Armin - Revolution`, 7 spans — the other three
-  scoring-corpus songs carry none yet), `vocal_voiceness` and `whisperx_vad`
-  both cut the false-vocal rate below the incumbent's (`ayuni`: 0.109 / 0.120
-  vs 0.290; `Armin`: 0.051 / 0.120 vs 0.460), and `whisperx_vad` additionally
-  wins boundary F1 by a wide margin (`ayuni` 0.583 vs the incumbent's 0.385).
-  `clap_voiceness` does not beat the incumbent on either song.
-  **`svd_tagger` is unmeasured** — its sandbox image never finished building
-  in this environment (a checkpoint-fetch throughput issue, not a dead pin).
-  This is two songs and eleven marked spans, not a corpus-wide result, and a
-  gating fix into `src/` awaits the operator's by-ear review of the winning
-  lane — see implementation-plan-v3.5.md item 8's `D8.1`.
+  **Not yet fixed in `src/`.** Five voiceness detectors were built and scored
+  on one three-class scorer (`docs/experiments.md`); `whisperx_vad` was
+  promoted as the additive `vocals_phrase` field, and `blocks` stays RMS-only.
+  Rescored 2026-09-13 on the full corpus rebuild, frame_acc / false_vocal on
+  the only two songs that declare negatives:
+
+  | detector | `ayuni` | `Cinderella - Ella Lee` |
+  | --- | --- | --- |
+  | incumbent RMS `arrangement_state` | 0.9042 / 0.0891 | **0.9369 / 0.0040** |
+  | `whisperx_vad` (promoted) | **0.9881 / 0.0056** | 0.8134 / 0.0510 |
+  | `vocal_voiceness` | 0.8708 / 0.0323 | 0.6450 / 0.0176 |
+  | `singer_identity` | 0.8905 / 0.0160 | 0.5918 / 0.0925 |
+  | `svd_tagger` mix, per-song p98 rescale | 0.8538 / 0.0077 | 0.5328 / 0.0000 |
+
+  whisperX fixes the flute/guitar leak (`ayuni` residual firing 0.24 vs RMS
+  0.82) and loses to RMS on rhythmic plucked-string leaks. No detector wins
+  both songs. The other three declared songs cannot rank detectors — `Armin`
+  and `In da name of love` declare no negatives, `What a Feeling` has 2 s
+  evaluable — so a 5-song mean rewards an always-on detector. Two songs is not
+  a corpus result; a gating fix into `src/` awaits the operator's by-ear review
+  (`docs/issues.md`, "`arrangement_state`'s `vocals` channel is still an
+  RMS-only claim").
 
 ### Structure — `segmentation.py`, a real improvement, not solved
 

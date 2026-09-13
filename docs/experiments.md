@@ -1361,9 +1361,24 @@ a model that costs its own image and a 327 MB pin.
 
 ## Singer Identity — open speaker embeddings for "is this a voice, and whose?"
 
-**Status: proposed, not built.** Raised by the operator 2026-09-12 ("apply the
-whisper Speaker A - Speaker B diarization, not only overlapping, try to find
-speakers/singers"). Implement with Sonnet; smoke test on `_test_song` only.
+**Status: OPEN — built, run over all 23 songs, calibrated 2026-09-13.** v3.5
+item 8. Built as
+[`../experiments/singer_identity/`](../experiments/singer_identity/README.md).
+Raised by the operator 2026-09-12 ("apply the whisper Speaker A - Speaker B
+diarization, not only overlapping, try to find speakers/singers"). Keep/kill
+and any threshold change are the operator's.
+
+**Results, TLDR** (full tables and the sweep in the README):
+
+- **Output 1 (voiceness) meets its kill condition.** `Cinderella` 0.5918 /
+  0.0925 against whisperX 0.8134 / 0.0510; `ayuni` 0.8905 against 0.9881.
+- **Output 2 (singer count) is 4/9 on the declared songs.** All five misses are
+  one-singer songs over-split (`Titanium` k=3, still 10.07 changes/min); none
+  reaches either gate (max centroid similarity 0.33-0.48, silhouette
+  0.12-0.35). A reported sweep gets 8/9 at `MERGE_SIMILARITY` 0.15-0.25, but the
+  duet `Only this moment` (0.438) then collapses — constants unchanged.
+- **The corpus's one marked handoff is missed:** `Armin`'s change points are at
+  12.6 s and 14.1 s, the handoff is at ~81.6 s.
 
 ### The question, and why it is not a duplicate of items 4-7
 
