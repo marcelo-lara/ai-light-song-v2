@@ -320,7 +320,13 @@ def _arrangement_block(doc: dict) -> dict[str, Any]:
     arrangement_state.json. One row per block, `start`/`end` to match the
     sibling sections/gestures rows. `confidence` (and the leading block's
     `null`) is passed through as-is; `margin_db` and per-row sources are left to
-    get_detail's structural view."""
+    get_detail's structural view.
+
+    `vocals_phrase` (v3.5 item 7 promotion) is a second, independent read on
+    the vocals stem from the `whisperx_vad` experiment — every span's
+    `confidence` is `1.0` by the operator's own rule (a detected phrase is
+    asserted certain, not graded); `null` means the song has no pre-computed
+    proposal cache, not "no vocals"."""
     blocks = doc.get("blocks", [])
     rows = [
         {
@@ -336,6 +342,8 @@ def _arrangement_block(doc: dict) -> dict[str, Any]:
     return {
         "block_count": len(blocks),
         "blocks": rows,
+        "vocals_phrase": doc.get("vocals_phrase"),
+        "vocals_sibilance_song_mean": doc.get("vocals_sibilance_song_mean"),
         "field_sources": doc.get("field_sources"),
     }
 
@@ -694,7 +702,7 @@ def _arrangement_structural(
     structural view even when the span exceeds DENSE_CAP_S. Absent file ->
     rows: [] (the tolerant pattern the other sub-blocks use)."""
     if doc is None:
-        return {"rows": [], "field_sources": None}
+        return {"rows": [], "vocals_phrase": [], "vocals_sibilance_song_mean": None, "field_sources": None}
     rows = [
         {
             "start_s": b.get("start_s"),
@@ -708,7 +716,22 @@ def _arrangement_structural(
         for b in doc.get("blocks", [])
         if _overlaps(span_start, span_end, float(b["start_s"]), float(b["end_s"]))
     ]
-    return {"rows": rows, "field_sources": doc.get("field_sources")}
+    vocals_phrase = [
+        {
+            "start_s": p.get("start_s"),
+            "end_s": p.get("end_s"),
+            "confidence": p.get("confidence"),
+            "sibilance": p.get("sibilance"),
+        }
+        for p in (doc.get("vocals_phrase") or [])
+        if _overlaps(span_start, span_end, float(p["start_s"]), float(p["end_s"]))
+    ]
+    return {
+        "rows": rows,
+        "vocals_phrase": vocals_phrase,
+        "vocals_sibilance_song_mean": doc.get("vocals_sibilance_song_mean"),
+        "field_sources": doc.get("field_sources"),
+    }
 
 
 def _dense_frames(

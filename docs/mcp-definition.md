@@ -171,7 +171,20 @@ Returns:
 - **Arrangement** — one row per `arrangement_state` block: who is `playing`,
   who `entered`, who `left`, and the block `confidence` (a leading block carries
   `null`). From the optional top-level `arrangement_state.json`; the whole block
-  is omitted for a song analysed before v3.2.
+  is omitted for a song analysed before v3.2. Also carries `vocals_phrase` — a
+  second, independent read on the vocals stem from the promoted `whisperx_vad`
+  experiment (v3.5 item 7): spans where a phrase was detected, each with
+  `confidence: 1.0` by operator directive (a detected phrase is asserted
+  certain, never graded). `null` means the song has no pre-computed proposal
+  cache, not "no vocals" — `whisperx_vad`'s compute step runs out-of-band
+  (its own sandbox image, incompatible torch pin) and is not yet part of
+  `./analyze` itself. Each span additionally carries `sibilance` — the
+  promoted item-4 stem-bleed discriminator (v3.5 item 4), to be read against
+  the sibling `vocals_sibilance_song_mean` rather than absolutely, since the
+  cue has a per-song noise floor. A phrase well below the song mean is the
+  vocal detector firing on instrument bleed rather than a voice. No gate is
+  applied at publish time — the value is reported and the call is the
+  consumer's.
 - **Transitions** — the `"<from> → <to>"` rows, with times.
 - **Human hints** — the operator's own marks, verbatim, with their
   `lighting_hint` where one exists. These are ground truth and outrank every

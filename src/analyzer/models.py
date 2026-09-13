@@ -27,6 +27,8 @@ class Producer(str, Enum):
     DEMUCS = "demucs"
     GESTURES = "gestures"
     ARRANGEMENT_STATE = "arrangement_state"
+    WHISPERX_VAD = "whisperx_vad"
+    VOCAL_SIBILANCE = "vocal_sibilance"
     SECTION_FUNCTION = "section_function"
     GENRE = "genre"
     HUMAN = "human"

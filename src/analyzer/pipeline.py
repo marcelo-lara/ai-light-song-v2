@@ -203,6 +203,10 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         return 0
     if stage_name == "publish-arrangement-state":
         _required_artifact_payload(paths, stage_name, "arrangement_state.json")
+        # The promoted item-4 sibilance cue is read off the vocal stem's FFT
+        # bands (1.3) — gate on it so a missing prerequisite fails here rather
+        # than publishing phrases with no discriminator attached.
+        _required_artifact_payload(paths, stage_name, "essentia", "fft_bands.vocals.json")
         _run_stage(paths.song_name, "phase-1", stage_name, publish_arrangement_state, paths)
         return 0
     if stage_name == "contest-section-function":

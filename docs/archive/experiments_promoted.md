@@ -234,3 +234,44 @@ uninformative until they are — tracked in [`../issues.md`](../issues.md).
 **Shipped unresolved.** The corpus number is uninformative until texture blocks
 are marked on the other three gold songs; the CLAP `feel` field is a planned
 second fuse candidate on the same rows.
+
+---
+
+## WhisperX VAD — speech-VAD front-end promoted as `arrangement_state.json`'s `vocals_phrase`
+
+v3.5 item 7. Full evidence trail in
+[`../experiments/whisperx_vad/README.md`](../experiments/whisperx_vad/README.md).
+
+**Promoted 2026-09-13**, operator decision, not a threshold gate. Best
+candidate of items 4-7 by a wide margin: balanced accuracy `_test_song` 0.866,
+`ayuni` 0.971 (arrangement_state's own RMS method: 0.942 / 0.921). Rescored on
+the three-class scorer, `ayuni` frame_acc 0.9881 / false_vocal 0.0056 — its tell
+is the residual class: 0.24 firing on "audible but not vocal" spans against the
+incumbent's 0.82, because a speech VAD reads a flute leak or plucked-guitar
+bleed as clearly not-speech where an RMS threshold cannot. Two known,
+un-fixed weaknesses stay real: sustained/filtered vocals (band-limiting strips
+consonant energy) and background chatter (which genuinely is speech).
+`Cinderella - Ella Lee`'s rhythmic plucked-string leaks were its one loss
+(frame_acc 0.8427) — an absolute stem-floor fusion (`whisperX >= 0.2 AND stem
+>= -38 dBFS`) fixes it (+0.039 frame_acc) but was fit to 3 songs and not
+carried into the promotion.
+
+**Promoted shape**: `arrangement_state.json`'s new `vocals_phrase` field —
+whisperX's phrase spans (library-default hysteresis, never swept — sweeping
+degrades boundary F1 monotonically), each with **`confidence` hardcoded
+`1.0`**, by direct operator instruction ("when 'phrase' is detected the chances
+that it happens is true") — collapsing whisperX's own graded per-span
+confidence (0.56-0.98 measured) into an asserted-certain boolean. Published
+additively alongside the existing RMS-based `blocks`, never merged into them —
+a wrong call on one stem-presence method must never mask the other.
+
+**Not part of `./analyze`.** whisperX pins torch~=2.8.0; the `app` image is
+pinned to torch==2.1.2 with `natten==0.15.1+torch210cu121` (breaks on any torch
+bump) — merging is a real, unresolved cost. Compute runs out-of-band via
+`experiments/whisperx_vad/run.py` in its own sandbox image; `src/`'s
+`ui_data._whisperx_vocal_phrase` reads the resulting
+`reference/proposals/whisperx_vad.json` cache when present and emits an honest
+`null` (never a guess) when it is not. Diarization was never attempted — gated
+checkpoint, no HF token in this environment, and lead-plus-backing is
+simultaneous rather than turn-taking, which defeats the diarization premise
+regardless.

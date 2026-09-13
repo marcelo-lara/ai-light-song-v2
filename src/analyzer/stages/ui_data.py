@@ -368,6 +368,101 @@ def _publish_loudness(paths: SongPaths) -> str:
     return str(paths.loudness_output_path)
 
 
+# --- the sibilance discriminator (v3.5 item 4, promoted 2026-09-13) --------
+#
+# `fft_bands.vocals.json` band ids, in order: sub, bass, low_mid, mid,
+# upper_mid, presence (2.5-6 kHz), brilliance (6-16 kHz). The published split
+# doesn't land exactly on the 4-10 kHz consonant band, so presence+brilliance
+# is the documented proxy — no new FFT is taken off vocals.wav.
+SIBILANCE_BAND_IDS = ("presence", "brilliance")
+#: Score at zero transient strength — pure brightness, no burst.
+SIBILANCE_BASELINE_WEIGHT = 0.4
+#: Additional score a burst-like onset unlocks. A sung consonant is bright AND
+#: transient; a bright sustained pad or a cymbal leak is only one of the two.
+SIBILANCE_BURST_WEIGHT = 0.6
+
+
+def _sibilance_curve(paths: SongPaths) -> tuple[list[float], list[float]]:
+    """Per-frame sibilance over the vocal stem, on `fft_bands.vocals.json`'s own
+    50 ms grid. Ported verbatim from `experiments/vocal_voiceness/features.py`'s
+    `compute_sibilance` — `src/` never imports from `experiments/`.
+
+    Measured (`experiments/vocal_voiceness/README.md`): of the experiment's
+    three cues this is the only one worth keeping — separability against ground
+    truth on `_test_song` / `ayuni` / `Queen of Kings` is AUC 0.990 / 0.959 /
+    0.813, against vibrato's 0.700 / 0.815 / 0.656 and portamento's 0.718 /
+    0.800 / 0.650. Vibrato and portamento are deliberately NOT promoted; the
+    experiment's own noisy-OR diluted this cue with those two.
+
+    **Known limit, carried across the promotion**: sibilance has a per-song
+    noise floor — it reads 0.129 on the digitally near-silent stem in
+    `What a Feeling - Courtney Storm` (level 0.0002). It discriminates *within*
+    a song against that song's own mean; it cannot gate presence on its own,
+    which is why it is published as per-phrase evidence next to a level-bearing
+    detector rather than as a standalone vocal call.
+    """
+    doc = read_json(paths.artifact("essentia", "fft_bands.vocals.json"))
+    band_ids = [band["id"] for band in doc["bands"]]
+    idxs = [band_ids.index(b) for b in SIBILANCE_BAND_IDS if b in band_ids]
+
+    times: list[float] = []
+    values: list[float] = []
+    for frame in doc["frames"]:
+        levels = frame["levels"]
+        spectral = min(max(sum(levels[i] for i in idxs) / len(idxs), 0.0), 1.0) if idxs else 0.0
+        transient = min(max(float(frame.get("transient_strength", 0.0)), 0.0), 1.0)
+        score = spectral * (SIBILANCE_BASELINE_WEIGHT + SIBILANCE_BURST_WEIGHT * transient)
+        times.append(float(frame["time"]))
+        values.append(min(max(score, 0.0), 1.0))
+    return times, values
+
+
+def _mean_in_span(times: list[float], values: list[float], start: float, end: float) -> float | None:
+    """Mean of `values` over [start, end], or `None` when the span covers no
+    frame — an honest gap, never a zero standing in for "no evidence"."""
+    inside = [v for t, v in zip(times, values) if start <= t <= end]
+    return round(sum(inside) / len(inside), 4) if inside else None
+
+
+def _whisperx_vocal_phrase(paths: SongPaths) -> list[dict] | None:
+    """`vocals_phrase` promotion (v3.5 item 7, operator-approved 2026-09-13):
+    the `whisperx_vad` experiment's phrase spans, when a pre-computed proposal
+    cache exists at `reference/proposals/whisperx_vad.json`.
+
+    Optional like `reference/human` and `reference/moises` — the whisperX VAD
+    stack (torch~=2.8.0) cannot share the `app` image (pinned torch==2.1.2,
+    `natten==0.15.1+torch210cu121` breaks on any torch bump), so its compute
+    step runs out-of-band via `experiments/whisperx_vad/run.py` in its own
+    sandbox image, never as part of `./analyze`. A song analysed without that
+    cache gets an honest `null`/`unknown`, never a guess.
+
+    Every span's `confidence` is hardcoded `1.0`, not whisperX's own varying
+    per-span value (0.56-0.98 in practice) — the operator's explicit call: "when
+    'phrase' is detected the chances that it happens is true". This collapses
+    the experiment's own graded confidence in favour of asserting each detected
+    phrase as certain; the graded per-frame curve stays in
+    `reference/proposals/whisperx_vad.json` for anyone who wants it.
+    """
+    cache_path = paths.reference("proposals", "whisperx_vad.json")
+    if not cache_path.exists():
+        return None
+    proposal = read_json(cache_path)
+    times, values = _sibilance_curve(paths)
+    return [
+        {
+            "start_s": span["start"],
+            "end_s": span["end"],
+            "confidence": 1.0,
+            # The stem-bleed discriminator, read against this song's own mean
+            # (published alongside as `vocals_sibilance_song_mean`) — a phrase
+            # far below the song mean is whisperX firing on instrument bleed,
+            # the failure mode it has on plucked/rhythmic leaks.
+            "sibilance": _mean_in_span(times, values, span["start"], span["end"]),
+        }
+        for span in proposal.get("vocal_phrase", [])
+    ]
+
+
 def publish_arrangement_state(paths: SongPaths) -> str:
     """v3.2 item 2 — publish the top-level fused view of
     `artifacts/arrangement_state.json` (phase-3 `detect-arrangement-state`, which
@@ -381,6 +476,11 @@ def publish_arrangement_state(paths: SongPaths) -> str:
     precision filter (experiment `margin-sweep`), so it is reported, never gated.
     The leading span before the first stem change has no flip: `margin_db` and
     `confidence` are both `null`, never a filled default.
+
+    `vocals_phrase` (v3.5 item 7 promotion, see `_whisperx_vocal_phrase`) is a
+    second, independent signal about the vocals stem — the `whisperx_vad`
+    experiment's phrase spans — published alongside `blocks` rather than folded
+    into them, so a wrong call on one never masks the other.
     """
     artifact = read_json(paths.artifact("arrangement_state.json"))
     raw_blocks = artifact.get("blocks", [])
@@ -403,10 +503,31 @@ def publish_arrangement_state(paths: SongPaths) -> str:
         for block in raw_blocks
     ]
 
+    vocals_phrase = _whisperx_vocal_phrase(paths)
+    _, sibilance_values = _sibilance_curve(paths)
+    sibilance_song_mean = (
+        round(sum(sibilance_values) / len(sibilance_values), 4) if sibilance_values else None
+    )
+
     row_keys = ("start_s", "end_s", "playing", "entered", "left", "margin_db", "confidence")
     field_sources = validate_field_sources(
-        _fuse({key: [("arrangement_state", True)] for key in row_keys}),
-        row_keys,
+        _fuse(
+            {
+                **{key: [("arrangement_state", True)] for key in row_keys},
+                "vocals_phrase": [("whisperx_vad", vocals_phrase is not None)],
+                # A `vocals_phrase` row fuses two producers: its span is
+                # whisperX's, its `sibilance` is the promoted item-4 cue's. The
+                # dotted key is the per-row override the flat header cannot
+                # otherwise express.
+                "vocals_phrase.sibilance": [
+                    ("vocal_sibilance", sibilance_song_mean is not None)
+                ],
+                "vocals_sibilance_song_mean": [
+                    ("vocal_sibilance", sibilance_song_mean is not None)
+                ],
+            }
+        ),
+        (*row_keys, "vocals_phrase", "vocals_sibilance_song_mean"),
         file="arrangement_state.json",
     )
     payload = {
@@ -417,6 +538,11 @@ def publish_arrangement_state(paths: SongPaths) -> str:
         # `schema_version` — it describes the file, not a fused per-row value.
         "stems": artifact.get("stems"),
         "blocks": blocks,
+        "vocals_phrase": vocals_phrase,
+        # The reference level every `vocals_phrase.sibilance` is read against.
+        # Sibilance has a per-song noise floor, so the absolute value carries
+        # far less than the distance from this mean.
+        "vocals_sibilance_song_mean": sibilance_song_mean,
     }
     write_json(paths.arrangement_state_output_path, payload)
     return str(paths.arrangement_state_output_path)

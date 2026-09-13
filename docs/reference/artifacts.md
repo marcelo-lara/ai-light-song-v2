@@ -67,8 +67,8 @@ default is visible precisely because it is the only kind of row that carries a
 `source`.
 
 The producer vocabulary is closed: `essentia`, `allin1`, `harmonic`, `omnizart`,
-`demucs`, `gestures`, `arrangement_state`, `section_function`, `genre`, `human`,
-`inference`.
+`demucs`, `gestures`, `arrangement_state`, `whisperx_vad`, `vocal_sibilance`,
+`section_function`, `genre`, `human`, `inference`.
 `unknown` is legal and
 means no producer cleared its confidence floor — it is never a synonym for
 "we didn't record it".
@@ -89,7 +89,7 @@ both.
 | `genre.json` | `field_sources`; `genres`, `confidence`, `top_predictions[]`, `guidance[]` | advisory style context. A **fused view** of `artifacts/genre.json` with host paths stripped — the artifact stays for the analyzer and the debugger. `genres: ["unknown"]` is a valid outcome |
 | `drum_events.json` | `field_sources`; `events[]` of `{ time, event_type, confidence }`; `summary` counts; `supported_event_types` | rhythmic pulse. `event_type` ∈ `kick` / `snare` / `hat` / `crash` / `unresolved` — `crash` is a v3.4 brilliance-gated split of pitch-42 `hat` events; `confidence` is always `null`; `velocity` is not published (constant 100). A fused view of `artifacts/symbolic_transcription/drum_events.json` — full event list, no decimation (~1,164 events/song); `summary` and `supported_event_types` are file-level and provenance-exempt |
 | `loudness.json` | `field_sources`; `metadata.interval_ms` `20`; `sources[]` of `{ id, label, kind }` (stems, not producers); `frames[]` of `{ time, values, normalized_values }` | fine-resolution per-source loudness. `artifacts/essentia/rms_loudness.json` decimated 10 ms → 20 ms by **averaging pairs** (transient peaks preserved; an unpaired trailing frame is dropped). 20 ms is the floor a caller may request, not what every read returns. The `path` field is dropped from `sources[]` |
-| `arrangement_state.json` | `field_sources`; `stems[]` (stem vocabulary, file-level); `blocks[]` of `{ start_s, end_s, playing[], entered[], left[], margin_db, confidence }` | who is playing and where that changes (sub-section stem-state spans). Fused view of `artifacts/arrangement_state.json` (phase-3 `detect-arrangement-state`, reads only published `loudness.json`). `confidence` is `1 - exp(-margin_db/6)` — dB headroom at the stem flip, not a tuned score. Leading block carries `margin_db: null` / `confidence: null`. **Optional** — absent on pre-v3.2 songs. Intended extension point: a CLAP `feel` field fused into the same rows later |
+| `arrangement_state.json` | `field_sources`; `stems[]` (stem vocabulary, file-level); `blocks[]` of `{ start_s, end_s, playing[], entered[], left[], margin_db, confidence }`; `vocals_phrase` (array of `{ start_s, end_s, confidence, sibilance }`, or `null`); `vocals_sibilance_song_mean` | who is playing and where that changes (sub-section stem-state spans). Fused view of `artifacts/arrangement_state.json` (phase-3 `detect-arrangement-state`, reads only published `loudness.json`). `confidence` is `1 - exp(-margin_db/6)` — dB headroom at the stem flip, not a tuned score. Leading block carries `margin_db: null` / `confidence: null`. **Optional** — absent on pre-v3.2 songs. `vocals_phrase` (v3.5 item 7, promoted 2026-09-13) is a second, independent read on the vocals stem — the `whisperx_vad` experiment's phrase spans, promoted from the optional `reference/proposals/whisperx_vad.json` cache when present. Every span's `confidence` is hardcoded `1.0` by operator directive (a detected phrase is asserted certain, never graded); `null` means the song has no proposal cache, not "no vocals". Each span also carries `sibilance` (v3.5 item 4, promoted 2026-09-13) — the mean of the promoted sibilance cue over that span, the stem-bleed discriminator, read against `vocals_sibilance_song_mean` rather than in absolute terms (the cue has a per-song noise floor). A span far below the song mean is the detector firing on instrument bleed. `sibilance` is `null` when the span covers no frame — never 0.0 standing in for "no evidence". No gate is applied at publish time: the value is reported, the decision is the consumer's. Intended extension point: a CLAP `feel` field fused into the `blocks` rows later |
 
 ### `field_sources` per file
 
@@ -107,7 +107,7 @@ does (a repeated per-row map would be pure token cost).
 | `genre.json` | `genres`, `confidence`, `top_predictions`, `guidance` → `genre` (`unknown` where the estimate is absent) |
 | `drum_events.json` | `time`, `event_type` (incl. the v3.4 `crash` split), `confidence` → `omnizart`. `summary` / `supported_event_types` are file-level aggregates, provenance-exempt like `schema_version` |
 | `loudness.json` | `time`, `values`, `normalized_values` → `essentia`. `metadata` / `sources` are file-level, provenance-exempt |
-| `arrangement_state.json` | `start_s`, `end_s`, `playing`, `entered`, `left`, `margin_db`, `confidence` → `arrangement_state`. `stems` is a file-level aggregate, provenance-exempt like `schema_version` |
+| `arrangement_state.json` | `start_s`, `end_s`, `playing`, `entered`, `left`, `margin_db`, `confidence` → `arrangement_state`; `vocals_phrase` → `whisperx_vad` (or `unknown` when no proposal cache exists for the song), except `vocals_phrase.sibilance` → `vocal_sibilance` — the one genuinely two-producer row on the delivery surface, so the header names the nested field explicitly. `vocals_sibilance_song_mean` → `vocal_sibilance`. `stems` is a file-level aggregate, provenance-exempt like `schema_version` |
 
 ## Artifacts
 
