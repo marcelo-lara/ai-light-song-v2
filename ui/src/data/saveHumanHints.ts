@@ -36,8 +36,9 @@ export interface HintDraft {
  * Throws `Error` with the same messages the old editor showed.
  *
  * On save the hints are sorted ascending by `start_time` (ties keep their
- * editor order) and their `id`s are reassigned `hint-001`, `hint-002`, … in
- * that order, so the file always reads front-to-back along the timeline.
+ * editor order) so the file always reads front-to-back along the timeline.
+ * Existing `id`s are never reassigned — only a hint's position in the array
+ * changes. A new hint keeps the id `nextHintId` gave it when it was created.
  */
 export function buildHumanHintsPayload(
   songName: string,
@@ -79,9 +80,6 @@ export function buildHumanHintsPayload(
 
   // Array.prototype.sort is stable, so equal start_times keep their editor order.
   human_hints.sort((a, b) => a.start_time - b.start_time);
-  human_hints.forEach((hint, index) => {
-    hint.id = `hint-${String(index + 1).padStart(3, "0")}`;
-  });
 
   return { song_name: String(songName || ""), human_hints };
 }

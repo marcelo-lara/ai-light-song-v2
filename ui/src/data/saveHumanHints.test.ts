@@ -30,7 +30,7 @@ describe("buildHumanHintsPayload", () => {
     });
   });
 
-  it("sorts hints by start_time and renumbers ids to match", () => {
+  it("sorts hints by start_time without renumbering ids", () => {
     const payload = buildHumanHintsPayload("s", [
       draft({ id: "hint-042", title: "late", start_time: 90, end_time: 92 }),
       draft({ id: "x", title: "early", start_time: 5, end_time: 6 }),
@@ -39,9 +39,9 @@ describe("buildHumanHintsPayload", () => {
     expect(
       payload.human_hints.map((h) => [h.id, h.title, h.start_time]),
     ).toEqual([
-      ["hint-001", "early", 5],
-      ["hint-002", "mid", 30],
-      ["hint-003", "late", 90],
+      ["x", "early", 5],
+      ["hint-007", "mid", 30],
+      ["hint-042", "late", 90],
     ]);
   });
 
@@ -51,8 +51,8 @@ describe("buildHumanHintsPayload", () => {
       draft({ id: "b", title: "second", start_time: 10, end_time: 11 }),
     ]);
     expect(payload.human_hints.map((h) => [h.id, h.title])).toEqual([
-      ["hint-001", "first"],
-      ["hint-002", "second"],
+      ["a", "first"],
+      ["b", "second"],
     ]);
   });
 

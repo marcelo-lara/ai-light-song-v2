@@ -97,6 +97,34 @@
     },
     {
       "id": "hint-012",
+      "title": "phrase",
+      "start_time": 71.092,
+      "end_time": 80.32,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-015",
+      "title": "Breakdown",
+      "start_time": 80.32,
+      "end_time": 82.803,
+      "summary": "Vocal delay tail",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-016",
+      "title": "Pre-Drop phrase",
+      "start_time": 82.803,
+      "end_time": 85.642,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-013",
       "title": "Plucked guitar",
       "start_time": 93.19,
       "end_time": 100.93,
@@ -104,7 +132,7 @@
       "lighting_hint": ""
     },
     {
-      "id": "hint-013",
+      "id": "hint-017",
       "title": "Main section",
       "start_time": 100.93,
       "end_time": 131.54,
@@ -113,12 +141,142 @@
       "type": "vocal"
     },
     {
+      "id": "hint-018",
+      "title": "phrase",
+      "start_time": 132.28,
+      "end_time": 136.555,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-019",
+      "title": "whisperxVad",
+      "start_time": 137.1,
+      "end_time": 139.5,
+      "summary": "experiments/whisperx_vad — whisperX VAD voiceness averaging 0.89 across this run.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-020",
+      "title": "phrase",
+      "start_time": 140.566,
+      "end_time": 146.152,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-021",
+      "title": "male phrase",
+      "start_time": 147.367,
+      "end_time": 151.294,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-022",
+      "title": "male phrase",
+      "start_time": 152.193,
+      "end_time": 155.95,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-023",
+      "title": "Duet phrase",
+      "start_time": 156,
+      "end_time": 162.16,
+      "summary": "experiments/whisperx_vad — whisperX VAD voiceness averaging 0.98 across this run.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
       "id": "hint-014",
-      "title": "Main",
-      "start_time": 169.312,
-      "end_time": 208.1,
-      "summary": "no vocals (everything in vocal stem is leaked)",
+      "title": "No vocals",
+      "start_time": 162.16,
+      "end_time": 207.61,
+      "summary": "",
       "lighting_hint": ""
+    },
+    {
+      "id": "hint-024",
+      "title": "Female lead vocal",
+      "start_time": 208.454,
+      "end_time": 216.503,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-025",
+      "title": "phrase",
+      "start_time": 217.786,
+      "end_time": 227.742,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-026",
+      "title": "phrase",
+      "start_time": 228.569,
+      "end_time": 232.332,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-027",
+      "title": "phrase",
+      "start_time": 232.872,
+      "end_time": 238.19,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-028",
+      "title": "phrase",
+      "start_time": 254.067,
+      "end_time": 269.305,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-029",
+      "title": "phrase",
+      "start_time": 283.767,
+      "end_time": 285.353,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-030",
+      "title": "movie voice samples",
+      "start_time": 315.644,
+      "end_time": 330.07,
+      "summary": "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      "lighting_hint": "",
+      "captured_from": "whisperxVad · experiments/whisperx_vad",
+      "type": "vocal"
     }
   ]
 }

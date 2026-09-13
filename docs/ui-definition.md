@@ -146,6 +146,18 @@ the operator — and adding provenance machinery to it (to `human_hints.json`,
 `lyric_validations.json`) would answer
 a question nobody is asking while making the file harder to read by hand.
 
+### A hint's id is a stable identifier, not a display position
+
+`hint-NNN` ids are assigned once, when a hint is created (the next unused
+number), and never reassigned afterwards. On `Save`, the editor sorts
+`human_hints.json` ascending by `start_time` so the file reads front-to-back
+along the timeline — but that sort reorders the array only, never the ids. An
+existing hint keeps its id even if editing, inserting, or deleting other
+hints changes its position in the file. This matters because other documents
+(`docs/experiments.md`, `experiments/*/README.md`) cite specific hint ids
+against specific songs as measured evidence — a save-time renumbering would
+silently invalidate those references.
+
 ## Lanes
 
 Lanes are the review surface, and any time-bearing experiment output gets one.
