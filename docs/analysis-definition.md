@@ -226,11 +226,13 @@ checked.
   apply the identical stretch and inherit the identical caveat; no cleaner
   level fixes it, and a flute is not noise a filter can remove without also
   removing vocal energy (implementation-plan-v3.5, product-refinement §review).
-  **Not yet fixed in `src/`.** Five voiceness detectors were built and scored
-  on one three-class scorer (`docs/experiments.md`); `whisperx_vad` was
-  promoted as the additive `vocals_phrase` field, and `blocks` stays RMS-only.
-  Rescored 2026-09-13 on the full corpus rebuild, frame_acc / false_vocal on
-  the only two songs that declare negatives:
+  **Resolved, additive (item 13, 2026-09-13): `blocks[].playing`'s `vocals`
+  stays RMS-only; `vocals_phrase[]` is the channel to trust for voice
+  presence.** Five voiceness detectors were built and scored on one
+  three-class scorer (`docs/experiments.md`); `whisperx_vad` was promoted as
+  the additive `vocals_phrase` field. Rescored 2026-09-13 on the full corpus
+  rebuild, frame_acc / false_vocal on the only two songs that declare
+  negatives:
 
   | detector | `ayuni` | `Cinderella - Ella Lee` |
   | --- | --- | --- |
@@ -246,12 +248,24 @@ checked.
 
   whisperX fixes the flute/guitar leak (`ayuni` residual firing 0.24 vs RMS
   0.82) and loses to RMS on rhythmic plucked-string leaks. No detector wins
-  both songs. The other three declared songs cannot rank detectors — `Armin`
-  and `In da name of love` declare no negatives, `What a Feeling` has 2 s
-  evaluable — so a 5-song mean rewards an always-on detector. Two songs is not
-  a corpus result; a gating fix into `src/` awaits the operator's by-ear review
-  (`docs/issues.md`, "`arrangement_state`'s `vocals` channel is still an
-  RMS-only claim").
+  both songs, so item 13 tested *gating* `playing`'s `vocals` on whisperX
+  agreement instead of switching to it outright — `vocals` present only where
+  RMS AND the detector rule both agree, published `blocks[]` scored
+  frame-wise against the curated hints:
+
+  | gate rule | `ayuni` frame_acc / false_vocal | `Cinderella` frame_acc / false_vocal |
+  | --- | --- | --- |
+  | additive (incumbent, shipped) | 0.9042 / 0.0891 | 0.9342 / 0.0035 |
+  | G1: whisperX ≥0.2 AND stem ≥-38 dBFS | 0.9859 / 0.0074 | 0.9159 / 0.0013 |
+  | G2: whisperX ≥0.2 AND sibilance ≥0.20 | 0.9766 / 0.0056 | 0.8361 / 0.0000 |
+
+  Decision rule (fixed before measuring): a gate ships only if it lowers
+  `false_vocal_rate` on both songs and costs no more than 0.01 `frame_acc` on
+  either. Both gates lower `false_vocal_rate` on both songs but both cost more
+  than 0.01 `frame_acc` on `Cinderella` (G1 −0.0183, G2 −0.0981) — neither
+  ships. `playing`'s `vocals` remains an RMS-only claim, unchanged in `src/`;
+  `vocals_phrase[]` (whisperX) is the field a consumer should read for voice
+  presence.
 
 ### Structure — `segmentation.py`, a real improvement, not solved
 

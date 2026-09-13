@@ -277,11 +277,15 @@ resolutions.
   separate read on the vocals stem from the promoted `whisperx_vad` detector,
   and `vocals_sibilance_song_mean` (a float, or `null`). These do **not**
   modify `blocks[]`: the `vocals` entry inside `playing[]` is still the
-  RMS-derived claim it always was, with the false-vocal rate that implies. Two
-  independent reads are published precisely so a wrong call by one never masks
-  the other — a consumer wanting high confidence that a voice is audible
-  should require both to agree, and should not read `vocals_phrase` as a
-  correction to `blocks[]`.
+  RMS-derived claim it always was. **`vocals_phrase[]` is the channel to
+  trust for voice presence** — a consumer wanting to know whether a voice is
+  audible should read it, not `blocks[].playing`. `playing`'s `vocals` is a
+  stem-energy reading that also fires on instrument leakage into the vocal
+  stem (measured false_vocal_rate 0.0891 on `ayuni`, vs whisperX's 0.0056 on
+  the same song). It is kept as-is: gating it on
+  whisperX agreement was measured — it raised `frame_acc` on `ayuni` but cost
+  more than the 0.01 tolerance on `Cinderella - Ella Lee` (0.9342 → 0.9159 at
+  best), so no gate shipped — this is the settled state, not a pending one.
 
   - `confidence` on a phrase is **always exactly `1.0`** — an operator
     directive, not a measurement: a detected phrase is asserted certain and

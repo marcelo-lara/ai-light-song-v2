@@ -1136,18 +1136,32 @@ scored frame-wise with `voiceness_common.scorer`. Gate ships only if it lowers
 either; otherwise additive ships. Whisper recall on `Cinderella` is circular
 (item 12) and does not count toward the decision.
 
-- [ ] Build both variants behind one switch in `arrangement_state.py` for the
+- [x] Build both variants behind one switch in `arrangement_state.py` for the
   measurement only; score both on the two songs; record the table and the
   outcome in this item and in `docs/analysis-definition.md`.
-- [ ] Ship the winner; delete the losing variant's code path (no switch left
+
+**Measured 2026-09-13 — additive ships.** Published `playing[]` `vocals`,
+frame_acc / false_vocal_rate:
+
+| variant | `ayuni` | `Cinderella` |
+| --- | --- | --- |
+| additive (RMS, shipped) | 0.9042 / 0.0891 | **0.9342** / 0.0035 |
+| G1 RMS AND whisperX >= 0.2 AND stem >= -38 dBFS | **0.9859 / 0.0074** | 0.9159 / 0.0013 |
+| G2 RMS AND whisperX >= 0.2 AND sibilance >= 0.20 | 0.9766 / 0.0056 | 0.8361 / 0.0000 |
+
+Both gates lower false_vocal_rate on both songs but lose more than 0.01
+frame_acc on `Cinderella` (G1 −0.018, G2 −0.098), so neither passes the fixed
+rule. G1 misses by 0.008 — a re-measure once more leaky-stem songs are marked
+could flip it.
+- [x] Ship the winner; delete the losing variant's code path (no switch left
   behind).
-- [ ] `CLAUDE.md` — one line in "Current state" for the `vocals` channel
+- [x] `CLAUDE.md` — one line in "Current state" for the `vocals` channel
   (item 9's deferred checkbox).
-- [ ] `docs/issues.md` — delete the `vocals`-channel entry.
+- [x] `docs/issues.md` — delete the `vocals`-channel entry.
 
 ### Validation
 
-- [ ] Gate: item 8's validation block. Additive: `docker compose run --rm test`
+- [x] Gate: item 8's validation block. Additive: `docker compose run --rm test`
   green and the contract text reviewed against `arrangement_state.json`.
 
 ---

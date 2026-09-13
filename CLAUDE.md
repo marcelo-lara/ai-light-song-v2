@@ -82,6 +82,7 @@ Full numbers, per-song breakdowns and root causes:
 | Section identity | **not shipped.** MFCC 0.73 is the number any attempt must beat |
 | Character blocks (texture, not arrangement) | **measured in `experiments/clap/`, not shipped** |
 | Arrangement state (`detect-arrangement-state`, phase 3) | informative on `_test_song` (F1 0.59 vs `sections.json` 0.00), unmeasured elsewhere; honest `null` confidence off the margin |
+| `vocals` channel (`playing[]` vs `vocals_phrase[]`) | **decided: `playing`'s `vocals` stays RMS-only** (false_vocal 0.0891 on `ayuni`) — gating it on whisperX lowered false_vocal but cost >0.01 frame_acc on `Cinderella`. Trust `vocals_phrase[]` (whisperX) for voice presence |
 | `mcp/` server + delivery surface | **built and green.** Three tools (`list_songs`, `get_song_overview`, `get_detail`); nine top-level files per song (`info`, `beats`, `hints`, `sections`, `song_event_timeline`, `genre`, `drum_events`, `loudness`, `arrangement_state`), each carrying a `field_sources` attribution header |
 
 ## Rules that are load-bearing
