@@ -93,11 +93,14 @@ the two songs that declare negatives (the other three cannot rank detectors):
 | song | vocal_voiceness | arrangement_state | vocal_phrases | mix_rms_baseline |
 | --- | --- | --- | --- | --- |
 | `ayuni` | 0.8708 / 0.0323 / 53.0 | 0.9042 / 0.0891 / 6.6 | 0.7038 / 0.1514 / 53.0 | 0.3263 / 0.6585 / 69.9 |
-| `Cinderella - Ella Lee` | 0.6450 / 0.0176 / 37.0 | 0.9369 / 0.0040 / 5.7 | 0.5022 / 0.1347 / 37.0 | 0.5143 / 0.4163 / 73.1 |
+| `Cinderella - Ella Lee` | 0.5480 / 0.0106 / 41.1 | 0.9342 / 0.0035 / 6.5 | 0.4518 / 0.0783 / 41.1 | 0.6946 / 0.2568 / 56.6 |
 
 `ayuni` reproduced its pre-rebuild row exactly; `Cinderella` moved 0.6760 →
-0.6450 against the repaired class map. Promoted whisperX scores 0.9881 / 0.8134
-on the same two songs.
+0.6450 → **0.5480** across the item-12 class-map repair (22 positive / 5
+negative spans, up from 4/4). Promoted whisperX scores 0.9881 / 0.8614 on the
+same two songs. ~15 of `Cinderella`'s 22 positives were captured from
+`whisperx_vad`'s own lane — see `docs/experiments.md` "Vocal ground truth
+inventory".
 
 ## Usage
 
@@ -122,7 +125,7 @@ unfixed gap in the sustain scan's own pitch-tolerance criterion.
 
 Against real ground truth it trails both incumbents on frame accuracy on both
 discriminating songs (`ayuni` 0.8708 vs RMS 0.9042 and whisperX 0.9881;
-`Cinderella` 0.6450 vs 0.9369 / 0.8134), at `vocal_phrases`' word-level firing
+`Cinderella` 0.5480 vs 0.9342 / 0.8614), at `vocal_phrases`' word-level firing
 budget. Its lasting value is the **sibilance cue**, already promoted as
 `vocals_phrase[].sibilance` — see `docs/experiments.md` for the per-cue AUCs.
 The noisy-OR of all three cues is not a promotion candidate.

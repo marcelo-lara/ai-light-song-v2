@@ -1226,18 +1226,19 @@ frame_acc / false_vocal_rate / residual firing:
 
 | candidate | `ayuni` | `Cinderella` |
 | --- | --- | --- |
-| `vocal_voiceness` | 0.8708 / 0.0323 / 0.21 | 0.6450 / 0.0176 / — |
-| `whisperx_vad` (promoted) | **0.9881 / 0.0056** / 0.24 | 0.8134 / 0.0510 / — |
-| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | **0.9369 / 0.0040** / — |
-| `vocal_phrases` | 0.7038 / 0.1514 / 0.25 | 0.5022 / 0.1347 / — |
-| mix-RMS baseline | 0.3263 / 0.6585 / 0.85 | 0.5143 / 0.4163 / — |
+| `vocal_voiceness` | 0.8708 / 0.0323 / 0.21 | 0.5480 / 0.0106 / — |
+| `whisperx_vad` (promoted) | **0.9881 / 0.0056** / 0.24 | 0.8614 / 0.0290 / — |
+| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | **0.9342 / 0.0035** / — |
+| `vocal_phrases` | 0.7038 / 0.1514 / 0.25 | 0.4518 / 0.0783 / — |
+| mix-RMS baseline | 0.3263 / 0.6585 / 0.85 | 0.6946 / 0.2568 / — |
 
 `ayuni` reproduced its pre-rebuild row exactly; `Cinderella` moved 0.6760 →
-0.6450 against the repaired class map (4/4 → 7/5 spans). It fires at
-`vocal_phrases`' budget (37-53 bounds/min) — word/syllable granularity, below —
-and trails both incumbents on frame accuracy on both songs. The 5-song mean
-(0.3412) is not comparable: three songs declare no negatives, so an always-on
-detector scores 1.0 there.
+0.6450 → **0.5480** across the item-12 class-map repair (4/4 → 7/5 → 22/5
+spans; ~15 of the 22 positives are whisperX's own lane — see "Vocal ground
+truth inventory" below). It fires at `vocal_phrases`' budget (37-53 bounds/min)
+— word/syllable granularity, below — and trails both incumbents on frame
+accuracy on both songs. The 5-song mean is not comparable: three songs declare
+no negatives, so an always-on detector scores 1.0 there.
 
 ### Conclusion
 
@@ -1304,21 +1305,26 @@ on the host and `COPY`-ing the checkpoint in.
 ### Results evidence
 
 **It discriminates; it does not fire.** Measured against the three-class ground
-truth:
+truth, per channel (rescored 2026-09-13 against the repaired `Cinderella` class
+map — the earlier single unlabelled figure per song is superseded):
 
-| song | AUC pos-vs-neg | AUC pos-vs-residual | mean on vocal | mean on no-voice |
+| song / channel | AUC pos-vs-neg | AUC pos-vs-residual | mean on vocal | mean on no-voice |
 | --- | --- | --- | --- | --- |
-| `ayuni` | **0.907** | 0.780 | 0.087 | 0.014 |
-| `Cinderella - Ella Lee` | **0.937** | — | 0.077 | 0.012 |
+| `ayuni` stem | 0.915 | 0.624 | 0.058 | 0.014 |
+| `ayuni` mix | 0.872 | 0.870 | 0.116 | 0.014 |
+| `Cinderella` stem | 0.931 | — | 0.144 | 0.020 |
+| `Cinderella` mix | **0.959** | — | 0.077 | 0.008 |
 
 The *ranking* is sound — vocal frames score reliably above non-vocal ones. The
 **scale** is not: peak output is 0.2967 on `ayuni`, 0.5039 on `Cinderella` and
 0.1438 on `Armin - Revolution`, so a 0.5 threshold never fires once. That is
 where this candidate's 0.00 bounds/min, 0.0000 false-vocal-rate and its
-apparent frame accuracy (0.7538 / 0.5169 — exactly the negative-class fraction)
-all come from: it is never wrong because it never speaks. PANNs' `Singing`
-posterior is simply low-magnitude on a separated vocal stem, which is
-out-of-distribution against the AudioSet material it was trained on.
+apparent frame accuracy (`ayuni` 0.7538, `Cinderella` 0.3083 stem / 0.3042 mix
+— exactly the negative-class fraction, now lower under the repaired class map
+since positives are 22 of 27 evaluable spans) all come from: it is never wrong
+because it never speaks. PANNs' `Singing` posterior is simply low-magnitude on
+a separated vocal stem, which is out-of-distribution against the AudioSet
+material it was trained on.
 
 **Per-song rescale, measured 2026-09-13** (`_p98` rows: each channel divided by
 the song's own p98, clipped; declared before measuring, not swept). frame_acc /
@@ -1326,16 +1332,18 @@ false_vocal_rate / residual firing, v3.5 corpus rebuild, three-class scorer:
 
 | candidate | `ayuni` | `Cinderella` |
 | --- | --- | --- |
-| `svd_tagger_stem` (raw) | 0.7538 / 0.0000 / 0.00 | 0.4818 / 0.0000 / — |
-| `svd_tagger_stem_p98` | 0.8077 / 0.0154 / 0.23 | 0.4964 / 0.0146 / — |
-| `svd_tagger_mix_p98` | 0.8538 / 0.0077 / **0.07** | 0.5328 / 0.0000 / — |
-| `whisperx_vad` (promoted) | **0.9881 / 0.0056** / 0.24 | 0.8134 / 0.0510 / — |
-| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | **0.9369 / 0.0040** / — |
+| `svd_tagger_stem` (raw) | 0.7538 / 0.0000 / 0.00 | 0.3083 / 0.0000 / — |
+| `svd_tagger_mix` (raw) | 0.7538 / 0.0000 / 0.00 | 0.3042 / 0.0000 / — |
+| `svd_tagger_stem_p98` | 0.8077 / 0.0154 / 0.23 | 0.4417 / 0.0083 / — |
+| `svd_tagger_mix_p98` | 0.8538 / 0.0077 / **0.07** | 0.5125 / 0.0000 / — |
+| `whisperx_vad` (promoted) | **0.9881 / 0.0056** / 0.24 | 0.8614 / 0.0290 / — |
+| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | **0.9342 / 0.0035** / — |
 
 **Rescaling alone does not make it competitive.** It now fires, and almost never
-wrongly, but it still misses most vocal frames — rescaled, it fires at 0.9-2.2
-bounds/min against whisperX's 5-12. `Cinderella` barely moves (0.48 → 0.53),
-far below both incumbents. The one distinctive number is `mix_p98`'s 0.07
+wrongly, but it still misses most vocal frames — rescaled, it fires at 1.75-2.19
+bounds/min against whisperX's 5.12-13.28. `Cinderella` moved further from both
+incumbents under the repaired class map (0.44-0.51 vs whisperX's 0.86,
+`arrangement_state`'s 0.93). The one distinctive number is `mix_p98`'s 0.07
 residual firing on `ayuni` (filtered/looped vocal constructs), the lowest of any
 candidate — reported, not a promotion case on its own. The other three
 scoreable songs cannot separate detectors (no declared negatives, or 2 s
@@ -1353,7 +1361,7 @@ won" convention generalised, not a new pattern).
 **OPEN — no promotion case; keep/kill is the operator's call.** Its AUC never
 beats `whisperx_vad` (0.998 / 0.948), and the per-song rescale — the one cheap
 experiment left — was run and does not close the gap: best frame_acc 0.8538
-(`ayuni`) / 0.5328 (`Cinderella`) against whisperX's 0.9881 / 0.8134. What it
+(`ayuni`) / 0.5125 (`Cinderella`) against whisperX's 0.9881 / 0.8614. What it
 uniquely shows is a low residual-construct firing rate (0.07 on `ayuni`), from
 a model that costs its own image and a 327 MB pin.
 
@@ -1503,7 +1511,7 @@ environment carries `type: "vocal"` ground truth" claim repeated in items 3-7.
 | song | source | content |
 | --- | --- | --- |
 | `ayuni` | `human_hints.json` | 7 `type: "vocal"` spans (32.0 s), explicit "no vocals" negatives (102.6 s), 2 residual-vocal spans (29.4 s). **Exhaustive** — 0.7 s of the 164.8 s is unmarked |
-| `Cinderella - Ella Lee` | `human_hints.json` | 4 `type: "vocal"` spans (57.1 s) and 4 hard negatives (60.8 s), every one of them an *instrument leaked into the vocal stem* case — the failure mode items 3-7 exist to catch. **Sparse**: 221.6 s of the 339.5 s is unmarked, including everything after 208.1 s, so unmarked time is not confirmed instrumental and its FP column is an upper bound |
+| `Cinderella - Ella Lee` | `human_hints.json` | v3.5 item 12 re-mark: 22 `type: "vocal"` spans (167.3 s), 5 hard negatives (72.1 s, instrument leaked into the vocal stem), 3 `unknown` (7.1 s). No longer sparse: 93.0 s of the 339.5 s is unmarked. **Circular positives**: 15 of the 22 positive spans were captured from `whisperx_vad`'s own lane (`captured_from` field) — whisperX's recall/F1 on `Cinderella` is not an independent measurement; only `false_vocal_rate` on the 5 operator-marked negatives compares fairly |
 | `Armin - Revolution` | `human_hints.json` | 7 `type: "vocal"` spans (35.3 s); male 30.0-55.8 s, female 81.6-88.0 s. No "no vocals" hints — unlabelled time is **not** confirmed instrumental, so its FP column is an upper bound |
 | `Queen of Kings - Alessandra` | `reference/moises/lyrics.json` | curated word timings, **trust window 0-127.2 s only**; lead-vs-chorus in hint prose |
 | `_test_song` | `reference/moises/lyrics.json` | curated, 24 words / 5 lines, 15.9-54.7 s; 36 s of real instrumental including deliberate traps (an acid-synth-bass block, an ambient pad between two vocal lines) |
@@ -1537,7 +1545,10 @@ detector and must not be quoted.
 
 Measured 2026-09-12 on the vocal stem (`artifacts/stems/vocals.wav`, 50 ms
 frames, mono sum), classified by the three-class ground truth above. This
-settles the recurring "remove anything below X dB" proposal.
+settles the recurring "remove anything below X dB" proposal. **Predates the
+item-12 `Cinderella` class-map repair** (4 pos / 4 neg spans at measurement
+time, now 22 pos / 5 neg) — not re-measured here; only the stale hint id below
+is corrected.
 
 | | `ayuni` | `Cinderella - Ella Lee` |
 | --- | --- | --- |
@@ -1558,7 +1569,7 @@ Where a gate fails, per hint, as % of frames above the oracle threshold:
 | --- | --- | --- | --- | --- |
 | `ayuni` hint-009 "Vocal Stem noise" | negative | **54.6 %** | **-14.8** | the flute leak — louder than hint-008 (-27.7 median) and hint-017 (-28.9), both true vocal |
 | `ayuni` hint-013 "Tension break" | negative | 51.9 % | -24.0 | "close to zero sound" by ear, -37.5 median in the stem |
-| `Cinderella` hint-005 "Plucked guitar" | negative | 38.5 % | -28.3 | overlaps hint-001's vocal median (-29.3) |
+| `Cinderella` hint-007 "Plucked guitar" | negative | 38.5 % | -28.3 | overlaps hint-001's vocal median (-29.3) |
 | `Cinderella` hint-001 "Cinderella sample" | positive | 71.5 % | -13.5 | so a gate also **silences 28.5 % of a real vocal** |
 
 Two things follow, and they point in opposite directions:
@@ -1573,6 +1584,38 @@ Two things follow, and they point in opposite directions:
   negative *time* is sub-audible bleed, and the two songs' oracle thresholds
   differ by only 2.8 dB against a per-song rule whose own docstring says nothing
   transfers between songs.
+
+### v3.5 item 12 fusion sweep — the rule item 13 must decide on
+
+Measured 2026-09-13 against the repaired `Cinderella` class map, on the 50 ms
+grid, via `voiceness_common.scorer` (throwaway script, not committed).
+frame_acc / false_vocal_rate / residual firing / recall on positives /
+bounds-per-min:
+
+| rule | `ayuni` | `Cinderella` |
+| --- | --- | --- |
+| `whisperX >= 0.5` | 0.9881 / 0.0056 / 0.24 / 0.974 / 5.12 | 0.8614 / 0.0290 / 0.00 / 0.843 / 15.54 |
+| `whisperX >= 0.2 AND stem >= -38 dBFS` | 0.9814 / 0.0089 / 0.39 / 0.960 / 30.36 | **0.8887 / 0.0265** / 0.00 / 0.879 / 39.10 |
+| `whisperX >= 0.2 AND sibilance >= 0.20` | 0.9759 / 0.0063 / 0.13 / 0.925 / 20.48 | 0.8355 / 0.0134 / 0.00 / 0.784 / 47.62 |
+| `whisperX >= 0.5 OR (whisperX >= 0.10 AND sibilance >= 0.20)` | 0.9558 / 0.0393 / 0.41 / 0.980 / 21.22 | 0.8791 / 0.0365 / 0.00 / 0.879 / 20.30 |
+| `arrangement_state` incumbent (`vocals` channel) | 0.9042 / 0.0891 / 0.82 / 0.972 / 6.58 | 0.9342 / 0.0035 / 0.00 / 0.911 / 6.52 |
+
+Sibilance read off `experiments/vocal_voiceness/features.py::compute_sibilance`'s
+cached 50 ms series — the formula `src/analyzer/stages/ui_data.py::_sibilance_curve`
+ported verbatim at promotion, so this is the series `src/` actually publishes
+(per-phrase mean only there; this sweep needs the full frame series). Vocal-stem
+dBFS: mono sum of `artifacts/stems/vocals.wav`, 50 ms RMS frames.
+
+**`whisperX >= 0.2 AND stem >= -38 dBFS` wins `Cinderella` outright** (best
+frame_acc and false_vocal_rate of the four whisperX-based rules) while costing
+`ayuni` only 0.007 frame_acc against plain `whisperX >= 0.5`. No rule beats the
+`arrangement_state` incumbent's false_vocal_rate on `Cinderella` (0.0035) — its
+6.52 bounds/min budget is far lower, so the comparison is not apples-to-apples.
+**`Cinderella`'s recall/F1-shaped numbers above are circular** for whisperX-based
+rules: ~15 of 22 positive spans were captured from `whisperx_vad`'s own lane
+(`captured_from` in `human_hints.json`). `false_vocal_rate` (measured only
+against the operator's own 5 negative spans) is the fair comparison; recall and
+frame_acc are reported for completeness, not as independent evidence.
 
 ### `confidence: "0.99"` marks curation only when the whole file carries it
 

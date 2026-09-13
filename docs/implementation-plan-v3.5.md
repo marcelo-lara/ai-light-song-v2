@@ -1063,30 +1063,36 @@ the old IDs, so `scorer.ground_truth()` raises (unclassified `hint-013`,
 
 ### D12.1 (resolved 2026-09-13, operator)
 
-`hint-013` "Breakdown — Vocal delay tail" (80.32-82.80 s) is `unknown`, like
-`hint-009` "maybe delay tail". `hint-030` "movie voice samples" (315.64-330.07 s)
+The "Breakdown — Vocal delay tail" span (80.32-82.80 s) is `unknown`, like
+`hint-009` "maybe delay tail". "movie voice samples" (315.64-330.07 s, `hint-030`)
 stays a positive — it is voice.
 
-- [ ] Class map for `Cinderella - Ella Lee`: keep `hint-003`/`005`/`007`
-  negative, `hint-009`/`011` unknown; **remove** `hint-012`, `hint-014` (now
-  typed vocal); **add** `hint-013` unknown, `hint-015` negative (plucked guitar
-  93.19-100.93 s), `hint-023` negative (162.16-207.61 s).
-- [ ] Re-run `score` for `vocal_voiceness`, `whisperx_vad`, `svd_tagger` and the
+**IDs re-assigned after the ruling (resolved, orchestrator).** Commit `870fe65`
+("Stop renumbering human_hints.json ids on save") re-saved the file: the
+Breakdown span is now `hint-015`, the 93.19 s plucked guitar `hint-013`, the
+162.16-207.61 s "No vocals" `hint-014`. The operator ruled on spans, so the
+rulings carry over by span.
+
+- [x] Class map for `Cinderella - Ella Lee`: `hint-003`/`005`/`007` negative,
+  `hint-009`/`011` unknown (unchanged); **remove** `hint-012` (now typed vocal);
+  `hint-013` negative (plucked guitar 93.19-100.93 s), `hint-014` negative
+  (162.16-207.61 s), `hint-015` unknown (Breakdown).
+- [x] Re-run `score` for `vocal_voiceness`, `whisperx_vad`, `svd_tagger` and the
   incumbents, plus the fusion sweep (`whisperX >= 0.2 AND stem >= -38 dBFS`) and
   **`whisperX AND sibilance`** — the rule `issues.md` says item 13 must be
   decided on.
-- [ ] Every rescored `Cinderella` table must state the caveat: ~15 of the new
+- [x] Every rescored `Cinderella` table must state the caveat: ~15 of the new
   positives were captured from `whisperx_vad`'s own lane, so whisperX's recall
   and F1@0.5s there are **circular**; only `false_vocal_rate` on the
   operator's own negatives is a fair comparison.
-- [ ] Update `docs/experiments.md` (the ground-truth corpus row — no longer
+- [x] Update `docs/experiments.md` (the ground-truth corpus row — no longer
   sparse — and the Cinderella columns), `docs/analysis-definition.md`'s
   voiceness table, and `issues.md`'s D8.1 table (the plucked-guitar span is
   `hint-007`, not `hint-005`).
 
 ### Validation
 
-- [ ] `docker compose run --rm test` and the `voiceness_common` scorer tests
+- [x] `docker compose run --rm test` and the `voiceness_common` scorer tests
   green; `ground_truth()` builds `Cinderella` without raising.
 
 ---

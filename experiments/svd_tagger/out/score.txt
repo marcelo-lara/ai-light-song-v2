@@ -11,15 +11,15 @@ Armin - Revolution  (7 positive / 0 residual / 0 negative spans)
   vocal_phrases            0.1997            0.0000          0.0000       39.10     0.486
   mix_rms_baseline         1.0000            0.0000          0.0000        0.00     0.000
 
-Cinderella - Ella Lee  (7 positive / 0 residual / 5 negative spans)
+Cinderella - Ella Lee  (22 positive / 0 residual / 5 negative spans)
   candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
-  svd_tagger_stem          0.4818            0.0000          0.0000        0.00    0.000*
-  svd_tagger_mix           0.4818            0.0000          0.0000        0.00    0.000*
-  svd_tagger_stem_p98      0.4964            0.0146          0.0000        0.88    0.000*
-  svd_tagger_mix_p98       0.5328            0.0000          0.0000        1.32    0.118*
-  arrangement_state        0.9369            0.0040          0.0000        5.73     0.519
-  vocal_phrases            0.5022            0.1347          0.0000       37.00     0.163
-  mix_rms_baseline         0.5143            0.4163          0.0000       73.11     0.078
+  svd_tagger_stem          0.3083            0.0000          0.0000        0.00    0.000*
+  svd_tagger_mix           0.3042            0.0000          0.0000        0.00    0.000*
+  svd_tagger_stem_p98      0.4417            0.0083          0.0000        1.75    0.039*
+  svd_tagger_mix_p98       0.5125            0.0000          0.0000        2.01    0.038*
+  arrangement_state        0.9342            0.0035          0.0000        6.52     0.400
+  vocal_phrases            0.4518            0.0783          0.0000       41.10     0.269
+  mix_rms_baseline         0.6946            0.2568          0.0000       56.64     0.067
 
 In da name of love - Anita and Ray  (10 positive / 1 residual / 0 negative spans)
   candidate             frame_acc  false_vocal_rate residual_firing  bounds/min   F1@0.5s
@@ -55,10 +55,10 @@ ayuni  (7 positive / 2 residual / 9 negative spans)
 
 Aggregate across 5 songs:
   candidate             avg frame_acc  avg false_vocal_rate  avg bounds/min
-  svd_tagger_stem              0.2471                0.0000            0.00
-  svd_tagger_mix               0.2471                0.0000            0.00
-  svd_tagger_stem_p98          0.4349                0.0060            3.88
-  svd_tagger_mix_p98           0.3399                0.0015            0.98
-  arrangement_state            0.7767                0.0186           14.67
-  vocal_phrases                0.3759                0.0572           48.23
-  mix_rms_baseline             0.7675                0.2150           29.69
+  svd_tagger_stem              0.2124                0.0000            0.00
+  svd_tagger_mix               0.2116                0.0000            0.00
+  svd_tagger_stem_p98          0.4239                0.0047            4.06
+  svd_tagger_mix_p98           0.3359                0.0015            1.11
+  arrangement_state            0.7762                0.0185           14.83
+  vocal_phrases                0.3658                0.0459           49.05
+  mix_rms_baseline             0.8036                0.1831           26.40

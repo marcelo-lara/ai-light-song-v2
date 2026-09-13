@@ -78,15 +78,20 @@ residual firing:
 
 | candidate | `ayuni` | `Cinderella` |
 | --- | --- | --- |
-| `svd_tagger_stem` / `_mix` (raw) | 0.7538 / 0.0000 / 0.00 | 0.4818 / 0.0000 / — |
-| `svd_tagger_stem_p98` | 0.8077 / 0.0154 / 0.23 | 0.4964 / 0.0146 / — |
-| `svd_tagger_mix_p98` | 0.8538 / 0.0077 / 0.07 | 0.5328 / 0.0000 / — |
-| `whisperx_vad` (promoted) | 0.9881 / 0.0056 / 0.24 | 0.8134 / 0.0510 / — |
-| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | 0.9369 / 0.0040 / — |
+| `svd_tagger_stem` (raw) | 0.7538 / 0.0000 / 0.00 | 0.3083 / 0.0000 / — |
+| `svd_tagger_mix` (raw) | 0.7538 / 0.0000 / 0.00 | 0.3042 / 0.0000 / — |
+| `svd_tagger_stem_p98` | 0.8077 / 0.0154 / 0.23 | 0.4417 / 0.0083 / — |
+| `svd_tagger_mix_p98` | 0.8538 / 0.0077 / 0.07 | 0.5125 / 0.0000 / — |
+| `whisperx_vad` (promoted) | 0.9881 / 0.0056 / 0.24 | 0.8614 / 0.0290 / — |
+| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | 0.9342 / 0.0035 / — |
 
-- **Raw:** discriminates (AUC pos-vs-neg 0.907 `ayuni`, 0.937 `Cinderella`) but
-  peaks at 0.14-0.50, so the shared 0.5 threshold never fires; its frame_acc is
-  just the negative-class fraction.
+`Cinderella` rescored 2026-09-13 against v3.5 item 12's repaired class map (22
+positive / 5 negative spans, was 4/4); per-channel AUC below supersedes the
+earlier single unlabelled figure.
+
+- **Raw:** discriminates (AUC pos-vs-neg `ayuni` stem 0.915 / mix 0.872,
+  `Cinderella` stem 0.931 / mix 0.959) but peaks at 0.14-0.50, so the shared 0.5
+  threshold never fires; its frame_acc is just the negative-class fraction.
 - **`_p98`** (`model.rescale_per_song`, divide by the song's own p98 — declared,
   not swept): fires, rarely wrongly, but still misses most vocal frames
   (0.9-2.2 bounds/min). Does not reach either incumbent.
@@ -125,6 +130,6 @@ be run manually via `run_in_container.sh` / `docker compose run app`.
 
 **No promotion case; keep/kill is the operator's call.** A correctly-ordered
 signal whose calibration is off, and a per-song rescale does not fix that
-enough: best 0.8538 / 0.5328 against whisperX's 0.9881 / 0.8134. Its one
+enough: best 0.8538 / 0.5125 against whisperX's 0.9881 / 0.8614. Its one
 distinctive number is `mix_p98`'s 0.07 residual firing on `ayuni`. Cost: its own
 image plus a 327 MB pin.

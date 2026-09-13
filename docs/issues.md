@@ -75,11 +75,12 @@ Current focus song: `_test_song`
 - **Why it is not just "finish item 8":** `whisperx_vad` beat the incumbent
   decisively on `ayuni` (frame_acc 0.9881 vs 0.9042, false_vocal 0.0056 vs
   0.0891, at a lower firing budget) but **lost on `Cinderella - Ella Lee`**
-  (0.8427 vs 0.9321) — that song's leaks are plucked and rhythmic, which a
-  speech VAD reads as consonants. Gating on it would trade one song's defect
-  for another's. Since then the sibilance discriminator shipped per-phrase,
-  which addresses exactly the Cinderella failure, so the question to answer is
-  now "does whisperX AND sibilance clear Cinderella", not "does whisperX win".
+  (0.8614 vs 0.9342, rescored 2026-09-13 against v3.5 item 12's repaired class
+  map) — that song's leaks are plucked and rhythmic, which a speech VAD reads
+  as consonants. Gating on it would trade one song's defect for another's.
+  Since then the sibilance discriminator shipped per-phrase, which addresses
+  exactly the Cinderella failure, so the question to answer is now "does
+  whisperX AND sibilance clear Cinderella", not "does whisperX win".
 - **The by-ear review, unchanged from D8.1** — four spans where the candidate
   rules disagree most, in the debugger against the audio:
 
@@ -87,7 +88,7 @@ Current focus song: `_test_song`
   | --- | --- | --- |
   | `ayuni` | 86.5-102.2 s (hint-009) | stem level says 57 % voiced, whisperX says 0.076. Is there really no voice? |
   | `Cinderella` | 25.0-31.4 s (hint-003) | whisperX says 0.536 mean. Is that plucked material truly voiceless? |
-  | `Cinderella` | 45.8-53.6 s (hint-005) | same question at 0.336 — and 38.5 % of it is above the -38 dB floor |
+  | `Cinderella` | 45.8-53.6 s (hint-007) | same question at 0.336 — and 38.5 % of it is above the -38 dB floor |
   | `Armin` | 44.7-55.8 s (hint-006) | filtered looped "oh, oh" — whisperX @0.5 misses 73 % of it, @0.2 catches it |
 
 - **Validation target:** `ayuni` and `Cinderella - Ella Lee` — the two songs

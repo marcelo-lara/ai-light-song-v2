@@ -234,10 +234,15 @@ checked.
 
   | detector | `ayuni` | `Cinderella - Ella Lee` |
   | --- | --- | --- |
-  | incumbent RMS `arrangement_state` | 0.9042 / 0.0891 | **0.9369 / 0.0040** |
-  | `whisperx_vad` (promoted) | **0.9881 / 0.0056** | 0.8134 / 0.0510 |
-  | `vocal_voiceness` | 0.8708 / 0.0323 | 0.6450 / 0.0176 |
-  | `svd_tagger` mix, per-song p98 rescale | 0.8538 / 0.0077 | 0.5328 / 0.0000 |
+  | incumbent RMS `arrangement_state` | 0.9042 / 0.0891 | **0.9342 / 0.0035** |
+  | `whisperx_vad` (promoted) | **0.9881 / 0.0056** | 0.8614 / 0.0290 |
+  | `vocal_voiceness` | 0.8708 / 0.0323 | 0.5480 / 0.0106 |
+  | `svd_tagger` mix, per-song p98 rescale | 0.8538 / 0.0077 | 0.5125 / 0.0000 |
+
+  `Cinderella` rescored 2026-09-13 against v3.5 item 12's repaired class map
+  (22 positive / 5 negative spans, was 4/4); ~15 of the 22 positives were
+  captured from `whisperx_vad`'s own lane, so whisperX's recall there is
+  circular — only `false_vocal_rate` (the second number) compares fairly.
 
   whisperX fixes the flute/guitar leak (`ayuni` residual firing 0.24 vs RMS
   0.82) and loses to RMS on rhythmic plucked-string leaks. No detector wins

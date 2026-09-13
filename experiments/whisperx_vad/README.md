@@ -195,7 +195,7 @@ v3.5 corpus rebuild, three-class scorer, the 5 songs declared in
 | song (evaluable: pos / res / neg s) | `whisperx_vad` | `arrangement_state` | `vocal_phrases` | mix-RMS |
 | --- | --- | --- | --- | --- |
 | `ayuni` (32.0 / 29.4 / 102.6) | **0.9881 / 0.0056** | 0.9042 / 0.0891 | 0.7038 / 0.1514 | 0.3263 / 0.6585 |
-| `Cinderella` (70.8 / 0 / 65.4) | 0.8134 / 0.0510 | **0.9369 / 0.0040** | 0.5022 / 0.1347 | 0.5143 / 0.4163 |
+| `Cinderella` (167.3 / 0 / 72.1) | 0.8614 / 0.0290 | **0.9342 / 0.0035** | 0.4518 / 0.0783 | 0.6946 / 0.2568 |
 | `In da name of love` (168.3 / 7.1 / 0) | 0.6013 / — | 0.9926 / — | 0.2736 / — | 0.9970 / — |
 | `Armin` (35.3 / 0 / 0) | 0.2730 / — | 1.0000 / — | 0.1997 / — | 1.0000 / — |
 | `What a Feeling` (1.0 / 1.0 / 0) | 0.5500 / — | 0.0500 / — | 0.2000 / — | 1.0000 / — |
@@ -206,16 +206,19 @@ Residual firing on `ayuni` (flute / plucked-guitar bleed): whisperX 0.24,
 **Only `ayuni` and `Cinderella` can separate detectors.** Three songs declare no
 negative span, so frame_acc there is recall alone and an always-on detector
 scores 1.0; `What a Feeling` has 2 s evaluable. The 5-song mean therefore ranks
-mix-RMS (0.7675) above whisperX (0.6452) — read the per-song rows, not the
+mix-RMS (0.8036) above whisperX (0.6548) — read the per-song rows, not the
 aggregate. On the two discriminating songs whisperX wins `ayuni` outright and
 loses `Cinderella` to the RMS incumbent. `ayuni` reproduced the pre-rebuild
-0.9881 / 0.0056 exactly.
+0.9881 / 0.0056 exactly; `Cinderella` rescored 2026-09-13 against v3.5 item
+12's repaired class map (22 positive / 5 negative spans, was 4/4) — ~15 of the
+22 positives were captured from this lane's own output, so only
+`false_vocal_rate` there is an independent measurement.
 
 ## Conclusion
 
 **Promoted.** Best items 4-7 candidate on the leak-heavy song (`ayuni` 0.9881 /
 0.0056, residual firing 0.24 vs the RMS incumbent's 0.82). Known weaknesses stay
-real: rhythmic plucked-string leaks (`Cinderella` 0.8134 vs RMS 0.9369),
+real: rhythmic plucked-string leaks (`Cinderella` 0.8614 vs RMS 0.9342),
 sustained/filtered vocals, and background chatter. No token needed at analysis
 time; diarization deliberately not attempted (see above).
 
