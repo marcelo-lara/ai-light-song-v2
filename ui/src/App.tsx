@@ -4,10 +4,15 @@ import { artifactPaths, discoverSongs, useSong } from "./data";
 import type {
   BlockEnergyFile,
   HumanHintsFile,
+  HumanSegmentsFile,
   LyricValidationsFile,
   SectionRow,
 } from "./data/types";
 import { buildHumanHintsPayload, saveHumanHints } from "./data/saveHumanHints";
+import {
+  buildHumanSectionsPayload,
+  saveHumanSections,
+} from "./data/saveHumanSections";
 import {
   buildBlockEnergyPayload,
   saveBlockEnergy,
@@ -18,9 +23,11 @@ import {
   saveLyricValidations,
 } from "./data/saveLyricValidations";
 import { draftToHint, hintToDraft } from "./panel/hintDraft";
+import { draftToSegment, segmentToDraft } from "./panel/segmentDraft";
 import {
   BlockInspector,
   HintEditorPanel,
+  SegmentEditorPanel,
   LaneEventsPanel,
   ReviewQueuePanel,
   RightPanel,
@@ -29,6 +36,7 @@ import {
   selectionFromSection,
   type BlockSelection,
   type HintSeed,
+  type SegmentSeed,
   type PanelMode,
 } from "./panel";
 import { ArtifactInspector } from "./inspector";
@@ -113,6 +121,9 @@ const TIMELINE_KEYS = [
   "drums",
   "energy",
   "humanHints",
+  // hand-authored section segmentation, editable via the same drag-to-edit /
+  // double-click-to-create conventions as humanHints (reference/human, writable)
+  "humanSections",
   // v3.4 item 4 — operator's per-block energy/tension ratings, joined to the
   // Human Hints events panel by hint_id (reference/human, writable).
   "blockEnergy",
@@ -176,6 +187,7 @@ const TIMELINE_KEYS = [
 /** sparse lane id → the single artifact key that backs it (drives empty-state). */
 const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   humanHints: "humanHints",
+  humanSections: "humanSections",
   moisesLyrics: "moisesLyrics",
   arrangementState: "arrangementState",
   dropProposals: "dropProposals",
@@ -243,6 +255,11 @@ export function App(): React.JSX.Element {
   const [eventsLaneId, setEventsLaneId] = useState<string | null>(null);
   const [activeHintRef, setActiveHintRef] = useState<string | null>(null);
   const [hintsOverride, setHintsOverride] = useState<HumanHintsFile | null>(null);
+  // Same reasoning as `activeHintRef` / `hintsOverride`, for the Human
+  // Sections lane.
+  const [activeSectionRef, setActiveSectionRef] = useState<string | null>(null);
+  const [sectionsOverride, setSectionsOverride] =
+    useState<HumanSegmentsFile | null>(null);
   // v3.4 item 4: the server-normalised block_energy.json returned by a Save,
   // applied in place so the Human Hints panel reflects it without a full reload
   // (same reasoning as `hintsOverride`).
@@ -259,6 +276,8 @@ export function App(): React.JSX.Element {
   // "Create human hint" action (item 9). `nonce` makes each request distinct so
   // the panel consumes it exactly once.
   const [hintSeed, setHintSeed] = useState<HintSeed | null>(null);
+  // Same reasoning as `hintSeed`, for the Human Sections lane.
+  const [sectionSeed, setSectionSeed] = useState<SegmentSeed | null>(null);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   // plan v1.5 D6: the offset the follow effect last wrote, so the scroll
@@ -352,6 +371,7 @@ export function App(): React.JSX.Element {
   const duration = transport.duration || estimatedDuration;
 
   const humanHintsFile = hintsOverride ?? artifacts.humanHints.data;
+  const humanSectionsFile = sectionsOverride ?? artifacts.humanSections.data;
   const blockEnergyFile = blockEnergyOverride ?? artifacts.blockEnergy.data;
   const lyricValidationsFile =
     lyricValidationsOverride ?? artifacts.lyricValidations.data;
@@ -364,6 +384,7 @@ export function App(): React.JSX.Element {
   const laneContentSources = useMemo<LaneContentSources>(
     () => ({
       humanHints: humanHintsFile,
+      humanSections: humanSectionsFile,
       moisesLyrics: artifacts.moisesLyrics.data,
       lyricValidations: validatedLyricIds,
       arrangementState: artifacts.arrangementState.data,
@@ -386,6 +407,7 @@ export function App(): React.JSX.Element {
     }),
     [
       humanHintsFile,
+      humanSectionsFile,
       artifacts.moisesLyrics.data,
       validatedLyricIds,
       artifacts.arrangementState.data,
@@ -414,9 +436,12 @@ export function App(): React.JSX.Element {
     setSelection(null);
     setActiveHintRef(null);
     setHintsOverride(null);
+    setActiveSectionRef(null);
+    setSectionsOverride(null);
     setBlockEnergyOverride(null);
     setLyricValidationsOverride(null);
     setHintSeed(null);
+    setSectionSeed(null);
     setEventsLaneId(null);
   }, [song]);
 
@@ -424,7 +449,9 @@ export function App(): React.JSX.Element {
     setPanelMode(null);
     setSelection(null);
     setActiveHintRef(null);
+    setActiveSectionRef(null);
     setHintSeed(null);
+    setSectionSeed(null);
     setEventsLaneId(null);
   }, []);
 
@@ -439,7 +466,9 @@ export function App(): React.JSX.Element {
       }
       setSelection(null);
       setActiveHintRef(null);
+      setActiveSectionRef(null);
       setHintSeed(null);
+      setSectionSeed(null);
       setEventsLaneId(laneId);
       setPanelMode("lane");
     },
@@ -515,6 +544,20 @@ export function App(): React.JSX.Element {
     setPanelMode("hint");
   }, []);
 
+  // Same conventions as the Human Hints editor, for Human Sections.
+  const openSegmentEditor = useCallback((reference: string | null) => {
+    setSelection(null);
+    setActiveSectionRef(reference);
+    setPanelMode("segment");
+  }, []);
+
+  const handleCreateSegmentAt = useCallback((time: number) => {
+    setSelection(null);
+    setActiveSectionRef(null);
+    setSectionSeed({ start: time, end: time + 1.0, nonce: Date.now() });
+    setPanelMode("segment");
+  }, []);
+
   // plan v1.5 item 9 / R8: promote the inspected event to a new, editable human
   // hint. Seeds an unsaved draft pre-filled from the block — no seek, no save,
   // no write to the source artifact (D10, D13).
@@ -558,11 +601,16 @@ export function App(): React.JSX.Element {
         openHintEditor(marker.id);
         return;
       }
+      if (marker.laneId === "humanSections") {
+        openSegmentEditor(marker.id);
+        return;
+      }
       setActiveHintRef(null);
+      setActiveSectionRef(null);
       setSelection(selectionFromMarker(marker));
       setPanelMode("inspector");
     },
-    [transport, openHintEditor, isTimeVisible, scrollTimelineToTime],
+    [transport, openHintEditor, openSegmentEditor, isTimeVisible, scrollTimelineToTime],
   );
 
   // item 7 (ui-issues finding 7): the server-normalised file returned by the
@@ -573,6 +621,11 @@ export function App(): React.JSX.Element {
   // every hint drag-commit and panel Save.
   const handleSaveHints = useCallback((file: HumanHintsFile) => {
     setHintsOverride(file);
+  }, []);
+
+  // Same reasoning as `handleSaveHints`, for Human Sections.
+  const handleSaveSegments = useCallback((file: HumanSegmentsFile) => {
+    setSectionsOverride(file);
   }, []);
 
   // v3.4 item 4: persist every Human Hints block's energy/tension rating on an
@@ -644,6 +697,55 @@ export function App(): React.JSX.Element {
     [song, humanHintsFile, handleSaveHints],
   );
 
+  // Same reasoning as `handleCommitHintTimes`, for Human Sections. Segments
+  // carry no persisted id — the block's synthesized `segment-NNN` id is
+  // matched back to its array position (assigned in the same order by
+  // `humanSectionsContent`).
+  const handleCommitSegmentTimes = useCallback(
+    async (id: string, start: number, end: number) => {
+      if (!song) throw new Error("No song selected.");
+      const current = humanSectionsFile ?? [];
+      const drafts = current.map((segment, i) => {
+        const draft = segmentToDraft(segment, i);
+        return draft.id === id
+          ? { ...draft, start: String(start), end: String(end) }
+          : draft;
+      });
+      const payload = buildHumanSectionsPayload(drafts.map(draftToSegment));
+      const written = await saveHumanSections(song, payload);
+      handleSaveSegments(written);
+    },
+    [song, humanSectionsFile, handleSaveSegments],
+  );
+
+  // Human Sections events-panel rating widget: energy/tension live on the
+  // segment itself, not a separate file (unlike block_energy.json), so the
+  // Save folds the panel's edited ratings back into the full segments array
+  // — same validate/PUT client the segment editor uses — keyed by each
+  // segment's synthesized `segment-NNN` id (`segmentToDraft`'s convention).
+  const handleSaveSectionRatings = useCallback(
+    async (
+      ratings: Record<string, { energy: number | null; tension: number | null }>,
+    ) => {
+      if (!song) throw new Error("No song selected.");
+      const current = humanSectionsFile ?? [];
+      const drafts = current.map((segment, i) => {
+        const draft = segmentToDraft(segment, i);
+        const r = ratings[draft.id];
+        if (!r) return draft;
+        return {
+          ...draft,
+          energy: r.energy != null ? String(r.energy) : "",
+          tension: r.tension != null ? String(r.tension) : "",
+        };
+      });
+      const payload = buildHumanSectionsPayload(drafts.map(draftToSegment));
+      const written = await saveHumanSections(song, payload);
+      handleSaveSegments(written);
+    },
+    [song, humanSectionsFile, handleSaveSegments],
+  );
+
   const renderLaneBody = useCallback(
     (lane: Lane): React.ReactNode => {
       if (lane.id === "waveform") {
@@ -687,14 +789,28 @@ export function App(): React.JSX.Element {
               blocks={blocks}
               status={art.status}
               error={art.error?.message ?? null}
-              activeId={lane.id === "humanHints" ? activeHintRef : null}
+              activeId={
+                lane.id === "humanHints"
+                  ? activeHintRef
+                  : lane.id === "humanSections"
+                    ? activeSectionRef
+                    : null
+              }
               onSeek={transport.seekTo}
               onSelectMarker={handleSelectMarker}
               onCommitHintTimes={
-                lane.id === "humanHints" ? handleCommitHintTimes : undefined
+                lane.id === "humanHints"
+                  ? handleCommitHintTimes
+                  : lane.id === "humanSections"
+                    ? handleCommitSegmentTimes
+                    : undefined
               }
               onCreateHint={
-                lane.id === "humanHints" ? handleCreateHintAt : undefined
+                lane.id === "humanHints"
+                  ? handleCreateHintAt
+                  : lane.id === "humanSections"
+                    ? handleCreateSegmentAt
+                    : undefined
               }
             />
             {lane.id === "humanHints" && (
@@ -703,6 +819,16 @@ export function App(): React.JSX.Element {
                 className="tl-hint-pill tl-hint-pill--new"
                 title="New hint at the playhead"
                 onClick={() => openHintEditor(null)}
+              >
+                <i className="ph ph-plus" />
+              </button>
+            )}
+            {lane.id === "humanSections" && (
+              <button
+                type="button"
+                className="tl-hint-pill tl-hint-pill--new"
+                title="New segment at the playhead"
+                onClick={() => openSegmentEditor(null)}
               >
                 <i className="ph ph-plus" />
               </button>
@@ -737,9 +863,13 @@ export function App(): React.JSX.Element {
       handleSelectMarker,
       laneContentSources,
       activeHintRef,
+      activeSectionRef,
       openHintEditor,
+      openSegmentEditor,
       handleCommitHintTimes,
       handleCreateHintAt,
+      handleCommitSegmentTimes,
+      handleCreateSegmentAt,
     ],
   );
 
@@ -1240,6 +1370,11 @@ export function App(): React.JSX.Element {
                 ? { file: blockEnergyFile, onSave: handleSaveBlockEnergy }
                 : undefined
             }
+            sectionRating={
+              eventsPanel.laneId === "humanSections"
+                ? { onSave: handleSaveSectionRatings }
+                : undefined
+            }
             lyricValidation={
               eventsPanel.laneId === "moisesLyrics"
                 ? {
@@ -1260,6 +1395,19 @@ export function App(): React.JSX.Element {
             seed={hintSeed}
             onClose={closePanel}
             onSaved={handleSaveHints}
+            onScrollToTime={scrollTimelineToTime}
+          />
+        )}
+
+        {activeView === "timeline" && song && panelMode === "segment" && (
+          <SegmentEditorPanel
+            song={song}
+            file={humanSectionsFile}
+            currentTime={transport.currentTime}
+            activeReference={activeSectionRef}
+            seed={sectionSeed}
+            onClose={closePanel}
+            onSaved={handleSaveSegments}
             onScrollToTime={scrollTimelineToTime}
           />
         )}

@@ -73,7 +73,7 @@ docker compose build ui         # production image
 **The debugger is read-only against generated data.** No snapshots, no caches,
 no derived JSON, no overrides, no helper files into `data/analysis/`.
 
-The only four writable paths:
+The only five writable paths:
 
 - `data/analysis/{song}/reference/human/human_hints.json` — explicit `Save`
 - `data/analysis/{song}/reference/human/song_facts.json` — explicit `Save`
@@ -86,6 +86,19 @@ The only four writable paths:
   defaulted `1`. Written by `PUT /api/block-energy/<song>` (dev-server only,
   like the hint editor — production Nginx has no handler). Nothing in `src/` or
   `mcp/` reads it.
+- `data/analysis/{song}/reference/human/segments.json` — explicit `Save`. The
+  operator's own hand-authored section segmentation, edited in the Human
+  Sections panel below Human Hints. A bare array of `{start, end, label?,
+  description?, energy?, tension?}`: `label`, when set, is a fixed value from
+  `docs/segments-vocabulary.md` (mirrored in `ui/src/data/segmentFunctions.ts`
+  and, for server-side validation, `vite.config.ts`'s
+  `SEGMENT_FUNCTION_NAMES`) — free text is rejected and unset is
+  honest-unknown, never defaulted; `description` is unconstrained free text;
+  `energy`/`tension` follow the same 1–5, unrated-is-absent convention as
+  `block_energy.json`, edited with the same segmented rating buttons in both
+  the segment editor and the lane's events panel. Written by `PUT
+  /api/human-sections/<song>` (dev-server only). Nothing in `src/` or `mcp/`
+  reads it.
 - `data/analysis/{song}/reference/human/lyric_validations.json` — **per-click**,
   not `Save` (v3.4 item 5 / D6). `{ schema_version, song_name, validated_ids:
   [int] }`: the ids of the Moises word tokens whose timing the operator has
@@ -99,7 +112,7 @@ The only four writable paths:
   three writers use — a rapid token-by-token pass should not need a Save button.
   Nothing in `src/` or `mcp/` reads it.
 
-`Cancel` / closing a panel must never update the three explicit-`Save` files.
+`Cancel` / closing a panel must never update the four explicit-`Save` files.
 The dev-server
 API enforces this at the mount level. A future workflow needing persisted
 review data must be documented as a new contract, not added implicitly.
@@ -129,7 +142,8 @@ reading that way, whichever of the three routes produced an entry.
 stops at these files.** That convention exists so a *fused, machine-written*
 value can say which producer won. `reference/human/` has exactly one producer —
 the operator — and adding provenance machinery to it (to `human_hints.json`,
-`song_facts.json`, `block_energy.json` or `lyric_validations.json`) would answer
+`song_facts.json`, `block_energy.json`, `segments.json` or
+`lyric_validations.json`) would answer
 a question nobody is asking while making the file harder to read by hand.
 
 ## Lanes
@@ -145,6 +159,7 @@ unrestricted" above.
 | Gestures | `song_event_timeline.json` | |
 | Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |
 | Human Hints | `reference/human/human_hints.json` (+ `reference/human/block_energy.json` for the per-block `energy`/`tension` rating controls in its events panel) | writable |
+| Human Sections | `reference/human/segments.json` | writable. The operator's own hand-authored section segmentation, below Human Hints; `label` (fixed vocabulary or unset), `description` (free text), `energy`/`tension` (1-5, same rating buttons as Human Hints) |
 | Moises Lyrics | `reference/moises/lyrics.json` (+ `reference/human/lyric_validations.json` overlay) | read-only ground truth; blocks tinted by per-word confidence. Each word-token card in its events panel has a ✔ button (v3.4 item 5); a validated token shows at confidence `1` with the distinct `moisesLyricsValidated` tint in both the panel and the lane. `lyric_validations.json` is writable (per-click); `reference/moises/lyrics.json` is never edited |
 | Drop Proposals | `reference/proposals/drop_impacts.json` | experiment |
 | Character, Shadow | `reference/proposals/character.json` | experiment |

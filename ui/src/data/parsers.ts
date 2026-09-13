@@ -16,6 +16,7 @@ import {
   stringOr,
   stringOrNull,
 } from "./parse";
+import { SEGMENT_FUNCTION_NAMES } from "./segmentFunctions";
 import type {
   Beats,
   BeatRow,
@@ -34,6 +35,8 @@ import type {
   HarmonicLayer,
   HumanHint,
   HumanHintsFile,
+  HumanSegment,
+  HumanSegmentsFile,
   LyricValidationsFile,
   LoudnessFrame,
   LoudnessHistory,
@@ -392,6 +395,42 @@ export function parseHumanHints(raw: unknown): HumanHintsFile {
       parseHumanHint(h, `human_hints.human_hints[${i}]`),
     ),
   };
+}
+
+// ---------------------------------------------------------------------------
+
+// reference/human/segments.json — a bare array, no wrapper object.
+export function parseHumanSegment(raw: unknown, ctx = "segment"): HumanSegment {
+  const o = asObject(raw, ctx);
+  const rawLabel = stringOr(o.label, "", `${ctx}.label`);
+  const rawDescription = stringOrNull(o.description, `${ctx}.description`);
+  // Migration shim: pre-swap segments.json wrote the vocab pick to `function`
+  // and free text to `label`. If `label` isn't a vocab name but `function` is,
+  // read the old shape so on-disk files survive the label/description swap
+  // without a manual re-pick — `function` is never written on save.
+  const rawFunction = stringOr(o.function, "", `${ctx}.function`);
+  const isOldShape = rawLabel && !SEGMENT_FUNCTION_NAMES.includes(rawLabel) && SEGMENT_FUNCTION_NAMES.includes(rawFunction);
+  // A label is either a vocab name or unset — never free text. Anything else
+  // on disk (a stray value from outside the app, say) reads back as unset
+  // rather than being carried forward as a fixed value it isn't.
+  const label = isOldShape
+    ? rawFunction
+    : SEGMENT_FUNCTION_NAMES.includes(rawLabel)
+      ? rawLabel
+      : null;
+  return {
+    start: numberOr(o.start, 0, `${ctx}.start`),
+    end: numberOr(o.end, 0, `${ctx}.end`),
+    label,
+    description: isOldShape ? (rawDescription ?? (rawLabel || null)) : rawDescription,
+    energy: numberOrNull(o.energy, `${ctx}.energy`),
+    tension: numberOrNull(o.tension, `${ctx}.tension`),
+  };
+}
+
+export function parseHumanSegmentsFile(raw: unknown): HumanSegmentsFile {
+  const list = asArray(raw ?? [], "segments.json");
+  return list.map((s, i) => parseHumanSegment(s, `segments.json[${i}]`));
 }
 
 // ---------------------------------------------------------------------------

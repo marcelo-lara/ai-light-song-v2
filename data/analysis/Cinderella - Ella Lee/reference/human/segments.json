@@ -1,0 +1,104 @@
+[
+  {
+    "start": 0,
+    "end": 24.98,
+    "label": "Intro",
+    "energy": 2,
+    "tension": 4
+  },
+  {
+    "start": 24.98,
+    "end": 53.34,
+    "label": "Intro"
+  },
+  {
+    "start": 53.34,
+    "end": 68.51,
+    "label": "Intro"
+  },
+  {
+    "start": 68.51,
+    "end": 78.32,
+    "label": "Pre-Build"
+  },
+  {
+    "start": 78.32,
+    "end": 82.83,
+    "label": "Breakdown"
+  },
+  {
+    "start": 82.83,
+    "end": 85.6,
+    "label": "Pre-Drop"
+  },
+  {
+    "start": 85.6,
+    "end": 101.89,
+    "label": "Drop"
+  },
+  {
+    "start": 101.89,
+    "end": 131.42,
+    "label": "Main"
+  },
+  {
+    "start": 131.42,
+    "end": 162.16,
+    "label": "Chorus"
+  },
+  {
+    "start": 162.16,
+    "end": 169.87,
+    "label": "Breakdown"
+  },
+  {
+    "start": 169.87,
+    "end": 177.08,
+    "label": "Build-Up"
+  },
+  {
+    "start": 177.08,
+    "end": 207.61,
+    "label": "Drop"
+  },
+  {
+    "start": 207.61,
+    "end": 238.09,
+    "label": "Verse"
+  },
+  {
+    "start": 238.09,
+    "end": 253.33,
+    "label": "Break"
+  },
+  {
+    "start": 253.33,
+    "end": 268.56,
+    "label": "Chorus"
+  },
+  {
+    "start": 268.56,
+    "end": 283.8,
+    "label": "Chorus"
+  },
+  {
+    "start": 283.8,
+    "end": 299.04,
+    "label": "Chorus"
+  },
+  {
+    "start": 299.04,
+    "end": 314.26,
+    "label": "Chorus"
+  },
+  {
+    "start": 314.26,
+    "end": 329.53,
+    "label": "Chorus"
+  },
+  {
+    "start": 329.53,
+    "end": 339.35,
+    "label": "Outro"
+  }
+]

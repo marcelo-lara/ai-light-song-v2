@@ -32,6 +32,10 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //   amber (35), humanHintsReview's azure (205), and every green-ish hue
   //   elsewhere in this file (arrangementState 95, phrasePeriodicity 130,
   //   characterVocalLead/moisesLyricsHigh 150)
+  humanSections: [55, 85, 46], // golden yellow — the operator's own hand-authored
+  //   segmentation, deliberately near humanHints' amber (35, same "hand-authored"
+  //   family) but distinct from it and from the production Sections lane's
+  //   teal (174)
   dropProposals: [318, 72, 46], // magenta — deliberately unlike the amber of the
   //                               human hints it is auditioned against
   dropProposalsMatched: [168, 60, 40], // muted teal — a proposal that already

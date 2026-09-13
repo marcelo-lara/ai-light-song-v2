@@ -295,6 +295,32 @@ export interface HumanHintsFile {
 }
 
 // ---------------------------------------------------------------------------
+// reference/human/segments.json  (editable, hand-authored section segmentation)
+// ---------------------------------------------------------------------------
+
+/**
+ * A bare array on disk — no wrapper object, no id/type/summary fields. Much
+ * simpler than `HumanHint`: this is the operator's own section segmentation.
+ * `label` is a fixed value, optional (honest-unknown when unset), one of
+ * `SEGMENT_FUNCTION_NAMES` (../data/segmentFunctions) — the canonical
+ * vocabulary is docs/segments-vocabulary.md. Free text is never accepted:
+ * a segment's label is either a vocabulary name or unset, never anything
+ * else. `description` is optional free text, never validated against the
+ * vocabulary. `energy`/`tension` are optional 1-5 integers (honest-unknown
+ * when unset, never a guessed default).
+ */
+export interface HumanSegment {
+  start: number;
+  end: number;
+  label?: string | null;
+  description?: string | null;
+  energy?: number | null;
+  tension?: number | null;
+}
+
+export type HumanSegmentsFile = HumanSegment[];
+
+// ---------------------------------------------------------------------------
 // reference/human/song_facts.json  (v1.1 — whole-song facts, human-confirmed)
 // ---------------------------------------------------------------------------
 // Written ONLY by an explicit human Save in the review-queue editor (Story

@@ -4,6 +4,7 @@
 export { RightPanel, type PanelMode } from "./RightPanel";
 export { BlockInspector } from "./BlockInspector";
 export { HintEditorPanel } from "./HintEditorPanel";
+export { SegmentEditorPanel } from "./SegmentEditorPanel";
 export { LaneEventsPanel, type BlockEnergyPanelProps } from "./LaneEventsPanel";
 export { ReviewQueuePanel } from "./ReviewQueuePanel";
 export {
@@ -32,3 +33,11 @@ export {
   type HintDraftFields,
   type HintSeed,
 } from "./hintDraft";
+export {
+  segmentToDraft,
+  draftToSegment,
+  segmentDraftFromSeed,
+  draftIdForSegmentReference,
+  type SegmentDraftFields,
+  type SegmentSeed,
+} from "./segmentDraft";

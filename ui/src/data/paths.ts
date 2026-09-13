@@ -20,6 +20,12 @@ export const artifactPaths = {
     encodePath(analysis(song, "song_event_timeline.json")),
   humanHints: (song: string) =>
     encodePath(analysis(song, "reference", "human", "human_hints.json")),
+  // Editable, hand-authored section segmentation — same reference/human/
+  // writable-lane conventions as humanHints (drag-to-edit, double-click to
+  // create, explicit Save), but a bare-array, simpler schema
+  // ({start, end, label} only, no id/type/summary).
+  humanSections: (song: string) =>
+    encodePath(analysis(song, "reference", "human", "segments.json")),
   songFacts: (song: string) =>
     encodePath(analysis(song, "reference", "human", "song_facts.json")),
   // v3.4 item 4 — operator's 1-5 energy/tension rating per human_hints.json

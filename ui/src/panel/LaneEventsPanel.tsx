@@ -72,6 +72,19 @@ export interface LyricValidationPanelProps {
   onToggle: (tokenId: number, nextValidated: boolean) => void;
 }
 
+export interface SectionRatingPanelProps {
+  /**
+   * Persist every block's rating on an explicit panel Save. Unlike
+   * `BlockEnergyPanelProps`, there is no separate ratings file to join —
+   * `energy`/`tension` live on the segment itself (segments.json), so the
+   * seed comes straight from each block's `raw` and the save handler folds
+   * the edits back into the full segments file.
+   */
+  onSave: (
+    ratings: Record<string, { energy: number | null; tension: number | null }>,
+  ) => Promise<void>;
+}
+
 interface LaneEventsPanelProps {
   laneId: string;
   laneLabel: string;
@@ -90,6 +103,8 @@ interface LaneEventsPanelProps {
   blockEnergy?: BlockEnergyPanelProps | undefined;
   /** v3.4 item 5 — supplied only for the Moises Lyrics panel */
   lyricValidation?: LyricValidationPanelProps | undefined;
+  /** supplied only for the Human Sections panel */
+  sectionRating?: SectionRatingPanelProps | undefined;
 }
 
 type AxisPair = { energy: number | null; tension: number | null };
@@ -104,6 +119,17 @@ function seedRatings(file: BlockEnergyFile | null): RatingState {
   return out;
 }
 
+/** Human Sections' energy/tension live on the segment itself — seed straight
+ *  from each block's `raw`, not a separate ratings file. */
+function seedSectionRatings(blocks: readonly SparseBlock[]): RatingState {
+  const out: RatingState = {};
+  for (const b of blocks) {
+    const raw = b.raw as { energy?: number | null; tension?: number | null } | null;
+    out[b.id] = { energy: raw?.energy ?? null, tension: raw?.tension ?? null };
+  }
+  return out;
+}
+
 function displayBlockId(blockId: string): string {
   const split = blockId.lastIndexOf("-");
   if (split < 0) return blockId;
@@ -111,7 +137,7 @@ function displayBlockId(blockId: string): string {
   return /^\d+$/.test(suffix) ? suffix : blockId;
 }
 
-function SegmentedRating({
+export function SegmentedRating({
   axis,
   hintId,
   value,
@@ -166,11 +192,13 @@ export function LaneEventsPanel({
   onSelectMarker,
   blockEnergy,
   lyricValidation,
+  sectionRating: sectionRatingProp,
 }: LaneEventsPanelProps): React.JSX.Element {
   const activeIndex = activeBlockIndex(blocks, currentTime);
   const activeCardRef = useRef<HTMLButtonElement | null>(null);
 
   const rating = laneId === "humanHints" ? blockEnergy : undefined;
+  const sectionRating = laneId === "humanSections" ? sectionRatingProp : undefined;
   const lyric = laneId === "moisesLyrics" ? lyricValidation : undefined;
 
   // D5.1 — guard against a double-fire from one click only (a rapid genuine
@@ -187,7 +215,7 @@ export function LaneEventsPanel({
     [lyric],
   );
   const [ratings, setRatings] = useState<RatingState>(() =>
-    seedRatings(rating?.file ?? null),
+    rating ? seedRatings(rating.file ?? null) : sectionRating ? seedSectionRatings(blocks) : {},
   );
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -201,6 +229,26 @@ export function LaneEventsPanel({
     setSaveState("idle");
     setSaveError(null);
   }, [rating?.file]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Same reseed reasoning, for Human Sections — but there is no separate
+  // ratings file to key off: `energy`/`tension` live on the segment itself
+  // (each block's `raw`), so a signature over those is the "did the on-disk
+  // data change" check instead of an object-identity comparison.
+  const sectionSigRef = useRef<string>("");
+  useEffect(() => {
+    if (!sectionRating) return;
+    const sig = JSON.stringify(
+      blocks.map((b) => {
+        const raw = b.raw as { energy?: number | null; tension?: number | null } | null;
+        return [b.id, raw?.energy ?? null, raw?.tension ?? null];
+      }),
+    );
+    if (sig === sectionSigRef.current) return;
+    sectionSigRef.current = sig;
+    setRatings(seedSectionRatings(blocks));
+    setSaveState("idle");
+    setSaveError(null);
+  }, [sectionRating, blocks]);
 
   const setAxis = useCallback(
     (hintId: string, axis: RatingAxis, v: number) => {
@@ -221,24 +269,39 @@ export function LaneEventsPanel({
   }).length;
 
   const doSave = useCallback(async () => {
-    if (!rating) return;
-    setSaveState("saving");
-    setSaveError(null);
-    try {
-      const drafts: BlockEnergyDraft[] = blocks.map((b) => ({
-        hint_id: b.id,
-        energy: ratings[b.id]?.energy ?? null,
-        tension: ratings[b.id]?.tension ?? null,
-      }));
-      await rating.onSave(drafts);
-      setSaveState("saved");
-    } catch (err) {
-      setSaveState("error");
-      setSaveError(
-        err instanceof Error ? err.message : "Unable to save ratings.",
-      );
+    if (rating) {
+      setSaveState("saving");
+      setSaveError(null);
+      try {
+        const drafts: BlockEnergyDraft[] = blocks.map((b) => ({
+          hint_id: b.id,
+          energy: ratings[b.id]?.energy ?? null,
+          tension: ratings[b.id]?.tension ?? null,
+        }));
+        await rating.onSave(drafts);
+        setSaveState("saved");
+      } catch (err) {
+        setSaveState("error");
+        setSaveError(
+          err instanceof Error ? err.message : "Unable to save ratings.",
+        );
+      }
+      return;
     }
-  }, [rating, blocks, ratings]);
+    if (sectionRating) {
+      setSaveState("saving");
+      setSaveError(null);
+      try {
+        await sectionRating.onSave(ratings);
+        setSaveState("saved");
+      } catch (err) {
+        setSaveState("error");
+        setSaveError(
+          err instanceof Error ? err.message : "Unable to save ratings.",
+        );
+      }
+    }
+  }, [rating, sectionRating, blocks, ratings]);
 
   // Follow: keep the active card visible while playing. Guarded so jsdom
   // (no `scrollIntoView`) does not throw.
@@ -274,7 +337,7 @@ export function LaneEventsPanel({
           )}
           <span className="app-rightpanel__kicker">{laneLabel}</span>
           <span className="lane-events__count">{blocks.length} events</span>
-          {rating && (
+          {(rating || sectionRating) && (
             <span
               className="lane-events__rated"
               data-testid="block-energy-count"
@@ -285,14 +348,14 @@ export function LaneEventsPanel({
         </>
       }
       footer={
-        rating ? (
+        rating || sectionRating ? (
           <div className="lane-events__ratings-footer">
             {saveState === "error" && (
               <p className="lane-events__save-status is-error">{saveError}</p>
             )}
             {saveState === "saved" && (
               <p className="lane-events__save-status is-ok">
-                Saved to block_energy.json.
+                {sectionRating ? "Saved to segments.json." : "Saved to block_energy.json."}
               </p>
             )}
             <button
@@ -372,7 +435,7 @@ export function LaneEventsPanel({
                         ✔
                       </button>
                     )}
-                  {rating && (
+                  {(rating || sectionRating) && (
                     <div
                       className="lane-events__rating"
                       data-testid={`block-energy-${block.id}`}

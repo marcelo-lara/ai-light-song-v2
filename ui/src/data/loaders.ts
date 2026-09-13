@@ -29,6 +29,7 @@ import {
   parseFftBands,
   parseHarmonicLayer,
   parseHumanHints,
+  parseHumanSegmentsFile,
   parseInfo,
   parseLyricValidations,
   parseLoudnessEnvelope,
@@ -47,6 +48,7 @@ import type {
   FftBands,
   HarmonicLayer,
   HumanHintsFile,
+  HumanSegmentsFile,
   LyricValidationsFile,
   LoudnessEnvelope,
   ReviewQueue,
@@ -196,6 +198,28 @@ export const loadEnergyLayer = (song: string, f?: typeof fetch) =>
 export const loadHumanHints = (song: string, f?: typeof fetch) =>
   loadJson<HumanHintsFile>(artifactPaths.humanHints(song), parseHumanHints, f);
 
+// reference/human/segments.json is optional (absent until the operator
+// authors a segmentation for a song), so a 404 resolves to an empty array.
+// Every other failure still surfaces.
+export const loadHumanSegments = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<HumanSegmentsFile>> => {
+  const result = await loadJson<HumanSegmentsFile>(
+    artifactPaths.humanSections(song),
+    parseHumanSegmentsFile,
+    f,
+  );
+  if (
+    !result.ok &&
+    result.error.kind === "http" &&
+    result.error.status === 404
+  ) {
+    return { ok: true, data: [] };
+  }
+  return result;
+};
+
 // v3.4 item 4 — reference/human/block_energy.json is optional (absent until the
 // operator rates a block), so a 404 resolves to an empty file. Every other
 // failure still surfaces.
@@ -290,6 +314,7 @@ export const artifactLoaders = {
   drums: loadDrumEvents,
   energy: loadEnergyLayer,
   humanHints: loadHumanHints,
+  humanSections: loadHumanSegments,
   blockEnergy: loadBlockEnergy,
   lyricValidations: loadLyricValidations,
   moisesLyrics: loadMoisesLyrics,

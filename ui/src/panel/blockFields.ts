@@ -40,6 +40,7 @@ export const LANE_LABELS: Record<string, string> = {
   character: "Character",
   vocalTranscription: "Vocal Transcription",
   humanHints: "Human Hints",
+  humanSections: "Human Sections",
   moisesLyrics: "Moises Lyrics",
   chords: "Chord Regions",
   drums: "Drum Density",

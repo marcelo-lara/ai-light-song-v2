@@ -70,6 +70,7 @@ export function collapsedLaneHeight(): number {
 export const LANE_DEFS: readonly LaneDef[] = [
   { id: "waveform", label: "Waveform Anchor", sub: "decoded source mix", kind: "waveform", height: 84 },
   { id: "humanHints", label: "Human Hints", sub: "reference/human · human_hints", kind: "hints", height: 58 },
+  { id: "humanSections", label: "Human Sections", sub: "reference/human · segments", kind: "hints", height: 58 },
   { id: "moisesLyrics", label: "Moises Lyrics", sub: "reference/moises · per-word tokens · tinted by confidence", kind: "lyrics", height: 84 },
   { id: "arrangementState", label: "Arrangement State", sub: "arrangement_state · who is playing, per-stem RMS state changes", kind: "proposals", height: 58 },
   { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58, experiment: "drop_detection" },
@@ -114,6 +115,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
 export const DEFAULT_EXPANDED: readonly string[] = [
   "waveform",
   "humanHints",
+  "humanSections",
   "moisesLyrics",
   "dropProposals",
   "fftBands",

@@ -24,7 +24,7 @@ Here is a genre-neutral list of section names you can use to tag song arrangemen
 
 * **Pre-Chorus** — A transitional section that builds anticipation and leads into the chorus.
 
-* **Chorus** — The main recurring hook or payoff section of a song.
+* **Chorus / Chorus (Inst)** — The main recurring hook or payoff section of a song; "Chorus (Inst)" is the same section without any significant vocal part.
 
 * **Post-Chorus** — A section immediately following the chorus, often extending its hook or energy without functioning as a full chorus.
 

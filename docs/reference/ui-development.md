@@ -170,8 +170,8 @@ hand-authored lanes they are auditioned against (`humanHints`, `moisesLyrics`).
   <laneId>: [<hue>, <sat>, <light>], // <colour name> — distinct from <neighbour hues>
 ```
 
-Existing hues to avoid colliding with: humanHints 35, gestures 10,
-arrangementState 95, characterShadow 96, vocalPhrasesSustained 280,
+Existing hues to avoid colliding with: humanHints 35, humanSections 55,
+gestures 10, arrangementState 95, characterShadow 96, vocalPhrasesSustained 280,
 dropProposals 318, vocalPhrases 340, sections 174, chords 193,
 moisesLyrics 210, character 275, textureNovelty 70, phrasePeriodicity 130.
 
@@ -296,12 +296,22 @@ Rare. Body is `CanvasLane` + a draw function in `timeline/laneRenderers.ts`.
    producers joins them inside the adapter from two `LaneContentSources` fields
    (precedent: `sectionsContent` joins `sections` + `sectionSegmentation` by
    `section_id`).
-4. **The debugger writes only** four `reference/human/` files:
+4. **The debugger writes only** five `reference/human/` files:
    `human_hints.json`, `song_facts.json`, `block_energy.json` (the Human Hints
    panel's per-block `energy`/`tension` rating, `PUT /api/block-energy/<song>`,
-   v3.4 item 4) — all three on explicit Save — and `lyric_validations.json`
-   (the Moises Lyrics panel's ✔ token-timing overlay, `PUT
-   /api/lyric-validations/<song>`, v3.4 item 5), which writes **per-click**, not
-   on Save (D5.1). Nothing in `src/` or `mcp/` reads any of them. Any other
-   write is a new contract — stop and ask.
+   v3.4 item 4) and `segments.json` (the Human Sections panel's hand-authored
+   section segmentation, `PUT /api/human-sections/<song>`) — all four on
+   explicit Save — and `lyric_validations.json` (the Moises Lyrics panel's ✔
+   token-timing overlay, `PUT /api/lyric-validations/<song>`, v3.4 item 5),
+   which writes **per-click**, not on Save (D5.1). Nothing in `src/` or `mcp/`
+   reads any of them. Any other write is a new contract — stop and ask.
+
+   `segments.json` is a bare array of `{start, end, label?, description?,
+   energy?, tension?}`. `label`, when set, must be one of the names in
+   `docs/segments-vocabulary.md` (mirrored in
+   `ui/src/data/segmentFunctions.ts` and, for server-side validation, in
+   `vite.config.ts`'s `SEGMENT_FUNCTION_NAMES` — kept in sync by hand in all
+   three places) — free text is rejected, and unset is honest-unknown, never
+   defaulted. `description` is unconstrained free text. `energy`/`tension` are
+   optional integers 1-5 (same convention as `block_energy.json`).
 5. **Docs update in the same change** as the code (Recipe A step 9).

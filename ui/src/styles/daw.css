@@ -892,6 +892,12 @@ input[type="range"]:focus-visible {
   color: var(--color-neutral-600);
   margin: 0 0 var(--space-2);
 }
+/* segments-vocabulary.md's description for the selected Function option. */
+.hint-editor__field-hint {
+  font: 400 11px/1.4 var(--font-body);
+  color: var(--color-neutral-600);
+  margin: var(--space-1) 0 0;
+}
 /* Type select tint matches the Human Hints lane's per-type block colour
    (sparseTints.ts: humanHints amber / humanHintsReview azure). */
 .hint-editor__type--hint { border-color: hsla(35, 92%, 48%, 0.5); }

@@ -19,7 +19,15 @@ import react from "@vitejs/plugin-react";
 // dev-only (production Nginx has no handler — the rating UI is dev-only, like
 // the hint editor). The `PUT /api/lyric-validations/<song>` handler (v3.4 item
 // 5) mirrors the guard/400/pretty-JSON shape but writes PER-CLICK, not on an
-// explicit Save (D5.1) — a rapid token-by-token verification pass.
+// explicit Save (D5.1) — a rapid token-by-token verification pass. The `PUT
+// /api/human-sections/<song>` handler mirrors the human-hints handler exactly
+// (explicit Save, same guard/400/pretty-JSON shape) but writes segments.json,
+// a bare array (no `{song_name, ...}` wrapper).
+//
+// The debugger writes exactly five `reference/human/` files: human_hints.json,
+// segments.json, song_facts.json, block_energy.json and
+// lyric_validations.json. Nothing in `src/` or `mcp/` reads any of them. Any
+// other write is a new contract — stop and ask.
 
 const dataRoot = "/data";
 const analysisRoot = path.join(dataRoot, "analysis");
@@ -160,6 +168,97 @@ function referenceHumanFilePath(song: unknown, fileName: string): string {
 
 function humanHintsFilePath(song: unknown): string {
   return referenceHumanFilePath(song, "human_hints.json");
+}
+
+// Kept in sync by hand with ui/src/data/segmentFunctions.ts (itself copied from
+// docs/segments-vocabulary.md) — this file is Node-side config, not part of
+// the src/ bundle, so it cannot import that module.
+const SEGMENT_FUNCTION_NAMES = [
+  "Intro",
+  "Outro",
+  "Verse",
+  "Main",
+  "Pre-Chorus",
+  "Chorus",
+  "Chorus (Inst)",
+  "Post-Chorus",
+  "Refrain",
+  "Breakdown",
+  "Break",
+  "Pre-Build",
+  "Build-Up",
+  "Build",
+  "Fill",
+  "Pre-Drop",
+  "Drop",
+  "Extended Drop",
+  "Bridge",
+  "Mid-Intro",
+];
+
+// segments.json — editable, hand-authored section segmentation. Same
+// writable-lane conventions as human_hints.json (explicit Save only; the
+// analyzer never writes reference/), but a bare array on disk, not
+// `{song_name, ...}`. `label` is a fixed value, optional, one of the names in
+// docs/segments-vocabulary.md (mirrored in ui/src/data/segmentFunctions.ts) —
+// never free text; it is the section's identity, not a caption, so a set
+// value must come from the vocabulary. `description` is optional free text,
+// never validated against the vocabulary. `energy`/`tension`, when present,
+// are an integer 1-5 (same D4.2 convention as block_energy.json) — a missing
+// axis is omitted, never defaulted.
+type NormalizedSegment = {
+  start: number;
+  end: number;
+  label?: string;
+  description?: string;
+  energy?: number;
+  tension?: number;
+};
+
+function normalizeSegmentRating(value: unknown, axis: string): number | undefined {
+  if (value === undefined || value === null) return undefined;
+  const n = Number(value);
+  if (!Number.isInteger(n) || n < 1 || n > 5) {
+    throw new Error(`Segment ${axis} must be an integer 1-5.`);
+  }
+  return n;
+}
+
+function normalizeSegmentLabel(value: unknown): string | undefined {
+  const name = String(value ?? "").trim();
+  if (!name) return undefined;
+  if (!SEGMENT_FUNCTION_NAMES.includes(name)) {
+    throw new Error(`Segment label "${name}" is not in segments-vocabulary.md, and free text is not allowed.`);
+  }
+  return name;
+}
+
+function normalizeHumanSegmentsPayload(payload: unknown): NormalizedSegment[] {
+  if (!Array.isArray(payload)) {
+    throw new Error("Human sections payload must be a JSON array.");
+  }
+  return payload.map((segment: unknown) => {
+    const s = (segment && typeof segment === "object" ? segment : {}) as Record<
+      string,
+      unknown
+    >;
+    const energy = normalizeSegmentRating(s.energy, "energy");
+    const tension = normalizeSegmentRating(s.tension, "tension");
+    const description = String(s.description ?? "").trim();
+    const label = normalizeSegmentLabel(s.label);
+    return {
+      start: Number(s.start ?? 0),
+      end: Number(s.end ?? 0),
+      ...(label ? { label } : {}),
+      ...(description ? { description } : {}),
+      ...(energy !== undefined ? { energy } : {}),
+      ...(tension !== undefined ? { tension } : {}),
+    };
+  });
+}
+
+function humanSectionsFilePath(song: unknown): string {
+  return referenceHumanFilePath(song, "segments.json");
 }
 
 // v1.1 Story 8.10 — song_facts.json is written ONLY by an explicit human Save
@@ -435,6 +534,40 @@ function dataMountPlugin(): Plugin {
             response.setHeader("Content-Type", "text/plain; charset=utf-8");
             response.end(
               error instanceof Error ? error.message : "Unable to save human hints.",
+            );
+          }
+          return;
+        }
+
+        if (
+          requestUrl &&
+          request.method === "PUT" &&
+          requestUrl.pathname.startsWith("/api/human-sections/")
+        ) {
+          try {
+            const song = decodeURIComponent(
+              requestUrl.pathname.replace("/api/human-sections/", ""),
+            );
+            const payload = normalizeHumanSegmentsPayload(
+              await readJsonBody(request),
+            );
+            const filePath = humanSectionsFilePath(song);
+            await fsp.mkdir(path.dirname(filePath), { recursive: true });
+            await fsp.writeFile(
+              filePath,
+              JSON.stringify(payload, null, 2) + "\n",
+              "utf-8",
+            );
+            response.statusCode = 200;
+            response.setHeader("Content-Type", "application/json; charset=utf-8");
+            response.end(JSON.stringify(payload));
+          } catch (error) {
+            response.statusCode = 400;
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            response.end(
+              error instanceof Error
+                ? error.message
+                : "Unable to save human sections.",
             );
           }
           return;

@@ -12,6 +12,7 @@
 import type {
   EventTimeline,
   HumanHintsFile,
+  HumanSegmentsFile,
   HarmonicLayer,
   SectionRow,
   SegmentationSection,
@@ -106,6 +107,38 @@ export function humanHintsContent(file: HumanHintsFile | null): SparseBlock[] {
     ...(h.type === "vocal" ? { tintId: "humanHintsVocal" } : {}),
     raw: h,
   }));
+}
+
+/**
+ * Human Sections — the operator's hand-authored segmentation
+ * (reference/human/segments.json). `label` is a fixed value, optional (one
+ * of SEGMENT_FUNCTION_NAMES, never free text) — when set it's the block's
+ * identity and doubles as the block label, falling back to the synthesized
+ * id when unset; `description` is optional free text, surfaced as the block
+ * summary when present. The block id is synthesized from array position.
+ */
+export function humanSectionsContent(file: HumanSegmentsFile | null): SparseBlock[] {
+  return (file ?? []).map((s, i) => {
+    const id = `segment-${String(i + 1).padStart(3, "0")}`;
+    const tags = [
+      s.energy != null ? `E${s.energy}` : null,
+      s.tension != null ? `T${s.tension}` : null,
+    ].filter((t): t is string => Boolean(t));
+    return {
+      id,
+      start_s: s.start,
+      end_s: s.end,
+      label: s.label || id,
+      laneLabel: "Human Sections",
+      caption: tags.length
+        ? `${formatRange(s.start, s.end)} · ${tags.join(" ")}`
+        : formatRange(s.start, s.end),
+      reference: id,
+      detail: "-",
+      summary: s.description?.trim() || "Hand-authored section segmentation.",
+      raw: s,
+    };
+  });
 }
 
 /**
@@ -1081,6 +1114,7 @@ export function gesturesContent(file: EventTimeline | null): SparseBlock[] {
 
 export interface LaneContentSources {
   humanHints?: HumanHintsFile | null;
+  humanSections?: HumanSegmentsFile | null;
   moisesLyrics?: MoisesLyricsFile | null;
   /** v3.4 item 5 — read-time overlay: Moises word-token ids the operator has
    *  hand-verified (from reference/human/lyric_validations.json). */
@@ -1107,6 +1141,7 @@ export interface LaneContentSources {
 /** the sparse (block) lane ids handled by this module, in registry order */
 export const SPARSE_LANE_IDS = [
   "humanHints",
+  "humanSections",
   "moisesLyrics",
   "arrangementState",
   "dropProposals",
@@ -1135,6 +1170,8 @@ export function buildLaneBlocks(
   switch (laneId) {
     case "humanHints":
       return humanHintsContent(s.humanHints ?? null);
+    case "humanSections":
+      return humanSectionsContent(s.humanSections ?? null);
     case "moisesLyrics":
       return moisesLyricsContent(s.moisesLyrics ?? null, s.lyricValidations ?? null);
     case "arrangementState":

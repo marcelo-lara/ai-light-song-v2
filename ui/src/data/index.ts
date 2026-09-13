@@ -14,6 +14,11 @@ export type {
 export { buildHumanHintsPayload, saveHumanHints } from "./saveHumanHints";
 export type { HintDraft } from "./saveHumanHints";
 export {
+  buildHumanSectionsPayload,
+  saveHumanSections,
+} from "./saveHumanSections";
+export type { SegmentDraft } from "./saveHumanSections";
+export {
   buildSongFactsPayload,
   saveSongFacts,
   WHOLE_SONG_FACT_FIELDS,
