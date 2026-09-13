@@ -10,15 +10,9 @@ hand-built cue set unnecessary, this is it.
 
 ## Status
 
-**BLOCKED — image build attempted once, timed out mid-checkpoint-download.**
-v3.5 item 6. All Python (`model.py`, `export.py`, `run.py`, `score.py`) and
-the `Dockerfile` / `run_in_container.sh` are written and follow the
-`clap_voiceness` (item 5) shape exactly. `pip install` of torch 2.4.1 CPU +
-`panns-inference==0.1.1` completed successfully inside the build. The build
-was killed by its own 15-minute bounded timeout while downloading the pinned
-327 MB PANNs checkpoint from Zenodo — see "What was actually attempted"
-below for the exact point of failure. **No `compute`/`export`/`score` run
-has happened** — the image was never produced.
+**OPEN — built, run over all 23 songs, scored on the 5 declared songs.** v3.5
+item 6. Neither promoted nor killed — that is the operator's call; see
+"Results evidence".
 
 ## Why? What for?
 
@@ -66,67 +60,36 @@ time — see `Dockerfile`). The kill condition
 item 4 on `ayuni`'s false-vocal rate, **given this cost** — a technically-equal
 score is not a win here, because items 4/5 pay no image/pin cost at all.
 
-## What was actually attempted
+## Checkpoint pin
 
-Per the task's resource guidance (bounded effort — image build attempted
-once, ≤ 10-15 min, no retry loop):
-
-1. The pinned checkpoint (`Cnn14_mAP=0.431.pth`, Zenodo record 3987831,
-   `Content-Length: 327428481` bytes) was downloaded directly from the host
-   shell this session (2m1s, ~2.7 MB/s effective) and sha256-verified —
-   `0dc499e40e9761ef5ea061ffc77697697f277f6a960894903df3ada000e34b31` — and
-   that exact, first-hand-verified hash is what `Dockerfile` pins and checks
-   at build time. `panns-inference==0.1.1` was confirmed to exist on PyPI.
-   `class_labels_indices.csv` was fetched and checked to confirm `"Singing"`
-   is AudioSet-527 class index 27 (0-indexed).
-
-2. **`docker build -f experiments/svd_tagger/Dockerfile -t
-   ai-light-song-v2-svd-research:dev .` was run once**, wrapped in `timeout
-   900` (15 min), the outer bound the task allowed. Result: **killed by its
-   own timeout at 14m59s, exit code 143. Not retried**, per the task's
-   explicit "stop immediately, do not retry" instruction.
-
-   **Exact point of failure** (from `docker buildx history logs`, the
-   buildkit record of that build): every `pip install` step (torch 2.4.1 CPU,
-   `panns-inference`, `librosa`, `soundfile`, the forced torch/numpy
-   reinstalls) **completed successfully** — steps `#1`-`#6` all finished.
-   The build reached step `#7`, the checkpoint `curl`, and stalled there:
-
-   ```
-   #7 [4/4] RUN mkdir -p /app/models/panns && curl -fL --retry 3 -o "/app/models/panns/Cnn14_mAP=0.431.pth" "https://zenodo.org/records/3987831/files/Cnn14_mAP=0.431.pth" && echo "<sha256>  ..." | sha256sum -c -
-   #7 0.187   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-   ...
-   #7 ...  0  312M    0  376k    0     0   154k      0  0:34:2[7] ...
-   #7 CANCELED
-   ```
-
-   `curl` inside the build container was transferring at **~154 KB/s**
-   (ETA ~34 minutes for the 312 MiB file) — roughly 17× slower than the same
-   URL's ~2.7 MB/s from the host shell moments earlier. Only ~376 KB of
-   327,428,481 bytes had downloaded when the 15-minute budget expired and
-   the step was canceled. This looks like a build-container network-path
-   constraint (proxy/rate-limit specific to the Docker build network, not a
-   dead URL or a bad pin — the same URL was fast from the host) rather than
-   anything wrong with the Dockerfile itself.
-
-3. **Step 3 of the task (`_test_song` compute/export run) was never
-   reached** — there is no image to run it in.
-
-**Design decision for the operator to record (D-item):** either (a) bake the
-checkpoint into the image via a `COPY` of a pre-fetched, host-verified file
-instead of an in-build `curl` (trades "no network dependency at build
-either" for "a 312 MB file must be staged next to the Dockerfile, likely
-outside git"), or (b) retry the build with a longer bound / on a host with a
-faster build-network path, since the pip layers already prove the rest of
-the Dockerfile is correct. Not decided here — this item's job was to prove
-or disprove the pipeline within budget, and it disproved it within the
-budget given, honestly, not by faking a number.
+`Cnn14_mAP=0.431.pth` (Zenodo record 3987831, 327,428,481 bytes, sha256
+`0dc499e40e9761ef5ea061ffc77697697f277f6a960894903df3ada000e34b31`), fetched by
+an in-build `curl` and sha256-checked in `Dockerfile`. The first build attempt
+was killed at its 15-minute bound (~154 KB/s inside the build network vs
+~2.7 MB/s from the host); a later build completed. If it stalls again, pre-fetch
+on the host and `COPY` it in, as `whisperx_vad` does.
 
 ## Results evidence
 
-**None yet.** No `compute` run has produced cache files under
-`experiments/svd_tagger/cache/`, so there is no results table — an honest
-`unknown`, not a fabricated number (CLAUDE.md: no silent fallbacks).
+Full table in [`out/score.txt`](out/score.txt). v3.5 corpus rebuild (2026-09-13),
+three-class scorer, the 5 declared songs. Only `ayuni` and `Cinderella` declare
+negatives, so only they separate detectors. frame_acc / false_vocal_rate /
+residual firing:
+
+| candidate | `ayuni` | `Cinderella` |
+| --- | --- | --- |
+| `svd_tagger_stem` / `_mix` (raw) | 0.7538 / 0.0000 / 0.00 | 0.4818 / 0.0000 / — |
+| `svd_tagger_stem_p98` | 0.8077 / 0.0154 / 0.23 | 0.4964 / 0.0146 / — |
+| `svd_tagger_mix_p98` | 0.8538 / 0.0077 / 0.07 | 0.5328 / 0.0000 / — |
+| `whisperx_vad` (promoted) | 0.9881 / 0.0056 / 0.24 | 0.8134 / 0.0510 / — |
+| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | 0.9369 / 0.0040 / — |
+
+- **Raw:** discriminates (AUC pos-vs-neg 0.907 `ayuni`, 0.937 `Cinderella`) but
+  peaks at 0.14-0.50, so the shared 0.5 threshold never fires; its frame_acc is
+  just the negative-class fraction.
+- **`_p98`** (`model.rescale_per_song`, divide by the song's own p98 — declared,
+  not swept): fires, rarely wrongly, but still misses most vocal frames
+  (0.9-2.2 bounds/min). Does not reach either incumbent.
 
 ## Usage
 
@@ -160,19 +123,8 @@ be run manually via `run_in_container.sh` / `docker compose run app`.
 
 ## Conclusion
 
-Scaffold complete and matches the `clap_voiceness` (item 5) shape: `model.py`
-/ `export.py` / `score.py` / `run.py`, the shared `voiceness_common` schema
-(extended with an optional per-row `channel` field for this item's two-
-producer case — see `voiceness_common/schema.py`), the shared scorer against
-all three incumbents for both channels, and the debugger lane
-(`6. SVD Tagger`, both channels as two curves, no toggle). The Dockerfile's
-`pip install` layers are proven correct (they completed in the one build
-attempt); the checkpoint-download layer is not — it stalled at ~154 KB/s
-inside the build network and was canceled by the 15-minute budget with
-376 KB of 312 MiB fetched. **No measured result exists and none is
-invented.** This item's kill condition is unevaluated, not passed or
-failed, and — per the task's explicit "stop, do not retry" instruction —
-was not retried. The next step is either re-attempting the build with a
-longer bound / on a faster build-network path, or switching the checkpoint
-to a `COPY`-in of a pre-fetched, host-verified file (see the D-item above),
-followed by one `compute`/`export`/`score` run on `_test_song`.
+**No promotion case; keep/kill is the operator's call.** A correctly-ordered
+signal whose calibration is off, and a per-song rescale does not fix that
+enough: best 0.8538 / 0.5328 against whisperX's 0.9881 / 0.8134. Its one
+distinctive number is `mix_p98`'s 0.07 residual firing on `ayuni`. Cost: its own
+image plus a 327 MB pin.

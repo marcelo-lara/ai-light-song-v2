@@ -1280,13 +1280,11 @@ highest-cost candidate in the false-vocal family)*
 
 ### Status
 
-**BLOCKED — scaffold complete, image build attempted once, timed out
-mid-download. Not run.** v3.5 item 6. Built as
+**OPEN — built and run over all 23 songs.** v3.5 item 6. Built as
 [`../experiments/svd_tagger/`](../experiments/svd_tagger/README.md): `model.py`
 / `export.py` / `score.py` / `run.py`, `Dockerfile`, `run_in_container.sh`,
 debugger lane `6. SVD Tagger` (both stem/mix channels as two curves in one
-lane, never a toggle). **No `compute`/`export`/`score` run has happened —
-the image was never produced.**
+lane, never a toggle).
 
 ### Cost, up front
 
@@ -1296,29 +1294,14 @@ sha256-verified at build time). The kill condition is explicitly
 cost-weighted: does not beat item 4 on `ayuni`'s false-vocal rate, *given
 this cost* — items 4/5 pay no image/pin cost at all.
 
-### What was attempted, exactly
-
-Per the task's bounded-effort guidance (one attempt, ≤ 15 min, no retry
-loop): `docker build -f experiments/svd_tagger/Dockerfile ...` was run once
-under `timeout 900`. Every `pip install` layer (torch 2.4.1 CPU,
-`panns-inference==0.1.1`, `librosa`, `soundfile`) **completed successfully**.
-The build reached its final layer — `curl`-fetching the pinned checkpoint
-from Zenodo (record 3987831, `Cnn14_mAP=0.431.pth`, 327,428,481 bytes,
-sha256 `0dc499e...e34b31`, verified first-hand by downloading the file
-directly on the host, 2m1s, ~2.7 MB/s) — and stalled there: inside the build
-container `curl` ran at **~154 KB/s** (ETA ~34 min), only 376 KB in before
-the 15-minute budget killed the build (`docker buildx history logs`: `#7
-CANCELED`). Not a dead URL or a bad pin (fast from the host, same URL) — a
-build-network throughput constraint specific to this environment's Docker
-build path. **Not retried**, per instruction. Step 3 (`_test_song`
-compute/export) was never reached — no image exists to run it in.
+**Build lesson (the durable part of the first attempt):** the Dockerfile fetches
+the 327 MB checkpoint with an in-build `curl`, sha256-checked (`0dc499e...e34b31`).
+The first attempt ran at ~154 KB/s inside the Docker build network against
+~2.7 MB/s from the host and was killed at its 15-minute bound; a later build
+completed with the same `curl`. `whisperx_vad` and `singer_identity` avoid the
+risk by pre-fetching on the host and `COPY`-ing the checkpoint in.
 
 ### Results evidence
-
-**Superseded 2026-09-13 — the image was built and the corpus was run.** The
-earlier "none, no compute has run" record is obsolete; D6.2's option (a) was
-taken (pre-fetched, host-verified checkpoint `COPY`'d in) and `compute`/`export`
-have since run over all 23 songs.
 
 **It discriminates; it does not fire.** Measured against the three-class ground
 truth:
@@ -1337,19 +1320,26 @@ all come from: it is never wrong because it never speaks. PANNs' `Singing`
 posterior is simply low-magnitude on a separated vocal stem, which is
 out-of-distribution against the AudioSet material it was trained on.
 
-**Do not read the all-zero-looking score table as "infers nothing".** It infers;
-its calibration is off by roughly 5x. What it would need is a per-song rescale
-(e.g. against its own high percentile, the way `arrangement_state` thresholds
-each stem against its own p98), not a threshold nudge.
+**Per-song rescale, measured 2026-09-13** (`_p98` rows: each channel divided by
+the song's own p98, clipped; declared before measuring, not swept). frame_acc /
+false_vocal_rate / residual firing, v3.5 corpus rebuild, three-class scorer:
 
-### D6.2 (open — for the operator)
+| candidate | `ayuni` | `Cinderella` |
+| --- | --- | --- |
+| `svd_tagger_stem` (raw) | 0.7538 / 0.0000 / 0.00 | 0.4818 / 0.0000 / — |
+| `svd_tagger_stem_p98` | 0.8077 / 0.0154 / 0.23 | 0.4964 / 0.0146 / — |
+| `svd_tagger_mix_p98` | 0.8538 / 0.0077 / **0.07** | 0.5328 / 0.0000 / — |
+| `whisperx_vad` (promoted) | **0.9881 / 0.0056** / 0.24 | 0.8134 / 0.0510 / — |
+| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | **0.9369 / 0.0040** / — |
 
-Either (a) `COPY` a pre-fetched, host-verified checkpoint into the image
-instead of an in-build `curl` (trades away the "still no network dependency
-at build either" property for staging a 312 MB file outside git next to the
-Dockerfile), or (b) retry the build with a longer bound or on a host with a
-faster build-network path — the `pip install` layers already prove the rest
-of the Dockerfile correct, only the checkpoint fetch is blocked.
+**Rescaling alone does not make it competitive.** It now fires, and almost never
+wrongly, but it still misses most vocal frames — rescaled, it fires at 0.9-2.2
+bounds/min against whisperX's 5-12. `Cinderella` barely moves (0.48 → 0.53),
+far below both incumbents. The one distinctive number is `mix_p98`'s 0.07
+residual firing on `ayuni` (filtered/looped vocal constructs), the lowest of any
+candidate — reported, not a promotion case on its own. The other three
+scoreable songs cannot separate detectors (no declared negatives, or 2 s
+evaluable); see `experiments/whisperx_vad/README.md`.
 
 ### Conclusion
 
@@ -1360,12 +1350,12 @@ field for this item's two-producer case (stem vs mix in one proposal file,
 each row attributed — the "published files are fused, say which producer
 won" convention generalised, not a new pattern).
 
-**OPEN — no promotion case, but not a kill either.** Its AUC never beats
-`whisperx_vad` (0.998 / 0.948) on either scored song, so it adds nothing the
-promoted detector does not already provide, and there is no reason to promote
-it. But it is a genuine, correctly-ordered signal rather than a dead end, and
-the one cheap experiment that would settle it — rescale per song, then rescore —
-has not been run. Kill only after that.
+**OPEN — no promotion case; keep/kill is the operator's call.** Its AUC never
+beats `whisperx_vad` (0.998 / 0.948), and the per-song rescale — the one cheap
+experiment left — was run and does not close the gap: best frame_acc 0.8538
+(`ayuni`) / 0.5328 (`Cinderella`) against whisperX's 0.9881 / 0.8134. What it
+uniquely shows is a low residual-construct firing rate (0.07 on `ayuni`), from
+a model that costs its own image and a 327 MB pin.
 
 ---
 

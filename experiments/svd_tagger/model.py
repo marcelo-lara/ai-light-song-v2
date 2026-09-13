@@ -42,6 +42,11 @@ BATCH = 8
 #: AudioSet-527 class index of "Singing" — see module docstring.
 SINGING_CLASS_INDEX = 27
 
+#: Per-song rescale anchor: each channel divided by its own 98th percentile,
+#: the same per-song p98 anchor `arrangement_state` uses for stem presence.
+#: Declared before measuring — not tuned against the ground truth.
+RESCALE_PERCENTILE = 98.0
+
 #: Merge phrase runs separated by no more than one hop.
 GAP_MERGE_S = 1.0
 #: A 5s window is not sharp enough to time anything shorter as a real phrase.
@@ -132,6 +137,19 @@ def load(song: str, *, rebuild: bool = False, device: str = "cpu", tagger=None) 
 
 def cached_songs(songs: list[str]) -> list[str]:
     return [song for song in songs if paths.cache_path(song).exists()]
+
+
+def rescale_per_song(voiceness: np.ndarray) -> np.ndarray:
+    """Divide by this song's own `RESCALE_PERCENTILE`, clipped to [0, 1].
+    PANNs' `Singing` posterior ranks vocal windows well but peaks far below
+    0.5 on a separated stem; this tests whether calibration alone is the
+    problem. Monotone per song, so it cannot change within-song AUC."""
+    v = np.asarray(voiceness, dtype=float)
+    ref = float(np.percentile(v, RESCALE_PERCENTILE)) if len(v) else 0.0
+    if ref <= 0.0:
+        # never guessed — a song with no Singing mass has nothing to rescale against
+        raise ValueError(f"p{RESCALE_PERCENTILE:g} of the Singing score is {ref}; cannot rescale")
+    return np.clip(v / ref, 0.0, 1.0)
 
 
 def derive_vocal_phrases(times: np.ndarray, voiceness: np.ndarray) -> list[dict]:

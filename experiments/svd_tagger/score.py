@@ -11,6 +11,10 @@ window cannot time a phrase edge to sub-second tolerance, same reasoning as
 `clap_voiceness`. Every `svd_tagger_*` row's `boundary_f1` numbers are
 marked `boundary_f1_scored: false` and the printed table stars them.
 
+**`_p98` rows** are the same two channels after `model.rescale_per_song`
+(divide by the song's own p98). Item 6's narrow question: does calibration
+alone make SVD competitive, given its within-song ranking is already good?
+
 **Three-class ground truth** (`voiceness_common.scorer.ground_truth`,
 declared per-song in `voiceness_common/vocal_ground_truth.json`): positive
 (`type: "vocal"`), residual (excluded from every scored metric, its firing
@@ -36,6 +40,8 @@ from . import model, paths
 CANDIDATES = (
     "svd_tagger_stem",
     "svd_tagger_mix",
+    "svd_tagger_stem_p98",
+    "svd_tagger_mix_p98",
     "arrangement_state",
     "vocal_phrases",
     "mix_rms_baseline",
@@ -43,11 +49,14 @@ CANDIDATES = (
 
 
 def _candidate_frames_phrases(name: str, song: str):
-    if name in ("svd_tagger_stem", "svd_tagger_mix"):
+    if name.startswith("svd_tagger_"):
         data = model.load(song)
-        channel = "stem" if name == "svd_tagger_stem" else "mix"
+        channel = "stem" if name.startswith("svd_tagger_stem") else "mix"
         times = data[f"{channel}_times"]
         voiceness = data[f"{channel}_voiceness"]
+        # `_p98` rows: the same scores divided by the song's own p98 (item 6's rescale test)
+        if name.endswith("_p98"):
+            voiceness = model.rescale_per_song(voiceness)
         frames = [(float(t), float(v)) for t, v in zip(times, voiceness)]
         phrases = model.derive_vocal_phrases(times, voiceness)
         return frames, phrases
@@ -90,7 +99,7 @@ def score_song(song: str) -> dict:
             "residual_firing_rate": round(result.residual_firing_rate, 4),
             "bounds_per_min": round(result.bounds_per_min, 2),
             "boundary_f1": {str(t): round(b.f1, 3) for t, b in result.boundary.items()},
-            "boundary_f1_scored": name not in ("svd_tagger_stem", "svd_tagger_mix"),
+            "boundary_f1_scored": not name.startswith("svd_tagger_"),
             "is_proxy_no_ground_truth": result.n_frames_evaluable == result.n_frames_residual,
         }
     return out
@@ -128,7 +137,7 @@ def gold_table(songs: list[str]) -> str:
             agg_bpm[name].append(c["bounds_per_min"])
 
     lines.append(
-        "\n* svd_tagger_stem/mix's F1@0.5s is REPORTED, NOT SCORED — a 5s "
+        "\n* every svd_tagger_* row's F1@0.5s is REPORTED, NOT SCORED — a 5s "
         "PANNs window cannot time a phrase edge to sub-second tolerance. "
         "Frame voiceness accuracy and false_vocal_rate are the metrics "
         "these candidates are actually measured on."
