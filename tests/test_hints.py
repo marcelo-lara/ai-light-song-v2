@@ -139,6 +139,54 @@ class SectionHintsTests(unittest.TestCase):
                 "soft motion of moving heads.\nparcans slow violet waves",
             )
 
+    def test_lighting_hint_from_human_hints_reaches_hints_json(self) -> None:
+        # Regression for the v3.6 bug: hints.json going stale against
+        # reference/human/human_hints.json. A non-empty lighting_hint in the
+        # human ground truth must appear in hints.json with source "human"
+        # and the same lighting_hint text after this stage runs.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = SongPaths(
+                song_path=root / "songs" / "_test_song.mp3",
+                analysis_root=root / "analysis",
+            )
+
+            sections_payload = {
+                "sections": [
+                    {
+                        "section_id": "section-001",
+                        "start": 0.0,
+                        "end": 30.0,
+                        "function": "verse",
+                    },
+                ]
+            }
+
+            expected_lighting_hint = "hard strobe hits on the snare, red wash"
+            _write_json(
+                paths.reference("human", "human_hints.json"),
+                {
+                    "song_name": "_test_song",
+                    "human_hints": [
+                        {
+                            "id": "hint-001",
+                            "title": "Drop",
+                            "start_time": 5.0,
+                            "end_time": 15.0,
+                            "summary": "Drop hits hard",
+                            "lighting_hint": expected_lighting_hint,
+                        }
+                    ],
+                },
+            )
+
+            generate_section_hints(paths, sections_payload)
+
+            merged_payload = json.loads(paths.hints_output_path.read_text(encoding="utf-8"))
+            all_hints = [hint for section in merged_payload["sections"] for hint in section["hints"]]
+            human_hint = next(hint for hint in all_hints if hint["source"] == "human")
+            self.assertEqual(human_hint["lighting_hint"], expected_lighting_hint)
+
 
 if __name__ == "__main__":
     unittest.main()

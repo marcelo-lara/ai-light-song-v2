@@ -66,7 +66,7 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 1 of 12 |
+| Done | 2 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 2, 8, 9, 10 |
@@ -91,12 +91,14 @@ commit.
 Refinement doc → Bugs. `hints.json` predates the 09-14 re-marks. Publishing
 already carries `lighting_hint`.
 
-- [ ] `tests/test_hints.py`: a hint in `reference/human/human_hints.json` with a non-empty `lighting_hint` appears in `hints.json` with `source: "human"` and the same `lighting_hint`.
-- [ ] For `Armin - Revolution`, `Cinderella - Ella Lee`, `Hideaway - Kiesza`, `In da name of love - Anita and Ray`, `Queen of Kings - Alessandra`, `Titanium - David Guetta ft Sia`, `What a Feeling - Courtney Storm`, `_test_song`, `ayuni`: run `./analyze --song "/data/songs/<song>.mp3" --stage <s>` for `generate-section-hints`, then `build-ui-data`, then `build-human-hints-alignment`.
+- [x] `tests/test_hints.py`: a hint in `reference/human/human_hints.json` with a non-empty `lighting_hint` appears in `hints.json` with `source: "human"` and the same `lighting_hint`.
+- [x] For `Armin - Revolution`, `Cinderella - Ella Lee`, `Hideaway - Kiesza`, `In da name of love - Anita and Ray`, `Queen of Kings - Alessandra`, `Titanium - David Guetta ft Sia`, `What a Feeling - Courtney Storm`, `_test_song`, `ayuni`: run `./analyze --song "/data/songs/<song>.mp3" --stage <s>` for `generate-section-hints`, then `build-ui-data`, then `build-human-hints-alignment`.
 
 **Checks**
-- [ ] `docker compose run --rm test` green.
-- [ ] Per song: `source == "human"` rows in `hints.json` == entries in `human_hints.json`. Expected: Armin 19, Cinderella 30, Hideaway 5, In da name of love 11, Queen of Kings 16, Titanium 15, What a Feeling 2, `_test_song` 13, ayuni 18.
+- [x] `docker compose run --rm test` green.
+- [x] Per song: `source == "human"` rows in `hints.json` == entries in `human_hints.json`. Expected: Armin 19, Cinderella 30, Hideaway 5, In da name of love 11, Queen of Kings 16, Titanium 15, What a Feeling 2, `_test_song` 13, ayuni 18. All 9 matched exactly.
+
+**Note:** `tests/ui-visual/fixtures/analysis/**` shows unrelated pre-existing drift against `build-fixtures.py`'s output (last regenerated before this plan started, source songs since re-analyzed by other work). Left uncommitted/untouched — out of scope for this item; items 2/4/5 re-run `build-fixtures.py` anyway.
 
 ---
 
