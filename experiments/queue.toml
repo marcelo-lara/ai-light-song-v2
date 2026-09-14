@@ -58,46 +58,11 @@ enabled = true
 # <path>`), not through this queue. See docs/archive/experiments_promoted.md
 # "WhisperX VAD".
 
-[[experiment]]
-name = "rhythm_drum_ioi"
-command = "python -m experiments.rhythm_drum_ioi.run compute --song {song_name} && python -m experiments.rhythm_drum_ioi.run export --song {song_name}"
-image = "app"
-enabled = true
-
-[[experiment]]
-name = "rhythm_stem_autocorr"
-command = "python -m experiments.rhythm_stem_autocorr.run compute --song {song_name} && python -m experiments.rhythm_stem_autocorr.run export --song {song_name}"
-image = "app"
-enabled = true
-
-[[experiment]]
-name = "rhythm_vocal_onsets"
-# `compute` needs `faster_whisper`, only installed in the ACE-Step sandbox
-# image (ai-light-song-v2-acestep:dev, built from
-# experiments/drop_detection/research/Dockerfile.acestep) — not the `app`
-# image this runner executes in, and the runner only ever honors "app" (see
-# the field comment above). `image` is deliberately not "app", so this whole
-# row is recorded skipped(needs image acestep ...) every run, matching
-# svd_tagger's precedent. Run compute by hand, export/score through the
-# normal queue path:
-#   ./experiments/acestep_transcriber/run_in_container.sh python -m experiments.rhythm_vocal_onsets.run compute --song {song_name}
-#   docker compose run --rm app python -m experiments.rhythm_vocal_onsets.run export --song {song_name}
-command = "python -m experiments.rhythm_vocal_onsets.run compute --song {song_name} && python -m experiments.rhythm_vocal_onsets.run export --song {song_name}"
-image = "acestep"
-enabled = true
-
-[[experiment]]
-name = "energy_level"
-command = "python -m experiments.energy_level.run compute --song {song_name} && python -m experiments.energy_level.run export --song {song_name}"
-image = "app"
-enabled = true
-
-[[experiment]]
-name = "tension_shape"
-# Reads the sibling phrase_periodicity experiment's proposal file for the
-# through-composed regime bump (file dependency, not an import) — run
-# phrase_periodicity first for a given song, or the bump is simply never
-# true (no crash).
-command = "python -m experiments.tension_shape.run compute --song {song_name} && python -m experiments.tension_shape.run export --song {song_name}"
-image = "app"
-enabled = true
+# rhythm_drum_ioi, rhythm_stem_autocorr, energy_level and tension_shape were
+# promoted OUT of experiments/ in v3.6 item 10 — ported into
+# src/analyzer/stages/section_clues.py, the analyzer's own phase-3 stage.
+# rhythm_vocal_onsets was promoted the same item into whisperx_vad/
+# vocal_onsets.py (D10.1), a second output of the `whisperx` service. None of
+# the five run through this queue any more; their READMEs stay at
+# experiments/<name>/README.md as the record of what was measured before
+# promotion (docs/archive/experiments_promoted.md has the TLDR).

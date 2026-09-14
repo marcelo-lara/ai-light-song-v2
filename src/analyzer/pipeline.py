@@ -22,6 +22,7 @@ from analyzer.stages.harmonic import extract_hpcp_and_chords
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.loudness import extract_mix_stem_loudness
+from analyzer.stages.section_clues import section_clues
 from analyzer.stages.section_function import contest_section_function
 from analyzer.stages.segmentation import segment_sections
 from analyzer.stages.stems import ensure_stems
@@ -54,6 +55,7 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "detect-arrangement-state": "3.2",
     "publish-arrangement-state": "7.3",
     "contest-section-function": "3.3",
+    "section-clues": "3.4",
     "derive-energy-layer": "4.1",
     "build-gestures": "5.0",
     "classify-genre": "6.1",
@@ -218,6 +220,18 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         _required_output_payload(paths, stage_name, paths.arrangement_state_output_path)
         _required_output_payload(paths, stage_name, paths.loudness_output_path)
         _run_stage(paths.song_name, "phase-1", stage_name, contest_section_function, paths)
+        return 0
+    if stage_name == "section-clues":
+        # Phase 3 (v3.6 item 10) — reads the published sections.json,
+        # beats.json, drum_events.json, loudness.json, arrangement_state.json,
+        # song_event_timeline.json (never audio), plus
+        # artifacts/whisperx-vad/vocal_onsets.json (D10.1). Runs after
+        # contest-section-function, which is the last stage to touch
+        # sections.json before this one.
+        _required_output_payload(paths, stage_name, paths.sections_output_path)
+        _required_output_payload(paths, stage_name, paths.loudness_output_path)
+        _required_output_payload(paths, stage_name, paths.arrangement_state_output_path)
+        _run_stage(paths.song_name, "phase-1", stage_name, section_clues, paths)
         return 0
     if stage_name == "derive-energy-layer":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
@@ -409,6 +423,12 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         # the already-published sections.json. Runs after build-ui-data and
         # publish-arrangement-state, which publish everything it reads.
         _run_stage(paths.song_name, "phase-1", "contest-section-function", contest_section_function, paths)
+        # section-clues (3.4, v3.6 item 10) is phase 3 — energy/tension/rhythm
+        # clue fields fused onto the already-published sections.json. Runs
+        # after contest-section-function, the last stage to touch
+        # sections.json before this one. Run order has never matched id order
+        # (see the contest-section-function comment above).
+        _run_stage(paths.song_name, "phase-1", "section-clues", section_clues, paths)
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
         # v3.1 item 2 — attribution header. `bpm` and `duration` are essentia's

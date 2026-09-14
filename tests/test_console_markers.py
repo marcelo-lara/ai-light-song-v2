@@ -432,6 +432,7 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.detect_arrangement_state", return_value={"blocks": []}))
                 stack.enter_context(patch("analyzer.pipeline.publish_arrangement_state", return_value="arrangement_state.json"))
                 stack.enter_context(patch("analyzer.pipeline.contest_section_function", return_value={"sections": []}))
+                stack.enter_context(patch("analyzer.pipeline.section_clues", return_value={"sections_with_seed_unreviewed": [], "any_seed_unreviewed": False}))
                 stack.enter_context(patch("analyzer.pipeline.derive_energy_layer", return_value=energy))
                 stack.enter_context(patch("analyzer.pipeline.build_gestures", return_value=event_timeline))
                 stack.enter_context(patch("analyzer.pipeline.build_human_hints_alignment", return_value=None))

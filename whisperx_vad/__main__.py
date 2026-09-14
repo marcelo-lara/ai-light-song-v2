@@ -39,6 +39,13 @@ def _run_one_song(song: str, analysis_root: str, device: str) -> int:
     print(f"[{song_paths.song_name}] whisperx-vad ...", flush=True)
     try:
         export_mod.export(song_paths, device=device)
+        # v3.6 item 10 (D10.1) — a second, independent output: word onsets
+        # from faster_whisper over the same vocal stem, for section_clues.py's
+        # rhythm.vocals candidate producer. CPU/CUDA device selection for this
+        # one is its own WHISPER_DEVICE env (see vocal_onsets.py), not the VAD
+        # model's --device flag.
+        print(f"[{song_paths.song_name}] whisperx-vad vocal-onsets ...", flush=True)
+        export_mod.export_vocal_onsets(song_paths)
     except AnalyzerError as exc:
         print(f"[{song_paths.song_name}] FAILED: {exc}", file=sys.stderr)
         return exc.exit_code
@@ -46,6 +53,7 @@ def _run_one_song(song: str, analysis_root: str, device: str) -> int:
         print(f"[{song_paths.song_name}] FAILED: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 3
     print(f"[{song_paths.song_name}] wrote {export_mod.paths.output_path(song_paths)}")
+    print(f"[{song_paths.song_name}] wrote {export_mod.paths.vocal_onsets_output_path(song_paths)}")
     return 0
 
 

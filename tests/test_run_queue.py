@@ -37,19 +37,19 @@ class SubstitutionTests(unittest.TestCase):
 
 
 class QueueFileTests(unittest.TestCase):
-    def test_seeded_queue_parses_with_six_enabled_app_rows(self) -> None:
+    def test_seeded_queue_parses_with_three_enabled_app_rows(self) -> None:
+        # v3.6 item 10 (D10.2) — rhythm_drum_ioi, rhythm_stem_autocorr,
+        # energy_level, tension_shape and rhythm_vocal_onsets were promoted
+        # out of the queue (into src/analyzer/stages/section_clues.py and
+        # whisperx_vad/vocal_onsets.py respectively); their rows are removed,
+        # not disabled.
         rows = run_queue.load_queue()
         names = [r["name"] for r in rows]
         self.assertEqual(
             sorted(names),
             [
-                "energy_level",
                 "phrase_periodicity",
-                "rhythm_drum_ioi",
-                "rhythm_stem_autocorr",
-                "rhythm_vocal_onsets",
                 "svd_tagger",
-                "tension_shape",
                 "vocal_voiceness",
             ],
         )
@@ -57,11 +57,7 @@ class QueueFileTests(unittest.TestCase):
         self.assertEqual(
             sorted(row["name"] for row in app_rows),
             [
-                "energy_level",
                 "phrase_periodicity",
-                "rhythm_drum_ioi",
-                "rhythm_stem_autocorr",
-                "tension_shape",
                 "vocal_voiceness",
             ],
         )

@@ -52,6 +52,14 @@ class ProducerVocabularyTests(unittest.TestCase):
                 "moises",
                 "inference",
                 "unknown",
+                # v3.6 item 10 — energy/tension/rhythm clue producers
+                # (section_clues.py) and the seed non-producer tier below them.
+                "energy_level",
+                "tension_shape",
+                "rhythm_drum_ioi",
+                "rhythm_stem_autocorr",
+                "rhythm_vocal_onsets",
+                "seed_unreviewed",
             },
         )
 
@@ -106,6 +114,7 @@ class TopLevelFileHeaderTests(unittest.TestCase):
             "src/analyzer/stages/ui_data.py",       # beats.json, sections.json
             "src/analyzer/stages/gestures.py",      # song_event_timeline.json
             "src/analyzer/stages/hints.py",         # hints.json
+            "src/analyzer/stages/section_clues.py", # sections.json (energy/tension/rhythm)
             "src/analyzer/pipeline.py",             # info.json
         ):
             text = (repo / rel).read_text()

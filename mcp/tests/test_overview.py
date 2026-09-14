@@ -125,7 +125,37 @@ def test_overview_human_hint_verbatim_with_lighting() -> None:
 _FIELD_SOURCE_VOCAB = {
     "essentia", "allin1", "harmonic", "omnizart", "demucs", "gestures",
     "genre", "human", "inference", "unknown", "arrangement_state",
+    "energy_level", "tension_shape", "rhythm_drum_ioi",
+    "rhythm_stem_autocorr", "rhythm_vocal_onsets", "seed_unreviewed",
 }
+
+
+def test_overview_review_warning_present_when_a_row_is_seed_unreviewed() -> None:
+    # v3.6 item 10 — McpFull - Fixture's section-002 carries an
+    # energy_source: "seed_unreviewed" override (see its sections.json).
+    ov = _overview("McpFull - Fixture")
+    assert "review_warning" in ov
+    assert ov["review_warning"]["section_ids"] == ["section-002"]
+    assert "seed_unreviewed" in ov["review_warning"]["text"]
+    assert "not yet reviewed by the operator" in ov["review_warning"]["text"]
+
+
+def test_overview_review_warning_absent_when_nothing_is_seed_unreviewed() -> None:
+    # McpDegenerate - Fixture's sections.json carries no energy/tension/rhythm
+    # fields at all, so certainly no seed_unreviewed source.
+    ov = _overview("McpDegenerate - Fixture")
+    assert "review_warning" not in ov
+
+
+def test_overview_section_rows_carry_clue_fields_only_when_present() -> None:
+    rows = {r["section_id"]: r for r in _overview("McpFull - Fixture")["sections"]["rows"]}
+    assert rows["section-001"]["energy"] == 3
+    assert rows["section-001"]["rhythm"]["drums"]["subdivision"] == "quarter"
+    assert "energy_source" not in rows["section-001"]  # matches file default
+    assert rows["section-002"]["energy_source"] == "seed_unreviewed"
+    assert rows["section-002"]["energy_confidence"] is None
+    assert "energy" not in rows["section-003"]  # no clue at all -> absent, never guessed
+    assert "rhythm" not in rows["section-003"]
 
 
 def test_overview_full_carries_arrangement_block() -> None:

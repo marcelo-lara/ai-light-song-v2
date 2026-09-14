@@ -355,7 +355,11 @@ def _check_f2_honesty() -> None:
 
     VOCAB = {"essentia", "allin1", "harmonic", "omnizart", "demucs", "gestures",
              "genre", "human", "inference", "unknown", "arrangement_state",
-             "section_function"}
+             "section_function",
+             # v3.6 item 10 — energy/tension/rhythm clue producers + the
+             # seed non-producer tier.
+             "energy_level", "tension_shape", "rhythm_drum_ioi",
+             "rhythm_stem_autocorr", "rhythm_vocal_onsets", "seed_unreviewed"}
 
     full = build_song_overview("McpFull - Fixture", root=FIXTURE_ROOT)
     degen = build_song_overview("McpDegenerate - Fixture", root=FIXTURE_ROOT)

@@ -130,6 +130,7 @@ which is exactly the ambiguity that made past chord issues hard to attribute.
 | `gestures.py` | `song_event_timeline.json` — gesture phases + section-pair transitions |
 | `arrangement_state.py` | `artifacts/arrangement_state.json` — per-stem RMS state blocks: who is playing, and where that changes |
 | `hint_alignment.py` | `find_primary_section`, the shared window→section matcher |
+| `section_clues.py` | fuses `energy`, `tension`, `rhythm` onto `sections.json` (v3.6 item 10) |
 
 `arrangement_state.py` (`detect-arrangement-state`) reads the published
 `loudness.json` — a phase-1 series, not audio — and asserts *who is playing* and
@@ -138,6 +139,30 @@ where a stem enters or leaves. It measures F1 0.59 @0.5 s / 0.75 @1.0 s on
 floor of the labels (32 of 47 gold hints are drop stages `gestures.py` owns).
 `confidence` is dB headroom at the stem flip (`margin_db`-derived), not a trained
 score, and is `null` for the leading block that has no flip.
+
+**`section_clues.py` (v3.6 item 10) — provisional, seed-only truth.** Fuses
+`energy`/`energy_confidence`, `tension`/`tension_confidence` and `rhythm`
+(per-source `subdivision`/`confidence`/`onsets_per_beat`) onto `sections.json`,
+by precedence: the operator's `reference/human/segments.json` value, else the
+highest-confidence of five ported candidate producers
+(`energy_level`, `tension_shape`, `rhythm_drum_ioi`, `rhythm_stem_autocorr`,
+`rhythm_vocal_onsets`), else `reference/human/segments.seed.json`
+(`seed_unreviewed`, `confidence: null`), else absent. The five producers were
+promoted from `experiments/` at their v3.6 item 5/6 evidence (corpus
+exact-match against `segments.seed.json` — a **self-consistency check**, since
+the seed shares each producer's own method, not independent validation):
+`rhythm_drum_ioi` drums 0.6415 (34/53); `rhythm_stem_autocorr` bass 1.0000,
+harmonic 1.0000, vocals 0.9811, drums 0.1698; `rhythm_vocal_onsets` vocals
+0.0377 (2/53 — whisper-large-v3 over short spans yields sparse onsets);
+`energy_level` energy 0.9811 seed / 0-of-2 exact but 1-of-2 within-1 against
+the operator's own `segments.json` rows; `tension_shape` tension 0.7547 seed /
+1-of-2 exact, 2-of-2 within-1 human. **Do not treat any energy/tension/rhythm
+value as settled** until the operator has reviewed the seeds — full record:
+`docs/archive/experiments_promoted.md` "Energy / tension / rhythm clue
+producers". `rhythm_vocal_onsets`'s compute lives outside this stage, in
+`whisperx_vad/vocal_onsets.py` (a second output of the `whisperx` service,
+`artifacts/whisperx-vad/vocal_onsets.json`) — `section_clues` reads that file
+and raises if the song has not been run through that service.
 
 ### Phase 4 — publish
 

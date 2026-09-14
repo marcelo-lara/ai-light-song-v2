@@ -50,6 +50,13 @@ services:
       dockerfile: whisperx_vad/Dockerfile
     image: ai-light-song-v2-whisperx:dev
     working_dir: /app
+    environment:
+      # v3.6 item 10 (D10.1) — vocal_onsets.py's faster_whisper large-v3 reads
+      # its weights from the repo's pre-fetched HF cache (bind-mounted at
+      # /app via the volume below), never the network — HF_HUB_OFFLINE=1 is
+      # already set in whisperx_vad/Dockerfile. Same convention as
+      # experiments/acestep_transcriber/run_in_container.sh.
+      - HF_HOME=/app/models/hf
     volumes:
       - .:/app
       - ./data:/data

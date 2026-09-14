@@ -65,6 +65,52 @@ DEFAULT_SOURCES: tuple[str, ...] = ("mix", "bass", "drums", "harmonic", "vocals"
 
 _SAME_LABEL_CAVEAT = "same_label_as is label repetition, not acoustic identity"
 
+# v3.6 item 10 — exact text from docs/product-refinement-v3.6.md item 6.
+REVIEW_WARNING_TEXT = (
+    "energy/tension/rhythm sourced `seed_unreviewed` are inferred, not yet "
+    "reviewed by the operator; verify on the final show."
+)
+
+
+def _seed_unreviewed_section_ids(sections: list[dict]) -> list[str]:
+    """`section_id`s of every row where `energy`, `tension` or any
+    `rhythm.<source>` field carries a `seed_unreviewed` source (v3.6 item 10:
+    energy_source/tension_source overrides, or a rhythm sub-object's own
+    `source` key — see analyzer.stages.section_clues)."""
+    ids: list[str] = []
+    for s in sections:
+        seeded = (
+            s.get("energy_source") == "seed_unreviewed"
+            or s.get("tension_source") == "seed_unreviewed"
+            or any(
+                (entry or {}).get("source") == "seed_unreviewed"
+                for entry in (s.get("rhythm") or {}).values()
+            )
+        )
+        if seeded:
+            ids.append(s["section_id"])
+    return ids
+
+
+def _section_clue_fields(s: dict) -> dict[str, Any]:
+    """`energy`/`tension`/`rhythm` fields, present only when the row carries
+    them (v3.6 item 10 — no silent fallback, a section with no resolved clue
+    simply omits the key)."""
+    out: dict[str, Any] = {}
+    if "energy" in s:
+        out["energy"] = s["energy"]
+        out["energy_confidence"] = s.get("energy_confidence")
+        if "energy_source" in s:
+            out["energy_source"] = s["energy_source"]
+    if "tension" in s:
+        out["tension"] = s["tension"]
+        out["tension_confidence"] = s.get("tension_confidence")
+        if "tension_source" in s:
+            out["tension_source"] = s["tension_source"]
+    if "rhythm" in s:
+        out["rhythm"] = s["rhythm"]
+    return out
+
 
 class DetailScopeError(ValueError):
     """Raised for an invalid get_detail scope selection (zero or >1 selectors,
@@ -116,6 +162,13 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
         "sections": _sections_block(sections_doc, sections),
         "gestures": {"phase_legend": PHASE_LEGEND, **_gestures_block(timeline_doc, events)},
     }
+
+    # v3.6 item 10 — omitted entirely (not null, not empty) when no section
+    # row carries a seed_unreviewed source; present with the affected
+    # section_ids otherwise.
+    seed_ids = _seed_unreviewed_section_ids(sections)
+    if seed_ids:
+        overview["review_warning"] = {"text": REVIEW_WARNING_TEXT, "section_ids": seed_ids}
 
     # If brief scope requested, prune prose-heavy bits per D3.3
     if scope == "brief":
@@ -253,6 +306,7 @@ def _sections_block(sections_doc: dict, sections: list[dict]) -> dict[str, Any]:
             "function_status": s["function_status"],
             "same_label_as": s["same_label_as"],
             "confidence": s["confidence"],
+            **_section_clue_fields(s),
         }
         for s in sections
     ]
@@ -575,6 +629,7 @@ def _structural_view(
             "function": s["function"],
             "function_status": s["function_status"],
             "same_label_as": s["same_label_as"],
+            **_section_clue_fields(s),
         }
         for s in sections_doc.get("sections", [])
         if _overlaps(span_start, span_end, float(s["start"]), float(s["end"]))

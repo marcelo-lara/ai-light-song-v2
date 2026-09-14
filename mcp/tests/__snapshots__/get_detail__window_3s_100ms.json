@@ -19,7 +19,17 @@
           "end": 8.0,
           "function": "intro",
           "function_status": "known",
-          "same_label_as": null
+          "same_label_as": null,
+          "energy": 3,
+          "energy_confidence": 0.62,
+          "tension": 2,
+          "tension_confidence": 0.44,
+          "rhythm": {
+            "drums": {
+              "subdivision": "quarter",
+              "confidence": 0.71
+            }
+          }
         }
       ],
       "field_sources": {
@@ -31,7 +41,13 @@
         "function": "allin1",
         "function_confidence": "allin1",
         "function_status": "allin1",
-        "same_label_as": "allin1"
+        "same_label_as": "allin1",
+        "energy": "energy_level",
+        "energy_confidence": "energy_level",
+        "tension": "tension_shape",
+        "tension_confidence": "tension_shape",
+        "rhythm.drums": "rhythm_drum_ioi",
+        "rhythm.vocals": "rhythm_stem_autocorr"
       }
     },
     "phases": {

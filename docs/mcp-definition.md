@@ -169,6 +169,18 @@ Returns:
   `confidence`. An `"unknown"` `function_status` is surfaced as such, never
   smoothed into a confident label. **v3.6 item 8 dropped `description`**
   (display prose, moved to a debugger-only artifact never read from `mcp/`).
+  **v3.6 item 10** adds `energy`, `energy_confidence`, `tension`,
+  `tension_confidence` and `rhythm` (per-source subdivision + confidence) —
+  present only where a row has one, never a guessed default. See
+  `docs/reference/downstream-contract.md`'s "Energy / tension / rhythm clue
+  fields" for the precedence rule and per-row `source` overrides.
+- **`review_warning`** (present only when needed) — set on the response,
+  never per section row, when at least one section in this call's `sections`
+  block carries a `seed_unreviewed` source on `energy`, `tension` or any
+  `rhythm.<source>`: `{"text": "...", "section_ids": [...]}` naming every
+  affected row. Text: *"energy/tension/rhythm sourced `seed_unreviewed` are
+  inferred, not yet reviewed by the operator; verify on the final show."*
+  Omitted entirely (not `null`) when nothing on the song is seed-sourced.
 - **Gestures** — one row per composite gesture, not per phase: its span, its
   peak intensity, its `section_id`, and which phases are present. A song with 31
   impact rows must not return 31 unrelated events.

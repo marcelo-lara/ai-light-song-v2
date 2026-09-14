@@ -15,3 +15,7 @@ def vocals_stem_path(paths: SongPaths) -> Path:
 
 def output_path(paths: SongPaths) -> Path:
     return paths.artifact("whisperx-vad", "whisperx_vad.json")
+
+
+def vocal_onsets_output_path(paths: SongPaths) -> Path:
+    return paths.artifact("whisperx-vad", "vocal_onsets.json")

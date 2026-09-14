@@ -17,7 +17,7 @@ from analyzer.io import write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
 
-from . import model, paths
+from . import model, paths, vocal_onsets as vocal_onsets_mod
 
 ENGINE = (
     "whisperx_vad.model (whisperX 3.8.6's Pyannote VAD front-end, bundled "
@@ -69,5 +69,42 @@ def export(song_paths: SongPaths, *, device: str = "cpu", vad_model=None) -> dic
     }
 
     out_path = paths.output_path(song_paths)
+    write_json(out_path, payload)
+    return payload
+
+
+VOCAL_ONSETS_ENGINE = (
+    "whisperx_vad.vocal_onsets (faster_whisper large-v3, word_timestamps=True, "
+    "over the vocal stem — same method as the promoted rhythm_vocal_onsets "
+    "experiment, docs/archive/experiments_promoted.md)"
+)
+
+
+def export_vocal_onsets(song_paths: SongPaths) -> dict:
+    """Writes `artifacts/whisperx-vad/vocal_onsets.json` — word onsets for
+    `section_clues.py`'s `rhythm.vocals` candidate producer (v3.6 item 10,
+    D10.1). Independent of `export` above: this never touches the VAD model,
+    only `faster_whisper`."""
+    vocals_stem = paths.vocals_stem_path(song_paths)
+    data = vocal_onsets_mod.compute(vocals_stem)
+
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": song_paths.song_name,
+        "generated_from": {
+            "source_song_path": str(song_paths.song_path),
+            "engine": VOCAL_ONSETS_ENGINE,
+            "dependencies": {"vocals_stem": str(vocals_stem)},
+            "model": data["model"],
+            "device": data["device"],
+            "compute_type": data["compute_type"],
+            "language": data["language"],
+            "language_confidence": data["language_confidence"],
+        },
+        "metadata": {"total_words": len(data["words"])},
+        "words": data["words"],
+    }
+
+    out_path = paths.vocal_onsets_output_path(song_paths)
     write_json(out_path, payload)
     return payload

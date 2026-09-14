@@ -157,6 +157,55 @@ than in a second file:
   a chorus," never "the same music as the first chorus." Surface it with that
   caveat; never describe grouped sections as verified-identical.
 
+### Energy / tension / rhythm clue fields — merged into `sections.json` (v3.6 item 10)
+
+A section row optionally carries `energy` (1–5), `energy_confidence`,
+`tension` (1–5), `tension_confidence`, and `rhythm` — a musical fact, not a
+light instruction: "drums go `quarter` → `sixteenth` across the build" is in
+scope, "strobe at 12 Hz" is the authoring model's call.
+
+- `rhythm` is `{<source>: {subdivision, confidence, onsets_per_beat}}` for
+  `source` in `drums`, `bass`, `harmonic`, `vocals`. `subdivision` is one of
+  `half`, `quarter`, `eighth`, `sixteenth`, `eighth_triplet`, `none`.
+  `onsets_per_beat` is present only where a discrete onset count actually
+  backs the call (the drum-IOI and vocal-word-onset producers); the
+  autocorrelation producer has no onset count and omits the key rather than
+  guessing one.
+- **Any of these fields may be entirely absent from a row** — a section with
+  no resolved clue on a field simply omits it. Never a guessed default.
+- **Precedence, per field, per section:** 1) the operator's value in
+  `reference/human/segments.json` — source `human`; 2) the highest-confidence
+  of the ported candidate producers (`energy_level`, `tension_shape`,
+  `rhythm_drum_ioi`, `rhythm_stem_autocorr`, `rhythm_vocal_onsets`) that
+  computed a value for that field on that section; 3)
+  `reference/human/segments.seed.json` — source `seed_unreviewed`,
+  `confidence` explicitly `null` (inferred, not yet operator-reviewed); 4)
+  otherwise absent. Produced by the phase-3 `section-clues` stage
+  (`src/analyzer/stages/section_clues.py`), which re-fuses the
+  already-published `sections.json` — never mutates from scratch.
+- **`field_sources` per-row overrides.** The file header declares one default
+  producer per field (`energy`, `energy_confidence`, `tension`,
+  `tension_confidence`, and the dotted `rhythm.drums` / `rhythm.bass` /
+  `rhythm.harmonic` / `rhythm.vocals`, the same per-sub-field convention
+  `arrangement_state.json`'s `vocals_phrase.sibilance` already uses). A row
+  whose actual source differs from that default carries a sparse override:
+  `energy_source` / `tension_source` on the row, or a `source` key inside the
+  specific `rhythm.<name>` object. No override key when the row matches the
+  file default.
+- **Not independent validation while provisional.** All five candidate
+  producers were scored against `segments.seed.json`, which shares each
+  producer's own method — a self-consistency check, not ground truth. Treat
+  any `energy`/`tension`/`rhythm` value on a song outside the 4 segment songs
+  (`ayuni`, `Cinderella - Ella Lee`, `_test_song`, `What a Feeling - Courtney
+  Storm`) as a first-pass inference, same posture as `function_status:
+  "unknown"`.
+- `get_song_overview`'s response gains a `review_warning` field — present
+  only when at least one section row in the response carries a
+  `seed_unreviewed` source on any field, naming the affected `section_id`s.
+  Omitted entirely (not `null`, not empty) when none do. Exact text: *"energy/
+  tension/rhythm sourced `seed_unreviewed` are inferred, not yet reviewed by
+  the operator; verify on the final show."*
+
 ### `song_event_timeline.json` (top-level) — high priority
 
 Produced by the phase-3 `gestures` stage. `events[]`, each a **flat** row
