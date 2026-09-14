@@ -1,9 +1,8 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
-// artifacts consumed by SparseLane (drop proposals, character, vocal
-// transcription, vocal phrases, texture novelty, phrase periodicity,
-// structural-vs-micro, rhythm drum ioi, rhythm stem autocorr, rhythm vocal
-// onsets, energy level, tension shape, whisperx vad, voice multiplicity, and
-// the top-level published arrangement state).
+// artifacts consumed by SparseLane (character, vocal transcription, vocal
+// phrases, phrase periodicity, rhythm drum ioi, rhythm stem autocorr, rhythm
+// vocal onsets, energy level, tension shape, whisperx vad, voice
+// multiplicity, and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -31,72 +30,6 @@ const st = (v: unknown, fallback = ""): string =>
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
 const rec = (v: unknown): Record<string, unknown> =>
   v && typeof v === "object" ? (v as Record<string, unknown>) : {};
-
-// ---------------------------------------------------------------------------
-// drop-impact proposals — reference/proposals/drop_impacts.json
-// ---------------------------------------------------------------------------
-//
-// Candidate `drop impact` instants from the stage-1 proposer in
-// `experiments/drop_detection`. They are NOT ground truth: the lane exists so a
-// human can audition each candidate against the Human Hints lane and copy the
-// survivors across by hand. `matches_human_label` is the proposer's own note
-// that a candidate already sits within 0.5 s of a hand-authored impact, so the
-// lane can grey out what is already labelled and highlight what is new.
-
-export interface DropProposal {
-  id: string;
-  start_s: number;
-  end_s: number;
-  /** which role-change channels fired here, e.g. ["handover", "voc_out"] */
-  channels: string[];
-  /** time of the human `drop impact` it matches, or null when unconfirmed */
-  matches_human_label: number | null;
-  evidence: Record<string, number>;
-  raw: Record<string, unknown>;
-}
-
-export interface DropProposalsFile {
-  schema_version: string;
-  song_name: string;
-  note: string;
-  /** every hand-authored `drop impact` instant in this song, for comparison */
-  existing_labels: number[];
-  proposals: DropProposal[];
-}
-
-export function parseDropProposals(raw: unknown): DropProposalsFile {
-  const o = asObject(raw, "reference/proposals/drop_impacts.json");
-  const proposals = arr(o.proposals).map((row, i): DropProposal => {
-    const r = rec(row);
-    const start_s = num(r.start_s ?? r.start_time ?? r.start);
-    const evidenceIn = rec(r.evidence);
-    const evidence: Record<string, number> = {};
-    for (const [key, value] of Object.entries(evidenceIn)) {
-      const n = Number(value);
-      if (Number.isFinite(n)) evidence[key] = n;
-    }
-    return {
-      id: st(r.id, `proposal-${String(i + 1).padStart(3, "0")}`),
-      start_s,
-      end_s: Math.max(num(r.end_s ?? r.end_time ?? r.end, start_s), start_s),
-      channels: arr(r.channels).map((c) => st(c)).filter(Boolean),
-      matches_human_label:
-        r.matches_human_label == null ? null : num(r.matches_human_label),
-      evidence,
-      raw: r,
-    };
-  });
-  proposals.sort((a, b) => a.start_s - b.start_s);
-  return {
-    schema_version: st(o.schema_version),
-    song_name: st(o.song_name),
-    note: st(o.note),
-    existing_labels: arr(o.existing_labels)
-      .map((v) => Number(v))
-      .filter((v) => Number.isFinite(v)),
-    proposals,
-  };
-}
 
 // ---------------------------------------------------------------------------
 // character blocks — reference/proposals/character.json
@@ -372,36 +305,6 @@ export async function loadMoisesLyrics(
   return result;
 }
 
-/**
- * The proposals file is optional — it exists only for songs the drop-detection
- * exporter has been run over — so a 404 resolves to an empty file rather than a
- * load error. Every other failure (network, bad JSON, wrong shape) still
- * surfaces, so a real problem is not silently swallowed.
- */
-export async function loadDropProposals(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<DropProposalsFile>> {
-  const result = await loadJson(
-    artifactPaths.dropProposals(song),
-    parseDropProposals,
-    f,
-  );
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return {
-      ok: true,
-      data: {
-        schema_version: "",
-        song_name: song,
-        note: "",
-        existing_labels: [],
-        proposals: [],
-      },
-    };
-  }
-  return result;
-}
-
 // ---------------------------------------------------------------------------
 // vocal phrase blocks — reference/proposals/vocal_phrases.json
 // ---------------------------------------------------------------------------
@@ -511,56 +414,6 @@ export async function loadArrangementState(
   f?: typeof fetch,
 ): Promise<LoadResult<ArrangementStateFile>> {
   const result = await loadJson(artifactPaths.arrangementState(song), parseArrangementState, f);
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// textureNovelty — reference/proposals/texture_novelty.json
-// ---------------------------------------------------------------------------
-//
-// Segments between self-similarity-novelty texture boundaries from
-// experiments/texture_novelty (cosine SSM + Foote checkerboard, 1.0 s
-// half-window, feature set 1 — raw 7-band mix vector). A proposal to audition
-// against Human Hints, not ground truth. The experiment FAILED its kill
-// condition (precision > 0.5 at recall >= 0.8) and the lane is kept for one
-// operator review pass only.
-
-export interface TextureNoveltyBlock {
-  start_s: number;
-  end_s: number;
-  /** peak novelty at this block's left edge (0..1); null on the first block */
-  edge_strength: number | null;
-}
-
-export interface TextureNoveltyFile {
-  schema_version: string;
-  song_name: string;
-  blocks: TextureNoveltyBlock[];
-}
-
-export function parseTextureNovelty(raw: unknown): TextureNoveltyFile {
-  const o = asObject(raw, "reference/proposals/texture_novelty.json");
-  const blocks: TextureNoveltyBlock[] = [];
-  for (const row of arr(o.blocks)) {
-    const r = rec(row);
-    blocks.push({
-      start_s: num(r.start_s),
-      end_s: num(r.end_s),
-      edge_strength: r.edge_strength == null ? null : num(r.edge_strength),
-    });
-  }
-  blocks.sort((a, b) => a.start_s - b.start_s);
-  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
-}
-
-export async function loadTextureNovelty(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<TextureNoveltyFile>> {
-  const result = await loadJson(artifactPaths.textureNovelty(song), parseTextureNovelty, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
   }
@@ -888,68 +741,6 @@ export async function loadTensionShape(
   f?: typeof fetch,
 ): Promise<LoadResult<TensionShapeFile>> {
   const result = await loadJson(artifactPaths.tensionShape(song), parseTensionShape, f);
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// structuralVsMicro — reference/proposals/structural_vs_micro.json
-// ---------------------------------------------------------------------------
-//
-// One block per operator hint (or published section) from
-// experiments/structural_vs_micro: a 4-bar phrase grid is fit to items 6+7's
-// boundary edges, then each block is labelled `kind` "structural" | "micro" by
-// how well its edges lock to that grid, carrying `grid_fit_bars` (the fit error
-// in bars) so a reviewer sees how marginal the call was. NOT a precision filter
-// for Texture Novelty — a two-class split the pipeline cannot otherwise express.
-// A proposal to audition against Human Hints, not ground truth. The experiment
-// FAILED its kill condition (did not beat a duration-only baseline); lane kept
-// for one review pass.
-
-export interface StructuralVsMicroBlock {
-  start_s: number;
-  end_s: number;
-  title: string;
-  /** "structural" (edge locks to the 4-bar phrase grid) | "micro" */
-  kind: string;
-  /** better-locking edge's distance to the nearest phrase-grid line, in bars */
-  grid_fit_bars: number | null;
-}
-
-export interface StructuralVsMicroFile {
-  schema_version: string;
-  song_name: string;
-  blocks: StructuralVsMicroBlock[];
-}
-
-export function parseStructuralVsMicro(raw: unknown): StructuralVsMicroFile {
-  const o = asObject(raw, "reference/proposals/structural_vs_micro.json");
-  const blocks: StructuralVsMicroBlock[] = [];
-  for (const row of arr(o.blocks)) {
-    const r = rec(row);
-    blocks.push({
-      start_s: num(r.start_s),
-      end_s: num(r.end_s),
-      title: st(r.title),
-      kind: st(r.kind),
-      grid_fit_bars: r.grid_fit_bars == null ? null : num(r.grid_fit_bars),
-    });
-  }
-  blocks.sort((a, b) => a.start_s - b.start_s);
-  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
-}
-
-export async function loadStructuralVsMicro(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<StructuralVsMicroFile>> {
-  const result = await loadJson(
-    artifactPaths.structuralVsMicro(song),
-    parseStructuralVsMicro,
-    f,
-  );
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
   }

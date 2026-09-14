@@ -3,22 +3,121 @@
   "song_name": "_test_song",
   "generated_from": {
     "experiment": "experiments/structural_vs_micro",
-    "engine": "4-bar phrase grid fit to items 6+7 boundary edges; block kind by grid lock"
+    "engine": "4-bar phrase grid fit to items 6+7 boundary edges; block kind by grid lock",
+    "bar_grid": "beats.json downbeats (period only)",
+    "boundary_set": "union of texture_novelty.json + phrase_periodicity.json edges",
+    "block_source": "human_hints",
+    "structural_max_bars": 0.12,
+    "bar_len_s": 1.86,
+    "phrase_len_s": 7.44,
+    "grid_phase_s": 6.733,
+    "generated_at": "2026-09-13T03:28:39.262979Z"
   },
   "blocks": [
     {
-      "start_s": 0.0,
-      "end_s": 8.0,
-      "title": "Intro",
-      "kind": "structural",
-      "grid_fit_bars": 0.04
+      "start_s": 7.44,
+      "end_s": 7.626,
+      "title": "Drum Hit",
+      "kind": "micro",
+      "grid_fit_bars": 0.38
     },
     {
-      "start_s": 20.0,
-      "end_s": 20.6,
-      "title": "Pre-drop",
+      "start_s": 22.179,
+      "end_s": 25.02,
+      "title": "drop approach",
       "kind": "micro",
-      "grid_fit_bars": 1.12
+      "grid_fit_bars": 0.304
+    },
+    {
+      "start_s": 25.02,
+      "end_s": 27.646,
+      "title": "drop build",
+      "kind": "micro",
+      "grid_fit_bars": 0.757
+    },
+    {
+      "start_s": 36.5,
+      "end_s": 36.958,
+      "title": "Spacer",
+      "kind": "structural",
+      "grid_fit_bars": 0.004
+    },
+    {
+      "start_s": 42.483,
+      "end_s": 43.206,
+      "title": "Outro start",
+      "kind": "micro",
+      "grid_fit_bars": 0.391
+    },
+    {
+      "start_s": 43.339,
+      "end_s": 44.356,
+      "title": "Vocal outro phrase 1.1",
+      "kind": "micro",
+      "grid_fit_bars": 0.227
+    },
+    {
+      "start_s": 44.455,
+      "end_s": 47.045,
+      "title": "Synth Pad",
+      "kind": "micro",
+      "grid_fit_bars": 0.281
+    },
+    {
+      "start_s": 47.091,
+      "end_s": 50.03,
+      "title": "Vocal outro 2",
+      "kind": "micro",
+      "grid_fit_bars": 0.722
+    },
+    {
+      "start_s": 50.076,
+      "end_s": 54.576,
+      "title": "Vocal Outro 3",
+      "kind": "micro",
+      "grid_fit_bars": 0.697
+    },
+    {
+      "start_s": 54.606,
+      "end_s": 55.0,
+      "title": "prepare for end",
+      "kind": "micro",
+      "grid_fit_bars": 1.738
+    },
+    {
+      "start_s": 55.038,
+      "end_s": 55.917,
+      "title": "Finale",
+      "kind": "micro",
+      "grid_fit_bars": 1.557
+    },
+    {
+      "start_s": 27.646,
+      "end_s": 28.396,
+      "title": "drop tension",
+      "kind": "micro",
+      "grid_fit_bars": 0.353
+    },
+    {
+      "start_s": 28.396,
+      "end_s": 29.125,
+      "title": "drop impact",
+      "kind": "structural",
+      "grid_fit_bars": 0.039
+    },
+    {
+      "start_s": 29.125,
+      "end_s": 29.566,
+      "title": "drop release",
+      "kind": "structural",
+      "grid_fit_bars": 0.039
+    },
+    {
+      "start_s": 29.594,
+      "end_s": 36.5,
+      "title": "High Energy",
+      "kind": "structural",
+      "grid_fit_bars": 0.004
     }
   ]
 }

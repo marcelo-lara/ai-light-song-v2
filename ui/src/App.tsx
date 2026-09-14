@@ -142,20 +142,11 @@ const TIMELINE_KEYS = [
   // who-is-playing state changes from the published per-stem RMS
   // (top-level arrangement_state.json)
   "arrangementState",
-  // drop-sequence exploration (experiments/drop_detection)
-  "dropProposals",
   // wave-2 experiments (docs/experiments.md run orders 1-3, 6)
   "vocalPhrases",
-  // texture-novelty segments (experiments/texture_novelty, v3.4 item 6 —
-  // failed kill condition, lane kept for one review pass)
-  "textureNovelty",
   // phrase repetition regime + period (experiments/phrase_periodicity,
   // v3.4 item 7 — passed its kill condition)
   "phrasePeriodicity",
-  // structural vs micro block kind by 4-bar phrase-grid fit
-  // (experiments/structural_vs_micro, v3.4 item 8 — failed its kill condition,
-  // lane kept for one review pass)
-  "structuralVsMicro",
   // v3.6 item 5/6 rhythm/energy/tension candidate producers — each its own
   // lane, fused by confidence in sections.json's rhythm/energy/tension fields.
   "rhythmDrumIoi",
@@ -201,11 +192,8 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   allin1Sections: "sectionSegmentation",
   moisesLyrics: "moisesLyrics",
   arrangementState: "arrangementState",
-  dropProposals: "dropProposals",
   vocalPhrases: "vocalPhrases",
-  textureNovelty: "textureNovelty",
   phrasePeriodicity: "phrasePeriodicity",
-  structuralVsMicro: "structuralVsMicro",
   rhythmDrumIoi: "rhythmDrumIoi",
   rhythmStemAutocorr: "rhythmStemAutocorr",
   rhythmVocalOnsets: "rhythmVocalOnsets",
@@ -405,11 +393,8 @@ export function App(): React.JSX.Element {
       moisesLyrics: artifacts.moisesLyrics.data,
       lyricValidations: validatedLyricIds,
       arrangementState: artifacts.arrangementState.data,
-      dropProposals: artifacts.dropProposals.data,
       vocalPhrases: artifacts.vocalPhrases.data,
-      textureNovelty: artifacts.textureNovelty.data,
       phrasePeriodicity: artifacts.phrasePeriodicity.data,
-      structuralVsMicro: artifacts.structuralVsMicro.data,
       rhythmDrumIoi: artifacts.rhythmDrumIoi.data,
       rhythmStemAutocorr: artifacts.rhythmStemAutocorr.data,
       rhythmVocalOnsets: artifacts.rhythmVocalOnsets.data,
@@ -434,11 +419,8 @@ export function App(): React.JSX.Element {
       artifacts.moisesLyrics.data,
       validatedLyricIds,
       artifacts.arrangementState.data,
-      artifacts.dropProposals.data,
       artifacts.vocalPhrases.data,
-      artifacts.textureNovelty.data,
       artifacts.phrasePeriodicity.data,
-      artifacts.structuralVsMicro.data,
       artifacts.rhythmDrumIoi.data,
       artifacts.rhythmStemAutocorr.data,
       artifacts.rhythmVocalOnsets.data,

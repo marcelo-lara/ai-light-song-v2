@@ -59,7 +59,6 @@ NEEDED = [
     "reference/human/song_facts.json",
     "reference/moises/lyrics.json",
     "reference/moises/segments.json",
-    "reference/proposals/drop_impacts.json",
     "reference/proposals/character.json",
     "reference/proposals/vocal_transcription.json",
     "reference/proposals/vocal_phrases.json",
@@ -67,9 +66,7 @@ NEEDED = [
     "reference/proposals/svd_tagger.json",
     "reference/proposals/voice_multiplicity.json",
     "reference/proposals/reactive_bands.json",
-    "reference/proposals/texture_novelty.json",
     "reference/proposals/phrase_periodicity.json",
-    "reference/proposals/structural_vs_micro.json",
     "reference/proposals/rhythm_drum_ioi.json",
     "reference/proposals/rhythm_stem_autocorr.json",
     "reference/proposals/rhythm_vocal_onsets.json",
@@ -200,43 +197,6 @@ def inject_section_contest(out_name: str):
     print(f"  patched {out_name}/sections.json — 1 contested section")
 
 
-def inject_texture_novelty(out_name: str):
-    """v3.4 item 6 — write a small deterministic texture_novelty.json (3 blocks
-    / 2 interior boundaries) so `texture-novelty.spec.ts` can assert block edges
-    against the ruler without depending on the experiment's real output. The
-    experiment FAILED its kill condition; this lane is a one-review-pass
-    audition surface. The file must exist on every fixture so the song-load
-    fetch never 404s (the visual suite fails any run with a failed network
-    response, ui-regression §3)."""
-    hints_path = OUT / out_name / "reference/human/human_hints.json"
-    song_name = REG_SOURCE
-    if hints_path.exists():
-        song_name = json.loads(hints_path.read_text()).get("song_name", REG_SOURCE)
-    p = OUT / out_name / "reference/proposals/texture_novelty.json"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(
-        json.dumps(
-            {
-                "schema_version": "1.0",
-                "song_name": song_name,
-                "generated_from": {
-                    "experiment": "experiments/texture_novelty",
-                    "engine": "cosine self-similarity + Foote checkerboard novelty (1.0 s half-window)",
-                    "feature_set": "raw 7-band MIX vector",
-                },
-                "blocks": [
-                    {"start_s": 0.0, "end_s": 8.0, "edge_strength": None},
-                    {"start_s": 8.0, "end_s": 20.0, "edge_strength": 0.71},
-                    {"start_s": 20.0, "end_s": 32.0, "edge_strength": 0.46},
-                ],
-            },
-            indent=2,
-        )
-        + "\n"
-    )
-    print(f"  wrote {out_name}/reference/proposals/texture_novelty.json")
-
-
 def inject_phrase_periodicity(out_name: str):
     """v3.4 item 7 — write a small deterministic phrase_periodicity.json (3
     blocks: one through-composed with period null, one bar-loop, one
@@ -277,43 +237,6 @@ def inject_phrase_periodicity(out_name: str):
         + "\n"
     )
     print(f"  wrote {out_name}/reference/proposals/phrase_periodicity.json")
-
-
-def inject_structural_vs_micro(out_name: str):
-    """v3.4 item 8 — write a small deterministic structural_vs_micro.json (one
-    `structural` block, grid_fit_bars 0.04; one `micro` block, grid_fit_bars
-    1.12) so `structural-vs-micro.spec.ts` can assert the two tints differ and
-    that each card prints its `kind` + `grid_fit_bars`, without depending on the
-    experiment's real output. The experiment FAILED its kill condition (lane
-    kept for one review pass). The file must exist on every fixture so the
-    song-load fetch never 404s (ui-regression §3)."""
-    hints_path = OUT / out_name / "reference/human/human_hints.json"
-    song_name = REG_SOURCE
-    if hints_path.exists():
-        song_name = json.loads(hints_path.read_text()).get("song_name", REG_SOURCE)
-    p = OUT / out_name / "reference/proposals/structural_vs_micro.json"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(
-        json.dumps(
-            {
-                "schema_version": "1.0",
-                "song_name": song_name,
-                "generated_from": {
-                    "experiment": "experiments/structural_vs_micro",
-                    "engine": "4-bar phrase grid fit to items 6+7 boundary edges; block kind by grid lock",
-                },
-                "blocks": [
-                    {"start_s": 0.0, "end_s": 8.0, "title": "Intro",
-                     "kind": "structural", "grid_fit_bars": 0.04},
-                    {"start_s": 20.0, "end_s": 20.6, "title": "Pre-drop",
-                     "kind": "micro", "grid_fit_bars": 1.12},
-                ],
-            },
-            indent=2,
-        )
-        + "\n"
-    )
-    print(f"  wrote {out_name}/reference/proposals/structural_vs_micro.json")
 
 
 def inject_block_energy(out_name: str, *, rated: bool = True):
@@ -397,9 +320,7 @@ def main():
     print("building fixtures:")
     copy_song(REG_SOURCE, "RegFull - Fixture")
     inject_section_contest("RegFull - Fixture")
-    inject_texture_novelty("RegFull - Fixture")
     inject_phrase_periodicity("RegFull - Fixture")
-    inject_structural_vs_micro("RegFull - Fixture")
     inject_block_energy("RegFull - Fixture")
     inject_lyric_validations("RegFull - Fixture", validated=True)
     inject_segments(
@@ -427,9 +348,7 @@ def main():
                     "artifacts/essentia/fft_bands.drums.json",
                     "artifacts/essentia/fft_bands.harmonic.json",
                     "artifacts/essentia/fft_bands.vocals.json"})
-    inject_texture_novelty("RegPartial - Fixture")
     inject_phrase_periodicity("RegPartial - Fixture")
-    inject_structural_vs_micro("RegPartial - Fixture")
     inject_block_energy("RegPartial - Fixture", rated=False)
     inject_lyric_validations("RegPartial - Fixture")
     inject_segments(
@@ -449,9 +368,7 @@ def main():
         ],
     )
     copy_test_song()
-    inject_texture_novelty("_test_song")
     inject_phrase_periodicity("_test_song")
-    inject_structural_vs_micro("_test_song")
     inject_block_energy("_test_song", rated=False)
     inject_lyric_validations("_test_song")
     inject_segments("_test_song", segments_json=None, seed_json=[])

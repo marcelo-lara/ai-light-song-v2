@@ -37,7 +37,7 @@ class SubstitutionTests(unittest.TestCase):
 
 
 class QueueFileTests(unittest.TestCase):
-    def test_seeded_queue_parses_with_eight_enabled_app_rows(self) -> None:
+    def test_seeded_queue_parses_with_six_enabled_app_rows(self) -> None:
         rows = run_queue.load_queue()
         names = [r["name"] for r in rows]
         self.assertEqual(
@@ -48,10 +48,8 @@ class QueueFileTests(unittest.TestCase):
                 "rhythm_drum_ioi",
                 "rhythm_stem_autocorr",
                 "rhythm_vocal_onsets",
-                "structural_vs_micro",
                 "svd_tagger",
                 "tension_shape",
-                "texture_novelty",
                 "vocal_voiceness",
             ],
         )
@@ -63,9 +61,7 @@ class QueueFileTests(unittest.TestCase):
                 "phrase_periodicity",
                 "rhythm_drum_ioi",
                 "rhythm_stem_autocorr",
-                "structural_vs_micro",
                 "tension_shape",
-                "texture_novelty",
                 "vocal_voiceness",
             ],
         )

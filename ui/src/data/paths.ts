@@ -44,11 +44,6 @@ export const artifactPaths = {
   // mcp/ reads it.
   lyricValidations: (song: string) =>
     encodePath(analysis(song, "reference", "human", "lyric_validations.json")),
-  // Written by experiments/drop_detection (`run export`), never by the pipeline
-  // and never by a human. Kept out of `reference/human/` so the drop-impact
-  // ground truth stays a purely hand-authored file.
-  dropProposals: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "drop_impacts.json")),
   // Written by experiments/clap (`run character`). Texture blocks — what a
   // passage is *like* — merged from the stems, CLAP's calm axis, and allin1's
   // frame-level shadow labels.
@@ -69,24 +64,12 @@ export const artifactPaths = {
   // derived from the published per-stem RMS series — no audio, no model.
   arrangementState: (song: string) =>
     encodePath(analysis(song, "arrangement_state.json")),
-  // Written by experiments/texture_novelty (`run export`). Segments between
-  // self-similarity-novelty texture boundaries. A proposal to audition against
-  // Human Hints — failed its kill condition, kept for one review pass.
-  textureNovelty: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "texture_novelty.json")),
   // Written by experiments/phrase_periodicity (`run export`). One block per
   // operator hint, each carrying a repetition `regime` + `period` (bars, or
   // null → "no phrase structure detected"). A proposal to audition against
   // Human Hints — passed its kill condition.
   phrasePeriodicity: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "phrase_periodicity.json")),
-  // Written by experiments/structural_vs_micro (`run export`). One block per
-  // operator hint, each carrying `kind` ("structural" | "micro", by 4-bar
-  // phrase-grid fit) + `grid_fit_bars` (the fit error in bars). A proposal to
-  // audition against Human Hints — failed its kill condition, kept for one
-  // review pass.
-  structuralVsMicro: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "structural_vs_micro.json")),
   // Written by experiments/rhythm_drum_ioi (`run export`). item 5/6a:
   // rhythm.drums subdivision + confidence from drum_events.json IOI.
   rhythmDrumIoi: (song: string) =>

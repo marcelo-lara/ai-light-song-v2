@@ -75,15 +75,12 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "allin1Sections", label: "allin1 Segmentation", sub: "artifacts/section_segmentation · pre-fusion, read-only", kind: "proposals", height: 58 },
   { id: "moisesLyrics", label: "Moises Lyrics", sub: "reference/moises · per-word tokens · tinted by confidence", kind: "lyrics", height: 84 },
   { id: "arrangementState", label: "Arrangement State", sub: "arrangement_state · who is playing, per-stem RMS state changes", kind: "proposals", height: 58 },
-  { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58, experiment: "drop_detection" },
   { id: "vocalPhrases", label: "Vocal Phrases", sub: "experiment · phrase / gap / sustained-note blocks over the vocal stem", kind: "proposals", height: 58, experiment: "vocal_phrases" },
   { id: "vocalVoiceness", label: "4. Vocal Voiceness", sub: "experiment · per-frame voiceness (vibrato + portamento + sibilance) + bridged phrase blocks", kind: "proposals", height: 84, experiment: "vocal_voiceness" },
   { id: "svdTagger", label: "6. SVD Tagger", sub: "experiment · PANNs Singing-class voiceness, stem + mix channels (two curves, no toggle)", kind: "proposals", height: 112, experiment: "svd_tagger" },
   { id: "whisperxVad", label: "7. WhisperX VAD", sub: "speech-domain VAD voiceness + phrase spans with real sub-second onsets (diarization not attempted — no HF_TOKEN)", kind: "proposals", height: 64 },
   { id: "voiceMultiplicity", label: "Voice Multiplicity", sub: "experiment · solo/stacked voice blocks from stereo width and L-R correlation", kind: "proposals", height: 58, experiment: "voice_multiplicity" },
-  { id: "textureNovelty", label: "2. Texture Novelty", sub: "experiment · self-similarity novelty texture segments", kind: "proposals", height: 58, experiment: "texture_novelty" },
   { id: "phrasePeriodicity", label: "3. Phrase Periodicity", sub: "experiment · per-bar autocorrelation regime + period", kind: "proposals", height: 58, experiment: "phrase_periodicity" },
-  { id: "structuralVsMicro", label: "4. Structural vs Micro", sub: "experiment · 4-bar phrase-grid fit · structural vs micro block kind", kind: "proposals", height: 58, experiment: "structural_vs_micro" },
   { id: "rhythmDrumIoi", label: "Rhythm Drum IOI", sub: "experiment · drum inter-onset interval / beat period -> subdivision", kind: "proposals", height: 58, experiment: "rhythm_drum_ioi" },
   { id: "rhythmStemAutocorr", label: "Rhythm Stem Autocorr", sub: "experiment · per-stem sub-beat loudness autocorrelation -> subdivision", kind: "proposals", height: 58, experiment: "rhythm_stem_autocorr" },
   { id: "rhythmVocalOnsets", label: "Rhythm Vocal Onsets", sub: "experiment · whisper word-onset interval / beat period -> subdivision", kind: "proposals", height: 58, experiment: "rhythm_vocal_onsets" },
@@ -107,16 +104,19 @@ export const LANE_DEFS: readonly LaneDef[] = [
 ];
 
 /**
- * design notes §2: the five lanes expanded on first load, plus the review
- * lanes that only exist to be compared against Human Hints while the song
- * plays — Moises Lyrics and Drop Proposals sit directly under it and open
- * with it.
+ * design notes §2: the lanes expanded on first load, plus the review
+ * lane that only exists to be compared against Human Hints while the song
+ * plays — Moises Lyrics sits directly under it and opens with it.
  *
  * Experiment lanes leave the registry when promoted or abandoned:
  * `allin1Transitions` went in plan v3.0 item 14 (content now in
  * `song_event_timeline.json`); `arrangementState` was promoted in plan v3.2
  * (it now reads the top-level published `arrangement_state.json` and carries
- * no flask badge). `allin1Sections` was also removed in v3.0 item 14 on the
+ * no flask badge). The `drop_detection`, `texture_novelty` and
+ * `structural_vs_micro` experiments' lanes were retired (v3.6 item 7) after
+ * their v3.6 item 3 archive verdicts — see
+ * `docs/archive/experiments_discarded.md`.
+ * `allin1Sections` was also removed in v3.0 item 14 on the
  * reasoning that the production `sections` lane already showed its content —
  * that stopped holding once `sections.json` could be overridden outright by
  * a human or moises reference file (docs/reference/analysis.segments.md), so
@@ -129,7 +129,6 @@ export const DEFAULT_EXPANDED: readonly string[] = [
   "humanHints",
   "humanSections",
   "moisesLyrics",
-  "dropProposals",
   "fftBands",
   "rmsLoudness",
   "loudnessEnvelope",

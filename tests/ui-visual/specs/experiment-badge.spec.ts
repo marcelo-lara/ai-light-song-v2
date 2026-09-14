@@ -8,7 +8,7 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // label text. Production `src/` lanes are never badged, even the ones
 // CLAUDE.md records as untrusted.
 //
-// The badged set currently has fifteen lanes (v3.6 item 5 added the five
+// The badged set currently has twelve lanes (v3.6 item 5 added the five
 // rhythm/energy/tension candidate-producer lanes: rhythmDrumIoi,
 // rhythmStemAutocorr, rhythmVocalOnsets, energyLevel, tensionShape). Plan
 // v3.0 item 9 promoted
@@ -20,18 +20,17 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // `song_event_timeline.json`. Plan v3.6 item 2 promoted `whisperxVad` out of
 // this set: the `whisperx_vad` detector now runs as its own pipeline service
 // (the `whisperx` Compose service), not an `experiments/` sandbox, and reads
-// `artifacts/whisperx-vad/whisperx_vad.json`. This list must track
-// `ui/src/timeline/laneState.ts`'s tagged set exactly.
+// `artifacts/whisperx-vad/whisperx_vad.json`. Plan v3.6 item 7 removed
+// `dropProposals`, `textureNovelty` and `structuralVsMicro` entirely — their
+// experiments were archived (item 3) and their lanes retired via Recipe B.
+// This list must track `ui/src/timeline/laneState.ts`'s tagged set exactly.
 
 const BADGED = [
-  "dropProposals",
   "vocalPhrases",
   "vocalVoiceness",
   "svdTagger",
   "voiceMultiplicity",
-  "textureNovelty",
   "phrasePeriodicity",
-  "structuralVsMicro",
   "rhythmDrumIoi",
   "rhythmStemAutocorr",
   "rhythmVocalOnsets",

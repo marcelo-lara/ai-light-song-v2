@@ -66,7 +66,7 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 7 of 12 |
+| Done | 8 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 2, 8, 9, 10 |
@@ -241,20 +241,20 @@ Refinement item 3: its table, keep-by-default rule and ACE-Step paragraph.
 
 Refinement item 4.
 
-- [ ] Delete `reference/proposals/{clap_voiceness,reactive_bands,grid,gestures}.json` on every song. Delete `reference/proposals/arrangement_state.json` after `grep -rn "proposals.*arrangement_state" src ui/src experiments mcp` returns no match.
-- [ ] Retire the lane of every experiment item 6 archived (Recipe B). Remove those proposals from the fixtures and `build-fixtures.py`, their ids from `BADGED`, and their rows from `experiments/queue.toml`.
-- [ ] Docs: `docs/analysis-definition.md` (4 songs with `human/segments.json`), `docs/experiments.md` "Vocal ground truth inventory" and "Loose ends" rewritten to refinement item 2's corpus table.
+- [x] Delete `reference/proposals/{clap_voiceness,reactive_bands,grid,gestures}.json` on every song (23/4/4/4 songs respectively). Delete `reference/proposals/arrangement_state.json` (4 songs) after `grep -rn "proposals.*arrangement_state" src ui/src experiments mcp` returns no match — confirmed clean.
+- [x] Retire the lane of every experiment item 6 archived (Recipe B): `textureNovelty`, `structuralVsMicro`, `dropProposals` (SongFormer had no lane, nothing to retire). All 11 Recipe B steps done per lane, plus two stale references outside the recipe's strict file list caught and fixed (`blockFields.ts`'s `LANE_LABELS`, dangling `loadDropProposals` test references) and two now-fully-obsolete visual specs deleted. Remove those proposals from the fixtures and `build-fixtures.py`, their ids from `BADGED`, and their rows from `experiments/queue.toml`.
+- [x] Docs: `docs/analysis-definition.md` (4 songs with `human/segments.json` — `Cinderella - Ella Lee` confirmed as the 4th), `docs/experiments.md` "Vocal ground truth inventory" and "Loose ends" rewritten to refinement item 2's corpus table.
 
 **Checks**
-- [ ] Every `data/analysis/*/reference/proposals/*.json` basename is referenced in `ui/src/data/paths.ts` or in an `experiments/*/` reader.
-- [ ] Every `experiment:` value in `laneState.ts` names an entry still open in `docs/experiments.md`.
-- [ ] ui test + build green.
+- [x] Every `data/analysis/*/reference/proposals/*.json` basename is referenced in `ui/src/data/paths.ts` or in an `experiments/*/` reader. `texture_novelty.json`/`structural_vs_micro.json` stay on disk (no longer UI-read, but still written by their own experiment and — `texture_novelty.json`/`phrase_periodicity.json` — read by `truth_common/adapters.py`'s item-5 adapters); `drop_impacts.json` stays, read by `experiments/{reactive_bands,grid_consensus,gestures}/score.py` (older, already-archived experiments kept as historical code, unrelated to this item).
+- [x] Every `experiment:` value in `laneState.ts` names an entry still open in `docs/experiments.md` — verified all 11 remaining values.
+- [x] ui test (399) + build green. analyzer tests (156, `test_run_queue.py` row counts updated for the 2 removed queue rows) green too.
 
 **Visual QA** (`RegFull`)
-- [ ] Runtime assertions as item 2.
-- [ ] For each retired lane id: `[data-lane="<id>"]` count 0.
-- [ ] `experiment-badge.spec.ts` passes.
-- [ ] `song-full` baseline re-captured, justification naming each removed lane.
+- [x] Runtime assertions as item 2.
+- [x] For each retired lane id: `[data-lane="<id>"]` count 0.
+- [x] `experiment-badge.spec.ts` passes.
+- [ ] `song-full` baseline re-captured — skipped, same reason as items 2/4/5. Full suite: 21/44 failing (same set, unchanged), all pure screenshot-pixel drift; `texture-novelty.spec.ts`/`structural-vs-micro.spec.ts` correctly gone (deleted with their lanes), no other regressions.
 
 ---
 

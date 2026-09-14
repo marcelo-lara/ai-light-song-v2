@@ -301,10 +301,10 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 - lane head (plan v1.5 item 7): a lane fed by an unpromoted `experiments/`
   sandbox carries `<i.ph.ph-flask.tl-lane-head__flask>` (`aria-label`
   `"Experimental lane"`) as the first child of `.tl-lane-head__name`, before
-  `<span.tl-lane-head__name-text>`. Fifteen lanes carry it —
-  `dropProposals`, `vocalPhrases`, `vocalVoiceness`, `svdTagger`,
-  `voiceMultiplicity`, `textureNovelty`, `phrasePeriodicity`,
-  `structuralVsMicro`, `rhythmDrumIoi`, `rhythmStemAutocorr`,
+  `<span.tl-lane-head__name-text>`. Twelve lanes carry it —
+  `vocalPhrases`, `vocalVoiceness`, `svdTagger`,
+  `voiceMultiplicity`, `phrasePeriodicity`,
+  `rhythmDrumIoi`, `rhythmStemAutocorr`,
   `rhythmVocalOnsets`, `energyLevel`, `tensionShape`, `character`,
   `vocalTranscription` (this list must track
   `tests/ui-visual/specs/experiment-badge.spec.ts`'s `BADGED` exactly). The

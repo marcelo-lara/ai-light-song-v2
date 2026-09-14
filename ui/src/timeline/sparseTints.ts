@@ -42,10 +42,6 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   allin1Sections: [90, 45, 42], // olive — our own pre-fusion segmentation,
   //   distinct from humanSections (55), moisesSections (160) and the fused
   //   Sections lane's teal (174)
-  dropProposals: [318, 72, 46], // magenta — deliberately unlike the amber of the
-  //                               human hints it is auditioned against
-  dropProposalsMatched: [168, 60, 40], // muted teal — a proposal that already
-  //                                      matches a hand-authored drop impact
   // Wave-2 experiments (docs/experiments.md, run orders 1-3, 6).
   vocalPhrases: [340, 55, 46], // rose — distinct from moisesLyrics' slate blue
   vocalPhrasesGap: [220, 10, 40], // near-grey — an instrumental (no-vocal) span
@@ -65,9 +61,8 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   // stem and the mix, rendered as two curves in the SAME lane (never a
   // toggle — the standing "no hiding a signal behind a selector" rule).
   // Two distinct base hues so the stem/mix curves read as two series at a
-  // glance: stem 105 (spring-green, clear of arrangementState's 95 and
-  // textureNovelty's 70), mix 235 (blue, clear of structuralVsMicro's 245
-  // and vocalPhrasesGap's 220). Each ramped by intensity like the sibling
+  // glance: stem 105 (spring-green, clear of arrangementState's 95), mix 235
+  // (blue, clear of vocalPhrasesGap's 220). Each ramped by intensity like the sibling
   // voiceness lanes; the two phrase-overlay hues (50, 185) sit in the same
   // gaps, clear of every neighbour.
   svdTaggerStemVeryLow: [105, 20, 20],
@@ -87,8 +82,8 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   // (amber-orange) sits between gestures' burnt orange (10) and humanHints'
   // amber (35) — distinguished from both by this lane's own intensity ramp
   // and by never co-occurring with either lane's block shape. The overlaid
-  // `vocal_phrase` hue (80, yellow-green) sits between textureNovelty (70)
-  // and arrangementState (95) for the same reason. Unlike
+  // `vocal_phrase` hue (80, yellow-green) sits below
+  // arrangementState (95) for the same reason. Unlike
   // svdTagger, this candidate's phrase spans carry real sub-second onsets
   // (Binarize hysteresis, not a 5s clip window) — see model.py.
   whisperxVadVeryLow: [20, 20, 20],
@@ -101,25 +96,13 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //                                   distinct from phrasePeriodicity's 130,
   //                                   moisesLyricsHigh's 150
   arrangementState: [95, 55, 44], // olive-lime — distinct from vocalPhrases' rose
-  //                                 (340) and dropProposals' magenta (318)
+  //                                 (340)
   arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a
   //                                       block where one stem or fewer is playing
-  textureNovelty: [70, 60, 44], // chartreuse — distinct from arrangementState's
-  //   olive-lime (95); v3.4 item 6 experiment lane
-  //   (failed kill condition, kept for one review pass)
-  phrasePeriodicity: [130, 55, 40], // emerald — distinct from textureNovelty's
-  //   chartreuse (70) and arrangementState's olive-lime (95); v3.4 item 7
-  //   experiment lane (passed its kill condition)
-  structuralVsMicro: [245, 50, 52], // indigo — a `structural` block (edge locks
-  //   to the 4-bar phrase grid). Distinct from every neighbour hue: textureNovelty
-  //   70, phrasePeriodicity 130, moisesLyrics 210, character 275; v3.4 item 8
-  //   experiment lane (failed its kill condition, kept for one review pass)
-  structuralVsMicroMicro: [300, 62, 52], // magenta-purple — a `micro` cue that
-  //   lives inside a phrase. Per-block tint override the adapter emits for
-  //   kind === "micro"; precedent dropProposalsMatched
+  phrasePeriodicity: [130, 55, 40], // emerald — distinct from arrangementState's
+  //   olive-lime (95); v3.4 item 7 experiment lane (passed its kill condition)
   rhythmDrumIoi: [290, 55, 46], // violet — v3.6 item 5's three rhythm.* candidate
-  //   producers get their own hue each; distinct from structuralVsMicro's indigo
-  //   (245) and character's 275
+  //   producers get their own hue each; distinct from character's 275
   rhythmStemAutocorr: [309, 55, 48], // magenta-violet — distinct from
   //   rhythmDrumIoi's 290 and moisesLyricsValidated's 265
   rhythmVocalOnsets: [329, 55, 48], // pink-magenta — distinct from
@@ -127,14 +110,13 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   energyLevel: [350, 60, 46], // red-pink — v3.6 item 5's energy candidate
   //   producer; distinct from every neighbour hue in the 300-340 range above
   tensionShape: [227, 55, 46], // blue — v3.6 item 5's tension candidate
-  //   producer; distinct from arrangementState's olive-lime (95) and
-  //   structuralVsMicro's indigo (245)
+  //   producer; distinct from arrangementState's olive-lime (95)
   gestures: [10, 75, 46], // burnt orange — sound-design device gestures
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
   sectionsContested: [28, 90, 50], // vivid orange — a section whose allin1
   //   `function` label is kept but contradicted by the energy contest (v3.4
-  //   item 3). Reads clearly against the Sections lane's teal blocks; precedent
-  //   is `dropProposalsMatched`.
+  //   item 3). Reads clearly against the Sections lane's teal blocks; a
+  //   per-block tint override.
   // Character blocks are tinted by *kind*, so a song's texture reads as a
   // colour strip before any label is. Violet for `breath` is not arbitrary —
   // it is the look the operator wrote for the block this lane was built to

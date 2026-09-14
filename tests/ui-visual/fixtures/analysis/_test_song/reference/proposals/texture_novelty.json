@@ -4,23 +4,39 @@
   "generated_from": {
     "experiment": "experiments/texture_novelty",
     "engine": "cosine self-similarity + Foote checkerboard novelty (1.0 s half-window)",
-    "feature_set": "raw 7-band MIX vector"
+    "feature_set": "raw 7-band MIX vector",
+    "params": {
+      "half_window_s": 1.0,
+      "min_gap_s": 2.0,
+      "k_std": 1.0
+    },
+    "generated_at": "2026-09-13T03:27:02.537659Z"
   },
   "blocks": [
     {
       "start_s": 0.0,
-      "end_s": 8.0,
+      "end_s": 7.15,
       "edge_strength": null
     },
     {
-      "start_s": 8.0,
-      "end_s": 20.0,
-      "edge_strength": 0.71
+      "start_s": 7.15,
+      "end_s": 29.1,
+      "edge_strength": 0.2888
     },
     {
-      "start_s": 20.0,
-      "end_s": 32.0,
-      "edge_strength": 0.46
+      "start_s": 29.1,
+      "end_s": 42.5,
+      "edge_strength": 0.2141
+    },
+    {
+      "start_s": 42.5,
+      "end_s": 56.35,
+      "edge_strength": 0.4105
+    },
+    {
+      "start_s": 56.35,
+      "end_s": 58.1,
+      "edge_strength": 1.0
     }
   ]
 }

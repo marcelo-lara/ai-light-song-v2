@@ -309,8 +309,8 @@ Honest caveats that ship with it:
 
 **v3.5 — `reference/human/segments.json` and the vocabulary switch.**
 A new optional, gold-song-only reference file (`_test_song`, `ayuni`, `"What
-a Feeling - Courtney Storm"` carry it today): a flat `[{start, end, label}]`
-list. Where it exists for a song, `ui_data.build_ui_data` rebuilds
+a Feeling - Courtney Storm"` and `"Cinderella - Ella Lee"` carry it today): a
+flat `[{start, end, label}]` list. Where it exists for a song, `ui_data.build_ui_data` rebuilds
 `sections.json` from its spans outright — boundaries/label/description/
 confidence (fixed `0.8`) come from it; `function_confidence`/
 `function_status`/`same_label_as` are still inherited from whichever allin1

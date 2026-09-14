@@ -1308,7 +1308,7 @@ environment carries `type: "vocal"` ground truth" claim repeated in items 3-7.
 | `ayuni` | `human_hints.json` | 7 `type: "vocal"` spans (32.0 s), explicit "no vocals" negatives (102.6 s), 2 residual-vocal spans (29.4 s). **Exhaustive** — 0.7 s of the 164.8 s is unmarked |
 | `Cinderella - Ella Lee` | `human_hints.json` | v3.5 item 12 re-mark: 22 `type: "vocal"` spans (167.3 s), 5 hard negatives (72.1 s, instrument leaked into the vocal stem), 3 `unknown` (7.1 s). No longer sparse: 93.0 s of the 339.5 s is unmarked. **Circular positives**: 15 of the 22 positive spans were captured from `whisperx_vad`'s own lane (`captured_from` field) — whisperX's recall/F1 on `Cinderella` is not an independent measurement; only `false_vocal_rate` on the 5 operator-marked negatives compares fairly |
 | `Armin - Revolution` | `human_hints.json` | 7 `type: "vocal"` spans (35.3 s); male 30.0-55.8 s, female 81.6-88.0 s. No "no vocals" hints — unlabelled time is **not** confirmed instrumental, so its FP column is an upper bound |
-| `Queen of Kings - Alessandra` | `reference/moises/lyrics.json` | curated word timings, **trust window 0-127.2 s only**; lead-vs-chorus in hint prose |
+| `Queen of Kings - Alessandra` | `reference/human/lyrics.json` | trusted word timings, 257 words / 37 lines, 1.0-142.9 s — **whole song**, superseding the earlier `reference/moises/lyrics.json` 0-127.2 s trust window |
 | `_test_song` | `reference/moises/lyrics.json` | curated, 24 words / 5 lines, 15.9-54.7 s; 36 s of real instrumental including deliberate traps (an acid-synth-bass block, an ambient pad between two vocal lines) |
 | `In da name of love - Anita and Ray` | `human_hints.json` | 11 hints, 10 of them `type: "vocal"`; 1 residual (hint-008, a vocal loop). **No hard negatives** — unmarked time is not confirmed instrumental. Classified 2026-09-13; also the corpus's only declared 2-singer song |
 | `What a Feeling - Courtney Storm` | `human_hints.json` | 2 hints only — 1 `type: "vocal"`, 1 residual (hint-002, sampled chatter). Very sparse; useful for the residual firing rate, not for recall |
@@ -1678,17 +1678,13 @@ task.
 
 ### The gold set has almost no non-drop ground truth
 
-**Partly resolved for vocals** — see "Vocal ground truth inventory" above; four
-songs now carry scoreable vocal truth. The texture/character gap below is
-unchanged.
-
-The counted table now lives in [`issues.md`](issues.md) ("Texture hints missing
-on three gold songs"): 12 non-drop hints in the whole gold set, 10 of them inside
-the 58-second synthetic `_test_song`. This loose end stays here because the gap
-still blocks the **CLAP character layer** entry above — its thresholds are
-hand-set against those absent labels, and it does not disappear now that
-`arrangement_state` has left the queue. One texture-marking session on
-`Titanium` and `Hideaway` unblocks both.
+**Resolved (v3.6 item 2 corpus, checked 2026-09-14).** The texture/character
+family now scores against untyped, non-drop hints on four songs: `Queen of
+Kings` 16, `ayuni` 11, `Cinderella` 8, `_test_song` 8 — see
+`docs/product-refinement-v3.6.md` section 2's corpus table. This is the
+current corpus for the **CLAP character layer** entry and any other
+texture/character candidate; `issues.md`'s older "Texture hints missing"
+count predates this marking pass.
 
 ### One sandbox image unblocks the two best open entries
 
@@ -1711,14 +1707,17 @@ The remaining `reference/proposals/` lanes are all wanted:
 | --- | --- |
 | `vocal_transcription` | VocalParse archived, but **keep** — shared with the open ACE-Step entry |
 | `character`, `vocal_phrases` | entries still open — keep |
-| `drop_impacts` | **resolved v3.6 item 3** — archived, see below |
+| `drop_impacts` | **retired v3.6 item 7** — see below |
 
-### `drop_impacts` orphan lane — resolved
+### `drop_impacts` orphan lane — retired
 
-**Settled 2026-09-14 (v3.6 item 3 rescore).** `experiments/drop_detection/`
-never had a queue entry, and its candidate proposals lose to the shipped
-`gestures.py` stage on the drop-stage family (see
-`docs/archive/experiments_discarded.md` "Drop Proposals (`drop_detection`)").
-Archived. The lane and the on-disk `experiments/drop_detection/` cache stay
-until item 7 ("Delete what nothing reads") retires them — this entry only
-settles the verdict, not the deletion.
+**Settled 2026-09-14 (v3.6 item 3 rescore, retired item 7).**
+`experiments/drop_detection/` never had a queue entry, and its candidate
+proposals lose to the shipped `gestures.py` stage on the drop-stage family
+(see `docs/archive/experiments_discarded.md` "Drop Proposals
+(`drop_detection`)"). The `dropProposals` debugger lane was removed via
+Recipe B; `experiments/drop_detection/` stays in the tree as a cache other
+experiments still read, and its `reference/proposals/drop_impacts.json`
+output is unaffected — only the lane and its own `reference/proposals/
+{clap_voiceness,reactive_bands,grid,gestures}.json` inputs (item 4's
+"no reader" list) were removed.

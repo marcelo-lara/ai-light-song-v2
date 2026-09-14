@@ -22,14 +22,11 @@ import type {
 import { mergeHumanSegments } from "../data/segmentMerge";
 import type {
   CharacterFile,
-  DropProposalsFile,
   MoisesLyricsFile,
   VocalTranscriptionFile,
   VocalPhrasesFile,
   ArrangementStateFile,
-  TextureNoveltyFile,
   PhrasePeriodicityFile,
-  StructuralVsMicroFile,
   RhythmDrumIoiFile,
   RhythmStemAutocorrFile,
   RhythmVocalOnsetsFile,
@@ -209,50 +206,6 @@ export function allin1SectionsContent(
     summary: "Our own segmentation (allin1), before any human/moises override.",
     raw: s,
   }));
-}
-
-/**
- * Drop-impact proposals from `experiments/drop_detection`. These are candidates
- * to audition, not findings: the label leads with whether the candidate already
- * matches a hand-authored `drop impact` (`✓`) or is unconfirmed (`?`), then
- * names the role-change channels that fired, which is what you need in order to
- * judge it against what you are hearing.
- */
-export function dropProposalsContent(file: DropProposalsFile | null): SparseBlock[] {
-  return (file?.proposals ?? []).map((p) => {
-    const matched = p.matches_human_label != null;
-    const channels = p.channels.join(" · ") || "no channel";
-    const evidence = Object.entries(p.evidence)
-      .map(([key, value]) => `${key.replace(/_db$/, "")} ${value > 0 ? "+" : ""}${round(value, 1)} dB`)
-      .join(", ");
-    return {
-      id: p.id,
-      start_s: p.start_s,
-      end_s: p.end_s,
-      label: `${matched ? "✓" : "?"} ${channels}`,
-      // Confirmed candidates go teal and unconfirmed ones stay magenta, so the
-      // lane reads as a triage queue at song-overview zoom, where the 0.5 s
-      // blocks are far too narrow for their labels.
-      ...(matched ? { tintId: "dropProposalsMatched" } : {}),
-      wideLabel: `${matched ? "✓" : "?"} ${channels}${evidence ? ` · ${evidence}` : ""}`,
-      laneLabel: "Drop Proposals",
-      caption: `${formatRange(p.start_s, p.end_s)} · ${
-        matched
-          ? `matches human ${round(p.matches_human_label, 2)}s`
-          : "unconfirmed"
-      }`,
-      reference: p.id,
-      detail: channels,
-      summary: `Stage-1 drop-impact candidate fired by ${channels}${
-        evidence ? `; ${evidence}` : ""
-      }. ${
-        matched
-          ? `Already within 0.5 s of the human label at ${round(p.matches_human_label, 2)}s.`
-          : "Not yet in human_hints.json — audition it, then copy it across by hand if it is real."
-      }`,
-      raw: p.raw ?? p,
-    };
-  });
 }
 
 /**
@@ -629,37 +582,6 @@ export function arrangementStateContent(file: ArrangementStateFile | null): Spar
 }
 
 /**
- * Segments between self-similarity-novelty texture boundaries from
- * `experiments/texture_novelty` (cosine SSM + Foote checkerboard, 1.0 s
- * half-window). A proposal to audition against Human Hints directly above it —
- * the experiment FAILED its kill condition and this lane is kept for one
- * operator review pass only.
- */
-export function textureNoveltyContent(file: TextureNoveltyFile | null): SparseBlock[] {
-  return (file?.blocks ?? []).map((b, i) => ({
-    id: `texture-novelty-${i + 1}`,
-    start_s: b.start_s,
-    end_s: b.end_s,
-    label: "",
-    wideLabel:
-      b.edge_strength == null
-        ? "first segment"
-        : `edge ${round(b.edge_strength, 2)}`,
-    laneLabel: "2. Texture Novelty",
-    caption: `${formatRange(b.start_s, b.end_s)} · ${
-      b.edge_strength == null
-        ? "first segment (no left edge)"
-        : `left-edge novelty ${round(b.edge_strength, 2)}`
-    }`,
-    reference: `texture-novelty-${i + 1}`,
-    detail: b.edge_strength == null ? "initial segment" : `edge ${round(b.edge_strength, 3)}`,
-    summary:
-      "experiments/texture_novelty — a texture segment bounded by cosine self-similarity novelty peaks (feature set 1, raw 7-band mix). Failed its kill condition; kept for one review pass.",
-    raw: b,
-  }));
-}
-
-/**
  * Per-block repetition regime + period from `experiments/phrase_periodicity`
  * (z-normalised per-bar 16-slot autocorrelation, period only — never phase). A
  * proposal to audition against Human Hints directly above it. `period` is null
@@ -683,40 +605,6 @@ export function phrasePeriodicityContent(file: PhrasePeriodicityFile | null): Sp
       reference: `phrase-periodicity-${i + 1}`,
       detail: b.title ? `${b.title} · ${b.n_bars} bar${b.n_bars === 1 ? "" : "s"}` : "",
       summary: `experiments/phrase_periodicity — ${b.regime}; ${periodText}. Regime needs a block ≥ 2 bars; shorter blocks read through-composed (known limit).`,
-      raw: b,
-    };
-  });
-}
-
-/**
- * Per-block `structural` | `micro` split from `experiments/structural_vs_micro`:
- * a 4-bar phrase grid is fit to items 6+7's boundary edges, and each operator
- * block is labelled by how well its edges lock to it, carrying `grid_fit_bars`
- * (the fit error in bars) so a reviewer sees how marginal the call was. `micro`
- * blocks get a distinct tint (`structuralVsMicroMicro`). NOT a precision filter
- * for Texture Novelty — a two-class split the pipeline cannot otherwise express.
- * FAILED its kill condition; lane kept for one review pass.
- */
-export function structuralVsMicroContent(
-  file: StructuralVsMicroFile | null,
-): SparseBlock[] {
-  return (file?.blocks ?? []).map((b, i) => {
-    const fitText =
-      b.grid_fit_bars == null
-        ? "grid fit unknown"
-        : `grid fit ${b.grid_fit_bars.toFixed(2)} bars`;
-    return {
-      id: `structural-vs-micro-${i + 1}`,
-      start_s: b.start_s,
-      end_s: b.end_s,
-      label: "",
-      wideLabel: b.kind,
-      ...(b.kind === "micro" ? { tintId: "structuralVsMicroMicro" } : {}),
-      laneLabel: "4. Structural vs Micro",
-      caption: `${formatRange(b.start_s, b.end_s)} · ${b.kind} · ${fitText}`,
-      reference: `structural-vs-micro-${i + 1}`,
-      detail: b.title || "",
-      summary: `experiments/structural_vs_micro — ${b.kind}; ${fitText}. A structural edge locks to the 4-bar phrase grid; a micro cue lives inside a phrase. Failed its kill condition (did not beat a duration-only baseline).`,
       raw: b,
     };
   });
@@ -1204,7 +1092,6 @@ export interface LaneContentSources {
   /** v3.4 item 5 — read-time overlay: Moises word-token ids the operator has
    *  hand-verified (from reference/human/lyric_validations.json). */
   lyricValidations?: ReadonlySet<number> | null;
-  dropProposals?: DropProposalsFile | null;
   sections?: readonly SectionRow[];
   sectionSegmentation?: readonly SegmentationSection[];
   harmonicLayer?: HarmonicLayer | null;
@@ -1212,9 +1099,7 @@ export interface LaneContentSources {
   vocalTranscription?: VocalTranscriptionFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
   arrangementState?: ArrangementStateFile | null;
-  textureNovelty?: TextureNoveltyFile | null;
   phrasePeriodicity?: PhrasePeriodicityFile | null;
-  structuralVsMicro?: StructuralVsMicroFile | null;
   rhythmDrumIoi?: RhythmDrumIoiFile | null;
   rhythmStemAutocorr?: RhythmStemAutocorrFile | null;
   rhythmVocalOnsets?: RhythmVocalOnsetsFile | null;
@@ -1235,11 +1120,8 @@ export const SPARSE_LANE_IDS = [
   "allin1Sections",
   "moisesLyrics",
   "arrangementState",
-  "dropProposals",
   "vocalPhrases",
-  "textureNovelty",
   "phrasePeriodicity",
-  "structuralVsMicro",
   "rhythmDrumIoi",
   "rhythmStemAutocorr",
   "rhythmVocalOnsets",
@@ -1275,16 +1157,10 @@ export function buildLaneBlocks(
       return moisesLyricsContent(s.moisesLyrics ?? null, s.lyricValidations ?? null);
     case "arrangementState":
       return arrangementStateContent(s.arrangementState ?? null);
-    case "dropProposals":
-      return dropProposalsContent(s.dropProposals ?? null);
     case "vocalPhrases":
       return vocalPhrasesContent(s.vocalPhrases ?? null);
-    case "textureNovelty":
-      return textureNoveltyContent(s.textureNovelty ?? null);
     case "phrasePeriodicity":
       return phrasePeriodicityContent(s.phrasePeriodicity ?? null);
-    case "structuralVsMicro":
-      return structuralVsMicroContent(s.structuralVsMicro ?? null);
     case "rhythmDrumIoi":
       return rhythmDrumIoiContent(s.rhythmDrumIoi ?? null);
     case "rhythmStemAutocorr":

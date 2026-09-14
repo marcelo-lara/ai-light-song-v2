@@ -26,20 +26,8 @@
 # Adding or removing an experiment from the queue is a one-row edit here.
 
 [[experiment]]
-name = "texture_novelty"
-command = "python -m experiments.texture_novelty.run compute --song {song_name} && python -m experiments.texture_novelty.run export --song {song_name}"
-image = "app"
-enabled = true
-
-[[experiment]]
 name = "phrase_periodicity"
 command = "python -m experiments.phrase_periodicity.run compute --song {song_name} && python -m experiments.phrase_periodicity.run export --song {song_name}"
-image = "app"
-enabled = true
-
-[[experiment]]
-name = "structural_vs_micro"
-command = "python -m experiments.structural_vs_micro.run compute --song {song_name} && python -m experiments.structural_vs_micro.run export --song {song_name}"
 image = "app"
 enabled = true
 

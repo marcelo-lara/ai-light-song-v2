@@ -4,15 +4,16 @@
 
 ## Status
 
-**Measured, FAILED its kill condition, kept as a lane for one operator review
-pass — kill candidate.** v3.4 item 8. Nothing in `src/` reads anything here.
-Queue entry with the same numbers in summary form:
-[`../../docs/experiments.md`](../../docs/experiments.md).
+**ARCHIVED 2026-09-14 (v3.6 item 3 rescore, lane retired item 7).** FAILED its
+kill condition: phrase-grid pooled macro-F1 0.38 vs the duration-only baseline
+0.82. Nothing in `src/` reads anything here. TLDR:
+[`../../docs/archive/experiments_discarded.md`](../../docs/archive/experiments_discarded.md)
+"Structural vs Micro".
 
-The debugger lane exists: **`4. Structural vs Micro`**, under Human Hints, flask
-badge, reads `reference/proposals/structural_vs_micro.json`. `micro` blocks get a
-distinct per-block tint (`structuralVsMicroMicro`) so the two classes read
-differently at a glance.
+The debugger lane (`structuralVsMicro`, `4. Structural vs Micro`) was removed
+via Recipe B. This directory and its cached
+`reference/proposals/structural_vs_micro.json` output are no longer read by
+anything in `ui/src`.
 
 **Do not tune to manufacture a pass.** **Do not re-open** `vocal_phrases`,
 `grid_consensus` or `reactive_bands` — measured, none promoted, out of scope.

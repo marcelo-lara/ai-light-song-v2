@@ -4,13 +4,16 @@
 
 ## Status
 
-**Measured, FAILED its kill condition, kept as a lane for one operator review
-pass — kill candidate.** Nothing in `src/` reads anything here. Queue entry with
-the same numbers in summary form:
-[`../../docs/experiments.md`](../../docs/experiments.md).
+**ARCHIVED 2026-09-14 (v3.6 item 3 rescore, lane retired item 7).** FAILED its
+kill condition: best pooled F1 0.29 (per-stem 28-dim band weight) vs
+incumbents `sections.json` 0.27 / `arrangement_state` 0.21. Nothing in `src/`
+reads anything here. TLDR:
+[`../../docs/archive/experiments_discarded.md`](../../docs/archive/experiments_discarded.md)
+"Texture Novelty".
 
-The debugger lane exists: **`2. Texture Novelty`**, under Human Hints, flask
-badge, reads `reference/proposals/texture_novelty.json`.
+The debugger lane (`2. Texture Novelty`) was removed via Recipe B. This
+directory and its cached `reference/proposals/texture_novelty.json` output
+are no longer read by anything in `ui/src`.
 
 ## Why? What for?
 

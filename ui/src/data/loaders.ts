@@ -7,13 +7,10 @@ import { artifactPaths } from "./paths";
 import {
   loadCharacter,
   loadVocalTranscription,
-  loadDropProposals,
   loadMoisesLyrics,
   loadVocalPhrases,
   loadArrangementState,
-  loadTextureNovelty,
   loadPhrasePeriodicity,
-  loadStructuralVsMicro,
   loadRhythmDrumIoi,
   loadRhythmStemAutocorr,
   loadRhythmVocalOnsets,
@@ -338,12 +335,9 @@ export const loadSongFacts = (song: string, f?: typeof fetch) =>
 
 export const artifactLoaders = {
   info: loadInfo,
-  dropProposals: loadDropProposals,
   vocalPhrases: loadVocalPhrases,
   arrangementState: loadArrangementState,
-  textureNovelty: loadTextureNovelty,
   phrasePeriodicity: loadPhrasePeriodicity,
-  structuralVsMicro: loadStructuralVsMicro,
   rhythmDrumIoi: loadRhythmDrumIoi,
   rhythmStemAutocorr: loadRhythmStemAutocorr,
   rhythmVocalOnsets: loadRhythmVocalOnsets,

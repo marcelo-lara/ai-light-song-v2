@@ -36,7 +36,6 @@ export interface BlockSelection {
 export const LANE_LABELS: Record<string, string> = {
   segments: "Segments",
   sections: "Sections",
-  dropProposals: "Drop Proposals",
   character: "Character",
   vocalTranscription: "Vocal Transcription",
   humanHints: "Human Hints",

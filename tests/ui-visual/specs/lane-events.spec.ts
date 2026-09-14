@@ -13,7 +13,6 @@ const HEAD_RIGHT_PADDING = 11.2; // --space-4
 const BLOCK_LANES = [
   "humanHints",
   "moisesLyrics",
-  "dropProposals",
   "gestures",
   "sections",
   "character",

@@ -3,14 +3,12 @@ import { describe, expect, it } from "vitest";
 import humanHints from "../data/__fixtures__/human_hints.json";
 import harmonic from "../data/__fixtures__/layer_a_harmonic.json";
 import timelineFixture from "../data/__fixtures__/song_event_timeline.json";
-import dropProposalsFix from "../data/__fixtures__/drop_proposals.json";
 import characterFix from "../data/__fixtures__/character.json";
 import vocalFix from "../data/__fixtures__/vocal_transcription.json";
 
 import {
   parseCharacter,
   parseVocalTranscription,
-  parseDropProposals,
   parseMoisesLyrics,
 } from "../data/sparseArtifacts";
 import { parseEventTimeline, parseHarmonicLayer, parseHumanHints } from "../data/parsers";
@@ -21,16 +19,13 @@ import {
   characterContent,
   vocalTranscriptionContent,
   chordsContent,
-  dropProposalsContent,
   gesturesContent,
   humanHintsContent,
   humanSectionsContent,
   moisesLyricsContent,
   moisesSectionsContent,
   sectionsContent,
-  textureNoveltyContent,
   phrasePeriodicityContent,
-  structuralVsMicroContent,
   rhythmDrumIoiContent,
   rhythmStemAutocorrContent,
   rhythmVocalOnsetsContent,
@@ -41,9 +36,7 @@ import {
 } from "./laneContent";
 import type {
   ArrangementStateFile,
-  TextureNoveltyFile,
   PhrasePeriodicityFile,
-  StructuralVsMicroFile,
   RhythmDrumIoiFile,
   RhythmStemAutocorrFile,
   RhythmVocalOnsetsFile,
@@ -357,43 +350,6 @@ describe("null inputs", () => {
   });
 });
 
-describe("dropProposalsContent", () => {
-  const blocks = dropProposalsContent(parseDropProposals(dropProposalsFix));
-
-  it("marks a proposal that already matches a human label", () => {
-    const matched = blocks.find((b) => b.id === "proposal-002");
-    expect(matched?.label).toMatch(/^\u2713 /);
-    expect(matched?.caption).toContain("matches human 57.83s");
-  });
-
-  it("marks an unconfirmed proposal and names the channels that fired", () => {
-    const unconfirmed = blocks.find((b) => b.id === "proposal-001");
-    expect(unconfirmed?.label).toBe("? drums_in \u00b7 sub_in \u00b7 voc_out");
-    expect(unconfirmed?.caption).toContain("unconfirmed");
-    expect(unconfirmed?.summary).toContain("copy it across by hand");
-  });
-
-  it("tints a matched proposal differently from an unconfirmed one", () => {
-    expect(blocks.find((b) => b.id === "proposal-002")?.tintId).toBe(
-      "dropProposalsMatched",
-    );
-    expect(blocks.find((b) => b.id === "proposal-001")?.tintId).toBeUndefined();
-  });
-
-  it("carries the dB evidence in the wide label", () => {
-    const matched = blocks.find((b) => b.id === "proposal-002");
-    expect(matched?.wideLabel).toContain("vocals_delta -35.3 dB");
-    expect(matched?.wideLabel).toContain("bass_reentry +11.9 dB");
-  });
-
-  it("is ordered by time and never throws on a missing file", () => {
-    expect(blocks.map((b) => b.start_s)).toEqual(
-      [...blocks.map((b) => b.start_s)].sort((a, b) => a - b),
-    );
-    expect(dropProposalsContent(null)).toEqual([]);
-  });
-});
-
 describe("arrangementStateContent", () => {
   // The published top-level `arrangement_state.json` shape: blocks carry
   // `margin_db` (dB headroom at the flip) and its `confidence` squash, both
@@ -547,32 +503,6 @@ describe("moisesLyricsContent — v3.4 item 5 validation overlay", () => {
   });
 });
 
-describe("textureNoveltyContent", () => {
-  const file: TextureNoveltyFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    blocks: [
-      { start_s: 0, end_s: 7.15, edge_strength: null },
-      { start_s: 7.15, end_s: 29.1, edge_strength: 0.2888 },
-    ],
-  };
-  const blocks = textureNoveltyContent(file);
-
-  it("labels a normal block with its left-edge novelty", () => {
-    expect(blocks[1]!.caption).toContain("left-edge novelty 0.29");
-    expect(blocks[1]!.wideLabel).toBe("edge 0.29");
-  });
-
-  it("renders the first block's null edge honestly", () => {
-    expect(blocks[0]!.caption).toContain("first segment (no left edge)");
-    expect(blocks[0]!.caption).not.toMatch(/novelty \d/);
-  });
-
-  it("never throws on a missing file", () => {
-    expect(textureNoveltyContent(null)).toEqual([]);
-  });
-});
-
 describe("phrasePeriodicityContent", () => {
   const file: PhrasePeriodicityFile = {
     schema_version: "1.0",
@@ -642,44 +572,6 @@ describe("vocalVoicenessContent", () => {
 
   it("never throws on a missing file", () => {
     expect(vocalVoicenessContent(null)).toEqual([]);
-  });
-});
-
-describe("structuralVsMicroContent", () => {
-  const file: StructuralVsMicroFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    blocks: [
-      { start_s: 0, end_s: 16, title: "Intro", kind: "structural", grid_fit_bars: 0.04 },
-      { start_s: 16, end_s: 16.6, title: "Pre-drop", kind: "micro", grid_fit_bars: 1.12 },
-    ],
-  };
-  const blocks = structuralVsMicroContent(file);
-
-  it("labels a structural block and prints its grid_fit_bars", () => {
-    expect(blocks[0]!.wideLabel).toBe("structural");
-    expect(blocks[0]!.caption).toContain("grid fit 0.04 bars");
-    expect(blocks[0]!.tintId).toBeUndefined();
-  });
-
-  it("gives a micro block the per-block tint override", () => {
-    expect(blocks[1]!.wideLabel).toBe("micro");
-    expect(blocks[1]!.tintId).toBe("structuralVsMicroMicro");
-    expect(blocks[1]!.caption).toContain("micro");
-  });
-
-  it("renders a null grid_fit_bars honestly", () => {
-    const b = structuralVsMicroContent({
-      schema_version: "1.0",
-      song_name: "x",
-      blocks: [{ start_s: 0, end_s: 1, title: "", kind: "micro", grid_fit_bars: null }],
-    });
-    expect(b[0]!.caption).toContain("grid fit unknown");
-    expect(b[0]!.caption).not.toMatch(/NaN|0\.00 bars/);
-  });
-
-  it("never throws on a missing file", () => {
-    expect(structuralVsMicroContent(null)).toEqual([]);
   });
 });
 
