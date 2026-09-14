@@ -1,5 +1,5 @@
 """Write PANNs' `Singing` head, run on both channels, to
-`reference/proposals/svd_tagger.json` via `voiceness_common.schema` — the
+`reference/proposals/svd_tagger.json` via `truth_common.vocal_presence.schema` — the
 shared shape every voiceness candidate (items 4-7) writes.
 
 **Both channels land in ONE proposal file, tagged per row.** The stem and
@@ -13,7 +13,7 @@ per-row `channel` field is the per-row attribution.
 """
 from __future__ import annotations
 
-from experiments.voiceness_common.schema import (
+from experiments.truth_common.vocal_presence.schema import (
     VocalPhrase,
     VoicenessFrame,
     VoicenessProposal,
@@ -82,7 +82,7 @@ def export(song: str) -> dict:
             "boundary_f1_scored": False,
             "boundary_f1_reason": (
                 "a 5s PANNs analysis window cannot time a phrase edge to the "
-                "0.25/0.5/1.0s tolerances voiceness_common.scorer uses; "
+                "0.25/0.5/1.0s tolerances truth_common.vocal_presence.scorer uses; "
                 "vocal_phrase spans are exported for the timeline and for "
                 "boundary bookkeeping only"
             ),

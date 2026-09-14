@@ -267,6 +267,15 @@ class ScoreResult:
     n_phrase_edges: int
     n_phrase_edges_evaluable: int
     boundary: dict[float, ToleranceScore] = field(default_factory=dict)
+    #: set by the `whisperx_derived_song` flag on `score()` — True means this
+    #: song's positives were themselves captured from a whisperX-derived
+    #: lane (`Cinderella - Ella Lee`: 15 of 22), so scoring a whisperX-
+    #: derived detector's recall/frame_accuracy/boundary-F1 here would grade
+    #: the truth against itself. Callers must gate their own report on this
+    #: flag rather than hardcoding "skip Cinderella" — the corpus rule lives
+    #: with the data (`docs/product-refinement-v3.6.md` item 2), not
+    #: scattered per-experiment string comparisons.
+    circularity_restricted: bool = False
 
 
 def score(
@@ -276,6 +285,7 @@ def score(
     *,
     duration_s: float | None = None,
     tolerances: tuple[float, ...] = DEFAULT_TOLERANCES,
+    whisperx_derived_song: bool = False,
 ) -> ScoreResult:
     """Score one candidate's frames + derived phrases against three-class
     ground truth. See the module docstring for what each field measures and
@@ -290,6 +300,15 @@ def score(
                compute it, but `bounds_per_min` is normalized against
                `truth.evaluable_duration_s`, not `duration_s` or song
                duration.
+    `whisperx_derived_song` — set True by the caller only for
+               `Cinderella - Ella Lee` (`docs/product-refinement-v3.6.md`
+               item 2 circularity rule: 15 of 22 positives there were
+               captured from the whisperX lane). All fields are still
+               computed — nothing is hidden from the struct — but
+               `circularity_restricted` is set so a caller's report can
+               print `false_vocal_rate` only and drop the rest, instead of
+               each experiment re-deriving "is this Cinderella and is my
+               detector whisperX-derived" itself.
     """
     n_frames = len(frames)
     n_frames_scored = 0  # evaluable, non-residual (positive + negative) — the
@@ -360,4 +379,5 @@ def score(
         n_phrase_edges=len(pred_edges_raw),
         n_phrase_edges_evaluable=len(pred_edges),
         boundary=boundary,
+        circularity_restricted=whisperx_derived_song,
     )

@@ -81,12 +81,12 @@ item; reported honestly rather than claimed.
 
 ## Results evidence
 
-Scored against `voiceness_common`'s three incumbents (`arrangement_state`,
+Scored against `truth_common.vocal_presence`'s three incumbents (`arrangement_state`,
 `vocal_phrases`, mix-RMS baseline) via the shared scorer, matched-budget
 (`bounds_per_min` reported beside every rate, never compared alone).
 
 **Rescored 2026-09-13** — v3.5 corpus rebuild, three-class scorer, the 5 songs
-declared in `voiceness_common/vocal_ground_truth.json`. Full output:
+declared in `truth_common.vocal_presence/vocal_ground_truth.json`. Full output:
 [`out/score.txt`](out/score.txt). frame_acc / false_vocal_rate / bounds/min on
 the two songs that declare negatives (the other three cannot rank detectors):
 
@@ -112,7 +112,7 @@ docker compose run --rm app python -m experiments.vocal_voiceness.run score [--s
 
 `compute` computes the three cues and caches them under
 `experiments/vocal_voiceness/cache/`. `export` combines them and writes
-`reference/proposals/vocal_voiceness.json` via `voiceness_common.schema`.
+`reference/proposals/vocal_voiceness.json` via `truth_common.vocal_presence.schema`.
 `score` (no `--song` = the 5-song scoring corpus) writes `out/score.txt`.
 
 ## Conclusion

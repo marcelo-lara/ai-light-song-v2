@@ -1,7 +1,7 @@
 """Where this experiment reads and writes.
 
 Deliberately independent of `src/analyzer` and of sibling `experiments/`
-packages other than `voiceness_common` and `experiments.clap` (both imported
+packages other than `truth_common.vocal_presence` and `experiments.clap` (both imported
 directly — experiment-to-experiment is fine; the forbidden direction is
 `src/` importing `experiments/`). Only the audio-tower *code* is reused from
 `experiments.clap.model` — this experiment owns its own cache directory, so

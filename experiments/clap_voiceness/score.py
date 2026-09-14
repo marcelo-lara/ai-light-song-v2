@@ -1,19 +1,19 @@
 """Score this candidate against the three shared incumbents
-(`voiceness_common.incumbents`) via the shared scorer
-(`voiceness_common.scorer`), at a matched firing budget (bounds/min reported
+(`truth_common.vocal_presence.incumbents`) via the shared scorer
+(`truth_common.vocal_presence.scorer`), at a matched firing budget (bounds/min reported
 beside every rate, never compared alone).
 
 **Frame voiceness accuracy and false-vocal rate are the scored metrics for
 this candidate.** Boundary F1 is computed for every candidate (so the table
 stays one comparable shape) but is explicitly NOT a scored comparison for
 `clap_voiceness` — a 5s CLAP analysis window cannot time a phrase edge to the
-0.25/0.5/1.0s tolerances `voiceness_common.scorer` uses. Every
+0.25/0.5/1.0s tolerances `truth_common.vocal_presence.scorer` uses. Every
 `clap_voiceness` row's `boundary_f1` numbers are marked `boundary_f1_scored:
 false` and the printed table stars them, so a reader cannot mistake the
 column for a claim this candidate makes.
 
-**Three-class ground truth** (`voiceness_common.scorer.ground_truth`,
-declared per-song in `voiceness_common/vocal_ground_truth.json`): positive
+**Three-class ground truth** (`truth_common.vocal_presence.scorer.ground_truth`,
+declared per-song in `truth_common.vocal_presence/vocal_ground_truth.json`): positive
 (`type: "vocal"`), residual (excluded from every scored metric, its firing
 rate reported separately) and negative (hard error) spans, resolved against
 an `evaluable` region — everything else is unreviewed and excluded entirely.
@@ -29,8 +29,8 @@ from __future__ import annotations
 import json
 import statistics
 
-from experiments.voiceness_common import incumbents, scorer as voiceness_scorer
-from experiments.voiceness_common.schema import frames_as_tuples, phrases_as_dicts
+from experiments.truth_common.vocal_presence import incumbents, scorer as voiceness_scorer
+from experiments.truth_common.vocal_presence.schema import frames_as_tuples, phrases_as_dicts
 
 from . import model, paths
 

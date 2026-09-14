@@ -18,9 +18,9 @@ experiment's own launcher — no new script, no new pin:
 `compute` runs one CLAP audio forward pass + one text forward pass per song
 (model.py) and caches the per-window differential under
 `experiments/clap_voiceness/cache/`. `export` combines it into the shared
-`voiceness_common` proposal shape and writes
+`truth_common.vocal_presence` proposal shape and writes
 `reference/proposals/clap_voiceness.json`. `score` runs the shared
-`voiceness_common` scorer against the three incumbents.
+`truth_common.vocal_presence` scorer against the three incumbents.
 """
 from __future__ import annotations
 

@@ -7,7 +7,7 @@
 `compute` computes the three per-frame cues (features.py) and caches them
 under `experiments/vocal_voiceness/cache/`. `export` combines them
 (model.py) and writes `reference/proposals/vocal_voiceness.json`. `score`
-runs the shared `voiceness_common` scorer against the three incumbents.
+runs the shared `truth_common.vocal_presence` scorer against the three incumbents.
 """
 from __future__ import annotations
 

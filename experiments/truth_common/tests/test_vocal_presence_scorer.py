@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import pytest
 
-from . import scorer
+from experiments.truth_common.vocal_presence import scorer
 
 
 def _grid(times: list[float], voiced_spans: list[tuple[float, float]]) -> list[tuple[float, float]]:
@@ -252,6 +252,31 @@ def test_predicted_edge_in_unknown_time_ignored():
         b = result.boundary[tol]
         assert b.precision == pytest.approx(1.0)
         assert b.recall == pytest.approx(1.0)
+
+
+def test_whisperx_derived_song_flag_carried_not_hardcoded():
+    """The Cinderella circularity rule (product-refinement-v3.6.md item 2:
+    15 of 22 positives came from the whisperX lane) is a caller-set flag on
+    `score()`, not a hardcoded 'if song == Cinderella' anywhere in the
+    scorer. Default is False; every other field is still computed so a
+    caller can choose what to print."""
+    marked_spans = [(1.0, 2.0)]
+    phrases = [{"start": 1.0, "end": 2.0}]
+    times = [round(i * 0.1, 3) for i in range(30)]
+    frames = _grid(times, marked_spans)
+    truth = _truth(positive=marked_spans, negative=[(0.0, 1.0), (2.0, 3.0)])
+
+    default_result = scorer.score(frames, phrases, truth, duration_s=3.0)
+    assert default_result.circularity_restricted is False
+
+    flagged_result = scorer.score(
+        frames, phrases, truth, duration_s=3.0, whisperx_derived_song=True
+    )
+    assert flagged_result.circularity_restricted is True
+    # everything is still computed — restriction is a reporting choice for
+    # the caller, not a data suppression in the scorer itself.
+    assert flagged_result.frame_accuracy == pytest.approx(default_result.frame_accuracy)
+    assert flagged_result.false_vocal_rate == pytest.approx(default_result.false_vocal_rate)
 
 
 def test_empty_frames_and_spans_do_not_crash():

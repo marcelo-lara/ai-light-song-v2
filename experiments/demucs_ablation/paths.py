@@ -1,7 +1,7 @@
 """Where this experiment reads and writes.
 
 Deliberately independent of `src/analyzer` and of sibling `experiments/`
-packages other than `voiceness_common` (shared scoring scaffolding, imported
+packages other than `truth_common.vocal_presence` (shared scoring scaffolding, imported
 the same way `vocal_voiceness` etc. do). Never writes under
 `data/analysis/*/artifacts/stems/` — variant stems are cached entirely under
 this experiment's own `cache/`.

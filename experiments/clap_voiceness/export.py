@@ -1,5 +1,5 @@
 """Write the CLAP contrastive differential to
-`reference/proposals/clap_voiceness.json` via `voiceness_common.schema` — the
+`reference/proposals/clap_voiceness.json` via `truth_common.vocal_presence.schema` — the
 shared shape every voiceness candidate (items 4-7) writes, so they land on
 one comparable timeline and score through one scorer.
 
@@ -11,7 +11,7 @@ frame-level call, not a boundary competitor.
 """
 from __future__ import annotations
 
-from experiments.voiceness_common.schema import (
+from experiments.truth_common.vocal_presence.schema import (
     VocalPhrase,
     VoicenessFrame,
     VoicenessProposal,
@@ -59,7 +59,7 @@ def export(song: str) -> dict:
             "boundary_f1_scored": False,
             "boundary_f1_reason": (
                 "a 5s CLAP analysis window cannot time a phrase edge to the "
-                "0.25/0.5/1.0s tolerances voiceness_common.scorer uses; "
+                "0.25/0.5/1.0s tolerances truth_common.vocal_presence.scorer uses; "
                 "vocal_phrase spans are exported for the timeline and for "
                 "boundary bookkeeping only"
             ),

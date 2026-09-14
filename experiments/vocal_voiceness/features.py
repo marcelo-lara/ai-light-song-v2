@@ -9,7 +9,7 @@ populated). `sibilance` reads the published, trusted
 
 Output grid: `fft_bands.vocals.json`'s own 50 ms frame grid (`FRAME_INTERVAL_S`)
 — chosen as canonical because sibilance is read directly off that file, and it
-matches `voiceness_common.schema.VoicenessFrame`'s default `interval_ms=50`.
+matches `truth_common.vocal_presence.schema.VoicenessFrame`'s default `interval_ms=50`.
 The f0 track (pYIN, ~11.6 ms hop @ 44100 Hz / 512-sample hop) is read into a
 sliding window centred on each 50 ms grid point, not point-sampled — vibrato
 and portamento are properties of a short window, not an instant.

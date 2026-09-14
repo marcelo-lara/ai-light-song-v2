@@ -1,7 +1,7 @@
 """Where this experiment reads and writes.
 
 Deliberately independent of `src/analyzer` and of sibling `experiments/`
-packages other than `voiceness_common` and `vocal_phrases` (both imported
+packages other than `truth_common.vocal_presence` and `vocal_phrases` (both imported
 directly — experiment-to-experiment is fine; the forbidden direction is
 `src/` importing `experiments/`).
 """
@@ -10,7 +10,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from experiments.voiceness_common.scorer import scoreable_songs
+from experiments.truth_common.vocal_presence.scorer import scoreable_songs
 
 REPO_ROOT = Path(os.environ.get("VOCAL_VOICENESS_EXP_REPO", Path(__file__).resolve().parents[2]))
 ANALYSIS_ROOT = REPO_ROOT / "data" / "analysis"
@@ -19,7 +19,7 @@ CACHE_ROOT = Path(__file__).resolve().parent / "cache"
 OUT_ROOT = Path(__file__).resolve().parent / "out"
 
 #: Songs whose vocal ground truth is fully declared in
-#: `voiceness_common/vocal_ground_truth.json` — shared by every voiceness sibling.
+#: `truth_common.vocal_presence/vocal_ground_truth.json` — shared by every voiceness sibling.
 SCORING_CORPUS = scoreable_songs()
 
 

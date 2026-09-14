@@ -14,8 +14,8 @@ loudness-shaped doc from that variant's own `vocals.wav` RMS series
 (10 ms windows, matching `loudness.py::RMS_INTERVAL_MS`) and feed it through
 the same `detect()`/`blocks()` call.
 
-**Three-class ground truth** (`voiceness_common.scorer.ground_truth`,
-declared per-song in `voiceness_common/vocal_ground_truth.json`): positive
+**Three-class ground truth** (`truth_common.vocal_presence.scorer.ground_truth`,
+declared per-song in `truth_common.vocal_presence/vocal_ground_truth.json`): positive
 (`type: "vocal"`), residual (excluded from every scored metric, its firing
 rate reported separately) and negative (hard error) spans, resolved against
 an `evaluable` region — everything else is unreviewed and excluded entirely.
@@ -33,7 +33,7 @@ import numpy as np
 
 from analyzer.stages import arrangement_state as prod
 
-from experiments.voiceness_common import scorer as voiceness_scorer
+from experiments.truth_common.vocal_presence import scorer as voiceness_scorer
 
 from . import paths, separate
 
@@ -115,7 +115,7 @@ def score_variant(song: str, variant: str) -> dict:
     ground truth (see module docstring), plus the block-level voiced-duration
     fraction the refinement doc's `ayuni` 40.8 % figure was computed the same
     way (that figure used all frames outside every vocal span, not the
-    evaluable-region denominator below — see `voiceness_common.scorer`)."""
+    evaluable-region denominator below — see `truth_common.vocal_presence.scorer`)."""
     blocks, duration_s = voiced_blocks_for_variant(song, variant)
 
     voiced_duration = sum(b["end_s"] - b["start_s"] for b in blocks if "vocals" in b["playing"])

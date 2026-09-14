@@ -111,7 +111,7 @@ per the plan.
    whisperX transcription runs use, not swept or corpus-fit for this item).
 5. **Boundary F1 is scored, not just reported** — the one property that
    distinguishes this candidate from items 5/6: VAD spans carry real
-   sub-second onsets/offsets, so `voiceness_common.scorer`'s
+   sub-second onsets/offsets, so `truth_common.vocal_presence.scorer`'s
    0.25/0.5/1.0s tolerances are a legitimate test here, the same way they are
    for `vocal_voiceness` (item 4). See `score.py`.
 
@@ -167,7 +167,7 @@ model parts; stop honestly if exceeded, no retry loop):
   frame series already reports, not a new heuristic.
 - **No `channel` field.** Single producer, single input (the vocal stem) —
   same shape as `vocal_voiceness`/`clap_voiceness` (items 4/5), unlike
-  `svd_tagger`'s stem+mix fusion (item 6). `voiceness_common.schema`'s
+  `svd_tagger`'s stem+mix fusion (item 6). `truth_common.vocal_presence.schema`'s
   `channel` field is left `None` throughout, per its own documented
   "`None` for a single-producer candidate" convention.
 
@@ -189,7 +189,7 @@ assuming.
 
 Full table in [`out/score.txt`](out/score.txt). **Rescored 2026-09-13** on the
 v3.5 corpus rebuild, three-class scorer, the 5 songs declared in
-`voiceness_common/vocal_ground_truth.json`. frame_acc / false_vocal_rate:
+`truth_common.vocal_presence/vocal_ground_truth.json`. frame_acc / false_vocal_rate:
 
 | song (evaluable: pos / res / neg s) | `whisperx_vad` | `arrangement_state` | `vocal_phrases` | mix-RMS |
 | --- | --- | --- | --- | --- |

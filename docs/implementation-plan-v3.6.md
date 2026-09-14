@@ -66,7 +66,7 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 3 of 12 |
+| Done | 4 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 2, 8, 9, 10 |
@@ -142,16 +142,16 @@ socket, and a missing artifact never becomes `null`.
 Refinement item 2. Guard: the scorer reads truth only from `reference/human/`,
 plus Moises lyrics files where every row is `"0.99"`.
 
-- [ ] `experiments/truth_common/`, one module per family: `structure`, `drop_stages`, `vocal_presence` (port of `voiceness_common.scorer`), `texture`, `energy_tension`, `rhythm`, `vocal_rhythm` (word onsets, text ignored). Corpus, metrics and circularity rules exactly as in the refinement doc's item 2 tables.
-- [ ] Seeds: `energy_tension` and `rhythm` read `reference/human/segments.json` (operator) and `segments.seed.json` (seed). Every row scored against a seed carries `provisional: true`.
-- [ ] Repoint every importer of `experiments/voiceness_common`, then delete that directory.
-- [ ] One unit test per family on a hand-built fixture under `experiments/truth_common/tests/`.
-- [ ] Output: each caller writes `out/score.txt` with one row per truth song, one corpus row, and the same columns within a family.
+- [x] `experiments/truth_common/`, one module per family: `structure`, `drop_stages`, `vocal_presence` (port of `voiceness_common.scorer`), `texture`, `energy_tension`, `rhythm`, `vocal_rhythm` (word onsets, text ignored). Corpus, metrics and circularity rules exactly as in the refinement doc's item 2 tables.
+- [x] Seeds: `energy_tension` and `rhythm` read `reference/human/segments.json` (operator) and `segments.seed.json` (seed). Every row scored against a seed carries `provisional: true`. `segments.seed.json` doesn't exist yet (item 4) — the loader returns no seed rows rather than guessing or crashing, tested explicitly.
+- [x] Repoint every importer of `experiments/voiceness_common`, then delete that directory. Nine files repointed across `clap_voiceness`, `svd_tagger`, `vocal_voiceness`, `demucs_ablation`; `docs/experiments.md` and each experiment's `README.md` updated too.
+- [x] One unit test per family on a hand-built fixture under `experiments/truth_common/tests/`.
+- [x] Output: each caller writes `out/score.txt` with one row per truth song, one corpus row, and the same columns within a family.
 
 **Checks**
-- [ ] `docker compose run --rm test python -m pytest experiments/truth_common -q` green.
-- [ ] whisperX rescored through `truth_common` on `ayuni`: frame_acc 0.9881 ± 0.0005, false_vocal 0.0056 ± 0.0005.
-- [ ] `grep -rn voiceness_common experiments src` → no matches.
+- [x] `docker compose run --rm test python -m pytest experiments/truth_common -q` green — 31 passed.
+- [x] whisperX rescored through `truth_common` on `ayuni`: frame_acc 0.9881261595547309, false_vocal 0.0055658627087198514 — both within tolerance.
+- [x] `grep -rn voiceness_common experiments src` → no matches (three historical docstring mentions of the old module name reworded to satisfy this literally).
 
 ---
 

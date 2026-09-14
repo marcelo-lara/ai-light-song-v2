@@ -1,10 +1,10 @@
 """Score this candidate against the three shared incumbents
-(`voiceness_common.incumbents`) via the shared scorer
-(`voiceness_common.scorer`), at a matched firing budget (bounds/min reported
+(`truth_common.vocal_presence.incumbents`) via the shared scorer
+(`truth_common.vocal_presence.scorer`), at a matched firing budget (bounds/min reported
 beside every F1, never compared on F1 alone).
 
-**Three-class ground truth** (`voiceness_common.scorer.ground_truth`,
-declared per-song in `voiceness_common/vocal_ground_truth.json`): positive
+**Three-class ground truth** (`truth_common.vocal_presence.scorer.ground_truth`,
+declared per-song in `truth_common.vocal_presence/vocal_ground_truth.json`): positive
 (`type: "vocal"`), residual (excluded from every scored metric, its firing
 rate reported separately) and negative (hard error) spans, resolved against
 an `evaluable` region — everything else is unreviewed and excluded entirely.
@@ -22,8 +22,8 @@ from __future__ import annotations
 import json
 import statistics
 
-from experiments.voiceness_common import incumbents, scorer as voiceness_scorer
-from experiments.voiceness_common.schema import frames_as_tuples, phrases_as_dicts
+from experiments.truth_common.vocal_presence import incumbents, scorer as voiceness_scorer
+from experiments.truth_common.vocal_presence.schema import frames_as_tuples, phrases_as_dicts
 
 from . import features, model, paths
 

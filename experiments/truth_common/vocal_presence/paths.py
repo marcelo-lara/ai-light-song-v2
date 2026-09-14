@@ -1,4 +1,4 @@
-"""Where this package reads from.
+"""Where `vocal_presence` (the prior standalone vocal-presence scorer) reads from.
 
 Deliberately independent of `src/analyzer` (`src/` never imports from
 `experiments/`). `experiments/vocal_phrases` is imported directly from
@@ -11,7 +11,8 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-REPO_ROOT = Path(os.environ.get("VOICENESS_COMMON_EXP_REPO", Path(__file__).resolve().parents[2]))
+# experiments/truth_common/vocal_presence/paths.py -> parents[3] is the repo root
+REPO_ROOT = Path(os.environ.get("TRUTH_COMMON_EXP_REPO", Path(__file__).resolve().parents[3]))
 ANALYSIS_ROOT = REPO_ROOT / "data" / "analysis"
 SONGS_ROOT = REPO_ROOT / "data" / "songs"
 

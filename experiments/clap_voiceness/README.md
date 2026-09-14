@@ -50,7 +50,7 @@ never a single absolute-sentence reading.
    not worth it for four lines of arithmetic (documented as a resolved
    D-item — see the implementation report).
 4. **Voiceness**: `sigmoid(z)` maps the (already per-song z-scored)
-   differential onto `[0, 1]` as `voiceness_common.schema` requires.
+   differential onto `[0, 1]` as `truth_common.vocal_presence.schema` requires.
    `confidence = |voiceness - 0.5| * 2`, the same decision-margin heuristic
    `vocal_voiceness` (item 4) uses — an honest heuristic, not a calibrated
    probability.
@@ -89,7 +89,7 @@ would tell us.
 
 ## Results evidence
 
-Scored against `voiceness_common`'s three incumbents via the shared scorer,
+Scored against `truth_common.vocal_presence`'s three incumbents via the shared scorer,
 matched-budget (`bounds_per_min` reported beside every rate). **Scored
 metrics: frame voiceness accuracy, false_vocal_rate. Boundary F1 is reported,
 not scored, for `clap_voiceness`** (starred in the table).
@@ -139,7 +139,7 @@ docker compose run --rm app python -m experiments.clap_voiceness.run score
 `compute` runs one CLAP audio forward pass + one text forward pass per song
 and caches the per-window differential under
 `experiments/clap_voiceness/cache/`. `export` writes
-`reference/proposals/clap_voiceness.json` via `voiceness_common.schema`.
+`reference/proposals/clap_voiceness.json` via `truth_common.vocal_presence.schema`.
 `score` (no `--song` = the 5-song scoring corpus) writes `out/score.txt`.
 
 ## `queue.toml`

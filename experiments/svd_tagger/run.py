@@ -17,9 +17,9 @@ launcher:
 `compute` runs PANNs (`model.py`) over both the vocal stem and the mix, one
 forward pass per 5s/1s-hop window, and caches both channels' scores under
 `experiments/svd_tagger/cache/`. `export` combines them into the shared
-`voiceness_common` proposal shape (channel-tagged rows) and writes
+`truth_common.vocal_presence` proposal shape (channel-tagged rows) and writes
 `reference/proposals/svd_tagger.json`. `score` runs the shared
-`voiceness_common` scorer against the three incumbents, for both channels.
+`truth_common.vocal_presence` scorer against the three incumbents, for both channels.
 """
 from __future__ import annotations
 

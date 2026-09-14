@@ -12,7 +12,7 @@ implied as a result. Both files are TLDRs: the full writeup stays in
 [Loose ends](#loose-ends) at the foot of this file holds the open questions the
 queue *depends* on but which are not themselves experiments.
 
-`experiments/voiceness_common/` is shared scaffolding, not an experiment: one
+`experiments/truth_common.vocal_presence/` is shared scaffolding, not an experiment: one
 proposal schema and one scorer (frame voiceness accuracy, false-vocal rate,
 boundary F1 @ ±0.25/0.5/1.0 s, bounds/min) against `type: "vocal"` human
 hints, plus the three incumbents (`arrangement_state`, `vocal_phrases`,
@@ -1093,7 +1093,7 @@ instead of the published, `htdemucs`-only `loudness.json`.
 "vocal"` human-hint schema but explicitly left marking real spans to the
 operator. Checked directly: every one of the four gold songs and `ayuni` has
 **zero** `type == "vocal"` rows in this environment. So
-`voiceness_common.scorer.score()`'s `false_vocal_rate` against an empty
+`truth_common.vocal_presence.scorer.score()`'s `false_vocal_rate` against an empty
 marked-span set is mathematically identical to "fraction of the song the
 rule calls voiced" — reported below as `voiced_duration_fraction`, an honest
 proxy for the false-vocal rate the plan specifies, not the validated metric.
@@ -1200,7 +1200,7 @@ sibilance band-level×transient burst — the last read straight off the
 published `fft_bands.vocals.json`, no new FFT), combined by **noisy-OR**
 (`voiceness = 1 - Π(1 - wᵢ·cueᵢ)`, weights sibilance 0.80 / vibrato 0.55 /
 portamento 0.35 — documented judgement, not corpus-fit), scored via
-`voiceness_common.scorer` against all three shared incumbents. Also
+`truth_common.vocal_presence.scorer` against all three shared incumbents. Also
 implements the **pitch-continuity bridge** over `vocal_phrases`' documented
 `sustained_notes` gap (a held note's amplitude decay drops the hysteresis
 gate mid-note): bridges word-level runs across gaps ≤0.6s that stay within 60
@@ -1218,7 +1218,7 @@ unfixed limit in the sustain scan's own pitch-tolerance/duration gate, not the
 amplitude-gate fragmentation this item targeted.
 
 **Rescored 2026-09-13** — v3.5 corpus rebuild, three-class scorer, the 5 songs
-declared in `voiceness_common/vocal_ground_truth.json`
+declared in `truth_common.vocal_presence/vocal_ground_truth.json`
 ([`out/score.txt`](../experiments/vocal_voiceness/out/score.txt)). Only `ayuni`
 and `Cinderella` declare negatives, so only they separate detectors.
 frame_acc / false_vocal_rate / residual firing:
@@ -1351,7 +1351,7 @@ evaluable); see `experiments/whisperx_vad/README.md`.
 ### Conclusion
 
 Scaffold complete and matches `clap_voiceness`'s (item 5) shape, including
-plugging into `voiceness_common.schema`/`scorer`/`incumbents` the same way —
+plugging into `truth_common.vocal_presence.schema`/`scorer`/`incumbents` the same way —
 `schema.py`'s `VoicenessFrame`/`VocalPhrase` gained an optional `channel`
 field for this item's two-producer case (stem vs mix in one proposal file,
 each row attributed — the "published files are fused, say which producer
@@ -1587,7 +1587,7 @@ Two things follow, and they point in opposite directions:
 ### v3.5 item 12 fusion sweep — the rule item 13 must decide on
 
 Measured 2026-09-13 against the repaired `Cinderella` class map, on the 50 ms
-grid, via `voiceness_common.scorer` (throwaway script, not committed).
+grid, via `truth_common.vocal_presence.scorer` (throwaway script, not committed).
 frame_acc / false_vocal_rate / residual firing / recall on positives /
 bounds-per-min:
 
