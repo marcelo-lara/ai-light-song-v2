@@ -321,6 +321,15 @@ export interface HumanSegment {
 export type HumanSegmentsFile = HumanSegment[];
 
 // ---------------------------------------------------------------------------
+// reference/moises/segments.json  (Moises.ai reference segmentation)
+// ---------------------------------------------------------------------------
+// Same bare-array shape as reference/human/segments.json ({start, end, label}
+// only — no description/energy/tension, no confidence field of its own: see
+// docs/reference/analysis.segments.md). Reuses HumanSegment's parser.
+
+export type MoisesSegmentsFile = HumanSegment[];
+
+// ---------------------------------------------------------------------------
 // reference/human/song_facts.json  (v1.1 — whole-song facts, human-confirmed)
 // ---------------------------------------------------------------------------
 // Written ONLY by an explicit human Save in the review-queue editor (Story

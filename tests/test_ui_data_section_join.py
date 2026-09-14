@@ -273,6 +273,65 @@ class SectionJoinTests(unittest.TestCase):
         self.assertEqual(payload["field_sources"]["function_confidence"], "allin1")
         self.assertEqual(payload["field_sources"]["key"], "harmonic")
 
+    def test_moises_segments_replace_allin1_boundaries_when_present_without_human(self) -> None:
+        # Moises tier: same whole-song-override shape as human, one
+        # confidence rung lower (0.6) — see docs/reference/analysis.segments.md.
+        sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 15.0, "function": "intro",
+             "function_confidence": 0.9, "function_status": "known", "same_label_as": None,
+             "confidence": 0.9},
+            {"section_id": "section-002", "start": 15.0, "end": 30.0, "function": "chorus",
+             "function_confidence": 0.7, "function_status": "known", "same_label_as": None,
+             "confidence": 0.7},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, sections)
+            moises_path = paths.reference("moises", "segments.json")
+            moises_path.parent.mkdir(parents=True, exist_ok=True)
+            moises_path.write_text(json.dumps([
+                {"start": 0.0, "end": 14.0, "label": "Intro"},
+                {"start": 14.0, "end": 30.0, "label": "Chorus"},
+            ]))
+            build_ui_data(paths)
+            payload = json.loads(paths.sections_output_path.read_text())
+            rows = payload["sections"]
+
+        self.assertEqual(rows[0]["start"], 0.0)
+        self.assertEqual(rows[0]["end"], 14.0)
+        self.assertEqual(rows[1]["end"], 30.0)
+        self.assertEqual(rows[0]["function"], "Intro")
+        self.assertEqual(rows[1]["function"], "Chorus")
+        # Fixed at 0.6 — moises/segments.json carries no confidence field.
+        self.assertEqual(rows[0]["confidence"], 0.6)
+        self.assertEqual(rows[1]["confidence"], 0.6)
+        self.assertEqual(rows[0]["function_confidence"], 0.9)
+        self.assertEqual(payload["field_sources"]["start"], "moises")
+        self.assertEqual(payload["field_sources"]["confidence"], "moises")
+        self.assertEqual(payload["field_sources"]["function"], "moises")
+        self.assertEqual(payload["field_sources"]["function_confidence"], "allin1")
+
+    def test_human_wins_over_moises_when_both_present(self) -> None:
+        sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 30.0, "function": "intro",
+             "function_confidence": 0.9, "function_status": "known", "same_label_as": None,
+             "confidence": 0.9},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, sections)
+            human_path = paths.reference("human", "segments.json")
+            human_path.parent.mkdir(parents=True, exist_ok=True)
+            human_path.write_text(json.dumps([{"start": 0.0, "end": 30.0, "label": "Intro"}]))
+            moises_path = paths.reference("moises", "segments.json")
+            moises_path.parent.mkdir(parents=True, exist_ok=True)
+            moises_path.write_text(json.dumps([{"start": 0.0, "end": 30.0, "label": "Chorus"}]))
+            build_ui_data(paths)
+            payload = json.loads(paths.sections_output_path.read_text())
+            rows = payload["sections"]
+
+        self.assertEqual(rows[0]["function"], "Intro")
+        self.assertEqual(rows[0]["confidence"], 0.8)
+        self.assertEqual(payload["field_sources"]["start"], "human")
+
     def test_sections_field_sources_default_to_allin1_without_human_file(self) -> None:
         # v3.5 item 10 — no reference/human/segments.json for this song: the
         # file-level default reverts to allin1 (previously hardcoded to

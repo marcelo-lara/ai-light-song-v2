@@ -102,15 +102,19 @@ def normalize_allin1_label(label: str | None) -> str | None:
 
 def normalize_human_label(label: str) -> str:
     """Case/whitespace normalization, plus a small known-synonym alias table.
-    Human labels in `reference/human/segments.json` are almost always already
-    written in `docs/segments-vocabulary.md` terms — this fixes stray
-    casing/whitespace against the canonical spelling, and additionally maps
-    the handful of known non-canonical synonyms in `_HUMAN_LABEL_ALIASES`
-    (e.g. "Instrumental" -> "Main") so they don't ship as out-of-vocabulary
-    `function` values. A label that matches neither is passed through
-    stripped, unchanged: it is the operator's own ground truth, not a guess
-    this module is entitled to overwrite (no silent fallbacks cuts both
-    ways)."""
+
+    Shared by both `reference/human/segments.json` and
+    `reference/moises/segments.json` — both are external, manually-curated
+    producers writing free-text labels, not a closed model vocabulary like
+    allin1's, so the same permissive treatment applies to either: labels are
+    almost always already written in `docs/segments-vocabulary.md` terms —
+    this fixes stray casing/whitespace against the canonical spelling, and
+    additionally maps the handful of known non-canonical synonyms in
+    `_HUMAN_LABEL_ALIASES` (e.g. "Instrumental" -> "Main") so they don't ship
+    as out-of-vocabulary `function` values. A label that matches neither is
+    passed through stripped, unchanged: it is the producer's own ground
+    truth, not a guess this module is entitled to overwrite (no silent
+    fallbacks cuts both ways)."""
     stripped = label.strip()
     casefolded = stripped.casefold()
     if casefolded in _CANONICAL_BY_CASEFOLD:

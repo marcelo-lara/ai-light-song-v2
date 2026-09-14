@@ -124,6 +124,9 @@ const TIMELINE_KEYS = [
   // hand-authored section segmentation, editable via the same drag-to-edit /
   // double-click-to-create conventions as humanHints (reference/human, writable)
   "humanSections",
+  // Moises.ai reference segmentation — read-only, one precedence tier below
+  // humanSections (docs/reference/analysis.segments.md).
+  "moisesSections",
   // v3.4 item 4 — operator's per-block energy/tension ratings, joined to the
   // Human Hints events panel by hint_id (reference/human, writable).
   "blockEnergy",
@@ -182,6 +185,10 @@ const TIMELINE_KEYS = [
 const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   humanHints: "humanHints",
   humanSections: "humanSections",
+  moisesSections: "moisesSections",
+  // The raw, pre-fusion analyzer artifact — same source already loaded for
+  // the fused Sections lane's inspector join.
+  allin1Sections: "sectionSegmentation",
   moisesLyrics: "moisesLyrics",
   arrangementState: "arrangementState",
   dropProposals: "dropProposals",
@@ -378,6 +385,7 @@ export function App(): React.JSX.Element {
     () => ({
       humanHints: humanHintsFile,
       humanSections: humanSectionsFile,
+      moisesSections: artifacts.moisesSections.data,
       moisesLyrics: artifacts.moisesLyrics.data,
       lyricValidations: validatedLyricIds,
       arrangementState: artifacts.arrangementState.data,
@@ -400,6 +408,7 @@ export function App(): React.JSX.Element {
     [
       humanHintsFile,
       humanSectionsFile,
+      artifacts.moisesSections.data,
       artifacts.moisesLyrics.data,
       validatedLyricIds,
       artifacts.arrangementState.data,
@@ -1473,6 +1482,7 @@ export function App(): React.JSX.Element {
           type="button"
           className="zbtn"
           aria-pressed={laneListOpen}
+          aria-label="Lanes"
           onClick={() => setLaneListOpen((open) => !open)}
         >
           <i className="ph ph-sliders-horizontal" />

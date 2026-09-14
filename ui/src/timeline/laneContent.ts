@@ -13,6 +13,7 @@ import type {
   EventTimeline,
   HumanHintsFile,
   HumanSegmentsFile,
+  MoisesSegmentsFile,
   HarmonicLayer,
   SectionRow,
   SegmentationSection,
@@ -138,6 +139,60 @@ export function humanSectionsContent(file: HumanSegmentsFile | null): SparseBloc
       raw: s,
     };
   });
+}
+
+/**
+ * Moises Sections — Moises.ai's reference segmentation
+ * (reference/moises/segments.json). Same bare-array shape as Human Sections
+ * but read-only and carries no confidence field of its own — see
+ * docs/reference/analysis.segments.md for the fusion precedence this lane
+ * exists to let the operator audit visually.
+ */
+export function moisesSectionsContent(file: MoisesSegmentsFile | null): SparseBlock[] {
+  return (file ?? []).map((s, i) => {
+    const id = `moises-segment-${String(i + 1).padStart(3, "0")}`;
+    return {
+      id,
+      start_s: s.start,
+      end_s: s.end,
+      label: s.label || id,
+      laneLabel: "Moises Sections",
+      caption: formatRange(s.start, s.end),
+      reference: id,
+      detail: "-",
+      summary: s.description?.trim() || "Moises.ai reference segmentation.",
+      raw: s,
+    };
+  });
+}
+
+/**
+ * allin1 Segmentation — the raw, pre-fusion analyzer output
+ * (artifacts/section_segmentation/sections.json), before any
+ * reference/human or reference/moises override is applied to the published
+ * `sections.json`. Exists so the operator can compare all three sources
+ * (Human Sections, Moises Sections, this lane) against the fused Sections
+ * lane at a glance — see docs/reference/analysis.segments.md.
+ */
+export function allin1SectionsContent(
+  sections: readonly SegmentationSection[],
+): SparseBlock[] {
+  return sections.map((s, i) => ({
+    id: s.section_id ?? `allin1-section-${String(i + 1).padStart(3, "0")}`,
+    start_s: s.start,
+    end_s: s.end,
+    label: s.function || "-",
+    laneLabel: "allin1 Segmentation",
+    caption: `${formatRange(s.start, s.end)}${
+      s.confidence != null ? ` · conf ${round(s.confidence)}` : ""
+    }`,
+    reference: s.section_id ?? "-",
+    detail: s.same_label_as
+      ? `same label as ${s.same_label_as}`
+      : (s.function_status ?? "-"),
+    summary: "Our own segmentation (allin1), before any human/moises override.",
+    raw: s,
+  }));
 }
 
 /**
@@ -1003,6 +1058,7 @@ export function gesturesContent(file: EventTimeline | null): SparseBlock[] {
 export interface LaneContentSources {
   humanHints?: HumanHintsFile | null;
   humanSections?: HumanSegmentsFile | null;
+  moisesSections?: MoisesSegmentsFile | null;
   moisesLyrics?: MoisesLyricsFile | null;
   /** v3.4 item 5 — read-time overlay: Moises word-token ids the operator has
    *  hand-verified (from reference/human/lyric_validations.json). */
@@ -1029,6 +1085,8 @@ export interface LaneContentSources {
 export const SPARSE_LANE_IDS = [
   "humanHints",
   "humanSections",
+  "moisesSections",
+  "allin1Sections",
   "moisesLyrics",
   "arrangementState",
   "dropProposals",
@@ -1058,6 +1116,10 @@ export function buildLaneBlocks(
       return humanHintsContent(s.humanHints ?? null);
     case "humanSections":
       return humanSectionsContent(s.humanSections ?? null);
+    case "moisesSections":
+      return moisesSectionsContent(s.moisesSections ?? null);
+    case "allin1Sections":
+      return allin1SectionsContent(s.sectionSegmentation ?? []);
     case "moisesLyrics":
       return moisesLyricsContent(s.moisesLyrics ?? null, s.lyricValidations ?? null);
     case "arrangementState":

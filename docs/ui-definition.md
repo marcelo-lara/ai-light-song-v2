@@ -172,6 +172,8 @@ unrestricted" above.
 | Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |
 | Human Hints | `reference/human/human_hints.json` (+ `reference/human/block_energy.json` for the per-block `energy`/`tension` rating controls in its events panel) | writable |
 | Human Sections | `reference/human/segments.json` | writable. The operator's own hand-authored section segmentation, below Human Hints; `label` (fixed vocabulary or unset), `description` (free text), `energy`/`tension` (1-5, same rating buttons as Human Hints) |
+| Moises Sections | `reference/moises/segments.json` | read-only. Moises.ai's reference segmentation — same bare `{start, end, label}` shape as Human Sections but never edited; one fusion tier below it in `sections.json` (`docs/reference/analysis.segments.md`) |
+| allin1 Segmentation | `artifacts/section_segmentation/sections.json` | read-only. The raw, pre-fusion analyzer output — lets the operator see what our own segmentation produced even on a song where the fused Sections lane shows a human or Moises override instead |
 | Moises Lyrics | `reference/moises/lyrics.json` (+ `reference/human/lyric_validations.json` overlay) | read-only ground truth; blocks tinted by per-word confidence. Each word-token card in its events panel has a ✔ button (v3.4 item 5); a validated token shows at confidence `1` with the distinct `moisesLyricsValidated` tint in both the panel and the lane. `lyric_validations.json` is writable (per-click); `reference/moises/lyrics.json` is never edited |
 | Drop Proposals | `reference/proposals/drop_impacts.json` | experiment |
 | Character, Shadow | `reference/proposals/character.json` | experiment |

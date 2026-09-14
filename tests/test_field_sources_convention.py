@@ -9,6 +9,8 @@ plan-approved exceptions —
 - `reference/human/segments.json` (v3.5 item 10): an optional hand-marked gold
   reference `ui_data.build_ui_data` fuses into `sections.json`, exactly like
   `human_hints.json` already fuses into `hints.json`.
+- `reference/moises/segments.json`: an optional Moises.ai reference, one
+  precedence tier below human — see `docs/reference/analysis.segments.md`.
 - `reference/proposals/whisperx_vad.json` (v3.5 item 7, promoted 2026-09-13):
   the `whisperx_vad` experiment's phrase spans, optionally fused into
   `arrangement_state.json`'s `vocals_phrase` field — see
@@ -45,6 +47,7 @@ class ProducerVocabularyTests(unittest.TestCase):
                 "section_function",
                 "genre",
                 "human",
+                "moises",
                 "inference",
                 "unknown",
             },
@@ -52,7 +55,7 @@ class ProducerVocabularyTests(unittest.TestCase):
 
     def test_unrecognised_producer_is_an_error_not_a_passthrough(self) -> None:
         with self.assertRaises(ValueError):
-            validate_field_sources({"x": "moises"}, ["x"], file="test.json")
+            validate_field_sources({"x": "spotify"}, ["x"], file="test.json")
 
     def test_header_must_cover_every_emitted_field(self) -> None:
         with self.assertRaises(ValueError):
@@ -70,19 +73,21 @@ class ProducerVocabularyTests(unittest.TestCase):
 
 
 class ReferenceGuardTests(unittest.TestCase):
-    def test_fusion_stage_reads_no_reference_file_but_the_two_sanctioned_exceptions(self) -> None:
+    def test_fusion_stage_reads_no_reference_file_but_the_three_sanctioned_exceptions(self) -> None:
         # v3.5 items 7 and 10 — the only allowed reference() calls in
-        # ui_data.py are the human segments gold file and the whisperx_vad
-        # phrase-proposal cache. Strip those two exact calls out of the source
-        # and the blanket ban still holds for everything else.
+        # ui_data.py are the human and moises segments reference files and
+        # the whisperx_vad phrase-proposal cache. Strip those exact calls out
+        # of the source and the blanket ban still holds for everything else.
         src = inspect.getsource(ui_data)
-        sanctioned_segments = 'paths.reference("human", "segments.json")'
+        sanctioned_human = 'paths.reference("human", "segments.json")'
+        sanctioned_moises = 'paths.reference("moises", "segments.json")'
         sanctioned_whisperx = 'paths.reference("proposals", "whisperx_vad.json")'
-        self.assertIn(sanctioned_segments, src)
+        self.assertIn(sanctioned_human, src)
+        self.assertIn(sanctioned_moises, src)
         self.assertIn(sanctioned_whisperx, src)
         self.assertEqual(
             src.count(".reference("),
-            src.count(sanctioned_segments) + src.count(sanctioned_whisperx),
+            src.count(sanctioned_human) + src.count(sanctioned_moises) + src.count(sanctioned_whisperx),
         )
         self.assertNotIn("read_reference", src)
 

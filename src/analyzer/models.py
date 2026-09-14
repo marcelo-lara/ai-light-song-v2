@@ -32,6 +32,7 @@ class Producer(str, Enum):
     SECTION_FUNCTION = "section_function"
     GENRE = "genre"
     HUMAN = "human"
+    MOISES = "moises"
     INFERENCE = "inference"
     UNKNOWN = "unknown"
 

@@ -310,10 +310,14 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
   is **not** badged — it reads `reference/moises/`, not an `experiments/`
   sandbox, so it sits with `humanHints` as external reference. `gestures` lost
   its badge when plan v3.0 item 9 repointed it at the production
-  `song_event_timeline.json` deliverable; the two allin1 lanes
-  (`allin1Transitions`, `allin1Sections`) were removed from the debugger
-  entirely by plan v3.0 item 14 — their content now lives in the production
-  Sections lane and in `song_event_timeline.json`.
+  `song_event_timeline.json` deliverable; `allin1Transitions` was removed
+  from the debugger entirely by plan v3.0 item 14 (content now in
+  `song_event_timeline.json`). `allin1Sections` was removed by the same item
+  and later reinstated as `allin1Sections` (label "allin1 Segmentation") once
+  `sections.json` gained a human/moises override tier
+  (`docs/reference/analysis.segments.md`) — it reads
+  `artifacts/section_segmentation/`, not an `experiments/` sandbox, so like
+  `moisesSections` it carries no badge either.
 - block inspector (plan v1.5 item 9): `promote-hint` on the `rows-plus-bottom`
   "Create human hint" action, rendered under `block-inspector__title` for every
   inspected event and in both transport states. A Human Hints block routes to

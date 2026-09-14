@@ -36,6 +36,12 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //   segmentation, deliberately near humanHints' amber (35, same "hand-authored"
   //   family) but distinct from it and from the production Sections lane's
   //   teal (174)
+  moisesSections: [160, 55, 42], // seafoam — the Moises.ai reference
+  //   segmentation, read-only; distinct from humanSections' gold (55),
+  //   moisesLyrics' slate blue (210), and the fused Sections lane's teal (174)
+  allin1Sections: [90, 45, 42], // olive — our own pre-fusion segmentation,
+  //   distinct from humanSections (55), moisesSections (160) and the fused
+  //   Sections lane's teal (174)
   dropProposals: [318, 72, 46], // magenta — deliberately unlike the amber of the
   //                               human hints it is auditioned against
   dropProposalsMatched: [168, 60, 40], // muted teal — a proposal that already

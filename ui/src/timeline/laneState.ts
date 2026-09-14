@@ -71,6 +71,8 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "waveform", label: "Waveform Anchor", sub: "decoded source mix", kind: "waveform", height: 84 },
   { id: "humanHints", label: "Human Hints", sub: "reference/human · human_hints", kind: "hints", height: 58 },
   { id: "humanSections", label: "Human Sections", sub: "reference/human · segments", kind: "hints", height: 58 },
+  { id: "moisesSections", label: "Moises Sections", sub: "reference/moises · segments · read-only", kind: "proposals", height: 58 },
+  { id: "allin1Sections", label: "allin1 Segmentation", sub: "artifacts/section_segmentation · pre-fusion, read-only", kind: "proposals", height: 58 },
   { id: "moisesLyrics", label: "Moises Lyrics", sub: "reference/moises · per-word tokens · tinted by confidence", kind: "lyrics", height: 84 },
   { id: "arrangementState", label: "Arrangement State", sub: "arrangement_state · who is playing, per-stem RMS state changes", kind: "proposals", height: 58 },
   { id: "dropProposals", label: "Drop Proposals", sub: "stage-1 candidates · audition vs. Human Hints", kind: "proposals", height: 58, experiment: "drop_detection" },
@@ -105,11 +107,17 @@ export const LANE_DEFS: readonly LaneDef[] = [
  * plays — Moises Lyrics and Drop Proposals sit directly under it and open
  * with it.
  *
- * Experiment lanes leave the registry when promoted or abandoned: the allin1
- * lanes (`allin1Transitions`, `allin1Sections`) went in plan v3.0 item 14
- * (content now in the production `sections` lane and `song_event_timeline.json`);
- * `arrangementState` was promoted in plan v3.2 (it now reads the top-level
- * published `arrangement_state.json` and carries no flask badge).
+ * Experiment lanes leave the registry when promoted or abandoned:
+ * `allin1Transitions` went in plan v3.0 item 14 (content now in
+ * `song_event_timeline.json`); `arrangementState` was promoted in plan v3.2
+ * (it now reads the top-level published `arrangement_state.json` and carries
+ * no flask badge). `allin1Sections` was also removed in v3.0 item 14 on the
+ * reasoning that the production `sections` lane already showed its content —
+ * that stopped holding once `sections.json` could be overridden outright by
+ * a human or moises reference file (docs/reference/analysis.segments.md), so
+ * the lane came back as a permanent, non-experiment read-only lane: the
+ * fused `sections` lane alone can no longer show what our own segmentation
+ * actually produced on a song with a reference override.
  */
 export const DEFAULT_EXPANDED: readonly string[] = [
   "waveform",

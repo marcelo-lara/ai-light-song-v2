@@ -117,6 +117,10 @@ export const artifactPaths = {
   // pipeline.
   moisesLyrics: (song: string) =>
     encodePath(analysis(song, "reference", "moises", "lyrics.json")),
+  // Moises.ai reference segmentation — read-only, one precedence tier below
+  // reference/human/segments.json (docs/reference/analysis.segments.md).
+  moisesSections: (song: string) =>
+    encodePath(analysis(song, "reference", "moises", "segments.json")),
   sectionSegmentation: (song: string) =>
     encodePath(analysis(song, "artifacts", "section_segmentation", "sections.json")),
   fftBands: (song: string) =>

@@ -16,6 +16,7 @@ import {
 import { parseEventTimeline, parseHarmonicLayer, parseHumanHints } from "../data/parsers";
 
 import {
+  allin1SectionsContent,
   arrangementStateContent,
   characterContent,
   vocalTranscriptionContent,
@@ -23,7 +24,9 @@ import {
   dropProposalsContent,
   gesturesContent,
   humanHintsContent,
+  humanSectionsContent,
   moisesLyricsContent,
+  moisesSectionsContent,
   sectionsContent,
   textureNoveltyContent,
   phrasePeriodicityContent,
@@ -103,6 +106,90 @@ describe("humanHintsContent", () => {
       ],
     });
     expect(blocks[0]!.tintId).toBe("humanHintsVocal");
+  });
+});
+
+describe("humanSectionsContent", () => {
+  it("labels a segment from its human label, falling back to the synthesized id", () => {
+    const blocks = humanSectionsContent([
+      { start: 0, end: 10, label: "Intro", description: "hand-marked" },
+      { start: 10, end: 20 },
+    ]);
+    expect(blocks[0]!.id).toBe("segment-001");
+    expect(blocks[0]!.label).toBe("Intro");
+    expect(blocks[0]!.summary).toBe("hand-marked");
+    expect(blocks[1]!.label).toBe("segment-002");
+    expect(blocks[1]!.summary).toBe("Hand-authored section segmentation.");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(humanSectionsContent(null)).toEqual([]);
+  });
+});
+
+describe("moisesSectionsContent", () => {
+  it("labels a segment from its moises label, read-only shape identical to Human Sections", () => {
+    const blocks = moisesSectionsContent([
+      { start: 0, end: 14.82, label: "Intro" },
+      { start: 14.82, end: 29.58, label: "Verse" },
+    ]);
+    expect(blocks[0]!.id).toBe("moises-segment-001");
+    expect(blocks[0]!.label).toBe("Intro");
+    expect(blocks[0]!.laneLabel).toBe("Moises Sections");
+    expect(blocks[1]!.label).toBe("Verse");
+  });
+
+  it("renders a missing label as the synthesized id, never a guess", () => {
+    const blocks = moisesSectionsContent([{ start: 0, end: 10 }]);
+    expect(blocks[0]!.label).toBe("moises-segment-001");
+    expect(blocks[0]!.summary).toBe("Moises.ai reference segmentation.");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(moisesSectionsContent(null)).toEqual([]);
+  });
+});
+
+describe("allin1SectionsContent", () => {
+  it("renders the raw, pre-fusion segmentation independent of any override", () => {
+    const blocks = allin1SectionsContent([
+      {
+        section_id: "section-001",
+        start: 0,
+        end: 14.81,
+        function: "Intro",
+        function_confidence: 0.34,
+        function_status: "unknown",
+        same_label_as: null,
+        confidence: 0.9,
+      },
+    ]);
+    expect(blocks[0]!.id).toBe("section-001");
+    expect(blocks[0]!.label).toBe("Intro");
+    expect(blocks[0]!.laneLabel).toBe("allin1 Segmentation");
+    expect(blocks[0]!.caption).toContain("conf 0.9");
+    expect(blocks[0]!.detail).toBe("unknown");
+  });
+
+  it("renders a null function honestly, never a guessed label", () => {
+    const blocks = allin1SectionsContent([
+      {
+        section_id: "section-002",
+        start: 14.81,
+        end: 20,
+        function: null,
+        function_confidence: null,
+        function_status: "unknown",
+        same_label_as: null,
+        confidence: null,
+      },
+    ]);
+    expect(blocks[0]!.label).toBe("-");
+    expect(blocks[0]!.caption).not.toContain("conf");
+  });
+
+  it("never throws on an empty list", () => {
+    expect(allin1SectionsContent([])).toEqual([]);
   });
 });
 

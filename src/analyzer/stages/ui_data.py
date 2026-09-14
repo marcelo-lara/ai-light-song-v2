@@ -614,6 +614,69 @@ def apply_section_function_contest(paths: SongPaths) -> str:
     return str(paths.sections_output_path)
 
 
+def _build_reference_override_rows(
+    reference_rows: list[dict],
+    raw_sections: list[dict],
+    song_key: str | None,
+    chord_events: list[dict],
+    occurrence_counts: dict[str, int],
+    confidence: float,
+) -> list[dict]:
+    """Shared whole-song-override builder for reference/human/segments.json
+    and reference/moises/segments.json: same boundary/label shape, only the
+    fixed `confidence` and the input rows differ per tier (see
+    docs/reference/analysis.segments.md for the precedence and rationale)."""
+    rows_sorted = sorted(reference_rows, key=lambda row: float(row["start"]))
+    section_rows = []
+    for index, reference_row in enumerate(rows_sorted):
+        start = float(reference_row["start"])
+        end = float(reference_row["end"])
+        function = normalize_human_label(str(reference_row["label"]))
+        section_id = f"section-{index + 1:03d}"
+
+        # Inherit function_confidence/function_status/same_label_as from
+        # whichever allin1 section this span overlaps most — never invented.
+        # No overlap (shouldn't normally happen; allin1 covers the whole
+        # song) is an honest null/"unknown", not a guess.
+        best_match: dict | None = None
+        best_overlap = 0.0
+        for candidate in raw_sections:
+            overlap = min(end, float(candidate["end"])) - max(start, float(candidate["start"]))
+            if overlap > best_overlap:
+                best_overlap = overlap
+                best_match = candidate
+        function_confidence = best_match.get("function_confidence") if best_match else None
+        function_status = best_match.get("function_status", "unknown") if best_match else "unknown"
+        same_label_as = best_match.get("same_label_as") if best_match else None
+
+        if function:
+            occurrence_counts[function] = occurrence_counts.get(function, 0) + 1
+        label_source = {
+            "section_id": section_id,
+            "function": function,
+            "function_confidence": function_confidence,
+            "function_status": function_status,
+        }
+        description_source = {**label_source, "start": start, "end": end, "same_label_as": same_label_as}
+        section_rows.append(
+            {
+                "section_id": section_id,
+                "start": round_schema_float(start),
+                "end": round_schema_float(end),
+                "label": _format_section_label(label_source),
+                "description": _section_description(description_source, occurrence_counts.get(function, 0)),
+                "function": function,
+                "function_confidence": function_confidence,
+                "function_status": function_status,
+                "same_label_as": same_label_as,
+                "confidence": confidence,
+                "key": song_key,
+                "chord_progression": _section_chord_progression(start, end, chord_events),
+            }
+        )
+    return section_rows
+
+
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
     beats_payload = read_json(paths.artifact("essentia", "beats.json"))
     harmonic_payload = read_json(paths.artifact("layer_a_harmonic.json"))
@@ -645,68 +708,35 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
 
     song_key = _song_key(harmonic_payload.get("global_key"))
 
-    # v3.5 item 10 — reference/human/segments.json is an OPTIONAL, per-song
-    # gold reference (same tier as human_hints.json and reference/moises/*):
-    # a flat [{start, end, label}] list. Where it exists for this song, its
-    # spans replace allin1's boundaries outright; where absent, behavior is
-    # unchanged from before this item. See section_vocabulary.py for the
-    # label-vocabulary switch this also applies.
+    # reference/human/segments.json and reference/moises/segments.json are
+    # OPTIONAL, per-song reference overrides (same tier as human_hints.json):
+    # each a flat [{start, end, label}] list. Precedence — documented in
+    # docs/reference/analysis.segments.md — is whole-song, never per-boundary:
+    # human wins outright if present, else moises if present, else our own
+    # segmentation. See section_vocabulary.py for the label-vocabulary
+    # normalization this also applies.
     human_segments_path = paths.reference("human", "segments.json")
     has_human_segments = human_segments_path.exists()
+    moises_segments_path = paths.reference("moises", "segments.json")
+    has_moises_segments = moises_segments_path.exists()
 
     occurrence_counts: dict[str, int] = {}
     section_rows = []
     if has_human_segments:
-        human_rows = sorted(read_json(human_segments_path), key=lambda row: float(row["start"]))
-        for index, human_row in enumerate(human_rows):
-            start = float(human_row["start"])
-            end = float(human_row["end"])
-            function = normalize_human_label(str(human_row["label"]))
-            section_id = f"section-{index + 1:03d}"
-
-            # Inherit function_confidence/function_status/same_label_as from
-            # whichever allin1 section this human span overlaps most — never
-            # invented. No overlap (shouldn't normally happen; allin1 covers
-            # the whole song) is an honest null/"unknown", not a guess.
-            best_match: dict | None = None
-            best_overlap = 0.0
-            for candidate in raw_sections:
-                overlap = min(end, float(candidate["end"])) - max(start, float(candidate["start"]))
-                if overlap > best_overlap:
-                    best_overlap = overlap
-                    best_match = candidate
-            function_confidence = best_match.get("function_confidence") if best_match else None
-            function_status = best_match.get("function_status", "unknown") if best_match else "unknown"
-            same_label_as = best_match.get("same_label_as") if best_match else None
-
-            if function:
-                occurrence_counts[function] = occurrence_counts.get(function, 0) + 1
-            label_source = {
-                "section_id": section_id,
-                "function": function,
-                "function_confidence": function_confidence,
-                "function_status": function_status,
-            }
-            description_source = {**label_source, "start": start, "end": end, "same_label_as": same_label_as}
-            section_rows.append(
-                {
-                    "section_id": section_id,
-                    "start": round_schema_float(start),
-                    "end": round_schema_float(end),
-                    "label": _format_section_label(label_source),
-                    "description": _section_description(description_source, occurrence_counts.get(function, 0)),
-                    "function": function,
-                    "function_confidence": function_confidence,
-                    "function_status": function_status,
-                    "same_label_as": same_label_as,
-                    # Fixed, not inherited — this is the confidence of a
-                    # human-drawn boundary/label, independent of allin1's own
-                    # (inherited above only for the function_* fields).
-                    "confidence": 0.8,
-                    "key": song_key,
-                    "chord_progression": _section_chord_progression(start, end, chord_events),
-                }
-            )
+        # Fixed at 0.8, independent of allin1's own confidence (inherited
+        # below only for the function_* fields) — human mistakes are
+        # plausible, but human is still the best available truth.
+        section_rows = _build_reference_override_rows(
+            read_json(human_segments_path), raw_sections, song_key, chord_events, occurrence_counts, confidence=0.8
+        )
+    elif has_moises_segments:
+        # Fixed at 0.6 — moises/segments.json carries no confidence field of
+        # its own (Moises.ai gives no per-row confidence for segments, unlike
+        # its word-level lyrics/chords) — moises is also an inferred
+        # discriminator, one tier below a human.
+        section_rows = _build_reference_override_rows(
+            read_json(moises_segments_path), raw_sections, song_key, chord_events, occurrence_counts, confidence=0.6
+        )
     else:
         for section in raw_sections:
             function = section.get("function")
@@ -758,27 +788,28 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         beat_rows[0].keys() if beat_rows else (),
         file="beats.json",
     )
-    # v3.5 item 10 — a genuine per-song producer switch, not a per-row
-    # override: when reference/human/segments.json exists, EVERY row's
-    # boundaries/label/description/confidence came from it, so the file-level
-    # default itself moves to "human" for this song. function's own value is
-    # also human-sourced then (normalize_human_label of the human label text);
-    # only function_confidence / function_status / same_label_as stay allin1's
-    # regardless (inherited by overlap, never invented); key / chord_progression
-    # stay the harmonic stage's either way.
+    # A genuine per-song producer switch, not a per-row override: precedence
+    # is human, then moises, then allin1 (docs/reference/analysis.segments.md).
+    # When a reference file exists, EVERY row's boundaries/label/description/
+    # confidence came from it, so the file-level default itself moves to that
+    # producer for this song. function's own value is also that producer's
+    # then (normalize_human_label of its label text — shared by human and
+    # moises); only function_confidence / function_status / same_label_as stay
+    # allin1's regardless (inherited by overlap, never invented); key /
+    # chord_progression stay the harmonic stage's either way.
     sections_field_sources = validate_field_sources(
         _fuse(
             {
-                "section_id": [("human", has_human_segments), ("allin1", True)],
-                "start": [("human", has_human_segments), ("allin1", True)],
-                "end": [("human", has_human_segments), ("allin1", True)],
-                "label": [("human", has_human_segments), ("allin1", True)],
-                "description": [("human", has_human_segments), ("allin1", True)],
-                "function": [("human", has_human_segments), ("allin1", True)],
+                "section_id": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "start": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "end": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "label": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "description": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "function": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "function_confidence": [("allin1", True)],
                 "function_status": [("allin1", True)],
                 "same_label_as": [("allin1", True)],
-                "confidence": [("human", has_human_segments), ("allin1", True)],
+                "confidence": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "key": [("harmonic", True)],
                 "chord_progression": [("harmonic", True)],
             }
