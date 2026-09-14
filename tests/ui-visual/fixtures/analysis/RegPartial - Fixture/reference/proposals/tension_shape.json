@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/tension_shape",
+    "engine": "mix-loudness slope across the span (2nd-half mean minus 1st-half mean), song-relative quintile -> 1-5, +1 gesture build/tension overlap, +1 phrase_periodicity through-composed regime overlap, clamped 5",
+    "spans": "reference/human/segments.json (falls back to sections.json)"
+  },
+  "blocks": [
+    {
+      "start_s": 0.48,
+      "end_s": 15.24,
+      "tension": 5,
+      "confidence": 0.2727,
+      "evidence": {
+        "slope": 0.0595,
+        "gesture_bump": true,
+        "phrase_periodicity_through_composed_bump": true
+      }
+    },
+    {
+      "start_s": 15.24,
+      "end_s": 30.0,
+      "tension": 3,
+      "confidence": 0.8182,
+      "evidence": {
+        "slope": -0.0041,
+        "gesture_bump": true,
+        "phrase_periodicity_through_composed_bump": false
+      }
+    },
+    {
+      "start_s": 30.0,
+      "end_s": 44.78,
+      "tension": 4,
+      "confidence": 0.2727,
+      "evidence": {
+        "slope": -0.0347,
+        "gesture_bump": true,
+        "phrase_periodicity_through_composed_bump": true
+      }
+    },
+    {
+      "start_s": 44.78,
+      "end_s": 59.54,
+      "tension": 2,
+      "confidence": 0.6364,
+      "evidence": {
+        "slope": -0.0924,
+        "gesture_bump": false,
+        "phrase_periodicity_through_composed_bump": true
+      }
+    },
+    {
+      "start_s": 59.54,
+      "end_s": 81.7,
+      "tension": 5,
+      "confidence": 0.4545,
+      "evidence": {
+        "slope": 0.1374,
+        "gesture_bump": true,
+        "phrase_periodicity_through_composed_bump": true
+      }
+    },
+    {
+      "start_s": 81.7,
+      "end_s": 96.48,
+      "tension": 5,
+      "confidence": 0.0909,
+      "evidence": {
+        "slope": 0.0243,
+        "gesture_bump": true,
+        "phrase_periodicity_through_composed_bump": true
+      }
+    },
+    {
+      "start_s": 96.48,
+      "end_s": 111.24,
+      "tension": 4,
+      "confidence": 0.0909,
+      "evidence": {
+        "slope": 0.0049,
+        "gesture_bump": true,
+        "phrase_periodicity_through_composed_bump": false
+      }
+    },
+    {
+      "start_s": 111.24,
+      "end_s": 126.0,
+      "tension": 4,
+      "confidence": 1.0,
+      "evidence": {
+        "slope": 0.0129,
+        "gesture_bump": true,
+        "phrase_periodicity_through_composed_bump": false
+      }
+    },
+    {
+      "start_s": 126.0,
+      "end_s": 155.54,
+      "tension": 5,
+      "confidence": 0.8182,
+      "evidence": {
+        "slope": 0.0339,
+        "gesture_bump": true,
+        "phrase_periodicity_through_composed_bump": true
+      }
+    },
+    {
+      "start_s": 155.54,
+      "end_s": 177.7,
+      "tension": 5,
+      "confidence": 0.6364,
+      "evidence": {
+        "slope": 0.1057,
+        "gesture_bump": true,
+        "phrase_periodicity_through_composed_bump": true
+      }
+    },
+    {
+      "start_s": 177.7,
+      "end_s": 192.48,
+      "tension": 2,
+      "confidence": 0.4545,
+      "evidence": {
+        "slope": -0.0979,
+        "gesture_bump": true,
+        "phrase_periodicity_through_composed_bump": false
+      }
+    }
+  ]
+}

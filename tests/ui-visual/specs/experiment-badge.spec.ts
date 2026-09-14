@@ -8,7 +8,10 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // label text. Production `src/` lanes are never badged, even the ones
 // CLAUDE.md records as untrusted.
 //
-// The badged set currently has ten lanes. Plan v3.0 item 9 promoted
+// The badged set currently has fifteen lanes (v3.6 item 5 added the five
+// rhythm/energy/tension candidate-producer lanes: rhythmDrumIoi,
+// rhythmStemAutocorr, rhythmVocalOnsets, energyLevel, tensionShape). Plan
+// v3.0 item 9 promoted
 // `gestures` out of this set: it used to be an `experiments/gestures`
 // sandbox lane and now reads the production `song_event_timeline.json`
 // deliverable. Plan v3.0 item 14 promoted the two allin1 lanes
@@ -29,6 +32,11 @@ const BADGED = [
   "textureNovelty",
   "phrasePeriodicity",
   "structuralVsMicro",
+  "rhythmDrumIoi",
+  "rhythmStemAutocorr",
+  "rhythmVocalOnsets",
+  "energyLevel",
+  "tensionShape",
   "character",
   "vocalTranscription",
 ] as const;

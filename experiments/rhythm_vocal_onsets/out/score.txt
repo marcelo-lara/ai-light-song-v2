@@ -1,0 +1,22 @@
+song                             source    truth_origin  provisional  n   exact_match  accuracy
+-------------------------------  --------  ------------  -----------  --  -----------  --------
+ayuni                            drums     seed          True         16  0            0.0000
+ayuni                            bass      seed          True         16  0            0.0000
+ayuni                            harmonic  seed          True         16  0            0.0000
+ayuni                            vocals    seed          True         16  1            0.0625
+Cinderella - Ella Lee            drums     seed          True         20  0            0.0000
+Cinderella - Ella Lee            bass      seed          True         20  0            0.0000
+Cinderella - Ella Lee            harmonic  seed          True         20  0            0.0000
+Cinderella - Ella Lee            vocals    seed          True         20  1            0.0500
+_test_song                       drums     seed          True         8   0            0.0000
+_test_song                       bass      seed          True         8   0            0.0000
+_test_song                       harmonic  seed          True         8   0            0.0000
+_test_song                       vocals    seed          True         8   0            0.0000
+What a Feeling - Courtney Storm  drums     seed          True         9   0            0.0000
+What a Feeling - Courtney Storm  bass      seed          True         9   0            0.0000
+What a Feeling - Courtney Storm  harmonic  seed          True         9   0            0.0000
+What a Feeling - Courtney Storm  vocals    seed          True         9   0            0.0000
+CORPUS                           drums     seed          True         53  0            0.0000
+CORPUS                           bass      seed          True         53  0            0.0000
+CORPUS                           harmonic  seed          True         53  0            0.0000
+CORPUS                           vocals    seed          True         53  2            0.0377

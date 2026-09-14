@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/rhythm_vocal_onsets",
+    "engine": "whisper-large-v3 word onsets (experiments.acestep_transcriber.whisper_baseline) over the vocal stem; median inter-onset interval / local beat period -> nearest subdivision",
+    "spans": "reference/human/segments.json (falls back to sections.json)"
+  },
+  "blocks": [
+    {
+      "start_s": 14.82,
+      "end_s": 22.2,
+      "subdivisions": {
+        "vocals": "quarter"
+      },
+      "confidence": {
+        "vocals": 1.0
+      },
+      "onsets_per_beat": 0.561
+    },
+    {
+      "start_s": 22.2,
+      "end_s": 28.63,
+      "subdivisions": {
+        "vocals": "half"
+      },
+      "confidence": {
+        "vocals": 0.444
+      },
+      "onsets_per_beat": 0.286
+    },
+    {
+      "start_s": 42.49,
+      "end_s": 44.35,
+      "subdivisions": {
+        "vocals": "quarter"
+      },
+      "confidence": {
+        "vocals": 0.2615
+      },
+      "onsets_per_beat": 0.5
+    },
+    {
+      "start_s": 44.36,
+      "end_s": 55.22,
+      "subdivisions": {
+        "vocals": "half"
+      },
+      "confidence": {
+        "vocals": 0.4434
+      },
+      "onsets_per_beat": 0.315
+    }
+  ]
+}

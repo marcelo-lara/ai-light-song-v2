@@ -37,15 +37,20 @@ class SubstitutionTests(unittest.TestCase):
 
 
 class QueueFileTests(unittest.TestCase):
-    def test_seeded_queue_parses_with_four_enabled_app_rows(self) -> None:
+    def test_seeded_queue_parses_with_eight_enabled_app_rows(self) -> None:
         rows = run_queue.load_queue()
         names = [r["name"] for r in rows]
         self.assertEqual(
             sorted(names),
             [
+                "energy_level",
                 "phrase_periodicity",
+                "rhythm_drum_ioi",
+                "rhythm_stem_autocorr",
+                "rhythm_vocal_onsets",
                 "structural_vs_micro",
                 "svd_tagger",
+                "tension_shape",
                 "texture_novelty",
                 "vocal_voiceness",
             ],
@@ -53,7 +58,16 @@ class QueueFileTests(unittest.TestCase):
         app_rows = [row for row in rows if row["image"] == "app"]
         self.assertEqual(
             sorted(row["name"] for row in app_rows),
-            ["phrase_periodicity", "structural_vs_micro", "texture_novelty", "vocal_voiceness"],
+            [
+                "energy_level",
+                "phrase_periodicity",
+                "rhythm_drum_ioi",
+                "rhythm_stem_autocorr",
+                "structural_vs_micro",
+                "tension_shape",
+                "texture_novelty",
+                "vocal_voiceness",
+            ],
         )
         for row in rows:
             self.assertTrue(row["enabled"])

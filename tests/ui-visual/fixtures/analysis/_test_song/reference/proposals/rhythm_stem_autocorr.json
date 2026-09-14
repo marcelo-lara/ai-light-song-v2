@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/rhythm_stem_autocorr",
+    "engine": "per-stem 20 ms loudness (loudness.json) sub-beat autocorrelation at half/quarter/eighth/sixteenth/eighth_triplet lags of the local beat period",
+    "spans": "reference/human/segments.json (falls back to sections.json)"
+  },
+  "blocks": [
+    {
+      "start_s": 0.06,
+      "end_s": 14.82,
+      "subdivisions": {
+        "bass": "sixteenth",
+        "drums": "sixteenth",
+        "harmonic": "sixteenth",
+        "vocals": "none"
+      },
+      "confidence": {
+        "bass": 0.0308,
+        "drums": 0.0093,
+        "harmonic": 0.0905,
+        "vocals": 1.0
+      }
+    },
+    {
+      "start_s": 14.82,
+      "end_s": 22.2,
+      "subdivisions": {
+        "bass": "sixteenth",
+        "drums": "quarter",
+        "harmonic": "quarter",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.0096,
+        "drums": 0.0555,
+        "harmonic": 0.0033,
+        "vocals": 0.0845
+      }
+    },
+    {
+      "start_s": 22.2,
+      "end_s": 28.63,
+      "subdivisions": {
+        "bass": "sixteenth",
+        "drums": "eighth",
+        "harmonic": "quarter",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.0076,
+        "drums": 0.0352,
+        "harmonic": 0.0239,
+        "vocals": 0.0257
+      }
+    },
+    {
+      "start_s": 28.63,
+      "end_s": 29.56,
+      "subdivisions": {
+        "bass": "none",
+        "drums": "sixteenth",
+        "harmonic": "none",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 1.0,
+        "drums": 0.0323,
+        "harmonic": 0.2054,
+        "vocals": 0.944
+      }
+    },
+    {
+      "start_s": 29.58,
+      "end_s": 42.49,
+      "subdivisions": {
+        "bass": "quarter",
+        "drums": "quarter",
+        "harmonic": "half",
+        "vocals": "none"
+      },
+      "confidence": {
+        "bass": 0.0286,
+        "drums": 0.0229,
+        "harmonic": 0.1078,
+        "vocals": 0.3622
+      }
+    },
+    {
+      "start_s": 42.49,
+      "end_s": 44.35,
+      "subdivisions": {
+        "bass": "none",
+        "drums": "eighth",
+        "harmonic": "quarter",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 1.0,
+        "drums": 0.1262,
+        "harmonic": 0.1785,
+        "vocals": 0.1217
+      }
+    },
+    {
+      "start_s": 44.36,
+      "end_s": 55.22,
+      "subdivisions": {
+        "bass": "sixteenth",
+        "drums": "sixteenth",
+        "harmonic": "sixteenth",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.2556,
+        "drums": 0.0222,
+        "harmonic": 0.2926,
+        "vocals": 0.0519
+      }
+    },
+    {
+      "start_s": 55.22,
+      "end_s": 58.12,
+      "subdivisions": {
+        "bass": "sixteenth",
+        "drums": "sixteenth",
+        "harmonic": "sixteenth",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.2107,
+        "drums": 0.0949,
+        "harmonic": 0.0819,
+        "vocals": 0.094
+      }
+    }
+  ]
+}

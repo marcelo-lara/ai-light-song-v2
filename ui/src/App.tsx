@@ -156,6 +156,13 @@ const TIMELINE_KEYS = [
   // (experiments/structural_vs_micro, v3.4 item 8 — failed its kill condition,
   // lane kept for one review pass)
   "structuralVsMicro",
+  // v3.6 item 5/6 rhythm/energy/tension candidate producers — each its own
+  // lane, fused by confidence in sections.json's rhythm/energy/tension fields.
+  "rhythmDrumIoi",
+  "rhythmStemAutocorr",
+  "rhythmVocalOnsets",
+  "energyLevel",
+  "tensionShape",
   // per-frame voiceness (vibrato+portamento+sibilance) + bridged phrase
   // blocks (experiments/vocal_voiceness, v3.5 item 4 — kill condition
   // unevaluable until item 1's `type: "vocal"` ground truth exists)
@@ -199,6 +206,11 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   textureNovelty: "textureNovelty",
   phrasePeriodicity: "phrasePeriodicity",
   structuralVsMicro: "structuralVsMicro",
+  rhythmDrumIoi: "rhythmDrumIoi",
+  rhythmStemAutocorr: "rhythmStemAutocorr",
+  rhythmVocalOnsets: "rhythmVocalOnsets",
+  energyLevel: "energyLevel",
+  tensionShape: "tensionShape",
   vocalVoiceness: "vocalVoiceness",
   svdTagger: "svdTagger",
   whisperxVad: "whisperxVad",
@@ -398,6 +410,11 @@ export function App(): React.JSX.Element {
       textureNovelty: artifacts.textureNovelty.data,
       phrasePeriodicity: artifacts.phrasePeriodicity.data,
       structuralVsMicro: artifacts.structuralVsMicro.data,
+      rhythmDrumIoi: artifacts.rhythmDrumIoi.data,
+      rhythmStemAutocorr: artifacts.rhythmStemAutocorr.data,
+      rhythmVocalOnsets: artifacts.rhythmVocalOnsets.data,
+      energyLevel: artifacts.energyLevel.data,
+      tensionShape: artifacts.tensionShape.data,
       vocalVoiceness: artifacts.vocalVoiceness.data,
       svdTagger: artifacts.svdTagger.data,
       whisperxVad: artifacts.whisperxVad.data,
@@ -422,6 +439,11 @@ export function App(): React.JSX.Element {
       artifacts.textureNovelty.data,
       artifacts.phrasePeriodicity.data,
       artifacts.structuralVsMicro.data,
+      artifacts.rhythmDrumIoi.data,
+      artifacts.rhythmStemAutocorr.data,
+      artifacts.rhythmVocalOnsets.data,
+      artifacts.energyLevel.data,
+      artifacts.tensionShape.data,
       artifacts.vocalVoiceness.data,
       artifacts.svdTagger.data,
       artifacts.whisperxVad.data,

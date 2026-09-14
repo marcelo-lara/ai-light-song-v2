@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/rhythm_vocal_onsets",
+    "engine": "whisper-large-v3 word onsets (experiments.acestep_transcriber.whisper_baseline) over the vocal stem; median inter-onset interval / local beat period -> nearest subdivision",
+    "spans": "reference/human/segments.json (falls back to sections.json)"
+  },
+  "blocks": [
+    {
+      "start_s": 30.0,
+      "end_s": 44.78,
+      "subdivisions": {
+        "vocals": "quarter"
+      },
+      "confidence": {
+        "vocals": 0.0471
+      },
+      "onsets_per_beat": 0.84
+    },
+    {
+      "start_s": 44.78,
+      "end_s": 59.54,
+      "subdivisions": {
+        "vocals": "half"
+      },
+      "confidence": {
+        "vocals": 0.8745
+      },
+      "onsets_per_beat": 0.478
+    },
+    {
+      "start_s": 59.54,
+      "end_s": 81.7,
+      "subdivisions": {
+        "vocals": "half"
+      },
+      "confidence": {
+        "vocals": 0.2524
+      },
+      "onsets_per_beat": 0.062
+    },
+    {
+      "start_s": 81.7,
+      "end_s": 96.48,
+      "subdivisions": {
+        "vocals": "half"
+      },
+      "confidence": {
+        "vocals": 0.688
+      },
+      "onsets_per_beat": 0.254
+    },
+    {
+      "start_s": 126.0,
+      "end_s": 155.54,
+      "subdivisions": {
+        "vocals": "half"
+      },
+      "confidence": {
+        "vocals": 0.4652
+      },
+      "onsets_per_beat": 0.143
+    },
+    {
+      "start_s": 177.7,
+      "end_s": 192.48,
+      "subdivisions": {
+        "vocals": "half"
+      },
+      "confidence": {
+        "vocals": 0.4652
+      },
+      "onsets_per_beat": 0.127
+    }
+  ]
+}

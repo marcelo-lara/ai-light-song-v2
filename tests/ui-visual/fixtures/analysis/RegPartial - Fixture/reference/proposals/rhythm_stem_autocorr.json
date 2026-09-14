@@ -1,0 +1,187 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/rhythm_stem_autocorr",
+    "engine": "per-stem 20 ms loudness (loudness.json) sub-beat autocorrelation at half/quarter/eighth/sixteenth/eighth_triplet lags of the local beat period",
+    "spans": "reference/human/segments.json (falls back to sections.json)"
+  },
+  "blocks": [
+    {
+      "start_s": 0.48,
+      "end_s": 15.24,
+      "subdivisions": {
+        "bass": "sixteenth",
+        "drums": "sixteenth",
+        "harmonic": "sixteenth",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.0479,
+        "drums": 0.046,
+        "harmonic": 0.0342,
+        "vocals": 0.0089
+      }
+    },
+    {
+      "start_s": 15.24,
+      "end_s": 30.0,
+      "subdivisions": {
+        "bass": "eighth_triplet",
+        "drums": "sixteenth",
+        "harmonic": "quarter",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.1385,
+        "drums": 0.0659,
+        "harmonic": 0.0533,
+        "vocals": 0.0268
+      }
+    },
+    {
+      "start_s": 30.0,
+      "end_s": 44.78,
+      "subdivisions": {
+        "bass": "quarter",
+        "drums": "sixteenth",
+        "harmonic": "sixteenth",
+        "vocals": "eighth_triplet"
+      },
+      "confidence": {
+        "bass": 0.2879,
+        "drums": 0.102,
+        "harmonic": 0.0497,
+        "vocals": 0.0529
+      }
+    },
+    {
+      "start_s": 44.78,
+      "end_s": 59.54,
+      "subdivisions": {
+        "bass": "quarter",
+        "drums": "sixteenth",
+        "harmonic": "sixteenth",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.0409,
+        "drums": 0.0259,
+        "harmonic": 0.0027,
+        "vocals": 0.013
+      }
+    },
+    {
+      "start_s": 59.54,
+      "end_s": 81.7,
+      "subdivisions": {
+        "bass": "quarter",
+        "drums": "sixteenth",
+        "harmonic": "quarter",
+        "vocals": "none"
+      },
+      "confidence": {
+        "bass": 0.0752,
+        "drums": 0.0179,
+        "harmonic": 0.088,
+        "vocals": 1.0
+      }
+    },
+    {
+      "start_s": 81.7,
+      "end_s": 96.48,
+      "subdivisions": {
+        "bass": "sixteenth",
+        "drums": "sixteenth",
+        "harmonic": "sixteenth",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.0213,
+        "drums": 0.0329,
+        "harmonic": 0.1477,
+        "vocals": 0.1038
+      }
+    },
+    {
+      "start_s": 96.48,
+      "end_s": 111.24,
+      "subdivisions": {
+        "bass": "sixteenth",
+        "drums": "sixteenth",
+        "harmonic": "sixteenth",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.0276,
+        "drums": 0.0911,
+        "harmonic": 0.058,
+        "vocals": 0.0187
+      }
+    },
+    {
+      "start_s": 111.24,
+      "end_s": 126.0,
+      "subdivisions": {
+        "bass": "sixteenth",
+        "drums": "sixteenth",
+        "harmonic": "eighth",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.1224,
+        "drums": 0.0984,
+        "harmonic": 0.0205,
+        "vocals": 0.0712
+      }
+    },
+    {
+      "start_s": 126.0,
+      "end_s": 155.54,
+      "subdivisions": {
+        "bass": "eighth",
+        "drums": "sixteenth",
+        "harmonic": "sixteenth",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.0451,
+        "drums": 0.0247,
+        "harmonic": 0.0066,
+        "vocals": 0.0123
+      }
+    },
+    {
+      "start_s": 155.54,
+      "end_s": 177.7,
+      "subdivisions": {
+        "bass": "quarter",
+        "drums": "half",
+        "harmonic": "quarter",
+        "vocals": "none"
+      },
+      "confidence": {
+        "bass": 0.0717,
+        "drums": 0.5888,
+        "harmonic": 0.077,
+        "vocals": 1.0
+      }
+    },
+    {
+      "start_s": 177.7,
+      "end_s": 192.48,
+      "subdivisions": {
+        "bass": "sixteenth",
+        "drums": "sixteenth",
+        "harmonic": "sixteenth",
+        "vocals": "sixteenth"
+      },
+      "confidence": {
+        "bass": 0.01,
+        "drums": 0.065,
+        "harmonic": 0.0214,
+        "vocals": 0.0271
+      }
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/rhythm_drum_ioi",
+    "engine": "drum_events.json median inter-onset interval / local beat period -> nearest subdivision (log-distance)",
+    "spans": "reference/human/segments.json (falls back to sections.json)"
+  },
+  "blocks": [
+    {
+      "start_s": 0.06,
+      "end_s": 14.82,
+      "subdivisions": {
+        "drums": "eighth_triplet"
+      },
+      "confidence": {
+        "drums": 0.5075
+      },
+      "onsets_per_bar": 10.732
+    },
+    {
+      "start_s": 14.82,
+      "end_s": 22.2,
+      "subdivisions": {
+        "drums": "quarter"
+      },
+      "confidence": {
+        "drums": 0.9937
+      },
+      "onsets_per_bar": 7.729
+    },
+    {
+      "start_s": 22.2,
+      "end_s": 28.63,
+      "subdivisions": {
+        "drums": "sixteenth"
+      },
+      "confidence": {
+        "drums": 0.9398
+      },
+      "onsets_per_bar": 22.034
+    },
+    {
+      "start_s": 28.63,
+      "end_s": 29.56,
+      "subdivisions": {
+        "drums": "eighth"
+      },
+      "confidence": {
+        "drums": 0.9467
+      },
+      "onsets_per_bar": 10.0
+    },
+    {
+      "start_s": 29.58,
+      "end_s": 42.49,
+      "subdivisions": {
+        "drums": "eighth"
+      },
+      "confidence": {
+        "drums": 1.0
+      },
+      "onsets_per_bar": 11.687
+    },
+    {
+      "start_s": 42.49,
+      "end_s": 44.35,
+      "subdivisions": {
+        "drums": "eighth"
+      },
+      "confidence": {
+        "drums": 0.9359
+      },
+      "onsets_per_bar": 15.0
+    },
+    {
+      "start_s": 44.36,
+      "end_s": 55.22,
+      "subdivisions": {
+        "drums": "eighth_triplet"
+      },
+      "confidence": {
+        "drums": 0.3484
+      },
+      "onsets_per_bar": 12.177
+    }
+  ]
+}

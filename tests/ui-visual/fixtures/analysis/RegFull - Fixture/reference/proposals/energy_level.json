@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/energy_level",
+    "engine": "0.5*mean(loudness.json mix normalized_values) + 0.5*(arrangement_state.json stems-playing fraction), song-relative quintile -> 1-5",
+    "spans": "reference/human/segments.json (falls back to sections.json)"
+  },
+  "blocks": [
+    {
+      "start_s": 0.48,
+      "end_s": 15.24,
+      "energy": 2,
+      "confidence": 0.2727,
+      "evidence": {
+        "mix_mean": 0.2858,
+        "stems_fraction": 0.4709
+      }
+    },
+    {
+      "start_s": 15.24,
+      "end_s": 30.0,
+      "energy": 3,
+      "confidence": 0.0909,
+      "evidence": {
+        "mix_mean": 0.5175,
+        "stems_fraction": 0.4155
+      }
+    },
+    {
+      "start_s": 30.0,
+      "end_s": 44.78,
+      "energy": 4,
+      "confidence": 0.2727,
+      "evidence": {
+        "mix_mean": 0.3748,
+        "stems_fraction": 0.7119
+      }
+    },
+    {
+      "start_s": 44.78,
+      "end_s": 59.54,
+      "energy": 4,
+      "confidence": 0.8182,
+      "evidence": {
+        "mix_mean": 0.3485,
+        "stems_fraction": 0.6301
+      }
+    },
+    {
+      "start_s": 59.54,
+      "end_s": 81.7,
+      "energy": 1,
+      "confidence": 0.6364,
+      "evidence": {
+        "mix_mean": 0.3042,
+        "stems_fraction": 0.3701
+      }
+    },
+    {
+      "start_s": 81.7,
+      "end_s": 96.48,
+      "energy": 2,
+      "confidence": 0.8182,
+      "evidence": {
+        "mix_mean": 0.3924,
+        "stems_fraction": 0.5262
+      }
+    },
+    {
+      "start_s": 96.48,
+      "end_s": 111.24,
+      "energy": 5,
+      "confidence": 0.4545,
+      "evidence": {
+        "mix_mean": 0.4933,
+        "stems_fraction": 0.7625
+      }
+    },
+    {
+      "start_s": 111.24,
+      "end_s": 126.0,
+      "energy": 3,
+      "confidence": 1.0,
+      "evidence": {
+        "mix_mean": 0.4966,
+        "stems_fraction": 0.4322
+      }
+    },
+    {
+      "start_s": 126.0,
+      "end_s": 155.54,
+      "energy": 5,
+      "confidence": 0.6364,
+      "evidence": {
+        "mix_mean": 0.397,
+        "stems_fraction": 0.7433
+      }
+    },
+    {
+      "start_s": 155.54,
+      "end_s": 177.7,
+      "energy": 1,
+      "confidence": 0.4545,
+      "evidence": {
+        "mix_mean": 0.2745,
+        "stems_fraction": 0.3872
+      }
+    },
+    {
+      "start_s": 177.7,
+      "end_s": 192.48,
+      "energy": 3,
+      "confidence": 0.0909,
+      "evidence": {
+        "mix_mean": 0.3311,
+        "stems_fraction": 0.5891
+      }
+    }
+  ]
+}

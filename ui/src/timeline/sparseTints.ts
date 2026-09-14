@@ -117,6 +117,18 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   structuralVsMicroMicro: [300, 62, 52], // magenta-purple — a `micro` cue that
   //   lives inside a phrase. Per-block tint override the adapter emits for
   //   kind === "micro"; precedent dropProposalsMatched
+  rhythmDrumIoi: [290, 55, 46], // violet — v3.6 item 5's three rhythm.* candidate
+  //   producers get their own hue each; distinct from structuralVsMicro's indigo
+  //   (245) and character's 275
+  rhythmStemAutocorr: [309, 55, 48], // magenta-violet — distinct from
+  //   rhythmDrumIoi's 290 and moisesLyricsValidated's 265
+  rhythmVocalOnsets: [329, 55, 48], // pink-magenta — distinct from
+  //   rhythmStemAutocorr's 309 and vocalPhrasesSustained's 280
+  energyLevel: [350, 60, 46], // red-pink — v3.6 item 5's energy candidate
+  //   producer; distinct from every neighbour hue in the 300-340 range above
+  tensionShape: [227, 55, 46], // blue — v3.6 item 5's tension candidate
+  //   producer; distinct from arrangementState's olive-lime (95) and
+  //   structuralVsMicro's indigo (245)
   gestures: [10, 75, 46], // burnt orange — sound-design device gestures
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
   sectionsContested: [28, 90, 50], // vivid orange — a section whose allin1

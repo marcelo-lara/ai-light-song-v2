@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/energy_level",
+    "engine": "0.5*mean(loudness.json mix normalized_values) + 0.5*(arrangement_state.json stems-playing fraction), song-relative quintile -> 1-5",
+    "spans": "reference/human/segments.json (falls back to sections.json)"
+  },
+  "blocks": [
+    {
+      "start_s": 0.06,
+      "end_s": 14.82,
+      "energy": 1,
+      "confidence": 0.125,
+      "evidence": {
+        "mix_mean": 0.2,
+        "stems_fraction": 0.5415
+      }
+    },
+    {
+      "start_s": 14.82,
+      "end_s": 22.2,
+      "energy": 3,
+      "confidence": 0.375,
+      "evidence": {
+        "mix_mean": 0.2506,
+        "stems_fraction": 0.5722
+      }
+    },
+    {
+      "start_s": 22.2,
+      "end_s": 28.63,
+      "energy": 3,
+      "confidence": 0.375,
+      "evidence": {
+        "mix_mean": 0.332,
+        "stems_fraction": 0.6431
+      }
+    },
+    {
+      "start_s": 28.63,
+      "end_s": 29.56,
+      "energy": 5,
+      "confidence": 0.125,
+      "evidence": {
+        "mix_mean": 0.3588,
+        "stems_fraction": 0.75
+      }
+    },
+    {
+      "start_s": 29.58,
+      "end_s": 42.49,
+      "energy": 5,
+      "confidence": 0.625,
+      "evidence": {
+        "mix_mean": 0.5737,
+        "stems_fraction": 0.7454
+      }
+    },
+    {
+      "start_s": 42.49,
+      "end_s": 44.35,
+      "energy": 2,
+      "confidence": 0.875,
+      "evidence": {
+        "mix_mean": 0.3009,
+        "stems_fraction": 0.5134
+      }
+    },
+    {
+      "start_s": 44.36,
+      "end_s": 55.22,
+      "energy": 4,
+      "confidence": 0.875,
+      "evidence": {
+        "mix_mean": 0.3218,
+        "stems_fraction": 0.7155
+      }
+    },
+    {
+      "start_s": 55.22,
+      "end_s": 58.12,
+      "energy": 1,
+      "confidence": 0.625,
+      "evidence": {
+        "mix_mean": 0.0458,
+        "stems_fraction": 0.1155
+      }
+    }
+  ]
+}

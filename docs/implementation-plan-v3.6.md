@@ -66,7 +66,7 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 5 of 12 |
+| Done | 6 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 2, 8, 9, 10 |
@@ -74,7 +74,7 @@ commit.
 | New experiments | `truth_common`, `segment_seeds`, `rhythm_drum_ioi`, `rhythm_stem_autocorr`, `rhythm_vocal_onsets`, `energy_level`, `tension_shape` |
 | Promotion approval | producers kept by item 6 are **pre-approved** for `src/` (operator, 2026-09-14: "unless something fails too far, just add it as a layer") |
 | Pre-existing failures | analyzer tests, ui test+build, MCP smoke-test: all green on HEAD (7a58785). Visual suite: 39/44 specs failed pre-existing — screenshot-baseline drift in this environment (e.g. `timeline-zoom-max` expects 1280×1142, environment renders 1280×1304 — a systemic font/viewport rendering difference, not a code defect). Item 2 incidentally fixed two non-screenshot contributors (stale `human_hints.json`/`block_energy.json` fixture drift, and the `segments.json` 404 gap — see D2.2), dropping this to 23/44 failing, all pure screenshot-baseline drift now. Treat any per-item visual QA as DOM/data assertions; screenshot re-capture is skipped for the reason given in each item's Visual QA section — a human with a matching rendering environment should run `--update-snapshots` once and review the diff before trusting pixel baselines again. |
-| Decisions | D2.1 (resolved), D2.2 (resolved), D4.1 (resolved), D10.1 (resolved) |
+| Decisions | D2.1 (resolved), D2.2 (resolved), D4.1 (resolved), D5.1 (resolved), D10.1 (resolved) |
 
 ---
 
@@ -202,21 +202,23 @@ the experiment name.
 | `energy_level` | `energy` | segment loudness level + `arrangement_state` stems playing |
 | `tension_shape` | `tension` | energy slope + gesture `build`/`tension` overlap + Phrase Periodicity regime |
 
-- [ ] Each follows the queue convention (`docs/reference/cli.md`, `experiments/queue.toml` header): `run.py compute --song <name>` then `export --song <name>`, plus one `[[experiment]]` row (`image = "app"`), run with `docker compose run --rm app ./experiment --song "/data/songs/<song>.mp3" --only <name>`. `rhythm_vocal_onsets` needs the ACE-Step image: its row says so and is skipped by the runner, and it is run with `experiments/acestep_transcriber/run_in_container.sh`. Export writes `reference/proposals/<name>.json` rows over segment spans (`segments.json`, else `sections.json`): `{start, end, <field>, confidence}`. Confidence is computed per row (e.g. the margin between the top two candidates), never a constant.
-- [ ] Each is run on the 4 segment songs and on `Armin - Revolution` (the fixture source). Each is scored through `truth_common`, results marked provisional.
-- [ ] Existing `clap` (character), `texture_novelty` and `phrase_periodicity` are scored as energy/tension producers through adapters in `truth_common` that read their existing proposals. Those experiments are not reworked.
-- [ ] `docs/experiments.md`: one entry per new experiment (status OPEN, method, provisional scores).
-- [ ] Fixtures: `build-fixtures.py` copies the five proposals from `Armin - Revolution` into `RegFull`/`RegPartial`. `experiment-badge.spec.ts` `BADGED` gains the five lane ids.
+- [x] Each follows the queue convention (`docs/reference/cli.md`, `experiments/queue.toml` header): `run.py compute --song <name>` then `export --song <name>`, plus one `[[experiment]]` row (`image = "app"`), run with `docker compose run --rm app ./experiment --song "/data/songs/<song>.mp3" --only <name>`. `rhythm_vocal_onsets` needs the ACE-Step image: its row says so and is skipped by the runner, and it is run with `experiments/acestep_transcriber/run_in_container.sh`. Export writes `reference/proposals/<name>.json` rows over segment spans (`segments.json`, else `sections.json`): `{start, end, <field>, confidence}`. Confidence is computed per row (e.g. the margin between the top two candidates), never a constant.
+- [x] Each is run on the 4 segment songs and on `Armin - Revolution` (the fixture source). Each is scored through `truth_common`, results marked provisional.
+- [x] Existing `clap` (character), `texture_novelty` and `phrase_periodicity` are scored as energy/tension producers through adapters in `truth_common` that read their existing proposals (`experiments/truth_common/adapters.py`). Those experiments are not reworked.
+- [x] `docs/experiments.md`: one entry per new experiment (status OPEN, method, provisional scores — real numbers filled in after the orchestrator's run, see each entry's "Results evidence").
+- [x] Fixtures: `build-fixtures.py` copies the five proposals from `Armin - Revolution` into `RegFull`/`RegPartial`. `experiment-badge.spec.ts` `BADGED` gains the five lane ids (10→15).
+
+**D5.1 (resolved):** all five experiments' `export.py` wrote a wall-clock `generated_from.generated_at`, breaking the determinism check outright (two runs never `cmp` identical). Fixed by dropping the field from all five, matching item 2's own precedent for exactly this reason. Caught before commit by actually running the determinism check rather than trusting the subagent's static review.
 
 **Checks**
-- [ ] Each producer run twice on `_test_song` → identical output (`cmp`).
-- [ ] analyzer tests, ui test + build green.
+- [x] Each producer run twice on `_test_song` → identical output (`cmp`) — confirmed for all 5 after the D5.1 fix.
+- [x] analyzer tests (156, after updating `tests/test_run_queue.py`'s stale expected-queue-names list to the new 10-row `queue.toml`), ui test (413) + build green.
 
 **Visual QA** (`RegFull`)
-- [ ] Runtime assertions as item 2.
-- [ ] For each of the five lane ids: `.tl-lane-head[data-lane="<id>"]` count 1, flask count 1, and the `lane-events-<id>` panel `.lane-events__card` count == number of rows in that fixture proposal.
-- [ ] `experiment-badge.spec.ts` passes.
-- [ ] `song-full` baseline re-captured, justification "five producer lanes added".
+- [x] Runtime assertions as item 2.
+- [x] For each of the five lane ids: `.tl-lane-head[data-lane="<id>"]` count 1, flask count 1, and the `lane-events-<id>` panel `.lane-events__card` count == number of rows in that fixture proposal (11/11/6/11/11, all matched).
+- [x] `experiment-badge.spec.ts` passes.
+- [ ] `song-full` baseline re-captured — skipped, same reason as items 2/4. Full suite: 21/44 failing (unchanged from item 4), all pure screenshot-pixel drift; item 5's own assertions (flask/count/card-count) all pass.
 
 ---
 

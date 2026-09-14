@@ -31,6 +31,11 @@ import {
   textureNoveltyContent,
   phrasePeriodicityContent,
   structuralVsMicroContent,
+  rhythmDrumIoiContent,
+  rhythmStemAutocorrContent,
+  rhythmVocalOnsetsContent,
+  energyLevelContent,
+  tensionShapeContent,
   vocalVoicenessContent,
   voiceMultiplicityContent,
 } from "./laneContent";
@@ -39,6 +44,11 @@ import type {
   TextureNoveltyFile,
   PhrasePeriodicityFile,
   StructuralVsMicroFile,
+  RhythmDrumIoiFile,
+  RhythmStemAutocorrFile,
+  RhythmVocalOnsetsFile,
+  EnergyLevelFile,
+  TensionShapeFile,
   VocalVoicenessFile,
   VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
@@ -670,6 +680,139 @@ describe("structuralVsMicroContent", () => {
 
   it("never throws on a missing file", () => {
     expect(structuralVsMicroContent(null)).toEqual([]);
+  });
+});
+
+describe("rhythmDrumIoiContent", () => {
+  const file: RhythmDrumIoiFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start_s: 0, end_s: 8, subdivisions: { drums: "eighth" }, confidence: { drums: 0.62 }, onsets_per_bar: 5.3 },
+      { start_s: 8, end_s: 16, subdivisions: { drums: "none" }, confidence: { drums: 0.9 }, onsets_per_bar: 0.4 },
+    ],
+  };
+  const blocks = rhythmDrumIoiContent(file);
+
+  it("labels a normal block with its subdivision and rate", () => {
+    expect(blocks[0]!.wideLabel).toContain("drums:eighth");
+    expect(blocks[0]!.caption).toContain("5.30/bar");
+  });
+
+  it("renders a none block honestly", () => {
+    expect(blocks[1]!.wideLabel).toContain("drums:none");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(rhythmDrumIoiContent(null)).toEqual([]);
+  });
+});
+
+describe("rhythmStemAutocorrContent", () => {
+  const file: RhythmStemAutocorrFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      {
+        start_s: 0,
+        end_s: 8,
+        subdivisions: { drums: "sixteenth", bass: "quarter", vocals: "none" },
+        confidence: { drums: 0.5, bass: 0.3, vocals: 1.0 },
+      },
+    ],
+  };
+  const blocks = rhythmStemAutocorrContent(file);
+
+  it("lists every source's subdivision", () => {
+    expect(blocks[0]!.caption).toContain("drums:sixteenth");
+    expect(blocks[0]!.caption).toContain("bass:quarter");
+    expect(blocks[0]!.caption).toContain("vocals:none");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(rhythmStemAutocorrContent(null)).toEqual([]);
+  });
+});
+
+describe("rhythmVocalOnsetsContent", () => {
+  const file: RhythmVocalOnsetsFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start_s: 0, end_s: 8, subdivisions: { vocals: "eighth" }, confidence: { vocals: 0.4 }, onsets_per_beat: 1.8 },
+      { start_s: 8, end_s: 16, subdivisions: { vocals: "none" }, confidence: { vocals: 0.7 }, onsets_per_beat: null },
+    ],
+  };
+  const blocks = rhythmVocalOnsetsContent(file);
+
+  it("labels a normal block with its onset rate", () => {
+    expect(blocks[0]!.caption).toContain("1.80/beat");
+  });
+
+  it("renders a null onsets_per_beat honestly", () => {
+    expect(blocks[1]!.caption).toContain("no onsets");
+    expect(blocks[1]!.caption).not.toMatch(/NaN/);
+  });
+
+  it("never throws on a missing file", () => {
+    expect(rhythmVocalOnsetsContent(null)).toEqual([]);
+  });
+});
+
+describe("energyLevelContent", () => {
+  const file: EnergyLevelFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start_s: 0, end_s: 8, energy: 4, confidence: 0.72, evidence: { mix_mean: 0.55, stems_fraction: 0.9 } },
+    ],
+  };
+  const blocks = energyLevelContent(file);
+
+  it("labels the energy level and confidence", () => {
+    expect(blocks[0]!.wideLabel).toBe("energy 4");
+    expect(blocks[0]!.caption).toContain("confidence 0.72");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(energyLevelContent(null)).toEqual([]);
+  });
+});
+
+describe("tensionShapeContent", () => {
+  const file: TensionShapeFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      {
+        start_s: 0,
+        end_s: 8,
+        tension: 5,
+        confidence: 0.3,
+        evidence: { slope: 0.12, gesture_bump: true, phrase_periodicity_through_composed_bump: false },
+      },
+      {
+        start_s: 8,
+        end_s: 16,
+        tension: 2,
+        confidence: 0.61,
+        evidence: { slope: -0.05, gesture_bump: false, phrase_periodicity_through_composed_bump: false },
+      },
+    ],
+  };
+  const blocks = tensionShapeContent(file);
+
+  it("labels the tension level and which bump fired", () => {
+    expect(blocks[0]!.wideLabel).toBe("tension 5");
+    expect(blocks[0]!.caption).toContain("+gesture");
+  });
+
+  it("renders no bump honestly", () => {
+    expect(blocks[1]!.caption).toContain("no bump");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(tensionShapeContent(null)).toEqual([]);
   });
 });
 

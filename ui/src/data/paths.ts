@@ -87,6 +87,27 @@ export const artifactPaths = {
   // review pass.
   structuralVsMicro: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "structural_vs_micro.json")),
+  // Written by experiments/rhythm_drum_ioi (`run export`). item 5/6a:
+  // rhythm.drums subdivision + confidence from drum_events.json IOI.
+  rhythmDrumIoi: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "rhythm_drum_ioi.json")),
+  // Written by experiments/rhythm_stem_autocorr (`run export`). item 5/6b:
+  // rhythm.{drums,bass,harmonic,vocals} from per-stem sub-beat autocorrelation.
+  rhythmStemAutocorr: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "rhythm_stem_autocorr.json")),
+  // Written by experiments/rhythm_vocal_onsets (`run export`, ACE-Step
+  // sandbox `compute`). item 5/6c: rhythm.vocals + onsets_per_beat from
+  // whisper word-onset intervals.
+  rhythmVocalOnsets: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "rhythm_vocal_onsets.json")),
+  // Written by experiments/energy_level (`run export`). item 5/6: candidate
+  // `energy` (1-5) from segment loudness level + stems-playing fraction.
+  energyLevel: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "energy_level.json")),
+  // Written by experiments/tension_shape (`run export`). item 5/6: candidate
+  // `tension` (1-5) from energy slope + gesture/regime overlap.
+  tensionShape: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "tension_shape.json")),
   // Written by experiments/vocal_voiceness (`run export`). A shared
   // voiceness_common.schema proposal: per-50ms-frame voiceness score
   // (vibrato + portamento + sibilance, noisy-OR combined) plus bridged

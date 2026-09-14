@@ -1629,6 +1629,230 @@ Moises rows are a comparison baseline and never a label: `'let'` spans
 49% of the song. Beating it there is a real but low bar — `vocal_voiceness` and
 `whisperx_vad` both do.
 
+---
+
+## Rhythm Drum IOI — dominant drum inter-onset interval vs the beat grid
+
+*(no external model — arithmetic over `drum_events.json` + `beats.json`)*
+
+### Status
+
+**[OPEN].** v3.6 item 5 (docs/product-refinement-v3.6.md section 6, method
+(a)). Built as
+[`../experiments/rhythm_drum_ioi/`](../experiments/rhythm_drum_ioi/README.md).
+Debugger lane: **`Rhythm Drum IOI`**, flask badge, reads
+`reference/proposals/rhythm_drum_ioi.json`.
+
+### Why? What for?
+
+Candidate producer for `sections.json`'s new `rhythm.drums` field — one of
+three independent producers (a/b/c) fused by confidence.
+
+### Experiment Plan
+
+Median drum-event IOI inside a segment span / local beat period -> nearest of
+half/quarter/eighth/sixteenth/eighth_triplet by log-distance; below 1
+onset/bar -> `none`. Same rule as item 4's `segment_seeds.features.
+drum_rhythm` seed writer. Confidence: normalised margin between best/second-
+best candidate (`experiments/rhythm_energy_common.py`). Scored via
+`truth_common.rhythm` against `segments.seed.json` (provisional until
+operator review) and any `segments.json` `rhythm` rows.
+
+### Results evidence
+
+Run + scored 2026-09-14 on the 4 segment songs (`ayuni` 0 rows — no drum
+events for that song, honestly omitted — `Cinderella` 20, `_test_song` 8,
+`What a Feeling` 9) via `truth_common.rhythm` against `segments.seed.json`
+(**provisional**). `drums` exact-match accuracy: corpus 0.6415 (34/53
+scoreable rows; `ayuni` excluded, no rows). Per-song: `Cinderella` 0.9500,
+`_test_song` 0.8750, `What a Feeling` 0.8889. `bass`/`harmonic`/`vocals` are
+never written by this experiment (single-source, drums only), so their
+`truth_common` rows read 0 by design, not a failure.
+
+### Conclusion
+
+Strong agreement with the seed on drums where drum events exist at all
+(0.64–0.95 exact-match). Still provisional — the seed shares this exact
+method, so this is a self-consistency check, not independent validation; item
+6 decides its fate once seeds are operator-reviewed.
+
+---
+
+## Rhythm Stem Autocorr — sub-beat autocorrelation of per-stem loudness
+
+*(no external model — numpy autocorrelation over `loudness.json`)*
+
+### Status
+
+**[OPEN].** v3.6 item 5 (section 6, method (b)). Built as
+[`../experiments/rhythm_stem_autocorr/`](../experiments/rhythm_stem_autocorr/README.md).
+Debugger lane: **`Rhythm Stem Autocorr`**, flask badge, reads
+`reference/proposals/rhythm_stem_autocorr.json`.
+
+### Why? What for?
+
+Candidate producer for `sections.json`'s `rhythm.{drums,bass,harmonic,
+vocals}` fields — covers all four sources in one row, unlike (a) and (c)
+which are single-source.
+
+### Experiment Plan
+
+Per stem, strongest sub-beat autocorrelation peak of that stem's 20 ms
+loudness curve at half/quarter/eighth/sixteenth/eighth_triplet lags of the
+local beat period; `vocals` is `none` where no `vocals_phrase` overlaps.
+Same scan as item 4's `segment_seeds.features.stem_rhythm`. Confidence:
+normalised margin between best/second-best lag correlation. Scored via
+`truth_common.rhythm`, same provisional rule as `rhythm_drum_ioi`.
+
+### Results evidence
+
+Run + scored 2026-09-14 on the 4 segment songs via `truth_common.rhythm`
+against `segments.seed.json` (**provisional**). Corpus exact-match accuracy:
+`drums` 0.1698, `bass` 1.0000, `harmonic` 1.0000, `vocals` 0.9811 (52/53).
+Per-song `drums` ranges 0.11–0.25 — far below `rhythm_drum_ioi`'s.
+
+### Conclusion
+
+`bass`/`harmonic`/`vocals` agree near-perfectly with the seed (expected — the
+seed's own method for those three sources *is* this autocorrelation scan, so
+this measures self-consistency, not independent accuracy). `drums` disagrees
+sharply with the seed's IOI-based drum call, which is the more musically
+direct method for a discrete-onset source — this experiment's own `drums`
+column is the weaker of the two rhythm-drums candidates. Still provisional;
+item 6 decides.
+
+---
+
+## Rhythm Vocal Onsets — word-onset IOI vs the beat grid
+
+*(ACE-Step Transcriber sandbox — whisper-large-v3 word timestamps)*
+
+### Status
+
+**[OPEN].** v3.6 item 5 (section 6, method (c)). Built as
+[`../experiments/rhythm_vocal_onsets/`](../experiments/rhythm_vocal_onsets/README.md).
+Debugger lane: **`Rhythm Vocal Onsets`**, flask badge, reads
+`reference/proposals/rhythm_vocal_onsets.json`. `compute` runs only in the
+ACE-Step sandbox image, never the normal queue path (same convention as
+`svd_tagger`) — see the experiment README.
+
+### Why? What for?
+
+Candidate producer for `sections.json`'s `rhythm.vocals` field, from actual
+onset *times* (item 3's whisper word timestamps) rather than autocorrelation
+of a continuous curve — the syllable-onset proxy the refinement doc names.
+
+### Experiment Plan
+
+Reuses `experiments.acestep_transcriber.whisper_baseline`'s cached word
+timestamps. Median word-onset IOI inside a span / local beat period -> nearest
+subdivision, same vocabulary/confidence rule as `rhythm_drum_ioi`. Also writes
+`onsets_per_beat`. Scored via `truth_common.rhythm`, same provisional rule.
+
+### Results evidence
+
+Run (via the ACE-Step sandbox, whisper-large-v3 CPU) + scored 2026-09-14 on
+the 4 segment songs via `truth_common.rhythm` against `segments.seed.json`
+(**provisional**). Corpus `vocals` exact-match accuracy: 0.0377 (2/53) — most
+spans get no scoreable row at all where `whisper_baseline` finds too few word
+onsets in the span (an honest omission, not a wrong guess); the drums/bass/
+harmonic columns are never written by this experiment (0 rows, by design).
+
+### Conclusion
+
+Far weaker agreement than (a)/(b) on this corpus — whisper-large-v3 on CPU
+over short spans yields sparse or no onsets for most segments, so this
+candidate contributes little signal today. Item 6 will likely judge this one
+against the trivial baseline once seeds are reviewed; kept open for now per
+the "no producer archived while truth is seed-only" rule.
+
+---
+
+## Energy Level — segment loudness + stems-playing fraction
+
+*(no external model — arithmetic over `loudness.json` + `arrangement_state.json`)*
+
+### Status
+
+**[OPEN].** v3.6 item 5 (section 6). Built as
+[`../experiments/energy_level/`](../experiments/energy_level/README.md).
+Debugger lane: **`Energy Level`**, flask badge, reads
+`reference/proposals/energy_level.json`.
+
+### Why? What for?
+
+Candidate producer for `sections.json`'s new `energy` field, alongside a CLAP
+character adapter (see `experiments/truth_common/adapters.py`).
+
+### Experiment Plan
+
+`0.5 * mean(mix loudness in span) + 0.5 * (arrangement_state stems-playing
+fraction in span)`, song-relative quintile -> 1-5 — same raw signal as item
+4's seed rule. Confidence: quintile-bin margin
+(`experiments/rhythm_energy_common.py`). Scored via
+`truth_common.energy_tension`, provisional until operator review.
+
+### Results evidence
+
+Run + scored 2026-09-14 on the 4 segment songs via `truth_common.
+energy_tension` against `segments.seed.json` (**provisional**) and the 2
+operator `segments.json` rows (**human**, not provisional). Corpus `energy`
+exact-match: seed 0.9811 (52/53), human 0/2 exact but 1/2 within-1.
+
+### Conclusion
+
+Near-total agreement with the seed — expected, this is the same method the
+seed writer uses (`segment_seeds.features`), so this is a self-consistency
+check. The 2 human rows are the real signal and both miss exact match; one is
+within ±1. Provisional; not archivable until seeds are reviewed (refinement
+item 6's rule).
+
+---
+
+## Tension Shape — energy slope + gesture/regime overlap
+
+*(no external model — arithmetic over `loudness.json` +
+`song_event_timeline.json` + the sibling `phrase_periodicity` proposal)*
+
+### Status
+
+**[OPEN].** v3.6 item 5 (section 6). Built as
+[`../experiments/tension_shape/`](../experiments/tension_shape/README.md).
+Debugger lane: **`Tension Shape`**, flask badge, reads
+`reference/proposals/tension_shape.json`.
+
+### Why? What for?
+
+Candidate producer for `sections.json`'s new `tension` field, alongside the
+CLAP-character, Texture Novelty and Phrase Periodicity adapters
+(`experiments/truth_common/adapters.py`).
+
+### Experiment Plan
+
+Mix-loudness slope across the span (rising = tenser), song-relative quintile
+-> 1-5 — same raw signal as item 4's seed rule — **+1** on a gesture
+`build`/`tension` overlap, **+1** on a `phrase_periodicity` `through-composed`
+regime overlap (a file dependency on that sibling experiment's output, not an
+import), clamped to 5. Confidence: quintile-bin margin on the slope only.
+Scored via `truth_common.energy_tension`, provisional until operator review.
+
+### Results evidence
+
+Run + scored 2026-09-14 on the 4 segment songs via `truth_common.
+energy_tension` against `segments.seed.json` (**provisional**) and the 2
+operator `segments.json` rows (**human**). Corpus `tension`: seed exact-match
+0.7547 (40/53), within-1 0.9811 (52/53); human exact-match 0.5000 (1/2),
+within-1 1.0000 (2/2). `_test_song`'s single human row matches exactly.
+
+### Conclusion
+
+The best-agreeing of the five candidates against the human rows on within-1
+tolerance (both match), and the strongest exact-match rate against the seed
+on the rhythm/energy/tension set overall. Still provisional; item 6 decides
+once seeds are reviewed.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

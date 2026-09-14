@@ -45,3 +45,11 @@ def human_lyrics_path(song: str) -> Path:
 
 def moises_lyrics_path(song: str) -> Path:
     return reference_path(song, "moises", "lyrics.json")
+
+
+def proposals_path(song: str, filename: str) -> Path:
+    """`reference/proposals/{filename}` — an experiment's own candidate
+    output. Read-only here: used by `adapters.py` to score a sibling
+    experiment's existing proposal file through this family's scorer,
+    without changing that experiment."""
+    return reference_path(song, "proposals", filename)

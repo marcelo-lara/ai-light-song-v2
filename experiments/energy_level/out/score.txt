@@ -1,0 +1,18 @@
+song                             field    source  provisional  n   exact_match  within_1  exact_accuracy  within_1_accuracy
+-------------------------------  -------  ------  -----------  --  -----------  --------  --------------  -----------------
+ayuni                            energy   seed    True         16  16           16        1.0000          1.0000
+ayuni                            tension  seed    True         16  0            0         0.0000          0.0000
+Cinderella - Ella Lee            energy   human   False        1   0            1         0.0000          1.0000
+Cinderella - Ella Lee            tension  human   False        1   0            0         0.0000          0.0000
+Cinderella - Ella Lee            energy   seed    True         20  20           20        1.0000          1.0000
+Cinderella - Ella Lee            tension  seed    True         20  0            0         0.0000          0.0000
+_test_song                       energy   human   False        1   0            0         0.0000          0.0000
+_test_song                       tension  human   False        1   0            0         0.0000          0.0000
+_test_song                       energy   seed    True         8   8            8         1.0000          1.0000
+_test_song                       tension  seed    True         8   0            0         0.0000          0.0000
+What a Feeling - Courtney Storm  energy   seed    True         9   8            9         0.8889          1.0000
+What a Feeling - Courtney Storm  tension  seed    True         9   0            0         0.0000          0.0000
+CORPUS                           energy   human   False        2   0            1         0.0000          0.5000
+CORPUS                           energy   seed    True         53  52           53        0.9811          1.0000
+CORPUS                           tension  human   False        2   0            0         0.0000          0.0000
+CORPUS                           tension  seed    True         53  0            0         0.0000          0.0000

@@ -1,8 +1,9 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (drop proposals, character, vocal
 // transcription, vocal phrases, texture novelty, phrase periodicity,
-// structural-vs-micro, whisperx vad, voice multiplicity, and the top-level published
-// arrangement state).
+// structural-vs-micro, rhythm drum ioi, rhythm stem autocorr, rhythm vocal
+// onsets, energy level, tension shape, whisperx vad, voice multiplicity, and
+// the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -617,6 +618,276 @@ export async function loadPhrasePeriodicity(
   f?: typeof fetch,
 ): Promise<LoadResult<PhrasePeriodicityFile>> {
   const result = await loadJson(artifactPaths.phrasePeriodicity(song), parsePhrasePeriodicity, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// rhythmDrumIoi — reference/proposals/rhythm_drum_ioi.json
+// ---------------------------------------------------------------------------
+//
+// v3.6 item 5/6a: candidate `rhythm.drums` producer from
+// experiments/rhythm_drum_ioi — dominant drum_events.json inter-onset
+// interval / local beat period -> nearest subdivision. A proposal to
+// audition, not ground truth; `confidence` is per-source, never a constant.
+
+export interface RhythmDrumIoiBlock {
+  start_s: number;
+  end_s: number;
+  subdivisions: Record<string, string>;
+  confidence: Record<string, number>;
+  onsets_per_bar: number;
+}
+
+export interface RhythmDrumIoiFile {
+  schema_version: string;
+  song_name: string;
+  blocks: RhythmDrumIoiBlock[];
+}
+
+export function parseRhythmDrumIoi(raw: unknown): RhythmDrumIoiFile {
+  const o = asObject(raw, "reference/proposals/rhythm_drum_ioi.json");
+  const blocks: RhythmDrumIoiBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    const subs = rec(r.subdivisions);
+    const confs = rec(r.confidence);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      subdivisions: Object.fromEntries(Object.entries(subs).map(([k, v]) => [k, st(v)])),
+      confidence: Object.fromEntries(Object.entries(confs).map(([k, v]) => [k, num(v)])),
+      onsets_per_bar: num(r.onsets_per_bar),
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadRhythmDrumIoi(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<RhythmDrumIoiFile>> {
+  const result = await loadJson(artifactPaths.rhythmDrumIoi(song), parseRhythmDrumIoi, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// rhythmStemAutocorr — reference/proposals/rhythm_stem_autocorr.json
+// ---------------------------------------------------------------------------
+//
+// v3.6 item 5/6b: candidate `rhythm.{drums,bass,harmonic,vocals}` producer
+// from experiments/rhythm_stem_autocorr — sub-beat autocorrelation of each
+// stem's 20 ms loudness. `vocals` reads `"none"` where no vocals_phrase
+// overlaps, not omitted. A proposal to audition, not ground truth.
+
+export interface RhythmStemAutocorrBlock {
+  start_s: number;
+  end_s: number;
+  subdivisions: Record<string, string>;
+  confidence: Record<string, number>;
+}
+
+export interface RhythmStemAutocorrFile {
+  schema_version: string;
+  song_name: string;
+  blocks: RhythmStemAutocorrBlock[];
+}
+
+export function parseRhythmStemAutocorr(raw: unknown): RhythmStemAutocorrFile {
+  const o = asObject(raw, "reference/proposals/rhythm_stem_autocorr.json");
+  const blocks: RhythmStemAutocorrBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    const subs = rec(r.subdivisions);
+    const confs = rec(r.confidence);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      subdivisions: Object.fromEntries(Object.entries(subs).map(([k, v]) => [k, st(v)])),
+      confidence: Object.fromEntries(Object.entries(confs).map(([k, v]) => [k, num(v)])),
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadRhythmStemAutocorr(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<RhythmStemAutocorrFile>> {
+  const result = await loadJson(artifactPaths.rhythmStemAutocorr(song), parseRhythmStemAutocorr, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// rhythmVocalOnsets — reference/proposals/rhythm_vocal_onsets.json
+// ---------------------------------------------------------------------------
+//
+// v3.6 item 5/6c: candidate `rhythm.vocals` + `onsets_per_beat` producer from
+// experiments/rhythm_vocal_onsets — dominant whisper word-onset interval /
+// local beat period -> nearest subdivision. `compute` runs only in the
+// ACE-Step sandbox image. A proposal to audition, not ground truth.
+
+export interface RhythmVocalOnsetsBlock {
+  start_s: number;
+  end_s: number;
+  subdivisions: Record<string, string>;
+  confidence: Record<string, number>;
+  onsets_per_beat: number | null;
+}
+
+export interface RhythmVocalOnsetsFile {
+  schema_version: string;
+  song_name: string;
+  blocks: RhythmVocalOnsetsBlock[];
+}
+
+export function parseRhythmVocalOnsets(raw: unknown): RhythmVocalOnsetsFile {
+  const o = asObject(raw, "reference/proposals/rhythm_vocal_onsets.json");
+  const blocks: RhythmVocalOnsetsBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    const subs = rec(r.subdivisions);
+    const confs = rec(r.confidence);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      subdivisions: Object.fromEntries(Object.entries(subs).map(([k, v]) => [k, st(v)])),
+      confidence: Object.fromEntries(Object.entries(confs).map(([k, v]) => [k, num(v)])),
+      onsets_per_beat: r.onsets_per_beat == null ? null : num(r.onsets_per_beat),
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadRhythmVocalOnsets(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<RhythmVocalOnsetsFile>> {
+  const result = await loadJson(artifactPaths.rhythmVocalOnsets(song), parseRhythmVocalOnsets, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// energyLevel — reference/proposals/energy_level.json
+// ---------------------------------------------------------------------------
+//
+// v3.6 item 5/6: candidate `energy` (1-5) producer from
+// experiments/energy_level — segment mix loudness + stems-playing fraction,
+// song-relative quintile-binned. A proposal to audition, not ground truth.
+
+export interface EnergyLevelBlock {
+  start_s: number;
+  end_s: number;
+  energy: number;
+  confidence: number;
+  evidence: { mix_mean: number; stems_fraction: number };
+}
+
+export interface EnergyLevelFile {
+  schema_version: string;
+  song_name: string;
+  blocks: EnergyLevelBlock[];
+}
+
+export function parseEnergyLevel(raw: unknown): EnergyLevelFile {
+  const o = asObject(raw, "reference/proposals/energy_level.json");
+  const blocks: EnergyLevelBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    const ev = rec(r.evidence);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      energy: num(r.energy),
+      confidence: num(r.confidence),
+      evidence: { mix_mean: num(ev.mix_mean), stems_fraction: num(ev.stems_fraction) },
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadEnergyLevel(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<EnergyLevelFile>> {
+  const result = await loadJson(artifactPaths.energyLevel(song), parseEnergyLevel, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// tensionShape — reference/proposals/tension_shape.json
+// ---------------------------------------------------------------------------
+//
+// v3.6 item 5/6: candidate `tension` (1-5) producer from
+// experiments/tension_shape — energy slope across the span + gesture
+// build/tension overlap + phrase_periodicity through-composed regime
+// overlap. A proposal to audition, not ground truth.
+
+export interface TensionShapeBlock {
+  start_s: number;
+  end_s: number;
+  tension: number;
+  confidence: number;
+  evidence: {
+    slope: number;
+    gesture_bump: boolean;
+    phrase_periodicity_through_composed_bump: boolean;
+  };
+}
+
+export interface TensionShapeFile {
+  schema_version: string;
+  song_name: string;
+  blocks: TensionShapeBlock[];
+}
+
+export function parseTensionShape(raw: unknown): TensionShapeFile {
+  const o = asObject(raw, "reference/proposals/tension_shape.json");
+  const blocks: TensionShapeBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    const ev = rec(r.evidence);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      tension: num(r.tension),
+      confidence: num(r.confidence),
+      evidence: {
+        slope: num(ev.slope),
+        gesture_bump: Boolean(ev.gesture_bump),
+        phrase_periodicity_through_composed_bump: Boolean(
+          ev.phrase_periodicity_through_composed_bump,
+        ),
+      },
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadTensionShape(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<TensionShapeFile>> {
+  const result = await loadJson(artifactPaths.tensionShape(song), parseTensionShape, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
   }

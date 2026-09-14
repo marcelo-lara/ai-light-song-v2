@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/rhythm_drum_ioi",
+    "engine": "drum_events.json median inter-onset interval / local beat period -> nearest subdivision (log-distance)",
+    "spans": "reference/human/segments.json (falls back to sections.json)"
+  },
+  "blocks": [
+    {
+      "start_s": 0.48,
+      "end_s": 15.24,
+      "subdivisions": {
+        "drums": "sixteenth"
+      },
+      "confidence": {
+        "drums": 0.7041
+      },
+      "onsets_per_bar": 10.098
+    },
+    {
+      "start_s": 15.24,
+      "end_s": 30.0,
+      "subdivisions": {
+        "drums": "eighth_triplet"
+      },
+      "confidence": {
+        "drums": 0.348
+      },
+      "onsets_per_bar": 8.103
+    },
+    {
+      "start_s": 30.0,
+      "end_s": 44.78,
+      "subdivisions": {
+        "drums": "sixteenth"
+      },
+      "confidence": {
+        "drums": 0.9398
+      },
+      "onsets_per_bar": 14.068
+    },
+    {
+      "start_s": 44.78,
+      "end_s": 59.54,
+      "subdivisions": {
+        "drums": "eighth_triplet"
+      },
+      "confidence": {
+        "drums": 0.5394
+      },
+      "onsets_per_bar": 12.737
+    },
+    {
+      "start_s": 59.54,
+      "end_s": 81.7,
+      "subdivisions": {
+        "drums": "eighth"
+      },
+      "confidence": {
+        "drums": 0.4324
+      },
+      "onsets_per_bar": 9.881
+    },
+    {
+      "start_s": 81.7,
+      "end_s": 96.48,
+      "subdivisions": {
+        "drums": "sixteenth"
+      },
+      "confidence": {
+        "drums": 0.7959
+      },
+      "onsets_per_bar": 13.101
+    },
+    {
+      "start_s": 96.48,
+      "end_s": 111.24,
+      "subdivisions": {
+        "drums": "eighth_triplet"
+      },
+      "confidence": {
+        "drums": 0.5875
+      },
+      "onsets_per_bar": 13.588
+    },
+    {
+      "start_s": 111.24,
+      "end_s": 126.0,
+      "subdivisions": {
+        "drums": "sixteenth"
+      },
+      "confidence": {
+        "drums": 0.5325
+      },
+      "onsets_per_bar": 6.981
+    },
+    {
+      "start_s": 126.0,
+      "end_s": 155.54,
+      "subdivisions": {
+        "drums": "sixteenth"
+      },
+      "confidence": {
+        "drums": 0.9705
+      },
+      "onsets_per_bar": 13.81
+    },
+    {
+      "start_s": 155.54,
+      "end_s": 177.7,
+      "subdivisions": {
+        "drums": "eighth_triplet"
+      },
+      "confidence": {
+        "drums": 0.5108
+      },
+      "onsets_per_bar": 9.502
+    },
+    {
+      "start_s": 177.7,
+      "end_s": 192.48,
+      "subdivisions": {
+        "drums": "sixteenth"
+      },
+      "confidence": {
+        "drums": 0.9705
+      },
+      "onsets_per_bar": 12.72
+    }
+  ]
+}

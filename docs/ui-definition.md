@@ -180,6 +180,11 @@ unrestricted" above.
 | 2. Texture Novelty | `reference/proposals/texture_novelty.json` | experiment (v3.4 item 6 — failed its kill condition, kept for one review pass) |
 | 3. Phrase Periodicity | `reference/proposals/phrase_periodicity.json` | experiment (v3.4 item 7 — passed its kill condition) |
 | 4. Structural vs Micro | `reference/proposals/structural_vs_micro.json` | experiment (v3.4 item 8 — failed its kill condition, kept for one review pass) |
+| Rhythm Drum IOI | `reference/proposals/rhythm_drum_ioi.json` | experiment (v3.6 item 5/6a — candidate `rhythm.drums` producer, not yet scored) |
+| Rhythm Stem Autocorr | `reference/proposals/rhythm_stem_autocorr.json` | experiment (v3.6 item 5/6b — candidate `rhythm.{drums,bass,harmonic,vocals}` producer, not yet scored) |
+| Rhythm Vocal Onsets | `reference/proposals/rhythm_vocal_onsets.json` | experiment (v3.6 item 5/6c — candidate `rhythm.vocals` producer, `compute` runs only in the ACE-Step sandbox, not yet scored) |
+| Energy Level | `reference/proposals/energy_level.json` | experiment (v3.6 item 5/6 — candidate `energy` producer, not yet scored) |
+| Tension Shape | `reference/proposals/tension_shape.json` | experiment (v3.6 item 5/6 — candidate `tension` producer, not yet scored) |
 | Vocal Phrases, Vocal Transcription | `reference/proposals/vocal_*.json` | experiment |
 | Dense lanes | `essentia/fft_bands.json`, `essentia/fft_bands.bass.json`, `essentia/fft_bands.drums.json`, `essentia/fft_bands.harmonic.json`, `essentia/fft_bands.vocals.json`, `essentia/rms_loudness.json`, `essentia/loudness_envelope.json`, `symbolic_transcription/drum_events.json`, `artifacts/layer_c_energy.json` | four per-stem FFT lanes beside the mix lane; each fails loudly on a missing artifact |
 
