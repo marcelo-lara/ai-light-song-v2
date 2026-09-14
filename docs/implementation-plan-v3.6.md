@@ -66,7 +66,7 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 6 of 12 |
+| Done | 7 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 2, 8, 9, 10 |
@@ -226,14 +226,14 @@ the experiment name.
 
 Refinement item 3: its table, keep-by-default rule and ACE-Step paragraph.
 
-- [ ] Score every row of refinement item 3's table through `truth_common`. ACE-Step: `Queen of Kings` + `_test_song` (onset F1 ±50 ms / ±100 ms, onsets per second per phrase, phrase edges); `Cinderella - Ella Lee` (three-class presence).
-- [ ] For each entry, write a `**Verdict (v3.6):**` line into its `### Status` in `docs/experiments.md`: keep / archive / merge, plus the deciding number per truth song.
-- [ ] Archive = no better than the family's trivial baseline, or contradicted by truth on most truth songs. Write the TLDR into `docs/archive/experiments_discarded.md` and delete the entry. **No energy/tension/rhythm producer is archived while its truth is seed-only.**
-- [ ] `drop_detection`: archive and retire the Drop Proposals lane if `gestures.py` matches or beats it on the drop-stage family. Otherwise give it a queue entry.
+- [x] Score every row of refinement item 3's table through `truth_common`. ACE-Step: `Queen of Kings` + `_test_song` (onset F1 ±50 ms / ±100 ms, onsets per second per phrase, phrase edges); `Cinderella - Ella Lee` (three-class presence).
+- [x] For each entry, write a `**Verdict (v3.6):**` line into its `### Status` in `docs/experiments.md`: keep / archive / merge, plus the deciding number per truth song.
+- [x] Archive = no better than the family's trivial baseline, or contradicted by truth on most truth songs. Write the TLDR into `docs/archive/experiments_discarded.md` and delete the entry. **No energy/tension/rhythm producer is archived while its truth is seed-only.** Archived: `SongFormer` (dropped un-run, third pending cycle), `Texture Novelty` (killed on its own kill condition, best pooled F1 0.29 vs incumbent 0.27), `Structural vs Micro` (killed on its own kill condition, macro-F1 0.38 vs duration-only baseline 0.82). The five item-5 producers all kept (provisional), as required.
+- [x] `drop_detection`: archive and retire the Drop Proposals lane if `gestures.py` matches or beats it on the drop-stage family. Otherwise give it a queue entry. `gestures.py` wins (4/7 @±1.0s at 4.5–10.3 events/min vs drop_detection's 4/7 @±0.5s at precision 0.048) — archived. Code/lane left in place; retirement is item 7's job. Also fixed a stale cross-reference in `docs/experiments.md`'s own "Loose ends" section (an open question this item settles).
 
 **Checks**
-- [ ] Every `## ` experiment entry in `docs/experiments.md` contains `**Verdict (v3.6):**`.
-- [ ] analyzer tests green.
+- [x] Every `## ` experiment entry in `docs/experiments.md` contains `**Verdict (v3.6):**` — 14 experiment entries, 14 verdicts (5 meta sections excluded).
+- [x] analyzer tests green (156).
 
 ---
 

@@ -169,6 +169,11 @@ hints, 10 of them inside the 58-second synthetic `_test_song`**. This entry's
 thresholds are being hand-set against an absence of labels, and no amount of
 method work fixes that.
 
+**Verdict (v3.6):** keep — 7/10 non-drop hints covered by a character block;
+the calm-axis ablation is specific where stems alone are not (stems+CLAP 28
+blocks / 241 s / 41% of corpus vs stems-alone 81 blocks / 973 s / 73%, both
+find the reference block). Still blocked on ground truth, not on method.
+
 ### Why? What for?
 
 To see what CLAP can infer *beyond the song arrangement sections*. The
@@ -282,6 +287,11 @@ observation already in hand.** Not yet run as an experiment in its own right.
 Ranked ahead of every other open entry on cost alone: **no new model, no new
 image, no GPU, no new published file.**
 
+**Verdict (v3.6):** keep, unrun — genuinely un-run, no fabricated score. The
+`Armin` observational finding (`break` 30% of the posterior across
+143.4–175.0 s, unrepresented in `sections.json`; per-section entropy 0.78)
+is what justifies opening the entry, not a measurement.
+
 ### Why? What for?
 
 `segmentation.py` ships an argmax over allin1's ten-label frame posterior,
@@ -373,6 +383,18 @@ positive measured result blocked on something buildable rather than on ground
 truth. Its blocker — a forced aligner — is the *same* sandbox image that the
 vocal-phrase entry's unbuilt Part B needs. One image build unblocks both; see
 [Loose ends](#loose-ends).
+
+**Verdict (v3.6):** keep — item 3's whisper_baseline word-onset timing IS
+ACE-Step's onset score (it emits no seconds of its own). Rhythm (vs trusted
+word-onset truth): `Queen of Kings` F1 0.14/0.26 @50/100ms (97 pred / 257
+truth onsets), phrase-edge F1 0.35; `_test_song` F1 0.09/0.38 (23/24),
+phrase-edge F1 0.55 — weak, and adds nothing beyond whisper_baseline for
+rhythm. Presence (`Cinderella`, circularity-restricted to `false_vocal_rate`
+only): 0.2224 — far worse than `arrangement_state` (0.0035) and
+`vocal_voiceness` (0.0106), near the `mix_rms_baseline` floor (0.2568). Its
+unique value stays lyrics + named structure-sequence (WER 0.23 vs baseline's
+0.32 on `Titanium`); `Queen of Kings` whisper_baseline cache computed fresh
+for this rescore (CPU faster-whisper, not the 8.9B ACE-Step model).
 
 ### Why? What for?
 
@@ -531,6 +553,15 @@ decision path is:
 
 Only if the standalone detector wins that comparison is the budget-matched
 ablation against mix-RMS worth running.
+
+**Verdict (v3.6):** keep — the decision path resolves against archiving.
+Rescored against the current 104-boundary hint set (4 gold songs):
+`vocal_phrases` recalls 34/104 @±0.1s, 59/104 @±0.25s, 84/104 @±0.5s (44.9
+bounds/min) vs the shipped `arrangement_state` vocal edges at 9/104, 15/104,
+25/104 (6.9 bounds/min) — the standalone detector wins clearly at every
+tolerance, so `arrangement_state` does not match or beat it. The
+budget-matched mix-RMS ablation the decision path asks for next is still
+unrun.
 
 ### Why? What for?
 
@@ -691,191 +722,6 @@ baseline, and Part B, which is also the ACE-Step entry's blocker.
 
 ---
 
-## SongFormer — the current structure SOTA, measured against our own allin1 result
-
-<https://github.com/ASLP-lab/SongFormer>
-
-### Status
-
-**[PENDING] — the only pending entry still carried.** The two siblings it was
-queued alongside were archived un-run on 2026-09-06: section identity (reopens a
-closed negative) and Music Flamingo (non-commercial licence, so a positive
-result could not ship). This one is kept because **structure is the weakest
-interpreted layer in the pipeline** — `segmentation.py` measures F1 0.67 — and
-SongFormer attacks exactly that.
-
-**Still not executed, and unchanged in scope.** Its `requirements.txt` pins
-`torch==2.4.0` alongside `muq==0.1.0` and some fifty other dependencies, and the
-project's own runtime figure is 2–4 s/song on an NVIDIA L40 against this box's
-4 GB GTX 1650 — a new multi-GB sandbox image on the
-`experiments/acestep_transcriber` pattern, not a side task. Carrying it means
-accepting that image build; if that is not going to happen, archive it rather
-than leaving it pending a third time.
-
-### Why? What for?
-
-`allin1` is the best structural read this repository has measured — 4/7 impacts
-at ±1.0 s on 1.6 boundaries/min, against an incumbent that loses to evenly
-spaced guesses — and it is sitting unpromoted. SongFormer (ASLP-lab, 2025) is a
-multi-resolution self-supervised structure analyser that reports **HR.5F 0.703
-and ACC 0.807 on SongFormBench-HarmonixSet against All-In-One's 0.596** and
-LinkSeg's 0.630, on the same Harmonix vocabulary this project already targets.
-It ships checkpoints, one-click inference, and full training and evaluation
-code.
-
-If that margin survives contact with our four gold songs, promoting allin1 would
-be promoting the second-best available model into a pipeline whose whole
-structural read hangs off it. If it does not survive, that is itself the finding
-that clears allin1 for promotion — a negative result with real value.
-
-Worth a look in the same run: [EDMFormer](https://github.com/25ohms/EDMFormer),
-a SongFormer fork adapted for EDM specifically. This corpus is EDM-heavy and the
-one song `allin1` degenerates on is the synthetic excerpt; a genre-matched fork
-is cheap to try once the harness exists.
-
-### Experiment Plan
-
-Build as `experiments/songformer/`, **mirroring `experiments/allin1/`'s file
-layout exactly** — `model.py` (runs in its own sandbox image and caches raw
-output per song, cache committed so the numbers reproduce without a GPU),
-`features.py`, `export.py`, `score.py`, `run_in_container.sh`. Reusing that
-shape is the point: the two models must be scored by the same code.
-
-- **Reproducibility first.** `allin1`'s "degenerates on instrumental trance"
-  finding turned out to be unseeded demucs, not the model — it disagreed with
-  itself on 14 of 21 songs. Determine whether SongFormer demixes internally; if
-  it does, seed it with the pipeline's stems as we did for allin1. If it cannot
-  be seeded, run each gold song 3× and **report the disagreement rate before
-  reporting any accuracy number.**
-- **Do not use its beat or bar grid.** Same rule as allin1: take the structure,
-  keep essentia's grid.
-- **Degeneracy check** carried over from allin1 — a song that collapses to one
-  or two distinct labels is `unknown`, not a confident wrong name.
-- Export `reference/proposals/songformer.json`; **SongFormer Sections** lane
-  placed directly beside **allin1 Sections** so the two segmentations can be
-  A/B'd against the waveform, and **SongFormer Transitions** beside allin1's.
-
-**Measurement — fixed before the run.**
-
-Reuse `experiments/allin1/score.py` verbatim so the table is directly
-comparable:
-
-| method | ±0.5 s | ±1.0 s | ±2.0 s | boundaries/min |
-| --- | --- | --- | --- | --- |
-| SongFormer transitions | | | | |
-| allin1 transitions (incumbent for this comparison) | 3/7 | 4/7 | 4/7 | 1.6 |
-| shipped `sections.json` | 0/7 | 0/7 | 1/7 | 3.6 |
-| evenly spaced grid, same budget (baseline) | 0/7 | 2/7 | 3/7 | 3.6 |
-
-Plus: label-sequence agreement with allin1 per song; distinct-label count per
-song across all 21; 3-run reproducibility; and — because 7 hand-clicked impacts
-**cannot** score a named segmentation, as the allin1 entry says outright — the
-full label sequence written out per song for the operator to audition by ear.
-Where the two models disagree on a boundary, that disagreement is the shortlist
-of places worth hand-labelling next.
-
-**Reach test — which projected file this lands in.**
-
-The top-level `sections.json` and `artifacts/section_segmentation/sections.json`
-— the highest-priority projected files. A promotion here deletes
-`src/analyzer/stages/sections/`.
-
-### Results evidence
-
-*(to be filled by the run)*
-
-### Conclusion
-
-*(to be filled by the run)*
-
----
-
-## Texture Novelty — self-similarity novelty over spectral features
-
-*(no external model — classical cosine SSM + Foote checkerboard novelty)*
-
-### Status
-
-**[CLOSED — FAILED kill condition, kill candidate].** v3.4 item 6. Built as
-[`../experiments/texture_novelty/`](../experiments/texture_novelty/README.md).
-The debugger lane exists — **`2. Texture Novelty`**, under Human Hints, flask
-badge, reads `reference/proposals/texture_novelty.json` — kept for **one
-operator review pass**, then removed by Recipe B if the operator agrees. Do not
-tune to manufacture a pass.
-
-### Why? What for?
-
-`sections.json` has no boundary at the `Queen of Kings` 48.7 s drop, and its
-boundary F1 vs operator hints is weak corpus-wide. The refinement doc (item 2)
-measured that self-similarity novelty over the 7 FFT bands has recall 0.80–1.00
-against operator hints on every gold song but precision 0.05–0.50 (64–114 fires
-per song). Question: does a *feature choice* keep the recall and lift precision
-above 0.5 — beating `sections.json` and `arrangement_state.json`?
-
-### Experiment Plan
-
-Method held fixed: cosine self-similarity matrix → Foote checkerboard novelty
-kernel, 1.0 s half-window → peak-pick (`mean + 1·std`, ≥ 2.0 s apart). Only the
-feature changes. Feature sets, tried IN ORDER: (1) raw 7-band mix vector from
-`fft_bands.json` — the measured baseline; (2) librosa chroma on the **mix**
-(never the harmonic-stem `hpcp.json`) concatenated with the mix's
-percussive-band weight; (3) per-stem band weight, 28-dim, from
-`fft_bands.<stem>.json` (item 1). Cheap baselines: mix-RMS delta, MFCC novelty.
-Metric: boundary F1 @ ±1.0 s vs `human_hints.json` block edges on the four gold
-songs.
-
-### Results evidence
-
-Full tables: [`../experiments/texture_novelty/out/score.txt`](../experiments/texture_novelty/out/score.txt),
-reproduced by `run score`. **Rescored 2026-09-13 on the v3.5 corpus rebuild**
-— 54 pooled human-hint block edges (was 48; `Armin` gained 6 marked edges).
-
-**Pooled (4 gold songs), boundary F1 @ ±1.0 s:**
-
-| method | P | R | F1 |
-| --- | --- | --- | --- |
-| feat 1 — raw 7-band MIX vector | 0.17 | 0.24 | 0.20 |
-| feat 2 — chroma(MIX) + percussive weight | 0.14 | 0.24 | 0.18 |
-| feat 3 — per-stem band weight (28-dim) | 0.24 | 0.37 | 0.29 |
-| baseline — mix-RMS delta | 0.16 | 0.41 | 0.23 |
-| baseline — MFCC novelty | 0.25 | 0.39 | 0.30 |
-| incumbent — `sections.json` | 0.39 | 0.20 | 0.27 |
-| incumbent — `arrangement_state.json` | 0.14 | 0.41 | 0.21 |
-
-**Per-song F1 (the three feature sets vs incumbents):**
-
-| song | feat 1 | feat 2 | feat 3 | `sections.json` | `arrangement_state` |
-| --- | --- | --- | --- | --- | --- |
-| `_test_song` | 0.44 | 0.29 | 0.64 | 0.22 | 0.52 |
-| `Titanium` | 0.06 | 0.00 | 0.15 | 0.24 | 0.07 |
-| `Hideaway` | 0.09 | 0.11 | 0.11 | 0.31 | 0.11 |
-| `Armin` | 0.32 | 0.39 | 0.39 | 0.31 | 0.27 |
-
-**Kill condition (precision > 0.5 at recall ≥ 0.8): FAIL for every feature set**,
-pooled and per song. Best pooled precision is feat 3 at 0.24. The one strong
-cell — feat 3 on the synthetic `_test_song` (P 0.88 / R 0.50) — does not
-generalise (F1 0.11–0.39 on the three real songs). Loosening the peak-picker
-back toward the refinement doc's dense regime trades precision down toward 0.05
-as recall rises — the refinement doc's own finding, reconfirmed. On the two real
-vocal-pop songs `sections.json` is the best method in the table.
-
-### Conclusion
-
-Killed on the metric. The failure is structural: the texture-change signal is
-real everywhere, which is exactly why precision cannot rise — it changes at
-non-boundaries just as often. This reconfirms the refinement doc's measurement
-rather than overturning it. Lane kept for one review pass.
-
-Two follow-ups were measured and **also failed** — per-stem novelty as four
-separate curves (every stem scores below the fused feat 3; cross-stem agreement
-at ≥ 3 stems fires 2.8×/song at F1 0.03, so the peaks do not co-occur) and
-symbolic drum loop-lock from `drum_events.json` (25–32 state flips per song,
-gold F1 ≤ 0.10 vs `sections.json` 0.30). Six methods now share one failure: the
-base rate, not the feature. Tables in the experiment README before re-proposing
-either.
-
----
-
 ## Phrase Periodicity — bar-sequence autocorrelation of per-stem energy shape
 
 *(no external model or repo — classical bar-sequence autocorrelation, numpy)*
@@ -887,6 +733,12 @@ either.
 Nothing in `src/` reads anything here. The debugger lane exists —
 **`3. Phrase Periodicity`**, under Human Hints, flask badge, reads
 `reference/proposals/phrase_periodicity.json`.
+
+**Verdict (v3.6):** keep — passed its kill condition. Bass z-norm prominence
+separates the two known-8-bar songs (`Chimera - Hana` +0.158, `Hideaway -
+Kiesza` +0.125) from the rest (max +0.075, `Armin`); the raw-envelope
+ablation finds no phrase anywhere (≤ +0.03). No top-level file, kept as a
+proposal lane.
 
 ### Why? What for?
 
@@ -966,92 +818,6 @@ Hints.
 
 ---
 
-## Structural vs Micro — 4-bar phrase-grid fit of the operator's block edges
-
-*(no external model or repo — classical 4-bar phrase-grid fit, numpy)*
-
-### Status
-
-**[CLOSED — FAILED kill condition, kill candidate].** v3.4 item 8. Built as
-[`../experiments/structural_vs_micro/`](../experiments/structural_vs_micro/README.md).
-The debugger lane exists — **`4. Structural vs Micro`**, under Human Hints, flask
-badge, reads `reference/proposals/structural_vs_micro.json`; `micro` blocks carry
-a distinct per-block tint. Kept for **one operator review pass**, then removed by
-Recipe B if the operator agrees. **Do not tune to manufacture a pass.**
-
-**This is NOT a precision filter for item 6 (Texture Novelty).** Averaged over
-all operator edges the phrase-grid prior beats chance by only ~1.7–2.25×
-(refinement doc item 4; the 2026-09-13 rebuild measured 0.00–6.67× per song,
-mean 2.31×, down from 1.67–6.77× / 3.80×). It is a **two-class split the pipeline
-currently cannot express**: a structural boundary that lands on the phrase grid
-vs a micro cue that lives inside a phrase. **Do not re-open** `vocal_phrases`,
-`grid_consensus` or `reactive_bands` — measured, none promoted, out of scope.
-
-### Why? What for?
-
-The operator marks both structural section edges and sub-bar micro-cues (a
-pre-drop, a near-silence, a 'hey', the tension/impact/release gesture phases) in
-one `human_hints.json`, and nothing downstream tells the two apart. Question:
-
-> Does a 4-bar phrase-grid fit label operator blocks `structural` vs `micro`
-> better than block duration alone?
-
-### Experiment Plan
-
-Method held fixed, not swept. Bar length = median downbeat spacing
-(`beats.json`). Boundary set = union of items 6 + 7 proposal-block edges (the
-"combination" of the two parent lanes), merged within 0.5 s. A 4-bar phrase grid
-is fit by sweeping the phase offset to minimise the median edge-to-line distance
-over that set. Each operator block → `kind` (`structural` if the better-locking
-edge is ≤ 0.12 bars from a grid line, else `micro`) + `grid_fit_bars`. Cheap
-baseline: block duration alone (`< 1 bar ⇒ micro`). Operator-truth `kind` from a
-hand-checked title-keyword map with a duration fallback (`truth.py`). Metric:
-per-class P/R/F1 + accuracy, pooled over the four gold songs. `Queen of Kings`
-reported separately (the edge-lock table).
-
-### Results evidence
-
-Full tables: [`../experiments/structural_vs_micro/out/score.txt`](../experiments/structural_vs_micro/out/score.txt),
-reproduced by `run score`. **Rescored 2026-09-13 on the v3.5 corpus rebuild** —
-52 pooled operator blocks (29 structural / 23 micro; was 45, `Armin` re-marked).
-
-**Block-kind agreement — pooled, 4 gold songs:**
-
-| method | acc | macro-F1 | structural P/R/F1 | micro P/R/F1 |
-| --- | --- | --- | --- | --- |
-| phrase-grid (4-bar fit) | 0.38 | **0.38** | 0.41 / 0.24 / 0.30 | 0.37 / 0.57 / 0.45 |
-| duration-only (`< 1 bar ⇒ micro`) | 0.83 | **0.82** | 0.81 / 0.90 / 0.85 | 0.85 / 0.74 / 0.79 |
-
-Per-song phrase-grid accuracy: `_test_song` 0.27, `Titanium` 0.47, `Hideaway`
-0.40, `Armin` 0.41 (was 0.60) — the baseline is 0.80, 0.80, 0.80, 0.88.
-
-**`Queen of Kings` — 0 of 16 operator edges lock to the fitted 4-bar grid on the
-rebuild (was 7 of 16).** `bar_len` 1.910 s and `phrase_len` 7.640 s are
-unchanged; the fitted grid **phase moved 0.898 s → 1.948 s** (≈ 0.55 bar), so
-the six edges the refinement doc names (1.11, 16.32, 23.94, 31.57, 39.21,
-62.16 s), which previously locked at 0.06–0.11 bars, now sit 0.44–0.49 bars off.
-The phase is fit to the union of the rebuilt `texture_novelty` +
-`phrase_periodicity` proposal edges, so the regression came from those inputs,
-not from this method's code. **Unexplained — not investigated further, and the
-refinement doc's edge-lock finding no longer reproduces from this pipeline.**
-
-**Kill condition — FAIL.** phrase-grid pooled macro-F1 0.376 < duration-only
-0.822. The distinction is real on `Queen of Kings`, but on the gold corpus the
-operator's block *lengths* already carry it — a micro-event is short, and that is
-enough. The phrase grid adds a weak prior that, pooled, hurts more than it helps.
-
-### Conclusion
-
-Killed on the metric. The 4-bar phrase-grid fit does not beat block duration at
-labelling operator blocks `structural`/`micro` (macro-F1 0.38 vs 0.82). What
-survives review: `grid_fit_bars` is an honest per-edge signal. The
-`Queen of Kings` edge-lock table reproduced the refinement doc's finding before
-the rebuild and does not after it (7/16 → 0/16) — a grid phase fit off detector
-edges is not stable across recomputes. Neither is promotable on this result. Lane kept for one review pass; **not
-tuned**.
-
----
-
 ## Demucs variant ablation — `htdemucs` vs `htdemucs_ft` vs `htdemucs_6s`
 
 *(no external model beyond the three Demucs checkpoints already used by `stems.py` — https://github.com/facebookresearch/demucs)*
@@ -1067,6 +833,14 @@ harness for system memory pressure, and the run was not retried per this
 item's time budget. `_test_song`, `ayuni` and `Titanium - David Guetta ft Sia`
 completed all three variants. `src/analyzer/stages/stems.py` and
 `DEMUCS_MODEL_NAME` are untouched — still pinned to `htdemucs`.
+
+**Verdict (v3.6):** keep — no kill condition, no clear winner, incomplete
+(3/5 scoring-corpus songs). `voiced_duration_fraction`: `htdemucs_6s` beats
+`htdemucs` by +1.8 pt on `ayuni` (0.510 vs 0.492) and +1.0 pt on `Titanium`
+(0.787 vs 0.777), loses by 1.3 pt on `_test_song` (0.637 vs 0.628) — a
+measured recommendation, not a re-pin decision. `Hideaway`/`Armin` unmeasured
+(harness killed for memory pressure); not rerun here (heavy multi-variant
+Demucs separation, out of this item's scope).
 
 ### Why? What for?
 
@@ -1186,6 +960,14 @@ against span-level ground truth while being correct at its own scale — the
 frame-level presence metric that first condemned this entry was measuring
 granularity, not error.
 
+**Verdict (v3.6):** keep — sibilance already promoted (`vocals_phrase[].
+sibilance`, `arrangement_state.json`). Separability AUC: sibilance
+0.990/0.959/0.813 (`_test_song`/`ayuni`/`Queen of Kings`) vs vibrato
+0.700/0.815/0.656 and portamento 0.718/0.800/0.650 — the two unpromoted cues
+stay weak. Frame-level presence trails `whisperx_vad` on every song measured
+(`_test_song` 0.707, `ayuni` 0.788, `Queen of Kings` 0.629 balanced acc.).
+Entry stays open for the sibilance rework the finding calls for.
+
 ### Why? What for?
 
 Can pitch-contour + spectral cues (vibrato width, portamento glide, sibilance
@@ -1286,6 +1068,13 @@ highest-cost candidate in the false-vocal family)*
 debugger lane `6. SVD Tagger` (both stem/mix channels as two curves in one
 lane, never a toggle).
 
+**Verdict (v3.6):** keep, not promotable — mixed against the family's
+trivial `mix_rms_baseline`, not a clean fail. Best rescale (`_p98`) frame_acc:
+`ayuni` 0.8538 beats `mix_rms_baseline` 0.3263; `Cinderella` 0.5125 loses to
+`mix_rms_baseline` 0.6946 — split 1-1, not "contradicted on most truth
+songs". Trails the `whisperx_vad` incumbent by a wide margin on both
+(0.9881/0.8614) at high fixed cost (327 MB pin, own sandbox image).
+
 ### Cost, up front
 
 The only item 4-7 candidate needing both a new sandbox image (torch 2.4 CPU
@@ -1378,6 +1167,13 @@ as
 Debugger lane `Voice Multiplicity` wired in. `out/score.txt` is 23 lines of
 "no `voices` labels" — only `Queen of Kings - Alessandra` has hand-marked
 lead-vs-chorus spans, and they live in hint prose, not yet in a `voices` field.
+
+**Verdict (v3.6):** keep — still corpus-wide unscoreable (`grep` for a
+`voices` field across every `reference/human/human_hints.json`: zero songs),
+confirmed unchanged. The one scored song stays strongly positive: AUC 0.951
+on `Queen of Kings`, adversarial control passed (`Underworld - Born Slippy`
+one-take vocal → 2.4 s of false "stacked", not a failure). Not archivable —
+data-starved, not contradicted.
 
 ### Why? What for?
 
@@ -1643,6 +1439,10 @@ Moises rows are a comparison baseline and never a label: `'let'` spans
 Debugger lane: **`Rhythm Drum IOI`**, flask badge, reads
 `reference/proposals/rhythm_drum_ioi.json`.
 
+**Verdict (v3.6):** keep (provisional) — never archived while truth is
+seed-only. Corpus `drums` exact-match 0.6415 (34/53) against
+`segments.seed.json`.
+
 ### Why? What for?
 
 Candidate producer for `sections.json`'s new `rhythm.drums` field — one of
@@ -1688,6 +1488,11 @@ method, so this is a self-consistency check, not independent validation; item
 [`../experiments/rhythm_stem_autocorr/`](../experiments/rhythm_stem_autocorr/README.md).
 Debugger lane: **`Rhythm Stem Autocorr`**, flask badge, reads
 `reference/proposals/rhythm_stem_autocorr.json`.
+
+**Verdict (v3.6):** keep (provisional) — never archived while truth is
+seed-only. Corpus exact-match against `segments.seed.json`: `bass` 1.0000,
+`harmonic` 1.0000, `vocals` 0.9811, `drums` 0.1698 (weaker than
+`rhythm_drum_ioi`'s 0.6415 on the same field).
 
 ### Why? What for?
 
@@ -1736,6 +1541,10 @@ Debugger lane: **`Rhythm Vocal Onsets`**, flask badge, reads
 ACE-Step sandbox image, never the normal queue path (same convention as
 `svd_tagger`) — see the experiment README.
 
+**Verdict (v3.6):** keep (provisional) — never archived while truth is
+seed-only. Corpus `vocals` exact-match 0.0377 (2/53) against
+`segments.seed.json`, the weakest of the three rhythm producers.
+
 ### Why? What for?
 
 Candidate producer for `sections.json`'s `rhythm.vocals` field, from actual
@@ -1779,6 +1588,10 @@ the "no producer archived while truth is seed-only" rule.
 Debugger lane: **`Energy Level`**, flask badge, reads
 `reference/proposals/energy_level.json`.
 
+**Verdict (v3.6):** keep (provisional) — never archived while truth is
+seed-only. Corpus `energy` exact-match: seed 0.9811 (52/53), human 0/2 exact
+(1/2 within-1).
+
 ### Why? What for?
 
 Candidate producer for `sections.json`'s new `energy` field, alongside a CLAP
@@ -1820,6 +1633,10 @@ item 6's rule).
 [`../experiments/tension_shape/`](../experiments/tension_shape/README.md).
 Debugger lane: **`Tension Shape`**, flask badge, reads
 `reference/proposals/tension_shape.json`.
+
+**Verdict (v3.6):** keep (provisional) — never archived while truth is
+seed-only. Corpus `tension` exact-match: seed 0.7547 (40/53, best of the
+five candidates), human 0.5000 (1/2) exact, 1.0000 (2/2) within-1.
 
 ### Why? What for?
 
@@ -1894,16 +1711,14 @@ The remaining `reference/proposals/` lanes are all wanted:
 | --- | --- |
 | `vocal_transcription` | VocalParse archived, but **keep** — shared with the open ACE-Step entry |
 | `character`, `vocal_phrases` | entries still open — keep |
-| `drop_impacts` | see below |
+| `drop_impacts` | **resolved v3.6 item 3** — archived, see below |
 
-### `drop_impacts` may be an orphan lane
+### `drop_impacts` orphan lane — resolved
 
-The **Drop Proposals** lane is cited in this file as *the pattern to copy* for
-experiment lanes, and `experiments/drop_detection/` is still in the tree and
-still read as a cache by other experiments. But `drop_detection` has no entry of
-its own in either archive file — the closest is
-"Transition-FX and gesture phases", promoted as `gestures.py`. Either the lane
-belongs to that promotion and should have been retired with it, or
-`drop_detection` was never given a queue entry at all. Worth settling before the
-next lane sweep; it is the one place where the record of what was run is
-genuinely unclear.
+**Settled 2026-09-14 (v3.6 item 3 rescore).** `experiments/drop_detection/`
+never had a queue entry, and its candidate proposals lose to the shipped
+`gestures.py` stage on the drop-stage family (see
+`docs/archive/experiments_discarded.md` "Drop Proposals (`drop_detection`)").
+Archived. The lane and the on-disk `experiments/drop_detection/` cache stay
+until item 7 ("Delete what nothing reads") retires them — this entry only
+settles the verdict, not the deletion.

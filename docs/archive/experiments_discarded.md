@@ -23,6 +23,10 @@ Still open: [`../experiments.md`](../experiments.md).
 | Section identity embedding | dropped un-run | reopens a closed negative; 0.73 is the bar |
 | Music Flamingo | dropped un-run | non-commercial licence blocks promotion |
 | Singer Identity | ran, negative | singer count **4/9** on declared songs; voiceness below whisperX on `Cinderella` |
+| SongFormer | dropped un-run | third pending cycle, own stated rule; needs a new multi-GB sandbox image not built |
+| Texture Novelty | ran, negative | kill condition (P>0.5 @ R≥0.8) FAIL every feature set; best pooled F1 0.29 vs `sections.json` 0.27 |
+| Structural vs Micro | ran, negative | phrase-grid macro-F1 **0.38** vs duration-only baseline **0.82** |
+| Drop Proposals (`drop_detection`) | ran, negative | `gestures.py` **4/7 @±1.0s** at 4.5-10.3 events/min beats candidate proposals' 4/7 @±0.5s at precision 0.048 (84 fires for 7 true) |
 
 ---
 
@@ -282,3 +286,53 @@ change points fell at 12.6 s and 14.1 s.
 **Voiceness also failed its own kill condition** (frame_acc / false_vocal
 rate vs whisperX): `ayuni` 0.8905 / 0.0160 vs **0.9881 / 0.0056**;
 `Cinderella - Ella Lee` 0.5918 / 0.0925 vs **0.8134 / 0.0510**.
+
+---
+
+## SongFormer — structure SOTA, never run
+
+**Archived** 2026-09-14 — dropped un-run, v3.6 item 3 rescore. Carried
+"[PENDING]" through three release cycles waiting on a new multi-GB sandbox
+image (`torch==2.4.0` + `muq==0.1.0`, ~50 deps, no local GPU path). The
+entry's own Status said as much: *"if that is not going to happen, archive it
+rather than leaving it pending a third time."* This is the third time; no
+image was built. `allin1`'s SongFormBench margin (HR.5F 0.703 vs 0.596) was
+never tested against this corpus.
+
+## Texture Novelty — self-similarity novelty over spectral features
+
+**Archived** 2026-09-14 — ran, measured, negative. v3.4 item 6, killed on its
+own kill condition (precision > 0.5 at recall ≥ 0.8): **FAIL for every
+feature set**, pooled and per song. Best pooled F1 0.29 (per-stem 28-dim
+band weight) against incumbents `sections.json` 0.27 / `arrangement_state`
+0.21 — no feature choice lifted precision, confirming the refinement doc's
+finding that the texture-change signal fires at non-boundaries as often as
+at them. Two follow-ups (per-stem novelty, symbolic drum loop-lock) also
+failed. Full tables: `experiments/texture_novelty/README.md`.
+
+## Structural vs Micro — 4-bar phrase-grid fit of operator block edges
+
+**Archived** 2026-09-14 — ran, measured, negative. v3.4 item 8, killed on its
+own kill condition: phrase-grid pooled macro-F1 **0.38** vs the
+duration-only baseline (`< 1 bar ⇒ micro`) **0.82**. The `structural`/`micro`
+distinction is real, but block *duration* alone already carries it on the
+gold corpus; the phrase-grid prior adds a weak signal that pooled hurts more
+than it helps. `Queen of Kings`' edge-lock finding (7/16) did not reproduce
+after the v3.5 corpus rebuild (0/16) — unexplained, not investigated
+further. Full tables: `experiments/structural_vs_micro/README.md`.
+
+## Drop Proposals (`drop_detection`) — hand-built role-change detector
+
+**Archived** 2026-09-14 — ran, measured, negative. v3.6 item 3 settles the
+orphan lane (`experiments/drop_detection/` was never given its own queue
+entry — see `experiments.md` "Loose ends"). Its stage-1 candidate proposals
+score **4/7 @±0.5s** (tighter tolerance than gestures.py's own ±1.0s) but at
+precision 0.048 — 84 predictions across 4 songs for 7 true impacts. The
+shipped `gestures.py` stage matches its recall at a *looser* tolerance for a
+fraction of the false-positive rate: **4/7 @±1.0s at 4.5-10.3 events/min**
+(all event types) against drop_detection's ~20+ candidates/song. `gestures.py`
+beats it outright; the model survey in this directory's own README already
+recommended `allin1`/MERT over the hand-built detector. `experiments/
+drop_detection/` stays in the tree as a cache other experiments still read
+(item 7 decides its fate); code and the `drop_impacts` lane are untouched
+here.
