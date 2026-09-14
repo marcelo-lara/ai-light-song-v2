@@ -11,10 +11,24 @@ because a fixture containing those would hide an exposure violation instead of
 exposing it. They describe a deliberately short 24 s song so the dense files
 stay small.
 
+v3.6 item 9 rebuilt every fixture to the item-8 top-level schema (see
+docs/reference/artifacts.md): `beats.json` drops `chord`; `sections.json` drops
+`label`/`description`/`chord_progression`; `hints.json` is a flat `hints[]`
+(no `sections[]` wrapper, every row human by construction); `genre.json` drops
+`top_predictions`/`guidance`; `drum_events.json` collapses per-event
+`confidence` to one file-level `confidence`/`confidence_reason` pair;
+`loudness.json` flattens `interval_ms`/`source_order` out of a `metadata`
+wrapper and drops `sources[]`; `song_event_timeline.json` drops
+`section_name`/`summary`/`evidence_summary`/`generated_from`.
+`arrangement_state.json` is now a required top-level file (no more pre-v3.2
+degraded/absent path) — every fixture carries it.
+
     McpFull - Fixture        fully populated baseline (the primary target)
     McpDegenerate - Fixture  honest-uncertainty path: function_status "unknown"
                              on every section, every beat confidence null
     McpPartial - Fixture     a required top-level file (sections.json) absent
+                             — every other required file is present, per
+                             loaders.REQUIRED_TOP_LEVEL_FILES
 """
 
 from __future__ import annotations
@@ -46,7 +60,6 @@ BEATS_FIELD_SOURCES = {
     "time": "essentia",
     "beat": "essentia",
     "bar": "essentia",
-    "chord": "harmonic",
     "type": "essentia",
     "downbeat_confidence": "allin1",
 }
@@ -55,11 +68,8 @@ SECTIONS_FIELD_SOURCES = {
     "section_id": "allin1",
     "start": "allin1",
     "end": "allin1",
-    "label": "human",
-    "description": "human",
     "confidence": "allin1",
     "key": "harmonic",
-    "chord_progression": "harmonic",
     "function": "allin1",
     "function_confidence": "allin1",
     "function_status": "allin1",
@@ -83,7 +93,6 @@ def beats(*, all_confidence_null: bool) -> dict:
                 "time": _round(i * BEAT_S, 3),
                 "beat": beat_in_bar + 1,
                 "bar": i // BEATS_PER_BAR + 1,
-                "chord": "C" if (i // BEATS_PER_BAR) % 2 == 0 else "G",
                 "type": "downbeat" if is_downbeat else "beat",
                 "downbeat_confidence": confidence,
             }
@@ -93,41 +102,33 @@ def beats(*, all_confidence_null: bool) -> dict:
 
 def sections(*, degenerate: bool) -> dict:
     spec = [
-        ("section-001", 0.0, 8.0, "intro", "verse", None,
-         "The 1st intro, 8.0s long."),
-        ("section-002", 8.0, 16.0, "verse", "chorus", None,
-         "The 1st verse, 8.0s long."),
-        ("section-003", 16.0, 24.0, "chorus", "outro", None,
-         "The 1st chorus, 8.0s long."),
+        ("section-001", 0.0, 8.0, "intro", None),
+        ("section-002", 8.0, 16.0, "verse", None),
+        ("section-003", 16.0, 24.0, "chorus", None),
     ]
     rows: list[dict] = []
-    for idx, (sid, start, end, function, _next, same_label_as, desc) in enumerate(spec):
+    for idx, (sid, start, end, function, same_label_as) in enumerate(spec):
         if degenerate:
             function_value = None
             function_confidence = None
             function_status = "unknown"
-            label = f"{idx + 1:03d} Unknown"
             confidence = None
         else:
             function_value = function
             function_confidence = _round(0.6 + 0.1 * idx, 3)
             function_status = "known"
-            label = f"{idx + 1:03d} {function.capitalize()} ({function_confidence:.2f})"
             confidence = _round(0.55 + 0.1 * idx, 3)
         rows.append(
             {
                 "section_id": sid,
                 "start": start,
                 "end": end,
-                "label": label,
-                "description": desc,
                 "function": function_value,
                 "function_confidence": function_confidence,
                 "function_status": function_status,
                 "same_label_as": same_label_as,
                 "confidence": confidence,
                 "key": "C major",
-                "chord_progression": None,
             }
         )
     return {"field_sources": SECTIONS_FIELD_SOURCES, "sections": rows}
@@ -143,16 +144,23 @@ def _phase_event(gesture_id: str, phase: str, start: float, end: float,
         "confidence": 0.8,
         "intensity": _round(intensity, 3),
         "section_id": section_id,
-        "section_name": "verse",
-        "provenance": "machine-only",
-        "summary": f"The {phase} phase of {gesture_id}.",
     }
+
+
+TIMELINE_FIELD_SOURCES = {
+    "type": "gestures",
+    "start_time": "gestures",
+    "end_time": "gestures",
+    "confidence": "gestures",
+    "intensity": "gestures",
+    "gesture_id": "gestures",
+    "section_id": "allin1",
+}
 
 
 def timeline(song_name: str, *, degenerate: bool) -> dict:
     if degenerate:
         events: list[dict] = []
-        gesture_count = 0
     else:
         # One complete gesture: approach -> build -> tension -> impact -> release.
         g = "gesture-001"
@@ -168,71 +176,45 @@ def timeline(song_name: str, *, degenerate: bool) -> dict:
                 "end_time": 16.0,
                 "confidence": 0.7,
                 "section_id": "section-003",
-                "provenance": "machine-only",
-                "summary": "Transition from verse into chorus.",
             },
         ]
-        gesture_count = 1
     return {
-        "schema_version": "3.0",
+        "schema_version": "3.6",
         "song_name": song_name,
-        "field_sources": {
-            "type": "gestures",
-            "start_time": "gestures",
-            "end_time": "gestures",
-            "confidence": "gestures",
-            "intensity": "gestures",
-            "section_id": "allin1",
-            "section_name": "allin1",
-            "gesture_id": "gestures",
-            "provenance": "gestures",
-            "summary": "gestures",
-            "evidence_summary": "gestures",
-        },
-        "generated_from": {
-            "engine": "mcp regression fixture generator",
-            "gesture_count": gesture_count,
-        },
+        "field_sources": TIMELINE_FIELD_SOURCES,
         "events": events,
     }
 
 
+HINTS_FIELD_SOURCES = {
+    "section_id": "human",
+    "title": "human",
+    "text": "human",
+    "start_time": "human",
+    "end_time": "human",
+    "lighting_hint": "human",
+}
+
+
 def hints(song_name: str, *, degenerate: bool) -> dict:
     if degenerate:
-        section_hints: list[dict] = []
-        user_hint_count = 0
+        rows: list[dict] = []
     else:
-        section_hints = [
+        rows = [
             {
                 "section_id": "section-002",
-                "label": "verse",
-                "start": 8.0,
-                "end": 16.0,
-                "hints": [
-                    {
-                        "id": "section-002-human-hint-001",
-                        "source": "human",
-                        "text": "Vocal - no intense section",
-                        "title": "Breath",
-                        "start_time": 8.5,
-                        "end_time": 15.5,
-                        "lighting_hint": "soft motion of moving heads. parcans slow violet waves.",
-                    }
-                ],
+                "title": "Breath",
+                "text": "Vocal - no intense section",
+                "start_time": 8.5,
+                "end_time": 15.5,
+                "lighting_hint": "soft motion of moving heads. parcans slow violet waves.",
             }
         ]
-        user_hint_count = 1
     return {
-        "schema_version": "3.0",
+        "schema_version": "3.6",
         "song_name": song_name,
-        "field_sources": {"summary": "inference", "sections": "inference"},
-        "generated_from": {"engine": "mcp regression fixture generator"},
-        "summary": {
-            "section_count": 3,
-            "inference_hint_count": 0,
-            "user_hint_count": user_hint_count,
-        },
-        "sections": section_hints,
+        "field_sources": HINTS_FIELD_SOURCES,
+        "hints": rows,
     }
 
 
@@ -250,11 +232,9 @@ def info(song_name: str) -> dict:
 GENRE_FIELD_SOURCES = {
     "genres": "genre",
     "confidence": "genre",
-    "top_predictions": "genre",
-    "guidance": "genre",
 }
 
-DRUM_FIELD_SOURCES = {"time": "omnizart", "event_type": "omnizart", "confidence": "omnizart"}
+DRUM_FIELD_SOURCES = {"time": "omnizart", "event_type": "omnizart"}
 
 LOUDNESS_FIELD_SOURCES = {
     "time": "essentia",
@@ -266,25 +246,18 @@ LOUDNESS_FIELD_SOURCES = {
 def genre(song_name: str, *, degenerate: bool) -> dict:
     if degenerate:
         return {
-            "schema_version": "3.0",
+            "schema_version": "3.6",
             "song_name": song_name,
             "field_sources": GENRE_FIELD_SOURCES,
             "genres": ["unknown"],
             "confidence": 0.11,
-            "top_predictions": [{"label": "unknown", "confidence": 0.11}],
-            "guidance": ["Genre estimate too weak to state — do not corroborate."],
         }
     return {
-        "schema_version": "3.0",
+        "schema_version": "3.6",
         "song_name": song_name,
         "field_sources": GENRE_FIELD_SOURCES,
         "genres": ["house", "dance"],
         "confidence": 0.62,
-        "top_predictions": [
-            {"label": "house", "confidence": 0.62},
-            {"label": "dance", "confidence": 0.21},
-        ],
-        "guidance": ["Four-on-the-floor, steady 120 BPM — drive the grid."],
     }
 
 
@@ -338,11 +311,13 @@ def arrangement_state(song_name: str) -> dict:
         },
     ]
     return {
-        "schema_version": "3.0",
+        "schema_version": "3.6",
         "song_name": song_name,
         "field_sources": ARRANGEMENT_STATE_FIELD_SOURCES,
         "stems": list(ARRANGEMENT_STEMS),
         "blocks": blocks,
+        "vocals_phrase": None,
+        "vocals_sibilance_song_mean": None,
     }
 
 
@@ -364,24 +339,11 @@ def loudness(song_name: str) -> dict:
             }
         )
     return {
-        "schema_version": "3.0",
+        "schema_version": "3.6",
         "song_name": song_name,
         "field_sources": LOUDNESS_FIELD_SOURCES,
-        "metadata": {
-            "sample_rate": 44100,
-            "duration": DURATION_S,
-            "normalization_scope": "per-song-per-source-peak-rms",
-            "source_order": ["mix", "bass", "drums", "harmonic", "vocals"],
-            "interval_ms": interval_ms,
-            "total_frames": n,
-        },
-        "sources": [
-            {"id": "mix", "label": "Mix", "kind": "mix"},
-            {"id": "bass", "label": "Bass", "kind": "stem"},
-            {"id": "drums", "label": "Drums", "kind": "stem"},
-            {"id": "harmonic", "label": "Harmonic", "kind": "stem"},
-            {"id": "vocals", "label": "Vocals", "kind": "stem"},
-        ],
+        "interval_ms": interval_ms,
+        "source_order": ["mix", "bass", "drums", "harmonic", "vocals"],
         "frames": frames,
     }
 
@@ -393,13 +355,13 @@ def drum_events(song_name: str) -> dict:
     kick = snare = 0
     for i in range(n):
         t = _round(i * step, 3)
-        events.append({"time": t, "event_type": "kick", "confidence": None})
+        events.append({"time": t, "event_type": "kick"})
         kick += 1
         if i % 2 == 1:
-            events.append({"time": t, "event_type": "snare", "confidence": None})
+            events.append({"time": t, "event_type": "snare"})
             snare += 1
     return {
-        "schema_version": "3.0",
+        "schema_version": "3.6",
         "song_name": song_name,
         "field_sources": DRUM_FIELD_SOURCES,
         "summary": {
@@ -409,45 +371,49 @@ def drum_events(song_name: str) -> dict:
             "hat_count": 0,
             "unresolved_count": 0,
         },
-        "supported_event_types": ["kick", "snare", "hat", "unresolved"],
+        "supported_event_types": ["kick", "snare", "hat", "crash", "unresolved"],
+        "confidence": None,
+        "confidence_reason": (
+            "omnizart emits no per-hit confidence signal — every event in the "
+            "fixture (as in the full corpus) carries null confidence; stated "
+            "once here rather than repeated on every row"
+        ),
         "events": events,
     }
 
 
-def build_full() -> None:
-    song = "McpFull - Fixture"
+def _write_common(song: str, *, degenerate: bool) -> None:
     _write(song, "info.json", info(song))
-    _write(song, "beats.json", beats(all_confidence_null=False))
-    _write(song, "sections.json", sections(degenerate=False))
-    _write(song, "song_event_timeline.json", timeline(song, degenerate=False))
-    _write(song, "hints.json", hints(song, degenerate=False))
-    _write(song, "genre.json", genre(song, degenerate=False))
+    _write(song, "beats.json", beats(all_confidence_null=degenerate))
+    _write(song, "sections.json", sections(degenerate=degenerate))
+    _write(song, "song_event_timeline.json", timeline(song, degenerate=degenerate))
+    _write(song, "hints.json", hints(song, degenerate=degenerate))
+    _write(song, "genre.json", genre(song, degenerate=degenerate))
     _write(song, "loudness.json", loudness(song))
     _write(song, "drum_events.json", drum_events(song))
-    # Optional file — only the full fixture carries it; its absence on the other
-    # two fixtures exercises the optional-file path in the serializer.
     _write(song, "arrangement_state.json", arrangement_state(song))
 
 
+def build_full() -> None:
+    _write_common("McpFull - Fixture", degenerate=False)
+
+
 def build_degenerate() -> None:
-    song = "McpDegenerate - Fixture"
-    _write(song, "info.json", info(song))
-    _write(song, "beats.json", beats(all_confidence_null=True))
-    _write(song, "sections.json", sections(degenerate=True))
-    _write(song, "song_event_timeline.json", timeline(song, degenerate=True))
-    _write(song, "hints.json", hints(song, degenerate=True))
-    _write(song, "genre.json", genre(song, degenerate=True))
-    _write(song, "loudness.json", loudness(song))
-    _write(song, "drum_events.json", drum_events(song))
+    _write_common("McpDegenerate - Fixture", degenerate=True)
 
 
 def build_partial() -> None:
-    # Required top-level file `sections.json` is deliberately absent.
+    # Required top-level file `sections.json` is deliberately absent; every
+    # other required file (loaders.REQUIRED_TOP_LEVEL_FILES) is present.
     song = "McpPartial - Fixture"
     _write(song, "info.json", info(song))
     _write(song, "beats.json", beats(all_confidence_null=False))
     _write(song, "song_event_timeline.json", timeline(song, degenerate=False))
     _write(song, "hints.json", hints(song, degenerate=False))
+    _write(song, "genre.json", genre(song, degenerate=False))
+    _write(song, "loudness.json", loudness(song))
+    _write(song, "drum_events.json", drum_events(song))
+    _write(song, "arrangement_state.json", arrangement_state(song))
 
 
 def main() -> None:

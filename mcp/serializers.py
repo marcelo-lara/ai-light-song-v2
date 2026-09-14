@@ -20,10 +20,19 @@ obligations" and the MCP regression guide's F2-F4 checks):
   section-pair transition;
 - `field_sources` / `source` are passed through (summarised once per block from
   the file header, never dropped);
-- the optional `arrangement_state.json` is surfaced when present and omitted
-  when absent — a leading block's `null` `margin_db` / `confidence` pass through
-  untouched, never filled in;
-- no full beat list ever leaves this module.
+- `arrangement_state.json` is one of the 9 required top-level files (v3.6 item
+  9 dropped its old pre-v3.2 degraded path) — its block is always present; a
+  leading block's `null` `margin_db` / `confidence` pass through untouched,
+  never filled in;
+- `drum_events.json`'s single file-level `confidence`/`confidence_reason` pair
+  is surfaced once per block, never repeated (null) on every row;
+- no full beat list ever leaves `get_song_overview`; `get_detail`'s structural
+  view carries an explicit, undecimated `beats` block instead — see below.
+
+No backwards compatibility: every one of the 9 required top-level files is
+assumed present once `resolve_song_dir` has validated the song, and this module
+reads their fields directly. A shape that does not match is a bug to surface
+loudly (`KeyError`/`TypeError`), never a silent `.get(..., default)`.
 """
 
 from __future__ import annotations
@@ -71,8 +80,9 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
 
     Compact by construction — the grid is a summary (never the beat list),
     gestures are grouped one row per composite gesture (never one row per phase),
-    and prose is kept to the honest downbeat note plus the file-supplied genre
-    guidance.
+    and prose is kept to the honest downbeat note. Genre `guidance` prose no
+    longer lives on `genre.json` (v3.6 item 8) — it is stated once in this
+    tool's own description instead (see server.py).
 
     When scope=="brief" (D3.3) return a reduced payload: keep identity, grid
     summary, section rows without description prose, gesture rows, arrangement
@@ -86,15 +96,15 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
     sections_doc = load_top_level_json(song_dir, "sections.json")
     timeline_doc = load_top_level_json(song_dir, "song_event_timeline.json")
     hints_doc = load_top_level_json(song_dir, "hints.json")
-    genre_doc = _maybe_load(song_dir, "genre.json")
-    arrangement_doc = _maybe_load(song_dir, "arrangement_state.json")
+    genre_doc = load_top_level_json(song_dir, "genre.json")
+    arrangement_doc = load_top_level_json(song_dir, "arrangement_state.json")
 
     beats = beats_doc.get("beats", [])
     sections = sections_doc.get("sections", [])
     events = timeline_doc.get("events", [])
 
     # precompute total hints for brief-scope compacting
-    total_hints = sum(len(s.get("hints", [])) for s in hints_doc.get("sections", []))
+    total_hints = len(hints_doc.get("hints", []))
 
     # Each block carries its own `field_sources` summary, drawn once from the
     # file header it came from — never repeated per row, never a redundant
@@ -129,25 +139,15 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
             })
         overview["gestures"] = {"rows": brief_g_rows}
 
-        # simplify arrangement in brief scope to only block_count to save tokens
-        arr = overview.get("arrangement", {})
-        if arr.get("available") is True:
-            overview["arrangement"] = {"block_count": arr.get("block_count"), "available": True}
         # transitions kept as-is
 
-    # Arrangement: always include the key. When the top-level file is
-    # absent (pre-v3.2 songs), return an explicit unavailable block per D3.5 so
-    # callers can distinguish omission from an explicit absence.
-    if arrangement_doc is not None:
-        overview["arrangement"] = _arrangement_block(arrangement_doc)
-    else:
-        overview["arrangement"] = {
-            "available": False,
-            "reason": "missing_top_level_file",
-            "missing_file": "arrangement_state.json",
-            "note": "song analysed before v3.2; re-run pipeline to populate",
-            "field_sources": None,
-        }
+    # arrangement_state.json is one of the 9 required top-level files (v3.6
+    # item 9) — the block is always present, no degraded/omitted path.
+    overview["arrangement"] = _arrangement_block(arrangement_doc)
+    if scope == "brief":
+        # simplify arrangement in brief scope to only block_count to save tokens
+        arr = overview["arrangement"]
+        overview["arrangement"] = {"block_count": arr.get("block_count")}
 
     overview["transitions"] = _transitions_block(timeline_doc, events)
 
@@ -164,7 +164,7 @@ def _r(value: Any, places: int = 3) -> Any:
     return round(value, places) if isinstance(value, (int, float)) else value
 
 
-def _identity_block(info: dict, sections: list[dict], genre_doc: dict | None) -> dict[str, Any]:
+def _identity_block(info: dict, sections: list[dict], genre_doc: dict) -> dict[str, Any]:
     keys = [s.get("key") for s in sections if s.get("key")]
     unique = list(dict.fromkeys(keys))
     if not unique:
@@ -174,13 +174,13 @@ def _identity_block(info: dict, sections: list[dict], genre_doc: dict | None) ->
     else:
         whole_key = {"varies": unique}
 
-    genre: Any = None
-    if genre_doc is not None:
-        genre = {
-            "genres": genre_doc.get("genres"),
-            "confidence": genre_doc.get("confidence"),
-            "guidance": genre_doc.get("guidance"),
-        }
+    # genre.json is a required top-level file (v3.6 item 9) — always present.
+    # `guidance` was dropped from the file (one identical text across the
+    # corpus) and lives once in the get_song_overview tool description instead.
+    genre = {
+        "genres": genre_doc.get("genres"),
+        "confidence": genre_doc.get("confidence"),
+    }
 
     return {
         "song_name": info.get("song_name"),
@@ -237,17 +237,22 @@ def _grid_block(info: dict, beats_doc: dict, beats: list[dict]) -> dict[str, Any
 
 
 def _sections_block(sections_doc: dict, sections: list[dict]) -> dict[str, Any]:
+    # `label` / `description` / `chord_progression` were dropped from
+    # sections.json in v3.6 item 8 (display prose, moved to a debugger-only
+    # inner-folder file this module must never read — see loaders.py's
+    # exposure guard). function_status is a required field on every row; a
+    # shape that lacks it is a bug to surface loudly, never a silent
+    # "unknown" default.
     rows = [
         {
-            "section_id": s.get("section_id"),
-            "start": s.get("start"),
-            "end": s.get("end"),
-            "function": s.get("function"),
-            "function_confidence": s.get("function_confidence"),
-            "function_status": s.get("function_status", "unknown"),
-            "same_label_as": s.get("same_label_as"),
-            "description": s.get("description"),
-            "confidence": s.get("confidence"),
+            "section_id": s["section_id"],
+            "start": s["start"],
+            "end": s["end"],
+            "function": s["function"],
+            "function_confidence": s["function_confidence"],
+            "function_status": s["function_status"],
+            "same_label_as": s["same_label_as"],
+            "confidence": s["confidence"],
         }
         for s in sections
     ]
@@ -316,7 +321,7 @@ def _gestures_block(timeline_doc: dict, events: list[dict]) -> dict[str, Any]:
 
 
 def _arrangement_block(doc: dict) -> dict[str, Any]:
-    """Compact per-block stem-state view from the optional top-level
+    """Compact per-block stem-state view from the required top-level
     arrangement_state.json. One row per block, `start`/`end` to match the
     sibling sections/gestures rows. `confidence` (and the leading block's
     `null`) is passed through as-is; `margin_db` and per-row sources are left to
@@ -366,22 +371,24 @@ def _transitions_block(timeline_doc: dict, events: list[dict]) -> dict[str, Any]
 
 
 def _hints_block(hints_doc: dict) -> dict[str, Any]:
+    # v3.6 item 8 restructured hints.json to a flat `hints[]` (no `sections[]`
+    # wrapper — that duplicated sections.json's join). Every row is human by
+    # construction; `source` is declared once here rather than per row.
     rows = []
-    for section in hints_doc.get("sections", []):
-        for hint in section.get("hints", []):
-            row = {
-                "section_id": section.get("section_id"),
-                "title": hint.get("title"),
-                "text": hint.get("text"),
-                "start_time": hint.get("start_time"),
-                "end_time": hint.get("end_time"),
-                "source": hint.get("source"),
-            }
-            if hint.get("lighting_hint") is not None:
-                row["lighting_hint"] = hint["lighting_hint"]
-            rows.append(row)
+    for hint in hints_doc.get("hints", []):
+        row = {
+            "section_id": hint.get("section_id"),
+            "title": hint.get("title"),
+            "text": hint.get("text"),
+            "start_time": hint.get("start_time"),
+            "end_time": hint.get("end_time"),
+        }
+        if hint.get("lighting_hint") is not None:
+            row["lighting_hint"] = hint["lighting_hint"]
+        rows.append(row)
     return {
         "rows": rows,
+        "source": "human",
         "field_sources": hints_doc.get("field_sources"),
         "note": "human hints are ground truth and outrank every inferred field above",
     }
@@ -415,10 +422,13 @@ def build_detail(
     sections_doc = load_top_level_json(song_dir, "sections.json")
     timeline_doc = load_top_level_json(song_dir, "song_event_timeline.json")
     hints_doc = load_top_level_json(song_dir, "hints.json")
-    arrangement_doc = _maybe_load(song_dir, "arrangement_state.json")
-    # drum events are a new required top-level signal for detail structural
-    # exposure (Item 1). They live at the top-level as `drum_events.json`.
+    arrangement_doc = load_top_level_json(song_dir, "arrangement_state.json")
     drum_doc = load_top_level_json(song_dir, "drum_events.json")
+    # beats.json (v3.6 item 9): the structural view's `beats` block is the one
+    # deliberate exception to "no full beat list ever leaves this module" — it
+    # is scoped to the resolved span, undecimated, and present even past the
+    # dense-series cap (unlike loudness's dense frames, which the cap withholds).
+    beats_doc = load_top_level_json(song_dir, "beats.json")
 
     scope, span_start, span_end = _resolve_span(
         section_id=section_id,
@@ -447,7 +457,7 @@ def build_detail(
         "span": {"start": span_start, "end": span_end, "duration": duration},
         "structural": _structural_view(
             span_start, span_end, sections_doc, timeline_doc, hints_doc,
-            arrangement_doc, drum_doc, events
+            arrangement_doc, drum_doc, beats_doc, events
         ),
     }
 
@@ -463,14 +473,7 @@ def build_detail(
         }
         return response
 
-    loudness_doc = _maybe_load(song_dir, "loudness.json")
-    if loudness_doc is None:
-        response["dense"] = None
-        response["dense_withheld"] = {
-            "reason": "loudness.json is not published for this song",
-        }
-        return response
-
+    loudness_doc = load_top_level_json(song_dir, "loudness.json")
     response["dense"] = _dense_frames(
         loudness_doc, span_start, span_end, target_interval, stem_set
     )
@@ -559,18 +562,19 @@ def _structural_view(
     sections_doc: dict,
     timeline_doc: dict,
     hints_doc: dict,
-    arrangement_doc: dict | None,
-    drum_doc: dict | None,
+    arrangement_doc: dict,
+    drum_doc: dict,
+    beats_doc: dict,
     events: list[dict],
 ) -> dict[str, Any]:
     section_rows = [
         {
-            "section_id": s.get("section_id"),
-            "start": s.get("start"),
-            "end": s.get("end"),
-            "function": s.get("function"),
-            "function_status": s.get("function_status", "unknown"),
-            "same_label_as": s.get("same_label_as"),
+            "section_id": s["section_id"],
+            "start": s["start"],
+            "end": s["end"],
+            "function": s["function"],
+            "function_status": s["function_status"],
+            "same_label_as": s["same_label_as"],
         }
         for s in sections_doc.get("sections", [])
         if _overlaps(span_start, span_end, float(s["start"]), float(s["end"]))
@@ -604,24 +608,22 @@ def _structural_view(
     ]
 
     hint_rows = []
-    for section in hints_doc.get("sections", []):
-        for hint in section.get("hints", []):
-            h_start = hint.get("start_time")
-            h_end = hint.get("end_time")
-            if h_start is None or h_end is None:
-                continue
-            if _overlaps(span_start, span_end, float(h_start), float(h_end)):
-                row = {
-                    "section_id": section.get("section_id"),
-                    "title": hint.get("title"),
-                    "text": hint.get("text"),
-                    "start_time": h_start,
-                    "end_time": h_end,
-                    "source": hint.get("source"),
-                }
-                if hint.get("lighting_hint") is not None:
-                    row["lighting_hint"] = hint["lighting_hint"]
-                hint_rows.append(row)
+    for hint in hints_doc.get("hints", []):
+        h_start = hint.get("start_time")
+        h_end = hint.get("end_time")
+        if h_start is None or h_end is None:
+            continue
+        if _overlaps(span_start, span_end, float(h_start), float(h_end)):
+            row = {
+                "section_id": hint.get("section_id"),
+                "title": hint.get("title"),
+                "text": hint.get("text"),
+                "start_time": h_start,
+                "end_time": h_end,
+            }
+            if hint.get("lighting_hint") is not None:
+                row["lighting_hint"] = hint["lighting_hint"]
+            hint_rows.append(row)
 
     intensities = [r["intensity"] for r in phase_rows if r["intensity"] is not None]
     if intensities:
@@ -632,44 +634,59 @@ def _structural_view(
     else:
         aggregate = None
 
-    # Drum events: structural rows overlapping the window, plus a window
-    # summary so callers can distinguish no-data from an empty event list.
+    # Drum events: structural rows overlapping the window, plus the file-level
+    # confidence/confidence_reason pair (v3.6 item 8 collapsed the per-event
+    # `confidence` — always null across the whole corpus — to one file-level
+    # pair, so it is surfaced once here, never repeated null on every row).
     drum_rows: list[dict] = []
-    drum_summary = None
-    if drum_doc is None:
-        drum_block = {"rows": [], "field_sources": None, "summary": None, "available": False}
+    for e in drum_doc.get("events", []):
+        t = e.get("time")
+        if t is None:
+            continue
+        if span_start <= float(t) <= span_end:
+            drum_rows.append({"time": t, "event_type": e.get("event_type")})
+
+    # Apply sparse-row cap: if there are more rows than SPARSE_ROW_CAP, do not
+    # silently truncate. Instead present an explicit withheld block so callers
+    # can distinguish a data cap from an empty result.
+    if len(drum_rows) > SPARSE_ROW_CAP:
+        drum_block = {
+            "rows": [],
+            "field_sources": drum_doc.get("field_sources"),
+            "summary": drum_doc.get("summary"),
+            "confidence": drum_doc.get("confidence"),
+            "confidence_reason": drum_doc.get("confidence_reason"),
+            "sparse_withheld": {
+                "reason": (
+                    f"sparse event cap exceeded: observed {len(drum_rows)} rows, "
+                    f"cap {SPARSE_ROW_CAP} rows"
+                ),
+                "observed_rows": len(drum_rows),
+                "cap_rows": SPARSE_ROW_CAP,
+            },
+        }
     else:
-        for e in drum_doc.get("events", []):
-            t = e.get("time")
-            if t is None:
-                continue
-            if span_start <= float(t) <= span_end:
-                drum_rows.append({
-                    "time": t,
-                    "event_type": e.get("event_type"),
-                    "confidence": e.get("confidence"),
-                })
-        drum_summary = drum_doc.get("summary")
-        # Apply sparse-row cap: if there are more rows than SPARSE_ROW_CAP, do not
-        # silently truncate. Instead present an explicit withheld block so callers
-        # can distinguish a data cap from an empty result.
-        if len(drum_rows) > SPARSE_ROW_CAP:
-            drum_block = {
-                "rows": [],
-                "field_sources": drum_doc.get("field_sources"),
-                "summary": drum_summary,
-                "available": True,
-                "sparse_withheld": {
-                    "reason": (
-                        f"sparse event cap exceeded: observed {len(drum_rows)} rows, "
-                        f"cap {SPARSE_ROW_CAP} rows"
-                    ),
-                    "observed_rows": len(drum_rows),
-                    "cap_rows": SPARSE_ROW_CAP,
-                },
-            }
-        else:
-            drum_block = {"rows": drum_rows, "field_sources": drum_doc.get("field_sources"), "summary": drum_summary, "available": True}
+        drum_block = {
+            "rows": drum_rows,
+            "field_sources": drum_doc.get("field_sources"),
+            "summary": drum_doc.get("summary"),
+            "confidence": drum_doc.get("confidence"),
+            "confidence_reason": drum_doc.get("confidence_reason"),
+        }
+
+    # Beats: every beat inside the resolved span, undecimated. This is the one
+    # deliberate exception to "no full beat list" and to the dense-series cap —
+    # the caller sees it in the structural view even when `dense` is withheld.
+    beat_rows = [
+        {
+            "time": b["time"],
+            "bar": b["bar"],
+            "beat": b["beat"],
+            "downbeat_confidence": b.get("downbeat_confidence"),
+        }
+        for b in beats_doc.get("beats", [])
+        if span_start <= float(b["time"]) <= span_end
+    ]
 
     return {
         "sections": {
@@ -686,23 +703,26 @@ def _structural_view(
         },
         "hints": {
             "rows": hint_rows,
+            "source": "human",
             "field_sources": hints_doc.get("field_sources"),
         },
         "arrangement": _arrangement_structural(arrangement_doc, span_start, span_end),
         "drum_events": drum_block,
+        "beats": {
+            "rows": beat_rows,
+            "field_sources": beats_doc.get("field_sources"),
+        },
         "aggregate_intensity": aggregate,
     }
 
 
 def _arrangement_structural(
-    doc: dict | None, span_start: float, span_end: float
+    doc: dict, span_start: float, span_end: float
 ) -> dict[str, Any]:
     """Overlapping arrangement_state blocks for the resolved span. Structural
     block data — no decimation, no dense cap — so it is present in the
-    structural view even when the span exceeds DENSE_CAP_S. Absent file ->
-    rows: [] (the tolerant pattern the other sub-blocks use)."""
-    if doc is None:
-        return {"rows": [], "vocals_phrase": [], "vocals_sibilance_song_mean": None, "field_sources": None}
+    structural view even when the span exceeds DENSE_CAP_S. arrangement_state
+    is a required top-level file (v3.6 item 9) — always present."""
     rows = [
         {
             "start_s": b.get("start_s"),
@@ -741,9 +761,9 @@ def _dense_frames(
     interval_ms: int,
     stem_set: list[str],
 ) -> dict[str, Any]:
-    published_order = loudness_doc.get("metadata", {}).get(
-        "source_order", list(DEFAULT_SOURCES)
-    )
+    # v3.6 item 8 flattened interval_ms/source_order out of a `metadata`
+    # wrapper to top-level fields on loudness.json.
+    published_order = loudness_doc.get("source_order", list(DEFAULT_SOURCES))
     keep_idx = [published_order.index(s) for s in stem_set]
 
     window = [
@@ -782,20 +802,3 @@ def _average_chunk(chunk: list[dict], keep_idx: list[int]) -> dict[str, Any]:
         for i in keep_idx
     ]
     return {"time": time, "values": values, "normalized_values": normalized}
-
-
-# --------------------------------------------------------------------------- #
-# helpers
-# --------------------------------------------------------------------------- #
-
-def _maybe_load(song_dir: Path, filename: str) -> dict | None:
-    """Load an optional top-level file; return None if it is not published yet.
-
-    genre.json / loudness.json are mid-migration and not in
-    `REQUIRED_TOP_LEVEL_FILES` (D23). A serializer that needs one degrades
-    honestly rather than raising.
-    """
-    try:
-        return load_top_level_json(song_dir, filename)
-    except FileNotFoundError:
-        return None

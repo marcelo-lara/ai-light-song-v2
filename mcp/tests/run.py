@@ -225,6 +225,66 @@ def _check_detail_snapshots() -> None:
         record(f"F1.4 snapshot get_detail__{name}", status, f"{len(current)} bytes")
 
 
+def _check_f1_beats_block() -> None:
+    """v3.6 item 9: get_detail's structural view carries an undecimated
+    `beats` block scoped to the resolved span — its row count must equal the
+    number of beats actually inside that span, no more, no fewer."""
+    from serializers import build_detail
+
+    beats_doc = json.loads(
+        (FIXTURE_ROOT / "McpFull - Fixture" / "beats.json").read_text()
+    )
+    resp = build_detail("McpFull - Fixture", root=FIXTURE_ROOT, section_id="section-002")
+    span = resp["span"]
+    expected = [
+        b for b in beats_doc["beats"]
+        if span["start"] <= b["time"] <= span["end"]
+    ]
+    rows = resp["structural"]["beats"]["rows"]
+    ok = len(rows) == len(expected) and 0 < len(rows) < len(beats_doc["beats"])
+    record("F1.5 get_detail beats block count == beats actually inside the span",
+           "PASS" if ok else "FAIL",
+           f"rows={len(rows)} expected={len(expected)} total_song_beats={len(beats_doc['beats'])}")
+
+    # Present past the 5 s dense cap too — the one deliberate exception.
+    over = build_detail("McpFull - Fixture", root=FIXTURE_ROOT, start_ms=0, end_ms=6000)
+    record("F1.6 beats block present past the 5 s dense cap (dense withheld, beats not)",
+           "PASS" if over["dense"] is None and over["structural"]["beats"]["rows"] else "FAIL",
+           f"dense={over['dense']} beat_rows={len(over['structural']['beats']['rows'])}")
+
+
+def _check_f1_all_nine_required() -> None:
+    """Every one of loaders.REQUIRED_TOP_LEVEL_FILES is required — a song
+    missing any single one errors naming that file. No degraded/optional path
+    for any of the 9 (v3.6 item 9)."""
+    import shutil
+    import tempfile
+
+    from loaders import REQUIRED_TOP_LEVEL_FILES, MissingTopLevelFileError, resolve_song_dir
+
+    ok_count = 0
+    for missing in REQUIRED_TOP_LEVEL_FILES:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            song_dir = tmp_path / "Probe - Song"
+            shutil.copytree(FIXTURE_ROOT / "McpFull - Fixture", song_dir)
+            (song_dir / missing).unlink()
+            try:
+                resolve_song_dir("Probe - Song", root=tmp_path)
+                ok = False
+                observed = "no error raised"
+            except MissingTopLevelFileError as exc:
+                ok = missing in str(exc)
+                observed = str(exc)
+            if ok:
+                ok_count += 1
+            else:
+                record(f"F1.7 missing {missing} errors naming it", "FAIL", observed)
+    record("F1.7 all 9 required top-level files individually enforced",
+           "PASS" if ok_count == len(REQUIRED_TOP_LEVEL_FILES) else "FAIL",
+           f"{ok_count}/{len(REQUIRED_TOP_LEVEL_FILES)} named correctly")
+
+
 def _check_f3_detail() -> None:
     from serializers import DetailScopeError, build_detail
 
@@ -413,6 +473,8 @@ def full_regression() -> int:
     _check_f2_honesty()
     _check_f3_detail()
     _check_f4_budget()
+    _check_f1_beats_block()
+    _check_f1_all_nine_required()
     return _finish()
 
 

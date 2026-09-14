@@ -10,10 +10,7 @@
         "house",
         "dance"
       ],
-      "confidence": 0.62,
-      "guidance": [
-        "Four-on-the-floor, steady 120 BPM — drive the grid."
-      ]
+      "confidence": 0.62
     },
     "field_sources": {
       "bpm": "essentia",
@@ -33,7 +30,6 @@
       "time": "essentia",
       "beat": "essentia",
       "bar": "essentia",
-      "chord": "harmonic",
       "type": "essentia",
       "downbeat_confidence": "allin1"
     }
@@ -49,7 +45,6 @@
         "function_confidence": 0.6,
         "function_status": "known",
         "same_label_as": null,
-        "description": "The 1st intro, 8.0s long.",
         "confidence": 0.55
       },
       {
@@ -60,7 +55,6 @@
         "function_confidence": 0.7,
         "function_status": "known",
         "same_label_as": null,
-        "description": "The 1st verse, 8.0s long.",
         "confidence": 0.65
       },
       {
@@ -71,7 +65,6 @@
         "function_confidence": 0.8,
         "function_status": "known",
         "same_label_as": null,
-        "description": "The 1st chorus, 8.0s long.",
         "confidence": 0.75
       }
     ],
@@ -79,11 +72,8 @@
       "section_id": "allin1",
       "start": "allin1",
       "end": "allin1",
-      "label": "human",
-      "description": "human",
       "confidence": "allin1",
       "key": "harmonic",
-      "chord_progression": "harmonic",
       "function": "allin1",
       "function_confidence": "allin1",
       "function_status": "allin1",
@@ -116,12 +106,8 @@
       "end_time": "gestures",
       "confidence": "gestures",
       "intensity": "gestures",
-      "section_id": "allin1",
-      "section_name": "allin1",
       "gesture_id": "gestures",
-      "provenance": "gestures",
-      "summary": "gestures",
-      "evidence_summary": "gestures"
+      "section_id": "allin1"
     }
   },
   "arrangement": {
@@ -197,12 +183,8 @@
       "end_time": "gestures",
       "confidence": "gestures",
       "intensity": "gestures",
-      "section_id": "allin1",
-      "section_name": "allin1",
       "gesture_id": "gestures",
-      "provenance": "gestures",
-      "summary": "gestures",
-      "evidence_summary": "gestures"
+      "section_id": "allin1"
     }
   },
   "human_hints": {
@@ -213,13 +195,17 @@
         "text": "Vocal - no intense section",
         "start_time": 8.5,
         "end_time": 15.5,
-        "source": "human",
         "lighting_hint": "soft motion of moving heads. parcans slow violet waves."
       }
     ],
+    "source": "human",
     "field_sources": {
-      "summary": "inference",
-      "sections": "inference"
+      "section_id": "human",
+      "title": "human",
+      "text": "human",
+      "start_time": "human",
+      "end_time": "human",
+      "lighting_hint": "human"
     },
     "note": "human hints are ground truth and outrank every inferred field above"
   }

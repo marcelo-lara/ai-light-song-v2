@@ -26,11 +26,8 @@
         "section_id": "allin1",
         "start": "allin1",
         "end": "allin1",
-        "label": "human",
-        "description": "human",
         "confidence": "allin1",
         "key": "harmonic",
-        "chord_progression": "harmonic",
         "function": "allin1",
         "function_confidence": "allin1",
         "function_status": "allin1",
@@ -45,12 +42,8 @@
         "end_time": "gestures",
         "confidence": "gestures",
         "intensity": "gestures",
-        "section_id": "allin1",
-        "section_name": "allin1",
         "gesture_id": "gestures",
-        "provenance": "gestures",
-        "summary": "gestures",
-        "evidence_summary": "gestures"
+        "section_id": "allin1"
       }
     },
     "transitions": {
@@ -61,19 +54,20 @@
         "end_time": "gestures",
         "confidence": "gestures",
         "intensity": "gestures",
-        "section_id": "allin1",
-        "section_name": "allin1",
         "gesture_id": "gestures",
-        "provenance": "gestures",
-        "summary": "gestures",
-        "evidence_summary": "gestures"
+        "section_id": "allin1"
       }
     },
     "hints": {
       "rows": [],
+      "source": "human",
       "field_sources": {
-        "summary": "inference",
-        "sections": "inference"
+        "section_id": "human",
+        "title": "human",
+        "text": "human",
+        "start_time": "human",
+        "end_time": "human",
+        "lighting_hint": "human"
       }
     },
     "arrangement": {
@@ -109,104 +103,84 @@
       "rows": [
         {
           "time": 0.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 0.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 0.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 1.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 1.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 1.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 2.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 2.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 2.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 3.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 3.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 3.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 4.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 4.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 4.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 5.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 5.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 5.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 6.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         }
       ],
       "field_sources": {
         "time": "omnizart",
-        "event_type": "omnizart",
-        "confidence": "omnizart"
+        "event_type": "omnizart"
       },
       "summary": {
         "event_count": 72,
@@ -215,7 +189,97 @@
         "hat_count": 0,
         "unresolved_count": 0
       },
-      "available": true
+      "confidence": null,
+      "confidence_reason": "omnizart emits no per-hit confidence signal — every event in the fixture (as in the full corpus) carries null confidence; stated once here rather than repeated on every row"
+    },
+    "beats": {
+      "rows": [
+        {
+          "time": 0.0,
+          "bar": 1,
+          "beat": 1,
+          "downbeat_confidence": 0.3
+        },
+        {
+          "time": 0.5,
+          "bar": 1,
+          "beat": 2,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 1.0,
+          "bar": 1,
+          "beat": 3,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 1.5,
+          "bar": 1,
+          "beat": 4,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 2.0,
+          "bar": 2,
+          "beat": 1,
+          "downbeat_confidence": 0.35
+        },
+        {
+          "time": 2.5,
+          "bar": 2,
+          "beat": 2,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 3.0,
+          "bar": 2,
+          "beat": 3,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 3.5,
+          "bar": 2,
+          "beat": 4,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 4.0,
+          "bar": 3,
+          "beat": 1,
+          "downbeat_confidence": 0.4
+        },
+        {
+          "time": 4.5,
+          "bar": 3,
+          "beat": 2,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 5.0,
+          "bar": 3,
+          "beat": 3,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 5.5,
+          "bar": 3,
+          "beat": 4,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 6.0,
+          "bar": 4,
+          "beat": 1,
+          "downbeat_confidence": 0.45
+        }
+      ],
+      "field_sources": {
+        "time": "essentia",
+        "beat": "essentia",
+        "bar": "essentia",
+        "type": "essentia",
+        "downbeat_confidence": "allin1"
+      }
     },
     "aggregate_intensity": null
   },

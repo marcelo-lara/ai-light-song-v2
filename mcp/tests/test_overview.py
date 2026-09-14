@@ -101,6 +101,12 @@ def test_overview_degenerate_surfaces_honest_uncertainty() -> None:
     assert ov["gestures"]["rows"] == []
 
 
+def test_overview_human_hints_source_declared_once() -> None:
+    ov = _overview("McpFull - Fixture")
+    assert ov["human_hints"]["source"] == "human"
+    assert all("source" not in r for r in ov["human_hints"]["rows"])
+
+
 def test_overview_full_carries_field_sources_per_block() -> None:
     ov = _overview("McpFull - Fixture")
     assert ov["grid"]["field_sources"]["downbeat_confidence"] == "allin1"
@@ -113,7 +119,6 @@ def test_overview_human_hint_verbatim_with_lighting() -> None:
     rows = _overview("McpFull - Fixture")["human_hints"]["rows"]
     assert len(rows) == 1
     assert rows[0]["title"] == "Breath"
-    assert rows[0]["source"] == "human"
     assert rows[0]["lighting_hint"].startswith("soft motion")
 
 
@@ -135,14 +140,15 @@ def test_overview_full_carries_arrangement_block() -> None:
     assert all(v in _FIELD_SOURCE_VOCAB for v in arr["field_sources"].values())
 
 
-def test_overview_omits_arrangement_when_file_absent() -> None:
-    # McpDegenerate has no arrangement_state.json — the overview must include
-    # an explicit unavailable block rather than omitting the key entirely.
+def test_overview_arrangement_present_on_every_song() -> None:
+    # arrangement_state.json is one of the 9 required top-level files (v3.6
+    # item 9 dropped the pre-v3.2 degraded/absent path) — the block is always
+    # present, on the degenerate fixture too.
     ov = _overview("McpDegenerate - Fixture")
     assert "arrangement" in ov
     arr = ov["arrangement"]
-    assert arr.get("available") is False
-    assert arr.get("missing_file") == "arrangement_state.json"
+    assert arr["block_count"] == 3
+    assert "available" not in arr
 
 
 def test_overview_partial_still_errors() -> None:

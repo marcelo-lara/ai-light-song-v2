@@ -83,26 +83,29 @@ Current focus song: `_test_song`
 
 - **Status:** `pending`
 - **Raised:** 2026-09-06, closing v3.1 (decision D25, resolved-as-accepted).
-- **Problem:** the committed token-budget gate is fixture-based — the
-  `McpFull - Fixture` overview is 4283 bytes, under the 6144-byte ceiling. Real
-  gesture-dense songs run larger: `Titanium` 13981 B, `Armin - Revolution`
-  12644 B, `Hideaway` 10025 B, `_test_song` 7936 B — all over the 6 KB
-  real-song target the plan set.
+  Re-measured 2026-09-14 after v3.6 item 8's field trim + item 9's MCP-side
+  rebuild: `McpFull - Fixture` overview is now 4973 bytes (still under the
+  6144-byte fixture gate). `Titanium - David Guetta ft Sia` is **34,919
+  bytes** — larger than the pre-trim 13,981 B, not smaller. Trimming
+  `label`/`description`/`chord_progression`/`guidance`/etc. did not move the
+  needle: `arrangement` (44 blocks, 7,273 B — promoted after this issue was
+  first raised) is now the largest block, just ahead of `gestures` (7,107 B);
+  `sections` fell to 3,169 B once `description` was dropped.
 - **Why it was accepted, not fixed:** the size is driven by *structure*, not
-  prose. On `Armin` the 31 grouped gesture rows are ~6.8 KB on their own —
-  already over the target — and the 13 human-hint rows (~2.2 KB) are verbatim
-  ground truth that the honesty rules forbid trimming. The genre `guidance` and
-  section `description` prose is already short (~180 / ~30 chars); clipping it
-  saves under 300 bytes and does not change the picture. Getting near 6 KB would
-  mean cutting gesture structure or truncating hints, both of which the plan
-  ruled out.
+  prose — dropping prose fields saves low hundreds of bytes, not the low
+  thousands needed. Every dense block (`arrangement`, `gestures`, human hints)
+  is verbatim structural or ground-truth data the honesty rules forbid
+  trimming or truncating.
 - **Options for a real fix:** a phase-code legend replacing repeated
-  `phases_present` / `phases_absent` arrays; a compact gesture encoding; or
-  making the overview paginate gestures and expose the rest via `get_detail`.
+  `phases_present`/`phases_absent` arrays; a compact gesture encoding; a
+  compact arrangement-block encoding (44 blocks is now the single largest
+  contributor); or making the overview paginate gestures/arrangement and
+  expose the rest via `get_detail`.
 - **Success condition:** a gesture-dense gold song's `get_song_overview` is at
-  or under 6 KB with every human hint still verbatim and every composite gesture
-  still individually addressable — or the 6 KB target is formally replaced with
-  a structure-aware budget in `mcp-definition.md`.
+  or under 6 KB with every human hint still verbatim and every composite
+  gesture and arrangement block still individually addressable — or the 6 KB
+  target is formally replaced with a structure-aware budget in
+  `mcp-definition.md`.
 
 ### Texture hints missing on three gold songs — `arrangement_state` corpus F1 measures the label absence, not the detector
 

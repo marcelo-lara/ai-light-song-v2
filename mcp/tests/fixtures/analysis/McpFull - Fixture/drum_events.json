@@ -1,10 +1,9 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.6",
   "song_name": "McpFull - Fixture",
   "field_sources": {
     "time": "omnizart",
-    "event_type": "omnizart",
-    "confidence": "omnizart"
+    "event_type": "omnizart"
   },
   "summary": {
     "event_count": 72,
@@ -17,368 +16,299 @@
     "kick",
     "snare",
     "hat",
+    "crash",
     "unresolved"
   ],
+  "confidence": null,
+  "confidence_reason": "omnizart emits no per-hit confidence signal — every event in the fixture (as in the full corpus) carries null confidence; stated once here rather than repeated on every row",
   "events": [
     {
       "time": 0.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 0.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 0.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 1.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 1.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 1.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 2.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 2.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 2.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 3.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 3.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 3.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 4.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 4.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 4.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 5.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 5.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 5.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 6.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 6.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 6.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 7.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 7.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 7.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 8.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 8.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 8.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 9.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 9.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 9.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 10.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 10.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 10.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 11.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 11.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 11.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 12.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 12.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 12.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 13.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 13.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 13.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 14.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 14.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 14.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 15.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 15.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 15.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 16.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 16.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 16.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 17.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 17.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 17.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 18.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 18.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 18.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 19.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 19.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 19.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 20.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 20.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 20.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 21.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 21.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 21.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 22.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 22.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 22.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     },
     {
       "time": 23.0,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 23.5,
-      "event_type": "kick",
-      "confidence": null
+      "event_type": "kick"
     },
     {
       "time": 23.5,
-      "event_type": "snare",
-      "confidence": null
+      "event_type": "snare"
     }
   ]
 }

@@ -25,11 +25,8 @@
         "section_id": "allin1",
         "start": "allin1",
         "end": "allin1",
-        "label": "human",
-        "description": "human",
         "confidence": "allin1",
         "key": "harmonic",
-        "chord_progression": "harmonic",
         "function": "allin1",
         "function_confidence": "allin1",
         "function_status": "allin1",
@@ -85,12 +82,8 @@
         "end_time": "gestures",
         "confidence": "gestures",
         "intensity": "gestures",
-        "section_id": "allin1",
-        "section_name": "allin1",
         "gesture_id": "gestures",
-        "provenance": "gestures",
-        "summary": "gestures",
-        "evidence_summary": "gestures"
+        "section_id": "allin1"
       }
     },
     "transitions": {
@@ -108,12 +101,8 @@
         "end_time": "gestures",
         "confidence": "gestures",
         "intensity": "gestures",
-        "section_id": "allin1",
-        "section_name": "allin1",
         "gesture_id": "gestures",
-        "provenance": "gestures",
-        "summary": "gestures",
-        "evidence_summary": "gestures"
+        "section_id": "allin1"
       }
     },
     "hints": {
@@ -124,13 +113,17 @@
           "text": "Vocal - no intense section",
           "start_time": 8.5,
           "end_time": 15.5,
-          "source": "human",
           "lighting_hint": "soft motion of moving heads. parcans slow violet waves."
         }
       ],
+      "source": "human",
       "field_sources": {
-        "summary": "inference",
-        "sections": "inference"
+        "section_id": "human",
+        "title": "human",
+        "text": "human",
+        "start_time": "human",
+        "end_time": "human",
+        "lighting_hint": "human"
       }
     },
     "arrangement": {
@@ -167,119 +160,96 @@
       "rows": [
         {
           "time": 9.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 9.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 9.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 10.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 10.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 10.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 11.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 11.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 11.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 12.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 12.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 12.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 13.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 13.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 13.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 14.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 14.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 14.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 15.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 15.5,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         },
         {
           "time": 15.5,
-          "event_type": "snare",
-          "confidence": null
+          "event_type": "snare"
         },
         {
           "time": 16.0,
-          "event_type": "kick",
-          "confidence": null
+          "event_type": "kick"
         }
       ],
       "field_sources": {
         "time": "omnizart",
-        "event_type": "omnizart",
-        "confidence": "omnizart"
+        "event_type": "omnizart"
       },
       "summary": {
         "event_count": 72,
@@ -288,7 +258,109 @@
         "hat_count": 0,
         "unresolved_count": 0
       },
-      "available": true
+      "confidence": null,
+      "confidence_reason": "omnizart emits no per-hit confidence signal — every event in the fixture (as in the full corpus) carries null confidence; stated once here rather than repeated on every row"
+    },
+    "beats": {
+      "rows": [
+        {
+          "time": 9.0,
+          "bar": 5,
+          "beat": 3,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 9.5,
+          "bar": 5,
+          "beat": 4,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 10.0,
+          "bar": 6,
+          "beat": 1,
+          "downbeat_confidence": 0.3
+        },
+        {
+          "time": 10.5,
+          "bar": 6,
+          "beat": 2,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 11.0,
+          "bar": 6,
+          "beat": 3,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 11.5,
+          "bar": 6,
+          "beat": 4,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 12.0,
+          "bar": 7,
+          "beat": 1,
+          "downbeat_confidence": 0.35
+        },
+        {
+          "time": 12.5,
+          "bar": 7,
+          "beat": 2,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 13.0,
+          "bar": 7,
+          "beat": 3,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 13.5,
+          "bar": 7,
+          "beat": 4,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 14.0,
+          "bar": 8,
+          "beat": 1,
+          "downbeat_confidence": 0.4
+        },
+        {
+          "time": 14.5,
+          "bar": 8,
+          "beat": 2,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 15.0,
+          "bar": 8,
+          "beat": 3,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 15.5,
+          "bar": 8,
+          "beat": 4,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 16.0,
+          "bar": 9,
+          "beat": 1,
+          "downbeat_confidence": 0.45
+        }
+      ],
+      "field_sources": {
+        "time": "essentia",
+        "beat": "essentia",
+        "bar": "essentia",
+        "type": "essentia",
+        "downbeat_confidence": "allin1"
+      }
     },
     "aggregate_intensity": {
       "peak": 0.95,

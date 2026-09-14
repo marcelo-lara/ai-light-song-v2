@@ -1,23 +1,12 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.6",
   "song_name": "McpDegenerate - Fixture",
   "field_sources": {
     "genres": "genre",
-    "confidence": "genre",
-    "top_predictions": "genre",
-    "guidance": "genre"
+    "confidence": "genre"
   },
   "genres": [
     "unknown"
   ],
-  "confidence": 0.11,
-  "top_predictions": [
-    {
-      "label": "unknown",
-      "confidence": 0.11
-    }
-  ],
-  "guidance": [
-    "Genre estimate too weak to state — do not corroborate."
-  ]
+  "confidence": 0.11
 }

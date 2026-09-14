@@ -157,21 +157,26 @@ else, and it must stay compact enough to sit in context for the whole session.
 Returns:
 
 - **Identity** — `song_name`, `bpm`, `duration`, whole-song `key`, genre with
-  its confidence and its `guidance` prose.
+  its confidence. **v3.6 item 8 dropped `genre.json`'s `guidance` field** (one
+  identical text across the whole corpus) — the equivalent guidance is stated
+  once in the `get_song_overview` tool's own description instead (see
+  `mcp/server.py`), not repeated per song in the response.
 - **Grid** — tempo, `beats_per_bar`, `bar_count`, and an **honest downbeat
   note**: how many downbeats carry a `null` confidence, so the caller knows
   whether bar numbers can be trusted on this song. Never the full beat list.
 - **Sections** — one compact row each: `section_id`, `start`, `end`, `function`,
-  `function_confidence`, `function_status`, `same_label_as`, `description`,
+  `function_confidence`, `function_status`, `same_label_as`,
   `confidence`. An `"unknown"` `function_status` is surfaced as such, never
-  smoothed into a confident label.
+  smoothed into a confident label. **v3.6 item 8 dropped `description`**
+  (display prose, moved to a debugger-only artifact never read from `mcp/`).
 - **Gestures** — one row per composite gesture, not per phase: its span, its
   peak intensity, its `section_id`, and which phases are present. A song with 31
   impact rows must not return 31 unrelated events.
 - **Arrangement** — one row per `arrangement_state` block: who is `playing`,
   who `entered`, who `left`, and the block `confidence` (a leading block carries
-  `null`). From the optional top-level `arrangement_state.json`; the whole block
-  is omitted for a song analysed before v3.2. Also carries `vocals_phrase` — a
+  `null`). `arrangement_state.json` is one of the 9 required top-level files
+  (v3.6 item 9 dropped the old pre-v3.2 degraded/omitted path) — the block is
+  always present. Also carries `vocals_phrase` — a
   second, independent read on the vocals stem from the promoted `whisperx_vad`
   detector (v3.5 item 7, run as its own pipeline service since v3.6 item 2 —
   the `whisperx` Compose service, before `./analyze`): spans where a phrase was
@@ -203,12 +208,19 @@ two is an error, with no precedence rule:
 | `start_ms` + `end_ms` | an arbitrary window |
 
 **The dense-series cap is 5 seconds — a maximum, not a default.** When the
-resolved span exceeds 5 s the call returns the structural view (phases,
-transitions, hints, aggregate intensity, and the overlapping `arrangement_state`
-blocks — structural block data, listed with no decimation and present even when
-the dense frames are withheld) and **withholds the dense frames**, saying so
-explicitly and naming the cap. It never silently truncates, and it
-never silently downsamples to fit.
+resolved span exceeds 5 s the call returns the structural view (sections,
+phases, transitions, hints, drum events, aggregate intensity, the overlapping
+`arrangement_state` blocks, and `beats` — all structural block data, listed
+with no decimation and present even when the dense frames are withheld) and
+**withholds the dense frames**, saying so explicitly and naming the cap. It
+never silently truncates, and it never silently downsamples to fit.
+
+**`beats` (v3.6 item 9)** is the one deliberate exception to "no full beat
+list": every beat inside the resolved span — `time`, `bar`, `beat`,
+`downbeat_confidence` — scoped, not the whole song's grid, and **not** subject
+to either the 5 s dense cap or the `interval_ms` decimation the dense loudness
+frames go through. A caller resolving a 6 s window still gets every beat in
+that window; it only loses the dense loudness/stem frames.
 
 **`interval_ms` is the caller's choice.** The server decimates the published
 series per request; it is not a resolution baked in at publish time. The

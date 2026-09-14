@@ -1,6 +1,6 @@
 {
   "schema_version": "3.6",
-  "song_name": "McpFull - Fixture",
+  "song_name": "McpPartial - Fixture",
   "field_sources": {
     "genres": "genre",
     "confidence": "genre"

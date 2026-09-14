@@ -66,9 +66,10 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 9 of 12 |
+| Done | 10 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
+| `get_song_overview("Titanium - David Guetta ft Sia")` byte size (item 9, `mcp/tests/measure_tokens.py`-style measurement) | 34,919 bytes — over the 6,144-byte target even after item 8's field trim; `arrangement` (44 blocks, 7,273 B) is now the largest block, ahead of `gestures` (7,107 B); see `docs/issues.md` "prose budget" |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 2, 8, 9, 10 |
 | New services | `whisperx` (item 2) |
 | New experiments | `truth_common`, `segment_seeds`, `rhythm_drum_ioi`, `rhythm_stem_autocorr`, `rhythm_vocal_onsets`, `energy_level`, `tension_shape` |
@@ -289,16 +290,16 @@ read. Beat `time`/`type`/`bar`/`beat`/`downbeat_confidence` stay.
 
 Refinement item 5 (MCP part, beats decision).
 
-- [ ] `mcp/loaders.py` `REQUIRED_TOP_LEVEL_FILES` = all 9. Delete `serializers._maybe_load`, the "song analysed before v3.2" block and every `.get("function_status", "unknown")`-style default.
-- [ ] Serializers stop reading dropped fields. The genre `guidance` text goes once into the `get_song_overview` tool description. The hints block reads the flat `hints[]`. The drum block carries the file-level confidence, not per row.
-- [ ] `get_detail` structural view: `beats` block with every beat in the span (`time, bar, beat, downbeat_confidence`), undecimated, present past the 5 s cap, plus `field_sources`.
-- [ ] Rebuild `mcp/tests/fixtures/analysis/*` to the item-8 schema (`McpPartial` omits one required file). Regenerate `mcp/tests/__snapshots__/` with one justification line each.
-- [ ] `docs/reference/mcp-regression.md`: add checks for the `beats` block (count == beats in the fixture span) and for all 9 files required. Update `docs/mcp-definition.md` and `downstream-contract.md`.
-- [ ] Record `get_song_overview("Titanium - David Guetta ft Sia")` bytes (`mcp/tests/measure_tokens.py`) in Status. Update or delete `docs/issues.md` "prose budget" entry against the 6 KB target.
+- [x] `mcp/loaders.py` `REQUIRED_TOP_LEVEL_FILES` = all 9. Delete `serializers._maybe_load`, the "song analysed before v3.2" block and every `.get("function_status", "unknown")`-style default.
+- [x] Serializers stop reading dropped fields. The genre `guidance` text goes once into the `get_song_overview` tool description. The hints block reads the flat `hints[]`. The drum block carries the file-level confidence, not per row.
+- [x] `get_detail` structural view: `beats` block with every beat in the span (`time, bar, beat, downbeat_confidence`), undecimated, present past the 5 s cap, plus `field_sources`.
+- [x] Rebuild `mcp/tests/fixtures/analysis/*` to the item-8 schema (`McpPartial` omits one required file). Regenerate `mcp/tests/__snapshots__/` with one justification line each.
+- [x] `docs/reference/mcp-regression.md`: add checks for the `beats` block (count == beats in the fixture span) and for all 9 files required. Update `docs/mcp-definition.md` and `downstream-contract.md`.
+- [x] Record `get_song_overview("Titanium - David Guetta ft Sia")` bytes (`mcp/tests/measure_tokens.py`) in Status. Update or delete `docs/issues.md` "prose budget" entry against the 6 KB target.
 
 **Checks**
-- [ ] MCP smoke-test and full-regression green.
-- [ ] `grep -n "_maybe_load\|before v3.2" mcp/*.py` → no matches.
+- [x] MCP smoke-test and full-regression green.
+- [x] `grep -n "_maybe_load\|before v3.2" mcp/*.py` → no matches.
 
 ---
 

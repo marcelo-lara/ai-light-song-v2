@@ -59,6 +59,13 @@ def get_song_overview(song: str, scope: str | None = None) -> dict[str, Any]:
     One small call, whole song. Optionally accepts scope="brief" to return a
     compact overview suitable for the concept-pass read (D3.3). The default
     is the full overview.
+
+    Genre guidance (moved here from the now-dropped per-song `genre.json`
+    `guidance` field, v3.6 item 8 — the text was identical across the whole
+    corpus, so it is stated once, here, rather than repeated per song):
+    use the genre only as review guidance for what song parts are likely to
+    matter. Do not assume genre-specific drops or section semantics unless
+    downstream evidence supports them.
     """
     _validate_song(song)
     return build_song_overview(song, scope=scope)

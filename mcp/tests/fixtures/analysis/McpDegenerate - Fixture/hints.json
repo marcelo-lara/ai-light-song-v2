@@ -1,17 +1,13 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.6",
   "song_name": "McpDegenerate - Fixture",
   "field_sources": {
-    "summary": "inference",
-    "sections": "inference"
+    "section_id": "human",
+    "title": "human",
+    "text": "human",
+    "start_time": "human",
+    "end_time": "human",
+    "lighting_hint": "human"
   },
-  "generated_from": {
-    "engine": "mcp regression fixture generator"
-  },
-  "summary": {
-    "section_count": 3,
-    "inference_hint_count": 0,
-    "user_hint_count": 0
-  },
-  "sections": []
+  "hints": []
 }

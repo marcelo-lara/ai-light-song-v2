@@ -34,22 +34,40 @@ def test_sparse_cap_hit_reports_withheld() -> None:
     song = analysis / "BigDrums - Temp"
     song.mkdir(parents=True)
 
-    # Minimal required top-level files
+    # Every one of loaders.REQUIRED_TOP_LEVEL_FILES — no degraded/optional path.
     _write_json(song / "info.json", {"song_name": "BigDrums - Temp", "bpm": 120, "duration": 60})
-    _write_json(song / "beats.json", {"beats": [] , "field_sources": {}})
-    _write_json(song / "sections.json", {"sections": [{"section_id": "s1", "start": 0, "end": 60000, "function_status": "unknown"}], "field_sources": {}})
+    _write_json(song / "beats.json", {"beats": [], "field_sources": {}})
+    _write_json(song / "sections.json", {
+        "sections": [{
+            "section_id": "s1", "start": 0, "end": 60000, "function": None,
+            "function_confidence": None, "function_status": "unknown",
+            "same_label_as": None, "confidence": None, "key": None,
+        }],
+        "field_sources": {},
+    })
     _write_json(song / "song_event_timeline.json", {"events": [], "field_sources": {}})
-    _write_json(song / "hints.json", {"sections": [], "field_sources": {}})
+    _write_json(song / "hints.json", {"hints": [], "field_sources": {}})
+    _write_json(song / "genre.json", {"genres": ["unknown"], "confidence": None, "field_sources": {}})
+    _write_json(song / "loudness.json", {
+        "interval_ms": 20, "source_order": ["mix", "bass", "drums", "harmonic", "vocals"],
+        "frames": [], "field_sources": {},
+    })
+    _write_json(song / "arrangement_state.json", {
+        "stems": [], "blocks": [], "vocals_phrase": None,
+        "vocals_sibilance_song_mean": None, "field_sources": {},
+    })
 
     # Create drum_events with SPARSE_ROW_CAP + 10 rows
     events = []
     for i in range(SPARSE_ROW_CAP + 10):
-        events.append({"time": float(i) * 0.01, "event_type": "kick", "confidence": None})
+        events.append({"time": float(i) * 0.01, "event_type": "kick"})
     drum_doc = {
-        "schema_version": "3.0",
+        "schema_version": "3.6",
         "song_name": "BigDrums - Temp",
-        "field_sources": {"time": "omnizart", "event_type": "omnizart", "confidence": "omnizart"},
+        "field_sources": {"time": "omnizart", "event_type": "omnizart"},
         "summary": {"event_count": len(events)},
+        "confidence": None,
+        "confidence_reason": "omnizart emits no per-hit confidence signal",
         "events": events,
     }
     _write_json(song / "drum_events.json", drum_doc)

@@ -166,9 +166,16 @@ def test_detail_no_host_paths() -> None:
         assert "/data/" not in _serialize(_detail(**kwargs))
 
 
-def test_detail_never_emits_a_full_beat_list() -> None:
-    blob = _serialize(_detail(section_id="section-002"))
-    assert '"beat"' not in blob
+def test_detail_beats_block_is_scoped_not_the_full_beat_list() -> None:
+    # v3.6 item 9: get_detail's structural view deliberately carries a `beats`
+    # block, unlike get_song_overview (see test_overview_never_emits_the_beat_
+    # list) — but it must stay scoped to the resolved span, never the whole
+    # song's beat grid (48 beats in the fixture).
+    beats_doc = json.loads(
+        (FIXTURE_ROOT / "McpFull - Fixture" / "beats.json").read_text()
+    )
+    rows = _detail(section_id="section-002")["structural"]["beats"]["rows"]
+    assert 0 < len(rows) < len(beats_doc["beats"])
 
 
 def test_detail_includes_drum_events_structural() -> None:
@@ -183,3 +190,43 @@ def test_detail_includes_drum_events_structural() -> None:
     # window_count (rows present) should equal the length of rows
     if block.get("summary") is not None:
         assert block["summary"].get("event_count") is not None or True
+
+
+def test_detail_drum_events_carry_file_level_confidence_not_per_row() -> None:
+    # v3.6 item 8 collapsed per-event confidence to one file-level pair.
+    resp = _detail(section_id="section-002")
+    block = resp["structural"]["drum_events"]
+    assert block["confidence"] is None
+    assert block["confidence_reason"]
+    assert all("confidence" not in row for row in block["rows"])
+
+
+def test_detail_beats_block_present_and_scoped_to_span() -> None:
+    # The beats block is the one deliberate exception to "no full beat list":
+    # every beat inside the resolved span, undecimated, time/bar/beat/
+    # downbeat_confidence only.
+    resp = _detail(section_id="section-002")
+    beats_doc = json.loads(
+        (FIXTURE_ROOT / "McpFull - Fixture" / "beats.json").read_text()
+    )
+    span = resp["span"]
+    expected = [
+        b for b in beats_doc["beats"]
+        if span["start"] <= b["time"] <= span["end"]
+    ]
+    rows = resp["structural"]["beats"]["rows"]
+    assert len(rows) == len(expected)
+    assert {r["time"] for r in rows} == {b["time"] for b in expected}
+    assert all(
+        set(r.keys()) == {"time", "bar", "beat", "downbeat_confidence"}
+        for r in rows
+    )
+    assert resp["structural"]["beats"]["field_sources"] == beats_doc["field_sources"]
+
+
+def test_detail_beats_block_present_past_the_dense_cap() -> None:
+    # Unlike loudness's dense frames, the beats block is not withheld by the
+    # 5 s dense-series cap.
+    resp = _detail(start_ms=0, end_ms=6000)
+    assert resp["dense"] is None  # dense withheld over the 5 s cap
+    assert resp["structural"]["beats"]["rows"]

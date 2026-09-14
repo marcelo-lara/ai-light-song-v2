@@ -51,7 +51,7 @@ answers to the top-level directory.
 | --- | --- | --- |
 | `list_songs()` | discovery | `song_name`, `bpm`, `duration` only |
 | `get_song_overview(song)` | concept pass (whole song) | `info.json`, `beats.json`, `sections.json`, `genre.json`, `song_event_timeline.json` (transitions only), `arrangement_state.json`, `hints.json` (human hints) |
-| `get_detail(song, section_id\|gesture_id\|start_ms+end_ms, interval_ms, sources)` | one span (section, gesture, or arbitrary window) | `loudness.json` + `drum_events.json` dense frames (**at most 5 s**), plus the overlapping structural rows (phases, transitions, hints, `arrangement_state` blocks) with no decimation |
+| `get_detail(song, section_id\|gesture_id\|start_ms+end_ms, interval_ms, sources)` | one span (section, gesture, or arbitrary window) | `loudness.json` + `drum_events.json` dense frames (**at most 5 s**), plus the overlapping structural rows (phases, transitions, hints, `arrangement_state` blocks, and — v3.6 item 9 — `beats.json` rows) with no decimation |
 
 All of these are top-level files. **Everything under `artifacts/` is invisible
 to cue authoring** — the layer files and the `validation/` reports are worth
@@ -241,17 +241,24 @@ end.
 `genres`, `confidence` — passed through to the concept pass.
 
 - **Dropped in v3.6 item 8**: `top_predictions[]` (unread) and `guidance[]`
-  (one identical text across all 23 songs; moving into the `mcp/` server's own
-  tool description — item 9, not this repo's concern). Both stay in
+  (one identical text across all 23 songs). Item 9 moved the equivalent text
+  into the in-repo `mcp/` server's `get_song_overview` tool description
+  (`mcp/server.py`) — that surface does not reach this downstream consumer,
+  which never sees tool descriptions, only file reads. Both fields stay in
   `artifacts/genre.json`, **not MCP-exposed**; the debugger UI reads it
-  directly.
+  directly. This consumer gets no `guidance` text at all any more — if it
+  needs the equivalent review-caution prose, it must be restated here or
+  re-added to the top-level file, not assumed still present.
 
 ### The detail files
 
 `loudness.json` and `drum_events.json` are the **only** dense files a section
 pass can pull. `arrangement_state.json` is structural, not dense — it is
 returned whole (no decimation) alongside a dense read whenever its blocks
-overlap the requested span.
+overlap the requested span. `beats.json` (v3.6 item 9) is likewise structural:
+every beat inside the resolved span, undecimated, present even when the span
+exceeds the 5 s dense cap — the one deliberate exception to "no full beat
+list", since it is always scoped to the span, never the whole song.
 
 **The window is capped at 5 s — that is a maximum, not a default.** A caller
 asking for a whole section gets a refusal, not a truncation. Most detail reads
@@ -290,9 +297,11 @@ resolutions.
   (`artifacts/symbolic_transcription/drum_events.json`, same lack of
   confidence) is unchanged and **not MCP-exposed**; the debugger UI reads it
   directly.
-- `arrangement_state.json` — **optional**, absent on a song analysed before
-  v3.2. `blocks[] { start_s, end_s, playing[], entered[], left[], margin_db,
-  confidence }`: who is playing and where that changes. `confidence = round(1 -
+- `arrangement_state.json` — **required** as of v3.6 item 9 (previously
+  optional, absent on a song analysed before v3.2; every song in the current
+  corpus already carries it). `blocks[] { start_s, end_s, playing[],
+  entered[], left[], margin_db, confidence }`: who is playing and where that
+  changes. `confidence = round(1 -
   exp(-margin_db / 6.0), 3)`, a monotone report of the dB headroom at the
   smallest stem flip — not a tuned score, so a consumer wanting its own
   threshold reads raw `margin_db`. The leading block (before the first stem
@@ -351,7 +360,7 @@ resolutions.
 4. **`beats.json`** — correct, continuous downbeats and bar numbers.
 5. **`loudness.json` + `drum_events.json`** — accurate, regular, complete.
 6. **`genre.json`** — honest, with `genres` + `confidence` kept.
-7. **`arrangement_state.json`** — optional; when present, accurate stem
+7. **`arrangement_state.json`** — required (v3.6 item 9); accurate stem
    entered/left spans with honest `confidence`/`margin_db`, plus the
    independent `vocals_phrase[]` read described above.
 

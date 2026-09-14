@@ -17,18 +17,23 @@ from typing import Any
 
 DEFAULT_ANALYSIS_ROOT = Path("/data/analysis")
 
-# Top-level files an analysed song must carry for the server to describe it.
-# Deliberately short: these are the files the pipeline publishes at top level
-# today. Signals still being migrated out of inner folders (genre, loudness,
-# drum events) are not required here yet — that is later v3.1 plan work. A song
-# missing one of these gets an explicit error, never a partial response.
+# Top-level files an analysed song must carry for the server to describe it —
+# all 9 files the pipeline publishes at top level (CLAUDE.md's "Current state"
+# table). No backwards compatibility and no degraded mode: a song missing any
+# one of these gets an explicit error naming the file, never a partial
+# response. `arrangement_state.json` used to be optional (pre-v3.2 songs could
+# lack it) — v3.6 item 9 dropped that degraded path; every song in the corpus
+# carries it now.
 REQUIRED_TOP_LEVEL_FILES: tuple[str, ...] = (
     "info.json",
     "beats.json",
+    "hints.json",
     "sections.json",
     "song_event_timeline.json",
-    "hints.json",
+    "genre.json",
     "drum_events.json",
+    "loudness.json",
+    "arrangement_state.json",
 )
 
 

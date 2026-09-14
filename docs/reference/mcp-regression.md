@@ -125,6 +125,17 @@ unless a check names one.
 2. Each tool called twice with identical arguments returns **byte-identical**
    output.
 3. Snapshot coverage: every tool × every scope it accepts × each fixture.
+5. **(v3.6 item 9)** `get_detail`'s structural `beats` block row count equals
+   the number of beats actually inside the resolved span — not the whole
+   song's grid, not zero (F1.5).
+6. **(v3.6 item 9)** the `beats` block is still present when the span exceeds
+   the 5 s dense-series cap, even though `dense` is withheld for that same
+   call (F1.6).
+7. **(v3.6 item 9)** all 9 of `loaders.REQUIRED_TOP_LEVEL_FILES` are
+   individually enforced — a probe song missing any single one of the 9
+   errors naming that exact file, never a silent degraded response (F1.7).
+   `McpPartial - Fixture` only exercises `sections.json`; this check covers
+   the other 8 by copying the full fixture and deleting one file at a time.
 
 > Snapshots are **regenerated, not defended** — regenerate them inside the
 > container (`MCP_REGEN_SNAPSHOTS=1 pytest mcp/tests/test_overview.py` for the
