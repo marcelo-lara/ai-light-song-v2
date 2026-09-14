@@ -65,11 +65,20 @@ export interface RuntimeErrorSink {
   list(): string[];
 }
 
+// reference/human/segments.json and reference/moises/segments.json are
+// optional at the app level (`ui/src/data/loaders.ts`'s `loadHumanSegments` /
+// `loadMoisesSections` both resolve a 404 to `[]`, unconditionally, for every
+// song) — a fixture missing either file is a real, expected shape, not a
+// fault, so the browser-level 404 response they still produce is tolerated
+// here the same way `allowMissingAudio` tolerates the absent mp3.
+const OPTIONAL_SEGMENTS_404 = /\/reference\/(human|moises)\/segments\.json$/;
+
 /**
  * Collect anything that should never happen on a healthy load: console
  * error/warning, page errors, unhandled rejections, and failed responses for a
  * URL under `/data/analysis/`. `/data/songs/*.mp3` 404s are only tolerated for
- * the no-audio spec (pass `{ allowMissingAudio: true }`).
+ * the no-audio spec (pass `{ allowMissingAudio: true }`); a missing
+ * `segments.json` is always tolerated (see `OPTIONAL_SEGMENTS_404` above).
  */
 export function assertNoRuntimeErrors(
   page: Page,
@@ -85,9 +94,10 @@ export function assertNoRuntimeErrors(
     // canvas pixels with getImageData — not a fault in the app.
     if (/willReadFrequently/i.test(text)) return;
     // Chromium logs a URL-less "Failed to load resource ... 404" console error
-    // for the absent mp3; the request/response handlers below still catch any
-    // real /data/analysis/ failure (those carry a URL).
-    if (opts.allowMissingAudio && /Failed to load resource.*\b(404|ERR_ABORTED)\b/.test(text)) {
+    // for every failed fetch (the absent mp3, an absent optional
+    // segments.json, ...) — always redundant with the request/response
+    // handlers below, which catch any real /data/analysis/ failure by its URL.
+    if (/Failed to load resource.*\b(404|ERR_ABORTED)\b/.test(text)) {
       return;
     }
     problems.push(`console.${type}: ${text}`);
@@ -98,6 +108,7 @@ export function assertNoRuntimeErrors(
   page.on("requestfailed", (req) => {
     const url = req.url();
     if (opts.allowMissingAudio && /\/data\/songs\/.*\.mp3$/.test(url)) return;
+    if (OPTIONAL_SEGMENTS_404.test(url)) return;
     if (url.includes("/data/analysis/") || url.includes("/data/songs/")) {
       problems.push(`requestfailed: ${url} (${req.failure()?.errorText ?? "?"})`);
     }
@@ -106,6 +117,7 @@ export function assertNoRuntimeErrors(
     const url = res.url();
     if (res.status() < 400) return;
     if (opts.allowMissingAudio && /\/data\/songs\/.*\.mp3$/.test(url)) return;
+    if (OPTIONAL_SEGMENTS_404.test(url)) return;
     if (url.includes("/data/analysis/")) {
       problems.push(`response ${res.status()}: ${url}`);
     }

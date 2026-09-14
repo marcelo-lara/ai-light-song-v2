@@ -48,7 +48,6 @@ class QueueFileTests(unittest.TestCase):
                 "svd_tagger",
                 "texture_novelty",
                 "vocal_voiceness",
-                "whisperx_vad",
             ],
         )
         app_rows = [row for row in rows if row["image"] == "app"]

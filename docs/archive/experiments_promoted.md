@@ -269,13 +269,15 @@ confidence (0.56-0.98 measured) into an asserted-certain boolean. Published
 additively alongside the existing RMS-based `blocks`, never merged into them —
 a wrong call on one stem-presence method must never mask the other.
 
-**Not part of `./analyze`.** whisperX pins torch~=2.8.0; the `app` image is
-pinned to torch==2.1.2 with `natten==0.15.1+torch210cu121` (breaks on any torch
-bump) — merging is a real, unresolved cost. Compute runs out-of-band via
-`experiments/whisperx_vad/run.py` in its own sandbox image; `src/`'s
-`ui_data._whisperx_vocal_phrase` reads the resulting
-`reference/proposals/whisperx_vad.json` cache when present and emits an honest
-`null` (never a guess) when it is not. Diarization was never attempted — gated
-checkpoint, no HF token in this environment, and lead-plus-backing is
-simultaneous rather than turn-taking, which defeats the diarization premise
-regardless.
+**Runs as its own service before `./analyze` (v3.6 item 2).** whisperX pins
+torch~=2.8.0; the `app` image is pinned to torch==2.1.2 with
+`natten==0.15.1+torch210cu121` (breaks on any torch bump) — merging is a real,
+unresolved cost. Promoted out of `experiments/whisperx_vad/` into its own
+top-level module (`whisperx_vad/`) and Compose service (`whisperx`):
+`docker compose run --rm whisperx --song <path>` writes
+`artifacts/whisperx-vad/whisperx_vad.json`; `src/`'s
+`ui_data._whisperx_vocal_phrase` reads it and raises (never a guess, never a
+silent `null`) if the song hasn't been run through that service yet.
+Diarization was never attempted — gated checkpoint, no HF token in this
+environment, and lead-plus-backing is simultaneous rather than turn-taking,
+which defeats the diarization premise regardless.

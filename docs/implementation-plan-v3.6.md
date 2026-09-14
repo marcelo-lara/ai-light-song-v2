@@ -66,15 +66,15 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 2 of 12 |
+| Done | 3 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 2, 8, 9, 10 |
 | New services | `whisperx` (item 2) |
 | New experiments | `truth_common`, `segment_seeds`, `rhythm_drum_ioi`, `rhythm_stem_autocorr`, `rhythm_vocal_onsets`, `energy_level`, `tension_shape` |
 | Promotion approval | producers kept by item 6 are **pre-approved** for `src/` (operator, 2026-09-14: "unless something fails too far, just add it as a layer") |
-| Pre-existing failures | analyzer tests, ui test+build, MCP smoke-test: all green on HEAD (7a58785). Visual suite: 39/44 specs fail pre-existing — screenshot-baseline drift in this environment (e.g. `timeline-zoom-max` expects 1280×1142, environment renders 1280×1304 — a systemic font/viewport rendering difference, not a code defect). Full failing list captured 2026-09-14; `experiment-badge.spec.ts` failures include the expected `BADGED` staleness (item 2 fixes) plus the same baseline drift. Treat any per-item visual QA as DOM/data assertions; a screenshot diff is only attributable to an item if its diff region matches that item's changed lane. |
-| Decisions | D10.1 (resolved) |
+| Pre-existing failures | analyzer tests, ui test+build, MCP smoke-test: all green on HEAD (7a58785). Visual suite: 39/44 specs failed pre-existing — screenshot-baseline drift in this environment (e.g. `timeline-zoom-max` expects 1280×1142, environment renders 1280×1304 — a systemic font/viewport rendering difference, not a code defect). Item 2 incidentally fixed two non-screenshot contributors (stale `human_hints.json`/`block_energy.json` fixture drift, and the `segments.json` 404 gap — see D2.2), dropping this to 23/44 failing, all pure screenshot-baseline drift now. Treat any per-item visual QA as DOM/data assertions; screenshot re-capture is skipped for the reason given in each item's Visual QA section — a human with a matching rendering environment should run `--update-snapshots` once and review the diff before trusting pixel baselines again. |
+| Decisions | D2.1 (resolved), D2.2 (resolved), D10.1 (resolved) |
 
 ---
 
@@ -107,31 +107,33 @@ already carries `lighting_hint`.
 Refinement item 1. Guard: the `app` image never gains torch 2.8 or a Docker
 socket, and a missing artifact never becomes `null`.
 
-- [ ] New top-level `whisperx_vad/` (like `mcp/`; not named `whisperx`, which collides with the pip package): `Dockerfile` carried from `experiments/whisperx_vad/Dockerfile` with unchanged pins and checkpoint; the compute code from `experiments/whisperx_vad/{model,export,run}.py`; entry `python -m whisperx_vad --song <path>` / `--all-songs`.
-- [ ] `docker-compose.yml` service `whisperx`: profile `ondemand`, build context `.`, dockerfile `whisperx_vad/Dockerfile`, image `ai-light-song-v2-whisperx:dev`, the same three volumes as `app`, no `gpus`.
-- [ ] Output `data/analysis/{song}/artifacts/whisperx-vad/whisperx_vad.json`: today's proposal schema minus `generated_from.generated_at` and `generated_from.experiment` (determinism).
-- [ ] `src/analyzer/stages/ui_data.py::_whisperx_vocal_phrase` reads that path. When the file is absent it raises, and the message contains `docker compose run --rm whisperx --song`. The `None` branch is deleted.
-- [ ] Delete `experiments/whisperx_vad/` except `README.md` and `out/`. Delete every `reference/proposals/whisperx_vad.json` once that song's artifact exists.
-- [ ] `ui/src/data/paths.ts` `whisperxVad` → `artifacts/whisperx-vad/whisperx_vad.json`. `laneState.ts`: remove `experiment` from the `whisperxVad` row and `experiment · ` from its `sub`. `laneContent.ts`: drop the `experiments/whisperx_vad — ` summary prefix. Update the tests.
-- [ ] `tests/ui-visual/fixtures/build-fixtures.py` copies `Armin - Revolution`'s `artifacts/whisperx-vad/whisperx_vad.json` into `RegFull` (and so `RegPartial`). Re-curate the hand-curated fixture files the script's header names.
-- [ ] `experiment-badge.spec.ts`: `BADGED` = exactly the lanes that carry `experiment` in `laneState.ts` after this item; remove `reactiveBands` and `gridPhrase`; add `whisperxVad` to `NOT_BADGED`. Where a `BADGED` lane needs a proposal file to render, `build-fixtures.py` copies it from `Armin - Revolution`.
-- [ ] Run: `docker compose build whisperx`, then `docker compose run --rm whisperx --all-songs`, then `build-ui-data` for all 23 songs. If the CLI rejects `--all-songs --stage`, loop `--song`.
-- [ ] Docs: `docs/reference/docker.md` (service row, commands, "run `whisperx` before `./analyze`"); `docs/reference/cli.md` (run order); `CLAUDE.md` "Running things" and the `vocals` row; `docs/mcp-definition.md` and `downstream-contract.md` (`vocals_phrase` is never `null`, and the out-of-band wording is removed); `docs/archive/experiments_promoted.md` WhisperX entry ("Not part of `./analyze`" paragraph → its own service before `./analyze`); `docs/reference/ui-regression.md` §5.5 flask list = `BADGED`.
+- [x] New top-level `whisperx_vad/` (like `mcp/`; not named `whisperx`, which collides with the pip package): `Dockerfile` carried from `experiments/whisperx_vad/Dockerfile` with unchanged pins and checkpoint; the compute code from `experiments/whisperx_vad/{model,export,run}.py`; entry `python -m whisperx_vad --song <path>` / `--all-songs`.
+- [x] `docker-compose.yml` service `whisperx`: profile `ondemand`, build context `.`, dockerfile `whisperx_vad/Dockerfile`, image `ai-light-song-v2-whisperx:dev`, the same three volumes as `app`, no `gpus`.
+- [x] Output `data/analysis/{song}/artifacts/whisperx-vad/whisperx_vad.json`: today's proposal schema minus `generated_from.generated_at` and `generated_from.experiment` (determinism).
+- [x] `src/analyzer/stages/ui_data.py::_whisperx_vocal_phrase` reads that path. When the file is absent it raises, and the message contains `docker compose run --rm whisperx --song`. The `None` branch is deleted.
+- [x] Delete `experiments/whisperx_vad/` except `README.md` and `out/`. Delete every `reference/proposals/whisperx_vad.json` once that song's artifact exists.
+- [x] `ui/src/data/paths.ts` `whisperxVad` → `artifacts/whisperx-vad/whisperx_vad.json`. `laneState.ts`: remove `experiment` from the `whisperxVad` row and `experiment · ` from its `sub`. `laneContent.ts`: drop the `experiments/whisperx_vad — ` summary prefix. Update the tests.
+- [x] `tests/ui-visual/fixtures/build-fixtures.py` copies `Armin - Revolution`'s `artifacts/whisperx-vad/whisperx_vad.json` into `RegFull` (and so `RegPartial`). Re-curate the hand-curated fixture files the script's header names.
+- [x] `experiment-badge.spec.ts`: `BADGED` = exactly the lanes that carry `experiment` in `laneState.ts` after this item; remove `reactiveBands` and `gridPhrase`; add `whisperxVad` to `NOT_BADGED`. Where a `BADGED` lane needs a proposal file to render, `build-fixtures.py` copies it from `Armin - Revolution`. **Note:** `reactiveBands`/`gridPhrase` were already gone from `laneState.ts` before this item (stale plan text); the actual `BADGED` gap was three lanes missing from the list entirely (`vocalVoiceness`, `svdTagger`, `voiceMultiplicity`) — added, and their proposal files added to `build-fixtures.py`'s `NEEDED` list so they render.
+- [x] Run: `docker compose build whisperx`, then `docker compose run --rm whisperx --all-songs`, then `build-ui-data` for all 23 songs. `--stage` doesn't accept `--all-songs` together, so looped `--song` over `data/songs/*.mp3` for both `build-ui-data` and `publish-arrangement-state` (the stage that actually reads the whisperx artifact — see D2.1).
+- [x] Docs: `docs/reference/docker.md` (service row, commands, "run `whisperx` before `./analyze`"); `docs/reference/cli.md` (run order); `CLAUDE.md` "Running things" and the `vocals` row; `docs/mcp-definition.md` and `downstream-contract.md` (`vocals_phrase` is never `null`, and the out-of-band wording is removed); `docs/archive/experiments_promoted.md` WhisperX entry ("Not part of `./analyze`" paragraph → its own service before `./analyze`); `docs/reference/ui-regression.md` §5.5 flask list = `BADGED`.
 
 **Checks**
-- [ ] `whisperx --song "/data/songs/_test_song.mp3"` run twice → `cmp` of the two outputs reports identical.
-- [ ] `ls data/analysis/*/reference/proposals/whisperx_vad.json` → no matches.
-- [ ] With `_test_song`'s artifact moved aside, `--stage build-ui-data` exits non-zero and the output contains `docker compose run --rm whisperx --song`. Restore the artifact.
-- [ ] `_test_song/arrangement_state.json` `vocals_phrase` span count == `vocal_phrase` count in its artifact.
-- [ ] analyzer tests, ui test + build, MCP smoke-test green.
+- [x] `whisperx --song "/data/songs/_test_song.mp3"` run twice → `cmp` of the two outputs reports identical.
+- [x] `ls data/analysis/*/reference/proposals/whisperx_vad.json` → no matches (all 23 deleted once each song's new artifact existed).
+- [x] **D2.1 (resolved):** the plan named `--stage build-ui-data` for this check, but `_whisperx_vocal_phrase` is only called from `publish-arrangement-state` (`src/analyzer/pipeline.py`) — `build-ui-data` doesn't reach it. Checked against `--stage publish-arrangement-state` instead: with `_test_song`'s artifact moved aside it exits 3 with `missing .../whisperx_vad.json — run the whisperx service before ./analyze: docker compose run --rm whisperx --song /data/songs/_test_song.mp3`. Artifact restored.
+- [x] `_test_song/arrangement_state.json` `vocals_phrase` span count == `vocal_phrase` count in its artifact (6 == 6).
+- [x] analyzer tests (156), ui test + build (400), MCP smoke-test (11) green.
+
+**D2.2 (resolved):** `RegFull - Fixture` was missing `reference/moises/segments.json` (exists for `Armin - Revolution`, just not in `build-fixtures.py`'s `NEEDED` list — added) and has no `reference/human/segments.json` at all (only 4 real songs do, item 4's concern). Both are documented app-level-optional (`ui/src/data/loaders.ts`'s `loadHumanSegments`/`loadMoisesSections` resolve a 404 to `[]` unconditionally), so `tests/ui-visual/helpers.ts`'s `assertNoRuntimeErrors` now tolerates a 404 on either path the same way it already tolerates the missing mp3 — a pre-existing gap since the Moises segmentation feature landed, unrelated to this item, fixed here because it blocked this item's own Visual QA gate.
 
 **Visual QA** (`/?song=RegFull - Fixture`, suite per `ui-regression.md` §6)
-- [ ] Runtime: no `console.error`/`console.warn`, no `pageerror`, no failed `/data/analysis/` response.
-- [ ] `.tl-lane-head[data-lane="whisperxVad"] .tl-lane-head__flask` count = 0.
-- [ ] `.tl-lane-head[data-lane="whisperxVad"]` count = 1.
-- [ ] No request URL contains `reference/proposals/whisperx_vad.json` (`page.on("request")`).
-- [ ] `experiment-badge.spec.ts` passes.
-- [ ] `song-full` baseline re-captured, justification "whisperxVad lane: flask removed, source moved to artifacts".
+- [x] Runtime: no `console.error`/`console.warn`, no `pageerror`, no failed `/data/analysis/` response.
+- [x] `.tl-lane-head[data-lane="whisperxVad"] .tl-lane-head__flask` count = 0.
+- [x] `.tl-lane-head[data-lane="whisperxVad"]` count = 1.
+- [x] No request URL contains `reference/proposals/whisperx_vad.json` (`page.on("request")`).
+- [x] `experiment-badge.spec.ts` passes.
+- [ ] `song-full` baseline re-captured — **skipped.** This environment's Playwright screenshots are systematically offset from the checked-in baselines regardless of any code change (`timeline-zoom-max` renders 1280×1304 vs the baseline's 1280×1142 — a font/viewport rendering difference, confirmed pre-existing in item 0's pre-flight run, present for specs this item never touches). Re-capturing here would bake this environment's rendering into the repo baseline rather than reflect this item's actual DOM change. Every DOM/data/network assertion above is verified directly instead. A human with a matching rendering environment should run `--update-snapshots` and review the diff before trusting the pixel baselines again.
 
 ---
 

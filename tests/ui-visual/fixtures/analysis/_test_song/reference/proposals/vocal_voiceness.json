@@ -1,0 +1,5943 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/vocal_voiceness",
+    "engine": "vocal_voiceness.model (noisy-OR of vibrato/portamento/sibilance cues; vocal_phrases hysteresis + pitch-continuity sustained-note bridge)",
+    "source_stem": "/app/data/analysis/_test_song/artifacts/stems/vocals.wav",
+    "source_fft_bands": "/app/data/analysis/_test_song/artifacts/essentia/fft_bands.vocals.json",
+    "cue_weights": {
+      "vibrato": 0.55,
+      "portamento": 0.35,
+      "sibilance": 0.8
+    },
+    "params": {
+      "bridge_max_gap_s": 0.6,
+      "bridge_pitch_tolerance_cents": 60.0,
+      "breath_s": 0.5,
+      "sustain_s": 1.5,
+      "min_phrase_s": 0.15
+    },
+    "n_sustained_notes": 0,
+    "sustained_notes": [],
+    "n_bridged_gaps": 6,
+    "bridge_events": [
+      {
+        "gap_start": 17.113,
+        "gap_end": 17.519,
+        "gap_s": 0.406,
+        "cents_diff": 5.0,
+        "direct_evidence": true
+      },
+      {
+        "gap_start": 19.54,
+        "gap_end": 19.691,
+        "gap_s": 0.151,
+        "cents_diff": 10.0,
+        "direct_evidence": true
+      },
+      {
+        "gap_start": 20.631,
+        "gap_end": 20.828,
+        "gap_s": 0.197,
+        "cents_diff": 0.0,
+        "direct_evidence": true
+      },
+      {
+        "gap_start": 21.084,
+        "gap_end": 21.316,
+        "gap_s": 0.232,
+        "cents_diff": 40.0,
+        "direct_evidence": true
+      },
+      {
+        "gap_start": 49.017,
+        "gap_end": 49.191,
+        "gap_s": 0.174,
+        "cents_diff": 0.0,
+        "direct_evidence": true
+      },
+      {
+        "gap_start": 53.882,
+        "gap_end": 54.219,
+        "gap_s": 0.337,
+        "cents_diff": 0.0,
+        "direct_evidence": true
+      }
+    ],
+    "generated_at": "2026-09-13T04:45:56.720584Z"
+  },
+  "metadata": {
+    "interval_ms": 50,
+    "total_frames": 1162
+  },
+  "frames": [
+    {
+      "time": 0.0,
+      "voiceness": 0.065,
+      "confidence": 0.87
+    },
+    {
+      "time": 0.05,
+      "voiceness": 0.0778,
+      "confidence": 0.844
+    },
+    {
+      "time": 0.1,
+      "voiceness": 0.0502,
+      "confidence": 0.9
+    },
+    {
+      "time": 0.15,
+      "voiceness": 0.0402,
+      "confidence": 0.92
+    },
+    {
+      "time": 0.2,
+      "voiceness": 0.0322,
+      "confidence": 0.936
+    },
+    {
+      "time": 0.25,
+      "voiceness": 0.0406,
+      "confidence": 0.919
+    },
+    {
+      "time": 0.3,
+      "voiceness": 0.0398,
+      "confidence": 0.92
+    },
+    {
+      "time": 0.35,
+      "voiceness": 0.0429,
+      "confidence": 0.914
+    },
+    {
+      "time": 0.4,
+      "voiceness": 0.0329,
+      "confidence": 0.934
+    },
+    {
+      "time": 0.45,
+      "voiceness": 0.032,
+      "confidence": 0.936
+    },
+    {
+      "time": 0.5,
+      "voiceness": 0.0298,
+      "confidence": 0.94
+    },
+    {
+      "time": 0.55,
+      "voiceness": 0.0339,
+      "confidence": 0.932
+    },
+    {
+      "time": 0.6,
+      "voiceness": 0.0314,
+      "confidence": 0.937
+    },
+    {
+      "time": 0.65,
+      "voiceness": 0.029,
+      "confidence": 0.942
+    },
+    {
+      "time": 0.7,
+      "voiceness": 0.0288,
+      "confidence": 0.942
+    },
+    {
+      "time": 0.75,
+      "voiceness": 0.025,
+      "confidence": 0.95
+    },
+    {
+      "time": 0.8,
+      "voiceness": 0.033,
+      "confidence": 0.934
+    },
+    {
+      "time": 0.85,
+      "voiceness": 0.0311,
+      "confidence": 0.938
+    },
+    {
+      "time": 0.9,
+      "voiceness": 0.0329,
+      "confidence": 0.934
+    },
+    {
+      "time": 0.95,
+      "voiceness": 0.0292,
+      "confidence": 0.942
+    },
+    {
+      "time": 1.0,
+      "voiceness": 0.0234,
+      "confidence": 0.953
+    },
+    {
+      "time": 1.05,
+      "voiceness": 0.0238,
+      "confidence": 0.952
+    },
+    {
+      "time": 1.1,
+      "voiceness": 0.0281,
+      "confidence": 0.944
+    },
+    {
+      "time": 1.15,
+      "voiceness": 0.027,
+      "confidence": 0.946
+    },
+    {
+      "time": 1.2,
+      "voiceness": 0.0214,
+      "confidence": 0.957
+    },
+    {
+      "time": 1.25,
+      "voiceness": 0.0251,
+      "confidence": 0.95
+    },
+    {
+      "time": 1.3,
+      "voiceness": 0.0182,
+      "confidence": 0.964
+    },
+    {
+      "time": 1.35,
+      "voiceness": 0.0215,
+      "confidence": 0.957
+    },
+    {
+      "time": 1.4,
+      "voiceness": 0.0238,
+      "confidence": 0.952
+    },
+    {
+      "time": 1.45,
+      "voiceness": 0.0234,
+      "confidence": 0.953
+    },
+    {
+      "time": 1.5,
+      "voiceness": 0.0263,
+      "confidence": 0.947
+    },
+    {
+      "time": 1.55,
+      "voiceness": 0.023,
+      "confidence": 0.954
+    },
+    {
+      "time": 1.6,
+      "voiceness": 0.0242,
+      "confidence": 0.952
+    },
+    {
+      "time": 1.65,
+      "voiceness": 0.0213,
+      "confidence": 0.957
+    },
+    {
+      "time": 1.7,
+      "voiceness": 0.02,
+      "confidence": 0.96
+    },
+    {
+      "time": 1.75,
+      "voiceness": 0.0155,
+      "confidence": 0.969
+    },
+    {
+      "time": 1.8,
+      "voiceness": 0.0189,
+      "confidence": 0.962
+    },
+    {
+      "time": 1.85,
+      "voiceness": 0.0196,
+      "confidence": 0.961
+    },
+    {
+      "time": 1.9,
+      "voiceness": 0.0143,
+      "confidence": 0.971
+    },
+    {
+      "time": 1.95,
+      "voiceness": 0.013,
+      "confidence": 0.974
+    },
+    {
+      "time": 2.0,
+      "voiceness": 0.0157,
+      "confidence": 0.969
+    },
+    {
+      "time": 2.05,
+      "voiceness": 0.0112,
+      "confidence": 0.978
+    },
+    {
+      "time": 2.1,
+      "voiceness": 0.0126,
+      "confidence": 0.975
+    },
+    {
+      "time": 2.15,
+      "voiceness": 0.0091,
+      "confidence": 0.982
+    },
+    {
+      "time": 2.2,
+      "voiceness": 0.0078,
+      "confidence": 0.984
+    },
+    {
+      "time": 2.25,
+      "voiceness": 0.0098,
+      "confidence": 0.98
+    },
+    {
+      "time": 2.3,
+      "voiceness": 0.0074,
+      "confidence": 0.985
+    },
+    {
+      "time": 2.35,
+      "voiceness": 0.0106,
+      "confidence": 0.979
+    },
+    {
+      "time": 2.4,
+      "voiceness": 0.0081,
+      "confidence": 0.984
+    },
+    {
+      "time": 2.45,
+      "voiceness": 0.0095,
+      "confidence": 0.981
+    },
+    {
+      "time": 2.5,
+      "voiceness": 0.0129,
+      "confidence": 0.974
+    },
+    {
+      "time": 2.55,
+      "voiceness": 0.012,
+      "confidence": 0.976
+    },
+    {
+      "time": 2.6,
+      "voiceness": 0.0094,
+      "confidence": 0.981
+    },
+    {
+      "time": 2.65,
+      "voiceness": 0.0084,
+      "confidence": 0.983
+    },
+    {
+      "time": 2.7,
+      "voiceness": 0.0092,
+      "confidence": 0.982
+    },
+    {
+      "time": 2.75,
+      "voiceness": 0.0103,
+      "confidence": 0.979
+    },
+    {
+      "time": 2.8,
+      "voiceness": 0.0134,
+      "confidence": 0.973
+    },
+    {
+      "time": 2.85,
+      "voiceness": 0.0094,
+      "confidence": 0.981
+    },
+    {
+      "time": 2.9,
+      "voiceness": 0.0077,
+      "confidence": 0.985
+    },
+    {
+      "time": 2.95,
+      "voiceness": 0.0123,
+      "confidence": 0.975
+    },
+    {
+      "time": 3.0,
+      "voiceness": 0.005,
+      "confidence": 0.99
+    },
+    {
+      "time": 3.05,
+      "voiceness": 0.003,
+      "confidence": 0.994
+    },
+    {
+      "time": 3.1,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 3.15,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 3.2,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 3.25,
+      "voiceness": 0.001,
+      "confidence": 0.998
+    },
+    {
+      "time": 3.3,
+      "voiceness": 0.0012,
+      "confidence": 0.998
+    },
+    {
+      "time": 3.35,
+      "voiceness": 0.0028,
+      "confidence": 0.994
+    },
+    {
+      "time": 3.4,
+      "voiceness": 0.0035,
+      "confidence": 0.993
+    },
+    {
+      "time": 3.45,
+      "voiceness": 0.0025,
+      "confidence": 0.995
+    },
+    {
+      "time": 3.5,
+      "voiceness": 0.0012,
+      "confidence": 0.998
+    },
+    {
+      "time": 3.55,
+      "voiceness": 0.0033,
+      "confidence": 0.993
+    },
+    {
+      "time": 3.6,
+      "voiceness": 0.0036,
+      "confidence": 0.993
+    },
+    {
+      "time": 3.65,
+      "voiceness": 0.0062,
+      "confidence": 0.988
+    },
+    {
+      "time": 3.7,
+      "voiceness": 0.0025,
+      "confidence": 0.995
+    },
+    {
+      "time": 3.75,
+      "voiceness": 0.0055,
+      "confidence": 0.989
+    },
+    {
+      "time": 3.8,
+      "voiceness": 0.0062,
+      "confidence": 0.988
+    },
+    {
+      "time": 3.85,
+      "voiceness": 0.0034,
+      "confidence": 0.993
+    },
+    {
+      "time": 3.9,
+      "voiceness": 0.0039,
+      "confidence": 0.992
+    },
+    {
+      "time": 3.95,
+      "voiceness": 0.0023,
+      "confidence": 0.995
+    },
+    {
+      "time": 4.0,
+      "voiceness": 0.0033,
+      "confidence": 0.993
+    },
+    {
+      "time": 4.05,
+      "voiceness": 0.0006,
+      "confidence": 0.999
+    },
+    {
+      "time": 4.1,
+      "voiceness": 0.0014,
+      "confidence": 0.997
+    },
+    {
+      "time": 4.15,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 4.2,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 4.25,
+      "voiceness": 0.002,
+      "confidence": 0.996
+    },
+    {
+      "time": 4.3,
+      "voiceness": 0.0024,
+      "confidence": 0.995
+    },
+    {
+      "time": 4.35,
+      "voiceness": 0.0025,
+      "confidence": 0.995
+    },
+    {
+      "time": 4.4,
+      "voiceness": 0.0022,
+      "confidence": 0.996
+    },
+    {
+      "time": 4.45,
+      "voiceness": 0.0014,
+      "confidence": 0.997
+    },
+    {
+      "time": 4.5,
+      "voiceness": 0.0019,
+      "confidence": 0.996
+    },
+    {
+      "time": 4.55,
+      "voiceness": 0.0034,
+      "confidence": 0.993
+    },
+    {
+      "time": 4.6,
+      "voiceness": 0.0072,
+      "confidence": 0.986
+    },
+    {
+      "time": 4.65,
+      "voiceness": 0.0105,
+      "confidence": 0.979
+    },
+    {
+      "time": 4.7,
+      "voiceness": 0.0096,
+      "confidence": 0.981
+    },
+    {
+      "time": 4.75,
+      "voiceness": 0.0111,
+      "confidence": 0.978
+    },
+    {
+      "time": 4.8,
+      "voiceness": 0.0106,
+      "confidence": 0.979
+    },
+    {
+      "time": 4.85,
+      "voiceness": 0.0095,
+      "confidence": 0.981
+    },
+    {
+      "time": 4.9,
+      "voiceness": 0.0123,
+      "confidence": 0.975
+    },
+    {
+      "time": 4.95,
+      "voiceness": 0.013,
+      "confidence": 0.974
+    },
+    {
+      "time": 5.0,
+      "voiceness": 0.0129,
+      "confidence": 0.974
+    },
+    {
+      "time": 5.05,
+      "voiceness": 0.0146,
+      "confidence": 0.971
+    },
+    {
+      "time": 5.1,
+      "voiceness": 0.0131,
+      "confidence": 0.974
+    },
+    {
+      "time": 5.15,
+      "voiceness": 0.0138,
+      "confidence": 0.972
+    },
+    {
+      "time": 5.2,
+      "voiceness": 0.0147,
+      "confidence": 0.971
+    },
+    {
+      "time": 5.25,
+      "voiceness": 0.0155,
+      "confidence": 0.969
+    },
+    {
+      "time": 5.3,
+      "voiceness": 0.0144,
+      "confidence": 0.971
+    },
+    {
+      "time": 5.35,
+      "voiceness": 0.0154,
+      "confidence": 0.969
+    },
+    {
+      "time": 5.4,
+      "voiceness": 0.013,
+      "confidence": 0.974
+    },
+    {
+      "time": 5.45,
+      "voiceness": 0.0111,
+      "confidence": 0.978
+    },
+    {
+      "time": 5.5,
+      "voiceness": 0.0099,
+      "confidence": 0.98
+    },
+    {
+      "time": 5.55,
+      "voiceness": 0.0121,
+      "confidence": 0.976
+    },
+    {
+      "time": 5.6,
+      "voiceness": 0.0114,
+      "confidence": 0.977
+    },
+    {
+      "time": 5.65,
+      "voiceness": 0.0081,
+      "confidence": 0.984
+    },
+    {
+      "time": 5.7,
+      "voiceness": 0.0072,
+      "confidence": 0.986
+    },
+    {
+      "time": 5.75,
+      "voiceness": 0.0052,
+      "confidence": 0.99
+    },
+    {
+      "time": 5.8,
+      "voiceness": 0.0058,
+      "confidence": 0.988
+    },
+    {
+      "time": 5.85,
+      "voiceness": 0.0062,
+      "confidence": 0.988
+    },
+    {
+      "time": 5.9,
+      "voiceness": 0.004,
+      "confidence": 0.992
+    },
+    {
+      "time": 5.95,
+      "voiceness": 0.0047,
+      "confidence": 0.991
+    },
+    {
+      "time": 6.0,
+      "voiceness": 0.0044,
+      "confidence": 0.991
+    },
+    {
+      "time": 6.05,
+      "voiceness": 0.0047,
+      "confidence": 0.991
+    },
+    {
+      "time": 6.1,
+      "voiceness": 0.0039,
+      "confidence": 0.992
+    },
+    {
+      "time": 6.15,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 6.2,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 6.25,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 6.3,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 6.35,
+      "voiceness": 0.0017,
+      "confidence": 0.997
+    },
+    {
+      "time": 6.4,
+      "voiceness": 0.0004,
+      "confidence": 0.999
+    },
+    {
+      "time": 6.45,
+      "voiceness": 0.0022,
+      "confidence": 0.996
+    },
+    {
+      "time": 6.5,
+      "voiceness": 0.0014,
+      "confidence": 0.997
+    },
+    {
+      "time": 6.55,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 6.6,
+      "voiceness": 0.0002,
+      "confidence": 1.0
+    },
+    {
+      "time": 6.65,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 6.7,
+      "voiceness": 0.0006,
+      "confidence": 0.999
+    },
+    {
+      "time": 6.75,
+      "voiceness": 0.0018,
+      "confidence": 0.996
+    },
+    {
+      "time": 6.8,
+      "voiceness": 0.0028,
+      "confidence": 0.994
+    },
+    {
+      "time": 6.85,
+      "voiceness": 0.0002,
+      "confidence": 1.0
+    },
+    {
+      "time": 6.9,
+      "voiceness": 0.0005,
+      "confidence": 0.999
+    },
+    {
+      "time": 6.95,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 7.0,
+      "voiceness": 0.0001,
+      "confidence": 1.0
+    },
+    {
+      "time": 7.05,
+      "voiceness": 0.0051,
+      "confidence": 0.99
+    },
+    {
+      "time": 7.1,
+      "voiceness": 0.0076,
+      "confidence": 0.985
+    },
+    {
+      "time": 7.15,
+      "voiceness": 0.0102,
+      "confidence": 0.98
+    },
+    {
+      "time": 7.2,
+      "voiceness": 0.0181,
+      "confidence": 0.964
+    },
+    {
+      "time": 7.25,
+      "voiceness": 0.0296,
+      "confidence": 0.941
+    },
+    {
+      "time": 7.3,
+      "voiceness": 0.0433,
+      "confidence": 0.913
+    },
+    {
+      "time": 7.35,
+      "voiceness": 0.0598,
+      "confidence": 0.88
+    },
+    {
+      "time": 7.4,
+      "voiceness": 0.0576,
+      "confidence": 0.885
+    },
+    {
+      "time": 7.45,
+      "voiceness": 0.0396,
+      "confidence": 0.921
+    },
+    {
+      "time": 7.5,
+      "voiceness": 0.0341,
+      "confidence": 0.932
+    },
+    {
+      "time": 7.55,
+      "voiceness": 0.0284,
+      "confidence": 0.943
+    },
+    {
+      "time": 7.6,
+      "voiceness": 0.0239,
+      "confidence": 0.952
+    },
+    {
+      "time": 7.65,
+      "voiceness": 0.0222,
+      "confidence": 0.956
+    },
+    {
+      "time": 7.7,
+      "voiceness": 0.0198,
+      "confidence": 0.96
+    },
+    {
+      "time": 7.75,
+      "voiceness": 0.0167,
+      "confidence": 0.967
+    },
+    {
+      "time": 7.8,
+      "voiceness": 0.0128,
+      "confidence": 0.974
+    },
+    {
+      "time": 7.85,
+      "voiceness": 0.0129,
+      "confidence": 0.974
+    },
+    {
+      "time": 7.9,
+      "voiceness": 0.012,
+      "confidence": 0.976
+    },
+    {
+      "time": 7.95,
+      "voiceness": 0.0148,
+      "confidence": 0.97
+    },
+    {
+      "time": 8.0,
+      "voiceness": 0.0186,
+      "confidence": 0.963
+    },
+    {
+      "time": 8.05,
+      "voiceness": 0.0238,
+      "confidence": 0.952
+    },
+    {
+      "time": 8.1,
+      "voiceness": 0.0131,
+      "confidence": 0.974
+    },
+    {
+      "time": 8.15,
+      "voiceness": 0.014,
+      "confidence": 0.972
+    },
+    {
+      "time": 8.2,
+      "voiceness": 0.0134,
+      "confidence": 0.973
+    },
+    {
+      "time": 8.25,
+      "voiceness": 0.0173,
+      "confidence": 0.965
+    },
+    {
+      "time": 8.3,
+      "voiceness": 0.0173,
+      "confidence": 0.965
+    },
+    {
+      "time": 8.35,
+      "voiceness": 0.0096,
+      "confidence": 0.981
+    },
+    {
+      "time": 8.4,
+      "voiceness": 0.0069,
+      "confidence": 0.986
+    },
+    {
+      "time": 8.45,
+      "voiceness": 0.0055,
+      "confidence": 0.989
+    },
+    {
+      "time": 8.5,
+      "voiceness": 0.0026,
+      "confidence": 0.995
+    },
+    {
+      "time": 8.55,
+      "voiceness": 0.0018,
+      "confidence": 0.996
+    },
+    {
+      "time": 8.6,
+      "voiceness": 0.0031,
+      "confidence": 0.994
+    },
+    {
+      "time": 8.65,
+      "voiceness": 0.0017,
+      "confidence": 0.997
+    },
+    {
+      "time": 8.7,
+      "voiceness": 0.0046,
+      "confidence": 0.991
+    },
+    {
+      "time": 8.75,
+      "voiceness": 0.0023,
+      "confidence": 0.995
+    },
+    {
+      "time": 8.8,
+      "voiceness": 0.0024,
+      "confidence": 0.995
+    },
+    {
+      "time": 8.85,
+      "voiceness": 0.0022,
+      "confidence": 0.996
+    },
+    {
+      "time": 8.9,
+      "voiceness": 0.0015,
+      "confidence": 0.997
+    },
+    {
+      "time": 8.95,
+      "voiceness": 0.002,
+      "confidence": 0.996
+    },
+    {
+      "time": 9.0,
+      "voiceness": 0.0026,
+      "confidence": 0.995
+    },
+    {
+      "time": 9.05,
+      "voiceness": 0.0011,
+      "confidence": 0.998
+    },
+    {
+      "time": 9.1,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.15,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.2,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.25,
+      "voiceness": 0.0006,
+      "confidence": 0.999
+    },
+    {
+      "time": 9.3,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.35,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.4,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.45,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.5,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.55,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.6,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.65,
+      "voiceness": 0.001,
+      "confidence": 0.998
+    },
+    {
+      "time": 9.7,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 9.75,
+      "voiceness": 0.0003,
+      "confidence": 0.999
+    },
+    {
+      "time": 9.8,
+      "voiceness": 0.0003,
+      "confidence": 0.999
+    },
+    {
+      "time": 9.85,
+      "voiceness": 0.0023,
+      "confidence": 0.995
+    },
+    {
+      "time": 9.9,
+      "voiceness": 0.0029,
+      "confidence": 0.994
+    },
+    {
+      "time": 9.95,
+      "voiceness": 0.0047,
+      "confidence": 0.991
+    },
+    {
+      "time": 10.0,
+      "voiceness": 0.0006,
+      "confidence": 0.999
+    },
+    {
+      "time": 10.05,
+      "voiceness": 0.0022,
+      "confidence": 0.996
+    },
+    {
+      "time": 10.1,
+      "voiceness": 0.002,
+      "confidence": 0.996
+    },
+    {
+      "time": 10.15,
+      "voiceness": 0.0015,
+      "confidence": 0.997
+    },
+    {
+      "time": 10.2,
+      "voiceness": 0.0022,
+      "confidence": 0.996
+    },
+    {
+      "time": 10.25,
+      "voiceness": 0.0056,
+      "confidence": 0.989
+    },
+    {
+      "time": 10.3,
+      "voiceness": 0.0077,
+      "confidence": 0.985
+    },
+    {
+      "time": 10.35,
+      "voiceness": 0.0125,
+      "confidence": 0.975
+    },
+    {
+      "time": 10.4,
+      "voiceness": 0.0109,
+      "confidence": 0.978
+    },
+    {
+      "time": 10.45,
+      "voiceness": 0.0092,
+      "confidence": 0.982
+    },
+    {
+      "time": 10.5,
+      "voiceness": 0.009,
+      "confidence": 0.982
+    },
+    {
+      "time": 10.55,
+      "voiceness": 0.0068,
+      "confidence": 0.986
+    },
+    {
+      "time": 10.6,
+      "voiceness": 0.0078,
+      "confidence": 0.984
+    },
+    {
+      "time": 10.65,
+      "voiceness": 0.0094,
+      "confidence": 0.981
+    },
+    {
+      "time": 10.7,
+      "voiceness": 0.0096,
+      "confidence": 0.981
+    },
+    {
+      "time": 10.75,
+      "voiceness": 0.0102,
+      "confidence": 0.98
+    },
+    {
+      "time": 10.8,
+      "voiceness": 0.0074,
+      "confidence": 0.985
+    },
+    {
+      "time": 10.85,
+      "voiceness": 0.0082,
+      "confidence": 0.984
+    },
+    {
+      "time": 10.9,
+      "voiceness": 0.0112,
+      "confidence": 0.978
+    },
+    {
+      "time": 10.95,
+      "voiceness": 0.019,
+      "confidence": 0.962
+    },
+    {
+      "time": 11.0,
+      "voiceness": 0.014,
+      "confidence": 0.972
+    },
+    {
+      "time": 11.05,
+      "voiceness": 0.015,
+      "confidence": 0.97
+    },
+    {
+      "time": 11.1,
+      "voiceness": 0.0139,
+      "confidence": 0.972
+    },
+    {
+      "time": 11.15,
+      "voiceness": 0.0131,
+      "confidence": 0.974
+    },
+    {
+      "time": 11.2,
+      "voiceness": 0.0113,
+      "confidence": 0.977
+    },
+    {
+      "time": 11.25,
+      "voiceness": 0.0145,
+      "confidence": 0.971
+    },
+    {
+      "time": 11.3,
+      "voiceness": 0.0145,
+      "confidence": 0.971
+    },
+    {
+      "time": 11.35,
+      "voiceness": 0.0136,
+      "confidence": 0.973
+    },
+    {
+      "time": 11.4,
+      "voiceness": 0.0154,
+      "confidence": 0.969
+    },
+    {
+      "time": 11.45,
+      "voiceness": 0.0155,
+      "confidence": 0.969
+    },
+    {
+      "time": 11.5,
+      "voiceness": 0.0128,
+      "confidence": 0.974
+    },
+    {
+      "time": 11.55,
+      "voiceness": 0.008,
+      "confidence": 0.984
+    },
+    {
+      "time": 11.6,
+      "voiceness": 0.0085,
+      "confidence": 0.983
+    },
+    {
+      "time": 11.65,
+      "voiceness": 0.0094,
+      "confidence": 0.981
+    },
+    {
+      "time": 11.7,
+      "voiceness": 0.0112,
+      "confidence": 0.978
+    },
+    {
+      "time": 11.75,
+      "voiceness": 0.0077,
+      "confidence": 0.985
+    },
+    {
+      "time": 11.8,
+      "voiceness": 0.0062,
+      "confidence": 0.988
+    },
+    {
+      "time": 11.85,
+      "voiceness": 0.0067,
+      "confidence": 0.987
+    },
+    {
+      "time": 11.9,
+      "voiceness": 0.0099,
+      "confidence": 0.98
+    },
+    {
+      "time": 11.95,
+      "voiceness": 0.0122,
+      "confidence": 0.976
+    },
+    {
+      "time": 12.0,
+      "voiceness": 0.0126,
+      "confidence": 0.975
+    },
+    {
+      "time": 12.05,
+      "voiceness": 0.0096,
+      "confidence": 0.981
+    },
+    {
+      "time": 12.1,
+      "voiceness": 0.0091,
+      "confidence": 0.982
+    },
+    {
+      "time": 12.15,
+      "voiceness": 0.0083,
+      "confidence": 0.983
+    },
+    {
+      "time": 12.2,
+      "voiceness": 0.0067,
+      "confidence": 0.987
+    },
+    {
+      "time": 12.25,
+      "voiceness": 0.0088,
+      "confidence": 0.982
+    },
+    {
+      "time": 12.3,
+      "voiceness": 0.0092,
+      "confidence": 0.982
+    },
+    {
+      "time": 12.35,
+      "voiceness": 0.0118,
+      "confidence": 0.976
+    },
+    {
+      "time": 12.4,
+      "voiceness": 0.0155,
+      "confidence": 0.969
+    },
+    {
+      "time": 12.45,
+      "voiceness": 0.0106,
+      "confidence": 0.979
+    },
+    {
+      "time": 12.5,
+      "voiceness": 0.011,
+      "confidence": 0.978
+    },
+    {
+      "time": 12.55,
+      "voiceness": 0.0107,
+      "confidence": 0.979
+    },
+    {
+      "time": 12.6,
+      "voiceness": 0.0105,
+      "confidence": 0.979
+    },
+    {
+      "time": 12.65,
+      "voiceness": 0.0051,
+      "confidence": 0.99
+    },
+    {
+      "time": 12.7,
+      "voiceness": 0.0092,
+      "confidence": 0.982
+    },
+    {
+      "time": 12.75,
+      "voiceness": 0.0104,
+      "confidence": 0.979
+    },
+    {
+      "time": 12.8,
+      "voiceness": 0.0112,
+      "confidence": 0.978
+    },
+    {
+      "time": 12.85,
+      "voiceness": 0.0146,
+      "confidence": 0.971
+    },
+    {
+      "time": 12.9,
+      "voiceness": 0.0152,
+      "confidence": 0.97
+    },
+    {
+      "time": 12.95,
+      "voiceness": 0.0177,
+      "confidence": 0.965
+    },
+    {
+      "time": 13.0,
+      "voiceness": 0.0179,
+      "confidence": 0.964
+    },
+    {
+      "time": 13.05,
+      "voiceness": 0.0201,
+      "confidence": 0.96
+    },
+    {
+      "time": 13.1,
+      "voiceness": 0.0194,
+      "confidence": 0.961
+    },
+    {
+      "time": 13.15,
+      "voiceness": 0.0147,
+      "confidence": 0.971
+    },
+    {
+      "time": 13.2,
+      "voiceness": 0.0181,
+      "confidence": 0.964
+    },
+    {
+      "time": 13.25,
+      "voiceness": 0.0221,
+      "confidence": 0.956
+    },
+    {
+      "time": 13.3,
+      "voiceness": 0.0191,
+      "confidence": 0.962
+    },
+    {
+      "time": 13.35,
+      "voiceness": 0.0166,
+      "confidence": 0.967
+    },
+    {
+      "time": 13.4,
+      "voiceness": 0.0211,
+      "confidence": 0.958
+    },
+    {
+      "time": 13.45,
+      "voiceness": 0.0243,
+      "confidence": 0.951
+    },
+    {
+      "time": 13.5,
+      "voiceness": 0.0258,
+      "confidence": 0.948
+    },
+    {
+      "time": 13.55,
+      "voiceness": 0.0281,
+      "confidence": 0.944
+    },
+    {
+      "time": 13.6,
+      "voiceness": 0.0326,
+      "confidence": 0.935
+    },
+    {
+      "time": 13.65,
+      "voiceness": 0.0371,
+      "confidence": 0.926
+    },
+    {
+      "time": 13.7,
+      "voiceness": 0.0347,
+      "confidence": 0.931
+    },
+    {
+      "time": 13.75,
+      "voiceness": 0.0342,
+      "confidence": 0.932
+    },
+    {
+      "time": 13.8,
+      "voiceness": 0.0366,
+      "confidence": 0.927
+    },
+    {
+      "time": 13.85,
+      "voiceness": 0.0372,
+      "confidence": 0.926
+    },
+    {
+      "time": 13.9,
+      "voiceness": 0.0358,
+      "confidence": 0.928
+    },
+    {
+      "time": 13.95,
+      "voiceness": 0.0364,
+      "confidence": 0.927
+    },
+    {
+      "time": 14.0,
+      "voiceness": 0.0422,
+      "confidence": 0.916
+    },
+    {
+      "time": 14.05,
+      "voiceness": 0.0366,
+      "confidence": 0.927
+    },
+    {
+      "time": 14.1,
+      "voiceness": 0.0448,
+      "confidence": 0.91
+    },
+    {
+      "time": 14.15,
+      "voiceness": 0.0431,
+      "confidence": 0.914
+    },
+    {
+      "time": 14.2,
+      "voiceness": 0.0399,
+      "confidence": 0.92
+    },
+    {
+      "time": 14.25,
+      "voiceness": 0.0495,
+      "confidence": 0.901
+    },
+    {
+      "time": 14.3,
+      "voiceness": 0.0478,
+      "confidence": 0.904
+    },
+    {
+      "time": 14.35,
+      "voiceness": 0.049,
+      "confidence": 0.902
+    },
+    {
+      "time": 14.4,
+      "voiceness": 0.0594,
+      "confidence": 0.881
+    },
+    {
+      "time": 14.45,
+      "voiceness": 0.0589,
+      "confidence": 0.882
+    },
+    {
+      "time": 14.5,
+      "voiceness": 0.0622,
+      "confidence": 0.876
+    },
+    {
+      "time": 14.55,
+      "voiceness": 0.0568,
+      "confidence": 0.886
+    },
+    {
+      "time": 14.6,
+      "voiceness": 0.0598,
+      "confidence": 0.88
+    },
+    {
+      "time": 14.65,
+      "voiceness": 0.0688,
+      "confidence": 0.862
+    },
+    {
+      "time": 14.7,
+      "voiceness": 0.0797,
+      "confidence": 0.841
+    },
+    {
+      "time": 14.75,
+      "voiceness": 0.0876,
+      "confidence": 0.825
+    },
+    {
+      "time": 14.8,
+      "voiceness": 0.087,
+      "confidence": 0.826
+    },
+    {
+      "time": 14.85,
+      "voiceness": 0.0768,
+      "confidence": 0.846
+    },
+    {
+      "time": 14.9,
+      "voiceness": 0.064,
+      "confidence": 0.872
+    },
+    {
+      "time": 14.95,
+      "voiceness": 0.0722,
+      "confidence": 0.856
+    },
+    {
+      "time": 15.0,
+      "voiceness": 0.0746,
+      "confidence": 0.851
+    },
+    {
+      "time": 15.05,
+      "voiceness": 0.0719,
+      "confidence": 0.856
+    },
+    {
+      "time": 15.1,
+      "voiceness": 0.0756,
+      "confidence": 0.849
+    },
+    {
+      "time": 15.15,
+      "voiceness": 0.0913,
+      "confidence": 0.817
+    },
+    {
+      "time": 15.2,
+      "voiceness": 0.0847,
+      "confidence": 0.831
+    },
+    {
+      "time": 15.25,
+      "voiceness": 0.0766,
+      "confidence": 0.847
+    },
+    {
+      "time": 15.3,
+      "voiceness": 0.0713,
+      "confidence": 0.857
+    },
+    {
+      "time": 15.35,
+      "voiceness": 0.0766,
+      "confidence": 0.847
+    },
+    {
+      "time": 15.4,
+      "voiceness": 0.0796,
+      "confidence": 0.841
+    },
+    {
+      "time": 15.45,
+      "voiceness": 0.0719,
+      "confidence": 0.856
+    },
+    {
+      "time": 15.5,
+      "voiceness": 0.0754,
+      "confidence": 0.849
+    },
+    {
+      "time": 15.55,
+      "voiceness": 0.0711,
+      "confidence": 0.858
+    },
+    {
+      "time": 15.6,
+      "voiceness": 0.0743,
+      "confidence": 0.851
+    },
+    {
+      "time": 15.65,
+      "voiceness": 0.0936,
+      "confidence": 0.813
+    },
+    {
+      "time": 15.7,
+      "voiceness": 0.0948,
+      "confidence": 0.81
+    },
+    {
+      "time": 15.75,
+      "voiceness": 0.0818,
+      "confidence": 0.836
+    },
+    {
+      "time": 15.8,
+      "voiceness": 0.0873,
+      "confidence": 0.825
+    },
+    {
+      "time": 15.85,
+      "voiceness": 0.0969,
+      "confidence": 0.806
+    },
+    {
+      "time": 15.9,
+      "voiceness": 0.2799,
+      "confidence": 0.44
+    },
+    {
+      "time": 15.95,
+      "voiceness": 0.39,
+      "confidence": 0.22
+    },
+    {
+      "time": 16.0,
+      "voiceness": 0.3279,
+      "confidence": 0.344
+    },
+    {
+      "time": 16.05,
+      "voiceness": 0.6238,
+      "confidence": 0.248
+    },
+    {
+      "time": 16.1,
+      "voiceness": 0.2995,
+      "confidence": 0.401
+    },
+    {
+      "time": 16.15,
+      "voiceness": 0.3047,
+      "confidence": 0.391
+    },
+    {
+      "time": 16.2,
+      "voiceness": 0.3082,
+      "confidence": 0.384
+    },
+    {
+      "time": 16.25,
+      "voiceness": 0.334,
+      "confidence": 0.332
+    },
+    {
+      "time": 16.3,
+      "voiceness": 0.372,
+      "confidence": 0.256
+    },
+    {
+      "time": 16.35,
+      "voiceness": 0.5013,
+      "confidence": 0.003
+    },
+    {
+      "time": 16.4,
+      "voiceness": 0.3112,
+      "confidence": 0.378
+    },
+    {
+      "time": 16.45,
+      "voiceness": 0.3099,
+      "confidence": 0.38
+    },
+    {
+      "time": 16.5,
+      "voiceness": 0.2503,
+      "confidence": 0.499
+    },
+    {
+      "time": 16.55,
+      "voiceness": 0.607,
+      "confidence": 0.214
+    },
+    {
+      "time": 16.6,
+      "voiceness": 0.3531,
+      "confidence": 0.294
+    },
+    {
+      "time": 16.65,
+      "voiceness": 0.694,
+      "confidence": 0.388
+    },
+    {
+      "time": 16.7,
+      "voiceness": 0.2979,
+      "confidence": 0.404
+    },
+    {
+      "time": 16.75,
+      "voiceness": 0.4543,
+      "confidence": 0.091
+    },
+    {
+      "time": 16.8,
+      "voiceness": 0.3506,
+      "confidence": 0.299
+    },
+    {
+      "time": 16.85,
+      "voiceness": 0.7565,
+      "confidence": 0.513
+    },
+    {
+      "time": 16.9,
+      "voiceness": 0.7907,
+      "confidence": 0.581
+    },
+    {
+      "time": 16.95,
+      "voiceness": 0.8002,
+      "confidence": 0.6
+    },
+    {
+      "time": 17.0,
+      "voiceness": 0.5414,
+      "confidence": 0.083
+    },
+    {
+      "time": 17.05,
+      "voiceness": 0.7483,
+      "confidence": 0.497
+    },
+    {
+      "time": 17.1,
+      "voiceness": 0.3372,
+      "confidence": 0.326
+    },
+    {
+      "time": 17.15,
+      "voiceness": 0.464,
+      "confidence": 0.072
+    },
+    {
+      "time": 17.2,
+      "voiceness": 0.4396,
+      "confidence": 0.121
+    },
+    {
+      "time": 17.25,
+      "voiceness": 0.3405,
+      "confidence": 0.319
+    },
+    {
+      "time": 17.3,
+      "voiceness": 0.3002,
+      "confidence": 0.4
+    },
+    {
+      "time": 17.35,
+      "voiceness": 0.3165,
+      "confidence": 0.367
+    },
+    {
+      "time": 17.4,
+      "voiceness": 0.5141,
+      "confidence": 0.028
+    },
+    {
+      "time": 17.45,
+      "voiceness": 0.5277,
+      "confidence": 0.055
+    },
+    {
+      "time": 17.5,
+      "voiceness": 0.4273,
+      "confidence": 0.145
+    },
+    {
+      "time": 17.55,
+      "voiceness": 0.4348,
+      "confidence": 0.13
+    },
+    {
+      "time": 17.6,
+      "voiceness": 0.3547,
+      "confidence": 0.291
+    },
+    {
+      "time": 17.65,
+      "voiceness": 0.7557,
+      "confidence": 0.511
+    },
+    {
+      "time": 17.7,
+      "voiceness": 0.67,
+      "confidence": 0.34
+    },
+    {
+      "time": 17.75,
+      "voiceness": 0.6761,
+      "confidence": 0.352
+    },
+    {
+      "time": 17.8,
+      "voiceness": 0.7164,
+      "confidence": 0.433
+    },
+    {
+      "time": 17.85,
+      "voiceness": 0.6762,
+      "confidence": 0.352
+    },
+    {
+      "time": 17.9,
+      "voiceness": 0.7053,
+      "confidence": 0.411
+    },
+    {
+      "time": 17.95,
+      "voiceness": 0.7158,
+      "confidence": 0.432
+    },
+    {
+      "time": 18.0,
+      "voiceness": 0.669,
+      "confidence": 0.338
+    },
+    {
+      "time": 18.05,
+      "voiceness": 0.7107,
+      "confidence": 0.421
+    },
+    {
+      "time": 18.1,
+      "voiceness": 0.7309,
+      "confidence": 0.462
+    },
+    {
+      "time": 18.15,
+      "voiceness": 0.314,
+      "confidence": 0.372
+    },
+    {
+      "time": 18.2,
+      "voiceness": 0.6612,
+      "confidence": 0.322
+    },
+    {
+      "time": 18.25,
+      "voiceness": 0.3236,
+      "confidence": 0.353
+    },
+    {
+      "time": 18.3,
+      "voiceness": 0.4528,
+      "confidence": 0.094
+    },
+    {
+      "time": 18.35,
+      "voiceness": 0.3648,
+      "confidence": 0.27
+    },
+    {
+      "time": 18.4,
+      "voiceness": 0.7166,
+      "confidence": 0.433
+    },
+    {
+      "time": 18.45,
+      "voiceness": 0.6824,
+      "confidence": 0.365
+    },
+    {
+      "time": 18.5,
+      "voiceness": 0.6628,
+      "confidence": 0.326
+    },
+    {
+      "time": 18.55,
+      "voiceness": 0.6459,
+      "confidence": 0.292
+    },
+    {
+      "time": 18.6,
+      "voiceness": 0.6397,
+      "confidence": 0.279
+    },
+    {
+      "time": 18.65,
+      "voiceness": 0.1952,
+      "confidence": 0.61
+    },
+    {
+      "time": 18.7,
+      "voiceness": 0.1986,
+      "confidence": 0.603
+    },
+    {
+      "time": 18.75,
+      "voiceness": 0.3398,
+      "confidence": 0.32
+    },
+    {
+      "time": 18.8,
+      "voiceness": 0.212,
+      "confidence": 0.576
+    },
+    {
+      "time": 18.85,
+      "voiceness": 0.2519,
+      "confidence": 0.496
+    },
+    {
+      "time": 18.9,
+      "voiceness": 0.2761,
+      "confidence": 0.448
+    },
+    {
+      "time": 18.95,
+      "voiceness": 0.283,
+      "confidence": 0.434
+    },
+    {
+      "time": 19.0,
+      "voiceness": 0.2678,
+      "confidence": 0.464
+    },
+    {
+      "time": 19.05,
+      "voiceness": 0.2223,
+      "confidence": 0.555
+    },
+    {
+      "time": 19.1,
+      "voiceness": 0.2086,
+      "confidence": 0.583
+    },
+    {
+      "time": 19.15,
+      "voiceness": 0.3181,
+      "confidence": 0.364
+    },
+    {
+      "time": 19.2,
+      "voiceness": 0.3157,
+      "confidence": 0.369
+    },
+    {
+      "time": 19.25,
+      "voiceness": 0.2996,
+      "confidence": 0.401
+    },
+    {
+      "time": 19.3,
+      "voiceness": 0.523,
+      "confidence": 0.046
+    },
+    {
+      "time": 19.35,
+      "voiceness": 0.7819,
+      "confidence": 0.564
+    },
+    {
+      "time": 19.4,
+      "voiceness": 0.7381,
+      "confidence": 0.476
+    },
+    {
+      "time": 19.45,
+      "voiceness": 0.7513,
+      "confidence": 0.503
+    },
+    {
+      "time": 19.5,
+      "voiceness": 0.2537,
+      "confidence": 0.493
+    },
+    {
+      "time": 19.55,
+      "voiceness": 0.2341,
+      "confidence": 0.532
+    },
+    {
+      "time": 19.6,
+      "voiceness": 0.3858,
+      "confidence": 0.228
+    },
+    {
+      "time": 19.65,
+      "voiceness": 0.7081,
+      "confidence": 0.416
+    },
+    {
+      "time": 19.7,
+      "voiceness": 0.681,
+      "confidence": 0.362
+    },
+    {
+      "time": 19.75,
+      "voiceness": 0.7535,
+      "confidence": 0.507
+    },
+    {
+      "time": 19.8,
+      "voiceness": 0.6991,
+      "confidence": 0.398
+    },
+    {
+      "time": 19.85,
+      "voiceness": 0.8037,
+      "confidence": 0.607
+    },
+    {
+      "time": 19.9,
+      "voiceness": 0.3661,
+      "confidence": 0.268
+    },
+    {
+      "time": 19.95,
+      "voiceness": 0.6901,
+      "confidence": 0.38
+    },
+    {
+      "time": 20.0,
+      "voiceness": 0.7289,
+      "confidence": 0.458
+    },
+    {
+      "time": 20.05,
+      "voiceness": 0.3564,
+      "confidence": 0.287
+    },
+    {
+      "time": 20.1,
+      "voiceness": 0.7356,
+      "confidence": 0.471
+    },
+    {
+      "time": 20.15,
+      "voiceness": 0.7031,
+      "confidence": 0.406
+    },
+    {
+      "time": 20.2,
+      "voiceness": 0.6578,
+      "confidence": 0.316
+    },
+    {
+      "time": 20.25,
+      "voiceness": 0.6942,
+      "confidence": 0.388
+    },
+    {
+      "time": 20.3,
+      "voiceness": 0.8086,
+      "confidence": 0.617
+    },
+    {
+      "time": 20.35,
+      "voiceness": 0.357,
+      "confidence": 0.286
+    },
+    {
+      "time": 20.4,
+      "voiceness": 0.3961,
+      "confidence": 0.208
+    },
+    {
+      "time": 20.45,
+      "voiceness": 0.2714,
+      "confidence": 0.457
+    },
+    {
+      "time": 20.5,
+      "voiceness": 0.5198,
+      "confidence": 0.04
+    },
+    {
+      "time": 20.55,
+      "voiceness": 0.2967,
+      "confidence": 0.407
+    },
+    {
+      "time": 20.6,
+      "voiceness": 0.3886,
+      "confidence": 0.223
+    },
+    {
+      "time": 20.65,
+      "voiceness": 0.2184,
+      "confidence": 0.563
+    },
+    {
+      "time": 20.7,
+      "voiceness": 0.3691,
+      "confidence": 0.262
+    },
+    {
+      "time": 20.75,
+      "voiceness": 0.3387,
+      "confidence": 0.323
+    },
+    {
+      "time": 20.8,
+      "voiceness": 0.3523,
+      "confidence": 0.295
+    },
+    {
+      "time": 20.85,
+      "voiceness": 0.4298,
+      "confidence": 0.14
+    },
+    {
+      "time": 20.9,
+      "voiceness": 0.7187,
+      "confidence": 0.437
+    },
+    {
+      "time": 20.95,
+      "voiceness": 0.6916,
+      "confidence": 0.383
+    },
+    {
+      "time": 21.0,
+      "voiceness": 0.3814,
+      "confidence": 0.237
+    },
+    {
+      "time": 21.05,
+      "voiceness": 0.5119,
+      "confidence": 0.024
+    },
+    {
+      "time": 21.1,
+      "voiceness": 0.5396,
+      "confidence": 0.079
+    },
+    {
+      "time": 21.15,
+      "voiceness": 0.3942,
+      "confidence": 0.212
+    },
+    {
+      "time": 21.2,
+      "voiceness": 0.3,
+      "confidence": 0.4
+    },
+    {
+      "time": 21.25,
+      "voiceness": 0.5198,
+      "confidence": 0.04
+    },
+    {
+      "time": 21.3,
+      "voiceness": 0.3202,
+      "confidence": 0.36
+    },
+    {
+      "time": 21.35,
+      "voiceness": 0.7675,
+      "confidence": 0.535
+    },
+    {
+      "time": 21.4,
+      "voiceness": 0.767,
+      "confidence": 0.534
+    },
+    {
+      "time": 21.45,
+      "voiceness": 0.7356,
+      "confidence": 0.471
+    },
+    {
+      "time": 21.5,
+      "voiceness": 0.8049,
+      "confidence": 0.61
+    },
+    {
+      "time": 21.55,
+      "voiceness": 0.7782,
+      "confidence": 0.556
+    },
+    {
+      "time": 21.6,
+      "voiceness": 0.6436,
+      "confidence": 0.287
+    },
+    {
+      "time": 21.65,
+      "voiceness": 0.6919,
+      "confidence": 0.384
+    },
+    {
+      "time": 21.7,
+      "voiceness": 0.6926,
+      "confidence": 0.385
+    },
+    {
+      "time": 21.75,
+      "voiceness": 0.3049,
+      "confidence": 0.39
+    },
+    {
+      "time": 21.8,
+      "voiceness": 0.3544,
+      "confidence": 0.291
+    },
+    {
+      "time": 21.85,
+      "voiceness": 0.2729,
+      "confidence": 0.454
+    },
+    {
+      "time": 21.9,
+      "voiceness": 0.3311,
+      "confidence": 0.338
+    },
+    {
+      "time": 21.95,
+      "voiceness": 0.2717,
+      "confidence": 0.457
+    },
+    {
+      "time": 22.0,
+      "voiceness": 0.2603,
+      "confidence": 0.479
+    },
+    {
+      "time": 22.05,
+      "voiceness": 0.2621,
+      "confidence": 0.476
+    },
+    {
+      "time": 22.1,
+      "voiceness": 0.2363,
+      "confidence": 0.527
+    },
+    {
+      "time": 22.15,
+      "voiceness": 0.222,
+      "confidence": 0.556
+    },
+    {
+      "time": 22.2,
+      "voiceness": 0.2532,
+      "confidence": 0.494
+    },
+    {
+      "time": 22.25,
+      "voiceness": 0.2285,
+      "confidence": 0.543
+    },
+    {
+      "time": 22.3,
+      "voiceness": 0.1838,
+      "confidence": 0.632
+    },
+    {
+      "time": 22.35,
+      "voiceness": 0.2429,
+      "confidence": 0.514
+    },
+    {
+      "time": 22.4,
+      "voiceness": 0.1998,
+      "confidence": 0.6
+    },
+    {
+      "time": 22.45,
+      "voiceness": 0.1563,
+      "confidence": 0.687
+    },
+    {
+      "time": 22.5,
+      "voiceness": 0.1659,
+      "confidence": 0.668
+    },
+    {
+      "time": 22.55,
+      "voiceness": 0.1429,
+      "confidence": 0.714
+    },
+    {
+      "time": 22.6,
+      "voiceness": 0.1299,
+      "confidence": 0.74
+    },
+    {
+      "time": 22.65,
+      "voiceness": 0.1162,
+      "confidence": 0.768
+    },
+    {
+      "time": 22.7,
+      "voiceness": 0.1169,
+      "confidence": 0.766
+    },
+    {
+      "time": 22.75,
+      "voiceness": 0.1232,
+      "confidence": 0.754
+    },
+    {
+      "time": 22.8,
+      "voiceness": 0.1239,
+      "confidence": 0.752
+    },
+    {
+      "time": 22.85,
+      "voiceness": 0.1865,
+      "confidence": 0.627
+    },
+    {
+      "time": 22.9,
+      "voiceness": 0.0906,
+      "confidence": 0.819
+    },
+    {
+      "time": 22.95,
+      "voiceness": 0.089,
+      "confidence": 0.822
+    },
+    {
+      "time": 23.0,
+      "voiceness": 0.0782,
+      "confidence": 0.844
+    },
+    {
+      "time": 23.05,
+      "voiceness": 0.091,
+      "confidence": 0.818
+    },
+    {
+      "time": 23.1,
+      "voiceness": 0.0951,
+      "confidence": 0.81
+    },
+    {
+      "time": 23.15,
+      "voiceness": 0.1748,
+      "confidence": 0.65
+    },
+    {
+      "time": 23.2,
+      "voiceness": 0.0763,
+      "confidence": 0.847
+    },
+    {
+      "time": 23.25,
+      "voiceness": 0.0732,
+      "confidence": 0.854
+    },
+    {
+      "time": 23.3,
+      "voiceness": 0.0898,
+      "confidence": 0.82
+    },
+    {
+      "time": 23.35,
+      "voiceness": 0.0656,
+      "confidence": 0.869
+    },
+    {
+      "time": 23.4,
+      "voiceness": 0.0667,
+      "confidence": 0.867
+    },
+    {
+      "time": 23.45,
+      "voiceness": 0.0639,
+      "confidence": 0.872
+    },
+    {
+      "time": 23.5,
+      "voiceness": 0.0693,
+      "confidence": 0.861
+    },
+    {
+      "time": 23.55,
+      "voiceness": 0.0809,
+      "confidence": 0.838
+    },
+    {
+      "time": 23.6,
+      "voiceness": 0.0664,
+      "confidence": 0.867
+    },
+    {
+      "time": 23.65,
+      "voiceness": 0.0773,
+      "confidence": 0.845
+    },
+    {
+      "time": 23.7,
+      "voiceness": 0.2237,
+      "confidence": 0.553
+    },
+    {
+      "time": 23.75,
+      "voiceness": 0.0804,
+      "confidence": 0.839
+    },
+    {
+      "time": 23.8,
+      "voiceness": 0.0642,
+      "confidence": 0.872
+    },
+    {
+      "time": 23.85,
+      "voiceness": 0.0653,
+      "confidence": 0.869
+    },
+    {
+      "time": 23.9,
+      "voiceness": 0.1958,
+      "confidence": 0.608
+    },
+    {
+      "time": 23.95,
+      "voiceness": 0.0593,
+      "confidence": 0.881
+    },
+    {
+      "time": 24.0,
+      "voiceness": 0.0962,
+      "confidence": 0.808
+    },
+    {
+      "time": 24.05,
+      "voiceness": 0.0602,
+      "confidence": 0.88
+    },
+    {
+      "time": 24.1,
+      "voiceness": 0.0605,
+      "confidence": 0.879
+    },
+    {
+      "time": 24.15,
+      "voiceness": 0.0673,
+      "confidence": 0.865
+    },
+    {
+      "time": 24.2,
+      "voiceness": 0.0804,
+      "confidence": 0.839
+    },
+    {
+      "time": 24.25,
+      "voiceness": 0.1641,
+      "confidence": 0.672
+    },
+    {
+      "time": 24.3,
+      "voiceness": 0.1233,
+      "confidence": 0.753
+    },
+    {
+      "time": 24.35,
+      "voiceness": 0.1483,
+      "confidence": 0.703
+    },
+    {
+      "time": 24.4,
+      "voiceness": 0.1708,
+      "confidence": 0.658
+    },
+    {
+      "time": 24.45,
+      "voiceness": 0.1784,
+      "confidence": 0.643
+    },
+    {
+      "time": 24.5,
+      "voiceness": 0.3134,
+      "confidence": 0.373
+    },
+    {
+      "time": 24.55,
+      "voiceness": 0.1856,
+      "confidence": 0.629
+    },
+    {
+      "time": 24.6,
+      "voiceness": 0.1135,
+      "confidence": 0.773
+    },
+    {
+      "time": 24.65,
+      "voiceness": 0.1528,
+      "confidence": 0.694
+    },
+    {
+      "time": 24.7,
+      "voiceness": 0.1268,
+      "confidence": 0.746
+    },
+    {
+      "time": 24.75,
+      "voiceness": 0.1864,
+      "confidence": 0.627
+    },
+    {
+      "time": 24.8,
+      "voiceness": 0.1194,
+      "confidence": 0.761
+    },
+    {
+      "time": 24.85,
+      "voiceness": 0.1819,
+      "confidence": 0.636
+    },
+    {
+      "time": 24.9,
+      "voiceness": 0.3007,
+      "confidence": 0.399
+    },
+    {
+      "time": 24.95,
+      "voiceness": 0.3126,
+      "confidence": 0.375
+    },
+    {
+      "time": 25.0,
+      "voiceness": 0.3176,
+      "confidence": 0.365
+    },
+    {
+      "time": 25.05,
+      "voiceness": 0.3268,
+      "confidence": 0.346
+    },
+    {
+      "time": 25.1,
+      "voiceness": 0.7716,
+      "confidence": 0.543
+    },
+    {
+      "time": 25.15,
+      "voiceness": 0.775,
+      "confidence": 0.55
+    },
+    {
+      "time": 25.2,
+      "voiceness": 0.7114,
+      "confidence": 0.423
+    },
+    {
+      "time": 25.25,
+      "voiceness": 0.677,
+      "confidence": 0.354
+    },
+    {
+      "time": 25.3,
+      "voiceness": 0.6796,
+      "confidence": 0.359
+    },
+    {
+      "time": 25.35,
+      "voiceness": 0.2834,
+      "confidence": 0.433
+    },
+    {
+      "time": 25.4,
+      "voiceness": 0.2721,
+      "confidence": 0.456
+    },
+    {
+      "time": 25.45,
+      "voiceness": 0.3625,
+      "confidence": 0.275
+    },
+    {
+      "time": 25.5,
+      "voiceness": 0.4372,
+      "confidence": 0.126
+    },
+    {
+      "time": 25.55,
+      "voiceness": 0.3774,
+      "confidence": 0.245
+    },
+    {
+      "time": 25.6,
+      "voiceness": 0.4766,
+      "confidence": 0.047
+    },
+    {
+      "time": 25.65,
+      "voiceness": 0.4108,
+      "confidence": 0.178
+    },
+    {
+      "time": 25.7,
+      "voiceness": 0.4917,
+      "confidence": 0.017
+    },
+    {
+      "time": 25.75,
+      "voiceness": 0.3124,
+      "confidence": 0.375
+    },
+    {
+      "time": 25.8,
+      "voiceness": 0.337,
+      "confidence": 0.326
+    },
+    {
+      "time": 25.85,
+      "voiceness": 0.3179,
+      "confidence": 0.364
+    },
+    {
+      "time": 25.9,
+      "voiceness": 0.3174,
+      "confidence": 0.365
+    },
+    {
+      "time": 25.95,
+      "voiceness": 0.397,
+      "confidence": 0.206
+    },
+    {
+      "time": 26.0,
+      "voiceness": 0.7789,
+      "confidence": 0.558
+    },
+    {
+      "time": 26.05,
+      "voiceness": 0.7132,
+      "confidence": 0.426
+    },
+    {
+      "time": 26.1,
+      "voiceness": 0.5242,
+      "confidence": 0.048
+    },
+    {
+      "time": 26.15,
+      "voiceness": 0.654,
+      "confidence": 0.308
+    },
+    {
+      "time": 26.2,
+      "voiceness": 0.68,
+      "confidence": 0.36
+    },
+    {
+      "time": 26.25,
+      "voiceness": 0.4446,
+      "confidence": 0.111
+    },
+    {
+      "time": 26.3,
+      "voiceness": 0.2898,
+      "confidence": 0.42
+    },
+    {
+      "time": 26.35,
+      "voiceness": 0.2658,
+      "confidence": 0.468
+    },
+    {
+      "time": 26.4,
+      "voiceness": 0.2773,
+      "confidence": 0.445
+    },
+    {
+      "time": 26.45,
+      "voiceness": 0.2629,
+      "confidence": 0.474
+    },
+    {
+      "time": 26.5,
+      "voiceness": 0.2855,
+      "confidence": 0.429
+    },
+    {
+      "time": 26.55,
+      "voiceness": 0.2666,
+      "confidence": 0.467
+    },
+    {
+      "time": 26.6,
+      "voiceness": 0.2567,
+      "confidence": 0.487
+    },
+    {
+      "time": 26.65,
+      "voiceness": 0.2616,
+      "confidence": 0.477
+    },
+    {
+      "time": 26.7,
+      "voiceness": 0.2557,
+      "confidence": 0.489
+    },
+    {
+      "time": 26.75,
+      "voiceness": 0.2671,
+      "confidence": 0.466
+    },
+    {
+      "time": 26.8,
+      "voiceness": 0.2425,
+      "confidence": 0.515
+    },
+    {
+      "time": 26.85,
+      "voiceness": 0.2588,
+      "confidence": 0.482
+    },
+    {
+      "time": 26.9,
+      "voiceness": 0.2535,
+      "confidence": 0.493
+    },
+    {
+      "time": 26.95,
+      "voiceness": 0.2681,
+      "confidence": 0.464
+    },
+    {
+      "time": 27.0,
+      "voiceness": 0.2603,
+      "confidence": 0.479
+    },
+    {
+      "time": 27.05,
+      "voiceness": 0.2619,
+      "confidence": 0.476
+    },
+    {
+      "time": 27.1,
+      "voiceness": 0.2565,
+      "confidence": 0.487
+    },
+    {
+      "time": 27.15,
+      "voiceness": 0.2515,
+      "confidence": 0.497
+    },
+    {
+      "time": 27.2,
+      "voiceness": 0.2586,
+      "confidence": 0.483
+    },
+    {
+      "time": 27.25,
+      "voiceness": 0.2422,
+      "confidence": 0.516
+    },
+    {
+      "time": 27.3,
+      "voiceness": 0.2859,
+      "confidence": 0.428
+    },
+    {
+      "time": 27.35,
+      "voiceness": 0.3389,
+      "confidence": 0.322
+    },
+    {
+      "time": 27.4,
+      "voiceness": 0.3184,
+      "confidence": 0.363
+    },
+    {
+      "time": 27.45,
+      "voiceness": 0.466,
+      "confidence": 0.068
+    },
+    {
+      "time": 27.5,
+      "voiceness": 0.4829,
+      "confidence": 0.034
+    },
+    {
+      "time": 27.55,
+      "voiceness": 0.5182,
+      "confidence": 0.036
+    },
+    {
+      "time": 27.6,
+      "voiceness": 0.7838,
+      "confidence": 0.568
+    },
+    {
+      "time": 27.65,
+      "voiceness": 0.7833,
+      "confidence": 0.567
+    },
+    {
+      "time": 27.7,
+      "voiceness": 0.7817,
+      "confidence": 0.563
+    },
+    {
+      "time": 27.75,
+      "voiceness": 0.5436,
+      "confidence": 0.087
+    },
+    {
+      "time": 27.8,
+      "voiceness": 0.7786,
+      "confidence": 0.557
+    },
+    {
+      "time": 27.85,
+      "voiceness": 0.5412,
+      "confidence": 0.082
+    },
+    {
+      "time": 27.9,
+      "voiceness": 0.5565,
+      "confidence": 0.113
+    },
+    {
+      "time": 27.95,
+      "voiceness": 0.6992,
+      "confidence": 0.398
+    },
+    {
+      "time": 28.0,
+      "voiceness": 0.6872,
+      "confidence": 0.374
+    },
+    {
+      "time": 28.05,
+      "voiceness": 0.4509,
+      "confidence": 0.098
+    },
+    {
+      "time": 28.1,
+      "voiceness": 0.4754,
+      "confidence": 0.049
+    },
+    {
+      "time": 28.15,
+      "voiceness": 0.6198,
+      "confidence": 0.24
+    },
+    {
+      "time": 28.2,
+      "voiceness": 0.3076,
+      "confidence": 0.385
+    },
+    {
+      "time": 28.25,
+      "voiceness": 0.6463,
+      "confidence": 0.293
+    },
+    {
+      "time": 28.3,
+      "voiceness": 0.6517,
+      "confidence": 0.303
+    },
+    {
+      "time": 28.35,
+      "voiceness": 0.5863,
+      "confidence": 0.173
+    },
+    {
+      "time": 28.4,
+      "voiceness": 0.6421,
+      "confidence": 0.284
+    },
+    {
+      "time": 28.45,
+      "voiceness": 0.5732,
+      "confidence": 0.146
+    },
+    {
+      "time": 28.5,
+      "voiceness": 0.2586,
+      "confidence": 0.483
+    },
+    {
+      "time": 28.55,
+      "voiceness": 0.3037,
+      "confidence": 0.393
+    },
+    {
+      "time": 28.6,
+      "voiceness": 0.4358,
+      "confidence": 0.128
+    },
+    {
+      "time": 28.65,
+      "voiceness": 0.3175,
+      "confidence": 0.365
+    },
+    {
+      "time": 28.7,
+      "voiceness": 0.4182,
+      "confidence": 0.164
+    },
+    {
+      "time": 28.75,
+      "voiceness": 0.3622,
+      "confidence": 0.276
+    },
+    {
+      "time": 28.8,
+      "voiceness": 0.3122,
+      "confidence": 0.376
+    },
+    {
+      "time": 28.85,
+      "voiceness": 0.3109,
+      "confidence": 0.378
+    },
+    {
+      "time": 28.9,
+      "voiceness": 0.2854,
+      "confidence": 0.429
+    },
+    {
+      "time": 28.95,
+      "voiceness": 0.6053,
+      "confidence": 0.211
+    },
+    {
+      "time": 29.0,
+      "voiceness": 0.4707,
+      "confidence": 0.059
+    },
+    {
+      "time": 29.05,
+      "voiceness": 0.32,
+      "confidence": 0.36
+    },
+    {
+      "time": 29.1,
+      "voiceness": 0.3197,
+      "confidence": 0.361
+    },
+    {
+      "time": 29.15,
+      "voiceness": 0.3505,
+      "confidence": 0.299
+    },
+    {
+      "time": 29.2,
+      "voiceness": 0.5376,
+      "confidence": 0.075
+    },
+    {
+      "time": 29.25,
+      "voiceness": 0.7814,
+      "confidence": 0.563
+    },
+    {
+      "time": 29.3,
+      "voiceness": 0.7887,
+      "confidence": 0.577
+    },
+    {
+      "time": 29.35,
+      "voiceness": 0.7899,
+      "confidence": 0.58
+    },
+    {
+      "time": 29.4,
+      "voiceness": 0.7801,
+      "confidence": 0.56
+    },
+    {
+      "time": 29.45,
+      "voiceness": 0.6851,
+      "confidence": 0.37
+    },
+    {
+      "time": 29.5,
+      "voiceness": 0.2697,
+      "confidence": 0.461
+    },
+    {
+      "time": 29.55,
+      "voiceness": 0.2657,
+      "confidence": 0.469
+    },
+    {
+      "time": 29.6,
+      "voiceness": 0.167,
+      "confidence": 0.666
+    },
+    {
+      "time": 29.65,
+      "voiceness": 0.1379,
+      "confidence": 0.724
+    },
+    {
+      "time": 29.7,
+      "voiceness": 0.1186,
+      "confidence": 0.763
+    },
+    {
+      "time": 29.75,
+      "voiceness": 0.2685,
+      "confidence": 0.463
+    },
+    {
+      "time": 29.8,
+      "voiceness": 0.1589,
+      "confidence": 0.682
+    },
+    {
+      "time": 29.85,
+      "voiceness": 0.1148,
+      "confidence": 0.77
+    },
+    {
+      "time": 29.9,
+      "voiceness": 0.1596,
+      "confidence": 0.681
+    },
+    {
+      "time": 29.95,
+      "voiceness": 0.1875,
+      "confidence": 0.625
+    },
+    {
+      "time": 30.0,
+      "voiceness": 0.2949,
+      "confidence": 0.41
+    },
+    {
+      "time": 30.05,
+      "voiceness": 0.6591,
+      "confidence": 0.318
+    },
+    {
+      "time": 30.1,
+      "voiceness": 0.6018,
+      "confidence": 0.204
+    },
+    {
+      "time": 30.15,
+      "voiceness": 0.6936,
+      "confidence": 0.387
+    },
+    {
+      "time": 30.2,
+      "voiceness": 0.3583,
+      "confidence": 0.283
+    },
+    {
+      "time": 30.25,
+      "voiceness": 0.6911,
+      "confidence": 0.382
+    },
+    {
+      "time": 30.3,
+      "voiceness": 0.3669,
+      "confidence": 0.266
+    },
+    {
+      "time": 30.35,
+      "voiceness": 0.2852,
+      "confidence": 0.43
+    },
+    {
+      "time": 30.4,
+      "voiceness": 0.5755,
+      "confidence": 0.151
+    },
+    {
+      "time": 30.45,
+      "voiceness": 0.1227,
+      "confidence": 0.755
+    },
+    {
+      "time": 30.5,
+      "voiceness": 0.0763,
+      "confidence": 0.847
+    },
+    {
+      "time": 30.55,
+      "voiceness": 0.0649,
+      "confidence": 0.87
+    },
+    {
+      "time": 30.6,
+      "voiceness": 0.0679,
+      "confidence": 0.864
+    },
+    {
+      "time": 30.65,
+      "voiceness": 0.0686,
+      "confidence": 0.863
+    },
+    {
+      "time": 30.7,
+      "voiceness": 0.0817,
+      "confidence": 0.837
+    },
+    {
+      "time": 30.75,
+      "voiceness": 0.075,
+      "confidence": 0.85
+    },
+    {
+      "time": 30.8,
+      "voiceness": 0.1009,
+      "confidence": 0.798
+    },
+    {
+      "time": 30.85,
+      "voiceness": 0.0877,
+      "confidence": 0.825
+    },
+    {
+      "time": 30.9,
+      "voiceness": 0.1123,
+      "confidence": 0.775
+    },
+    {
+      "time": 30.95,
+      "voiceness": 0.0992,
+      "confidence": 0.802
+    },
+    {
+      "time": 31.0,
+      "voiceness": 0.0629,
+      "confidence": 0.874
+    },
+    {
+      "time": 31.05,
+      "voiceness": 0.058,
+      "confidence": 0.884
+    },
+    {
+      "time": 31.1,
+      "voiceness": 0.0536,
+      "confidence": 0.893
+    },
+    {
+      "time": 31.15,
+      "voiceness": 0.0846,
+      "confidence": 0.831
+    },
+    {
+      "time": 31.2,
+      "voiceness": 0.0731,
+      "confidence": 0.854
+    },
+    {
+      "time": 31.25,
+      "voiceness": 0.066,
+      "confidence": 0.868
+    },
+    {
+      "time": 31.3,
+      "voiceness": 0.0592,
+      "confidence": 0.882
+    },
+    {
+      "time": 31.35,
+      "voiceness": 0.0721,
+      "confidence": 0.856
+    },
+    {
+      "time": 31.4,
+      "voiceness": 0.1186,
+      "confidence": 0.763
+    },
+    {
+      "time": 31.45,
+      "voiceness": 0.0653,
+      "confidence": 0.869
+    },
+    {
+      "time": 31.5,
+      "voiceness": 0.0618,
+      "confidence": 0.876
+    },
+    {
+      "time": 31.55,
+      "voiceness": 0.0617,
+      "confidence": 0.877
+    },
+    {
+      "time": 31.6,
+      "voiceness": 0.0685,
+      "confidence": 0.863
+    },
+    {
+      "time": 31.65,
+      "voiceness": 0.0705,
+      "confidence": 0.859
+    },
+    {
+      "time": 31.7,
+      "voiceness": 0.0735,
+      "confidence": 0.853
+    },
+    {
+      "time": 31.75,
+      "voiceness": 0.078,
+      "confidence": 0.844
+    },
+    {
+      "time": 31.8,
+      "voiceness": 0.0893,
+      "confidence": 0.821
+    },
+    {
+      "time": 31.85,
+      "voiceness": 0.1643,
+      "confidence": 0.671
+    },
+    {
+      "time": 31.9,
+      "voiceness": 0.0774,
+      "confidence": 0.845
+    },
+    {
+      "time": 31.95,
+      "voiceness": 0.0673,
+      "confidence": 0.865
+    },
+    {
+      "time": 32.0,
+      "voiceness": 0.0647,
+      "confidence": 0.871
+    },
+    {
+      "time": 32.05,
+      "voiceness": 0.0789,
+      "confidence": 0.842
+    },
+    {
+      "time": 32.1,
+      "voiceness": 0.0962,
+      "confidence": 0.808
+    },
+    {
+      "time": 32.15,
+      "voiceness": 0.0769,
+      "confidence": 0.846
+    },
+    {
+      "time": 32.2,
+      "voiceness": 0.0728,
+      "confidence": 0.854
+    },
+    {
+      "time": 32.25,
+      "voiceness": 0.0632,
+      "confidence": 0.874
+    },
+    {
+      "time": 32.3,
+      "voiceness": 0.1265,
+      "confidence": 0.747
+    },
+    {
+      "time": 32.35,
+      "voiceness": 0.0785,
+      "confidence": 0.843
+    },
+    {
+      "time": 32.4,
+      "voiceness": 0.0624,
+      "confidence": 0.875
+    },
+    {
+      "time": 32.45,
+      "voiceness": 0.0622,
+      "confidence": 0.876
+    },
+    {
+      "time": 32.5,
+      "voiceness": 0.061,
+      "confidence": 0.878
+    },
+    {
+      "time": 32.55,
+      "voiceness": 0.0805,
+      "confidence": 0.839
+    },
+    {
+      "time": 32.6,
+      "voiceness": 0.0697,
+      "confidence": 0.861
+    },
+    {
+      "time": 32.65,
+      "voiceness": 0.091,
+      "confidence": 0.818
+    },
+    {
+      "time": 32.7,
+      "voiceness": 0.0735,
+      "confidence": 0.853
+    },
+    {
+      "time": 32.75,
+      "voiceness": 0.1203,
+      "confidence": 0.759
+    },
+    {
+      "time": 32.8,
+      "voiceness": 0.0958,
+      "confidence": 0.808
+    },
+    {
+      "time": 32.85,
+      "voiceness": 0.07,
+      "confidence": 0.86
+    },
+    {
+      "time": 32.9,
+      "voiceness": 0.0641,
+      "confidence": 0.872
+    },
+    {
+      "time": 32.95,
+      "voiceness": 0.0574,
+      "confidence": 0.885
+    },
+    {
+      "time": 33.0,
+      "voiceness": 0.0952,
+      "confidence": 0.81
+    },
+    {
+      "time": 33.05,
+      "voiceness": 0.0765,
+      "confidence": 0.847
+    },
+    {
+      "time": 33.1,
+      "voiceness": 0.0743,
+      "confidence": 0.851
+    },
+    {
+      "time": 33.15,
+      "voiceness": 0.0654,
+      "confidence": 0.869
+    },
+    {
+      "time": 33.2,
+      "voiceness": 0.093,
+      "confidence": 0.814
+    },
+    {
+      "time": 33.25,
+      "voiceness": 0.1344,
+      "confidence": 0.731
+    },
+    {
+      "time": 33.3,
+      "voiceness": 0.0696,
+      "confidence": 0.861
+    },
+    {
+      "time": 33.35,
+      "voiceness": 0.0708,
+      "confidence": 0.858
+    },
+    {
+      "time": 33.4,
+      "voiceness": 0.0722,
+      "confidence": 0.856
+    },
+    {
+      "time": 33.45,
+      "voiceness": 0.0758,
+      "confidence": 0.848
+    },
+    {
+      "time": 33.5,
+      "voiceness": 0.068,
+      "confidence": 0.864
+    },
+    {
+      "time": 33.55,
+      "voiceness": 0.0697,
+      "confidence": 0.861
+    },
+    {
+      "time": 33.6,
+      "voiceness": 0.0787,
+      "confidence": 0.843
+    },
+    {
+      "time": 33.65,
+      "voiceness": 0.0758,
+      "confidence": 0.848
+    },
+    {
+      "time": 33.7,
+      "voiceness": 0.1306,
+      "confidence": 0.739
+    },
+    {
+      "time": 33.75,
+      "voiceness": 0.0789,
+      "confidence": 0.842
+    },
+    {
+      "time": 33.8,
+      "voiceness": 0.061,
+      "confidence": 0.878
+    },
+    {
+      "time": 33.85,
+      "voiceness": 0.0602,
+      "confidence": 0.88
+    },
+    {
+      "time": 33.9,
+      "voiceness": 0.0806,
+      "confidence": 0.839
+    },
+    {
+      "time": 33.95,
+      "voiceness": 0.0866,
+      "confidence": 0.827
+    },
+    {
+      "time": 34.0,
+      "voiceness": 0.0783,
+      "confidence": 0.843
+    },
+    {
+      "time": 34.05,
+      "voiceness": 0.0761,
+      "confidence": 0.848
+    },
+    {
+      "time": 34.1,
+      "voiceness": 0.0696,
+      "confidence": 0.861
+    },
+    {
+      "time": 34.15,
+      "voiceness": 0.1194,
+      "confidence": 0.761
+    },
+    {
+      "time": 34.2,
+      "voiceness": 0.0719,
+      "confidence": 0.856
+    },
+    {
+      "time": 34.25,
+      "voiceness": 0.0681,
+      "confidence": 0.864
+    },
+    {
+      "time": 34.3,
+      "voiceness": 0.069,
+      "confidence": 0.862
+    },
+    {
+      "time": 34.35,
+      "voiceness": 0.0674,
+      "confidence": 0.865
+    },
+    {
+      "time": 34.4,
+      "voiceness": 0.0757,
+      "confidence": 0.849
+    },
+    {
+      "time": 34.45,
+      "voiceness": 0.0755,
+      "confidence": 0.849
+    },
+    {
+      "time": 34.5,
+      "voiceness": 0.0927,
+      "confidence": 0.815
+    },
+    {
+      "time": 34.55,
+      "voiceness": 0.0874,
+      "confidence": 0.825
+    },
+    {
+      "time": 34.6,
+      "voiceness": 0.1266,
+      "confidence": 0.747
+    },
+    {
+      "time": 34.65,
+      "voiceness": 0.0848,
+      "confidence": 0.83
+    },
+    {
+      "time": 34.7,
+      "voiceness": 0.0657,
+      "confidence": 0.869
+    },
+    {
+      "time": 34.75,
+      "voiceness": 0.0639,
+      "confidence": 0.872
+    },
+    {
+      "time": 34.8,
+      "voiceness": 0.0589,
+      "confidence": 0.882
+    },
+    {
+      "time": 34.85,
+      "voiceness": 0.0847,
+      "confidence": 0.831
+    },
+    {
+      "time": 34.9,
+      "voiceness": 0.0686,
+      "confidence": 0.863
+    },
+    {
+      "time": 34.95,
+      "voiceness": 0.0678,
+      "confidence": 0.864
+    },
+    {
+      "time": 35.0,
+      "voiceness": 0.0542,
+      "confidence": 0.892
+    },
+    {
+      "time": 35.05,
+      "voiceness": 0.083,
+      "confidence": 0.834
+    },
+    {
+      "time": 35.1,
+      "voiceness": 0.1006,
+      "confidence": 0.799
+    },
+    {
+      "time": 35.15,
+      "voiceness": 0.0607,
+      "confidence": 0.879
+    },
+    {
+      "time": 35.2,
+      "voiceness": 0.0614,
+      "confidence": 0.877
+    },
+    {
+      "time": 35.25,
+      "voiceness": 0.0618,
+      "confidence": 0.876
+    },
+    {
+      "time": 35.3,
+      "voiceness": 0.0874,
+      "confidence": 0.825
+    },
+    {
+      "time": 35.35,
+      "voiceness": 0.0731,
+      "confidence": 0.854
+    },
+    {
+      "time": 35.4,
+      "voiceness": 0.0697,
+      "confidence": 0.861
+    },
+    {
+      "time": 35.45,
+      "voiceness": 0.0725,
+      "confidence": 0.855
+    },
+    {
+      "time": 35.5,
+      "voiceness": 0.0926,
+      "confidence": 0.815
+    },
+    {
+      "time": 35.55,
+      "voiceness": 0.1493,
+      "confidence": 0.701
+    },
+    {
+      "time": 35.6,
+      "voiceness": 0.0668,
+      "confidence": 0.866
+    },
+    {
+      "time": 35.65,
+      "voiceness": 0.057,
+      "confidence": 0.886
+    },
+    {
+      "time": 35.7,
+      "voiceness": 0.055,
+      "confidence": 0.89
+    },
+    {
+      "time": 35.75,
+      "voiceness": 0.0872,
+      "confidence": 0.826
+    },
+    {
+      "time": 35.8,
+      "voiceness": 0.0862,
+      "confidence": 0.828
+    },
+    {
+      "time": 35.85,
+      "voiceness": 0.0779,
+      "confidence": 0.844
+    },
+    {
+      "time": 35.9,
+      "voiceness": 0.063,
+      "confidence": 0.874
+    },
+    {
+      "time": 35.95,
+      "voiceness": 0.0611,
+      "confidence": 0.878
+    },
+    {
+      "time": 36.0,
+      "voiceness": 0.1192,
+      "confidence": 0.762
+    },
+    {
+      "time": 36.05,
+      "voiceness": 0.0742,
+      "confidence": 0.852
+    },
+    {
+      "time": 36.1,
+      "voiceness": 0.079,
+      "confidence": 0.842
+    },
+    {
+      "time": 36.15,
+      "voiceness": 0.0721,
+      "confidence": 0.856
+    },
+    {
+      "time": 36.2,
+      "voiceness": 0.0798,
+      "confidence": 0.84
+    },
+    {
+      "time": 36.25,
+      "voiceness": 0.0903,
+      "confidence": 0.819
+    },
+    {
+      "time": 36.3,
+      "voiceness": 0.0846,
+      "confidence": 0.831
+    },
+    {
+      "time": 36.35,
+      "voiceness": 0.1072,
+      "confidence": 0.786
+    },
+    {
+      "time": 36.4,
+      "voiceness": 0.0894,
+      "confidence": 0.821
+    },
+    {
+      "time": 36.45,
+      "voiceness": 0.1241,
+      "confidence": 0.752
+    },
+    {
+      "time": 36.5,
+      "voiceness": 0.0784,
+      "confidence": 0.843
+    },
+    {
+      "time": 36.55,
+      "voiceness": 0.0769,
+      "confidence": 0.846
+    },
+    {
+      "time": 36.6,
+      "voiceness": 0.0965,
+      "confidence": 0.807
+    },
+    {
+      "time": 36.65,
+      "voiceness": 0.1074,
+      "confidence": 0.785
+    },
+    {
+      "time": 36.7,
+      "voiceness": 0.1367,
+      "confidence": 0.727
+    },
+    {
+      "time": 36.75,
+      "voiceness": 0.1244,
+      "confidence": 0.751
+    },
+    {
+      "time": 36.8,
+      "voiceness": 0.1157,
+      "confidence": 0.769
+    },
+    {
+      "time": 36.85,
+      "voiceness": 0.1078,
+      "confidence": 0.784
+    },
+    {
+      "time": 36.9,
+      "voiceness": 0.1235,
+      "confidence": 0.753
+    },
+    {
+      "time": 36.95,
+      "voiceness": 0.1149,
+      "confidence": 0.77
+    },
+    {
+      "time": 37.0,
+      "voiceness": 0.0698,
+      "confidence": 0.86
+    },
+    {
+      "time": 37.05,
+      "voiceness": 0.0815,
+      "confidence": 0.837
+    },
+    {
+      "time": 37.1,
+      "voiceness": 0.0912,
+      "confidence": 0.818
+    },
+    {
+      "time": 37.15,
+      "voiceness": 0.1002,
+      "confidence": 0.8
+    },
+    {
+      "time": 37.2,
+      "voiceness": 0.0859,
+      "confidence": 0.828
+    },
+    {
+      "time": 37.25,
+      "voiceness": 0.0832,
+      "confidence": 0.834
+    },
+    {
+      "time": 37.3,
+      "voiceness": 0.0837,
+      "confidence": 0.833
+    },
+    {
+      "time": 37.35,
+      "voiceness": 0.1131,
+      "confidence": 0.774
+    },
+    {
+      "time": 37.4,
+      "voiceness": 0.1494,
+      "confidence": 0.701
+    },
+    {
+      "time": 37.45,
+      "voiceness": 0.0741,
+      "confidence": 0.852
+    },
+    {
+      "time": 37.5,
+      "voiceness": 0.0615,
+      "confidence": 0.877
+    },
+    {
+      "time": 37.55,
+      "voiceness": 0.0615,
+      "confidence": 0.877
+    },
+    {
+      "time": 37.6,
+      "voiceness": 0.0918,
+      "confidence": 0.816
+    },
+    {
+      "time": 37.65,
+      "voiceness": 0.0931,
+      "confidence": 0.814
+    },
+    {
+      "time": 37.7,
+      "voiceness": 0.0882,
+      "confidence": 0.824
+    },
+    {
+      "time": 37.75,
+      "voiceness": 0.0778,
+      "confidence": 0.844
+    },
+    {
+      "time": 37.8,
+      "voiceness": 0.0772,
+      "confidence": 0.846
+    },
+    {
+      "time": 37.85,
+      "voiceness": 0.1219,
+      "confidence": 0.756
+    },
+    {
+      "time": 37.9,
+      "voiceness": 0.0713,
+      "confidence": 0.857
+    },
+    {
+      "time": 37.95,
+      "voiceness": 0.067,
+      "confidence": 0.866
+    },
+    {
+      "time": 38.0,
+      "voiceness": 0.0692,
+      "confidence": 0.862
+    },
+    {
+      "time": 38.05,
+      "voiceness": 0.0819,
+      "confidence": 0.836
+    },
+    {
+      "time": 38.1,
+      "voiceness": 0.0875,
+      "confidence": 0.825
+    },
+    {
+      "time": 38.15,
+      "voiceness": 0.3219,
+      "confidence": 0.356
+    },
+    {
+      "time": 38.2,
+      "voiceness": 0.095,
+      "confidence": 0.81
+    },
+    {
+      "time": 38.25,
+      "voiceness": 0.0847,
+      "confidence": 0.831
+    },
+    {
+      "time": 38.3,
+      "voiceness": 0.1643,
+      "confidence": 0.671
+    },
+    {
+      "time": 38.35,
+      "voiceness": 0.0816,
+      "confidence": 0.837
+    },
+    {
+      "time": 38.4,
+      "voiceness": 0.0618,
+      "confidence": 0.876
+    },
+    {
+      "time": 38.45,
+      "voiceness": 0.0594,
+      "confidence": 0.881
+    },
+    {
+      "time": 38.5,
+      "voiceness": 0.0762,
+      "confidence": 0.848
+    },
+    {
+      "time": 38.55,
+      "voiceness": 0.1084,
+      "confidence": 0.783
+    },
+    {
+      "time": 38.6,
+      "voiceness": 0.0817,
+      "confidence": 0.837
+    },
+    {
+      "time": 38.65,
+      "voiceness": 0.0773,
+      "confidence": 0.845
+    },
+    {
+      "time": 38.7,
+      "voiceness": 0.0642,
+      "confidence": 0.872
+    },
+    {
+      "time": 38.75,
+      "voiceness": 0.1197,
+      "confidence": 0.761
+    },
+    {
+      "time": 38.8,
+      "voiceness": 0.0941,
+      "confidence": 0.812
+    },
+    {
+      "time": 38.85,
+      "voiceness": 0.0638,
+      "confidence": 0.872
+    },
+    {
+      "time": 38.9,
+      "voiceness": 0.07,
+      "confidence": 0.86
+    },
+    {
+      "time": 38.95,
+      "voiceness": 0.0804,
+      "confidence": 0.839
+    },
+    {
+      "time": 39.0,
+      "voiceness": 0.1139,
+      "confidence": 0.772
+    },
+    {
+      "time": 39.05,
+      "voiceness": 0.0758,
+      "confidence": 0.848
+    },
+    {
+      "time": 39.1,
+      "voiceness": 0.0874,
+      "confidence": 0.825
+    },
+    {
+      "time": 39.15,
+      "voiceness": 0.0748,
+      "confidence": 0.85
+    },
+    {
+      "time": 39.2,
+      "voiceness": 0.1118,
+      "confidence": 0.776
+    },
+    {
+      "time": 39.25,
+      "voiceness": 0.1335,
+      "confidence": 0.733
+    },
+    {
+      "time": 39.3,
+      "voiceness": 0.07,
+      "confidence": 0.86
+    },
+    {
+      "time": 39.35,
+      "voiceness": 0.0682,
+      "confidence": 0.864
+    },
+    {
+      "time": 39.4,
+      "voiceness": 0.069,
+      "confidence": 0.862
+    },
+    {
+      "time": 39.45,
+      "voiceness": 0.1206,
+      "confidence": 0.759
+    },
+    {
+      "time": 39.5,
+      "voiceness": 0.0878,
+      "confidence": 0.824
+    },
+    {
+      "time": 39.55,
+      "voiceness": 0.08,
+      "confidence": 0.84
+    },
+    {
+      "time": 39.6,
+      "voiceness": 0.0636,
+      "confidence": 0.873
+    },
+    {
+      "time": 39.65,
+      "voiceness": 0.064,
+      "confidence": 0.872
+    },
+    {
+      "time": 39.7,
+      "voiceness": 0.1271,
+      "confidence": 0.746
+    },
+    {
+      "time": 39.75,
+      "voiceness": 0.065,
+      "confidence": 0.87
+    },
+    {
+      "time": 39.8,
+      "voiceness": 0.0622,
+      "confidence": 0.876
+    },
+    {
+      "time": 39.85,
+      "voiceness": 0.0636,
+      "confidence": 0.873
+    },
+    {
+      "time": 39.9,
+      "voiceness": 0.0802,
+      "confidence": 0.84
+    },
+    {
+      "time": 39.95,
+      "voiceness": 0.0885,
+      "confidence": 0.823
+    },
+    {
+      "time": 40.0,
+      "voiceness": 0.0778,
+      "confidence": 0.844
+    },
+    {
+      "time": 40.05,
+      "voiceness": 0.0797,
+      "confidence": 0.841
+    },
+    {
+      "time": 40.1,
+      "voiceness": 0.0914,
+      "confidence": 0.817
+    },
+    {
+      "time": 40.15,
+      "voiceness": 0.1446,
+      "confidence": 0.711
+    },
+    {
+      "time": 40.2,
+      "voiceness": 0.0801,
+      "confidence": 0.84
+    },
+    {
+      "time": 40.25,
+      "voiceness": 0.0748,
+      "confidence": 0.85
+    },
+    {
+      "time": 40.3,
+      "voiceness": 0.0704,
+      "confidence": 0.859
+    },
+    {
+      "time": 40.35,
+      "voiceness": 0.0763,
+      "confidence": 0.847
+    },
+    {
+      "time": 40.4,
+      "voiceness": 0.1006,
+      "confidence": 0.799
+    },
+    {
+      "time": 40.45,
+      "voiceness": 0.0785,
+      "confidence": 0.843
+    },
+    {
+      "time": 40.5,
+      "voiceness": 0.0694,
+      "confidence": 0.861
+    },
+    {
+      "time": 40.55,
+      "voiceness": 0.059,
+      "confidence": 0.882
+    },
+    {
+      "time": 40.6,
+      "voiceness": 0.1075,
+      "confidence": 0.785
+    },
+    {
+      "time": 40.65,
+      "voiceness": 0.0788,
+      "confidence": 0.842
+    },
+    {
+      "time": 40.7,
+      "voiceness": 0.0629,
+      "confidence": 0.874
+    },
+    {
+      "time": 40.75,
+      "voiceness": 0.0611,
+      "confidence": 0.878
+    },
+    {
+      "time": 40.8,
+      "voiceness": 0.0806,
+      "confidence": 0.839
+    },
+    {
+      "time": 40.85,
+      "voiceness": 0.0998,
+      "confidence": 0.8
+    },
+    {
+      "time": 40.9,
+      "voiceness": 0.0738,
+      "confidence": 0.852
+    },
+    {
+      "time": 40.95,
+      "voiceness": 0.0834,
+      "confidence": 0.833
+    },
+    {
+      "time": 41.0,
+      "voiceness": 0.0745,
+      "confidence": 0.851
+    },
+    {
+      "time": 41.05,
+      "voiceness": 0.0963,
+      "confidence": 0.807
+    },
+    {
+      "time": 41.1,
+      "voiceness": 0.0998,
+      "confidence": 0.8
+    },
+    {
+      "time": 41.15,
+      "voiceness": 0.0516,
+      "confidence": 0.897
+    },
+    {
+      "time": 41.2,
+      "voiceness": 0.0447,
+      "confidence": 0.911
+    },
+    {
+      "time": 41.25,
+      "voiceness": 0.0467,
+      "confidence": 0.907
+    },
+    {
+      "time": 41.3,
+      "voiceness": 0.0933,
+      "confidence": 0.813
+    },
+    {
+      "time": 41.35,
+      "voiceness": 0.0759,
+      "confidence": 0.848
+    },
+    {
+      "time": 41.4,
+      "voiceness": 0.0669,
+      "confidence": 0.866
+    },
+    {
+      "time": 41.45,
+      "voiceness": 0.0554,
+      "confidence": 0.889
+    },
+    {
+      "time": 41.5,
+      "voiceness": 0.0585,
+      "confidence": 0.883
+    },
+    {
+      "time": 41.55,
+      "voiceness": 0.1118,
+      "confidence": 0.776
+    },
+    {
+      "time": 41.6,
+      "voiceness": 0.0563,
+      "confidence": 0.887
+    },
+    {
+      "time": 41.65,
+      "voiceness": 0.0616,
+      "confidence": 0.877
+    },
+    {
+      "time": 41.7,
+      "voiceness": 0.3274,
+      "confidence": 0.345
+    },
+    {
+      "time": 41.75,
+      "voiceness": 0.3177,
+      "confidence": 0.365
+    },
+    {
+      "time": 41.8,
+      "voiceness": 0.279,
+      "confidence": 0.442
+    },
+    {
+      "time": 41.85,
+      "voiceness": 0.0689,
+      "confidence": 0.862
+    },
+    {
+      "time": 41.9,
+      "voiceness": 0.0778,
+      "confidence": 0.844
+    },
+    {
+      "time": 41.95,
+      "voiceness": 0.0774,
+      "confidence": 0.845
+    },
+    {
+      "time": 42.0,
+      "voiceness": 0.1366,
+      "confidence": 0.727
+    },
+    {
+      "time": 42.05,
+      "voiceness": 0.0557,
+      "confidence": 0.889
+    },
+    {
+      "time": 42.1,
+      "voiceness": 0.0515,
+      "confidence": 0.897
+    },
+    {
+      "time": 42.15,
+      "voiceness": 0.0459,
+      "confidence": 0.908
+    },
+    {
+      "time": 42.2,
+      "voiceness": 0.0818,
+      "confidence": 0.836
+    },
+    {
+      "time": 42.25,
+      "voiceness": 0.1056,
+      "confidence": 0.789
+    },
+    {
+      "time": 42.3,
+      "voiceness": 0.0701,
+      "confidence": 0.86
+    },
+    {
+      "time": 42.35,
+      "voiceness": 0.0588,
+      "confidence": 0.882
+    },
+    {
+      "time": 42.4,
+      "voiceness": 0.0545,
+      "confidence": 0.891
+    },
+    {
+      "time": 42.45,
+      "voiceness": 0.1222,
+      "confidence": 0.756
+    },
+    {
+      "time": 42.5,
+      "voiceness": 0.0774,
+      "confidence": 0.845
+    },
+    {
+      "time": 42.55,
+      "voiceness": 0.0505,
+      "confidence": 0.899
+    },
+    {
+      "time": 42.6,
+      "voiceness": 0.0548,
+      "confidence": 0.89
+    },
+    {
+      "time": 42.65,
+      "voiceness": 0.0629,
+      "confidence": 0.874
+    },
+    {
+      "time": 42.7,
+      "voiceness": 0.0934,
+      "confidence": 0.813
+    },
+    {
+      "time": 42.75,
+      "voiceness": 0.079,
+      "confidence": 0.842
+    },
+    {
+      "time": 42.8,
+      "voiceness": 0.079,
+      "confidence": 0.842
+    },
+    {
+      "time": 42.85,
+      "voiceness": 0.0501,
+      "confidence": 0.9
+    },
+    {
+      "time": 42.9,
+      "voiceness": 0.0842,
+      "confidence": 0.832
+    },
+    {
+      "time": 42.95,
+      "voiceness": 0.0874,
+      "confidence": 0.825
+    },
+    {
+      "time": 43.0,
+      "voiceness": 0.0634,
+      "confidence": 0.873
+    },
+    {
+      "time": 43.05,
+      "voiceness": 0.063,
+      "confidence": 0.874
+    },
+    {
+      "time": 43.1,
+      "voiceness": 0.3605,
+      "confidence": 0.279
+    },
+    {
+      "time": 43.15,
+      "voiceness": 0.1028,
+      "confidence": 0.794
+    },
+    {
+      "time": 43.2,
+      "voiceness": 0.0974,
+      "confidence": 0.805
+    },
+    {
+      "time": 43.25,
+      "voiceness": 0.1494,
+      "confidence": 0.701
+    },
+    {
+      "time": 43.3,
+      "voiceness": 0.2442,
+      "confidence": 0.512
+    },
+    {
+      "time": 43.35,
+      "voiceness": 0.3146,
+      "confidence": 0.371
+    },
+    {
+      "time": 43.4,
+      "voiceness": 0.4407,
+      "confidence": 0.119
+    },
+    {
+      "time": 43.45,
+      "voiceness": 0.3097,
+      "confidence": 0.381
+    },
+    {
+      "time": 43.5,
+      "voiceness": 0.4919,
+      "confidence": 0.016
+    },
+    {
+      "time": 43.55,
+      "voiceness": 0.3078,
+      "confidence": 0.384
+    },
+    {
+      "time": 43.6,
+      "voiceness": 0.3106,
+      "confidence": 0.379
+    },
+    {
+      "time": 43.65,
+      "voiceness": 0.3101,
+      "confidence": 0.38
+    },
+    {
+      "time": 43.7,
+      "voiceness": 0.366,
+      "confidence": 0.268
+    },
+    {
+      "time": 43.75,
+      "voiceness": 0.5163,
+      "confidence": 0.033
+    },
+    {
+      "time": 43.8,
+      "voiceness": 0.4072,
+      "confidence": 0.186
+    },
+    {
+      "time": 43.85,
+      "voiceness": 0.3185,
+      "confidence": 0.363
+    },
+    {
+      "time": 43.9,
+      "voiceness": 0.3093,
+      "confidence": 0.381
+    },
+    {
+      "time": 43.95,
+      "voiceness": 0.5034,
+      "confidence": 0.007
+    },
+    {
+      "time": 44.0,
+      "voiceness": 0.5234,
+      "confidence": 0.047
+    },
+    {
+      "time": 44.05,
+      "voiceness": 0.5122,
+      "confidence": 0.024
+    },
+    {
+      "time": 44.1,
+      "voiceness": 0.4658,
+      "confidence": 0.068
+    },
+    {
+      "time": 44.15,
+      "voiceness": 0.515,
+      "confidence": 0.03
+    },
+    {
+      "time": 44.2,
+      "voiceness": 0.287,
+      "confidence": 0.426
+    },
+    {
+      "time": 44.25,
+      "voiceness": 0.2498,
+      "confidence": 0.5
+    },
+    {
+      "time": 44.3,
+      "voiceness": 0.231,
+      "confidence": 0.538
+    },
+    {
+      "time": 44.35,
+      "voiceness": 0.1692,
+      "confidence": 0.662
+    },
+    {
+      "time": 44.4,
+      "voiceness": 0.159,
+      "confidence": 0.682
+    },
+    {
+      "time": 44.45,
+      "voiceness": 0.1578,
+      "confidence": 0.684
+    },
+    {
+      "time": 44.5,
+      "voiceness": 0.4543,
+      "confidence": 0.091
+    },
+    {
+      "time": 44.55,
+      "voiceness": 0.3667,
+      "confidence": 0.267
+    },
+    {
+      "time": 44.6,
+      "voiceness": 0.2461,
+      "confidence": 0.508
+    },
+    {
+      "time": 44.65,
+      "voiceness": 0.3939,
+      "confidence": 0.212
+    },
+    {
+      "time": 44.7,
+      "voiceness": 0.117,
+      "confidence": 0.766
+    },
+    {
+      "time": 44.75,
+      "voiceness": 0.1103,
+      "confidence": 0.779
+    },
+    {
+      "time": 44.8,
+      "voiceness": 0.1012,
+      "confidence": 0.798
+    },
+    {
+      "time": 44.85,
+      "voiceness": 0.0958,
+      "confidence": 0.808
+    },
+    {
+      "time": 44.9,
+      "voiceness": 0.0951,
+      "confidence": 0.81
+    },
+    {
+      "time": 44.95,
+      "voiceness": 0.089,
+      "confidence": 0.822
+    },
+    {
+      "time": 45.0,
+      "voiceness": 0.3083,
+      "confidence": 0.383
+    },
+    {
+      "time": 45.05,
+      "voiceness": 0.3622,
+      "confidence": 0.276
+    },
+    {
+      "time": 45.1,
+      "voiceness": 0.3531,
+      "confidence": 0.294
+    },
+    {
+      "time": 45.15,
+      "voiceness": 0.0727,
+      "confidence": 0.855
+    },
+    {
+      "time": 45.2,
+      "voiceness": 0.0745,
+      "confidence": 0.851
+    },
+    {
+      "time": 45.25,
+      "voiceness": 0.071,
+      "confidence": 0.858
+    },
+    {
+      "time": 45.3,
+      "voiceness": 0.0678,
+      "confidence": 0.864
+    },
+    {
+      "time": 45.35,
+      "voiceness": 0.715,
+      "confidence": 0.43
+    },
+    {
+      "time": 45.4,
+      "voiceness": 0.3781,
+      "confidence": 0.244
+    },
+    {
+      "time": 45.45,
+      "voiceness": 0.2179,
+      "confidence": 0.564
+    },
+    {
+      "time": 45.5,
+      "voiceness": 0.2105,
+      "confidence": 0.579
+    },
+    {
+      "time": 45.55,
+      "voiceness": 0.0574,
+      "confidence": 0.885
+    },
+    {
+      "time": 45.6,
+      "voiceness": 0.0574,
+      "confidence": 0.885
+    },
+    {
+      "time": 45.65,
+      "voiceness": 0.0535,
+      "confidence": 0.893
+    },
+    {
+      "time": 45.7,
+      "voiceness": 0.0532,
+      "confidence": 0.894
+    },
+    {
+      "time": 45.75,
+      "voiceness": 0.057,
+      "confidence": 0.886
+    },
+    {
+      "time": 45.8,
+      "voiceness": 0.0534,
+      "confidence": 0.893
+    },
+    {
+      "time": 45.85,
+      "voiceness": 0.055,
+      "confidence": 0.89
+    },
+    {
+      "time": 45.9,
+      "voiceness": 0.0562,
+      "confidence": 0.888
+    },
+    {
+      "time": 45.95,
+      "voiceness": 0.06,
+      "confidence": 0.88
+    },
+    {
+      "time": 46.0,
+      "voiceness": 0.053,
+      "confidence": 0.894
+    },
+    {
+      "time": 46.05,
+      "voiceness": 0.0598,
+      "confidence": 0.88
+    },
+    {
+      "time": 46.1,
+      "voiceness": 0.0516,
+      "confidence": 0.897
+    },
+    {
+      "time": 46.15,
+      "voiceness": 0.0518,
+      "confidence": 0.896
+    },
+    {
+      "time": 46.2,
+      "voiceness": 0.0552,
+      "confidence": 0.89
+    },
+    {
+      "time": 46.25,
+      "voiceness": 0.0546,
+      "confidence": 0.891
+    },
+    {
+      "time": 46.3,
+      "voiceness": 0.0535,
+      "confidence": 0.893
+    },
+    {
+      "time": 46.35,
+      "voiceness": 0.0563,
+      "confidence": 0.887
+    },
+    {
+      "time": 46.4,
+      "voiceness": 0.0528,
+      "confidence": 0.894
+    },
+    {
+      "time": 46.45,
+      "voiceness": 0.051,
+      "confidence": 0.898
+    },
+    {
+      "time": 46.5,
+      "voiceness": 0.0561,
+      "confidence": 0.888
+    },
+    {
+      "time": 46.55,
+      "voiceness": 0.0638,
+      "confidence": 0.872
+    },
+    {
+      "time": 46.6,
+      "voiceness": 0.057,
+      "confidence": 0.886
+    },
+    {
+      "time": 46.65,
+      "voiceness": 0.0494,
+      "confidence": 0.901
+    },
+    {
+      "time": 46.7,
+      "voiceness": 0.0535,
+      "confidence": 0.893
+    },
+    {
+      "time": 46.75,
+      "voiceness": 0.0555,
+      "confidence": 0.889
+    },
+    {
+      "time": 46.8,
+      "voiceness": 0.0654,
+      "confidence": 0.869
+    },
+    {
+      "time": 46.85,
+      "voiceness": 0.068,
+      "confidence": 0.864
+    },
+    {
+      "time": 46.9,
+      "voiceness": 0.0716,
+      "confidence": 0.857
+    },
+    {
+      "time": 46.95,
+      "voiceness": 0.0865,
+      "confidence": 0.827
+    },
+    {
+      "time": 47.0,
+      "voiceness": 0.1454,
+      "confidence": 0.709
+    },
+    {
+      "time": 47.05,
+      "voiceness": 0.6815,
+      "confidence": 0.363
+    },
+    {
+      "time": 47.1,
+      "voiceness": 0.7121,
+      "confidence": 0.424
+    },
+    {
+      "time": 47.15,
+      "voiceness": 0.6827,
+      "confidence": 0.365
+    },
+    {
+      "time": 47.2,
+      "voiceness": 0.499,
+      "confidence": 0.002
+    },
+    {
+      "time": 47.25,
+      "voiceness": 0.3952,
+      "confidence": 0.21
+    },
+    {
+      "time": 47.3,
+      "voiceness": 0.7828,
+      "confidence": 0.566
+    },
+    {
+      "time": 47.35,
+      "voiceness": 0.7599,
+      "confidence": 0.52
+    },
+    {
+      "time": 47.4,
+      "voiceness": 0.6782,
+      "confidence": 0.356
+    },
+    {
+      "time": 47.45,
+      "voiceness": 0.6783,
+      "confidence": 0.357
+    },
+    {
+      "time": 47.5,
+      "voiceness": 0.3108,
+      "confidence": 0.378
+    },
+    {
+      "time": 47.55,
+      "voiceness": 0.2927,
+      "confidence": 0.415
+    },
+    {
+      "time": 47.6,
+      "voiceness": 0.3491,
+      "confidence": 0.302
+    },
+    {
+      "time": 47.65,
+      "voiceness": 0.3269,
+      "confidence": 0.346
+    },
+    {
+      "time": 47.7,
+      "voiceness": 0.4083,
+      "confidence": 0.183
+    },
+    {
+      "time": 47.75,
+      "voiceness": 0.3079,
+      "confidence": 0.384
+    },
+    {
+      "time": 47.8,
+      "voiceness": 0.2943,
+      "confidence": 0.411
+    },
+    {
+      "time": 47.85,
+      "voiceness": 0.6342,
+      "confidence": 0.268
+    },
+    {
+      "time": 47.9,
+      "voiceness": 0.32,
+      "confidence": 0.36
+    },
+    {
+      "time": 47.95,
+      "voiceness": 0.3277,
+      "confidence": 0.345
+    },
+    {
+      "time": 48.0,
+      "voiceness": 0.32,
+      "confidence": 0.36
+    },
+    {
+      "time": 48.05,
+      "voiceness": 0.32,
+      "confidence": 0.36
+    },
+    {
+      "time": 48.1,
+      "voiceness": 0.3094,
+      "confidence": 0.381
+    },
+    {
+      "time": 48.15,
+      "voiceness": 0.5117,
+      "confidence": 0.023
+    },
+    {
+      "time": 48.2,
+      "voiceness": 0.7443,
+      "confidence": 0.489
+    },
+    {
+      "time": 48.25,
+      "voiceness": 0.6815,
+      "confidence": 0.363
+    },
+    {
+      "time": 48.3,
+      "voiceness": 0.6489,
+      "confidence": 0.298
+    },
+    {
+      "time": 48.35,
+      "voiceness": 0.7948,
+      "confidence": 0.59
+    },
+    {
+      "time": 48.4,
+      "voiceness": 0.7638,
+      "confidence": 0.528
+    },
+    {
+      "time": 48.45,
+      "voiceness": 0.6891,
+      "confidence": 0.378
+    },
+    {
+      "time": 48.5,
+      "voiceness": 0.6742,
+      "confidence": 0.348
+    },
+    {
+      "time": 48.55,
+      "voiceness": 0.4257,
+      "confidence": 0.149
+    },
+    {
+      "time": 48.6,
+      "voiceness": 0.2789,
+      "confidence": 0.442
+    },
+    {
+      "time": 48.65,
+      "voiceness": 0.2965,
+      "confidence": 0.407
+    },
+    {
+      "time": 48.7,
+      "voiceness": 0.2856,
+      "confidence": 0.429
+    },
+    {
+      "time": 48.75,
+      "voiceness": 0.3082,
+      "confidence": 0.384
+    },
+    {
+      "time": 48.8,
+      "voiceness": 0.2794,
+      "confidence": 0.441
+    },
+    {
+      "time": 48.85,
+      "voiceness": 0.2832,
+      "confidence": 0.434
+    },
+    {
+      "time": 48.9,
+      "voiceness": 0.2869,
+      "confidence": 0.426
+    },
+    {
+      "time": 48.95,
+      "voiceness": 0.2809,
+      "confidence": 0.438
+    },
+    {
+      "time": 49.0,
+      "voiceness": 0.2786,
+      "confidence": 0.443
+    },
+    {
+      "time": 49.05,
+      "voiceness": 0.2797,
+      "confidence": 0.441
+    },
+    {
+      "time": 49.1,
+      "voiceness": 0.2842,
+      "confidence": 0.432
+    },
+    {
+      "time": 49.15,
+      "voiceness": 0.2838,
+      "confidence": 0.432
+    },
+    {
+      "time": 49.2,
+      "voiceness": 0.2788,
+      "confidence": 0.442
+    },
+    {
+      "time": 49.25,
+      "voiceness": 0.2909,
+      "confidence": 0.418
+    },
+    {
+      "time": 49.3,
+      "voiceness": 0.274,
+      "confidence": 0.452
+    },
+    {
+      "time": 49.35,
+      "voiceness": 0.2786,
+      "confidence": 0.443
+    },
+    {
+      "time": 49.4,
+      "voiceness": 0.3453,
+      "confidence": 0.309
+    },
+    {
+      "time": 49.45,
+      "voiceness": 0.6773,
+      "confidence": 0.355
+    },
+    {
+      "time": 49.5,
+      "voiceness": 0.7471,
+      "confidence": 0.494
+    },
+    {
+      "time": 49.55,
+      "voiceness": 0.4919,
+      "confidence": 0.016
+    },
+    {
+      "time": 49.6,
+      "voiceness": 0.5301,
+      "confidence": 0.06
+    },
+    {
+      "time": 49.65,
+      "voiceness": 0.5325,
+      "confidence": 0.065
+    },
+    {
+      "time": 49.7,
+      "voiceness": 0.2588,
+      "confidence": 0.482
+    },
+    {
+      "time": 49.75,
+      "voiceness": 0.23,
+      "confidence": 0.54
+    },
+    {
+      "time": 49.8,
+      "voiceness": 0.2459,
+      "confidence": 0.508
+    },
+    {
+      "time": 49.85,
+      "voiceness": 0.256,
+      "confidence": 0.488
+    },
+    {
+      "time": 49.9,
+      "voiceness": 0.2495,
+      "confidence": 0.501
+    },
+    {
+      "time": 49.95,
+      "voiceness": 0.2213,
+      "confidence": 0.557
+    },
+    {
+      "time": 50.0,
+      "voiceness": 0.3105,
+      "confidence": 0.379
+    },
+    {
+      "time": 50.05,
+      "voiceness": 0.6529,
+      "confidence": 0.306
+    },
+    {
+      "time": 50.1,
+      "voiceness": 0.6247,
+      "confidence": 0.249
+    },
+    {
+      "time": 50.15,
+      "voiceness": 0.1701,
+      "confidence": 0.66
+    },
+    {
+      "time": 50.2,
+      "voiceness": 0.3605,
+      "confidence": 0.279
+    },
+    {
+      "time": 50.25,
+      "voiceness": 0.692,
+      "confidence": 0.384
+    },
+    {
+      "time": 50.3,
+      "voiceness": 0.6174,
+      "confidence": 0.235
+    },
+    {
+      "time": 50.35,
+      "voiceness": 0.3674,
+      "confidence": 0.265
+    },
+    {
+      "time": 50.4,
+      "voiceness": 0.3706,
+      "confidence": 0.259
+    },
+    {
+      "time": 50.45,
+      "voiceness": 0.2271,
+      "confidence": 0.546
+    },
+    {
+      "time": 50.5,
+      "voiceness": 0.1468,
+      "confidence": 0.706
+    },
+    {
+      "time": 50.55,
+      "voiceness": 0.2859,
+      "confidence": 0.428
+    },
+    {
+      "time": 50.6,
+      "voiceness": 0.3144,
+      "confidence": 0.371
+    },
+    {
+      "time": 50.65,
+      "voiceness": 0.5318,
+      "confidence": 0.064
+    },
+    {
+      "time": 50.7,
+      "voiceness": 0.5632,
+      "confidence": 0.126
+    },
+    {
+      "time": 50.75,
+      "voiceness": 0.7956,
+      "confidence": 0.591
+    },
+    {
+      "time": 50.8,
+      "voiceness": 0.7485,
+      "confidence": 0.497
+    },
+    {
+      "time": 50.85,
+      "voiceness": 0.7224,
+      "confidence": 0.445
+    },
+    {
+      "time": 50.9,
+      "voiceness": 0.717,
+      "confidence": 0.434
+    },
+    {
+      "time": 50.95,
+      "voiceness": 0.2853,
+      "confidence": 0.429
+    },
+    {
+      "time": 51.0,
+      "voiceness": 0.46,
+      "confidence": 0.08
+    },
+    {
+      "time": 51.05,
+      "voiceness": 0.6946,
+      "confidence": 0.389
+    },
+    {
+      "time": 51.1,
+      "voiceness": 0.2774,
+      "confidence": 0.445
+    },
+    {
+      "time": 51.15,
+      "voiceness": 0.4566,
+      "confidence": 0.087
+    },
+    {
+      "time": 51.2,
+      "voiceness": 0.7409,
+      "confidence": 0.482
+    },
+    {
+      "time": 51.25,
+      "voiceness": 0.6889,
+      "confidence": 0.378
+    },
+    {
+      "time": 51.3,
+      "voiceness": 0.6928,
+      "confidence": 0.386
+    },
+    {
+      "time": 51.35,
+      "voiceness": 0.448,
+      "confidence": 0.104
+    },
+    {
+      "time": 51.4,
+      "voiceness": 0.4881,
+      "confidence": 0.024
+    },
+    {
+      "time": 51.45,
+      "voiceness": 0.3867,
+      "confidence": 0.227
+    },
+    {
+      "time": 51.5,
+      "voiceness": 0.3717,
+      "confidence": 0.257
+    },
+    {
+      "time": 51.55,
+      "voiceness": 0.7408,
+      "confidence": 0.482
+    },
+    {
+      "time": 51.6,
+      "voiceness": 0.5815,
+      "confidence": 0.163
+    },
+    {
+      "time": 51.65,
+      "voiceness": 0.6662,
+      "confidence": 0.332
+    },
+    {
+      "time": 51.7,
+      "voiceness": 0.91,
+      "confidence": 0.82
+    },
+    {
+      "time": 51.75,
+      "voiceness": 0.3057,
+      "confidence": 0.389
+    },
+    {
+      "time": 51.8,
+      "voiceness": 0.2966,
+      "confidence": 0.407
+    },
+    {
+      "time": 51.85,
+      "voiceness": 0.5241,
+      "confidence": 0.048
+    },
+    {
+      "time": 51.9,
+      "voiceness": 0.7895,
+      "confidence": 0.579
+    },
+    {
+      "time": 51.95,
+      "voiceness": 0.7343,
+      "confidence": 0.469
+    },
+    {
+      "time": 52.0,
+      "voiceness": 0.6822,
+      "confidence": 0.364
+    },
+    {
+      "time": 52.05,
+      "voiceness": 0.6623,
+      "confidence": 0.325
+    },
+    {
+      "time": 52.1,
+      "voiceness": 0.6499,
+      "confidence": 0.3
+    },
+    {
+      "time": 52.15,
+      "voiceness": 0.7163,
+      "confidence": 0.433
+    },
+    {
+      "time": 52.2,
+      "voiceness": 0.7252,
+      "confidence": 0.45
+    },
+    {
+      "time": 52.25,
+      "voiceness": 0.7173,
+      "confidence": 0.435
+    },
+    {
+      "time": 52.3,
+      "voiceness": 0.7153,
+      "confidence": 0.431
+    },
+    {
+      "time": 52.35,
+      "voiceness": 0.5206,
+      "confidence": 0.041
+    },
+    {
+      "time": 52.4,
+      "voiceness": 0.7705,
+      "confidence": 0.541
+    },
+    {
+      "time": 52.45,
+      "voiceness": 0.544,
+      "confidence": 0.088
+    },
+    {
+      "time": 52.5,
+      "voiceness": 0.4641,
+      "confidence": 0.072
+    },
+    {
+      "time": 52.55,
+      "voiceness": 0.6817,
+      "confidence": 0.363
+    },
+    {
+      "time": 52.6,
+      "voiceness": 0.6798,
+      "confidence": 0.36
+    },
+    {
+      "time": 52.65,
+      "voiceness": 0.8144,
+      "confidence": 0.629
+    },
+    {
+      "time": 52.7,
+      "voiceness": 0.3502,
+      "confidence": 0.3
+    },
+    {
+      "time": 52.75,
+      "voiceness": 0.7778,
+      "confidence": 0.556
+    },
+    {
+      "time": 52.8,
+      "voiceness": 0.7579,
+      "confidence": 0.516
+    },
+    {
+      "time": 52.85,
+      "voiceness": 0.7611,
+      "confidence": 0.522
+    },
+    {
+      "time": 52.9,
+      "voiceness": 0.7789,
+      "confidence": 0.558
+    },
+    {
+      "time": 52.95,
+      "voiceness": 0.4852,
+      "confidence": 0.03
+    },
+    {
+      "time": 53.0,
+      "voiceness": 0.7647,
+      "confidence": 0.529
+    },
+    {
+      "time": 53.05,
+      "voiceness": 0.6995,
+      "confidence": 0.399
+    },
+    {
+      "time": 53.1,
+      "voiceness": 0.7033,
+      "confidence": 0.407
+    },
+    {
+      "time": 53.15,
+      "voiceness": 0.5054,
+      "confidence": 0.011
+    },
+    {
+      "time": 53.2,
+      "voiceness": 0.4608,
+      "confidence": 0.078
+    },
+    {
+      "time": 53.25,
+      "voiceness": 0.3546,
+      "confidence": 0.291
+    },
+    {
+      "time": 53.3,
+      "voiceness": 0.5255,
+      "confidence": 0.051
+    },
+    {
+      "time": 53.35,
+      "voiceness": 0.3036,
+      "confidence": 0.393
+    },
+    {
+      "time": 53.4,
+      "voiceness": 0.3027,
+      "confidence": 0.395
+    },
+    {
+      "time": 53.45,
+      "voiceness": 0.3003,
+      "confidence": 0.399
+    },
+    {
+      "time": 53.5,
+      "voiceness": 0.2863,
+      "confidence": 0.427
+    },
+    {
+      "time": 53.55,
+      "voiceness": 0.2877,
+      "confidence": 0.425
+    },
+    {
+      "time": 53.6,
+      "voiceness": 0.2807,
+      "confidence": 0.439
+    },
+    {
+      "time": 53.65,
+      "voiceness": 0.3388,
+      "confidence": 0.322
+    },
+    {
+      "time": 53.7,
+      "voiceness": 0.2751,
+      "confidence": 0.45
+    },
+    {
+      "time": 53.75,
+      "voiceness": 0.3301,
+      "confidence": 0.34
+    },
+    {
+      "time": 53.8,
+      "voiceness": 0.2698,
+      "confidence": 0.46
+    },
+    {
+      "time": 53.85,
+      "voiceness": 0.2623,
+      "confidence": 0.475
+    },
+    {
+      "time": 53.9,
+      "voiceness": 0.258,
+      "confidence": 0.484
+    },
+    {
+      "time": 53.95,
+      "voiceness": 0.2579,
+      "confidence": 0.484
+    },
+    {
+      "time": 54.0,
+      "voiceness": 0.2506,
+      "confidence": 0.499
+    },
+    {
+      "time": 54.05,
+      "voiceness": 0.2523,
+      "confidence": 0.495
+    },
+    {
+      "time": 54.1,
+      "voiceness": 0.3046,
+      "confidence": 0.391
+    },
+    {
+      "time": 54.15,
+      "voiceness": 0.2488,
+      "confidence": 0.502
+    },
+    {
+      "time": 54.2,
+      "voiceness": 0.3185,
+      "confidence": 0.363
+    },
+    {
+      "time": 54.25,
+      "voiceness": 0.2737,
+      "confidence": 0.453
+    },
+    {
+      "time": 54.3,
+      "voiceness": 0.3438,
+      "confidence": 0.312
+    },
+    {
+      "time": 54.35,
+      "voiceness": 0.4673,
+      "confidence": 0.065
+    },
+    {
+      "time": 54.4,
+      "voiceness": 0.2174,
+      "confidence": 0.565
+    },
+    {
+      "time": 54.45,
+      "voiceness": 0.5256,
+      "confidence": 0.051
+    },
+    {
+      "time": 54.5,
+      "voiceness": 0.5436,
+      "confidence": 0.087
+    },
+    {
+      "time": 54.55,
+      "voiceness": 0.5165,
+      "confidence": 0.033
+    },
+    {
+      "time": 54.6,
+      "voiceness": 0.5475,
+      "confidence": 0.095
+    },
+    {
+      "time": 54.65,
+      "voiceness": 0.6248,
+      "confidence": 0.25
+    },
+    {
+      "time": 54.7,
+      "voiceness": 0.4556,
+      "confidence": 0.089
+    },
+    {
+      "time": 54.75,
+      "voiceness": 0.4034,
+      "confidence": 0.193
+    },
+    {
+      "time": 54.8,
+      "voiceness": 0.4183,
+      "confidence": 0.163
+    },
+    {
+      "time": 54.85,
+      "voiceness": 0.4048,
+      "confidence": 0.19
+    },
+    {
+      "time": 54.9,
+      "voiceness": 0.3849,
+      "confidence": 0.23
+    },
+    {
+      "time": 54.95,
+      "voiceness": 0.1491,
+      "confidence": 0.702
+    },
+    {
+      "time": 55.0,
+      "voiceness": 0.189,
+      "confidence": 0.622
+    },
+    {
+      "time": 55.05,
+      "voiceness": 0.1454,
+      "confidence": 0.709
+    },
+    {
+      "time": 55.1,
+      "voiceness": 0.1152,
+      "confidence": 0.77
+    },
+    {
+      "time": 55.15,
+      "voiceness": 0.1865,
+      "confidence": 0.627
+    },
+    {
+      "time": 55.2,
+      "voiceness": 0.133,
+      "confidence": 0.734
+    },
+    {
+      "time": 55.25,
+      "voiceness": 0.1183,
+      "confidence": 0.763
+    },
+    {
+      "time": 55.3,
+      "voiceness": 0.1167,
+      "confidence": 0.767
+    },
+    {
+      "time": 55.35,
+      "voiceness": 0.1173,
+      "confidence": 0.765
+    },
+    {
+      "time": 55.4,
+      "voiceness": 0.1895,
+      "confidence": 0.621
+    },
+    {
+      "time": 55.45,
+      "voiceness": 0.1478,
+      "confidence": 0.704
+    },
+    {
+      "time": 55.5,
+      "voiceness": 0.1289,
+      "confidence": 0.742
+    },
+    {
+      "time": 55.55,
+      "voiceness": 0.1232,
+      "confidence": 0.754
+    },
+    {
+      "time": 55.6,
+      "voiceness": 0.1175,
+      "confidence": 0.765
+    },
+    {
+      "time": 55.65,
+      "voiceness": 0.2188,
+      "confidence": 0.562
+    },
+    {
+      "time": 55.7,
+      "voiceness": 0.072,
+      "confidence": 0.856
+    },
+    {
+      "time": 55.75,
+      "voiceness": 0.1274,
+      "confidence": 0.745
+    },
+    {
+      "time": 55.8,
+      "voiceness": 0.0647,
+      "confidence": 0.871
+    },
+    {
+      "time": 55.85,
+      "voiceness": 0.0417,
+      "confidence": 0.917
+    },
+    {
+      "time": 55.9,
+      "voiceness": 0.0582,
+      "confidence": 0.884
+    },
+    {
+      "time": 55.95,
+      "voiceness": 0.1072,
+      "confidence": 0.786
+    },
+    {
+      "time": 56.0,
+      "voiceness": 0.0541,
+      "confidence": 0.892
+    },
+    {
+      "time": 56.05,
+      "voiceness": 0.0194,
+      "confidence": 0.961
+    },
+    {
+      "time": 56.1,
+      "voiceness": 0.0211,
+      "confidence": 0.958
+    },
+    {
+      "time": 56.15,
+      "voiceness": 0.1779,
+      "confidence": 0.644
+    },
+    {
+      "time": 56.2,
+      "voiceness": 0.0098,
+      "confidence": 0.98
+    },
+    {
+      "time": 56.25,
+      "voiceness": 0.0354,
+      "confidence": 0.929
+    },
+    {
+      "time": 56.3,
+      "voiceness": 0.0689,
+      "confidence": 0.862
+    },
+    {
+      "time": 56.35,
+      "voiceness": 0.0323,
+      "confidence": 0.935
+    },
+    {
+      "time": 56.4,
+      "voiceness": 0.0058,
+      "confidence": 0.988
+    },
+    {
+      "time": 56.45,
+      "voiceness": 0.0846,
+      "confidence": 0.831
+    },
+    {
+      "time": 56.5,
+      "voiceness": 0.0477,
+      "confidence": 0.905
+    },
+    {
+      "time": 56.55,
+      "voiceness": 0.1337,
+      "confidence": 0.733
+    },
+    {
+      "time": 56.6,
+      "voiceness": 0.0022,
+      "confidence": 0.996
+    },
+    {
+      "time": 56.65,
+      "voiceness": 0.0006,
+      "confidence": 0.999
+    },
+    {
+      "time": 56.7,
+      "voiceness": 0.003,
+      "confidence": 0.994
+    },
+    {
+      "time": 56.75,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 56.8,
+      "voiceness": 0.0014,
+      "confidence": 0.997
+    },
+    {
+      "time": 56.85,
+      "voiceness": 0.0002,
+      "confidence": 1.0
+    },
+    {
+      "time": 56.9,
+      "voiceness": 0.0005,
+      "confidence": 0.999
+    },
+    {
+      "time": 56.95,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 57.0,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 57.05,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 57.1,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 57.15,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 57.2,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 57.25,
+      "voiceness": 0.0974,
+      "confidence": 0.805
+    },
+    {
+      "time": 57.3,
+      "voiceness": 0.0001,
+      "confidence": 1.0
+    },
+    {
+      "time": 57.35,
+      "voiceness": 0.262,
+      "confidence": 0.476
+    },
+    {
+      "time": 57.4,
+      "voiceness": 0.0124,
+      "confidence": 0.975
+    },
+    {
+      "time": 57.45,
+      "voiceness": 0.0259,
+      "confidence": 0.948
+    },
+    {
+      "time": 57.5,
+      "voiceness": 0.0008,
+      "confidence": 0.998
+    },
+    {
+      "time": 57.55,
+      "voiceness": 0.0087,
+      "confidence": 0.983
+    },
+    {
+      "time": 57.6,
+      "voiceness": 0.0006,
+      "confidence": 0.999
+    },
+    {
+      "time": 57.65,
+      "voiceness": 0.055,
+      "confidence": 0.89
+    },
+    {
+      "time": 57.7,
+      "voiceness": 0.0007,
+      "confidence": 0.999
+    },
+    {
+      "time": 57.75,
+      "voiceness": 0.0003,
+      "confidence": 0.999
+    },
+    {
+      "time": 57.8,
+      "voiceness": 0.015,
+      "confidence": 0.97
+    },
+    {
+      "time": 57.85,
+      "voiceness": 0.1124,
+      "confidence": 0.775
+    },
+    {
+      "time": 57.9,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 57.95,
+      "voiceness": 0.0,
+      "confidence": 1.0
+    },
+    {
+      "time": 58.0,
+      "voiceness": 0.0086,
+      "confidence": 0.983
+    },
+    {
+      "time": 58.05,
+      "voiceness": 0.2133,
+      "confidence": 0.573
+    }
+  ],
+  "vocal_phrase": [
+    {
+      "start": 0.081,
+      "end": 12.899,
+      "confidence": 0.223
+    },
+    {
+      "start": 15.975,
+      "end": 18.123,
+      "confidence": 0.688
+    },
+    {
+      "start": 19.18,
+      "end": 22.384,
+      "confidence": 0.603
+    },
+    {
+      "start": 24.927,
+      "end": 25.623,
+      "confidence": 1.0
+    },
+    {
+      "start": 28.688,
+      "end": 29.594,
+      "confidence": 1.0
+    },
+    {
+      "start": 36.653,
+      "end": 36.862,
+      "confidence": 1.0
+    },
+    {
+      "start": 43.352,
+      "end": 44.373,
+      "confidence": 1.0
+    },
+    {
+      "start": 47.102,
+      "end": 47.787,
+      "confidence": 1.0
+    },
+    {
+      "start": 48.727,
+      "end": 49.784,
+      "confidence": 0.77
+    },
+    {
+      "start": 50.608,
+      "end": 52.465,
+      "confidence": 0.56
+    },
+    {
+      "start": 53.359,
+      "end": 54.544,
+      "confidence": 0.637
+    }
+  ]
+}

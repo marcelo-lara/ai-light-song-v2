@@ -15,6 +15,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from analyzer.exceptions import DependencyError
 from analyzer.models import PRODUCERS
 from analyzer.paths import SongPaths
 from analyzer.stages.ui_data import publish_arrangement_state
@@ -65,13 +66,25 @@ FFT_BANDS_VOCALS = {
 }
 
 
-def _write_inputs(paths: SongPaths, artifact: dict, bands: dict | None = None) -> None:
+def _write_whisperx_artifact(paths: SongPaths, proposal: dict) -> None:
+    """v3.6 item 2 — `whisperx_vad` is promoted out of `experiments/`; its
+    output now lives at `artifacts/whisperx-vad/whisperx_vad.json`, written by
+    the separate `whisperx` Compose service (never by this publish step)."""
+    out = paths.artifact("whisperx-vad", "whisperx_vad.json")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(proposal))
+
+
+def _write_inputs(paths: SongPaths, artifact: dict, bands: dict | None = None, *, whisperx: dict | None = None) -> None:
     paths.artifact("essentia").mkdir(parents=True, exist_ok=True)
     paths.artifact("arrangement_state.json").write_text(json.dumps(artifact))
     paths.artifact("essentia", "fft_bands.vocals.json").write_text(
         json.dumps(bands if bands is not None else FFT_BANDS_VOCALS)
     )
     paths.arrangement_state_output_path.parent.mkdir(parents=True, exist_ok=True)
+    # Default: the whisperx service has run and found no phrases — the common
+    # case for every test in this file that is not itself about vocals_phrase.
+    _write_whisperx_artifact(paths, whisperx if whisperx is not None else {"vocal_phrase": []})
 
 
 def _publish(artifact: dict) -> dict:
@@ -138,14 +151,25 @@ class ArrangementStatePublishTests(unittest.TestCase):
         for key in ROW_KEYS:
             self.assertEqual(payload["field_sources"][key], "arrangement_state")
 
-    def test_vocals_phrase_absent_when_no_proposal_cache(self) -> None:
-        payload = _publish(ARTIFACT)
-        self.assertIsNone(payload["vocals_phrase"])
-        self.assertEqual(payload["field_sources"]["vocals_phrase"], "unknown")
+    def test_publish_raises_when_whisperx_artifact_missing(self) -> None:
+        """v3.6 item 2 — no silent fallback: a missing
+        `artifacts/whisperx-vad/whisperx_vad.json` (the `whisperx` service has
+        not been run for this song) raises rather than publishing a guessed
+        or honest-looking-`None` `vocals_phrase`."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            paths = SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
+            paths.artifact("essentia").mkdir(parents=True, exist_ok=True)
+            paths.artifact("arrangement_state.json").write_text(json.dumps(ARTIFACT))
+            paths.artifact("essentia", "fft_bands.vocals.json").write_text(json.dumps(FFT_BANDS_VOCALS))
+            paths.arrangement_state_output_path.parent.mkdir(parents=True, exist_ok=True)
+            with self.assertRaises(DependencyError) as ctx:
+                publish_arrangement_state(paths)
+            self.assertIn("docker compose run --rm whisperx --song", str(ctx.exception))
 
 
 class VocalsPhrasePromotionTests(unittest.TestCase):
-    """v3.5 item 7 promotion — the optional whisperx_vad phrase-proposal cache,
+    """v3.5 item 7 promotion — the whisperx_vad phrase-proposal artifact,
     when present, is fused into `vocals_phrase` with every span's confidence
     hardcoded 1.0 (operator's rule: a detected phrase is asserted certain)."""
 
@@ -153,10 +177,7 @@ class VocalsPhrasePromotionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             paths = SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
-            _write_inputs(paths, artifact)
-            cache_path = paths.reference("proposals", "whisperx_vad.json")
-            cache_path.parent.mkdir(parents=True, exist_ok=True)
-            cache_path.write_text(json.dumps(proposal))
+            _write_inputs(paths, artifact, whisperx=proposal)
             out = publish_arrangement_state(paths)
             return json.loads(Path(out).read_text())
 

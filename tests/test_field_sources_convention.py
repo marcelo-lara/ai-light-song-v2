@@ -11,10 +11,12 @@ plan-approved exceptions —
   `human_hints.json` already fuses into `hints.json`.
 - `reference/moises/segments.json`: an optional Moises.ai reference, one
   precedence tier below human — see `docs/reference/analysis.segments.md`.
-- `reference/proposals/whisperx_vad.json` (v3.5 item 7, promoted 2026-09-13):
-  the `whisperx_vad` experiment's phrase spans, optionally fused into
-  `arrangement_state.json`'s `vocals_phrase` field — see
-  `ui_data._whisperx_vocal_phrase`.
+
+`artifacts/whisperx-vad/whisperx_vad.json` (v3.5 item 7, promoted 2026-09-13;
+run as its own pipeline service since v3.6 item 2) is fused into
+`arrangement_state.json`'s `vocals_phrase` field — see
+`ui_data._whisperx_vocal_phrase` — but it is a generated artifact, not a
+`reference/` read, so it is not one of the exceptions above.
 
 Any other `reference/` read from a publishing path is still a bug this guard
 catches.
@@ -73,23 +75,24 @@ class ProducerVocabularyTests(unittest.TestCase):
 
 
 class ReferenceGuardTests(unittest.TestCase):
-    def test_fusion_stage_reads_no_reference_file_but_the_three_sanctioned_exceptions(self) -> None:
-        # v3.5 items 7 and 10 — the only allowed reference() calls in
-        # ui_data.py are the human and moises segments reference files and
-        # the whisperx_vad phrase-proposal cache. Strip those exact calls out
+    def test_fusion_stage_reads_no_reference_file_but_the_two_sanctioned_exceptions(self) -> None:
+        # v3.5 item 10 — the only allowed reference() calls in ui_data.py are
+        # the human and moises segments reference files. whisperx_vad (v3.5
+        # item 7) reads artifacts/, not reference/, since v3.6 item 2 promoted
+        # it into its own pipeline service. Strip the two sanctioned calls out
         # of the source and the blanket ban still holds for everything else.
         src = inspect.getsource(ui_data)
         sanctioned_human = 'paths.reference("human", "segments.json")'
         sanctioned_moises = 'paths.reference("moises", "segments.json")'
-        sanctioned_whisperx = 'paths.reference("proposals", "whisperx_vad.json")'
         self.assertIn(sanctioned_human, src)
         self.assertIn(sanctioned_moises, src)
-        self.assertIn(sanctioned_whisperx, src)
         self.assertEqual(
             src.count(".reference("),
-            src.count(sanctioned_human) + src.count(sanctioned_moises) + src.count(sanctioned_whisperx),
+            src.count(sanctioned_human) + src.count(sanctioned_moises),
         )
         self.assertNotIn("read_reference", src)
+        # The whisperx_vad artifact is read via .artifact(), not .reference().
+        self.assertIn('paths.artifact("whisperx-vad", "whisperx_vad.json")', src)
 
 
 class TopLevelFileHeaderTests(unittest.TestCase):

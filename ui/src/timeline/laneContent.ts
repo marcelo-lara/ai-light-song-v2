@@ -930,12 +930,13 @@ const WHISPERX_VAD_BUCKET_TINT: Record<VoicenessBucket, string> = {
 /**
  * whisperX's VAD front-end (speech-domain, `pyannote.audio` segmentation
  * model bundled locally — no gated checkpoint, no live token at analysis
- * time) over the vocal stem, from the same shared `voiceness_common.schema`
- * proposal shape as `vocalVoicenessContent`. Unlike that one, this candidate's `vocal_phrase` spans carry real sub-second
- * onsets (a hysteresis binarizer over the segmentation model's own ~17ms
- * frames), not a clip-window approximation — see `experiments/whisperx_vad/
- * model.py`. Diarization was not attempted (no HF_TOKEN in this
- * environment); this file carries no diarization field at all.
+ * time) over the vocal stem, run as its own pipeline service
+ * (`whisperx_vad/`, promoted out of `experiments/` in v3.6 item 2). This
+ * candidate's `vocal_phrase` spans carry real sub-second onsets (a
+ * hysteresis binarizer over the segmentation model's own ~17ms frames), not
+ * a clip-window approximation — see `whisperx_vad/model.py`. Diarization was
+ * not attempted (no HF_TOKEN in this environment); this file carries no
+ * diarization field at all.
  */
 export function whisperxVadContent(file: WhisperxVadFile | null): SparseBlock[] {
   const out: SparseBlock[] = [];
@@ -962,7 +963,7 @@ export function whisperxVadContent(file: WhisperxVadFile | null): SparseBlock[] 
       caption: `${formatRange(runStart, endTime)} · avg voiceness ${avg.toFixed(2)}`,
       reference: `whisperx-vad-${runIdx}`,
       detail: `${runN} frame${runN === 1 ? "" : "s"}`,
-      summary: `experiments/whisperx_vad — whisperX VAD voiceness averaging ${avg.toFixed(2)} across this run.`,
+      summary: `whisperX VAD voiceness averaging ${avg.toFixed(2)} across this run.`,
       raw: { avg_voiceness: avg, n_frames: runN },
     });
   };
@@ -996,7 +997,7 @@ export function whisperxVadContent(file: WhisperxVadFile | null): SparseBlock[] 
       reference: `whisperx-vad-phrase-${i + 1}`,
       detail: "vocal_phrase",
       summary:
-        "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+        "A vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
       raw: p,
     });
   });

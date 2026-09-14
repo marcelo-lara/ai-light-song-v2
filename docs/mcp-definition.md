@@ -173,12 +173,13 @@ Returns:
   `null`). From the optional top-level `arrangement_state.json`; the whole block
   is omitted for a song analysed before v3.2. Also carries `vocals_phrase` — a
   second, independent read on the vocals stem from the promoted `whisperx_vad`
-  experiment (v3.5 item 7): spans where a phrase was detected, each with
-  `confidence: 1.0` by operator directive (a detected phrase is asserted
-  certain, never graded). `null` means the song has no pre-computed proposal
-  cache, not "no vocals" — `whisperx_vad`'s compute step runs out-of-band
-  (its own sandbox image, incompatible torch pin) and is not yet part of
-  `./analyze` itself. Each span additionally carries `sibilance` — the
+  detector (v3.5 item 7, run as its own pipeline service since v3.6 item 2 —
+  the `whisperx` Compose service, before `./analyze`): spans where a phrase was
+  detected, each with `confidence: 1.0` by operator directive (a detected
+  phrase is asserted certain, never graded). `vocals_phrase` is never `null`
+  once `arrangement_state.json` exists — publishing fails loudly if the
+  `whisperx` service has not been run for that song. Each span additionally
+  carries `sibilance` — the
   promoted item-4 stem-bleed discriminator (v3.5 item 4), to be read against
   the sibling `vocals_sibilance_song_mean` rather than absolutely, since the
   cue has a per-song noise floor. A phrase well below the song mean is the

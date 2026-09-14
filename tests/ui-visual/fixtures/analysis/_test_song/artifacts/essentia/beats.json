@@ -59,7 +59,7 @@
       "bar": 2,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.02462
+      "confidence": 0.022965
     },
     {
       "index": 7,
@@ -91,7 +91,7 @@
       "bar": 3,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.005639
+      "confidence": 0.005609
     },
     {
       "index": 11,
@@ -155,7 +155,7 @@
       "bar": 5,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.126122
+      "confidence": 0.09069
     },
     {
       "index": 19,
@@ -187,7 +187,7 @@
       "bar": 6,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.000952
+      "confidence": 0.000883
     },
     {
       "index": 23,
@@ -219,7 +219,7 @@
       "bar": 7,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.294635
+      "confidence": 0.362224
     },
     {
       "index": 27,
@@ -251,7 +251,7 @@
       "bar": 8,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": null
+      "confidence": 0.24138
     },
     {
       "index": 31,
@@ -283,7 +283,7 @@
       "bar": 9,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.379317
+      "confidence": 0.405215
     },
     {
       "index": 35,
@@ -315,7 +315,7 @@
       "bar": 10,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.223534
+      "confidence": 0.229583
     },
     {
       "index": 39,
@@ -347,7 +347,7 @@
       "bar": 11,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.46335
+      "confidence": 0.464622
     },
     {
       "index": 43,
@@ -379,7 +379,7 @@
       "bar": 12,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.173006
+      "confidence": 0.184943
     },
     {
       "index": 47,
@@ -411,7 +411,7 @@
       "bar": 13,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.202603
+      "confidence": 0.218793
     },
     {
       "index": 51,
@@ -443,7 +443,7 @@
       "bar": 14,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.12483
+      "confidence": 0.112499
     },
     {
       "index": 55,
@@ -475,7 +475,7 @@
       "bar": 15,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.085796
+      "confidence": 0.087754
     },
     {
       "index": 59,
@@ -507,7 +507,7 @@
       "bar": 16,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.312154
+      "confidence": 0.318422
     },
     {
       "index": 63,
@@ -539,7 +539,7 @@
       "bar": 17,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.040763
+      "confidence": 0.043143
     },
     {
       "index": 67,
@@ -571,7 +571,7 @@
       "bar": 18,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.27305
+      "confidence": 0.277805
     },
     {
       "index": 71,
@@ -603,7 +603,7 @@
       "bar": 19,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.023742
+      "confidence": 0.027469
     },
     {
       "index": 75,
@@ -635,7 +635,7 @@
       "bar": 20,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.198869
+      "confidence": 0.21041
     },
     {
       "index": 79,
@@ -667,7 +667,7 @@
       "bar": 21,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.024565
+      "confidence": 0.02654
     },
     {
       "index": 83,
@@ -699,7 +699,7 @@
       "bar": 22,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.221294
+      "confidence": 0.220107
     },
     {
       "index": 87,
@@ -731,7 +731,7 @@
       "bar": 23,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.417354
+      "confidence": 0.402777
     },
     {
       "index": 91,
@@ -859,7 +859,7 @@
       "bar": 27,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": 0.001583
+      "confidence": 0.001152
     },
     {
       "index": 107,
@@ -891,7 +891,7 @@
       "bar": 28,
       "beat_in_bar": 1,
       "type": "downbeat",
-      "confidence": null
+      "confidence": 0.00037
     },
     {
       "index": 111,

@@ -163,11 +163,10 @@ const TIMELINE_KEYS = [
   // additionally beat item 4 given its image/pin cost)
   "svdTagger",
   // whisperX's VAD front-end (speech-domain), voiceness + phrase spans with
-  // real sub-second onsets (experiments/whisperx_vad, v3.5 item 7 — new
-  // sandbox image, locally-bundled non-gated checkpoint, no live token at
-  // analysis time; diarization not attempted — no HF_TOKEN in this
-  // environment; kill condition unevaluable until item 1's `type: "vocal"`
-  // ground truth exists)
+  // real sub-second onsets. Its own pipeline service since v3.6 item 2
+  // (whisperx_vad/, promoted out of experiments/) — locally-bundled
+  // non-gated checkpoint, no live token at analysis time; diarization not
+  // attempted — no HF_TOKEN in this environment.
   "whisperxVad",
   // solo/stacked voice blocks from stereo width and L-R correlation
   // (experiments/voice_multiplicity)

@@ -25,10 +25,16 @@ list. The file must exist on every fixture so the song-load fetch never 404s
 (the visual suite fails any run with a failed network response). Written by
 `inject_lyric_validations` below.
 
-Dense per-frame arrays (fft_bands / rms_loudness / loudness_envelope) are
-decimated to ~60 evenly spaced frames, keeping the first and last frame so the
-song's full duration is still represented. info.json / beats.json are copied
-verbatim so full-extent checks stay meaningful.
+Dense per-frame arrays (fft_bands / rms_loudness / loudness_envelope /
+whisperx-vad) are decimated to ~60 evenly spaced frames, keeping the first
+and last frame so the song's full duration is still represented. info.json /
+beats.json are copied verbatim so full-extent checks stay meaningful.
+
+`artifacts/whisperx-vad/whisperx_vad.json` (v3.6 item 2) is written by the
+`whisperx` Compose service, run separately before this script — if
+`Armin - Revolution`'s artifact does not exist yet, the copy is silently
+skipped (see `copy_song`'s "skip (absent)" branch) and the WhisperX VAD lane
+renders empty in the fixture until the service has been run once.
 """
 import json
 import shutil
@@ -52,15 +58,20 @@ NEEDED = [
     "reference/human/human_hints.json",
     "reference/human/song_facts.json",
     "reference/moises/lyrics.json",
+    "reference/moises/segments.json",
     "reference/proposals/drop_impacts.json",
     "reference/proposals/character.json",
     "reference/proposals/vocal_transcription.json",
     "reference/proposals/vocal_phrases.json",
+    "reference/proposals/vocal_voiceness.json",
+    "reference/proposals/svd_tagger.json",
+    "reference/proposals/voice_multiplicity.json",
     "reference/proposals/reactive_bands.json",
     "reference/proposals/texture_novelty.json",
     "reference/proposals/phrase_periodicity.json",
     "reference/proposals/structural_vs_micro.json",
     "reference/proposals/grid.json",
+    "artifacts/whisperx-vad/whisperx_vad.json",
     "artifacts/essentia/fft_bands.json",
     "artifacts/essentia/fft_bands.bass.json",
     "artifacts/essentia/fft_bands.drums.json",
@@ -75,6 +86,7 @@ NEEDED = [
 ]
 
 DENSE = {
+    "artifacts/whisperx-vad/whisperx_vad.json",
     "artifacts/essentia/fft_bands.json",
     "artifacts/essentia/fft_bands.bass.json",
     "artifacts/essentia/fft_bands.drums.json",

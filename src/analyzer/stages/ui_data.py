@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 import re
 
+from analyzer.exceptions import DependencyError
 from analyzer.io import read_json, write_json
 from analyzer.models import SCHEMA_VERSION, round_schema_float, validate_field_sources
 from analyzer.paths import SongPaths
@@ -424,29 +425,34 @@ def _mean_in_span(times: list[float], values: list[float], start: float, end: fl
     return round(sum(inside) / len(inside), 4) if inside else None
 
 
-def _whisperx_vocal_phrase(paths: SongPaths) -> list[dict] | None:
-    """`vocals_phrase` promotion (v3.5 item 7, operator-approved 2026-09-13):
-    the `whisperx_vad` experiment's phrase spans, when a pre-computed proposal
-    cache exists at `reference/proposals/whisperx_vad.json`.
+def _whisperx_vocal_phrase(paths: SongPaths) -> list[dict]:
+    """`vocals_phrase` (v3.5 item 7 promotion; v3.6 item 2 promoted the
+    `whisperx_vad` detector itself out of `experiments/` into its own
+    pipeline service — the `whisperx` Compose service, `whisperx_vad/`).
 
-    Optional like `reference/human` and `reference/moises` — the whisperX VAD
-    stack (torch~=2.8.0) cannot share the `app` image (pinned torch==2.1.2,
-    `natten==0.15.1+torch210cu121` breaks on any torch bump), so its compute
-    step runs out-of-band via `experiments/whisperx_vad/run.py` in its own
-    sandbox image, never as part of `./analyze`. A song analysed without that
-    cache gets an honest `null`/`unknown`, never a guess.
+    Reads `artifacts/whisperx-vad/whisperx_vad.json`, written by
+    `docker compose run --rm whisperx --song <path>` before `./analyze` runs
+    (whisperX pins torch~=2.8.0, incompatible with the `app` image's pinned
+    torch==2.1.2 / `natten==0.15.1+torch210cu121`, so it cannot run inside
+    `./analyze` itself). No silent fallback: when the artifact is absent this
+    raises rather than returning a guess or an honest-looking `None` that a
+    caller could mistake for "ran, found nothing" — a song must not silently
+    publish `arrangement_state.json` without this signal.
 
     Every span's `confidence` is hardcoded `1.0`, not whisperX's own varying
     per-span value (0.56-0.98 in practice) — the operator's explicit call: "when
     'phrase' is detected the chances that it happens is true". This collapses
-    the experiment's own graded confidence in favour of asserting each detected
+    the detector's own graded confidence in favour of asserting each detected
     phrase as certain; the graded per-frame curve stays in
-    `reference/proposals/whisperx_vad.json` for anyone who wants it.
+    `artifacts/whisperx-vad/whisperx_vad.json` for anyone who wants it.
     """
-    cache_path = paths.reference("proposals", "whisperx_vad.json")
-    if not cache_path.exists():
-        return None
-    proposal = read_json(cache_path)
+    artifact_path = paths.artifact("whisperx-vad", "whisperx_vad.json")
+    if not artifact_path.exists():
+        raise DependencyError(
+            f"missing {artifact_path} — run the whisperx service before ./analyze: "
+            f"docker compose run --rm whisperx --song {paths.song_path}"
+        )
+    proposal = read_json(artifact_path)
     times, values = _sibilance_curve(paths)
     return [
         {
@@ -479,8 +485,9 @@ def publish_arrangement_state(paths: SongPaths) -> str:
 
     `vocals_phrase` (v3.5 item 7 promotion, see `_whisperx_vocal_phrase`) is a
     second, independent signal about the vocals stem — the `whisperx_vad`
-    experiment's phrase spans — published alongside `blocks` rather than folded
-    into them, so a wrong call on one never masks the other.
+    detector's phrase spans, run as its own pipeline service (v3.6 item 2) —
+    published alongside `blocks` rather than folded into them, so a wrong call
+    on one never masks the other.
     """
     artifact = read_json(paths.artifact("arrangement_state.json"))
     raw_blocks = artifact.get("blocks", [])
@@ -514,7 +521,9 @@ def publish_arrangement_state(paths: SongPaths) -> str:
         _fuse(
             {
                 **{key: [("arrangement_state", True)] for key in row_keys},
-                "vocals_phrase": [("whisperx_vad", vocals_phrase is not None)],
+                # Never `None` — `_whisperx_vocal_phrase` raises rather than
+                # returning one (no silent fallback).
+                "vocals_phrase": [("whisperx_vad", True)],
                 # A `vocals_phrase` row fuses two producers: its span is
                 # whisperX's, its `sibilance` is the promoted item-4 cue's. The
                 # dotted key is the per-row override the flat header cannot

@@ -1,0 +1,45 @@
+{
+  "schema_version": "3.0",
+  "generated_from": {
+    "engine": "analyzer.stages.section_function",
+    "reads": [
+      "sections.json",
+      "arrangement_state.json",
+      "loudness.json"
+    ],
+    "drums_margin_db": 3.0,
+    "mix_min_gap_db": -1.5,
+    "play_tolerance": -1,
+    "function_confidence_ceiling": 0.9
+  },
+  "sections": [
+    {
+      "section_id": "section-001",
+      "function": "Intro",
+      "contested": false,
+      "contested_by": null,
+      "margin": 9.83
+    },
+    {
+      "section_id": "section-002",
+      "function": "Verse",
+      "contested": false,
+      "contested_by": null,
+      "margin": 8.7
+    },
+    {
+      "section_id": "section-003",
+      "function": "Chorus",
+      "contested": false,
+      "contested_by": null,
+      "margin": -23.14
+    },
+    {
+      "section_id": "section-004",
+      "function": "Outro",
+      "contested": false,
+      "contested_by": null,
+      "margin": null
+    }
+  ]
+}

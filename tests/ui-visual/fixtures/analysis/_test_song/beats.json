@@ -54,7 +54,7 @@
       "bar": 2,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.02462
+      "downbeat_confidence": 0.022965
     },
     {
       "time": 3.85,
@@ -86,7 +86,7 @@
       "bar": 3,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.005639
+      "downbeat_confidence": 0.005609
     },
     {
       "time": 6.39,
@@ -150,7 +150,7 @@
       "bar": 5,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.126122
+      "downbeat_confidence": 0.09069
     },
     {
       "time": 11.28,
@@ -182,7 +182,7 @@
       "bar": 6,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.000952
+      "downbeat_confidence": 0.000883
     },
     {
       "time": 13.33,
@@ -214,7 +214,7 @@
       "bar": 7,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.294635
+      "downbeat_confidence": 0.362224
     },
     {
       "time": 15.28,
@@ -246,7 +246,7 @@
       "bar": 8,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": null
+      "downbeat_confidence": 0.24138
     },
     {
       "time": 17.11,
@@ -278,7 +278,7 @@
       "bar": 9,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.379317
+      "downbeat_confidence": 0.405215
     },
     {
       "time": 18.97,
@@ -310,7 +310,7 @@
       "bar": 10,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.223534
+      "downbeat_confidence": 0.229583
     },
     {
       "time": 20.81,
@@ -342,7 +342,7 @@
       "bar": 11,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.46335
+      "downbeat_confidence": 0.464622
     },
     {
       "time": 22.64,
@@ -374,7 +374,7 @@
       "bar": 12,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.173006
+      "downbeat_confidence": 0.184943
     },
     {
       "time": 24.5,
@@ -406,7 +406,7 @@
       "bar": 13,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.202603
+      "downbeat_confidence": 0.218793
     },
     {
       "time": 26.33,
@@ -438,7 +438,7 @@
       "bar": 14,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.12483
+      "downbeat_confidence": 0.112499
     },
     {
       "time": 28.19,
@@ -470,7 +470,7 @@
       "bar": 15,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.085796
+      "downbeat_confidence": 0.087754
     },
     {
       "time": 30.02,
@@ -502,7 +502,7 @@
       "bar": 16,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.312154
+      "downbeat_confidence": 0.318422
     },
     {
       "time": 31.88,
@@ -534,7 +534,7 @@
       "bar": 17,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.040763
+      "downbeat_confidence": 0.043143
     },
     {
       "time": 33.72,
@@ -566,7 +566,7 @@
       "bar": 18,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.27305
+      "downbeat_confidence": 0.277805
     },
     {
       "time": 35.57,
@@ -598,7 +598,7 @@
       "bar": 19,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.023742
+      "downbeat_confidence": 0.027469
     },
     {
       "time": 37.41,
@@ -630,7 +630,7 @@
       "bar": 20,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.198869
+      "downbeat_confidence": 0.21041
     },
     {
       "time": 39.26,
@@ -662,7 +662,7 @@
       "bar": 21,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.024565
+      "downbeat_confidence": 0.02654
     },
     {
       "time": 41.1,
@@ -694,7 +694,7 @@
       "bar": 22,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.221294
+      "downbeat_confidence": 0.220107
     },
     {
       "time": 42.96,
@@ -726,7 +726,7 @@
       "bar": 23,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.417354
+      "downbeat_confidence": 0.402777
     },
     {
       "time": 44.84,
@@ -854,7 +854,7 @@
       "bar": 27,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": 0.001583
+      "downbeat_confidence": 0.001152
     },
     {
       "time": 53.79,
@@ -886,7 +886,7 @@
       "bar": 28,
       "chord": "D#m",
       "type": "downbeat",
-      "downbeat_confidence": null
+      "downbeat_confidence": 0.00037
     },
     {
       "time": 55.69,

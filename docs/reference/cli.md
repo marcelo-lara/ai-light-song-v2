@@ -89,6 +89,13 @@ crash/hat split reads `essentia/fft_bands.drums.json`. The full pipeline already
 orders them this way; a single `--stage extract-drum-events` run gates on the
 artifact and fails (`DependencyError`) if `extract-fft-bands` has not run.
 
+`publish-arrangement-state` (7.3) reads `artifacts/whisperx-vad/whisperx_vad.json`
+for `vocals_phrase` — written by the separate `whisperx` Compose service, not
+by `./analyze` itself (its own `torch~=2.8.0` pin is incompatible with the
+`app` image). Run `docker compose run --rm whisperx --song <path>` **before**
+`./analyze` for that song; `publish-arrangement-state` fails (`DependencyError`)
+if the artifact is absent.
+
 Batch progress lines carry both positions: `[2/20][1.1] _test_song | ensure-stems`.
 
 ## Working sequence

@@ -39,6 +39,22 @@ services:
       NVIDIA_VISIBLE_DEVICES: all
       NVIDIA_DRIVER_CAPABILITIES: compute,utility
 
+  whisperx:
+    # Own image — never the analyzer image (torch~=2.8.0 vs the app image's
+    # pinned torch==2.1.2). Batch CLI tool like `app`, not a stdio server
+    # like `mcp`: `docker compose run --rm whisperx --song <path>` /
+    # `--all-songs` (see docs/reference/docker.md, whisperx_vad/__main__.py).
+    profiles: ["ondemand"]
+    build:
+      context: .
+      dockerfile: whisperx_vad/Dockerfile
+    image: ai-light-song-v2-whisperx:dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ./data:/data
+      - /home/darkangel/ai-dmx-light-render/data/songs:/data/songs
+
   mcp:
     # Own image — never the analyzer image. stdio server: the MCP client spawns
     # it with `docker compose run --rm -T mcp` (see docs/mcp-definition.md).

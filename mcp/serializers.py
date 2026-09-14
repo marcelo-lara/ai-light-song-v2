@@ -323,10 +323,10 @@ def _arrangement_block(doc: dict) -> dict[str, Any]:
     get_detail's structural view.
 
     `vocals_phrase` (v3.5 item 7 promotion) is a second, independent read on
-    the vocals stem from the `whisperx_vad` experiment — every span's
-    `confidence` is `1.0` by the operator's own rule (a detected phrase is
-    asserted certain, not graded); `null` means the song has no pre-computed
-    proposal cache, not "no vocals"."""
+    the vocals stem from the `whisperx_vad` detector (its own pipeline
+    service, v3.6 item 2) — every span's `confidence` is `1.0` by the
+    operator's own rule (a detected phrase is asserted certain, not
+    graded)."""
     blocks = doc.get("blocks", [])
     rows = [
         {

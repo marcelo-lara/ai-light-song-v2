@@ -12,7 +12,7 @@
   },
   "global_key": {
     "label": "D# minor",
-    "confidence": 0.764135,
+    "confidence": 0.76508,
     "source": "hpcp"
   },
   "chords": [
@@ -22,7 +22,7 @@
       "bar": 1,
       "beat": 4,
       "chord": "D#m",
-      "confidence": 0.849954
+      "confidence": 0.850587
     },
     {
       "time": 46.393467,
@@ -30,7 +30,7 @@
       "bar": 24,
       "beat": 1,
       "chord": "B",
-      "confidence": 0.917239
+      "confidence": 0.91832
     },
     {
       "time": 48.088524,
@@ -38,7 +38,7 @@
       "bar": 24,
       "beat": 4,
       "chord": "F#",
-      "confidence": 0.930625
+      "confidence": 0.930415
     },
     {
       "time": 51.548298,
@@ -46,7 +46,7 @@
       "bar": 26,
       "beat": 2,
       "chord": "D#m",
-      "confidence": 0.951396
+      "confidence": 0.953375
     }
   ],
   "chord_probabilities": [
@@ -54,181 +54,181 @@
       "beat": 1,
       "time": 0.510839,
       "label": "D#m",
-      "confidence": 0.77867
+      "confidence": 0.778155
     },
     {
       "beat": 2,
       "time": 1.044898,
       "label": "D#m",
-      "confidence": 0.77867
+      "confidence": 0.778155
     },
     {
       "beat": 3,
       "time": 1.567347,
       "label": "D#m",
-      "confidence": 0.666537
+      "confidence": 0.667713
     },
     {
       "beat": 4,
       "time": 2.089796,
       "label": "D#m",
-      "confidence": 0.775243
+      "confidence": 0.773642
     },
     {
       "beat": 5,
       "time": 2.612245,
       "label": "D#m",
-      "confidence": 0.852279
+      "confidence": 0.851124
     },
     {
       "beat": 6,
       "time": 3.227574,
       "label": "D#m",
-      "confidence": 0.851312
+      "confidence": 0.850961
     },
     {
       "beat": 7,
       "time": 3.854512,
       "label": "D#m",
-      "confidence": 0.74798
+      "confidence": 0.747334
     },
     {
       "beat": 8,
       "time": 4.481451,
       "label": "G#m",
-      "confidence": 0.628016
+      "confidence": 0.630465
     },
     {
       "beat": 9,
       "time": 5.12,
       "label": "G#m",
-      "confidence": 0.63982
+      "confidence": 0.642269
     },
     {
       "beat": 10,
       "time": 5.758549,
       "label": "G#m",
-      "confidence": 0.584024
+      "confidence": 0.58582
     },
     {
       "beat": 11,
       "time": 6.385488,
       "label": "D#",
-      "confidence": 0.794503
+      "confidence": 0.795521
     },
     {
       "beat": 12,
       "time": 6.989206,
       "label": "D#",
-      "confidence": 0.771174
+      "confidence": 0.770768
     },
     {
       "beat": 13,
       "time": 7.604535,
       "label": "D#",
-      "confidence": 0.812227
+      "confidence": 0.812521
     },
     {
       "beat": 14,
       "time": 8.219864,
       "label": "D#",
-      "confidence": 0.800108
+      "confidence": 0.803274
     },
     {
       "beat": 15,
       "time": 8.846803,
       "label": "D#m",
-      "confidence": 0.789919
+      "confidence": 0.791164
     },
     {
       "beat": 16,
       "time": 9.462132,
       "label": "D#m",
-      "confidence": 0.848313
+      "confidence": 0.847235
     },
     {
       "beat": 17,
       "time": 10.07746,
       "label": "D#m",
-      "confidence": 0.886569
+      "confidence": 0.881018
     },
     {
       "beat": 18,
       "time": 10.681179,
       "label": "D#m",
-      "confidence": 0.873413
+      "confidence": 0.862854
     },
     {
       "beat": 19,
       "time": 11.284898,
       "label": "D#m",
-      "confidence": 0.786033
+      "confidence": 0.775343
     },
     {
       "beat": 20,
       "time": 11.877007,
       "label": "D#m",
-      "confidence": 0.67807
+      "confidence": 0.671992
     },
     {
       "beat": 21,
       "time": 12.353016,
       "label": "D#m",
-      "confidence": 0.789919
+      "confidence": 0.791164
     },
     {
       "beat": 22,
       "time": 12.840634,
       "label": "D#m",
-      "confidence": 0.789919
+      "confidence": 0.791164
     },
     {
       "beat": 23,
       "time": 13.328254,
       "label": "D#m",
-      "confidence": 0.66393
+      "confidence": 0.665047
     },
     {
       "beat": 24,
       "time": 13.815873,
       "label": "D#m",
-      "confidence": 0.726464
+      "confidence": 0.727779
     },
     {
       "beat": 25,
       "time": 14.315102,
       "label": "D#m",
-      "confidence": 0.759078
+      "confidence": 0.762404
     },
     {
       "beat": 26,
       "time": 14.802721,
       "label": "D#",
-      "confidence": 0.756669
+      "confidence": 0.757553
     },
     {
       "beat": 27,
       "time": 15.278729,
       "label": "D#",
-      "confidence": 0.710846
+      "confidence": 0.718356
     },
     {
       "beat": 28,
       "time": 15.731519,
       "label": "D#",
-      "confidence": 0.661262
+      "confidence": 0.664446
     },
     {
       "beat": 29,
       "time": 16.195917,
       "label": "D#",
-      "confidence": 0.626579
+      "confidence": 0.633838
     },
     {
       "beat": 30,
       "time": 16.648706,
       "label": "D#m",
-      "confidence": 0.692581
+      "confidence": 0.694972
     },
     {
       "beat": 31,
@@ -240,505 +240,505 @@
       "beat": 32,
       "time": 17.577505,
       "label": "D#m",
-      "confidence": 0.884823
+      "confidence": 0.890313
     },
     {
       "beat": 33,
       "time": 18.041904,
       "label": "D#m",
-      "confidence": 0.906587
+      "confidence": 0.911665
     },
     {
       "beat": 34,
       "time": 18.506304,
       "label": "D#m",
-      "confidence": 0.886404
+      "confidence": 0.890004
     },
     {
       "beat": 35,
       "time": 18.970703,
       "label": "D#m",
-      "confidence": 0.793431
+      "confidence": 0.797156
     },
     {
       "beat": 36,
       "time": 19.435102,
       "label": "D#m",
-      "confidence": 0.688275
+      "confidence": 0.694133
     },
     {
       "beat": 37,
       "time": 19.8995,
       "label": "D#m",
-      "confidence": 0.692581
+      "confidence": 0.694972
     },
     {
       "beat": 38,
       "time": 20.340679,
       "label": "D#m",
-      "confidence": 0.620804
+      "confidence": 0.623594
     },
     {
       "beat": 39,
       "time": 20.805079,
       "label": "D#m",
-      "confidence": 0.673177
+      "confidence": 0.675824
     },
     {
       "beat": 40,
       "time": 21.269478,
       "label": "D#m",
-      "confidence": 0.749938
+      "confidence": 0.75951
     },
     {
       "beat": 41,
       "time": 21.733877,
       "label": "D#m",
-      "confidence": 0.77762
+      "confidence": 0.785806
     },
     {
       "beat": 42,
       "time": 22.198277,
       "label": "D#m",
-      "confidence": 0.750676
+      "confidence": 0.760526
     },
     {
       "beat": 43,
       "time": 22.639456,
       "label": "D#m",
-      "confidence": 0.692581
+      "confidence": 0.694972
     },
     {
       "beat": 44,
       "time": 23.103855,
       "label": "D#m",
-      "confidence": 0.692581
+      "confidence": 0.694972
     },
     {
       "beat": 45,
       "time": 23.568254,
       "label": "D#m",
-      "confidence": 0.676663
+      "confidence": 0.681963
     },
     {
       "beat": 46,
       "time": 24.032652,
       "label": "D#m",
-      "confidence": 0.726558
+      "confidence": 0.727196
     },
     {
       "beat": 47,
       "time": 24.497051,
       "label": "D#m",
-      "confidence": 0.837842
+      "confidence": 0.841658
     },
     {
       "beat": 48,
       "time": 24.961451,
       "label": "D#m",
-      "confidence": 0.916476
+      "confidence": 0.920725
     },
     {
       "beat": 49,
       "time": 25.42585,
       "label": "D#m",
-      "confidence": 0.917778
+      "confidence": 0.91994
     },
     {
       "beat": 50,
       "time": 25.878639,
       "label": "D#m",
-      "confidence": 0.869335
+      "confidence": 0.872257
     },
     {
       "beat": 51,
       "time": 26.331429,
       "label": "D#m",
-      "confidence": 0.752521
+      "confidence": 0.751916
     },
     {
       "beat": 52,
       "time": 26.795828,
       "label": "D#m",
-      "confidence": 0.672314
+      "confidence": 0.679851
     },
     {
       "beat": 53,
       "time": 27.260227,
       "label": "D#",
-      "confidence": 0.644657
+      "confidence": 0.657234
     },
     {
       "beat": 54,
       "time": 27.724625,
       "label": "D#",
-      "confidence": 0.659527
+      "confidence": 0.673823
     },
     {
       "beat": 55,
       "time": 28.189024,
       "label": "D#",
-      "confidence": 0.65875
+      "confidence": 0.68408
     },
     {
       "beat": 56,
       "time": 28.630203,
       "label": "D#",
-      "confidence": 0.72313
+      "confidence": 0.751499
     },
     {
       "beat": 57,
       "time": 29.094603,
       "label": "D#",
-      "confidence": 0.779835
+      "confidence": 0.79968
     },
     {
       "beat": 58,
       "time": 29.559002,
       "label": "D#",
-      "confidence": 0.799046
+      "confidence": 0.811984
     },
     {
       "beat": 59,
       "time": 30.023401,
       "label": "D#",
-      "confidence": 0.8091
+      "confidence": 0.812989
     },
     {
       "beat": 60,
       "time": 30.487801,
       "label": "D#",
-      "confidence": 0.732626
+      "confidence": 0.731231
     },
     {
       "beat": 61,
       "time": 30.952198,
       "label": "D#",
-      "confidence": 0.675593
+      "confidence": 0.666542
     },
     {
       "beat": 62,
       "time": 31.416597,
       "label": "D#",
-      "confidence": 0.680179
+      "confidence": 0.6662
     },
     {
       "beat": 63,
       "time": 31.880997,
       "label": "D#",
-      "confidence": 0.714402
+      "confidence": 0.702467
     },
     {
       "beat": 64,
       "time": 32.333786,
       "label": "D#m",
-      "confidence": 0.810049
+      "confidence": 0.808428
     },
     {
       "beat": 65,
       "time": 32.786575,
       "label": "D#m",
-      "confidence": 0.847738
+      "confidence": 0.850151
     },
     {
       "beat": 66,
       "time": 33.250973,
       "label": "D#m",
-      "confidence": 0.849299
+      "confidence": 0.850333
     },
     {
       "beat": 67,
       "time": 33.715374,
       "label": "D#m",
-      "confidence": 0.806936
+      "confidence": 0.804929
     },
     {
       "beat": 68,
       "time": 34.179771,
       "label": "D#",
-      "confidence": 0.761513
+      "confidence": 0.768269
     },
     {
       "beat": 69,
       "time": 34.644173,
       "label": "D#",
-      "confidence": 0.716568
+      "confidence": 0.715916
     },
     {
       "beat": 70,
       "time": 35.10857,
       "label": "D#",
-      "confidence": 0.720212
+      "confidence": 0.712728
     },
     {
       "beat": 71,
       "time": 35.572971,
-      "label": "D#",
-      "confidence": 0.847754
+      "label": "D#m",
+      "confidence": 0.741038
     },
     {
       "beat": 72,
       "time": 36.025761,
-      "label": "D#",
-      "confidence": 0.847754
+      "label": "D#m",
+      "confidence": 0.827478
     },
     {
       "beat": 73,
       "time": 36.47855,
-      "label": "D#",
-      "confidence": 0.847754
+      "label": "D#m",
+      "confidence": 0.840677
     },
     {
       "beat": 74,
       "time": 36.942947,
       "label": "D#",
-      "confidence": 0.870914
+      "confidence": 0.847535
     },
     {
       "beat": 75,
       "time": 37.407345,
       "label": "D#",
-      "confidence": 0.875761
+      "confidence": 0.874075
     },
     {
       "beat": 76,
       "time": 37.871746,
       "label": "D#",
-      "confidence": 0.838816
+      "confidence": 0.842654
     },
     {
       "beat": 77,
       "time": 38.336143,
       "label": "D#",
-      "confidence": 0.794883
+      "confidence": 0.796707
     },
     {
       "beat": 78,
       "time": 38.800545,
       "label": "D#",
-      "confidence": 0.797327
+      "confidence": 0.789409
     },
     {
       "beat": 79,
       "time": 39.264942,
       "label": "D#",
-      "confidence": 0.774506
+      "confidence": 0.766052
     },
     {
       "beat": 80,
       "time": 39.717731,
       "label": "D#m",
-      "confidence": 0.822021
+      "confidence": 0.820206
     },
     {
       "beat": 81,
       "time": 40.170521,
       "label": "D#m",
-      "confidence": 0.840133
+      "confidence": 0.827238
     },
     {
       "beat": 82,
       "time": 40.634918,
       "label": "D#m",
-      "confidence": 0.851446
+      "confidence": 0.832024
     },
     {
       "beat": 83,
       "time": 41.099319,
       "label": "D#m",
-      "confidence": 0.84718
+      "confidence": 0.83253
     },
     {
       "beat": 84,
       "time": 41.563717,
       "label": "D#",
-      "confidence": 0.819255
+      "confidence": 0.813319
     },
     {
       "beat": 85,
       "time": 42.028118,
       "label": "D#",
-      "confidence": 0.803007
+      "confidence": 0.799817
     },
     {
       "beat": 86,
       "time": 42.492516,
       "label": "D#",
-      "confidence": 0.738539
+      "confidence": 0.739527
     },
     {
       "beat": 87,
       "time": 42.956917,
       "label": "D#m",
-      "confidence": 0.715199
+      "confidence": 0.724664
     },
     {
       "beat": 88,
       "time": 43.421314,
       "label": "D#m",
-      "confidence": 0.812172
+      "confidence": 0.822846
     },
     {
       "beat": 89,
       "time": 43.885712,
       "label": "D#m",
-      "confidence": 0.911601
+      "confidence": 0.917528
     },
     {
       "beat": 90,
       "time": 44.350113,
       "label": "D#m",
-      "confidence": 0.954906
+      "confidence": 0.958565
     },
     {
       "beat": 91,
       "time": 44.83773,
       "label": "D#m",
-      "confidence": 0.971773
+      "confidence": 0.973844
     },
     {
       "beat": 92,
       "time": 45.325352,
       "label": "D#m",
-      "confidence": 0.986168
+      "confidence": 0.986201
     },
     {
       "beat": 93,
       "time": 45.824581,
       "label": "D#m",
-      "confidence": 0.933414
+      "confidence": 0.93106
     },
     {
       "beat": 94,
       "time": 46.393467,
       "label": "B",
-      "confidence": 0.940003
+      "confidence": 0.942199
     },
     {
       "beat": 95,
       "time": 46.973969,
       "label": "B",
-      "confidence": 0.953489
+      "confidence": 0.953855
     },
     {
       "beat": 96,
       "time": 47.542858,
       "label": "B",
-      "confidence": 0.858225
+      "confidence": 0.858907
     },
     {
       "beat": 97,
       "time": 48.088524,
       "label": "F#",
-      "confidence": 0.784088
+      "confidence": 0.785114
     },
     {
       "beat": 98,
       "time": 48.657413,
       "label": "F#",
-      "confidence": 0.922305
+      "confidence": 0.924531
     },
     {
       "beat": 99,
       "time": 49.226303,
       "label": "F#",
-      "confidence": 0.968623
+      "confidence": 0.969979
     },
     {
       "beat": 100,
       "time": 49.806801,
       "label": "F#",
-      "confidence": 0.974733
+      "confidence": 0.973342
     },
     {
       "beat": 101,
       "time": 50.387302,
       "label": "F#",
-      "confidence": 0.978529
+      "confidence": 0.97606
     },
     {
       "beat": 102,
       "time": 50.979408,
       "label": "F#",
-      "confidence": 0.955475
+      "confidence": 0.953463
     },
     {
       "beat": 103,
       "time": 51.548298,
       "label": "D#m",
-      "confidence": 0.920092
+      "confidence": 0.919586
     },
     {
       "beat": 104,
       "time": 52.140408,
       "label": "D#m",
-      "confidence": 0.964907
+      "confidence": 0.964722
     },
     {
       "beat": 105,
       "time": 52.732517,
       "label": "D#m",
-      "confidence": 0.922797
+      "confidence": 0.922731
     },
     {
       "beat": 106,
       "time": 53.313015,
       "label": "D#m",
-      "confidence": 0.878765
+      "confidence": 0.881659
     },
     {
       "beat": 107,
       "time": 53.789024,
       "label": "D#m",
-      "confidence": 0.866269
+      "confidence": 0.870298
     },
     {
       "beat": 108,
       "time": 54.265034,
       "label": "D#m",
-      "confidence": 0.906591
+      "confidence": 0.913572
     },
     {
       "beat": 109,
       "time": 54.752651,
       "label": "D#m",
-      "confidence": 0.946828
+      "confidence": 0.953868
     },
     {
       "beat": 110,
       "time": 55.217052,
       "label": "D#m",
-      "confidence": 0.979372
+      "confidence": 0.982792
     },
     {
       "beat": 111,
       "time": 55.693062,
       "label": "D#m",
-      "confidence": 0.991715
+      "confidence": 0.993664
     },
     {
       "beat": 112,
       "time": 56.169067,
       "label": "D#m",
-      "confidence": 0.996487
+      "confidence": 0.996745
     },
     {
       "beat": 113,
       "time": 56.633469,
       "label": "D#m",
-      "confidence": 0.998056
+      "confidence": 0.998015
     },
     {
       "beat": 114,
       "time": 57.109478,
       "label": "D#m",
-      "confidence": 0.998758
+      "confidence": 0.998722
     },
     {
       "beat": 115,
       "time": 57.585487,
       "label": "D#m",
-      "confidence": 0.997515
+      "confidence": 0.997506
     }
   ]
 }

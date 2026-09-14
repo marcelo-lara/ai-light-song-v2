@@ -8,7 +8,10 @@
     "entered": "arrangement_state",
     "left": "arrangement_state",
     "margin_db": "arrangement_state",
-    "confidence": "arrangement_state"
+    "confidence": "arrangement_state",
+    "vocals_phrase": "whisperx_vad",
+    "vocals_phrase.sibilance": "vocal_sibilance",
+    "vocals_sibilance_song_mean": "vocal_sibilance"
   },
   "stems": [
     "bass",
@@ -19,7 +22,7 @@
   "blocks": [
     {
       "start_s": 0.0,
-      "end_s": 16.0,
+      "end_s": 1.25,
       "playing": [
         "bass",
         "drums",
@@ -32,6 +35,35 @@
       "confidence": null
     },
     {
+      "start_s": 1.25,
+      "end_s": 14.75,
+      "playing": [
+        "bass",
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 2.93,
+      "confidence": 0.386
+    },
+    {
+      "start_s": 14.75,
+      "end_s": 16.0,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 12.26,
+      "confidence": 0.87
+    },
+    {
       "start_s": 16.0,
       "end_s": 16.75,
       "playing": [
@@ -42,13 +74,15 @@
       "entered": [
         "vocals"
       ],
-      "left": [],
-      "margin_db": 16.28,
-      "confidence": 0.934
+      "left": [
+        "drums"
+      ],
+      "margin_db": 8.01,
+      "confidence": 0.737
     },
     {
       "start_s": 16.75,
-      "end_s": 22.25,
+      "end_s": 22.0,
       "playing": [
         "harmonic",
         "vocals"
@@ -57,12 +91,12 @@
       "left": [
         "bass"
       ],
-      "margin_db": 0.82,
-      "confidence": 0.128
+      "margin_db": 1.79,
+      "confidence": 0.258
     },
     {
-      "start_s": 22.25,
-      "end_s": 22.75,
+      "start_s": 22.0,
+      "end_s": 22.5,
       "playing": [
         "drums",
         "harmonic",
@@ -72,11 +106,11 @@
         "drums"
       ],
       "left": [],
-      "margin_db": 11.79,
-      "confidence": 0.86
+      "margin_db": 11.37,
+      "confidence": 0.85
     },
     {
-      "start_s": 22.75,
+      "start_s": 22.5,
       "end_s": 23.75,
       "playing": [
         "drums",
@@ -86,12 +120,12 @@
       "left": [
         "vocals"
       ],
-      "margin_db": 5.14,
-      "confidence": 0.575
+      "margin_db": 3.02,
+      "confidence": 0.395
     },
     {
       "start_s": 23.75,
-      "end_s": 24.5,
+      "end_s": 24.25,
       "playing": [
         "bass",
         "drums",
@@ -101,11 +135,11 @@
         "bass"
       ],
       "left": [],
-      "margin_db": 2.59,
-      "confidence": 0.351
+      "margin_db": 4.56,
+      "confidence": 0.532
     },
     {
-      "start_s": 24.5,
+      "start_s": 24.25,
       "end_s": 25.0,
       "playing": [
         "bass",
@@ -115,12 +149,100 @@
       "left": [
         "drums"
       ],
-      "margin_db": 7.27,
-      "confidence": 0.702
+      "margin_db": 5.9,
+      "confidence": 0.626
     },
     {
       "start_s": 25.0,
+      "end_s": 25.25,
+      "playing": [
+        "bass",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 15.94,
+      "confidence": 0.93
+    },
+    {
+      "start_s": 25.25,
+      "end_s": 26.0,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "bass"
+      ],
+      "margin_db": 0.24,
+      "confidence": 0.039
+    },
+    {
+      "start_s": 26.0,
       "end_s": 29.75,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 5.66,
+      "confidence": 0.611
+    },
+    {
+      "start_s": 29.75,
+      "end_s": 42.25,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic"
+      ],
+      "entered": [
+        "bass"
+      ],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 13.6,
+      "confidence": 0.896
+    },
+    {
+      "start_s": 42.25,
+      "end_s": 42.5,
+      "playing": [
+        "bass",
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 8.39,
+      "confidence": 0.753
+    },
+    {
+      "start_s": 42.5,
+      "end_s": 43.25,
+      "playing": [
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "bass"
+      ],
+      "margin_db": 11.25,
+      "confidence": 0.847
+    },
+    {
+      "start_s": 43.25,
+      "end_s": 43.5,
       "playing": [
         "harmonic",
         "vocals"
@@ -128,59 +250,12 @@
       "entered": [
         "vocals"
       ],
-      "left": [
-        "bass"
-      ],
-      "margin_db": 2.02,
-      "confidence": 0.286
-    },
-    {
-      "start_s": 29.75,
-      "end_s": 36.5,
-      "playing": [
-        "bass",
-        "harmonic"
-      ],
-      "entered": [
-        "bass"
-      ],
-      "left": [
-        "vocals"
-      ],
-      "margin_db": 11.93,
-      "confidence": 0.863
-    },
-    {
-      "start_s": 36.5,
-      "end_s": 42.5,
-      "playing": [
-        "bass",
-        "drums",
-        "harmonic"
-      ],
-      "entered": [
-        "drums"
-      ],
       "left": [],
-      "margin_db": 7.74,
-      "confidence": 0.725
+      "margin_db": 19.99,
+      "confidence": 0.964
     },
     {
-      "start_s": 42.5,
-      "end_s": 43.25,
-      "playing": [
-        "drums",
-        "harmonic"
-      ],
-      "entered": [],
-      "left": [
-        "bass"
-      ],
-      "margin_db": 11.15,
-      "confidence": 0.844
-    },
-    {
-      "start_s": 43.25,
+      "start_s": 43.5,
       "end_s": 44.5,
       "playing": [
         "drums",
@@ -188,15 +263,15 @@
         "vocals"
       ],
       "entered": [
-        "vocals"
+        "drums"
       ],
       "left": [],
-      "margin_db": 19.96,
-      "confidence": 0.964
+      "margin_db": 10.38,
+      "confidence": 0.823
     },
     {
       "start_s": 44.5,
-      "end_s": 45.25,
+      "end_s": 45.5,
       "playing": [
         "bass",
         "drums",
@@ -208,11 +283,11 @@
       "left": [
         "vocals"
       ],
-      "margin_db": 4.25,
-      "confidence": 0.508
+      "margin_db": 3.89,
+      "confidence": 0.477
     },
     {
-      "start_s": 45.25,
+      "start_s": 45.5,
       "end_s": 47.0,
       "playing": [
         "bass",
@@ -222,8 +297,8 @@
       "left": [
         "drums"
       ],
-      "margin_db": 3.0,
-      "confidence": 0.393
+      "margin_db": 0.78,
+      "confidence": 0.122
     },
     {
       "start_s": 47.0,
@@ -237,8 +312,8 @@
         "vocals"
       ],
       "left": [],
-      "margin_db": 18.01,
-      "confidence": 0.95
+      "margin_db": 17.82,
+      "confidence": 0.949
     },
     {
       "start_s": 55.25,
@@ -251,8 +326,8 @@
       "left": [
         "vocals"
       ],
-      "margin_db": 0.85,
-      "confidence": 0.132
+      "margin_db": 1.88,
+      "confidence": 0.269
     },
     {
       "start_s": 55.5,
@@ -264,8 +339,8 @@
       "left": [
         "bass"
       ],
-      "margin_db": 24.27,
-      "confidence": 0.982
+      "margin_db": 24.42,
+      "confidence": 0.983
     },
     {
       "start_s": 56.25,
@@ -275,8 +350,47 @@
       "left": [
         "harmonic"
       ],
-      "margin_db": 0.19,
-      "confidence": 0.031
+      "margin_db": 0.13,
+      "confidence": 0.021
     }
-  ]
+  ],
+  "vocals_phrase": [
+    {
+      "start_s": 15.91,
+      "end_s": 22.61,
+      "confidence": 1.0,
+      "sibilance": 0.3698
+    },
+    {
+      "start_s": 24.888,
+      "end_s": 26.677,
+      "confidence": 1.0,
+      "sibilance": 0.3723
+    },
+    {
+      "start_s": 28.499,
+      "end_s": 29.798,
+      "confidence": 1.0,
+      "sibilance": 0.3843
+    },
+    {
+      "start_s": 43.282,
+      "end_s": 44.615,
+      "confidence": 1.0,
+      "sibilance": 0.3607
+    },
+    {
+      "start_s": 47.028,
+      "end_s": 48.749,
+      "confidence": 1.0,
+      "sibilance": 0.3868
+    },
+    {
+      "start_s": 50.504,
+      "end_s": 55.415,
+      "confidence": 1.0,
+      "sibilance": 0.3458
+    }
+  ],
+  "vocals_sibilance_song_mean": 0.1702
 }

@@ -274,8 +274,10 @@ resolutions.
 
   **New in v3.5**, alongside `blocks[]` and independent of it:
   `vocals_phrase[] { start_s, end_s, confidence, sibilance }` — a second,
-  separate read on the vocals stem from the promoted `whisperx_vad` detector,
-  and `vocals_sibilance_song_mean` (a float, or `null`). These do **not**
+  separate read on the vocals stem from the promoted `whisperx_vad` detector
+  (its own pipeline service since v3.6 item 2 — the `whisperx` Compose
+  service, run before `./analyze`), and `vocals_sibilance_song_mean` (a
+  float, or `null`). These do **not**
   modify `blocks[]`: the `vocals` entry inside `playing[]` is still the
   RMS-derived claim it always was. **`vocals_phrase[]` is the channel to
   trust for voice presence** — a consumer wanting to know whether a voice is
@@ -293,11 +295,13 @@ resolutions.
     Do not weight phrases by it; it carries no information. It is the one
     place in this contract where a confidence is not a graded score, and it is
     deliberate.
-  - `vocals_phrase: null` means **the song has no pre-computed proposal**, not
-    "no vocals". The detector's compute step cannot run inside the analyzer
-    image (an incompatible torch pin against the natten ABI lock) and runs
-    out-of-band, so `./analyze` alone does not produce it. An empty list `[]`
-    is the distinct, real claim "ran, found no phrases".
+  - `vocals_phrase` is **never `null`** once `arrangement_state.json` exists —
+    the detector's compute step cannot run inside the `app` image (an
+    incompatible torch pin against the natten ABI lock), so it runs as its own
+    Compose service (`whisperx`) that must be run for a song before
+    `./analyze`; `publish-arrangement-state` fails loudly rather than
+    publishing without it. An empty list `[]` is the real claim "ran, found no
+    phrases".
   - `sibilance` is a **relative** stem-bleed discriminator and is meaningless
     read absolutely — compare it against the sibling
     `vocals_sibilance_song_mean`, which is the same cue's per-song noise

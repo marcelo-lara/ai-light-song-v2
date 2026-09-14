@@ -1,0 +1,57 @@
+[
+    {
+        "start": 0.48,
+        "end": 15.24,
+        "label": "Intro"
+    },
+    {
+        "start": 15.24,
+        "end": 30.0,
+        "label": "Chorus"
+    },
+    {
+        "start": 30.0,
+        "end": 44.78,
+        "label": "Chorus"
+    },
+    {
+        "start": 44.78,
+        "end": 59.54,
+        "label": "Instrumental"
+    },
+    {
+        "start": 59.54,
+        "end": 81.7,
+        "label": "Instrumental"
+    },
+    {
+        "start": 81.7,
+        "end": 96.48,
+        "label": "Instrumental"
+    },
+    {
+        "start": 96.48,
+        "end": 111.24,
+        "label": "Instrumental"
+    },
+    {
+        "start": 111.24,
+        "end": 126.0,
+        "label": "Instrumental"
+    },
+    {
+        "start": 126.0,
+        "end": 155.54,
+        "label": "Instrumental"
+    },
+    {
+        "start": 155.54,
+        "end": 177.7,
+        "label": "Instrumental"
+    },
+    {
+        "start": 177.7,
+        "end": 192.48,
+        "label": "Instrumental"
+    }
+]

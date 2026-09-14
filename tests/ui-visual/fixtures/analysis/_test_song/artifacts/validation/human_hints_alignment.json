@@ -8,18 +8,16 @@
     "harmonic_layer_file": "/data/analysis/_test_song/artifacts/layer_a_harmonic.json"
   },
   "summary": {
-    "hint_count": 15,
-    "hints_with_section_overlap": 15,
+    "hint_count": 13,
+    "hints_with_section_overlap": 13,
     "hints_with_event_overlap": 7,
-    "hints_with_chord_overlap": 15,
+    "hints_with_chord_overlap": 13,
     "hints_without_event_overlap": [
       "hint-004",
-      "hint-005",
       "hint-006",
       "hint-009",
       "hint-010",
       "hint-011",
-      "hint-012",
       "hint-013"
     ]
   },
@@ -31,7 +29,7 @@
       "end_time": 7.626,
       "summary": "Drum Hit",
       "lighting_hint": "Intense strobe",
-      "primary_section_label": "001 intro [unverified] (0.34)",
+      "primary_section_label": "001 Intro [unverified] (0.34)",
       "section_overlap_count": 1,
       "event_overlap_count": 1,
       "chord_overlap_count": 1,
@@ -40,8 +38,8 @@
       },
       "overlapping_sections": [
         {
-          "label": "001 intro [unverified] (0.34)",
-          "start": 0.0,
+          "label": "001 Intro [unverified] (0.34)",
+          "start": 0.06,
           "end": 14.82,
           "overlap_seconds": 0.186
         }
@@ -52,7 +50,7 @@
           "type": "build",
           "start_time": 2.786,
           "end_time": 32.508,
-          "section_name": "intro",
+          "section_name": "Intro",
           "overlap_seconds": 0.186
         }
       ],
@@ -61,7 +59,7 @@
           "chord": "D#m",
           "start_s": 0.510839,
           "end_s": 46.393467,
-          "confidence": 0.849954,
+          "confidence": 0.850587,
           "overlap_seconds": 0.186
         }
       ]
@@ -73,8 +71,8 @@
       "end_time": 25.02,
       "summary": "drop approach",
       "lighting_hint": "strobes, slow to fast",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
-      "section_overlap_count": 1,
+      "primary_section_label": "003 Build [unverified] (0.45)",
+      "section_overlap_count": 2,
       "event_overlap_count": 2,
       "chord_overlap_count": 1,
       "event_type_counts": {
@@ -82,10 +80,16 @@
       },
       "overlapping_sections": [
         {
-          "label": "002 chorus [unverified] (0.45)",
+          "label": "002 Pre-Build [unverified] (0.45)",
           "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 2.841
+          "end": 22.2,
+          "overlap_seconds": 0.021
+        },
+        {
+          "label": "003 Build [unverified] (0.45)",
+          "start": 22.2,
+          "end": 28.63,
+          "overlap_seconds": 2.82
         }
       ],
       "overlapping_events": [
@@ -94,7 +98,7 @@
           "type": "build",
           "start_time": 2.786,
           "end_time": 32.508,
-          "section_name": "intro",
+          "section_name": "Intro",
           "overlap_seconds": 2.841
         },
         {
@@ -102,7 +106,7 @@
           "type": "build",
           "start_time": 20.341,
           "end_time": 25.879,
-          "section_name": "chorus",
+          "section_name": "Chorus",
           "overlap_seconds": 2.841
         }
       ],
@@ -111,7 +115,7 @@
           "chord": "D#m",
           "start_s": 0.510839,
           "end_s": 46.393467,
-          "confidence": 0.849954,
+          "confidence": 0.850587,
           "overlap_seconds": 2.841
         }
       ]
@@ -123,7 +127,7 @@
       "end_time": 27.646,
       "summary": "drop build",
       "lighting_hint": "",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
+      "primary_section_label": "003 Build [unverified] (0.45)",
       "section_overlap_count": 1,
       "event_overlap_count": 2,
       "chord_overlap_count": 1,
@@ -132,9 +136,9 @@
       },
       "overlapping_sections": [
         {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
+          "label": "003 Build [unverified] (0.45)",
+          "start": 22.2,
+          "end": 28.63,
           "overlap_seconds": 2.626
         }
       ],
@@ -144,7 +148,7 @@
           "type": "build",
           "start_time": 2.786,
           "end_time": 32.508,
-          "section_name": "intro",
+          "section_name": "Intro",
           "overlap_seconds": 2.626
         },
         {
@@ -152,7 +156,7 @@
           "type": "build",
           "start_time": 20.341,
           "end_time": 25.879,
-          "section_name": "chorus",
+          "section_name": "Chorus",
           "overlap_seconds": 0.859
         }
       ],
@@ -161,277 +165,8 @@
           "chord": "D#m",
           "start_s": 0.510839,
           "end_s": 46.393467,
-          "confidence": 0.849954,
+          "confidence": 0.850587,
           "overlap_seconds": 2.626
-        }
-      ]
-    },
-    {
-      "hint_id": "hint-004",
-      "title": "Spacer",
-      "start_time": 36.5,
-      "end_time": 36.958,
-      "summary": "Volume drops to restart melody",
-      "lighting_hint": "dim intensity close to 0",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
-      "section_overlap_count": 1,
-      "event_overlap_count": 0,
-      "chord_overlap_count": 1,
-      "event_type_counts": {},
-      "overlapping_sections": [
-        {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 0.458
-        }
-      ],
-      "overlapping_events": [],
-      "overlapping_chords": [
-        {
-          "chord": "D#m",
-          "start_s": 0.510839,
-          "end_s": 46.393467,
-          "confidence": 0.849954,
-          "overlap_seconds": 0.458
-        }
-      ]
-    },
-    {
-      "hint_id": "hint-005",
-      "title": "Outro start",
-      "start_time": 42.483,
-      "end_time": 43.206,
-      "summary": "Drum and bass leaves",
-      "lighting_hint": "stop moving effects, prepare for next effect.",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
-      "section_overlap_count": 1,
-      "event_overlap_count": 0,
-      "chord_overlap_count": 1,
-      "event_type_counts": {},
-      "overlapping_sections": [
-        {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 0.723
-        }
-      ],
-      "overlapping_events": [],
-      "overlapping_chords": [
-        {
-          "chord": "D#m",
-          "start_s": 0.510839,
-          "end_s": 46.393467,
-          "confidence": 0.849954,
-          "overlap_seconds": 0.723
-        }
-      ]
-    },
-    {
-      "hint_id": "hint-006",
-      "title": "Vocal outro phrase 1.1",
-      "start_time": 43.339,
-      "end_time": 44.356,
-      "summary": "Intense vocal shout",
-      "lighting_hint": "moving heads movement following vocal levels",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
-      "section_overlap_count": 1,
-      "event_overlap_count": 0,
-      "chord_overlap_count": 1,
-      "event_type_counts": {},
-      "overlapping_sections": [
-        {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 1.017
-        }
-      ],
-      "overlapping_events": [],
-      "overlapping_chords": [
-        {
-          "chord": "D#m",
-          "start_s": 0.510839,
-          "end_s": 46.393467,
-          "confidence": 0.849954,
-          "overlap_seconds": 1.017
-        }
-      ]
-    },
-    {
-      "hint_id": "hint-009",
-      "title": "Synth Pad",
-      "start_time": 44.455,
-      "end_time": 47.045,
-      "summary": "ambient melody",
-      "lighting_hint": "minimal moving head intensity / movements",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
-      "section_overlap_count": 1,
-      "event_overlap_count": 0,
-      "chord_overlap_count": 2,
-      "event_type_counts": {},
-      "overlapping_sections": [
-        {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 2.59
-        }
-      ],
-      "overlapping_events": [],
-      "overlapping_chords": [
-        {
-          "chord": "D#m",
-          "start_s": 0.510839,
-          "end_s": 46.393467,
-          "confidence": 0.849954,
-          "overlap_seconds": 1.938467
-        },
-        {
-          "chord": "B",
-          "start_s": 46.393467,
-          "end_s": 48.088524,
-          "confidence": 0.917239,
-          "overlap_seconds": 0.651533
-        }
-      ]
-    },
-    {
-      "hint_id": "hint-010",
-      "title": "Vocal outro 2",
-      "start_time": 47.091,
-      "end_time": 50.03,
-      "summary": "Soft vocal outro (part 2)",
-      "lighting_hint": "moving heads long travels, parcans with violet gradient chase",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
-      "section_overlap_count": 1,
-      "event_overlap_count": 0,
-      "chord_overlap_count": 2,
-      "event_type_counts": {},
-      "overlapping_sections": [
-        {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 2.939
-        }
-      ],
-      "overlapping_events": [],
-      "overlapping_chords": [
-        {
-          "chord": "B",
-          "start_s": 46.393467,
-          "end_s": 48.088524,
-          "confidence": 0.917239,
-          "overlap_seconds": 0.997524
-        },
-        {
-          "chord": "F#",
-          "start_s": 48.088524,
-          "end_s": 51.548298,
-          "confidence": 0.930625,
-          "overlap_seconds": 1.941476
-        }
-      ]
-    },
-    {
-      "hint_id": "hint-011",
-      "title": "Vocal Outro 3",
-      "start_time": 50.076,
-      "end_time": 54.576,
-      "summary": "Soft vocal outro (part 3)",
-      "lighting_hint": "moving heads circle around the table center with violet or indigo",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
-      "section_overlap_count": 1,
-      "event_overlap_count": 0,
-      "chord_overlap_count": 2,
-      "event_type_counts": {},
-      "overlapping_sections": [
-        {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 4.5
-        }
-      ],
-      "overlapping_events": [],
-      "overlapping_chords": [
-        {
-          "chord": "F#",
-          "start_s": 48.088524,
-          "end_s": 51.548298,
-          "confidence": 0.930625,
-          "overlap_seconds": 1.472298
-        },
-        {
-          "chord": "D#m",
-          "start_s": 51.548298,
-          "end_s": 58.049888,
-          "confidence": 0.951396,
-          "overlap_seconds": 3.027702
-        }
-      ]
-    },
-    {
-      "hint_id": "hint-012",
-      "title": "prepare for end",
-      "start_time": 54.606,
-      "end_time": 55.0,
-      "summary": "moving heads dim close to 0, move to table.",
-      "lighting_hint": "",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
-      "section_overlap_count": 1,
-      "event_overlap_count": 0,
-      "chord_overlap_count": 1,
-      "event_type_counts": {},
-      "overlapping_sections": [
-        {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 0.394
-        }
-      ],
-      "overlapping_events": [],
-      "overlapping_chords": [
-        {
-          "chord": "D#m",
-          "start_s": 51.548298,
-          "end_s": 58.049888,
-          "confidence": 0.951396,
-          "overlap_seconds": 0.394
-        }
-      ]
-    },
-    {
-      "hint_id": "hint-013",
-      "title": "Finale",
-      "start_time": 55.038,
-      "end_time": 55.917,
-      "summary": "finale",
-      "lighting_hint": "all fixtures to max intensity. prism on. quickly fadeout.",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
-      "section_overlap_count": 1,
-      "event_overlap_count": 0,
-      "chord_overlap_count": 1,
-      "event_type_counts": {},
-      "overlapping_sections": [
-        {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 0.879
-        }
-      ],
-      "overlapping_events": [],
-      "overlapping_chords": [
-        {
-          "chord": "D#m",
-          "start_s": 51.548298,
-          "end_s": 58.049888,
-          "confidence": 0.951396,
-          "overlap_seconds": 0.879
         }
       ]
     },
@@ -442,7 +177,7 @@
       "end_time": 28.396,
       "summary": "drop tension",
       "lighting_hint": "",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
+      "primary_section_label": "003 Build [unverified] (0.45)",
       "section_overlap_count": 1,
       "event_overlap_count": 1,
       "chord_overlap_count": 1,
@@ -451,9 +186,9 @@
       },
       "overlapping_sections": [
         {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
+          "label": "003 Build [unverified] (0.45)",
+          "start": 22.2,
+          "end": 28.63,
           "overlap_seconds": 0.75
         }
       ],
@@ -463,7 +198,7 @@
           "type": "build",
           "start_time": 2.786,
           "end_time": 32.508,
-          "section_name": "intro",
+          "section_name": "Intro",
           "overlap_seconds": 0.75
         }
       ],
@@ -472,7 +207,7 @@
           "chord": "D#m",
           "start_s": 0.510839,
           "end_s": 46.393467,
-          "confidence": 0.849954,
+          "confidence": 0.850587,
           "overlap_seconds": 0.75
         }
       ]
@@ -484,8 +219,8 @@
       "end_time": 29.125,
       "summary": "drop impact",
       "lighting_hint": "",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
-      "section_overlap_count": 1,
+      "primary_section_label": "004 Pre-Drop [unverified] (0.45)",
+      "section_overlap_count": 2,
       "event_overlap_count": 1,
       "chord_overlap_count": 1,
       "event_type_counts": {
@@ -493,10 +228,16 @@
       },
       "overlapping_sections": [
         {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 0.729
+          "label": "003 Build [unverified] (0.45)",
+          "start": 22.2,
+          "end": 28.63,
+          "overlap_seconds": 0.234
+        },
+        {
+          "label": "004 Pre-Drop [unverified] (0.45)",
+          "start": 28.63,
+          "end": 29.56,
+          "overlap_seconds": 0.495
         }
       ],
       "overlapping_events": [
@@ -505,7 +246,7 @@
           "type": "build",
           "start_time": 2.786,
           "end_time": 32.508,
-          "section_name": "intro",
+          "section_name": "Intro",
           "overlap_seconds": 0.729
         }
       ],
@@ -514,7 +255,7 @@
           "chord": "D#m",
           "start_s": 0.510839,
           "end_s": 46.393467,
-          "confidence": 0.849954,
+          "confidence": 0.850587,
           "overlap_seconds": 0.729
         }
       ]
@@ -526,7 +267,7 @@
       "end_time": 29.566,
       "summary": "drop release",
       "lighting_hint": "",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
+      "primary_section_label": "004 Pre-Drop [unverified] (0.45)",
       "section_overlap_count": 1,
       "event_overlap_count": 2,
       "chord_overlap_count": 1,
@@ -536,10 +277,10 @@
       },
       "overlapping_sections": [
         {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
-          "overlap_seconds": 0.441
+          "label": "004 Pre-Drop [unverified] (0.45)",
+          "start": 28.63,
+          "end": 29.56,
+          "overlap_seconds": 0.435
         }
       ],
       "overlapping_events": [
@@ -548,7 +289,7 @@
           "type": "build",
           "start_time": 2.786,
           "end_time": 32.508,
-          "section_name": "intro",
+          "section_name": "Intro",
           "overlap_seconds": 0.441
         },
         {
@@ -556,7 +297,7 @@
           "type": "release",
           "start_time": 29.55,
           "end_time": 33.265,
-          "section_name": "chorus",
+          "section_name": "Chorus",
           "overlap_seconds": 0.016
         }
       ],
@@ -565,7 +306,7 @@
           "chord": "D#m",
           "start_s": 0.510839,
           "end_s": 46.393467,
-          "confidence": 0.849954,
+          "confidence": 0.850587,
           "overlap_seconds": 0.441
         }
       ]
@@ -577,7 +318,7 @@
       "end_time": 36.5,
       "summary": "Full drum machine. acid synth bass.",
       "lighting_hint": "",
-      "primary_section_label": "002 chorus [unverified] (0.45)",
+      "primary_section_label": "005 Drop [unverified] (0.45)",
       "section_overlap_count": 1,
       "event_overlap_count": 3,
       "chord_overlap_count": 1,
@@ -587,9 +328,9 @@
       },
       "overlapping_sections": [
         {
-          "label": "002 chorus [unverified] (0.45)",
-          "start": 14.82,
-          "end": 58.05,
+          "label": "005 Drop [unverified] (0.45)",
+          "start": 29.58,
+          "end": 42.49,
           "overlap_seconds": 6.906
         }
       ],
@@ -599,7 +340,7 @@
           "type": "build",
           "start_time": 2.786,
           "end_time": 32.508,
-          "section_name": "intro",
+          "section_name": "Intro",
           "overlap_seconds": 2.914
         },
         {
@@ -607,7 +348,7 @@
           "type": "release",
           "start_time": 29.55,
           "end_time": 33.265,
-          "section_name": "chorus",
+          "section_name": "Chorus",
           "overlap_seconds": 3.671
         },
         {
@@ -615,7 +356,7 @@
           "type": "release",
           "start_time": 30.7,
           "end_time": 34.415,
-          "section_name": "chorus",
+          "section_name": "Chorus",
           "overlap_seconds": 3.715
         }
       ],
@@ -624,8 +365,221 @@
           "chord": "D#m",
           "start_s": 0.510839,
           "end_s": 46.393467,
-          "confidence": 0.849954,
+          "confidence": 0.850587,
           "overlap_seconds": 6.906
+        }
+      ]
+    },
+    {
+      "hint_id": "hint-004",
+      "title": "Spacer",
+      "start_time": 36.5,
+      "end_time": 36.958,
+      "summary": "Volume drops to restart melody",
+      "lighting_hint": "dim intensity close to 0",
+      "primary_section_label": "005 Drop [unverified] (0.45)",
+      "section_overlap_count": 1,
+      "event_overlap_count": 0,
+      "chord_overlap_count": 1,
+      "event_type_counts": {},
+      "overlapping_sections": [
+        {
+          "label": "005 Drop [unverified] (0.45)",
+          "start": 29.58,
+          "end": 42.49,
+          "overlap_seconds": 0.458
+        }
+      ],
+      "overlapping_events": [],
+      "overlapping_chords": [
+        {
+          "chord": "D#m",
+          "start_s": 0.510839,
+          "end_s": 46.393467,
+          "confidence": 0.850587,
+          "overlap_seconds": 0.458
+        }
+      ]
+    },
+    {
+      "hint_id": "hint-006",
+      "title": "Vocal outro phrase 1.1",
+      "start_time": 43.339,
+      "end_time": 44.356,
+      "summary": "Intense vocal shout",
+      "lighting_hint": "moving heads movement following vocal levels",
+      "primary_section_label": "006 Refrain [unverified] (0.45)",
+      "section_overlap_count": 1,
+      "event_overlap_count": 0,
+      "chord_overlap_count": 1,
+      "event_type_counts": {},
+      "overlapping_sections": [
+        {
+          "label": "006 Refrain [unverified] (0.45)",
+          "start": 42.49,
+          "end": 44.35,
+          "overlap_seconds": 1.011
+        }
+      ],
+      "overlapping_events": [],
+      "overlapping_chords": [
+        {
+          "chord": "D#m",
+          "start_s": 0.510839,
+          "end_s": 46.393467,
+          "confidence": 0.850587,
+          "overlap_seconds": 1.017
+        }
+      ]
+    },
+    {
+      "hint_id": "hint-009",
+      "title": "Synth Pad",
+      "start_time": 44.455,
+      "end_time": 47.045,
+      "summary": "ambient melody",
+      "lighting_hint": "minimal moving head intensity / movements",
+      "primary_section_label": "007 Breakdown [unverified] (0.45)",
+      "section_overlap_count": 1,
+      "event_overlap_count": 0,
+      "chord_overlap_count": 2,
+      "event_type_counts": {},
+      "overlapping_sections": [
+        {
+          "label": "007 Breakdown [unverified] (0.45)",
+          "start": 44.36,
+          "end": 55.22,
+          "overlap_seconds": 2.59
+        }
+      ],
+      "overlapping_events": [],
+      "overlapping_chords": [
+        {
+          "chord": "D#m",
+          "start_s": 0.510839,
+          "end_s": 46.393467,
+          "confidence": 0.850587,
+          "overlap_seconds": 1.938467
+        },
+        {
+          "chord": "B",
+          "start_s": 46.393467,
+          "end_s": 48.088524,
+          "confidence": 0.91832,
+          "overlap_seconds": 0.651533
+        }
+      ]
+    },
+    {
+      "hint_id": "hint-010",
+      "title": "Vocal outro 2",
+      "start_time": 47.091,
+      "end_time": 50.03,
+      "summary": "Soft vocal outro (part 2)",
+      "lighting_hint": "moving heads long travels, parcans with violet gradient chase",
+      "primary_section_label": "007 Breakdown [unverified] (0.45)",
+      "section_overlap_count": 1,
+      "event_overlap_count": 0,
+      "chord_overlap_count": 2,
+      "event_type_counts": {},
+      "overlapping_sections": [
+        {
+          "label": "007 Breakdown [unverified] (0.45)",
+          "start": 44.36,
+          "end": 55.22,
+          "overlap_seconds": 2.939
+        }
+      ],
+      "overlapping_events": [],
+      "overlapping_chords": [
+        {
+          "chord": "B",
+          "start_s": 46.393467,
+          "end_s": 48.088524,
+          "confidence": 0.91832,
+          "overlap_seconds": 0.997524
+        },
+        {
+          "chord": "F#",
+          "start_s": 48.088524,
+          "end_s": 51.548298,
+          "confidence": 0.930415,
+          "overlap_seconds": 1.941476
+        }
+      ]
+    },
+    {
+      "hint_id": "hint-011",
+      "title": "Vocal Outro 3",
+      "start_time": 50.496,
+      "end_time": 54.75,
+      "summary": "Soft vocal outro (part 3)",
+      "lighting_hint": "moving heads circle around the table center with violet or indigo",
+      "primary_section_label": "007 Breakdown [unverified] (0.45)",
+      "section_overlap_count": 1,
+      "event_overlap_count": 0,
+      "chord_overlap_count": 2,
+      "event_type_counts": {},
+      "overlapping_sections": [
+        {
+          "label": "007 Breakdown [unverified] (0.45)",
+          "start": 44.36,
+          "end": 55.22,
+          "overlap_seconds": 4.254
+        }
+      ],
+      "overlapping_events": [],
+      "overlapping_chords": [
+        {
+          "chord": "F#",
+          "start_s": 48.088524,
+          "end_s": 51.548298,
+          "confidence": 0.930415,
+          "overlap_seconds": 1.052298
+        },
+        {
+          "chord": "D#m",
+          "start_s": 51.548298,
+          "end_s": 58.049888,
+          "confidence": 0.953375,
+          "overlap_seconds": 3.201702
+        }
+      ]
+    },
+    {
+      "hint_id": "hint-013",
+      "title": "Finale",
+      "start_time": 55.038,
+      "end_time": 55.917,
+      "summary": "finale",
+      "lighting_hint": "all fixtures to max intensity. prism on. quickly fadeout.",
+      "primary_section_label": "008 Outro [unverified] (0.45)",
+      "section_overlap_count": 2,
+      "event_overlap_count": 0,
+      "chord_overlap_count": 1,
+      "event_type_counts": {},
+      "overlapping_sections": [
+        {
+          "label": "007 Breakdown [unverified] (0.45)",
+          "start": 44.36,
+          "end": 55.22,
+          "overlap_seconds": 0.182
+        },
+        {
+          "label": "008 Outro [unverified] (0.45)",
+          "start": 55.22,
+          "end": 58.12,
+          "overlap_seconds": 0.697
+        }
+      ],
+      "overlapping_events": [],
+      "overlapping_chords": [
+        {
+          "chord": "D#m",
+          "start_s": 51.548298,
+          "end_s": 58.049888,
+          "confidence": 0.953375,
+          "overlap_seconds": 0.879
         }
       ]
     }

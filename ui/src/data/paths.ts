@@ -97,16 +97,17 @@ export const artifactPaths = {
   // unevaluable until item 1's `type: "vocal"` ground truth exists.
   svdTagger: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "svd_tagger.json")),
-  // Written by experiments/whisperx_vad (`run export`). The same shared
-  // voiceness_common.schema proposal shape as vocalVoiceness
-  // (no `channel` — single producer, vocal stem only), but from whisperX's
-  // VAD front-end (speech-domain) instead of DSP cues or a perceptual-audio
-  // model. `interval_ms: 50` — VAD's own sub-second onsets are real, unlike
-  // svdTagger's 1000ms clip windows, so its `vocal_phrase`
-  // boundaries are genuinely scoreable, not just reported. Diarization was
-  // not attempted (no HF_TOKEN in this environment) — VAD-only.
+  // Written by the `whisperx` Compose service (whisperx_vad/, promoted out of
+  // experiments/ in v3.6 item 2). Per-50ms-frame voiceness curve (no
+  // `channel` — single producer, vocal stem only) plus `Binarize`d
+  // vocal_phrase spans, from whisperX's VAD front-end (speech-domain) rather
+  // than DSP cues or a perceptual-audio model. `interval_ms: 50` — VAD's own
+  // sub-second onsets are real, unlike svdTagger's 1000ms clip windows, so
+  // its `vocal_phrase` boundaries are genuinely scoreable, not just reported.
+  // Diarization was not attempted (no HF_TOKEN in this environment) —
+  // VAD-only.
   whisperxVad: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "whisperx_vad.json")),
+    encodePath(analysis(song, "artifacts", "whisperx-vad", "whisperx_vad.json")),
   // Written by experiments/voice_multiplicity (`run export`). Solo/stacked voice
   // blocks from stereo vocal stem width and L-R correlation.
   voiceMultiplicity: (song: string) =>

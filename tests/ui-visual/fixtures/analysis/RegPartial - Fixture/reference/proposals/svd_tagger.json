@@ -1,0 +1,2319 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/svd_tagger",
+    "engine": "svd_tagger.model (PANNs Cnn14, AudioSet-527 \"Singing\" class index 27, 5s window / 1s hop clip-level inference, run on both the vocal stem and the mix)",
+    "channels": [
+      "stem",
+      "mix"
+    ],
+    "class_label": "Singing",
+    "class_index": 27,
+    "checkpoint": "Cnn14_mAP=0.431.pth",
+    "window_s": 5.0,
+    "hop_s": 1.0,
+    "boundary_f1_scored": false,
+    "boundary_f1_reason": "a 5s PANNs analysis window cannot time a phrase edge to the 0.25/0.5/1.0s tolerances voiceness_common.scorer uses; vocal_phrase spans are exported for the timeline and for boundary bookkeeping only",
+    "generated_at": "2026-09-13T03:20:33.871131Z"
+  },
+  "metadata": {
+    "interval_ms": 1000,
+    "total_frames": 382
+  },
+  "frames": [
+    {
+      "time": 2.5,
+      "voiceness": 0.0041,
+      "confidence": 0.992,
+      "channel": "mix"
+    },
+    {
+      "time": 2.5,
+      "voiceness": 0.0278,
+      "confidence": 0.944,
+      "channel": "stem"
+    },
+    {
+      "time": 3.5,
+      "voiceness": 0.0032,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 3.5,
+      "voiceness": 0.0106,
+      "confidence": 0.979,
+      "channel": "stem"
+    },
+    {
+      "time": 4.5,
+      "voiceness": 0.0036,
+      "confidence": 0.993,
+      "channel": "mix"
+    },
+    {
+      "time": 4.5,
+      "voiceness": 0.0171,
+      "confidence": 0.966,
+      "channel": "stem"
+    },
+    {
+      "time": 5.5,
+      "voiceness": 0.0019,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 5.5,
+      "voiceness": 0.0307,
+      "confidence": 0.939,
+      "channel": "stem"
+    },
+    {
+      "time": 6.5,
+      "voiceness": 0.0013,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 6.5,
+      "voiceness": 0.0278,
+      "confidence": 0.944,
+      "channel": "stem"
+    },
+    {
+      "time": 7.5,
+      "voiceness": 0.0014,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 7.5,
+      "voiceness": 0.07,
+      "confidence": 0.86,
+      "channel": "stem"
+    },
+    {
+      "time": 8.5,
+      "voiceness": 0.0015,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 8.5,
+      "voiceness": 0.1036,
+      "confidence": 0.793,
+      "channel": "stem"
+    },
+    {
+      "time": 9.5,
+      "voiceness": 0.0019,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 9.5,
+      "voiceness": 0.1022,
+      "confidence": 0.796,
+      "channel": "stem"
+    },
+    {
+      "time": 10.5,
+      "voiceness": 0.0053,
+      "confidence": 0.989,
+      "channel": "mix"
+    },
+    {
+      "time": 10.5,
+      "voiceness": 0.0799,
+      "confidence": 0.84,
+      "channel": "stem"
+    },
+    {
+      "time": 11.5,
+      "voiceness": 0.0214,
+      "confidence": 0.957,
+      "channel": "mix"
+    },
+    {
+      "time": 11.5,
+      "voiceness": 0.0932,
+      "confidence": 0.814,
+      "channel": "stem"
+    },
+    {
+      "time": 12.5,
+      "voiceness": 0.0218,
+      "confidence": 0.956,
+      "channel": "mix"
+    },
+    {
+      "time": 12.5,
+      "voiceness": 0.0662,
+      "confidence": 0.868,
+      "channel": "stem"
+    },
+    {
+      "time": 13.5,
+      "voiceness": 0.0147,
+      "confidence": 0.971,
+      "channel": "mix"
+    },
+    {
+      "time": 13.5,
+      "voiceness": 0.0437,
+      "confidence": 0.913,
+      "channel": "stem"
+    },
+    {
+      "time": 14.5,
+      "voiceness": 0.0213,
+      "confidence": 0.957,
+      "channel": "mix"
+    },
+    {
+      "time": 14.5,
+      "voiceness": 0.0566,
+      "confidence": 0.887,
+      "channel": "stem"
+    },
+    {
+      "time": 15.5,
+      "voiceness": 0.0259,
+      "confidence": 0.948,
+      "channel": "mix"
+    },
+    {
+      "time": 15.5,
+      "voiceness": 0.0516,
+      "confidence": 0.897,
+      "channel": "stem"
+    },
+    {
+      "time": 16.5,
+      "voiceness": 0.0052,
+      "confidence": 0.99,
+      "channel": "mix"
+    },
+    {
+      "time": 16.5,
+      "voiceness": 0.0237,
+      "confidence": 0.953,
+      "channel": "stem"
+    },
+    {
+      "time": 17.5,
+      "voiceness": 0.0023,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 17.5,
+      "voiceness": 0.0054,
+      "confidence": 0.989,
+      "channel": "stem"
+    },
+    {
+      "time": 18.5,
+      "voiceness": 0.0028,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 18.5,
+      "voiceness": 0.0055,
+      "confidence": 0.989,
+      "channel": "stem"
+    },
+    {
+      "time": 19.5,
+      "voiceness": 0.0028,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 19.5,
+      "voiceness": 0.0062,
+      "confidence": 0.988,
+      "channel": "stem"
+    },
+    {
+      "time": 20.5,
+      "voiceness": 0.0028,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 20.5,
+      "voiceness": 0.0076,
+      "confidence": 0.985,
+      "channel": "stem"
+    },
+    {
+      "time": 21.5,
+      "voiceness": 0.0031,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 21.5,
+      "voiceness": 0.0042,
+      "confidence": 0.992,
+      "channel": "stem"
+    },
+    {
+      "time": 22.5,
+      "voiceness": 0.0026,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 22.5,
+      "voiceness": 0.0035,
+      "confidence": 0.993,
+      "channel": "stem"
+    },
+    {
+      "time": 23.5,
+      "voiceness": 0.003,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 23.5,
+      "voiceness": 0.0056,
+      "confidence": 0.989,
+      "channel": "stem"
+    },
+    {
+      "time": 24.5,
+      "voiceness": 0.0026,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 24.5,
+      "voiceness": 0.005,
+      "confidence": 0.99,
+      "channel": "stem"
+    },
+    {
+      "time": 25.5,
+      "voiceness": 0.0032,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 25.5,
+      "voiceness": 0.0056,
+      "confidence": 0.989,
+      "channel": "stem"
+    },
+    {
+      "time": 26.5,
+      "voiceness": 0.004,
+      "confidence": 0.992,
+      "channel": "mix"
+    },
+    {
+      "time": 26.5,
+      "voiceness": 0.0123,
+      "confidence": 0.975,
+      "channel": "stem"
+    },
+    {
+      "time": 27.5,
+      "voiceness": 0.0034,
+      "confidence": 0.993,
+      "channel": "mix"
+    },
+    {
+      "time": 27.5,
+      "voiceness": 0.021,
+      "confidence": 0.958,
+      "channel": "stem"
+    },
+    {
+      "time": 28.5,
+      "voiceness": 0.0048,
+      "confidence": 0.99,
+      "channel": "mix"
+    },
+    {
+      "time": 28.5,
+      "voiceness": 0.038,
+      "confidence": 0.924,
+      "channel": "stem"
+    },
+    {
+      "time": 29.5,
+      "voiceness": 0.0047,
+      "confidence": 0.991,
+      "channel": "mix"
+    },
+    {
+      "time": 29.5,
+      "voiceness": 0.0419,
+      "confidence": 0.916,
+      "channel": "stem"
+    },
+    {
+      "time": 30.5,
+      "voiceness": 0.0059,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 30.5,
+      "voiceness": 0.0987,
+      "confidence": 0.803,
+      "channel": "stem"
+    },
+    {
+      "time": 31.5,
+      "voiceness": 0.007,
+      "confidence": 0.986,
+      "channel": "mix"
+    },
+    {
+      "time": 31.5,
+      "voiceness": 0.06,
+      "confidence": 0.88,
+      "channel": "stem"
+    },
+    {
+      "time": 32.5,
+      "voiceness": 0.0099,
+      "confidence": 0.98,
+      "channel": "mix"
+    },
+    {
+      "time": 32.5,
+      "voiceness": 0.0626,
+      "confidence": 0.875,
+      "channel": "stem"
+    },
+    {
+      "time": 33.5,
+      "voiceness": 0.0101,
+      "confidence": 0.98,
+      "channel": "mix"
+    },
+    {
+      "time": 33.5,
+      "voiceness": 0.0627,
+      "confidence": 0.875,
+      "channel": "stem"
+    },
+    {
+      "time": 34.5,
+      "voiceness": 0.0112,
+      "confidence": 0.978,
+      "channel": "mix"
+    },
+    {
+      "time": 34.5,
+      "voiceness": 0.051,
+      "confidence": 0.898,
+      "channel": "stem"
+    },
+    {
+      "time": 35.5,
+      "voiceness": 0.0138,
+      "confidence": 0.972,
+      "channel": "mix"
+    },
+    {
+      "time": 35.5,
+      "voiceness": 0.0578,
+      "confidence": 0.884,
+      "channel": "stem"
+    },
+    {
+      "time": 36.5,
+      "voiceness": 0.0086,
+      "confidence": 0.983,
+      "channel": "mix"
+    },
+    {
+      "time": 36.5,
+      "voiceness": 0.033,
+      "confidence": 0.934,
+      "channel": "stem"
+    },
+    {
+      "time": 37.5,
+      "voiceness": 0.0111,
+      "confidence": 0.978,
+      "channel": "mix"
+    },
+    {
+      "time": 37.5,
+      "voiceness": 0.0613,
+      "confidence": 0.877,
+      "channel": "stem"
+    },
+    {
+      "time": 38.5,
+      "voiceness": 0.0137,
+      "confidence": 0.973,
+      "channel": "mix"
+    },
+    {
+      "time": 38.5,
+      "voiceness": 0.0832,
+      "confidence": 0.834,
+      "channel": "stem"
+    },
+    {
+      "time": 39.5,
+      "voiceness": 0.0329,
+      "confidence": 0.934,
+      "channel": "mix"
+    },
+    {
+      "time": 39.5,
+      "voiceness": 0.1157,
+      "confidence": 0.769,
+      "channel": "stem"
+    },
+    {
+      "time": 40.5,
+      "voiceness": 0.0112,
+      "confidence": 0.978,
+      "channel": "mix"
+    },
+    {
+      "time": 40.5,
+      "voiceness": 0.0706,
+      "confidence": 0.859,
+      "channel": "stem"
+    },
+    {
+      "time": 41.5,
+      "voiceness": 0.0183,
+      "confidence": 0.963,
+      "channel": "mix"
+    },
+    {
+      "time": 41.5,
+      "voiceness": 0.0528,
+      "confidence": 0.894,
+      "channel": "stem"
+    },
+    {
+      "time": 42.5,
+      "voiceness": 0.0113,
+      "confidence": 0.977,
+      "channel": "mix"
+    },
+    {
+      "time": 42.5,
+      "voiceness": 0.0558,
+      "confidence": 0.888,
+      "channel": "stem"
+    },
+    {
+      "time": 43.5,
+      "voiceness": 0.0086,
+      "confidence": 0.983,
+      "channel": "mix"
+    },
+    {
+      "time": 43.5,
+      "voiceness": 0.0206,
+      "confidence": 0.959,
+      "channel": "stem"
+    },
+    {
+      "time": 44.5,
+      "voiceness": 0.0033,
+      "confidence": 0.993,
+      "channel": "mix"
+    },
+    {
+      "time": 44.5,
+      "voiceness": 0.0231,
+      "confidence": 0.954,
+      "channel": "stem"
+    },
+    {
+      "time": 45.5,
+      "voiceness": 0.003,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 45.5,
+      "voiceness": 0.0509,
+      "confidence": 0.898,
+      "channel": "stem"
+    },
+    {
+      "time": 46.5,
+      "voiceness": 0.0024,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 46.5,
+      "voiceness": 0.088,
+      "confidence": 0.824,
+      "channel": "stem"
+    },
+    {
+      "time": 47.5,
+      "voiceness": 0.0028,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 47.5,
+      "voiceness": 0.0764,
+      "confidence": 0.847,
+      "channel": "stem"
+    },
+    {
+      "time": 48.5,
+      "voiceness": 0.0025,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 48.5,
+      "voiceness": 0.0956,
+      "confidence": 0.809,
+      "channel": "stem"
+    },
+    {
+      "time": 49.5,
+      "voiceness": 0.0031,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 49.5,
+      "voiceness": 0.1067,
+      "confidence": 0.787,
+      "channel": "stem"
+    },
+    {
+      "time": 50.5,
+      "voiceness": 0.004,
+      "confidence": 0.992,
+      "channel": "mix"
+    },
+    {
+      "time": 50.5,
+      "voiceness": 0.0874,
+      "confidence": 0.825,
+      "channel": "stem"
+    },
+    {
+      "time": 51.5,
+      "voiceness": 0.0041,
+      "confidence": 0.992,
+      "channel": "mix"
+    },
+    {
+      "time": 51.5,
+      "voiceness": 0.0898,
+      "confidence": 0.82,
+      "channel": "stem"
+    },
+    {
+      "time": 52.5,
+      "voiceness": 0.0065,
+      "confidence": 0.987,
+      "channel": "mix"
+    },
+    {
+      "time": 52.5,
+      "voiceness": 0.1083,
+      "confidence": 0.783,
+      "channel": "stem"
+    },
+    {
+      "time": 53.5,
+      "voiceness": 0.0071,
+      "confidence": 0.986,
+      "channel": "mix"
+    },
+    {
+      "time": 53.5,
+      "voiceness": 0.062,
+      "confidence": 0.876,
+      "channel": "stem"
+    },
+    {
+      "time": 54.5,
+      "voiceness": 0.0071,
+      "confidence": 0.986,
+      "channel": "mix"
+    },
+    {
+      "time": 54.5,
+      "voiceness": 0.0431,
+      "confidence": 0.914,
+      "channel": "stem"
+    },
+    {
+      "time": 55.5,
+      "voiceness": 0.0046,
+      "confidence": 0.991,
+      "channel": "mix"
+    },
+    {
+      "time": 55.5,
+      "voiceness": 0.0418,
+      "confidence": 0.916,
+      "channel": "stem"
+    },
+    {
+      "time": 56.5,
+      "voiceness": 0.0056,
+      "confidence": 0.989,
+      "channel": "mix"
+    },
+    {
+      "time": 56.5,
+      "voiceness": 0.0084,
+      "confidence": 0.983,
+      "channel": "stem"
+    },
+    {
+      "time": 57.5,
+      "voiceness": 0.0069,
+      "confidence": 0.986,
+      "channel": "mix"
+    },
+    {
+      "time": 57.5,
+      "voiceness": 0.0115,
+      "confidence": 0.977,
+      "channel": "stem"
+    },
+    {
+      "time": 58.5,
+      "voiceness": 0.006,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 58.5,
+      "voiceness": 0.0054,
+      "confidence": 0.989,
+      "channel": "stem"
+    },
+    {
+      "time": 59.5,
+      "voiceness": 0.0065,
+      "confidence": 0.987,
+      "channel": "mix"
+    },
+    {
+      "time": 59.5,
+      "voiceness": 0.0026,
+      "confidence": 0.995,
+      "channel": "stem"
+    },
+    {
+      "time": 60.5,
+      "voiceness": 0.009,
+      "confidence": 0.982,
+      "channel": "mix"
+    },
+    {
+      "time": 60.5,
+      "voiceness": 0.0017,
+      "confidence": 0.997,
+      "channel": "stem"
+    },
+    {
+      "time": 61.5,
+      "voiceness": 0.0105,
+      "confidence": 0.979,
+      "channel": "mix"
+    },
+    {
+      "time": 61.5,
+      "voiceness": 0.002,
+      "confidence": 0.996,
+      "channel": "stem"
+    },
+    {
+      "time": 62.5,
+      "voiceness": 0.0059,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 62.5,
+      "voiceness": 0.0024,
+      "confidence": 0.995,
+      "channel": "stem"
+    },
+    {
+      "time": 63.5,
+      "voiceness": 0.0048,
+      "confidence": 0.99,
+      "channel": "mix"
+    },
+    {
+      "time": 63.5,
+      "voiceness": 0.0023,
+      "confidence": 0.995,
+      "channel": "stem"
+    },
+    {
+      "time": 64.5,
+      "voiceness": 0.005,
+      "confidence": 0.99,
+      "channel": "mix"
+    },
+    {
+      "time": 64.5,
+      "voiceness": 0.0024,
+      "confidence": 0.995,
+      "channel": "stem"
+    },
+    {
+      "time": 65.5,
+      "voiceness": 0.0051,
+      "confidence": 0.99,
+      "channel": "mix"
+    },
+    {
+      "time": 65.5,
+      "voiceness": 0.0038,
+      "confidence": 0.992,
+      "channel": "stem"
+    },
+    {
+      "time": 66.5,
+      "voiceness": 0.0051,
+      "confidence": 0.99,
+      "channel": "mix"
+    },
+    {
+      "time": 66.5,
+      "voiceness": 0.0037,
+      "confidence": 0.993,
+      "channel": "stem"
+    },
+    {
+      "time": 67.5,
+      "voiceness": 0.0064,
+      "confidence": 0.987,
+      "channel": "mix"
+    },
+    {
+      "time": 67.5,
+      "voiceness": 0.0027,
+      "confidence": 0.995,
+      "channel": "stem"
+    },
+    {
+      "time": 68.5,
+      "voiceness": 0.0057,
+      "confidence": 0.989,
+      "channel": "mix"
+    },
+    {
+      "time": 68.5,
+      "voiceness": 0.003,
+      "confidence": 0.994,
+      "channel": "stem"
+    },
+    {
+      "time": 69.5,
+      "voiceness": 0.0065,
+      "confidence": 0.987,
+      "channel": "mix"
+    },
+    {
+      "time": 69.5,
+      "voiceness": 0.0056,
+      "confidence": 0.989,
+      "channel": "stem"
+    },
+    {
+      "time": 70.5,
+      "voiceness": 0.0071,
+      "confidence": 0.986,
+      "channel": "mix"
+    },
+    {
+      "time": 70.5,
+      "voiceness": 0.005,
+      "confidence": 0.99,
+      "channel": "stem"
+    },
+    {
+      "time": 71.5,
+      "voiceness": 0.0097,
+      "confidence": 0.981,
+      "channel": "mix"
+    },
+    {
+      "time": 71.5,
+      "voiceness": 0.0045,
+      "confidence": 0.991,
+      "channel": "stem"
+    },
+    {
+      "time": 72.5,
+      "voiceness": 0.0058,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 72.5,
+      "voiceness": 0.0056,
+      "confidence": 0.989,
+      "channel": "stem"
+    },
+    {
+      "time": 73.5,
+      "voiceness": 0.0068,
+      "confidence": 0.986,
+      "channel": "mix"
+    },
+    {
+      "time": 73.5,
+      "voiceness": 0.0062,
+      "confidence": 0.988,
+      "channel": "stem"
+    },
+    {
+      "time": 74.5,
+      "voiceness": 0.0061,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 74.5,
+      "voiceness": 0.0075,
+      "confidence": 0.985,
+      "channel": "stem"
+    },
+    {
+      "time": 75.5,
+      "voiceness": 0.0071,
+      "confidence": 0.986,
+      "channel": "mix"
+    },
+    {
+      "time": 75.5,
+      "voiceness": 0.0046,
+      "confidence": 0.991,
+      "channel": "stem"
+    },
+    {
+      "time": 76.5,
+      "voiceness": 0.006,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 76.5,
+      "voiceness": 0.0038,
+      "confidence": 0.992,
+      "channel": "stem"
+    },
+    {
+      "time": 77.5,
+      "voiceness": 0.01,
+      "confidence": 0.98,
+      "channel": "mix"
+    },
+    {
+      "time": 77.5,
+      "voiceness": 0.0036,
+      "confidence": 0.993,
+      "channel": "stem"
+    },
+    {
+      "time": 78.5,
+      "voiceness": 0.0085,
+      "confidence": 0.983,
+      "channel": "mix"
+    },
+    {
+      "time": 78.5,
+      "voiceness": 0.0045,
+      "confidence": 0.991,
+      "channel": "stem"
+    },
+    {
+      "time": 79.5,
+      "voiceness": 0.0068,
+      "confidence": 0.986,
+      "channel": "mix"
+    },
+    {
+      "time": 79.5,
+      "voiceness": 0.0248,
+      "confidence": 0.95,
+      "channel": "stem"
+    },
+    {
+      "time": 80.5,
+      "voiceness": 0.0044,
+      "confidence": 0.991,
+      "channel": "mix"
+    },
+    {
+      "time": 80.5,
+      "voiceness": 0.0553,
+      "confidence": 0.889,
+      "channel": "stem"
+    },
+    {
+      "time": 81.5,
+      "voiceness": 0.0027,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 81.5,
+      "voiceness": 0.0477,
+      "confidence": 0.905,
+      "channel": "stem"
+    },
+    {
+      "time": 82.5,
+      "voiceness": 0.002,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 82.5,
+      "voiceness": 0.0531,
+      "confidence": 0.894,
+      "channel": "stem"
+    },
+    {
+      "time": 83.5,
+      "voiceness": 0.0026,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 83.5,
+      "voiceness": 0.0722,
+      "confidence": 0.856,
+      "channel": "stem"
+    },
+    {
+      "time": 84.5,
+      "voiceness": 0.0016,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 84.5,
+      "voiceness": 0.0577,
+      "confidence": 0.885,
+      "channel": "stem"
+    },
+    {
+      "time": 85.5,
+      "voiceness": 0.0014,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 85.5,
+      "voiceness": 0.0373,
+      "confidence": 0.925,
+      "channel": "stem"
+    },
+    {
+      "time": 86.5,
+      "voiceness": 0.0016,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 86.5,
+      "voiceness": 0.0315,
+      "confidence": 0.937,
+      "channel": "stem"
+    },
+    {
+      "time": 87.5,
+      "voiceness": 0.0017,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 87.5,
+      "voiceness": 0.0899,
+      "confidence": 0.82,
+      "channel": "stem"
+    },
+    {
+      "time": 88.5,
+      "voiceness": 0.0013,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 88.5,
+      "voiceness": 0.1291,
+      "confidence": 0.742,
+      "channel": "stem"
+    },
+    {
+      "time": 89.5,
+      "voiceness": 0.001,
+      "confidence": 0.998,
+      "channel": "mix"
+    },
+    {
+      "time": 89.5,
+      "voiceness": 0.1142,
+      "confidence": 0.772,
+      "channel": "stem"
+    },
+    {
+      "time": 90.5,
+      "voiceness": 0.0011,
+      "confidence": 0.998,
+      "channel": "mix"
+    },
+    {
+      "time": 90.5,
+      "voiceness": 0.1093,
+      "confidence": 0.781,
+      "channel": "stem"
+    },
+    {
+      "time": 91.5,
+      "voiceness": 0.001,
+      "confidence": 0.998,
+      "channel": "mix"
+    },
+    {
+      "time": 91.5,
+      "voiceness": 0.1072,
+      "confidence": 0.786,
+      "channel": "stem"
+    },
+    {
+      "time": 92.5,
+      "voiceness": 0.0012,
+      "confidence": 0.998,
+      "channel": "mix"
+    },
+    {
+      "time": 92.5,
+      "voiceness": 0.0672,
+      "confidence": 0.866,
+      "channel": "stem"
+    },
+    {
+      "time": 93.5,
+      "voiceness": 0.0017,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 93.5,
+      "voiceness": 0.0727,
+      "confidence": 0.855,
+      "channel": "stem"
+    },
+    {
+      "time": 94.5,
+      "voiceness": 0.0017,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 94.5,
+      "voiceness": 0.0685,
+      "confidence": 0.863,
+      "channel": "stem"
+    },
+    {
+      "time": 95.5,
+      "voiceness": 0.0015,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 95.5,
+      "voiceness": 0.065,
+      "confidence": 0.87,
+      "channel": "stem"
+    },
+    {
+      "time": 96.5,
+      "voiceness": 0.0013,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 96.5,
+      "voiceness": 0.069,
+      "confidence": 0.862,
+      "channel": "stem"
+    },
+    {
+      "time": 97.5,
+      "voiceness": 0.0018,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 97.5,
+      "voiceness": 0.0912,
+      "confidence": 0.818,
+      "channel": "stem"
+    },
+    {
+      "time": 98.5,
+      "voiceness": 0.0013,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 98.5,
+      "voiceness": 0.0582,
+      "confidence": 0.884,
+      "channel": "stem"
+    },
+    {
+      "time": 99.5,
+      "voiceness": 0.0018,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 99.5,
+      "voiceness": 0.0616,
+      "confidence": 0.877,
+      "channel": "stem"
+    },
+    {
+      "time": 100.5,
+      "voiceness": 0.0012,
+      "confidence": 0.998,
+      "channel": "mix"
+    },
+    {
+      "time": 100.5,
+      "voiceness": 0.0644,
+      "confidence": 0.871,
+      "channel": "stem"
+    },
+    {
+      "time": 101.5,
+      "voiceness": 0.0013,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 101.5,
+      "voiceness": 0.0542,
+      "confidence": 0.892,
+      "channel": "stem"
+    },
+    {
+      "time": 102.5,
+      "voiceness": 0.0015,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 102.5,
+      "voiceness": 0.0388,
+      "confidence": 0.922,
+      "channel": "stem"
+    },
+    {
+      "time": 103.5,
+      "voiceness": 0.0017,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 103.5,
+      "voiceness": 0.0463,
+      "confidence": 0.907,
+      "channel": "stem"
+    },
+    {
+      "time": 104.5,
+      "voiceness": 0.0019,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 104.5,
+      "voiceness": 0.0422,
+      "confidence": 0.916,
+      "channel": "stem"
+    },
+    {
+      "time": 105.5,
+      "voiceness": 0.003,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 105.5,
+      "voiceness": 0.0118,
+      "confidence": 0.976,
+      "channel": "stem"
+    },
+    {
+      "time": 106.5,
+      "voiceness": 0.0031,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 106.5,
+      "voiceness": 0.017,
+      "confidence": 0.966,
+      "channel": "stem"
+    },
+    {
+      "time": 107.5,
+      "voiceness": 0.0034,
+      "confidence": 0.993,
+      "channel": "mix"
+    },
+    {
+      "time": 107.5,
+      "voiceness": 0.0587,
+      "confidence": 0.883,
+      "channel": "stem"
+    },
+    {
+      "time": 108.5,
+      "voiceness": 0.0066,
+      "confidence": 0.987,
+      "channel": "mix"
+    },
+    {
+      "time": 108.5,
+      "voiceness": 0.0923,
+      "confidence": 0.815,
+      "channel": "stem"
+    },
+    {
+      "time": 109.5,
+      "voiceness": 0.0044,
+      "confidence": 0.991,
+      "channel": "mix"
+    },
+    {
+      "time": 109.5,
+      "voiceness": 0.1074,
+      "confidence": 0.785,
+      "channel": "stem"
+    },
+    {
+      "time": 110.5,
+      "voiceness": 0.0056,
+      "confidence": 0.989,
+      "channel": "mix"
+    },
+    {
+      "time": 110.5,
+      "voiceness": 0.0781,
+      "confidence": 0.844,
+      "channel": "stem"
+    },
+    {
+      "time": 111.5,
+      "voiceness": 0.0055,
+      "confidence": 0.989,
+      "channel": "mix"
+    },
+    {
+      "time": 111.5,
+      "voiceness": 0.1047,
+      "confidence": 0.791,
+      "channel": "stem"
+    },
+    {
+      "time": 112.5,
+      "voiceness": 0.0075,
+      "confidence": 0.985,
+      "channel": "mix"
+    },
+    {
+      "time": 112.5,
+      "voiceness": 0.0543,
+      "confidence": 0.891,
+      "channel": "stem"
+    },
+    {
+      "time": 113.5,
+      "voiceness": 0.0036,
+      "confidence": 0.993,
+      "channel": "mix"
+    },
+    {
+      "time": 113.5,
+      "voiceness": 0.0043,
+      "confidence": 0.991,
+      "channel": "stem"
+    },
+    {
+      "time": 114.5,
+      "voiceness": 0.0038,
+      "confidence": 0.992,
+      "channel": "mix"
+    },
+    {
+      "time": 114.5,
+      "voiceness": 0.0041,
+      "confidence": 0.992,
+      "channel": "stem"
+    },
+    {
+      "time": 115.5,
+      "voiceness": 0.0034,
+      "confidence": 0.993,
+      "channel": "mix"
+    },
+    {
+      "time": 115.5,
+      "voiceness": 0.0046,
+      "confidence": 0.991,
+      "channel": "stem"
+    },
+    {
+      "time": 116.5,
+      "voiceness": 0.0049,
+      "confidence": 0.99,
+      "channel": "mix"
+    },
+    {
+      "time": 116.5,
+      "voiceness": 0.0057,
+      "confidence": 0.989,
+      "channel": "stem"
+    },
+    {
+      "time": 117.5,
+      "voiceness": 0.0028,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 117.5,
+      "voiceness": 0.0187,
+      "confidence": 0.963,
+      "channel": "stem"
+    },
+    {
+      "time": 118.5,
+      "voiceness": 0.0029,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 118.5,
+      "voiceness": 0.0296,
+      "confidence": 0.941,
+      "channel": "stem"
+    },
+    {
+      "time": 119.5,
+      "voiceness": 0.0031,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 119.5,
+      "voiceness": 0.0394,
+      "confidence": 0.921,
+      "channel": "stem"
+    },
+    {
+      "time": 120.5,
+      "voiceness": 0.0048,
+      "confidence": 0.99,
+      "channel": "mix"
+    },
+    {
+      "time": 120.5,
+      "voiceness": 0.0322,
+      "confidence": 0.936,
+      "channel": "stem"
+    },
+    {
+      "time": 121.5,
+      "voiceness": 0.0051,
+      "confidence": 0.99,
+      "channel": "mix"
+    },
+    {
+      "time": 121.5,
+      "voiceness": 0.021,
+      "confidence": 0.958,
+      "channel": "stem"
+    },
+    {
+      "time": 122.5,
+      "voiceness": 0.006,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 122.5,
+      "voiceness": 0.0082,
+      "confidence": 0.984,
+      "channel": "stem"
+    },
+    {
+      "time": 123.5,
+      "voiceness": 0.0055,
+      "confidence": 0.989,
+      "channel": "mix"
+    },
+    {
+      "time": 123.5,
+      "voiceness": 0.0111,
+      "confidence": 0.978,
+      "channel": "stem"
+    },
+    {
+      "time": 124.5,
+      "voiceness": 0.0039,
+      "confidence": 0.992,
+      "channel": "mix"
+    },
+    {
+      "time": 124.5,
+      "voiceness": 0.0094,
+      "confidence": 0.981,
+      "channel": "stem"
+    },
+    {
+      "time": 125.5,
+      "voiceness": 0.0036,
+      "confidence": 0.993,
+      "channel": "mix"
+    },
+    {
+      "time": 125.5,
+      "voiceness": 0.0275,
+      "confidence": 0.945,
+      "channel": "stem"
+    },
+    {
+      "time": 126.5,
+      "voiceness": 0.0027,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 126.5,
+      "voiceness": 0.0245,
+      "confidence": 0.951,
+      "channel": "stem"
+    },
+    {
+      "time": 127.5,
+      "voiceness": 0.0025,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 127.5,
+      "voiceness": 0.0203,
+      "confidence": 0.959,
+      "channel": "stem"
+    },
+    {
+      "time": 128.5,
+      "voiceness": 0.0017,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 128.5,
+      "voiceness": 0.0189,
+      "confidence": 0.962,
+      "channel": "stem"
+    },
+    {
+      "time": 129.5,
+      "voiceness": 0.0014,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 129.5,
+      "voiceness": 0.0257,
+      "confidence": 0.949,
+      "channel": "stem"
+    },
+    {
+      "time": 130.5,
+      "voiceness": 0.0018,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 130.5,
+      "voiceness": 0.007,
+      "confidence": 0.986,
+      "channel": "stem"
+    },
+    {
+      "time": 131.5,
+      "voiceness": 0.0018,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 131.5,
+      "voiceness": 0.0094,
+      "confidence": 0.981,
+      "channel": "stem"
+    },
+    {
+      "time": 132.5,
+      "voiceness": 0.0018,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 132.5,
+      "voiceness": 0.003,
+      "confidence": 0.994,
+      "channel": "stem"
+    },
+    {
+      "time": 133.5,
+      "voiceness": 0.0019,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 133.5,
+      "voiceness": 0.0027,
+      "confidence": 0.995,
+      "channel": "stem"
+    },
+    {
+      "time": 134.5,
+      "voiceness": 0.0022,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 134.5,
+      "voiceness": 0.0062,
+      "confidence": 0.988,
+      "channel": "stem"
+    },
+    {
+      "time": 135.5,
+      "voiceness": 0.0021,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 135.5,
+      "voiceness": 0.0279,
+      "confidence": 0.944,
+      "channel": "stem"
+    },
+    {
+      "time": 136.5,
+      "voiceness": 0.0022,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 136.5,
+      "voiceness": 0.1172,
+      "confidence": 0.766,
+      "channel": "stem"
+    },
+    {
+      "time": 137.5,
+      "voiceness": 0.002,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 137.5,
+      "voiceness": 0.1017,
+      "confidence": 0.797,
+      "channel": "stem"
+    },
+    {
+      "time": 138.5,
+      "voiceness": 0.0021,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 138.5,
+      "voiceness": 0.0534,
+      "confidence": 0.893,
+      "channel": "stem"
+    },
+    {
+      "time": 139.5,
+      "voiceness": 0.0022,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 139.5,
+      "voiceness": 0.0644,
+      "confidence": 0.871,
+      "channel": "stem"
+    },
+    {
+      "time": 140.5,
+      "voiceness": 0.0022,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 140.5,
+      "voiceness": 0.0422,
+      "confidence": 0.916,
+      "channel": "stem"
+    },
+    {
+      "time": 141.5,
+      "voiceness": 0.0025,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 141.5,
+      "voiceness": 0.0199,
+      "confidence": 0.96,
+      "channel": "stem"
+    },
+    {
+      "time": 142.5,
+      "voiceness": 0.0025,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 142.5,
+      "voiceness": 0.0079,
+      "confidence": 0.984,
+      "channel": "stem"
+    },
+    {
+      "time": 143.5,
+      "voiceness": 0.0024,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 143.5,
+      "voiceness": 0.0038,
+      "confidence": 0.992,
+      "channel": "stem"
+    },
+    {
+      "time": 144.5,
+      "voiceness": 0.0024,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 144.5,
+      "voiceness": 0.0021,
+      "confidence": 0.996,
+      "channel": "stem"
+    },
+    {
+      "time": 145.5,
+      "voiceness": 0.0029,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 145.5,
+      "voiceness": 0.0028,
+      "confidence": 0.994,
+      "channel": "stem"
+    },
+    {
+      "time": 146.5,
+      "voiceness": 0.0022,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 146.5,
+      "voiceness": 0.0022,
+      "confidence": 0.996,
+      "channel": "stem"
+    },
+    {
+      "time": 147.5,
+      "voiceness": 0.0022,
+      "confidence": 0.996,
+      "channel": "mix"
+    },
+    {
+      "time": 147.5,
+      "voiceness": 0.0022,
+      "confidence": 0.996,
+      "channel": "stem"
+    },
+    {
+      "time": 148.5,
+      "voiceness": 0.0012,
+      "confidence": 0.998,
+      "channel": "mix"
+    },
+    {
+      "time": 148.5,
+      "voiceness": 0.0027,
+      "confidence": 0.995,
+      "channel": "stem"
+    },
+    {
+      "time": 149.5,
+      "voiceness": 0.0016,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 149.5,
+      "voiceness": 0.0023,
+      "confidence": 0.995,
+      "channel": "stem"
+    },
+    {
+      "time": 150.5,
+      "voiceness": 0.001,
+      "confidence": 0.998,
+      "channel": "mix"
+    },
+    {
+      "time": 150.5,
+      "voiceness": 0.0142,
+      "confidence": 0.972,
+      "channel": "stem"
+    },
+    {
+      "time": 151.5,
+      "voiceness": 0.0016,
+      "confidence": 0.997,
+      "channel": "mix"
+    },
+    {
+      "time": 151.5,
+      "voiceness": 0.0395,
+      "confidence": 0.921,
+      "channel": "stem"
+    },
+    {
+      "time": 152.5,
+      "voiceness": 0.0098,
+      "confidence": 0.98,
+      "channel": "mix"
+    },
+    {
+      "time": 152.5,
+      "voiceness": 0.043,
+      "confidence": 0.914,
+      "channel": "stem"
+    },
+    {
+      "time": 153.5,
+      "voiceness": 0.0102,
+      "confidence": 0.98,
+      "channel": "mix"
+    },
+    {
+      "time": 153.5,
+      "voiceness": 0.0481,
+      "confidence": 0.904,
+      "channel": "stem"
+    },
+    {
+      "time": 154.5,
+      "voiceness": 0.0108,
+      "confidence": 0.978,
+      "channel": "mix"
+    },
+    {
+      "time": 154.5,
+      "voiceness": 0.1122,
+      "confidence": 0.776,
+      "channel": "stem"
+    },
+    {
+      "time": 155.5,
+      "voiceness": 0.0172,
+      "confidence": 0.966,
+      "channel": "mix"
+    },
+    {
+      "time": 155.5,
+      "voiceness": 0.0149,
+      "confidence": 0.97,
+      "channel": "stem"
+    },
+    {
+      "time": 156.5,
+      "voiceness": 0.0123,
+      "confidence": 0.975,
+      "channel": "mix"
+    },
+    {
+      "time": 156.5,
+      "voiceness": 0.002,
+      "confidence": 0.996,
+      "channel": "stem"
+    },
+    {
+      "time": 157.5,
+      "voiceness": 0.0045,
+      "confidence": 0.991,
+      "channel": "mix"
+    },
+    {
+      "time": 157.5,
+      "voiceness": 0.0018,
+      "confidence": 0.996,
+      "channel": "stem"
+    },
+    {
+      "time": 158.5,
+      "voiceness": 0.0057,
+      "confidence": 0.989,
+      "channel": "mix"
+    },
+    {
+      "time": 158.5,
+      "voiceness": 0.0016,
+      "confidence": 0.997,
+      "channel": "stem"
+    },
+    {
+      "time": 159.5,
+      "voiceness": 0.0038,
+      "confidence": 0.992,
+      "channel": "mix"
+    },
+    {
+      "time": 159.5,
+      "voiceness": 0.0012,
+      "confidence": 0.998,
+      "channel": "stem"
+    },
+    {
+      "time": 160.5,
+      "voiceness": 0.0041,
+      "confidence": 0.992,
+      "channel": "mix"
+    },
+    {
+      "time": 160.5,
+      "voiceness": 0.001,
+      "confidence": 0.998,
+      "channel": "stem"
+    },
+    {
+      "time": 161.5,
+      "voiceness": 0.0041,
+      "confidence": 0.992,
+      "channel": "mix"
+    },
+    {
+      "time": 161.5,
+      "voiceness": 0.0008,
+      "confidence": 0.998,
+      "channel": "stem"
+    },
+    {
+      "time": 162.5,
+      "voiceness": 0.0054,
+      "confidence": 0.989,
+      "channel": "mix"
+    },
+    {
+      "time": 162.5,
+      "voiceness": 0.0012,
+      "confidence": 0.998,
+      "channel": "stem"
+    },
+    {
+      "time": 163.5,
+      "voiceness": 0.0056,
+      "confidence": 0.989,
+      "channel": "mix"
+    },
+    {
+      "time": 163.5,
+      "voiceness": 0.0016,
+      "confidence": 0.997,
+      "channel": "stem"
+    },
+    {
+      "time": 164.5,
+      "voiceness": 0.0073,
+      "confidence": 0.985,
+      "channel": "mix"
+    },
+    {
+      "time": 164.5,
+      "voiceness": 0.0025,
+      "confidence": 0.995,
+      "channel": "stem"
+    },
+    {
+      "time": 165.5,
+      "voiceness": 0.0073,
+      "confidence": 0.985,
+      "channel": "mix"
+    },
+    {
+      "time": 165.5,
+      "voiceness": 0.0029,
+      "confidence": 0.994,
+      "channel": "stem"
+    },
+    {
+      "time": 166.5,
+      "voiceness": 0.0086,
+      "confidence": 0.983,
+      "channel": "mix"
+    },
+    {
+      "time": 166.5,
+      "voiceness": 0.0043,
+      "confidence": 0.991,
+      "channel": "stem"
+    },
+    {
+      "time": 167.5,
+      "voiceness": 0.0088,
+      "confidence": 0.982,
+      "channel": "mix"
+    },
+    {
+      "time": 167.5,
+      "voiceness": 0.0012,
+      "confidence": 0.998,
+      "channel": "stem"
+    },
+    {
+      "time": 168.5,
+      "voiceness": 0.0061,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 168.5,
+      "voiceness": 0.0014,
+      "confidence": 0.997,
+      "channel": "stem"
+    },
+    {
+      "time": 169.5,
+      "voiceness": 0.0046,
+      "confidence": 0.991,
+      "channel": "mix"
+    },
+    {
+      "time": 169.5,
+      "voiceness": 0.0021,
+      "confidence": 0.996,
+      "channel": "stem"
+    },
+    {
+      "time": 170.5,
+      "voiceness": 0.0051,
+      "confidence": 0.99,
+      "channel": "mix"
+    },
+    {
+      "time": 170.5,
+      "voiceness": 0.0043,
+      "confidence": 0.991,
+      "channel": "stem"
+    },
+    {
+      "time": 171.5,
+      "voiceness": 0.0065,
+      "confidence": 0.987,
+      "channel": "mix"
+    },
+    {
+      "time": 171.5,
+      "voiceness": 0.0028,
+      "confidence": 0.994,
+      "channel": "stem"
+    },
+    {
+      "time": 172.5,
+      "voiceness": 0.0066,
+      "confidence": 0.987,
+      "channel": "mix"
+    },
+    {
+      "time": 172.5,
+      "voiceness": 0.0023,
+      "confidence": 0.995,
+      "channel": "stem"
+    },
+    {
+      "time": 173.5,
+      "voiceness": 0.0058,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 173.5,
+      "voiceness": 0.0031,
+      "confidence": 0.994,
+      "channel": "stem"
+    },
+    {
+      "time": 174.5,
+      "voiceness": 0.0114,
+      "confidence": 0.977,
+      "channel": "mix"
+    },
+    {
+      "time": 174.5,
+      "voiceness": 0.002,
+      "confidence": 0.996,
+      "channel": "stem"
+    },
+    {
+      "time": 175.5,
+      "voiceness": 0.008,
+      "confidence": 0.984,
+      "channel": "mix"
+    },
+    {
+      "time": 175.5,
+      "voiceness": 0.0015,
+      "confidence": 0.997,
+      "channel": "stem"
+    },
+    {
+      "time": 176.5,
+      "voiceness": 0.0078,
+      "confidence": 0.984,
+      "channel": "mix"
+    },
+    {
+      "time": 176.5,
+      "voiceness": 0.0078,
+      "confidence": 0.984,
+      "channel": "stem"
+    },
+    {
+      "time": 177.5,
+      "voiceness": 0.006,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 177.5,
+      "voiceness": 0.0182,
+      "confidence": 0.964,
+      "channel": "stem"
+    },
+    {
+      "time": 178.5,
+      "voiceness": 0.007,
+      "confidence": 0.986,
+      "channel": "mix"
+    },
+    {
+      "time": 178.5,
+      "voiceness": 0.0381,
+      "confidence": 0.924,
+      "channel": "stem"
+    },
+    {
+      "time": 179.5,
+      "voiceness": 0.0045,
+      "confidence": 0.991,
+      "channel": "mix"
+    },
+    {
+      "time": 179.5,
+      "voiceness": 0.0513,
+      "confidence": 0.897,
+      "channel": "stem"
+    },
+    {
+      "time": 180.5,
+      "voiceness": 0.0029,
+      "confidence": 0.994,
+      "channel": "mix"
+    },
+    {
+      "time": 180.5,
+      "voiceness": 0.0483,
+      "confidence": 0.903,
+      "channel": "stem"
+    },
+    {
+      "time": 181.5,
+      "voiceness": 0.0078,
+      "confidence": 0.984,
+      "channel": "mix"
+    },
+    {
+      "time": 181.5,
+      "voiceness": 0.0492,
+      "confidence": 0.902,
+      "channel": "stem"
+    },
+    {
+      "time": 182.5,
+      "voiceness": 0.0059,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 182.5,
+      "voiceness": 0.0259,
+      "confidence": 0.948,
+      "channel": "stem"
+    },
+    {
+      "time": 183.5,
+      "voiceness": 0.0037,
+      "confidence": 0.993,
+      "channel": "mix"
+    },
+    {
+      "time": 183.5,
+      "voiceness": 0.0276,
+      "confidence": 0.945,
+      "channel": "stem"
+    },
+    {
+      "time": 184.5,
+      "voiceness": 0.0044,
+      "confidence": 0.991,
+      "channel": "mix"
+    },
+    {
+      "time": 184.5,
+      "voiceness": 0.0221,
+      "confidence": 0.956,
+      "channel": "stem"
+    },
+    {
+      "time": 185.5,
+      "voiceness": 0.0027,
+      "confidence": 0.995,
+      "channel": "mix"
+    },
+    {
+      "time": 185.5,
+      "voiceness": 0.022,
+      "confidence": 0.956,
+      "channel": "stem"
+    },
+    {
+      "time": 186.5,
+      "voiceness": 0.0062,
+      "confidence": 0.988,
+      "channel": "mix"
+    },
+    {
+      "time": 186.5,
+      "voiceness": 0.0486,
+      "confidence": 0.903,
+      "channel": "stem"
+    },
+    {
+      "time": 187.5,
+      "voiceness": 0.0045,
+      "confidence": 0.991,
+      "channel": "mix"
+    },
+    {
+      "time": 187.5,
+      "voiceness": 0.0768,
+      "confidence": 0.846,
+      "channel": "stem"
+    },
+    {
+      "time": 188.5,
+      "voiceness": 0.033,
+      "confidence": 0.934,
+      "channel": "mix"
+    },
+    {
+      "time": 188.5,
+      "voiceness": 0.1438,
+      "confidence": 0.712,
+      "channel": "stem"
+    },
+    {
+      "time": 189.5,
+      "voiceness": 0.0251,
+      "confidence": 0.95,
+      "channel": "mix"
+    },
+    {
+      "time": 189.5,
+      "voiceness": 0.1085,
+      "confidence": 0.783,
+      "channel": "stem"
+    },
+    {
+      "time": 190.5,
+      "voiceness": 0.0494,
+      "confidence": 0.901,
+      "channel": "mix"
+    },
+    {
+      "time": 190.5,
+      "voiceness": 0.1169,
+      "confidence": 0.766,
+      "channel": "stem"
+    },
+    {
+      "time": 191.5,
+      "voiceness": 0.0304,
+      "confidence": 0.939,
+      "channel": "mix"
+    },
+    {
+      "time": 191.5,
+      "voiceness": 0.0553,
+      "confidence": 0.889,
+      "channel": "stem"
+    },
+    {
+      "time": 192.5,
+      "voiceness": 0.0155,
+      "confidence": 0.969,
+      "channel": "mix"
+    },
+    {
+      "time": 192.5,
+      "voiceness": 0.0176,
+      "confidence": 0.965,
+      "channel": "stem"
+    }
+  ],
+  "vocal_phrase": []
+}

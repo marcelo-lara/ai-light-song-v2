@@ -4,11 +4,12 @@
   "command": "python -m analyzer",
   "status": "passed",
   "exit_code": 0,
-  "generated_at": "2026-09-06T02:45:14.708940+00:00",
+  "generated_at": "2026-09-12T21:56:40.993412+00:00",
   "inputs": {
     "song_path": "/data/songs/_test_song.mp3",
     "reference_chords": "/data/analysis/_test_song/reference/moises/chords.json",
-    "reference_sections": "/data/analysis/_test_song/reference/moises/segments.json"
+    "reference_sections": "/data/analysis/_test_song/reference/moises/segments.json",
+    "reference_human_segments": "/data/analysis/_test_song/reference/human/segments.json"
   },
   "generated_artifacts": {
     "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
@@ -23,1105 +24,31 @@
   },
   "validation": {
     "beats": {
-      "status": "failed",
-      "matched": 84,
-      "mismatched": 30,
-      "match_ratio": 0.7368421052631579,
-      "details": [
-        {
-          "beat_index": 1,
-          "beat_type": "beat",
-          "inferred_time": 0.510839,
-          "reference_time": 0.52,
-          "delta_seconds": -0.009161,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 2,
-          "beat_type": "downbeat",
-          "inferred_time": 1.044898,
-          "reference_time": 0.98,
-          "delta_seconds": 0.064898,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 3,
-          "beat_type": "beat",
-          "inferred_time": 1.567347,
-          "reference_time": 1.44,
-          "delta_seconds": 0.127347,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 4,
-          "beat_type": "beat",
-          "inferred_time": 2.089796,
-          "reference_time": 1.9,
-          "delta_seconds": 0.189796,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 5,
-          "beat_type": "beat",
-          "inferred_time": 2.612245,
-          "reference_time": 2.82,
-          "delta_seconds": -0.207755,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 6,
-          "beat_type": "downbeat",
-          "inferred_time": 3.227574,
-          "reference_time": 3.28,
-          "delta_seconds": -0.052426,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 7,
-          "beat_type": "beat",
-          "inferred_time": 3.854512,
-          "reference_time": 3.74,
-          "delta_seconds": 0.114512,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 8,
-          "beat_type": "beat",
-          "inferred_time": 4.481451,
-          "reference_time": 4.66,
-          "delta_seconds": -0.178549,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 9,
-          "beat_type": "beat",
-          "inferred_time": 5.12,
-          "reference_time": 5.12,
-          "delta_seconds": 0.0,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 10,
-          "beat_type": "downbeat",
-          "inferred_time": 5.758549,
-          "reference_time": 5.58,
-          "delta_seconds": 0.178549,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 11,
-          "beat_type": "beat",
-          "inferred_time": 6.385488,
-          "reference_time": 6.5,
-          "delta_seconds": -0.114512,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 12,
-          "beat_type": "beat",
-          "inferred_time": 6.989206,
-          "reference_time": 6.96,
-          "delta_seconds": 0.029206,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 13,
-          "beat_type": "beat",
-          "inferred_time": 7.604535,
-          "reference_time": 7.44,
-          "delta_seconds": 0.164535,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 14,
-          "beat_type": "downbeat",
-          "inferred_time": 8.219864,
-          "reference_time": 8.36,
-          "delta_seconds": -0.140136,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 15,
-          "beat_type": "beat",
-          "inferred_time": 8.846803,
-          "reference_time": 8.82,
-          "delta_seconds": 0.026803,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 16,
-          "beat_type": "beat",
-          "inferred_time": 9.462132,
-          "reference_time": 9.28,
-          "delta_seconds": 0.182132,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 17,
-          "beat_type": "beat",
-          "inferred_time": 10.07746,
-          "reference_time": 10.2,
-          "delta_seconds": -0.12254,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 18,
-          "beat_type": "downbeat",
-          "inferred_time": 10.681179,
-          "reference_time": 10.66,
-          "delta_seconds": 0.021179,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 19,
-          "beat_type": "beat",
-          "inferred_time": 11.284898,
-          "reference_time": 11.12,
-          "delta_seconds": 0.164898,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 20,
-          "beat_type": "beat",
-          "inferred_time": 11.877007,
-          "reference_time": 12.04,
-          "delta_seconds": -0.162993,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 21,
-          "beat_type": "beat",
-          "inferred_time": 12.353016,
-          "reference_time": 12.5,
-          "delta_seconds": -0.146984,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 22,
-          "beat_type": "downbeat",
-          "inferred_time": 12.840634,
-          "reference_time": 12.96,
-          "delta_seconds": -0.119366,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 23,
-          "beat_type": "beat",
-          "inferred_time": 13.328254,
-          "reference_time": 13.42,
-          "delta_seconds": -0.091746,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 24,
-          "beat_type": "beat",
-          "inferred_time": 13.815873,
-          "reference_time": 13.9,
-          "delta_seconds": -0.084127,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 25,
-          "beat_type": "beat",
-          "inferred_time": 14.315102,
-          "reference_time": 14.36,
-          "delta_seconds": -0.044898,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 26,
-          "beat_type": "downbeat",
-          "inferred_time": 14.802721,
-          "reference_time": 14.82,
-          "delta_seconds": -0.017279,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 27,
-          "beat_type": "beat",
-          "inferred_time": 15.278729,
-          "reference_time": 15.28,
-          "delta_seconds": -0.001271,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 28,
-          "beat_type": "beat",
-          "inferred_time": 15.731519,
-          "reference_time": 15.74,
-          "delta_seconds": -0.008481,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 29,
-          "beat_type": "beat",
-          "inferred_time": 16.195917,
-          "reference_time": 16.2,
-          "delta_seconds": -0.004083,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 30,
-          "beat_type": "downbeat",
-          "inferred_time": 16.648706,
-          "reference_time": 16.68,
-          "delta_seconds": -0.031294,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 31,
-          "beat_type": "beat",
-          "inferred_time": 17.113106,
-          "reference_time": 17.14,
-          "delta_seconds": -0.026894,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 32,
-          "beat_type": "beat",
-          "inferred_time": 17.577505,
-          "reference_time": 17.6,
-          "delta_seconds": -0.022495,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 33,
-          "beat_type": "beat",
-          "inferred_time": 18.041904,
-          "reference_time": 18.06,
-          "delta_seconds": -0.018096,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 34,
-          "beat_type": "downbeat",
-          "inferred_time": 18.506304,
-          "reference_time": 18.52,
-          "delta_seconds": -0.013696,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 35,
-          "beat_type": "beat",
-          "inferred_time": 18.970703,
-          "reference_time": 18.98,
-          "delta_seconds": -0.009297,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 36,
-          "beat_type": "beat",
-          "inferred_time": 19.435102,
-          "reference_time": 19.44,
-          "delta_seconds": -0.004898,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 37,
-          "beat_type": "beat",
-          "inferred_time": 19.8995,
-          "reference_time": 19.9,
-          "delta_seconds": -0.0005,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 38,
-          "beat_type": "downbeat",
-          "inferred_time": 20.340679,
-          "reference_time": 20.36,
-          "delta_seconds": -0.019321,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 39,
-          "beat_type": "beat",
-          "inferred_time": 20.805079,
-          "reference_time": 20.82,
-          "delta_seconds": -0.014921,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 40,
-          "beat_type": "beat",
-          "inferred_time": 21.269478,
-          "reference_time": 21.28,
-          "delta_seconds": -0.010522,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 41,
-          "beat_type": "beat",
-          "inferred_time": 21.733877,
-          "reference_time": 21.74,
-          "delta_seconds": -0.006123,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 42,
-          "beat_type": "downbeat",
-          "inferred_time": 22.198277,
-          "reference_time": 22.2,
-          "delta_seconds": -0.001723,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 43,
-          "beat_type": "beat",
-          "inferred_time": 22.639456,
-          "reference_time": 22.66,
-          "delta_seconds": -0.020544,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 44,
-          "beat_type": "beat",
-          "inferred_time": 23.103855,
-          "reference_time": 23.12,
-          "delta_seconds": -0.016145,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 45,
-          "beat_type": "beat",
-          "inferred_time": 23.568254,
-          "reference_time": 23.6,
-          "delta_seconds": -0.031746,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 46,
-          "beat_type": "downbeat",
-          "inferred_time": 24.032652,
-          "reference_time": 24.06,
-          "delta_seconds": -0.027348,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 47,
-          "beat_type": "beat",
-          "inferred_time": 24.497051,
-          "reference_time": 24.52,
-          "delta_seconds": -0.022949,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 48,
-          "beat_type": "beat",
-          "inferred_time": 24.961451,
-          "reference_time": 24.98,
-          "delta_seconds": -0.018549,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 49,
-          "beat_type": "beat",
-          "inferred_time": 25.42585,
-          "reference_time": 25.44,
-          "delta_seconds": -0.01415,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 50,
-          "beat_type": "downbeat",
-          "inferred_time": 25.878639,
-          "reference_time": 25.9,
-          "delta_seconds": -0.021361,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 51,
-          "beat_type": "beat",
-          "inferred_time": 26.331429,
-          "reference_time": 26.36,
-          "delta_seconds": -0.028571,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 52,
-          "beat_type": "beat",
-          "inferred_time": 26.795828,
-          "reference_time": 26.82,
-          "delta_seconds": -0.024172,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 53,
-          "beat_type": "beat",
-          "inferred_time": 27.260227,
-          "reference_time": 27.28,
-          "delta_seconds": -0.019773,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 54,
-          "beat_type": "downbeat",
-          "inferred_time": 27.724625,
-          "reference_time": 27.74,
-          "delta_seconds": -0.015375,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 55,
-          "beat_type": "beat",
-          "inferred_time": 28.189024,
-          "reference_time": 28.2,
-          "delta_seconds": -0.010976,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 56,
-          "beat_type": "beat",
-          "inferred_time": 28.630203,
-          "reference_time": 28.66,
-          "delta_seconds": -0.029797,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 57,
-          "beat_type": "beat",
-          "inferred_time": 29.094603,
-          "reference_time": 29.12,
-          "delta_seconds": -0.025397,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 58,
-          "beat_type": "downbeat",
-          "inferred_time": 29.559002,
-          "reference_time": 29.58,
-          "delta_seconds": -0.020998,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 59,
-          "beat_type": "beat",
-          "inferred_time": 30.023401,
-          "reference_time": 30.04,
-          "delta_seconds": -0.016599,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 60,
-          "beat_type": "beat",
-          "inferred_time": 30.487801,
-          "reference_time": 30.5,
-          "delta_seconds": -0.012199,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 61,
-          "beat_type": "beat",
-          "inferred_time": 30.952198,
-          "reference_time": 30.98,
-          "delta_seconds": -0.027802,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 62,
-          "beat_type": "downbeat",
-          "inferred_time": 31.416597,
-          "reference_time": 31.44,
-          "delta_seconds": -0.023403,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 63,
-          "beat_type": "beat",
-          "inferred_time": 31.880997,
-          "reference_time": 31.9,
-          "delta_seconds": -0.019003,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 64,
-          "beat_type": "beat",
-          "inferred_time": 32.333786,
-          "reference_time": 32.36,
-          "delta_seconds": -0.026214,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 65,
-          "beat_type": "beat",
-          "inferred_time": 32.786575,
-          "reference_time": 32.82,
-          "delta_seconds": -0.033425,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 66,
-          "beat_type": "downbeat",
-          "inferred_time": 33.250973,
-          "reference_time": 33.28,
-          "delta_seconds": -0.029027,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 67,
-          "beat_type": "beat",
-          "inferred_time": 33.715374,
-          "reference_time": 33.74,
-          "delta_seconds": -0.024626,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 68,
-          "beat_type": "beat",
-          "inferred_time": 34.179771,
-          "reference_time": 34.2,
-          "delta_seconds": -0.020229,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 69,
-          "beat_type": "beat",
-          "inferred_time": 34.644173,
-          "reference_time": 34.66,
-          "delta_seconds": -0.015827,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 70,
-          "beat_type": "downbeat",
-          "inferred_time": 35.10857,
-          "reference_time": 35.12,
-          "delta_seconds": -0.01143,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 71,
-          "beat_type": "beat",
-          "inferred_time": 35.572971,
-          "reference_time": 35.58,
-          "delta_seconds": -0.007029,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 72,
-          "beat_type": "beat",
-          "inferred_time": 36.025761,
-          "reference_time": 36.04,
-          "delta_seconds": -0.014239,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 73,
-          "beat_type": "beat",
-          "inferred_time": 36.47855,
-          "reference_time": 36.5,
-          "delta_seconds": -0.02145,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 74,
-          "beat_type": "downbeat",
-          "inferred_time": 36.942947,
-          "reference_time": 36.98,
-          "delta_seconds": -0.037053,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 75,
-          "beat_type": "beat",
-          "inferred_time": 37.407345,
-          "reference_time": 37.44,
-          "delta_seconds": -0.032655,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 76,
-          "beat_type": "beat",
-          "inferred_time": 37.871746,
-          "reference_time": 37.9,
-          "delta_seconds": -0.028254,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 77,
-          "beat_type": "beat",
-          "inferred_time": 38.336143,
-          "reference_time": 38.36,
-          "delta_seconds": -0.023857,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 78,
-          "beat_type": "downbeat",
-          "inferred_time": 38.800545,
-          "reference_time": 38.82,
-          "delta_seconds": -0.019455,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 79,
-          "beat_type": "beat",
-          "inferred_time": 39.264942,
-          "reference_time": 39.28,
-          "delta_seconds": -0.015058,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 80,
-          "beat_type": "beat",
-          "inferred_time": 39.717731,
-          "reference_time": 39.74,
-          "delta_seconds": -0.022269,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 81,
-          "beat_type": "beat",
-          "inferred_time": 40.170521,
-          "reference_time": 40.2,
-          "delta_seconds": -0.029479,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 82,
-          "beat_type": "downbeat",
-          "inferred_time": 40.634918,
-          "reference_time": 40.66,
-          "delta_seconds": -0.025082,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 83,
-          "beat_type": "beat",
-          "inferred_time": 41.099319,
-          "reference_time": 41.12,
-          "delta_seconds": -0.020681,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 84,
-          "beat_type": "beat",
-          "inferred_time": 41.563717,
-          "reference_time": 41.58,
-          "delta_seconds": -0.016283,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 85,
-          "beat_type": "beat",
-          "inferred_time": 42.028118,
-          "reference_time": 42.04,
-          "delta_seconds": -0.011882,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 86,
-          "beat_type": "downbeat",
-          "inferred_time": 42.492516,
-          "reference_time": 42.5,
-          "delta_seconds": -0.007484,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 87,
-          "beat_type": "beat",
-          "inferred_time": 42.956917,
-          "reference_time": 42.98,
-          "delta_seconds": -0.023083,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 88,
-          "beat_type": "beat",
-          "inferred_time": 43.421314,
-          "reference_time": 43.44,
-          "delta_seconds": -0.018686,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 89,
-          "beat_type": "beat",
-          "inferred_time": 43.885712,
-          "reference_time": 43.9,
-          "delta_seconds": -0.014288,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 90,
-          "beat_type": "downbeat",
-          "inferred_time": 44.350113,
-          "reference_time": 44.36,
-          "delta_seconds": -0.009887,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 91,
-          "beat_type": "beat",
-          "inferred_time": 44.83773,
-          "reference_time": 44.82,
-          "delta_seconds": 0.01773,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 92,
-          "beat_type": "beat",
-          "inferred_time": 45.325352,
-          "reference_time": 45.28,
-          "delta_seconds": 0.045352,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 93,
-          "beat_type": "beat",
-          "inferred_time": 45.824581,
-          "reference_time": 45.74,
-          "delta_seconds": 0.084581,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 94,
-          "beat_type": "downbeat",
-          "inferred_time": 46.393467,
-          "reference_time": 46.2,
-          "delta_seconds": 0.193467,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 95,
-          "beat_type": "beat",
-          "inferred_time": 46.973969,
-          "reference_time": 47.12,
-          "delta_seconds": -0.146031,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 96,
-          "beat_type": "beat",
-          "inferred_time": 47.542858,
-          "reference_time": 47.58,
-          "delta_seconds": -0.037142,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 97,
-          "beat_type": "beat",
-          "inferred_time": 48.088524,
-          "reference_time": 48.04,
-          "delta_seconds": 0.048524,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 98,
-          "beat_type": "downbeat",
-          "inferred_time": 48.657413,
-          "reference_time": 48.52,
-          "delta_seconds": 0.137413,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 99,
-          "beat_type": "beat",
-          "inferred_time": 49.226303,
-          "reference_time": 49.44,
-          "delta_seconds": -0.213697,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 100,
-          "beat_type": "beat",
-          "inferred_time": 49.806801,
-          "reference_time": 49.9,
-          "delta_seconds": -0.093199,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 101,
-          "beat_type": "beat",
-          "inferred_time": 50.387302,
-          "reference_time": 50.36,
-          "delta_seconds": 0.027302,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 102,
-          "beat_type": "downbeat",
-          "inferred_time": 50.979408,
-          "reference_time": 50.82,
-          "delta_seconds": 0.159408,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 103,
-          "beat_type": "beat",
-          "inferred_time": 51.548298,
-          "reference_time": 51.74,
-          "delta_seconds": -0.191702,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 104,
-          "beat_type": "beat",
-          "inferred_time": 52.140408,
-          "reference_time": 52.22,
-          "delta_seconds": -0.079592,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 105,
-          "beat_type": "beat",
-          "inferred_time": 52.732517,
-          "reference_time": 52.68,
-          "delta_seconds": 0.052517,
-          "within_tolerance": true
-        },
-        {
-          "beat_index": 106,
-          "beat_type": "downbeat",
-          "inferred_time": 53.313015,
-          "reference_time": 53.14,
-          "delta_seconds": 0.173015,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 107,
-          "beat_type": "beat",
-          "inferred_time": 53.789024,
-          "reference_time": 53.6,
-          "delta_seconds": 0.189024,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 108,
-          "beat_type": "beat",
-          "inferred_time": 54.265034,
-          "reference_time": 54.06,
-          "delta_seconds": 0.205034,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 109,
-          "beat_type": "beat",
-          "inferred_time": 54.752651,
-          "reference_time": 54.98,
-          "delta_seconds": -0.227349,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 110,
-          "beat_type": "downbeat",
-          "inferred_time": 55.217052,
-          "reference_time": 55.44,
-          "delta_seconds": -0.222948,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 111,
-          "beat_type": "beat",
-          "inferred_time": 55.693062,
-          "reference_time": 55.9,
-          "delta_seconds": -0.206938,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 112,
-          "beat_type": "beat",
-          "inferred_time": 56.169067,
-          "reference_time": 56.36,
-          "delta_seconds": -0.190933,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 113,
-          "beat_type": "beat",
-          "inferred_time": 56.633469,
-          "reference_time": 56.82,
-          "delta_seconds": -0.186531,
-          "within_tolerance": false
-        },
-        {
-          "beat_index": 114,
-          "beat_type": "downbeat",
-          "inferred_time": 57.109478,
-          "reference_time": 57.28,
-          "delta_seconds": -0.170522,
-          "within_tolerance": false
-        }
-      ],
-      "reference_file": "/data/analysis/_test_song/reference/moises/chords.json",
-      "diagnostics": {
-        "global_offset_seconds": -0.019162,
-        "global_offset_direction": "aligned",
-        "global_offset_present": false,
-        "mean_absolute_delta_seconds": 0.063646,
-        "start_window_median_seconds": 0.028005,
-        "end_window_median_seconds": -0.13186,
-        "local_drift_seconds": -0.159865,
-        "local_drift_present": true,
-        "residual_spread_seconds": 0.224196,
-        "reference_beat_interval_seconds": 0.46,
-        "downbeat_f1_diagnostics": {
-          "downbeat_true_positives": 16,
-          "downbeat_predicted_count": 21,
-          "downbeat_reference_count": 32,
-          "downbeat_precision": 0.761905,
-          "downbeat_recall": 0.5,
-          "downbeat_f1": 0.603774,
-          "downbeat_tolerance_seconds": 0.07
-        }
-      }
+      "status": "skipped",
+      "matched": 0,
+      "mismatched": 0,
+      "match_ratio": null,
+      "details": [],
+      "reference_file": null,
+      "diagnostics": null
     },
     "chords": {
-      "status": "passed",
-      "matched": 4,
+      "status": "skipped",
+      "matched": 0,
       "mismatched": 0,
-      "match_ratio": 1.0,
-      "details": [
-        {
-          "inferred": {
-            "time": 0.510839,
-            "end_s": 46.393467,
-            "bar": 1,
-            "beat": 4,
-            "chord": "D#m",
-            "confidence": 0.849954
-          },
-          "reference": {
-            "time": 0.06,
-            "end_s": 46.2,
-            "bar": 23,
-            "beat": 4,
-            "chord": "D#m"
-          },
-          "inferred_label_normalized": "D#m",
-          "reference_label_normalized": "D#m",
-          "overlap_ratio": 0.995783,
-          "result": "matched"
-        },
-        {
-          "inferred": {
-            "time": 46.393467,
-            "end_s": 48.088524,
-            "bar": 24,
-            "beat": 1,
-            "chord": "B",
-            "confidence": 0.917239
-          },
-          "reference": {
-            "time": 46.2,
-            "end_s": 48.04,
-            "bar": 24,
-            "beat": 3,
-            "chord": "B"
-          },
-          "inferred_label_normalized": "B",
-          "reference_label_normalized": "B",
-          "overlap_ratio": 0.971373,
-          "result": "matched"
-        },
-        {
-          "inferred": {
-            "time": 48.088524,
-            "end_s": 51.548298,
-            "bar": 24,
-            "beat": 4,
-            "chord": "F#",
-            "confidence": 0.930625
-          },
-          "reference": {
-            "time": 48.04,
-            "end_s": 51.74,
-            "bar": null,
-            "beat": null,
-            "chord": "F#"
-          },
-          "inferred_label_normalized": "F#",
-          "reference_label_normalized": "F#",
-          "overlap_ratio": 1.0,
-          "result": "matched"
-        },
-        {
-          "inferred": {
-            "time": 51.548298,
-            "end_s": 58.049888,
-            "bar": 26,
-            "beat": 2,
-            "chord": "D#m",
-            "confidence": 0.951396
-          },
-          "reference": {
-            "time": 51.74,
-            "end_s": 57.28,
-            "bar": 29,
-            "beat": 1,
-            "chord": "D#m"
-          },
-          "inferred_label_normalized": "D#m",
-          "reference_label_normalized": "D#m",
-          "overlap_ratio": 0.852099,
-          "result": "matched"
-        }
-      ],
-      "reference_file": "/data/analysis/_test_song/reference/moises/chords.json",
-      "diagnostics": {
-        "matched_event_count": 4,
-        "timing_overlap_failure_count": 0,
-        "label_mismatch_count": 0,
-        "no_reference_overlap_count": 0,
-        "median_overlap_ratio": 0.983578
-      }
+      "match_ratio": null,
+      "details": [],
+      "reference_file": null,
+      "diagnostics": null
     },
     "drums": {
-      "status": "passed",
-      "matched": 9,
+      "status": "skipped",
+      "matched": 0,
       "mismatched": 0,
-      "match_ratio": 1.0,
-      "details": [
-        {
-          "check": "drum_events_present",
-          "passed": true,
-          "count": 342
-        },
-        {
-          "check": "event_ids_unique",
-          "passed": true
-        },
-        {
-          "check": "event_times_sorted",
-          "passed": true
-        },
-        {
-          "check": "event_types_supported",
-          "passed": true
-        },
-        {
-          "check": "summary_counts_match_event_rows",
-          "passed": true
-        },
-        {
-          "check": "resolved_events_have_alignment_fields",
-          "passed": true
-        },
-        {
-          "check": "raw_midi_cache_present",
-          "passed": true
-        },
-        {
-          "check": "generated_engine_is_omnizart",
-          "passed": true
-        },
-        {
-          "check": "debug_source_paths_present",
-          "passed": true
-        }
-      ],
-      "reference_file": "/data/analysis/_test_song/artifacts/symbolic_transcription/drum_events.json",
-      "diagnostics": {
-        "event_count": 342,
-        "kick_count": 106,
-        "snare_count": 57,
-        "hat_count": 179,
-        "unresolved_count": 0,
-        "aligned_event_ratio": 0.748538,
-        "reference_beat_interval_seconds": 0.464401,
-        "median_hat_interval_seconds": 0.229546,
-        "recognizable_backbeat": true,
-        "recognizable_hat_pulse": true,
-        "overdense_hat_regions": 0
-      }
+      "match_ratio": null,
+      "details": [],
+      "reference_file": null,
+      "diagnostics": null
     },
     "sections": {
       "status": "failed",
@@ -1132,15 +59,15 @@
         {
           "match_type": "matched_boundary",
           "inferred": {
-            "time": 14.82,
+            "time": 14.81,
             "section_id": "section-002",
-            "label": "chorus"
+            "label": "Chorus"
           },
           "reference": {
             "time": 14.82,
             "label": "Verse"
           },
-          "delta_seconds": 0.0,
+          "delta_seconds": -0.01,
           "within_tolerance": true
         },
         {
@@ -1166,66 +93,79 @@
       ],
       "reference_file": "/data/analysis/_test_song/reference/moises/segments.json",
       "diagnostics": {
-        "boundary_offset_seconds": 0.0,
-        "boundary_offset_direction": "aligned",
+        "boundary_offset_seconds": -0.01,
+        "boundary_offset_direction": "early",
         "reference_beat_interval_seconds": 0.46,
         "snap_like_boundary_count": 0,
         "dominant_snap_multiple_beats": null
       }
     },
-    "drops": {
+    "human_segments": {
       "status": "failed",
       "matched": 1,
       "mismatched": 2,
       "match_ratio": 0.3333333333333333,
       "details": [
         {
-          "check": "drop recall >= 0.5",
-          "passed": false,
-          "recall": 0.0
+          "match_type": "matched_boundary",
+          "inferred": {
+            "time": 14.81,
+            "section_id": "section-002",
+            "label": "Chorus"
+          },
+          "reference": {
+            "time": 14.82,
+            "label": "Verse"
+          },
+          "delta_seconds": -0.01,
+          "within_tolerance": true
         },
         {
-          "check": "drop precision >= 0.5",
-          "passed": false,
-          "precision": null
+          "match_type": "missed_reference_boundary",
+          "inferred": null,
+          "reference": {
+            "time": 29.58,
+            "label": "Chorus"
+          },
+          "delta_seconds": null,
+          "within_tolerance": false
         },
         {
-          "check": "fake_drop does not outnumber drop",
-          "passed": true,
-          "fake": 0,
-          "drop": 0
+          "match_type": "missed_reference_boundary",
+          "inferred": null,
+          "reference": {
+            "time": 44.36,
+            "label": "Outro"
+          },
+          "delta_seconds": null,
+          "within_tolerance": false
         }
       ],
-      "reference_file": "/data/analysis/_test_song/reference/human/human_hints.json",
+      "reference_file": "/data/analysis/_test_song/reference/human/segments.json",
       "diagnostics": {
-        "score": {
-          "target": "drops",
-          "tolerance_seconds": 1.0,
-          "detected_count": 0,
-          "fake_drop_count": 0,
-          "detected_times": [],
-          "labelled_count": 5,
-          "metrics": {
-            "true_positives": 0,
-            "predicted": 0,
-            "labelled": 5,
-            "precision": null,
-            "recall": 0.0,
-            "f1": 0.0
-          },
-          "match_deltas": [],
-          "mode": "timed",
-          "fake_outnumbers_drop": false
-        }
+        "recall": 0.333333,
+        "precision": 1.0,
+        "f1": 0.5,
+        "boundary_offset_seconds": -0.01,
+        "boundary_offset_direction": "early",
+        "reference_beat_interval_seconds": null,
+        "snap_like_boundary_count": 0,
+        "dominant_snap_multiple_beats": null
       }
+    },
+    "drops": {
+      "status": "skipped",
+      "matched": 0,
+      "mismatched": 0,
+      "match_ratio": null,
+      "details": [],
+      "reference_file": null,
+      "diagnostics": null
     }
   },
   "notes": [
-    "Beat validation compares inferred beat times against the beat timestamps embedded in the reference chord annotation when present.",
-    "reference/moises/*.json is Moises.ai inference, not human ground truth. Only lyrics.json carries a confidence field, and only its \"0.99\" rows are operator-curated. Chord validation therefore measures agreement with a second model, not correctness.",
-    "Drum validation checks the producer-scoped drum_events.json artifact for structural integrity, Omnizart provenance, debug-source metadata, and song-level pulse plausibility.",
     "Section validation compares structural change points only; reference segment labels are advisory and do not affect pass/fail.",
-    "Drop validation scores detected drops against timed human drop hints in reference/human/human_hints.json; advisory only, and reports 'skipped' when a song has no timed drop hints (plan v3.0 item 10 -- no presence-only fallback).",
+    "human_segments (v3.5 item 10) scores the same boundaries against reference/human/segments.json where that hand-marked file exists for the song; advisory, and 'skipped' otherwise.",
     "Human hint alignment review files compare narrative hint windows against generated sections, events, and harmonic events when human hints are available."
   ]
 }

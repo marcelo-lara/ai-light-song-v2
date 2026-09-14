@@ -82,7 +82,7 @@ Full numbers, per-song breakdowns and root causes:
 | Section identity | **not shipped.** MFCC 0.73 is the number any attempt must beat |
 | Character blocks (texture, not arrangement) | **measured in `experiments/clap/`, not shipped** |
 | Arrangement state (`detect-arrangement-state`, phase 3) | informative on `_test_song` (F1 0.59 vs `sections.json` 0.00), unmeasured elsewhere; honest `null` confidence off the margin |
-| `vocals` channel (`playing[]` vs `vocals_phrase[]`) | **decided: `playing`'s `vocals` stays RMS-only** (false_vocal 0.0891 on `ayuni`) — gating it on whisperX lowered false_vocal but cost >0.01 frame_acc on `Cinderella`. Trust `vocals_phrase[]` (whisperX) for voice presence |
+| `vocals` channel (`playing[]` vs `vocals_phrase[]`) | **decided: `playing`'s `vocals` stays RMS-only** (false_vocal 0.0891 on `ayuni`) — gating it on whisperX lowered false_vocal but cost >0.01 frame_acc on `Cinderella`. Trust `vocals_phrase[]` (whisperX) for voice presence. whisperX's own compute now runs in-pipeline as the `whisperx` Compose service (`whisperx_vad/`, v3.6 item 2) rather than out-of-band in `experiments/` — run it before `./analyze`; `vocals_phrase` is never `null` once it has |
 | `mcp/` server + delivery surface | **built and green.** Three tools (`list_songs`, `get_song_overview`, `get_detail`); nine top-level files per song (`info`, `beats`, `hints`, `sections`, `song_event_timeline`, `genre`, `drum_events`, `loudness`, `arrangement_state`), each carrying a `field_sources` attribution header |
 
 ## Rules that are load-bearing
@@ -138,11 +138,16 @@ breaking it has already cost this repo something.
 ## Running things
 
 ```bash
-docker compose build app mcp ui   # `build` alone builds only `ui`; the rest are on-demand
+docker compose build app mcp whisperx ui   # `build` alone builds only `ui`; the rest are on-demand
 
-# `docker compose up` (no service) starts ONLY the `ui` debugger. `app`, `mcp`
-# and `test` carry the `ondemand` profile — `docker compose run` still starts
-# them, or `docker compose --profile ondemand up` brings the whole set up.
+# `docker compose up` (no service) starts ONLY the `ui` debugger. `app`, `mcp`,
+# `whisperx` and `test` carry the `ondemand` profile — `docker compose run`
+# still starts them, or `docker compose --profile ondemand up` brings the
+# whole set up.
+
+# whisperX VAD (arrangement_state.json's vocals_phrase) — run before ./analyze;
+# its own torch~=2.8.0 pin can't share the `app` image
+docker compose run --rm whisperx --song "/data/songs/YOUR_SONG.mp3"
 
 # full pipeline + validation report for one song
 docker compose run --rm app ./analyze --song "/data/songs/YOUR_SONG.mp3"

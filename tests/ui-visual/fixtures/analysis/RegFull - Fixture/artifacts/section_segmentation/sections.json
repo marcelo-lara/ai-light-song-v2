@@ -22,7 +22,7 @@
     "merge_strategy": "consecutive equal-labelled 8-bar phrases merged into one section run",
     "function_confidence_strategy": "1 - normalised Shannon entropy of allin1's frame-level label posterior within the section span",
     "labelling_status": "known",
-    "phrase_count": 11
+    "phrase_count": 10
   },
   "sections": [
     {
@@ -30,7 +30,7 @@
       "start": 0.0,
       "end": 30.0,
       "function": "intro",
-      "function_confidence": 0.441519,
+      "function_confidence": 0.474817,
       "function_status": "known",
       "same_label_as": null,
       "confidence": 0.9
@@ -38,52 +38,52 @@
     {
       "section_id": "section-002",
       "start": 30.0,
-      "end": 44.76,
+      "end": 44.77,
       "function": "verse",
-      "function_confidence": 0.187426,
+      "function_confidence": 0.188917,
       "function_status": "known",
       "same_label_as": null,
-      "confidence": 0.187426
+      "confidence": 0.188917
     },
     {
       "section_id": "section-003",
-      "start": 44.76,
+      "start": 44.77,
       "end": 81.76,
       "function": "inst",
-      "function_confidence": 0.193769,
+      "function_confidence": 0.19984,
       "function_status": "known",
       "same_label_as": null,
-      "confidence": 0.193769
+      "confidence": 0.19984
     },
     {
       "section_id": "section-004",
       "start": 81.76,
-      "end": 96.46,
+      "end": 96.47,
       "function": "verse",
-      "function_confidence": 0.194511,
+      "function_confidence": 0.196237,
       "function_status": "known",
       "same_label_as": "section-002",
-      "confidence": 0.194511
+      "confidence": 0.196237
     },
     {
       "section_id": "section-005",
-      "start": 96.46,
+      "start": 96.47,
       "end": 111.23,
       "function": "chorus",
-      "function_confidence": 0.331459,
+      "function_confidence": 0.331091,
       "function_status": "known",
       "same_label_as": null,
-      "confidence": 0.331459
+      "confidence": 0.331091
     },
     {
       "section_id": "section-006",
       "start": 111.23,
       "end": 193.851791,
       "function": "inst",
-      "function_confidence": 0.144056,
+      "function_confidence": 0.141951,
       "function_status": "known",
       "same_label_as": "section-003",
-      "confidence": 0.144056
+      "confidence": 0.141951
     }
   ]
 }

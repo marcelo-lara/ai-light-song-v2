@@ -1,0 +1,1706 @@
+{
+  "schema_version": "3.0",
+  "song_name": "_test_song",
+  "field_sources": {
+    "time": "omnizart",
+    "event_type": "omnizart",
+    "confidence": "omnizart"
+  },
+  "summary": {
+    "event_count": 336,
+    "kick_count": 101,
+    "snare_count": 59,
+    "hat_count": 139,
+    "crash_count": 37,
+    "unresolved_count": 0
+  },
+  "supported_event_types": [
+    "kick",
+    "snare",
+    "hat",
+    "crash",
+    "unresolved"
+  ],
+  "events": [
+    {
+      "time": 0.409,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 0.482,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 0.705,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 0.855,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 1.08,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 1.23,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 1.448,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 1.593,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 1.736,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 2.173,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 2.318,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 2.634,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 3.345,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 3.65,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 3.816,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 4.145,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 4.47,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 4.63,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 4.791,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 4.95,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 4.95,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 5.255,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 5.407,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 5.484,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 5.811,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 6.145,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 6.145,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 6.307,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 6.459,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 6.686,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 6.841,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 7.216,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 7.441,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 7.441,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 7.668,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 7.82,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 7.973,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 8.105,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 8.216,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 8.325,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 8.545,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 8.766,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 8.93,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 9.4,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 9.83,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 10.291,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 10.291,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 10.52,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 10.52,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 10.693,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 10.857,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 11.18,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 11.409,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 11.409,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 11.641,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 12.368,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 12.589,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 12.766,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 12.941,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 13.168,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 13.168,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 13.786,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 14.182,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 14.182,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 14.527,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 14.527,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 14.82,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 14.82,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 14.82,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 14.934,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 14.934,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 15.05,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 15.166,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 15.28,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 15.28,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 15.395,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 15.741,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 16.209,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 16.67,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 17.13,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 17.6,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 17.6,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 18.05,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 18.05,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 18.509,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 18.745,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 19.441,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 19.441,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 19.9,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 19.9,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 20.359,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 20.82,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 21.291,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 21.291,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 21.75,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 21.75,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 22.039,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 22.209,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 22.209,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 22.209,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 22.434,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 22.434,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 22.659,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 22.659,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 22.895,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 22.895,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 22.895,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 23.13,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 23.13,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 23.13,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 23.359,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 23.359,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 23.359,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 23.591,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 23.591,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 23.591,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 23.82,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 23.82,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 23.934,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 24.05,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 24.05,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 24.28,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 24.28,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 24.28,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 24.509,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 24.509,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 24.509,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 24.741,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 24.741,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 24.97,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 24.97,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 25.2,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 25.2,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 25.316,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 25.43,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 25.43,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 25.659,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 25.659,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 25.775,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 25.775,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 25.891,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 25.891,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 26.005,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 26.005,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 26.12,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 26.12,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 26.234,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 26.234,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 26.35,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 26.35,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 26.468,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 26.468,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 26.584,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 26.584,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 26.702,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 26.702,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 26.82,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 26.82,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 26.934,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 26.934,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 27.05,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 27.05,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 27.166,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 27.166,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 27.28,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 27.28,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 27.395,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 27.395,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 27.509,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 27.509,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 27.625,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 27.625,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 27.741,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 27.855,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 28.895,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 28.895,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 29.13,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 29.13,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 29.355,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 29.58,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 29.58,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 29.757,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 30.05,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 30.05,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 30.28,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 30.509,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 30.509,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 30.855,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 30.855,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 30.97,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 30.97,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 31.43,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 31.43,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 31.718,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 31.891,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 31.891,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 31.891,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 32.234,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 32.35,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 32.35,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 32.809,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 32.809,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 33.045,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 33.164,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 33.28,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 33.28,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 33.741,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 33.741,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 34.2,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 34.2,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 34.659,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 34.659,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 34.659,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 34.832,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 35.12,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 35.293,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 35.58,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 35.58,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 35.816,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 36.05,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 36.05,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 36.509,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 36.509,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 36.741,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 36.798,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 36.97,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 36.97,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 37.2,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 37.43,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 37.43,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 37.659,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 37.891,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 37.891,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 38.125,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 38.359,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 38.359,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 38.591,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 38.82,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 38.82,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 39.05,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 39.28,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 39.28,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 39.509,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 39.741,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 39.741,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 39.97,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 40.2,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 40.2,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 40.43,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 40.659,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 40.659,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 40.891,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 41.12,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 41.12,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 41.35,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 41.58,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 41.58,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 41.816,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 42.05,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 42.05,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 42.28,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 42.509,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 42.509,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 42.741,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 42.97,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 42.97,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 43.316,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 43.316,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 43.43,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 43.548,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 43.548,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 43.666,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 43.666,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 43.9,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 43.9,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 44.13,
+      "event_type": "crash",
+      "confidence": null
+    },
+    {
+      "time": 44.359,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 44.359,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 44.698,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 44.809,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 45.025,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 45.634,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 46.034,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 47.091,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 47.316,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 47.541,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 47.775,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 47.893,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 48.066,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 48.12,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 48.341,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 48.395,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 48.507,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 48.623,
+      "event_type": "kick",
+      "confidence": null
+    },
+    {
+      "time": 48.623,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 48.852,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 49.032,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 49.339,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 49.518,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 49.693,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 49.811,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 49.986,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 49.986,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 50.282,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 50.452,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 50.62,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 50.734,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 50.85,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 50.85,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 51.15,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 51.384,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 51.5,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 51.616,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 51.616,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 51.73,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 51.73,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 51.975,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 52.159,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 52.336,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 52.514,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 52.573,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 52.807,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 52.925,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 53.332,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 53.448,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 53.62,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 53.855,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 53.973,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 54.091,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 54.207,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 54.325,
+      "event_type": "snare",
+      "confidence": null
+    },
+    {
+      "time": 54.325,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 54.559,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 54.732,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 54.905,
+      "event_type": "hat",
+      "confidence": null
+    },
+    {
+      "time": 55.077,
+      "event_type": "hat",
+      "confidence": null
+    }
+  ]
+}

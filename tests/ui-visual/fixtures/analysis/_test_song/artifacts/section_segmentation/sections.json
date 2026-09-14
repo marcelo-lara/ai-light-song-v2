@@ -28,22 +28,22 @@
     {
       "section_id": "section-001",
       "start": 0.0,
-      "end": 14.82,
-      "function": "intro",
-      "function_confidence": 0.343031,
+      "end": 14.81,
+      "function": "Intro",
+      "function_confidence": 0.342105,
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.9
     },
     {
       "section_id": "section-002",
-      "start": 14.82,
+      "start": 14.81,
       "end": 58.049888,
-      "function": "chorus",
-      "function_confidence": 0.446144,
+      "function": "Chorus",
+      "function_confidence": 0.446157,
       "function_status": "unknown",
       "same_label_as": null,
-      "confidence": 0.446144
+      "confidence": 0.446157
     }
   ]
 }

@@ -6,12 +6,6 @@
       "hint_id": "hint-001",
       "energy": 5,
       "tension": 4
-    },
-    {
-      "hint_id": "hint-002"
-    },
-    {
-      "hint_id": "hint-003"
     }
   ]
 }
