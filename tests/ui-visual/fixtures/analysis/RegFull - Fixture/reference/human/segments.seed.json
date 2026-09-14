@@ -1,0 +1,24 @@
+[
+  {
+    "start": 40,
+    "end": 60,
+    "label": "Build",
+    "energy": 3,
+    "tension": 4,
+    "rhythm": {
+      "drums": "sixteenth",
+      "vocals": "none"
+    }
+  },
+  {
+    "start": 60,
+    "end": 80,
+    "label": "Drop",
+    "energy": 5,
+    "tension": 2,
+    "rhythm": {
+      "drums": "quarter",
+      "bass": "eighth"
+    }
+  }
+]

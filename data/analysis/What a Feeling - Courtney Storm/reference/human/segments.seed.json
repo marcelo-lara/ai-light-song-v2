@@ -1,0 +1,119 @@
+[
+  {
+    "start": 3.12,
+    "end": 34.11,
+    "label": "Intro",
+    "energy": 2,
+    "tension": 5,
+    "rhythm": {
+      "drums": "none",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 34.11,
+    "end": 49.6,
+    "label": "Verse",
+    "energy": 3,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth",
+      "bass": "quarter",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 49.6,
+    "end": 80.34,
+    "label": "Verse",
+    "energy": 5,
+    "tension": 5,
+    "rhythm": {
+      "drums": "sixteenth",
+      "bass": "quarter",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 80.34,
+    "end": 111.55,
+    "label": "Bridge",
+    "energy": 1,
+    "tension": 4,
+    "rhythm": {
+      "drums": "none",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 111.55,
+    "end": 127.27,
+    "label": "Verse",
+    "energy": 2,
+    "tension": 3,
+    "rhythm": {
+      "drums": "quarter",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 127.27,
+    "end": 142.18,
+    "label": "Verse",
+    "energy": 4,
+    "tension": 2,
+    "rhythm": {
+      "drums": "sixteenth",
+      "bass": "quarter",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 142.18,
+    "end": 158.0,
+    "label": "Instrumental",
+    "energy": 4,
+    "tension": 5,
+    "rhythm": {
+      "drums": "sixteenth",
+      "bass": "quarter",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 157.39,
+    "end": 188.73,
+    "label": "Verse",
+    "energy": 5,
+    "tension": 3,
+    "rhythm": {
+      "drums": "sixteenth",
+      "bass": "quarter",
+      "harmonic": "sixteenth",
+      "vocals": "none"
+    }
+  },
+  {
+    "start": 188.73,
+    "end": 204.73,
+    "label": "Outro",
+    "energy": 1,
+    "tension": 1,
+    "rhythm": {
+      "drums": "none",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "none"
+    }
+  }
+]

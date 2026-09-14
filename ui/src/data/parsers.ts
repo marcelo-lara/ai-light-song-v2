@@ -36,7 +36,9 @@ import type {
   HumanHint,
   HumanHintsFile,
   HumanSegment,
+  HumanSegmentSeed,
   HumanSegmentsFile,
+  HumanSegmentsSeedFile,
   LyricValidationsFile,
   LoudnessFrame,
   LoudnessHistory,
@@ -48,6 +50,7 @@ import type {
   SectionSegmentation,
   SectionsTopLevel,
   SegmentationSection,
+  SegmentRhythm,
   SongFact,
   SongFactsFile,
   SongInfo,
@@ -399,6 +402,37 @@ export function parseHumanHints(raw: unknown): HumanHintsFile {
 
 // ---------------------------------------------------------------------------
 
+// v3.6 item 4 — `rhythm.{drums,bass,harmonic,vocals}`, one subdivision name
+// from SEGMENT_RHYTHM_VALUES each. Deliberately tolerant like block_energy's
+// axis parsing: an unknown key or an out-of-vocabulary value is dropped
+// rather than failing the whole file. `null`/absent -> `null` (honest unset,
+// never an empty object).
+const SEGMENT_RHYTHM_KEYS = ["drums", "bass", "harmonic", "vocals"] as const;
+export const SEGMENT_RHYTHM_VALUES = [
+  "half",
+  "quarter",
+  "eighth",
+  "sixteenth",
+  "eighth_triplet",
+  "none",
+] as const;
+
+export function parseSegmentRhythm(
+  raw: unknown,
+  ctx: string,
+): SegmentRhythm | null {
+  const o = objectOrNull(raw, ctx);
+  if (!o) return null;
+  const out: NonNullable<HumanSegment["rhythm"]> = {};
+  for (const key of SEGMENT_RHYTHM_KEYS) {
+    const v = o[key];
+    if (typeof v === "string" && (SEGMENT_RHYTHM_VALUES as readonly string[]).includes(v)) {
+      out[key] = v;
+    }
+  }
+  return Object.keys(out).length ? out : null;
+}
+
 // reference/human/segments.json — a bare array, no wrapper object.
 export function parseHumanSegment(raw: unknown, ctx = "segment"): HumanSegment {
   const o = asObject(raw, ctx);
@@ -425,12 +459,36 @@ export function parseHumanSegment(raw: unknown, ctx = "segment"): HumanSegment {
     description: isOldShape ? (rawDescription ?? (rawLabel || null)) : rawDescription,
     energy: numberOrNull(o.energy, `${ctx}.energy`),
     tension: numberOrNull(o.tension, `${ctx}.tension`),
+    rhythm: parseSegmentRhythm(o.rhythm, `${ctx}.rhythm`),
   };
 }
 
 export function parseHumanSegmentsFile(raw: unknown): HumanSegmentsFile {
   const list = asArray(raw ?? [], "segments.json");
   return list.map((s, i) => parseHumanSegment(s, `segments.json[${i}]`));
+}
+
+// reference/human/segments.seed.json (v3.6 item 4) — same bare-array shape,
+// no `description`. Written only by experiments/segment_seeds; read-only here.
+export function parseHumanSegmentSeed(
+  raw: unknown,
+  ctx = "segment_seed",
+): HumanSegmentSeed {
+  const o = asObject(raw, ctx);
+  const rawLabel = stringOrNull(o.label, `${ctx}.label`);
+  return {
+    start: numberOr(o.start, 0, `${ctx}.start`),
+    end: numberOr(o.end, 0, `${ctx}.end`),
+    label: rawLabel,
+    energy: numberOrNull(o.energy, `${ctx}.energy`),
+    tension: numberOrNull(o.tension, `${ctx}.tension`),
+    rhythm: parseSegmentRhythm(o.rhythm, `${ctx}.rhythm`),
+  };
+}
+
+export function parseHumanSegmentsSeedFile(raw: unknown): HumanSegmentsSeedFile {
+  const list = asArray(raw ?? [], "segments.seed.json");
+  return list.map((s, i) => parseHumanSegmentSeed(s, `segments.seed.json[${i}]`));
 }
 
 // ---------------------------------------------------------------------------

@@ -26,6 +26,11 @@ export const artifactPaths = {
   // ({start, end, label} only, no id/type/summary).
   humanSections: (song: string) =>
     encodePath(analysis(song, "reference", "human", "segments.json")),
+  // v3.6 item 4 — unreviewed rule-based drafts (experiments/segment_seeds),
+  // same spans as segments.json. Read-only to the UI: never written here,
+  // shown only as a draft fallback in the segment editor per field.
+  humanSectionsSeed: (song: string) =>
+    encodePath(analysis(song, "reference", "human", "segments.seed.json")),
   songFacts: (song: string) =>
     encodePath(analysis(song, "reference", "human", "song_facts.json")),
   // v3.4 item 4 — operator's 1-5 energy/tension rating per human_hints.json

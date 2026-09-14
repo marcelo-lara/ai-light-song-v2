@@ -65,13 +65,16 @@ export interface RuntimeErrorSink {
   list(): string[];
 }
 
-// reference/human/segments.json and reference/moises/segments.json are
+// reference/human/segments.json, reference/human/segments.seed.json (v3.6
+// item 4 — unreviewed rule-based drafts, experiments/segment_seeds, not every
+// song has been seeded yet) and reference/moises/segments.json are all
 // optional at the app level (`ui/src/data/loaders.ts`'s `loadHumanSegments` /
-// `loadMoisesSections` both resolve a 404 to `[]`, unconditionally, for every
-// song) — a fixture missing either file is a real, expected shape, not a
-// fault, so the browser-level 404 response they still produce is tolerated
-// here the same way `allowMissingAudio` tolerates the absent mp3.
-const OPTIONAL_SEGMENTS_404 = /\/reference\/(human|moises)\/segments\.json$/;
+// `loadHumanSectionsSeed` / `loadMoisesSections` all resolve a 404 to `[]`,
+// unconditionally, for every song) — a fixture missing any of them is a real,
+// expected shape, not a fault, so the browser-level 404 response they still
+// produce is tolerated here the same way `allowMissingAudio` tolerates the
+// absent mp3.
+const OPTIONAL_SEGMENTS_404 = /\/reference\/(human|moises)\/segments(\.seed)?\.json$/;
 
 /**
  * Collect anything that should never happen on a healthy load: console

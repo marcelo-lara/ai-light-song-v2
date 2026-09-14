@@ -32,6 +32,9 @@ interface RightPanelProps {
   /** optional test/data hooks forwarded to the panel root (item 10). */
   "data-testid"?: string | undefined;
   "data-hint-id"?: string | undefined;
+  /** v3.6 item 4 — the open segment's synthesized id / start time (seconds). */
+  "data-segment-id"?: string | undefined;
+  "data-segment-start"?: string | number | undefined;
 }
 
 /** Selectors whose clicks must NOT dismiss the panel (they open/drive it). */
@@ -48,6 +51,8 @@ export function RightPanel({
   "aria-label": ariaLabel = "Detail panel",
   "data-testid": dataTestId,
   "data-hint-id": dataHintId,
+  "data-segment-id": dataSegmentId,
+  "data-segment-start": dataSegmentStart,
 }: RightPanelProps): React.JSX.Element | null {
   const ref = useRef<HTMLElement>(null);
 
@@ -91,6 +96,8 @@ export function RightPanel({
       aria-label={ariaLabel}
       data-testid={dataTestId}
       data-hint-id={dataHintId}
+      data-segment-id={dataSegmentId}
+      data-segment-start={dataSegmentStart}
       ref={ref}
     >
       <div className="app-rightpanel__header">

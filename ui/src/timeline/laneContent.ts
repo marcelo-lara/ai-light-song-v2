@@ -13,11 +13,13 @@ import type {
   EventTimeline,
   HumanHintsFile,
   HumanSegmentsFile,
+  HumanSegmentsSeedFile,
   MoisesSegmentsFile,
   HarmonicLayer,
   SectionRow,
   SegmentationSection,
 } from "../data/types";
+import { mergeHumanSegments } from "../data/segmentMerge";
 import type {
   CharacterFile,
   DropProposalsFile,
@@ -117,12 +119,21 @@ export function humanHintsContent(file: HumanHintsFile | null): SparseBlock[] {
  * id when unset; `description` is optional free text, surfaced as the block
  * summary when present. The block id is synthesized from array position.
  */
-export function humanSectionsContent(file: HumanSegmentsFile | null): SparseBlock[] {
-  return (file ?? []).map((s, i) => {
+// v3.6 item 4 — with `seedFile` given, spans/energy/tension are fused
+// per field against the operator's own segments.json (`mergeHumanSegments`):
+// the operator's value wins where present, else the seed's unreviewed
+// value shows as a draft (`E5*`/`T5*` tag). With no segments.json at all,
+// the lane still renders using the seed's own spans, every field a draft.
+export function humanSectionsContent(
+  file: HumanSegmentsFile | null,
+  seedFile: HumanSegmentsSeedFile | null = null,
+): SparseBlock[] {
+  const merged = mergeHumanSegments(file, seedFile);
+  return merged.map((s, i) => {
     const id = `segment-${String(i + 1).padStart(3, "0")}`;
     const tags = [
-      s.energy != null ? `E${s.energy}` : null,
-      s.tension != null ? `T${s.tension}` : null,
+      s.energy.value != null ? `E${s.energy.value}${s.energy.isDraft ? "*" : ""}` : null,
+      s.tension.value != null ? `T${s.tension.value}${s.tension.isDraft ? "*" : ""}` : null,
     ].filter((t): t is string => Boolean(t));
     return {
       id,
@@ -1059,6 +1070,7 @@ export function gesturesContent(file: EventTimeline | null): SparseBlock[] {
 export interface LaneContentSources {
   humanHints?: HumanHintsFile | null;
   humanSections?: HumanSegmentsFile | null;
+  humanSectionsSeed?: HumanSegmentsSeedFile | null;
   moisesSections?: MoisesSegmentsFile | null;
   moisesLyrics?: MoisesLyricsFile | null;
   /** v3.4 item 5 — read-time overlay: Moises word-token ids the operator has
@@ -1116,7 +1128,7 @@ export function buildLaneBlocks(
     case "humanHints":
       return humanHintsContent(s.humanHints ?? null);
     case "humanSections":
-      return humanSectionsContent(s.humanSections ?? null);
+      return humanSectionsContent(s.humanSections ?? null, s.humanSectionsSeed ?? null);
     case "moisesSections":
       return moisesSectionsContent(s.moisesSections ?? null);
     case "allin1Sections":

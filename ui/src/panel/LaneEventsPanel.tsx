@@ -120,12 +120,21 @@ function seedRatings(file: BlockEnergyFile | null): RatingState {
 }
 
 /** Human Sections' energy/tension live on the segment itself — seed straight
- *  from each block's `raw`, not a separate ratings file. */
+ *  from each block's `raw`, not a separate ratings file. `raw` is a
+ *  `MergedSegment` (v3.6 item 4): `.energy`/`.tension` are `{value, isDraft}`,
+ *  not bare numbers, since a value may be the operator's own or an
+ *  unreviewed seed draft. This quick-edit widget reads only the value. */
 function seedSectionRatings(blocks: readonly SparseBlock[]): RatingState {
   const out: RatingState = {};
   for (const b of blocks) {
-    const raw = b.raw as { energy?: number | null; tension?: number | null } | null;
-    out[b.id] = { energy: raw?.energy ?? null, tension: raw?.tension ?? null };
+    const raw = b.raw as {
+      energy?: { value: number | null } | null;
+      tension?: { value: number | null } | null;
+    } | null;
+    out[b.id] = {
+      energy: raw?.energy?.value ?? null,
+      tension: raw?.tension?.value ?? null,
+    };
   }
   return out;
 }
@@ -142,17 +151,27 @@ export function SegmentedRating({
   hintId,
   value,
   onPick,
+  id,
+  draft,
 }: {
   axis: RatingAxis;
   hintId: string;
   value: number | null;
   onPick: (hintId: string, axis: RatingAxis, v: number) => void;
+  /** v3.6 item 4 — test hook for the segment editor's `segment-energy` /
+   *  `segment-tension` controls; omitted elsewhere (e.g. the Human Hints
+   *  block-energy panel, which has no draft concept). */
+  id?: string;
+  /** true when `value` is an unreviewed seed draft, not an operator save. */
+  draft?: boolean;
 }): React.JSX.Element {
   return (
     <div
       className="seg-rating"
+      id={id}
       data-axis={axis}
       data-value={value ?? "unrated"}
+      {...(draft !== undefined ? { "data-seed-draft": draft ? "true" : "false" } : {})}
     >
       <span className="seg-rating__label">{axis}</span>
       <div
@@ -239,8 +258,11 @@ export function LaneEventsPanel({
     if (!sectionRating) return;
     const sig = JSON.stringify(
       blocks.map((b) => {
-        const raw = b.raw as { energy?: number | null; tension?: number | null } | null;
-        return [b.id, raw?.energy ?? null, raw?.tension ?? null];
+        const raw = b.raw as {
+          energy?: { value: number | null } | null;
+          tension?: { value: number | null } | null;
+        } | null;
+        return [b.id, raw?.energy?.value ?? null, raw?.tension?.value ?? null];
       }),
     );
     if (sig === sectionSigRef.current) return;

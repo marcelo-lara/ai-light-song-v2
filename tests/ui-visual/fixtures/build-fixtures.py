@@ -338,6 +338,26 @@ def inject_block_energy(out_name: str, *, rated: bool = True):
     print(f"  wrote {out_name}/reference/human/block_energy.json")
 
 
+def inject_segments(out_name: str, *, segments_json: list | None, seed_json: list):
+    """v3.6 item 4 — write the synthetic segments.json / segments.seed.json pair
+    `segment-seeds.spec.ts` exercises.
+
+    `segments_json=None` means: do not write segments.json at all (RegPartial —
+    the "no operator segmentation yet" case, where the humanSections lane must
+    still render off the seed's own spans). `RegFull` gets a 2-span
+    segments.json (only `energy` rated on the first span) plus a matching
+    segments.seed.json with different values on every field, so the spec can
+    assert the operator-value-wins-else-draft fusion per field. `_test_song`
+    gets an empty seed array (file exists, no rows)."""
+    base = OUT / out_name / "reference/human"
+    base.mkdir(parents=True, exist_ok=True)
+    if segments_json is not None:
+        (base / "segments.json").write_text(json.dumps(segments_json, indent=2) + "\n")
+        print(f"  wrote {out_name}/reference/human/segments.json")
+    (base / "segments.seed.json").write_text(json.dumps(seed_json, indent=2) + "\n")
+    print(f"  wrote {out_name}/reference/human/segments.seed.json")
+
+
 def inject_lyric_validations(out_name: str, *, validated: bool = False):
     """v3.4 item 5 — write the synthetic lyric_validations.json overlay.
 
@@ -377,6 +397,25 @@ def main():
     inject_structural_vs_micro("RegFull - Fixture")
     inject_block_energy("RegFull - Fixture")
     inject_lyric_validations("RegFull - Fixture", validated=True)
+    inject_segments(
+        "RegFull - Fixture",
+        segments_json=[
+            {"start": 40, "end": 60, "label": "Build", "energy": 4},
+            {"start": 60, "end": 80, "label": "Drop"},
+        ],
+        seed_json=[
+            {
+                "start": 40, "end": 60, "label": "Build",
+                "energy": 3, "tension": 4,
+                "rhythm": {"drums": "sixteenth", "vocals": "none"},
+            },
+            {
+                "start": 60, "end": 80, "label": "Drop",
+                "energy": 5, "tension": 2,
+                "rhythm": {"drums": "quarter", "bass": "eighth"},
+            },
+        ],
+    )
     copy_song(REG_SOURCE, "RegPartial - Fixture",
               drop={"artifacts/essentia/fft_bands.json",
                     "artifacts/essentia/fft_bands.bass.json",
@@ -388,12 +427,29 @@ def main():
     inject_structural_vs_micro("RegPartial - Fixture")
     inject_block_energy("RegPartial - Fixture", rated=False)
     inject_lyric_validations("RegPartial - Fixture")
+    inject_segments(
+        "RegPartial - Fixture",
+        segments_json=None,
+        seed_json=[
+            {
+                "start": 40, "end": 60, "label": "Build",
+                "energy": 3, "tension": 4,
+                "rhythm": {"drums": "sixteenth", "vocals": "none"},
+            },
+            {
+                "start": 60, "end": 80, "label": "Drop",
+                "energy": 5, "tension": 2,
+                "rhythm": {"drums": "quarter", "bass": "eighth"},
+            },
+        ],
+    )
     copy_test_song()
     inject_texture_novelty("_test_song")
     inject_phrase_periodicity("_test_song")
     inject_structural_vs_micro("_test_song")
     inject_block_energy("_test_song", rated=False)
     inject_lyric_validations("_test_song")
+    inject_segments("_test_song", segments_json=None, seed_json=[])
     # audio: ship the real mp3 for RegFull (real decode path). RegPartial reuses
     # it; _test_song intentionally has none.
     mp3 = SRC_SONGS / f"{REG_SOURCE}.mp3"

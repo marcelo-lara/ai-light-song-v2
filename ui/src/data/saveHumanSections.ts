@@ -6,11 +6,13 @@
 // shape: a bare array of `{start, end, label}` — no id, no wrapper object.
 // `label` is a fixed value from SEGMENT_FUNCTION_NAMES, or unset — never
 // free text; `description` is optional free text, never validated against
-// the vocabulary.
+// the vocabulary. `rhythm` (v3.6 item 4) is optional: one of
+// SEGMENT_RHYTHM_VALUES per source, an unmarked source omitted entirely.
 
+import { SEGMENT_RHYTHM_VALUES } from "./parsers";
 import { SEGMENT_FUNCTION_NAMES } from "./segmentFunctions";
 import { artifactPaths } from "./paths";
-import type { HumanSegment, HumanSegmentsFile } from "./types";
+import type { HumanSegment, HumanSegmentsFile, SegmentRhythm } from "./types";
 
 export interface SegmentDraft {
   id: string;
@@ -23,6 +25,13 @@ export interface SegmentDraft {
   /** "1".."5", or "" when unset */
   energy?: string;
   tension?: string;
+  /** each: one of SEGMENT_RHYTHM_VALUES, or "" when unset */
+  rhythm?: {
+    drums?: string;
+    bass?: string;
+    harmonic?: string;
+    vocals?: string;
+  };
 }
 
 /** Parse a "1".."5" draft field to an integer, or `null` for "" (unset). */
@@ -34,6 +43,26 @@ function ratingOrNull(value: string | undefined, field: string): number | null {
     throw new Error(`Segment ${field} must be a whole number from 1 to 5.`);
   }
   return n;
+}
+
+const RHYTHM_KEYS = ["drums", "bass", "harmonic", "vocals"] as const;
+
+/** Build the optional `rhythm` object: one vocabulary value per source, an
+ *  unmarked source omitted entirely (never `null`/`""`). `null` when no
+ *  source is marked — never an empty object. */
+function rhythmOrNull(rhythm: SegmentDraft["rhythm"]): SegmentRhythm | null {
+  const out: SegmentRhythm = {};
+  for (const key of RHYTHM_KEYS) {
+    const value = (rhythm?.[key] ?? "").trim();
+    if (!value) continue;
+    if (!(SEGMENT_RHYTHM_VALUES as readonly string[]).includes(value)) {
+      throw new Error(
+        `Segment rhythm.${key} must be one of ${SEGMENT_RHYTHM_VALUES.join(", ")}, or unset.`,
+      );
+    }
+    out[key] = value;
+  }
+  return Object.keys(out).length ? out : null;
 }
 
 /**
@@ -64,6 +93,7 @@ export function buildHumanSectionsPayload(
     const energy = ratingOrNull(segment.energy, "energy");
     const tension = ratingOrNull(segment.tension, "tension");
     const description = (segment.description ?? "").trim();
+    const rhythm = rhythmOrNull(segment.rhythm);
     return {
       start,
       end,
@@ -73,6 +103,7 @@ export function buildHumanSectionsPayload(
       ...(description ? { description } : {}),
       ...(energy !== null ? { energy } : {}),
       ...(tension !== null ? { tension } : {}),
+      ...(rhythm ? { rhythm } : {}),
     };
   });
 

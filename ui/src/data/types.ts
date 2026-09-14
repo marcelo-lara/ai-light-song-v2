@@ -299,6 +299,15 @@ export interface HumanHintsFile {
 // ---------------------------------------------------------------------------
 
 /**
+ * v3.6 item 4 — per-source dominant subdivision relative to the beat grid.
+ * Keys ∈ `drums|bass|harmonic|vocals`; an unmarked source is omitted
+ * entirely, never `null` or `""`.
+ */
+export type SegmentRhythm = Partial<
+  Record<"drums" | "bass" | "harmonic" | "vocals", string>
+>;
+
+/**
  * A bare array on disk — no wrapper object, no id/type/summary fields. Much
  * simpler than `HumanHint`: this is the operator's own section segmentation.
  * `label` is a fixed value, optional (honest-unknown when unset), one of
@@ -307,7 +316,8 @@ export interface HumanHintsFile {
  * a segment's label is either a vocabulary name or unset, never anything
  * else. `description` is optional free text, never validated against the
  * vocabulary. `energy`/`tension` are optional 1-5 integers (honest-unknown
- * when unset, never a guessed default).
+ * when unset, never a guessed default). `rhythm` (v3.6 item 4) is optional,
+ * one SegmentRhythm entry per source.
  */
 export interface HumanSegment {
   start: number;
@@ -316,9 +326,28 @@ export interface HumanSegment {
   description?: string | null;
   energy?: number | null;
   tension?: number | null;
+  rhythm?: SegmentRhythm | null;
 }
 
 export type HumanSegmentsFile = HumanSegment[];
+
+// ---------------------------------------------------------------------------
+// reference/human/segments.seed.json  (v3.6 item 4 — unreviewed rule-based
+// drafts, experiments/segment_seeds. Read-only to the UI; same spans as
+// segments.json. `label` is carried for readability only — never treated as
+// a boundary/label source, per the seed method's own docstring.)
+// ---------------------------------------------------------------------------
+
+export interface HumanSegmentSeed {
+  start: number;
+  end: number;
+  label?: string | null;
+  energy?: number | null;
+  tension?: number | null;
+  rhythm?: SegmentRhythm | null;
+}
+
+export type HumanSegmentsSeedFile = HumanSegmentSeed[];
 
 // ---------------------------------------------------------------------------
 // reference/moises/segments.json  (Moises.ai reference segmentation)

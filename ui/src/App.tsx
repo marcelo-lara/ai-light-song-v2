@@ -124,6 +124,10 @@ const TIMELINE_KEYS = [
   // hand-authored section segmentation, editable via the same drag-to-edit /
   // double-click-to-create conventions as humanHints (reference/human, writable)
   "humanSections",
+  // v3.6 item 4 — unreviewed rule-based drafts (experiments/segment_seeds),
+  // fused per field into the humanSections lane + segment editor as a draft
+  // fallback where the operator hasn't reviewed a field yet.
+  "humanSectionsSeed",
   // Moises.ai reference segmentation — read-only, one precedence tier below
   // humanSections (docs/reference/analysis.segments.md).
   "moisesSections",
@@ -384,6 +388,7 @@ export function App(): React.JSX.Element {
     () => ({
       humanHints: humanHintsFile,
       humanSections: humanSectionsFile,
+      humanSectionsSeed: artifacts.humanSectionsSeed.data,
       moisesSections: artifacts.moisesSections.data,
       moisesLyrics: artifacts.moisesLyrics.data,
       lyricValidations: validatedLyricIds,
@@ -407,6 +412,7 @@ export function App(): React.JSX.Element {
     [
       humanHintsFile,
       humanSectionsFile,
+      artifacts.humanSectionsSeed.data,
       artifacts.moisesSections.data,
       artifacts.moisesLyrics.data,
       validatedLyricIds,
@@ -1402,6 +1408,7 @@ export function App(): React.JSX.Element {
           <SegmentEditorPanel
             song={song}
             file={humanSectionsFile}
+            seedFile={artifacts.humanSectionsSeed.data}
             currentTime={transport.currentTime}
             activeReference={activeSectionRef}
             seed={sectionSeed}

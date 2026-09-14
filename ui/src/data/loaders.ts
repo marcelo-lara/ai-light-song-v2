@@ -29,6 +29,7 @@ import {
   parseHarmonicLayer,
   parseHumanHints,
   parseHumanSegmentsFile,
+  parseHumanSegmentsSeedFile,
   parseInfo,
   parseLyricValidations,
   parseLoudnessEnvelope,
@@ -48,6 +49,7 @@ import type {
   HarmonicLayer,
   HumanHintsFile,
   HumanSegmentsFile,
+  HumanSegmentsSeedFile,
   LyricValidationsFile,
   LoudnessEnvelope,
   MoisesSegmentsFile,
@@ -220,6 +222,28 @@ export const loadHumanSegments = async (
   return result;
 };
 
+// reference/human/segments.seed.json (v3.6 item 4) is optional (unreviewed
+// rule-based drafts, experiments/segment_seeds — not every song has been
+// seeded yet), so a 404 resolves to an empty array. Read-only in the UI.
+export const loadHumanSectionsSeed = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<HumanSegmentsSeedFile>> => {
+  const result = await loadJson<HumanSegmentsSeedFile>(
+    artifactPaths.humanSectionsSeed(song),
+    parseHumanSegmentsSeedFile,
+    f,
+  );
+  if (
+    !result.ok &&
+    result.error.kind === "http" &&
+    result.error.status === 404
+  ) {
+    return { ok: true, data: [] };
+  }
+  return result;
+};
+
 // reference/moises/segments.json is optional (not every song has a Moises.ai
 // reference), so a 404 resolves to an empty array. Same bare-array shape as
 // human/segments.json, so it reuses parseHumanSegmentsFile.
@@ -336,6 +360,7 @@ export const artifactLoaders = {
   energy: loadEnergyLayer,
   humanHints: loadHumanHints,
   humanSections: loadHumanSegments,
+  humanSectionsSeed: loadHumanSectionsSeed,
   moisesSections: loadMoisesSections,
   blockEnergy: loadBlockEnergy,
   lyricValidations: loadLyricValidations,

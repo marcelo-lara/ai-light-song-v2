@@ -1,0 +1,106 @@
+[
+  {
+    "start": 0.06,
+    "end": 14.82,
+    "label": "Intro",
+    "energy": 1,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth_triplet",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "none"
+    }
+  },
+  {
+    "start": 14.82,
+    "end": 22.2,
+    "label": "Pre-Build",
+    "energy": 3,
+    "tension": 3,
+    "rhythm": {
+      "drums": "quarter",
+      "bass": "sixteenth",
+      "harmonic": "quarter",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 22.2,
+    "end": 28.63,
+    "label": "Build",
+    "energy": 3,
+    "tension": 4,
+    "rhythm": {
+      "drums": "sixteenth",
+      "bass": "sixteenth",
+      "harmonic": "quarter",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 28.63,
+    "end": 29.56,
+    "label": "Pre-Drop",
+    "energy": 5,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth",
+      "bass": "none",
+      "harmonic": "none",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 29.58,
+    "end": 42.49,
+    "label": "Drop",
+    "energy": 5,
+    "tension": 2,
+    "rhythm": {
+      "drums": "eighth",
+      "bass": "quarter",
+      "harmonic": "half",
+      "vocals": "none"
+    }
+  },
+  {
+    "start": 42.49,
+    "end": 44.35,
+    "label": "Refrain",
+    "energy": 2,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth",
+      "bass": "none",
+      "harmonic": "quarter",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 44.36,
+    "end": 55.22,
+    "label": "Breakdown",
+    "energy": 4,
+    "tension": 3,
+    "rhythm": {
+      "drums": "eighth_triplet",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 55.22,
+    "end": 58.12,
+    "label": "Outro",
+    "energy": 1,
+    "tension": 1,
+    "rhythm": {
+      "drums": "none",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  }
+]

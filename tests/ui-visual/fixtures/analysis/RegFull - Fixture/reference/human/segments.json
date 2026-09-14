@@ -1,0 +1,13 @@
+[
+  {
+    "start": 40,
+    "end": 60,
+    "label": "Build",
+    "energy": 4
+  },
+  {
+    "start": 60,
+    "end": 80,
+    "label": "Drop"
+  }
+]

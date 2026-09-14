@@ -11,9 +11,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { SEGMENT_RHYTHM_VALUES } from "../data/parsers";
 import { buildHumanSectionsPayload, saveHumanSections } from "../data/saveHumanSections";
+import { mergeHumanSegments } from "../data/segmentMerge";
 import { SEGMENT_FUNCTIONS } from "../data/segmentFunctions";
-import type { HumanSegmentsFile } from "../data/types";
+import type { HumanSegmentsFile, HumanSegmentsSeedFile } from "../data/types";
 
 import { SegmentedRating } from "./LaneEventsPanel";
 import { RightPanel } from "./RightPanel";
@@ -21,9 +23,9 @@ import { parseTimeInput } from "./hintDraft";
 import {
   draftIdForSegmentReference,
   draftToSegment,
+  mergedSegmentToDraft,
   nextSegmentId,
   segmentDraftFromSeed,
-  segmentToDraft,
   type SegmentDraftFields,
   type SegmentSeed,
 } from "./segmentDraft";
@@ -31,6 +33,14 @@ import {
 interface SegmentEditorPanelProps {
   song: string;
   file: HumanSegmentsFile | null;
+  /**
+   * v3.6 item 4 ("Seeds first") — unreviewed rule-based drafts
+   * (experiments/segment_seeds), fused per field against `file`: the
+   * operator's own value wins where present, else the seed value is shown
+   * as a draft. With no `file` rows at all, the editor falls back to the
+   * seed's own spans, every field a draft.
+   */
+  seedFile?: HumanSegmentsSeedFile | null;
   currentTime: number;
   /** id of the segment a Human Sections block click selected, if any */
   activeReference: string | null;
@@ -44,20 +54,32 @@ interface SegmentEditorPanelProps {
   onScrollToTime: (seconds: number) => void;
 }
 
+/** rhythm select field names, in the fixed display order the panel renders. */
+const RHYTHM_FIELDS = [
+  { key: "rhythmDrums", draftKey: "rhythmDrumsIsDraft", testId: "segment-rhythm-drums", label: "Drums" },
+  { key: "rhythmBass", draftKey: "rhythmBassIsDraft", testId: "segment-rhythm-bass", label: "Bass" },
+  { key: "rhythmHarmonic", draftKey: "rhythmHarmonicIsDraft", testId: "segment-rhythm-harmonic", label: "Harmonic" },
+  { key: "rhythmVocals", draftKey: "rhythmVocalsIsDraft", testId: "segment-rhythm-vocals", label: "Vocals" },
+] as const;
+
 type SaveState =
   | { status: "idle" }
   | { status: "saving" }
   | { status: "error"; message: string }
   | { status: "success" };
 
-function seedDrafts(file: HumanSegmentsFile | null): SegmentDraftFields[] {
-  const segments = Array.isArray(file) ? file : [];
-  return segments.map(segmentToDraft);
+function seedDrafts(
+  file: HumanSegmentsFile | null,
+  seedFile: HumanSegmentsSeedFile | null,
+): SegmentDraftFields[] {
+  const merged = mergeHumanSegments(file, seedFile);
+  return merged.map(mergedSegmentToDraft);
 }
 
 export function SegmentEditorPanel({
   song,
   file,
+  seedFile = null,
   currentTime,
   activeReference,
   seed,
@@ -65,21 +87,22 @@ export function SegmentEditorPanel({
   onSaved,
   onScrollToTime,
 }: SegmentEditorPanelProps): React.JSX.Element {
-  const [drafts, setDrafts] = useState<SegmentDraftFields[]>(() => seedDrafts(file));
+  const [drafts, setDrafts] = useState<SegmentDraftFields[]>(() => seedDrafts(file, seedFile));
   const [activeId, setActiveId] = useState<string>("");
   const [save, setSave] = useState<SaveState>({ status: "idle" });
   const baseSigRef = useRef<string>("");
   const seedNonceRef = useRef<number | null>(null);
 
-  // Reseed when the on-disk file changes (song switch, external reload).
+  // Reseed when the on-disk file (or the seed file behind it) changes (song
+  // switch, external reload, a save that persisted a draft into segments.json).
   useEffect(() => {
-    const sig = JSON.stringify({ song, segments: file ?? [] });
+    const sig = JSON.stringify({ song, segments: file ?? [], seedFile: seedFile ?? [] });
     if (sig === baseSigRef.current) return;
     baseSigRef.current = sig;
-    setDrafts(seedDrafts(file));
+    setDrafts(seedDrafts(file, seedFile));
     setActiveId("");
     setSave({ status: "idle" });
-  }, [song, file]);
+  }, [song, file, seedFile]);
 
   // Follow a Human Sections block selection.
   useEffect(() => {
@@ -131,12 +154,25 @@ export function SegmentEditorPanel({
   // defaulted 1).
   const patchRating = useCallback(
     (_hintId: string, axis: "energy" | "tension", v: number) => {
+      const draftKey = axis === "energy" ? "energyIsDraft" : "tensionIsDraft";
       setDrafts((cur) =>
         cur.map((d) => {
           if (d.id !== activeId) return d;
           const current = d[axis] ? Number(d[axis]) : null;
-          return { ...d, [axis]: current === v ? "" : String(v) };
+          return { ...d, [axis]: current === v ? "" : String(v), [draftKey]: false };
         }),
+      );
+      setSave({ status: "idle" });
+    },
+    [activeId],
+  );
+
+  // A rhythm dropdown pick is the operator's own choice from here on — no
+  // longer the seed's unreviewed draft, even before Save.
+  const patchRhythm = useCallback(
+    (key: (typeof RHYTHM_FIELDS)[number]["key"], draftKey: (typeof RHYTHM_FIELDS)[number]["draftKey"], value: string) => {
+      setDrafts((cur) =>
+        cur.map((d) => (d.id === activeId ? { ...d, [key]: value, [draftKey]: false } : d)),
       );
       setSave({ status: "idle" });
     },
@@ -167,6 +203,16 @@ export function SegmentEditorPanel({
         end: String(start),
         energy: "",
         tension: "",
+        energyIsDraft: false,
+        tensionIsDraft: false,
+        rhythmDrums: "",
+        rhythmBass: "",
+        rhythmHarmonic: "",
+        rhythmVocals: "",
+        rhythmDrumsIsDraft: false,
+        rhythmBassIsDraft: false,
+        rhythmHarmonicIsDraft: false,
+        rhythmVocalsIsDraft: false,
       };
       setActiveId(next.id);
       return [...cur, next];
@@ -187,8 +233,8 @@ export function SegmentEditorPanel({
     try {
       const payload = buildHumanSectionsPayload(drafts.map(draftToSegment));
       const written = await saveHumanSections(song, payload);
-      baseSigRef.current = JSON.stringify({ song, segments: written });
-      setDrafts(seedDrafts(written));
+      baseSigRef.current = JSON.stringify({ song, segments: written, seedFile: seedFile ?? [] });
+      setDrafts(seedDrafts(written, seedFile));
       setSave({ status: "success" });
       onSaved(written);
     } catch (err) {
@@ -197,7 +243,7 @@ export function SegmentEditorPanel({
         message: err instanceof Error ? err.message : "Unable to save human sections.",
       });
     }
-  }, [drafts, song, onSaved]);
+  }, [drafts, song, seedFile, onSaved]);
 
   const header = useMemo(
     () => (
@@ -263,6 +309,7 @@ export function SegmentEditorPanel({
       aria-label="Segment editor"
       data-testid="segment-editor"
       data-segment-id={activeId || undefined}
+      data-segment-start={active ? active.start : undefined}
     >
       <div className="hint-editor__toolbar">
         <button type="button" className="btn btn-secondary btn-sm" onClick={addSegment}>
@@ -365,17 +412,43 @@ export function SegmentEditorPanel({
 
           <div className="lane-events__rating">
             <SegmentedRating
+              id="segment-energy"
               axis="energy"
               hintId={active.id}
               value={active.energy ? Number(active.energy) : null}
+              draft={active.energyIsDraft}
               onPick={patchRating}
             />
             <SegmentedRating
+              id="segment-tension"
               axis="tension"
               hintId={active.id}
               value={active.tension ? Number(active.tension) : null}
+              draft={active.tensionIsDraft}
               onPick={patchRating}
             />
+          </div>
+
+          <div className="hint-editor__row2 segment-editor__rhythm">
+            {RHYTHM_FIELDS.map(({ key, draftKey, testId, label }) => (
+              <div className="field" key={key}>
+                <label htmlFor={testId}>{label}</label>
+                <select
+                  id={testId}
+                  className="input"
+                  value={active[key]}
+                  data-seed-draft={active[draftKey] ? "true" : "false"}
+                  onChange={(e) => patchRhythm(key, draftKey, e.target.value)}
+                >
+                  <option value="">Unset</option>
+                  {SEGMENT_RHYTHM_VALUES.map((v) => (
+                    <option key={v} value={v}>
+                      {v}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
           </div>
         </>
       )}
