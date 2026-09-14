@@ -1,22 +1,44 @@
 [
-    {
-        "start": 0.06,
-        "end": 14.82,
-        "label": "Intro"
-    },
-    {
-        "start": 14.82,
-        "end": 29.58,
-        "label": "Verse"
-    },
-    {
-        "start": 29.58,
-        "end": 44.36,
-        "label": "Chorus"
-    },
-    {
-        "start": 44.36,
-        "end": 57.28,
-        "label": "Outro"
-    }
+  {
+    "start": 0.06,
+    "end": 14.82,
+    "label": "Intro"
+  },
+  {
+    "start": 14.82,
+    "end": 22.2,
+    "label": "Pre-Build"
+  },
+  {
+    "start": 22.2,
+    "end": 28.63,
+    "label": "Build"
+  },
+  {
+    "start": 28.63,
+    "end": 29.56,
+    "label": "Pre-Drop"
+  },
+  {
+    "start": 29.58,
+    "end": 42.49,
+    "label": "Drop"
+  },
+  {
+    "start": 42.49,
+    "end": 44.35,
+    "label": "Refrain",
+    "energy": 4,
+    "tension": 5
+  },
+  {
+    "start": 44.36,
+    "end": 55.22,
+    "label": "Breakdown"
+  },
+  {
+    "start": 55.22,
+    "end": 58.12,
+    "label": "Outro"
+  }
 ]
