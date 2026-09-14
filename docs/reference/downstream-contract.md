@@ -84,16 +84,16 @@ entirely.
 
 The honesty rules, as the server enforces them structurally:
 
-- **Confidence is always its own numeric field.** `sections.json`'s `label`
-  (`"003 Chorus (0.81)"`) is a display convenience; the real value must also
-  exist as `function_confidence: 0.81`.
-- **Pass through the source's own `guidance` prose** — `genre.json`'s
-  `guidance` array is surfaced verbatim.
+- **Confidence is always its own numeric field**, never folded into a display
+  string. `sections.json` carries `function_confidence` directly — there is no
+  `label` field to read a confidence out of.
 - **Never inflate.** The concept pass reads a weak label as "don't spend tokens
   corroborating this." An honest `0.27` beats a manufactured `0.7`;
   `genre.json` predicting `"ambient" @ 0.27` for a 130 BPM track is a correct,
   useful output.
-- Every event and section carries `confidence` **and** `provenance`.
+- `drum_events.json` states its `null` confidence **once, at file level**
+  (`confidence` + `confidence_reason`), not repeated on 32,213 corpus rows with
+  no information gained.
 - Every top-level file carries a `field_sources` header: the default producer
   per field, declared once. A row carries its own `source` only where it
   departs from that default — a repeated per-row map on hundreds of rows is
@@ -108,19 +108,24 @@ short — projected strings are either truncated or paid for in full.
 
 ### `sections.json` (top-level **object**, rows under `sections`) — highest priority
 
-Consumed: `start`, `end`, `label`, `description`, `key`, `chord_progression`.
+Row fields: `section_id`, `start`, `end`, `function`, `function_confidence`,
+`function_status`, `same_label_as`, `confidence`, `key` (+ `contested_by` on a
+flagged row).
 
-- `description` — **one sentence**, concrete and lighting-relevant. This is the
-  concept pass's main per-section signal. Not a paragraph.
 - `key` — the whole-song HPCP key estimate (`"C# major"`), or `null` when too
   low-confidence to state. One value for the whole song; every row carries the
   same string or the same `null`, never a per-section key.
-- `chord_progression` — the section's dominant repeating sequence (`"Am–F–C–G"`),
-  or `null` when any overlapping chord event falls below the confidence floor.
-  **`null` is expected and honest on low-agreement songs**, not a bug — chord
-  agreement measures 1.00/0.69/0.51/0.38 across the four gold songs
-  ([`../analysis-definition.md`](../analysis-definition.md)).
 - Row order and count must equal the segmentation file.
+- **Dropped in v3.6 item 8**: `label` (a display string folding
+  `function_confidence` into text, e.g. `"003 Build [unverified] (0.45)"`),
+  `description` (a sentence restating `function` + ordinal), and
+  `chord_progression` (the section's dominant repeating chord sequence,
+  `"Am–F–C–G"` — gated on the same per-chord confidence floor as before). None
+  were read downstream. All three now live in
+  `artifacts/section_segmentation/sections_display.json`, joined by
+  `section_id` — **not MCP-exposed**; the debugger UI reads it directly. A
+  consumer wanting a per-section headline sentence must build one from
+  `function` + `function_confidence` + `function_status` on this row.
 
 ### Section function fields — merged into `sections.json`
 
@@ -156,23 +161,26 @@ than in a second file:
 
 Produced by the phase-3 `gestures` stage. `events[]`, each a **flat** row
 (never a composite with nested `phases[]`): `type`, `start_time`, `end_time`,
-`confidence`, `intensity`, `section_id`, `section_name`, `provenance`,
-`summary`, `evidence_summary`.
+`confidence`, `intensity`, `section_id` (+ `gesture_id` on a gesture-phase row).
 
 - `type` is either a gesture-phase name (`approach`, `build`, `tension`,
   `impact`, `release`) or a section-pair transition `"<from> → <to>"`. **A drop
   is never named directly** — the vocabulary can say "a build of this shape
   happens here," never "this is the drop" (a drop is derived from a named section pair, never detected). A missing phase
   means no supporting primitive was found, never a guess.
-- Unscoped, the server projects **only** `type`, `start_time`, `end_time`,
-  `intensity`, `section_id` — a table of contents. `summary` and
-  `evidence_summary` arrive only when a section pass asks for its own section.
-- So: make `type`, the window and `intensity` (0–1) precise — that is what the
-  concept pass sees for the whole song. Make `summary` actionable for the
-  section pass ("a rising riser builds into an impact here"), never an internal
-  implementation note.
-- Every row already carries its own evidence (`"high-band r2=0.82 over 4 bars,
-  delta=0.31x range"`). There is no separate machine-events file.
+- The server projects `type`, `start_time`, `end_time`, `intensity`,
+  `confidence`, `section_id` (+ `gesture_id`) — this is now the *entire* row,
+  not a scoped-down table of contents.
+- **Dropped in v3.6 item 8**: `section_name` (duplicated the `section_id` join
+  — resolve the name via `sections.json`), `summary` and `evidence_summary`
+  (human-readable prose, unread downstream), and file-level `generated_from`
+  (provenance now lives in `artifacts/` only). The full row shape — every
+  field this file used to carry — is preserved in
+  `artifacts/gestures/song_event_timeline.json`, **not MCP-exposed**; the
+  debugger UI reads it directly.
+- So: make `type`, the window, `intensity` and `confidence` (0–1) precise —
+  that is now the whole of what a consumer sees for an event. There is no
+  separate machine-events file.
 - Every gesture-phase row belonging to one composite gesture carries a shared
   `gesture_id` (e.g. `"gesture-003"`), letting a consumer reconstruct a drop's
   full `approach → release` envelope by grouping on it without re-deriving the
@@ -181,43 +189,46 @@ Produced by the phase-3 `gestures` stage. `events[]`, each a **flat** row
 
 ### `beats.json` (top-level **object**, rows under `beats`) — high priority
 
-`time`, `type` (`"beat"` / `"downbeat"`), `bar`, `beat`, `confidence`.
+`time`, `beat`, `bar`, `type` (`"beat"` / `"downbeat"`), `downbeat_confidence`.
 
 - Beat *times* are essentia's; the downbeat *phase* comes from allin1's
   activation, not a modulo. **Bar numbers shifted on most songs** when this
   changed — do not assume continuity with an older artifact.
-- `confidence` is `null` on `"beat"` rows always. On a `"downbeat"` row it is
-  the activation strength, **unless** essentia and allin1 disagree by a whole
-  beat or more for that bar, where it is `null` too. A consumer ranking cue
-  placements should read `null` as "do not snap a cue here with confidence."
+- `downbeat_confidence` is `null` on `"beat"` rows always. On a `"downbeat"` row
+  it is the activation strength, **unless** essentia and allin1 disagree by a
+  whole beat or more for that bar, where it is `null` too. A consumer ranking
+  cue placements should read `null` as "do not snap a cue here with confidence."
 - The default projection derives tempo, `beats_per_bar`, `bar_count` and the
   **downbeat list**. Cue placement snaps to downbeats, so downbeat detection and
   bar numbering must be correct and continuous — and today they are **not fully
   trusted** ([`../analysis-definition.md`](../analysis-definition.md), "Downbeats").
+- **Dropped in v3.6 item 8**: `chord` (chord labels are "informative, not
+  settled" — CLAUDE.md — and this field was unread). Chord data still exists,
+  time-indexed, in `artifacts/layer_a_harmonic.json`'s `chords[]` list
+  (`time`, `end_s`, `chord`, `confidence`) — **not MCP-exposed**; nothing
+  replaces this field at top level.
 - Per-beat *features* are not consumed; don't attach them here.
 
 ### `hints.json` (top-level) — high priority
 
-`engine: editable-hints-merge-v1`. `sections[]` keyed by `section_id`, each with
-`hints[]` of `{ id, source, category, text, anchor_refs }`, plus
-`summary.user_hint_count` / `inference_hint_count`.
+**Restructured in v3.6 item 8, no longer nested.** Flat `hints[]`, each row
+`{ section_id, title, text, start_time, end_time, lighting_hint }`. No
+`sections[]` wrapper, no `summary` block.
 
-- `source` distinguishes `"inference"` from `"human"`.
-  `reference/human/human_hints.json` is merged in under the matching
-  `section_id` via `hint_alignment.find_primary_section`.
-- Keep inference hints **few and concrete**. "Layered section with undulating
-  contour, dense activity" costs tokens and changes no cue. A hint earns its
-  place if it names a moment, a contrast, or an intent.
-- `category` is a short tag (`strobe`, `movement`, `intensity`, `transition`,
-  `color`, `phrase_boundary`) — **inference hints only**. Human hints never
-  carry one: they span everything from a drop impact to a calm vocal passage
-  ("Breath"), and none of the six tags honestly fits that range, so the key is
-  omitted rather than guessed (no silent fallbacks — never guess to keep a run green).
-- A human hint's `text` is its `summary` verbatim, falling back to `title`. It
-  is dropped only when both are empty — never for having no overlapping section
-  (it lands under a synthetic `"unsectioned"` section) and never for an empty
-  `lighting_hint`. `lighting_hint`, `title`, `start_time` and `end_time` pass
-  through as their own fields.
+- Every row is `source: "human"` by construction — the inference-hint
+  generator was deleted, not just filtered, so there is no `"inference"` case
+  left to distinguish. `source` is declared once in the file's `field_sources`
+  header (never per row).
+- Dropped along with the wrapper: `id`, `category`, `anchor_refs` (all unread;
+  `anchor_refs` pointed at stages that no longer exist).
+- `reference/human/human_hints.json` is the sole source, matched to a section
+  via `hint_alignment.find_primary_section`; a hint with no overlapping section
+  gets `section_id: "unsectioned"`, never dropped for that reason.
+- A row's `text` is its `summary` verbatim, falling back to `title`; a row is
+  dropped only when both are empty. `lighting_hint` is `null` when absent —
+  never dropped for that.
+- Keep hints **few and concrete**. A hint earns its place if it names a
+  moment, a contrast, or an intent — never a restated texture description.
 
 ### `info.json`
 
@@ -227,8 +238,13 @@ end.
 
 ### `genre.json` (top-level)
 
-`genres`, `confidence`, `top_predictions[] {label, confidence}`, `guidance[]` —
-all passed through to the concept pass.
+`genres`, `confidence` — passed through to the concept pass.
+
+- **Dropped in v3.6 item 8**: `top_predictions[]` (unread) and `guidance[]`
+  (one identical text across all 23 songs; moving into the `mcp/` server's own
+  tool description — item 9, not this repo's concern). Both stay in
+  `artifacts/genre.json`, **not MCP-exposed**; the debugger UI reads it
+  directly.
 
 ### The detail files
 
@@ -248,21 +264,32 @@ series to whatever the client asks for. A concept pass wanting a coarse envelope
 and a section pass chasing a transient are the same file read at different
 resolutions.
 
-- `loudness.json` — `metadata.interval_ms` (**20 ms**, the published floor and
-  the finest a client may request), `sources[]` (mix, drums, bass, vocals, harmonic),
-  `frames[] { time, values[] }` aligned to `sources`. Keep the stem set complete
+- `loudness.json` — flat top-level `interval_ms` (**20 ms**, the published
+  floor and the finest a client may request) and `source_order` (the stem
+  order `values[]` is indexed against — **v3.6 item 8 moved both out of a
+  `metadata` wrapper to flat fields**), `frames[] { time, values[],
+  normalized_values[] }` aligned to `source_order`. Keep the stem set complete
   and the interval regular. This is a **published projection** of the 10 ms
   `artifacts/essentia/rms_loudness.json`, not a copy — that artifact is ~18 MB
   per song and embeds absolute host paths, neither of which belongs on a
-  delivery surface.
-- `drum_events.json` — `events[] { time, event_type, confidence }`. Accurate
-  onsets and a small consistent `event_type` set (`kick` / `snare` / `hat` /
-  `crash` / `unresolved`) — `crash` is a brilliance-gated split of pitch-42
-  `hat` events (drums-stem 6–16 kHz gate); a consumer switching on `event_type`
-  should treat it as a distinct, brighter cue than `hat`. `confidence` is
-  always `null` (Omnizart emits no per-event confidence); `velocity` is not
-  published (constant 100). This is the rhythmic backbone for chase and strobe
-  timing.
+  delivery surface. **Dropped in v3.6 item 8**: `sources[]` (the stem-identity
+  list — unread) and `metadata.sample_rate` / `duration` / `total_frames` /
+  `normalization_scope` (unread). All remain on the artifact, **not
+  MCP-exposed**; the debugger UI reads it directly for stem identity and full
+  metadata.
+- `drum_events.json` — `events[] { time, event_type }`. Accurate onsets and a
+  small consistent `event_type` set (`kick` / `snare` / `hat` / `crash` /
+  `unresolved`) — `crash` is a brilliance-gated split of pitch-42 `hat` events
+  (drums-stem 6–16 kHz gate); a consumer switching on `event_type` should treat
+  it as a distinct, brighter cue than `hat`. This is the rhythmic backbone for
+  chase and strobe timing. **Dropped in v3.6 item 8**: per-event `confidence`
+  — every one of the 32,213 corpus events already carried `null` (Omnizart
+  emits no per-hit confidence signal), so the file now states this **once, at
+  file level**: `confidence: null` + `confidence_reason: "<why>"`. `velocity`
+  is still not published (constant 100). The full per-event artifact
+  (`artifacts/symbolic_transcription/drum_events.json`, same lack of
+  confidence) is unchanged and **not MCP-exposed**; the debugger UI reads it
+  directly.
 - `arrangement_state.json` — **optional**, absent on a song analysed before
   v3.2. `blocks[] { start_s, end_s, playing[], entered[], left[], margin_db,
   confidence }`: who is playing and where that changes. `confidence = round(1 -
@@ -316,14 +343,14 @@ resolutions.
 
 ## Priorities, in order
 
-1. **Section boundaries + `section_id` + `function` + honest confidences + a
-   one-line `description`, all on the top-level row.** Everything hangs off this.
+1. **Section boundaries + `section_id` + `function` + honest confidences, all
+   on the top-level row.** Everything hangs off this.
 2. **`song_event_timeline.json`** — a lean set of well-timed gesture phases and
-   transitions with `intensity`, honest `confidence` and an actionable `summary`.
-3. **`hints.json`** — short, concrete, per-section, human hints merged.
+   transitions with `intensity` and honest `confidence`.
+3. **`hints.json`** — short, concrete, per-section, human hints.
 4. **`beats.json`** — correct, continuous downbeats and bar numbers.
 5. **`loudness.json` + `drum_events.json`** — accurate, regular, complete.
-6. **`genre.json`** — honest, with the guidance prose kept.
+6. **`genre.json`** — honest, with `genres` + `confidence` kept.
 7. **`arrangement_state.json`** — optional; when present, accurate stem
    entered/left spans with honest `confidence`/`margin_db`, plus the
    independent `vocals_phrase[]` read described above.

@@ -139,7 +139,7 @@ class ArrangementStatePublishTests(unittest.TestCase):
     def test_payload_shape(self) -> None:
         payload = _publish(ARTIFACT)
         self.assertEqual(payload["stems"], STEMS)
-        self.assertEqual(payload["schema_version"], "3.0")
+        self.assertEqual(payload["schema_version"], "3.1")
         self.assertEqual(payload["song_name"], "_test_song")
 
     def test_no_data_paths(self) -> None:

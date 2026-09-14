@@ -48,7 +48,12 @@ def _setup(tmp: str, sections: list[dict]) -> SongPaths:
 
 
 class SectionJoinTests(unittest.TestCase):
-    def test_top_level_sections_carry_section_id_label_and_description(self) -> None:
+    def test_top_level_sections_carry_section_id_and_function_fields_only(self) -> None:
+        # v3.6 item 8 — label/description/chord_progression are dropped from
+        # the top-level row (a display string with confidence folded in,
+        # a restatement of function+ordinal, and an unread field
+        # respectively); they move to
+        # artifacts/section_segmentation/sections_display.json.
         sections = [
             {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "intro",
              "function_confidence": 0.9, "function_status": "known", "same_label_as": None,
@@ -62,15 +67,27 @@ class SectionJoinTests(unittest.TestCase):
             build_ui_data(paths)
             payload = json.loads(paths.sections_output_path.read_text())
             rows = payload["sections"]
+            display = json.loads(
+                paths.artifact("section_segmentation", "sections_display.json").read_text()
+            )
         self.assertIn("field_sources", payload)
         self.assertEqual([r["section_id"] for r in rows], ["section-001", "section-002"])
-        self.assertEqual(rows[0]["label"], "001 Intro (0.90)")
-        self.assertEqual(rows[1]["label"], "002 Chorus (0.40)")
-        self.assertIn("intro", rows[0]["description"])
+        self.assertNotIn("label", rows[0])
+        self.assertNotIn("description", rows[0])
+        self.assertNotIn("chord_progression", rows[0])
+        self.assertNotIn("label", payload["field_sources"])
+        self.assertNotIn("description", payload["field_sources"])
+        self.assertNotIn("chord_progression", payload["field_sources"])
         self.assertNotIn("section_character", rows[0])
         self.assertNotIn("form_role", rows[0])
 
-    def test_unknown_function_status_marks_label_unverified(self) -> None:
+        display_rows = {r["section_id"]: r for r in display["sections"]}
+        self.assertEqual(display_rows["section-001"]["label"], "001 Intro (0.90)")
+        self.assertEqual(display_rows["section-002"]["label"], "002 Chorus (0.40)")
+        self.assertIn("intro", display_rows["section-001"]["description"])
+        self.assertIn("generated_from", display)
+
+    def test_unknown_function_status_marks_display_label_unverified(self) -> None:
         sections = [
             {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "verse",
              "function_confidence": 0.2, "function_status": "unknown", "same_label_as": None,
@@ -79,11 +96,12 @@ class SectionJoinTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             paths = _setup(tmp, sections)
             build_ui_data(paths)
-            payload = json.loads(paths.sections_output_path.read_text())
-            rows = payload["sections"]
-        self.assertIn("field_sources", payload)
-        self.assertIn("[unverified]", rows[0]["label"])
-        self.assertIn("not trustworthy", rows[0]["description"])
+            display = json.loads(
+                paths.artifact("section_segmentation", "sections_display.json").read_text()
+            )
+        row = display["sections"][0]
+        self.assertIn("[unverified]", row["label"])
+        self.assertIn("not trustworthy", row["description"])
 
     def test_every_row_carries_function_fields_and_matches_segmentation_order(self) -> None:
         seg_sections = [
@@ -223,6 +241,9 @@ class SectionJoinTests(unittest.TestCase):
         # The ambiguous `confidence` is gone from beats rows.
         self.assertNotIn("confidence", beat_row)
         self.assertIn("downbeat_confidence", beat_row)
+        # v3.6 item 8 — `chord` (unread; chord labels are "informative, not
+        # settled") is gone from beats rows.
+        self.assertNotIn("chord", beat_row)
 
     def test_human_segments_replace_allin1_boundaries_when_present(self) -> None:
         # v3.5 item 10 — reference/human/segments.json present: boundaries,
@@ -345,8 +366,6 @@ class SectionJoinTests(unittest.TestCase):
             paths = _setup(tmp, sections)
             build_ui_data(paths)
             payload = json.loads(paths.sections_output_path.read_text())
-        self.assertEqual(payload["field_sources"]["label"], "allin1")
-        self.assertEqual(payload["field_sources"]["description"], "allin1")
         self.assertEqual(payload["field_sources"]["start"], "allin1")
         self.assertEqual(payload["field_sources"]["confidence"], "allin1")
         self.assertEqual(payload["field_sources"]["function"], "allin1")

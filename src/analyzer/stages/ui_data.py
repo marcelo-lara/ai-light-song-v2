@@ -57,21 +57,6 @@ KEY_CONFIDENCE_THRESHOLD = 0.70
 MAX_CHORD_PROGRESSION_CHORDS = 8
 
 
-def _resolve_chord_for_time(time_s: float, chord_events: list[dict]) -> str | None:
-    previous_label: str | None = None
-    for event in chord_events:
-        start_s = float(event["time"])
-        end_s = float(event["end_s"])
-        label = str(event["chord"])
-        if start_s <= time_s < end_s:
-            return label
-        if time_s >= start_s:
-            previous_label = label
-        if time_s < start_s:
-            break
-    return previous_label or (str(chord_events[0]["chord"]) if chord_events else None)
-
-
 def _section_index_prefix(section_id: str | None) -> str:
     if not section_id:
         return ""
@@ -244,16 +229,17 @@ def _publish_genre(paths: SongPaths) -> str:
     def _present(key: str) -> bool:
         return artifact.get(key) is not None
 
+    # v3.6 item 8 — `top_predictions` (unread) and `guidance` (one identical
+    # text across all 23 songs; moves into mcp/'s tool description, item 9)
+    # are dropped from the top-level view. Both stay in the artifact.
     field_sources = validate_field_sources(
         _fuse(
             {
                 "genres": [("genre", _present("genres"))],
                 "confidence": [("genre", _present("confidence"))],
-                "top_predictions": [("genre", _present("top_predictions"))],
-                "guidance": [("genre", _present("guidance"))],
             }
         ),
-        ("genres", "confidence", "top_predictions", "guidance"),
+        ("genres", "confidence"),
         file="genre.json",
     )
     payload = {
@@ -262,11 +248,21 @@ def _publish_genre(paths: SongPaths) -> str:
         "field_sources": field_sources,
         "genres": artifact.get("genres"),
         "confidence": artifact.get("confidence"),
-        "top_predictions": artifact.get("top_predictions"),
-        "guidance": artifact.get("guidance"),
     }
     write_json(paths.genre_output_path, payload)
     return str(paths.genre_output_path)
+
+
+# v3.6 item 8 — every one of the 32,213 corpus drum events carries `null`
+# confidence (CLAUDE.md: omnizart emits no per-hit confidence signal).
+# Repeating that `null` on every row is pure token cost with no information;
+# it is now stated once at file level, with the reason a reader would
+# otherwise have to rediscover per event.
+DRUM_EVENTS_CONFIDENCE_REASON = (
+    "omnizart emits no per-hit confidence signal — every event in the corpus "
+    "(32,213 events across 23 songs) carries null confidence; stated once "
+    "here rather than repeated on every row"
+)
 
 
 def _publish_drum_events(paths: SongPaths) -> str:
@@ -275,21 +271,20 @@ def _publish_drum_events(paths: SongPaths) -> str:
         {
             "time": round_schema_float(float(event["time"]), 3),
             "event_type": str(event["event_type"]),
-            "confidence": event.get("confidence"),
         }
         for event in artifact.get("events", [])
     ]
-    row_keys = events[0].keys() if events else ("time", "event_type", "confidence")
+    row_keys = events[0].keys() if events else ("time", "event_type")
     field_sources = validate_field_sources(
         _fuse(
             {
                 "time": [("omnizart", True)],
                 "event_type": [("omnizart", True)],
-                "confidence": [("omnizart", True)],
             }
         ),
         row_keys,
         file="drum_events.json",
+        exempt=("confidence", "confidence_reason"),
     )
     payload = {
         "schema_version": SCHEMA_VERSION,
@@ -300,6 +295,10 @@ def _publish_drum_events(paths: SongPaths) -> str:
         # fused per-row value. Every row is omnizart's (plan D21).
         "summary": artifact.get("summary"),
         "supported_event_types": artifact.get("supported_event_types"),
+        # File-level, honest `null` — see DRUM_EVENTS_CONFIDENCE_REASON. Never
+        # per-event: no silent fallback, no confident-looking repetition.
+        "confidence": None,
+        "confidence_reason": DRUM_EVENTS_CONFIDENCE_REASON,
         "events": events,
     }
     write_json(paths.drum_events_output_path, payload)
@@ -329,16 +328,14 @@ def _decimate_loudness_pairs(frames: list[dict]) -> list[dict]:
 
 
 def _publish_loudness(paths: SongPaths) -> str:
+    # v3.6 item 8 — `sources[]` (stem identity list) and
+    # `metadata.sample_rate/duration/total_frames/normalization_scope` are
+    # unread; dropped from the top-level view. All stay in the artifact
+    # (`artifacts/essentia/rms_loudness.json`), which the debugger UI reads
+    # directly for stem identity and full metadata.
     artifact = read_json(paths.artifact("essentia", "rms_loudness.json"))
     frames = _decimate_loudness_pairs(artifact.get("frames", []))
     meta = artifact.get("metadata", {})
-    # `sources[]` here means STEMS, not producers — do not overload it with the
-    # item-2 producer attribution. It only loses its `path` field (the host-path
-    # leak).
-    sources = [
-        {"id": s["id"], "label": s["label"], "kind": s["kind"]}
-        for s in artifact.get("sources", [])
-    ]
     field_sources = validate_field_sources(
         _fuse(
             {
@@ -354,15 +351,8 @@ def _publish_loudness(paths: SongPaths) -> str:
         "schema_version": SCHEMA_VERSION,
         "song_name": paths.song_name,
         "field_sources": field_sources,
-        "metadata": {
-            "sample_rate": meta.get("sample_rate"),
-            "duration": meta.get("duration"),
-            "normalization_scope": meta.get("normalization_scope"),
-            "source_order": meta.get("source_order"),
-            "interval_ms": 20,
-            "total_frames": len(frames),
-        },
-        "sources": sources,
+        "interval_ms": 20,
+        "source_order": meta.get("source_order"),
         "frames": frames,
     }
     write_json(paths.loudness_output_path, payload)
@@ -630,13 +620,21 @@ def _build_reference_override_rows(
     chord_events: list[dict],
     occurrence_counts: dict[str, int],
     confidence: float,
-) -> list[dict]:
+) -> tuple[list[dict], list[dict]]:
     """Shared whole-song-override builder for reference/human/segments.json
     and reference/moises/segments.json: same boundary/label shape, only the
     fixed `confidence` and the input rows differ per tier (see
-    docs/reference/analysis.segments.md for the precedence and rationale)."""
+    docs/reference/analysis.segments.md for the precedence and rationale).
+
+    Returns `(section_rows, display_rows)` — `section_rows` is the trimmed
+    top-level shape (v3.6 item 8: no `label` / `description` /
+    `chord_progression`, which fold confidence into a display string or are
+    unread); `display_rows` carries those three fields keyed by `section_id`
+    for `artifacts/section_segmentation/sections_display.json`, which the
+    debugger UI reads instead."""
     rows_sorted = sorted(reference_rows, key=lambda row: float(row["start"]))
     section_rows = []
+    display_rows = []
     for index, reference_row in enumerate(rows_sorted):
         start = float(reference_row["start"])
         end = float(reference_row["end"])
@@ -672,18 +670,23 @@ def _build_reference_override_rows(
                 "section_id": section_id,
                 "start": round_schema_float(start),
                 "end": round_schema_float(end),
-                "label": _format_section_label(label_source),
-                "description": _section_description(description_source, occurrence_counts.get(function, 0)),
                 "function": function,
                 "function_confidence": function_confidence,
                 "function_status": function_status,
                 "same_label_as": same_label_as,
                 "confidence": confidence,
                 "key": song_key,
+            }
+        )
+        display_rows.append(
+            {
+                "section_id": section_id,
+                "label": _format_section_label(label_source),
+                "description": _section_description(description_source, occurrence_counts.get(function, 0)),
                 "chord_progression": _section_chord_progression(start, end, chord_events),
             }
         )
-    return section_rows
+    return section_rows, display_rows
 
 
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
@@ -703,12 +706,14 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
 
     chord_events = harmonic_payload.get("chords", [])
     beat_points = beats_payload.get("beats", [])
+    # v3.6 item 8 — `chord` dropped: unread, and chord labels are "informative,
+    # not settled" (CLAUDE.md). The harmonic stage's own chord events are the
+    # source of truth (`artifacts/layer_a_harmonic.json`, still read above).
     beat_rows = [
         {
             "time": round_schema_float(float(beat["time"])),
             "beat": int(beat["beat_in_bar"]),
             "bar": int(beat["bar"]),
-            "chord": _resolve_chord_for_time(float(beat["time"]), chord_events),
             "type": str(beat["type"]),
             "downbeat_confidence": beat.get("confidence"),
         }
@@ -731,11 +736,12 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
 
     occurrence_counts: dict[str, int] = {}
     section_rows = []
+    display_rows = []
     if has_human_segments:
         # Fixed at 0.8, independent of allin1's own confidence (inherited
         # below only for the function_* fields) — human mistakes are
         # plausible, but human is still the best available truth.
-        section_rows = _build_reference_override_rows(
+        section_rows, display_rows = _build_reference_override_rows(
             read_json(human_segments_path), raw_sections, song_key, chord_events, occurrence_counts, confidence=0.8
         )
     elif has_moises_segments:
@@ -743,7 +749,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         # its own (Moises.ai gives no per-row confidence for segments, unlike
         # its word-level lyrics/chords) — moises is also an inferred
         # discriminator, one tier below a human.
-        section_rows = _build_reference_override_rows(
+        section_rows, display_rows = _build_reference_override_rows(
             read_json(moises_segments_path), raw_sections, song_key, chord_events, occurrence_counts, confidence=0.6
         )
     else:
@@ -758,8 +764,6 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
                     "section_id": section["section_id"],
                     "start": round_schema_float(start),
                     "end": round_schema_float(end),
-                    "label": _format_section_label(section),
-                    "description": _section_description(section, occurrence_counts.get(function, 0)),
                     # v3.1 item 3 — the allin1 section-function fields are now on the
                     # top-level row. A consumer reads section names from here alone
                     # and never opens artifacts/section_segmentation/sections.json.
@@ -772,6 +776,18 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
                     "same_label_as": section.get("same_label_as"),
                     "confidence": section.get("confidence"),
                     "key": song_key,
+                }
+            )
+            # v3.6 item 8 — `label` / `description` / `chord_progression`
+            # dropped from the top-level row (display string with confidence
+            # folded in; restates function+ordinal; unread) and written
+            # instead to artifacts/section_segmentation/sections_display.json
+            # for the debugger UI, joined by section_id.
+            display_rows.append(
+                {
+                    "section_id": section["section_id"],
+                    "label": _format_section_label(section),
+                    "description": _section_description(section, occurrence_counts.get(function, 0)),
                     "chord_progression": _section_chord_progression(start, end, chord_events),
                 }
             )
@@ -790,7 +806,6 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
             "time": "essentia",
             "beat": "essentia",
             "bar": "essentia",
-            "chord": "harmonic",
             "type": "essentia",
             "downbeat_confidence": "allin1",
         },
@@ -799,28 +814,25 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     )
     # A genuine per-song producer switch, not a per-row override: precedence
     # is human, then moises, then allin1 (docs/reference/analysis.segments.md).
-    # When a reference file exists, EVERY row's boundaries/label/description/
-    # confidence came from it, so the file-level default itself moves to that
-    # producer for this song. function's own value is also that producer's
-    # then (normalize_human_label of its label text — shared by human and
-    # moises); only function_confidence / function_status / same_label_as stay
-    # allin1's regardless (inherited by overlap, never invented); key /
-    # chord_progression stay the harmonic stage's either way.
+    # When a reference file exists, EVERY row's boundaries/confidence came
+    # from it, so the file-level default itself moves to that producer for
+    # this song. function's own value is also that producer's then
+    # (normalize_human_label of its label text — shared by human and moises);
+    # only function_confidence / function_status / same_label_as stay
+    # allin1's regardless (inherited by overlap, never invented); key stays
+    # the harmonic stage's either way.
     sections_field_sources = validate_field_sources(
         _fuse(
             {
                 "section_id": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "start": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "end": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
-                "label": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
-                "description": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "function": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "function_confidence": [("allin1", True)],
                 "function_status": [("allin1", True)],
                 "same_label_as": [("allin1", True)],
                 "confidence": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "key": [("harmonic", True)],
-                "chord_progression": [("harmonic", True)],
             }
         ),
         section_rows[0].keys() if section_rows else (),
@@ -833,6 +845,30 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     sections_output_path = paths.sections_output_path
     write_json(beats_output_path, beats_output)
     write_json(sections_output_path, sections_output)
+
+    # v3.6 item 8 — the display text dropped from sections.json (label,
+    # description, chord_progression) is written to its own artifact for the
+    # debugger UI, joined by section_id. Not provenance-tracked with
+    # `generated_from` per-field (it's a straight publish-time projection,
+    # like the top-level files it replaces a field of), but the file itself
+    # carries `generated_from` like every other artifact.
+    sections_display_path = paths.artifact("section_segmentation", "sections_display.json")
+    write_json(
+        sections_display_path,
+        {
+            "schema_version": SCHEMA_VERSION,
+            "song_name": paths.song_name,
+            "generated_from": {
+                "source_song_path": str(paths.song_path),
+                "engine": "ui_data.build_ui_data (publish-time section display text)",
+                "dependencies": {
+                    "sections_file": str(paths.sections_output_path),
+                    "harmonic_file": str(paths.artifact("layer_a_harmonic.json")),
+                },
+            },
+            "sections": display_rows,
+        },
+    )
 
     # v3.1 items 5-7 — publish top-level fused views of genre, drum events and
     # loudness. The artifacts under artifacts/ are untouched.

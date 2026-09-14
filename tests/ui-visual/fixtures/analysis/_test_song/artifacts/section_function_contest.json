@@ -1,5 +1,5 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.1",
   "generated_from": {
     "engine": "analyzer.stages.section_function",
     "reads": [
@@ -18,24 +18,52 @@
       "function": "Intro",
       "contested": false,
       "contested_by": null,
-      "margin": 9.83
+      "margin": 4.82
     },
     {
       "section_id": "section-002",
-      "function": "Verse",
+      "function": "Pre-Build",
       "contested": false,
       "contested_by": null,
-      "margin": 8.7
+      "margin": 8.33
     },
     {
       "section_id": "section-003",
-      "function": "Chorus",
+      "function": "Build",
       "contested": false,
       "contested_by": null,
-      "margin": -23.14
+      "margin": -1.34
     },
     {
       "section_id": "section-004",
+      "function": "Pre-Drop",
+      "contested": false,
+      "contested_by": null,
+      "margin": 7.45
+    },
+    {
+      "section_id": "section-005",
+      "function": "Drop",
+      "contested": false,
+      "contested_by": null,
+      "margin": -8.59
+    },
+    {
+      "section_id": "section-006",
+      "function": "Refrain",
+      "contested": false,
+      "contested_by": null,
+      "margin": -13.82
+    },
+    {
+      "section_id": "section-007",
+      "function": "Breakdown",
+      "contested": false,
+      "contested_by": null,
+      "margin": -30.71
+    },
+    {
+      "section_id": "section-008",
       "function": "Outro",
       "contested": false,
       "contested_by": null,

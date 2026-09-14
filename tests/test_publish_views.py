@@ -97,10 +97,17 @@ class GenrePublishTests(unittest.TestCase):
         self.assertEqual(payload["confidence"], 0.38)
         self.assertTrue(_no_data_paths(payload))
         self.assertNotIn("generated_from", payload)
+        # v3.6 item 8 — top_predictions (unread) and guidance (one identical
+        # text across all songs; moves into mcp/'s tool description) are
+        # dropped from the top-level view.
+        self.assertNotIn("top_predictions", payload)
+        self.assertNotIn("guidance", payload)
         header = payload["field_sources"]
-        for key in ("genres", "confidence", "top_predictions", "guidance"):
+        for key in ("genres", "confidence"):
             self.assertIn(key, header)
             self.assertIn(header[key], PRODUCERS)
+        self.assertNotIn("top_predictions", header)
+        self.assertNotIn("guidance", header)
 
 
 class DrumEventsPublishTests(unittest.TestCase):
@@ -120,11 +127,16 @@ class DrumEventsPublishTests(unittest.TestCase):
         self.assertEqual(by_type.get("snare", 0), artifact["summary"]["snare_count"])
         self.assertTrue(_no_data_paths(payload))
         self.assertNotIn("generated_from", payload)
+        # v3.6 item 8 — per-event confidence (null on all 32,213 corpus
+        # events) collapses to one file-level confidence + confidence_reason.
+        self.assertIsNone(payload["confidence"])
+        self.assertTrue(payload["confidence_reason"])
         header = payload["field_sources"]
-        for key in ("time", "event_type", "confidence"):
+        for key in ("time", "event_type"):
             self.assertEqual(header[key], "omnizart")
+        self.assertNotIn("confidence", header)
         for e in payload["events"]:
-            self.assertEqual(set(e), {"time", "event_type", "confidence"})
+            self.assertEqual(set(e), {"time", "event_type"})
 
 
 if __name__ == "__main__":

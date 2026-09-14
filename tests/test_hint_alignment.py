@@ -38,15 +38,28 @@ class HumanHintsAlignmentTests(unittest.TestCase):
                     ],
                 },
             )
+            # v3.6 item 8 — sections.json no longer carries `label`; the join
+            # key is `section_id`, and `label` lives in the display artifact.
             _write_json(
                 paths.sections_output_path,
                 [
-                    {"start": 8.0, "end": 12.0, "label": "Ambient Opening"},
-                    {"start": 12.0, "end": 16.0, "label": "Peak Lift"},
+                    {"section_id": "section-001", "start": 8.0, "end": 12.0},
+                    {"section_id": "section-002", "start": 12.0, "end": 16.0},
                 ],
             )
             _write_json(
-                paths.timeline_output_path,
+                paths.artifact("section_segmentation", "sections_display.json"),
+                {
+                    "sections": [
+                        {"section_id": "section-001", "label": "Ambient Opening"},
+                        {"section_id": "section-002", "label": "Peak Lift"},
+                    ]
+                },
+            )
+            # song_event_timeline.json no longer carries `section_name`; the
+            # full event shape (incl. section_name) lives in the artifact.
+            _write_json(
+                paths.artifact("gestures", "song_event_timeline.json"),
                 {
                     "events": [
                         {

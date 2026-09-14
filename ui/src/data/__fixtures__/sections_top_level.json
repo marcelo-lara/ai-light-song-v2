@@ -3,48 +3,44 @@
     "section_id": "section-001",
     "start": 0.0,
     "end": 14.82,
-    "label": "001 Intro (0.90)",
-    "description": "Opening section, 14.8s.",
     "function": "intro",
     "function_confidence": 0.9,
     "function_status": "known",
     "same_label_as": null,
-    "confidence": 0.9
+    "confidence": 0.9,
+    "key": "C# major"
   },
   {
     "section_id": "section-002",
     "start": 14.82,
     "end": 29.61,
-    "label": "002 Verse (0.71)",
-    "description": "Verse section, 14.8s.",
     "function": "verse",
     "function_confidence": 0.71,
     "function_status": "known",
     "same_label_as": null,
-    "confidence": 0.71
+    "confidence": 0.71,
+    "key": "C# major"
   },
   {
     "section_id": "section-003",
     "start": 29.61,
     "end": 44.36,
-    "label": "003 Chorus (0.80)",
-    "description": "Chorus section, 14.8s.",
     "function": "chorus",
     "function_confidence": 0.8,
     "function_status": "known",
     "same_label_as": null,
-    "confidence": 0.8
+    "confidence": 0.8,
+    "key": "C# major"
   },
   {
     "section_id": "section-004",
     "start": 44.36,
     "end": 57.74,
-    "label": "004 Outro (0.69)",
-    "description": "Outro section, 13.4s.",
     "function": "outro",
     "function_confidence": 0.69,
     "function_status": "known",
     "same_label_as": null,
-    "confidence": 0.69
+    "confidence": 0.69,
+    "key": "C# major"
   }
 ]

@@ -39,7 +39,9 @@ import {
   parseSongFacts,
   parseRmsLoudness,
   parseSectionSegmentation,
-  parseSectionsTopLevel,
+  parseSectionsTopLevelRows,
+  parseSectionDisplay,
+  mergeSectionDisplay,
 } from "./parsers";
 import type {
   Beats,
@@ -57,8 +59,10 @@ import type {
   MoisesSegmentsFile,
   ReviewQueue,
   RmsLoudness,
+  SectionDisplayFile,
   SectionSegmentation,
   SectionsTopLevel,
+  SectionsTopLevelRows,
   SongFactsFile,
   SongInfo,
 } from "./types";
@@ -146,12 +150,54 @@ export const loadInfo = (song: string, f?: typeof fetch) =>
 export const loadBeats = (song: string, f?: typeof fetch) =>
   loadJson<Beats>(artifactPaths.beats(song), parseBeats, f);
 
-export const loadSectionsTopLevel = (song: string, f?: typeof fetch) =>
-  loadJson<SectionsTopLevel>(
-    artifactPaths.sectionsTopLevel(song),
-    parseSectionsTopLevel,
+// v3.6 item 8 — sections.json.sections was trimmed to drop label/description/
+// chord_progression, which now live only in
+// artifacts/section_segmentation/sections_display.json. Every consumer in
+// the UI still wants the full `SectionRow` shape, so this loader fetches both
+// files and joins them (mergeSectionDisplay, ./parsers) before returning.
+// Both are always written together by the publish stage — no 404 tolerance,
+// and a `section_id` join mismatch surfaces as a shape error rather than a
+// silently missing label.
+export const loadSectionDisplay = (song: string, f?: typeof fetch) =>
+  loadJson<SectionDisplayFile>(
+    artifactPaths.sectionsDisplay(song),
+    parseSectionDisplay,
     f,
   );
+
+export const loadSectionsTopLevel = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<SectionsTopLevel>> => {
+  const [topLevelResult, displayResult] = await Promise.all([
+    loadJson<SectionsTopLevelRows>(
+      artifactPaths.sectionsTopLevel(song),
+      parseSectionsTopLevelRows,
+      f,
+    ),
+    loadSectionDisplay(song, f),
+  ]);
+  if (!topLevelResult.ok) return topLevelResult;
+  if (!displayResult.ok) return displayResult;
+  try {
+    return {
+      ok: true,
+      data: mergeSectionDisplay(topLevelResult.data, displayResult.data.sections),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error: {
+        kind: "shape",
+        path: artifactPaths.sectionsTopLevel(song),
+        message:
+          error instanceof Error
+            ? error.message
+            : "sections.json / sections_display.json join failed.",
+      },
+    };
+  }
+};
 
 export const loadSectionSegmentation = (song: string, f?: typeof fetch) =>
   loadJson<SectionSegmentation>(
@@ -351,6 +397,7 @@ export const artifactLoaders = {
   vocalTranscription: loadVocalTranscription,
   beats: loadBeats,
   sectionsTopLevel: loadSectionsTopLevel,
+  sectionDisplay: loadSectionDisplay,
   sectionSegmentation: loadSectionSegmentation,
   fftBands: loadFftBands,
   fftBandsBass: loadFftBandsBass,

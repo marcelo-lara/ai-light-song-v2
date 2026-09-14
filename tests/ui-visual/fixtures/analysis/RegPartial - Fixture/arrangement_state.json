@@ -1,5 +1,5 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.1",
   "song_name": "Armin - Revolution",
   "field_sources": {
     "start_s": "arrangement_state",
@@ -766,7 +766,7 @@
     },
     {
       "start_s": 193.0,
-      "end_s": 194.009,
+      "end_s": 194.01,
       "playing": [],
       "entered": [],
       "left": [

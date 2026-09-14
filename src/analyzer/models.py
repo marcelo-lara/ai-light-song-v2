@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from analyzer.paths import SongPaths
 
 
-SCHEMA_VERSION = "3.0"
+SCHEMA_VERSION = "3.1"
 
 
 class Producer(str, Enum):

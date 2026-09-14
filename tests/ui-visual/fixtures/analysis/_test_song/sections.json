@@ -3,128 +3,101 @@
     "section_id": "human",
     "start": "human",
     "end": "human",
-    "label": "human",
-    "description": "human",
     "function": "human",
     "function_confidence": "allin1",
     "function_status": "allin1",
     "same_label_as": "allin1",
     "confidence": "human",
-    "key": "harmonic",
-    "chord_progression": "harmonic"
+    "key": "harmonic"
   },
   "sections": [
     {
       "section_id": "section-001",
       "start": 0.06,
       "end": 14.82,
-      "label": "001 Intro [unverified] (0.34)",
-      "description": "Unverified section, 14.8s \u2014 allin1's label for this song is not trustworthy.",
       "function": "Intro",
       "function_confidence": 0.342105,
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor",
-      "chord_progression": "D#m"
+      "key": "D# minor"
     },
     {
       "section_id": "section-002",
       "start": 14.82,
       "end": 22.2,
-      "label": "002 Pre-Build [unverified] (0.45)",
-      "description": "Unverified section, 7.4s \u2014 allin1's label for this song is not trustworthy.",
       "function": "Pre-Build",
       "function_confidence": 0.446157,
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor",
-      "chord_progression": "D#m"
+      "key": "D# minor"
     },
     {
       "section_id": "section-003",
       "start": 22.2,
       "end": 28.63,
-      "label": "003 Build [unverified] (0.45)",
-      "description": "Unverified section, 6.4s \u2014 allin1's label for this song is not trustworthy.",
       "function": "Build",
       "function_confidence": 0.446157,
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor",
-      "chord_progression": "D#m"
+      "key": "D# minor"
     },
     {
       "section_id": "section-004",
       "start": 28.63,
       "end": 29.56,
-      "label": "004 Pre-Drop [unverified] (0.45)",
-      "description": "Unverified section, 0.9s \u2014 allin1's label for this song is not trustworthy.",
       "function": "Pre-Drop",
       "function_confidence": 0.446157,
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor",
-      "chord_progression": "D#m"
+      "key": "D# minor"
     },
     {
       "section_id": "section-005",
       "start": 29.58,
       "end": 42.49,
-      "label": "005 Drop [unverified] (0.45)",
-      "description": "Unverified section, 12.9s \u2014 allin1's label for this song is not trustworthy.",
       "function": "Drop",
       "function_confidence": 0.446157,
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor",
-      "chord_progression": "D#m"
+      "key": "D# minor"
     },
     {
       "section_id": "section-006",
       "start": 42.49,
       "end": 44.35,
-      "label": "006 Refrain [unverified] (0.45)",
-      "description": "Unverified section, 1.9s \u2014 allin1's label for this song is not trustworthy.",
       "function": "Refrain",
       "function_confidence": 0.446157,
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor",
-      "chord_progression": "D#m"
+      "key": "D# minor"
     },
     {
       "section_id": "section-007",
       "start": 44.36,
       "end": 55.22,
-      "label": "007 Breakdown [unverified] (0.45)",
-      "description": "Unverified section, 10.9s \u2014 allin1's label for this song is not trustworthy.",
       "function": "Breakdown",
       "function_confidence": 0.446157,
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor",
-      "chord_progression": "D#m\u2013B\u2013F#\u2013D#m"
+      "key": "D# minor"
     },
     {
       "section_id": "section-008",
       "start": 55.22,
       "end": 58.12,
-      "label": "008 Outro [unverified] (0.45)",
-      "description": "Unverified section, 2.9s \u2014 allin1's label for this song is not trustworthy.",
       "function": "Outro",
       "function_confidence": 0.446157,
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor",
-      "chord_progression": "D#m"
+      "key": "D# minor"
     }
   ]
 }

@@ -25,18 +25,21 @@ from analyzer.stages.section_function import contest_section_function
 
 SOURCE_ORDER = ["mix", "bass", "drums", "harmonic", "vocals"]
 
+# v3.6 item 8 — sections.json dropped label/description/chord_progression
+# (display string with confidence folded in; restates function+ordinal;
+# unread — they now live in artifacts/section_segmentation/sections_display.json).
 SECTION_KEYS = (
-    "section_id", "start", "end", "label", "description", "function",
+    "section_id", "start", "end", "function",
     "function_confidence", "function_status", "same_label_as", "confidence",
-    "key", "chord_progression",
+    "key",
 )
 
 SECTIONS_FIELD_SOURCES = {
     "section_id": "allin1", "start": "allin1", "end": "allin1",
-    "label": "human", "description": "human", "function": "allin1",
+    "function": "allin1",
     "function_confidence": "allin1", "function_status": "allin1",
     "same_label_as": "allin1", "confidence": "allin1",
-    "key": "harmonic", "chord_progression": "harmonic",
+    "key": "harmonic",
 }
 
 
@@ -44,10 +47,9 @@ def _section(section_id: str, start: float, end: float, function: str,
              fconf: float = 0.5) -> dict:
     return {
         "section_id": section_id, "start": start, "end": end,
-        "label": f"{section_id} {function.title()} ({fconf:.2f})",
-        "description": "x", "function": function, "function_confidence": fconf,
+        "function": function, "function_confidence": fconf,
         "function_status": "known", "same_label_as": None, "confidence": fconf,
-        "key": None, "chord_progression": None,
+        "key": None,
     }
 
 
@@ -76,15 +78,14 @@ def _run(sections: list[dict], frames: list[dict]) -> dict:
             "field_sources": dict(SECTIONS_FIELD_SOURCES),
             "sections": sections,
         }))
+        # v3.6 item 8 — flat top-level loudness.json shape: `source_order` /
+        # `interval_ms` are flat fields, no `metadata` wrapper, no `sources[]`.
         paths.loudness_output_path.write_text(json.dumps({
-            "schema_version": "3.0", "song_name": "_test_song",
+            "schema_version": "3.1", "song_name": "_test_song",
             "field_sources": {"time": "essentia", "values": "essentia",
                               "normalized_values": "essentia"},
-            "metadata": {"sample_rate": 44100, "duration": frames[-1]["time"] + 0.5,
-                         "normalization_scope": "x", "source_order": SOURCE_ORDER,
-                         "interval_ms": 20, "total_frames": len(frames)},
-            "sources": [{"id": s, "label": s, "kind": "mix" if s == "mix" else "stem"}
-                        for s in SOURCE_ORDER],
+            "source_order": SOURCE_ORDER,
+            "interval_ms": 20,
             "frames": frames,
         }))
         paths.arrangement_state_output_path.write_text(json.dumps({

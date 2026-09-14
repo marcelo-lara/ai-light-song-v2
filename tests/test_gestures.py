@@ -287,12 +287,21 @@ class BuildGesturesEndToEndTests(unittest.TestCase):
             written = read_json(paths.timeline_output_path)
             self.assertEqual(written, payload)
 
-            section_ids = {s["section_id"] for s in sections_payload["sections"]}
-            phase_types = set(PHASE_NAMES)
-            for event in payload["events"]:
+            # v3.6 item 8 — `summary` (and section_name/evidence_summary/
+            # provenance) is dropped from the top-level `payload`/`written`
+            # view; the full event shape, including `summary`, lives in the
+            # artifact this stage writes first.
+            full_events = read_json(paths.artifact("gestures", "song_event_timeline.json"))["events"]
+            self.assertEqual(len(full_events), len(payload["events"]))
+            for event in full_events:
                 self.assertTrue(event["summary"], "summary must be non-empty")
                 for boilerplate in _FORBIDDEN_BOILERPLATE:
                     self.assertNotIn(boilerplate, event["summary"])
+
+            section_ids = {s["section_id"] for s in sections_payload["sections"]}
+            phase_types = set(PHASE_NAMES)
+            for event in payload["events"]:
+                self.assertNotIn("summary", event)
                 if event["section_id"] is not None:
                     self.assertIn(event["section_id"], section_ids)
                 self.assertTrue(

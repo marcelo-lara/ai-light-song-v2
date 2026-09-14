@@ -3,170 +3,134 @@
     "section_id": "moises",
     "start": "moises",
     "end": "moises",
-    "label": "moises",
-    "description": "moises",
     "function": "moises",
     "function_confidence": "allin1",
     "function_status": "allin1",
     "same_label_as": "allin1",
     "confidence": "moises",
-    "key": "harmonic",
-    "chord_progression": "harmonic"
+    "key": "harmonic"
   },
   "sections": [
     {
       "section_id": "section-001",
       "start": 0.48,
       "end": 15.24,
-      "label": "001 Intro (0.47)",
-      "description": "The 1st Intro, 14.8s long.",
       "function": "Intro",
       "function_confidence": 0.474817,
       "function_status": "known",
       "same_label_as": null,
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": "F#m\u2013A"
+      "key": "B minor"
     },
     {
       "section_id": "section-002",
       "start": 15.24,
       "end": 30.0,
-      "label": "002 Chorus (0.47)",
-      "description": "The 1st Chorus, 14.8s long.",
       "function": "Chorus",
       "function_confidence": 0.474817,
       "function_status": "known",
       "same_label_as": null,
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": null
+      "key": "B minor"
     },
     {
       "section_id": "section-003",
       "start": 30.0,
       "end": 44.78,
-      "label": "003 Chorus (0.19)",
-      "description": "The 2nd Chorus, 14.8s long.",
       "function": "Chorus",
       "function_confidence": 0.188917,
       "function_status": "known",
       "same_label_as": null,
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": null
+      "key": "B minor"
     },
     {
       "section_id": "section-004",
       "start": 44.78,
       "end": 59.54,
-      "label": "004 Main (0.20)",
-      "description": "The 1st Main, 14.8s long.",
       "function": "Main",
       "function_confidence": 0.19984,
       "function_status": "known",
       "same_label_as": null,
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": null
+      "key": "B minor"
     },
     {
       "section_id": "section-005",
       "start": 59.54,
       "end": 81.7,
-      "label": "005 Main (0.20)",
-      "description": "The 2nd Main, 22.2s long.",
       "function": "Main",
       "function_confidence": 0.19984,
       "function_status": "known",
       "same_label_as": null,
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": null
+      "key": "B minor"
     },
     {
       "section_id": "section-006",
       "start": 81.7,
       "end": 96.48,
-      "label": "006 Main (0.20)",
-      "description": "The 3rd Main, 14.8s long, same label as the first Main.",
       "function": "Main",
       "function_confidence": 0.196237,
       "function_status": "known",
       "same_label_as": "section-002",
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": "F#m\u2013E"
+      "key": "B minor"
     },
     {
       "section_id": "section-007",
       "start": 96.48,
       "end": 111.24,
-      "label": "007 Main (0.33)",
-      "description": "The 4th Main, 14.8s long.",
       "function": "Main",
       "function_confidence": 0.331091,
       "function_status": "known",
       "same_label_as": null,
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": "F#m\u2013Bm"
+      "key": "B minor"
     },
     {
       "section_id": "section-008",
       "start": 111.24,
       "end": 126.0,
-      "label": "008 Main (0.14)",
-      "description": "The 5th Main, 14.8s long, same label as the first Main.",
       "function": "Main",
       "function_confidence": 0.141951,
       "function_status": "known",
       "same_label_as": "section-003",
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": null
+      "key": "B minor"
     },
     {
       "section_id": "section-009",
       "start": 126.0,
       "end": 155.54,
-      "label": "009 Main (0.14)",
-      "description": "The 6th Main, 29.5s long, same label as the first Main.",
       "function": "Main",
       "function_confidence": 0.141951,
       "function_status": "known",
       "same_label_as": "section-003",
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": "F#\u2013F#m"
+      "key": "B minor"
     },
     {
       "section_id": "section-010",
       "start": 155.54,
       "end": 177.7,
-      "label": "010 Main (0.14)",
-      "description": "The 7th Main, 22.2s long, same label as the first Main.",
       "function": "Main",
       "function_confidence": 0.141951,
       "function_status": "known",
       "same_label_as": "section-003",
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": null
+      "key": "B minor"
     },
     {
       "section_id": "section-011",
       "start": 177.7,
       "end": 192.48,
-      "label": "011 Main (0.14)",
-      "description": "The 8th Main, 14.8s long, same label as the first Main.",
       "function": "Main",
       "function_confidence": 0.141951,
       "function_status": "known",
       "same_label_as": "section-003",
       "confidence": 0.6,
-      "key": "B minor",
-      "chord_progression": null
+      "key": "B minor"
     }
   ]
 }

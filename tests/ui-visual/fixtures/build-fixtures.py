@@ -55,6 +55,8 @@ NEEDED = [
     "sections.json",
     "song_event_timeline.json",
     "arrangement_state.json",
+    "artifacts/section_segmentation/sections_display.json",
+    "artifacts/gestures/song_event_timeline.json",
     "reference/human/human_hints.json",
     "reference/human/song_facts.json",
     "reference/moises/lyrics.json",

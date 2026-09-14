@@ -1,12 +1,12 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.1",
   "contract": "song_event_schema",
-  "description": "Payload contract for the generated deliverable data/analysis/<song>/song_event_timeline.json, produced by the phase-3 gestures stage (src/analyzer/stages/gestures.py, plan v3.0 item 9). Replaces the Epic-5 song_event_schema (composite build/drop/post_drop rows with nested phases[], member_event_ids, lighting_hint, evidence_ref) -- that stack was measured at chance against the gold set and deleted in the same change. Nothing in src/ loads this file at runtime any more -- it is documentation of the contract.",
+  "description": "Payload contract for the generated deliverable data/analysis/<song>/song_event_timeline.json, produced by the phase-3 gestures stage (src/analyzer/stages/gestures.py, plan v3.0 item 9; trimmed in v3.6 item 8). Replaces the Epic-5 song_event_schema (composite build/drop/post_drop rows with nested phases[], member_event_ids, lighting_hint, evidence_ref) -- that stack was measured at chance against the gold set and deleted in the same change. Nothing in src/ loads this file at runtime any more -- it is documentation of the contract.",
   "top_level": {
     "required": [
       "schema_version",
       "song_name",
-      "generated_from",
+      "field_sources",
       "events"
     ]
   },
@@ -18,11 +18,7 @@
       "end_time",
       "confidence",
       "intensity",
-      "section_id",
-      "section_name",
-      "provenance",
-      "summary",
-      "evidence_summary"
+      "section_id"
     ],
     "numeric_ranges": {
       "confidence": {
@@ -34,13 +30,12 @@
         "maximum": 1.0
       }
     },
-    "type_enum_note": "Either a gesture phase name from event_vocabulary.json's phase_vocabulary (approach, build, tension, impact, release), or a '<from_label> → <to_label>' section-pair transition.",
-    "provenance_enum": [
-      "machine-only"
-    ],
-    "summary_note": "Natural descriptive prose, e.g. 'a rising riser builds into an impact here'. Must never equal any retired Epic-5 boilerplate string (constitution §2 -- no internal implementation notes leak into a projected field)."
+    "type_enum_note": "Either a gesture phase name from event_vocabulary.json's phase_vocabulary (approach, build, tension, impact, release), or a '<from_label> → <to_label>' section-pair transition."
   },
   "removed_in_v3_0_item_9": {
     "description": "The composite-row shape (composite, phases[], member_event_ids, evidence_ref, lighting_hint, created_by, id) and the layer_add/layer_remove per-beat delta events and texture_summary[] are gone. Every event this stage emits is already flat and already carries its own evidence_summary; there is no separate machine-events file to cross-reference."
+  },
+  "trimmed_in_v3_6_item_8": {
+    "description": "`section_name` (duplicated the section_id join), `summary` / `evidence_summary` / `provenance` (unread) and `generated_from` (provenance now lives in artifacts/ only) are dropped from this top-level view. The full event shape, all seven fields included, is written first to artifacts/gestures/song_event_timeline.json -- the debugger UI reads that file for display text."
   }
 }

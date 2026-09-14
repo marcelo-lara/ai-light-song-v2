@@ -39,7 +39,6 @@ export interface BeatRow {
   time: number;
   beat: number;
   bar: number;
-  chord: string | null;
   type: BeatType;
   downbeat_confidence: number | null;
 }
@@ -95,6 +94,43 @@ export interface SectionsFile {
 }
 
 export type SectionsTopLevel = SectionRow[];
+
+// v3.6 item 8 — the trimmed wire shape of the top-level sections.json row,
+// after `label` / `description` / `chord_progression` moved to
+// artifacts/section_segmentation/sections_display.json. Used only as the
+// raw parse of the top-level file, before `mergeSectionDisplay` joins it
+// with the display artifact back into the full `SectionRow` every UI
+// component still consumes.
+export interface SectionsTopLevelRow {
+  section_id: string;
+  start: number;
+  end: number;
+  function: string | null;
+  function_confidence: number | null;
+  function_status: string;
+  contested_by?: string | null;
+  same_label_as: string | null;
+  confidence: number | null;
+  key: string | null;
+}
+
+export type SectionsTopLevelRows = SectionsTopLevelRow[];
+
+// v3.6 item 8 — artifacts/section_segmentation/sections_display.json. The
+// display-only fields split out of sections.json; never exposed to the MCP
+// server, read by the UI only to re-merge into `SectionRow`.
+export interface SectionDisplayRow {
+  section_id: string;
+  label: string;
+  description: string | null;
+  chord_progression: string | null;
+}
+
+export interface SectionDisplayFile {
+  schema_version: string;
+  song_name: string;
+  sections: SectionDisplayRow[];
+}
 
 // ---------------------------------------------------------------------------
 // artifacts/section_segmentation/sections.json  (v3.0 — allin1 named

@@ -634,9 +634,43 @@ def build_gestures(
 
     events.sort(key=lambda e: (e["start_time"], e["end_time"]))
 
+    generated_from = {
+        "source_song_path": str(paths.song_path),
+        "engine": "gestures.primitives (rule-based sound-design device detectors) + gestures.assembly + section-transition detector",
+        "dependencies": {
+            "fft_bands_file": str(paths.artifact("essentia", "fft_bands.json")),
+            "rms_loudness_file": str(paths.artifact("essentia", "rms_loudness.json")),
+            "drum_events_file": str(paths.artifact("symbolic_transcription", "drum_events.json")),
+            "beats_file": str(paths.artifact("essentia", "beats.json")),
+            "sections_file": str(paths.artifact("section_segmentation", "sections.json")),
+        },
+        "gesture_count": len(gestures),
+    }
+
+    # v3.6 item 8 — the full event shape (every field, including the ones
+    # dropped from the top-level view below) is written to its own artifact
+    # first, so the debugger UI can still read `section_name` / `summary` /
+    # `evidence_summary` / `provenance` there.
+    full_payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "generated_from": generated_from,
+        "events": events,
+    }
+    write_json(paths.artifact("gestures", "song_event_timeline.json"), full_payload)
+
     # v3.1 item 2 — attribution header. Every event field is the gestures stage's
-    # own output except `section_id` / `section_name`, which it copies from the
-    # allin1 segmentation to locate each event.
+    # own output except `section_id`, which it copies from the allin1
+    # segmentation to locate each event.
+    #
+    # v3.6 item 8 — `section_name` (duplicates the section_id join),
+    # `summary` / `evidence_summary` / `provenance` (unread) and
+    # `generated_from` (provenance now lives in artifacts/ only) are dropped
+    # from the top-level view; all four stay on the artifact above.
+    trimmed_events = [
+        {k: v for k, v in event.items() if k not in ("section_name", "summary", "evidence_summary", "provenance")}
+        for event in events
+    ]
     timeline_field_sources = validate_field_sources(
         {
             "type": "gestures",
@@ -645,32 +679,16 @@ def build_gestures(
             "confidence": "gestures",
             "intensity": "gestures",
             "section_id": "allin1",
-            "section_name": "allin1",
             "gesture_id": "gestures",
-            "provenance": "gestures",
-            "summary": "gestures",
-            "evidence_summary": "gestures",
         },
-        {key for event in events for key in event},
+        {key for event in trimmed_events for key in event},
         file="song_event_timeline.json",
     )
     payload = {
         "schema_version": SCHEMA_VERSION,
         "song_name": paths.song_name,
         "field_sources": timeline_field_sources,
-        "generated_from": {
-            "source_song_path": str(paths.song_path),
-            "engine": "gestures.primitives (rule-based sound-design device detectors) + gestures.assembly + section-transition detector",
-            "dependencies": {
-                "fft_bands_file": str(paths.artifact("essentia", "fft_bands.json")),
-                "rms_loudness_file": str(paths.artifact("essentia", "rms_loudness.json")),
-                "drum_events_file": str(paths.artifact("symbolic_transcription", "drum_events.json")),
-                "beats_file": str(paths.artifact("essentia", "beats.json")),
-                "sections_file": str(paths.artifact("section_segmentation", "sections.json")),
-            },
-            "gesture_count": len(gestures),
-        },
-        "events": events,
+        "events": trimmed_events,
     }
     write_json(paths.timeline_output_path, payload)
     return payload

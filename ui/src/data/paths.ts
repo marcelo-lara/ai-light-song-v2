@@ -16,8 +16,19 @@ export const artifactPaths = {
   info: (song: string) => encodePath(analysis(song, "info.json")),
   beats: (song: string) => encodePath(analysis(song, "beats.json")),
   sectionsTopLevel: (song: string) => encodePath(analysis(song, "sections.json")),
+  // v3.6 item 8 — the display-only fields (label/description/chord_progression)
+  // split out of the trimmed top-level sections.json. Read by the UI only,
+  // to re-merge into the full `SectionRow` shape (see `mergeSectionDisplay`).
+  sectionsDisplay: (song: string) =>
+    encodePath(analysis(song, "artifacts", "section_segmentation", "sections_display.json")),
+  // v3.6 item 8 trimmed `section_name` / `summary` / `evidence_summary` /
+  // `provenance` / `generated_from` off the top-level song_event_timeline.json
+  // (unread by any consumer). The debugger's Gestures lane still needs them
+  // for operator review, so it reads the full pre-trim artifact instead —
+  // written first, byte-for-byte the same events plus those fields
+  // (src/analyzer/stages/gestures.py).
   eventTimeline: (song: string) =>
-    encodePath(analysis(song, "song_event_timeline.json")),
+    encodePath(analysis(song, "artifacts", "gestures", "song_event_timeline.json")),
   humanHints: (song: string) =>
     encodePath(analysis(song, "reference", "human", "human_hints.json")),
   // Editable, hand-authored section segmentation — same reference/human/

@@ -126,8 +126,10 @@ breaking it has already cost this repo something.
   onset wins over the nearest grid position — a cue fired late is a cue missed.
   Where the grid itself is uncertain, say so rather than snapping and implying a
   precision that isn't there.
-- **Provenance.** Every generated file carries `generated_from`; every claim
-  carries how it was arrived at.
+- **Provenance.** Every artifact carries `generated_from`; every top-level
+  (delivery-surface) file carries `field_sources` instead — no top-level file
+  carries `generated_from` (v3.6 item 8). Every claim carries how it was
+  arrived at.
 - **Docs hold current material only.** Delete a doc in the change that makes it
   stale — git history is the archive. No numbered story files, no archive folder
   (`docs/archive/experiments_promoted.md` and

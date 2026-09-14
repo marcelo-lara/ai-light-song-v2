@@ -15,12 +15,15 @@ import {
   parseSongFacts,
   parseRmsLoudness,
   parseSectionSegmentation,
-  parseSectionsTopLevel,
+  parseSectionsTopLevelRows,
+  parseSectionDisplay,
+  mergeSectionDisplay,
 } from "./parsers";
 
 import infoFixture from "./__fixtures__/info.json";
 import beatsFixture from "./__fixtures__/beats.json";
 import sectionsFixture from "./__fixtures__/sections_top_level.json";
+import sectionsDisplayFixture from "./__fixtures__/sections_display.json";
 import segFixture from "./__fixtures__/section_segmentation.json";
 import fftFixture from "./__fixtures__/fft_bands.json";
 import rmsFixture from "./__fixtures__/rms_loudness.json";
@@ -69,9 +72,11 @@ describe("parseBeats", () => {
   });
 });
 
-describe("parseSectionsTopLevel", () => {
-  it("parses the v3.0 allin1 named-segmentation projection", () => {
-    const sections = parseSectionsTopLevel(sectionsFixture);
+describe("parseSectionsTopLevelRows / parseSectionDisplay / mergeSectionDisplay", () => {
+  it("parses the v3.0 allin1 named-segmentation projection, joined with its display fields", () => {
+    const topLevel = parseSectionsTopLevelRows(sectionsFixture);
+    const display = parseSectionDisplay(sectionsDisplayFixture);
+    const sections = mergeSectionDisplay(topLevel, display.sections);
     expect(sections.length).toBe(4);
     expect(sections[0]!.label).toMatch(/^\d{3} /);
     expect(sections[0]!.section_id).toBe("section-001");
@@ -79,22 +84,42 @@ describe("parseSectionsTopLevel", () => {
   });
 
   it("carries the exact row shape through: section_id, start, end, label, description, confidence", () => {
-    const raw = [
+    const rawTopLevel = [
       {
         section_id: "section-001",
         start: 0,
         end: 10,
-        label: "001 Intro (0.90)",
-        description: "Opening section, 10.0s.",
         confidence: 0.9,
       },
     ];
-    const [row] = parseSectionsTopLevel(raw);
+    const rawDisplay = {
+      schema_version: "3.6",
+      song_name: "_test_song",
+      sections: [
+        {
+          section_id: "section-001",
+          label: "001 Intro (0.90)",
+          description: "Opening section, 10.0s.",
+          chord_progression: null,
+        },
+      ],
+    };
+    const topLevel = parseSectionsTopLevelRows(rawTopLevel);
+    const display = parseSectionDisplay(rawDisplay);
+    const [row] = mergeSectionDisplay(topLevel, display.sections);
     expect(row).toMatchObject({
       section_id: "section-001",
       label: "001 Intro (0.90)",
+      description: "Opening section, 10.0s.",
       confidence: 0.9,
     });
+  });
+
+  it("throws when a top-level section_id has no matching display row", () => {
+    const topLevel = parseSectionsTopLevelRows([
+      { section_id: "section-999", start: 0, end: 10, confidence: 0.5 },
+    ]);
+    expect(() => mergeSectionDisplay(topLevel, [])).toThrow(ShapeError);
   });
 });
 

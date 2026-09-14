@@ -1,0 +1,80 @@
+{
+  "schema_version": "3.1",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "source_song_path": "data/songs/Armin - Revolution.mp3",
+    "engine": "ui_data.build_ui_data (publish-time section display text)",
+    "dependencies": {
+      "sections_file": "/data/analysis/Armin - Revolution/sections.json",
+      "harmonic_file": "/data/analysis/Armin - Revolution/artifacts/layer_a_harmonic.json"
+    }
+  },
+  "sections": [
+    {
+      "section_id": "section-001",
+      "label": "001 Intro (0.47)",
+      "description": "The 1st Intro, 14.8s long.",
+      "chord_progression": "F#m\u2013A"
+    },
+    {
+      "section_id": "section-002",
+      "label": "002 Chorus (0.47)",
+      "description": "The 1st Chorus, 14.8s long.",
+      "chord_progression": null
+    },
+    {
+      "section_id": "section-003",
+      "label": "003 Chorus (0.19)",
+      "description": "The 2nd Chorus, 14.8s long.",
+      "chord_progression": null
+    },
+    {
+      "section_id": "section-004",
+      "label": "004 Main (0.20)",
+      "description": "The 1st Main, 14.8s long.",
+      "chord_progression": null
+    },
+    {
+      "section_id": "section-005",
+      "label": "005 Main (0.20)",
+      "description": "The 2nd Main, 22.2s long.",
+      "chord_progression": null
+    },
+    {
+      "section_id": "section-006",
+      "label": "006 Main (0.20)",
+      "description": "The 3rd Main, 14.8s long, same label as the first Main.",
+      "chord_progression": "F#m\u2013E"
+    },
+    {
+      "section_id": "section-007",
+      "label": "007 Main (0.33)",
+      "description": "The 4th Main, 14.8s long.",
+      "chord_progression": "F#m\u2013Bm"
+    },
+    {
+      "section_id": "section-008",
+      "label": "008 Main (0.14)",
+      "description": "The 5th Main, 14.8s long, same label as the first Main.",
+      "chord_progression": null
+    },
+    {
+      "section_id": "section-009",
+      "label": "009 Main (0.14)",
+      "description": "The 6th Main, 29.5s long, same label as the first Main.",
+      "chord_progression": "F#\u2013F#m"
+    },
+    {
+      "section_id": "section-010",
+      "label": "010 Main (0.14)",
+      "description": "The 7th Main, 22.2s long, same label as the first Main.",
+      "chord_progression": null
+    },
+    {
+      "section_id": "section-011",
+      "label": "011 Main (0.14)",
+      "description": "The 8th Main, 14.8s long, same label as the first Main.",
+      "chord_progression": null
+    }
+  ]
+}

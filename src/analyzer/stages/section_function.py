@@ -77,7 +77,9 @@ def _section_energy(paths: SongPaths) -> list[dict]:
     """Per published-section mean mix RMS, mean drums RMS, and the
     arrangement_state playing-stem count at the section midpoint."""
     loudness = read_json(paths.loudness_output_path)
-    order: list[str] = loudness["metadata"]["source_order"]
+    # v3.6 item 8 — `source_order` moved out of a `metadata` wrapper to a flat
+    # top-level field (the wrapper's other keys were unread and dropped).
+    order: list[str] = loudness["source_order"]
     mix_i = order.index("mix")
     drums_i = order.index("drums")
     frames = loudness["frames"]

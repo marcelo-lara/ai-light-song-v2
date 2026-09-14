@@ -103,11 +103,17 @@ def _windows(
     `artifacts/essentia/rms_loudness.json` — no silent fallback to the artifact.
     """
     doc = read_json(paths.loudness_output_path)
-    order: list[str] = doc["metadata"]["source_order"]
-    duration: float = doc["metadata"]["duration"]
+    # v3.6 item 8 — `source_order` moved out of a `metadata` wrapper to a flat
+    # top-level field; `metadata.duration` was dropped outright (unread by
+    # the MCP consumer). Derive the window bound from the frames' own last
+    # time instead — every window beyond the last frame's coverage already
+    # produces no data and is skipped below, so this is exact, not an
+    # approximation standing in for the dropped field.
+    order: list[str] = doc["source_order"]
     frames = doc["frames"]
 
     times = [f["time"] for f in frames]
+    duration: float = (times[-1] + doc["interval_ms"] / 1000.0) if times else 0.0
     # dB per source. A silent frame floors at -180 dB rather than being dropped:
     # silence is a fact about the stem, not missing data (no silent fallbacks).
     db = [[20.0 * math.log10(max(f["values"][i], 1e-9)) for f in frames] for i in range(len(order))]

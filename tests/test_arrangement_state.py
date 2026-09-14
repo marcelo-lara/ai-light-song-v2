@@ -32,15 +32,15 @@ def _loudness_doc(duration_s: float, present: Callable[[str, float], bool]) -> d
         t = round(i * FRAME_DT, 4)
         vals = [PRESENT if present(s, t) else ABSENT for s in STEMS]
         frames.append({"time": t, "values": vals, "normalized_values": vals})
+    # v3.6 item 8 — `source_order` / `interval_ms` moved out of a `metadata`
+    # wrapper to flat top-level fields; `duration` / `total_frames` dropped
+    # (unread; arrangement_state.py now derives its window bound from the
+    # frames' own last time).
     return {
-        "schema_version": "3.0",
+        "schema_version": "3.1",
         "song_name": "_test_song",
-        "metadata": {
-            "source_order": STEMS,
-            "duration": round(n * FRAME_DT, 6),
-            "interval_ms": 20,
-            "total_frames": n,
-        },
+        "source_order": STEMS,
+        "interval_ms": 20,
         "frames": frames,
     }
 
@@ -88,7 +88,7 @@ class ArrangementStateStageTests(unittest.TestCase):
         self.assertIsInstance(blocks[1]["margin_db"], float)
         self.assertEqual(blocks[1]["entered"], ["drums"])
         self.assertEqual(payload["generated_from"]["reads"], "loudness.json")
-        self.assertEqual(payload["schema_version"], "3.0")
+        self.assertEqual(payload["schema_version"], "3.1")
 
     def test_mix_only_flip_produces_no_block(self) -> None:
         # the mix channel drops out for a sustained span; every real stem is

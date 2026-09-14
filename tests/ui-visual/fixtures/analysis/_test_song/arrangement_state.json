@@ -1,5 +1,5 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.1",
   "song_name": "_test_song",
   "field_sources": {
     "start_s": "arrangement_state",
@@ -344,7 +344,7 @@
     },
     {
       "start_s": 56.25,
-      "end_s": 58.122,
+      "end_s": 58.13,
       "playing": [],
       "entered": [],
       "left": [

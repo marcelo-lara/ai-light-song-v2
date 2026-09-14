@@ -90,8 +90,10 @@ class LoudnessPublishTests(unittest.TestCase):
             payload = self._publish(n)
             frames = payload["frames"]
             self.assertLessEqual(abs(len(frames) - n / 2), 1)
-            self.assertEqual(payload["metadata"]["interval_ms"], 20)
-            self.assertEqual(payload["metadata"]["total_frames"], len(frames))
+            # v3.6 item 8 — `interval_ms` is now a flat top-level field (no
+            # `metadata` wrapper); `total_frames` (unread) is dropped.
+            self.assertEqual(payload["interval_ms"], 20)
+            self.assertNotIn("metadata", payload)
 
     def test_successive_frame_times_are_20ms_apart(self) -> None:
         for n in (2000, 19401):  # even and odd source-frame counts
@@ -104,8 +106,10 @@ class LoudnessPublishTests(unittest.TestCase):
         all_strings = list(_strings(payload))
         self.assertNotIn("path", all_strings)
         self.assertFalse([s for s in all_strings if s.startswith("/data/")])
-        self.assertEqual(
-            [set(s) for s in payload["sources"]][0], {"id", "label", "kind"})
+        # v3.6 item 8 — `sources[]` (stem identity list) is unread and
+        # dropped from the top-level view; it stays on the artifact.
+        self.assertNotIn("sources", payload)
+        self.assertEqual(payload["source_order"], ["mix", "bass"])
 
     def test_pair_averaging_keeps_the_mean_not_a_dropped_frame(self) -> None:
         # artifact frame i values = [0.01*i, 0.02*i]; pair (0,1) -> mean [0.005, 0.01]

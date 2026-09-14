@@ -66,7 +66,7 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 8 of 12 |
+| Done | 9 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 2, 8, 9, 10 |
@@ -74,7 +74,7 @@ commit.
 | New experiments | `truth_common`, `segment_seeds`, `rhythm_drum_ioi`, `rhythm_stem_autocorr`, `rhythm_vocal_onsets`, `energy_level`, `tension_shape` |
 | Promotion approval | producers kept by item 6 are **pre-approved** for `src/` (operator, 2026-09-14: "unless something fails too far, just add it as a layer") |
 | Pre-existing failures | analyzer tests, ui test+build, MCP smoke-test: all green on HEAD (7a58785). Visual suite: 39/44 specs failed pre-existing — screenshot-baseline drift in this environment (e.g. `timeline-zoom-max` expects 1280×1142, environment renders 1280×1304 — a systemic font/viewport rendering difference, not a code defect). Item 2 incidentally fixed two non-screenshot contributors (stale `human_hints.json`/`block_energy.json` fixture drift, and the `segments.json` 404 gap — see D2.2), dropping this to 23/44 failing, all pure screenshot-baseline drift now. Treat any per-item visual QA as DOM/data assertions; screenshot re-capture is skipped for the reason given in each item's Visual QA section — a human with a matching rendering environment should run `--update-snapshots` once and review the diff before trusting pixel baselines again. |
-| Decisions | D2.1 (resolved), D2.2 (resolved), D4.1 (resolved), D5.1 (resolved), D10.1 (resolved) |
+| Decisions | D2.1 (resolved), D2.2 (resolved), D4.1 (resolved), D5.1 (resolved), D8.1 (resolved), D10.1 (resolved) |
 
 ---
 
@@ -264,22 +264,24 @@ Refinement item 5, the field table. Guard: no top-level file carries
 `generated_from`, a display string, or a field `mcp/serializers.py` does not
 read. Beat `time`/`type`/`bar`/`beat`/`downbeat_confidence` stay.
 
-- [ ] Apply refinement item 5's drop table in the stages that write each top-level file (`src/analyzer/paths.py` lists them). `hints.json` becomes a flat, human-only `hints[]` with `section_id, title, text, start_time, end_time, lighting_hint`, and `source` declared once in `field_sources`. `drum_events.json` gets a file-level `confidence: null` with a `confidence_reason`. Bump `schema_version` in every changed file. `field_sources` lists surviving fields only.
-- [ ] If a dropped field exists in no artifact, the producing stage first writes it under `artifacts/<producer>/`.
-- [ ] `ui/src/data/parsers.ts` and the loaders read `chord`, `chord_progression`, `label`, `description`, `section_name`, `summary`, `evidence_summary` and `provenance` from those artifact files, never from top level.
-- [ ] Update `tests/test_field_sources_convention.py`, `tests/test_publish_views.py` and any failing publish test to the new shapes.
-- [ ] Re-publish all 23 songs from `build-ui-data` onward, then run `build-fixtures.py` (re-curating the hand-curated files).
-- [ ] Contract: `docs/reference/downstream-contract.md` file-by-file, `docs/reference/artifacts.md`. `CLAUDE.md` "Provenance" rule → "every artifact carries `generated_from`; top-level files carry `field_sources`". Delete `docs/issues.md` "host paths" entry.
+- [x] Apply refinement item 5's drop table in the stages that write each top-level file (`src/analyzer/paths.py` lists them). `hints.json` becomes a flat, human-only `hints[]` with `section_id, title, text, start_time, end_time, lighting_hint`, and `source` declared once in `field_sources`. `drum_events.json` gets a file-level `confidence: null` with a `confidence_reason`. Bump `schema_version` in every changed file. `field_sources` lists surviving fields only.
+- [x] If a dropped field exists in no artifact, the producing stage first writes it under `artifacts/<producer>/` — new `artifacts/section_segmentation/sections_display.json` (`section_id, label, description, chord_progression`).
+- [x] `ui/src/data/parsers.ts` and the loaders read `chord`, `chord_progression`, `label`, `description`, `section_name`, `summary`, `evidence_summary` and `provenance` from those artifact files, never from top level. `sections.json`'s display trio reads from the new artifact via `mergeSectionDisplay` (join on `section_id`, fails loudly on a mismatch); the Gestures lane's `section_name`/`summary`/`evidence_summary`/`provenance` now read `artifacts/gestures/song_event_timeline.json` (the pre-trim artifact) instead of the trimmed top-level file. `beats.json`'s `chord` was already unused by the UI (the Chords lane reads `artifacts/layer_a_harmonic.json`, unrelated) — nothing to repoint. `genre.json`'s `top_predictions`/`guidance` are shown only through the generic raw-artifact inspector reading `artifacts/genre.json` directly — nothing to repoint.
+- [x] Update `tests/test_field_sources_convention.py`, `tests/test_publish_views.py` and any failing publish test to the new shapes.
+- [x] Re-publish all 23 songs from `build-ui-data` onward, then run `build-fixtures.py` (re-curating the hand-curated files). Republished via the 7 downstream stages the schema change actually touches (`build-gestures`, `generate-section-hints`, `build-ui-data`, `detect-arrangement-state`, `publish-arrangement-state`, `contest-section-function`, `build-human-hints-alignment`) rather than the full pipeline — phase-1/2 artifacts (stems, HPCP, drum transcription, etc.) are untouched by this item and re-running them would have been pure waste.
+- [x] Contract: `docs/reference/downstream-contract.md` file-by-file, `docs/reference/artifacts.md`. `CLAUDE.md` "Provenance" rule → "every artifact carries `generated_from`; top-level files carry `field_sources`". Delete `docs/issues.md` "host paths" entry.
+
+**D8.1 (resolved):** two implementation subagents hit the same infra rate-limit mid-item, in sequence — the second one left the Python/analyzer side complete and green (157 tests) but the UI side half-wired (`parsers.ts`/`types.ts` had the new merge machinery, but `loaders.ts` still called the deleted `parseSectionsTopLevel`, and `paths.ts`/fixture wiring were untouched). A third, narrowly-scoped subagent finished the UI wiring; validated independently afterward (see Checks) rather than trusting its self-report, which caught two more gaps the subagent didn't: `build-fixtures.py`'s `NEEDED` list was missing the two new/repointed artifact paths (`artifacts/section_segmentation/sections_display.json`, `artifacts/gestures/song_event_timeline.json`), which would have 404'd every RegFull/RegPartial load — fixed directly.
 
 **Checks**
-- [ ] `grep -l generated_from data/analysis/*/*.json` → no matches.
-- [ ] Each published top-level file's key set equals refinement item 5's surviving set (script in the scratchpad, not the repo).
-- [ ] analyzer tests, ui test + build green.
+- [x] `grep -l generated_from data/analysis/*/*.json` → no matches, across all 23 songs.
+- [x] Each published top-level file's key set equals refinement item 5's surviving set — verified directly against `Armin - Revolution` and `_test_song` for every changed file (`sections.json`, `beats.json`, `song_event_timeline.json`, `hints.json`, `genre.json`, `drum_events.json`, `loudness.json`); `contested_by` on `sections.json` rows is correctly optional (present only when a section is actually contested — 2/23 songs).
+- [x] analyzer tests (157), ui test (400) + build green.
 
 **Visual QA**
-- [ ] Before the change, record `lane-events-chords` card count on `RegFull`. After: same count.
-- [ ] The full visual suite passes **with no `--update-snapshots`**: the debugger must look identical.
-- [ ] Runtime assertions as item 2.
+- [x] Before the change, recorded `lane-events-chords` card count on `RegFull`: **39**. After: **39** — unchanged, and no runtime errors.
+- [x] The full visual suite: 21/44 failing, same set as items 5/7 (unchanged), all pure screenshot-pixel drift — no new failures from this item. `--update-snapshots` not run, per the environment-drift reasoning already recorded in Status; every DOM/data/network assertion this item can check directly all pass.
+- [x] Runtime assertions as item 2.
 
 ---
 

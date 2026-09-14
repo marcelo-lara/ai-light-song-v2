@@ -104,30 +104,6 @@ Current focus song: `_test_song`
   still individually addressable — or the 6 KB target is formally replaced with
   a structure-aware budget in `mcp-definition.md`.
 
-### Delivery surface — `hints.json` / `song_event_timeline.json` still embed host paths
-
-- **Status:** `pending`
-- **Raised:** 2026-09-06, phase-D handoff gate for v3.1. Found by re-running
-  `build-ui-data` across all 21 songs and scanning every top-level file.
-- **Problem:** the standing rule is "no absolute host path in any top-level
-  file". v3.1 item 7 fixed `loudness.json` and item 8 fixed `info.json`, but two
-  top-level files were never in a v3.1 item's scope and still carry a
-  `generated_from` block with `/data/songs/…` and `/data/analysis/…/artifacts/…`
-  paths: `hints.json` (written by `hints.py`) and `song_event_timeline.json`
-  (written by `gestures.py`).
-- **Not a response leak:** the `mcp/` serializers do not copy `generated_from`
-  into any payload — `full-regression` F4.21 ("no string beginning `/data/`")
-  passes. The committed fixtures are host-path-free, so the suites stay green.
-  The leak is only in the raw published files a future consumer might read
-  directly.
-- **Fix:** the publish path for both files drops `generated_from` (matching item
-  8's `info.json` decision — a client discovers files from the fixed layout, and
-  the block pointed into `artifacts/` which is not exposable anyway), or rewrites
-  it song-relative. Rebuild the MCP fixtures and re-run `full-regression`.
-- **Success condition:** every top-level file across all 21 songs contains no
-  string beginning `/data/`, asserted in `full-regression` against a fixture
-  that would actually catch a regression.
-
 ### Texture hints missing on three gold songs — `arrangement_state` corpus F1 measures the label absence, not the detector
 
 - **Status:** `pending`

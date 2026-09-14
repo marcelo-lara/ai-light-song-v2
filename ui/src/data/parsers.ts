@@ -46,9 +46,12 @@ import type {
   LoudnessSource,
   ReviewQuestion,
   ReviewQueue,
-  SectionRow,
+  SectionDisplayFile,
+  SectionDisplayRow,
   SectionSegmentation,
   SectionsTopLevel,
+  SectionsTopLevelRow,
+  SectionsTopLevelRows,
   SegmentationSection,
   SegmentRhythm,
   SongFact,
@@ -91,7 +94,6 @@ function parseBeatRow(raw: unknown, ctx: string): BeatRow {
     time: asNumber(o.time, `${ctx}.time`),
     beat: asNumber(o.beat, `${ctx}.beat`),
     bar: asNumber(o.bar, `${ctx}.bar`),
-    chord: stringOrNull(o.chord, `${ctx}.chord`),
     type: stringOr(o.type, "beat", `${ctx}.type`),
     downbeat_confidence: numberOrNull(
       o.downbeat_confidence ?? o.confidence,
@@ -114,14 +116,17 @@ export function parseBeats(raw: unknown): Beats {
 
 // ---------------------------------------------------------------------------
 
-function parseSectionRow(raw: unknown, ctx: string): SectionRow {
+// Raw wire parse of the trimmed top-level sections.json row (v3.6 item 8 —
+// label/description/chord_progression moved to
+// artifacts/section_segmentation/sections_display.json). Used only as input
+// to `mergeSectionDisplay`; nothing else should consume `SectionsTopLevelRow`
+// directly.
+function parseSectionsTopLevelRow(raw: unknown, ctx: string): SectionsTopLevelRow {
   const o = asObject(raw, ctx);
   return {
     section_id: asString(o.section_id, `${ctx}.section_id`),
     start: asNumber(o.start, `${ctx}.start`),
     end: asNumber(o.end, `${ctx}.end`),
-    label: asString(o.label, `${ctx}.label`),
-    description: stringOrNull(o.description, `${ctx}.description`),
     function: stringOrNull(o.function, `${ctx}.function`),
     function_confidence: numberOrNull(
       o.function_confidence,
@@ -135,20 +140,79 @@ function parseSectionRow(raw: unknown, ctx: string): SectionRow {
     contested_by: stringOrNull(o.contested_by, `${ctx}.contested_by`),
     confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
     key: stringOrNull(o.key, `${ctx}.key`),
-    chord_progression: stringOrNull(o.chord_progression, `${ctx}.chord_progression`),
   };
 }
 
-export function parseSectionsTopLevel(raw: unknown): SectionsTopLevel {
+export function parseSectionsTopLevelRows(raw: unknown): SectionsTopLevelRows {
   if (typeof raw === "object" && raw !== null && "sections" in raw) {
     const o = asObject(raw, "sections.json");
     return asArray(o.sections, "sections.json.sections").map((row, i) =>
-      parseSectionRow(row, `sections[${i}]`),
+      parseSectionsTopLevelRow(row, `sections[${i}]`),
     );
   }
   return asArray(raw, "sections.json").map((row, i) =>
-    parseSectionRow(row, `sections[${i}]`),
+    parseSectionsTopLevelRow(row, `sections[${i}]`),
   );
+}
+
+// artifacts/section_segmentation/sections_display.json (v3.6 item 8).
+function parseSectionDisplayRow(raw: unknown, ctx: string): SectionDisplayRow {
+  const o = asObject(raw, ctx);
+  return {
+    section_id: asString(o.section_id, `${ctx}.section_id`),
+    label: asString(o.label, `${ctx}.label`),
+    description: stringOrNull(o.description, `${ctx}.description`),
+    chord_progression: stringOrNull(
+      o.chord_progression,
+      `${ctx}.chord_progression`,
+    ),
+  };
+}
+
+export function parseSectionDisplay(raw: unknown): SectionDisplayFile {
+  const o = asObject(raw, "sections_display.json");
+  return {
+    schema_version: stringOr(o.schema_version, "", "sections_display.schema_version"),
+    song_name: stringOr(o.song_name, "", "sections_display.song_name"),
+    sections: asArray(o.sections, "sections_display.sections").map((row, i) =>
+      parseSectionDisplayRow(row, `sections_display.sections[${i}]`),
+    ),
+  };
+}
+
+// Joins the trimmed top-level rows with their display counterparts back into
+// the full `SectionRow` shape every UI component still consumes. A
+// `section_id` present in `topLevel` with no matching `display` row is a
+// join-key mismatch between the two publishers — fail loudly rather than
+// paper over it with an empty label (no silent fallbacks).
+export function mergeSectionDisplay(
+  topLevel: SectionsTopLevelRows,
+  display: SectionDisplayRow[],
+): SectionsTopLevel {
+  const bySectionId = new Map(display.map((row) => [row.section_id, row]));
+  return topLevel.map((row) => {
+    const disp = bySectionId.get(row.section_id);
+    if (!disp) {
+      throw new ShapeError(
+        `mergeSectionDisplay: section_id "${row.section_id}" has no matching row in sections_display.json`,
+      );
+    }
+    return {
+      section_id: row.section_id,
+      start: row.start,
+      end: row.end,
+      label: disp.label,
+      description: disp.description,
+      function: row.function,
+      function_confidence: row.function_confidence,
+      function_status: row.function_status,
+      same_label_as: row.same_label_as,
+      ...(row.contested_by !== undefined ? { contested_by: row.contested_by } : {}),
+      confidence: row.confidence,
+      key: row.key,
+      chord_progression: disp.chord_progression,
+    };
+  });
 }
 
 // ---------------------------------------------------------------------------

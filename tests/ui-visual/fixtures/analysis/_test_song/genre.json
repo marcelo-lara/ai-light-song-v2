@@ -1,42 +1,14 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.1",
   "song_name": "_test_song",
   "field_sources": {
     "genres": "genre",
-    "confidence": "genre",
-    "top_predictions": "genre",
-    "guidance": "genre"
+    "confidence": "genre"
   },
   "genres": [
     "dance",
     "electronic",
     "pop"
   ],
-  "confidence": 0.312636,
-  "top_predictions": [
-    {
-      "label": "dance",
-      "confidence": 0.312636
-    },
-    {
-      "label": "electronic",
-      "confidence": 0.254756
-    },
-    {
-      "label": "pop",
-      "confidence": 0.200326
-    },
-    {
-      "label": "female vocalists",
-      "confidence": 0.142062
-    },
-    {
-      "label": "House",
-      "confidence": 0.141891
-    }
-  ],
-  "guidance": [
-    "Use the genre only as review guidance for what song parts are likely to matter.",
-    "Do not assume genre-specific drops or section semantics unless downstream evidence supports them."
-  ]
+  "confidence": 0.312636
 }

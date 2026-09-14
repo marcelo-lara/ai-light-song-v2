@@ -1,5 +1,5 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.1",
   "generated_from": {
     "engine": "analyzer.stages.arrangement_state",
     "reads": "loudness.json",
@@ -318,7 +318,7 @@
     },
     {
       "start_s": 56.25,
-      "end_s": 58.122,
+      "end_s": 58.13,
       "playing": [],
       "entered": [],
       "left": [

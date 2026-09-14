@@ -39,11 +39,24 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
 
     hints_payload = read_json(reference_path)
     sections_payload = _load_json_if_exists(paths.sections_output_path) or []
-    timeline_payload = _load_json_if_exists(paths.timeline_output_path) or {"events": []}
+    # v3.6 item 8 — `label` (sections.json) and `section_name` (song_event_
+    # timeline.json) were dropped from both top-level files. This is a
+    # validation-only artifact (artifacts/validation/), so it reads the
+    # display/full-event artifacts those fields moved to instead of going
+    # without them.
+    display_payload = _load_json_if_exists(
+        paths.artifact("section_segmentation", "sections_display.json")
+    ) or {"sections": []}
+    timeline_payload = _load_json_if_exists(
+        paths.artifact("gestures", "song_event_timeline.json")
+    ) or {"events": []}
     harmonic_payload = _load_json_if_exists(paths.artifact("layer_a_harmonic.json")) or {"chords": []}
 
     hints = hints_payload.get("human_hints", [])
     sections = sections_payload if isinstance(sections_payload, list) else sections_payload.get("sections", [])
+    labels_by_section_id = {
+        row["section_id"]: row.get("label") for row in display_payload.get("sections", [])
+    }
     events = timeline_payload.get("events", []) if isinstance(timeline_payload, dict) else []
     chords = harmonic_payload.get("chords", []) if isinstance(harmonic_payload, dict) else []
 
@@ -64,7 +77,7 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
             if overlap <= 0:
                 continue
             overlapping_sections.append({
-                "label": section.get("label"),
+                "label": labels_by_section_id.get(section.get("section_id")),
                 "start": round(section_start, 6),
                 "end": round(section_end, 6),
                 "overlap_seconds": round(overlap, 6),
@@ -114,7 +127,7 @@ def build_human_hints_alignment(paths: SongPaths) -> dict | None:
         primary_section_full = find_primary_section(sections, hint_start, hint_end)
         primary_section = (
             {
-                "label": primary_section_full.get("label"),
+                "label": labels_by_section_id.get(primary_section_full.get("section_id")),
                 "start": round(float(primary_section_full["start"]), 6),
                 "end": round(float(primary_section_full["end"]), 6),
             }
