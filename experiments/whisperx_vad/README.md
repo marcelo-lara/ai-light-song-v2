@@ -1,0 +1,253 @@
+# WhisperX VAD — a speech-stack's VAD front-end over the vocal stem
+
+*(whisperX 3.8.6's Pyannote-based VAD front-end — NEW sandbox image, NEW
+checkpoint pin; diarization NOT attempted, VAD-only)*
+
+**Does a speech-domain VAD find vocal-phrase edges on sung material, without
+the confusions its own domain gap predicts?** The last candidate in the
+false-vocal family (items 4-7), and the only one whose pretraining is on
+*speech*, not music or a general audio-tagging class — built anyway so the
+comparison happens by ear rather than by assumption.
+
+## Status
+
+**PROMOTED 2026-09-13** (operator decision) as `arrangement_state.json`'s
+`vocals_phrase` — TLDR in
+[`docs/archive/experiments_promoted.md`](../../docs/archive/experiments_promoted.md).
+v3.5 item 7. Compute stays out-of-band in this sandbox image (whisperX pins a
+torch the `app` image cannot take); `src/` reads the exported proposal. The VAD
+checkpoint is pre-fetched, sha256-verified and `COPY`'d in — item 6's lesson.
+Debugger lane `7. WhisperX VAD`.
+
+## Why? What for?
+
+`arrangement_state` reports `vocals` present 40.8% of `ayuni` — the
+false-vocal question items 3-7 chase from different angles. Items 4/5 use
+hand-built DSP cues and a CLAP contrastive pair; item 6 asks whether a
+general audio tagger's own `Singing` class does better. This item asks the
+opposite-direction question: does a **speech-trained** VAD, built to find
+"someone is talking" in call-center and meeting audio, transfer to "someone
+is singing" at all — and if it does, is it cheap and reliable enough to be
+worth the new image it costs?
+
+## Three recorded objections — expected risks, not surprises
+
+This item is built anyway so these show up in the numbers rather than being
+argued about in the abstract:
+
+1. **Diarization answers *which speaker*, and on music it will assign a
+   speaker to the flute.** It segments whatever its VAD accepts, so a
+   diarization pass inherits exactly the false positives this whole release
+   exists to remove — it does not fix the underlying confusion, it just adds
+   a speaker label on top of it. This is also part of why diarization was
+   not attempted here (see below) — even setting the token gate aside, a
+   speaker split does not obviously help this item's actual question.
+2. **The VAD is speech-trained: sustained sung vowels with no consonants are
+   its classic miss, and pitched instruments its classic false accept.** A
+   held vowel with no plosive/fricative texture looks acoustically closer to
+   "silence" than "speech" to a model trained on conversational audio; a
+   sustained lead synth or string pad can look closer to "speech" than a
+   quiet vocal does.
+3. **Lead-vs-backing is its weakest axis**, because double-tracked leads and
+   harmony stacks overlap constantly and a binary VAD has no notion of
+   "which voice" at all — this is a strictly weaker read than even the crude
+   frame-level voiceness curves items 4-6 produce, since VAD's native output
+   is a single yes/no per frame, not a continuous confidence that could later
+   separate overlapping sources.
+
+## Determinism — the automatic kill clause
+
+**A candidate that needs a live token at analysis time cannot be promoted
+regardless of its score.** This is stated plainly, per the refinement doc's
+own instruction, rather than left to be discovered at the promotion gate.
+whisperX's VAD checkpoint does not trigger this clause (see "Checkpoint" in
+`model.py`'s docstring — it is bundled in the `whisperx` PyPI package itself,
+not a gated Hugging Face download, and this experiment additionally pins its
+own independently-verified copy, `COPY`'d into the image at build time, never
+fetched at analysis time). Diarization's checkpoint
+(`pyannote/speaker-diarization-3.1`) **does** trigger this clause — see
+below.
+
+## Diarization: not attempted
+
+`echo $HF_TOKEN` and `~/.cache/huggingface/token` were both checked in this
+environment before any code was written: **no Hugging Face token is
+available.** `pyannote/speaker-diarization-3.1` is a gated checkpoint that
+cannot be fetched, checksummed, or baked into an image without one. Per the
+plan's own instruction ("if that is not achievable within this item's scope,
+diarization is not attempted and the item ships VAD-only — say so plainly in
+the README rather than discovering it at the promotion gate"), **diarization
+was not built, not stubbed, and not attempted.** `export.py` does not emit a
+diarization field with `null`s standing in for it — the schema does not
+imply a capability the item does not have. If a token becomes available
+later, adding the diarization pass is future work (see "Future work" below);
+it needs its own build-secret-gated build (checkpoint fetched and
+checksummed at image build time using a token supplied as a Docker build
+secret, never fetched at analysis time) before it could even be attempted,
+per the plan.
+
+## Method
+
+1. **whisperX's VAD front-end** (`whisperx.vads.pyannote.Pyannote`, wrapping
+   a `pyannote.audio` `VoiceActivityDetection`-family pipeline) run over
+   `artifacts/stems/vocals.wav` only — no diarization, no ASR/transcription
+   (the Whisper decoder itself is never loaded; only the VAD stage of the
+   whisperX pipeline runs, which is the plan's own scoping: "whisperX's VAD
+   front-end").
+2. **Checkpoint**: whisperX's own bundled VAD segmentation model (distinct
+   from and unrelated to the gated diarization checkpoint) — 17,719,103
+   bytes, sha256 `0b5b3216d60a2d32fc086b47ea8c67589aaeb26b7e07fcbe620d6d0b83e209ea`,
+   downloaded from the `v3.8.6` git tag on the host and `COPY`'d into the
+   image (see `Dockerfile`). No download at build time or analysis time.
+3. **Frame curve**: the segmentation model's raw per-frame activation
+   (~17ms native rate, before hysteresis), resampled onto the shared 50ms
+   grid every DSP-based voiceness candidate uses. Reported continuously
+   (`voiceness` in [0, 1]), not collapsed to the hard 0/1 call, so a reviewer
+   can see *how confidently* voiced a frame was called, not only the binary
+   decision.
+4. **Phrase spans**: whisperX's own `Binarize` hysteresis binarizer at its
+   **library-default** thresholds (`vad_onset=0.500`, `vad_offset=0.363`,
+   `min_duration_on=0.1s`, `min_duration_off=0.1s` — the same defaults real
+   whisperX transcription runs use, not swept or corpus-fit for this item).
+5. **Boundary F1 is scored, not just reported** — the one property that
+   distinguishes this candidate from items 5/6: VAD spans carry real
+   sub-second onsets/offsets, so `voiceness_common.scorer`'s
+   0.25/0.5/1.0s tolerances are a legitimate test here, the same way they are
+   for `vocal_voiceness` (item 4). See `score.py`.
+
+**Not run by the queue.** `compute` needs `torch`/`whisperx` (a new research
+sandbox image), not the `app` image the queue runner executes in; the
+`queue.toml` row uses a non-`app` `image` value so it is honestly recorded
+`skipped(needs image ...)`, matching `clap_voiceness`/`svd_tagger`'s own
+precedent.
+
+## What was attempted, exactly
+
+Per the task's bounded-effort budget (~25 min total for the heavy Docker/
+model parts; stop honestly if exceeded, no retry loop):
+
+1. **Checkpoint pre-fetch (host, bounded ~5 min): SUCCEEDED.** Downloaded
+   directly from GitHub's raw content CDN for the `v3.8.6` tag in 2.8s at
+   ~6 MB/s (17.7 MB file) and sha256-verified
+   (`0b5b3216d60a2d32fc086b47ea8c67589aaeb26b7e07fcbe620d6d0b83e209ea`). That
+   exact file is committed as `vad_pytorch_model.bin` next to this README and
+   is what `Dockerfile` `COPY`s in and checksums again at build time.
+2. **HF_TOKEN check: no token available.** `echo $HF_TOKEN` empty,
+   `~/.cache/huggingface/token` absent. Diarization ruled out before any
+   diarization code was written — see "Diarization: not attempted" above.
+3. **Image build (bounded, one attempt, ≤15 min): SUCCEEDED.** Applying item
+   6's lesson (`COPY` the pre-fetched checkpoint rather than `curl`-ing it
+   in-build) avoided that item's network-stall failure mode entirely — all
+   `pip install` layers (torch 2.4.1 CPU, whisperX, `pyannote.audio`) and the
+   checkpoint `COPY` completed well inside budget.
+   `ai-light-song-v2-whisperx-research:dev` built.
+4. **`_test_song` compute/export run: SUCCEEDED**, and the full 5-song
+   scoring corpus (`_test_song`, `ayuni`, `Hideaway - Kiesza`,
+   `Armin - Revolution`, `Titanium - David Guetta ft Sia`) completed within
+   budget — see "Results evidence" below.
+
+## Design decisions not fully specified in the plan text
+
+- **Frame grid: 50ms, not whisperX's native ~17ms nor the 1000ms the two
+  window-based candidates (items 5/6) use.** Chosen to match `vocal_voiceness`
+  (item 4) — the shared grid every DSP-based candidate reports on — since
+  VAD's native resolution is already far finer than 50ms and downsampling to
+  it loses nothing material while keeping every candidate's frame series
+  directly comparable at the scorer's own grid.
+- **`Binarize` at library defaults, not whisperX's `merge_chunks`.**
+  whisperX's own transcription pipeline additionally regroups `Binarize`'s
+  output into ≤30s windows sized for feeding the ASR decoder
+  (`whisperx.vads.vad.Vad.merge_chunks`). This experiment skips that step
+  entirely — it exists only to batch audio for a Whisper decoder this item
+  never loads — and exports `Binarize`'s own hysteresis spans directly as
+  `vocal_phrase`, which is the actual VAD phrase boundary the plan is asking
+  for, not an ASR-chunking artifact.
+- **Confidence on `vocal_phrase` spans**: mean of the raw (un-binarized)
+  activation curve over the span — an honest average of the same number the
+  frame series already reports, not a new heuristic.
+- **No `channel` field.** Single producer, single input (the vocal stem) —
+  same shape as `vocal_voiceness`/`clap_voiceness` (items 4/5), unlike
+  `svd_tagger`'s stem+mix fusion (item 6). `voiceness_common.schema`'s
+  `channel` field is left `None` throughout, per its own documented
+  "`None` for a single-producer candidate" convention.
+
+## Future work (not built)
+
+If a Hugging Face token becomes available: a diarization pass, gated
+identically to `svd_tagger`'s checkpoint discipline — the gated checkpoint
+fetched and checksummed at image **build** time using a token supplied as a
+Docker build secret (`--secret`), never at analysis time — scored separately
+from the VAD call per the plan ("never folded into the voiceness call"), and
+rendered as a distinct sub-lane or color-coded segment in the debugger, never
+behind a selector. Given objection 1 above (diarization inherits the VAD's
+own false-vocal confusions and adds a speaker label on top, rather than
+resolving them), it is not obvious this would improve the false-vocal
+question even if the token gate were solved — worth stating rather than
+assuming.
+
+## Results evidence
+
+Full table in [`out/score.txt`](out/score.txt). **Rescored 2026-09-13** on the
+v3.5 corpus rebuild, three-class scorer, the 5 songs declared in
+`voiceness_common/vocal_ground_truth.json`. frame_acc / false_vocal_rate:
+
+| song (evaluable: pos / res / neg s) | `whisperx_vad` | `arrangement_state` | `vocal_phrases` | mix-RMS |
+| --- | --- | --- | --- | --- |
+| `ayuni` (32.0 / 29.4 / 102.6) | **0.9881 / 0.0056** | 0.9042 / 0.0891 | 0.7038 / 0.1514 | 0.3263 / 0.6585 |
+| `Cinderella` (167.3 / 0 / 72.1) | 0.8614 / 0.0290 | **0.9342 / 0.0035** | 0.4518 / 0.0783 | 0.6946 / 0.2568 |
+| `In da name of love` (168.3 / 7.1 / 0) | 0.6013 / — | 0.9926 / — | 0.2736 / — | 0.9970 / — |
+| `Armin` (35.3 / 0 / 0) | 0.2730 / — | 1.0000 / — | 0.1997 / — | 1.0000 / — |
+| `What a Feeling` (1.0 / 1.0 / 0) | 0.5500 / — | 0.0500 / — | 0.2000 / — | 1.0000 / — |
+
+Residual firing on `ayuni` (flute / plucked-guitar bleed): whisperX 0.24,
+`arrangement_state` 0.82.
+
+**Only `ayuni` and `Cinderella` can separate detectors.** Three songs declare no
+negative span, so frame_acc there is recall alone and an always-on detector
+scores 1.0; `What a Feeling` has 2 s evaluable. The 5-song mean therefore ranks
+mix-RMS (0.8036) above whisperX (0.6548) — read the per-song rows, not the
+aggregate. On the two discriminating songs whisperX wins `ayuni` outright and
+loses `Cinderella` to the RMS incumbent. `ayuni` reproduced the pre-rebuild
+0.9881 / 0.0056 exactly; `Cinderella` rescored 2026-09-13 against v3.5 item
+12's repaired class map (22 positive / 5 negative spans, was 4/4) — ~15 of the
+22 positives were captured from this lane's own output, so only
+`false_vocal_rate` there is an independent measurement.
+
+## Conclusion
+
+**Promoted.** Best items 4-7 candidate on the leak-heavy song (`ayuni` 0.9881 /
+0.0056, residual firing 0.24 vs the RMS incumbent's 0.82). Known weaknesses stay
+real: rhythmic plucked-string leaks (`Cinderella` 0.8614 vs RMS 0.9342),
+sustained/filtered vocals, and background chatter. No token needed at analysis
+time; diarization deliberately not attempted (see above).
+
+## Usage
+
+**Update (2026-09-13):** the image now installs torch/torchaudio/torchvision
+2.8.0/2.8.0/0.23.0 from the `cu126` CUDA wheel index rather than the CPU
+index, and `CUDA_VISIBLE_DEVICES`/`WHISPERX_VAD_DEVICE` no longer force CPU
+at the container level. GPU is opt-in via `--device cuda` (default stays
+`cpu`).
+
+```bash
+# build the sandbox image once (see Dockerfile for the checkpoint pin)
+docker build -f experiments/whisperx_vad/Dockerfile -t ai-light-song-v2-whisperx-research:dev .
+
+# compute needs torch/whisperx — the whisperx_vad sandbox image
+./experiments/whisperx_vad/run_in_container.sh \
+    python -m experiments.whisperx_vad.run compute --song <name>
+
+# export/score only read the cache/JSON compute wrote — plain app image
+docker compose run --rm app python -m experiments.whisperx_vad.run export --song <name>
+docker compose run --rm app python -m experiments.whisperx_vad.run score
+```
+
+## `queue.toml`
+
+**Not run automatically by the queue runner** — same precedent as
+`clap_voiceness`/`svd_tagger`: `compute` needs `torch`/`whisperx`, only in
+the `whisperx-research` sandbox image, and the runner only ever honors
+`image = "app"`. The `queue.toml` row uses `image = "whisperx-research"` so
+it is recorded `skipped(needs image whisperx-research — run via
+run_in_container.sh)` on every queue run rather than silently failing or
+being invisible.

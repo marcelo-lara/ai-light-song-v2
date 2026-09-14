@@ -10,18 +10,27 @@ import {
   loadDropProposals,
   loadMoisesLyrics,
   loadVocalPhrases,
-  loadReactiveBands,
-  loadGrid,
+  loadArrangementState,
+  loadTextureNovelty,
+  loadPhrasePeriodicity,
+  loadStructuralVsMicro,
+  loadVocalVoiceness,
+  loadSvdTagger,
+  loadWhisperxVad,
+  loadVoiceMultiplicity,
 } from "./sparseArtifacts";
 import {
   parseBeats,
+  parseBlockEnergy,
   parseDrumEvents,
   parseEnergyLayer,
   parseEventTimeline,
   parseFftBands,
   parseHarmonicLayer,
   parseHumanHints,
+  parseHumanSegmentsFile,
   parseInfo,
+  parseLyricValidations,
   parseLoudnessEnvelope,
   parseReviewQueue,
   parseSongFacts,
@@ -31,13 +40,17 @@ import {
 } from "./parsers";
 import type {
   Beats,
+  BlockEnergyFile,
   DrumEventsFile,
   EnergyLayer,
   EventTimeline,
   FftBands,
   HarmonicLayer,
   HumanHintsFile,
+  HumanSegmentsFile,
+  LyricValidationsFile,
   LoudnessEnvelope,
+  MoisesSegmentsFile,
   ReviewQueue,
   RmsLoudness,
   SectionSegmentation,
@@ -146,6 +159,19 @@ export const loadSectionSegmentation = (song: string, f?: typeof fetch) =>
 export const loadFftBands = (song: string, f?: typeof fetch) =>
   loadJson<FftBands>(artifactPaths.fftBands(song), parseFftBands, f);
 
+// Per-stem FFT bands — dense/core lanes, fail loudly (no 404 → empty).
+export const loadFftBandsBass = (song: string, f?: typeof fetch) =>
+  loadJson<FftBands>(artifactPaths.fftBandsBass(song), parseFftBands, f);
+
+export const loadFftBandsDrums = (song: string, f?: typeof fetch) =>
+  loadJson<FftBands>(artifactPaths.fftBandsDrums(song), parseFftBands, f);
+
+export const loadFftBandsHarmonic = (song: string, f?: typeof fetch) =>
+  loadJson<FftBands>(artifactPaths.fftBandsHarmonic(song), parseFftBands, f);
+
+export const loadFftBandsVocals = (song: string, f?: typeof fetch) =>
+  loadJson<FftBands>(artifactPaths.fftBandsVocals(song), parseFftBands, f);
+
 export const loadRmsLoudness = (song: string, f?: typeof fetch) =>
   loadJson<RmsLoudness>(artifactPaths.rmsLoudness(song), parseRmsLoudness, f);
 
@@ -172,6 +198,100 @@ export const loadEnergyLayer = (song: string, f?: typeof fetch) =>
 export const loadHumanHints = (song: string, f?: typeof fetch) =>
   loadJson<HumanHintsFile>(artifactPaths.humanHints(song), parseHumanHints, f);
 
+// reference/human/segments.json is optional (absent until the operator
+// authors a segmentation for a song), so a 404 resolves to an empty array.
+// Every other failure still surfaces.
+export const loadHumanSegments = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<HumanSegmentsFile>> => {
+  const result = await loadJson<HumanSegmentsFile>(
+    artifactPaths.humanSections(song),
+    parseHumanSegmentsFile,
+    f,
+  );
+  if (
+    !result.ok &&
+    result.error.kind === "http" &&
+    result.error.status === 404
+  ) {
+    return { ok: true, data: [] };
+  }
+  return result;
+};
+
+// reference/moises/segments.json is optional (not every song has a Moises.ai
+// reference), so a 404 resolves to an empty array. Same bare-array shape as
+// human/segments.json, so it reuses parseHumanSegmentsFile.
+export const loadMoisesSections = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<MoisesSegmentsFile>> => {
+  const result = await loadJson<MoisesSegmentsFile>(
+    artifactPaths.moisesSections(song),
+    parseHumanSegmentsFile,
+    f,
+  );
+  if (
+    !result.ok &&
+    result.error.kind === "http" &&
+    result.error.status === 404
+  ) {
+    return { ok: true, data: [] };
+  }
+  return result;
+};
+
+// v3.4 item 4 — reference/human/block_energy.json is optional (absent until the
+// operator rates a block), so a 404 resolves to an empty file. Every other
+// failure still surfaces.
+export const loadBlockEnergy = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<BlockEnergyFile>> => {
+  const result = await loadJson<BlockEnergyFile>(
+    artifactPaths.blockEnergy(song),
+    parseBlockEnergy,
+    f,
+  );
+  if (
+    !result.ok &&
+    result.error.kind === "http" &&
+    result.error.status === 404
+  ) {
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, ratings: [] },
+    };
+  }
+  return result;
+};
+
+// v3.4 item 5 — reference/human/lyric_validations.json is optional (absent
+// until the operator validates a token), so a 404 resolves to an empty file.
+// Every other failure still surfaces.
+export const loadLyricValidations = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<LyricValidationsFile>> => {
+  const result = await loadJson<LyricValidationsFile>(
+    artifactPaths.lyricValidations(song),
+    parseLyricValidations,
+    f,
+  );
+  if (
+    !result.ok &&
+    result.error.kind === "http" &&
+    result.error.status === 404
+  ) {
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, validated_ids: [] },
+    };
+  }
+  return result;
+};
+
 export const loadEventTimeline = (song: string, f?: typeof fetch) =>
   loadJson<EventTimeline>(
     artifactPaths.eventTimeline(song),
@@ -191,20 +311,34 @@ export const artifactLoaders = {
   info: loadInfo,
   dropProposals: loadDropProposals,
   vocalPhrases: loadVocalPhrases,
-  reactiveBands: loadReactiveBands,
-  grid: loadGrid,
+  arrangementState: loadArrangementState,
+  textureNovelty: loadTextureNovelty,
+  phrasePeriodicity: loadPhrasePeriodicity,
+  structuralVsMicro: loadStructuralVsMicro,
+  vocalVoiceness: loadVocalVoiceness,
+  svdTagger: loadSvdTagger,
+  whisperxVad: loadWhisperxVad,
+  voiceMultiplicity: loadVoiceMultiplicity,
   character: loadCharacter,
   vocalTranscription: loadVocalTranscription,
   beats: loadBeats,
   sectionsTopLevel: loadSectionsTopLevel,
   sectionSegmentation: loadSectionSegmentation,
   fftBands: loadFftBands,
+  fftBandsBass: loadFftBandsBass,
+  fftBandsDrums: loadFftBandsDrums,
+  fftBandsHarmonic: loadFftBandsHarmonic,
+  fftBandsVocals: loadFftBandsVocals,
   rmsLoudness: loadRmsLoudness,
   loudnessEnvelope: loadLoudnessEnvelope,
   harmonicLayer: loadHarmonicLayer,
   drums: loadDrumEvents,
   energy: loadEnergyLayer,
   humanHints: loadHumanHints,
+  humanSections: loadHumanSegments,
+  moisesSections: loadMoisesSections,
+  blockEnergy: loadBlockEnergy,
+  lyricValidations: loadLyricValidations,
   moisesLyrics: loadMoisesLyrics,
   eventTimeline: loadEventTimeline,
   reviewQueue: loadReviewQueue,

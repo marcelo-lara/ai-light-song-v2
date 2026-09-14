@@ -11,7 +11,7 @@ import { useEffect, useRef } from "react";
 
 import { useFocusTrap } from "../app/useFocusTrap";
 
-export type PanelMode = "inspector" | "hint" | "review" | "lane";
+export type PanelMode = "inspector" | "hint" | "segment" | "review" | "lane";
 
 interface RightPanelProps {
   open: boolean;

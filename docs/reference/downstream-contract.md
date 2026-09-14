@@ -10,11 +10,18 @@ Not to be confused with [`../mcp-definition.md`](../mcp-definition.md), which
 defines the **in-repo `mcp/` module** — a different server with a different
 purpose. Both read the same top-level files; only this one authors cues.
 
+Reciprocal boundary: downstream authors must not reach into analyzer internals.
+Downstream services (the cue-authoring server and its siblings) must consume
+only the published top-level delivery surface (`data/analysis/{song}/*.json`) and
+must not directly read files under `artifacts/` or other analyzer internals. The
+contract is enforced both ways: this repo publishes the delivery surface and
+downstream services consume it, not the other way around.
+
 Field-level detail for each file: [`artifacts.md`](artifacts.md).
 
 ## The exposure rule
 
-> **Exposed JSON lives only at `data/analysis/<Song - Artist>/*.json`.**
+> **Exposed JSON lives only at `data/analysis/{song}/*.json`.**
 > Nothing inside `artifacts/` or `reference/` is ever projected — to this
 > consumer or any other.
 
@@ -22,7 +29,7 @@ There are exactly two tiers, and the boundary is the directory level:
 
 | Tier | Who may read it |
 | --- | --- |
-| `data/analysis/<Song - Artist>/*.json` — top level | the MCP server, the analyzer, the debugger UI |
+| `data/analysis/{song}/*.json` — top level | the MCP server, the analyzer, the debugger UI |
 | `…/artifacts/**`, `…/reference/**` | **the analyzer and the debugger UI only** |
 
 Inner folders exist to *produce* the usable top-level files. They are raw
@@ -42,9 +49,9 @@ answers to the top-level directory.
 
 | MCP read | Backs which pass | Files it projects |
 | --- | --- | --- |
-| `get_song_brief(song)` | concept pass (whole song) | `info.json`, `beats.json`, `sections.json`, `genre.json` |
-| `get_analysis(song, part=…, section=…)` | section pass (one section) | `sections.json`, `beats.json`, `hints.json`, `song_event_timeline.json`, `genre.json` |
-| `get_analysis_detail(song, artifact, start_ms, end_ms, interval_ms)` | sub-section moments | **only** `loudness.json` and `drum_events.json`, in windows of **at most 5 s** |
+| `list_songs()` | discovery | `song_name`, `bpm`, `duration` only |
+| `get_song_overview(song)` | concept pass (whole song) | `info.json`, `beats.json`, `sections.json`, `genre.json`, `song_event_timeline.json` (transitions only), `arrangement_state.json`, `hints.json` (human hints) |
+| `get_detail(song, section_id\|gesture_id\|start_ms+end_ms, interval_ms, sources)` | one span (section, gesture, or arbitrary window) | `loudness.json` + `drum_events.json` dense frames (**at most 5 s**), plus the overlapping structural rows (phases, transitions, hints, `arrangement_state` blocks) with no decimation |
 
 All of these are top-level files. **Everything under `artifacts/` is invisible
 to cue authoring** — the layer files and the `validation/` reports are worth
@@ -53,12 +60,6 @@ schema does nothing for the show unless phase 4 promotes the signal into a
 top-level file.
 
 This table is the reach test. Before building anything, name the row it lands in.
-
-> **Migration in progress.** The exposure rule was adopted after v3.0 shipped,
-> and four of the files above are still only produced inside `artifacts/`:
-> section function fields, `genre.json`, `loudness.json` and `drum_events.json`.
-> Until phase 4 publishes them at top level, this table describes the target,
-> not what the pipeline emits today. Tracked in [`../issues.md`](../issues.md).
 
 ## The join key: `section_id`
 
@@ -93,6 +94,12 @@ The honesty rules, as the server enforces them structurally:
   `genre.json` predicting `"ambient" @ 0.27` for a 130 BPM track is a correct,
   useful output.
 - Every event and section carries `confidence` **and** `provenance`.
+- Every top-level file carries a `field_sources` header: the default producer
+  per field, declared once. A row carries its own `source` only where it
+  departs from that default — a repeated per-row map on hundreds of rows is
+  pure token cost. `source` (which producer) is distinct from `provenance`
+  (how much human review). Per-file defaults:
+  [`artifacts.md`](artifacts.md) "`field_sources` per file".
 
 ## File-by-file contract
 
@@ -126,13 +133,23 @@ than in a second file:
 - `function_confidence` — `1 −` normalised entropy of allin1's frame-level label
   posterior over the section's span. How sure the *model* was, independent of
   `confidence`.
-- `function_status` — `"known"` or `"unknown"`. `"unknown"` means allin1's
-  labelling for the *whole song* is outside the distribution it can reliably
-  name. The boundary is still usable; the name is not.
+- `function_status` — `"known"`, `"unknown"` or `"contested"`. `"unknown"`
+  means allin1's labelling for the *whole song* is outside the distribution it
+  can reliably name; the boundary is still usable, the name is not.
+  `"contested"` means a phase-3 stage (`contest-section-function`) cross-checked
+  `function` against the published `loudness.json` + `arrangement_state.json`
+  and found the section's measured energy contradicts the label (e.g. a
+  `chorus` quieter and thinner than the `verse`/`bridge` that follows it). The
+  label is **kept and flagged, never flipped** — `function` and
+  `function_confidence` are unchanged. A contested row also carries
+  `contested_by: "energy"` (absent on every other row). Treat a contested row
+  like `unknown` for pacing purposes (fall back to `loudness.json` /
+  `arrangement_state.json`), while noting the label may still be structurally
+  correct. Deliberately conservative — flags only a handful of sections across
+  the corpus, concentrated on Eurovision-shaped songs.
 - `same_label_as` — **label repetition, not acoustic identity.** It points at
   the first section given the same functional label: "the third thing it called
-  a chorus," never "the same music as the first chorus." It drives
-  `get_song_brief`'s `similar_sections` grouping, so surface it with that
+  a chorus," never "the same music as the first chorus." Surface it with that
   caveat; never describe grouped sections as verified-identical.
 
 ### `song_event_timeline.json` (top-level) — high priority
@@ -156,6 +173,11 @@ Produced by the phase-3 `gestures` stage. `events[]`, each a **flat** row
   implementation note.
 - Every row already carries its own evidence (`"high-band r2=0.82 over 4 bars,
   delta=0.31x range"`). There is no separate machine-events file.
+- Every gesture-phase row belonging to one composite gesture carries a shared
+  `gesture_id` (e.g. `"gesture-003"`), letting a consumer reconstruct a drop's
+  full `approach → release` envelope by grouping on it without re-deriving the
+  assembly. Section-transition rows carry no `gesture_id` key. Rows sharing a
+  `gesture_id` are time-ordered and non-overlapping.
 
 ### `beats.json` (top-level **object**, rows under `beats`) — high priority
 
@@ -208,10 +230,12 @@ end.
 `genres`, `confidence`, `top_predictions[] {label, confidence}`, `guidance[]` —
 all passed through to the concept pass.
 
-### The two detail files
+### The detail files
 
 `loudness.json` and `drum_events.json` are the **only** dense files a section
-pass can pull.
+pass can pull. `arrangement_state.json` is structural, not dense — it is
+returned whole (no decimation) alongside a dense read whenever its blocks
+overlap the requested span.
 
 **The window is capped at 5 s — that is a maximum, not a default.** A caller
 asking for a whole section gets a refusal, not a truncation. Most detail reads
@@ -232,8 +256,56 @@ resolutions.
   per song and embeds absolute host paths, neither of which belongs on a
   delivery surface.
 - `drum_events.json` — `events[] { time, event_type, confidence }`. Accurate
-  onsets and a small consistent `event_type` set; this is the rhythmic backbone
-  for chase and strobe timing.
+  onsets and a small consistent `event_type` set (`kick` / `snare` / `hat` /
+  `crash` / `unresolved`) — `crash` is a brilliance-gated split of pitch-42
+  `hat` events (drums-stem 6–16 kHz gate); a consumer switching on `event_type`
+  should treat it as a distinct, brighter cue than `hat`. `confidence` is
+  always `null` (Omnizart emits no per-event confidence); `velocity` is not
+  published (constant 100). This is the rhythmic backbone for chase and strobe
+  timing.
+- `arrangement_state.json` — **optional**, absent on a song analysed before
+  v3.2. `blocks[] { start_s, end_s, playing[], entered[], left[], margin_db,
+  confidence }`: who is playing and where that changes. `confidence = round(1 -
+  exp(-margin_db / 6.0), 3)`, a monotone report of the dB headroom at the
+  smallest stem flip — not a tuned score, so a consumer wanting its own
+  threshold reads raw `margin_db`. The leading block (before the first stem
+  change) carries `margin_db: null` / `confidence: null`, never a filled
+  default.
+
+  **New in v3.5**, alongside `blocks[]` and independent of it:
+  `vocals_phrase[] { start_s, end_s, confidence, sibilance }` — a second,
+  separate read on the vocals stem from the promoted `whisperx_vad` detector,
+  and `vocals_sibilance_song_mean` (a float, or `null`). These do **not**
+  modify `blocks[]`: the `vocals` entry inside `playing[]` is still the
+  RMS-derived claim it always was. **`vocals_phrase[]` is the channel to
+  trust for voice presence** — a consumer wanting to know whether a voice is
+  audible should read it, not `blocks[].playing`. `playing`'s `vocals` is a
+  stem-energy reading that also fires on instrument leakage into the vocal
+  stem (measured false_vocal_rate 0.0891 on `ayuni`, vs whisperX's 0.0056 on
+  the same song). It is kept as-is: gating it on
+  whisperX agreement was measured — it raised `frame_acc` on `ayuni` but cost
+  more than the 0.01 tolerance on `Cinderella - Ella Lee` (0.9342 → 0.9159 at
+  best), so no gate shipped — this is the settled state, not a pending one.
+
+  - `confidence` on a phrase is **always exactly `1.0`** — an operator
+    directive, not a measurement: a detected phrase is asserted certain and
+    the detector's own graded per-span confidence is discarded at publish.
+    Do not weight phrases by it; it carries no information. It is the one
+    place in this contract where a confidence is not a graded score, and it is
+    deliberate.
+  - `vocals_phrase: null` means **the song has no pre-computed proposal**, not
+    "no vocals". The detector's compute step cannot run inside the analyzer
+    image (an incompatible torch pin against the natten ABI lock) and runs
+    out-of-band, so `./analyze` alone does not produce it. An empty list `[]`
+    is the distinct, real claim "ran, found no phrases".
+  - `sibilance` is a **relative** stem-bleed discriminator and is meaningless
+    read absolutely — compare it against the sibling
+    `vocals_sibilance_song_mean`, which is the same cue's per-song noise
+    floor. A phrase well below the song mean is the vocal detector firing on
+    instrument bleed rather than a voice. **No gate is applied at publish
+    time**: the value is reported and the judgement is the consumer's.
+    `sibilance: null` on a phrase means the span covered no analysed frame —
+    never 0.0, which would read as "measured, and silent".
 - A new dense signal (spectral flux, onset strength) needs a top-level file and
   a registry entry in the server's `detail.py` — **propose it** rather than
   hoping a layer file gets read.
@@ -248,6 +320,9 @@ resolutions.
 4. **`beats.json`** — correct, continuous downbeats and bar numbers.
 5. **`loudness.json` + `drum_events.json`** — accurate, regular, complete.
 6. **`genre.json`** — honest, with the guidance prose kept.
+7. **`arrangement_state.json`** — optional; when present, accurate stem
+   entered/left spans with honest `confidence`/`margin_db`, plus the
+   independent `vocals_phrase[]` read described above.
 
 ## Not worth optimizing for this consumer
 

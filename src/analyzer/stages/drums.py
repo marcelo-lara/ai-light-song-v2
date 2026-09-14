@@ -1,3 +1,32 @@
+"""Omnizart drum transcription on the isolated drums stem.
+
+**Vocabulary bound.** Omnizart emits three General MIDI pitches only —
+35 (kick), 38 (snare), 42 (hi-hat). `velocity` is a constant 100 and is not
+published. `confidence` is `null` (Omnizart exposes no per-hit score).
+Toms and congas are folded into kick or snare — a *known* wrong label, not a
+silent one.
+
+**v3.4 crash/hat split.** The one taxonomy change in v3.4: a pitch-42 event is
+reclassified `hat` -> `crash` from the drums-stem 6-16 kHz brilliance band in
+`artifacts/essentia/fft_bands.drums.json`. Nothing else widened. Thresholds and
+their derivation are the `CRASH_*` constants below. If `fft_bands.drums.json`
+is absent the stage raises `DependencyError` — there is no fallback to
+"everything is hat".
+
+Measured split (pitch-42 events -> `crash`, threshold
+brilliance >= 0.90 & transient >= 0.40 within +/- 0.12 s):
+
+| song | pitch-42 | -> crash | notes |
+| --- | --- | --- | --- |
+| `Armin - Revolution` | 656 | 10 (2%) | gold song |
+| `Queen of Kings - Alessandra` | 476 | 43 (9%) | a `crash` lands 0.08 s from the 48.7 s drop |
+| `_test_song` | 179 | 35 (20%) | synthetic corpus fixture, crash-heavy drums stem |
+
+`Titanium` / `Hideaway`: measurement pending — no `fft_bands.drums.json` yet
+and Omnizart is CPU-only in this runtime, so a full re-analysis was
+impractical this pass.
+"""
+
 from __future__ import annotations
 
 from collections import Counter
@@ -7,16 +36,58 @@ from statistics import median
 import sys
 
 from analyzer.exceptions import AnalysisError, DependencyError
-from analyzer.io import ensure_directory, write_json
+from analyzer.io import ensure_directory, read_json, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
 from analyzer.stages._omnizart_runtime import resolve_omnizart_drum_model_path
 
 
-SUPPORTED_EVENT_TYPES = ["kick", "snare", "hat", "unresolved"]
+SUPPORTED_EVENT_TYPES = ["kick", "snare", "hat", "crash", "unresolved"]
 KICK_PITCHES = {35, 36}
 SNARE_PITCHES = {37, 38, 39, 40}
 HAT_PITCHES = {42, 44, 46}
+
+# --- crash / hat split on GM pitch 42 -------------------------------------
+# Omnizart emits only GM pitches 35/38/42, so a crash cymbal and a closed
+# hi-hat both arrive as pitch 42. They are split here from the drums-stem
+# 6-16 kHz "brilliance" band in artifacts/essentia/fft_bands.drums.json
+# (fft_bands.py BAND_DEFINITIONS[-1]; frame `levels` index 6), read at the
+# event frame. A crash is a strong broadband onset that floods the top
+# octave with a sustained wash; a closed hat is a short low-energy tick.
+#
+# Thresholds (measured constants — NOT tuned per song):
+#   * CRASH_BRILLIANCE_LEVEL 0.90 — the brilliance `levels` value is
+#     _robust_normalize'd against that stem's own 5th-95th percentile
+#     (fft_bands.py), so >= 0.90 is the top of the drums stem's own 6-16 kHz
+#     dynamic range. A closed-hat tick sits well below its own ceiling; a
+#     crash wash pins it.
+#   * CRASH_TRANSIENT_STRENGTH 0.40 — the frame's broadband positive-delta
+#     transient magnitude (normalized 0-1). On _test_song's 1162 drums-stem
+#     frames the 95th percentile is 0.147 and the 99th is 0.734, so 0.40
+#     isolates genuine accented onsets from the steady hat pulse. It was
+#     lowered from an initial 0.50 because the `Queen of Kings` 48.7 s drop
+#     cymbal peaks at transient_strength 0.40 (the frame at 48.70 s), and
+#     0.50 missed it.
+# Both must hold within the window (event time - 0.12 s .. + 0.12 s). The
+# 0.12 s lead is deliberate: a crash's spectral onset routinely precedes
+# Omnizart's quantized note start by 50-100 ms (on `Queen of Kings` the
+# 48.70 s transient carries an Omnizart hat at 48.78 s).
+#
+# Measured split (pitch-42 events reclassified to `crash`, recompute over
+# the artifacts that already carry fft_bands.drums.json):
+#   * Armin - Revolution          : 10 / 656  (2%)
+#   * Queen of Kings - Alessandra : 43 / 476  (9%) — a `crash` lands 0.08 s
+#                                   from the operator-marked 48.7 s drop
+#   * _test_song                  : 35 / 179  (20%, synthetic corpus fixture)
+# Titanium / Hideaway: measurement pending (no fft_bands.drums.json yet;
+# Omnizart is CPU-only here so a full re-analysis was impractical this pass).
+# A `crash` count of zero on every measured song means these constants are
+# wrong.
+CRASH_BRILLIANCE_BAND_INDEX = 6
+CRASH_BRILLIANCE_LEVEL = 0.90
+CRASH_TRANSIENT_STRENGTH = 0.40
+CRASH_WINDOW_BEFORE_S = 0.12
+CRASH_WINDOW_AFTER_S = 0.12
 
 
 def _nearest_beat_alignment(time_s: float, beat_times: list[float], tolerance_seconds: float = 0.2) -> tuple[int | None, float | None]:
@@ -46,6 +117,69 @@ def _event_type_for_pitch(pitch: int) -> str:
     if pitch in HAT_PITCHES:
         return "hat"
     return "unresolved"
+
+
+def _load_drums_brilliance_frames(paths: SongPaths) -> list[dict]:
+    """Read the drums-stem 7-band spectra written by `extract-fft-bands`.
+
+    Absent artifact -> `DependencyError` (extract-fft-bands runs before
+    extract-drum-events in the full pipeline; the single-stage path gates on
+    it in pipeline.py). No fallback to "call every pitch-42 event `hat`".
+    """
+    artifact_path = paths.artifact("essentia", "fft_bands.drums.json")
+    if not artifact_path.exists():
+        raise DependencyError(
+            f"drums crash/hat split requires '{artifact_path}'. "
+            "Run 'extract-fft-bands' first (it emits fft_bands.<stem>.json)."
+        )
+    payload = read_json(artifact_path)
+    frames = payload.get("frames") if isinstance(payload, dict) else None
+    if not isinstance(frames, list) or not frames:
+        raise AnalysisError(f"fft_bands.drums.json carries no frames: {artifact_path}")
+    return frames
+
+
+def _window_extremum(frames: list[dict], time_s: float, key_fn) -> float:
+    """Max of `key_fn(frame)` over frames in [time - before, time + after]."""
+    interval_ms = 50.0
+    start_time = time_s - CRASH_WINDOW_BEFORE_S
+    end_time = time_s + CRASH_WINDOW_AFTER_S
+    hi = 0.0
+    seen = False
+    for frame in frames:
+        frame_time = float(frame.get("time", 0.0))
+        if frame_time < start_time - interval_ms / 1000.0:
+            continue
+        if frame_time > end_time:
+            break
+        value = key_fn(frame)
+        if value is None:
+            continue
+        hi = max(hi, float(value)) if seen else float(value)
+        seen = True
+    return hi if seen else 0.0
+
+
+def _reclassify_crashes(events: list[dict], frames: list[dict]) -> int:
+    """Split `crash` out of pitch-42 `hat` events from the brilliance band.
+
+    Returns the number of events relabelled. Only pitch-42 `hat` events are
+    touched; every other event is left exactly as `_event_type_for_pitch`
+    decided it.
+    """
+    relabelled = 0
+    for event in events:
+        if event.get("event_type") != "hat" or int(event.get("source_note_pitch", 0)) != 42:
+            continue
+        time_s = float(event["time"])
+        brilliance = _window_extremum(
+            frames, time_s, lambda f: (f.get("levels") or [None] * 7)[CRASH_BRILLIANCE_BAND_INDEX]
+        )
+        transient = _window_extremum(frames, time_s, lambda f: f.get("transient_strength"))
+        if brilliance >= CRASH_BRILLIANCE_LEVEL and transient >= CRASH_TRANSIENT_STRENGTH:
+            event["event_type"] = "crash"
+            relabelled += 1
+    return relabelled
 
 
 def _bar_for_time(time_s: float, bars: list[dict]) -> int | None:
@@ -215,6 +349,7 @@ def _summary(events: list[dict]) -> dict:
         "kick_count": counts["kick"],
         "snare_count": counts["snare"],
         "hat_count": counts["hat"],
+        "crash_count": counts["crash"],
         "unresolved_count": counts["unresolved"],
     }
 
@@ -227,9 +362,14 @@ def extract_drum_events(paths: SongPaths, stems: dict[str, str], timing: dict, s
     model_path: Path | None = None
     model_source: str | None = None
 
+    # Fail explicitly if the crash/hat split input is missing — before any
+    # transcription work, and outside the graceful-degradation catch below.
+    brilliance_frames = _load_drums_brilliance_frames(paths)
+
     try:
         midi, model_path, model_source = _transcribe_drums(stems["drums"], midi_path)
         events = _build_events(midi, timing, sections_payload)
+        _reclassify_crashes(events, brilliance_frames)
     except (AnalysisError, DependencyError) as exc:
         # Story contract: fail gracefully when the named dependency cannot execute.
         transcription_status = "failed"

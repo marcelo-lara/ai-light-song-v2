@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { loadJson, loadInfo } from "./loaders";
+import {
+  loadJson,
+  loadInfo,
+  loadBlockEnergy,
+  loadLyricValidations,
+} from "./loaders";
 import { loadDropProposals } from "./sparseArtifacts";
 import { parseInfo } from "./parsers";
 
@@ -83,5 +88,71 @@ describe("loadDropProposals", () => {
       new Response("boom", { status: 500 })) as unknown as typeof fetch;
     const result = await loadDropProposals("Broken", fetchImpl);
     expect(result.ok).toBe(false);
+  });
+});
+
+describe("loadBlockEnergy", () => {
+  it("maps a 404 to an empty ratings file (v3.4 item 4)", async () => {
+    const fetchImpl = (async () =>
+      new Response("Not found", { status: 404 })) as unknown as typeof fetch;
+    const result = await loadBlockEnergy("Unrated Song", fetchImpl);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data).toEqual({
+        schema_version: "",
+        song_name: "Unrated Song",
+        ratings: [],
+      });
+    }
+  });
+
+  it("still reports a real failure", async () => {
+    const fetchImpl = (async () =>
+      new Response("boom", { status: 500 })) as unknown as typeof fetch;
+    expect((await loadBlockEnergy("Broken", fetchImpl)).ok).toBe(false);
+  });
+
+  it("parses a real ratings file", async () => {
+    const fetchImpl = fetchReturning({
+      schema_version: "1.0",
+      song_name: "s",
+      ratings: [{ hint_id: "hint-001", energy: 5, tension: 4 }],
+    });
+    const result = await loadBlockEnergy("s", fetchImpl);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.data.ratings).toHaveLength(1);
+  });
+});
+
+describe("loadLyricValidations", () => {
+  it("maps a 404 to an empty file (v3.4 item 5)", async () => {
+    const fetchImpl = (async () =>
+      new Response("Not found", { status: 404 })) as unknown as typeof fetch;
+    const result = await loadLyricValidations("Unvalidated", fetchImpl);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data).toEqual({
+        schema_version: "",
+        song_name: "Unvalidated",
+        validated_ids: [],
+      });
+    }
+  });
+
+  it("still reports a real failure", async () => {
+    const fetchImpl = (async () =>
+      new Response("boom", { status: 500 })) as unknown as typeof fetch;
+    expect((await loadLyricValidations("Broken", fetchImpl)).ok).toBe(false);
+  });
+
+  it("parses a real overlay file", async () => {
+    const fetchImpl = fetchReturning({
+      schema_version: "1.0",
+      song_name: "s",
+      validated_ids: [2, 3],
+    });
+    const result = await loadLyricValidations("s", fetchImpl);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.data.validated_ids).toEqual([2, 3]);
   });
 });

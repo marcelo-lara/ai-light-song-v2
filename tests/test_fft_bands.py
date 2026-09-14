@@ -10,12 +10,22 @@ from unittest.mock import patch
 
 import numpy as np
 
+from analyzer.exceptions import DependencyError
 from analyzer.paths import SongPaths
-from analyzer.stages.fft_bands import extract_fft_bands
+from analyzer.stages.fft_bands import STEM_SOURCE_FILENAMES, extract_fft_bands
 
 
 def _read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _write_stems(paths: SongPaths, *, skip: set[str] | None = None) -> None:
+    skip = skip or set()
+    paths.stems_dir.mkdir(parents=True, exist_ok=True)
+    for stem, filename in STEM_SOURCE_FILENAMES.items():
+        if stem in skip:
+            continue
+        (paths.stems_dir / filename).write_bytes(b"fake-wav")
 
 
 class _FakeMonoLoader:
@@ -65,6 +75,17 @@ class _FakeSpectrum:
         return values
 
 
+def _fake_essentia() -> dict:
+    fake_standard = types.ModuleType("essentia.standard")
+    fake_standard.MonoLoader = _FakeMonoLoader
+    fake_standard.FrameGenerator = _fake_frame_generator
+    fake_standard.Windowing = _FakeWindowing
+    fake_standard.Spectrum = _FakeSpectrum
+    fake_essentia = types.ModuleType("essentia")
+    fake_essentia.standard = fake_standard
+    return {"essentia": fake_essentia, "essentia.standard": fake_standard}
+
+
 class FftBandsTests(unittest.TestCase):
     def test_extract_fft_bands_writes_expected_schema(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -76,6 +97,7 @@ class FftBandsTests(unittest.TestCase):
                 song_path=song_path,
                 analysis_root=root / "analysis",
             )
+            _write_stems(paths)
 
             fake_standard = types.ModuleType("essentia.standard")
             fake_standard.MonoLoader = _FakeMonoLoader
@@ -113,3 +135,44 @@ class FftBandsTests(unittest.TestCase):
             "per-song-per-band-log-power-percentile",
         )
         self.assertEqual(written["metadata"]["normalization_percentiles"], [5.0, 95.0])
+        self.assertNotIn("stem", written["metadata"])  # mix file unchanged
+
+    def test_extract_fft_bands_writes_per_stem_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            song_path = root / "songs" / "_test_song.mp3"
+            song_path.parent.mkdir(parents=True, exist_ok=True)
+            song_path.write_bytes(b"fake-mp3")
+            paths = SongPaths(song_path=song_path, analysis_root=root / "analysis")
+            _write_stems(paths)
+
+            with patch.dict(sys.modules, _fake_essentia()):
+                extract_fft_bands(paths)
+
+            mix = _read_json(paths.artifact("essentia", "fft_bands.json"))
+            for stem in ("bass", "drums", "harmonic", "vocals"):
+                stem_file = paths.artifact("essentia", f"fft_bands.{stem}.json")
+                self.assertTrue(stem_file.exists(), f"missing {stem_file}")
+                doc = _read_json(stem_file)
+                self.assertEqual(doc["metadata"]["stem"], stem)
+                self.assertEqual(len(doc["bands"]), len(mix["bands"]))
+                self.assertEqual(doc["metadata"]["hop_size"], mix["metadata"]["hop_size"])
+                self.assertEqual(doc["metadata"]["interval_ms"], mix["metadata"]["interval_ms"])
+                self.assertEqual(doc["metadata"]["total_frames"], mix["metadata"]["total_frames"])
+                self.assertEqual(len(doc["frames"][0]["levels"]), 7)
+
+    def test_missing_stem_raises_dependency_error_and_writes_no_artifact(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            song_path = root / "songs" / "_test_song.mp3"
+            song_path.parent.mkdir(parents=True, exist_ok=True)
+            song_path.write_bytes(b"fake-mp3")
+            paths = SongPaths(song_path=song_path, analysis_root=root / "analysis")
+            _write_stems(paths, skip={"vocals"})
+
+            with patch.dict(sys.modules, _fake_essentia()):
+                with self.assertRaises(DependencyError) as ctx:
+                    extract_fft_bands(paths)
+
+            self.assertIn("vocals", str(ctx.exception))
+            self.assertFalse(paths.artifact("essentia", "fft_bands.vocals.json").exists())

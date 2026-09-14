@@ -66,7 +66,7 @@ from typing import Any
 import numpy as np
 
 from analyzer.io import write_json
-from analyzer.models import SCHEMA_VERSION
+from analyzer.models import SCHEMA_VERSION, validate_field_sources
 from analyzer.paths import SongPaths
 
 #: Ordered sub-phases of a composite gesture (event_vocabulary.json).
@@ -264,7 +264,9 @@ def detect_snare_roll(drum_events: list[dict], beats: list[dict]) -> list[dict]:
     bar_end = {bars[i]: bar_times.get(bars[i + 1], bar_times[bars[i]] + 2.0) for i in range(len(bars) - 1)}
     bar_end[bars[-1]] = bar_times[bars[-1]] + 2.0
 
-    snare_hat_times = sorted(e["time"] for e in drum_events if e.get("event_type") in ("snare", "hat"))
+    # "crash" is a v3.4 brilliance-gated split of pitch-42 hat events; it still
+    # contributes onset density to a fill, so keep it in this set.
+    snare_hat_times = sorted(e["time"] for e in drum_events if e.get("event_type") in ("snare", "hat", "crash"))
     counts: dict[int, int] = {}
     for bar in bars:
         t0, t1 = bar_times[bar], bar_end[bar]
@@ -388,7 +390,7 @@ def assemble_gestures(
     """
     bar_len = _bar_length(beats)
     gestures = []
-    for impact in impacts:
+    for gesture_index, impact in enumerate(impacts, start=1):
         t_impact = impact["start"]
         window_start = t_impact - 16 * bar_len
 
@@ -465,7 +467,7 @@ def assemble_gestures(
                         "evidence": f"post-impact mix-RMS median {post_level:.4f} vs pre-impact {pre_level:.4f}",
                     }
 
-        gestures.append({"impact_time": round(t_impact, 3), "phases": phases})
+        gestures.append({"gesture_id": f"gesture-{gesture_index:03d}", "impact_time": round(t_impact, 3), "phases": phases})
     return gestures
 
 
@@ -593,6 +595,7 @@ def build_gestures(
                     "intensity": round(float(phase["intensity"]), 6),
                     "section_id": phase_section.get("section_id") if phase_section else None,
                     "section_name": phase_section.get("function") if phase_section else None,
+                    "gesture_id": gesture["gesture_id"],
                     "provenance": "machine-only",
                     "summary": _phase_summary(phase_name, phase, impact_time),
                     "evidence_summary": phase["evidence"],
@@ -631,9 +634,30 @@ def build_gestures(
 
     events.sort(key=lambda e: (e["start_time"], e["end_time"]))
 
+    # v3.1 item 2 — attribution header. Every event field is the gestures stage's
+    # own output except `section_id` / `section_name`, which it copies from the
+    # allin1 segmentation to locate each event.
+    timeline_field_sources = validate_field_sources(
+        {
+            "type": "gestures",
+            "start_time": "gestures",
+            "end_time": "gestures",
+            "confidence": "gestures",
+            "intensity": "gestures",
+            "section_id": "allin1",
+            "section_name": "allin1",
+            "gesture_id": "gestures",
+            "provenance": "gestures",
+            "summary": "gestures",
+            "evidence_summary": "gestures",
+        },
+        {key for event in events for key in event},
+        file="song_event_timeline.json",
+    )
     payload = {
         "schema_version": SCHEMA_VERSION,
         "song_name": paths.song_name,
+        "field_sources": timeline_field_sources,
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "engine": "gestures.primitives (rule-based sound-design device detectors) + gestures.assembly + section-transition detector",

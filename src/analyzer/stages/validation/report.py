@@ -17,7 +17,7 @@ from .drums import validate_drums
 from .beats import validate_beats
 from .chords import validate_chords
 from .utils import ValidationResult, skipped_result
-from .sections import _validate_sections
+from .sections import _validate_sections, _validate_human_segments
 from .drops import validate_drops
 
 
@@ -51,13 +51,19 @@ def build_validation_report(
         ),
         "drums": validate_drums(paths, timing) if "drums" in compare_targets else skipped_result(),
         "sections": _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
+        # v3.5 item 10 — a second, independent boundary score against the
+        # hand-marked reference/human/segments.json, gated the same as
+        # "sections" (skipped where the file does not exist for this song).
+        "human_segments": _validate_human_segments(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
         "drops": validate_drops(paths) if "drops" in compare_targets else skipped_result(),
     }
 
     # drops is an advisory structural score (plan item 0.3): it surfaces in
     # the report but never flips the pipeline exit code, even under
     # --fail-on-mismatch, because its ground truth is an incomplete gold set.
-    ADVISORY_TARGETS = {"drops"}
+    # human_segments (v3.5 item 10) is advisory for the same reason: only two
+    # songs carry the file so far, and it must not gate the corpus-wide run.
+    ADVISORY_TARGETS = {"drops", "human_segments"}
     evaluated_results = [result for result in results.values() if result.status != "skipped"]
     gating_results = [
         result for key, result in results.items()
@@ -79,6 +85,7 @@ def build_validation_report(
         notes.append("Drum validation checks the producer-scoped drum_events.json artifact for structural integrity, Omnizart provenance, debug-source metadata, and song-level pulse plausibility.")
     if "sections" in compare_targets:
         notes.append("Section validation compares structural change points only; reference segment labels are advisory and do not affect pass/fail.")
+        notes.append("human_segments (v3.5 item 10) scores the same boundaries against reference/human/segments.json where that hand-marked file exists for the song; advisory, and 'skipped' otherwise.")
     if "drops" in compare_targets:
         notes.append("Drop validation scores detected drops against timed human drop hints in reference/human/human_hints.json; advisory only, and reports 'skipped' when a song has no timed drop hints (plan v3.0 item 10 -- no presence-only fallback).")
 
@@ -93,6 +100,7 @@ def build_validation_report(
             "song_path": str(paths.song_path),
             "reference_chords": str(paths.reference("moises", "chords.json")),
             "reference_sections": str(paths.reference("moises", "segments.json")),
+            "reference_human_segments": str(paths.reference("human", "segments.json")),
         },
         "generated_artifacts": {
             "beats_file": str(beats_path),

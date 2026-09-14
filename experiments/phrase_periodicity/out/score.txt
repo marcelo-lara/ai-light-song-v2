@@ -1,0 +1,72 @@
+PHRASE LENGTH — bar-sequence autocorrelation, period in bars
+======================================================================
+
+  song / stem                                 z-norm      raw (ablation)
+                                        period  prom        period  prom
+  _test_song / bass                         — +0.005            — +0.000
+  _test_song / drums                        8 +0.068            — +0.006
+  _test_song / harmonic                     2 +0.099            — +0.004
+  _test_song / vocals                      12 +0.300            — +0.033
+
+  Titanium - David Guetta ft Sia / bass        — +0.016            — +0.001
+  Titanium - David Guetta ft Sia / drums        4 +0.057            — +0.001
+  Titanium - David Guetta ft Sia / harmonic        4 +0.085            — +0.001
+  Titanium - David Guetta ft Sia / vocals        4 +0.249            — +0.010
+
+  Hideaway - Kiesza / bass                  2 +0.125            — +0.006
+  Hideaway - Kiesza / drums                 2 +0.051            — +0.003
+  Hideaway - Kiesza / harmonic              2 +0.100            — +0.002
+  Hideaway - Kiesza / vocals                2 +0.074            — +0.007
+
+  Armin - Revolution / bass                 2 +0.075            — +0.006
+  Armin - Revolution / drums                2 +0.136            — +0.008
+  Armin - Revolution / harmonic             2 +0.072            — +0.003
+  Armin - Revolution / vocals               4 +0.105            — +0.007
+
+  Chimera - Hana / bass                     8 +0.158            — +0.004
+  Chimera - Hana / drums                    — +0.029            — +0.001
+  Chimera - Hana / harmonic                 8 +0.106            — +0.005
+  Chimera - Hana / vocals                   8 +0.226            — +0.008
+
+  Queen of Kings - Alessandra / bass        — +0.035            — +0.006
+  Queen of Kings - Alessandra / drums        2 +0.129            — +0.012
+  Queen of Kings - Alessandra / harmonic        2 +0.067            — +0.002
+  Queen of Kings - Alessandra / vocals        4 +0.114            — +0.002
+
+
+KILL CONDITION — prominence must separate the known-8-bar bass songs from the rest
+----------------------------------------------------------------------
+  bass z-norm prominence  Chimera - Hana                    +0.158 (known 8-bar)
+  bass z-norm prominence  Hideaway - Kiesza                 +0.125 (known 8-bar)
+  bass z-norm prominence  Armin - Revolution                +0.075
+  bass z-norm prominence  Queen of Kings - Alessandra       +0.035
+  bass z-norm prominence  Titanium - David Guetta ft Sia    +0.016
+  bass z-norm prominence  _test_song                        +0.005
+
+  min(known 8-bar) = +0.125   max(rest) = +0.075
+  OUTCOME: PASS — prominence separates the known-8-bar songs
+
+
+BLOCK REGIME — Queen of Kings, predicted vs marked
+======================================================================
+
+  block                               rep@bar rep@beat       predicted           truth
+  Fairytale like intro                   0.14    -0.02through-composedthrough-composed
+  Post-Intro                             0.59    -0.38        bar-loop        bar-loop
+  Post-Intro + Harmony                   0.81     0.60   half-bar-loop        bar-loop
+  Melodic Vocal bridge                   0.15    -0.11through-composedthrough-composed
+  Vocal tension build                   -0.27    -0.12through-composed               ·
+  Pre-drop phrase                        0.00    -0.08through-composed               ·
+  pre-drop tension                       0.00     0.00through-composed               ·
+  Vocal tension phrase                   0.00     0.12through-composed               ·
+  Main chorus section                    0.00     0.18through-composed   half-bar-loop
+  Micro break                            0.00     0.00through-composed               ·
+  Main chorus section (continues)        0.00     0.55through-composed   half-bar-loop
+  'Hey' phrase                           0.00     0.00through-composed               ·
+  Main chorus section (continues)        0.00     0.46through-composed   half-bar-loop
+  Main chorus exit phrase                0.00     0.53through-composed               ·
+  Final chorus exit                      0.00     0.12through-composed               ·
+  Verse should start here                0.00     0.00through-composed               ·
+
+  regime agreement on marked blocks: 3/7
+

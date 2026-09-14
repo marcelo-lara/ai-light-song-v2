@@ -26,70 +26,6 @@
       "lighting_hint": ""
     },
     {
-      "id": "hint-004",
-      "title": "Spacer",
-      "start_time": 36.5,
-      "end_time": 36.958,
-      "summary": "Volume drops to restart melody",
-      "lighting_hint": "dim intensity close to 0"
-    },
-    {
-      "id": "hint-005",
-      "title": "Outro start",
-      "start_time": 42.483,
-      "end_time": 43.206,
-      "summary": "Drum and bass leaves",
-      "lighting_hint": "stop moving effects, prepare for next effect."
-    },
-    {
-      "id": "hint-006",
-      "title": "Vocal outro phrase 1.1",
-      "start_time": 43.339,
-      "end_time": 44.356,
-      "summary": "Intense vocal shout",
-      "lighting_hint": "moving heads movement following vocal levels"
-    },
-    {
-      "id": "hint-009",
-      "title": "Synth Pad",
-      "start_time": 44.455,
-      "end_time": 47.045,
-      "summary": "ambient melody",
-      "lighting_hint": "minimal moving head intensity / movements"
-    },
-    {
-      "id": "hint-010",
-      "title": "Vocal outro 2",
-      "start_time": 47.091,
-      "end_time": 50.03,
-      "summary": "Soft vocal outro (part 2)",
-      "lighting_hint": "moving heads long travels, parcans with violet gradient chase"
-    },
-    {
-      "id": "hint-011",
-      "title": "Vocal Outro 3",
-      "start_time": 50.076,
-      "end_time": 54.576,
-      "summary": "Soft vocal outro (part 3)",
-      "lighting_hint": "moving heads circle around the table center with violet or indigo"
-    },
-    {
-      "id": "hint-012",
-      "title": "prepare for end",
-      "start_time": 54.606,
-      "end_time": 55,
-      "summary": "moving heads dim close to 0, move to table.",
-      "lighting_hint": ""
-    },
-    {
-      "id": "hint-013",
-      "title": "Finale",
-      "start_time": 55.038,
-      "end_time": 55.917,
-      "summary": "finale",
-      "lighting_hint": "all fixtures to max intensity. prism on. quickly fadeout."
-    },
-    {
       "id": "hint-014",
       "title": "drop tension",
       "start_time": 27.646,
@@ -120,6 +56,54 @@
       "end_time": 36.5,
       "summary": "Full drum machine. acid synth bass.",
       "lighting_hint": ""
+    },
+    {
+      "id": "hint-004",
+      "title": "Spacer",
+      "start_time": 36.5,
+      "end_time": 36.958,
+      "summary": "Volume drops to restart melody",
+      "lighting_hint": "dim intensity close to 0"
+    },
+    {
+      "id": "hint-006",
+      "title": "Vocal outro phrase 1.1",
+      "start_time": 43.339,
+      "end_time": 44.356,
+      "summary": "Intense vocal shout",
+      "lighting_hint": "moving heads movement following vocal levels"
+    },
+    {
+      "id": "hint-009",
+      "title": "Synth Pad",
+      "start_time": 44.455,
+      "end_time": 47.045,
+      "summary": "ambient melody",
+      "lighting_hint": "minimal moving head intensity / movements"
+    },
+    {
+      "id": "hint-010",
+      "title": "Vocal outro 2",
+      "start_time": 47.091,
+      "end_time": 50.03,
+      "summary": "Soft vocal outro (part 2)",
+      "lighting_hint": "moving heads long travels, parcans with violet gradient chase"
+    },
+    {
+      "id": "hint-011",
+      "title": "Vocal Outro 3",
+      "start_time": 50.496,
+      "end_time": 54.75,
+      "summary": "Soft vocal outro (part 3)",
+      "lighting_hint": "moving heads circle around the table center with violet or indigo"
+    },
+    {
+      "id": "hint-013",
+      "title": "Finale",
+      "start_time": 55.038,
+      "end_time": 55.917,
+      "summary": "finale",
+      "lighting_hint": "all fixtures to max intensity. prism on. quickly fadeout."
     }
   ]
 }

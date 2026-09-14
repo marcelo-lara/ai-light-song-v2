@@ -7,6 +7,21 @@ is authoritative over any prose here.
 Stage responsibilities and their measured quality:
 [`../analysis-definition.md`](../analysis-definition.md).
 
+## `mcp/` — the song-comprehension server
+
+A separate top-level module beside `src/`. **`src/` never imports from `mcp/`,
+and `mcp/` never imports from `src/`** — the only channel between them is the
+top-level `data/analysis/{song}/*.json` files.
+
+| File | Purpose |
+| --- | --- |
+| `mcp/server.py` | stdio MCP server entry point — registers `list_songs`, `get_song_overview` and `get_detail`, all three returning real payloads |
+| `mcp/loaders.py` | song discovery, top-level file access, exposure enforcement (no code path reaches an inner folder) — the *stable* half |
+| `mcp/serializers.py` | response shaping for `get_song_overview` / `get_detail` — the *volatile* half; a tool-surface reshape touches this file and its snapshots only |
+| `mcp/tests/run.py` | `smoke-test` / `full-regression` named entry points |
+| `mcp/tests/fixtures/build_fixtures.py` | deterministic generator for the three committed regression fixtures |
+| `mcp/tests/` | exposure guard, scaffold checks, tool-surface checks, committed fixtures |
+
 ## Core
 
 | File | Purpose |
@@ -30,17 +45,18 @@ only surviving package.
 | --- | --- | --- |
 | 1 | `stems.py` | Demucs separation, seeded |
 | 1 | `timing.py` | canonical beat grid; essentia beat *times* plus allin1-derived downbeat *phase* with per-downbeat confidence. Module docstring carries the phase-selection algorithm |
-| 1 | `fft_bands.py` | 7 spectral bands / 50 ms |
+| 1 | `fft_bands.py` | 7 spectral bands / 50 ms — five artifacts: the mix (`fft_bands.json`) plus one per Demucs stem (`fft_bands.{bass,drums,harmonic,vocals}.json`), each normalised against its own percentiles; a missing stem WAV raises `DependencyError` |
 | 1 | `loudness.py` | RMS (10 ms) and envelope (200 ms), per source |
 | 2 | `harmonic.py` | HPCP, global key, chord decoding; projects `key` / `chord_progression` into `sections.json`, confidence-gated |
-| 2 | `drums.py` | Omnizart drum transcription on the drums stem; owns `resolve_omnizart_drum_model_path` and the beat/section alignment helpers |
+| 2 | `drums.py` | Omnizart drum transcription on the drums stem (GM 35/38/42); owns `resolve_omnizart_drum_model_path`, the beat/section alignment helpers, and the v3.4 `crash`/`hat` split on pitch 42 — reads `essentia/fft_bands.drums.json`, raises `DependencyError` if absent |
 | 2 | `genre.py` | genre classification with honest confidences and `guidance` prose |
 | 2 | `segmentation.py` | All-In-One named segmentation; merges 8-bar phrases into song-form runs, computes `function_confidence` from posterior entropy, flags degenerate songs `function_status: "unknown"`, sets `same_label_as` |
 | 2 | `energy.py` | `layer_c_energy.json`. Its 4 MB/song feature intermediate is computed in memory and never written |
 | 3 | `gestures.py` | named primitives → gesture phases anchored on a detected impact, plus one event per section-pair transition. Reads phase-1/2 artifacts only, never audio |
 | 3 | `hint_alignment.py` | `find_primary_section` — the shared window→section matcher used by `hints.py` and the alignment review artifact |
+| 3 | `section_function.py` | `contest-section-function` — cross-checks each allin1 `function` against the published `loudness.json` + `arrangement_state.json`; writes `artifacts/section_function_contest.json` and re-fuses `function_status: "contested"` / `contested_by` into `sections.json`. Never audio. Measured scope: `experiments/section_function_contest/measurement.md` |
 | 4 | `hints.py` | `hints.json`: inference hints merged with `reference/human/human_hints.json` by `section_id` |
-| 4 | `ui_data.py` | packs the compact top-level deliverables |
+| 4 | `ui_data.py` | packs the compact top-level deliverables; `apply_section_function_contest` re-publishes `sections.json` for the phase-3 contest |
 
 `segmentation.py`, `gestures.py` and `timing.py` carry their promotion numbers
 and honest caveats **in their own module docstrings** — read those first.

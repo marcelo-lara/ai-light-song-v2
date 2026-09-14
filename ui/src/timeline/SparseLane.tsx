@@ -6,8 +6,8 @@
 // Nocturne-tinted rounded blocks with a label (+ caption when wide), row-packs
 // overlapping blocks for the compact lanes (sparseGeometry.packRows), and
 // registers hit regions so a click opens the item-6 block inspector (or, for
-// `humanHints`, the hint editor — routed by App via marker.laneId). A click
-// that misses every block seeks the playhead.
+// `humanHints`/`humanSections`, their editor panel — routed by App via
+// marker.laneId). A click that misses every block seeks the playhead.
 
 import {
   useCallback,
@@ -54,18 +54,20 @@ interface SparseLaneProps {
   onSeek: (time: number) => void;
   onSelectMarker: (marker: LaneMarker) => void;
   /**
-   * humanHints lane only (plan v2.1 item 10): persist a block's new
-   * start/end after a drag. When present AND the lane is the expanded
-   * `humanHints` lane, block edges / interiors become drag handles. A
-   * rejected promise reverts the on-canvas preview to the pre-drag position.
+   * humanHints / humanSections lanes only (plan v2.1 item 10; humanSections
+   * mirrors the same convention): persist a block's new start/end after a
+   * drag. When present AND the lane is one of these expanded editable lanes,
+   * block edges / interiors become drag handles. A rejected promise reverts
+   * the on-canvas preview to the pre-drag position.
    */
   onCommitHintTimes?:
     | ((id: string, start: number, end: number) => void | Promise<void>)
     | undefined;
   /**
-   * humanHints lane only (item 8): double-clicking empty lane background
-   * creates a new draft hint at the given time. A double-click that lands on an
-   * existing block opens it in the sidebar instead (no create).
+   * humanHints / humanSections lanes only (item 8; humanSections mirrors the
+   * same convention): double-clicking empty lane background creates a new
+   * draft block at the given time. A double-click that lands on an existing
+   * block opens it in the sidebar instead (no create).
    */
   onCreateHint?: ((time: number) => void) | undefined;
 }
@@ -89,7 +91,7 @@ function trimText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
 }
 
 /** marker payload merged so the item-6 inspector sees both adapter + raw fields */
-function markerFor(block: SparseBlock, laneId: string): LaneMarker {
+export function markerFor(block: SparseBlock, laneId: string): LaneMarker {
   const base =
     block.raw && typeof block.raw === "object"
       ? (block.raw as Record<string, unknown>)
@@ -135,9 +137,12 @@ export function SparseLane({
   const cssHeight = lane.renderHeight;
   const tint = sparseTint(laneId);
 
-  // --- item 10: drag-to-edit on the expanded humanHints lane --------------
+  // --- item 10: drag-to-edit on the expanded humanHints / humanSections
+  // lanes (the two editable, hand-authored reference/human/ lanes) ---------
   const dragEnabled =
-    laneId === "humanHints" && lane.expanded && typeof onCommitHintTimes === "function";
+    (laneId === "humanHints" || laneId === "humanSections") &&
+    lane.expanded &&
+    typeof onCommitHintTimes === "function";
 
   // live start/end for the block currently being (or just) dragged; overrides
   // the drawn geometry so the block follows the pointer. Cleared whenever the

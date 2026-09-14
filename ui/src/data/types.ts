@@ -21,13 +21,12 @@ export interface SongInfo {
   song_name: string;
   bpm: number;
   duration: number;
-  song_path: string;
-  /** absolute `/data/...` paths to producer artifacts, keyed by short name */
-  artifacts: Record<string, string>;
-  /** absolute `/data/...` paths to the top-level UI outputs */
-  outputs: Record<string, string> | null;
-  generated_from: Record<string, unknown> | null;
-  debug: Record<string, unknown> | null;
+  /** v3.1 item 2 attribution header — `bpm` / `duration` → `essentia`.
+   *  v3.1 item 8 removed `song_path`, `artifacts`, `outputs`, `debug` and
+   *  `generated_from`: they embedded absolute host paths and a per-song file
+   *  manifest no consumer needs (files are discovered from the fixed top-level
+   *  layout). */
+  field_sources: Record<string, string>;
 }
 
 // ---------------------------------------------------------------------------
@@ -40,10 +39,14 @@ export interface BeatRow {
   time: number;
   beat: number;
   bar: number;
-  bass: string | null;
   chord: string | null;
   type: BeatType;
-  confidence: number | null;
+  downbeat_confidence: number | null;
+}
+
+export interface BeatsFile {
+  field_sources: Record<string, string>;
+  beats: BeatRow[];
 }
 
 export type Beats = BeatRow[];
@@ -59,6 +62,21 @@ export interface SectionRow {
   /** e.g. "003 Chorus (0.80)" */
   label: string;
   description: string | null;
+  /** allin1's Harmonix-vocabulary functional label (e.g. "chorus"), or `null`.
+   * v3.1 item 3 — merged onto the top-level row so a consumer never opens
+   * artifacts/section_segmentation/sections.json. */
+  function: string | null;
+  function_confidence: number | null;
+  /** "known" / "unknown" / "contested" — treat `function` as unverified when
+   * "unknown"; "contested" (v3.4) means allin1's label is kept but its energy
+   * contradicts a following section (see `contested_by`). */
+  function_status: string;
+  /** set only on a `function_status: "contested"` row — the signal that
+   * contradicts the label. `"energy"` today. Absent otherwise. */
+  contested_by?: string | null;
+  /** section_id of the first section allin1 gave the same label; label
+   * repetition, not acoustic identity. */
+  same_label_as: string | null;
   confidence: number | null;
   /** Whole-song HPCP key estimate (e.g. "C# major"), same value on every
    * row, or `null` when essentia's key confidence is too low to state one
@@ -69,6 +87,11 @@ export interface SectionRow {
    * stage's confidence floor (plan v3.0 item 13) — an honest, expected
    * outcome on low-agreement songs, not a bug. */
   chord_progression: string | null;
+}
+
+export interface SectionsFile {
+  field_sources: Record<string, string>;
+  sections: SectionRow[];
 }
 
 export type SectionsTopLevel = SectionRow[];
@@ -255,12 +278,56 @@ export interface HumanHint {
    * hand-authored hints (plan v1.5 D11).
    */
   captured_from?: string;
+  /**
+   * "review" when the hint originated from an experiment/event block seeded
+   * for review or annotation; "vocal" when a voice sounds continuously across
+   * the span (only ever chosen explicitly by the operator, never inferred);
+   * absent (equivalent to "hint") for a hand-authored one. Editable in the
+   * hint editor; "review" defaults from whether the hint carries a
+   * `captured_from` note, "vocal" never defaults.
+   */
+  type?: "hint" | "review" | "vocal";
 }
 
 export interface HumanHintsFile {
   song_name: string;
   human_hints: HumanHint[];
 }
+
+// ---------------------------------------------------------------------------
+// reference/human/segments.json  (editable, hand-authored section segmentation)
+// ---------------------------------------------------------------------------
+
+/**
+ * A bare array on disk — no wrapper object, no id/type/summary fields. Much
+ * simpler than `HumanHint`: this is the operator's own section segmentation.
+ * `label` is a fixed value, optional (honest-unknown when unset), one of
+ * `SEGMENT_FUNCTION_NAMES` (../data/segmentFunctions) — the canonical
+ * vocabulary is docs/segments-vocabulary.md. Free text is never accepted:
+ * a segment's label is either a vocabulary name or unset, never anything
+ * else. `description` is optional free text, never validated against the
+ * vocabulary. `energy`/`tension` are optional 1-5 integers (honest-unknown
+ * when unset, never a guessed default).
+ */
+export interface HumanSegment {
+  start: number;
+  end: number;
+  label?: string | null;
+  description?: string | null;
+  energy?: number | null;
+  tension?: number | null;
+}
+
+export type HumanSegmentsFile = HumanSegment[];
+
+// ---------------------------------------------------------------------------
+// reference/moises/segments.json  (Moises.ai reference segmentation)
+// ---------------------------------------------------------------------------
+// Same bare-array shape as reference/human/segments.json ({start, end, label}
+// only — no description/energy/tension, no confidence field of its own: see
+// docs/reference/analysis.segments.md). Reuses HumanSegment's parser.
+
+export type MoisesSegmentsFile = HumanSegment[];
 
 // ---------------------------------------------------------------------------
 // reference/human/song_facts.json  (v1.1 — whole-song facts, human-confirmed)
@@ -279,6 +346,58 @@ export interface SongFactsFile {
   schema_version: string;
   song_name: string;
   facts: Record<string, SongFact>;
+}
+
+// ---------------------------------------------------------------------------
+// reference/human/block_energy.json  (v3.4 item 4 — operator block ratings)
+// ---------------------------------------------------------------------------
+// The operator's two-axis rating of each `human_hints.json` block: `energy` and
+// `tension`, each an integer 1-5, joined to the hint by `hint_id` at read time.
+// A block is unrated when it is absent from `ratings`. The two axes are
+// deliberately independent (a "close to silence" block is lowest-energy,
+// highest-tension). SCOPE GUARD: nothing in `src/` or `mcp/` reads this file —
+// it is `reference/human/` material like the hints, with one producer (the
+// operator) and no `field_sources` / `source` attribution machinery.
+//
+// D4.2 (resolved, implementation): an entry may carry one axis or both. The
+// schema's "energy: 1-5, tension: 1-5" is kept as "each axis, when present, is
+// an integer 1-5"; a missing axis is omitted rather than defaulted (no silent
+// fallbacks). A block counts as fully rated only when both axes are set.
+
+export interface BlockEnergyRating {
+  hint_id: string;
+  energy?: number;
+  tension?: number;
+}
+
+export interface BlockEnergyFile {
+  schema_version: string;
+  song_name: string;
+  ratings: BlockEnergyRating[];
+}
+
+// ---------------------------------------------------------------------------
+// reference/human/lyric_validations.json  (v3.4 item 5 / D6 — operator's
+// hand-verification of Moises lyric-token timing)
+// ---------------------------------------------------------------------------
+// An overlay on `reference/moises/lyrics.json`: the ids of the Moises word
+// tokens whose timing the operator has personally checked against the
+// waveform. The Moises Lyrics lane substitutes confidence `1` for a listed
+// token at read time — a value Moises itself never emits — so a validated
+// token is unambiguous. `reference/moises/lyrics.json` is never edited; it
+// stays read-only, inference-only.
+//
+// SCOPE GUARD: nothing in `src/` or `mcp/` reads this file. It is
+// `reference/human/` material like the hints — one producer (the operator),
+// no `field_sources` / `source` attribution. Written per-click by
+// `PUT /api/lyric-validations/<song>` (dev-server only), which diverges from
+// the explicit-Save pattern the other `reference/human/` writers use (D5.1 —
+// a rapid token-by-token pass should not need a Save button).
+
+export interface LyricValidationsFile {
+  schema_version: string;
+  song_name: string;
+  validated_ids: number[];
 }
 
 // ---------------------------------------------------------------------------
@@ -305,6 +424,9 @@ export interface TimelineEvent {
   intensity: number;
   section_id: string | null;
   section_name: string | null;
+  /** v3.1 item 4 — shared by every gesture-phase row of one composite gesture
+   * (e.g. "gesture-003"); absent on section-pair transition rows. */
+  gesture_id?: string;
   provenance: string | null;
   summary: string | null;
   evidence_summary: string | null;

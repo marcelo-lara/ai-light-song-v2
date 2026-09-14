@@ -1,0 +1,66 @@
+{
+  "schema_version": "3.0",
+  "song_name": "McpFull - Fixture",
+  "field_sources": {
+    "start_s": "arrangement_state",
+    "end_s": "arrangement_state",
+    "playing": "arrangement_state",
+    "entered": "arrangement_state",
+    "left": "arrangement_state",
+    "margin_db": "arrangement_state",
+    "confidence": "arrangement_state"
+  },
+  "stems": [
+    "bass",
+    "drums",
+    "harmonic",
+    "vocals"
+  ],
+  "blocks": [
+    {
+      "start_s": 0.0,
+      "end_s": 8.0,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [],
+      "margin_db": null,
+      "confidence": null
+    },
+    {
+      "start_s": 8.0,
+      "end_s": 16.0,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 6.0,
+      "confidence": 0.632
+    },
+    {
+      "start_s": 16.0,
+      "end_s": 24.0,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 12.5,
+      "confidence": 0.875
+    }
+  ]
+}

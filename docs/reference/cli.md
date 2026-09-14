@@ -24,6 +24,7 @@ docker compose run --rm app ./analyze --song "/data/songs/_test_song.mp3"
 | `--device` | auto | `cuda` or `cpu`; prefer GPU |
 | `--verbose` | off | detailed logging |
 | `--clean-generated-data` | — | delete generated per-song directories only; never touches `data/songs/` or `reference/` |
+| `--include-experiments` | off | after the pipeline finishes for a song, run the experiment queue (`experiments/queue.toml`) against it; allowed only with `--song` or `--all-songs`, rejected with `--stage`. Advisory — never changes the analyzer exit code |
 
 ## Compare targets
 
@@ -36,7 +37,7 @@ than silently reporting `skipped`.
 | `beats` | inferred beat times, over the reference-covered span only | beat times embedded in `reference/moises/chords.json` |
 | `chords` | time-aligned chord events and labels | `reference/moises/chords.json` |
 | `sections` | structural change points | `reference/moises/segments.json` |
-| `drums` | internal consistency: time-ordering, label set (`kick`/`snare`/`hat`/unresolved), summary-count match, MIDI preservation, recorded debug source paths, recognizable backbeat and hat pulse | itself |
+| `drums` | internal consistency: time-ordering, label set (`kick`/`snare`/`hat`/`crash`/unresolved), summary-count match, MIDI preservation, recorded debug source paths, recognizable backbeat and hat pulse | itself |
 | `drops` | detected drop impacts, precision/recall @ 1.0 s, plus a "fake drops don't outnumber real drops" check | timed drop hints in `reference/human/human_hints.json` |
 
 `drops` is **advisory** and never flips the exit code. A song with no timed drop
@@ -62,13 +63,31 @@ is authoritative over this list.
 | `extract-drum-events` | 2.5 |
 | `extract-energy-features` | 2.6 |
 | `segment-sections` | 3.1 |
+| `detect-arrangement-state` | 3.2 |
+| `contest-section-function` | 3.3 |
 | `derive-energy-layer` | 4.1 |
 | `build-gestures` | 5.0 |
 | `classify-genre` | 6.1 |
 | `generate-section-hints` | 6.2 |
 | `build-ui-data` | 7.2 |
+| `publish-arrangement-state` | 7.3 |
 | `build-human-hints-alignment` | 8.8 |
 | `build-validation-report`, `write-validation-report`, `write-validation-markdown` | validation |
+
+The table is ordered by id, and run order differs — `detect-arrangement-state`
+runs after `build-ui-data`, which publishes the `loudness.json` it reads.
+`contest-section-function` (3.3) runs later still, after `build-ui-data` **and**
+`publish-arrangement-state`: it reads the published `sections.json`,
+`arrangement_state.json` and `loudness.json`, writes
+`artifacts/section_function_contest.json`, and re-fuses the two contest fields
+(`function_status: "contested"`, `contested_by`) into `sections.json`. A single
+`--stage contest-section-function` run gates on all three published files and
+fails (`AnalysisError`) if `build-ui-data` has not run.
+
+`extract-fft-bands` (1.3) must run before `extract-drum-events` (2.5): the
+crash/hat split reads `essentia/fft_bands.drums.json`. The full pipeline already
+orders them this way; a single `--stage extract-drum-events` run gates on the
+artifact and fails (`DependencyError`) if `extract-fft-bands` has not run.
 
 Batch progress lines carry both positions: `[2/20][1.1] _test_song | ensure-stems`.
 
@@ -81,7 +100,7 @@ Batch progress lines carry both positions: `[2/20][1.1] _test_song | ensure-stem
 
 Always written:
 
-- artifacts under `data/analysis/<Song - Artist>/artifacts/`
+- artifacts under `data/analysis/{song}/artifacts/`
 - `artifacts/validation/phase_1_report.json` and `.md`
 - `artifacts/symbolic_transcription/omnizart/drums.mid` when drums run
 
@@ -113,6 +132,40 @@ replacement for generated output.
 | `drums` | time-ordering, summary-count match, recognizable backbeat, hat pulse, over-dense regions |
 | `sections` | boundary offset and direction, snap-like boundary count, dominant snap multiple in beats |
 | `drops` | tolerance, detected/labelled counts, precision/recall/F1, `fake_outnumbers_drop`, or `mode: "skipped"` with a reason |
+
+## Experiment queue
+
+`experiments/queue.toml` lists the experiments that regenerate their
+`reference/proposals/<name>.json` lane per song. One row per experiment:
+
+```toml
+[[experiment]]
+name = "texture_novelty"
+command = "python -m experiments.texture_novelty.run compute --song {song_name} && python -m experiments.texture_novelty.run export --song {song_name}"
+image = "app"
+enabled = true
+```
+
+`command` placeholders: `{song_name}`, `{analysis_dir}`
+(`<analysis-root>/<song_name>`), `{song_path}` (the `.mp3`). ` && ` chains steps.
+Only `image = "app"` runs in-container; other images are skipped with a reason.
+
+Run it:
+
+```bash
+docker compose run --rm app ./experiment --song "/data/songs/_test_song.mp3"
+docker compose run --rm app ./experiment --all-songs
+docker compose run --rm app ./experiment --song "/data/songs/_test_song.mp3" --only texture_novelty
+```
+
+`./experiment` takes `--song` xor `--all-songs`, plus `--analysis-root`,
+`--songs-root`, `--only NAME[,NAME...]`. Same pass runs automatically after each
+song when `./analyze --include-experiments` is used.
+
+Every `experiment x song` pair is isolated: a non-zero exit is recorded
+`failed(code)`, a disabled or wrong-image row `skipped(reason)`, never raised. A
+summary table prints at the end. `./experiment` exits non-zero only if *every*
+attempted pair failed; the pass never affects the `./analyze` exit code.
 
 ## The rule that governs all of it
 

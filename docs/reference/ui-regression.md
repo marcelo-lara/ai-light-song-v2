@@ -59,7 +59,7 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `hint-drag-resized` | `song-full` after a right-edge resize + interior move of two `humanHints` blocks | drag handles on the `humanHints` lane (plan v2.1 item 10) | Blocks at post-drag positions, pre-reload; `.app-timeline__grid`, waveform masked |
 | `validation-snapshot` | Validation panel populated | part of `song-full` (assert region) | Status, beat match ratio, comparison counts |
 | `inspector-promote` | `song-full` with a `sections` block selected | click the block, then `promote-hint` | Plan v1.5 item 9 / R8: the `rows-plus-bottom` "Create human hint" action under the inspector title opens the hint editor pre-filled from the event (no seek, no save); `.app-rightpanel` |
-| `header-readout` | `.app-header` with the playhead at `1:04.0` | `/?song=<full-fixture>`, click `hint-003` on the `humanHints` lane | Plan v1.5 item 5 / R9, R10: no `app-header__barbeat-caption`; time / total / bar.beat readouts have reserved widths so nothing shifts as the digit count grows; `.app-header` |
+| `header-readout` | `.app-header` with the playhead at `1:04.0` | `/?song=<full-fixture>`, click `hint-003` on the `humanHints` lane | Plan v1.5 item 5 / R9, R10: no `app-header__barbeat-caption`; time / time_s / bar.beat readouts have reserved widths so nothing shifts as the digit count grows; `app-header__time` is the playhead in clock format, `app-header__time_s` the same playhead position as seconds with two fixed decimals; `.app-header` |
 | `footer-follow` | `.app-footer` with the follow toggle off, transport paused | `/?song=<full-fixture>`, clear `localStorage`, click `follow-toggle` once | Plan v1.5 item 6 / R6: the `arrows-in-line-horizontal` follow toggle sits immediately left of the `Lanes` button; `aria-pressed` and the pressed styling track the flag (default on, persisted per session); `.app-footer` |
 
 Component-level (optional, faster feedback): capture individual panels
@@ -301,17 +301,23 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 - lane head (plan v1.5 item 7): a lane fed by an unpromoted `experiments/`
   sandbox carries `<i.ph.ph-flask.tl-lane-head__flask>` (`aria-label`
   `"Experimental lane"`) as the first child of `.tl-lane-head__name`, before
-  `<span.tl-lane-head__name-text>`. Six lanes carry it today — `dropProposals`,
-  `vocalPhrases`, `reactiveBands`, `gridPhrase`, `character`,
-  `vocalTranscription`. The same badge precedes `.app-rightpanel__kicker` in
+  `<span.tl-lane-head__name-text>`. Seven lanes carry it —
+  `dropProposals`, `vocalPhrases`, `textureNovelty`,
+  `phrasePeriodicity`, `structuralVsMicro`, `character`,
+  `vocalTranscription`. The same badge precedes
+  `.app-rightpanel__kicker` in
   that lane's events panel header. `LaneList.tsx` is not badged. `moisesLyrics`
   is **not** badged — it reads `reference/moises/`, not an `experiments/`
   sandbox, so it sits with `humanHints` as external reference. `gestures` lost
   its badge when plan v3.0 item 9 repointed it at the production
-  `song_event_timeline.json` deliverable; the two allin1 lanes
-  (`allin1Transitions`, `allin1Sections`) were removed from the debugger
-  entirely by plan v3.0 item 14 — their content now lives in the production
-  Sections lane and in `song_event_timeline.json`.
+  `song_event_timeline.json` deliverable; `allin1Transitions` was removed
+  from the debugger entirely by plan v3.0 item 14 (content now in
+  `song_event_timeline.json`). `allin1Sections` was removed by the same item
+  and later reinstated as `allin1Sections` (label "allin1 Segmentation") once
+  `sections.json` gained a human/moises override tier
+  (`docs/reference/analysis.segments.md`) — it reads
+  `artifacts/section_segmentation/`, not an `experiments/` sandbox, so like
+  `moisesSections` it carries no badge either.
 - block inspector (plan v1.5 item 9): `promote-hint` on the `rows-plus-bottom`
   "Create human hint" action, rendered under `block-inspector__title` for every
   inspected event and in both transport states. A Human Hints block routes to

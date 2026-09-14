@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/phrase_periodicity",
+    "engine": "per-bar 16-slot z-normalised energy profile -> bar-sequence autocorrelation (period only)"
+  },
+  "phrase_lengths": {
+    "bass": {
+      "phrase_bars": 8,
+      "prominence": 0.168,
+      "detected": true
+    }
+  },
+  "blocks": [
+    {
+      "start_s": 0.0,
+      "end_s": 8.0,
+      "title": "Intro",
+      "regime": "through-composed",
+      "period": null,
+      "n_bars": 4
+    },
+    {
+      "start_s": 8.0,
+      "end_s": 20.0,
+      "title": "Groove",
+      "regime": "bar-loop",
+      "period": 1.0,
+      "n_bars": 6
+    },
+    {
+      "start_s": 20.0,
+      "end_s": 32.0,
+      "title": "Chorus",
+      "regime": "half-bar-loop",
+      "period": 0.5,
+      "n_bars": 6
+    }
+  ]
+}

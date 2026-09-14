@@ -29,8 +29,7 @@ test("item 8 — hide all clears every lane row, header rows remain, re-show wor
 
   // Re-show one lane from the list → its row reappears and renders.
   await page
-    .locator('.tl-lanelist__row', { hasText: "FFT Bands" })
-    .getByRole("checkbox")
+    .getByRole("checkbox", { name: "FFT Bands", exact: true })
     .check();
   await waitReady(page);
   await expect(page.locator('.tl-lane-head[data-lane="fftBands"]')).toHaveCount(1);

@@ -30,6 +30,32 @@ describe("buildHumanHintsPayload", () => {
     });
   });
 
+  it("sorts hints by start_time without renumbering ids", () => {
+    const payload = buildHumanHintsPayload("s", [
+      draft({ id: "hint-042", title: "late", start_time: 90, end_time: 92 }),
+      draft({ id: "x", title: "early", start_time: 5, end_time: 6 }),
+      draft({ id: "hint-007", title: "mid", start_time: 30, end_time: 31 }),
+    ]);
+    expect(
+      payload.human_hints.map((h) => [h.id, h.title, h.start_time]),
+    ).toEqual([
+      ["x", "early", 5],
+      ["hint-007", "mid", 30],
+      ["hint-042", "late", 90],
+    ]);
+  });
+
+  it("keeps editor order for equal start_times", () => {
+    const payload = buildHumanHintsPayload("s", [
+      draft({ id: "a", title: "first", start_time: 10, end_time: 11 }),
+      draft({ id: "b", title: "second", start_time: 10, end_time: 11 }),
+    ]);
+    expect(payload.human_hints.map((h) => [h.id, h.title])).toEqual([
+      ["a", "first"],
+      ["b", "second"],
+    ]);
+  });
+
   it("requires an id", () => {
     expect(() => buildHumanHintsPayload("s", [draft({ id: "  " })])).toThrow(
       /must include an id/,
@@ -81,6 +107,37 @@ describe("buildHumanHintsPayload", () => {
       buildHumanHintsPayload("s", [draft({ captured_from: "   " })])
         .human_hints[0]!,
     ).not.toHaveProperty("captured_from");
+  });
+
+  it("omits type for a hand-authored hint with no explicit type", () => {
+    const hint = buildHumanHintsPayload("s", [draft()]).human_hints[0]!;
+    expect(hint).not.toHaveProperty("type");
+  });
+
+  it("defaults type to review when the draft carries a captured_from note", () => {
+    const hint = buildHumanHintsPayload("s", [
+      draft({ captured_from: "allin1 Sections · experiments/allin1" }),
+    ]).human_hints[0]!;
+    expect(hint.type).toBe("review");
+  });
+
+  it("honours an explicit type over the captured_from-derived default", () => {
+    const reviewOverride = buildHumanHintsPayload("s", [
+      draft({ type: "hint", captured_from: "allin1 Sections · experiments/allin1" }),
+    ]).human_hints[0]!;
+    expect(reviewOverride).not.toHaveProperty("type");
+
+    const hintOverride = buildHumanHintsPayload("s", [
+      draft({ type: "review" }),
+    ]).human_hints[0]!;
+    expect(hintOverride.type).toBe("review");
+  });
+
+  it("writes an explicit vocal type verbatim (never inferred, never dropped)", () => {
+    const hint = buildHumanHintsPayload("s", [
+      draft({ type: "vocal" }),
+    ]).human_hints[0]!;
+    expect(hint.type).toBe("vocal");
   });
 });
 

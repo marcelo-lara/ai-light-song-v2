@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import { ShapeError } from "./parse";
 import {
   parseBeats,
+  parseBlockEnergy,
+  parseLyricValidations,
   parseEventTimeline,
   parseFftBands,
   parseHarmonicLayer,
@@ -33,21 +35,18 @@ describe("parseInfo", () => {
     const info = parseInfo(infoFixture);
     expect(info.song_name).toBe("_test_song");
     expect(info.duration).toBeGreaterThan(0);
-    expect(typeof info.artifacts).toBe("object");
-    expect(info.outputs).not.toBeNull();
+    expect(info.bpm).toBeGreaterThan(0);
+    // v3.1 item 8 removed song_path / artifacts / outputs / debug / generated_from.
+    expect(info.field_sources).toEqual({ bpm: "essentia", duration: "essentia" });
   });
 
   it("throws on a missing required field", () => {
     expect(() => parseInfo({ song_name: "x" })).toThrow(ShapeError);
   });
 
-  it("tolerates null-valued artifact entries (unproduced artifacts)", () => {
-    const info = parseInfo({
-      song_name: "x",
-      duration: 10,
-      artifacts: { beats: "/p/beats.json", human_hints_alignment: null },
-    });
-    expect(info.artifacts).toEqual({ beats: "/p/beats.json" });
+  it("defaults field_sources to an empty object when absent", () => {
+    const info = parseInfo({ song_name: "x", duration: 10 });
+    expect(info.field_sources).toEqual({});
   });
 });
 
@@ -62,7 +61,7 @@ describe("parseBeats", () => {
       bar: expect.any(Number),
       type: expect.any(String),
     });
-    expect(["string", "object"]).toContain(typeof first.bass); // string | null
+    expect(first.downbeat_confidence).toBeNull();
   });
 
   it("rejects a non-array", () => {
@@ -164,6 +163,53 @@ describe("parseHumanHints", () => {
   it("accepts an empty / missing human_hints array", () => {
     expect(parseHumanHints({ song_name: "x" }).human_hints).toEqual([]);
   });
+
+  it("carries captured_from and type through, so they survive a reload", () => {
+    const hints = parseHumanHints({
+      song_name: "x",
+      human_hints: [
+        {
+          id: "hint-001",
+          title: "T",
+          start_time: 0,
+          end_time: 1,
+          captured_from: "allin1 Sections · experiments/allin1",
+          type: "review",
+        },
+      ],
+    }).human_hints;
+    expect(hints[0]!.captured_from).toBe(
+      "allin1 Sections · experiments/allin1",
+    );
+    expect(hints[0]!.type).toBe("review");
+  });
+
+  it("carries a vocal type through, so it survives a reload", () => {
+    const hints = parseHumanHints({
+      song_name: "x",
+      human_hints: [
+        {
+          id: "hint-001",
+          title: "T",
+          start_time: 0,
+          end_time: 1,
+          type: "vocal",
+        },
+      ],
+    }).human_hints;
+    expect(hints[0]!.type).toBe("vocal");
+  });
+
+  it("omits captured_from and type when absent or unrecognised", () => {
+    const hints = parseHumanHints({
+      song_name: "x",
+      human_hints: [
+        { id: "hint-001", title: "T", start_time: 0, end_time: 1, type: "bogus" },
+      ],
+    }).human_hints;
+    expect(hints[0]!).not.toHaveProperty("captured_from");
+    expect(hints[0]!).not.toHaveProperty("type");
+  });
 });
 
 describe("parseEventTimeline", () => {
@@ -216,5 +262,70 @@ describe("parseSongFacts", () => {
 
   it("throws on a non-object root", () => {
     expect(() => parseSongFacts([])).toThrow(ShapeError);
+  });
+});
+
+describe("parseBlockEnergy", () => {
+  it("reads full and partial ratings joined by hint_id", () => {
+    const file = parseBlockEnergy({
+      schema_version: "1.0",
+      song_name: "_test_song",
+      ratings: [
+        { hint_id: "hint-001", energy: 5, tension: 4 },
+        { hint_id: "hint-002", energy: 3 },
+      ],
+    });
+    expect(file.schema_version).toBe("1.0");
+    expect(file.ratings).toEqual([
+      { hint_id: "hint-001", energy: 5, tension: 4 },
+      { hint_id: "hint-002", energy: 3 },
+    ]);
+  });
+
+  it("drops out-of-range, non-integer, id-less and fully-empty entries", () => {
+    const file = parseBlockEnergy({
+      ratings: [
+        { hint_id: "a", energy: 9, tension: 2 }, // energy dropped, tension kept
+        { hint_id: "b", energy: 3.5 }, // dropped entirely
+        { hint_id: "", energy: 4, tension: 4 }, // no id
+        { hint_id: "d" }, // no axes
+      ],
+    });
+    expect(file.ratings).toEqual([{ hint_id: "a", tension: 2 }]);
+  });
+
+  it("tolerates a missing ratings array (404 -> empty stands in for this)", () => {
+    expect(parseBlockEnergy({ song_name: "s" }).ratings).toEqual([]);
+  });
+
+  it("throws on a non-object root", () => {
+    expect(() => parseBlockEnergy([])).toThrow(ShapeError);
+  });
+});
+
+describe("parseLyricValidations", () => {
+  it("reads the validated_ids list", () => {
+    const file = parseLyricValidations({
+      schema_version: "1.0",
+      song_name: "s",
+      validated_ids: [2, 3, 7],
+    });
+    expect(file.schema_version).toBe("1.0");
+    expect(file.validated_ids).toEqual([2, 3, 7]);
+  });
+
+  it("drops non-integer / non-finite ids and collapses duplicates", () => {
+    expect(
+      parseLyricValidations({ validated_ids: [2, 2, 3.5, "x", null, 4] })
+        .validated_ids,
+    ).toEqual([2, 4]);
+  });
+
+  it("tolerates a missing validated_ids array (404 -> empty stands in)", () => {
+    expect(parseLyricValidations({ song_name: "s" }).validated_ids).toEqual([]);
+  });
+
+  it("throws on a non-object root", () => {
+    expect(() => parseLyricValidations([])).toThrow(ShapeError);
   });
 });

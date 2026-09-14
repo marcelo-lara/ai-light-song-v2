@@ -10,7 +10,7 @@ promoted alongside it (item 14) — it now reads the production
 `song_event_timeline.json` directly and lost its experiment badge. The
 measurements below are kept exactly as run, including the open per-primitive
 precision-audit gap; they do not go stale (measured evidence does not go stale). Archive entry:
-[`../../docs/archive/experiments.md`](../../docs/archive/experiments.md).
+[`../../docs/archive/experiments_promoted.md`](../../docs/archive/experiments_promoted.md).
 
 ## The question
 

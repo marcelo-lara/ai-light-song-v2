@@ -5,10 +5,15 @@ read-only MCP server that helps a reasoning model understand a song's mood,
 sections and dynamics — **drop sequences especially** — while spending as few
 tokens as possible.
 
-> **Status: specified, not built.** No `mcp/` directory exists yet. The plan is
-> [`implementation-plan-v3.1.md`](implementation-plan-v3.1.md), whose **first
-> item is the scaffold** — the module, its Compose service and a proven stdio
-> round-trip — so the plumbing is validated before any data work.
+> **Status: built and green — all three tools return real payloads.**
+> The stdio/Compose plumbing, song discovery, the exposure guard, the
+> fixture-based regression harness (`smoke-test` / `full-regression`, no
+> deferrals), the whole-song overview and the on-demand `get_detail` dense read
+> are all in place. Shipped in v3.1. The downstream cue-authoring consumer kept
+> consuming the published delivery surface rather than migrating to read
+> analyzer internals directly — see
+> [`reference/downstream-contract.md`](reference/downstream-contract.md) for the
+> current contract.
 
 - How to prove it still works: [`reference/mcp-regression.md`](reference/mcp-regression.md)
 - What the analyzer produces for it: [`analysis-definition.md`](analysis-definition.md)
@@ -45,13 +50,26 @@ capability here, the answer is that it goes in the other repo — see
 The server describes the *music*. A downstream host owns the lighting
 translation.
 
+Reciprocal boundary statement
+
+- Downstream services (the cue-authoring server and its siblings) must not read
+  the `data/analysis/` top-level files directly. They operate on the compact
+ , reviewed tool-surface this project publishes. In short: the boundary is
+  enforced both ways — this server does not author cues, and downstream cue
+  authoring does not reach back into analyzer internals.
+
+Consequence: any top-level signal not published into the delivery surface will
+not reach cue authoring. If a signal is kept only in inner artifact folders or
+never published at top level, it cannot be consumed by downstream cue authors.
+To make a signal available for lighting translation, the analyzer must publish
+it as a top-level file (phase 4).
 ## The exposure rule
 
-> **This server reads `data/analysis/<Song - Artist>/*.json` and nothing else.**
+> **This server reads `data/analysis/{song}/*.json` and nothing else.**
 
 | Tier | Who may read it |
 | --- | --- |
-| `data/analysis/<Song - Artist>/*.json` — top level | `mcp/`, `src/analyzer/`, `ui/` |
+| `data/analysis/{song}/*.json` — top level | `mcp/`, `src/analyzer/`, `ui/` |
 | `…/artifacts/**`, `…/reference/**` | **`src/analyzer/` and `ui/` only** |
 
 Inner folders are the raw material phase 4 uses to build the top-level files.
@@ -64,9 +82,14 @@ depth, by design ([`ui-definition.md`](ui-definition.md)); it is a diagnostic
 tool, not a delivery surface.
 
 A corollary worth stating: **no top-level file may embed an absolute host path.**
-Several do today (`info.json`'s `song_path` / `generated_from` / `artifacts` /
-`outputs`, `rms_loudness.json`'s `sources[].path`). Those are internal
-filesystem details and must not cross to a delivery surface.
+The v3.1 work removed them from `info.json` (`song_path` / `generated_from` /
+`artifacts` / `outputs`, item 8) and the published `loudness.json`
+(`sources[].path`, item 7). Two top-level files still carry host paths in a
+`generated_from` provenance block — `hints.json` and `song_event_timeline.json`
+— a pre-existing leak the serializers do not propagate into responses (the
+`full-regression` F4.21 check confirms this) but which the publish stage should
+strip at source; tracked in [`issues.md`](issues.md). The `artifacts/`
+originals keep these internal filesystem details and must never be exposed.
 
 ## Runtime
 
@@ -88,8 +111,26 @@ A stdio server is **spawned by its client**, so there is no `docker compose up`
 for this service. The client's MCP config names the command:
 
 ```json
-{ "command": "docker",
-  "args": ["compose", "run", "--rm", "-T", "mcp"] }
+{
+  "command": "docker",
+  "args": ["compose", "run", "--rm", "-T", "mcp"]
+}
+```
+
+The canonical invocation topology (D3.1) for remote clients is *remote Docker
+over SSH*: the caller SSHes to the host running the Compose stack and invokes
+Compose there, passing an absolute path to the repository's `docker-compose.yml`.
+Example canonical command:
+
+```sh
+ssh s2.local -T -- docker compose -f <absolute-repo-path>/docker-compose.yml run --rm -T mcp
+```
+
+When the caller and the Compose host are the same machine the equivalent local
+invocation is acceptable:
+
+```sh
+docker compose -f <absolute-repo-path>/docker-compose.yml run --rm -T mcp
 ```
 
 `-T` is mandatory — without it Compose allocates a TTY and corrupts the stdio
@@ -105,7 +146,7 @@ call they both need. Everything else is out of scope for v1.
 Every analysable song directory under `data/analysis/`, with `song_name`, `bpm`
 and `duration`. Deliberately trivial, and not optional: a client cannot guess
 directory names, and without this the caller must be told the exact
-`"<Song - Artist>"` string out of band. It is also what makes the scaffold
+`"{song}"` string out of band. It is also what makes the scaffold
 end-to-end testable without stubbing a response.
 
 ### `get_song_overview(song)`
@@ -127,16 +168,34 @@ Returns:
 - **Gestures** — one row per composite gesture, not per phase: its span, its
   peak intensity, its `section_id`, and which phases are present. A song with 31
   impact rows must not return 31 unrelated events.
+- **Arrangement** — one row per `arrangement_state` block: who is `playing`,
+  who `entered`, who `left`, and the block `confidence` (a leading block carries
+  `null`). From the optional top-level `arrangement_state.json`; the whole block
+  is omitted for a song analysed before v3.2. Also carries `vocals_phrase` — a
+  second, independent read on the vocals stem from the promoted `whisperx_vad`
+  experiment (v3.5 item 7): spans where a phrase was detected, each with
+  `confidence: 1.0` by operator directive (a detected phrase is asserted
+  certain, never graded). `null` means the song has no pre-computed proposal
+  cache, not "no vocals" — `whisperx_vad`'s compute step runs out-of-band
+  (its own sandbox image, incompatible torch pin) and is not yet part of
+  `./analyze` itself. Each span additionally carries `sibilance` — the
+  promoted item-4 stem-bleed discriminator (v3.5 item 4), to be read against
+  the sibling `vocals_sibilance_song_mean` rather than absolutely, since the
+  cue has a per-song noise floor. A phrase well below the song mean is the
+  vocal detector firing on instrument bleed rather than a voice. No gate is
+  applied at publish time — the value is reported and the call is the
+  consumer's.
 - **Transitions** — the `"<from> → <to>"` rows, with times.
 - **Human hints** — the operator's own marks, verbatim, with their
   `lighting_hint` where one exists. These are ground truth and outrank every
   inferred field in the response.
 
-### `get_detail(song, scope, interval_ms=None, sources=None)`
+### `get_detail(song, section_id=None, gesture_id=None, start_ms=None, end_ms=None, interval_ms=None, sources=None)`
 
-On-demand detail for one span. `scope` selects it, exactly one of:
+On-demand detail for one span. Exactly one scope selector is required — zero or
+two is an error, with no precedence rule:
 
-| Scope | Span |
+| Scope selector | Span |
 | --- | --- |
 | `section_id` | that section |
 | `gesture_id` | that gesture's full `approach → release` envelope |
@@ -144,15 +203,19 @@ On-demand detail for one span. `scope` selects it, exactly one of:
 
 **The dense-series cap is 5 seconds — a maximum, not a default.** When the
 resolved span exceeds 5 s the call returns the structural view (phases,
-transitions, hints, aggregate intensity) and **withholds the dense frames**,
-saying so explicitly and naming the cap. It never silently truncates, and it
+transitions, hints, aggregate intensity, and the overlapping `arrangement_state`
+blocks — structural block data, listed with no decimation and present even when
+the dense frames are withheld) and **withholds the dense frames**, saying so
+explicitly and naming the cap. It never silently truncates, and it
 never silently downsamples to fit.
 
 **`interval_ms` is the caller's choice.** The server decimates the published
 series per request; it is not a resolution baked in at publish time. The
-published floor is **20 ms** — the finest a caller may request. A concept pass
-wanting a coarse envelope and a section pass chasing a transient are the same
-file read at two resolutions.
+published floor is **20 ms** — the finest a caller may request; a finer
+`interval_ms` is an error naming the floor, never a silent upsample. Decimation
+is chunk-averaging, not frame-dropping, so a transient in the window is not lost.
+A concept pass wanting a coarse envelope and a section pass chasing a transient
+are the same file read at two resolutions.
 
 `sources` optionally narrows the stem set (mix, drums, bass, harmonic, vocals);
 the default is all five.

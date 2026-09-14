@@ -24,6 +24,24 @@ export interface SparseTint {
 /** documented base hue (deg) + saturation (%) per lane id */
 const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   humanHints: [35, 92, 48], // amber   (the previous app rgba(217,119,6))
+  humanHintsReview: [205, 80, 55], // azure — a hint seeded from an
+  //   experiment/event block for review, distinct from a hand-authored
+  //   hint's amber
+  humanHintsVocal: [118, 65, 36], // warm green — a voice sounds continuously
+  //   across the span (voice = alive/present); distinct from humanHints'
+  //   amber (35), humanHintsReview's azure (205), and every green-ish hue
+  //   elsewhere in this file (arrangementState 95, phrasePeriodicity 130,
+  //   characterVocalLead/moisesLyricsHigh 150)
+  humanSections: [55, 85, 46], // golden yellow — the operator's own hand-authored
+  //   segmentation, deliberately near humanHints' amber (35, same "hand-authored"
+  //   family) but distinct from it and from the production Sections lane's
+  //   teal (174)
+  moisesSections: [160, 55, 42], // seafoam — the Moises.ai reference
+  //   segmentation, read-only; distinct from humanSections' gold (55),
+  //   moisesLyrics' slate blue (210), and the fused Sections lane's teal (174)
+  allin1Sections: [90, 45, 42], // olive — our own pre-fusion segmentation,
+  //   distinct from humanSections (55), moisesSections (160) and the fused
+  //   Sections lane's teal (174)
   dropProposals: [318, 72, 46], // magenta — deliberately unlike the amber of the
   //                               human hints it is auditioned against
   dropProposalsMatched: [168, 60, 40], // muted teal — a proposal that already
@@ -32,11 +50,79 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalPhrases: [340, 55, 46], // rose — distinct from moisesLyrics' slate blue
   vocalPhrasesGap: [220, 10, 40], // near-grey — an instrumental (no-vocal) span
   vocalPhrasesSustained: [280, 60, 48], // violet-pink — a held note marker
-  reactiveBands: [50, 85, 42], // warm gold-amber — MilkDrop-style band accents
+  // v3.5 item 4 — per-frame voiceness curve (vibrato+portamento+sibilance,
+  // noisy-OR), one hue (260, violet-blue) ramped by intensity so the lane
+  // reads as a curve rather than a qualitative label; `vocalVoicenessPhrase`
+  // is a distinct hue for the overlaid bridged `vocal_phrase` spans.
+  vocalVoicenessVeryLow: [260, 20, 22],
+  vocalVoicenessLow: [260, 35, 30],
+  vocalVoicenessMid: [260, 55, 40],
+  vocalVoicenessHigh: [260, 75, 48],
+  vocalVoicenessVeryHigh: [260, 90, 56],
+  vocalVoicenessPhrase: [200, 65, 44], // distinct from the curve's 260 hue and
+  //   from vocalPhrases' rose (340)
+  // v3.5 item 6 — PANNs `Singing`-class voiceness, run on BOTH the vocal
+  // stem and the mix, rendered as two curves in the SAME lane (never a
+  // toggle — the standing "no hiding a signal behind a selector" rule).
+  // Two distinct base hues so the stem/mix curves read as two series at a
+  // glance: stem 105 (spring-green, clear of arrangementState's 95 and
+  // textureNovelty's 70), mix 235 (blue, clear of structuralVsMicro's 245
+  // and vocalPhrasesGap's 220). Each ramped by intensity like the sibling
+  // voiceness lanes; the two phrase-overlay hues (50, 185) sit in the same
+  // gaps, clear of every neighbour.
+  svdTaggerStemVeryLow: [105, 20, 20],
+  svdTaggerStemLow: [105, 38, 28],
+  svdTaggerStemMid: [105, 55, 38],
+  svdTaggerStemHigh: [105, 75, 46],
+  svdTaggerStemVeryHigh: [105, 92, 54],
+  svdTaggerStemPhrase: [50, 65, 44],
+  svdTaggerMixVeryLow: [235, 20, 22],
+  svdTaggerMixLow: [235, 38, 32],
+  svdTaggerMixMid: [235, 58, 44],
+  svdTaggerMixHigh: [235, 75, 54],
+  svdTaggerMixVeryHigh: [235, 90, 62],
+  svdTaggerMixPhrase: [185, 60, 42],
+  // v3.5 item 7 — whisperX's VAD front-end (speech-domain, VAD-only —
+  // diarization not attempted, no HF_TOKEN in this environment). Hue 20
+  // (amber-orange) sits between gestures' burnt orange (10) and humanHints'
+  // amber (35) — distinguished from both by this lane's own intensity ramp
+  // and by never co-occurring with either lane's block shape. The overlaid
+  // `vocal_phrase` hue (80, yellow-green) sits between textureNovelty (70)
+  // and arrangementState (95) for the same reason. Unlike
+  // svdTagger, this candidate's phrase spans carry real sub-second onsets
+  // (Binarize hysteresis, not a 5s clip window) — see model.py.
+  whisperxVadVeryLow: [20, 20, 20],
+  whisperxVadLow: [20, 40, 28],
+  whisperxVadMid: [20, 60, 38],
+  whisperxVadHigh: [20, 80, 46],
+  whisperxVadVeryHigh: [20, 95, 54],
+  whisperxVadPhrase: [80, 60, 42],
+  voiceMultiplicity: [145, 60, 44], // sea-green — solo/stacked voice blocks,
+  //                                   distinct from phrasePeriodicity's 130,
+  //                                   moisesLyricsHigh's 150
+  arrangementState: [95, 55, 44], // olive-lime — distinct from vocalPhrases' rose
+  //                                 (340) and dropProposals' magenta (318)
+  arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a
+  //                                       block where one stem or fewer is playing
+  textureNovelty: [70, 60, 44], // chartreuse — distinct from arrangementState's
+  //   olive-lime (95); v3.4 item 6 experiment lane
+  //   (failed kill condition, kept for one review pass)
+  phrasePeriodicity: [130, 55, 40], // emerald — distinct from textureNovelty's
+  //   chartreuse (70) and arrangementState's olive-lime (95); v3.4 item 7
+  //   experiment lane (passed its kill condition)
+  structuralVsMicro: [245, 50, 52], // indigo — a `structural` block (edge locks
+  //   to the 4-bar phrase grid). Distinct from every neighbour hue: textureNovelty
+  //   70, phrasePeriodicity 130, moisesLyrics 210, character 275; v3.4 item 8
+  //   experiment lane (failed its kill condition, kept for one review pass)
+  structuralVsMicroMicro: [300, 62, 52], // magenta-purple — a `micro` cue that
+  //   lives inside a phrase. Per-block tint override the adapter emits for
+  //   kind === "micro"; precedent dropProposalsMatched
   gestures: [10, 75, 46], // burnt orange — sound-design device gestures
-  gridPhrase: [188, 50, 42], // slate cyan — resolved bar/phrase grid
-  gridDisputed: [0, 70, 40], // red — a song whose grid was NOT confidently resolved
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
+  sectionsContested: [28, 90, 50], // vivid orange — a section whose allin1
+  //   `function` label is kept but contradicted by the energy contest (v3.4
+  //   item 3). Reads clearly against the Sections lane's teal blocks; precedent
+  //   is `dropProposalsMatched`.
   // Character blocks are tinted by *kind*, so a song's texture reads as a
   // colour strip before any label is. Violet for `breath` is not arbitrary —
   // it is the look the operator wrote for the block this lane was built to
@@ -60,6 +146,12 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   moisesLyricsLow: [0, 72, 46],
   moisesLyricsUnscored: [210, 12, 40],
   moisesLyricsMarker: [210, 30, 34],
+  // v3.4 item 5 — a token the operator has hand-verified. Deliberately NOT the
+  // `≥ 0.7` "High" bucket (150, green): a bright indigo, unlike every Moises
+  // confidence tint, so a validated token reads as validated at a glance and
+  // is never mistaken for Moises' own 0.99s. Applies in both the panel card
+  // and the timeline lane.
+  moisesLyricsValidated: [265, 80, 56],
   vocalTranscription: [32, 45, 42],
   vocalTranscriptionBaseline: [28, 20, 40],
   vocalTranscriptionModel: [32, 80, 46],

@@ -1,0 +1,10 @@
+{
+  "schema_version": "3.0",
+  "song_name": "McpPartial - Fixture",
+  "field_sources": {
+    "bpm": "essentia",
+    "duration": "essentia"
+  },
+  "bpm": 120.0,
+  "duration": 24.0
+}

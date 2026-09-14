@@ -64,7 +64,7 @@
   font-size: 13px;
   color: var(--color-neutral-700);
 }
-.app-header__total {
+.app-header__time_s {
   display: inline-block;
   min-width: 7ch;
   text-align: left;

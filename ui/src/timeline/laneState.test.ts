@@ -3,6 +3,8 @@
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
+import { artifactLoaders } from "../data/loaders";
+
 import {
   LANE_DEFS,
   defaultLaneState,
@@ -41,5 +43,31 @@ describe("item 8 — hide all", () => {
     const reloaded = loadLaneState();
     expect(reloaded.waveform!.visible).toBe(true);
     expect(reloaded.fftBands!.visible).toBe(false);
+  });
+});
+
+describe("item 1 — per-stem FFT lanes", () => {
+  const stemLanes = [
+    "fftBandsBass",
+    "fftBandsDrums",
+    "fftBandsHarmonic",
+    "fftBandsVocals",
+  ] as const;
+
+  it("registers four per-stem FFT lanes with the mix `fft` renderer and no flask badge", () => {
+    for (const id of stemLanes) {
+      const def = LANE_DEFS.find((d) => d.id === id);
+      expect(def, `${id} present in LANE_DEFS`).toBeTruthy();
+      expect(def!.kind).toBe("fft");
+      // src/ output, not an experiments/ sandbox — must not be badged
+      expect(def!.experiment).toBeUndefined();
+    }
+    // sits beside, not merged into, the mix FFT lane
+    expect(LANE_DEFS.some((d) => d.id === "fftBands")).toBe(true);
+  });
+
+  it("has a fail-loud loader registered for each per-stem artifact", () => {
+    const loaders = artifactLoaders as Record<string, unknown>;
+    for (const id of stemLanes) expect(typeof loaders[id]).toBe("function");
   });
 });

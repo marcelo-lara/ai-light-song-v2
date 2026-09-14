@@ -3,13 +3,15 @@ from __future__ import annotations
 from collections.abc import Callable
 import gc
 import sys
+from pathlib import Path
 from typing import TypeVar
 
 from analyzer.config import ValidationConfig
 from analyzer.io import ensure_directory, read_json, write_json
 from analyzer.exceptions import AnalysisError
-from analyzer.models import SCHEMA_VERSION, build_song_schema_fields
+from analyzer.models import SCHEMA_VERSION, build_song_schema_fields, validate_field_sources
 from analyzer.paths import SongPaths
+from analyzer.stages.arrangement_state import detect_arrangement_state
 from analyzer.stages.gestures import build_gestures
 from analyzer.stages.energy import extract_energy_features
 from analyzer.stages.energy import derive_energy_layer
@@ -20,10 +22,11 @@ from analyzer.stages.harmonic import extract_hpcp_and_chords
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.loudness import extract_mix_stem_loudness
+from analyzer.stages.section_function import contest_section_function
 from analyzer.stages.segmentation import segment_sections
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import extract_timing_grid
-from analyzer.stages.ui_data import build_ui_data
+from analyzer.stages.ui_data import build_ui_data, publish_arrangement_state
 from analyzer.stages.validation import (
     build_validation_report,
     skipped_result,
@@ -48,6 +51,9 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "extract-drum-events": "2.5",
     "extract-energy-features": "2.6",
     "segment-sections": "3.1",
+    "detect-arrangement-state": "3.2",
+    "publish-arrangement-state": "7.3",
+    "contest-section-function": "3.3",
     "derive-energy-layer": "4.1",
     "build-gestures": "5.0",
     "classify-genre": "6.1",
@@ -83,6 +89,24 @@ def _required_artifact_payload(paths: SongPaths, stage_name: str, *artifact_part
     if not isinstance(payload, dict):
         joined = "/".join(artifact_parts)
         raise AnalysisError(f"Artifact '{joined}' must contain a JSON object payload.")
+    return payload
+
+
+def _required_output_payload(paths: SongPaths, stage_name: str, path: Path) -> dict:
+    """Existence gate for a single-stage run that reads a *published top-level*
+    file rather than an artifact. `_required_artifact_payload` cannot express
+    this — it resolves under `artifacts/`. No fallback to
+    `artifacts/essentia/rms_loudness.json`: that is a different (pre-decimation)
+    series and would silently change every measured number."""
+    if not path.exists():
+        raise AnalysisError(
+            f"Single-stage execution for '{stage_name}' requires the published top-level "
+            f"file '{path.name}'. Run 'build-ui-data' first (it publishes {path.name}), "
+            "or execute the full pipeline once."
+        )
+    payload = read_json(path)
+    if not isinstance(payload, dict):
+        raise AnalysisError(f"Top-level file '{path.name}' must contain a JSON object payload.")
     return payload
 
 
@@ -125,6 +149,9 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         _run_stage(paths.song_name, "phase-1", stage_name, validate_beats, paths, timing, config.beat_tolerance_seconds)
         return 0
     if stage_name == "extract-fft-bands":
+        # Reads paths.song_path (mix) and the four stem WAVs from disk. Stems
+        # must already exist (run 'ensure-stems' first); the stage raises
+        # DependencyError naming any stem that is missing.
         _run_stage(paths.song_name, "phase-1", stage_name, extract_fft_bands, paths)
         return 0
     if stage_name == "extract-mix-stem-loudness":
@@ -157,6 +184,10 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         stems = _existing_stems(paths, stage_name)
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
         sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        # v3.4: the crash/hat split reads the drums-stem brilliance band.
+        # extract-fft-bands runs before extract-drum-events in the full
+        # pipeline; gate the single-stage path on the same prerequisite.
+        _required_artifact_payload(paths, stage_name, "essentia", "fft_bands.drums.json")
         _run_stage(paths.song_name, "phase-1", stage_name, extract_drum_events, paths, stems, timing, sections)
         return 0
     if stage_name == "generate-section-hints":
@@ -165,6 +196,28 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         return 0
     if stage_name == "build-ui-data":
         _run_stage(paths.song_name, "phase-1", stage_name, build_ui_data, paths)
+        return 0
+    if stage_name == "detect-arrangement-state":
+        _required_output_payload(paths, stage_name, paths.loudness_output_path)
+        _run_stage(paths.song_name, "phase-1", stage_name, detect_arrangement_state, paths)
+        return 0
+    if stage_name == "publish-arrangement-state":
+        _required_artifact_payload(paths, stage_name, "arrangement_state.json")
+        # The promoted item-4 sibilance cue is read off the vocal stem's FFT
+        # bands (1.3) — gate on it so a missing prerequisite fails here rather
+        # than publishing phrases with no discriminator attached.
+        _required_artifact_payload(paths, stage_name, "essentia", "fft_bands.vocals.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, publish_arrangement_state, paths)
+        return 0
+    if stage_name == "contest-section-function":
+        # Phase 3 — reads the published top-level sections.json,
+        # arrangement_state.json and loudness.json (never audio). All three are
+        # published by build-ui-data / publish-arrangement-state, which run
+        # earlier in the full pipeline.
+        _required_output_payload(paths, stage_name, paths.sections_output_path)
+        _required_output_payload(paths, stage_name, paths.arrangement_state_output_path)
+        _required_output_payload(paths, stage_name, paths.loudness_output_path)
+        _run_stage(paths.song_name, "phase-1", stage_name, contest_section_function, paths)
         return 0
     if stage_name == "derive-energy-layer":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
@@ -286,6 +339,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         # the v3.0 plan's item 8 resolved ordering note (plan deleted with the
         # release; recoverable via `git log --diff-filter=D -- docs/`).
         timing = _run_stage(paths.song_name, "phase-1", "extract-timing-grid", extract_timing_grid, paths, stems)
+        # extract-fft-bands reads the mix and all four stem WAVs (written by
+        # ensure-stems above) and emits fft_bands.json + fft_bands.<stem>.json x4.
         fft_bands = _run_stage(paths.song_name, "phase-1", "extract-fft-bands", extract_fft_bands, paths)
         loudness = _run_stage(paths.song_name, "phase-1", "extract-mix-stem-loudness", extract_mix_stem_loudness, paths, stems)
         beat_validation = (
@@ -333,48 +388,44 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             timing,
             sections,
         )
-        hints = _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, sections)
-        ui_outputs = _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
+        # These stages write their own top-level files (hints.json; beats.json /
+        # sections.json / song_event_timeline.json). Their return values are no
+        # longer read here — v3.1 item 8 dropped the info.json `outputs` manifest
+        # that used them.
+        _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, sections)
+        _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
+        # detect-arrangement-state (3.2) reads the top-level loudness.json that
+        # build-ui-data has just published — it runs immediately after, never
+        # earlier (D4). Run order has never matched id order.
+        _run_stage(paths.song_name, "phase-1", "detect-arrangement-state", detect_arrangement_state, paths)
+        # publish-arrangement-state (7.3) fuses the artifact just written into the
+        # top-level arrangement_state.json (D4) — publishing outside build-ui-data,
+        # like generate-section-hints already does for hints.json.
+        _run_stage(paths.song_name, "phase-1", "publish-arrangement-state", publish_arrangement_state, paths)
+        # contest-section-function (3.3) is phase 3 — it cross-checks each allin1
+        # `function` against the published loudness.json + arrangement_state.json
+        # and flags (never flips) a `chorus` that is quieter and thinner than the
+        # `verse`/`bridge` that follows. It re-fuses the two contest fields into
+        # the already-published sections.json. Runs after build-ui-data and
+        # publish-arrangement-state, which publish everything it reads.
+        _run_stage(paths.song_name, "phase-1", "contest-section-function", contest_section_function, paths)
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
+        # v3.1 item 2 — attribution header. `bpm` and `duration` are essentia's
+        # (the timing stage). v3.1 item 8 removed `song_path` / `artifacts` /
+        # `outputs` / `debug` / `generated_from`: they embedded absolute host
+        # paths and a stale per-song file manifest that no consumer needs — a
+        # client discovers a song's files from the fixed top-level layout, not a
+        # manifest. Nothing is exempted now because nothing path-bearing remains.
+        info_field_sources = validate_field_sources(
+            {"bpm": "essentia", "duration": "essentia"},
+            ("bpm", "duration"),
+            file="info.json",
+        )
         info_payload = {
             "schema_version": SCHEMA_VERSION,
             **build_song_schema_fields(paths, bpm=timing["bpm"], duration=timing["duration"]),
-            "song_path": str(paths.song_path),
-            "artifacts": {
-                "beats": str(paths.artifact("essentia", "beats.json")),
-                "fft_bands": str(paths.artifact("essentia", "fft_bands.json")),
-                "rms_loudness": str(paths.artifact("essentia", "rms_loudness.json")),
-                "loudness_envelope": str(paths.artifact("essentia", "loudness_envelope.json")),
-                "genre": str(paths.artifact("genre.json")),
-                "hpcp": str(paths.artifact("essentia", "hpcp.json")),
-                "harmonic_layer": str(paths.artifact("layer_a_harmonic.json")),
-                "drum_events": str(paths.artifact("symbolic_transcription", "drum_events.json")),
-                "drum_midi": str(paths.artifact("symbolic_transcription", "omnizart", "drums.mid")),
-                "energy_layer": str(paths.artifact("layer_c_energy.json")),
-                "song_facts": str(paths.reference("human", "song_facts.json")),
-                "human_hints_alignment": human_hint_alignment["json_path"] if human_hint_alignment else None,
-                "human_hints_alignment_markdown": human_hint_alignment["markdown_path"] if human_hint_alignment else None,
-                "sections": str(paths.artifact("section_segmentation", "sections.json")),
-            },
-            "generated_from": {
-                "source_song_path": str(paths.song_path),
-                "timing_grid": str(paths.artifact("essentia", "beats.json")),
-                "fft_bands_file": str(paths.artifact("essentia", "fft_bands.json")),
-                "rms_loudness_file": str(paths.artifact("essentia", "rms_loudness.json")),
-                "loudness_envelope_file": str(paths.artifact("essentia", "loudness_envelope.json")),
-            },
-            "outputs": {
-                "beats": ui_outputs["beats"],
-                "hints": hints["hints"],
-                "sections": ui_outputs["sections"],
-                "song_event_timeline": str(paths.timeline_output_path),
-            },
-            "debug": {
-                "fft_band_count": len(fft_bands.get("bands", [])),
-                "loudness_source_count": len(loudness["rms_loudness"].get("sources", [])),
-                "drum_events_engine": drum_events["generated_from"]["engine"],
-            },
+            "field_sources": info_field_sources,
         }
         write_json(paths.info_output_path, info_payload)
 

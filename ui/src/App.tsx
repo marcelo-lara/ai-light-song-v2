@@ -1,12 +1,33 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { artifactPaths, discoverSongs, useSong } from "./data";
-import type { HumanHintsFile, SectionRow } from "./data/types";
+import type {
+  BlockEnergyFile,
+  HumanHintsFile,
+  HumanSegmentsFile,
+  LyricValidationsFile,
+  SectionRow,
+} from "./data/types";
 import { buildHumanHintsPayload, saveHumanHints } from "./data/saveHumanHints";
+import {
+  buildHumanSectionsPayload,
+  saveHumanSections,
+} from "./data/saveHumanSections";
+import {
+  buildBlockEnergyPayload,
+  saveBlockEnergy,
+  type BlockEnergyDraft,
+} from "./data/saveBlockEnergy";
+import {
+  buildLyricValidationsPayload,
+  saveLyricValidations,
+} from "./data/saveLyricValidations";
 import { draftToHint, hintToDraft } from "./panel/hintDraft";
+import { draftToSegment, segmentToDraft } from "./panel/segmentDraft";
 import {
   BlockInspector,
   HintEditorPanel,
+  SegmentEditorPanel,
   LaneEventsPanel,
   ReviewQueuePanel,
   RightPanel,
@@ -15,6 +36,7 @@ import {
   selectionFromSection,
   type BlockSelection,
   type HintSeed,
+  type SegmentSeed,
   type PanelMode,
 } from "./panel";
 import { ArtifactInspector } from "./inspector";
@@ -89,22 +111,70 @@ const TIMELINE_KEYS = [
   "sectionSegmentation",
   "harmonicLayer",
   "fftBands",
+  // per-stem 7-band spectra — one dense lane each, beside the mix FFT lane
+  "fftBandsBass",
+  "fftBandsDrums",
+  "fftBandsHarmonic",
+  "fftBandsVocals",
   "rmsLoudness",
   "loudnessEnvelope",
   "drums",
   "energy",
   "humanHints",
+  // hand-authored section segmentation, editable via the same drag-to-edit /
+  // double-click-to-create conventions as humanHints (reference/human, writable)
+  "humanSections",
+  // Moises.ai reference segmentation — read-only, one precedence tier below
+  // humanSections (docs/reference/analysis.segments.md).
+  "moisesSections",
+  // v3.4 item 4 — operator's per-block energy/tension ratings, joined to the
+  // Human Hints events panel by hint_id (reference/human, writable).
+  "blockEnergy",
   // external word-level sung lyrics (reference/moises)
   "moisesLyrics",
+  // v3.4 item 5 — operator's per-token timing validations, overlaid on the
+  // Moises Lyrics lane by token id (reference/human, writable, per-click)
+  "lyricValidations",
+  // who-is-playing state changes from the published per-stem RMS
+  // (top-level arrangement_state.json)
+  "arrangementState",
   // drop-sequence exploration (experiments/drop_detection)
   "dropProposals",
   // wave-2 experiments (docs/experiments.md run orders 1-3, 6)
   "vocalPhrases",
-  "reactiveBands",
+  // texture-novelty segments (experiments/texture_novelty, v3.4 item 6 —
+  // failed kill condition, lane kept for one review pass)
+  "textureNovelty",
+  // phrase repetition regime + period (experiments/phrase_periodicity,
+  // v3.4 item 7 — passed its kill condition)
+  "phrasePeriodicity",
+  // structural vs micro block kind by 4-bar phrase-grid fit
+  // (experiments/structural_vs_micro, v3.4 item 8 — failed its kill condition,
+  // lane kept for one review pass)
+  "structuralVsMicro",
+  // per-frame voiceness (vibrato+portamento+sibilance) + bridged phrase
+  // blocks (experiments/vocal_voiceness, v3.5 item 4 — kill condition
+  // unevaluable until item 1's `type: "vocal"` ground truth exists)
+  "vocalVoiceness",
+  // PANNs `Singing`-class voiceness curve, stem + mix channels, rendered as
+  // two curves in one lane, never a toggle (experiments/svd_tagger, v3.5
+  // item 6 — new sandbox image + new model pin; kill condition unevaluable
+  // until item 1's `type: "vocal"` ground truth exists, and must
+  // additionally beat item 4 given its image/pin cost)
+  "svdTagger",
+  // whisperX's VAD front-end (speech-domain), voiceness + phrase spans with
+  // real sub-second onsets (experiments/whisperx_vad, v3.5 item 7 — new
+  // sandbox image, locally-bundled non-gated checkpoint, no live token at
+  // analysis time; diarization not attempted — no HF_TOKEN in this
+  // environment; kill condition unevaluable until item 1's `type: "vocal"`
+  // ground truth exists)
+  "whisperxVad",
+  // solo/stacked voice blocks from stereo width and L-R correlation
+  // (experiments/voice_multiplicity)
+  "voiceMultiplicity",
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
   // lane's production data source.
   "eventTimeline",
-  "grid",
   // texture / character blocks under review (experiments/clap)
   "character",
   // sung lyrics + timing under review (experiments/vocalparse, acestep_transcriber)
@@ -114,12 +184,23 @@ const TIMELINE_KEYS = [
 /** sparse lane id → the single artifact key that backs it (drives empty-state). */
 const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   humanHints: "humanHints",
+  humanSections: "humanSections",
+  moisesSections: "moisesSections",
+  // The raw, pre-fusion analyzer artifact — same source already loaded for
+  // the fused Sections lane's inspector join.
+  allin1Sections: "sectionSegmentation",
   moisesLyrics: "moisesLyrics",
+  arrangementState: "arrangementState",
   dropProposals: "dropProposals",
   vocalPhrases: "vocalPhrases",
-  reactiveBands: "reactiveBands",
+  textureNovelty: "textureNovelty",
+  phrasePeriodicity: "phrasePeriodicity",
+  structuralVsMicro: "structuralVsMicro",
+  vocalVoiceness: "vocalVoiceness",
+  svdTagger: "svdTagger",
+  whisperxVad: "whisperxVad",
+  voiceMultiplicity: "voiceMultiplicity",
   gestures: "eventTimeline",
-  gridPhrase: "grid",
   character: "character",
   vocalTranscription: "vocalTranscription",
   sections: "sectionsTopLevel",
@@ -129,6 +210,10 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
 /** lane id → (artifact key, canvas renderer kind) for the item-5 data lanes. */
 const CANVAS_LANES: Record<string, { key: (typeof TIMELINE_KEYS)[number]; kind: CanvasLaneSource["kind"] }> = {
   fftBands: { key: "fftBands", kind: "fft" },
+  fftBandsBass: { key: "fftBandsBass", kind: "fft" },
+  fftBandsDrums: { key: "fftBandsDrums", kind: "fft" },
+  fftBandsHarmonic: { key: "fftBandsHarmonic", kind: "fft" },
+  fftBandsVocals: { key: "fftBandsVocals", kind: "fft" },
   rmsLoudness: { key: "rmsLoudness", kind: "rms" },
   loudnessEnvelope: { key: "loudnessEnvelope", kind: "env" },
   drums: { key: "drums", kind: "drums" },
@@ -140,6 +225,10 @@ function formatClock(seconds: number): string {
   const m = Math.floor(safe / 60);
   const s = safe - m * 60;
   return `${m}:${s < 10 ? "0" : ""}${s.toFixed(1)}`;
+}
+
+function formatSecondsFixed(seconds: number): string {
+  return Math.max(0, seconds || 0).toFixed(2);
 }
 
 export function App(): React.JSX.Element {
@@ -166,11 +255,29 @@ export function App(): React.JSX.Element {
   const [eventsLaneId, setEventsLaneId] = useState<string | null>(null);
   const [activeHintRef, setActiveHintRef] = useState<string | null>(null);
   const [hintsOverride, setHintsOverride] = useState<HumanHintsFile | null>(null);
+  // Same reasoning as `activeHintRef` / `hintsOverride`, for the Human
+  // Sections lane.
+  const [activeSectionRef, setActiveSectionRef] = useState<string | null>(null);
+  const [sectionsOverride, setSectionsOverride] =
+    useState<HumanSegmentsFile | null>(null);
+  // v3.4 item 4: the server-normalised block_energy.json returned by a Save,
+  // applied in place so the Human Hints panel reflects it without a full reload
+  // (same reasoning as `hintsOverride`).
+  const [blockEnergyOverride, setBlockEnergyOverride] =
+    useState<BlockEnergyFile | null>(null);
+  // v3.4 item 5: the server-normalised lyric_validations.json returned by a
+  // per-click ✔ toggle, applied in place (same reasoning as the two above).
+  const [lyricValidationsOverride, setLyricValidationsOverride] =
+    useState<LyricValidationsFile | null>(null);
+  // Guards a double-fire from one ✔ click (D5.1) at the write layer too.
+  const savingLyricRef = useRef(false);
   // A pending "open the hint editor on a pre-filled draft" request — from a
   // double-click on the Human Hints lane (item 8) or the block inspector's
   // "Create human hint" action (item 9). `nonce` makes each request distinct so
   // the panel consumes it exactly once.
   const [hintSeed, setHintSeed] = useState<HintSeed | null>(null);
+  // Same reasoning as `hintSeed`, for the Human Sections lane.
+  const [sectionSeed, setSectionSeed] = useState<SegmentSeed | null>(null);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   // plan v1.5 D6: the offset the follow effect last wrote, so the scroll
@@ -264,17 +371,34 @@ export function App(): React.JSX.Element {
   const duration = transport.duration || estimatedDuration;
 
   const humanHintsFile = hintsOverride ?? artifacts.humanHints.data;
+  const humanSectionsFile = sectionsOverride ?? artifacts.humanSections.data;
+  const blockEnergyFile = blockEnergyOverride ?? artifacts.blockEnergy.data;
+  const lyricValidationsFile =
+    lyricValidationsOverride ?? artifacts.lyricValidations.data;
+  const validatedLyricIds = useMemo(
+    () => new Set(lyricValidationsFile?.validated_ids ?? []),
+    [lyricValidationsFile],
+  );
 
   // item 9: block lists for every sparse lane, rebuilt when a source changes.
   const laneContentSources = useMemo<LaneContentSources>(
     () => ({
       humanHints: humanHintsFile,
+      humanSections: humanSectionsFile,
+      moisesSections: artifacts.moisesSections.data,
       moisesLyrics: artifacts.moisesLyrics.data,
+      lyricValidations: validatedLyricIds,
+      arrangementState: artifacts.arrangementState.data,
       dropProposals: artifacts.dropProposals.data,
       vocalPhrases: artifacts.vocalPhrases.data,
-      reactiveBands: artifacts.reactiveBands.data,
+      textureNovelty: artifacts.textureNovelty.data,
+      phrasePeriodicity: artifacts.phrasePeriodicity.data,
+      structuralVsMicro: artifacts.structuralVsMicro.data,
+      vocalVoiceness: artifacts.vocalVoiceness.data,
+      svdTagger: artifacts.svdTagger.data,
+      whisperxVad: artifacts.whisperxVad.data,
+      voiceMultiplicity: artifacts.voiceMultiplicity.data,
       gestures: artifacts.eventTimeline.data,
-      grid: artifacts.grid.data,
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
       sections,
@@ -283,12 +407,21 @@ export function App(): React.JSX.Element {
     }),
     [
       humanHintsFile,
+      humanSectionsFile,
+      artifacts.moisesSections.data,
       artifacts.moisesLyrics.data,
+      validatedLyricIds,
+      artifacts.arrangementState.data,
       artifacts.dropProposals.data,
       artifacts.vocalPhrases.data,
-      artifacts.reactiveBands.data,
+      artifacts.textureNovelty.data,
+      artifacts.phrasePeriodicity.data,
+      artifacts.structuralVsMicro.data,
+      artifacts.vocalVoiceness.data,
+      artifacts.svdTagger.data,
+      artifacts.whisperxVad.data,
+      artifacts.voiceMultiplicity.data,
       artifacts.eventTimeline.data,
-      artifacts.grid.data,
       artifacts.character.data,
       artifacts.vocalTranscription.data,
       sections,
@@ -303,7 +436,12 @@ export function App(): React.JSX.Element {
     setSelection(null);
     setActiveHintRef(null);
     setHintsOverride(null);
+    setActiveSectionRef(null);
+    setSectionsOverride(null);
+    setBlockEnergyOverride(null);
+    setLyricValidationsOverride(null);
     setHintSeed(null);
+    setSectionSeed(null);
     setEventsLaneId(null);
   }, [song]);
 
@@ -311,7 +449,9 @@ export function App(): React.JSX.Element {
     setPanelMode(null);
     setSelection(null);
     setActiveHintRef(null);
+    setActiveSectionRef(null);
     setHintSeed(null);
+    setSectionSeed(null);
     setEventsLaneId(null);
   }, []);
 
@@ -326,7 +466,9 @@ export function App(): React.JSX.Element {
       }
       setSelection(null);
       setActiveHintRef(null);
+      setActiveSectionRef(null);
       setHintSeed(null);
+      setSectionSeed(null);
       setEventsLaneId(laneId);
       setPanelMode("lane");
     },
@@ -350,16 +492,6 @@ export function App(): React.JSX.Element {
     };
   }, [panelMode, eventsLaneId, artifacts, laneContentSources]);
 
-  // R3/D1 + D2: a lane-events card click seeks (only when paused) and nothing
-  // else — the panel stays on the same lane.
-  const handleSelectBlock = useCallback(
-    (block: SparseBlock) => {
-      const seekTo = seekTimeForCardClick(transport.isPlaying, block.start_s);
-      if (seekTo !== null) transport.seekTo(seekTo);
-    },
-    [transport],
-  );
-
   const scrollTimelineToTime = useCallback(
     (seconds: number) => {
       const el = scrollerRef.current;
@@ -369,6 +501,32 @@ export function App(): React.JSX.Element {
       el.scrollLeft = Math.max(0, Math.min(target, max));
     },
     [coords],
+  );
+
+  // whether `seconds`' playhead x-position currently sits inside the
+  // scroller's visible window (label column excluded).
+  const isTimeVisible = useCallback(
+    (seconds: number) => {
+      const el = scrollerRef.current;
+      if (!el) return true;
+      const x = LABEL_WIDTH + coords.timeToX(seconds);
+      return x >= el.scrollLeft + LABEL_WIDTH && x <= el.scrollLeft + el.clientWidth;
+    },
+    [coords],
+  );
+
+  // R3/D1 + D2: a lane-events card click seeks (only when paused) and scrolls
+  // the playhead into view when it's off-screen — the panel stays on the same
+  // lane.
+  const handleSelectBlock = useCallback(
+    (block: SparseBlock) => {
+      const seekTo = seekTimeForCardClick(transport.isPlaying, block.start_s);
+      if (seekTo !== null) {
+        transport.seekTo(seekTo);
+        if (!isTimeVisible(seekTo)) scrollTimelineToTime(seekTo);
+      }
+    },
+    [transport, isTimeVisible, scrollTimelineToTime],
   );
 
   const openHintEditor = useCallback((reference: string | null) => {
@@ -384,6 +542,20 @@ export function App(): React.JSX.Element {
     setActiveHintRef(null);
     setHintSeed({ start: time, end: time + 1.0, nonce: Date.now() });
     setPanelMode("hint");
+  }, []);
+
+  // Same conventions as the Human Hints editor, for Human Sections.
+  const openSegmentEditor = useCallback((reference: string | null) => {
+    setSelection(null);
+    setActiveSectionRef(reference);
+    setPanelMode("segment");
+  }, []);
+
+  const handleCreateSegmentAt = useCallback((time: number) => {
+    setSelection(null);
+    setActiveSectionRef(null);
+    setSectionSeed({ start: time, end: time + 1.0, nonce: Date.now() });
+    setPanelMode("segment");
   }, []);
 
   // plan v1.5 item 9 / R8: promote the inspected event to a new, editable human
@@ -419,16 +591,26 @@ export function App(): React.JSX.Element {
     (marker: LaneMarker) => {
       // R3/D1: a card click never moves the playhead while playing.
       const seekTo = seekTimeForCardClick(transport.isPlaying, marker.time);
-      if (seekTo !== null) transport.seekTo(seekTo);
+      if (seekTo !== null) {
+        transport.seekTo(seekTo);
+        // scroll the playhead into view only when it's out of the current
+        // window — never yank the timeline when it's already visible.
+        if (!isTimeVisible(seekTo)) scrollTimelineToTime(seekTo);
+      }
       if (marker.laneId === "humanHints") {
         openHintEditor(marker.id);
         return;
       }
+      if (marker.laneId === "humanSections") {
+        openSegmentEditor(marker.id);
+        return;
+      }
       setActiveHintRef(null);
+      setActiveSectionRef(null);
       setSelection(selectionFromMarker(marker));
       setPanelMode("inspector");
     },
-    [transport, openHintEditor],
+    [transport, openHintEditor, openSegmentEditor, isTimeVisible, scrollTimelineToTime],
   );
 
   // item 7 (ui-issues finding 7): the server-normalised file returned by the
@@ -440,6 +622,55 @@ export function App(): React.JSX.Element {
   const handleSaveHints = useCallback((file: HumanHintsFile) => {
     setHintsOverride(file);
   }, []);
+
+  // Same reasoning as `handleSaveHints`, for Human Sections.
+  const handleSaveSegments = useCallback((file: HumanSegmentsFile) => {
+    setSectionsOverride(file);
+  }, []);
+
+  // v3.4 item 4: persist every Human Hints block's energy/tension rating on an
+  // explicit panel Save. Builds + validates the whole file through the same
+  // client the tests exercise, then applies the server-normalised result in
+  // place (no full reload — see `handleSaveHints`). Rejects on failure so the
+  // panel can surface the error and keep the unsaved edits.
+  const handleSaveBlockEnergy = useCallback(
+    async (drafts: BlockEnergyDraft[]) => {
+      if (!song) throw new Error("No song selected.");
+      const payload = buildBlockEnergyPayload(
+        blockEnergyFile?.song_name || song,
+        drafts,
+      );
+      const written = await saveBlockEnergy(song, payload);
+      setBlockEnergyOverride(written);
+    },
+    [song, blockEnergyFile],
+  );
+
+  // v3.4 item 5 (D5.1): a ✔ toggle in the Moises Lyrics panel persists
+  // immediately — no Save button. Sends the FULL validated-id list; the handler
+  // replaces the file. Applies the server-normalised result in place (no full
+  // reload — see `handleSaveHints`). `savingLyricRef` drops a second toggle
+  // that lands while a write is still in flight.
+  const handleToggleLyricValidation = useCallback(
+    async (tokenId: number, nextValidated: boolean) => {
+      if (!song || savingLyricRef.current) return;
+      savingLyricRef.current = true;
+      try {
+        const ids = new Set(lyricValidationsFile?.validated_ids ?? []);
+        if (nextValidated) ids.add(tokenId);
+        else ids.delete(tokenId);
+        const payload = buildLyricValidationsPayload(
+          lyricValidationsFile?.song_name || song,
+          [...ids],
+        );
+        const written = await saveLyricValidations(song, payload);
+        setLyricValidationsOverride(written);
+      } finally {
+        savingLyricRef.current = false;
+      }
+    },
+    [song, lyricValidationsFile],
+  );
 
   // item 10: persist a humanHints block's new start/end after a timeline drag.
   // Builds the full file from the current hints (only the dragged one's times
@@ -464,6 +695,55 @@ export function App(): React.JSX.Element {
       handleSaveHints(written);
     },
     [song, humanHintsFile, handleSaveHints],
+  );
+
+  // Same reasoning as `handleCommitHintTimes`, for Human Sections. Segments
+  // carry no persisted id — the block's synthesized `segment-NNN` id is
+  // matched back to its array position (assigned in the same order by
+  // `humanSectionsContent`).
+  const handleCommitSegmentTimes = useCallback(
+    async (id: string, start: number, end: number) => {
+      if (!song) throw new Error("No song selected.");
+      const current = humanSectionsFile ?? [];
+      const drafts = current.map((segment, i) => {
+        const draft = segmentToDraft(segment, i);
+        return draft.id === id
+          ? { ...draft, start: String(start), end: String(end) }
+          : draft;
+      });
+      const payload = buildHumanSectionsPayload(drafts.map(draftToSegment));
+      const written = await saveHumanSections(song, payload);
+      handleSaveSegments(written);
+    },
+    [song, humanSectionsFile, handleSaveSegments],
+  );
+
+  // Human Sections events-panel rating widget: energy/tension live on the
+  // segment itself, not a separate file (unlike block_energy.json), so the
+  // Save folds the panel's edited ratings back into the full segments array
+  // — same validate/PUT client the segment editor uses — keyed by each
+  // segment's synthesized `segment-NNN` id (`segmentToDraft`'s convention).
+  const handleSaveSectionRatings = useCallback(
+    async (
+      ratings: Record<string, { energy: number | null; tension: number | null }>,
+    ) => {
+      if (!song) throw new Error("No song selected.");
+      const current = humanSectionsFile ?? [];
+      const drafts = current.map((segment, i) => {
+        const draft = segmentToDraft(segment, i);
+        const r = ratings[draft.id];
+        if (!r) return draft;
+        return {
+          ...draft,
+          energy: r.energy != null ? String(r.energy) : "",
+          tension: r.tension != null ? String(r.tension) : "",
+        };
+      });
+      const payload = buildHumanSectionsPayload(drafts.map(draftToSegment));
+      const written = await saveHumanSections(song, payload);
+      handleSaveSegments(written);
+    },
+    [song, humanSectionsFile, handleSaveSegments],
   );
 
   const renderLaneBody = useCallback(
@@ -509,14 +789,28 @@ export function App(): React.JSX.Element {
               blocks={blocks}
               status={art.status}
               error={art.error?.message ?? null}
-              activeId={lane.id === "humanHints" ? activeHintRef : null}
+              activeId={
+                lane.id === "humanHints"
+                  ? activeHintRef
+                  : lane.id === "humanSections"
+                    ? activeSectionRef
+                    : null
+              }
               onSeek={transport.seekTo}
               onSelectMarker={handleSelectMarker}
               onCommitHintTimes={
-                lane.id === "humanHints" ? handleCommitHintTimes : undefined
+                lane.id === "humanHints"
+                  ? handleCommitHintTimes
+                  : lane.id === "humanSections"
+                    ? handleCommitSegmentTimes
+                    : undefined
               }
               onCreateHint={
-                lane.id === "humanHints" ? handleCreateHintAt : undefined
+                lane.id === "humanHints"
+                  ? handleCreateHintAt
+                  : lane.id === "humanSections"
+                    ? handleCreateSegmentAt
+                    : undefined
               }
             />
             {lane.id === "humanHints" && (
@@ -525,6 +819,16 @@ export function App(): React.JSX.Element {
                 className="tl-hint-pill tl-hint-pill--new"
                 title="New hint at the playhead"
                 onClick={() => openHintEditor(null)}
+              >
+                <i className="ph ph-plus" />
+              </button>
+            )}
+            {lane.id === "humanSections" && (
+              <button
+                type="button"
+                className="tl-hint-pill tl-hint-pill--new"
+                title="New segment at the playhead"
+                onClick={() => openSegmentEditor(null)}
               >
                 <i className="ph ph-plus" />
               </button>
@@ -559,9 +863,13 @@ export function App(): React.JSX.Element {
       handleSelectMarker,
       laneContentSources,
       activeHintRef,
+      activeSectionRef,
       openHintEditor,
+      openSegmentEditor,
       handleCommitHintTimes,
       handleCreateHintAt,
+      handleCommitSegmentTimes,
+      handleCreateSegmentAt,
     ],
   );
 
@@ -571,6 +879,22 @@ export function App(): React.JSX.Element {
   followPlayheadRef.current = followPlayhead;
   const playingRef = useRef(transport.isPlaying);
   playingRef.current = transport.isPlaying;
+  const currentTimeRef = useRef(transport.currentTime);
+  currentTimeRef.current = transport.currentTime;
+
+  // Zoom anchoring: record the playhead's on-screen pixel position right
+  // before a zoom change, so the effect below can restore that same screen
+  // position under the new px/bar instead of leaving the scroll wherever it
+  // lands. Captured in the click/change handlers (pre-update coords), read
+  // and cleared by the effect once pxPerBar has actually changed.
+  const zoomAnchorRef = useRef<{ time: number; screenX: number } | null>(null);
+  const captureZoomAnchor = useCallback(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const t = currentTimeRef.current;
+    const x = LABEL_WIDTH + coords.timeToX(t);
+    zoomAnchorRef.current = { time: t, screenX: x - el.scrollLeft };
+  }, [coords]);
 
   // Track the timeline scroll offset + viewport width for the canvas lanes
   // (sub-labels are anchored to the viewport's left edge). rAF-coalesced.
@@ -623,6 +947,32 @@ export function App(): React.JSX.Element {
       el.scrollLeft = next;
     }
   }, [transport.currentTime, transport.isPlaying, followPlayhead, coords]);
+
+  // Zooming changes each bar's pixel width, which otherwise scrolls the
+  // playhead out from under the viewport with no way back short of a manual
+  // scroll. While paused (the follow effect above already covers playback):
+  // if a zoom control captured an anchor, pin the playhead to the same
+  // screen pixel it occupied before the zoom; otherwise (e.g. fit-to-width)
+  // just make sure it's still visible.
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    if (playingRef.current) {
+      zoomAnchorRef.current = null;
+      return;
+    }
+    const anchor = zoomAnchorRef.current;
+    zoomAnchorRef.current = null;
+    if (anchor) {
+      const playheadX = LABEL_WIDTH + coords.timeToX(anchor.time);
+      const max = el.scrollWidth - el.clientWidth;
+      el.scrollLeft = Math.max(0, Math.min(playheadX - anchor.screenX, max));
+      return;
+    }
+    if (!isTimeVisible(currentTimeRef.current)) {
+      scrollTimelineToTime(currentTimeRef.current);
+    }
+  }, [pxPerBar, coords, isTimeVisible, scrollTimelineToTime]);
 
   const fitToWidth = useCallback(() => {
     const el = scrollerRef.current;
@@ -679,9 +1029,11 @@ export function App(): React.JSX.Element {
           stepBar(1);
           break;
         case "zoomIn":
+          captureZoomAnchor();
           setPxPerBar((v) => zoomInPxPerBar(v));
           break;
         case "zoomOut":
+          captureZoomAnchor();
           setPxPerBar((v) => zoomOutPxPerBar(v));
           break;
         case "fitToWidth":
@@ -691,7 +1043,16 @@ export function App(): React.JSX.Element {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeView, song, transport, stepBeat, stepBar, fitToWidth, closeOverlay]);
+  }, [
+    activeView,
+    song,
+    transport,
+    stepBeat,
+    stepBar,
+    fitToWidth,
+    closeOverlay,
+    captureZoomAnchor,
+  ]);
 
   // Move focus into the drawer when it opens (non-modal — no trap).
   const drawerRef = useRef<HTMLElement>(null);
@@ -836,7 +1197,7 @@ export function App(): React.JSX.Element {
           <div>
             <span className="app-header__time">{formatClock(transport.currentTime)}</span>
             <span className="app-header__time-sep"> / </span>
-            <span className="app-header__total">{formatClock(duration)}</span>
+            <span className="app-header__time_s">{formatSecondsFixed(transport.currentTime)}</span>
           </div>
           <div className="app-header__divider" />
           <span className="app-header__barbeat">
@@ -1003,6 +1364,25 @@ export function App(): React.JSX.Element {
             playing={transport.isPlaying}
             onClose={closePanel}
             onSelectBlock={handleSelectBlock}
+            onSelectMarker={handleSelectMarker}
+            blockEnergy={
+              eventsPanel.laneId === "humanHints"
+                ? { file: blockEnergyFile, onSave: handleSaveBlockEnergy }
+                : undefined
+            }
+            sectionRating={
+              eventsPanel.laneId === "humanSections"
+                ? { onSave: handleSaveSectionRatings }
+                : undefined
+            }
+            lyricValidation={
+              eventsPanel.laneId === "moisesLyrics"
+                ? {
+                    validatedIds: validatedLyricIds,
+                    onToggle: handleToggleLyricValidation,
+                  }
+                : undefined
+            }
           />
         )}
 
@@ -1015,6 +1395,19 @@ export function App(): React.JSX.Element {
             seed={hintSeed}
             onClose={closePanel}
             onSaved={handleSaveHints}
+            onScrollToTime={scrollTimelineToTime}
+          />
+        )}
+
+        {activeView === "timeline" && song && panelMode === "segment" && (
+          <SegmentEditorPanel
+            song={song}
+            file={humanSectionsFile}
+            currentTime={transport.currentTime}
+            activeReference={activeSectionRef}
+            seed={sectionSeed}
+            onClose={closePanel}
+            onSaved={handleSaveSegments}
             onScrollToTime={scrollTimelineToTime}
           />
         )}
@@ -1039,7 +1432,10 @@ export function App(): React.JSX.Element {
             className="zic"
             data-testid="zoom-out"
             aria-label="Zoom out"
-            onClick={() => setPxPerBar((v) => zoomOutPxPerBar(v))}
+            onClick={() => {
+              captureZoomAnchor();
+              setPxPerBar((v) => zoomOutPxPerBar(v));
+            }}
           >
             <i className="ph ph-magnifying-glass-minus" />
           </button>
@@ -1050,14 +1446,20 @@ export function App(): React.JSX.Element {
             value={pxPerBar}
             aria-label="Zoom (px per bar)"
             style={{ width: 148 }}
-            onChange={(event) => setPxPerBar(clampPxPerBar(Number(event.target.value)))}
+            onChange={(event) => {
+              captureZoomAnchor();
+              setPxPerBar(clampPxPerBar(Number(event.target.value)));
+            }}
           />
           <button
             type="button"
             className="zic"
             data-testid="zoom-in"
             aria-label="Zoom in"
-            onClick={() => setPxPerBar((v) => zoomInPxPerBar(v))}
+            onClick={() => {
+              captureZoomAnchor();
+              setPxPerBar((v) => zoomInPxPerBar(v));
+            }}
           >
             <i className="ph ph-magnifying-glass-plus" />
           </button>
@@ -1080,10 +1482,10 @@ export function App(): React.JSX.Element {
           type="button"
           className="zbtn"
           aria-pressed={laneListOpen}
+          aria-label="Lanes"
           onClick={() => setLaneListOpen((open) => !open)}
         >
           <i className="ph ph-sliders-horizontal" />
-          Lanes
         </button>
       </footer>
     </div>

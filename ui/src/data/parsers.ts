@@ -16,9 +16,12 @@ import {
   stringOr,
   stringOrNull,
 } from "./parse";
+import { SEGMENT_FUNCTION_NAMES } from "./segmentFunctions";
 import type {
   Beats,
   BeatRow,
+  BlockEnergyFile,
+  BlockEnergyRating,
   DrumEvent,
   DrumEventsFile,
   EnergyAccent,
@@ -32,6 +35,9 @@ import type {
   HarmonicLayer,
   HumanHint,
   HumanHintsFile,
+  HumanSegment,
+  HumanSegmentsFile,
+  LyricValidationsFile,
   LoudnessFrame,
   LoudnessHistory,
   LoudnessSeries,
@@ -70,14 +76,7 @@ export function parseInfo(raw: unknown): SongInfo {
     song_name: asString(o.song_name, "info.song_name"),
     bpm: numberOr(o.bpm, 0, "info.bpm"),
     duration: asNumber(o.duration, "info.duration"),
-    song_path: stringOr(o.song_path, "", "info.song_path"),
-    artifacts: stringRecord(o.artifacts ?? {}, "info.artifacts"),
-    outputs:
-      o.outputs === undefined || o.outputs === null
-        ? null
-        : stringRecord(o.outputs, "info.outputs"),
-    generated_from: objectOrNull(o.generated_from, "info.generated_from"),
-    debug: objectOrNull(o.debug, "info.debug"),
+    field_sources: stringRecord(o.field_sources ?? {}, "info.field_sources"),
   };
 }
 
@@ -89,14 +88,22 @@ function parseBeatRow(raw: unknown, ctx: string): BeatRow {
     time: asNumber(o.time, `${ctx}.time`),
     beat: asNumber(o.beat, `${ctx}.beat`),
     bar: asNumber(o.bar, `${ctx}.bar`),
-    bass: stringOrNull(o.bass, `${ctx}.bass`),
     chord: stringOrNull(o.chord, `${ctx}.chord`),
     type: stringOr(o.type, "beat", `${ctx}.type`),
-    confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
+    downbeat_confidence: numberOrNull(
+      o.downbeat_confidence ?? o.confidence,
+      `${ctx}.downbeat_confidence`,
+    ),
   };
 }
 
 export function parseBeats(raw: unknown): Beats {
+  if (typeof raw === "object" && raw !== null && "beats" in raw) {
+    const o = asObject(raw, "beats.json");
+    return asArray(o.beats, "beats.json.beats").map((row, i) =>
+      parseBeatRow(row, `beats[${i}]`),
+    );
+  }
   return asArray(raw, "beats.json").map((row, i) =>
     parseBeatRow(row, `beats[${i}]`),
   );
@@ -112,6 +119,17 @@ function parseSectionRow(raw: unknown, ctx: string): SectionRow {
     end: asNumber(o.end, `${ctx}.end`),
     label: asString(o.label, `${ctx}.label`),
     description: stringOrNull(o.description, `${ctx}.description`),
+    function: stringOrNull(o.function, `${ctx}.function`),
+    function_confidence: numberOrNull(
+      o.function_confidence,
+      `${ctx}.function_confidence`,
+    ),
+    function_status: asString(
+      o.function_status ?? "unknown",
+      `${ctx}.function_status`,
+    ),
+    same_label_as: stringOrNull(o.same_label_as, `${ctx}.same_label_as`),
+    contested_by: stringOrNull(o.contested_by, `${ctx}.contested_by`),
     confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
     key: stringOrNull(o.key, `${ctx}.key`),
     chord_progression: stringOrNull(o.chord_progression, `${ctx}.chord_progression`),
@@ -119,6 +137,12 @@ function parseSectionRow(raw: unknown, ctx: string): SectionRow {
 }
 
 export function parseSectionsTopLevel(raw: unknown): SectionsTopLevel {
+  if (typeof raw === "object" && raw !== null && "sections" in raw) {
+    const o = asObject(raw, "sections.json");
+    return asArray(o.sections, "sections.json.sections").map((row, i) =>
+      parseSectionRow(row, `sections[${i}]`),
+    );
+  }
   return asArray(raw, "sections.json").map((row, i) =>
     parseSectionRow(row, `sections[${i}]`),
   );
@@ -333,6 +357,11 @@ export function parseHarmonicLayer(raw: unknown): HarmonicLayer {
 
 export function parseHumanHint(raw: unknown, ctx = "human_hint"): HumanHint {
   const o = asObject(raw, ctx);
+  const capturedFrom = stringOr(o.captured_from, "", `${ctx}.captured_from`);
+  const type =
+    o.type === "hint" || o.type === "review" || o.type === "vocal"
+      ? o.type
+      : undefined;
   return {
     id: asString(o.id, `${ctx}.id`),
     title: stringOr(
@@ -352,6 +381,8 @@ export function parseHumanHint(raw: unknown, ctx = "human_hint"): HumanHint {
     ),
     summary: stringOr(o.summary, "", `${ctx}.summary`),
     lighting_hint: stringOr(o.lighting_hint, "", `${ctx}.lighting_hint`),
+    ...(capturedFrom ? { captured_from: capturedFrom } : {}),
+    ...(type ? { type } : {}),
   };
 }
 
@@ -363,6 +394,121 @@ export function parseHumanHints(raw: unknown): HumanHintsFile {
     human_hints: list.map((h, i) =>
       parseHumanHint(h, `human_hints.human_hints[${i}]`),
     ),
+  };
+}
+
+// ---------------------------------------------------------------------------
+
+// reference/human/segments.json — a bare array, no wrapper object.
+export function parseHumanSegment(raw: unknown, ctx = "segment"): HumanSegment {
+  const o = asObject(raw, ctx);
+  const rawLabel = stringOr(o.label, "", `${ctx}.label`);
+  const rawDescription = stringOrNull(o.description, `${ctx}.description`);
+  // Migration shim: pre-swap segments.json wrote the vocab pick to `function`
+  // and free text to `label`. If `label` isn't a vocab name but `function` is,
+  // read the old shape so on-disk files survive the label/description swap
+  // without a manual re-pick — `function` is never written on save.
+  const rawFunction = stringOr(o.function, "", `${ctx}.function`);
+  const isOldShape = rawLabel && !SEGMENT_FUNCTION_NAMES.includes(rawLabel) && SEGMENT_FUNCTION_NAMES.includes(rawFunction);
+  // A label is either a vocab name or unset — never free text. Anything else
+  // on disk (a stray value from outside the app, say) reads back as unset
+  // rather than being carried forward as a fixed value it isn't.
+  const label = isOldShape
+    ? rawFunction
+    : SEGMENT_FUNCTION_NAMES.includes(rawLabel)
+      ? rawLabel
+      : null;
+  return {
+    start: numberOr(o.start, 0, `${ctx}.start`),
+    end: numberOr(o.end, 0, `${ctx}.end`),
+    label,
+    description: isOldShape ? (rawDescription ?? (rawLabel || null)) : rawDescription,
+    energy: numberOrNull(o.energy, `${ctx}.energy`),
+    tension: numberOrNull(o.tension, `${ctx}.tension`),
+  };
+}
+
+export function parseHumanSegmentsFile(raw: unknown): HumanSegmentsFile {
+  const list = asArray(raw ?? [], "segments.json");
+  return list.map((s, i) => parseHumanSegment(s, `segments.json[${i}]`));
+}
+
+// ---------------------------------------------------------------------------
+
+// v3.4 item 4 — reference/human/block_energy.json. The operator's 1-5 energy /
+// tension rating for each human_hints.json block, joined by hint_id at read
+// time. Deliberately tolerant: a malformed, out-of-range or non-integer axis is
+// dropped rather than failing the whole file — the only writer is the
+// debugger's Human Hints events panel, which validates on Save
+// (`saveBlockEnergy.ts`) and the dev-server handler rejects bad payloads.
+//
+// SCOPE GUARD: nothing in src/ or mcp/ reads this file. It is reference/human/
+// material like the hints themselves — one producer (the operator), so there is
+// no field_sources / source attribution here (ui-definition.md "The write
+// rule"; the human-hints-file-stays-simple rule).
+function blockEnergyAxis(value: unknown): number | undefined {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= 1 &&
+    value <= 5
+    ? value
+    : undefined;
+}
+
+export function parseBlockEnergy(raw: unknown): BlockEnergyFile {
+  const o = asObject(raw, "block_energy.json");
+  const ratings: BlockEnergyRating[] = [];
+  for (const entry of asArray(o.ratings ?? [], "block_energy.ratings")) {
+    const e =
+      entry && typeof entry === "object"
+        ? (entry as Record<string, unknown>)
+        : {};
+    const hintId = typeof e.hint_id === "string" ? e.hint_id.trim() : "";
+    if (!hintId) continue;
+    const energy = blockEnergyAxis(e.energy);
+    const tension = blockEnergyAxis(e.tension);
+    if (energy === undefined && tension === undefined) continue;
+    ratings.push({
+      hint_id: hintId,
+      ...(energy !== undefined ? { energy } : {}),
+      ...(tension !== undefined ? { tension } : {}),
+    });
+  }
+  return {
+    schema_version: stringOr(o.schema_version, "", "block_energy.schema_version"),
+    song_name: stringOr(o.song_name, "", "block_energy.song_name"),
+    ratings,
+  };
+}
+
+// ---------------------------------------------------------------------------
+
+// v3.4 item 5 / D6 — reference/human/lyric_validations.json. The ids of the
+// Moises word tokens whose timing the operator has hand-verified; the Moises
+// Lyrics lane substitutes confidence `1` for a listed token at read time
+// (source file untouched). Deliberately tolerant: a non-integer / non-finite
+// id is dropped and duplicates are collapsed rather than failing the file —
+// the only writer is the debugger's ✔ button, validated on the client
+// (`saveLyricValidations.ts`) and again in the dev-server handler.
+//
+// SCOPE GUARD: nothing in src/ or mcp/ reads this file. It is reference/human/
+// material like the hints — one producer (the operator), no field_sources /
+// source attribution (ui-definition.md "The write rule").
+export function parseLyricValidations(raw: unknown): LyricValidationsFile {
+  const o = asObject(raw, "lyric_validations.json");
+  const seen = new Set<number>();
+  const validated_ids: number[] = [];
+  for (const entry of asArray(o.validated_ids ?? [], "lyric_validations.validated_ids")) {
+    if (typeof entry !== "number" || !Number.isInteger(entry) || seen.has(entry)) {
+      continue;
+    }
+    seen.add(entry);
+    validated_ids.push(entry);
+  }
+  return {
+    schema_version: stringOr(o.schema_version, "", "lyric_validations.schema_version"),
+    song_name: stringOr(o.song_name, "", "lyric_validations.song_name"),
+    validated_ids,
   };
 }
 
@@ -447,6 +593,8 @@ function parseTimelineEvent(raw: unknown, ctx: string): TimelineEvent {
     intensity: numberOr(o.intensity, 0, `${ctx}.intensity`),
     section_id: stringOrNull(o.section_id, `${ctx}.section_id`),
     section_name: stringOrNull(o.section_name, `${ctx}.section_name`),
+    // v3.1 item 4 — present only on gesture-phase rows, absent on transitions.
+    ...(typeof o.gesture_id === "string" ? { gesture_id: o.gesture_id } : {}),
     provenance: stringOrNull(o.provenance, `${ctx}.provenance`),
     summary: stringOrNull(o.summary, `${ctx}.summary`),
     evidence_summary: stringOrNull(

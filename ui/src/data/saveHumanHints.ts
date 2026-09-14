@@ -21,11 +21,24 @@ export interface HintDraft {
    * (plan v1.5 D11).
    */
   captured_from?: string;
+  /**
+   * "hint" (hand-authored, from scratch), "review" (seeded from an
+   * experiment/event block to review or annotate a finding), or "vocal" (a
+   * voice sounds continuously across the span). Editable in the editor;
+   * defaults to "review" when the draft carries a `captured_from` note,
+   * "hint" otherwise — "vocal" is never a default, only an explicit choice.
+   */
+  type?: "hint" | "review" | "vocal";
 }
 
 /**
  * Validate + normalise draft hints into the on-disk payload shape.
  * Throws `Error` with the same messages the old editor showed.
+ *
+ * On save the hints are sorted ascending by `start_time` (ties keep their
+ * editor order) so the file always reads front-to-back along the timeline.
+ * Existing `id`s are never reassigned — only a hint's position in the array
+ * changes. A new hint keeps the id `nextHintId` gave it when it was created.
  */
 export function buildHumanHintsPayload(
   songName: string,
@@ -49,6 +62,7 @@ export function buildHumanHintsPayload(
       );
     }
     const capturedFrom = (hint.captured_from ?? "").trim();
+    const type = hint.type ?? (capturedFrom ? "review" : "hint");
     return {
       id: hint.id.trim(),
       title: hint.title.trim(),
@@ -58,8 +72,14 @@ export function buildHumanHintsPayload(
       lighting_hint: (hint.lighting_hint ?? "").trim(),
       // Emitted only for a non-empty note; hand-authored hints omit the key.
       ...(capturedFrom ? { captured_from: capturedFrom } : {}),
+      // Omitted for the "hint" default so hand-authored entries stay unchanged;
+      // any other explicit type (e.g. "review", "vocal") is written verbatim.
+      ...(type !== "hint" ? { type } : {}),
     };
   });
+
+  // Array.prototype.sort is stable, so equal start_times keep their editor order.
+  human_hints.sort((a, b) => a.start_time - b.start_time);
 
   return { song_name: String(songName || ""), human_hints };
 }

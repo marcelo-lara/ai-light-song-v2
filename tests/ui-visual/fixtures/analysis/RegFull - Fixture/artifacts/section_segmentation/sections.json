@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.0",
+  "schema_version": "3.0",
   "song_name": "Armin - Revolution",
   "generated_from": {
     "source_song_path": "/data/songs/Armin - Revolution.mp3",
@@ -18,7 +18,7 @@
       "other",
       "vocals"
     ],
-    "seeding_note": "allin1 was seeded with the pipeline's own htdemucs stems rather than separating the mix itself \u2014 mandatory for determinism (constitution \u00a76).",
+    "seeding_note": "allin1 was seeded with the pipeline's own htdemucs stems rather than separating the mix itself \u2014 mandatory for determinism (determinism: same input + engine version must give byte-identical artifacts).",
     "merge_strategy": "consecutive equal-labelled 8-bar phrases merged into one section run",
     "function_confidence_strategy": "1 - normalised Shannon entropy of allin1's frame-level label posterior within the section span",
     "labelling_status": "known",

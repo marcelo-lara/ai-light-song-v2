@@ -84,6 +84,10 @@ Fast, and the gate on every item. Nothing here needs the full corpus.
 7. `get_detail("McpFull - Fixture", start_ms=0, end_ms=3000, interval_ms=20)`
    returns dense frames.
 
+> **Checks 6 and 7 run (v3.1 items 9-10).** `get_song_overview` and `get_detail`
+> both return real payloads; check 7 asserts `dense.frame_count > 0` for the
+> 0-3000 ms / 20 ms window. Checks 8 and 9 run.
+
 ### S3 — it fails honestly
 
 8. An unknown song name errors, and the message contains the name asked for.
@@ -97,7 +101,12 @@ Fast, and the gate on every item. Nothing here needs the full corpus.
 11. Writing to the mounted `/data` fails — the read-only bind is real, not
     assumed.
 
-**Pass condition:** all eleven, with observed values reported.
+**Pass condition:** every check reported with its observed value; no `FAIL`.
+As of v3.1 items 9-10 every `smoke-test` check runs — there are no deferrals.
+
+Run it: `docker compose run --rm --no-deps -T --entrypoint python mcp
+mcp/tests/run.py smoke-test` (exit 0 = no `FAIL`). `full-regression` adds the
+determinism, snapshot, honesty (F2), detail-read (F3) and budget (F4) checks.
 
 ---
 
@@ -108,10 +117,19 @@ unless a check names one.
 
 ### F1 — snapshots and determinism
 
-1. Every golden snapshot in `mcp/tests/__snapshots__/` matches byte for byte.
+1. Every golden snapshot in `mcp/tests/__snapshots__/` matches byte for byte —
+   `list_songs__fixture_root.json` (F1.1),
+   `get_song_overview__{McpFull,McpDegenerate} - Fixture.json` (F1.3), and the
+   five `get_detail__*.json` (F1.4: `section_scope`, `gesture_scope`,
+   `window_3s_20ms`, `window_3s_100ms`, `window_over_cap`).
 2. Each tool called twice with identical arguments returns **byte-identical**
    output.
 3. Snapshot coverage: every tool × every scope it accepts × each fixture.
+
+> Snapshots are **regenerated, not defended** — regenerate them inside the
+> container (`MCP_REGEN_SNAPSHOTS=1 pytest mcp/tests/test_overview.py` for the
+> overview, or capture `run.py`'s serializer output) so byte-for-byte equality
+> holds against the runtime, then commit with one line of justification each.
 
 ### F2 — the honesty obligations
 
@@ -141,6 +159,20 @@ well-formed and still lie. Each maps to an obligation in
 
 ### F3 — the detail-read contract
 
+The detail-read contract now distinguishes dense-series caps from sparse-event caps.
+
+A few important checks added here:
+
+- A resolved span over 5 s returns the structural view and withholds the dense
+  frames (the DENSE_CAP_S behavior). Sparse-event blocks (for example,
+  drum_events) remain present in the structural view when available.
+- Sparse-event blocks are subject to a separate row cap (D3.4). When a
+  sparse block's observed rows exceed the cap, the response includes an
+  explicit `sparse_withheld` object naming the cap and the observed row count
+  rather than silently truncating.
+
+### F3 — the detail-read contract
+
 13. A resolved span **over 5 s** returns the structural view, contains **no**
     dense frames, and states the cap. It never truncates and never silently
     downsamples.
@@ -159,6 +191,27 @@ well-formed and still lie. Each maps to an obligation in
 20. The serialized `get_song_overview` for `McpFull - Fixture` is under its
     stated budget. Record the observed size in bytes on every run — a budget
     silently creeping upward is the failure this catches.
+
+
+
+**Measuring baseline sizes**
+
+A small helper script generates a repeatable baseline and writes it to
+`docs/reference/mcp-token-baseline-v3.3.md`. Run it inside the repository or
+inside the regression container:
+
+- Container (recommended):
+
+    docker compose run --rm --no-deps -T -e MCP_ANALYSIS_ROOT=/data/analysis \
+      --entrypoint python mcp mcp/tests/measure_tokens.py
+
+- Local (uses committed fixtures under `mcp/tests/fixtures/analysis`):
+
+    python mcp/tests/measure_tokens.py
+
+The script records: overview chars & approx tokens, a structural-detail case
+(section) and a dense-detail case (gesture). The output file is intended to be
+committed with the observed values for v3.3's baseline.
 21. No response embeds an absolute host path (no string beginning `/data/`).
 22. `get_song_overview` never returns the full beat list.
 
@@ -182,13 +235,11 @@ routine:
    guide that documents behaviour the server no longer has is worse than no
    guide.
 
-## Outstanding harness work
+## Harness status
 
-Tracked here until done; the suites are not fully runnable while any box is open.
-
-- [ ] Build `mcp/tests/fixtures/analysis/` and its generator script.
-- [ ] Capture the initial golden snapshots.
-- [ ] Wire `smoke-test` and `full-regression` as named entry points so an
-      executor can invoke them by name rather than assembling checks by hand.
-- [ ] Decide whether `full-regression` also runs against the four gold songs in
-      a developer's local `data/analysis/`, in addition to the fixtures.
+The harness is complete: the three committed fixtures under
+`mcp/tests/fixtures/analysis/` and their generator, `smoke-test` and
+`full-regression` as named entry points, and the golden snapshots are all in
+place. Every `smoke-test` and `full-regression` check runs — there are no
+deferrals. Both suites are fixture-based by default; a local `data/analysis/`
+run is optional developer-only context, never a required gate.

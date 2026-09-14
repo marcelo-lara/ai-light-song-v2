@@ -1,3 +1,29 @@
+"""7-band spectral analysis of the mix and of each Demucs stem.
+
+Writes five artifacts under ``artifacts/essentia/``:
+
+* ``fft_bands.json``        — the mix (unchanged; ``metadata.stem = null``)
+* ``fft_bands.bass.json``
+* ``fft_bands.drums.json``
+* ``fft_bands.harmonic.json``   (Demucs ``other`` source)
+* ``fft_bands.vocals.json``
+
+Every file carries the identical schema: 7 log-power bands at 50 ms frames,
+each frame also carrying ``brightness_ratio`` / ``transient_strength`` /
+``dropout_strength``. Each source is normalised against **its own** 5th-95th
+percentile per band, so a quiet stem still shows its own dynamics rather than
+being flattened against the mix.
+
+Separation-error caveat (measured on ``Queen of Kings - Alessandra``): the
+harmonic stem reads 0.009 RMS through the 48.7 s drop while the chroma chord
+decoder still finds Am at 0.716 confidence. Per-stem FFT is FFT of a Demucs
+output, so it inherits every separation error before the transform. The mix
+``fft_bands.json`` inherits none but cannot attribute band motion to an
+instrument. That trade — attribution vs. separation noise, not resolution — is
+why both the mix file and the four stem files are published side by side and
+each gets its own debugger lane.
+"""
+
 from __future__ import annotations
 
 import numpy as np
@@ -22,6 +48,15 @@ EPSILON = 1e-12
 LOW_PERCENTILE = 5.0
 HIGH_PERCENTILE = 95.0
 HIGH_BAND_IDS = {"upper_mid", "presence", "brilliance"}
+
+# Logical stem name -> WAV filename written by stages/stems.py (REQUIRED_STEMS).
+# "harmonic" is the Demucs "other" source.
+STEM_SOURCE_FILENAMES: dict[str, str] = {
+    "bass": "bass.wav",
+    "drums": "drums.wav",
+    "harmonic": "harmonic.wav",
+    "vocals": "vocals.wav",
+}
 
 
 def _normalize(values: np.ndarray) -> np.ndarray:
@@ -61,7 +96,19 @@ def _normalized_deltas(values: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return _normalize(rising), _normalize(falling)
 
 
-def extract_fft_bands(paths: SongPaths) -> dict:
+def _analyze_source(
+    audio_path: str,
+    *,
+    song_name: str,
+    source_label: str,
+    stem: str | None,
+) -> dict:
+    """Run the 7-band analysis on one audio file (mix or a single stem).
+
+    Normalisation is per-source: ``_robust_normalize`` clips each band against
+    that source's own 5th-95th percentile, never the mix's — a quiet stem must
+    still show its own dynamics.
+    """
     try:
         from essentia.standard import FrameGenerator, MonoLoader, Spectrum, Windowing
     except ImportError as exc:
@@ -71,9 +118,9 @@ def extract_fft_bands(paths: SongPaths) -> dict:
     frame_size = 4096
     hop_size = int(sample_rate * 0.05)
     interval_ms = 50
-    audio = MonoLoader(filename=str(paths.song_path), sampleRate=sample_rate)()
+    audio = MonoLoader(filename=str(audio_path), sampleRate=sample_rate)()
     if len(audio) == 0:
-        raise AnalysisError("No audio samples were available for FFT band extraction")
+        raise AnalysisError(f"No audio samples were available for FFT band extraction ({source_label})")
 
     windowing = Windowing(type="hann")
     spectrum = Spectrum(size=frame_size)
@@ -87,7 +134,7 @@ def extract_fft_bands(paths: SongPaths) -> dict:
         raw_levels.append([float(magnitude[mask].sum()) if np.any(mask) else 0.0 for mask in band_masks])
 
     if not raw_levels:
-        raise AnalysisError("No FFT band frames were extracted from the source song")
+        raise AnalysisError(f"No FFT band frames were extracted from the source ({source_label})")
 
     raw_matrix = np.asarray(raw_levels, dtype=float)
     # Use power-domain energy to improve stability under broadband loudness swings.
@@ -115,25 +162,61 @@ def extract_fft_bands(paths: SongPaths) -> dict:
         for frame_index in range(normalized_matrix.shape[0])
     ]
 
+    metadata = {
+        "interval_ms": interval_ms,
+        "sample_rate": sample_rate,
+        "frame_size": frame_size,
+        "hop_size": hop_size,
+        "window": "hann",
+        "total_frames": len(frames),
+        "duration": round(len(audio) / sample_rate, 6),
+        "normalization_scope": "per-song-per-band-log-power-percentile",
+        "normalization_percentiles": [LOW_PERCENTILE, HIGH_PERCENTILE],
+        "derived_frame_fields": ["brightness_ratio", "transient_strength", "dropout_strength"],
+    }
+    if stem is not None:
+        # present only on the per-stem files; the mix fft_bands.json is unchanged
+        metadata["stem"] = stem
+
     payload = {
         "schema_version": SCHEMA_VERSION,
-        "song_name": paths.song_name,
-        "generated_from": GeneratedFrom(source_song_path=str(paths.song_path), engine="essentia+numpy.fft_bands"),
+        "song_name": song_name,
+        "generated_from": GeneratedFrom(source_song_path=str(audio_path), engine="essentia+numpy.fft_bands"),
         "bands": [dict(band) for band in BAND_DEFINITIONS],
         "frames": frames,
-        "metadata": {
-            "interval_ms": interval_ms,
-            "sample_rate": sample_rate,
-            "frame_size": frame_size,
-            "hop_size": hop_size,
-            "window": "hann",
-            "total_frames": len(frames),
-            "duration": round(len(audio) / sample_rate, 6),
-            "normalization_scope": "per-song-per-band-log-power-percentile",
-            "normalization_percentiles": [LOW_PERCENTILE, HIGH_PERCENTILE],
-            "derived_frame_fields": ["brightness_ratio", "transient_strength", "dropout_strength"],
-        },
+        "metadata": metadata,
     }
-    payload = to_jsonable(payload)
-    write_json(paths.artifact("essentia", "fft_bands.json"), payload)
-    return payload
+    return to_jsonable(payload)
+
+
+def extract_fft_bands(paths: SongPaths) -> dict:
+    """Write the mix band artifact plus one per Demucs stem.
+
+    Returns the *mix* payload — downstream stages (build-gestures) consume it.
+    A missing stem WAV raises ``DependencyError`` naming the stem; no partial or
+    zero-filled artifact is written for that stem.
+    """
+    mix_payload = _analyze_source(
+        str(paths.song_path),
+        song_name=paths.song_name,
+        source_label="mix",
+        stem=None,
+    )
+    write_json(paths.artifact("essentia", "fft_bands.json"), mix_payload)
+
+    for stem, filename in STEM_SOURCE_FILENAMES.items():
+        stem_path = paths.stems_dir / filename
+        if not stem_path.exists() or stem_path.stat().st_size == 0:
+            # never guessed — no silent fallback to a zero-filled stem artifact
+            raise DependencyError(
+                f"stem '{stem}' WAV is missing for per-stem FFT bands: {stem_path}. Run 'ensure-stems' first."
+            )
+        stem_payload = _analyze_source(
+            str(stem_path),
+            song_name=paths.song_name,
+            source_label=f"{stem} stem",
+            stem=stem,
+        )
+        write_json(paths.artifact("essentia", f"fft_bands.{stem}.json"), stem_payload)
+
+    return mix_payload

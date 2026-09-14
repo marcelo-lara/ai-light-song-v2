@@ -28,6 +28,14 @@ export interface HintDraftFields {
    * hand-authored hints.
    */
   capturedFrom?: string;
+  /**
+   * "hint" (from scratch), "review" (seeded from an experiment/event block
+   * to review or annotate a finding), or "vocal" (a voice sounds continuously
+   * across the span). Editable in the form; "review" defaults from whether
+   * the draft carries a `capturedFrom` note; "vocal" is never inferred, only
+   * chosen explicitly via the dropdown.
+   */
+  type: "hint" | "review" | "vocal";
 }
 
 /** Accept "83.4" or "1:23.4" -> canonical seconds string ("83.4"). Empty and
@@ -59,6 +67,7 @@ export function hintToDraft(hint: HumanHint): HintDraftFields {
     ...(typeof hint.captured_from === "string" && hint.captured_from.trim()
       ? { capturedFrom: hint.captured_from }
       : {}),
+    type: hint.type ?? (hint.captured_from && hint.captured_from.trim() ? "review" : "hint"),
   };
 }
 
@@ -74,6 +83,7 @@ export function draftToHint(draft: HintDraftFields): HintDraft {
     ...(draft.capturedFrom && draft.capturedFrom.trim()
       ? { captured_from: draft.capturedFrom }
       : {}),
+    type: draft.type,
   };
 }
 
@@ -103,6 +113,7 @@ export interface HintSeed {
   nonce: number;
 }
 
+
 /**
  * Build a fresh draft from a {@link HintSeed}. `title` falls back to
  * `Hint <n>` when the seed carries none; `capturedFrom` is carried straight
@@ -124,6 +135,7 @@ export function hintDraftFromSeed(
     ...(seed.capturedFrom && seed.capturedFrom.trim()
       ? { capturedFrom: seed.capturedFrom }
       : {}),
+    type: seed.capturedFrom && seed.capturedFrom.trim() ? "review" : "hint",
   };
 }
 

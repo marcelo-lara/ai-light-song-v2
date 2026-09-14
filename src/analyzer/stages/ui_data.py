@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import math
 import re
 
 from analyzer.io import read_json, write_json
-from analyzer.models import round_schema_float
+from analyzer.models import SCHEMA_VERSION, round_schema_float, validate_field_sources
 from analyzer.paths import SongPaths
+from analyzer.section_vocabulary import normalize_human_label
 
 # Thresholds for projecting a compact harmonic form into sections.json.
 #
@@ -212,6 +214,469 @@ def _song_key(global_key: dict | None) -> str | None:
     return str(label)
 
 
+# v3.1 items 5-7 — publish top-level views of three signals that live only under
+# artifacts/ today (genre, drum events, loudness). These are FUSED VIEWS, not
+# moves: the artifact stays put for the analyzer and the debugger, and the
+# top-level file is rebuilt from it each run with a `field_sources` header and no
+# host paths. The selection goes through `_fuse` — "which producer wins this
+# field" — even though one producer answers every field today, so a second
+# producer can be added without rewriting the publisher (plan D4).
+
+
+def _fuse(field_candidates: dict[str, list[tuple[str, bool]]]) -> dict[str, str]:
+    """For each field, the first candidate producer whose value is present wins.
+
+    `field_candidates` maps a field name to an ordered list of
+    `(producer, is_available)` pairs. Today every list has one entry; the shape
+    is what lets a higher-confidence second producer slot in later. A field with
+    no available producer resolves to `"unknown"` — an honest gap, never a guess.
+    """
+    return {
+        field: next((producer for producer, available in candidates if available), "unknown")
+        for field, candidates in field_candidates.items()
+    }
+
+
+def _publish_genre(paths: SongPaths) -> str:
+    artifact = read_json(paths.artifact("genre.json"))
+
+    def _present(key: str) -> bool:
+        return artifact.get(key) is not None
+
+    field_sources = validate_field_sources(
+        _fuse(
+            {
+                "genres": [("genre", _present("genres"))],
+                "confidence": [("genre", _present("confidence"))],
+                "top_predictions": [("genre", _present("top_predictions"))],
+                "guidance": [("genre", _present("guidance"))],
+            }
+        ),
+        ("genres", "confidence", "top_predictions", "guidance"),
+        file="genre.json",
+    )
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "field_sources": field_sources,
+        "genres": artifact.get("genres"),
+        "confidence": artifact.get("confidence"),
+        "top_predictions": artifact.get("top_predictions"),
+        "guidance": artifact.get("guidance"),
+    }
+    write_json(paths.genre_output_path, payload)
+    return str(paths.genre_output_path)
+
+
+def _publish_drum_events(paths: SongPaths) -> str:
+    artifact = read_json(paths.artifact("symbolic_transcription", "drum_events.json"))
+    events = [
+        {
+            "time": round_schema_float(float(event["time"]), 3),
+            "event_type": str(event["event_type"]),
+            "confidence": event.get("confidence"),
+        }
+        for event in artifact.get("events", [])
+    ]
+    row_keys = events[0].keys() if events else ("time", "event_type", "confidence")
+    field_sources = validate_field_sources(
+        _fuse(
+            {
+                "time": [("omnizart", True)],
+                "event_type": [("omnizart", True)],
+                "confidence": [("omnizart", True)],
+            }
+        ),
+        row_keys,
+        file="drum_events.json",
+    )
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "field_sources": field_sources,
+        # File-level aggregate blocks (counts, the supported-type list) are
+        # provenance-exempt like `schema_version` — they describe the file, not a
+        # fused per-row value. Every row is omnizart's (plan D21).
+        "summary": artifact.get("summary"),
+        "supported_event_types": artifact.get("supported_event_types"),
+        "events": events,
+    }
+    write_json(paths.drum_events_output_path, payload)
+    return str(paths.drum_events_output_path)
+
+
+def _decimate_loudness_pairs(frames: list[dict]) -> list[dict]:
+    """10 ms → 20 ms by AVERAGING consecutive pairs, not dropping every other
+    frame: a dropped-frame series loses transient peaks, which is exactly what a
+    drop impact is. An unpaired trailing frame (odd source count) is dropped so
+    every published interval is a clean 20 ms — at most 10 ms is lost at the very
+    end of the song, never a mid-song transient."""
+    out: list[dict] = []
+    for i in range(0, len(frames) - 1, 2):
+        pair = frames[i : i + 2]
+        times = [float(f["time"]) for f in pair]
+        values = [f["values"] for f in pair]
+        normalized = [f["normalized_values"] for f in pair]
+        out.append(
+            {
+                "time": round(sum(times) / len(times), 4),
+                "values": [round(sum(col) / len(col), 6) for col in zip(*values)],
+                "normalized_values": [round(sum(col) / len(col), 6) for col in zip(*normalized)],
+            }
+        )
+    return out
+
+
+def _publish_loudness(paths: SongPaths) -> str:
+    artifact = read_json(paths.artifact("essentia", "rms_loudness.json"))
+    frames = _decimate_loudness_pairs(artifact.get("frames", []))
+    meta = artifact.get("metadata", {})
+    # `sources[]` here means STEMS, not producers — do not overload it with the
+    # item-2 producer attribution. It only loses its `path` field (the host-path
+    # leak).
+    sources = [
+        {"id": s["id"], "label": s["label"], "kind": s["kind"]}
+        for s in artifact.get("sources", [])
+    ]
+    field_sources = validate_field_sources(
+        _fuse(
+            {
+                "time": [("essentia", True)],
+                "values": [("essentia", True)],
+                "normalized_values": [("essentia", True)],
+            }
+        ),
+        frames[0].keys() if frames else ("time", "values", "normalized_values"),
+        file="loudness.json",
+    )
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "field_sources": field_sources,
+        "metadata": {
+            "sample_rate": meta.get("sample_rate"),
+            "duration": meta.get("duration"),
+            "normalization_scope": meta.get("normalization_scope"),
+            "source_order": meta.get("source_order"),
+            "interval_ms": 20,
+            "total_frames": len(frames),
+        },
+        "sources": sources,
+        "frames": frames,
+    }
+    write_json(paths.loudness_output_path, payload)
+    return str(paths.loudness_output_path)
+
+
+# --- the sibilance discriminator (v3.5 item 4, promoted 2026-09-13) --------
+#
+# `fft_bands.vocals.json` band ids, in order: sub, bass, low_mid, mid,
+# upper_mid, presence (2.5-6 kHz), brilliance (6-16 kHz). The published split
+# doesn't land exactly on the 4-10 kHz consonant band, so presence+brilliance
+# is the documented proxy — no new FFT is taken off vocals.wav.
+SIBILANCE_BAND_IDS = ("presence", "brilliance")
+#: Score at zero transient strength — pure brightness, no burst.
+SIBILANCE_BASELINE_WEIGHT = 0.4
+#: Additional score a burst-like onset unlocks. A sung consonant is bright AND
+#: transient; a bright sustained pad or a cymbal leak is only one of the two.
+SIBILANCE_BURST_WEIGHT = 0.6
+
+
+def _sibilance_curve(paths: SongPaths) -> tuple[list[float], list[float]]:
+    """Per-frame sibilance over the vocal stem, on `fft_bands.vocals.json`'s own
+    50 ms grid. Ported verbatim from `experiments/vocal_voiceness/features.py`'s
+    `compute_sibilance` — `src/` never imports from `experiments/`.
+
+    Measured (`experiments/vocal_voiceness/README.md`): of the experiment's
+    three cues this is the only one worth keeping — separability against ground
+    truth on `_test_song` / `ayuni` / `Queen of Kings` is AUC 0.990 / 0.959 /
+    0.813, against vibrato's 0.700 / 0.815 / 0.656 and portamento's 0.718 /
+    0.800 / 0.650. Vibrato and portamento are deliberately NOT promoted; the
+    experiment's own noisy-OR diluted this cue with those two.
+
+    **Known limit, carried across the promotion**: sibilance has a per-song
+    noise floor — it reads 0.129 on the digitally near-silent stem in
+    `What a Feeling - Courtney Storm` (level 0.0002). It discriminates *within*
+    a song against that song's own mean; it cannot gate presence on its own,
+    which is why it is published as per-phrase evidence next to a level-bearing
+    detector rather than as a standalone vocal call.
+    """
+    doc = read_json(paths.artifact("essentia", "fft_bands.vocals.json"))
+    band_ids = [band["id"] for band in doc["bands"]]
+    idxs = [band_ids.index(b) for b in SIBILANCE_BAND_IDS if b in band_ids]
+
+    times: list[float] = []
+    values: list[float] = []
+    for frame in doc["frames"]:
+        levels = frame["levels"]
+        spectral = min(max(sum(levels[i] for i in idxs) / len(idxs), 0.0), 1.0) if idxs else 0.0
+        transient = min(max(float(frame.get("transient_strength", 0.0)), 0.0), 1.0)
+        score = spectral * (SIBILANCE_BASELINE_WEIGHT + SIBILANCE_BURST_WEIGHT * transient)
+        times.append(float(frame["time"]))
+        values.append(min(max(score, 0.0), 1.0))
+    return times, values
+
+
+def _mean_in_span(times: list[float], values: list[float], start: float, end: float) -> float | None:
+    """Mean of `values` over [start, end], or `None` when the span covers no
+    frame — an honest gap, never a zero standing in for "no evidence"."""
+    inside = [v for t, v in zip(times, values) if start <= t <= end]
+    return round(sum(inside) / len(inside), 4) if inside else None
+
+
+def _whisperx_vocal_phrase(paths: SongPaths) -> list[dict] | None:
+    """`vocals_phrase` promotion (v3.5 item 7, operator-approved 2026-09-13):
+    the `whisperx_vad` experiment's phrase spans, when a pre-computed proposal
+    cache exists at `reference/proposals/whisperx_vad.json`.
+
+    Optional like `reference/human` and `reference/moises` — the whisperX VAD
+    stack (torch~=2.8.0) cannot share the `app` image (pinned torch==2.1.2,
+    `natten==0.15.1+torch210cu121` breaks on any torch bump), so its compute
+    step runs out-of-band via `experiments/whisperx_vad/run.py` in its own
+    sandbox image, never as part of `./analyze`. A song analysed without that
+    cache gets an honest `null`/`unknown`, never a guess.
+
+    Every span's `confidence` is hardcoded `1.0`, not whisperX's own varying
+    per-span value (0.56-0.98 in practice) — the operator's explicit call: "when
+    'phrase' is detected the chances that it happens is true". This collapses
+    the experiment's own graded confidence in favour of asserting each detected
+    phrase as certain; the graded per-frame curve stays in
+    `reference/proposals/whisperx_vad.json` for anyone who wants it.
+    """
+    cache_path = paths.reference("proposals", "whisperx_vad.json")
+    if not cache_path.exists():
+        return None
+    proposal = read_json(cache_path)
+    times, values = _sibilance_curve(paths)
+    return [
+        {
+            "start_s": span["start"],
+            "end_s": span["end"],
+            "confidence": 1.0,
+            # The stem-bleed discriminator, read against this song's own mean
+            # (published alongside as `vocals_sibilance_song_mean`) — a phrase
+            # far below the song mean is whisperX firing on instrument bleed,
+            # the failure mode it has on plucked/rhythmic leaks.
+            "sibilance": _mean_in_span(times, values, span["start"], span["end"]),
+        }
+        for span in proposal.get("vocal_phrase", [])
+    ]
+
+
+def publish_arrangement_state(paths: SongPaths) -> str:
+    """v3.2 item 2 — publish the top-level fused view of
+    `artifacts/arrangement_state.json` (phase-3 `detect-arrangement-state`, which
+    reads only the published `loudness.json`).
+
+    A pure fuse-and-strip step: every row field is `arrangement_state`'s today,
+    but the selection goes through `_fuse` so a later CLAP `feel` field slots in
+    as a second candidate without touching the caller. `confidence` is a monotone
+    report of the dB headroom of the smallest stem flip at the block boundary
+    (`1 - exp(-margin_db / 6)`), not a tuned gate — `margin_db` fails as a
+    precision filter (experiment `margin-sweep`), so it is reported, never gated.
+    The leading span before the first stem change has no flip: `margin_db` and
+    `confidence` are both `null`, never a filled default.
+
+    `vocals_phrase` (v3.5 item 7 promotion, see `_whisperx_vocal_phrase`) is a
+    second, independent signal about the vocals stem — the `whisperx_vad`
+    experiment's phrase spans — published alongside `blocks` rather than folded
+    into them, so a wrong call on one never masks the other.
+    """
+    artifact = read_json(paths.artifact("arrangement_state.json"))
+    raw_blocks = artifact.get("blocks", [])
+
+    def _confidence(margin_db: object) -> float | None:
+        if isinstance(margin_db, (int, float)) and not isinstance(margin_db, bool):
+            return round(1 - math.exp(-float(margin_db) / 6.0), 3)
+        return None
+
+    blocks = [
+        {
+            "start_s": block["start_s"],
+            "end_s": block["end_s"],
+            "playing": block["playing"],
+            "entered": block["entered"],
+            "left": block["left"],
+            "margin_db": block["margin_db"],
+            "confidence": _confidence(block["margin_db"]),
+        }
+        for block in raw_blocks
+    ]
+
+    vocals_phrase = _whisperx_vocal_phrase(paths)
+    _, sibilance_values = _sibilance_curve(paths)
+    sibilance_song_mean = (
+        round(sum(sibilance_values) / len(sibilance_values), 4) if sibilance_values else None
+    )
+
+    row_keys = ("start_s", "end_s", "playing", "entered", "left", "margin_db", "confidence")
+    field_sources = validate_field_sources(
+        _fuse(
+            {
+                **{key: [("arrangement_state", True)] for key in row_keys},
+                "vocals_phrase": [("whisperx_vad", vocals_phrase is not None)],
+                # A `vocals_phrase` row fuses two producers: its span is
+                # whisperX's, its `sibilance` is the promoted item-4 cue's. The
+                # dotted key is the per-row override the flat header cannot
+                # otherwise express.
+                "vocals_phrase.sibilance": [
+                    ("vocal_sibilance", sibilance_song_mean is not None)
+                ],
+                "vocals_sibilance_song_mean": [
+                    ("vocal_sibilance", sibilance_song_mean is not None)
+                ],
+            }
+        ),
+        (*row_keys, "vocals_phrase", "vocals_sibilance_song_mean"),
+        file="arrangement_state.json",
+    )
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "song_name": paths.song_name,
+        "field_sources": field_sources,
+        # File-level aggregate (the stem vocabulary), provenance-exempt like
+        # `schema_version` — it describes the file, not a fused per-row value.
+        "stems": artifact.get("stems"),
+        "blocks": blocks,
+        "vocals_phrase": vocals_phrase,
+        # The reference level every `vocals_phrase.sibilance` is read against.
+        # Sibilance has a per-song noise floor, so the absolute value carries
+        # far less than the distance from this mean.
+        "vocals_sibilance_song_mean": sibilance_song_mean,
+    }
+    write_json(paths.arrangement_state_output_path, payload)
+    return str(paths.arrangement_state_output_path)
+
+
+def _load_section_contest(paths: SongPaths) -> dict[str, dict]:
+    """`{section_id: contest_row}` for the rows the phase-3 contest flagged, or
+    `{}` when `artifacts/section_function_contest.json` has not been written yet
+    (a fresh run publishes `sections.json` first, then the contest stage
+    re-fuses it — see `apply_section_function_contest`)."""
+    artifact_path = paths.artifact("section_function_contest.json")
+    if not artifact_path.exists():
+        return {}
+    doc = read_json(artifact_path)
+    return {
+        row["section_id"]: row
+        for row in doc.get("sections", [])
+        if row.get("contested")
+    }
+
+
+def apply_section_function_contest(paths: SongPaths) -> str:
+    """v3.4 item 3 — re-fuse the published `sections.json` after the phase-3
+    `contest-section-function` stage has written
+    `artifacts/section_function_contest.json`.
+
+    A flagged row gains two fields: `function_status: "contested"` (a NEW third
+    enum value beside `known` / `unknown`) and `contested_by: "energy"`.
+    `function` and `function_confidence` are untouched — the label is kept, only
+    flagged (refinement D5; the phase-3 stage never mutates `sections.json`, the
+    publisher fuses). A row the contest does not flag is byte-identical to
+    `build_ui_data`'s output. The `function_status` producer goes through
+    `_fuse`: `allin1`'s where the row is `known` / `unknown`,
+    `section_function`'s where it is `contested`, so the header records which
+    producer had the final say.
+    """
+    contested = _load_section_contest(paths)
+    payload = read_json(paths.sections_output_path)
+    rows = payload["sections"]
+    any_contested = False
+    for row in rows:
+        if row["section_id"] in contested:
+            row["function_status"] = "contested"
+            row["contested_by"] = "energy"
+            any_contested = True
+        else:
+            row.pop("contested_by", None)
+
+    header = dict(payload.get("field_sources", {}))
+    if any_contested:
+        header.update(
+            _fuse(
+                {
+                    "function_status": [("section_function", True), ("allin1", True)],
+                    "contested_by": [("section_function", True)],
+                }
+            )
+        )
+    else:
+        header.pop("contested_by", None)
+
+    emitted_keys: set[str] = set()
+    for row in rows:
+        emitted_keys.update(row.keys())
+    payload["field_sources"] = validate_field_sources(
+        header, emitted_keys, file="sections.json"
+    )
+    write_json(paths.sections_output_path, payload)
+    return str(paths.sections_output_path)
+
+
+def _build_reference_override_rows(
+    reference_rows: list[dict],
+    raw_sections: list[dict],
+    song_key: str | None,
+    chord_events: list[dict],
+    occurrence_counts: dict[str, int],
+    confidence: float,
+) -> list[dict]:
+    """Shared whole-song-override builder for reference/human/segments.json
+    and reference/moises/segments.json: same boundary/label shape, only the
+    fixed `confidence` and the input rows differ per tier (see
+    docs/reference/analysis.segments.md for the precedence and rationale)."""
+    rows_sorted = sorted(reference_rows, key=lambda row: float(row["start"]))
+    section_rows = []
+    for index, reference_row in enumerate(rows_sorted):
+        start = float(reference_row["start"])
+        end = float(reference_row["end"])
+        function = normalize_human_label(str(reference_row["label"]))
+        section_id = f"section-{index + 1:03d}"
+
+        # Inherit function_confidence/function_status/same_label_as from
+        # whichever allin1 section this span overlaps most — never invented.
+        # No overlap (shouldn't normally happen; allin1 covers the whole
+        # song) is an honest null/"unknown", not a guess.
+        best_match: dict | None = None
+        best_overlap = 0.0
+        for candidate in raw_sections:
+            overlap = min(end, float(candidate["end"])) - max(start, float(candidate["start"]))
+            if overlap > best_overlap:
+                best_overlap = overlap
+                best_match = candidate
+        function_confidence = best_match.get("function_confidence") if best_match else None
+        function_status = best_match.get("function_status", "unknown") if best_match else "unknown"
+        same_label_as = best_match.get("same_label_as") if best_match else None
+
+        if function:
+            occurrence_counts[function] = occurrence_counts.get(function, 0) + 1
+        label_source = {
+            "section_id": section_id,
+            "function": function,
+            "function_confidence": function_confidence,
+            "function_status": function_status,
+        }
+        description_source = {**label_source, "start": start, "end": end, "same_label_as": same_label_as}
+        section_rows.append(
+            {
+                "section_id": section_id,
+                "start": round_schema_float(start),
+                "end": round_schema_float(end),
+                "label": _format_section_label(label_source),
+                "description": _section_description(description_source, occurrence_counts.get(function, 0)),
+                "function": function,
+                "function_confidence": function_confidence,
+                "function_status": function_status,
+                "same_label_as": same_label_as,
+                "confidence": confidence,
+                "key": song_key,
+                "chord_progression": _section_chord_progression(start, end, chord_events),
+            }
+        )
+    return section_rows
+
+
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
     beats_payload = read_json(paths.artifact("essentia", "beats.json"))
     harmonic_payload = read_json(paths.artifact("layer_a_harmonic.json"))
@@ -236,39 +701,140 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
             "bar": int(beat["bar"]),
             "chord": _resolve_chord_for_time(float(beat["time"]), chord_events),
             "type": str(beat["type"]),
-            "confidence": beat.get("confidence"),
+            "downbeat_confidence": beat.get("confidence"),
         }
         for beat in beat_points
     ]
 
     song_key = _song_key(harmonic_payload.get("global_key"))
 
+    # reference/human/segments.json and reference/moises/segments.json are
+    # OPTIONAL, per-song reference overrides (same tier as human_hints.json):
+    # each a flat [{start, end, label}] list. Precedence — documented in
+    # docs/reference/analysis.segments.md — is whole-song, never per-boundary:
+    # human wins outright if present, else moises if present, else our own
+    # segmentation. See section_vocabulary.py for the label-vocabulary
+    # normalization this also applies.
+    human_segments_path = paths.reference("human", "segments.json")
+    has_human_segments = human_segments_path.exists()
+    moises_segments_path = paths.reference("moises", "segments.json")
+    has_moises_segments = moises_segments_path.exists()
+
     occurrence_counts: dict[str, int] = {}
     section_rows = []
-    for section in raw_sections:
-        function = section.get("function")
-        if function:
-            occurrence_counts[function] = occurrence_counts.get(function, 0) + 1
-        start = float(section["start"])
-        end = float(section["end"])
-        section_rows.append(
-            {
-                "section_id": section["section_id"],
-                "start": round_schema_float(start),
-                "end": round_schema_float(end),
-                "label": _format_section_label(section),
-                "description": _section_description(section, occurrence_counts.get(function, 0)),
-                "confidence": section.get("confidence"),
-                "key": song_key,
-                "chord_progression": _section_chord_progression(start, end, chord_events),
-            }
+    if has_human_segments:
+        # Fixed at 0.8, independent of allin1's own confidence (inherited
+        # below only for the function_* fields) — human mistakes are
+        # plausible, but human is still the best available truth.
+        section_rows = _build_reference_override_rows(
+            read_json(human_segments_path), raw_sections, song_key, chord_events, occurrence_counts, confidence=0.8
         )
+    elif has_moises_segments:
+        # Fixed at 0.6 — moises/segments.json carries no confidence field of
+        # its own (Moises.ai gives no per-row confidence for segments, unlike
+        # its word-level lyrics/chords) — moises is also an inferred
+        # discriminator, one tier below a human.
+        section_rows = _build_reference_override_rows(
+            read_json(moises_segments_path), raw_sections, song_key, chord_events, occurrence_counts, confidence=0.6
+        )
+    else:
+        for section in raw_sections:
+            function = section.get("function")
+            if function:
+                occurrence_counts[function] = occurrence_counts.get(function, 0) + 1
+            start = float(section["start"])
+            end = float(section["end"])
+            section_rows.append(
+                {
+                    "section_id": section["section_id"],
+                    "start": round_schema_float(start),
+                    "end": round_schema_float(end),
+                    "label": _format_section_label(section),
+                    "description": _section_description(section, occurrence_counts.get(function, 0)),
+                    # v3.1 item 3 — the allin1 section-function fields are now on the
+                    # top-level row. A consumer reads section names from here alone
+                    # and never opens artifacts/section_segmentation/sections.json.
+                    # The row is built directly from the segmentation list (joined on
+                    # section_id, never array position), so there is no second list
+                    # to misalign.
+                    "function": function,
+                    "function_confidence": section.get("function_confidence"),
+                    "function_status": section.get("function_status", "unknown"),
+                    "same_label_as": section.get("same_label_as"),
+                    "confidence": section.get("confidence"),
+                    "key": song_key,
+                    "chord_progression": _section_chord_progression(start, end, chord_events),
+                }
+            )
+
+    # v3.1 item 2 — the attribution convention. Each top-level file carries a
+    # `field_sources` header: the default producer per field, declared once. A
+    # row overrides it with its own `source` only where it departs from the
+    # default (no beats.json row does — a repeated per-row map would be pure
+    # token cost against the budget the mcp/ server exists to protect).
+    #
+    # `downbeat_confidence` (renamed from the ambiguous `confidence`) measures
+    # allin1's downbeat-phase strength (0.226 F1), not essentia's trusted beat
+    # time — the name now says which producer's number it is.
+    beats_field_sources = validate_field_sources(
+        {
+            "time": "essentia",
+            "beat": "essentia",
+            "bar": "essentia",
+            "chord": "harmonic",
+            "type": "essentia",
+            "downbeat_confidence": "allin1",
+        },
+        beat_rows[0].keys() if beat_rows else (),
+        file="beats.json",
+    )
+    # A genuine per-song producer switch, not a per-row override: precedence
+    # is human, then moises, then allin1 (docs/reference/analysis.segments.md).
+    # When a reference file exists, EVERY row's boundaries/label/description/
+    # confidence came from it, so the file-level default itself moves to that
+    # producer for this song. function's own value is also that producer's
+    # then (normalize_human_label of its label text — shared by human and
+    # moises); only function_confidence / function_status / same_label_as stay
+    # allin1's regardless (inherited by overlap, never invented); key /
+    # chord_progression stay the harmonic stage's either way.
+    sections_field_sources = validate_field_sources(
+        _fuse(
+            {
+                "section_id": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "start": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "end": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "label": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "description": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "function": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "function_confidence": [("allin1", True)],
+                "function_status": [("allin1", True)],
+                "same_label_as": [("allin1", True)],
+                "confidence": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
+                "key": [("harmonic", True)],
+                "chord_progression": [("harmonic", True)],
+            }
+        ),
+        section_rows[0].keys() if section_rows else (),
+        file="sections.json",
+    )
+    beats_output = {"field_sources": beats_field_sources, "beats": beat_rows}
+    sections_output = {"field_sources": sections_field_sources, "sections": section_rows}
 
     beats_output_path = paths.beats_output_path
     sections_output_path = paths.sections_output_path
-    write_json(beats_output_path, beat_rows)
-    write_json(sections_output_path, section_rows)
+    write_json(beats_output_path, beats_output)
+    write_json(sections_output_path, sections_output)
+
+    # v3.1 items 5-7 — publish top-level fused views of genre, drum events and
+    # loudness. The artifacts under artifacts/ are untouched.
+    genre_output = _publish_genre(paths)
+    drum_events_output = _publish_drum_events(paths)
+    loudness_output = _publish_loudness(paths)
+
     return {
         "beats": str(beats_output_path),
         "sections": str(sections_output_path),
+        "genre": genre_output,
+        "drum_events": drum_events_output,
+        "loudness": loudness_output,
     }

@@ -1,0 +1,133 @@
+{
+  "song_name": "Queen of Kings - Alessandra",
+  "human_hints": [
+    {
+      "id": "hint-001",
+      "title": "Fairytale like intro",
+      "start_time": 1.109,
+      "end_time": 16.32,
+      "summary": "Vocal lead melody. Padded bass harmony. High notes synth as fairy embellishment notes.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-002",
+      "title": "Post-Intro",
+      "start_time": 16.394,
+      "end_time": 23.94,
+      "summary": "Rhythmic tribal percussion",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-003",
+      "title": "Post-Intro + Harmony",
+      "start_time": 23.94,
+      "end_time": 31.57,
+      "summary": "Rhythmic tribal continues, plus rhythmic bass pads",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-004",
+      "title": "Melodic Vocal bridge",
+      "start_time": 31.58,
+      "end_time": 39.21,
+      "summary": "Melodic Vocals with long tonal phrases; Long chords bass pad notes.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-005",
+      "title": "Vocal tension build",
+      "start_time": 39.21,
+      "end_time": 45.002,
+      "summary": "Vocals start building tension. Bass pad turns into rhythmic bass. Snares start rolling.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-006",
+      "title": "Pre-drop phrase",
+      "start_time": 45.002,
+      "end_time": 46.524,
+      "summary": "Vocal lead keeps the note. snare rolls speeds up. Bass is minimal.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-007",
+      "title": "pre-drop tension",
+      "start_time": 46.524,
+      "end_time": 47.203,
+      "summary": "Close to silence after vocal long note",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-008",
+      "title": "Vocal tension phrase",
+      "start_time": 47.203,
+      "end_time": 48.72,
+      "summary": "Vocal lead plus chorus phrase prepares to the main intense verse.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-009",
+      "title": "Main chorus section",
+      "start_time": 48.72,
+      "end_time": 52.112,
+      "summary": "Intense vocal lead melody + back chorus. Percussive bass and synth.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-010",
+      "title": "Micro break",
+      "start_time": 52.112,
+      "end_time": 52.52,
+      "summary": "Vocals pause (small tension)",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-011",
+      "title": "Main chorus section (continues)",
+      "start_time": 52.52,
+      "end_time": 55.86,
+      "summary": "Same as previous bars",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-012",
+      "title": "'Hey' phrase",
+      "start_time": 55.86,
+      "end_time": 56.33,
+      "summary": "Vocal Lead + Chorus shouts 'hey' (maximum perceptual tension)",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-013",
+      "title": "Main chorus section (continues)",
+      "start_time": 56.33,
+      "end_time": 59.899,
+      "summary": "Vocal lead plus chorus. Rhythmic bass and percussive synth alternates (sidechained).",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-014",
+      "title": "Main chorus exit phrase",
+      "start_time": 60.184,
+      "end_time": 62.159,
+      "summary": "Vocals tonal variation (prepares for slow down).\nRhythmic pattern changes",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-015",
+      "title": "Final chorus exit",
+      "start_time": 62.159,
+      "end_time": 63.95,
+      "summary": "Heavy chorus phrases drives the melody.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-016",
+      "title": "Verse should start here",
+      "start_time": 63.95,
+      "end_time": 64.123,
+      "summary": "on bar 34, the Vocal lead takes the melody, while percussive synth (harmony) and drum machine follows.",
+      "lighting_hint": ""
+    }
+  ]
+}

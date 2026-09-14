@@ -1,0 +1,789 @@
+{
+  "schema_version": "3.0",
+  "song_name": "Armin - Revolution",
+  "field_sources": {
+    "start_s": "arrangement_state",
+    "end_s": "arrangement_state",
+    "playing": "arrangement_state",
+    "entered": "arrangement_state",
+    "left": "arrangement_state",
+    "margin_db": "arrangement_state",
+    "confidence": "arrangement_state"
+  },
+  "stems": [
+    "bass",
+    "drums",
+    "harmonic",
+    "vocals"
+  ],
+  "blocks": [
+    {
+      "start_s": 0.0,
+      "end_s": 0.5,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [],
+      "margin_db": null,
+      "confidence": null
+    },
+    {
+      "start_s": 0.5,
+      "end_s": 1.75,
+      "playing": [
+        "drums",
+        "harmonic"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 19.48,
+      "confidence": 0.961
+    },
+    {
+      "start_s": 1.75,
+      "end_s": 3.25,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 7.34,
+      "confidence": 0.706
+    },
+    {
+      "start_s": 3.25,
+      "end_s": 7.25,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 3.79,
+      "confidence": 0.468
+    },
+    {
+      "start_s": 7.25,
+      "end_s": 8.75,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 17.82,
+      "confidence": 0.949
+    },
+    {
+      "start_s": 8.75,
+      "end_s": 13.0,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 1.76,
+      "confidence": 0.254
+    },
+    {
+      "start_s": 13.0,
+      "end_s": 14.5,
+      "playing": [
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "harmonic"
+      ],
+      "margin_db": 0.06,
+      "confidence": 0.01
+    },
+    {
+      "start_s": 14.5,
+      "end_s": 14.75,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "harmonic"
+      ],
+      "left": [],
+      "margin_db": 5.9,
+      "confidence": 0.626
+    },
+    {
+      "start_s": 14.75,
+      "end_s": 15.25,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 14.99,
+      "confidence": 0.918
+    },
+    {
+      "start_s": 15.25,
+      "end_s": 19.0,
+      "playing": [
+        "drums",
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 2.99,
+      "confidence": 0.392
+    },
+    {
+      "start_s": 19.0,
+      "end_s": 24.0,
+      "playing": [
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 4.73,
+      "confidence": 0.545
+    },
+    {
+      "start_s": 24.0,
+      "end_s": 30.0,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 4.75,
+      "confidence": 0.547
+    },
+    {
+      "start_s": 30.0,
+      "end_s": 40.75,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 22.63,
+      "confidence": 0.977
+    },
+    {
+      "start_s": 40.75,
+      "end_s": 43.0,
+      "playing": [
+        "drums",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "harmonic"
+      ],
+      "margin_db": 0.07,
+      "confidence": 0.012
+    },
+    {
+      "start_s": 43.0,
+      "end_s": 55.75,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "harmonic"
+      ],
+      "left": [],
+      "margin_db": 6.74,
+      "confidence": 0.675
+    },
+    {
+      "start_s": 55.75,
+      "end_s": 56.25,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 4.42,
+      "confidence": 0.521
+    },
+    {
+      "start_s": 56.25,
+      "end_s": 68.75,
+      "playing": [
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 3.44,
+      "confidence": 0.436
+    },
+    {
+      "start_s": 68.75,
+      "end_s": 70.5,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 6.83,
+      "confidence": 0.68
+    },
+    {
+      "start_s": 70.5,
+      "end_s": 74.5,
+      "playing": [
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 3.98,
+      "confidence": 0.485
+    },
+    {
+      "start_s": 74.5,
+      "end_s": 79.75,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 3.94,
+      "confidence": 0.481
+    },
+    {
+      "start_s": 79.75,
+      "end_s": 81.25,
+      "playing": [
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 0.65,
+      "confidence": 0.103
+    },
+    {
+      "start_s": 81.25,
+      "end_s": 81.5,
+      "playing": [
+        "drums",
+        "harmonic"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 18.1,
+      "confidence": 0.951
+    },
+    {
+      "start_s": 81.5,
+      "end_s": 83.0,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 10.52,
+      "confidence": 0.827
+    },
+    {
+      "start_s": 83.0,
+      "end_s": 95.5,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 5.21,
+      "confidence": 0.58
+    },
+    {
+      "start_s": 95.5,
+      "end_s": 96.75,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 11.53,
+      "confidence": 0.854
+    },
+    {
+      "start_s": 96.75,
+      "end_s": 100.25,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "bass"
+      ],
+      "left": [],
+      "margin_db": 17.92,
+      "confidence": 0.95
+    },
+    {
+      "start_s": 100.25,
+      "end_s": 103.5,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "bass"
+      ],
+      "margin_db": 2.71,
+      "confidence": 0.363
+    },
+    {
+      "start_s": 103.5,
+      "end_s": 103.75,
+      "playing": [
+        "drums",
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 4.11,
+      "confidence": 0.496
+    },
+    {
+      "start_s": 103.75,
+      "end_s": 107.5,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic"
+      ],
+      "entered": [
+        "bass"
+      ],
+      "left": [],
+      "margin_db": 17.14,
+      "confidence": 0.943
+    },
+    {
+      "start_s": 107.5,
+      "end_s": 108.75,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 4.76,
+      "confidence": 0.548
+    },
+    {
+      "start_s": 108.75,
+      "end_s": 109.5,
+      "playing": [
+        "bass",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 7.0,
+      "confidence": 0.689
+    },
+    {
+      "start_s": 109.5,
+      "end_s": 110.5,
+      "playing": [
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "bass",
+        "harmonic"
+      ],
+      "margin_db": 2.31,
+      "confidence": 0.32
+    },
+    {
+      "start_s": 110.5,
+      "end_s": 110.75,
+      "playing": [
+        "drums",
+        "vocals"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 14.56,
+      "confidence": 0.912
+    },
+    {
+      "start_s": 110.75,
+      "end_s": 111.25,
+      "playing": [
+        "drums",
+        "harmonic"
+      ],
+      "entered": [
+        "harmonic"
+      ],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 2.29,
+      "confidence": 0.317
+    },
+    {
+      "start_s": 111.25,
+      "end_s": 112.75,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic"
+      ],
+      "entered": [
+        "bass"
+      ],
+      "left": [],
+      "margin_db": 15.38,
+      "confidence": 0.923
+    },
+    {
+      "start_s": 112.75,
+      "end_s": 115.0,
+      "playing": [
+        "drums",
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "bass"
+      ],
+      "margin_db": 1.81,
+      "confidence": 0.26
+    },
+    {
+      "start_s": 115.0,
+      "end_s": 121.75,
+      "playing": [
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 4.24,
+      "confidence": 0.507
+    },
+    {
+      "start_s": 121.75,
+      "end_s": 122.0,
+      "playing": [
+        "drums",
+        "harmonic"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 12.62,
+      "confidence": 0.878
+    },
+    {
+      "start_s": 122.0,
+      "end_s": 140.5,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 17.94,
+      "confidence": 0.95
+    },
+    {
+      "start_s": 140.5,
+      "end_s": 145.0,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "bass"
+      ],
+      "left": [],
+      "margin_db": 3.07,
+      "confidence": 0.401
+    },
+    {
+      "start_s": 145.0,
+      "end_s": 146.5,
+      "playing": [
+        "bass",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 9.63,
+      "confidence": 0.799
+    },
+    {
+      "start_s": 146.5,
+      "end_s": 147.75,
+      "playing": [
+        "bass",
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 3.02,
+      "confidence": 0.395
+    },
+    {
+      "start_s": 147.75,
+      "end_s": 152.0,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "bass"
+      ],
+      "margin_db": 0.48,
+      "confidence": 0.077
+    },
+    {
+      "start_s": 152.0,
+      "end_s": 153.5,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 6.84,
+      "confidence": 0.68
+    },
+    {
+      "start_s": 153.5,
+      "end_s": 155.5,
+      "playing": [
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 0.94,
+      "confidence": 0.145
+    },
+    {
+      "start_s": 155.5,
+      "end_s": 161.5,
+      "playing": [
+        "bass",
+        "harmonic"
+      ],
+      "entered": [
+        "bass"
+      ],
+      "left": [],
+      "margin_db": 2.94,
+      "confidence": 0.387
+    },
+    {
+      "start_s": 161.5,
+      "end_s": 170.25,
+      "playing": [
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "bass"
+      ],
+      "margin_db": 2.38,
+      "confidence": 0.327
+    },
+    {
+      "start_s": 170.25,
+      "end_s": 176.0,
+      "playing": [
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 3.42,
+      "confidence": 0.434
+    },
+    {
+      "start_s": 176.0,
+      "end_s": 177.5,
+      "playing": [
+        "harmonic"
+      ],
+      "entered": [],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 3.05,
+      "confidence": 0.399
+    },
+    {
+      "start_s": 177.5,
+      "end_s": 177.75,
+      "playing": [
+        "drums",
+        "harmonic"
+      ],
+      "entered": [
+        "drums"
+      ],
+      "left": [],
+      "margin_db": 15.75,
+      "confidence": 0.928
+    },
+    {
+      "start_s": 177.75,
+      "end_s": 187.75,
+      "playing": [
+        "drums",
+        "harmonic",
+        "vocals"
+      ],
+      "entered": [
+        "vocals"
+      ],
+      "left": [],
+      "margin_db": 15.18,
+      "confidence": 0.92
+    },
+    {
+      "start_s": 187.75,
+      "end_s": 188.0,
+      "playing": [
+        "drums",
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "harmonic"
+      ],
+      "margin_db": 2.61,
+      "confidence": 0.353
+    },
+    {
+      "start_s": 188.0,
+      "end_s": 193.0,
+      "playing": [
+        "vocals"
+      ],
+      "entered": [],
+      "left": [
+        "drums"
+      ],
+      "margin_db": 1.47,
+      "confidence": 0.217
+    },
+    {
+      "start_s": 193.0,
+      "end_s": 194.009,
+      "playing": [],
+      "entered": [],
+      "left": [
+        "vocals"
+      ],
+      "margin_db": 0.75,
+      "confidence": 0.118
+    }
+  ]
+}

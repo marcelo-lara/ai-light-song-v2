@@ -1,0 +1,2650 @@
+[
+    {
+        "id": 1,
+        "line_id": 1,
+        "start": 1.0497278911564625,
+        "end": 1.0497278911564625,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 2,
+        "line_id": 1,
+        "start": 1.0497278911564625,
+        "end": 1.497687074829932,
+        "text": "She,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 3,
+        "line_id": 1,
+        "start": 1.502517006802721,
+        "end": 1.6718367346938776,
+        "text": "queen",
+        "confidence": "0.99"
+    },
+    {
+        "id": 4,
+        "line_id": 1,
+        "start": 1.6766666666666665,
+        "end": 1.811156462585034,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 5,
+        "line_id": 1,
+        "start": 1.815986394557823,
+        "end": 1.9853061224489796,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 6,
+        "line_id": 1,
+        "start": 1.9901360544217688,
+        "end": 2.3336054421768706,
+        "text": "kings,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 7,
+        "line_id": 1,
+        "start": 2.4429251700680275,
+        "end": 2.7167346938775507,
+        "text": "running",
+        "confidence": "0.99"
+    },
+    {
+        "id": 8,
+        "line_id": 1,
+        "start": 2.7563945578231293,
+        "end": 2.8908843537414963,
+        "text": "so",
+        "confidence": "0.99"
+    },
+    {
+        "id": 9,
+        "line_id": 1,
+        "start": 2.930544217687075,
+        "end": 3.3436734693877552,
+        "text": "fast,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 10,
+        "line_id": 1,
+        "start": 3.3485034013605444,
+        "end": 3.691972789115646,
+        "text": "splitting",
+        "confidence": "0.99"
+    },
+    {
+        "id": 11,
+        "line_id": 1,
+        "start": 3.6968027210884356,
+        "end": 3.8661224489795916,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 12,
+        "line_id": 1,
+        "start": 3.870952380952381,
+        "end": 4.841360544217687,
+        "text": "wind",
+        "confidence": "0.99"
+    },
+    {
+        "id": 13,
+        "line_id": 1,
+        "start": 4.841360544217687,
+        "end": 4.841360544217687,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 14,
+        "line_id": 2,
+        "start": 4.8461904761904755,
+        "end": 4.8461904761904755,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 15,
+        "line_id": 2,
+        "start": 4.8461904761904755,
+        "end": 5.294149659863946,
+        "text": "Nothing",
+        "confidence": "0.99"
+    },
+    {
+        "id": 16,
+        "line_id": 2,
+        "start": 5.333809523809523,
+        "end": 5.537959183673469,
+        "text": "in",
+        "confidence": "0.99"
+    },
+    {
+        "id": 17,
+        "line_id": 2,
+        "start": 5.542789115646258,
+        "end": 5.712108843537415,
+        "text": "this",
+        "confidence": "0.99"
+    },
+    {
+        "id": 18,
+        "line_id": 2,
+        "start": 5.786598639455782,
+        "end": 6.060408163265306,
+        "text": "world",
+        "confidence": "0.99"
+    },
+    {
+        "id": 19,
+        "line_id": 2,
+        "start": 6.065238095238095,
+        "end": 6.2345578231292516,
+        "text": "can",
+        "confidence": "0.99"
+    },
+    {
+        "id": 20,
+        "line_id": 2,
+        "start": 6.23938775510204,
+        "end": 6.513197278911565,
+        "text": "stop",
+        "confidence": "0.99"
+    },
+    {
+        "id": 21,
+        "line_id": 2,
+        "start": 6.5180272108843536,
+        "end": 6.6873469387755105,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 22,
+        "line_id": 2,
+        "start": 6.692176870748299,
+        "end": 7.209795918367346,
+        "text": "spread",
+        "confidence": "0.99"
+    },
+    {
+        "id": 23,
+        "line_id": 2,
+        "start": 7.284285714285714,
+        "end": 7.48843537414966,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 24,
+        "line_id": 2,
+        "start": 7.493265306122448,
+        "end": 7.662585034013605,
+        "text": "her",
+        "confidence": "0.99"
+    },
+    {
+        "id": 25,
+        "line_id": 2,
+        "start": 7.702244897959183,
+        "end": 8.6378231292517,
+        "text": "wings",
+        "confidence": "0.99"
+    },
+    {
+        "id": 26,
+        "line_id": 2,
+        "start": 8.6378231292517,
+        "end": 8.6378231292517,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 27,
+        "line_id": 3,
+        "start": 8.677482993197279,
+        "end": 8.677482993197279,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 28,
+        "line_id": 3,
+        "start": 8.677482993197279,
+        "end": 9.090612244897958,
+        "text": "She,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 29,
+        "line_id": 3,
+        "start": 9.09544217687075,
+        "end": 9.264761904761905,
+        "text": "queen",
+        "confidence": "0.99"
+    },
+    {
+        "id": 30,
+        "line_id": 3,
+        "start": 9.304421768707483,
+        "end": 9.40408163265306,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 31,
+        "line_id": 3,
+        "start": 9.40891156462585,
+        "end": 9.578231292517007,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 32,
+        "line_id": 3,
+        "start": 9.583061224489796,
+        "end": 10.031020408163265,
+        "text": "kings,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 33,
+        "line_id": 3,
+        "start": 10.070680272108843,
+        "end": 10.344489795918367,
+        "text": "broken",
+        "confidence": "0.99"
+    },
+    {
+        "id": 34,
+        "line_id": 3,
+        "start": 10.349319727891157,
+        "end": 10.518639455782312,
+        "text": "her",
+        "confidence": "0.99"
+    },
+    {
+        "id": 35,
+        "line_id": 3,
+        "start": 10.558299319727892,
+        "end": 10.936598639455783,
+        "text": "cage,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 36,
+        "line_id": 3,
+        "start": 10.976258503401361,
+        "end": 11.145578231292516,
+        "text": "threw",
+        "confidence": "0.99"
+    },
+    {
+        "id": 37,
+        "line_id": 3,
+        "start": 11.185238095238095,
+        "end": 11.284897959183674,
+        "text": "out",
+        "confidence": "0.99"
+    },
+    {
+        "id": 38,
+        "line_id": 3,
+        "start": 11.289727891156463,
+        "end": 11.459047619047618,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 39,
+        "line_id": 3,
+        "start": 11.498707482993197,
+        "end": 12.434285714285714,
+        "text": "keys",
+        "confidence": "0.99"
+    },
+    {
+        "id": 40,
+        "line_id": 3,
+        "start": 12.434285714285714,
+        "end": 12.434285714285714,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 41,
+        "line_id": 4,
+        "start": 12.473945578231293,
+        "end": 12.473945578231293,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 42,
+        "line_id": 4,
+        "start": 12.473945578231293,
+        "end": 12.747755102040816,
+        "text": "She",
+        "confidence": "0.99"
+    },
+    {
+        "id": 43,
+        "line_id": 4,
+        "start": 12.787414965986395,
+        "end": 12.95673469387755,
+        "text": "will",
+        "confidence": "0.99"
+    },
+    {
+        "id": 44,
+        "line_id": 4,
+        "start": 12.96156462585034,
+        "end": 13.200544217687074,
+        "text": "be",
+        "confidence": "0.99"
+    },
+    {
+        "id": 45,
+        "line_id": 4,
+        "start": 13.205374149659864,
+        "end": 13.40952380952381,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 46,
+        "line_id": 4,
+        "start": 13.4143537414966,
+        "end": 14.17578231292517,
+        "text": "warrior",
+        "confidence": "0.99"
+    },
+    {
+        "id": 47,
+        "line_id": 4,
+        "start": 14.215442176870749,
+        "end": 14.384761904761904,
+        "text": "for",
+        "confidence": "0.99"
+    },
+    {
+        "id": 48,
+        "line_id": 4,
+        "start": 14.389591836734693,
+        "end": 14.663401360544217,
+        "text": "north",
+        "confidence": "0.99"
+    },
+    {
+        "id": 49,
+        "line_id": 4,
+        "start": 14.703061224489796,
+        "end": 14.837551020408164,
+        "text": "and",
+        "confidence": "0.99"
+    },
+    {
+        "id": 50,
+        "line_id": 4,
+        "start": 14.842380952380953,
+        "end": 15.36,
+        "text": "souther",
+        "confidence": "0.99"
+    },
+    {
+        "id": 51,
+        "line_id": 4,
+        "start": 15.364829931972789,
+        "end": 16.237,
+        "text": "seas",
+        "confidence": "0.99"
+    },
+    {
+        "id": 52,
+        "line_id": 4,
+        "start": 16.237,
+        "end": 16.237,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 53,
+        "line_id": 5,
+        "start": 17.071496598639452,
+        "end": 17.071496598639452,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 54,
+        "line_id": 5,
+        "start": 17.071496598639452,
+        "end": 17.240816326530613,
+        "text": "Got",
+        "confidence": "0.99"
+    },
+    {
+        "id": 55,
+        "line_id": 5,
+        "start": 17.2456462585034,
+        "end": 17.69360544217687,
+        "text": "Raven",
+        "confidence": "0.99"
+    },
+    {
+        "id": 56,
+        "line_id": 5,
+        "start": 17.698435374149657,
+        "end": 18.982312925170067,
+        "text": "hair,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 57,
+        "line_id": 5,
+        "start": 18.987142857142857,
+        "end": 19.121632653061223,
+        "text": "it's",
+        "confidence": "0.99"
+    },
+    {
+        "id": 58,
+        "line_id": 5,
+        "start": 19.126462585034012,
+        "end": 19.435102040816325,
+        "text": "dark",
+        "confidence": "0.99"
+    },
+    {
+        "id": 59,
+        "line_id": 5,
+        "start": 19.474761904761902,
+        "end": 19.60925170068027,
+        "text": "as",
+        "confidence": "0.99"
+    },
+    {
+        "id": 60,
+        "line_id": 5,
+        "start": 19.61408163265306,
+        "end": 20.11408163265306,
+        "text": "night",
+        "confidence": "0.99"
+    },
+    {
+        "id": 61,
+        "line_id": 5,
+        "start": 20.11408163265306,
+        "end": 20.11408163265306,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 62,
+        "line_id": 6,
+        "start": 21.076938775510204,
+        "end": 21.076938775510204,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 63,
+        "line_id": 6,
+        "start": 21.076938775510204,
+        "end": 21.524897959183672,
+        "text": "Icy",
+        "confidence": "0.99"
+    },
+    {
+        "id": 64,
+        "line_id": 6,
+        "start": 21.56455782312925,
+        "end": 21.942857142857143,
+        "text": "eyes,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 65,
+        "line_id": 6,
+        "start": 22.017346938775507,
+        "end": 22.291156462585032,
+        "text": "out",
+        "confidence": "0.99"
+    },
+    {
+        "id": 66,
+        "line_id": 6,
+        "start": 22.33081632653061,
+        "end": 22.46530612244898,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 67,
+        "line_id": 6,
+        "start": 22.47013605442177,
+        "end": 22.88326530612245,
+        "text": "sight,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 68,
+        "line_id": 6,
+        "start": 22.992585034013604,
+        "end": 23.23156462585034,
+        "text": "out",
+        "confidence": "0.99"
+    },
+    {
+        "id": 69,
+        "line_id": 6,
+        "start": 23.271224489795916,
+        "end": 23.405714285714286,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 70,
+        "line_id": 6,
+        "start": 23.41054421768707,
+        "end": 23.91054421768707,
+        "text": "sight",
+        "confidence": "0.99"
+    },
+    {
+        "id": 71,
+        "line_id": 6,
+        "start": 23.91054421768707,
+        "end": 23.91054421768707,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 72,
+        "line_id": 7,
+        "start": 24.69925170068027,
+        "end": 24.69925170068027,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 73,
+        "line_id": 7,
+        "start": 24.69925170068027,
+        "end": 24.833741496598638,
+        "text": "Her",
+        "confidence": "0.99"
+    },
+    {
+        "id": 74,
+        "line_id": 7,
+        "start": 24.873401360544214,
+        "end": 25.18204081632653,
+        "text": "heart",
+        "confidence": "0.99"
+    },
+    {
+        "id": 75,
+        "line_id": 7,
+        "start": 25.221700680272107,
+        "end": 25.321360544217686,
+        "text": "is",
+        "confidence": "0.99"
+    },
+    {
+        "id": 76,
+        "line_id": 7,
+        "start": 25.361020408163263,
+        "end": 26.540408163265305,
+        "text": "bright,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 77,
+        "line_id": 7,
+        "start": 26.614897959183672,
+        "end": 26.71455782312925,
+        "text": "it's",
+        "confidence": "0.99"
+    },
+    {
+        "id": 78,
+        "line_id": 7,
+        "start": 26.78904761904762,
+        "end": 27.06285714285714,
+        "text": "warm",
+        "confidence": "0.99"
+    },
+    {
+        "id": 79,
+        "line_id": 7,
+        "start": 27.10251700680272,
+        "end": 27.237006802721087,
+        "text": "and",
+        "confidence": "0.99"
+    },
+    {
+        "id": 80,
+        "line_id": 7,
+        "start": 27.241836734693877,
+        "end": 27.741836734693877,
+        "text": "bright",
+        "confidence": "0.99"
+    },
+    {
+        "id": 81,
+        "line_id": 7,
+        "start": 27.741836734693877,
+        "end": 27.741836734693877,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 82,
+        "line_id": 8,
+        "start": 28.495714285714282,
+        "end": 28.495714285714282,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 83,
+        "line_id": 8,
+        "start": 28.495714285714282,
+        "end": 28.63020408163265,
+        "text": "Her",
+        "confidence": "0.99"
+    },
+    {
+        "id": 84,
+        "line_id": 8,
+        "start": 28.63503401360544,
+        "end": 28.943673469387754,
+        "text": "smile",
+        "confidence": "0.99"
+    },
+    {
+        "id": 85,
+        "line_id": 8,
+        "start": 29.01816326530612,
+        "end": 29.431292517006803,
+        "text": "awakes",
+        "confidence": "0.99"
+    },
+    {
+        "id": 86,
+        "line_id": 8,
+        "start": 29.43612244897959,
+        "end": 29.60544217687075,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 87,
+        "line_id": 8,
+        "start": 29.610272108843535,
+        "end": 30.058231292517007,
+        "text": "Northern",
+        "confidence": "0.99"
+    },
+    {
+        "id": 88,
+        "line_id": 8,
+        "start": 30.063061224489793,
+        "end": 30.563061224489793,
+        "text": "Lights",
+        "confidence": "0.99"
+    },
+    {
+        "id": 89,
+        "line_id": 8,
+        "start": 30.563061224489793,
+        "end": 30.563061224489793,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 90,
+        "line_id": 9,
+        "start": 31.560748299319727,
+        "end": 31.560748299319727,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 91,
+        "line_id": 9,
+        "start": 31.560748299319727,
+        "end": 33.36707482993197,
+        "text": "Lookin'",
+        "confidence": "0.99"
+    },
+    {
+        "id": 92,
+        "line_id": 9,
+        "start": 33.44156462585034,
+        "end": 34.411972789115644,
+        "text": "out,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 93,
+        "line_id": 9,
+        "start": 34.451632653061225,
+        "end": 35.352380952380955,
+        "text": "she",
+        "confidence": "0.99"
+    },
+    {
+        "id": 94,
+        "line_id": 9,
+        "start": 35.39204081632653,
+        "end": 35.89204081632653,
+        "text": "calls",
+        "confidence": "0.99"
+    },
+    {
+        "id": 95,
+        "line_id": 9,
+        "start": 35.89204081632653,
+        "end": 35.89204081632653,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 96,
+        "line_id": 10,
+        "start": 37.27285714285714,
+        "end": 37.27285714285714,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 97,
+        "line_id": 10,
+        "start": 37.27285714285714,
+        "end": 37.77285714285714,
+        "text": "La-di-da-di-da-di-da",
+        "confidence": "0.99"
+    },
+    {
+        "id": 98,
+        "line_id": 10,
+        "start": 37.77285714285714,
+        "end": 37.77285714285714,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 99,
+        "line_id": 11,
+        "start": 39.18850340136054,
+        "end": 39.18850340136054,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 100,
+        "line_id": 11,
+        "start": 39.18850340136054,
+        "end": 40.08925170068027,
+        "text": "Who",
+        "confidence": "0.99"
+    },
+    {
+        "id": 101,
+        "line_id": 11,
+        "start": 40.128911564625845,
+        "end": 41.029659863945575,
+        "text": "will",
+        "confidence": "0.99"
+    },
+    {
+        "id": 102,
+        "line_id": 11,
+        "start": 41.069319727891155,
+        "end": 42.91047619047619,
+        "text": "conquer",
+        "confidence": "0.99"
+    },
+    {
+        "id": 103,
+        "line_id": 11,
+        "start": 42.984965986394556,
+        "end": 43.484965986394556,
+        "text": "us?",
+        "confidence": "0.99"
+    },
+    {
+        "id": 104,
+        "line_id": 11,
+        "start": 43.484965986394556,
+        "end": 43.484965986394556,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 105,
+        "line_id": 12,
+        "start": 47.234217687074825,
+        "end": 47.234217687074825,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 106,
+        "line_id": 12,
+        "start": 47.234217687074825,
+        "end": 47.71700680272109,
+        "text": "Her",
+        "confidence": "0.99"
+    },
+    {
+        "id": 107,
+        "line_id": 12,
+        "start": 47.72183673469387,
+        "end": 48.16979591836735,
+        "text": "name",
+        "confidence": "0.99"
+    },
+    {
+        "id": 108,
+        "line_id": 12,
+        "start": 48.20945578231292,
+        "end": 48.65741496598639,
+        "text": "is",
+        "confidence": "0.99"
+    },
+    {
+        "id": 109,
+        "line_id": 12,
+        "start": 48.69707482993197,
+        "end": 49.19707482993197,
+        "text": "she",
+        "confidence": "0.99"
+    },
+    {
+        "id": 110,
+        "line_id": 12,
+        "start": 49.19707482993197,
+        "end": 49.19707482993197,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 111,
+        "line_id": 13,
+        "start": 49.149863945578225,
+        "end": 49.149863945578225,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 112,
+        "line_id": 13,
+        "start": 49.149863945578225,
+        "end": 49.31918367346939,
+        "text": "Queen",
+        "confidence": "0.99"
+    },
+    {
+        "id": 113,
+        "line_id": 13,
+        "start": 49.324013605442175,
+        "end": 49.458503401360545,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 114,
+        "line_id": 13,
+        "start": 49.46333333333333,
+        "end": 49.63265306122449,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 115,
+        "line_id": 13,
+        "start": 49.637482993197274,
+        "end": 50.137482993197274,
+        "text": "kings",
+        "confidence": "0.99"
+    },
+    {
+        "id": 116,
+        "line_id": 13,
+        "start": 50.137482993197274,
+        "end": 50.137482993197274,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 117,
+        "line_id": 14,
+        "start": 50.090272108843536,
+        "end": 50.090272108843536,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 118,
+        "line_id": 14,
+        "start": 50.090272108843536,
+        "end": 50.39891156462585,
+        "text": "Running",
+        "confidence": "0.99"
+    },
+    {
+        "id": 119,
+        "line_id": 14,
+        "start": 50.403741496598634,
+        "end": 50.57306122448979,
+        "text": "so",
+        "confidence": "0.99"
+    },
+    {
+        "id": 120,
+        "line_id": 14,
+        "start": 50.577891156462584,
+        "end": 51.077891156462584,
+        "text": "fast",
+        "confidence": "0.99"
+    },
+    {
+        "id": 121,
+        "line_id": 14,
+        "start": 51.077891156462584,
+        "end": 51.077891156462584,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 122,
+        "line_id": 15,
+        "start": 51.03068027210884,
+        "end": 51.03068027210884,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 123,
+        "line_id": 15,
+        "start": 51.03068027210884,
+        "end": 51.33931972789115,
+        "text": "Spreading",
+        "confidence": "0.99"
+    },
+    {
+        "id": 124,
+        "line_id": 15,
+        "start": 51.344149659863945,
+        "end": 51.5134693877551,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 125,
+        "line_id": 15,
+        "start": 51.553129251700675,
+        "end": 52.053129251700675,
+        "text": "wind",
+        "confidence": "0.99"
+    },
+    {
+        "id": 126,
+        "line_id": 15,
+        "start": 52.053129251700675,
+        "end": 52.053129251700675,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 127,
+        "line_id": 16,
+        "start": 52.389047619047616,
+        "end": 52.389047619047616,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 128,
+        "line_id": 16,
+        "start": 52.389047619047616,
+        "end": 52.94149659863945,
+        "text": "Nothing",
+        "confidence": "0.99"
+    },
+    {
+        "id": 129,
+        "line_id": 16,
+        "start": 52.981156462585034,
+        "end": 53.25496598639456,
+        "text": "in",
+        "confidence": "0.99"
+    },
+    {
+        "id": 130,
+        "line_id": 16,
+        "start": 53.259795918367345,
+        "end": 53.394285714285715,
+        "text": "this",
+        "confidence": "0.99"
+    },
+    {
+        "id": 131,
+        "line_id": 16,
+        "start": 53.43394557823129,
+        "end": 53.93394557823129,
+        "text": "world",
+        "confidence": "0.99"
+    },
+    {
+        "id": 132,
+        "line_id": 16,
+        "start": 53.93394557823129,
+        "end": 53.93394557823129,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 133,
+        "line_id": 17,
+        "start": 53.7125850340136,
+        "end": 53.7125850340136,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 134,
+        "line_id": 17,
+        "start": 53.7125850340136,
+        "end": 53.881904761904764,
+        "text": "Can",
+        "confidence": "0.99"
+    },
+    {
+        "id": 135,
+        "line_id": 17,
+        "start": 53.88673469387755,
+        "end": 54.19537414965986,
+        "text": "stop",
+        "confidence": "0.99"
+    },
+    {
+        "id": 136,
+        "line_id": 17,
+        "start": 54.20020408163265,
+        "end": 54.33469387755102,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 137,
+        "line_id": 17,
+        "start": 54.339523809523804,
+        "end": 54.857142857142854,
+        "text": "spread",
+        "confidence": "0.99"
+    },
+    {
+        "id": 138,
+        "line_id": 17,
+        "start": 54.896802721088434,
+        "end": 55.17061224489796,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 139,
+        "line_id": 17,
+        "start": 55.175442176870746,
+        "end": 55.3447619047619,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 140,
+        "line_id": 17,
+        "start": 55.34959183673469,
+        "end": 55.84959183673469,
+        "text": "wind",
+        "confidence": "0.99"
+    },
+    {
+        "id": 141,
+        "line_id": 17,
+        "start": 55.84959183673469,
+        "end": 55.84959183673469,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 142,
+        "line_id": 18,
+        "start": 56.29,
+        "end": 56.29,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 143,
+        "line_id": 18,
+        "start": 56.29,
+        "end": 56.73795918367347,
+        "text": "She,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 144,
+        "line_id": 18,
+        "start": 56.742789115646254,
+        "end": 56.91210884353741,
+        "text": "queen",
+        "confidence": "0.99"
+    },
+    {
+        "id": 145,
+        "line_id": 18,
+        "start": 56.95176870748299,
+        "end": 57.08625850340136,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 146,
+        "line_id": 18,
+        "start": 57.09108843537415,
+        "end": 57.2604081632653,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 147,
+        "line_id": 18,
+        "start": 57.26523809523809,
+        "end": 57.76523809523809,
+        "text": "kings",
+        "confidence": "0.99"
+    },
+    {
+        "id": 148,
+        "line_id": 18,
+        "start": 57.76523809523809,
+        "end": 57.76523809523809,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 149,
+        "line_id": 19,
+        "start": 57.75285714285714,
+        "end": 57.75285714285714,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 150,
+        "line_id": 19,
+        "start": 57.75285714285714,
+        "end": 58.026666666666664,
+        "text": "Broken",
+        "confidence": "0.99"
+    },
+    {
+        "id": 151,
+        "line_id": 19,
+        "start": 58.03149659863945,
+        "end": 58.200816326530614,
+        "text": "her",
+        "confidence": "0.99"
+    },
+    {
+        "id": 152,
+        "line_id": 19,
+        "start": 58.2056462585034,
+        "end": 58.7056462585034,
+        "text": "case",
+        "confidence": "0.99"
+    },
+    {
+        "id": 153,
+        "line_id": 19,
+        "start": 58.7056462585034,
+        "end": 58.7056462585034,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 154,
+        "line_id": 20,
+        "start": 58.658435374149654,
+        "end": 58.658435374149654,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 155,
+        "line_id": 20,
+        "start": 58.658435374149654,
+        "end": 58.792925170068024,
+        "text": "Threw",
+        "confidence": "0.99"
+    },
+    {
+        "id": 156,
+        "line_id": 20,
+        "start": 58.832585034013604,
+        "end": 58.967074829931974,
+        "text": "out",
+        "confidence": "0.99"
+    },
+    {
+        "id": 157,
+        "line_id": 20,
+        "start": 58.97190476190476,
+        "end": 59.14122448979592,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 158,
+        "line_id": 20,
+        "start": 59.1460544217687,
+        "end": 59.6460544217687,
+        "text": "key",
+        "confidence": "0.99"
+    },
+    {
+        "id": 159,
+        "line_id": 20,
+        "start": 59.6460544217687,
+        "end": 59.6460544217687,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 160,
+        "line_id": 21,
+        "start": 60.08646258503401,
+        "end": 60.08646258503401,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 161,
+        "line_id": 21,
+        "start": 60.08646258503401,
+        "end": 60.395102040816326,
+        "text": "She",
+        "confidence": "0.99"
+    },
+    {
+        "id": 162,
+        "line_id": 21,
+        "start": 60.39993197278911,
+        "end": 60.56925170068027,
+        "text": "will",
+        "confidence": "0.99"
+    },
+    {
+        "id": 163,
+        "line_id": 21,
+        "start": 60.60891156462585,
+        "end": 60.882721088435375,
+        "text": "be",
+        "confidence": "0.99"
+    },
+    {
+        "id": 164,
+        "line_id": 21,
+        "start": 60.88755102040816,
+        "end": 61.05687074829932,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 165,
+        "line_id": 21,
+        "start": 61.0965306122449,
+        "end": 61.5965306122449,
+        "text": "warrior",
+        "confidence": "0.99"
+    },
+    {
+        "id": 166,
+        "line_id": 21,
+        "start": 61.5965306122449,
+        "end": 61.5965306122449,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 167,
+        "line_id": 22,
+        "start": 61.75829931972789,
+        "end": 61.75829931972789,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 168,
+        "line_id": 22,
+        "start": 61.75829931972789,
+        "end": 61.89278911564626,
+        "text": "Of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 169,
+        "line_id": 22,
+        "start": 61.897619047619045,
+        "end": 62.032108843537415,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 170,
+        "line_id": 22,
+        "start": 62.0369387755102,
+        "end": 62.27591836734694,
+        "text": "north",
+        "confidence": "0.99"
+    },
+    {
+        "id": 171,
+        "line_id": 22,
+        "start": 62.3504081632653,
+        "end": 62.48489795918367,
+        "text": "and",
+        "confidence": "0.99"
+    },
+    {
+        "id": 172,
+        "line_id": 22,
+        "start": 62.48972789115646,
+        "end": 62.76353741496598,
+        "text": "south",
+        "confidence": "0.99"
+    },
+    {
+        "id": 173,
+        "line_id": 22,
+        "start": 62.80319727891156,
+        "end": 62.97251700680272,
+        "text": "and",
+        "confidence": "0.99"
+    },
+    {
+        "id": 174,
+        "line_id": 22,
+        "start": 63.047006802721086,
+        "end": 63.547006802721086,
+        "text": "east",
+        "confidence": "0.99"
+    },
+    {
+        "id": 175,
+        "line_id": 22,
+        "start": 63.547006802721086,
+        "end": 63.547006802721086,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 176,
+        "line_id": 23,
+        "start": 64.71884353741497,
+        "end": 64.71884353741497,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 177,
+        "line_id": 23,
+        "start": 64.71884353741497,
+        "end": 64.85333333333332,
+        "text": "A",
+        "confidence": "0.99"
+    },
+    {
+        "id": 178,
+        "line_id": 23,
+        "start": 64.85816326530612,
+        "end": 67.01278911564626,
+        "text": "firestone,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 179,
+        "line_id": 23,
+        "start": 67.05244897959183,
+        "end": 67.1869387755102,
+        "text": "ing",
+        "confidence": "0.99"
+    },
+    {
+        "id": 180,
+        "line_id": 23,
+        "start": 67.22659863945577,
+        "end": 67.72659863945577,
+        "text": "flames",
+        "confidence": "0.99"
+    },
+    {
+        "id": 181,
+        "line_id": 23,
+        "start": 67.72659863945577,
+        "end": 67.72659863945577,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 182,
+        "line_id": 24,
+        "start": 68.65462585034014,
+        "end": 68.65462585034014,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 183,
+        "line_id": 24,
+        "start": 68.65462585034014,
+        "end": 69.17224489795917,
+        "text": "Wildest",
+        "confidence": "0.99"
+    },
+    {
+        "id": 184,
+        "line_id": 24,
+        "start": 69.17707482993197,
+        "end": 69.62503401360544,
+        "text": "card,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 185,
+        "line_id": 24,
+        "start": 69.62986394557822,
+        "end": 69.90367346938775,
+        "text": "run",
+        "confidence": "0.99"
+    },
+    {
+        "id": 186,
+        "line_id": 24,
+        "start": 69.94333333333333,
+        "end": 70.11265306122449,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 187,
+        "line_id": 24,
+        "start": 70.11748299319727,
+        "end": 70.46095238095238,
+        "text": "game,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 188,
+        "line_id": 24,
+        "start": 70.57027210884354,
+        "end": 70.87891156462585,
+        "text": "run",
+        "confidence": "0.99"
+    },
+    {
+        "id": 189,
+        "line_id": 24,
+        "start": 70.88374149659863,
+        "end": 71.018231292517,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 190,
+        "line_id": 24,
+        "start": 71.05789115646259,
+        "end": 71.55789115646259,
+        "text": "game",
+        "confidence": "0.99"
+    },
+    {
+        "id": 191,
+        "line_id": 24,
+        "start": 71.55789115646259,
+        "end": 71.55789115646259,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 192,
+        "line_id": 25,
+        "start": 72.2769387755102,
+        "end": 72.2769387755102,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 193,
+        "line_id": 25,
+        "start": 72.2769387755102,
+        "end": 72.48108843537415,
+        "text": "Can't",
+        "confidence": "0.99"
+    },
+    {
+        "id": 194,
+        "line_id": 25,
+        "start": 72.48591836734694,
+        "end": 72.75972789115646,
+        "text": "say",
+        "confidence": "0.99"
+    },
+    {
+        "id": 195,
+        "line_id": 25,
+        "start": 72.79938775510203,
+        "end": 72.9338775510204,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 196,
+        "line_id": 25,
+        "start": 72.97353741496599,
+        "end": 73.87428571428572,
+        "text": "same,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 197,
+        "line_id": 25,
+        "start": 73.98360544217687,
+        "end": 74.2225850340136,
+        "text": "in",
+        "confidence": "0.99"
+    },
+    {
+        "id": 198,
+        "line_id": 25,
+        "start": 74.2274149659864,
+        "end": 74.39673469387755,
+        "text": "this",
+        "confidence": "0.99"
+    },
+    {
+        "id": 199,
+        "line_id": 25,
+        "start": 74.40156462585034,
+        "end": 74.71020408163265,
+        "text": "world",
+        "confidence": "0.99"
+    },
+    {
+        "id": 200,
+        "line_id": 25,
+        "start": 74.74986394557823,
+        "end": 74.8843537414966,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 201,
+        "line_id": 25,
+        "start": 74.92401360544217,
+        "end": 75.42401360544217,
+        "text": "change",
+        "confidence": "0.99"
+    },
+    {
+        "id": 202,
+        "line_id": 25,
+        "start": 75.42401360544217,
+        "end": 75.42401360544217,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 203,
+        "line_id": 26,
+        "start": 76.108231292517,
+        "end": 76.108231292517,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 204,
+        "line_id": 26,
+        "start": 76.108231292517,
+        "end": 76.31238095238095,
+        "text": "Don't",
+        "confidence": "0.99"
+    },
+    {
+        "id": 205,
+        "line_id": 26,
+        "start": 76.31721088435374,
+        "end": 76.59102040816326,
+        "text": "fear",
+        "confidence": "0.99"
+    },
+    {
+        "id": 206,
+        "line_id": 26,
+        "start": 76.59585034013605,
+        "end": 76.73034013605442,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 207,
+        "line_id": 26,
+        "start": 76.77,
+        "end": 77.04380952380953,
+        "text": "pain,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 208,
+        "line_id": 26,
+        "start": 77.04863945578231,
+        "end": 77.21795918367347,
+        "text": "just",
+        "confidence": "0.99"
+    },
+    {
+        "id": 209,
+        "line_id": 26,
+        "start": 77.22278911564625,
+        "end": 77.56625850340136,
+        "text": "break",
+        "confidence": "0.99"
+    },
+    {
+        "id": 210,
+        "line_id": 26,
+        "start": 77.57108843537415,
+        "end": 77.70557823129252,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 211,
+        "line_id": 26,
+        "start": 77.7104081632653,
+        "end": 78.2104081632653,
+        "text": "chain",
+        "confidence": "0.99"
+    },
+    {
+        "id": 212,
+        "line_id": 26,
+        "start": 78.2104081632653,
+        "end": 78.2104081632653,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 213,
+        "line_id": 27,
+        "start": 79.17326530612245,
+        "end": 79.17326530612245,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 214,
+        "line_id": 27,
+        "start": 79.17326530612245,
+        "end": 80.9795918367347,
+        "text": "Lookin'",
+        "confidence": "0.99"
+    },
+    {
+        "id": 215,
+        "line_id": 27,
+        "start": 81.05408163265305,
+        "end": 82.02448979591837,
+        "text": "out,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 216,
+        "line_id": 27,
+        "start": 82.06414965986394,
+        "end": 82.96489795918367,
+        "text": "she",
+        "confidence": "0.99"
+    },
+    {
+        "id": 217,
+        "line_id": 27,
+        "start": 82.96972789115645,
+        "end": 83.46972789115645,
+        "text": "calls",
+        "confidence": "0.99"
+    },
+    {
+        "id": 218,
+        "line_id": 27,
+        "start": 83.46972789115645,
+        "end": 83.46972789115645,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 219,
+        "line_id": 28,
+        "start": 84.92020408163265,
+        "end": 84.92020408163265,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 220,
+        "line_id": 28,
+        "start": 84.92020408163265,
+        "end": 85.42020408163265,
+        "text": "La-da-da-di-da-da",
+        "confidence": "0.99"
+    },
+    {
+        "id": 221,
+        "line_id": 28,
+        "start": 85.42020408163265,
+        "end": 85.42020408163265,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 222,
+        "line_id": 29,
+        "start": 86.76619047619047,
+        "end": 86.76619047619047,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 223,
+        "line_id": 29,
+        "start": 86.76619047619047,
+        "end": 87.73659863945578,
+        "text": "Who",
+        "confidence": "0.99"
+    },
+    {
+        "id": 224,
+        "line_id": 29,
+        "start": 87.77625850340135,
+        "end": 88.6421768707483,
+        "text": "will",
+        "confidence": "0.99"
+    },
+    {
+        "id": 225,
+        "line_id": 29,
+        "start": 88.64700680272108,
+        "end": 89.14700680272108,
+        "text": "conquer?",
+        "confidence": "0.99"
+    },
+    {
+        "id": 226,
+        "line_id": 29,
+        "start": 89.14700680272108,
+        "end": 89.14700680272108,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 227,
+        "line_id": 30,
+        "start": 94.88156462585033,
+        "end": 94.88156462585033,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 228,
+        "line_id": 30,
+        "start": 94.88156462585033,
+        "end": 95.3295238095238,
+        "text": "Her",
+        "confidence": "0.99"
+    },
+    {
+        "id": 229,
+        "line_id": 30,
+        "start": 95.3343537414966,
+        "end": 95.78231292517006,
+        "text": "name",
+        "confidence": "0.99"
+    },
+    {
+        "id": 230,
+        "line_id": 30,
+        "start": 95.85680272108843,
+        "end": 96.23510204081633,
+        "text": "is",
+        "confidence": "0.99"
+    },
+    {
+        "id": 231,
+        "line_id": 30,
+        "start": 96.2747619047619,
+        "end": 96.75755102040816,
+        "text": "She,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 232,
+        "line_id": 30,
+        "start": 96.76238095238095,
+        "end": 96.9317006802721,
+        "text": "Queen",
+        "confidence": "0.99"
+    },
+    {
+        "id": 233,
+        "line_id": 30,
+        "start": 96.9365306122449,
+        "end": 97.03619047619047,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 234,
+        "line_id": 30,
+        "start": 97.07585034013606,
+        "end": 97.2451700680272,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 235,
+        "line_id": 30,
+        "start": 97.25,
+        "end": 97.75,
+        "text": "Kings",
+        "confidence": "0.99"
+    },
+    {
+        "id": 236,
+        "line_id": 30,
+        "start": 97.75,
+        "end": 97.75,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 237,
+        "line_id": 31,
+        "start": 97.59829931972789,
+        "end": 97.59829931972789,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 238,
+        "line_id": 31,
+        "start": 97.59829931972789,
+        "end": 97.69795918367346,
+        "text": "A",
+        "confidence": "0.99"
+    },
+    {
+        "id": 239,
+        "line_id": 31,
+        "start": 97.70278911564625,
+        "end": 98.01142857142857,
+        "text": "running",
+        "confidence": "0.99"
+    },
+    {
+        "id": 240,
+        "line_id": 31,
+        "start": 98.1904081632653,
+        "end": 98.63836734693878,
+        "text": "fast",
+        "confidence": "0.99"
+    },
+    {
+        "id": 241,
+        "line_id": 31,
+        "start": 98.67802721088435,
+        "end": 98.8473469387755,
+        "text": "beat",
+        "confidence": "0.99"
+    },
+    {
+        "id": 242,
+        "line_id": 31,
+        "start": 98.8521768707483,
+        "end": 98.95183673469387,
+        "text": "in",
+        "confidence": "0.99"
+    },
+    {
+        "id": 243,
+        "line_id": 31,
+        "start": 98.99149659863946,
+        "end": 99.12598639455781,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 244,
+        "line_id": 31,
+        "start": 99.1656462585034,
+        "end": 99.61360544217686,
+        "text": "wind",
+        "confidence": "0.99"
+    },
+    {
+        "id": 245,
+        "line_id": 31,
+        "start": 99.61843537414966,
+        "end": 100.11843537414966,
+        "text": "(hey)",
+        "confidence": "0.99"
+    },
+    {
+        "id": 246,
+        "line_id": 31,
+        "start": 100.11843537414966,
+        "end": 100.11843537414966,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 247,
+        "line_id": 32,
+        "start": 100.07122448979591,
+        "end": 100.07122448979591,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 248,
+        "line_id": 32,
+        "start": 100.07122448979591,
+        "end": 100.55401360544218,
+        "text": "Nothing",
+        "confidence": "0.99"
+    },
+    {
+        "id": 249,
+        "line_id": 32,
+        "start": 100.62850340136055,
+        "end": 100.83265306122449,
+        "text": "in",
+        "confidence": "0.99"
+    },
+    {
+        "id": 250,
+        "line_id": 32,
+        "start": 100.87231292517006,
+        "end": 101.00680272108843,
+        "text": "this",
+        "confidence": "0.99"
+    },
+    {
+        "id": 251,
+        "line_id": 32,
+        "start": 101.046462585034,
+        "end": 101.32027210884354,
+        "text": "world",
+        "confidence": "0.99"
+    },
+    {
+        "id": 252,
+        "line_id": 32,
+        "start": 101.32510204081632,
+        "end": 101.49442176870748,
+        "text": "can",
+        "confidence": "0.99"
+    },
+    {
+        "id": 253,
+        "line_id": 32,
+        "start": 101.49925170068026,
+        "end": 101.7730612244898,
+        "text": "stop",
+        "confidence": "0.99"
+    },
+    {
+        "id": 254,
+        "line_id": 32,
+        "start": 101.81272108843537,
+        "end": 101.94721088435374,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 255,
+        "line_id": 32,
+        "start": 101.95204081632653,
+        "end": 102.46965986394558,
+        "text": "spread",
+        "confidence": "0.99"
+    },
+    {
+        "id": 256,
+        "line_id": 32,
+        "start": 102.50931972789115,
+        "end": 102.74829931972789,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 257,
+        "line_id": 32,
+        "start": 102.75312925170067,
+        "end": 102.95727891156463,
+        "text": "her",
+        "confidence": "0.99"
+    },
+    {
+        "id": 258,
+        "line_id": 32,
+        "start": 102.96210884353741,
+        "end": 103.46210884353741,
+        "text": "wings",
+        "confidence": "0.99"
+    },
+    {
+        "id": 259,
+        "line_id": 32,
+        "start": 103.46210884353741,
+        "end": 103.46210884353741,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 260,
+        "line_id": 33,
+        "start": 103.9373469387755,
+        "end": 103.9373469387755,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 261,
+        "line_id": 33,
+        "start": 103.9373469387755,
+        "end": 104.35047619047619,
+        "text": "She,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 262,
+        "line_id": 33,
+        "start": 104.35530612244898,
+        "end": 104.52462585034013,
+        "text": "Queen",
+        "confidence": "0.99"
+    },
+    {
+        "id": 263,
+        "line_id": 33,
+        "start": 104.56428571428572,
+        "end": 104.69877551020407,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 264,
+        "line_id": 33,
+        "start": 104.70360544217687,
+        "end": 104.87292517006803,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 265,
+        "line_id": 33,
+        "start": 104.87775510204081,
+        "end": 105.37775510204081,
+        "text": "Kings",
+        "confidence": "0.99"
+    },
+    {
+        "id": 266,
+        "line_id": 33,
+        "start": 105.37775510204081,
+        "end": 105.37775510204081,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 267,
+        "line_id": 34,
+        "start": 105.22605442176871,
+        "end": 105.22605442176871,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 268,
+        "line_id": 34,
+        "start": 105.22605442176871,
+        "end": 105.32571428571428,
+        "text": "A",
+        "confidence": "0.99"
+    },
+    {
+        "id": 269,
+        "line_id": 34,
+        "start": 105.33054421768708,
+        "end": 105.81333333333333,
+        "text": "broken",
+        "confidence": "0.99"
+    },
+    {
+        "id": 270,
+        "line_id": 34,
+        "start": 105.81816326530611,
+        "end": 106.26612244897959,
+        "text": "case",
+        "confidence": "0.99"
+    },
+    {
+        "id": 271,
+        "line_id": 34,
+        "start": 106.27095238095238,
+        "end": 106.57959183673469,
+        "text": "through",
+        "confidence": "0.99"
+    },
+    {
+        "id": 272,
+        "line_id": 34,
+        "start": 106.58442176870747,
+        "end": 106.75374149659864,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 273,
+        "line_id": 34,
+        "start": 106.75857142857143,
+        "end": 107.20653061224489,
+        "text": "key",
+        "confidence": "0.99"
+    },
+    {
+        "id": 274,
+        "line_id": 34,
+        "start": 107.21136054421768,
+        "end": 107.71136054421768,
+        "text": "(hey)",
+        "confidence": "0.99"
+    },
+    {
+        "id": 275,
+        "line_id": 34,
+        "start": 107.71136054421768,
+        "end": 107.71136054421768,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 276,
+        "line_id": 35,
+        "start": 107.69897959183673,
+        "end": 107.69897959183673,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 277,
+        "line_id": 35,
+        "start": 107.69897959183673,
+        "end": 108.00761904761904,
+        "text": "She",
+        "confidence": "0.99"
+    },
+    {
+        "id": 278,
+        "line_id": 35,
+        "start": 108.01244897959184,
+        "end": 108.21659863945578,
+        "text": "will",
+        "confidence": "0.99"
+    },
+    {
+        "id": 279,
+        "line_id": 35,
+        "start": 108.22142857142856,
+        "end": 108.4952380952381,
+        "text": "be",
+        "confidence": "0.99"
+    },
+    {
+        "id": 280,
+        "line_id": 35,
+        "start": 108.50006802721089,
+        "end": 108.66938775510204,
+        "text": "the",
+        "confidence": "0.99"
+    },
+    {
+        "id": 281,
+        "line_id": 35,
+        "start": 108.70904761904761,
+        "end": 109.15700680272109,
+        "text": "warrior",
+        "confidence": "0.99"
+    },
+    {
+        "id": 282,
+        "line_id": 35,
+        "start": 109.19666666666666,
+        "end": 109.54013605442177,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 283,
+        "line_id": 35,
+        "start": 109.57979591836734,
+        "end": 110.06258503401361,
+        "text": "North,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 284,
+        "line_id": 35,
+        "start": 110.06741496598639,
+        "end": 110.34122448979592,
+        "text": "South",
+        "confidence": "0.99"
+    },
+    {
+        "id": 285,
+        "line_id": 35,
+        "start": 110.3808843537415,
+        "end": 110.55020408163264,
+        "text": "and",
+        "confidence": "0.99"
+    },
+    {
+        "id": 286,
+        "line_id": 35,
+        "start": 110.58986394557823,
+        "end": 111.08986394557823,
+        "text": "Seas",
+        "confidence": "0.99"
+    },
+    {
+        "id": 287,
+        "line_id": 35,
+        "start": 111.08986394557823,
+        "end": 111.08986394557823,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 288,
+        "line_id": 36,
+        "start": 111.49544217687074,
+        "end": 111.49544217687074,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 289,
+        "line_id": 36,
+        "start": 111.49544217687074,
+        "end": 111.97823129251701,
+        "text": "La",
+        "confidence": "0.99"
+    },
+    {
+        "id": 290,
+        "line_id": 36,
+        "start": 111.98306122448979,
+        "end": 112.46585034013606,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 291,
+        "line_id": 36,
+        "start": 112.47068027210884,
+        "end": 113.44108843537414,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 292,
+        "line_id": 36,
+        "start": 113.48074829931973,
+        "end": 113.92870748299319,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 293,
+        "line_id": 36,
+        "start": 113.93353741496598,
+        "end": 114.41632653061224,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 294,
+        "line_id": 36,
+        "start": 114.45598639455781,
+        "end": 114.72979591836734,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 295,
+        "line_id": 36,
+        "start": 114.73462585034014,
+        "end": 116.01850340136055,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 296,
+        "line_id": 36,
+        "start": 116.02333333333333,
+        "end": 117.27238095238094,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 297,
+        "line_id": 36,
+        "start": 117.27721088435374,
+        "end": 118.21278911564626,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 298,
+        "line_id": 36,
+        "start": 118.25244897959183,
+        "end": 119.0138775510204,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 299,
+        "line_id": 36,
+        "start": 119.12319727891156,
+        "end": 120.05877551020407,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 300,
+        "line_id": 36,
+        "start": 120.06360544217686,
+        "end": 121.06884353741496,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 301,
+        "line_id": 36,
+        "start": 121.10850340136054,
+        "end": 121.59129251700679,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 302,
+        "line_id": 36,
+        "start": 121.59612244897959,
+        "end": 122.04408163265306,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 303,
+        "line_id": 36,
+        "start": 122.08374149659863,
+        "end": 122.81034013605442,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 304,
+        "line_id": 36,
+        "start": 122.98931972789116,
+        "end": 123.95972789115646,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 305,
+        "line_id": 36,
+        "start": 123.96455782312924,
+        "end": 127.19891156462585,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 306,
+        "line_id": 36,
+        "start": 127.27340136054421,
+        "end": 127.72136054421769,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 307,
+        "line_id": 36,
+        "start": 127.72619047619047,
+        "end": 128.661768707483,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 308,
+        "line_id": 36,
+        "start": 128.73625850340136,
+        "end": 129.23625850340136,
+        "text": "la",
+        "confidence": "0.99"
+    },
+    {
+        "id": 309,
+        "line_id": 36,
+        "start": 129.23625850340136,
+        "end": 129.23625850340136,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 310,
+        "line_id": 37,
+        "start": 129.29353741496598,
+        "end": 129.29353741496598,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 311,
+        "line_id": 37,
+        "start": 129.29353741496598,
+        "end": 129.9504761904762,
+        "text": "La,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 312,
+        "line_id": 37,
+        "start": 130.02496598639456,
+        "end": 130.36843537414967,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 313,
+        "line_id": 37,
+        "start": 130.40809523809523,
+        "end": 130.5425850340136,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 314,
+        "line_id": 37,
+        "start": 130.58224489795919,
+        "end": 131.34367346938774,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 315,
+        "line_id": 37,
+        "start": 131.8709523809524,
+        "end": 132.458231292517,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 316,
+        "line_id": 37,
+        "start": 132.4630612244898,
+        "end": 132.77170068027212,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 317,
+        "line_id": 37,
+        "start": 132.95068027210883,
+        "end": 133.4334693877551,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 318,
+        "line_id": 37,
+        "start": 133.4382993197279,
+        "end": 133.7121088435374,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 319,
+        "line_id": 37,
+        "start": 133.7169387755102,
+        "end": 133.88625850340136,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 320,
+        "line_id": 37,
+        "start": 133.89108843537414,
+        "end": 134.16489795918366,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 321,
+        "line_id": 37,
+        "start": 134.16972789115647,
+        "end": 134.33904761904762,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 322,
+        "line_id": 37,
+        "start": 135.07530612244898,
+        "end": 137.05578231292517,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 323,
+        "line_id": 37,
+        "start": 137.09544217687073,
+        "end": 137.2647619047619,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 324,
+        "line_id": 37,
+        "start": 137.72238095238095,
+        "end": 138.17034013605442,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 325,
+        "line_id": 37,
+        "start": 138.21,
+        "end": 140.05115646258503,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 326,
+        "line_id": 37,
+        "start": 140.09081632653061,
+        "end": 140.60843537414965,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 327,
+        "line_id": 37,
+        "start": 140.61326530612246,
+        "end": 141.51401360544216,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 328,
+        "line_id": 37,
+        "start": 141.51884353741497,
+        "end": 141.96680272108844,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 329,
+        "line_id": 37,
+        "start": 142.006462585034,
+        "end": 142.28027210884352,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 330,
+        "line_id": 37,
+        "start": 142.3895918367347,
+        "end": 142.8895918367347,
+        "text": "la,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 331,
+        "line_id": 37,
+        "start": 142.8895918367347,
+        "end": 142.8895918367347,
+        "text": "<EOL>",
+        "confidence": null
+    }
+]

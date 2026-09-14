@@ -190,7 +190,10 @@ class SegmentSectionsTests(unittest.TestCase):
             payload = segment_sections(paths, stems, timing)
 
             sections = payload["sections"]
-            self.assertEqual([s["function"] for s in sections], ["intro", "verse", "chorus"])
+            # v3.5 item 10 — function is displayed through
+            # section_vocabulary's Harmonix -> docs/segments-vocabulary.md
+            # mapping, not the raw allin1 token.
+            self.assertEqual([s["function"] for s in sections], ["Intro", "Verse", "Chorus"])
             self.assertIsNone(sections[0]["same_label_as"])
             self.assertIsNone(sections[1]["same_label_as"])
             self.assertIsNone(sections[2]["same_label_as"])
@@ -215,7 +218,7 @@ class SegmentSectionsTests(unittest.TestCase):
             payload = segment_sections(paths, stems, timing)
             sections = {s["section_id"]: s for s in payload["sections"]}
             ordered = payload["sections"]
-            self.assertEqual([s["function"] for s in ordered], ["verse", "chorus", "verse", "chorus"])
+            self.assertEqual([s["function"] for s in ordered], ["Verse", "Chorus", "Verse", "Chorus"])
             self.assertIsNone(ordered[0]["same_label_as"])
             self.assertIsNone(ordered[1]["same_label_as"])
             self.assertEqual(ordered[2]["same_label_as"], ordered[0]["section_id"])

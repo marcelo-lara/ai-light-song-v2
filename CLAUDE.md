@@ -3,10 +3,11 @@
 ## What this is
 
 The **analysis module** of a three-part stage-lighting system. It turns a song
-into structured musical analysis under `data/analysis/<Song - Artist>/`. A
-separate MCP server (another repo) projects small, token-budgeted views of that
-analysis to a model that authors the light show, targeting **moving-head
-fixtures**.
+into structured musical analysis under `data/analysis/{song}/`. The in-repo
+`mcp/` server projects small, token-budgeted views of that analysis to a model
+that authors the light show, targeting **moving-head fixtures**; a separate
+cue-authoring server (`ai-dmx-light-render`, another repo) turns those cues into
+DMX.
 
 This repo produces *concrete, reliable, precisely-timed musical facts a
 reasoning model can author a production-quality light show from.* That is the
@@ -26,7 +27,7 @@ Read the one that answers your question. Do not re-derive this from `src/`.
 | [`docs/product-definition.md`](docs/product-definition.md) | what the system is for, and what it is explicitly not for |
 | [`docs/analysis-definition.md`](docs/analysis-definition.md) | every stage, which phase it is in, **and how good it measures**. Read before trusting any output |
 | [`docs/ui-definition.md`](docs/ui-definition.md) | the debugger: reviewing findings, authoring human hints, and the two files it may write |
-| [`docs/mcp-definition.md`](docs/mcp-definition.md) | the in-repo `mcp/` song-comprehension server — purpose, hard boundary, tool surface. **Specified, not built** |
+| [`docs/mcp-definition.md`](docs/mcp-definition.md) | the in-repo `mcp/` song-comprehension server — purpose, hard boundary, tool surface. **Built and green** |
 
 Lookups, not reading: [`docs/reference/`](docs/reference/) —
 [`artifacts.md`](docs/reference/artifacts.md) (every `data/` file),
@@ -35,14 +36,18 @@ Lookups, not reading: [`docs/reference/`](docs/reference/) —
 [`cli.md`](docs/reference/cli.md) (`./analyze` flags),
 [`docker.md`](docs/reference/docker.md) (runtime and version pins),
 [`ui-regression.md`](docs/reference/ui-regression.md) (visual QA runbook),
+[`ui-development.md`](docs/reference/ui-development.md) (adding/removing a UI lane and other repetitive `ui/` changes),
 [`mcp-regression.md`](docs/reference/mcp-regression.md) (`smoke-test` and `full-regression` for the MCP server).
 
-Open release: [`docs/implementation-plan-v3.1.md`](docs/implementation-plan-v3.1.md) — build the `mcp/` module and the delivery surface it needs.
+No open release. The `mcp/` module and its delivery surface shipped in v3.1
+(see git history); the current contract with the downstream cue-authoring
+consumer is [`docs/reference/downstream-contract.md`](docs/reference/downstream-contract.md).
 
 Queues: [`docs/issues.md`](docs/issues.md) (open issues only),
 [`docs/experiments.md`](docs/experiments.md) (one entry per experiment),
-[`docs/archive/experiments.md`](docs/archive/experiments.md) (concluded ones —
-the only archive file that exists).
+[`docs/archive/experiments_promoted.md`](docs/archive/experiments_promoted.md)
+and [`docs/archive/experiments_discarded.md`](docs/archive/experiments_discarded.md)
+(what shipped, and what did not — TLDRs; the only archive files that exist).
 
 Measured evidence lives with the experiment: `experiments/*/README.md`. That is
 the best account of what actually works, and it does not go stale with age.
@@ -53,7 +58,7 @@ the best account of what actually works, and it does not go stale with age.
 | --- | --- | --- |
 | 1 **measure** | audio | facts that cannot be musically wrong — beat grid, loudness, spectra, chroma, stems |
 | 2 **interpret** | phase 1 + audio | claims — chords, key, sections and their names, drum events, genre |
-| 3 **relate** | phase 2 only, **never audio** | identity, repetition, transitions, composite gestures |
+| 3 **relate** | phases 1-2, **never audio** | identity, repetition, transitions, composite gestures |
 | 4 **publish** | phases 1-3 | the projected deliverables, and nothing else |
 
 The 1/2 line is **not** DSP vs. ML — it is *does this stage assert something
@@ -69,12 +74,16 @@ Full numbers, per-song breakdowns and root causes:
 | Area | State |
 | --- | --- |
 | Stems, beat *times*, FFT, loudness, HPCP, drums, energy | **trusted.** 7/7 human impacts within 0.25 s of an essentia beat |
+| Drum vocabulary (`drums.py`) | **bounded and written down.** Omnizart emits GM pitches 35/38/42 only; `velocity` is a constant 100 (not published); `confidence` is `null`; toms/congas fold into kick/snare — a *known* wrong label. v3.4 adds a `crash`/`hat` split on pitch 42 (drums-stem 6–16 kHz brilliance gate), nothing else in the taxonomy widened |
 | Chord labels | **informative, not settled.** Agreement with a second model: 1.00 / 0.69 / 0.51 / 0.38 across the gold songs |
 | Structure (`segmentation.py`) | **improved, not solved.** F1 0.67 vs the old segmenter's 0.29. `function_status: "unknown"` is set honestly, and `same_label_as` is label repetition, not identity |
 | Downbeats / bar numbers | **short of target — 0.226 F1** against a 0.50 goal. **Do not assume bar numbers are correct.** A `null` confidence is an honest "we don't know", not a guess |
 | Gestures (`gestures.py`) | **better than what it replaced**: 4/7 @±1.0 s vs 2/7. Per-primitive *precision* has never been audited — see `docs/issues.md` |
 | Section identity | **not shipped.** MFCC 0.73 is the number any attempt must beat |
 | Character blocks (texture, not arrangement) | **measured in `experiments/clap/`, not shipped** |
+| Arrangement state (`detect-arrangement-state`, phase 3) | informative on `_test_song` (F1 0.59 vs `sections.json` 0.00), unmeasured elsewhere; honest `null` confidence off the margin |
+| `vocals` channel (`playing[]` vs `vocals_phrase[]`) | **decided: `playing`'s `vocals` stays RMS-only** (false_vocal 0.0891 on `ayuni`) — gating it on whisperX lowered false_vocal but cost >0.01 frame_acc on `Cinderella`. Trust `vocals_phrase[]` (whisperX) for voice presence |
+| `mcp/` server + delivery surface | **built and green.** Three tools (`list_songs`, `get_song_overview`, `get_detail`); nine top-level files per song (`info`, `beats`, `hints`, `sections`, `song_event_timeline`, `genre`, `drum_events`, `loudness`, `arrangement_state`), each carrying a `field_sources` attribution header |
 
 ## Rules that are load-bearing
 
@@ -95,7 +104,7 @@ breaking it has already cost this repo something.
   [`docs/mcp-definition.md`](docs/mcp-definition.md). Improving an artifact
   nothing projects changes nothing about the show.
 - **Only top-level song JSON is exposable.** The MCP server reads
-  `data/analysis/<Song - Artist>/*.json` and nothing else. `artifacts/` and
+  `data/analysis/{song}/*.json` and nothing else. `artifacts/` and
   `reference/` are readable by **the analyzer and the debugger UI only** — they
   are the raw material phase 4 uses to build the top-level files, never a
   delivery surface. A signal reaches the model only by being published at top
@@ -121,14 +130,19 @@ breaking it has already cost this repo something.
   carries how it was arrived at.
 - **Docs hold current material only.** Delete a doc in the change that makes it
   stale — git history is the archive. No numbered story files, no archive folder
-  (`docs/archive/experiments.md` is the sole exception). If intent and behaviour
+  (`docs/archive/experiments_promoted.md` and
+  `docs/archive/experiments_discarded.md` are the sole exception). If intent and behaviour
   disagree, that is a defect to fix now, not a precedence rule to invoke.
 - Clean up temporary scripts; use the session scratchpad, not the repo.
 
 ## Running things
 
 ```bash
-docker compose build
+docker compose build app mcp ui   # `build` alone builds only `ui`; the rest are on-demand
+
+# `docker compose up` (no service) starts ONLY the `ui` debugger. `app`, `mcp`
+# and `test` carry the `ondemand` profile — `docker compose run` still starts
+# them, or `docker compose --profile ondemand up` brings the whole set up.
 
 # full pipeline + validation report for one song
 docker compose run --rm app ./analyze --song "/data/songs/YOUR_SONG.mp3"
@@ -141,6 +155,10 @@ docker compose run --rm app ./analyze --song "/data/songs/YOUR_SONG.mp3" --stage
 
 docker compose run --rm test     # tests
 docker compose up ui             # debugger at http://localhost:9090
+
+# song-comprehension MCP server — spawned by its client over stdio, -T is mandatory
+docker compose run --rm -T mcp
+docker compose run --rm --no-deps -T --entrypoint python mcp mcp/tests/run.py smoke-test
 ```
 
 Stage names come from `STAGE_PIPELINE_IDS` in
@@ -153,9 +171,9 @@ any prose. Flags: [`docs/reference/cli.md`](docs/reference/cli.md).
 | --- | --- |
 | `src/analyzer/pipeline.py` | stage registry and orchestration — start here for execution order |
 | `src/analyzer/stages/` | one file per stage; each carries its measured numbers in its own docstring |
-| `data/analysis/<Song - Artist>/*.json` | the delivery surface — the only files the MCP server may read |
-| `data/analysis/<Song - Artist>/artifacts/` | intermediates. Analyzer and debugger UI only |
-| `data/analysis/<Song - Artist>/reference/` | human and external ground truth. Read-only to the pipeline; never exposed |
+| `data/analysis/{song}/*.json` | the delivery surface — the only files the MCP server may read |
+| `data/analysis/{song}/artifacts/` | intermediates. Analyzer and debugger UI only |
+| `data/analysis/{song}/reference/` | human and external ground truth. Read-only to the pipeline; never exposed |
 | `ui/` | the debugger (Preact + TS + Vite). Reads anything under `data/`; writes only `reference/human/` |
 | `mcp/` | the song-comprehension MCP server. Reads top-level song JSON only — never `artifacts/` or `reference/` |
 | `experiments/` | the sandbox. `src/` never imports from it |

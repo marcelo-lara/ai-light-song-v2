@@ -12,6 +12,8 @@
 import type {
   EventTimeline,
   HumanHintsFile,
+  HumanSegmentsFile,
+  MoisesSegmentsFile,
   HarmonicLayer,
   SectionRow,
   SegmentationSection,
@@ -22,8 +24,14 @@ import type {
   MoisesLyricsFile,
   VocalTranscriptionFile,
   VocalPhrasesFile,
-  ReactiveBandsFile,
-  GridFile,
+  ArrangementStateFile,
+  TextureNoveltyFile,
+  PhrasePeriodicityFile,
+  StructuralVsMicroFile,
+  VocalVoicenessFile,
+  SvdTaggerFile,
+  WhisperxVadFile,
+  VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
 
 import { romanNumeral } from "./romanNumeral";
@@ -42,6 +50,14 @@ export interface SparseBlock {
    * label differently from one still needing a decision.
    */
   tintId?: string;
+  /**
+   * v3.4 item 5 — the Moises lyric-token id this block represents, when the
+   * block is a validatable **word** token (not a `<SOL>`/`<EOL>` marker). The
+   * Moises Lyrics events panel renders a ✔ validation button only for a block
+   * carrying both this and `lyricValidatable: true`.
+   */
+  lyricTokenId?: number;
+  lyricValidatable?: boolean;
   laneLabel: string;
   caption: string;
   reference: string;
@@ -83,7 +99,99 @@ export function humanHintsContent(file: HumanHintsFile | null): SparseBlock[] {
     reference: h.id,
     detail: h.lighting_hint || "-",
     summary: h.summary || "Reference hint window from human annotation.",
+    // The lane's own "humanHints" amber tint applies for a "hint" (or absent)
+    // type; a "review" hint gets a distinct tint, and a "vocal" hint (a voice
+    // sounds continuously across the span) gets its own, so each reads apart
+    // on the timeline.
+    ...(h.type === "review" ? { tintId: "humanHintsReview" } : {}),
+    ...(h.type === "vocal" ? { tintId: "humanHintsVocal" } : {}),
     raw: h,
+  }));
+}
+
+/**
+ * Human Sections — the operator's hand-authored segmentation
+ * (reference/human/segments.json). `label` is a fixed value, optional (one
+ * of SEGMENT_FUNCTION_NAMES, never free text) — when set it's the block's
+ * identity and doubles as the block label, falling back to the synthesized
+ * id when unset; `description` is optional free text, surfaced as the block
+ * summary when present. The block id is synthesized from array position.
+ */
+export function humanSectionsContent(file: HumanSegmentsFile | null): SparseBlock[] {
+  return (file ?? []).map((s, i) => {
+    const id = `segment-${String(i + 1).padStart(3, "0")}`;
+    const tags = [
+      s.energy != null ? `E${s.energy}` : null,
+      s.tension != null ? `T${s.tension}` : null,
+    ].filter((t): t is string => Boolean(t));
+    return {
+      id,
+      start_s: s.start,
+      end_s: s.end,
+      label: s.label || id,
+      laneLabel: "Human Sections",
+      caption: tags.length
+        ? `${formatRange(s.start, s.end)} · ${tags.join(" ")}`
+        : formatRange(s.start, s.end),
+      reference: id,
+      detail: "-",
+      summary: s.description?.trim() || "Hand-authored section segmentation.",
+      raw: s,
+    };
+  });
+}
+
+/**
+ * Moises Sections — Moises.ai's reference segmentation
+ * (reference/moises/segments.json). Same bare-array shape as Human Sections
+ * but read-only and carries no confidence field of its own — see
+ * docs/reference/analysis.segments.md for the fusion precedence this lane
+ * exists to let the operator audit visually.
+ */
+export function moisesSectionsContent(file: MoisesSegmentsFile | null): SparseBlock[] {
+  return (file ?? []).map((s, i) => {
+    const id = `moises-segment-${String(i + 1).padStart(3, "0")}`;
+    return {
+      id,
+      start_s: s.start,
+      end_s: s.end,
+      label: s.label || id,
+      laneLabel: "Moises Sections",
+      caption: formatRange(s.start, s.end),
+      reference: id,
+      detail: "-",
+      summary: s.description?.trim() || "Moises.ai reference segmentation.",
+      raw: s,
+    };
+  });
+}
+
+/**
+ * allin1 Segmentation — the raw, pre-fusion analyzer output
+ * (artifacts/section_segmentation/sections.json), before any
+ * reference/human or reference/moises override is applied to the published
+ * `sections.json`. Exists so the operator can compare all three sources
+ * (Human Sections, Moises Sections, this lane) against the fused Sections
+ * lane at a glance — see docs/reference/analysis.segments.md.
+ */
+export function allin1SectionsContent(
+  sections: readonly SegmentationSection[],
+): SparseBlock[] {
+  return sections.map((s, i) => ({
+    id: s.section_id ?? `allin1-section-${String(i + 1).padStart(3, "0")}`,
+    start_s: s.start,
+    end_s: s.end,
+    label: s.function || "-",
+    laneLabel: "allin1 Segmentation",
+    caption: `${formatRange(s.start, s.end)}${
+      s.confidence != null ? ` · conf ${round(s.confidence)}` : ""
+    }`,
+    reference: s.section_id ?? "-",
+    detail: s.same_label_as
+      ? `same label as ${s.same_label_as}`
+      : (s.function_status ?? "-"),
+    summary: "Our own segmentation (allin1), before any human/moises override.",
+    raw: s,
   }));
 }
 
@@ -260,8 +368,16 @@ export function vocalTranscriptionContent(
  * glance at the lane shows where the transcription is shaky (dense or effected
  * vocals) without reading a single number.
  */
-function moisesTintId(kind: string, confidence: number | null): string {
+function moisesTintId(
+  kind: string,
+  confidence: number | null,
+  validated: boolean,
+): string {
   if (kind !== "word") return "moisesLyricsMarker";
+  // v3.4 item 5 — a hand-verified token reads as validated at a glance, never
+  // as one of Moises' own confidence buckets (in particular not the `≥ 0.7`
+  // "High" bucket alongside Moises' 0.99s).
+  if (validated) return "moisesLyricsValidated";
   if (confidence == null) return "moisesLyricsUnscored";
   if (confidence >= 0.7) return "moisesLyricsHigh";
   if (confidence >= 0.4) return "moisesLyricsMid";
@@ -274,22 +390,42 @@ function moisesTintId(kind: string, confidence: number | null): string {
  * time order. It sits directly under Human Hints so a hand-marked window
  * ("Breath", "Vocal outro") can be checked against exactly which words are
  * being sung when. Blocks are tinted by per-word confidence.
+ *
+ * v3.4 item 5 — `validatedIds` is the read-time overlay from
+ * `reference/human/lyric_validations.json`: a word token whose id is listed is
+ * shown at confidence `1` (a value Moises never emits) with the distinct
+ * `moisesLyricsValidated` tint. The source file is untouched. Word tokens
+ * carry `lyricTokenId` + `lyricValidatable: true` so the events panel can draw
+ * a ✔ button for them; markers get neither.
  */
-export function moisesLyricsContent(file: MoisesLyricsFile | null): SparseBlock[] {
+export function moisesLyricsContent(
+  file: MoisesLyricsFile | null,
+  validatedIds?: ReadonlySet<number> | null,
+): SparseBlock[] {
   return (file?.tokens ?? []).map((t) => {
     const text = t.text || "♪";
     const marker = t.kind !== "word";
+    const tokenId = Number(t.id);
+    const hasId = Number.isInteger(tokenId) && Number.isFinite(tokenId);
+    const validated = !marker && hasId && !!validatedIds?.has(tokenId);
+    const shownConf = validated ? 1 : t.confidence;
     return {
       id: t.id,
       start_s: t.start_s,
       end_s: t.end_s,
       label: text.length > 24 ? `${text.slice(0, 23)}…` : text,
-      wideLabel: t.confidence != null ? `${text} · ${round(t.confidence)}` : text,
-      tintId: moisesTintId(t.kind, t.confidence),
+      wideLabel:
+        shownConf != null
+          ? `${text} · ${round(shownConf)}${validated ? " · validated" : ""}`
+          : text,
+      tintId: moisesTintId(t.kind, t.confidence, validated),
+      ...(marker || !hasId
+        ? {}
+        : { lyricTokenId: tokenId, lyricValidatable: true }),
       laneLabel: "Moises Lyrics",
       caption: `${formatRange(t.start_s, t.end_s)}${
-        t.confidence != null ? ` · conf ${round(t.confidence)}` : ""
-      }`,
+        shownConf != null ? ` · conf ${round(shownConf)}` : ""
+      }${validated ? " · human-validated" : ""}`,
       reference: t.id,
       detail: marker
         ? t.kind === "sol"
@@ -300,11 +436,13 @@ export function moisesLyricsContent(file: MoisesLyricsFile | null): SparseBlock[
         ? `Moises line marker \`${t.text}\` — ${
             t.kind === "sol" ? "start" : "end"
           } of line ${t.line_id}. External reference, read-only.`
-        : `Moises sung word "${t.text}" (line ${t.line_id})${
-            t.confidence != null
-              ? `, transcription confidence ${round(t.confidence)}`
-              : ", no confidence reported"
-          }. External reference — read-only ground truth, not a pipeline output.`,
+        : validated
+          ? `Moises sung word "${t.text}" (line ${t.line_id}) — timing hand-verified by the operator, shown at confidence 1. Overlay from reference/human/lyric_validations.json; reference/moises/lyrics.json is untouched.`
+          : `Moises sung word "${t.text}" (line ${t.line_id})${
+              t.confidence != null
+                ? `, transcription confidence ${round(t.confidence)}`
+                : ", no confidence reported"
+            }. External reference — read-only ground truth, not a pipeline output.`,
       raw: t.raw,
     };
   });
@@ -327,31 +465,44 @@ export function sectionsContent(
   );
   return rows.map((s, i) => {
     const seg = bySectionId.get(s.section_id);
+    // v3.4 item 3 — the phase-3 energy contest flags (never flips) a `chorus`
+    // that is quieter/thinner than the following section. The flag lands on the
+    // top-level row's `function_status`, so it wins over the artifact's value.
+    const contested = s.function_status === "contested";
+    const functionStatus = contested
+      ? "contested"
+      : (seg?.function_status ?? s.function_status);
     return {
       id: s.section_id ?? `section-${String(i + 1).padStart(3, "0")}`,
       start_s: s.start,
       end_s: s.end,
       label: s.label,
+      ...(contested ? { tintId: "sectionsContested" } : {}),
       laneLabel: "Sections",
       caption: `${formatRange(s.start, s.end)}${
         s.confidence != null ? ` · conf ${round(s.confidence)}` : ""
-      }`,
+      }${contested ? ` · contested (${s.contested_by ?? "energy"})` : ""}`,
       reference: s.section_id ?? "-",
-      detail: seg?.same_label_as
-        ? `same label as ${seg.same_label_as}`
-        : (seg?.function_status ?? "-"),
+      detail: contested
+        ? `function_status: contested · contested_by: ${s.contested_by ?? "energy"}`
+        : seg?.same_label_as
+          ? `same label as ${seg.same_label_as}`
+          : (seg?.function_status ?? "-"),
       summary:
         s.description ||
         "Section navigation stays browser-local and moves only the shared playback cursor.",
-      raw: seg
-        ? {
-            ...s,
-            function: seg.function,
-            function_confidence: seg.function_confidence,
-            function_status: seg.function_status,
-            same_label_as: seg.same_label_as,
-          }
-        : s,
+      raw: {
+        ...s,
+        ...(seg
+          ? {
+              function: seg.function,
+              function_confidence: seg.function_confidence,
+              same_label_as: seg.same_label_as,
+            }
+          : {}),
+        function_status: functionStatus,
+        ...(contested ? { contested_by: s.contested_by ?? "energy" } : {}),
+      },
     };
   });
 }
@@ -412,27 +563,465 @@ export function vocalPhrasesContent(file: VocalPhrasesFile | null): SparseBlock[
 }
 
 /**
- * Discrete accents from `experiments/reactive_bands` — locally auto-gained
- * band-power spikes, budget-matched and threshold-calibrated (see the
- * experiment's README, which reports the local-normalisation ablation coming
- * back *against* the headline hypothesis once measured fairly). The dense
- * per-beat bass/mid/treb stream this experiment also produces is not
- * rendered here — see the README.
+ * Who-is-playing state-change blocks from the top-level published
+ * `arrangement_state.json` (the `detect-arrangement-state` stage — no audio,
+ * no model, derived from the published per-stem RMS series). Auditioned
+ * against Human Hints directly above it (this lane sits below Moises Lyrics,
+ * above Drop Proposals).
+ *
+ * `label` is kept short for a narrow block: the change itself when there is
+ * one (`+drums`, `-bass -vocals`, space-joined tokens for multiple stems), or
+ * initials of the stems currently playing (`b+d+h+v`) for the leading block,
+ * which has no prior state to diff against.
  */
-export function reactiveBandsContent(file: ReactiveBandsFile | null): SparseBlock[] {
-  return (file?.accents ?? []).map((a, i) => ({
-    id: `reactive-accent-${i + 1}`,
-    start_s: a.time_s,
-    end_s: a.time_s + 0.05,
-    label: `${a.band} ${round(a.strength, 1)}`,
-    laneLabel: "Reactive Bands",
-    caption: `${formatRange(a.time_s, a.time_s)} · ${a.band} band, strength ${round(a.strength, 2)}${
-      a.bar != null ? ` · bar ${a.bar} beat ${a.beat}` : ""
+export function arrangementStateContent(file: ArrangementStateFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => {
+    const changeTokens = [
+      ...b.entered.map((s) => `+${s}`),
+      ...b.left.map((s) => `-${s}`),
+    ];
+    const isInitial = b.entered.length === 0 && b.left.length === 0;
+    const label = changeTokens.length > 0
+      ? changeTokens.join(" ")
+      : isInitial
+        ? b.playing.map((s) => s[0]).join("+") || "silence"
+        : "no change";
+    const marginClause = b.margin_db != null ? ` · margin ${round(b.margin_db, 1)}dB` : "";
+    const playingList = b.playing.length > 0 ? b.playing.join(", ") : "nothing";
+    const changeSummary = changeTokens.length > 0
+      ? `${changeTokens.join(" ")} at this block's start.`
+      : isInitial
+        ? "the leading span, before the first detected change."
+        : "no change at this block's start.";
+    return {
+      id: `arrangement-state-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label,
+      ...(b.playing.length <= 1 ? { tintId: "arrangementStateSparse" } : {}),
+      wideLabel: `${changeTokens.length > 0 ? `${changeTokens.join(" ")} · ` : ""}${playingList}${marginClause}`,
+      laneLabel: "Arrangement State",
+      caption: `${formatRange(b.start_s, b.end_s)} · playing: ${playingList}${
+        b.margin_db != null ? marginClause : " · initial state"
+      }`,
+      reference: `arrangement-state-${i + 1}`,
+      detail: `playing: ${playingList}`,
+      summary: `arrangement_state.json — who is playing over this span, derived from the published per-stem RMS (no model). ${changeSummary}`,
+      raw: b,
+    };
+  });
+}
+
+/**
+ * Segments between self-similarity-novelty texture boundaries from
+ * `experiments/texture_novelty` (cosine SSM + Foote checkerboard, 1.0 s
+ * half-window). A proposal to audition against Human Hints directly above it —
+ * the experiment FAILED its kill condition and this lane is kept for one
+ * operator review pass only.
+ */
+export function textureNoveltyContent(file: TextureNoveltyFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => ({
+    id: `texture-novelty-${i + 1}`,
+    start_s: b.start_s,
+    end_s: b.end_s,
+    label: "",
+    wideLabel:
+      b.edge_strength == null
+        ? "first segment"
+        : `edge ${round(b.edge_strength, 2)}`,
+    laneLabel: "2. Texture Novelty",
+    caption: `${formatRange(b.start_s, b.end_s)} · ${
+      b.edge_strength == null
+        ? "first segment (no left edge)"
+        : `left-edge novelty ${round(b.edge_strength, 2)}`
     }`,
-    reference: `reactive-accent-${i + 1}`,
-    detail: a.band,
-    summary: `experiments/reactive_bands — an instantaneous ${a.band}-band power spike above its own damped (locally auto-gained) twin.`,
-    raw: a,
+    reference: `texture-novelty-${i + 1}`,
+    detail: b.edge_strength == null ? "initial segment" : `edge ${round(b.edge_strength, 3)}`,
+    summary:
+      "experiments/texture_novelty — a texture segment bounded by cosine self-similarity novelty peaks (feature set 1, raw 7-band mix). Failed its kill condition; kept for one review pass.",
+    raw: b,
+  }));
+}
+
+/**
+ * Per-block repetition regime + period from `experiments/phrase_periodicity`
+ * (z-normalised per-bar 16-slot autocorrelation, period only — never phase). A
+ * proposal to audition against Human Hints directly above it. `period` is null
+ * when no repeat structure was detected — printed as "no phrase structure
+ * detected", never a fabricated number.
+ */
+export function phrasePeriodicityContent(file: PhrasePeriodicityFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => {
+    const periodText =
+      b.period == null
+        ? "no phrase structure detected"
+        : `repeat unit ${b.period} bar`;
+    return {
+      id: `phrase-periodicity-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: "",
+      wideLabel: b.regime,
+      laneLabel: "3. Phrase Periodicity",
+      caption: `${formatRange(b.start_s, b.end_s)} · ${b.regime} · ${periodText}`,
+      reference: `phrase-periodicity-${i + 1}`,
+      detail: b.title ? `${b.title} · ${b.n_bars} bar${b.n_bars === 1 ? "" : "s"}` : "",
+      summary: `experiments/phrase_periodicity — ${b.regime}; ${periodText}. Regime needs a block ≥ 2 bars; shorter blocks read through-composed (known limit).`,
+      raw: b,
+    };
+  });
+}
+
+/**
+ * Per-block `structural` | `micro` split from `experiments/structural_vs_micro`:
+ * a 4-bar phrase grid is fit to items 6+7's boundary edges, and each operator
+ * block is labelled by how well its edges lock to it, carrying `grid_fit_bars`
+ * (the fit error in bars) so a reviewer sees how marginal the call was. `micro`
+ * blocks get a distinct tint (`structuralVsMicroMicro`). NOT a precision filter
+ * for Texture Novelty — a two-class split the pipeline cannot otherwise express.
+ * FAILED its kill condition; lane kept for one review pass.
+ */
+export function structuralVsMicroContent(
+  file: StructuralVsMicroFile | null,
+): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => {
+    const fitText =
+      b.grid_fit_bars == null
+        ? "grid fit unknown"
+        : `grid fit ${b.grid_fit_bars.toFixed(2)} bars`;
+    return {
+      id: `structural-vs-micro-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: "",
+      wideLabel: b.kind,
+      ...(b.kind === "micro" ? { tintId: "structuralVsMicroMicro" } : {}),
+      laneLabel: "4. Structural vs Micro",
+      caption: `${formatRange(b.start_s, b.end_s)} · ${b.kind} · ${fitText}`,
+      reference: `structural-vs-micro-${i + 1}`,
+      detail: b.title || "",
+      summary: `experiments/structural_vs_micro — ${b.kind}; ${fitText}. A structural edge locks to the 4-bar phrase grid; a micro cue lives inside a phrase. Failed its kill condition (did not beat a duration-only baseline).`,
+      raw: b,
+    };
+  });
+}
+
+/**
+ * Which intensity bucket a voiceness frame falls in — the SparseLane block
+ * primitive has no continuous-curve renderer, so the "dense curve" this lane
+ * needs is approximated by merging consecutive same-bucket frames (at the
+ * file's native 50ms grid) into a run block, tinted on a single-hue ramp
+ * (`sparseTints.ts`, hue 260) so a glance across the lane reads as a curve's
+ * shape rather than five discrete colours. Bucket edges are round numbers,
+ * not fit to any ground truth (none exists yet — see the experiment README).
+ */
+type VoicenessBucket = "veryLow" | "low" | "mid" | "high" | "veryHigh";
+
+function voicenessBucket(v: number): VoicenessBucket {
+  if (v >= 0.8) return "veryHigh";
+  if (v >= 0.6) return "high";
+  if (v >= 0.4) return "mid";
+  if (v >= 0.2) return "low";
+  return "veryLow";
+}
+
+const VOICENESS_BUCKET_TINT: Record<VoicenessBucket, string> = {
+  veryLow: "vocalVoicenessVeryLow",
+  low: "vocalVoicenessLow",
+  mid: "vocalVoicenessMid",
+  high: "vocalVoicenessHigh",
+  veryHigh: "vocalVoicenessVeryHigh",
+};
+
+/**
+ * Per-frame voiceness curve (vibrato + portamento + sibilance, noisy-OR
+ * combined — `experiments/vocal_voiceness/model.py`) plus the bridged
+ * `vocal_phrase` spans, from the shared `voiceness_common.schema` proposal.
+ * A proposal to audition against Human Hints, not ground truth — kill
+ * condition unevaluable until item 1's `type: "vocal"` ground truth exists.
+ *
+ * Consecutive frames sharing an intensity bucket are merged into one run
+ * block (see `voicenessBucket`) so the curve doesn't render one block per
+ * 50ms frame; `vocal_phrase` spans are appended as their own, differently
+ * tinted blocks so SparseLane's row-packing stacks them below the curve.
+ */
+export function vocalVoicenessContent(file: VocalVoicenessFile | null): SparseBlock[] {
+  const out: SparseBlock[] = [];
+  const frames = file?.frames ?? [];
+  const intervalS = (file?.interval_ms ?? 50) / 1000;
+
+  let runStart: number | null = null;
+  let runBucket: VoicenessBucket | null = null;
+  let runSum = 0;
+  let runN = 0;
+  let runIdx = 0;
+  const flush = (endTime: number) => {
+    if (runStart == null || runBucket == null || runN === 0) return;
+    const avg = runSum / runN;
+    runIdx += 1;
+    out.push({
+      id: `voiceness-${runIdx}`,
+      start_s: runStart,
+      end_s: endTime,
+      label: "",
+      wideLabel: `voiceness ${avg.toFixed(2)}`,
+      tintId: VOICENESS_BUCKET_TINT[runBucket],
+      laneLabel: "4. Vocal Voiceness",
+      caption: `${formatRange(runStart, endTime)} · avg voiceness ${avg.toFixed(2)}`,
+      reference: `voiceness-${runIdx}`,
+      detail: `${runN} frame${runN === 1 ? "" : "s"}`,
+      summary: `experiments/vocal_voiceness — per-frame voiceness averaging ${avg.toFixed(2)} across this run (vibrato+portamento+sibilance, noisy-OR combined).`,
+      raw: { avg_voiceness: avg, n_frames: runN },
+    });
+  };
+
+  for (const f of frames) {
+    const bucket = voicenessBucket(f.voiceness);
+    if (runBucket !== bucket) {
+      flush(f.time_s);
+      runStart = f.time_s;
+      runBucket = bucket;
+      runSum = 0;
+      runN = 0;
+    }
+    runSum += f.voiceness;
+    runN += 1;
+  }
+  if (frames.length > 0) {
+    flush(frames[frames.length - 1]!.time_s + intervalS);
+  }
+
+  (file?.vocal_phrase ?? []).forEach((p, i) => {
+    out.push({
+      id: `voiceness-phrase-${i + 1}`,
+      start_s: p.start_s,
+      end_s: p.end_s,
+      label: "phrase",
+      wideLabel: `bridged phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
+      tintId: "vocalVoicenessPhrase",
+      laneLabel: "4. Vocal Voiceness",
+      caption: `${formatRange(p.start_s, p.end_s)} · bridged phrase`,
+      reference: `voiceness-phrase-${i + 1}`,
+      detail: "vocal_phrase",
+      summary:
+        "experiments/vocal_voiceness — a vocal_phrase span derived with the pitch-continuity bridge over vocal_phrases' known sustained_notes gap.",
+      raw: p,
+    });
+  });
+
+  out.sort((a, b) => a.start_s - b.start_s);
+  return out;
+}
+
+const SVD_TAGGER_STEM_BUCKET_TINT: Record<VoicenessBucket, string> = {
+  veryLow: "svdTaggerStemVeryLow",
+  low: "svdTaggerStemLow",
+  mid: "svdTaggerStemMid",
+  high: "svdTaggerStemHigh",
+  veryHigh: "svdTaggerStemVeryHigh",
+};
+
+const SVD_TAGGER_MIX_BUCKET_TINT: Record<VoicenessBucket, string> = {
+  veryLow: "svdTaggerMixVeryLow",
+  low: "svdTaggerMixLow",
+  mid: "svdTaggerMixMid",
+  high: "svdTaggerMixHigh",
+  veryHigh: "svdTaggerMixVeryHigh",
+};
+
+/**
+ * PANNs `Singing`-class curve, run on BOTH the vocal stem and the mix
+ * (`experiments/svd_tagger/model.py`) — the only voiceness candidate (items
+ * 4-7) that fuses two producers into one file, so every row from
+ * `SvdTaggerFile` carries its own `channel: "stem" | "mix"`.
+ *
+ * **Both channels render as two separate curves in this ONE lane — never a
+ * toggle.** This repo's standing rule ("every artifact gets its own visible
+ * lane"/"no hiding a signal behind a selector") rules out a channel picker;
+ * each channel is bucket-run-merged independently (same technique as
+ * `vocalVoicenessContent`) and both sets of blocks are
+ * appended to the same lane — SparseLane's own row-packing stacks the two
+ * time-overlapping curves into separate rows automatically, exactly as it
+ * already does for a voiceness curve plus its overlaid `vocal_phrase` spans.
+ */
+export function svdTaggerContent(file: SvdTaggerFile | null): SparseBlock[] {
+  const out: SparseBlock[] = [];
+  const intervalS = (file?.interval_ms ?? 1000) / 1000;
+
+  for (const channel of ["stem", "mix"] as const) {
+    const frames = (file?.frames ?? []).filter((f) => f.channel === channel);
+    const tint = channel === "stem" ? SVD_TAGGER_STEM_BUCKET_TINT : SVD_TAGGER_MIX_BUCKET_TINT;
+    const phraseTint = channel === "stem" ? "svdTaggerStemPhrase" : "svdTaggerMixPhrase";
+    const laneLabel = `6. SVD Tagger (${channel})`;
+
+    let runStart: number | null = null;
+    let runBucket: VoicenessBucket | null = null;
+    let runSum = 0;
+    let runN = 0;
+    let runIdx = 0;
+    const flush = (endTime: number) => {
+      if (runStart == null || runBucket == null || runN === 0) return;
+      const avg = runSum / runN;
+      runIdx += 1;
+      out.push({
+        id: `svd-tagger-${channel}-${runIdx}`,
+        start_s: runStart,
+        end_s: endTime,
+        label: "",
+        wideLabel: `${channel} voiceness ${avg.toFixed(2)}`,
+        tintId: tint[runBucket],
+        laneLabel,
+        caption: `${formatRange(runStart, endTime)} · ${channel} avg voiceness ${avg.toFixed(2)}`,
+        reference: `svd-tagger-${channel}-${runIdx}`,
+        detail: `${runN} window${runN === 1 ? "" : "s"}`,
+        summary: `experiments/svd_tagger — PANNs "Singing" class, ${channel} channel, averaging ${avg.toFixed(2)} across this run.`,
+        raw: { channel, avg_voiceness: avg, n_frames: runN },
+      });
+    };
+
+    for (const f of frames) {
+      const bucket = voicenessBucket(f.voiceness);
+      if (runBucket !== bucket) {
+        flush(f.time_s);
+        runStart = f.time_s;
+        runBucket = bucket;
+        runSum = 0;
+        runN = 0;
+      }
+      runSum += f.voiceness;
+      runN += 1;
+    }
+    if (frames.length > 0) {
+      flush(frames[frames.length - 1]!.time_s + intervalS);
+    }
+
+    (file?.vocal_phrase ?? [])
+      .filter((p) => p.channel === channel)
+      .forEach((p, i) => {
+        out.push({
+          id: `svd-tagger-${channel}-phrase-${i + 1}`,
+          start_s: p.start_s,
+          end_s: p.end_s,
+          label: "phrase",
+          wideLabel: `${channel} phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
+          tintId: phraseTint,
+          laneLabel,
+          caption: `${formatRange(p.start_s, p.end_s)} · ${channel} phrase (not boundary-scored)`,
+          reference: `svd-tagger-${channel}-phrase-${i + 1}`,
+          detail: "vocal_phrase",
+          summary: `experiments/svd_tagger — a vocal_phrase span thresholded from the PANNs ${channel}-channel differential. Reported for review only; never scored on boundary F1 (5s window is too coarse to time an edge).`,
+          raw: p,
+        });
+      });
+  }
+
+  out.sort((a, b) => a.start_s - b.start_s);
+  return out;
+}
+
+const WHISPERX_VAD_BUCKET_TINT: Record<VoicenessBucket, string> = {
+  veryLow: "whisperxVadVeryLow",
+  low: "whisperxVadLow",
+  mid: "whisperxVadMid",
+  high: "whisperxVadHigh",
+  veryHigh: "whisperxVadVeryHigh",
+};
+
+/**
+ * whisperX's VAD front-end (speech-domain, `pyannote.audio` segmentation
+ * model bundled locally — no gated checkpoint, no live token at analysis
+ * time) over the vocal stem, from the same shared `voiceness_common.schema`
+ * proposal shape as `vocalVoicenessContent`. Unlike that one, this candidate's `vocal_phrase` spans carry real sub-second
+ * onsets (a hysteresis binarizer over the segmentation model's own ~17ms
+ * frames), not a clip-window approximation — see `experiments/whisperx_vad/
+ * model.py`. Diarization was not attempted (no HF_TOKEN in this
+ * environment); this file carries no diarization field at all.
+ */
+export function whisperxVadContent(file: WhisperxVadFile | null): SparseBlock[] {
+  const out: SparseBlock[] = [];
+  const frames = file?.frames ?? [];
+  const intervalS = (file?.interval_ms ?? 50) / 1000;
+
+  let runStart: number | null = null;
+  let runBucket: VoicenessBucket | null = null;
+  let runSum = 0;
+  let runN = 0;
+  let runIdx = 0;
+  const flush = (endTime: number) => {
+    if (runStart == null || runBucket == null || runN === 0) return;
+    const avg = runSum / runN;
+    runIdx += 1;
+    out.push({
+      id: `whisperx-vad-${runIdx}`,
+      start_s: runStart,
+      end_s: endTime,
+      label: "",
+      wideLabel: `voiceness ${avg.toFixed(2)}`,
+      tintId: WHISPERX_VAD_BUCKET_TINT[runBucket],
+      laneLabel: "7. WhisperX VAD",
+      caption: `${formatRange(runStart, endTime)} · avg voiceness ${avg.toFixed(2)}`,
+      reference: `whisperx-vad-${runIdx}`,
+      detail: `${runN} frame${runN === 1 ? "" : "s"}`,
+      summary: `experiments/whisperx_vad — whisperX VAD voiceness averaging ${avg.toFixed(2)} across this run.`,
+      raw: { avg_voiceness: avg, n_frames: runN },
+    });
+  };
+
+  for (const f of frames) {
+    const bucket = voicenessBucket(f.voiceness);
+    if (runBucket !== bucket) {
+      flush(f.time_s);
+      runStart = f.time_s;
+      runBucket = bucket;
+      runSum = 0;
+      runN = 0;
+    }
+    runSum += f.voiceness;
+    runN += 1;
+  }
+  if (frames.length > 0) {
+    flush(frames[frames.length - 1]!.time_s + intervalS);
+  }
+
+  (file?.vocal_phrase ?? []).forEach((p, i) => {
+    out.push({
+      id: `whisperx-vad-phrase-${i + 1}`,
+      start_s: p.start_s,
+      end_s: p.end_s,
+      label: "phrase",
+      wideLabel: `VAD phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
+      tintId: "whisperxVadPhrase",
+      laneLabel: "7. WhisperX VAD",
+      caption: `${formatRange(p.start_s, p.end_s)} · VAD phrase`,
+      reference: `whisperx-vad-phrase-${i + 1}`,
+      detail: "vocal_phrase",
+      summary:
+        "experiments/whisperx_vad — a vocal_phrase span from whisperX's VAD hysteresis binarizer, with real sub-second onsets.",
+      raw: p,
+    });
+  });
+
+  out.sort((a, b) => a.start_s - b.start_s);
+  return out;
+}
+
+/**
+ * Solo/stacked voice blocks from stereo vocal stem width and L-R correlation,
+ * per-song z-scored. A proposal to audition against Human Hints, not ground truth.
+ */
+export function voiceMultiplicityContent(file: VoiceMultiplicityFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => ({
+    id: `voiceMultiplicity-${i + 1}`,
+    start_s: b.start,
+    end_s: b.end,
+    label: b.kind,
+    wideLabel: `${b.kind}${b.mean_multiplicity != null ? ` · ${round(b.mean_multiplicity, 2)}` : ""}`,
+    laneLabel: "Voice Multiplicity",
+    caption: `${formatRange(b.start, b.end)} · ${b.kind}${b.mean_multiplicity != null ? ` (${round(b.mean_multiplicity, 2)})` : ""}`,
+    reference: `voiceMultiplicity-${i + 1}`,
+    detail: b.kind,
+    summary: `experiments/voice_multiplicity — ${b.kind} vocal region${b.confidence != null ? ` · confidence ${round(b.confidence, 2)}` : ""}`,
+    raw: b,
   }));
 }
 
@@ -464,38 +1053,16 @@ export function gesturesContent(file: EventTimeline | null): SparseBlock[] {
   });
 }
 
-/**
- * Phrase-grid boundaries from `experiments/grid_consensus` — the resolved
- * downbeat phase's derived 8/16-bar phrase edges. `status: "unknown"` marks
- * a song where trackers disagreed and musical evidence did not resolve it
- * (say so rather than snapping, never imply precision that isn't there); those blocks are tinted
- * distinctly as disputed.
- */
-export function gridPhraseContent(file: GridFile | null): SparseBlock[] {
-  const disputed = file?.status === "unknown";
-  return (file?.boundaries ?? []).map((b, i) => ({
-    id: `phrase-grid-${i + 1}`,
-    start_s: b.time_s,
-    end_s: b.time_s + 0.1,
-    label: `bar ${b.bar}`,
-    ...(disputed ? { tintId: "gridDisputed" } : {}),
-    wideLabel: `phrase boundary · bar ${b.bar} · conf ${round(b.confidence, 2)}${disputed ? " · DISPUTED" : ""}`,
-    laneLabel: "Phrase Grid",
-    caption: `${formatRange(b.time_s, b.time_s)} · bar ${b.bar}${disputed ? " · disputed grid" : ""}`,
-    reference: `phrase-grid-${i + 1}`,
-    detail: disputed ? "grid status: unknown" : "grid status: resolved",
-    summary: `experiments/grid_consensus — an ${file?.phrase_length_bars ?? "?"}-bar phrase boundary at bar ${b.bar}${
-      disputed ? "; this song's downbeat phase was not confidently resolved (trackers disagreed, evidence inconclusive) — treat the whole grid on this song with caution" : ""
-    }.`,
-    raw: b,
-  }));
-}
-
 // -- dispatch -------------------------------------------------------------
 
 export interface LaneContentSources {
   humanHints?: HumanHintsFile | null;
+  humanSections?: HumanSegmentsFile | null;
+  moisesSections?: MoisesSegmentsFile | null;
   moisesLyrics?: MoisesLyricsFile | null;
+  /** v3.4 item 5 — read-time overlay: Moises word-token ids the operator has
+   *  hand-verified (from reference/human/lyric_validations.json). */
+  lyricValidations?: ReadonlySet<number> | null;
   dropProposals?: DropProposalsFile | null;
   sections?: readonly SectionRow[];
   sectionSegmentation?: readonly SegmentationSection[];
@@ -503,20 +1070,35 @@ export interface LaneContentSources {
   character?: CharacterFile | null;
   vocalTranscription?: VocalTranscriptionFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
-  reactiveBands?: ReactiveBandsFile | null;
+  arrangementState?: ArrangementStateFile | null;
+  textureNovelty?: TextureNoveltyFile | null;
+  phrasePeriodicity?: PhrasePeriodicityFile | null;
+  structuralVsMicro?: StructuralVsMicroFile | null;
+  vocalVoiceness?: VocalVoicenessFile | null;
+  svdTagger?: SvdTaggerFile | null;
+  whisperxVad?: WhisperxVadFile | null;
+  voiceMultiplicity?: VoiceMultiplicityFile | null;
   gestures?: EventTimeline | null;
-  grid?: GridFile | null;
 }
 
 /** the sparse (block) lane ids handled by this module, in registry order */
 export const SPARSE_LANE_IDS = [
   "humanHints",
+  "humanSections",
+  "moisesSections",
+  "allin1Sections",
   "moisesLyrics",
+  "arrangementState",
   "dropProposals",
   "vocalPhrases",
-  "reactiveBands",
+  "textureNovelty",
+  "phrasePeriodicity",
+  "structuralVsMicro",
+  "vocalVoiceness",
+  "svdTagger",
+  "whisperxVad",
+  "voiceMultiplicity",
   "gestures",
-  "gridPhrase",
   "sections",
   "character",
   "vocalTranscription",
@@ -532,18 +1114,36 @@ export function buildLaneBlocks(
   switch (laneId) {
     case "humanHints":
       return humanHintsContent(s.humanHints ?? null);
+    case "humanSections":
+      return humanSectionsContent(s.humanSections ?? null);
+    case "moisesSections":
+      return moisesSectionsContent(s.moisesSections ?? null);
+    case "allin1Sections":
+      return allin1SectionsContent(s.sectionSegmentation ?? []);
     case "moisesLyrics":
-      return moisesLyricsContent(s.moisesLyrics ?? null);
+      return moisesLyricsContent(s.moisesLyrics ?? null, s.lyricValidations ?? null);
+    case "arrangementState":
+      return arrangementStateContent(s.arrangementState ?? null);
     case "dropProposals":
       return dropProposalsContent(s.dropProposals ?? null);
     case "vocalPhrases":
       return vocalPhrasesContent(s.vocalPhrases ?? null);
-    case "reactiveBands":
-      return reactiveBandsContent(s.reactiveBands ?? null);
+    case "textureNovelty":
+      return textureNoveltyContent(s.textureNovelty ?? null);
+    case "phrasePeriodicity":
+      return phrasePeriodicityContent(s.phrasePeriodicity ?? null);
+    case "structuralVsMicro":
+      return structuralVsMicroContent(s.structuralVsMicro ?? null);
+    case "vocalVoiceness":
+      return vocalVoicenessContent(s.vocalVoiceness ?? null);
+    case "svdTagger":
+      return svdTaggerContent(s.svdTagger ?? null);
+    case "whisperxVad":
+      return whisperxVadContent(s.whisperxVad ?? null);
+    case "voiceMultiplicity":
+      return voiceMultiplicityContent(s.voiceMultiplicity ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
-    case "gridPhrase":
-      return gridPhraseContent(s.grid ?? null);
     case "sections":
       return sectionsContent(s.sections ?? [], s.sectionSegmentation ?? []);
     case "character":

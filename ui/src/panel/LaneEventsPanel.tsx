@@ -7,9 +7,14 @@
 // `aria-modal`, no outside-click dismissal; it closes via its ✕, `esc`, its
 // lane's opener button, or a song change.
 //
-// A card click seeks (only when paused — item 1 / D1) and does nothing else
-// (D2): the panel stays on the same lane. Card colour comes from the same
-// `sparseTint` source the timeline blocks use so the two read as one thing.
+// A card click seeks (only when paused — item 1 / D1), scrolling the
+// timeline to keep the playhead visible if the seek target falls outside the
+// current scroll window, and does nothing else (D2): the panel stays on the
+// same lane. A card double-click seeks the same way and additionally opens
+// the item-6 block inspector for that event (the humanHints lane opens the
+// hint editor instead, same routing as a canvas double-click). Card colour
+// comes from the same `sparseTint` source the timeline blocks use so the two
+// read as one thing.
 //
 // item 4 / R1 "highlight the active card": the card covering `currentTime`
 // (per `activeBlockIndex`) gets `data-active="true"` / `aria-current`. While
@@ -21,15 +26,64 @@
 // accent-300 left-edge marker. Blocks in a lane can overlap, so more than one
 // card can carry this at once; `data-active` still names a single "primary"
 // card (raised tint, bright label) among however many are in-window.
+//
+// v3.4 item 4 (D4.1): when `blockEnergy` is supplied — only for the Human Hints
+// events panel — each card also carries two 1-5 segmented-button selectors
+// (`energy`, `tension`) pre-filled from `reference/human/block_energy.json`,
+// with an explicit "unrated" state (no segment pressed — never a defaulted 1).
+// A panel-level Save persists every rating via the client; closing / Cancel
+// does not write. The card is restructured to a wrapper `<div>` with the seek
+// button and the rating controls as siblings so no `<button>` is nested inside
+// another.
 
-import { useEffect, useRef } from "react";
+// v3.4 item 5: for the Moises Lyrics events panel only, each **word-token**
+// card also carries a ✔ button (a sibling of the seek button, not nested in
+// it — `stopPropagation()` so it never seeks). Clicking it toggles the token's
+// human-validated state, which persists per-click via
+// `PUT /api/lyric-validations/<song>` (D5.1 — no Save button, unlike the other
+// reference/human/ writers). `<SOL>`/`<EOL>` markers get no button.
+
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { ArtifactStatus } from "../data";
+import type { BlockEnergyDraft } from "../data/saveBlockEnergy";
+import type { BlockEnergyFile } from "../data/types";
+import type { LaneMarker } from "../timeline/laneRenderers";
 import type { SparseBlock } from "../timeline/laneContent";
+import { markerFor } from "../timeline/SparseLane";
 import { sparseTint } from "../timeline/sparseTints";
 
 import { activeBlockIndex, isInPlayheadWindow } from "./laneEvents";
 import { RightPanel } from "./RightPanel";
+
+type RatingAxis = "energy" | "tension";
+
+export interface BlockEnergyPanelProps {
+  /** the loaded (or empty) ratings file, joined to the cards by `hint_id` */
+  file: BlockEnergyFile | null;
+  /** persist every card's rating via `saveBlockEnergy` (explicit Save only) */
+  onSave: (drafts: BlockEnergyDraft[]) => Promise<void>;
+}
+
+export interface LyricValidationPanelProps {
+  /** Moises word-token ids the operator has hand-verified */
+  validatedIds: ReadonlySet<number>;
+  /** persist a toggle immediately (per-click, no Save — D5.1) */
+  onToggle: (tokenId: number, nextValidated: boolean) => void;
+}
+
+export interface SectionRatingPanelProps {
+  /**
+   * Persist every block's rating on an explicit panel Save. Unlike
+   * `BlockEnergyPanelProps`, there is no separate ratings file to join —
+   * `energy`/`tension` live on the segment itself (segments.json), so the
+   * seed comes straight from each block's `raw` and the save handler folds
+   * the edits back into the full segments file.
+   */
+  onSave: (
+    ratings: Record<string, { energy: number | null; tension: number | null }>,
+  ) => Promise<void>;
+}
 
 interface LaneEventsPanelProps {
   laneId: string;
@@ -43,6 +97,85 @@ interface LaneEventsPanelProps {
   playing: boolean;
   onClose: () => void;
   onSelectBlock: (block: SparseBlock) => void;
+  /** double-click a card -> open the item-6 block inspector for it */
+  onSelectMarker: (marker: LaneMarker) => void;
+  /** v3.4 item 4 — supplied only for the Human Hints panel */
+  blockEnergy?: BlockEnergyPanelProps | undefined;
+  /** v3.4 item 5 — supplied only for the Moises Lyrics panel */
+  lyricValidation?: LyricValidationPanelProps | undefined;
+  /** supplied only for the Human Sections panel */
+  sectionRating?: SectionRatingPanelProps | undefined;
+}
+
+type AxisPair = { energy: number | null; tension: number | null };
+type RatingState = Record<string, AxisPair>;
+type SaveState = "idle" | "saving" | "saved" | "error";
+
+function seedRatings(file: BlockEnergyFile | null): RatingState {
+  const out: RatingState = {};
+  for (const r of file?.ratings ?? []) {
+    out[r.hint_id] = { energy: r.energy ?? null, tension: r.tension ?? null };
+  }
+  return out;
+}
+
+/** Human Sections' energy/tension live on the segment itself — seed straight
+ *  from each block's `raw`, not a separate ratings file. */
+function seedSectionRatings(blocks: readonly SparseBlock[]): RatingState {
+  const out: RatingState = {};
+  for (const b of blocks) {
+    const raw = b.raw as { energy?: number | null; tension?: number | null } | null;
+    out[b.id] = { energy: raw?.energy ?? null, tension: raw?.tension ?? null };
+  }
+  return out;
+}
+
+function displayBlockId(blockId: string): string {
+  const split = blockId.lastIndexOf("-");
+  if (split < 0) return blockId;
+  const suffix = blockId.slice(split + 1).trim();
+  return /^\d+$/.test(suffix) ? suffix : blockId;
+}
+
+export function SegmentedRating({
+  axis,
+  hintId,
+  value,
+  onPick,
+}: {
+  axis: RatingAxis;
+  hintId: string;
+  value: number | null;
+  onPick: (hintId: string, axis: RatingAxis, v: number) => void;
+}): React.JSX.Element {
+  return (
+    <div
+      className="seg-rating"
+      data-axis={axis}
+      data-value={value ?? "unrated"}
+    >
+      <span className="seg-rating__label">{axis}</span>
+      <div
+        className="seg-rating__buttons"
+        role="group"
+        aria-label={`${axis} rating`}
+      >
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button
+            key={n}
+            type="button"
+            className="seg-rating__btn"
+            data-testid={`block-energy-${hintId}-${axis}-${n}`}
+            aria-pressed={value === n}
+            aria-label={`${axis} ${n}`}
+            onClick={() => onPick(hintId, axis, n)}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export function LaneEventsPanel({
@@ -56,9 +189,119 @@ export function LaneEventsPanel({
   playing,
   onClose,
   onSelectBlock,
+  onSelectMarker,
+  blockEnergy,
+  lyricValidation,
+  sectionRating: sectionRatingProp,
 }: LaneEventsPanelProps): React.JSX.Element {
   const activeIndex = activeBlockIndex(blocks, currentTime);
   const activeCardRef = useRef<HTMLButtonElement | null>(null);
+
+  const rating = laneId === "humanHints" ? blockEnergy : undefined;
+  const sectionRating = laneId === "humanSections" ? sectionRatingProp : undefined;
+  const lyric = laneId === "moisesLyrics" ? lyricValidation : undefined;
+
+  // D5.1 — guard against a double-fire from one click only (a rapid genuine
+  // second toggle is still honoured after the short window).
+  const lastToggleRef = useRef<Map<number, number>>(new Map());
+  const toggleValidated = useCallback(
+    (tokenId: number, currentlyValidated: boolean) => {
+      if (!lyric) return;
+      const now = Date.now();
+      if (now - (lastToggleRef.current.get(tokenId) ?? 0) < 300) return;
+      lastToggleRef.current.set(tokenId, now);
+      lyric.onToggle(tokenId, !currentlyValidated);
+    },
+    [lyric],
+  );
+  const [ratings, setRatings] = useState<RatingState>(() =>
+    rating ? seedRatings(rating.file ?? null) : sectionRating ? seedSectionRatings(blocks) : {},
+  );
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  // Reseed from the on-disk file whenever it changes (song switch, a Save that
+  // returns the server-normalised file). An unsaved click never changes
+  // `rating.file`, so this does not fight the local edits.
+  useEffect(() => {
+    if (!rating) return;
+    setRatings(seedRatings(rating.file ?? null));
+    setSaveState("idle");
+    setSaveError(null);
+  }, [rating?.file]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Same reseed reasoning, for Human Sections — but there is no separate
+  // ratings file to key off: `energy`/`tension` live on the segment itself
+  // (each block's `raw`), so a signature over those is the "did the on-disk
+  // data change" check instead of an object-identity comparison.
+  const sectionSigRef = useRef<string>("");
+  useEffect(() => {
+    if (!sectionRating) return;
+    const sig = JSON.stringify(
+      blocks.map((b) => {
+        const raw = b.raw as { energy?: number | null; tension?: number | null } | null;
+        return [b.id, raw?.energy ?? null, raw?.tension ?? null];
+      }),
+    );
+    if (sig === sectionSigRef.current) return;
+    sectionSigRef.current = sig;
+    setRatings(seedSectionRatings(blocks));
+    setSaveState("idle");
+    setSaveError(null);
+  }, [sectionRating, blocks]);
+
+  const setAxis = useCallback(
+    (hintId: string, axis: RatingAxis, v: number) => {
+      setRatings((cur) => {
+        const prev = cur[hintId] ?? { energy: null, tension: null };
+        // Clicking the pressed segment again clears the axis back to "unrated".
+        const next = prev[axis] === v ? null : v;
+        return { ...cur, [hintId]: { ...prev, [axis]: next } };
+      });
+      setSaveState("idle");
+    },
+    [],
+  );
+
+  const ratedCount = blocks.filter((b) => {
+    const r = ratings[b.id];
+    return !!r && r.energy != null && r.tension != null;
+  }).length;
+
+  const doSave = useCallback(async () => {
+    if (rating) {
+      setSaveState("saving");
+      setSaveError(null);
+      try {
+        const drafts: BlockEnergyDraft[] = blocks.map((b) => ({
+          hint_id: b.id,
+          energy: ratings[b.id]?.energy ?? null,
+          tension: ratings[b.id]?.tension ?? null,
+        }));
+        await rating.onSave(drafts);
+        setSaveState("saved");
+      } catch (err) {
+        setSaveState("error");
+        setSaveError(
+          err instanceof Error ? err.message : "Unable to save ratings.",
+        );
+      }
+      return;
+    }
+    if (sectionRating) {
+      setSaveState("saving");
+      setSaveError(null);
+      try {
+        await sectionRating.onSave(ratings);
+        setSaveState("saved");
+      } catch (err) {
+        setSaveState("error");
+        setSaveError(
+          err instanceof Error ? err.message : "Unable to save ratings.",
+        );
+      }
+    }
+  }, [rating, sectionRating, blocks, ratings]);
 
   // Follow: keep the active card visible while playing. Guarded so jsdom
   // (no `scrollIntoView`) does not throw.
@@ -94,7 +337,38 @@ export function LaneEventsPanel({
           )}
           <span className="app-rightpanel__kicker">{laneLabel}</span>
           <span className="lane-events__count">{blocks.length} events</span>
+          {(rating || sectionRating) && (
+            <span
+              className="lane-events__rated"
+              data-testid="block-energy-count"
+            >
+              {ratedCount} / {blocks.length} blocks rated
+            </span>
+          )}
         </>
+      }
+      footer={
+        rating || sectionRating ? (
+          <div className="lane-events__ratings-footer">
+            {saveState === "error" && (
+              <p className="lane-events__save-status is-error">{saveError}</p>
+            )}
+            {saveState === "saved" && (
+              <p className="lane-events__save-status is-ok">
+                {sectionRating ? "Saved to segments.json." : "Saved to block_energy.json."}
+              </p>
+            )}
+            <button
+              type="button"
+              className="btn btn-primary"
+              data-testid="block-energy-save"
+              disabled={saveState === "saving"}
+              onClick={() => void doSave()}
+            >
+              {saveState === "saving" ? "Saving…" : "Save ratings"}
+            </button>
+          </div>
+        ) : undefined
       }
     >
       {state ? (
@@ -105,23 +379,82 @@ export function LaneEventsPanel({
             const tint = sparseTint(block.tintId ?? laneId);
             const active = index === activeIndex;
             const inWindow = isInPlayheadWindow(block, currentTime);
+            const pair = ratings[block.id];
             return (
               <li key={block.id}>
-                <button
-                  ref={active ? activeCardRef : undefined}
-                  type="button"
+                <div
                   className="lane-events__card"
-                  data-testid={`lane-event-${block.id}`}
                   data-block-id={block.id}
                   data-active={active}
                   data-in-window={inWindow}
                   aria-current={active ? "true" : undefined}
                   style={{ background: tint.fill, borderLeftColor: tint.stroke }}
-                  onClick={() => onSelectBlock(block)}
                 >
-                  <span className="lane-events__label">{block.label}</span>
-                  <span className="lane-events__caption">{block.caption}</span>
-                </button>
+                  <button
+                    ref={active ? activeCardRef : undefined}
+                    type="button"
+                    className="lane-events__cardmain"
+                    data-testid={`lane-event-${block.id}`}
+                    onClick={() => onSelectBlock(block)}
+                    onDoubleClick={() => onSelectMarker(markerFor(block, laneId))}
+                  >
+                    <span className="lane-events__label">{block.label}</span>
+                    <span className="lane-events__captionrow">
+                      <span className="lane-events__caption">{block.caption}</span>
+                      <span className="lane-events__blockid">
+                        {displayBlockId(block.id)}
+                      </span>
+                    </span>
+                  </button>
+                  {lyric &&
+                    block.lyricValidatable &&
+                    block.lyricTokenId != null && (
+                      <button
+                        type="button"
+                        className="lane-events__validate"
+                        data-testid={`lyric-validate-${block.id}`}
+                        aria-pressed={lyric.validatedIds.has(block.lyricTokenId)}
+                        aria-label={
+                          lyric.validatedIds.has(block.lyricTokenId)
+                            ? "Un-validate token timing"
+                            : "Validate token timing"
+                        }
+                        title={
+                          lyric.validatedIds.has(block.lyricTokenId)
+                            ? "Human-validated — click to undo"
+                            : "Mark this token's timing human-validated"
+                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleValidated(
+                            block.lyricTokenId!,
+                            lyric.validatedIds.has(block.lyricTokenId!),
+                          );
+                        }}
+                      >
+                        ✔
+                      </button>
+                    )}
+                  {(rating || sectionRating) && (
+                    <div
+                      className="lane-events__rating"
+                      data-testid={`block-energy-${block.id}`}
+                    >
+                      <SegmentedRating
+                        axis="energy"
+                        hintId={block.id}
+                        value={pair?.energy ?? null}
+                        onPick={setAxis}
+                      />
+                      <SegmentedRating
+                        axis="tension"
+                        hintId={block.id}
+                        value={pair?.tension ?? null}
+                        onPick={setAxis}
+                      />
+                    </div>
+                  )}
+                </div>
               </li>
             );
           })}

@@ -1,0 +1,105 @@
+{
+  "generated_at": "2026-09-11T20:57:29.097980Z",
+  "songs": [
+    "_test_song",
+    "ayuni",
+    "Titanium - David Guetta ft Sia"
+  ],
+  "variants": [
+    "htdemucs",
+    "htdemucs_ft",
+    "htdemucs_6s"
+  ],
+  "rows": [
+    {
+      "song": "_test_song",
+      "variant": "htdemucs",
+      "duration_s": 58.122,
+      "n_marked_vocal_spans": 0,
+      "voiced_duration_fraction": 0.628,
+      "false_vocal_rate": 0.6282,
+      "is_proxy_no_ground_truth": true,
+      "n_blocks": 9
+    },
+    {
+      "song": "_test_song",
+      "variant": "htdemucs_ft",
+      "duration_s": 58.122,
+      "n_marked_vocal_spans": 0,
+      "voiced_duration_fraction": 0.6409,
+      "false_vocal_rate": 0.6411,
+      "is_proxy_no_ground_truth": true,
+      "n_blocks": 9
+    },
+    {
+      "song": "_test_song",
+      "variant": "htdemucs_6s",
+      "duration_s": 58.122,
+      "n_marked_vocal_spans": 0,
+      "voiced_duration_fraction": 0.6366,
+      "false_vocal_rate": 0.6368,
+      "is_proxy_no_ground_truth": true,
+      "n_blocks": 9
+    },
+    {
+      "song": "ayuni",
+      "variant": "htdemucs",
+      "duration_s": 164.766,
+      "n_marked_vocal_spans": 0,
+      "voiced_duration_fraction": 0.4916,
+      "false_vocal_rate": 0.4917,
+      "is_proxy_no_ground_truth": true,
+      "n_blocks": 17
+    },
+    {
+      "song": "ayuni",
+      "variant": "htdemucs_ft",
+      "duration_s": 164.766,
+      "n_marked_vocal_spans": 0,
+      "voiced_duration_fraction": 0.4946,
+      "false_vocal_rate": 0.4947,
+      "is_proxy_no_ground_truth": true,
+      "n_blocks": 21
+    },
+    {
+      "song": "ayuni",
+      "variant": "htdemucs_6s",
+      "duration_s": 164.766,
+      "n_marked_vocal_spans": 0,
+      "voiced_duration_fraction": 0.5098,
+      "false_vocal_rate": 0.5099,
+      "is_proxy_no_ground_truth": true,
+      "n_blocks": 19
+    },
+    {
+      "song": "Titanium - David Guetta ft Sia",
+      "variant": "htdemucs",
+      "duration_s": 232.409,
+      "n_marked_vocal_spans": 0,
+      "voiced_duration_fraction": 0.7766,
+      "false_vocal_rate": 0.7767,
+      "is_proxy_no_ground_truth": true,
+      "n_blocks": 19
+    },
+    {
+      "song": "Titanium - David Guetta ft Sia",
+      "variant": "htdemucs_ft",
+      "duration_s": 232.409,
+      "n_marked_vocal_spans": 0,
+      "voiced_duration_fraction": 0.7745,
+      "false_vocal_rate": 0.7745,
+      "is_proxy_no_ground_truth": true,
+      "n_blocks": 19
+    },
+    {
+      "song": "Titanium - David Guetta ft Sia",
+      "variant": "htdemucs_6s",
+      "duration_s": 232.409,
+      "n_marked_vocal_spans": 0,
+      "voiced_duration_fraction": 0.7874,
+      "false_vocal_rate": 0.7874,
+      "is_proxy_no_ground_truth": true,
+      "n_blocks": 19
+    }
+  ]
+}

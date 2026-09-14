@@ -1,0 +1,47 @@
+[
+    {
+        "start": 3.12,
+        "end": 34.11,
+        "label": "Intro"
+    },
+    {
+        "start": 34.11,
+        "end": 49.60,
+        "label": "Verse"
+    },
+    {
+        "start": 49.60,
+        "end": 80.34,
+        "label": "Verse"
+    },
+    {
+        "start": 80.34,
+        "end": 111.55,
+        "label": "Bridge"
+    },
+    {
+        "start": 111.55,
+        "end": 127.27,
+        "label": "Verse"
+    },
+    {
+        "start": 127.27,
+        "end": 142.18,
+        "label": "Verse"
+    },
+    {
+        "start": 142.18,
+        "end": 158.00,
+        "label": "Instrumental"
+    },
+    {
+        "start": 157.39,
+        "end": 188.73,
+        "label": "Verse"
+    },
+    {
+        "start": 188.73,
+        "end": 204.73,
+        "label": "Outro"
+    }
+]
