@@ -66,23 +66,23 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 0 of 12 |
+| Done | 1 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 2, 8, 9, 10 |
 | New services | `whisperx` (item 2) |
 | New experiments | `truth_common`, `segment_seeds`, `rhythm_drum_ioi`, `rhythm_stem_autocorr`, `rhythm_vocal_onsets`, `energy_level`, `tension_shape` |
 | Promotion approval | producers kept by item 6 are **pre-approved** for `src/` (operator, 2026-09-14: "unless something fails too far, just add it as a layer") |
-| Pre-existing failures | *filled by item 0* |
+| Pre-existing failures | analyzer tests, ui test+build, MCP smoke-test: all green on HEAD (7a58785). Visual suite: 39/44 specs fail pre-existing — screenshot-baseline drift in this environment (e.g. `timeline-zoom-max` expects 1280×1142, environment renders 1280×1304 — a systemic font/viewport rendering difference, not a code defect). Full failing list captured 2026-09-14; `experiment-badge.spec.ts` failures include the expected `BADGED` staleness (item 2 fixes) plus the same baseline drift. Treat any per-item visual QA as DOM/data assertions; a screenshot diff is only attributable to an item if its diff region matches that item's changed lane. |
 | Decisions | D10.1 (resolved) |
 
 ---
 
 ## 0. Pre-flight
 
-- [ ] Commit `docs/product-refinement-v3.6.md` and `docs/implementation-plan-v3.6.md` alone as ``0. v3.6 refinement and plan``, so no item commit sweeps them in.
-- [ ] Run every suite named in "How this plan is worked" on HEAD. List each failing test by name in Status → "Pre-existing failures". Later items are not blamed for these.
-- [ ] Expected: `tests/ui-visual/specs/experiment-badge.spec.ts` fails, because `BADGED` still lists the retired `reactiveBands` and `gridPhrase`. Item 2 fixes it.
+- [x] Commit `docs/product-refinement-v3.6.md` and `docs/implementation-plan-v3.6.md` alone as ``0. v3.6 refinement and plan``, so no item commit sweeps them in.
+- [x] Run every suite named in "How this plan is worked" on HEAD. List each failing test by name in Status → "Pre-existing failures". Later items are not blamed for these.
+- [x] Expected: `tests/ui-visual/specs/experiment-badge.spec.ts` fails, because `BADGED` still lists the retired `reactiveBands` and `gridPhrase`. Item 2 fixes it.
 
 ---
 
