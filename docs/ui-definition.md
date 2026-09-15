@@ -167,6 +167,7 @@ unrestricted" above.
 | Lane | Reads | Notes |
 | --- | --- | --- |
 | Sections | `sections.json` + `artifacts/section_segmentation/sections.json` | a `function_status: "contested"` section (v3.4 phase-3 energy contest) gets a distinct orange per-block tint (`sectionsContested`); its inspector card prints `function_status: contested` + `contested_by: energy` |
+| Chords | `artifacts/layer_a_harmonic.json` | per-beat chord inference from `chord_probabilities`, rendered as individual short spans between consecutive inference timestamps |
 | Chord Regions | `artifacts/layer_a_harmonic.json` | |
 | Gestures | `song_event_timeline.json` | |
 | Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |
@@ -234,6 +235,11 @@ are **browser-local only** and not persisted, except the follow-playhead flag
 (`localStorage`, per browser). Shared zoom spans 14–360 px/bar; at maximum
 zoom a long song exceeds the ~32k-pixel canvas ceiling, so dense lanes hold
 their CSS width and downscale the backing store instead.
+
+When a lane is in the ready-empty state (`"No data in this artifact"`), its
+expand control is ignored (both timeline lane head and lane list). Collapse
+remains allowed. On song start, ready-empty lanes initialize hidden and
+collapsed (unchecked in the lane list).
 
 **Zoom keeps the playhead anchored.** While paused, zooming (the footer
 buttons, the slider, or a keyboard shortcut) pins the playhead to the same

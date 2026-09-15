@@ -32,6 +32,7 @@ import type {
   FftBand,
   FftFrame,
   HarmonicChord,
+  HarmonicChordProbability,
   HarmonicLayer,
   HumanHint,
   HumanHintsFile,
@@ -397,6 +398,19 @@ function parseHarmonicChord(raw: unknown, ctx: string): HarmonicChord {
   };
 }
 
+function parseHarmonicChordProbability(
+  raw: unknown,
+  ctx: string,
+): HarmonicChordProbability {
+  const o = asObject(raw, ctx);
+  return {
+    beat: numberOrNull(o.beat, `${ctx}.beat`),
+    time: numberOr(o.time, 0, `${ctx}.time`),
+    label: stringOr(o.label, "", `${ctx}.label`),
+    confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
+  };
+}
+
 export function parseHarmonicLayer(raw: unknown): HarmonicLayer {
   const o = asObject(raw, "layer_a_harmonic.json");
   const gk = objectOrNull(o.global_key, "harmonic.global_key");
@@ -416,7 +430,12 @@ export function parseHarmonicLayer(raw: unknown): HarmonicLayer {
     chords: asArray(o.chords, "harmonic.chords").map((c, i) =>
       parseHarmonicChord(c, `harmonic.chords[${i}]`),
     ),
-    chord_probabilities: o.chord_probabilities ?? null,
+    chord_probabilities: asArray(
+      o.chord_probabilities ?? [],
+      "harmonic.chord_probabilities",
+    ).map((c, i) =>
+      parseHarmonicChordProbability(c, `harmonic.chord_probabilities[${i}]`),
+    ),
   };
 }
 

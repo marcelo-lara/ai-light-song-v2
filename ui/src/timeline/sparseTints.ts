@@ -150,6 +150,7 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalTranscriptionBaseline: [28, 20, 40],
   vocalTranscriptionModel: [32, 80, 46],
   vocalTranscriptionStructure: [32, 30, 34],
+  chordsInference: [193, 74, 50], // cyan family, brighter than Chord Regions
   chords: [193, 82, 44], // cyan    (the previous app rgba(14,116,144))
 };
 

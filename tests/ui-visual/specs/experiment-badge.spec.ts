@@ -44,6 +44,7 @@ const NOT_BADGED = [
   "waveform",
   "humanHints",
   "sections",
+  "chordsInference",
   "chords",
   "gestures",
   "whisperxVad",

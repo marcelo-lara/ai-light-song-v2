@@ -499,6 +499,38 @@ export function chordsContent(harmonic: HarmonicLayer | null): SparseBlock[] {
   });
 }
 
+export function chordsInferenceContent(harmonic: HarmonicLayer | null): SparseBlock[] {
+  const key = harmonic?.global_key?.label ?? null;
+  const probs = harmonic?.chord_probabilities ?? [];
+  return probs.map((c, i) => {
+    const nextTime = probs[i + 1]?.time;
+    const end_s =
+      nextTime != null && nextTime > c.time
+        ? nextTime
+        : c.time + 0.08;
+    const roman = romanNumeral(c.label, key);
+    return {
+      id: `chords-inference-${String(i + 1).padStart(3, "0")}`,
+      start_s: c.time,
+      end_s,
+      label: c.label || "-",
+      ...(roman ? { wideLabel: `${c.label} · ${roman}` } : {}),
+      laneLabel: "Chords",
+      caption: `${formatRange(c.time, end_s)}${
+        c.confidence != null ? ` · conf ${round(c.confidence)}` : ""
+      }`,
+      reference: roman ?? "-",
+      detail: c.beat != null ? `beat ${c.beat}` : "-",
+      summary: `Per-beat chord inference ${c.label}${roman ? ` (${roman} in ${key})` : ""} from layer_a_harmonic.chord_probabilities.`,
+      raw: {
+        ...c,
+        roman,
+        name: c.label,
+      },
+    };
+  });
+}
+
 
 /**
  * Vocal phrase / instrumental gap / sustained-note blocks from
@@ -1135,6 +1167,7 @@ export const SPARSE_LANE_IDS = [
   "sections",
   "character",
   "vocalTranscription",
+  "chordsInference",
   "chords",
 ] as const;
 
@@ -1187,6 +1220,8 @@ export function buildLaneBlocks(
       return characterContent(s.character ?? null);
     case "vocalTranscription":
       return vocalTranscriptionContent(s.vocalTranscription ?? null);
+    case "chordsInference":
+      return chordsInferenceContent(s.harmonicLayer ?? null);
     case "chords":
       return chordsContent(s.harmonicLayer ?? null);
     default:

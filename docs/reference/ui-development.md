@@ -155,7 +155,7 @@ Array position = top-to-bottom lane order. Put experiment lanes **below** the
 hand-authored lanes they are auditioned against (`humanHints`, `moisesLyrics`).
 
 ```ts
-  { id: "<laneId>", label: "<Label>", sub: "experiment · <what it shows>", kind: "proposals", height: 58, experiment: "<experiment>" },
+  { id: "<laneId>", label: "<Label>", sub: "experiment · <what it shows>", kind: "proposals", height: 50, experiment: "<experiment>" },
 ```
 
 - `kind: "proposals"` unless the lane needs a different renderer. A new `kind`
@@ -163,6 +163,7 @@ hand-authored lanes they are auditioned against (`humanHints`, `moisesLyrics`).
 - `experiment:` present ⇒ `ph-flask` badge renders. **Omit it** for lanes fed
   from `reference/human/` or `reference/moises/`.
 - Add `"<laneId>"` to `DEFAULT_EXPANDED` only if it must be open on first load.
+- Compact sparse/event lanes now standardize on `height: 50` when expanded.
 
 ### 6. `ui/src/timeline/sparseTints.ts` — add to `BASE`
 
@@ -283,7 +284,7 @@ Rare. Body is `CanvasLane` + a draw function in `timeline/laneRenderers.ts`.
 | Retint a lane | `timeline/sparseTints.ts` | `BASE[<laneId>]`. One `[hue, sat, light]`; alpha comes from the shared `FILL_A`/`STROKE_A`. |
 | Add a per-block tint | `laneContent.ts` + `sparseTints.ts` | adapter emits `tintId: "<laneId><Variant>"`; add that key to `BASE`. Precedent: `sectionsContested`. |
 | Add/remove the flask badge | `timeline/laneState.ts` | presence of `experiment:` on the `LaneDef`. |
-| Change lane row height | `timeline/laneState.ts` | `height` (collapsed is always `COLLAPSED_LANE_HEIGHT` = 26). |
+| Change lane row height | `timeline/laneState.ts` | `height` (collapsed is always `COLLAPSED_LANE_HEIGHT` = 26). Compact sparse/event lanes use 50 by default unless a lane-specific exception is required. |
 
 ---
 
@@ -293,11 +294,14 @@ Rare. Body is `CanvasLane` + a draw function in `timeline/laneRenderers.ts`.
    error propagates and renders the lane's error state.
 2. **Parsers coerce, adapters do not invent.** A missing optional field renders
    as a stated gap, never a plausible default.
-3. **One lane, one artifact key** in `SPARSE_LANE_ARTIFACT`. A lane needing two
+3. **Ready-empty lanes start collapsed and hidden.** Lanes rendering
+  `"No data in this artifact"` initialize collapsed and unchecked in the lane
+  list on song start; their expand controls are ignored until data exists.
+4. **One lane, one artifact key** in `SPARSE_LANE_ARTIFACT`. A lane needing two
    producers joins them inside the adapter from two `LaneContentSources` fields
    (precedent: `sectionsContent` joins `sections` + `sectionSegmentation` by
    `section_id`).
-4. **The debugger writes only** five `reference/human/` files:
+5. **The debugger writes only** five `reference/human/` files:
    `human_hints.json`, `song_facts.json`, `block_energy.json` (the Human Hints
    panel's per-block `energy`/`tension` rating, `PUT /api/block-energy/<song>`,
    v3.4 item 4) and `segments.json` (the Human Sections panel's hand-authored
@@ -315,4 +319,4 @@ Rare. Body is `CanvasLane` + a draw function in `timeline/laneRenderers.ts`.
    three places) — free text is rejected, and unset is honest-unknown, never
    defaulted. `description` is unconstrained free text. `energy`/`tension` are
    optional integers 1-5 (same convention as `block_energy.json`).
-5. **Docs update in the same change** as the code (Recipe A step 9).
+6. **Docs update in the same change** as the code (Recipe A step 9).

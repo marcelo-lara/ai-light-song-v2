@@ -207,6 +207,7 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   character: "character",
   vocalTranscription: "vocalTranscription",
   sections: "sectionsTopLevel",
+  chordsInference: "harmonicLayer",
   chords: "harmonicLayer",
 };
 
@@ -222,6 +223,22 @@ const CANVAS_LANES: Record<string, { key: (typeof TIMELINE_KEYS)[number]; kind: 
   drums: { key: "drums", kind: "drums" },
   energy: { key: "energy", kind: "energy" },
 };
+
+function canvasLaneHasData(source: CanvasLaneSource): boolean {
+  switch (source.kind) {
+    case "fft":
+      return !!source.data?.frames.length && !!source.data.bands.length;
+    case "rms":
+    case "env":
+      return !!source.data?.frames.length && !!source.data.sources.length;
+    case "drums":
+      return !!source.data?.events.length;
+    case "energy":
+      return (
+        !!source.data?.beat_energy.length || !!source.data?.accent_candidates.length
+      );
+  }
+}
 
 function formatClock(seconds: number): string {
   const safe = Math.max(0, seconds || 0);
@@ -283,6 +300,7 @@ export function App(): React.JSX.Element {
   const [sectionSeed, setSectionSeed] = useState<SegmentSeed | null>(null);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const emptyLaneInitSongRef = useRef<string | null>(null);
   // plan v1.5 D6: the offset the follow effect last wrote, so the scroll
   // listener can tell a user scroll from the effect's own. null until the
   // effect writes.
@@ -452,6 +470,7 @@ export function App(): React.JSX.Element {
     setHintSeed(null);
     setSectionSeed(null);
     setEventsLaneId(null);
+    emptyLaneInitSongRef.current = null;
   }, [song]);
 
   const closePanel = useCallback(() => {
@@ -500,6 +519,100 @@ export function App(): React.JSX.Element {
       error: art?.error?.message ?? null,
     };
   }, [panelMode, eventsLaneId, artifacts, laneContentSources]);
+
+  const laneById = useMemo(
+    () => new Map(laneState.lanes.map((lane) => [lane.id, lane])),
+    [laneState.lanes],
+  );
+
+  const laneArtifactsSettled = useMemo(() => {
+    const keys = new Set<(typeof TIMELINE_KEYS)[number]>();
+    for (const key of Object.values(SPARSE_LANE_ARTIFACT)) keys.add(key);
+    for (const entry of Object.values(CANVAS_LANES)) keys.add(entry.key);
+    for (const key of keys) {
+      const status = artifacts[key].status;
+      if (status === "idle" || status === "loading") return false;
+    }
+    return true;
+  }, [artifacts]);
+
+  // On song start, lanes with a ready-empty artifact should begin collapsed
+  // and hidden (unchecked in the lane list).
+  useEffect(() => {
+    if (!song || emptyLaneInitSongRef.current === song) return;
+    if (!laneArtifactsSettled) return;
+
+    const updates: Array<{ id: string; hide: boolean; collapse: boolean }> = [];
+    for (const lane of laneState.lanes) {
+      let noData = false;
+
+      const sparseKey = SPARSE_LANE_ARTIFACT[lane.id];
+      if (sparseKey) {
+        const art = artifacts[sparseKey];
+        const blocks = buildLaneBlocks(lane.id, laneContentSources);
+        noData = art.status === "ready" && blocks.length === 0;
+      } else {
+        const canvas = CANVAS_LANES[lane.id];
+        if (canvas) {
+          const art = artifacts[canvas.key];
+          const source = {
+            kind: canvas.kind,
+            data: art.data as never,
+          } as CanvasLaneSource;
+          noData = art.status === "ready" && !canvasLaneHasData(source);
+        }
+      }
+
+      if (noData && (lane.visible || lane.expanded)) {
+        updates.push({ id: lane.id, hide: lane.visible, collapse: lane.expanded });
+      }
+    }
+
+    for (const u of updates) {
+      if (u.hide) laneState.setVisible(u.id, false);
+      if (u.collapse) laneState.setExpanded(u.id, false);
+    }
+
+    emptyLaneInitSongRef.current = song;
+  }, [song, laneArtifactsSettled, laneState, artifacts, laneContentSources]);
+
+  // Do not expand a lane when it is exactly in the same ready-empty state
+  // that renders "No data in this artifact".
+  const toggleExpandedGuarded = useCallback(
+    (laneId: string) => {
+      const lane = laneById.get(laneId);
+      if (!lane) return;
+
+      // Always allow collapsing.
+      if (lane.expanded) {
+        laneState.toggleExpanded(laneId);
+        return;
+      }
+
+      const sparseKey = SPARSE_LANE_ARTIFACT[laneId];
+      if (sparseKey) {
+        const art = artifacts[sparseKey];
+        const blocks = buildLaneBlocks(laneId, laneContentSources);
+        const noData = art.status === "ready" && blocks.length === 0;
+        if (noData) return;
+        laneState.toggleExpanded(laneId);
+        return;
+      }
+
+      const canvas = CANVAS_LANES[laneId];
+      if (canvas) {
+        const art = artifacts[canvas.key];
+        const source = { kind: canvas.kind, data: art.data as never } as CanvasLaneSource;
+        const noData = art.status === "ready" && !canvasLaneHasData(source);
+        if (noData) return;
+        laneState.toggleExpanded(laneId);
+        return;
+      }
+
+      laneState.toggleExpanded(laneId);
+    },
+    [laneById, laneState, artifacts, laneContentSources],
+  );
 
   const scrollTimelineToTime = useCallback(
     (seconds: number) => {
@@ -1306,7 +1419,7 @@ export function App(): React.JSX.Element {
                 currentTime={transport.currentTime}
                 playing={transport.isPlaying}
                 onSeek={transport.seekTo}
-                onToggleExpand={laneState.toggleExpanded}
+                onToggleExpand={toggleExpandedGuarded}
                 onSelectSegment={handleSelectSegment}
                 renderLaneBody={renderLaneBody}
                 onOpenLaneEvents={toggleLaneEvents}
@@ -1317,7 +1430,7 @@ export function App(): React.JSX.Element {
                 <LaneList
                   lanes={laneState.lanes}
                   onToggleVisible={laneState.toggleVisible}
-                  onToggleExpanded={laneState.toggleExpanded}
+                  onToggleExpanded={toggleExpandedGuarded}
                   onShowAll={laneState.showAll}
                   onHideAll={laneState.hideAll}
                   onReset={laneState.resetToDefaults}

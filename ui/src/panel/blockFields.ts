@@ -41,6 +41,7 @@ export const LANE_LABELS: Record<string, string> = {
   humanHints: "Human Hints",
   humanSections: "Human Sections",
   moisesLyrics: "Moises Lyrics",
+  chordsInference: "Chords",
   chords: "Chord Regions",
   drums: "Drum Density",
   energy: "Energy Profile",
@@ -204,6 +205,7 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
       if (instr) out.push({ label: "Instruments", value: instr });
       break;
     }
+    case "chordsInference":
     case "chords": {
       const roman = str(r.roman);
       if (roman) out.push({ label: "Roman", value: roman });

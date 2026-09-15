@@ -17,6 +17,7 @@ import {
   allin1SectionsContent,
   arrangementStateContent,
   characterContent,
+  chordsInferenceContent,
   vocalTranscriptionContent,
   chordsContent,
   gesturesContent,
@@ -45,6 +46,7 @@ import type {
   VocalVoicenessFile,
   VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
+import type { HarmonicLayer } from "../data/types";
 import { romanNumeral } from "./romanNumeral";
 
 describe("humanHintsContent", () => {
@@ -324,6 +326,38 @@ describe("chordsContent", () => {
   });
 });
 
+describe("chordsInferenceContent", () => {
+  const harmonicWithProbabilities: HarmonicLayer = {
+    schema_version: "3.1",
+    song_name: "_test_song",
+    global_key: { label: "D# minor", confidence: 0.76, source: "hpcp" },
+    chords: [],
+    chord_probabilities: [
+      { beat: 1, time: 0.510839, label: "D#m", confidence: 0.778155 },
+      { beat: 2, time: 1.044898, label: "D#m", confidence: 0.778155 },
+      { beat: 3, time: 1.567347, label: "D#m", confidence: 0.667713 },
+    ],
+  };
+
+  it("renders per-beat chord inference blocks from chord_probabilities", () => {
+    const blocks = chordsInferenceContent(harmonicWithProbabilities);
+    expect(blocks.length).toBeGreaterThan(0);
+    expect(blocks[0]!.label).toBe("D#m");
+    expect(blocks[0]!.laneLabel).toBe("Chords");
+    expect(blocks[0]!.end_s).toBeGreaterThan(blocks[0]!.start_s);
+  });
+
+  it("uses the next inference time as end_s when available", () => {
+    const blocks = chordsInferenceContent(harmonicWithProbabilities);
+    expect(blocks[0]!.start_s).toBe(0.510839);
+    expect(blocks[0]!.end_s).toBe(1.044898);
+  });
+
+  it("never throws on a missing artifact", () => {
+    expect(chordsInferenceContent(null)).toEqual([]);
+  });
+});
+
 describe("gesturesContent", () => {
   it("renders one block per flat gesture-phase / transition event", () => {
     const blocks = gesturesContent(parseEventTimeline(timelineFixture));
@@ -346,6 +380,7 @@ describe("gesturesContent", () => {
 describe("null inputs", () => {
   it("every adapter tolerates a missing artifact", () => {
     expect(humanHintsContent(null)).toEqual([]);
+    expect(chordsInferenceContent(null)).toEqual([]);
     expect(chordsContent(null)).toEqual([]);
   });
 });

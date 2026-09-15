@@ -17,6 +17,7 @@ const BLOCK_LANES = [
   "sections",
   "character",
   "vocalTranscription",
+  "chordsInference",
   "chords",
 ] as const;
 

@@ -247,12 +247,19 @@ export interface HarmonicChord {
   confidence: number | null;
 }
 
+export interface HarmonicChordProbability {
+  beat: number | null;
+  time: number;
+  label: string;
+  confidence: number | null;
+}
+
 export interface HarmonicLayer {
   schema_version: string;
   song_name: string;
   global_key: HarmonicGlobalKey | null;
   chords: HarmonicChord[];
-  chord_probabilities: unknown;
+  chord_probabilities: HarmonicChordProbability[];
 }
 
 // ---------------------------------------------------------------------------
