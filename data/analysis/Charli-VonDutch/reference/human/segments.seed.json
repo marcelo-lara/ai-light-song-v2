@@ -1,0 +1,42 @@
+[
+  {
+    "start": 0.0,
+    "end": 29.99,
+    "label": "verse",
+    "energy": 1,
+    "tension": 1,
+    "rhythm": {
+      "drums": "none"
+    }
+  },
+  {
+    "start": 29.99,
+    "end": 73.86,
+    "label": "chorus",
+    "energy": 5,
+    "tension": 3,
+    "rhythm": {
+      "drums": "none"
+    }
+  },
+  {
+    "start": 73.86,
+    "end": 96.46,
+    "label": "verse",
+    "energy": 2,
+    "tension": 4,
+    "rhythm": {
+      "drums": "none"
+    }
+  },
+  {
+    "start": 96.46,
+    "end": 161.54,
+    "label": "chorus",
+    "energy": 4,
+    "tension": 5,
+    "rhythm": {
+      "drums": "none"
+    }
+  }
+]

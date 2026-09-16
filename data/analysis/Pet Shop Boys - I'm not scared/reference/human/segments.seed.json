@@ -1,0 +1,125 @@
+[
+  {
+    "start": 0.0,
+    "end": 17.46,
+    "label": "intro",
+    "energy": 1,
+    "tension": 1,
+    "rhythm": {
+      "drums": "sixteenth",
+      "vocals": "none"
+    }
+  },
+  {
+    "start": 17.46,
+    "end": 52.36,
+    "label": "chorus",
+    "energy": 3,
+    "tension": 2,
+    "rhythm": {
+      "drums": "sixteenth",
+      "vocals": "none"
+    }
+  },
+  {
+    "start": 52.36,
+    "end": 89.45,
+    "label": "inst",
+    "energy": 2,
+    "tension": 3,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 89.45,
+    "end": 124.35,
+    "label": "verse",
+    "energy": 3,
+    "tension": 3,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 124.35,
+    "end": 198.53,
+    "label": "chorus",
+    "energy": 4,
+    "tension": 3,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 198.53,
+    "end": 268.33,
+    "label": "inst",
+    "energy": 2,
+    "tension": 4,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 268.33,
+    "end": 285.79,
+    "label": "verse",
+    "energy": 4,
+    "tension": 4,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 285.79,
+    "end": 303.24,
+    "label": "chorus",
+    "energy": 5,
+    "tension": 4,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 303.24,
+    "end": 322.87,
+    "label": "verse",
+    "energy": 5,
+    "tension": 4,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 322.87,
+    "end": 368.68,
+    "label": "chorus",
+    "energy": 4,
+    "tension": 4,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 368.68,
+    "end": 423.3,
+    "label": "solo",
+    "energy": 2,
+    "tension": 5,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 423.3,
+    "end": 442.98,
+    "label": "outro",
+    "energy": 1,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth",
+      "vocals": "none"
+    }
+  }
+]

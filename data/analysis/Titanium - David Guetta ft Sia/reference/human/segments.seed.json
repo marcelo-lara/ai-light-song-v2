@@ -1,0 +1,153 @@
+[
+  {
+    "start": 0.0,
+    "end": 15.24,
+    "label": "Intro",
+    "energy": 1,
+    "tension": 1,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 15.24,
+    "end": 28.57,
+    "label": "Verse",
+    "energy": 4,
+    "tension": 2,
+    "rhythm": {
+      "drums": "quarter"
+    }
+  },
+  {
+    "start": 28.57,
+    "end": 43.81,
+    "label": "Verse",
+    "energy": 5,
+    "tension": 2,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 43.81,
+    "end": 60.96,
+    "label": "Chorus",
+    "energy": 2,
+    "tension": 2,
+    "rhythm": {
+      "drums": "eighth_triplet"
+    }
+  },
+  {
+    "start": 60.96,
+    "end": 76.19,
+    "label": "Chorus",
+    "energy": 3,
+    "tension": 2,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 76.19,
+    "end": 89.54,
+    "label": "Main",
+    "energy": 4,
+    "tension": 2,
+    "rhythm": {
+      "drums": "eighth",
+      "vocals": "none"
+    }
+  },
+  {
+    "start": 89.54,
+    "end": 106.66,
+    "label": "Verse",
+    "energy": 1,
+    "tension": 4,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 106.66,
+    "end": 120.0,
+    "label": "Verse",
+    "energy": 5,
+    "tension": 4,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 120.0,
+    "end": 137.14,
+    "label": "Chorus",
+    "energy": 2,
+    "tension": 3,
+    "rhythm": {
+      "drums": "eighth_triplet"
+    }
+  },
+  {
+    "start": 137.14,
+    "end": 150.46,
+    "label": "Chorus",
+    "energy": 1,
+    "tension": 4,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 150.46,
+    "end": 165.71,
+    "label": "Bridge",
+    "energy": 5,
+    "tension": 4,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 165.71,
+    "end": 180.99,
+    "label": "Bridge",
+    "energy": 3,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth_triplet"
+    }
+  },
+  {
+    "start": 180.99,
+    "end": 196.21,
+    "label": "Chorus",
+    "energy": 3,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth_triplet"
+    }
+  },
+  {
+    "start": 196.21,
+    "end": 211.42,
+    "label": "Chorus",
+    "energy": 2,
+    "tension": 5,
+    "rhythm": {
+      "drums": "quarter"
+    }
+  },
+  {
+    "start": 211.42,
+    "end": 226.66,
+    "label": "Chorus",
+    "energy": 4,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  }
+]

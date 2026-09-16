@@ -15,13 +15,29 @@ REPO_ROOT = Path(
 )
 ANALYSIS_ROOT = REPO_ROOT / "data" / "analysis"
 
-#: refinement item 6 "Seeds first" — the four segment songs.
-SONGS = [
+#: refinement item 6 "Seeds first" — the four songs seeded first. Kept for
+#: reference; `--all-songs` (item 7, `all_analysed_songs()`) now covers the
+#: whole corpus.
+SEGMENT_SONGS = [
     "ayuni",
     "Cinderella - Ella Lee",
     "_test_song",
     "What a Feeling - Courtney Storm",
 ]
+#: Backwards-compatible alias — the item-6 corpus.
+SONGS = SEGMENT_SONGS
+
+
+def all_analysed_songs() -> list[str]:
+    """Every song under `data/analysis/` that has a published `sections.json`
+    — the whole-corpus discovery `--all-songs` uses from refinement item 7
+    onward. `experiments/` never imports `src/`, so this is a plain directory
+    scan rather than `analyzer.config.discover_song_files`."""
+    return sorted(
+        p.parent.name
+        for p in ANALYSIS_ROOT.glob("*/sections.json")
+        if p.is_file()
+    )
 
 #: loudness.json / arrangement_state.json stem order after `mix`.
 STEM_IDS = ("bass", "drums", "harmonic", "vocals")

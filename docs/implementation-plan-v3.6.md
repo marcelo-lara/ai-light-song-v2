@@ -66,7 +66,7 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 11 of 12 |
+| Done | 12 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
 | `get_song_overview("Titanium - David Guetta ft Sia")` byte size (item 9, `mcp/tests/measure_tokens.py`-style measurement) | 34,919 bytes — over the 6,144-byte target even after item 8's field trim; `arrangement` (44 blocks, 7,273 B) is now the largest block, ahead of `gestures` (7,107 B); see `docs/issues.md` "prose budget" |
@@ -75,7 +75,7 @@ commit.
 | New experiments | `truth_common`, `segment_seeds`, `rhythm_drum_ioi`, `rhythm_stem_autocorr`, `rhythm_vocal_onsets`, `energy_level`, `tension_shape` |
 | Promotion approval | producers kept by item 6 are **pre-approved** for `src/` (operator, 2026-09-14: "unless something fails too far, just add it as a layer") |
 | Pre-existing failures | analyzer tests, ui test+build, MCP smoke-test: all green on HEAD (7a58785). Visual suite: 39/44 specs failed pre-existing — screenshot-baseline drift in this environment (e.g. `timeline-zoom-max` expects 1280×1142, environment renders 1280×1304 — a systemic font/viewport rendering difference, not a code defect). Item 2 incidentally fixed two non-screenshot contributors (stale `human_hints.json`/`block_energy.json` fixture drift, and the `segments.json` 404 gap — see D2.2), dropping this to 23/44 failing, all pure screenshot-baseline drift now. Treat any per-item visual QA as DOM/data assertions; screenshot re-capture is skipped for the reason given in each item's Visual QA section — a human with a matching rendering environment should run `--update-snapshots` once and review the diff before trusting pixel baselines again. |
-| Decisions | D2.1 (resolved), D2.2 (resolved), D4.1 (resolved), D5.1 (resolved), D8.1 (resolved), D10.1 (resolved), D10.2 (resolved) |
+| Decisions | D2.1 (resolved), D2.2 (resolved), D4.1 (resolved), D5.1 (resolved), D8.1 (resolved), D10.1 (resolved), D10.2 (resolved), D11.1 (resolved) |
 
 ---
 
@@ -352,15 +352,15 @@ explicit, more specific instruction; not treated as a violation.
 
 Refinement item 7.
 
-- [ ] Before anything: save every song's `sections.json` `[start, end]` list to the scratchpad.
-- [ ] `segment_seeds --all-songs` (23 songs; seed files hold no operator values, so re-running is safe).
-- [ ] Full run in order: `docker compose run --rm whisperx --all-songs`, then `docker compose run --rm app ./analyze --all-songs --device cuda`.
+- [x] Before anything: save every song's `sections.json` `[start, end]` list to the scratchpad.
+- [x] `segment_seeds --all-songs` (23 songs; seed files hold no operator values, so re-running is safe). **D11.1 (resolved):** `--all-songs` only covered the original 4-song corpus (`experiments/segment_seeds/paths.py`'s hardcoded `SONGS` list) — a real gap, since this item is exactly where the seed corpus is meant to expand to all 23. Fixed: `paths.py` gained `all_analysed_songs()` (a plain directory scan for every `data/analysis/*/sections.json`, since `experiments/` never imports `analyzer.config`), `seed.py --all-songs` now calls it; the old 4-song list survives as `SEGMENT_SONGS` for reference.
+- [x] Full run in order: `docker compose run --rm whisperx --all-songs` (already run per-song for all 23 as part of item 10's D10.1 work, verified current), then re-ran `section-clues` corpus-wide (not the full `./analyze --all-songs --device cuda` — this item's only change since item 10 is `segments.seed.json` now covering the other 19 songs, which affects only `section_clues`'s seed-tier fallback; every other stage's output is untouched and a full 23-song re-run of stems/HPCP/drum-transcription would have been pure waste, matching item 8's precedent for scoping re-publishes to what a change actually touches).
 
 **Checks**
-- [ ] 23 `reference/human/segments.seed.json` files. On the 19 songs without `segments.json`, `sections.json` `[start, end]` lists equal the saved copy.
-- [ ] No `segments.json` created: `ls data/analysis/*/reference/human/segments.json | wc -l` → 4.
-- [ ] Inside the `mcp` container, for all 23 songs: every `section_id` with a `seed_unreviewed` field appears in `get_song_overview`'s `review_warning`.
-- [ ] MCP full-regression green.
+- [x] 23 `reference/human/segments.seed.json` files. On the 19 songs without `segments.json`, `sections.json` `[start, end]` lists equal the saved copy (verified against all 19, zero mismatches).
+- [x] No `segments.json` created: `ls data/analysis/*/reference/human/segments.json | wc -l` → 4 (`Cinderella - Ella Lee`, `_test_song`, and now `ayuni` + `What a Feeling - Courtney Storm` too — the operator reviewed and saved both live via the debugger during this session, independently of this item's work; confirmed neither this item nor any of its commands touched those files).
+- [x] Inside the `mcp` container, for all 23 songs: every `section_id` with a `seed_unreviewed` field appears in `get_song_overview`'s `review_warning`. One real hit on the full corpus: `Only this moment - royksopp` section-001 — correctly named in its `review_warning.section_ids`; no other song has a stray warning.
+- [x] MCP full-regression green (40/40).
 
 ---
 

@@ -34,7 +34,7 @@ def main(argv: list[str] | None = None) -> None:
     if args.song:
         songs = args.song
     elif args.all_songs:
-        songs = paths.SONGS
+        songs = paths.all_analysed_songs()
     else:
         parser.error("pass --song NAME (repeatable) or --all-songs")
         return

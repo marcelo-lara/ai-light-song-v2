@@ -1,0 +1,83 @@
+[
+  {
+    "start": 0.0,
+    "end": 30.52,
+    "label": "intro",
+    "energy": 3,
+    "tension": 2,
+    "rhythm": {
+      "drums": "none"
+    }
+  },
+  {
+    "start": 30.52,
+    "end": 46.38,
+    "label": "verse",
+    "energy": 3,
+    "tension": 2,
+    "rhythm": {
+      "drums": "eighth_triplet"
+    }
+  },
+  {
+    "start": 46.38,
+    "end": 87.09,
+    "label": "inst",
+    "energy": 4,
+    "tension": 3,
+    "rhythm": {
+      "drums": "eighth_triplet"
+    }
+  },
+  {
+    "start": 87.09,
+    "end": 103.36,
+    "label": "verse",
+    "energy": 5,
+    "tension": 4,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 103.36,
+    "end": 132.11,
+    "label": "chorus",
+    "energy": 2,
+    "tension": 4,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 132.11,
+    "end": 159.53,
+    "label": "solo",
+    "energy": 1,
+    "tension": 5,
+    "rhythm": {
+      "drums": "sixteenth",
+      "vocals": "none"
+    }
+  },
+  {
+    "start": 159.53,
+    "end": 173.88,
+    "label": "chorus",
+    "energy": 5,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth_triplet"
+    }
+  },
+  {
+    "start": 173.88,
+    "end": 192.61,
+    "label": "outro",
+    "energy": 1,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth_triplet"
+    }
+  }
+]

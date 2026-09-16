@@ -1,0 +1,103 @@
+[
+  {
+    "start": 0.0,
+    "end": 0.01,
+    "label": "intro",
+    "energy": 5,
+    "tension": 1,
+    "rhythm": {
+      "drums": "none",
+      "vocals": "none"
+    }
+  },
+  {
+    "start": 0.01,
+    "end": 31.23,
+    "label": "inst",
+    "energy": 1,
+    "tension": 2,
+    "rhythm": {
+      "drums": "eighth_triplet"
+    }
+  },
+  {
+    "start": 31.23,
+    "end": 46.84,
+    "label": "verse",
+    "energy": 4,
+    "tension": 2,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 46.84,
+    "end": 78.06,
+    "label": "chorus",
+    "energy": 5,
+    "tension": 2,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 78.06,
+    "end": 92.7,
+    "label": "verse",
+    "energy": 3,
+    "tension": 4,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 92.7,
+    "end": 109.28,
+    "label": "inst",
+    "energy": 2,
+    "tension": 4,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 109.28,
+    "end": 156.12,
+    "label": "chorus",
+    "energy": 2,
+    "tension": 5,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 156.12,
+    "end": 171.73,
+    "label": "bridge",
+    "energy": 4,
+    "tension": 5,
+    "rhythm": {
+      "drums": "sixteenth"
+    }
+  },
+  {
+    "start": 171.73,
+    "end": 218.57,
+    "label": "chorus",
+    "energy": 3,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth_triplet"
+    }
+  },
+  {
+    "start": 218.57,
+    "end": 228.22,
+    "label": "outro",
+    "energy": 1,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "start": 0.0,
+    "end": 30.22,
+    "label": "intro",
+    "energy": 2,
+    "tension": 1,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 30.22,
+    "end": 49.29,
+    "label": "verse",
+    "energy": 3,
+    "tension": 2,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 49.29,
+    "end": 126.51,
+    "label": "chorus",
+    "energy": 4,
+    "tension": 4,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 126.51,
+    "end": 164.64,
+    "label": "break",
+    "energy": 1,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  },
+  {
+    "start": 164.64,
+    "end": 196.07,
+    "label": "chorus",
+    "energy": 5,
+    "tension": 5,
+    "rhythm": {
+      "drums": "eighth"
+    }
+  }
+]
