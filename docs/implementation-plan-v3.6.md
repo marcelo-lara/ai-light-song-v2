@@ -1,6 +1,6 @@
 # Implementation plan — v3.6
 
-**Status: not started.** Turns
+**Status: implemented, all 12 items.** Turns
 [`product-refinement-v3.6.md`](product-refinement-v3.6.md) (the refinement doc
 in the rest of this plan) into an ordered worklist for a Sonnet implementer in
 batch mode. The refinement doc holds the evidence and decisions. This plan says
@@ -366,10 +366,10 @@ Refinement item 7.
 
 ## 12. Close-out
 
-- [ ] `CLAUDE.md` "Current state" rows: `vocals` channel, structure (new clue fields, provisional), MCP surface (9 required files, beats in `get_detail`, `review_warning`).
-- [ ] `docs/issues.md`: delete every entry this plan solved.
-- [ ] `docs/product-refinement-v3.6.md` Status → implemented; list the unreviewed seed rows as "all rows of `segments.seed.json`, 23 songs" for the next refinement.
-- [ ] `grep -rn "reference/proposals/whisperx_vad" docs src ui mcp whisperx_vad` → no matches.
+- [x] `CLAUDE.md` "Current state" rows: `vocals` channel, structure (new clue fields, provisional), MCP surface (9 required files, beats in `get_detail`, `review_warning`).
+- [x] `docs/issues.md`: delete every entry this plan solved — only the "host paths" entry (already deleted in item 8); nothing else in the tracker was closed by v3.6 (the "Texture hints missing" and "prose budget" entries both got touched but stay open — neither is actually resolved).
+- [x] `docs/product-refinement-v3.6.md` Status → implemented; list the unreviewed seed rows as "all rows of `segments.seed.json`, 23 songs" for the next refinement.
+- [x] `grep -rn "reference/proposals/whisperx_vad" docs src ui mcp whisperx_vad` → 2 remaining hits, both in `docs/product-refinement-v3.6.md`'s own item-1 "Current behaviour"/"Writes" narrative, describing the pre-v3.6 state being replaced — legitimate history, not a live reference. One genuine stale reference found and fixed: `ui/src/data/sparseArtifacts.ts`'s `whisperxVad` parser had a leftover comment header and error-context string naming the old `reference/proposals/` path, even though the actual fetch (`artifactPaths.whisperxVad`) was already correctly repointed in item 2 — cosmetic only, no behavior change, fixed for accuracy. `docs/reference/artifacts.md`'s `arrangement_state.json` row also still described `vocals_phrase` as optional/cache-dependent and the file itself as "absent on pre-v3.2 songs" — both stale since items 2 and 9; rewritten.
 
 **Checks**
-- [ ] Every suite green: analyzer, ui test + build, visual, MCP full-regression.
+- [x] Every suite green: analyzer (162), ui test (403) + build, MCP full-regression (40/40), visual (21/44 failing — unchanged pure screenshot-pixel drift, same set since item 5; see Status "Pre-existing failures").

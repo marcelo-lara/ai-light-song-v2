@@ -895,25 +895,26 @@ export async function loadSvdTagger(
 }
 
 // ---------------------------------------------------------------------------
-// whisperxVad — reference/proposals/whisperx_vad.json
+// whisperxVad — artifacts/whisperx-vad/whisperx_vad.json
 // ---------------------------------------------------------------------------
 //
-// v3.5 item 7: whisperX's VAD front-end (speech-domain, not music or a
-// general audio-tagging class), run over the vocal stem only. Same shared
-// `voiceness_common.schema` shape as `vocalVoiceness` — no
-// `channel` field, single producer. `interval_ms` is 50, not 1000: VAD spans
-// carry real sub-second onsets/offsets (a hysteresis binarizer over the
-// segmentation model's own ~17ms frames), so unlike
-// `svdTagger`, this candidate's `vocal_phrase` boundaries are genuinely
-// timed, not a 5s clip-window approximation. Diarization was NOT attempted
-// (no HF_TOKEN in this environment, and a live-token dependency at analysis
-// time is an automatic kill regardless of score) — no diarization field
-// exists in this file at all, never a stubbed-out null.
+// whisperX's VAD front-end (speech-domain, not music or a general
+// audio-tagging class), run over the vocal stem only, as its own pipeline
+// service (`whisperx_vad/`, v3.6 item 2 — promoted out of `experiments/`,
+// no longer read from `reference/proposals/`). Same shared voiceness shape
+// as `vocalVoiceness` — no `channel` field, single producer. `interval_ms`
+// is 50, not 1000: VAD spans carry real sub-second onsets/offsets (a
+// hysteresis binarizer over the segmentation model's own ~17ms frames), so
+// unlike `svdTagger`, this candidate's `vocal_phrase` boundaries are
+// genuinely timed, not a 5s clip-window approximation. Diarization was NOT
+// attempted (no HF_TOKEN in this environment, and a live-token dependency at
+// analysis time is an automatic kill regardless of score) — no diarization
+// field exists in this file at all, never a stubbed-out null.
 
 export type WhisperxVadFile = VocalVoicenessFile;
 
 export function parseWhisperxVad(raw: unknown): WhisperxVadFile {
-  const o = asObject(raw, "reference/proposals/whisperx_vad.json");
+  const o = asObject(raw, "artifacts/whisperx-vad/whisperx_vad.json");
   const meta = rec(o.metadata);
   const frames = arr(o.frames).map((row): VoicenessFrameRow => {
     const r = rec(row);

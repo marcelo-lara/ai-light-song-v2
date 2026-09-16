@@ -1,6 +1,11 @@
 # Product refinement — v3.6
 
-**Status: planned:** [`implementation-plan-v3.6.md`](implementation-plan-v3.6.md).
+**Status: implemented** — [`implementation-plan-v3.6.md`](implementation-plan-v3.6.md),
+all 12 items done. Unreviewed rows for the next refinement's review pass: all
+rows of `segments.seed.json`, 23 songs (only `Cinderella - Ella Lee`,
+`_test_song`, `ayuni` and `What a Feeling - Courtney Storm` have any
+operator-reviewed `segments.json` rows at all, and even those songs have seed
+rows beyond what's been reviewed).
 
 **Goal:** the MCP server lets the authoring model understand a song without
 guessing or re-reading large JSON. The question every experiment answers: **for
