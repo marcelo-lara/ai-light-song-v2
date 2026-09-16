@@ -8,7 +8,15 @@
     "function_status": "allin1",
     "same_label_as": "allin1",
     "confidence": "human",
-    "key": "harmonic"
+    "key": "harmonic",
+    "energy": "energy_level",
+    "energy_confidence": "energy_level",
+    "tension": "tension_shape",
+    "tension_confidence": "tension_shape",
+    "rhythm.bass": "rhythm_stem_autocorr",
+    "rhythm.drums": "rhythm_drum_ioi",
+    "rhythm.harmonic": "rhythm_stem_autocorr",
+    "rhythm.vocals": "rhythm_stem_autocorr"
   },
   "sections": [
     {
@@ -20,7 +28,30 @@
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor"
+      "key": "D# minor",
+      "energy": 1,
+      "energy_confidence": 0.125,
+      "tension": 5,
+      "tension_confidence": 0.875,
+      "rhythm": {
+        "bass": {
+          "subdivision": "sixteenth",
+          "confidence": 0.0308
+        },
+        "drums": {
+          "subdivision": "eighth_triplet",
+          "confidence": 0.5075,
+          "onsets_per_beat": 2.683
+        },
+        "harmonic": {
+          "subdivision": "sixteenth",
+          "confidence": 0.0905
+        },
+        "vocals": {
+          "subdivision": "none",
+          "confidence": 1.0
+        }
+      }
     },
     {
       "section_id": "section-002",
@@ -31,7 +62,32 @@
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor"
+      "key": "D# minor",
+      "energy": 3,
+      "energy_confidence": 0.375,
+      "tension": 3,
+      "tension_confidence": 0.875,
+      "rhythm": {
+        "bass": {
+          "subdivision": "sixteenth",
+          "confidence": 0.0096
+        },
+        "drums": {
+          "subdivision": "quarter",
+          "confidence": 0.9937,
+          "onsets_per_beat": 1.932
+        },
+        "harmonic": {
+          "subdivision": "quarter",
+          "confidence": 0.0033
+        },
+        "vocals": {
+          "subdivision": "quarter",
+          "confidence": 1.0,
+          "onsets_per_beat": 0.561,
+          "source": "rhythm_vocal_onsets"
+        }
+      }
     },
     {
       "section_id": "section-003",
@@ -42,7 +98,32 @@
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor"
+      "key": "D# minor",
+      "energy": 3,
+      "energy_confidence": 0.375,
+      "tension": 4,
+      "tension_confidence": 0.375,
+      "rhythm": {
+        "bass": {
+          "subdivision": "sixteenth",
+          "confidence": 0.0076
+        },
+        "drums": {
+          "subdivision": "sixteenth",
+          "confidence": 0.9398,
+          "onsets_per_beat": 5.509
+        },
+        "harmonic": {
+          "subdivision": "quarter",
+          "confidence": 0.0239
+        },
+        "vocals": {
+          "subdivision": "half",
+          "confidence": 0.4522,
+          "onsets_per_beat": 0.286,
+          "source": "rhythm_vocal_onsets"
+        }
+      }
     },
     {
       "section_id": "section-004",
@@ -53,7 +134,30 @@
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor"
+      "key": "D# minor",
+      "energy": 5,
+      "energy_confidence": 0.125,
+      "tension": 5,
+      "tension_confidence": 0.125,
+      "rhythm": {
+        "bass": {
+          "subdivision": "none",
+          "confidence": 1.0
+        },
+        "drums": {
+          "subdivision": "eighth",
+          "confidence": 0.9467,
+          "onsets_per_beat": 2.5
+        },
+        "harmonic": {
+          "subdivision": "none",
+          "confidence": 0.2054
+        },
+        "vocals": {
+          "subdivision": "sixteenth",
+          "confidence": 0.944
+        }
+      }
     },
     {
       "section_id": "section-005",
@@ -64,7 +168,30 @@
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor"
+      "key": "D# minor",
+      "energy": 5,
+      "energy_confidence": 0.625,
+      "tension": 2,
+      "tension_confidence": 0.125,
+      "rhythm": {
+        "bass": {
+          "subdivision": "quarter",
+          "confidence": 0.0286
+        },
+        "drums": {
+          "subdivision": "eighth",
+          "confidence": 1.0,
+          "onsets_per_beat": 2.922
+        },
+        "harmonic": {
+          "subdivision": "half",
+          "confidence": 0.1078
+        },
+        "vocals": {
+          "subdivision": "none",
+          "confidence": 0.3622
+        }
+      }
     },
     {
       "section_id": "section-006",
@@ -75,7 +202,34 @@
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor"
+      "key": "D# minor",
+      "energy": 4,
+      "energy_confidence": null,
+      "energy_source": "human",
+      "tension": 5,
+      "tension_confidence": null,
+      "tension_source": "human",
+      "rhythm": {
+        "bass": {
+          "subdivision": "none",
+          "confidence": 1.0
+        },
+        "drums": {
+          "subdivision": "eighth",
+          "confidence": 0.9359,
+          "onsets_per_beat": 3.75
+        },
+        "harmonic": {
+          "subdivision": "quarter",
+          "confidence": 0.1785
+        },
+        "vocals": {
+          "subdivision": "quarter",
+          "confidence": 0.2615,
+          "onsets_per_beat": 0.5,
+          "source": "rhythm_vocal_onsets"
+        }
+      }
     },
     {
       "section_id": "section-007",
@@ -86,7 +240,32 @@
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor"
+      "key": "D# minor",
+      "energy": 4,
+      "energy_confidence": 0.875,
+      "tension": 3,
+      "tension_confidence": 0.375,
+      "rhythm": {
+        "bass": {
+          "subdivision": "sixteenth",
+          "confidence": 0.2556
+        },
+        "drums": {
+          "subdivision": "eighth_triplet",
+          "confidence": 0.3484,
+          "onsets_per_beat": 3.044
+        },
+        "harmonic": {
+          "subdivision": "sixteenth",
+          "confidence": 0.2926
+        },
+        "vocals": {
+          "subdivision": "quarter",
+          "confidence": 0.095,
+          "onsets_per_beat": 0.315,
+          "source": "rhythm_vocal_onsets"
+        }
+      }
     },
     {
       "section_id": "section-008",
@@ -97,7 +276,30 @@
       "function_status": "unknown",
       "same_label_as": null,
       "confidence": 0.8,
-      "key": "D# minor"
+      "key": "D# minor",
+      "energy": 1,
+      "energy_confidence": 0.625,
+      "tension": 1,
+      "tension_confidence": 0.625,
+      "rhythm": {
+        "bass": {
+          "subdivision": "sixteenth",
+          "confidence": 0.2107
+        },
+        "drums": {
+          "subdivision": "sixteenth",
+          "confidence": 0.0949,
+          "source": "rhythm_stem_autocorr"
+        },
+        "harmonic": {
+          "subdivision": "sixteenth",
+          "confidence": 0.0819
+        },
+        "vocals": {
+          "subdivision": "sixteenth",
+          "confidence": 0.094
+        }
+      }
     }
   ]
 }

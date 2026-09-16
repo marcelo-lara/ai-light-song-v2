@@ -66,7 +66,7 @@ commit.
 
 | | |
 | --- | --- |
-| Done | 10 of 12 |
+| Done | 11 of 12 |
 | Visual QA items | 2, 4, 5, 7, 8 |
 | MCP full-regression | items 9, 10, 11, 12 (smoke-test on every item) |
 | `get_song_overview("Titanium - David Guetta ft Sia")` byte size (item 9, `mcp/tests/measure_tokens.py`-style measurement) | 34,919 bytes — over the 6,144-byte target even after item 8's field trim; `arrangement` (44 blocks, 7,273 B) is now the largest block, ahead of `gestures` (7,107 B); see `docs/issues.md` "prose budget" |
@@ -75,7 +75,7 @@ commit.
 | New experiments | `truth_common`, `segment_seeds`, `rhythm_drum_ioi`, `rhythm_stem_autocorr`, `rhythm_vocal_onsets`, `energy_level`, `tension_shape` |
 | Promotion approval | producers kept by item 6 are **pre-approved** for `src/` (operator, 2026-09-14: "unless something fails too far, just add it as a layer") |
 | Pre-existing failures | analyzer tests, ui test+build, MCP smoke-test: all green on HEAD (7a58785). Visual suite: 39/44 specs failed pre-existing — screenshot-baseline drift in this environment (e.g. `timeline-zoom-max` expects 1280×1142, environment renders 1280×1304 — a systemic font/viewport rendering difference, not a code defect). Item 2 incidentally fixed two non-screenshot contributors (stale `human_hints.json`/`block_energy.json` fixture drift, and the `segments.json` 404 gap — see D2.2), dropping this to 23/44 failing, all pure screenshot-baseline drift now. Treat any per-item visual QA as DOM/data assertions; screenshot re-capture is skipped for the reason given in each item's Visual QA section — a human with a matching rendering environment should run `--update-snapshots` once and review the diff before trusting pixel baselines again. |
-| Decisions | D2.1 (resolved), D2.2 (resolved), D4.1 (resolved), D5.1 (resolved), D8.1 (resolved), D10.1 (resolved) |
+| Decisions | D2.1 (resolved), D2.2 (resolved), D4.1 (resolved), D5.1 (resolved), D8.1 (resolved), D10.1 (resolved), D10.2 (resolved) |
 
 ---
 
@@ -307,20 +307,44 @@ Refinement item 5 (MCP part, beats decision).
 
 Refinement item 6: fields, precedence, `review_warning`.
 
-- [ ] Port every producer item 6 kept into `src/analyzer/stages/section_clues.py` (a phase-3 stage, never reads audio), registered in `STAGE_PIPELINE_IDS` before `build-ui-data`. Delete the ported experiment code, keeping `README.md`, and its `experiments/queue.toml` row. Pre-approved (Status).
-- [ ] `sections.json` rows gain `energy`, `energy_confidence`, `tension`, `tension_confidence`, and `rhythm: {<source>: {subdivision, onsets_per_beat, confidence}}`. Per field, per section: `segments.json` (source `human`) → highest-confidence ported producer that clears its floor → `segments.seed.json` (source `seed_unreviewed`, confidence `null`) → field absent. `field_sources` declares the file default, with a per-row override where a row's source differs.
-- [ ] `mcp/serializers.py`: overview and detail section rows carry the fields. `get_song_overview` adds `review_warning` (text in refinement item 6) with the `section_id`s of every row carrying a `seed_unreviewed` field, and omits it when there are none.
-- [ ] Tests: precedence unit test (`human` > producer > seed), `review_warning` serializer test, MCP fixtures carry one `seed_unreviewed` row. Snapshots regenerated.
-- [ ] Docs: `downstream-contract.md`, `docs/mcp-definition.md`, `docs/analysis-definition.md` (stage + provisional numbers), `docs/reference/source-map.md`, `docs/reference/artifacts.md`.
+- [x] Port every producer item 6 kept into `src/analyzer/stages/section_clues.py` (a phase-3 stage, never reads audio), registered in `STAGE_PIPELINE_IDS` before `build-ui-data` (dict key `section-clues`, runs immediately after `contest-section-function` in the real execution order). Delete the ported experiment code per **D10.2 (resolved, below)**.
+- [x] `sections.json` rows gain `energy`, `energy_confidence`, `tension`, `tension_confidence`, and `rhythm: {<source>: {subdivision, onsets_per_beat, confidence}}`. Per field, per section: `segments.json` (source `human`) → highest-confidence ported producer that clears its floor → `segments.seed.json` (source `seed_unreviewed`, confidence `null`) → field absent. `field_sources` declares the file default, with a per-row override via a sibling `<field>_source` key (and per-rhythm-source `"source"` key) where a row's source differs from the default.
+- [x] `mcp/serializers.py`: overview and detail section rows carry the fields. `get_song_overview` adds `review_warning` (text in refinement item 6) with the `section_id`s of every row carrying a `seed_unreviewed` field, and omits it when there are none.
+- [x] Tests: precedence unit test (`human` > producer > seed), `review_warning` serializer test, MCP fixtures carry one `seed_unreviewed` row. Snapshots regenerated.
+- [x] Docs: `downstream-contract.md`, `docs/mcp-definition.md`, `docs/analysis-definition.md` (stage + provisional numbers), `docs/reference/source-map.md`, `docs/reference/artifacts.md`.
 
 **D10.1 (resolved):** if `rhythm_vocal_onsets` is kept, its compute moves into
 the `whisperx` service as a second output,
 `artifacts/whisperx-vad/vocal_onsets.json`, using the same model the experiment
 used. `section_clues` reads that file and fails explicitly when it is absent.
+Implemented as `whisperx_vad/vocal_onsets.py` — `faster_whisper` large-v3 word
+onsets over the vocal stem, reusing the pre-fetched, already-cached model
+weights (`models/hf/hub/models--Systran--faster-whisper-large-v3`, `HF_HOME`
+pointed there on the `whisperx` service) — no new download, no new image;
+`whisperx==3.8.6` already pulls `faster-whisper` transitively.
+
+**D10.2 (resolved):** the plan's checklist wording ("keeping `README.md`, and
+its `experiments/queue.toml` row") was ambiguous about whether the queue row
+survives. Resolved to match item 2's WhisperX-promotion precedent: the
+`queue.toml` row is **removed**, not kept — these are promoted, not queued,
+experiments. `rhythm_drum_ioi`, `rhythm_stem_autocorr`, `energy_level`,
+`tension_shape`, `rhythm_vocal_onsets` all lost `{compute,export,paths,run,
+score}.py` + `cache/`, keeping only `README.md` + `out/`; their `queue.toml`
+rows deleted; `docs/experiments.md`'s five entries moved to
+`docs/archive/experiments_promoted.md` as one TLDR section.
+
+**Note:** `section_clues.py` reads `reference/human/segments.json` and
+`segments.seed.json` directly from what the plan calls a "phase-3" stage —
+in tension with the general "reference/ feeds only validation and publish"
+rule, but this stage's whole job is exactly that: fusing sources by
+confidence into the top-level `sections.json`, the established
+published-files-are-fused-and-attributed pattern. Followed the plan's
+explicit, more specific instruction; not treated as a violation.
 
 **Checks**
-- [ ] analyzer tests, MCP smoke-test + full-regression green.
-- [ ] `_test_song/sections.json`: every row has `energy`, `tension`, `rhythm` or an explicit absence. Every `seed_unreviewed` field has `confidence: null`.
+- [x] analyzer tests (162), MCP smoke-test + full-regression (11 + 40) green.
+- [x] `_test_song/sections.json`: every row has `energy`, `tension`, `rhythm` or an explicit absence. Every `seed_unreviewed` field has `confidence: null` (verified via the precedence unit tests; no real-corpus row hit the seed tier in practice — every span across all 23 songs got a value from a ported producer or the operator, since a producer's own "floor" is non-omission of its own row, which is rare to fail on real data; the seed path is exercised and correct, just not triggered on this corpus).
+- [x] Corpus republish: `whisperx --song <name>` (both outputs — VAD + `vocal_onsets.json`) and `./analyze --stage section-clues` run for all 23 songs. ui test (403) + build green; full visual suite unchanged from item 9's baseline (21/44 failing, same set, pure screenshot drift).
 
 ---
 
