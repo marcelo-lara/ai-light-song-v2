@@ -390,6 +390,15 @@ export function App(): React.JSX.Element {
   const audioUrl = song ? artifactPaths.audio(song) : null;
   const transport = useTransport({ audioUrl, coords });
   const duration = transport.duration || estimatedDuration;
+  const minZoomPxPerBar = useMemo(() => {
+    if (!duration || viewportWidth <= 0) return PX_PER_BAR_MIN;
+    return fitToWidthPxPerBar(viewportWidth, duration, coords.medianBarSeconds);
+  }, [duration, viewportWidth, coords.medianBarSeconds]);
+  const clampZoomForViewport = useCallback(
+    (value: number): number =>
+      Math.max(minZoomPxPerBar, clampPxPerBar(value)),
+    [minZoomPxPerBar],
+  );
 
   const humanHintsFile = hintsOverride ?? artifacts.humanHints.data;
   const humanSectionsFile = sectionsOverride ?? artifacts.humanSections.data;
@@ -1102,6 +1111,12 @@ export function App(): React.JSX.Element {
     setPxPerBar(fitToWidthPxPerBar(el.clientWidth, duration, coords.medianBarSeconds));
   }, [duration, coords.medianBarSeconds]);
 
+  // Zoom floor is dynamic: never below full-song fit in the current viewport
+  // (with the global 3 px/bar absolute floor from `clampPxPerBar`).
+  useEffect(() => {
+    setPxPerBar((v) => (v < minZoomPxPerBar ? minZoomPxPerBar : v));
+  }, [minZoomPxPerBar]);
+
   const { stepBeat, stepBar } = transport;
 
   // esc target: panel → review view → lane list → left panel (drawer).
@@ -1156,7 +1171,7 @@ export function App(): React.JSX.Element {
           break;
         case "zoomOut":
           captureZoomAnchor();
-          setPxPerBar((v) => zoomOutPxPerBar(v));
+          setPxPerBar((v) => clampZoomForViewport(zoomOutPxPerBar(v)));
           break;
         case "fitToWidth":
           fitToWidth();
@@ -1174,6 +1189,7 @@ export function App(): React.JSX.Element {
     fitToWidth,
     closeOverlay,
     captureZoomAnchor,
+    clampZoomForViewport,
   ]);
 
   // Move focus into the drawer when it opens (non-modal — no trap).
@@ -1557,21 +1573,21 @@ export function App(): React.JSX.Element {
             aria-label="Zoom out"
             onClick={() => {
               captureZoomAnchor();
-              setPxPerBar((v) => zoomOutPxPerBar(v));
+              setPxPerBar((v) => clampZoomForViewport(zoomOutPxPerBar(v)));
             }}
           >
             <i className="ph ph-magnifying-glass-minus" />
           </button>
           <input
             type="range"
-            min={PX_PER_BAR_MIN}
+            min={minZoomPxPerBar}
             max={PX_PER_BAR_MAX}
             value={pxPerBar}
             aria-label="Zoom (px per bar)"
             style={{ width: 148 }}
             onChange={(event) => {
               captureZoomAnchor();
-              setPxPerBar(clampPxPerBar(Number(event.target.value)));
+              setPxPerBar(clampZoomForViewport(Number(event.target.value)));
             }}
           />
           <button

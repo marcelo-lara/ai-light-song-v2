@@ -221,8 +221,8 @@ Fixed bottom bar, left to right:
 
 | Element | Behavior |
 | --- | --- |
-| Zoom out / zoom in buttons | multiply/divide `pxPerBar` by `ZOOM_FACTOR` (1.3), clamped to `PX_PER_BAR_MIN`–`PX_PER_BAR_MAX` (14–360) |
-| Zoom slider | sets `pxPerBar` directly, same 14–360 range |
+| Zoom out / zoom in buttons | multiply/divide `pxPerBar` by `ZOOM_FACTOR` (1.3). The absolute clamp is `PX_PER_BAR_MIN`–`PX_PER_BAR_MAX` (3–360), and the effective minimum is the current fit-to-width value so zoom-out stops at whole-song view |
+| Zoom slider | sets `pxPerBar` directly with the same 3–360 absolute span and the same whole-song effective minimum |
 | `app-footer__ppb` label | live `"<pxPerBar> px/bar"` string |
 | Fit-to-width button | sets `pxPerBar` so the whole song fills the visible scroll width (`fitToWidthPxPerBar`, driven by song duration and the median bar length) |
 | Follow-playhead toggle (`follow-toggle`) | on by default, persisted per browser (`localStorage`); while on and playing, auto-scrolls the timeline to keep the playhead onscreen; turns itself off the instant the reviewer scrolls manually during playback |
@@ -232,7 +232,9 @@ Fixed bottom bar, left to right:
 
 Zoom, playhead position, lane visibility, lane collapse and region selection
 are **browser-local only** and not persisted, except the follow-playhead flag
-(`localStorage`, per browser). Shared zoom spans 14–360 px/bar; at maximum
+(`localStorage`, per browser). Shared zoom spans 3–360 px/bar, with a
+viewport/song-specific floor at fit-to-width so the minimum visible zoom is
+the whole song; at maximum
 zoom a long song exceeds the ~32k-pixel canvas ceiling, so dense lanes hold
 their CSS width and downscale the backing store instead.
 
