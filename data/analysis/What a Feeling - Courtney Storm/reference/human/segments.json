@@ -1,47 +1,140 @@
 [
-    {
-        "start": 3.12,
-        "end": 34.11,
-        "label": "Intro"
-    },
-    {
-        "start": 34.11,
-        "end": 49.60,
-        "label": "Verse"
-    },
-    {
-        "start": 49.60,
-        "end": 80.34,
-        "label": "Verse"
-    },
-    {
-        "start": 80.34,
-        "end": 111.55,
-        "label": "Bridge"
-    },
-    {
-        "start": 111.55,
-        "end": 127.27,
-        "label": "Verse"
-    },
-    {
-        "start": 127.27,
-        "end": 142.18,
-        "label": "Verse"
-    },
-    {
-        "start": 142.18,
-        "end": 158.00,
-        "label": "Instrumental"
-    },
-    {
-        "start": 157.39,
-        "end": 188.73,
-        "label": "Verse"
-    },
-    {
-        "start": 188.73,
-        "end": 204.73,
-        "label": "Outro"
+  {
+    "start": 3.12,
+    "end": 34.11,
+    "label": "Intro",
+    "energy": 2,
+    "tension": 5,
+    "rhythm": {
+      "drums": "none",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
     }
+  },
+  {
+    "start": 34.11,
+    "end": 49.6,
+    "label": "Chorus",
+    "energy": 4,
+    "tension": 3,
+    "rhythm": {
+      "drums": "eighth",
+      "bass": "quarter",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 49.6,
+    "end": 64.85,
+    "label": "Chorus",
+    "energy": 5,
+    "tension": 3,
+    "rhythm": {
+      "drums": "sixteenth",
+      "bass": "quarter",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 64.85,
+    "end": 78.4,
+    "label": "Chorus",
+    "energy": 5,
+    "tension": 3
+  },
+  {
+    "start": 78.4,
+    "end": 80.34,
+    "label": "Post-Chorus",
+    "energy": 3,
+    "tension": 3
+  },
+  {
+    "start": 80.34,
+    "end": 111.55,
+    "label": "Breakdown",
+    "energy": 1,
+    "tension": 4,
+    "rhythm": {
+      "drums": "none",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 111.55,
+    "end": 127.27,
+    "label": "Pre-Chorus",
+    "energy": 3,
+    "tension": 3,
+    "rhythm": {
+      "drums": "quarter",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 127.27,
+    "end": 142.18,
+    "label": "Chorus",
+    "energy": 5,
+    "tension": 3,
+    "rhythm": {
+      "drums": "sixteenth",
+      "bass": "quarter",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 142.18,
+    "end": 157.949,
+    "label": "Chorus",
+    "energy": 5,
+    "tension": 3,
+    "rhythm": {
+      "drums": "sixteenth",
+      "bass": "quarter",
+      "harmonic": "sixteenth",
+      "vocals": "sixteenth"
+    }
+  },
+  {
+    "start": 157.949,
+    "end": 175.17,
+    "label": "Chorus",
+    "energy": 5,
+    "tension": 3,
+    "rhythm": {
+      "drums": "sixteenth",
+      "bass": "quarter",
+      "harmonic": "sixteenth",
+      "vocals": "none"
+    }
+  },
+  {
+    "start": 175.17,
+    "end": 188.73,
+    "label": "Chorus",
+    "energy": 5,
+    "tension": 3
+  },
+  {
+    "start": 188.73,
+    "end": 204.73,
+    "label": "Outro",
+    "energy": 1,
+    "tension": 2,
+    "rhythm": {
+      "drums": "none",
+      "bass": "sixteenth",
+      "harmonic": "sixteenth",
+      "vocals": "none"
+    }
+  }
 ]

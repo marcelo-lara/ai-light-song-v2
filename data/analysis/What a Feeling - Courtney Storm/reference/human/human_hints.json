@@ -4,18 +4,27 @@
     {
       "id": "hint-001",
       "title": "Chatter",
-      "start_time": 3.27,
-      "end_time": 4.2700000000000005,
+      "start_time": 3.682,
+      "end_time": 34.077,
       "summary": "People talking about peaceful and heavenly places (like a seashore table)",
       "lighting_hint": "",
       "type": "vocal"
     },
     {
       "id": "hint-002",
-      "title": "chatt",
+      "title": "Lead vocal",
       "start_time": 34.231,
-      "end_time": 35.231,
-      "summary": "",
+      "end_time": 49.575,
+      "summary": "Lead vocal chill sing, 1 bar notes",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-003",
+      "title": "Build like",
+      "start_time": 119.4,
+      "end_time": 127.27,
+      "summary": "Snares duplicating time (rising) to pace up the chorus energy, similar to a drop (not a drop, but main chorus)",
       "lighting_hint": ""
     }
   ]
