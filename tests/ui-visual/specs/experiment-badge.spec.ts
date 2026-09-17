@@ -36,6 +36,7 @@ const BADGED = [
   "rhythmVocalOnsets",
   "energyLevel",
   "tensionShape",
+  "segmentSeeds",
   "character",
   "vocalTranscription",
 ] as const;

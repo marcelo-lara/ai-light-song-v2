@@ -32,6 +32,7 @@ import {
   rhythmVocalOnsetsContent,
   energyLevelContent,
   tensionShapeContent,
+  segmentSeedsContent,
   vocalVoicenessContent,
   voiceMultiplicityContent,
 } from "./laneContent";
@@ -46,7 +47,7 @@ import type {
   VocalVoicenessFile,
   VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
-import type { HarmonicLayer } from "../data/types";
+import type { HarmonicLayer, HumanSegmentsSeedFile } from "../data/types";
 import { romanNumeral } from "./romanNumeral";
 
 describe("humanHintsContent", () => {
@@ -740,6 +741,50 @@ describe("tensionShapeContent", () => {
 
   it("never throws on a missing file", () => {
     expect(tensionShapeContent(null)).toEqual([]);
+  });
+});
+
+describe("segmentSeedsContent", () => {
+  const file: HumanSegmentsSeedFile = [
+    {
+      start: 0,
+      end: 16,
+      label: "verse",
+      energy: 3,
+      tension: 2,
+      rhythm: { drums: "steady", bass: "root-fifth", harmonic: "sustained", vocals: "syllabic" },
+    },
+    {
+      start: 16,
+      end: 32,
+      label: null,
+      energy: null,
+      tension: 4,
+      rhythm: { harmonic: "arpeggiated" },
+    },
+  ];
+  const blocks = segmentSeedsContent(file);
+
+  it("labels a fully-seeded row with id, caption tags, and per-source rhythm detail", () => {
+    expect(blocks[0]!.id).toBe("segment-seed-001");
+    expect(blocks[0]!.laneLabel).toBe("Segment Seeds");
+    expect(blocks[0]!.label).toBe("verse");
+    expect(blocks[0]!.caption).toContain("E3");
+    expect(blocks[0]!.caption).toContain("T2");
+    expect(blocks[0]!.detail).toContain("rhythm drums: steady");
+    expect(blocks[0]!.summary).toContain("experiments/segment_seeds");
+  });
+
+  it("renders a missing energy/label and an unreported rhythm source honestly, never a default", () => {
+    expect(blocks[1]!.label).toBe("segment-seed-002");
+    expect(blocks[1]!.caption).not.toContain("E");
+    expect(blocks[1]!.detail).toContain("energy: not seeded");
+    expect(blocks[1]!.detail).toContain("rhythm drums: none reported");
+    expect(blocks[1]!.detail).toContain("rhythm harmonic: arpeggiated");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(segmentSeedsContent(null)).toEqual([]);
   });
 });
 

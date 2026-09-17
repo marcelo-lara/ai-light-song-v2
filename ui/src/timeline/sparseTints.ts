@@ -110,6 +110,7 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   energyLevel: [350, 60, 46], // red-pink — v3.6 item 5's energy candidate
   //   producer; distinct from every neighbour hue in the 300-340 range above
   tensionShape: [227, 55, 46], // blue — v3.6 item 5's tension candidate
+  segmentSeeds: [246, 55, 46], // indigo — the unreviewed seed tier below the five clue producers; distinct from tensionShape's blue (227) and moisesLyricsValidated's violet (265)
   //   producer; distinct from arrangementState's olive-lime (95)
   gestures: [10, 75, 46], // burnt orange — sound-design device gestures
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))

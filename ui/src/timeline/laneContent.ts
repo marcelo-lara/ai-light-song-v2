@@ -766,6 +766,50 @@ export function tensionShapeContent(file: TensionShapeFile | null): SparseBlock[
 }
 
 /**
+ * `reference/human/segments.seed.json` — `experiments/segment_seeds`' rule-based
+ * first-pass draft of energy/tension/rhythm over the operator's segment spans.
+ * Unreviewed inference, not operator input; renders every row regardless of
+ * whether it has since been reviewed into segments.json. Never invents a value
+ * for a missing field — prints the gap instead.
+ */
+export function segmentSeedsContent(file: HumanSegmentsSeedFile | null): SparseBlock[] {
+  return (file ?? []).map((row, i) => {
+    const id = `segment-seed-${String(i + 1).padStart(3, "0")}`;
+    const tags = [
+      row.energy != null ? `E${row.energy}` : null,
+      row.tension != null ? `T${row.tension}` : null,
+    ].filter((t): t is string => t != null);
+    const caption = tags.length
+      ? `${formatRange(row.start, row.end)} · ${tags.join(" ")}`
+      : formatRange(row.start, row.end);
+    const rhythmSources: Array<["drums" | "bass" | "harmonic" | "vocals", string]> = [
+      ["drums", row.rhythm?.drums ?? "none reported"],
+      ["bass", row.rhythm?.bass ?? "none reported"],
+      ["harmonic", row.rhythm?.harmonic ?? "none reported"],
+      ["vocals", row.rhythm?.vocals ?? "none reported"],
+    ];
+    const detail = [
+      `energy: ${row.energy != null ? row.energy : "not seeded"}`,
+      `tension: ${row.tension != null ? row.tension : "not seeded"}`,
+      ...rhythmSources.map(([k, v]) => `rhythm ${k}: ${v}`),
+    ].join(" · ");
+    return {
+      id,
+      start_s: row.start,
+      end_s: row.end,
+      label: row.label ?? id,
+      laneLabel: "Segment Seeds",
+      caption,
+      reference: id,
+      detail,
+      summary:
+        "experiments/segment_seeds — rule-based first-pass draft over the operator's segment spans; unreviewed inference, not operator input.",
+      raw: row,
+    };
+  });
+}
+
+/**
  * Which intensity bucket a voiceness frame falls in — the SparseLane block
  * primitive has no continuous-curve renderer, so the "dense curve" this lane
  * needs is approximated by merging consecutive same-bucket frames (at the
@@ -1137,6 +1181,7 @@ export interface LaneContentSources {
   rhythmVocalOnsets?: RhythmVocalOnsetsFile | null;
   energyLevel?: EnergyLevelFile | null;
   tensionShape?: TensionShapeFile | null;
+  segmentSeeds?: HumanSegmentsSeedFile | null;
   vocalVoiceness?: VocalVoicenessFile | null;
   svdTagger?: SvdTaggerFile | null;
   whisperxVad?: WhisperxVadFile | null;
@@ -1159,6 +1204,7 @@ export const SPARSE_LANE_IDS = [
   "rhythmVocalOnsets",
   "energyLevel",
   "tensionShape",
+  "segmentSeeds",
   "vocalVoiceness",
   "svdTagger",
   "whisperxVad",
@@ -1204,6 +1250,8 @@ export function buildLaneBlocks(
       return energyLevelContent(s.energyLevel ?? null);
     case "tensionShape":
       return tensionShapeContent(s.tensionShape ?? null);
+    case "segmentSeeds":
+      return segmentSeedsContent(s.segmentSeeds ?? null);
     case "vocalVoiceness":
       return vocalVoicenessContent(s.vocalVoiceness ?? null);
     case "svdTagger":
