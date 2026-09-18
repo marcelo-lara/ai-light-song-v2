@@ -158,8 +158,8 @@ harmonic 1.0000, vocals 0.9811, drums 0.1698; `rhythm_vocal_onsets` vocals
 the operator's own `segments.json` rows; `tension_shape` tension 0.7547 seed /
 1-of-2 exact, 2-of-2 within-1 human. **Do not treat any energy/tension/rhythm
 value as settled** until the operator has reviewed the seeds — full record:
-`docs/archive/experiments_promoted.md` "Energy / tension / rhythm clue
-producers". `rhythm_vocal_onsets`'s compute lives outside this stage, in
+`docs/archive/experiments.promoted.energy-tension-rhythm-clues.md`.
+`rhythm_vocal_onsets`'s compute lives outside this stage, in
 `whisperx_vad/vocal_onsets.py` (a second output of the `whisperx` service,
 `artifacts/whisperx-vad/vocal_onsets.json`) — `section_clues` reads that file
 and raises if the song has not been run through that service.
@@ -441,7 +441,7 @@ boundaries to a **median 0.07 s** (F1 0.59 @±0.5 s, where `sections.json` score
 0.00), with no model and no audio read, and finds the Armin `Breath` block at
 83.00–95.50 against 81.39–96.33 hand-marked — tighter on both edges than the
 CLAP forward pass. Full measured record:
-[`archive/experiments_promoted.md`](archive/experiments_promoted.md).
+[`archive/experiments.promoted.arrangement-state.md`](archive/experiments.promoted.arrangement-state.md).
 
 Three findings from that work that generalise beyond it:
 

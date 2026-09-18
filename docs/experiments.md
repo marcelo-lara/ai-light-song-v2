@@ -3,11 +3,12 @@
 One entry per experiment, carrying its plan, its measured results and its
 conclusion. An entry leaves this file only when the operator picks **archive**
 or **promote**. Promoted ones go to
-[`archive/experiments_promoted.md`](archive/experiments_promoted.md), the rest to
-[`archive/experiments_discarded.md`](archive/experiments_discarded.md) — which
-also holds entries stopped before they ever ran, said so explicitly rather than
-implied as a result. Both files are TLDRs: the full writeup stays in
-`experiments/<topic>/README.md` where the experiment lived.
+[`archive/experiments_archive.md`](archive/experiments_archive.md), the rest to
+the same [`archive/experiments_archive.md`](archive/experiments_archive.md)
+index, discarded — which also holds entries stopped before they ever ran,
+said so explicitly rather than implied as a result. Every entry is a TLDR: the
+full writeup stays in `experiments/<topic>/README.md` where the experiment
+lived.
 
 [Loose ends](#loose-ends) at the foot of this file holds the open questions the
 queue *depends* on but which are not themselves experiments.
@@ -153,8 +154,8 @@ Adding or removing an experiment from the queue is a one-row edit to
 
 **[OPEN] — blocked on ground truth, not on method.** CLAP's *section-identity*
 result (measured, negative: MFCC 20 beats CLAP) is concluded and archived —
-[`archive/experiments_discarded.md`](archive/experiments_discarded.md). This
-entry is the other
+[`archive/experiments.discarded.clap-section-identity.md`](archive/experiments.discarded.clap-section-identity.md).
+This entry is the other
 half: a character/texture layer beyond verse-chorus arrangement, and on the
 little truth that exists it is measured and positive.
 
@@ -268,7 +269,7 @@ noise floor ([`issues.md`](issues.md)), and one marking session unblocks both.
 
 One warning for whoever tunes this next, from the shipped
 `detect-arrangement-state` stage's Measurement 1
-([`archive/experiments_promoted.md`](archive/experiments_promoted.md)): this
+([`archive/experiments.promoted.arrangement-state.md`](archive/experiments.promoted.arrangement-state.md)): this
 experiment's `smooth_s: 2.0` / `min_block_s: 4.0` is why it
 emits only three blocks on `_test_song` and misses the 16 s vocal entry, the
 36.5 s `Spacer` and the whole outro structure. **The smoothing was the cost, not
@@ -398,7 +399,7 @@ for this rescore (CPU faster-whisper, not the 8.9B ACE-Step model).
 
 ### Why? What for?
 
-Same goal as [VocalParse](archive/experiments_discarded.md#vocalparse--singing-voice-transcription-lyrics--melody):
+Same goal as [VocalParse](archive/experiments.discarded.vocalparse.md):
 put the sung lyric line, with precise timing, in front of the authoring model,
 because a sung line is a cue. ACE-Step Transcriber is the stronger candidate for
 *this* corpus — it is a Qwen2.5-Omni-7B fine-tune (11B params) built by the
@@ -542,7 +543,7 @@ never compared at a matched budget. Part B (forced alignment) was never built.
 test now exists and probably settles it. `arrangement_state` — shipped in v3.2 as
 the `detect-arrangement-state` phase-3 stage — emits `+vocals` / `-vocals` edges
 from the same per-stem RMS series, and its Measurement 1
-([`archive/experiments_promoted.md`](archive/experiments_promoted.md)) shows that
+([`archive/experiments.promoted.arrangement-state.md`](archive/experiments.promoted.arrangement-state.md)) shows that
 hysteresis-plus-smoothing, which is exactly this entry's method, **halves** F1 on
 `_test_song` (0.59 → 0.27) and displaces a hand-marked boundary by 6 s. So the
 decision path is:
@@ -722,102 +723,6 @@ baseline, and Part B, which is also the ACE-Step entry's blocker.
 
 ---
 
-## Phrase Periodicity — bar-sequence autocorrelation of per-stem energy shape
-
-*(no external model or repo — classical bar-sequence autocorrelation, numpy)*
-
-### Status
-
-**[OPEN — PASSED its kill condition].** v3.4 item 7. Built as
-[`../experiments/phrase_periodicity/`](../experiments/phrase_periodicity/README.md).
-Nothing in `src/` reads anything here. The debugger lane exists —
-**`3. Phrase Periodicity`**, under Human Hints, flask badge, reads
-`reference/proposals/phrase_periodicity.json`.
-
-**Verdict (v3.6):** keep — passed its kill condition. Bass z-norm prominence
-separates the two known-8-bar songs (`Chimera - Hana` +0.158, `Hideaway -
-Kiesza` +0.125) from the rest (max +0.075, `Armin`); the raw-envelope
-ablation finds no phrase anywhere (≤ +0.03). No top-level file, kept as a
-proposal lane.
-
-### Why? What for?
-
-The pipeline emits **no periodicity signal at all**. Question: what is the
-repetition period of a passage, and does its strength classify what kind of
-passage it is (drumless long-phrase / bar loop / dense half-bar loop)?
-
-### Experiment Plan
-
-Method held fixed, not swept:
-
-1. bar grid from `beats.json` downbeats — **period only, never phase**.
-2. per-stem envelope: `fft_bands.<stem>.json` broadband energy (mean of the 7
-   per-song-normalised band levels); documented fallback `loudness.json` 20 ms
-   per-stem RMS where a song lacks per-stem FFT (`Chimera - Hana` needed
-   `--stage extract-fft-bands` first).
-3. collapse each bar to a 16-slot energy profile; **z-normalise per bar** (shape
-   not level — load-bearing).
-4. cosine-similarity autocorrelation of the bar sequence at 1–16 bar lags.
-   Phrase length = peak lag in 2–16; `prominence` = peak minus neighbouring
-   lags (honest confidence); prominence `< 0.05` ⇒ "no phrase structure
-   detected". Regime per operator block from `rep@bar` / `rep@beat` on the
-   4-stem composite.
-
-**Cheap baseline (named ablation):** same pipeline, step 3 removed (raw
-envelope). **Songs:** the four gold songs + `Chimera - Hana` + `Queen of Kings`.
-
-### Results evidence
-
-Full tables: [`../experiments/phrase_periodicity/out/score.txt`](../experiments/phrase_periodicity/out/score.txt),
-reproduced by `run score`. **Rescored 2026-09-13 on the v3.5 corpus rebuild.**
-
-**Phrase length — z-norm vs the raw ablation (bass, prominence):**
-
-| song | z-norm period | z-norm prom | raw prom |
-| --- | --- | --- | --- |
-| `Chimera - Hana` | **8** | **+0.158** | +0.004 |
-| `Hideaway - Kiesza` | 2 | **+0.125** | +0.006 |
-| `Armin - Revolution` | 2 | +0.075 | +0.006 |
-| `Queen of Kings` | — | +0.035 | +0.006 |
-| `Titanium` | — | +0.016 | +0.001 |
-| `_test_song` | — | +0.005 | +0.000 |
-
-The raw-envelope ablation finds **no phrase on any stem of any song** (every
-prominence ≤ 0.03) — the per-bar z-normalisation is the whole method.
-`Chimera - Hana`'s operator-stated 8-bar bass phrase is recovered on **three
-stems independently** (bass +0.158, harmonic +0.106, vocals +0.226).
-`Hideaway` bass reports 2 bars: the 8-bar phrase is a weaker secondary local
-max, a 2-bar sub-loop dominates the curve — the experiment does not force the
-operator's number.
-
-**Kill condition — PASS.** `min(known 8-bar prominence) = +0.125 (Hideaway) >
-max(rest) = +0.075 (Armin)` — prominence separates `Chimera - Hana` and
-`Hideaway` bass from the four songs with no such phrase.
-
-**Block regime — `Queen of Kings`, 3/7 marked blocks:** the two intro/bridge
-blocks (through-composed) and the first percussion loop (bar-loop) classify
-correctly; `Post-Intro + Harmony` reads half-bar (rep@beat 0.60) where the
-operator marked bar-loop; the three ~3.4 s chorus blocks read through-composed
-because each is ≈ 1.7 bars — below the ≥ 2 bars `rep@bar` needs.
-
-### Known limit
-
-Needs **≥ 1 bar, ideally 2**. Seven of the sixteen `Queen of Kings` blocks are
-shorter (all four micro-events). This classifies block **character**, not
-sub-second cues — that is item 8 (`structural_vs_micro`).
-
-### Conclusion
-
-**Passed on the metric.** z-normalised bar-sequence autocorrelation recovers the
-operator-stated 8-bar bass phrase on `Chimera - Hana` (three stems) and phrase
-prominence cleanly separates the two known-8-bar songs from the rest; the raw
-ablation finds nothing. Regime classification works on blocks ≥ 2 bars and
-degrades to through-composed on shorter ones, as the known limit predicts. Not
-promoted, no top-level file. Kept as a proposal lane to audition against Human
-Hints.
-
----
-
 ## Demucs variant ablation — `htdemucs` vs `htdemucs_ft` vs `htdemucs_6s`
 
 *(no external model beyond the three Demucs checkpoints already used by `stems.py` — https://github.com/facebookresearch/demucs)*
@@ -911,340 +816,6 @@ explicitly-asked-for decision because it invalidates every cached stem in the
 corpus. Finishing `Hideaway`/`Armin` and re-running once item 1's `type:
 "vocal"` spans exist (to get the real, non-proxy false-vocal rate) are both
 open follow-ons, not committed to a queue row here.
-
----
-
-## Vocal voiceness — vibrato + portamento + sibilance timbre discriminator
-
-*(no external model — classical DSP: pitch/vibrato/portamento/sibilance features)*
-
-### Status
-
-**PARTIALLY PROMOTED 2026-09-13 — the sibilance cue only. The entry stays open
-for the rest.** v3.5 item 4. Built as
-[`../experiments/vocal_voiceness/`](../experiments/vocal_voiceness/README.md).
-Debugger lane `4. Vocal Voiceness` wired in under Human Hints. Ground truth now
-exists (see "Vocal ground truth inventory" below), so every proxy number in this
-entry is superseded.
-
-**What was promoted, and what was not.** On the operator's instruction, only
-the **sibilance** cue went into `src/` — as `vocals_phrase[].sibilance` plus
-`vocals_sibilance_song_mean` on the top-level `arrangement_state.json`, the
-stem-bleed discriminator next to the promoted `whisperx_vad` phrase spans
-(`src/analyzer/stages/ui_data.py::_sibilance_curve`, ported verbatim — `src/`
-never imports from `experiments/`). **Vibrato and portamento were deliberately
-NOT promoted**, and neither was the noisy-OR that combines all three: this
-entry's own finding is that the combination dilutes the one strong cue with two
-weak ones (separability AUC — sibilance 0.990/0.959/0.813, vibrato
-0.700/0.815/0.656, portamento 0.718/0.800/0.650). The remaining open question
-is the rework *around* sibilance that finding calls for, which is why this
-entry is not archived.
-
-Verified at the promoted granularity on `ayuni`: per-phrase sibilance separates
-true-vocal phrases (mean 0.317, range 0.218-0.416) from residual/bleed phrases
-(mean 0.178, range 0.135-0.222) against a song mean of 0.169 — every real
-phrase above the mean, both bleed phrases at it.
-
-It is **not** a rival to `whisperx_vad`. The two work at different
-granularities, consistently on every song checked:
-
-| song | `vocal_voiceness` | `whisperx_vad` |
-| --- | --- | --- |
-| `ayuni` | 73 phrases, median 0.73 s | 8 phrases, median 2.23 s |
-| `Hideaway - Kiesza` | 114 phrases, median 0.84 s | 25 phrases, median 2.83 s |
-| `Armin - Revolution` | 90 phrases, median 0.55 s | 15 phrases, median 2.68 s |
-
-One finds **words and syllables**, the other **lines and regions**. A
-word-level detector that switches off between words scores as low recall
-against span-level ground truth while being correct at its own scale — the
-frame-level presence metric that first condemned this entry was measuring
-granularity, not error.
-
-**Verdict (v3.6):** keep — sibilance already promoted (`vocals_phrase[].
-sibilance`, `arrangement_state.json`). Separability AUC: sibilance
-0.990/0.959/0.813 (`_test_song`/`ayuni`/`Queen of Kings`) vs vibrato
-0.700/0.815/0.656 and portamento 0.718/0.800/0.650 — the two unpromoted cues
-stay weak. Frame-level presence trails `whisperx_vad` on every song measured
-(`_test_song` 0.707, `ayuni` 0.788, `Queen of Kings` 0.629 balanced acc.).
-Entry stays open for the sibilance rework the finding calls for.
-
-### Why? What for?
-
-Can pitch-contour + spectral cues (vibrato width, portamento glide, sibilance
-bursts) separate a sung phrase from a pitched-instrument leak where a level
-gate cannot? `arrangement_state` reports `vocals` present 40.8% of `ayuni` —
-the false-vocal question items 3-7 chase from different angles.
-
-### Experiment Plan
-
-Three per-50ms-frame cues (vibrato depth×rate, portamento slope×fit,
-sibilance band-level×transient burst — the last read straight off the
-published `fft_bands.vocals.json`, no new FFT), combined by **noisy-OR**
-(`voiceness = 1 - Π(1 - wᵢ·cueᵢ)`, weights sibilance 0.80 / vibrato 0.55 /
-portamento 0.35 — documented judgement, not corpus-fit), scored via
-`truth_common.vocal_presence.scorer` against all three shared incumbents. Also
-implements the **pitch-continuity bridge** over `vocal_phrases`' documented
-`sustained_notes` gap (a held note's amplitude decay drops the hysteresis
-gate mid-note): bridges word-level runs across gaps ≤0.6s that stay within 60
-cents.
-
-### Results evidence
-
-Full tables: [`../experiments/vocal_voiceness/README.md`](../experiments/vocal_voiceness/README.md).
-
-**Bridge measurably adds value beyond `vocal_phrases`' own 0.5s breath merge**
-— on `ayuni`, 2 of 37 bridged gaps exceed 0.5s (0.557s, 0.592s; pitch-continuous
-within 0-5 cents) and would not have merged otherwise. But `sustained_notes`
-is still **0** on every tested song even after bridging — a separate,
-unfixed limit in the sustain scan's own pitch-tolerance/duration gate, not the
-amplitude-gate fragmentation this item targeted.
-
-**Rescored 2026-09-13** — v3.5 corpus rebuild, three-class scorer, the 5 songs
-declared in `truth_common.vocal_presence/vocal_ground_truth.json`
-([`out/score.txt`](../experiments/vocal_voiceness/out/score.txt)). Only `ayuni`
-and `Cinderella` declare negatives, so only they separate detectors.
-frame_acc / false_vocal_rate / residual firing:
-
-| candidate | `ayuni` | `Cinderella` |
-| --- | --- | --- |
-| `vocal_voiceness` | 0.8708 / 0.0323 / 0.21 | 0.5480 / 0.0106 / — |
-| `whisperx_vad` (promoted) | **0.9881 / 0.0056** / 0.24 | 0.8614 / 0.0290 / — |
-| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | **0.9342 / 0.0035** / — |
-| `vocal_phrases` | 0.7038 / 0.1514 / 0.25 | 0.4518 / 0.0783 / — |
-| mix-RMS baseline | 0.3263 / 0.6585 / 0.85 | 0.6946 / 0.2568 / — |
-
-`ayuni` reproduced its pre-rebuild row exactly; `Cinderella` moved 0.6760 →
-0.6450 → **0.5480** across the item-12 class-map repair (4/4 → 7/5 → 22/5
-spans; ~15 of the 22 positives are whisperX's own lane — see "Vocal ground
-truth inventory" below). It fires at `vocal_phrases`' budget (37-53 bounds/min)
-— word/syllable granularity, below — and trails both incumbents on frame
-accuracy on both songs. The 5-song mean is not comparable: three songs declare
-no negatives, so an always-on detector scores 1.0 there.
-
-### Conclusion
-
-**Kept.** Frame-level presence (balanced accuracy) trails `whisperx_vad`:
-`_test_song` 0.707, `ayuni` 0.788, `Queen of Kings` 0.629. But at a matched
-firing budget on `Armin - Revolution` it is close — recall 0.789 / FP-ub 0.427
-at threshold 0.2, against whisperX's 0.843 / 0.399.
-
-Two findings outlive the scoring:
-
-- **Sibilance is the only one of the three cues worth keeping.** Separability
-  against ground truth on `_test_song` / `ayuni` / `Queen of Kings`: sibilance
-  AUC **0.990 / 0.959 / 0.813**; vibrato 0.700 / 0.815 / 0.656; portamento
-  0.718 / 0.800 / 0.650. The noisy-OR dilutes the one strong cue with two weak
-  ones. Rework around sibilance; drop or down-weight the rest.
-- **Sibilance is the stem-bleed gate nothing else provides.** On `ayuni`'s
-  flute leak and on the bass bleed in `In da name of love - Anita and Ray` it
-  reads 0.007-0.061 against a song mean near 0.30. It also rescues
-  `whisperx_vad`'s own misses: on the frames whisperX calls unvoiced, sibilance
-  separates true vocal from true negative at **AUC 0.999** (`_test_song`) and
-  **0.977** (`Queen of Kings`).
-
-**Known limit.** Sibilance has a per-song noise floor: it reads 0.129 on a
-digitally near-silent stem in `What a Feeling - Courtney Storm` (level 0.0002).
-It cannot gate presence without a level gate in front of it.
-
-**A gated fusion was measured and is not yet promotable.**
-`whisperX >= 0.5 OR (whisperX >= 0.10 AND sibilance >= 0.20)` scores mean
-balanced accuracy 0.887 against whisperX's 0.846 — but leave-one-out (fit on
-two songs, score the third) gives 0.850 vs 0.845, a wash. The headline gain is
-overfitting. Needs more labelled songs, especially leaky-stem ones, before it
-means anything.
-
----
-
-## SVD Tagger — PANNs `Singing` class, stem vs mix
-
-*(PANNs Cnn14 AudioSet-527 tagger — NEW sandbox image + NEW model pin, the
-highest-cost candidate in the false-vocal family)*
-
-### Status
-
-**OPEN — built and run over all 23 songs.** v3.5 item 6. Built as
-[`../experiments/svd_tagger/`](../experiments/svd_tagger/README.md): `model.py`
-/ `export.py` / `score.py` / `run.py`, `Dockerfile`, `run_in_container.sh`,
-debugger lane `6. SVD Tagger` (both stem/mix channels as two curves in one
-lane, never a toggle).
-
-**Verdict (v3.6):** keep, not promotable — mixed against the family's
-trivial `mix_rms_baseline`, not a clean fail. Best rescale (`_p98`) frame_acc:
-`ayuni` 0.8538 beats `mix_rms_baseline` 0.3263; `Cinderella` 0.5125 loses to
-`mix_rms_baseline` 0.6946 — split 1-1, not "contradicted on most truth
-songs". Trails the `whisperx_vad` incumbent by a wide margin on both
-(0.9881/0.8614) at high fixed cost (327 MB pin, own sandbox image).
-
-### Cost, up front
-
-The only item 4-7 candidate needing both a new sandbox image (torch 2.4 CPU
-+ `panns_inference`) **and** a new model pin (327 MB PANNs checkpoint,
-sha256-verified at build time). The kill condition is explicitly
-cost-weighted: does not beat item 4 on `ayuni`'s false-vocal rate, *given
-this cost* — items 4/5 pay no image/pin cost at all.
-
-**Build lesson (the durable part of the first attempt):** the Dockerfile fetches
-the 327 MB checkpoint with an in-build `curl`, sha256-checked (`0dc499e...e34b31`).
-The first attempt ran at ~154 KB/s inside the Docker build network against
-~2.7 MB/s from the host and was killed at its 15-minute bound; a later build
-completed with the same `curl`. `whisperx_vad` avoids the risk by pre-fetching
-on the host and `COPY`-ing the checkpoint in.
-
-### Results evidence
-
-**It discriminates; it does not fire.** Measured against the three-class ground
-truth, per channel (rescored 2026-09-13 against the repaired `Cinderella` class
-map — the earlier single unlabelled figure per song is superseded):
-
-| song / channel | AUC pos-vs-neg | AUC pos-vs-residual | mean on vocal | mean on no-voice |
-| --- | --- | --- | --- | --- |
-| `ayuni` stem | 0.915 | 0.624 | 0.058 | 0.014 |
-| `ayuni` mix | 0.872 | 0.870 | 0.116 | 0.014 |
-| `Cinderella` stem | 0.931 | — | 0.144 | 0.020 |
-| `Cinderella` mix | **0.959** | — | 0.077 | 0.008 |
-
-The *ranking* is sound — vocal frames score reliably above non-vocal ones. The
-**scale** is not: peak output is 0.2967 on `ayuni`, 0.5039 on `Cinderella` and
-0.1438 on `Armin - Revolution`, so a 0.5 threshold never fires once. That is
-where this candidate's 0.00 bounds/min, 0.0000 false-vocal-rate and its
-apparent frame accuracy (`ayuni` 0.7538, `Cinderella` 0.3083 stem / 0.3042 mix
-— exactly the negative-class fraction, now lower under the repaired class map
-since positives are 22 of 27 evaluable spans) all come from: it is never wrong
-because it never speaks. PANNs' `Singing` posterior is simply low-magnitude on
-a separated vocal stem, which is out-of-distribution against the AudioSet
-material it was trained on.
-
-**Per-song rescale, measured 2026-09-13** (`_p98` rows: each channel divided by
-the song's own p98, clipped; declared before measuring, not swept). frame_acc /
-false_vocal_rate / residual firing, v3.5 corpus rebuild, three-class scorer:
-
-| candidate | `ayuni` | `Cinderella` |
-| --- | --- | --- |
-| `svd_tagger_stem` (raw) | 0.7538 / 0.0000 / 0.00 | 0.3083 / 0.0000 / — |
-| `svd_tagger_mix` (raw) | 0.7538 / 0.0000 / 0.00 | 0.3042 / 0.0000 / — |
-| `svd_tagger_stem_p98` | 0.8077 / 0.0154 / 0.23 | 0.4417 / 0.0083 / — |
-| `svd_tagger_mix_p98` | 0.8538 / 0.0077 / **0.07** | 0.5125 / 0.0000 / — |
-| `whisperx_vad` (promoted) | **0.9881 / 0.0056** / 0.24 | 0.8614 / 0.0290 / — |
-| `arrangement_state` | 0.9042 / 0.0891 / 0.82 | **0.9342 / 0.0035** / — |
-
-**Rescaling alone does not make it competitive.** It now fires, and almost never
-wrongly, but it still misses most vocal frames — rescaled, it fires at 1.75-2.19
-bounds/min against whisperX's 5.12-13.28. `Cinderella` moved further from both
-incumbents under the repaired class map (0.44-0.51 vs whisperX's 0.86,
-`arrangement_state`'s 0.93). The one distinctive number is `mix_p98`'s 0.07
-residual firing on `ayuni` (filtered/looped vocal constructs), the lowest of any
-candidate — reported, not a promotion case on its own. The other three
-scoreable songs cannot separate detectors (no declared negatives, or 2 s
-evaluable); see `experiments/whisperx_vad/README.md`.
-
-### Conclusion
-
-Scaffold complete and matches `clap_voiceness`'s (item 5) shape, including
-plugging into `truth_common.vocal_presence.schema`/`scorer`/`incumbents` the same way —
-`schema.py`'s `VoicenessFrame`/`VocalPhrase` gained an optional `channel`
-field for this item's two-producer case (stem vs mix in one proposal file,
-each row attributed — the "published files are fused, say which producer
-won" convention generalised, not a new pattern).
-
-**OPEN — no promotion case; keep/kill is the operator's call.** Its AUC never
-beats `whisperx_vad` (0.998 / 0.948), and the per-song rescale — the one cheap
-experiment left — was run and does not close the gap: best frame_acc 0.8538
-(`ayuni`) / 0.5125 (`Cinderella`) against whisperX's 0.9881 / 0.8614. What it
-uniquely shows is a low residual-construct firing rate (0.07 on `ayuni`), from
-a model that costs its own image and a 327 MB pin.
-
----
-
-## Voice Multiplicity — stereo width + L/R correlation on the vocal stem
-
-*(no external model — mid/side width and L-R correlation, per-song z-scored)*
-
-### Status
-
-**OPEN — built, run over all 23 songs, validated on one labelled song.** Built
-as
-[`../experiments/voice_multiplicity/`](../experiments/voice_multiplicity/README.md).
-Debugger lane `Voice Multiplicity` wired in. `out/score.txt` is 23 lines of
-"no `voices` labels" — only `Queen of Kings - Alessandra` has hand-marked
-lead-vs-chorus spans, and they live in hint prose, not yet in a `voices` field.
-
-**Verdict (v3.6):** keep — still corpus-wide unscoreable (`grep` for a
-`voices` field across every `reference/human/human_hints.json`: zero songs),
-confirmed unchanged. The one scored song stays strongly positive: AUC 0.951
-on `Queen of Kings`, adversarial control passed (`Underworld - Born Slippy`
-one-take vocal → 2.4 s of false "stacked", not a failure). Not archivable —
-data-starved, not contradicted.
-
-### Why? What for?
-
-The operator marks "lead alone" against "lead + back chorus", and male against
-female, and says that distinction *is* the point of the vocal work. Answering
-*who is singing* does not need diarization; the tractable question is **how
-many voices**. Leads sit centred, stacked backings are spread, and the vocal
-stems are already stereo (2ch/44.1 kHz) — so this costs nothing new.
-
-### Experiment Plan
-
-Per 50 ms frame on `artifacts/stems/vocals.wav`: `width = side_rms / mid_rms`
-and `corr` = Pearson correlation of L against R. Presence gate
-`mid_rms >= 0.10 * p90`. Both z-scored over present frames only, then
-`multiplicity = 0.5*width_z + 0.5*(-corr_z)`. Blocks where
-`|multiplicity| >= 0.5`.
-
-**Per-song z-scoring is mandatory, not a refinement.** Absolute width does not
-transfer between songs: a solo lead in `ayuni` reads 2.1 while a full chorus in
-`Queen of Kings` reads 0.77.
-
-### Results evidence
-
-Against the operator's labelled lead-vs-chorus spans on `Queen of Kings`:
-
-| signal | lead alone | lead + chorus | AUC |
-| --- | --- | --- | --- |
-| raw width | 0.253 | 0.769 | 0.921 |
-| `width_z` | -0.750 | 0.913 | 0.951 |
-| L/R correlation | 0.841 | 0.295 | 0.922 (inverted) |
-| **`multiplicity`** | -0.726 | 0.928 | **0.951** |
-
-Correlation is a strong independent cue, not filler. The `'Hey' phrase` the
-operator called "maximum perceptual tension" is the widest span in the song at
-1.459.
-
-**Adversarial control passed.** `Underworld - Born Slippy` is a documented
-single **one-take** vocal drowned in distortion and stereo effects, predicted
-here to false-positive as "stacked". It produced **4 stacked blocks totalling
-2.4 s** across the whole track: per-song z-scoring normalises constant effects
-width away. `ayuni` (solo throughout, operator-confirmed) likewise — 6 solo
-blocks, 1 stacked, 4% coverage.
-
-### Known limits
-
-- **The block layer is not usable yet.** `Titanium` produces 68 blocks at
-  median 0.95 s covering 41% of the song; `_test_song` 2 blocks covering 2%.
-  Sub-second blocks are frame flicker, not musical spans. The fixed ±0.5 z cut
-  also means different things per song because the width distribution is skewed
-  (0.09 on `Armin` to 1.92 on `Fascination`). Fix: smooth over 1-2 s, raise the
-  minimum block to ~1.5 s, replace the fixed cut with per-song percentiles.
-- **Per-song `mean multiplicity` is structurally zero** — it is a z-score — and
-  carries no information. Block counts are likewise **not comparable across
-  songs**; any table that ranks songs by them is misreading the output.
-- **Width alone is ambiguous.** Diffuse background chatter reads wide exactly as
-  a stacked chorus does. Only level and sibilance separate them:
-
-  | | centred | wide |
-  | --- | --- | --- |
-  | loud + sibilant | vocal lead | stacked chorus |
-  | quiet + weak sibilance | bleed / silence | background chatter |
-
-### Conclusion
-
-The frame-level cue is validated at AUC 0.951 on **one** song. The 23-song
-sweep produced data, not evidence. Next step is `voices: "solo"` / `"stacked"`
-labels on `Best Friend - Sofi Tukker` (four credited vocal acts),
-`Underworld - Born Slippy` (single one-take voice — the negative control) and
-`Titanium` (clean solo-verse / stacked-chorus structure), then `score` re-runs
-with no code change. Hold the block-layer rework until it can be tuned against
-labels rather than judgement.
 
 ---
 
@@ -1465,14 +1036,55 @@ The remaining `reference/proposals/` lanes are all wanted:
 | `vocal_transcription` | VocalParse archived, but **keep** — shared with the open ACE-Step entry |
 | `character`, `vocal_phrases` | entries still open — keep |
 | `drop_impacts` | **retired v3.6 item 7** — see below |
+| `vocal_voiceness`, `svd_tagger` | **retired 2026-09-17** — see below |
+| `phrase_periodicity`, `voice_multiplicity` | **retired 2026-09-17** — see below |
+
+### `phrase_periodicity` and `voice_multiplicity` lanes — retired
+
+**Archived 2026-09-17.** Neither was a negative result — `phrase_periodicity`
+passed its own kill condition (bar-sequence autocorrelation separated the two
+known-8-bar songs from the rest) and `voice_multiplicity` scored AUC 0.951 on
+`Queen of Kings` — but neither cleared the bar for promotion into `src/`.
+`phrase_periodicity` classifies block *character* (through-composed / bar-loop
+/ half-bar), not a top-level field the MCP contract projects, and its own
+known limit (needs ≥ 2 bars per block) rules out sub-second cues.
+`voice_multiplicity` stayed data-starved: only `Queen of Kings` in the whole
+corpus carries `voices` labels, so the one positive score never became
+corpus-wide evidence. Full TLDRs in
+[`archive/experiments.discarded.phrase-periodicity.md`](archive/experiments.discarded.phrase-periodicity.md)
+and
+[`archive/experiments.discarded.voice-multiplicity.md`](archive/experiments.discarded.voice-multiplicity.md).
+The `3. Phrase Periodicity` and `Voice Multiplicity` debugger lanes were removed
+via Recipe B; `experiments/phrase_periodicity/` and
+`experiments/voice_multiplicity/` stay in the tree as the record.
+
+### `vocal_voiceness` and `svd_tagger` lanes — retired
+
+**Archived 2026-09-17.** Both were voiceness-presence candidates in the same
+family as `whisperx_vad`, which beats both on every song measured (frame_acc
+`ayuni`/`Cinderella` 0.9881/0.8614 vs `vocal_voiceness` 0.8708/0.5480 and
+`svd_tagger`'s best per-song rescale 0.8538/0.5125) at far lower cost —
+`svd_tagger` alone needed its own sandbox image and a 327 MB model pin.
+Full TLDRs in
+[`archive/experiments.discarded.vocal-voiceness.md`](archive/experiments.discarded.vocal-voiceness.md)
+and
+[`archive/experiments.discarded.svd-tagger.md`](archive/experiments.discarded.svd-tagger.md).
+**Sibilance is unaffected** — `vocal_voiceness`'s one measured-strong cue was
+already promoted into `src/` (`vocals_phrase[].sibilance`,
+`arrangement_state.json`) and stays there; only the rest of that entry (the
+noisy-OR voiceness curve, vibrato/portamento) and all of `svd_tagger` are
+archived. The `4. Vocal Voiceness` and `6. SVD Tagger` debugger lanes were
+removed via Recipe B; `experiments/vocal_voiceness/` and
+`experiments/svd_tagger/` stay in the tree as the record (`truth_common`'s
+shared scorer still imports fine with both gone).
 
 ### `drop_impacts` orphan lane — retired
 
 **Settled 2026-09-14 (v3.6 item 3 rescore, retired item 7).**
 `experiments/drop_detection/` never had a queue entry, and its candidate
 proposals lose to the shipped `gestures.py` stage on the drop-stage family
-(see `docs/archive/experiments_discarded.md` "Drop Proposals
-(`drop_detection`)"). The `dropProposals` debugger lane was removed via
+(see `docs/archive/experiments.discarded.drop-proposals.md`). The
+`dropProposals` debugger lane was removed via
 Recipe B; `experiments/drop_detection/` stays in the tree as a cache other
 experiments still read, and its `reference/proposals/drop_impacts.json`
 output is unaffected — only the lane and its own `reference/proposals/
