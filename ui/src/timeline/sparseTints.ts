@@ -30,7 +30,7 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   humanHintsVocal: [118, 65, 36], // warm green — a voice sounds continuously
   //   across the span (voice = alive/present); distinct from humanHints'
   //   amber (35), humanHintsReview's azure (205), and every green-ish hue
-  //   elsewhere in this file (arrangementState 95, phrasePeriodicity 130,
+  //   elsewhere in this file (arrangementState 95,
   //   characterVocalLead/moisesLyricsHigh 150)
   humanSections: [55, 85, 46], // golden yellow — the operator's own hand-authored
   //   segmentation, deliberately near humanHints' amber (35, same "hand-authored"
@@ -46,61 +46,25 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalPhrases: [340, 55, 46], // rose — distinct from moisesLyrics' slate blue
   vocalPhrasesGap: [220, 10, 40], // near-grey — an instrumental (no-vocal) span
   vocalPhrasesSustained: [280, 60, 48], // violet-pink — a held note marker
-  // v3.5 item 4 — per-frame voiceness curve (vibrato+portamento+sibilance,
-  // noisy-OR), one hue (260, violet-blue) ramped by intensity so the lane
-  // reads as a curve rather than a qualitative label; `vocalVoicenessPhrase`
-  // is a distinct hue for the overlaid bridged `vocal_phrase` spans.
-  vocalVoicenessVeryLow: [260, 20, 22],
-  vocalVoicenessLow: [260, 35, 30],
-  vocalVoicenessMid: [260, 55, 40],
-  vocalVoicenessHigh: [260, 75, 48],
-  vocalVoicenessVeryHigh: [260, 90, 56],
-  vocalVoicenessPhrase: [200, 65, 44], // distinct from the curve's 260 hue and
-  //   from vocalPhrases' rose (340)
-  // v3.5 item 6 — PANNs `Singing`-class voiceness, run on BOTH the vocal
-  // stem and the mix, rendered as two curves in the SAME lane (never a
-  // toggle — the standing "no hiding a signal behind a selector" rule).
-  // Two distinct base hues so the stem/mix curves read as two series at a
-  // glance: stem 105 (spring-green, clear of arrangementState's 95), mix 235
-  // (blue, clear of vocalPhrasesGap's 220). Each ramped by intensity like the sibling
-  // voiceness lanes; the two phrase-overlay hues (50, 185) sit in the same
-  // gaps, clear of every neighbour.
-  svdTaggerStemVeryLow: [105, 20, 20],
-  svdTaggerStemLow: [105, 38, 28],
-  svdTaggerStemMid: [105, 55, 38],
-  svdTaggerStemHigh: [105, 75, 46],
-  svdTaggerStemVeryHigh: [105, 92, 54],
-  svdTaggerStemPhrase: [50, 65, 44],
-  svdTaggerMixVeryLow: [235, 20, 22],
-  svdTaggerMixLow: [235, 38, 32],
-  svdTaggerMixMid: [235, 58, 44],
-  svdTaggerMixHigh: [235, 75, 54],
-  svdTaggerMixVeryHigh: [235, 90, 62],
-  svdTaggerMixPhrase: [185, 60, 42],
   // v3.5 item 7 — whisperX's VAD front-end (speech-domain, VAD-only —
   // diarization not attempted, no HF_TOKEN in this environment). Hue 20
   // (amber-orange) sits between gestures' burnt orange (10) and humanHints'
   // amber (35) — distinguished from both by this lane's own intensity ramp
   // and by never co-occurring with either lane's block shape. The overlaid
   // `vocal_phrase` hue (80, yellow-green) sits below
-  // arrangementState (95) for the same reason. Unlike
-  // svdTagger, this candidate's phrase spans carry real sub-second onsets
-  // (Binarize hysteresis, not a 5s clip window) — see model.py.
+  // arrangementState (95) for the same reason. This candidate's phrase spans
+  // carry real sub-second onsets (Binarize hysteresis, not a 5s clip window)
+  // — see model.py.
   whisperxVadVeryLow: [20, 20, 20],
   whisperxVadLow: [20, 40, 28],
   whisperxVadMid: [20, 60, 38],
   whisperxVadHigh: [20, 80, 46],
   whisperxVadVeryHigh: [20, 95, 54],
   whisperxVadPhrase: [80, 60, 42],
-  voiceMultiplicity: [145, 60, 44], // sea-green — solo/stacked voice blocks,
-  //                                   distinct from phrasePeriodicity's 130,
-  //                                   moisesLyricsHigh's 150
   arrangementState: [95, 55, 44], // olive-lime — distinct from vocalPhrases' rose
   //                                 (340)
   arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a
   //                                       block where one stem or fewer is playing
-  phrasePeriodicity: [130, 55, 40], // emerald — distinct from arrangementState's
-  //   olive-lime (95); v3.4 item 7 experiment lane (passed its kill condition)
   rhythmDrumIoi: [290, 55, 46], // violet — v3.6 item 5's three rhythm.* candidate
   //   producers get their own hue each; distinct from character's 275
   rhythmStemAutocorr: [309, 55, 48], // magenta-violet — distinct from

@@ -26,26 +26,20 @@ import {
   moisesLyricsContent,
   moisesSectionsContent,
   sectionsContent,
-  phrasePeriodicityContent,
   rhythmDrumIoiContent,
   rhythmStemAutocorrContent,
   rhythmVocalOnsetsContent,
   energyLevelContent,
   tensionShapeContent,
   segmentSeedsContent,
-  vocalVoicenessContent,
-  voiceMultiplicityContent,
 } from "./laneContent";
 import type {
   ArrangementStateFile,
-  PhrasePeriodicityFile,
   RhythmDrumIoiFile,
   RhythmStemAutocorrFile,
   RhythmVocalOnsetsFile,
   EnergyLevelFile,
   TensionShapeFile,
-  VocalVoicenessFile,
-  VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
 import type { HarmonicLayer, HumanSegmentsSeedFile } from "../data/types";
 import { romanNumeral } from "./romanNumeral";
@@ -539,78 +533,6 @@ describe("moisesLyricsContent — v3.4 item 5 validation overlay", () => {
   });
 });
 
-describe("phrasePeriodicityContent", () => {
-  const file: PhrasePeriodicityFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    blocks: [
-      { start_s: 0, end_s: 16, title: "Intro", regime: "through-composed", period: null, n_bars: 8 },
-      { start_s: 16, end_s: 24, title: "Loop", regime: "bar-loop", period: 1, n_bars: 4 },
-    ],
-  };
-  const blocks = phrasePeriodicityContent(file);
-
-  it("labels a bar-loop block with its period", () => {
-    expect(blocks[1]!.wideLabel).toBe("bar-loop");
-    expect(blocks[1]!.caption).toContain("repeat unit 1 bar");
-  });
-
-  it("renders a null period honestly", () => {
-    expect(blocks[0]!.caption).toContain("no phrase structure detected");
-    expect(blocks[0]!.caption).not.toMatch(/repeat unit/);
-  });
-
-  it("never throws on a missing file", () => {
-    expect(phrasePeriodicityContent(null)).toEqual([]);
-  });
-});
-
-describe("vocalVoicenessContent", () => {
-  const file: VocalVoicenessFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    interval_ms: 50,
-    frames: [
-      { time_s: 0.0, voiceness: 0.05, confidence: 0.9 },
-      { time_s: 0.05, voiceness: 0.08, confidence: 0.84 },
-      { time_s: 0.1, voiceness: 0.72, confidence: 0.44 },
-      { time_s: 0.15, voiceness: 0.81, confidence: 0.62 },
-      { time_s: 0.2, voiceness: 0.79, confidence: 0.58 },
-    ],
-    vocal_phrase: [{ start_s: 0.1, end_s: 0.25, confidence: 0.6 }],
-  };
-  const blocks = vocalVoicenessContent(file);
-
-  it("merges consecutive same-bucket frames into one run block", () => {
-    // frames 0-1 are both "veryLow" (< 0.2) -> one merged run
-    const veryLowRun = blocks.find((b) => b.tintId === "vocalVoicenessVeryLow");
-    expect(veryLowRun).toBeDefined();
-    expect(veryLowRun!.start_s).toBe(0.0);
-    expect(veryLowRun!.end_s).toBe(0.1);
-    expect(veryLowRun!.detail).toBe("2 frames");
-  });
-
-  it("starts a new run when the bucket changes", () => {
-    // frame index 2 (0.72, "high") differs from frame index 3/4 ("veryHigh")
-    const highRun = blocks.find((b) => b.tintId === "vocalVoicenessHigh");
-    expect(highRun).toBeDefined();
-    expect(highRun!.start_s).toBe(0.1);
-    expect(highRun!.end_s).toBe(0.15);
-  });
-
-  it("appends vocal_phrase spans as their own tinted blocks", () => {
-    const phraseBlock = blocks.find((b) => b.tintId === "vocalVoicenessPhrase");
-    expect(phraseBlock).toBeDefined();
-    expect(phraseBlock!.start_s).toBe(0.1);
-    expect(phraseBlock!.end_s).toBe(0.25);
-    expect(phraseBlock!.wideLabel).toContain("bridged phrase");
-  });
-
-  it("never throws on a missing file", () => {
-    expect(vocalVoicenessContent(null)).toEqual([]);
-  });
-});
-
 describe("rhythmDrumIoiContent", () => {
   const file: RhythmDrumIoiFile = {
     schema_version: "1.0",
@@ -785,34 +707,5 @@ describe("segmentSeedsContent", () => {
 
   it("never throws on a missing file", () => {
     expect(segmentSeedsContent(null)).toEqual([]);
-  });
-});
-
-describe("voiceMultiplicityContent", () => {
-  const file: VoiceMultiplicityFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    blocks: [
-      { start: 1.0, end: 5.0, kind: "solo", mean_multiplicity: -0.82, confidence: 0.41 },
-      { start: 6.0, end: 10.0, kind: "stacked", mean_multiplicity: 0.55, confidence: 0.28 },
-    ],
-  };
-
-  it("labels a solo block with its kind", () => {
-    const blocks = voiceMultiplicityContent(file);
-    expect(blocks[0]!.label).toBe("solo");
-  });
-
-  it("renders a null mean_multiplicity honestly", () => {
-    const b = voiceMultiplicityContent({
-      schema_version: "1.0",
-      song_name: "_test_song",
-      blocks: [{ start: 0, end: 1, kind: "solo", mean_multiplicity: null, confidence: null }],
-    });
-    expect(b[0]!.caption).not.toMatch(/null/);
-  });
-
-  it("never throws on a missing file", () => {
-    expect(voiceMultiplicityContent(null)).toEqual([]);
   });
 });

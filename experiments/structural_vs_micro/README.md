@@ -7,8 +7,7 @@
 **ARCHIVED 2026-09-14 (v3.6 item 3 rescore, lane retired item 7).** FAILED its
 kill condition: phrase-grid pooled macro-F1 0.38 vs the duration-only baseline
 0.82. Nothing in `src/` reads anything here. TLDR:
-[`../../docs/archive/experiments_discarded.md`](../../docs/archive/experiments_discarded.md)
-"Structural vs Micro".
+[`../../docs/archive/experiments.discarded.structural-vs-micro.md`](../../docs/archive/experiments.discarded.structural-vs-micro.md).
 
 The debugger lane (`structuralVsMicro`, `4. Structural vs Micro`) was removed
 via Recipe B. This directory and its cached

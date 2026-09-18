@@ -420,62 +420,6 @@ export async function loadArrangementState(
   return result;
 }
 
-// ---------------------------------------------------------------------------
-// phrasePeriodicity — reference/proposals/phrase_periodicity.json
-// ---------------------------------------------------------------------------
-//
-// One block per operator hint (or published section) from
-// experiments/phrase_periodicity: z-normalised per-bar 16-slot energy profiles
-// autocorrelated over 1-16 bar lags (period only, never phase). Each block
-// carries a repetition `regime` and a `period` in bars — `period` is null when
-// no repeat structure was detected, and renders as "no phrase structure
-// detected", never a fabricated number. A proposal to audition against Human
-// Hints, not ground truth. The experiment PASSED its kill condition.
-
-export interface PhrasePeriodicityBlock {
-  start_s: number;
-  end_s: number;
-  title: string;
-  regime: string;
-  /** repeat unit in bars (1 / 0.5), or null when no phrase structure detected */
-  period: number | null;
-  n_bars: number;
-}
-
-export interface PhrasePeriodicityFile {
-  schema_version: string;
-  song_name: string;
-  blocks: PhrasePeriodicityBlock[];
-}
-
-export function parsePhrasePeriodicity(raw: unknown): PhrasePeriodicityFile {
-  const o = asObject(raw, "reference/proposals/phrase_periodicity.json");
-  const blocks: PhrasePeriodicityBlock[] = [];
-  for (const row of arr(o.blocks)) {
-    const r = rec(row);
-    blocks.push({
-      start_s: num(r.start_s),
-      end_s: num(r.end_s),
-      title: st(r.title),
-      regime: st(r.regime),
-      period: r.period == null ? null : num(r.period),
-      n_bars: num(r.n_bars),
-    });
-  }
-  blocks.sort((a, b) => a.start_s - b.start_s);
-  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
-}
-
-export async function loadPhrasePeriodicity(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<PhrasePeriodicityFile>> {
-  const result = await loadJson(artifactPaths.phrasePeriodicity(song), parsePhrasePeriodicity, f);
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
-  }
-  return result;
-}
 
 // ---------------------------------------------------------------------------
 // rhythmDrumIoi — reference/proposals/rhythm_drum_ioi.json
@@ -748,17 +692,20 @@ export async function loadTensionShape(
 }
 
 // ---------------------------------------------------------------------------
-// vocalVoiceness — reference/proposals/vocal_voiceness.json
+// whisperxVad — artifacts/whisperx-vad/whisperx_vad.json
 // ---------------------------------------------------------------------------
 //
-// The `voiceness_common.schema` proposal shape shared by every voiceness
-// candidate (items 4-7 — this file is item 4, `experiments/vocal_voiceness`):
-// a per-50ms-frame `voiceness` score in [0,1] (vibrato + portamento +
-// sibilance, noisy-OR combined — see the experiment's `model.py`) plus
-// `vocal_phrase` spans derived with a pitch-continuity bridge over
-// `vocal_phrases`' known `sustained_notes` gap. Not ground truth — a
-// proposal to audition against Human Hints; kill condition unevaluable until
-// item 1's `type: "vocal"` ground truth exists (see the experiment README).
+// whisperX's VAD front-end (speech-domain, not music or a general
+// audio-tagging class), run over the vocal stem only, as its own pipeline
+// service (`whisperx_vad/`, v3.6 item 2 — promoted out of `experiments/`,
+// no longer read from `reference/proposals/`). A per-50ms-frame `voiceness`
+// score in [0,1] plus `vocal_phrase` spans. `interval_ms` is 50: VAD spans
+// carry real sub-second onsets/offsets (a hysteresis binarizer over the
+// segmentation model's own ~17ms frames), so `vocal_phrase` boundaries are
+// genuinely timed, not a clip-window approximation. Diarization was NOT
+// attempted (no HF_TOKEN in this environment, and a live-token dependency at
+// analysis time is an automatic kill regardless of score) — no diarization
+// field exists in this file at all, never a stubbed-out null.
 
 export interface VoicenessFrameRow {
   time_s: number;
@@ -766,152 +713,13 @@ export interface VoicenessFrameRow {
   confidence: number | null;
 }
 
-export interface VocalVoicenessFile {
+export interface WhisperxVadFile {
   schema_version: string;
   song_name: string;
   interval_ms: number;
   frames: VoicenessFrameRow[];
   vocal_phrase: { start_s: number; end_s: number; confidence: number | null }[];
 }
-
-export function parseVocalVoiceness(raw: unknown): VocalVoicenessFile {
-  const o = asObject(raw, "reference/proposals/vocal_voiceness.json");
-  const meta = rec(o.metadata);
-  const frames = arr(o.frames).map((row): VoicenessFrameRow => {
-    const r = rec(row);
-    return {
-      time_s: num(r.time),
-      voiceness: num(r.voiceness),
-      confidence: r.confidence == null ? null : num(r.confidence),
-    };
-  });
-  const vocal_phrase = arr(o.vocal_phrase).map((row) => {
-    const r = rec(row);
-    const start_s = num(r.start);
-    return {
-      start_s,
-      end_s: Math.max(num(r.end, start_s), start_s),
-      confidence: r.confidence == null ? null : num(r.confidence),
-    };
-  });
-  return {
-    schema_version: st(o.schema_version),
-    song_name: st(o.song_name),
-    interval_ms: num(meta.interval_ms, 50),
-    frames,
-    vocal_phrase,
-  };
-}
-
-export async function loadVocalVoiceness(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<VocalVoicenessFile>> {
-  const result = await loadJson(artifactPaths.vocalVoiceness(song), parseVocalVoiceness, f);
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return {
-      ok: true,
-      data: { schema_version: "", song_name: song, interval_ms: 50, frames: [], vocal_phrase: [] },
-    };
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// svdTagger — reference/proposals/svd_tagger.json
-// ---------------------------------------------------------------------------
-//
-// v3.5 item 6: PANNs' `Singing` class head (AudioSet-527, index 27), run on
-// BOTH the vocal stem and the mix — the only voiceness candidate (items 4-7)
-// that runs more than one producer over the same song. Every frame/phrase
-// row carries an explicit `channel: "stem" | "mix"` (see
-// `voiceness_common.schema`'s `channel` field and `export.py`'s docstring —
-// the "published files are fused from many producers, and say which one
-// won" convention, generalised to a proposal file). `interval_ms` is 1000,
-// PANNs' own native window grid, reported honestly. Kill condition
-// unevaluable until item 1's `type: "vocal"` ground truth exists — and,
-// per the plan, this candidate must additionally beat item 4 given its new
-// image/pin cost.
-
-export interface SvdTaggerFrameRow extends VoicenessFrameRow {
-  channel: "stem" | "mix" | null;
-}
-
-export interface SvdTaggerFile {
-  schema_version: string;
-  song_name: string;
-  interval_ms: number;
-  frames: SvdTaggerFrameRow[];
-  vocal_phrase: { start_s: number; end_s: number; confidence: number | null; channel: "stem" | "mix" | null }[];
-}
-
-function parseChannel(v: unknown): "stem" | "mix" | null {
-  return v === "stem" || v === "mix" ? v : null;
-}
-
-export function parseSvdTagger(raw: unknown): SvdTaggerFile {
-  const o = asObject(raw, "reference/proposals/svd_tagger.json");
-  const meta = rec(o.metadata);
-  const frames = arr(o.frames).map((row): SvdTaggerFrameRow => {
-    const r = rec(row);
-    return {
-      time_s: num(r.time),
-      voiceness: num(r.voiceness),
-      confidence: r.confidence == null ? null : num(r.confidence),
-      channel: parseChannel(r.channel),
-    };
-  });
-  const vocal_phrase = arr(o.vocal_phrase).map((row) => {
-    const r = rec(row);
-    const start_s = num(r.start);
-    return {
-      start_s,
-      end_s: Math.max(num(r.end, start_s), start_s),
-      confidence: r.confidence == null ? null : num(r.confidence),
-      channel: parseChannel(r.channel),
-    };
-  });
-  return {
-    schema_version: st(o.schema_version),
-    song_name: st(o.song_name),
-    interval_ms: num(meta.interval_ms, 1000),
-    frames,
-    vocal_phrase,
-  };
-}
-
-export async function loadSvdTagger(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<SvdTaggerFile>> {
-  const result = await loadJson(artifactPaths.svdTagger(song), parseSvdTagger, f);
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return {
-      ok: true,
-      data: { schema_version: "", song_name: song, interval_ms: 1000, frames: [], vocal_phrase: [] },
-    };
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// whisperxVad — artifacts/whisperx-vad/whisperx_vad.json
-// ---------------------------------------------------------------------------
-//
-// whisperX's VAD front-end (speech-domain, not music or a general
-// audio-tagging class), run over the vocal stem only, as its own pipeline
-// service (`whisperx_vad/`, v3.6 item 2 — promoted out of `experiments/`,
-// no longer read from `reference/proposals/`). Same shared voiceness shape
-// as `vocalVoiceness` — no `channel` field, single producer. `interval_ms`
-// is 50, not 1000: VAD spans carry real sub-second onsets/offsets (a
-// hysteresis binarizer over the segmentation model's own ~17ms frames), so
-// unlike `svdTagger`, this candidate's `vocal_phrase` boundaries are
-// genuinely timed, not a 5s clip-window approximation. Diarization was NOT
-// attempted (no HF_TOKEN in this environment, and a live-token dependency at
-// analysis time is an automatic kill regardless of score) — no diarization
-// field exists in this file at all, never a stubbed-out null.
-
-export type WhisperxVadFile = VocalVoicenessFile;
 
 export function parseWhisperxVad(raw: unknown): WhisperxVadFile {
   const o = asObject(raw, "artifacts/whisperx-vad/whisperx_vad.json");
@@ -956,56 +764,3 @@ export async function loadWhisperxVad(
   return result;
 }
 
-// ---------------------------------------------------------------------------
-// voiceMultiplicity — reference/proposals/voice_multiplicity.json
-// ---------------------------------------------------------------------------
-//
-// Solo vs stacked voice blocks from stereo vocal stem width and L-R correlation.
-// Per-song z-scored (absolute width is not comparable across songs). A proposal
-// to audition against Human Hints, not ground truth.
-
-export interface VoiceMultiplicityBlock {
-  start: number;
-  end: number;
-  kind: string;
-  mean_multiplicity: number | null;
-  confidence: number | null;
-}
-
-export interface VoiceMultiplicityFile {
-  schema_version: string;
-  song_name: string;
-  blocks: VoiceMultiplicityBlock[];
-}
-
-export function parseVoiceMultiplicity(raw: unknown): VoiceMultiplicityFile {
-  const o = asObject(raw, "reference/proposals/voice_multiplicity.json");
-  const blocks: VoiceMultiplicityBlock[] = [];
-  for (const row of arr(o.blocks)) {
-    const r = rec(row);
-    blocks.push({
-      start: num(r.start),
-      end: num(r.end),
-      kind: st(r.kind),
-      mean_multiplicity: r.mean_multiplicity == null ? null : num(r.mean_multiplicity),
-      confidence: r.confidence == null ? null : num(r.confidence),
-    });
-  }
-  blocks.sort((a, b) => a.start - b.start);
-  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
-}
-
-export async function loadVoiceMultiplicity(
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<VoiceMultiplicityFile>> {
-  const result = await loadJson(
-    artifactPaths.voiceMultiplicity(song),
-    parseVoiceMultiplicity,
-    f,
-  );
-  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
-    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
-  }
-  return result;
-}

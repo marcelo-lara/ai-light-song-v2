@@ -6,7 +6,7 @@ vocal stem only.
 diarization-3.1` checkpoint, no live HF token in this environment, and
 lead-plus-backing vocals are simultaneous rather than turn-taking, which
 defeats the diarization premise regardless. See
-`docs/archive/experiments_promoted.md` "WhisperX VAD" for the full record.
+`docs/archive/experiments.promoted.whisperx-vad.md` for the full record.
 
 **Checkpoint.** whisperX ships its own VAD segmentation checkpoint
 (`pyannote/segmentation`-shaped, distinct from the gated

@@ -588,8 +588,8 @@ them.
 candidates score 4/7 @±0.5s at precision 0.048, while the shipped `gestures.py`
 stage matches that recall at a looser ±1.0s tolerance for a fraction of the
 false-positive rate (4/7 @±1.0s at 4.5-10.3 events/min). TLDR:
-[`../../docs/archive/experiments_discarded.md`](../../docs/archive/experiments_discarded.md)
-"Drop Proposals (`drop_detection`)". The debugger's `dropProposals` lane was
+[`../../docs/archive/experiments.discarded.drop-proposals.md`](../../docs/archive/experiments.discarded.drop-proposals.md).
+The debugger's `dropProposals` lane was
 removed via Recipe B; this directory stays in the tree as a cache other
 experiments still read, and `run export`'s output
 (`reference/proposals/drop_impacts.json`) is no longer rendered by the UI.

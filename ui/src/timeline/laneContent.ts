@@ -26,16 +26,12 @@ import type {
   VocalTranscriptionFile,
   VocalPhrasesFile,
   ArrangementStateFile,
-  PhrasePeriodicityFile,
   RhythmDrumIoiFile,
   RhythmStemAutocorrFile,
   RhythmVocalOnsetsFile,
   EnergyLevelFile,
   TensionShapeFile,
-  VocalVoicenessFile,
-  SvdTaggerFile,
   WhisperxVadFile,
-  VoiceMultiplicityFile,
 } from "../data/sparseArtifacts";
 
 import { romanNumeral } from "./romanNumeral";
@@ -613,35 +609,6 @@ export function arrangementStateContent(file: ArrangementStateFile | null): Spar
   });
 }
 
-/**
- * Per-block repetition regime + period from `experiments/phrase_periodicity`
- * (z-normalised per-bar 16-slot autocorrelation, period only — never phase). A
- * proposal to audition against Human Hints directly above it. `period` is null
- * when no repeat structure was detected — printed as "no phrase structure
- * detected", never a fabricated number.
- */
-export function phrasePeriodicityContent(file: PhrasePeriodicityFile | null): SparseBlock[] {
-  return (file?.blocks ?? []).map((b, i) => {
-    const periodText =
-      b.period == null
-        ? "no phrase structure detected"
-        : `repeat unit ${b.period} bar`;
-    return {
-      id: `phrase-periodicity-${i + 1}`,
-      start_s: b.start_s,
-      end_s: b.end_s,
-      label: "",
-      wideLabel: b.regime,
-      laneLabel: "3. Phrase Periodicity",
-      caption: `${formatRange(b.start_s, b.end_s)} · ${b.regime} · ${periodText}`,
-      reference: `phrase-periodicity-${i + 1}`,
-      detail: b.title ? `${b.title} · ${b.n_bars} bar${b.n_bars === 1 ? "" : "s"}` : "",
-      summary: `experiments/phrase_periodicity — ${b.regime}; ${periodText}. Regime needs a block ≥ 2 bars; shorter blocks read through-composed (known limit).`,
-      raw: b,
-    };
-  });
-}
-
 /** Compact `source:subdivision` list, `"—"` when a row carries no sources. */
 function subdivisionSummary(subs: Record<string, string>): string {
   const entries = Object.entries(subs);
@@ -828,200 +795,6 @@ function voicenessBucket(v: number): VoicenessBucket {
   return "veryLow";
 }
 
-const VOICENESS_BUCKET_TINT: Record<VoicenessBucket, string> = {
-  veryLow: "vocalVoicenessVeryLow",
-  low: "vocalVoicenessLow",
-  mid: "vocalVoicenessMid",
-  high: "vocalVoicenessHigh",
-  veryHigh: "vocalVoicenessVeryHigh",
-};
-
-/**
- * Per-frame voiceness curve (vibrato + portamento + sibilance, noisy-OR
- * combined — `experiments/vocal_voiceness/model.py`) plus the bridged
- * `vocal_phrase` spans, from the shared `voiceness_common.schema` proposal.
- * A proposal to audition against Human Hints, not ground truth — kill
- * condition unevaluable until item 1's `type: "vocal"` ground truth exists.
- *
- * Consecutive frames sharing an intensity bucket are merged into one run
- * block (see `voicenessBucket`) so the curve doesn't render one block per
- * 50ms frame; `vocal_phrase` spans are appended as their own, differently
- * tinted blocks so SparseLane's row-packing stacks them below the curve.
- */
-export function vocalVoicenessContent(file: VocalVoicenessFile | null): SparseBlock[] {
-  const out: SparseBlock[] = [];
-  const frames = file?.frames ?? [];
-  const intervalS = (file?.interval_ms ?? 50) / 1000;
-
-  let runStart: number | null = null;
-  let runBucket: VoicenessBucket | null = null;
-  let runSum = 0;
-  let runN = 0;
-  let runIdx = 0;
-  const flush = (endTime: number) => {
-    if (runStart == null || runBucket == null || runN === 0) return;
-    const avg = runSum / runN;
-    runIdx += 1;
-    out.push({
-      id: `voiceness-${runIdx}`,
-      start_s: runStart,
-      end_s: endTime,
-      label: "",
-      wideLabel: `voiceness ${avg.toFixed(2)}`,
-      tintId: VOICENESS_BUCKET_TINT[runBucket],
-      laneLabel: "4. Vocal Voiceness",
-      caption: `${formatRange(runStart, endTime)} · avg voiceness ${avg.toFixed(2)}`,
-      reference: `voiceness-${runIdx}`,
-      detail: `${runN} frame${runN === 1 ? "" : "s"}`,
-      summary: `experiments/vocal_voiceness — per-frame voiceness averaging ${avg.toFixed(2)} across this run (vibrato+portamento+sibilance, noisy-OR combined).`,
-      raw: { avg_voiceness: avg, n_frames: runN },
-    });
-  };
-
-  for (const f of frames) {
-    const bucket = voicenessBucket(f.voiceness);
-    if (runBucket !== bucket) {
-      flush(f.time_s);
-      runStart = f.time_s;
-      runBucket = bucket;
-      runSum = 0;
-      runN = 0;
-    }
-    runSum += f.voiceness;
-    runN += 1;
-  }
-  if (frames.length > 0) {
-    flush(frames[frames.length - 1]!.time_s + intervalS);
-  }
-
-  (file?.vocal_phrase ?? []).forEach((p, i) => {
-    out.push({
-      id: `voiceness-phrase-${i + 1}`,
-      start_s: p.start_s,
-      end_s: p.end_s,
-      label: "phrase",
-      wideLabel: `bridged phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
-      tintId: "vocalVoicenessPhrase",
-      laneLabel: "4. Vocal Voiceness",
-      caption: `${formatRange(p.start_s, p.end_s)} · bridged phrase`,
-      reference: `voiceness-phrase-${i + 1}`,
-      detail: "vocal_phrase",
-      summary:
-        "experiments/vocal_voiceness — a vocal_phrase span derived with the pitch-continuity bridge over vocal_phrases' known sustained_notes gap.",
-      raw: p,
-    });
-  });
-
-  out.sort((a, b) => a.start_s - b.start_s);
-  return out;
-}
-
-const SVD_TAGGER_STEM_BUCKET_TINT: Record<VoicenessBucket, string> = {
-  veryLow: "svdTaggerStemVeryLow",
-  low: "svdTaggerStemLow",
-  mid: "svdTaggerStemMid",
-  high: "svdTaggerStemHigh",
-  veryHigh: "svdTaggerStemVeryHigh",
-};
-
-const SVD_TAGGER_MIX_BUCKET_TINT: Record<VoicenessBucket, string> = {
-  veryLow: "svdTaggerMixVeryLow",
-  low: "svdTaggerMixLow",
-  mid: "svdTaggerMixMid",
-  high: "svdTaggerMixHigh",
-  veryHigh: "svdTaggerMixVeryHigh",
-};
-
-/**
- * PANNs `Singing`-class curve, run on BOTH the vocal stem and the mix
- * (`experiments/svd_tagger/model.py`) — the only voiceness candidate (items
- * 4-7) that fuses two producers into one file, so every row from
- * `SvdTaggerFile` carries its own `channel: "stem" | "mix"`.
- *
- * **Both channels render as two separate curves in this ONE lane — never a
- * toggle.** This repo's standing rule ("every artifact gets its own visible
- * lane"/"no hiding a signal behind a selector") rules out a channel picker;
- * each channel is bucket-run-merged independently (same technique as
- * `vocalVoicenessContent`) and both sets of blocks are
- * appended to the same lane — SparseLane's own row-packing stacks the two
- * time-overlapping curves into separate rows automatically, exactly as it
- * already does for a voiceness curve plus its overlaid `vocal_phrase` spans.
- */
-export function svdTaggerContent(file: SvdTaggerFile | null): SparseBlock[] {
-  const out: SparseBlock[] = [];
-  const intervalS = (file?.interval_ms ?? 1000) / 1000;
-
-  for (const channel of ["stem", "mix"] as const) {
-    const frames = (file?.frames ?? []).filter((f) => f.channel === channel);
-    const tint = channel === "stem" ? SVD_TAGGER_STEM_BUCKET_TINT : SVD_TAGGER_MIX_BUCKET_TINT;
-    const phraseTint = channel === "stem" ? "svdTaggerStemPhrase" : "svdTaggerMixPhrase";
-    const laneLabel = `6. SVD Tagger (${channel})`;
-
-    let runStart: number | null = null;
-    let runBucket: VoicenessBucket | null = null;
-    let runSum = 0;
-    let runN = 0;
-    let runIdx = 0;
-    const flush = (endTime: number) => {
-      if (runStart == null || runBucket == null || runN === 0) return;
-      const avg = runSum / runN;
-      runIdx += 1;
-      out.push({
-        id: `svd-tagger-${channel}-${runIdx}`,
-        start_s: runStart,
-        end_s: endTime,
-        label: "",
-        wideLabel: `${channel} voiceness ${avg.toFixed(2)}`,
-        tintId: tint[runBucket],
-        laneLabel,
-        caption: `${formatRange(runStart, endTime)} · ${channel} avg voiceness ${avg.toFixed(2)}`,
-        reference: `svd-tagger-${channel}-${runIdx}`,
-        detail: `${runN} window${runN === 1 ? "" : "s"}`,
-        summary: `experiments/svd_tagger — PANNs "Singing" class, ${channel} channel, averaging ${avg.toFixed(2)} across this run.`,
-        raw: { channel, avg_voiceness: avg, n_frames: runN },
-      });
-    };
-
-    for (const f of frames) {
-      const bucket = voicenessBucket(f.voiceness);
-      if (runBucket !== bucket) {
-        flush(f.time_s);
-        runStart = f.time_s;
-        runBucket = bucket;
-        runSum = 0;
-        runN = 0;
-      }
-      runSum += f.voiceness;
-      runN += 1;
-    }
-    if (frames.length > 0) {
-      flush(frames[frames.length - 1]!.time_s + intervalS);
-    }
-
-    (file?.vocal_phrase ?? [])
-      .filter((p) => p.channel === channel)
-      .forEach((p, i) => {
-        out.push({
-          id: `svd-tagger-${channel}-phrase-${i + 1}`,
-          start_s: p.start_s,
-          end_s: p.end_s,
-          label: "phrase",
-          wideLabel: `${channel} phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
-          tintId: phraseTint,
-          laneLabel,
-          caption: `${formatRange(p.start_s, p.end_s)} · ${channel} phrase (not boundary-scored)`,
-          reference: `svd-tagger-${channel}-phrase-${i + 1}`,
-          detail: "vocal_phrase",
-          summary: `experiments/svd_tagger — a vocal_phrase span thresholded from the PANNs ${channel}-channel differential. Reported for review only; never scored on boundary F1 (5s window is too coarse to time an edge).`,
-          raw: p,
-        });
-      });
-  }
-
-  out.sort((a, b) => a.start_s - b.start_s);
-  return out;
-}
-
 const WHISPERX_VAD_BUCKET_TINT: Record<VoicenessBucket, string> = {
   veryLow: "whisperxVadVeryLow",
   low: "whisperxVadLow",
@@ -1062,7 +835,7 @@ export function whisperxVadContent(file: WhisperxVadFile | null): SparseBlock[] 
       label: "",
       wideLabel: `voiceness ${avg.toFixed(2)}`,
       tintId: WHISPERX_VAD_BUCKET_TINT[runBucket],
-      laneLabel: "7. WhisperX VAD",
+      laneLabel: "Voice phrase (WhisperX VAD)",
       caption: `${formatRange(runStart, endTime)} · avg voiceness ${avg.toFixed(2)}`,
       reference: `whisperx-vad-${runIdx}`,
       detail: `${runN} frame${runN === 1 ? "" : "s"}`,
@@ -1095,7 +868,7 @@ export function whisperxVadContent(file: WhisperxVadFile | null): SparseBlock[] 
       label: "phrase",
       wideLabel: `VAD phrase${p.confidence != null ? ` · conf ${round(p.confidence, 2)}` : ""}`,
       tintId: "whisperxVadPhrase",
-      laneLabel: "7. WhisperX VAD",
+      laneLabel: "Voice phrase (WhisperX VAD)",
       caption: `${formatRange(p.start_s, p.end_s)} · VAD phrase`,
       reference: `whisperx-vad-phrase-${i + 1}`,
       detail: "vocal_phrase",
@@ -1107,26 +880,6 @@ export function whisperxVadContent(file: WhisperxVadFile | null): SparseBlock[] 
 
   out.sort((a, b) => a.start_s - b.start_s);
   return out;
-}
-
-/**
- * Solo/stacked voice blocks from stereo vocal stem width and L-R correlation,
- * per-song z-scored. A proposal to audition against Human Hints, not ground truth.
- */
-export function voiceMultiplicityContent(file: VoiceMultiplicityFile | null): SparseBlock[] {
-  return (file?.blocks ?? []).map((b, i) => ({
-    id: `voiceMultiplicity-${i + 1}`,
-    start_s: b.start,
-    end_s: b.end,
-    label: b.kind,
-    wideLabel: `${b.kind}${b.mean_multiplicity != null ? ` · ${round(b.mean_multiplicity, 2)}` : ""}`,
-    laneLabel: "Voice Multiplicity",
-    caption: `${formatRange(b.start, b.end)} · ${b.kind}${b.mean_multiplicity != null ? ` (${round(b.mean_multiplicity, 2)})` : ""}`,
-    reference: `voiceMultiplicity-${i + 1}`,
-    detail: b.kind,
-    summary: `experiments/voice_multiplicity — ${b.kind} vocal region${b.confidence != null ? ` · confidence ${round(b.confidence, 2)}` : ""}`,
-    raw: b,
-  }));
 }
 
 /**
@@ -1175,17 +928,13 @@ export interface LaneContentSources {
   vocalTranscription?: VocalTranscriptionFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
   arrangementState?: ArrangementStateFile | null;
-  phrasePeriodicity?: PhrasePeriodicityFile | null;
   rhythmDrumIoi?: RhythmDrumIoiFile | null;
   rhythmStemAutocorr?: RhythmStemAutocorrFile | null;
   rhythmVocalOnsets?: RhythmVocalOnsetsFile | null;
   energyLevel?: EnergyLevelFile | null;
   tensionShape?: TensionShapeFile | null;
   segmentSeeds?: HumanSegmentsSeedFile | null;
-  vocalVoiceness?: VocalVoicenessFile | null;
-  svdTagger?: SvdTaggerFile | null;
   whisperxVad?: WhisperxVadFile | null;
-  voiceMultiplicity?: VoiceMultiplicityFile | null;
   gestures?: EventTimeline | null;
 }
 
@@ -1198,17 +947,13 @@ export const SPARSE_LANE_IDS = [
   "moisesLyrics",
   "arrangementState",
   "vocalPhrases",
-  "phrasePeriodicity",
   "rhythmDrumIoi",
   "rhythmStemAutocorr",
   "rhythmVocalOnsets",
   "energyLevel",
   "tensionShape",
   "segmentSeeds",
-  "vocalVoiceness",
-  "svdTagger",
   "whisperxVad",
-  "voiceMultiplicity",
   "gestures",
   "sections",
   "character",
@@ -1238,8 +983,6 @@ export function buildLaneBlocks(
       return arrangementStateContent(s.arrangementState ?? null);
     case "vocalPhrases":
       return vocalPhrasesContent(s.vocalPhrases ?? null);
-    case "phrasePeriodicity":
-      return phrasePeriodicityContent(s.phrasePeriodicity ?? null);
     case "rhythmDrumIoi":
       return rhythmDrumIoiContent(s.rhythmDrumIoi ?? null);
     case "rhythmStemAutocorr":
@@ -1252,14 +995,8 @@ export function buildLaneBlocks(
       return tensionShapeContent(s.tensionShape ?? null);
     case "segmentSeeds":
       return segmentSeedsContent(s.segmentSeeds ?? null);
-    case "vocalVoiceness":
-      return vocalVoicenessContent(s.vocalVoiceness ?? null);
-    case "svdTagger":
-      return svdTaggerContent(s.svdTagger ?? null);
     case "whisperxVad":
       return whisperxVadContent(s.whisperxVad ?? null);
-    case "voiceMultiplicity":
-      return voiceMultiplicityContent(s.voiceMultiplicity ?? null);
     case "gestures":
       return gesturesContent(s.gestures ?? null);
     case "sections":

@@ -144,9 +144,6 @@ const TIMELINE_KEYS = [
   "arrangementState",
   // wave-2 experiments (docs/experiments.md run orders 1-3, 6)
   "vocalPhrases",
-  // phrase repetition regime + period (experiments/phrase_periodicity,
-  // v3.4 item 7 — passed its kill condition)
-  "phrasePeriodicity",
   // v3.6 item 5/6 rhythm/energy/tension candidate producers — each its own
   // lane, fused by confidence in sections.json's rhythm/energy/tension fields.
   "rhythmDrumIoi",
@@ -154,25 +151,12 @@ const TIMELINE_KEYS = [
   "rhythmVocalOnsets",
   "energyLevel",
   "tensionShape",
-  // per-frame voiceness (vibrato+portamento+sibilance) + bridged phrase
-  // blocks (experiments/vocal_voiceness, v3.5 item 4 — kill condition
-  // unevaluable until item 1's `type: "vocal"` ground truth exists)
-  "vocalVoiceness",
-  // PANNs `Singing`-class voiceness curve, stem + mix channels, rendered as
-  // two curves in one lane, never a toggle (experiments/svd_tagger, v3.5
-  // item 6 — new sandbox image + new model pin; kill condition unevaluable
-  // until item 1's `type: "vocal"` ground truth exists, and must
-  // additionally beat item 4 given its image/pin cost)
-  "svdTagger",
   // whisperX's VAD front-end (speech-domain), voiceness + phrase spans with
   // real sub-second onsets. Its own pipeline service since v3.6 item 2
   // (whisperx_vad/, promoted out of experiments/) — locally-bundled
   // non-gated checkpoint, no live token at analysis time; diarization not
   // attempted — no HF_TOKEN in this environment.
   "whisperxVad",
-  // solo/stacked voice blocks from stereo width and L-R correlation
-  // (experiments/voice_multiplicity)
-  "voiceMultiplicity",
   // gesture phases + section transitions (plan v3.0 item 9) — the Gestures
   // lane's production data source.
   "eventTimeline",
@@ -193,17 +177,13 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   moisesLyrics: "moisesLyrics",
   arrangementState: "arrangementState",
   vocalPhrases: "vocalPhrases",
-  phrasePeriodicity: "phrasePeriodicity",
   rhythmDrumIoi: "rhythmDrumIoi",
   rhythmStemAutocorr: "rhythmStemAutocorr",
   rhythmVocalOnsets: "rhythmVocalOnsets",
   energyLevel: "energyLevel",
   tensionShape: "tensionShape",
   segmentSeeds: "humanSectionsSeed",
-  vocalVoiceness: "vocalVoiceness",
-  svdTagger: "svdTagger",
   whisperxVad: "whisperxVad",
-  voiceMultiplicity: "voiceMultiplicity",
   gestures: "eventTimeline",
   character: "character",
   vocalTranscription: "vocalTranscription",
@@ -422,17 +402,13 @@ export function App(): React.JSX.Element {
       lyricValidations: validatedLyricIds,
       arrangementState: artifacts.arrangementState.data,
       vocalPhrases: artifacts.vocalPhrases.data,
-      phrasePeriodicity: artifacts.phrasePeriodicity.data,
       rhythmDrumIoi: artifacts.rhythmDrumIoi.data,
       rhythmStemAutocorr: artifacts.rhythmStemAutocorr.data,
       rhythmVocalOnsets: artifacts.rhythmVocalOnsets.data,
       energyLevel: artifacts.energyLevel.data,
       tensionShape: artifacts.tensionShape.data,
       segmentSeeds: artifacts.humanSectionsSeed.data,
-      vocalVoiceness: artifacts.vocalVoiceness.data,
-      svdTagger: artifacts.svdTagger.data,
       whisperxVad: artifacts.whisperxVad.data,
-      voiceMultiplicity: artifacts.voiceMultiplicity.data,
       gestures: artifacts.eventTimeline.data,
       character: artifacts.character.data,
       vocalTranscription: artifacts.vocalTranscription.data,
@@ -449,16 +425,12 @@ export function App(): React.JSX.Element {
       validatedLyricIds,
       artifacts.arrangementState.data,
       artifacts.vocalPhrases.data,
-      artifacts.phrasePeriodicity.data,
       artifacts.rhythmDrumIoi.data,
       artifacts.rhythmStemAutocorr.data,
       artifacts.rhythmVocalOnsets.data,
       artifacts.energyLevel.data,
       artifacts.tensionShape.data,
-      artifacts.vocalVoiceness.data,
-      artifacts.svdTagger.data,
       artifacts.whisperxVad.data,
-      artifacts.voiceMultiplicity.data,
       artifacts.eventTimeline.data,
       artifacts.character.data,
       artifacts.vocalTranscription.data,

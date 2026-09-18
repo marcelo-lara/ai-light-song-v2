@@ -76,7 +76,7 @@ def export(song_paths: SongPaths, *, device: str = "cpu", vad_model=None) -> dic
 VOCAL_ONSETS_ENGINE = (
     "whisperx_vad.vocal_onsets (faster_whisper large-v3, word_timestamps=True, "
     "over the vocal stem — same method as the promoted rhythm_vocal_onsets "
-    "experiment, docs/archive/experiments_promoted.md)"
+    "experiment, docs/archive/experiments.promoted.energy-tension-rhythm-clues.md)"
 )
 
 

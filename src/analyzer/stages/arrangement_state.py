@@ -9,7 +9,7 @@ without touching audio.
 
 Ported from `experiments/arrangement_state/` (promoted in the v3.2 plan). The
 experiment's `detect_smoothed()` ablation is intentionally NOT carried over —
-its finding stays recorded in `docs/archive/experiments_promoted.md`.
+its finding stays recorded in `docs/archive/experiments.promoted.arrangement-state.md`.
 
 Three decisions carry the whole result; each is a measured one.
 

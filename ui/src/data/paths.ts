@@ -75,12 +75,6 @@ export const artifactPaths = {
   // derived from the published per-stem RMS series — no audio, no model.
   arrangementState: (song: string) =>
     encodePath(analysis(song, "arrangement_state.json")),
-  // Written by experiments/phrase_periodicity (`run export`). One block per
-  // operator hint, each carrying a repetition `regime` + `period` (bars, or
-  // null → "no phrase structure detected"). A proposal to audition against
-  // Human Hints — passed its kill condition.
-  phrasePeriodicity: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "phrase_periodicity.json")),
   // Written by experiments/rhythm_drum_ioi (`run export`). item 5/6a:
   // rhythm.drums subdivision + confidence from drum_events.json IOI.
   rhythmDrumIoi: (song: string) =>
@@ -102,36 +96,16 @@ export const artifactPaths = {
   // `tension` (1-5) from energy slope + gesture/regime overlap.
   tensionShape: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "tension_shape.json")),
-  // Written by experiments/vocal_voiceness (`run export`). A shared
-  // voiceness_common.schema proposal: per-50ms-frame voiceness score
-  // (vibrato + portamento + sibilance, noisy-OR combined) plus bridged
-  // vocal_phrase spans. A proposal to audition against Human Hints — kill
-  // condition unevaluable until item 1's `type: "vocal"` ground truth exists.
-  vocalVoiceness: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "vocal_voiceness.json")),
-  // Written by experiments/svd_tagger (`run export`). PANNs' `Singing` class
-  // head (AudioSet-527, index 27) run on BOTH the vocal stem and the mix —
-  // every row carries `channel: "stem" | "mix"` (the only voiceness
-  // candidate that fuses two producers into one file). `interval_ms: 1000`,
-  // PANNs' own native window grid, reported honestly. Kill condition
-  // unevaluable until item 1's `type: "vocal"` ground truth exists.
-  svdTagger: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "svd_tagger.json")),
   // Written by the `whisperx` Compose service (whisperx_vad/, promoted out of
   // experiments/ in v3.6 item 2). Per-50ms-frame voiceness curve (no
   // `channel` — single producer, vocal stem only) plus `Binarize`d
   // vocal_phrase spans, from whisperX's VAD front-end (speech-domain) rather
   // than DSP cues or a perceptual-audio model. `interval_ms: 50` — VAD's own
-  // sub-second onsets are real, unlike svdTagger's 1000ms clip windows, so
-  // its `vocal_phrase` boundaries are genuinely scoreable, not just reported.
-  // Diarization was not attempted (no HF_TOKEN in this environment) —
-  // VAD-only.
+  // sub-second onsets are real, so its `vocal_phrase` boundaries are
+  // genuinely scoreable, not just reported. Diarization was not attempted (no
+  // HF_TOKEN in this environment) — VAD-only.
   whisperxVad: (song: string) =>
     encodePath(analysis(song, "artifacts", "whisperx-vad", "whisperx_vad.json")),
-  // Written by experiments/voice_multiplicity (`run export`). Solo/stacked voice
-  // blocks from stereo vocal stem width and L-R correlation.
-  voiceMultiplicity: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "voice_multiplicity.json")),
   // Moises' word-level sung-lyric export, delivered as external reference. A
   // flat list of word tokens with `line_id`, `start`, `end`; `<SOL>` / `<EOL>`
   // rows mark line boundaries. Read-only ground truth, never written by the

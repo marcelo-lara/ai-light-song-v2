@@ -13,7 +13,7 @@ comparison happens by ear rather than by assumption.
 
 **PROMOTED 2026-09-13** (operator decision) as `arrangement_state.json`'s
 `vocals_phrase` — TLDR in
-[`docs/archive/experiments_promoted.md`](../../docs/archive/experiments_promoted.md).
+[`docs/archive/experiments.promoted.whisperx-vad.md`](../../docs/archive/experiments.promoted.whisperx-vad.md).
 v3.5 item 7. Compute stays out-of-band in this sandbox image (whisperX pins a
 torch the `app` image cannot take); `src/` reads the exported proposal. The VAD
 checkpoint is pre-fetched, sha256-verified and `COPY`'d in — item 6's lesson.

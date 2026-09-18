@@ -8,8 +8,7 @@
 kill condition: best pooled F1 0.29 (per-stem 28-dim band weight) vs
 incumbents `sections.json` 0.27 / `arrangement_state` 0.21. Nothing in `src/`
 reads anything here. TLDR:
-[`../../docs/archive/experiments_discarded.md`](../../docs/archive/experiments_discarded.md)
-"Texture Novelty".
+[`../../docs/archive/experiments.discarded.texture-novelty.md`](../../docs/archive/experiments.discarded.texture-novelty.md).
 
 The debugger lane (`2. Texture Novelty`) was removed via Recipe B. This
 directory and its cached `reference/proposals/texture_novelty.json` output

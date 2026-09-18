@@ -25,38 +25,28 @@
 #
 # Adding or removing an experiment from the queue is a one-row edit here.
 
-[[experiment]]
-name = "phrase_periodicity"
-command = "python -m experiments.phrase_periodicity.run compute --song {song_name} && python -m experiments.phrase_periodicity.run export --song {song_name}"
-image = "app"
-enabled = true
+# phrase_periodicity and voice_multiplicity were archived, 2026-09-17 — both
+# passed/validated on their own metric (phrase_periodicity's kill condition
+# passed; voice_multiplicity scored AUC 0.951 on Queen of Kings) but neither
+# was promoted: phrase_periodicity classifies block character, not a
+# top-level field, and voice_multiplicity stayed data-starved (only one song
+# in the corpus carries `voices` labels). No `src/` code references either.
+# See docs/archive/experiments.discarded.phrase-periodicity.md and
+# docs/archive/experiments.discarded.voice-multiplicity.md.
 
-[[experiment]]
-name = "vocal_voiceness"
-command = "python -m experiments.vocal_voiceness.run compute --song {song_name} && python -m experiments.vocal_voiceness.run export --song {song_name}"
-image = "app"
-enabled = true
-
-[[experiment]]
-name = "svd_tagger"
-# `compute` needs `torch`/`panns_inference`, only installed in the new
-# svd-research sandbox image (ai-light-song-v2-svd-research:dev,
-# experiments/svd_tagger/Dockerfile — its own new image + pinned PANNs
-# checkpoint) — not the `app` image this runner executes in, and the runner
-# only ever honors "app" (see the field comment above). `image` is
-# deliberately not "app", so this whole row is recorded skipped(needs image
-# svd-research...) every run, matching clap_voiceness's precedent. Run both
-# steps by hand instead:
-#   ./experiments/svd_tagger/run_in_container.sh python -m experiments.svd_tagger.run compute --song {song_name}
-#   docker compose run --rm app python -m experiments.svd_tagger.run export --song {song_name}
-command = "python -m experiments.svd_tagger.run compute --song {song_name} && python -m experiments.svd_tagger.run export --song {song_name}"
-image = "svd-research"
-enabled = true
+# vocal_voiceness (sibilance-only) and svd_tagger were archived, 2026-09-17 —
+# both discarded as voiceness-presence detectors, since whisperX VAD covers
+# what they were for and beats both on every song measured (frame_acc
+# 0.988/0.861 vs vocal_voiceness 0.871/0.548 and svd_tagger's best rescale
+# 0.854/0.513). Sibilance (`vocal_voiceness`'s one measured-strong cue) stays
+# promoted in src/ as `vocals_phrase[].sibilance` — that promotion is
+# untouched. See docs/archive/experiments.discarded.vocal-voiceness.md and
+# docs/archive/experiments.discarded.svd-tagger.md.
 
 # whisperx_vad was promoted OUT of experiments/ in v3.6 item 2 — it now runs
 # as its own pipeline service (`docker compose run --rm whisperx --song
-# <path>`), not through this queue. See docs/archive/experiments_promoted.md
-# "WhisperX VAD".
+# <path>`), not through this queue. See
+# docs/archive/experiments.promoted.whisperx-vad.md.
 
 # rhythm_drum_ioi, rhythm_stem_autocorr, energy_level and tension_shape were
 # promoted OUT of experiments/ in v3.6 item 10 — ported into
@@ -65,4 +55,5 @@ enabled = true
 # vocal_onsets.py (D10.1), a second output of the `whisperx` service. None of
 # the five run through this queue any more; their READMEs stay at
 # experiments/<name>/README.md as the record of what was measured before
-# promotion (docs/archive/experiments_promoted.md has the TLDR).
+# promotion (docs/archive/experiments.promoted.energy-tension-rhythm-clues.md
+# has the TLDR).
