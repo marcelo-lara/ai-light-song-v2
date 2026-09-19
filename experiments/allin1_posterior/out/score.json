@@ -1,0 +1,131 @@
+{
+  "rows": [
+    {
+      "song": "_test_song",
+      "n_hint_boundaries": 21,
+      "duration_s": 58.1,
+      "shadow_labels": {
+        "n_boundaries": 8,
+        "bounds_per_min": 8.26,
+        "recall@0.1s": 0,
+        "recall@0.25s": 0,
+        "recall@0.5s": 2
+      },
+      "sections_incumbent": {
+        "n_boundaries": 8,
+        "bounds_per_min": 8.26,
+        "recall@0.1s": 5,
+        "recall@0.25s": 7,
+        "recall@0.5s": 9
+      },
+      "even_grid_baseline": {
+        "n_boundaries": 8,
+        "bounds_per_min": 8.26,
+        "recall@0.1s": 1,
+        "recall@0.25s": 3,
+        "recall@0.5s": 7
+      }
+    },
+    {
+      "song": "Hideaway - Kiesza",
+      "n_hint_boundaries": 6,
+      "duration_s": 251.2,
+      "shadow_labels": {
+        "n_boundaries": 32,
+        "bounds_per_min": 7.64,
+        "recall@0.1s": 0,
+        "recall@0.25s": 1,
+        "recall@0.5s": 3
+      },
+      "sections_incumbent": {
+        "n_boundaries": 11,
+        "bounds_per_min": 2.63,
+        "recall@0.1s": 0,
+        "recall@0.25s": 0,
+        "recall@0.5s": 0
+      },
+      "even_grid_baseline": {
+        "n_boundaries": 32,
+        "bounds_per_min": 7.64,
+        "recall@0.1s": 1,
+        "recall@0.25s": 2,
+        "recall@0.5s": 3
+      }
+    },
+    {
+      "song": "Armin - Revolution",
+      "n_hint_boundaries": 28,
+      "duration_s": 192.5,
+      "shadow_labels": {
+        "n_boundaries": 30,
+        "bounds_per_min": 9.35,
+        "recall@0.1s": 5,
+        "recall@0.25s": 7,
+        "recall@0.5s": 8
+      },
+      "sections_incumbent": {
+        "n_boundaries": 11,
+        "bounds_per_min": 3.43,
+        "recall@0.1s": 8,
+        "recall@0.25s": 11,
+        "recall@0.5s": 13
+      },
+      "even_grid_baseline": {
+        "n_boundaries": 30,
+        "bounds_per_min": 9.35,
+        "recall@0.1s": 6,
+        "recall@0.25s": 7,
+        "recall@0.5s": 8
+      }
+    },
+    {
+      "song": "Titanium - David Guetta ft Sia",
+      "n_hint_boundaries": 18,
+      "duration_s": 226.7,
+      "shadow_labels": {
+        "n_boundaries": 12,
+        "bounds_per_min": 3.18,
+        "recall@0.1s": 0,
+        "recall@0.25s": 2,
+        "recall@0.5s": 6
+      },
+      "sections_incumbent": {
+        "n_boundaries": 14,
+        "bounds_per_min": 3.71,
+        "recall@0.1s": 0,
+        "recall@0.25s": 0,
+        "recall@0.5s": 0
+      },
+      "even_grid_baseline": {
+        "n_boundaries": 12,
+        "bounds_per_min": 3.18,
+        "recall@0.1s": 1,
+        "recall@0.25s": 2,
+        "recall@0.5s": 4
+      }
+    }
+  ],
+  "armin_worked_example": {
+    "song": "Armin - Revolution",
+    "expected_break_span": [
+      143.4,
+      175.0
+    ],
+    "detected_matching_spans": [
+      {
+        "label": "break",
+        "start_s": 144.31,
+        "end_s": 155.53,
+        "mean_share": 0.3226,
+        "published_overlap": 0.0
+      },
+      {
+        "label": "break",
+        "start_s": 155.57,
+        "end_s": 168.16,
+        "mean_share": 0.32,
+        "published_overlap": 0.0
+      }
+    ]
+  }
+}

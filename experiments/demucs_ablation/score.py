@@ -74,8 +74,11 @@ def _rms_series(audio: np.ndarray, sr: int, window_ms: int = RMS_INTERVAL_MS) ->
 
 
 def _synthetic_loudness_doc(times: list[float], values: list[float], duration_s: float) -> dict:
+    # matches the flat `source_order`/`interval_ms` shape `arrangement_state._windows`
+    # reads since v3.6 item 8 (metadata.duration was dropped, never read downstream)
     return {
-        "metadata": {"source_order": ["vocals"], "duration": duration_s},
+        "source_order": ["vocals"],
+        "interval_ms": RMS_INTERVAL_MS,
         "frames": [{"time": t, "values": [v]} for t, v in zip(times, values)],
     }
 

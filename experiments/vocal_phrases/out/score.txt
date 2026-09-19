@@ -1,40 +1,57 @@
 Vocal phrase blocks — score vs incumbent + mix-RMS baseline
 ============================================================
 
-_test_song  (30 hint boundaries, span 58.1s)
+_test_song  (26 hint boundaries, span 58.1s)
   method                       +-0.1  +-0.25   +-0.5  bounds/min
-  vocal_phrases                11/30   14/30   20/30       20.65
-  shipped sections.json         4/30    4/30    6/30        3.10
-  mix-RMS baseline             12/30   16/30   23/30       47.49
+  vocal_phrases                10/26   16/26   21/26       23.74
+  shipped sections.json         5/26    8/26   11/26        8.26
+  mix-RMS baseline             11/26   15/26   20/26       47.49
 
 Hideaway - Kiesza  (10 hint boundaries, span 251.7s)
   method                       +-0.1  +-0.25   +-0.5  bounds/min
-  vocal_phrases                 2/10    2/10    8/10       56.02
-  shipped sections.json         0/10    0/10    0/10        3.34
+  vocal_phrases                 2/10    2/10    8/10       55.07
+  shipped sections.json         0/10    0/10    0/10        2.62
   mix-RMS baseline              0/10    0/10    0/10       49.11
 
-Armin - Revolution  (24 hint boundaries, span 194.0s)
+Armin - Revolution  (38 hint boundaries, span 194.0s)
   method                       +-0.1  +-0.25   +-0.5  bounds/min
-  vocal_phrases                 8/24   12/24   14/24       58.14
-  shipped sections.json         1/24    1/24    4/24        3.71
-  mix-RMS baseline              3/24    3/24    7/24       63.09
+  vocal_phrases                15/38   27/38   31/38       56.29
+  shipped sections.json        11/38   14/38   16/38        3.40
+  mix-RMS baseline              5/38    6/38   11/38       63.09
 
 Titanium - David Guetta ft Sia  (30 hint boundaries, span 232.4s)
   method                       +-0.1  +-0.25   +-0.5  bounds/min
-  vocal_phrases                 7/30   14/30   24/30       44.92
-  shipped sections.json         0/30    0/30    0/30        4.13
+  vocal_phrases                 7/30   14/30   24/30       46.99
+  shipped sections.json         0/30    0/30    0/30        3.61
   mix-RMS baseline             10/30   18/30   21/30       85.19
 
-Aggregate across 4 songs, 94 hint boundaries:
+Aggregate across 4 songs, 104 hint boundaries:
   method                       +-0.1  +-0.25   +-0.5  avg bounds/min
-  vocal_phrases                28/94   42/94   66/94           44.93
-  shipped sections.json         5/94    5/94   10/94            3.57
-  mix-RMS baseline             25/94   37/94   51/94           61.22
+  vocal_phrases                34/104   59/104   84/104           45.52
+  shipped sections.json        16/104   22/104   27/104            4.47
+  mix-RMS baseline             26/104   39/104   52/104           61.22
 
 breath_s sweep on _test_song, MAE against word-level line on/off:
 
   breath_s     phrases   onset MAE  offset MAE
-  0.3               13       0.022       0.145
-  0.5                9       0.022       0.164
-  0.7                9       0.022       0.164
-  1.0                6       0.022       0.164
+  0.3               15       0.022       0.142
+  0.5               11       0.022       0.162
+  0.7               11       0.022       0.162
+  1.0                8       0.022       0.162
+
+Budget-matched ablation: vocal_phrases fires 50.37 bounds/min aggregate;
+mix-RMS threshold_ratio=1.269 matched to 50.53 bounds/min aggregate.
+
+  song                              method             +-0.1  +-0.25   +-0.5  bounds/min
+  _test_song                        vocal_phrases      10/26   16/26   21/26       23.74
+  _test_song                        mix-RMS matched    12/26   13/26   14/26       41.29
+  Hideaway - Kiesza                 vocal_phrases       2/10    2/10    8/10       55.07
+  Hideaway - Kiesza                 mix-RMS matched     0/10    0/10    0/10       38.14
+  Armin - Revolution                vocal_phrases      15/38   27/38   31/38       56.29
+  Armin - Revolution                mix-RMS matched     4/38    5/38    6/38       45.15
+  Titanium - David Guetta ft Sia    vocal_phrases       7/30   14/30   24/30       46.99
+  Titanium - David Guetta ft Sia    mix-RMS matched     8/30   13/30   16/30       70.74
+
+Aggregate, 104 hint boundaries:
+  vocal_phrases                                        34/104   59/104   84/104
+  mix-RMS matched                                      24/104   31/104   36/104

@@ -52,7 +52,10 @@ def _shipped_boundaries(song: str) -> list[float]:
     path = paths.shipped_sections_path(song)
     if not path.exists():
         return []
-    rows = json.loads(path.read_text())
+    doc = json.loads(path.read_text())
+    # v3.6 item 8 wrapped the section list under "sections" alongside
+    # "field_sources"; it used to be a bare list.
+    rows = doc["sections"] if isinstance(doc, dict) else doc
     return [float(r["start"]) for r in rows if float(r["start"]) > 0.05]
 
 
@@ -160,9 +163,80 @@ def breath_sweep_table() -> str:
     return "\n".join(out)
 
 
+def matched_budget_table() -> str:
+    """Sweeps the mix-RMS baseline's `threshold_ratio` until its aggregate
+    bounds/min across the gold set matches the vocal_phrases detector's own
+    aggregate bounds/min, then compares recall at that matched firing budget —
+    the ablation the entry's decision path asked for and the README says was
+    never run. A budget-matched win is real evidence; the un-matched table
+    above conflates "better detector" with "fires more often"."""
+    songs_data = []
+    total_span = 0.0
+    vp_total_bounds = 0
+    for song in paths.GOLD_SONGS:
+        env = detector.load_envelope(song)
+        derived = detector.derive_phrases(env)
+        payload = {"vocal_phrases": derived["vocal_phrases"], "instrumental_gaps": derived["instrumental_gaps"]}
+        vp_bounds = _boundary_list(payload)
+        hints = _hint_boundaries(song)
+        span = env.times[-1] if env.times else 0.0
+        songs_data.append({"song": song, "hints": hints, "span": span, "vp_bounds": vp_bounds})
+        total_span += span
+        vp_total_bounds += len(vp_bounds)
+
+    target_bpm = vp_total_bounds / (total_span / 60.0) if total_span else 0.0
+
+    # Sweep threshold_ratio: lower ratio -> looser gate -> more boundaries.
+    # Coarse-to-fine bisection over aggregate bounds/min.
+    best_ratio, best_bounds_by_song, best_bpm = None, None, None
+    lo, hi = 0.90, 3.00
+    for _ in range(24):
+        mid = (lo + hi) / 2.0
+        bounds_by_song = {sd["song"]: _mix_rms_baseline(sd["song"], threshold_ratio=mid) for sd in songs_data}
+        total_bounds = sum(len(b) for b in bounds_by_song.values())
+        bpm = total_bounds / (total_span / 60.0) if total_span else 0.0
+        best_ratio, best_bounds_by_song, best_bpm = mid, bounds_by_song, bpm
+        if bpm > target_bpm:
+            lo = mid  # too many boundaries -> raise the threshold ratio to fire less
+        else:
+            hi = mid
+        if abs(bpm - target_bpm) < 0.5:
+            break
+
+    lines = [
+        f"Budget-matched ablation: vocal_phrases fires {target_bpm:.2f} bounds/min aggregate;",
+        f"mix-RMS threshold_ratio={best_ratio:.3f} matched to {best_bpm:.2f} bounds/min aggregate.",
+        "",
+        f"  {'song':<34}{'method':<16}" + "".join(f"{'+-' + str(t):>8}" for t in TOLERANCES) + f"{'bounds/min':>12}",
+    ]
+    agg = {"vocal_phrases": {t: 0 for t in TOLERANCES}, "mix-RMS matched": {t: 0 for t in TOLERANCES}}
+    total_hints = 0
+    for sd in songs_data:
+        hints = sd["hints"]
+        total_hints += len(hints)
+        matched_bounds = best_bounds_by_song[sd["song"]]
+        for name, bounds in (("vocal_phrases", sd["vp_bounds"]), ("mix-RMS matched", matched_bounds)):
+            row = f"  {sd['song']:<34}{name:<16}"
+            for t in TOLERANCES:
+                hit = _recall(bounds, hints, t)
+                agg[name][t] += hit
+                row += f"{hit:>5}/{len(hints):<2}"
+            bpm = _per_minute(bounds, sd["span"])
+            row += f"{bpm:>12.2f}"
+            lines.append(row)
+
+    lines.append(f"\nAggregate, {total_hints} hint boundaries:")
+    for name in agg:
+        row = f"  {name:<50}"
+        for t in TOLERANCES:
+            row += f"{agg[name][t]:>5}/{total_hints:<2}"
+        lines.append(row)
+    return "\n".join(lines)
+
+
 def write_report() -> None:
     paths.OUT_ROOT.mkdir(parents=True, exist_ok=True)
     text = "Vocal phrase blocks — score vs incumbent + mix-RMS baseline\n" + "=" * 60 + "\n"
-    text += gold_table() + "\n\n" + breath_sweep_table() + "\n"
+    text += gold_table() + "\n\n" + breath_sweep_table() + "\n\n" + matched_budget_table() + "\n"
     (paths.OUT_ROOT / "score.txt").write_text(text)
     print(text)

@@ -283,15 +283,19 @@ the stems.**
 
 ### Status
 
-**[OPEN] — split out of the CLAP character entry on 2026-09-06, with its first
-observation already in hand.** Not yet run as an experiment in its own right.
-Ranked ahead of every other open entry on cost alone: **no new model, no new
-image, no GPU, no new published file.**
+**[OPEN — run 2026-09-18. Item 1 turns out already shipped; item 2 is a
+negative result.]** Built as `experiments/allin1_posterior/` (no README yet).
+No UI lane yet — the entry's own reach test said item 1 needs none (a field
+on `sections.json`, not a timeline claim), but item 2's shadow labels are
+boundaries and do need one per the UI-lane rule; not built.
 
-**Verdict (v3.6):** keep, unrun — genuinely un-run, no fabricated score. The
-`Armin` observational finding (`break` 30% of the posterior across
-143.4–175.0 s, unrepresented in `sections.json`; per-section entropy 0.78)
-is what justifies opening the entry, not a measurement.
+**Verdict:** the entropy-as-confidence idea (item 1) turns out to already be
+shipped — `segmentation.py::_function_confidence_for_span` (`1 - mean
+posterior entropy` per section) already backs `sections.json`'s
+`function_confidence` field. This entry's "not yet run" status was stale.
+Shadow labels (item 2) reproduce the `Armin` worked example closely but
+**lose to a plain even-grid baseline on boundary recall on 3 of 4 gold
+songs** — a negative result, not a promotion candidate as scoped.
 
 ### Why? What for?
 
@@ -320,48 +324,59 @@ either gets wrong or honestly refuses:
 
 ### Experiment Plan
 
-Not yet built. `experiments/allin1_posterior/`, reading the committed
-`analyzer.allin1_cache` caches as data — no model run, so the ordinary `app`
-service is enough and no research image is needed.
+Built as `experiments/allin1_posterior/`, reading the committed
+`analyzer.allin1_cache` caches as data — no model run, plain `app` service.
+Time-bearing output (shadow labels) goes to
+`reference/proposals/allin1_posterior.json`; the debugger lane it needs per
+the UI-lane rule is not yet built.
 
-1. **Entropy as a real confidence.** Per published section, take the mean
-   posterior entropy over its frames. Score it against the gold songs: does
-   entropy separate the sections a listener would call correctly named from the
-   ones they would not? The incumbent is the current label-set heuristic, which
-   has never been measured at all — that is a low bar and it should be stated as
-   one. Baseline: section duration (long sections are likelier to be named
-   right), so the entropy claim has to beat the trivial explanation.
+1. **Entropy as a real confidence.** Turned out to be moot — see Status.
+   `segmentation.py::_function_confidence_for_span` already computes and
+   publishes exactly this measure as `function_confidence`.
 2. **Shadow labels.** Find spans where a non-argmax label holds a sustained
-   share of the posterior — the `Armin` `break` is the worked example — and score
-   their boundaries on the gold set against `sections.json` as the incumbent and
-   an even grid at matched boundary budget as the baseline.
-3. **Reach test, settled before building.** Both outputs land on rows that are
-   already published: entropy as a second, honestly *named* confidence on
-   `sections.json` (never folded into the existing one, which measures something
-   else), shadow labels as an optional field on the same rows. **This entry
-   proposes no new file** — it is the only open entry that adds nothing to the
-   delivery surface.
-
-Time-bearing output goes to `reference/proposals/allin1_posterior.json` with its
-own debugger lane, per the UI-lane rule above.
+   share of the posterior, score their boundaries against `sections.json`
+   (incumbent) and an even grid at matched boundary budget (baseline). Built
+   and run.
+3. **Reach test.** Unchanged from the original plan — no new file, entropy
+   already lands on `sections.json`, shadow labels would land there too if
+   promoted.
 
 ### Results evidence
 
-Carried over from [`../experiments/clap/`](../experiments/clap/README.md), which
-measured the posterior incidentally while testing something else. This is **one
-song, observational** — it is what justifies opening the entry, not a result:
+`out/score.json` in `experiments/allin1_posterior/`, gold set, boundary
+recall count (of `n_hint_boundaries`) at matched `bounds_per_min`:
 
-- `Armin - Revolution`: `break` holds 30 % of the frame posterior across
-  143.4–175.0 s and appears in no published section; the drum stem reads 0.011
-  across that span.
-- Per-section posterior entropy on that song averages 0.78.
+| song | hint boundaries | shadow @0.1/0.25/0.5s | sections incumbent @0.1/0.25/0.5s | even-grid baseline @0.1/0.25/0.5s |
+| --- | --- | --- | --- | --- |
+| `_test_song` | 21 | 0/0/2 | 5/7/9 | 1/3/7 |
+| `Hideaway - Kiesza` | 6 | 0/1/3 | 0/0/0 | 1/2/3 |
+| `Armin - Revolution` | 28 | 5/7/8 | 8/11/13 | 6/7/8 |
+| `Titanium - David Guetta ft Sia` | 18 | 0/2/6 | 0/0/0 | 1/2/4 |
 
-No gold-set comparison, no baseline, no incumbent number. Everything in the plan
-above is unrun, and this section must not be cited as if it were a measurement.
+Shadow labels lose to the even-grid baseline on `_test_song`, `Hideaway` and
+`Armin`; only beats it on `Titanium` at ±0.5 s (6 vs 4). The `sections.json`
+incumbent — a different comparison, boundaries it already has reason to place
+well — still wins outright on `_test_song`/`Armin` and is empty on
+`Hideaway`/`Titanium` (both `0/0/0`, the same songs `arrangement_state`
+struggles on elsewhere in this file).
+
+**Armin worked example reproduced closely:** detected `break` spans
+144.31–155.53 s and 155.57–168.16 s (mean share 0.32-0.32) against the
+original 143.4–175.0 s / 0.30 observation — both spans have zero overlap with
+any published section (`published_overlap: 0.0`), confirming the argmax
+genuinely discards this.
 
 ### Conclusion
 
-*(to be filled by the run)*
+**Item 1 needs no action — it shipped independently of this entry.** Item 2
+is a **negative result**: shadow labels reproduce the interesting worked
+example but do not clear a trivial even-grid baseline on boundary recall at
+matched budget on 3 of 4 gold songs, so they are not ready to become a
+published field. Not proposing promotion. If kept open, the UI lane for
+shadow labels is the next concrete step, followed by a second look at
+*why* the even-grid baseline wins — likely the same lesson as elsewhere in
+this file: a naive high-firing-rate method wins recall at a matched budget
+unless the signal is specific, and shadow-label share alone may not be.
 
 ---
 
@@ -533,36 +548,29 @@ feeds section naming rather than shipping as its own file.
 
 ### Status
 
-**[OPEN] — one cheap re-score from a decision, and the likely answer is
-archive.** Part A concluded: the detector finds the operator's vocal-phrase
-edges 5–6× better than the shipped `sections.json`, but does not clearly beat a
-naive mix-RMS threshold once its firing rate is accounted for, and the two were
-never compared at a matched budget. Part B (forced alignment) was never built.
+**[OPEN] — the decision path's own next step is now run, and it settles the
+question in the detector's favor.** Part A concluded: the detector finds the
+operator's vocal-phrase edges 5–6× better than the shipped `sections.json`.
+Against `arrangement_state`'s vocal edges the standalone detector also wins
+clearly (see prior verdict below). The one thing still open after that —
+whether the win against mix-RMS was really about the stem gate, or just a
+higher firing rate — is now measured too.
 
-**Do not build the budget-matched ablation this entry asked for.** A cheaper
-test now exists and probably settles it. `arrangement_state` — shipped in v3.2 as
-the `detect-arrangement-state` phase-3 stage — emits `+vocals` / `-vocals` edges
-from the same per-stem RMS series, and its Measurement 1
-([`archive/experiments.promoted.arrangement-state.md`](archive/experiments.promoted.arrangement-state.md)) shows that
-hysteresis-plus-smoothing, which is exactly this entry's method, **halves** F1 on
-`_test_song` (0.59 → 0.27) and displaces a hand-marked boundary by 6 s. So the
-decision path is:
+**Verdict (2026-09-18): the budget-matched ablation is run.** Sweeping the
+mix-RMS threshold until its firing rate matches `vocal_phrases`'s ~50
+bounds/min (aggregate 50.37 vs 50.53), `vocal_phrases` beats matched mix-RMS
+at every tolerance on the 104-boundary gold set: **34/104 vs 24/104 @±0.1s,
+59/104 vs 31/104 @±0.25s, 84/104 vs 36/104 @±0.5s.** The stem gate is doing
+real work, not just firing more often — this closes the open question the
+entry was scoped around. Only Part B (forced alignment, still unbuilt) stands
+between this and a promotion discussion.
 
-> Score the shipped `detect-arrangement-state` stage's vocal edges against this
-> entry's existing 94-boundary scorer. If the stage that shipped anyway matches
-> or beats this detector, this entry archives with **zero** new production code.
-
-Only if the standalone detector wins that comparison is the budget-matched
-ablation against mix-RMS worth running.
-
-**Verdict (v3.6):** keep — the decision path resolves against archiving.
-Rescored against the current 104-boundary hint set (4 gold songs):
-`vocal_phrases` recalls 34/104 @±0.1s, 59/104 @±0.25s, 84/104 @±0.5s (44.9
-bounds/min) vs the shipped `arrangement_state` vocal edges at 9/104, 15/104,
-25/104 (6.9 bounds/min) — the standalone detector wins clearly at every
-tolerance, so `arrangement_state` does not match or beat it. The
-budget-matched mix-RMS ablation the decision path asks for next is still
-unrun.
+**Verdict (v3.6, still holds):** rescored against the current 104-boundary
+hint set (4 gold songs): `vocal_phrases` recalls 34/104 @±0.1s, 59/104
+@±0.25s, 84/104 @±0.5s (44.9 bounds/min) vs the shipped `arrangement_state`
+vocal edges at 9/104, 15/104, 25/104 (6.9 bounds/min) — the standalone
+detector wins clearly at every tolerance, so `arrangement_state` does not
+match or beat it.
 
 ### Why? What for?
 
@@ -710,16 +718,45 @@ continuity would fix it — a design gap, not a tuning one.
 problem therefore stays open, and line *offsets* on the three non-`_test_song`
 gold songs remain unusable as truth.
 
+**Budget-matched ablation (2026-09-18), added to `score.py`.** Mix-RMS
+threshold swept to `threshold_ratio=1.269`, matching `vocal_phrases`'s
+aggregate 50.37 bounds/min (50.53 achieved):
+
+| song | method | ±0.1s | ±0.25s | ±0.5s | bounds/min |
+| --- | --- | --- | --- | --- | --- |
+| `_test_song` | vocal_phrases | 10/26 | 16/26 | 21/26 | 23.74 |
+| `_test_song` | mix-RMS matched | 12/26 | 13/26 | 14/26 | 41.29 |
+| `Hideaway - Kiesza` | vocal_phrases | 2/10 | 2/10 | 8/10 | 55.07 |
+| `Hideaway - Kiesza` | mix-RMS matched | 0/10 | 0/10 | 0/10 | 38.14 |
+| `Armin - Revolution` | vocal_phrases | 15/38 | 27/38 | 31/38 | 56.29 |
+| `Armin - Revolution` | mix-RMS matched | 4/38 | 5/38 | 6/38 | 45.15 |
+| `Titanium` | vocal_phrases | 7/30 | 14/30 | 24/30 | 46.99 |
+| `Titanium` | mix-RMS matched | 8/30 | 13/30 | 16/30 | 70.74 |
+| **aggregate, 104 boundaries** | **vocal_phrases** | **34/104** | **59/104** | **84/104** | — |
+| **aggregate, 104 boundaries** | **mix-RMS matched** | **24/104** | **31/104** | **36/104** | — |
+
+`vocal_phrases` wins at every tolerance on every song except `_test_song`
+@±0.1s and `Titanium` @±0.1s, where matched mix-RMS is marginally ahead
+(12/26 vs 10/26; 8/30 vs 7/30) — both close, both reversed by ±0.25s. On
+`Hideaway`, the dense-mix song where the unmatched comparison already showed
+the stem gate earning its keep, matched mix-RMS finds **nothing** (0/10 at
+every tolerance) while `vocal_phrases` still finds 8/10 at ±0.5s.
+
+A `score.py` schema-drift bug was fixed alongside this: `_shipped_boundaries`
+read `sections.json` as a bare list; it is now `{field_sources, sections}`
+per the v3.6 publish-phase shape, and was silently returning zero incumbent
+boundaries before the fix.
+
 ### Conclusion
 
-The premise holds: the operator marks vocal edges, nothing in the pipeline emits
-them, and a stem-gated hysteresis detector finds them far better than the shipped
-segmentation does. What is **not** established is the claim the entry rests on —
-that the stem gate and the hysteresis are what does the work. Against a fixed
-threshold on mix RMS the win appears only on the dense mixes, and the two were
-never compared at a matched firing budget. Two things stand between this and a
-promotion discussion, in order: a budget-matched ablation against the mix-RMS
-baseline, and Part B, which is also the ACE-Step entry's blocker.
+The premise holds: the operator marks vocal edges, nothing in the pipeline
+emits them, and a stem-gated hysteresis detector finds them far better than
+the shipped segmentation does. The claim the entry rested on — that the
+stem gate and hysteresis are doing real work, not just firing more often —
+is now established: at a matched firing budget, `vocal_phrases` beats mix-RMS
+at every tolerance in aggregate, decisively on the dense mixes. One thing
+stands between this and a promotion discussion: Part B (forced alignment),
+which is also the ACE-Step entry's blocker.
 
 ---
 
@@ -729,23 +766,36 @@ baseline, and Part B, which is also the ACE-Step entry's blocker.
 
 ### Status
 
-**[OPEN — measured on 3 of 5 scoring-corpus songs, incomplete].** v3.5 item 3.
-Built as [`../experiments/demucs_ablation/`](../experiments/demucs_ablation/README.md).
+**[OPEN — measured on all 5 scoring-corpus songs, still no clear winner].**
+v3.5 item 3. Built as
+[`../experiments/demucs_ablation/`](../experiments/demucs_ablation/README.md).
 No UI lane — this item reports numbers only, no timeline claim.
-`Hideaway - Kiesza` (stopped mid `htdemucs_ft`) and `Armin - Revolution`
-(not started) did not finish: the background compute loop was killed by the
-harness for system memory pressure, and the run was not retried per this
-item's time budget. `_test_song`, `ayuni` and `Titanium - David Guetta ft Sia`
-completed all three variants. `src/analyzer/stages/stems.py` and
+`Hideaway - Kiesza` and `Armin - Revolution` — previously killed by the
+harness for system memory pressure mid-run — finished 2026-09-18, run one
+variant/song at a time. `src/analyzer/stages/stems.py` and
 `DEMUCS_MODEL_NAME` are untouched — still pinned to `htdemucs`.
 
-**Verdict (v3.6):** keep — no kill condition, no clear winner, incomplete
-(3/5 scoring-corpus songs). `voiced_duration_fraction`: `htdemucs_6s` beats
-`htdemucs` by +1.8 pt on `ayuni` (0.510 vs 0.492) and +1.0 pt on `Titanium`
-(0.787 vs 0.777), loses by 1.3 pt on `_test_song` (0.637 vs 0.628) — a
-measured recommendation, not a re-pin decision. `Hideaway`/`Armin` unmeasured
-(harness killed for memory pressure); not rerun here (heavy multi-variant
-Demucs separation, out of this item's scope).
+**Verdict (v3.6):** keep — no kill condition, still no clear winner, now
+complete on all 5 songs. `ayuni` and `Armin` carry declared three-class
+ground truth ([Vocal ground truth inventory](#vocal-ground-truth-inventory)),
+so their `false_vocal_rate` is real, not the `voiced_duration_fraction` proxy:
+`ayuni` htdemucs 0.1745, `htdemucs_ft` 0.2004, `htdemucs_6s` 0.2223 — `htdemucs`
+wins (lowest false-vocal rate); `Armin` all three variants score **0.0000**
+(its 7 vocal spans have no declared negatives, so nothing distinguishes them
+here). `voiced_duration_fraction` (no ground truth, proxy only) on the
+remaining three: `_test_song` 0.628/0.641/0.637, `Hideaway` 0.851/0.820/0.850,
+`Titanium` 0.777/0.775/0.787 (htdemucs/ft/6s) — `htdemucs_6s` wins `Titanium`,
+`htdemucs` wins `_test_song` and `Hideaway`. Mixed across songs and metrics;
+still not a re-pin decision.
+
+`experiments/demucs_ablation/score.py` had a schema-drift bug found and fixed
+2026-09-18: it built the synthetic loudness doc in the pre-v3.6-item-8 nested
+`metadata.source_order` shape, which silently broke every score against the
+now-flat `source_order`/`interval_ms` production shape. `out/score.json` now
+also hard-fails rather than silently proxying `false_vocal_rate` for a song
+with no declared ground truth (`_test_song`/`Hideaway`/`Titanium` all raise —
+their numbers above came from a direct call to the un-gated block function,
+not the committed `score.json`, which now lists `ayuni`/`Armin` only).
 
 ### Why? What for?
 
@@ -784,38 +834,47 @@ number with no code change.
 Full detail and the `ayuni` 49.2 % vs shipped 40.8 % discrepancy note (loader/windowing variance, not a re-measurement of the shipped figure):
 [`../experiments/demucs_ablation/README.md`](../experiments/demucs_ablation/README.md).
 
-**`voiced_duration_fraction` (== `false_vocal_rate` against zero marked spans — proxy, not validated):**
+**`false_vocal_rate` — real, declared ground truth (`ayuni`, `Armin - Revolution` only):**
 
 | song | htdemucs | htdemucs_ft | htdemucs_6s |
 | --- | --- | --- | --- |
-| `_test_song` | 0.628 | 0.641 | 0.637 |
-| `ayuni` | 0.492 | 0.495 | 0.510 |
-| `Titanium - David Guetta ft Sia` | 0.777 | 0.774 | 0.787 |
-| `Hideaway - Kiesza` | not run — checkpoint fetch succeeded for `htdemucs`, run killed (system memory) mid `htdemucs_ft`, `htdemucs_6s` never started | | |
-| `Armin - Revolution` | not run — separation never started for any variant | | |
+| `ayuni` | **0.1745** | 0.2004 | 0.2223 |
+| `Armin - Revolution` | 0.0000 | 0.0000 | 0.0000 |
+
+`Armin` has 7 declared positive spans and zero declared negatives, so every
+variant scores 0 — the metric has nothing to discriminate on there yet.
+
+**`voiced_duration_fraction` (proxy — no declared ground truth for these three):**
+
+| song | htdemucs | htdemucs_ft | htdemucs_6s |
+| --- | --- | --- | --- |
+| `_test_song` | **0.628** | 0.641 | 0.637 |
+| `Hideaway - Kiesza` | **0.851** | 0.820 | 0.850 |
+| `Titanium - David Guetta ft Sia` | 0.777 | 0.775 | **0.787** |
 
 All three checkpoints fetched successfully in this environment (`htdemucs_ft`
 and `htdemucs_6s` via Demucs's own HuggingFace-hub fallback, no local
-mirror) — the anticipated "checkpoint may not be cacheable" risk did not
-materialise; the actual constraint was host memory during a 3-variant x
-3-song batch.
+mirror). `Hideaway`/`Armin` finished 2026-09-18 by running one variant/song
+at a time rather than batching — the earlier OOM was a batching problem, not
+a checkpoint-availability one.
 
 ### Conclusion
 
-No kill condition (none specified for this item) and no clear winner on the
-3 songs measured: all three variants land within 1.3, 1.8 and 1.3 points of
-each other on `_test_song`, `ayuni`, `Titanium` respectively — `htdemucs_6s`
-is highest on `ayuni` (+1.8 pts vs incumbent) and `Titanium` (+1.0 pt), lowest
-on `_test_song` is `htdemucs` itself. This is a **measured recommendation,
-not a decision**: on the songs measured, `htdemucs_6s` does not clearly beat
-`htdemucs` at the one number this item can compute today (a ground-truth-free
-proxy), and the corpus run is incomplete (2 of 5 scoring-corpus songs
-unmeasured). Re-pinning `DEMUCS_MODEL_NAME` is not proposed here — insufficient
-evidence either way, and per the promotion gate a re-pin is a separate,
+No kill condition (none specified for this item) and no clear winner now
+that all 5 scoring-corpus songs are measured. `htdemucs` wins on
+`false_vocal_rate` (`ayuni`, the only song where the variants actually
+differ) and on two of the three proxy songs (`_test_song`, `Hideaway`);
+`htdemucs_6s` wins the proxy on `Titanium`; `Armin`'s metric is uninformative
+until it gets declared negative spans. This stays a **measured
+recommendation against `htdemucs` re-pinning, not a case for it**:
+`htdemucs_6s` was the entry's working hypothesis (it adds `guitar`/`piano`
+sources that could pull melodic leakage out of `vocals`) and it does not win
+on the metric that actually has ground truth. Re-pinning `DEMUCS_MODEL_NAME`
+is not proposed — per the promotion gate a re-pin is a separate,
 explicitly-asked-for decision because it invalidates every cached stem in the
-corpus. Finishing `Hideaway`/`Armin` and re-running once item 1's `type:
-"vocal"` spans exist (to get the real, non-proxy false-vocal rate) are both
-open follow-ons, not committed to a queue row here.
+corpus, and the one real number here argues against it anyway. Getting
+`Armin` (and ideally `_test_song`/`Hideaway`/`Titanium`) declared negative
+spans is the only thing that would make this measurement complete.
 
 ---
 
