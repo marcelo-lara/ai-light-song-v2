@@ -122,6 +122,13 @@ describe("humanSectionsContent", () => {
     expect(blocks[1]!.summary).toBe("Hand-authored section segmentation.");
   });
 
+  it("shows only the operator's own energy/tension, no draft tags", () => {
+    const blocks = humanSectionsContent([{ start: 0, end: 10, energy: 4 }]);
+    expect(blocks[0]!.caption).toContain("E4");
+    expect(blocks[0]!.caption).not.toContain("*");
+    expect(blocks[0]!.caption).not.toContain("T");
+  });
+
   it("never throws on a missing file", () => {
     expect(humanSectionsContent(null)).toEqual([]);
   });
