@@ -4,6 +4,7 @@ import { artifactPaths, discoverSongs, useSong } from "./data";
 import type {
   BlockEnergyFile,
   HumanHintsFile,
+  HumanSegmentSeed,
   HumanSegmentsFile,
   LyricValidationsFile,
   SectionRow,
@@ -125,8 +126,7 @@ const TIMELINE_KEYS = [
   // double-click-to-create conventions as humanHints (reference/human, writable)
   "humanSections",
   // v3.6 item 4 — unreviewed rule-based drafts (experiments/segment_seeds):
-  // shown on the Segment Seeds lane and fused into the segment editor as a
-  // draft fallback; the Human Sections lane shows segments.json only.
+  // shown only on the Segment Seeds lane; Human Sections shows segments.json only.
   "humanSectionsSeed",
   // Moises.ai reference segmentation — read-only, one precedence tier below
   // humanSections (docs/reference/analysis.segments.md).
@@ -684,6 +684,28 @@ export function App(): React.JSX.Element {
       nonce: Date.now(),
     });
     setPanelMode("hint");
+  }, []);
+
+  // "Create human section" on an allin1 / Segment Seeds / Moises block: seeds an
+  // unsaved draft in the segment editor from the block — no save, no write to
+  // the source artifact. Seed-lane blocks carry their draft energy/tension/rhythm.
+  const handleCreateSectionFromSelection = useCallback((sel: BlockSelection) => {
+    const end =
+      typeof sel.end_s === "number" && Number.isFinite(sel.end_s)
+        ? sel.end_s
+        : sel.start_s + 1.0;
+    const raw = (sel.raw ?? {}) as Partial<HumanSegmentSeed> & { function?: string | null };
+    const isSeedLane = sel.laneId === "segmentSeeds";
+    setSelection(null);
+    setActiveSectionRef(null);
+    setSectionSeed({
+      start: sel.start_s,
+      end,
+      nonce: Date.now(),
+      label: raw.function ?? raw.label ?? null,
+      ...(isSeedLane ? { energy: raw.energy ?? null, tension: raw.tension ?? null, rhythm: raw.rhythm ?? null } : {}),
+    });
+    setPanelMode("segment");
   }, []);
 
   const handleSelectMarker = useCallback(
@@ -1454,6 +1476,7 @@ export function App(): React.JSX.Element {
             <BlockInspector
               selection={selection}
               onCreateHint={handleCreateHintFromSelection}
+              onCreateSection={handleCreateSectionFromSelection}
             />
           </RightPanel>
         )}
@@ -1509,7 +1532,6 @@ export function App(): React.JSX.Element {
           <SegmentEditorPanel
             song={song}
             file={humanSectionsFile}
-            seedFile={artifacts.humanSectionsSeed.data}
             currentTime={transport.currentTime}
             activeReference={activeSectionRef}
             seed={sectionSeed}

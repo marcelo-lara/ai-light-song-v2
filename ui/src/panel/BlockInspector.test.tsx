@@ -1,4 +1,5 @@
-// BlockInspector — plan v1.5 item 9: the "Create human hint" action.
+// BlockInspector — plan v1.5 item 9: the "Create human hint" action, and the
+// "Create human section" action on the section-shaped lanes.
 
 import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -25,7 +26,7 @@ const selection: BlockSelection = {
 describe("BlockInspector — Create human hint", () => {
   it("renders the button with an accessible name containing 'Create human hint'", () => {
     const { getByTestId } = render(
-      <BlockInspector selection={selection} onCreateHint={() => {}} />,
+      <BlockInspector selection={selection} onCreateHint={() => {}} onCreateSection={() => {}} />,
     );
     const btn = getByTestId("promote-hint");
     expect(btn).toBeTruthy();
@@ -35,10 +36,30 @@ describe("BlockInspector — Create human hint", () => {
   it("calls onCreateHint with the exact selection object it was given", () => {
     const onCreateHint = vi.fn();
     const { getByTestId } = render(
-      <BlockInspector selection={selection} onCreateHint={onCreateHint} />,
+      <BlockInspector selection={selection} onCreateHint={onCreateHint} onCreateSection={() => {}} />,
     );
     fireEvent.click(getByTestId("promote-hint"));
     expect(onCreateHint).toHaveBeenCalledTimes(1);
     expect(onCreateHint).toHaveBeenCalledWith(selection);
   });
+});
+
+describe("BlockInspector — Create human section", () => {
+  it.each(["allin1Sections", "segmentSeeds", "moisesSections"])(
+    "%s blocks get 'Create human section' routed to onCreateSection",
+    (laneId) => {
+      const onCreateHint = vi.fn();
+      const onCreateSection = vi.fn();
+      const sel = { ...selection, laneId };
+      const { getByTestId, queryByTestId } = render(
+        <BlockInspector selection={sel} onCreateHint={onCreateHint} onCreateSection={onCreateSection} />,
+      );
+      expect(queryByTestId("promote-hint")).toBeNull();
+      const btn = getByTestId("promote-section");
+      expect(btn.textContent).toContain("Create human section");
+      fireEvent.click(btn);
+      expect(onCreateSection).toHaveBeenCalledWith(sel);
+      expect(onCreateHint).not.toHaveBeenCalled();
+    },
+  );
 });

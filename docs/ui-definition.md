@@ -164,8 +164,8 @@ Lanes are the review surface, and any time-bearing experiment output gets one.
 **Every experiment artifact has its own lane, and a lane shows only its source
 artifact** — never a merged, fused or synthesized view, not even a draft
 fallback: the UI exists to debug artifacts, and a blend hides which producer
-said what. (Known exceptions: the fused Sections lane, and the segment editor
-panel, which still fills unset fields from `segments.seed.json`.)
+said what. (Known exception: the fused Sections lane.) The segment editor likewise
+builds its drafts from `segments.json` only.
 This table is **current state, not a permitted-reads list** — see "Reads:
 unrestricted" above.
 
@@ -175,7 +175,7 @@ unrestricted" above.
 | Gestures | `song_event_timeline.json` | |
 | Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |
 | Human Hints | `reference/human/human_hints.json` (+ `reference/human/block_energy.json` for the per-block `energy`/`tension` rating controls in its events panel) | writable |
-| Human Sections | `reference/human/segments.json` | writable. The operator's own hand-authored section segmentation, below Human Hints; `label` (fixed vocabulary or unset), `description` (free text), `energy`/`tension` (1-5, same rating buttons as Human Hints) |
+| Human Sections | `reference/human/segments.json` | writable. The operator's own hand-authored section segmentation, below Human Hints; `label` (fixed vocabulary or unset), `description` (free text), `energy`/`tension` (1-5, same rating buttons as Human Hints). The segment editor and this lane read `segments.json` only. Inspecting a block on allin1 Segmentation, Segment Seeds or Moises Sections offers "Create human section", which seeds an unsaved editor draft from the block (see `docs/reference/ui-regression.md`, `inspector-promote`) |
 | Segment Seeds | `reference/human/segments.seed.json` | read-only, experiment badge. `experiments/segment_seeds`' unreviewed rule-based `energy`/`tension`/`rhythm` draft over the operator's segment spans; one block per row, caption carries `E`/`T` tags, detail lists per-field values (`not seeded` when null) |
 | Moises Sections | `reference/moises/segments.json` | read-only. Moises.ai's reference segmentation — same bare `{start, end, label}` shape as Human Sections but never edited; one fusion tier below it in `sections.json` (`docs/reference/analysis.segments.md`) |
 | allin1 Segmentation | `artifacts/section_segmentation/sections.json` | read-only. The raw, pre-fusion analyzer output — lets the operator see what our own segmentation produced even on a song where the fused Sections lane shows a human or Moises override instead |

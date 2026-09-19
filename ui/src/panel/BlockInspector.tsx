@@ -15,14 +15,28 @@ interface BlockInspectorProps {
    * (D10) and never marks the source artifact (D13).
    */
   onCreateHint: (selection: BlockSelection) => void;
+  /**
+   * Same, for the section-shaped lanes (`SECTION_SOURCE_LANES`): seeds an
+   * unsaved draft in the segment editor instead of the hint editor.
+   */
+  onCreateSection: (selection: BlockSelection) => void;
 }
+
+/** Lanes whose blocks are section spans — promoted to a human *section*. */
+export const SECTION_SOURCE_LANES: ReadonlySet<string> = new Set([
+  "allin1Sections",
+  "segmentSeeds",
+  "moisesSections",
+]);
 
 export function BlockInspector({
   selection,
   onCreateHint,
+  onCreateSection,
 }: BlockInspectorProps): React.JSX.Element {
   const [showRaw, setShowRaw] = useState(false);
   const fields = blockFields(selection.laneId, selection);
+  const isSection = SECTION_SOURCE_LANES.has(selection.laneId);
 
   return (
     <div className="block-inspector">
@@ -31,11 +45,11 @@ export function BlockInspector({
       <button
         type="button"
         className="btn btn-ghost btn-sm block-inspector__promote"
-        data-testid="promote-hint"
-        onClick={() => onCreateHint(selection)}
+        data-testid={isSection ? "promote-section" : "promote-hint"}
+        onClick={() => (isSection ? onCreateSection(selection) : onCreateHint(selection))}
       >
         <i className="ph ph-rows-plus-bottom" />
-        Create human hint
+        {isSection ? "Create human section" : "Create human hint"}
       </button>
 
       <dl className="block-inspector__dl">
