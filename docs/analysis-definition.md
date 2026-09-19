@@ -68,12 +68,11 @@ producers:
 | --- | --- | --- |
 | `time` | essentia `RhythmExtractor2013` | trusted — 7/7 impacts within 0.25 s |
 | `type`, `bar`, `beat` | allin1 downbeat activation | 0.226 F1, short of target |
-| `chord` | HPCP chord decoding | 1.00–0.38 agreement by song |
 
 and its single `confidence` describes **only the downbeat phase**, not the beat
 time — so the row reads as though a trusted field carried a weak confidence. A
 `sections.json` row likewise fuses allin1's boundaries and labels with the
-harmonic stage's `key` and `chord_progression`, gated on a different producer's
+harmonic stage's `key`, gated on a different producer's
 confidence than the row's own `confidence` field.
 
 `hints.json` is the one file that already gets this right: every hint carries
@@ -113,15 +112,11 @@ No `confidence` field anywhere in phase 1 — there is nothing to be uncertain a
 
 | Module | Produces |
 | --- | --- |
-| `harmonic.py` | `artifacts/essentia/hpcp.json`, `artifacts/layer_a_harmonic.json` — HPCP, global key, chord events; also projects compact `key` / `chord_progression` into `sections.json` |
+| `harmonic.py` | `artifacts/essentia/hpcp.json`, `artifacts/layer_a_harmonic.json` — HPCP and the whole-song key; projects `key` into `sections.json`. Chord inference was removed — it failed on every song |
 | `drums.py` | `artifacts/symbolic_transcription/drum_events.json` — Omnizart drum hits on the isolated drums stem; GM 35/38/42 only, plus a v3.4 `crash`/`hat` split on pitch 42 from the drums-stem brilliance band |
 | `genre.py` | `artifacts/genre.json` — genre with honest confidences and `guidance` prose |
 | `segmentation.py` | `artifacts/section_segmentation/sections.json` — All-In-One named functional segmentation |
 | `energy.py` | `artifacts/layer_c_energy.json` — energy states, per-section cards, accent candidates |
-
-Chroma extraction and chord decoding stay **two stages, not one** — fusing them
-would make a chroma bug and a decoding bug indistinguishable in the artifact,
-which is exactly the ambiguity that made past chord issues hard to attribute.
 
 ### Phase 3 — relate (phases 1-2, **never audio**)
 
@@ -177,14 +172,14 @@ surface needs still lives only under `artifacts/`.
 
 ### Validation — orthogonal to all four
 
-`validation/{beats,chords,sections,drums,drops}.py` score generated artifacts
+`validation/{beats,sections,drums,drops}.py` score generated artifacts
 against `reference/`; `report.py` aggregates into
 `artifacts/validation/phase_1_report.{json,md}`.
 
 Validation and the human/reference loop **observe** every phase rather than
 occupying a position in the sequence, and must not be interleaved as ordinary
-stages — doing so is what previously scattered `validate-beats` and
-`validate-chords` through the middle of extraction. Human corrections may enter
+stages — doing so is what previously scattered `validate-beats`
+through the middle of extraction. Human corrections may enter
 at any phase, subject to the promotion rules.
 
 ### Shared infrastructure
@@ -216,10 +211,10 @@ checked.
 
 - **Beat tracking is good.** 7/7 human-marked impacts land within 0.25 s of an
   essentia beat. Beat times are essentia's throughout.
-- **Chord labels are informative, not settled.** Root+quality agreement with
-  Moises varies widely by song: **1.00 / 0.69 / 0.51 / 0.38** across the four
-  gold songs. `sections.json`'s `chord_progression` is confidence-gated on
-  exactly this uncertainty, and `null` there is honest, not a bug.
+- **Chord inference was removed.** Root+quality agreement with Moises was
+  1.00 / 0.69 / 0.51 / 0.38 across the four gold songs, and the labels never
+  helped find where a song repeats. The `key` estimate is a separate claim and
+  stays, confidence-gated (`null` when weak).
 - **The drum vocabulary is bounded, and the bound is written down.** Omnizart
   emits three GM pitches only — 35 (kick), 38 (snare), 42 (hi-hat). `velocity`
   is a constant 100 and is **not published** (a zero-information column is worse
@@ -428,7 +423,7 @@ the instinct is to blame the model that reads the output:
 | producer | reads | therefore cannot see |
 | --- | --- | --- |
 | `segmentation.py` | mix spectrogram, argmax over 10 labels, 8-bar quantised | any change shorter than ~15 s on a mid-tempo track |
-| `harmonic.py` | HPCP | anything that is not pitch — the chord is `D#m` on both sides of every boundary above |
+| `harmonic.py` | HPCP (key only) | anything that is not pitch — the key is the same on both sides of every boundary above |
 | `gestures.py` | mix FFT + drum onsets | a *state*; it emits build/impact/release events, never "who is playing now" |
 | `loudness.py` | per-stem RMS ✅ | — it publishes the series and draws no conclusion from it |
 

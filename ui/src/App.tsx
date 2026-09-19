@@ -188,8 +188,6 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   character: "character",
   vocalTranscription: "vocalTranscription",
   sections: "sectionsTopLevel",
-  chordsInference: "harmonicLayer",
-  chords: "harmonicLayer",
 };
 
 /** lane id → (artifact key, canvas renderer kind) for the item-5 data lanes. */
@@ -413,7 +411,6 @@ export function App(): React.JSX.Element {
       vocalTranscription: artifacts.vocalTranscription.data,
       sections,
       sectionSegmentation,
-      harmonicLayer: artifacts.harmonicLayer.data,
     }),
     [
       humanHintsFile,
@@ -434,7 +431,6 @@ export function App(): React.JSX.Element {
       artifacts.vocalTranscription.data,
       sections,
       sectionSegmentation,
-      artifacts.harmonicLayer.data,
     ],
   );
 

@@ -15,31 +15,5 @@
     "label": null,
     "confidence": 1.0,
     "source": "reference_promoted"
-  },
-  "chords": [
-    {
-      "time": 0.06,
-      "end_s": 46.2,
-      "bar": 1,
-      "beat": 1,
-      "chord": "D#m",
-      "confidence": 1.0
-    },
-    {
-      "time": 46.2,
-      "end_s": 48.04,
-      "bar": 26,
-      "beat": 1,
-      "chord": "B",
-      "confidence": 1.0
-    },
-    {
-      "time": 48.04,
-      "end_s": 51.74,
-      "bar": 27,
-      "beat": 1,
-      "chord": "F#",
-      "confidence": 1.0
-    }
-  ]
+  }
 }

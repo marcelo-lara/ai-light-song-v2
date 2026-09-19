@@ -16,7 +16,7 @@ export const artifactPaths = {
   info: (song: string) => encodePath(analysis(song, "info.json")),
   beats: (song: string) => encodePath(analysis(song, "beats.json")),
   sectionsTopLevel: (song: string) => encodePath(analysis(song, "sections.json")),
-  // v3.6 item 8 — the display-only fields (label/description/chord_progression)
+  // v3.6 item 8 — the display-only fields (label/description)
   // split out of the trimmed top-level sections.json. Read by the UI only,
   // to re-merge into the full `SectionRow` shape (see `mergeSectionDisplay`).
   sectionsDisplay: (song: string) =>

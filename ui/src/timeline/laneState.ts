@@ -18,7 +18,6 @@ export type LaneKind =
   | "validation"
   | "hints"
   | "sections"
-  | "chords"
   | "proposals"
   | "character"
   | "lyrics"
@@ -94,8 +93,6 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "loudnessEnvelope", label: "Loudness Envelope", sub: "essentia · mix + 4 stems", kind: "env", height: 112 },
   { id: "character", label: "Character", sub: "experiment · what this passage is like", kind: "character", height: 50, experiment: "clap" },
   { id: "vocalTranscription", label: "Vocal Transcription", sub: "experiment · sung lyrics + timing · VocalParse / ACE-Step / whisper", kind: "lyrics", height: 84, experiment: "vocalparse + acestep_transcriber" },
-  { id: "chordsInference", label: "Chords", sub: "layer A harmonic · per-beat inference", kind: "chords", height: 50 },
-  { id: "chords", label: "Chord Regions", sub: "layer A harmonic", kind: "chords", height: 50 },
   { id: "drums", label: "Drum Density", sub: "kick / snare / hat / crash activity", kind: "drums", height: 84 },
   { id: "energy", label: "Energy Profile", sub: "beat-aligned energy + accents", kind: "energy", height: 84 },
   { id: "validation", label: "Regression Overlay", sub: "beat drift + event comparison", kind: "validation", height: 84 },

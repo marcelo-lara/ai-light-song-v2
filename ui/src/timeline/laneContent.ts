@@ -15,7 +15,6 @@ import type {
   HumanSegmentsFile,
   HumanSegmentsSeedFile,
   MoisesSegmentsFile,
-  HarmonicLayer,
   SectionRow,
   SegmentationSection,
 } from "../data/types";
@@ -33,7 +32,6 @@ import type {
   WhisperxVadFile,
 } from "../data/sparseArtifacts";
 
-import { romanNumeral } from "./romanNumeral";
 
 export interface SparseBlock {
   id: string;
@@ -462,62 +460,6 @@ export function sectionsContent(
   });
 }
 
-export function chordsContent(harmonic: HarmonicLayer | null): SparseBlock[] {
-  const key = harmonic?.global_key?.label ?? null;
-  return (harmonic?.chords ?? []).map((c, i) => {
-    const roman = romanNumeral(c.chord, key);
-    return {
-      id: `chord-${String(i + 1).padStart(3, "0")}`,
-      start_s: c.time,
-      end_s: c.end_s,
-      label: c.chord || "-",
-      ...(roman ? { wideLabel: `${c.chord} · ${roman}` } : {}),
-      laneLabel: "Chord Regions",
-      caption: `${formatRange(c.time, c.end_s)}${
-        c.confidence != null ? ` · conf ${round(c.confidence)}` : ""
-      }`,
-      reference: roman ?? "-",
-      detail:
-        c.bar != null ? `bar ${c.bar}${c.beat != null ? `.${c.beat}` : ""}` : "-",
-      summary: `Chord ${c.chord}${roman ? ` (${roman} in ${key})` : ""} from the Layer A harmonic read.`,
-      raw: c,
-    };
-  });
-}
-
-export function chordsInferenceContent(harmonic: HarmonicLayer | null): SparseBlock[] {
-  const key = harmonic?.global_key?.label ?? null;
-  const probs = harmonic?.chord_probabilities ?? [];
-  return probs.map((c, i) => {
-    const nextTime = probs[i + 1]?.time;
-    const end_s =
-      nextTime != null && nextTime > c.time
-        ? nextTime
-        : c.time + 0.08;
-    const roman = romanNumeral(c.label, key);
-    return {
-      id: `chords-inference-${String(i + 1).padStart(3, "0")}`,
-      start_s: c.time,
-      end_s,
-      label: c.label || "-",
-      ...(roman ? { wideLabel: `${c.label} · ${roman}` } : {}),
-      laneLabel: "Chords",
-      caption: `${formatRange(c.time, end_s)}${
-        c.confidence != null ? ` · conf ${round(c.confidence)}` : ""
-      }`,
-      reference: roman ?? "-",
-      detail: c.beat != null ? `beat ${c.beat}` : "-",
-      summary: `Per-beat chord inference ${c.label}${roman ? ` (${roman} in ${key})` : ""} from layer_a_harmonic.chord_probabilities.`,
-      raw: {
-        ...c,
-        roman,
-        name: c.label,
-      },
-    };
-  });
-}
-
-
 /**
  * Vocal phrase / instrumental gap / sustained-note blocks from
  * `experiments/vocal_phrases` (Part A — no model, local-auto-gain hysteresis
@@ -912,7 +854,6 @@ export interface LaneContentSources {
   lyricValidations?: ReadonlySet<number> | null;
   sections?: readonly SectionRow[];
   sectionSegmentation?: readonly SegmentationSection[];
-  harmonicLayer?: HarmonicLayer | null;
   character?: CharacterFile | null;
   vocalTranscription?: VocalTranscriptionFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
@@ -947,8 +888,6 @@ export const SPARSE_LANE_IDS = [
   "sections",
   "character",
   "vocalTranscription",
-  "chordsInference",
-  "chords",
 ] as const;
 
 export type SparseLaneId = (typeof SPARSE_LANE_IDS)[number];
@@ -994,10 +933,6 @@ export function buildLaneBlocks(
       return characterContent(s.character ?? null);
     case "vocalTranscription":
       return vocalTranscriptionContent(s.vocalTranscription ?? null);
-    case "chordsInference":
-      return chordsInferenceContent(s.harmonicLayer ?? null);
-    case "chords":
-      return chordsContent(s.harmonicLayer ?? null);
     default:
       return [];
   }

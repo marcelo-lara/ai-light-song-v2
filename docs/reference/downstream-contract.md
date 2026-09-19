@@ -118,10 +118,8 @@ flagged row).
 - Row order and count must equal the segmentation file.
 - **Dropped in v3.6 item 8**: `label` (a display string folding
   `function_confidence` into text, e.g. `"003 Build [unverified] (0.45)"`),
-  `description` (a sentence restating `function` + ordinal), and
-  `chord_progression` (the section's dominant repeating chord sequence,
-  `"Am–F–C–G"` — gated on the same per-chord confidence floor as before). None
-  were read downstream. All three now live in
+  and `description` (a sentence restating `function` + ordinal). Neither was
+  read downstream. Both now live in
   `artifacts/section_segmentation/sections_display.json`, joined by
   `section_id` — **not MCP-exposed**; the debugger UI reads it directly. A
   consumer wanting a per-section headline sentence must build one from
@@ -251,11 +249,8 @@ Produced by the phase-3 `gestures` stage. `events[]`, each a **flat** row
   **downbeat list**. Cue placement snaps to downbeats, so downbeat detection and
   bar numbering must be correct and continuous — and today they are **not fully
   trusted** ([`../analysis-definition.md`](../analysis-definition.md), "Downbeats").
-- **Dropped in v3.6 item 8**: `chord` (chord labels are "informative, not
-  settled" — CLAUDE.md — and this field was unread). Chord data still exists,
-  time-indexed, in `artifacts/layer_a_harmonic.json`'s `chords[]` list
-  (`time`, `end_s`, `chord`, `confidence`) — **not MCP-exposed**; nothing
-  replaces this field at top level.
+- **Dropped in v3.6 item 8**: `chord` (unread). Chord inference was later
+  removed from the analyzer entirely; nothing replaces this field.
 - Per-beat *features* are not consumed; don't attach them here.
 
 ### `hints.json` (top-level) — high priority

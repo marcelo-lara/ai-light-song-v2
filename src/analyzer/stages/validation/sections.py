@@ -10,9 +10,6 @@ from analyzer.io import read_json, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
 BEAT_MATCH_RATIO_THRESHOLD = 0.80
-CHORD_MATCH_RATIO_THRESHOLD = 0.85
-CHORD_MAX_LABEL_MISMATCHES = 0
-CHORD_MAX_TIMING_OVERLAP_FAILURES = 2
 from .beats import _build_section_timing_diagnostics
 from .utils import ValidationResult, skipped_result
 

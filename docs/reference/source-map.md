@@ -47,7 +47,7 @@ only surviving package.
 | 1 | `timing.py` | canonical beat grid; essentia beat *times* plus allin1-derived downbeat *phase* with per-downbeat confidence. Module docstring carries the phase-selection algorithm |
 | 1 | `fft_bands.py` | 7 spectral bands / 50 ms — five artifacts: the mix (`fft_bands.json`) plus one per Demucs stem (`fft_bands.{bass,drums,harmonic,vocals}.json`), each normalised against its own percentiles; a missing stem WAV raises `DependencyError` |
 | 1 | `loudness.py` | RMS (10 ms) and envelope (200 ms), per source |
-| 2 | `harmonic.py` | HPCP, global key, chord decoding; projects `key` / `chord_progression` into `sections.json`, confidence-gated |
+| 2 | `harmonic.py` | HPCP and the whole-song key (`extract-hpcp-and-key`); `ui_data.py` projects `key` into `sections.json`, confidence-gated |
 | 2 | `drums.py` | Omnizart drum transcription on the drums stem (GM 35/38/42); owns `resolve_omnizart_drum_model_path`, the beat/section alignment helpers, and the v3.4 `crash`/`hat` split on pitch 42 — reads `essentia/fft_bands.drums.json`, raises `DependencyError` if absent |
 | 2 | `genre.py` | genre classification with honest confidences and `guidance` prose |
 | 2 | `segmentation.py` | All-In-One named segmentation; merges 8-bar phrases into song-form runs, computes `function_confidence` from posterior entropy, flags degenerate songs `function_status: "unknown"`, sets `same_label_as` |
@@ -69,7 +69,6 @@ Orthogonal to the four phases (validation observes every phase; it is not a stag
 | File | Scores |
 | --- | --- |
 | `validation/beats.py` | beat times and downbeat phase vs. `reference/moises/` |
-| `validation/chords.py` | chord agreement vs. `reference/moises/chords.json` |
 | `validation/sections.py` | boundaries vs. `reference/moises/segments.json` |
 | `validation/drums.py` | internal consistency and plausibility of `drum_events.json` |
 | `validation/drops.py` | timed drop impacts vs. `reference/human/human_hints.json` |

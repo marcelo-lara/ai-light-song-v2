@@ -31,8 +31,6 @@ import type {
   FftBands,
   FftBand,
   FftFrame,
-  HarmonicChord,
-  HarmonicChordProbability,
   HarmonicLayer,
   HumanHint,
   HumanHintsFile,
@@ -118,7 +116,7 @@ export function parseBeats(raw: unknown): Beats {
 // ---------------------------------------------------------------------------
 
 // Raw wire parse of the trimmed top-level sections.json row (v3.6 item 8 —
-// label/description/chord_progression moved to
+// label/description moved to
 // artifacts/section_segmentation/sections_display.json). Used only as input
 // to `mergeSectionDisplay`; nothing else should consume `SectionsTopLevelRow`
 // directly.
@@ -163,10 +161,6 @@ function parseSectionDisplayRow(raw: unknown, ctx: string): SectionDisplayRow {
     section_id: asString(o.section_id, `${ctx}.section_id`),
     label: asString(o.label, `${ctx}.label`),
     description: stringOrNull(o.description, `${ctx}.description`),
-    chord_progression: stringOrNull(
-      o.chord_progression,
-      `${ctx}.chord_progression`,
-    ),
   };
 }
 
@@ -211,7 +205,6 @@ export function mergeSectionDisplay(
       ...(row.contested_by !== undefined ? { contested_by: row.contested_by } : {}),
       confidence: row.confidence,
       key: row.key,
-      chord_progression: disp.chord_progression,
     };
   });
 }
@@ -386,31 +379,6 @@ export const parseLoudnessEnvelope = (raw: unknown): LoudnessSeries =>
 
 // ---------------------------------------------------------------------------
 
-function parseHarmonicChord(raw: unknown, ctx: string): HarmonicChord {
-  const o = asObject(raw, ctx);
-  return {
-    time: asNumber(o.time, `${ctx}.time`),
-    end_s: asNumber(o.end_s, `${ctx}.end_s`),
-    bar: numberOrNull(o.bar, `${ctx}.bar`),
-    beat: numberOrNull(o.beat, `${ctx}.beat`),
-    chord: asString(o.chord, `${ctx}.chord`),
-    confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
-  };
-}
-
-function parseHarmonicChordProbability(
-  raw: unknown,
-  ctx: string,
-): HarmonicChordProbability {
-  const o = asObject(raw, ctx);
-  return {
-    beat: numberOrNull(o.beat, `${ctx}.beat`),
-    time: numberOr(o.time, 0, `${ctx}.time`),
-    label: stringOr(o.label, "", `${ctx}.label`),
-    confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
-  };
-}
-
 export function parseHarmonicLayer(raw: unknown): HarmonicLayer {
   const o = asObject(raw, "layer_a_harmonic.json");
   const gk = objectOrNull(o.global_key, "harmonic.global_key");
@@ -427,15 +395,6 @@ export function parseHarmonicLayer(raw: unknown): HarmonicLayer {
           source: stringOrNull(gk.source, "harmonic.global_key.source"),
         }
       : null,
-    chords: asArray(o.chords, "harmonic.chords").map((c, i) =>
-      parseHarmonicChord(c, `harmonic.chords[${i}]`),
-    ),
-    chord_probabilities: asArray(
-      o.chord_probabilities ?? [],
-      "harmonic.chord_probabilities",
-    ).map((c, i) =>
-      parseHarmonicChordProbability(c, `harmonic.chord_probabilities[${i}]`),
-    ),
   };
 }
 

@@ -295,8 +295,6 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
   than one at once for overlapping blocks (`isInPlayheadWindow`, both in
   `ui/src/panel/laneEvents.ts`). The card is inset within `.app-rightpanel`'s
   own padding (`--space-2` each side), not full-bleed past it.
-  Block-lane opener coverage includes both harmonic lanes: `lane-events-chordsInference`
-  (Chords) and `lane-events-chords` (Chord Regions).
 - footer (plan v1.5 item 6): `follow-toggle` on the follow-playhead toggle
   button, immediately left of the `Lanes` button; `aria-pressed` tracks the
   persisted flag (default on).

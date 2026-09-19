@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import humanHints from "../data/__fixtures__/human_hints.json";
-import harmonic from "../data/__fixtures__/layer_a_harmonic.json";
 import timelineFixture from "../data/__fixtures__/song_event_timeline.json";
 import characterFix from "../data/__fixtures__/character.json";
 import vocalFix from "../data/__fixtures__/vocal_transcription.json";
@@ -11,15 +10,13 @@ import {
   parseVocalTranscription,
   parseMoisesLyrics,
 } from "../data/sparseArtifacts";
-import { parseEventTimeline, parseHarmonicLayer, parseHumanHints } from "../data/parsers";
+import { parseEventTimeline, parseHumanHints } from "../data/parsers";
 
 import {
   allin1SectionsContent,
   arrangementStateContent,
   characterContent,
-  chordsInferenceContent,
   vocalTranscriptionContent,
-  chordsContent,
   gesturesContent,
   humanHintsContent,
   humanSectionsContent,
@@ -41,8 +38,7 @@ import type {
   EnergyLevelFile,
   TensionShapeFile,
 } from "../data/sparseArtifacts";
-import type { HarmonicLayer, HumanSegmentsSeedFile } from "../data/types";
-import { romanNumeral } from "./romanNumeral";
+import type { HumanSegmentsSeedFile } from "../data/types";
 
 describe("humanHintsContent", () => {
   it("maps every hint to a block carrying id + lighting hint", () => {
@@ -215,7 +211,6 @@ describe("sectionsContent", () => {
         same_label_as: null,
         confidence: 0.66,
         key: null,
-        chord_progression: null,
       },
     ]);
     expect(blocks[0]!.label).toBe("001 Verse (0.66)");
@@ -239,8 +234,7 @@ describe("sectionsContent", () => {
           same_label_as: null,
           confidence: 0.91,
           key: null,
-          chord_progression: null,
-        },
+          },
       ],
       [
         {
@@ -277,7 +271,6 @@ describe("sectionsContent", () => {
         same_label_as: null,
         confidence: 0.54,
         key: null,
-        chord_progression: null,
       },
     ]);
     const b = blocks[0]!;
@@ -305,58 +298,9 @@ describe("sectionsContent", () => {
         same_label_as: null,
         confidence: 0.66,
         key: null,
-        chord_progression: null,
       },
     ]);
     expect(blocks[0]!.tintId).toBeUndefined();
-  });
-});
-
-describe("chordsContent", () => {
-  it("emits chord name + a wide roman-numeral label when key is known", () => {
-    const blocks = chordsContent(parseHarmonicLayer(harmonic));
-    expect(blocks.length).toBeGreaterThan(0);
-    expect(blocks[0]!.label).toBe("D#m");
-    // fixture global_key.label is null -> no roman numeral
-    expect(blocks[0]!.wideLabel).toBeUndefined();
-  });
-
-  it("derives a roman numeral when a key label is available", () => {
-    expect(romanNumeral("D#m", "D# minor")).toBe("i");
-    expect(romanNumeral("B", "D# minor")).toBe("VI");
-    expect(romanNumeral("F#", "D# minor")).toBe("III");
-  });
-});
-
-describe("chordsInferenceContent", () => {
-  const harmonicWithProbabilities: HarmonicLayer = {
-    schema_version: "3.1",
-    song_name: "_test_song",
-    global_key: { label: "D# minor", confidence: 0.76, source: "hpcp" },
-    chords: [],
-    chord_probabilities: [
-      { beat: 1, time: 0.510839, label: "D#m", confidence: 0.778155 },
-      { beat: 2, time: 1.044898, label: "D#m", confidence: 0.778155 },
-      { beat: 3, time: 1.567347, label: "D#m", confidence: 0.667713 },
-    ],
-  };
-
-  it("renders per-beat chord inference blocks from chord_probabilities", () => {
-    const blocks = chordsInferenceContent(harmonicWithProbabilities);
-    expect(blocks.length).toBeGreaterThan(0);
-    expect(blocks[0]!.label).toBe("D#m");
-    expect(blocks[0]!.laneLabel).toBe("Chords");
-    expect(blocks[0]!.end_s).toBeGreaterThan(blocks[0]!.start_s);
-  });
-
-  it("uses the next inference time as end_s when available", () => {
-    const blocks = chordsInferenceContent(harmonicWithProbabilities);
-    expect(blocks[0]!.start_s).toBe(0.510839);
-    expect(blocks[0]!.end_s).toBe(1.044898);
-  });
-
-  it("never throws on a missing artifact", () => {
-    expect(chordsInferenceContent(null)).toEqual([]);
   });
 });
 
@@ -382,8 +326,6 @@ describe("gesturesContent", () => {
 describe("null inputs", () => {
   it("every adapter tolerates a missing artifact", () => {
     expect(humanHintsContent(null)).toEqual([]);
-    expect(chordsInferenceContent(null)).toEqual([]);
-    expect(chordsContent(null)).toEqual([]);
   });
 });
 

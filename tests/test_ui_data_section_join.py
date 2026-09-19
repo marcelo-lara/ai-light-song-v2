@@ -14,7 +14,7 @@ def _setup(tmp: str, sections: list[dict]) -> SongPaths:
     paths = SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
     paths.artifact("essentia").mkdir(parents=True)
     paths.artifact("essentia", "beats.json").write_text(json.dumps({"beats": [{"time": 0.0, "index": 1, "bar": 1, "beat_in_bar": 1, "type": "downbeat"}]}))
-    paths.artifact("layer_a_harmonic.json").write_text(json.dumps({"chords": []}))
+    paths.artifact("layer_a_harmonic.json").write_text(json.dumps({"global_key": None}))
     paths.artifact("section_segmentation").mkdir(parents=True, exist_ok=True)
     paths.artifact("section_segmentation", "sections.json").write_text(json.dumps({"sections": sections}))
     # v3.1 items 5-7 — build_ui_data now also publishes top-level views of these.

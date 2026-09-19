@@ -10,12 +10,8 @@ from analyzer.io import read_json, write_json
 from analyzer.models import SCHEMA_VERSION
 from analyzer.paths import SongPaths
 BEAT_MATCH_RATIO_THRESHOLD = 0.80
-CHORD_MATCH_RATIO_THRESHOLD = 0.85
-CHORD_MAX_LABEL_MISMATCHES = 0
-CHORD_MAX_TIMING_OVERLAP_FAILURES = 2
 from .drums import validate_drums
 from .beats import validate_beats
-from .chords import validate_chords
 from .utils import ValidationResult, skipped_result
 from .sections import _validate_sections, _validate_human_segments
 from .drops import validate_drops
@@ -25,29 +21,22 @@ def build_validation_report(
     paths: SongPaths,
     compare_targets: tuple[str, ...],
     beat_validation: ValidationResult | None,
-    chord_validation: ValidationResult | None,
     beat_tolerance_seconds: float,
     tolerance_seconds: float,
-    chord_min_overlap: float,
     fail_on_mismatch: bool,
 ) -> tuple[dict, int]:
-    harmonic_path = paths.artifact("layer_a_harmonic.json")
     sections_path = paths.artifact("section_segmentation", "sections.json")
     beats_path = paths.artifact("essentia", "beats.json")
     drum_events_path = paths.artifact("symbolic_transcription", "drum_events.json")
     drum_midi_path = paths.artifact("symbolic_transcription", "omnizart", "drums.mid")
     energy_path = paths.artifact("layer_c_energy.json")
     event_timeline_path = paths.timeline_output_path
-    harmonic = read_json(harmonic_path)
     sections = read_json(sections_path)
     timing = read_json(beats_path)
 
     results = {
         "beats": beat_validation if "beats" in compare_targets and beat_validation is not None else (
             validate_beats(paths, timing, beat_tolerance_seconds) if "beats" in compare_targets else skipped_result()
-        ),
-        "chords": chord_validation if "chords" in compare_targets and chord_validation is not None else (
-            validate_chords(paths, harmonic, timing, chord_min_overlap) if "chords" in compare_targets else skipped_result()
         ),
         "drums": validate_drums(paths, timing) if "drums" in compare_targets else skipped_result(),
         "sections": _validate_sections(paths, sections, tolerance_seconds) if "sections" in compare_targets else skipped_result(),
@@ -79,8 +68,6 @@ def build_validation_report(
     notes: list[str] = []
     if "beats" in compare_targets:
         notes.append("Beat validation compares inferred beat times against the beat timestamps embedded in the reference chord annotation when present.")
-    if "chords" in compare_targets:
-        notes.append("reference/moises/*.json is Moises.ai inference, not human ground truth. Only lyrics.json carries a confidence field, and only its \"0.99\" rows are operator-curated. Chord validation therefore measures agreement with a second model, not correctness.")
     if "drums" in compare_targets:
         notes.append("Drum validation checks the producer-scoped drum_events.json artifact for structural integrity, Omnizart provenance, debug-source metadata, and song-level pulse plausibility.")
     if "sections" in compare_targets:
@@ -98,13 +85,11 @@ def build_validation_report(
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "inputs": {
             "song_path": str(paths.song_path),
-            "reference_chords": str(paths.reference("moises", "chords.json")),
             "reference_sections": str(paths.reference("moises", "segments.json")),
             "reference_human_segments": str(paths.reference("human", "segments.json")),
         },
         "generated_artifacts": {
             "beats_file": str(beats_path),
-            "harmonic_layer_file": str(harmonic_path),
             "drum_events_file": str(drum_events_path),
             "drum_midi_file": str(drum_midi_path),
             "energy_layer_file": str(energy_path),

@@ -8,9 +8,6 @@ from statistics import median
 from analyzer.io import read_json
 from analyzer.paths import SongPaths
 BEAT_MATCH_RATIO_THRESHOLD = 0.80
-CHORD_MATCH_RATIO_THRESHOLD = 0.85
-CHORD_MAX_LABEL_MISMATCHES = 0
-CHORD_MAX_TIMING_OVERLAP_FAILURES = 2
 
 #: The plan v3.0 item 8 acceptance metric is stated at this tolerance
 #: specifically (independent of `--beat-tolerance-seconds`, which defaults to

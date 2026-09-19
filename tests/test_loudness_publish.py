@@ -50,7 +50,7 @@ def _setup(tmp: str, n_frames: int) -> SongPaths:
     paths.artifact("essentia").mkdir(parents=True)
     paths.artifact("essentia", "beats.json").write_text(json.dumps(
         {"beats": [{"time": 0.0, "index": 1, "bar": 1, "beat_in_bar": 1, "type": "downbeat"}]}))
-    paths.artifact("layer_a_harmonic.json").write_text(json.dumps({"chords": []}))
+    paths.artifact("layer_a_harmonic.json").write_text(json.dumps({"global_key": None}))
     paths.artifact("section_segmentation").mkdir(parents=True, exist_ok=True)
     paths.artifact("section_segmentation", "sections.json").write_text(json.dumps({"sections": [
         {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "intro",

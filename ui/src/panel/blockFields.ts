@@ -41,8 +41,6 @@ export const LANE_LABELS: Record<string, string> = {
   humanHints: "Human Hints",
   humanSections: "Human Sections",
   moisesLyrics: "Moises Lyrics",
-  chordsInference: "Chords",
-  chords: "Chord Regions",
   drums: "Drum Density",
   energy: "Energy Profile",
   validation: "Regression Overlay",
@@ -161,11 +159,10 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
       // visible on the first Sections block, not only on a repeat.
       const sameAs = str(r.same_label_as);
       out.push({ label: "same_label_as", value: sameAs || "null" });
-      // v3.0 item 13: key + chord_progression, projected from
-      // layer_a_harmonic.json. Always shown, `null` included verbatim, since
-      // an honest null here is a pass, not an absence of data.
+      // v3.0 item 13: key, projected from layer_a_harmonic.json. Always
+      // shown, `null` included verbatim, since an honest null here is a pass,
+      // not an absence of data.
       out.push({ label: "key", value: str(r.key) || "null" });
-      out.push({ label: "chord_progression", value: str(r.chord_progression) || "null" });
       break;
     }
     case "character": {
@@ -203,14 +200,6 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
       if (tag) out.push({ label: "Structure tag", value: tag });
       const instr = str(r.instruments);
       if (instr) out.push({ label: "Instruments", value: instr });
-      break;
-    }
-    case "chordsInference":
-    case "chords": {
-      const roman = str(r.roman);
-      if (roman) out.push({ label: "Roman", value: roman });
-      const name = firstStr(r.name, r.label);
-      if (name) out.push({ label: "Chord", value: name });
       break;
     }
     case "drums": {

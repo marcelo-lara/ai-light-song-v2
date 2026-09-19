@@ -88,7 +88,6 @@ class ConsoleMarkerTests(unittest.TestCase):
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
             tolerance_seconds=2.0,
-            chord_min_overlap=0.5,
             device=None,
             verbose=False,
             stage=None,
@@ -121,7 +120,6 @@ class ConsoleMarkerTests(unittest.TestCase):
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
             tolerance_seconds=2.0,
-            chord_min_overlap=0.5,
             device=None,
             verbose=False,
             stage="extract-fft-bands",
@@ -153,7 +151,6 @@ class ConsoleMarkerTests(unittest.TestCase):
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
             tolerance_seconds=2.0,
-            chord_min_overlap=0.5,
             device=None,
             verbose=False,
             stage="extract-fft-bands",
@@ -205,7 +202,6 @@ class ConsoleMarkerTests(unittest.TestCase):
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
             tolerance_seconds=2.0,
-            chord_min_overlap=0.5,
             device=None,
             verbose=False,
             stage=None,
@@ -221,7 +217,6 @@ class ConsoleMarkerTests(unittest.TestCase):
             fail_on_mismatch=False,
             beat_tolerance_seconds=0.1,
             tolerance_seconds=2.0,
-            chord_min_overlap=0.5,
             device=None,
             verbose=False,
             stage=None,
@@ -291,7 +286,6 @@ class ConsoleMarkerTests(unittest.TestCase):
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,
-                chord_min_overlap=0.5,
                 device=None,
                 verbose=False,
             )
@@ -319,7 +313,6 @@ class ConsoleMarkerTests(unittest.TestCase):
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,
-                chord_min_overlap=0.5,
                 device=None,
                 verbose=False,
             )
@@ -353,7 +346,6 @@ class ConsoleMarkerTests(unittest.TestCase):
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,
-                chord_min_overlap=0.5,
                 device=None,
                 verbose=False,
             )
@@ -381,13 +373,12 @@ class ConsoleMarkerTests(unittest.TestCase):
             reference_path.write_text("[]", encoding="utf-8")
 
             config = ValidationConfig(
-                compare_targets=("beats", "chords"),
+                compare_targets=("beats",),
                 report_json=root / "analysis" / "_test_song" / "artifacts" / "validation" / "phase_1_report.json",
                 report_md=root / "analysis" / "_test_song" / "artifacts" / "validation" / "phase_1_report.md",
                 fail_on_mismatch=False,
                 beat_tolerance_seconds=0.1,
                 tolerance_seconds=2.0,
-                chord_min_overlap=0.5,
                 device=None,
                 verbose=False,
             )
@@ -398,9 +389,7 @@ class ConsoleMarkerTests(unittest.TestCase):
                 "beats": [{"index": 1, "time": 0.5, "bar": 1, "beat_in_bar": 1, "type": "downbeat"}],
                 "bars": [{"bar": 1, "start_s": 0.5, "end_s": 2.5}],
             }
-            inferred_harmonic = {"chords": [{"time": 0.5, "end_s": 2.5, "bar": 1, "beat": 1, "chord": "C"}]}
             beat_validation = ValidationResult(status="passed", matched=4, mismatched=0, match_ratio=1.0, details=[], reference_file=str(reference_path), diagnostics=None)
-            chord_validation = ValidationResult(status="passed", matched=4, mismatched=0, match_ratio=1.0, details=[], reference_file=str(reference_path), diagnostics=None)
             sections_payload = {"sections": [{"section_id": "section-001", "start": 1.5, "end": 3.5, "label": "reference_section", "confidence": 0.9}]}
             ui_outputs = {"beats": str(paths.beats_output_path), "sections": str(paths.sections_output_path)}
             hints_payload = {"hints": str(paths.hints_output_path)}
@@ -422,8 +411,7 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.extract_mix_stem_loudness", return_value=loudness))
                 stack.enter_context(patch("analyzer.pipeline.validate_beats", return_value=beat_validation))
                 stack.enter_context(patch("analyzer.pipeline.classify_genre", return_value={"genres": []}))
-                stack.enter_context(patch("analyzer.pipeline.extract_hpcp_and_chords", return_value=({}, inferred_harmonic)))
-                stack.enter_context(patch("analyzer.pipeline.validate_chords", return_value=chord_validation))
+                stack.enter_context(patch("analyzer.pipeline.extract_hpcp_and_key", return_value=({}, {})))
                 stack.enter_context(patch("analyzer.pipeline.extract_energy_features", return_value=energy_features))
                 mock_segment_sections = stack.enter_context(patch("analyzer.pipeline.segment_sections", return_value=sections_payload))
                 stack.enter_context(patch("analyzer.pipeline.extract_drum_events", return_value=drum_events))

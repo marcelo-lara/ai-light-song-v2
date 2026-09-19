@@ -9,53 +9,14 @@ from analyzer.models import SCHEMA_VERSION, round_schema_float, validate_field_s
 from analyzer.paths import SongPaths
 from analyzer.section_vocabulary import normalize_human_label
 
-# Thresholds for projecting a compact harmonic form into sections.json.
-#
-# Measured on the four gold songs (docs/analysis-definition.md): exact
-# root+quality agreement with Moises is 1.00 (_test_song) / 0.69 (Titanium) /
-# 0.51 (Armin - Revolution) / 0.38 (Hideaway - Kiesza). Per-song *mean* chord
-# confidence and the whole-song *global_key* confidence both cluster in a tight
-# band (0.73-0.80 and 0.75-0.85 respectively) across all four songs regardless
-# of that agreement spread, so neither discriminates a trustworthy song from an
-# untrustworthy one. What does separate them is the *minimum* per-chord-event
-# confidence within a song's low-agreement stretches: Hideaway dips to 0.459,
-# Armin to 0.531, while _test_song's minimum is 0.850 and Titanium's (0.685)
-# sits in between.
-#
-# CHORD_EVENT_CONFIDENCE_THRESHOLD gates chord_progression with a "weakest
-# link" rule: a section's progression is only stated if every essentia chord
-# event overlapping it clears this floor. One unreliable chord inside an
-# otherwise-clean run makes the whole stated sequence untrustworthy — stating
-# "Am-F-C-G" when one of those four is a coin flip is worse than saying
-# nothing. 0.70 is chosen because it sits inside the gap between _test_song's
-# floor (0.850, never gated out) and the bulk of Titanium's per-section minima
-# (0.685-0.778, roughly half pass), while gating out most of Armin's and
-# Hideaway's low-confidence stretches (mins as low as 0.531 / 0.459). Verified
-# empirically below to produce a null-rate ordering that tracks the measured
-# agreement: _test_song 0% null, Titanium ~50%, Armin and Hideaway both
-# meaningfully higher (~60-85%).
-CHORD_EVENT_CONFIDENCE_THRESHOLD = 0.70
-
 # KEY_CONFIDENCE_THRESHOLD gates the section-level `key` string against
-# essentia's whole-track HPCP key estimate (`global_key.confidence`). Unlike
-# per-chord confidence, this value does not track the measured chord-agreement
-# spread at all — it clusters 0.75-0.85 across all four gold songs, including
-# the 1.00-agreement _test_song. That is expected: global key is a single,
-# more robust estimate aggregated over the entire track, not a per-beat label,
-# so it is evaluated on its own scale rather than tied to the local
-# chord-progression gate above (a key claim is not automatically unsupported
-# just because one section's local chords are shaky). 0.70 is a real floor —
+# essentia's whole-track HPCP key estimate (`global_key.confidence`). It
+# clusters 0.75-0.85 across the four gold songs — a single, robust estimate
+# aggregated over the entire track, not a per-beat label. 0.70 is a real floor —
 # low enough that all four gold songs pass it (0.749-0.851), but not zero, so
 # a genuinely weak key estimate on a future song is still honestly `null`
 # rather than a silent default.
 KEY_CONFIDENCE_THRESHOLD = 0.70
-
-# Cap on the number of distinct chords shown in a chord_progression string
-# when no short repeating cycle is found (see _dominant_cycle). Real sections
-# on the gold songs run 5-16 distinct consecutive chords; 8 keeps the string
-# short enough to read as a "progression" rather than a chord-by-chord log.
-MAX_CHORD_PROGRESSION_CHORDS = 8
-
 
 def _section_index_prefix(section_id: str | None) -> str:
     if not section_id:
@@ -122,70 +83,11 @@ def _section_description(section: dict, occurrence: int) -> str:
     return f"The {ordinal} {label_text}, {duration_text} long, same label as the first {label_text}."
 
 
-def _overlapping_chord_events(start_s: float, end_s: float, chord_events: list[dict]) -> list[dict]:
-    """Chord events with any overlap with `[start_s, end_s)` — not just events
-    fully contained in it, since a section can start or end mid-chord."""
-    return [event for event in chord_events if float(event["time"]) < end_s and float(event["end_s"]) > start_s]
-
-
-def _distinct_consecutive_chords(events: list[dict]) -> list[str]:
-    """Chord labels in time order, collapsing immediate repeats (e.g. a chord
-    split across a section boundary should not repeat itself in the string)."""
-    labels: list[str] = []
-    for event in events:
-        label = str(event["chord"])
-        if not labels or labels[-1] != label:
-            labels.append(label)
-    return labels
-
-
-def _dominant_cycle(labels: list[str], max_len: int) -> list[str]:
-    """The shortest repeating cycle that reproduces `labels` exactly (allowing
-    a trailing partial repeat), e.g. `[Cm, D#, A#, Cm, D#, A#, Cm]` -> `[Cm,
-    D#, A#]`. This is what "dominant repeating chord sequence" means for a
-    section that loops a short progression many times. If no such cycle
-    exists (the section doesn't loop cleanly), fall back to the first
-    `max_len` distinct chords rather than printing every change."""
-    n = len(labels)
-    for period in range(1, n):
-        # Require at least half a cycle of confirmation beyond the first full
-        # cycle, so a single coincidental match at the far end of the list
-        # (e.g. the last chord happening to equal the first) is not mistaken
-        # for a genuine loop.
-        trailing = n - period
-        if trailing < period / 2:
-            continue
-        if all(labels[i] == labels[i % period] for i in range(n)):
-            return labels[:period]
-    return labels[:max_len]
-
-
-def _section_chord_progression(start_s: float, end_s: float, chord_events: list[dict]) -> str | None:
-    """The section's dominant repeating chord sequence, e.g. `"Am–F–C–G"`, or
-    `None` when confidence is too low to state one honestly (no silent fallbacks
-    no silent fallbacks — never an empty string or a placeholder). Gated by
-    CHORD_EVENT_CONFIDENCE_THRESHOLD with a weakest-link rule: every chord
-    event overlapping the section must individually clear the floor, not just
-    the section's average. See the threshold comment above for the
-    measurement this is based on."""
-    overlapping = _overlapping_chord_events(start_s, end_s, chord_events)
-    if not overlapping:
-        return None
-    for event in overlapping:
-        confidence = event.get("confidence")
-        if confidence is None or float(confidence) < CHORD_EVENT_CONFIDENCE_THRESHOLD:
-            return None
-    labels = _distinct_consecutive_chords(overlapping)
-    cycle = _dominant_cycle(labels, MAX_CHORD_PROGRESSION_CHORDS)
-    return "–".join(cycle)
-
-
 def _song_key(global_key: dict | None) -> str | None:
     """The whole-song key label (e.g. `"C# major"`), or `None` when
     essentia's HPCP key confidence is too low to state one. `global_key` is a
     single value for the whole song (not per-section), so every section
-    either carries this same string or `None` — see the threshold comment
-    above for why this is gated independently of the per-chord floor."""
+    either carries this same string or `None`."""
     if not global_key:
         return None
     label = global_key.get("label")
@@ -617,7 +519,6 @@ def _build_reference_override_rows(
     reference_rows: list[dict],
     raw_sections: list[dict],
     song_key: str | None,
-    chord_events: list[dict],
     occurrence_counts: dict[str, int],
     confidence: float,
 ) -> tuple[list[dict], list[dict]]:
@@ -627,9 +528,9 @@ def _build_reference_override_rows(
     docs/reference/analysis.segments.md for the precedence and rationale).
 
     Returns `(section_rows, display_rows)` — `section_rows` is the trimmed
-    top-level shape (v3.6 item 8: no `label` / `description` /
-    `chord_progression`, which fold confidence into a display string or are
-    unread); `display_rows` carries those three fields keyed by `section_id`
+    top-level shape (v3.6 item 8: no `label` / `description`,
+    which fold confidence into a display string or are unread);
+    `display_rows` carries those two fields keyed by `section_id`
     for `artifacts/section_segmentation/sections_display.json`, which the
     debugger UI reads instead."""
     rows_sorted = sorted(reference_rows, key=lambda row: float(row["start"]))
@@ -683,7 +584,6 @@ def _build_reference_override_rows(
                 "section_id": section_id,
                 "label": _format_section_label(label_source),
                 "description": _section_description(description_source, occurrence_counts.get(function, 0)),
-                "chord_progression": _section_chord_progression(start, end, chord_events),
             }
         )
     return section_rows, display_rows
@@ -704,11 +604,9 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     if len(set(section_ids)) != len(section_ids):
         raise ValueError(f"section_segmentation/sections.json has duplicate section_id values: {section_ids}")
 
-    chord_events = harmonic_payload.get("chords", [])
     beat_points = beats_payload.get("beats", [])
-    # v3.6 item 8 — `chord` dropped: unread, and chord labels are "informative,
-    # not settled" (CLAUDE.md). The harmonic stage's own chord events are the
-    # source of truth (`artifacts/layer_a_harmonic.json`, still read above).
+    # v3.6 item 8 — `chord` dropped from beats.json (unread); chord inference
+    # was later removed from the analyzer entirely.
     beat_rows = [
         {
             "time": round_schema_float(float(beat["time"])),
@@ -742,7 +640,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         # below only for the function_* fields) — human mistakes are
         # plausible, but human is still the best available truth.
         section_rows, display_rows = _build_reference_override_rows(
-            read_json(human_segments_path), raw_sections, song_key, chord_events, occurrence_counts, confidence=0.8
+            read_json(human_segments_path), raw_sections, song_key, occurrence_counts, confidence=0.8
         )
     elif has_moises_segments:
         # Fixed at 0.6 — moises/segments.json carries no confidence field of
@@ -750,7 +648,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         # its word-level lyrics/chords) — moises is also an inferred
         # discriminator, one tier below a human.
         section_rows, display_rows = _build_reference_override_rows(
-            read_json(moises_segments_path), raw_sections, song_key, chord_events, occurrence_counts, confidence=0.6
+            read_json(moises_segments_path), raw_sections, song_key, occurrence_counts, confidence=0.6
         )
     else:
         for section in raw_sections:
@@ -778,7 +676,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
                     "key": song_key,
                 }
             )
-            # v3.6 item 8 — `label` / `description` / `chord_progression`
+            # v3.6 item 8 — `label` / `description`
             # dropped from the top-level row (display string with confidence
             # folded in; restates function+ordinal; unread) and written
             # instead to artifacts/section_segmentation/sections_display.json
@@ -788,8 +686,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
                     "section_id": section["section_id"],
                     "label": _format_section_label(section),
                     "description": _section_description(section, occurrence_counts.get(function, 0)),
-                    "chord_progression": _section_chord_progression(start, end, chord_events),
-                }
+                    }
             )
 
     # v3.1 item 2 — the attribution convention. Each top-level file carries a
@@ -847,7 +744,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     write_json(sections_output_path, sections_output)
 
     # v3.6 item 8 — the display text dropped from sections.json (label,
-    # description, chord_progression) is written to its own artifact for the
+    # description) is written to its own artifact for the
     # debugger UI, joined by section_id. Not provenance-tracked with
     # `generated_from` per-field (it's a straight publish-time projection,
     # like the top-level files it replaces a field of), but the file itself

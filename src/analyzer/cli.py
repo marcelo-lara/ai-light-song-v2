@@ -34,11 +34,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--all-songs", action="store_true", help="Analyze every .mp3 under the songs root")
     parser.add_argument("--songs-root", help="Songs directory for --all-songs. Defaults to <analysis-root parent>/songs")
     parser.add_argument("--analysis-root", default="/data/analysis")
-    parser.add_argument("--compare", default="beats,chords,drums,sections,drops")
+    parser.add_argument("--compare", default="beats,drums,sections,drops")
     parser.add_argument("--fail-on-mismatch", action="store_true")
     parser.add_argument("--beat-tolerance-seconds", type=float, default=0.10)
     parser.add_argument("--tolerance-seconds", type=float, default=2.0)
-    parser.add_argument("--chord-min-overlap", type=float, default=0.5)
     parser.add_argument("--device")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument(
@@ -81,7 +80,6 @@ def _build_validation_config(
         fail_on_mismatch=args.fail_on_mismatch,
         beat_tolerance_seconds=args.beat_tolerance_seconds,
         tolerance_seconds=args.tolerance_seconds,
-        chord_min_overlap=args.chord_min_overlap,
         device=args.device,
         verbose=args.verbose,
     )
@@ -174,8 +172,6 @@ def _single_song_command(
         str(args.beat_tolerance_seconds),
         "--tolerance-seconds",
         str(args.tolerance_seconds),
-        "--chord-min-overlap",
-        str(args.chord_min_overlap),
     ]
     if args.fail_on_mismatch:
         command.append("--fail-on-mismatch")
@@ -256,7 +252,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    supported_targets = {"beats", "chords", "drums", "sections", "drops"}
+    supported_targets = {"beats", "drums", "sections", "drops"}
     try:
         if args.clean_generated_data and not args.song and not args.all_songs:
             _clean_generated_song_data(args)

@@ -57,7 +57,7 @@ the best account of what actually works, and it does not go stale with age.
 | Phase | Reads | Produces |
 | --- | --- | --- |
 | 1 **measure** | audio | facts that cannot be musically wrong — beat grid, loudness, spectra, chroma, stems |
-| 2 **interpret** | phase 1 + audio | claims — chords, key, sections and their names, drum events, genre |
+| 2 **interpret** | phase 1 + audio | claims — key, sections and their names, drum events, genre |
 | 3 **relate** | phases 1-2, **never audio** | identity, repetition, transitions, composite gestures |
 | 4 **publish** | phases 1-3 | the projected deliverables, and nothing else |
 
@@ -75,7 +75,7 @@ Full numbers, per-song breakdowns and root causes:
 | --- | --- |
 | Stems, beat *times*, FFT, loudness, HPCP, drums, energy | **trusted.** 7/7 human impacts within 0.25 s of an essentia beat |
 | Drum vocabulary (`drums.py`) | **bounded and written down.** Omnizart emits GM pitches 35/38/42 only; `velocity` is a constant 100 (not published); `confidence` is `null`; toms/congas fold into kick/snare — a *known* wrong label. v3.4 adds a `crash`/`hat` split on pitch 42 (drums-stem 6–16 kHz brilliance gate), nothing else in the taxonomy widened |
-| Chord labels | **informative, not settled.** Agreement with a second model: 1.00 / 0.69 / 0.51 / 0.38 across the gold songs |
+| Chord inference | **removed.** It failed on every song and never served its purpose (finding where a song repeats). Only the essentia whole-song `key` survives, published on `sections.json` |
 | Structure (`segmentation.py`) | **improved, not solved.** F1 0.67 vs the old segmenter's 0.29. `function_status: "unknown"` is set honestly, and `same_label_as` is label repetition, not identity. `sections.json` rows also carry `energy`/`tension`/`rhythm` (v3.6 item 10, `section_clues.py`) — fused per field from the operator's `segments.json` (`human`), else the best-clearing candidate producer, else `segments.seed.json` (`seed_unreviewed`, `confidence: null`). **Provisional corpus-wide**: only 4 songs (`Cinderella - Ella Lee`, `_test_song`, `ayuni`, `What a Feeling - Courtney Storm`) have operator-reviewed segments; the rest is seed or candidate-producer output, not yet reviewed — `get_song_overview`'s `review_warning` names every affected section |
 | Downbeats / bar numbers | **short of target — 0.226 F1** against a 0.50 goal. **Do not assume bar numbers are correct.** A `null` confidence is an honest "we don't know", not a guess |
 | Gestures (`gestures.py`) | **better than what it replaced**: 4/7 @±1.0 s vs 2/7. Per-primitive *precision* has never been audited — see `docs/issues.md` |

@@ -172,8 +172,6 @@ unrestricted" above.
 | Lane | Reads | Notes |
 | --- | --- | --- |
 | Sections | `sections.json` + `artifacts/section_segmentation/sections.json` | a `function_status: "contested"` section (v3.4 phase-3 energy contest) gets a distinct orange per-block tint (`sectionsContested`); its inspector card prints `function_status: contested` + `contested_by: energy` |
-| Chords | `artifacts/layer_a_harmonic.json` | per-beat chord inference from `chord_probabilities`, rendered as individual short spans between consecutive inference timestamps |
-| Chord Regions | `artifacts/layer_a_harmonic.json` | |
 | Gestures | `song_event_timeline.json` | |
 | Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |
 | Human Hints | `reference/human/human_hints.json` (+ `reference/human/block_energy.json` for the per-block `energy`/`tension` rating controls in its events panel) | writable |

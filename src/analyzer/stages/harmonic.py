@@ -4,7 +4,7 @@ import numpy as np
 
 from analyzer.exceptions import AnalysisError, DependencyError
 from analyzer.io import write_json
-from analyzer.models import ChordEvent, GeneratedFrom, SCHEMA_VERSION, to_jsonable
+from analyzer.models import GeneratedFrom, SCHEMA_VERSION, to_jsonable
 from analyzer.paths import SongPaths
 
 
@@ -21,8 +21,6 @@ FLAT_TO_SHARP = {
 FRAME_SIZE = 4096
 HOP_SIZE = 2048
 SAMPLE_RATE = 44100
-NOTE_NAMES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
-NOTE_INDEX = {note: index for index, note in enumerate(NOTE_NAMES)}
 
 
 def _normalize_note_spelling(label: str) -> str:
@@ -34,33 +32,6 @@ def _normalize_note_spelling(label: str) -> str:
     normalized = normalized.replace(":maj", "")
     normalized = normalized.replace(":min", "m")
     return normalized
-
-
-def _diatonic_chord_map(key_label: str, key_scale: str) -> dict[int, str]:
-    tonic = _normalize_note_spelling(key_label)
-    if tonic not in NOTE_INDEX:
-        return {}
-
-    tonic_index = NOTE_INDEX[tonic]
-    if key_scale == "major":
-        return {
-            tonic_index % 12: NOTE_NAMES[tonic_index % 12],
-            (tonic_index + 2) % 12: f"{NOTE_NAMES[(tonic_index + 2) % 12]}m",
-            (tonic_index + 4) % 12: f"{NOTE_NAMES[(tonic_index + 4) % 12]}m",
-            (tonic_index + 5) % 12: NOTE_NAMES[(tonic_index + 5) % 12],
-            (tonic_index + 7) % 12: NOTE_NAMES[(tonic_index + 7) % 12],
-            (tonic_index + 9) % 12: f"{NOTE_NAMES[(tonic_index + 9) % 12]}m",
-        }
-
-    return {
-        tonic_index % 12: f"{NOTE_NAMES[tonic_index % 12]}m",
-        (tonic_index + 2) % 12: f"{NOTE_NAMES[(tonic_index + 2) % 12]}dim",
-        (tonic_index + 3) % 12: NOTE_NAMES[(tonic_index + 3) % 12],
-        (tonic_index + 5) % 12: f"{NOTE_NAMES[(tonic_index + 5) % 12]}m",
-        (tonic_index + 7) % 12: f"{NOTE_NAMES[(tonic_index + 7) % 12]}m",
-        (tonic_index + 8) % 12: NOTE_NAMES[(tonic_index + 8) % 12],
-        (tonic_index + 10) % 12: NOTE_NAMES[(tonic_index + 10) % 12],
-    }
 
 
 def _extract_hpcp(audio: np.ndarray) -> tuple[list[np.ndarray], list[float]]:
@@ -119,389 +90,17 @@ def _aggregate_hpcp_by_beat(
     return hpcp_by_beat
 
 
-def _merge_short_chord_runs(labels: list[str], strengths: list[float], min_run_beats: int = 3) -> tuple[list[str], list[float]]:
-    if not labels:
-        return labels, strengths
-    merged_labels = list(labels)
-    merged_strengths = list(strengths)
-    changed = True
-    while changed:
-        changed = False
-        runs: list[tuple[int, int]] = []
-        start = 0
-        for index in range(1, len(merged_labels) + 1):
-            if index == len(merged_labels) or merged_labels[index] != merged_labels[start]:
-                runs.append((start, index))
-                start = index
+def extract_hpcp_and_key(paths: SongPaths, stems: dict[str, str], timing: dict) -> tuple[dict, dict]:
+    """HPCP chroma per beat plus the whole-song key estimate.
 
-        for run_index, (start, end) in enumerate(runs):
-            if end - start >= min_run_beats:
-                continue
-            previous_run = runs[run_index - 1] if run_index > 0 else None
-            next_run = runs[run_index + 1] if run_index + 1 < len(runs) else None
-            if previous_run and next_run and merged_labels[previous_run[0]] == merged_labels[next_run[0]]:
-                replacement = merged_labels[previous_run[0]]
-                replacement_strength = max(
-                    merged_strengths[previous_run[0]],
-                    merged_strengths[next_run[0]],
-                )
-            else:
-                previous_strength = (
-                    sum(merged_strengths[previous_run[0]:previous_run[1]]) / (previous_run[1] - previous_run[0])
-                    if previous_run
-                    else -1.0
-                )
-                next_strength = (
-                    sum(merged_strengths[next_run[0]:next_run[1]]) / (next_run[1] - next_run[0])
-                    if next_run
-                    else -1.0
-                )
-                if previous_strength >= next_strength:
-                    replacement = merged_labels[previous_run[0]] if previous_run else merged_labels[next_run[0]]
-                    replacement_strength = previous_strength if previous_run else next_strength
-                else:
-                    replacement = merged_labels[next_run[0]] if next_run else merged_labels[previous_run[0]]
-                    replacement_strength = next_strength if next_run else previous_strength
-
-            for index in range(start, end):
-                merged_labels[index] = replacement
-                merged_strengths[index] = replacement_strength
-            changed = True
-            break
-    return merged_labels, merged_strengths
-
-
-def _apply_viterbi_smoothing(
-    labels: list[str],
-    strengths: list[float],
-    key_label: str,
-    key_scale: str,
-    key_confidence: float,
-) -> tuple[list[str], list[float]]:
-    """Smooth beat-level chord labels using Viterbi decoding over a 24-chord state space.
-
-    Applied only when key_confidence >= 0.5 so the transition prior is trustworthy.
-    States: 12 major + 12 minor chords (chromatic).
-    Transition: diatonic transitions are boosted; chromatic jumps are penalized.
-    Emission: agreement with existing label = high likelihood; disagreement = low.
-    """
-    if key_confidence < 0.5 or len(labels) < 2:
-        return labels, strengths
-
-    # Build 24-state chord alphabet
-    states: list[str] = []
-    for note in NOTE_NAMES:
-        states.append(note)          # major
-        states.append(f"{note}m")    # minor
-    state_index: dict[str, int] = {state: i for i, state in enumerate(states)}
-    n_states = len(states)
-
-    # Diatonic chord set for current key (for transition boost)
-    diatonic_set = set(_diatonic_chord_map(key_label, key_scale).values())
-
-    # Build log transition matrix: penalize non-diatonic jumps
-    LOG_SELF = np.log(0.70)          # stay probability
-    LOG_DIATONIC = np.log(0.25 / max(len(diatonic_set), 1))
-    LOG_CHROMATIC = np.log(0.05 / max(n_states - len(diatonic_set) - 1, 1))
-    LOG_FLOOR = -30.0
-
-    log_trans = np.full((n_states, n_states), LOG_FLOOR)
-    for src in range(n_states):
-        log_trans[src, src] = LOG_SELF
-        remaining = 1.0 - 0.70
-        n_diatonic = 0
-        for dst, state in enumerate(states):
-            if dst != src and state in diatonic_set:
-                log_trans[src, dst] = LOG_DIATONIC
-                n_diatonic += 1
-        for dst, state in enumerate(states):
-            if dst != src and state not in diatonic_set:
-                log_trans[src, dst] = LOG_CHROMATIC
-
-    # Viterbi decode
-    T = len(labels)
-    log_emit = np.full((T, n_states), np.log(0.05 / (n_states - 1)))
-    for t, label in enumerate(labels):
-        if label in state_index:
-            log_emit[t, state_index[label]] = np.log(0.95)
-
-    viterbi = np.full((T, n_states), -np.inf)
-    backpointer = np.zeros((T, n_states), dtype=int)
-    viterbi[0] = log_emit[0]  # uniform prior
-
-    for t in range(1, T):
-        for s in range(n_states):
-            candidates = viterbi[t - 1] + log_trans[:, s]
-            best_prev = int(np.argmax(candidates))
-            viterbi[t, s] = candidates[best_prev] + log_emit[t, s]
-            backpointer[t, s] = best_prev
-
-    # Backtrack
-    path: list[int] = [int(np.argmax(viterbi[T - 1]))]
-    for t in range(T - 1, 0, -1):
-        path.append(backpointer[t, path[-1]])
-    path.reverse()
-
-    smoothed_labels = [states[s] for s in path]
-    # Preserve original strengths but update label
-    return smoothed_labels, strengths
-
-
-def _decode_chords_by_beat(
-    frame_vectors: list[np.ndarray],
-    frame_times: list[float],
-    beat_times: list[float],
-) -> tuple[list[str], list[float]]:
-    from essentia.standard import ChordsDetection
-
-    raw_labels, raw_strengths = ChordsDetection(hopSize=HOP_SIZE, sampleRate=SAMPLE_RATE)(
-        [vector.tolist() for vector in frame_vectors]
-    )
-    normalized_frame_labels = [_normalize_note_spelling(label) for label in raw_labels]
-
-    beat_labels: list[str] = []
-    beat_strengths: list[float] = []
-    usable_frame_times = frame_times[:len(normalized_frame_labels)]
-    for index, beat_time in enumerate(beat_times):
-        next_time = beat_times[index + 1] if index + 1 < len(beat_times) else usable_frame_times[-1] + (HOP_SIZE / SAMPLE_RATE)
-        selected_indexes = [
-            frame_index
-            for frame_index, frame_time in enumerate(usable_frame_times)
-            if beat_time <= frame_time < next_time
-        ]
-        if not selected_indexes:
-            selected_indexes = [
-                min(range(len(usable_frame_times)), key=lambda item: abs(usable_frame_times[item] - beat_time))
-            ]
-
-        counts: dict[str, int] = {}
-        strengths: dict[str, float] = {}
-        for frame_index in selected_indexes:
-            label = normalized_frame_labels[frame_index]
-            counts[label] = counts.get(label, 0) + 1
-            strengths[label] = strengths.get(label, 0.0) + float(raw_strengths[frame_index])
-
-        chosen_label = max(counts, key=lambda label: (counts[label], strengths[label]))
-        beat_labels.append(chosen_label)
-        beat_strengths.append(round(strengths[chosen_label] / counts[chosen_label], 6))
-
-    return _merge_short_chord_runs(beat_labels, beat_strengths, min_run_beats=3)
-
-
-def _estimate_bass_chroma(bass_stem: str) -> tuple[np.ndarray, np.ndarray]:
-    import librosa
-    import soundfile as sf
-
-    audio, sample_rate = sf.read(bass_stem)
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
-    chroma = librosa.feature.chroma_cqt(y=audio.astype(np.float32), sr=sample_rate)
-    times = librosa.times_like(chroma, sr=sample_rate)
-    return chroma, times
-
-
-def _estimate_chroma_by_beat(audio_path: str, beat_times: list[float]) -> np.ndarray:
-    import librosa
-
-    audio, sample_rate = librosa.load(audio_path, sr=SAMPLE_RATE, mono=True)
-    chroma = librosa.feature.chroma_cqt(y=audio.astype(np.float32), sr=sample_rate)
-    frame_times = librosa.times_like(chroma, sr=sample_rate)
-    beat_vectors: list[np.ndarray] = []
-    for index, beat_time in enumerate(beat_times):
-        next_time = beat_times[index + 1] if index + 1 < len(beat_times) else frame_times[-1] + (frame_times[1] - frame_times[0])
-        mask = (frame_times >= beat_time) & (frame_times < next_time)
-        if not np.any(mask):
-            mask[np.argmin(np.abs(frame_times - beat_time))] = True
-        vector = chroma[:, mask].mean(axis=1)
-        norm = np.linalg.norm(vector)
-        if norm > 0:
-            vector = vector / norm
-        beat_vectors.append(vector.astype(float))
-    return np.vstack(beat_vectors)
-
-
-def _estimate_vocal_activity_by_beat(vocal_stem: str, beat_times: list[float]) -> np.ndarray:
-    import librosa
-
-    audio, sample_rate = librosa.load(vocal_stem, sr=SAMPLE_RATE, mono=True)
-    rms = librosa.feature.rms(y=audio.astype(np.float32), frame_length=2048, hop_length=512)[0]
-    frame_times = librosa.times_like(rms, sr=sample_rate, hop_length=512)
-    beat_activity: list[float] = []
-    for index, beat_time in enumerate(beat_times):
-        next_time = beat_times[index + 1] if index + 1 < len(beat_times) else frame_times[-1] + (frame_times[1] - frame_times[0])
-        mask = (frame_times >= beat_time) & (frame_times < next_time)
-        if not np.any(mask):
-            mask[np.argmin(np.abs(frame_times - beat_time))] = True
-        beat_activity.append(float(rms[mask].mean()))
-    activity = np.array(beat_activity, dtype=float)
-    maximum = float(activity.max()) if activity.size else 0.0
-    if maximum > 1e-8:
-        activity = activity / maximum
-    return activity
-
-
-def _apply_bass_root_corrections(
-    chord_events: list[ChordEvent],
-    bass_stem: str,
-    key_label: str,
-    key_scale: str,
-    min_margin: float = 0.05,
-) -> list[ChordEvent]:
-    diatonic_map = _diatonic_chord_map(key_label, key_scale)
-    if not diatonic_map or not chord_events:
-        return chord_events
-
-    chroma, times = _estimate_bass_chroma(bass_stem)
-    corrected_events: list[ChordEvent] = []
-    for event in chord_events:
-        mask = (times >= float(event.time)) & (times < float(event.end_s))
-        if not np.any(mask):
-            corrected_events.append(event)
-            continue
-
-        averaged = chroma[:, mask].mean(axis=1)
-        ranked = np.argsort(averaged)[::-1]
-        top_index = int(ranked[0])
-        second_value = float(averaged[ranked[1]]) if len(ranked) > 1 else 0.0
-        top_value = float(averaged[top_index])
-        candidate = diatonic_map.get(top_index)
-        if candidate is None or (top_value - second_value) < min_margin:
-            corrected_events.append(event)
-            continue
-
-        corrected_events.append(
-            ChordEvent(
-                time=event.time,
-                end_s=event.end_s,
-                bar=event.bar,
-                beat=event.beat,
-                chord=candidate,
-                confidence=event.confidence,
-            )
-        )
-    return corrected_events
-
-
-def _merge_adjacent_chord_events(chord_events: list[ChordEvent]) -> list[ChordEvent]:
-    if not chord_events:
-        return []
-
-    merged: list[ChordEvent] = [chord_events[0]]
-    for event in chord_events[1:]:
-        previous = merged[-1]
-        if previous.chord != event.chord:
-            merged.append(event)
-            continue
-        merged[-1] = ChordEvent(
-            time=previous.time,
-            end_s=event.end_s,
-            bar=previous.bar,
-            beat=previous.beat,
-            chord=previous.chord,
-            confidence=round(float((previous.confidence + event.confidence) / 2.0), 6),
-        )
-    return merged
-
-
-def _boundary_alignment_score(
-    candidate_index: int,
-    mix_chroma_by_beat: np.ndarray,
-    bass_chroma_by_beat: np.ndarray,
-    vocal_activity_by_beat: np.ndarray,
-) -> float:
-    left_start = max(0, candidate_index - 2)
-    right_end = min(len(mix_chroma_by_beat), candidate_index + 2)
-
-    left_mix = mix_chroma_by_beat[left_start:candidate_index].mean(axis=0) if candidate_index > left_start else mix_chroma_by_beat[candidate_index]
-    right_mix = mix_chroma_by_beat[candidate_index:right_end].mean(axis=0) if right_end > candidate_index else mix_chroma_by_beat[candidate_index]
-    left_bass = bass_chroma_by_beat[left_start:candidate_index].mean(axis=0) if candidate_index > left_start else bass_chroma_by_beat[candidate_index]
-    right_bass = bass_chroma_by_beat[candidate_index:right_end].mean(axis=0) if right_end > candidate_index else bass_chroma_by_beat[candidate_index]
-
-    mix_denominator = max(float(np.linalg.norm(left_mix) * np.linalg.norm(right_mix)), 1e-8)
-    bass_denominator = max(float(np.linalg.norm(left_bass) * np.linalg.norm(right_bass)), 1e-8)
-    mix_novelty = 1.0 - float(np.dot(left_mix, right_mix) / mix_denominator)
-    bass_novelty = 1.0 - float(np.dot(left_bass, right_bass) / bass_denominator)
-    vocal_quietness = 1.0 - float(vocal_activity_by_beat[candidate_index])
-    return (0.5 * mix_novelty) + (0.35 * bass_novelty) + (0.15 * vocal_quietness)
-
-
-def _refine_chord_boundaries(
-    chord_events: list[ChordEvent],
-    song_path: str,
-    bass_stem: str,
-    vocal_stem: str,
-    timing: dict,
-) -> list[ChordEvent]:
-    if len(chord_events) < 2:
-        return chord_events
-
-    beat_points = timing["beats"]
-    beat_times = [float(beat["time"]) for beat in beat_points]
-    mix_chroma_by_beat = _estimate_chroma_by_beat(song_path, beat_times)
-    bass_chroma_by_beat = _estimate_chroma_by_beat(bass_stem, beat_times)
-    vocal_activity_by_beat = _estimate_vocal_activity_by_beat(vocal_stem, beat_times)
-
-    beat_index_by_time = {round(float(beat["time"]), 6): index for index, beat in enumerate(beat_points)}
-    aligned_events = [
-        {
-            "time": float(event.time),
-            "end_s": float(event.end_s),
-            "chord": event.chord,
-            "confidence": float(event.confidence),
-        }
-        for event in chord_events
-    ]
-
-    for index in range(1, len(aligned_events)):
-        boundary_time = round(aligned_events[index]["time"], 6)
-        beat_index = beat_index_by_time.get(boundary_time)
-        if beat_index is None:
-            continue
-        candidate_indexes = [candidate for candidate in (beat_index - 1, beat_index, beat_index + 1) if 0 < candidate < len(beat_times) - 1]
-        if not candidate_indexes:
-            continue
-        best_index = max(
-            candidate_indexes,
-            key=lambda candidate: _boundary_alignment_score(
-                candidate,
-                mix_chroma_by_beat,
-                bass_chroma_by_beat,
-                vocal_activity_by_beat,
-            ),
-        )
-        aligned_events[index]["time"] = float(beat_times[best_index])
-        aligned_events[index - 1]["end_s"] = float(beat_times[best_index])
-
-    song_end = float(timing["bars"][-1]["end_s"])
-    rebuilt_events: list[ChordEvent] = []
-    for index, event in enumerate(aligned_events):
-        start_time = float(event["time"])
-        end_time = float(aligned_events[index + 1]["time"]) if index + 1 < len(aligned_events) else song_end
-        if end_time <= start_time:
-            continue
-        beat_index = beat_index_by_time.get(round(start_time, 6))
-        if beat_index is None:
-            beat_index = min(range(len(beat_times)), key=lambda candidate: abs(beat_times[candidate] - start_time))
-        beat = beat_points[beat_index]
-        rebuilt_events.append(
-            ChordEvent(
-                time=round(start_time, 6),
-                end_s=round(end_time, 6),
-                bar=int(beat["bar"]),
-                beat=int(beat["beat_in_bar"]),
-                chord=str(event["chord"]),
-                confidence=round(float(event["confidence"]), 6),
-            )
-        )
-
-    return _merge_adjacent_chord_events(rebuilt_events)
-
-
-def extract_hpcp_and_chords(paths: SongPaths, stems: dict[str, str], timing: dict) -> tuple[dict, dict]:
+    Chord inference (per-beat decode, Viterbi, bass-root correction, boundary
+    alignment) was removed: it failed on every song and never served its
+    purpose, finding where a song repeats. Only the essentia key survives —
+    a separate claim, published as `key` and gated in `ui_data.py`."""
     try:
         from essentia.standard import Key, MonoLoader
     except ImportError as exc:
-        raise DependencyError("essentia is required for HPCP and chord extraction") from exc
+        raise DependencyError("essentia is required for HPCP and key extraction") from exc
 
     harmonic_stem = stems["harmonic"]
     audio = MonoLoader(filename=harmonic_stem, sampleRate=SAMPLE_RATE)()
@@ -526,63 +125,6 @@ def extract_hpcp_and_chords(paths: SongPaths, stems: dict[str, str], timing: dic
 
     key_label, key_scale, key_strength, _ = Key(profileType="edma", pcpSize=12)(aggregated_vectors.mean(axis=0))
     normalized_key_label = _normalize_note_spelling(key_label)
-    normalized_labels, normalized_strengths = _decode_chords_by_beat(frame_vectors, frame_times, beat_times)
-    normalized_labels, normalized_strengths = _apply_viterbi_smoothing(
-        normalized_labels,
-        normalized_strengths,
-        normalized_key_label,
-        key_scale,
-        float(key_strength),
-    )
-
-    chord_events: list[ChordEvent] = []
-    chord_probabilities = []
-    current_label = normalized_labels[0]
-    start_index = 0
-    for beat_index, label in enumerate(normalized_labels):
-        confidence = normalized_strengths[beat_index]
-        chord_probabilities.append({
-            "beat": beat_index + 1,
-            "time": hpcp_by_beat[beat_index]["time"],
-            "label": label,
-            "confidence": round(confidence, 6),
-        })
-        if label != current_label:
-            chord_events.append(
-                _build_chord_event(
-                    timing=timing,
-                    start_index=start_index,
-                    end_index=beat_index,
-                    label=current_label,
-                    confidence_scores=[item["confidence"] for item in chord_probabilities[start_index:beat_index]],
-                )
-            )
-            current_label = label
-            start_index = beat_index
-
-    chord_events.append(
-        _build_chord_event(
-            timing=timing,
-            start_index=start_index,
-            end_index=len(normalized_labels),
-            label=current_label,
-            confidence_scores=[item["confidence"] for item in chord_probabilities[start_index:]],
-        )
-    )
-
-    chord_events = _apply_bass_root_corrections(
-        chord_events=chord_events,
-        bass_stem=stems["bass"],
-        key_label=normalized_key_label,
-        key_scale=key_scale,
-    )
-    chord_events = _refine_chord_boundaries(
-        chord_events=chord_events,
-        song_path=str(paths.song_path),
-        bass_stem=stems["bass"],
-        vocal_stem=stems["vocals"],
-        timing=timing,
-    )
 
     layer_payload = {
         "schema_version": SCHEMA_VERSION,
@@ -590,34 +132,16 @@ def extract_hpcp_and_chords(paths: SongPaths, stems: dict[str, str], timing: dic
         "generated_from": {
             "source_song_path": str(paths.song_path),
             "harmonic_stem": harmonic_stem,
-            "bass_stem": stems["bass"],
-            "vocals_stem": stems["vocals"],
             "beats_file": str(paths.artifact("essentia", "beats.json")),
             "hpcp_file": str(paths.artifact("essentia", "hpcp.json")),
-            "engine": "essentia.HPCP+ChordsDetection+Key+bass-root-diatonic-correction+mix-bass-vocal-boundary-alignment",
+            "engine": "essentia.HPCP+Key",
         },
         "global_key": {
             "label": f"{normalized_key_label} {key_scale}",
             "confidence": round(float(key_strength), 6),
             "source": "hpcp",
         },
-        "chords": chord_events,
-        "chord_probabilities": chord_probabilities,
     }
     layer_payload = to_jsonable(layer_payload)
     write_json(paths.artifact("layer_a_harmonic.json"), layer_payload)
     return hpcp_payload, layer_payload
-
-
-def _build_chord_event(timing: dict, start_index: int, end_index: int, label: str, confidence_scores: list[float]) -> ChordEvent:
-    beats = timing["beats"]
-    beat = beats[start_index]
-    event_end = beats[end_index]["time"] if end_index < len(beats) else timing["bars"][-1]["end_s"]
-    return ChordEvent(
-        time=round(float(beat["time"]), 6),
-        end_s=round(float(event_end), 6),
-        bar=int(beat["bar"]),
-        beat=int(beat["beat_in_bar"]),
-        chord=label,
-        confidence=round(float(sum(confidence_scores) / max(len(confidence_scores), 1)), 6),
-    )

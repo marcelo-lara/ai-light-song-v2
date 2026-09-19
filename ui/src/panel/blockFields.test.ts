@@ -35,7 +35,6 @@ describe("selectionFromSection", () => {
     same_label_as: null,
     confidence: 0.8,
     key: null,
-    chord_progression: null,
   };
   const block = { section } as { section: SectionRow };
 
@@ -139,8 +138,7 @@ describe("blockFields — segments / sections", () => {
         description: null,
         confidence: 0.9,
         key: null,
-        chord_progression: null,
-        function: "intro",
+            function: "intro",
         function_confidence: 0.44,
         function_status: "known",
         same_label_as: null,
@@ -151,7 +149,7 @@ describe("blockFields — segments / sections", () => {
     expect(val(fields, "same_label_as")).toBe("null");
   });
 
-  it("shows key and chord_progression, null included verbatim (item 13)", () => {
+  it("shows key, null included verbatim (item 13)", () => {
     const sel = {
       laneId: "sections",
       laneLabel: "Sections",
@@ -173,7 +171,6 @@ describe("blockFields — segments / sections", () => {
         description: null,
         confidence: 0.8,
         key: "C# major",
-        chord_progression: "Am–F–C–G",
         function: "chorus",
         function_confidence: 0.8,
         function_status: "known",
@@ -182,12 +179,10 @@ describe("blockFields — segments / sections", () => {
     };
     const fields = blockFields("sections", sel);
     expect(val(fields, "key")).toBe("C# major");
-    expect(val(fields, "chord_progression")).toBe("Am–F–C–G");
 
-    const nullSel = { ...sel, raw: { ...sel.raw, key: null, chord_progression: null } };
+    const nullSel = { ...sel, raw: { ...sel.raw, key: null } };
     const nullFields = blockFields("sections", nullSel);
     expect(val(nullFields, "key")).toBe("null");
-    expect(val(nullFields, "chord_progression")).toBe("null");
   });
 });
 

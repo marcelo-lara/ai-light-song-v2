@@ -81,11 +81,6 @@ export interface SectionRow {
    * row, or `null` when essentia's key confidence is too low to state one
    * honestly (plan v3.0 item 13). */
   key: string | null;
-  /** The section's dominant repeating chord sequence (e.g. "Am–F–C–G"), or
-   * `null` when any chord event overlapping the section falls below the
-   * stage's confidence floor (plan v3.0 item 13) — an honest, expected
-   * outcome on low-agreement songs, not a bug. */
-  chord_progression: string | null;
 }
 
 export interface SectionsFile {
@@ -96,7 +91,7 @@ export interface SectionsFile {
 export type SectionsTopLevel = SectionRow[];
 
 // v3.6 item 8 — the trimmed wire shape of the top-level sections.json row,
-// after `label` / `description` / `chord_progression` moved to
+// after `label` / `description` moved to
 // artifacts/section_segmentation/sections_display.json. Used only as the
 // raw parse of the top-level file, before `mergeSectionDisplay` joins it
 // with the display artifact back into the full `SectionRow` every UI
@@ -123,7 +118,6 @@ export interface SectionDisplayRow {
   section_id: string;
   label: string;
   description: string | null;
-  chord_progression: string | null;
 }
 
 export interface SectionDisplayFile {
@@ -238,28 +232,10 @@ export interface HarmonicGlobalKey {
   source: string | null;
 }
 
-export interface HarmonicChord {
-  time: number;
-  end_s: number;
-  bar: number | null;
-  beat: number | null;
-  chord: string;
-  confidence: number | null;
-}
-
-export interface HarmonicChordProbability {
-  beat: number | null;
-  time: number;
-  label: string;
-  confidence: number | null;
-}
-
 export interface HarmonicLayer {
   schema_version: string;
   song_name: string;
   global_key: HarmonicGlobalKey | null;
-  chords: HarmonicChord[];
-  chord_probabilities: HarmonicChordProbability[];
 }
 
 // ---------------------------------------------------------------------------

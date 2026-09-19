@@ -54,7 +54,7 @@ actually measures.
 | Phase | Stages | Key output |
 | --- | --- | --- |
 | 1 measure | stems, beat grid + downbeat phase, 7-band FFT, loudness | `essentia/beats.json`, `essentia/fft_bands.json`, `rms_loudness.json` |
-| 2 interpret | harmonic (key, chords, HPCP), drum transcription, genre, named segmentation (All-In-One) | `layer_a_harmonic.json`, `symbolic_transcription/drum_events.json`, `genre.json`, `section_segmentation/sections.json` |
+| 2 interpret | harmonic (key, HPCP), drum transcription, genre, named segmentation (All-In-One) | `layer_a_harmonic.json`, `symbolic_transcription/drum_events.json`, `genre.json`, `section_segmentation/sections.json` |
 | 3 relate | gesture phases and section-pair transitions | `song_event_timeline.json` |
 | 4 publish | fuse + pack the top-level deliverables | `info.json`, `beats.json`, `sections.json`, `hints.json`, `genre.json`, `drum_events.json`, `loudness.json` |
 

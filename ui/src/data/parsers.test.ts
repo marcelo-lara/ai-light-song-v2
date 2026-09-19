@@ -100,7 +100,6 @@ describe("parseSectionsTopLevelRows / parseSectionDisplay / mergeSectionDisplay"
           section_id: "section-001",
           label: "001 Intro (0.90)",
           description: "Opening section, 10.0s.",
-          chord_progression: null,
         },
       ],
     };
@@ -165,11 +164,9 @@ describe("parseRmsLoudness / parseLoudnessEnvelope", () => {
 });
 
 describe("parseHarmonicLayer", () => {
-  it("parses chords and the global key", () => {
+  it("parses the global key", () => {
     const harm = parseHarmonicLayer(harmonicFixture);
     expect(harm.global_key?.source).toBe("reference_promoted");
-    expect(harm.chords[0]!.chord).toBe("D#m");
-    expect(harm.chords[0]!.end_s).toBeGreaterThan(harm.chords[0]!.time);
   });
 });
 

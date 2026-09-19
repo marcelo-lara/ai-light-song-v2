@@ -174,7 +174,7 @@ hand-authored lanes they are auditioned against (`humanHints`, `moisesLyrics`).
 Existing hues to avoid colliding with: humanHints 35, humanSections 55,
 moisesSections 160, allin1Sections 90, gestures 10, arrangementState 95,
 characterShadow 96, vocalPhrasesSustained 280,
-vocalPhrases 340, sections 174, chords 193, moisesLyrics 210, character 275,
+vocalPhrases 340, sections 174, moisesLyrics 210, character 275,
 phrasePeriodicity 130.
 
 Add a second entry (e.g. `<laneId>Disputed`) for every `tintId` the adapter emits.

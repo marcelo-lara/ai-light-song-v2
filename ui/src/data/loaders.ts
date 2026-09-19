@@ -146,8 +146,8 @@ export const loadInfo = (song: string, f?: typeof fetch) =>
 export const loadBeats = (song: string, f?: typeof fetch) =>
   loadJson<Beats>(artifactPaths.beats(song), parseBeats, f);
 
-// v3.6 item 8 — sections.json.sections was trimmed to drop label/description/
-// chord_progression, which now live only in
+// v3.6 item 8 — sections.json.sections was trimmed to drop label/description,
+// which now live only in
 // artifacts/section_segmentation/sections_display.json. Every consumer in
 // the UI still wants the full `SectionRow` shape, so this loader fetches both
 // files and joins them (mergeSectionDisplay, ./parsers) before returning.

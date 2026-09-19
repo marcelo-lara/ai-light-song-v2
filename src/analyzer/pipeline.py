@@ -18,7 +18,7 @@ from analyzer.stages.energy import derive_energy_layer
 from analyzer.stages.genre import classify_genre
 from analyzer.stages.drums import extract_drum_events
 from analyzer.stages.fft_bands import extract_fft_bands
-from analyzer.stages.harmonic import extract_hpcp_and_chords
+from analyzer.stages.harmonic import extract_hpcp_and_key
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.loudness import extract_mix_stem_loudness
@@ -31,7 +31,6 @@ from analyzer.stages.ui_data import build_ui_data, publish_arrangement_state
 from analyzer.stages.validation import (
     build_validation_report,
     skipped_result,
-    validate_chords,
     validate_beats,
     write_validation_markdown,
     write_validation_report,
@@ -47,8 +46,7 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "validate-beats": "1.2",
     "extract-fft-bands": "1.3",
     "extract-mix-stem-loudness": "1.4",
-    "extract-hpcp-and-chords": "2.1-2.2",
-    "validate-chords": "2.2",
+    "extract-hpcp-and-key": "2.1",
     "extract-drum-events": "2.5",
     "extract-energy-features": "2.6",
     "segment-sections": "3.1",
@@ -163,15 +161,10 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
     if stage_name == "classify-genre":
         _run_stage(paths.song_name, "phase-1", stage_name, classify_genre, paths)
         return 0
-    if stage_name == "extract-hpcp-and-chords":
+    if stage_name == "extract-hpcp-and-key":
         stems = _existing_stems(paths, stage_name)
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, extract_hpcp_and_chords, paths, stems, timing)
-        return 0
-    if stage_name == "validate-chords":
-        harmonic = _required_artifact_payload(paths, stage_name, "layer_a_harmonic.json")
-        timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        _run_stage(paths.song_name, "phase-1", stage_name, validate_chords, paths, harmonic, timing, config.chord_min_overlap)
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_hpcp_and_key, paths, stems, timing)
         return 0
     if stage_name == "extract-energy-features":
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
@@ -370,21 +363,7 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             if "beats" in config.compare_targets
             else skipped_result()
         )
-        _, harmonic = _run_stage(paths.song_name, "phase-1", "extract-hpcp-and-chords", extract_hpcp_and_chords, paths, stems, timing)
-        chord_validation = (
-            _run_stage(
-                paths.song_name,
-                "phase-1",
-                "validate-chords",
-                validate_chords,
-                paths,
-                harmonic,
-                timing,
-                config.chord_min_overlap,
-            )
-            if "chords" in config.compare_targets
-            else skipped_result()
-        )
+        _run_stage(paths.song_name, "phase-1", "extract-hpcp-and-key", extract_hpcp_and_key, paths, stems, timing)
         energy_features = _run_stage(paths.song_name, "phase-1", "extract-energy-features", extract_energy_features, paths, timing)
         sections = _run_stage(paths.song_name, "phase-1", "segment-sections", segment_sections, paths, stems, timing)
         drum_events = _run_stage(paths.song_name, "phase-1", "extract-drum-events", extract_drum_events, paths, stems, timing, sections)
@@ -457,16 +436,14 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             paths=paths,
             compare_targets=config.compare_targets,
             beat_validation=beat_validation,
-            chord_validation=chord_validation,
             beat_tolerance_seconds=config.beat_tolerance_seconds,
             tolerance_seconds=config.tolerance_seconds,
-            chord_min_overlap=config.chord_min_overlap,
             fail_on_mismatch=config.fail_on_mismatch,
         )
         if human_hint_alignment:
             report["generated_artifacts"]["human_hints_alignment_file"] = human_hint_alignment["json_path"]
             report["generated_artifacts"]["human_hints_alignment_markdown"] = human_hint_alignment["markdown_path"]
-            report["notes"].append("Human hint alignment review files compare narrative hint windows against generated sections, events, and harmonic events when human hints are available.")
+            report["notes"].append("Human hint alignment review files compare narrative hint windows against generated sections, events, when human hints are available.")
         _run_stage(paths.song_name, "phase-1", "write-validation-report", write_validation_report, report, config.report_json)
         _run_stage(paths.song_name, "phase-1", "write-validation-markdown", write_validation_markdown, report, config.report_md)
         return exit_code

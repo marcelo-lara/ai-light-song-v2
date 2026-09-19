@@ -148,16 +148,6 @@ class BarWindow:
 
 
 @dataclass(slots=True)
-class ChordEvent:
-    time: float
-    end_s: float
-    bar: int
-    beat: int
-    chord: str
-    confidence: float
-
-
-@dataclass(slots=True)
 class EnergyFrame:
     time: float
     frame_index: int
