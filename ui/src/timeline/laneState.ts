@@ -77,6 +77,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "moisesLyrics", label: "Moises Lyrics", sub: "reference/moises · per-word tokens · tinted by confidence", kind: "lyrics", height: 84 },
   { id: "arrangementState", label: "Arrangement State", sub: "arrangement_state · who is playing, per-stem RMS state changes", kind: "proposals", height: 58 },
   { id: "vocalPhrases", label: "Vocal Phrases", sub: "experiment · phrase / gap / sustained-note blocks over the vocal stem", kind: "proposals", height: 50, experiment: "vocal_phrases" },
+  { id: "allin1Posterior", label: "allin1 Posterior", sub: "experiment · shadow-label spans the published 8-bar argmax discards", kind: "proposals", height: 50, experiment: "allin1_posterior" },
   { id: "whisperxVad", label: "Voice phrase (WhisperX VAD)", sub: "speech-domain VAD voiceness + phrase spans with real sub-second onsets (diarization not attempted — no HF_TOKEN)", kind: "proposals", height: 50 },
   { id: "rhythmDrumIoi", label: "Rhythm Drum IOI", sub: "experiment · drum inter-onset interval / beat period -> subdivision", kind: "proposals", height: 50, experiment: "rhythm_drum_ioi" },
   { id: "rhythmStemAutocorr", label: "Rhythm Stem Autocorr", sub: "experiment · per-stem sub-beat loudness autocorrelation -> subdivision", kind: "proposals", height: 50, experiment: "rhythm_stem_autocorr" },

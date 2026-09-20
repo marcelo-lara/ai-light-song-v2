@@ -46,6 +46,9 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalPhrases: [340, 55, 46], // rose — distinct from moisesLyrics' slate blue
   vocalPhrasesGap: [220, 10, 40], // near-grey — an instrumental (no-vocal) span
   vocalPhrasesSustained: [280, 60, 48], // violet-pink — a held note marker
+  allin1Posterior: [130, 50, 44], // spring green — distinct from allin1Sections'
+  //   olive (90) and moisesSections' seafoam (160); hue 130 is free since the
+  //   phrase_periodicity lane that previously used it was retired 2026-09-17
   // v3.5 item 7 — whisperX's VAD front-end (speech-domain, VAD-only —
   // diarization not attempted, no HF_TOKEN in this environment). Hue 20
   // (amber-orange) sits between gestures' burnt orange (10) and humanHints'

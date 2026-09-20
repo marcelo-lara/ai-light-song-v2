@@ -1,0 +1,63 @@
+[
+  {
+    "start": 0,
+    "end": 35.82,
+    "label": "Intro"
+  },
+  {
+    "start": 35.82,
+    "end": 50.18,
+    "label": "Break"
+  },
+  {
+    "start": 50.18,
+    "end": 84.21,
+    "label": "Chorus"
+  },
+  {
+    "start": 84.17,
+    "end": 100.32,
+    "label": "Verse"
+  },
+  {
+    "start": 100.32,
+    "end": 112.85,
+    "label": "Build-Up"
+  },
+  {
+    "start": 112.85,
+    "end": 114.64,
+    "label": "Pre-Drop"
+  },
+  {
+    "start": 114.62,
+    "end": 127.801,
+    "label": "Chorus (Inst)",
+    "tension": 5
+  },
+  {
+    "start": 127.801,
+    "end": 128.98,
+    "label": "Refrain"
+  },
+  {
+    "start": 128.95,
+    "end": 142.044,
+    "label": "Chorus"
+  },
+  {
+    "start": 142.044,
+    "end": 143.328,
+    "label": "Refrain"
+  },
+  {
+    "start": 143.328,
+    "end": 156.841,
+    "label": "Chorus (Inst)"
+  },
+  {
+    "start": 156.84105381944445,
+    "end": 158.24850716145835,
+    "label": "Outro"
+  }
+]

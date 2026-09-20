@@ -191,6 +191,7 @@ unrestricted" above.
 | Energy Level | `reference/proposals/energy_level.json` | experiment (v3.6 item 5/6 — candidate `energy` producer, not yet scored) |
 | Tension Shape | `reference/proposals/tension_shape.json` | experiment (v3.6 item 5/6 — candidate `tension` producer, not yet scored) |
 | Vocal Phrases, Vocal Transcription | `reference/proposals/vocal_*.json` | experiment |
+| allin1 Posterior | `reference/proposals/allin1_posterior.json` | experiment — shadow-label spans the published 8-bar argmax discards; the entropy-confidence half of this entry shipped independently as `sections.json`'s `function_confidence`, so only shadow labels ride this lane. Loses to an even-grid baseline on boundary recall on 3/4 gold songs (`docs/experiments.md`) — not a promotion candidate as scoped |
 | Dense lanes | `essentia/fft_bands.json`, `essentia/fft_bands.bass.json`, `essentia/fft_bands.drums.json`, `essentia/fft_bands.harmonic.json`, `essentia/fft_bands.vocals.json`, `essentia/rms_loudness.json`, `essentia/loudness_envelope.json`, `symbolic_transcription/drum_events.json`, `artifacts/layer_c_energy.json` | four per-stem FFT lanes beside the mix lane; each fails loudly on a missing artifact |
 
 **Badging rule.** A lane fed from `reference/proposals/` is unpromoted

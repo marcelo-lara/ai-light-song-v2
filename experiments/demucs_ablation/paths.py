@@ -31,6 +31,10 @@ GOLD_SONGS = [
 SCORING_CORPUS = GOLD_SONGS + ["ayuni"]
 
 
+def all_songs() -> list[str]:
+    return sorted(p.stem for p in SONGS_ROOT.glob("*.mp3"))
+
+
 def song_audio_path(song: str) -> Path:
     return SONGS_ROOT / f"{song}.mp3"
 

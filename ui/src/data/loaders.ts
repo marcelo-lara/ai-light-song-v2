@@ -9,6 +9,7 @@ import {
   loadVocalTranscription,
   loadMoisesLyrics,
   loadVocalPhrases,
+  loadAllin1Posterior,
   loadArrangementState,
   loadRhythmDrumIoi,
   loadRhythmStemAutocorr,
@@ -378,6 +379,7 @@ export const loadSongFacts = (song: string, f?: typeof fetch) =>
 export const artifactLoaders = {
   info: loadInfo,
   vocalPhrases: loadVocalPhrases,
+  allin1Posterior: loadAllin1Posterior,
   arrangementState: loadArrangementState,
   rhythmDrumIoi: loadRhythmDrumIoi,
   rhythmStemAutocorr: loadRhythmStemAutocorr,

@@ -15,7 +15,12 @@ def export(songs: list[str], variants: list[str]) -> list[dict]:
         for variant in variants:
             try:
                 rows.append(score.score_variant(song, variant))
-            except FileNotFoundError as exc:
+            except (FileNotFoundError, ValueError) as exc:
+                # ValueError: score.py's declared-ground-truth gate — a song
+                # with no entry in vocal_ground_truth.json (or an entry that
+                # doesn't cover every hint) fails loud there by design; a
+                # corpus-wide export must not let one song's missing truth
+                # abort every other song's score.
                 rows.append({"song": song, "variant": variant, "error": str(exc)})
     return rows
 

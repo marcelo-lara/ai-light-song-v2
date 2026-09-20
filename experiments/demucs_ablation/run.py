@@ -38,9 +38,15 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--song", action="append", help="restrict to one song (repeatable)")
     parser.add_argument("--variant", action="append", choices=list(paths.VARIANTS), help="restrict to one variant (repeatable)")
     parser.add_argument("--force", action="store_true", help="re-separate even if cached")
+    parser.add_argument("--all", action="store_true", help="run over every song under data/songs/, not just the 5-song scoring corpus")
     args = parser.parse_args(argv)
 
-    songs = args.song if args.song else paths.SCORING_CORPUS
+    if args.song:
+        songs = args.song
+    elif args.all:
+        songs = paths.all_songs()
+    else:
+        songs = paths.SCORING_CORPUS
     variants = args.variant if args.variant else list(paths.VARIANTS)
 
     if args.cmd == "compute":

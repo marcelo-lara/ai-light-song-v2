@@ -70,6 +70,11 @@ export const artifactPaths = {
   // "vocal phrase blocks" wave-2 entry.
   vocalPhrases: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "vocal_phrases.json")),
+  // Written by experiments/allin1_posterior (`run export`). Shadow-label
+  // spans — a non-argmax allin1 label sustaining a share of the frame
+  // posterior the published 8-bar argmax discards (e.g. Armin's `break`).
+  allin1Posterior: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "allin1_posterior.json")),
   // Top-level published `arrangement_state.json` (phase-4 publish of the
   // `detect-arrangement-state` stage). Who-is-playing state-change blocks
   // derived from the published per-stem RMS series — no audio, no model.

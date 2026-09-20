@@ -284,10 +284,11 @@ the stems.**
 ### Status
 
 **[OPEN — run 2026-09-18. Item 1 turns out already shipped; item 2 is a
-negative result.]** Built as `experiments/allin1_posterior/` (no README yet).
-No UI lane yet — the entry's own reach test said item 1 needs none (a field
-on `sections.json`, not a timeline claim), but item 2's shadow labels are
-boundaries and do need one per the UI-lane rule; not built.
+negative result.]** Built as `experiments/allin1_posterior/`. **allin1
+Posterior** debugger lane built 2026-09-19 (`reference/proposals/
+allin1_posterior.json`'s `shadow_labels`) — item 1 needed none (a field on
+`sections.json`, not a timeline claim), item 2's shadow labels are boundaries
+and do need one per the UI-lane rule.
 
 **Verdict:** the entropy-as-confidence idea (item 1) turns out to already be
 shipped — `segmentation.py::_function_confidence_for_span` (`1 - mean
@@ -327,8 +328,8 @@ either gets wrong or honestly refuses:
 Built as `experiments/allin1_posterior/`, reading the committed
 `analyzer.allin1_cache` caches as data — no model run, plain `app` service.
 Time-bearing output (shadow labels) goes to
-`reference/proposals/allin1_posterior.json`; the debugger lane it needs per
-the UI-lane rule is not yet built.
+`reference/proposals/allin1_posterior.json`, rendered by the **allin1
+Posterior** debugger lane.
 
 1. **Entropy as a real confidence.** Turned out to be moot — see Status.
    `segmentation.py::_function_confidence_for_span` already computes and
@@ -372,11 +373,12 @@ genuinely discards this.
 is a **negative result**: shadow labels reproduce the interesting worked
 example but do not clear a trivial even-grid baseline on boundary recall at
 matched budget on 3 of 4 gold songs, so they are not ready to become a
-published field. Not proposing promotion. If kept open, the UI lane for
-shadow labels is the next concrete step, followed by a second look at
-*why* the even-grid baseline wins — likely the same lesson as elsewhere in
-this file: a naive high-firing-rate method wins recall at a matched budget
-unless the signal is specific, and shadow-label share alone may not be.
+published field. Not proposing promotion. The **allin1 Posterior** debugger
+lane is built, so the next concrete step is eyeballing shadow labels against
+the waveform to understand *why* the even-grid baseline wins — likely the
+same lesson as elsewhere in this file: a naive high-firing-rate method wins
+recall at a matched budget unless the signal is specific, and shadow-label
+share alone may not be.
 
 ---
 

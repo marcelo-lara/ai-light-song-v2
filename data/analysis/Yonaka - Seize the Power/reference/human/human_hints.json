@@ -1,0 +1,22 @@
+{
+  "song_name": "Yonaka - Seize the Power",
+  "human_hints": [
+    {
+      "id": "hint-001",
+      "title": "ah prelude",
+      "start_time": 0.46,
+      "end_time": 6.71,
+      "summary": "loud drum double kick on beat 1-2, then silence.\nloud 'ah' synth voice every two beats.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-002",
+      "title": "ah prelude + vocal loud rap",
+      "start_time": 6.71,
+      "end_time": 35.86,
+      "summary": "same as previous + Strong female vocal lead loud",
+      "lighting_hint": "",
+      "type": "vocal"
+    }
+  ]
+}

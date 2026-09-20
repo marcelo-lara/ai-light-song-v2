@@ -144,6 +144,8 @@ const TIMELINE_KEYS = [
   "arrangementState",
   // wave-2 experiments (docs/experiments.md run orders 1-3, 6)
   "vocalPhrases",
+  // allin1 posterior shadow labels (experiments/allin1_posterior)
+  "allin1Posterior",
   // v3.6 item 5/6 rhythm/energy/tension candidate producers — each its own
   // lane, fused by confidence in sections.json's rhythm/energy/tension fields.
   "rhythmDrumIoi",
@@ -177,6 +179,7 @@ const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   moisesLyrics: "moisesLyrics",
   arrangementState: "arrangementState",
   vocalPhrases: "vocalPhrases",
+  allin1Posterior: "allin1Posterior",
   rhythmDrumIoi: "rhythmDrumIoi",
   rhythmStemAutocorr: "rhythmStemAutocorr",
   rhythmVocalOnsets: "rhythmVocalOnsets",
@@ -399,6 +402,7 @@ export function App(): React.JSX.Element {
       lyricValidations: validatedLyricIds,
       arrangementState: artifacts.arrangementState.data,
       vocalPhrases: artifacts.vocalPhrases.data,
+      allin1Posterior: artifacts.allin1Posterior.data,
       rhythmDrumIoi: artifacts.rhythmDrumIoi.data,
       rhythmStemAutocorr: artifacts.rhythmStemAutocorr.data,
       rhythmVocalOnsets: artifacts.rhythmVocalOnsets.data,
@@ -420,6 +424,7 @@ export function App(): React.JSX.Element {
       validatedLyricIds,
       artifacts.arrangementState.data,
       artifacts.vocalPhrases.data,
+      artifacts.allin1Posterior.data,
       artifacts.rhythmDrumIoi.data,
       artifacts.rhythmStemAutocorr.data,
       artifacts.rhythmVocalOnsets.data,

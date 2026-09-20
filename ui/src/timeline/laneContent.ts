@@ -23,6 +23,7 @@ import type {
   MoisesLyricsFile,
   VocalTranscriptionFile,
   VocalPhrasesFile,
+  Allin1PosteriorFile,
   ArrangementStateFile,
   RhythmDrumIoiFile,
   RhythmStemAutocorrFile,
@@ -461,6 +462,29 @@ export function sectionsContent(
 }
 
 /**
+ * Shadow-label spans from `experiments/allin1_posterior` — a non-argmax
+ * allin1 frame-posterior label sustaining a share the published 8-bar argmax
+ * discards. Not ground truth, and per docs/experiments.md loses to an
+ * even-grid baseline on boundary recall on 3/4 gold songs — a proposal to
+ * audition against Sections, sitting below it.
+ */
+export function allin1PosteriorContent(file: Allin1PosteriorFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => ({
+    id: `allin1-posterior-${i + 1}`,
+    start_s: b.start_s,
+    end_s: b.end_s,
+    label: b.label,
+    wideLabel: `${b.label} · share ${round(b.mean_share, 2)}`,
+    laneLabel: "allin1 Posterior",
+    caption: `${formatRange(b.start_s, b.end_s)} · ${b.label} · share ${round(b.mean_share, 2)}`,
+    reference: `allin1-posterior-${i + 1}`,
+    detail: b.label,
+    summary: `experiments/allin1_posterior — a non-argmax allin1 label ("${b.label}") sustaining ${round(b.mean_share, 2)} of the frame posterior; ${round(b.published_overlap, 2)} overlap with the published section at that time.`,
+    raw: b,
+  }));
+}
+
+/**
  * Vocal phrase / instrumental gap / sustained-note blocks from
  * `experiments/vocal_phrases` (Part A — no model, local-auto-gain hysteresis
  * over the vocal stem). A proposal to audition against Human Hints and
@@ -857,6 +881,7 @@ export interface LaneContentSources {
   character?: CharacterFile | null;
   vocalTranscription?: VocalTranscriptionFile | null;
   vocalPhrases?: VocalPhrasesFile | null;
+  allin1Posterior?: Allin1PosteriorFile | null;
   arrangementState?: ArrangementStateFile | null;
   rhythmDrumIoi?: RhythmDrumIoiFile | null;
   rhythmStemAutocorr?: RhythmStemAutocorrFile | null;
@@ -877,6 +902,7 @@ export const SPARSE_LANE_IDS = [
   "moisesLyrics",
   "arrangementState",
   "vocalPhrases",
+  "allin1Posterior",
   "rhythmDrumIoi",
   "rhythmStemAutocorr",
   "rhythmVocalOnsets",
@@ -911,6 +937,8 @@ export function buildLaneBlocks(
       return arrangementStateContent(s.arrangementState ?? null);
     case "vocalPhrases":
       return vocalPhrasesContent(s.vocalPhrases ?? null);
+    case "allin1Posterior":
+      return allin1PosteriorContent(s.allin1Posterior ?? null);
     case "rhythmDrumIoi":
       return rhythmDrumIoiContent(s.rhythmDrumIoi ?? null);
     case "rhythmStemAutocorr":

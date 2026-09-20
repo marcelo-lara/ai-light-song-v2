@@ -27,6 +27,7 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 
 const BADGED = [
   "vocalPhrases",
+  "allin1Posterior",
   "vocalVoiceness",
   "svdTagger",
   "voiceMultiplicity",

@@ -29,6 +29,7 @@ import {
   energyLevelContent,
   tensionShapeContent,
   segmentSeedsContent,
+  allin1PosteriorContent,
 } from "./laneContent";
 import type {
   ArrangementStateFile,
@@ -37,6 +38,7 @@ import type {
   RhythmVocalOnsetsFile,
   EnergyLevelFile,
   TensionShapeFile,
+  Allin1PosteriorFile,
 } from "../data/sparseArtifacts";
 import type { HumanSegmentsSeedFile } from "../data/types";
 
@@ -504,6 +506,31 @@ describe("rhythmDrumIoiContent", () => {
 
   it("never throws on a missing file", () => {
     expect(rhythmDrumIoiContent(null)).toEqual([]);
+  });
+});
+
+describe("allin1PosteriorContent", () => {
+  const file: Allin1PosteriorFile = {
+    schema_version: "1.0",
+    song_name: "Armin - Revolution",
+    blocks: [
+      { start_s: 144.31, end_s: 155.53, label: "break", mean_share: 0.3226, published_overlap: 0.0 },
+      { start_s: 155.57, end_s: 168.16, label: "break", mean_share: 0.32, published_overlap: 0.0 },
+    ],
+  };
+  const blocks = allin1PosteriorContent(file);
+
+  it("labels a shadow-label block with the allin1 label", () => {
+    expect(blocks[0]!.label).toBe("break");
+    expect(blocks[0]!.wideLabel).toContain("break");
+  });
+
+  it("carries published_overlap in the summary rather than hiding it", () => {
+    expect(blocks[0]!.summary).toContain("overlap");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(allin1PosteriorContent(null)).toEqual([]);
   });
 });
 

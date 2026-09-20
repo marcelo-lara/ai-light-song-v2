@@ -1,8 +1,8 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (character, vocal transcription, vocal
-// phrases, phrase periodicity, rhythm drum ioi, rhythm stem autocorr, rhythm
-// vocal onsets, energy level, tension shape, whisperx vad, voice
-// multiplicity, and the top-level published arrangement state).
+// phrases, allin1 posterior shadow labels, rhythm drum ioi, rhythm stem
+// autocorr, rhythm vocal onsets, energy level, tension shape, whisperx vad,
+// and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -355,6 +355,60 @@ export async function loadVocalPhrases(
   f?: typeof fetch,
 ): Promise<LoadResult<VocalPhrasesFile>> {
   const result = await loadJson(artifactPaths.vocalPhrases(song), parseVocalPhrases, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// allin1 posterior shadow labels — reference/proposals/allin1_posterior.json
+// ---------------------------------------------------------------------------
+//
+// Spans where a non-argmax allin1 frame-posterior label sustains a share the
+// published 8-bar argmax discards (e.g. Armin's `break`, 30% of the posterior
+// across 143-175s, unrepresented in sections.json). experiments/allin1_posterior,
+// no model run — reads the already-cached allin1 posterior. Not ground truth,
+// and per docs/experiments.md not yet a promotion candidate (loses to an
+// even-grid baseline on boundary recall on 3/4 gold songs) — a proposal to
+// audition against Sections, nothing more.
+
+export interface Allin1PosteriorBlock {
+  start_s: number;
+  end_s: number;
+  label: string;
+  mean_share: number;
+  published_overlap: number;
+}
+
+export interface Allin1PosteriorFile {
+  schema_version: string;
+  song_name: string;
+  blocks: Allin1PosteriorBlock[];
+}
+
+export function parseAllin1Posterior(raw: unknown): Allin1PosteriorFile {
+  const o = asObject(raw, "reference/proposals/allin1_posterior.json");
+  const blocks: Allin1PosteriorBlock[] = [];
+  for (const row of arr(o.shadow_labels)) {
+    const r = rec(row);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      label: st(r.label),
+      mean_share: num(r.mean_share),
+      published_overlap: num(r.published_overlap),
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadAllin1Posterior(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<Allin1PosteriorFile>> {
+  const result = await loadJson(artifactPaths.allin1Posterior(song), parseAllin1Posterior, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
   }
