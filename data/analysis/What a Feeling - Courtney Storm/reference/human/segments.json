@@ -57,7 +57,7 @@
     "end": 111.55,
     "label": "Breakdown",
     "energy": 1,
-    "tension": 4,
+    "tension": 5,
     "rhythm": {
       "drums": "none",
       "bass": "sixteenth",
@@ -70,7 +70,7 @@
     "end": 127.27,
     "label": "Pre-Chorus",
     "energy": 3,
-    "tension": 3,
+    "tension": 5,
     "rhythm": {
       "drums": "quarter",
       "bass": "sixteenth",
@@ -96,7 +96,7 @@
     "end": 157.949,
     "label": "Chorus",
     "energy": 5,
-    "tension": 3,
+    "tension": 4,
     "rhythm": {
       "drums": "sixteenth",
       "bass": "quarter",

@@ -20,11 +20,85 @@
       "type": "vocal"
     },
     {
+      "id": "hint-004",
+      "title": "Chatter",
+      "start_time": 82.45,
+      "end_time": 110.1,
+      "summary": "three different voices chatting (peaceful, contemplating)",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "hint-005",
+      "title": "Lighthouse like",
+      "start_time": 96.06,
+      "end_time": 98.01,
+      "summary": "Two synth pulses (softens the tempo)",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-006",
+      "title": "Lighthouse like",
+      "start_time": 99.94,
+      "end_time": 101.84,
+      "summary": "Two synth pulses (softens the tempo)",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-007",
+      "title": "Lighthouse like",
+      "start_time": 103.812,
+      "end_time": 105.74,
+      "summary": "Two synth pulses (softens the tempo)",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-008",
+      "title": "Vocal phrase",
+      "start_time": 110.57,
+      "end_time": 113.22,
+      "summary": "Female vocal long notes",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
       "id": "hint-003",
       "title": "Build like",
       "start_time": 119.4,
       "end_time": 127.27,
       "summary": "Snares duplicating time (rising) to pace up the chorus energy, similar to a drop (not a drop, but main chorus)",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-009",
+      "title": "Drums cut",
+      "start_time": 124.62,
+      "end_time": 127.195,
+      "summary": "All drums stop dead for ~5 beats after the snare run — the highest-tension moment of the passage. Only a single pickup snare at 127.195 breaks it, 75 ms before the chorus downbeat.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-010",
+      "title": "Late impact",
+      "start_time": 127.27,
+      "end_time": 131.1,
+      "summary": "The chorus downbeat is not the payoff: it opens as a build (hats ramp eighth to sixteenth, snares nearly absent). The real impact lands at 131.1, about two bars late. Do not peak the show at 127.27.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-011",
+      "title": "Kick doubles",
+      "start_time": 155.83,
+      "end_time": 157.76,
+      "summary": "Bar 79 loads the transition: the kick goes quarter to eighth (156.059 / 156.300 / 156.541), and three crashes land on beat 3 at 156.659-156.902 — the first crashes in 30 seconds. Snares run the bar out at 157.27 and 157.52.",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-012",
+      "title": "Late impact",
+      "start_time": 157.95,
+      "end_time": 158.45,
+      "summary": "Same trap as 127.27, half a second wide: the section boundary is not the payoff. gesture-045's tension resolves at 158.45, the peak hit (kick+snare+crash together) is at 158.841, and a sustained crash wash follows. Drums enter at 157.25 for the rest of the song and vocals drop out entirely.",
       "lighting_hint": ""
     }
   ]
