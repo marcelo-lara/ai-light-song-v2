@@ -63,6 +63,7 @@ is authoritative over this list.
 | `segment-sections` | 3.1 |
 | `detect-arrangement-state` | 3.2 |
 | `contest-section-function` | 3.3 |
+| `section-clues` | 3.4 |
 | `derive-energy-layer` | 4.1 |
 | `build-gestures` | 5.0 |
 | `classify-genre` | 6.1 |
@@ -81,6 +82,13 @@ runs after `build-ui-data`, which publishes the `loudness.json` it reads.
 (`function_status: "contested"`, `contested_by`) into `sections.json`. A single
 `--stage contest-section-function` run gates on all three published files and
 fails (`AnalysisError`) if `build-ui-data` has not run.
+
+`section-clues` (3.4) runs last of the three phase-3 stages, after
+`contest-section-function` — it fuses `energy`, `tension` and `rhythm` onto the
+already-published `sections.json`, so it is the stage to re-run after editing a
+song's `reference/human/segments.json`. A stage name absent from
+`STAGE_PIPELINE_IDS` is not an error: the run reports success and writes
+nothing, so check the output file's mtime rather than the exit code.
 
 `extract-fft-bands` (1.3) must run before `extract-drum-events` (2.5): the
 crash/hat split reads `essentia/fft_bands.drums.json`. The full pipeline already

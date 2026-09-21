@@ -118,3 +118,61 @@ head-to-head on the same song without a ground-truth file existing for it.
 | Writes | `data/analysis/{song}/reference/human/block_reviews.json` (new, operator-written); a new `experiments/truth_common/` scorer family + its report rows |
 | Reads changed | `ui/vite.config.ts` (new PUT handler), `ui/src/data/` (paths, loader, parser, save module), `ui/src/panel/BlockInspector.tsx`, `ui/src/panel/LaneEventsPanel.tsx`, `ui/src/timeline/laneState.ts` |
 | Done when | a verdict survives a page reload and an analyzer re-run of the same song; a re-run that moves a block past ±0.25 s marks its review stale rather than re-attaching it; and a per-primitive precision figure exists for each gesture phase across the four gold songs — closing [`issues.md`](issues.md)'s gestures entry, with the false-positive bound written into `CLAUDE.md` |
+
+---
+
+## 2. `impact_alignment` — a late payoff as data, not as a cross-reference — `src/analyzer/stages/section_clues.py`
+
+**Current behaviour.** `sections.json` carries each section's `start`/`end`;
+`song_event_timeline.json` carries each gesture's `impact_time`. Nothing joins
+them, so "does this section's payoff land on its boundary?" is answerable only
+by a reader holding both files open and subtracting. Downstream, the authoring
+model's concept pass makes one `get_song_overview` call that returns both — and
+has no instruction to compare them.
+
+**Change.** A derived `impact_alignment` object on each section row, fused by
+`section-clues` (3.4), which already reads `sections.json` and
+`song_event_timeline.json` for `tension_shape`.
+
+```json
+"impact_alignment": {
+  "gesture_id": "gesture-034",
+  "impact_time": 131.1,
+  "offset_s": 3.83,
+  "offset_beats": 7.9
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `gesture_id`, `impact_time` | the gesture impact nearest this section's `start` |
+| `offset_s` | signed, `impact_time - start`. **Positive means the payoff is late** — the boundary is not the peak |
+| `offset_beats` | `offset_s` in beats at the song's BPM, so a threshold can be musical rather than absolute |
+
+`null` when no impact falls within **±2 bars** of the boundary — an honest
+omission, never a nearest-match at any distance. `field_sources` gains
+`impact_alignment: "impact_alignment"`.
+
+**Why it matters.** A late payoff is invisible in every field that exists
+today. On *What a Feeling – Courtney Storm* it happens twice: section-008
+starts 127.27 s against an impact at 131.10 (`+3.83`), section-010 starts
+157.95 against 158.45 (`+0.50`). Both sections read `energy 5, tension 3` —
+flat and released — while the section is still building. A show lit on the
+boundary peaks early, which is one of the two failures that actually cost a
+light show.
+
+**Out of scope.**
+
+- **Moving any boundary.** This field describes the gap; it never closes it.
+  `start`/`end` stay exactly as their tier produced them.
+- **Deriving `tension` from it.** `tension` is operator-set on reviewed songs
+  and outranks inference. A late impact is evidence a human may want to raise
+  a section's tension, not a trigger that raises it.
+- **A "late" flag.** The threshold is the consumer's: a 0.5 s offset matters
+  to a cue and not to a plan narrative. Publish the number, not a verdict.
+
+| | |
+| --- | --- |
+| Writes | `impact_alignment` on each `sections.json` row, plus its `field_sources` entry |
+| Reads changed | `src/analyzer/stages/section_clues.py` (fusion + the nearest-impact search); `docs/reference/downstream-contract.md`, `docs/reference/source-map.md` |
+| Done when | both *What a Feeling* boundaries above emit the stated offsets; a section with no impact within ±2 bars emits `null`; and the field survives a `--stage section-clues` re-run |
