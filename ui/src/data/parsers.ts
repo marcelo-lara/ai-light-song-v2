@@ -22,6 +22,10 @@ import type {
   BeatRow,
   BlockEnergyFile,
   BlockEnergyRating,
+  BlockReview,
+  BlockReviewReason,
+  BlockReviewsFile,
+  BlockReviewVerdict,
   DrumEvent,
   DrumEventsFile,
   EnergyAccent,
@@ -609,6 +613,76 @@ export function parseLyricValidations(raw: unknown): LyricValidationsFile {
     schema_version: stringOr(o.schema_version, "", "lyric_validations.schema_version"),
     song_name: stringOr(o.song_name, "", "lyric_validations.song_name"),
     validated_ids,
+  };
+}
+
+// ---------------------------------------------------------------------------
+
+// v3.7 item 1 — reference/human/block_reviews.json. The operator's three-state
+// verdict on a claim-bearing lane's emitted block, joined by `(lane_id, start)`
+// at read time (never a block id — those are array positions and shift on
+// every re-run). Deliberately tolerant like block_energy/lyric_validations: a
+// row missing `lane_id`/`start`, an out-of-vocabulary `verdict`, or a `reason`
+// outside the fixed vocabulary is dropped rather than failing the whole file —
+// the only writer is the debugger's verdict control, validated on the client
+// (`saveBlockReviews.ts`) and again in the dev-server handler. `start` is
+// rounded to 3 decimals here (the join-key convention); staleness against the
+// current run's blocks is a separate step (`./blockReviewMatch.ts`), never
+// done in this parser — a parse failure and "this block no longer exists" are
+// different facts.
+//
+// SCOPE GUARD: nothing in src/ or mcp/ reads this file. It is reference/human/
+// material like the hints — one producer (the operator), no field_sources /
+// source attribution (ui-definition.md "The write rule").
+const BLOCK_REVIEW_VERDICTS: readonly BlockReviewVerdict[] = [
+  "correct",
+  "wrong",
+  "misplaced",
+];
+const BLOCK_REVIEW_REASONS: readonly BlockReviewReason[] = [
+  "boundary",
+  "label",
+  "value",
+];
+
+function parseBlockReviewRow(raw: unknown): BlockReview | null {
+  const o =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const laneId = typeof o.lane_id === "string" ? o.lane_id.trim() : "";
+  const start = typeof o.start === "number" && Number.isFinite(o.start) ? o.start : null;
+  const verdict = (BLOCK_REVIEW_VERDICTS as readonly string[]).includes(
+    o.verdict as string,
+  )
+    ? (o.verdict as BlockReviewVerdict)
+    : null;
+  if (!laneId || start === null || !verdict) return null;
+  const reasonRaw = o.reason;
+  const reason = (BLOCK_REVIEW_REASONS as readonly string[]).includes(
+    reasonRaw as string,
+  )
+    ? (reasonRaw as BlockReviewReason)
+    : null;
+  return {
+    lane_id: laneId,
+    start: Number(start.toFixed(3)),
+    verdict,
+    reason,
+    note: typeof o.note === "string" ? o.note : "",
+    reviewed_at: typeof o.reviewed_at === "string" ? o.reviewed_at : "",
+  };
+}
+
+export function parseBlockReviews(raw: unknown): BlockReviewsFile {
+  const o = asObject(raw, "block_reviews.json");
+  const reviews: BlockReview[] = [];
+  for (const entry of asArray(o.reviews ?? [], "block_reviews.reviews")) {
+    const row = parseBlockReviewRow(entry);
+    if (row) reviews.push(row);
+  }
+  return {
+    schema_version: stringOr(o.schema_version, "", "block_reviews.schema_version"),
+    song_name: stringOr(o.song_name, "", "block_reviews.song_name"),
+    reviews,
   };
 }
 

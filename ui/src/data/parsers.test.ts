@@ -4,6 +4,7 @@ import { ShapeError } from "./parse";
 import {
   parseBeats,
   parseBlockEnergy,
+  parseBlockReviews,
   parseLyricValidations,
   parseEventTimeline,
   parseFftBands,
@@ -322,6 +323,65 @@ describe("parseBlockEnergy", () => {
 
   it("throws on a non-object root", () => {
     expect(() => parseBlockEnergy([])).toThrow(ShapeError);
+  });
+});
+
+describe("parseBlockReviews", () => {
+  it("reads reviews and rounds start to 3 decimals", () => {
+    const file = parseBlockReviews({
+      schema_version: "1.0",
+      song_name: "s",
+      reviews: [
+        {
+          lane_id: "gestures",
+          start: 7.8600001,
+          verdict: "correct",
+          reason: null,
+          note: "",
+          reviewed_at: "2026-09-19T14:00:00Z",
+        },
+        {
+          lane_id: "gestures",
+          start: 9.288,
+          verdict: "wrong",
+          reason: "boundary",
+          note: "phantom",
+          reviewed_at: "2026-09-19T14:01:00Z",
+        },
+      ],
+    });
+    expect(file.reviews).toHaveLength(2);
+    expect(file.reviews[0]!.start).toBe(7.86);
+    expect(file.reviews[1]!.reason).toBe("boundary");
+  });
+
+  it("drops a row missing lane_id, start or a valid verdict", () => {
+    const file = parseBlockReviews({
+      reviews: [
+        { start: 1, verdict: "correct" }, // no lane_id
+        { lane_id: "gestures", verdict: "correct" }, // no start
+        { lane_id: "gestures", start: 1, verdict: "maybe" }, // bad verdict
+        { lane_id: "gestures", start: 1, verdict: "correct" }, // kept
+      ],
+    });
+    expect(file.reviews).toHaveLength(1);
+  });
+
+  it("drops an out-of-vocabulary reason rather than keeping it (a parse concern, not a validation one)", () => {
+    const file = parseBlockReviews({
+      reviews: [
+        { lane_id: "gestures", start: 1, verdict: "wrong", reason: "nonsense" },
+      ],
+    });
+    expect(file.reviews[0]!.reason).toBeNull();
+  });
+
+  it("tolerates a missing reviews array", () => {
+    expect(parseBlockReviews({ song_name: "s" }).reviews).toEqual([]);
+  });
+
+  it("throws on a non-object root", () => {
+    expect(() => parseBlockReviews([])).toThrow(ShapeError);
   });
 });
 

@@ -39,4 +39,13 @@ export {
   buildLyricValidationsPayload,
   saveLyricValidations,
 } from "./saveLyricValidations";
+export { buildBlockReviewsPayload, saveBlockReviews } from "./saveBlockReviews";
+export {
+  REVIEWABLE_LANE_IDS,
+  BLOCK_REVIEW_STALE_TOLERANCE_S,
+  matchBlockReviews,
+  startsByLane,
+  indexBlockReviews,
+  reviewKey,
+} from "./blockReviewMatch";
 export { artifactPaths, listingPaths, encodePath } from "./paths";

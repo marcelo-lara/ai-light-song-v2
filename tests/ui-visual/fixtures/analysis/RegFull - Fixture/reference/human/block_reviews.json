@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "reviews": [
+    {
+      "lane_id": "gestures",
+      "start": 7.86,
+      "verdict": "correct",
+      "reason": null,
+      "note": "",
+      "reviewed_at": "2026-09-19T14:00:00Z"
+    },
+    {
+      "lane_id": "gestures",
+      "start": 9.288,
+      "verdict": "wrong",
+      "reason": "boundary",
+      "note": "nothing here",
+      "reviewed_at": "2026-09-19T14:01:00Z"
+    },
+    {
+      "lane_id": "gestures",
+      "start": 15.232,
+      "verdict": "misplaced",
+      "reason": "label",
+      "note": "real event, wrong phase name",
+      "reviewed_at": "2026-09-19T14:02:00Z"
+    },
+    {
+      "lane_id": "gestures",
+      "start": 999.999,
+      "verdict": "correct",
+      "reason": null,
+      "note": "stale \u2014 no current block matches",
+      "reviewed_at": "2026-09-19T14:03:00Z"
+    }
+  ]
+}

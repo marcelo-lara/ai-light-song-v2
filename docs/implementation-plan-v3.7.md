@@ -80,15 +80,15 @@ needing a design decision becomes a `BUG` in the refinement doc, annotated
 | MCP full-regression | items 5, 7, 8, 9, 10 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 4, 5, 6, 7, 8, 9, 10 |
 | New writable `reference/human/` files | `block_reviews.json` (item 1), `reference/proposals/pending.json` (item 10 — not `reference/human/`, never operator-authored directly) |
-| Pre-existing failures | *filled by item 0* |
+| Pre-existing failures | `tests/test_run_queue.py::QueueFileTests::test_seeded_queue_parses_with_three_enabled_app_rows` (stale test — asserts `queue.toml` has `[[experiment]]` rows; the file is now empty after v3.6's promotions). Pre-dates this plan, not owned by any v3.7 item. |
 | Decisions | none yet |
 
 ---
 
 ## 0. Pre-flight
 
-- [ ] Commit `docs/product-refinement-v3.7.md` and `docs/implementation-plan-v3.7.md` alone as ``0. v3.7 refinement and plan``, so no item commit sweeps them in.
-- [ ] Run every suite named in "How this plan is worked" on HEAD. List each failing test by name in Status → "Pre-existing failures". Later items are not blamed for these.
+- [x] Commit `docs/product-refinement-v3.7.md` and `docs/implementation-plan-v3.7.md` alone as ``0. v3.7 refinement and plan``, so no item commit sweeps them in.
+- [x] Run every suite named in "How this plan is worked" on HEAD. List each failing test by name in Status → "Pre-existing failures". Later items are not blamed for these.
 
 ---
 
@@ -96,14 +96,14 @@ needing a design decision becomes a `BUG` in the refinement doc, annotated
 
 Refinement item 1, the `block_reviews.json` schema and lane set.
 
-- [ ] `data/analysis/{song}/reference/human/block_reviews.json`: writer function in `ui/vite.config.ts` beside `blockEnergyFilePath`/`lyricValidationsFilePath`, following the merge-on-write, per-click pattern `lyric_validations.json` uses (item is the join key `(lane_id, start)`, not an index). New `PUT /api/block-reviews/{song}` handler. `ui/src/data/paths.ts` gains `blockReviews`.
-- [ ] Loader + normalizer in `ui/src/data/` reads the file, rounds `start` to 3 decimals to match, and marks a review **stale** (never dropped, never re-attached) when no block of that `lane_id` in the current run has a `start` within ±0.25 s.
-- [ ] Lane set this applies to: every lane in `ui/src/timeline/laneState.ts` carrying an `experiment` field (`segmentSeeds`, `vocalPhrases`, `allin1Posterior`, `rhythmDrumIoi`, `rhythmStemAutocorr`, `rhythmVocalOnsets`, `energyLevel`, `tensionShape`, `character`, `vocalTranscription`), plus `gestures`. Not `moisesSections`, `moisesLyrics`, or a human-authored lane.
-- [ ] Regression fixtures: add a `block_reviews.json` fixture (`RegFull`) with at least one `correct`, one `wrong`, one `misplaced`, and one stale row (a `start` no current block matches).
+- [x] `data/analysis/{song}/reference/human/block_reviews.json`: writer function in `ui/vite.config.ts` beside `blockEnergyFilePath`/`lyricValidationsFilePath`, following the merge-on-write, per-click pattern `lyric_validations.json` uses (item is the join key `(lane_id, start)`, not an index). New `PUT /api/block-reviews/{song}` handler. `ui/src/data/paths.ts` gains `blockReviews`.
+- [x] Loader + normalizer in `ui/src/data/` reads the file, rounds `start` to 3 decimals to match, and marks a review **stale** (never dropped, never re-attached) when no block of that `lane_id` in the current run has a `start` within ±0.25 s.
+- [x] Lane set this applies to: every lane in `ui/src/timeline/laneState.ts` carrying an `experiment` field (`segmentSeeds`, `vocalPhrases`, `allin1Posterior`, `rhythmDrumIoi`, `rhythmStemAutocorr`, `rhythmVocalOnsets`, `energyLevel`, `tensionShape`, `character`, `vocalTranscription`), plus `gestures`. Not `moisesSections`, `moisesLyrics`, or a human-authored lane.
+- [x] Regression fixtures: add a `block_reviews.json` fixture (`RegFull`) with at least one `correct`, one `wrong`, one `misplaced`, and one stale row (a `start` no current block matches).
 
 **Checks**
-- [ ] `docker compose run --rm ui npm run test` and `npm run build` green.
-- [ ] A `PUT` with a `start` that matches no current block within ±0.25 s is accepted and stored, but the loader reports it stale, never dropped or reattached.
+- [x] `docker compose run --rm ui npm run test` and `npm run build` green.
+- [x] A `PUT` with a `start` that matches no current block within ±0.25 s is accepted and stored, but the loader reports it stale, never dropped or reattached (`blockReviewMatch.test.ts`).
 
 ---
 

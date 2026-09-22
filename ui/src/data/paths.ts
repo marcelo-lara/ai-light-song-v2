@@ -55,6 +55,12 @@ export const artifactPaths = {
   // mcp/ reads it.
   lyricValidations: (song: string) =>
     encodePath(analysis(song, "reference", "human", "lyric_validations.json")),
+  // v3.7 item 1 — the operator's three-state verdict (correct/wrong/misplaced)
+  // on each block of a claim-bearing lane, joined by (lane_id, start).
+  // Writable (debugger only, per-click), reference/human/ material; nothing
+  // in src/ or mcp/ reads it.
+  blockReviews: (song: string) =>
+    encodePath(analysis(song, "reference", "human", "block_reviews.json")),
   // Written by experiments/clap (`run character`). Texture blocks — what a
   // passage is *like* — merged from the stems, CLAP's calm axis, and allin1's
   // frame-level shadow labels.

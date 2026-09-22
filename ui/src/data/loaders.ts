@@ -21,6 +21,7 @@ import {
 import {
   parseBeats,
   parseBlockEnergy,
+  parseBlockReviews,
   parseDrumEvents,
   parseEnergyLayer,
   parseEventTimeline,
@@ -43,6 +44,7 @@ import {
 import type {
   Beats,
   BlockEnergyFile,
+  BlockReviewsFile,
   DrumEventsFile,
   EnergyLayer,
   EventTimeline,
@@ -361,6 +363,33 @@ export const loadLyricValidations = async (
   return result;
 };
 
+// v3.7 item 1 — reference/human/block_reviews.json is optional (absent until
+// the operator reviews a block), so a 404 resolves to an empty file. Every
+// other failure still surfaces. Staleness-against-the-current-run is computed
+// separately (./blockReviewMatch.ts) once the lane blocks are built — this
+// loader only parses the file as written.
+export const loadBlockReviews = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<BlockReviewsFile>> => {
+  const result = await loadJson<BlockReviewsFile>(
+    artifactPaths.blockReviews(song),
+    parseBlockReviews,
+    f,
+  );
+  if (
+    !result.ok &&
+    result.error.kind === "http" &&
+    result.error.status === 404
+  ) {
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, reviews: [] },
+    };
+  }
+  return result;
+};
+
 export const loadEventTimeline = (song: string, f?: typeof fetch) =>
   loadJson<EventTimeline>(
     artifactPaths.eventTimeline(song),
@@ -409,6 +438,7 @@ export const artifactLoaders = {
   moisesSections: loadMoisesSections,
   blockEnergy: loadBlockEnergy,
   lyricValidations: loadLyricValidations,
+  blockReviews: loadBlockReviews,
   moisesLyrics: loadMoisesLyrics,
   eventTimeline: loadEventTimeline,
   reviewQueue: loadReviewQueue,

@@ -316,6 +316,70 @@ def inject_lyric_validations(out_name: str, *, validated: bool = False):
     print(f"  wrote {out_name}/reference/human/lyric_validations.json")
 
 
+def inject_block_reviews(out_name: str, *, reviewed: bool = False):
+    """v3.7 item 1 — write the synthetic block_reviews.json.
+
+    `RegFull - Fixture` gets four rows keyed against the `gestures` lane's
+    real `song_event_timeline.json` starts (7.86, 9.288, 15.232) plus one
+    `start` (999.999) that matches nothing in the current run — one `correct`,
+    one `wrong`, one `misplaced`, and one stale row, per plan item 1's fixture
+    requirement. The other fixtures get an empty `reviews` array — the file
+    must still exist so the app's song-load fetch does not 404
+    (ui-regression §3)."""
+    hints_path = OUT / out_name / "reference/human/human_hints.json"
+    song_name = REG_SOURCE
+    if hints_path.exists():
+        song_name = json.loads(hints_path.read_text()).get("song_name", REG_SOURCE)
+    p = OUT / out_name / "reference/human/block_reviews.json"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    reviews = (
+        [
+            {
+                "lane_id": "gestures",
+                "start": 7.86,
+                "verdict": "correct",
+                "reason": None,
+                "note": "",
+                "reviewed_at": "2026-09-19T14:00:00Z",
+            },
+            {
+                "lane_id": "gestures",
+                "start": 9.288,
+                "verdict": "wrong",
+                "reason": "boundary",
+                "note": "nothing here",
+                "reviewed_at": "2026-09-19T14:01:00Z",
+            },
+            {
+                "lane_id": "gestures",
+                "start": 15.232,
+                "verdict": "misplaced",
+                "reason": "label",
+                "note": "real event, wrong phase name",
+                "reviewed_at": "2026-09-19T14:02:00Z",
+            },
+            {
+                "lane_id": "gestures",
+                "start": 999.999,
+                "verdict": "correct",
+                "reason": None,
+                "note": "stale — no current block matches",
+                "reviewed_at": "2026-09-19T14:03:00Z",
+            },
+        ]
+        if reviewed
+        else []
+    )
+    p.write_text(
+        json.dumps(
+            {"schema_version": "1.0", "song_name": song_name, "reviews": reviews},
+            indent=2,
+        )
+        + "\n"
+    )
+    print(f"  wrote {out_name}/reference/human/block_reviews.json")
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     OUT_SONGS.mkdir(parents=True, exist_ok=True)
@@ -325,6 +389,7 @@ def main():
     inject_phrase_periodicity("RegFull - Fixture")
     inject_block_energy("RegFull - Fixture")
     inject_lyric_validations("RegFull - Fixture", validated=True)
+    inject_block_reviews("RegFull - Fixture", reviewed=True)
     inject_segments(
         "RegFull - Fixture",
         segments_json=[
@@ -353,6 +418,7 @@ def main():
     inject_phrase_periodicity("RegPartial - Fixture")
     inject_block_energy("RegPartial - Fixture", rated=False)
     inject_lyric_validations("RegPartial - Fixture")
+    inject_block_reviews("RegPartial - Fixture")
     inject_segments(
         "RegPartial - Fixture",
         segments_json=None,
@@ -373,6 +439,7 @@ def main():
     inject_phrase_periodicity("_test_song")
     inject_block_energy("_test_song", rated=False)
     inject_lyric_validations("_test_song")
+    inject_block_reviews("_test_song")
     inject_segments("_test_song", segments_json=None, seed_json=[])
     # audio: ship the real mp3 for RegFull (real decode path). RegPartial reuses
     # it; _test_song intentionally has none.

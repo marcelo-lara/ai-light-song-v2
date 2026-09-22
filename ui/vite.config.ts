@@ -24,10 +24,15 @@ import react from "@vitejs/plugin-react";
 // (explicit Save, same guard/400/pretty-JSON shape) but writes segments.json,
 // a bare array (no `{song_name, ...}` wrapper).
 //
-// The debugger writes exactly five `reference/human/` files: human_hints.json,
-// segments.json, song_facts.json, block_energy.json and
-// lyric_validations.json. Nothing in `src/` or `mcp/` reads any of them. Any
+// The debugger writes exactly six `reference/human/` files: human_hints.json,
+// segments.json, song_facts.json, block_energy.json, lyric_validations.json
+// and block_reviews.json. Nothing in `src/` or `mcp/` reads any of them. Any
 // other write is a new contract — stop and ask.
+//
+// The `PUT /api/block-reviews/<song>` handler (v3.7 item 1) mirrors
+// lyric-validations: per-click, not explicit-Save — each verdict click PUTs
+// the FULL `reviews` array (the join key is `(lane_id, start)`, not an
+// index) and this handler replaces the file.
 
 const dataRoot = "/data";
 const analysisRoot = path.join(dataRoot, "analysis");
@@ -412,6 +417,87 @@ function normalizeLyricValidationsPayload(payload: unknown): {
   };
 }
 
+// v3.7 item 1 — block_reviews.json is written PER-CLICK by the verdict
+// control in the block inspector / lane events panel, mirroring
+// lyric_validations.json's pattern (D5.1: a rapid review pass should not need
+// a Save button). Each toggle PUTs the FULL `reviews` array and this handler
+// replaces the file. The join key is `(lane_id, start)`, never a block id
+// (an array position that shifts on every re-run).
+function blockReviewsFilePath(song: unknown): string {
+  return referenceHumanFilePath(song, "block_reviews.json");
+}
+
+const BLOCK_REVIEW_VERDICTS = new Set(["correct", "wrong", "misplaced"]);
+const BLOCK_REVIEW_REASONS = new Set(["boundary", "label", "value"]);
+
+function normalizeBlockReviewsPayload(payload: unknown): {
+  schema_version: string;
+  song_name: string;
+  reviews: Array<{
+    lane_id: string;
+    start: number;
+    verdict: string;
+    reason: string | null;
+    note: string;
+    reviewed_at: string;
+  }>;
+} {
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Block reviews payload must be a JSON object.");
+  }
+  const record = payload as Record<string, unknown>;
+  const reviewsIn = Array.isArray(record.reviews) ? record.reviews : null;
+  if (!reviewsIn) {
+    throw new Error("Block reviews payload must include a reviews array.");
+  }
+  const reviews = reviewsIn.map((entry: unknown) => {
+    const r = (entry && typeof entry === "object" ? entry : {}) as Record<
+      string,
+      unknown
+    >;
+    const laneId = String(r.lane_id ?? "").trim();
+    if (!laneId) {
+      throw new Error("Each block review must include a lane_id.");
+    }
+    const start = Number(r.start);
+    if (!Number.isFinite(start)) {
+      throw new Error(`Block review for lane "${laneId}" must include a numeric start.`);
+    }
+    const verdict = String(r.verdict ?? "");
+    if (!BLOCK_REVIEW_VERDICTS.has(verdict)) {
+      throw new Error(
+        `Block review for lane "${laneId}" verdict must be one of correct, wrong, misplaced.`,
+      );
+    }
+    const reasonRaw = r.reason == null ? null : String(r.reason);
+    if (verdict === "correct") {
+      if (reasonRaw !== null) {
+        throw new Error(`Block review for lane "${laneId}" reason must be null on "correct".`);
+      }
+    } else if (!reasonRaw || !BLOCK_REVIEW_REASONS.has(reasonRaw)) {
+      throw new Error(
+        `Block review for lane "${laneId}" reason must be one of boundary, label, value on "${verdict}".`,
+      );
+    }
+    return {
+      lane_id: laneId,
+      start: Number(start.toFixed(3)),
+      verdict,
+      reason: verdict === "correct" ? null : reasonRaw,
+      note: typeof r.note === "string" ? r.note : "",
+      reviewed_at:
+        typeof r.reviewed_at === "string" && r.reviewed_at
+          ? r.reviewed_at
+          : new Date().toISOString(),
+    };
+  });
+  return {
+    schema_version: "1.0",
+    song_name: String(record.song_name || ""),
+    reviews,
+  };
+}
+
 // Whole-song review-queue fields that disposition into song_facts.json.
 const SONG_FACT_KEYS = new Set(["form_family", "form_family_vs_genre"]);
 
@@ -703,6 +789,40 @@ function dataMountPlugin(): Plugin {
               error instanceof Error
                 ? error.message
                 : "Unable to save lyric validations.",
+            );
+          }
+          return;
+        }
+
+        if (
+          requestUrl &&
+          request.method === "PUT" &&
+          requestUrl.pathname.startsWith("/api/block-reviews/")
+        ) {
+          try {
+            const song = decodeURIComponent(
+              requestUrl.pathname.replace("/api/block-reviews/", ""),
+            );
+            const payload = normalizeBlockReviewsPayload(
+              await readJsonBody(request),
+            );
+            const filePath = blockReviewsFilePath(song);
+            await fsp.mkdir(path.dirname(filePath), { recursive: true });
+            await fsp.writeFile(
+              filePath,
+              JSON.stringify(payload, null, 2) + "\n",
+              "utf-8",
+            );
+            response.statusCode = 200;
+            response.setHeader("Content-Type", "application/json; charset=utf-8");
+            response.end(JSON.stringify(payload));
+          } catch (error) {
+            response.statusCode = 400;
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            response.end(
+              error instanceof Error
+                ? error.message
+                : "Unable to save block reviews.",
             );
           }
           return;

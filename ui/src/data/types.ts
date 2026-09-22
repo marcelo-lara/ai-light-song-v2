@@ -449,6 +449,50 @@ export interface LyricValidationsFile {
 }
 
 // ---------------------------------------------------------------------------
+// reference/human/block_reviews.json  (v3.7 item 1 — a precision instrument:
+// the operator's verdict on whether a claim-bearing lane's emitted block is
+// real)
+// ---------------------------------------------------------------------------
+// A three-state verdict per block of a claim-bearing lane (docs/product-
+// refinement-v3.7.md item 1). The join key is `(lane_id, start)`, `start`
+// rounded to 3 decimals — block ids are array positions and shift on every
+// re-run, so they are never the key. `verdict`/`reason` are fixed
+// vocabularies (they are counted by the experiments/truth_common scorer);
+// `note` is free text, never parsed. SCOPE GUARD: nothing in `src/` or `mcp/`
+// reads this file — it is `reference/human/` material like the hints, one
+// producer (the operator), written per-click like `lyric_validations.json`.
+
+export type BlockReviewVerdict = "correct" | "wrong" | "misplaced";
+export type BlockReviewReason = "boundary" | "label" | "value";
+
+export interface BlockReview {
+  lane_id: string;
+  /** rounded to 3 decimal places — the join key alongside `lane_id` */
+  start: number;
+  verdict: BlockReviewVerdict;
+  /** `null` on `correct`; required (non-null) on `wrong` / `misplaced` */
+  reason: BlockReviewReason | null;
+  note: string;
+  reviewed_at: string;
+}
+
+export interface BlockReviewsFile {
+  schema_version: string;
+  song_name: string;
+  reviews: BlockReview[];
+}
+
+/**
+ * A review annotated at read time against the CURRENT run's emitted blocks.
+ * `stale: true` when no block of `lane_id` in the current run has a `start`
+ * within ±0.25 s of this review's `start` — never dropped, never
+ * re-attached to a neighbouring block (see `../data/blockReviewMatch.ts`).
+ */
+export interface BlockReviewMatched extends BlockReview {
+  stale: boolean;
+}
+
+// ---------------------------------------------------------------------------
 // song_event_timeline.json  (plan v3.0 item 9 — flat gesture-phase /
 // section-transition events, replacing the Epic-5 composite event_* stack)
 // ---------------------------------------------------------------------------
