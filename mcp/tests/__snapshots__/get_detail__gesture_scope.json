@@ -640,6 +640,364 @@
     "aggregate_intensity": {
       "peak": 0.95,
       "mean": 0.59
+    },
+    "stem_summary": {
+      "stems": {
+        "mix": {
+          "peak": 0.870604,
+          "mean": 0.553601,
+          "peak_position": {
+            "bar": 7,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        "bass": {
+          "peak": 0.870604,
+          "mean": 0.553601,
+          "peak_position": {
+            "bar": 7,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        "drums": {
+          "peak": 0.870604,
+          "mean": 0.553601,
+          "peak_position": {
+            "bar": 7,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        "harmonic": {
+          "peak": 0.870604,
+          "mean": 0.553601,
+          "peak_position": {
+            "bar": 7,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        "vocals": {
+          "peak": 0.870604,
+          "mean": 0.553601,
+          "peak_position": {
+            "bar": 7,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        }
+      },
+      "field_sources": {
+        "time": "essentia",
+        "values": "essentia",
+        "normalized_values": "essentia"
+      }
+    },
+    "drum_density": {
+      "rows": [
+        {
+          "bar": 5,
+          "instrument": "kick",
+          "count": 4,
+          "subdivision": "quarter",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 5,
+          "instrument": "snare",
+          "count": 2,
+          "subdivision": "mixed",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 5,
+          "instrument": "hat",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 5,
+          "instrument": "crash",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 6,
+          "instrument": "kick",
+          "count": 4,
+          "subdivision": "quarter",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 6,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 6,
+          "instrument": "snare",
+          "count": 2,
+          "subdivision": "mixed",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 6,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 6,
+          "instrument": "hat",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 6,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 6,
+          "instrument": "crash",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 6,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 7,
+          "instrument": "kick",
+          "count": 4,
+          "subdivision": "quarter",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 7,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 7,
+          "instrument": "snare",
+          "count": 2,
+          "subdivision": "mixed",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 7,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 7,
+          "instrument": "hat",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 7,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 7,
+          "instrument": "crash",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 7,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 8,
+          "instrument": "kick",
+          "count": 4,
+          "subdivision": "quarter",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 8,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 8,
+          "instrument": "snare",
+          "count": 2,
+          "subdivision": "mixed",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 8,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 8,
+          "instrument": "hat",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 8,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 8,
+          "instrument": "crash",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 8,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 9,
+          "instrument": "kick",
+          "count": 4,
+          "subdivision": "quarter",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 9,
+            "beat": 1,
+            "section_id": "section-003",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 9,
+          "instrument": "snare",
+          "count": 2,
+          "subdivision": "mixed",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 9,
+            "beat": 1,
+            "section_id": "section-003",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 9,
+          "instrument": "hat",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 9,
+            "beat": 1,
+            "section_id": "section-003",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 9,
+          "instrument": "crash",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 9,
+            "beat": 1,
+            "section_id": "section-003",
+            "resolved": true
+          }
+        }
+      ],
+      "field_sources": {
+        "time": "omnizart",
+        "event_type": "omnizart"
+      },
+      "confidence": null,
+      "confidence_reason": "omnizart emits no per-hit confidence signal — every event in the fixture (as in the full corpus) carries null confidence; stated once here rather than repeated on every row"
+    },
+    "dropouts": {
+      "rows": [
+        {
+          "stem": "vocals",
+          "start": 8.0,
+          "end": 16.0,
+          "disagreement": true,
+          "sources": {
+            "measured": "get_detail_dropouts",
+            "arrangement_state": "arrangement_state"
+          },
+          "arrangement_state_confidence": 0.632,
+          "start_position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 9,
+            "beat": 1,
+            "section_id": "section-003",
+            "resolved": true
+          }
+        }
+      ],
+      "min_gap_beats": 2.0,
+      "note": "drums: gap between onsets of any instrument. Other stems: below 1.5x this song's own 5th-percentile normalized level for that stem — an unvalidated per-song heuristic, not a tuned gate (same posture as arrangement_state's own margin_db: reported, never gated)."
     }
   },
   "dense": null,

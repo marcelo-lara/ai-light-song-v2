@@ -223,10 +223,18 @@ two is an error, with no precedence rule:
 **The dense-series cap is 5 seconds — a maximum, not a default.** When the
 resolved span exceeds 5 s the call returns the structural view (sections,
 phases, transitions, hints, drum events, aggregate intensity, the overlapping
-`arrangement_state` blocks, and `beats` — all structural block data, listed
-with no decimation and present even when the dense frames are withheld) and
-**withholds the dense frames**, saying so explicitly and naming the cap. It
-never silently truncates, and it never silently downsamples to fit.
+`arrangement_state` blocks, `beats`, `stem_summary`, `drum_density` and
+`dropouts` — all structural block data, listed with no decimation and present
+even when the dense frames are withheld) and **withholds the dense frames**,
+saying so explicitly and naming the cap. It never silently truncates, and it
+never silently downsamples to fit.
+
+**`stem_summary` (v3.7 item 7).** Per requested stem, `{ peak, mean,
+peak_position }` over the resolved span, from `loudness.json`'s
+normalized-loudness series. Answers "how loud is X here" without the caller
+fetching and hand-averaging multiple capped dense windows — served on every
+call, including spans past the 5 s cap, since the cap guards the per-frame
+payload, not this fact.
 
 **`beats` (v3.6 item 9)** is the one deliberate exception to "no full beat
 list": every beat inside the resolved span — `time`, `bar`, `beat`,
@@ -248,8 +256,9 @@ the default is all five.
 
 **`position` (v3.7 item 3/5).** Every time field `get_detail` serializes — the
 span itself, section/phase/transition/hint edges, `impact_alignment.
-impact_position`, arrangement blocks and vocals phrases, drum-event rows, and
-every dense loudness frame — carries a sibling `position`:
+impact_position`, arrangement blocks and vocals phrases (including item 7's
+`peak_position`), drum-event rows, `drum_density` bar rows, `dropouts` span
+edges, and every dense loudness frame — carries a sibling `position`:
 `{"bar", "beat", "section_id", "resolved"}`, derived on read from the
 published beat grid; nothing in `src/` stores bars. `resolved: false` marks a
 bar derived by tempo arithmetic across a downbeat with `null`

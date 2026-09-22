@@ -456,6 +456,53 @@ resolutions.
     time**: the value is reported and the judgement is the consumer's.
     `sibilance: null` on a phrase means the span covered no analysed frame —
     never 0.0, which would read as "measured, and silent".
+  - **New in v3.7 item 7**: `peak`, `mean` (normalized vocals loudness, off
+    `loudness.json`) and `peak_time` (seconds) are stored on the top-level
+    `vocals_phrase[]` row. `get_detail`'s projection additionally derives
+    `peak_position` (bar/beat) from `peak_time` on read — the bar/beat
+    `position` itself is never stored, matching every other `position` field
+    in this contract.
+
+**New in v3.7 — `get_detail`'s structural view gains three blocks, none
+decimated or dense-cap-gated (structural facts, like `arrangement_state` and
+`beats` above):**
+
+- **`stem_summary` (item 7)** — per requested stem (respecting `sources`
+  narrowing), `{ peak, mean, peak_position }` over the resolved span, from
+  `loudness.json`'s normalized-loudness series. **Served on every call,
+  including spans past the 5 s dense cap** — the cap withholds dense frames,
+  not this summary. Answers "how loud is X here" without a client having to
+  fetch and hand-average multiple 5 s dense reads.
+- **`drum_density` (item 8)** — one row per bar in the resolved span, per
+  instrument (`kick`, `snare`, `hat`, `crash`): `{ bar, instrument, count,
+  subdivision, changed_from_previous, position }`. `subdivision` is
+  `quarter`/`eighth`/`sixteenth`/`none`/`mixed`, from the ratio of that bar's
+  own average inter-onset interval to that bar's own beat period (never a
+  fixed corpus-wide period). `none` for zero onsets; a **single** onset
+  reports `mixed` (no spacing to measure a periodicity from — never guessed
+  as `quarter`). `changed_from_previous` compares against the previous bar
+  actually present in the response (a bar with no published beat is skipped,
+  not treated as unchanged). Per-hit confidence stays `null` at source
+  (Omnizart) — stated once at block level from `drum_events.json`'s own
+  `confidence`/`confidence_reason` pair, never re-derived or repeated per row.
+- **`dropouts` (item 9)** — per stem (`bass`, `drums`, `harmonic`, `vocals`),
+  every span of **two beats or more** (`min_gap_beats`) with no onset
+  (`drums`, from `drum_events.json`) or at that stem's own 5th-percentile
+  normalized-loudness floor (the rest, from `loudness.json` — an unvalidated
+  per-song heuristic, reported not tuned, same posture as
+  `arrangement_state`'s own `margin_db`): `{ stem, start, end, start_position,
+  end_position, disagreement }`. Where `arrangement_state` calls a stem
+  absent for a block and this item's own measurement finds it present, that
+  block is **also** emitted with `disagreement: true` and
+  `sources: { measured, arrangement_state }` naming both producers — never
+  resolved automatically. Measured on `What a Feeling - Courtney Storm`: the
+  pre-chorus block (`start_s: 112.75, end_s: 127.0, confidence: 0.163`)
+  disagrees as expected (drum_events shows dense onsets throughout, 4-8
+  onsets/s); several further `drums`-absent blocks from 127 s to the end of
+  the song disagree the same way at much higher `arrangement_state`
+  confidence (up to 0.963) — `arrangement_state`'s own drums call appears
+  unreliable for this song past 112.75 s, not just in the one pre-chorus
+  block the operator had already flagged by hand.
 - A new dense signal (spectral flux, onset strength) needs a top-level file and
   a registry entry in the server's `detail.py` — **propose it** rather than
   hoping a layer file gets read.

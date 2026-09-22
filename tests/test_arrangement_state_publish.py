@@ -66,6 +66,28 @@ FFT_BANDS_VOCALS = {
 }
 
 
+# v3.7 item 7 — `_whisperx_vocal_phrase` now reads the published top-level
+# loudness.json (source_order + normalized_values) for each phrase's
+# peak/mean/peak_time. A flat, low-but-non-zero vocals series with one clear
+# peak at 1.0 s and another at 11.0 s — inside the two phrases every
+# VocalsPhrasePromotionTests span below covers (1.0-2.5 s, 10.0-12.0 s).
+LOUDNESS_DOC = {
+    "schema_version": "3.1",
+    "song_name": "_test_song",
+    "field_sources": {"time": "essentia", "values": "essentia", "normalized_values": "essentia"},
+    "interval_ms": 20,
+    "source_order": STEMS + ["mix"],
+    "frames": [
+        {"time": round(t * 0.5, 2), "values": [0.0] * 5, "normalized_values": [0.0, 0.0, 0.0, v, 0.0]}
+        for t, v in [
+            (0, 0.05), (2, 0.9), (4, 0.05),  # 0.0s, 1.0s (peak), 2.0s
+            (22, 0.05), (24, 0.6), (26, 0.05),  # 11.0s, 12.0s (peak), 13.0s
+            (80, 0.05),  # 40.0s — covers the full ARTIFACT block span
+        ]
+    ],
+}
+
+
 def _write_whisperx_artifact(paths: SongPaths, proposal: dict) -> None:
     """v3.6 item 2 — `whisperx_vad` is promoted out of `experiments/`; its
     output now lives at `artifacts/whisperx-vad/whisperx_vad.json`, written by
@@ -82,6 +104,11 @@ def _write_inputs(paths: SongPaths, artifact: dict, bands: dict | None = None, *
         json.dumps(bands if bands is not None else FFT_BANDS_VOCALS)
     )
     paths.arrangement_state_output_path.parent.mkdir(parents=True, exist_ok=True)
+    # v3.7 item 7 — the published loudness.json _whisperx_vocal_phrase now
+    # reads for peak/mean/peak_time (build-ui-data always publishes this
+    # before publish-arrangement-state runs — see pipeline.py's stage order).
+    paths.loudness_output_path.parent.mkdir(parents=True, exist_ok=True)
+    paths.loudness_output_path.write_text(json.dumps(LOUDNESS_DOC))
     # Default: the whisperx service has run and found no phrases — the common
     # case for every test in this file that is not itself about vocals_phrase.
     _write_whisperx_artifact(paths, whisperx if whisperx is not None else {"vocal_phrase": []})

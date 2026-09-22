@@ -15,6 +15,42 @@ Current focus song: `_test_song`
 
 ## Open queue
 
+### `get_detail`'s `dropouts` — vocals gap detector misses short mid-song gaps
+
+- **Status:** `pending` — found implementing v3.7 item 9 (dropouts).
+- **Problem:** the vocals-stem noise floor for gap detection is a whole-song
+  5th-percentile of the loudness series. On *What a Feeling – Courtney Storm*
+  this only finds the intro/outro silences; the short "chatter gap under a
+  synth pulse" moments the item's refinement doc named (found by manual ear
+  during the original review) do not clear that floor and are not emitted.
+  The detector works — it just isn't sensitive enough for a brief, local dip
+  against an otherwise-loud song.
+- **Validation target:** *What a Feeling – Courtney Storm*, the two known
+  chatter gaps under synth pulses (found by ear, times not yet logged
+  precisely — re-locate by ear against the mix stem).
+- **Success condition:** a more local/adaptive floor (e.g. a rolling window
+  rather than whole-song percentile) emits both known gaps without also
+  emitting spurious short dips elsewhere in the song.
+
+### `arrangement_state`'s drums-absence call looks broken past 112.75 s on *What a Feeling*
+
+- **Status:** `pending` — found implementing v3.7 item 9 (dropouts), which
+  cross-checks `arrangement_state`'s per-block stem-absence calls against
+  measured drum onsets and reports a `disagreement: true` span wherever they
+  conflict.
+- **Problem:** beyond the one pre-chorus block the operator had hand-flagged
+  (`112.75–127.0 s`, confidence 0.163), several further blocks from 127 s to
+  song end call `drums` absent at confidence up to **0.963** while
+  `drum_events.json` shows 4–8 onsets/s throughout — not silence, not noise.
+  The scale of the disagreement (high-confidence blocks, not just the
+  marginal one) suggests something more structural than a borderline call.
+- **Validation target:** *What a Feeling – Courtney Storm*'s `drums`-absent
+  `arrangement_state` blocks past 127 s, cross-checked against `drum_events.json`.
+- **Success condition:** root cause found (e.g. a stem-routing bug specific to
+  this song, or a systematic issue with the absence detector on dense mixes)
+  and either fixed or the confidence model corrected so it stops asserting
+  high-confidence absence where onsets are present.
+
 ### Visual-regression baseline mismatch — height off by ~78px on most specs, environment-side
 
 - **Status:** `pending` — found running `docs/reference/ui-regression.md` §6

@@ -317,6 +317,37 @@ def _mean_in_span(times: list[float], values: list[float], start: float, end: fl
     return round(sum(inside) / len(inside), 4) if inside else None
 
 
+def _peak_and_mean_in_span(
+    times: list[float], values: list[float], start: float, end: float
+) -> tuple[float | None, float | None, float | None]:
+    """`(peak, mean, peak_time)` of `values` over `[start, end]`, or
+    `(None, None, None)` when the span covers no frame — an honest gap, never
+    a zero standing in for "no evidence" (mirrors `_mean_in_span`)."""
+    inside = [(t, v) for t, v in zip(times, values) if start <= t <= end]
+    if not inside:
+        return None, None, None
+    peak_time, peak_value = max(inside, key=lambda tv: tv[1])
+    mean_value = sum(v for _, v in inside) / len(inside)
+    return round(peak_value, 6), round(mean_value, 6), peak_time
+
+
+def _vocals_loudness_curve(paths: SongPaths) -> tuple[list[float], list[float]]:
+    """`(times, normalized_values)` for the vocals stem, off the already-
+    published top-level `loudness.json` (`_publish_loudness` runs earlier in
+    `build_ui_data`, and `publish_arrangement_state` always runs after it —
+    see `pipeline.py`'s stage order comment on `detect-arrangement-state`).
+    v3.7 item 7 — `vocals_phrase.peak`/`.mean`/`.peak_time`."""
+    doc = read_json(paths.loudness_output_path)
+    source_order = doc.get("source_order") or []
+    idx = source_order.index("vocals")
+    times: list[float] = []
+    values: list[float] = []
+    for frame in doc.get("frames", []):
+        times.append(float(frame["time"]))
+        values.append(float(frame["normalized_values"][idx]))
+    return times, values
+
+
 def _whisperx_vocal_phrase(paths: SongPaths) -> list[dict]:
     """`vocals_phrase` (v3.5 item 7 promotion; v3.6 item 2 promoted the
     `whisperx_vad` detector itself out of `experiments/` into its own
@@ -337,6 +368,12 @@ def _whisperx_vocal_phrase(paths: SongPaths) -> list[dict]:
     the detector's own graded confidence in favour of asserting each detected
     phrase as certain; the graded per-frame curve stays in
     `artifacts/whisperx-vad/whisperx_vad.json` for anyone who wants it.
+
+    v3.7 item 7 — each span also gains `peak`/`mean` (normalized vocals
+    loudness, off the published `loudness.json`) and `peak_time` (seconds).
+    `peak_time` is a stored fact like `start_s`/`end_s`; the bar/beat
+    `position` of that instant is derived on read by `mcp/serializers.py`,
+    never stored here (CLAUDE.md determinism / position-never-stored rule).
     """
     artifact_path = paths.artifact("whisperx-vad", "whisperx_vad.json")
     if not artifact_path.exists():
@@ -346,19 +383,28 @@ def _whisperx_vocal_phrase(paths: SongPaths) -> list[dict]:
         )
     proposal = read_json(artifact_path)
     times, values = _sibilance_curve(paths)
-    return [
-        {
-            "start_s": span["start"],
-            "end_s": span["end"],
-            "confidence": 1.0,
-            # The stem-bleed discriminator, read against this song's own mean
-            # (published alongside as `vocals_sibilance_song_mean`) — a phrase
-            # far below the song mean is whisperX firing on instrument bleed,
-            # the failure mode it has on plucked/rhythmic leaks.
-            "sibilance": _mean_in_span(times, values, span["start"], span["end"]),
-        }
-        for span in proposal.get("vocal_phrase", [])
-    ]
+    loudness_times, loudness_values = _vocals_loudness_curve(paths)
+    rows = []
+    for span in proposal.get("vocal_phrase", []):
+        peak, mean, peak_time = _peak_and_mean_in_span(
+            loudness_times, loudness_values, span["start"], span["end"]
+        )
+        rows.append(
+            {
+                "start_s": span["start"],
+                "end_s": span["end"],
+                "confidence": 1.0,
+                # The stem-bleed discriminator, read against this song's own mean
+                # (published alongside as `vocals_sibilance_song_mean`) — a phrase
+                # far below the song mean is whisperX firing on instrument bleed,
+                # the failure mode it has on plucked/rhythmic leaks.
+                "sibilance": _mean_in_span(times, values, span["start"], span["end"]),
+                "peak": peak,
+                "mean": mean,
+                "peak_time": peak_time,
+            }
+        )
+    return rows
 
 
 def publish_arrangement_state(paths: SongPaths) -> str:
@@ -416,13 +462,18 @@ def publish_arrangement_state(paths: SongPaths) -> str:
                 # Never `None` — `_whisperx_vocal_phrase` raises rather than
                 # returning one (no silent fallback).
                 "vocals_phrase": [("whisperx_vad", True)],
-                # A `vocals_phrase` row fuses two producers: its span is
-                # whisperX's, its `sibilance` is the promoted item-4 cue's. The
-                # dotted key is the per-row override the flat header cannot
-                # otherwise express.
+                # A `vocals_phrase` row fuses three producers: its span is
+                # whisperX's, its `sibilance` is the promoted item-4 cue's, and
+                # its `peak`/`mean`/`peak_time` (v3.7 item 7) are read off
+                # loudness.json (essentia) — same producer tag loudness.json's
+                # own header uses for these values. The dotted keys are the
+                # per-row overrides the flat header cannot otherwise express.
                 "vocals_phrase.sibilance": [
                     ("vocal_sibilance", sibilance_song_mean is not None)
                 ],
+                "vocals_phrase.peak": [("essentia", True)],
+                "vocals_phrase.mean": [("essentia", True)],
+                "vocals_phrase.peak_time": [("essentia", True)],
                 "vocals_sibilance_song_mean": [
                     ("vocal_sibilance", sibilance_song_mean is not None)
                 ],

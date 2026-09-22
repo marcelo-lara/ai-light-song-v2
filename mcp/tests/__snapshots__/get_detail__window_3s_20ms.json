@@ -322,7 +322,240 @@
         "downbeat_confidence": "allin1"
       }
     },
-    "aggregate_intensity": null
+    "aggregate_intensity": null,
+    "stem_summary": {
+      "stems": {
+        "mix": {
+          "peak": 0.288521,
+          "mean": 0.254375,
+          "peak_position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        "bass": {
+          "peak": 0.288521,
+          "mean": 0.254375,
+          "peak_position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        "drums": {
+          "peak": 0.288521,
+          "mean": 0.254375,
+          "peak_position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        "harmonic": {
+          "peak": 0.288521,
+          "mean": 0.254375,
+          "peak_position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        "vocals": {
+          "peak": 0.288521,
+          "mean": 0.254375,
+          "peak_position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        }
+      },
+      "field_sources": {
+        "time": "essentia",
+        "values": "essentia",
+        "normalized_values": "essentia"
+      }
+    },
+    "drum_density": {
+      "rows": [
+        {
+          "bar": 1,
+          "instrument": "kick",
+          "count": 4,
+          "subdivision": "quarter",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 1,
+          "instrument": "snare",
+          "count": 2,
+          "subdivision": "mixed",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 1,
+          "instrument": "hat",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 1,
+          "instrument": "crash",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 2,
+          "instrument": "kick",
+          "count": 4,
+          "subdivision": "quarter",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 2,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 2,
+          "instrument": "snare",
+          "count": 2,
+          "subdivision": "mixed",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 2,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 2,
+          "instrument": "hat",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 2,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 2,
+          "instrument": "crash",
+          "count": 0,
+          "subdivision": "none",
+          "changed_from_previous": false,
+          "position": {
+            "bar": 2,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        }
+      ],
+      "field_sources": {
+        "time": "omnizart",
+        "event_type": "omnizart"
+      },
+      "confidence": null,
+      "confidence_reason": "omnizart emits no per-hit confidence signal — every event in the fixture (as in the full corpus) carries null confidence; stated once here rather than repeated on every row"
+    },
+    "dropouts": {
+      "rows": [
+        {
+          "stem": "bass",
+          "start": 0.01,
+          "end": 2.99,
+          "disagreement": false,
+          "start_position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "stem": "harmonic",
+          "start": 0.01,
+          "end": 2.99,
+          "disagreement": false,
+          "start_position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "stem": "vocals",
+          "start": 0.01,
+          "end": 2.99,
+          "disagreement": false,
+          "start_position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        }
+      ],
+      "min_gap_beats": 2.0,
+      "note": "drums: gap between onsets of any instrument. Other stems: below 1.5x this song's own 5th-percentile normalized level for that stem — an unvalidated per-song heuristic, not a tuned gate (same posture as arrangement_state's own margin_db: reported, never gated)."
+    }
   },
   "dense": {
     "interval_ms": 20,
