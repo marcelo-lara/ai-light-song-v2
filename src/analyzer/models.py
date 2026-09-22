@@ -43,6 +43,8 @@ class Producer(str, Enum):
     RHYTHM_STEM_AUTOCORR = "rhythm_stem_autocorr"
     RHYTHM_VOCAL_ONSETS = "rhythm_vocal_onsets"
     SEED_UNREVIEWED = "seed_unreviewed"
+    # v3.7 item 4 — the nearest-gesture-impact fusion (section_clues.py).
+    IMPACT_ALIGNMENT = "impact_alignment"
 
 
 PRODUCERS: frozenset[str] = frozenset(p.value for p in Producer)

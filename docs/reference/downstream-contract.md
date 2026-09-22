@@ -109,8 +109,8 @@ short — projected strings are either truncated or paid for in full.
 ### `sections.json` (top-level **object**, rows under `sections`) — highest priority
 
 Row fields: `section_id`, `start`, `end`, `function`, `function_confidence`,
-`function_status`, `same_label_as`, `confidence`, `key` (+ `contested_by` on a
-flagged row).
+`function_status`, `same_label_as`, `confidence`, `key`, `impact_alignment`
+(+ `contested_by` on a flagged row).
 
 - `key` — the whole-song HPCP key estimate (`"C# major"`), or `null` when too
   low-confidence to state. One value for the whole song; every row carries the
@@ -197,6 +197,42 @@ scope, "strobe at 12 Hz" is the authoring model's call.
   (`ayuni`, `Cinderella - Ella Lee`, `_test_song`, `What a Feeling - Courtney
   Storm`) as a first-pass inference, same posture as `function_status:
   "unknown"`.
+
+### `impact_alignment` — merged into `sections.json` (v3.7 item 2)
+
+Every row carries `impact_alignment`, always present (never omitted, unlike
+`energy`/`tension`/`rhythm`) but `null` when no gesture `impact` event
+(`song_event_timeline.json`) falls within **+-2 bars** of the row's `start` —
+an honest omission, never a nearest-match at any distance. When resolved:
+
+```json
+"impact_alignment": {
+  "gesture_id": "gesture-034",
+  "impact_time": 131.1,
+  "offset_s": 3.83,
+  "offset_beats": 7.889,
+  "impact_position": {"bar": 66, "beat": 2, "section_id": "section-008", "resolved": true}
+}
+```
+
+- `gesture_id` / `impact_time` — the nearest impact event to `start`.
+- `offset_s` — signed, `impact_time - start`. **Positive means the payoff is
+  late** — the section boundary is not where the gesture peaks.
+- `offset_beats` — `offset_s` converted to beats at the song's whole-song
+  `bpm` (`info.json`), assuming 4/4 (corpus-wide assumption).
+- `impact_position` — the impact's musical position (item 3/5's `position`
+  shape). **Stored as `null`** by `section_clues.py` — seconds are the only
+  stored/joined unit — and backfilled on read by `mcp/serializers.py`'s
+  `position` deriver.
+- Never moves a boundary and never derives `tension` from the offset — both
+  stay exactly as their own tier produced them. The offset is data for the
+  authoring model to weigh, not a verdict.
+- `field_sources` gains `impact_alignment: "impact_alignment"` (always —
+  the field is never conditionally omitted like the clue fields above it).
+- Produced by `src/analyzer/stages/section_clues.py`'s
+  `_nearest_impact_alignment`, in the same fusion pass as `energy`/`tension`/
+  `rhythm` above (reuses that stage's already-loaded `sections.json` +
+  `song_event_timeline.json`).
 - `get_song_overview`'s response gains a `review_warning` field — present
   only when at least one section row in the response carries a
   `seed_unreviewed` source on any field, naming the affected `section_id`s.

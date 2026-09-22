@@ -60,6 +60,8 @@ class ProducerVocabularyTests(unittest.TestCase):
                 "rhythm_stem_autocorr",
                 "rhythm_vocal_onsets",
                 "seed_unreviewed",
+                # v3.7 item 4 — impact_alignment (section_clues.py).
+                "impact_alignment",
             },
         )
 

@@ -1,5 +1,16 @@
-"""Phase 3 (relate) — `energy`, `tension` and `rhythm` clue fields on
-`sections.json` rows (docs/product-refinement-v3.6.md item 6, plan item 10).
+"""Phase 3 (relate) — `energy`, `tension`, `rhythm` and `impact_alignment`
+clue fields on `sections.json` rows (docs/product-refinement-v3.6.md item 6,
+plan item 10; `impact_alignment` is docs/product-refinement-v3.7.md item 2,
+plan item 4).
+
+`impact_alignment` (always emitted, `null` when unresolved — see
+`_nearest_impact_alignment`) is the nearest `song_event_timeline.json`
+gesture `impact` to a section's `start`, so a late payoff ("the section
+started but the impact lands 3.8s later") is a fact on the row rather than
+something a reader has to cross-reference and subtract by hand. Unlike
+`energy`/`tension`/`rhythm` it has no human/seed tier — there is no
+`reference/` producer for it — and no confidence field of its own; the
+gesture's own `confidence` lives on the `song_event_timeline.json` row.
 
 Nothing here reads audio. Every input is a *published* top-level file
 (`sections.json`, `beats.json`, `drum_events.json`, `loudness.json`,
@@ -249,6 +260,48 @@ def _vocals_phrase_overlap(arrangement: dict | None, start: float, end: float) -
     return False
 
 
+def _impact_events(event_timeline: dict | None) -> list[dict]:
+    events = (event_timeline or {}).get("events") or []
+    return [e for e in events if e.get("type") == "impact" and e.get("start_time") is not None]
+
+
+def _nearest_impact_alignment(
+    start: float, impacts: list[dict], bpm: float | None
+) -> dict | None:
+    """Nearest gesture impact (by `start_time`) to a section's `start`.
+    `null` when none falls within +-2 bars — an honest omission, never a
+    nearest-match at any distance (CLAUDE.md "no silent fallbacks"). Bar
+    length is derived from the song's whole-song `bpm` (info.json) assuming
+    4/4 (corpus-wide assumption, see docs/analysis-definition.md). `offset_s`
+    is signed (`impact_time - start`; positive = late).
+    `impact_position` is left `null` here — item 5's `mcp/serializers.py`
+    `position` deriver backfills it on read; nothing is stored in bars."""
+    if not impacts or not bpm or bpm <= 0:
+        return None
+    beat_period = 60.0 / bpm
+    bar_s = beat_period * 4.0
+    max_distance = 2.0 * bar_s
+    best: dict | None = None
+    best_dist: float | None = None
+    for e in impacts:
+        t = float(e["start_time"])
+        dist = abs(t - start)
+        if best_dist is None or dist < best_dist:
+            best_dist, best = dist, e
+    if best is None or best_dist is None or best_dist > max_distance:
+        return None
+    impact_time = float(best["start_time"])
+    offset_s = round(impact_time - start, 3)
+    offset_beats = round(offset_s / beat_period, 3)
+    return {
+        "gesture_id": best.get("gesture_id"),
+        "impact_time": round(impact_time, 3),
+        "offset_s": offset_s,
+        "offset_beats": offset_beats,
+        "impact_position": None,
+    }
+
+
 def _gesture_tension_overlap(event_timeline: dict | None, start: float, end: float) -> bool:
     events = (event_timeline or {}).get("events") or []
     for e in events:
@@ -489,6 +542,7 @@ FIELD_SOURCES_DEFAULT = {
     "rhythm.bass": "rhythm_stem_autocorr",
     "rhythm.harmonic": "rhythm_stem_autocorr",
     "rhythm.vocals": "rhythm_stem_autocorr",
+    "impact_alignment": "impact_alignment",
 }
 
 
@@ -512,6 +566,10 @@ def section_clues(paths: SongPaths) -> dict:
             f"(D10.1) — run the 'whisperx' service for {paths.song_name!r} first."
         )
     vocal_onsets = read_json(vocal_onsets_path)
+
+    info_payload = read_json(paths.info_output_path) if paths.info_output_path.exists() else None
+    bpm = (info_payload or {}).get("bpm")
+    impacts = _impact_events(event_timeline)
 
     human_rows = _load_rows(paths.reference("human", "segments.json"))
     seed_rows = _load_rows(paths.reference("human", "segments.seed.json"))
@@ -599,6 +657,9 @@ def section_clues(paths: SongPaths) -> dict:
             section["rhythm"] = rhythm
             emitted_keys.add("rhythm")
 
+        section["impact_alignment"] = _nearest_impact_alignment(start, impacts, bpm)
+        emitted_keys.add("impact_alignment")
+
         if resolved_any_seed_here:
             any_seed = True
             seed_section_ids.append(sid)
@@ -615,6 +676,9 @@ def section_clues(paths: SongPaths) -> dict:
         coverage_keys.update({"tension", "tension_confidence"})
     for source_name in sorted(rhythm_sources_emitted):
         header[f"rhythm.{source_name}"] = FIELD_SOURCES_DEFAULT[f"rhythm.{source_name}"]
+    if "impact_alignment" in emitted_keys:
+        header["impact_alignment"] = FIELD_SOURCES_DEFAULT["impact_alignment"]
+        coverage_keys.add("impact_alignment")
 
     sections_payload["field_sources"] = validate_field_sources(
         header,

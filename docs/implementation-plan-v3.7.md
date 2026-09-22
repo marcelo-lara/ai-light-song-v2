@@ -75,7 +75,7 @@ needing a design decision becomes a `BUG` in the refinement doc, annotated
 
 | | |
 | --- | --- |
-| Done | 3 of 12 |
+| Done | 4 of 12 |
 | Visual QA items | 2, 11 |
 | MCP full-regression | items 5, 7, 8, 9, 10 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 4, 5, 6, 7, 8, 9, 10 |
@@ -162,16 +162,16 @@ already reads `sections.json` and `song_event_timeline.json` for
 `tension_shape` — reuse its `_best_overlap_row`/gesture-scan helpers rather
 than a second nearest-impact search.
 
-- [ ] Per section row: nearest gesture impact to `start`; `null` when none falls within ±2 bars (an honest omission, never a nearest-match at any distance).
-- [ ] Fields: `gesture_id`, `impact_time`, `offset_s` (signed, `impact_time - start`; positive = late), `offset_beats` (`offset_s` at the song's BPM), `impact_position` (per item 5's `position` shape — until item 5 lands, this sub-field is `null`; item 5 backfills it, no schema change).
-- [ ] `field_sources` gains `impact_alignment: "impact_alignment"`.
-- [ ] Contract: `docs/reference/downstream-contract.md` `sections.json` section; `docs/reference/source-map.md`.
+- [x] Per section row: nearest gesture impact to `start`; `null` when none falls within ±2 bars (an honest omission, never a nearest-match at any distance).
+- [x] Fields: `gesture_id`, `impact_time`, `offset_s` (signed, `impact_time - start`; positive = late), `offset_beats` (`offset_s` at the song's BPM), `impact_position` (per item 5's `position` shape — until item 5 lands, this sub-field is `null`; item 5 backfills it, no schema change).
+- [x] `field_sources` gains `impact_alignment: "impact_alignment"`.
+- [x] Contract: `docs/reference/downstream-contract.md` `sections.json` section; `docs/reference/source-map.md`; `docs/reference/artifacts.md`.
 
 **Checks**
-- [ ] `docker compose run --rm test` green.
-- [ ] On *What a Feeling – Courtney Storm*: section-008 emits `offset_s ≈ 3.83` (start 127.27 vs. impact 131.10); section-010 emits `offset_s ≈ 0.50` (start 157.95 vs. impact 158.45).
-- [ ] A section with no impact within ±2 bars emits `impact_alignment: null`.
-- [ ] `--stage section-clues` re-run on the same song is byte-identical.
+- [x] `docker compose run --rm test` green (159/160 — the 1 failure is the pre-existing `test_run_queue` one from Status).
+- [x] On *What a Feeling – Courtney Storm*: section-008 emits `offset_s: 3.83` (start 127.27 vs. impact 131.10); section-010 emits `offset_s: 0.5` (start 157.95 vs. impact 158.45). Verified directly against the generated `sections.json`.
+- [x] A section with no impact within ±2 bars emits `impact_alignment: null` (section-001, section-007).
+- [x] `--stage section-clues` re-run on the same song is byte-identical (md5 match).
 
 ---
 
