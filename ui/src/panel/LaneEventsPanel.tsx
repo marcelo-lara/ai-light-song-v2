@@ -47,7 +47,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { ArtifactStatus } from "../data";
 import type { BlockEnergyDraft } from "../data/saveBlockEnergy";
-import type { BlockEnergyFile } from "../data/types";
+import { reviewKey } from "../data/blockReviewMatch";
+import type {
+  BlockEnergyFile,
+  BlockReview,
+  BlockReviewMatched,
+  BlockReviewReason,
+  BlockReviewVerdict,
+} from "../data/types";
 import type { LaneMarker } from "../timeline/laneRenderers";
 import type { SparseBlock } from "../timeline/laneContent";
 import { markerFor } from "../timeline/SparseLane";
@@ -70,6 +77,171 @@ export interface LyricValidationPanelProps {
   validatedIds: ReadonlySet<number>;
   /** persist a toggle immediately (per-click, no Save — D5.1) */
   onToggle: (tokenId: number, nextValidated: boolean) => void;
+}
+
+// v3.7 item 1 — the operator's three-state verdict (correct/wrong/misplaced)
+// on a claim-bearing lane's emitted block, joined by (lane_id, start).
+export interface BlockReviewPanelProps {
+  /** every current review for the open lane, indexed by `reviewKey(lane_id, start)` */
+  reviewsByKey: ReadonlyMap<string, BlockReviewMatched>;
+  /** persist a verdict immediately (per-click, no Save — mirrors lyricValidation) */
+  onSave: (review: BlockReview) => void;
+}
+
+const BLOCK_REVIEW_VERDICTS: readonly BlockReviewVerdict[] = [
+  "correct",
+  "wrong",
+  "misplaced",
+];
+const BLOCK_REVIEW_REASONS: readonly BlockReviewReason[] = [
+  "boundary",
+  "label",
+  "value",
+];
+
+/**
+ * Three-state verdict control, following `SegmentedRating`'s per-block
+ * pattern. Picking `correct` saves immediately (`reason: null`). Picking
+ * `wrong` / `misplaced` reveals the fixed reason vocabulary — the reason pick
+ * IS the save trigger, since `reason` is required non-null on those verdicts
+ * (never a silently-defaulted reason). A stale review (no current block
+ * within tolerance of its `start` — `../data/blockReviewMatch.ts`) renders a
+ * visibly distinct "stale" badge rather than the normal verdict state.
+ */
+export function VerdictControl({
+  laneId,
+  start,
+  review,
+  onSave,
+}: {
+  laneId: string;
+  start: number;
+  review: BlockReviewMatched | undefined;
+  onSave: (review: BlockReview) => void;
+}): React.JSX.Element {
+  const [pendingVerdict, setPendingVerdict] = useState<BlockReviewVerdict | null>(null);
+  const [noteDraft, setNoteDraft] = useState(review?.note ?? "");
+
+  useEffect(() => {
+    setNoteDraft(review?.note ?? "");
+  }, [review?.note]);
+
+  const save = useCallback(
+    (verdict: BlockReviewVerdict, reason: BlockReviewReason | null, note: string) => {
+      onSave({
+        lane_id: laneId,
+        start: Number(start.toFixed(3)),
+        verdict,
+        reason: verdict === "correct" ? null : reason,
+        note,
+        reviewed_at: new Date().toISOString(),
+      });
+    },
+    [laneId, start, onSave],
+  );
+
+  const pickVerdict = useCallback(
+    (verdict: BlockReviewVerdict) => {
+      if (verdict === "correct") {
+        setPendingVerdict(null);
+        save("correct", null, review?.note ?? "");
+        return;
+      }
+      setPendingVerdict(verdict);
+    },
+    [save, review?.note],
+  );
+
+  const pickReason = useCallback(
+    (reason: BlockReviewReason) => {
+      if (!pendingVerdict) return;
+      save(pendingVerdict, reason, review?.note ?? "");
+      setPendingVerdict(null);
+    },
+    [pendingVerdict, save, review?.note],
+  );
+
+  const verdict = review?.verdict ?? null;
+  const stale = review?.stale ?? false;
+  const showReasonPicker = pendingVerdict != null;
+
+  return (
+    <div
+      className="block-verdict"
+      data-testid="block-verdict"
+      data-lane={laneId}
+      data-start={start.toFixed(3)}
+      data-verdict={verdict ?? "unreviewed"}
+      data-stale={stale}
+    >
+      {stale && (
+        <span
+          className="block-verdict__stale"
+          data-testid="block-verdict-stale"
+          title="No current block matches this review's start — stale, excluded from scoring"
+        >
+          stale
+        </span>
+      )}
+      <div className="block-verdict__buttons" role="group" aria-label="Block verdict">
+        {BLOCK_REVIEW_VERDICTS.map((v) => (
+          <button
+            key={v}
+            type="button"
+            className="block-verdict__btn"
+            data-testid={`block-verdict-${v}`}
+            aria-pressed={verdict === v}
+            aria-label={v}
+            onClick={(e) => {
+              e.stopPropagation();
+              pickVerdict(v);
+            }}
+          >
+            {v}
+          </button>
+        ))}
+      </div>
+      {showReasonPicker && (
+        <div className="block-verdict__reasons" role="group" aria-label="Reason">
+          {BLOCK_REVIEW_REASONS.map((r) => (
+            <button
+              key={r}
+              type="button"
+              className="block-verdict__reason-btn"
+              data-testid={`block-verdict-reason-${r}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                pickReason(r);
+              }}
+            >
+              {r}
+            </button>
+          ))}
+        </div>
+      )}
+      {verdict && verdict !== "correct" && review?.reason && !showReasonPicker && (
+        <span className="block-verdict__reason-label" data-testid="block-verdict-reason">
+          {review.reason}
+        </span>
+      )}
+      {review && (
+        <input
+          type="text"
+          className="block-verdict__note"
+          data-testid="block-verdict-note"
+          placeholder="note"
+          value={noteDraft}
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => setNoteDraft(e.target.value)}
+          onBlur={() => {
+            if (noteDraft !== (review.note ?? "")) {
+              save(review.verdict, review.reason, noteDraft);
+            }
+          }}
+        />
+      )}
+    </div>
+  );
 }
 
 export interface SectionRatingPanelProps {
@@ -105,6 +277,8 @@ interface LaneEventsPanelProps {
   lyricValidation?: LyricValidationPanelProps | undefined;
   /** supplied only for the Human Sections panel */
   sectionRating?: SectionRatingPanelProps | undefined;
+  /** v3.7 item 1 — supplied only when `laneId` is in REVIEWABLE_LANE_IDS */
+  blockReview?: BlockReviewPanelProps | undefined;
 }
 
 type AxisPair = { energy: number | null; tension: number | null };
@@ -201,6 +375,7 @@ export function LaneEventsPanel({
   blockEnergy,
   lyricValidation,
   sectionRating: sectionRatingProp,
+  blockReview,
 }: LaneEventsPanelProps): React.JSX.Element {
   const activeIndex = activeBlockIndex(blocks, currentTime);
   const activeCardRef = useRef<HTMLButtonElement | null>(null);
@@ -279,6 +454,20 @@ export function LaneEventsPanel({
     return !!r && r.energy != null && r.tension != null;
   }).length;
 
+  // v3.7 item 1 — reviewed/stale coverage counts for the panel header. A
+  // stale review still counts toward "reviewed" here (it IS a verdict the
+  // operator recorded, just against a block this run no longer emits) — it
+  // is the scorer (experiments/truth_common/block_reviews.py) that excludes
+  // it from the scored count, never this header.
+  const reviewedCount = blockReview
+    ? blocks.filter((b) =>
+        blockReview.reviewsByKey.has(reviewKey(laneId, Number(b.start_s.toFixed(3)))),
+      ).length
+    : 0;
+  const staleCount = blockReview
+    ? [...blockReview.reviewsByKey.values()].filter((r) => r.stale).length
+    : 0;
+
   const doSave = useCallback(async () => {
     if (rating) {
       setSaveState("saving");
@@ -354,6 +543,15 @@ export function LaneEventsPanel({
               data-testid="block-energy-count"
             >
               {ratedCount} / {blocks.length} blocks rated
+            </span>
+          )}
+          {blockReview && (
+            <span
+              className="lane-events__rated"
+              data-testid="block-review-count"
+            >
+              {reviewedCount} / {blocks.length} reviewed
+              {staleCount > 0 ? ` (${staleCount} stale)` : ""}
             </span>
           )}
         </>
@@ -464,6 +662,16 @@ export function LaneEventsPanel({
                         onPick={setAxis}
                       />
                     </div>
+                  )}
+                  {blockReview && (
+                    <VerdictControl
+                      laneId={laneId}
+                      start={block.start_s}
+                      review={blockReview.reviewsByKey.get(
+                        reviewKey(laneId, Number(block.start_s.toFixed(3))),
+                      )}
+                      onSave={blockReview.onSave}
+                    />
                   )}
                 </div>
               </li>

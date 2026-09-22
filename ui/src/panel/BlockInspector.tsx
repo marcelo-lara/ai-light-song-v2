@@ -5,7 +5,10 @@
 
 import { useState } from "react";
 
+import type { BlockReview, BlockReviewMatched } from "../data/types";
+
 import { blockFields, type BlockSelection } from "./blockFields";
+import { VerdictControl } from "./LaneEventsPanel";
 
 interface BlockInspectorProps {
   selection: BlockSelection;
@@ -20,6 +23,13 @@ interface BlockInspectorProps {
    * unsaved draft in the segment editor instead of the hint editor.
    */
   onCreateSection: (selection: BlockSelection) => void;
+  /** v3.7 item 1 — supplied only when `selection.laneId` is in REVIEWABLE_LANE_IDS */
+  blockReview?:
+    | {
+        review: BlockReviewMatched | undefined;
+        onSave: (review: BlockReview) => void;
+      }
+    | undefined;
 }
 
 /** Lanes whose blocks are section spans — promoted to a human *section*. */
@@ -33,6 +43,7 @@ export function BlockInspector({
   selection,
   onCreateHint,
   onCreateSection,
+  blockReview,
 }: BlockInspectorProps): React.JSX.Element {
   const [showRaw, setShowRaw] = useState(false);
   const fields = blockFields(selection.laneId, selection);
@@ -41,6 +52,15 @@ export function BlockInspector({
   return (
     <div className="block-inspector">
       <h3 className="block-inspector__title">{selection.label}</h3>
+
+      {blockReview && (
+        <VerdictControl
+          laneId={selection.laneId}
+          start={selection.start_s}
+          review={blockReview.review}
+          onSave={blockReview.onSave}
+        />
+      )}
 
       <button
         type="button"

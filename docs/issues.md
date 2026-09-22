@@ -15,6 +15,26 @@ Current focus song: `_test_song`
 
 ## Open queue
 
+### Visual-regression baseline mismatch — height off by ~78px on most specs, environment-side
+
+- **Status:** `pending` — found running `docs/reference/ui-regression.md` §6
+  during v3.7 item 2, confirmed pre-existing (reproduces identically at the
+  v3.7 item-1-only commit, before any UI change this release made).
+- **Problem:** 36 of 40 Playwright specs fail with a captured-image height
+  mismatch against the committed baseline (e.g. `timeline-zoom-min.png`:
+  expected 1280×1142, received 1280×1220 — a consistent ~78px taller capture),
+  spanning specs unrelated to any recent feature (fft-bands-stems, drums-crash,
+  header-readout, lane-collapsed, …). Consistent with the pinned Playwright
+  container (`mcr.microsoft.com/playwright:v1.56.0-noble`) rendering fonts or
+  layout slightly differently than whatever machine captured the current
+  `__screenshots__` baselines, not a real UI regression.
+- **Success condition:** either the baselines are recaptured in the pinned
+  container and committed, or the root cause (font substitution, DPR, viewport)
+  is found and the guide's determinism section is amended so a recapture is not
+  needed. Until then, a `pending`/`failed` visual suite must not be read as a
+  UI defect without first checking whether it reproduces at a commit before
+  the change under test.
+
 ### Waveform/playhead drift — up to 600ms, root cause not yet located
 
 - **Status:** `pending` — reported by the operator as "the waveform is not

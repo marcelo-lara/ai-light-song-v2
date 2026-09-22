@@ -10,6 +10,7 @@
 // individual adapters are exported for unit tests against artifact fixtures.
 
 import type {
+  BlockReviewsFile,
   EventTimeline,
   HumanHintsFile,
   HumanSegmentsFile,
@@ -18,6 +19,7 @@ import type {
   SectionRow,
   SegmentationSection,
 } from "../data/types";
+import { REVIEWABLE_LANE_IDS, matchBlockReviews } from "../data/blockReviewMatch";
 import type {
   CharacterFile,
   MoisesLyricsFile,
@@ -63,6 +65,14 @@ export interface SparseBlock {
   summary: string;
   /** original artifact row — surfaced by the inspector's raw disclosure */
   raw: unknown;
+  /**
+   * v3.7 item 1 — set only when a `reference/human/block_reviews.json` row
+   * matches this block's `(lane_id, start)` within tolerance (never a stale
+   * one — a stale review matches no current block, so it never tints one).
+   * `tintId` is overridden to the matching `blockReview*` id at the same
+   * time, by `applyBlockReviewTint` below.
+   */
+  reviewVerdict?: "correct" | "wrong" | "misplaced";
 }
 
 // -- formatting (ported from the previous app's src/lib/utils.js) ------------------------
@@ -891,6 +901,9 @@ export interface LaneContentSources {
   segmentSeeds?: HumanSegmentsSeedFile | null;
   whisperxVad?: WhisperxVadFile | null;
   gestures?: EventTimeline | null;
+  /** v3.7 item 1 — reference/human/block_reviews.json, unfiltered; tinting is
+   *  applied per lane inside `buildLaneBlocks`. */
+  blockReviews?: BlockReviewsFile | null;
 }
 
 /** the sparse (block) lane ids handled by this module, in registry order */
@@ -918,7 +931,51 @@ export const SPARSE_LANE_IDS = [
 
 export type SparseLaneId = (typeof SPARSE_LANE_IDS)[number];
 
+/**
+ * v3.7 item 1 — overrides a reviewed block's `tintId` to a fixed
+ * green/red/amber verdict colour, so coverage reads on the timeline canvas
+ * without opening the inspector. A review whose `start` matches no block in
+ * `blocks` (a stale review — see `../data/blockReviewMatch.ts`) tints
+ * nothing: there is no block for it to attach to, and it is never
+ * re-attached to the nearest one.
+ */
+function applyBlockReviewTint(
+  blocks: SparseBlock[],
+  laneId: string,
+  file: BlockReviewsFile | null | undefined,
+): SparseBlock[] {
+  if (!file?.reviews.length || !REVIEWABLE_LANE_IDS.has(laneId)) return blocks;
+  const laneReviews = file.reviews.filter((r) => r.lane_id === laneId);
+  if (!laneReviews.length) return blocks;
+  const matched = matchBlockReviews(
+    laneReviews,
+    new Map([[laneId, blocks.map((b) => b.start_s)]]),
+  );
+  const byStart = new Map(
+    matched.filter((r) => !r.stale).map((r) => [Number(r.start.toFixed(3)), r]),
+  );
+  if (!byStart.size) return blocks;
+  return blocks.map((b) => {
+    const review = byStart.get(Number(b.start_s.toFixed(3)));
+    if (!review) return b;
+    const tintId =
+      review.verdict === "correct"
+        ? "blockReviewCorrect"
+        : review.verdict === "wrong"
+          ? "blockReviewWrong"
+          : "blockReviewMisplaced";
+    return { ...b, tintId, reviewVerdict: review.verdict };
+  });
+}
+
 export function buildLaneBlocks(
+  laneId: string,
+  s: LaneContentSources,
+): SparseBlock[] {
+  return applyBlockReviewTint(buildLaneBlocksRaw(laneId, s), laneId, s.blockReviews);
+}
+
+function buildLaneBlocksRaw(
   laneId: string,
   s: LaneContentSources,
 ): SparseBlock[] {

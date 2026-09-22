@@ -118,6 +118,15 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   vocalTranscriptionBaseline: [28, 20, 40],
   vocalTranscriptionModel: [32, 80, 46],
   vocalTranscriptionStructure: [32, 30, 34],
+  // v3.7 item 1 — a block review's verdict, applied as a tint OVERRIDE on top
+  // of whatever a reviewed block's own lane tint would be, so coverage reads
+  // at a glance without opening the inspector. A fixed green/red/amber
+  // vocabulary shared across every reviewable lane (docs/product-
+  // refinement-v3.7.md item 1) — deliberately NOT reused from any producer
+  // hue above, since a verdict is a judgement ON a block, not a lane identity.
+  blockReviewCorrect: [150, 60, 40], // green — real and correctly described
+  blockReviewWrong: [0, 72, 46], // red — a phantom, nothing is here
+  blockReviewMisplaced: [43, 88, 46], // amber — real, but this block gets it wrong
 };
 
 /** fixed alpha ramp shared by every lane */

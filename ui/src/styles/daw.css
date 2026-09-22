@@ -759,6 +759,89 @@ input[type="range"]:focus-visible {
   background: var(--color-accent-800);
   color: var(--color-accent-100);
 }
+/* ---- Block reviews (v3.7 item 1) — same segmented-button family as
+ * .seg-rating, three states instead of five, plus a reason sub-picker and a
+ * stale badge. */
+.block-verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-1) var(--space-1);
+}
+.block-verdict__buttons,
+.block-verdict__reasons {
+  display: flex;
+  border: 1px solid var(--color-neutral-800);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.block-verdict__btn,
+.block-verdict__reason-btn {
+  height: 20px;
+  padding: 0 var(--space-2);
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-left: 1px solid var(--color-neutral-800);
+  background: transparent;
+  color: var(--color-neutral-400);
+  font: 500 9px/1 var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.block-verdict__btn:first-child,
+.block-verdict__reason-btn:first-child {
+  border-left: 0;
+}
+.block-verdict__btn:hover,
+.block-verdict__reason-btn:hover {
+  color: var(--color-accent-300);
+  background: var(--color-accent-900);
+}
+.block-verdict__btn[aria-pressed="true"] {
+  background: var(--color-accent-800);
+  color: var(--color-accent-100);
+}
+.block-verdict__btn[data-testid="block-verdict-correct"][aria-pressed="true"] {
+  background: hsla(150, 60%, 40%, 0.55);
+  color: rgba(233, 233, 237, 0.96);
+}
+.block-verdict__btn[data-testid="block-verdict-wrong"][aria-pressed="true"] {
+  background: hsla(0, 72%, 46%, 0.55);
+  color: rgba(233, 233, 237, 0.96);
+}
+.block-verdict__btn[data-testid="block-verdict-misplaced"][aria-pressed="true"] {
+  background: hsla(43, 88%, 46%, 0.55);
+  color: rgba(233, 233, 237, 0.96);
+}
+.block-verdict__stale {
+  font: 700 8px/1 var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: hsla(0, 72%, 62%, 1);
+  border: 1px solid hsla(0, 72%, 46%, 0.6);
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+}
+.block-verdict__reason-label {
+  font: 500 9px/1 var(--font-body);
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.block-verdict__note {
+  flex: 1 1 120px;
+  min-width: 80px;
+  height: 20px;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-neutral-800);
+  border-radius: var(--radius-sm);
+  color: var(--color-neutral-200);
+  font: 400 10px/1 var(--font-body);
+  padding: 0 var(--space-2);
+}
 /* ---- Moises lyric-token human validation (v3.4 item 5) ------------------ */
 
 /* A ✔ toggle in the top-right of each word-token card. Sibling of the seek

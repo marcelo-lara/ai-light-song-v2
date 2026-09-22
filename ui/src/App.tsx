@@ -3,6 +3,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { artifactPaths, discoverSongs, useSong } from "./data";
 import type {
   BlockEnergyFile,
+  BlockReview,
+  BlockReviewMatched,
+  BlockReviewsFile,
   HumanHintsFile,
   HumanSegmentSeed,
   HumanSegmentsFile,
@@ -23,6 +26,13 @@ import {
   buildLyricValidationsPayload,
   saveLyricValidations,
 } from "./data/saveLyricValidations";
+import { buildBlockReviewsPayload, saveBlockReviews } from "./data/saveBlockReviews";
+import {
+  REVIEWABLE_LANE_IDS,
+  matchBlockReviews,
+  indexBlockReviews,
+  reviewKey,
+} from "./data/blockReviewMatch";
 import { draftToHint, hintToDraft } from "./panel/hintDraft";
 import { draftToSegment, segmentToDraft } from "./panel/segmentDraft";
 import {
@@ -139,6 +149,10 @@ const TIMELINE_KEYS = [
   // v3.4 item 5 — operator's per-token timing validations, overlaid on the
   // Moises Lyrics lane by token id (reference/human, writable, per-click)
   "lyricValidations",
+  // v3.7 item 1 — operator's three-state verdict on a claim-bearing lane's
+  // emitted block, joined by (lane_id, start) (reference/human, writable,
+  // per-click).
+  "blockReviews",
   // who-is-playing state changes from the published per-stem RMS
   // (top-level arrangement_state.json)
   "arrangementState",
@@ -273,6 +287,13 @@ export function App(): React.JSX.Element {
     useState<LyricValidationsFile | null>(null);
   // Guards a double-fire from one ✔ click (D5.1) at the write layer too.
   const savingLyricRef = useRef(false);
+  // v3.7 item 1: the server-normalised block_reviews.json returned by a
+  // per-click verdict, applied in place (same reasoning as blockEnergyOverride
+  // / lyricValidationsOverride above).
+  const [blockReviewsOverride, setBlockReviewsOverride] =
+    useState<BlockReviewsFile | null>(null);
+  // Guards a double-fire from one verdict click at the write layer too.
+  const savingReviewRef = useRef(false);
   // A pending "open the hint editor on a pre-filled draft" request — from a
   // double-click on the Human Hints lane (item 8) or the block inspector's
   // "Create human hint" action (item 9). `nonce` makes each request distinct so
@@ -391,6 +412,10 @@ export function App(): React.JSX.Element {
     () => new Set(lyricValidationsFile?.validated_ids ?? []),
     [lyricValidationsFile],
   );
+  // v3.7 item 1: the server-normalised block_reviews.json returned by a
+  // per-click verdict, applied in place (same reasoning as blockEnergy /
+  // lyricValidations above).
+  const blockReviewsFile = blockReviewsOverride ?? artifacts.blockReviews.data;
 
   // item 9: block lists for every sparse lane, rebuilt when a source changes.
   const laneContentSources = useMemo<LaneContentSources>(
@@ -415,6 +440,7 @@ export function App(): React.JSX.Element {
       vocalTranscription: artifacts.vocalTranscription.data,
       sections,
       sectionSegmentation,
+      blockReviews: blockReviewsFile,
     }),
     [
       humanHintsFile,
@@ -436,6 +462,7 @@ export function App(): React.JSX.Element {
       artifacts.vocalTranscription.data,
       sections,
       sectionSegmentation,
+      blockReviewsFile,
     ],
   );
 
@@ -449,6 +476,7 @@ export function App(): React.JSX.Element {
     setSectionsOverride(null);
     setBlockEnergyOverride(null);
     setLyricValidationsOverride(null);
+    setBlockReviewsOverride(null);
     setHintSeed(null);
     setSectionSeed(null);
     setEventsLaneId(null);
@@ -796,6 +824,52 @@ export function App(): React.JSX.Element {
       }
     },
     [song, lyricValidationsFile],
+  );
+
+  // v3.7 item 1: a verdict click persists immediately — no Save button
+  // (mirrors `handleToggleLyricValidation`'s per-click pattern, D5.1). Sends
+  // the FULL reviews array (merging the new/changed one into whatever is
+  // already on disk); the handler replaces the file. Applies the
+  // server-normalised result in place (no full reload). `savingReviewRef`
+  // drops a second verdict click that lands while a write is still in flight.
+  const handleSaveBlockReview = useCallback(
+    async (review: BlockReview) => {
+      if (!song || savingReviewRef.current) return;
+      savingReviewRef.current = true;
+      try {
+        const current = (blockReviewsFile?.reviews ?? []).filter(
+          (r) => !(r.lane_id === review.lane_id && r.start === review.start),
+        );
+        const payload = buildBlockReviewsPayload(
+          blockReviewsFile?.song_name || song,
+          [...current, review],
+        );
+        const written = await saveBlockReviews(song, payload);
+        setBlockReviewsOverride(written);
+      } finally {
+        savingReviewRef.current = false;
+      }
+    },
+    [song, blockReviewsFile],
+  );
+
+  // v3.7 item 1 — every current review for one lane, matched against that
+  // lane's CURRENT blocks and indexed by (lane_id, start) for the verdict
+  // control's O(1) per-block lookup. `undefined` for a lane not in
+  // REVIEWABLE_LANE_IDS or with no reviews at all.
+  const blockReviewIndexFor = useCallback(
+    (laneId: string) => {
+      if (!blockReviewsFile || !REVIEWABLE_LANE_IDS.has(laneId)) return null;
+      const laneReviews = blockReviewsFile.reviews.filter((r) => r.lane_id === laneId);
+      if (!laneReviews.length) return new Map<string, BlockReviewMatched>();
+      const blocks = buildLaneBlocks(laneId, laneContentSources);
+      const matched = matchBlockReviews(
+        laneReviews,
+        new Map([[laneId, blocks.map((b) => b.start_s)]]),
+      );
+      return indexBlockReviews(matched);
+    },
+    [blockReviewsFile, laneContentSources],
   );
 
   // item 10: persist a humanHints block's new start/end after a timeline drag.
@@ -1482,6 +1556,16 @@ export function App(): React.JSX.Element {
               selection={selection}
               onCreateHint={handleCreateHintFromSelection}
               onCreateSection={handleCreateSectionFromSelection}
+              blockReview={
+                REVIEWABLE_LANE_IDS.has(selection.laneId)
+                  ? {
+                      review: blockReviewIndexFor(selection.laneId)?.get(
+                        reviewKey(selection.laneId, Number(selection.start_s.toFixed(3))),
+                      ),
+                      onSave: handleSaveBlockReview,
+                    }
+                  : undefined
+              }
             />
           </RightPanel>
         )}
@@ -1514,6 +1598,14 @@ export function App(): React.JSX.Element {
                 ? {
                     validatedIds: validatedLyricIds,
                     onToggle: handleToggleLyricValidation,
+                  }
+                : undefined
+            }
+            blockReview={
+              REVIEWABLE_LANE_IDS.has(eventsPanel.laneId)
+                ? {
+                    reviewsByKey: blockReviewIndexFor(eventsPanel.laneId) ?? new Map(),
+                    onSave: handleSaveBlockReview,
                   }
                 : undefined
             }

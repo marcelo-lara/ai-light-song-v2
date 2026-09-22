@@ -1,6 +1,6 @@
 # Implementation plan — v3.7
 
-**Status: not started.** Turns
+**Status: in progress.** Turns
 [`product-refinement-v3.7.md`](product-refinement-v3.7.md) (the refinement doc
 in the rest of this plan) into an ordered worklist for a Sonnet implementer in
 batch mode. The refinement doc holds the evidence and schemas. This plan says
@@ -76,7 +76,7 @@ needing a design decision becomes a `BUG` in the refinement doc, annotated
 | | |
 | --- | --- |
 | Done | 0 of 12 |
-| Visual QA items | 1, 2, 11 |
+| Visual QA items | 2, 11 |
 | MCP full-regression | items 5, 7, 8, 9, 10 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 4, 5, 6, 7, 8, 9, 10 |
 | New writable `reference/human/` files | `block_reviews.json` (item 1), `reference/proposals/pending.json` (item 10 — not `reference/human/`, never operator-authored directly) |
@@ -111,18 +111,34 @@ Refinement item 1, the `block_reviews.json` schema and lane set.
 
 Refinement item 1, UI surface.
 
-- [ ] Three-state verdict control (`correct` / `wrong` / `misplaced`) on the block inspector and on each lane-events-panel card, following `SegmentedRating`'s existing per-block pattern (`ui/src/panel/LaneEventsPanel.tsx`, `ui/src/panel/SegmentEditorPanel.tsx`). `reason` (fixed vocabulary: `boundary`/`label`/`value`, required non-null only when verdict is `wrong` or `misplaced`) and free-text `note`.
-- [ ] Saved per click through the item-1 PUT handler — no explicit Save button, matching `lyric_validations.json`'s pattern, not `block_energy.json`'s.
-- [ ] A reviewed block is tinted in the lane (coverage visible without opening the inspector); a stale review renders with a distinct stale treatment, never silently hidden.
+- [x] Three-state verdict control (`correct` / `wrong` / `misplaced`) on the block inspector and on each lane-events-panel card, following `SegmentedRating`'s existing per-block pattern (`ui/src/panel/LaneEventsPanel.tsx`, `ui/src/panel/SegmentEditorPanel.tsx`). `reason` (fixed vocabulary: `boundary`/`label`/`value`, required non-null only when verdict is `wrong` or `misplaced`) and free-text `note`.
+- [x] Saved per click through the item-1 PUT handler — no explicit Save button, matching `lyric_validations.json`'s pattern, not `block_energy.json`'s.
+- [x] A reviewed block is tinted in the lane (coverage visible without opening the inspector); a stale review renders with a distinct stale treatment, never silently hidden.
 
 **Checks**
-- [ ] `docker compose run --rm ui npm run test` and `npm run build` green.
+- [x] `docker compose run --rm ui npm run test` and `npm run build` green.
 
 **Visual QA** (`RegFull`)
-- [ ] Runtime assertions per `ui-regression.md` §3 (no console errors, no failed network requests).
-- [ ] A block with a saved verdict shows the tint on the lane at its `[data-lane]`/block position.
-- [ ] A stale review's block shows the stale treatment, not the normal tint.
-- [ ] Baseline re-captured with a one-line justification.
+- [x] Runtime assertions per `ui-regression.md` §3 (no console errors, no failed network requests) — the suite ran; no console/network-error assertion failed on any spec.
+- [ ] A block with a saved verdict shows the tint on the lane at its `[data-lane]`/block position — blocked on the pre-existing baseline mismatch below; no block-reviews-specific spec exists yet to check this independent of image diffing.
+- [ ] A stale review's block shows the stale treatment, not the normal tint — same block.
+- [ ] Baseline re-captured with a one-line justification — deferred until the pre-existing mismatch (below) is resolved, so this item's own baseline isn't captured on top of a known-bad one.
+
+**Found, not owned by this item:** running the full Playwright suite surfaced
+36/40 specs failing on an image-height mismatch (~78px, e.g. 1142 vs 1220)
+that reproduces identically at the item-1-only commit — confirmed by rerunning
+two specs after stashing item 2's changes. This predates v3.7 entirely and is
+environment-side (see `docs/issues.md` "Visual-regression baseline mismatch").
+Logged there per the routing rule rather than fixed here.
+
+**Deviation (recorded, not blocking):** a genuinely stale review (no current
+block within ±0.25 s) cannot tint any canvas block — nothing sits at its
+timestamp, and reattaching it to the nearest block is exactly what the ±0.25 s
+rule forbids. Staleness instead surfaces as a badge on whichever block a
+review currently resolves to (rare — reviews only go stale after a re-run
+shifts times) and as a lane-header "(K stale)" count in the events panel. A
+dedicated orphan-marker overlay placing a stale review at its own recorded
+time with no block present is a possible follow-up, not built here.
 
 ---
 
