@@ -47,6 +47,20 @@ def moises_lyrics_path(song: str) -> Path:
     return reference_path(song, "moises", "lyrics.json")
 
 
+def block_reviews_path(song: str) -> Path:
+    """v3.7 item 1 — the operator's per-block verdict file
+    (`docs/product-refinement-v3.7.md` item 1). The only `reference/human/`
+    tier `block_reviews.py` reads."""
+    return reference_path(song, "human", "block_reviews.json")
+
+
+def gestures_timeline_path(song: str) -> Path:
+    """`artifacts/gestures/song_event_timeline.json` — the pre-trim gesture
+    events artifact (not `reference/`), used only to read the CURRENT run's
+    block starts for the `gestures` lane's staleness match."""
+    return ANALYSIS_ROOT / song / "artifacts" / "gestures" / "song_event_timeline.json"
+
+
 def proposals_path(song: str, filename: str) -> Path:
     """`reference/proposals/{filename}` — an experiment's own candidate
     output. Read-only here: used by `adapters.py` to score a sibling

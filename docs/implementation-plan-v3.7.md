@@ -75,7 +75,7 @@ needing a design decision becomes a `BUG` in the refinement doc, annotated
 
 | | |
 | --- | --- |
-| Done | 0 of 12 |
+| Done | 3 of 12 |
 | Visual QA items | 2, 11 |
 | MCP full-regression | items 5, 7, 8, 9, 10 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 4, 5, 6, 7, 8, 9, 10 |
@@ -146,12 +146,12 @@ time with no block present is a possible follow-up, not built here.
 
 Refinement item 1, the measurement side.
 
-- [ ] New family in `experiments/truth_common/` reading `block_reviews.json` (the only `reference/human/` tier this module reads) and emitting a per-lane, per-song table: block count, reviewed count, `correct`/`wrong`/`misplaced` split, `wrong` reported separately from `misplaced`. Precision = `correct / reviewed`.
-- [ ] A stale review is excluded from the scored count (it does not describe any block the current run emitted).
+- [x] New family in `experiments/truth_common/` reading `block_reviews.json` (the only `reference/human/` tier this module reads) and emitting a per-lane, per-song table: block count, reviewed count, `correct`/`wrong`/`misplaced` split, `wrong` reported separately from `misplaced`. Precision = `correct / reviewed`.
+- [x] A stale review is excluded from the scored count (it does not describe any block the current run emitted).
 
 **Checks**
-- [ ] `docker compose run --rm test` green.
-- [ ] On the item-1 fixture (or an equivalent scratch fixture), the scorer's precision figure matches a hand count of the fixture rows.
+- [x] `docker compose run --rm test` green (`experiments/truth_common` — 36 passed).
+- [x] On the item-1 fixture, the scorer's precision figure matches a hand count of the fixture rows (`test_block_reviews.py` asserts 1 correct/1 wrong/1 misplaced/1 stale → reviewed=3, precision=1/3).
 
 ---
 
