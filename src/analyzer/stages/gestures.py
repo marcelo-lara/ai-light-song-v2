@@ -34,8 +34,13 @@ gold set (CLAUDE.md). Ported from `experiments/gestures/primitives.py` and
 
 This stage reads ONLY phase-1/2 artifacts -- `fft_bands.json`,
 `rms_loudness.json`, `drum_events.json`, the canonical timing grid
-(`essentia/beats.json`) and `section_segmentation/sections.json` -- and never
-opens the audio (phase 3 "relate" never touches audio).
+(`essentia/beats.json`) -- plus the PUBLISHED top-level `sections.json`
+(v3.7 item 6; previously `artifacts/section_segmentation/sections.json`,
+allin1's raw, coarser boundaries) -- and never opens the audio (phase 3
+"relate" never touches audio). Reading the published table means this stage
+now runs after `build-ui-data` in the full pipeline (moved there in v3.7 item
+6 for exactly this reason — nothing downstream of `build-gestures` before
+that point reads `song_event_timeline.json`, so the reorder is free).
 
 Two kinds of named, timed thing are produced, both flattened into one event
 list for `song_event_timeline.json`:
@@ -52,12 +57,12 @@ list for `song_event_timeline.json`:
    absent, never guessed** (no silent fallbacks — never guess to keep a run green). A drop is never detected or
    named directly -- this stage says "a build of this shape happens here", not
    "this is the drop" (a drop is derived from a named section pair, never detected).
-2. **Section-pair transitions**, one per boundary in
-   `section_segmentation/sections.json` -- that stage already merges
-   consecutive equal-labelled runs, so every remaining boundary is a change in
-   `function` (or, for two same-labelled non-adjacent runs, `same_label_as`);
-   the transition is named `"<from> -> <to>"` and carries that stage's own
-   boundary `confidence`, never a re-detected instant of its own.
+2. **Section-pair transitions**, one per boundary in the published
+   `sections.json` -- consecutive equal-labelled runs are already merged
+   upstream, so every remaining boundary is a change in `function` (or, for
+   two same-labelled non-adjacent runs, `same_label_as`); the transition is
+   named `"<from> -> <to>"` and carries that row's own boundary `confidence`,
+   never a re-detected instant of its own.
 """
 from __future__ import annotations
 
@@ -477,14 +482,16 @@ def assemble_gestures(
 
 
 def detect_section_transitions(sections: list[dict]) -> list[dict]:
-    """One event per boundary in `section_segmentation/sections.json`.
+    """One event per boundary in the published `sections.json` (`sections`
+    here is that table's own `sections` list -- v3.7 item 6, previously the
+    raw `artifacts/section_segmentation/sections.json`).
 
-    That stage already merges consecutive equal-labelled phrase runs
+    Consecutive equal-labelled phrase runs are already merged upstream
     (`merge_equal_labelled_runs`), so every remaining boundary is already a
     change in `function` -- this never re-detects the boundary instant, it
-    only names it. The section's own boundary `confidence`
-    (`segmentation.py::_boundary_confidence`) carries over unchanged; this
-    stage adds no independent opinion about whether the boundary is real."""
+    only names it. The section's own boundary `confidence` carries over
+    unchanged; this stage adds no independent opinion about whether the
+    boundary is real."""
     transitions = []
     for i in range(1, len(sections)):
         prev_section = sections[i - 1]
@@ -544,7 +551,9 @@ def build_gestures(
     """Detect named sound-design primitives, assemble them into gesture
     phases anchored on detected impacts, add one event per section-pair
     transition, and write the merged, flat event list to
-    `song_event_timeline.json`. Reads only phase-1/2 artifacts, never audio."""
+    `song_event_timeline.json`. Reads only phase-1/2 artifacts plus the
+    published `sections.json`, never audio. `sections_payload` must be the
+    PUBLISHED table (v3.7 item 6) -- see module docstring."""
     frames = fft_bands.get("frames", [])
     fft_times = np.array([f["time"] for f in frames]) if frames else np.array([])
     fft_levels = np.array([f["levels"] for f in frames]) if frames else np.zeros((0, 7))
@@ -642,7 +651,7 @@ def build_gestures(
             "rms_loudness_file": str(paths.artifact("essentia", "rms_loudness.json")),
             "drum_events_file": str(paths.artifact("symbolic_transcription", "drum_events.json")),
             "beats_file": str(paths.artifact("essentia", "beats.json")),
-            "sections_file": str(paths.artifact("section_segmentation", "sections.json")),
+            "sections_file": str(paths.sections_output_path),
         },
         "gesture_count": len(gestures),
     }
@@ -660,8 +669,9 @@ def build_gestures(
     write_json(paths.artifact("gestures", "song_event_timeline.json"), full_payload)
 
     # v3.1 item 2 — attribution header. Every event field is the gestures stage's
-    # own output except `section_id`, which it copies from the allin1
-    # segmentation to locate each event.
+    # own output except `section_id`, which it copies from the PUBLISHED
+    # sections.json to locate each event (v3.7 item 6 — was allin1's raw
+    # segmentation).
     #
     # v3.6 item 8 — `section_name` (duplicates the section_id join),
     # `summary` / `evidence_summary` / `provenance` (unread) and
@@ -678,7 +688,7 @@ def build_gestures(
             "end_time": "gestures",
             "confidence": "gestures",
             "intensity": "gestures",
-            "section_id": "allin1",
+            "section_id": "sections",
             "gesture_id": "gestures",
         },
         {key for event in trimmed_events for key in event},

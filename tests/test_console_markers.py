@@ -416,7 +416,17 @@ class ConsoleMarkerTests(unittest.TestCase):
                 mock_segment_sections = stack.enter_context(patch("analyzer.pipeline.segment_sections", return_value=sections_payload))
                 stack.enter_context(patch("analyzer.pipeline.extract_drum_events", return_value=drum_events))
                 stack.enter_context(patch("analyzer.pipeline.generate_section_hints", return_value=hints_payload))
-                stack.enter_context(patch("analyzer.pipeline.build_ui_data", return_value=ui_outputs))
+
+                # v3.7 item 6 — build-gestures / generate-section-hints now
+                # run after build-ui-data and read the PUBLISHED
+                # sections.json back off disk (never allin1's raw artifact),
+                # so the mocked build_ui_data must actually write it.
+                def _fake_build_ui_data(paths_arg):
+                    paths_arg.sections_output_path.parent.mkdir(parents=True, exist_ok=True)
+                    paths_arg.sections_output_path.write_text(json.dumps(sections_payload), encoding="utf-8")
+                    return ui_outputs
+
+                stack.enter_context(patch("analyzer.pipeline.build_ui_data", side_effect=_fake_build_ui_data))
                 stack.enter_context(patch("analyzer.pipeline.detect_arrangement_state", return_value={"blocks": []}))
                 stack.enter_context(patch("analyzer.pipeline.publish_arrangement_state", return_value="arrangement_state.json"))
                 stack.enter_context(patch("analyzer.pipeline.contest_section_function", return_value={"sections": []}))

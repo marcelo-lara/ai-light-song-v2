@@ -75,7 +75,7 @@ needing a design decision becomes a `BUG` in the refinement doc, annotated
 
 | | |
 | --- | --- |
-| Done | 5 of 12 |
+| Done | 6 of 12 |
 | Visual QA items | 2, 11 |
 | MCP full-regression | items 5, 7, 8, 9, 10 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 4, 5, 6, 7, 8, 9, 10 |
@@ -210,13 +210,27 @@ benefit was the wrong trade.
 
 Refinement item 3, the attribution fix.
 
-- [ ] `src/analyzer/stages/hints.py` and `src/analyzer/stages/gestures.py`: attribute `section_id` by timestamp against the **published** `sections.json`, never allin1's `artifacts/section_segmentation/sections.json`.
-- [ ] `field_sources` entries updated to name the published table as the source of `section_id`.
+- [x] `src/analyzer/stages/hints.py` and `src/analyzer/stages/gestures.py`: attribute `section_id` by timestamp against the **published** `sections.json`, never allin1's `artifacts/section_segmentation/sections.json`.
+- [x] `field_sources` entries updated to name the published table as the source of `section_id` (new `Producer.SECTIONS = "sections"`).
+
+**D6.1 (resolved).** Fixing attribution required a **pipeline reorder**:
+`generate-section-hints` and `build-gestures` previously ran *before*
+`build-ui-data` publishes `sections.json`, so they could only ever read
+allin1's raw, coarser artifact. Both now run **after** `build-ui-data` in the
+full pipeline and the single-stage CLI gate. This also means `gestures.py`'s
+section-pair **transitions** now key off the finer published boundaries, not
+allin1's coarser ones — a broader behavioral change than "just retag
+`section_id`," but the only self-consistent reading (a transition is one event
+per boundary in the sections table). Verified nothing between the old and new
+pipeline position reads `song_event_timeline.json` or `hints.json`. Adopted as
+the best recommendation and continued rather than raised as blocking, since
+any narrower fix would have left the attribution still wrong for exactly the
+songs where the published table differs from allin1's.
 
 **Checks**
-- [ ] `docker compose run --rm test` green.
-- [ ] On *What a Feeling*, the `Drums cut` hint reports `section-007` (the published pre-chorus), not `section-003` (allin1's).
-- [ ] `--stage generate-section-hints` / `--stage gestures` re-run is byte-identical.
+- [x] `docker compose run --rm test` green (159/160 — the 1 failure is the pre-existing `test_run_queue` one from Status).
+- [x] On *What a Feeling*, the `Drums cut` hint reports `section-007` (the published pre-chorus), not `section-003` (allin1's). Verified directly against the generated `hints.json`.
+- [x] `--stage generate-section-hints` / `--stage gestures` re-run is byte-identical (md5 match).
 
 ---
 

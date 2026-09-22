@@ -186,7 +186,9 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         _run_stage(paths.song_name, "phase-1", stage_name, extract_drum_events, paths, stems, timing, sections)
         return 0
     if stage_name == "generate-section-hints":
-        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        # v3.7 item 6 — attributes section_id against the PUBLISHED
+        # sections.json, never allin1's raw artifact segmentation.
+        sections = _required_output_payload(paths, stage_name, paths.sections_output_path)
         _run_stage(paths.song_name, "phase-1", stage_name, generate_section_hints, paths, sections)
         return 0
     if stage_name == "build-ui-data":
@@ -237,7 +239,9 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         rms_loudness = _required_artifact_payload(paths, stage_name, "essentia", "rms_loudness.json")
         drum_events = _required_artifact_payload(paths, stage_name, "symbolic_transcription", "drum_events.json")
         timing = _required_artifact_payload(paths, stage_name, "essentia", "beats.json")
-        sections = _required_artifact_payload(paths, stage_name, "section_segmentation", "sections.json")
+        # v3.7 item 6 — attributes section_id against the PUBLISHED
+        # sections.json, never allin1's raw artifact segmentation.
+        sections = _required_output_payload(paths, stage_name, paths.sections_output_path)
         _run_stage(paths.song_name, "phase-1", stage_name, build_gestures, paths, fft_bands, rms_loudness, drum_events, timing, sections)
         return 0
     if stage_name == "build-human-hints-alignment":
@@ -369,6 +373,17 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         drum_events = _run_stage(paths.song_name, "phase-1", "extract-drum-events", extract_drum_events, paths, stems, timing, sections)
         genre_result = _run_stage(paths.song_name, "phase-1", "classify-genre", classify_genre, paths)
         energy = _run_stage(paths.song_name, "phase-1", "derive-energy-layer", derive_energy_layer, paths, timing, energy_features, sections)
+        # build-ui-data now runs before build-gestures / generate-section-hints
+        # (v3.7 item 6 — moved up from after them). Both stages attribute
+        # `section_id` by timestamp against the PUBLISHED sections.json, never
+        # allin1's raw, coarser `artifacts/section_segmentation/sections.json`
+        # (the `sections` var above) — so they need build-ui-data's published
+        # table to exist first. Nothing between the old and new position reads
+        # `song_event_timeline.json` or `hints.json` (section-clues, the first
+        # reader of the timeline, still runs later), so the reorder changes
+        # nothing else.
+        _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
+        published_sections = read_json(paths.sections_output_path)
         event_timeline = _run_stage(
             paths.song_name,
             "phase-1",
@@ -379,14 +394,13 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             loudness["rms_loudness"],
             drum_events,
             timing,
-            sections,
+            published_sections,
         )
-        # These stages write their own top-level files (hints.json; beats.json /
-        # sections.json / song_event_timeline.json). Their return values are no
-        # longer read here — v3.1 item 8 dropped the info.json `outputs` manifest
-        # that used them.
-        _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, sections)
-        _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
+        # These stages write their own top-level files (hints.json;
+        # song_event_timeline.json). Their return values are no longer read
+        # here — v3.1 item 8 dropped the info.json `outputs` manifest that
+        # used them.
+        _run_stage(paths.song_name, "phase-1", "generate-section-hints", generate_section_hints, paths, published_sections)
         # detect-arrangement-state (3.2) reads the top-level loudness.json that
         # build-ui-data has just published — it runs immediately after, never
         # earlier (D4). Run order has never matched id order.

@@ -43,8 +43,12 @@ class Producer(str, Enum):
     RHYTHM_STEM_AUTOCORR = "rhythm_stem_autocorr"
     RHYTHM_VOCAL_ONSETS = "rhythm_vocal_onsets"
     SEED_UNREVIEWED = "seed_unreviewed"
-    # v3.7 item 4 — the nearest-gesture-impact fusion (section_clues.py).
+    # v3.7 item 2/4 — the nearest-gesture-impact fusion (section_clues.py).
     IMPACT_ALIGNMENT = "impact_alignment"
+    # v3.7 item 3/6 — `section_id` attributed by timestamp against the
+    # PUBLISHED sections.json (hints.py, gestures.py), never allin1's raw
+    # artifact segmentation.
+    SECTIONS = "sections"
 
 
 PRODUCERS: frozenset[str] = frozenset(p.value for p in Producer)

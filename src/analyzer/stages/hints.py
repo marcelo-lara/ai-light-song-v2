@@ -22,6 +22,12 @@ HINT_ROW_FIELDS = ("section_id", "title", "text", "start_time", "end_time", "lig
 
 
 def _build_human_hint_rows(paths: SongPaths, sections_payload: dict) -> list[dict]:
+    """`sections_payload` must be the PUBLISHED `sections.json` (v3.7 item 6)
+    — never `artifacts/section_segmentation/sections.json` (allin1's raw,
+    coarser boundaries). The published table is what a reader sees when it
+    looks up `section_id`, so attribution has to match it: a hint inside the
+    human-curated pre-chorus must report that pre-chorus's `section_id`, not
+    whichever coarser allin1 run happened to contain the same timestamp."""
     reference_path = paths.reference("human", "human_hints.json")
     if not reference_path.exists():
         return []
@@ -66,8 +72,11 @@ def generate_section_hints(paths: SongPaths, sections_payload: dict) -> dict[str
     output_path = paths.hints_output_path
     ensure_directory(paths.song_output_dir)
 
+    # v3.7 item 6 — `section_id` is attributed by timestamp against the
+    # published sections.json (source "sections"), never the human-authored
+    # hint text itself; every other field is genuinely human-authored.
     hints_field_sources = validate_field_sources(
-        dict.fromkeys(HINT_ROW_FIELDS, "human"),
+        {**dict.fromkeys(HINT_ROW_FIELDS, "human"), "section_id": "sections"},
         hint_rows[0].keys() if hint_rows else HINT_ROW_FIELDS,
         file="hints.json",
     )

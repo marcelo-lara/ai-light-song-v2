@@ -90,6 +90,15 @@ song's `reference/human/segments.json`. A stage name absent from
 `STAGE_PIPELINE_IDS` is not an error: the run reports success and writes
 nothing, so check the output file's mtime rather than the exit code.
 
+`build-gestures` (5.0) and `generate-section-hints` (6.2) run **after**
+`build-ui-data` (7.2) in the full pipeline (v3.7 item 6 — moved up from their
+id-order position). Both attribute `section_id` by timestamp against the
+published `sections.json`, never allin1's raw, coarser
+`artifacts/section_segmentation/sections.json`, so they need `build-ui-data`'s
+published table to exist first. A single `--stage build-gestures` or
+`--stage generate-section-hints` run gates on the published `sections.json`
+and fails (`AnalysisError`) naming it if `build-ui-data` has not run.
+
 `extract-fft-bands` (1.3) must run before `extract-drum-events` (2.5): the
 crash/hat split reads `essentia/fft_bands.drums.json`. The full pipeline already
 orders them this way; a single `--stage extract-drum-events` run gates on the

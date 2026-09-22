@@ -106,6 +106,14 @@ The honesty rules, as the server enforces them structurally:
 Times are **seconds (float)**; the MCP layer multiplies by 1000. Keep prose
 short — projected strings are either truncated or paid for in full.
 
+**v3.7 item 6.** `hints.json` and `song_event_timeline.json` rows attribute
+`section_id` by *timestamp* against the same published `sections.json` —
+never `artifacts/section_segmentation/sections.json` (allin1's raw,
+coarser-boundary table). Before this fix a hint or gesture event inside a
+human-curated finer boundary (e.g. a pre-chorus split out of a coarser
+allin1 run) could report the wrong, coarser section's id. `field_sources`
+names the attribution producer `"sections"` for this field on both files.
+
 ### `position` — musical addressing, `get_detail` only (v3.7 item 3/5)
 
 Seconds remain the only stored/joined unit everywhere in `src/`. `get_detail`
