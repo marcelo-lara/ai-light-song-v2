@@ -208,6 +208,8 @@ _DETAIL_SNAP_CASES = {
     "window_3s_20ms": dict(start_ms=0, end_ms=3000, interval_ms=20),
     "window_3s_100ms": dict(start_ms=0, end_ms=3000, interval_ms=100),
     "window_over_cap": dict(start_ms=0, end_ms=6000),
+    # v3.7 item 3/5 — the `bars` scope selector.
+    "bars_scope": dict(bars=[3, 4]),
 }
 
 
@@ -359,7 +361,10 @@ def _check_f2_honesty() -> None:
              # v3.6 item 10 — energy/tension/rhythm clue producers + the
              # seed non-producer tier.
              "energy_level", "tension_shape", "rhythm_drum_ioi",
-             "rhythm_stem_autocorr", "rhythm_vocal_onsets", "seed_unreviewed"}
+             "rhythm_stem_autocorr", "rhythm_vocal_onsets", "seed_unreviewed",
+             # v3.7 item 2/4 — impact_alignment (section_clues.py); v3.7
+             # item 3/6 — section_id attributed against published sections.json.
+             "impact_alignment", "sections"}
 
     full = build_song_overview("McpFull - Fixture", root=FIXTURE_ROOT)
     degen = build_song_overview("McpDegenerate - Fixture", root=FIXTURE_ROOT)
@@ -414,8 +419,10 @@ def _check_f2_honesty() -> None:
 def _check_f4_budget() -> None:
     full_text = _overview_text("McpFull - Fixture")
     size = len(full_text.encode("utf-8"))
-    record("F4.20 get_song_overview(McpFull) under the 6144-byte budget",
-           "PASS" if size < 6144 else "FAIL", f"{size} bytes")
+    # v3.7 item 2 — budget moved 6144 -> 6450 for the new, omitted-when-null
+    # `impact_alignment` field (see test_overview_budget_mcpfull_under_6kb).
+    record("F4.20 get_song_overview(McpFull) under the 6450-byte budget",
+           "PASS" if size < 6450 else "FAIL", f"{size} bytes")
 
     record("F4.21 no host path in the overview (no string starting /data/)",
            "PASS" if "/data/" not in full_text else "FAIL",

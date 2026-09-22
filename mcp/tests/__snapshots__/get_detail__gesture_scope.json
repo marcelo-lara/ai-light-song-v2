@@ -7,7 +7,19 @@
   "span": {
     "start": 9.0,
     "end": 16.0,
-    "duration": 7.0
+    "duration": 7.0,
+    "start_position": {
+      "bar": 5,
+      "beat": 3,
+      "section_id": "section-002",
+      "resolved": true
+    },
+    "end_position": {
+      "bar": 9,
+      "beat": 1,
+      "section_id": "section-003",
+      "resolved": true
+    }
   },
   "structural": {
     "sections": {
@@ -28,6 +40,30 @@
               "confidence": null,
               "source": "seed_unreviewed"
             }
+          },
+          "impact_alignment": {
+            "gesture_id": "gesture-001",
+            "impact_time": 13.5,
+            "offset_s": 5.5,
+            "offset_beats": 11.0,
+            "impact_position": {
+              "bar": 7,
+              "beat": 4,
+              "section_id": "section-002",
+              "resolved": true
+            }
+          },
+          "start_position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 9,
+            "beat": 1,
+            "section_id": "section-003",
+            "resolved": true
           }
         }
       ],
@@ -46,7 +82,8 @@
         "tension": "tension_shape",
         "tension_confidence": "tension_shape",
         "rhythm.drums": "rhythm_drum_ioi",
-        "rhythm.vocals": "rhythm_stem_autocorr"
+        "rhythm.vocals": "rhythm_stem_autocorr",
+        "impact_alignment": "impact_alignment"
       }
     },
     "phases": {
@@ -57,7 +94,19 @@
           "start": 9.0,
           "end": 10.0,
           "intensity": 0.3,
-          "confidence": 0.8
+          "confidence": 0.8,
+          "start_position": {
+            "bar": 5,
+            "beat": 3,
+            "section_id": "section-002",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 6,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "type": "build",
@@ -65,7 +114,19 @@
           "start": 10.0,
           "end": 12.0,
           "intensity": 0.55,
-          "confidence": 0.8
+          "confidence": 0.8,
+          "start_position": {
+            "bar": 6,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 7,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "type": "tension",
@@ -73,7 +134,19 @@
           "start": 12.0,
           "end": 13.5,
           "intensity": 0.75,
-          "confidence": 0.8
+          "confidence": 0.8,
+          "start_position": {
+            "bar": 7,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 7,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "type": "impact",
@@ -81,7 +154,19 @@
           "start": 13.5,
           "end": 14.0,
           "intensity": 0.95,
-          "confidence": 0.8
+          "confidence": 0.8,
+          "start_position": {
+            "bar": 7,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 8,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "type": "release",
@@ -89,7 +174,19 @@
           "start": 14.0,
           "end": 16.0,
           "intensity": 0.4,
-          "confidence": 0.8
+          "confidence": 0.8,
+          "start_position": {
+            "bar": 8,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 9,
+            "beat": 1,
+            "section_id": "section-003",
+            "resolved": true
+          }
         }
       ],
       "field_sources": {
@@ -108,7 +205,13 @@
           "transition": "verse → chorus",
           "time": 16.0,
           "confidence": 0.7,
-          "section_id": "section-003"
+          "section_id": "section-003",
+          "position": {
+            "bar": 9,
+            "beat": 1,
+            "section_id": "section-003",
+            "resolved": true
+          }
         }
       ],
       "field_sources": {
@@ -129,7 +232,19 @@
           "text": "Vocal - no intense section",
           "start_time": 8.5,
           "end_time": 15.5,
-          "lighting_hint": "soft motion of moving heads. parcans slow violet waves."
+          "lighting_hint": "soft motion of moving heads. parcans slow violet waves.",
+          "start_position": {
+            "bar": 5,
+            "beat": 2,
+            "section_id": "section-002",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 8,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
         }
       ],
       "source": "human",
@@ -157,7 +272,19 @@
             "vocals"
           ],
           "margin_db": 6.0,
-          "confidence": 0.632
+          "confidence": 0.632,
+          "start_position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 9,
+            "beat": 1,
+            "section_id": "section-003",
+            "resolved": true
+          }
         }
       ],
       "vocals_phrase": [],
@@ -176,91 +303,223 @@
       "rows": [
         {
           "time": 9.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 5,
+            "beat": 3,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 9.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 5,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 9.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 5,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 10.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 6,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 10.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 6,
+            "beat": 2,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 10.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 6,
+            "beat": 2,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 11.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 6,
+            "beat": 3,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 11.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 6,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 11.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 6,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 12.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 7,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 12.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 7,
+            "beat": 2,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 12.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 7,
+            "beat": 2,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 13.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 7,
+            "beat": 3,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 13.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 7,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 13.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 7,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 14.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 8,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 14.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 8,
+            "beat": 2,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 14.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 8,
+            "beat": 2,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 15.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 8,
+            "beat": 3,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 15.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 8,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 15.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 8,
+            "beat": 4,
+            "section_id": "section-002",
+            "resolved": true
+          }
         },
         {
           "time": 16.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 9,
+            "beat": 1,
+            "section_id": "section-003",
+            "resolved": true
+          }
         }
       ],
       "field_sources": {

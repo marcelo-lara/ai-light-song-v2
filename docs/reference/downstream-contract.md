@@ -51,7 +51,7 @@ answers to the top-level directory.
 | --- | --- | --- |
 | `list_songs()` | discovery | `song_name`, `bpm`, `duration` only |
 | `get_song_overview(song)` | concept pass (whole song) | `info.json`, `beats.json`, `sections.json`, `genre.json`, `song_event_timeline.json` (transitions only), `arrangement_state.json`, `hints.json` (human hints) |
-| `get_detail(song, section_id\|gesture_id\|start_ms+end_ms, interval_ms, sources)` | one span (section, gesture, or arbitrary window) | `loudness.json` + `drum_events.json` dense frames (**at most 5 s**), plus the overlapping structural rows (phases, transitions, hints, `arrangement_state` blocks, and — v3.6 item 9 — `beats.json` rows) with no decimation |
+| `get_detail(song, section_id\|gesture_id\|start_ms+end_ms\|bars, interval_ms, sources)` | one span (section, gesture, arbitrary window, or — v3.7 item 3/5 — a `[start_bar, end_bar]` bar range) | `loudness.json` + `drum_events.json` dense frames (**at most 5 s**), plus the overlapping structural rows (phases, transitions, hints, `arrangement_state` blocks, and — v3.6 item 9 — `beats.json` rows) with no decimation; every time field carries a sibling `position` (v3.7 item 3/5) |
 
 All of these are top-level files. **Everything under `artifacts/` is invisible
 to cue authoring** — the layer files and the `validation/` reports are worth
@@ -105,6 +105,28 @@ The honesty rules, as the server enforces them structurally:
 
 Times are **seconds (float)**; the MCP layer multiplies by 1000. Keep prose
 short — projected strings are either truncated or paid for in full.
+
+### `position` — musical addressing, `get_detail` only (v3.7 item 3/5)
+
+Seconds remain the only stored/joined unit everywhere in `src/`. `get_detail`
+(never `get_song_overview` — its byte budget is load-bearing, see
+`docs/issues.md`) derives `{"bar", "beat", "section_id", "resolved"}` on read,
+beside every time field it serializes: the resolved span itself, section/
+phase/transition/hint edges, `impact_alignment.impact_position`, arrangement
+blocks and vocals phrases, drum-event rows, and every dense loudness frame.
+
+- `section_id` is always the **published** `sections.json` (v3.7 item 6 — see
+  below), matched by containment.
+- `resolved: false` marks a bar read by tempo arithmetic across a downbeat
+  whose `downbeat_confidence` is `null`, rather than a bar/beat read straight
+  off a detected beat row — never present a guessed bar as detected. Only 3
+  of 4 beats in a 4/4 bar carry a non-null `downbeat_confidence` on their own
+  row (only the downbeat row does); `resolved` looks up the *bar's* downbeat
+  row, never a beat row's own (usually-null) field.
+- `get_detail`'s `bars: [start_bar, end_bar]` scope selector (inclusive,
+  1-indexed) is the inverse: it resolves to `[start_bar beat 1, (end_bar+1)
+  beat 1)` off the same beat grid, extrapolating by tempo arithmetic when a
+  bar falls outside the published grid.
 
 ### `sections.json` (top-level **object**, rows under `sections`) — highest priority
 

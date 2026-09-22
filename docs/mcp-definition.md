@@ -208,7 +208,7 @@ Returns:
   `lighting_hint` where one exists. These are ground truth and outrank every
   inferred field in the response.
 
-### `get_detail(song, section_id=None, gesture_id=None, start_ms=None, end_ms=None, interval_ms=None, sources=None)`
+### `get_detail(song, section_id=None, gesture_id=None, start_ms=None, end_ms=None, bars=None, interval_ms=None, sources=None)`
 
 On-demand detail for one span. Exactly one scope selector is required — zero or
 two is an error, with no precedence rule:
@@ -218,6 +218,7 @@ two is an error, with no precedence rule:
 | `section_id` | that section |
 | `gesture_id` | that gesture's full `approach → release` envelope |
 | `start_ms` + `end_ms` | an arbitrary window |
+| `bars` (v3.7 item 3/5) | `[start_bar, end_bar]`, inclusive, 1-indexed — resolved to `[start_bar beat 1, (end_bar+1) beat 1)` off the published beat grid, tempo-extrapolated where a bar falls outside it |
 
 **The dense-series cap is 5 seconds — a maximum, not a default.** When the
 resolved span exceeds 5 s the call returns the structural view (sections,
@@ -244,6 +245,19 @@ are the same file read at two resolutions.
 
 `sources` optionally narrows the stem set (mix, drums, bass, harmonic, vocals);
 the default is all five.
+
+**`position` (v3.7 item 3/5).** Every time field `get_detail` serializes — the
+span itself, section/phase/transition/hint edges, `impact_alignment.
+impact_position`, arrangement blocks and vocals phrases, drum-event rows, and
+every dense loudness frame — carries a sibling `position`:
+`{"bar", "beat", "section_id", "resolved"}`, derived on read from the
+published beat grid; nothing in `src/` stores bars. `resolved: false` marks a
+bar derived by tempo arithmetic across a downbeat with `null`
+`downbeat_confidence`, rather than read from an actual detected downbeat —
+never present a guessed bar as detected. `get_song_overview` deliberately does
+**not** carry `position` (its byte budget is load-bearing — see
+`docs/issues.md`'s prose-budget issue); a caller wanting bar/beat context for
+a specific row fetches it through `get_detail`.
 
 ## Honesty obligations
 

@@ -78,18 +78,21 @@ def get_detail(
     gesture_id: str | None = None,
     start_ms: int | None = None,
     end_ms: int | None = None,
+    bars: list[int] | None = None,
     interval_ms: int | None = None,
     sources: list[str] | None = None,
 ) -> dict[str, Any]:
     """On-demand dense detail for one resolved span.
 
-    Exactly one scope selector is required: ``section_id``, ``gesture_id``, or
-    ``start_ms`` + ``end_ms``. Zero or two is an error — there is no precedence
-    rule. A resolved span over the 5 s cap (a maximum, not a default) returns the
-    structural view with the dense frames withheld and the cap named.
-    ``interval_ms`` is caller-chosen and decimates the published 20 ms series by
-    chunk-averaging; finer than 20 ms is an error, never a silent upsample.
-    ``sources`` narrows the stem set (default all five, stable order).
+    Exactly one scope selector is required: ``section_id``, ``gesture_id``,
+    ``start_ms`` + ``end_ms``, or ``bars`` (v3.7 item 5 — ``[start_bar,
+    end_bar]``, inclusive, 1-indexed). Zero or two is an error — there is no
+    precedence rule. A resolved span over the 5 s cap (a maximum, not a
+    default) returns the structural view with the dense frames withheld and
+    the cap named. ``interval_ms`` is caller-chosen and decimates the
+    published 20 ms series by chunk-averaging; finer than 20 ms is an error,
+    never a silent upsample. ``sources`` narrows the stem set (default all
+    five, stable order).
     """
     _validate_song(song)
     try:
@@ -99,6 +102,7 @@ def get_detail(
             gesture_id=gesture_id,
             start_ms=start_ms,
             end_ms=end_ms,
+            bars=bars,
             interval_ms=interval_ms,
             sources=sources,
         )

@@ -110,7 +110,12 @@ Current focus song: `_test_song`
   `label`/`description`/`chord_progression`/`guidance`/etc. did not move the
   needle: `arrangement` (44 blocks, 7,273 B — promoted after this issue was
   first raised) is now the largest block, just ahead of `gestures` (7,107 B);
-  `sections` fell to 3,169 B once `description` was dropped.
+  `sections` fell to 3,169 B once `description` was dropped. v3.7 item 2 added
+  `impact_alignment` (omitted when `null`, same convention as energy/tension) —
+  the fixture gate moved to 6450 B to keep one resolved example in the
+  committed snapshot; `position` (item 3/5) was deliberately kept off this
+  tool entirely for the same reason (see serializers.py's `build_song_overview`
+  docstring) — `get_detail` carries it instead.
 - **Why it was accepted, not fixed:** the size is driven by *structure*, not
   prose — dropping prose fields saves low hundreds of bytes, not the low
   thousands needed. Every dense block (`arrangement`, `gestures`, human hints)

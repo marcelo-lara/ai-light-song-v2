@@ -138,7 +138,7 @@
         "confidence": 0.875
       }
     ],
-    "vocals_phrase": null,
+    "vocals_phrase": [],
     "vocals_sibilance_song_mean": null,
     "field_sources": {
       "start_s": "arrangement_state",

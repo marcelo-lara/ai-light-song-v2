@@ -67,6 +67,8 @@ SNAPSHOT_CASES = {
     "window_3s_20ms": dict(start_ms=0, end_ms=3000, interval_ms=20),
     "window_3s_100ms": dict(start_ms=0, end_ms=3000, interval_ms=100),
     "window_over_cap": dict(start_ms=0, end_ms=6000),
+    # v3.7 item 3/5 — the `bars` scope selector.
+    "bars_scope": dict(bars=[3, 4]),
 }
 
 

@@ -109,6 +109,14 @@ def _section_clue_fields(s: dict) -> dict[str, Any]:
             out["tension_source"] = s["tension_source"]
     if "rhythm" in s:
         out["rhythm"] = s["rhythm"]
+    # v3.7 item 2/4 — `impact_alignment` is always a key on the STORED
+    # sections.json row (explicit `null` there — CLAUDE.md "no silent
+    # fallbacks"), but the projected view omits it entirely when `null`,
+    # same token-cost convention as energy/tension/rhythm above (D25's
+    # get_song_overview byte budget is load-bearing — see
+    # test_overview_budget_mcpfull_under_6kb).
+    if s.get("impact_alignment") is not None:
+        out["impact_alignment"] = s["impact_alignment"]
     return out
 
 
@@ -155,6 +163,14 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
     # Each block carries its own `field_sources` summary, drawn once from the
     # file header it came from — never repeated per row, never a redundant
     # response-level copy.
+    #
+    # v3.7 item 3/5 — `position` is NOT attached here. This tool stays
+    # compact by construction (F4.20's byte budget on the module's own golden
+    # fixture is load-bearing — see the module docstring "Compact by
+    # construction"): a `position` object roughly doubles a section/gesture/
+    # hint row. `get_detail` is the on-demand, span-scoped read and carries
+    # `position` on every time field in both its structural and dense views;
+    # a client wanting bar/beat context for a specific row fetches it there.
     overview: dict[str, Any] = {
         "song_name": info.get("song_name"),
         "identity": _identity_block(info, sections, genre_doc),
@@ -215,6 +231,155 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
 
 def _r(value: Any, places: int = 3) -> Any:
     return round(value, places) if isinstance(value, (int, float)) else value
+
+
+# --------------------------------------------------------------------------- #
+# position — musical addressing (v3.7 item 3/5). `{"bar", "beat", "section_id",
+# "resolved"}`, derived on read from the published beat grid + sections.json.
+# Never stored: seconds remain the only stored/joined unit in src/. `section_id`
+# here always means the PUBLISHED sections.json (v3.7 item 6 generalises the
+# same rule to hints.py/gestures.py's own stored `section_id` fields).
+# --------------------------------------------------------------------------- #
+
+#: corpus-wide 4/4 assumption (docs/analysis-definition.md "corpus is 4/4 and
+#: constant BPM") — never inferred per song, never hedged about meter changes.
+BEATS_PER_BAR = 4
+
+
+def _section_id_for_time(time_s: float, sections: list[dict]) -> str | None:
+    for s in sections:
+        if float(s["start"]) <= time_s < float(s["end"]):
+            return s.get("section_id")
+    if sections and time_s >= float(sections[-1]["start"]):
+        return sections[-1].get("section_id")
+    return None
+
+
+def _downbeat_confidence_for_bar(bar: int, beats: list[dict]) -> float | None:
+    """The `downbeat_confidence` on `bar`'s own downbeat (`beat == 1`) row.
+    Only the downbeat row carries this value — the other 3 beats of a 4/4
+    bar publish `downbeat_confidence: null` on their own row regardless of
+    whether the bar's downbeat was confidently detected, so `_position` must
+    look this up rather than read the nearest beat row's own field."""
+    for b in beats:
+        if int(b["bar"]) == bar and int(b["beat"]) == 1:
+            return b.get("downbeat_confidence")
+    return None
+
+
+def _nearest_beat_at_or_before(time_s: float, beats: list[dict]) -> dict | None:
+    best = None
+    for b in beats:
+        t = float(b["time"])
+        if t <= time_s + 1e-9 and (best is None or t > float(best["time"])):
+            best = b
+    return best
+
+
+def _nearest_beat_after(time_s: float, beats: list[dict]) -> dict | None:
+    best = None
+    for b in beats:
+        t = float(b["time"])
+        if t > time_s + 1e-9 and (best is None or t < float(best["time"])):
+            best = b
+    return best
+
+
+def _beat_index(bar: int, beat: int) -> float:
+    return (bar - 1) * BEATS_PER_BAR + (beat - 1)
+
+
+def _extrapolate_bar_beat(anchor: dict, delta_beats: float) -> tuple[int, int]:
+    """`anchor`'s (bar, beat) shifted by `delta_beats` fractional beats
+    (positive = forward), assuming 4/4. Used only when a time falls outside
+    the published beat grid — the one case this module extrapolates rather
+    than reads a detected beat."""
+    index = _beat_index(int(anchor["bar"]), int(anchor["beat"])) + delta_beats
+    bar = int(index // BEATS_PER_BAR) + 1
+    beat = int(round(index % BEATS_PER_BAR)) + 1
+    if beat > BEATS_PER_BAR:
+        beat = 1
+        bar += 1
+    return max(bar, 1), beat
+
+
+def _position(
+    time_s: float | None, beats: list[dict], sections: list[dict], bpm: float | None
+) -> dict[str, Any] | None:
+    """`{"bar", "beat", "section_id", "resolved"}` for `time_s`. `None` when
+    `time_s` is `None` — an absent time has no position, never a guessed one.
+
+    The common case reads `bar`/`beat` directly off the nearest published
+    beat at-or-before `time_s` — no arithmetic. `resolved` reports whether
+    *that bar* was itself grounded in a detected downbeat: `false` when the
+    governing beat row's `downbeat_confidence` is `null` (allin1's downbeat
+    phase measures ~0.226 F1 — CLAUDE.md: never present a guessed bar as
+    detected). Only when `time_s` falls before the first published beat does
+    this extrapolate by tempo arithmetic off the nearest beat — always
+    `resolved: false` there, since no beat was actually detected at that
+    instant."""
+    if time_s is None:
+        return None
+    time_s = float(time_s)
+    section_id = _section_id_for_time(time_s, sections)
+
+    at = _nearest_beat_at_or_before(time_s, beats)
+    if at is not None:
+        bar = int(at["bar"])
+        return {
+            "bar": bar,
+            "beat": int(at["beat"]),
+            "section_id": section_id,
+            "resolved": _downbeat_confidence_for_bar(bar, beats) is not None,
+        }
+
+    after = _nearest_beat_after(time_s, beats)
+    if after is not None and bpm:
+        beat_period = 60.0 / float(bpm)
+        delta_beats = (time_s - float(after["time"])) / beat_period
+        bar, beat = _extrapolate_bar_beat(after, delta_beats)
+        return {"bar": bar, "beat": beat, "section_id": section_id, "resolved": False}
+
+    return {"bar": None, "beat": None, "section_id": section_id, "resolved": False}
+
+
+def _time_for_bar_beat(
+    bar: int, beat: int, beats: list[dict], bpm: float | None
+) -> float | None:
+    """Inverse of `_position`: the time of a given `(bar, beat)`, for the
+    `bars` `get_detail` scope selector. Reads the published beat row when one
+    exists; otherwise extrapolates off the nearest published beat by tempo
+    arithmetic (4/4). `None` only when there is no beat grid and no bpm to
+    extrapolate from at all."""
+    for b in beats:
+        if int(b["bar"]) == bar and int(b["beat"]) == beat:
+            return float(b["time"])
+    if not beats or not bpm:
+        return None
+    target_index = _beat_index(bar, beat)
+    anchor = min(
+        beats,
+        key=lambda b: abs(_beat_index(int(b["bar"]), int(b["beat"])) - target_index),
+    )
+    anchor_index = _beat_index(int(anchor["bar"]), int(anchor["beat"]))
+    beat_period = 60.0 / float(bpm)
+    return float(anchor["time"]) + (target_index - anchor_index) * beat_period
+
+
+def _make_position_fn(beats: list[dict], sections: list[dict], bpm: float | None):
+    return lambda time_s: _position(time_s, beats, sections, bpm)
+
+
+def _attach_positions(
+    rows: list[dict], fields: list[tuple[str, str]], pos_fn
+) -> None:
+    """Mutates `rows` in place: for each `(time_field, position_field)` pair,
+    adds `position_field` beside `time_field` (v3.7 item 3/5). A row missing
+    `time_field` (or carrying `None`) gets `position_field: None` — never a
+    guessed position."""
+    for row in rows:
+        for time_field, pos_field in fields:
+            row[pos_field] = pos_fn(row.get(time_field))
 
 
 def _identity_block(info: dict, sections: list[dict], genre_doc: dict) -> dict[str, Any]:
@@ -374,7 +539,7 @@ def _gestures_block(timeline_doc: dict, events: list[dict]) -> dict[str, Any]:
     }
 
 
-def _arrangement_block(doc: dict) -> dict[str, Any]:
+def _arrangement_block(doc: dict, pos_fn=None) -> dict[str, Any]:
     """Compact per-block stem-state view from the required top-level
     arrangement_state.json. One row per block, `start`/`end` to match the
     sibling sections/gestures rows. `confidence` (and the leading block's
@@ -398,16 +563,22 @@ def _arrangement_block(doc: dict) -> dict[str, Any]:
         }
         for b in blocks
     ]
+    vocals_phrase = [dict(p) for p in (doc.get("vocals_phrase") or [])]
+    if pos_fn is not None:
+        _attach_positions(rows, [("start", "start_position"), ("end", "end_position")], pos_fn)
+        _attach_positions(
+            vocals_phrase, [("start_s", "start_position"), ("end_s", "end_position")], pos_fn
+        )
     return {
         "block_count": len(blocks),
         "blocks": rows,
-        "vocals_phrase": doc.get("vocals_phrase"),
+        "vocals_phrase": vocals_phrase,
         "vocals_sibilance_song_mean": doc.get("vocals_sibilance_song_mean"),
         "field_sources": doc.get("field_sources"),
     }
 
 
-def _transitions_block(timeline_doc: dict, events: list[dict]) -> dict[str, Any]:
+def _transitions_block(timeline_doc: dict, events: list[dict], pos_fn=None) -> dict[str, Any]:
     rows = [
         {
             "transition": e.get("type"),
@@ -418,13 +589,15 @@ def _transitions_block(timeline_doc: dict, events: list[dict]) -> dict[str, Any]
         for e in events
         if not e.get("gesture_id") and "→" in str(e.get("type", ""))
     ]
+    if pos_fn is not None:
+        _attach_positions(rows, [("time", "position")], pos_fn)
     return {
         "rows": rows,
         "field_sources": timeline_doc.get("field_sources"),
     }
 
 
-def _hints_block(hints_doc: dict) -> dict[str, Any]:
+def _hints_block(hints_doc: dict, pos_fn=None) -> dict[str, Any]:
     # v3.6 item 8 restructured hints.json to a flat `hints[]` (no `sections[]`
     # wrapper — that duplicated sections.json's join). Every row is human by
     # construction; `source` is declared once here rather than per row.
@@ -440,6 +613,8 @@ def _hints_block(hints_doc: dict) -> dict[str, Any]:
         if hint.get("lighting_hint") is not None:
             row["lighting_hint"] = hint["lighting_hint"]
         rows.append(row)
+    if pos_fn is not None:
+        _attach_positions(rows, [("start_time", "start_position"), ("end_time", "end_position")], pos_fn)
     return {
         "rows": rows,
         "source": "human",
@@ -459,20 +634,23 @@ def build_detail(
     gesture_id: str | None = None,
     start_ms: int | None = None,
     end_ms: int | None = None,
+    bars: list[int] | None = None,
     interval_ms: int | None = None,
     sources: list[str] | None = None,
     root: str | Path | None = None,
 ) -> dict[str, Any]:
     """Dense detail for one resolved span.
 
-    Exactly one scope selector is required — `section_id`, `gesture_id`, or
-    `start_ms` + `end_ms`. Zero or two is an error (no precedence rule). A span
-    longer than the 5 s cap returns the structural view with the dense frames
+    Exactly one scope selector is required — `section_id`, `gesture_id`,
+    `start_ms` + `end_ms`, or `bars` (v3.7 item 5, `[start_bar, end_bar]`
+    inclusive). Zero or two is an error (no precedence rule). A span longer
+    than the 5 s cap returns the structural view with the dense frames
     withheld and the cap named. `interval_ms` is caller-chosen and decimates the
     published 20 ms series by pair-averaging; finer than 20 ms is an error.
     """
     song_dir = resolve_song_dir(song, root=root)
 
+    info_doc = load_top_level_json(song_dir, "info.json")
     sections_doc = load_top_level_json(song_dir, "sections.json")
     timeline_doc = load_top_level_json(song_dir, "song_event_timeline.json")
     hints_doc = load_top_level_json(song_dir, "hints.json")
@@ -483,15 +661,21 @@ def build_detail(
     # is scoped to the resolved span, undecimated, and present even past the
     # dense-series cap (unlike loudness's dense frames, which the cap withholds).
     beats_doc = load_top_level_json(song_dir, "beats.json")
+    beats_list = beats_doc.get("beats", [])
+    bpm = info_doc.get("bpm")
 
     scope, span_start, span_end = _resolve_span(
         section_id=section_id,
         gesture_id=gesture_id,
         start_ms=start_ms,
         end_ms=end_ms,
+        bars=bars,
         sections=sections_doc.get("sections", []),
         events=timeline_doc.get("events", []),
+        beats=beats_list,
+        bpm=bpm,
     )
+    pos_fn = _make_position_fn(beats_list, sections_doc.get("sections", []), bpm)
 
     target_interval = LOUDNESS_FLOOR_MS if interval_ms is None else int(interval_ms)
     if target_interval < LOUDNESS_FLOOR_MS:
@@ -508,10 +692,16 @@ def build_detail(
     response: dict[str, Any] = {
         "song_name": timeline_doc.get("song_name"),
         "scope": scope,
-        "span": {"start": span_start, "end": span_end, "duration": duration},
+        "span": {
+            "start": span_start,
+            "end": span_end,
+            "duration": duration,
+            "start_position": pos_fn(span_start),
+            "end_position": pos_fn(span_end),
+        },
         "structural": _structural_view(
             span_start, span_end, sections_doc, timeline_doc, hints_doc,
-            arrangement_doc, drum_doc, beats_doc, events
+            arrangement_doc, drum_doc, beats_doc, events, pos_fn
         ),
     }
 
@@ -529,7 +719,7 @@ def build_detail(
 
     loudness_doc = load_top_level_json(song_dir, "loudness.json")
     response["dense"] = _dense_frames(
-        loudness_doc, span_start, span_end, target_interval, stem_set
+        loudness_doc, span_start, span_end, target_interval, stem_set, pos_fn
     )
     return response
 
@@ -540,22 +730,25 @@ def _resolve_span(
     gesture_id: str | None,
     start_ms: int | None,
     end_ms: int | None,
+    bars: list[int] | None,
     sections: list[dict],
     events: list[dict],
+    beats: list[dict],
+    bpm: float | None,
 ) -> tuple[dict[str, Any], float, float]:
     has_window = start_ms is not None or end_ms is not None
-    selectors = [section_id is not None, gesture_id is not None, has_window]
+    selectors = [section_id is not None, gesture_id is not None, has_window, bars is not None]
     chosen = sum(selectors)
 
     if chosen == 0:
         raise DetailScopeError(
-            "a scope selector is required: section_id, gesture_id, or "
-            "start_ms + end_ms"
+            "a scope selector is required: section_id, gesture_id, "
+            "start_ms + end_ms, or bars"
         )
     if chosen > 1:
         raise DetailScopeError(
-            "exactly one scope selector is allowed (section_id, gesture_id, or "
-            "start_ms + end_ms) — there is no precedence rule; pass just one"
+            "exactly one scope selector is allowed (section_id, gesture_id, "
+            "start_ms + end_ms, or bars) — there is no precedence rule; pass just one"
         )
 
     if section_id is not None:
@@ -577,6 +770,27 @@ def _resolve_span(
             {"kind": "gesture", "gesture_id": gesture_id},
             min(float(r["start_time"]) for r in phase_rows),
             max(float(r["end_time"]) for r in phase_rows),
+        )
+
+    if bars is not None:
+        if len(bars) != 2:
+            raise DetailScopeError(f"bars must be [start_bar, end_bar], got {bars!r}")
+        start_bar, end_bar = int(bars[0]), int(bars[1])
+        if start_bar < 1 or end_bar < start_bar:
+            raise DetailScopeError(
+                f"bars must satisfy 1 <= start_bar <= end_bar, got {bars!r}"
+            )
+        span_start_t = _time_for_bar_beat(start_bar, 1, beats, bpm)
+        span_end_t = _time_for_bar_beat(end_bar + 1, 1, beats, bpm)
+        if span_start_t is None or span_end_t is None:
+            raise DetailScopeError(
+                f"cannot resolve bars {bars!r} — no beat grid or bpm to derive bar "
+                "times from"
+            )
+        return (
+            {"kind": "bars", "bars": [start_bar, end_bar]},
+            span_start_t,
+            span_end_t,
         )
 
     if start_ms is None or end_ms is None:
@@ -620,6 +834,7 @@ def _structural_view(
     drum_doc: dict,
     beats_doc: dict,
     events: list[dict],
+    pos_fn=None,
 ) -> dict[str, Any]:
     section_rows = [
         {
@@ -634,6 +849,12 @@ def _structural_view(
         for s in sections_doc.get("sections", [])
         if _overlaps(span_start, span_end, float(s["start"]), float(s["end"]))
     ]
+    if pos_fn is not None:
+        _attach_positions(section_rows, [("start", "start_position"), ("end", "end_position")], pos_fn)
+        for _row in section_rows:
+            _ia = _row.get("impact_alignment")
+            if _ia is not None:
+                _ia["impact_position"] = pos_fn(_ia.get("impact_time"))
 
     phase_rows = [
         {
@@ -648,6 +869,8 @@ def _structural_view(
         if e.get("gesture_id")
         and _overlaps(span_start, span_end, float(e["start_time"]), float(e["end_time"]))
     ]
+    if pos_fn is not None:
+        _attach_positions(phase_rows, [("start", "start_position"), ("end", "end_position")], pos_fn)
 
     transition_rows = [
         {
@@ -661,6 +884,8 @@ def _structural_view(
         and "→" in str(e.get("type", ""))
         and span_start <= float(e["start_time"]) <= span_end
     ]
+    if pos_fn is not None:
+        _attach_positions(transition_rows, [("time", "position")], pos_fn)
 
     hint_rows = []
     for hint in hints_doc.get("hints", []):
@@ -679,6 +904,8 @@ def _structural_view(
             if hint.get("lighting_hint") is not None:
                 row["lighting_hint"] = hint["lighting_hint"]
             hint_rows.append(row)
+    if pos_fn is not None:
+        _attach_positions(hint_rows, [("start_time", "start_position"), ("end_time", "end_position")], pos_fn)
 
     intensities = [r["intensity"] for r in phase_rows if r["intensity"] is not None]
     if intensities:
@@ -700,6 +927,8 @@ def _structural_view(
             continue
         if span_start <= float(t) <= span_end:
             drum_rows.append({"time": t, "event_type": e.get("event_type")})
+    if pos_fn is not None:
+        _attach_positions(drum_rows, [("time", "position")], pos_fn)
 
     # Apply sparse-row cap: if there are more rows than SPARSE_ROW_CAP, do not
     # silently truncate. Instead present an explicit withheld block so callers
@@ -761,7 +990,7 @@ def _structural_view(
             "source": "human",
             "field_sources": hints_doc.get("field_sources"),
         },
-        "arrangement": _arrangement_structural(arrangement_doc, span_start, span_end),
+        "arrangement": _arrangement_structural(arrangement_doc, span_start, span_end, pos_fn),
         "drum_events": drum_block,
         "beats": {
             "rows": beat_rows,
@@ -772,7 +1001,7 @@ def _structural_view(
 
 
 def _arrangement_structural(
-    doc: dict, span_start: float, span_end: float
+    doc: dict, span_start: float, span_end: float, pos_fn=None
 ) -> dict[str, Any]:
     """Overlapping arrangement_state blocks for the resolved span. Structural
     block data — no decimation, no dense cap — so it is present in the
@@ -801,6 +1030,9 @@ def _arrangement_structural(
         for p in (doc.get("vocals_phrase") or [])
         if _overlaps(span_start, span_end, float(p["start_s"]), float(p["end_s"]))
     ]
+    if pos_fn is not None:
+        _attach_positions(rows, [("start_s", "start_position"), ("end_s", "end_position")], pos_fn)
+        _attach_positions(vocals_phrase, [("start_s", "start_position"), ("end_s", "end_position")], pos_fn)
     return {
         "rows": rows,
         "vocals_phrase": vocals_phrase,
@@ -815,6 +1047,7 @@ def _dense_frames(
     span_end: float,
     interval_ms: int,
     stem_set: list[str],
+    pos_fn=None,
 ) -> dict[str, Any]:
     # v3.6 item 8 flattened interval_ms/source_order out of a `metadata`
     # wrapper to top-level fields on loudness.json.
@@ -832,7 +1065,7 @@ def _dense_frames(
     # emitted interval is exactly `factor * 20` ms (see D22).
     for base in range(0, len(window) - factor + 1, factor):
         chunk = window[base:base + factor]
-        frames.append(_average_chunk(chunk, keep_idx))
+        frames.append(_average_chunk(chunk, keep_idx, pos_fn))
 
     return {
         "interval_ms": interval_ms,
@@ -846,7 +1079,7 @@ def _dense_frames(
     }
 
 
-def _average_chunk(chunk: list[dict], keep_idx: list[int]) -> dict[str, Any]:
+def _average_chunk(chunk: list[dict], keep_idx: list[int], pos_fn=None) -> dict[str, Any]:
     n = len(chunk)
     time = round(sum(f["time"] for f in chunk) / n, 6)
     values = [
@@ -856,4 +1089,7 @@ def _average_chunk(chunk: list[dict], keep_idx: list[int]) -> dict[str, Any]:
         round(sum(f["normalized_values"][i] for f in chunk) / n, 6)
         for i in keep_idx
     ]
-    return {"time": time, "values": values, "normalized_values": normalized}
+    row: dict[str, Any] = {"time": time, "values": values, "normalized_values": normalized}
+    if pos_fn is not None:
+        row["position"] = pos_fn(time)
+    return row

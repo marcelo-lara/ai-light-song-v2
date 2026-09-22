@@ -75,6 +75,13 @@
             "confidence": null,
             "source": "seed_unreviewed"
           }
+        },
+        "impact_alignment": {
+          "gesture_id": "gesture-001",
+          "impact_time": 13.5,
+          "offset_s": 5.5,
+          "offset_beats": 11.0,
+          "impact_position": null
         }
       },
       {
@@ -103,7 +110,8 @@
       "tension": "tension_shape",
       "tension_confidence": "tension_shape",
       "rhythm.drums": "rhythm_drum_ioi",
-      "rhythm.vocals": "rhythm_stem_autocorr"
+      "rhythm.vocals": "rhythm_stem_autocorr",
+      "impact_alignment": "impact_alignment"
     }
   },
   "gestures": {
@@ -188,7 +196,7 @@
         "confidence": 0.875
       }
     ],
-    "vocals_phrase": null,
+    "vocals_phrase": [],
     "vocals_sibilance_song_mean": null,
     "field_sources": {
       "start_s": "arrangement_state",

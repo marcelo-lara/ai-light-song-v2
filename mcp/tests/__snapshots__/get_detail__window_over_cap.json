@@ -8,7 +8,19 @@
   "span": {
     "start": 0.0,
     "end": 6.0,
-    "duration": 6.0
+    "duration": 6.0,
+    "start_position": {
+      "bar": 1,
+      "beat": 1,
+      "section_id": "section-001",
+      "resolved": true
+    },
+    "end_position": {
+      "bar": 4,
+      "beat": 1,
+      "section_id": "section-001",
+      "resolved": true
+    }
   },
   "structural": {
     "sections": {
@@ -29,6 +41,18 @@
               "subdivision": "quarter",
               "confidence": 0.71
             }
+          },
+          "start_position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
           }
         }
       ],
@@ -47,7 +71,8 @@
         "tension": "tension_shape",
         "tension_confidence": "tension_shape",
         "rhythm.drums": "rhythm_drum_ioi",
-        "rhythm.vocals": "rhythm_stem_autocorr"
+        "rhythm.vocals": "rhythm_stem_autocorr",
+        "impact_alignment": "impact_alignment"
       }
     },
     "phases": {
@@ -100,7 +125,19 @@
           "entered": [],
           "left": [],
           "margin_db": null,
-          "confidence": null
+          "confidence": null,
+          "start_position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
         }
       ],
       "vocals_phrase": [],
@@ -119,79 +156,193 @@
       "rows": [
         {
           "time": 0.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 0.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 1,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 0.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 1,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 1.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 1,
+            "beat": 3,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 1.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 1,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 1.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 1,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 2.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 2,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 2.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 2.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 3.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 2,
+            "beat": 3,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 3.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 2,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 3.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 2,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 4.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 3,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 4.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 3,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 4.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 3,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 5.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 3,
+            "beat": 3,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 5.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 3,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 5.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 3,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 6.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 4,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
         }
       ],
       "field_sources": {

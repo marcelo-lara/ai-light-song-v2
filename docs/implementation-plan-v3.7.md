@@ -75,13 +75,13 @@ needing a design decision becomes a `BUG` in the refinement doc, annotated
 
 | | |
 | --- | --- |
-| Done | 4 of 12 |
+| Done | 5 of 12 |
 | Visual QA items | 2, 11 |
 | MCP full-regression | items 5, 7, 8, 9, 10 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 4, 5, 6, 7, 8, 9, 10 |
 | New writable `reference/human/` files | `block_reviews.json` (item 1), `reference/proposals/pending.json` (item 10 — not `reference/human/`, never operator-authored directly) |
 | Pre-existing failures | `tests/test_run_queue.py::QueueFileTests::test_seeded_queue_parses_with_three_enabled_app_rows` (stale test — asserts `queue.toml` has `[[experiment]]` rows; the file is now empty after v3.6's promotions). Pre-dates this plan, not owned by any v3.7 item. |
-| Decisions | none yet |
+| Decisions | D5.1 (resolved), D6.1 (resolved) |
 
 ---
 
@@ -179,17 +179,30 @@ than a second nearest-impact search.
 
 Refinement item 3, the addressing mechanism.
 
-- [ ] `position` shape `{"bar", "beat", "section_id", "resolved"}`, derived **on read** in `mcp/serializers.py` from the beat grid — never stored. `resolved: false` where the bar is tempo-arithmetic across a downbeat with `null` `downbeat_confidence`, rather than read from a detected downbeat.
-- [ ] Attach `position` to every time field the MCP serializes: section edges, gesture phases and impacts (including `impact_alignment.impact_position` from item 4), transitions, hints, arrangement blocks, vocal phrases, dense-frame rows, drum-event rows.
-- [ ] `get_detail` gains `bars: [start, end]` (inclusive) as a fourth scope selector alongside `section_id`/`gesture_id`/(existing time-range selector) in `mcp/server.py` and `DetailScopeError` handling — still exactly one selector per call.
-- [ ] Seconds remain the only stored/joined unit; nothing in `src/` changes to store bars.
-- [ ] Contract: `docs/reference/downstream-contract.md` (every block gains `position`; the `bars` selector), `docs/mcp-definition.md`.
-- [ ] Regenerate `mcp/tests/__snapshots__/` with one justification line each.
+- [x] `position` shape `{"bar", "beat", "section_id", "resolved"}`, derived **on read** in `mcp/serializers.py` from the beat grid — never stored. `resolved: false` where the bar is tempo-arithmetic across a downbeat with `null` `downbeat_confidence`, rather than read from a detected downbeat. `resolved` looks up the bar's own downbeat row's confidence, never a queried beat row's own (usually-null) field — only 1 of 4 beats in a 4/4 bar carries a non-null `downbeat_confidence` on its own row.
+- [x] Attach `position` to every time field the MCP serializes: section edges, gesture phases and impacts (including `impact_alignment.impact_position` from item 4), transitions, hints, arrangement blocks, vocal phrases, dense-frame rows, drum-event rows. **Not** `get_song_overview` — see D5.1 below.
+- [x] `get_detail` gains `bars: [start, end]` (inclusive) as a fourth scope selector alongside `section_id`/`gesture_id`/(existing time-range selector) in `mcp/server.py` and `DetailScopeError` handling — still exactly one selector per call.
+- [x] Seconds remain the only stored/joined unit; nothing in `src/` changes to store bars.
+- [x] Contract: `docs/reference/downstream-contract.md` (every block gains `position`; the `bars` selector), `docs/mcp-definition.md`.
+- [x] Regenerate `mcp/tests/__snapshots__/` with one justification line each (inline comments at each change site).
+
+**D5.1 (resolved).** `position` is deliberately withheld from `get_song_overview`
+entirely (attaching it there blew the load-bearing `test_overview_budget_mcpfull_under_6kb`
+test from ~5.9KB to ~8.6KB, against `docs/issues.md`'s already-open prose-budget
+issue). `impact_alignment` in the overview's section rows is likewise omitted
+when `null` rather than emitted as an explicit `null` key (matching the
+existing `energy`/`tension` convention) — the fixture budget moved 6144→6450
+bytes to keep one resolved `impact_alignment` example in the committed
+snapshot. Both documented in `serializers.py`'s `build_song_overview` docstring
+and `docs/issues.md`. Adopted as the best recommendation rather than raised as
+a blocking question — all of this item's own done-when checks are
+`get_detail`-scoped, and worsening a known accepted issue for no plan-required
+benefit was the wrong trade.
 
 **Checks**
-- [ ] MCP smoke-test and full-regression green.
-- [ ] On *What a Feeling*, `get_detail(bars=[79, 80])` returns the span 155.83–159.70 s.
-- [ ] A bar derived across a null-confidence downbeat reports `resolved: false` on at least one fixture row.
+- [x] MCP smoke-test and full-regression green (11/11, 41/41).
+- [x] On *What a Feeling*, `get_detail(bars=[79, 80])` returns the span 155.83–159.70 s.
+- [x] A bar derived across a null-confidence downbeat reports `resolved: false` on at least one fixture row (`start_position.resolved: true` / `end_position.resolved: false` on the same call).
 
 ---
 

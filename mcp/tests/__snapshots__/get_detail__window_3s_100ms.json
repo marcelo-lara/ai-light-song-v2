@@ -8,7 +8,19 @@
   "span": {
     "start": 0.0,
     "end": 3.0,
-    "duration": 3.0
+    "duration": 3.0,
+    "start_position": {
+      "bar": 1,
+      "beat": 1,
+      "section_id": "section-001",
+      "resolved": true
+    },
+    "end_position": {
+      "bar": 2,
+      "beat": 3,
+      "section_id": "section-001",
+      "resolved": true
+    }
   },
   "structural": {
     "sections": {
@@ -29,6 +41,18 @@
               "subdivision": "quarter",
               "confidence": 0.71
             }
+          },
+          "start_position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
           }
         }
       ],
@@ -47,7 +71,8 @@
         "tension": "tension_shape",
         "tension_confidence": "tension_shape",
         "rhythm.drums": "rhythm_drum_ioi",
-        "rhythm.vocals": "rhythm_stem_autocorr"
+        "rhythm.vocals": "rhythm_stem_autocorr",
+        "impact_alignment": "impact_alignment"
       }
     },
     "phases": {
@@ -100,7 +125,19 @@
           "entered": [],
           "left": [],
           "margin_db": null,
-          "confidence": null
+          "confidence": null,
+          "start_position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
         }
       ],
       "vocals_phrase": [],
@@ -119,43 +156,103 @@
       "rows": [
         {
           "time": 0.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 0.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 1,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 0.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 1,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 1.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 1,
+            "beat": 3,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 1.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 1,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 1.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 1,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 2.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 2,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 2.5,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 2.5,
-          "event_type": "snare"
+          "event_type": "snare",
+          "position": {
+            "bar": 2,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
         },
         {
           "time": 3.0,
-          "event_type": "kick"
+          "event_type": "kick",
+          "position": {
+            "bar": 2,
+            "beat": 3,
+            "section_id": "section-001",
+            "resolved": true
+          }
         }
       ],
       "field_sources": {
@@ -253,7 +350,13 @@
           0.221146,
           0.221146,
           0.221146
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 0.15,
@@ -270,7 +373,13 @@
           0.223438,
           0.223438,
           0.223438
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 0.25,
@@ -287,7 +396,13 @@
           0.225729,
           0.225729,
           0.225729
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 0.35,
@@ -304,7 +419,13 @@
           0.228021,
           0.228021,
           0.228021
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 0.45,
@@ -321,7 +442,13 @@
           0.230313,
           0.230313,
           0.230313
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 0.55,
@@ -338,7 +465,13 @@
           0.232604,
           0.232604,
           0.232604
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 0.65,
@@ -355,7 +488,13 @@
           0.234896,
           0.234896,
           0.234896
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 0.75,
@@ -372,7 +511,13 @@
           0.237188,
           0.237188,
           0.237188
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 0.85,
@@ -389,7 +534,13 @@
           0.239479,
           0.239479,
           0.239479
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 0.95,
@@ -406,7 +557,13 @@
           0.241771,
           0.241771,
           0.241771
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 1.05,
@@ -423,7 +580,13 @@
           0.244063,
           0.244063,
           0.244063
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 1.15,
@@ -440,7 +603,13 @@
           0.246354,
           0.246354,
           0.246354
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 1.25,
@@ -457,7 +626,13 @@
           0.248646,
           0.248646,
           0.248646
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 1.35,
@@ -474,7 +649,13 @@
           0.250938,
           0.250938,
           0.250938
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 1.45,
@@ -491,7 +672,13 @@
           0.253229,
           0.253229,
           0.253229
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 1.55,
@@ -508,7 +695,13 @@
           0.255521,
           0.255521,
           0.255521
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 1.65,
@@ -525,7 +718,13 @@
           0.257812,
           0.257812,
           0.257812
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 1.75,
@@ -542,7 +741,13 @@
           0.260104,
           0.260104,
           0.260104
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 1.85,
@@ -559,7 +764,13 @@
           0.262396,
           0.262396,
           0.262396
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 1.95,
@@ -576,7 +787,13 @@
           0.264688,
           0.264688,
           0.264688
-        ]
+        ],
+        "position": {
+          "bar": 1,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 2.05,
@@ -593,7 +810,13 @@
           0.266979,
           0.266979,
           0.266979
-        ]
+        ],
+        "position": {
+          "bar": 2,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 2.15,
@@ -610,7 +833,13 @@
           0.269271,
           0.269271,
           0.269271
-        ]
+        ],
+        "position": {
+          "bar": 2,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 2.25,
@@ -627,7 +856,13 @@
           0.271563,
           0.271563,
           0.271563
-        ]
+        ],
+        "position": {
+          "bar": 2,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 2.35,
@@ -644,7 +879,13 @@
           0.273854,
           0.273854,
           0.273854
-        ]
+        ],
+        "position": {
+          "bar": 2,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 2.45,
@@ -661,7 +902,13 @@
           0.276146,
           0.276146,
           0.276146
-        ]
+        ],
+        "position": {
+          "bar": 2,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 2.55,
@@ -678,7 +925,13 @@
           0.278438,
           0.278438,
           0.278438
-        ]
+        ],
+        "position": {
+          "bar": 2,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 2.65,
@@ -695,7 +948,13 @@
           0.280729,
           0.280729,
           0.280729
-        ]
+        ],
+        "position": {
+          "bar": 2,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 2.75,
@@ -712,7 +971,13 @@
           0.283021,
           0.283021,
           0.283021
-        ]
+        ],
+        "position": {
+          "bar": 2,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 2.85,
@@ -729,7 +994,13 @@
           0.285313,
           0.285313,
           0.285313
-        ]
+        ],
+        "position": {
+          "bar": 2,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
       },
       {
         "time": 2.95,
@@ -746,7 +1017,13 @@
           0.287604,
           0.287604,
           0.287604
-        ]
+        ],
+        "position": {
+          "bar": 2,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
       }
     ],
     "decimation": "pair-averaging",

@@ -63,7 +63,13 @@ def test_overview_budget_mcpfull_under_6kb() -> None:
     size = len(_serialize(_overview("McpFull - Fixture")).encode("utf-8"))
     # D25: the committed budget assert is fixture-based; 6 KB is the plan's
     # stated ceiling for Armin - Revolution (7 sections, 58 event rows).
-    assert size < 6144, f"overview is {size} bytes, over the 6144-byte budget"
+    # v3.7 item 2 — `impact_alignment` is a new, always-resolved-or-omitted
+    # section field (omitted when null, same convention as energy/tension —
+    # see `_section_clue_fields`); the fixture carries one resolved example
+    # so this test still exercises the non-null shape, so the ceiling moves
+    # up by ~300 bytes to keep it, still well under the 8 KB the tool
+    # description budgets for a fully-populated real song.
+    assert size < 6450, f"overview is {size} bytes, over the 6450-byte budget"
 
 
 def test_overview_never_emits_the_beat_list() -> None:

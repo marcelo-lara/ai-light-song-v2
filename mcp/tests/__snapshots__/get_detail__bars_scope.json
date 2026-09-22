@@ -1,0 +1,4990 @@
+{
+  "song_name": "McpFull - Fixture",
+  "scope": {
+    "kind": "bars",
+    "bars": [
+      3,
+      4
+    ]
+  },
+  "span": {
+    "start": 4.0,
+    "end": 8.0,
+    "duration": 4.0,
+    "start_position": {
+      "bar": 3,
+      "beat": 1,
+      "section_id": "section-001",
+      "resolved": true
+    },
+    "end_position": {
+      "bar": 5,
+      "beat": 1,
+      "section_id": "section-002",
+      "resolved": true
+    }
+  },
+  "structural": {
+    "sections": {
+      "rows": [
+        {
+          "section_id": "section-001",
+          "start": 0.0,
+          "end": 8.0,
+          "function": "intro",
+          "function_status": "known",
+          "same_label_as": null,
+          "energy": 3,
+          "energy_confidence": 0.62,
+          "tension": 2,
+          "tension_confidence": 0.44,
+          "rhythm": {
+            "drums": {
+              "subdivision": "quarter",
+              "confidence": 0.71
+            }
+          },
+          "start_position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        }
+      ],
+      "field_sources": {
+        "section_id": "allin1",
+        "start": "allin1",
+        "end": "allin1",
+        "confidence": "allin1",
+        "key": "harmonic",
+        "function": "allin1",
+        "function_confidence": "allin1",
+        "function_status": "allin1",
+        "same_label_as": "allin1",
+        "energy": "energy_level",
+        "energy_confidence": "energy_level",
+        "tension": "tension_shape",
+        "tension_confidence": "tension_shape",
+        "rhythm.drums": "rhythm_drum_ioi",
+        "rhythm.vocals": "rhythm_stem_autocorr",
+        "impact_alignment": "impact_alignment"
+      }
+    },
+    "phases": {
+      "rows": [],
+      "field_sources": {
+        "type": "gestures",
+        "start_time": "gestures",
+        "end_time": "gestures",
+        "confidence": "gestures",
+        "intensity": "gestures",
+        "gesture_id": "gestures",
+        "section_id": "allin1"
+      }
+    },
+    "transitions": {
+      "rows": [],
+      "field_sources": {
+        "type": "gestures",
+        "start_time": "gestures",
+        "end_time": "gestures",
+        "confidence": "gestures",
+        "intensity": "gestures",
+        "gesture_id": "gestures",
+        "section_id": "allin1"
+      }
+    },
+    "hints": {
+      "rows": [],
+      "source": "human",
+      "field_sources": {
+        "section_id": "human",
+        "title": "human",
+        "text": "human",
+        "start_time": "human",
+        "end_time": "human",
+        "lighting_hint": "human"
+      }
+    },
+    "arrangement": {
+      "rows": [
+        {
+          "start_s": 0.0,
+          "end_s": 8.0,
+          "playing": [
+            "bass",
+            "drums",
+            "harmonic",
+            "vocals"
+          ],
+          "entered": [],
+          "left": [],
+          "margin_db": null,
+          "confidence": null,
+          "start_position": {
+            "bar": 1,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        }
+      ],
+      "vocals_phrase": [],
+      "vocals_sibilance_song_mean": null,
+      "field_sources": {
+        "start_s": "arrangement_state",
+        "end_s": "arrangement_state",
+        "playing": "arrangement_state",
+        "entered": "arrangement_state",
+        "left": "arrangement_state",
+        "margin_db": "arrangement_state",
+        "confidence": "arrangement_state"
+      }
+    },
+    "drum_events": {
+      "rows": [
+        {
+          "time": 4.0,
+          "event_type": "kick",
+          "position": {
+            "bar": 3,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 4.5,
+          "event_type": "kick",
+          "position": {
+            "bar": 3,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 4.5,
+          "event_type": "snare",
+          "position": {
+            "bar": 3,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 5.0,
+          "event_type": "kick",
+          "position": {
+            "bar": 3,
+            "beat": 3,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 5.5,
+          "event_type": "kick",
+          "position": {
+            "bar": 3,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 5.5,
+          "event_type": "snare",
+          "position": {
+            "bar": 3,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 6.0,
+          "event_type": "kick",
+          "position": {
+            "bar": 4,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 6.5,
+          "event_type": "kick",
+          "position": {
+            "bar": 4,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 6.5,
+          "event_type": "snare",
+          "position": {
+            "bar": 4,
+            "beat": 2,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 7.0,
+          "event_type": "kick",
+          "position": {
+            "bar": 4,
+            "beat": 3,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 7.5,
+          "event_type": "kick",
+          "position": {
+            "bar": 4,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 7.5,
+          "event_type": "snare",
+          "position": {
+            "bar": 4,
+            "beat": 4,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "time": 8.0,
+          "event_type": "kick",
+          "position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        }
+      ],
+      "field_sources": {
+        "time": "omnizart",
+        "event_type": "omnizart"
+      },
+      "summary": {
+        "event_count": 72,
+        "kick_count": 48,
+        "snare_count": 24,
+        "hat_count": 0,
+        "unresolved_count": 0
+      },
+      "confidence": null,
+      "confidence_reason": "omnizart emits no per-hit confidence signal — every event in the fixture (as in the full corpus) carries null confidence; stated once here rather than repeated on every row"
+    },
+    "beats": {
+      "rows": [
+        {
+          "time": 4.0,
+          "bar": 3,
+          "beat": 1,
+          "downbeat_confidence": 0.4
+        },
+        {
+          "time": 4.5,
+          "bar": 3,
+          "beat": 2,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 5.0,
+          "bar": 3,
+          "beat": 3,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 5.5,
+          "bar": 3,
+          "beat": 4,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 6.0,
+          "bar": 4,
+          "beat": 1,
+          "downbeat_confidence": 0.45
+        },
+        {
+          "time": 6.5,
+          "bar": 4,
+          "beat": 2,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 7.0,
+          "bar": 4,
+          "beat": 3,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 7.5,
+          "bar": 4,
+          "beat": 4,
+          "downbeat_confidence": null
+        },
+        {
+          "time": 8.0,
+          "bar": 5,
+          "beat": 1,
+          "downbeat_confidence": 0.5
+        }
+      ],
+      "field_sources": {
+        "time": "essentia",
+        "beat": "essentia",
+        "bar": "essentia",
+        "type": "essentia",
+        "downbeat_confidence": "allin1"
+      }
+    },
+    "aggregate_intensity": null
+  },
+  "dense": {
+    "interval_ms": 20,
+    "sources": [
+      "mix",
+      "bass",
+      "drums",
+      "harmonic",
+      "vocals"
+    ],
+    "frame_count": 200,
+    "frames": [
+      {
+        "time": 4.01,
+        "values": [
+          0.283542,
+          0.170125,
+          0.226834,
+          0.141771,
+          0.085063
+        ],
+        "normalized_values": [
+          0.311896,
+          0.311896,
+          0.311896,
+          0.311896,
+          0.311896
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.03,
+        "values": [
+          0.283958,
+          0.170375,
+          0.227166,
+          0.141979,
+          0.085187
+        ],
+        "normalized_values": [
+          0.312354,
+          0.312354,
+          0.312354,
+          0.312354,
+          0.312354
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.05,
+        "values": [
+          0.284375,
+          0.170625,
+          0.2275,
+          0.142187,
+          0.085312
+        ],
+        "normalized_values": [
+          0.312812,
+          0.312812,
+          0.312812,
+          0.312812,
+          0.312812
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.07,
+        "values": [
+          0.284792,
+          0.170875,
+          0.227834,
+          0.142396,
+          0.085438
+        ],
+        "normalized_values": [
+          0.313271,
+          0.313271,
+          0.313271,
+          0.313271,
+          0.313271
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.09,
+        "values": [
+          0.285208,
+          0.171125,
+          0.228166,
+          0.142604,
+          0.085562
+        ],
+        "normalized_values": [
+          0.313729,
+          0.313729,
+          0.313729,
+          0.313729,
+          0.313729
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.11,
+        "values": [
+          0.285625,
+          0.171375,
+          0.2285,
+          0.142813,
+          0.085687
+        ],
+        "normalized_values": [
+          0.314188,
+          0.314188,
+          0.314188,
+          0.314188,
+          0.314188
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.13,
+        "values": [
+          0.286042,
+          0.171625,
+          0.228834,
+          0.143021,
+          0.085813
+        ],
+        "normalized_values": [
+          0.314646,
+          0.314646,
+          0.314646,
+          0.314646,
+          0.314646
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.15,
+        "values": [
+          0.286458,
+          0.171875,
+          0.229166,
+          0.143229,
+          0.085937
+        ],
+        "normalized_values": [
+          0.315104,
+          0.315104,
+          0.315104,
+          0.315104,
+          0.315104
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.17,
+        "values": [
+          0.286875,
+          0.172125,
+          0.2295,
+          0.143437,
+          0.086063
+        ],
+        "normalized_values": [
+          0.315563,
+          0.315563,
+          0.315563,
+          0.315563,
+          0.315563
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.19,
+        "values": [
+          0.287292,
+          0.172375,
+          0.229834,
+          0.143646,
+          0.086188
+        ],
+        "normalized_values": [
+          0.316021,
+          0.316021,
+          0.316021,
+          0.316021,
+          0.316021
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.21,
+        "values": [
+          0.287708,
+          0.172625,
+          0.230166,
+          0.143854,
+          0.086312
+        ],
+        "normalized_values": [
+          0.316479,
+          0.316479,
+          0.316479,
+          0.316479,
+          0.316479
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.23,
+        "values": [
+          0.288125,
+          0.172875,
+          0.2305,
+          0.144063,
+          0.086438
+        ],
+        "normalized_values": [
+          0.316938,
+          0.316938,
+          0.316938,
+          0.316938,
+          0.316938
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.25,
+        "values": [
+          0.288542,
+          0.173125,
+          0.230834,
+          0.144271,
+          0.086563
+        ],
+        "normalized_values": [
+          0.317396,
+          0.317396,
+          0.317396,
+          0.317396,
+          0.317396
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.27,
+        "values": [
+          0.288958,
+          0.173375,
+          0.231166,
+          0.144479,
+          0.086687
+        ],
+        "normalized_values": [
+          0.317854,
+          0.317854,
+          0.317854,
+          0.317854,
+          0.317854
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.29,
+        "values": [
+          0.289375,
+          0.173625,
+          0.2315,
+          0.144687,
+          0.086813
+        ],
+        "normalized_values": [
+          0.318312,
+          0.318312,
+          0.318312,
+          0.318312,
+          0.318312
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.31,
+        "values": [
+          0.289792,
+          0.173875,
+          0.231834,
+          0.144896,
+          0.086938
+        ],
+        "normalized_values": [
+          0.318771,
+          0.318771,
+          0.318771,
+          0.318771,
+          0.318771
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.33,
+        "values": [
+          0.290208,
+          0.174125,
+          0.232166,
+          0.145104,
+          0.087062
+        ],
+        "normalized_values": [
+          0.319229,
+          0.319229,
+          0.319229,
+          0.319229,
+          0.319229
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.35,
+        "values": [
+          0.290625,
+          0.174375,
+          0.2325,
+          0.145313,
+          0.087188
+        ],
+        "normalized_values": [
+          0.319688,
+          0.319688,
+          0.319688,
+          0.319688,
+          0.319688
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.37,
+        "values": [
+          0.291042,
+          0.174625,
+          0.232834,
+          0.145521,
+          0.087313
+        ],
+        "normalized_values": [
+          0.320146,
+          0.320146,
+          0.320146,
+          0.320146,
+          0.320146
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.39,
+        "values": [
+          0.291458,
+          0.174875,
+          0.233166,
+          0.145729,
+          0.087437
+        ],
+        "normalized_values": [
+          0.320604,
+          0.320604,
+          0.320604,
+          0.320604,
+          0.320604
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.41,
+        "values": [
+          0.291875,
+          0.175125,
+          0.2335,
+          0.145937,
+          0.087563
+        ],
+        "normalized_values": [
+          0.321063,
+          0.321063,
+          0.321063,
+          0.321063,
+          0.321063
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.43,
+        "values": [
+          0.292292,
+          0.175375,
+          0.233834,
+          0.146146,
+          0.087688
+        ],
+        "normalized_values": [
+          0.321521,
+          0.321521,
+          0.321521,
+          0.321521,
+          0.321521
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.45,
+        "values": [
+          0.292708,
+          0.175625,
+          0.234166,
+          0.146354,
+          0.087812
+        ],
+        "normalized_values": [
+          0.321979,
+          0.321979,
+          0.321979,
+          0.321979,
+          0.321979
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.47,
+        "values": [
+          0.293125,
+          0.175875,
+          0.2345,
+          0.146563,
+          0.087938
+        ],
+        "normalized_values": [
+          0.322438,
+          0.322438,
+          0.322438,
+          0.322438,
+          0.322438
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.49,
+        "values": [
+          0.293542,
+          0.176125,
+          0.234834,
+          0.146771,
+          0.088063
+        ],
+        "normalized_values": [
+          0.322896,
+          0.322896,
+          0.322896,
+          0.322896,
+          0.322896
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.51,
+        "values": [
+          0.293958,
+          0.176375,
+          0.235166,
+          0.146979,
+          0.088187
+        ],
+        "normalized_values": [
+          0.323354,
+          0.323354,
+          0.323354,
+          0.323354,
+          0.323354
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.53,
+        "values": [
+          0.294375,
+          0.176625,
+          0.2355,
+          0.147187,
+          0.088313
+        ],
+        "normalized_values": [
+          0.323813,
+          0.323813,
+          0.323813,
+          0.323813,
+          0.323813
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.55,
+        "values": [
+          0.294792,
+          0.176875,
+          0.235834,
+          0.147396,
+          0.088438
+        ],
+        "normalized_values": [
+          0.324271,
+          0.324271,
+          0.324271,
+          0.324271,
+          0.324271
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.57,
+        "values": [
+          0.295208,
+          0.177125,
+          0.236166,
+          0.147604,
+          0.088562
+        ],
+        "normalized_values": [
+          0.324729,
+          0.324729,
+          0.324729,
+          0.324729,
+          0.324729
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.59,
+        "values": [
+          0.295625,
+          0.177375,
+          0.2365,
+          0.147813,
+          0.088688
+        ],
+        "normalized_values": [
+          0.325188,
+          0.325188,
+          0.325188,
+          0.325188,
+          0.325188
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.61,
+        "values": [
+          0.296042,
+          0.177625,
+          0.236834,
+          0.148021,
+          0.088813
+        ],
+        "normalized_values": [
+          0.325646,
+          0.325646,
+          0.325646,
+          0.325646,
+          0.325646
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.63,
+        "values": [
+          0.296458,
+          0.177875,
+          0.237166,
+          0.148229,
+          0.088937
+        ],
+        "normalized_values": [
+          0.326104,
+          0.326104,
+          0.326104,
+          0.326104,
+          0.326104
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.65,
+        "values": [
+          0.296875,
+          0.178125,
+          0.2375,
+          0.148438,
+          0.089063
+        ],
+        "normalized_values": [
+          0.326563,
+          0.326563,
+          0.326563,
+          0.326563,
+          0.326563
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.67,
+        "values": [
+          0.297292,
+          0.178375,
+          0.237834,
+          0.148646,
+          0.089188
+        ],
+        "normalized_values": [
+          0.327021,
+          0.327021,
+          0.327021,
+          0.327021,
+          0.327021
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.69,
+        "values": [
+          0.297708,
+          0.178625,
+          0.238166,
+          0.148854,
+          0.089312
+        ],
+        "normalized_values": [
+          0.327479,
+          0.327479,
+          0.327479,
+          0.327479,
+          0.327479
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.71,
+        "values": [
+          0.298125,
+          0.178875,
+          0.2385,
+          0.149062,
+          0.089437
+        ],
+        "normalized_values": [
+          0.327937,
+          0.327937,
+          0.327937,
+          0.327937,
+          0.327937
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.73,
+        "values": [
+          0.298542,
+          0.179125,
+          0.238834,
+          0.149271,
+          0.089563
+        ],
+        "normalized_values": [
+          0.328396,
+          0.328396,
+          0.328396,
+          0.328396,
+          0.328396
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.75,
+        "values": [
+          0.298958,
+          0.179375,
+          0.239166,
+          0.149479,
+          0.089687
+        ],
+        "normalized_values": [
+          0.328854,
+          0.328854,
+          0.328854,
+          0.328854,
+          0.328854
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.77,
+        "values": [
+          0.299375,
+          0.179625,
+          0.2395,
+          0.149688,
+          0.089813
+        ],
+        "normalized_values": [
+          0.329313,
+          0.329313,
+          0.329313,
+          0.329313,
+          0.329313
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.79,
+        "values": [
+          0.299792,
+          0.179875,
+          0.239834,
+          0.149896,
+          0.089938
+        ],
+        "normalized_values": [
+          0.329771,
+          0.329771,
+          0.329771,
+          0.329771,
+          0.329771
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.81,
+        "values": [
+          0.300208,
+          0.180125,
+          0.240166,
+          0.150104,
+          0.090062
+        ],
+        "normalized_values": [
+          0.330229,
+          0.330229,
+          0.330229,
+          0.330229,
+          0.330229
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.83,
+        "values": [
+          0.300625,
+          0.180375,
+          0.2405,
+          0.150312,
+          0.090187
+        ],
+        "normalized_values": [
+          0.330688,
+          0.330688,
+          0.330688,
+          0.330688,
+          0.330688
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.85,
+        "values": [
+          0.301042,
+          0.180625,
+          0.240834,
+          0.150521,
+          0.090313
+        ],
+        "normalized_values": [
+          0.331146,
+          0.331146,
+          0.331146,
+          0.331146,
+          0.331146
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.87,
+        "values": [
+          0.301458,
+          0.180875,
+          0.241166,
+          0.150729,
+          0.090437
+        ],
+        "normalized_values": [
+          0.331604,
+          0.331604,
+          0.331604,
+          0.331604,
+          0.331604
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.89,
+        "values": [
+          0.301875,
+          0.181125,
+          0.2415,
+          0.150938,
+          0.090563
+        ],
+        "normalized_values": [
+          0.332063,
+          0.332063,
+          0.332063,
+          0.332063,
+          0.332063
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.91,
+        "values": [
+          0.302292,
+          0.181375,
+          0.241834,
+          0.151146,
+          0.090688
+        ],
+        "normalized_values": [
+          0.332521,
+          0.332521,
+          0.332521,
+          0.332521,
+          0.332521
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.93,
+        "values": [
+          0.302708,
+          0.181625,
+          0.242166,
+          0.151354,
+          0.090812
+        ],
+        "normalized_values": [
+          0.332979,
+          0.332979,
+          0.332979,
+          0.332979,
+          0.332979
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.95,
+        "values": [
+          0.303125,
+          0.181875,
+          0.2425,
+          0.151562,
+          0.090937
+        ],
+        "normalized_values": [
+          0.333437,
+          0.333437,
+          0.333437,
+          0.333437,
+          0.333437
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.97,
+        "values": [
+          0.303542,
+          0.182125,
+          0.242834,
+          0.151771,
+          0.091063
+        ],
+        "normalized_values": [
+          0.333896,
+          0.333896,
+          0.333896,
+          0.333896,
+          0.333896
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 4.99,
+        "values": [
+          0.303958,
+          0.182375,
+          0.243166,
+          0.151979,
+          0.091187
+        ],
+        "normalized_values": [
+          0.334354,
+          0.334354,
+          0.334354,
+          0.334354,
+          0.334354
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.01,
+        "values": [
+          0.304375,
+          0.182625,
+          0.2435,
+          0.152188,
+          0.091313
+        ],
+        "normalized_values": [
+          0.334813,
+          0.334813,
+          0.334813,
+          0.334813,
+          0.334813
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.03,
+        "values": [
+          0.304792,
+          0.182875,
+          0.243834,
+          0.152396,
+          0.091438
+        ],
+        "normalized_values": [
+          0.335271,
+          0.335271,
+          0.335271,
+          0.335271,
+          0.335271
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.05,
+        "values": [
+          0.305208,
+          0.183125,
+          0.244166,
+          0.152604,
+          0.091562
+        ],
+        "normalized_values": [
+          0.335729,
+          0.335729,
+          0.335729,
+          0.335729,
+          0.335729
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.07,
+        "values": [
+          0.305625,
+          0.183375,
+          0.2445,
+          0.152812,
+          0.091687
+        ],
+        "normalized_values": [
+          0.336188,
+          0.336188,
+          0.336188,
+          0.336188,
+          0.336188
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.09,
+        "values": [
+          0.306042,
+          0.183625,
+          0.244834,
+          0.153021,
+          0.091813
+        ],
+        "normalized_values": [
+          0.336646,
+          0.336646,
+          0.336646,
+          0.336646,
+          0.336646
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.11,
+        "values": [
+          0.306458,
+          0.183875,
+          0.245166,
+          0.153229,
+          0.091937
+        ],
+        "normalized_values": [
+          0.337104,
+          0.337104,
+          0.337104,
+          0.337104,
+          0.337104
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.13,
+        "values": [
+          0.306875,
+          0.184125,
+          0.2455,
+          0.153438,
+          0.092063
+        ],
+        "normalized_values": [
+          0.337563,
+          0.337563,
+          0.337563,
+          0.337563,
+          0.337563
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.15,
+        "values": [
+          0.307292,
+          0.184375,
+          0.245834,
+          0.153646,
+          0.092188
+        ],
+        "normalized_values": [
+          0.338021,
+          0.338021,
+          0.338021,
+          0.338021,
+          0.338021
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.17,
+        "values": [
+          0.307708,
+          0.184625,
+          0.246166,
+          0.153854,
+          0.092312
+        ],
+        "normalized_values": [
+          0.338479,
+          0.338479,
+          0.338479,
+          0.338479,
+          0.338479
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.19,
+        "values": [
+          0.308125,
+          0.184875,
+          0.2465,
+          0.154062,
+          0.092437
+        ],
+        "normalized_values": [
+          0.338938,
+          0.338938,
+          0.338938,
+          0.338938,
+          0.338938
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.21,
+        "values": [
+          0.308542,
+          0.185125,
+          0.246834,
+          0.154271,
+          0.092563
+        ],
+        "normalized_values": [
+          0.339396,
+          0.339396,
+          0.339396,
+          0.339396,
+          0.339396
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.23,
+        "values": [
+          0.308958,
+          0.185375,
+          0.247166,
+          0.154479,
+          0.092687
+        ],
+        "normalized_values": [
+          0.339854,
+          0.339854,
+          0.339854,
+          0.339854,
+          0.339854
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.25,
+        "values": [
+          0.309375,
+          0.185625,
+          0.2475,
+          0.154688,
+          0.092813
+        ],
+        "normalized_values": [
+          0.340313,
+          0.340313,
+          0.340313,
+          0.340313,
+          0.340313
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.27,
+        "values": [
+          0.309792,
+          0.185875,
+          0.247834,
+          0.154896,
+          0.092938
+        ],
+        "normalized_values": [
+          0.340771,
+          0.340771,
+          0.340771,
+          0.340771,
+          0.340771
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.29,
+        "values": [
+          0.310208,
+          0.186125,
+          0.248166,
+          0.155104,
+          0.093062
+        ],
+        "normalized_values": [
+          0.341229,
+          0.341229,
+          0.341229,
+          0.341229,
+          0.341229
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.31,
+        "values": [
+          0.310625,
+          0.186375,
+          0.2485,
+          0.155312,
+          0.093187
+        ],
+        "normalized_values": [
+          0.341688,
+          0.341688,
+          0.341688,
+          0.341688,
+          0.341688
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.33,
+        "values": [
+          0.311042,
+          0.186625,
+          0.248834,
+          0.155521,
+          0.093313
+        ],
+        "normalized_values": [
+          0.342146,
+          0.342146,
+          0.342146,
+          0.342146,
+          0.342146
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.35,
+        "values": [
+          0.311458,
+          0.186875,
+          0.249166,
+          0.155729,
+          0.093437
+        ],
+        "normalized_values": [
+          0.342604,
+          0.342604,
+          0.342604,
+          0.342604,
+          0.342604
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.37,
+        "values": [
+          0.311875,
+          0.187125,
+          0.2495,
+          0.155938,
+          0.093563
+        ],
+        "normalized_values": [
+          0.343063,
+          0.343063,
+          0.343063,
+          0.343063,
+          0.343063
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.39,
+        "values": [
+          0.312292,
+          0.187375,
+          0.249834,
+          0.156146,
+          0.093688
+        ],
+        "normalized_values": [
+          0.343521,
+          0.343521,
+          0.343521,
+          0.343521,
+          0.343521
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.41,
+        "values": [
+          0.312708,
+          0.187625,
+          0.250166,
+          0.156354,
+          0.093812
+        ],
+        "normalized_values": [
+          0.343979,
+          0.343979,
+          0.343979,
+          0.343979,
+          0.343979
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.43,
+        "values": [
+          0.313125,
+          0.187875,
+          0.2505,
+          0.156562,
+          0.093937
+        ],
+        "normalized_values": [
+          0.344438,
+          0.344438,
+          0.344438,
+          0.344438,
+          0.344438
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.45,
+        "values": [
+          0.313542,
+          0.188125,
+          0.250834,
+          0.156771,
+          0.094063
+        ],
+        "normalized_values": [
+          0.344896,
+          0.344896,
+          0.344896,
+          0.344896,
+          0.344896
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.47,
+        "values": [
+          0.313958,
+          0.188375,
+          0.251166,
+          0.156979,
+          0.094187
+        ],
+        "normalized_values": [
+          0.345354,
+          0.345354,
+          0.345354,
+          0.345354,
+          0.345354
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.49,
+        "values": [
+          0.314375,
+          0.188625,
+          0.2515,
+          0.157188,
+          0.094313
+        ],
+        "normalized_values": [
+          0.345813,
+          0.345813,
+          0.345813,
+          0.345813,
+          0.345813
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.51,
+        "values": [
+          0.314792,
+          0.188875,
+          0.251834,
+          0.157396,
+          0.094438
+        ],
+        "normalized_values": [
+          0.346271,
+          0.346271,
+          0.346271,
+          0.346271,
+          0.346271
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.53,
+        "values": [
+          0.315208,
+          0.189125,
+          0.252166,
+          0.157604,
+          0.094562
+        ],
+        "normalized_values": [
+          0.346729,
+          0.346729,
+          0.346729,
+          0.346729,
+          0.346729
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.55,
+        "values": [
+          0.315625,
+          0.189375,
+          0.2525,
+          0.157812,
+          0.094687
+        ],
+        "normalized_values": [
+          0.347188,
+          0.347188,
+          0.347188,
+          0.347188,
+          0.347188
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.57,
+        "values": [
+          0.316042,
+          0.189625,
+          0.252834,
+          0.158021,
+          0.094813
+        ],
+        "normalized_values": [
+          0.347646,
+          0.347646,
+          0.347646,
+          0.347646,
+          0.347646
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.59,
+        "values": [
+          0.316458,
+          0.189875,
+          0.253166,
+          0.158229,
+          0.094937
+        ],
+        "normalized_values": [
+          0.348104,
+          0.348104,
+          0.348104,
+          0.348104,
+          0.348104
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.61,
+        "values": [
+          0.316875,
+          0.190125,
+          0.2535,
+          0.158438,
+          0.095063
+        ],
+        "normalized_values": [
+          0.348563,
+          0.348563,
+          0.348563,
+          0.348563,
+          0.348563
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.63,
+        "values": [
+          0.317292,
+          0.190375,
+          0.253834,
+          0.158646,
+          0.095188
+        ],
+        "normalized_values": [
+          0.349021,
+          0.349021,
+          0.349021,
+          0.349021,
+          0.349021
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.65,
+        "values": [
+          0.317708,
+          0.190625,
+          0.254166,
+          0.158854,
+          0.095312
+        ],
+        "normalized_values": [
+          0.349479,
+          0.349479,
+          0.349479,
+          0.349479,
+          0.349479
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.67,
+        "values": [
+          0.318125,
+          0.190875,
+          0.2545,
+          0.159062,
+          0.095437
+        ],
+        "normalized_values": [
+          0.349938,
+          0.349938,
+          0.349938,
+          0.349938,
+          0.349938
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.69,
+        "values": [
+          0.318542,
+          0.191125,
+          0.254834,
+          0.159271,
+          0.095563
+        ],
+        "normalized_values": [
+          0.350396,
+          0.350396,
+          0.350396,
+          0.350396,
+          0.350396
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.71,
+        "values": [
+          0.318958,
+          0.191375,
+          0.255166,
+          0.159479,
+          0.095687
+        ],
+        "normalized_values": [
+          0.350854,
+          0.350854,
+          0.350854,
+          0.350854,
+          0.350854
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.73,
+        "values": [
+          0.319375,
+          0.191625,
+          0.2555,
+          0.159688,
+          0.095813
+        ],
+        "normalized_values": [
+          0.351313,
+          0.351313,
+          0.351313,
+          0.351313,
+          0.351313
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.75,
+        "values": [
+          0.319792,
+          0.191875,
+          0.255834,
+          0.159896,
+          0.095938
+        ],
+        "normalized_values": [
+          0.351771,
+          0.351771,
+          0.351771,
+          0.351771,
+          0.351771
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.77,
+        "values": [
+          0.320208,
+          0.192125,
+          0.256166,
+          0.160104,
+          0.096062
+        ],
+        "normalized_values": [
+          0.352229,
+          0.352229,
+          0.352229,
+          0.352229,
+          0.352229
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.79,
+        "values": [
+          0.320625,
+          0.192375,
+          0.2565,
+          0.160312,
+          0.096187
+        ],
+        "normalized_values": [
+          0.352688,
+          0.352688,
+          0.352688,
+          0.352688,
+          0.352688
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.81,
+        "values": [
+          0.321042,
+          0.192625,
+          0.256834,
+          0.160521,
+          0.096313
+        ],
+        "normalized_values": [
+          0.353146,
+          0.353146,
+          0.353146,
+          0.353146,
+          0.353146
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.83,
+        "values": [
+          0.321458,
+          0.192875,
+          0.257166,
+          0.160729,
+          0.096437
+        ],
+        "normalized_values": [
+          0.353604,
+          0.353604,
+          0.353604,
+          0.353604,
+          0.353604
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.85,
+        "values": [
+          0.321875,
+          0.193125,
+          0.2575,
+          0.160938,
+          0.096563
+        ],
+        "normalized_values": [
+          0.354063,
+          0.354063,
+          0.354063,
+          0.354063,
+          0.354063
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.87,
+        "values": [
+          0.322292,
+          0.193375,
+          0.257834,
+          0.161146,
+          0.096688
+        ],
+        "normalized_values": [
+          0.354521,
+          0.354521,
+          0.354521,
+          0.354521,
+          0.354521
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.89,
+        "values": [
+          0.322708,
+          0.193625,
+          0.258166,
+          0.161354,
+          0.096812
+        ],
+        "normalized_values": [
+          0.354979,
+          0.354979,
+          0.354979,
+          0.354979,
+          0.354979
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.91,
+        "values": [
+          0.323125,
+          0.193875,
+          0.2585,
+          0.161562,
+          0.096937
+        ],
+        "normalized_values": [
+          0.355438,
+          0.355438,
+          0.355438,
+          0.355438,
+          0.355438
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.93,
+        "values": [
+          0.323542,
+          0.194125,
+          0.258834,
+          0.161771,
+          0.097063
+        ],
+        "normalized_values": [
+          0.355896,
+          0.355896,
+          0.355896,
+          0.355896,
+          0.355896
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.95,
+        "values": [
+          0.323958,
+          0.194375,
+          0.259166,
+          0.161979,
+          0.097187
+        ],
+        "normalized_values": [
+          0.356354,
+          0.356354,
+          0.356354,
+          0.356354,
+          0.356354
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.97,
+        "values": [
+          0.324375,
+          0.194625,
+          0.2595,
+          0.162188,
+          0.097313
+        ],
+        "normalized_values": [
+          0.356813,
+          0.356813,
+          0.356813,
+          0.356813,
+          0.356813
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 5.99,
+        "values": [
+          0.324792,
+          0.194875,
+          0.259834,
+          0.162396,
+          0.097438
+        ],
+        "normalized_values": [
+          0.357271,
+          0.357271,
+          0.357271,
+          0.357271,
+          0.357271
+        ],
+        "position": {
+          "bar": 3,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.01,
+        "values": [
+          0.325208,
+          0.195125,
+          0.260166,
+          0.162604,
+          0.097562
+        ],
+        "normalized_values": [
+          0.357729,
+          0.357729,
+          0.357729,
+          0.357729,
+          0.357729
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.03,
+        "values": [
+          0.325625,
+          0.195375,
+          0.2605,
+          0.162812,
+          0.097687
+        ],
+        "normalized_values": [
+          0.358188,
+          0.358188,
+          0.358188,
+          0.358188,
+          0.358188
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.05,
+        "values": [
+          0.326042,
+          0.195625,
+          0.260834,
+          0.163021,
+          0.097813
+        ],
+        "normalized_values": [
+          0.358646,
+          0.358646,
+          0.358646,
+          0.358646,
+          0.358646
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.07,
+        "values": [
+          0.326458,
+          0.195875,
+          0.261166,
+          0.163229,
+          0.097937
+        ],
+        "normalized_values": [
+          0.359104,
+          0.359104,
+          0.359104,
+          0.359104,
+          0.359104
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.09,
+        "values": [
+          0.326875,
+          0.196125,
+          0.2615,
+          0.163438,
+          0.098063
+        ],
+        "normalized_values": [
+          0.359563,
+          0.359563,
+          0.359563,
+          0.359563,
+          0.359563
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.11,
+        "values": [
+          0.327292,
+          0.196375,
+          0.261834,
+          0.163646,
+          0.098188
+        ],
+        "normalized_values": [
+          0.360021,
+          0.360021,
+          0.360021,
+          0.360021,
+          0.360021
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.13,
+        "values": [
+          0.327708,
+          0.196625,
+          0.262166,
+          0.163854,
+          0.098312
+        ],
+        "normalized_values": [
+          0.360479,
+          0.360479,
+          0.360479,
+          0.360479,
+          0.360479
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.15,
+        "values": [
+          0.328125,
+          0.196875,
+          0.2625,
+          0.164062,
+          0.098437
+        ],
+        "normalized_values": [
+          0.360938,
+          0.360938,
+          0.360938,
+          0.360938,
+          0.360938
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.17,
+        "values": [
+          0.328542,
+          0.197125,
+          0.262834,
+          0.164271,
+          0.098563
+        ],
+        "normalized_values": [
+          0.361396,
+          0.361396,
+          0.361396,
+          0.361396,
+          0.361396
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.19,
+        "values": [
+          0.328958,
+          0.197375,
+          0.263166,
+          0.164479,
+          0.098687
+        ],
+        "normalized_values": [
+          0.361854,
+          0.361854,
+          0.361854,
+          0.361854,
+          0.361854
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.21,
+        "values": [
+          0.329375,
+          0.197625,
+          0.2635,
+          0.164687,
+          0.098812
+        ],
+        "normalized_values": [
+          0.362312,
+          0.362312,
+          0.362312,
+          0.362312,
+          0.362312
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.23,
+        "values": [
+          0.329792,
+          0.197875,
+          0.263834,
+          0.164896,
+          0.098938
+        ],
+        "normalized_values": [
+          0.362771,
+          0.362771,
+          0.362771,
+          0.362771,
+          0.362771
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.25,
+        "values": [
+          0.330208,
+          0.198125,
+          0.264166,
+          0.165104,
+          0.099062
+        ],
+        "normalized_values": [
+          0.363229,
+          0.363229,
+          0.363229,
+          0.363229,
+          0.363229
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.27,
+        "values": [
+          0.330625,
+          0.198375,
+          0.2645,
+          0.165313,
+          0.099187
+        ],
+        "normalized_values": [
+          0.363688,
+          0.363688,
+          0.363688,
+          0.363688,
+          0.363688
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.29,
+        "values": [
+          0.331042,
+          0.198625,
+          0.264834,
+          0.165521,
+          0.099313
+        ],
+        "normalized_values": [
+          0.364146,
+          0.364146,
+          0.364146,
+          0.364146,
+          0.364146
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.31,
+        "values": [
+          0.331458,
+          0.198875,
+          0.265166,
+          0.165729,
+          0.099437
+        ],
+        "normalized_values": [
+          0.364604,
+          0.364604,
+          0.364604,
+          0.364604,
+          0.364604
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.33,
+        "values": [
+          0.331875,
+          0.199125,
+          0.2655,
+          0.165937,
+          0.099562
+        ],
+        "normalized_values": [
+          0.365063,
+          0.365063,
+          0.365063,
+          0.365063,
+          0.365063
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.35,
+        "values": [
+          0.332292,
+          0.199375,
+          0.265834,
+          0.166146,
+          0.099688
+        ],
+        "normalized_values": [
+          0.365521,
+          0.365521,
+          0.365521,
+          0.365521,
+          0.365521
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.37,
+        "values": [
+          0.332708,
+          0.199625,
+          0.266166,
+          0.166354,
+          0.099812
+        ],
+        "normalized_values": [
+          0.365979,
+          0.365979,
+          0.365979,
+          0.365979,
+          0.365979
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.39,
+        "values": [
+          0.333125,
+          0.199875,
+          0.2665,
+          0.166563,
+          0.099937
+        ],
+        "normalized_values": [
+          0.366438,
+          0.366438,
+          0.366438,
+          0.366438,
+          0.366438
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.41,
+        "values": [
+          0.333542,
+          0.200125,
+          0.266834,
+          0.166771,
+          0.100063
+        ],
+        "normalized_values": [
+          0.366896,
+          0.366896,
+          0.366896,
+          0.366896,
+          0.366896
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.43,
+        "values": [
+          0.333958,
+          0.200375,
+          0.267166,
+          0.166979,
+          0.100187
+        ],
+        "normalized_values": [
+          0.367354,
+          0.367354,
+          0.367354,
+          0.367354,
+          0.367354
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.45,
+        "values": [
+          0.334375,
+          0.200625,
+          0.2675,
+          0.167187,
+          0.100312
+        ],
+        "normalized_values": [
+          0.367812,
+          0.367812,
+          0.367812,
+          0.367812,
+          0.367812
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.47,
+        "values": [
+          0.334792,
+          0.200875,
+          0.267834,
+          0.167396,
+          0.100438
+        ],
+        "normalized_values": [
+          0.368271,
+          0.368271,
+          0.368271,
+          0.368271,
+          0.368271
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.49,
+        "values": [
+          0.335208,
+          0.201125,
+          0.268166,
+          0.167604,
+          0.100562
+        ],
+        "normalized_values": [
+          0.368729,
+          0.368729,
+          0.368729,
+          0.368729,
+          0.368729
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 1,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.51,
+        "values": [
+          0.335625,
+          0.201375,
+          0.2685,
+          0.167813,
+          0.100687
+        ],
+        "normalized_values": [
+          0.369188,
+          0.369188,
+          0.369188,
+          0.369188,
+          0.369188
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.53,
+        "values": [
+          0.336042,
+          0.201625,
+          0.268834,
+          0.168021,
+          0.100813
+        ],
+        "normalized_values": [
+          0.369646,
+          0.369646,
+          0.369646,
+          0.369646,
+          0.369646
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.55,
+        "values": [
+          0.336458,
+          0.201875,
+          0.269166,
+          0.168229,
+          0.100937
+        ],
+        "normalized_values": [
+          0.370104,
+          0.370104,
+          0.370104,
+          0.370104,
+          0.370104
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.57,
+        "values": [
+          0.336875,
+          0.202125,
+          0.2695,
+          0.168437,
+          0.101062
+        ],
+        "normalized_values": [
+          0.370563,
+          0.370563,
+          0.370563,
+          0.370563,
+          0.370563
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.59,
+        "values": [
+          0.337292,
+          0.202375,
+          0.269834,
+          0.168646,
+          0.101188
+        ],
+        "normalized_values": [
+          0.371021,
+          0.371021,
+          0.371021,
+          0.371021,
+          0.371021
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.61,
+        "values": [
+          0.337708,
+          0.202625,
+          0.270166,
+          0.168854,
+          0.101312
+        ],
+        "normalized_values": [
+          0.371479,
+          0.371479,
+          0.371479,
+          0.371479,
+          0.371479
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.63,
+        "values": [
+          0.338125,
+          0.202875,
+          0.2705,
+          0.169063,
+          0.101437
+        ],
+        "normalized_values": [
+          0.371938,
+          0.371938,
+          0.371938,
+          0.371938,
+          0.371938
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.65,
+        "values": [
+          0.338542,
+          0.203125,
+          0.270834,
+          0.169271,
+          0.101563
+        ],
+        "normalized_values": [
+          0.372396,
+          0.372396,
+          0.372396,
+          0.372396,
+          0.372396
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.67,
+        "values": [
+          0.338958,
+          0.203375,
+          0.271166,
+          0.169479,
+          0.101687
+        ],
+        "normalized_values": [
+          0.372854,
+          0.372854,
+          0.372854,
+          0.372854,
+          0.372854
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.69,
+        "values": [
+          0.339375,
+          0.203625,
+          0.2715,
+          0.169687,
+          0.101812
+        ],
+        "normalized_values": [
+          0.373312,
+          0.373312,
+          0.373312,
+          0.373312,
+          0.373312
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.71,
+        "values": [
+          0.339792,
+          0.203875,
+          0.271834,
+          0.169896,
+          0.101938
+        ],
+        "normalized_values": [
+          0.373771,
+          0.373771,
+          0.373771,
+          0.373771,
+          0.373771
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.73,
+        "values": [
+          0.340208,
+          0.204125,
+          0.272166,
+          0.170104,
+          0.102062
+        ],
+        "normalized_values": [
+          0.374229,
+          0.374229,
+          0.374229,
+          0.374229,
+          0.374229
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.75,
+        "values": [
+          0.340625,
+          0.204375,
+          0.2725,
+          0.170313,
+          0.102188
+        ],
+        "normalized_values": [
+          0.374688,
+          0.374688,
+          0.374688,
+          0.374688,
+          0.374688
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.77,
+        "values": [
+          0.341042,
+          0.204625,
+          0.272834,
+          0.170521,
+          0.102313
+        ],
+        "normalized_values": [
+          0.375146,
+          0.375146,
+          0.375146,
+          0.375146,
+          0.375146
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.79,
+        "values": [
+          0.341458,
+          0.204875,
+          0.273166,
+          0.170729,
+          0.102437
+        ],
+        "normalized_values": [
+          0.375604,
+          0.375604,
+          0.375604,
+          0.375604,
+          0.375604
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.81,
+        "values": [
+          0.341875,
+          0.205125,
+          0.2735,
+          0.170937,
+          0.102562
+        ],
+        "normalized_values": [
+          0.376063,
+          0.376063,
+          0.376063,
+          0.376063,
+          0.376063
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.83,
+        "values": [
+          0.342292,
+          0.205375,
+          0.273834,
+          0.171146,
+          0.102688
+        ],
+        "normalized_values": [
+          0.376521,
+          0.376521,
+          0.376521,
+          0.376521,
+          0.376521
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.85,
+        "values": [
+          0.342708,
+          0.205625,
+          0.274166,
+          0.171354,
+          0.102812
+        ],
+        "normalized_values": [
+          0.376979,
+          0.376979,
+          0.376979,
+          0.376979,
+          0.376979
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.87,
+        "values": [
+          0.343125,
+          0.205875,
+          0.2745,
+          0.171563,
+          0.102938
+        ],
+        "normalized_values": [
+          0.377438,
+          0.377438,
+          0.377438,
+          0.377438,
+          0.377438
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.89,
+        "values": [
+          0.343542,
+          0.206125,
+          0.274834,
+          0.171771,
+          0.103063
+        ],
+        "normalized_values": [
+          0.377896,
+          0.377896,
+          0.377896,
+          0.377896,
+          0.377896
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.91,
+        "values": [
+          0.343958,
+          0.206375,
+          0.275166,
+          0.171979,
+          0.103187
+        ],
+        "normalized_values": [
+          0.378354,
+          0.378354,
+          0.378354,
+          0.378354,
+          0.378354
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.93,
+        "values": [
+          0.344375,
+          0.206625,
+          0.2755,
+          0.172187,
+          0.103312
+        ],
+        "normalized_values": [
+          0.378812,
+          0.378812,
+          0.378812,
+          0.378812,
+          0.378812
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.95,
+        "values": [
+          0.344792,
+          0.206875,
+          0.275834,
+          0.172396,
+          0.103438
+        ],
+        "normalized_values": [
+          0.379271,
+          0.379271,
+          0.379271,
+          0.379271,
+          0.379271
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.97,
+        "values": [
+          0.345208,
+          0.207125,
+          0.276166,
+          0.172604,
+          0.103562
+        ],
+        "normalized_values": [
+          0.379729,
+          0.379729,
+          0.379729,
+          0.379729,
+          0.379729
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 6.99,
+        "values": [
+          0.345625,
+          0.207375,
+          0.2765,
+          0.172813,
+          0.103688
+        ],
+        "normalized_values": [
+          0.380188,
+          0.380188,
+          0.380188,
+          0.380188,
+          0.380188
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 2,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.01,
+        "values": [
+          0.346042,
+          0.207625,
+          0.276834,
+          0.173021,
+          0.103813
+        ],
+        "normalized_values": [
+          0.380646,
+          0.380646,
+          0.380646,
+          0.380646,
+          0.380646
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.03,
+        "values": [
+          0.346458,
+          0.207875,
+          0.277166,
+          0.173229,
+          0.103937
+        ],
+        "normalized_values": [
+          0.381104,
+          0.381104,
+          0.381104,
+          0.381104,
+          0.381104
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.05,
+        "values": [
+          0.346875,
+          0.208125,
+          0.2775,
+          0.173437,
+          0.104062
+        ],
+        "normalized_values": [
+          0.381563,
+          0.381563,
+          0.381563,
+          0.381563,
+          0.381563
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.07,
+        "values": [
+          0.347292,
+          0.208375,
+          0.277834,
+          0.173646,
+          0.104188
+        ],
+        "normalized_values": [
+          0.382021,
+          0.382021,
+          0.382021,
+          0.382021,
+          0.382021
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.09,
+        "values": [
+          0.347708,
+          0.208625,
+          0.278166,
+          0.173854,
+          0.104312
+        ],
+        "normalized_values": [
+          0.382479,
+          0.382479,
+          0.382479,
+          0.382479,
+          0.382479
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.11,
+        "values": [
+          0.348125,
+          0.208875,
+          0.2785,
+          0.174063,
+          0.104438
+        ],
+        "normalized_values": [
+          0.382938,
+          0.382938,
+          0.382938,
+          0.382938,
+          0.382938
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.13,
+        "values": [
+          0.348542,
+          0.209125,
+          0.278834,
+          0.174271,
+          0.104563
+        ],
+        "normalized_values": [
+          0.383396,
+          0.383396,
+          0.383396,
+          0.383396,
+          0.383396
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.15,
+        "values": [
+          0.348958,
+          0.209375,
+          0.279166,
+          0.174479,
+          0.104687
+        ],
+        "normalized_values": [
+          0.383854,
+          0.383854,
+          0.383854,
+          0.383854,
+          0.383854
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.17,
+        "values": [
+          0.349375,
+          0.209625,
+          0.2795,
+          0.174687,
+          0.104812
+        ],
+        "normalized_values": [
+          0.384313,
+          0.384313,
+          0.384313,
+          0.384313,
+          0.384313
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.19,
+        "values": [
+          0.349792,
+          0.209875,
+          0.279834,
+          0.174896,
+          0.104938
+        ],
+        "normalized_values": [
+          0.384771,
+          0.384771,
+          0.384771,
+          0.384771,
+          0.384771
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.21,
+        "values": [
+          0.350208,
+          0.210125,
+          0.280166,
+          0.175104,
+          0.105062
+        ],
+        "normalized_values": [
+          0.385229,
+          0.385229,
+          0.385229,
+          0.385229,
+          0.385229
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.23,
+        "values": [
+          0.350625,
+          0.210375,
+          0.2805,
+          0.175313,
+          0.105188
+        ],
+        "normalized_values": [
+          0.385688,
+          0.385688,
+          0.385688,
+          0.385688,
+          0.385688
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.25,
+        "values": [
+          0.351042,
+          0.210625,
+          0.280834,
+          0.175521,
+          0.105313
+        ],
+        "normalized_values": [
+          0.386146,
+          0.386146,
+          0.386146,
+          0.386146,
+          0.386146
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.27,
+        "values": [
+          0.351458,
+          0.210875,
+          0.281166,
+          0.175729,
+          0.105437
+        ],
+        "normalized_values": [
+          0.386604,
+          0.386604,
+          0.386604,
+          0.386604,
+          0.386604
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.29,
+        "values": [
+          0.351875,
+          0.211125,
+          0.2815,
+          0.175937,
+          0.105562
+        ],
+        "normalized_values": [
+          0.387063,
+          0.387063,
+          0.387063,
+          0.387063,
+          0.387063
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.31,
+        "values": [
+          0.352292,
+          0.211375,
+          0.281834,
+          0.176146,
+          0.105688
+        ],
+        "normalized_values": [
+          0.387521,
+          0.387521,
+          0.387521,
+          0.387521,
+          0.387521
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.33,
+        "values": [
+          0.352708,
+          0.211625,
+          0.282166,
+          0.176354,
+          0.105812
+        ],
+        "normalized_values": [
+          0.387979,
+          0.387979,
+          0.387979,
+          0.387979,
+          0.387979
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.35,
+        "values": [
+          0.353125,
+          0.211875,
+          0.2825,
+          0.176563,
+          0.105938
+        ],
+        "normalized_values": [
+          0.388438,
+          0.388438,
+          0.388438,
+          0.388438,
+          0.388438
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.37,
+        "values": [
+          0.353542,
+          0.212125,
+          0.282834,
+          0.176771,
+          0.106063
+        ],
+        "normalized_values": [
+          0.388896,
+          0.388896,
+          0.388896,
+          0.388896,
+          0.388896
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.39,
+        "values": [
+          0.353958,
+          0.212375,
+          0.283166,
+          0.176979,
+          0.106187
+        ],
+        "normalized_values": [
+          0.389354,
+          0.389354,
+          0.389354,
+          0.389354,
+          0.389354
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.41,
+        "values": [
+          0.354375,
+          0.212625,
+          0.2835,
+          0.177187,
+          0.106312
+        ],
+        "normalized_values": [
+          0.389813,
+          0.389813,
+          0.389813,
+          0.389813,
+          0.389813
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.43,
+        "values": [
+          0.354792,
+          0.212875,
+          0.283834,
+          0.177396,
+          0.106438
+        ],
+        "normalized_values": [
+          0.390271,
+          0.390271,
+          0.390271,
+          0.390271,
+          0.390271
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.45,
+        "values": [
+          0.355208,
+          0.213125,
+          0.284166,
+          0.177604,
+          0.106562
+        ],
+        "normalized_values": [
+          0.390729,
+          0.390729,
+          0.390729,
+          0.390729,
+          0.390729
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.47,
+        "values": [
+          0.355625,
+          0.213375,
+          0.2845,
+          0.177813,
+          0.106688
+        ],
+        "normalized_values": [
+          0.391188,
+          0.391188,
+          0.391188,
+          0.391188,
+          0.391188
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.49,
+        "values": [
+          0.356042,
+          0.213625,
+          0.284834,
+          0.178021,
+          0.106813
+        ],
+        "normalized_values": [
+          0.391646,
+          0.391646,
+          0.391646,
+          0.391646,
+          0.391646
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 3,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.51,
+        "values": [
+          0.356458,
+          0.213875,
+          0.285166,
+          0.178229,
+          0.106937
+        ],
+        "normalized_values": [
+          0.392104,
+          0.392104,
+          0.392104,
+          0.392104,
+          0.392104
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.53,
+        "values": [
+          0.356875,
+          0.214125,
+          0.2855,
+          0.178437,
+          0.107062
+        ],
+        "normalized_values": [
+          0.392563,
+          0.392563,
+          0.392563,
+          0.392563,
+          0.392563
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.55,
+        "values": [
+          0.357292,
+          0.214375,
+          0.285834,
+          0.178646,
+          0.107188
+        ],
+        "normalized_values": [
+          0.393021,
+          0.393021,
+          0.393021,
+          0.393021,
+          0.393021
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.57,
+        "values": [
+          0.357708,
+          0.214625,
+          0.286166,
+          0.178854,
+          0.107312
+        ],
+        "normalized_values": [
+          0.393479,
+          0.393479,
+          0.393479,
+          0.393479,
+          0.393479
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.59,
+        "values": [
+          0.358125,
+          0.214875,
+          0.2865,
+          0.179063,
+          0.107438
+        ],
+        "normalized_values": [
+          0.393938,
+          0.393938,
+          0.393938,
+          0.393938,
+          0.393938
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.61,
+        "values": [
+          0.358542,
+          0.215125,
+          0.286834,
+          0.179271,
+          0.107563
+        ],
+        "normalized_values": [
+          0.394396,
+          0.394396,
+          0.394396,
+          0.394396,
+          0.394396
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.63,
+        "values": [
+          0.358958,
+          0.215375,
+          0.287166,
+          0.179479,
+          0.107687
+        ],
+        "normalized_values": [
+          0.394854,
+          0.394854,
+          0.394854,
+          0.394854,
+          0.394854
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.65,
+        "values": [
+          0.359375,
+          0.215625,
+          0.2875,
+          0.179688,
+          0.107812
+        ],
+        "normalized_values": [
+          0.395313,
+          0.395313,
+          0.395313,
+          0.395313,
+          0.395313
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.67,
+        "values": [
+          0.359792,
+          0.215875,
+          0.287834,
+          0.179896,
+          0.107938
+        ],
+        "normalized_values": [
+          0.395771,
+          0.395771,
+          0.395771,
+          0.395771,
+          0.395771
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.69,
+        "values": [
+          0.360208,
+          0.216125,
+          0.288166,
+          0.180104,
+          0.108062
+        ],
+        "normalized_values": [
+          0.396229,
+          0.396229,
+          0.396229,
+          0.396229,
+          0.396229
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.71,
+        "values": [
+          0.360625,
+          0.216375,
+          0.2885,
+          0.180312,
+          0.108187
+        ],
+        "normalized_values": [
+          0.396688,
+          0.396688,
+          0.396688,
+          0.396688,
+          0.396688
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.73,
+        "values": [
+          0.361042,
+          0.216625,
+          0.288834,
+          0.180521,
+          0.108313
+        ],
+        "normalized_values": [
+          0.397146,
+          0.397146,
+          0.397146,
+          0.397146,
+          0.397146
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.75,
+        "values": [
+          0.361458,
+          0.216875,
+          0.289166,
+          0.180729,
+          0.108437
+        ],
+        "normalized_values": [
+          0.397604,
+          0.397604,
+          0.397604,
+          0.397604,
+          0.397604
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.77,
+        "values": [
+          0.361875,
+          0.217125,
+          0.2895,
+          0.180938,
+          0.108562
+        ],
+        "normalized_values": [
+          0.398063,
+          0.398063,
+          0.398063,
+          0.398063,
+          0.398063
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.79,
+        "values": [
+          0.362292,
+          0.217375,
+          0.289834,
+          0.181146,
+          0.108688
+        ],
+        "normalized_values": [
+          0.398521,
+          0.398521,
+          0.398521,
+          0.398521,
+          0.398521
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.81,
+        "values": [
+          0.362708,
+          0.217625,
+          0.290166,
+          0.181354,
+          0.108812
+        ],
+        "normalized_values": [
+          0.398979,
+          0.398979,
+          0.398979,
+          0.398979,
+          0.398979
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.83,
+        "values": [
+          0.363125,
+          0.217875,
+          0.2905,
+          0.181562,
+          0.108937
+        ],
+        "normalized_values": [
+          0.399438,
+          0.399438,
+          0.399438,
+          0.399438,
+          0.399438
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.85,
+        "values": [
+          0.363542,
+          0.218125,
+          0.290834,
+          0.181771,
+          0.109063
+        ],
+        "normalized_values": [
+          0.399896,
+          0.399896,
+          0.399896,
+          0.399896,
+          0.399896
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.87,
+        "values": [
+          0.363958,
+          0.218375,
+          0.291166,
+          0.181979,
+          0.109187
+        ],
+        "normalized_values": [
+          0.400354,
+          0.400354,
+          0.400354,
+          0.400354,
+          0.400354
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.89,
+        "values": [
+          0.364375,
+          0.218625,
+          0.2915,
+          0.182188,
+          0.109312
+        ],
+        "normalized_values": [
+          0.400813,
+          0.400813,
+          0.400813,
+          0.400813,
+          0.400813
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.91,
+        "values": [
+          0.364792,
+          0.218875,
+          0.291834,
+          0.182396,
+          0.109438
+        ],
+        "normalized_values": [
+          0.401271,
+          0.401271,
+          0.401271,
+          0.401271,
+          0.401271
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.93,
+        "values": [
+          0.365208,
+          0.219125,
+          0.292166,
+          0.182604,
+          0.109562
+        ],
+        "normalized_values": [
+          0.401729,
+          0.401729,
+          0.401729,
+          0.401729,
+          0.401729
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.95,
+        "values": [
+          0.365625,
+          0.219375,
+          0.2925,
+          0.182812,
+          0.109687
+        ],
+        "normalized_values": [
+          0.402188,
+          0.402188,
+          0.402188,
+          0.402188,
+          0.402188
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.97,
+        "values": [
+          0.366042,
+          0.219625,
+          0.292834,
+          0.183021,
+          0.109813
+        ],
+        "normalized_values": [
+          0.402646,
+          0.402646,
+          0.402646,
+          0.402646,
+          0.402646
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      },
+      {
+        "time": 7.99,
+        "values": [
+          0.366458,
+          0.219875,
+          0.293166,
+          0.183229,
+          0.109937
+        ],
+        "normalized_values": [
+          0.403104,
+          0.403104,
+          0.403104,
+          0.403104,
+          0.403104
+        ],
+        "position": {
+          "bar": 4,
+          "beat": 4,
+          "section_id": "section-001",
+          "resolved": true
+        }
+      }
+    ],
+    "decimation": "none (published floor)",
+    "field_sources": {
+      "time": "essentia",
+      "values": "essentia",
+      "normalized_values": "essentia"
+    }
+  }
+}
