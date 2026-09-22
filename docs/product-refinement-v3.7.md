@@ -1,14 +1,19 @@
 # Product refinement — v3.7
 
-**Status: backlog.** No implementation plan yet, nothing started. This doc is
-the worklist the next release draws from; items are added here as they are
-decided and only turn into `implementation-plan-v3.7.md` when the release opens.
+**Status: release open.** See
+[`implementation-plan-v3.7.md`](implementation-plan-v3.7.md) for the ordered
+worklist and progress.
 
 **Goal:** make the debugger's review verdicts measurable. The corpus has 21
 songs and 4 with operator-reviewed segments, so "how good is this producer"
 is answerable on the gold four and nowhere else. Hand-marking is what costs;
 a per-block verdict is cheap, and it measures the one thing hand-marked truth
 cannot — whether what a producer *emitted* is real.
+
+**Second goal:** make the MCP answer in the terms its readers reason in —
+sections, bars and beats — and serve the derived views a reader currently
+computes by hand from raw series (items 2–7). Every item here was needed, and
+worked around, during one review of *What a Feeling – Courtney Storm*.
 
 ---
 
@@ -139,7 +144,8 @@ has no instruction to compare them.
   "gesture_id": "gesture-034",
   "impact_time": 131.1,
   "offset_s": 3.83,
-  "offset_beats": 7.9
+  "offset_beats": 7.9,
+  "impact_position": {"bar": 66, "beat": 2, "resolved": true}
 }
 ```
 
@@ -148,6 +154,7 @@ has no instruction to compare them.
 | `gesture_id`, `impact_time` | the gesture impact nearest this section's `start` |
 | `offset_s` | signed, `impact_time - start`. **Positive means the payoff is late** — the boundary is not the peak |
 | `offset_beats` | `offset_s` in beats at the song's BPM, so a threshold can be musical rather than absolute |
+| `impact_position` | the impact's musical position, per item 3 |
 
 `null` when no impact falls within **±2 bars** of the boundary — an honest
 omission, never a nearest-match at any distance. `field_sources` gains
@@ -176,3 +183,155 @@ light show.
 | Writes | `impact_alignment` on each `sections.json` row, plus its `field_sources` entry |
 | Reads changed | `src/analyzer/stages/section_clues.py` (fusion + the nearest-impact search); `docs/reference/downstream-contract.md`, `docs/reference/source-map.md` |
 | Done when | both *What a Feeling* boundaries above emit the stated offsets; a section with no impact within ±2 bars emits `null`; and the field survives a `--stage section-clues` re-run |
+
+---
+
+## 3. Musical addressing — every time carries its bar, beat and section — `mcp/serializers.py`, `mcp/server.py`, `src/analyzer/stages/hints.py`, `src/analyzer/stages/gestures.py`
+
+**Current behaviour.** Every time the MCP returns is seconds. Bar and beat
+exist only on `beats` rows, so "where is this in the song" means scanning the
+beat list by hand, and "what happens in bar 79" means fetching a whole section
+to find bar 79's time. Separately, hint and gesture rows carry a `section_id`
+attributed against allin1's own segmentation
+(`artifacts/section_segmentation/sections.json`), not the published sections
+table — so a hint inside the human pre-chorus is tagged `section-003`.
+
+**Change.**
+
+- **Every time field gains a `position` beside it:** `{"bar", "beat",
+  "section_id", "resolved"}`. Seconds stay — they are the join key and the
+  render contract. Applies to section edges, gesture phases and impacts,
+  transitions, hints, arrangement blocks, vocal phrases, and dense-frame and
+  drum-event rows.
+- **`get_detail` accepts a bar range** as a fourth scope selector:
+  `bars: [79, 80]`, inclusive. Still exactly one selector per call.
+- **`section_id` everywhere means the published sections table.** Hints and
+  gestures attribute by timestamp against `sections.json`, never allin1's
+  segmentation.
+
+`resolved: false` where the bar number is derived by tempo arithmetic from a
+downbeat with null `downbeat_confidence`, rather than read from a detected
+downbeat. This is load-bearing: on songs with a partly unresolved grid, a
+guessed bar number presented as detected is worse than no bar number.
+
+**Out of scope.** Changing any stored time to bars. Positions are derived on
+read; seconds remain the only stored and joined unit.
+
+| | |
+| --- | --- |
+| Writes | `position` on every time-bearing row; the `bars` selector |
+| Reads changed | `mcp/serializers.py`, `mcp/server.py`; `hints.py` and `gestures.py` attribution input |
+| Done when | on *What a Feeling*, `get_detail(bars=[79,80])` returns 155.83–159.70 s; the `Drums cut` hint reports `section-007`, not `section-003`; a bar derived across a null downbeat reports `resolved: false` |
+
+---
+
+## 4. Intensity summaries — per phrase, and per span above the dense cap — `mcp/serializers.py`, `src/analyzer/stages/arrangement_state.py`
+
+**Current behaviour.** `vocals_phrase` rows carry start, end and sibilance but
+no level. Above the 5 s cap, `get_detail` withholds the dense series entirely
+and returns nothing about loudness. Answering "how loud is the chatter" took
+twelve 5-second windows and a hand-computed peak and mean per phrase.
+
+**Change.**
+
+- `vocals_phrase` rows gain `peak` and `mean` (normalized vocals loudness) and
+  the `position` of the peak.
+- `get_detail`'s structural view gains `stem_summary`: per requested stem,
+  `peak`, `mean` and peak `position` over the resolved span. **Served on every
+  call, including over the cap** — the cap withholds frames, not facts.
+
+**Out of scope.** Raising or removing the 5 s cap. A summary answers the
+question the cap was blocking without reintroducing the payload it guards
+against.
+
+| | |
+| --- | --- |
+| Writes | `peak`/`mean`/peak `position` on `vocals_phrase`; `stem_summary` in `get_detail` |
+| Done when | a `section_id`-scoped `get_detail` on *What a Feeling* section-006 returns per-stem levels with dense frames withheld |
+
+---
+
+## 5. Rhythm inside a section — per-bar drum density — `mcp/serializers.py`
+
+**Current behaviour.** `rhythm.drums.subdivision` is one label per section.
+The two findings that mattered most on *What a Feeling* — snares going to every
+beat at bar 61 beat 3, the kick doubling in bar 79 — were invisible in it and
+came only from hand-computing inter-onset intervals over raw `drum_events`.
+
+**Change.** `get_detail`'s structural view gains `drum_density`: one row per
+bar in the span, per instrument (`kick`, `snare`, `hat`, `crash`), with
+`count` and the implied `subdivision` (`quarter`, `eighth`, `sixteenth`,
+`none`, or `mixed`). A change in subdivision between consecutive bars is what
+a reader is looking for, so it must be readable without diffing rows by hand:
+each row carries `changed_from_previous`.
+
+**Out of scope.** Per-hit confidence. omnizart emits none, and the existing
+null stays null.
+
+| | |
+| --- | --- |
+| Writes | `drum_density` in `get_detail` |
+| Done when | on *What a Feeling*, snare subdivision reads `quarter` from bar 61 beat 3 and the kick reads `eighth` in bar 79, both flagged `changed_from_previous` |
+
+---
+
+## 6. Dropouts — spans where a stem goes silent — `mcp/serializers.py`
+
+**Current behaviour.** Nothing lists absence. Two of *What a Feeling*'s key
+findings were silences — a 2.6 s total drum cut before the chorus, and the
+chatter going silent under each synth pulse — and both were found by noticing
+that events stopped. Meanwhile `arrangement_state` reported the pre-chorus
+drums absent for 14 s where `drum_events` shows them playing throughout, at a
+0.163 confidence nobody downstream checks.
+
+**Change.** `get_detail`'s structural view gains `dropouts`: per stem, every
+span of **two beats or more** with no onsets (drums) or at the stem's noise
+floor (the rest), with `position` at both edges. Where `arrangement_state`
+calls a stem absent and onsets are present — or the reverse — the span is
+emitted with `disagreement: true` and both producers named, so a low-margin
+"absent" is visibly contested rather than silently wrong.
+
+**Out of scope.** Resolving the disagreement. Report both; which producer is
+right is a promotion decision, and item 1's verdicts are how it gets measured.
+
+| | |
+| --- | --- |
+| Writes | `dropouts` in `get_detail` |
+| Done when | *What a Feeling*'s drum cut is emitted at bar 62 beat 4 – bar 64 beat 1, its start `resolved: false` (bar 62's downbeat has null confidence); each chatter gap under a synth pulse is emitted; the pre-chorus drums span is emitted with `disagreement: true` |
+
+---
+
+## 7. Corrections through the MCP — as proposals, never as writes — `mcp/server.py`, `ui/`
+
+**Current behaviour.** The MCP is read-only. Correcting an operator-set field
+or adding a hint means editing `reference/human/*.json` on the host, then
+running the one analyzer stage that consumes it — and a wrong stage name
+reports success and writes nothing.
+
+**Change.** Two MCP tools that **queue** a correction, never apply it:
+
+- `propose_hint(song, start, end, title, summary, evidence)`
+- `propose_section_field(song, section_id, field, value, evidence)` — `field`
+  one of `energy`, `tension`, `rhythm.<stem>`
+
+Proposals land in `reference/proposals/pending.json`, with `evidence` required.
+The debugger UI lists them beside the existing operator-write surfaces; an
+approval writes the change to `reference/human/` through the existing PUT
+handlers and re-runs the stage that consumes it (`section-clues` for section
+fields, `generate-section-hints` for hints). A rejection is kept, with its
+reason, so the same proposal is not re-queued.
+
+**Why proposals and not writes.** A human field outranks every inferred field
+*because a person set it*. An MCP that writes `reference/human/` directly makes
+`source: "human"` mean "whoever called the tool last" and dissolves the one
+precedence rule the rest of the system trusts. The render server's
+`propose_hint` already works this way for the authoring guide; this mirrors it.
+
+**Out of scope.** Boundary edits. Moving a section edge changes every derived
+field and needs a full pipeline run, not a single-stage republish.
+
+| | |
+| --- | --- |
+| Writes | `reference/proposals/pending.json`; UI approve/reject surfaces |
+| Reads changed | `mcp/server.py` (two tools), `ui/vite.config.ts`, `ui/src/panel/` |
+| Done when | a proposed tension change, once approved in the UI, is served by `get_detail` with `tension_source: "human"` and no manual stage run; nothing proposed and unapproved ever appears in published output |
