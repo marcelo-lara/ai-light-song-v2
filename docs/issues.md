@@ -126,10 +126,16 @@ Current focus song: `_test_song`
   often that happens.
 - **Evidence to use:** every gesture phase in `song_event_timeline.json`
   carries its per-primitive evidence string, so the audit is possible against
-  the shipped artifacts without re-running anything.
+  the shipped artifacts without re-running anything. **v3.7 item 1 built the
+  instrument**: a three-state verdict control (`correct`/`wrong`/`misplaced`)
+  on the `gestures` lane's blocks in the debugger, and
+  `experiments/truth_common`'s `block_reviews` scorer turns saved verdicts
+  into a per-lane precision figure. Auditioning itself — clicking a verdict on
+  each gesture block for the four gold songs — is still open; nothing here
+  claims that work is done.
 - **Validation target:** the four gold songs (`Titanium - David Guetta ft Sia`,
   `Armin - Revolution`, `Hideaway - Kiesza`, `_test_song`), auditioned in the
-  debugger against the waveform.
+  debugger against the waveform, using the block-verdict control above.
 - **Success condition:** a per-primitive precision figure exists for each
   gesture phase across the gold set, and either the false-positive rate is
   written into `CLAUDE.md` as a known bound, or the primitives responsible for

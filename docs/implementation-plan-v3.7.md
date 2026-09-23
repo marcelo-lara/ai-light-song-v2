@@ -1,6 +1,6 @@
 # Implementation plan — v3.7
 
-**Status: in progress.** Turns
+**Status: implemented.** Turns
 [`product-refinement-v3.7.md`](product-refinement-v3.7.md) (the refinement doc
 in the rest of this plan) into an ordered worklist for a Sonnet implementer in
 batch mode. The refinement doc holds the evidence and schemas. This plan says
@@ -75,7 +75,7 @@ needing a design decision becomes a `BUG` in the refinement doc, annotated
 
 | | |
 | --- | --- |
-| Done | 11 of 12 |
+| Done | 12 of 12 |
 | Visual QA items | 2, 11 |
 | MCP full-regression | items 5, 7, 8, 9, 10 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 4, 5, 6, 7, 8, 9, 10 |
@@ -378,10 +378,22 @@ reverted, not shipped.
 
 ## 12. Close-out
 
-- [ ] `CLAUDE.md` "Current state" table: gestures precision figure (closing `docs/issues.md`'s entry, false-positive bound written in), structure (`impact_alignment`), MCP surface (`position`, `bars` scope, `stem_summary`, `drum_density`, `dropouts`, proposal tools).
-- [ ] `docs/issues.md`: delete the `gestures` per-primitive-precision entry (item 3's per-gesture-phase precision figure across the four gold songs discharges it).
-- [ ] `docs/product-refinement-v3.7.md` Status → implemented.
-- [ ] `docs/reference/downstream-contract.md`, `docs/mcp-definition.md`, `docs/reference/source-map.md`, `docs/reference/artifacts.md` read through once for drift against what actually shipped.
+**D12.1 (resolved — this item's own premise was wrong, corrected rather than
+followed literally).** This item originally read "delete the `gestures`
+per-primitive-precision entry (item 3's precision figure ... discharges it)".
+That assumed running the scorer would itself produce the gold-song precision
+figure. It does not: item 1/3 built the *instrument* (a verdict control +
+scorer), but the actual audit — an operator clicking a verdict on every
+`gestures` block for the four gold songs against the waveform — is real human
+review time nobody has spent in this implementation run. Fabricating or
+skipping that step to close the issue would be exactly the "confident wrong
+answer" CLAUDE.md's no-silent-fallbacks rule forbids. The entry stays open,
+updated to say the instrument now exists and point at it.
+
+- [x] `CLAUDE.md` "Current state" table: gestures row (instrument shipped, audit still open — not closed), structure (`impact_alignment`), downbeats/bars row (`position` deriver), MCP surface (5 tools, `position`/`bars`/`stem_summary`/`drum_density`/`dropouts`, proposal flow + its read-write mount and manual-rerun reminder).
+- [x] `docs/issues.md`: **not deleting** the `gestures` entry (per D12.1) — updated its "Evidence to use" to name the new instrument. Two new entries added during item 9 (vocals dropout detector misses short mid-song gaps; `arrangement_state`'s drums-absence call looks broken past 112.75s on *What a Feeling*) and one during item 2 (visual-regression baseline mismatch, environment-side) stay open — none of the three is this plan's to fix.
+- [x] `docs/product-refinement-v3.7.md` Status → implemented.
+- [x] `docs/reference/downstream-contract.md`, `docs/mcp-definition.md`, `docs/reference/source-map.md`, `docs/reference/artifacts.md` — read through; each item already updated its own section as it landed (items 4-11), no further drift found.
 
 **Checks**
-- [ ] Every suite green: analyzer, ui test + build, visual, MCP full-regression.
+- [x] Every suite green: analyzer (159/160 — the 1 pre-existing failure), ui test + build (432/432, clean build), MCP smoke-test + full-regression (13/13, 43/43). Visual-regression suite is the one known exception — see `docs/issues.md`'s baseline-mismatch entry; not this plan's to fix, and confirmed pre-existing before any v3.7 change.

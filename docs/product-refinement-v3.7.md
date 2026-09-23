@@ -1,8 +1,10 @@
 # Product refinement — v3.7
 
-**Status: release open.** See
-[`implementation-plan-v3.7.md`](implementation-plan-v3.7.md) for the ordered
-worklist and progress.
+**Status: implemented.** See
+[`implementation-plan-v3.7.md`](implementation-plan-v3.7.md) for what shipped
+per item, including two user-facing decisions (D10.1, D11.1) that changed the
+MCP write-mount posture and dropped an auto-rerun mechanism from the plan as
+originally scoped.
 
 **Goal:** make the debugger's review verdicts measurable. The corpus has 21
 songs and 4 with operator-reviewed segments, so "how good is this producer"
