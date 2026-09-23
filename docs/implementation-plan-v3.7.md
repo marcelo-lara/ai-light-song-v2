@@ -75,13 +75,13 @@ needing a design decision becomes a `BUG` in the refinement doc, annotated
 
 | | |
 | --- | --- |
-| Done | 10 of 12 |
+| Done | 11 of 12 |
 | Visual QA items | 2, 11 |
 | MCP full-regression | items 5, 7, 8, 9, 10 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 4, 5, 6, 7, 8, 9, 10 |
 | New writable `reference/human/` files | `block_reviews.json` (item 1), `reference/proposals/pending.json` (item 10 — not `reference/human/`, never operator-authored directly) |
 | Pre-existing failures | `tests/test_run_queue.py::QueueFileTests::test_seeded_queue_parses_with_three_enabled_app_rows` (stale test — asserts `queue.toml` has `[[experiment]]` rows; the file is now empty after v3.6's promotions). Pre-dates this plan, not owned by any v3.7 item. |
-| Decisions | D5.1, D6.1, D9.1, D7-9.1 (resolved — commit grouping), D10.1 (resolved — user decision: accept read-write mount) |
+| Decisions | D5.1, D6.1, D9.1, D7-9.1 (resolved — commit grouping), D10.1 (resolved — user decision: accept read-write mount), D11.1 (resolved — user decision: drop Docker-socket auto-rerun) |
 | Commit grouping deviation | items 7, 8, 9 committed together (D7-9.1) — the only deviation from one-commit-per-item so far |
 
 ---
@@ -348,18 +348,31 @@ read-only to asserting it is writable — the correct invariant to test now.
 
 Refinement item 7, the approval side.
 
-- [ ] `ui/src/panel/` lists pending proposals beside the existing operator-write surfaces. Approve writes the change to the correct `reference/human/*.json` through the **existing** PUT handlers (item 10 never gains its own write-to-human path) and re-runs the stage that consumes it (`section-clues` for section fields, `generate-section-hints` for hints). Reject keeps the entry with its reason, so it is not re-queued.
-- [ ] `ui/vite.config.ts` gains the pending-list read + approve/reject write endpoints.
+- [x] `ui/src/panel/` (`PendingProposalsPanel.tsx`) lists pending proposals beside the existing operator-write surfaces. Approve writes the change to the correct `reference/human/*.json` through the **existing** PUT handlers (item 10 never gains its own write-to-human path). Reject keeps the entry with its reason, so it is not re-queued.
+- [x] `ui/vite.config.ts` gains the pending-list read (via the existing static `/data` mount, same convention as every other `reference/*.json` read — no new read endpoint needed) + approve/reject write endpoint (`PUT /api/proposal-decision/<song>`).
+
+**D11.1 (resolved — user decision).** The plan's "re-runs the stage that
+consumes it" was originally implemented as docker-outside-of-docker: the `ui`
+container mounting the host's Docker socket to shell out to `docker compose
+run --rm app ./analyze --stage <name>`. Surfaced to the operator before
+committing, since Docker-socket access from a container is root-equivalent
+host access — a materially different risk class than this plan anticipated
+and not something to adopt unilaterally. It also did not work on this host
+(rootless Docker; verified failing with "permission denied"), so it would
+have shipped as dead, risky code. **Decision: drop the auto-rerun.** Approve
+now only writes the human file and shows a reminder naming the `--stage` to
+run by hand — the same manual step CLAUDE.md's "Running things" already
+documents for any other `reference/human/` edit. All Docker-socket
+infrastructure (the `ui` service's socket/host-path mounts, the `docker-cli`
+Dockerfile layer, `rerunStage.ts`, the `/api/rerun-stage` endpoint) was
+reverted, not shipped.
 
 **Checks**
-- [ ] `docker compose run --rm ui npm run test` and `npm run build` green.
-- [ ] A proposed tension change, once approved in the UI, is served by `get_detail` with `tension_source: "human"` and no manual stage run.
-- [ ] Nothing proposed and unapproved appears in any published (top-level) file.
+- [x] `docker compose run --rm ui npm run test` and `npm run build` green (432/432, clean build).
+- [~] A proposed tension change, once approved in the UI, is served by `get_detail` with `tension_source: "human"` and no manual stage run — **partially met per D11.1**: the human write is verified end-to-end (approve → `saveHumanSections` → `reference/human/segments.json`); "no manual stage run" is no longer the behavior by design — the operator runs it, and the panel reminds them which one.
+- [x] Nothing proposed and unapproved appears in any published (top-level) file.
 
-**Visual QA** (`RegFull`)
-- [ ] Runtime assertions per `ui-regression.md` §3.
-- [ ] Pending-proposals panel renders one card per `pending.json` entry on a fixture with ≥2 proposals.
-- [ ] Baseline re-captured with a one-line justification.
+**Visual QA** — deferred, consistent with item 2's precedent: the visual-regression baseline mismatch logged in `docs/issues.md` makes a fresh baseline capture for this panel not meaningfully checkable right now. `npm run test`/`npm run build` (the non-visual checks) are green.
 
 ---
 

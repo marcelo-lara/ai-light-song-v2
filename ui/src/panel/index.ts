@@ -15,6 +15,14 @@ export {
   type PartitionedReviewQueue,
   type ReviewQuestionKind,
 } from "./reviewQueue";
+export { PendingProposalsPanel } from "./PendingProposalsPanel";
+export {
+  applySectionFieldToSegments,
+  bestOverlapIndex,
+  hintDraftFromProposal,
+  partitionProposals,
+  sectionSpan,
+} from "./proposalsQueue";
 export {
   blockFields,
   selectionFromSection,

@@ -24,17 +24,20 @@ describe("App shell", () => {
     expect(screen.queryByRole("navigation", { name: "Primary" })).toBeNull();
   });
 
-  it("has exactly four drawer entries", () => {
+  it("has exactly five drawer entries", () => {
     render(<App />);
     openDrawer();
     const nav = screen.getByRole("navigation", { name: "Primary" });
     const entries = nav.querySelectorAll(".dr-item");
-    expect(entries).toHaveLength(4);
+    expect(entries).toHaveLength(5);
     expect(Array.from(entries, (el) => el.textContent?.trim())).toEqual([
       "Select Song",
       "Timeline",
       "Artifact inspector",
       "Review queue",
+      // v3.7 item 11 — MCP correction proposals (propose_hint /
+      // propose_section_field), queued for human approve/reject.
+      "Pending proposals",
     ]);
   });
 

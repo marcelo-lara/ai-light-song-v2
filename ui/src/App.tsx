@@ -40,6 +40,7 @@ import {
   HintEditorPanel,
   SegmentEditorPanel,
   LaneEventsPanel,
+  PendingProposalsPanel,
   ReviewQueuePanel,
   RightPanel,
   LANE_LABELS,
@@ -98,7 +99,7 @@ import {
   zoomOutPxPerBar,
 } from "./timeline/zoom";
 
-type DrawerView = "song" | "timeline" | "inspector" | "review";
+type DrawerView = "song" | "timeline" | "inspector" | "review" | "proposals";
 
 interface DrawerEntry {
   id: DrawerView;
@@ -111,6 +112,9 @@ const DRAWER_ENTRIES: readonly DrawerEntry[] = [
   { id: "timeline", label: "Timeline", icon: "ph-waveform" },
   { id: "inspector", label: "Artifact inspector", icon: "ph-squares-four" },
   { id: "review", label: "Review queue", icon: "ph-flag" },
+  // v3.7 item 11 — MCP correction proposals (propose_hint /
+  // propose_section_field), queued for human approve/reject.
+  { id: "proposals", label: "Pending proposals", icon: "ph-inbox" },
 ] as const;
 
 const TIMELINE_KEYS = [
@@ -1195,7 +1199,7 @@ export function App(): React.JSX.Element {
       closePanel();
       return;
     }
-    if (activeView === "review") {
+    if (activeView === "review" || activeView === "proposals") {
       setActiveView("timeline");
       return;
     }
@@ -1647,6 +1651,18 @@ export function App(): React.JSX.Element {
             <aside className="app-rightpanel" aria-label="Review queue">
               <div className="card-kicker">Review queue</div>
               <p className="card-body">Select a song to review its open questions.</p>
+            </aside>
+          ))}
+
+        {/* v3.7 item 11: MCP correction proposals — same RightPanel-shell
+            convention as the review queue above, its own drawer entry. */}
+        {activeView === "proposals" &&
+          (song ? (
+            <PendingProposalsPanel song={song} onClose={() => setActiveView("timeline")} />
+          ) : (
+            <aside className="app-rightpanel" aria-label="Pending proposals">
+              <div className="card-kicker">Pending proposals</div>
+              <p className="card-body">Select a song to review its queued proposals.</p>
             </aside>
           ))}
       </main>

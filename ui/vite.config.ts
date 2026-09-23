@@ -33,6 +33,17 @@ import react from "@vitejs/plugin-react";
 // lyric-validations: per-click, not explicit-Save — each verdict click PUTs
 // the FULL `reviews` array (the join key is `(lane_id, start)`, not an
 // index) and this handler replaces the file.
+//
+// v3.7 item 11 adds `PUT /api/proposal-decision/<song>`: flips ONE
+// `reference/proposals/pending.json` entry's status by id (never appends —
+// only mcp/proposals.py's two MCP tools do that, over stdio, never through
+// this server). Approving a proposal writes the human file through the
+// existing handlers above; it does NOT re-run the analyzer stage that
+// republishes it — a Docker-outside-of-docker trigger was tried and reverted
+// (mounting the host's docker socket into this dev container was judged too
+// broad a grant for what it bought, and doesn't work on a rootless Docker
+// host anyway). The panel shows a reminder naming the `--stage` to run by
+// hand, same as any other `reference/human/` edit.
 
 const dataRoot = "/data";
 const analysisRoot = path.join(dataRoot, "analysis");
@@ -498,6 +509,101 @@ function normalizeBlockReviewsPayload(payload: unknown): {
   };
 }
 
+// v3.7 item 11 — reference/proposals/pending.json is written by TWO
+// producers: mcp/proposals.py appends new entries (v3.7 item 10, over stdio,
+// never through this dev server), and the two handlers below flip one
+// existing entry's `status` by `id`. Nothing here ever appends a NEW
+// proposal — only mcp/server.py's tools do that.
+// Mirrors `referenceHumanFilePath`'s escape guard exactly, but against
+// `reference/proposals/` instead of `reference/human/` — the two producers
+// above never write into the operator's own directory.
+function pendingProposalsFilePath(song: unknown): string {
+  const safeSong = path.basename(String(song || "").trim());
+  if (!safeSong) {
+    throw new Error("Song name is required.");
+  }
+  const songDir = path.join(analysisRoot, safeSong);
+  const filePath = path.join(songDir, "reference", "proposals", "pending.json");
+  const relativePath = path.relative(songDir, filePath);
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+    throw new Error("Song path is outside the reference data root.");
+  }
+  return filePath;
+}
+
+interface PendingProposalRecord {
+  id: string;
+  status: "pending" | "approved" | "rejected";
+  created_at: string;
+  rejection_reason: string | null;
+  evidence: string;
+  [key: string]: unknown;
+}
+
+interface PendingProposalsFile {
+  schema_version: string;
+  song_name: string;
+  proposals: PendingProposalRecord[];
+}
+
+async function readPendingProposals(song: string): Promise<PendingProposalsFile> {
+  const filePath = pendingProposalsFilePath(song);
+  try {
+    const raw = await fsp.readFile(filePath, "utf-8");
+    return JSON.parse(raw) as PendingProposalsFile;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException)?.code === "ENOENT") {
+      throw new Error(`No proposals queued for "${song}" yet.`);
+    }
+    throw error;
+  }
+}
+
+async function writePendingProposals(
+  song: string,
+  file: PendingProposalsFile,
+): Promise<void> {
+  const filePath = pendingProposalsFilePath(song);
+  await fsp.mkdir(path.dirname(filePath), { recursive: true });
+  await fsp.writeFile(filePath, JSON.stringify(file, null, 2) + "\n", "utf-8");
+}
+
+// `PUT /api/proposal-decision/<song>` body: `{id, status, rejection_reason?}`.
+// Approve is issued by PendingProposalsPanel.tsx only AFTER the write to the
+// operator's own reference/human/*.json file and the stage re-run that
+// republishes it have both already succeeded — this handler only ever flips
+// the queue entry's own status, never touches reference/human/. A reject
+// requires a non-empty reason; only a currently "pending" entry may be
+// decided, so a decided entry can never be silently re-queued or overwritten.
+function normalizeProposalDecisionPayload(payload: unknown): {
+  id: string;
+  status: "approved" | "rejected";
+  rejection_reason: string | null;
+} {
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Proposal decision payload must be a JSON object.");
+  }
+  const record = payload as Record<string, unknown>;
+  const id = String(record.id ?? "").trim();
+  if (!id) {
+    throw new Error("Proposal decision payload must include an id.");
+  }
+  const status = record.status;
+  if (status !== "approved" && status !== "rejected") {
+    throw new Error('Proposal decision "status" must be "approved" or "rejected".');
+  }
+  const rejection_reason =
+    typeof record.rejection_reason === "string" ? record.rejection_reason.trim() : "";
+  if (status === "rejected" && !rejection_reason) {
+    throw new Error('Rejecting a proposal requires a non-empty "rejection_reason".');
+  }
+  return {
+    id,
+    status,
+    rejection_reason: status === "rejected" ? rejection_reason : null,
+  };
+}
+
 // Whole-song review-queue fields that disposition into song_facts.json.
 const SONG_FACT_KEYS = new Set(["form_family", "form_family_vs_genre"]);
 
@@ -823,6 +929,54 @@ function dataMountPlugin(): Plugin {
               error instanceof Error
                 ? error.message
                 : "Unable to save block reviews.",
+            );
+          }
+          return;
+        }
+
+        // v3.7 item 11 — approve/reject one reference/proposals/pending.json
+        // entry by id. Never appends a new entry (only mcp/proposals.py does
+        // that) and never itself touches reference/human/ — see
+        // normalizeProposalDecisionPayload's docstring.
+        if (
+          requestUrl &&
+          request.method === "PUT" &&
+          requestUrl.pathname.startsWith("/api/proposal-decision/")
+        ) {
+          try {
+            const song = decodeURIComponent(
+              requestUrl.pathname.replace("/api/proposal-decision/", ""),
+            );
+            const decision = normalizeProposalDecisionPayload(
+              await readJsonBody(request),
+            );
+            const file = await readPendingProposals(song);
+            const index = file.proposals.findIndex((p) => p.id === decision.id);
+            if (index === -1) {
+              throw new Error(`No pending proposal with id "${decision.id}".`);
+            }
+            const current = file.proposals[index]!;
+            if (current.status !== "pending") {
+              throw new Error(
+                `Proposal "${decision.id}" is already ${current.status} — it cannot be re-decided.`,
+              );
+            }
+            file.proposals[index] = {
+              ...current,
+              status: decision.status,
+              rejection_reason: decision.rejection_reason,
+            };
+            await writePendingProposals(song, file);
+            response.statusCode = 200;
+            response.setHeader("Content-Type", "application/json; charset=utf-8");
+            response.end(JSON.stringify(file));
+          } catch (error) {
+            response.statusCode = 400;
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            response.end(
+              error instanceof Error
+                ? error.message
+                : "Unable to save the proposal decision.",
             );
           }
           return;

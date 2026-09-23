@@ -47,6 +47,9 @@ import type {
   LoudnessHistory,
   LoudnessSeries,
   LoudnessSource,
+  PendingProposal,
+  PendingProposalsFile,
+  ProposalStatus,
   ReviewQuestion,
   ReviewQueue,
   SectionDisplayFile,
@@ -835,6 +838,79 @@ export function parseSongFacts(raw: unknown): SongFactsFile {
     schema_version: stringOr(o.schema_version, "", "song_facts.schema_version"),
     song_name: stringOr(o.song_name, "", "song_facts.song_name"),
     facts,
+  };
+}
+
+// v3.7 item 10/11 — reference/proposals/pending.json. Written by
+// mcp/proposals.py (append-only) and by this debugger's approve/reject
+// endpoints. A malformed row is skipped rather than throwing, the same
+// tolerance parseBlockReviewRow applies to another per-click editor file.
+function parsePendingProposalRow(raw: unknown): PendingProposal | null {
+  const o = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const id = typeof o.id === "string" ? o.id.trim() : "";
+  const status: ProposalStatus | null =
+    o.status === "pending" || o.status === "approved" || o.status === "rejected"
+      ? o.status
+      : null;
+  if (!id || !status) return null;
+
+  const base = {
+    id,
+    status,
+    created_at: typeof o.created_at === "string" ? o.created_at : "",
+    rejection_reason: typeof o.rejection_reason === "string" ? o.rejection_reason : null,
+    evidence: typeof o.evidence === "string" ? o.evidence : "",
+  };
+
+  if (o.type === "hint") {
+    const h =
+      o.hint && typeof o.hint === "object" ? (o.hint as Record<string, unknown>) : {};
+    const start = typeof h.start === "number" ? h.start : null;
+    const end = typeof h.end === "number" ? h.end : null;
+    if (start === null || end === null) return null;
+    return {
+      ...base,
+      type: "hint",
+      hint: {
+        start,
+        end,
+        title: typeof h.title === "string" ? h.title : "",
+        summary: typeof h.summary === "string" ? h.summary : "",
+      },
+    };
+  }
+
+  if (o.type === "section_field") {
+    const f =
+      o.section_field && typeof o.section_field === "object"
+        ? (o.section_field as Record<string, unknown>)
+        : {};
+    const sectionId = typeof f.section_id === "string" ? f.section_id.trim() : "";
+    const field = typeof f.field === "string" ? f.field : "";
+    if (!sectionId || !field || f.value === undefined) return null;
+    const value = typeof f.value === "number" || typeof f.value === "string" ? f.value : null;
+    if (value === null) return null;
+    return {
+      ...base,
+      type: "section_field",
+      section_field: { section_id: sectionId, field, value },
+    };
+  }
+
+  return null;
+}
+
+export function parsePendingProposals(raw: unknown): PendingProposalsFile {
+  const o = asObject(raw, "pending.json");
+  const proposals: PendingProposal[] = [];
+  for (const entry of asArray(o.proposals ?? [], "pending.proposals")) {
+    const row = parsePendingProposalRow(entry);
+    if (row) proposals.push(row);
+  }
+  return {
+    schema_version: stringOr(o.schema_version, "", "pending.schema_version"),
+    song_name: stringOr(o.song_name, "", "pending.song_name"),
+    proposals,
   };
 }
 

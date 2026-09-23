@@ -33,6 +33,7 @@ import {
   parseInfo,
   parseLyricValidations,
   parseLoudnessEnvelope,
+  parsePendingProposals,
   parseReviewQueue,
   parseSongFacts,
   parseRmsLoudness,
@@ -56,6 +57,7 @@ import type {
   LyricValidationsFile,
   LoudnessEnvelope,
   MoisesSegmentsFile,
+  PendingProposalsFile,
   ReviewQueue,
   RmsLoudness,
   SectionDisplayFile,
@@ -400,6 +402,28 @@ export const loadEventTimeline = (song: string, f?: typeof fetch) =>
 export const loadReviewQueue = (song: string, f?: typeof fetch) =>
   loadJson<ReviewQueue>(artifactPaths.reviewQueue(song), parseReviewQueue, f);
 
+// v3.7 item 10/11 — reference/proposals/pending.json is optional (absent
+// until the MCP server or an approve/reject click first writes it), so a 404
+// resolves to an empty queue rather than an error — same convention as
+// loadBlockReviews above.
+export const loadPendingProposals = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<PendingProposalsFile>> => {
+  const result = await loadJson<PendingProposalsFile>(
+    artifactPaths.pendingProposals(song),
+    parsePendingProposals,
+    f,
+  );
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, proposals: [] },
+    };
+  }
+  return result;
+};
+
 export const loadSongFacts = (song: string, f?: typeof fetch) =>
   loadJson<SongFactsFile>(artifactPaths.songFacts(song), parseSongFacts, f);
 
@@ -443,6 +467,7 @@ export const artifactLoaders = {
   eventTimeline: loadEventTimeline,
   reviewQueue: loadReviewQueue,
   songFacts: loadSongFacts,
+  pendingProposals: loadPendingProposals,
 } as const;
 
 export type ArtifactKey = keyof typeof artifactLoaders;

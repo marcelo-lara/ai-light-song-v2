@@ -154,6 +154,12 @@ export const artifactPaths = {
     encodePath(analysis(song, "artifacts", "layer_c_energy.json")),
   reviewQueue: (song: string) =>
     encodePath(analysis(song, "artifacts", "validation", "review_queue.json")),
+  // v3.7 item 10/11 — the MCP correction-proposals queue. Read here via the
+  // static `/data` mount, same convention as every other reference/ file
+  // (`humanHints` etc. above); writes go through the dedicated
+  // `/api/proposal-decision/<song>` endpoint, never a direct PUT of this path.
+  pendingProposals: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "pending.json")),
   audio: (song: string) => encodePath(["data", "songs", `${song}.mp3`]),
 } as const;
 

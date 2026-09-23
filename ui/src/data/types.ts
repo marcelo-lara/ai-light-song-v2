@@ -556,3 +556,46 @@ export interface ReviewQueue {
   open_question_count: number | null;
   questions: ReviewQuestion[];
 }
+
+// ---------------------------------------------------------------------------
+// reference/proposals/pending.json  (v3.7 item 10/11 — MCP correction
+// proposals queue. Written only by `propose_hint`/`propose_section_field`
+// (mcp/proposals.py) and by the debugger's approve/reject endpoints
+// (ui/vite.config.ts); read here for the Pending proposals panel.)
+// ---------------------------------------------------------------------------
+
+export type ProposalStatus = "pending" | "approved" | "rejected";
+
+export interface ProposedHint {
+  start: number;
+  end: number;
+  title: string;
+  summary: string;
+}
+
+export interface ProposedSectionField {
+  section_id: string;
+  /** "energy" | "tension" | "rhythm.<drums|bass|harmonic|vocals>" */
+  field: string;
+  value: number | string;
+}
+
+interface PendingProposalBase {
+  id: string;
+  status: ProposalStatus;
+  created_at: string;
+  rejection_reason: string | null;
+  evidence: string;
+}
+
+export type PendingProposal = PendingProposalBase &
+  (
+    | { type: "hint"; hint: ProposedHint; section_field?: undefined }
+    | { type: "section_field"; section_field: ProposedSectionField; hint?: undefined }
+  );
+
+export interface PendingProposalsFile {
+  schema_version: string;
+  song_name: string;
+  proposals: PendingProposal[];
+}
