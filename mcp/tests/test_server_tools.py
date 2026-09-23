@@ -78,8 +78,16 @@ def test_get_song_overview_validates_song_first() -> None:
 
 
 def test_registered_tool_names() -> None:
+    # v3.7 item 10 added the two proposal-queue tools, appended after the
+    # three read tools in declaration order.
     tools = asyncio.run(server.server.list_tools())
-    assert [t.name for t in tools] == ["list_songs", "get_song_overview", "get_detail"]
+    assert [t.name for t in tools] == [
+        "list_songs",
+        "get_song_overview",
+        "get_detail",
+        "propose_hint",
+        "propose_section_field",
+    ]
 
 
 def test_list_songs_tool_matches_loader() -> None:

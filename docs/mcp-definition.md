@@ -99,7 +99,7 @@ originals keep these internal filesystem details and must never be exposed.
 | SDK | the official `mcp` package |
 | Transport | stdio |
 | State | none — reads `data/analysis/` on each call |
-| Writes | **none, ever.** Read-only against the whole tree |
+| Writes | **read-only, with one exception (v3.7 item 10):** `propose_hint`/`propose_section_field` append to a song's own inner-folder proposals queue file — never a top-level file, never the operator's own hand-authored file. See "Correction proposals" below |
 | Container | its own Compose service; never the analyzer image |
 
 Song discovery is by directory name under `data/analysis/`, the same key the
@@ -138,8 +138,10 @@ framing. The container lives for the session and exits with it.
 
 ## The tool surface
 
-Two substantive capabilities — overview and detail — plus the trivial discovery
-call they both need. Everything else is out of scope for v1.
+Two substantive read capabilities — overview and detail — plus the trivial
+discovery call they both need, and (v3.7 item 10) two write tools that only
+ever queue a correction for human review. Everything else is out of scope
+for v1.
 
 ### `list_songs()`
 
@@ -267,6 +269,38 @@ never present a guessed bar as detected. `get_song_overview` deliberately does
 **not** carry `position` (its byte budget is load-bearing — see
 `docs/issues.md`'s prose-budget issue); a caller wanting bar/beat context for
 a specific row fetches it through `get_detail`.
+
+### Correction proposals — `propose_hint` / `propose_section_field` (v3.7 item 10)
+
+The one write path this server has, and it never touches the surface above.
+
+- `propose_hint(song, start, end, title, summary, evidence)` — a new hint,
+  queued.
+- `propose_section_field(song, section_id, field, value, evidence)` — a
+  correction to one section's `energy`, `tension`, or `rhythm.<stem>`
+  (`rhythm.drums`/`rhythm.bass`/`rhythm.harmonic`/`rhythm.vocals`), queued.
+  `section_id` must already exist on the song's published `sections.json`.
+
+Both **append** to a queue file one level under the song directory — an inner
+folder, so nothing written there is exposed by `list_songs`,
+`get_song_overview` or `get_detail`. Neither tool ever writes the operator's
+own hand-authored file, and neither ever mutates a top-level published file.
+`evidence` is required on both: an empty or missing value is a rejected error,
+and nothing is written — no silent no-op.
+
+Turning a queued proposal into a real, published value is entirely the
+debugger UI's job: an operator reviews it there, and approval writes the
+change through the UI's existing write path for that file. The UI does not
+trigger the analyzer stage that republishes it — it has no Docker access —
+so it shows a reminder naming the `--stage` the operator runs by hand, same
+as any other `reference/human/` edit. A rejection is kept, with its reason,
+so the same proposal is not re-queued. This server never approves, rejects,
+or reads back its own queue — it only appends to it.
+
+**Why a queue and not a direct write.** A human-set field outranks every
+inferred field *because a person set it*. A tool that wrote the operator's own
+file directly would make that provenance mean "whoever called the tool last,"
+which dissolves the one precedence rule the rest of the system trusts.
 
 ## Honesty obligations
 

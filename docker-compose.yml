@@ -75,7 +75,12 @@ services:
     # No tty: a TTY corrupts stdio framing (`-T` on `run` also enforces this).
     volumes:
       - .:/app:ro
-      - ./data:/data:ro
+      # v3.7 item 10 — no longer :ro. `propose_hint`/`propose_section_field`
+      # append to a song's own proposals queue file; the read-only boundary
+      # that keeps the server from exposing inner folders is enforced in
+      # code (loaders.py's top-level-only reads, proposals.py's queue-file-
+      # only writes), not by the mount. Nothing else in mcp/ writes.
+      - ./data:/data
     environment:
       MCP_ANALYSIS_ROOT: /data/analysis
     command: ["python", "/app/mcp/server.py"]

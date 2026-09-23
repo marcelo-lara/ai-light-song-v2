@@ -90,6 +90,12 @@ def test_stdio_server_initializes_and_lists_expected_tools() -> None:
                 await session.initialize()
                 tools = await session.list_tools()
                 names = [tool.name for tool in tools.tools]
-                assert names == ["list_songs", "get_song_overview", "get_detail"]
+                assert names == [
+                    "list_songs",
+                    "get_song_overview",
+                    "get_detail",
+                    "propose_hint",
+                    "propose_section_field",
+                ]
 
     asyncio.run(_run())

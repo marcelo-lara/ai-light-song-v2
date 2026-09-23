@@ -19,13 +19,20 @@ import argparse
 import asyncio
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 
 MCP_DIR = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = MCP_DIR / "tests" / "fixtures" / "analysis"
 SERVER = MCP_DIR / "server.py"
-EXPECTED_TOOLS = ["list_songs", "get_song_overview", "get_detail"]
+EXPECTED_TOOLS = [
+    "list_songs",
+    "get_song_overview",
+    "get_detail",
+    "propose_hint",
+    "propose_section_field",
+]
 
 _RESULTS: list[tuple[str, str, str]] = []
 
@@ -57,9 +64,29 @@ async def _run_stdio_checks() -> None:
     from mcp.client.session import ClientSession
     from mcp.client.stdio import StdioServerParameters, stdio_client
 
+    # v3.7 item 10 — propose_hint/propose_section_field write a queue file
+    # under the song directory, so the stdio session points at a throwaway
+    # copy of the fixtures (under the writable /data mount) rather than the
+    # committed, read-only fixtures at FIXTURE_ROOT (under the :ro /app
+    # mount). Every check below reads the same content either way.
+    writable_root = Path("/data/.mcp_smoke_fixture_copy")
+    if writable_root.exists():
+        shutil.rmtree(writable_root)
+    shutil.copytree(FIXTURE_ROOT, writable_root)
+
     env = dict(os.environ)
-    env["MCP_ANALYSIS_ROOT"] = str(FIXTURE_ROOT)
+    env["MCP_ANALYSIS_ROOT"] = str(writable_root)
     params = StdioServerParameters(command=sys.executable, args=[str(SERVER)], env=env)
+
+    try:
+        await _run_stdio_checks_against(params, writable_root)
+    finally:
+        shutil.rmtree(writable_root, ignore_errors=True)
+
+
+async def _run_stdio_checks_against(params, writable_root: Path) -> None:
+    from mcp.client.session import ClientSession
+    from mcp.client.stdio import stdio_client
 
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
@@ -71,8 +98,8 @@ async def _run_stdio_checks() -> None:
             tools = await session.list_tools()
             names = [t.name for t in tools.tools]
             status = "PASS" if names == EXPECTED_TOOLS else "FAIL"
-            record("S1.3 tools/list == list_songs, get_song_overview, get_detail",
-                   status, str(names))
+            record("S1.3 tools/list == list_songs, get_song_overview, get_detail, "
+                   "propose_hint, propose_section_field", status, str(names))
 
             # S1.4 — stray stdout would have broken the handshake above.
             record("S1.4 no stray stdout (proxy: handshake + list succeeded)",
@@ -124,6 +151,45 @@ async def _run_stdio_checks() -> None:
             record("S3.9 McpPartial errors naming the missing file (sections.json)",
                    status, repr(text))
 
+            # v3.7 item 10 — empty evidence is rejected and writes nothing.
+            empty_evidence = await session.call_tool(
+                "propose_hint",
+                {"song": "McpFull - Fixture", "start": 10.0, "end": 12.0,
+                 "title": "Drop payoff", "summary": "loudness spike",
+                 "evidence": ""},
+            )
+            queue_path = writable_root / "McpFull - Fixture" / "reference" / "proposals" / "pending.json"
+            status = "PASS" if empty_evidence.is_error and not queue_path.exists() else "FAIL"
+            record("S3.10 propose_hint with empty evidence errors and writes nothing",
+                   status, f"is_error={empty_evidence.is_error} queue_exists={queue_path.exists()}")
+
+            # Two calls append two distinct entries, neither overwriting the other.
+            first = await session.call_tool(
+                "propose_hint",
+                {"song": "McpFull - Fixture", "start": 10.0, "end": 12.0,
+                 "title": "Drop payoff", "summary": "loudness spike",
+                 "evidence": "loudness.json shows a 6dB step at 10.0s"},
+            )
+            second = await session.call_tool(
+                "propose_section_field",
+                {"song": "McpFull - Fixture", "section_id": "section-001",
+                 "field": "tension", "value": 4,
+                 "evidence": "gesture build overlaps this section"},
+            )
+            first_id = (_tool_json(first) or {}).get("id") if not first.is_error else None
+            second_id = (_tool_json(second) or {}).get("id") if not second.is_error else None
+            queue = json.loads(queue_path.read_text()) if queue_path.is_file() else {}
+            ids = [p.get("id") for p in queue.get("proposals", [])]
+            ok = (
+                not first.is_error and not second.is_error
+                and first_id is not None and second_id is not None
+                and first_id != second_id
+                and ids == [first_id, second_id]
+            )
+            status = "PASS" if ok else "FAIL"
+            record("S3.11 two propose_* calls append two distinct pending.json entries",
+                   status, f"ids={ids}")
+
 
 def _check_build() -> None:
     # If this harness is running, the image built and the SDK imported.
@@ -148,16 +214,24 @@ def _check_exposure() -> None:
 
 
 def _check_readonly_mount() -> None:
+    # v3.7 item 10 — the /data mount changed from :ro to read-write so
+    # propose_hint/propose_section_field can append to a song's own proposals
+    # queue file (docker-compose.yml's mcp service). The server's read-only
+    # guarantee is now enforced entirely in code — loaders.py's top-level-only
+    # reads, proposals.py's queue-file-only writes — rather than by the bind
+    # mount; S4.10's exposure guard is what actually holds that boundary. This
+    # check now asserts the mount IS writable: a probe failing here would mean
+    # item 10's tools cannot function at all.
     root = Path(os.environ.get("MCP_ANALYSIS_ROOT", "/data/analysis"))
     probe = root.parent / ".mcp_write_probe"
     try:
         probe.write_text("x", encoding="utf-8")
         probe.unlink()
-        record("S4.11 writing to the /data mount fails (read-only bind holds)",
-               "FAIL", f"write to {probe} succeeded")
+        record("S4.11 /data mount is writable (propose_* tools can append their queue file)",
+               "PASS", f"write to {probe} succeeded")
     except OSError as exc:
-        record("S4.11 writing to the /data mount fails (read-only bind holds)",
-               "PASS", f"{type(exc).__name__}: {exc}")
+        record("S4.11 /data mount is writable (propose_* tools can append their queue file)",
+               "FAIL", f"{type(exc).__name__}: {exc}")
 
 
 def _check_determinism() -> None:

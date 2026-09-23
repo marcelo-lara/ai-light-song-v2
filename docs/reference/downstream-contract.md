@@ -61,6 +61,25 @@ top-level file.
 
 This table is the reach test. Before building anything, name the row it lands in.
 
+## The two write tools (v3.7 item 10) — queue only, never a write to the surface above
+
+`propose_hint(song, start, end, title, summary, evidence)` and
+`propose_section_field(song, section_id, field, value, evidence)` (`field` one
+of `energy`, `tension`, `rhythm.<stem>`) are the one exception to "the server
+is read-only." Both **append** to a queue file one level under the song
+directory (an inner folder, so it is not exposed by anything above), never to
+the operator's own hand-authored file and never directly to a top-level
+published file. `evidence` is required on both — an empty value is rejected
+(error, not a silent no-op) and nothing is written.
+
+A queued proposal reaches a published file only if a human approves it in the
+debugger UI, which writes the operator's own file through its existing PUT
+handler. The UI does not trigger the analyzer stage that republishes it — it
+has no Docker access — so approval shows a reminder naming the `--stage` the
+operator runs by hand. Nothing proposed and unapproved is ever visible
+through `list_songs`, `get_song_overview` or `get_detail` — the exposure rule
+above still holds for every read tool.
+
 ## The join key: `section_id`
 
 `section_id` (e.g. `"section-004"`) ties the whole analysis together. The

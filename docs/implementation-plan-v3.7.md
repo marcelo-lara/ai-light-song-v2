@@ -75,13 +75,13 @@ needing a design decision becomes a `BUG` in the refinement doc, annotated
 
 | | |
 | --- | --- |
-| Done | 9 of 12 |
+| Done | 10 of 12 |
 | Visual QA items | 2, 11 |
 | MCP full-regression | items 5, 7, 8, 9, 10 (smoke-test on every item) |
 | Contract changes (`docs/reference/downstream-contract.md`, written as current state in the item that makes the change) | 4, 5, 6, 7, 8, 9, 10 |
 | New writable `reference/human/` files | `block_reviews.json` (item 1), `reference/proposals/pending.json` (item 10 — not `reference/human/`, never operator-authored directly) |
 | Pre-existing failures | `tests/test_run_queue.py::QueueFileTests::test_seeded_queue_parses_with_three_enabled_app_rows` (stale test — asserts `queue.toml` has `[[experiment]]` rows; the file is now empty after v3.6's promotions). Pre-dates this plan, not owned by any v3.7 item. |
-| Decisions | D5.1 (resolved), D6.1 (resolved), D9.1 (resolved), D7-9.1 (resolved — commit grouping) |
+| Decisions | D5.1, D6.1, D9.1, D7-9.1 (resolved — commit grouping), D10.1 (resolved — user decision: accept read-write mount) |
 | Commit grouping deviation | items 7, 8, 9 committed together (D7-9.1) — the only deviation from one-commit-per-item so far |
 
 ---
@@ -320,14 +320,27 @@ against its own done-when conditions before the commit.
 Refinement item 7, the queue side. Read-only boundary preserved: these tools
 write only `reference/proposals/pending.json`, never `reference/human/`.
 
-- [ ] `propose_hint(song, start, end, title, summary, evidence)` and `propose_section_field(song, section_id, field, value, evidence)` (`field` one of `energy`, `tension`, `rhythm.<stem>`) in `mcp/server.py`. `evidence` required, rejected (error, not silent drop) if empty.
-- [ ] Proposals land in `data/analysis/{song}/reference/proposals/pending.json`, append-only until approved/rejected.
-- [ ] Contract: `downstream-contract.md` (two new tools, their write-only-to-proposals boundary), `docs/mcp-definition.md`.
+- [x] `propose_hint(song, start, end, title, summary, evidence)` and `propose_section_field(song, section_id, field, value, evidence)` (`field` one of `energy`, `tension`, `rhythm.<stem>`) in `mcp/server.py`. `evidence` required, rejected (error, not silent drop) if empty. Writes go through a new `mcp/proposals.py`, the only module allowed to write, hardcoded to one queue-file path per song — never a caller-supplied path.
+- [x] Proposals land in `data/analysis/{song}/reference/proposals/pending.json`, append-only until approved/rejected.
+- [x] Contract: `downstream-contract.md` (two new tools, their write-only-to-proposals boundary), `docs/mcp-definition.md`.
+
+**D10.1 (resolved — user decision, not adopted-and-continued).** Implementing
+this item required loosening the `mcp` Compose service's `./data` mount from
+`:ro` to read-write, since `propose_*` needs to write somewhere under it. This
+touches `mcp-definition.md`'s stated "read-only against the whole tree"
+invariant, so it was surfaced to the operator rather than resolved
+unilaterally. **Decision: accept — code-level scoping is enough.** The mount
+is read-write, but the write surface is narrowly scoped in code
+(`mcp/proposals.py`: one function set, one hardcoded queue-file path per
+song, never a caller-supplied path) and `mcp-definition.md`'s Runtime table
+now states the narrower guarantee explicitly instead of a blanket "never".
+`S4.11` in the smoke-test suite was flipped from asserting the mount is
+read-only to asserting it is writable — the correct invariant to test now.
 
 **Checks**
-- [ ] MCP smoke-test/full-regression green.
-- [ ] Calling `propose_hint` with empty `evidence` errors and writes nothing.
-- [ ] Two calls append two distinct entries to `pending.json`, neither overwriting the other.
+- [x] MCP smoke-test/full-regression green (13/13, 43/43).
+- [x] Calling `propose_hint` with empty `evidence` errors and writes nothing (`S3.10`).
+- [x] Two calls append two distinct entries to `pending.json`, neither overwriting the other (`S3.11`).
 
 ---
 

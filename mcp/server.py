@@ -1,9 +1,14 @@
-"""Read-only stdio MCP server for song comprehension.
+"""Stdio MCP server for song comprehension — read-only except for two
+propose-and-queue tools (v3.7 item 10).
 
-`list_songs`, `get_song_overview` and `get_detail` are all implemented.
-Song discovery and top-level file access live in `loaders.py` (stable); response
-shaping lives in `serializers.py` (volatile — a tool-surface reshape touches
-that file and its snapshots only).
+`list_songs`, `get_song_overview` and `get_detail` are the read surface.
+`propose_hint` and `propose_section_field` are the one write path: they only
+ever append to a song's own proposals queue (`proposals.py`), never to a
+top-level file or the operator's own hand-authored one — see
+docs/mcp-definition.md's "Correction proposals" section. Song discovery and
+top-level file access live in `loaders.py` (stable); response shaping lives in
+`serializers.py` (volatile — a tool-surface reshape touches that file and its
+snapshots only).
 
 The repo directory is named `mcp/` but is never imported as the `mcp` package:
 `mcp/` has no `__init__.py`, so `import mcp` resolves to the installed SDK
@@ -13,6 +18,7 @@ by bare name because this file's own directory is `sys.path[0]` when it runs.
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from mcp.server import MCPServer
@@ -27,7 +33,13 @@ from loaders import (
     MissingTopLevelFileError,
     SongNotFoundError,
     list_songs as _list_songs,
+    load_top_level_json,
     resolve_song_dir,
+)
+from proposals import (
+    ProposalValidationError,
+    append_hint_proposal,
+    append_section_field_proposal,
 )
 from serializers import DetailScopeError, build_detail, build_song_overview
 
@@ -38,6 +50,15 @@ def _validate_song(song: str) -> None:
     """Resolve the song, translating discovery failures into a readable ToolError."""
     try:
         resolve_song_dir(song)
+    except (SongNotFoundError, MissingTopLevelFileError) as exc:
+        raise ToolError(str(exc)) from exc
+
+
+def _resolve_song_or_error(song: str) -> Path:
+    """Like `_validate_song`, but hands back the resolved directory for the
+    two write-a-proposal tools, which need it to place the queue file."""
+    try:
+        return resolve_song_dir(song)
     except (SongNotFoundError, MissingTopLevelFileError) as exc:
         raise ToolError(str(exc)) from exc
 
@@ -107,6 +128,78 @@ def get_detail(
             sources=sources,
         )
     except DetailScopeError as exc:
+        raise ToolError(str(exc)) from exc
+
+
+@server.tool(name="propose_hint")
+def propose_hint(
+    song: str,
+    start: float,
+    end: float,
+    title: str,
+    summary: str,
+    evidence: str,
+) -> dict[str, Any]:
+    """Queue a new lighting hint for operator review — never applied.
+
+    The server stays read-only by the hard boundary in
+    docs/mcp-definition.md: this appends one entry to the song's own
+    proposals queue and nothing else. It never becomes a published field
+    until an operator reviews and approves it in the debugger UI, which is
+    the only surface that may write the operator's own hints file and the
+    only one that triggers a republish. ``evidence`` is required — an empty
+    or missing value is rejected and nothing is written.
+    """
+    song_dir = _resolve_song_or_error(song)
+    try:
+        return append_hint_proposal(
+            song_dir,
+            song,
+            start=start,
+            end=end,
+            title=title,
+            summary=summary,
+            evidence=evidence,
+        )
+    except ProposalValidationError as exc:
+        raise ToolError(str(exc)) from exc
+
+
+@server.tool(name="propose_section_field")
+def propose_section_field(
+    song: str,
+    section_id: str,
+    field: str,
+    value: Any,
+    evidence: str,
+) -> dict[str, Any]:
+    """Queue a correction to one section's ``energy``, ``tension`` or
+    ``rhythm.<stem>`` (``rhythm.drums``/``rhythm.bass``/``rhythm.harmonic``/
+    ``rhythm.vocals``) — never applied.
+
+    Same read-only boundary as ``propose_hint``: this appends to the song's
+    proposals queue only. ``section_id`` must name a row already published on
+    ``sections.json``. ``evidence`` is required — an empty or missing value
+    is rejected and nothing is written. Approval — the only path to the
+    operator's own file, and the only trigger for the ``section-clues``
+    republish that would surface it as ``*_source: "human"`` — happens in
+    the debugger UI.
+    """
+    song_dir = _resolve_song_or_error(song)
+    sections_payload = load_top_level_json(song_dir, "sections.json")
+    known_ids = {row.get("section_id") for row in sections_payload.get("sections", [])}
+    if section_id not in known_ids:
+        raise ToolError(f"Unknown section_id: {section_id!r}")
+    try:
+        return append_section_field_proposal(
+            song_dir,
+            song,
+            section_id=section_id,
+            field=field,
+            value=value,
+            evidence=evidence,
+        )
+    except ProposalValidationError as exc:
         raise ToolError(str(exc)) from exc
 
 
