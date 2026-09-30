@@ -1,0 +1,14 @@
+{
+  "schema_version": "3.6",
+  "song_name": "McpPartial - Fixture",
+  "field_sources": {
+    "lines": "unknown",
+    "sections": "unknown",
+    "calls": "unknown"
+  },
+  "source": null,
+  "reason": "McpPartial - Fixture: no reference/human/lyrics.json and no reference/moises/lyrics.json — vocal_cadence needs an aligned lyric transcript; nothing to infer this from.",
+  "lines": [],
+  "sections": [],
+  "calls": []
+}

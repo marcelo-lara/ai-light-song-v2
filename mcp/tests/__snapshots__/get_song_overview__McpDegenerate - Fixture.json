@@ -150,6 +150,16 @@
       "confidence": "arrangement_state"
     }
   },
+  "vocal_cadence": {
+    "source": null,
+    "reason": "McpDegenerate - Fixture: no reference/human/lyrics.json and no reference/moises/lyrics.json — vocal_cadence needs an aligned lyric transcript; nothing to infer this from.",
+    "call_count": 0,
+    "field_sources": {
+      "lines": "unknown",
+      "sections": "unknown",
+      "calls": "unknown"
+    }
+  },
   "transitions": {
     "rows": [],
     "field_sources": {

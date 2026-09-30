@@ -1,0 +1,42 @@
+[
+  {
+    "start": 0,
+    "end": 46.15,
+    "label": "Intro"
+  },
+  {
+    "start": 46.15,
+    "end": 55.39,
+    "label": "Pre-Drop"
+  },
+  {
+    "start": 55.39,
+    "end": 96,
+    "label": "Drop"
+  },
+  {
+    "start": 96,
+    "end": 125.54,
+    "label": "Breakdown"
+  },
+  {
+    "start": 125.55,
+    "end": 155.08,
+    "label": "Chorus"
+  },
+  {
+    "start": 155.07,
+    "end": 169.84,
+    "label": "Pre-Drop"
+  },
+  {
+    "start": 169.84,
+    "end": 210.46,
+    "label": "Drop"
+  },
+  {
+    "start": 210.46,
+    "end": 215.307,
+    "label": "Outro"
+  }
+]

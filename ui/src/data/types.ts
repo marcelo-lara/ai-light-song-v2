@@ -590,7 +590,16 @@ interface PendingProposalBase {
 
 export type PendingProposal = PendingProposalBase &
   (
-    | { type: "hint"; hint: ProposedHint; section_field?: undefined }
+    | {
+        type: "hint";
+        hint: ProposedHint;
+        /** Operator-corrected start/end, set only when the times approved
+         *  differ from `hint`'s proposed ones (ui/vite.config.ts's
+         *  `normalizeProposalDecisionPayload`/PUT handler). `hint` itself is
+         *  never mutated. */
+        approved_hint?: { start: number; end: number };
+        section_field?: undefined;
+      }
     | { type: "section_field"; section_field: ProposedSectionField; hint?: undefined }
   );
 

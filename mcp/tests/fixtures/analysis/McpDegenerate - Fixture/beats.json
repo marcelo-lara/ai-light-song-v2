@@ -4,7 +4,8 @@
     "beat": "essentia",
     "bar": "essentia",
     "type": "essentia",
-    "downbeat_confidence": "allin1"
+    "downbeat_confidence": "allin1",
+    "off_grid_spans": "beat_grid_fit"
   },
   "beats": [
     {
@@ -343,5 +344,6 @@
       "type": "beat",
       "downbeat_confidence": null
     }
-  ]
+  ],
+  "off_grid_spans": []
 }

@@ -65,6 +65,8 @@ class ProducerVocabularyTests(unittest.TestCase):
                 # v3.7 item 3/6 — section_id attributed against the
                 # published sections.json (hints.py, gestures.py).
                 "sections",
+                # v3.9 item 3 — beats.json's file-level off_grid_spans.
+                "beat_grid_fit",
             },
         )
 

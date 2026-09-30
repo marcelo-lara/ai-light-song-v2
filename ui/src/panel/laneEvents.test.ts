@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { SparseBlock } from "../timeline/laneContent";
 
-import { activeBlockIndex, isInPlayheadWindow } from "./laneEvents";
+import { activeBlockIndex, isInPlayheadWindow, isTimeInWindow } from "./laneEvents";
 
 function block(over: Partial<SparseBlock> & { id: string }): SparseBlock {
   return {
@@ -72,6 +72,21 @@ describe("activeBlockIndex", () => {
     expect(activeBlockIndex(degenerate, 10)).toBe(-1);
     expect(activeBlockIndex(degenerate, 27)).toBe(-1);
     expect(activeBlockIndex(degenerate, 30)).toBe(-1);
+  });
+});
+
+describe("isTimeInWindow", () => {
+  it("is true inside [start, end) and false outside it", () => {
+    const w = { start: 10, end: 20 };
+    expect(isTimeInWindow(w, 5)).toBe(false);
+    expect(isTimeInWindow(w, 10)).toBe(true);
+    expect(isTimeInWindow(w, 15)).toBe(true);
+    expect(isTimeInWindow(w, 20)).toBe(false);
+  });
+
+  it("a degenerate window (end <= start) is never in-window", () => {
+    expect(isTimeInWindow({ start: 10, end: 10 }, 10)).toBe(false);
+    expect(isTimeInWindow({ start: 30, end: 25 }, 27)).toBe(false);
   });
 });
 

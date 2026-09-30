@@ -1,0 +1,60 @@
+[
+  {
+    "start": 0,
+    "end": 15.107,
+    "label": "Intro",
+    "energy": 4,
+    "tension": 4
+  },
+  {
+    "start": 15.107,
+    "end": 22.38,
+    "label": "Pre-Build",
+    "energy": 4,
+    "tension": 4
+  },
+  {
+    "start": 22.38,
+    "end": 28.228,
+    "label": "Build-Up",
+    "energy": 4,
+    "tension": 4
+  },
+  {
+    "start": 28.228,
+    "end": 29.85,
+    "label": "Pre-Drop",
+    "energy": 4,
+    "tension": 4
+  },
+  {
+    "start": 29.85,
+    "end": 74.09,
+    "label": "Drop"
+  },
+  {
+    "start": 74.09,
+    "end": 88.4,
+    "label": "Breakdown"
+  },
+  {
+    "start": 88.4,
+    "end": 96.26,
+    "label": "Build-Up"
+  },
+  {
+    "start": 96.26,
+    "end": 125.34,
+    "label": "Chorus"
+  },
+  {
+    "start": 125.34,
+    "end": 155.34,
+    "label": "Chorus"
+  },
+  {
+    "start": 155.34,
+    "end": 161.54,
+    "label": "Outro"
+  }
+]

@@ -232,3 +232,35 @@ def test_detail_beats_block_present_past_the_dense_cap() -> None:
     resp = _detail(start_ms=0, end_ms=6000)
     assert resp["dense"] is None  # dense withheld over the 5 s cap
     assert resp["structural"]["beats"]["rows"]
+
+
+# --------------------------------------------------------------------------- #
+# v3.9 item 3 — beat-grid honesty: `off_grid_spans` and `_position.resolved`
+# --------------------------------------------------------------------------- #
+
+
+def test_detail_beats_block_carries_off_grid_spans_scoped_to_the_window() -> None:
+    resp = _detail(section_id="section-002")
+    assert resp["structural"]["beats"]["off_grid_spans"] == []
+
+
+def test_position_resolved_false_inside_an_off_grid_span() -> None:
+    beats = [
+        {"time": 0.0, "bar": 1, "beat": 1, "downbeat_confidence": 0.9},
+        {"time": 1.0, "bar": 2, "beat": 1, "downbeat_confidence": 0.9},
+    ]
+    sections = [{"section_id": "section-001", "start": 0.0, "end": 2.0}]
+    off_grid_spans = [{"start": 0.4, "end": 0.9, "max_deviation_ms": 120.0}]
+
+    inside = serializers._position(0.5, beats, sections, 60.0, off_grid_spans)
+    assert inside["resolved"] is False
+
+    outside = serializers._position(0.1, beats, sections, 60.0, off_grid_spans)
+    assert outside["resolved"] is True
+
+
+def test_position_still_resolved_true_when_no_off_grid_spans_given() -> None:
+    beats = [{"time": 0.0, "bar": 1, "beat": 1, "downbeat_confidence": 0.9}]
+    sections = [{"section_id": "section-001", "start": 0.0, "end": 2.0}]
+    pos = serializers._position(0.0, beats, sections, 60.0, None)
+    assert pos["resolved"] is True

@@ -55,7 +55,11 @@
             "subdivision": "quarter",
             "confidence": 0.71
           }
-        }
+        },
+        "lead_in_bars": 0,
+        "rest_count": 0,
+        "call_count": 0,
+        "cadence_repeat_best": null
       },
       {
         "section_id": "section-002",
@@ -82,6 +86,13 @@
           "offset_s": 5.5,
           "offset_beats": 11.0,
           "impact_position": null
+        },
+        "lead_in_bars": -1,
+        "rest_count": 0,
+        "call_count": 1,
+        "cadence_repeat_best": {
+          "section_id": "section-001",
+          "bar_offset": -1
         }
       },
       {
@@ -92,7 +103,14 @@
         "function_confidence": 0.8,
         "function_status": "known",
         "same_label_as": null,
-        "confidence": 0.75
+        "confidence": 0.75,
+        "lead_in_bars": -1,
+        "rest_count": 0,
+        "call_count": 0,
+        "cadence_repeat_best": {
+          "section_id": "section-002",
+          "bar_offset": -1
+        }
       }
     ],
     "field_sources": {
@@ -206,6 +224,16 @@
       "left": "arrangement_state",
       "margin_db": "arrangement_state",
       "confidence": "arrangement_state"
+    }
+  },
+  "vocal_cadence": {
+    "source": "human",
+    "reason": null,
+    "call_count": 1,
+    "field_sources": {
+      "lines": "human",
+      "sections": "human",
+      "calls": "human"
     }
   },
   "transitions": {

@@ -2,7 +2,8 @@
 // artifacts consumed by SparseLane (character, vocal transcription, vocal
 // phrases, allin1 posterior shadow labels, rhythm drum ioi, rhythm stem
 // autocorr, rhythm vocal onsets, energy level, tension shape, whisperx vad,
-// and the top-level published arrangement state).
+// stem presence sections, vocal cadence, clap events, kick check, crash
+// check, and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -416,6 +417,177 @@ export async function loadAllin1Posterior(
 }
 
 // ---------------------------------------------------------------------------
+// stem presence sections — reference/proposals/stem_presence_sections.json
+// ---------------------------------------------------------------------------
+//
+// experiments/stem_presence_sections: a low-cardinality bass/drums-presence
+// state machine (full / bass_only / drums_only / stripped), hysteresis-merged
+// (a short mid-section dip does not split it) and boundary-refined to the
+// nearest physical stem onset in loudness.json. Vocals never cut a boundary —
+// `vocals_present_fraction` is annotation only. A proposal to audition
+// against Human Hints, never ground truth; not yet scored corpus-wide.
+
+export interface StemPresenceSectionsBlock {
+  start_s: number;
+  end_s: number;
+  bar_start: number;
+  bar_end: number;
+  state: string;
+  drums_detail: string;
+  vocals_present_fraction: number;
+  confidence: number | null;
+  boundary_resolved: boolean | null;
+}
+
+export interface StemPresenceSectionsFile {
+  schema_version: string;
+  song_name: string;
+  blocks: StemPresenceSectionsBlock[];
+}
+
+export function parseStemPresenceSections(raw: unknown): StemPresenceSectionsFile {
+  const o = asObject(raw, "reference/proposals/stem_presence_sections.json");
+  const blocks: StemPresenceSectionsBlock[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      bar_start: num(r.bar_start),
+      bar_end: num(r.bar_end),
+      state: st(r.state),
+      drums_detail: st(r.drums_detail),
+      vocals_present_fraction: num(r.vocals_present_fraction),
+      confidence: r.confidence == null ? null : num(r.confidence),
+      boundary_resolved: typeof r.boundary_resolved === "boolean" ? r.boundary_resolved : null,
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadStemPresenceSections(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<StemPresenceSectionsFile>> {
+  const result = await loadJson(
+    artifactPaths.stemPresenceSections(song), parseStemPresenceSections, f,
+  );
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// vocal cadence — top-level vocal_cadence.json (v3.9 item 1)
+// ---------------------------------------------------------------------------
+//
+// Published per-line bar-relative timing and separate call events from the
+// operator's lyric alignment (`reference/human/lyrics.json`, else
+// `reference/moises/lyrics.json`) + `beats.json`. TIMING ONLY — no lyric text
+// is published here or read by this parser. `source: null` + `reason` set
+// (D1.1) when the song carries no lyrics tier — `lines`/`calls` are then
+// empty, never inferred.
+
+export interface VocalCadencePosition {
+  bar: number | null;
+  beat: number | null;
+  resolved: boolean;
+}
+
+export interface VocalCadenceLine {
+  line_id: number;
+  start_s: number;
+  end_s: number;
+  start_position: VocalCadencePosition;
+  end_position: VocalCadencePosition;
+  duration_beats: number | null;
+  token_count: number;
+  pickup: boolean;
+}
+
+export interface VocalCadenceCall {
+  time_s: number;
+  position: VocalCadencePosition;
+}
+
+export interface VocalCadenceFile {
+  schema_version: string;
+  song_name: string;
+  /** "human" | "moises" — which lyrics.json tier fed this file; "" (coerced
+   * from `null`) when the song has neither (D1.1) — see `reason`. */
+  source: string;
+  /** Set only in the D1.1 no-lyrics case; `null` otherwise. */
+  reason: string | null;
+  lines: VocalCadenceLine[];
+  calls: VocalCadenceCall[];
+}
+
+function parseVocalCadencePosition(raw: unknown): VocalCadencePosition {
+  const r = rec(raw);
+  return {
+    bar: r.bar == null ? null : num(r.bar),
+    beat: r.beat == null ? null : num(r.beat),
+    resolved: r.resolved === true,
+  };
+}
+
+export function parseVocalCadence(raw: unknown): VocalCadenceFile {
+  const o = asObject(raw, "vocal_cadence.json");
+  const lines: VocalCadenceLine[] = [];
+  for (const row of arr(o.lines)) {
+    const r = rec(row);
+    lines.push({
+      line_id: num(r.line_id),
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      start_position: parseVocalCadencePosition(r.start_position),
+      end_position: parseVocalCadencePosition(r.end_position),
+      duration_beats: r.duration_beats == null ? null : num(r.duration_beats),
+      token_count: num(r.token_count),
+      pickup: r.pickup === true,
+    });
+  }
+  lines.sort((a, b) => a.start_s - b.start_s);
+
+  const calls: VocalCadenceCall[] = [];
+  for (const row of arr(o.calls)) {
+    const r = rec(row);
+    calls.push({ time_s: num(r.time_s), position: parseVocalCadencePosition(r.position) });
+  }
+  calls.sort((a, b) => a.time_s - b.time_s);
+
+  return {
+    schema_version: st(o.schema_version),
+    song_name: st(o.song_name),
+    source: st(o.source),
+    reason: o.reason == null ? null : st(o.reason),
+    lines,
+    calls,
+  };
+}
+
+export async function loadVocalCadence(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<VocalCadenceFile>> {
+  const result = await loadJson(artifactPaths.vocalCadence(song), parseVocalCadence, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    // vocal_cadence.json is a required top-level file as of v3.9 item 1; a
+    // 404 only happens on a song analysed before that item shipped and not
+    // yet backfilled with `--stage publish-vocal-cadence`. Tolerant empty
+    // read rather than a hard failure, same convention as every other
+    // artifact this file parses.
+    return {
+      ok: true,
+      data: { schema_version: "", song_name: song, source: "", reason: "not yet published for this song", lines: [], calls: [] },
+    };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
 // arrangement state — arrangement_state.json (top-level, published)
 // ---------------------------------------------------------------------------
 //
@@ -814,6 +986,151 @@ export async function loadWhisperxVad(
       ok: true,
       data: { schema_version: "", song_name: song, interval_ms: 50, frames: [], vocal_phrase: [] },
     };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// clapEvents — reference/proposals/clap_events.json
+// ---------------------------------------------------------------------------
+//
+// v3.9 item 2: claps detected from the drums stem by per-hit spectral shape
+// (1-6 kHz noise share, 120-400 Hz body share), never omnizart's label.
+// `experiments/clap_events`. Point events — a proposal to audition, not
+// ground truth.
+
+export interface ClapEvent {
+  time: number;
+  noise_share: number;
+  body_share: number;
+  confidence: number | null;
+}
+
+export interface ClapEventsFile {
+  schema_version: string;
+  song_name: string;
+  events: ClapEvent[];
+}
+
+export function parseClapEvents(raw: unknown): ClapEventsFile {
+  const o = asObject(raw, "reference/proposals/clap_events.json");
+  const events: ClapEvent[] = [];
+  for (const row of arr(o.events)) {
+    const r = rec(row);
+    events.push({
+      time: num(r.time),
+      noise_share: num(r.noise_share),
+      body_share: num(r.body_share),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    });
+  }
+  events.sort((a, b) => a.time - b.time);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), events };
+}
+
+export async function loadClapEvents(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<ClapEventsFile>> {
+  const result = await loadJson(artifactPaths.clapEvents(song), parseClapEvents, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, events: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// kickCheck — reference/proposals/kick_check.json
+// ---------------------------------------------------------------------------
+//
+// v3.9 item 2 (kick-check sibling): every omnizart `kick` event kept or
+// rejected by the same per-hit spectral shape as clapEvents, plus a
+// percussive-attack gate. `experiments/kick_check`.
+
+export interface KickCheckHit {
+  time: number;
+  verdict: string; // "keep" | "reject"
+  low_share: number;
+  noise_share: number;
+}
+
+export interface KickCheckFile {
+  schema_version: string;
+  song_name: string;
+  kicks: KickCheckHit[];
+}
+
+export function parseKickCheck(raw: unknown): KickCheckFile {
+  const o = asObject(raw, "reference/proposals/kick_check.json");
+  const kicks: KickCheckHit[] = [];
+  for (const row of arr(o.kicks)) {
+    const r = rec(row);
+    kicks.push({
+      time: num(r.time),
+      verdict: st(r.verdict, "reject"),
+      low_share: num(r.low_share),
+      noise_share: num(r.noise_share),
+    });
+  }
+  kicks.sort((a, b) => a.time - b.time);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), kicks };
+}
+
+export async function loadKickCheck(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<KickCheckFile>> {
+  const result = await loadJson(artifactPaths.kickCheck(song), parseKickCheck, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, kicks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// crashCheck — reference/proposals/crash_check.json
+// ---------------------------------------------------------------------------
+//
+// The "crash over-fires on bright hats/rides" bug (v3.9): every omnizart
+// `crash` event kept or rejected by regular-stream-period rejection plus a
+// brilliance-band decay-shape gate. `experiments/crash_check`.
+
+export interface CrashCheckHit {
+  time: number;
+  verdict: string; // "keep" | "reject"
+  is_stream_continuation: boolean;
+  decay_ratio: number | null;
+}
+
+export interface CrashCheckFile {
+  schema_version: string;
+  song_name: string;
+  crashes: CrashCheckHit[];
+}
+
+export function parseCrashCheck(raw: unknown): CrashCheckFile {
+  const o = asObject(raw, "reference/proposals/crash_check.json");
+  const crashes: CrashCheckHit[] = [];
+  for (const row of arr(o.crashes)) {
+    const r = rec(row);
+    crashes.push({
+      time: num(r.time),
+      verdict: st(r.verdict, "reject"),
+      is_stream_continuation: r.is_stream_continuation === true,
+      decay_ratio: r.decay_ratio == null ? null : num(r.decay_ratio),
+    });
+  }
+  crashes.sort((a, b) => a.time - b.time);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), crashes };
+}
+
+export async function loadCrashCheck(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<CrashCheckFile>> {
+  const result = await loadJson(artifactPaths.crashCheck(song), parseCrashCheck, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, crashes: [] } };
   }
   return result;
 }

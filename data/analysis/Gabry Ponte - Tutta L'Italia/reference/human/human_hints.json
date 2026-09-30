@@ -1,0 +1,235 @@
+{
+  "song_name": "Gabry Ponte - Tutta L'Italia",
+  "human_hints": [
+    {
+      "id": "human-hint-19",
+      "title": "Pad and hat intro",
+      "start_time": 0,
+      "end_time": 7.428764181246584,
+      "summary": "Pads and hats, almost no kick. No bass, no vocal.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-60b25cecb961",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-24",
+      "title": "Possible intro shout (bar 1 beat 4) — low confidence",
+      "start_time": 3.28,
+      "end_time": 3.69,
+      "summary": "A lone vocal burst in the intro before the vocals start properly (first vocal phrase from about 7.4 s). Could be a shout or a vocal sample; weakest of the call candidates.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-4f680330ca2e",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-20",
+      "title": "Vocal verse, full beat",
+      "start_time": 7.327880859374989,
+      "end_time": 37.5,
+      "summary": "The vocal, kick and sub come in together. A continuous vocal over the full beat.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-8dd5ff8dcc0a",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-22",
+      "title": "Breakdown claps (bars 20-25)",
+      "start_time": 37.5,
+      "end_time": 48.74,
+      "summary": "Kick drops out; drums stem is claps on beats 2 and 4 only, 12 claps: 37.96, 38.89, 39.82, 40.77, 41.70, 42.63, 43.58, 44.51, 45.46, 46.39, 47.35, 48.27 (first one weakest). Bar 26 re-enters with kick on beats 3-4.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-8bd6a3bf4035",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-21",
+      "title": "Chorus drop",
+      "start_time": 52.48,
+      "end_time": 75.01,
+      "summary": "The full beat and sub return under the vocal hook. A snare fill closes it.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-31bb6735252d",
+      "type": "review"
+    },
+    {
+      "id": "hint-001",
+      "title": "Crowd Hey",
+      "start_time": 55.528,
+      "end_time": 56.016,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "human-hint-23",
+      "title": "Shout before drop 1 (bar 39 beat 4)",
+      "start_time": 74.52,
+      "end_time": 74.98,
+      "summary": "Short shout on the last beat before drop 1 lands at bar 40 (74.98); the vocal then stops for the drop.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-0a4b72344c4b",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-8",
+      "title": "Instrumental hook",
+      "start_time": 75.01,
+      "end_time": 83.06,
+      "summary": "No sung vocal. The pads/lead hook takes over at full level over the beat.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-90569d45ba7e",
+      "type": "review"
+    },
+    {
+      "id": "hint-002",
+      "title": "Crowd Hey",
+      "start_time": 78.26,
+      "end_time": 78.48008897569446,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-003",
+      "title": "Crowd Hey",
+      "start_time": 82.031,
+      "end_time": 82.239,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "human-hint-11",
+      "title": "Drop 1 crowd calls (bars 40-47)",
+      "start_time": 82.48,
+      "end_time": 89.99999999999999,
+      "summary": "Crowd shouts on beat 4 every second bar, then held sung notes: single at bar 41 beat 4 (78.31); doubles beat 4 -> next beat 1 at bars 43-44 (82.05, 82.50) and 45-46 (85.75, 86.24); a longer one at bar 47 beat 4 (89.56) leading into the verse.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-738cd73aac5f",
+      "type": "review"
+    },
+    {
+      "id": "hint-004",
+      "title": "Crowd Hey",
+      "start_time": 85.76,
+      "end_time": 85.979,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-005",
+      "title": "Crowd Hey",
+      "start_time": 89.53,
+      "end_time": 89.773,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "human-hint-6",
+      "title": "Short break before verse 2",
+      "start_time": 91.85999999999999,
+      "end_time": 97.48,
+      "summary": "Drums, bass and pads dip. The vocal holds, then the build goes into verse 2.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-8c17e177a07a",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-10",
+      "title": "Vocal returns over the hook",
+      "start_time": 96.55,
+      "end_time": 100.29000000000002,
+      "summary": "The vocal comes back over the full beat.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-4f1a4d4ffe11",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-7",
+      "title": "Verse 2, full beat",
+      "start_time": 97.48,
+      "end_time": 123.74,
+      "summary": "Vocal over the full beat and bass.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-f7acf7cbef34",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-12",
+      "title": "Snare build into final chorus",
+      "start_time": 123.74,
+      "end_time": 127.41653830199114,
+      "summary": "The bass pulls out and a snare build leads into the last chorus.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-784a010ee55b",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-13",
+      "title": "Shout before the clap bar (bar 79 beat 4)",
+      "start_time": 149.51,
+      "end_time": 149.75720182291664,
+      "summary": "Short shout on the last beat of the final chorus, just before the bar-80 clap and chant break.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-dfd895716944",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-15",
+      "title": "Clap + chant bar before final drop (bar 80)",
+      "start_time": 149.99,
+      "end_time": 151.86,
+      "summary": "One-bar break: kick out, claps on beats 2 and 4 (150.44, 151.37), and a short crowd call on every beat (150.00, 150.54, 150.97, 151.44). The strongest crowd moment in the song; drop lands on bar 81 (151.86).",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-5a30882ec1b4",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-14",
+      "title": "Drop 2 crowd calls (bars 81-88)",
+      "start_time": 151.86,
+      "end_time": 166.89,
+      "summary": "Same call pattern as drop 1: single at bar 82 beat 4 (155.18); doubles beat 4 -> next beat 1 at bars 84-85 (158.93, 159.38), 86-87 (162.67, 163.12) and 88-89 (166.43, 166.88), each followed by held sung notes.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-4321d67f9921",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-16",
+      "title": "Instrumental break, vocal out",
+      "start_time": 151.86,
+      "end_time": 158.89,
+      "summary": "The vocal stops. The beat and pads carry the hook.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-ab0a75eb4a88",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-17",
+      "title": "Last vocal over the beat",
+      "start_time": 158.89,
+      "end_time": 166.86,
+      "summary": "The vocal returns for the final lines over the full beat.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-dc667037036e",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-9",
+      "title": "Ending, beat drops",
+      "start_time": 166.86,
+      "end_time": 174.82,
+      "summary": "Bass and drums drop away. The vocal and pads finish.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-e2e81e02da49",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-18",
+      "title": "Outro accent hits (bars 90 and 92, beat 4)",
+      "start_time": 166.89,
+      "end_time": 174.37,
+      "summary": "Kickless outro with two isolated full hits on beat 4: bar 90 (170.13, with a vocal call at 170.15 on the same beat) and bar 92 (173.89, the last hit of the song). Kick plus mid, so accent hits, not claps.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-d3bb27ab4165",
+      "type": "review"
+    }
+  ]
+}

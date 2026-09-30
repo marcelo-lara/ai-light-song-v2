@@ -22,6 +22,7 @@ Still open: [`../experiments.md`](../experiments.md).
 | [Arrangement state](experiments.promoted.arrangement-state.md) | nothing — new stage | `_test_song` F1 **0.59** @0.5 s vs `sections.json` **0.00** |
 | [WhisperX VAD](experiments.promoted.whisperx-vad.md) | nothing — new `vocals_phrase` field | balanced accuracy 0.866–0.971 vs incumbent RMS 0.921–0.942 |
 | [Energy / tension / rhythm clue producers](experiments.promoted.energy-tension-rhythm-clues.md) | nothing — new `section_clues.py` stage | best-agreeing seed exact-match 0.98 (energy) down to 0.04 (vocal onsets); still provisional |
+| [Vocal cadence](experiments.promoted.vocal-cadence.md) | nothing — new `vocal_cadence.json` stage | 12/12 on Queen of Kings' named facts (lead-in bars, cadence-repeat offsets, calls) |
 
 ## Discarded — tried and did not earn a place, or dropped before running
 

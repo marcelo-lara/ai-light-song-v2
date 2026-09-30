@@ -2,6 +2,24 @@
   "song_name": "Cinderella - Ella Lee",
   "human_hints": [
     {
+      "id": "human-hint-32",
+      "title": "Filtered house intro",
+      "start_time": 0,
+      "end_time": 45.44,
+      "summary": "A steady kick with filtered, low drums and bass. No pads. Moderate energy under the Cinderella samples.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-0e751d27ce03",
+      "type": "review"
+    },
+    {
+      "id": "hint-031",
+      "title": "Heartbeat",
+      "start_time": 0.023287172379049315,
+      "end_time": 45.778,
+      "summary": "Drum Kicks in a human heartbeat pace (two kicks at the beginning of each beat)",
+      "lighting_hint": ""
+    },
+    {
       "id": "hint-001",
       "title": "Cinderella sample",
       "start_time": 2.97,
@@ -54,12 +72,32 @@
       "type": "vocal"
     },
     {
+      "id": "human-hint-33",
+      "title": "Snare roll, kick out, pads in",
+      "start_time": 45.44,
+      "end_time": 53.08,
+      "summary": "The kick drops out, a snare roll runs and the pads swell in for the first time.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-846a060eac1e",
+      "type": "review"
+    },
+    {
       "id": "hint-007",
       "title": "Plucked guitar",
       "start_time": 45.778,
       "end_time": 53.56,
       "summary": "No vocals. (the vocal stem contains a leaked guitar)",
       "lighting_hint": ""
+    },
+    {
+      "id": "human-hint-39",
+      "title": "Pads-up groove, filtered drums",
+      "start_time": 53.08,
+      "end_time": 79.32,
+      "summary": "The kick returns under full pads. The drums stay filtered and low.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-66a3d02b2e99",
+      "type": "review"
     },
     {
       "id": "hint-008",
@@ -106,6 +144,16 @@
       "type": "vocal"
     },
     {
+      "id": "human-hint-35",
+      "title": "Beat and bass out before the drop",
+      "start_time": 79.32,
+      "end_time": 85.68,
+      "summary": "Kick, bass and pads all drop out under the vocal tail and pre-drop phrase.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-55421070f1cb",
+      "type": "review"
+    },
+    {
       "id": "hint-015",
       "title": "Breakdown",
       "start_time": 80.32,
@@ -124,6 +172,26 @@
       "type": "vocal"
     },
     {
+      "id": "human-hint-34",
+      "title": "drop impact",
+      "start_time": 85.68,
+      "end_time": 86.17,
+      "summary": "The full kick and sub slam in together.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-e826ad30e650",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-36",
+      "title": "Drop groove, pads out",
+      "start_time": 86.17,
+      "end_time": 101.4,
+      "summary": "Full kick and bass at peak level with no pads and no vocal.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-833a4316b986",
+      "type": "review"
+    },
+    {
       "id": "hint-013",
       "title": "Plucked guitar",
       "start_time": 93.19,
@@ -139,6 +207,36 @@
       "summary": "includes female vocal lead",
       "lighting_hint": "",
       "type": "vocal"
+    },
+    {
+      "id": "human-hint-40",
+      "title": "Main vocal over full beat, no pads",
+      "start_time": 101.4,
+      "end_time": 116.17,
+      "summary": "The vocal returns over the full kick/bass groove. The pads stay out.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-f1049fc9e56c",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-37",
+      "title": "Full groove with pads",
+      "start_time": 116.17,
+      "end_time": 129.57,
+      "summary": "The pads return, so every stem is at full level under the vocal.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-3e987b1150c4",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-38",
+      "title": "Chorus vocal over bass, drums low",
+      "start_time": 129.57,
+      "end_time": 164.14,
+      "summary": "The drums drop out and then stay low. The bass and duet vocals carry the chorus.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-92f38e3fcf85",
+      "type": "review"
     },
     {
       "id": "hint-018",
@@ -209,6 +307,26 @@
       "lighting_hint": ""
     },
     {
+      "id": "human-hint-41",
+      "title": "Breakdown and snare-roll build",
+      "start_time": 164.14,
+      "end_time": 176.7663999495968,
+      "summary": "Vocals stop and the kick drops out. A snare roll (up to 24 per 2 bars) builds into the second drop.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-ea37bbec7ef7",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-42",
+      "title": "Drop 2, instrumental",
+      "start_time": 176.7663999495968,
+      "end_time": 208.58,
+      "summary": "A full kick/bass/pads groove at peak level with no vocal.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-2a96577e5245",
+      "type": "review"
+    },
+    {
       "id": "hint-024",
       "title": "Female lead vocal",
       "start_time": 208.454,
@@ -217,6 +335,16 @@
       "lighting_hint": "",
       "captured_from": "whisperxVad · experiments/whisperx_vad",
       "type": "vocal"
+    },
+    {
+      "id": "human-hint-43",
+      "title": "Verse over full beat",
+      "start_time": 211.15785912298387,
+      "end_time": 238.67,
+      "summary": "The lead vocal returns over the full groove.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-6747939d0d54",
+      "type": "review"
     },
     {
       "id": "hint-025",
@@ -249,6 +377,26 @@
       "type": "vocal"
     },
     {
+      "id": "human-hint-45",
+      "title": "Break, drums stem out",
+      "start_time": 238.67,
+      "end_time": 253.32,
+      "summary": "The drum stem drops and the vocal stops. A kick/hat pattern and a late snare build lead into the chorus drop.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-dce4010f4551",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-44",
+      "title": "Chorus drop with vocal",
+      "start_time": 253.32,
+      "end_time": 269.03,
+      "summary": "Drums and vocal hit together for the main chorus.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-2513a48bbd1b",
+      "type": "review"
+    },
+    {
       "id": "hint-028",
       "title": "phrase",
       "start_time": 254.067,
@@ -257,6 +405,16 @@
       "lighting_hint": "",
       "captured_from": "whisperxVad · experiments/whisperx_vad",
       "type": "vocal"
+    },
+    {
+      "id": "human-hint-46",
+      "title": "Instrumental chorus, full beat",
+      "start_time": 269.03,
+      "end_time": 298.54,
+      "summary": "The vocal drops out and the full groove continues at peak level.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-e1a6f756a336",
+      "type": "review"
     },
     {
       "id": "hint-029",
@@ -269,6 +427,16 @@
       "type": "vocal"
     },
     {
+      "id": "human-hint-47",
+      "title": "Pads out, drums and bass",
+      "start_time": 298.54,
+      "end_time": 314.26,
+      "summary": "The pads fall away, leaving the kick/bass groove.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-9c193b0d2361",
+      "type": "review"
+    },
+    {
       "id": "hint-030",
       "title": "movie voice samples",
       "start_time": 315.644,
@@ -277,6 +445,16 @@
       "lighting_hint": "",
       "captured_from": "whisperxVad · experiments/whisperx_vad",
       "type": "vocal"
+    },
+    {
+      "id": "human-hint-48",
+      "title": "Outro, beat stops",
+      "start_time": 329.03,
+      "end_time": 339.35,
+      "summary": "The drums and bass cut. Only the voice samples remain.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-25977017e374",
+      "type": "review"
     }
   ]
 }

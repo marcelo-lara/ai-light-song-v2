@@ -445,8 +445,10 @@
         "beat": "essentia",
         "bar": "essentia",
         "type": "essentia",
-        "downbeat_confidence": "allin1"
-      }
+        "downbeat_confidence": "allin1",
+        "off_grid_spans": "beat_grid_fit"
+      },
+      "off_grid_spans": []
     },
     "aggregate_intensity": null,
     "stem_summary": {
@@ -785,6 +787,91 @@
       ],
       "min_gap_beats": 2.0,
       "note": "drums: gap between onsets of any instrument. Other stems: below 1.5x this song's own 5th-percentile normalized level for that stem — an unvalidated per-song heuristic, not a tuned gate (same posture as arrangement_state's own margin_db: reported, never gated)."
+    },
+    "vocal_cadence": {
+      "source": "human",
+      "reason": null,
+      "sections": [
+        {
+          "section_id": "section-001",
+          "start_s": 0.0,
+          "end_s": 8.0,
+          "lead_in_bars": 0,
+          "lead_in_line_id": 1,
+          "lead_in_resolve_time_s": 0.0,
+          "lead_in_resolve_position": {
+            "bar": 1,
+            "beat": 1,
+            "resolved": true
+          },
+          "lead_in_reason": null,
+          "rests": [],
+          "held_notes": [],
+          "tokens_per_bar": [
+            {
+              "bar": 1,
+              "tokens": 1
+            }
+          ],
+          "cadence_repeats": []
+        }
+      ],
+      "lines": [
+        {
+          "line_id": 1,
+          "start_s": 0.0,
+          "end_s": 0.5,
+          "start_position": {
+            "bar": 1,
+            "beat": 1,
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 1,
+            "beat": 2,
+            "resolved": false
+          },
+          "duration_beats": 1.0,
+          "token_count": 1,
+          "resolve_time_s": 0.0,
+          "resolve_position": {
+            "bar": 1,
+            "beat": 1,
+            "resolved": true
+          },
+          "pickup": false
+        },
+        {
+          "line_id": 2,
+          "start_s": 6.0,
+          "end_s": 6.5,
+          "start_position": {
+            "bar": 4,
+            "beat": 1,
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 4,
+            "beat": 2,
+            "resolved": false
+          },
+          "duration_beats": 1.0,
+          "token_count": 1,
+          "resolve_time_s": 6.0,
+          "resolve_position": {
+            "bar": 4,
+            "beat": 1,
+            "resolved": true
+          },
+          "pickup": false
+        }
+      ],
+      "calls": [],
+      "field_sources": {
+        "lines": "human",
+        "sections": "human",
+        "calls": "human"
+      }
     }
   },
   "dense": null,

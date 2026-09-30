@@ -76,12 +76,20 @@ export interface RuntimeErrorSink {
 // absent mp3.
 const OPTIONAL_SEGMENTS_404 = /\/reference\/(human|moises)\/segments(\.seed)?\.json$/;
 
+// v3.8 item 2: `RunAnalysisControl` polls `artifacts/_run_progress.json` on
+// every song load. No run has been requested for a fixture song by default,
+// so this 404 is the expected idle state (`fetchRunProgress` reads it as
+// `{ kind: "idle" }`, never logged) — always tolerated, the same way
+// `OPTIONAL_SEGMENTS_404` is.
+const OPTIONAL_RUN_PROGRESS_404 = /\/artifacts\/_run_progress\.json$/;
+
 /**
  * Collect anything that should never happen on a healthy load: console
  * error/warning, page errors, unhandled rejections, and failed responses for a
  * URL under `/data/analysis/`. `/data/songs/*.mp3` 404s are only tolerated for
  * the no-audio spec (pass `{ allowMissingAudio: true }`); a missing
- * `segments.json` is always tolerated (see `OPTIONAL_SEGMENTS_404` above).
+ * `segments.json` or `_run_progress.json` is always tolerated (see
+ * `OPTIONAL_SEGMENTS_404` / `OPTIONAL_RUN_PROGRESS_404` above).
  */
 export function assertNoRuntimeErrors(
   page: Page,
@@ -112,6 +120,7 @@ export function assertNoRuntimeErrors(
     const url = req.url();
     if (opts.allowMissingAudio && /\/data\/songs\/.*\.mp3$/.test(url)) return;
     if (OPTIONAL_SEGMENTS_404.test(url)) return;
+    if (OPTIONAL_RUN_PROGRESS_404.test(url)) return;
     if (url.includes("/data/analysis/") || url.includes("/data/songs/")) {
       problems.push(`requestfailed: ${url} (${req.failure()?.errorText ?? "?"})`);
     }
@@ -121,6 +130,7 @@ export function assertNoRuntimeErrors(
     if (res.status() < 400) return;
     if (opts.allowMissingAudio && /\/data\/songs\/.*\.mp3$/.test(url)) return;
     if (OPTIONAL_SEGMENTS_404.test(url)) return;
+    if (OPTIONAL_RUN_PROGRESS_404.test(url)) return;
     if (url.includes("/data/analysis/")) {
       problems.push(`response ${res.status()}: ${url}`);
     }

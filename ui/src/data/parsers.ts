@@ -868,6 +868,12 @@ function parsePendingProposalRow(raw: unknown): PendingProposal | null {
     const start = typeof h.start === "number" ? h.start : null;
     const end = typeof h.end === "number" ? h.end : null;
     if (start === null || end === null) return null;
+    const ah =
+      o.approved_hint && typeof o.approved_hint === "object"
+        ? (o.approved_hint as Record<string, unknown>)
+        : null;
+    const approvedStart = ah && typeof ah.start === "number" ? ah.start : null;
+    const approvedEnd = ah && typeof ah.end === "number" ? ah.end : null;
     return {
       ...base,
       type: "hint",
@@ -877,6 +883,9 @@ function parsePendingProposalRow(raw: unknown): PendingProposal | null {
         title: typeof h.title === "string" ? h.title : "",
         summary: typeof h.summary === "string" ? h.summary : "",
       },
+      ...(approvedStart !== null && approvedEnd !== null
+        ? { approved_hint: { start: approvedStart, end: approvedEnd } }
+        : {}),
     };
   }
 

@@ -1,0 +1,72 @@
+[
+  {
+    "start": 0,
+    "end": 30,
+    "label": "Intro"
+  },
+  {
+    "start": 30,
+    "end": 44.77,
+    "label": "Pre-Build"
+  },
+  {
+    "start": 44.78,
+    "end": 57.97,
+    "label": "Build"
+  },
+  {
+    "start": 57.97,
+    "end": 59.554,
+    "label": "Fill"
+  },
+  {
+    "start": 59.554,
+    "end": 66.77,
+    "label": "Drop"
+  },
+  {
+    "start": 81.76,
+    "end": 96.47,
+    "label": "Breakdown"
+  },
+  {
+    "start": 96.47,
+    "end": 109.39,
+    "label": "Chorus"
+  },
+  {
+    "start": 109.39,
+    "end": 111.22,
+    "label": "Refrain"
+  },
+  {
+    "start": 111.22,
+    "end": 126.01,
+    "label": "Pre-Build"
+  },
+  {
+    "start": 126.01,
+    "end": 151.836,
+    "label": "Build-Up"
+  },
+  {
+    "start": 151.836,
+    "end": 155.559,
+    "label": "Pre-Drop"
+  },
+  {
+    "start": 155.559,
+    "end": 177.68,
+    "label": "Drop"
+  },
+  {
+    "start": 177.68,
+    "end": 186.98,
+    "label": "Post-Chorus"
+  },
+  {
+    "start": 186.98,
+    "end": 193.88554095262097,
+    "label": "Outro"
+  }
+]

@@ -301,12 +301,13 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 - lane head (plan v1.5 item 7): a lane fed by an unpromoted `experiments/`
   sandbox carries `<i.ph.ph-flask.tl-lane-head__flask>` (`aria-label`
   `"Experimental lane"`) as the first child of `.tl-lane-head__name`, before
-  `<span.tl-lane-head__name-text>`. Thirteen lanes carry it —
-  `vocalPhrases`, `allin1Posterior`, `vocalVoiceness`, `svdTagger`,
+  `<span.tl-lane-head__name-text>`. Seventeen lanes carry it —
+  `vocalPhrases`, `allin1Posterior`, `stemPresenceSections`, `vocalVoiceness`, `svdTagger`,
   `voiceMultiplicity`, `phrasePeriodicity`,
   `rhythmDrumIoi`, `rhythmStemAutocorr`,
   `rhythmVocalOnsets`, `energyLevel`, `tensionShape`, `character`,
-  `vocalTranscription` (this list must track
+  `vocalTranscription`, `clapEvents`, `kickCheck`, `crashCheck` (v3.9 item 2 +
+  the "crash over-fires" bug; this list must track
   `tests/ui-visual/specs/experiment-badge.spec.ts`'s `BADGED` exactly). The
   same badge precedes
   `.app-rightpanel__kicker` in
@@ -324,7 +325,9 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
   `moisesSections` it carries no badge either. `whisperxVad` lost its badge in
   plan v3.6 item 2: the detector now runs as its own pipeline service (the
   `whisperx` Compose service, `whisperx_vad/`), not an `experiments/` sandbox,
-  reading `artifacts/whisperx-vad/whisperx_vad.json`.
+  reading `artifacts/whisperx-vad/whisperx_vad.json`. `vocalCadence` lost its
+  badge in v3.9 item 1: it now reads the top-level published
+  `vocal_cadence.json`, not an `experiments/` sandbox.
 - block inspector (plan v1.5 item 9): `promote-hint` on the `rows-plus-bottom`
   "Create human hint" action, rendered under `block-inspector__title` for every
   inspected event and in both transport states. A Human Hints block routes to

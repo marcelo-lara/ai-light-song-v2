@@ -1,0 +1,7 @@
+Stem Presence Sections — boundary F1 @ +-1.0 s vs reference/human/segments.json
+pooled corpus row per method (per-song rows in each method's own out/score_<method>.txt)
+========================================================================================
+  this experiment — stem presence sections     P=0.43478260869565216 R=0.19230769230769232 F1=0.2667  pred=23 truth=52
+  incumbent — allin1 raw segments              P=0.6666666666666666 R=0.5769230769230769 F1=0.6186  pred=45 truth=52
+  baseline — even 8-bar grid                   P=0.0625 R=0.057692307692307696 F1=0.0600  pred=48 truth=52
+  incumbent — arrangement_state.json blocks    P=0.23118279569892472 R=0.8269230769230769 F1=0.3613  pred=186 truth=52

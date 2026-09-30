@@ -21,7 +21,9 @@ docs/reference/artifacts.md): `beats.json` drops `chord`; `sections.json` drops
 wrapper and drops `sources[]`; `song_event_timeline.json` drops
 `section_name`/`summary`/`evidence_summary`/`generated_from`.
 `arrangement_state.json` is now a required top-level file (no more pre-v3.2
-degraded/absent path) — every fixture carries it.
+degraded/absent path) — every fixture carries it. v3.9 item 3 adds
+`beats.json`'s file-level `off_grid_spans` (empty here — the fixture grid is
+perfectly constant-tempo by construction).
 
     McpFull - Fixture        fully populated baseline (the primary target)
     McpDegenerate - Fixture  honest-uncertainty path: function_status "unknown"
@@ -62,6 +64,7 @@ BEATS_FIELD_SOURCES = {
     "bar": "essentia",
     "type": "essentia",
     "downbeat_confidence": "allin1",
+    "off_grid_spans": "beat_grid_fit",
 }
 
 SECTIONS_FIELD_SOURCES = {
@@ -97,7 +100,9 @@ def beats(*, all_confidence_null: bool) -> dict:
                 "downbeat_confidence": confidence,
             }
         )
-    return {"field_sources": BEATS_FIELD_SOURCES, "beats": rows}
+    # v3.9 item 3 — the fixture is a perfectly constant-tempo grid by
+    # construction, so `off_grid_spans` is honestly empty, never omitted.
+    return {"field_sources": BEATS_FIELD_SOURCES, "beats": rows, "off_grid_spans": []}
 
 
 def sections(*, degenerate: bool) -> dict:
@@ -382,6 +387,109 @@ def drum_events(song_name: str) -> dict:
     }
 
 
+VOCAL_CADENCE_FIELD_SOURCES_PRESENT = {"lines": "human", "sections": "human", "calls": "human"}
+VOCAL_CADENCE_FIELD_SOURCES_ABSENT = {"lines": "unknown", "sections": "unknown", "calls": "unknown"}
+
+
+def vocal_cadence(song_name: str, *, degenerate: bool) -> dict:
+    """v3.9 item 1. `degenerate` here means "no lyrics tier" (D1.1) — the
+    honest-empty shape, same convention as this module's other `degenerate`
+    docs. `McpFull - Fixture`'s bar grid (120 BPM, 2 s/bar, sections at
+    0/8/16 s = bars 1/5/9) carries one lead-in-on-the-hit line (section-001),
+    one lead-in-one-bar-early line that also makes section-002 a cadence
+    repeat of section-001 (bar_offset -1), a symmetric repeat for
+    section-003, and one call at 9.62 s."""
+    if degenerate:
+        return {
+            "schema_version": "3.6",
+            "song_name": song_name,
+            "field_sources": VOCAL_CADENCE_FIELD_SOURCES_ABSENT,
+            "source": None,
+            "reason": (
+                f"{song_name}: no reference/human/lyrics.json and no "
+                "reference/moises/lyrics.json — vocal_cadence needs an aligned "
+                "lyric transcript; nothing to infer this from."
+            ),
+            "lines": [],
+            "sections": [],
+            "calls": [],
+        }
+
+    def _pos(bar: int, beat: int, resolved: bool) -> dict:
+        return {"bar": bar, "beat": beat, "resolved": resolved}
+
+    lines = [
+        {
+            "line_id": 1, "start_s": 0.0, "end_s": 0.5,
+            "start_position": _pos(1, 1, True), "end_position": _pos(1, 2, False),
+            "duration_beats": 1.0, "token_count": 1,
+            "resolve_time_s": 0.0, "resolve_position": _pos(1, 1, True), "pickup": False,
+        },
+        {
+            "line_id": 2, "start_s": 6.0, "end_s": 6.5,
+            "start_position": _pos(4, 1, True), "end_position": _pos(4, 2, False),
+            "duration_beats": 1.0, "token_count": 1,
+            "resolve_time_s": 6.0, "resolve_position": _pos(4, 1, True), "pickup": False,
+        },
+        {
+            "line_id": 3, "start_s": 9.62, "end_s": 9.62,
+            "start_position": _pos(5, 4, True), "end_position": _pos(5, 4, True),
+            "duration_beats": 0.0, "token_count": 0,
+            "resolve_time_s": None, "resolve_position": None, "pickup": None,
+        },
+        {
+            "line_id": 4, "start_s": 14.0, "end_s": 14.5,
+            "start_position": _pos(8, 1, True), "end_position": _pos(8, 2, False),
+            "duration_beats": 1.0, "token_count": 1,
+            "resolve_time_s": 14.0, "resolve_position": _pos(8, 1, True), "pickup": False,
+        },
+    ]
+    sections_rows = [
+        {
+            "section_id": "section-001", "start_s": 0.0, "end_s": 8.0,
+            "lead_in_bars": 0, "lead_in_line_id": 1, "lead_in_resolve_time_s": 0.0,
+            "lead_in_resolve_position": _pos(1, 1, True), "lead_in_reason": None,
+            "rests": [], "held_notes": [], "tokens_per_bar": [{"bar": 1, "tokens": 1}],
+            "cadence_repeats": [],
+        },
+        {
+            "section_id": "section-002", "start_s": 8.0, "end_s": 16.0,
+            "lead_in_bars": -1, "lead_in_line_id": 2, "lead_in_resolve_time_s": 6.0,
+            "lead_in_resolve_position": _pos(4, 1, True), "lead_in_reason": None,
+            "rests": [], "held_notes": [], "tokens_per_bar": [{"bar": 4, "tokens": 1}],
+            "cadence_repeats": [
+                {
+                    "section_id": "section-001", "bar_offset": -1, "match_fraction": 1.0,
+                    "onsets_matched": 1, "onsets_total": 1, "median_error_ms": 0.0, "best": True,
+                }
+            ],
+        },
+        {
+            "section_id": "section-003", "start_s": 16.0, "end_s": 24.0,
+            "lead_in_bars": -1, "lead_in_line_id": 4, "lead_in_resolve_time_s": 14.0,
+            "lead_in_resolve_position": _pos(8, 1, True), "lead_in_reason": None,
+            "rests": [], "held_notes": [], "tokens_per_bar": [{"bar": 8, "tokens": 1}],
+            "cadence_repeats": [
+                {
+                    "section_id": "section-002", "bar_offset": -1, "match_fraction": 1.0,
+                    "onsets_matched": 1, "onsets_total": 1, "median_error_ms": 0.0, "best": True,
+                }
+            ],
+        },
+    ]
+    calls = [{"time_s": 9.62, "position": _pos(5, 4, True)}]
+    return {
+        "schema_version": "3.6",
+        "song_name": song_name,
+        "field_sources": VOCAL_CADENCE_FIELD_SOURCES_PRESENT,
+        "source": "human",
+        "reason": None,
+        "lines": lines,
+        "sections": sections_rows,
+        "calls": calls,
+    }
+
+
 def _write_common(song: str, *, degenerate: bool) -> None:
     _write(song, "info.json", info(song))
     _write(song, "beats.json", beats(all_confidence_null=degenerate))
@@ -392,6 +500,7 @@ def _write_common(song: str, *, degenerate: bool) -> None:
     _write(song, "loudness.json", loudness(song))
     _write(song, "drum_events.json", drum_events(song))
     _write(song, "arrangement_state.json", arrangement_state(song))
+    _write(song, "vocal_cadence.json", vocal_cadence(song, degenerate=degenerate))
 
 
 def build_full() -> None:
@@ -414,6 +523,7 @@ def build_partial() -> None:
     _write(song, "loudness.json", loudness(song))
     _write(song, "drum_events.json", drum_events(song))
     _write(song, "arrangement_state.json", arrangement_state(song))
+    _write(song, "vocal_cadence.json", vocal_cadence(song, degenerate=True))
 
 
 def main() -> None:

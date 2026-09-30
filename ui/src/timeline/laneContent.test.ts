@@ -20,6 +20,7 @@ import {
   gesturesContent,
   humanHintsContent,
   humanSectionsContent,
+  llmPendingProposalsContent,
   moisesLyricsContent,
   moisesSectionsContent,
   sectionsContent,
@@ -30,6 +31,11 @@ import {
   tensionShapeContent,
   segmentSeedsContent,
   allin1PosteriorContent,
+  stemPresenceSectionsContent,
+  vocalCadenceContent,
+  clapEventsContent,
+  kickCheckContent,
+  crashCheckContent,
 } from "./laneContent";
 import type {
   ArrangementStateFile,
@@ -39,8 +45,13 @@ import type {
   EnergyLevelFile,
   TensionShapeFile,
   Allin1PosteriorFile,
+  StemPresenceSectionsFile,
+  VocalCadenceFile,
+  ClapEventsFile,
+  KickCheckFile,
+  CrashCheckFile,
 } from "../data/sparseArtifacts";
-import type { HumanSegmentsSeedFile } from "../data/types";
+import type { HumanSegmentsSeedFile, PendingProposalsFile } from "../data/types";
 
 describe("humanHintsContent", () => {
   it("maps every hint to a block carrying id + lighting hint", () => {
@@ -104,6 +115,75 @@ describe("humanHintsContent", () => {
       ],
     });
     expect(blocks[0]!.tintId).toBe("humanHintsVocal");
+  });
+});
+
+describe("llmPendingProposalsContent", () => {
+  const file: PendingProposalsFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    proposals: [
+      {
+        id: "prop-002",
+        status: "pending",
+        created_at: "2026-01-02T00:00:00Z",
+        rejection_reason: null,
+        evidence: "gesture impact at 42.0s with no covering hint",
+        type: "hint",
+        hint: { start: 40.0, end: 44.0, title: "Strobe on impact", summary: "Impact-aligned strobe." },
+      },
+      {
+        id: "prop-001",
+        status: "pending",
+        created_at: "2026-01-01T00:00:00Z",
+        rejection_reason: null,
+        evidence: "chorus energy jump",
+        type: "hint",
+        hint: { start: 10.0, end: 14.0, title: "Bright wash", summary: "Chorus entry." },
+      },
+      {
+        id: "prop-003",
+        status: "pending",
+        created_at: "2026-01-03T00:00:00Z",
+        rejection_reason: null,
+        evidence: "energy field candidate",
+        type: "section_field",
+        section_field: { section_id: "section-001", field: "energy", value: 4 },
+      },
+      {
+        id: "prop-004",
+        status: "approved",
+        created_at: "2026-01-01T00:00:00Z",
+        rejection_reason: null,
+        evidence: "already decided",
+        type: "hint",
+        hint: { start: 60.0, end: 62.0, title: "Decided hint", summary: "" },
+      },
+    ],
+  };
+  const blocks = llmPendingProposalsContent(file);
+
+  it("keeps only pending hint proposals, sorted by start", () => {
+    expect(blocks.map((b) => b.reference)).toEqual(["prop-001", "prop-002"]);
+  });
+
+  it("maps id/start/end/label/detail/reference from the proposal + its hint", () => {
+    const first = blocks[0]!;
+    expect(first.id).toBe("llmPendingProposals-prop-001");
+    expect(first.start_s).toBe(10.0);
+    expect(first.end_s).toBe(14.0);
+    expect(first.label).toBe("Bright wash");
+    expect(first.detail).toBe("chorus energy jump");
+    expect(first.reference).toBe("prop-001");
+  });
+
+  it("excludes section_field and already-decided proposals", () => {
+    expect(blocks.some((b) => b.reference === "prop-003")).toBe(false);
+    expect(blocks.some((b) => b.reference === "prop-004")).toBe(false);
+  });
+
+  it("never throws on a missing file", () => {
+    expect(llmPendingProposalsContent(null)).toEqual([]);
   });
 });
 
@@ -534,6 +614,95 @@ describe("allin1PosteriorContent", () => {
   });
 });
 
+describe("stemPresenceSectionsContent", () => {
+  const file: StemPresenceSectionsFile = {
+    schema_version: "1.0",
+    song_name: "Rapture - Nadia Ali",
+    blocks: [
+      {
+        start_s: 0.0, end_s: 55.38, bar_start: 1, bar_end: 30,
+        state: "stripped", drums_detail: "off", vocals_present_fraction: 0.5,
+        confidence: 0.22, boundary_resolved: null,
+      },
+      {
+        start_s: 55.38, end_s: 97.85, bar_start: 31, bar_end: 53,
+        state: "full", drums_detail: "full", vocals_present_fraction: 0.1,
+        confidence: null, boundary_resolved: false,
+      },
+    ],
+  };
+  const blocks = stemPresenceSectionsContent(file);
+
+  it("labels a normal block with its coarse state", () => {
+    expect(blocks[0]!.label).toBe("stripped");
+    expect(blocks[0]!.caption).toContain("stripped");
+  });
+
+  it("renders a null confidence and an unresolved boundary honestly", () => {
+    expect(blocks[1]!.summary).toContain("no confidence reported");
+    expect(blocks[1]!.summary).toContain("no onset found");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(stemPresenceSectionsContent(null)).toEqual([]);
+  });
+});
+
+describe("vocalCadenceContent", () => {
+  const file: VocalCadenceFile = {
+    schema_version: "1.0",
+    song_name: "Queen of Kings - Alessandra",
+    source: "human",
+    reason: null,
+    lines: [
+      {
+        line_id: 12, start_s: 47.234, end_s: 49.197,
+        start_position: { bar: 25, beat: 4, resolved: true },
+        end_position: { bar: 26, beat: 1, resolved: true },
+        duration_beats: 3.12, token_count: 4, pickup: true,
+      },
+      {
+        line_id: 13, start_s: 49.15, end_s: 50.137,
+        start_position: { bar: null, beat: null, resolved: false },
+        end_position: { bar: 26, beat: 3, resolved: true },
+        duration_beats: null, token_count: 3, pickup: false,
+      },
+    ],
+    calls: [
+      { time_s: 99.618, position: { bar: 52, beat: 3, resolved: true } },
+    ],
+  };
+  const blocks = vocalCadenceContent(file);
+
+  it("renders a line block with bar position and token count, never text", () => {
+    const line = blocks.find((b) => b.id === "vocal-cadence-line-1")!;
+    expect(line.caption).toContain("4 tokens");
+    expect(line.caption).toContain("pickup");
+    // the fixture's Line dataclass carries no text field at all, so this is
+    // a belt-and-braces check against known lyric words from the real song.
+    for (const word of ["Queen", "Kings", "wind", "hey"]) {
+      expect(line.summary.toLowerCase()).not.toContain(word.toLowerCase());
+      expect(line.caption.toLowerCase()).not.toContain(word.toLowerCase());
+    }
+  });
+
+  it("renders an unresolved bar position honestly, never a guessed bar", () => {
+    const line = blocks.find((b) => b.id === "vocal-cadence-line-2")!;
+    expect(line.caption).toContain("no bar grid");
+  });
+
+  it("renders a call as a distinct, zero-length, textless point marker", () => {
+    const call = blocks.find((b) => b.id === "vocal-cadence-call-1")!;
+    expect(call.start_s).toBe(call.end_s);
+    expect(call.tintId).toBe("vocalCadenceCall");
+    expect(call.label).toBe("call");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(vocalCadenceContent(null)).toEqual([]);
+  });
+});
+
 describe("rhythmStemAutocorrContent", () => {
   const file: RhythmStemAutocorrFile = {
     schema_version: "1.0",
@@ -683,5 +852,89 @@ describe("segmentSeedsContent", () => {
 
   it("never throws on a missing file", () => {
     expect(segmentSeedsContent(null)).toEqual([]);
+  });
+});
+
+describe("clapEventsContent", () => {
+  const file: ClapEventsFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    events: [
+      { time: 80.144, noise_share: 0.73, body_share: 0.0002, confidence: 0.62 },
+      { time: 82.042, noise_share: 0.77, body_share: 0.0, confidence: null },
+    ],
+  };
+  const blocks = clapEventsContent(file);
+
+  it("labels a clap block", () => {
+    expect(blocks[0]!.label).toBe("clap");
+    expect(blocks[0]!.laneLabel).toBe("Clap Events");
+    expect(blocks[0]!.end_s).toBeGreaterThan(blocks[0]!.start_s);
+    expect(blocks[0]!.caption).toContain("noise 0.73");
+  });
+
+  it("renders a null confidence honestly", () => {
+    expect(blocks[1]!.detail).toContain("no confidence reported");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(clapEventsContent(null)).toEqual([]);
+  });
+});
+
+describe("kickCheckContent", () => {
+  const file: KickCheckFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    kicks: [
+      { time: 57.22, verdict: "keep", low_share: 0.98, noise_share: 0.0001 },
+      { time: 96.459, verdict: "reject", low_share: 0.89, noise_share: 0.05 },
+    ],
+  };
+  const blocks = kickCheckContent(file);
+
+  it("distinguishes keep vs reject by label and tint", () => {
+    expect(blocks[0]!.label).toBe("kick");
+    expect(blocks[0]!.tintId).toBe("kickCheckKeep");
+    expect(blocks[1]!.label).toBe("reject");
+    expect(blocks[1]!.tintId).toBe("kickCheckReject");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(kickCheckContent(null)).toEqual([]);
+  });
+});
+
+describe("crashCheckContent", () => {
+  const file: CrashCheckFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    crashes: [
+      { time: 222.37, verdict: "keep", is_stream_continuation: false, decay_ratio: 0.003 },
+      { time: 223.33, verdict: "reject", is_stream_continuation: true, decay_ratio: 0.081 },
+    ],
+  };
+  const blocks = crashCheckContent(file);
+
+  it("distinguishes keep vs reject by label and tint", () => {
+    expect(blocks[0]!.label).toBe("crash");
+    expect(blocks[0]!.tintId).toBe("crashCheckKeep");
+    expect(blocks[0]!.wideLabel).toContain("isolated");
+    expect(blocks[1]!.label).toBe("reject");
+    expect(blocks[1]!.tintId).toBe("crashCheckReject");
+    expect(blocks[1]!.wideLabel).toContain("stream member");
+  });
+
+  it("renders a missing decay reading honestly", () => {
+    const noDecay = crashCheckContent({
+      schema_version: "1.0",
+      song_name: "_test_song",
+      crashes: [{ time: 1.0, verdict: "reject", is_stream_continuation: false, decay_ratio: null }],
+    });
+    expect(noDecay[0]!.caption).toContain("no decay reading");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(crashCheckContent(null)).toEqual([]);
   });
 });

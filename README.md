@@ -44,6 +44,26 @@ Each run writes intermediates under `data/analysis/{song}/artifacts/`,
 the stable deliverables at `data/analysis/{song}/`, and validation
 reports at `artifacts/validation/phase_1_report.{json,md}`.
 
+### Analysis watcher
+
+The debugger's **Run analysis** button and the MCP `request_analysis` tool only
+queue a run (`data/analysis/{song}/artifacts/_run_request.json`). Nothing runs
+until the host-side watcher picks it up. The watcher runs on the host, not in
+a container, and calls `docker compose run` itself.
+
+```bash
+./analysis-watcher               # start in the background and return (same as --start)
+./analysis-watcher --stop        # stop it; a run in progress is marked failed ("interrupted")
+./analysis-watcher --foreground  # run the polling loop in this terminal instead
+./analysis-watcher --once        # work through the queue, then exit
+```
+
+If a watcher is already running, `./analysis-watcher` shows its pid and asks
+whether to stop it. Its log and pid file are `data/analysis-watcher.log` and
+`data/analysis-watcher.pid`. A request that no watcher picks up within 2 minutes
+shows as "no watcher running" in the debugger, and as `not_started` from
+`get_analysis_progress`.
+
 ## The pipeline
 
 Four phases — measure, interpret, relate, publish. This table is the shipped

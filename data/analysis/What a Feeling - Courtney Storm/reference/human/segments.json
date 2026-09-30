@@ -107,7 +107,7 @@
   {
     "start": 157.949,
     "end": 175.17,
-    "label": "Chorus",
+    "label": "Chorus (Inst)",
     "energy": 5,
     "tension": 3,
     "rhythm": {
@@ -120,7 +120,7 @@
   {
     "start": 175.17,
     "end": 188.73,
-    "label": "Chorus",
+    "label": "Chorus (Inst)",
     "energy": 5,
     "tension": 3
   },

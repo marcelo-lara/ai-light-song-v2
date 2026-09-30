@@ -28,6 +28,7 @@ from analyzer.stages.segmentation import segment_sections
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import extract_timing_grid
 from analyzer.stages.ui_data import build_ui_data, publish_arrangement_state
+from analyzer.stages.vocal_cadence import publish_vocal_cadence
 from analyzer.stages.validation import (
     build_validation_report,
     skipped_result,
@@ -59,6 +60,7 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "classify-genre": "6.1",
     "generate-section-hints": "6.2",
     "build-ui-data": "7.2",
+    "publish-vocal-cadence": "7.4",
     "build-human-hints-alignment": "8.8",
     "build-validation-report": "validation",
     "write-validation-report": "validation",
@@ -205,6 +207,17 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         # than publishing phrases with no discriminator attached.
         _required_artifact_payload(paths, stage_name, "essentia", "fft_bands.vocals.json")
         _run_stage(paths.song_name, "phase-1", stage_name, publish_arrangement_state, paths)
+        return 0
+    if stage_name == "publish-vocal-cadence":
+        # Phase 4 — reads the published beats.json/sections.json/info.json
+        # (never audio, never reference/human/segments.json). A single-stage
+        # rerun requires all three already published, including info.json,
+        # since bpm is read off it when not passed explicitly (only the full
+        # pipeline passes it explicitly, ahead of info.json's own write).
+        _required_output_payload(paths, stage_name, paths.sections_output_path)
+        _required_output_payload(paths, stage_name, paths.beats_output_path)
+        _required_output_payload(paths, stage_name, paths.info_output_path)
+        _run_stage(paths.song_name, "phase-1", stage_name, publish_vocal_cadence, paths)
         return 0
     if stage_name == "contest-section-function":
         # Phase 3 — reads the published top-level sections.json,
@@ -383,6 +396,12 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         # reader of the timeline, still runs later), so the reorder changes
         # nothing else.
         _run_stage(paths.song_name, "phase-1", "build-ui-data", build_ui_data, paths)
+        # publish-vocal-cadence (7.4, v3.9 item 1) — reads the beats.json/
+        # sections.json build-ui-data just published, plus reference/
+        # lyrics.json. `bpm` is passed explicitly (from `timing`, in memory)
+        # since info.json itself is not written until the end of this
+        # function.
+        _run_stage(paths.song_name, "phase-1", "publish-vocal-cadence", publish_vocal_cadence, paths, timing["bpm"])
         published_sections = read_json(paths.sections_output_path)
         event_timeline = _run_stage(
             paths.song_name,

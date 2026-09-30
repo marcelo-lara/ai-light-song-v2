@@ -96,6 +96,8 @@ def test_stdio_server_initializes_and_lists_expected_tools() -> None:
                     "get_detail",
                     "propose_hint",
                     "propose_section_field",
+                    "request_analysis",
+                    "get_analysis_progress",
                 ]
 
     asyncio.run(_run())

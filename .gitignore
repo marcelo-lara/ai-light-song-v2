@@ -12,6 +12,9 @@ data/analysis/*/**
 !ui/src/data/**
 !data/analysis/*/reference/human/
 !data/analysis/*/reference/human/*.json
+# v3.8 item 1 — host watcher run-state files; already covered by
+# data/analysis/*/** above, restated here for documentation intent.
+data/analysis/*/artifacts/_run_*.json
 logs/
 models/
 

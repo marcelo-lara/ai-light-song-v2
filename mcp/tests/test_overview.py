@@ -59,17 +59,19 @@ def test_overview_is_deterministic(song: str) -> None:
     assert _serialize(_overview(song)) == _serialize(_overview(song))
 
 
-def test_overview_budget_mcpfull_under_6kb() -> None:
+def test_overview_budget_mcpfull_under_7kb() -> None:
     size = len(_serialize(_overview("McpFull - Fixture")).encode("utf-8"))
     # D25: the committed budget assert is fixture-based; 6 KB is the plan's
     # stated ceiling for Armin - Revolution (7 sections, 58 event rows).
-    # v3.7 item 2 — `impact_alignment` is a new, always-resolved-or-omitted
-    # section field (omitted when null, same convention as energy/tension —
-    # see `_section_clue_fields`); the fixture carries one resolved example
-    # so this test still exercises the non-null shape, so the ceiling moves
-    # up by ~300 bytes to keep it, still well under the 8 KB the tool
+    # v3.7 item 2 moved the ceiling 6144 -> 6450 for the new,
+    # omitted-when-null `impact_alignment` field. v3.9 item 1 moves it again,
+    # 6450 -> 6900: every required top-level file now includes
+    # `vocal_cadence.json` — a compact whole-song block (`source`/`reason`/
+    # `call_count`/`field_sources`) plus 4 small per-section fields
+    # (`lead_in_bars`/`rest_count`/`call_count`/`cadence_repeat_best`) folded
+    # onto each `sections.rows` entry. Still well under the 8 KB the tool
     # description budgets for a fully-populated real song.
-    assert size < 6450, f"overview is {size} bytes, over the 6450-byte budget"
+    assert size < 6900, f"overview is {size} bytes, over the 6900-byte budget"
 
 
 def test_overview_never_emits_the_beat_list() -> None:
@@ -177,7 +179,7 @@ def test_overview_full_carries_arrangement_block() -> None:
 
 
 def test_overview_arrangement_present_on_every_song() -> None:
-    # arrangement_state.json is one of the 9 required top-level files (v3.6
+    # arrangement_state.json is one of the 10 required top-level files (v3.6
     # item 9 dropped the pre-v3.2 degraded/absent path) — the block is always
     # present, on the degenerate fixture too.
     ov = _overview("McpDegenerate - Fixture")

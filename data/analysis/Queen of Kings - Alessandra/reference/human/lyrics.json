@@ -2442,206 +2442,302 @@
     {
         "id": 306,
         "line_id": 36,
-        "start": 127.27340136054421,
-        "end": 127.72136054421769,
-        "text": "la",
-        "confidence": "0.99"
-    },
-    {
-        "id": 307,
-        "line_id": 36,
-        "start": 127.72619047619047,
-        "end": 128.661768707483,
-        "text": "la",
-        "confidence": "0.99"
-    },
-    {
-        "id": 308,
-        "line_id": 36,
-        "start": 128.73625850340136,
-        "end": 129.23625850340136,
-        "text": "la",
-        "confidence": "0.99"
-    },
-    {
-        "id": 309,
-        "line_id": 36,
-        "start": 129.23625850340136,
-        "end": 129.23625850340136,
+        "start": 127.19891156462585,
+        "end": 127.19891156462585,
         "text": "<EOL>",
         "confidence": null
     },
     {
-        "id": 310,
+        "id": 307,
         "line_id": 37,
-        "start": 129.29353741496598,
-        "end": 129.29353741496598,
+        "start": 127.27340136054421,
+        "end": 127.27340136054421,
         "text": "<SOL>",
         "confidence": null
+    },
+    {
+        "id": 308,
+        "line_id": 37,
+        "start": 127.27340136054421,
+        "end": 127.72136054421769,
+        "text": "Her",
+        "confidence": "0.99"
+    },
+    {
+        "id": 309,
+        "line_id": 37,
+        "start": 127.72619047619047,
+        "end": 128.661768707483,
+        "text": "name is",
+        "confidence": "0.99"
+    },
+    {
+        "id": 310,
+        "line_id": 37,
+        "start": 128.73625850340136,
+        "end": 129.23625850340136,
+        "text": "She, Queen",
+        "confidence": "0.99"
     },
     {
         "id": 311,
         "line_id": 37,
         "start": 129.29353741496598,
         "end": 129.9504761904762,
-        "text": "La,",
+        "text": "of the Kings",
         "confidence": "0.99"
     },
     {
         "id": 312,
         "line_id": 37,
-        "start": 130.02496598639456,
-        "end": 130.36843537414967,
-        "text": "la,",
-        "confidence": "0.99"
+        "start": 129.9504761904762,
+        "end": 129.9504761904762,
+        "text": "<EOL>",
+        "confidence": null
     },
     {
         "id": 313,
-        "line_id": 37,
-        "start": 130.40809523809523,
-        "end": 130.5425850340136,
-        "text": "la,",
-        "confidence": "0.99"
+        "line_id": 38,
+        "start": 130.02496598639456,
+        "end": 130.02496598639456,
+        "text": "<SOL>",
+        "confidence": null
     },
     {
         "id": 314,
-        "line_id": 37,
-        "start": 130.58224489795919,
-        "end": 131.34367346938774,
-        "text": "la,",
+        "line_id": 38,
+        "start": 130.02496598639456,
+        "end": 130.36843537414967,
+        "text": "A run-",
         "confidence": "0.99"
     },
     {
         "id": 315,
-        "line_id": 37,
-        "start": 131.8709523809524,
-        "end": 132.458231292517,
-        "text": "la,",
+        "line_id": 38,
+        "start": 130.40809523809523,
+        "end": 130.5425850340136,
+        "text": "ning",
         "confidence": "0.99"
     },
     {
         "id": 316,
-        "line_id": 37,
-        "start": 132.4630612244898,
-        "end": 132.77170068027212,
-        "text": "la,",
+        "line_id": 38,
+        "start": 130.58224489795919,
+        "end": 131.34367346938774,
+        "text": "fast beat in the wind",
         "confidence": "0.99"
     },
     {
         "id": 317,
-        "line_id": 37,
-        "start": 132.95068027210883,
-        "end": 133.4334693877551,
-        "text": "la,",
+        "line_id": 38,
+        "start": 131.8709523809524,
+        "end": 132.458231292517,
+        "text": "(hey)",
         "confidence": "0.99"
     },
     {
         "id": 318,
-        "line_id": 37,
-        "start": 133.4382993197279,
-        "end": 133.7121088435374,
-        "text": "la,",
-        "confidence": "0.99"
+        "line_id": 38,
+        "start": 132.458231292517,
+        "end": 132.458231292517,
+        "text": "<EOL>",
+        "confidence": null
     },
     {
         "id": 319,
-        "line_id": 37,
-        "start": 133.7169387755102,
-        "end": 133.88625850340136,
-        "text": "la,",
-        "confidence": "0.99"
+        "line_id": 39,
+        "start": 132.4630612244898,
+        "end": 132.4630612244898,
+        "text": "<SOL>",
+        "confidence": null
     },
     {
         "id": 320,
-        "line_id": 37,
-        "start": 133.89108843537414,
-        "end": 134.16489795918366,
-        "text": "la,",
+        "line_id": 39,
+        "start": 132.4630612244898,
+        "end": 132.77170068027212,
+        "text": "Nothing",
         "confidence": "0.99"
     },
     {
         "id": 321,
-        "line_id": 37,
-        "start": 134.16972789115647,
-        "end": 134.33904761904762,
-        "text": "la,",
+        "line_id": 39,
+        "start": 132.95068027210883,
+        "end": 133.4334693877551,
+        "text": "in this",
         "confidence": "0.99"
     },
     {
         "id": 322,
-        "line_id": 37,
-        "start": 135.07530612244898,
-        "end": 137.05578231292517,
-        "text": "la,",
+        "line_id": 39,
+        "start": 133.4382993197279,
+        "end": 133.7121088435374,
+        "text": "world",
         "confidence": "0.99"
     },
     {
         "id": 323,
-        "line_id": 37,
-        "start": 137.09544217687073,
-        "end": 137.2647619047619,
-        "text": "la,",
+        "line_id": 39,
+        "start": 133.7169387755102,
+        "end": 133.88625850340136,
+        "text": "can",
         "confidence": "0.99"
     },
     {
         "id": 324,
-        "line_id": 37,
-        "start": 137.72238095238095,
-        "end": 138.17034013605442,
-        "text": "la,",
+        "line_id": 39,
+        "start": 133.89108843537414,
+        "end": 134.16489795918366,
+        "text": "stop",
         "confidence": "0.99"
     },
     {
         "id": 325,
-        "line_id": 37,
-        "start": 138.21,
-        "end": 140.05115646258503,
-        "text": "la,",
+        "line_id": 39,
+        "start": 134.16972789115647,
+        "end": 134.33904761904762,
+        "text": "the spread of",
         "confidence": "0.99"
     },
     {
         "id": 326,
-        "line_id": 37,
-        "start": 140.09081632653061,
-        "end": 140.60843537414965,
-        "text": "la,",
+        "line_id": 39,
+        "start": 135.07530612244898,
+        "end": 136.26000000000002,
+        "text": "her wings",
         "confidence": "0.99"
     },
     {
         "id": 327,
-        "line_id": 37,
-        "start": 140.61326530612246,
-        "end": 141.51401360544216,
-        "text": "la,",
-        "confidence": "0.99"
+        "line_id": 39,
+        "start": 136.26000000000002,
+        "end": 136.26000000000002,
+        "text": "<EOL>",
+        "confidence": null
     },
     {
         "id": 328,
-        "line_id": 37,
-        "start": 141.51884353741497,
-        "end": 141.96680272108844,
-        "text": "la,",
-        "confidence": "0.99"
+        "line_id": 40,
+        "start": 136.3,
+        "end": 136.3,
+        "text": "<SOL>",
+        "confidence": null
     },
     {
         "id": 329,
-        "line_id": 37,
-        "start": 142.006462585034,
-        "end": 142.28027210884352,
-        "text": "la,",
+        "line_id": 40,
+        "start": 136.3,
+        "end": 137.05578231292517,
+        "text": "She, Queen of",
         "confidence": "0.99"
     },
     {
         "id": 330,
-        "line_id": 37,
-        "start": 142.3895918367347,
-        "end": 142.8895918367347,
-        "text": "la,",
+        "line_id": 40,
+        "start": 137.09544217687073,
+        "end": 137.2647619047619,
+        "text": "the Kings",
         "confidence": "0.99"
     },
     {
         "id": 331,
-        "line_id": 37,
+        "line_id": 40,
+        "start": 137.2647619047619,
+        "end": 137.2647619047619,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 332,
+        "line_id": 41,
+        "start": 137.72238095238095,
+        "end": 137.72238095238095,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 333,
+        "line_id": 41,
+        "start": 137.72238095238095,
+        "end": 138.17034013605442,
+        "text": "A broken",
+        "confidence": "0.99"
+    },
+    {
+        "id": 334,
+        "line_id": 41,
+        "start": 138.21,
+        "end": 139.55,
+        "text": "case through the key",
+        "confidence": "0.99"
+    },
+    {
+        "id": 335,
+        "line_id": 41,
+        "start": 139.62,
+        "end": 140.05115646258503,
+        "text": "(hey)",
+        "confidence": "0.99"
+    },
+    {
+        "id": 336,
+        "line_id": 41,
+        "start": 140.05115646258503,
+        "end": 140.05115646258503,
+        "text": "<EOL>",
+        "confidence": null
+    },
+    {
+        "id": 337,
+        "line_id": 42,
+        "start": 140.09081632653061,
+        "end": 140.09081632653061,
+        "text": "<SOL>",
+        "confidence": null
+    },
+    {
+        "id": 338,
+        "line_id": 42,
+        "start": 140.09081632653061,
+        "end": 140.60843537414965,
+        "text": "She will",
+        "confidence": "0.99"
+    },
+    {
+        "id": 339,
+        "line_id": 42,
+        "start": 140.61326530612246,
+        "end": 141.51401360544216,
+        "text": "be the warrior",
+        "confidence": "0.99"
+    },
+    {
+        "id": 340,
+        "line_id": 42,
+        "start": 141.51884353741497,
+        "end": 141.96680272108844,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 341,
+        "line_id": 42,
+        "start": 142.006462585034,
+        "end": 142.28027210884352,
+        "text": "North,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 342,
+        "line_id": 42,
+        "start": 142.3895918367347,
+        "end": 142.8895918367347,
+        "text": "South and Seas",
+        "confidence": "0.99"
+    },
+    {
+        "id": 343,
+        "line_id": 42,
         "start": 142.8895918367347,
         "end": 142.8895918367347,
         "text": "<EOL>",

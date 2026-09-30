@@ -1,0 +1,487 @@
+#!/usr/bin/env bash
+#
+# Host-side analysis watcher (implementation-plan-v3.8 item 1, D1.2).
+#
+# Runs on the HOST, never in a container. This is deliberate: v3.7's D11.1
+# rejected mounting the Docker socket into the `ui` (or any) container as
+# root-equivalent host access, too broad a grant for what it buys, and it
+# didn't even work on this host (rootless Docker). Running natively on the
+# host sidesteps that grant entirely — it already has the host's own `docker`
+# CLI with no socket mount needed anywhere.
+#
+# Bash + coreutils + `docker` only (D1.2) — no `jq`, no `inotifywait`, just
+# polling every ANALYSIS_WATCHER_POLL_S seconds. The song name comes from the
+# request file's *directory name* (data/analysis/<song>/artifacts/…), so the
+# watcher never parses JSON to find it — only to build/escape the small
+# progress payloads it writes itself.
+#
+# Queue file:    data/analysis/<song>/artifacts/_run_request.json
+# Progress file: data/analysis/<song>/artifacts/_run_progress.json
+#
+# Usage: ./analysis-watcher [--start | --stop | --foreground | --once]
+#   --start       (default) launch the watcher in the background and return;
+#                 if one is already running, offer to stop it
+#   --stop        stop the background watcher (its current job is marked
+#                 failed, "interrupted")
+#   --foreground  run the polling loop in this terminal (--start runs this)
+#   --once        process the queue until empty, then exit (tests use this)
+#
+# Background state: $DATA_DIR/analysis-watcher.pid and
+# $DATA_DIR/analysis-watcher.log (data/ is gitignored).
+#
+# Env:
+#   ANALYSIS_WATCHER_DOCKER   docker binary (default: docker)
+#   ANALYSIS_WATCHER_DATA     data dir (default: ./data)
+#   ANALYSIS_WATCHER_POLL_S   poll interval in seconds (default: 2)
+
+set -euo pipefail
+
+DOCKER_BIN="${ANALYSIS_WATCHER_DOCKER:-docker}"
+DATA_DIR="${ANALYSIS_WATCHER_DATA:-./data}"
+POLL_S="${ANALYSIS_WATCHER_POLL_S:-2}"
+
+# Run from the repo root wherever it is invoked from: `docker compose` and
+# the default DATA_DIR are both relative to it.
+cd "$(dirname "$(readlink -f "$0")")"
+
+MODE="${1:---start}"
+case "$MODE" in
+  --start|--stop|--foreground|--once) ;;
+  *)
+    echo "usage: $0 [--start | --stop | --foreground | --once]" >&2
+    exit 2
+    ;;
+esac
+
+PID_FILE="$DATA_DIR/analysis-watcher.pid"
+LOG_FILE="$DATA_DIR/analysis-watcher.log"
+
+# Pid of the running background watcher, or nothing (stale pidfile ignored).
+running_pid() {
+  local pid
+  [[ -f "$PID_FILE" ]] || return 0
+  pid="$(cat "$PID_FILE" 2>/dev/null || true)"
+  if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null \
+      && grep -q "analysis-watcher" "/proc/$pid/cmdline" 2>/dev/null; then
+    printf '%s' "$pid"
+  fi
+}
+
+# SIGTERM the watcher's whole process group (setsid made it the leader), so
+# the in-flight `docker compose run` goes too; its trap marks the job failed.
+stop_watcher() {
+  local pid="$1" i
+  kill -TERM -- "-$pid" 2>/dev/null || kill -TERM "$pid" 2>/dev/null || true
+  for i in $(seq 1 20); do
+    kill -0 "$pid" 2>/dev/null || break
+    sleep 0.5
+  done
+  if kill -0 "$pid" 2>/dev/null; then
+    echo "watcher (pid $pid) did not exit within 10s" >&2
+    return 1
+  fi
+  rm -f "$PID_FILE"
+  echo "analysis-watcher stopped (pid $pid)."
+}
+
+if [[ "$MODE" == "--stop" ]]; then
+  pid="$(running_pid)"
+  if [[ -z "$pid" ]]; then
+    rm -f "$PID_FILE"
+    echo "analysis-watcher is not running."
+    exit 0
+  fi
+  stop_watcher "$pid"
+  exit $?
+fi
+
+if [[ "$MODE" == "--start" ]]; then
+  pid="$(running_pid)"
+  if [[ -n "$pid" ]]; then
+    echo "analysis-watcher is already running (pid $pid, log: $LOG_FILE)."
+    if [[ ! -t 0 ]]; then
+      exit 1
+    fi
+    read -r -p "Stop it? [y/N] " answer
+    if [[ "$answer" =~ ^[Yy] ]]; then
+      stop_watcher "$pid"
+      exit $?
+    fi
+    exit 0
+  fi
+  mkdir -p "$DATA_DIR"
+  setsid nohup "$0" --foreground >> "$LOG_FILE" 2>&1 < /dev/null &
+  echo "$!" > "$PID_FILE"
+  echo "analysis-watcher started (pid $!, log: $LOG_FILE). Stop with: $0 --stop"
+  exit 0
+fi
+
+# Known stage names — must equal STAGE_PIPELINE_IDS' keys in
+# src/analyzer/pipeline.py exactly. tests/test_analysis_watcher.py asserts
+# this list against that dict so drift between the two fails a test rather
+# than silently going stale.
+KNOWN_STAGES=(
+  "ensure-stems"
+  "extract-timing-grid"
+  "validate-beats"
+  "extract-fft-bands"
+  "extract-mix-stem-loudness"
+  "extract-hpcp-and-key"
+  "extract-drum-events"
+  "extract-energy-features"
+  "segment-sections"
+  "detect-arrangement-state"
+  "publish-arrangement-state"
+  "contest-section-function"
+  "section-clues"
+  "derive-energy-layer"
+  "build-gestures"
+  "classify-genre"
+  "generate-section-hints"
+  "build-ui-data"
+  "publish-vocal-cadence"
+  "build-human-hints-alignment"
+  "build-validation-report"
+  "write-validation-report"
+  "write-validation-markdown"
+)
+
+is_known_stage() {
+  local candidate="$1"
+  local stage
+  for stage in "${KNOWN_STAGES[@]}"; do
+    if [[ "$stage" == "$candidate" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+now_iso() {
+  date -u +"%Y-%m-%dT%H:%M:%SZ"
+}
+
+# JSON-escape a string: backslash, double quote, control chars, newline -> \n.
+json_escape() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  # Convert literal newlines to \n, strip carriage returns and other control chars.
+  s="$(printf '%s' "$s" | tr '\r' ' ' | sed ':a;N;$!ba;s/\n/\\n/g')"
+  printf '%s' "$s"
+}
+
+progress_path() {
+  printf '%s/analysis/%s/artifacts/_run_progress.json' "$DATA_DIR" "$1"
+}
+
+request_path() {
+  printf '%s/analysis/%s/artifacts/_run_request.json' "$DATA_DIR" "$1"
+}
+
+# write_progress song status stage requested_at started_at finished_at error
+write_progress() {
+  local song="$1" status="$2" stage="$3" requested_at="$4" started_at="$5" finished_at="$6" error="$7"
+  local path
+  path="$(progress_path "$song")"
+  local tmp="${path}.tmp.$$"
+
+  local stage_json="null"
+  if [[ -n "$stage" ]]; then
+    stage_json="\"$(json_escape "$stage")\""
+  fi
+  local started_json="null"
+  if [[ -n "$started_at" ]]; then
+    started_json="\"$started_at\""
+  fi
+  local finished_json="null"
+  if [[ -n "$finished_at" ]]; then
+    finished_json="\"$finished_at\""
+  fi
+  local error_json="null"
+  if [[ -n "$error" ]]; then
+    error_json="\"$(json_escape "$error")\""
+  fi
+
+  mkdir -p "$(dirname "$path")"
+  {
+    printf '{\n'
+    printf '  "song": "%s",\n' "$(json_escape "$song")"
+    printf '  "status": "%s",\n' "$status"
+    printf '  "stage": %s,\n' "$stage_json"
+    printf '  "requested_at": "%s",\n' "$requested_at"
+    printf '  "started_at": %s,\n' "$started_json"
+    printf '  "finished_at": %s,\n' "$finished_json"
+    printf '  "error": %s\n' "$error_json"
+    printf '}\n'
+  } > "$tmp"
+  mv -f "$tmp" "$path"
+}
+
+# Read a JSON string field's value out of a progress file, if present.
+read_json_string_field() {
+  local path="$1" field="$2"
+  [[ -f "$path" ]] || return 1
+  sed -n "s/.*\"${field}\": *\"\\([^\"]*\\)\".*/\\1/p" "$path" | head -n1
+}
+
+# Portable mtime (seconds since epoch) — GNU stat, BSD stat, or fallback.
+file_mtime_epoch() {
+  local path="$1"
+  if stat -c %Y "$path" >/dev/null 2>&1; then
+    stat -c %Y "$path"
+  else
+    stat -f %m "$path"
+  fi
+}
+
+file_mtime_iso() {
+  local path="$1" epoch
+  epoch="$(file_mtime_epoch "$path")"
+  date -u -d "@$epoch" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null \
+    || date -u -r "$epoch" +"%Y-%m-%dT%H:%M:%SZ"
+}
+
+# Mark any progress file left in "running" as interrupted (restart safety).
+recover_interrupted() {
+  local dir song status req
+  shopt -s nullglob
+  for req in "$DATA_DIR"/analysis/*/artifacts/_run_progress.json; do
+    status="$(read_json_string_field "$req" status || true)"
+    if [[ "$status" == "running" ]]; then
+      dir="$(dirname "$(dirname "$req")")"
+      song="$(basename "$dir")"
+      local requested_at started_at
+      requested_at="$(read_json_string_field "$req" requested_at || true)"
+      started_at="$(read_json_string_field "$req" started_at || true)"
+      write_progress "$song" "failed" "" "${requested_at:-$(now_iso)}" "${started_at:-}" "$(now_iso)" \
+        "interrupted: watcher restarted"
+    fi
+  done
+  shopt -u nullglob
+}
+
+CURRENT_SONG=""
+CURRENT_REQUESTED_AT=""
+CURRENT_STARTED_AT=""
+TICKER_PID=""
+
+stop_queue_ticker() {
+  if [[ -n "$TICKER_PID" ]]; then
+    kill "$TICKER_PID" 2>/dev/null || true
+    wait "$TICKER_PID" 2>/dev/null || true
+    TICKER_PID=""
+  fi
+}
+
+on_signal() {
+  stop_queue_ticker
+  if [[ -n "$CURRENT_SONG" ]]; then
+    write_progress "$CURRENT_SONG" "failed" "" "$CURRENT_REQUESTED_AT" "$CURRENT_STARTED_AT" "$(now_iso)" \
+      "interrupted: watcher restarted"
+  fi
+  exit 143
+}
+trap on_signal SIGINT SIGTERM
+
+# List songs with a pending request file, oldest request mtime first (FIFO).
+# Tab-delimited (not space) so a song name containing spaces (e.g.
+# "Cinderella - Ella Lee") survives the sort/cut round trip intact.
+list_queued_songs() {
+  local req song mtime
+  local -a rows=()
+  shopt -s nullglob
+  for req in "$DATA_DIR"/analysis/*/artifacts/_run_request.json; do
+    song="$(basename "$(dirname "$(dirname "$req")")")"
+    mtime="$(file_mtime_epoch "$req")"
+    rows+=("$(printf '%s\t%s' "$mtime" "$song")")
+  done
+  shopt -u nullglob
+  if [[ "${#rows[@]}" -eq 0 ]]; then
+    return 0
+  fi
+  printf '%s\n' "${rows[@]}" | sort -t $'\t' -n -k1,1 | cut -f2-
+}
+
+# Mark every request file not yet reflected as queued/running/etc — called
+# once per sweep, before any job runs, so a second song's progress file
+# reads "queued" while the first song is still running rather than only
+# appearing once the watcher gets around to it.
+mark_all_queued() {
+  local req song status
+  shopt -s nullglob
+  for req in "$DATA_DIR"/analysis/*/artifacts/_run_request.json; do
+    song="$(basename "$(dirname "$(dirname "$req")")")"
+    status="$(read_json_string_field "$(progress_path "$song")" status || true)"
+    if [[ -z "$status" || "$status" == "done" || "$status" == "failed" ]]; then
+      write_progress "$song" "queued" "" "$(file_mtime_iso "$req")" "" "" ""
+    fi
+  done
+  shopt -u nullglob
+}
+
+# Background ticker: while a job runs (both the whisperx and analyze steps,
+# which can each take minutes), re-sweep for newly arrived request files
+# every POLL_S so a second song's progress file reads "queued" promptly
+# rather than only once the running job finishes. mark_all_queued's own
+# status guard (skips a song whose progress is already something other than
+# unset/done/failed) keeps this from ever touching the running song's own
+# "running" row.
+start_queue_ticker() {
+  (
+    while true; do
+      sleep "$POLL_S"
+      mark_all_queued
+    done
+  ) &
+  TICKER_PID=$!
+}
+
+# Run one docker-compose step, streaming its combined output into out_file
+# and, for every line, checking for a pipeline stage marker
+# (pipeline.py:_print_stage_marker: optional "[i/N]" batch prefix, optional
+# "[EPIC n | n.n] ", then "<song> | <stage-name>") — the text after the LAST
+# " | " is accepted as the current stage only if it is in KNOWN_STAGES.
+# stage_label, if non-empty, is written as the stage immediately, before the
+# command starts (for a step whose own output carries no stage marker, e.g.
+# whisperx). Sets the global STEP_EXIT_CODE to the command's real exit
+# status and truncates out_file to that step's own output (so a step's
+# `error` never mixes in an earlier step's log).
+#
+# run_step song requested_at started_at out_file stage_label -- <docker args...>
+run_step() {
+  local song="$1" requested_at="$2" started_at="$3" out_file="$4" stage_label="$5"
+  shift 5
+  : > "$out_file"
+  if [[ -n "$stage_label" ]]; then
+    write_progress "$song" "running" "$stage_label" "$requested_at" "$started_at" "" ""
+  fi
+  local line stage_candidate
+  while IFS= read -r line; do
+    printf '%s\n' "$line" >> "$out_file"
+    stage_candidate="${line##*| }"
+    stage_candidate="${stage_candidate# }"
+    stage_candidate="${stage_candidate%% }"
+    if is_known_stage "$stage_candidate"; then
+      write_progress "$song" "running" "$stage_candidate" "$requested_at" "$started_at" "" ""
+    fi
+  done < <(set +e; "$DOCKER_BIN" "$@" 2>&1; echo "EXIT:$?")
+  # Extract the trailing sentinel exit code appended above. `set +e` inside
+  # the process substitution is required — under the outer `set -e`,
+  # errexit is otherwise inherited into that subshell and a failing command
+  # aborts it before "echo EXIT:$?" ever runs, leaving the real exit code
+  # unobserved.
+  local last_line
+  last_line="$(tail -n1 "$out_file")"
+  if [[ "$last_line" == EXIT:* ]]; then
+    STEP_EXIT_CODE="${last_line#EXIT:}"
+    sed -i '$ d' "$out_file"
+  else
+    STEP_EXIT_CODE=1
+  fi
+}
+
+run_one_job() {
+  local song="$1"
+  local req_path prog_path requested_at
+  req_path="$(request_path "$song")"
+  prog_path="$(progress_path "$song")"
+
+  requested_at="$(file_mtime_iso "$req_path")"
+
+  # Take the job: delete the request file, write running.
+  rm -f "$req_path"
+  local started_at
+  started_at="$(now_iso)"
+  CURRENT_SONG="$song"
+  CURRENT_REQUESTED_AT="$requested_at"
+  CURRENT_STARTED_AT="$started_at"
+  write_progress "$song" "running" "" "$requested_at" "$started_at" "" ""
+  start_queue_ticker
+
+  local song_dir="$DATA_DIR/analysis/$song"
+  local audio_path="/data/songs/${song}.mp3"
+  local stems_artifact="$song_dir/artifacts/stems/vocals.wav"
+  local whisperx_artifact="$song_dir/artifacts/whisperx-vad/whisperx_vad.json"
+
+  local out_file
+  out_file="$(mktemp)"
+  local exit_code=0
+
+  # D1.1 (corrected — found by the host end-to-end smoke against a
+  # never-analysed song). whisperX reads the vocal stem, which only the
+  # analyzer's own `ensure-stems` stage produces
+  # (artifacts/stems/vocals.wav) — running whisperX before any analyze step
+  # ever touched the song fails immediately with `FileNotFoundError:
+  # expected vocal stem at .../artifacts/stems/vocals.wav`. So, iff
+  # whisperX's own output is missing: run `ensure-stems` alone first (iff
+  # the vocal stem is itself missing), then whisperX, then — iff both
+  # succeeded — the full `./analyze`. Any step failing stops the job there;
+  # later steps do not run.
+  if [[ ! -f "$whisperx_artifact" ]]; then
+    if [[ ! -f "$stems_artifact" ]]; then
+      run_step "$song" "$requested_at" "$started_at" "$out_file" "" \
+        compose run --rm -T app ./analyze --song "$audio_path" --stage ensure-stems --device cuda
+      exit_code="$STEP_EXIT_CODE"
+    fi
+
+    if [[ "$exit_code" -eq 0 ]]; then
+      run_step "$song" "$requested_at" "$started_at" "$out_file" "whisperx" \
+        compose run --rm -T whisperx --song "$audio_path"
+      exit_code="$STEP_EXIT_CODE"
+    fi
+  fi
+
+  if [[ "$exit_code" -eq 0 ]]; then
+    run_step "$song" "$requested_at" "$started_at" "$out_file" "" \
+      compose run --rm -T app ./analyze --song "$audio_path" --device cuda
+    exit_code="$STEP_EXIT_CODE"
+  fi
+
+  stop_queue_ticker
+
+  local finished_at
+  finished_at="$(now_iso)"
+
+  if [[ "$exit_code" -eq 0 ]]; then
+    write_progress "$song" "done" "" "$requested_at" "$started_at" "$finished_at" ""
+  else
+    local error_text
+    error_text="$(tail -n20 "$out_file")"
+    write_progress "$song" "failed" "" "$requested_at" "$started_at" "$finished_at" "$error_text"
+  fi
+
+  rm -f "$out_file"
+  CURRENT_SONG=""
+  CURRENT_REQUESTED_AT=""
+  CURRENT_STARTED_AT=""
+}
+
+process_queue_once() {
+  local song
+  mark_all_queued
+  while true; do
+    song="$(list_queued_songs | head -n1)"
+    if [[ -z "$song" ]]; then
+      break
+    fi
+    run_one_job "$song"
+    mark_all_queued
+  done
+}
+
+main() {
+  recover_interrupted
+
+  if [[ "$MODE" == "--once" ]]; then
+    process_queue_once
+    exit 0
+  fi
+
+  while true; do
+    process_queue_once
+    sleep "$POLL_S"
+  done
+}
+
+main

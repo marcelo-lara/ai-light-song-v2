@@ -1,0 +1,145 @@
+{
+  "song_name": "Rapture - Nadia Ali",
+  "human_hints": [
+    {
+      "id": "human-hint-1",
+      "title": "Vocal over a light beat, no bass",
+      "start_time": 0,
+      "end_time": 23.55,
+      "summary": "The vocal opens over pads and light percussion. No bass.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-d1eaaff8db36",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-2",
+      "title": "Drums out, snare and hat build",
+      "start_time": 23.55,
+      "end_time": 32.79,
+      "summary": "The drum stem drops out. Snares and hats accelerate into the bass drop.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-4226912d14f2",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-3",
+      "title": "Bass drop under the vocal",
+      "start_time": 32.79,
+      "end_time": 46.15,
+      "summary": "The sub and bass hit under the vocal. The drums stay light.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-b595c1188add",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-4",
+      "title": "Instrumental break, pads only",
+      "start_time": 46.15,
+      "end_time": 55.39,
+      "summary": "The vocal ends and the bass and drums fall away, leaving pads.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-532fab91d581",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-5",
+      "title": "Main instrumental drop",
+      "start_time": 55.39,
+      "end_time": 70.39,
+      "summary": "Kick, bass and sub all slam in together. No vocal.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-d7771604721f",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-6",
+      "title": "Mini break with vocal chop",
+      "start_time": 70.39,
+      "end_time": 77.31,
+      "summary": "The bass drops out for a few bars. A vocal-stem swell with no sung phrase detected.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-26831437acc0",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-7",
+      "title": "Drop continues",
+      "start_time": 77.31,
+      "end_time": 96,
+      "summary": "The full kick/bass groove returns, with a brief drum-stem gap near 89 s.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-f08211c9bfca",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-8",
+      "title": "Verse, vocal without bass or kick",
+      "start_time": 96,
+      "end_time": 125.55,
+      "summary": "Vocal over pads with a snare/hat pattern. The kick and bass are out.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-f273104da804",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-9",
+      "title": "Chorus, bass under vocal, still no kick",
+      "start_time": 125.55,
+      "end_time": 155.07,
+      "summary": "The bass line returns under the chorus vocal. The kick stays out.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-7657be062b5a",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-10",
+      "title": "Breakdown, snare-roll build",
+      "start_time": 155.07,
+      "end_time": 169.55,
+      "summary": "Bass out. The snare roll builds into the final drop.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-a6c85edf0df1",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-11",
+      "title": "Final drop",
+      "start_time": 169.55,
+      "end_time": 184.85,
+      "summary": "Kick and bass back at full level.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-f2b3422acb4a",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-12",
+      "title": "Short break",
+      "start_time": 184.85,
+      "end_time": 191.77,
+      "summary": "The bass drops out and the drums thin.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-76f6b7a5c5d1",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-13",
+      "title": "Last drop run",
+      "start_time": 191.77,
+      "end_time": 202.85,
+      "summary": "The full groove for a final run.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-c868defe2c5e",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-14",
+      "title": "Outro, closing kick hit",
+      "start_time": 202.85,
+      "end_time": 215.31,
+      "summary": "The bass fades and the drums thin, then a final kick burst ends the song.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-dd52ae468973",
+      "type": "review"
+    }
+  ]
+}

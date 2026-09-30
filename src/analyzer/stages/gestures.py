@@ -50,8 +50,14 @@ list for `song_event_timeline.json`:
    window linear regression on high-band energy), reverse cymbal (a rising
    mix-RMS ramp into a `transient_strength` spike), snare roll (per-bar onset-
    density doubling in `drum_events.json`), impact (simultaneous sub-band +
-   transient spike), pre-drop gap (a `dropout_strength` spike immediately
-   before an impact). `assemble_gestures` anchors each gesture on a detected
+   transient spike, OR -- v3.9 item 4 -- a published section boundary where
+   the bass and drums stems both enter within one beat, `detect_stem_entry_impacts`;
+   this is the only primitive that reads `rms_loudness.json`'s raw per-stem
+   frames rather than `fft_bands.json`), pre-drop gap (a `dropout_strength`
+   spike immediately before an impact). Every impact's `start` is its onset,
+   never a detector's peak instant -- `detect_impacts` keeps its transient
+   peak as `peak_time`; a stem-entry impact has no separate peak, so the two
+   are equal. `assemble_gestures` anchors each gesture on a detected
    impact and fills approach/build/tension/release from whichever primitives
    fall in the preceding window. **A phase with no supporting primitive is
    absent, never guessed** (no silent fallbacks — never guess to keep a run green). A drop is never detected or
@@ -91,6 +97,84 @@ _IMPACT_TRANSIENT_PERCENTILE = 95.0
 _IMPACT_SUB_PERCENTILE = 82.0
 _IMPACT_MIN_GAP_S = 1.0
 
+#: v3.9 item 4 -- an impact's reported `start` is the onset (first frame of
+#: the rise leading to the transient peak), never the peak itself; `peak_time`
+#: keeps the old instant. Walking back is capped at one beat so a preceding
+#: riser or roll (a real, separate primitive) can never pull the onset into
+#: its own span -- "how far starts moved" is reported in this item's checks.
+_IMPACT_WALKBACK_MAX_BEATS = 1.0
+
+#: v3.9 item 4 -- stem-entry impacts. A published section boundary where the
+#: bass and drums stems both enter gets its own impact even when the FFT
+#: transient detector above found nothing there (Rapture's 55.39s drop is the
+#: loudest arrival in the song and produces no qualifying transient at all).
+#: Every ratio is of each stem's OWN whole-song p95 (`rms_loudness.json`,
+#: 10ms frames -- finer than the 20ms floor this item's plan text names, never
+#: coarser). Values below are tuned against the gold corpus
+#: (docs/analysis-definition.md); see the stage-4 hard-won-lessons note in
+#: docs/issues.md history / commit message for the failure modes each guards:
+#:   - a centered moving average over ON_RATIO/OFF_RATIO hysteresis finds
+#:     *that* both stems turn on near the boundary -- SMOOTH_BEATS wide so a
+#:     kick-only stem's between-hits dips don't reset the "on" state;
+#:   - the smoothed crossing is never reported as the onset (it lags up to
+#:     half a beat) -- it only anchors a raw-frame search window
+#:     [-SEARCH_BACK_BEATS, +SEARCH_FWD_BARS] for the frame maximizing the
+#:     jump in (bass+drums)/p95 from the previous beat to the next one
+#:     (JUMP_MIN floor -- Queen of Kings' pre-drop riser/roll never clears it
+#:     over a full bar-scale window the way a real entry does);
+#:   - the onset itself is the first raw frame at/after that jump clearing
+#:     ONSET_RATIO of drums' own p95 whose next SUSTAIN_BEATS never dips below
+#:     SUSTAIN_RATIO -- a lone pre-drop stray hit (a hi-hat spike inside a
+#:     riser) crashes back down within a beat and fails this, a real entry
+#:     does not;
+#:   - no qualifying frame anywhere in the search -> no impact, never guessed.
+_STEM_ENTRY_ON_RATIO = 0.40
+_STEM_ENTRY_OFF_RATIO = 0.25
+_STEM_ENTRY_SMOOTH_BEATS = 1.0
+_STEM_ENTRY_PAIR_MAX_BEATS = 1.0
+_STEM_ENTRY_BOUNDARY_WINDOW_BARS = 1.0
+_STEM_ENTRY_SEARCH_BACK_BEATS = 1.0
+_STEM_ENTRY_SEARCH_FWD_BARS = 1.0
+_STEM_ENTRY_JUMP_MIN = 0.6
+_STEM_ENTRY_ONSET_RATIO = 0.5
+_STEM_ENTRY_SUSTAIN_RATIO = 0.2
+_STEM_ENTRY_SUSTAIN_BEATS = 0.5
+#: An existing impact within this of the BOUNDARY means the drop already has
+#: an impact accounted for -- never add a second one for the same event. A
+#: transient-detector hit is routinely placed at its peak rather than the
+#: physical onset (Rapture's 170.05s peak for a 169.83s onset, 220ms off, is
+#: the motivating case for this whole item); that existing impact's `start` is
+#: corrected in place to the more precisely stem-anchored onset (its old
+#: `start` kept as `peak_time` if it did not already carry one) rather than
+#: left stale -- physical onset wins over the grid (CLAUDE.md); a cue fired
+#: late is a cue missed. `_STEM_ENTRY_CORRECTION_EPSILON_S` guards against a
+#: no-op rewrite when the existing impact is already at the onset. Also used,
+#: unscoped to any one boundary, as the floor below which a freshly computed
+#: onset is never emitted as a NEW impact -- against every existing impact
+#: and every stem-entry impact already emitted this call, so two
+#: bar-spaced boundaries whose search windows overlap can't each
+#: independently rediscover the same real hit as their own.
+_STEM_ENTRY_DEDUP_S = 0.25
+_STEM_ENTRY_CORRECTION_EPSILON_S = 0.02
+#: "Stems entered first" is not sufficient evidence on its own to override an
+#: existing impact -- a bass pickup + drum-fill hit ahead of the real downbeat
+#: also clears the sustain check (Queen of Kings' 48.555s pickup before its
+#: operator-reviewed 48.70s drop). Distinguish a pickup from a genuine
+#: monotonic attack (Rapture's 169.845s onset -> its own peak) by shape, not
+#: absolute strength: if the raw drums value, somewhere between the stem
+#: onset and the existing impact, dips to a real trough and then climbs back
+#: up again, that is a *separate* later hit -- the onset does not win. A
+#: single hit's own attack only decays gently off its early peak (Rapture:
+#: never drops below ~98% of its onset value in this span); a pickup-then-hit
+#: has a real trough in between (Queen of Kings: dips to ~53% of the onset
+#: value before recovering). Measured on the gold set, not the round number
+#: it sits near -- a literal "half the onset value" (0.50) sits 3 points on
+#: the wrong side of Queen of Kings' measured 0.529 trough, which would fail
+#: to guard it; 0.6 clears that with room and is still far below Rapture's
+#: 0.978 (never tuned past what the gold set needed -- CLAUDE.md, "tuned on
+#: the gold set, not invented").
+_STEM_ENTRY_TROUGH_RATIO = 0.6
+
 #: Riser/downlifter: a near-monotonic ramp has to explain most of the
 #: high-band range (not just a quarter of it) and fit tightly (r2) to count --
 #: otherwise general loudness drift reads as a "riser" on every bar.
@@ -122,6 +206,12 @@ def _bar_length(beats: list[dict]) -> float:
     if len(downbeat_times) > 1:
         return float(np.median(np.diff(downbeat_times)))
     return 2.0
+
+
+def _beat_length(beats: list[dict]) -> float:
+    times = sorted(b["time"] for b in beats)
+    diffs = np.diff(times)
+    return float(np.median(diffs)) if len(diffs) else 0.5
 
 
 def _nearest_beat(beats: list[dict], t: float) -> dict | None:
@@ -306,33 +396,272 @@ def detect_snare_roll(drum_events: list[dict], beats: list[dict]) -> list[dict]:
 
 def detect_impacts(fft_levels: np.ndarray, fft_times: np.ndarray, fft_transient: np.ndarray, beats: list[dict]) -> list[dict]:
     """Simultaneous sub and brilliance transient -- the crash-and-sub hit that
-    lands a gesture's impact."""
+    lands a gesture's impact.
+
+    `start` is the onset, not the transient peak (v3.9 item 4 -- a cue fired
+    late is a cue missed): walk back from the peak while the transient stays
+    *strictly* above its own threshold, capped at `_IMPACT_WALKBACK_MAX_BEATS`
+    so a preceding riser or roll can never pull the onset into its own span.
+    The peak itself is kept as `peak_time`. Confidence logic is unchanged --
+    it is still keyed on the peak's magnitude and downbeat alignment."""
     if len(fft_transient) == 0:
         return []
     t_thresh = np.percentile(fft_transient, _IMPACT_TRANSIENT_PERCENTILE)
     sub = fft_levels[:, _SUB_BAND_IDX]
     sub_thresh = np.percentile(sub, _IMPACT_SUB_PERCENTILE)
     peaks = _local_peaks(fft_transient, t_thresh, min_gap=_IMPACT_MIN_GAP_S, times=fft_times)
+    max_walkback_s = _IMPACT_WALKBACK_MAX_BEATS * _beat_length(beats)
     out = []
     for peak_t, strength in peaks:
         idx = int(np.argmin(np.abs(fft_times - peak_t)))
         window = slice(max(0, idx - 2), idx + 3)
         if sub[window].max() < sub_thresh:
             continue
-        anchor = _nearest_beat(beats, peak_t)
+        onset_idx = idx
+        while (
+            onset_idx > 0
+            and fft_transient[onset_idx - 1] > t_thresh
+            and (peak_t - fft_times[onset_idx - 1]) <= max_walkback_s
+        ):
+            onset_idx -= 1
+        onset_t = float(fft_times[onset_idx])
+        anchor = _nearest_beat(beats, onset_t)
         on_downbeat = anchor is not None and anchor.get("type") == "downbeat"
         magnitude = min(1.0, strength / max(t_thresh, 1e-6))
         out.append({
             "type": "impact",
-            "start": round(float(peak_t), 3),
-            "end": round(float(peak_t), 3),
+            "start": round(onset_t, 3),
+            "peak_time": round(float(peak_t), 3),
+            "end": round(onset_t, 3),
             "confidence": round(magnitude * (1.0 if on_downbeat else 0.75), 3),
             "intensity": round(magnitude, 3),
             "anchor_bar": anchor["bar"] if anchor else None,
             "on_downbeat": on_downbeat,
-            "evidence": f"transient={strength:.2f}, sub-band elevated, {'on' if on_downbeat else 'off'} downbeat",
+            "evidence": (
+                f"transient={strength:.2f} at peak {peak_t:.3f}s (onset {onset_t:.3f}s), "
+                f"sub-band elevated, {'on' if on_downbeat else 'off'} downbeat"
+            ),
         })
     return out
+
+
+def detect_stem_entry_impacts(
+    rms_loudness: dict,
+    beats: list[dict],
+    sections: list[dict],
+    existing_impacts: list[dict],
+) -> list[dict]:
+    """A published section boundary where the bass and drums stems both enter
+    (cross from below to above their own on-threshold, within one beat of
+    each other) gets its own impact even when `detect_impacts` above found no
+    qualifying transient there. See the `_STEM_ENTRY_*` constants' docstring
+    for the algorithm and why each step exists. Never guessed: no qualifying
+    boundary emits nothing, silently."""
+    rms_sources = rms_loudness.get("sources", [])
+    rms_ids = [s["id"] for s in rms_sources]
+    rms_frames = rms_loudness.get("frames", [])
+    if "bass" not in rms_ids or "drums" not in rms_ids or not rms_frames or not sections:
+        return []
+    bass_col, drums_col = rms_ids.index("bass"), rms_ids.index("drums")
+    rms_times = np.array([f["time"] for f in rms_frames])
+    bass_raw = np.array([f["values"][bass_col] for f in rms_frames])
+    drums_raw = np.array([f["values"][drums_col] for f in rms_frames])
+
+    beat_len = _beat_length(beats)
+    bar_len = _bar_length(beats)
+    if beat_len <= 0 or len(rms_times) < 2:
+        return []
+    frame_dt = float(np.median(np.diff(rms_times)))
+    if frame_dt <= 0:
+        return []
+
+    bass_p95 = float(np.percentile(bass_raw, 95))
+    drums_p95 = float(np.percentile(drums_raw, 95))
+    if bass_p95 <= 0 or drums_p95 <= 0:
+        return []
+
+    smooth_window = max(1, int(round(_STEM_ENTRY_SMOOTH_BEATS * beat_len / frame_dt)))
+    bass_smooth = _centered_moving_average(bass_raw, smooth_window)
+    drums_smooth = _centered_moving_average(drums_raw, smooth_window)
+    bass_on, bass_off = _STEM_ENTRY_ON_RATIO * bass_p95, _STEM_ENTRY_OFF_RATIO * bass_p95
+    drums_on, drums_off = _STEM_ENTRY_ON_RATIO * drums_p95, _STEM_ENTRY_OFF_RATIO * drums_p95
+
+    beat_frames = max(1, int(round(beat_len / frame_dt)))
+    sustain_frames = max(1, int(round(_STEM_ENTRY_SUSTAIN_BEATS * beat_len / frame_dt)))
+    onset_back_frames = max(1, beat_frames // 4)
+
+    out = []
+    for section in sections[1:]:
+        boundary_time = float(section["start"])
+        lo_idx = int(np.searchsorted(rms_times, boundary_time - _STEM_ENTRY_BOUNDARY_WINDOW_BARS * bar_len))
+        hi_idx = int(np.searchsorted(rms_times, boundary_time + _STEM_ENTRY_BOUNDARY_WINDOW_BARS * bar_len))
+        if hi_idx <= lo_idx:
+            continue
+
+        bass_crossings = _off_to_on_crossings(bass_smooth, rms_times, bass_on, bass_off, lo_idx, hi_idx)
+        drums_crossings = _off_to_on_crossings(drums_smooth, rms_times, drums_on, drums_off, lo_idx, hi_idx)
+        if not bass_crossings or not drums_crossings:
+            continue
+        # The earliest pair of (bass, drums) crossings within one beat of
+        # each other; anchored on the LATER of the pair -- the point both
+        # stems are confirmed on together, not a lone stem's own (possibly
+        # much earlier, e.g. a slow separate riser) crossing.
+        anchor = None
+        for bt in bass_crossings:
+            for dt in drums_crossings:
+                if abs(bt - dt) <= _STEM_ENTRY_PAIR_MAX_BEATS * beat_len:
+                    candidate = max(bt, dt)
+                    if anchor is None or candidate < anchor:
+                        anchor = candidate
+        if anchor is None:
+            continue
+
+        search_lo = int(np.searchsorted(rms_times, anchor - _STEM_ENTRY_SEARCH_BACK_BEATS * beat_len))
+        search_hi = int(np.searchsorted(rms_times, anchor + _STEM_ENTRY_SEARCH_FWD_BARS * bar_len))
+        best_idx, best_score = None, -1e9
+        for i in range(max(search_lo, beat_frames), min(search_hi, len(rms_times) - beat_frames)):
+            prev, nxt = slice(i - beat_frames, i), slice(i, i + beat_frames)
+            score = (
+                (np.mean(bass_raw[nxt]) / bass_p95 + np.mean(drums_raw[nxt]) / drums_p95)
+                - (np.mean(bass_raw[prev]) / bass_p95 + np.mean(drums_raw[prev]) / drums_p95)
+            )
+            if score > best_score:
+                best_score, best_idx = score, i
+        if best_idx is None or best_score < _STEM_ENTRY_JUMP_MIN:
+            continue
+
+        onset_idx = None
+        for i in range(max(best_idx - onset_back_frames, 0), min(best_idx + beat_frames, len(rms_times))):
+            if drums_raw[i] < _STEM_ENTRY_ONSET_RATIO * drums_p95:
+                continue
+            follow = slice(i, min(i + sustain_frames, len(rms_times)))
+            if np.min(drums_raw[follow]) >= _STEM_ENTRY_SUSTAIN_RATIO * drums_p95:
+                onset_idx = i
+                break
+        if onset_idx is None:
+            continue
+        onset_time = float(rms_times[onset_idx])
+        # An onset this far from the boundary it was searched from does not
+        # belong to it -- it belongs to whichever (closer) boundary it is
+        # actually the entry for (Queen of Kings' 48.555s onset, found while
+        # searching from the 46.82s boundary 1.735s away, really belongs to
+        # the 48.72s boundary 0.165s away). Bars, not the pairing's own
+        # one-beat tolerance: Titanium's real onset legitimately sits 0.985s
+        # (~2 beats, ~0.52 bar) past its 150.46s boundary -- a literal
+        # one-beat cap would silently drop that verified case, so this reuses
+        # the same one-bar radius the crossing search itself is bounded to.
+        if abs(onset_time - boundary_time) > _STEM_ENTRY_BOUNDARY_WINDOW_BARS * bar_len:
+            continue
+
+        nearby = [e for e in existing_impacts if abs(float(e["start"]) - boundary_time) <= _STEM_ENTRY_DEDUP_S]
+        if nearby:
+            # The drop already has an impact -- never add a second one for
+            # the same event. Refine it in place to the stem-anchored onset
+            # unless it is already there in all but name.
+            closest = min(nearby, key=lambda e: abs(float(e["start"]) - onset_time))
+            existing_start = float(closest["start"])
+            moved_enough = abs(existing_start - onset_time) > _STEM_ENTRY_CORRECTION_EPSILON_S
+            # Guard (v3.9 item 4 follow-up): "stems entered first" is not
+            # enough on its own -- a bass pickup + drum-fill hit ahead of the
+            # real downbeat (Queen of Kings' 48.555s before its true 48.70s
+            # drop) also clears the sustain check above. Only move the
+            # existing impact when there is no recovering trough between the
+            # onset and it -- a real trough (drums dips well below the
+            # onset's own level, then climbs back up again) means a separate,
+            # later hit exists in between, and the onset is the pickup, not
+            # the drop.
+            no_trough = not moved_enough or not _has_recovering_trough(
+                drums_raw, rms_times, onset_idx, existing_start, _STEM_ENTRY_TROUGH_RATIO
+            )
+            if moved_enough and no_trough:
+                if closest.get("peak_time") is None:
+                    closest["peak_time"] = closest["start"]
+                closest["evidence"] = (
+                    f"{closest['evidence']}; corrected to stem entry onset {onset_time:.3f}s "
+                    f"(bass+drums both on within {_STEM_ENTRY_PAIR_MAX_BEATS:.0f} beat, jump score {best_score:.2f})"
+                )
+                closest["start"] = round(onset_time, 3)
+                closest["end"] = round(onset_time, 3)
+            continue
+
+        # Never emit within the dedup floor of ANY existing impact -- not
+        # only ones near this boundary -- so two boundaries whose search
+        # windows overlap (bar-spaced boundaries are less than two bar
+        # lengths apart) can't each independently rediscover the same real
+        # hit and emit near-duplicates for it.
+        all_prior_starts = [float(e["start"]) for e in existing_impacts] + [float(e["start"]) for e in out]
+        if any(abs(onset_time - t) <= _STEM_ENTRY_DEDUP_S for t in all_prior_starts):
+            continue
+
+        anchor_beat = _nearest_beat(beats, onset_time)
+        out.append({
+            "type": "impact",
+            "start": round(onset_time, 3),
+            "peak_time": round(onset_time, 3),
+            "end": round(onset_time, 3),
+            "confidence": round(min(1.0, best_score / max(_STEM_ENTRY_JUMP_MIN, 1e-6) * 0.75), 3),
+            "intensity": round(min(1.0, best_score), 3),
+            "anchor_bar": anchor_beat["bar"] if anchor_beat else None,
+            "on_downbeat": bool(anchor_beat and anchor_beat.get("type") == "downbeat"),
+            "evidence": (
+                f"stem entry at section boundary {boundary_time:.2f}s: bass+drums both on "
+                f"within {_STEM_ENTRY_PAIR_MAX_BEATS:.0f} beat (jump score {best_score:.2f})"
+            ),
+        })
+    return out
+
+
+def _centered_moving_average(values: np.ndarray, window: int) -> np.ndarray:
+    if window <= 1:
+        return values.copy()
+    kernel = np.ones(window) / window
+    padded = np.pad(values, (window // 2, window - 1 - window // 2), mode="edge")
+    return np.convolve(padded, kernel, mode="valid")
+
+
+def _off_to_on_crossings(
+    smoothed: np.ndarray, times: np.ndarray, on: float, off: float, lo_idx: int, hi_idx: int
+) -> list[float]:
+    """Every below-`off` -> at/above-`on` transition in `[lo_idx, hi_idx]`.
+    Never reported as the onset itself -- a centered moving average lags the
+    true onset by up to half a smoothing window; this only locates the
+    region a raw-frame search should refine."""
+    out: list[float] = []
+    was_off = True
+    capped_hi = min(hi_idx, len(smoothed) - 1)
+    for i in range(max(lo_idx, 1), capped_hi + 1):
+        if smoothed[i - 1] < off:
+            was_off = True
+        if was_off and smoothed[i - 1] < on <= smoothed[i]:
+            out.append(float(times[i]))
+            was_off = False
+    return out
+
+
+def _has_recovering_trough(
+    drums_raw: np.ndarray, rms_times: np.ndarray, onset_idx: int, other_time: float, trough_ratio: float
+) -> bool:
+    """True when the raw drums value, somewhere strictly between `onset_idx`
+    and `other_time`, dips below `trough_ratio` of the onset's own value and
+    then climbs back above that floor again -- a real trough, meaning a
+    separate later hit exists in between (see `_STEM_ENTRY_TROUGH_RATIO`).
+    A single hit's own attack decay does not do this; it only ever eases off
+    its early peak."""
+    onset_value = float(drums_raw[onset_idx])
+    if onset_value <= 0:
+        return False
+    other_idx = int(np.searchsorted(rms_times, other_time))
+    lo, hi = sorted((onset_idx, other_idx))
+    trough_thresh = trough_ratio * onset_value
+    dipped = False
+    for i in range(lo, hi + 1):
+        if i == onset_idx:
+            continue
+        if not dipped and drums_raw[i] < trough_thresh:
+            dipped = True
+        elif dipped and drums_raw[i] >= trough_thresh:
+            return True
+    return False
 
 
 def detect_pre_drop_gaps(fft_times: np.ndarray, fft_dropout: np.ndarray, impacts: list[dict], beats: list[dict]) -> list[dict]:
@@ -453,6 +782,10 @@ def assemble_gestures(
             "start": t_impact, "end": t_impact,
             "confidence": impact["confidence"], "intensity": impact["intensity"],
             "from": "impact", "evidence": impact["evidence"],
+            # v3.9 item 4 -- `start`/`t_impact` is the onset; `peak_time` keeps
+            # the transient's own peak instant (equal to the onset for a
+            # stem-entry impact, which has no separate transient peak).
+            "peak_time": impact.get("peak_time", t_impact),
         }
 
         # Release: does the mix RMS stay elevated (above its own pre-impact
@@ -583,6 +916,13 @@ def build_gestures(
         impacts = detect_impacts(fft_levels, fft_times, fft_transient, beats)
         pre_drop_gaps = detect_pre_drop_gaps(fft_times, fft_dropout, impacts, beats)
 
+        # v3.9 item 4 -- a published section boundary where bass+drums both
+        # enter gets its own impact even where the transient detector above
+        # found nothing (or placed one imprecisely, corrected in place by
+        # this call -- see `detect_stem_entry_impacts`'s docstring).
+        stem_entry_impacts = detect_stem_entry_impacts(rms_loudness, beats, sections, impacts)
+        impacts = sorted(impacts + stem_entry_impacts, key=lambda i: i["start"])
+
         gestures = assemble_gestures(
             impacts, risers + downlifters, reverse_cymbals, snare_rolls, pre_drop_gaps,
             beats, rms_times, rms_mix,
@@ -596,7 +936,7 @@ def build_gestures(
                 if phase is None:
                     continue
                 phase_section = _section_for_time(float(phase["start"]), sections) or section
-                events.append({
+                event: dict[str, Any] = {
                     "type": phase_name,
                     "start_time": round(float(phase["start"]), 6),
                     "end_time": round(float(max(phase["end"], phase["start"])), 6),
@@ -608,7 +948,13 @@ def build_gestures(
                     "provenance": "machine-only",
                     "summary": _phase_summary(phase_name, phase, impact_time),
                     "evidence_summary": phase["evidence"],
-                })
+                }
+                if phase_name == "impact":
+                    # v3.9 item 4 -- `start_time` is the onset; `peak_time`
+                    # keeps the transient's own peak (equal to the onset for a
+                    # stem-entry impact, which has no separate transient peak).
+                    event["peak_time"] = round(float(phase["peak_time"]), 6)
+                events.append(event)
     else:
         gestures = []
 
@@ -690,6 +1036,7 @@ def build_gestures(
             "intensity": "gestures",
             "section_id": "sections",
             "gesture_id": "gestures",
+            "peak_time": "gestures",
         },
         {key for event in trimmed_events for key in event},
         file="song_event_timeline.json",

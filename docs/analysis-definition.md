@@ -164,10 +164,11 @@ and raises if the song has not been run through that service.
 | Module | Produces |
 | --- | --- |
 | `hints.py` | `hints.json` — inference hints merged with `reference/human/human_hints.json` |
-| `ui_data.py` | `sections.json`, `beats.json`, `info.json`, `genre.json`, `drum_events.json`, `loudness.json` — the compact top-level deliverables, each fused from its producers with a `field_sources` header |
+| `ui_data.py` | `sections.json`, `beats.json`, `info.json`, `genre.json`, `drum_events.json`, `loudness.json`, `arrangement_state.json` (`publish_arrangement_state`, fusing phase-3's `artifacts/arrangement_state.json`) — the compact top-level deliverables, each fused from its producers with a `field_sources` header |
+| `vocal_cadence.py` | `vocal_cadence.json` (v3.9 item 1) — per-line bar timing, per-section `lead_in_bars`/rests/held notes/cadence-repeats, calls, from `reference/human/lyrics.json` > `reference/moises/lyrics.json` (D1.1: neither → still written, `source: null`) plus the published `beats.json`/`sections.json`/`info.json`. Timing only |
 
 Together with `hints.py`'s `hints.json` and phase 3's `song_event_timeline.json`,
-these are the eight top-level files the `mcp/` server reads. Nothing the delivery
+these are the ten top-level files the `mcp/` server reads. Nothing the delivery
 surface needs still lives only under `artifacts/`.
 
 ### Validation — orthogonal to all four
@@ -211,6 +212,30 @@ checked.
 
 - **Beat tracking is good.** 7/7 human-marked impacts land within 0.25 s of an
   essentia beat. Beat times are essentia's throughout.
+- **Beat-grid honesty (v3.9 item 3).** essentia's *times* stay trusted, but the
+  tracker still loses the song's constant-tempo grid on pads-only or ambient
+  stretches (e.g. *Rapture*'s Pre-Drop, ~167 BPM against the song's 129.84) or
+  drifts before resyncing (*Rapture* before drop 2, ~0.485 s vs 0.462 s). A
+  local-anchor fit (`ui_data._compute_off_grid_spans`) marks these as
+  file-level `beats.json.off_grid_spans` — never rewrites a beat time (D3.1).
+  Deliberately *not* one global regression against the beat's sequential
+  index or one global phase: either accumulates ordinary ms-level jitter or a
+  slightly-rounded BPM linearly over the whole song, flagging clean, unrelated
+  stretches as off-grid (observed directly: an index-based fit flagged
+  ~140 s of clean *Rapture* beats). Each beat is instead measured against its
+  *nearest* stable neighbour, so error only ever accumulates over the short
+  run between a beat and the closest known-good point. A span's `start`/`end`
+  are the bounding STABLE beats either side of the unstable run, not the
+  run's own first/last beat — every inter-beat interval touching the run is
+  itself untrustworthy, including the one leading in and the one leading out
+  (*Rapture*'s Pre-Drop span is 47.53–54.94, not the narrower 47.87–54.59: the
+  IOI goes wrong exactly on the pair 47.53→47.87 and stays wrong through
+  54.59→54.94). Corpus-wide (23 songs, 2026-09-28): 10/23 songs have zero
+  spans; the rest range 1.6%–16.4% of duration except two long, genuinely
+  different-tempo intros/outros — `_test_song` (35.3%) and `Underworld - Born
+  Slippy` (27.5%, ~70 BPM half-time beats against a reported 140.09 BPM for
+  the first 71 s) — both judged real tracker/song characteristics on
+  inspection, not a fitting artifact.
 - **Chord inference was removed.** Root+quality agreement with Moises was
   1.00 / 0.69 / 0.51 / 0.38 across the four gold songs, and the labels never
   helped find where a song repeats. The `key` estimate is a separate claim and
@@ -333,15 +358,25 @@ a Feeling - Courtney Storm"` and `"Cinderella - Ella Lee"` carry it today): a
 flat `[{start, end, label}]` list. Where it exists for a song, `ui_data.build_ui_data` rebuilds
 `sections.json` from its spans outright — boundaries/label/description/
 confidence (fixed `0.8`) come from it; `function_confidence`/
-`function_status`/`same_label_as` are still inherited from whichever allin1
-section overlaps most, never invented. Scored separately in the phase-1
-report (`human_segments`, same recall/precision/F1 method as the `moises`
-comparison above, advisory). Also switches the `function` vocabulary itself,
-for every song regardless of whether it carries this file: allin1's Harmonix
-set (`intro outro break bridge inst solo verse chorus`) is mapped onto
+`function_status` are still inherited from whichever allin1 section overlaps
+most, never invented. Scored separately in the phase-1 report
+(`human_segments`, same recall/precision/F1 method as the `moises` comparison
+above, advisory). Also switches the `function` vocabulary itself, for every
+song regardless of whether it carries this file: allin1's Harmonix set
+(`intro outro break bridge inst solo verse chorus`) is mapped onto
 `docs/segments-vocabulary.md` terms by `section_vocabulary.py` before
-`function` leaves `segmentation.py` — `same_label_as` identity is still keyed
-on allin1's raw token, computed before that mapping.
+`function` leaves `segmentation.py`.
+
+**v3.9 item 2 — `same_label_as` follows the winning `function` tier, not
+always allin1.** Previously `same_label_as` was inherited from whichever
+allin1 section overlapped most *even when* `function`/boundaries came from a
+reference tier — so it pointed at unrelated allin1 sections (Rapture: Drop 2
+→ the Breakdown). Now, whenever a reference tier (human/moises) wins
+`function` for the song, `same_label_as` is computed from the *published*
+label sequence itself — the first earlier published section with the same
+normalized `function`, else `null` — and `field_sources` attributes it to
+that tier. allin1 inheritance is kept only when `function` is allin1's (no
+reference file for the song).
 
 ### Downbeats — honest, and short of target
 
@@ -378,7 +413,8 @@ every event it ever emitted.
 
 | @±1.0 s | @±0.25 s | |
 | --- | --- | --- |
-| **4/7** | **2/7** | `gestures.py` |
+| **4/7** | **3/7** | `gestures.py` (v3.9 item 4) |
+| 4/7 | 2/7 | `gestures.py` (pre-v3.9) |
 | 2/7 | 0/7 | old `event_*` stack |
 
 It reads only trusted phase-1/2 artifacts and assembles named primitives
@@ -387,6 +423,73 @@ phases `approach → build → tension → impact → release` anchored on a det
 impact. A phase absent from a gesture means **no supporting primitive was
 found** — never guessed. **A drop is never named directly**; naming stays with
 the section-pair transition.
+
+**v3.9 item 4 — impacts at the physical onset.** An impact's `start` is now
+the onset (walked back from the transient peak while the transient stays
+above its own threshold, capped at one beat so a preceding riser/roll can
+never pull it into their own span); the peak is kept as `peak_time`. A
+published section boundary where the bass and drums stems both enter within
+one beat gets its own impact even with no supporting transient at all
+(`detect_stem_entry_impacts`, `gestures.py`) — this is what raised @±0.25s
+from 2/7 to 3/7 without dropping @±1.0s. On the 4 gold songs with hand-marked
+drop impacts (`_test_song`, `Hideaway - Kiesza`, `Armin - Revolution`,
+`Titanium - David Guetta ft Sia` — a different, smaller gold set than the
+segmentation-review 4 above), `Armin - Revolution` and `_test_song` still
+score 0: neither has a boundary-aligned, sustained bass+drums entry the
+stem-entry detector's on/off-threshold hysteresis clears, and their transient
+hits don't walk back far enough on their own. Verified beyond this gold set on
+`Rapture - Nadia Ali` (both drops, 55.39s and 169.83s, previously 0/2 —
+55.39s had no impact at all; 169.83s read 170.05s, 220ms late, now corrected
+in place to 169.845s, `peak_time` keeping 170.05) and
+`Queen of Kings - Alessandra` (48.70s, operator-reviewed, correctly stays
+untouched — a naive "stems entered first" correction would have moved it to
+48.555s, a bass-pickup-and-drum-fill hit ahead of the real downbeat; the
+correction is guarded by shape, not strength: it only fires when the raw
+drums value never dips to a real trough — below 60% of the onset's own value
+— and climbs back up again between the stem onset and the existing impact. A
+recovering trough means a separate, later hit exists in between (QoK dips to
+~53% before recovering); a genuine attack envelope only eases off its own
+early peak (Rapture never drops below ~98%). Two further guards keep an onset
+from being attributed to the wrong boundary: it must fall within one bar of
+the boundary it was searched from (QoK's 46.82s boundary, Fill → Pre-Drop,
+independently rediscovered the same 48.555s pickup — 1.735s away, more than a
+bar, and really belonging to the 48.72s Pre-Drop → Drop boundary 0.165s away
+— so its own search is now rejected on distance alone), and a candidate is
+never emitted as a new impact within the dedup floor of ANY existing impact,
+not only ones near the boundary being processed (adjacent, bar-spaced
+boundaries have overlapping search windows). Titanium's own onset (151.445s)
+legitimately sits 0.985s — nearly 2 beats, about half a bar — past its
+150.46s boundary, which is why the distance cap is a bar, not the pairing's
+own one-beat tolerance; a literal one-beat cap would have silently dropped
+it. Not closed by this item: `Cinderella - Ella Lee`'s 85.73s drop is a
+drums-only entry (bass follows ~0.36s later, never crossing the stems'
+shared on-threshold together) and `CruelSummer - Malvina` has no published
+section boundaries at all (`sections.json` has zero rows — a pre-existing,
+separate defect, not this item's to fix) — both are open follow-ups, not
+regressions.
+
+### Vocal cadence — `vocal_cadence.py`, 12/12 on Queen of Kings
+
+v3.9 item 1, promoted from `experiments/vocal_cadence/`. Turns the operator's
+own lyric alignment (`reference/human/lyrics.json` > `reference/moises/
+lyrics.json`) plus the published `beats.json` into per-line bar-relative
+timing, per-section `lead_in_bars`/rests/held notes/token density, and —
+the load-bearing part — which earlier section a section's vocal cadence
+repeats and at what bar offset. Timing only: the only text ever read from a
+token is whether it is a `<SOL>`/`<EOL>` marker or fully parenthesised (a
+call, e.g. `(hey)`).
+
+**12/12 on the operator's own Queen of Kings facts** (the only song scored so
+far — it is the one the spec names): `lead_in_bars` 0 / −1 / −1 on drop1 /
+drop2 / final chorus; drop2 repeats drop1 at `bar_offset` −1 (0.897 match
+fraction); the final chorus repeats drop2 at offset 0 (best) and drop1 at −1;
+all 4 calls (99.62/107.21/131.87/139.62 s) exact. `lead_in_bars` is anchored
+on which downbeat a line *resolves on*, not raw line-start distance — this is
+what lets a short Fill/Pre-Drop section directly in front of a boundary still
+count its cadence line as that boundary's lead-in (drop 2: the line starts at
+94.88 s, before the Fill section even begins). Not yet a corpus metric — only
+Queen of Kings carries the fact set to score against; a song with no lyrics
+tier gets an honest `source: null` file (D1.1), never an inferred one.
 
 ---
 

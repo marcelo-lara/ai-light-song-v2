@@ -49,6 +49,9 @@ class Producer(str, Enum):
     # PUBLISHED sections.json (hints.py, gestures.py), never allin1's raw
     # artifact segmentation.
     SECTIONS = "sections"
+    # v3.9 item 3 — beats.json's file-level `off_grid_spans`: a constant-tempo
+    # grid fitted to the beats themselves (ui_data.py), not a raw producer.
+    BEAT_GRID_FIT = "beat_grid_fit"
 
 
 PRODUCERS: frozenset[str] = frozenset(p.value for p in Producer)

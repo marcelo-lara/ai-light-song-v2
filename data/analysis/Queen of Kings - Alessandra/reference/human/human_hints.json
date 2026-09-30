@@ -128,6 +128,143 @@
       "end_time": 64.123,
       "summary": "on bar 34, the Vocal lead takes the melody, while percussive synth (harmony) and drum machine follows.",
       "lighting_hint": ""
+    },
+    {
+      "id": "human-hint-20",
+      "title": "Verse 2 over the drum machine",
+      "start_time": 64.12,
+      "end_time": 79.2,
+      "summary": "The vocal lead over a steady four-on-the-floor drum machine, with the bass slightly pulled back.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-8a4ddce3306e",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-25",
+      "title": "Drums out, vocal over bass pads",
+      "start_time": 79.2,
+      "end_time": 92.52,
+      "summary": "The drums cut completely. The vocal and chorus over bass pads build toward the drop.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-2acab4043454",
+      "type": "review"
+    },
+    {
+      "id": "hint-019",
+      "title": "Break claps",
+      "start_time": 79.22,
+      "end_time": 92.52,
+      "summary": "Drums stem is a single clap on beat 3 of every bar, bars 42-48 (80.17, 82.09, 84.01, 85.89, 87.79, 89.73, 91.63); nothing else on drums. Vocal cadence is slow here.",
+      "lighting_hint": "Accents live on the claps, not on the vocal."
+    },
+    {
+      "id": "human-hint-23",
+      "title": "Chorus 2 drop",
+      "start_time": 98.23,
+      "end_time": 109.67,
+      "summary": "The drums and sub slam back under the vocal. The pads drop out.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-02cf8fc22f16",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-21",
+      "title": "Crowd Hey",
+      "start_time": 99.62,
+      "end_time": 99.9,
+      "summary": "Drop 2 hey, bar 52 beat 4. Marked in lyrics.json as (hey) but not as a hint, so the MCP does not surface it yet.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-52d33a77fd4a",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-22",
+      "title": "Crowd Hey",
+      "start_time": 107.21,
+      "end_time": 107.5,
+      "summary": "Drop 2 hey, bar 56 beat 4. Marked in lyrics.json as (hey) but not as a hint.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-ce5070ba1628",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-24",
+      "title": "Kick-roll build (bridge)",
+      "start_time": 109.67,
+      "end_time": 123.95,
+      "summary": "The kick accelerates, from 14 to 24 hits per 2 bars, under the vocal and returning pads. The main tension ramp before the last chorus.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-2308a857e5d5",
+      "type": "review"
+    },
+    {
+      "id": "hint-017",
+      "title": "Full tension",
+      "start_time": 124.956,
+      "end_time": 127.2,
+      "summary": "A final sustained high note, to hit back\nMoises sung word \"la!!\" (line 36),",
+      "lighting_hint": "",
+      "captured_from": "Moises Lyrics",
+      "type": "review"
+    },
+    {
+      "id": "hint-018",
+      "title": "Lyrics repeat",
+      "start_time": 127.367,
+      "end_time": 128.367,
+      "summary": "same as bar 25: \"Her name is She...\"",
+      "lighting_hint": "",
+      "type": "vocal"
+    },
+    {
+      "id": "human-hint-28",
+      "title": "Final chorus",
+      "start_time": 130.63,
+      "end_time": 143.99,
+      "summary": "Full kick/bass groove under the last chorus. The pads are low.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-e576b6ad94d5",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-29",
+      "title": "Crowd Hey",
+      "start_time": 131.87,
+      "end_time": 132.3,
+      "summary": "Final chorus hey, bar 69 beat 4, the copy of drop 2's bar 52 hey 17 bars later. Marked in lyrics.json as (hey) but not as a hint.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-14dfb8e35b65",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-26",
+      "title": "Crowd Hey",
+      "start_time": 139.62,
+      "end_time": 140.05,
+      "summary": "Final chorus hey, bar 73 beat 4, the copy of drop 2's bar 56 hey 17 bars later.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-27dadd55cbf8",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-27",
+      "title": "Crowd Hey",
+      "start_time": 143.48,
+      "end_time": 143.75,
+      "summary": "Closing hey on bar 75 beat 4, the last beat of the final chorus before the outro. Not yet in lyrics.json.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-0565e67750bd",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-30",
+      "title": "Ending",
+      "start_time": 143.99,
+      "end_time": 145.84,
+      "summary": "The bass and pads fall away as the vocal finishes.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-cc9ba4ba4c5e",
+      "type": "review"
     }
   ]
 }

@@ -103,15 +103,29 @@ export const artifactLoaders = {
 } as const;
 ```
 
-### 4. `ui/src/timeline/laneContent.ts` — 5 edits
+### 4. `ui/src/timeline/laneContent/<family>.ts` + `laneContent.ts` — 5 edits
 
-**4a.** Add `<Type>File` to the `import type { ... } from "../data/sparseArtifacts";` block.
+The adapters live one file per family under `timeline/laneContent/`:
+`referenceHints.ts` (human hints, pending proposals, Moises lyrics),
+`sections.ts` (Human/Moises/allin1/fused Sections, allin1 Posterior, Stem
+Presence Sections, Segment Seeds, Arrangement State), `vocal.ts` (Vocal
+Transcription, Vocal Cadence, Vocal Phrases, WhisperX VAD), `rhythm.ts` (the
+three `rhythm_*` candidate producers), `energyGestures.ts` (Character, Energy
+Level, Tension Shape, Gestures). Pick the closest family, or add a new
+`<family>.ts` if none fits. `laneContent.ts` itself keeps only the
+`SparseBlock` type, `LaneContentSources`, `SPARSE_LANE_IDS` and the
+`buildLaneBlocks` dispatch — it re-exports every adapter so nothing outside
+this directory needs to know which family file an adapter lives in.
 
-**4b.** Add the adapter. Required `SparseBlock` fields: `id`, `start_s`,
-`end_s`, `label`, `laneLabel`, `caption`, `reference`, `detail`, `summary`,
-`raw`. Optional: `wideLabel` (drawn when the block is wide), `tintId`
-(per-block tint override). `formatRange(a, b)` and `round(v, digits)` are
-already defined in this file.
+**4a.** In your family file, add `<Type>File` to the
+`import type { ... } from "../../data/sparseArtifacts";` block.
+
+**4b.** Add the adapter to that family file. Required `SparseBlock` fields:
+`id`, `start_s`, `end_s`, `label`, `laneLabel`, `caption`, `reference`,
+`detail`, `summary`, `raw`. Optional: `wideLabel` (drawn when the block is
+wide), `tintId` (per-block tint override). `formatRange(a, b)` and
+`round(v, digits)` live in `timeline/laneContent/shared.ts` — import them
+from there, not from `laneContent.ts`.
 
 ```ts
 /**
@@ -138,11 +152,15 @@ export function <laneId>Content(file: <Type>File | null): SparseBlock[] {
 Never substitute a value for a `null` field. Print the gap instead
 (`"initial state"`, `"no confidence reported"`, `"DISPUTED"`).
 
-**4c.** `LaneContentSources` interface: add `<laneId>?: <Type>File | null;`
+**4c.** Back in `laneContent.ts`: `LaneContentSources` interface — add
+`<laneId>?: <Type>File | null;`.
 
-**4d.** `SPARSE_LANE_IDS` array: add `"<laneId>",` in registry order.
+**4d.** `laneContent.ts`: `SPARSE_LANE_IDS` array — add `"<laneId>",` in
+registry order.
 
-**4e.** `buildLaneBlocks` switch: add
+**4e.** `laneContent.ts`: import `<laneId>Content` from your family file, add
+it to the `export { ... }` re-export block, and add a `buildLaneBlocksRaw`
+switch case:
 
 ```ts
     case "<laneId>":
@@ -159,7 +177,8 @@ hand-authored lanes they are auditioned against (`humanHints`, `moisesLyrics`).
 ```
 
 - `kind: "proposals"` unless the lane needs a different renderer. A new `kind`
-  = new `LaneKind` union member + new `renderLaneBody` branch in `App.tsx`.
+  = new `LaneKind` union member + new branch in `app/useRenderLaneBody.tsx`'s
+  callback.
 - `experiment:` present ⇒ `ph-flask` badge renders. **Omit it** for lanes fed
   from `reference/human/` or `reference/moises/`.
 - Add `"<laneId>"` to `DEFAULT_EXPANDED` only if it must be open on first load.
@@ -171,7 +190,7 @@ hand-authored lanes they are auditioned against (`humanHints`, `moisesLyrics`).
   <laneId>: [<hue>, <sat>, <light>], // <colour name> — distinct from <neighbour hues>
 ```
 
-Existing hues to avoid colliding with: humanHints 35, humanSections 55,
+Existing hues to avoid colliding with: humanHints 35, llmPendingProposals 245, humanSections 55,
 moisesSections 160, allin1Sections 90, gestures 10, arrangementState 95,
 characterShadow 96, vocalPhrasesSustained 280,
 vocalPhrases 340, sections 174, moisesLyrics 210, character 275,
@@ -179,14 +198,16 @@ phrasePeriodicity 130.
 
 Add a second entry (e.g. `<laneId>Disputed`) for every `tintId` the adapter emits.
 
-### 7. `ui/src/App.tsx` — 3 edits
+### 7. `ui/src/timeline/laneConfig.ts` + `ui/src/app/useLaneContentSources.ts` — 3 edits
 
 ```ts
+// timeline/laneConfig.ts
 const TIMELINE_KEYS = [ ..., "<laneId>" ] as const;              // 7a
 
 const SPARSE_LANE_ARTIFACT = { ..., <laneId>: "<laneId>" };      // 7b
 
-const laneContentSources = useMemo<LaneContentSources>(
+// app/useLaneContentSources.ts
+return useMemo<LaneContentSources>(
   () => ({ ..., <laneId>: artifacts.<laneId>.data }),            // 7c (object)
   [ ..., artifacts.<laneId>.data ],                              // 7c (deps array — both)
 );
@@ -225,8 +246,9 @@ the wiring is complete:
 grep -rn "<laneId>" ui/src --include=*.ts --include=*.tsx | cut -d: -f1 | sort -u
 ```
 
-Expect exactly these 8 files: `App.tsx`, `data/loaders.ts`, `data/paths.ts`,
-`data/sparseArtifacts.ts`, `timeline/laneContent.ts`,
+Expect exactly these 10 files: `app/useLaneContentSources.ts`, `data/loaders.ts`,
+`data/paths.ts`, `data/sparseArtifacts.ts`, `timeline/laneConfig.ts`,
+`timeline/laneContent.ts`, `timeline/laneContent/<family>.ts`,
 `timeline/laneContent.test.ts`, `timeline/laneState.ts`,
 `timeline/sparseTints.ts`. Fewer ⇒ a step was missed.
 
@@ -238,10 +260,12 @@ Reverse order of Recipe A. Delete, never leave the loader "working".
 
 1. `laneState.ts` — delete the `LANE_DEFS` row; delete any `DEFAULT_EXPANDED`
    entry; delete the `LaneKind` member if now unused.
-2. `App.tsx` — delete from `TIMELINE_KEYS`, `SPARSE_LANE_ARTIFACT`, the
-   `laneContentSources` object **and** its deps array.
-3. `laneContent.ts` — delete the adapter, the type import, the
-   `LaneContentSources` field, the `SPARSE_LANE_IDS` entry, the `switch` case.
+2. `timeline/laneConfig.ts` — delete from `TIMELINE_KEYS`, `SPARSE_LANE_ARTIFACT`.
+   `app/useLaneContentSources.ts` — delete from the `laneContentSources` object
+   **and** its deps array.
+3. `timeline/laneContent/<family>.ts` — delete the adapter and its type
+   import. `laneContent.ts` — delete the re-export, the `LaneContentSources`
+   field, the `SPARSE_LANE_IDS` entry, the `switch` case.
 4. `laneContent.test.ts` — delete the `describe` block.
 5. `sparseTints.ts` — delete every `BASE` entry for the lane.
 6. `loaders.ts` — delete the `artifactLoaders` line and the import.
@@ -265,7 +289,7 @@ Rare. Body is `CanvasLane` + a draw function in `timeline/laneRenderers.ts`.
 1. `data/paths.ts` — accessor for the essentia artifact.
 2. `data/loaders.ts` — plain `loadJson` loader (**no** 404→empty; core
    artifacts must fail loudly) + `artifactLoaders` entry.
-3. `App.tsx` — add key to `TIMELINE_KEYS`; add
+3. `timeline/laneConfig.ts` — add key to `TIMELINE_KEYS`; add
    `<laneId>: { key: "<laneId>", kind: "<rendererKind>" }` to `CANVAS_LANES`.
 4. `timeline/laneRenderers.ts` — add `<rendererKind>` to the
    `CanvasLaneSource` union and its draw branch.
@@ -282,7 +306,7 @@ Rare. Body is `CanvasLane` + a draw function in `timeline/laneRenderers.ts`.
 | Reorder lanes vertically | `timeline/laneState.ts` | move the `LANE_DEFS` row; array order = render order. |
 | Change which lanes open on load | `timeline/laneState.ts` | `DEFAULT_EXPANDED`. A user's `localStorage` (`als.timeline.laneState.v1`) overrides it. |
 | Retint a lane | `timeline/sparseTints.ts` | `BASE[<laneId>]`. One `[hue, sat, light]`; alpha comes from the shared `FILL_A`/`STROKE_A`. |
-| Add a per-block tint | `laneContent.ts` + `sparseTints.ts` | adapter emits `tintId: "<laneId><Variant>"`; add that key to `BASE`. Precedent: `sectionsContested`. |
+| Add a per-block tint | `timeline/laneContent/<family>.ts` + `sparseTints.ts` | adapter emits `tintId: "<laneId><Variant>"`; add that key to `BASE`. Precedent: `sectionsContested`. |
 | Add/remove the flask badge | `timeline/laneState.ts` | presence of `experiment:` on the `LaneDef`. |
 | Change lane row height | `timeline/laneState.ts` | `height` (collapsed is always `COLLAPSED_LANE_HEIGHT` = 26). Compact sparse/event lanes use 50 by default unless a lane-specific exception is required. |
 
@@ -315,7 +339,7 @@ Rare. Body is `CanvasLane` + a draw function in `timeline/laneRenderers.ts`.
    energy?, tension?}`. `label`, when set, must be one of the names in
    `docs/segments-vocabulary.md` (mirrored in
    `ui/src/data/segmentFunctions.ts` and, for server-side validation, in
-   `vite.config.ts`'s `SEGMENT_FUNCTION_NAMES` — kept in sync by hand in all
+   `ui/server/humanSections.ts`'s `SEGMENT_FUNCTION_NAMES` — kept in sync by hand in all
    three places) — free text is rejected, and unset is honest-unknown, never
    defaulted. `description` is unconstrained free text. `energy`/`tension` are
    optional integers 1-5 (same convention as `block_energy.json`).

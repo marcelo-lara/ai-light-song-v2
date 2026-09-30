@@ -50,8 +50,8 @@ answers to the top-level directory.
 | MCP read | Backs which pass | Files it projects |
 | --- | --- | --- |
 | `list_songs()` | discovery | `song_name`, `bpm`, `duration` only |
-| `get_song_overview(song)` | concept pass (whole song) | `info.json`, `beats.json`, `sections.json`, `genre.json`, `song_event_timeline.json` (transitions only), `arrangement_state.json`, `hints.json` (human hints) |
-| `get_detail(song, section_id\|gesture_id\|start_ms+end_ms\|bars, interval_ms, sources)` | one span (section, gesture, arbitrary window, or — v3.7 item 3/5 — a `[start_bar, end_bar]` bar range) | `loudness.json` + `drum_events.json` dense frames (**at most 5 s**), plus the overlapping structural rows (phases, transitions, hints, `arrangement_state` blocks, and — v3.6 item 9 — `beats.json` rows) with no decimation; every time field carries a sibling `position` (v3.7 item 3/5) |
+| `get_song_overview(song)` | concept pass (whole song) | `info.json`, `beats.json`, `sections.json`, `genre.json`, `song_event_timeline.json` (transitions only), `arrangement_state.json`, `hints.json` (human hints), `vocal_cadence.json` (a whole-song summary block, plus compact per-section fields folded onto `sections.rows` — v3.9 item 1) |
+| `get_detail(song, section_id\|gesture_id\|start_ms+end_ms\|bars, interval_ms, sources)` | one span (section, gesture, arbitrary window, or — v3.7 item 3/5 — a `[start_bar, end_bar]` bar range) | `loudness.json` + `drum_events.json` dense frames (**at most 5 s**), plus the overlapping structural rows (phases, transitions, hints, `arrangement_state` blocks, `vocal_cadence` lines/sections/calls — v3.9 item 1, and — v3.6 item 9 — `beats.json` rows) with no decimation; every time field carries a sibling `position` (v3.7 item 3/5) |
 
 All of these are top-level files. **Everything under `artifacts/` is invisible
 to cue authoring** — the layer files and the `validation/` reports are worth
@@ -79,6 +79,31 @@ has no Docker access — so approval shows a reminder naming the `--stage` the
 operator runs by hand. Nothing proposed and unapproved is ever visible
 through `list_songs`, `get_song_overview` or `get_detail` — the exposure rule
 above still holds for every read tool.
+
+## `request_analysis` / `get_analysis_progress` (v3.8 item 3) — operational, not analysis
+
+Two more tools outside the reach-test table above: `request_analysis(song)`
+and `get_analysis_progress(song)`. Neither projects a song-fact file, so
+neither is "what reaches the model" in the sense the table above means —
+they let the authoring model start and poll a `./analyze` run for a song it
+cannot see yet, reusing the same `_run_request.json`/`_run_progress.json`
+files the debugger's **Run analysis** button writes/reads (v3.8 item 1/2).
+
+- `request_analysis(song)` refuses a song that is already fully analysed
+  (points the caller at `get_song_overview` instead), refuses a song with no
+  matching **non-empty** audio file — a 0-byte placeholder counts as no file
+  (lists every stem that is both non-empty and not already fully analysed),
+  otherwise writes the request and returns a poll instruction — it never
+  blocks waiting for the run.
+- `get_analysis_progress(song)` reports `queued`/`running`/`done`/`failed`
+  once the host-side `./analysis-watcher` has picked up the request, or
+  `not_started` if a request has sat unpicked-up for 120 s (no watcher
+  running) — never an indefinite `queued`.
+
+D3.1: this is a bounded, documented exception to the top-level-only exposure
+rule, same shape as the two write tools above — the two `_run_*` files live
+one level under the song directory and are never promoted to a top-level
+file. `mcp/runs.py` is the only module that touches them.
 
 ## The join key: `section_id`
 
@@ -202,7 +227,12 @@ than in a second file:
 - `same_label_as` — **label repetition, not acoustic identity.** It points at
   the first section given the same functional label: "the third thing it called
   a chorus," never "the same music as the first chorus." Surface it with that
-  caveat; never describe grouped sections as verified-identical.
+  caveat; never describe grouped sections as verified-identical. It follows
+  whichever tier won `function` for the song (v3.9 item 2): allin1 when no
+  reference file exists, else the human/moises label sequence itself — never
+  allin1's own value once a reference tier has replaced the boundaries/labels
+  (that value would point at unrelated allin1 sections). `field_sources`
+  attributes it to that same tier.
 
 ### Energy / tension / rhythm clue fields — merged into `sections.json` (v3.6 item 10)
 
@@ -293,16 +323,38 @@ an honest omission, never a nearest-match at any distance. When resolved:
 
 Produced by the phase-3 `gestures` stage. `events[]`, each a **flat** row
 (never a composite with nested `phases[]`): `type`, `start_time`, `end_time`,
-`confidence`, `intensity`, `section_id` (+ `gesture_id` on a gesture-phase row).
+`confidence`, `intensity`, `section_id` (+ `gesture_id` on a gesture-phase row,
++ `peak_time` on an `impact` row — v3.9 item 4).
 
 - `type` is either a gesture-phase name (`approach`, `build`, `tension`,
   `impact`, `release`) or a section-pair transition `"<from> → <to>"`. **A drop
   is never named directly** — the vocabulary can say "a build of this shape
   happens here," never "this is the drop" (a drop is derived from a named section pair, never detected). A missing phase
   means no supporting primitive was found, never a guess.
+- **v3.9 item 4** — an `impact` row's `start_time` is the onset, not the
+  detector's peak instant: a cue fired late is a cue missed. `peak_time`
+  keeps the old peak instant (for a transient-detected impact, its walked-back
+  onset; for a stem-entry impact — a published section boundary where the
+  bass and drums stems both enter within one beat, with no supporting
+  transient — `peak_time` equals `start_time`, since there is no separate
+  peak). A transient impact placed near a boundary but off from the more
+  precisely stem-anchored onset is corrected in place (its stale `start`
+  becomes `peak_time`) rather than duplicated — but only when the raw drums
+  value never dips to a real trough (below 60% of the onset's own value) and
+  climbs back up again between the two instants. A recovering trough means a
+  *separate*, later hit exists in between and the stem onset is a pickup, not
+  the drop (Queen of Kings' 48.555s pickup ahead of its operator-reviewed
+  48.70s drop) — the existing impact is left untouched in that case. Two
+  further guards on a stem-entry candidate: its onset must fall within one
+  bar of the boundary it was searched from (a boundary's search window can
+  reach far enough to find an onset that really belongs to the *next*
+  boundary — never attribute it to this one), and it is never emitted as a
+  new impact within the dedup floor of ANY existing impact, not only ones
+  near this boundary (adjacent, bar-spaced boundaries have overlapping search
+  windows and can otherwise each independently rediscover the same hit).
 - The server projects `type`, `start_time`, `end_time`, `intensity`,
-  `confidence`, `section_id` (+ `gesture_id`) — this is now the *entire* row,
-  not a scoped-down table of contents.
+  `confidence`, `section_id` (+ `gesture_id`, + `peak_time` on an `impact` row)
+  — this is now the *entire* row, not a scoped-down table of contents.
 - **Dropped in v3.6 item 8**: `section_name` (duplicated the `section_id` join
   — resolve the name via `sections.json`), `summary` and `evidence_summary`
   (human-readable prose, unread downstream), and file-level `generated_from`
@@ -321,7 +373,9 @@ Produced by the phase-3 `gestures` stage. `events[]`, each a **flat** row
 
 ### `beats.json` (top-level **object**, rows under `beats`) — high priority
 
-`time`, `beat`, `bar`, `type` (`"beat"` / `"downbeat"`), `downbeat_confidence`.
+`time`, `beat`, `bar`, `type` (`"beat"` / `"downbeat"`), `downbeat_confidence`,
+plus a file-level `off_grid_spans: [{start, end, max_deviation_ms}]` (v3.9
+item 3).
 
 - Beat *times* are essentia's; the downbeat *phase* comes from allin1's
   activation, not a modulo. **Bar numbers shifted on most songs** when this
@@ -334,6 +388,15 @@ Produced by the phase-3 `gestures` stage. `events[]`, each a **flat** row
   **downbeat list**. Cue placement snaps to downbeats, so downbeat detection and
   bar numbering must be correct and continuous — and today they are **not fully
   trusted** ([`../analysis-definition.md`](../analysis-definition.md), "Downbeats").
+- **Beat times are trusted OUTSIDE `off_grid_spans` (D3.1).** Each entry marks
+  a stretch where essentia's tracker left the song's fitted constant-tempo
+  grid — a pads-only or ambient passage the tracker measures at the wrong
+  local rate. Beat times inside a span are still essentia's raw measurement,
+  never rewritten; they are just not evenly spaced there, so a chase locked to
+  the grid runs fast, then late, across that stretch. Empty `[]` is itself a
+  claim (this song's beat grid is clean throughout), not an unmeasured field.
+  `get_detail`'s derived `position` reports `resolved: false` for any time
+  inside a span (same honesty rule as a null-confidence downbeat).
 - **Dropped in v3.6 item 8**: `chord` (unread). Chord inference was later
   removed from the analyzer entirely; nothing replaces this field.
 - Per-beat *features* are not consumed; don't attach them here.
@@ -522,6 +585,17 @@ decimated or dense-cap-gated (structural facts, like `arrangement_state` and
   confidence (up to 0.963) — `arrangement_state`'s own drums call appears
   unreliable for this song past 112.75 s, not just in the one pre-chorus
   block the operator had already flagged by hand.
+- **`vocal_cadence.json` (v3.9 item 1)** — a section's `cadence_repeats[]`
+  (best-flagged, `bar_offset` relative to the two boundaries) and
+  `lead_in_bars` land on `get_detail(section_id=…)`'s full section row and, in
+  compact form, on `get_song_overview`'s `sections.rows`
+  (`lead_in_bars`/`rest_count`/`call_count`/`cadence_repeat_best`). Calls
+  (crowd shouts, a parenthesised `lyrics.json` token) are direct lighting
+  cues, distinct from cadence onsets. **No lyric text ever reaches a
+  response** — this file and everything derived from it are timing only.
+  `source: null` + `reason` (D1.1) on a song with no lyrics tier — the
+  overview's `vocal_cadence` block still reports `source`/`reason`/
+  `call_count: 0` rather than omitting the block.
 - A new dense signal (spectral flux, onset strength) needs a top-level file and
   a registry entry in the server's `detail.py` — **propose it** rather than
   hoping a layer file gets read.
@@ -539,6 +613,9 @@ decimated or dense-cap-gated (structural facts, like `arrangement_state` and
 7. **`arrangement_state.json`** — required (v3.6 item 9); accurate stem
    entered/left spans with honest `confidence`/`margin_db`, plus the
    independent `vocals_phrase[]` read described above.
+8. **`vocal_cadence.json`** — required (v3.9 item 1, D1.1); `lead_in_bars`
+   and `cadence_repeats[]` are what let a chase key off "this section repeats
+   that one's vocal entry, a bar early" rather than the boundary alone.
 
 ## Not worth optimizing for this consumer
 

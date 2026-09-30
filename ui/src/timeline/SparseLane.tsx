@@ -6,8 +6,10 @@
 // Nocturne-tinted rounded blocks with a label (+ caption when wide), row-packs
 // overlapping blocks for the compact lanes (sparseGeometry.packRows), and
 // registers hit regions so a click opens the item-6 block inspector (or, for
-// `humanHints`/`humanSections`, their editor panel — routed by App via
-// marker.laneId). A click that misses every block seeks the playhead.
+// `humanHints`/`humanSections`, their editor panel, or for
+// `llmPendingProposals`, the Pending Proposals drawer focused on that card —
+// all routed by App via marker.laneId). A click that misses every block
+// seeks the playhead.
 
 import {
   useCallback,
@@ -54,11 +56,12 @@ interface SparseLaneProps {
   onSeek: (time: number) => void;
   onSelectMarker: (marker: LaneMarker) => void;
   /**
-   * humanHints / humanSections lanes only (plan v2.1 item 10; humanSections
-   * mirrors the same convention): persist a block's new start/end after a
-   * drag. When present AND the lane is one of these expanded editable lanes,
-   * block edges / interiors become drag handles. A rejected promise reverts
-   * the on-canvas preview to the pre-drag position.
+   * humanHints / humanSections / llmPendingProposals lanes only: persist a
+   * block's new start/end after a drag. When present AND the lane is one of
+   * these expanded editable lanes, block edges / interiors become drag
+   * handles. A rejected promise reverts the on-canvas preview to the
+   * pre-drag position. For llmPendingProposals this writes no file — App.tsx
+   * only updates its own local draft-times map.
    */
   onCommitHintTimes?:
     | ((id: string, start: number, end: number) => void | Promise<void>)
@@ -138,11 +141,19 @@ export function SparseLane({
   const tint = sparseTint(laneId);
 
   // --- item 10: drag-to-edit on the expanded humanHints / humanSections
-  // lanes (the two editable, hand-authored reference/human/ lanes) ---------
+  // lanes (the two editable, hand-authored reference/human/ lanes), plus
+  // llmPendingProposals — same mechanism, but its commit writes no file
+  // (App.tsx keeps the correction in a local draft-times map instead). ------
   const dragEnabled =
-    (laneId === "humanHints" || laneId === "humanSections") &&
+    (laneId === "humanHints" || laneId === "humanSections" || laneId === "llmPendingProposals") &&
     lane.expanded &&
     typeof onCommitHintTimes === "function";
+
+  // Hover tooltip on the LLM Pending Proposals lane only — every other lane
+  // has no pointermove listener at all, so this must not change their
+  // behaviour. Uses the container's native `title`, not a custom element.
+  // Runs alongside drag's own cursor feedback below, not instead of it.
+  const tooltipEnabled = laneId === "llmPendingProposals";
 
   // live start/end for the block currently being (or just) dragged; overrides
   // the drawn geometry so the block follows the pointer. Cleared whenever the
@@ -363,12 +374,20 @@ export function SparseLane({
     (event: React.PointerEvent<HTMLDivElement>) => {
       const drag = dragRef.current;
       if (!drag) {
-        // hover cursor feedback only
-        if (!dragEnabled) return;
+        // hover: cursor feedback on the two drag-enabled lanes, a native
+        // `title` tooltip on the LLM Pending Proposals lane. Neither flag set
+        // -> no other lane needs pointermove at all.
+        if (!dragEnabled && !tooltipEnabled) return;
         const el = containerRef.current;
         if (!el) return;
         const { x, y } = localPoint(event.clientX, event.clientY);
         const hit = findHit(x, y);
+        if (tooltipEnabled) {
+          el.title = hit
+            ? `${hit.block.caption}\n${hit.block.summary}\nevidence: ${hit.block.detail}`
+            : "";
+        }
+        if (!dragEnabled) return;
         if (!hit) {
           el.style.cursor = "";
           return;
@@ -400,7 +419,15 @@ export function SparseLane({
       });
       setPreview({ id: drag.id, start: next.start, end: next.end });
     },
-    [dragEnabled, localPoint, findHit, snapTargets, coords.pxPerSec, coords.duration],
+    [
+      dragEnabled,
+      tooltipEnabled,
+      localPoint,
+      findHit,
+      snapTargets,
+      coords.pxPerSec,
+      coords.duration,
+    ],
   );
 
   const endDrag = useCallback(
@@ -516,14 +543,16 @@ export function SparseLane({
       onClick={handleClick}
       onDoubleClick={onCreateHint ? handleDoubleClick : undefined}
       onPointerDown={dragEnabled ? handlePointerDown : undefined}
-      onPointerMove={dragEnabled ? handlePointerMove : undefined}
+      onPointerMove={dragEnabled || tooltipEnabled ? handlePointerMove : undefined}
       onPointerUp={dragEnabled ? endDrag : undefined}
       onPointerCancel={dragEnabled ? handlePointerCancel : undefined}
       onPointerLeave={
-        dragEnabled
+        dragEnabled || tooltipEnabled
           ? () => {
-              if (!dragRef.current && containerRef.current)
+              if (!dragRef.current && containerRef.current) {
                 containerRef.current.style.cursor = "";
+                if (tooltipEnabled) containerRef.current.title = "";
+              }
             }
           : undefined
       }

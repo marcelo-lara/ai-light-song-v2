@@ -1017,6 +1017,39 @@ input[type="range"]:focus-visible {
   font-family: "IBM Plex Mono", monospace;
   font-size: 11px;
 }
+/* A card scrolled into view by an LLM Pending Proposals lane block
+   click (App.tsx's `openPendingProposal`). */
+.review-queue__q--focused {
+  padding: var(--space-2);
+  margin: calc(-1 * var(--space-2));
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-900);
+  outline: 1px solid var(--color-accent-700);
+}
+/* A card with a playhead window seeks to its start on click (App.tsx's
+   `onSeek`); a section_field card whose section_id no longer resolves
+   carries no window and never gets this class. */
+.review-queue__q--clickable {
+  cursor: pointer;
+}
+/* the card's window covers `currentTime` — same accent-stripe marker as
+   `.lane-events__card[data-in-window="true"]` (laneEvents.ts's
+   `isTimeInWindow`). */
+.review-queue__q[data-in-window="true"] {
+  box-shadow: inset 2px 0 0 0 var(--color-accent-300);
+}
+/* Shown on a hint card's Start/End row once the operator's draft differs
+   from the proposal's own proposed times. */
+.review-queue__edited-tag {
+  align-self: center;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-900);
+  color: var(--color-accent-300);
+  font: 500 9px/1.6 var(--font-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .review-queue__reason,
 .review-queue__evidence,
 .review-queue__answered {

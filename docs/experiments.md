@@ -1059,6 +1059,213 @@ Moises rows are a comparison baseline and never a label: `'let'` spans
 
 ---
 
+## Stem Presence Sections — bass/drums presence state machine
+
+*(no external model or repo — classical, numpy)*
+
+### Status
+
+**Measured 2026-09-27 — loses to allin1 on the scoring corpus; wins on
+stem-switching EDM.** Kept as a clue layer pending the operator's call. Full
+writeup: [`../experiments/stem_presence_sections/README.md`](../experiments/stem_presence_sections/README.md).
+Queue row enabled (`experiments/queue.toml`). Debugger lane: **Stem Presence
+Sections**, below allin1 Posterior, flask badge.
+
+### Why? What for?
+
+`sections.json` (boundary F1 0.67 @ ±1.0 s) misses structure where the
+*stems playing* change hard but timbre/harmony barely does — `Rapture -
+Nadia Ali`'s first drop: allin1 places it at 48.0 s, the true onset is
+55.25 s. Question: does a low-cardinality bass/drums-presence **state
+machine** (not a continuous novelty curve, unlike the archived
+`texture_novelty`) beat allin1's raw boundaries, an even-bar grid, and
+`arrangement_state.json`?
+
+### Experiment Plan
+
+Per-bar bass on/off + drums full/sparse/off classification, thresholds as a
+fraction of each song's own per-stem p95 (never absolute). Hysteresis merges
+any run shorter than 4 bars into the run it interrupted (absorbs a mid-drop
+dip). Vocals are annotation-only (`vocals_present_fraction`) — never cut a
+boundary. Each surviving boundary is moved from the bar edge to the nearest
+physical stem onset in `loudness.json`'s 20 ms frames. `score.py` will run
+`truth_common.structure.score_structure()` against the 4-song
+`SCORING_CORPUS`, ±1.0 s, vs. this experiment, allin1's raw segments, an
+even 8-bar baseline, and `arrangement_state.json` — never the fused
+`sections.json` (circularity rule).
+
+### Results evidence
+
+Boundary F1 @ ±1.0 s vs `reference/human/segments.json` (`score`, 2026-09-27):
+
+| Method | P | R | F1 | pred / truth |
+| --- | --- | --- | --- | --- |
+| **this experiment** | 0.43 | **0.19** | **0.27** | 23 / 52 |
+| allin1 raw segments (incumbent) | 0.67 | 0.58 | **0.62** | 45 / 52 |
+| `arrangement_state.json` blocks | 0.23 | 0.83 | 0.36 | 186 / 52 |
+| even 8-bar grid (baseline) | 0.06 | 0.06 | 0.06 | 48 / 52 |
+
+Per song: ayuni 0.19, Cinderella 0.15, `_test_song` 0.55 (ties allin1),
+What a Feeling 0.35. Recall is the failure: most operator boundaries in these
+four songs are vocal/harmonic/texture changes with bass and drums unchanged,
+which this method cannot see by design.
+
+Off-corpus, against operator-reviewed hints (sanity, not scores): *Rapture*
+13 hint boundaries — 10 found, F1 0.77 vs allin1 0.42; *Charli-VonDutch* 6
+hints — F1 0.91 vs allin1 0.67. Its two Rapture misses are the same pattern:
+a bass exit near a section's end (149.5, 203) that the operator hears as the
+section's tail, not a boundary.
+
+### Conclusion
+
+Not a replacement for allin1: it sees only bass/drums arrangement changes,
+which dominate stem-switching EDM (drops, breaks inside drops) and are a
+minority of boundaries elsewhere. Its value is as a complementary clue —
+sub-blocks inside allin1/human sections — which would need its own
+measurement (precision of added boundaries inside sections) before any
+promotion.
+
+---
+
+## Clap Events — accent detection by spectral shape, not omnizart's label
+
+*(no external model or repo — classical DSP, numpy/scipy/librosa)*
+
+### Status
+
+**Built and run, 2026-09-30 — Queen of Kings 3/3, Tutta L'Italia 1/2.** Full
+writeup with the failure explained:
+[`../experiments/clap_events/README.md`](../experiments/clap_events/README.md).
+Queue row enabled. Debugger lane: **Clap Events**, flask badge.
+
+### Why? What for?
+
+`drum_events.json` labels only kick/snare/hat/crash and bleeds on a sparse
+stem: *Queen of Kings*' break (bars 42-48) returns 46 false snare/hat events
+where the drums stem holds 7 claps and silence, and the operator places
+lighting accents on claps (hint-019). Product-refinement v3.9 item 2.
+
+### Experiment Plan
+
+Per-hit spectral shape, shared with `kick_check`/`crash_check` via
+`experiments/drum_hit_shape.py`: onset candidates from the drums stem
+(broadband + 1-6 kHz band-limited, unioned — recovers soft claps a
+loudness gate misses), classified clap iff 1-6 kHz noise share >= 0.50 and
+120-400 Hz body share <= 0.15 over a 120 ms window. Thresholds and window
+length measured directly against the refinement's own worked numbers.
+
+### Results evidence
+
+Full table in the README. Queen of Kings: all 3 Done-when facts pass (7/7
+break claps, no clap at the rejected machine hit 97.29, none on the drop
+backbeat). Tutta L'Italia: bar 80 clap found; bars 20-25 beats 2/4 are 9/12 —
+bars 20-21 have no detectable 1-6 kHz energy anywhere in the isolated drums
+stem (scanned ±300 ms, several window sizes), not a threshold-tuning fix.
+
+### Conclusion
+
+The shape test works exactly as specified everywhere the signal exists in
+the stem. Not promoted — pending a decision on the Tutta L'Italia bars 20-21
+gap (stem-isolation artifact vs. genuinely absent) and a corpus-wide run.
+
+---
+
+## Kick Check — does an omnizart `kick` deserve its label?
+
+*(no external model or repo — classical DSP, numpy/scipy/librosa)*
+
+### Status
+
+**Built and run, 2026-09-30 — directionally correct, misses both numeric
+targets.** Full writeup with the precision/recall tradeoff explained:
+[`../experiments/kick_check/README.md`](../experiments/kick_check/README.md).
+Queue row enabled. Debugger lane: **Kick Check**, flask badge.
+
+### Why? What for?
+
+*Rapture*'s Breakdown/Chorus publish 57/37 kicks/min where the operator
+hears none — omnizart's `kick` folds in toms and ghost hits. Product-
+refinement v3.9 item 2 (kick-check sibling).
+
+### Experiment Plan
+
+Shares `experiments/drum_hit_shape.py` with `clap_events`/`crash_check`.
+Keep a `kick` iff sub/low body share >= 0.75, 1-6 kHz noise share <= 0.10,
+**and** a percussive-attack gate (low-band onset-strength envelope >= 0.5x
+this song's own 75th-percentile attack strength) — the attack gate is what
+tells a real kick transient from a sustained sub-bass pad sharing the same
+low-frequency dominance.
+
+### Results evidence
+
+`Rapture - Nadia Ali`, kept kicks/min: Breakdown 16.2 (target <=5, **fail**),
+Chorus 4.1 (target <=5, **pass**), Drop 1 84.2 / Drop 2 88.6 (target >=100,
+**fail** both). A parameter sweep (27 combinations) never found one setting
+clearing all four targets simultaneously — every tightening that helped the
+Breakdown cost more real Drop-kick recall than precision gained. Breakdown's
+8 survivors cluster at the section's own boundaries (real kick bleed from
+the adjacent Drop/Chorus).
+
+### Conclusion
+
+Directionally right (Breakdown/Chorus far below the Drops) but the two
+spectral shares plus one attack ratio cannot fully separate "soft real kick
+at a section edge" from "sustained pad" — they overlap. Not promoted.
+Next idea, unbuilt: gate on beat-grid alignment (this corpus's real kicks
+land on-beat; a pad does not).
+
+---
+
+## Crash Check — is a `crash` an isolated accent, or a bright-hat/ride stream?
+
+*(no external model or repo — classical DSP, numpy/scipy/librosa)*
+
+### Status
+
+**Built and run, 2026-09-30 — 5/6 isolated accents right, streams mostly but
+not fully rejected.** Full writeup:
+[`../experiments/crash_check/README.md`](../experiments/crash_check/README.md).
+Queue row enabled. Debugger lane: **Crash Check**, flask badge. Addresses
+the open bug "`crash` over-fires on bright hats/rides" (docs/issues.md /
+product-refinement v3.9 Bugs).
+
+### Why? What for?
+
+The v3.4 crash/hat brightness split over-fires: 17/23 songs publish
+>15 crashes/min (up to 108/min) where a real crash is a few accents per
+section. A crash must be an isolated accent, never a stream member.
+
+### Experiment Plan
+
+Shares `experiments/drum_hit_shape.py`. Two joint gates on every omnizart
+`crash`: (1) not spaced ~1 or ~2 beats from the *previous* crash
+(`is_stream_continuation` — memoryless, so a run's first hit is never
+self-flagged); (2) a brilliance-band (2-16 kHz) decay-shape test — a real
+crash rings and goes quiet within 400 ms, a hit inside a busy hat/ride
+pattern never does. Both must pass to keep the label.
+
+### Results evidence
+
+`Rapture - Nadia Ali`'s six isolated accents: 5/6 kept correctly (66.23,
+68.07, 69.92, 180.69, 182.53 pass; 184.38 fails — its decay ratio 0.19 sits
+just above the 0.15 cutoff, a real crash with a longer tail than its
+siblings). `Cinderella - Ella Lee`: 222.37 kept as one accent and 223.33
+(the very next hit in the same steady-period run) rejected — both explicit
+facts pass. The two long streams (176-207s, 269-297s) are mostly but not
+fully rejected (74% and 91% of their members respectively) — the surviving
+false keeps break the "gap to immediately preceding hit" test by one
+syncopated interval and also read a low decay ratio in that instant.
+
+### Conclusion
+
+The two-gate design is right in shape (isolated hits kept, the vast majority
+of stream members rejected, including the operator's exact "keep one accent,
+reject the rest of the run" case) but the gap-to-previous periodicity test
+has a known blind spot on syncopated runs. Not promoted. A run-level (not
+one-gap-back) periodicity test is the next thing to try.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

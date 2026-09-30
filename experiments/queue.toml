@@ -57,3 +57,32 @@
 # experiments/<name>/README.md as the record of what was measured before
 # promotion (docs/archive/experiments.promoted.energy-tension-rhythm-clues.md
 # has the TLDR).
+
+# vocal_cadence was promoted OUT of experiments/ in v3.9 item 1 — ported into
+# src/analyzer/stages/vocal_cadence.py as the `publish-vocal-cadence` stage,
+# publishing top-level vocal_cadence.json. See
+# docs/archive/experiments.promoted.vocal-cadence.md.
+
+[[experiment]]
+name = "stem_presence_sections"
+command = "python -m experiments.stem_presence_sections.run compute --song {song_name} && python -m experiments.stem_presence_sections.run export --song {song_name}"
+image = "app"
+enabled = true
+
+[[experiment]]
+name = "clap_events"
+command = "python -m experiments.clap_events.run compute --song {song_name} && python -m experiments.clap_events.run export --song {song_name}"
+image = "app"
+enabled = true
+
+[[experiment]]
+name = "kick_check"
+command = "python -m experiments.kick_check.run compute --song {song_name} && python -m experiments.kick_check.run export --song {song_name}"
+image = "app"
+enabled = true
+
+[[experiment]]
+name = "crash_check"
+command = "python -m experiments.crash_check.run compute --song {song_name} && python -m experiments.crash_check.run export --song {song_name}"
+image = "app"
+enabled = true

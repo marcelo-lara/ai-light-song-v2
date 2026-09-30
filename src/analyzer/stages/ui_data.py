@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import bisect
 import math
 import re
 
@@ -17,6 +18,169 @@ from analyzer.section_vocabulary import normalize_human_label
 # a genuinely weak key estimate on a future song is still honestly `null`
 # rather than a silent default.
 KEY_CONFIDENCE_THRESHOLD = 0.70
+
+# v3.9 item 3 — beat-grid honesty (D3.1: beat times are flagged, never
+# rewritten). A beat more than this far (ms) from the fitted constant-tempo
+# grid, in a run of >= 2 consecutive such beats, falls inside an
+# `off_grid_spans` entry.
+OFF_GRID_TOLERANCE_MS = 70.0
+# A beat's local IOI (to its neighbour) must be within this fraction of the
+# song's nominal beat period to count as "stable" — i.e. to be trusted as
+# evidence of where the true constant-tempo grid sits.
+GRID_FIT_IOI_TOLERANCE = 0.03
+_MIN_OFF_GRID_RUN = 2
+
+
+def _fit_beat_grid(
+    times: list[float], bpm: float | None
+) -> tuple[float, list[float], list[bool]] | None:
+    """Return `(period, stable_times, stable_flags)`: the corpus's
+    near-constant beat period, the sorted times of the "stable" beats — those
+    whose local IOI already agrees with it (within `GRID_FIT_IOI_TOLERANCE`)
+    — that later serve as local grid anchors, and the per-beat boolean flag
+    (aligned with `times`) marking which ones they are. `None` when there
+    isn't enough stable evidence to anchor anything.
+
+    Deliberately NOT one global `time ~= period * beat_index + phase`
+    regression, and NOT one global phase anchor either. Both break exactly
+    where this feature is needed most: essentia's tracker inserting or
+    dropping a beat during a pads-only stretch (the same failure
+    `off_grid_spans` exists to flag) permanently shifts every later beat's
+    correspondence to a single fixed reference, so ANY residual bias in the
+    reference — a rounded BPM, ordinary tracker jitter, ordinary tempo
+    rubato — accumulates *linearly with distance from that one reference*
+    and eventually swamps the 70 ms tolerance on beats that are perfectly
+    fine locally. Observed directly on *Rapture*: a single global anchor (by
+    index, and then by one time+phase pair) flagged 80-140 s of otherwise
+    clean grid, because normal ms-level jitter compounded over hundreds of
+    beats' distance from the anchor.
+
+    The fix is to anchor LOCALLY: `_compute_off_grid_spans` below measures
+    each beat's deviation against its *nearest* stable beat, never a distant
+    one, so error can only accumulate over the short run between a beat and
+    the closest point already known to be on-grid — never over the whole
+    song. A stable beat's nearest stable neighbour is itself, so stable beats
+    always score a true zero, and only a genuinely anomalous run (like the
+    Pre-Drop) racks up distance-from-its-nearest-anchor deviation.
+
+    `period` itself is still a single corpus-wide value (`60 / bpm`, refined
+    by the two outermost stable beats' elapsed time divided by the nearest
+    whole number of periods between them, correcting BPM rounding) — safe to
+    share globally because it only sets the *spacing* used for the local
+    look-up, never a fixed *offset* that has to hold over the whole song.
+    """
+    if not bpm or bpm <= 0 or len(times) < 3:
+        return None
+    nominal_period = 60.0 / bpm
+    n = len(times)
+    stable = [False] * n
+    for i in range(n - 1):
+        ioi = times[i + 1] - times[i]
+        if ioi <= 0:
+            continue
+        if abs(ioi - nominal_period) / nominal_period <= GRID_FIT_IOI_TOLERANCE:
+            stable[i] = True
+            stable[i + 1] = True
+    idx = [i for i in range(n) if stable[i]]
+    if len(idx) < 2:
+        return None
+
+    t_first = times[idx[0]]
+    t_last = times[idx[-1]]
+    span = t_last - t_first
+    period = nominal_period
+    if span > 0:
+        cycles = round(span / nominal_period)
+        if cycles > 0:
+            period = span / cycles
+
+    stable_times = [times[i] for i in idx]  # already ascending (idx built in order)
+    return period, stable_times, stable
+
+
+def _nearest_anchor_time(t: float, stable_times: list[float]) -> float:
+    """The stable-beat time closest to `t` (ties broken toward the earlier
+    one), via binary search since `stable_times` is sorted ascending."""
+    pos = bisect.bisect_left(stable_times, t)
+    if pos <= 0:
+        return stable_times[0]
+    if pos >= len(stable_times):
+        return stable_times[-1]
+    before, after = stable_times[pos - 1], stable_times[pos]
+    return before if (t - before) <= (after - t) else after
+
+
+def _compute_off_grid_spans(times: list[float], bpm: float | None) -> list[dict]:
+    """`[{start, end, max_deviation_ms}]`. Empty when nothing is off — an
+    honest `[]`, never `null`: absence of a span is itself a claim (this
+    stretch of the song IS on the constant-tempo grid), not an unmeasured
+    field. Beat times themselves are never rewritten (D3.1) — this only marks
+    where they should not be trusted as evenly spaced.
+
+    A span is a maximal run of >= `_MIN_OFF_GRID_RUN` consecutive NOT-stable
+    beats (see `_fit_beat_grid`) whose worst nearest-anchor deviation clears
+    `OFF_GRID_TOLERANCE_MS`. Instability (not point deviation) sets which
+    beats are IN the run — a slow, one-directional drift's true error is
+    largest in the *middle* of the run and shrinks toward either edge because
+    the nearest good anchor is close by there (see `_fit_beat_grid`'s
+    docstring) — a beat right at that edge can score a low, even a zero,
+    deviation while still sitting inside the untrustworthy stretch.
+
+    The reported `start`/`end` are the bounding STABLE beats either side of
+    the run, not the run's own first/last (unstable) beat: every inter-beat
+    interval touched by an unstable beat is itself untrustworthy, including
+    the interval from the last good beat into the run and the interval from
+    the run out to the next good beat. *Rapture*'s IOIs go wrong exactly on
+    the pair 47.53->47.87 and stay wrong through 54.59->54.94, while
+    47.08->47.53 and 54.94->55.39 are normal — so the untrustworthy stretch
+    is 47.53-54.94 (both bounding beats included), not the narrower run of
+    only-unstable beats in between. This also folds in the 169.83 case (the
+    beat before it, 169.552, and the beat after, 170.051, both score under
+    tolerance individually, yet the gap between them — 0.499 s against a
+    0.462 s period — is the widest in the run; bounding on stable beats
+    means 169.83 lands inside the span rather than in a false gap between
+    two "clean-scoring" edge beats). A run touching the very start/end of the
+    song (no stable beat on that side) is bounded by its own first/last beat
+    instead — there is nothing earlier/later to bound it with.
+    """
+    fit = _fit_beat_grid(times, bpm)
+    if fit is None:
+        return []
+    period, stable_times, stable_flags = fit
+    n = len(times)
+
+    def _deviation_ms(t: float) -> float:
+        anchor = _nearest_anchor_time(t, stable_times)
+        nearest_k = round((t - anchor) / period)
+        predicted = anchor + nearest_k * period
+        return abs(t - predicted) * 1000.0
+
+    deviations_ms = [_deviation_ms(t) for t in times]
+
+    spans: list[dict] = []
+    run: list[int] = []
+
+    def _flush() -> None:
+        if len(run) >= _MIN_OFF_GRID_RUN and max(deviations_ms[i] for i in run) > OFF_GRID_TOLERANCE_MS:
+            start_index = run[0] - 1 if run[0] > 0 else run[0]
+            end_index = run[-1] + 1 if run[-1] < n - 1 else run[-1]
+            spans.append(
+                {
+                    "start": round_schema_float(times[start_index]),
+                    "end": round_schema_float(times[end_index]),
+                    "max_deviation_ms": round_schema_float(max(deviations_ms[i] for i in run)),
+                }
+            )
+
+    for i, is_stable in enumerate(stable_flags):
+        if not is_stable:
+            run.append(i)
+        else:
+            _flush()
+            run = []
+    _flush()
+    return spans
+
 
 def _section_index_prefix(section_id: str | None) -> str:
     if not section_id:
@@ -593,10 +757,10 @@ def _build_reference_override_rows(
         function = normalize_human_label(str(reference_row["label"]))
         section_id = f"section-{index + 1:03d}"
 
-        # Inherit function_confidence/function_status/same_label_as from
-        # whichever allin1 section this span overlaps most — never invented.
-        # No overlap (shouldn't normally happen; allin1 covers the whole
-        # song) is an honest null/"unknown", not a guess.
+        # Inherit function_confidence/function_status from whichever allin1
+        # section this span overlaps most — never invented. No overlap
+        # (shouldn't normally happen; allin1 covers the whole song) is an
+        # honest null/"unknown", not a guess.
         best_match: dict | None = None
         best_overlap = 0.0
         for candidate in raw_sections:
@@ -606,7 +770,20 @@ def _build_reference_override_rows(
                 best_match = candidate
         function_confidence = best_match.get("function_confidence") if best_match else None
         function_status = best_match.get("function_status", "unknown") if best_match else "unknown"
-        same_label_as = best_match.get("same_label_as") if best_match else None
+
+        # `function` now comes from the reference tier (human/moises), so
+        # `same_label_as` must be derived from the published labels
+        # themselves — allin1's own `same_label_as` points at ITS section
+        # boundaries/labels, which no longer match what's published here
+        # (v3.9 item 2 — was silently pointing across unrelated labels, e.g.
+        # Rapture's Drop 2 -> Breakdown). First earlier published section with
+        # the same normalized function, else null; never allin1's value.
+        same_label_as = None
+        if function:
+            for prior in section_rows:
+                if prior["function"] == function:
+                    same_label_as = prior["section_id"]
+                    break
 
         if function:
             occurrence_counts[function] = occurrence_counts.get(function, 0) + 1
@@ -668,6 +845,15 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         }
         for beat in beat_points
     ]
+
+    # v3.9 item 3 — beat-grid honesty (D3.1). `bpm` is already in the
+    # essentia beats artifact payload we just read (`beats_payload["bpm"]`),
+    # the same value `info.json` will later carry — no need to read
+    # `info.json`, which build-ui-data runs well before in the full pipeline
+    # (see pipeline.py's publish-vocal-cadence comment for the same reason).
+    off_grid_spans = _compute_off_grid_spans(
+        [float(beat["time"]) for beat in beat_points], beats_payload.get("bpm")
+    )
 
     song_key = _song_key(harmonic_payload.get("global_key"))
 
@@ -756,6 +942,9 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
             "bar": "essentia",
             "type": "essentia",
             "downbeat_confidence": "allin1",
+            # File-level, not a beat-row key (harmless extra: validate_field_sources
+            # only requires coverage of emitted row keys, not every dict key).
+            "off_grid_spans": "beat_grid_fit",
         },
         beat_rows[0].keys() if beat_rows else (),
         file="beats.json",
@@ -768,7 +957,10 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     # (normalize_human_label of its label text — shared by human and moises);
     # only function_confidence / function_status / same_label_as stay
     # allin1's regardless (inherited by overlap, never invented); key stays
-    # the harmonic stage's either way.
+    # the harmonic stage's either way. `same_label_as` (v3.9 item 2) now
+    # follows the SAME tier as `function` — when a reference tier wins, the
+    # boundaries/labels are wholly that tier's, so label repetition must be
+    # computed from them, not from allin1's now-unrelated section list.
     sections_field_sources = validate_field_sources(
         _fuse(
             {
@@ -778,7 +970,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
                 "function": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "function_confidence": [("allin1", True)],
                 "function_status": [("allin1", True)],
-                "same_label_as": [("allin1", True)],
+                "same_label_as": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "confidence": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "key": [("harmonic", True)],
             }
@@ -786,7 +978,11 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         section_rows[0].keys() if section_rows else (),
         file="sections.json",
     )
-    beats_output = {"field_sources": beats_field_sources, "beats": beat_rows}
+    beats_output = {
+        "field_sources": beats_field_sources,
+        "beats": beat_rows,
+        "off_grid_spans": off_grid_spans,
+    }
     sections_output = {"field_sources": sections_field_sources, "sections": section_rows}
 
     beats_output_path = paths.beats_output_path

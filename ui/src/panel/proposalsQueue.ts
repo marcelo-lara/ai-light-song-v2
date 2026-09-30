@@ -41,6 +41,22 @@ export function sectionSpan(
   return row ? { start: row.start, end: row.end } : null;
 }
 
+/** A proposal card's playhead window, or `null` when it has none (an
+ * unknown/re-analysed section_id). A hint's window is the operator's dragged
+ * correction (`timeEdit`) when given, else the proposal's own proposed
+ * start/end; a section_field's window is its section's current published
+ * span from `sections.json`. */
+export function proposalWindow(
+  proposal: PendingProposal,
+  sections: SectionsTopLevel,
+  timeEdit?: { start: number; end: number },
+): { start: number; end: number } | null {
+  if (proposal.type === "hint") {
+    return timeEdit ?? { start: proposal.hint.start, end: proposal.hint.end };
+  }
+  return sectionSpan(sections, proposal.section_field.section_id);
+}
+
 /** Index of the segments.json row with the largest positive overlap against
  * [start, end], or -1 when no row overlaps at all. */
 export function bestOverlapIndex(
@@ -99,16 +115,20 @@ export function applySectionFieldToSegments(
 
 /** Build the draft `buildHumanHintsPayload` expects for a new hint proposal.
  * `captured_from` names the proposal id — informative only (never read by
- * anything), matching the existing convention for every other captured hint. */
+ * anything), matching the existing convention for every other captured hint.
+ * `times`, when given (the operator's corrected start/end), wins over the
+ * proposal's own `hint.start`/`hint.end` — `proposal.hint` itself is never
+ * mutated by this. */
 export function hintDraftFromProposal(
   proposal: Extract<PendingProposal, { type: "hint" }>,
   existingHints: HumanHint[],
+  times?: { start: number; end: number },
 ): HintDraft {
   return {
     id: `human-hint-${existingHints.length + 1}`,
     title: proposal.hint.title,
-    start_time: proposal.hint.start,
-    end_time: proposal.hint.end,
+    start_time: times?.start ?? proposal.hint.start,
+    end_time: times?.end ?? proposal.hint.end,
     summary: proposal.hint.summary,
     lighting_hint: "",
     captured_from: `MCP proposal ${proposal.id}`,

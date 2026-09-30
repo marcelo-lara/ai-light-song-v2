@@ -56,6 +56,10 @@ def test_sparse_cap_hit_reports_withheld() -> None:
         "stems": [], "blocks": [], "vocals_phrase": None,
         "vocals_sibilance_song_mean": None, "field_sources": {},
     })
+    _write_json(song / "vocal_cadence.json", {
+        "source": None, "reason": "no lyrics tier for this fixture",
+        "lines": [], "sections": [], "calls": [], "field_sources": {},
+    })
 
     # Create drum_events with SPARSE_ROW_CAP + 10 rows
     events = []

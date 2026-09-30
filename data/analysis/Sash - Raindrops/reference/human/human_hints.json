@@ -1,0 +1,105 @@
+{
+  "song_name": "Sash - Raindrops",
+  "human_hints": [
+    {
+      "id": "human-hint-2",
+      "title": "Beatless vocal intro",
+      "start_time": 0,
+      "end_time": 29.27,
+      "summary": "No kick, no bass. Soft vocal over a sustained pad.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-384f6430b6df",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-3",
+      "title": "Vocal verse, still no beat",
+      "start_time": 29.27,
+      "end_time": 44.06,
+      "summary": "Vocal at full level over pads. Bass and kick still absent.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-c070c4d0e556",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-4",
+      "title": "Instrumental drop groove",
+      "start_time": 45.78,
+      "end_time": 72.34,
+      "summary": "No vocals. Full kick/snare/hat groove with the bass line.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-389bd886b273",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-9",
+      "title": "Vocal peak",
+      "start_time": 86.91,
+      "end_time": 100.62,
+      "summary": "Full-level vocal lead with the whole mix up.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-ff4f142a75f9",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-5",
+      "title": "Breakdown vocal, no beat",
+      "start_time": 103.19,
+      "end_time": 111.36,
+      "summary": "Vocal alone over pads. No bass, no kick.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-66012400058d",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-7",
+      "title": "Rebuild under the vocal",
+      "start_time": 111.36,
+      "end_time": 131.63675907258065,
+      "summary": "The kick comes back under the vocal and grows. The bass is still out until the end.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-22be0887b845",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-6",
+      "title": "Bass return (pre-drop)",
+      "start_time": 127.2,
+      "end_time": 131.5,
+      "summary": "The bass comes back in before the vocal leaves.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-b4de5f2ec880",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-1",
+      "title": "Instrumental drop 2",
+      "start_time": 131.5,
+      "end_time": 157.64,
+      "summary": "No vocals. Full kick/snare/hat groove with the bass line.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-71513db918a7",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-10",
+      "title": "Final vocal over the groove",
+      "start_time": 159.06480846774193,
+      "end_time": 183.36,
+      "summary": "Vocal returns at moderate level over the full groove.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-dfc72eb6aee3",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-8",
+      "title": "Outro fade",
+      "start_time": 183.36,
+      "end_time": 192.61,
+      "summary": "The beat and bass stop. The vocal tail fades over pads.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-db33848262fb",
+      "type": "review"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+[
+  {
+    "start": 0,
+    "end": 30.52,
+    "label": "Intro"
+  },
+  {
+    "start": 30.52,
+    "end": 37.478,
+    "label": "Pre-Build"
+  },
+  {
+    "start": 37.478,
+    "end": 44.49,
+    "label": "Build-Up"
+  },
+  {
+    "start": 44.49,
+    "end": 46.21,
+    "label": "Fill"
+  },
+  {
+    "start": 46.21,
+    "end": 72.34,
+    "label": "Drop"
+  },
+  {
+    "start": 72.34,
+    "end": 73.2,
+    "label": "Refrain"
+  },
+  {
+    "start": 73.2,
+    "end": 101.05,
+    "label": "Main"
+  },
+  {
+    "start": 101.05,
+    "end": 103.074,
+    "label": "Mid-Intro"
+  },
+  {
+    "start": 103.074,
+    "end": 104.499,
+    "label": "Refrain"
+  },
+  {
+    "start": 104.5,
+    "end": 125.06,
+    "label": "Breakdown"
+  },
+  {
+    "start": 125.06,
+    "end": 131.771,
+    "label": "Build-Up"
+  },
+  {
+    "start": 131.771,
+    "end": 159.53,
+    "label": "Drop"
+  },
+  {
+    "start": 159.53,
+    "end": 180.78,
+    "label": "Main"
+  },
+  {
+    "start": 180.78,
+    "end": 192.18,
+    "label": "Outro"
+  }
+]

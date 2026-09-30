@@ -58,6 +58,7 @@ only surviving package.
 | 3 | `section_clues.py` | `section-clues` (v3.6 item 10; `impact_alignment` v3.7 item 2) — re-fuses `energy`, `energy_confidence`, `tension`, `tension_confidence`, `rhythm` and `impact_alignment` onto the published `sections.json`. Clue fields: precedence `human` > best ported producer (`energy_level`/`tension_shape`/`rhythm_drum_ioi`/`rhythm_stem_autocorr`/`rhythm_vocal_onsets`) > `seed_unreviewed`. `impact_alignment`: nearest `song_event_timeline.json` gesture `impact` to each row's `start`, `null` outside +-2 bars — no human/seed tier. Reads `beats.json`, `drum_events.json`, `loudness.json`, `arrangement_state.json`, `song_event_timeline.json`, `info.json` (bpm), `reference/human/{segments.json,segments.seed.json}` and `artifacts/whisperx-vad/vocal_onsets.json` (raises if that last one is missing). Never audio. Runs after `contest-section-function` |
 | 4 | `hints.py` | `hints.json`: human hints from `reference/human/human_hints.json`, `section_id` attributed by timestamp against the PUBLISHED `sections.json` (v3.7 item 6 — was allin1's raw artifact segmentation; runs after `build-ui-data` for this reason) |
 | 4 | `ui_data.py` | packs the compact top-level deliverables; `apply_section_function_contest` re-publishes `sections.json` for the phase-3 contest |
+| 4 | `vocal_cadence.py` | `publish-vocal-cadence` (v3.9 item 1) — `vocal_cadence.json`: per-line bar timing, per-section `lead_in_bars`/rests/held notes/tokens-per-bar/cadence-repeats, calls. Reads `reference/human/lyrics.json` > `reference/moises/lyrics.json` (D1.1: neither present → still writes the file, `source: null` + `reason`) plus the PUBLISHED `beats.json`/`sections.json`/`info.json`. Timing only — no lyric text past parsing. Ported from `experiments/vocal_cadence/` (12/12 on Queen of Kings), never imported from it |
 
 `segmentation.py`, `gestures.py` and `timing.py` carry their promotion numbers
 and honest caveats **in their own module docstrings** — read those first.
@@ -90,6 +91,13 @@ runtime since `event_contracts.py` was deleted.
 | File | Purpose |
 | --- | --- |
 | `_omnizart_runtime.py` | subprocess isolation for Omnizart, `drums.py`'s only consumer |
+| `_omnizart_drum_runner.py` | subprocess entry point `drums.py` runs; patches vendored omnizart's `predict()`, whose `pred[:-pad_size]` returns nothing when `pad_size == 0` (a stem whose mini-beat count fills whole batches: Charli-VonDutch, ayuni) |
+
+## Host scripts (outside `src/`)
+
+| File | Purpose |
+| --- | --- |
+| `analysis-watcher` (repo root) | v3.8 item 1 — bash, runs on the host (never in a container, D1.2). Polls `data/analysis/*/artifacts/_run_request.json`; on a never-analysed song runs `./analyze --stage ensure-stems` (whisperX needs the vocal stem it produces — D1.1, corrected by the host end-to-end smoke) then `whisperx` then the full `./analyze`, all via `docker compose run` on the operator's behalf, writing `_run_progress.json`. Its `KNOWN_STAGES` list must equal `STAGE_PIPELINE_IDS`' keys in `pipeline.py` — `tests/test_analysis_watcher.py` asserts this |
 
 ## Where to start
 

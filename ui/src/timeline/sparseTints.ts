@@ -32,6 +32,10 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //   amber (35), humanHintsReview's azure (205), and every green-ish hue
   //   elsewhere in this file (arrangementState 95,
   //   characterVocalLead/moisesLyricsHigh 150)
+  llmPendingProposals: [245, 70, 58], // indigo — a proposal still awaiting an
+  //   operator decision (mcp/propose_hint), auditioning against humanHints'
+  //   amber (35) directly above it; distinct from segmentSeeds' indigo-ish
+  //   246 and moisesLyricsValidated's 265 (neither co-occurs with this lane)
   humanSections: [55, 85, 46], // golden yellow — the operator's own hand-authored
   //   segmentation, deliberately near humanHints' amber (35, same "hand-authored"
   //   family) but distinct from it and from the production Sections lane's
@@ -49,6 +53,14 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   allin1Posterior: [130, 50, 44], // spring green — distinct from allin1Sections'
   //   olive (90) and moisesSections' seafoam (160); hue 130 is free since the
   //   phrase_periodicity lane that previously used it was retired 2026-09-17
+  stemPresenceSections: [70, 55, 45], // yellow-green — distinct from
+  //   humanSections' gold (55) and allin1Sections' olive (90) either side of it
+  vocalCadence: [190, 55, 44], // cyan-teal — a line block; distinct from
+  //   sections' teal (174) and humanHintsReview's azure (205) either side
+  vocalCadenceCall: [140, 60, 46], // green — a call point marker, deliberately
+  //   distinct in hue AND shape (zero-length) from the vocalCadence line
+  //   blocks above; also distinct from allin1Posterior's spring green (130)
+  //   and characterVocalLead's green (150)
   // v3.5 item 7 — whisperX's VAD front-end (speech-domain, VAD-only —
   // diarization not attempted, no HF_TOKEN in this environment). Hue 20
   // (amber-orange) sits between gestures' burnt orange (10) and humanHints'
@@ -127,6 +139,18 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   blockReviewCorrect: [150, 60, 40], // green — real and correctly described
   blockReviewWrong: [0, 72, 46], // red — a phantom, nothing is here
   blockReviewMisplaced: [43, 88, 46], // amber — real, but this block gets it wrong
+  // v3.9 item 2 + the "crash over-fires" bug — per-hit drum-label accuracy
+  // checks. clapEvents is a detection lane (no keep/reject split, every row
+  // is a positive). kickCheck/crashCheck carry a keep/reject verdict per
+  // row, tinted green/red so the split reads without opening the inspector —
+  // deliberately different hues from blockReview's green/red (150/0) since
+  // these are a different lane family's own verdict, not a block review.
+  clapEvents: [235, 55, 46], // periwinkle — distinct from vocalCadence (190),
+  //   moisesLyrics (210) and allin1Posterior (130)
+  kickCheckKeep: [105, 55, 40], // green — a kick that keeps its label
+  kickCheckReject: [5, 70, 46], // red-orange — a kick relabelled away
+  crashCheckKeep: [168, 55, 40], // teal-green — an isolated accent kept
+  crashCheckReject: [355, 65, 46], // red — a stream member rejected
 };
 
 /** fixed alpha ramp shared by every lane */

@@ -24,10 +24,13 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // `dropProposals`, `textureNovelty` and `structuralVsMicro` entirely — their
 // experiments were archived (item 3) and their lanes retired via Recipe B.
 // This list must track `ui/src/timeline/laneState.ts`'s tagged set exactly.
+// v3.9 item 2 + the "crash over-fires" bug added three: clapEvents,
+// kickCheck, crashCheck.
 
 const BADGED = [
   "vocalPhrases",
   "allin1Posterior",
+  "stemPresenceSections",
   "vocalVoiceness",
   "svdTagger",
   "voiceMultiplicity",
@@ -40,6 +43,9 @@ const BADGED = [
   "segmentSeeds",
   "character",
   "vocalTranscription",
+  "clapEvents",
+  "kickCheck",
+  "crashCheck",
 ] as const;
 
 const NOT_BADGED = [
@@ -48,6 +54,7 @@ const NOT_BADGED = [
   "sections",
   "gestures",
   "whisperxVad",
+  "vocalCadence",
   "fftBands",
   "fftBandsBass",
   "fftBandsDrums",

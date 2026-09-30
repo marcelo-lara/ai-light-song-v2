@@ -25,6 +25,16 @@ brilliance >= 0.90 & transient >= 0.40 within +/- 0.12 s):
 `Titanium` / `Hideaway`: measurement pending — no `fft_bands.drums.json` yet
 and Omnizart is CPU-only in this runtime, so a full re-analysis was
 impractical this pass.
+
+**v3.9 empty-events fix.** `Charli-VonDutch` and `ayuni` published
+`events: []` despite a live drums stem: the vendored omnizart
+`predict()` ends with `pred[:-pad_size]`, and `pad_size` is `0` exactly when
+the stem's mini-beat count divides evenly into full 32-wide batches — Python
+then evaluates `pred[:-0]` as `pred[:0]`, an empty array. `_transcribe_drums`
+now runs transcription through `_omnizart_drum_runner.py`, which installs a
+corrected `predict` (same math, `pad_size == 0` returns the whole array)
+before calling `app.transcribe`. See that module's docstring for the repro
+numbers.
 """
 
 from __future__ import annotations
@@ -198,21 +208,12 @@ def _transcribe_drums(stem_path: str, midi_path: Path) -> tuple[object, Path, st
         raise DependencyError("Omnizart drum transcription is required for Story 3.2") from exc
 
     ensure_directory(midi_path.parent)
+    runner_path = Path(__file__).with_name("_omnizart_drum_runner.py")
     try:
         completed = subprocess.run(
             [
                 sys.executable,
-                "-c",
-                (
-                    "from pathlib import Path; "
-                    "import sys; "
-                    "from omnizart.drum import app; "
-                    "stem_path, model_path, midi_path = sys.argv[1:4]; "
-                    "midi = app.transcribe(stem_path, model_path=model_path, output=midi_path); "
-                    "output_path = Path(midi_path); "
-                    "output_path.parent.mkdir(parents=True, exist_ok=True); "
-                    "(midi.write(str(output_path)) if hasattr(midi, 'write') else None)"
-                ),
+                str(runner_path),
                 stem_path,
                 str(model_path),
                 str(midi_path),

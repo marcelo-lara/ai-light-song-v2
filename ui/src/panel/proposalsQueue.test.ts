@@ -13,6 +13,7 @@ import {
   bestOverlapIndex,
   hintDraftFromProposal,
   partitionProposals,
+  proposalWindow,
   sectionSpan,
 } from "./proposalsQueue";
 
@@ -84,6 +85,49 @@ describe("sectionSpan", () => {
   });
 });
 
+describe("proposalWindow", () => {
+  const sections: SectionsTopLevel = [
+    {
+      section_id: "section-001",
+      start: 0,
+      end: 10,
+      label: "001 Intro",
+      description: null,
+      function: "intro",
+      function_confidence: 0.8,
+      function_status: "known",
+      same_label_as: null,
+      confidence: 0.8,
+      key: "C major",
+    },
+  ];
+
+  it("uses the proposal's own start/end for a hint with no operator edit", () => {
+    const proposal = hintProposal();
+    expect(proposalWindow(proposal, sections)).toEqual({ start: 10, end: 12 });
+  });
+
+  it("prefers the operator's dragged correction for a hint", () => {
+    const proposal = hintProposal();
+    expect(proposalWindow(proposal, sections, { start: 9, end: 13 })).toEqual({
+      start: 9,
+      end: 13,
+    });
+  });
+
+  it("uses the section's current published span for a section_field", () => {
+    const proposal = sectionFieldProposal();
+    expect(proposalWindow(proposal, sections)).toEqual({ start: 0, end: 10 });
+  });
+
+  it("returns null for a section_field whose section_id no longer resolves", () => {
+    const proposal = sectionFieldProposal({
+      section_field: { section_id: "section-999", field: "tension", value: 4 },
+    } as Partial<PendingProposal>);
+    expect(proposalWindow(proposal, sections)).toBeNull();
+  });
+});
+
 describe("bestOverlapIndex", () => {
   const segments: HumanSegmentsFile = [
     { start: 0, end: 5 },
@@ -138,17 +182,18 @@ describe("applySectionFieldToSegments", () => {
 });
 
 describe("hintDraftFromProposal", () => {
+  const existing: HumanHint[] = [
+    {
+      id: "human-hint-1",
+      title: "existing",
+      start_time: 1,
+      end_time: 2,
+      summary: "",
+      lighting_hint: "",
+    },
+  ];
+
   it("builds a HintDraft carrying the proposal id as an informative note", () => {
-    const existing: HumanHint[] = [
-      {
-        id: "human-hint-1",
-        title: "existing",
-        start_time: 1,
-        end_time: 2,
-        summary: "",
-        lighting_hint: "",
-      },
-    ];
     const proposal = hintProposal() as Extract<PendingProposal, { type: "hint" }>;
     const draft = hintDraftFromProposal(proposal, existing);
     expect(draft).toEqual({
@@ -161,5 +206,23 @@ describe("hintDraftFromProposal", () => {
       captured_from: "MCP proposal prop-1",
       type: "review",
     });
+  });
+
+  it("falls back to the proposal's own hint.start/end when no times are given", () => {
+    const proposal = hintProposal() as Extract<PendingProposal, { type: "hint" }>;
+    const draft = hintDraftFromProposal(proposal, existing);
+    expect(draft.start_time).toBe(proposal.hint.start);
+    expect(draft.end_time).toBe(proposal.hint.end);
+  });
+
+  it("uses the operator's corrected times over the proposal's own, when given", () => {
+    const proposal = hintProposal() as Extract<PendingProposal, { type: "hint" }>;
+    const draft = hintDraftFromProposal(proposal, existing, { start: 9.5, end: 13.25 });
+    expect(draft.start_time).toBe(9.5);
+    expect(draft.end_time).toBe(13.25);
+    // every other field is unaffected by the override
+    expect(draft.title).toBe("Drop payoff");
+    expect(proposal.hint.start).toBe(10);
+    expect(proposal.hint.end).toBe(12);
   });
 });

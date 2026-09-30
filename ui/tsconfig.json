@@ -21,7 +21,7 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
+    "types": ["vitest/globals", "@testing-library/jest-dom", "node"]
   },
-  "include": ["src"]
+  "include": ["src", "server", "vite.config.ts"]
 }

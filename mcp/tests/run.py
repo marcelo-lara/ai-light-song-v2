@@ -21,6 +21,7 @@ import json
 import os
 import shutil
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 MCP_DIR = Path(__file__).resolve().parents[1]
@@ -32,6 +33,8 @@ EXPECTED_TOOLS = [
     "get_detail",
     "propose_hint",
     "propose_section_field",
+    "request_analysis",
+    "get_analysis_progress",
 ]
 
 _RESULTS: list[tuple[str, str, str]] = []
@@ -74,14 +77,32 @@ async def _run_stdio_checks() -> None:
         shutil.rmtree(writable_root)
     shutil.copytree(FIXTURE_ROOT, writable_root)
 
+    # v3.8 item 3 — request_analysis checks for a `<song>.mp3` under
+    # MCP_SONGS_ROOT before queuing a run; a throwaway songs root with one
+    # stub audio file exercises both the "audio present, not yet analysed"
+    # and "no audio at all" branches without touching the real mount.
+    writable_songs_root = Path("/data/.mcp_smoke_songs_copy")
+    if writable_songs_root.exists():
+        shutil.rmtree(writable_songs_root)
+    writable_songs_root.mkdir(parents=True)
+    (writable_songs_root / "McpUnanalysed - Fixture.mp3").write_bytes(b"stub-audio-bytes")
+    # A 0-byte placeholder (matches the real songs mount's `authoring-*.mp3`
+    # files) and a real, non-empty file for an already-fully-analysed song —
+    # neither should ever appear in request_analysis's "unanalysed audio"
+    # error listing (S3.15 below).
+    (writable_songs_root / "authoring-placeholder.mp3").write_bytes(b"")
+    (writable_songs_root / "McpFull - Fixture.mp3").write_bytes(b"already analysed")
+
     env = dict(os.environ)
     env["MCP_ANALYSIS_ROOT"] = str(writable_root)
+    env["MCP_SONGS_ROOT"] = str(writable_songs_root)
     params = StdioServerParameters(command=sys.executable, args=[str(SERVER)], env=env)
 
     try:
         await _run_stdio_checks_against(params, writable_root)
     finally:
         shutil.rmtree(writable_root, ignore_errors=True)
+        shutil.rmtree(writable_songs_root, ignore_errors=True)
 
 
 async def _run_stdio_checks_against(params, writable_root: Path) -> None:
@@ -99,7 +120,8 @@ async def _run_stdio_checks_against(params, writable_root: Path) -> None:
             names = [t.name for t in tools.tools]
             status = "PASS" if names == EXPECTED_TOOLS else "FAIL"
             record("S1.3 tools/list == list_songs, get_song_overview, get_detail, "
-                   "propose_hint, propose_section_field", status, str(names))
+                   "propose_hint, propose_section_field, request_analysis, "
+                   "get_analysis_progress", status, str(names))
 
             # S1.4 — stray stdout would have broken the handshake above.
             record("S1.4 no stray stdout (proxy: handshake + list succeeded)",
@@ -189,6 +211,128 @@ async def _run_stdio_checks_against(params, writable_root: Path) -> None:
             status = "PASS" if ok else "FAIL"
             record("S3.11 two propose_* calls append two distinct pending.json entries",
                    status, f"ids={ids}")
+
+            # v3.8 item 3 — request_analysis / get_analysis_progress.
+            already = await session.call_tool(
+                "request_analysis", {"song": "McpFull - Fixture"},
+            )
+            text = _tool_text(already)
+            status = "PASS" if already.is_error and "get_song_overview" in text else "FAIL"
+            record("S3.12 request_analysis refuses an already-analysed song",
+                   status, repr(text))
+
+            requested = await session.call_tool(
+                "request_analysis", {"song": "McpUnanalysed - Fixture"},
+            )
+            req_payload = _tool_json(requested) if not requested.is_error else {}
+            request_path = (
+                writable_root / "McpUnanalysed - Fixture" / "artifacts" / "_run_request.json"
+            )
+            status = (
+                "PASS"
+                if not requested.is_error
+                and req_payload.get("status") == "requested"
+                and request_path.is_file()
+                else "FAIL"
+            )
+            record("S3.13 request_analysis on unanalysed-but-audible song writes a request",
+                   status, f"is_error={requested.is_error} payload={req_payload}")
+
+            queued = await session.call_tool(
+                "get_analysis_progress", {"song": "McpUnanalysed - Fixture"},
+            )
+            queued_payload = _tool_json(queued) if not queued.is_error else {}
+            status = "PASS" if not queued.is_error and queued_payload.get("status") == "queued" else "FAIL"
+            record("S3.14 get_analysis_progress reports queued right after a fresh request",
+                   status, f"is_error={queued.is_error} payload={queued_payload}")
+
+            no_audio = await session.call_tool(
+                "request_analysis", {"song": "no-such-audio-xyz"},
+            )
+            text = _tool_text(no_audio)
+            status = (
+                "PASS"
+                if no_audio.is_error and "no-such-audio-xyz" in text
+                and "McpUnanalysed - Fixture" in text
+                # A 0-byte placeholder and an already-analysed song's audio
+                # must never be offered as "unanalysed" — orchestrator review.
+                and "authoring-placeholder" not in text
+                and "McpFull - Fixture" not in text
+                else "FAIL"
+            )
+            record("S3.15 request_analysis with no audio errors, listing unanalysed "
+                   "non-empty not-yet-analysed stems only",
+                   status, repr(text))
+
+            never_requested = await session.call_tool(
+                "get_analysis_progress", {"song": "McpNeverRequested - Fixture"},
+            )
+            text = _tool_text(never_requested)
+            status = "PASS" if never_requested.is_error and "request_analysis" in text else "FAIL"
+            record("S3.16 get_analysis_progress with no request errors, pointing at request_analysis",
+                   status, repr(text))
+
+            stale_request_dir = writable_root / "McpStale - Fixture" / "artifacts"
+            stale_request_dir.mkdir(parents=True, exist_ok=True)
+            (stale_request_dir / "_run_request.json").write_text(
+                json.dumps({"song": "McpStale - Fixture",
+                            "requested_at": "2000-01-01T00:00:00Z"}) + "\n",
+                encoding="utf-8",
+            )
+            stale = await session.call_tool(
+                "get_analysis_progress", {"song": "McpStale - Fixture"},
+            )
+            stale_payload = _tool_json(stale) if not stale.is_error else {}
+            status = "PASS" if not stale.is_error and stale_payload.get("status") == "not_started" else "FAIL"
+            record("S3.17 a request older than the threshold reports not_started",
+                   status, f"is_error={stale.is_error} payload={stale_payload}")
+
+            # Orchestrator review fix 2 — song-name validation before any path is built.
+            traversal = await session.call_tool(
+                "request_analysis", {"song": "../escaped-song"},
+            )
+            text = _tool_text(traversal)
+            escaped_dir = writable_root.parent / "escaped-song"
+            status = "PASS" if traversal.is_error and not escaped_dir.exists() else "FAIL"
+            record("S3.18 request_analysis rejects a path-traversal song name, writes nothing",
+                   status, f"is_error={traversal.is_error} escaped_dir_exists={escaped_dir.exists()}")
+
+            # Orchestrator review fix 1 — a stale terminal progress (failed, finished
+            # before a newer request) must not be read back verbatim forever.
+            retry_dir = writable_root / "McpRetry - Fixture" / "artifacts"
+            retry_dir.mkdir(parents=True, exist_ok=True)
+            (retry_dir / "_run_progress.json").write_text(
+                json.dumps({
+                    "song": "McpRetry - Fixture", "status": "failed", "stage": "measure-loudness",
+                    "requested_at": "2020-01-01T00:00:00Z", "started_at": "2020-01-01T00:00:05Z",
+                    "finished_at": "2020-01-01T00:05:00Z", "error": "boom",
+                }) + "\n",
+                encoding="utf-8",
+            )
+            fresh_requested_at = (
+                datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+            )
+            (retry_dir / "_run_request.json").write_text(
+                json.dumps({"song": "McpRetry - Fixture",
+                            "requested_at": fresh_requested_at}) + "\n",
+                encoding="utf-8",
+            )
+            retry = await session.call_tool(
+                "get_analysis_progress", {"song": "McpRetry - Fixture"},
+            )
+            retry_payload = _tool_json(retry) if not retry.is_error else {}
+            status = "PASS" if not retry.is_error and retry_payload.get("status") == "queued" else "FAIL"
+            record("S3.19 a stale failed progress is ignored once a newer request exists",
+                   status, f"is_error={retry.is_error} payload={retry_payload}")
+
+            # Orchestrator review round 2 — a 0-byte placeholder counts as no audio.
+            placeholder = await session.call_tool(
+                "request_analysis", {"song": "authoring-placeholder"},
+            )
+            text = _tool_text(placeholder)
+            status = "PASS" if placeholder.is_error and "No audio found" in text else "FAIL"
+            record("S3.20 request_analysis refuses a 0-byte placeholder audio file",
+                   status, repr(text))
 
 
 def _check_build() -> None:
@@ -356,7 +500,7 @@ def _check_f1_all_nine_required() -> None:
                 ok_count += 1
             else:
                 record(f"F1.7 missing {missing} errors naming it", "FAIL", observed)
-    record("F1.7 all 9 required top-level files individually enforced",
+    record("F1.7 all 10 required top-level files individually enforced",
            "PASS" if ok_count == len(REQUIRED_TOP_LEVEL_FILES) else "FAIL",
            f"{ok_count}/{len(REQUIRED_TOP_LEVEL_FILES)} named correctly")
 
@@ -493,10 +637,11 @@ def _check_f2_honesty() -> None:
 def _check_f4_budget() -> None:
     full_text = _overview_text("McpFull - Fixture")
     size = len(full_text.encode("utf-8"))
-    # v3.7 item 2 — budget moved 6144 -> 6450 for the new, omitted-when-null
-    # `impact_alignment` field (see test_overview_budget_mcpfull_under_6kb).
-    record("F4.20 get_song_overview(McpFull) under the 6450-byte budget",
-           "PASS" if size < 6450 else "FAIL", f"{size} bytes")
+    # v3.7 item 2 moved 6144 -> 6450 (impact_alignment). v3.9 item 1 moves it
+    # again, 6450 -> 6900, for vocal_cadence.json's compact overview block and
+    # per-section fields (see test_overview_budget_mcpfull_under_7kb).
+    record("F4.20 get_song_overview(McpFull) under the 6900-byte budget",
+           "PASS" if size < 6900 else "FAIL", f"{size} bytes")
 
     record("F4.21 no host path in the overview (no string starting /data/)",
            "PASS" if "/data/" not in full_text else "FAIL",

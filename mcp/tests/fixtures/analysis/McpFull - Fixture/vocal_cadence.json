@@ -1,0 +1,206 @@
+{
+  "schema_version": "3.6",
+  "song_name": "McpFull - Fixture",
+  "field_sources": {
+    "lines": "human",
+    "sections": "human",
+    "calls": "human"
+  },
+  "source": "human",
+  "reason": null,
+  "lines": [
+    {
+      "line_id": 1,
+      "start_s": 0.0,
+      "end_s": 0.5,
+      "start_position": {
+        "bar": 1,
+        "beat": 1,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 1,
+        "beat": 2,
+        "resolved": false
+      },
+      "duration_beats": 1.0,
+      "token_count": 1,
+      "resolve_time_s": 0.0,
+      "resolve_position": {
+        "bar": 1,
+        "beat": 1,
+        "resolved": true
+      },
+      "pickup": false
+    },
+    {
+      "line_id": 2,
+      "start_s": 6.0,
+      "end_s": 6.5,
+      "start_position": {
+        "bar": 4,
+        "beat": 1,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 4,
+        "beat": 2,
+        "resolved": false
+      },
+      "duration_beats": 1.0,
+      "token_count": 1,
+      "resolve_time_s": 6.0,
+      "resolve_position": {
+        "bar": 4,
+        "beat": 1,
+        "resolved": true
+      },
+      "pickup": false
+    },
+    {
+      "line_id": 3,
+      "start_s": 9.62,
+      "end_s": 9.62,
+      "start_position": {
+        "bar": 5,
+        "beat": 4,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 5,
+        "beat": 4,
+        "resolved": true
+      },
+      "duration_beats": 0.0,
+      "token_count": 0,
+      "resolve_time_s": null,
+      "resolve_position": null,
+      "pickup": null
+    },
+    {
+      "line_id": 4,
+      "start_s": 14.0,
+      "end_s": 14.5,
+      "start_position": {
+        "bar": 8,
+        "beat": 1,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 8,
+        "beat": 2,
+        "resolved": false
+      },
+      "duration_beats": 1.0,
+      "token_count": 1,
+      "resolve_time_s": 14.0,
+      "resolve_position": {
+        "bar": 8,
+        "beat": 1,
+        "resolved": true
+      },
+      "pickup": false
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "section-001",
+      "start_s": 0.0,
+      "end_s": 8.0,
+      "lead_in_bars": 0,
+      "lead_in_line_id": 1,
+      "lead_in_resolve_time_s": 0.0,
+      "lead_in_resolve_position": {
+        "bar": 1,
+        "beat": 1,
+        "resolved": true
+      },
+      "lead_in_reason": null,
+      "rests": [],
+      "held_notes": [],
+      "tokens_per_bar": [
+        {
+          "bar": 1,
+          "tokens": 1
+        }
+      ],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-002",
+      "start_s": 8.0,
+      "end_s": 16.0,
+      "lead_in_bars": -1,
+      "lead_in_line_id": 2,
+      "lead_in_resolve_time_s": 6.0,
+      "lead_in_resolve_position": {
+        "bar": 4,
+        "beat": 1,
+        "resolved": true
+      },
+      "lead_in_reason": null,
+      "rests": [],
+      "held_notes": [],
+      "tokens_per_bar": [
+        {
+          "bar": 4,
+          "tokens": 1
+        }
+      ],
+      "cadence_repeats": [
+        {
+          "section_id": "section-001",
+          "bar_offset": -1,
+          "match_fraction": 1.0,
+          "onsets_matched": 1,
+          "onsets_total": 1,
+          "median_error_ms": 0.0,
+          "best": true
+        }
+      ]
+    },
+    {
+      "section_id": "section-003",
+      "start_s": 16.0,
+      "end_s": 24.0,
+      "lead_in_bars": -1,
+      "lead_in_line_id": 4,
+      "lead_in_resolve_time_s": 14.0,
+      "lead_in_resolve_position": {
+        "bar": 8,
+        "beat": 1,
+        "resolved": true
+      },
+      "lead_in_reason": null,
+      "rests": [],
+      "held_notes": [],
+      "tokens_per_bar": [
+        {
+          "bar": 8,
+          "tokens": 1
+        }
+      ],
+      "cadence_repeats": [
+        {
+          "section_id": "section-002",
+          "bar_offset": -1,
+          "match_fraction": 1.0,
+          "onsets_matched": 1,
+          "onsets_total": 1,
+          "median_error_ms": 0.0,
+          "best": true
+        }
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "time_s": 9.62,
+      "position": {
+        "bar": 5,
+        "beat": 4,
+        "resolved": true
+      }
+    }
+  ]
+}

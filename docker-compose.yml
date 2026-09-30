@@ -81,8 +81,13 @@ services:
       # code (loaders.py's top-level-only reads, proposals.py's queue-file-
       # only writes), not by the mount. Nothing else in mcp/ writes.
       - ./data:/data
+      # v3.8 item 3 (D3.2) — read-only, so request_analysis can check whether
+      # a song's audio exists before queuing a run guaranteed to fail. mcp/
+      # never reads the file contents, only whether `<song>.mp3` is present.
+      - /home/darkangel/ai-dmx-light-render/data/songs:/data/songs:ro
     environment:
       MCP_ANALYSIS_ROOT: /data/analysis
+      MCP_SONGS_ROOT: /data/songs
     command: ["python", "/app/mcp/server.py"]
 
   ui:

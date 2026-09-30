@@ -20,7 +20,7 @@ obligations" and the MCP regression guide's F2-F4 checks):
   section-pair transition;
 - `field_sources` / `source` are passed through (summarised once per block from
   the file header, never dropped);
-- `arrangement_state.json` is one of the 9 required top-level files (v3.6 item
+- `arrangement_state.json` is one of the 10 required top-level files (v3.6 item
   9 dropped its old pre-v3.2 degraded path) — its block is always present; a
   leading block's `null` `margin_db` / `confidence` pass through untouched,
   never filled in;
@@ -29,7 +29,7 @@ obligations" and the MCP regression guide's F2-F4 checks):
 - no full beat list ever leaves `get_song_overview`; `get_detail`'s structural
   view carries an explicit, undecimated `beats` block instead — see below.
 
-No backwards compatibility: every one of the 9 required top-level files is
+No backwards compatibility: every one of the 10 required top-level files is
 assumed present once `resolve_song_dir` has validated the song, and this module
 reads their fields directly. A shape that does not match is a bug to surface
 loudly (`KeyError`/`TypeError`), never a silent `.get(..., default)`.
@@ -152,10 +152,12 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
     hints_doc = load_top_level_json(song_dir, "hints.json")
     genre_doc = load_top_level_json(song_dir, "genre.json")
     arrangement_doc = load_top_level_json(song_dir, "arrangement_state.json")
+    cadence_doc = load_top_level_json(song_dir, "vocal_cadence.json")
 
     beats = beats_doc.get("beats", [])
     sections = sections_doc.get("sections", [])
     events = timeline_doc.get("events", [])
+    cadence_by_section = _vocal_cadence_by_section(cadence_doc)
 
     # precompute total hints for brief-scope compacting
     total_hints = len(hints_doc.get("hints", []))
@@ -175,7 +177,7 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
         "song_name": info.get("song_name"),
         "identity": _identity_block(info, sections, genre_doc),
         "grid": _grid_block(info, beats_doc, beats),
-        "sections": _sections_block(sections_doc, sections),
+        "sections": _sections_block(sections_doc, sections, cadence_by_section),
         "gestures": {"phase_legend": PHASE_LEGEND, **_gestures_block(timeline_doc, events)},
     }
 
@@ -210,13 +212,19 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
 
         # transitions kept as-is
 
-    # arrangement_state.json is one of the 9 required top-level files (v3.6
+    # arrangement_state.json is one of the 10 required top-level files (v3.6
     # item 9) — the block is always present, no degraded/omitted path.
     overview["arrangement"] = _arrangement_block(arrangement_doc)
     if scope == "brief":
         # simplify arrangement in brief scope to only block_count to save tokens
         arr = overview["arrangement"]
         overview["arrangement"] = {"block_count": arr.get("block_count")}
+
+    overview["vocal_cadence"] = _vocal_cadence_block(cadence_doc)
+    if scope == "brief":
+        # brief scope keeps only the tier/reason, not the full field_sources.
+        vc = overview["vocal_cadence"]
+        overview["vocal_cadence"] = {"source": vc.get("source"), "call_count": vc.get("call_count")}
 
     overview["transitions"] = _transitions_block(timeline_doc, events)
 
@@ -303,8 +311,18 @@ def _extrapolate_bar_beat(anchor: dict, delta_beats: float) -> tuple[int, int]:
     return max(bar, 1), beat
 
 
+def _in_off_grid_span(time_s: float, off_grid_spans: list[dict] | None) -> bool:
+    if not off_grid_spans:
+        return False
+    return any(float(span["start"]) <= time_s <= float(span["end"]) for span in off_grid_spans)
+
+
 def _position(
-    time_s: float | None, beats: list[dict], sections: list[dict], bpm: float | None
+    time_s: float | None,
+    beats: list[dict],
+    sections: list[dict],
+    bpm: float | None,
+    off_grid_spans: list[dict] | None = None,
 ) -> dict[str, Any] | None:
     """`{"bar", "beat", "section_id", "resolved"}` for `time_s`. `None` when
     `time_s` is `None` — an absent time has no position, never a guessed one.
@@ -317,11 +335,20 @@ def _position(
     detected). Only when `time_s` falls before the first published beat does
     this extrapolate by tempo arithmetic off the nearest beat — always
     `resolved: false` there, since no beat was actually detected at that
-    instant."""
+    instant.
+
+    `resolved` is also forced `false` when `time_s` falls inside one of
+    `beats.json`'s `off_grid_spans` (v3.9 item 3) — the beat *time* there is
+    still essentia's honest measurement (D3.1: never rewritten), but the
+    tracker left the constant-tempo grid in that stretch, so the `bar`/`beat`
+    address built on top of it is not trustworthy either. Same honesty rule
+    as a null-confidence downbeat, applied to the other way a bar number can
+    be wrong."""
     if time_s is None:
         return None
     time_s = float(time_s)
     section_id = _section_id_for_time(time_s, sections)
+    off_grid = _in_off_grid_span(time_s, off_grid_spans)
 
     at = _nearest_beat_at_or_before(time_s, beats)
     if at is not None:
@@ -330,7 +357,7 @@ def _position(
             "bar": bar,
             "beat": int(at["beat"]),
             "section_id": section_id,
-            "resolved": _downbeat_confidence_for_bar(bar, beats) is not None,
+            "resolved": _downbeat_confidence_for_bar(bar, beats) is not None and not off_grid,
         }
 
     after = _nearest_beat_after(time_s, beats)
@@ -366,8 +393,13 @@ def _time_for_bar_beat(
     return float(anchor["time"]) + (target_index - anchor_index) * beat_period
 
 
-def _make_position_fn(beats: list[dict], sections: list[dict], bpm: float | None):
-    return lambda time_s: _position(time_s, beats, sections, bpm)
+def _make_position_fn(
+    beats: list[dict],
+    sections: list[dict],
+    bpm: float | None,
+    off_grid_spans: list[dict] | None = None,
+):
+    return lambda time_s: _position(time_s, beats, sections, bpm, off_grid_spans)
 
 
 def _attach_positions(
@@ -450,17 +482,50 @@ def _grid_block(info: dict, beats_doc: dict, beats: list[dict]) -> dict[str, Any
         "downbeat_count": total,
         "downbeats_null_confidence": null_conf,
         "downbeat_note": note,
-        "field_sources": beats_doc.get("field_sources"),
+        # `off_grid_spans` deliberately excluded (byte-budget, same posture as
+        # get_song_overview omitting `position` entirely) — get_detail is
+        # where a caller reads it, scoped to the span it actually needs.
+        "field_sources": {k: v for k, v in (beats_doc.get("field_sources") or {}).items() if k != "off_grid_spans"},
     }
 
 
-def _sections_block(sections_doc: dict, sections: list[dict]) -> dict[str, Any]:
+def _vocal_cadence_by_section(cadence_doc: dict) -> dict[str, dict[str, Any]]:
+    """v3.9 item 1 — compact per-section cadence fields keyed by
+    `section_id`, for folding onto `_sections_block` rows: `lead_in_bars`,
+    `rest_count`, `call_count` (calls whose time falls in the section's own
+    span), and the best cadence-repeat reference (`section_id`/`bar_offset`
+    only — never a full candidate list, that is `get_detail`'s job). A
+    no-lyrics song (D1.1, `source: null`) has an empty `sections` list here,
+    so this returns `{}` and every row simply omits the fields — the same
+    "omitted, never guessed" convention as `_section_clue_fields`."""
+    calls = cadence_doc.get("calls", [])
+    out: dict[str, dict[str, Any]] = {}
+    for row in cadence_doc.get("sections", []):
+        start_s, end_s = row["start_s"], row["end_s"]
+        call_count = sum(1 for c in calls if start_s <= c["time_s"] < end_s)
+        best = next((c for c in row.get("cadence_repeats", []) if c.get("best")), None)
+        out[row["section_id"]] = {
+            "lead_in_bars": row.get("lead_in_bars"),
+            "rest_count": len(row.get("rests", [])),
+            "call_count": call_count,
+            "cadence_repeat_best": (
+                {"section_id": best["section_id"], "bar_offset": best["bar_offset"]}
+                if best is not None else None
+            ),
+        }
+    return out
+
+
+def _sections_block(
+    sections_doc: dict, sections: list[dict], cadence_by_section: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     # `label` / `description` / `chord_progression` were dropped from
     # sections.json in v3.6 item 8 (display prose, moved to a debugger-only
     # inner-folder file this module must never read — see loaders.py's
     # exposure guard). function_status is a required field on every row; a
     # shape that lacks it is a bug to surface loudly, never a silent
     # "unknown" default.
+    cadence_by_section = cadence_by_section or {}
     rows = [
         {
             "section_id": s["section_id"],
@@ -472,6 +537,9 @@ def _sections_block(sections_doc: dict, sections: list[dict]) -> dict[str, Any]:
             "same_label_as": s["same_label_as"],
             "confidence": s["confidence"],
             **_section_clue_fields(s),
+            # v3.9 item 1 — omitted (not null-filled) for a section the
+            # cadence file has no row for, e.g. a no-lyrics song.
+            **cadence_by_section.get(s["section_id"], {}),
         }
         for s in sections
     ]
@@ -602,6 +670,20 @@ def _transitions_block(timeline_doc: dict, events: list[dict], pos_fn=None) -> d
     }
 
 
+def _vocal_cadence_block(cadence_doc: dict) -> dict[str, Any]:
+    """Whole-song summary of the required vocal_cadence.json — tier, reason
+    (when D1.1's no-lyrics path wrote the file), and total call count.
+    Per-section `lead_in_bars`/`rest_count`/`call_count`/
+    `cadence_repeat_best` are folded onto `sections.rows` instead
+    (`_vocal_cadence_by_section`), next to the boundary they describe."""
+    return {
+        "source": cadence_doc.get("source"),
+        "reason": cadence_doc.get("reason"),
+        "call_count": len(cadence_doc.get("calls", [])),
+        "field_sources": cadence_doc.get("field_sources"),
+    }
+
+
 def _hints_block(hints_doc: dict, pos_fn=None) -> dict[str, Any]:
     # v3.6 item 8 restructured hints.json to a flat `hints[]` (no `sections[]`
     # wrapper — that duplicated sections.json's join). Every row is human by
@@ -668,6 +750,7 @@ def build_detail(
     beats_doc = load_top_level_json(song_dir, "beats.json")
     beats_list = beats_doc.get("beats", [])
     bpm = info_doc.get("bpm")
+    cadence_doc = load_top_level_json(song_dir, "vocal_cadence.json")
 
     scope, span_start, span_end = _resolve_span(
         section_id=section_id,
@@ -680,7 +763,9 @@ def build_detail(
         beats=beats_list,
         bpm=bpm,
     )
-    pos_fn = _make_position_fn(beats_list, sections_doc.get("sections", []), bpm)
+    pos_fn = _make_position_fn(
+        beats_list, sections_doc.get("sections", []), bpm, beats_doc.get("off_grid_spans", [])
+    )
 
     target_interval = LOUDNESS_FLOOR_MS if interval_ms is None else int(interval_ms)
     if target_interval < LOUDNESS_FLOOR_MS:
@@ -712,7 +797,7 @@ def build_detail(
         "structural": _structural_view(
             span_start, span_end, sections_doc, timeline_doc, hints_doc,
             arrangement_doc, drum_doc, beats_doc, events, pos_fn,
-            loudness_doc=loudness_doc, stem_set=stem_set,
+            loudness_doc=loudness_doc, stem_set=stem_set, cadence_doc=cadence_doc,
         ),
     }
 
@@ -1179,6 +1264,7 @@ def _structural_view(
     *,
     loudness_doc: dict | None = None,
     stem_set: list[str] | None = None,
+    cadence_doc: dict | None = None,
 ) -> dict[str, Any]:
     section_rows = [
         {
@@ -1339,6 +1425,14 @@ def _structural_view(
         "beats": {
             "rows": beat_rows,
             "field_sources": beats_doc.get("field_sources"),
+            # v3.9 item 3 — spans overlapping this resolved window; times
+            # inside one carry `resolved: false` on their `position` (see
+            # `_position`). Empty means nothing in this window is off-grid.
+            "off_grid_spans": [
+                span
+                for span in beats_doc.get("off_grid_spans", [])
+                if float(span["end"]) >= span_start and float(span["start"]) <= span_end
+            ],
         },
         "aggregate_intensity": aggregate,
         # v3.7 item 7 — served on every call, including spans past DENSE_CAP_S.
@@ -1354,6 +1448,43 @@ def _structural_view(
             span_start, span_end, beats_doc.get("beats", []), drum_doc.get("events", []),
             loudness_doc, arrangement_doc, pos_fn,
         ),
+        # v3.9 item 1 — the required top-level vocal_cadence.json, scoped to
+        # the resolved span: section row(s) that overlap it, lines starting
+        # inside it, calls inside it. `source`/`reason` pass through
+        # unconditionally (D1.1's no-lyrics file has empty lists here, never
+        # an absent key).
+        "vocal_cadence": _vocal_cadence_structural(cadence_doc or {}, span_start, span_end),
+    }
+
+
+def _vocal_cadence_structural(doc: dict, span_start: float, span_end: float) -> dict[str, Any]:
+    """v3.9 item 1 — `vocal_cadence.json` scoped to the resolved span: the
+    section row(s) whose own span overlaps it (each already carries
+    `lead_in_bars`/`rests`/`held_notes`/`tokens_per_bar`/`cadence_repeats` at
+    full detail — the overview only folds a compact subset onto its section
+    rows), lines starting inside it, and calls inside it. Positions already
+    live on every row (`start_position`/`resolve_position`/etc.) as published
+    — no `pos_fn` re-derivation needed here, unlike sparse event lists that
+    only publish a bare `time`."""
+    sections = [
+        row for row in doc.get("sections", [])
+        if _overlaps(span_start, span_end, float(row["start_s"]), float(row["end_s"]))
+    ]
+    lines = [
+        line for line in doc.get("lines", [])
+        if span_start <= float(line["start_s"]) <= span_end
+    ]
+    calls = [
+        c for c in doc.get("calls", [])
+        if span_start <= float(c["time_s"]) <= span_end
+    ]
+    return {
+        "source": doc.get("source"),
+        "reason": doc.get("reason"),
+        "sections": sections,
+        "lines": lines,
+        "calls": calls,
+        "field_sources": doc.get("field_sources"),
     }
 
 

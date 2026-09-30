@@ -42,6 +42,7 @@ docker compose run --rm whisperx --all-songs                     # whole corpus
 docker compose run --rm test      # tests
 docker compose up                 # debugger only, at http://localhost:9090
 docker compose up ui              # same — debugger at http://localhost:9090
+./analysis-watcher [--stop]       # host process (not a container), backgrounds itself (log/pid in data/; asks to stop if already running) — polls data/analysis/*/artifacts/_run_request.json and runs ensure-stems (iff needed) + whisperx + ./analyze via `docker compose run` on the operator's behalf (v3.8 item 1, D1.1/D1.2 — no Docker-socket grant)
 ```
 
 Long batch run, detached, logged:

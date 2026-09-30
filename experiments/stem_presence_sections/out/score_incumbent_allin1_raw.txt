@@ -1,0 +1,7 @@
+song                             n_truth  n_predicted  matched  precision  recall  f1      label_matches  label_accuracy  out_of_vocab_predicted
+-------------------------------  -------  -----------  -------  ---------  ------  ------  -------------  --------------  ----------------------
+ayuni                            15       9            6        0.6667     0.4000  0.5000  0              0.0000          6
+Cinderella - Ella Lee            19       20           13       0.6500     0.6842  0.6667  5              0.3846          7
+_test_song                       7        4            3        0.7500     0.4286  0.5455  0              0.0000          0
+What a Feeling - Courtney Storm  11       12           8        0.6667     0.7273  0.6957  4              0.5000          2
+CORPUS                           52       45           30       0.6667     0.5769  0.6186  9              0.3000          15

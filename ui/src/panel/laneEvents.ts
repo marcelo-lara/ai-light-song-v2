@@ -30,6 +30,20 @@ export function activeBlockIndex(
 }
 
 /**
+ * Whether `time` falls inside [start, end) — half-open, and false for a
+ * degenerate window (end <= start). Shared by every "is the playhead inside
+ * this card's window" check (`isInPlayheadWindow` below, and the Pending
+ * Proposals panel's `proposalWindow`-based check in proposalsQueue.ts).
+ */
+export function isTimeInWindow(
+  window: { start: number; end: number },
+  time: number,
+): boolean {
+  if (window.end <= window.start) return false;
+  return time >= window.start && time < window.end;
+}
+
+/**
  * Whether `time` falls inside this block's window — half-open [start_s, end_s),
  * same convention as `activeBlockIndex`, and the same D5 rule that a
  * degenerate block (end_s <= start_s) is never active. Unlike
@@ -38,6 +52,5 @@ export function activeBlockIndex(
  * is what the card's left-border playhead marker is for.
  */
 export function isInPlayheadWindow(block: SparseBlock, time: number): boolean {
-  if (block.end_s <= block.start_s) return false;
-  return time >= block.start_s && time < block.end_s;
+  return isTimeInWindow({ start: block.start_s, end: block.end_s }, time);
 }

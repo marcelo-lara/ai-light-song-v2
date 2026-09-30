@@ -634,8 +634,10 @@
         "beat": "essentia",
         "bar": "essentia",
         "type": "essentia",
-        "downbeat_confidence": "allin1"
-      }
+        "downbeat_confidence": "allin1",
+        "off_grid_spans": "beat_grid_fit"
+      },
+      "off_grid_spans": []
     },
     "aggregate_intensity": {
       "peak": 0.95,
@@ -998,6 +1000,106 @@
       ],
       "min_gap_beats": 2.0,
       "note": "drums: gap between onsets of any instrument. Other stems: below 1.5x this song's own 5th-percentile normalized level for that stem — an unvalidated per-song heuristic, not a tuned gate (same posture as arrangement_state's own margin_db: reported, never gated)."
+    },
+    "vocal_cadence": {
+      "source": "human",
+      "reason": null,
+      "sections": [
+        {
+          "section_id": "section-002",
+          "start_s": 8.0,
+          "end_s": 16.0,
+          "lead_in_bars": -1,
+          "lead_in_line_id": 2,
+          "lead_in_resolve_time_s": 6.0,
+          "lead_in_resolve_position": {
+            "bar": 4,
+            "beat": 1,
+            "resolved": true
+          },
+          "lead_in_reason": null,
+          "rests": [],
+          "held_notes": [],
+          "tokens_per_bar": [
+            {
+              "bar": 4,
+              "tokens": 1
+            }
+          ],
+          "cadence_repeats": [
+            {
+              "section_id": "section-001",
+              "bar_offset": -1,
+              "match_fraction": 1.0,
+              "onsets_matched": 1,
+              "onsets_total": 1,
+              "median_error_ms": 0.0,
+              "best": true
+            }
+          ]
+        }
+      ],
+      "lines": [
+        {
+          "line_id": 3,
+          "start_s": 9.62,
+          "end_s": 9.62,
+          "start_position": {
+            "bar": 5,
+            "beat": 4,
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 5,
+            "beat": 4,
+            "resolved": true
+          },
+          "duration_beats": 0.0,
+          "token_count": 0,
+          "resolve_time_s": null,
+          "resolve_position": null,
+          "pickup": null
+        },
+        {
+          "line_id": 4,
+          "start_s": 14.0,
+          "end_s": 14.5,
+          "start_position": {
+            "bar": 8,
+            "beat": 1,
+            "resolved": true
+          },
+          "end_position": {
+            "bar": 8,
+            "beat": 2,
+            "resolved": false
+          },
+          "duration_beats": 1.0,
+          "token_count": 1,
+          "resolve_time_s": 14.0,
+          "resolve_position": {
+            "bar": 8,
+            "beat": 1,
+            "resolved": true
+          },
+          "pickup": false
+        }
+      ],
+      "calls": [
+        {
+          "time_s": 9.62,
+          "position": {
+            "bar": 5,
+            "beat": 4,
+            "resolved": true
+          }
+        }
+      ],
+      "field_sources": {
+        "lines": "human",
+        "sections": "human",
+        "calls": "human"
+      }
     }
   },
   "dense": null,

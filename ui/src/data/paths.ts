@@ -81,6 +81,16 @@ export const artifactPaths = {
   // posterior the published 8-bar argmax discards (e.g. Armin's `break`).
   allin1Posterior: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "allin1_posterior.json")),
+  // Written by experiments/stem_presence_sections (`run export`). Bass
+  // on/off + drums full/sparse/off state-machine sections, boundaries moved
+  // to the nearest physical stem onset.
+  stemPresenceSections: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "stem_presence_sections.json")),
+  // Top-level published `vocal_cadence.json` (v3.9 item 1, promoted out of
+  // experiments/vocal_cadence). Per-line bar timing + call events from the
+  // operator's lyric alignment. Timing only — no lyric text.
+  vocalCadence: (song: string) =>
+    encodePath(analysis(song, "vocal_cadence.json")),
   // Top-level published `arrangement_state.json` (phase-4 publish of the
   // `detect-arrangement-state` stage). Who-is-playing state-change blocks
   // derived from the published per-stem RMS series — no audio, no model.
@@ -161,6 +171,29 @@ export const artifactPaths = {
   pendingProposals: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "pending.json")),
   audio: (song: string) => encodePath(["data", "songs", `${song}.mp3`]),
+  // v3.8 item 2/3 — request/progress pair for the host-side
+  // ./analysis-watcher (item 1). `runRequest` is written by this UI's `PUT
+  // /api/run-request/<song>` and by mcp/runs.py's `request_analysis` — one
+  // mechanism, two callers. `runProgress` is read-only here (the watcher's
+  // own write); a 404 is the expected idle case, not an error. Neither file
+  // is `reference/human/` material or a delivery artifact.
+  runRequest: (song: string) =>
+    encodePath(analysis(song, "artifacts", "_run_request.json")),
+  runProgress: (song: string) =>
+    encodePath(analysis(song, "artifacts", "_run_progress.json")),
+  // Written by experiments/clap_events (`run export`). v3.9 item 2: claps
+  // detected from the drums stem by per-hit spectral shape.
+  clapEvents: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "clap_events.json")),
+  // Written by experiments/kick_check (`run export`). v3.9 item 2 (kick-check
+  // sibling): every omnizart `kick` kept/rejected by per-hit spectral shape.
+  kickCheck: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "kick_check.json")),
+  // Written by experiments/crash_check (`run export`). The "crash over-fires
+  // on bright hats/rides" bug: every omnizart `crash` kept/rejected by
+  // stream-period + decay-shape.
+  crashCheck: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "crash_check.json")),
 } as const;
 
 export const listingPaths = {

@@ -1,0 +1,97 @@
+[
+  {
+    "start": 1.1,
+    "end": 16.35,
+    "label": "Intro"
+  },
+  {
+    "start": 16.35,
+    "end": 31.6,
+    "label": "Verse"
+  },
+  {
+    "start": 31.6,
+    "end": 39.21,
+    "label": "Pre-Build"
+  },
+  {
+    "start": 39.21,
+    "end": 44.91,
+    "label": "Build-Up"
+  },
+  {
+    "start": 44.91,
+    "end": 46.82,
+    "label": "Fill"
+  },
+  {
+    "start": 46.82,
+    "end": 48.72,
+    "label": "Pre-Drop"
+  },
+  {
+    "start": 48.72,
+    "end": 62.04,
+    "label": "Drop"
+  },
+  {
+    "start": 62.04,
+    "end": 63.95,
+    "label": "Post-Chorus"
+  },
+  {
+    "start": 63.95,
+    "end": 79.22,
+    "label": "Verse"
+  },
+  {
+    "start": 79.22,
+    "end": 92.52,
+    "label": "Break"
+  },
+  {
+    "start": 92.52,
+    "end": 96.32,
+    "label": "Pre-Drop"
+  },
+  {
+    "start": 96.32,
+    "end": 98.23,
+    "label": "Fill"
+  },
+  {
+    "start": 98.23,
+    "end": 109.67,
+    "label": "Drop"
+  },
+  {
+    "start": 109.67,
+    "end": 111.59,
+    "label": "Post-Chorus"
+  },
+  {
+    "start": 111.59,
+    "end": 126.81,
+    "label": "Bridge"
+  },
+  {
+    "start": 126.81,
+    "end": 128.71,
+    "label": "Pre-Chorus"
+  },
+  {
+    "start": 128.71,
+    "end": 130.63,
+    "label": "Fill"
+  },
+  {
+    "start": 130.63,
+    "end": 143.99,
+    "label": "Chorus"
+  },
+  {
+    "start": 143.99,
+    "end": 146.395,
+    "label": "Outro"
+  }
+]

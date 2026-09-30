@@ -1,11 +1,12 @@
 # MCP definition — the `mcp/` song-comprehension server
 
-The **third module** of this repository, beside `src/analyzer/` and `ui/`. A
-read-only MCP server that helps a reasoning model understand a song's mood,
+The **third module** of this repository, beside `src/analyzer/` and `ui/`. An
+MCP server that helps a reasoning model understand a song's mood,
 sections and dynamics — **drop sequences especially** — while spending as few
 tokens as possible.
 
-> **Status: built and green — all three tools return real payloads.**
+> **Status: built and green — seven tools.** Three reads, two proposal
+> writes (v3.7) and two analysis-run tools (v3.8) — see "The tool surface".
 > The stdio/Compose plumbing, song discovery, the exposure guard, the
 > fixture-based regression harness (`smoke-test` / `full-regression`, no
 > deferrals), the whole-song overview and the on-demand `get_detail` dense read
@@ -49,6 +50,16 @@ capability here, the answer is that it goes in the other repo — see
 
 The server describes the *music*. A downstream host owns the lighting
 translation.
+
+**D3.1 exception (v3.8 item 3).** `request_analysis`/`get_analysis_progress`
+write/read `_run_request.json`/`_run_progress.json`, one level under a song's
+directory — a bounded, documented exception to the top-level-only exposure
+rule, same shape as `propose_hint`/`propose_section_field`'s queue file
+(v3.7 item 10). Both files are operational run state (who is running
+`./analyze` and how far it got), never analysis, and are never promoted to a
+top-level file. Kept in its own module, `mcp/runs.py`, path components split
+as separate string literals exactly as `proposals.py` does, so
+`test_exposure.py`'s literal-substring grep stays unchanged and green.
 
 Reciprocal boundary statement
 
@@ -99,7 +110,7 @@ originals keep these internal filesystem details and must never be exposed.
 | SDK | the official `mcp` package |
 | Transport | stdio |
 | State | none — reads `data/analysis/` on each call |
-| Writes | **read-only, with one exception (v3.7 item 10):** `propose_hint`/`propose_section_field` append to a song's own inner-folder proposals queue file — never a top-level file, never the operator's own hand-authored file. See "Correction proposals" below |
+| Writes | **read-only, with two bounded exceptions:** `propose_hint`/`propose_section_field` (v3.7) append to a song's own inner-folder proposals queue file — never a top-level file, never the operator's own hand-authored file (see "Correction proposals"); `request_analysis` (v3.8) writes only `artifacts/_run_request.json` (see `request_analysis` / `get_analysis_progress`) |
 | Container | its own Compose service; never the analyzer image |
 
 Song discovery is by directory name under `data/analysis/`, the same key the
@@ -139,9 +150,10 @@ framing. The container lives for the session and exits with it.
 ## The tool surface
 
 Two substantive read capabilities — overview and detail — plus the trivial
-discovery call they both need, and (v3.7 item 10) two write tools that only
-ever queue a correction for human review. Everything else is out of scope
-for v1.
+discovery call they both need, (v3.7 item 10) two write tools that only ever
+queue a correction for human review, and (v3.8 item 3) two tools that let the
+caller request and poll a run for a song it cannot see yet. Seven tools
+total. Everything else is out of scope for v1.
 
 ### `list_songs()`
 
@@ -188,7 +200,7 @@ Returns:
   impact rows must not return 31 unrelated events.
 - **Arrangement** — one row per `arrangement_state` block: who is `playing`,
   who `entered`, who `left`, and the block `confidence` (a leading block carries
-  `null`). `arrangement_state.json` is one of the 9 required top-level files
+  `null`). `arrangement_state.json` is one of the 10 required top-level files
   (v3.6 item 9 dropped the old pre-v3.2 degraded/omitted path) — the block is
   always present. Also carries `vocals_phrase` — a
   second, independent read on the vocals stem from the promoted `whisperx_vad`
@@ -209,6 +221,19 @@ Returns:
 - **Human hints** — the operator's own marks, verbatim, with their
   `lighting_hint` where one exists. These are ground truth and outrank every
   inferred field in the response.
+- **Vocal cadence** (v3.9 item 1) — a whole-song `vocal_cadence` block
+  (`source`, `reason`, total `call_count`), plus four compact fields folded
+  onto each `sections` row: `lead_in_bars` (the downbeat a section's first
+  line resolves on, in whole bars relative to the boundary — 0 = on the hit,
+  -1 = a bar early), `rest_count`, `call_count` (calls inside that section's
+  own span), and `cadence_repeat_best` (`{section_id, bar_offset}` of the
+  highest-scoring earlier section this one's vocal cadence repeats, or
+  `null`). Timing only — no lyric text anywhere. `source: null` (D1.1, no
+  lyrics tier) still returns the block with `reason` set and every row's
+  fields omitted — `vocal_cadence.json` is one of the 10 required top-level
+  files, no degraded/absent path. The full per-section detail (`rests[]`,
+  `held_notes[]`, `tokens_per_bar[]`, every `cadence_repeats[]` candidate) is
+  `get_detail`'s job, not this one — see below.
 
 ### `get_detail(song, section_id=None, gesture_id=None, start_ms=None, end_ms=None, bars=None, interval_ms=None, sources=None)`
 
@@ -225,9 +250,12 @@ two is an error, with no precedence rule:
 **The dense-series cap is 5 seconds — a maximum, not a default.** When the
 resolved span exceeds 5 s the call returns the structural view (sections,
 phases, transitions, hints, drum events, aggregate intensity, the overlapping
-`arrangement_state` blocks, `beats`, `stem_summary`, `drum_density` and
-`dropouts` — all structural block data, listed with no decimation and present
-even when the dense frames are withheld) and **withholds the dense frames**,
+`arrangement_state` blocks, `vocal_cadence` (v3.9 item 1 — the section
+row(s)/lines/calls overlapping the span, at full detail: `rests[]`,
+`held_notes[]`, `tokens_per_bar[]`, every `cadence_repeats[]` candidate), `beats`,
+`stem_summary`, `drum_density` and `dropouts` — all structural block data,
+listed with no decimation and present even when the dense frames are withheld)
+and **withholds the dense frames**,
 saying so explicitly and naming the cap. It never silently truncates, and it
 never silently downsamples to fit.
 
@@ -243,7 +271,9 @@ list": every beat inside the resolved span — `time`, `bar`, `beat`,
 `downbeat_confidence` — scoped, not the whole song's grid, and **not** subject
 to either the 5 s dense cap or the `interval_ms` decimation the dense loudness
 frames go through. A caller resolving a 6 s window still gets every beat in
-that window; it only loses the dense loudness/stem frames.
+that window; it only loses the dense loudness/stem frames. It also carries
+`off_grid_spans` (v3.9 item 3) — the published `beats.json` spans overlapping
+the resolved window, `[]` when none do.
 
 **`interval_ms` is the caller's choice.** The server decimates the published
 series per request; it is not a resolution baked in at publish time. The
@@ -265,7 +295,10 @@ edges, and every dense loudness frame — carries a sibling `position`:
 published beat grid; nothing in `src/` stores bars. `resolved: false` marks a
 bar derived by tempo arithmetic across a downbeat with `null`
 `downbeat_confidence`, rather than read from an actual detected downbeat —
-never present a guessed bar as detected. `get_song_overview` deliberately does
+never present a guessed bar as detected. **v3.9 item 3**: `resolved` is also
+`false` for a time falling inside one of `beats.json`'s `off_grid_spans` —
+same honesty rule, the other way a bar number can be wrong (the tracker left
+the constant-tempo grid there, not just the downbeat phase). `get_song_overview` deliberately does
 **not** carry `position` (its byte budget is load-bearing — see
 `docs/issues.md`'s prose-budget issue); a caller wanting bar/beat context for
 a specific row fetches it through `get_detail`.
@@ -301,6 +334,42 @@ or reads back its own queue — it only appends to it.
 inferred field *because a person set it*. A tool that wrote the operator's own
 file directly would make that provenance mean "whoever called the tool last,"
 which dissolves the one precedence rule the rest of the system trusts.
+
+### `request_analysis` / `get_analysis_progress` (v3.8 item 3)
+
+Let the caller start and poll a full `./analyze` run for a song it cannot see
+yet, reusing the same request/progress files the debugger's **Run analysis**
+button writes/reads (v3.8 item 1/2) — one mechanism, not two, regardless of
+which surface started the run. The host-side `./analysis-watcher` (item 1) is
+what actually runs the analyzer; this server only writes the request and
+reads the progress.
+
+- `request_analysis(song)` — fully analysed already (`resolve_song_dir`
+  succeeds) → refused, pointing at `get_song_overview`/`get_detail` instead of
+  starting a redundant run. A `queued`/`running` progress already in flight →
+  that progress is returned, no new request written. No real `<song>.mp3`
+  under the songs root (missing, **or present but 0 bytes** — the real mount
+  carries ~14 zero-byte `authoring-*.mp3` placeholders a run would be
+  guaranteed to fail against) → refused, listing every stem that is both
+  non-empty audio and not already fully analysed (excludes size-0
+  placeholders and songs that already have a complete analysis directory —
+  the only way the caller can discover a legal `song` argument for a song
+  `list_songs` doesn't know about yet). Otherwise writes the request and
+  returns immediately — `{"status": "requested", "song", "requested_at",
+  "poll_with": "get_analysis_progress", "poll_every_s": 60, "note": "..."}`
+  — never blocking on the run.
+- `get_analysis_progress(song)` — once the watcher has written a progress
+  file, its fields are returned verbatim (`status`: `queued`/`running`/
+  `done`/`failed`, `stage`, timestamps, `error`). Before that: a fresh
+  request reports `queued`; a request older than 120 s with still no
+  progress file reports `not_started` (no-silent-fallbacks — nothing is
+  watching this, not an indefinite wait). Neither file present → refused,
+  pointing at `request_analysis`.
+
+Mount (D3.2): the `mcp` service gets the songs directory read-only
+(`MCP_SONGS_ROOT`, default `/data/songs`) so `request_analysis` can check for
+audio before queuing a run guaranteed to fail — it never reads the audio
+file's contents, only its size (`> 0`) and whether it exists.
 
 ## Honesty obligations
 

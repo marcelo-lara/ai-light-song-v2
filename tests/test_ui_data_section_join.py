@@ -248,8 +248,9 @@ class SectionJoinTests(unittest.TestCase):
     def test_human_segments_replace_allin1_boundaries_when_present(self) -> None:
         # v3.5 item 10 — reference/human/segments.json present: boundaries,
         # label, description and confidence come from it; function_confidence
-        # / function_status / same_label_as are inherited from whichever
-        # allin1 section overlaps most.
+        # / function_status are inherited from whichever allin1 section
+        # overlaps most. same_label_as (v3.9 item 2) is derived from the
+        # published human labels themselves — see the dedicated test below.
         sections = [
             {"section_id": "section-001", "start": 0.0, "end": 15.0, "function": "intro",
              "function_confidence": 0.9, "function_status": "known", "same_label_as": None,
@@ -281,8 +282,8 @@ class SectionJoinTests(unittest.TestCase):
         # inherited from allin1.
         self.assertEqual(rows[0]["confidence"], 0.8)
         self.assertEqual(rows[1]["confidence"], 0.8)
-        # function_confidence/function_status/same_label_as are inherited by
-        # best time-overlap with the allin1 artifact, never invented.
+        # function_confidence/function_status are inherited by best
+        # time-overlap with the allin1 artifact, never invented.
         self.assertEqual(rows[0]["function_confidence"], 0.9)
         self.assertEqual(rows[1]["function_confidence"], 0.7)
         self.assertEqual(payload["field_sources"]["start"], "human")
@@ -352,6 +353,48 @@ class SectionJoinTests(unittest.TestCase):
         self.assertEqual(rows[0]["function"], "Intro")
         self.assertEqual(rows[0]["confidence"], 0.8)
         self.assertEqual(payload["field_sources"]["start"], "human")
+
+    def test_same_label_as_derived_from_published_labels_not_allin1(self) -> None:
+        # v3.9 item 2 — Rapture-shaped fixture: allin1's own section list is
+        # unrelated to the human boundaries (deliberately, to prove
+        # same_label_as is no longer inherited by overlap). Only the second
+        # Drop and second Pre-Drop should get a same_label_as; everything
+        # else (including the two singleton labels) stays null.
+        seg_sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 215.307, "function": "verse",
+             "function_confidence": 0.5, "function_status": "known", "same_label_as": "section-999",
+             "confidence": 0.5},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, seg_sections)
+            human_path = paths.reference("human", "segments.json")
+            human_path.parent.mkdir(parents=True, exist_ok=True)
+            human_path.write_text(json.dumps([
+                {"start": 0.0, "end": 46.15, "label": "Intro"},
+                {"start": 46.15, "end": 55.39, "label": "Pre-Drop"},
+                {"start": 55.39, "end": 96.0, "label": "Drop"},
+                {"start": 96.0, "end": 125.54, "label": "Breakdown"},
+                {"start": 125.55, "end": 155.08, "label": "Chorus"},
+                {"start": 155.07, "end": 169.84, "label": "Pre-Drop"},
+                {"start": 169.84, "end": 210.46, "label": "Drop"},
+                {"start": 210.46, "end": 215.307, "label": "Outro"},
+            ]))
+            build_ui_data(paths)
+            payload = json.loads(paths.sections_output_path.read_text())
+            rows = payload["sections"]
+
+        by_id = {r["section_id"]: r for r in rows}
+        self.assertIsNone(by_id["section-001"]["same_label_as"])  # Intro
+        self.assertIsNone(by_id["section-002"]["same_label_as"])  # Pre-Drop (1st)
+        self.assertIsNone(by_id["section-003"]["same_label_as"])  # Drop (1st)
+        self.assertIsNone(by_id["section-004"]["same_label_as"])  # Breakdown
+        self.assertIsNone(by_id["section-005"]["same_label_as"])  # Chorus
+        self.assertEqual(by_id["section-006"]["same_label_as"], "section-002")  # Pre-Drop (2nd)
+        self.assertEqual(by_id["section-007"]["same_label_as"], "section-003")  # Drop (2nd)
+        self.assertIsNone(by_id["section-008"]["same_label_as"])  # Outro
+        # Never allin1's own same_label_as value.
+        self.assertNotEqual(by_id["section-001"]["same_label_as"], "section-999")
+        self.assertEqual(payload["field_sources"]["same_label_as"], "human")
 
     def test_sections_field_sources_default_to_allin1_without_human_file(self) -> None:
         # v3.5 item 10 — no reference/human/segments.json for this song: the

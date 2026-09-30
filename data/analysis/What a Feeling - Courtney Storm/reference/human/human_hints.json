@@ -20,10 +20,20 @@
       "type": "vocal"
     },
     {
+      "id": "human-hint-14",
+      "title": "Cut into breakdown",
+      "start_time": 80.34,
+      "end_time": 82.45,
+      "summary": "Drums, bass and vocal all cut at once. The hard entry into the chatter breakdown.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-76ee3f01b78f",
+      "type": "review"
+    },
+    {
       "id": "hint-004",
       "title": "Chatter",
-      "start_time": 82.45,
-      "end_time": 110.1,
+      "start_time": 82.67,
+      "end_time": 110.57,
       "summary": "three different voices chatting (peaceful, contemplating)",
       "lighting_hint": "",
       "type": "vocal"
@@ -31,24 +41,24 @@
     {
       "id": "hint-005",
       "title": "Lighthouse like",
-      "start_time": 96.06,
-      "end_time": 98.01,
+      "start_time": 97.04,
+      "end_time": 98.99,
       "summary": "Two synth pulses (softens the tempo)",
       "lighting_hint": ""
     },
     {
       "id": "hint-006",
       "title": "Lighthouse like",
-      "start_time": 99.94,
-      "end_time": 101.84,
+      "start_time": 100.624,
+      "end_time": 102.524,
       "summary": "Two synth pulses (softens the tempo)",
       "lighting_hint": ""
     },
     {
       "id": "hint-007",
       "title": "Lighthouse like",
-      "start_time": 103.812,
-      "end_time": 105.74,
+      "start_time": 105.135,
+      "end_time": 107.063,
       "summary": "Two synth pulses (softens the tempo)",
       "lighting_hint": ""
     },
@@ -56,7 +66,7 @@
       "id": "hint-008",
       "title": "Vocal phrase",
       "start_time": 110.57,
-      "end_time": 113.22,
+      "end_time": 119.4,
       "summary": "Female vocal long notes",
       "lighting_hint": "",
       "type": "vocal"
@@ -65,7 +75,7 @@
       "id": "hint-003",
       "title": "Build like",
       "start_time": 119.4,
-      "end_time": 127.27,
+      "end_time": 126.78,
       "summary": "Snares duplicating time (rising) to pace up the chorus energy, similar to a drop (not a drop, but main chorus)",
       "lighting_hint": ""
     },
@@ -73,17 +83,26 @@
       "id": "hint-009",
       "title": "Drums cut",
       "start_time": 124.62,
-      "end_time": 127.195,
+      "end_time": 126.585,
       "summary": "All drums stop dead for ~5 beats after the snare run — the highest-tension moment of the passage. Only a single pickup snare at 127.195 breaks it, 75 ms before the chorus downbeat.",
       "lighting_hint": ""
     },
     {
       "id": "hint-010",
-      "title": "Late impact",
-      "start_time": 127.27,
-      "end_time": 131.1,
-      "summary": "The chorus downbeat is not the payoff: it opens as a build (hats ramp eighth to sixteenth, snares nearly absent). The real impact lands at 131.1, about two bars late. Do not peak the show at 127.27.",
+      "title": "Drop",
+      "start_time": 126.999765625,
+      "end_time": 128.91479697452226,
+      "summary": "The chorus at bar 64 is a drop (operator-confirmed): the hit lands at 127.0 with the bass entry, just ahead of the bar-64 downbeat at 127.27 and its harmonic stab, straight out of the drum cut. The vocal entry re-hits at 131.086. Peak on 127.0; 131.1 is the second hit, not the payoff.",
       "lighting_hint": ""
+    },
+    {
+      "id": "hint-015",
+      "title": "Grid runs a beat early",
+      "start_time": 127.27,
+      "end_time": 142.18,
+      "summary": "The beat grid gives bar 64 only three beats (127.27 / 127.76 / 128.24, bar 65 at 128.73), so its bar numbers run one beat early through this chorus. True downbeats, confirmed by beat accents: 127.27, 129.21, 131.15, 133.09, 135.04, 136.98, 138.92, 140.87. The chorus 'kick' drum events sit half a beat off the grid (median 230-240 ms, in every chorus): they are the off-beat bass pump, not the kick.",
+      "lighting_hint": "",
+      "type": "review"
     },
     {
       "id": "hint-011",
@@ -100,6 +119,16 @@
       "end_time": 158.45,
       "summary": "Same trap as 127.27, half a second wide: the section boundary is not the payoff. gesture-045's tension resolves at 158.45, the peak hit (kick+snare+crash together) is at 158.841, and a sustained crash wash follows. Drums enter at 157.25 for the rest of the song and vocals drop out entirely.",
       "lighting_hint": ""
+    },
+    {
+      "id": "human-hint-13",
+      "title": "Outro, drums and bass out",
+      "start_time": 188.73,
+      "end_time": 204.73,
+      "summary": "Drums and bass stop. The pads fade out.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-e6d887a01710",
+      "type": "review"
     }
   ]
 }

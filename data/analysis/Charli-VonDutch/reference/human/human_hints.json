@@ -1,0 +1,97 @@
+{
+  "song_name": "Charli-VonDutch",
+  "human_hints": [
+    {
+      "id": "hint-001",
+      "title": "Intro",
+      "start_time": 0,
+      "end_time": 15.107,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-004",
+      "title": "Pre-build",
+      "start_time": 15.107,
+      "end_time": 22.38,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-003",
+      "title": "Build-Up",
+      "start_time": 22.38,
+      "end_time": 28.228,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "hint-002",
+      "title": "Pre-drop phrase",
+      "start_time": 28.228,
+      "end_time": 29.85,
+      "summary": "",
+      "lighting_hint": ""
+    },
+    {
+      "id": "human-hint-1",
+      "title": "Full groove with bass",
+      "start_time": 29.78,
+      "end_time": 74.09,
+      "summary": "(Drop like) Bass and drums at full level under the vocal.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-1af31ef31f15",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-2",
+      "title": "Breakdown: vocal over pads",
+      "start_time": 74.09,
+      "end_time": 88.4,
+      "summary": "Bass and drums drop out. The vocal carries over pads.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-6d703bacd843",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-3",
+      "title": "Drum build",
+      "start_time": 88.4,
+      "end_time": 96.26,
+      "summary": "The drums come back and grow into the final chorus.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-d09e89c06678",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-4",
+      "title": "Final chorus groove",
+      "start_time": 96.26,
+      "end_time": 125.34,
+      "summary": "The full groove returns with bass, drums and pads at full level.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-c4b5ef292c38",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-5",
+      "title": "Final peak, full vocal",
+      "start_time": 125.34,
+      "end_time": 155.34,
+      "summary": "Every stem at full level. The vocal is at its loudest.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-f1d3a6cbcecd",
+      "type": "review"
+    },
+    {
+      "id": "human-hint-6",
+      "title": "Ending",
+      "start_time": 155.34,
+      "end_time": 161.54,
+      "summary": "Bass and drums stop. The pad and vocal tail remain.",
+      "lighting_hint": "",
+      "captured_from": "MCP proposal prop-bbe952c51b54",
+      "type": "review"
+    }
+  ]
+}
