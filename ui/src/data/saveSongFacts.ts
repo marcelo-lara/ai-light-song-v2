@@ -1,8 +1,7 @@
 // Client for `PUT /api/song-facts/<song>` — mirrors saveHumanHints.ts.
 //
-// Story 8.10: only the whole-song review-queue answers (`form_family`,
-// `form_family_vs_genre`) are dispositioned into `reference/human/song_facts.json`,
-// and only on an explicit human Save. Each answer is stamped
+// Story 8.10: only the whole-song review-queue answers (`form_family`) is dispositioned into
+// `reference/human/song_facts.json`, and only on an explicit human Save. Each answer is stamped
 // `provenance: "human-confirmed"` here; the dev-server handler re-stamps it and
 // merges onto any facts already on disk. Per-section / drop questions are NOT
 // written by this path — they are answered by editing `human_hints.json`.
@@ -11,10 +10,7 @@ import { artifactPaths } from "./paths";
 import type { SongFactsFile } from "./types";
 
 /** The review-queue fields that disposition into song_facts.json. */
-export const WHOLE_SONG_FACT_FIELDS = [
-  "form_family",
-  "form_family_vs_genre",
-] as const;
+export const WHOLE_SONG_FACT_FIELDS = ["form_family"] as const;
 
 export type WholeSongFactField = (typeof WHOLE_SONG_FACT_FIELDS)[number];
 

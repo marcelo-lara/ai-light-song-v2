@@ -66,21 +66,12 @@ export interface SectionRow {
    * artifacts/section_segmentation/sections.json. */
   function: string | null;
   function_confidence: number | null;
-  /** "known" / "unknown" / "contested" — treat `function` as unverified when
-   * "unknown"; "contested" (v3.4) means allin1's label is kept but its energy
-   * contradicts a following section (see `contested_by`). */
+  /** "known" / "unknown" — treat `function` as unverified when "unknown". */
   function_status: string;
-  /** set only on a `function_status: "contested"` row — the signal that
-   * contradicts the label. `"energy"` today. Absent otherwise. */
-  contested_by?: string | null;
   /** section_id of the first section allin1 gave the same label; label
    * repetition, not acoustic identity. */
   same_label_as: string | null;
   confidence: number | null;
-  /** Whole-song HPCP key estimate (e.g. "C# major"), same value on every
-   * row, or `null` when essentia's key confidence is too low to state one
-   * honestly (plan v3.0 item 13). */
-  key: string | null;
 }
 
 export interface SectionsFile {
@@ -103,10 +94,8 @@ export interface SectionsTopLevelRow {
   function: string | null;
   function_confidence: number | null;
   function_status: string;
-  contested_by?: string | null;
   same_label_as: string | null;
   confidence: number | null;
-  key: string | null;
 }
 
 export type SectionsTopLevelRows = SectionsTopLevelRow[];
@@ -223,22 +212,6 @@ export type RmsLoudness = LoudnessSeries;
 export type LoudnessEnvelope = LoudnessSeries;
 
 // ---------------------------------------------------------------------------
-// artifacts/layer_a_harmonic.json
-// ---------------------------------------------------------------------------
-
-export interface HarmonicGlobalKey {
-  label: string | null;
-  confidence: number | null;
-  source: string | null;
-}
-
-export interface HarmonicLayer {
-  schema_version: string;
-  song_name: string;
-  global_key: HarmonicGlobalKey | null;
-}
-
-// ---------------------------------------------------------------------------
 // artifacts/symbolic_transcription/drum_events.json
 // ---------------------------------------------------------------------------
 
@@ -253,31 +226,6 @@ export interface DrumEventsFile {
   schema_version: string;
   song_name: string;
   events: DrumEvent[];
-}
-
-// ---------------------------------------------------------------------------
-// artifacts/layer_c_energy.json  (beat-aligned energy + accent candidates)
-// ---------------------------------------------------------------------------
-
-export interface EnergyBeat {
-  time: number;
-  energy_score: number;
-  bar: number | null;
-  beat: number | null;
-}
-
-export interface EnergyAccent {
-  id: string;
-  time: number;
-  intensity: number;
-  kind: string;
-}
-
-export interface EnergyLayer {
-  schema_version: string;
-  song_name: string;
-  beat_energy: EnergyBeat[];
-  accent_candidates: EnergyAccent[];
 }
 
 // ---------------------------------------------------------------------------
@@ -318,15 +266,6 @@ export interface HumanHintsFile {
 // ---------------------------------------------------------------------------
 
 /**
- * v3.6 item 4 — per-source dominant subdivision relative to the beat grid.
- * Keys ∈ `drums|bass|harmonic|vocals`; an unmarked source is omitted
- * entirely, never `null` or `""`.
- */
-export type SegmentRhythm = Partial<
-  Record<"drums" | "bass" | "harmonic" | "vocals", string>
->;
-
-/**
  * A bare array on disk — no wrapper object, no id/type/summary fields. Much
  * simpler than `HumanHint`: this is the operator's own section segmentation.
  * `label` is a fixed value, optional (honest-unknown when unset), one of
@@ -334,45 +273,24 @@ export type SegmentRhythm = Partial<
  * vocabulary is docs/segments-vocabulary.md. Free text is never accepted:
  * a segment's label is either a vocabulary name or unset, never anything
  * else. `description` is optional free text, never validated against the
- * vocabulary. `energy`/`tension` are optional 1-5 integers (honest-unknown
- * when unset, never a guessed default). `rhythm` (v3.6 item 4) is optional,
- * one SegmentRhythm entry per source.
+ * vocabulary. `preserved` holds every other key the row carries on disk,
+ * verbatim, so a Save writes it back untouched; nothing reads it.
  */
 export interface HumanSegment {
   start: number;
   end: number;
   label?: string | null;
   description?: string | null;
-  energy?: number | null;
-  tension?: number | null;
-  rhythm?: SegmentRhythm | null;
+  preserved?: Record<string, unknown>;
 }
 
 export type HumanSegmentsFile = HumanSegment[];
 
 // ---------------------------------------------------------------------------
-// reference/human/segments.seed.json  (v3.6 item 4 — unreviewed rule-based
-// drafts, experiments/segment_seeds. Read-only to the UI; same spans as
-// segments.json. `label` is carried for readability only — never treated as
-// a boundary/label source, per the seed method's own docstring.)
-// ---------------------------------------------------------------------------
-
-export interface HumanSegmentSeed {
-  start: number;
-  end: number;
-  label?: string | null;
-  energy?: number | null;
-  tension?: number | null;
-  rhythm?: SegmentRhythm | null;
-}
-
-export type HumanSegmentsSeedFile = HumanSegmentSeed[];
-
-// ---------------------------------------------------------------------------
 // reference/moises/segments.json  (Moises.ai reference segmentation)
 // ---------------------------------------------------------------------------
 // Same bare-array shape as reference/human/segments.json ({start, end, label}
-// only — no description/energy/tension, no confidence field of its own: see
+// only — no description, no confidence field of its own: see
 // docs/reference/analysis.segments.md). Reuses HumanSegment's parser.
 
 export type MoisesSegmentsFile = HumanSegment[];
@@ -394,34 +312,6 @@ export interface SongFactsFile {
   schema_version: string;
   song_name: string;
   facts: Record<string, SongFact>;
-}
-
-// ---------------------------------------------------------------------------
-// reference/human/block_energy.json  (v3.4 item 4 — operator block ratings)
-// ---------------------------------------------------------------------------
-// The operator's two-axis rating of each `human_hints.json` block: `energy` and
-// `tension`, each an integer 1-5, joined to the hint by `hint_id` at read time.
-// A block is unrated when it is absent from `ratings`. The two axes are
-// deliberately independent (a "close to silence" block is lowest-energy,
-// highest-tension). SCOPE GUARD: nothing in `src/` or `mcp/` reads this file —
-// it is `reference/human/` material like the hints, with one producer (the
-// operator) and no `field_sources` / `source` attribution machinery.
-//
-// D4.2 (resolved, implementation): an entry may carry one axis or both. The
-// schema's "energy: 1-5, tension: 1-5" is kept as "each axis, when present, is
-// an integer 1-5"; a missing axis is omitted rather than defaulted (no silent
-// fallbacks). A block counts as fully rated only when both axes are set.
-
-export interface BlockEnergyRating {
-  hint_id: string;
-  energy?: number;
-  tension?: number;
-}
-
-export interface BlockEnergyFile {
-  schema_version: string;
-  song_name: string;
-  ratings: BlockEnergyRating[];
 }
 
 // ---------------------------------------------------------------------------
@@ -559,7 +449,7 @@ export interface ReviewQueue {
 
 // ---------------------------------------------------------------------------
 // reference/proposals/pending.json  (v3.7 item 10/11 — MCP correction
-// proposals queue. Written only by `propose_hint`/`propose_section_field`
+// proposals queue. Written only by `propose_hint`
 // (mcp/proposals.py) and by the debugger's approve/reject endpoints
 // (ui/vite.config.ts); read here for the Pending proposals panel.)
 // ---------------------------------------------------------------------------
@@ -573,13 +463,6 @@ export interface ProposedHint {
   summary: string;
 }
 
-export interface ProposedSectionField {
-  section_id: string;
-  /** "energy" | "tension" | "rhythm.<drums|bass|harmonic|vocals>" */
-  field: string;
-  value: number | string;
-}
-
 interface PendingProposalBase {
   id: string;
   status: ProposalStatus;
@@ -588,20 +471,15 @@ interface PendingProposalBase {
   evidence: string;
 }
 
-export type PendingProposal = PendingProposalBase &
-  (
-    | {
-        type: "hint";
-        hint: ProposedHint;
-        /** Operator-corrected start/end, set only when the times approved
-         *  differ from `hint`'s proposed ones (ui/vite.config.ts's
-         *  `normalizeProposalDecisionPayload`/PUT handler). `hint` itself is
-         *  never mutated. */
-        approved_hint?: { start: number; end: number };
-        section_field?: undefined;
-      }
-    | { type: "section_field"; section_field: ProposedSectionField; hint?: undefined }
-  );
+export type PendingProposal = PendingProposalBase & {
+  type: "hint";
+  hint: ProposedHint;
+  /** Operator-corrected start/end, set only when the times approved
+   *  differ from `hint`'s proposed ones (ui/vite.config.ts's
+   *  `normalizeProposalDecisionPayload`/PUT handler). `hint` itself is
+   *  never mutated. */
+  approved_hint?: { start: number; end: number };
+};
 
 export interface PendingProposalsFile {
   schema_version: string;

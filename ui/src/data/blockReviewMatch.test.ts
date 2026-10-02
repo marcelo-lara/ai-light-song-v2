@@ -21,8 +21,10 @@ const review = (lane_id: string, start: number, verdict: BlockReview["verdict"] 
 describe("REVIEWABLE_LANE_IDS", () => {
   it("includes every experiment lane plus gestures, and excludes reference/human lanes", () => {
     expect(REVIEWABLE_LANE_IDS.has("gestures")).toBe(true);
-    expect(REVIEWABLE_LANE_IDS.has("segmentSeeds")).toBe(true);
-    expect(REVIEWABLE_LANE_IDS.has("tensionShape")).toBe(true);
+    expect(REVIEWABLE_LANE_IDS.has("character")).toBe(true);
+    for (const gone of ["segmentSeeds", "tensionShape", "energyLevel", "rhythmDrumIoi"]) {
+      expect(REVIEWABLE_LANE_IDS.has(gone)).toBe(false);
+    }
     expect(REVIEWABLE_LANE_IDS.has("moisesSections")).toBe(false);
     expect(REVIEWABLE_LANE_IDS.has("moisesLyrics")).toBe(false);
     expect(REVIEWABLE_LANE_IDS.has("humanHints")).toBe(false);

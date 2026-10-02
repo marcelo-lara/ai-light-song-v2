@@ -63,9 +63,7 @@ def test_overview_budget_mcpfull_under_7kb() -> None:
     size = len(_serialize(_overview("McpFull - Fixture")).encode("utf-8"))
     # D25: the committed budget assert is fixture-based; 6 KB is the plan's
     # stated ceiling for Armin - Revolution (7 sections, 58 event rows).
-    # v3.7 item 2 moved the ceiling 6144 -> 6450 for the new,
-    # omitted-when-null `impact_alignment` field. v3.9 item 1 moves it again,
-    # 6450 -> 6900: every required top-level file now includes
+    # v3.9 item 1 moved the ceiling to 6900: every required top-level file now includes
     # `vocal_cadence.json` — a compact whole-song block (`source`/`reason`/
     # `call_count`/`field_sources`) plus 4 small per-section fields
     # (`lead_in_bars`/`rest_count`/`call_count`/`cadence_repeat_best`) folded
@@ -131,39 +129,21 @@ def test_overview_human_hint_verbatim_with_lighting() -> None:
 
 
 _FIELD_SOURCE_VOCAB = {
-    "essentia", "allin1", "harmonic", "omnizart", "demucs", "gestures",
-    "genre", "human", "inference", "unknown", "arrangement_state",
-    "energy_level", "tension_shape", "rhythm_drum_ioi",
-    "rhythm_stem_autocorr", "rhythm_vocal_onsets", "seed_unreviewed",
+    "essentia", "allin1", "omnizart", "demucs", "gestures",
+    "human", "inference", "unknown", "arrangement_state",
 }
 
 
-def test_overview_review_warning_present_when_a_row_is_seed_unreviewed() -> None:
-    # v3.6 item 10 — McpFull - Fixture's section-002 carries an
-    # energy_source: "seed_unreviewed" override (see its sections.json).
-    ov = _overview("McpFull - Fixture")
-    assert "review_warning" in ov
-    assert ov["review_warning"]["section_ids"] == ["section-002"]
-    assert "seed_unreviewed" in ov["review_warning"]["text"]
-    assert "not yet reviewed by the operator" in ov["review_warning"]["text"]
-
-
-def test_overview_review_warning_absent_when_nothing_is_seed_unreviewed() -> None:
-    # McpDegenerate - Fixture's sections.json carries no energy/tension/rhythm
-    # fields at all, so certainly no seed_unreviewed source.
-    ov = _overview("McpDegenerate - Fixture")
-    assert "review_warning" not in ov
-
-
-def test_overview_section_rows_carry_clue_fields_only_when_present() -> None:
-    rows = {r["section_id"]: r for r in _overview("McpFull - Fixture")["sections"]["rows"]}
-    assert rows["section-001"]["energy"] == 3
-    assert rows["section-001"]["rhythm"]["drums"]["subdivision"] == "quarter"
-    assert "energy_source" not in rows["section-001"]  # matches file default
-    assert rows["section-002"]["energy_source"] == "seed_unreviewed"
-    assert rows["section-002"]["energy_confidence"] is None
-    assert "energy" not in rows["section-003"]  # no clue at all -> absent, never guessed
-    assert "rhythm" not in rows["section-003"]
+def test_overview_carries_no_cut_stage_fields() -> None:
+    # v3.10 item 8 — genre, key, review_warning and the section clue fields
+    # are gone from the projection.
+    for song in ("McpFull - Fixture", "McpDegenerate - Fixture"):
+        ov = _overview(song)
+        assert "genre" not in ov["identity"] and "key" not in ov["identity"]
+        assert "review_warning" not in ov
+        for row in ov["sections"]["rows"]:
+            for gone in ("key", "energy", "tension", "rhythm", "impact_alignment"):
+                assert gone not in row
 
 
 def test_overview_full_carries_arrangement_block() -> None:
@@ -179,7 +159,7 @@ def test_overview_full_carries_arrangement_block() -> None:
 
 
 def test_overview_arrangement_present_on_every_song() -> None:
-    # arrangement_state.json is one of the 10 required top-level files (v3.6
+    # arrangement_state.json is one of the 9 required top-level files (v3.6
     # item 9 dropped the pre-v3.2 degraded/absent path) — the block is always
     # present, on the degenerate fixture too.
     ov = _overview("McpDegenerate - Fixture")
@@ -216,3 +196,21 @@ def test_overview_brief_scope_is_compact_and_omits_prose() -> None:
     for r in ov["gestures"]["rows"]:
         assert set(r.keys()) <= {"gesture_id", "impact_time"}
 
+
+
+def test_overview_projects_the_sections_tier_note(tmp_path) -> None:
+    # v3.10 item 1 (D1.1) — an empty reference/human/segments.json is skipped by
+    # the analyzer; sections.json carries `sections_tier_note`. The overview projects the note as
+    # sections.tier_note, only when present.
+    import json
+    import shutil
+
+    shutil.copytree(FIXTURE_ROOT / "McpFull - Fixture", tmp_path / "McpFull - Fixture")
+    sections_path = tmp_path / "McpFull - Fixture" / "sections.json"
+    doc = json.loads(sections_path.read_text())
+    note = "reference/human/segments.json is empty \u2014 not a review"
+    doc["sections_tier_note"] = note
+    sections_path.write_text(json.dumps(doc))
+    ov = serializers.build_song_overview("McpFull - Fixture", root=tmp_path)
+    assert ov["sections"]["tier_note"] == note
+    assert "tier_note" not in _overview("McpFull - Fixture")["sections"]

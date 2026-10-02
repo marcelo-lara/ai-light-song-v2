@@ -45,7 +45,7 @@ describe("BlockInspector — Create human hint", () => {
 });
 
 describe("BlockInspector — Create human section", () => {
-  it.each(["allin1Sections", "segmentSeeds", "moisesSections"])(
+  it.each(["allin1Sections", "moisesSections"])(
     "%s blocks get 'Create human section' routed to onCreateSection",
     (laneId) => {
       const onCreateHint = vi.fn();

@@ -34,8 +34,8 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //   characterVocalLead/moisesLyricsHigh 150)
   llmPendingProposals: [245, 70, 58], // indigo — a proposal still awaiting an
   //   operator decision (mcp/propose_hint), auditioning against humanHints'
-  //   amber (35) directly above it; distinct from segmentSeeds' indigo-ish
-  //   246 and moisesLyricsValidated's 265 (neither co-occurs with this lane)
+  //   amber (35) directly above it; distinct from moisesLyricsValidated's
+  //   265 (it does not co-occur with this lane)
   humanSections: [55, 85, 46], // golden yellow — the operator's own hand-authored
   //   segmentation, deliberately near humanHints' amber (35, same "hand-authored"
   //   family) but distinct from it and from the production Sections lane's
@@ -80,23 +80,8 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //                                 (340)
   arrangementStateSparse: [95, 25, 34], // same hue, dimmer + desaturated: a
   //                                       block where one stem or fewer is playing
-  rhythmDrumIoi: [290, 55, 46], // violet — v3.6 item 5's three rhythm.* candidate
-  //   producers get their own hue each; distinct from character's 275
-  rhythmStemAutocorr: [309, 55, 48], // magenta-violet — distinct from
-  //   rhythmDrumIoi's 290 and moisesLyricsValidated's 265
-  rhythmVocalOnsets: [329, 55, 48], // pink-magenta — distinct from
-  //   rhythmStemAutocorr's 309 and vocalPhrasesSustained's 280
-  energyLevel: [350, 60, 46], // red-pink — v3.6 item 5's energy candidate
-  //   producer; distinct from every neighbour hue in the 300-340 range above
-  tensionShape: [227, 55, 46], // blue — v3.6 item 5's tension candidate
-  segmentSeeds: [246, 55, 46], // indigo — the unreviewed seed tier below the five clue producers; distinct from tensionShape's blue (227) and moisesLyricsValidated's violet (265)
-  //   producer; distinct from arrangementState's olive-lime (95)
   gestures: [10, 75, 46], // burnt orange — sound-design device gestures
   sections: [174, 78, 38], // teal    (the previous app rgba(15,118,110))
-  sectionsContested: [28, 90, 50], // vivid orange — a section whose allin1
-  //   `function` label is kept but contradicted by the energy contest (v3.4
-  //   item 3). Reads clearly against the Sections lane's teal blocks; a
-  //   per-block tint override.
   // Character blocks are tinted by *kind*, so a song's texture reads as a
   // colour strip before any label is. Violet for `breath` is not arbitrary —
   // it is the look the operator wrote for the block this lane was built to
@@ -151,6 +136,19 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   kickCheckReject: [5, 70, 46], // red-orange — a kick relabelled away
   crashCheckKeep: [168, 55, 40], // teal-green — an isolated accent kept
   crashCheckReject: [355, 65, 46], // red — a stream member rejected
+  // v3.10 item 14 — filter sweeps. One lane; the tint only splits direction
+  // so an opening (brightening) sweep reads apart from a closing one.
+  filterSweepOpening: [310, 55, 48], // magenta — distinct from vocalPhrases'
+  //   rose (340) and characterShadow/vocalPhrasesSustained violets (265-280)
+  filterSweepClosing: [310, 30, 36], // dusky magenta — same hue, darker/greyer
+  // v3.10 item 15 — phrases. One lane; the tint only marks a phrase whose edge
+  // evidence disagrees (`resolved: false`) in grey, so it reads apart at a glance.
+  phrases: [20, 60, 44], // burnt orange — distinct from gestures (10) by lane kind
+  phrasesUnresolved: [20, 10, 38], // desaturated — evidence for an edge disagrees
+  // v3.10 item 17 — section names. The tint only marks rows that are NOT the
+  // experiment's own naming (the current sections.json labels it kept), in grey.
+  sectionNames: [250, 45, 46], // indigo — distinct from clapEvents (235) / llm proposals (245) by sat/lightness
+  sectionNamesKept: [250, 8, 38], // desaturated — the current label, kept and attributed
 };
 
 /** fixed alpha ramp shared by every lane */

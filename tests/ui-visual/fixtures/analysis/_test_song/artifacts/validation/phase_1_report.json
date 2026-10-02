@@ -13,10 +13,8 @@
   },
   "generated_artifacts": {
     "beats_file": "/data/analysis/_test_song/artifacts/essentia/beats.json",
-    "harmonic_layer_file": "/data/analysis/_test_song/artifacts/layer_a_harmonic.json",
     "drum_events_file": "/data/analysis/_test_song/artifacts/symbolic_transcription/drum_events.json",
     "drum_midi_file": "/data/analysis/_test_song/artifacts/symbolic_transcription/omnizart/drums.mid",
-    "energy_layer_file": "/data/analysis/_test_song/artifacts/layer_c_energy.json",
     "event_timeline_file": "/data/analysis/_test_song/song_event_timeline.json",
     "sections_file": "/data/analysis/_test_song/artifacts/section_segmentation/sections.json",
     "human_hints_alignment_file": "/data/analysis/_test_song/artifacts/validation/human_hints_alignment.json",

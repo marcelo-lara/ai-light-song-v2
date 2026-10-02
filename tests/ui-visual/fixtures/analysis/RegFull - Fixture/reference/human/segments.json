@@ -3,7 +3,8 @@
     "start": 40,
     "end": 60,
     "label": "Build",
-    "energy": 4
+    "energy": 4,
+    "tension": 2
   },
   {
     "start": 60,

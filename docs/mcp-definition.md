@@ -5,8 +5,11 @@ MCP server that helps a reasoning model understand a song's mood,
 sections and dynamics — **drop sequences especially** — while spending as few
 tokens as possible.
 
-> **Status: built and green — seven tools.** Three reads, two proposal
-> writes (v3.7) and two analysis-run tools (v3.8) — see "The tool surface".
+> **Status: built and green — nine tools.** Three reads, one proposal
+> write (v3.7), two analysis-run tools (v3.8), `get_watcher_status`
+> (v3.10) and the structure-hint pair `get_structure_hint_brief` /
+> `write_structure_hint` (v3.10 item 7, plus the `structure_hint` prompt) —
+> see "The tool surface". `request_analysis` takes `force` (v3.10).
 > The stdio/Compose plumbing, song discovery, the exposure guard, the
 > fixture-based regression harness (`smoke-test` / `full-regression`, no
 > deferrals), the whole-song overview and the on-demand `get_detail` dense read
@@ -51,10 +54,19 @@ capability here, the answer is that it goes in the other repo — see
 The server describes the *music*. A downstream host owns the lighting
 translation.
 
+**Second code-scoped write (v3.10 item 7).** `write_structure_hint` writes
+one file, `reference/pre-analysis/structure.json`, in a song's inner folder
+(created on demand, so it works before a first run). It lives in
+`mcp/structure_hint.py` with the path components split as separate string
+literals, and the tool descriptions avoid inner-folder paths, so
+`test_exposure.py` and smoke S4.10 stay unchanged and green. S4.11 now asserts
+the `/data` mount is writable for these bounded writers; the boundary itself is
+held by code, not the mount.
+
 **D3.1 exception (v3.8 item 3).** `request_analysis`/`get_analysis_progress`
 write/read `_run_request.json`/`_run_progress.json`, one level under a song's
 directory — a bounded, documented exception to the top-level-only exposure
-rule, same shape as `propose_hint`/`propose_section_field`'s queue file
+rule, same shape as `propose_hint`'s queue file
 (v3.7 item 10). Both files are operational run state (who is running
 `./analyze` and how far it got), never analysis, and are never promoted to a
 top-level file. Kept in its own module, `mcp/runs.py`, path components split
@@ -110,7 +122,7 @@ originals keep these internal filesystem details and must never be exposed.
 | SDK | the official `mcp` package |
 | Transport | stdio |
 | State | none — reads `data/analysis/` on each call |
-| Writes | **read-only, with two bounded exceptions:** `propose_hint`/`propose_section_field` (v3.7) append to a song's own inner-folder proposals queue file — never a top-level file, never the operator's own hand-authored file (see "Correction proposals"); `request_analysis` (v3.8) writes only `artifacts/_run_request.json` (see `request_analysis` / `get_analysis_progress`) |
+| Writes | **read-only, with bounded exceptions:** `propose_hint` (v3.7) appends to a song's own inner-folder proposals queue file — never a top-level file, never the operator's own hand-authored file (see "Correction proposals"); `request_analysis` (v3.8) writes only `artifacts/_run_request.json` (see `request_analysis` / `get_analysis_progress`); `get_watcher_status` (v3.10) reads `data/analysis-watcher.heartbeat`; `write_structure_hint` (v3.10 item 7) writes only `reference/pre-analysis/structure.json` (see "Pre-analysis structure hint") |
 | Container | its own Compose service; never the analyzer image |
 
 Song discovery is by directory name under `data/analysis/`, the same key the
@@ -150,10 +162,19 @@ framing. The container lives for the session and exits with it.
 ## The tool surface
 
 Two substantive read capabilities — overview and detail — plus the trivial
-discovery call they both need, (v3.7 item 10) two write tools that only ever
-queue a correction for human review, and (v3.8 item 3) two tools that let the
-caller request and poll a run for a song it cannot see yet. Seven tools
-total. Everything else is out of scope for v1.
+discovery call they both need, (v3.7 item 10) one write tool that only ever
+queues a correction for human review, and (v3.8 item 3) two tools that let the
+caller request and poll a run for a song it cannot see yet, and (v3.10 item 7)
+two tools for the pre-analysis structure hint, and (v3.10 item 11)
+`get_watcher_status`. Nine tools, plus the `structure_hint` prompt. Everything else is out of scope for v1.
+
+**Not on this surface:** the v3.10 experiments `filter_sweep`, `phrases`,
+`downbeat_anchors` and `section_names` (measured on the whole corpus, none
+shipped; see [`analysis-definition.md`](analysis-definition.md)). Their
+`reference/proposals/*.json` outputs are never read by any tool here and
+`get_song_overview` / `get_detail` carry no field derived from them. A promotion
+would first publish the signal into a top-level file (the reach test) and then
+list it in the tool sections below.
 
 ### `list_songs()`
 
@@ -170,11 +191,8 @@ else, and it must stay compact enough to sit in context for the whole session.
 
 Returns:
 
-- **Identity** — `song_name`, `bpm`, `duration`, whole-song `key`, genre with
-  its confidence. **v3.6 item 8 dropped `genre.json`'s `guidance` field** (one
-  identical text across the whole corpus) — the equivalent guidance is stated
-  once in the `get_song_overview` tool's own description instead (see
-  `mcp/server.py`), not repeated per song in the response.
+- **Identity** — `song_name`, `bpm`, `duration`. **v3.10 item 8 removed** the
+  whole-song `key` and the genre block (`genre.json` is no longer published).
 - **Grid** — tempo, `beats_per_bar`, `bar_count`, and an **honest downbeat
   note**: how many downbeats carry a `null` confidence, so the caller knows
   whether bar numbers can be trusted on this song. Never the full beat list.
@@ -183,24 +201,15 @@ Returns:
   `confidence`. An `"unknown"` `function_status` is surfaced as such, never
   smoothed into a confident label. **v3.6 item 8 dropped `description`**
   (display prose, moved to a debugger-only artifact never read from `mcp/`).
-  **v3.6 item 10** adds `energy`, `energy_confidence`, `tension`,
-  `tension_confidence` and `rhythm` (per-source subdivision + confidence) —
-  present only where a row has one, never a guessed default. See
-  `docs/reference/downstream-contract.md`'s "Energy / tension / rhythm clue
-  fields" for the precedence rule and per-row `source` overrides.
-- **`review_warning`** (present only when needed) — set on the response,
-  never per section row, when at least one section in this call's `sections`
-  block carries a `seed_unreviewed` source on `energy`, `tension` or any
-  `rhythm.<source>`: `{"text": "...", "section_ids": [...]}` naming every
-  affected row. Text: *"energy/tension/rhythm sourced `seed_unreviewed` are
-  inferred, not yet reviewed by the operator; verify on the final show."*
-  Omitted entirely (not `null`) when nothing on the song is seed-sourced.
+  **v3.10 item 8 removed** `key`, `energy`, `tension`, `rhythm`,
+  `impact_alignment` and their `*_confidence`/`*_source` fields from the rows,
+  and the response-level `review_warning`.
 - **Gestures** — one row per composite gesture, not per phase: its span, its
   peak intensity, its `section_id`, and which phases are present. A song with 31
   impact rows must not return 31 unrelated events.
 - **Arrangement** — one row per `arrangement_state` block: who is `playing`,
   who `entered`, who `left`, and the block `confidence` (a leading block carries
-  `null`). `arrangement_state.json` is one of the 10 required top-level files
+  `null`). `arrangement_state.json` is one of the 9 required top-level files
   (v3.6 item 9 dropped the old pre-v3.2 degraded/omitted path) — the block is
   always present. Also carries `vocals_phrase` — a
   second, independent read on the vocals stem from the promoted `whisperx_vad`
@@ -230,7 +239,7 @@ Returns:
   highest-scoring earlier section this one's vocal cadence repeats, or
   `null`). Timing only — no lyric text anywhere. `source: null` (D1.1, no
   lyrics tier) still returns the block with `reason` set and every row's
-  fields omitted — `vocal_cadence.json` is one of the 10 required top-level
+  fields omitted — `vocal_cadence.json` is one of the 9 required top-level
   files, no degraded/absent path. The full per-section detail (`rests[]`,
   `held_notes[]`, `tokens_per_bar[]`, every `cadence_repeats[]` candidate) is
   `get_detail`'s job, not this one — see below.
@@ -287,8 +296,7 @@ are the same file read at two resolutions.
 the default is all five.
 
 **`position` (v3.7 item 3/5).** Every time field `get_detail` serializes — the
-span itself, section/phase/transition/hint edges, `impact_alignment.
-impact_position`, arrangement blocks and vocals phrases (including item 7's
+span itself, section/phase/transition/hint edges, arrangement blocks and vocals phrases (including item 7's
 `peak_position`), drum-event rows, `drum_density` bar rows, `dropouts` span
 edges, and every dense loudness frame — carries a sibling `position`:
 `{"bar", "beat", "section_id", "resolved"}`, derived on read from the
@@ -303,22 +311,18 @@ the constant-tempo grid there, not just the downbeat phase). `get_song_overview`
 `docs/issues.md`'s prose-budget issue); a caller wanting bar/beat context for
 a specific row fetches it through `get_detail`.
 
-### Correction proposals — `propose_hint` / `propose_section_field` (v3.7 item 10)
+### Correction proposals — `propose_hint` (v3.7 item 10)
 
-The one write path this server has, and it never touches the surface above.
+The one proposal write path this server has, and it never touches the surface above.
 
 - `propose_hint(song, start, end, title, summary, evidence)` — a new hint,
   queued.
-- `propose_section_field(song, section_id, field, value, evidence)` — a
-  correction to one section's `energy`, `tension`, or `rhythm.<stem>`
-  (`rhythm.drums`/`rhythm.bass`/`rhythm.harmonic`/`rhythm.vocals`), queued.
-  `section_id` must already exist on the song's published `sections.json`.
 
-Both **append** to a queue file one level under the song directory — an inner
+It **appends** to a queue file one level under the song directory — an inner
 folder, so nothing written there is exposed by `list_songs`,
-`get_song_overview` or `get_detail`. Neither tool ever writes the operator's
-own hand-authored file, and neither ever mutates a top-level published file.
-`evidence` is required on both: an empty or missing value is a rejected error,
+`get_song_overview` or `get_detail`. The tool never writes the operator's
+own hand-authored file, and never mutates a top-level published file.
+`evidence` is required: an empty or missing value is a rejected error,
 and nothing is written — no silent no-op.
 
 Turning a queued proposal into a real, published value is entirely the
@@ -344,9 +348,12 @@ which surface started the run. The host-side `./analysis-watcher` (item 1) is
 what actually runs the analyzer; this server only writes the request and
 reads the progress.
 
-- `request_analysis(song)` — fully analysed already (`resolve_song_dir`
-  succeeds) → refused, pointing at `get_song_overview`/`get_detail` instead of
-  starting a redundant run. A `queued`/`running` progress already in flight →
+- `request_analysis(song, force=False)` — fully analysed already
+  (`resolve_song_dir` succeeds) → refused, pointing at
+  `get_song_overview`/`get_detail` (or `force=True`) instead of starting a
+  redundant run. `force=True` skips only that refusal, to re-run an analysed
+  song deliberately (the debugger's **Run analysis** button does the same);
+  every other rule below still applies, audio included. A `queued`/`running` progress already in flight →
   that progress is returned, no new request written. No real `<song>.mp3`
   under the songs root (missing, **or present but 0 bytes** — the real mount
   carries ~14 zero-byte `authoring-*.mp3` placeholders a run would be
@@ -356,8 +363,11 @@ reads the progress.
   the only way the caller can discover a legal `song` argument for a song
   `list_songs` doesn't know about yet). Otherwise writes the request and
   returns immediately — `{"status": "requested", "song", "requested_at",
-  "poll_with": "get_analysis_progress", "poll_every_s": 60, "note": "..."}`
-  — never blocking on the run.
+  "watcher": "up" | "down", "poll_with": "get_analysis_progress",
+  "poll_every_s": 60, "note": "..."}` — never blocking on the run. `watcher`
+  (also added to the in-flight progress it may return instead) is
+  `get_watcher_status`'s `status`: `down` means nothing will pick the
+  request up until `./analysis-watcher` runs on the host.
 - `get_analysis_progress(song)` — once the watcher has written a progress
   file, its fields are returned verbatim (`status`: `queued`/`running`/
   `done`/`failed`, `stage`, timestamps, `error`). Before that: a fresh
@@ -366,10 +376,68 @@ reads the progress.
   watching this, not an indefinite wait). Neither file present → refused,
   pointing at `request_analysis`.
 
+### `get_watcher_status` (v3.10 item 11)
+
+`get_watcher_status()` → `{status: "up" | "down", last_heartbeat, age_s}`.
+`./analysis-watcher` rewrites `data/analysis-watcher.heartbeat` (one ISO-8601
+UTC timestamp) every poll interval, including while a job runs. `down` when
+the file is missing or unparseable (`last_heartbeat` and `age_s` are then
+`null`) or older than 3 poll intervals. The server reads it from the analysis
+root's parent (`MCP_WATCHER_HEARTBEAT` overrides the path; `MCP_WATCHER_POLL_S`,
+default 2, must match the watcher's `ANALYSIS_WATCHER_POLL_S`). It never
+starts the watcher — that needs host process control, and the Docker-socket
+grant was rejected (v3.7 D11.1); `analysis-watcher.service` keeps it up
+(`docs/reference/docker.md`). The heartbeat is operational state like
+`_run_progress.json`, never a top-level song file.
+
 Mount (D3.2): the `mcp` service gets the songs directory read-only
 (`MCP_SONGS_ROOT`, default `/data/songs`) so `request_analysis` can check for
 audio before queuing a run guaranteed to fail — it never reads the audio
 file's contents, only its size (`> 0`) and whether it exists.
+
+### Pre-analysis structure hint — `get_structure_hint_brief` / `write_structure_hint` (v3.10 item 7)
+
+A web-researched prior about a song's version, genre and expected shape,
+generated by the client (Claude) when a song is added. The analysis reads it
+as a prior only; it never outranks the audio, so it is written directly, not
+queued.
+
+- `get_structure_hint_brief(song)`: returns `{brief, existing}`, where
+  `brief` is the instructions verbatim (also published as the MCP prompt
+  `structure_hint`, one implementation, no paraphrase) and `existing` is the
+  stored hint or `null`. The brief has the client research the song, fill
+  the schema below and call `write_structure_hint`. It never writes times,
+  sections or hints.
+- `write_structure_hint(song, hint)`: validates `hint` against the schema
+  and writes only `<song>/reference/pre-analysis/structure.json`, replacing
+  any earlier one. An invalid payload is refused naming the first bad field,
+  and nothing is written.
+- Both accept any song `request_analysis` would accept (real audio under
+  the songs root) as well as analysed songs: the hint is meant to exist
+  before the first run.
+
+**Schema** (`schema_version: "1.0"`). Unknown → `null`, never a guess. No
+timestamps anywhere: web sources describe other versions, and an invented
+time is worse than none.
+
+| Field | Type | Values |
+| --- | --- | --- |
+| `schema_version` | string | `"1.0"` |
+| `song_name` | string | the song folder name |
+| `generated_at` | string | ISO date |
+| `track.artist`, `track.title` | string | as researched |
+| `track.version` | enum \| null | `radio_edit`, `extended`, `club_mix`, `remix`, `original` |
+| `track.remixer` | string \| null | |
+| `track.version_duration_s` | number \| null | the researched version's length. The pipeline compares it with `info.json`'s duration and ignores `track.version` and `shape` on a mismatch |
+| `genre.family` | enum | `edm`, `pop_edm`, `pop`, `rock`, `other` |
+| `genre.subgenre` | enum \| null | `big_room`, `house`, `techno`, `trance`, `dubstep`, `drum_and_bass`, `other` |
+| `genre.bpm` | number \| null | researched, not measured |
+| `shape.drops` | integer \| null | expected number of drops |
+| `shape.chorus_is_drop` | bool \| null | a sung chorus takes the drop's place |
+| `shape.has_build_ups` | bool \| null | |
+| `shape.vocals` | enum \| null | `none`, `chops`, `full` |
+| `confidence` | number 0–1 | overall |
+| `sources` | list of `{url, title}` | at least one |
 
 ## Honesty obligations
 

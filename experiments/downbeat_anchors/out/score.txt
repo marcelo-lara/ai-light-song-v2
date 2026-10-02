@@ -1,0 +1,26 @@
+Downbeat F1 @ +-70 ms vs Moises downbeats; 5 songs; pooled = micro
+
+song                                       incumbent                modulo            kick-phase          anchors-only        anchors+allin1   anchors+allin1 @2.5
+Armin - Revolution                             0.606                 0.268                 0.067                 0.174                 0.186                 0.578
+Hideaway - Kiesza                              0.060                 0.024                 0.016                 0.000                 0.027                 0.067
+Queen of Kings - Alessandra                    0.878                 0.000                 0.954                 0.889                 0.947                 0.947
+Titanium - David Guetta ft Sia                 0.000                 0.000                 0.000                 0.000                 0.000                 0.000
+_test_song                                     0.618                 0.033                 0.033                 0.653                 0.618                 0.618
+POOLED (5 songs)                               0.343                 0.069                 0.180                 0.273                 0.301                 0.361
+POOLED (4, no Queen)                           0.234                 0.083                 0.026                 0.106                 0.119                 0.223
+MACRO                                          0.432                 0.065                 0.214                 0.343                 0.356                 0.442
+
+pooled (5 songs) tp / predicted / reference:
+  incumbent             141 /  361 /  462
+  modulo                 32 /  459 /  462
+  kick-phase             83 /  458 /  462
+  anchors-only           92 /  212 /  462
+  anchors+allin1        104 /  230 /  462
+  anchors+allin1 @2.5   144 /  336 /  462
+
+anchor diagnostics (default threshold):
+  Armin - Revolution             anchors 7/10 edges, spans 6 (unresolved 5: 4 phase, 1 off-grid), downbeats by source {'allin1': 2, 'counted_edge': 22, 'anchor': 7, 'counted': 4}
+  Hideaway - Kiesza              anchors 5/10 edges, spans 4 (unresolved 3: 2 phase, 1 off-grid), downbeats by source {'allin1': 2, 'counted_edge': 11, 'anchor': 5, 'counted': 5}
+  Queen of Kings - Alessandra    anchors 8/8 edges, spans 7 (unresolved 0: 0 phase, 0 off-grid), downbeats by source {'counted_edge': 24, 'anchor': 8, 'counted': 35, 'allin1': 9}
+  Titanium - David Guetta ft Sia anchors 11/12 edges, spans 10 (unresolved 4: 4 phase, 0 off-grid), downbeats by source {'counted_edge': 17, 'anchor': 11, 'counted': 46}
+  _test_song                     anchors 2/5 edges, spans 1 (unresolved 0: 0 phase, 0 off-grid), downbeats by source {'allin1': 6, 'counted_edge': 12, 'anchor': 2, 'counted': 3}

@@ -5,8 +5,7 @@
     "source_song_path": "data/songs/Armin - Revolution.mp3",
     "engine": "ui_data.build_ui_data (publish-time section display text)",
     "dependencies": {
-      "sections_file": "/data/analysis/Armin - Revolution/sections.json",
-      "harmonic_file": "/data/analysis/Armin - Revolution/artifacts/layer_a_harmonic.json"
+      "sections_file": "/data/analysis/Armin - Revolution/sections.json"
     }
   },
   "sections": [

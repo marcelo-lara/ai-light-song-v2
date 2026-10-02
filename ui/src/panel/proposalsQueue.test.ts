@@ -1,21 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import type {
-  HumanHint,
-  HumanSegmentsFile,
-  PendingProposal,
-  PendingProposalsFile,
-  SectionsTopLevel,
-} from "../data/types";
+import type { HumanHint, PendingProposal, PendingProposalsFile } from "../data/types";
 
-import {
-  applySectionFieldToSegments,
-  bestOverlapIndex,
-  hintDraftFromProposal,
-  partitionProposals,
-  proposalWindow,
-  sectionSpan,
-} from "./proposalsQueue";
+import * as queue from "./proposalsQueue";
+import { hintDraftFromProposal, partitionProposals, proposalWindow } from "./proposalsQueue";
 
 const hintProposal = (over: Partial<PendingProposal> = {}): PendingProposal => ({
   id: "prop-1",
@@ -28,20 +16,6 @@ const hintProposal = (over: Partial<PendingProposal> = {}): PendingProposal => (
   ...over,
 } as PendingProposal);
 
-const sectionFieldProposal = (
-  over: Partial<PendingProposal> = {},
-): PendingProposal =>
-  ({
-    id: "prop-2",
-    type: "section_field",
-    status: "pending",
-    created_at: "2026-09-22T00:00:01Z",
-    rejection_reason: null,
-    evidence: "gesture build overlaps",
-    section_field: { section_id: "section-001", field: "tension", value: 4 },
-    ...over,
-  }) as PendingProposal;
-
 describe("partitionProposals", () => {
   it("splits pending from decided, newest-decided first", () => {
     const file: PendingProposalsFile = {
@@ -49,7 +23,7 @@ describe("partitionProposals", () => {
       song_name: "ayuni",
       proposals: [
         hintProposal({ id: "a", status: "approved", created_at: "2026-09-20T00:00:00Z" }),
-        sectionFieldProposal({ id: "b", status: "pending" }),
+        hintProposal({ id: "b", status: "pending" }),
         hintProposal({ id: "c", status: "rejected", created_at: "2026-09-21T00:00:00Z" }),
       ],
     };
@@ -59,125 +33,21 @@ describe("partitionProposals", () => {
   });
 });
 
-describe("sectionSpan", () => {
-  const sections: SectionsTopLevel = [
-    {
-      section_id: "section-001",
-      start: 0,
-      end: 10,
-      label: "001 Intro",
-      description: null,
-      function: "intro",
-      function_confidence: 0.8,
-      function_status: "known",
-      same_label_as: null,
-      confidence: 0.8,
-      key: "C major",
-    },
-  ];
-
-  it("returns the span for a known section_id", () => {
-    expect(sectionSpan(sections, "section-001")).toEqual({ start: 0, end: 10 });
-  });
-
-  it("returns null for an unknown section_id", () => {
-    expect(sectionSpan(sections, "section-999")).toBeNull();
-  });
-});
-
 describe("proposalWindow", () => {
-  const sections: SectionsTopLevel = [
-    {
-      section_id: "section-001",
-      start: 0,
-      end: 10,
-      label: "001 Intro",
-      description: null,
-      function: "intro",
-      function_confidence: 0.8,
-      function_status: "known",
-      same_label_as: null,
-      confidence: 0.8,
-      key: "C major",
-    },
-  ];
-
-  it("uses the proposal's own start/end for a hint with no operator edit", () => {
-    const proposal = hintProposal();
-    expect(proposalWindow(proposal, sections)).toEqual({ start: 10, end: 12 });
+  it("uses the proposal's own start/end with no operator edit", () => {
+    expect(proposalWindow(hintProposal())).toEqual({ start: 10, end: 12 });
   });
 
-  it("prefers the operator's dragged correction for a hint", () => {
-    const proposal = hintProposal();
-    expect(proposalWindow(proposal, sections, { start: 9, end: 13 })).toEqual({
-      start: 9,
-      end: 13,
-    });
-  });
-
-  it("uses the section's current published span for a section_field", () => {
-    const proposal = sectionFieldProposal();
-    expect(proposalWindow(proposal, sections)).toEqual({ start: 0, end: 10 });
-  });
-
-  it("returns null for a section_field whose section_id no longer resolves", () => {
-    const proposal = sectionFieldProposal({
-      section_field: { section_id: "section-999", field: "tension", value: 4 },
-    } as Partial<PendingProposal>);
-    expect(proposalWindow(proposal, sections)).toBeNull();
+  it("prefers the operator's dragged correction", () => {
+    expect(proposalWindow(hintProposal(), { start: 9, end: 13 })).toEqual({ start: 9, end: 13 });
   });
 });
 
-describe("bestOverlapIndex", () => {
-  const segments: HumanSegmentsFile = [
-    { start: 0, end: 5 },
-    { start: 5, end: 20 },
-    { start: 20, end: 30 },
-  ];
-
-  it("picks the row with the largest positive overlap", () => {
-    expect(bestOverlapIndex(segments, 4, 22)).toBe(1);
-  });
-
-  it("returns -1 when nothing overlaps", () => {
-    expect(bestOverlapIndex(segments, 100, 110)).toBe(-1);
-  });
-});
-
-describe("applySectionFieldToSegments", () => {
-  it("sets a scalar field on the best-overlapping existing row, immutably", () => {
-    const segments: HumanSegmentsFile = [{ start: 0, end: 10, energy: 2 }];
-    const next = applySectionFieldToSegments(segments, { start: 0, end: 10 }, "tension", 4);
-    expect(next).not.toBe(segments);
-    expect(next[0]).toEqual({ start: 0, end: 10, energy: 2, tension: 4 });
-    expect(segments[0]).toEqual({ start: 0, end: 10, energy: 2 });
-  });
-
-  it("merges a rhythm.<stem> field onto any existing rhythm object", () => {
-    const segments: HumanSegmentsFile = [
-      { start: 0, end: 10, rhythm: { bass: "quarter" } },
-    ];
-    const next = applySectionFieldToSegments(
-      segments,
-      { start: 0, end: 10 },
-      "rhythm.drums",
-      "eighth",
-    );
-    expect(next[0]!.rhythm).toEqual({ bass: "quarter", drums: "eighth" });
-  });
-
-  it("creates a new row at the section's own span when nothing overlaps", () => {
-    const segments: HumanSegmentsFile = [{ start: 0, end: 5 }];
-    const next = applySectionFieldToSegments(segments, { start: 50, end: 60 }, "energy", 3);
-    expect(next).toHaveLength(2);
-    expect(next[1]).toEqual({ start: 50, end: 60, energy: 3 });
-  });
-
-  it("rejects an out-of-range scalar value", () => {
-    const segments: HumanSegmentsFile = [{ start: 0, end: 10 }];
-    expect(() =>
-      applySectionFieldToSegments(segments, { start: 0, end: 10 }, "energy", 9),
-    ).toThrow();
+describe("section-field helpers are gone", () => {
+  it("exports no section-field merge or section span lookup", () => {
+    expect(queue).not.toHaveProperty("applySectionFieldToSegments");
+    expect(queue).not.toHaveProperty("bestOverlapIndex");
+    expect(queue).not.toHaveProperty("sectionSpan");
   });
 });
 
@@ -194,7 +64,7 @@ describe("hintDraftFromProposal", () => {
   ];
 
   it("builds a HintDraft carrying the proposal id as an informative note", () => {
-    const proposal = hintProposal() as Extract<PendingProposal, { type: "hint" }>;
+    const proposal = hintProposal();
     const draft = hintDraftFromProposal(proposal, existing);
     expect(draft).toEqual({
       id: "human-hint-2",
@@ -209,14 +79,14 @@ describe("hintDraftFromProposal", () => {
   });
 
   it("falls back to the proposal's own hint.start/end when no times are given", () => {
-    const proposal = hintProposal() as Extract<PendingProposal, { type: "hint" }>;
+    const proposal = hintProposal();
     const draft = hintDraftFromProposal(proposal, existing);
     expect(draft.start_time).toBe(proposal.hint.start);
     expect(draft.end_time).toBe(proposal.hint.end);
   });
 
   it("uses the operator's corrected times over the proposal's own, when given", () => {
-    const proposal = hintProposal() as Extract<PendingProposal, { type: "hint" }>;
+    const proposal = hintProposal();
     const draft = hintDraftFromProposal(proposal, existing, { start: 9.5, end: 13.25 });
     expect(draft.start_time).toBe(9.5);
     expect(draft.end_time).toBe(13.25);

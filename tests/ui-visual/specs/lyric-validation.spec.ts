@@ -14,7 +14,7 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong, waitReady } from "../helpers
 //
 // The write is PER-CLICK (no Save button — D5.1). It writes the (writable,
 // under the visual compose) fixture file, so snapshot-and-restore it exactly as
-// `promote-hint.spec.ts` / `block-energy-rating.spec.ts` do.
+// `promote-hint.spec.ts` does.
 const LYRIC_VALIDATIONS_FIXTURE = path.join(
   process.cwd(),
   "fixtures/analysis/RegFull - Fixture/reference/human/lyric_validations.json",

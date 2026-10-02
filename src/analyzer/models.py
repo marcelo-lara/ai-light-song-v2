@@ -22,29 +22,16 @@ class Producer(str, Enum):
 
     ESSENTIA = "essentia"
     ALLIN1 = "allin1"
-    HARMONIC = "harmonic"
     OMNIZART = "omnizart"
     DEMUCS = "demucs"
     GESTURES = "gestures"
     ARRANGEMENT_STATE = "arrangement_state"
     WHISPERX_VAD = "whisperx_vad"
     VOCAL_SIBILANCE = "vocal_sibilance"
-    SECTION_FUNCTION = "section_function"
-    GENRE = "genre"
     HUMAN = "human"
     MOISES = "moises"
     INFERENCE = "inference"
     UNKNOWN = "unknown"
-    # v3.6 item 10 — energy/tension/rhythm clue producers (section_clues.py) and
-    # the two non-producer tiers below them in that stage's precedence chain.
-    ENERGY_LEVEL = "energy_level"
-    TENSION_SHAPE = "tension_shape"
-    RHYTHM_DRUM_IOI = "rhythm_drum_ioi"
-    RHYTHM_STEM_AUTOCORR = "rhythm_stem_autocorr"
-    RHYTHM_VOCAL_ONSETS = "rhythm_vocal_onsets"
-    SEED_UNREVIEWED = "seed_unreviewed"
-    # v3.7 item 2/4 — the nearest-gesture-impact fusion (section_clues.py).
-    IMPACT_ALIGNMENT = "impact_alignment"
     # v3.7 item 3/6 — `section_id` attributed by timestamp against the
     # PUBLISHED sections.json (hints.py, gestures.py), never allin1's raw
     # artifact segmentation.
@@ -129,7 +116,6 @@ class GeneratedFrom:
     source_song_path: str
     engine: str | None = None
     beats_file: str | None = None
-    harmonic_stem: str | None = None
     dependencies: dict[str, str] = field(default_factory=dict)
 
 

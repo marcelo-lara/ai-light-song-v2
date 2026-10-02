@@ -18,6 +18,10 @@ const HINTS_FIXTURE = path.join(
   process.cwd(),
   "fixtures/analysis/RegFull - Fixture/reference/human/human_hints.json",
 );
+const INFO_FIXTURE = path.join(
+  process.cwd(),
+  "fixtures/analysis/RegFull - Fixture/info.json",
+);
 const SECTIONS_FIXTURE = path.join(
   process.cwd(),
   "fixtures/analysis/RegFull - Fixture/sections.json",
@@ -189,12 +193,11 @@ async function clickWidestBlock(page: Page, laneId: string): Promise<void> {
   await page.mouse.click(rect.x + hit.localX, rect.y + hit.localY);
 }
 
-/** Seconds represented by the whole timeline canvas, from the header total. */
-async function totalSeconds(page: Page): Promise<number> {
-  const t = (await page.locator(".app-header__total").textContent()) ?? "";
-  const m = t.trim().match(/^(\d+):(\d+(?:\.\d+)?)$/);
-  if (!m) throw new Error(`unexpected header total ${JSON.stringify(t)}`);
-  return Number(m[1]) * 60 + Number(m[2]);
+/** Seconds represented by the whole timeline canvas: the fixture's song
+ *  duration (the header no longer renders a total — only current time). */
+function totalSeconds(): number {
+  const info = JSON.parse(fs.readFileSync(INFO_FIXTURE, "utf-8")) as { duration: number };
+  return info.duration;
 }
 
 /** Expand `laneId` and click the block covering time `t` (seconds). Used for
@@ -203,7 +206,7 @@ async function clickBlockAtTime(page: Page, laneId: string, t: number): Promise<
   await expandLane(page, laneId);
   const canvas = await page.locator(`${canvasContainerSel(laneId)} canvas`).boundingBox();
   if (!canvas) throw new Error(`${laneId} canvas not found`);
-  const total = await totalSeconds(page);
+  const total = totalSeconds();
   await clickLaneAt(page, laneId, (t / total) * canvas.width);
 }
 
@@ -312,12 +315,16 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
       human_hints: Array<Record<string, unknown>>;
     };
     expect(afterSave.human_hints).toHaveLength(4);
-    const promoted = afterSave.human_hints[3]!;
+    // The saved list is ordered by start time, and the promoted section starts
+    // at 0.48 s, before the three curated hints — so find it by its note.
+    const promotedRows = afterSave.human_hints.filter((h) => h.captured_from !== undefined);
+    expect(promotedRows).toHaveLength(1);
+    const promoted = promotedRows[0]!;
     expect(promoted.title).toBe(title);
     expect(Math.abs(Number(promoted.start_time) - first.start)).toBeLessThanOrEqual(0.01);
     expect(Math.abs(Number(promoted.end_time) - first.end)).toBeLessThanOrEqual(0.01);
     expect(promoted.captured_from).toBe("Sections");
-    for (const h of afterSave.human_hints.slice(0, 3)) {
+    for (const h of afterSave.human_hints.filter((row) => row !== promoted)) {
       expect(h).not.toHaveProperty("captured_from");
     }
 
@@ -325,8 +332,8 @@ test.describe("plan v1.5 item 9 — Create human hint from the block inspector",
     await page.getByTestId("lane-events-humanHints").click();
     await expect(page.locator(".lane-events__card")).toHaveCount(4);
     await expect(
-      page.locator(".lane-events__card").nth(3).locator(".lane-events__label"),
-    ).toHaveText(title ?? "");
+      page.locator(".lane-events__card").locator(".lane-events__label").filter({ hasText: title ?? "" }),
+    ).toHaveCount(1);
 
     expect(errors.list()).toEqual([]);
   });

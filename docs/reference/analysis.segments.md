@@ -21,11 +21,12 @@ or allin1 might have drawn a boundary the human file didn't. Do not propose
 per-gap or per-boundary merging as an enhancement — it was considered and
 rejected in favor of a stable, honest single producer per song.
 
-`function_confidence`, `function_status` and `same_label_as` are **never**
-overridden by tiers 1 or 2 — they always come from allin1, inherited from
-whichever allin1 section overlaps the winning span most (by time overlap;
-no overlap is an honest `null`/`"unknown"`, never invented). `key` always
-comes from the harmonic stage regardless of tier.
+`function_confidence` and `function_status` are **never** overridden by
+tiers 1 or 2 — they always come from allin1, inherited from whichever allin1
+section overlaps the winning span most (by time overlap; no overlap is an
+honest `null`/`"unknown"`, never invented). `same_label_as` is label
+repetition computed from the **winning tier's** published labels (v3.9), so it
+follows whichever tier won `function`.
 
 ## Confidence ladder — boundary corroboration
 

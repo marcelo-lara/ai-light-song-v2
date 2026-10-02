@@ -13,28 +13,22 @@ import {
   loadStemPresenceSections,
   loadVocalCadence,
   loadArrangementState,
-  loadRhythmDrumIoi,
-  loadRhythmStemAutocorr,
-  loadRhythmVocalOnsets,
-  loadEnergyLevel,
-  loadTensionShape,
   loadWhisperxVad,
   loadClapEvents,
   loadKickCheck,
   loadCrashCheck,
+  loadFilterSweep,
+  loadPhrases,
+  loadSectionNames,
 } from "./sparseArtifacts";
 import {
   parseBeats,
-  parseBlockEnergy,
   parseBlockReviews,
   parseDrumEvents,
-  parseEnergyLayer,
   parseEventTimeline,
   parseFftBands,
-  parseHarmonicLayer,
   parseHumanHints,
   parseHumanSegmentsFile,
-  parseHumanSegmentsSeedFile,
   parseInfo,
   parseLyricValidations,
   parseLoudnessEnvelope,
@@ -49,16 +43,12 @@ import {
 } from "./parsers";
 import type {
   Beats,
-  BlockEnergyFile,
   BlockReviewsFile,
   DrumEventsFile,
-  EnergyLayer,
   EventTimeline,
   FftBands,
-  HarmonicLayer,
   HumanHintsFile,
   HumanSegmentsFile,
-  HumanSegmentsSeedFile,
   LyricValidationsFile,
   LoudnessEnvelope,
   MoisesSegmentsFile,
@@ -238,18 +228,8 @@ export const loadLoudnessEnvelope = (song: string, f?: typeof fetch) =>
     f,
   );
 
-export const loadHarmonicLayer = (song: string, f?: typeof fetch) =>
-  loadJson<HarmonicLayer>(
-    artifactPaths.harmonicLayer(song),
-    parseHarmonicLayer,
-    f,
-  );
-
 export const loadDrumEvents = (song: string, f?: typeof fetch) =>
   loadJson<DrumEventsFile>(artifactPaths.drumEvents(song), parseDrumEvents, f);
-
-export const loadEnergyLayer = (song: string, f?: typeof fetch) =>
-  loadJson<EnergyLayer>(artifactPaths.energyLayer(song), parseEnergyLayer, f);
 
 export const loadHumanHints = (song: string, f?: typeof fetch) =>
   loadJson<HumanHintsFile>(artifactPaths.humanHints(song), parseHumanHints, f);
@@ -264,28 +244,6 @@ export const loadHumanSegments = async (
   const result = await loadJson<HumanSegmentsFile>(
     artifactPaths.humanSections(song),
     parseHumanSegmentsFile,
-    f,
-  );
-  if (
-    !result.ok &&
-    result.error.kind === "http" &&
-    result.error.status === 404
-  ) {
-    return { ok: true, data: [] };
-  }
-  return result;
-};
-
-// reference/human/segments.seed.json (v3.6 item 4) is optional (unreviewed
-// rule-based drafts, experiments/segment_seeds — not every song has been
-// seeded yet), so a 404 resolves to an empty array. Read-only in the UI.
-export const loadHumanSectionsSeed = async (
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<HumanSegmentsSeedFile>> => {
-  const result = await loadJson<HumanSegmentsSeedFile>(
-    artifactPaths.humanSectionsSeed(song),
-    parseHumanSegmentsSeedFile,
     f,
   );
   if (
@@ -316,31 +274,6 @@ export const loadMoisesSections = async (
     result.error.status === 404
   ) {
     return { ok: true, data: [] };
-  }
-  return result;
-};
-
-// v3.4 item 4 — reference/human/block_energy.json is optional (absent until the
-// operator rates a block), so a 404 resolves to an empty file. Every other
-// failure still surfaces.
-export const loadBlockEnergy = async (
-  song: string,
-  f?: typeof fetch,
-): Promise<LoadResult<BlockEnergyFile>> => {
-  const result = await loadJson<BlockEnergyFile>(
-    artifactPaths.blockEnergy(song),
-    parseBlockEnergy,
-    f,
-  );
-  if (
-    !result.ok &&
-    result.error.kind === "http" &&
-    result.error.status === 404
-  ) {
-    return {
-      ok: true,
-      data: { schema_version: "", song_name: song, ratings: [] },
-    };
   }
   return result;
 };
@@ -441,15 +374,13 @@ export const artifactLoaders = {
   stemPresenceSections: loadStemPresenceSections,
   vocalCadence: loadVocalCadence,
   arrangementState: loadArrangementState,
-  rhythmDrumIoi: loadRhythmDrumIoi,
-  rhythmStemAutocorr: loadRhythmStemAutocorr,
-  rhythmVocalOnsets: loadRhythmVocalOnsets,
-  energyLevel: loadEnergyLevel,
-  tensionShape: loadTensionShape,
   whisperxVad: loadWhisperxVad,
   clapEvents: loadClapEvents,
   kickCheck: loadKickCheck,
   crashCheck: loadCrashCheck,
+  filterSweep: loadFilterSweep,
+  phrases: loadPhrases,
+  sectionNames: loadSectionNames,
   character: loadCharacter,
   vocalTranscription: loadVocalTranscription,
   beats: loadBeats,
@@ -463,14 +394,10 @@ export const artifactLoaders = {
   fftBandsVocals: loadFftBandsVocals,
   rmsLoudness: loadRmsLoudness,
   loudnessEnvelope: loadLoudnessEnvelope,
-  harmonicLayer: loadHarmonicLayer,
   drums: loadDrumEvents,
-  energy: loadEnergyLayer,
   humanHints: loadHumanHints,
   humanSections: loadHumanSegments,
-  humanSectionsSeed: loadHumanSectionsSeed,
   moisesSections: loadMoisesSections,
-  blockEnergy: loadBlockEnergy,
   lyricValidations: loadLyricValidations,
   blockReviews: loadBlockReviews,
   moisesLyrics: loadMoisesLyrics,

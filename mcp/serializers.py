@@ -65,61 +65,6 @@ DEFAULT_SOURCES: tuple[str, ...] = ("mix", "bass", "drums", "harmonic", "vocals"
 
 _SAME_LABEL_CAVEAT = "same_label_as is label repetition, not acoustic identity"
 
-# v3.6 item 10 — exact text from docs/product-refinement-v3.6.md item 6.
-REVIEW_WARNING_TEXT = (
-    "energy/tension/rhythm sourced `seed_unreviewed` are inferred, not yet "
-    "reviewed by the operator; verify on the final show."
-)
-
-
-def _seed_unreviewed_section_ids(sections: list[dict]) -> list[str]:
-    """`section_id`s of every row where `energy`, `tension` or any
-    `rhythm.<source>` field carries a `seed_unreviewed` source (v3.6 item 10:
-    energy_source/tension_source overrides, or a rhythm sub-object's own
-    `source` key — see analyzer.stages.section_clues)."""
-    ids: list[str] = []
-    for s in sections:
-        seeded = (
-            s.get("energy_source") == "seed_unreviewed"
-            or s.get("tension_source") == "seed_unreviewed"
-            or any(
-                (entry or {}).get("source") == "seed_unreviewed"
-                for entry in (s.get("rhythm") or {}).values()
-            )
-        )
-        if seeded:
-            ids.append(s["section_id"])
-    return ids
-
-
-def _section_clue_fields(s: dict) -> dict[str, Any]:
-    """`energy`/`tension`/`rhythm` fields, present only when the row carries
-    them (v3.6 item 10 — no silent fallback, a section with no resolved clue
-    simply omits the key)."""
-    out: dict[str, Any] = {}
-    if "energy" in s:
-        out["energy"] = s["energy"]
-        out["energy_confidence"] = s.get("energy_confidence")
-        if "energy_source" in s:
-            out["energy_source"] = s["energy_source"]
-    if "tension" in s:
-        out["tension"] = s["tension"]
-        out["tension_confidence"] = s.get("tension_confidence")
-        if "tension_source" in s:
-            out["tension_source"] = s["tension_source"]
-    if "rhythm" in s:
-        out["rhythm"] = s["rhythm"]
-    # v3.7 item 2/4 — `impact_alignment` is always a key on the STORED
-    # sections.json row (explicit `null` there — CLAUDE.md "no silent
-    # fallbacks"), but the projected view omits it entirely when `null`,
-    # same token-cost convention as energy/tension/rhythm above (D25's
-    # get_song_overview byte budget is load-bearing — see
-    # test_overview_budget_mcpfull_under_6kb).
-    if s.get("impact_alignment") is not None:
-        out["impact_alignment"] = s["impact_alignment"]
-    return out
-
-
 class DetailScopeError(ValueError):
     """Raised for an invalid get_detail scope selection (zero or >1 selectors,
     a half-specified window, or an interval below the published floor)."""
@@ -134,9 +79,7 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
 
     Compact by construction — the grid is a summary (never the beat list),
     gestures are grouped one row per composite gesture (never one row per phase),
-    and prose is kept to the honest downbeat note. Genre `guidance` prose no
-    longer lives on `genre.json` (v3.6 item 8) — it is stated once in this
-    tool's own description instead (see server.py).
+    and prose is kept to the honest downbeat note.
 
     When scope=="brief" (D3.3) return a reduced payload: keep identity, grid
     summary, section rows without description prose, gesture rows, arrangement
@@ -150,7 +93,6 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
     sections_doc = load_top_level_json(song_dir, "sections.json")
     timeline_doc = load_top_level_json(song_dir, "song_event_timeline.json")
     hints_doc = load_top_level_json(song_dir, "hints.json")
-    genre_doc = load_top_level_json(song_dir, "genre.json")
     arrangement_doc = load_top_level_json(song_dir, "arrangement_state.json")
     cadence_doc = load_top_level_json(song_dir, "vocal_cadence.json")
 
@@ -175,18 +117,11 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
     # a client wanting bar/beat context for a specific row fetches it there.
     overview: dict[str, Any] = {
         "song_name": info.get("song_name"),
-        "identity": _identity_block(info, sections, genre_doc),
+        "identity": _identity_block(info),
         "grid": _grid_block(info, beats_doc, beats),
         "sections": _sections_block(sections_doc, sections, cadence_by_section),
         "gestures": {"phase_legend": PHASE_LEGEND, **_gestures_block(timeline_doc, events)},
     }
-
-    # v3.6 item 10 — omitted entirely (not null, not empty) when no section
-    # row carries a seed_unreviewed source; present with the affected
-    # section_ids otherwise.
-    seed_ids = _seed_unreviewed_section_ids(sections)
-    if seed_ids:
-        overview["review_warning"] = {"text": REVIEW_WARNING_TEXT, "section_ids": seed_ids}
 
     # If brief scope requested, prune prose-heavy bits per D3.3
     if scope == "brief":
@@ -198,7 +133,8 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
                 "section_id": r.get("section_id"),
             }
             pruned_rows.append(pr)
-        overview["sections"] = {"caveat": sec_block.get("caveat"), "rows": pruned_rows, "field_sources": sec_block.get("field_sources")}
+        overview["sections"] = {"caveat": sec_block.get("caveat"), "rows": pruned_rows, "field_sources": sec_block.get("field_sources"),
+                                **({"tier_note": sec_block["tier_note"]} if "tier_note" in sec_block else {})}
 
         # prune gestures to only the anchor fields to keep the overview tiny
         g = overview.get("gestures", {})
@@ -414,35 +350,14 @@ def _attach_positions(
             row[pos_field] = pos_fn(row.get(time_field))
 
 
-def _identity_block(info: dict, sections: list[dict], genre_doc: dict) -> dict[str, Any]:
-    keys = [s.get("key") for s in sections if s.get("key")]
-    unique = list(dict.fromkeys(keys))
-    if not unique:
-        whole_key: Any = None
-    elif len(unique) == 1:
-        whole_key = unique[0]
-    else:
-        whole_key = {"varies": unique}
-
-    # genre.json is a required top-level file (v3.6 item 9) — always present.
-    # `guidance` was dropped from the file (one identical text across the
-    # corpus) and lives once in the get_song_overview tool description instead.
-    genre = {
-        "genres": genre_doc.get("genres"),
-        "confidence": genre_doc.get("confidence"),
-    }
-
+def _identity_block(info: dict) -> dict[str, Any]:
     return {
         "song_name": info.get("song_name"),
         "bpm": info.get("bpm"),
         "duration": info.get("duration"),
-        "key": whole_key,
-        "genre": genre,
         "field_sources": {
             "bpm": "essentia",
             "duration": "essentia",
-            "key": "harmonic",
-            "genre": "genre",
         },
     }
 
@@ -496,8 +411,7 @@ def _vocal_cadence_by_section(cadence_doc: dict) -> dict[str, dict[str, Any]]:
     span), and the best cadence-repeat reference (`section_id`/`bar_offset`
     only — never a full candidate list, that is `get_detail`'s job). A
     no-lyrics song (D1.1, `source: null`) has an empty `sections` list here,
-    so this returns `{}` and every row simply omits the fields — the same
-    "omitted, never guessed" convention as `_section_clue_fields`."""
+    so this returns `{}` and every row simply omits the fields (omitted, never guessed)."""
     calls = cadence_doc.get("calls", [])
     out: dict[str, dict[str, Any]] = {}
     for row in cadence_doc.get("sections", []):
@@ -536,18 +450,22 @@ def _sections_block(
             "function_status": s["function_status"],
             "same_label_as": s["same_label_as"],
             "confidence": s["confidence"],
-            **_section_clue_fields(s),
             # v3.9 item 1 — omitted (not null-filled) for a section the
             # cadence file has no row for, e.g. a no-lyrics song.
             **cadence_by_section.get(s["section_id"], {}),
         }
         for s in sections
     ]
-    return {
+    block: dict[str, Any] = {
         "caveat": _SAME_LABEL_CAVEAT,
         "rows": rows,
         "field_sources": sections_doc.get("field_sources"),
     }
+    # v3.10 item 1 — present only when a reference segments tier was skipped
+    # for being empty; omitted otherwise (byte budget).
+    if sections_doc.get("sections_tier_note"):
+        block["tier_note"] = sections_doc["sections_tier_note"]
+    return block
 
 
 def _group_gestures(events: list[dict]) -> list[tuple[str, list[dict]]]:
@@ -1274,17 +1192,12 @@ def _structural_view(
             "function": s["function"],
             "function_status": s["function_status"],
             "same_label_as": s["same_label_as"],
-            **_section_clue_fields(s),
         }
         for s in sections_doc.get("sections", [])
         if _overlaps(span_start, span_end, float(s["start"]), float(s["end"]))
     ]
     if pos_fn is not None:
         _attach_positions(section_rows, [("start", "start_position"), ("end", "end_position")], pos_fn)
-        for _row in section_rows:
-            _ia = _row.get("impact_alignment")
-            if _ia is not None:
-                _ia["impact_position"] = pos_fn(_ia.get("impact_time"))
 
     phase_rows = [
         {

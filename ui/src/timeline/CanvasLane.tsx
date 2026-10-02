@@ -3,15 +3,14 @@
 // per-`kind` renderer from laneRenderers.ts. Redraws on pxPerSec / collapse /
 // resize / scroll (sub-labels are viewport-anchored) and data change.
 //
-// Continuous lanes: a click anywhere seeks. Drums / energy lanes additionally
-// build hit regions for their discrete markers → onSelectMarker (item 6 stub).
+// Continuous lanes: a click anywhere seeks. The drums lane additionally
+// builds hit regions for its discrete markers → onSelectMarker (item 6 stub).
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 
 import type { ArtifactStatus } from "../data";
 import type {
   DrumEventsFile,
-  EnergyLayer,
   FftBands,
   LoudnessSeries,
 } from "../data/types";
@@ -21,7 +20,6 @@ import type { Lane } from "./laneState";
 import {
   drawCollapsedStrip,
   drawDrums,
-  drawEnergy,
   drawFft,
   drawLoudness,
   type HitRegion,
@@ -35,8 +33,7 @@ export type CanvasLaneSource =
   | { kind: "fft"; data: FftBands | null }
   | { kind: "rms"; data: LoudnessSeries | null }
   | { kind: "env"; data: LoudnessSeries | null }
-  | { kind: "drums"; data: DrumEventsFile | null }
-  | { kind: "energy"; data: EnergyLayer | null };
+  | { kind: "drums"; data: DrumEventsFile | null };
 
 interface CanvasLaneProps {
   lane: Lane;
@@ -61,10 +58,6 @@ function hasData(source: CanvasLaneSource): boolean {
       return !!source.data?.frames.length && !!source.data.sources.length;
     case "drums":
       return !!source.data?.events.length;
-    case "energy":
-      return (
-        !!source.data?.beat_energy.length || !!source.data?.accent_candidates.length
-      );
   }
 }
 
@@ -88,11 +81,6 @@ function collapsedSamples(source: CanvasLaneSource): Array<{ t: number; v: numbe
       return pick(source.data?.frames ?? [], (f) => ({
         t: f.time,
         v: f.normalized_values[0] ?? 0,
-      }));
-    case "energy":
-      return pick(source.data?.beat_energy ?? [], (b) => ({
-        t: b.time,
-        v: b.energy_score,
       }));
     case "drums":
       return [];
@@ -184,28 +172,6 @@ export function CanvasLane({
               time: e.time,
               end_s: e.end_s,
               event_type: e.event_type,
-            })),
-            lane.id,
-          );
-        }
-        break;
-      case "energy":
-        if (source.data) {
-          const beats = source.data.beat_energy;
-          const beatRows = beats.map((b, i) => ({
-            start_s: b.time,
-            end_s: beats[i + 1]?.time ?? coords.duration,
-            value: b.energy_score,
-          }));
-          hitsRef.current = drawEnergy(
-            rc,
-            beatRows,
-            source.data.accent_candidates.map((a) => ({
-              id: a.id,
-              time: a.time,
-              intensity: a.intensity,
-              kind: a.kind,
-              raw: a,
             })),
             lane.id,
           );

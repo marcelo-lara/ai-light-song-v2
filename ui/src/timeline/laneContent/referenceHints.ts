@@ -32,11 +32,10 @@ export function humanHintsContent(file: HumanHintsFile | null): SparseBlock[] {
 
 /**
  * LLM Pending Proposals — `reference/proposals/pending.json`, written only by
- * `propose_hint`/`propose_section_field` (mcp/proposals.py). Sits directly
+ * `propose_hint` (mcp/proposals.py). Sits directly
  * under Human Hints so a proposal can be eyeballed against the hand-authored
- * hints it is auditioning to join. Only unreviewed `hint`-type proposals get a
- * block here — `section_field` proposals have no start/end span to place on
- * the timeline, and a decided (`approved`/`rejected`) proposal has already
+ * hints it is auditioning to join. Only unreviewed proposals get a block here;
+ * a decided (`approved`/`rejected`) proposal has already
  * left the queue this lane exists to surface.
  */
 export function llmPendingProposalsContent(

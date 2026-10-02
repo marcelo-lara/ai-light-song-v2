@@ -19,6 +19,14 @@ class NormalizeHumanLabelTests(unittest.TestCase):
         self.assertEqual(normalize_human_label("instrumental"), "Main")
         self.assertEqual(normalize_human_label("  Instrumental  "), "Main")
 
+    def test_drop_break_is_canonical_with_case_and_spacing_tolerance(self) -> None:
+        from analyzer.section_vocabulary import CANONICAL_TERMS
+
+        self.assertEqual(CANONICAL_TERMS.index("Drop Break"), CANONICAL_TERMS.index("Extended Drop") + 1)
+        self.assertEqual(normalize_human_label("Drop Break"), "Drop Break")
+        self.assertEqual(normalize_human_label("  drop break "), "Drop Break")
+        self.assertEqual(normalize_human_label("DROP BREAK"), "Drop Break")
+
     def test_unknown_label_passes_through_stripped_unchanged(self) -> None:
         # No silent fallback: a genuinely novel human label is not overwritten.
         self.assertEqual(normalize_human_label(" Freestyle Rap "), "Freestyle Rap")

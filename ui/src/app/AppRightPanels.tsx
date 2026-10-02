@@ -16,7 +16,7 @@ import {
   RightPanel,
 } from "../panel";
 import { REVIEWABLE_LANE_IDS, reviewKey } from "../data/blockReviewMatch";
-import type { BlockReviewMatched, HumanHintsFile, HumanSegmentsFile, BlockEnergyFile } from "../data/types";
+import type { BlockReviewMatched, HumanHintsFile, HumanSegmentsFile } from "../data/types";
 import type { SparseBlock } from "../timeline/laneContent";
 import type { DrawerView } from "./useDrawer";
 import type { HumanOverridesResult } from "./useHumanOverrides";
@@ -44,7 +44,6 @@ export function AppRightPanels({
   isPlaying,
   humanHintsFile,
   humanSectionsFile,
-  blockEnergyFile,
   validatedLyricIds,
   eventsPanel,
   blockReviewIndexFor,
@@ -62,7 +61,6 @@ export function AppRightPanels({
   isPlaying: boolean;
   humanHintsFile: HumanHintsFile | null;
   humanSectionsFile: HumanSegmentsFile | null;
-  blockEnergyFile: BlockEnergyFile | null;
   validatedLyricIds: ReadonlySet<number>;
   eventsPanel: EventsPanelProps | null;
   blockReviewIndexFor: (laneId: string) => Map<string, BlockReviewMatched> | null;
@@ -115,16 +113,6 @@ export function AppRightPanels({
             }
           }}
           onSelectMarker={panel.handleSelectMarker}
-          blockEnergy={
-            eventsPanel.laneId === "humanHints"
-              ? { file: blockEnergyFile, onSave: overrides.handleSaveBlockEnergy }
-              : undefined
-          }
-          sectionRating={
-            eventsPanel.laneId === "humanSections"
-              ? { onSave: overrides.handleSaveSectionRatings }
-              : undefined
-          }
           lyricValidation={
             eventsPanel.laneId === "moisesLyrics"
               ? {

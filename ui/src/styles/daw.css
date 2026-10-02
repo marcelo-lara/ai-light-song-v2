@@ -236,7 +236,7 @@ input[type="range"]:focus-visible {
   display: flex;
   align-items: center;
   gap: 4px;
-  font: 500 12.5px/1.3 var(--font-heading);
+  font: 500 12px/1.3 var(--font-heading);
   letter-spacing: -0.01em;
   color: var(--color-neutral-200);
 }
@@ -318,7 +318,7 @@ input[type="range"]:focus-visible {
 }
 .tl-waveform__state--error { color: var(--color-danger, #e0757a); }
 
-/* ---- Canvas data lanes (FFT / RMS / Envelope / drums / energy) ---- */
+/* ---- Canvas data lanes (FFT / RMS / Envelope / drums) ---- */
 
 .tl-canvas-lane { pointer-events: auto; }
 .tl-canvas-lane__canvas { position: absolute; inset: 0; display: block; }
@@ -676,9 +676,9 @@ input[type="range"]:focus-visible {
   color: var(--color-neutral-100);
 }
 
-/* ---- Block energy / tension ratings (v3.4 item 4, D4.1) ------------------ */
+/* ---- Lane-event cards ------------------------------------------------------ */
 
-/* The card is now a wrapper: the seek button and the rating controls are
+/* The card is a wrapper: the seek button and the per-card controls are
  * siblings so no <button> is nested inside another. The tint background /
  * borders / playhead marker stay on `.lane-events__card`; the seek button
  * carries the padding the card used to. */
@@ -699,69 +699,13 @@ input[type="range"]:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: -2px;
 }
-/* `N / M blocks rated`, beside the `N events` count in the panel header. */
+/* `N / M reviewed`, beside the `N events` count in the panel header. */
 .lane-events__rated {
   font: 500 10px/1 var(--font-body);
   color: var(--color-accent-300);
 }
-.lane-events__rating {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: 0 var(--space-1) var(--space-1);
-}
-.seg-rating {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.seg-rating__label {
-  flex: 0 0 46px;
-  font: 500 8px/1 var(--font-body);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-neutral-600);
-}
-/* Segmented buttons — same visual family as `.zbtn` / `.tp` panel controls:
- * a bordered strip of five cells, the picked one filled with the accent. No
- * novel visual design. */
-.seg-rating__buttons {
-  display: flex;
-  border: 1px solid var(--color-neutral-800);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-}
-.seg-rating__btn {
-  width: 22px;
-  height: 20px;
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-left: 1px solid var(--color-neutral-800);
-  background: transparent;
-  color: var(--color-neutral-400);
-  font: 500 10px/1 var(--font-body);
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-}
-.seg-rating__btn:first-child {
-  border-left: 0;
-}
-.seg-rating__btn:hover {
-  color: var(--color-accent-300);
-  background: var(--color-accent-900);
-}
-.seg-rating__btn:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: -2px;
-}
-.seg-rating__btn[aria-pressed="true"] {
-  background: var(--color-accent-800);
-  color: var(--color-accent-100);
-}
-/* ---- Block reviews (v3.7 item 1) — same segmented-button family as
- * .seg-rating, three states instead of five, plus a reason sub-picker and a
- * stale badge. */
+/* ---- Block reviews (v3.7 item 1) — three-state segmented buttons plus a
+ * reason sub-picker and a stale badge. */
 .block-verdict {
   display: flex;
   flex-wrap: wrap;
@@ -875,23 +819,6 @@ input[type="range"]:focus-visible {
   border-color: hsl(265, 80%, 56%);
   background: hsla(265, 80%, 56%, 0.22);
   color: hsl(265, 90%, 82%);
-}
-
-.lane-events__ratings-footer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.lane-events__ratings-footer .btn {
-  width: 100%;
-}
-.lane-events__save-status {
-  margin: 0;
-  font: 400 11px/1.4 var(--font-body);
-  color: var(--color-neutral-500);
-}
-.lane-events__save-status.is-error {
-  color: var(--color-accent-200);
 }
 .lane-events__save-status.is-ok {
   color: var(--color-neutral-400);
@@ -1027,8 +954,7 @@ input[type="range"]:focus-visible {
   outline: 1px solid var(--color-accent-700);
 }
 /* A card with a playhead window seeks to its start on click (App.tsx's
-   `onSeek`); a section_field card whose section_id no longer resolves
-   carries no window and never gets this class. */
+   `onSeek`). */
 .review-queue__q--clickable {
   cursor: pointer;
 }

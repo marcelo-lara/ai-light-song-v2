@@ -212,6 +212,25 @@ class AnalysisWatcherTests(unittest.TestCase):
         docker_stub = _install_stub(bin_dir)
         return data_dir, docker_stub, config_dir
 
+    def test_heartbeat_written_as_iso_timestamp(self) -> None:
+        import re
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            data_dir, docker_stub, config_dir = self._make_dirs(tmp_path)
+            result = subprocess.run(
+                [str(WATCHER), "--once"], cwd=REPO_ROOT,
+                env=_env(data_dir, docker_stub, config_dir),
+                capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            beat = data_dir / "analysis-watcher.heartbeat"
+            self.assertTrue(beat.is_file())
+            self.assertRegex(
+                beat.read_text(encoding="utf-8").strip(),
+                r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$",
+            )
+
     def test_done_and_failed_with_escaped_error(self) -> None:
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:

@@ -3,8 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 import {
   loadJson,
   loadInfo,
-  loadBlockEnergy,
   loadLyricValidations,
+  artifactLoaders,
 } from "./loaders";
 import { parseInfo } from "./parsers";
 
@@ -73,36 +73,22 @@ describe("loadJson", () => {
   });
 });
 
-describe("loadBlockEnergy", () => {
-  it("maps a 404 to an empty ratings file (v3.4 item 4)", async () => {
-    const fetchImpl = (async () =>
-      new Response("Not found", { status: 404 })) as unknown as typeof fetch;
-    const result = await loadBlockEnergy("Unrated Song", fetchImpl);
-    expect(result.ok).toBe(true);
-    if (result.ok) {
-      expect(result.data).toEqual({
-        schema_version: "",
-        song_name: "Unrated Song",
-        ratings: [],
-      });
+describe("removed artifacts", () => {
+  it("has no loader for a cut file or an experiment lane that fed a cut field", () => {
+    const keys = Object.keys(artifactLoaders);
+    for (const gone of [
+      "harmonicLayer",
+      "energy",
+      "blockEnergy",
+      "humanSectionsSeed",
+      "rhythmDrumIoi",
+      "rhythmStemAutocorr",
+      "rhythmVocalOnsets",
+      "energyLevel",
+      "tensionShape",
+    ]) {
+      expect(keys).not.toContain(gone);
     }
-  });
-
-  it("still reports a real failure", async () => {
-    const fetchImpl = (async () =>
-      new Response("boom", { status: 500 })) as unknown as typeof fetch;
-    expect((await loadBlockEnergy("Broken", fetchImpl)).ok).toBe(false);
-  });
-
-  it("parses a real ratings file", async () => {
-    const fetchImpl = fetchReturning({
-      schema_version: "1.0",
-      song_name: "s",
-      ratings: [{ hint_id: "hint-001", energy: 5, tension: 4 }],
-    });
-    const result = await loadBlockEnergy("s", fetchImpl);
-    expect(result.ok).toBe(true);
-    if (result.ok) expect(result.data.ratings).toHaveLength(1);
   });
 });
 

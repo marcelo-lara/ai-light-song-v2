@@ -3,13 +3,13 @@ import { describe, expect, it } from "vitest";
 import { ShapeError } from "./parse";
 import {
   parseBeats,
-  parseBlockEnergy,
   parseBlockReviews,
   parseLyricValidations,
   parseEventTimeline,
   parseFftBands,
-  parseHarmonicLayer,
   parseHumanHints,
+  parseHumanSegmentsFile,
+  parsePendingProposals,
   parseInfo,
   parseLoudnessEnvelope,
   parseReviewQueue,
@@ -29,7 +29,6 @@ import segFixture from "./__fixtures__/section_segmentation.json";
 import fftFixture from "./__fixtures__/fft_bands.json";
 import rmsFixture from "./__fixtures__/rms_loudness.json";
 import envFixture from "./__fixtures__/loudness_envelope.json";
-import harmonicFixture from "./__fixtures__/layer_a_harmonic.json";
 import humanHintsFixture from "./__fixtures__/human_hints.json";
 import timelineFixture from "./__fixtures__/song_event_timeline.json";
 import reviewQueueFixture from "./__fixtures__/review_queue.json";
@@ -164,13 +163,6 @@ describe("parseRmsLoudness / parseLoudnessEnvelope", () => {
   });
 });
 
-describe("parseHarmonicLayer", () => {
-  it("parses the global key", () => {
-    const harm = parseHarmonicLayer(harmonicFixture);
-    expect(harm.global_key?.source).toBe("reference_promoted");
-  });
-});
-
 describe("parseHumanHints", () => {
   it("normalises the editable hint store", () => {
     const hints = parseHumanHints(humanHintsFixture);
@@ -288,41 +280,45 @@ describe("parseSongFacts", () => {
   });
 });
 
-describe("parseBlockEnergy", () => {
-  it("reads full and partial ratings joined by hint_id", () => {
-    const file = parseBlockEnergy({
+describe("parsePendingProposals", () => {
+  it("keeps hint proposals and drops a legacy section_field row", () => {
+    const file = parsePendingProposals({
       schema_version: "1.0",
-      song_name: "_test_song",
-      ratings: [
-        { hint_id: "hint-001", energy: 5, tension: 4 },
-        { hint_id: "hint-002", energy: 3 },
+      song_name: "s",
+      proposals: [
+        {
+          id: "h1", type: "hint", status: "pending", created_at: "", evidence: "",
+          hint: { start: 1, end: 2, title: "t", summary: "" },
+        },
+        {
+          id: "s1", type: "section_field", status: "pending", created_at: "", evidence: "",
+          section_field: { section_id: "section-001", field: "x", value: 1 },
+        },
       ],
     });
-    expect(file.schema_version).toBe("1.0");
-    expect(file.ratings).toEqual([
-      { hint_id: "hint-001", energy: 5, tension: 4 },
-      { hint_id: "hint-002", energy: 3 },
+    expect(file.proposals.map((p) => p.id)).toEqual(["h1"]);
+  });
+});
+
+describe("parseHumanSegmentsFile", () => {
+  it("carries keys the editor does not own in `preserved`, verbatim", () => {
+    const [a, b] = parseHumanSegmentsFile([
+      { start: 0, end: 8, label: "Intro", energy: 2, rhythm: { drums: "half" } },
+      { start: 8, end: 16, label: "Drop" },
     ]);
+    expect(a!.preserved).toEqual({ energy: 2, rhythm: { drums: "half" } });
+    expect(b!.preserved).toBeUndefined();
   });
+});
 
-  it("drops out-of-range, non-integer, id-less and fully-empty entries", () => {
-    const file = parseBlockEnergy({
-      ratings: [
-        { hint_id: "a", energy: 9, tension: 2 }, // energy dropped, tension kept
-        { hint_id: "b", energy: 3.5 }, // dropped entirely
-        { hint_id: "", energy: 4, tension: 4 }, // no id
-        { hint_id: "d" }, // no axes
-      ],
-    });
-    expect(file.ratings).toEqual([{ hint_id: "a", tension: 2 }]);
-  });
-
-  it("tolerates a missing ratings array (404 -> empty stands in for this)", () => {
-    expect(parseBlockEnergy({ song_name: "s" }).ratings).toEqual([]);
-  });
-
-  it("throws on a non-object root", () => {
-    expect(() => parseBlockEnergy([])).toThrow(ShapeError);
+describe("removed shapes", () => {
+  it("parses a section row without key or contested_by", () => {
+    const [row] = parseSectionsTopLevelRows([
+      { section_id: "s1", start: 0, end: 1, function: null, function_confidence: null,
+        function_status: "unknown", same_label_as: null, confidence: null },
+    ]);
+    expect(row).not.toHaveProperty("key");
+    expect(row).not.toHaveProperty("contested_by");
   });
 });
 

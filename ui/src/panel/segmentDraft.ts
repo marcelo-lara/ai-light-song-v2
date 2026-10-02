@@ -7,8 +7,7 @@
 //   start / end         | start / end (seconds)
 //   label                | label ("" = unset; otherwise one of SEGMENT_FUNCTION_NAMES — never free text)
 //   description          | description (optional free text, "" = unset)
-//   energy / tension    | energy / tension (1-5, "" = unset)
-//   rhythm{Drums,Bass,Harmonic,Vocals} | rhythm.{drums,bass,harmonic,vocals} ("" = unset)
+//   preserved            | every other key the on-disk row carries, written back untouched
 //
 // segments.json carries no id, so drafts get a synthetic `segment-NNN` id
 // (display/selection only — never written back).
@@ -16,7 +15,7 @@
 import { parseTimeInput } from "./hintDraft";
 import type { SegmentDraft } from "../data/saveHumanSections";
 import { SEGMENT_FUNCTION_NAMES } from "../data/segmentFunctions";
-import type { HumanSegment, SegmentRhythm } from "../data/types";
+import type { HumanSegment } from "../data/types";
 
 export interface SegmentDraftFields {
   id: string;
@@ -26,14 +25,8 @@ export interface SegmentDraftFields {
   description: string;
   start: string;
   end: string;
-  /** "1".."5", or "" when unset (honest-unknown — never a guessed default) */
-  energy: string;
-  tension: string;
-  /** one of SEGMENT_RHYTHM_VALUES, or "" when unset */
-  rhythmDrums: string;
-  rhythmBass: string;
-  rhythmHarmonic: string;
-  rhythmVocals: string;
+  /** keys the editor does not own, carried through a Save verbatim */
+  preserved: Record<string, unknown>;
 }
 
 export function formatSeconds(seconds: number): string {
@@ -51,12 +44,7 @@ export function segmentToDraft(
     description: segment.description ?? "",
     start: formatSeconds(Number(segment.start ?? 0)),
     end: formatSeconds(Number(segment.end ?? 0)),
-    energy: segment.energy != null ? String(segment.energy) : "",
-    tension: segment.tension != null ? String(segment.tension) : "",
-    rhythmDrums: segment.rhythm?.drums ?? "",
-    rhythmBass: segment.rhythm?.bass ?? "",
-    rhythmHarmonic: segment.rhythm?.harmonic ?? "",
-    rhythmVocals: segment.rhythm?.vocals ?? "",
+    preserved: segment.preserved ?? {},
   };
 }
 
@@ -68,14 +56,7 @@ export function draftToSegment(draft: SegmentDraftFields): SegmentDraft {
     description: draft.description,
     start: parseTimeInput(draft.start),
     end: parseTimeInput(draft.end),
-    energy: draft.energy,
-    tension: draft.tension,
-    rhythm: {
-      drums: draft.rhythmDrums,
-      bass: draft.rhythmBass,
-      harmonic: draft.rhythmHarmonic,
-      vocals: draft.rhythmVocals,
-    },
+    preserved: draft.preserved,
   };
 }
 
@@ -98,13 +79,9 @@ export interface SegmentSeed {
   start: number;
   end: number;
   nonce: number;
-  /** from "Create human section" on an allin1 / Moises / Segment Seeds block;
+  /** from "Create human section" on an allin1 / Moises block;
    *  used only when it names a SEGMENT_FUNCTION_NAMES value (case-insensitive) */
   label?: string | null;
-  /** Segment Seeds blocks only — the seed's own draft values */
-  energy?: number | null;
-  tension?: number | null;
-  rhythm?: SegmentRhythm | null;
 }
 
 /** The vocabulary name matching `label` case-insensitively, else "" (unset —
@@ -128,12 +105,7 @@ export function segmentDraftFromSeed(
     description: "",
     start: formatSeconds(start),
     end: formatSeconds(end),
-    energy: seed.energy != null ? String(seed.energy) : "",
-    tension: seed.tension != null ? String(seed.tension) : "",
-    rhythmDrums: seed.rhythm?.drums ?? "",
-    rhythmBass: seed.rhythm?.bass ?? "",
-    rhythmHarmonic: seed.rhythm?.harmonic ?? "",
-    rhythmVocals: seed.rhythm?.vocals ?? "",
+    preserved: {},
   };
 }
 

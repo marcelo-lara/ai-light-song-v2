@@ -1,0 +1,103 @@
+Phrases — boundary P / R / F1 @ +-1.0 s
+====================================================================================================
+
+## truth: reviewed segments (coarse) — 10 songs
+
+song                                     fam      truth                 phrases        phrases-resolved                  allin1           stem-presence
+Armin - Revolution                       edm         13  0.500/0.385/0.435 n=10   0.444/0.308/0.364 n=9    0.727/0.615/0.667 n=11   0.250/0.077/0.118 n=4  
+Charli-VonDutch                          pop_edm      9  0.833/0.556/0.667 n=6    0.833/0.556/0.667 n=6    0.545/0.667/0.600 n=11   1.000/0.556/0.714 n=5  
+Cinderella - Ella Lee                    other       19  0.222/0.211/0.216 n=18   0.214/0.158/0.182 n=14   0.650/0.684/0.667 n=20   0.429/0.158/0.231 n=7  
+Queen of Kings - Alessandra              pop_edm     18  0.875/0.389/0.538 n=8    0.875/0.389/0.538 n=8    0.900/0.500/0.643 n=10   0.833/0.278/0.417 n=6  
+Rapture - Nadia Ali                      edm          7  0.385/0.714/0.500 n=13   0.300/0.429/0.353 n=10   0.417/0.714/0.526 n=12   0.385/0.714/0.500 n=13 
+Sash - Raindrops                         edm         13  0.667/0.308/0.421 n=6    0.600/0.231/0.333 n=5    0.545/0.462/0.500 n=11   0.400/0.154/0.222 n=5  
+What a Feeling - Courtney Storm          pop_edm     11  0.500/0.455/0.476 n=10   0.556/0.455/0.500 n=9    0.667/0.727/0.696 n=12   0.667/0.364/0.471 n=6  
+Yonaka - Seize the Power                 rock        11  0.364/0.364/0.364 n=11   0.364/0.364/0.364 n=11   0.700/0.636/0.667 n=10   0.429/0.273/0.333 n=7  
+_test_song                               other        7  0.800/0.571/0.667 n=5    1.000/0.286/0.444 n=2    0.750/0.429/0.545 n=4    0.750/0.429/0.545 n=4  
+ayuni                                    other       15  0.500/0.267/0.348 n=8    0.429/0.200/0.273 n=7    0.667/0.400/0.500 n=9    0.500/0.200/0.286 n=6  
+
+  pooled, edm (3 songs)
+    phrases            P=0.483 R=0.424 F1=0.452  pred=29 truth=33 matched=14
+    phrases-resolved   P=0.417 R=0.303 F1=0.351  pred=24 truth=33 matched=10
+    allin1             P=0.559 R=0.576 F1=0.567  pred=34 truth=33 matched=19
+    stem-presence      P=0.364 R=0.242 F1=0.291  pred=22 truth=33 matched=8
+
+  pooled, non-edm (7 songs)
+    phrases            P=0.500 R=0.367 F1=0.423  pred=66 truth=90 matched=33
+    phrases-resolved   P=0.509 R=0.322 F1=0.395  pred=57 truth=90 matched=29
+    allin1             P=0.684 R=0.578 F1=0.627  pred=76 truth=90 matched=52
+    stem-presence      P=0.634 R=0.289 F1=0.397  pred=41 truth=90 matched=26
+
+  pooled, all (10 songs)
+    phrases            P=0.495 R=0.382 F1=0.431  pred=95 truth=123 matched=47
+    phrases-resolved   P=0.481 R=0.317 F1=0.382  pred=81 truth=123 matched=39
+    allin1             P=0.645 R=0.577 F1=0.609  pred=110 truth=123 matched=71
+    stem-presence      P=0.540 R=0.276 F1=0.366  pred=63 truth=123 matched=34
+
+## truth: reviewed hints (fine) — 8 songs
+
+song                                     fam      truth                 phrases        phrases-resolved                  allin1           stem-presence
+Charli-VonDutch                          pop_edm      6  0.833/0.833/0.833 n=6    0.833/0.833/0.833 n=6    0.455/0.833/0.588 n=11   1.000/0.833/0.909 n=5  
+Cinderella - Ella Lee                    other       18  0.333/0.333/0.333 n=18   0.286/0.222/0.250 n=14   0.550/0.611/0.579 n=20   0.286/0.111/0.160 n=7  
+Gabry Ponte - Tutta L'Italia             pop_edm     22  0.857/0.273/0.414 n=7    0.833/0.227/0.357 n=6    0.700/0.318/0.438 n=10   1.000/0.136/0.240 n=3  
+Queen of Kings - Alessandra              pop_edm     18  0.250/0.111/0.154 n=8    0.250/0.111/0.154 n=8    0.400/0.222/0.286 n=10   0.167/0.056/0.083 n=6  
+Rapture - Nadia Ali                      edm         13  0.769/0.769/0.769 n=13   0.700/0.538/0.609 n=10   0.583/0.538/0.560 n=12   0.769/0.769/0.769 n=13 
+Sash - Raindrops                         edm         13  0.833/0.385/0.526 n=6    0.800/0.308/0.444 n=5    0.455/0.385/0.417 n=11   0.600/0.231/0.333 n=5  
+What a Feeling - Courtney Storm          pop_edm      6  0.300/0.500/0.375 n=10   0.333/0.500/0.400 n=9    0.333/0.667/0.444 n=12   0.500/0.500/0.500 n=6  
+ayuni                                    other        2  0.125/0.500/0.200 n=8    0.000/0.000/0.000 n=7    0.111/0.500/0.182 n=9    0.167/0.500/0.250 n=6  
+
+  pooled, edm (2 songs)
+    phrases            P=0.789 R=0.577 F1=0.667  pred=19 truth=26 matched=15
+    phrases-resolved   P=0.733 R=0.423 F1=0.537  pred=15 truth=26 matched=11
+    allin1             P=0.522 R=0.462 F1=0.490  pred=23 truth=26 matched=12
+    stem-presence      P=0.722 R=0.500 F1=0.591  pred=18 truth=26 matched=13
+
+  pooled, non-edm (6 songs)
+    phrases            P=0.404 R=0.319 F1=0.357  pred=57 truth=72 matched=23
+    phrases-resolved   P=0.380 R=0.264 F1=0.311  pred=50 truth=72 matched=19
+    allin1             P=0.444 R=0.444 F1=0.444  pred=72 truth=72 matched=32
+    stem-presence      P=0.455 R=0.208 F1=0.286  pred=33 truth=72 matched=15
+
+  pooled, all (8 songs)
+    phrases            P=0.500 R=0.388 F1=0.437  pred=76 truth=98 matched=38
+    phrases-resolved   P=0.462 R=0.306 F1=0.368  pred=65 truth=98 matched=30
+    allin1             P=0.463 R=0.449 F1=0.456  pred=95 truth=98 matched=44
+    stem-presence      P=0.549 R=0.286 F1=0.376  pred=51 truth=98 matched=28
+
+## Rapture and Charli-VonDutch vs stem-presence (F1; 'match or beat' check)
+
+  Rapture - Nadia Ali      segments  phrases F1=0.500 (P=0.385 R=0.714) vs stem-presence F1=0.500 (P=0.385 R=0.714)  MATCH-OR-BEAT
+  Rapture - Nadia Ali      hints     phrases F1=0.769 (P=0.769 R=0.769) vs stem-presence F1=0.769 (P=0.769 R=0.769)  MATCH-OR-BEAT
+  Charli-VonDutch          segments  phrases F1=0.667 (P=0.833 R=0.556) vs stem-presence F1=0.714 (P=1.000 R=0.556)  BELOW
+  Charli-VonDutch          hints     phrases F1=0.833 (P=0.833 R=0.833) vs stem-presence F1=0.909 (P=1.000 R=0.833)  BELOW
+
+## Output sanity (all songs with a cache)
+
+  Armin - Revolution                           edm      phrases= 11 unresolved=  2
+  Best Friend - Sofi Tukker                    pop_edm  phrases= 11 unresolved=  2
+  ChangedTheWayYouKissMe-Example               pop_edm  phrases=  9 unresolved=  0
+  Charli-Guess                                 pop_edm  phrases=  5 unresolved=  4
+  Charli-VonDutch                              pop_edm  phrases=  7 unresolved=  0
+  Chimera - Hana                               other    phrases= 19 unresolved= 11
+  Cinderella - Ella Lee                        other    phrases= 19 unresolved=  8
+  CruelSummer - Malvina                        other    phrases= 15 unresolved=  6
+  Fascination (The Droyds One Armed Remix)     pop_edm  phrases= 21 unresolved=  0
+  Gabry Ponte - Tutta L'Italia                 pop_edm  phrases=  8 unresolved=  2
+  Hideaway - Kiesza                            pop_edm  phrases= 11 unresolved=  5
+  In da name of love - Anita and Ray           pop_edm  phrases=  8 unresolved=  4
+  It's a fine day - Opus III                   edm      phrases= 10 unresolved=  5
+  Medicine-MilkInc                             pop_edm  phrases=  8 unresolved=  4
+  Only this moment - royksopp                  pop_edm  phrases= 14 unresolved=  6
+  Pet Shop Boys - I'm not scared               pop      phrases=  8 unresolved=  3
+  Queen of Kings - Alessandra                  pop_edm  phrases=  9 unresolved=  0
+  Rapture - Nadia Ali                          edm      phrases= 14 unresolved=  5
+  Rotate-Skillibeng                            other    phrases= 10 unresolved=  6
+  Sash - Raindrops                             edm      phrases=  7 unresolved=  2
+  StealTheShow-NeonDreams                      other    phrases= 18 unresolved=  8
+  Titanium - David Guetta ft Sia               pop_edm  phrases= 13 unresolved=  2
+  Underworld - Born Slippy                     edm      phrases=  6 unresolved=  2
+  What a Feeling - Courtney Storm              pop_edm  phrases= 11 unresolved=  2
+  Yonaka - Seize the Power                     rock     phrases= 12 unresolved=  0
+  _test_song                                   other    phrases=  6 unresolved=  5
+  ayuni                                        other    phrases=  9 unresolved=  2
+  total phrases 299, unresolved 96
+

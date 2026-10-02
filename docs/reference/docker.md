@@ -42,7 +42,7 @@ docker compose run --rm whisperx --all-songs                     # whole corpus
 docker compose run --rm test      # tests
 docker compose up                 # debugger only, at http://localhost:9090
 docker compose up ui              # same — debugger at http://localhost:9090
-./analysis-watcher [--stop]       # host process (not a container), backgrounds itself (log/pid in data/; asks to stop if already running) — polls data/analysis/*/artifacts/_run_request.json and runs ensure-stems (iff needed) + whisperx + ./analyze via `docker compose run` on the operator's behalf (v3.8 item 1, D1.1/D1.2 — no Docker-socket grant)
+./analysis-watcher [--stop]       # host process (not a container), backgrounds itself (log/pid in data/; asks to stop if already running) — polls data/analysis/*/artifacts/_run_request.json and runs ensure-stems (iff needed) + whisperx + ./analyze via `docker compose run` on the operator's behalf (v3.8 item 1, D1.1/D1.2 — no Docker-socket grant); rewrites data/analysis-watcher.heartbeat every poll (v3.10 item 11)
 ```
 
 Long batch run, detached, logged:
@@ -56,6 +56,29 @@ mkdir -p logs && nohup docker compose run --rm -T app \
 Batch mode isolates each song in a subprocess so unstable native state does not
 leak between tracks, and reuses the repo-local Demucs cache so no run depends on
 a mid-run download.
+
+## Always-on analysis watcher
+
+`analysis-watcher.service` (repo root) is a systemd **user** unit
+(`Restart=on-failure`) that runs `./analysis-watcher --foreground`. It
+assumes the repo is at `~/ai-light-song-v2` (`%h`); edit `WorkingDirectory`
+and `ExecStart` otherwise. Enable it once, on the host:
+
+```bash
+mkdir -p ~/.config/systemd/user
+ln -sf "$PWD/analysis-watcher.service" ~/.config/systemd/user/analysis-watcher.service
+systemctl --user daemon-reload
+systemctl --user enable --now analysis-watcher.service
+loginctl enable-linger "$USER"     # keep it running without a login session
+systemctl --user status analysis-watcher.service
+journalctl --user -u analysis-watcher.service -f    # logs
+```
+
+Do not also run `./analysis-watcher` (backgrounding mode) — two watchers
+would race on the queue. The MCP's `get_watcher_status` reports `up` while
+`data/analysis-watcher.heartbeat` is younger than 3 poll intervals
+(`ANALYSIS_WATCHER_POLL_S`, default 2; the `mcp` service's
+`MCP_WATCHER_POLL_S` must match if you change it).
 
 ## Container layout
 

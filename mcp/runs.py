@@ -48,6 +48,15 @@ NOT_STARTED_THRESHOLD_S = 120.0
 
 _TERMINAL_STATUSES = ("done", "failed")
 
+# v3.10 item 11: `./analysis-watcher` rewrites this file (one ISO-8601 UTC `Z`
+# timestamp) every poll interval, in `data/` beside the `analysis/` root.
+# The watcher is `down` when the file is missing or older than
+# WATCHER_DOWN_AFTER_POLLS poll intervals. `MCP_WATCHER_POLL_S` must match the
+# watcher's `ANALYSIS_WATCHER_POLL_S` (both default 2).
+_HEARTBEAT_FILENAME = "analysis-watcher.heartbeat"
+DEFAULT_WATCHER_POLL_S = 2.0
+WATCHER_DOWN_AFTER_POLLS = 3
+
 
 class NoRunRequestedError(Exception):
     """Raised when neither a request nor a progress file exists for a song."""
@@ -103,6 +112,40 @@ def _now_iso_z() -> str:
 
 def _parse_iso_z(text: str) -> datetime:
     return datetime.strptime(text, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+
+
+def get_heartbeat_path() -> Path:
+    """`MCP_WATCHER_HEARTBEAT` overrides the default (the analysis root's
+    parent, i.e. `/data`) so tests can point at a tmp file."""
+    configured = os.environ.get("MCP_WATCHER_HEARTBEAT")
+    if configured:
+        return Path(configured)
+    return get_analysis_root().parent / _HEARTBEAT_FILENAME
+
+
+def get_watcher_poll_s() -> float:
+    configured = os.environ.get("MCP_WATCHER_POLL_S")
+    return float(configured) if configured else DEFAULT_WATCHER_POLL_S
+
+
+def get_watcher_status() -> dict[str, Any]:
+    """`{status: "up" | "down", last_heartbeat, age_s}`. `down` when the
+    heartbeat file is missing, unparseable, or older than 3 poll intervals;
+    a missing/unparseable file reports `last_heartbeat`/`age_s` as null
+    (no-silent-fallbacks: never a guessed age)."""
+    path = get_heartbeat_path()
+    try:
+        text = path.read_text(encoding="utf-8").strip()
+        beat = _parse_iso_z(text)
+    except (OSError, ValueError):
+        return {"status": "down", "last_heartbeat": None, "age_s": None}
+    age = max(0.0, (datetime.now(timezone.utc) - beat).total_seconds())
+    up = age <= WATCHER_DOWN_AFTER_POLLS * get_watcher_poll_s()
+    return {
+        "status": "up" if up else "down",
+        "last_heartbeat": text,
+        "age_s": round(age, 1),
+    }
 
 
 def audio_path(song: str, songs_root: Path | None = None) -> Path:

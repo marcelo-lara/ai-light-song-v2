@@ -4,8 +4,7 @@
   "generated_from": {
     "human_hints_file": "/data/analysis/_test_song/reference/human/human_hints.json",
     "sections_file": "/data/analysis/_test_song/sections.json",
-    "event_timeline_file": "/data/analysis/_test_song/song_event_timeline.json",
-    "harmonic_layer_file": "/data/analysis/_test_song/artifacts/layer_a_harmonic.json"
+    "event_timeline_file": "/data/analysis/_test_song/song_event_timeline.json"
   },
   "summary": {
     "hint_count": 13,

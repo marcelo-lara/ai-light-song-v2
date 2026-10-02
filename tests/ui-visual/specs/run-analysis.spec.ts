@@ -11,7 +11,7 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // 404 is the expected idle state (`OPTIONAL_RUN_PROGRESS_404` in helpers.ts).
 //
 // This spec writes a transient `_run_progress.json` fixture for the
-// running-status case, then deletes it (mirrors `block-energy-rating.spec.ts`'s
+// running-status case, then deletes it (mirrors `lyric-validation.spec.ts`'s
 // snapshot/restore pattern for a mutated fixture file — here the file starts
 // absent, so "restore" is "remove").
 const RUN_PROGRESS_FIXTURE = path.join(

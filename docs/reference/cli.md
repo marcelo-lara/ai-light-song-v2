@@ -57,16 +57,10 @@ is authoritative over this list.
 | `extract-timing-grid` / `validate-beats` | 1.2 |
 | `extract-fft-bands` | 1.3 |
 | `extract-mix-stem-loudness` | 1.4 |
-| `extract-hpcp-and-key` | 2.1 |
 | `extract-drum-events` | 2.5 |
-| `extract-energy-features` | 2.6 |
 | `segment-sections` | 3.1 |
 | `detect-arrangement-state` | 3.2 |
-| `contest-section-function` | 3.3 |
-| `section-clues` | 3.4 |
-| `derive-energy-layer` | 4.1 |
 | `build-gestures` | 5.0 |
-| `classify-genre` | 6.1 |
 | `generate-section-hints` | 6.2 |
 | `build-ui-data` | 7.2 |
 | `publish-arrangement-state` | 7.3 |
@@ -74,21 +68,11 @@ is authoritative over this list.
 | `build-validation-report`, `write-validation-report`, `write-validation-markdown` | validation |
 
 The table is ordered by id, and run order differs — `detect-arrangement-state`
-runs after `build-ui-data`, which publishes the `loudness.json` it reads.
-`contest-section-function` (3.3) runs later still, after `build-ui-data` **and**
-`publish-arrangement-state`: it reads the published `sections.json`,
-`arrangement_state.json` and `loudness.json`, writes
-`artifacts/section_function_contest.json`, and re-fuses the two contest fields
-(`function_status: "contested"`, `contested_by`) into `sections.json`. A single
-`--stage contest-section-function` run gates on all three published files and
-fails (`AnalysisError`) if `build-ui-data` has not run.
-
-`section-clues` (3.4) runs last of the three phase-3 stages, after
-`contest-section-function` — it fuses `energy`, `tension` and `rhythm` onto the
-already-published `sections.json`, so it is the stage to re-run after editing a
-song's `reference/human/segments.json`. A stage name absent from
-`STAGE_PIPELINE_IDS` is not an error: the run reports success and writes
-nothing, so check the output file's mtime rather than the exit code.
+runs after `build-ui-data`, which publishes the `loudness.json` it reads. A
+stage name absent from `STAGE_PIPELINE_IDS` is not an error: the run reports
+success and writes nothing, so check the output file's mtime rather than the
+exit code. Republishing `sections.json` after editing a song's
+`reference/human/segments.json` needs only `build-ui-data`.
 
 `build-gestures` (5.0) and `generate-section-hints` (6.2) run **after**
 `build-ui-data` (7.2) in the full pipeline (v3.7 item 6 — moved up from their
@@ -191,7 +175,6 @@ attempted pair failed; the pass never affects the `./analyze` exit code.
 ## The rule that governs all of it
 
 **The analyzer never rebuilds a canonical artifact from `reference/`.**
-`essentia/beats.json` and `layer_a_harmonic.json` are always the pipeline's own
-output. The v2.1 takeover that substituted a Moises-derived grid — and its
-`beats_inferred.json`, `layer_a_harmonic.inferred.json` and
+`essentia/beats.json` is always the pipeline's own output. The v2.1 takeover that substituted a Moises-derived grid — and its
+`beats_inferred.json` and
 `generate-timing-diagnosis` stage — is gone. `reference/` is validation-only.

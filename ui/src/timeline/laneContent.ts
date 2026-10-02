@@ -17,7 +17,6 @@ import type {
   EventTimeline,
   HumanHintsFile,
   HumanSegmentsFile,
-  HumanSegmentsSeedFile,
   MoisesSegmentsFile,
   PendingProposalsFile,
   SectionRow,
@@ -33,15 +32,13 @@ import type {
   StemPresenceSectionsFile,
   VocalCadenceFile,
   ArrangementStateFile,
-  RhythmDrumIoiFile,
-  RhythmStemAutocorrFile,
-  RhythmVocalOnsetsFile,
-  EnergyLevelFile,
-  TensionShapeFile,
   WhisperxVadFile,
   ClapEventsFile,
   KickCheckFile,
   CrashCheckFile,
+  FilterSweepFile,
+  PhrasesFile,
+  SectionNamesFile,
 } from "../data/sparseArtifacts";
 
 import {
@@ -56,8 +53,8 @@ import {
   sectionsContent,
   allin1PosteriorContent,
   stemPresenceSectionsContent,
-  segmentSeedsContent,
   arrangementStateContent,
+  sectionNamesContent,
 } from "./laneContent/sections";
 import {
   vocalTranscriptionContent,
@@ -66,16 +63,11 @@ import {
   whisperxVadContent,
 } from "./laneContent/vocal";
 import {
-  rhythmDrumIoiContent,
-  rhythmStemAutocorrContent,
-  rhythmVocalOnsetsContent,
-} from "./laneContent/rhythm";
-import {
   characterContent,
-  energyLevelContent,
-  tensionShapeContent,
   gesturesContent,
-} from "./laneContent/energyGestures";
+  filterSweepContent,
+  phrasesContent,
+} from "./laneContent/characterGestures";
 import {
   clapEventsContent,
   kickCheckContent,
@@ -93,19 +85,16 @@ export {
   sectionsContent,
   allin1PosteriorContent,
   stemPresenceSectionsContent,
-  segmentSeedsContent,
   arrangementStateContent,
+  sectionNamesContent,
   vocalTranscriptionContent,
   vocalCadenceContent,
   vocalPhrasesContent,
   whisperxVadContent,
-  rhythmDrumIoiContent,
-  rhythmStemAutocorrContent,
-  rhythmVocalOnsetsContent,
   characterContent,
-  energyLevelContent,
-  tensionShapeContent,
   gesturesContent,
+  filterSweepContent,
+  phrasesContent,
   clapEventsContent,
   kickCheckContent,
   crashCheckContent,
@@ -171,17 +160,14 @@ export interface LaneContentSources {
   stemPresenceSections?: StemPresenceSectionsFile | null;
   vocalCadence?: VocalCadenceFile | null;
   arrangementState?: ArrangementStateFile | null;
-  rhythmDrumIoi?: RhythmDrumIoiFile | null;
-  rhythmStemAutocorr?: RhythmStemAutocorrFile | null;
-  rhythmVocalOnsets?: RhythmVocalOnsetsFile | null;
-  energyLevel?: EnergyLevelFile | null;
-  tensionShape?: TensionShapeFile | null;
-  segmentSeeds?: HumanSegmentsSeedFile | null;
   whisperxVad?: WhisperxVadFile | null;
   gestures?: EventTimeline | null;
   clapEvents?: ClapEventsFile | null;
   kickCheck?: KickCheckFile | null;
   crashCheck?: CrashCheckFile | null;
+  filterSweep?: FilterSweepFile | null;
+  phrases?: PhrasesFile | null;
+  sectionNames?: SectionNamesFile | null;
   /** v3.7 item 1 — reference/human/block_reviews.json, unfiltered; tinting is
    *  applied per lane inside `buildLaneBlocks`. */
   blockReviews?: BlockReviewsFile | null;
@@ -200,17 +186,14 @@ export const SPARSE_LANE_IDS = [
   "allin1Posterior",
   "stemPresenceSections",
   "vocalCadence",
-  "rhythmDrumIoi",
-  "rhythmStemAutocorr",
-  "rhythmVocalOnsets",
-  "energyLevel",
-  "tensionShape",
-  "segmentSeeds",
   "whisperxVad",
   "gestures",
   "clapEvents",
   "kickCheck",
   "crashCheck",
+  "filterSweep",
+  "phrases",
+  "sectionNames",
   "sections",
   "character",
   "vocalTranscription",
@@ -289,18 +272,6 @@ function buildLaneBlocksRaw(
       return stemPresenceSectionsContent(s.stemPresenceSections ?? null);
     case "vocalCadence":
       return vocalCadenceContent(s.vocalCadence ?? null);
-    case "rhythmDrumIoi":
-      return rhythmDrumIoiContent(s.rhythmDrumIoi ?? null);
-    case "rhythmStemAutocorr":
-      return rhythmStemAutocorrContent(s.rhythmStemAutocorr ?? null);
-    case "rhythmVocalOnsets":
-      return rhythmVocalOnsetsContent(s.rhythmVocalOnsets ?? null);
-    case "energyLevel":
-      return energyLevelContent(s.energyLevel ?? null);
-    case "tensionShape":
-      return tensionShapeContent(s.tensionShape ?? null);
-    case "segmentSeeds":
-      return segmentSeedsContent(s.segmentSeeds ?? null);
     case "whisperxVad":
       return whisperxVadContent(s.whisperxVad ?? null);
     case "gestures":
@@ -311,6 +282,12 @@ function buildLaneBlocksRaw(
       return kickCheckContent(s.kickCheck ?? null);
     case "crashCheck":
       return crashCheckContent(s.crashCheck ?? null);
+    case "filterSweep":
+      return filterSweepContent(s.filterSweep ?? null);
+    case "phrases":
+      return phrasesContent(s.phrases ?? null);
+    case "sectionNames":
+      return sectionNamesContent(s.sectionNames ?? null);
     case "sections":
       return sectionsContent(s.sections ?? [], s.sectionSegmentation ?? []);
     case "character":

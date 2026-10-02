@@ -2,7 +2,7 @@
 // (item 7 / Story 8.10).
 //
 // Renders `artifacts/validation/review_queue.json` as ranked questions. The
-// whole-song questions (`form_family`, `form_family_vs_genre`) are answerable
+// whole-song questions (`form_family`) are answerable
 // via a `<select>` of the analyzer's candidates; on an explicit Save they are
 // PUT to `/api/song-facts/<song>` and land in `reference/human/song_facts.json`
 // stamped `provenance: "human-confirmed"`. Per-section / drop questions are

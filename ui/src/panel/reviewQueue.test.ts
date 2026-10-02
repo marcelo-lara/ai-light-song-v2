@@ -21,11 +21,8 @@ const q = (over: Partial<ReviewQuestion> = {}): ReviewQuestion => ({
 });
 
 describe("reviewQuestionKind", () => {
-  it("treats form_family / form_family_vs_genre as whole-song", () => {
+  it("treats form_family as whole-song", () => {
     expect(reviewQuestionKind(q({ field: "form_family" }))).toBe("whole_song");
-    expect(reviewQuestionKind(q({ field: "form_family_vs_genre" }))).toBe(
-      "whole_song",
-    );
   });
 
   it("treats per-section and drop questions as context", () => {
@@ -67,15 +64,11 @@ describe("partitionReviewQueue", () => {
       questions: [
         q({ field: "sections.section-001.form_role", leverage: 0.2 }),
         q({ field: "form_family", leverage: 0.9 }),
-        q({ field: "form_family_vs_genre", leverage: 0.3 }),
         q({ field: "drops.timed_location", leverage: 0.7 }),
       ],
     };
     const { wholeSong, context } = partitionReviewQueue(queue);
-    expect(wholeSong.map((x) => x.field)).toEqual([
-      "form_family",
-      "form_family_vs_genre",
-    ]);
+    expect(wholeSong.map((x) => x.field)).toEqual(["form_family"]);
     expect(context.map((x) => x.field)).toEqual([
       "drops.timed_location",
       "sections.section-001.form_role",
@@ -90,11 +83,11 @@ describe("partitionReviewQueue", () => {
       open_question_count: 2,
       questions: [
         q({ field: "form_family", leverage: null }),
-        q({ field: "form_family_vs_genre", leverage: 0.1 }),
+        q({ field: "form_family", leverage: 0.1 }),
       ],
     };
     expect(
-      partitionReviewQueue(queue).wholeSong.map((x) => x.field),
-    ).toEqual(["form_family_vs_genre", "form_family"]);
+      partitionReviewQueue(queue).wholeSong.map((x) => x.leverage),
+    ).toEqual([0.1, null]);
   });
 });

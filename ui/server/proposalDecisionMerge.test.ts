@@ -5,8 +5,9 @@
 
 import { describe, expect, it } from "vitest";
 
+import * as merge from "./proposalDecisionMerge";
+
 import {
-  applyApprovedSectionField,
   buildApprovedHintEntry,
   hintAlreadyCaptured,
   nextHumanHintId,
@@ -136,31 +137,8 @@ describe("buildApprovedHintEntry", () => {
   });
 });
 
-describe("applyApprovedSectionField", () => {
-  it("merges onto the best-overlapping existing row", () => {
-    const segments = [
-      { start: 0, end: 10 },
-      { start: 20, end: 30 },
-    ];
-    const next = applyApprovedSectionField(segments, { start: 18, end: 32 }, "tension", 4);
-    expect(next).toEqual([
-      { start: 0, end: 10 },
-      { start: 20, end: 30, tension: 4 },
-    ]);
-  });
-
-  it("creates a new row at the section's span when nothing overlaps", () => {
-    const next = applyApprovedSectionField([], { start: 50, end: 60 }, "energy", 3);
-    expect(next).toEqual([{ start: 50, end: 60, energy: 3 }]);
-  });
-
-  it("merges a rhythm.<stem> field into the row's rhythm map", () => {
-    const segments = [{ start: 0, end: 10, rhythm: { bass: "quarter" } }];
-    const next = applyApprovedSectionField(segments, { start: 0, end: 10 }, "rhythm.drums", "eighth");
-    expect(next[0]!.rhythm).toEqual({ bass: "quarter", drums: "eighth" });
-  });
-
-  it("rejects an unknown field", () => {
-    expect(() => applyApprovedSectionField([], { start: 0, end: 10 }, "bogus", 1)).toThrow();
+describe("section-field proposals are gone", () => {
+  it("exposes no section-field merge", () => {
+    expect(merge).not.toHaveProperty("applyApprovedSectionField");
   });
 });

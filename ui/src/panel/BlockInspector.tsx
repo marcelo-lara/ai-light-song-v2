@@ -35,7 +35,6 @@ interface BlockInspectorProps {
 /** Lanes whose blocks are section spans — promoted to a human *section*. */
 export const SECTION_SOURCE_LANES: ReadonlySet<string> = new Set([
   "allin1Sections",
-  "segmentSeeds",
   "moisesSections",
 ]);
 

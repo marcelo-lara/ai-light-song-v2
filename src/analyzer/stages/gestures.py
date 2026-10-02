@@ -175,6 +175,50 @@ _STEM_ENTRY_CORRECTION_EPSILON_S = 0.02
 #: the gold set, not invented").
 _STEM_ENTRY_TROUGH_RATIO = 0.6
 
+#: v3.10 item 3 -- drums-led entries. The two-stem rule above needs bass AND
+#: drums to cross their on-thresholds within one beat, and judges "on" by a
+#: 1-beat rolling mean. Two real drops escape it: *Cinderella* 85.73s (a
+#: drums-only entry, the bass stem a beat and a half later) and
+#: *Charli-VonDutch* 29.85s (one ~50 ms kick per beat, whose rolling mean tops
+#: out at 0.31x p95 against the 0.40x gate; a rolling *max* was tried and
+#: regressed Titanium 151.445s and moved Rapture / Queen of Kings earlier).
+#: This fallback runs only at a boundary the two-stem rule found nothing for.
+#: Drums presence is HIT DENSITY on the raw frames, not a mean:
+#:   - a hit is a raw-frame local maximum >= HIT_RATIO of the drums stem's
+#:     own p95 (Charli's kicks peak at 0.96-1.51x p95, Cinderella's at
+#:     1.05-1.11x; Charli's 29.55s stray ghost hit is 0.43x and never counts);
+#:     hits closer than HIT_MIN_GAP_BEATS collapse to the first (one kick's
+#:     own decay ripple);
+#:   - the groove must be CONTINUOUS: no gap between consecutive hits inside
+#:     the density window longer than MAX_GAP_BEATS. A lone pickup hit
+#:     followed by a trough and then the real groove would otherwise borrow
+#:     the groove's hits for its density (Charli-Guess 95.745s pickup, 3 beats
+#:     of silence, real entry ~97.25s; genuine grooves here run 1 beat apart);
+#:   - the drums are "on" from a hit when the next DENSITY_BEATS beats hold
+#:     at least DENSITY_MIN hits per beat (Charli and Cinderella: 1 per beat,
+#:     4 hits in 4 beats) and the PRIOR_BEATS beats before it hold no hit
+#:     (both songs: complete silence before the entry, so this is a turn-on,
+#:     not a continuing groove);
+#:   - the bass then follows: its smoothed value clears its own on-threshold
+#:     somewhere in the next FOLLOW_BARS bar and was below it the beat before
+#:     the drums onset (Cinderella: ~1.5 beats after; Charli: ~4 beats);
+#:   - the onset is the drums onset, walked back from the hit's peak to the
+#:     first frame >= the shared `_STEM_ENTRY_ONSET_RATIO` (at most
+#:     ONSET_BACK_BEATS), and it must lie within one bar of its own boundary;
+#:   - the impact carries the fixed, deliberately modest FALLBACK_CONFIDENCE
+#:     (below the two-stem case's 0.75 ceiling): there is no jump score here.
+#: The v3.9 guards (0.25 s dedup against every impact, D4.1 trough guard on
+#: an in-place correction) apply unchanged in the shared tail.
+_DRUMS_LED_HIT_RATIO = 0.5
+_DRUMS_LED_HIT_MIN_GAP_BEATS = 0.25
+_DRUMS_LED_DENSITY_BEATS = 4.0
+_DRUMS_LED_DENSITY_MIN = 0.75
+_DRUMS_LED_PRIOR_BEATS = 2.0
+_DRUMS_LED_MAX_GAP_BEATS = 1.5
+_DRUMS_LED_FOLLOW_BARS = 1.0
+_DRUMS_LED_ONSET_BACK_BEATS = 0.25
+_DRUMS_LED_FALLBACK_CONFIDENCE = 0.5
+
 #: Riser/downlifter: a near-monotonic ramp has to explain most of the
 #: high-band range (not just a quarter of it) and fit tightly (r2) to count --
 #: otherwise general loudness drift reads as a "riser" on every bar.
@@ -490,18 +534,13 @@ def detect_stem_entry_impacts(
     sustain_frames = max(1, int(round(_STEM_ENTRY_SUSTAIN_BEATS * beat_len / frame_dt)))
     onset_back_frames = max(1, beat_frames // 4)
 
-    out = []
-    for section in sections[1:]:
-        boundary_time = float(section["start"])
-        lo_idx = int(np.searchsorted(rms_times, boundary_time - _STEM_ENTRY_BOUNDARY_WINDOW_BARS * bar_len))
-        hi_idx = int(np.searchsorted(rms_times, boundary_time + _STEM_ENTRY_BOUNDARY_WINDOW_BARS * bar_len))
-        if hi_idx <= lo_idx:
-            continue
-
+    def _two_stem_entry(boundary_time: float, lo_idx: int, hi_idx: int) -> tuple[int, float] | None:
+        """The v3.9 rule: bass and drums both cross their on-thresholds
+        within one beat -> (raw onset frame, jump score), else None."""
         bass_crossings = _off_to_on_crossings(bass_smooth, rms_times, bass_on, bass_off, lo_idx, hi_idx)
         drums_crossings = _off_to_on_crossings(drums_smooth, rms_times, drums_on, drums_off, lo_idx, hi_idx)
         if not bass_crossings or not drums_crossings:
-            continue
+            return None
         # The earliest pair of (bass, drums) crossings within one beat of
         # each other; anchored on the LATER of the pair -- the point both
         # stems are confirmed on together, not a lone stem's own (possibly
@@ -514,7 +553,7 @@ def detect_stem_entry_impacts(
                     if anchor is None or candidate < anchor:
                         anchor = candidate
         if anchor is None:
-            continue
+            return None
 
         search_lo = int(np.searchsorted(rms_times, anchor - _STEM_ENTRY_SEARCH_BACK_BEATS * beat_len))
         search_hi = int(np.searchsorted(rms_times, anchor + _STEM_ENTRY_SEARCH_FWD_BARS * bar_len))
@@ -528,18 +567,89 @@ def detect_stem_entry_impacts(
             if score > best_score:
                 best_score, best_idx = score, i
         if best_idx is None or best_score < _STEM_ENTRY_JUMP_MIN:
-            continue
+            return None
 
-        onset_idx = None
         for i in range(max(best_idx - onset_back_frames, 0), min(best_idx + beat_frames, len(rms_times))):
             if drums_raw[i] < _STEM_ENTRY_ONSET_RATIO * drums_p95:
                 continue
             follow = slice(i, min(i + sustain_frames, len(rms_times)))
             if np.min(drums_raw[follow]) >= _STEM_ENTRY_SUSTAIN_RATIO * drums_p95:
-                onset_idx = i
-                break
-        if onset_idx is None:
+                return i, float(best_score)
+        return None
+
+    hit_level = _DRUMS_LED_HIT_RATIO * drums_p95
+    hit_min_gap = max(1, int(round(_DRUMS_LED_HIT_MIN_GAP_BEATS * beat_frames)))
+    hit_indices = _drum_hit_indices(drums_raw, hit_level, hit_min_gap)
+    density_frames = _DRUMS_LED_DENSITY_BEATS * beat_frames
+    prior_frames = _DRUMS_LED_PRIOR_BEATS * beat_frames
+    max_gap_frames = _DRUMS_LED_MAX_GAP_BEATS * beat_frames
+    follow_frames = int(round(_DRUMS_LED_FOLLOW_BARS * bar_len / frame_dt))
+    led_back_frames = max(1, int(round(_DRUMS_LED_ONSET_BACK_BEATS * beat_frames)))
+
+    def _drums_led_entry(boundary_time: float) -> tuple[int, float] | None:
+        """v3.10 item 3 -- a drums-led entry near `boundary_time` (see the
+        `_DRUMS_LED_*` constants): the first qualifying hit within one bar of
+        the boundary -> (raw onset frame, hit peak / drums p95), else None."""
+        window = _STEM_ENTRY_BOUNDARY_WINDOW_BARS * bar_len
+        for h in hit_indices:
+            if abs(float(rms_times[h]) - boundary_time) > window:
+                continue
+            n_ahead = int(np.sum((hit_indices >= h) & (hit_indices < h + density_frames)))
+            n_prior = int(np.sum((hit_indices >= h - prior_frames) & (hit_indices < h)))
+            if n_ahead / _DRUMS_LED_DENSITY_BEATS < _DRUMS_LED_DENSITY_MIN:
+                continue
+            if n_prior / _DRUMS_LED_PRIOR_BEATS > 0.0:
+                continue
+            in_window = hit_indices[(hit_indices >= h) & (hit_indices < h + density_frames)]
+            if np.any(np.diff(in_window) > max_gap_frames):
+                continue
+            onset = h
+            while (
+                onset > 0
+                and h - onset < led_back_frames
+                and drums_raw[onset - 1] >= _STEM_ENTRY_ONSET_RATIO * drums_p95
+                and drums_raw[onset - 1] <= drums_raw[onset]
+            ):
+                onset -= 1
+            # Bass follows within a bar, and was not already on before the drums.
+            after = slice(onset, min(onset + follow_frames + 1, len(rms_times)))
+            if not np.any(bass_smooth[after] >= bass_on):
+                continue
+            before = slice(max(0, onset - beat_frames), onset + 1)
+            if np.any(bass_smooth[before] >= bass_on):
+                continue
+            return onset, float(drums_raw[h] / drums_p95)
+        return None
+
+    out = []
+    for section in sections[1:]:
+        boundary_time = float(section["start"])
+        lo_idx = int(np.searchsorted(rms_times, boundary_time - _STEM_ENTRY_BOUNDARY_WINDOW_BARS * bar_len))
+        hi_idx = int(np.searchsorted(rms_times, boundary_time + _STEM_ENTRY_BOUNDARY_WINDOW_BARS * bar_len))
+        if hi_idx <= lo_idx:
             continue
+
+        primary = _two_stem_entry(boundary_time, lo_idx, hi_idx)
+        if primary is not None:
+            onset_idx, best_score = primary
+            entry_kind = "two-stem"
+            evidence_tail = (
+                f"bass+drums both on within {_STEM_ENTRY_PAIR_MAX_BEATS:.0f} beat, jump score {best_score:.2f}"
+            )
+            confidence = round(min(1.0, best_score / max(_STEM_ENTRY_JUMP_MIN, 1e-6) * 0.75), 3)
+            intensity = round(min(1.0, best_score), 3)
+        else:
+            led = _drums_led_entry(boundary_time)
+            if led is None:
+                continue
+            onset_idx, peak_ratio = led
+            entry_kind = "drums-led"
+            evidence_tail = (
+                f"drums-led, hit density >= {_DRUMS_LED_DENSITY_MIN:g}/beat then bass within "
+                f"{_DRUMS_LED_FOLLOW_BARS:.0f} bar (hit {peak_ratio:.2f}x drums p95)"
+            )
+            confidence = _DRUMS_LED_FALLBACK_CONFIDENCE
+            intensity = round(min(1.0, peak_ratio), 3)
         onset_time = float(rms_times[onset_idx])
         # An onset this far from the boundary it was searched from does not
         # belong to it -- it belongs to whichever (closer) boundary it is
@@ -578,7 +688,7 @@ def detect_stem_entry_impacts(
                     closest["peak_time"] = closest["start"]
                 closest["evidence"] = (
                     f"{closest['evidence']}; corrected to stem entry onset {onset_time:.3f}s "
-                    f"(bass+drums both on within {_STEM_ENTRY_PAIR_MAX_BEATS:.0f} beat, jump score {best_score:.2f})"
+                    f"({evidence_tail})"
                 )
                 closest["start"] = round(onset_time, 3)
                 closest["end"] = round(onset_time, 3)
@@ -599,16 +709,29 @@ def detect_stem_entry_impacts(
             "start": round(onset_time, 3),
             "peak_time": round(onset_time, 3),
             "end": round(onset_time, 3),
-            "confidence": round(min(1.0, best_score / max(_STEM_ENTRY_JUMP_MIN, 1e-6) * 0.75), 3),
-            "intensity": round(min(1.0, best_score), 3),
+            "confidence": confidence,
+            "intensity": intensity,
             "anchor_bar": anchor_beat["bar"] if anchor_beat else None,
             "on_downbeat": bool(anchor_beat and anchor_beat.get("type") == "downbeat"),
-            "evidence": (
-                f"stem entry at section boundary {boundary_time:.2f}s: bass+drums both on "
-                f"within {_STEM_ENTRY_PAIR_MAX_BEATS:.0f} beat (jump score {best_score:.2f})"
-            ),
+            "evidence": f"stem entry at section boundary {boundary_time:.2f}s: {evidence_tail}",
         })
     return out
+
+
+def _drum_hit_indices(drums_raw: np.ndarray, level: float, min_gap: int) -> np.ndarray:
+    """Frame indices of raw-frame local maxima at/above `level`, later ones
+    within `min_gap` frames of an accepted hit dropped (one kick's own decay
+    ripple). Hit *density* over these is how `_DRUMS_LED_*` judges drums
+    presence -- short sparse kicks count, unlike a rolling mean."""
+    hits: list[int] = []
+    n = len(drums_raw)
+    for i in range(1, n - 1):
+        if drums_raw[i] < level or drums_raw[i] < drums_raw[i - 1] or drums_raw[i] < drums_raw[i + 1]:
+            continue
+        if hits and i - hits[-1] < min_gap:
+            continue
+        hits.append(i)
+    return np.array(hits, dtype=int)
 
 
 def _centered_moving_average(values: np.ndarray, window: int) -> np.ndarray:

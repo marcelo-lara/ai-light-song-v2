@@ -15,82 +15,6 @@ Current focus song: `_test_song`
 
 ## Open queue
 
-### `test_seeded_queue_parses_with_three_enabled_app_rows` expects archived queue rows
-
-- **Status:** `pending` — stale since v3.6, carried as a known failure through v3.7–v3.9.
-- **Problem:** `tests/test_run_queue.py::QueueFileTests::test_seeded_queue_parses_with_three_enabled_app_rows`
-  asserts `phrase_periodicity` / `svd_tagger` / `vocal_voiceness` rows that left
-  `experiments/queue.toml` when those experiments were archived. It is the only red
-  analyzer test (202/203 at v3.9 close-out).
-- **Success condition:** the test asserts against the queue's current rows (or
-  a fixture queue file), and the analyzer suite is fully green.
-
-### `CruelSummer - Malvina` publishes an empty `sections.json`
-
-- **Status:** `pending` — found implementing v3.9 item 4 (stem-entry impacts,
-  which need a published section boundary to anchor on).
-- **Problem:** `data/analysis/CruelSummer - Malvina/sections.json` has zero
-  rows. Cause: `reference/human/segments.json` is an empty list (since
-  `f87d31f`, 2026-09-20), and `ui_data.py` treats the file's *existence* as a
-  reviewed override, so the human tier wins with 0 rows and allin1's 7
-  sections are discarded. `Charli-VonDutch` is the same shape with one row
-  (`Verse` at 0) → a single published section. Downstream, stem-entry impacts
-  (`gestures.py`) have no boundary to anchor on, so the drops at 81.37 s and
-  162.73 s are missed.
-- **Validation target:** an empty (or clearly unfinished) reviewed segments
-  file no longer erases the structure — either the tier is skipped with the
-  reason recorded in `field_sources`, or the operator's file is completed.
-  Needs the operator's call on which (a design decision, not a silent
-  fallback).
-
-### `Cinderella - Ella Lee`'s 85.73s drop is a drums-only entry
-
-- **Status:** `pending` — found implementing v3.9 item 4.
-- **Problem:** `detect_stem_entry_impacts` (`gestures.py`) requires the bass
-  and drums stems to both cross their on-threshold within one beat of each
-  other. This song's drop at 85.73s is drums-only at the boundary — the bass
-  stem doesn't reach the shared on-threshold until ~86.1s, on a different
-  beat entirely (a real bass note, not this drop's own entry) — so no
-  qualifying pair is ever found and nothing is emitted (correct per "never
-  guessed," but a real gap in coverage). The transient detector also misses
-  this instant by >1s.
-- **Validation target:** an impact within ±40ms of 85.73s on this song
-  without regressing the corpus-wide gold score (`docs/analysis-definition.md`
-  "Gestures").
-- **Next step:** a drums-only entry variant of the stem-entry detector (single
-  stem crossing its own on-threshold at a boundary, with a higher confidence
-  penalty than the two-stem case) — evaluate on the gold set before shipping,
-  per the promotion rule.
-
-### `Charli-VonDutch`'s 29.85s drop gets no stem-entry impact — sparse kicks dilute the smoothing
-
-- **Status:** `pending` — found implementing v3.9 item 4 follow-up.
-- **Problem:** the bass stem legitimately crosses the on-threshold at ~30.19s
-  (within one beat of the 29.85s boundary — the physical entry is correctly
-  reachable). The drums stem never does: its raw signal has two real, loud
-  kicks right at the boundary (29.765–29.825s and 30.245–30.285s, each
-  0.96–1.24× the song's own drums p95), but each lasts only 40–60ms, roughly
-  a beat apart, with near-silence between. `detect_stem_entry_impacts`'
-  centered 1-beat rolling *mean* used to decide "is this stem on" dilutes
-  each brief kick into the surrounding silence, topping out at 0.31× p95 —
-  short of the 0.40× on-threshold by about a quarter. No pairing is ever
-  found, so nothing is emitted (never guessed, but a real gap on a sparse
-  kick pattern). I tried swapping the rolling mean for a rolling max
-  (naturally immune to dilution) and it did **not** fix this song — the
-  full pipeline (crossing → jump-score → onset → sustain) still produced no
-  candidate at 29.85s for a reason I didn't chase further — while it *did*
-  regress a verified case: Titanium's 151.445s onset vanished entirely, and
-  Rapture's/QoK's crossings all shifted noticeably earlier from picking up
-  more transient blips. Did not ship it.
-- **Validation target:** an impact within ±40ms of 29.85s (or wherever the
-  true onset resolves to) on this song, without moving Rapture's 55.385s/
-  169.845s, Titanium's 151.445s, or reintroducing QoK's 48.555s duplicate.
-- **Next step:** a presence check that's robust to sparse, short hits without
-  over-triggering on transient noise — e.g. a rolling max gated by a minimum
-  hit *duration* (not just amplitude), or a hit-count/density check over the
-  window rather than an amplitude average — evaluated against the full gold
-  set before shipping, per the promotion rule.
-
 ### `get_detail`'s `dropouts` — vocals gap detector misses short mid-song gaps
 
 - **Status:** `pending` — found implementing v3.7 item 9 (dropouts).
@@ -126,47 +50,6 @@ Current focus song: `_test_song`
   this song, or a systematic issue with the absence detector on dense mixes)
   and either fixed or the confidence model corrected so it stops asserting
   high-confidence absence where onsets are present.
-
-### `mcp/tests/fixtures/build_fixtures.py` has drifted from the committed fixtures
-
-- **Status:** `pending` — found during v3.9 items 1 and 3.
-- **Problem:** a full `build_fixtures.py` run drops the `energy` / `tension` /
-  `rhythm` / `impact_alignment` fields hand-added to `McpFull - Fixture/sections.json`
-  since v3.6/v3.7, so the generator no longer reproduces what is checked in.
-  Items 1 and 3 regenerated only the files they added or changed and reverted the rest.
-- **Success condition:** the generator emits every committed fixture file
-  byte-identically, so it can be re-run in full.
-
-### Visual-regression baseline mismatch — height off by ~78px on most specs, environment-side
-
-- **Status:** `pending` — found running `docs/reference/ui-regression.md` §6
-  during v3.7 item 2, confirmed pre-existing (reproduces identically at the
-  v3.7 item-1-only commit, before any UI change this release made).
-- **Problem:** 36 of 40 Playwright specs fail with a captured-image height
-  mismatch against the committed baseline (e.g. `timeline-zoom-min.png`:
-  expected 1280×1142, received 1280×1220 — a consistent ~78px taller capture),
-  spanning specs unrelated to any recent feature (fft-bands-stems, drums-crash,
-  header-readout, lane-collapsed, …). Consistent with the pinned Playwright
-  container (`mcr.microsoft.com/playwright:v1.56.0-noble`) rendering fonts or
-  layout slightly differently than whatever machine captured the current
-  `__screenshots__` baselines, not a real UI regression.
-- **Success condition:** either the baselines are recaptured in the pinned
-  container and committed, or the root cause (font substitution, DPR, viewport)
-  is found and the guide's determinism section is amended so a recapture is not
-  needed. Until then, a `pending`/`failed` visual suite must not be read as a
-  UI defect without first checking whether it reproduces at a commit before
-  the change under test.
-- **Re-run at v3.8 item 2 (44 specs: 4 pass, 38 fail, 2 skipped)** — none
-  caused by that item. Besides the 10 height-mismatch failures above:
-  - **Fixture gap (18 specs):** `RegFull - Fixture/reference/proposals/allin1_posterior.json`
-    is missing, but the `allin1Posterior` lane fetches it unconditionally → a
-    404 that `assertNoRuntimeErrors` fails on. Stubbing the file made all 18
-    pass. Fix: add the fixture, or make the 404 optional in `helpers.ts`.
-  - **Right-panel pixel diff (4):** `block-energy-rating`, `lane-events` ×2,
-    `lyric-validation` fail at ~2% pixel diff (not a height change).
-  - **Functional failures (6), reproduce in isolation:** `card-click-seek`,
-    `experiment-badge` ×2, `follow-playhead`, `phrase-periodicity`,
-    `sections-contested`; `promote-hint` times out on `.app-header__total`.
 
 ### Waveform/playhead drift — up to 600ms, root cause not yet located
 
@@ -250,9 +133,8 @@ Current focus song: `_test_song`
   needle: `arrangement` (44 blocks, 7,273 B — promoted after this issue was
   first raised) is now the largest block, just ahead of `gestures` (7,107 B);
   `sections` fell to 3,169 B once `description` was dropped. v3.7 item 2 added
-  `impact_alignment` (omitted when `null`, same convention as energy/tension) —
-  the fixture gate moved to 6450 B to keep one resolved example in the
-  committed snapshot; `position` (item 3/5) was deliberately kept off this
+  `impact_alignment` (removed again in v3.10 item 8; the fixture gate stays at
+  the 6900 B v3.9 set); `position` (item 3/5) was deliberately kept off this
   tool entirely for the same reason (see serializers.py's `build_song_overview`
   docstring) — `get_detail` carries it instead.
 - **Why it was accepted, not fixed:** the size is driven by *structure*, not
@@ -307,3 +189,43 @@ Current focus song: `_test_song`
 - **Status:** `pending`
 - **Raised:** 2026-09-13
 - **Problem:** When expanding the canvas to >200px/bar the width contains excesive information that is not visible, flooding the browser memory; The solution could be to narrow the loaded information only to the visible portion, plus a buffer of half screen before and after to improve the ux; (lazy loading vs eagaer loading)
+
+### `whisperx_vad/vocal_onsets.py` and `vocal_onsets.json` are dead since v3.10 item 8
+
+- **Status:** `pending` — found implementing v3.10 item 8.
+- **Problem:** `section_clues.py` was the only reader of
+  `artifacts/whisperx-vad/vocal_onsets.json`. It was cut, but the `whisperx`
+  service still loads `faster_whisper` large-v3 and writes the file on every run
+  (`whisperx_vad/vocal_onsets.py`, `export.export_vocal_onsets`,
+  `__main__.py`, `paths.py`, the `WHISPER_DEVICE` comment in
+  `docker-compose.yml`). Nothing in `src/`, `mcp/` or `ui/` reads it (grep
+  verified); `experiments/truth_common/block_reviews.py` names only the
+  separate `rhythm_vocal_onsets.json` proposal.
+- **Validation target:** a `whisperx` run on one song.
+- **Success condition:** the module, its export call, the path helper, the
+  compose note and the `artifacts.md` row are deleted, and a `whisperx` run
+  writes only `whisperx_vad.json`.
+
+### `phrases`' `noise_sweep` rule fires on 3 of 299 phrases
+
+- **Status:** `pending` — found in v3.10 item 15.
+- **Problem:** the rising-noise rule in `experiments/phrases/` is too strict to
+  carry information (3 of 299 phrases, no ground truth), so the field is
+  effectively always false.
+- **Validation target:** a few songs with an audible white-noise sweep, named
+  by the operator in the Phrases lane.
+- **Success condition:** the rule fires on those sweeps and not on steady
+  sections, or the field is dropped from `phrases.json`.
+
+### Experiment tests are not collected by `docker compose run --rm test`
+
+- **Status:** `pending` — found in v3.10 items 14-17.
+- **Problem:** the `test` service's default command is `pytest tests/ -q`
+  (`Dockerfile.test`), so the suites under `experiments/*/tests/`
+  (`filter_sweep`, `phrases`, `downbeat_anchors`, `section_names`,
+  `stem_presence_sections`, `truth_common`, ...) never run in the default check
+  and a regression there is invisible. Each runs only when named, e.g.
+  `docker compose run --rm test python3 -m pytest experiments/phrases/tests -q`.
+- **Validation target:** `docker compose run --rm test` before and after.
+- **Success condition:** the default run covers `experiments/*/tests` too (or
+  the docs state, in one place, that it deliberately does not).

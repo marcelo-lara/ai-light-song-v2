@@ -95,9 +95,11 @@ def test_stdio_server_initializes_and_lists_expected_tools() -> None:
                     "get_song_overview",
                     "get_detail",
                     "propose_hint",
-                    "propose_section_field",
                     "request_analysis",
                     "get_analysis_progress",
+                    "get_watcher_status",
+                    "get_structure_hint_brief",
+                    "write_structure_hint",
                 ]
 
     asyncio.run(_run())

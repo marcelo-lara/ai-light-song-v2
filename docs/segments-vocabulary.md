@@ -18,7 +18,7 @@ Here is a genre-neutral list of section names you can use to tag song arrangemen
   * 128 BPM House: 16 bars
   * 140 BPM Dubstep: 16 bars (often carries the main vocal story)
 
-* **Main** — A primary musical section in arrangements that do not follow a conventional verse/chorus structure; useful for EDM and other groove-based forms.
+* **Main** — A primary musical section in arrangements that do not follow a conventional verse/chorus structure; useful for EDM and other groove-based forms. This is the EDM "groove": beat and bass, no main hook.
   * 128 BPM House: 16 bars
   * 140 BPM Dubstep: 16 bars
 
@@ -26,7 +26,7 @@ Here is a genre-neutral list of section names you can use to tag song arrangemen
 
 * **Chorus / Chorus (Inst)** — The main recurring hook or payoff section of a song; "Chorus (Inst)" is the same section without any significant vocal part.
 
-* **Post-Chorus** — A section immediately following the chorus, often extending its hook or energy without functioning as a full chorus.
+* **Post-Chorus** — A section immediately following the chorus, often extending its hook or energy without functioning as a full chorus. After a drop, this is the drop's tail (often bass on, drums thinning).
 
 * **Refrain** — A recurring lyrical or musical phrase that may function as a hook without constituting a full chorus.
 
@@ -42,9 +42,12 @@ Here is a genre-neutral list of section names you can use to tag song arrangemen
   * 128 BPM House: 8 or 16 bars (16 bars allows for a long, driving filter sweep)
   * 140 BPM Dubstep: 8 bars (shorter and highly explosive)
 
-* **Fill / Pre-Drop** — The final 1 to 4 beats of silence, a vocal phrase, or a quick drum roll right before the beat hits.
-  * 128 BPM House: 1 or 2 bars
-  * 140 BPM Dubstep: 1 bar (often just the last 2 or 4 beats of a bar for a quick vocal poke)
+* **Fill** — A short variation (up to 4 beats; up to 2 bars before a Drop) at the end of a phrase that announces the next one: a drum fill, a vocal pickup, a riser's tail. It can end an Intro, a Main, a Build-Up, a Chorus or a Drop; between a Build-Up and a Drop it is the last push into the hit. Purpose: signal "something changes now" while the music keeps moving. Lighting keeps moving into the next phrase.
+  * 128 BPM House: up to 4 beats; 1 or 2 bars only before a Drop
+  * 140 BPM Dubstep: often just the last 2 or 4 beats of a bar for a quick vocal poke
+
+* **Pre-Drop** — Between the build and the drop, near-silence across all stems: the gap before the hit. Purpose: suspend the music so the drop lands harder. Unlike a Fill, nothing keeps moving. Lighting blacks out or freezes. When a fill runs into a gap, they are two sections: Fill, then Pre-Drop.
+  * Usually 1 to 4 beats, rarely more than 1 bar
 
 ## 🔥 High-Energy Peak Sections
 
@@ -56,6 +59,9 @@ Here is a genre-neutral list of section names you can use to tag song arrangemen
   * 128 BPM House: 16 bars (rarely used unless it's a long progressive house track)
   * 140 BPM Dubstep: 8 or 16 bars (often acts as a shorter "VIP" or final energetic push)
 
+* **Drop Break** — A short break *inside* a drop that returns to the same drop (unlike a Fill, it lasts bars, not beats, and the drop's energy is cut rather than pushed): bass and drums fall out (often a vocal chop or pads only), then the drop resumes. Distinct from **Break**, which sits between sections; lighting holds the drop's look and cuts intensity for these bars.
+  * 128 BPM House: 4 or 8 bars
+
 ## 🔄 Transition Sections
 
 * **Bridge** — A contrasting section that connects major parts of the song, often appearing later in the arrangement.
@@ -64,3 +70,17 @@ Here is a genre-neutral list of section names you can use to tag song arrangemen
 * **Mid-Intro** — Used in extended club mixes, a transition section after the first drop before the main breakdown.
   * 128 BPM House: 16 bars
   * 140 BPM Dubstep: 8 or 16 bars
+
+## 🧭 Typical EDM Sequence (a guide, not a rule)
+
+Most EDM tracks cycle through the same stages. Songs skip, repeat or reorder them, and radio edits shorten them. When a stage is ambiguous, its position decides it: whatever sits between a Build-Up and a Drop is a Fill or a Pre-Drop.
+
+```
+Intro → Main → Pre-Build → Build-Up → Fill / Pre-Drop → Drop (→ Drop Break → Drop) → Post-Chorus
+      → Breakdown → Pre-Build → Build-Up → Fill / Pre-Drop → Drop → … → Outro
+```
+
+* A later Drop usually sounds like the first one, so a repeat inherits its label.
+* A Drop can follow an Intro or a Breakdown directly, with no Build-Up.
+* A Fill can close any phrase (Intro, Main, Build-Up, Chorus, Drop), not only the one before a Drop.
+* In pop-EDM, a sung Chorus often takes the Drop's place.

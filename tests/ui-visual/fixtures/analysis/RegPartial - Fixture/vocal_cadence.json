@@ -1,0 +1,637 @@
+{
+  "schema_version": "3.1",
+  "song_name": "Armin - Revolution",
+  "field_sources": {
+    "lines": "moises",
+    "sections": "moises",
+    "calls": "moises"
+  },
+  "source": "moises",
+  "reason": null,
+  "lines": [
+    {
+      "line_id": 1,
+      "start_s": 11.56,
+      "end_s": 15.0,
+      "start_position": {
+        "bar": 7,
+        "beat": 1,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 8,
+        "beat": 4,
+        "resolved": false
+      },
+      "duration_beats": 7.489,
+      "token_count": 5,
+      "resolve_time_s": 11.56,
+      "resolve_position": {
+        "bar": 7,
+        "beat": 1,
+        "resolved": true
+      },
+      "pickup": false
+    },
+    {
+      "line_id": 2,
+      "start_s": 30.5,
+      "end_s": 33.7,
+      "start_position": {
+        "bar": 17,
+        "beat": 2,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 19,
+        "beat": 1,
+        "resolved": true
+      },
+      "duration_beats": 6.915,
+      "token_count": 4,
+      "resolve_time_s": 31.86,
+      "resolve_position": {
+        "bar": 18,
+        "beat": 1,
+        "resolved": true
+      },
+      "pickup": true
+    },
+    {
+      "line_id": 3,
+      "start_s": 42.91,
+      "end_s": 43.69,
+      "start_position": {
+        "bar": 23,
+        "beat": 4,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 24,
+        "beat": 2,
+        "resolved": true
+      },
+      "duration_beats": 1.674,
+      "token_count": 1,
+      "resolve_time_s": 42.93,
+      "resolve_position": {
+        "bar": 24,
+        "beat": 1,
+        "resolved": true
+      },
+      "pickup": false
+    },
+    {
+      "line_id": 4,
+      "start_s": 43.33,
+      "end_s": 100.95,
+      "start_position": {
+        "bar": 24,
+        "beat": 1,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 54,
+        "beat": 2,
+        "resolved": true
+      },
+      "duration_beats": 120.838,
+      "token_count": 8,
+      "resolve_time_s": null,
+      "resolve_position": null,
+      "pickup": null
+    },
+    {
+      "line_id": 5,
+      "start_s": 100.62,
+      "end_s": 101.86,
+      "start_position": {
+        "bar": 54,
+        "beat": 1,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 54,
+        "beat": 4,
+        "resolved": true
+      },
+      "duration_beats": 2.723,
+      "token_count": 4,
+      "resolve_time_s": null,
+      "resolve_position": null,
+      "pickup": null
+    },
+    {
+      "line_id": 6,
+      "start_s": 101.46,
+      "end_s": 102.9,
+      "start_position": {
+        "bar": 54,
+        "beat": 3,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 55,
+        "beat": 2,
+        "resolved": true
+      },
+      "duration_beats": 3.113,
+      "token_count": 6,
+      "resolve_time_s": 102.01,
+      "resolve_position": {
+        "bar": 55,
+        "beat": 1,
+        "resolved": true
+      },
+      "pickup": true
+    },
+    {
+      "line_id": 7,
+      "start_s": 102.47,
+      "end_s": 108.75,
+      "start_position": {
+        "bar": 55,
+        "beat": 2,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 58,
+        "beat": 3,
+        "resolved": true
+      },
+      "duration_beats": 13.622,
+      "token_count": 8,
+      "resolve_time_s": null,
+      "resolve_position": null,
+      "pickup": null
+    },
+    {
+      "line_id": 8,
+      "start_s": 108.46,
+      "end_s": 109.69,
+      "start_position": {
+        "bar": 58,
+        "beat": 2,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 59,
+        "beat": 1,
+        "resolved": true
+      },
+      "duration_beats": 2.674,
+      "token_count": 6,
+      "resolve_time_s": null,
+      "resolve_position": null,
+      "pickup": null
+    },
+    {
+      "line_id": 9,
+      "start_s": 121.84,
+      "end_s": 139.58,
+      "start_position": {
+        "bar": 65,
+        "beat": 3,
+        "resolved": true
+      },
+      "end_position": {
+        "bar": 75,
+        "beat": 2,
+        "resolved": false
+      },
+      "duration_beats": 38.456,
+      "token_count": 8,
+      "resolve_time_s": 138.94,
+      "resolve_position": {
+        "bar": 75,
+        "beat": 1,
+        "resolved": false
+      },
+      "pickup": true
+    },
+    {
+      "line_id": 10,
+      "start_s": 139.28,
+      "end_s": 152.25,
+      "start_position": {
+        "bar": 75,
+        "beat": 1,
+        "resolved": false
+      },
+      "end_position": {
+        "bar": 82,
+        "beat": 2,
+        "resolved": true
+      },
+      "duration_beats": 28.849,
+      "token_count": 10,
+      "resolve_time_s": null,
+      "resolve_position": null,
+      "pickup": null
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "section-001",
+      "start_s": 0.0,
+      "end_s": 30.0,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "section boundary has no resolvable bar",
+      "rests": [],
+      "held_notes": [
+        {
+          "start_s": 11.95,
+          "length_beats": 4.105
+        },
+        {
+          "start_s": 13.83,
+          "length_beats": 2.554
+        }
+      ],
+      "tokens_per_bar": [
+        {
+          "bar": 7,
+          "tokens": 4
+        },
+        {
+          "bar": 8,
+          "tokens": 1
+        }
+      ],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-002",
+      "start_s": 30.0,
+      "end_s": 44.77,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [
+        {
+          "start_s": 33.7,
+          "length_beats": 19.957
+        }
+      ],
+      "held_notes": [
+        {
+          "start_s": 30.5,
+          "length_beats": 3.002
+        },
+        {
+          "start_s": 44.69,
+          "length_beats": 6.264
+        },
+        {
+          "start_s": 48.27,
+          "length_beats": 8.894
+        }
+      ],
+      "tokens_per_bar": [
+        {
+          "bar": 17,
+          "tokens": 1
+        },
+        {
+          "bar": 18,
+          "tokens": 3
+        },
+        {
+          "bar": 23,
+          "tokens": 1
+        },
+        {
+          "bar": 24,
+          "tokens": 4
+        },
+        {
+          "bar": 26,
+          "tokens": 3
+        },
+        {
+          "bar": 54,
+          "tokens": 1
+        }
+      ],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-003",
+      "start_s": 44.78,
+      "end_s": 57.97,
+      "lead_in_bars": -1,
+      "lead_in_line_id": 3,
+      "lead_in_resolve_time_s": 42.93,
+      "lead_in_resolve_position": {
+        "bar": 24,
+        "beat": 1,
+        "resolved": true
+      },
+      "lead_in_reason": null,
+      "rests": [],
+      "held_notes": [
+        {
+          "start_s": 44.69,
+          "length_beats": 6.264
+        },
+        {
+          "start_s": 48.27,
+          "length_beats": 8.894
+        }
+      ],
+      "tokens_per_bar": [
+        {
+          "bar": 24,
+          "tokens": 4
+        },
+        {
+          "bar": 26,
+          "tokens": 3
+        },
+        {
+          "bar": 54,
+          "tokens": 1
+        }
+      ],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-004",
+      "start_s": 57.97,
+      "end_s": 59.55,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [],
+      "tokens_per_bar": [],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-005",
+      "start_s": 59.55,
+      "end_s": 66.77,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [],
+      "tokens_per_bar": [],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-006",
+      "start_s": 81.76,
+      "end_s": 96.47,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [],
+      "tokens_per_bar": [],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-007",
+      "start_s": 96.47,
+      "end_s": 109.39,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [
+        {
+          "start_s": 103.27,
+          "length_beats": 9.574
+        }
+      ],
+      "tokens_per_bar": [
+        {
+          "bar": 54,
+          "tokens": 8
+        },
+        {
+          "bar": 55,
+          "tokens": 6
+        },
+        {
+          "bar": 58,
+          "tokens": 10
+        }
+      ],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-008",
+      "start_s": 109.39,
+      "end_s": 111.22,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [],
+      "tokens_per_bar": [
+        {
+          "bar": 58,
+          "tokens": 6
+        }
+      ],
+      "cadence_repeats": [
+        {
+          "section_id": "section-003",
+          "bar_offset": -2,
+          "match_fraction": 0.5,
+          "onsets_matched": 3,
+          "onsets_total": 6,
+          "median_error_ms": 23.24,
+          "best": false
+        },
+        {
+          "section_id": "section-007",
+          "bar_offset": -3,
+          "match_fraction": 0.6667,
+          "onsets_matched": 4,
+          "onsets_total": 6,
+          "median_error_ms": 24.66,
+          "best": true
+        }
+      ]
+    },
+    {
+      "section_id": "section-009",
+      "start_s": 111.22,
+      "end_s": 126.01,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [
+        {
+          "start_s": 121.84,
+          "length_beats": 33.404
+        }
+      ],
+      "tokens_per_bar": [
+        {
+          "bar": 65,
+          "tokens": 1
+        },
+        {
+          "bar": 74,
+          "tokens": 6
+        },
+        {
+          "bar": 75,
+          "tokens": 1
+        }
+      ],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-010",
+      "start_s": 126.01,
+      "end_s": 151.84,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [
+        {
+          "start_s": 121.84,
+          "length_beats": 33.404
+        },
+        {
+          "start_s": 144.82,
+          "length_beats": 15.601
+        }
+      ],
+      "tokens_per_bar": [
+        {
+          "bar": 65,
+          "tokens": 1
+        },
+        {
+          "bar": 74,
+          "tokens": 6
+        },
+        {
+          "bar": 75,
+          "tokens": 9
+        },
+        {
+          "bar": 78,
+          "tokens": 1
+        },
+        {
+          "bar": 82,
+          "tokens": 1
+        }
+      ],
+      "cadence_repeats": [
+        {
+          "section_id": "section-007",
+          "bar_offset": 4,
+          "match_fraction": 0.6111,
+          "onsets_matched": 11,
+          "onsets_total": 18,
+          "median_error_ms": 42.32,
+          "best": true
+        }
+      ]
+    },
+    {
+      "section_id": "section-011",
+      "start_s": 151.84,
+      "end_s": 155.56,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [
+        {
+          "start_s": 144.82,
+          "length_beats": 15.601
+        }
+      ],
+      "tokens_per_bar": [
+        {
+          "bar": 75,
+          "tokens": 8
+        },
+        {
+          "bar": 78,
+          "tokens": 1
+        },
+        {
+          "bar": 82,
+          "tokens": 1
+        }
+      ],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-012",
+      "start_s": 155.56,
+      "end_s": 177.68,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [],
+      "tokens_per_bar": [],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-013",
+      "start_s": 177.68,
+      "end_s": 186.98,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [],
+      "tokens_per_bar": [],
+      "cadence_repeats": []
+    },
+    {
+      "section_id": "section-014",
+      "start_s": 186.98,
+      "end_s": 193.89,
+      "lead_in_bars": null,
+      "lead_in_line_id": null,
+      "lead_in_resolve_time_s": null,
+      "lead_in_resolve_position": null,
+      "lead_in_reason": "no line resolves on a downbeat in the search window",
+      "rests": [],
+      "held_notes": [],
+      "tokens_per_bar": [],
+      "cadence_repeats": []
+    }
+  ],
+  "calls": []
+}

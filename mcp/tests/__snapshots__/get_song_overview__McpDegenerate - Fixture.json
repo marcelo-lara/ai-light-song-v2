@@ -4,18 +4,9 @@
     "song_name": "McpDegenerate - Fixture",
     "bpm": 120.0,
     "duration": 24.0,
-    "key": "C major",
-    "genre": {
-      "genres": [
-        "unknown"
-      ],
-      "confidence": 0.11
-    },
     "field_sources": {
       "bpm": "essentia",
-      "duration": "essentia",
-      "key": "harmonic",
-      "genre": "genre"
+      "duration": "essentia"
     }
   },
   "grid": {
@@ -72,7 +63,6 @@
       "start": "allin1",
       "end": "allin1",
       "confidence": "allin1",
-      "key": "harmonic",
       "function": "allin1",
       "function_confidence": "allin1",
       "function_status": "allin1",

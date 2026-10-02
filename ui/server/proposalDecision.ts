@@ -10,7 +10,6 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 
 import { analysisRoot, readJsonBody } from "./shared";
 import {
-  applyApprovedSectionField,
   buildApprovedHintEntry,
   hintAlreadyCaptured,
   withSongLock,
@@ -20,11 +19,6 @@ import {
   normalizeHumanHintPayload,
   type NormalizedHint,
 } from "./humanHints";
-import {
-  humanSectionsFilePath,
-  normalizeHumanSegmentsPayload,
-  type NormalizedSegment,
-} from "./humanSections";
 
 // v3.7 item 11 — reference/proposals/pending.json is written by TWO
 // producers: mcp/proposals.py appends new entries (v3.7 item 10, over stdio,
@@ -50,46 +44,13 @@ function pendingProposalsFilePath(song: unknown): string {
 
 interface PendingProposalRecord {
   id: string;
-  type?: "hint" | "section_field";
+  type?: "hint";
   status: "pending" | "approved" | "rejected";
   created_at: string;
   rejection_reason: string | null;
   evidence: string;
   hint?: { start: number; end: number; title: string; summary?: string };
-  section_field?: { section_id: string; field: string; value: number | string };
   [key: string]: unknown;
-}
-
-// Top-level `sections.json`'s span for one `section_id` — read raw, since an
-// approve only needs `start`/`end`, not the `sections_display.json` join the
-// browser's `loadSectionsTopLevel` also performs. `null` when the file or the
-// row is missing (a re-analysed song, or a section that no longer exists).
-function sectionsTopLevelFilePath(song: unknown): string {
-  const safeSong = path.basename(String(song || "").trim());
-  if (!safeSong) {
-    throw new Error("Song name is required.");
-  }
-  return path.join(analysisRoot, safeSong, "sections.json");
-}
-
-async function readSectionSpan(
-  song: string,
-  sectionId: string,
-): Promise<{ start: number; end: number } | null> {
-  let raw: string;
-  try {
-    raw = await fsp.readFile(sectionsTopLevelFilePath(song), "utf-8");
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException)?.code === "ENOENT") return null;
-    throw error;
-  }
-  const parsed = JSON.parse(raw) as {
-    sections?: Array<{ section_id?: unknown; start?: unknown; end?: unknown }>;
-  };
-  const rows = Array.isArray(parsed.sections) ? parsed.sections : [];
-  const row = rows.find((r) => r.section_id === sectionId);
-  if (!row || typeof row.start !== "number" || typeof row.end !== "number") return null;
-  return { start: row.start, end: row.end };
 }
 
 interface PendingProposalsFile {
@@ -251,48 +212,6 @@ export async function handleProposalDecision(
               "utf-8",
             );
           }
-        } else if (current.type === "section_field") {
-          const sectionField = current.section_field;
-          if (!sectionField) {
-            throw new Error(
-              `Proposal "${decision.id}" is missing its "section_field" payload.`,
-            );
-          }
-          const span = await readSectionSpan(song, sectionField.section_id);
-          if (!span) {
-            throw new Error(
-              `Section ${sectionField.section_id} is no longer on sections.json — re-run analysis before approving.`,
-            );
-          }
-          const segmentsPath = humanSectionsFilePath(song);
-          let segments: NormalizedSegment[];
-          try {
-            segments = normalizeHumanSegmentsPayload(
-              JSON.parse(await fsp.readFile(segmentsPath, "utf-8")),
-            );
-          } catch (error) {
-            if ((error as NodeJS.ErrnoException)?.code === "ENOENT") {
-              segments = [];
-            } else {
-              throw error;
-            }
-          }
-          const merged = applyApprovedSectionField(
-            segments,
-            span,
-            sectionField.field,
-            sectionField.value,
-          );
-          // Round-trips through the same validation/shape the explicit-Save
-          // editor uses (energy/tension range, rhythm vocabulary) — one
-          // place owns that, not this merge.
-          const normalized = normalizeHumanSegmentsPayload(merged);
-          await fsp.mkdir(path.dirname(segmentsPath), { recursive: true });
-          await fsp.writeFile(
-            segmentsPath,
-            JSON.stringify(normalized, null, 2) + "\n",
-            "utf-8",
-          );
         } else {
           throw new Error(`Proposal "${decision.id}" has an unknown type.`);
         }

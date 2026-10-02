@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/stem_presence_sections",
+    "engine": "per-bar bass on/off + drums full/sparse/off state machine, hysteresis-merged, boundaries moved to the nearest 20 ms loudness-frame stem onset",
+    "bar_grid": "beats.json downbeats",
+    "params": {
+      "min_section_bars": 4,
+      "bass_on_frac_of_p95": 0.35,
+      "drums_full_frac_of_p95": 0.5,
+      "drums_sparse_frac_of_p95": 0.15,
+      "vocals_on_frac_of_p95": 0.4
+    },
+    "generated_at": "2026-09-27T05:52:31.902035Z"
+  },
+  "blocks": [
+    {
+      "start_s": 0.0,
+      "end_s": 55.837,
+      "bar_start": 1,
+      "bar_end": 30,
+      "state": "drums_only",
+      "drums_detail": "sparse",
+      "vocals_present_fraction": 0.6667,
+      "confidence": 0.2471,
+      "boundary_resolved": null
+    },
+    {
+      "start_s": 55.837,
+      "end_s": 120.48,
+      "bar_start": 31,
+      "bar_end": 64,
+      "state": "stripped",
+      "drums_detail": "off",
+      "vocals_present_fraction": 0.2941,
+      "confidence": 0.2293,
+      "boundary_resolved": true
+    },
+    {
+      "start_s": 120.48,
+      "end_s": 157.237,
+      "bar_start": 65,
+      "bar_end": 84,
+      "state": "drums_only",
+      "drums_detail": "sparse",
+      "vocals_present_fraction": 0.5,
+      "confidence": 0.2568,
+      "boundary_resolved": true
+    },
+    {
+      "start_s": 157.237,
+      "end_s": 177.706,
+      "bar_start": 85,
+      "bar_end": 95,
+      "state": "stripped",
+      "drums_detail": "off",
+      "vocals_present_fraction": 0.2727,
+      "confidence": 0.1526,
+      "boundary_resolved": true
+    },
+    {
+      "start_s": 177.706,
+      "end_s": 194.01,
+      "bar_start": 96,
+      "bar_end": 104,
+      "state": "drums_only",
+      "drums_detail": "sparse",
+      "vocals_present_fraction": 0.8889,
+      "confidence": 0.2362,
+      "boundary_resolved": true
+    }
+  ]
+}

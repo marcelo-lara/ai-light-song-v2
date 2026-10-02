@@ -111,14 +111,8 @@ def _setup_beats(tmp: str, beats_payload: dict) -> SongPaths:
     paths = SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
     paths.artifact("essentia").mkdir(parents=True)
     paths.artifact("essentia", "beats.json").write_text(json.dumps(beats_payload))
-    paths.artifact("layer_a_harmonic.json").write_text(json.dumps({"global_key": None}))
     paths.artifact("section_segmentation").mkdir(parents=True, exist_ok=True)
     paths.artifact("section_segmentation", "sections.json").write_text(json.dumps({"sections": []}))
-    paths.artifact("genre.json").write_text(json.dumps({
-        "genres": ["electronic"], "confidence": 0.42,
-        "top_predictions": [{"label": "electronic", "confidence": 0.42}],
-        "guidance": ["advisory only"],
-    }))
     paths.artifact("symbolic_transcription").mkdir(parents=True, exist_ok=True)
     paths.artifact("symbolic_transcription", "drum_events.json").write_text(json.dumps({
         "summary": {"event_count": 0, "kick_count": 0, "snare_count": 0, "hat_count": 0, "unresolved_count": 0},

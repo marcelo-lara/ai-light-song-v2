@@ -18,7 +18,6 @@ export function AppHeader({
   barBeat,
   song,
   info,
-  keyLabel,
 }: {
   drawerOpen: boolean;
   onToggleDrawer: () => void;
@@ -31,7 +30,6 @@ export function AppHeader({
   barBeat: BarBeat;
   song: string | null;
   info: SongInfo | null | undefined;
-  keyLabel: string;
 }): React.JSX.Element {
   return (
     <header className="app-header">
@@ -98,9 +96,6 @@ export function AppHeader({
         <div className="app-header__tags">
           <span className="tag tag-accent" style={{ justifyContent: "center" }}>
             {info?.bpm ? `${Math.round(info.bpm)} BPM` : "— BPM"}
-          </span>
-          <span className="tag tag-outline" style={{ justifyContent: "center" }}>
-            {keyLabel}
           </span>
         </div>
       </div>

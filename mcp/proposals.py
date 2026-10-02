@@ -1,8 +1,8 @@
 """Append-only write path for MCP correction proposals (v3.7 item 10).
 
 The server is otherwise entirely read-only (the hard boundary documented in
-`docs/mcp-definition.md`). `propose_hint` and `propose_section_field` in
-`server.py` are the one exception, and even they may not write into either
+`docs/mcp-definition.md`). `propose_hint` in
+`server.py` is the one exception, and even it may not write into either
 the analyzer's own artifacts or the operator's own hand-authored files: they
 append to a single queue file, in a directory two levels below the song
 directory, named by the two components below and joined only at call time —
@@ -28,21 +28,9 @@ _INNER_DIRNAME = "reference"
 _QUEUE_DIRNAME = "proposals"
 _QUEUE_FILENAME = "pending.json"
 
-_VALID_RHYTHM_STEMS: tuple[str, ...] = ("drums", "bass", "harmonic", "vocals")
-_VALID_RHYTHM_VALUES: tuple[str, ...] = (
-    "half",
-    "quarter",
-    "eighth",
-    "sixteenth",
-    "eighth_triplet",
-    "none",
-)
-_VALID_SCALAR_FIELDS: tuple[str, ...] = ("energy", "tension")
-
 
 class ProposalValidationError(Exception):
-    """Raised for a malformed proposal call (missing evidence, an out-of-
-    vocabulary field, an out-of-range value). Nothing is written when this is
+    """Raised for a malformed proposal call (missing evidence, an invalid span). Nothing is written when this is
     raised — the caller's queue file is untouched."""
 
 
@@ -117,60 +105,6 @@ def append_hint_proposal(
             "end": end_s,
             "title": title_text,
             "summary": summary_text,
-        },
-    }
-    queue = _load_queue(song_dir, song_name)
-    queue.setdefault("proposals", []).append(entry)
-    _write_queue(song_dir, queue)
-    return entry
-
-
-def append_section_field_proposal(
-    song_dir: Path,
-    song_name: str,
-    *,
-    section_id: str,
-    field: str,
-    value: Any,
-    evidence: str,
-) -> dict[str, Any]:
-    """Validate and append a queued section-field correction. `field` is one
-    of `energy`, `tension`, or `rhythm.<stem>` (`drums`/`bass`/`harmonic`/
-    `vocals`) — anything else, or a value outside that field's domain, raises
-    `ProposalValidationError` and writes nothing."""
-    evidence_text = _require_text(evidence, "evidence")
-    section_id_text = _require_text(section_id, "section_id")
-    field_text = _require_text(field, "field")
-
-    if field_text in _VALID_SCALAR_FIELDS:
-        if isinstance(value, bool) or not isinstance(value, int) or not (1 <= value <= 5):
-            raise ProposalValidationError(f"{field_text} must be an integer 1-5")
-    elif field_text.startswith("rhythm."):
-        stem = field_text.split(".", 1)[1]
-        if stem not in _VALID_RHYTHM_STEMS:
-            valid = ", ".join(f"rhythm.{s}" for s in _VALID_RHYTHM_STEMS)
-            raise ProposalValidationError(f"rhythm field must be one of {valid}")
-        if not isinstance(value, str) or value not in _VALID_RHYTHM_VALUES:
-            valid_values = ", ".join(_VALID_RHYTHM_VALUES)
-            raise ProposalValidationError(
-                f"rhythm.{stem} value must be one of {valid_values}"
-            )
-    else:
-        raise ProposalValidationError(
-            "field must be one of energy, tension, or rhythm.<stem>"
-        )
-
-    entry: dict[str, Any] = {
-        "id": _new_id(),
-        "type": "section_field",
-        "status": "pending",
-        "created_at": _now(),
-        "rejection_reason": None,
-        "evidence": evidence_text,
-        "section_field": {
-            "section_id": section_id_text,
-            "field": field_text,
-            "value": value,
         },
     }
     queue = _load_queue(song_dir, song_name)

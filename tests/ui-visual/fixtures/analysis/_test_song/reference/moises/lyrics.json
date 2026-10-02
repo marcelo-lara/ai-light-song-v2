@@ -1,0 +1,490 @@
+[
+    {
+        "id": 2,
+        "line_id": 1,
+        "start": 11.56,
+        "end": 11.63,
+        "text": "We",
+        "confidence": "0.99"
+    },
+    {
+        "id": 3,
+        "line_id": 1,
+        "start": 11.63,
+        "end": 11.7,
+        "text": "are",
+        "confidence": "0.99"
+    },
+    {
+        "id": 4,
+        "line_id": 1,
+        "start": 11.74,
+        "end": 11.84,
+        "text": "a",
+        "confidence": "0.99"
+    },
+    {
+        "id": 5,
+        "line_id": 1,
+        "start": 11.95,
+        "end": 13.83,
+        "text": "revolution,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 6,
+        "line_id": 1,
+        "start": 13.83,
+        "end": 15.00,
+        "text": "yeah",
+        "confidence": "0.99"
+    },
+    {
+        "id": 9,
+        "line_id": 2,
+        "start": 30.50,
+        "end": 31.9,
+        "text": "(oh,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 10,
+        "line_id": 2,
+        "start": 31.9,
+        "end": 32.3,
+        "text": "oh,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 11,
+        "line_id": 2,
+        "start": 32.3,
+        "end": 32.8,
+        "text": "oh,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 12,
+        "line_id": 2,
+        "start": 32.8,
+        "end": 33.7,
+        "text": "oh,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 31,
+        "line_id": 3,
+        "start": 42.91,
+        "end": 43.69,
+        "text": "Everyday",
+        "confidence": "0.98"
+    },
+    {
+        "id": 34,
+        "line_id": 4,
+        "start": 43.33,
+        "end": 43.47,
+        "text": "We",
+        "confidence": "0.02"
+    },
+    {
+        "id": 35,
+        "line_id": 4,
+        "start": 43.78,
+        "end": 43.99,
+        "text": "are",
+        "confidence": "0.02"
+    },
+    {
+        "id": 36,
+        "line_id": 4,
+        "start": 44.27,
+        "end": 44.37,
+        "text": "the",
+        "confidence": "0.98"
+    },
+    {
+        "id": 37,
+        "line_id": 4,
+        "start": 44.69,
+        "end": 47.58,
+        "text": "ones",
+        "confidence": "0.98"
+    },
+    {
+        "id": 38,
+        "line_id": 4,
+        "start": 47.61,
+        "end": 47.93,
+        "text": "that",
+        "confidence": "0.98"
+    },
+    {
+        "id": 39,
+        "line_id": 4,
+        "start": 47.96,
+        "end": 48.2,
+        "text": "are",
+        "confidence": "0.98"
+    },
+    {
+        "id": 40,
+        "line_id": 4,
+        "start": 48.27,
+        "end": 52.45,
+        "text": "calling",
+        "confidence": "0.99"
+    },
+    {
+        "id": 41,
+        "line_id": 4,
+        "start": 100.45,
+        "end": 100.95,
+        "text": "out",
+        "confidence": "0.99"
+    },
+    {
+        "id": 44,
+        "line_id": 5,
+        "start": 100.62,
+        "end": 100.73,
+        "text": "I'm",
+        "confidence": "0.99"
+    },
+    {
+        "id": 45,
+        "line_id": 5,
+        "start": 100.76,
+        "end": 100.97,
+        "text": "tired",
+        "confidence": "0.99"
+    },
+    {
+        "id": 46,
+        "line_id": 5,
+        "start": 101.01,
+        "end": 101.08,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 47,
+        "line_id": 5,
+        "start": 101.11,
+        "end": 101.86,
+        "text": "waiting",
+        "confidence": "0.99"
+    },
+    {
+        "id": 50,
+        "line_id": 6,
+        "start": 101.46,
+        "end": 101.7,
+        "text": "Crying",
+        "confidence": "0.99"
+    },
+    {
+        "id": 51,
+        "line_id": 6,
+        "start": 101.7,
+        "end": 101.81,
+        "text": "like",
+        "confidence": "0.99"
+    },
+    {
+        "id": 52,
+        "line_id": 6,
+        "start": 101.84,
+        "end": 101.91,
+        "text": "I'm",
+        "confidence": "0.99"
+    },
+    {
+        "id": 53,
+        "line_id": 6,
+        "start": 101.95,
+        "end": 102.09,
+        "text": "sick",
+        "confidence": "0.99"
+    },
+    {
+        "id": 54,
+        "line_id": 6,
+        "start": 102.12,
+        "end": 102.19,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 55,
+        "line_id": 6,
+        "start": 102.23,
+        "end": 102.9,
+        "text": "waiting",
+        "confidence": "0.99"
+    },
+    {
+        "id": 58,
+        "line_id": 7,
+        "start": 102.47,
+        "end": 102.61,
+        "text": "One",
+        "confidence": "0.99"
+    },
+    {
+        "id": 59,
+        "line_id": 7,
+        "start": 102.64,
+        "end": 102.89,
+        "text": "sound",
+        "confidence": "0.07"
+    },
+    {
+        "id": 60,
+        "line_id": 7,
+        "start": 102.92,
+        "end": 103.24,
+        "text": "and",
+        "confidence": "0.99"
+    },
+    {
+        "id": 61,
+        "line_id": 7,
+        "start": 103.27,
+        "end": 107.69,
+        "text": "it",
+        "confidence": "0.99"
+    },
+    {
+        "id": 62,
+        "line_id": 7,
+        "start": 107.73,
+        "end": 107.94,
+        "text": "takes",
+        "confidence": "0.09"
+    },
+    {
+        "id": 63,
+        "line_id": 7,
+        "start": 107.97,
+        "end": 108.08,
+        "text": "two",
+        "confidence": "0.99"
+    },
+    {
+        "id": 64,
+        "line_id": 7,
+        "start": 108.11,
+        "end": 108.22,
+        "text": "more",
+        "confidence": "0.99"
+    },
+    {
+        "id": 65,
+        "line_id": 7,
+        "start": 108.25,
+        "end": 108.75,
+        "text": "thoughts",
+        "confidence": "0.1"
+    },
+    {
+        "id": 68,
+        "line_id": 8,
+        "start": 108.46,
+        "end": 108.56,
+        "text": "To",
+        "confidence": "0.99"
+    },
+    {
+        "id": 69,
+        "line_id": 8,
+        "start": 108.63,
+        "end": 108.81,
+        "text": "carry",
+        "confidence": "0.99"
+    },
+    {
+        "id": 70,
+        "line_id": 8,
+        "start": 108.84,
+        "end": 108.91,
+        "text": "all",
+        "confidence": "0.11"
+    },
+    {
+        "id": 71,
+        "line_id": 8,
+        "start": 108.95,
+        "end": 109.05,
+        "text": "of",
+        "confidence": "0.99"
+    },
+    {
+        "id": 72,
+        "line_id": 8,
+        "start": 109.09,
+        "end": 109.16,
+        "text": "it",
+        "confidence": "0.99"
+    },
+    {
+        "id": 73,
+        "line_id": 8,
+        "start": 109.19,
+        "end": 109.69,
+        "text": "down",
+        "confidence": "0.12"
+    },
+    {
+        "id": 76,
+        "line_id": 9,
+        "start": 121.84,
+        "end": 137.26,
+        "text": "We",
+        "confidence": "0.99"
+    },
+    {
+        "id": 77,
+        "line_id": 9,
+        "start": 137.54,
+        "end": 137.75,
+        "text": "are",
+        "confidence": "0.99"
+    },
+    {
+        "id": 78,
+        "line_id": 9,
+        "start": 138,
+        "end": 138.07,
+        "text": "the",
+        "confidence": "0.13"
+    },
+    {
+        "id": 79,
+        "line_id": 9,
+        "start": 138.1,
+        "end": 138.41,
+        "text": "ones",
+        "confidence": "0.99"
+    },
+    {
+        "id": 80,
+        "line_id": 9,
+        "start": 138.45,
+        "end": 138.69,
+        "text": "that",
+        "confidence": "0.99"
+    },
+    {
+        "id": 81,
+        "line_id": 9,
+        "start": 138.73,
+        "end": 138.83,
+        "text": "are",
+        "confidence": "0.14"
+    },
+    {
+        "id": 82,
+        "line_id": 9,
+        "start": 138.87,
+        "end": 139.08,
+        "text": "calling",
+        "confidence": "0.99"
+    },
+    {
+        "id": 83,
+        "line_id": 9,
+        "start": 139.08,
+        "end": 139.58,
+        "text": "out",
+        "confidence": "0.14"
+    },
+    {
+        "id": 86,
+        "line_id": 10,
+        "start": 139.28,
+        "end": 139.32,
+        "text": "Oh,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 87,
+        "line_id": 10,
+        "start": 139.35,
+        "end": 139.46,
+        "text": "oh,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 88,
+        "line_id": 10,
+        "start": 139.53,
+        "end": 139.63,
+        "text": "oh,",
+        "confidence": "0.15"
+    },
+    {
+        "id": 89,
+        "line_id": 10,
+        "start": 139.67,
+        "end": 139.74,
+        "text": "oh,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 90,
+        "line_id": 10,
+        "start": 139.81,
+        "end": 139.95,
+        "text": "oh,",
+        "confidence": "0.15"
+    },
+    {
+        "id": 91,
+        "line_id": 10,
+        "start": 140.09,
+        "end": 140.19,
+        "text": "oh,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 92,
+        "line_id": 10,
+        "start": 140.26,
+        "end": 140.29,
+        "text": "oh,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 93,
+        "line_id": 10,
+        "start": 140.33,
+        "end": 140.4,
+        "text": "oh,",
+        "confidence": "0.16"
+    },
+    {
+        "id": 94,
+        "line_id": 10,
+        "start": 144.82,
+        "end": 151.41,
+        "text": "oh,",
+        "confidence": "0.99"
+    },
+    {
+        "id": 95,
+        "line_id": 10,
+        "start": 151.75,
+        "end": 152.25,
+        "text": "oh",
+        "confidence": "0.16"
+    },
+    {
+        "id": 96,
+        "line_id": 10,
+        "start": 152.25,
+        "end": 152.25,
+        "text": "<EOL>",
+        "confidence": null
+    }
+]

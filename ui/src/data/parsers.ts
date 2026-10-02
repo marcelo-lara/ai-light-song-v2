@@ -20,28 +20,20 @@ import { SEGMENT_FUNCTION_NAMES } from "./segmentFunctions";
 import type {
   Beats,
   BeatRow,
-  BlockEnergyFile,
-  BlockEnergyRating,
   BlockReview,
   BlockReviewReason,
   BlockReviewsFile,
   BlockReviewVerdict,
   DrumEvent,
   DrumEventsFile,
-  EnergyAccent,
-  EnergyBeat,
-  EnergyLayer,
   EventTimeline,
   FftBands,
   FftBand,
   FftFrame,
-  HarmonicLayer,
   HumanHint,
   HumanHintsFile,
   HumanSegment,
-  HumanSegmentSeed,
   HumanSegmentsFile,
-  HumanSegmentsSeedFile,
   LyricValidationsFile,
   LoudnessFrame,
   LoudnessHistory,
@@ -59,7 +51,6 @@ import type {
   SectionsTopLevelRow,
   SectionsTopLevelRows,
   SegmentationSection,
-  SegmentRhythm,
   SongFact,
   SongFactsFile,
   SongInfo,
@@ -143,9 +134,7 @@ function parseSectionsTopLevelRow(raw: unknown, ctx: string): SectionsTopLevelRo
       `${ctx}.function_status`,
     ),
     same_label_as: stringOrNull(o.same_label_as, `${ctx}.same_label_as`),
-    contested_by: stringOrNull(o.contested_by, `${ctx}.contested_by`),
     confidence: numberOrNull(o.confidence, `${ctx}.confidence`),
-    key: stringOrNull(o.key, `${ctx}.key`),
   };
 }
 
@@ -209,9 +198,7 @@ export function mergeSectionDisplay(
       function_confidence: row.function_confidence,
       function_status: row.function_status,
       same_label_as: row.same_label_as,
-      ...(row.contested_by !== undefined ? { contested_by: row.contested_by } : {}),
       confidence: row.confidence,
-      key: row.key,
     };
   });
 }
@@ -386,25 +373,6 @@ export const parseLoudnessEnvelope = (raw: unknown): LoudnessSeries =>
 
 // ---------------------------------------------------------------------------
 
-export function parseHarmonicLayer(raw: unknown): HarmonicLayer {
-  const o = asObject(raw, "layer_a_harmonic.json");
-  const gk = objectOrNull(o.global_key, "harmonic.global_key");
-  return {
-    schema_version: stringOr(o.schema_version, "", "harmonic.schema_version"),
-    song_name: stringOr(o.song_name, "", "harmonic.song_name"),
-    global_key: gk
-      ? {
-          label: stringOrNull(gk.label, "harmonic.global_key.label"),
-          confidence: numberOrNull(
-            gk.confidence,
-            "harmonic.global_key.confidence",
-          ),
-          source: stringOrNull(gk.source, "harmonic.global_key.source"),
-        }
-      : null,
-  };
-}
-
 // ---------------------------------------------------------------------------
 
 export function parseHumanHint(raw: unknown, ctx = "human_hint"): HumanHint {
@@ -451,38 +419,8 @@ export function parseHumanHints(raw: unknown): HumanHintsFile {
 
 // ---------------------------------------------------------------------------
 
-// v3.6 item 4 — `rhythm.{drums,bass,harmonic,vocals}`, one subdivision name
-// from SEGMENT_RHYTHM_VALUES each. Deliberately tolerant like block_energy's
-// axis parsing: an unknown key or an out-of-vocabulary value is dropped
-// rather than failing the whole file. `null`/absent -> `null` (honest unset,
-// never an empty object).
-const SEGMENT_RHYTHM_KEYS = ["drums", "bass", "harmonic", "vocals"] as const;
-export const SEGMENT_RHYTHM_VALUES = [
-  "half",
-  "quarter",
-  "eighth",
-  "sixteenth",
-  "eighth_triplet",
-  "none",
-] as const;
-
-export function parseSegmentRhythm(
-  raw: unknown,
-  ctx: string,
-): SegmentRhythm | null {
-  const o = objectOrNull(raw, ctx);
-  if (!o) return null;
-  const out: NonNullable<HumanSegment["rhythm"]> = {};
-  for (const key of SEGMENT_RHYTHM_KEYS) {
-    const v = o[key];
-    if (typeof v === "string" && (SEGMENT_RHYTHM_VALUES as readonly string[]).includes(v)) {
-      out[key] = v;
-    }
-  }
-  return Object.keys(out).length ? out : null;
-}
-
 // reference/human/segments.json — a bare array, no wrapper object.
+const SEGMENT_OWN_KEYS = new Set(["start", "end", "label", "description", "id", "function"]);
 export function parseHumanSegment(raw: unknown, ctx = "segment"): HumanSegment {
   const o = asObject(raw, ctx);
   const rawLabel = stringOr(o.label, "", `${ctx}.label`);
@@ -501,14 +439,17 @@ export function parseHumanSegment(raw: unknown, ctx = "segment"): HumanSegment {
     : SEGMENT_FUNCTION_NAMES.includes(rawLabel)
       ? rawLabel
       : null;
+  // Keys the editor does not own are carried verbatim so a Save writes them
+  // back exactly as found (see `HumanSegment.preserved`).
+  const preserved = Object.fromEntries(
+    Object.entries(o).filter(([key]) => !SEGMENT_OWN_KEYS.has(key)),
+  );
   return {
     start: numberOr(o.start, 0, `${ctx}.start`),
     end: numberOr(o.end, 0, `${ctx}.end`),
     label,
     description: isOldShape ? (rawDescription ?? (rawLabel || null)) : rawDescription,
-    energy: numberOrNull(o.energy, `${ctx}.energy`),
-    tension: numberOrNull(o.tension, `${ctx}.tension`),
-    rhythm: parseSegmentRhythm(o.rhythm, `${ctx}.rhythm`),
+    ...(Object.keys(preserved).length ? { preserved } : {}),
   };
 }
 
@@ -516,79 +457,6 @@ export function parseHumanSegmentsFile(raw: unknown): HumanSegmentsFile {
   const list = asArray(raw ?? [], "segments.json");
   return list.map((s, i) => parseHumanSegment(s, `segments.json[${i}]`));
 }
-
-// reference/human/segments.seed.json (v3.6 item 4) — same bare-array shape,
-// no `description`. Written only by experiments/segment_seeds; read-only here.
-export function parseHumanSegmentSeed(
-  raw: unknown,
-  ctx = "segment_seed",
-): HumanSegmentSeed {
-  const o = asObject(raw, ctx);
-  const rawLabel = stringOrNull(o.label, `${ctx}.label`);
-  return {
-    start: numberOr(o.start, 0, `${ctx}.start`),
-    end: numberOr(o.end, 0, `${ctx}.end`),
-    label: rawLabel,
-    energy: numberOrNull(o.energy, `${ctx}.energy`),
-    tension: numberOrNull(o.tension, `${ctx}.tension`),
-    rhythm: parseSegmentRhythm(o.rhythm, `${ctx}.rhythm`),
-  };
-}
-
-export function parseHumanSegmentsSeedFile(raw: unknown): HumanSegmentsSeedFile {
-  const list = asArray(raw ?? [], "segments.seed.json");
-  return list.map((s, i) => parseHumanSegmentSeed(s, `segments.seed.json[${i}]`));
-}
-
-// ---------------------------------------------------------------------------
-
-// v3.4 item 4 — reference/human/block_energy.json. The operator's 1-5 energy /
-// tension rating for each human_hints.json block, joined by hint_id at read
-// time. Deliberately tolerant: a malformed, out-of-range or non-integer axis is
-// dropped rather than failing the whole file — the only writer is the
-// debugger's Human Hints events panel, which validates on Save
-// (`saveBlockEnergy.ts`) and the dev-server handler rejects bad payloads.
-//
-// SCOPE GUARD: nothing in src/ or mcp/ reads this file. It is reference/human/
-// material like the hints themselves — one producer (the operator), so there is
-// no field_sources / source attribution here (ui-definition.md "The write
-// rule"; the human-hints-file-stays-simple rule).
-function blockEnergyAxis(value: unknown): number | undefined {
-  return typeof value === "number" &&
-    Number.isInteger(value) &&
-    value >= 1 &&
-    value <= 5
-    ? value
-    : undefined;
-}
-
-export function parseBlockEnergy(raw: unknown): BlockEnergyFile {
-  const o = asObject(raw, "block_energy.json");
-  const ratings: BlockEnergyRating[] = [];
-  for (const entry of asArray(o.ratings ?? [], "block_energy.ratings")) {
-    const e =
-      entry && typeof entry === "object"
-        ? (entry as Record<string, unknown>)
-        : {};
-    const hintId = typeof e.hint_id === "string" ? e.hint_id.trim() : "";
-    if (!hintId) continue;
-    const energy = blockEnergyAxis(e.energy);
-    const tension = blockEnergyAxis(e.tension);
-    if (energy === undefined && tension === undefined) continue;
-    ratings.push({
-      hint_id: hintId,
-      ...(energy !== undefined ? { energy } : {}),
-      ...(tension !== undefined ? { tension } : {}),
-    });
-  }
-  return {
-    schema_version: stringOr(o.schema_version, "", "block_energy.schema_version"),
-    song_name: stringOr(o.song_name, "", "block_energy.song_name"),
-    ratings,
-  };
-}
-
-// ---------------------------------------------------------------------------
 
 // v3.4 item 5 / D6 — reference/human/lyric_validations.json. The ids of the
 // Moises word tokens whose timing the operator has hand-verified; the Moises
@@ -624,7 +492,7 @@ export function parseLyricValidations(raw: unknown): LyricValidationsFile {
 // v3.7 item 1 — reference/human/block_reviews.json. The operator's three-state
 // verdict on a claim-bearing lane's emitted block, joined by `(lane_id, start)`
 // at read time (never a block id — those are array positions and shift on
-// every re-run). Deliberately tolerant like block_energy/lyric_validations: a
+// every re-run). Deliberately tolerant like lyric_validations: a
 // row missing `lane_id`/`start`, an out-of-vocabulary `verdict`, or a `reason`
 // outside the fixed vocabulary is dropped rather than failing the whole file —
 // the only writer is the debugger's verdict control, validated on the client
@@ -715,46 +583,6 @@ export function parseDrumEvents(raw: unknown): DrumEventsFile {
     schema_version: stringOr(o.schema_version, "", "drum_events.schema_version"),
     song_name: stringOr(o.song_name, "", "drum_events.song_name"),
     events,
-  };
-}
-
-// ---------------------------------------------------------------------------
-
-function parseEnergyBeat(raw: unknown, ctx: string): EnergyBeat {
-  const o = asObject(raw, ctx);
-  return {
-    time: numberOr(o.time, 0, `${ctx}.time`),
-    energy_score: numberOr(o.energy_score, 0, `${ctx}.energy_score`),
-    bar: numberOrNull(o.bar, `${ctx}.bar`),
-    beat: numberOrNull(o.beat_in_bar ?? o.beat, `${ctx}.beat`),
-  };
-}
-
-function parseEnergyAccent(raw: unknown, ctx: string, index: number): EnergyAccent {
-  const o = asObject(raw, ctx);
-  return {
-    id: stringOr(
-      (o.id ?? o.accent_id) as unknown,
-      `accent-${String(index + 1).padStart(3, "0")}`,
-      `${ctx}.id`,
-    ),
-    time: numberOr(o.time, 0, `${ctx}.time`),
-    intensity: numberOr(o.intensity, 0, `${ctx}.intensity`),
-    kind: stringOr(o.kind, "hit", `${ctx}.kind`),
-  };
-}
-
-export function parseEnergyLayer(raw: unknown): EnergyLayer {
-  const o = asObject(raw, "layer_c_energy.json");
-  return {
-    schema_version: stringOr(o.schema_version, "", "energy.schema_version"),
-    song_name: stringOr(o.song_name, "", "energy.song_name"),
-    beat_energy: asArray(o.beat_energy ?? [], "energy.beat_energy")
-      .map((b, i) => parseEnergyBeat(b, `energy.beat_energy[${i}]`))
-      .sort((a, b) => a.time - b.time),
-    accent_candidates: asArray(o.accent_candidates ?? [], "energy.accent_candidates")
-      .map((a, i) => parseEnergyAccent(a, `energy.accent_candidates[${i}]`, i))
-      .sort((a, b) => a.time - b.time),
   };
 }
 
@@ -886,23 +714,6 @@ function parsePendingProposalRow(raw: unknown): PendingProposal | null {
       ...(approvedStart !== null && approvedEnd !== null
         ? { approved_hint: { start: approvedStart, end: approvedEnd } }
         : {}),
-    };
-  }
-
-  if (o.type === "section_field") {
-    const f =
-      o.section_field && typeof o.section_field === "object"
-        ? (o.section_field as Record<string, unknown>)
-        : {};
-    const sectionId = typeof f.section_id === "string" ? f.section_id.trim() : "";
-    const field = typeof f.field === "string" ? f.field : "";
-    if (!sectionId || !field || f.value === undefined) return null;
-    const value = typeof f.value === "number" || typeof f.value === "string" ? f.value : null;
-    if (value === null) return null;
-    return {
-      ...base,
-      type: "section_field",
-      section_field: { section_id: sectionId, field, value },
     };
   }
 

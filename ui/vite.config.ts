@@ -8,7 +8,6 @@ import { handleDataMount } from "./server/dataMount";
 import { handleHumanHints } from "./server/humanHints";
 import { handleHumanSections } from "./server/humanSections";
 import { handleSongFacts } from "./server/songFacts";
-import { handleBlockEnergy } from "./server/blockEnergy";
 import { handleLyricValidations } from "./server/lyricValidations";
 import { handleBlockReviews } from "./server/blockReviews";
 import { handleProposalDecision } from "./server/proposalDecision";
@@ -20,20 +19,18 @@ import { handleRunRequest } from "./server/runRequest";
 // The dev-server `/data` static mount + directory listing and the
 // `PUT /api/human-hints/<song>` handler below are ported byte-for-byte (in
 // behaviour) from the previous app's vite.config.js, plan item 2. The `PUT
-// /api/song-facts/<song>` handler is added by plan item 7. The `PUT
-// /api/block-energy/<song>` handler (v3.4 item 4) mirrors both: same
+// /api/song-facts/<song>` handler is added by plan item 7. Both share one
 // path-escape guard, 400-on-bad-payload, pretty JSON + trailing newline,
-// dev-only (production Nginx has no handler — the rating UI is dev-only, like
-// the hint editor). The `PUT /api/lyric-validations/<song>` handler (v3.4 item
-// 5) mirrors the guard/400/pretty-JSON shape but writes PER-CLICK, not on an
+// dev-only (production Nginx has no handler — the editors are dev-only). The `PUT
+// /api/lyric-validations/<song>` handler (v3.4 item 5) mirrors the guard/400/pretty-JSON shape but writes PER-CLICK, not on an
 // explicit Save (D5.1) — a rapid token-by-token verification pass. The `PUT
 // /api/human-sections/<song>` handler mirrors the human-hints handler exactly
 // (explicit Save, same guard/400/pretty-JSON shape) but writes segments.json,
 // a bare array (no `{song_name, ...}` wrapper).
 //
-// The debugger writes exactly six `reference/human/` files: human_hints.json,
-// segments.json, song_facts.json, block_energy.json, lyric_validations.json
-// and block_reviews.json. Nothing in `src/` or `mcp/` reads any of them. Any
+// The debugger writes exactly five `reference/human/` files: human_hints.json,
+// segments.json, song_facts.json, lyric_validations.json and
+// block_reviews.json. Nothing in `src/` or `mcp/` reads any of them. Any
 // other write is a new contract — stop and ask.
 //
 // The `PUT /api/block-reviews/<song>` handler (v3.7 item 1) mirrors
@@ -89,7 +86,6 @@ const PUT_ENDPOINTS: Array<{ prefix: string; handle: Handler }> = [
   { prefix: "/api/human-hints/", handle: handleHumanHints },
   { prefix: "/api/human-sections/", handle: handleHumanSections },
   { prefix: "/api/song-facts/", handle: handleSongFacts },
-  { prefix: "/api/block-energy/", handle: handleBlockEnergy },
   { prefix: "/api/lyric-validations/", handle: handleLyricValidations },
   { prefix: "/api/block-reviews/", handle: handleBlockReviews },
   { prefix: "/api/proposal-decision/", handle: handleProposalDecision },

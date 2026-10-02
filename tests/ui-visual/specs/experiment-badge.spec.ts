@@ -8,9 +8,11 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // label text. Production `src/` lanes are never badged, even the ones
 // CLAUDE.md records as untrusted.
 //
-// The badged set currently has twelve lanes (v3.6 item 5 added the five
-// rhythm/energy/tension candidate-producer lanes: rhythmDrumIoi,
-// rhythmStemAutocorr, rhythmVocalOnsets, energyLevel, tensionShape). Plan
+// The badged set currently has eleven lanes. v3.10 item 9 removed the six
+// lanes that existed only to feed the cut `sections.json` clue fields
+// (rhythmDrumIoi, rhythmStemAutocorr, rhythmVocalOnsets, energyLevel,
+// tensionShape, segmentSeeds); v3.9 dropped four retired experiment lanes
+// (vocalVoiceness, svdTagger, voiceMultiplicity, phrasePeriodicity). Plan
 // v3.0 item 9 promoted
 // `gestures` out of this set: it used to be an `experiments/gestures`
 // sandbox lane and now reads the production `song_event_timeline.json`
@@ -25,27 +27,20 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // experiments were archived (item 3) and their lanes retired via Recipe B.
 // This list must track `ui/src/timeline/laneState.ts`'s tagged set exactly.
 // v3.9 item 2 + the "crash over-fires" bug added three: clapEvents,
-// kickCheck, crashCheck.
+// kickCheck, crashCheck. v3.10 item 14 added filterSweep, item 15 phrases, item 17 sectionNames.
 
 const BADGED = [
   "vocalPhrases",
   "allin1Posterior",
   "stemPresenceSections",
-  "vocalVoiceness",
-  "svdTagger",
-  "voiceMultiplicity",
-  "phrasePeriodicity",
-  "rhythmDrumIoi",
-  "rhythmStemAutocorr",
-  "rhythmVocalOnsets",
-  "energyLevel",
-  "tensionShape",
-  "segmentSeeds",
   "character",
   "vocalTranscription",
   "clapEvents",
   "kickCheck",
   "crashCheck",
+  "filterSweep",
+  "phrases",
+  "sectionNames",
 ] as const;
 
 const NOT_BADGED = [
@@ -63,7 +58,6 @@ const NOT_BADGED = [
   "rmsLoudness",
   "loudnessEnvelope",
   "drums",
-  "energy",
   "validation",
 ] as const;
 
@@ -76,7 +70,7 @@ test("item 7 — flask badge on unpromoted-experiment lane heads", async ({ page
 
   // 1. runtime assertions clean (re-checked at the end).
 
-  // 2. badged — exactly these nine.
+  // 2. badged — exactly the `BADGED` set.
   for (const id of BADGED) {
     expect(await flask(page, id).count()).toBe(1);
   }

@@ -6,7 +6,6 @@ describe("buildSongFactsPayload", () => {
   it("keeps only whole-song keys and stamps human-confirmed provenance", () => {
     const payload = buildSongFactsPayload("_test_song", {
       form_family: "aaba",
-      form_family_vs_genre: "genre_wins",
       "sections.section-002.form_role": "chorus",
       "drops.timed_location": "28.7",
     });
@@ -14,10 +13,6 @@ describe("buildSongFactsPayload", () => {
       song_name: "_test_song",
       facts: {
         form_family: { value: "aaba", provenance: "human-confirmed" },
-        form_family_vs_genre: {
-          value: "genre_wins",
-          provenance: "human-confirmed",
-        },
       },
     });
   });
@@ -25,11 +20,12 @@ describe("buildSongFactsPayload", () => {
   it("trims values and drops blank answers", () => {
     const payload = buildSongFactsPayload("s", {
       form_family: "  verse_chorus  ",
-      form_family_vs_genre: "   ",
+      "drops.timed_location": "   ",
     });
     expect(payload.facts).toEqual({
       form_family: { value: "verse_chorus", provenance: "human-confirmed" },
     });
+    expect(buildSongFactsPayload("s", { form_family: "   " }).facts).toEqual({});
   });
 
   it("emits an empty facts object when nothing is answered", () => {

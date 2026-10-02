@@ -62,10 +62,6 @@ class SongPaths:
         return self.song_output_dir / "song_event_timeline.json"
 
     @property
-    def genre_output_path(self) -> Path:
-        return self.song_output_dir / "genre.json"
-
-    @property
     def drum_events_output_path(self) -> Path:
         return self.song_output_dir / "drum_events.json"
 

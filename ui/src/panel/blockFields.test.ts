@@ -28,13 +28,12 @@ describe("selectionFromSection", () => {
     start: 12,
     end: 30,
     label: "003 Chorus (0.80)",
-    description: "energy rises into the chorus",
+    description: "builds into the chorus",
     function: "chorus",
     function_confidence: 0.8,
     function_status: "known",
     same_label_as: null,
     confidence: 0.8,
-    key: null,
   };
   const block = { section } as { section: SectionRow };
 
@@ -45,7 +44,7 @@ describe("selectionFromSection", () => {
     expect(sel.end_s).toBe(30);
     expect(sel.confidence).toBe(0.8);
     expect(sel.reference).toBe("S3");
-    expect(sel.summary).toBe("energy rises into the chorus");
+    expect(sel.summary).toBe("builds into the chorus");
   });
 });
 
@@ -137,8 +136,7 @@ describe("blockFields — segments / sections", () => {
         label: "001 Intro (0.44)",
         description: null,
         confidence: 0.9,
-        key: null,
-            function: "intro",
+        function: "intro",
         function_confidence: 0.44,
         function_status: "known",
         same_label_as: null,
@@ -149,7 +147,7 @@ describe("blockFields — segments / sections", () => {
     expect(val(fields, "same_label_as")).toBe("null");
   });
 
-  it("shows key, null included verbatim (item 13)", () => {
+  it("shows no key or contested_by row, even when the raw row carries them", () => {
     const sel = {
       laneId: "sections",
       laneLabel: "Sections",
@@ -165,24 +163,17 @@ describe("blockFields — segments / sections", () => {
       summary: null,
       raw: {
         section_id: "S3",
-        start: 12,
-        end: 30,
-        label: "003 Chorus (0.80)",
-        description: null,
-        confidence: 0.8,
-        key: "C# major",
         function: "chorus",
         function_confidence: 0.8,
         function_status: "known",
         same_label_as: "S1",
+        key: "C# major",
+        contested_by: "energy",
       },
     };
-    const fields = blockFields("sections", sel);
-    expect(val(fields, "key")).toBe("C# major");
-
-    const nullSel = { ...sel, raw: { ...sel.raw, key: null } };
-    const nullFields = blockFields("sections", nullSel);
-    expect(val(nullFields, "key")).toBe("null");
+    const labels = blockFields("sections", sel).map((f) => f.label);
+    expect(labels).not.toContain("key");
+    expect(labels).not.toContain("contested_by");
   });
 });
 
@@ -202,7 +193,7 @@ describe("selectionFromMarker + blockFields — lane markers", () => {
     expect(val(fields, "Event type")).toBe("kick");
   });
 
-  it("energy accent candidate", () => {
+  it("has no energy-lane extras (the Energy Profile lane is gone)", () => {
     const marker: LaneMarker = {
       laneId: "energy",
       id: "a-3",
@@ -213,8 +204,8 @@ describe("selectionFromMarker + blockFields — lane markers", () => {
     };
     const sel = selectionFromMarker(marker);
     const fields = blockFields("energy", sel);
-    expect(val(fields, "Intensity")).toBe("0.90");
-    expect(val(fields, "Kind")).toBe("impact");
+    expect(fields.map((f) => f.label)).not.toContain("Intensity");
+    expect(fields.map((f) => f.label)).not.toContain("Kind");
   });
 
   it("gesture-phase event with nested evidence summary + section_id", () => {

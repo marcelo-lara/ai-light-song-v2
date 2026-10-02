@@ -42,7 +42,6 @@ export const LANE_LABELS: Record<string, string> = {
   humanSections: "Human Sections",
   moisesLyrics: "Moises Lyrics",
   drums: "Drum Density",
-  energy: "Energy Profile",
   validation: "Regression Overlay",
 };
 
@@ -151,18 +150,11 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
         out.push({ label: "function_confidence", value: roundNumber(fnConf, 2) });
       const fnStatus = str(r.function_status);
       if (fnStatus) out.push({ label: "function_status", value: fnStatus });
-      // v3.4 item 3 — only present on a `function_status: "contested"` row.
-      const contestedBy = str(r.contested_by);
-      if (contestedBy) out.push({ label: "contested_by", value: contestedBy });
       // Always shown, even for a section's first occurrence (r.same_label_as
       // is null there) — plan v3.0 item 7 V7.3 requires the field name to be
       // visible on the first Sections block, not only on a repeat.
       const sameAs = str(r.same_label_as);
       out.push({ label: "same_label_as", value: sameAs || "null" });
-      // v3.0 item 13: key, projected from layer_a_harmonic.json. Always
-      // shown, `null` included verbatim, since an honest null here is a pass,
-      // not an absence of data.
-      out.push({ label: "key", value: str(r.key) || "null" });
       break;
     }
     case "character": {
@@ -205,14 +197,6 @@ export function blockFields(laneId: string, sel: BlockSelection): Field[] {
     case "drums": {
       const t = str(r.event_type);
       if (t) out.push({ label: "Event type", value: t });
-      break;
-    }
-    case "energy": {
-      const intensity = firstStr(r.intensity, r.value);
-      if (intensity)
-        out.push({ label: "Intensity", value: roundNumber(intensity, 2) });
-      const kind = str(r.kind);
-      if (kind) out.push({ label: "Kind", value: kind });
       break;
     }
     default:

@@ -1,0 +1,351 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/phrases",
+    "engine": "edges = clusters of arrangement_state stem entries/exits, stem_presence_sections boundaries, gestures impacts and the ends of risers / reverse cymbals / snare rolls / pre-drop gaps, accepted at summed evidence >= 1.0 and moved to the nearest trusted beat; per-phrase presence and density features; no bar counting",
+    "inputs": [
+      "arrangement_state.json",
+      "song_event_timeline.json (impacts)",
+      "loudness.json",
+      "beats.json (times + off_grid_spans only)",
+      "artifacts/essentia/fft_bands.json",
+      "artifacts/essentia/fft_bands.drums.json",
+      "reference/proposals/stem_presence_sections.json",
+      "reference/proposals/filter_sweep.json"
+    ],
+    "inputs_present": {
+      "stem_presence_sections": true,
+      "filter_sweep": true
+    },
+    "params": {
+      "accept_score": 1.5,
+      "cluster_beats": 3.0,
+      "min_phrase_beats": 4.0,
+      "snap_max_beats": 1.0,
+      "spread_conflict_beats": 2.0,
+      "kick_on_frac_of_p95": 0.5,
+      "kick_on_floor": 0.2,
+      "bass_on_frac_of_p95": 0.35,
+      "vocals_on_frac_of_p95": 0.4,
+      "weights": {
+        "W_GAP_END": 0.8,
+        "W_IMPACT": 0.6,
+        "W_PRESENCE": 1.5,
+        "W_PRESENCE_UNRESOLVED": 0.75,
+        "W_RISER_END": 0.4,
+        "W_ROLL_END": 0.4,
+        "W_STEM_HARD": 1.0,
+        "W_STEM_SOFT": 0.5
+      },
+      "repeat_max_dist": 0.12,
+      "conf_full_score": 4.0
+    }
+  },
+  "blocks": [
+    {
+      "id": "phrase-01",
+      "start_s": 0.0,
+      "end_s": 14.8,
+      "n_beats": 25,
+      "kick_presence": 0.48,
+      "bass_presence": 1.0,
+      "vocals_presence": 0.0,
+      "riser_density": 0.8118,
+      "snare_roll_density": 0.0,
+      "filter_sweeps": [
+        {
+          "stem": "harmonic",
+          "direction": "opening",
+          "start_s": 0.94,
+          "end_s": 12.69
+        }
+      ],
+      "noise_sweep": false,
+      "noise_sweep_strength": 0.3073,
+      "kick_dropout_near_end": true,
+      "ends_on_gap": false,
+      "repeat_of": null,
+      "repeat_distance": null,
+      "start_edge": null,
+      "end_edge": {
+        "t": 14.8,
+        "onset_s": 14.813,
+        "snapped": true,
+        "score": 2.6055,
+        "kinds": [
+          "presence_exit:bass",
+          "stem_enter:drums",
+          "stem_enter:vocals",
+          "stem_exit:drums"
+        ],
+        "conflicts": [
+          "position: stem sources disagree on the change time by more than two beats",
+          "direction: drums both enters and leaves within one cluster"
+        ]
+      },
+      "resolved": false,
+      "conflicts": [
+        "direction: drums both enters and leaves within one cluster",
+        "position: stem sources disagree on the change time by more than two beats"
+      ],
+      "confidence": 0.6514
+    },
+    {
+      "id": "phrase-02",
+      "start_s": 14.8,
+      "end_s": 22.2,
+      "n_beats": 16,
+      "kick_presence": 1.0,
+      "bass_presence": 0.0,
+      "vocals_presence": 0.6875,
+      "riser_density": 1.0,
+      "snare_roll_density": 0.2512,
+      "filter_sweeps": [],
+      "noise_sweep": false,
+      "noise_sweep_strength": 0.2219,
+      "kick_dropout_near_end": false,
+      "ends_on_gap": false,
+      "repeat_of": null,
+      "repeat_distance": null,
+      "start_edge": {
+        "t": 14.8,
+        "onset_s": 14.813,
+        "snapped": true,
+        "score": 2.6055,
+        "kinds": [
+          "presence_exit:bass",
+          "stem_enter:drums",
+          "stem_enter:vocals",
+          "stem_exit:drums"
+        ],
+        "conflicts": [
+          "position: stem sources disagree on the change time by more than two beats",
+          "direction: drums both enters and leaves within one cluster"
+        ]
+      },
+      "end_edge": {
+        "t": 22.2,
+        "onset_s": 22.193,
+        "snapped": true,
+        "score": 2.5475,
+        "kinds": [
+          "presence_enter:drums",
+          "stem_enter:drums",
+          "stem_exit:vocals"
+        ],
+        "conflicts": []
+      },
+      "resolved": false,
+      "conflicts": [
+        "direction: drums both enters and leaves within one cluster",
+        "position: stem sources disagree on the change time by more than two beats"
+      ],
+      "confidence": 0.6441
+    },
+    {
+      "id": "phrase-03",
+      "start_s": 22.2,
+      "end_s": 29.56,
+      "n_beats": 16,
+      "kick_presence": 0.8125,
+      "bass_presence": 0.125,
+      "vocals_presence": 0.625,
+      "riser_density": 1.0,
+      "snare_roll_density": 0.4999,
+      "filter_sweeps": [
+        {
+          "stem": "harmonic",
+          "direction": "opening",
+          "start_s": 20.915,
+          "end_s": 27.965
+        }
+      ],
+      "noise_sweep": false,
+      "noise_sweep_strength": -0.0717,
+      "kick_dropout_near_end": false,
+      "ends_on_gap": false,
+      "repeat_of": null,
+      "repeat_distance": null,
+      "start_edge": {
+        "t": 22.2,
+        "onset_s": 22.193,
+        "snapped": true,
+        "score": 2.5475,
+        "kinds": [
+          "presence_enter:drums",
+          "stem_enter:drums",
+          "stem_exit:vocals"
+        ],
+        "conflicts": []
+      },
+      "end_edge": {
+        "t": 29.56,
+        "onset_s": 29.75,
+        "snapped": true,
+        "score": 3.444,
+        "kinds": [
+          "impact",
+          "presence_enter:bass",
+          "stem_enter:bass",
+          "stem_exit:vocals"
+        ],
+        "conflicts": []
+      },
+      "resolved": true,
+      "conflicts": [],
+      "confidence": 0.7489
+    },
+    {
+      "id": "phrase-04",
+      "start_s": 29.56,
+      "end_s": 42.49,
+      "n_beats": 28,
+      "kick_presence": 1.0,
+      "bass_presence": 0.9643,
+      "vocals_presence": 0.0,
+      "riser_density": 0.228,
+      "snare_roll_density": 0.0,
+      "filter_sweeps": [],
+      "noise_sweep": false,
+      "noise_sweep_strength": -0.0597,
+      "kick_dropout_near_end": false,
+      "ends_on_gap": false,
+      "repeat_of": null,
+      "repeat_distance": null,
+      "start_edge": {
+        "t": 29.56,
+        "onset_s": 29.75,
+        "snapped": true,
+        "score": 3.444,
+        "kinds": [
+          "impact",
+          "presence_enter:bass",
+          "stem_enter:bass",
+          "stem_exit:vocals"
+        ],
+        "conflicts": []
+      },
+      "end_edge": {
+        "t": 42.49,
+        "onset_s": 42.5,
+        "snapped": true,
+        "score": 1.7905,
+        "kinds": [
+          "stem_enter:drums",
+          "stem_enter:vocals",
+          "stem_exit:bass",
+          "stem_exit:drums"
+        ],
+        "conflicts": [
+          "position: stem sources disagree on the change time by more than two beats",
+          "direction: drums both enters and leaves within one cluster"
+        ]
+      },
+      "resolved": false,
+      "conflicts": [
+        "direction: drums both enters and leaves within one cluster",
+        "position: stem sources disagree on the change time by more than two beats"
+      ],
+      "confidence": 0.6543
+    },
+    {
+      "id": "phrase-05",
+      "start_s": 42.49,
+      "end_s": 46.385,
+      "n_beats": 8,
+      "kick_presence": 0.875,
+      "bass_presence": 0.5,
+      "vocals_presence": 0.25,
+      "riser_density": 0.0,
+      "snare_roll_density": 0.0,
+      "filter_sweeps": [],
+      "noise_sweep": false,
+      "noise_sweep_strength": -0.1142,
+      "kick_dropout_near_end": false,
+      "ends_on_gap": false,
+      "repeat_of": null,
+      "repeat_distance": null,
+      "start_edge": {
+        "t": 42.49,
+        "onset_s": 42.5,
+        "snapped": true,
+        "score": 1.7905,
+        "kinds": [
+          "stem_enter:drums",
+          "stem_enter:vocals",
+          "stem_exit:bass",
+          "stem_exit:drums"
+        ],
+        "conflicts": [
+          "position: stem sources disagree on the change time by more than two beats",
+          "direction: drums both enters and leaves within one cluster"
+        ]
+      },
+      "end_edge": {
+        "t": 46.385,
+        "onset_s": 46.385,
+        "snapped": false,
+        "score": 1.9745,
+        "kinds": [
+          "presence_exit:drums",
+          "stem_enter:vocals"
+        ],
+        "conflicts": [
+          "grid: no trusted beat within one beat of the physical change"
+        ]
+      },
+      "resolved": false,
+      "conflicts": [
+        "direction: drums both enters and leaves within one cluster",
+        "grid: no trusted beat within one beat of the physical change",
+        "position: stem sources disagree on the change time by more than two beats"
+      ],
+      "confidence": 0.4706
+    },
+    {
+      "id": "phrase-06",
+      "start_s": 46.385,
+      "end_s": 58.12,
+      "n_beats": 22,
+      "kick_presence": 0.0909,
+      "bass_presence": 0.7273,
+      "vocals_presence": 0.5909,
+      "riser_density": 0.0,
+      "snare_roll_density": 0.0,
+      "filter_sweeps": [
+        {
+          "stem": "bass",
+          "direction": "closing",
+          "start_s": 44.18,
+          "end_s": 48.88
+        }
+      ],
+      "noise_sweep": false,
+      "noise_sweep_strength": -1.0245,
+      "kick_dropout_near_end": null,
+      "ends_on_gap": false,
+      "repeat_of": null,
+      "repeat_distance": null,
+      "start_edge": {
+        "t": 46.385,
+        "onset_s": 46.385,
+        "snapped": false,
+        "score": 1.9745,
+        "kinds": [
+          "presence_exit:drums",
+          "stem_enter:vocals"
+        ],
+        "conflicts": [
+          "grid: no trusted beat within one beat of the physical change"
+        ]
+      },
+      "end_edge": null,
+      "resolved": false,
+      "conflicts": [
+        "grid: no trusted beat within one beat of the physical change"
+      ],
+      "confidence": 0.4936
+    }
+  ]
+}

@@ -4,7 +4,6 @@
 
 import { useCallback, useState } from "react";
 
-import type { HumanSegmentSeed } from "../data/types";
 import {
   LANE_LABELS,
   selectionFromMarker,
@@ -142,16 +141,15 @@ export function usePanelState({
     setPanelMode("hint");
   }, []);
 
-  // "Create human section" on an allin1 / Segment Seeds / Moises block: seeds an
-  // unsaved draft in the segment editor from the block — no save, no write to
-  // the source artifact. Seed-lane blocks carry their draft energy/tension/rhythm.
+  // "Create human section" on an allin1 / Moises block: seeds an unsaved draft
+  // in the segment editor from the block — no save, no write to the source
+  // artifact.
   const handleCreateSectionFromSelection = useCallback((sel: BlockSelection) => {
     const end =
       typeof sel.end_s === "number" && Number.isFinite(sel.end_s)
         ? sel.end_s
         : sel.start_s + 1.0;
-    const raw = (sel.raw ?? {}) as Partial<HumanSegmentSeed> & { function?: string | null };
-    const isSeedLane = sel.laneId === "segmentSeeds";
+    const raw = (sel.raw ?? {}) as { function?: string | null; label?: string | null };
     setSelection(null);
     setActiveSectionRef(null);
     setSectionSeed({
@@ -159,7 +157,6 @@ export function usePanelState({
       end,
       nonce: Date.now(),
       label: raw.function ?? raw.label ?? null,
-      ...(isSeedLane ? { energy: raw.energy ?? null, tension: raw.tension ?? null, rhythm: raw.rhythm ?? null } : {}),
     });
     setPanelMode("segment");
   }, []);

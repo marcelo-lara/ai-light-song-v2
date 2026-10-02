@@ -1266,6 +1266,203 @@ one-gap-back) periodicity test is the next thing to try.
 
 ---
 
+## Filter Sweeps — a stem changing tone while the same notes keep playing
+
+*(no external model or repo — classical, numpy)*
+
+### Status
+
+**Built and run, 2026-10-01 (v3.10 item 14) — 79 sweeps over 27 songs, not yet
+reviewed by ear; no sweep ground truth exists.** Full writeup:
+[`../experiments/filter_sweep/README.md`](../experiments/filter_sweep/README.md).
+Queue row enabled. Debugger lane: **Filter Sweeps**, flask badge. Promotion
+into `gestures.py` waits on the operator's lane review.
+
+### Why? What for?
+
+A low-pass opening or closing on the pads or bass over 2-16 bars changes the
+tone with no new instrument and no loudness change. `gestures`' `riser` (high
+band energy rising) cannot see it. A moving-head show wants it as a slow
+brightness/intensity ramp.
+
+### Experiment Plan
+
+Per-stem (`harmonic`, `bass`) spectral centroid from the published per-stem FFT
+bands (octaves, level-weighted over 7 bands) on a half-beat grid; a sweep is a
+window of 2-16 bars (length from the beat interval, never downbeats) with a
+depth >= 1.0 octave (0.5 on bass), |Spearman| >= 0.85 and that stem's
+loudness level (spread and trend gates). Rows: `direction`, `stem`, span,
+`depth`, `confidence`.
+
+### Results evidence
+
+79 sweeps (56 harmonic / 23 bass, 50 opening / 29 closing), 0-9 per song.
+11 overlap a `riser`/`downlifter` span (54 exist), so 68 are not seen by the
+incumbent. Baselines: depth-only 118, depth + monotonicity 118, full 79 — the
+level gate removes a third, the monotonicity gate nothing after smoothing.
+No precision/recall: no hint labels a sweep.
+
+### Conclusion
+
+Selective and mostly distinct from `riser`, but unvalidated: the lane review
+(a sweep named where one is heard, none on steady sections) decides. Not
+promoted.
+
+---
+
+## Phrases — the song cut where the audio changes
+
+*(no external model or repo — classical, numpy)*
+
+### Status
+
+**Built and run, 2026-10-01 (v3.10 item 15) — 299 phrases over 27 songs, 96
+`resolved: false`; Rapture matches stem-presence, Charli-VonDutch does not.**
+Full writeup:
+[`../experiments/phrases/README.md`](../experiments/phrases/README.md).
+Queue row enabled. Debugger lane: **Phrases**, flask badge. Not promoted.
+
+### Why? What for?
+
+A moving-head show changes where the audio changes — a bass drop, drums out, a
+riser ending on a gap — and nothing published says what a chunk between two
+changes is like. Bar counting is out (downbeat F1 0.226; 8-bar grid 0/7).
+
+### Experiment Plan
+
+Edges from `arrangement_state` stem entries/exits, `stem_presence_sections`
+boundaries (read as data — its state machine folded in as an input), gestures
+impacts and the ends of risers / snare rolls / pre-drop gaps; clusters of
+evidence summing to >= 1.5 become edges at the nearest trusted beat (outside
+`off_grid_spans`). Per phrase: kick (drums-stem energy < 150 Hz), bass, vocals,
+riser and snare-roll density, filter sweeps (item 14), noise sweep, kick
+drop-out near the end, ends-on-gap, repeat-of, confidence; disagreeing sources
+-> `resolved: false`. Scored at +-1.0 s against reviewed segments (10 songs)
+and review hints (8), `genre.family == "edm"` reported apart; incumbent allin1
+raw, baseline stem-presence.
+
+### Results evidence
+
+Pooled F1, all songs: segments phrases 0.431 vs allin1 0.609 vs stem-presence
+0.366; hints 0.437 vs 0.456 vs 0.376. EDM hints (2 songs) 0.667 vs 0.490 vs
+0.591. Rapture F1 0.500 / 0.769 (segments / hints) = stem-presence exactly;
+Charli-VonDutch 0.667 / 0.833 vs stem-presence 0.714 / 0.909 (one extra edge,
+no hint labels it). `ACCEPT_SCORE` was moved 1.0 -> 1.5 after a sweep on these
+labels (disclosed in the README); at 1.0 both required songs were below.
+`noise_sweep` fires on 3 of 299 phrases (too strict); no feature has ground
+truth.
+
+### Conclusion
+
+Phrase edges are not a better section finder than allin1 and miss the
+Charli done-when; their value is the per-phrase features and the honest
+`resolved` flag, untested without the lane review. Not promoted.
+
+## Downbeat Anchors — bars counted from phrase edges
+
+*(no external model — classical; reads `phrases.json` as data)*
+
+### Status
+
+**Built and run, 2026-10-01 (v3.10 item 16) — negative result; not promoted.**
+Full writeup:
+[`../experiments/downbeat_anchors/README.md`](../experiments/downbeat_anchors/README.md).
+Queue row enabled. No debugger lane.
+
+### Why? What for?
+
+Downbeat F1 is short of target (0.226). A bass/drums entry or an impact is
+where a bar starts, so a phrase edge on one is a local downbeat needing no
+song-wide grid.
+
+### Experiment Plan
+
+Conflict-free, snapped phrase start edges with a stem/presence entry or an
+impact (summed score >= 1.5) are downbeats; bars counted in fours on trusted
+beats between anchors; anchors disagreeing on phase or a span crossing
+off-grid beats -> `resolved: false`, no downbeat; 16-bar reach past the outer
+anchors; allin1's phase only where no anchor reaches. Scored as
+`analysis-definition.md` "Downbeats" (F1 @ +-70 ms, Moises `beatNum == 1`, 5
+songs). Incumbent allin1 phase; baselines modulo-4 and a song-wide kick phase.
+
+### Results evidence
+
+Pooled F1: incumbent 0.234 (the 4 songs behind the documented 0.226) / 0.343
+(5 songs with Queen of Kings); anchors + allin1 0.119 / 0.301; anchors only
+0.106 / 0.273; modulo 0.083 / 0.069; kick-phase 0.026 / 0.180. Anchors land on
+a Moises downbeat 8/8 (Queen of Kings), 2/2 (`_test_song`), 3/7 (Armin), 0/11
+(Titanium; 9 sit on Moises beat 3 — the offset that zeroes allin1 there),
+0/5 (Hideaway, wrong-tempo grid). Counting between right anchors is right
+(35/35, 4/4). 89 of 165 spans unresolved corpus-wide. A `>= 2.5` anchor
+threshold, looked at after the default, gives 0.223 / 0.361 — sensitivity only.
+
+### Conclusion
+
+Counting works; the premise that a phrase edge sits on a downbeat holds on 2 of
+5 songs, and the strict "disagree -> unresolved" rule discards Armin's good
+allin1 phase. Does not beat the incumbent; beats both cheap baselines. Not
+promoted.
+
+## Section Names — phrases named in the typical EDM sequence
+
+*(no external model — classical; reads `phrases.json` as data)*
+
+### Status
+
+**Built and run, 2026-10-01 (v3.10 item 17) — 191 blocks over 27 songs (26
+named, 1 kept on its current labels); better labels than allin1, far fewer
+boundaries; the Armin / Medicine acceptance bar is not met.** Full writeup:
+[`../experiments/section_names/README.md`](../experiments/section_names/README.md).
+Queue row enabled. Debugger lane: **Section Names**, flask badge. Not promoted.
+
+### Why? What for?
+
+`sections.json` labels are allin1's Harmonix tokens mapped to the vocabulary;
+a show is authored per stage (build, pre-drop, drop). The stages have a typical
+order (`segments-vocabulary.md`), so once the build→drop units are found
+everything around them is named by position.
+
+### Experiment Plan
+
+Drops first: a phrase start with a kick or bass entry (8 beats after vs. 8
+before) together with a hit (gestures impact, or the end of a near-silent gap),
+never drum density. Then by position: Pre-Drop (near-silence across all stems)
+and Fill (roll / riser / vocal pickup) before the hit, Build-Up (roll / riser /
+opening sweep / kick drop-out evidence, <= 64 beats), Pre-Build, Intro,
+Breakdown, Outro (<= 128 beats), Drop Break, Fills closing phrases; a repeat of
+a drop inherits its label. Boundaries on the Phrases edges (a Fill / Pre-Drop /
+Build-Up start may sit on its own evidence time). The structure hint is a prior
+only (acceptance, build cap, early-drop rule). No unit → the current labels,
+attributed. Scored on the 10 reviewed songs against allin1's mapped labels
+(exact / coarse / peak-vs-not label accuracy; boundary F1 @ +-1 s), with and
+without the hint; the report lists every reviewed label / boundary it overrides.
+
+### Results evidence
+
+Pooled over the 10 reviewed songs, label accuracy exact / coarse / peak:
+section_names 0.391 / 0.409 / 0.716, no hint 0.406 / 0.423 / 0.716, allin1
+mapped 0.316 / 0.331 / 0.677, majority label 0.189 / 0.221 / 0.416. Boundary F1
+0.330 (P 0.547, R 0.236) vs allin1 0.633. *Rapture* names both drops `Drop`
+(exact 0.692). *Armin - Revolution* (6/10 stages in order, exact 0.116) and
+*Medicine-MilkInc* (7/10) do not show the full sequence: Armin's reviewed drop
+has no kick/bass entry in the audio, Medicine's first 100 s are one phrase.
+98 of 133 reviewed section labels and 75 of 123 reviewed boundaries (no
+proposal boundary within 4 s) would be overridden. `Pre-Drop` fires once in the
+corpus. The hint changed 2 of 27 songs (both trance) and lowered accuracy.
+Rules were corrected after reading the reviewed output (README tuning table), so
+the figures are optimistic.
+
+### Conclusion
+
+Stage names from entry + hit + position beat allin1's labels on the songs that
+have a clear kick/bass drop, but a drop run lasts as long as the groove stays
+on and phrases are coarser than reviewed sections, so reviewed sections inside
+a drop and 60 % of reviewed boundaries are lost. Promoting it over the human
+tier would be a net loss on boundaries; as names on top of reviewed boundaries
+it is untested. The operator's lane review decides. Not promoted.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

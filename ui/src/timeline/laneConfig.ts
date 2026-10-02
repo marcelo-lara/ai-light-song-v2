@@ -11,7 +11,6 @@ export const TIMELINE_KEYS = [
   // artifact-scoped detail (function / function_confidence / function_status /
   // same_label_as) joined into the Sections lane inspector by section_id.
   "sectionSegmentation",
-  "harmonicLayer",
   "fftBands",
   // per-stem 7-band spectra — one dense lane each, beside the mix FFT lane
   "fftBandsBass",
@@ -21,24 +20,17 @@ export const TIMELINE_KEYS = [
   "rmsLoudness",
   "loudnessEnvelope",
   "drums",
-  "energy",
   "humanHints",
-  // v3.7 item 10/11 — unreviewed MCP propose_hint/propose_section_field queue
-  // (reference/proposals/pending.json). Only "hint"-type pending entries get
-  // a block; "section_field" and decided entries carry no timeline span.
+  // v3.7 item 10/11 — unreviewed MCP propose_hint queue
+  // (reference/proposals/pending.json). Only pending entries get a block;
+  // decided entries carry no timeline span.
   "pendingProposals",
   // hand-authored section segmentation, editable via the same drag-to-edit /
   // double-click-to-create conventions as humanHints (reference/human, writable)
   "humanSections",
-  // v3.6 item 4 — unreviewed rule-based drafts (experiments/segment_seeds):
-  // shown only on the Segment Seeds lane; Human Sections shows segments.json only.
-  "humanSectionsSeed",
   // Moises.ai reference segmentation — read-only, one precedence tier below
   // humanSections (docs/reference/analysis.segments.md).
   "moisesSections",
-  // v3.4 item 4 — operator's per-block energy/tension ratings, joined to the
-  // Human Hints events panel by hint_id (reference/human, writable).
-  "blockEnergy",
   // external word-level sung lyrics (reference/moises)
   "moisesLyrics",
   // v3.4 item 5 — operator's per-token timing validations, overlaid on the
@@ -59,13 +51,6 @@ export const TIMELINE_KEYS = [
   "stemPresenceSections",
   // lyric-alignment line timing + call events, timing only (top-level vocal_cadence.json)
   "vocalCadence",
-  // v3.6 item 5/6 rhythm/energy/tension candidate producers — each its own
-  // lane, fused by confidence in sections.json's rhythm/energy/tension fields.
-  "rhythmDrumIoi",
-  "rhythmStemAutocorr",
-  "rhythmVocalOnsets",
-  "energyLevel",
-  "tensionShape",
   // whisperX's VAD front-end (speech-domain), voiceness + phrase spans with
   // real sub-second onsets. Its own pipeline service since v3.6 item 2
   // (whisperx_vad/, promoted out of experiments/) — locally-bundled
@@ -84,6 +69,9 @@ export const TIMELINE_KEYS = [
   "clapEvents",
   "kickCheck",
   "crashCheck",
+  "filterSweep",
+  "phrases",
+  "sectionNames",
 ] as const;
 
 /** sparse lane id → the single artifact key that backs it (drives empty-state). */
@@ -101,12 +89,6 @@ export const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]
   allin1Posterior: "allin1Posterior",
   stemPresenceSections: "stemPresenceSections",
   vocalCadence: "vocalCadence",
-  rhythmDrumIoi: "rhythmDrumIoi",
-  rhythmStemAutocorr: "rhythmStemAutocorr",
-  rhythmVocalOnsets: "rhythmVocalOnsets",
-  energyLevel: "energyLevel",
-  tensionShape: "tensionShape",
-  segmentSeeds: "humanSectionsSeed",
   whisperxVad: "whisperxVad",
   gestures: "eventTimeline",
   character: "character",
@@ -115,6 +97,9 @@ export const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]
   clapEvents: "clapEvents",
   kickCheck: "kickCheck",
   crashCheck: "crashCheck",
+  filterSweep: "filterSweep",
+  phrases: "phrases",
+  sectionNames: "sectionNames",
 };
 
 /** lane id → (artifact key, canvas renderer kind) for the item-5 data lanes. */
@@ -130,7 +115,6 @@ export const CANVAS_LANES: Record<
   rmsLoudness: { key: "rmsLoudness", kind: "rms" },
   loudnessEnvelope: { key: "loudnessEnvelope", kind: "env" },
   drums: { key: "drums", kind: "drums" },
-  energy: { key: "energy", kind: "energy" },
 };
 
 export function canvasLaneHasData(source: CanvasLaneSource): boolean {
@@ -142,9 +126,5 @@ export function canvasLaneHasData(source: CanvasLaneSource): boolean {
       return !!source.data?.frames.length && !!source.data.sources.length;
     case "drums":
       return !!source.data?.events.length;
-    case "energy":
-      return (
-        !!source.data?.beat_energy.length || !!source.data?.accent_candidates.length
-      );
   }
 }

@@ -35,8 +35,8 @@ describe("App shell", () => {
       "Timeline",
       "Artifact inspector",
       "Review queue",
-      // v3.7 item 11 — MCP correction proposals (propose_hint /
-      // propose_section_field), queued for human approve/reject.
+      // v3.7 item 11 — MCP correction proposals (propose_hint), queued
+      // for human approve/reject.
       "Pending proposals",
     ]);
   });

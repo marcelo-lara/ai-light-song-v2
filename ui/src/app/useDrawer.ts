@@ -18,8 +18,7 @@ export const DRAWER_ENTRIES: readonly DrawerEntry[] = [
   { id: "timeline", label: "Timeline", icon: "ph-waveform" },
   { id: "inspector", label: "Artifact inspector", icon: "ph-squares-four" },
   { id: "review", label: "Review queue", icon: "ph-flag" },
-  // v3.7 item 11 — MCP correction proposals (propose_hint /
-  // propose_section_field), queued for human approve/reject.
+  // v3.7 item 11 — MCP correction proposals (propose_hint), queued for human approve/reject.
   { id: "proposals", label: "Pending proposals", icon: "ph-inbox" },
 ] as const;
 

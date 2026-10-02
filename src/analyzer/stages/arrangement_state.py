@@ -57,7 +57,7 @@ PRESENT_FRACTION = 0.4
 
 #: How long a flipped value must hold before the flip is believed, and how much
 #: of that span must agree. Expressed in seconds rather than bars because the
-#: downbeat grid measures 0.226 F1 — the bar numbers are not trustworthy enough
+#: downbeat grid measures 0.234 F1 — the bar numbers are not trustworthy enough
 #: to gate a boundary on.
 HOLD_S = 1.5
 HOLD_AGREEMENT = 0.7

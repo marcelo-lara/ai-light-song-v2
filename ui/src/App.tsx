@@ -49,14 +49,12 @@ export function App(): React.JSX.Element {
     song,
     humanHintsData: artifacts.humanHints.data,
     humanSectionsData: artifacts.humanSections.data,
-    blockEnergyData: artifacts.blockEnergy.data,
     lyricValidationsData: artifacts.lyricValidations.data,
     blockReviewsData: artifacts.blockReviews.data,
   });
   const {
     humanHintsFile,
     humanSectionsFile,
-    blockEnergyFile,
     validatedLyricIds,
     blockReviewsFile,
   } = overrides;
@@ -207,7 +205,6 @@ export function App(): React.JSX.Element {
   }, [activeView, song, transport, stepBeat, stepBar, closeOverlay, zoomIn, zoomOut, fitToWidth]);
 
   const barBeat = coords.timeToBarBeat(transport.currentTime);
-  const keyLabel = artifacts.harmonicLayer.data?.global_key?.label ?? "— key";
 
   const laneArtifactStatus = useMemo<Record<string, ArtifactLoadStatus>>(() => {
     const entries: Record<string, ArtifactLoadStatus> = {};
@@ -281,7 +278,6 @@ export function App(): React.JSX.Element {
         barBeat={barBeat}
         song={song}
         info={info}
-        keyLabel={keyLabel}
       />
 
       <main className="app-main">
@@ -333,7 +329,6 @@ export function App(): React.JSX.Element {
           isPlaying={transport.isPlaying}
           humanHintsFile={humanHintsFile}
           humanSectionsFile={humanSectionsFile}
-          blockEnergyFile={blockEnergyFile}
           validatedLyricIds={validatedLyricIds}
           eventsPanel={eventsPanel}
           blockReviewIndexFor={blockReviewIndexFor}

@@ -9,7 +9,7 @@ import { readJsonBody, referenceHumanFilePath, writeJsonFile } from "./shared";
 // v3.4 item 5 — lyric_validations.json is written PER-CLICK by the Moises
 // Lyrics events panel's ✔ button (D5.1 / D6). This diverges from the
 // explicit-Save pattern the other reference/human/ writers (human hints, song
-// facts, block energy) use: a rapid token-by-token verification pass should not
+// facts) use: a rapid token-by-token verification pass should not
 // need a Save button. Each toggle PUTs the FULL `validated_ids` array and this
 // handler replaces the file. Overlay only — nothing here touches
 // reference/moises/lyrics.json, which stays read-only. Dev-only (production

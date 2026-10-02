@@ -25,7 +25,6 @@ const NON_BLOCK_LANES = [
   "rmsLoudness",
   "loudnessEnvelope",
   "drums",
-  "energy",
   "validation",
 ] as const;
 

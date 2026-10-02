@@ -8,8 +8,8 @@ import {
 } from "../helpers";
 
 const LANES = ["fftBands", "rmsLoudness", "loudnessEnvelope"] as const;
-// `drums` / `energy` share the CanvasLane base — the fix must hold for them too.
-const ALSO = ["drums", "energy"] as const;
+// `drums` shares the CanvasLane base — the fix must hold for it too.
+const ALSO = ["drums"] as const;
 
 async function expandLanes(page: import("@playwright/test").Page, ids: readonly string[]) {
   for (const id of ids) {
@@ -41,7 +41,7 @@ async function scrollTimeline(page: import("@playwright/test").Page, ratio: numb
 /**
  * The lane's backing canvas must be sized to the whole timeline (not the
  * viewport) and its rendered content must reach the content right edge — within
- * 4px for the lanes that paint a continuous field (rms / envelope / energy /
+ * 4px for the lanes that paint a continuous field (rms / envelope /
  * drums), or within 5% for FFT Bands, whose right edge tracks the last frame
  * that clears the spectral visibility floor (a near-silent outro legitimately
  * renders nothing without the canvas being "short").

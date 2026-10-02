@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/crash_check",
+    "engine": "regular-stream-period rejection (~1-2 beat spacing) + brilliance-band decay-shape gate over every omnizart `crash` event",
+    "params": {
+      "decay_max": 0.15,
+      "stream_tol_frac": 0.15,
+      "beat_length_s": 0.47
+    },
+    "generated_at": "2026-09-30T00:39:55.627770Z"
+  },
+  "crashes": [
+    {
+      "time": 29.58,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0988
+    },
+    {
+      "time": 30.05,
+      "verdict": "reject",
+      "is_stream_continuation": true,
+      "decay_ratio": 0.0629
+    },
+    {
+      "time": 31.43,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0321
+    },
+    {
+      "time": 31.891,
+      "verdict": "reject",
+      "is_stream_continuation": true,
+      "decay_ratio": 0.0277
+    },
+    {
+      "time": 33.164,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0328
+    },
+    {
+      "time": 33.28,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.017
+    },
+    {
+      "time": 33.741,
+      "verdict": "reject",
+      "is_stream_continuation": true,
+      "decay_ratio": 0.0149
+    },
+    {
+      "time": 34.2,
+      "verdict": "reject",
+      "is_stream_continuation": true,
+      "decay_ratio": 0.063
+    },
+    {
+      "time": 35.58,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.031
+    },
+    {
+      "time": 36.05,
+      "verdict": "reject",
+      "is_stream_continuation": true,
+      "decay_ratio": 0.1119
+    },
+    {
+      "time": 37.2,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0743
+    },
+    {
+      "time": 37.43,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.1251
+    },
+    {
+      "time": 37.659,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0558
+    },
+    {
+      "time": 37.891,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.1821
+    },
+    {
+      "time": 38.125,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.1001
+    },
+    {
+      "time": 38.359,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.1074
+    },
+    {
+      "time": 38.591,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0583
+    },
+    {
+      "time": 39.05,
+      "verdict": "reject",
+      "is_stream_continuation": true,
+      "decay_ratio": 0.0598
+    },
+    {
+      "time": 39.28,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0987
+    },
+    {
+      "time": 39.741,
+      "verdict": "reject",
+      "is_stream_continuation": true,
+      "decay_ratio": 0.0982
+    },
+    {
+      "time": 39.97,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0446
+    },
+    {
+      "time": 40.2,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0727
+    },
+    {
+      "time": 40.43,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0684
+    },
+    {
+      "time": 40.891,
+      "verdict": "reject",
+      "is_stream_continuation": true,
+      "decay_ratio": 0.0777
+    },
+    {
+      "time": 41.12,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.1613
+    },
+    {
+      "time": 41.35,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0762
+    },
+    {
+      "time": 41.58,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.213
+    },
+    {
+      "time": 41.816,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0827
+    },
+    {
+      "time": 42.05,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.1536
+    },
+    {
+      "time": 42.28,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.1082
+    },
+    {
+      "time": 42.741,
+      "verdict": "reject",
+      "is_stream_continuation": true,
+      "decay_ratio": 0.1202
+    },
+    {
+      "time": 42.97,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.1856
+    },
+    {
+      "time": 43.316,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.4491
+    },
+    {
+      "time": 43.548,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.5555
+    },
+    {
+      "time": 43.666,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0809
+    },
+    {
+      "time": 43.9,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.1915
+    },
+    {
+      "time": 44.13,
+      "verdict": "keep",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.0856
+    }
+  ]
+}

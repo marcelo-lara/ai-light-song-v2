@@ -108,10 +108,10 @@ export const artifactLoaders = {
 The adapters live one file per family under `timeline/laneContent/`:
 `referenceHints.ts` (human hints, pending proposals, Moises lyrics),
 `sections.ts` (Human/Moises/allin1/fused Sections, allin1 Posterior, Stem
-Presence Sections, Segment Seeds, Arrangement State), `vocal.ts` (Vocal
-Transcription, Vocal Cadence, Vocal Phrases, WhisperX VAD), `rhythm.ts` (the
-three `rhythm_*` candidate producers), `energyGestures.ts` (Character, Energy
-Level, Tension Shape, Gestures). Pick the closest family, or add a new
+Presence Sections, Arrangement State), `vocal.ts` (Vocal
+Transcription, Vocal Cadence, Vocal Phrases, WhisperX VAD),
+`characterGestures.ts` (Character, Gestures), `drumHitChecks.ts` (Clap Events,
+Kick Check, Crash Check). Pick the closest family, or add a new
 `<family>.ts` if none fits. `laneContent.ts` itself keeps only the
 `SparseBlock` type, `LaneContentSources`, `SPARSE_LANE_IDS` and the
 `buildLaneBlocks` dispatch — it re-exports every adapter so nothing outside
@@ -306,7 +306,7 @@ Rare. Body is `CanvasLane` + a draw function in `timeline/laneRenderers.ts`.
 | Reorder lanes vertically | `timeline/laneState.ts` | move the `LANE_DEFS` row; array order = render order. |
 | Change which lanes open on load | `timeline/laneState.ts` | `DEFAULT_EXPANDED`. A user's `localStorage` (`als.timeline.laneState.v1`) overrides it. |
 | Retint a lane | `timeline/sparseTints.ts` | `BASE[<laneId>]`. One `[hue, sat, light]`; alpha comes from the shared `FILL_A`/`STROKE_A`. |
-| Add a per-block tint | `timeline/laneContent/<family>.ts` + `sparseTints.ts` | adapter emits `tintId: "<laneId><Variant>"`; add that key to `BASE`. Precedent: `sectionsContested`. |
+| Add a per-block tint | `timeline/laneContent/<family>.ts` + `sparseTints.ts` | adapter emits `tintId: "<laneId><Variant>"`; add that key to `BASE`. Precedent: `humanHintsReview`. |
 | Add/remove the flask badge | `timeline/laneState.ts` | presence of `experiment:` on the `LaneDef`. |
 | Change lane row height | `timeline/laneState.ts` | `height` (collapsed is always `COLLAPSED_LANE_HEIGHT` = 26). Compact sparse/event lanes use 50 by default unless a lane-specific exception is required. |
 
@@ -325,22 +325,25 @@ Rare. Body is `CanvasLane` + a draw function in `timeline/laneRenderers.ts`.
    producers joins them inside the adapter from two `LaneContentSources` fields
    (precedent: `sectionsContent` joins `sections` + `sectionSegmentation` by
    `section_id`).
-5. **The debugger writes only** five `reference/human/` files:
-   `human_hints.json`, `song_facts.json`, `block_energy.json` (the Human Hints
-   panel's per-block `energy`/`tension` rating, `PUT /api/block-energy/<song>`,
-   v3.4 item 4) and `segments.json` (the Human Sections panel's hand-authored
-   section segmentation, `PUT /api/human-sections/<song>`) — all four on
-   explicit Save — and `lyric_validations.json` (the Moises Lyrics panel's ✔
-   token-timing overlay, `PUT /api/lyric-validations/<song>`, v3.4 item 5),
-   which writes **per-click**, not on Save (D5.1). Nothing in `src/` or `mcp/`
-   reads any of them. Any other write is a new contract — stop and ask.
+5. **The debugger writes only** four `reference/human/` files:
+   `human_hints.json`, `song_facts.json` and `segments.json` (the Human
+   Sections panel's hand-authored section segmentation,
+   `PUT /api/human-sections/<song>`) — all three on explicit Save — and
+   `lyric_validations.json` (the Moises Lyrics panel's ✔ token-timing overlay,
+   `PUT /api/lyric-validations/<song>`, v3.4 item 5), which writes
+   **per-click**, not on Save (D5.1); plus `block_reviews.json` (per-click
+   verdicts) and the `artifacts/_run_request.json` queue file. Nothing in
+   `src/` or `mcp/` reads the `reference/human/` ones. Any other write is a new
+   contract — stop and ask.
 
-   `segments.json` is a bare array of `{start, end, label?, description?,
-   energy?, tension?}`. `label`, when set, must be one of the names in
+   `segments.json` is a bare array of `{start, end, label?, description?}`.
+   `label`, when set, must be one of the names in
    `docs/segments-vocabulary.md` (mirrored in
    `ui/src/data/segmentFunctions.ts` and, for server-side validation, in
    `ui/server/humanSections.ts`'s `SEGMENT_FUNCTION_NAMES` — kept in sync by hand in all
    three places) — free text is rejected, and unset is honest-unknown, never
-   defaulted. `description` is unconstrained free text. `energy`/`tension` are
-   optional integers 1-5 (same convention as `block_energy.json`).
+   defaulted. `description` is unconstrained free text. Any other key a row
+   already carries on disk (older files hold `energy`/`tension`/`rhythm`) rides
+   through a Save untouched (`HumanSegment.preserved` on the client, passthrough
+   in `normalizeHumanSegmentsPayload`); the editor never adds one.
 6. **Docs update in the same change** as the code (Recipe A step 9).

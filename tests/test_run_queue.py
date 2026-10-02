@@ -37,33 +37,34 @@ class SubstitutionTests(unittest.TestCase):
 
 
 class QueueFileTests(unittest.TestCase):
-    def test_seeded_queue_parses_with_three_enabled_app_rows(self) -> None:
-        # v3.6 item 10 (D10.2) — rhythm_drum_ioi, rhythm_stem_autocorr,
-        # energy_level, tension_shape and rhythm_vocal_onsets were promoted
-        # out of the queue (into src/analyzer/stages/section_clues.py and
-        # whisperx_vad/vocal_onsets.py respectively); their rows are removed,
-        # not disabled.
-        rows = run_queue.load_queue()
-        names = [r["name"] for r in rows]
-        self.assertEqual(
-            sorted(names),
-            [
-                "phrase_periodicity",
-                "svd_tagger",
-                "vocal_voiceness",
-            ],
+    def test_queue_file_parses_rows_and_filters_by_image(self) -> None:
+        # Asserts against a fixture queue, not experiments/queue.toml — the real
+        # queue changes whenever an experiment is added or archived.
+        body = (
+            '[[experiment]]\nname = "alpha"\ncommand = "python -m experiments.alpha.run compute --song {song_name}"\n'
+            'image = "app"\nenabled = true\n\n'
+            '[[experiment]]\nname = "beta"\ncommand = "python -m experiments.beta.run compute --song {song_name}"\n'
+            'image = "app"\nenabled = true\n\n'
+            '[[experiment]]\nname = "gamma"\ncommand = "python -m experiments.gamma.run compute --song {song_name}"\n'
+            'image = "whisperx"\nenabled = true\n'
         )
-        app_rows = [row for row in rows if row["image"] == "app"]
+        with tempfile.TemporaryDirectory() as tmp:
+            rows = run_queue.load_queue(_write_queue(Path(tmp), body))
+        self.assertEqual(sorted(r["name"] for r in rows), ["alpha", "beta", "gamma"])
         self.assertEqual(
-            sorted(row["name"] for row in app_rows),
-            [
-                "phrase_periodicity",
-                "vocal_voiceness",
-            ],
+            sorted(r["name"] for r in rows if r["image"] == "app"), ["alpha", "beta"]
         )
         for row in rows:
             self.assertTrue(row["enabled"])
             self.assertEqual(row["name"], row["name"].strip())
+
+    def test_real_queue_file_loads_and_rows_are_well_formed(self) -> None:
+        # No row names pinned: only that whatever is queued today parses.
+        for row in run_queue.load_queue():
+            self.assertTrue(row["name"])
+            self.assertEqual(row["name"], row["name"].strip())
+            self.assertIn("command", row)
+            self.assertIn("image", row)
 
     def test_missing_queue_file_raises_queue_error(self) -> None:
         with self.assertRaises(run_queue.QueueError):

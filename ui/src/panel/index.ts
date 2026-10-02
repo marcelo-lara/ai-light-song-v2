@@ -5,7 +5,7 @@ export { RightPanel, type PanelMode } from "./RightPanel";
 export { BlockInspector } from "./BlockInspector";
 export { HintEditorPanel } from "./HintEditorPanel";
 export { SegmentEditorPanel } from "./SegmentEditorPanel";
-export { LaneEventsPanel, type BlockEnergyPanelProps } from "./LaneEventsPanel";
+export { LaneEventsPanel } from "./LaneEventsPanel";
 export { ReviewQueuePanel } from "./ReviewQueuePanel";
 export {
   partitionReviewQueue,
@@ -16,13 +16,7 @@ export {
   type ReviewQuestionKind,
 } from "./reviewQueue";
 export { PendingProposalsPanel } from "./PendingProposalsPanel";
-export {
-  applySectionFieldToSegments,
-  bestOverlapIndex,
-  hintDraftFromProposal,
-  partitionProposals,
-  sectionSpan,
-} from "./proposalsQueue";
+export { hintDraftFromProposal, partitionProposals } from "./proposalsQueue";
 export {
   blockFields,
   selectionFromSection,

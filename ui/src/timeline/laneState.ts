@@ -14,7 +14,6 @@ export type LaneKind =
   | "rms"
   | "env"
   | "drums"
-  | "energy"
   | "validation"
   | "hints"
   | "sections"
@@ -74,7 +73,6 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "humanSections", label: "Human Sections", sub: "reference/human · segments", kind: "hints", height: 58 },
   { id: "moisesSections", label: "Moises Sections", sub: "reference/moises · segments · read-only", kind: "proposals", height: 58 },
   { id: "allin1Sections", label: "allin1 Segmentation", sub: "artifacts/section_segmentation · pre-fusion, read-only", kind: "proposals", height: 58 },
-  { id: "segmentSeeds", label: "Segment Seeds", sub: "experiment · unreviewed rule-based energy/tension/rhythm draft over the operator's segment spans", kind: "proposals", height: 50, experiment: "segment_seeds" },
   { id: "moisesLyrics", label: "Moises Lyrics", sub: "reference/moises · per-word tokens · tinted by confidence", kind: "lyrics", height: 84 },
   { id: "arrangementState", label: "Arrangement State", sub: "arrangement_state · who is playing, per-stem RMS state changes", kind: "proposals", height: 58 },
   { id: "vocalPhrases", label: "Vocal Phrases", sub: "experiment · phrase / gap / sustained-note blocks over the vocal stem", kind: "proposals", height: 50, experiment: "vocal_phrases" },
@@ -82,12 +80,10 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "stemPresenceSections", label: "Stem Presence Sections", sub: "experiment · bass/drums presence state machine, hysteresis-merged", kind: "proposals", height: 50, experiment: "stem_presence_sections" },
   { id: "vocalCadence", label: "Vocal Cadence", sub: "vocal_cadence.json · lyric-alignment line timing + call events, bar-relative — timing only, no text", kind: "proposals", height: 50 },
   { id: "whisperxVad", label: "Voice phrase (WhisperX VAD)", sub: "speech-domain VAD voiceness + phrase spans with real sub-second onsets (diarization not attempted — no HF_TOKEN)", kind: "proposals", height: 50 },
-  { id: "rhythmDrumIoi", label: "Rhythm Drum IOI", sub: "experiment · drum inter-onset interval / beat period -> subdivision", kind: "proposals", height: 50, experiment: "rhythm_drum_ioi" },
-  { id: "rhythmStemAutocorr", label: "Rhythm Stem Autocorr", sub: "experiment · per-stem sub-beat loudness autocorrelation -> subdivision", kind: "proposals", height: 50, experiment: "rhythm_stem_autocorr" },
-  { id: "rhythmVocalOnsets", label: "Rhythm Vocal Onsets", sub: "experiment · whisper word-onset interval / beat period -> subdivision", kind: "proposals", height: 50, experiment: "rhythm_vocal_onsets" },
-  { id: "energyLevel", label: "Energy Level", sub: "experiment · mix loudness + stems-playing fraction -> energy 1-5", kind: "proposals", height: 50, experiment: "energy_level" },
-  { id: "tensionShape", label: "Tension Shape", sub: "experiment · energy slope + gesture/regime overlap -> tension 1-5", kind: "proposals", height: 50, experiment: "tension_shape" },
   { id: "gestures", label: "Gestures", sub: "song_event_timeline · approach/build/tension/impact/release + section transitions", kind: "gestures", height: 58 },
+  { id: "filterSweep", label: "Filter Sweeps", sub: "experiment · harmonic/bass stem brightness opening or closing over 2-16 bars at level loudness", kind: "proposals", height: 50, experiment: "filter_sweep" },
+  { id: "phrases", label: "Phrases", sub: "experiment · the song cut where stems enter/leave, impacts, gaps and riser ends land — each edge at a trusted beat, never bar-counted", kind: "proposals", height: 50, experiment: "phrases" },
+  { id: "sectionNames", label: "Section Names", sub: "experiment · every phrase named in the typical EDM sequence (Intro, Build-Up, Drop ...) from kick/bass entries and hits; current labels kept where no build→drop unit is found", kind: "proposals", height: 50, experiment: "section_names" },
   { id: "clapEvents", label: "Clap Events", sub: "experiment · claps detected from the drums stem by per-hit spectral shape, never omnizart's label", kind: "proposals", height: 50, experiment: "clap_events" },
   { id: "kickCheck", label: "Kick Check", sub: "experiment · every omnizart kick kept/rejected by spectral shape + percussive-attack gate", kind: "proposals", height: 50, experiment: "kick_check" },
   { id: "crashCheck", label: "Crash Check", sub: "experiment · every omnizart crash kept/rejected by stream-period + decay-shape gate", kind: "proposals", height: 50, experiment: "crash_check" },
@@ -101,7 +97,6 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "character", label: "Character", sub: "experiment · what this passage is like", kind: "character", height: 50, experiment: "clap" },
   { id: "vocalTranscription", label: "Vocal Transcription", sub: "experiment · sung lyrics + timing · VocalParse / ACE-Step / whisper", kind: "lyrics", height: 84, experiment: "vocalparse + acestep_transcriber" },
   { id: "drums", label: "Drum Density", sub: "kick / snare / hat / crash activity", kind: "drums", height: 84 },
-  { id: "energy", label: "Energy Profile", sub: "beat-aligned energy + accents", kind: "energy", height: 84 },
   { id: "validation", label: "Regression Overlay", sub: "beat drift + event comparison", kind: "validation", height: 84 },
 ];
 

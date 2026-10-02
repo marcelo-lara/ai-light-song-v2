@@ -37,16 +37,6 @@ export interface MergeHint {
   type?: "hint" | "review" | "vocal";
 }
 
-export interface MergeSegment {
-  start: number;
-  end: number;
-  label?: string;
-  description?: string;
-  energy?: number;
-  tension?: number;
-  rhythm?: Record<string, string>;
-}
-
 export interface HintProposalLike {
   id: string;
   hint?: { start: number; end: number; title: string; summary?: string };
@@ -105,47 +95,6 @@ export function buildApprovedHintEntry(
     captured_from: proposalCapturedFromMarker(proposal.id),
     type: "review",
   };
-}
-
-/** Merge one approved `section_field` proposal onto the current human
- *  segments array by span overlap (never by index) — same rule
- *  `section_clues.py` uses to resolve a human row against a published
- *  section. A section with no overlapping row gets a brand-new one at the
- *  section's own span. Field-value shape (the energy/tension 1-5 range, the
- *  rhythm vocabulary) is NOT re-validated here — the caller runs the result
- *  back through `normalizeHumanSegmentsPayload`, so that validation lives in
- *  exactly one place. */
-export function applyApprovedSectionField(
-  segments: MergeSegment[],
-  span: { start: number; end: number },
-  field: string,
-  value: unknown,
-): MergeSegment[] {
-  if (field !== "energy" && field !== "tension" && !field.startsWith("rhythm.")) {
-    throw new Error(`Unknown proposal field: "${field}".`);
-  }
-  let bestIndex = -1;
-  let bestOverlap = 0;
-  segments.forEach((row, index) => {
-    const overlap = Math.min(span.end, row.end) - Math.max(span.start, row.start);
-    if (overlap > bestOverlap) {
-      bestOverlap = overlap;
-      bestIndex = index;
-    }
-  });
-  const target: MergeSegment =
-    bestIndex === -1 ? { start: span.start, end: span.end } : segments[bestIndex]!;
-
-  const updated: MergeSegment =
-    field === "energy" || field === "tension"
-      ? { ...target, [field]: value as number }
-      : {
-          ...target,
-          rhythm: { ...target.rhythm, [field.slice("rhythm.".length)]: String(value) },
-        };
-
-  if (bestIndex === -1) return [...segments, updated];
-  return segments.map((row, i) => (i === bestIndex ? updated : row));
 }
 
 // One promise-chain per song, serializing every proposal-decision request

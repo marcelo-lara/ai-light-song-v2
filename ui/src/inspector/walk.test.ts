@@ -27,7 +27,7 @@ const root = "/data/analysis/Hideaway%20-%20Kiesza";
 
 const tree: Record<string, string[]> = {
   [`${root}/`]: ["info.json", "beats.json", "artifacts/", "reference/"],
-  [`${root}/artifacts/`]: ["genre.json", "essentia/", "validation/"],
+  [`${root}/artifacts/`]: ["notes.json", "essentia/", "validation/"],
   [`${root}/artifacts/essentia/`]: ["fft_bands.json", "rms_loudness.json"],
   [`${root}/artifacts/validation/`]: ["review_queue.json", "phase_1_report.md"],
   [`${root}/reference/`]: ["human/"],
@@ -40,7 +40,7 @@ describe("walkDataDir", () => {
     expect(files.map((f) => f.relativePath)).toEqual([
       "artifacts/essentia/fft_bands.json",
       "artifacts/essentia/rms_loudness.json",
-      "artifacts/genre.json",
+      "artifacts/notes.json",
       "artifacts/validation/phase_1_report.md",
       "artifacts/validation/review_queue.json",
       "beats.json",
@@ -75,7 +75,7 @@ describe("groupByDir", () => {
       "artifacts/validation",
       "reference/human",
     ]);
-    expect(groups[1]?.files.map((f) => f.name)).toEqual(["genre.json"]);
+    expect(groups[1]?.files.map((f) => f.name)).toEqual(["notes.json"]);
   });
 });
 

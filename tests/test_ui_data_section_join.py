@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 from analyzer.paths import SongPaths
-from analyzer.stages.ui_data import apply_section_function_contest, build_ui_data
+from analyzer.stages.ui_data import build_ui_data
 
 
 def _setup(tmp: str, sections: list[dict]) -> SongPaths:
@@ -14,15 +14,9 @@ def _setup(tmp: str, sections: list[dict]) -> SongPaths:
     paths = SongPaths(song_path=root / "songs" / "_test_song.mp3", analysis_root=root / "analysis")
     paths.artifact("essentia").mkdir(parents=True)
     paths.artifact("essentia", "beats.json").write_text(json.dumps({"beats": [{"time": 0.0, "index": 1, "bar": 1, "beat_in_bar": 1, "type": "downbeat"}]}))
-    paths.artifact("layer_a_harmonic.json").write_text(json.dumps({"global_key": None}))
     paths.artifact("section_segmentation").mkdir(parents=True, exist_ok=True)
     paths.artifact("section_segmentation", "sections.json").write_text(json.dumps({"sections": sections}))
-    # v3.1 items 5-7 — build_ui_data now also publishes top-level views of these.
-    paths.artifact("genre.json").write_text(json.dumps({
-        "genres": ["electronic"], "confidence": 0.42,
-        "top_predictions": [{"label": "electronic", "confidence": 0.42}],
-        "guidance": ["advisory only"],
-    }))
+    # v3.1 items 5-7 — build_ui_data also publishes top-level views of these.
     paths.artifact("symbolic_transcription").mkdir(parents=True, exist_ok=True)
     paths.artifact("symbolic_transcription", "drum_events.json").write_text(json.dumps({
         "summary": {"event_count": 2, "kick_count": 1, "snare_count": 1, "hat_count": 0, "unresolved_count": 0},
@@ -149,57 +143,6 @@ class SectionJoinTests(unittest.TestCase):
         for row in rows:
             self.assertEqual(row["function_status"], "unknown")
 
-    def test_section_function_contest_is_a_noop_without_the_artifact(self) -> None:
-        # v3.4 item 3 — apply_section_function_contest runs after the phase-3
-        # stage. With no artifacts/section_function_contest.json it must leave
-        # sections.json byte-identical to build_ui_data's output.
-        sections = [
-            {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "chorus",
-             "function_confidence": 0.5, "function_status": "known", "same_label_as": None,
-             "confidence": 0.5},
-        ]
-        with tempfile.TemporaryDirectory() as tmp:
-            paths = _setup(tmp, sections)
-            build_ui_data(paths)
-            before = paths.sections_output_path.read_text()
-            apply_section_function_contest(paths)
-            after = paths.sections_output_path.read_text()
-        self.assertEqual(before, after)
-        payload = json.loads(after)
-        self.assertNotIn("contested_by", payload["field_sources"])
-        self.assertNotIn("contested_by", payload["sections"][0])
-
-    def test_section_function_contest_flags_a_row_from_the_artifact(self) -> None:
-        sections = [
-            {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "chorus",
-             "function_confidence": 0.5, "function_status": "known", "same_label_as": None,
-             "confidence": 0.5},
-            {"section_id": "section-002", "start": 10.0, "end": 20.0, "function": "verse",
-             "function_confidence": 0.8, "function_status": "known", "same_label_as": None,
-             "confidence": 0.8},
-        ]
-        with tempfile.TemporaryDirectory() as tmp:
-            paths = _setup(tmp, sections)
-            build_ui_data(paths)
-            paths.artifact("section_function_contest.json").write_text(json.dumps({
-                "schema_version": "3.0", "generated_from": {},
-                "sections": [
-                    {"section_id": "section-001", "function": "chorus", "contested": True,
-                     "contested_by": "energy", "margin": 6.2},
-                    {"section_id": "section-002", "function": "verse", "contested": False,
-                     "contested_by": None, "margin": None},
-                ],
-            }))
-            apply_section_function_contest(paths)
-            payload = json.loads(paths.sections_output_path.read_text())
-        rows = {r["section_id"]: r for r in payload["sections"]}
-        self.assertEqual(rows["section-001"]["function_status"], "contested")
-        self.assertEqual(rows["section-001"]["contested_by"], "energy")
-        self.assertEqual(rows["section-001"]["function"], "chorus")
-        self.assertNotIn("contested_by", rows["section-002"])
-        self.assertEqual(payload["field_sources"]["function_status"], "section_function")
-        self.assertEqual(payload["field_sources"]["contested_by"], "section_function")
-
     def test_missing_section_id_fails_loudly(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             paths = _setup(tmp, [{"start": 0.0, "end": 10.0, "function": "intro"}])
@@ -293,7 +236,6 @@ class SectionJoinTests(unittest.TestCase):
         # allin1's.
         self.assertEqual(payload["field_sources"]["function"], "human")
         self.assertEqual(payload["field_sources"]["function_confidence"], "allin1")
-        self.assertEqual(payload["field_sources"]["key"], "harmonic")
 
     def test_moises_segments_replace_allin1_boundaries_when_present_without_human(self) -> None:
         # Moises tier: same whole-song-override shape as human, one
@@ -412,6 +354,70 @@ class SectionJoinTests(unittest.TestCase):
         self.assertEqual(payload["field_sources"]["start"], "allin1")
         self.assertEqual(payload["field_sources"]["confidence"], "allin1")
         self.assertEqual(payload["field_sources"]["function"], "allin1")
+
+    def test_empty_human_file_is_not_a_review_and_publishes_allin1_with_reason(self) -> None:
+        # v3.10 item 1 (D1.1) — an empty reference/human/segments.json is skipped.
+        sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "intro",
+             "function_confidence": 0.9, "function_status": "known", "same_label_as": None,
+             "confidence": 0.9},
+            {"section_id": "section-002", "start": 10.0, "end": 20.0, "function": "chorus",
+             "function_confidence": 0.7, "function_status": "known", "same_label_as": None,
+             "confidence": 0.7},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, sections)
+            human_path = paths.reference("human", "segments.json")
+            human_path.parent.mkdir(parents=True, exist_ok=True)
+            human_path.write_text("[]")
+            build_ui_data(paths)
+            payload = json.loads(paths.sections_output_path.read_text())
+        self.assertEqual([r["function"] for r in payload["sections"]], ["intro", "chorus"])
+        self.assertEqual(payload["field_sources"]["start"], "allin1")
+        self.assertEqual(payload["field_sources"]["function"], "allin1")
+        self.assertEqual(
+            payload["sections_tier_note"],
+            "reference/human/segments.json is empty \u2014 not a review",
+        )
+
+    def test_empty_human_file_falls_through_to_non_empty_moises(self) -> None:
+        sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 20.0, "function": "intro",
+             "function_confidence": 0.9, "function_status": "known", "same_label_as": None,
+             "confidence": 0.9},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, sections)
+            for tier, rows in (("human", []), ("moises", [{"start": 0.0, "end": 20.0, "label": "Verse"}])):
+                path = paths.reference(tier, "segments.json")
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(rows))
+            build_ui_data(paths)
+            payload = json.loads(paths.sections_output_path.read_text())
+        self.assertEqual(payload["field_sources"]["start"], "moises")
+        self.assertEqual(payload["sections"][0]["function"], "Verse")
+        self.assertIn("reference/human/segments.json is empty", payload["sections_tier_note"])
+        self.assertNotIn("moises", payload["sections_tier_note"])
+
+    def test_one_row_human_file_stays_authoritative_and_has_no_tier_note(self) -> None:
+        sections = [
+            {"section_id": "section-001", "start": 0.0, "end": 10.0, "function": "intro",
+             "function_confidence": 0.9, "function_status": "known", "same_label_as": None,
+             "confidence": 0.9},
+            {"section_id": "section-002", "start": 10.0, "end": 20.0, "function": "chorus",
+             "function_confidence": 0.7, "function_status": "known", "same_label_as": None,
+             "confidence": 0.7},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = _setup(tmp, sections)
+            human_path = paths.reference("human", "segments.json")
+            human_path.parent.mkdir(parents=True, exist_ok=True)
+            human_path.write_text(json.dumps([{"start": 0.0, "end": 20.0, "label": "Verse"}]))
+            build_ui_data(paths)
+            payload = json.loads(paths.sections_output_path.read_text())
+        self.assertEqual(len(payload["sections"]), 1)
+        self.assertEqual(payload["field_sources"]["start"], "human")
+        self.assertNotIn("sections_tier_note", payload)
 
 
 if __name__ == "__main__":

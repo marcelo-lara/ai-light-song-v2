@@ -41,13 +41,12 @@ def test_sparse_cap_hit_reports_withheld() -> None:
         "sections": [{
             "section_id": "s1", "start": 0, "end": 60000, "function": None,
             "function_confidence": None, "function_status": "unknown",
-            "same_label_as": None, "confidence": None, "key": None,
+            "same_label_as": None, "confidence": None,
         }],
         "field_sources": {},
     })
     _write_json(song / "song_event_timeline.json", {"events": [], "field_sources": {}})
     _write_json(song / "hints.json", {"hints": [], "field_sources": {}})
-    _write_json(song / "genre.json", {"genres": ["unknown"], "confidence": None, "field_sources": {}})
     _write_json(song / "loudness.json", {
         "interval_ms": 20, "source_order": ["mix", "bass", "drums", "harmonic", "vocals"],
         "frames": [], "field_sources": {},

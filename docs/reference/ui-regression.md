@@ -58,8 +58,12 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `human-hints-editor` | Right-side hint editor open | trigger "add hint" | Editor stays open; compact styling |
 | `hint-drag-resized` | `song-full` after a right-edge resize + interior move of two `humanHints` blocks | drag handles on the `humanHints` lane (plan v2.1 item 10) | Blocks at post-drag positions, pre-reload; `.app-timeline__grid`, waveform masked |
 | `validation-snapshot` | Validation panel populated | part of `song-full` (assert region) | Status, beat match ratio, comparison counts |
-| `inspector-promote` | `song-full` with a `sections` block selected | click the block, then `promote-hint` | Plan v1.5 item 9 / R8: the `rows-plus-bottom` "Create human hint" action under the inspector title opens the hint editor pre-filled from the event (no seek, no save); `.app-rightpanel`. Blocks on `allin1Sections`, `segmentSeeds` and `moisesSections` show "Create human section" (`promote-section`) instead, opening the segment editor on an unsaved draft with the block's span, its label if it names a vocabulary value (case-insensitive), and — `segmentSeeds` only — its energy/tension/rhythm. Unit-tested (`BlockInspector.test.tsx`, `segmentDraft.test.ts`); no Playwright spec |
+| `inspector-promote` | `song-full` with a `sections` block selected | click the block, then `promote-hint` | Plan v1.5 item 9 / R8: the `rows-plus-bottom` "Create human hint" action under the inspector title opens the hint editor pre-filled from the event (no seek, no save); `.app-rightpanel`. Blocks on `allin1Sections` and `moisesSections` show "Create human section" (`promote-section`) instead, opening the segment editor on an unsaved draft with the block's span and its label if it names a vocabulary value (case-insensitive). Unit-tested (`BlockInspector.test.tsx`, `segmentDraft.test.ts`); no Playwright spec |
 | `header-readout` | `.app-header` with the playhead at `1:04.0` | `/?song=<full-fixture>`, click `hint-003` on the `humanHints` lane | Plan v1.5 item 5 / R9, R10: no `app-header__barbeat-caption`; time / time_s / bar.beat readouts have reserved widths so nothing shifts as the digit count grows; `app-header__time` is the playhead in clock format, `app-header__time_s` the same playhead position as seconds with two fixed decimals; `.app-header` |
+| `removed-surfaces` | `song-full` timeline, then the segment editor on the first Human Section | `/?song=<full-fixture>`; open `lane-events-humanSections`, double-click `lane-event-segment-001` | v3.10 item 9. No screenshot; assertions only. No lane id or title matches `energy|tension|rhythm|key|seed`, no key tag in the header, and every remaining canvas lane reaches the timeline's right edge (§5.2 full-extent). The segment editor has exactly Start / End / Label / Description — no `#segment-energy`, `#segment-tension`, `#segment-rhythm-*` or `.seg-rating`. Saving writes the fixture's first row as `{start, end, label}` plus the legacy `energy: 4` / `tension: 2` keys exactly as they were (`RegFull`'s `segments.json` carries them on purpose). A request for any removed artifact fails every spec (§5.2) |
+| `filter-sweep` | `song-full` and `_test_song`, Filter Sweeps lane events panel | `/?song=<fixture>`; click `lane-events-filterSweep` | v3.10 item 14. No screenshot; assertions only. Lane title is "Filter Sweeps"; the panel lists exactly as many `lane-event-filter-sweep-N` cards as the fixture's `reference/proposals/filter_sweep.json` has `blocks` (RegFull/RegPartial carry three synthetic rows from `build-fixtures.py`, `_test_song` its real file; the count must be non-zero). Runtime assertions as §5.2 |
+| `phrases` | `song-full` and `_test_song`, Phrases lane events panel | `/?song=<fixture>`; click `lane-events-phrases` | v3.10 item 15. No screenshot; assertions only. Lane title is "Phrases"; the panel lists exactly as many `lane-event-phrases-N` cards as the fixture's `reference/proposals/phrases.json` has `blocks` (the real exports of `Armin - Revolution` for RegFull/RegPartial and of `_test_song`, copied by `build-fixtures.py`'s `NEEDED`; the count must be non-zero), the last block ends within 1 s of `info.json`'s duration, and the last card's range shows that end time. Runtime assertions as §5.2 |
+| `section-names` | `song-full` and `_test_song`, Section Names lane events panel | `/?song=<fixture>`; click `lane-events-sectionNames` | v3.10 item 17. No screenshot; assertions only. Lane title is "Section Names"; the panel lists exactly as many `lane-event-sectionNames-N` cards as the fixture's `reference/proposals/section_names.json` has `blocks`, in order, and each card's `.lane-events__label` equals that row's `label` (the real exports of `Armin - Revolution` for RegFull/RegPartial and of `_test_song`, copied by `build-fixtures.py`'s `NEEDED`; the count must be non-zero). Runtime assertions as §5.2 |
 | `footer-follow` | `.app-footer` with the follow toggle off, transport paused | `/?song=<full-fixture>`, clear `localStorage`, click `follow-toggle` once | Plan v1.5 item 6 / R6: the `arrows-in-line-horizontal` follow toggle sits immediately left of the `Lanes` button; `aria-pressed` and the pressed styling track the flag (default on, persisted per session); `.app-footer` |
 
 Component-level (optional, faster feedback): capture individual panels
@@ -102,9 +106,8 @@ Create `tests/ui-visual/fixtures/analysis/` containing 3 frozen song folders:
     of an untouched hint must not introduce it. `promote-hint.spec.ts` (item 9)
     is the only spec that writes a hint with `captured_from`, and it snapshots
     and restores the file.
-- `RegPartial - Fixture/` — missing at least one core key from the gate
-  (`harmonic`, `symbolic`, `energy`, `sectionsArtifact`, `eventMachine`,
-  `validation`) so the warning card renders.
+- `RegPartial - Fixture/` — missing at least one core key from the gate so the
+  warning card renders.
 - `_test_song/` — copy of the current synthetic fixture (no audio).
 
 Keep each JSON small (a handful of beats/sections/events) but schema-valid. Trim
@@ -208,6 +211,11 @@ Also assert, on every test:
 - no `console.error` / `console.warning` (fail the test on any — this is how
   issue #1 would have been caught automatically);
 - no `pageerror` (unhandled exceptions);
+- no request at all for a file the analyzer no longer writes (v3.10 item 9:
+  `genre.json`, `hpcp.json`, `layer_a_harmonic.json`, `layer_c_energy.json`,
+  `block_energy.json`, `segments.seed.json`, `section_function_contest.json`
+  and the rhythm/energy/tension proposal files) — `helpers.ts`'s
+  `REMOVED_ARTIFACT_REQUEST` fails the run on one, whether or not it 404s;
 - no failed responses for URLs under `/data/analysis/` (a `404`/`ERR` for an
   expected artifact is a regression). `/data/songs/*.mp3` `404`s are allowed only
   for `song-no-audio`.
@@ -301,13 +309,9 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
 - lane head (plan v1.5 item 7): a lane fed by an unpromoted `experiments/`
   sandbox carries `<i.ph.ph-flask.tl-lane-head__flask>` (`aria-label`
   `"Experimental lane"`) as the first child of `.tl-lane-head__name`, before
-  `<span.tl-lane-head__name-text>`. Seventeen lanes carry it —
-  `vocalPhrases`, `allin1Posterior`, `stemPresenceSections`, `vocalVoiceness`, `svdTagger`,
-  `voiceMultiplicity`, `phrasePeriodicity`,
-  `rhythmDrumIoi`, `rhythmStemAutocorr`,
-  `rhythmVocalOnsets`, `energyLevel`, `tensionShape`, `character`,
-  `vocalTranscription`, `clapEvents`, `kickCheck`, `crashCheck` (v3.9 item 2 +
-  the "crash over-fires" bug; this list must track
+  `<span.tl-lane-head__name-text>`. Eleven lanes carry it —
+  `vocalPhrases`, `allin1Posterior`, `stemPresenceSections`, `character`,
+  `vocalTranscription`, `clapEvents`, `kickCheck`, `crashCheck`, `filterSweep`, `phrases`, `sectionNames` (this list must track
   `tests/ui-visual/specs/experiment-badge.spec.ts`'s `BADGED` exactly). The
   same badge precedes
   `.app-rightpanel__kicker` in
@@ -348,6 +352,10 @@ every host OS).
 
 ```bash
 # 1. rebuild the frozen fixtures (only if a source song changed)
+# WARNING: the fixtures' reference/human/human_hints.json are HAND-CURATED
+# (hint-drag.spec.ts needs hint-001/002/003 at 40-48, 52-60, 64-72 s). The
+# rebuild overwrites them: `git checkout tests/ui-visual/fixtures/analysis/*/reference/human/human_hints.json`
+# afterwards. QA agents must not run this step as a routine refresh.
 python3 tests/ui-visual/fixtures/build-fixtures.py
 
 # 2. build + start the UI against the fixture data

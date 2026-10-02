@@ -64,3 +64,9 @@ def test_corpus_row_is_micro_averaged_not_mean_of_f1():
     assert row["matched"] == 1
     assert row["precision"] == 0.5
     assert row["recall"] == 1 / 3
+
+
+def test_vocabulary_parser_picks_up_drop_break():
+    vocab = structure.load_label_vocabulary()
+    assert "drop break" in vocab
+    assert "break" in vocab

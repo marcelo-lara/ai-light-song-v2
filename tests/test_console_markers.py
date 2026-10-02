@@ -393,9 +393,7 @@ class ConsoleMarkerTests(unittest.TestCase):
             sections_payload = {"sections": [{"section_id": "section-001", "start": 1.5, "end": 3.5, "label": "reference_section", "confidence": 0.9}]}
             ui_outputs = {"beats": str(paths.beats_output_path), "sections": str(paths.sections_output_path)}
             hints_payload = {"hints": str(paths.hints_output_path)}
-            energy_features = {"beat_features": []}
             drum_events = {"generated_from": {"engine": "audiohacking.omnizart.drum"}}
-            energy = {"sections": []}
             event_timeline = {"events": []}
             fft_bands = {"bands": [{"id": "sub"}, {"id": "bass"}, {"id": "low_mid"}, {"id": "mid"}, {"id": "upper_mid"}, {"id": "presence"}, {"id": "brilliance"}]}
             loudness = {
@@ -410,9 +408,6 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.extract_fft_bands", return_value=fft_bands))
                 stack.enter_context(patch("analyzer.pipeline.extract_mix_stem_loudness", return_value=loudness))
                 stack.enter_context(patch("analyzer.pipeline.validate_beats", return_value=beat_validation))
-                stack.enter_context(patch("analyzer.pipeline.classify_genre", return_value={"genres": []}))
-                stack.enter_context(patch("analyzer.pipeline.extract_hpcp_and_key", return_value=({}, {})))
-                stack.enter_context(patch("analyzer.pipeline.extract_energy_features", return_value=energy_features))
                 mock_segment_sections = stack.enter_context(patch("analyzer.pipeline.segment_sections", return_value=sections_payload))
                 stack.enter_context(patch("analyzer.pipeline.extract_drum_events", return_value=drum_events))
                 stack.enter_context(patch("analyzer.pipeline.generate_section_hints", return_value=hints_payload))
@@ -429,9 +424,6 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.build_ui_data", side_effect=_fake_build_ui_data))
                 stack.enter_context(patch("analyzer.pipeline.detect_arrangement_state", return_value={"blocks": []}))
                 stack.enter_context(patch("analyzer.pipeline.publish_arrangement_state", return_value="arrangement_state.json"))
-                stack.enter_context(patch("analyzer.pipeline.contest_section_function", return_value={"sections": []}))
-                stack.enter_context(patch("analyzer.pipeline.section_clues", return_value={"sections_with_seed_unreviewed": [], "any_seed_unreviewed": False}))
-                stack.enter_context(patch("analyzer.pipeline.derive_energy_layer", return_value=energy))
                 stack.enter_context(patch("analyzer.pipeline.build_gestures", return_value=event_timeline))
                 stack.enter_context(patch("analyzer.pipeline.build_human_hints_alignment", return_value=None))
                 stack.enter_context(patch("analyzer.pipeline.build_validation_report", return_value=(report, 0)))
@@ -447,7 +439,6 @@ class ConsoleMarkerTests(unittest.TestCase):
         # inferred timing, not a reference-rebuilt one.
         self.assertEqual(mock_segment_sections.call_args.args[2], inferred_timing)
         self.assertFalse(paths.artifact("essentia", "beats_inferred.json").exists())
-        self.assertFalse(paths.artifact("harmonic_inference", "layer_a_harmonic.inferred.json").exists())
         # v3.1 item 8 — info.json is song metadata only: no host-path or
         # file-manifest fields remain.
         self.assertEqual(

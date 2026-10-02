@@ -31,28 +31,6 @@
           "function": "verse",
           "function_status": "known",
           "same_label_as": null,
-          "energy": 4,
-          "energy_confidence": null,
-          "energy_source": "seed_unreviewed",
-          "rhythm": {
-            "vocals": {
-              "subdivision": "eighth",
-              "confidence": null,
-              "source": "seed_unreviewed"
-            }
-          },
-          "impact_alignment": {
-            "gesture_id": "gesture-001",
-            "impact_time": 13.5,
-            "offset_s": 5.5,
-            "offset_beats": 11.0,
-            "impact_position": {
-              "bar": 7,
-              "beat": 4,
-              "section_id": "section-002",
-              "resolved": true
-            }
-          },
           "start_position": {
             "bar": 5,
             "beat": 1,
@@ -72,18 +50,10 @@
         "start": "allin1",
         "end": "allin1",
         "confidence": "allin1",
-        "key": "harmonic",
         "function": "allin1",
         "function_confidence": "allin1",
         "function_status": "allin1",
-        "same_label_as": "allin1",
-        "energy": "energy_level",
-        "energy_confidence": "energy_level",
-        "tension": "tension_shape",
-        "tension_confidence": "tension_shape",
-        "rhythm.drums": "rhythm_drum_ioi",
-        "rhythm.vocals": "rhythm_stem_autocorr",
-        "impact_alignment": "impact_alignment"
+        "same_label_as": "allin1"
       }
     },
     "phases": {

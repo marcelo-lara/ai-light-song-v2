@@ -1,0 +1,100 @@
+{
+  "song_name": "_test_song",
+  "shadow_labels": [
+    {
+      "label": "chorus",
+      "start_s": 15.58,
+      "end_s": 58.12,
+      "mean_share": 0.5618,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "inst",
+      "start_s": 29.99,
+      "end_s": 42.42,
+      "mean_share": 0.3587,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "outro",
+      "start_s": 45.43,
+      "end_s": 47.89,
+      "mean_share": 0.3155,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "outro",
+      "start_s": 49.48,
+      "end_s": 51.74,
+      "mean_share": 0.2951,
+      "published_overlap": 0.0
+    }
+  ],
+  "section_entropy_parity_check": [
+    {
+      "section_id": "section-001",
+      "function": "Intro",
+      "start": 0.06,
+      "end": 14.82,
+      "shipped_function_confidence": 0.342105,
+      "recomputed_entropy_confidence": 0.342196
+    },
+    {
+      "section_id": "section-002",
+      "function": "Pre-Build",
+      "start": 14.82,
+      "end": 22.2,
+      "shipped_function_confidence": 0.446157,
+      "recomputed_entropy_confidence": 0.43551
+    },
+    {
+      "section_id": "section-003",
+      "function": "Build",
+      "start": 22.2,
+      "end": 28.63,
+      "shipped_function_confidence": 0.446157,
+      "recomputed_entropy_confidence": 0.410043
+    },
+    {
+      "section_id": "section-004",
+      "function": "Pre-Drop",
+      "start": 28.63,
+      "end": 29.56,
+      "shipped_function_confidence": 0.446157,
+      "recomputed_entropy_confidence": 0.39136
+    },
+    {
+      "section_id": "section-005",
+      "function": "Drop",
+      "start": 29.58,
+      "end": 42.49,
+      "shipped_function_confidence": 0.446157,
+      "recomputed_entropy_confidence": 0.427454
+    },
+    {
+      "section_id": "section-006",
+      "function": "Refrain",
+      "start": 42.49,
+      "end": 44.35,
+      "shipped_function_confidence": 0.446157,
+      "recomputed_entropy_confidence": 0.428707
+    },
+    {
+      "section_id": "section-007",
+      "function": "Breakdown",
+      "start": 44.36,
+      "end": 55.22,
+      "shipped_function_confidence": 0.446157,
+      "recomputed_entropy_confidence": 0.492527
+    },
+    {
+      "section_id": "section-008",
+      "function": "Outro",
+      "start": 55.22,
+      "end": 58.12,
+      "shipped_function_confidence": 0.446157,
+      "recomputed_entropy_confidence": 0.495151
+    }
+  ],
+  "note": "function_confidence on sections.json is already this module's entropy measure, shipped in production (segmentation.py). Only shadow_labels is new \u2014 a candidate field, not yet published anywhere."
+}

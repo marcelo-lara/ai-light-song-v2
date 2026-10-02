@@ -2,7 +2,7 @@
 //
 // `review_queue.json` is a flat list of low-confidence questions the analyzer
 // wants a human to settle. Two kinds matter to this panel:
-//   - whole-song questions (`form_family`, `form_family_vs_genre`) — answerable
+//   - whole-song questions (`form_family`) — answerable
 //     here; the answer is dispositioned into `song_facts.json`.
 //   - per-section `form_role` and `drops.*` questions — shown read-only for
 //     context; they are answered by editing `human_hints.json` (Story 8.8).

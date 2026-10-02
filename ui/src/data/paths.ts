@@ -37,18 +37,8 @@ export const artifactPaths = {
   // ({start, end, label} only, no id/type/summary).
   humanSections: (song: string) =>
     encodePath(analysis(song, "reference", "human", "segments.json")),
-  // v3.6 item 4 — unreviewed rule-based drafts (experiments/segment_seeds),
-  // same spans as segments.json. Read-only to the UI: never written here,
-  // shown only on the Segment Seeds lane.
-  humanSectionsSeed: (song: string) =>
-    encodePath(analysis(song, "reference", "human", "segments.seed.json")),
   songFacts: (song: string) =>
     encodePath(analysis(song, "reference", "human", "song_facts.json")),
-  // v3.4 item 4 — operator's 1-5 energy/tension rating per human_hints.json
-  // block, joined by hint_id. Writable (debugger only), reference/human/
-  // material; nothing in src/ or mcp/ reads it.
-  blockEnergy: (song: string) =>
-    encodePath(analysis(song, "reference", "human", "block_energy.json")),
   // v3.4 item 5 — ids of the Moises lyric tokens the operator has hand-verified.
   // An overlay on reference/moises/lyrics.json (never an edit to it). Writable
   // (debugger only, per-click), reference/human/ material; nothing in src/ or
@@ -96,27 +86,6 @@ export const artifactPaths = {
   // derived from the published per-stem RMS series — no audio, no model.
   arrangementState: (song: string) =>
     encodePath(analysis(song, "arrangement_state.json")),
-  // Written by experiments/rhythm_drum_ioi (`run export`). item 5/6a:
-  // rhythm.drums subdivision + confidence from drum_events.json IOI.
-  rhythmDrumIoi: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "rhythm_drum_ioi.json")),
-  // Written by experiments/rhythm_stem_autocorr (`run export`). item 5/6b:
-  // rhythm.{drums,bass,harmonic,vocals} from per-stem sub-beat autocorrelation.
-  rhythmStemAutocorr: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "rhythm_stem_autocorr.json")),
-  // Written by experiments/rhythm_vocal_onsets (`run export`, ACE-Step
-  // sandbox `compute`). item 5/6c: rhythm.vocals + onsets_per_beat from
-  // whisper word-onset intervals.
-  rhythmVocalOnsets: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "rhythm_vocal_onsets.json")),
-  // Written by experiments/energy_level (`run export`). item 5/6: candidate
-  // `energy` (1-5) from segment loudness level + stems-playing fraction.
-  energyLevel: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "energy_level.json")),
-  // Written by experiments/tension_shape (`run export`). item 5/6: candidate
-  // `tension` (1-5) from energy slope + gesture/regime overlap.
-  tensionShape: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "tension_shape.json")),
   // Written by the `whisperx` Compose service (whisperx_vad/, promoted out of
   // experiments/ in v3.6 item 2). Per-50ms-frame voiceness curve (no
   // `channel` — single producer, vocal stem only) plus `Binarize`d
@@ -156,12 +125,8 @@ export const artifactPaths = {
     encodePath(analysis(song, "artifacts", "essentia", "rms_loudness.json")),
   loudnessEnvelope: (song: string) =>
     encodePath(analysis(song, "artifacts", "essentia", "loudness_envelope.json")),
-  harmonicLayer: (song: string) =>
-    encodePath(analysis(song, "artifacts", "layer_a_harmonic.json")),
   drumEvents: (song: string) =>
     encodePath(analysis(song, "artifacts", "symbolic_transcription", "drum_events.json")),
-  energyLayer: (song: string) =>
-    encodePath(analysis(song, "artifacts", "layer_c_energy.json")),
   reviewQueue: (song: string) =>
     encodePath(analysis(song, "artifacts", "validation", "review_queue.json")),
   // v3.7 item 10/11 — the MCP correction-proposals queue. Read here via the
@@ -194,6 +159,21 @@ export const artifactPaths = {
   // stream-period + decay-shape.
   crashCheck: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "crash_check.json")),
+  // Written by experiments/filter_sweep (`run export`). v3.10 item 14: a stem's
+  // brightness (spectral centroid) moving near-monotonically over 2-16 bars
+  // while its loudness stays level.
+  filterSweep: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "filter_sweep.json")),
+  // Written by experiments/phrases (`run export`). v3.10 item 15: the song cut
+  // where the audio changes, one block per phrase with presence / density
+  // features. Never bar-counted.
+  phrases: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "phrases.json")),
+  // Written by experiments/section_names (`run export`). v3.10 item 17: every
+  // phrase named in the typical EDM sequence (Intro ... Build-Up ... Drop ...),
+  // or the current labels kept and attributed when no build->drop unit is found.
+  sectionNames: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "section_names.json")),
 } as const;
 
 export const listingPaths = {

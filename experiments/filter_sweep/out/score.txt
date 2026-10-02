@@ -1,0 +1,31 @@
+song                                         sweeps  harm  bass  open close riser-ovl depth-only  +mono
+Armin - Revolution                                0     0     0     0     0         0          2      2
+Best Friend - Sofi Tukker                         0     0     0     0     0         0          1      1
+ChangedTheWayYouKissMe-Example                    4     4     0     1     3         1          5      4
+Charli-Guess                                      0     0     0     0     0         0          1      1
+Charli-VonDutch                                   0     0     0     0     0         0          1      1
+Chimera - Hana                                    4     4     0     3     1         1          9      9
+Cinderella - Ella Lee                             4     0     4     2     2         1          8      8
+CruelSummer - Malvina                             4     3     1     3     1         0          6      6
+Fascination (The Droyds One Armed Remix)          0     0     0     0     0         0          3      3
+Gabry Ponte - Tutta L'Italia                      4     1     3     2     2         0          3      3
+Hideaway - Kiesza                                 5     5     0     3     2         2          3      3
+In da name of love - Anita and Ray                4     4     0     2     2         0          4      4
+It's a fine day - Opus III                        3     1     2     2     1         0          5      5
+Medicine-MilkInc                                  6     5     1     4     2         2          8      8
+Only this moment - royksopp                       5     4     1     4     1         0          6      7
+Pet Shop Boys - I'm not scared                    4     1     3     2     2         0          6      6
+Queen of Kings - Alessandra                       0     0     0     0     0         0          0      0
+Rapture - Nadia Ali                               6     5     1     4     2         0          7      7
+Rotate-Skillibeng                                 0     0     0     0     0         0          5      5
+Sash - Raindrops                                  3     3     0     3     0         0          3      3
+StealTheShow-NeonDreams                           4     3     1     1     3         1          9      9
+Titanium - David Guetta ft Sia                    9     8     1     7     2         0          8      8
+Underworld - Born Slippy                          6     2     4     4     2         0          7      8
+What a Feeling - Courtney Storm                   1     1     0     1     0         1          3      2
+Yonaka - Seize the Power                          0     0     0     0     0         0          2      2
+_test_song                                        3     2     1     2     1         2          3      3
+ayuni                                             0     0     0     0     0         0          0      0
+
+27 songs: 79 sweeps (56 harmonic / 23 bass, 50 opening / 29 closing); 11 overlap an incumbent riser/downlifter span (54 such spans exist); baselines: depth-only 118, depth+monotonic 118
+No sweep ground truth exists: no precision/recall reported.

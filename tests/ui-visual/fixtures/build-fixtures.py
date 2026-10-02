@@ -13,10 +13,14 @@ not exist in the real track. Re-running this script overwrites them with the liv
 values and breaks that spec, so `git checkout` those three files (or re-curate
 them) after any rebuild.
 
-`reference/human/block_energy.json` (v3.4 item 4) is likewise synthetic — it
-rates the hand-curated hint-001 `{energy:5, tension:4}` and leaves hint-002 /
-hint-003 unrated, which `block-energy-rating.spec.ts` asserts ("1 / 3 blocks
-rated"). It is (re)written by `inject_block_energy` below.
+v3.10 item 9: the files and fields the analyzer cut in item 8 (`genre.json`,
+`hpcp.json`, `layer_a_harmonic.json`, `layer_c_energy.json`, the section
+`key`/`energy`/`tension`/`rhythm` clue fields, `block_energy.json`,
+`segments.seed.json`, the rhythm/energy/tension candidate-producer proposals)
+are not copied and not injected. The one deliberate exception is
+`reference/human/segments.json`'s legacy `energy`/`tension` keys on the first
+`RegFull` row (`inject_segments`): the operator's file may still carry them,
+and `removed-surfaces.spec.ts` asserts a segment save leaves them untouched.
 
 `reference/human/lyric_validations.json` (v3.4 item 5) is also synthetic —
 `RegFull` gets `validated_ids: [2, 3]` (the Moises word tokens "We" / "are"),
@@ -51,6 +55,7 @@ REG_SOURCE = "Armin - Revolution"
 # Files the UI actually loads (ui/src/data/paths.ts + App.tsx TIMELINE_KEYS).
 NEEDED = [
     "info.json",
+    "vocal_cadence.json",
     "beats.json",
     "sections.json",
     "song_event_timeline.json",
@@ -62,18 +67,16 @@ NEEDED = [
     "reference/moises/lyrics.json",
     "reference/moises/segments.json",
     "reference/proposals/character.json",
+    "reference/proposals/allin1_posterior.json",
+    "reference/proposals/stem_presence_sections.json",
+    "reference/proposals/clap_events.json",
+    "reference/proposals/kick_check.json",
+    "reference/proposals/crash_check.json",
+    "reference/proposals/phrases.json",
+    "reference/proposals/section_names.json",
     "reference/proposals/vocal_transcription.json",
     "reference/proposals/vocal_phrases.json",
-    "reference/proposals/vocal_voiceness.json",
-    "reference/proposals/svd_tagger.json",
-    "reference/proposals/voice_multiplicity.json",
     "reference/proposals/reactive_bands.json",
-    "reference/proposals/phrase_periodicity.json",
-    "reference/proposals/rhythm_drum_ioi.json",
-    "reference/proposals/rhythm_stem_autocorr.json",
-    "reference/proposals/rhythm_vocal_onsets.json",
-    "reference/proposals/energy_level.json",
-    "reference/proposals/tension_shape.json",
     "reference/proposals/grid.json",
     "artifacts/whisperx-vad/whisperx_vad.json",
     "artifacts/essentia/fft_bands.json",
@@ -83,8 +86,6 @@ NEEDED = [
     "artifacts/essentia/fft_bands.vocals.json",
     "artifacts/essentia/rms_loudness.json",
     "artifacts/essentia/loudness_envelope.json",
-    "artifacts/layer_a_harmonic.json",
-    "artifacts/layer_c_energy.json",
     "artifacts/section_segmentation/sections.json",
     "artifacts/symbolic_transcription/drum_events.json",
 ]
@@ -175,117 +176,18 @@ def copy_test_song():
     print("  wrote _test_song")
 
 
-def inject_section_contest(out_name: str):
-    """v3.4 item 3 — the `REG_SOURCE` song has no energy-contested section, so
-    synthesize one: mark section-005 (a `chorus`) `function_status: "contested"`
-    + `contested_by: "energy"` and switch the `sections.json` header the way
-    `ui_data.apply_section_function_contest` does on a real contested song."""
-    p = OUT / out_name / "sections.json"
-    doc = json.loads(p.read_text())
-    fs = doc["field_sources"]
-    new_fs: dict = {}
-    for k, v in fs.items():
-        new_fs[k] = "section_function" if k == "function_status" else v
-        if k == "function_status":
-            new_fs["contested_by"] = "section_function"
-    doc["field_sources"] = new_fs
-    marked = False
-    for s in doc["sections"]:
-        if s.get("function") == "chorus" and not marked:
-            s["function_status"] = "contested"
-            s["contested_by"] = "energy"
-            marked = True
-    p.write_text(json.dumps(doc, indent=2) + "\n")
-    print(f"  patched {out_name}/sections.json — 1 contested section")
+def inject_segments(out_name: str, *, segments_json: list | None):
+    """Write the synthetic operator `reference/human/segments.json`.
 
-
-def inject_phrase_periodicity(out_name: str):
-    """v3.4 item 7 — write a small deterministic phrase_periodicity.json (3
-    blocks: one through-composed with period null, one bar-loop, one
-    half-bar-loop) so `phrase-periodicity.spec.ts` can assert the null-period
-    "no phrase structure detected" string and block edges against the ruler
-    without depending on the experiment's real output. The experiment PASSED
-    its kill condition. The file must exist on every fixture so the song-load
-    fetch never 404s (ui-regression §3)."""
-    hints_path = OUT / out_name / "reference/human/human_hints.json"
-    song_name = REG_SOURCE
-    if hints_path.exists():
-        song_name = json.loads(hints_path.read_text()).get("song_name", REG_SOURCE)
-    p = OUT / out_name / "reference/proposals/phrase_periodicity.json"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(
-        json.dumps(
-            {
-                "schema_version": "1.0",
-                "song_name": song_name,
-                "generated_from": {
-                    "experiment": "experiments/phrase_periodicity",
-                    "engine": "per-bar 16-slot z-normalised energy profile -> bar-sequence autocorrelation (period only)",
-                },
-                "phrase_lengths": {
-                    "bass": {"phrase_bars": 8, "prominence": 0.168, "detected": True},
-                },
-                "blocks": [
-                    {"start_s": 0.0, "end_s": 8.0, "title": "Intro",
-                     "regime": "through-composed", "period": None, "n_bars": 4},
-                    {"start_s": 8.0, "end_s": 20.0, "title": "Groove",
-                     "regime": "bar-loop", "period": 1.0, "n_bars": 6},
-                    {"start_s": 20.0, "end_s": 32.0, "title": "Chorus",
-                     "regime": "half-bar-loop", "period": 0.5, "n_bars": 6},
-                ],
-            },
-            indent=2,
-        )
-        + "\n"
-    )
-    print(f"  wrote {out_name}/reference/proposals/phrase_periodicity.json")
-
-
-def inject_block_energy(out_name: str, *, rated: bool = True):
-    """v3.4 item 4 — write the synthetic block_energy.json.
-
-    `RegFull - Fixture` gets hint-001 rated {energy:5, tension:4}, hint-002 /
-    hint-003 left unrated (absent from `ratings`), so the panel header reads
-    `1 / 3 blocks rated`. The other fixtures get an empty `ratings` array — the
-    file must still exist so the app's song-load fetch does not 404 (the visual
-    suite fails any run with a failed network response, ui-regression §3)."""
-    hints = json.loads(
-        (OUT / out_name / "reference/human/human_hints.json").read_text()
-    )
-    song_name = hints.get("song_name", REG_SOURCE)
-    p = OUT / out_name / "reference/human/block_energy.json"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    ratings = (
-        [{"hint_id": "hint-001", "energy": 5, "tension": 4}] if rated else []
-    )
-    p.write_text(
-        json.dumps(
-            {"schema_version": "1.0", "song_name": song_name, "ratings": ratings},
-            indent=2,
-        )
-        + "\n"
-    )
-    print(f"  wrote {out_name}/reference/human/block_energy.json")
-
-
-def inject_segments(out_name: str, *, segments_json: list | None, seed_json: list):
-    """v3.6 item 4 — write the synthetic segments.json / segments.seed.json pair
-    `segment-seeds.spec.ts` exercises.
-
-    `segments_json=None` means: do not write segments.json at all (RegPartial —
-    the "no operator segmentation yet" case, where the humanSections lane must
-    still render off the seed's own spans). `RegFull` gets a 2-span
-    segments.json (only `energy` rated on the first span) plus a matching
-    segments.seed.json with different values on every field, so the spec can
-    assert the operator-value-wins-else-draft fusion per field. `_test_song`
-    gets an empty seed array (file exists, no rows)."""
+    `segments_json=None` means: do not write it at all (the "no operator
+    segmentation yet" case). `RegFull` gets a 2-span file whose first row
+    still carries legacy `energy`/`tension` keys (see the module docstring)."""
+    if segments_json is None:
+        return
     base = OUT / out_name / "reference/human"
     base.mkdir(parents=True, exist_ok=True)
-    if segments_json is not None:
-        (base / "segments.json").write_text(json.dumps(segments_json, indent=2) + "\n")
-        print(f"  wrote {out_name}/reference/human/segments.json")
-    (base / "segments.seed.json").write_text(json.dumps(seed_json, indent=2) + "\n")
-    print(f"  wrote {out_name}/reference/human/segments.seed.json")
+    (base / "segments.json").write_text(json.dumps(segments_json, indent=2) + "\n")
+    print(f"  wrote {out_name}/reference/human/segments.json")
 
 
 def inject_lyric_validations(out_name: str, *, validated: bool = False):
@@ -380,33 +282,52 @@ def inject_block_reviews(out_name: str, *, reviewed: bool = False):
     print(f"  wrote {out_name}/reference/human/block_reviews.json")
 
 
+FIXTURE_FILTER_SWEEPS = [
+    {"direction": "opening", "stem": "harmonic", "start_s": 8.0, "end_s": 24.0,
+     "depth": 1.8, "confidence": 0.62},
+    {"direction": "closing", "stem": "harmonic", "start_s": 96.0, "end_s": 108.0,
+     "depth": 2.4, "confidence": 0.71},
+    {"direction": "opening", "stem": "bass", "start_s": 150.0, "end_s": 160.0,
+     "depth": 0.9, "confidence": 0.48},
+]
+
+
+def inject_filter_sweep(out_name: str, *, blocks: list | None):
+    """v3.10 item 14 — `reference/proposals/filter_sweep.json`.
+
+    `Armin - Revolution` (the RegFull/RegPartial source) has no detected sweep
+    in the live corpus, which would leave the lane empty and the block-count
+    check vacuous, so those two fixtures get the three hand-fixed rows in
+    `FIXTURE_FILTER_SWEEPS` (synthetic, like `inject_block_reviews`).
+    `_test_song` keeps its own real file (`blocks=None` = leave `copy_test_song`'s
+    copy alone). The file must exist on every fixture (a 404 fails the suite).
+    `filter-sweep.spec.ts` reads this file for its expected count."""
+    if blocks is None:
+        return
+    p = OUT / out_name / "reference/proposals/filter_sweep.json"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps({
+        "schema_version": "1.0",
+        "song_name": REG_SOURCE,
+        "generated_from": {"experiment": "experiments/filter_sweep", "synthetic_fixture": True},
+        "blocks": blocks,
+    }, indent=2) + "\n")
+    print(f"  wrote {out_name}/reference/proposals/filter_sweep.json")
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     OUT_SONGS.mkdir(parents=True, exist_ok=True)
     print("building fixtures:")
     copy_song(REG_SOURCE, "RegFull - Fixture")
-    inject_section_contest("RegFull - Fixture")
-    inject_phrase_periodicity("RegFull - Fixture")
-    inject_block_energy("RegFull - Fixture")
     inject_lyric_validations("RegFull - Fixture", validated=True)
+    inject_filter_sweep("RegFull - Fixture", blocks=FIXTURE_FILTER_SWEEPS)
     inject_block_reviews("RegFull - Fixture", reviewed=True)
     inject_segments(
         "RegFull - Fixture",
         segments_json=[
-            {"start": 40, "end": 60, "label": "Build", "energy": 4},
+            {"start": 40, "end": 60, "label": "Build", "energy": 4, "tension": 2},
             {"start": 60, "end": 80, "label": "Drop"},
-        ],
-        seed_json=[
-            {
-                "start": 40, "end": 60, "label": "Build",
-                "energy": 3, "tension": 4,
-                "rhythm": {"drums": "sixteenth", "vocals": "none"},
-            },
-            {
-                "start": 60, "end": 80, "label": "Drop",
-                "energy": 5, "tension": 2,
-                "rhythm": {"drums": "quarter", "bass": "eighth"},
-            },
         ],
     )
     copy_song(REG_SOURCE, "RegPartial - Fixture",
@@ -415,32 +336,19 @@ def main():
                     "artifacts/essentia/fft_bands.drums.json",
                     "artifacts/essentia/fft_bands.harmonic.json",
                     "artifacts/essentia/fft_bands.vocals.json"})
-    inject_phrase_periodicity("RegPartial - Fixture")
-    inject_block_energy("RegPartial - Fixture", rated=False)
     inject_lyric_validations("RegPartial - Fixture")
+    inject_filter_sweep("RegPartial - Fixture", blocks=FIXTURE_FILTER_SWEEPS)
     inject_block_reviews("RegPartial - Fixture")
-    inject_segments(
-        "RegPartial - Fixture",
-        segments_json=None,
-        seed_json=[
-            {
-                "start": 40, "end": 60, "label": "Build",
-                "energy": 3, "tension": 4,
-                "rhythm": {"drums": "sixteenth", "vocals": "none"},
-            },
-            {
-                "start": 60, "end": 80, "label": "Drop",
-                "energy": 5, "tension": 2,
-                "rhythm": {"drums": "quarter", "bass": "eighth"},
-            },
-        ],
-    )
     copy_test_song()
-    inject_phrase_periodicity("_test_song")
-    inject_block_energy("_test_song", rated=False)
+    # copy_test_song drops reference/moises; the Moises Lyrics lane fetches
+    # lyrics.json on every song, so give _test_song RegFull's copy (a 404 would
+    # fail assertNoRuntimeErrors — ui-regression §3.1).
+    moises = OUT / "_test_song" / "reference" / "moises"
+    moises.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(OUT / "RegFull - Fixture" / "reference" / "moises" / "lyrics.json",
+                 moises / "lyrics.json")
     inject_lyric_validations("_test_song")
     inject_block_reviews("_test_song")
-    inject_segments("_test_song", segments_json=None, seed_json=[])
     # audio: ship the real mp3 for RegFull (real decode path). RegPartial reuses
     # it; _test_song intentionally has none.
     mp3 = SRC_SONGS / f"{REG_SOURCE}.mp3"

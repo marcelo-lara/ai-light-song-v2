@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/filter_sweep",
+    "synthetic_fixture": true
+  },
+  "blocks": [
+    {
+      "direction": "opening",
+      "stem": "harmonic",
+      "start_s": 8.0,
+      "end_s": 24.0,
+      "depth": 1.8,
+      "confidence": 0.62
+    },
+    {
+      "direction": "closing",
+      "stem": "harmonic",
+      "start_s": 96.0,
+      "end_s": 108.0,
+      "depth": 2.4,
+      "confidence": 0.71
+    },
+    {
+      "direction": "opening",
+      "stem": "bass",
+      "start_s": 150.0,
+      "end_s": 160.0,
+      "depth": 0.9,
+      "confidence": 0.48
+    }
+  ]
+}

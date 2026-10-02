@@ -13,7 +13,7 @@ and what "good" means for the thing we emit. Rules are in
         ▼
   ┌──────────────────────┐   data/analysis/{song}/
   │ 1. ANALYSIS  (here)  │ ─────────────────────────────────►┐
-  │  src/ + ui/          │   8 top-level files + artifacts/  │
+  │  src/ + ui/          │   9 top-level files + artifacts/  │
   └──────────────────────┘                                   │
                                                              ▼
                                           ┌──────────────────────────────┐

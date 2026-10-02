@@ -2,7 +2,7 @@
 // proposals (v3.7 item 11, refinement item 7's approval side).
 //
 // Lists `reference/proposals/pending.json`, written only by
-// `mcp/server.py`'s `propose_hint`/`propose_section_field` (v3.7 item 10) —
+// `mcp/server.py`'s `propose_hint` (v3.7 item 10) —
 // the MCP server stays read-only against every top-level and operator file;
 // this panel is the ONLY path from a queued proposal to a real value.
 //
@@ -14,11 +14,6 @@
 //                 under concurrent approvals). This panel just shows a
 //                 reminder naming the stage to re-run by hand
 //                 (`generate-section-hints`).
-//  - section_field -> same handler merges onto reference/human/segments.json
-//                 (by span overlap against the proposal's section_id, never
-//                 by index), then this panel shows a reminder to re-run
-//                 `section-clues` so sections.json republishes it with
-//                 `<field>_source: "human"`.
 // The debugger does not trigger analyzer stages itself (no Docker-socket
 // access from this container — see docker-compose.yml's history for why that
 // was tried and reverted for v3.7 item 11). The human write and the status
@@ -32,9 +27,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { loadPendingProposals, loadSectionsTopLevel } from "../data/loaders";
+import { loadPendingProposals } from "../data/loaders";
 import { saveProposalDecision } from "../data/saveProposalDecision";
-import type { PendingProposal, PendingProposalsFile, SectionsTopLevel } from "../data/types";
+import type { PendingProposal, PendingProposalsFile } from "../data/types";
 
 import { isTimeInWindow } from "./laneEvents";
 import { RightPanel } from "./RightPanel";
@@ -55,8 +50,7 @@ interface PendingProposalsPanelProps {
   currentTime: number;
   /** A click on a card (outside its actions/reason field) moves the playhead
    *  to its window's start — `timeEdits[proposal.id]` or `proposal.hint`'s
-   *  own start/end for a hint card, `sectionSpan(...)` for a section_field
-   *  card. Absent, or a card with no window -> the card isn't clickable. */
+   *  own start/end. Absent -> the card isn't clickable. */
   onSeek?: (time: number) => void;
   /** App.tsx's operator Start/End correction, keyed by proposal id — set by
    *  dragging the block's edges/interior on the LLM Pending Proposals lane
@@ -76,7 +70,7 @@ function formatTime(n: number): string {
 type QueueState =
   | { status: "loading" }
   | { status: "error"; message: string }
-  | { status: "ready"; file: PendingProposalsFile; sections: SectionsTopLevel };
+  | { status: "ready"; file: PendingProposalsFile };
 
 type CardState =
   | { phase: "idle" }
@@ -85,10 +79,7 @@ type CardState =
   | { phase: "error"; message: string };
 
 function summarize(p: PendingProposal): string {
-  if (p.type === "hint") {
-    return `${p.hint.title || "(untitled)"} · ${p.hint.start.toFixed(2)}s–${p.hint.end.toFixed(2)}s`;
-  }
-  return `${p.section_field.section_id} · ${p.section_field.field} = ${p.section_field.value}`;
+  return `${p.hint.title || "(untitled)"} · ${p.hint.start.toFixed(2)}s–${p.hint.end.toFixed(2)}s`;
 }
 
 export function PendingProposalsPanel({
@@ -112,21 +103,15 @@ export function PendingProposalsPanel({
   const reload = useCallback(() => {
     let cancelled = false;
     setQueueState({ status: "loading" });
-    void Promise.all([loadPendingProposals(song), loadSectionsTopLevel(song)]).then(
-      ([queueResult, sectionsResult]) => {
-        if (cancelled) return;
-        if (!queueResult.ok) {
-          setQueueState({ status: "error", message: queueResult.error.message });
-          return;
-        }
-        setQueueState({
-          status: "ready",
-          file: queueResult.data,
-          sections: sectionsResult.ok ? sectionsResult.data : [],
-        });
-        onQueueChange?.(queueResult.data);
-      },
-    );
+    void loadPendingProposals(song).then((queueResult) => {
+      if (cancelled) return;
+      if (!queueResult.ok) {
+        setQueueState({ status: "error", message: queueResult.error.message });
+        return;
+      }
+      setQueueState({ status: "ready", file: queueResult.data });
+      onQueueChange?.(queueResult.data);
+    });
     return () => {
       cancelled = true;
     };
@@ -148,7 +133,7 @@ export function PendingProposalsPanel({
         // drag commit's already-clamped/validated times (0 <= start < end),
         // so no re-validation is needed here. Absent -> approved as proposed.
         const approvedTimes: { start: number; end: number } | undefined =
-          proposal.type === "hint" ? timeEdits[proposal.id] : undefined;
+          timeEdits[proposal.id];
         // The dev-server handler now does the reference/human/*.json write
         // itself, from its own fresh read, serialized per song (v3.9 item
         // 6) — this call is the whole approve, not a follow-up to a write
@@ -158,8 +143,7 @@ export function PendingProposalsPanel({
           status: "approved",
           ...(approvedTimes ? { approved_times: approvedTimes } : {}),
         });
-        const stageToRerun = proposal.type === "hint" ? "generate-section-hints" : "section-clues";
-        setRerunReminders((cur) => ({ ...cur, [proposal.id]: stageToRerun }));
+        setRerunReminders((cur) => ({ ...cur, [proposal.id]: "generate-section-hints" }));
         setCard(proposal.id, { phase: "idle" });
         onResetTimes?.(proposal.id);
         reload();
@@ -218,16 +202,14 @@ export function PendingProposalsPanel({
     el?.scrollIntoView({ block: "center", behavior: "smooth" });
   }, [focusId, queueState]);
 
-  // A click anywhere on a card (hint or section_field) seeks to its window's
+  // A click anywhere on a card seeks to its window's
   // start, except a click that originated inside the actions row, the
   // reject-reason field, or any button/input/textarea — those already have
   // their own handlers and must not also move the playhead.
   const handleCardClick = useCallback(
     (proposal: PendingProposal) => (event: React.MouseEvent<HTMLDivElement>) => {
       if (!onSeek || queueState.status !== "ready") return;
-      const edit = proposal.type === "hint" ? timeEdits[proposal.id] : undefined;
-      const cardWindow = proposalWindow(proposal, queueState.sections, edit);
-      if (!cardWindow) return;
+      const cardWindow = proposalWindow(proposal, timeEdits[proposal.id]);
       const target = event.target as Element;
       if (target.closest(".hint-editor__actions, .hint-editor__row2, button, textarea, input")) {
         return;
@@ -266,8 +248,8 @@ export function PendingProposalsPanel({
             </h3>
             {partitioned.pending.length === 0 ? (
               <p className="hint-editor__empty">
-                No queued proposals — none of `propose_hint`/`propose_section_field`
-                have been called for this song, or every one has been decided.
+                No queued proposals — `propose_hint`
+                has not been called for this song, or every one has been decided.
               </p>
             ) : (
               partitioned.pending.map((proposal) => {
@@ -275,34 +257,31 @@ export function PendingProposalsPanel({
                 const working = card.phase === "working";
                 // The operator's dragged-edge correction for this hint card, if
                 // any — App.tsx's `timeEdits`, keyed by proposal id.
-                const edit = proposal.type === "hint" ? timeEdits[proposal.id] : undefined;
-                // The card's playhead window — a hint's proposed (or
-                // edited) span, or a section_field's current section span —
+                const edit = timeEdits[proposal.id];
+                // The card's playhead window — the proposed (or edited) span —
                 // and whether `currentTime` falls inside it.
-                const cardWindow = proposalWindow(proposal, queueState.sections, edit);
-                const inWindow = cardWindow ? isTimeInWindow(cardWindow, currentTime) : false;
+                const cardWindow = proposalWindow(proposal, edit);
+                const inWindow = isTimeInWindow(cardWindow, currentTime);
                 return (
                   <div
                     key={proposal.id}
                     className={`field review-queue__q${
                       proposal.id === focusId ? " review-queue__q--focused" : ""
-                    }${cardWindow && onSeek ? " review-queue__q--clickable" : ""}`}
+                    }${onSeek ? " review-queue__q--clickable" : ""}`}
                     data-testid="pending-proposal-card"
                     data-proposal-id={proposal.id}
                     data-in-window={inWindow}
                     onClick={handleCardClick(proposal)}
                   >
                     <label>
-                      {proposal.type === "hint"
-                        ? proposal.hint.title || "(untitled)"
-                        : "Section field"}
+                      {proposal.hint.title || "(untitled)"}
                     </label>
                     <p className="review-queue__reason">{summarize(proposal)}</p>
-                    {proposal.type === "hint" && proposal.hint.summary && (
+                    {proposal.hint.summary && (
                       <p className="review-queue__reason">{proposal.hint.summary}</p>
                     )}
                     <p className="review-queue__evidence">evidence: {proposal.evidence}</p>
-                    {proposal.type === "hint" && edit && (
+                    {edit && (
                       <div className="hint-editor__row2">
                         <p className="review-queue__reason">
                           proposed {formatTime(proposal.hint.start)}–
@@ -320,12 +299,10 @@ export function PendingProposalsPanel({
                         </button>
                       </div>
                     )}
-                    {proposal.type === "hint" && (
-                      <p className="review-queue__evidence">
-                        Drag the block&rsquo;s edges on the LLM Pending Proposals lane to adjust
-                        timing.
-                      </p>
-                    )}
+                    <p className="review-queue__evidence">
+                      Drag the block&rsquo;s edges on the LLM Pending Proposals lane to adjust
+                      timing.
+                    </p>
                     {card.phase === "error" && (
                       <p className="hint-editor__status is-error">{card.message}</p>
                     )}

@@ -59,7 +59,7 @@ like every decision in this pipeline it has to be recorded.
 
 **Every published value carries a `source`.** The value alone is not enough,
 because the reader cannot otherwise tell whether a number came from the trusted
-beat tracker or from a model measuring 0.226 F1.
+beat tracker or from a model measuring 0.234 F1.
 
 This is already true and currently unrecorded. One `beats.json` row fuses three
 producers:
@@ -67,13 +67,10 @@ producers:
 | Field | Producer | Trust |
 | --- | --- | --- |
 | `time` | essentia `RhythmExtractor2013` | trusted — 7/7 impacts within 0.25 s |
-| `type`, `bar`, `beat` | allin1 downbeat activation | 0.226 F1, short of target |
+| `type`, `bar`, `beat` | allin1 downbeat activation | 0.234 F1, short of target |
 
 and its single `confidence` describes **only the downbeat phase**, not the beat
-time — so the row reads as though a trusted field carried a weak confidence. A
-`sections.json` row likewise fuses allin1's boundaries and labels with the
-harmonic stage's `key`, gated on a different producer's
-confidence than the row's own `confidence` field.
+time — so the row reads as though a trusted field carried a weak confidence.
 
 `hints.json` is the one file that already gets this right: every hint carries
 `source: "human" | "inference"`. That is the pattern to generalise.
@@ -112,11 +109,8 @@ No `confidence` field anywhere in phase 1 — there is nothing to be uncertain a
 
 | Module | Produces |
 | --- | --- |
-| `harmonic.py` | `artifacts/essentia/hpcp.json`, `artifacts/layer_a_harmonic.json` — HPCP and the whole-song key; projects `key` into `sections.json`. Chord inference was removed — it failed on every song |
 | `drums.py` | `artifacts/symbolic_transcription/drum_events.json` — Omnizart drum hits on the isolated drums stem; GM 35/38/42 only, plus a v3.4 `crash`/`hat` split on pitch 42 from the drums-stem brilliance band |
-| `genre.py` | `artifacts/genre.json` — genre with honest confidences and `guidance` prose |
 | `segmentation.py` | `artifacts/section_segmentation/sections.json` — All-In-One named functional segmentation |
-| `energy.py` | `artifacts/layer_c_energy.json` — energy states, per-section cards, accent candidates |
 
 ### Phase 3 — relate (phases 1-2, **never audio**)
 
@@ -125,7 +119,6 @@ No `confidence` field anywhere in phase 1 — there is nothing to be uncertain a
 | `gestures.py` | `song_event_timeline.json` — gesture phases + section-pair transitions |
 | `arrangement_state.py` | `artifacts/arrangement_state.json` — per-stem RMS state blocks: who is playing, and where that changes |
 | `hint_alignment.py` | `find_primary_section`, the shared window→section matcher |
-| `section_clues.py` | fuses `energy`, `tension`, `rhythm` onto `sections.json` (v3.6 item 10) |
 
 `arrangement_state.py` (`detect-arrangement-state`) reads the published
 `loudness.json` — a phase-1 series, not audio — and asserts *who is playing* and
@@ -135,40 +128,16 @@ floor of the labels (32 of 47 gold hints are drop stages `gestures.py` owns).
 `confidence` is dB headroom at the stem flip (`margin_db`-derived), not a trained
 score, and is `null` for the leading block that has no flip.
 
-**`section_clues.py` (v3.6 item 10) — provisional, seed-only truth.** Fuses
-`energy`/`energy_confidence`, `tension`/`tension_confidence` and `rhythm`
-(per-source `subdivision`/`confidence`/`onsets_per_beat`) onto `sections.json`,
-by precedence: the operator's `reference/human/segments.json` value, else the
-highest-confidence of five ported candidate producers
-(`energy_level`, `tension_shape`, `rhythm_drum_ioi`, `rhythm_stem_autocorr`,
-`rhythm_vocal_onsets`), else `reference/human/segments.seed.json`
-(`seed_unreviewed`, `confidence: null`), else absent. The five producers were
-promoted from `experiments/` at their v3.6 item 5/6 evidence (corpus
-exact-match against `segments.seed.json` — a **self-consistency check**, since
-the seed shares each producer's own method, not independent validation):
-`rhythm_drum_ioi` drums 0.6415 (34/53); `rhythm_stem_autocorr` bass 1.0000,
-harmonic 1.0000, vocals 0.9811, drums 0.1698; `rhythm_vocal_onsets` vocals
-0.0377 (2/53 — whisper-large-v3 over short spans yields sparse onsets);
-`energy_level` energy 0.9811 seed / 0-of-2 exact but 1-of-2 within-1 against
-the operator's own `segments.json` rows; `tension_shape` tension 0.7547 seed /
-1-of-2 exact, 2-of-2 within-1 human. **Do not treat any energy/tension/rhythm
-value as settled** until the operator has reviewed the seeds — full record:
-`docs/archive/experiments.promoted.energy-tension-rhythm-clues.md`.
-`rhythm_vocal_onsets`'s compute lives outside this stage, in
-`whisperx_vad/vocal_onsets.py` (a second output of the `whisperx` service,
-`artifacts/whisperx-vad/vocal_onsets.json`) — `section_clues` reads that file
-and raises if the song has not been run through that service.
-
 ### Phase 4 — publish
 
 | Module | Produces |
 | --- | --- |
 | `hints.py` | `hints.json` — inference hints merged with `reference/human/human_hints.json` |
-| `ui_data.py` | `sections.json`, `beats.json`, `info.json`, `genre.json`, `drum_events.json`, `loudness.json`, `arrangement_state.json` (`publish_arrangement_state`, fusing phase-3's `artifacts/arrangement_state.json`) — the compact top-level deliverables, each fused from its producers with a `field_sources` header |
+| `ui_data.py` | `sections.json`, `beats.json`, `info.json`, `drum_events.json`, `loudness.json`, `arrangement_state.json` (`publish_arrangement_state`, fusing phase-3's `artifacts/arrangement_state.json`) — the compact top-level deliverables, each fused from its producers with a `field_sources` header |
 | `vocal_cadence.py` | `vocal_cadence.json` (v3.9 item 1) — per-line bar timing, per-section `lead_in_bars`/rests/held notes/cadence-repeats, calls, from `reference/human/lyrics.json` > `reference/moises/lyrics.json` (D1.1: neither → still written, `source: null`) plus the published `beats.json`/`sections.json`/`info.json`. Timing only |
 
 Together with `hints.py`'s `hints.json` and phase 3's `song_event_timeline.json`,
-these are the ten top-level files the `mcp/` server reads. Nothing the delivery
+these are the nine top-level files the `mcp/` server reads. Nothing the delivery
 surface needs still lives only under `artifacts/`.
 
 ### Validation — orthogonal to all four
@@ -207,7 +176,7 @@ Reproduction: [`../experiments/drop_detection/README.md`](../experiments/drop_de
 ### Trusted — deterministic DSP, ~1,950 lines
 
 `stems.py`, the beat-*time* grid in `timing.py`, `fft_bands.py`, `loudness.py`,
-`harmonic.py`, `drums.py`, `energy.py`. Byte-reproducible and independently
+`drums.py`. Byte-reproducible and independently
 checked.
 
 - **Beat tracking is good.** 7/7 human-marked impacts land within 0.25 s of an
@@ -238,8 +207,8 @@ checked.
   inspection, not a fitting artifact.
 - **Chord inference was removed.** Root+quality agreement with Moises was
   1.00 / 0.69 / 0.51 / 0.38 across the four gold songs, and the labels never
-  helped find where a song repeats. The `key` estimate is a separate claim and
-  stays, confidence-gated (`null` when weak).
+  helped find where a song repeats. The whole-song key estimate was removed in
+  v3.10 — the key is not a lighting cue.
 - **The drum vocabulary is bounded, and the bound is written down.** Omnizart
   emits three GM pitches only — 35 (kick), 38 (snare), 42 (hi-hat). `velocity`
   is a constant 100 and is **not published** (a zero-information column is worse
@@ -337,20 +306,9 @@ Honest caveats that ship with it:
   a 14.8 s floor, so nothing shorter can be expressed however clearly it is
   audible. This is the origin of the intra-section gap below, and it is a
   property of allin1's output, not a tuning choice.
-- allin1's `chorus` prior can invert against energy. The phase-3
-  `contest-section-function` stage (`section_function.py`) cross-checks each
-  `function` against the published `loudness.json` + `arrangement_state.json`
-  and, where a `chorus` is quieter and thinner than the `verse` / `bridge` that
-  follows, **keeps the label and flags it** `function_status: "contested"` +
-  `contested_by: "energy"` in `sections.json` — it never flips (refinement
-  `D5`). Measured across all 23 analysed songs
-  (`experiments/section_function_contest/measurement.md`): the contradiction is
-  **not corpus-wide** — 4 sections across 2 songs (`Queen of Kings` ×3, `It's a
-  fine day - Opus III` ×1), the other 21 flag nothing. So the rule ships
-  conservative (next-section drums ≥ 3 dB louder, mix not > 1.5 dB quieter,
-  arrangement_state stem count not clearly thinner, allin1
-  `function_confidence` ≤ 0.9). On a normal song `sections.json` is
-  byte-identical to before.
+- allin1's `chorus` prior can invert against energy. The v3.4 patch that flagged
+  it (`contest-section-function`) was removed in v3.10; the function label is
+  published as allin1 (or the reviewed tier) gave it.
 
 **v3.5 — `reference/human/segments.json` and the vocabulary switch.**
 A new optional, gold-song-only reference file (`_test_song`, `ayuni`, `"What
@@ -387,15 +345,15 @@ allin1's `downbeat` frame activation, by majority vote of local arg-maxes in
 16-bar windows — a single song-wide offset was tried first and scored worse than
 the modulo baseline.
 
-**Combined F1 is 0.226 — short of the 0.50 target.** Stating that plainly
+**Combined F1 is 0.234 — short of the 0.50 target** (80 of 385 Moises downbeats matched across the four songs). Stating that plainly
 matters more than rounding up:
 
 | Song | F1 | Why |
 | --- | --- | --- |
-| `_test_song` | 0.604 | clears target |
-| `Armin - Revolution` | 0.593 | clears target |
+| `_test_song` | 0.618 | clears target |
+| `Armin - Revolution` | 0.606 | clears target |
 | `Titanium - David Guetta ft Sia` | 0.000 | allin1's activation confidently peaks (0.24–0.47) where the reference calls beat 3 and sits near zero (~0.001–0.02) at the true downbeat — a reproducible ~2-beat disagreement. Its *beat* grid was independently confirmed aligned to ~10 ms first, so this is not an indexing bug |
-| `Hideaway - Kiesza` | 0.050 | essentia's beat *tracker* — untouched by this work — finds ~0.66 s intervals against the reference's ~0.48 s. The one gold song where essentia trails Moises. No phase choice on a wrong-tempo grid can land within ±70 ms |
+| `Hideaway - Kiesza` | 0.060 | essentia's beat *tracker* — untouched by this work — finds ~0.66 s intervals against the reference's ~0.48 s. The one gold song where essentia trails Moises. No phase choice on a wrong-tempo grid can land within ±70 ms |
 
 Neither failure is fixable without fabricating a downbeat allin1 does not
 support (forbidden — never invent a plausible default) or reworking essentia's beat tracker.
@@ -461,12 +419,36 @@ boundaries have overlapping search windows). Titanium's own onset (151.445s)
 legitimately sits 0.985s — nearly 2 beats, about half a bar — past its
 150.46s boundary, which is why the distance cap is a bar, not the pairing's
 own one-beat tolerance; a literal one-beat cap would have silently dropped
-it. Not closed by this item: `Cinderella - Ella Lee`'s 85.73s drop is a
-drums-only entry (bass follows ~0.36s later, never crossing the stems'
-shared on-threshold together) and `CruelSummer - Malvina` has no published
-section boundaries at all (`sections.json` has zero rows — a pre-existing,
-separate defect, not this item's to fix) — both are open follow-ups, not
-regressions.
+it. `CruelSummer - Malvina`'s missing boundaries are a separate,
+pre-existing defect (an empty reviewed `segments.json`, since fixed in
+v3.10 item 1).
+
+**v3.10 item 3 — drums-led entries.** Where the two-stem rule finds nothing
+at a boundary, a fallback judges drums presence by *hit density* on the raw
+frames instead of a 1-beat rolling mean: a hit is a raw local maximum
+>= 0.5x the stem's own p95; the drums are "on" when the next 4 beats hold
+>= 0.75 hits/beat, with no gap between consecutive hits over 1.5 beats (a
+pickup, trough, then groove is rejected — Charli-Guess's 95.745 s pickup), after
+2 beats with no hit; the bass must then clear its own
+on-threshold within one bar and not already be on the beat before. The onset
+is the drums onset (walked back at most a quarter beat), within one bar of its
+boundary, confidence a fixed 0.5. All v3.9 guards (0.25 s dedup against every
+impact, D4.1 trough guard on in-place corrections) apply unchanged. Constants:
+`_DRUMS_LED_*` in `gestures.py`, each with its measured origin.
+Measured: `Cinderella - Ella Lee` 85.715 s (target 85.73, 15 ms; the bass
+follows ~1.5 beats later); `Charli-VonDutch` gains an impact at 29.765 s,
+the physical onset of its first ~50 ms kick (the 29.85 s boundary is 85 ms
+later, so the +-40 ms check against 29.85 is missed by design — the
+onset, not the boundary, is the cue). `Rapture` 55.385 / 169.845, `Titanium`
+151.445 and `Queen of Kings` 48.70 (nothing at 48.555) are unchanged. Gold
+score unchanged, 3/7 @+-0.25 s and 4/7 @+-1.0 s. Corpus-wide the impact
+count went 1303 -> 1313 over 23 songs: 10 new impacts on 8 songs
+(`Cinderella` 85.715, `Charli-VonDutch` 29.765, `Charli-Guess` 97.135,
+`Fascination` 277.595, `It's a fine day` 245.755, `Rapture` 125.085, `ayuni`
+x3, `Yonaka` 113.065) and 5 in-place corrections toward the drums onset
+(`Sash` 131.85 -> 131.645, `In da name of love` 164.4 -> 163.975, `_test_song`
+29.55 -> 29.585, `Yonaka` 143.25 -> 143.295, `Cinderella` 268.55 -> 268.575);
+no song gained more impacts than it has boundaries. Not audited by ear.
 
 ### Vocal cadence — `vocal_cadence.py`, 12/12 on Queen of Kings
 
@@ -490,6 +472,52 @@ count its cadence line as that boundary's lead-in (drop 2: the line starts at
 94.88 s, before the Fill section even begins). Not yet a corpus metric — only
 Queen of Kings carries the fact set to score against; a song with no lyrics
 tier gets an honest `source: null` file (D1.1), never an inferred one.
+
+### Pre-analysis structure hint — a prior, not a measurement
+
+v3.10 item 7. `reference/pre-analysis/structure.json` (schema `1.0`, contract in
+[`mcp-definition.md`](mcp-definition.md)) holds a web-researched guess at a
+song's version, genre family and expected shape (drops, build-ups). It is
+written only by the `mcp/` `write_structure_hint` tool and carries no time.
+**27 of 27 songs have one.** Seven (`_test_song`, `ayuni`, `Rotate-Skillibeng`,
+`StealTheShow-NeonDreams`, `Cinderella - Ella Lee`, `CruelSummer - Malvina`,
+`Chimera - Hana`) are family `other` with confidence <= 0.2 and nulls because
+research found nothing reliable; `shape.drops`, `chorus_is_drop` and
+`has_build_ups` are `null` on every song. Five songs' researched
+`track.version_duration_s` differs from `info.json` by more than 5 s
+(*ChangedTheWayYouKissMe-Example*, *Only this moment*, *Queen of Kings*,
+*Titanium*, *Underworld - Born Slippy*): their version and shape are to be
+ignored. No `src/` stage reads the file; of the experiments only
+`section_names` (as a prior) and `phrases`' scorer (to split EDM songs out)
+do. It is not validated against anything, and in the one experiment that used
+it the hint changed 2 of 27 songs and lowered label accuracy.
+
+### Analysis runs — watcher status
+
+The host-side `./analysis-watcher` rewrites `data/analysis-watcher.heartbeat`
+on every poll; `get_watcher_status` reports `up` / `down` (missing, or older
+than 3 poll intervals) and `request_analysis` returns the same flag, so a
+queued run that nothing will pick up is visible at once. `request_analysis`
+re-runs an analysed song only with `force=True`.
+
+### v3.10 experiments — measured on all 27 songs, none shipped
+
+Four classical (no-model) experiments, each with an `experiments/<name>/README.md`
+and a debugger lane except `downbeat_anchors`. Their outputs are
+`reference/proposals/*.json`: nothing in `src/` reads them and nothing reaches
+`mcp/`. Each is a verdict for the operator's lane review.
+
+| Experiment | Question | Result | Bar from the plan |
+| --- | --- | --- | --- |
+| `filter_sweep` | does a harmonic or bass stem change tone over 2-16 bars at level loudness? | 79 sweeps (56 harmonic / 23 bass), 0-9 per song; 11 overlap a `riser`/`downlifter` span. **No ground truth exists**, so precision and recall are unknown | a sweep named where heard, none on steady sections: needs the lane review |
+| `phrases` | cut the song where the audio changes, without bar counting | 299 phrases, 96 `resolved: false`. Boundary F1 @ +-1.0 s, reviewed segments: phrases .431, allin1 .609, stem-presence .366 (EDM .452 / .567 / .291); review hints: .437 / .456 / .376 (EDM .667 / .490 / .591). `noise_sweep` fires on 3 of 299 phrases (rule too strict to use) | *Rapture* matches stem-presence (.500 / .769): **met**. *Charli-VonDutch* .667 / .833 vs .714 / .909: **not met** (one unlabelled extra edge). allin1 stays the better boundary finder |
+| `downbeat_anchors` | bars counted in fours between phrase-edge anchors | **Negative.** F1 @ +-70 ms vs Moises, 5 songs: anchors + allin1 .301 vs incumbent allin1 .343 (original 4 songs: .119 vs .234). Beats modulo-4 (.069) and kick-phase (.180). 89 of 165 spans `resolved: false`. The premise (a phrase edge sits on a downbeat) fails on 3 of 5 songs | beat the incumbent: **not met** |
+| `section_names` | name phrases by position in the typical EDM sequence | 191 blocks (26 named, 1 kept on current labels). Label accuracy exact .391 (no hint .406) vs allin1 mapped .316; boundary F1 @ +-1 s .330 vs allin1 .633. 98 of 133 reviewed labels and 75 of 123 reviewed boundaries would be overridden. Thresholds a priori, but rules were fixed after reading *Rapture*, *Charli*, *Medicine* and *Sash*, so figures are optimistic | *Rapture* names both drops `Drop`: **met**. *Armin - Revolution* 6/10 stages and *Medicine-MilkInc* 7/10: **not met** |
+
+The consequence for the incumbents: `segmentation.py` (allin1) stays the
+boundary source, `timing.py`'s downbeat phase stays at 0.234 F1, and bar
+numbers stay unreliable. Promotion of any of the four is an operator verdict and
+its own plan item; until then `src/` never imports from them.
 
 ---
 
@@ -526,7 +554,6 @@ the instinct is to blame the model that reads the output:
 | producer | reads | therefore cannot see |
 | --- | --- | --- |
 | `segmentation.py` | mix spectrogram, argmax over 10 labels, 8-bar quantised | any change shorter than ~15 s on a mid-tempo track |
-| `harmonic.py` | HPCP (key only) | anything that is not pitch — the key is the same on both sides of every boundary above |
 | `gestures.py` | mix FFT + drum onsets | a *state*; it emits build/impact/release events, never "who is playing now" |
 | `loudness.py` | per-stem RMS ✅ | — it publishes the series and draws no conclusion from it |
 
@@ -586,6 +613,16 @@ span asserted where the music has none — moves that metric not at all, yet fir
 a cue that contradicts the song. Tracked in [`issues.md`](issues.md).
 
 ---
+
+## Deleted in v3.10 — do not reintroduce
+
+| Removed | Why |
+| --- | --- |
+| `energy.py` (`derive-energy-layer`, `layer_c_energy.json`) | read only by the debugger and the validation report, never projected; overlaps `gestures.py` |
+| `section_function.py` (`contest-section-function`, `function_status: "contested"`, `contested_by`) | a patch that flagged (never flipped) 4 sections on 2 songs of 23 |
+| `section_clues.py` (`section-clues`): `energy`, `tension`, `rhythm`, their `*_source` overrides and `impact_alignment` leave `sections.json`; `segments.seed.json` is no longer read; `review_warning` and the MCP `propose_section_field` tool go | provisional, seed-only truth; the operator's `energy`/`tension`/`rhythm` keys in `reference/human/segments.json` are ignored, never rewritten |
+| `genre.py` (`classify-genre`, `genre.json`, top level and artifact) | advisory only, never a cue; the required top-level files drop to nine |
+| `harmonic.py` (`extract-hpcp-and-key`, `hpcp.json`, `layer_a_harmonic.json`, `key` on `sections.json`) | the whole-song key is not a lighting cue |
 
 ## Deleted in v3.0 — do not reintroduce
 

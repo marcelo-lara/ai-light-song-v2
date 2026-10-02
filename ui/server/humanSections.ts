@@ -28,6 +28,7 @@ export const SEGMENT_FUNCTION_NAMES = [
   "Pre-Drop",
   "Drop",
   "Extended Drop",
+  "Drop Break",
   "Bridge",
   "Mid-Intro",
 ];
@@ -39,40 +40,20 @@ export const SEGMENT_FUNCTION_NAMES = [
 // docs/segments-vocabulary.md (mirrored in ui/src/data/segmentFunctions.ts) —
 // never free text; it is the section's identity, not a caption, so a set
 // value must come from the vocabulary. `description` is optional free text,
-// never validated against the vocabulary. `energy`/`tension`, when present,
-// are an integer 1-5 (same D4.2 convention as block_energy.json) — a missing
-// axis is omitted, never defaulted. `rhythm` (v3.6 item 4) is optional: one
-// SEGMENT_RHYTHM_VALUES name per source (`drums`/`bass`/`harmonic`/`vocals`),
-// an unmarked source omitted entirely — mirrors the editor's per-source
-// draft-vs-saved review (segments.seed.json, experiments/segment_seeds).
+// never validated against the vocabulary.
+//
+// The editor writes `start`/`end`/`label`/`description` only. Any other key an
+// existing row carries (older files hold fields the analyzer now ignores) is
+// passed through verbatim, never validated, never dropped, never added to.
 export type NormalizedSegment = {
   start: number;
   end: number;
   label?: string;
   description?: string;
-  energy?: number;
-  tension?: number;
-  rhythm?: Record<string, string>;
+  [extra: string]: unknown;
 };
 
-const SEGMENT_RHYTHM_KEYS = ["drums", "bass", "harmonic", "vocals"] as const;
-const SEGMENT_RHYTHM_VALUES = [
-  "half",
-  "quarter",
-  "eighth",
-  "sixteenth",
-  "eighth_triplet",
-  "none",
-] as const;
-
-function normalizeSegmentRating(value: unknown, axis: string): number | undefined {
-  if (value === undefined || value === null) return undefined;
-  const n = Number(value);
-  if (!Number.isInteger(n) || n < 1 || n > 5) {
-    throw new Error(`Segment ${axis} must be an integer 1-5.`);
-  }
-  return n;
-}
+const SEGMENT_OWN_KEYS = new Set(["start", "end", "label", "description", "id", "function"]);
 
 function normalizeSegmentLabel(value: unknown): string | undefined {
   const name = String(value ?? "").trim();
@@ -81,24 +62,6 @@ function normalizeSegmentLabel(value: unknown): string | undefined {
     throw new Error(`Segment label "${name}" is not in segments-vocabulary.md, and free text is not allowed.`);
   }
   return name;
-}
-
-function normalizeSegmentRhythm(value: unknown): Record<string, string> | undefined {
-  if (value === undefined || value === null) return undefined;
-  const o = (typeof value === "object" ? value : {}) as Record<string, unknown>;
-  const out: Record<string, string> = {};
-  for (const key of SEGMENT_RHYTHM_KEYS) {
-    const raw = o[key];
-    if (raw === undefined || raw === null || raw === "") continue;
-    const name = String(raw).trim();
-    if (!(SEGMENT_RHYTHM_VALUES as readonly string[]).includes(name)) {
-      throw new Error(
-        `Segment rhythm.${key} must be one of ${SEGMENT_RHYTHM_VALUES.join(", ")}, or unset.`,
-      );
-    }
-    out[key] = name;
-  }
-  return Object.keys(out).length ? out : undefined;
 }
 
 export function normalizeHumanSegmentsPayload(payload: unknown): NormalizedSegment[] {
@@ -110,19 +73,17 @@ export function normalizeHumanSegmentsPayload(payload: unknown): NormalizedSegme
       string,
       unknown
     >;
-    const energy = normalizeSegmentRating(s.energy, "energy");
-    const tension = normalizeSegmentRating(s.tension, "tension");
     const description = String(s.description ?? "").trim();
     const label = normalizeSegmentLabel(s.label);
-    const rhythm = normalizeSegmentRhythm(s.rhythm);
+    const extras = Object.fromEntries(
+      Object.entries(s).filter(([key]) => !SEGMENT_OWN_KEYS.has(key)),
+    );
     return {
       start: Number(s.start ?? 0),
       end: Number(s.end ?? 0),
       ...(label ? { label } : {}),
       ...(description ? { description } : {}),
-      ...(energy !== undefined ? { energy } : {}),
-      ...(tension !== undefined ? { tension } : {}),
-      ...(rhythm ? { rhythm } : {}),
+      ...extras,
     };
   });
 }

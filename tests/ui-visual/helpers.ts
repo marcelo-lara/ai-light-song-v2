@@ -65,16 +65,19 @@ export interface RuntimeErrorSink {
   list(): string[];
 }
 
-// reference/human/segments.json, reference/human/segments.seed.json (v3.6
-// item 4 — unreviewed rule-based drafts, experiments/segment_seeds, not every
-// song has been seeded yet) and reference/moises/segments.json are all
+// reference/human/segments.json and reference/moises/segments.json are
 // optional at the app level (`ui/src/data/loaders.ts`'s `loadHumanSegments` /
-// `loadHumanSectionsSeed` / `loadMoisesSections` all resolve a 404 to `[]`,
-// unconditionally, for every song) — a fixture missing any of them is a real,
-// expected shape, not a fault, so the browser-level 404 response they still
-// produce is tolerated here the same way `allowMissingAudio` tolerates the
-// absent mp3.
-const OPTIONAL_SEGMENTS_404 = /\/reference\/(human|moises)\/segments(\.seed)?\.json$/;
+// `loadMoisesSections` resolve a 404 to `[]`, unconditionally, for every song)
+// — a fixture missing either is a real, expected shape, not a fault, so the
+// browser-level 404 response they still produce is tolerated here the same way
+// `allowMissingAudio` tolerates the absent mp3.
+const OPTIONAL_SEGMENTS_404 = /\/reference\/(human|moises)\/segments\.json$/;
+
+// v3.10 item 9: files the analyzer no longer writes (item 8) and the
+// debugger no longer reads. Any request for one — whether or not it would
+// 404 — is a regression: the UI must not ask for them at all.
+const REMOVED_ARTIFACT_REQUEST =
+  /\/(genre|hpcp|layer_a_harmonic|layer_c_energy|block_energy|segments\.seed|section_function_contest|energy_level|tension_shape|rhythm_drum_ioi|rhythm_stem_autocorr|rhythm_vocal_onsets)\.json(\?|$)/;
 
 // v3.8 item 2: `RunAnalysisControl` polls `artifacts/_run_progress.json` on
 // every song load. No run has been requested for a fixture song by default,
@@ -82,6 +85,15 @@ const OPTIONAL_SEGMENTS_404 = /\/reference\/(human|moises)\/segments(\.seed)?\.j
 // `{ kind: "idle" }`, never logged) — always tolerated, the same way
 // `OPTIONAL_SEGMENTS_404` is.
 const OPTIONAL_RUN_PROGRESS_404 = /\/artifacts\/_run_progress\.json$/;
+
+// v3.10 item 5: `reference/proposals/pending.json` is written only by an MCP
+// `propose_*` call and is absent until then; its loader resolves a 404 to
+// "no proposals" (the other experiment proposal files ship in the fixtures,
+// because a lane whose file is absent is not rendered at all).
+// The frozen fixtures carry no `pending.json`, so its 404 is named here
+// (and only this — any other missing `/data/analysis/` file still fails).
+const OPTIONAL_PROPOSALS_404 =
+  /\/reference\/proposals\/pending\.json$/;
 
 /**
  * Collect anything that should never happen on a healthy load: console
@@ -113,6 +125,11 @@ export function assertNoRuntimeErrors(
     }
     problems.push(`console.${type}: ${text}`);
   });
+  page.on("request", (req) => {
+    if (REMOVED_ARTIFACT_REQUEST.test(req.url())) {
+      problems.push(`request for a removed artifact: ${req.url()}`);
+    }
+  });
   page.on("pageerror", (err) => {
     problems.push(`pageerror: ${err.message}`);
   });
@@ -121,6 +138,7 @@ export function assertNoRuntimeErrors(
     if (opts.allowMissingAudio && /\/data\/songs\/.*\.mp3$/.test(url)) return;
     if (OPTIONAL_SEGMENTS_404.test(url)) return;
     if (OPTIONAL_RUN_PROGRESS_404.test(url)) return;
+    if (OPTIONAL_PROPOSALS_404.test(url)) return;
     if (url.includes("/data/analysis/") || url.includes("/data/songs/")) {
       problems.push(`requestfailed: ${url} (${req.failure()?.errorText ?? "?"})`);
     }
@@ -131,6 +149,7 @@ export function assertNoRuntimeErrors(
     if (opts.allowMissingAudio && /\/data\/songs\/.*\.mp3$/.test(url)) return;
     if (OPTIONAL_SEGMENTS_404.test(url)) return;
     if (OPTIONAL_RUN_PROGRESS_404.test(url)) return;
+    if (OPTIONAL_PROPOSALS_404.test(url)) return;
     if (url.includes("/data/analysis/")) {
       problems.push(`response ${res.status()}: ${url}`);
     }

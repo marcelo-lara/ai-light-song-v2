@@ -32,9 +32,11 @@ EXPECTED_TOOLS = [
     "get_song_overview",
     "get_detail",
     "propose_hint",
-    "propose_section_field",
     "request_analysis",
     "get_analysis_progress",
+    "get_watcher_status",
+    "get_structure_hint_brief",
+    "write_structure_hint",
 ]
 
 _RESULTS: list[tuple[str, str, str]] = []
@@ -67,7 +69,7 @@ async def _run_stdio_checks() -> None:
     from mcp.client.session import ClientSession
     from mcp.client.stdio import StdioServerParameters, stdio_client
 
-    # v3.7 item 10 — propose_hint/propose_section_field write a queue file
+    # v3.7 item 10 — propose_hint writes a queue file
     # under the song directory, so the stdio session points at a throwaway
     # copy of the fixtures (under the writable /data mount) rather than the
     # committed, read-only fixtures at FIXTURE_ROOT (under the :ro /app
@@ -96,6 +98,9 @@ async def _run_stdio_checks() -> None:
     env = dict(os.environ)
     env["MCP_ANALYSIS_ROOT"] = str(writable_root)
     env["MCP_SONGS_ROOT"] = str(writable_songs_root)
+    # v3.10 item 11 — a heartbeat path that never exists, so the watcher
+    # reads `down` regardless of any real watcher running on the host.
+    env["MCP_WATCHER_HEARTBEAT"] = "/data/.mcp_smoke_no_heartbeat"
     params = StdioServerParameters(command=sys.executable, args=[str(SERVER)], env=env)
 
     try:
@@ -120,8 +125,9 @@ async def _run_stdio_checks_against(params, writable_root: Path) -> None:
             names = [t.name for t in tools.tools]
             status = "PASS" if names == EXPECTED_TOOLS else "FAIL"
             record("S1.3 tools/list == list_songs, get_song_overview, get_detail, "
-                   "propose_hint, propose_section_field, request_analysis, "
-                   "get_analysis_progress", status, str(names))
+                   "propose_hint, request_analysis, "
+                   "get_analysis_progress, get_watcher_status, get_structure_hint_brief, "
+                   "write_structure_hint", status, str(names))
 
             # S1.4 — stray stdout would have broken the handshake above.
             record("S1.4 no stray stdout (proxy: handshake + list succeeded)",
@@ -193,10 +199,10 @@ async def _run_stdio_checks_against(params, writable_root: Path) -> None:
                  "evidence": "loudness.json shows a 6dB step at 10.0s"},
             )
             second = await session.call_tool(
-                "propose_section_field",
-                {"song": "McpFull - Fixture", "section_id": "section-001",
-                 "field": "tension", "value": 4,
-                 "evidence": "gesture build overlaps this section"},
+                "propose_hint",
+                {"song": "McpFull - Fixture", "start": 14.0, "end": 15.0,
+                 "title": "Second", "summary": "second hint",
+                 "evidence": "gesture build overlaps this window"},
             )
             first_id = (_tool_json(first) or {}).get("id") if not first.is_error else None
             second_id = (_tool_json(second) or {}).get("id") if not second.is_error else None
@@ -209,7 +215,7 @@ async def _run_stdio_checks_against(params, writable_root: Path) -> None:
                 and ids == [first_id, second_id]
             )
             status = "PASS" if ok else "FAIL"
-            record("S3.11 two propose_* calls append two distinct pending.json entries",
+            record("S3.11 two propose_hint calls append two distinct pending.json entries",
                    status, f"ids={ids}")
 
             # v3.8 item 3 — request_analysis / get_analysis_progress.
@@ -334,6 +340,90 @@ async def _run_stdio_checks_against(params, writable_root: Path) -> None:
             record("S3.20 request_analysis refuses a 0-byte placeholder audio file",
                    status, repr(text))
 
+            # v3.10 item 11 — force re-run + watcher status.
+            ws = await session.call_tool("get_watcher_status", {})
+            ws_payload = _tool_json(ws) if not ws.is_error else {}
+            status = (
+                "PASS" if not ws.is_error and ws_payload.get("status") == "down"
+                and ws_payload.get("last_heartbeat") is None
+                and ws_payload.get("age_s") is None else "FAIL"
+            )
+            record("S3.21 get_watcher_status is down with no heartbeat file",
+                   status, f"payload={ws_payload}")
+
+            forced = await session.call_tool(
+                "request_analysis", {"song": "McpFull - Fixture", "force": True},
+            )
+            forced_payload = _tool_json(forced) if not forced.is_error else {}
+            forced_path = (
+                writable_root / "McpFull - Fixture" / "artifacts" / "_run_request.json"
+            )
+            status = (
+                "PASS" if not forced.is_error
+                and forced_payload.get("status") == "requested"
+                and forced_payload.get("watcher") == "down"
+                and forced_path.is_file() else "FAIL"
+            )
+            record("S3.22 request_analysis(force=True) re-runs an analysed song, reports watcher",
+                   status, f"is_error={forced.is_error} payload={forced_payload}")
+
+            # v3.10 item 7 — structure hint tools.
+            hint_path = (writable_root / "McpUnanalysed - Fixture" / "reference"
+                         / "pre-analysis" / "structure.json")
+            good = {
+                "schema_version": "1.0", "song_name": "McpUnanalysed - Fixture",
+                "generated_at": "2026-10-01",
+                "track": {"artist": "A", "title": "T", "version": "extended",
+                          "remixer": None, "version_duration_s": 400},
+                "genre": {"family": "edm", "subgenre": "big_room", "bpm": 128},
+                "shape": {"drops": 2, "chorus_is_drop": False,
+                          "has_build_ups": True, "vocals": "chops"},
+                "confidence": 0.7,
+                "sources": [{"url": "https://example.com", "title": "x"}],
+            }
+            brief = await session.call_tool(
+                "get_structure_hint_brief", {"song": "McpUnanalysed - Fixture"})
+            bp = _tool_json(brief) if not brief.is_error else {}
+            prompt = await session.get_prompt(
+                "structure_hint", {"song": "McpUnanalysed - Fixture"})
+            prompt_text = " ".join(
+                getattr(m.content, "text", "") for m in prompt.messages)
+            ok = (not brief.is_error and bp.get("existing") is None
+                  and bp.get("brief") == prompt_text
+                  and "never write a time" in bp.get("brief", "").lower())
+            record("S3.23 get_structure_hint_brief on an unanalysed song with audio: "
+                   "brief == structure_hint prompt, existing null",
+                   "PASS" if ok else "FAIL", f"is_error={brief.is_error}")
+
+            bad_enum = {**good, "genre": {**good["genre"], "family": "polka"}}
+            no_src = {**good, "sources": []}
+            timed = {**good, "shape": {**good["shape"], "drop_time": 61.0}}
+            refusals = []
+            for label, payload in (("enum", bad_enum), ("sources", no_src), ("time", timed)):
+                res = await session.call_tool(
+                    "write_structure_hint",
+                    {"song": "McpUnanalysed - Fixture", "hint": payload})
+                refusals.append((label, res.is_error, _tool_text(res)[:80]))
+            ok = all(r[1] for r in refusals) and not hint_path.exists()
+            record("S3.24 write_structure_hint refuses unknown enum, no sources and a "
+                   "time key, writing nothing", "PASS" if ok else "FAIL", str(refusals))
+
+            wrote = await session.call_tool(
+                "write_structure_hint",
+                {"song": "McpUnanalysed - Fixture", "hint": good})
+            again = await session.call_tool(
+                "get_structure_hint_brief", {"song": "McpUnanalysed - Fixture"})
+            ok = (not wrote.is_error and hint_path.is_file()
+                  and not again.is_error and _tool_json(again).get("existing") == good)
+            record("S3.25 a valid hint is written and round-trips through existing",
+                   "PASS" if ok else "FAIL", f"is_error={wrote.is_error}")
+
+            unknown = await session.call_tool(
+                "get_structure_hint_brief", {"song": "No Such Song"})
+            record("S3.26 get_structure_hint_brief on a song with no analysis and no "
+                   "audio errors", "PASS" if unknown.is_error else "FAIL",
+                   _tool_text(unknown)[:80])
+
 
 def _check_build() -> None:
     # If this harness is running, the image built and the SDK imported.
@@ -359,7 +449,7 @@ def _check_exposure() -> None:
 
 def _check_readonly_mount() -> None:
     # v3.7 item 10 — the /data mount changed from :ro to read-write so
-    # propose_hint/propose_section_field can append to a song's own proposals
+    # propose_hint can append to a song's own proposals
     # queue file (docker-compose.yml's mcp service). The server's read-only
     # guarantee is now enforced entirely in code — loaders.py's top-level-only
     # reads, proposals.py's queue-file-only writes — rather than by the bind
@@ -371,10 +461,10 @@ def _check_readonly_mount() -> None:
     try:
         probe.write_text("x", encoding="utf-8")
         probe.unlink()
-        record("S4.11 /data mount is writable (propose_* tools can append their queue file)",
+        record("S4.11 /data mount is writable (propose_*/write_structure_hint can write their bounded files)",
                "PASS", f"write to {probe} succeeded")
     except OSError as exc:
-        record("S4.11 /data mount is writable (propose_* tools can append their queue file)",
+        record("S4.11 /data mount is writable (propose_*/write_structure_hint can write their bounded files)",
                "FAIL", f"{type(exc).__name__}: {exc}")
 
 
@@ -500,7 +590,7 @@ def _check_f1_all_nine_required() -> None:
                 ok_count += 1
             else:
                 record(f"F1.7 missing {missing} errors naming it", "FAIL", observed)
-    record("F1.7 all 10 required top-level files individually enforced",
+    record("F1.7 all 9 required top-level files individually enforced",
            "PASS" if ok_count == len(REQUIRED_TOP_LEVEL_FILES) else "FAIL",
            f"{ok_count}/{len(REQUIRED_TOP_LEVEL_FILES)} named correctly")
 
@@ -573,16 +663,10 @@ def _check_f3_detail() -> None:
 def _check_f2_honesty() -> None:
     from serializers import build_song_overview
 
-    VOCAB = {"essentia", "allin1", "harmonic", "omnizart", "demucs", "gestures",
-             "genre", "human", "inference", "unknown", "arrangement_state",
-             "section_function",
-             # v3.6 item 10 — energy/tension/rhythm clue producers + the
-             # seed non-producer tier.
-             "energy_level", "tension_shape", "rhythm_drum_ioi",
-             "rhythm_stem_autocorr", "rhythm_vocal_onsets", "seed_unreviewed",
-             # v3.7 item 2/4 — impact_alignment (section_clues.py); v3.7
-             # item 3/6 — section_id attributed against published sections.json.
-             "impact_alignment", "sections"}
+    VOCAB = {"essentia", "allin1", "omnizart", "demucs", "gestures",
+             "human", "inference", "unknown", "arrangement_state",
+             # v3.7 item 3/6 — section_id attributed against published sections.json.
+             "sections"}
 
     full = build_song_overview("McpFull - Fixture", root=FIXTURE_ROOT)
     degen = build_song_overview("McpDegenerate - Fixture", root=FIXTURE_ROOT)
@@ -637,9 +721,8 @@ def _check_f2_honesty() -> None:
 def _check_f4_budget() -> None:
     full_text = _overview_text("McpFull - Fixture")
     size = len(full_text.encode("utf-8"))
-    # v3.7 item 2 moved 6144 -> 6450 (impact_alignment). v3.9 item 1 moves it
-    # again, 6450 -> 6900, for vocal_cadence.json's compact overview block and
-    # per-section fields (see test_overview_budget_mcpfull_under_7kb).
+    # Ceiling 6900 since v3.9 item 1 (vocal_cadence.json's compact overview
+    # block and per-section fields; see test_overview_budget_mcpfull_under_7kb).
     record("F4.20 get_song_overview(McpFull) under the 6900-byte budget",
            "PASS" if size < 6900 else "FAIL", f"{size} bytes")
 

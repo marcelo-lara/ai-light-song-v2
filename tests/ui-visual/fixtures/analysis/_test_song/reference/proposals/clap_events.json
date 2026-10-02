@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/clap_events",
+    "engine": "per-hit spectral shape (1-6 kHz noise share / 120-400 Hz body share) over drums-stem onset candidates \u2014 never omnizart's event label",
+    "params": {
+      "win_s": 0.12,
+      "noise_min": 0.5,
+      "body_max": 0.15
+    },
+    "generated_at": "2026-09-30T00:38:06.199930Z"
+  },
+  "events": [
+    {
+      "time": 28.195,
+      "noise_share": 0.5487,
+      "body_share": 0.0646,
+      "confidence": 0.0974
+    },
+    {
+      "time": 28.427,
+      "noise_share": 0.6869,
+      "body_share": 0.0159,
+      "confidence": 0.3738
+    },
+    {
+      "time": 55.362,
+      "noise_share": 0.9485,
+      "body_share": 0.0034,
+      "confidence": 0.897
+    }
+  ]
+}

@@ -234,8 +234,101 @@ def test_request_analysis_returns_existing_progress_without_rewriting_request(
     }
     progress_path.write_text(json.dumps(progress), encoding="utf-8")
     result = server.request_analysis("McpUnanalysed - Fixture")
+    assert result.pop("watcher") in ("up", "down")
     assert result == progress
     assert not _request_path(writable_root, "McpUnanalysed - Fixture").exists()
+
+
+def test_request_analysis_force_rewrites_request_for_an_analysed_song(
+    writable_root, tmp_path, monkeypatch
+) -> None:
+    monkeypatch.setenv("MCP_WATCHER_HEARTBEAT", str(tmp_path / "missing.heartbeat"))
+    # Unforced stays a refusal, writes nothing.
+    with pytest.raises(ToolError, match="force=True"):
+        server.request_analysis("McpFull - Fixture")
+    assert not _request_path(writable_root, "McpFull - Fixture").exists()
+    # Forced writes the request. McpFull - Fixture has no audio in the
+    # tmp songs root unless provided, so provide it.
+    songs = tmp_path / "songs"
+    songs.mkdir()
+    (songs / "McpFull - Fixture.mp3").write_bytes(b"audio")
+    monkeypatch.setenv("MCP_SONGS_ROOT", str(songs))
+    result = server.request_analysis("McpFull - Fixture", force=True)
+    assert result["status"] == "requested"
+    assert result["watcher"] == "down"
+    assert _request_path(writable_root, "McpFull - Fixture").is_file()
+
+
+def test_request_analysis_force_still_needs_audio(writable_root, songs_root) -> None:
+    with pytest.raises(ToolError, match="No audio found"):
+        server.request_analysis("McpFull - Fixture", force=True)
+    assert not _request_path(writable_root, "McpFull - Fixture").exists()
+
+
+def test_request_analysis_reports_watcher_up_with_fresh_heartbeat(
+    writable_root, songs_root, tmp_path, monkeypatch
+) -> None:
+    hb = tmp_path / "hb"
+    hb.write_text(runs._now_iso_z() + "\n", encoding="utf-8")
+    monkeypatch.setenv("MCP_WATCHER_HEARTBEAT", str(hb))
+    result = server.request_analysis("McpUnanalysed - Fixture")
+    assert result["watcher"] == "up"
+
+
+# --- get_watcher_status ---------------------------------------------------
+
+
+def _beat(path: Path, age_s: float) -> None:
+    from datetime import datetime, timedelta, timezone
+
+    when = datetime.now(timezone.utc) - timedelta(seconds=age_s)
+    path.write_text(when.strftime("%Y-%m-%dT%H:%M:%SZ") + "\n", encoding="utf-8")
+
+
+def test_watcher_status_up_with_fresh_heartbeat(tmp_path, monkeypatch) -> None:
+    hb = tmp_path / "hb"
+    _beat(hb, 1)
+    monkeypatch.setenv("MCP_WATCHER_HEARTBEAT", str(hb))
+    monkeypatch.setenv("MCP_WATCHER_POLL_S", "2")
+    status = server.get_watcher_status()
+    assert status["status"] == "up"
+    assert status["last_heartbeat"].endswith("Z")
+    assert 0 <= status["age_s"] <= 4
+
+
+def test_watcher_status_down_with_stale_heartbeat(tmp_path, monkeypatch) -> None:
+    hb = tmp_path / "hb"
+    _beat(hb, 60)
+    monkeypatch.setenv("MCP_WATCHER_HEARTBEAT", str(hb))
+    monkeypatch.setenv("MCP_WATCHER_POLL_S", "2")
+    status = server.get_watcher_status()
+    assert status["status"] == "down"
+    assert status["age_s"] >= 59
+    assert status["last_heartbeat"] is not None
+
+
+def test_watcher_status_threshold_scales_with_poll_interval(tmp_path, monkeypatch) -> None:
+    hb = tmp_path / "hb"
+    _beat(hb, 20)
+    monkeypatch.setenv("MCP_WATCHER_HEARTBEAT", str(hb))
+    monkeypatch.setenv("MCP_WATCHER_POLL_S", "10")
+    assert server.get_watcher_status()["status"] == "up"
+    monkeypatch.setenv("MCP_WATCHER_POLL_S", "2")
+    assert server.get_watcher_status()["status"] == "down"
+
+
+def test_watcher_status_down_when_missing_or_garbage(tmp_path, monkeypatch) -> None:
+    hb = tmp_path / "hb"
+    monkeypatch.setenv("MCP_WATCHER_HEARTBEAT", str(hb))
+    expected = {"status": "down", "last_heartbeat": None, "age_s": None}
+    assert server.get_watcher_status() == expected
+    hb.write_text("not a timestamp", encoding="utf-8")
+    assert server.get_watcher_status() == expected
+
+
+def test_watcher_status_default_path_is_beside_analysis_root(writable_root, monkeypatch) -> None:
+    monkeypatch.delenv("MCP_WATCHER_HEARTBEAT", raising=False)
+    assert runs.get_heartbeat_path() == writable_root.parent / "analysis-watcher.heartbeat"
 
 
 # --- server.get_analysis_progress ----------------------------------------

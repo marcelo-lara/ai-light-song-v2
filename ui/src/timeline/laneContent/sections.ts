@@ -1,12 +1,10 @@
 // sections.ts — Human/Moises/allin1 Sections, the fused Sections lane, the
-// allin1 Posterior and Stem Presence Sections candidates, Segment Seeds and
-// Arrangement State. Split out of laneContent.ts (v3.9 item 7) with no
+// allin1 Posterior and Stem Presence Sections candidates and Arrangement State. Split out of laneContent.ts (v3.9 item 7) with no
 // behaviour change; see laneContent.ts for the dispatch table and shared
 // SparseBlock type.
 
 import type {
   HumanSegmentsFile,
-  HumanSegmentsSeedFile,
   MoisesSegmentsFile,
   SectionRow,
   SegmentationSection,
@@ -15,6 +13,7 @@ import type {
   Allin1PosteriorFile,
   ArrangementStateFile,
   StemPresenceSectionsFile,
+  SectionNamesFile,
 } from "../../data/sparseArtifacts";
 import type { SparseBlock } from "../laneContent";
 import { formatRange, round } from "./shared";
@@ -30,19 +29,13 @@ import { formatRange, round } from "./shared";
 export function humanSectionsContent(file: HumanSegmentsFile | null): SparseBlock[] {
   return (file ?? []).map((s, i) => {
     const id = `segment-${String(i + 1).padStart(3, "0")}`;
-    const tags = [
-      s.energy != null ? `E${s.energy}` : null,
-      s.tension != null ? `T${s.tension}` : null,
-    ].filter((t): t is string => Boolean(t));
     return {
       id,
       start_s: s.start,
       end_s: s.end,
       label: s.label || id,
       laneLabel: "Human Sections",
-      caption: tags.length
-        ? `${formatRange(s.start, s.end)} · ${tags.join(" ")}`
-        : formatRange(s.start, s.end),
+      caption: formatRange(s.start, s.end),
       reference: id,
       detail: "-",
       summary: s.description?.trim() || "Hand-authored section segmentation.",
@@ -122,29 +115,20 @@ export function sectionsContent(
   );
   return rows.map((s, i) => {
     const seg = bySectionId.get(s.section_id);
-    // v3.4 item 3 — the phase-3 energy contest flags (never flips) a `chorus`
-    // that is quieter/thinner than the following section. The flag lands on the
-    // top-level row's `function_status`, so it wins over the artifact's value.
-    const contested = s.function_status === "contested";
-    const functionStatus = contested
-      ? "contested"
-      : (seg?.function_status ?? s.function_status);
+    const functionStatus = seg?.function_status ?? s.function_status;
     return {
       id: s.section_id ?? `section-${String(i + 1).padStart(3, "0")}`,
       start_s: s.start,
       end_s: s.end,
       label: s.label,
-      ...(contested ? { tintId: "sectionsContested" } : {}),
       laneLabel: "Sections",
       caption: `${formatRange(s.start, s.end)}${
         s.confidence != null ? ` · conf ${round(s.confidence)}` : ""
-      }${contested ? ` · contested (${s.contested_by ?? "energy"})` : ""}`,
+      }`,
       reference: s.section_id ?? "-",
-      detail: contested
-        ? `function_status: contested · contested_by: ${s.contested_by ?? "energy"}`
-        : seg?.same_label_as
-          ? `same label as ${seg.same_label_as}`
-          : (seg?.function_status ?? "-"),
+      detail: seg?.same_label_as
+        ? `same label as ${seg.same_label_as}`
+        : (seg?.function_status ?? "-"),
       summary:
         s.description ||
         "Section navigation stays browser-local and moves only the shared playback cursor.",
@@ -158,7 +142,6 @@ export function sectionsContent(
             }
           : {}),
         function_status: functionStatus,
-        ...(contested ? { contested_by: s.contested_by ?? "energy" } : {}),
       },
     };
   });
@@ -218,50 +201,6 @@ export function stemPresenceSectionsContent(
 }
 
 /**
- * `reference/human/segments.seed.json` — `experiments/segment_seeds`' rule-based
- * first-pass draft of energy/tension/rhythm over the operator's segment spans.
- * Unreviewed inference, not operator input; renders every row regardless of
- * whether it has since been reviewed into segments.json. Never invents a value
- * for a missing field — prints the gap instead.
- */
-export function segmentSeedsContent(file: HumanSegmentsSeedFile | null): SparseBlock[] {
-  return (file ?? []).map((row, i) => {
-    const id = `segment-seed-${String(i + 1).padStart(3, "0")}`;
-    const tags = [
-      row.energy != null ? `E${row.energy}` : null,
-      row.tension != null ? `T${row.tension}` : null,
-    ].filter((t): t is string => t != null);
-    const caption = tags.length
-      ? `${formatRange(row.start, row.end)} · ${tags.join(" ")}`
-      : formatRange(row.start, row.end);
-    const rhythmSources: Array<["drums" | "bass" | "harmonic" | "vocals", string]> = [
-      ["drums", row.rhythm?.drums ?? "none reported"],
-      ["bass", row.rhythm?.bass ?? "none reported"],
-      ["harmonic", row.rhythm?.harmonic ?? "none reported"],
-      ["vocals", row.rhythm?.vocals ?? "none reported"],
-    ];
-    const detail = [
-      `energy: ${row.energy != null ? row.energy : "not seeded"}`,
-      `tension: ${row.tension != null ? row.tension : "not seeded"}`,
-      ...rhythmSources.map(([k, v]) => `rhythm ${k}: ${v}`),
-    ].join(" · ");
-    return {
-      id,
-      start_s: row.start,
-      end_s: row.end,
-      label: row.label ?? id,
-      laneLabel: "Segment Seeds",
-      caption,
-      reference: id,
-      detail,
-      summary:
-        "experiments/segment_seeds — rule-based first-pass draft over the operator's segment spans; unreviewed inference, not operator input.",
-      raw: row,
-    };
-  });
-}
-
-/**
  * Who-is-playing state-change blocks from the top-level published
  * `arrangement_state.json` (the `detect-arrangement-state` stage — no audio,
  * no model, derived from the published per-stem RMS series). Auditioned
@@ -306,6 +245,45 @@ export function arrangementStateContent(file: ArrangementStateFile | null): Spar
       reference: `arrangement-state-${i + 1}`,
       detail: `playing: ${playingList}`,
       summary: `arrangement_state.json — who is playing over this span, derived from the published per-stem RMS (no model). ${changeSummary}`,
+      raw: b,
+    };
+  });
+}
+
+/**
+ * Section Names from `experiments/section_names` — every phrase named in the
+ * typical EDM sequence (`docs/segments-vocabulary.md`), boundaries on the
+ * phrase edges (a Fill / Pre-Drop / Build-Up start may sit on its own evidence
+ * time: `start_kind` says which). A song with no build->drop unit keeps its
+ * current `sections.json` labels, tinted grey and attributed. Confidence is a
+ * heuristic score, never a calibrated probability; `null` is printed as such.
+ * A proposal to audition against Human Sections, not ground truth.
+ */
+export function sectionNamesContent(file: SectionNamesFile | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => {
+    const kept = b.source !== "section_names";
+    const conf = b.confidence == null ? "no confidence reported" : `confidence ${round(b.confidence, 2)}`;
+    const start =
+      b.start_kind === "phrase_edge" ? "starts on a phrase edge"
+      : b.start_kind === "song_start" ? "starts at the song start"
+      : b.start_kind === "kept_current" ? "boundary kept from sections.json"
+      : b.start_kind === "evidence" ? "starts at its own evidence time (snapped to a trusted beat)"
+      : "starts at its own evidence time (not snapped: no trusted beat near)";
+    return {
+      id: `sectionNames-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: b.label,
+      wideLabel: b.confidence == null ? b.label : `${b.label} · ${round(b.confidence, 2)}`,
+      laneLabel: "Section Names",
+      caption: `${formatRange(b.start_s, b.end_s)} · ${b.label}${kept ? " (kept current label)" : ""}`,
+      reference: `sectionNames-${i + 1}`,
+      detail: b.label,
+      summary:
+        `experiments/section_names — ${b.label}; ${conf}; ${start}; ` +
+        `source ${b.source}${b.unit ? `, ${b.unit}` : ""}${b.phrase_ids.length ? `, phrases ${b.phrase_ids.join(", ")}` : ""}` +
+        `${b.inherited_from ? `; label inherited from ${b.inherited_from}` : ""}. Why: ${b.why.join("; ")}.`,
+      tintId: kept ? "sectionNamesKept" : "sectionNames",
       raw: b,
     };
   });

@@ -50,7 +50,16 @@ test("item 6 — follow-playhead toggle", async ({ page }) => {
   await page.getByTestId("lane-events-humanHints").click();
   await page.getByTestId("lane-event-hint-003").click();
   await expect(page.locator(".app-header__time")).toHaveText("1:04.0");
-  expect(await viewport.evaluate((el) => el.scrollLeft)).toBe(0);
+  // A card click scrolls an off-screen seek target into view by design
+  // (`usePanelState.handleSelectMarker` -> `scrollTimelineToTime`), so the
+  // offset is no longer 0 here. Following must not add any further movement
+  // while paused: the offset settles and stays.
+  const afterSeek = await viewport.evaluate((el) => el.scrollLeft);
+  expect(afterSeek).toBeGreaterThan(0);
+  await page.evaluate(
+    () => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r()))),
+  );
+  expect(await viewport.evaluate((el) => el.scrollLeft)).toBe(afterSeek);
 
   // 5. toggling — `aria-pressed` and the pressed styling both change. Move the
   // pointer off the button before reading `color` so a lingering `:hover` does

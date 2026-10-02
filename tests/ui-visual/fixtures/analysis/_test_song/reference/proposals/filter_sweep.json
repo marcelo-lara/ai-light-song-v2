@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/filter_sweep",
+    "engine": "per-stem spectral centroid (log2 Hz, level-weighted over the 7 published FFT bands) on a half-beat grid; near-monotonic move over 2-16 bars with level-flat stem loudness",
+    "inputs": [
+      "artifacts/essentia/fft_bands.harmonic.json",
+      "artifacts/essentia/fft_bands.bass.json",
+      "loudness.json",
+      "beats.json (beat spacing only)"
+    ],
+    "params": {
+      "bar_lengths": [
+        2,
+        3,
+        4,
+        6,
+        8,
+        12,
+        16
+      ],
+      "min_depth_octaves": {
+        "harmonic": 1.0,
+        "bass": 0.5
+      },
+      "min_monotonicity": 0.85,
+      "max_level_spread": 0.5,
+      "max_level_trend": 0.5,
+      "present_frac_of_p95": 0.1
+    },
+    "generated_at": "2026-10-01T04:16:34.237842Z"
+  },
+  "blocks": [
+    {
+      "direction": "opening",
+      "stem": "harmonic",
+      "start_s": 0.94,
+      "end_s": 12.69,
+      "depth": 1.8,
+      "confidence": 0.707
+    },
+    {
+      "direction": "opening",
+      "stem": "harmonic",
+      "start_s": 20.915,
+      "end_s": 27.965,
+      "depth": 2.309,
+      "confidence": 0.709
+    },
+    {
+      "direction": "closing",
+      "stem": "bass",
+      "start_s": 44.18,
+      "end_s": 48.88,
+      "depth": 1.0,
+      "confidence": 0.614
+    }
+  ]
+}

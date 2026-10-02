@@ -2,7 +2,7 @@
 // Mirrors HintEditorPanel.tsx's conventions (‹ › prev/next, new, delete,
 // Cancel / Save, explicit-Save-only write), but against segments.json's
 // shape: Start / End / Label (optional, one of SEGMENT_FUNCTION_NAMES — never free text) /
-// Description (optional free text) / Energy / Tension.
+// Description (optional free text).
 //
 // Save issues `PUT /api/human-sections/<song>` on explicit Save only (via
 // `buildHumanSectionsPayload` + `saveHumanSections`), then hands the
@@ -11,12 +11,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { SEGMENT_RHYTHM_VALUES } from "../data/parsers";
 import { buildHumanSectionsPayload, saveHumanSections } from "../data/saveHumanSections";
 import { SEGMENT_FUNCTIONS } from "../data/segmentFunctions";
 import type { HumanSegmentsFile } from "../data/types";
 
-import { SegmentedRating } from "./LaneEventsPanel";
 import { RightPanel } from "./RightPanel";
 import { parseTimeInput } from "./hintDraft";
 import {
@@ -44,14 +42,6 @@ interface SegmentEditorPanelProps {
   onSaved: (file: HumanSegmentsFile) => void;
   onScrollToTime: (seconds: number) => void;
 }
-
-/** rhythm select field names, in the fixed display order the panel renders. */
-const RHYTHM_FIELDS = [
-  { key: "rhythmDrums", testId: "segment-rhythm-drums", label: "Drums" },
-  { key: "rhythmBass", testId: "segment-rhythm-bass", label: "Bass" },
-  { key: "rhythmHarmonic", testId: "segment-rhythm-harmonic", label: "Harmonic" },
-  { key: "rhythmVocals", testId: "segment-rhythm-vocals", label: "Vocals" },
-] as const;
 
 type SaveState =
   | { status: "idle" }
@@ -135,33 +125,6 @@ export function SegmentEditorPanel({
     [activeId],
   );
 
-  // Same seg-rating buttons the Human Hints block-energy panel uses: clicking
-  // the pressed value again clears the axis back to "unrated" (never a
-  // defaulted 1).
-  const patchRating = useCallback(
-    (_hintId: string, axis: "energy" | "tension", v: number) => {
-      setDrafts((cur) =>
-        cur.map((d) => {
-          if (d.id !== activeId) return d;
-          const current = d[axis] ? Number(d[axis]) : null;
-          return { ...d, [axis]: current === v ? "" : String(v) };
-        }),
-      );
-      setSave({ status: "idle" });
-    },
-    [activeId],
-  );
-
-  const patchRhythm = useCallback(
-    (key: (typeof RHYTHM_FIELDS)[number]["key"], value: string) => {
-      setDrafts((cur) =>
-        cur.map((d) => (d.id === activeId ? { ...d, [key]: value } : d)),
-      );
-      setSave({ status: "idle" });
-    },
-    [activeId],
-  );
-
   const selectByIndex = useCallback(
     (index: number) => {
       const d = drafts[index];
@@ -184,12 +147,7 @@ export function SegmentEditorPanel({
         description: "",
         start: String(start),
         end: String(start),
-        energy: "",
-        tension: "",
-        rhythmDrums: "",
-        rhythmBass: "",
-        rhythmHarmonic: "",
-        rhythmVocals: "",
+        preserved: {},
       };
       setActiveId(next.id);
       return [...cur, next];
@@ -385,44 +343,6 @@ export function SegmentEditorPanel({
               value={active.description}
               onChange={(e) => patchActive({ description: e.target.value })}
             />
-          </div>
-
-          <div className="lane-events__rating">
-            <SegmentedRating
-              id="segment-energy"
-              axis="energy"
-              hintId={active.id}
-              value={active.energy ? Number(active.energy) : null}
-              onPick={patchRating}
-            />
-            <SegmentedRating
-              id="segment-tension"
-              axis="tension"
-              hintId={active.id}
-              value={active.tension ? Number(active.tension) : null}
-              onPick={patchRating}
-            />
-          </div>
-
-          <div className="hint-editor__row2 segment-editor__rhythm">
-            {RHYTHM_FIELDS.map(({ key, testId, label }) => (
-              <div className="field" key={key}>
-                <label htmlFor={testId}>{label}</label>
-                <select
-                  id={testId}
-                  className="input"
-                  value={active[key]}
-                  onChange={(e) => patchRhythm(key, e.target.value)}
-                >
-                  <option value="">Unset</option>
-                  {SEGMENT_RHYTHM_VALUES.map((v) => (
-                    <option key={v} value={v}>
-                      {v}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ))}
           </div>
         </>
       )}

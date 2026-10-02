@@ -21,6 +21,7 @@ from analyzer.stages.gestures import (
     detect_section_transitions,
     detect_snare_roll,
     detect_stem_entry_impacts,
+    _drum_hit_indices,
 )
 
 # Retired Epic-5 boilerplate strings that must never leak into a projected
@@ -291,6 +292,76 @@ class DetectStemEntryImpactsTests(unittest.TestCase):
         impacts = detect_stem_entry_impacts(rms_loudness, beats, sections, [existing])
         self.assertEqual(impacts, [])
         self.assertAlmostEqual(existing["start"], 11.85, delta=0.05)
+
+    def _sparse_kick_drums(self, n: int, first_kick: float, last_kick: float, beat_len: float = 0.5) -> np.ndarray:
+        """One 50 ms kick per beat from `first_kick` to `last_kick`, near
+        silence between (the Charli-VonDutch shape)."""
+        t = np.arange(n) * 0.01
+        drums = np.full(n, 0.005)
+        k = first_kick
+        while k <= last_kick:
+            drums[(t >= k) & (t < k + 0.05)] = 1.0
+            k += beat_len
+        return drums
+
+    def test_sparse_short_kicks_one_per_beat_are_present(self) -> None:
+        """v3.10 item 3 -- ~50 ms kicks one per beat are drums presence:
+        every kick is a hit, and a 1-beat rolling mean of them stays below
+        the 0.40x on-threshold that used to gate them out."""
+        n = 3000
+        drums = self._sparse_kick_drums(n, 10.0, 28.0)
+        p95 = float(np.percentile(drums, 95))
+        hits = _drum_hit_indices(drums, gestures._DRUMS_LED_HIT_RATIO * p95, min_gap=12)
+        hit_times = hits * 0.01
+        self.assertEqual(len(hits), 37)
+        self.assertTrue(np.all(np.abs(np.diff(hit_times) - 0.5) < 0.02))
+        smooth = gestures._centered_moving_average(drums, 50)
+        self.assertLess(float(smooth[1500]), gestures._STEM_ENTRY_ON_RATIO * p95)
+
+    def test_drums_led_entry_with_bass_one_beat_late_gives_one_impact_at_the_drums_onset(self) -> None:
+        n = 3000
+        t = np.arange(n) * 0.01
+        drums = self._sparse_kick_drums(n, 10.0, 28.0)
+        bass = np.where(t < 10.5, 0.005, 1.0)  # a beat after the first kick
+        rms_loudness = _rms_loudness(bass, drums)
+        beats = _beats(n_bars=40, bar_len=2.0)
+        sections = [{"start": 0.0}, {"start": 9.9}]
+        impacts = detect_stem_entry_impacts(rms_loudness, beats, sections, [])
+        self.assertEqual(len(impacts), 1)
+        self.assertAlmostEqual(impacts[0]["start"], 10.0, delta=0.03)
+        self.assertIn("drums-led", impacts[0]["evidence"])
+        self.assertEqual(impacts[0]["confidence"], gestures._DRUMS_LED_FALLBACK_CONFIDENCE)
+
+    def test_pickup_hit_then_trough_then_groove_gives_one_impact_at_the_groove(self) -> None:
+        """A lone pickup, a 3-beat trough, then the real groove: the pickup
+        must not borrow the groove's hits for its density."""
+        n = 3000
+        t = np.arange(n) * 0.01
+        drums = self._sparse_kick_drums(n, 11.5, 28.0)  # groove from 11.5s
+        drums[(t >= 10.0) & (t < 10.05)] = 1.0  # pickup 1.5s (3 beats) earlier
+        bass = np.where(t < 12.0, 0.005, 1.0)  # a beat after the groove
+        rms_loudness = _rms_loudness(bass, drums)
+        beats = _beats(n_bars=40, bar_len=2.0)
+        impacts = detect_stem_entry_impacts(rms_loudness, beats, [{"start": 0.0}, {"start": 11.4}], [])
+        self.assertEqual(len(impacts), 1)
+        self.assertAlmostEqual(impacts[0]["start"], 11.5, delta=0.03)
+
+    def test_drums_only_with_no_bass_following_is_not_an_entry(self) -> None:
+        n = 3000
+        drums = self._sparse_kick_drums(n, 10.0, 28.0)
+        bass = np.full(n, 0.005)
+        rms_loudness = _rms_loudness(bass, drums)
+        beats = _beats(n_bars=40, bar_len=2.0)
+        self.assertEqual(detect_stem_entry_impacts(rms_loudness, beats, [{"start": 0.0}, {"start": 9.9}], []), [])
+
+    def test_drums_led_entry_over_a_continuing_groove_is_not_an_entry(self) -> None:
+        n = 3000
+        t = np.arange(n) * 0.01
+        drums = self._sparse_kick_drums(n, 4.0, 28.0)  # kicks already running before the boundary
+        bass = np.where(t < 10.5, 0.005, 1.0)
+        rms_loudness = _rms_loudness(bass, drums)
+        beats = _beats(n_bars=40, bar_len=2.0)
+        self.assertEqual(detect_stem_entry_impacts(rms_loudness, beats, [{"start": 0.0}, {"start": 9.9}], []), [])
 
     def test_riser_before_the_hit_does_not_pull_the_onset_early(self) -> None:
         n = 2000

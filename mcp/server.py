@@ -1,9 +1,9 @@
 """Stdio MCP server for song comprehension — read-only except for two
-propose-and-queue tools (v3.7 item 10) and one run-request tool (v3.8 item 3).
+propose-and-queue tool (v3.7 item 10) and one run-request tool (v3.8 item 3).
 
 `list_songs`, `get_song_overview` and `get_detail` are the read surface.
-`propose_hint` and `propose_section_field` are one write path: they only ever
-append to a song's own proposals queue (`proposals.py`), never to a top-level
+`propose_hint` is the one proposal write path: it only ever
+appends to a song's own proposals queue (`proposals.py`), never to a top-level
 file or the operator's own hand-authored one — see docs/mcp-definition.md's
 "Correction proposals" section. `request_analysis` and `get_analysis_progress`
 are the other write/read path (`runs.py`, D3.1): they write/read a song's own
@@ -43,18 +43,24 @@ from loaders import (
 from proposals import (
     ProposalValidationError,
     append_hint_proposal,
-    append_section_field_proposal,
 )
 from runs import (
     InvalidSongNameError,
     NoRunRequestedError,
     get_progress_or_derive,
     get_songs_root,
+    get_watcher_status as _get_watcher_status,
     has_audio,
     list_unanalysed_audio_stems,
     read_progress,
     validate_song_name,
     write_request,
+)
+from structure_hint import (
+    StructureHintError,
+    build_brief,
+    load_existing,
+    write_hint,
 )
 from serializers import DetailScopeError, build_detail, build_song_overview
 
@@ -108,13 +114,6 @@ def get_song_overview(song: str, scope: str | None = None) -> dict[str, Any]:
     One small call, whole song. Optionally accepts scope="brief" to return a
     compact overview suitable for the concept-pass read (D3.3). The default
     is the full overview.
-
-    Genre guidance (moved here from the now-dropped per-song `genre.json`
-    `guidance` field, v3.6 item 8 — the text was identical across the whole
-    corpus, so it is stated once, here, rather than repeated per song):
-    use the genre only as review guidance for what song parts are likely to
-    matter. Do not assume genre-specific drops or section semantics unless
-    downstream evidence supports them.
     """
     _validate_song(song)
     return build_song_overview(song, scope=scope)
@@ -193,47 +192,9 @@ def propose_hint(
         raise ToolError(str(exc)) from exc
 
 
-@server.tool(name="propose_section_field")
-def propose_section_field(
-    song: str,
-    section_id: str,
-    field: str,
-    value: Any,
-    evidence: str,
-) -> dict[str, Any]:
-    """Queue a correction to one section's ``energy``, ``tension`` or
-    ``rhythm.<stem>`` (``rhythm.drums``/``rhythm.bass``/``rhythm.harmonic``/
-    ``rhythm.vocals``) — never applied.
-
-    Same read-only boundary as ``propose_hint``: this appends to the song's
-    proposals queue only. ``section_id`` must name a row already published on
-    ``sections.json``. ``evidence`` is required — an empty or missing value
-    is rejected and nothing is written. Approval — the only path to the
-    operator's own file, and the only trigger for the ``section-clues``
-    republish that would surface it as ``*_source: "human"`` — happens in
-    the debugger UI.
-    """
-    song_dir = _resolve_song_or_error(song)
-    sections_payload = load_top_level_json(song_dir, "sections.json")
-    known_ids = {row.get("section_id") for row in sections_payload.get("sections", [])}
-    if section_id not in known_ids:
-        raise ToolError(f"Unknown section_id: {section_id!r}")
-    try:
-        return append_section_field_proposal(
-            song_dir,
-            song,
-            section_id=section_id,
-            field=field,
-            value=value,
-            evidence=evidence,
-        )
-    except ProposalValidationError as exc:
-        raise ToolError(str(exc)) from exc
-
-
 @server.tool(name="request_analysis")
-def request_analysis(song: str) -> dict[str, Any]:
-    """Request a full ``./analyze`` run for a song with no analysis yet.
+def request_analysis(song: str, force: bool = False) -> dict[str, Any]:
+    """Request a full ``./analyze`` run for a song.
 
     Reuses v3.8 item 1's request/progress files: whether a run was started
     from the debugger button or from here, the same host-side
@@ -241,30 +202,35 @@ def request_analysis(song: str) -> dict[str, Any]:
     (D3.1 — a bounded, documented exception to the top-level-only exposure
     rule; see docs/mcp-definition.md's "The hard boundary").
 
-    Refuses outright for a song that already has a complete analysis — use
-    ``get_song_overview``/``get_detail`` instead of requesting a redundant
-    run — and for a song with no *non-empty* audio file to analyze (a 0-byte
-    placeholder counts as no file: a run against it is guaranteed to fail).
-    Returns immediately without waiting for the run to finish; poll
+    By default refuses a song that already has a complete analysis — use
+    ``get_song_overview``/``get_detail`` instead of a redundant run. Pass
+    ``force=True`` to re-run an analysed song deliberately. Either way it
+    refuses a song with no *non-empty* audio file (a 0-byte placeholder
+    counts as no file: a run against it is guaranteed to fail). The result
+    carries ``watcher: "up" | "down"``; ``down`` means nothing will pick the
+    request up until ``./analysis-watcher`` is started on the host. Returns
+    immediately without waiting for the run to finish; poll
     ``get_analysis_progress`` roughly once a minute rather than re-calling
     this tool.
     """
     song = _validate_run_song_or_error(song)
 
+    analysed = True
     try:
         resolve_song_dir(song)
     except (SongNotFoundError, MissingTopLevelFileError):
-        pass
-    else:
+        analysed = False
+    if analysed and not force:
         raise ToolError(
             f"{song!r} is already fully analysed — use get_song_overview or "
-            "get_detail instead of requesting a new run."
+            "get_detail, or pass force=True to re-run it."
         )
 
+    watcher = _get_watcher_status()["status"]
     song_dir = get_analysis_root() / song
     progress = read_progress(song_dir)
     if progress is not None and progress.get("status") in ("queued", "running"):
-        return progress
+        return {**progress, "watcher": watcher}
 
     if not has_audio(song):
         stems = list_unanalysed_audio_stems()
@@ -278,6 +244,7 @@ def request_analysis(song: str) -> dict[str, Any]:
         "status": "requested",
         "song": song,
         "requested_at": request["requested_at"],
+        "watcher": watcher,
         "poll_with": "get_analysis_progress",
         "poll_every_s": 60,
         "note": "analysis takes several minutes; poll about once a minute",
@@ -303,6 +270,73 @@ def get_analysis_progress(song: str) -> dict[str, Any]:
     try:
         return get_progress_or_derive(song, song_dir)
     except NoRunRequestedError as exc:
+        raise ToolError(str(exc)) from exc
+
+
+@server.tool(name="get_watcher_status")
+def get_watcher_status() -> dict[str, Any]:
+    """Is the host-side ``./analysis-watcher`` running?
+
+    ``{status: "up" | "down", last_heartbeat, age_s}``. The watcher writes a
+    heartbeat every poll interval; ``down`` means the heartbeat is missing or
+    older than 3 poll intervals (``last_heartbeat``/``age_s`` are null when
+    missing). This server never starts the watcher — that is a host step.
+    """
+    return _get_watcher_status()
+
+
+def _hint_song_dir(song: str) -> Path:
+    """Both structure-hint tools accept an analysed song or one
+    `request_analysis` would accept (real audio under the songs root) - the
+    hint is meant to exist before the first run."""
+    song = _validate_run_song_or_error(song)
+    song_dir = get_analysis_root() / song
+    try:
+        resolve_song_dir(song)
+    except (SongNotFoundError, MissingTopLevelFileError):
+        if not has_audio(song):
+            raise ToolError(
+                f"Unknown song: {song!r} - not analysed and no audio ({song}.mp3) "
+                f"under the songs root. Unanalysed audio available: "
+                f"{list_unanalysed_audio_stems()}"
+            ) from None
+    return song_dir
+
+
+@server.tool(name="get_structure_hint_brief")
+def get_structure_hint_brief(song: str) -> dict[str, Any]:
+    """Instructions for writing the song's pre-analysis structure hint.
+
+    ``{brief, existing}``: ``brief`` is the instructions (identical to the MCP
+    prompt ``structure_hint``) - research version, genre and shape, fill every
+    schema field, then call ``write_structure_hint``; ``existing`` is the
+    stored hint or null. Works for analysed songs and songs with audio that
+    ``request_analysis`` would accept.
+    """
+    song_dir = _hint_song_dir(song)
+    return {"brief": build_brief(song.strip()), "existing": load_existing(song_dir)}
+
+
+@server.prompt(
+    name="structure_hint",
+    description="Research a song and write its pre-analysis structure hint.",
+)
+def structure_hint_prompt(song: str) -> str:
+    return build_brief(song.strip())
+
+
+@server.tool(name="write_structure_hint")
+def write_structure_hint(song: str, hint: dict[str, Any]) -> dict[str, Any]:
+    """Validate and store the song's pre-analysis structure hint (schema 1.0).
+
+    Writes only the song's own pre-analysis ``structure.json``, replacing any
+    earlier one. Refused - nothing written - naming the first bad field when
+    the payload breaks the schema, has no source, or carries any time field.
+    """
+    song_dir = _hint_song_dir(song)
+    try:
+        return write_hint(song_dir, song.strip(), hint)
+    except StructureHintError as exc:
         raise ToolError(str(exc)) from exc
 
 

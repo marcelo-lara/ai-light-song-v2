@@ -1,0 +1,201 @@
+{
+  "song_name": "Armin - Revolution",
+  "shadow_labels": [
+    {
+      "label": "intro",
+      "start_s": 0.0,
+      "end_s": 31.85,
+      "mean_share": 0.6322,
+      "published_overlap": 0.4634
+    },
+    {
+      "label": "inst",
+      "start_s": 15.82,
+      "end_s": 20.52,
+      "mean_share": 0.277,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "inst",
+      "start_s": 23.19,
+      "end_s": 25.6,
+      "mean_share": 0.2732,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "inst",
+      "start_s": 26.43,
+      "end_s": 33.55,
+      "mean_share": 0.2637,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "verse",
+      "start_s": 32.93,
+      "end_s": 40.0,
+      "mean_share": 0.2597,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "verse",
+      "start_s": 40.85,
+      "end_s": 45.26,
+      "mean_share": 0.2525,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "inst",
+      "start_s": 46.86,
+      "end_s": 81.29,
+      "mean_share": 0.2893,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "intro",
+      "start_s": 57.67,
+      "end_s": 82.02,
+      "mean_share": 0.3018,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "verse",
+      "start_s": 81.46,
+      "end_s": 97.2,
+      "mean_share": 0.3696,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "chorus",
+      "start_s": 95.46,
+      "end_s": 116.05,
+      "mean_share": 0.4523,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "verse",
+      "start_s": 98.14,
+      "end_s": 101.96,
+      "mean_share": 0.2507,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "inst",
+      "start_s": 110.79,
+      "end_s": 188.74,
+      "mean_share": 0.3004,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "chorus",
+      "start_s": 128.96,
+      "end_s": 135.84,
+      "mean_share": 0.2552,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "break",
+      "start_s": 144.31,
+      "end_s": 155.53,
+      "mean_share": 0.3226,
+      "published_overlap": 0.0
+    },
+    {
+      "label": "break",
+      "start_s": 155.57,
+      "end_s": 168.16,
+      "mean_share": 0.32,
+      "published_overlap": 0.0
+    }
+  ],
+  "section_entropy_parity_check": [
+    {
+      "section_id": "section-001",
+      "function": "Intro",
+      "start": 0.48,
+      "end": 15.24,
+      "shipped_function_confidence": 0.474817,
+      "recomputed_entropy_confidence": 0.581642
+    },
+    {
+      "section_id": "section-002",
+      "function": "Chorus",
+      "start": 15.24,
+      "end": 30.0,
+      "shipped_function_confidence": 0.474817,
+      "recomputed_entropy_confidence": 0.359925
+    },
+    {
+      "section_id": "section-003",
+      "function": "Chorus",
+      "start": 30.0,
+      "end": 44.78,
+      "shipped_function_confidence": 0.188917,
+      "recomputed_entropy_confidence": 0.188921
+    },
+    {
+      "section_id": "section-004",
+      "function": "Main",
+      "start": 44.78,
+      "end": 59.54,
+      "shipped_function_confidence": 0.19984,
+      "recomputed_entropy_confidence": 0.192623
+    },
+    {
+      "section_id": "section-005",
+      "function": "Main",
+      "start": 59.54,
+      "end": 81.7,
+      "shipped_function_confidence": 0.19984,
+      "recomputed_entropy_confidence": 0.204703
+    },
+    {
+      "section_id": "section-006",
+      "function": "Main",
+      "start": 81.7,
+      "end": 96.48,
+      "shipped_function_confidence": 0.196237,
+      "recomputed_entropy_confidence": 0.196192
+    },
+    {
+      "section_id": "section-007",
+      "function": "Main",
+      "start": 96.48,
+      "end": 111.24,
+      "shipped_function_confidence": 0.331091,
+      "recomputed_entropy_confidence": 0.331047
+    },
+    {
+      "section_id": "section-008",
+      "function": "Main",
+      "start": 111.24,
+      "end": 126.0,
+      "shipped_function_confidence": 0.141951,
+      "recomputed_entropy_confidence": 0.182805
+    },
+    {
+      "section_id": "section-009",
+      "function": "Main",
+      "start": 126.0,
+      "end": 155.54,
+      "shipped_function_confidence": 0.141951,
+      "recomputed_entropy_confidence": 0.144916
+    },
+    {
+      "section_id": "section-010",
+      "function": "Main",
+      "start": 155.54,
+      "end": 177.7,
+      "shipped_function_confidence": 0.141951,
+      "recomputed_entropy_confidence": 0.156789
+    },
+    {
+      "section_id": "section-011",
+      "function": "Main",
+      "start": 177.7,
+      "end": 192.48,
+      "shipped_function_confidence": 0.141951,
+      "recomputed_entropy_confidence": 0.07791
+    }
+  ],
+  "note": "function_confidence on sections.json is already this module's entropy measure, shipped in production (segmentation.py). Only shadow_labels is new \u2014 a candidate field, not yet published anywhere."
+}

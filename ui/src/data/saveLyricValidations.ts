@@ -1,4 +1,4 @@
-// Client for `PUT /api/lyric-validations/<song>` — mirrors saveBlockEnergy.ts,
+// Client for `PUT /api/lyric-validations/<song>` — mirrors saveHumanHints.ts,
 // with one deliberate divergence: this writer is **per-click**, not
 // explicit-Save (v3.4 item 5 / D5.1 / D6). Each ✔ toggle sends the FULL
 // `validated_ids` array and the dev-server handler replaces the file — a rapid

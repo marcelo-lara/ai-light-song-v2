@@ -4,19 +4,9 @@
     "song_name": "McpFull - Fixture",
     "bpm": 120.0,
     "duration": 24.0,
-    "key": "C major",
-    "genre": {
-      "genres": [
-        "house",
-        "dance"
-      ],
-      "confidence": 0.62
-    },
     "field_sources": {
       "bpm": "essentia",
-      "duration": "essentia",
-      "key": "harmonic",
-      "genre": "genre"
+      "duration": "essentia"
     }
   },
   "grid": {
@@ -46,16 +36,6 @@
         "function_status": "known",
         "same_label_as": null,
         "confidence": 0.55,
-        "energy": 3,
-        "energy_confidence": 0.62,
-        "tension": 2,
-        "tension_confidence": 0.44,
-        "rhythm": {
-          "drums": {
-            "subdivision": "quarter",
-            "confidence": 0.71
-          }
-        },
         "lead_in_bars": 0,
         "rest_count": 0,
         "call_count": 0,
@@ -70,23 +50,6 @@
         "function_status": "known",
         "same_label_as": null,
         "confidence": 0.65,
-        "energy": 4,
-        "energy_confidence": null,
-        "energy_source": "seed_unreviewed",
-        "rhythm": {
-          "vocals": {
-            "subdivision": "eighth",
-            "confidence": null,
-            "source": "seed_unreviewed"
-          }
-        },
-        "impact_alignment": {
-          "gesture_id": "gesture-001",
-          "impact_time": 13.5,
-          "offset_s": 5.5,
-          "offset_beats": 11.0,
-          "impact_position": null
-        },
         "lead_in_bars": -1,
         "rest_count": 0,
         "call_count": 1,
@@ -118,18 +81,10 @@
       "start": "allin1",
       "end": "allin1",
       "confidence": "allin1",
-      "key": "harmonic",
       "function": "allin1",
       "function_confidence": "allin1",
       "function_status": "allin1",
-      "same_label_as": "allin1",
-      "energy": "energy_level",
-      "energy_confidence": "energy_level",
-      "tension": "tension_shape",
-      "tension_confidence": "tension_shape",
-      "rhythm.drums": "rhythm_drum_ioi",
-      "rhythm.vocals": "rhythm_stem_autocorr",
-      "impact_alignment": "impact_alignment"
+      "same_label_as": "allin1"
     }
   },
   "gestures": {
@@ -161,12 +116,6 @@
       "gesture_id": "gestures",
       "section_id": "allin1"
     }
-  },
-  "review_warning": {
-    "text": "energy/tension/rhythm sourced `seed_unreviewed` are inferred, not yet reviewed by the operator; verify on the final show.",
-    "section_ids": [
-      "section-002"
-    ]
   },
   "arrangement": {
     "block_count": 3,

@@ -7,8 +7,7 @@
     "function_confidence": 0.9,
     "function_status": "known",
     "same_label_as": null,
-    "confidence": 0.9,
-    "key": "C# major"
+    "confidence": 0.9
   },
   {
     "section_id": "section-002",
@@ -18,8 +17,7 @@
     "function_confidence": 0.71,
     "function_status": "known",
     "same_label_as": null,
-    "confidence": 0.71,
-    "key": "C# major"
+    "confidence": 0.71
   },
   {
     "section_id": "section-003",
@@ -29,8 +27,7 @@
     "function_confidence": 0.8,
     "function_status": "known",
     "same_label_as": null,
-    "confidence": 0.8,
-    "key": "C# major"
+    "confidence": 0.8
   },
   {
     "section_id": "section-004",
@@ -40,7 +37,6 @@
     "function_confidence": 0.69,
     "function_status": "known",
     "same_label_as": null,
-    "confidence": 0.69,
-    "key": "C# major"
+    "confidence": 0.69
   }
 ]

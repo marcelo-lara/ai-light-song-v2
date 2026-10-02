@@ -29,7 +29,6 @@ def build_validation_report(
     beats_path = paths.artifact("essentia", "beats.json")
     drum_events_path = paths.artifact("symbolic_transcription", "drum_events.json")
     drum_midi_path = paths.artifact("symbolic_transcription", "omnizart", "drums.mid")
-    energy_path = paths.artifact("layer_c_energy.json")
     event_timeline_path = paths.timeline_output_path
     sections = read_json(sections_path)
     timing = read_json(beats_path)
@@ -92,7 +91,6 @@ def build_validation_report(
             "beats_file": str(beats_path),
             "drum_events_file": str(drum_events_path),
             "drum_midi_file": str(drum_midi_path),
-            "energy_layer_file": str(energy_path),
             "event_timeline_file": str(event_timeline_path),
             "sections_file": str(sections_path),
         },

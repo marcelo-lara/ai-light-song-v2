@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "experiment": "experiments/crash_check",
+    "engine": "regular-stream-period rejection (~1-2 beat spacing) + brilliance-band decay-shape gate over every omnizart `crash` event",
+    "params": {
+      "decay_max": 0.15,
+      "stream_tol_frac": 0.15,
+      "beat_length_s": 0.46
+    },
+    "generated_at": "2026-09-30T00:39:26.140383Z"
+  },
+  "crashes": [
+    {
+      "time": 129.575,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.3793
+    },
+    {
+      "time": 129.691,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.2465
+    },
+    {
+      "time": 131.541,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.2155
+    },
+    {
+      "time": 133.273,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.3651
+    },
+    {
+      "time": 133.391,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.1925
+    },
+    {
+      "time": 135.348,
+      "verdict": "reject",
+      "is_stream_continuation": false,
+      "decay_ratio": 0.2001
+    }
+  ]
+}

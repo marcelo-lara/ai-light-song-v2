@@ -63,6 +63,7 @@ CANONICAL_TERMS: tuple[str, ...] = (
     "Pre-Drop",
     "Drop",
     "Extended Drop",
+    "Drop Break",
     "Bridge",
     "Mid-Intro",
 )

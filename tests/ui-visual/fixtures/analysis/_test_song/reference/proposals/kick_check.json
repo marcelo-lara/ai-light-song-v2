@@ -1,0 +1,622 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/kick_check",
+    "engine": "per-hit spectral shape (sub/low body share, 1-6 kHz noise share) + percussive-attack gate (low-band onset strength vs song-relative baseline) over every omnizart `kick` event",
+    "params": {
+      "low_min": 0.75,
+      "noise_max": 0.1,
+      "attack_factor": 0.5
+    },
+    "generated_at": "2026-09-30T00:39:21.542916Z"
+  },
+  "kicks": [
+    {
+      "time": 0.409,
+      "verdict": "keep",
+      "low_share": 0.8617,
+      "noise_share": 0.0582
+    },
+    {
+      "time": 0.705,
+      "verdict": "keep",
+      "low_share": 0.9075,
+      "noise_share": 0.0559
+    },
+    {
+      "time": 0.855,
+      "verdict": "keep",
+      "low_share": 0.9605,
+      "noise_share": 0.0273
+    },
+    {
+      "time": 1.08,
+      "verdict": "keep",
+      "low_share": 0.9303,
+      "noise_share": 0.0519
+    },
+    {
+      "time": 1.23,
+      "verdict": "keep",
+      "low_share": 0.9295,
+      "noise_share": 0.0531
+    },
+    {
+      "time": 1.448,
+      "verdict": "reject",
+      "low_share": 0.6509,
+      "noise_share": 0.2689
+    },
+    {
+      "time": 1.593,
+      "verdict": "reject",
+      "low_share": 0.838,
+      "noise_share": 0.1324
+    },
+    {
+      "time": 1.736,
+      "verdict": "keep",
+      "low_share": 0.933,
+      "noise_share": 0.0546
+    },
+    {
+      "time": 2.173,
+      "verdict": "reject",
+      "low_share": 0.852,
+      "noise_share": 0.1057
+    },
+    {
+      "time": 2.318,
+      "verdict": "reject",
+      "low_share": 0.8125,
+      "noise_share": 0.1617
+    },
+    {
+      "time": 2.634,
+      "verdict": "reject",
+      "low_share": 0.7133,
+      "noise_share": 0.2558
+    },
+    {
+      "time": 3.345,
+      "verdict": "reject",
+      "low_share": 0.5853,
+      "noise_share": 0.3588
+    },
+    {
+      "time": 3.65,
+      "verdict": "reject",
+      "low_share": 0.0575,
+      "noise_share": 0.8631
+    },
+    {
+      "time": 4.47,
+      "verdict": "reject",
+      "low_share": 0.2809,
+      "noise_share": 0.5421
+    },
+    {
+      "time": 4.95,
+      "verdict": "reject",
+      "low_share": 0.1164,
+      "noise_share": 0.4488
+    },
+    {
+      "time": 6.145,
+      "verdict": "reject",
+      "low_share": 0.3524,
+      "noise_share": 0.149
+    },
+    {
+      "time": 6.459,
+      "verdict": "reject",
+      "low_share": 0.6,
+      "noise_share": 0.0839
+    },
+    {
+      "time": 7.441,
+      "verdict": "keep",
+      "low_share": 0.8634,
+      "noise_share": 0.0304
+    },
+    {
+      "time": 7.668,
+      "verdict": "keep",
+      "low_share": 0.9146,
+      "noise_share": 0.0583
+    },
+    {
+      "time": 7.82,
+      "verdict": "keep",
+      "low_share": 0.9236,
+      "noise_share": 0.0417
+    },
+    {
+      "time": 7.973,
+      "verdict": "keep",
+      "low_share": 0.9377,
+      "noise_share": 0.0423
+    },
+    {
+      "time": 8.105,
+      "verdict": "keep",
+      "low_share": 0.86,
+      "noise_share": 0.0778
+    },
+    {
+      "time": 8.216,
+      "verdict": "keep",
+      "low_share": 0.9527,
+      "noise_share": 0.0336
+    },
+    {
+      "time": 8.325,
+      "verdict": "keep",
+      "low_share": 0.9294,
+      "noise_share": 0.0529
+    },
+    {
+      "time": 8.545,
+      "verdict": "keep",
+      "low_share": 0.9431,
+      "noise_share": 0.0463
+    },
+    {
+      "time": 8.766,
+      "verdict": "keep",
+      "low_share": 0.9654,
+      "noise_share": 0.0214
+    },
+    {
+      "time": 8.93,
+      "verdict": "keep",
+      "low_share": 0.9556,
+      "noise_share": 0.0229
+    },
+    {
+      "time": 9.4,
+      "verdict": "keep",
+      "low_share": 0.9621,
+      "noise_share": 0.0266
+    },
+    {
+      "time": 9.83,
+      "verdict": "keep",
+      "low_share": 0.9173,
+      "noise_share": 0.0655
+    },
+    {
+      "time": 10.291,
+      "verdict": "reject",
+      "low_share": 0.5987,
+      "noise_share": 0.302
+    },
+    {
+      "time": 10.52,
+      "verdict": "reject",
+      "low_share": 0.14,
+      "noise_share": 0.5932
+    },
+    {
+      "time": 11.409,
+      "verdict": "reject",
+      "low_share": 0.0325,
+      "noise_share": 0.9269
+    },
+    {
+      "time": 11.641,
+      "verdict": "reject",
+      "low_share": 0.0628,
+      "noise_share": 0.9027
+    },
+    {
+      "time": 12.368,
+      "verdict": "reject",
+      "low_share": 0.0111,
+      "noise_share": 0.9533
+    },
+    {
+      "time": 12.589,
+      "verdict": "reject",
+      "low_share": 0.0624,
+      "noise_share": 0.8862
+    },
+    {
+      "time": 12.941,
+      "verdict": "reject",
+      "low_share": 0.0586,
+      "noise_share": 0.8748
+    },
+    {
+      "time": 13.168,
+      "verdict": "reject",
+      "low_share": 0.0685,
+      "noise_share": 0.864
+    },
+    {
+      "time": 14.182,
+      "verdict": "reject",
+      "low_share": 0.1547,
+      "noise_share": 0.7538
+    },
+    {
+      "time": 14.527,
+      "verdict": "reject",
+      "low_share": 0.2737,
+      "noise_share": 0.6527
+    },
+    {
+      "time": 14.82,
+      "verdict": "reject",
+      "low_share": 0.6733,
+      "noise_share": 0.0228
+    },
+    {
+      "time": 14.934,
+      "verdict": "keep",
+      "low_share": 0.9058,
+      "noise_share": 0.031
+    },
+    {
+      "time": 15.166,
+      "verdict": "keep",
+      "low_share": 0.9497,
+      "noise_share": 0.0269
+    },
+    {
+      "time": 15.28,
+      "verdict": "keep",
+      "low_share": 0.7607,
+      "noise_share": 0.0207
+    },
+    {
+      "time": 15.395,
+      "verdict": "keep",
+      "low_share": 0.9272,
+      "noise_share": 0.0495
+    },
+    {
+      "time": 16.209,
+      "verdict": "reject",
+      "low_share": 0.4371,
+      "noise_share": 0.007
+    },
+    {
+      "time": 16.67,
+      "verdict": "reject",
+      "low_share": 0.5267,
+      "noise_share": 0.0005
+    },
+    {
+      "time": 17.13,
+      "verdict": "reject",
+      "low_share": 0.2995,
+      "noise_share": 0.0013
+    },
+    {
+      "time": 17.6,
+      "verdict": "reject",
+      "low_share": 0.2049,
+      "noise_share": 0.0019
+    },
+    {
+      "time": 18.05,
+      "verdict": "reject",
+      "low_share": 0.1472,
+      "noise_share": 0.0003
+    },
+    {
+      "time": 18.745,
+      "verdict": "keep",
+      "low_share": 0.8336,
+      "noise_share": 0.0175
+    },
+    {
+      "time": 19.441,
+      "verdict": "reject",
+      "low_share": 0.1921,
+      "noise_share": 0.0001
+    },
+    {
+      "time": 19.9,
+      "verdict": "reject",
+      "low_share": 0.079,
+      "noise_share": 0.0001
+    },
+    {
+      "time": 21.291,
+      "verdict": "reject",
+      "low_share": 0.1059,
+      "noise_share": 0.0001
+    },
+    {
+      "time": 21.75,
+      "verdict": "reject",
+      "low_share": 0.2479,
+      "noise_share": 0.0003
+    },
+    {
+      "time": 22.039,
+      "verdict": "reject",
+      "low_share": 0.6468,
+      "noise_share": 0.1135
+    },
+    {
+      "time": 22.209,
+      "verdict": "keep",
+      "low_share": 0.8892,
+      "noise_share": 0.0428
+    },
+    {
+      "time": 22.434,
+      "verdict": "keep",
+      "low_share": 0.9383,
+      "noise_share": 0.0094
+    },
+    {
+      "time": 22.659,
+      "verdict": "keep",
+      "low_share": 0.8348,
+      "noise_share": 0.0391
+    },
+    {
+      "time": 22.895,
+      "verdict": "keep",
+      "low_share": 0.8668,
+      "noise_share": 0.0246
+    },
+    {
+      "time": 23.13,
+      "verdict": "keep",
+      "low_share": 0.8061,
+      "noise_share": 0.0509
+    },
+    {
+      "time": 23.359,
+      "verdict": "keep",
+      "low_share": 0.9191,
+      "noise_share": 0.0151
+    },
+    {
+      "time": 23.591,
+      "verdict": "reject",
+      "low_share": 0.767,
+      "noise_share": 0.109
+    },
+    {
+      "time": 24.28,
+      "verdict": "reject",
+      "low_share": 0.3407,
+      "noise_share": 0.0535
+    },
+    {
+      "time": 24.509,
+      "verdict": "reject",
+      "low_share": 0.1599,
+      "noise_share": 0.218
+    },
+    {
+      "time": 29.58,
+      "verdict": "keep",
+      "low_share": 0.9768,
+      "noise_share": 0.0008
+    },
+    {
+      "time": 30.05,
+      "verdict": "keep",
+      "low_share": 0.9903,
+      "noise_share": 0.0026
+    },
+    {
+      "time": 30.509,
+      "verdict": "keep",
+      "low_share": 0.9888,
+      "noise_share": 0.002
+    },
+    {
+      "time": 30.97,
+      "verdict": "keep",
+      "low_share": 0.9888,
+      "noise_share": 0.0014
+    },
+    {
+      "time": 31.43,
+      "verdict": "keep",
+      "low_share": 0.9876,
+      "noise_share": 0.0011
+    },
+    {
+      "time": 31.891,
+      "verdict": "keep",
+      "low_share": 0.9843,
+      "noise_share": 0.0021
+    },
+    {
+      "time": 32.35,
+      "verdict": "keep",
+      "low_share": 0.9819,
+      "noise_share": 0.0012
+    },
+    {
+      "time": 32.809,
+      "verdict": "keep",
+      "low_share": 0.9723,
+      "noise_share": 0.0024
+    },
+    {
+      "time": 33.28,
+      "verdict": "keep",
+      "low_share": 0.99,
+      "noise_share": 0.0011
+    },
+    {
+      "time": 33.741,
+      "verdict": "keep",
+      "low_share": 0.9908,
+      "noise_share": 0.0017
+    },
+    {
+      "time": 34.2,
+      "verdict": "keep",
+      "low_share": 0.9847,
+      "noise_share": 0.0013
+    },
+    {
+      "time": 34.659,
+      "verdict": "keep",
+      "low_share": 0.9827,
+      "noise_share": 0.0017
+    },
+    {
+      "time": 35.12,
+      "verdict": "keep",
+      "low_share": 0.9827,
+      "noise_share": 0.0012
+    },
+    {
+      "time": 35.58,
+      "verdict": "keep",
+      "low_share": 0.9771,
+      "noise_share": 0.0017
+    },
+    {
+      "time": 36.05,
+      "verdict": "keep",
+      "low_share": 0.9711,
+      "noise_share": 0.0047
+    },
+    {
+      "time": 36.741,
+      "verdict": "keep",
+      "low_share": 0.8175,
+      "noise_share": 0.0654
+    },
+    {
+      "time": 36.97,
+      "verdict": "keep",
+      "low_share": 0.9867,
+      "noise_share": 0.0013
+    },
+    {
+      "time": 37.43,
+      "verdict": "keep",
+      "low_share": 0.9708,
+      "noise_share": 0.013
+    },
+    {
+      "time": 37.891,
+      "verdict": "keep",
+      "low_share": 0.9827,
+      "noise_share": 0.0034
+    },
+    {
+      "time": 38.359,
+      "verdict": "keep",
+      "low_share": 0.9805,
+      "noise_share": 0.0111
+    },
+    {
+      "time": 38.82,
+      "verdict": "keep",
+      "low_share": 0.9912,
+      "noise_share": 0.0024
+    },
+    {
+      "time": 39.28,
+      "verdict": "keep",
+      "low_share": 0.9801,
+      "noise_share": 0.0089
+    },
+    {
+      "time": 39.741,
+      "verdict": "keep",
+      "low_share": 0.9887,
+      "noise_share": 0.0019
+    },
+    {
+      "time": 40.2,
+      "verdict": "keep",
+      "low_share": 0.9737,
+      "noise_share": 0.0117
+    },
+    {
+      "time": 40.659,
+      "verdict": "keep",
+      "low_share": 0.982,
+      "noise_share": 0.0018
+    },
+    {
+      "time": 41.12,
+      "verdict": "keep",
+      "low_share": 0.9622,
+      "noise_share": 0.014
+    },
+    {
+      "time": 41.58,
+      "verdict": "keep",
+      "low_share": 0.9759,
+      "noise_share": 0.0022
+    },
+    {
+      "time": 42.05,
+      "verdict": "keep",
+      "low_share": 0.9784,
+      "noise_share": 0.01
+    },
+    {
+      "time": 44.359,
+      "verdict": "keep",
+      "low_share": 0.9776,
+      "noise_share": 0.004
+    },
+    {
+      "time": 44.698,
+      "verdict": "keep",
+      "low_share": 0.9634,
+      "noise_share": 0.0124
+    },
+    {
+      "time": 44.809,
+      "verdict": "keep",
+      "low_share": 0.9877,
+      "noise_share": 0.0047
+    },
+    {
+      "time": 45.025,
+      "verdict": "keep",
+      "low_share": 0.9821,
+      "noise_share": 0.0071
+    },
+    {
+      "time": 45.634,
+      "verdict": "keep",
+      "low_share": 0.9301,
+      "noise_share": 0.0071
+    },
+    {
+      "time": 46.034,
+      "verdict": "keep",
+      "low_share": 0.9616,
+      "noise_share": 0.0262
+    },
+    {
+      "time": 47.091,
+      "verdict": "keep",
+      "low_share": 0.8909,
+      "noise_share": 0.0208
+    },
+    {
+      "time": 47.541,
+      "verdict": "reject",
+      "low_share": 0.6774,
+      "noise_share": 0.094
+    },
+    {
+      "time": 48.623,
+      "verdict": "reject",
+      "low_share": 0.1195,
+      "noise_share": 0.2733
+    }
+  ]
+}

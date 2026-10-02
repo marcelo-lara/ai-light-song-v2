@@ -14,8 +14,7 @@ stay small.
 v3.6 item 9 rebuilt every fixture to the item-8 top-level schema (see
 docs/reference/artifacts.md): `beats.json` drops `chord`; `sections.json` drops
 `label`/`description`/`chord_progression`; `hints.json` is a flat `hints[]`
-(no `sections[]` wrapper, every row human by construction); `genre.json` drops
-`top_predictions`/`guidance`; `drum_events.json` collapses per-event
+(no `sections[]` wrapper, every row human by construction); `drum_events.json` collapses per-event
 `confidence` to one file-level `confidence`/`confidence_reason` pair;
 `loudness.json` flattens `interval_ms`/`source_order` out of a `metadata`
 wrapper and drops `sources[]`; `song_event_timeline.json` drops
@@ -23,7 +22,11 @@ wrapper and drops `sources[]`; `song_event_timeline.json` drops
 `arrangement_state.json` is now a required top-level file (no more pre-v3.2
 degraded/absent path) — every fixture carries it. v3.9 item 3 adds
 `beats.json`'s file-level `off_grid_spans` (empty here — the fixture grid is
-perfectly constant-tempo by construction).
+perfectly constant-tempo by construction). Every fixture carries v3.9's `vocal_cadence.json`. v3.10 item 8 removed
+`genre.json` and the `key`/`energy`/`tension`/`rhythm`/`impact_alignment`
+section fields.
+The generator reproduces every committed file byte-for-byte —
+`tests/test_mcp_fixtures_generator.py` diffs it against the committed tree.
 
     McpFull - Fixture        fully populated baseline (the primary target)
     McpDegenerate - Fixture  honest-uncertainty path: function_status "unknown"
@@ -39,7 +42,8 @@ import json
 import math
 from pathlib import Path
 
-FIXTURE_ROOT = Path(__file__).resolve().parent / "analysis"
+COMMITTED_ROOT = Path(__file__).resolve().parent / "analysis"
+FIXTURE_ROOT = COMMITTED_ROOT  # `main(out_root)` rebinds this; tests write to a tmp dir
 
 DURATION_S = 24.0
 BPM = 120.0
@@ -47,10 +51,14 @@ BEAT_S = 60.0 / BPM  # 0.5 s
 BEATS_PER_BAR = 4
 
 
+def _dumps(payload: object) -> str:
+    return json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+
+
 def _write(song: str, filename: str, payload: object) -> None:
     song_dir = FIXTURE_ROOT / song
     song_dir.mkdir(parents=True, exist_ok=True)
-    text = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+    text = _dumps(payload)
     (song_dir / filename).write_text(text, encoding="utf-8")
 
 
@@ -72,13 +80,11 @@ SECTIONS_FIELD_SOURCES = {
     "start": "allin1",
     "end": "allin1",
     "confidence": "allin1",
-    "key": "harmonic",
     "function": "allin1",
     "function_confidence": "allin1",
     "function_status": "allin1",
     "same_label_as": "allin1",
 }
-
 
 def beats(*, all_confidence_null: bool) -> dict:
     rows: list[dict] = []
@@ -133,10 +139,9 @@ def sections(*, degenerate: bool) -> dict:
                 "function_status": function_status,
                 "same_label_as": same_label_as,
                 "confidence": confidence,
-                "key": "C major",
             }
         )
-    return {"field_sources": SECTIONS_FIELD_SOURCES, "sections": rows}
+    return {"field_sources": dict(SECTIONS_FIELD_SOURCES), "sections": rows}
 
 
 def _phase_event(gesture_id: str, phase: str, start: float, end: float,
@@ -234,11 +239,6 @@ def info(song_name: str) -> dict:
     }
 
 
-GENRE_FIELD_SOURCES = {
-    "genres": "genre",
-    "confidence": "genre",
-}
-
 DRUM_FIELD_SOURCES = {"time": "omnizart", "event_type": "omnizart"}
 
 LOUDNESS_FIELD_SOURCES = {
@@ -246,24 +246,6 @@ LOUDNESS_FIELD_SOURCES = {
     "values": "essentia",
     "normalized_values": "essentia",
 }
-
-
-def genre(song_name: str, *, degenerate: bool) -> dict:
-    if degenerate:
-        return {
-            "schema_version": "3.6",
-            "song_name": song_name,
-            "field_sources": GENRE_FIELD_SOURCES,
-            "genres": ["unknown"],
-            "confidence": 0.11,
-        }
-    return {
-        "schema_version": "3.6",
-        "song_name": song_name,
-        "field_sources": GENRE_FIELD_SOURCES,
-        "genres": ["house", "dance"],
-        "confidence": 0.62,
-    }
 
 
 ARRANGEMENT_STATE_FIELD_SOURCES = {
@@ -496,7 +478,6 @@ def _write_common(song: str, *, degenerate: bool) -> None:
     _write(song, "sections.json", sections(degenerate=degenerate))
     _write(song, "song_event_timeline.json", timeline(song, degenerate=degenerate))
     _write(song, "hints.json", hints(song, degenerate=degenerate))
-    _write(song, "genre.json", genre(song, degenerate=degenerate))
     _write(song, "loudness.json", loudness(song))
     _write(song, "drum_events.json", drum_events(song))
     _write(song, "arrangement_state.json", arrangement_state(song))
@@ -519,14 +500,15 @@ def build_partial() -> None:
     _write(song, "beats.json", beats(all_confidence_null=False))
     _write(song, "song_event_timeline.json", timeline(song, degenerate=False))
     _write(song, "hints.json", hints(song, degenerate=False))
-    _write(song, "genre.json", genre(song, degenerate=False))
     _write(song, "loudness.json", loudness(song))
     _write(song, "drum_events.json", drum_events(song))
     _write(song, "arrangement_state.json", arrangement_state(song))
     _write(song, "vocal_cadence.json", vocal_cadence(song, degenerate=True))
 
 
-def main() -> None:
+def main(out_root: Path | None = None) -> None:
+    global FIXTURE_ROOT
+    FIXTURE_ROOT = Path(out_root) if out_root is not None else COMMITTED_ROOT
     build_full()
     build_degenerate()
     build_partial()

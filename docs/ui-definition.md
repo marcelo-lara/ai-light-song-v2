@@ -73,32 +73,24 @@ docker compose build ui         # production image
 **The debugger is read-only against generated data.** No snapshots, no caches,
 no derived JSON, no overrides, no helper files into `data/analysis/`.
 
-The only six writable paths:
+The only five writable paths:
 
 - `data/analysis/{song}/reference/human/human_hints.json` — explicit `Save`
 - `data/analysis/{song}/reference/human/song_facts.json` — explicit `Save`
-- `data/analysis/{song}/reference/human/block_energy.json` — explicit `Save`.
-  The operator's 1–5 `energy` / `tension` rating per `human_hints.json` block,
-  joined by `hint_id`, edited in the Human Hints events panel (v3.4 item 4). Two
-  independent axes: a "close to silence" block is lowest-energy,
-  highest-tension. A block is unrated when it is absent from `ratings`; the
-  segmented selectors show an explicit no-segment-pressed state, never a
-  defaulted `1`. Written by `PUT /api/block-energy/<song>` (dev-server only,
-  like the hint editor — production Nginx has no handler). Nothing in `src/` or
-  `mcp/` reads it.
 - `data/analysis/{song}/reference/human/segments.json` — explicit `Save`. The
   operator's own hand-authored section segmentation, edited in the Human
   Sections panel below Human Hints. A bare array of `{start, end, label?,
-  description?, energy?, tension?}`: `label`, when set, is a fixed value from
+  description?}`: `label`, when set, is a fixed value from
   `docs/segments-vocabulary.md` (mirrored in `ui/src/data/segmentFunctions.ts`
   and, for server-side validation, `ui/server/humanSections.ts`'s
   `SEGMENT_FUNCTION_NAMES`) — free text is rejected and unset is
-  honest-unknown, never defaulted; `description` is unconstrained free text;
-  `energy`/`tension` follow the same 1–5, unrated-is-absent convention as
-  `block_energy.json`, edited with the same segmented rating buttons in both
-  the segment editor and the lane's events panel. Written by `PUT
-  /api/human-sections/<song>` (dev-server only). Nothing in `src/` or `mcp/`
-  reads it.
+  honest-unknown, never defaulted; `description` is unconstrained free text.
+  The editor has exactly four controls: Start, End, Label, Description. A row
+  read from disk may carry other keys (older files hold `energy`, `tension`,
+  `rhythm`, which the analyzer ignores since v3.10): they are not shown, and a
+  Save writes them back exactly as read, never adds, edits or removes them.
+  Written by `PUT /api/human-sections/<song>` (dev-server only). Nothing in
+  `src/` or `mcp/` reads it for those keys.
 - `data/analysis/{song}/reference/human/lyric_validations.json` — **per-click**,
   not `Save` (v3.4 item 5 / D6). `{ schema_version, song_name, validated_ids:
   [int] }`: the ids of the Moises word tokens whose timing the operator has
@@ -109,7 +101,7 @@ The only six writable paths:
   `PUT /api/lyric-validations/<song>` (dev-server only), which sends the full
   `validated_ids` array on each toggle and replaces the file. The per-click
   cadence is a deliberate divergence from the explicit-`Save` pattern the other
-  three writers use — a rapid token-by-token pass should not need a Save button.
+  writers use — a rapid token-by-token pass should not need a Save button.
   Nothing in `src/` or `mcp/` reads it.
 - `data/analysis/{song}/artifacts/_run_request.json` — v3.8 item 2. The only
   writable path outside `reference/human/`: `{song, requested_at}`, written by
@@ -124,7 +116,7 @@ The only six writable paths:
   writes over stdio — one mechanism, two callers. Neither `_run_*` file is
   `reference/human/` material or a delivery artifact.
 
-`Cancel` / closing a panel must never update the four explicit-`Save` files.
+`Cancel` / closing a panel must never update the three explicit-`Save` files.
 The dev-server
 API enforces this at the mount level. A future workflow needing persisted
 review data must be documented as a new contract, not added implicitly.
@@ -154,8 +146,7 @@ reading that way, whichever of the three routes produced an entry.
 stops at these files.** That convention exists so a *fused, machine-written*
 value can say which producer won. `reference/human/` has exactly one producer —
 the operator — and adding provenance machinery to it (to `human_hints.json`,
-`song_facts.json`, `block_energy.json`, `segments.json` or
-`lyric_validations.json`) would answer
+`song_facts.json`, `segments.json` or `lyric_validations.json`) would answer
 a question nobody is asking while making the file harder to read by hand.
 
 ### A hint's id is a stable identifier, not a display position
@@ -183,14 +174,13 @@ unrestricted" above.
 
 | Lane | Reads | Notes |
 | --- | --- | --- |
-| Sections | `sections.json` + `artifacts/section_segmentation/sections.json` | a `function_status: "contested"` section (v3.4 phase-3 energy contest) gets a distinct orange per-block tint (`sectionsContested`); its inspector card prints `function_status: contested` + `contested_by: energy` |
+| Sections | `sections.json` + `artifacts/section_segmentation/sections.json` | `function_status` is `known` or `unknown` only; the inspector card prints `function`, `function_confidence`, `function_status` and `same_label_as` |
 | Gestures | `song_event_timeline.json` | |
 | Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |
 | Vocal Cadence | `vocal_cadence.json` | top-level published (v3.9 item 1, promoted from `experiments/vocal_cadence`); per-line bar-relative timing + separate call events from the operator's lyric alignment (`lyrics.json`) + `beats.json`; timing only, no lyric text. Lines render as blocks, calls as zero-length point markers. `source: null` + a `reason` (D1.1) when the song has no lyrics tier |
-| Human Hints | `reference/human/human_hints.json` (+ `reference/human/block_energy.json` for the per-block `energy`/`tension` rating controls in its events panel) | writable |
-| LLM Pending Proposals | `reference/proposals/pending.json` (the `propose_hint` queue, `docs/mcp-definition.md`) | read-only here, no experiment badge, directly below Human Hints, indigo tint (hue 245). One block per entry with `type: "hint"` **and** `status: "pending"`, sorted by `hint.start`; `section_field` entries and approved/rejected ones get no block. Block label = `hint.title`, detail = `evidence`, summary = `hint.summary`, reference = the proposal `id`. Hover (this lane only) sets a native tooltip: `<range> · <title>` / `<summary>` / `evidence: <evidence>`. Clicking a block (on the lane or in its events panel) seeks to `hint.start` and opens the **Pending proposals** drawer view (`PendingProposalsPanel.tsx`) scrolled to that proposal's card, highlighted (`review-queue__q--focused`). On each pending **hint** card the heading is `hint.title` (`(untitled)` when empty; `section_field` cards keep "Section field"), then the `title · start–end` line, then `hint.summary`, then `evidence: …`. Clicking the card body seeks to `hint.start`, except clicks inside `.hint-editor__actions`, the reject-confirm row, or any button/input/textarea. The reject reason is a 2-row `<textarea class="input">`. Every approve/reject reloads the queue and hands it back to `App` (`onQueueChange`), so the lane drops the decided block without a song reload |
-| Human Sections | `reference/human/segments.json` | writable. The operator's own hand-authored section segmentation, below Human Hints; `label` (fixed vocabulary or unset), `description` (free text), `energy`/`tension` (1-5, same rating buttons as Human Hints). The segment editor and this lane read `segments.json` only. Inspecting a block on allin1 Segmentation, Segment Seeds or Moises Sections offers "Create human section", which seeds an unsaved editor draft from the block (see `docs/reference/ui-regression.md`, `inspector-promote`) |
-| Segment Seeds | `reference/human/segments.seed.json` | read-only, experiment badge. `experiments/segment_seeds`' unreviewed rule-based `energy`/`tension`/`rhythm` draft over the operator's segment spans; one block per row, caption carries `E`/`T` tags, detail lists per-field values (`not seeded` when null) |
+| Human Hints | `reference/human/human_hints.json` | writable |
+| LLM Pending Proposals | `reference/proposals/pending.json` (the `propose_hint` queue, `docs/mcp-definition.md`) | read-only here, no experiment badge, directly below Human Hints, indigo tint (hue 245). One block per entry with `type: "hint"` **and** `status: "pending"`, sorted by `hint.start`; approved/rejected ones get no block. Block label = `hint.title`, detail = `evidence`, summary = `hint.summary`, reference = the proposal `id`. Hover (this lane only) sets a native tooltip: `<range> · <title>` / `<summary>` / `evidence: <evidence>`. Clicking a block (on the lane or in its events panel) seeks to `hint.start` and opens the **Pending proposals** drawer view (`PendingProposalsPanel.tsx`) scrolled to that proposal's card, highlighted (`review-queue__q--focused`). On each pending card the heading is `hint.title` (`(untitled)` when empty), then the `title · start–end` line, then `hint.summary`, then `evidence: …`. Clicking the card body seeks to `hint.start`, except clicks inside `.hint-editor__actions`, the reject-confirm row, or any button/input/textarea. The reject reason is a 2-row `<textarea class="input">`. Every approve/reject reloads the queue and hands it back to `App` (`onQueueChange`), so the lane drops the decided block without a song reload |
+| Human Sections | `reference/human/segments.json` | writable. The operator's own hand-authored section segmentation, below Human Hints; `label` (fixed vocabulary or unset), `description` (free text). The segment editor and this lane read `segments.json` only. Inspecting a block on allin1 Segmentation or Moises Sections offers "Create human section", which seeds an unsaved editor draft from the block (see `docs/reference/ui-regression.md`, `inspector-promote`) |
 | Moises Sections | `reference/moises/segments.json` | read-only. Moises.ai's reference segmentation — same bare `{start, end, label}` shape as Human Sections but never edited; one fusion tier below it in `sections.json` (`docs/reference/analysis.segments.md`) |
 | allin1 Segmentation | `artifacts/section_segmentation/sections.json` | read-only. The raw, pre-fusion analyzer output — lets the operator see what our own segmentation produced even on a song where the fused Sections lane shows a human or Moises override instead |
 | Moises Lyrics | `reference/moises/lyrics.json` (+ `reference/human/lyric_validations.json` overlay) | read-only ground truth; blocks tinted by per-word confidence. Each word-token card in its events panel has a ✔ button (v3.4 item 5); a validated token shows at confidence `1` with the distinct `moisesLyricsValidated` tint in both the panel and the lane. `lyric_validations.json` is writable (per-click); `reference/moises/lyrics.json` is never edited |
@@ -199,18 +189,16 @@ unrestricted" above.
 | 2. Texture Novelty | `reference/proposals/texture_novelty.json` | experiment (v3.4 item 6 — failed its kill condition, kept for one review pass) |
 | 3. Phrase Periodicity | `reference/proposals/phrase_periodicity.json` | experiment (v3.4 item 7 — passed its kill condition) |
 | 4. Structural vs Micro | `reference/proposals/structural_vs_micro.json` | experiment (v3.4 item 8 — failed its kill condition, kept for one review pass) |
-| Rhythm Drum IOI | `reference/proposals/rhythm_drum_ioi.json` | experiment (v3.6 item 5/6a — candidate `rhythm.drums` producer, not yet scored) |
-| Rhythm Stem Autocorr | `reference/proposals/rhythm_stem_autocorr.json` | experiment (v3.6 item 5/6b — candidate `rhythm.{drums,bass,harmonic,vocals}` producer, not yet scored) |
-| Rhythm Vocal Onsets | `reference/proposals/rhythm_vocal_onsets.json` | experiment (v3.6 item 5/6c — candidate `rhythm.vocals` producer, `compute` runs only in the ACE-Step sandbox, not yet scored) |
-| Energy Level | `reference/proposals/energy_level.json` | experiment (v3.6 item 5/6 — candidate `energy` producer, not yet scored) |
-| Tension Shape | `reference/proposals/tension_shape.json` | experiment (v3.6 item 5/6 — candidate `tension` producer, not yet scored) |
 | Vocal Phrases, Vocal Transcription | `reference/proposals/vocal_*.json` | experiment |
 | allin1 Posterior | `reference/proposals/allin1_posterior.json` | experiment — shadow-label spans the published 8-bar argmax discards; the entropy-confidence half of this entry shipped independently as `sections.json`'s `function_confidence`, so only shadow labels ride this lane. Loses to an even-grid baseline on boundary recall on 3/4 gold songs (`docs/experiments.md`) — not a promotion candidate as scoped |
 | Stem Presence Sections | `reference/proposals/stem_presence_sections.json` | experiment — bass on/off + drums full/sparse/off state machine, hysteresis-merged, boundaries moved to the nearest physical stem onset; vocals annotate but never cut a boundary. Not yet scored corpus-wide (`docs/experiments.md`) |
 | Clap Events | `reference/proposals/clap_events.json` | experiment (v3.9 item 2) — claps detected from the drums stem by per-hit spectral shape, never omnizart's label. Point events |
 | Kick Check | `reference/proposals/kick_check.json` | experiment (v3.9 item 2, kick-check sibling) — every omnizart `kick` kept/rejected by spectral shape + a percussive-attack gate; keep/reject tinted distinctly |
 | Crash Check | `reference/proposals/crash_check.json` | experiment (the "`crash` over-fires on bright hats/rides" bug) — every omnizart `crash` kept/rejected by regular-stream-period rejection + a brilliance-band decay-shape gate; keep/reject tinted distinctly |
-| Dense lanes | `essentia/fft_bands.json`, `essentia/fft_bands.bass.json`, `essentia/fft_bands.drums.json`, `essentia/fft_bands.harmonic.json`, `essentia/fft_bands.vocals.json`, `essentia/rms_loudness.json`, `essentia/loudness_envelope.json`, `symbolic_transcription/drum_events.json`, `artifacts/layer_c_energy.json` | four per-stem FFT lanes beside the mix lane; each fails loudly on a missing artifact |
+| Filter Sweeps | `reference/proposals/filter_sweep.json` | experiment (v3.10 item 14) — a harmonic or bass stem opening (brighter) or closing (darker) over 2–16 bars while its loudness stays level; spectral centroid from the published per-stem FFT bands; opening/closing tinted distinctly. Spans |
+| Phrases | `reference/proposals/phrases.json` | experiment (v3.10 item 15) — the song cut where stems enter/leave, impacts, pre-drop gaps and riser/snare-roll ends land, each edge at the nearest trusted beat (never bar-counted); per-phrase kick/bass/vocal presence, riser and snare-roll density, filter sweeps, noise sweep, kick drop-out, ends-on-gap, repeat-of, confidence. `resolved: false` blocks (edge evidence disagrees) tinted grey. Spans tiling the song |
+| Section Names | `reference/proposals/section_names.json` | experiment (v3.10 item 17) — every phrase named in the typical EDM sequence of `segments-vocabulary.md` (Intro, Pre-Build, Build-Up, Fill, Pre-Drop, Drop, Drop Break, Breakdown, Outro ...) from kick/bass entries and hits; boundaries on the Phrases edges (a Fill / Pre-Drop / Build-Up start may sit on its own evidence time); a heuristic confidence on every row. A song with no build→drop unit shows its current `sections.json` labels, tinted grey and attributed. Spans tiling the song |
+| Dense lanes | `essentia/fft_bands.json`, `essentia/fft_bands.bass.json`, `essentia/fft_bands.drums.json`, `essentia/fft_bands.harmonic.json`, `essentia/fft_bands.vocals.json`, `essentia/rms_loudness.json`, `essentia/loudness_envelope.json`, `symbolic_transcription/drum_events.json` | four per-stem FFT lanes beside the mix lane; each fails loudly on a missing artifact |
 
 **Badging rule.** A lane fed from `reference/proposals/` is unpromoted
 experiment output and carries a `ph-flask` badge in its lane head and its
@@ -233,7 +221,6 @@ Fixed top bar, three groups, left to right:
 | Center | `app-header__barbeat` | current `bar.beat` (e.g. `12.3`), from `coords.timeToBarBeat(transport.currentTime)` against the beat grid |
 | Right | song title + subtitle | song name, or "No song selected" / "Select a song from the drawer" when none is loaded |
 | Right | BPM tag | `info.bpm` rounded, or `— BPM` when absent |
-| Right | key tag | the resolved key label |
 
 All three time/bar-beat readouts track `transport.currentTime` live during
 playback and seeking; none of them show song duration.

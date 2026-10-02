@@ -1,0 +1,16 @@
+# systemd user unit for ./analysis-watcher (v3.10 item 11).
+# Install: see docs/reference/docker.md "Always-on analysis watcher".
+# %h is the home directory; edit WorkingDirectory/ExecStart if the repo
+# lives elsewhere.
+[Unit]
+Description=ai-light-song-v2 analysis watcher
+
+[Service]
+Type=simple
+WorkingDirectory=%h/ai-light-song-v2
+ExecStart=%h/ai-light-song-v2/analysis-watcher --foreground
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

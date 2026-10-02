@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/stem_presence_sections",
+    "engine": "per-bar bass on/off + drums full/sparse/off state machine, hysteresis-merged, boundaries moved to the nearest 20 ms loudness-frame stem onset",
+    "bar_grid": "beats.json downbeats",
+    "params": {
+      "min_section_bars": 4,
+      "bass_on_frac_of_p95": 0.35,
+      "drums_full_frac_of_p95": 0.5,
+      "drums_sparse_frac_of_p95": 0.15,
+      "vocals_on_frac_of_p95": 0.4
+    },
+    "generated_at": "2026-09-27T06:23:08.588292Z"
+  },
+  "blocks": [
+    {
+      "start_s": 0.0,
+      "end_s": 14.813,
+      "bar_start": 1,
+      "bar_end": 6,
+      "state": "bass_only",
+      "drums_detail": "off",
+      "vocals_present_fraction": 0.0,
+      "confidence": 0.153,
+      "boundary_resolved": null
+    },
+    {
+      "start_s": 14.813,
+      "end_s": 22.193,
+      "bar_start": 7,
+      "bar_end": 10,
+      "state": "stripped",
+      "drums_detail": "off",
+      "vocals_present_fraction": 0.75,
+      "confidence": 0.1589,
+      "boundary_resolved": true
+    },
+    {
+      "start_s": 22.193,
+      "end_s": 29.75,
+      "bar_start": 11,
+      "bar_end": 14,
+      "state": "drums_only",
+      "drums_detail": "sparse",
+      "vocals_present_fraction": 0.75,
+      "confidence": 0.2112,
+      "boundary_resolved": true
+    },
+    {
+      "start_s": 29.75,
+      "end_s": 46.385,
+      "bar_start": 15,
+      "bar_end": 23,
+      "state": "full",
+      "drums_detail": "full",
+      "vocals_present_fraction": 0.1111,
+      "confidence": 0.4489,
+      "boundary_resolved": true
+    },
+    {
+      "start_s": 46.385,
+      "end_s": 58.12,
+      "bar_start": 24,
+      "bar_end": 29,
+      "state": "bass_only",
+      "drums_detail": "off",
+      "vocals_present_fraction": 0.6667,
+      "confidence": 0.1867,
+      "boundary_resolved": true
+    }
+  ]
+}

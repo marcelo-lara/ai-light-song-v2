@@ -13,10 +13,10 @@ This module replaces that modulo with a phase derived from allin1's own
 `downbeat` frame activation (100 Hz posterior of "is this frame a downbeat").
 Measured on the same 385-downbeat benchmark, scoring only confidence-bearing
 downbeats as predictions (`validate_beats` excludes `confidence: null`
-abstentions — see that module), this implementation reaches **0.226 combined
-F1** (vs the shipped 0.16), with 2 of 4 songs — `_test_song` (0.604) and
-`Armin - Revolution` (0.593) — individually clearing 0.50. `Titanium` (F1 0,
-0 true positives) and `Hideaway` (0.050) are capped by pre-existing,
+abstentions — see that module), this implementation reaches **0.234 combined
+F1** (vs the shipped 0.16), with 2 of 4 songs — `_test_song` (0.618) and
+`Armin - Revolution` (0.606) — individually clearing 0.50. `Titanium` (F1 0,
+0 true positives) and `Hideaway` (0.060) are capped by pre-existing,
 independently-verified problems this item does not touch, not by a bug in the
 phase-picking algorithm here — confirmed by direct inspection, not assumed:
 

@@ -15,7 +15,7 @@ export function songFactsFilePath(song: unknown): string {
 }
 
 // Whole-song review-queue fields that disposition into song_facts.json.
-const SONG_FACT_KEYS = new Set(["form_family", "form_family_vs_genre"]);
+const SONG_FACT_KEYS = new Set(["form_family"]);
 
 export async function normalizeSongFactsPayload(
   payload: unknown,

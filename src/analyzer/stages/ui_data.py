@@ -10,15 +10,6 @@ from analyzer.models import SCHEMA_VERSION, round_schema_float, validate_field_s
 from analyzer.paths import SongPaths
 from analyzer.section_vocabulary import normalize_human_label
 
-# KEY_CONFIDENCE_THRESHOLD gates the section-level `key` string against
-# essentia's whole-track HPCP key estimate (`global_key.confidence`). It
-# clusters 0.75-0.85 across the four gold songs — a single, robust estimate
-# aggregated over the entire track, not a per-beat label. 0.70 is a real floor —
-# low enough that all four gold songs pass it (0.749-0.851), but not zero, so
-# a genuinely weak key estimate on a future song is still honestly `null`
-# rather than a silent default.
-KEY_CONFIDENCE_THRESHOLD = 0.70
-
 # v3.9 item 3 — beat-grid honesty (D3.1: beat times are flagged, never
 # rewritten). A beat more than this far (ms) from the fitted constant-tempo
 # grid, in a run of >= 2 consecutive such beats, falls inside an
@@ -247,27 +238,8 @@ def _section_description(section: dict, occurrence: int) -> str:
     return f"The {ordinal} {label_text}, {duration_text} long, same label as the first {label_text}."
 
 
-def _song_key(global_key: dict | None) -> str | None:
-    """The whole-song key label (e.g. `"C# major"`), or `None` when
-    essentia's HPCP key confidence is too low to state one. `global_key` is a
-    single value for the whole song (not per-section), so every section
-    either carries this same string or `None`."""
-    if not global_key:
-        return None
-    label = global_key.get("label")
-    confidence = global_key.get("confidence")
-    if not label or confidence is None:
-        return None
-    try:
-        if float(confidence) < KEY_CONFIDENCE_THRESHOLD:
-            return None
-    except (TypeError, ValueError):
-        return None
-    return str(label)
-
-
-# v3.1 items 5-7 — publish top-level views of three signals that live only under
-# artifacts/ today (genre, drum events, loudness). These are FUSED VIEWS, not
+# v3.1 items 5-7 — publish top-level views of signals that live only under
+# artifacts/ today (drum events, loudness). These are FUSED VIEWS, not
 # moves: the artifact stays put for the analyzer and the debugger, and the
 # top-level file is rebuilt from it each run with a `field_sources` header and no
 # host paths. The selection goes through `_fuse` — "which producer wins this
@@ -287,36 +259,6 @@ def _fuse(field_candidates: dict[str, list[tuple[str, bool]]]) -> dict[str, str]
         field: next((producer for producer, available in candidates if available), "unknown")
         for field, candidates in field_candidates.items()
     }
-
-
-def _publish_genre(paths: SongPaths) -> str:
-    artifact = read_json(paths.artifact("genre.json"))
-
-    def _present(key: str) -> bool:
-        return artifact.get(key) is not None
-
-    # v3.6 item 8 — `top_predictions` (unread) and `guidance` (one identical
-    # text across all 23 songs; moves into mcp/'s tool description, item 9)
-    # are dropped from the top-level view. Both stay in the artifact.
-    field_sources = validate_field_sources(
-        _fuse(
-            {
-                "genres": [("genre", _present("genres"))],
-                "confidence": [("genre", _present("confidence"))],
-            }
-        ),
-        ("genres", "confidence"),
-        file="genre.json",
-    )
-    payload = {
-        "schema_version": SCHEMA_VERSION,
-        "song_name": paths.song_name,
-        "field_sources": field_sources,
-        "genres": artifact.get("genres"),
-        "confidence": artifact.get("confidence"),
-    }
-    write_json(paths.genre_output_path, payload)
-    return str(paths.genre_output_path)
 
 
 # v3.6 item 8 — every one of the 32,213 corpus drum events carries `null`
@@ -664,76 +606,9 @@ def publish_arrangement_state(paths: SongPaths) -> str:
     return str(paths.arrangement_state_output_path)
 
 
-def _load_section_contest(paths: SongPaths) -> dict[str, dict]:
-    """`{section_id: contest_row}` for the rows the phase-3 contest flagged, or
-    `{}` when `artifacts/section_function_contest.json` has not been written yet
-    (a fresh run publishes `sections.json` first, then the contest stage
-    re-fuses it — see `apply_section_function_contest`)."""
-    artifact_path = paths.artifact("section_function_contest.json")
-    if not artifact_path.exists():
-        return {}
-    doc = read_json(artifact_path)
-    return {
-        row["section_id"]: row
-        for row in doc.get("sections", [])
-        if row.get("contested")
-    }
-
-
-def apply_section_function_contest(paths: SongPaths) -> str:
-    """v3.4 item 3 — re-fuse the published `sections.json` after the phase-3
-    `contest-section-function` stage has written
-    `artifacts/section_function_contest.json`.
-
-    A flagged row gains two fields: `function_status: "contested"` (a NEW third
-    enum value beside `known` / `unknown`) and `contested_by: "energy"`.
-    `function` and `function_confidence` are untouched — the label is kept, only
-    flagged (refinement D5; the phase-3 stage never mutates `sections.json`, the
-    publisher fuses). A row the contest does not flag is byte-identical to
-    `build_ui_data`'s output. The `function_status` producer goes through
-    `_fuse`: `allin1`'s where the row is `known` / `unknown`,
-    `section_function`'s where it is `contested`, so the header records which
-    producer had the final say.
-    """
-    contested = _load_section_contest(paths)
-    payload = read_json(paths.sections_output_path)
-    rows = payload["sections"]
-    any_contested = False
-    for row in rows:
-        if row["section_id"] in contested:
-            row["function_status"] = "contested"
-            row["contested_by"] = "energy"
-            any_contested = True
-        else:
-            row.pop("contested_by", None)
-
-    header = dict(payload.get("field_sources", {}))
-    if any_contested:
-        header.update(
-            _fuse(
-                {
-                    "function_status": [("section_function", True), ("allin1", True)],
-                    "contested_by": [("section_function", True)],
-                }
-            )
-        )
-    else:
-        header.pop("contested_by", None)
-
-    emitted_keys: set[str] = set()
-    for row in rows:
-        emitted_keys.update(row.keys())
-    payload["field_sources"] = validate_field_sources(
-        header, emitted_keys, file="sections.json"
-    )
-    write_json(paths.sections_output_path, payload)
-    return str(paths.sections_output_path)
-
-
 def _build_reference_override_rows(
     reference_rows: list[dict],
     raw_sections: list[dict],
-    song_key: str | None,
     occurrence_counts: dict[str, int],
     confidence: float,
 ) -> tuple[list[dict], list[dict]]:
@@ -804,7 +679,6 @@ def _build_reference_override_rows(
                 "function_status": function_status,
                 "same_label_as": same_label_as,
                 "confidence": confidence,
-                "key": song_key,
             }
         )
         display_rows.append(
@@ -819,7 +693,6 @@ def _build_reference_override_rows(
 
 def build_ui_data(paths: SongPaths) -> dict[str, str]:
     beats_payload = read_json(paths.artifact("essentia", "beats.json"))
-    harmonic_payload = read_json(paths.artifact("layer_a_harmonic.json"))
     sections_payload = read_json(paths.artifact("section_segmentation", "sections.json"))
 
     # v1.1 item 3.2 (B5) — validate the join key up front. The top-level section
@@ -855,8 +728,6 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         [float(beat["time"]) for beat in beat_points], beats_payload.get("bpm")
     )
 
-    song_key = _song_key(harmonic_payload.get("global_key"))
-
     # reference/human/segments.json and reference/moises/segments.json are
     # OPTIONAL, per-song reference overrides (same tier as human_hints.json):
     # each a flat [{start, end, label}] list. Precedence — documented in
@@ -864,10 +735,23 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     # human wins outright if present, else moises if present, else our own
     # segmentation. See section_vocabulary.py for the label-vocabulary
     # normalization this also applies.
+    # v3.10 item 1 (D1.1) — a reference file counts as a review only when it
+    # holds >= 1 row. An empty list is not a review: the tier is skipped, the
+    # next tier publishes, and the skip is published as `sections_tier_note`.
     human_segments_path = paths.reference("human", "segments.json")
-    has_human_segments = human_segments_path.exists()
+    human_segments_rows = read_json(human_segments_path) if human_segments_path.exists() else None
+    has_human_segments = bool(human_segments_rows)
     moises_segments_path = paths.reference("moises", "segments.json")
-    has_moises_segments = moises_segments_path.exists()
+    moises_segments_rows = read_json(moises_segments_path) if moises_segments_path.exists() else None
+    has_moises_segments = bool(moises_segments_rows)
+    skipped_empty = [
+        f"reference/{tier}/segments.json"
+        for tier, rows in (("human", human_segments_rows), ("moises", moises_segments_rows))
+        if rows is not None and not rows
+    ]
+    sections_tier_note = (
+        "; ".join(f"{name} is empty \u2014 not a review" for name in skipped_empty) if skipped_empty else None
+    )
 
     occurrence_counts: dict[str, int] = {}
     section_rows = []
@@ -877,7 +761,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         # below only for the function_* fields) — human mistakes are
         # plausible, but human is still the best available truth.
         section_rows, display_rows = _build_reference_override_rows(
-            read_json(human_segments_path), raw_sections, song_key, occurrence_counts, confidence=0.8
+            human_segments_rows, raw_sections, occurrence_counts, confidence=0.8
         )
     elif has_moises_segments:
         # Fixed at 0.6 — moises/segments.json carries no confidence field of
@@ -885,7 +769,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         # its word-level lyrics/chords) — moises is also an inferred
         # discriminator, one tier below a human.
         section_rows, display_rows = _build_reference_override_rows(
-            read_json(moises_segments_path), raw_sections, song_key, occurrence_counts, confidence=0.6
+            moises_segments_rows, raw_sections, occurrence_counts, confidence=0.6
         )
     else:
         for section in raw_sections:
@@ -910,8 +794,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
                     "function_status": section.get("function_status", "unknown"),
                     "same_label_as": section.get("same_label_as"),
                     "confidence": section.get("confidence"),
-                    "key": song_key,
-                }
+                    }
             )
             # v3.6 item 8 — `label` / `description`
             # dropped from the top-level row (display string with confidence
@@ -933,7 +816,7 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     # token cost against the budget the mcp/ server exists to protect).
     #
     # `downbeat_confidence` (renamed from the ambiguous `confidence`) measures
-    # allin1's downbeat-phase strength (0.226 F1), not essentia's trusted beat
+    # allin1's downbeat-phase strength (0.234 F1), not essentia's trusted beat
     # time — the name now says which producer's number it is.
     beats_field_sources = validate_field_sources(
         {
@@ -955,9 +838,8 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
     # from it, so the file-level default itself moves to that producer for
     # this song. function's own value is also that producer's then
     # (normalize_human_label of its label text — shared by human and moises);
-    # only function_confidence / function_status / same_label_as stay
-    # allin1's regardless (inherited by overlap, never invented); key stays
-    # the harmonic stage's either way. `same_label_as` (v3.9 item 2) now
+    # only function_confidence / function_status stay
+    # allin1's regardless (inherited by overlap, never invented). `same_label_as` (v3.9 item 2) now
     # follows the SAME tier as `function` — when a reference tier wins, the
     # boundaries/labels are wholly that tier's, so label repetition must be
     # computed from them, not from allin1's now-unrelated section list.
@@ -972,7 +854,6 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
                 "function_status": [("allin1", True)],
                 "same_label_as": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
                 "confidence": [("human", has_human_segments), ("moises", has_moises_segments), ("allin1", True)],
-                "key": [("harmonic", True)],
             }
         ),
         section_rows[0].keys() if section_rows else (),
@@ -984,6 +865,8 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
         "off_grid_spans": off_grid_spans,
     }
     sections_output = {"field_sources": sections_field_sources, "sections": section_rows}
+    if sections_tier_note:
+        sections_output["sections_tier_note"] = sections_tier_note
 
     beats_output_path = paths.beats_output_path
     sections_output_path = paths.sections_output_path
@@ -1007,23 +890,20 @@ def build_ui_data(paths: SongPaths) -> dict[str, str]:
                 "engine": "ui_data.build_ui_data (publish-time section display text)",
                 "dependencies": {
                     "sections_file": str(paths.sections_output_path),
-                    "harmonic_file": str(paths.artifact("layer_a_harmonic.json")),
                 },
             },
             "sections": display_rows,
         },
     )
 
-    # v3.1 items 5-7 — publish top-level fused views of genre, drum events and
+    # v3.1 items 5-7 — publish top-level fused views of drum events and
     # loudness. The artifacts under artifacts/ are untouched.
-    genre_output = _publish_genre(paths)
     drum_events_output = _publish_drum_events(paths)
     loudness_output = _publish_loudness(paths)
 
     return {
         "beats": str(beats_output_path),
         "sections": str(sections_output_path),
-        "genre": genre_output,
         "drum_events": drum_events_output,
         "loudness": loudness_output,
     }

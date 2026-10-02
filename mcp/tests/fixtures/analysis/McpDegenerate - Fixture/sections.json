@@ -4,7 +4,6 @@
     "start": "allin1",
     "end": "allin1",
     "confidence": "allin1",
-    "key": "harmonic",
     "function": "allin1",
     "function_confidence": "allin1",
     "function_status": "allin1",
@@ -19,8 +18,7 @@
       "function_confidence": null,
       "function_status": "unknown",
       "same_label_as": null,
-      "confidence": null,
-      "key": "C major"
+      "confidence": null
     },
     {
       "section_id": "section-002",
@@ -30,8 +28,7 @@
       "function_confidence": null,
       "function_status": "unknown",
       "same_label_as": null,
-      "confidence": null,
-      "key": "C major"
+      "confidence": null
     },
     {
       "section_id": "section-003",
@@ -41,8 +38,7 @@
       "function_confidence": null,
       "function_status": "unknown",
       "same_label_as": null,
-      "confidence": null,
-      "key": "C major"
+      "confidence": null
     }
   ]
 }

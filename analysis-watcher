@@ -26,6 +26,10 @@
 #   --foreground  run the polling loop in this terminal (--start runs this)
 #   --once        process the queue until empty, then exit (tests use this)
 #
+# Heartbeat: $DATA_DIR/analysis-watcher.heartbeat holds an ISO-8601 UTC
+# timestamp, rewritten every poll interval — including while a job runs (via
+# the queue ticker) — so the MCP's get_watcher_status can tell up from down.
+#
 # Background state: $DATA_DIR/analysis-watcher.pid and
 # $DATA_DIR/analysis-watcher.log (data/ is gitignored).
 #
@@ -126,17 +130,11 @@ KNOWN_STAGES=(
   "validate-beats"
   "extract-fft-bands"
   "extract-mix-stem-loudness"
-  "extract-hpcp-and-key"
   "extract-drum-events"
-  "extract-energy-features"
   "segment-sections"
   "detect-arrangement-state"
   "publish-arrangement-state"
-  "contest-section-function"
-  "section-clues"
-  "derive-energy-layer"
   "build-gestures"
-  "classify-genre"
   "generate-section-hints"
   "build-ui-data"
   "publish-vocal-cadence"
@@ -169,6 +167,14 @@ json_escape() {
   # Convert literal newlines to \n, strip carriage returns and other control chars.
   s="$(printf '%s' "$s" | tr '\r' ' ' | sed ':a;N;$!ba;s/\n/\\n/g')"
   printf '%s' "$s"
+}
+
+# Atomic (tmp + rename) so a reader never sees a half-written timestamp.
+write_heartbeat() {
+  local path="$DATA_DIR/analysis-watcher.heartbeat"
+  mkdir -p "$DATA_DIR"
+  now_iso > "${path}.tmp.$$"
+  mv -f "${path}.tmp.$$" "$path"
 }
 
 progress_path() {
@@ -331,6 +337,7 @@ start_queue_ticker() {
   (
     while true; do
       sleep "$POLL_S"
+      write_heartbeat
       mark_all_queued
     done
   ) &
@@ -472,6 +479,7 @@ process_queue_once() {
 
 main() {
   recover_interrupted
+  write_heartbeat
 
   if [[ "$MODE" == "--once" ]]; then
     process_queue_once
@@ -479,6 +487,7 @@ main() {
   fi
 
   while true; do
+    write_heartbeat
     process_queue_once
     sleep "$POLL_S"
   done

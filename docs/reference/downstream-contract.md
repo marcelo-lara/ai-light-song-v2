@@ -50,7 +50,7 @@ answers to the top-level directory.
 | MCP read | Backs which pass | Files it projects |
 | --- | --- | --- |
 | `list_songs()` | discovery | `song_name`, `bpm`, `duration` only |
-| `get_song_overview(song)` | concept pass (whole song) | `info.json`, `beats.json`, `sections.json`, `genre.json`, `song_event_timeline.json` (transitions only), `arrangement_state.json`, `hints.json` (human hints), `vocal_cadence.json` (a whole-song summary block, plus compact per-section fields folded onto `sections.rows` — v3.9 item 1) |
+| `get_song_overview(song)` | concept pass (whole song) | `info.json`, `beats.json`, `sections.json`, `song_event_timeline.json` (transitions only), `arrangement_state.json`, `hints.json` (human hints), `vocal_cadence.json` (a whole-song summary block, plus compact per-section fields folded onto `sections.rows` — v3.9 item 1) |
 | `get_detail(song, section_id\|gesture_id\|start_ms+end_ms\|bars, interval_ms, sources)` | one span (section, gesture, arbitrary window, or — v3.7 item 3/5 — a `[start_bar, end_bar]` bar range) | `loudness.json` + `drum_events.json` dense frames (**at most 5 s**), plus the overlapping structural rows (phases, transitions, hints, `arrangement_state` blocks, `vocal_cadence` lines/sections/calls — v3.9 item 1, and — v3.6 item 9 — `beats.json` rows) with no decimation; every time field carries a sibling `position` (v3.7 item 3/5) |
 
 All of these are top-level files. **Everything under `artifacts/` is invisible
@@ -61,15 +61,22 @@ top-level file.
 
 This table is the reach test. Before building anything, name the row it lands in.
 
-## The two write tools (v3.7 item 10) — queue only, never a write to the surface above
+## Experiments that are not on the surface
 
-`propose_hint(song, start, end, title, summary, evidence)` and
-`propose_section_field(song, section_id, field, value, evidence)` (`field` one
-of `energy`, `tension`, `rhythm.<stem>`) are the one exception to "the server
-is read-only." Both **append** to a queue file one level under the song
+The v3.10 experiments (`filter_sweep`, `phrases`, `downbeat_anchors`,
+`section_names`) write only `reference/proposals/*.json`. None is a top-level
+file, a field of one, or a tool result; this consumer sees no phrase,
+filter-sweep, anchored downbeat or normalized section name, and `beats.json` bar
+numbers and `sections.json` labels are still the incumbents' (allin1 and the
+reviewed tiers). A promotion would change this document in the same change.
+
+## The write tool (v3.7 item 10) — queue only, never a write to the surface above
+
+`propose_hint(song, start, end, title, summary, evidence)` is the one
+exception to "the server is read-only." It **appends** to a queue file one level under the song
 directory (an inner folder, so it is not exposed by anything above), never to
 the operator's own hand-authored file and never directly to a top-level
-published file. `evidence` is required on both — an empty value is rejected
+published file. `evidence` is required — an empty value is rejected
 (error, not a silent no-op) and nothing is written.
 
 A queued proposal reaches a published file only if a human approves it in the
@@ -82,28 +89,43 @@ above still holds for every read tool.
 
 ## `request_analysis` / `get_analysis_progress` (v3.8 item 3) — operational, not analysis
 
-Two more tools outside the reach-test table above: `request_analysis(song)`
-and `get_analysis_progress(song)`. Neither projects a song-fact file, so
+Three more tools outside the reach-test table above: `request_analysis(song,
+force=False)`, `get_analysis_progress(song)` and `get_watcher_status()`. Neither projects a song-fact file, so
 neither is "what reaches the model" in the sense the table above means —
 they let the authoring model start and poll a `./analyze` run for a song it
 cannot see yet, reusing the same `_run_request.json`/`_run_progress.json`
 files the debugger's **Run analysis** button writes/reads (v3.8 item 1/2).
 
-- `request_analysis(song)` refuses a song that is already fully analysed
-  (points the caller at `get_song_overview` instead), refuses a song with no
+- `request_analysis(song, force=False)` refuses a song that is already fully
+  analysed unless `force=True` (otherwise points the caller at
+  `get_song_overview`), refuses a song with no
   matching **non-empty** audio file — a 0-byte placeholder counts as no file
   (lists every stem that is both non-empty and not already fully analysed),
   otherwise writes the request and returns a poll instruction — it never
-  blocks waiting for the run.
+  blocks waiting for the run. The result carries `watcher: "up" | "down"`.
 - `get_analysis_progress(song)` reports `queued`/`running`/`done`/`failed`
   once the host-side `./analysis-watcher` has picked up the request, or
   `not_started` if a request has sat unpicked-up for 120 s (no watcher
   running) — never an indefinite `queued`.
+- `get_watcher_status()` returns `{status: "up" | "down", last_heartbeat,
+  age_s}` from the watcher's heartbeat file; `down` when missing or older
+  than 3 poll intervals. The server never starts the watcher.
 
 D3.1: this is a bounded, documented exception to the top-level-only exposure
-rule, same shape as the two write tools above — the two `_run_*` files live
+rule, same shape as the write tool above — the two `_run_*` files live
 one level under the song directory and are never promoted to a top-level
 file. `mcp/runs.py` is the only module that touches them.
+
+## `get_structure_hint_brief` / `write_structure_hint` (v3.10 item 7) — a prior, not analysis
+
+`get_structure_hint_brief(song)` returns `{brief, existing}` (the brief is also
+the MCP prompt `structure_hint`); `write_structure_hint(song, hint)` validates
+schema `1.0` and writes only `reference/pre-analysis/structure.json`, one level
+under the song directory. Neither projects a song-fact file and the hint is
+never published at top level; schema and rules are in
+[`../mcp-definition.md`](../mcp-definition.md), "Pre-analysis structure hint".
+Both accept analysed songs and songs with audio that `request_analysis` would
+accept. The hint never carries a time.
 
 ## The join key: `section_id`
 
@@ -133,8 +155,7 @@ The honesty rules, as the server enforces them structurally:
   `label` field to read a confidence out of.
 - **Never inflate.** The concept pass reads a weak label as "don't spend tokens
   corroborating this." An honest `0.27` beats a manufactured `0.7`;
-  `genre.json` predicting `"ambient" @ 0.27` for a 130 BPM track is a correct,
-  useful output.
+  a weak `function_confidence` is a correct, useful output.
 - `drum_events.json` states its `null` confidence **once, at file level**
   (`confidence` + `confidence_reason`), not repeated on 32,213 corpus rows with
   no information gained.
@@ -164,7 +185,7 @@ Seconds remain the only stored/joined unit everywhere in `src/`. `get_detail`
 (never `get_song_overview` — its byte budget is load-bearing, see
 `docs/issues.md`) derives `{"bar", "beat", "section_id", "resolved"}` on read,
 beside every time field it serializes: the resolved span itself, section/
-phase/transition/hint edges, `impact_alignment.impact_position`, arrangement
+phase/transition/hint edges, arrangement
 blocks and vocals phrases, drum-event rows, and every dense loudness frame.
 
 - `section_id` is always the **published** `sections.json` (v3.7 item 6 — see
@@ -183,13 +204,21 @@ blocks and vocals phrases, drum-event rows, and every dense loudness frame.
 ### `sections.json` (top-level **object**, rows under `sections`) — highest priority
 
 Row fields: `section_id`, `start`, `end`, `function`, `function_confidence`,
-`function_status`, `same_label_as`, `confidence`, `key`, `impact_alignment`
-(+ `contested_by` on a flagged row).
+`function_status`, `same_label_as`, `confidence`. v3.10 item 8 removed `key`, `energy`, `tension`, `rhythm`,
+`impact_alignment`, `contested_by` and the `*_confidence`/`*_source` clue
+fields from this row; the operator's old `energy`/`tension`/`rhythm` keys in
+`reference/human/segments.json` are ignored, never rewritten.
 
-- `key` — the whole-song HPCP key estimate (`"C# major"`), or `null` when too
-  low-confidence to state. One value for the whole song; every row carries the
-  same string or the same `null`, never a per-section key.
 - Row order and count must equal the segmentation file.
+- **An empty reviewed file is not a review** (v3.10 item 1). A
+  `reference/human/segments.json` (or `reference/moises/segments.json`) counts
+  as a tier only when it holds at least one row; a non-empty file stays
+  authoritative however short. An empty one is skipped and the next tier
+  (moises, then allin1) publishes. The skip is published, never silent: the
+  file carries a top-level `sections_tier_note` string, e.g.
+  `"reference/human/segments.json is empty — not a review"` (absent when no tier
+  was skipped), and `field_sources` names the tier that actually won. The MCP
+  `get_song_overview` projects it as `sections.tier_note` (present only then).
 - **Dropped in v3.6 item 8**: `label` (a display string folding
   `function_confidence` into text, e.g. `"003 Build [unverified] (0.45)"`),
   and `description` (a sentence restating `function` + ordinal). Neither was
@@ -210,20 +239,9 @@ than in a second file:
 - `function_confidence` — `1 −` normalised entropy of allin1's frame-level label
   posterior over the section's span. How sure the *model* was, independent of
   `confidence`.
-- `function_status` — `"known"`, `"unknown"` or `"contested"`. `"unknown"`
+- `function_status` — `"known"` or `"unknown"`. `"unknown"`
   means allin1's labelling for the *whole song* is outside the distribution it
   can reliably name; the boundary is still usable, the name is not.
-  `"contested"` means a phase-3 stage (`contest-section-function`) cross-checked
-  `function` against the published `loudness.json` + `arrangement_state.json`
-  and found the section's measured energy contradicts the label (e.g. a
-  `chorus` quieter and thinner than the `verse`/`bridge` that follows it). The
-  label is **kept and flagged, never flipped** — `function` and
-  `function_confidence` are unchanged. A contested row also carries
-  `contested_by: "energy"` (absent on every other row). Treat a contested row
-  like `unknown` for pacing purposes (fall back to `loudness.json` /
-  `arrangement_state.json`), while noting the label may still be structurally
-  correct. Deliberately conservative — flags only a handful of sections across
-  the corpus, concentrated on Eurovision-shaped songs.
 - `same_label_as` — **label repetition, not acoustic identity.** It points at
   the first section given the same functional label: "the third thing it called
   a chorus," never "the same music as the first chorus." Surface it with that
@@ -233,91 +251,6 @@ than in a second file:
   allin1's own value once a reference tier has replaced the boundaries/labels
   (that value would point at unrelated allin1 sections). `field_sources`
   attributes it to that same tier.
-
-### Energy / tension / rhythm clue fields — merged into `sections.json` (v3.6 item 10)
-
-A section row optionally carries `energy` (1–5), `energy_confidence`,
-`tension` (1–5), `tension_confidence`, and `rhythm` — a musical fact, not a
-light instruction: "drums go `quarter` → `sixteenth` across the build" is in
-scope, "strobe at 12 Hz" is the authoring model's call.
-
-- `rhythm` is `{<source>: {subdivision, confidence, onsets_per_beat}}` for
-  `source` in `drums`, `bass`, `harmonic`, `vocals`. `subdivision` is one of
-  `half`, `quarter`, `eighth`, `sixteenth`, `eighth_triplet`, `none`.
-  `onsets_per_beat` is present only where a discrete onset count actually
-  backs the call (the drum-IOI and vocal-word-onset producers); the
-  autocorrelation producer has no onset count and omits the key rather than
-  guessing one.
-- **Any of these fields may be entirely absent from a row** — a section with
-  no resolved clue on a field simply omits it. Never a guessed default.
-- **Precedence, per field, per section:** 1) the operator's value in
-  `reference/human/segments.json` — source `human`; 2) the highest-confidence
-  of the ported candidate producers (`energy_level`, `tension_shape`,
-  `rhythm_drum_ioi`, `rhythm_stem_autocorr`, `rhythm_vocal_onsets`) that
-  computed a value for that field on that section; 3)
-  `reference/human/segments.seed.json` — source `seed_unreviewed`,
-  `confidence` explicitly `null` (inferred, not yet operator-reviewed); 4)
-  otherwise absent. Produced by the phase-3 `section-clues` stage
-  (`src/analyzer/stages/section_clues.py`), which re-fuses the
-  already-published `sections.json` — never mutates from scratch.
-- **`field_sources` per-row overrides.** The file header declares one default
-  producer per field (`energy`, `energy_confidence`, `tension`,
-  `tension_confidence`, and the dotted `rhythm.drums` / `rhythm.bass` /
-  `rhythm.harmonic` / `rhythm.vocals`, the same per-sub-field convention
-  `arrangement_state.json`'s `vocals_phrase.sibilance` already uses). A row
-  whose actual source differs from that default carries a sparse override:
-  `energy_source` / `tension_source` on the row, or a `source` key inside the
-  specific `rhythm.<name>` object. No override key when the row matches the
-  file default.
-- **Not independent validation while provisional.** All five candidate
-  producers were scored against `segments.seed.json`, which shares each
-  producer's own method — a self-consistency check, not ground truth. Treat
-  any `energy`/`tension`/`rhythm` value on a song outside the 4 segment songs
-  (`ayuni`, `Cinderella - Ella Lee`, `_test_song`, `What a Feeling - Courtney
-  Storm`) as a first-pass inference, same posture as `function_status:
-  "unknown"`.
-
-### `impact_alignment` — merged into `sections.json` (v3.7 item 2)
-
-Every row carries `impact_alignment`, always present (never omitted, unlike
-`energy`/`tension`/`rhythm`) but `null` when no gesture `impact` event
-(`song_event_timeline.json`) falls within **+-2 bars** of the row's `start` —
-an honest omission, never a nearest-match at any distance. When resolved:
-
-```json
-"impact_alignment": {
-  "gesture_id": "gesture-034",
-  "impact_time": 131.1,
-  "offset_s": 3.83,
-  "offset_beats": 7.889,
-  "impact_position": {"bar": 66, "beat": 2, "section_id": "section-008", "resolved": true}
-}
-```
-
-- `gesture_id` / `impact_time` — the nearest impact event to `start`.
-- `offset_s` — signed, `impact_time - start`. **Positive means the payoff is
-  late** — the section boundary is not where the gesture peaks.
-- `offset_beats` — `offset_s` converted to beats at the song's whole-song
-  `bpm` (`info.json`), assuming 4/4 (corpus-wide assumption).
-- `impact_position` — the impact's musical position (item 3/5's `position`
-  shape). **Stored as `null`** by `section_clues.py` — seconds are the only
-  stored/joined unit — and backfilled on read by `mcp/serializers.py`'s
-  `position` deriver.
-- Never moves a boundary and never derives `tension` from the offset — both
-  stay exactly as their own tier produced them. The offset is data for the
-  authoring model to weigh, not a verdict.
-- `field_sources` gains `impact_alignment: "impact_alignment"` (always —
-  the field is never conditionally omitted like the clue fields above it).
-- Produced by `src/analyzer/stages/section_clues.py`'s
-  `_nearest_impact_alignment`, in the same fusion pass as `energy`/`tension`/
-  `rhythm` above (reuses that stage's already-loaded `sections.json` +
-  `song_event_timeline.json`).
-- `get_song_overview`'s response gains a `review_warning` field — present
-  only when at least one section row in the response carries a
-  `seed_unreviewed` source on any field, naming the affected `section_id`s.
-  Omitted entirely (not `null`, not empty) when none do. Exact text: *"energy/
-  tension/rhythm sourced `seed_unreviewed` are inferred, not yet reviewed by
-  the operator; verify on the final show."*
 
 ### `song_event_timeline.json` (top-level) — high priority
 
@@ -352,6 +285,12 @@ Produced by the phase-3 `gestures` stage. `events[]`, each a **flat** row
   new impact within the dedup floor of ANY existing impact, not only ones
   near this boundary (adjacent, bar-spaced boundaries have overlapping search
   windows and can otherwise each independently rediscover the same hit).
+- **v3.10 item 3** — a stem-entry impact is also emitted for a *drums-led*
+  entry: at a boundary with no two-stem entry, the drums turn on (hit density
+  >= 0.75 hits/beat over 4 beats with no inter-hit gap over 1.5 beats, after 2
+  silent beats) and the bass follows
+  within one bar. Its `start_time` is the drums onset, `confidence` a fixed
+  0.5, and the same guards apply.
 - The server projects `type`, `start_time`, `end_time`, `intensity`,
   `confidence`, `section_id` (+ `gesture_id`, + `peak_time` on an `impact` row)
   — this is now the *entire* row, not a scoped-down table of contents.
@@ -427,20 +366,6 @@ item 3).
 Consumed: `bpm`, `duration`. The beat grid is the primary tempo source;
 `info.json` `bpm` is the fallback. Keep `duration` accurate — it sets the show's
 end.
-
-### `genre.json` (top-level)
-
-`genres`, `confidence` — passed through to the concept pass.
-
-- **Dropped in v3.6 item 8**: `top_predictions[]` (unread) and `guidance[]`
-  (one identical text across all 23 songs). Item 9 moved the equivalent text
-  into the in-repo `mcp/` server's `get_song_overview` tool description
-  (`mcp/server.py`) — that surface does not reach this downstream consumer,
-  which never sees tool descriptions, only file reads. Both fields stay in
-  `artifacts/genre.json`, **not MCP-exposed**; the debugger UI reads it
-  directly. This consumer gets no `guidance` text at all any more — if it
-  needs the equivalent review-caution prose, it must be restated here or
-  re-added to the top-level file, not assumed still present.
 
 ### The detail files
 
@@ -609,11 +534,10 @@ decimated or dense-cap-gated (structural facts, like `arrangement_state` and
 3. **`hints.json`** — short, concrete, per-section, human hints.
 4. **`beats.json`** — correct, continuous downbeats and bar numbers.
 5. **`loudness.json` + `drum_events.json`** — accurate, regular, complete.
-6. **`genre.json`** — honest, with `genres` + `confidence` kept.
-7. **`arrangement_state.json`** — required (v3.6 item 9); accurate stem
+6. **`arrangement_state.json`** — required (v3.6 item 9); accurate stem
    entered/left spans with honest `confidence`/`margin_db`, plus the
    independent `vocals_phrase[]` read described above.
-8. **`vocal_cadence.json`** — required (v3.9 item 1, D1.1); `lead_in_bars`
+7. **`vocal_cadence.json`** — required (v3.9 item 1, D1.1); `lead_in_bars`
    and `cadence_repeats[]` are what let a chase key off "this section repeats
    that one's vocal entry, a bar early" rather than the boundary alone.
 

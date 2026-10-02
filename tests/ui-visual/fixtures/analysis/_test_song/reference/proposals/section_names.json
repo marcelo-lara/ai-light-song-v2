@@ -1,0 +1,177 @@
+{
+  "schema_version": "1.0",
+  "song_name": "_test_song",
+  "generated_from": {
+    "experiment": "experiments/section_names",
+    "engine": "drops = phrase starts where a kick or bass entry coincides with a hit (gestures impact or the end of a near-silent gap); Pre-Drop / Fill / Build-Up / Pre-Build before them, Intro / Breakdown / Outro by position, Fills closing phrases; a drop that repeats an earlier one inherits its label; hint = prior only",
+    "inputs": [
+      "reference/proposals/phrases.json",
+      "loudness.json",
+      "beats.json (times + off_grid_spans only)",
+      "arrangement_state.json (vocals_phrase)",
+      "song_event_timeline.json (impact rows only)",
+      "artifacts/essentia/fft_bands.drums.json",
+      "artifacts/essentia/fft_bands.json",
+      "sections.json (current labels, kept only when no unit is found)",
+      "reference/pre-analysis/structure.json (prior only)"
+    ],
+    "hint": {
+      "used": true,
+      "delta": 0.0,
+      "build_cap_beats": 64,
+      "radio_edit": false,
+      "second_wave": false,
+      "expect_no_drop": false,
+      "sung_is_chorus": true,
+      "notes": []
+    },
+    "params": {
+      "BUILD_CAP_BEATS": 64,
+      "BUILD_RISER": 0.05,
+      "BUILD_ROLL": 0.15,
+      "CLOSE_FILL_MAX_BEATS": 4,
+      "CLOSE_FILL_MIN_PHRASE_BEATS": 12,
+      "CLOSE_FILL_MIN_SPAN_BEATS": 2.0,
+      "CLOSE_FILL_TOL_BEATS": 1.0,
+      "DROPBREAK_MAX_BEATS": 32,
+      "DROP_ACCEPT": 0.45,
+      "EARLY_DROP_S": 20.0,
+      "EARLY_PENALTY": 0.15,
+      "ENTRY_AFTER_MIN": 0.6,
+      "ENTRY_BEATS": 8,
+      "ENTRY_FULL_DELTA": 0.5,
+      "FILL_MAX_BEATS": 8,
+      "GROOVE_ON": 0.5,
+      "HIT_BEATS": 2.0,
+      "HIT_SILENCE_CONF": 0.8,
+      "MIN_DROP_BEATS": 8,
+      "MIN_LEAD_BEATS": 8,
+      "OUTRO_CAP_BEATS": 128,
+      "OUTRO_MAX_BEATS": 24,
+      "POSTCHORUS_MAX_BEATS": 16,
+      "PREBUILD_MAX_BEATS": 48,
+      "PREDROP_MAX_BEATS": 8,
+      "REPEAT_ACCEPT_DROP": 0.15,
+      "SNAP_MAX_BEATS": 1.0,
+      "SUNG_VOCALS": 0.5,
+      "silence": {
+        "SIL_MERGE_S": 0.12,
+        "SIL_MIN_S": 0.25,
+        "SIL_MIX_FRAC": 0.12,
+        "SIL_STEM_FRAC": 0.2
+      }
+    }
+  },
+  "status": "named",
+  "status_reason": null,
+  "units": [
+    {
+      "id": "unit-01",
+      "kind": "build_drop",
+      "label": "Drop",
+      "drop_start_s": 29.56,
+      "entry": 1.0,
+      "entry_stem": "bass",
+      "hit": 1.0,
+      "hit_kind": "impact",
+      "confidence": 0.8963,
+      "threshold": 0.45,
+      "via_repeat": false,
+      "build_start_s": 0.94,
+      "pre_drop": null,
+      "fill": {
+        "start": 28.63,
+        "end": 29.56,
+        "snapped": true,
+        "kinds": [
+          "vocal_pickup"
+        ],
+        "signal_conf": 0.5
+      },
+      "inherited_from": null,
+      "build_evidence": [
+        "kick_dropout",
+        "opening_sweep",
+        "riser",
+        "snare_roll"
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "start_s": 0.0,
+      "end_s": 0.94,
+      "label": "Intro",
+      "confidence": 0.44815,
+      "why": [
+        "before the build's first roll/riser"
+      ],
+      "unit": "unit-01",
+      "phrase_ids": [
+        "phrase-01"
+      ],
+      "start_kind": "song_start",
+      "inherited_from": null,
+      "id": "name-01",
+      "source": "section_names"
+    },
+    {
+      "start_s": 0.94,
+      "end_s": 28.63,
+      "label": "Build-Up",
+      "confidence": 0.848,
+      "why": [
+        "build evidence: riser, opening_sweep, kick_dropout",
+        "build evidence: snare_roll, riser",
+        "build evidence: snare_roll, riser, opening_sweep"
+      ],
+      "unit": "unit-01",
+      "phrase_ids": [
+        "phrase-01",
+        "phrase-02",
+        "phrase-03"
+      ],
+      "start_kind": "evidence",
+      "inherited_from": null,
+      "id": "name-02",
+      "source": "section_names"
+    },
+    {
+      "start_s": 28.63,
+      "end_s": 29.56,
+      "label": "Fill",
+      "confidence": 0.69815,
+      "why": [
+        "fill before the drop: vocal_pickup"
+      ],
+      "unit": "unit-01",
+      "phrase_ids": [
+        "phrase-03"
+      ],
+      "start_kind": "evidence",
+      "inherited_from": null,
+      "id": "name-03",
+      "source": "section_names"
+    },
+    {
+      "start_s": 29.56,
+      "end_s": 58.12,
+      "label": "Drop",
+      "confidence": 0.807,
+      "why": [
+        "bass entry 1.00 + impact 1.00",
+        "groove stays on"
+      ],
+      "unit": "unit-01",
+      "phrase_ids": [
+        "phrase-04",
+        "phrase-05",
+        "phrase-06"
+      ],
+      "start_kind": "phrase_edge",
+      "inherited_from": null,
+      "id": "name-04",
+      "source": "section_names"
+    }
+  ]
+}

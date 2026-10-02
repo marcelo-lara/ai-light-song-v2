@@ -11,22 +11,15 @@ import type { BlockReview, BlockReviewMatched } from "./types";
 
 /**
  * Every lane carrying an `experiment` field in
- * ../timeline/laneState.ts (segmentSeeds, vocalPhrases, allin1Posterior,
- * rhythmDrumIoi, rhythmStemAutocorr, rhythmVocalOnsets, energyLevel,
- * tensionShape, character, vocalTranscription), plus `gestures` — shipped,
+ * ../timeline/laneState.ts (vocalPhrases, allin1Posterior, character,
+ * vocalTranscription), plus `gestures` — shipped,
  * and the lane the gestures-precision issue names. NOT moisesSections /
  * moisesLyrics (reference lanes, truth or authored input) and not a
  * human-authored lane — those are truth, not claims to be judged.
  */
 export const REVIEWABLE_LANE_IDS: ReadonlySet<string> = new Set([
-  "segmentSeeds",
   "vocalPhrases",
   "allin1Posterior",
-  "rhythmDrumIoi",
-  "rhythmStemAutocorr",
-  "rhythmVocalOnsets",
-  "energyLevel",
-  "tensionShape",
   "character",
   "vocalTranscription",
   "gestures",

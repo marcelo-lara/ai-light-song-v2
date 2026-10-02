@@ -10,7 +10,7 @@ import {
   parseVocalTranscription,
   parseMoisesLyrics,
 } from "../data/sparseArtifacts";
-import { parseEventTimeline, parseHumanHints } from "../data/parsers";
+import { parseEventTimeline, parseHumanHints, parseHumanSegmentsFile } from "../data/parsers";
 
 import {
   allin1SectionsContent,
@@ -24,34 +24,29 @@ import {
   moisesLyricsContent,
   moisesSectionsContent,
   sectionsContent,
-  rhythmDrumIoiContent,
-  rhythmStemAutocorrContent,
-  rhythmVocalOnsetsContent,
-  energyLevelContent,
-  tensionShapeContent,
-  segmentSeedsContent,
   allin1PosteriorContent,
   stemPresenceSectionsContent,
   vocalCadenceContent,
   clapEventsContent,
   kickCheckContent,
   crashCheckContent,
+  filterSweepContent,
+  phrasesContent,
+  sectionNamesContent,
 } from "./laneContent";
 import type {
   ArrangementStateFile,
-  RhythmDrumIoiFile,
-  RhythmStemAutocorrFile,
-  RhythmVocalOnsetsFile,
-  EnergyLevelFile,
-  TensionShapeFile,
   Allin1PosteriorFile,
   StemPresenceSectionsFile,
   VocalCadenceFile,
   ClapEventsFile,
   KickCheckFile,
   CrashCheckFile,
+  FilterSweepFile,
+  PhrasesFile,
+  SectionNamesFile,
 } from "../data/sparseArtifacts";
-import type { HumanSegmentsSeedFile, PendingProposalsFile } from "../data/types";
+import type { PendingProposalsFile } from "../data/types";
 
 describe("humanHintsContent", () => {
   it("maps every hint to a block carrying id + lighting hint", () => {
@@ -142,15 +137,6 @@ describe("llmPendingProposalsContent", () => {
         hint: { start: 10.0, end: 14.0, title: "Bright wash", summary: "Chorus entry." },
       },
       {
-        id: "prop-003",
-        status: "pending",
-        created_at: "2026-01-03T00:00:00Z",
-        rejection_reason: null,
-        evidence: "energy field candidate",
-        type: "section_field",
-        section_field: { section_id: "section-001", field: "energy", value: 4 },
-      },
-      {
         id: "prop-004",
         status: "approved",
         created_at: "2026-01-01T00:00:00Z",
@@ -177,8 +163,7 @@ describe("llmPendingProposalsContent", () => {
     expect(first.reference).toBe("prop-001");
   });
 
-  it("excludes section_field and already-decided proposals", () => {
-    expect(blocks.some((b) => b.reference === "prop-003")).toBe(false);
+  it("excludes already-decided proposals", () => {
     expect(blocks.some((b) => b.reference === "prop-004")).toBe(false);
   });
 
@@ -200,11 +185,10 @@ describe("humanSectionsContent", () => {
     expect(blocks[1]!.summary).toBe("Hand-authored section segmentation.");
   });
 
-  it("shows only the operator's own energy/tension, no draft tags", () => {
-    const blocks = humanSectionsContent([{ start: 0, end: 10, energy: 4 }]);
-    expect(blocks[0]!.caption).toContain("E4");
-    expect(blocks[0]!.caption).not.toContain("*");
-    expect(blocks[0]!.caption).not.toContain("T");
+  it("shows the window only, never an energy/tension tag, even for a row that carries them", () => {
+    const blocks = humanSectionsContent(parseHumanSegmentsFile([{ start: 0, end: 10, energy: 4, tension: 2 }]));
+    expect(blocks[0]!.caption).toBe("0:00.0–0:10.0");
+    expect(blocks[0]!.caption).not.toContain("E4");
   });
 
   it("never throws on a missing file", () => {
@@ -292,7 +276,6 @@ describe("sectionsContent", () => {
         function_status: "known",
         same_label_as: null,
         confidence: 0.66,
-        key: null,
       },
     ]);
     expect(blocks[0]!.label).toBe("001 Verse (0.66)");
@@ -315,8 +298,7 @@ describe("sectionsContent", () => {
           function_status: "known",
           same_label_as: null,
           confidence: 0.91,
-          key: null,
-          },
+      },
       ],
       [
         {
@@ -338,7 +320,7 @@ describe("sectionsContent", () => {
     expect(raw.same_label_as).toBeNull();
   });
 
-  it("gives a contested section the sectionsContested tint and card text", () => {
+  it("never tints or flags a section as contested, whatever function_status says", () => {
     const blocks = sectionsContent([
       {
         section_id: "section-002",
@@ -348,22 +330,15 @@ describe("sectionsContent", () => {
         description: "x",
         function: "chorus",
         function_confidence: 0.54,
-        function_status: "contested",
-        contested_by: "energy",
+        function_status: "unknown",
         same_label_as: null,
         confidence: 0.54,
-        key: null,
       },
     ]);
     const b = blocks[0]!;
-    expect(b.tintId).toBe("sectionsContested");
-    expect(b.detail).toBe(
-      "function_status: contested · contested_by: energy",
-    );
-    const raw = b.raw as Record<string, unknown>;
-    expect(raw.function).toBe("chorus"); // label kept, not flipped
-    expect(raw.function_status).toBe("contested");
-    expect(raw.contested_by).toBe("energy");
+    expect(b.tintId).toBeUndefined();
+    expect(b.caption).not.toContain("contested");
+    expect(b.raw as Record<string, unknown>).not.toHaveProperty("contested_by");
   });
 
   it("leaves an uncontested section untinted", () => {
@@ -379,7 +354,6 @@ describe("sectionsContent", () => {
         function_status: "known",
         same_label_as: null,
         confidence: 0.66,
-        key: null,
       },
     ]);
     expect(blocks[0]!.tintId).toBeUndefined();
@@ -564,31 +538,6 @@ describe("moisesLyricsContent — v3.4 item 5 validation overlay", () => {
   });
 });
 
-describe("rhythmDrumIoiContent", () => {
-  const file: RhythmDrumIoiFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    blocks: [
-      { start_s: 0, end_s: 8, subdivisions: { drums: "eighth" }, confidence: { drums: 0.62 }, onsets_per_bar: 5.3 },
-      { start_s: 8, end_s: 16, subdivisions: { drums: "none" }, confidence: { drums: 0.9 }, onsets_per_bar: 0.4 },
-    ],
-  };
-  const blocks = rhythmDrumIoiContent(file);
-
-  it("labels a normal block with its subdivision and rate", () => {
-    expect(blocks[0]!.wideLabel).toContain("drums:eighth");
-    expect(blocks[0]!.caption).toContain("5.30/bar");
-  });
-
-  it("renders a none block honestly", () => {
-    expect(blocks[1]!.wideLabel).toContain("drums:none");
-  });
-
-  it("never throws on a missing file", () => {
-    expect(rhythmDrumIoiContent(null)).toEqual([]);
-  });
-});
-
 describe("allin1PosteriorContent", () => {
   const file: Allin1PosteriorFile = {
     schema_version: "1.0",
@@ -703,158 +652,6 @@ describe("vocalCadenceContent", () => {
   });
 });
 
-describe("rhythmStemAutocorrContent", () => {
-  const file: RhythmStemAutocorrFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    blocks: [
-      {
-        start_s: 0,
-        end_s: 8,
-        subdivisions: { drums: "sixteenth", bass: "quarter", vocals: "none" },
-        confidence: { drums: 0.5, bass: 0.3, vocals: 1.0 },
-      },
-    ],
-  };
-  const blocks = rhythmStemAutocorrContent(file);
-
-  it("lists every source's subdivision", () => {
-    expect(blocks[0]!.caption).toContain("drums:sixteenth");
-    expect(blocks[0]!.caption).toContain("bass:quarter");
-    expect(blocks[0]!.caption).toContain("vocals:none");
-  });
-
-  it("never throws on a missing file", () => {
-    expect(rhythmStemAutocorrContent(null)).toEqual([]);
-  });
-});
-
-describe("rhythmVocalOnsetsContent", () => {
-  const file: RhythmVocalOnsetsFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    blocks: [
-      { start_s: 0, end_s: 8, subdivisions: { vocals: "eighth" }, confidence: { vocals: 0.4 }, onsets_per_beat: 1.8 },
-      { start_s: 8, end_s: 16, subdivisions: { vocals: "none" }, confidence: { vocals: 0.7 }, onsets_per_beat: null },
-    ],
-  };
-  const blocks = rhythmVocalOnsetsContent(file);
-
-  it("labels a normal block with its onset rate", () => {
-    expect(blocks[0]!.caption).toContain("1.80/beat");
-  });
-
-  it("renders a null onsets_per_beat honestly", () => {
-    expect(blocks[1]!.caption).toContain("no onsets");
-    expect(blocks[1]!.caption).not.toMatch(/NaN/);
-  });
-
-  it("never throws on a missing file", () => {
-    expect(rhythmVocalOnsetsContent(null)).toEqual([]);
-  });
-});
-
-describe("energyLevelContent", () => {
-  const file: EnergyLevelFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    blocks: [
-      { start_s: 0, end_s: 8, energy: 4, confidence: 0.72, evidence: { mix_mean: 0.55, stems_fraction: 0.9 } },
-    ],
-  };
-  const blocks = energyLevelContent(file);
-
-  it("labels the energy level and confidence", () => {
-    expect(blocks[0]!.wideLabel).toBe("energy 4");
-    expect(blocks[0]!.caption).toContain("confidence 0.72");
-  });
-
-  it("never throws on a missing file", () => {
-    expect(energyLevelContent(null)).toEqual([]);
-  });
-});
-
-describe("tensionShapeContent", () => {
-  const file: TensionShapeFile = {
-    schema_version: "1.0",
-    song_name: "_test_song",
-    blocks: [
-      {
-        start_s: 0,
-        end_s: 8,
-        tension: 5,
-        confidence: 0.3,
-        evidence: { slope: 0.12, gesture_bump: true, phrase_periodicity_through_composed_bump: false },
-      },
-      {
-        start_s: 8,
-        end_s: 16,
-        tension: 2,
-        confidence: 0.61,
-        evidence: { slope: -0.05, gesture_bump: false, phrase_periodicity_through_composed_bump: false },
-      },
-    ],
-  };
-  const blocks = tensionShapeContent(file);
-
-  it("labels the tension level and which bump fired", () => {
-    expect(blocks[0]!.wideLabel).toBe("tension 5");
-    expect(blocks[0]!.caption).toContain("+gesture");
-  });
-
-  it("renders no bump honestly", () => {
-    expect(blocks[1]!.caption).toContain("no bump");
-  });
-
-  it("never throws on a missing file", () => {
-    expect(tensionShapeContent(null)).toEqual([]);
-  });
-});
-
-describe("segmentSeedsContent", () => {
-  const file: HumanSegmentsSeedFile = [
-    {
-      start: 0,
-      end: 16,
-      label: "verse",
-      energy: 3,
-      tension: 2,
-      rhythm: { drums: "steady", bass: "root-fifth", harmonic: "sustained", vocals: "syllabic" },
-    },
-    {
-      start: 16,
-      end: 32,
-      label: null,
-      energy: null,
-      tension: 4,
-      rhythm: { harmonic: "arpeggiated" },
-    },
-  ];
-  const blocks = segmentSeedsContent(file);
-
-  it("labels a fully-seeded row with id, caption tags, and per-source rhythm detail", () => {
-    expect(blocks[0]!.id).toBe("segment-seed-001");
-    expect(blocks[0]!.laneLabel).toBe("Segment Seeds");
-    expect(blocks[0]!.label).toBe("verse");
-    expect(blocks[0]!.caption).toContain("E3");
-    expect(blocks[0]!.caption).toContain("T2");
-    expect(blocks[0]!.detail).toContain("rhythm drums: steady");
-    expect(blocks[0]!.summary).toContain("experiments/segment_seeds");
-  });
-
-  it("renders a missing energy/label and an unreported rhythm source honestly, never a default", () => {
-    expect(blocks[1]!.label).toBe("segment-seed-002");
-    expect(blocks[1]!.caption).not.toContain("E");
-    expect(blocks[1]!.detail).toContain("energy: not seeded");
-    expect(blocks[1]!.detail).toContain("rhythm drums: none reported");
-    expect(blocks[1]!.detail).toContain("rhythm harmonic: arpeggiated");
-  });
-
-  it("never throws on a missing file", () => {
-    expect(segmentSeedsContent(null)).toEqual([]);
-  });
-});
-
 describe("clapEventsContent", () => {
   const file: ClapEventsFile = {
     schema_version: "1.0",
@@ -936,5 +733,122 @@ describe("crashCheckContent", () => {
 
   it("never throws on a missing file", () => {
     expect(crashCheckContent(null)).toEqual([]);
+  });
+});
+
+describe("filterSweepContent", () => {
+  const file: FilterSweepFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start_s: 0, end_s: 13.9, direction: "opening", stem: "harmonic", depth: 2.12, confidence: 0.74 },
+      { start_s: 44.2, end_s: 49.6, direction: "closing", stem: "bass", depth: 1.1, confidence: null },
+    ],
+  };
+  const blocks = filterSweepContent(file);
+
+  it("labels direction and tints opening apart from closing", () => {
+    expect(blocks[0]!.label).toBe("opening");
+    expect(blocks[0]!.wideLabel).toContain("harmonic");
+    expect(blocks[0]!.tintId).toBe("filterSweepOpening");
+    expect(blocks[1]!.tintId).toBe("filterSweepClosing");
+  });
+
+  it("renders a null confidence honestly", () => {
+    expect(blocks[1]!.summary).toContain("no confidence reported");
+    expect(blocks[0]!.summary).toContain("confidence 0.74");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(filterSweepContent(null)).toEqual([]);
+  });
+});
+
+describe("phrasesContent", () => {
+  const base = {
+    n_beats: 32, kick_presence: 0.9, bass_presence: 0.8, vocals_presence: 0.1,
+    riser_density: 0.25, snare_roll_density: 0, filter_sweeps: [], noise_sweep: false,
+    noise_sweep_strength: 0.05, kick_dropout_near_end: true, ends_on_gap: true,
+    repeat_of: null, repeat_distance: null, start_edge: null, end_edge: null,
+  };
+  const file: PhrasesFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { ...base, id: "phrase-01", start_s: 0, end_s: 30, resolved: true, conflicts: [], confidence: 0.8 },
+      {
+        ...base, id: "phrase-02", start_s: 30, end_s: 60, resolved: false,
+        conflicts: ["grid: no trusted beat within one beat of the physical change"],
+        confidence: null, kick_presence: null, filter_sweeps: null, kick_dropout_near_end: null,
+      },
+    ],
+  };
+  const blocks = phrasesContent(file);
+
+  it("tints an unresolved phrase apart and marks its label", () => {
+    expect(blocks[0]!.label).toBe("1");
+    expect(blocks[0]!.tintId).toBe("phrases");
+    expect(blocks[1]!.label).toBe("2?");
+    expect(blocks[1]!.tintId).toBe("phrasesUnresolved");
+    expect(blocks[1]!.summary).toContain("UNRESOLVED");
+  });
+
+  it("names presence and flags in the wide label", () => {
+    expect(blocks[0]!.wideLabel).toContain("kick+bass");
+    expect(blocks[0]!.wideLabel).toContain("ends on gap");
+  });
+
+  it("renders null fields honestly, never as a default", () => {
+    expect(blocks[1]!.summary).toContain("kick n/a");
+    expect(blocks[1]!.summary).toContain("filter sweeps n/a");
+    expect(blocks[1]!.summary).toContain("no confidence reported");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(phrasesContent(null)).toEqual([]);
+  });
+});
+
+describe("sectionNamesContent", () => {
+  const row = {
+    why: ["kick entry 1.00 + impact 1.00"], unit: "unit-01", phrase_ids: ["phrase-04"],
+    inherited_from: null,
+  };
+  const file: SectionNamesFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    status: "named",
+    status_reason: null,
+    units: [],
+    blocks: [
+      { ...row, id: "name-01", start_s: 0, end_s: 30, label: "Intro", confidence: 0.85, start_kind: "song_start", source: "section_names" },
+      { ...row, id: "name-02", start_s: 30, end_s: 60, label: "Drop", confidence: null, start_kind: "evidence_unsnapped", source: "section_names", inherited_from: "phrase-02" },
+      { ...row, id: "name-03", start_s: 60, end_s: 90, label: "Chorus", confidence: 0.5, start_kind: "kept_current", source: "sections.json", unit: null, phrase_ids: [] },
+    ],
+  };
+  const blocks = sectionNamesContent(file);
+
+  it("labels a normal block with the stage name and its confidence", () => {
+    expect(blocks[0]!.label).toBe("Intro");
+    expect(blocks[0]!.wideLabel).toBe("Intro · 0.85");
+    expect(blocks[0]!.tintId).toBe("sectionNames");
+    expect(blocks[0]!.summary).toContain("starts at the song start");
+  });
+
+  it("renders null confidence and an unsnapped boundary honestly", () => {
+    expect(blocks[1]!.wideLabel).toBe("Drop");
+    expect(blocks[1]!.summary).toContain("no confidence reported");
+    expect(blocks[1]!.summary).toContain("not snapped");
+    expect(blocks[1]!.summary).toContain("inherited from phrase-02");
+  });
+
+  it("tints and attributes a kept current label apart", () => {
+    expect(blocks[2]!.tintId).toBe("sectionNamesKept");
+    expect(blocks[2]!.caption).toContain("kept current label");
+    expect(blocks[2]!.summary).toContain("source sections.json");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(sectionNamesContent(null)).toEqual([]);
   });
 });

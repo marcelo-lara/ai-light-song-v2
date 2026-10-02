@@ -1,0 +1,60 @@
+Section Names — label accuracy and boundary moves on the reviewed songs
+====================================================================================================
+
+truth = reference/human/segments.json (10 songs); majority baseline label = 'Chorus'
+
+## Per song (exact label accuracy / boundary F1 @ +-1.0 s)
+
+  song                                  section_names           no-hint            allin1          majority
+  Armin - Revolution                   0.116/F1 0.364    0.116/F1 0.348    0.239/F1 0.727             0.072
+  Charli-VonDutch                      0.901/F1 0.667    0.901/F1 0.667    0.361/F1 0.526             0.366
+  Cinderella - Ella Lee                0.340/F1 0.182    0.340/F1 0.182    0.388/F1 0.703             0.315
+  Queen of Kings - Alessandra          0.249/F1 0.191    0.249/F1 0.191    0.406/F1 0.643             0.092
+  Rapture - Nadia Ali                  0.692/F1 0.625    0.692/F1 0.625    0.160/F1 0.526             0.137
+  Sash - Raindrops                     0.372/F1 0.125    0.515/F1 0.125    0.274/F1 0.545             0.000
+  What a Feeling - Courtney Storm      0.234/F1 0.118    0.234/F1 0.118    0.518/F1 0.762             0.372
+  Yonaka - Seize the Power             0.329/F1 0.353    0.329/F1 0.353    0.310/F1 0.700             0.298
+  _test_song                           0.238/F1 0.400    0.238/F1 0.400    0.255/F1 0.600             0.000
+  ayuni                                0.356/F1 0.400    0.356/F1 0.400    0.155/F1 0.522             0.000
+
+## Pooled over the 10 songs where section_names names the sections
+
+  label accuracy (exact): section_names 0.391   no-hint 0.406   allin1 0.316   majority 0.189
+  label accuracy (coarse): section_names 0.409   no-hint 0.423   allin1 0.331   majority 0.221
+  label accuracy (peak): section_names 0.716   no-hint 0.716   allin1 0.677   majority 0.416
+  boundaries section_names  P=0.547 R=0.236 F1=0.330  pred=53 truth=123 matched=29
+  boundaries no-hint        P=0.537 R=0.236 F1=0.328  pred=54 truth=123 matched=29
+  boundaries allin1         P=0.714 R=0.569 F1=0.633  pred=98 truth=123 matched=70
+
+## Songs kept on their current labels (not scored)
+
+
+## Stage sequence (Intro > Pre-Build > Build-Up > Fill|Pre-Drop > Drop|Chorus > Breakdown > Build-Up > Fill|Pre-Drop > Drop|Chorus > Outro)
+
+  Armin - Revolution                 named         reviewed     stages 6/10  missing: Pre-Build, Build-Up, Fill|Pre-Drop, Outro
+      Intro > Build-Up > Chorus > Build-Up > Chorus > Breakdown > Fill > Chorus > Breakdown > Chorus
+  Charli-VonDutch                    named         reviewed     stages 4/10  missing: Pre-Build, Fill|Pre-Drop, Breakdown, Build-Up, Fill|Pre-Drop, Drop|Chorus
+      Intro > Pre-Drop > Drop > Breakdown > Build-Up > Chorus > Outro
+  Cinderella - Ella Lee              named         reviewed     stages 4/10  missing: Pre-Build, Fill|Pre-Drop, Breakdown, Build-Up, Fill|Pre-Drop, Drop|Chorus
+      Intro > Build-Up > Drop > Outro
+  Medicine-MilkInc                   named         not reviewed stages 7/10  missing: Pre-Build, Fill|Pre-Drop, Outro
+      Intro > Build-Up > Fill > Drop > Fill > Breakdown > Build-Up > Drop
+  Queen of Kings - Alessandra        named         reviewed     stages 4/10  missing: Pre-Build, Breakdown, Build-Up, Fill|Pre-Drop, Drop|Chorus, Outro
+      Intro > Build-Up > Fill > Chorus
+  Rapture - Nadia Ali                named         reviewed     stages 8/10  missing: Fill|Pre-Drop, Fill|Pre-Drop
+      Intro > Pre-Build > Build-Up > Drop > Breakdown > Build-Up > Chorus > Build-Up > Drop > Outro
+  Sash - Raindrops                   named         reviewed     stages 4/10  missing: Pre-Build, Fill|Pre-Drop, Breakdown, Build-Up, Fill|Pre-Drop, Drop|Chorus
+      Intro > Build-Up > Drop > Outro
+  What a Feeling - Courtney Storm    named         reviewed     stages 6/10  missing: Pre-Build, Build-Up, Fill|Pre-Drop, Drop|Chorus
+      Intro > Build-Up > Fill > Drop > Breakdown > Main > Outro
+  Yonaka - Seize the Power           named         reviewed     stages 7/10  missing: Fill|Pre-Drop, Build-Up, Fill|Pre-Drop
+      Intro > Pre-Build > Build-Up > Drop > Breakdown > Chorus > Outro
+  _test_song                         named         reviewed     stages 4/10  missing: Pre-Build, Breakdown, Build-Up, Fill|Pre-Drop, Drop|Chorus, Outro
+      Intro > Build-Up > Fill > Drop
+  ayuni                              named         reviewed     stages 4/10  missing: Pre-Build, Breakdown, Build-Up, Fill|Pre-Drop, Drop|Chorus, Outro
+      Intro > Build-Up > Drop > Breakdown > Fill > Drop
+
+## Reviewed labels / boundaries the proposal would override (detail: out/overrides.txt)
+
+  songs compared: 10; reviewed sections 133, reviewed boundaries 123
+  labels overridden: 98   boundaries moved >1 s (<=4 s): 19   reviewed boundaries dropped (no proposal boundary within 4 s): 75   proposal boundaries with no reviewed counterpart: 23

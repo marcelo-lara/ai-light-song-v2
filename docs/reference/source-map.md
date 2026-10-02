@@ -15,7 +15,8 @@ top-level `data/analysis/{song}/*.json` files.
 
 | File | Purpose |
 | --- | --- |
-| `mcp/server.py` | stdio MCP server entry point — registers `list_songs`, `get_song_overview` and `get_detail`, all three returning real payloads |
+| `mcp/server.py` | stdio MCP server entry point — registers the nine tools (`list_songs`, `get_song_overview`, `get_detail`, `propose_hint`, `request_analysis`, `get_analysis_progress`, `get_watcher_status`, `get_structure_hint_brief`, `write_structure_hint`) and the `structure_hint` prompt |
+| `mcp/structure_hint.py` | v3.10 item 7 — the structure-hint brief (one text for the tool and the `structure_hint` prompt), strict schema-1.0 validator (rejects time-bearing keys) and the single bounded write of `reference/pre-analysis/structure.json` |
 | `mcp/loaders.py` | song discovery, top-level file access, exposure enforcement (no code path reaches an inner folder) — the *stable* half |
 | `mcp/serializers.py` | response shaping for `get_song_overview` / `get_detail` — the *volatile* half; a tool-surface reshape touches this file and its snapshots only |
 | `mcp/tests/run.py` | `smoke-test` / `full-regression` named entry points |
@@ -47,17 +48,12 @@ only surviving package.
 | 1 | `timing.py` | canonical beat grid; essentia beat *times* plus allin1-derived downbeat *phase* with per-downbeat confidence. Module docstring carries the phase-selection algorithm |
 | 1 | `fft_bands.py` | 7 spectral bands / 50 ms — five artifacts: the mix (`fft_bands.json`) plus one per Demucs stem (`fft_bands.{bass,drums,harmonic,vocals}.json`), each normalised against its own percentiles; a missing stem WAV raises `DependencyError` |
 | 1 | `loudness.py` | RMS (10 ms) and envelope (200 ms), per source |
-| 2 | `harmonic.py` | HPCP and the whole-song key (`extract-hpcp-and-key`); `ui_data.py` projects `key` into `sections.json`, confidence-gated |
 | 2 | `drums.py` | Omnizart drum transcription on the drums stem (GM 35/38/42); owns `resolve_omnizart_drum_model_path`, the beat/section alignment helpers, and the v3.4 `crash`/`hat` split on pitch 42 — reads `essentia/fft_bands.drums.json`, raises `DependencyError` if absent |
-| 2 | `genre.py` | genre classification with honest confidences and `guidance` prose |
 | 2 | `segmentation.py` | All-In-One named segmentation; merges 8-bar phrases into song-form runs, computes `function_confidence` from posterior entropy, flags degenerate songs `function_status: "unknown"`, sets `same_label_as` |
-| 2 | `energy.py` | `layer_c_energy.json`. Its 4 MB/song feature intermediate is computed in memory and never written |
 | 3 | `gestures.py` | named primitives → gesture phases anchored on a detected impact, plus one event per section-pair transition. Reads phase-1/2 artifacts plus the PUBLISHED `sections.json` (v3.7 item 6 — was allin1's raw `artifacts/section_segmentation/sections.json`; runs after `build-ui-data` for this reason), never audio |
 | 3 | `hint_alignment.py` | `find_primary_section` — the shared window→section matcher used by `hints.py` and the alignment review artifact |
-| 3 | `section_function.py` | `contest-section-function` — cross-checks each allin1 `function` against the published `loudness.json` + `arrangement_state.json`; writes `artifacts/section_function_contest.json` and re-fuses `function_status: "contested"` / `contested_by` into `sections.json`. Never audio. Measured scope: `experiments/section_function_contest/measurement.md` |
-| 3 | `section_clues.py` | `section-clues` (v3.6 item 10; `impact_alignment` v3.7 item 2) — re-fuses `energy`, `energy_confidence`, `tension`, `tension_confidence`, `rhythm` and `impact_alignment` onto the published `sections.json`. Clue fields: precedence `human` > best ported producer (`energy_level`/`tension_shape`/`rhythm_drum_ioi`/`rhythm_stem_autocorr`/`rhythm_vocal_onsets`) > `seed_unreviewed`. `impact_alignment`: nearest `song_event_timeline.json` gesture `impact` to each row's `start`, `null` outside +-2 bars — no human/seed tier. Reads `beats.json`, `drum_events.json`, `loudness.json`, `arrangement_state.json`, `song_event_timeline.json`, `info.json` (bpm), `reference/human/{segments.json,segments.seed.json}` and `artifacts/whisperx-vad/vocal_onsets.json` (raises if that last one is missing). Never audio. Runs after `contest-section-function` |
 | 4 | `hints.py` | `hints.json`: human hints from `reference/human/human_hints.json`, `section_id` attributed by timestamp against the PUBLISHED `sections.json` (v3.7 item 6 — was allin1's raw artifact segmentation; runs after `build-ui-data` for this reason) |
-| 4 | `ui_data.py` | packs the compact top-level deliverables; `apply_section_function_contest` re-publishes `sections.json` for the phase-3 contest |
+| 4 | `ui_data.py` | packs the compact top-level deliverables |
 | 4 | `vocal_cadence.py` | `publish-vocal-cadence` (v3.9 item 1) — `vocal_cadence.json`: per-line bar timing, per-section `lead_in_bars`/rests/held notes/tokens-per-bar/cadence-repeats, calls. Reads `reference/human/lyrics.json` > `reference/moises/lyrics.json` (D1.1: neither present → still writes the file, `source: null` + `reason`) plus the PUBLISHED `beats.json`/`sections.json`/`info.json`. Timing only — no lyric text past parsing. Ported from `experiments/vocal_cadence/` (12/12 on Queen of Kings), never imported from it |
 
 `segmentation.py`, `gestures.py` and `timing.py` carry their promotion numbers
@@ -97,7 +93,8 @@ runtime since `event_contracts.py` was deleted.
 
 | File | Purpose |
 | --- | --- |
-| `analysis-watcher` (repo root) | v3.8 item 1 — bash, runs on the host (never in a container, D1.2). Polls `data/analysis/*/artifacts/_run_request.json`; on a never-analysed song runs `./analyze --stage ensure-stems` (whisperX needs the vocal stem it produces — D1.1, corrected by the host end-to-end smoke) then `whisperx` then the full `./analyze`, all via `docker compose run` on the operator's behalf, writing `_run_progress.json`. Its `KNOWN_STAGES` list must equal `STAGE_PIPELINE_IDS`' keys in `pipeline.py` — `tests/test_analysis_watcher.py` asserts this |
+| `analysis-watcher.service` (repo root) | v3.10 item 11 — systemd user unit (`Restart=on-failure`) running `./analysis-watcher --foreground`; enabling it is documented in `docker.md` |
+| `analysis-watcher` (repo root) | v3.8 item 1 — bash, runs on the host (never in a container, D1.2). Polls `data/analysis/*/artifacts/_run_request.json`; on a never-analysed song runs `./analyze --stage ensure-stems` (whisperX needs the vocal stem it produces — D1.1, corrected by the host end-to-end smoke) then `whisperx` then the full `./analyze`, all via `docker compose run` on the operator's behalf, writing `_run_progress.json`, and rewriting `data/analysis-watcher.heartbeat` every poll (v3.10 item 11; `get_watcher_status` reads it). Its `KNOWN_STAGES` list must equal `STAGE_PIPELINE_IDS`' keys in `pipeline.py` — `tests/test_analysis_watcher.py` asserts this |
 
 ## Where to start
 

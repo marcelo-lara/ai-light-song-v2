@@ -62,6 +62,10 @@ export const SEGMENT_FUNCTIONS: SegmentFunctionOption[] = [
   { name: "Drop", hint: "A main high-energy chorus/peak of the track." },
   { name: "Extended Drop", hint: "Common in longer club formats or specific genres like Trance." },
   {
+    name: "Drop Break",
+    hint: "A short break inside a drop that returns to the same drop: bass and drums fall out, then the drop resumes.",
+  },
+  {
     name: "Bridge",
     hint: "A contrasting section that connects major parts of the song, often appearing later in the arrangement.",
   },
