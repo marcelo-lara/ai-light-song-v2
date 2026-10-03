@@ -4,7 +4,7 @@
 // SparseBlock type.
 
 import type { EventTimeline } from "../../data/types";
-import type { CharacterFile, FilterSweepFile, PhrasesFile } from "../../data/sparseArtifacts";
+import type { BarFeaturesFile, CharacterFile, FilterSweepFile, PhrasesFile } from "../../data/sparseArtifacts";
 import type { SparseBlock } from "../laneContent";
 import { formatRange, round } from "./shared";
 
@@ -101,6 +101,58 @@ export function filterSweepContent(file: FilterSweepFile | null): SparseBlock[] 
       summary: `experiments/filter_sweep — ${b.stem} stem ${b.direction}: spectral centroid moved ` +
         `${round(b.depth, 2)} octaves over ${round(b.end_s - b.start_s, 1)} s with the stem's loudness level; ${conf}.`,
       tintId: b.direction === "closing" ? "filterSweepClosing" : "filterSweepOpening",
+      raw: b,
+    };
+  });
+}
+
+const fx = (v: number | null, d = 3): string => (v == null ? "n/a" : String(round(v, d)));
+
+/**
+ * Per-bar feature table from `experiments/bar_features` — one block per bar,
+ * tinted by the bar's brightness tercile within the song (grey when the bar is
+ * not 4 beats long: a known grid slip, flagged and never repaired). The label
+ * is the bar number; the caption carries the numbers. A feature table to read
+ * against the other lanes, not a claim.
+ */
+export function barFeaturesContent(file: BarFeaturesFile | null): SparseBlock[] {
+  const bars = file?.bars ?? [];
+  const br = bars.map((b) => b.brightness).filter((v): v is number => v != null).sort((a, b) => a - b);
+  const lo = br.length ? br[Math.floor(br.length / 3)]! : 0;
+  const hi = br.length ? br[Math.floor((2 * br.length) / 3)]! : 0;
+  return bars.map((b, i) => {
+    const drums = `k${b.kick} s${b.snare} h${b.hat}`;
+    const tint = b.irregular
+      ? "barFeaturesIrregular"
+      : b.brightness == null || b.brightness < lo
+        ? "barFeaturesLow"
+        : b.brightness >= hi
+          ? "barFeaturesHigh"
+          : "barFeaturesMid";
+    const slip = b.irregular ? ` · ${b.beats_in_bar} beats (not 4)` : "";
+    const arrange = [
+      b.entered.length ? `in: ${b.entered.join(",")}` : "",
+      b.left.length ? `out: ${b.left.join(",")}` : "",
+    ].filter(Boolean).join(" ");
+    return {
+      id: `bar-features-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: String(b.bar),
+      wideLabel: `${b.bar} · ${drums} · br ${fx(b.brightness, 2)}${slip}`,
+      laneLabel: "Bar Features",
+      caption: `bar ${b.bar} ${formatRange(b.start_s, b.end_s)} · mix ${fx(b.mix_rms)} bass ${fx(b.bass_rms)} ` +
+        `drums ${fx(b.drums_rms)} harm ${fx(b.harmonic_rms)} voc ${fx(b.vocals_rms)} · brightness ${fx(b.brightness, 2)} ` +
+        `· transient ${fx(b.transient_mean)}±${fx(b.transient_std)} · ${drums}${slip}`,
+      reference: `bar-features-${i + 1}`,
+      detail: [arrange, b.sweep_opening > 0 ? `sweep opening ${pct(b.sweep_opening)}` : "",
+        b.sweep_closing > 0 ? `sweep closing ${pct(b.sweep_closing)}` : "",
+        b.gestures.length ? `gestures: ${b.gestures.join(", ")}` : "",
+        `vocals ${pct(b.vocals_cover)}`].filter(Boolean).join(" · "),
+      summary: `experiments/bar_features — bar ${b.bar}, ${b.beats_in_bar} beats` +
+        (b.irregular ? " (not 4: grid slip, flagged not repaired)" : "") +
+        `: RMS mix ${fx(b.mix_rms)}, brightness ${fx(b.brightness, 2)}, ${drums}, vocals cover ${pct(b.vocals_cover)}.`,
+      tintId: tint,
       raw: b,
     };
   });

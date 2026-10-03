@@ -170,6 +170,11 @@ export const artifactPaths = {
   // while its loudness stays level.
   filterSweep: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "filter_sweep.json")),
+  // Written by experiments/bar_features (`run export`). v3.12 item 1: one row
+  // per bar fusing loudness, bands, brightness, transients, drum counts,
+  // arrangement, sweeps and gestures.
+  barFeatures: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "bar_features.json")),
   // Written by experiments/phrases (`run export`). v3.10 item 15: the song cut
   // where the audio changes, one block per phrase with presence / density
   // features. Never bar-counted.

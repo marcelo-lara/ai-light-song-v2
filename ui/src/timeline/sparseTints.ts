@@ -147,6 +147,12 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   filterSweepOpening: [310, 55, 48], // magenta — distinct from vocalPhrases'
   //   rose (340) and characterShadow/vocalPhrasesSustained violets (265-280)
   filterSweepClosing: [310, 30, 36], // dusky magenta — same hue, darker/greyer
+  // v3.12 item 1 — bar features. Tinted by the bar's brightness tercile within
+  // the song (low / mid / high); a bar that is not 4 beats long is grey.
+  barFeaturesLow: [200, 35, 30], // slate blue — dark bar
+  barFeaturesMid: [200, 50, 40],
+  barFeaturesHigh: [190, 70, 52], // bright cyan — bright bar
+  barFeaturesIrregular: [200, 5, 36], // grey — bar length != 4 beats (grid slip)
   // v3.10 item 15 — phrases. One lane; the tint only marks a phrase whose edge
   // evidence disagrees (`resolved: false`) in grey, so it reads apart at a glance.
   phrases: [20, 60, 44], // burnt orange — distinct from gestures (10) by lane kind

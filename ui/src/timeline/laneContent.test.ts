@@ -31,6 +31,7 @@ import {
   kickCheckContent,
   crashCheckContent,
   filterSweepContent,
+  barFeaturesContent,
   phrasesContent,
   sectionNamesContent,
   verdictChecksContent,
@@ -44,6 +45,7 @@ import type {
   KickCheckFile,
   CrashCheckFile,
   FilterSweepFile,
+  BarFeaturesFile,
   PhrasesFile,
   SectionNamesFile,
 } from "../data/sparseArtifacts";
@@ -762,6 +764,40 @@ describe("filterSweepContent", () => {
 
   it("never throws on a missing file", () => {
     expect(filterSweepContent(null)).toEqual([]);
+  });
+});
+
+describe("barFeaturesContent", () => {
+  const row = {
+    bar: 9, start_s: 15.26, end_s: 16.96, beats_in_bar: 4, irregular: false,
+    mix_rms: 0.022, bass_rms: 0.009, drums_rms: 0.013, harmonic_rms: 0.032, vocals_rms: 0.017,
+    brightness: 0.66, transient_mean: 0.012, transient_std: 0.023, kick: 3, snare: 3, hat: 7,
+    vocals_cover: 1, entered: ["bass"], left: ["drums"], sweep_opening: 1, sweep_closing: 0, gestures: [],
+  };
+  const file: BarFeaturesFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    bars: [
+      row,
+      { ...row, bar: 16, start_s: 27.25, end_s: 27.68, beats_in_bar: 1, irregular: true, brightness: null, gestures: ["build"] },
+    ],
+  };
+  const blocks = barFeaturesContent(file);
+
+  it("labels a bar with its number and drum counts", () => {
+    expect(blocks[0]!.label).toBe("9");
+    expect(blocks[0]!.wideLabel).toContain("k3 s3 h7");
+    expect(blocks[0]!.detail).toContain("in: bass");
+  });
+
+  it("flags a bar that is not 4 beats, and renders a null brightness honestly", () => {
+    expect(blocks[1]!.tintId).toBe("barFeaturesIrregular");
+    expect(blocks[1]!.caption).toContain("1 beats (not 4)");
+    expect(blocks[1]!.caption).toContain("brightness n/a");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(barFeaturesContent(null)).toEqual([]);
   });
 });
 

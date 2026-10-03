@@ -2,7 +2,7 @@
 // artifacts consumed by SparseLane (character, vocal transcription, vocal
 // phrases, allin1 posterior shadow labels, whisperx vad,
 // stem presence sections, vocal cadence, clap events, kick check, crash
-// check, filter sweep, phrases, section names, and the top-level published arrangement state).
+// check, filter sweep, bar features, phrases, section names, and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -913,6 +913,96 @@ export async function loadFilterSweep(
   const result = await loadJson(artifactPaths.filterSweep(song), parseFilterSweep, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+
+// ---------------------------------------------------------------------------
+// barFeatures — reference/proposals/bar_features.json
+// ---------------------------------------------------------------------------
+//
+// v3.12 item 1: one row per bar fusing existing artifacts (loudness, FFT bands,
+// brightness, transients, drum counts, vocals cover, arrangement entries,
+// sweeps, gestures). `experiments/bar_features`. A feature table, not a claim.
+// Only `bars[]` is read here; `half_beats[]` is for later detectors.
+
+export interface BarFeatureRow {
+  bar: number;
+  start_s: number;
+  end_s: number;
+  beats_in_bar: number;
+  irregular: boolean;
+  mix_rms: number | null;
+  bass_rms: number | null;
+  drums_rms: number | null;
+  harmonic_rms: number | null;
+  vocals_rms: number | null;
+  brightness: number | null;
+  transient_mean: number | null;
+  transient_std: number | null;
+  kick: number;
+  snare: number;
+  hat: number;
+  vocals_cover: number;
+  entered: string[];
+  left: string[];
+  sweep_opening: number;
+  sweep_closing: number;
+  gestures: string[];
+}
+
+export interface BarFeaturesFile {
+  schema_version: string;
+  song_name: string;
+  bars: BarFeatureRow[];
+}
+
+const numOrNull = (v: unknown): number | null => (v == null ? null : num(v));
+
+export function parseBarFeatures(raw: unknown): BarFeaturesFile {
+  const o = asObject(raw, "reference/proposals/bar_features.json");
+  const bars: BarFeatureRow[] = [];
+  for (const row of arr(o.bars)) {
+    const r = rec(row);
+    const loud = rec(r.loud_rms);
+    const sweep = rec(r.sweep);
+    bars.push({
+      bar: num(r.bar),
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      beats_in_bar: num(r.beats_in_bar),
+      irregular: r.irregular === true,
+      mix_rms: numOrNull(loud.mix),
+      bass_rms: numOrNull(loud.bass),
+      drums_rms: numOrNull(loud.drums),
+      harmonic_rms: numOrNull(loud.harmonic),
+      vocals_rms: numOrNull(loud.vocals),
+      brightness: numOrNull(r.brightness),
+      transient_mean: numOrNull(r.transient_mean),
+      transient_std: numOrNull(r.transient_std),
+      kick: num(r.kick),
+      snare: num(r.snare),
+      hat: num(r.hat),
+      vocals_cover: num(r.vocals_cover),
+      entered: arr(r.entered).map((x) => st(x)),
+      left: arr(r.left).map((x) => st(x)),
+      sweep_opening: num(sweep.opening),
+      sweep_closing: num(sweep.closing),
+      gestures: Object.keys(rec(r.gestures)),
+    });
+  }
+  bars.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), bars };
+}
+
+export async function loadBarFeatures(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<BarFeaturesFile>> {
+  const result = await loadJson(artifactPaths.barFeatures(song), parseBarFeatures, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, bars: [] } };
   }
   return result;
 }

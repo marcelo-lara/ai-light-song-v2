@@ -1463,6 +1463,40 @@ it is untested. The operator's lane review decides. Not promoted.
 
 ---
 
+## Bar Features — one row per bar from what already exists
+
+*(no external model or repo — fusion of existing artifacts)*
+
+### Status
+
+**Built and run, 2026-10-03 (v3.12 item 1) — 27 songs.** Full writeup:
+[`../experiments/bar_features/README.md`](../experiments/bar_features/README.md).
+Queue row enabled. Debugger lane: **Bar Features**, flask badge. Input to
+`light_changes`; nothing in `src/` reads it.
+
+### Why? What for?
+
+Medicine bars 9-17 showed in four artifacts and was acted on by none. One
+table per bar (and half-beat) lets detectors read one thing.
+
+### Experiment Plan
+
+Windows from `beats.json` bars (a bar not 4 beats long is flagged, never fixed).
+Per window: mix + stem loudness, 7 bands per source, brightness, transient mean
+and spread, kick/snare/hat counts, vocals cover, arrangement entered/left,
+`filter_sweep` overlap, gesture overlap.
+
+### Results evidence
+
+Validation-set changes show at their bars in the table (Medicine 8, 9, 10, 16,
+19, 23; Armin 55-60) — numbers in the README. No scorer: it makes no claim.
+
+### Conclusion
+
+A feature table; judged by what `light_changes` does with it. Not promoted.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

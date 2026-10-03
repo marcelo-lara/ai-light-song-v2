@@ -73,6 +73,7 @@ export const TIMELINE_KEYS = [
   "kickCheck",
   "crashCheck",
   "filterSweep",
+  "barFeatures",
   "phrases",
   "sectionNames",
 ] as const;
@@ -102,6 +103,7 @@ export const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]
   kickCheck: "kickCheck",
   crashCheck: "crashCheck",
   filterSweep: "filterSweep",
+  barFeatures: "barFeatures",
   phrases: "phrases",
   sectionNames: "sectionNames",
 };
