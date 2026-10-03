@@ -133,6 +133,8 @@ Onset times only; word text is never read or published.
 
 ## 8. Artifact cleanup
 
+**Done 2026-10-03:** the five orphans deleted on all 27 songs (135 files; nothing in `src/`, `mcp/`, `ui/src`, `experiments/` read them). `loudness_envelope.json` stays until the debugger derives it.
+
 **Change.** Delete orphans whose producer v3.10 removed: `artifacts/essentia/hpcp.json`,
 `artifacts/layer_a_harmonic.json`, `artifacts/layer_c_energy.json`,
 `artifacts/genre.json`, top-level `genre.json` (all 27 songs). Kept by operator
