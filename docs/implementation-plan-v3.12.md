@@ -1,6 +1,6 @@
 # Implementation plan — v3.12
 
-**Status: not started.** Turns [`product-refinement-v3.12.md`](product-refinement-v3.12.md)
+**Status: implemented.** Items 28, 29, 31, 32, 33, 34, 35, 37, 38 shipped; item 30 (downbeat re-anchoring) and item 36 (vocal cadence from word onsets) ended as measured experiments / decisions D2 and D9 (gate not met, nothing promoted). Turns [`product-refinement-v3.12.md`](product-refinement-v3.12.md)
 into an ordered worklist for a Sonnet implementer in batch mode. The refinement
 doc holds the rationale; this plan says what each item builds, how it is
 checked, and what must not be undone. Items continue v3.11's numbering (19–27
@@ -72,7 +72,7 @@ needing a design decision → a `BUG` in the refinement doc, "Addressed by item 
 
 | | |
 | --- | --- |
-| Done | 10 of 11 |
+| Done | 11 of 11 |
 | Visual QA items | 35 |
 | MCP full-regression | 34, 37 (smoke-test on every item touching `mcp/` or a top-level file) |
 | Contract changes | 30 (`beats.json` bar labels), 33 (`light_change` rows, `bar_features.json`, producers), 36 (`vocal_cadence.json` source tier) |
@@ -262,6 +262,6 @@ Armin 29/8.97 (6 sweeps), Best Friend 17/5.64 (5), ChangedTheWay 14/4.43 (4), Ch
 
 ## 38. Close-out
 
-- [ ] `CLAUDE.md` state table, `analysis-definition.md`, `mcp-definition.md`, `downstream-contract.md`, `artifacts.md`, `ui-definition.md`, `experiments.md` (promoted entries → archive): current state after items 29–37.
-- [ ] Refinement doc: shipped items dropped.
-- [ ] Status → "Done", then mark this plan implemented.
+- [x] `CLAUDE.md` state table, `analysis-definition.md`, `mcp-definition.md`, `downstream-contract.md`, `artifacts.md`, `ui-definition.md`, `experiments.md` (promoted entries → archive): current state after items 29–37.
+- [x] Refinement doc: shipped items dropped.
+- [x] Status → "Done", then mark this plan implemented.

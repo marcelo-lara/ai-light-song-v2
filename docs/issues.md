@@ -229,3 +229,58 @@ Current focus song: `_test_song`
 - **Validation target:** `docker compose run --rm test` before and after.
 - **Success condition:** the default run covers `experiments/*/tests` too (or
   the docs state, in one place, that it deliberately does not).
+
+### Light changes — `kick_present` misses Medicine bar 18
+
+- **Status:** `pending` — found in v3.12 item 29, accepted there (D1).
+- **Problem:** Medicine's bar-18 drum roll is low-end bumps with a click <= 4 dB; `CLICK_MIN_DB` 4.0 rejects it, and lowering the gate far enough admits the bass hits of bars 20-21. `kick_present` is right on 13 of 14 bars (9-17 present, 19-22 absent).
+- **Validation target:** *Medicine-MilkInc* bars 9-22 `kick_present` in `bar_features.json`.
+- **Success condition:** bar 18 reads present with bars 19-22 still absent, using a rule that is not a threshold tuned on Medicine alone.
+
+### `detect-kick-attacks` recall is near zero under a hat bed (Armin and others)
+
+- **Status:** `pending` — found in v3.12 item 29.
+- **Problem:** agreement with omnizart kicks (+-50 ms) is precision 0.44 / recall 0.32 over 27 songs and near-zero recall on *Armin*, *Sash*, *StealTheShow*, *Charli-VonDutch*, *ChangedTheWayYouKissMe*: the 2-5 kHz click does not clear a busy hat bed, so `kick_present` is false where a kick plays. The published `bar_features.json` `kick_present` is therefore unreliable on those songs.
+- **Validation target:** the five songs above, kick bars named by the operator in the Kick Attacks lane.
+- **Success condition:** `kick_present` on those songs agrees with the operator's reading without lowering precision on *Fascination* (.87) and *Medicine*.
+
+### Medicine fill, break and drop `light_change` points sit 0.95-1.00 beat early
+
+- **Status:** `pending` — found in v3.12 items 32 and 37.
+- **Problem:** the point time is floored to the beat that contains the change, so Medicine 8 fill (-1.00 beat), 19 break (-0.95) and 23 drop (-0.98) land a full beat before the bar start, right at the one-beat hit limit; a cue fired a beat early is a cue missed. Medicine also carries an extra break at 29.41 s (bar 18 beat 1).
+- **Validation target:** the 8 validation targets in `docs/implementation-plan-v3.12.md` item 37.
+- **Success condition:** round-to-nearest (a one-line change) or a half-beat-aware rule puts those three within half a beat with Armin 55/59/60 and Medicine 9/16 unchanged and 10-14 still empty.
+
+### 65% of filter sweeps carry `aftermath: none`
+
+- **Status:** `pending` — found in v3.12 item 31.
+- **Problem:** 131 sweeps on 27 songs (1.3/min), 85 with `aftermath: none` (halved confidence), the "suspect detection" signature. Thresholds were set on *Armin* and *Medicine*. Sweep end events and `aftermath` were not ported to `src/` (no consumer), so the sweep state in `bar_features.json` carries none of it.
+- **Validation target:** the Filter Sweeps v2 lane on *ayuni*, *Charli-VonDutch*, *Cinderella* (14 sweeps) and *It's a fine day* (14), reviewed by the operator.
+- **Success condition:** a verdict per sweep in the lane; the rule is tightened until the suspect share is explained or the `none` sweeps are dropped.
+
+### Downbeat re-anchor: let the phase change only inside an unresolved span
+
+- **Status:** `pending` — follow-up of `experiments/downbeat_reanchor` (v3.12 item 30, gate not met: F1 0.024 / 0.163 vs allin1 0.343).
+- **Problem:** one constant phase per trusted run cannot follow a real 1-beat slip (*Armin*), which is what costs the F1. The phase should be allowed to change only inside an unresolved (`resolved: false`) span or an `off_grid_span`, never in the middle of a resolved run. Today 72 bars outside `off_grid_spans` are not 4 beats long (99 in all).
+- **Validation target:** the 5 Moises songs (downbeat F1 @ +-70 ms) and Medicine bar 16 (a 1-beat bar).
+- **Success condition:** F1 above 0.343 with zero bars != 4 beats outside `off_grid_spans`, thresholds not tuned on the Moises songs.
+
+### `vocal_cadence` line starts without lyrics are unsolved
+
+- **Status:** `pending` — v3.12 item 36 gate not met (D9).
+- **Problem:** line starts from `vocal_onsets.json` word times (rest >= 1 beat) score F1 0.346 @ +-1 beat on the 5 songs with lyrics (needs 0.7); a 2-beat rest gives 0.305. Word onsets carry no end time and whisper splits slow phrasing. 22 of 27 songs have `source: null` and no lines.
+- **Validation target:** Armin, Hideaway, Queen of Kings, `_test_song`, Titanium lyric line starts.
+- **Success condition:** a method (word ends, `vocals_phrase` cover, or a forced aligner) reaches F1 >= 0.7 @ +-1 beat on those songs without reading word text.
+
+### Operator lane review: light changes and kick attacks
+
+- **Status:** `pending` — list from v3.12 item 37.
+- **Review:** *ayuni* (24 points, 8.74/min, 1 irregular bar) and *Charli-VonDutch* (8 points, 2.97/min, 5 irregular bars, 2 sweeps where v1 found 0) bar placement; every song above 8 points/min: *Armin - Revolution* 8.97, *Medicine-MilkInc* 8.82, *ayuni* 8.74 (next: *Rapture* 7.52, `_test_song` 7.23, *CruelSummer* 7.00); the Filter Sweeps v2 and Kick Attacks lanes.
+- **Success condition:** a verdict per song; points the operator rejects become a threshold or role-rule change.
+
+### Debugger lanes "Kick Attacks" and "Filter Sweeps v2" read experiments whose logic now lives in `src/`
+
+- **Status:** `pending` — found closing v3.12.
+- **Problem:** `src/` stages `detect-kick-attacks` and `extract-harmonic-spectrum` are ports of `experiments/kick_attacks` and `experiments/filter_sweep_v2`, whose proposals still draw two flask-badged lanes and are 404 on the fixtures (allowed by `OPTIONAL_PROPOSALS_404` in `tests/ui-visual/helpers.ts`). The experiments are archived as promoted, so by the lane rule the lanes should read `artifacts/` or be retired.
+- **Validation target:** `docker compose run --rm ui npm run test` and the visual suite.
+- **Success condition:** both lanes are either re-pointed at the stage artifacts or removed via Recipe B in [`reference/ui-development.md`](reference/ui-development.md), and `OPTIONAL_PROPOSALS_404` drops their paths.

@@ -23,6 +23,10 @@ Still open: [`../experiments.md`](../experiments.md).
 | [WhisperX VAD](experiments.promoted.whisperx-vad.md) | nothing — new `vocals_phrase` field | balanced accuracy 0.866–0.971 vs incumbent RMS 0.921–0.942 |
 | [Energy / tension / rhythm clue producers](experiments.promoted.energy-tension-rhythm-clues.md) | nothing — new `section_clues.py` stage | best-agreeing seed exact-match 0.98 (energy) down to 0.04 (vocal onsets); still provisional |
 | [Vocal cadence](experiments.promoted.vocal-cadence.md) | nothing — new `vocal_cadence.json` stage | 12/12 on Queen of Kings' named facts (lead-in bars, cadence-repeat offsets, calls) |
+| [Bar Features](experiments.promoted.bar-features.md) | nothing — new top-level `bar_features.json` | per-bar table; validation changes show at their bars (no scorer) |
+| [Light Changes](experiments.promoted.light-changes.md) | nothing — new `light_change` rows | 8 of 8 targets within one beat in `src/` (7 of 8 as experiment), 4.80 points/min; thresholds tuned on Medicine and Armin |
+| [Kick Attacks](experiments.promoted.kick-attacks.md) | nothing — feeds `kick_present` | Medicine 13 of 14 bars; omnizart agreement precision 0.44 / recall 0.32 |
+| [Filter Sweeps v2](experiments.promoted.filter-sweeps-v2.md) | nothing — `filter_sweep` stays unshipped | Armin bar 55 found via ramp onset; end event and `aftermath` not ported |
 
 ## Discarded — tried and did not earn a place, or dropped before running
 
