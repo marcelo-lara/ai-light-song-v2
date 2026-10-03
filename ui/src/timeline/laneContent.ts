@@ -36,6 +36,7 @@ import type {
   WhisperxVadFile,
   ClapEventsFile,
   KickCheckFile,
+  KickAttacksFile,
   CrashCheckFile,
   FilterSweepFile,
   BarFeaturesFile,
@@ -76,6 +77,7 @@ import {
 import {
   clapEventsContent,
   kickCheckContent,
+  kickAttacksContent,
   crashCheckContent,
 } from "./laneContent/drumHitChecks";
 import { verdictChecksContent } from "./laneContent/verdicts";
@@ -105,6 +107,7 @@ export {
   lightChangesContent,
   clapEventsContent,
   kickCheckContent,
+  kickAttacksContent,
   crashCheckContent,
   verdictChecksContent,
   formatRange,
@@ -177,6 +180,7 @@ export interface LaneContentSources {
   gestures?: EventTimeline | null;
   clapEvents?: ClapEventsFile | null;
   kickCheck?: KickCheckFile | null;
+  kickAttacks?: KickAttacksFile | null;
   crashCheck?: CrashCheckFile | null;
   filterSweep?: FilterSweepFile | null;
   barFeatures?: BarFeaturesFile | null;
@@ -206,6 +210,7 @@ export const SPARSE_LANE_IDS = [
   "gestures",
   "clapEvents",
   "kickCheck",
+  "kickAttacks",
   "crashCheck",
   "filterSweep",
   "barFeatures",
@@ -304,6 +309,8 @@ function buildLaneBlocksRaw(
       return clapEventsContent(s.clapEvents ?? null);
     case "kickCheck":
       return kickCheckContent(s.kickCheck ?? null);
+    case "kickAttacks":
+      return kickAttacksContent(s.kickAttacks ?? null);
     case "crashCheck":
       return crashCheckContent(s.crashCheck ?? null);
     case "filterSweep":

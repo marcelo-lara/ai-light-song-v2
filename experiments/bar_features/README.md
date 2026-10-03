@@ -30,13 +30,14 @@ mostly inside `beats.json` `off_grid_spans`. Per window:
 | `bands` (7 per source: mix + 4 stems) | `fft_bands{,.<stem>}.json`, mean level |
 | `brightness`, `transient_mean`, `transient_std` | mix FFT frames `brightness_ratio`, `transient_strength` |
 | `kick`, `snare`, `hat` | `drum_events.json` counts (omnizart; known over-labelling) |
+| `kick_attacks`, `kick_present` | `reference/proposals/kick_attacks.json` (v3.12 item 29): non-echo mix-audio kick attacks; present = >= 2 confident in a bar (1 per beat if the bar is under 2 beats), >= 1 in a half-beat window |
 | `vocals_cover` | fraction covered by `arrangement_state.json` `vocals_phrase` |
 | `entered`, `left`, `playing` | arrangement blocks starting in the window / block at the midpoint |
 | `sweep` `{opening, closing}` | overlap fraction with `reference/proposals/filter_sweep.json` |
 | `gestures` | `song_event_timeline.json` overlap fraction per type (point events: 1.0 if inside) |
 
 `half_beats[]` repeats the signal columns only (loudness, mix bands, brightness,
-transients, drum counts) for items 4/5. A missing input file raises.
+transients, drum counts, kick columns) for items 4/5. A missing input file raises.
 
 ## Run
 
@@ -46,7 +47,7 @@ docker compose run --rm --no-deps app python -m experiments.bar_features.run exp
 docker compose run --rm test python -m pytest experiments/bar_features
 ```
 
-Needs `reference/proposals/filter_sweep.json` first (queue order handles it).
+Needs `reference/proposals/filter_sweep.json` and `reference/proposals/kick_attacks.json` first (queue order handles it).
 
 ## UI lane
 

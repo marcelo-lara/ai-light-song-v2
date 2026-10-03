@@ -89,6 +89,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "sectionNames", label: "Section Names", sub: "experiment · every phrase named in the typical EDM sequence (Intro, Build-Up, Drop ...) from kick/bass entries and hits; current labels kept where no build→drop unit is found", kind: "proposals", height: 50, experiment: "section_names" },
   { id: "clapEvents", label: "Clap Events", sub: "experiment · claps detected from the drums stem by per-hit spectral shape, never omnizart's label", kind: "proposals", height: 50, experiment: "clap_events" },
   { id: "kickCheck", label: "Kick Check", sub: "experiment · every omnizart kick kept/rejected by spectral shape + percussive-attack gate", kind: "proposals", height: 50, experiment: "kick_check" },
+  { id: "kickAttacks", label: "Kick Attacks", sub: "experiment · kick attacks on the mix (steep 40-120 Hz rise + 2-5 kHz click); weaker repeats labelled echo, off-grid ones low confidence", kind: "proposals", height: 50, experiment: "kick_attacks" },
   { id: "crashCheck", label: "Crash Check", sub: "experiment · every omnizart crash kept/rejected by stream-period + decay-shape gate", kind: "proposals", height: 50, experiment: "crash_check" },
   { id: "fftBands", label: "FFT Bands", sub: "essentia · 7 spectral bands", kind: "fft", height: 84 },
   { id: "fftBandsBass", label: "FFT Bands · Bass", sub: "essentia · 7 bands · bass stem (Demucs)", kind: "fft", height: 84 },

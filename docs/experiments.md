@@ -1540,6 +1540,46 @@ The lane review decides. Not promoted.
 
 ---
 
+## Kick Attacks — a kick measured as an attack, on the mix
+
+*(no external model or repo — band-pass envelopes on the mix; kick_check's sibling)*
+
+### Status
+
+**Built and run, 2026-10-03 (v3.12 item 29) — 27 songs, 6,767 attacks + 715 echoes;
+Medicine bar check 13 of 14.** Full writeup:
+[`../experiments/kick_attacks/README.md`](../experiments/kick_attacks/README.md).
+Queue row enabled (before `bar_features`). Debugger lane: **Kick Attacks**, flask badge.
+`bar_features` gains `kick_attacks` / `kick_present`. Nothing in `src/` reads it; not promoted.
+
+### Why? What for?
+
+omnizart's `kick` over-fires (toms, snares, sub pads); item 30's kick phase and a
+"kick playing" column need a kick that is an attack, never a level.
+
+### Experiment Plan
+
+Mix audio: steep 40-120 Hz rise with a coincident 2-5 kHz click (pitch drop as tie-break),
+weaker+duller repeats at a recurring offset labelled `echo`, off-grid (> 1/4 beat)
+survivors kept at x0.4 confidence. Scored by Medicine bars 9-18 `kick_present` / 19-22 not,
+and agreement with `drum_events` kicks (+-50 ms) per song.
+
+### Results evidence
+
+Medicine 13 of 14 (bar 18, a drum roll with no click-bearing low attack, is missed).
+Agreement with omnizart over 27 songs: precision .44, recall .32 (best *Fascination*
+.87/.77; near-zero recall on *Armin*, *Sash*, *StealTheShow*, *Charli-VonDutch*, where the
+click does not clear a busy hat bed). Thresholds `CLICK_DB`, `CLICK_MIN_DB`,
+`PRESENT_MIN_CONF`, the 50 ms bin shift and the short-bar rule were set looking at
+Medicine: validation, not held out.
+
+### Conclusion
+
+Separates Medicine's kicks from its bass hits and echoes, at the price of recall in dense
+mixes. The lane review decides. Not promoted.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

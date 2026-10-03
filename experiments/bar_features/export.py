@@ -24,7 +24,7 @@ def export(song: str) -> dict:
             "engine": "fusion of existing artifacts onto beats.json bar / half-beat windows; nothing extracted from audio",
             "inputs": ["beats.json", "loudness.json", "artifacts/essentia/fft_bands{,.<stem>}.json",
                        "drum_events.json", "arrangement_state.json", "song_event_timeline.json",
-                       "reference/proposals/filter_sweep.json"],
+                       "reference/proposals/filter_sweep.json", "reference/proposals/kick_attacks.json"],
             "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
         },
         "bars": cache["bars"],

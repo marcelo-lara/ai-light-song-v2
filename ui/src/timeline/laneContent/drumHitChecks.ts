@@ -4,7 +4,7 @@
 // (`experiments/drum_hit_shape.py`), never omnizart's own label. Each block
 // is drawn with a minimum width (`MIN_WIDTH_S`) — a point event, not a span.
 
-import type { ClapEventsFile, CrashCheckFile, KickCheckFile } from "../../data/sparseArtifacts";
+import type { ClapEventsFile, CrashCheckFile, KickAttacksFile, KickCheckFile } from "../../data/sparseArtifacts";
 import type { SparseBlock } from "../laneContent";
 import { formatRange, round } from "./shared";
 
@@ -62,6 +62,36 @@ function buildKickBlock(k: { time: number; verdict: string; low_share: number; n
     raw: k,
     tintId: kept ? "kickCheckKeep" : "kickCheckReject",
   };
+}
+
+/**
+ * Kick attacks detected on the mix — `experiments/kick_attacks`. Echo rows (weaker, duller
+ * repeats at a recurring offset) are labelled `echo` and tinted grey; an attack beyond 1/4
+ * beat from the beat grid keeps its event at reduced confidence and is tinted dusky.
+ * A proposal to audition, not truth.
+ */
+export function kickAttacksContent(file: KickAttacksFile | null): SparseBlock[] {
+  return (file?.events ?? []).map((e, i) => {
+    const id = `kick-attacks-${i + 1}`;
+    const echo = e.echo_of != null;
+    const conf = e.confidence == null ? "no confidence reported" : `confidence ${round(e.confidence, 2)}`;
+    const grid = e.grid === "untrusted" ? "grid untrusted" : e.on_grid ? "on grid" : "off grid";
+    const ev = `rise ${e.rise_db == null ? "n/a" : round(e.rise_db, 1)} dB · click ${e.click_db == null ? "n/a" : round(e.click_db, 1)} dB`;
+    return {
+      id,
+      start_s: e.time,
+      end_s: e.time + MIN_WIDTH_S,
+      label: echo ? "echo" : "kick",
+      wideLabel: echo ? `echo of ${round(e.echo_of as number, 2)}s` : `kick · ${conf}`,
+      laneLabel: "Kick Attacks",
+      caption: `${formatRange(e.time, e.time)} · ${echo ? "echo" : "kick"} · ${conf} · ${grid}`,
+      reference: id,
+      detail: `${ev}${e.pitch_drop ? " · pitch drop" : ""}`,
+      summary: "experiments/kick_attacks — steep 40-120 Hz rise with a coincident 2-5 kHz click on the mix; weaker+duller repeats at a recurring offset labelled echo; off-grid kept at low confidence. Proposal to audition, not truth.",
+      raw: e,
+      tintId: echo ? "kickAttacksEcho" : e.on_grid || e.grid === "untrusted" ? "kickAttacks" : "kickAttacksOffGrid",
+    };
+  });
 }
 
 /**

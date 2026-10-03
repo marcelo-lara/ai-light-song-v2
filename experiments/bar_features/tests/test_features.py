@@ -46,3 +46,12 @@ def test_cover_unions_overlapping_spans():
     assert features._cover([(0, 2), (1, 3)], 0, 4) == 0.75
     assert features._cover([], 0, 4) == 0.0
     assert features._cover([(5, 6)], 0, 4) == 0.0
+
+
+def test_kick_columns_on_bar_and_half_beat_rows():
+    from experiments.kick_attacks import present
+    ev = [{"time": 0.1, "confidence": 0.8, "echo_of": None}, {"time": 0.6, "confidence": 0.7, "echo_of": None}]
+    assert present.window_counts(ev, 0.0, 2.0, min(present.BAR_MIN_ATTACKS, 4)) == (2, True)
+    assert present.window_counts(ev, 0.0, 0.25, present.HALF_MIN_ATTACKS) == (1, True)
+    assert present.window_counts(ev, 0.0, 0.5, min(present.BAR_MIN_ATTACKS, 1)) == (1, True)   # 1-beat bar: one per beat
+    assert "kick_present" in features.HALF_BEAT_KEYS and "kick_attacks" in features.HALF_BEAT_KEYS

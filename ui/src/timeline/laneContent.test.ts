@@ -29,6 +29,7 @@ import {
   vocalCadenceContent,
   clapEventsContent,
   kickCheckContent,
+  kickAttacksContent,
   crashCheckContent,
   filterSweepContent,
   barFeaturesContent,
@@ -44,6 +45,7 @@ import type {
   VocalCadenceFile,
   ClapEventsFile,
   KickCheckFile,
+  KickAttacksFile,
   CrashCheckFile,
   FilterSweepFile,
   BarFeaturesFile,
@@ -704,6 +706,38 @@ describe("kickCheckContent", () => {
 
   it("never throws on a missing file", () => {
     expect(kickCheckContent(null)).toEqual([]);
+  });
+});
+
+describe("kickAttacksContent", () => {
+  const file: KickAttacksFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    events: [
+      { time: 17.363, confidence: 0.74, echo_of: null, on_grid: true, grid: "trusted", rise_db: 27.2, click_db: 18.5, pitch_drop: false },
+      { time: 17.691, confidence: 0.2, echo_of: 17.363, on_grid: false, grid: "trusted", rise_db: 8.8, click_db: 7.2, pitch_drop: false },
+      { time: 18.01, confidence: 0.26, echo_of: null, on_grid: false, grid: "trusted", rise_db: null, click_db: null, pitch_drop: true },
+    ],
+  };
+  const blocks = kickAttacksContent(file);
+
+  it("labels a kick, tinted on-grid", () => {
+    expect(blocks[0]!.label).toBe("kick");
+    expect(blocks[0]!.tintId).toBe("kickAttacks");
+    expect(blocks[0]!.detail).toBe("rise 27.2 dB · click 18.5 dB");
+  });
+
+  it("labels an echo with its parent and tints an off-grid kick apart", () => {
+    expect(blocks[1]!.label).toBe("echo");
+    expect(blocks[1]!.tintId).toBe("kickAttacksEcho");
+    expect(blocks[1]!.wideLabel).toContain("17.36");
+    expect(blocks[2]!.tintId).toBe("kickAttacksOffGrid");
+    expect(blocks[2]!.caption).toContain("off grid");
+  });
+
+  it("renders missing evidence honestly and never throws on a missing file", () => {
+    expect(blocks[2]!.detail).toBe("rise n/a dB · click n/a dB · pitch drop");
+    expect(kickAttacksContent(null)).toEqual([]);
   });
 });
 

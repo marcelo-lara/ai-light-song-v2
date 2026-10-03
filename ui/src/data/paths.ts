@@ -160,6 +160,10 @@ export const artifactPaths = {
   // sibling): every omnizart `kick` kept/rejected by per-hit spectral shape.
   kickCheck: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "kick_check.json")),
+  // Written by experiments/kick_attacks (`run export`). v3.12 item 29: kick
+  // attacks on the mix (steep 40-120 Hz rise + 2-5 kHz click), echoes labelled.
+  kickAttacks: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "kick_attacks.json")),
   // Written by experiments/crash_check (`run export`). The "crash over-fires
   // on bright hats/rides" bug: every omnizart `crash` kept/rejected by
   // stream-period + decay-shape.

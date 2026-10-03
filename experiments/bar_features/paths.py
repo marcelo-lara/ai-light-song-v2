@@ -3,7 +3,7 @@
 `src/` never imports this package (docs/experiments.md sandbox rule). Reads,
 read-only, existing analysis data only: top-level `beats.json`, `loudness.json`,
 `drum_events.json`, `arrangement_state.json`, `song_event_timeline.json`;
-`artifacts/essentia/fft_bands{,.<stem>}.json`; `reference/proposals/filter_sweep.json`.
+`artifacts/essentia/fft_bands{,.<stem>}.json`; `reference/proposals/filter_sweep.json`, `reference/proposals/kick_attacks.json`.
 Writes: `cache/<song>.json` and `reference/proposals/bar_features.json`.
 """
 from __future__ import annotations
@@ -33,6 +33,10 @@ def top_path(song: str, name: str) -> Path:
 
 def filter_sweep_path(song: str) -> Path:
     return song_dir(song) / "reference" / "proposals" / "filter_sweep.json"
+
+
+def kick_attacks_path(song: str) -> Path:
+    return song_dir(song) / "reference" / "proposals" / "kick_attacks.json"
 
 
 def cache_path(song: str) -> Path:

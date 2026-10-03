@@ -1,7 +1,7 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (character, vocal transcription, vocal
 // phrases, allin1 posterior shadow labels, whisperx vad,
-// stem presence sections, vocal cadence, clap events, kick check, crash
+// stem presence sections, vocal cadence, clap events, kick check, kick attacks, crash
 // check, filter sweep, bar features, light changes, phrases, section names, and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
@@ -812,6 +812,62 @@ export async function loadKickCheck(
   const result = await loadJson(artifactPaths.kickCheck(song), parseKickCheck, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, kicks: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// kickAttacks — reference/proposals/kick_attacks.json
+// ---------------------------------------------------------------------------
+//
+// v3.12 item 29: kick attacks detected on the mix (steep 40-120 Hz rise with a
+// coincident 2-5 kHz click), echoes labelled `echo_of`. `experiments/kick_attacks`.
+// A proposal, not truth.
+
+export interface KickAttackEvent {
+  time: number;
+  confidence: number | null;
+  echo_of: number | null;
+  on_grid: boolean;
+  grid: string; // "trusted" | "untrusted"
+  rise_db: number | null;
+  click_db: number | null;
+  pitch_drop: boolean;
+}
+
+export interface KickAttacksFile {
+  schema_version: string;
+  song_name: string;
+  events: KickAttackEvent[];
+}
+
+export function parseKickAttacks(raw: unknown): KickAttacksFile {
+  const o = asObject(raw, "reference/proposals/kick_attacks.json");
+  const events: KickAttackEvent[] = [];
+  for (const row of arr(o.events)) {
+    const r = rec(row);
+    events.push({
+      time: num(r.time),
+      confidence: r.confidence == null ? null : num(r.confidence),
+      echo_of: r.echo_of == null ? null : num(r.echo_of),
+      on_grid: r.on_grid !== false,
+      grid: st(r.grid, "trusted"),
+      rise_db: r.rise_db == null ? null : num(r.rise_db),
+      click_db: r.click_db == null ? null : num(r.click_db),
+      pitch_drop: r.pitch_drop === true,
+    });
+  }
+  events.sort((a, b) => a.time - b.time);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), events };
+}
+
+export async function loadKickAttacks(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<KickAttacksFile>> {
+  const result = await loadJson(artifactPaths.kickAttacks(song), parseKickAttacks, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, events: [] } };
   }
   return result;
 }

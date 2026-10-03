@@ -12,6 +12,9 @@ half-beat rows are slimmed to loudness, mix bands, brightness, transients and dr
   bands                 mean of the 7 FFT band levels per source (mix + 4 stems)
   brightness, transient_mean, transient_std   mix FFT frames
   kick / snare / hat    drum_events.json counts
+  kick_attacks / kick_present   experiments/kick_attacks (v3.12 item 29), mix-audio kick attacks net of
+                        echoes; present = >= 2 confident ones in a bar (1 per beat in a bar under 2 beats),
+                        >= 1 in a half-beat window (`kick_attacks.present`)
   vocals_cover          fraction covered by arrangement_state `vocals_phrase`
   entered / left / playing   arrangement_state block boundaries in the window / block at the midpoint
   sweep                 fraction overlapped by filter_sweep proposals, per direction
@@ -23,6 +26,8 @@ from __future__ import annotations
 import json
 
 import numpy as np
+
+from experiments.kick_attacks import present as kick_present_rule
 
 from . import paths
 
@@ -126,6 +131,7 @@ def load_inputs(song: str) -> dict:
         "arr": _load(paths.top_path(song, "arrangement_state.json")),
         "timeline": _load(paths.top_path(song, "song_event_timeline.json"))["events"],
         "sweeps": _load(paths.filter_sweep_path(song))["blocks"],
+        "kick_attacks": _load(paths.kick_attacks_path(song))["events"],
     }
 
 
@@ -157,6 +163,9 @@ def _rows(windows: list[dict], inp: dict) -> list[dict]:
     rows = []
     for i, w in enumerate(windows):
         s, e = w["start_s"], w["end_s"]
+        is_bar = "beats_in_bar" in w
+        min_att = min(kick_present_rule.BAR_MIN_ATTACKS, w["beats_in_bar"]) if is_bar else kick_present_rule.HALF_MIN_ATTACKS
+        n_kick, kick_here = kick_present_rule.window_counts(inp["kick_attacks"], s, e, min_att)
         mid = (s + e) / 2.0
         entered: list[str] = []
         left: list[str] = []
@@ -181,6 +190,7 @@ def _rows(windows: list[dict], inp: dict) -> list[dict]:
             "brightness": rnd(bright[i]),
             "transient_mean": rnd(trans_m[i]), "transient_std": rnd(trans_s[i]),
             "kick": int(counts["kick"][i]), "snare": int(counts["snare"][i]), "hat": int(counts["hat"][i]),
+            "kick_attacks": n_kick, "kick_present": kick_here,
             "vocals_cover": round(_cover(voc, s, e), 3),
             "entered": entered, "left": left, "playing": playing,
             "sweep": {d: round(_cover(sp, s, e), 3) for d, sp in sweeps.items()},
@@ -192,7 +202,7 @@ def _rows(windows: list[dict], inp: dict) -> list[dict]:
 
 
 HALF_BEAT_KEYS = ("bar", "beat", "half", "start_s", "end_s", "loud_rms", "bands_mix", "brightness",
-                  "transient_mean", "transient_std", "kick", "snare", "hat")
+                  "transient_mean", "transient_std", "kick", "snare", "hat", "kick_attacks", "kick_present")
 
 
 def _slim_half(row: dict) -> dict:

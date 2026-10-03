@@ -140,6 +140,10 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //   moisesLyrics (210) and allin1Posterior (130)
   kickCheckKeep: [105, 55, 40], // green — a kick that keeps its label
   kickCheckReject: [5, 70, 46], // red-orange — a kick relabelled away
+  // v3.12 item 29 — kick attacks on the mix. Echo and off-grid rows read apart.
+  kickAttacks: [150, 60, 40], // green — a kick attack on the grid
+  kickAttacksOffGrid: [150, 30, 30], // dusky green — beyond 1/4 beat from the grid, low confidence
+  kickAttacksEcho: [0, 0, 40], // grey — weaker, duller repeat of an earlier attack
   crashCheckKeep: [168, 55, 40], // teal-green — an isolated accent kept
   crashCheckReject: [355, 65, 46], // red — a stream member rejected
   // v3.10 item 14 — filter sweeps. One lane; the tint only splits direction
