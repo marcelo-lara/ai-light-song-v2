@@ -1472,7 +1472,8 @@ it is untested. The operator's lane review decides. Not promoted.
 **Built and run, 2026-10-03 (v3.12 item 1) — 27 songs.** Full writeup:
 [`../experiments/bar_features/README.md`](../experiments/bar_features/README.md).
 Queue row enabled. Debugger lane: **Bar Features**, flask badge. Input to
-`light_changes`; nothing in `src/` reads it.
+`light_changes`; nothing in `src/` reads it yet. **Operator verdict (lane
+review): promote** — ported to `src/` by v3.12 item 32.
 
 ### Why? What for?
 
@@ -1507,7 +1508,8 @@ A feature table; judged by what `light_changes` does with it. Not promoted.
 validation targets hit.** Full writeup:
 [`../experiments/light_changes/README.md`](../experiments/light_changes/README.md).
 Queue row enabled. Debugger lane: **Light Changes**, flask badge. Nothing in `src/`
-reads it; not promoted.
+reads it yet. **Operator verdict (lane review): promote** — Armin good; Medicine,
+ayuni, Charli-VonDutch very good. Ported to `src/` by v3.12 item 32.
 
 ### Why? What for?
 

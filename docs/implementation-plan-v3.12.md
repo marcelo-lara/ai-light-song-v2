@@ -72,20 +72,20 @@ needing a design decision → a `BUG` in the refinement doc, "Addressed by item 
 
 | | |
 | --- | --- |
-| Done | 0 of 11 |
+| Done | 1 of 11 |
 | Visual QA items | 35 |
 | MCP full-regression | 34, 37 (smoke-test on every item touching `mcp/` or a top-level file) |
 | Contract changes | 30 (`beats.json` bar labels), 33 (`light_change` rows, `bar_features.json`, producers), 36 (`vocal_cadence.json` source tier) |
-| Pre-existing failures | — |
-| Decisions | — |
+| Pre-existing failures | `docker compose run --rm test` 223 pass; `ui npm run test` 525 pass; `npm run build` ok; MCP `smoke-test` 29/29 and `full-regression` 59/59 pass. **Visual suite: 50 of 58 specs fail on HEAD, one cause**: the `Bar Features` and `Light Changes` proposal lanes (v3.12 items 1–2) request `reference/proposals/bar_features.json` and `light_changes.json`, which the `RegFull - Fixture` has not got, so every spec that asserts no failed response gets two 404s (e.g. `song-full`, `timeline-zoom`, `timeline-scrolled`, `verdict-checks`, `phrases`, `filter-sweep`, `hint-drag`, `left-panel`, `header-readout`). 6 specs pass, 2 did not run. Item 35 moves both lanes to published files and adds fixtures, which clears it; not fixed earlier. |
+| Decisions | D0 (resolved): the `/implement` workflow says never push, the plan says push each item; commits stay local and the operator pushes. |
 
 ---
 
 ## 28. Pre-flight
 
-- [ ] Commit this plan and the refinement update as ``28. v3.12 plan``.
-- [ ] Run every suite above on HEAD; list each failing test by name in Status → "Pre-existing failures".
-- [ ] `docs/experiments.md`: `bar_features` and `light_changes` entries record the operator verdict "promote" (refinement item 2).
+- [x] Commit this plan and the refinement update as ``28. v3.12 plan``.
+- [x] Run every suite above on HEAD; list each failing test by name in Status → "Pre-existing failures".
+- [x] `docs/experiments.md`: `bar_features` and `light_changes` entries record the operator verdict "promote" (refinement item 2).
 
 ---
 
