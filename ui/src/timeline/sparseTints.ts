@@ -157,6 +157,9 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   barFeaturesMid: [200, 50, 40],
   barFeaturesHigh: [190, 70, 52], // bright cyan — bright bar
   barFeaturesIrregular: [200, 5, 36], // grey — bar length != 4 beats (grid slip)
+  // v3.12 item 30 — downbeat reanchor: a bar whose downbeat has agreeing anchors vs. none/disagreeing.
+  downbeatReanchor: [30, 60, 42], // amber — resolved downbeat
+  downbeatReanchorUnresolved: [30, 5, 36], // grey — confidence null (anchors disagree or none)
   // v3.12 item 2 — light changes. One tint per role.
   lightChangeGrooveIn: [140, 55, 42], // green
   lightChangeBuild: [45, 75, 50], // amber

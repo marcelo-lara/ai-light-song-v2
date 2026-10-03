@@ -2,7 +2,7 @@
 // artifacts consumed by SparseLane (character, vocal transcription, vocal
 // phrases, allin1 posterior shadow labels, whisperx vad,
 // stem presence sections, vocal cadence, clap events, kick check, kick attacks, crash
-// check, filter sweep, bar features, light changes, phrases, section names, and the top-level published arrangement state).
+// check, filter sweep, bar features, downbeat reanchor, light changes, phrases, section names, and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -1063,6 +1063,60 @@ export async function loadBarFeatures(
   return result;
 }
 
+
+// ---------------------------------------------------------------------------
+// downbeatReanchor — reference/proposals/downbeat_reanchor.json
+// ---------------------------------------------------------------------------
+//
+// v3.12 item 30: bar labels rebuilt from anchor votes (kick-phase windows,
+// impacts, bass/drums entries); beat times unchanged. `experiments/downbeat_reanchor`.
+// A proposal, not truth. Only `bars[]` is read here.
+
+export interface DownbeatReanchorBar {
+  bar: number;
+  start_s: number;
+  end_s: number;
+  beats_in_bar: number;
+  irregular: boolean;
+  resolved: boolean;
+  downbeat_confidence: number | null;
+}
+
+export interface DownbeatReanchorFile {
+  schema_version: string;
+  song_name: string;
+  bars: DownbeatReanchorBar[];
+}
+
+export function parseDownbeatReanchor(raw: unknown): DownbeatReanchorFile {
+  const o = asObject(raw, "reference/proposals/downbeat_reanchor.json");
+  const bars: DownbeatReanchorBar[] = [];
+  for (const row of arr(o.bars)) {
+    const r = rec(row);
+    bars.push({
+      bar: num(r.bar),
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      beats_in_bar: num(r.beats_in_bar),
+      irregular: r.irregular === true,
+      resolved: r.resolved === true,
+      downbeat_confidence: r.downbeat_confidence == null ? null : num(r.downbeat_confidence),
+    });
+  }
+  bars.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), bars };
+}
+
+export async function loadDownbeatReanchor(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<DownbeatReanchorFile>> {
+  const result = await loadJson(artifactPaths.downbeatReanchor(song), parseDownbeatReanchor, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, bars: [] } };
+  }
+  return result;
+}
 
 // ---------------------------------------------------------------------------
 // lightChanges — reference/proposals/light_changes.json

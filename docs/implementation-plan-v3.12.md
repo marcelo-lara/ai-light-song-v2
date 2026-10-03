@@ -72,12 +72,12 @@ needing a design decision → a `BUG` in the refinement doc, "Addressed by item 
 
 | | |
 | --- | --- |
-| Done | 2 of 11 |
+| Done | 3 of 11 |
 | Visual QA items | 35 |
 | MCP full-regression | 34, 37 (smoke-test on every item touching `mcp/` or a top-level file) |
 | Contract changes | 30 (`beats.json` bar labels), 33 (`light_change` rows, `bar_features.json`, producers), 36 (`vocal_cadence.json` source tier) |
 | Pre-existing failures | `docker compose run --rm test` 223 pass; `ui npm run test` 525 pass; `npm run build` ok; MCP `smoke-test` 29/29 and `full-regression` 59/59 pass. **Visual suite: 50 of 58 specs fail on HEAD, one cause**: the `Bar Features` and `Light Changes` proposal lanes (v3.12 items 1–2) request `reference/proposals/bar_features.json` and `light_changes.json`, which the `RegFull - Fixture` has not got, so every spec that asserts no failed response gets two 404s (e.g. `song-full`, `timeline-zoom`, `timeline-scrolled`, `verdict-checks`, `phrases`, `filter-sweep`, `hint-drag`, `left-panel`, `header-readout`). 6 specs pass, 2 did not run. Item 35 moves both lanes to published files and adds fixtures, which clears it; not fixed earlier. |
-| Decisions | D0 (resolved): the operator told this session to push; each item is pushed to `origin v3.12` after its commit. D1 (item 29): Medicine `kick_present` is right on 13 of 14 bars (9–17 present, 19–22 absent) and **misses bar 18**: its drum-roll hits are low-end bumps with a click ≤ 4 dB, and lowering the click gate far enough admits the bass hits in bars 20–21. Accepted, not tuned further. Thresholds `CLICK_DB` 6.5, `CLICK_MIN_DB` 4.0, `PRESENT_MIN_CONF` 0.25, the +50 ms bin shift and the short-bar rule were chosen on Medicine (not held out). Agreement with `drum_events` kicks ±50 ms, mean of 27 songs: precision 0.44, recall 0.32 (omnizart over-labels toms and snares, so a cross-check only); recall near zero on Armin, Sash, StealTheShow, Charli-VonDutch, ChangedTheWayYouKissMe where a hat bed hides the click. Corpus: 6,767 attacks (68/min), 715 echoes, 35% off-grid. |
+| Decisions | D0 (resolved): the operator told this session to push; each item is pushed to `origin v3.12` after its commit. D1 (item 29): Medicine `kick_present` is right on 13 of 14 bars (9–17 present, 19–22 absent) and **misses bar 18**: its drum-roll hits are low-end bumps with a click ≤ 4 dB, and lowering the click gate far enough admits the bass hits in bars 20–21. Accepted, not tuned further. Thresholds `CLICK_DB` 6.5, `CLICK_MIN_DB` 4.0, `PRESENT_MIN_CONF` 0.25, the +50 ms bin shift and the short-bar rule were chosen on Medicine (not held out). Agreement with `drum_events` kicks ±50 ms, mean of 27 songs: precision 0.44, recall 0.32 (omnizart over-labels toms and snares, so a cross-check only); recall near zero on Armin, Sash, StealTheShow, Charli-VonDutch, ChangedTheWayYouKissMe where a hat bed hides the click. Corpus: 6,767 attacks (68/min), 715 echoes, 35% off-grid.  D2 (item 30, **gate not met, not promoted**): `experiments/downbeat_reanchor` scores downbeat F1 @ +-70 ms on the 5 Moises songs **0.024** (confidence-bearing downbeats, the incumbent's convention) / **0.163** (all downbeats) vs allin1 0.343 and `downbeat_anchors` 0.301, with 0 bars != 4 beats outside `off_grid_spans` (47 on today's grid; 74 counting the song-edge partials). Zero irregular bars is met by construction (one phase per trusted run) and is what costs the F1: *Armin* has a real 1-beat slip inside one trusted run, and the votes are thin (kick phase alone 0.000). `timing.py`, `artifacts.md` and `downstream-contract.md` untouched; **items 32+ proceed on the old grid**. No threshold was tuned on Medicine, Armin, ayuni or Charli-VonDutch (a post-hoc 24-point grid reached at most 0.166, not adopted). Possible follow-up outside this plan: let the phase change only inside an unresolved span. |
 
 ---
 
@@ -108,17 +108,17 @@ Refinement item 4. Experiment `experiments/kick_attacks/`, beside `kick_check`.
 
 Refinement item 3. Experiment `experiments/downbeat_reanchor/`; ported to `timing.py` only if it passes.
 
-- [ ] Beat times unchanged. Anchors: item-29 kick attacks on the beat (kick-phase over a sliding 8-bar window), `song_event_timeline` impacts, `arrangement_state` bass/drums entries. Each anchor votes a downbeat phase.
-- [ ] Between anchors, bars counted in fours on beat times; the slip is resolved by relabelling the index, never by warping time. Disagreeing anchors → span `resolved: false` (existing `downbeat_confidence: null` rule).
-- [ ] Spans with no kick (Charli-VonDutch) use the remaining anchors; none → allin1's phase, unresolved.
-- [ ] Score: downbeat F1 @ ±70 ms on the Moises songs vs allin1 (.343) and `downbeat_anchors` (.301); count of bars ≠ 4 beats outside `off_grid_spans`, corpus-wide.
-- [ ] Promote **only if** F1 > .343 and zero irregular bars: `timing.py` writes `bar`/`beat`/`type`/`downbeat_confidence` from the re-anchored phase; `field_sources` names the new producer. Otherwise stays an experiment and becomes a `D` item; items 32+ proceed on the old grid.
+- [x] Beat times unchanged. Anchors: item-29 kick attacks on the beat (kick-phase over a sliding 8-bar window), `song_event_timeline` impacts, `arrangement_state` bass/drums entries. Each anchor votes a downbeat phase.
+- [x] Between anchors, bars counted in fours on beat times; the slip is resolved by relabelling the index, never by warping time. Disagreeing anchors → span `resolved: false` (existing `downbeat_confidence: null` rule).
+- [x] Spans with no kick (Charli-VonDutch) use the remaining anchors; none → allin1's phase, unresolved.
+- [x] Score: downbeat F1 @ ±70 ms on the Moises songs vs allin1 (.343) and `downbeat_anchors` (.301); count of bars ≠ 4 beats outside `off_grid_spans`, corpus-wide.
+- [x] Promote **only if** F1 > .343 and zero irregular bars: `timing.py` writes `bar`/`beat`/`type`/`downbeat_confidence` from the re-anchored phase; `field_sources` names the new producer. Otherwise stays an experiment and becomes a `D` item; items 32+ proceed on the old grid.
 
 **Contract** (on promotion)
-- [ ] `artifacts.md`, `downstream-contract.md`: `bar` labels may shift by whole beats vs earlier runs; the producer vocabulary gains `downbeat_reanchor`.
+- [ ] (not promoted, N/A — see D2) `artifacts.md`, `downstream-contract.md`: `bar` labels may shift by whole beats vs earlier runs; the producer vocabulary gains `downbeat_reanchor`.
 
 **Checks**
-- [ ] `docker compose run --rm test`; Medicine bar lengths all 4 beats; MCP `smoke-test`.
+- [x] `docker compose run --rm test`; MCP `smoke-test` (Medicine bar lengths: not promoted, old grid unchanged).
 
 ---
 

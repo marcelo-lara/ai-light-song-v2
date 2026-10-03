@@ -40,6 +40,7 @@ import type {
   CrashCheckFile,
   FilterSweepFile,
   BarFeaturesFile,
+  DownbeatReanchorFile,
   LightChangesFile,
   PhrasesFile,
   SectionNamesFile,
@@ -72,6 +73,7 @@ import {
   filterSweepContent,
   phrasesContent,
   barFeaturesContent,
+  downbeatReanchorContent,
   lightChangesContent,
 } from "./laneContent/characterGestures";
 import {
@@ -104,6 +106,7 @@ export {
   filterSweepContent,
   phrasesContent,
   barFeaturesContent,
+  downbeatReanchorContent,
   lightChangesContent,
   clapEventsContent,
   kickCheckContent,
@@ -184,6 +187,7 @@ export interface LaneContentSources {
   crashCheck?: CrashCheckFile | null;
   filterSweep?: FilterSweepFile | null;
   barFeatures?: BarFeaturesFile | null;
+  downbeatReanchor?: DownbeatReanchorFile | null;
   lightChanges?: LightChangesFile | null;
   phrases?: PhrasesFile | null;
   sectionNames?: SectionNamesFile | null;
@@ -214,6 +218,7 @@ export const SPARSE_LANE_IDS = [
   "crashCheck",
   "filterSweep",
   "barFeatures",
+  "downbeatReanchor",
   "lightChanges",
   "phrases",
   "sectionNames",
@@ -317,6 +322,8 @@ function buildLaneBlocksRaw(
       return filterSweepContent(s.filterSweep ?? null);
     case "barFeatures":
       return barFeaturesContent(s.barFeatures ?? null);
+    case "downbeatReanchor":
+      return downbeatReanchorContent(s.downbeatReanchor ?? null);
     case "lightChanges":
       return lightChangesContent(s.lightChanges ?? null);
     case "phrases":

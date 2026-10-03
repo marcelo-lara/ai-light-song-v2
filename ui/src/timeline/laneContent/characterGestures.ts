@@ -4,7 +4,7 @@
 // SparseBlock type.
 
 import type { EventTimeline } from "../../data/types";
-import type { BarFeaturesFile, CharacterFile, FilterSweepFile, LightChangesFile, PhrasesFile } from "../../data/sparseArtifacts";
+import type { BarFeaturesFile, CharacterFile, DownbeatReanchorFile, FilterSweepFile, LightChangesFile, PhrasesFile } from "../../data/sparseArtifacts";
 import type { SparseBlock } from "../laneContent";
 import { formatRange, round } from "./shared";
 
@@ -243,6 +243,33 @@ export function phrasesContent(file: PhrasesFile | null): SparseBlock[] {
         `ends on gap ${yn(b.ends_on_gap)}; ${b.repeat_of ? `repeats ${b.repeat_of}` : "no earlier repeat"}; ` +
         `${state}; ${conf}.`,
       tintId: b.resolved ? "phrases" : "phrasesUnresolved",
+      raw: b,
+    };
+  });
+}
+
+/**
+ * Re-anchored bar labels from `experiments/downbeat_reanchor` — one block per bar, label = the
+ * re-anchored bar number. Beat times are unchanged; only which beat is the downbeat moves. Grey
+ * when the downbeat carries no confidence (local anchors disagree, or none). A proposal to
+ * audition, not truth.
+ */
+export function downbeatReanchorContent(file: DownbeatReanchorFile | null): SparseBlock[] {
+  return (file?.bars ?? []).map((b, i) => {
+    const conf = b.downbeat_confidence == null ? "no confidence (unresolved)" : `confidence ${round(b.downbeat_confidence, 2)}`;
+    const len = b.irregular ? ` · ${b.beats_in_bar} beats (song edge or off-grid)` : "";
+    return {
+      id: `downbeat-reanchor-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: String(b.bar),
+      wideLabel: `${b.bar} · ${b.resolved ? "resolved" : "unresolved"}${len}`,
+      laneLabel: "Downbeat Reanchor",
+      caption: `bar ${b.bar} ${formatRange(b.start_s, b.end_s)} · ${conf}${len}`,
+      reference: `downbeat-reanchor-${i + 1}`,
+      detail: `${b.beats_in_bar} beats`,
+      summary: "experiments/downbeat_reanchor — bar labels rebuilt from anchor votes on unchanged beat times; confidence null where anchors disagree or none exist. Proposal to audition, not truth.",
+      tintId: b.resolved ? "downbeatReanchor" : "downbeatReanchorUnresolved",
       raw: b,
     };
   });

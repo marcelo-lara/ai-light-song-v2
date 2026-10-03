@@ -33,6 +33,7 @@ import {
   crashCheckContent,
   filterSweepContent,
   barFeaturesContent,
+  downbeatReanchorContent,
   lightChangesContent,
   phrasesContent,
   sectionNamesContent,
@@ -49,6 +50,7 @@ import type {
   CrashCheckFile,
   FilterSweepFile,
   BarFeaturesFile,
+  DownbeatReanchorFile,
   LightChangesFile,
   PhrasesFile,
   SectionNamesFile,
@@ -1024,5 +1026,33 @@ describe("verdictChecksContent", () => {
 
   it("no file, no blocks", () => {
     expect(verdictChecksContent(null, sections, null)).toEqual([]);
+  });
+});
+
+describe("downbeatReanchorContent", () => {
+  const file: DownbeatReanchorFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    bars: [
+      { bar: 2, start_s: 2.0, end_s: 4.0, beats_in_bar: 4, irregular: false, resolved: true, downbeat_confidence: 0.9 },
+      { bar: 3, start_s: 4.0, end_s: 5.5, beats_in_bar: 3, irregular: true, resolved: false, downbeat_confidence: null },
+    ],
+  };
+  const blocks = downbeatReanchorContent(file);
+
+  it("labels a resolved bar with its number and confidence", () => {
+    expect(blocks[0]!.label).toBe("2");
+    expect(blocks[0]!.tintId).toBe("downbeatReanchor");
+    expect(blocks[0]!.caption).toContain("confidence 0.9");
+  });
+
+  it("renders a null confidence honestly, grey", () => {
+    expect(blocks[1]!.tintId).toBe("downbeatReanchorUnresolved");
+    expect(blocks[1]!.caption).toContain("no confidence (unresolved)");
+    expect(blocks[1]!.caption).not.toMatch(/confidence 0/);
+  });
+
+  it("never throws on a missing file", () => {
+    expect(downbeatReanchorContent(null)).toEqual([]);
   });
 });

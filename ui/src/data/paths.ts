@@ -179,6 +179,10 @@ export const artifactPaths = {
   // arrangement, sweeps and gestures.
   barFeatures: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "bar_features.json")),
+  // Written by experiments/downbeat_reanchor (`run export`). v3.12 item 30: one
+  // row per bar of the re-anchored downbeat labels (times unchanged).
+  downbeatReanchor: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "downbeat_reanchor.json")),
   // Written by experiments/light_changes (`run export`). v3.12 item 2: light
   // change points with a role, detected on the bar-features table.
   lightChanges: (song: string) =>
