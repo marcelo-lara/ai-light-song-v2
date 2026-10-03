@@ -134,10 +134,11 @@ score, and is `null` for the leading block that has no flip.
 | --- | --- |
 | `hints.py` | `hints.json` — inference hints merged with `reference/human/human_hints.json` |
 | `ui_data.py` | `sections.json`, `beats.json`, `info.json`, `drum_events.json`, `loudness.json`, `arrangement_state.json` (`publish_arrangement_state`, fusing phase-3's `artifacts/arrangement_state.json`) — the compact top-level deliverables, each fused from its producers with a `field_sources` header |
+| `publish_light_changes.py` | `publish-light-changes` (v3.12 item 33) — top-level `bar_features.json` and the `light_change` rows of `song_event_timeline.json`, from `artifacts/light_changes/` |
 | `vocal_cadence.py` | `vocal_cadence.json` (v3.9 item 1) — per-line bar timing, per-section `lead_in_bars`/rests/held notes/cadence-repeats, calls, from `reference/human/lyrics.json` > `reference/moises/lyrics.json` (D1.1: neither → still written, `source: null`) plus the published `beats.json`/`sections.json`/`info.json`. Timing only |
 
 Together with `hints.py`'s `hints.json` and phase 3's `song_event_timeline.json`,
-these are the nine top-level files the `mcp/` server reads. Nothing the delivery
+these are the nine top-level files (the tenth, `bar_features.json`, is `publish_light_changes.py`'s) the `mcp/` server reads. Nothing the delivery
 surface needs still lives only under `artifacts/`.
 
 ### Validation — orthogonal to all four

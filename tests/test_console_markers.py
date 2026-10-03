@@ -427,6 +427,7 @@ class ConsoleMarkerTests(unittest.TestCase):
                 stack.enter_context(patch("analyzer.pipeline.extract_harmonic_spectrum", return_value={}))
                 stack.enter_context(patch("analyzer.pipeline.detect_kick_attacks", return_value={}))
                 stack.enter_context(patch("analyzer.pipeline.build_light_changes", return_value={}))
+                stack.enter_context(patch("analyzer.pipeline.publish_light_changes", return_value={}))
                 stack.enter_context(patch("analyzer.pipeline.build_gestures", return_value=event_timeline))
                 stack.enter_context(patch("analyzer.pipeline.build_human_hints_alignment", return_value=None))
                 stack.enter_context(patch("analyzer.pipeline.build_validation_report", return_value=(report, 0)))

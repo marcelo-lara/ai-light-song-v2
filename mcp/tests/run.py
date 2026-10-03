@@ -586,10 +586,10 @@ def _check_f1_beats_block() -> None:
            f"dense={over['dense']} beat_rows={len(over['structural']['beats']['rows'])}")
 
 
-def _check_f1_all_nine_required() -> None:
+def _check_f1_all_ten_required() -> None:
     """Every one of loaders.REQUIRED_TOP_LEVEL_FILES is required — a song
     missing any single one errors naming that file. No degraded/optional path
-    for any of the 9 (v3.6 item 9)."""
+    for any of the 10 (v3.6 item 9, v3.12 item 33)."""
     import shutil
     import tempfile
 
@@ -613,7 +613,7 @@ def _check_f1_all_nine_required() -> None:
                 ok_count += 1
             else:
                 record(f"F1.7 missing {missing} errors naming it", "FAIL", observed)
-    record("F1.7 all 9 required top-level files individually enforced",
+    record("F1.7 all 10 required top-level files individually enforced",
            "PASS" if ok_count == len(REQUIRED_TOP_LEVEL_FILES) else "FAIL",
            f"{ok_count}/{len(REQUIRED_TOP_LEVEL_FILES)} named correctly")
 
@@ -810,7 +810,7 @@ def full_regression() -> int:
     _check_f3_detail()
     _check_f4_budget()
     _check_f1_beats_block()
-    _check_f1_all_nine_required()
+    _check_f1_all_ten_required()
     return _finish()
 
 

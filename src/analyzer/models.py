@@ -39,6 +39,9 @@ class Producer(str, Enum):
     # v3.9 item 3 — beats.json's file-level `off_grid_spans`: a constant-tempo
     # grid fitted to the beats themselves (ui_data.py), not a raw producer.
     BEAT_GRID_FIT = "beat_grid_fit"
+    # v3.12 item 33 — `light_change` rows and `bar_features.json`'s kick/sweep/role
+    # columns from the phase-3 `light-changes` stage.
+    LIGHT_CHANGES = "light_changes"
 
 
 PRODUCERS: frozenset[str] = frozenset(p.value for p in Producer)

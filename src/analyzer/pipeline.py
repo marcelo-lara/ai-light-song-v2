@@ -20,6 +20,7 @@ from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
 from analyzer.stages.kick_attacks import detect_kick_attacks
 from analyzer.stages.light_changes import build_light_changes
+from analyzer.stages.publish_light_changes import publish_light_changes
 from analyzer.stages.loudness import extract_mix_stem_loudness
 from analyzer.stages.segmentation import segment_sections
 from analyzer.stages.stems import ensure_stems
@@ -57,6 +58,7 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "generate-section-hints": "6.2",
     "build-ui-data": "7.2",
     "publish-vocal-cadence": "7.4",
+    "publish-light-changes": "7.7",
     "version-check": "7.5",
     "hint-verdict": "7.6",
     "build-human-hints-alignment": "8.8",
@@ -195,6 +197,16 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         _required_artifact_payload(paths, stage_name, "kick_attacks", "kick_attacks.json")
         _required_artifact_payload(paths, stage_name, "harmonic_spectrum", "half_beats.json")
         _run_stage(paths.song_name, "phase-1", stage_name, build_light_changes, paths)
+        return 0
+    if stage_name == "publish-light-changes":
+        # Phase 4 — fuses item 32's artifacts into the top-level `bar_features.json` and the
+        # `light_change` rows of `song_event_timeline.json` (which build-gestures must have
+        # written; re-run this stage after any build-gestures re-run).
+        _required_output_payload(paths, stage_name, paths.sections_output_path)
+        _required_output_payload(paths, stage_name, paths.timeline_output_path)
+        _required_artifact_payload(paths, stage_name, "light_changes", "light_changes.json")
+        _required_artifact_payload(paths, stage_name, "light_changes", "bar_features.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, publish_light_changes, paths)
         return 0
     if stage_name == "generate-section-hints":
         # v3.7 item 6 — attributes section_id against the PUBLISHED
@@ -426,6 +438,8 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         _run_stage(paths.song_name, "phase-1", "extract-harmonic-spectrum", extract_harmonic_spectrum, paths)
         _run_stage(paths.song_name, "phase-1", "detect-kick-attacks", detect_kick_attacks, paths)
         _run_stage(paths.song_name, "phase-1", "light-changes", build_light_changes, paths)
+        # v3.12 item 33 — publish after light-changes (needs build-gestures' timeline above).
+        _run_stage(paths.song_name, "phase-1", "publish-light-changes", publish_light_changes, paths)
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
         # v3.1 item 2 — attribution header. `bpm` and `duration` are essentia's

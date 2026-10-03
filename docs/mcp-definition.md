@@ -107,6 +107,13 @@ it as a top-level file (phase 4).
 | `data/analysis/{song}/*.json` — top level | `mcp/`, `src/analyzer/`, `ui/` |
 | `…/artifacts/**`, `…/reference/**` | **`src/analyzer/` and `ui/` only** |
 
+The ten required top-level files (`mcp/loaders.py` `REQUIRED_TOP_LEVEL_FILES`; a
+missing one errors naming it, no degraded mode): `info.json`, `beats.json`,
+`hints.json`, `sections.json`, `song_event_timeline.json`, `drum_events.json`,
+`loudness.json`, `arrangement_state.json`, `vocal_cadence.json`, and — v3.12
+item 33 — `bar_features.json` (per-bar texture; projected through the tools by
+item 34, not yet a tool field).
+
 Inner folders are the raw material phase 4 uses to build the top-level files.
 They are never a delivery surface. `mcp/` must contain no path that reaches into
 `artifacts/` or `reference/` — a signal only reaches this server by being
@@ -221,7 +228,7 @@ Returns:
   impact rows must not return 31 unrelated events.
 - **Arrangement** — one row per `arrangement_state` block: who is `playing`,
   who `entered`, who `left`, and the block `confidence` (a leading block carries
-  `null`). `arrangement_state.json` is one of the 9 required top-level files
+  `null`). `arrangement_state.json` is one of the 10 required top-level files
   (v3.6 item 9 dropped the old pre-v3.2 degraded/omitted path) — the block is
   always present. Also carries `vocals_phrase` — a
   second, independent read on the vocals stem from the promoted `whisperx_vad`
@@ -251,7 +258,7 @@ Returns:
   highest-scoring earlier section this one's vocal cadence repeats, or
   `null`). Timing only — no lyric text anywhere. `source: null` (D1.1, no
   lyrics tier) still returns the block with `reason` set and every row's
-  fields omitted — `vocal_cadence.json` is one of the 9 required top-level
+  fields omitted — `vocal_cadence.json` is one of the 10 required top-level
   files, no degraded/absent path. The full per-section detail (`rests[]`,
   `held_notes[]`, `tokens_per_bar[]`, every `cadence_repeats[]` candidate) is
   `get_detail`'s job, not this one — see below.

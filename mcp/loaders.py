@@ -18,7 +18,7 @@ from typing import Any
 DEFAULT_ANALYSIS_ROOT = Path("/data/analysis")
 
 # Top-level files an analysed song must carry for the server to describe it —
-# all 9 files the pipeline publishes at top level (CLAUDE.md's "Current state"
+# all 10 files the pipeline publishes at top level (CLAUDE.md's "Current state"
 # table). No backwards compatibility and no degraded mode: a song missing any
 # one of these gets an explicit error naming the file, never a partial
 # response. `arrangement_state.json` used to be optional (pre-v3.2 songs could
@@ -26,6 +26,7 @@ DEFAULT_ANALYSIS_ROOT = Path("/data/analysis")
 # carries it now. `vocal_cadence.json` (v3.9 item 1) is always written too —
 # D1.1: a song with no lyric alignment gets an honest `source: null` file, not
 # an absent one, so the required-file rule never grows a degraded mode.
+# `bar_features.json` (v3.12 item 33) is required the same way.
 REQUIRED_TOP_LEVEL_FILES: tuple[str, ...] = (
     "info.json",
     "beats.json",
@@ -36,6 +37,7 @@ REQUIRED_TOP_LEVEL_FILES: tuple[str, ...] = (
     "loudness.json",
     "arrangement_state.json",
     "vocal_cadence.json",
+    "bar_features.json",   # v3.12 item 33
 )
 
 

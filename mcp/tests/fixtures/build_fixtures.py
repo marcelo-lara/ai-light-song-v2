@@ -472,6 +472,33 @@ def vocal_cadence(song_name: str, *, degenerate: bool) -> dict:
     }
 
 
+BAR_FEATURES_FIELD_SOURCES = {
+    "bar": "essentia", "start": "essentia", "end": "essentia",
+    "brightness": "essentia", "transient_density": "essentia",
+    "irregular": "light_changes", "kick_present": "light_changes",
+    "sweep_state": "light_changes", "light_change_role": "light_changes",
+}
+
+
+def bar_features(song_name: str) -> dict:
+    """v3.12 item 33 — one row per bar of the fixture's 2 s/bar grid (12 bars, 24 s)."""
+    bars = []
+    for i in range(int(DURATION_S / BEAT_S) // BEATS_PER_BAR):
+        bars.append({
+            "bar": i + 1,
+            "start": _round(i * BEATS_PER_BAR * BEAT_S, 3),
+            "end": _round((i + 1) * BEATS_PER_BAR * BEAT_S, 3),
+            "irregular": False,
+            "brightness": _round(0.4 + 0.02 * i, 4),
+            "transient_density": _round(0.01 + 0.001 * i, 4),
+            "kick_present": i >= 2,
+            "sweep_state": "opening" if 4 <= i < 6 else None,
+            "light_change_role": "groove_in" if i == 2 else None,
+        })
+    return {"schema_version": "3.1", "song_name": song_name,
+            "field_sources": BAR_FEATURES_FIELD_SOURCES, "bars": bars}
+
+
 def _write_common(song: str, *, degenerate: bool) -> None:
     _write(song, "info.json", info(song))
     _write(song, "beats.json", beats(all_confidence_null=degenerate))
@@ -482,6 +509,7 @@ def _write_common(song: str, *, degenerate: bool) -> None:
     _write(song, "drum_events.json", drum_events(song))
     _write(song, "arrangement_state.json", arrangement_state(song))
     _write(song, "vocal_cadence.json", vocal_cadence(song, degenerate=degenerate))
+    _write(song, "bar_features.json", bar_features(song))
 
 
 def build_full() -> None:
@@ -504,6 +532,7 @@ def build_partial() -> None:
     _write(song, "drum_events.json", drum_events(song))
     _write(song, "arrangement_state.json", arrangement_state(song))
     _write(song, "vocal_cadence.json", vocal_cadence(song, degenerate=True))
+    _write(song, "bar_features.json", bar_features(song))
 
 
 def main(out_root: Path | None = None) -> None:

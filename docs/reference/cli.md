@@ -64,6 +64,7 @@ is authoritative over this list.
 | `detect-arrangement-state` | 3.2 |
 | `light-changes` (phase 3, never audio; needs the published `beats.json`, `loudness.json`, `drum_events.json`, `arrangement_state.json` and the artifacts `essentia/fft_bands*.json`, `kick_attacks/kick_attacks.json`, `harmonic_spectrum/half_beats.json`) | 3.3 |
 | `build-gestures` | 5.0 |
+| `publish-light-changes` (needs the published `sections.json` and `song_event_timeline.json`, and `artifacts/light_changes/{light_changes,bar_features}.json`; re-run after any `build-gestures` re-run) | 7.7 |
 | `generate-section-hints` | 6.2 |
 | `build-ui-data` | 7.2 |
 | `publish-arrangement-state` | 7.3 |
