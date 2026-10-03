@@ -15,6 +15,9 @@ half-beat rows are slimmed to loudness, mix bands, brightness, transients and dr
   kick_attacks / kick_present   experiments/kick_attacks (v3.12 item 29), mix-audio kick attacks net of
                         echoes; present = >= 2 confident ones in a bar (1 per beat in a bar under 2 beats),
                         >= 1 in a half-beat window (`kick_attacks.present`)
+  sweep_slope / sweep_state   experiments/filter_sweep_v2 (v3.12 item 31), bars only: slope of the high/low
+                        energy ratio (dB/bar, `hl`) and of the 99 % rolloff (octaves/bar, `roll`) over the
+                        last 4 bars; state opening / closing / null
   vocals_cover          fraction covered by arrangement_state `vocals_phrase`
   entered / left / playing   arrangement_state block boundaries in the window / block at the midpoint
   sweep                 fraction overlapped by filter_sweep proposals, per direction
@@ -132,6 +135,7 @@ def load_inputs(song: str) -> dict:
         "timeline": _load(paths.top_path(song, "song_event_timeline.json"))["events"],
         "sweeps": _load(paths.filter_sweep_path(song))["blocks"],
         "kick_attacks": _load(paths.kick_attacks_path(song))["events"],
+        "sweep_v2": _load(paths.sweep_v2_cache_path(song))["bars"],
     }
 
 
@@ -215,7 +219,13 @@ def _slim_half(row: dict) -> dict:
 def compute(song: str) -> dict:
     inp = load_inputs(song)
     bars, halves = build_windows(inp["beats"])
-    return {"song": song, "bars": _rows(bars, inp), "half_beats": [_slim_half(r) for r in _rows(halves, inp)]}
+    rows = _rows(bars, inp)
+    if [r["bar"] for r in rows] != [b["bar"] for b in inp["sweep_v2"]]:
+        raise ValueError(f"{song}: filter_sweep_v2 cache bars differ from beats.json — rerun filter_sweep_v2 compute")
+    for r, sv in zip(rows, inp["sweep_v2"]):
+        r["sweep_slope"] = {"hl": sv["slope"]["hl"]["4"][0], "roll": sv["slope"]["roll"]["4"][0]}
+        r["sweep_state"] = sv["state"]
+    return {"song": song, "bars": rows, "half_beats": [_slim_half(r) for r in _rows(halves, inp)]}
 
 
 def compute_and_cache(song: str) -> dict:

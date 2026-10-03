@@ -34,6 +34,7 @@ import {
   filterSweepContent,
   barFeaturesContent,
   downbeatReanchorContent,
+  filterSweepV2Content,
   lightChangesContent,
   phrasesContent,
   sectionNamesContent,
@@ -51,6 +52,7 @@ import type {
   FilterSweepFile,
   BarFeaturesFile,
   DownbeatReanchorFile,
+  FilterSweepV2File,
   LightChangesFile,
   PhrasesFile,
   SectionNamesFile,
@@ -836,6 +838,39 @@ describe("barFeaturesContent", () => {
 
   it("never throws on a missing file", () => {
     expect(barFeaturesContent(null)).toEqual([]);
+  });
+});
+
+describe("filterSweepV2Content", () => {
+  const file: FilterSweepV2File = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start_s: 94.3, end_s: 109.4, direction: "opening", start_bar: 51, end_bar: 59, end_time: 109.39,
+        end_kind: "top", aftermath: "gap", hl_change_db: 8.2, roll_change_oct: 1.1, consistency: 0.7, confidence: 0.67 },
+      { start_s: 50, end_s: 60, direction: "closing", start_bar: 28, end_bar: null, end_time: 60,
+        end_kind: "top", aftermath: "none", hl_change_db: null, roll_change_oct: null, consistency: 0.6, confidence: null },
+    ],
+  };
+  const blocks = filterSweepV2Content(file);
+
+  it("labels a sweep with its aftermath and tints by it", () => {
+    expect(blocks[0]!.label).toBe("opening → gap");
+    expect(blocks[0]!.tintId).toBe("filterSweepV2Gap");
+    expect(blocks[0]!.caption).toContain("end 109.39 s (bar 59)");
+  });
+
+  it("renders no aftermath, a null change and no confidence honestly", () => {
+    expect(blocks[1]!.label).toBe("closing");
+    expect(blocks[1]!.tintId).toBe("filterSweepV2None");
+    expect(blocks[1]!.detail).toContain("hl n/a");
+    expect(blocks[1]!.summary).toContain("nothing follows: suspect");
+    expect(blocks[1]!.summary).toContain("no confidence reported");
+    expect(blocks[1]!.caption).toContain("song end");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(filterSweepV2Content(null)).toEqual([]);
   });
 });
 

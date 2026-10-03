@@ -3,7 +3,8 @@
 `src/` never imports this package (docs/experiments.md sandbox rule). Reads,
 read-only, existing analysis data only: top-level `beats.json`, `loudness.json`,
 `drum_events.json`, `arrangement_state.json`, `song_event_timeline.json`;
-`artifacts/essentia/fft_bands{,.<stem>}.json`; `reference/proposals/filter_sweep.json`, `reference/proposals/kick_attacks.json`.
+`artifacts/essentia/fft_bands{,.<stem>}.json`; `reference/proposals/filter_sweep.json`, `reference/proposals/kick_attacks.json`;
+`experiments/filter_sweep_v2/cache/<song>.json` (per-bar sweep slope and state, v3.12 item 31).
 Writes: `cache/<song>.json` and `reference/proposals/bar_features.json`.
 """
 from __future__ import annotations
@@ -37,6 +38,10 @@ def filter_sweep_path(song: str) -> Path:
 
 def kick_attacks_path(song: str) -> Path:
     return song_dir(song) / "reference" / "proposals" / "kick_attacks.json"
+
+
+def sweep_v2_cache_path(song: str) -> Path:
+    return REPO_ROOT / "experiments" / "filter_sweep_v2" / "cache" / f"{song.replace('/', '_')}.json"
 
 
 def cache_path(song: str) -> Path:

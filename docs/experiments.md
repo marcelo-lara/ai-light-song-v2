@@ -1580,6 +1580,43 @@ mixes. The lane review decides. Not promoted.
 
 ---
 
+## Filter Sweeps v2 — a sweep as a running slope, and its end as the cue
+
+*(no external model or repo — log-frequency spectrogram of the harmonic stem, numpy; `filter_sweep`'s successor)*
+
+### Status
+
+**Built and run, 2026-10-03 (v3.12 item 31) — 27 songs, 131 sweeps (63 opening / 68 closing), 85 of them with
+aftermath `none`; Armin 51-58 opening ending at bar 59 `gap`, Medicine 7-15 opening.** Full writeup:
+[`../experiments/filter_sweep_v2/README.md`](../experiments/filter_sweep_v2/README.md).
+Queue row enabled (before `bar_features`). Debugger lane: **Filter Sweeps v2**, flask badge.
+`bar_features` gains `sweep_slope` / `sweep_state`. Nothing in `src/` reads it; not promoted. Awaits the operator's lane review.
+
+### Why? What for?
+
+`filter_sweep`'s centroid over 7 per-band-normalised bands barely moves in a dense mix, so its 1-octave
+gate found nothing on *Armin*, *ayuni*, *Charli-VonDutch*. `light_changes` missed Armin bar 55, a slow
+4-bar ramp. The cue is the sweep **end** and what follows it.
+
+### Experiment Plan
+
+Half-beat frames of a 6-bins-per-octave spectrogram of the harmonic stem: resonant peak Hz and sharpness,
+high/low energy ratio (> 2 kHz vs < 500 Hz), 99 % rolloff. Per bar: slope and consistency over the last 1/2/4/8 bars.
+State from the 4/8-bar windows; end event on the first beat after the run; aftermath from `bar_features`.
+
+### Results evidence
+
+Armin and Medicine targets met (above), *ayuni* 2 and *Charli-VonDutch* 2 sweeps
+listed for review (v1: 0). The peak Hz itself jumps between chord tones in a dense mix and drives nothing: the high/low
+ratio and rolloff carry the state. All thresholds were set on *Armin* and *Medicine* (validation, not held out).
+
+### Conclusion
+
+The aftermath filter does its job (it is the reason 65 % of sweeps read "suspect"), but the rate (1.3/min, 85 `none`) is
+high: the lane review decides. Not promoted.
+
+---
+
 ## Downbeat Reanchor — bar labels rebuilt from anchor votes
 
 *(no external model; reads item 29's kick attacks, timeline impacts, arrangement entries)*

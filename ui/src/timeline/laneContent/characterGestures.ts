@@ -4,7 +4,7 @@
 // SparseBlock type.
 
 import type { EventTimeline } from "../../data/types";
-import type { BarFeaturesFile, CharacterFile, DownbeatReanchorFile, FilterSweepFile, LightChangesFile, PhrasesFile } from "../../data/sparseArtifacts";
+import type { BarFeaturesFile, CharacterFile, DownbeatReanchorFile, FilterSweepFile, FilterSweepV2File, LightChangesFile, PhrasesFile } from "../../data/sparseArtifacts";
 import type { SparseBlock } from "../laneContent";
 import { formatRange, round } from "./shared";
 
@@ -101,6 +101,44 @@ export function filterSweepContent(file: FilterSweepFile | null): SparseBlock[] 
       summary: `experiments/filter_sweep — ${b.stem} stem ${b.direction}: spectral centroid moved ` +
         `${round(b.depth, 2)} octaves over ${round(b.end_s - b.start_s, 1)} s with the stem's loudness level; ${conf}.`,
       tintId: b.direction === "closing" ? "filterSweepClosing" : "filterSweepOpening",
+      raw: b,
+    };
+  });
+}
+
+const AFTERMATH_TINT: Record<string, string> = {
+  gap: "filterSweepV2Gap",
+  drop: "filterSweepV2Drop",
+  break: "filterSweepV2Break",
+};
+
+/**
+ * Filter sweeps v2 from `experiments/filter_sweep_v2` — a run of bars where the
+ * harmonic stem's high/low band ratio or rolloff moves consistently. The block
+ * spans the run; its end (on the beat grid, `end_time`) is the cue, and the
+ * aftermath says what the next 1-2 bars do. `none` = nothing follows, a suspect
+ * detection (lower confidence, grey). A proposal to audition, not ground truth.
+ */
+export function filterSweepV2Content(file: FilterSweepV2File | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => {
+    const conf = b.confidence == null ? "no confidence reported" : `confidence ${round(b.confidence, 2)}`;
+    const hl = b.hl_change_db == null ? "hl n/a" : `${round(b.hl_change_db, 1)} dB`;
+    const roll = b.roll_change_oct == null ? "rolloff n/a" : `${round(b.roll_change_oct, 2)} oct`;
+    const endBar = b.end_bar == null ? "song end" : `bar ${b.end_bar}`;
+    return {
+      id: `filter-sweep-v2-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: b.aftermath === "none" ? b.direction : `${b.direction} → ${b.aftermath}`,
+      wideLabel: `${b.direction} · bars ${b.start_bar}-${b.end_bar ?? "end"} · ends ${b.end_kind} → ${b.aftermath}`,
+      laneLabel: "Filter Sweeps v2",
+      caption: `${formatRange(b.start_s, b.end_s)} · ${b.direction} · end ${round(b.end_time, 2)} s (${endBar}) ${b.end_kind} · aftermath ${b.aftermath}`,
+      reference: `filter-sweep-v2-${i + 1}`,
+      detail: `${hl}, ${roll}, consistency ${round(b.consistency, 2)}`,
+      summary: `experiments/filter_sweep_v2 — ${b.direction} over bars ${b.start_bar}-${b.end_bar ?? "end"}: high/low ratio ${hl}, ` +
+        `rolloff ${roll}; end at ${round(b.end_time, 2)} s is a ${b.end_kind}, aftermath ${b.aftermath}` +
+        `${b.aftermath === "none" ? " (nothing follows: suspect)" : ""}; ${conf}.`,
+      tintId: AFTERMATH_TINT[b.aftermath] ?? "filterSweepV2None",
       raw: b,
     };
   });

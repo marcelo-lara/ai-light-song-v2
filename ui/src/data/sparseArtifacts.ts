@@ -2,7 +2,7 @@
 // artifacts consumed by SparseLane (character, vocal transcription, vocal
 // phrases, allin1 posterior shadow labels, whisperx vad,
 // stem presence sections, vocal cadence, clap events, kick check, kick attacks, crash
-// check, filter sweep, bar features, downbeat reanchor, light changes, phrases, section names, and the top-level published arrangement state).
+// check, filter sweep, bar features, filter sweeps v2, downbeat reanchor, light changes, phrases, section names, and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -1117,6 +1117,72 @@ export async function loadDownbeatReanchor(
   }
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// filterSweepV2 — reference/proposals/filter_sweep_v2.json
+// ---------------------------------------------------------------------------
+//
+// v3.12 item 31: a run of bars where the harmonic stem's high/low band ratio
+// or rolloff moves consistently, with the sweep END on the beat grid and what the
+// next 1-2 bars do (gap / drop / break / none). `experiments/filter_sweep_v2`.
+// A proposal, not truth. `none` means nothing follows the end: a suspect sweep.
+
+export interface FilterSweepV2Block {
+  start_s: number;
+  end_s: number;
+  direction: string; // "opening" | "closing"
+  start_bar: number;
+  end_bar: number | null;
+  end_time: number;
+  end_kind: string; // "top" | "cut"
+  aftermath: string; // "gap" | "drop" | "break" | "none"
+  hl_change_db: number | null;
+  roll_change_oct: number | null;
+  consistency: number;
+  confidence: number | null;
+}
+
+export interface FilterSweepV2File {
+  schema_version: string;
+  song_name: string;
+  blocks: FilterSweepV2Block[];
+}
+
+export function parseFilterSweepV2(raw: unknown): FilterSweepV2File {
+  const o = asObject(raw, "reference/proposals/filter_sweep_v2.json");
+  const blocks: FilterSweepV2Block[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      direction: st(r.direction),
+      start_bar: num(r.start_bar),
+      end_bar: r.end_bar == null ? null : num(r.end_bar),
+      end_time: num(r.end_time),
+      end_kind: st(r.end_kind),
+      aftermath: st(r.aftermath),
+      hl_change_db: r.hl_change_db == null ? null : num(r.hl_change_db),
+      roll_change_oct: r.roll_change_oct == null ? null : num(r.roll_change_oct),
+      consistency: num(r.consistency),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadFilterSweepV2(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<FilterSweepV2File>> {
+  const result = await loadJson(artifactPaths.filterSweepV2(song), parseFilterSweepV2, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
 
 // ---------------------------------------------------------------------------
 // lightChanges — reference/proposals/light_changes.json

@@ -160,6 +160,12 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   // v3.12 item 30 — downbeat reanchor: a bar whose downbeat has agreeing anchors vs. none/disagreeing.
   downbeatReanchor: [30, 60, 42], // amber — resolved downbeat
   downbeatReanchorUnresolved: [30, 5, 36], // grey — confidence null (anchors disagree or none)
+  // v3.12 item 31 — filter sweeps v2. Tinted by aftermath: a sweep end followed by
+  // nothing (`none`) is a suspect detection and reads grey.
+  filterSweepV2Gap: [310, 60, 50], // magenta — sweep end followed by a gap
+  filterSweepV2Drop: [330, 70, 52], // hot pink — followed by a drop
+  filterSweepV2Break: [290, 50, 44], // violet-magenta — followed by a break
+  filterSweepV2None: [310, 10, 36], // grey — nothing follows, suspect
   // v3.12 item 2 — light changes. One tint per role.
   lightChangeGrooveIn: [140, 55, 42], // green
   lightChangeBuild: [45, 75, 50], // amber

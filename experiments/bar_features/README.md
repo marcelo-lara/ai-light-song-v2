@@ -34,6 +34,7 @@ mostly inside `beats.json` `off_grid_spans`. Per window:
 | `vocals_cover` | fraction covered by `arrangement_state.json` `vocals_phrase` |
 | `entered`, `left`, `playing` | arrangement blocks starting in the window / block at the midpoint |
 | `sweep` `{opening, closing}` | overlap fraction with `reference/proposals/filter_sweep.json` |
+| `sweep_slope`, `sweep_state` (bars only) | `experiments/filter_sweep_v2/cache` (v3.12 item 31): 4-bar slope of the high/low band ratio (`hl`, dB/bar) and of the 99 % rolloff (`roll`, oct/bar); state `opening` / `closing` / null |
 | `gestures` | `song_event_timeline.json` overlap fraction per type (point events: 1.0 if inside) |
 
 `half_beats[]` repeats the signal columns only (loudness, mix bands, brightness,
@@ -47,7 +48,7 @@ docker compose run --rm --no-deps app python -m experiments.bar_features.run exp
 docker compose run --rm test python -m pytest experiments/bar_features
 ```
 
-Needs `reference/proposals/filter_sweep.json` and `reference/proposals/kick_attacks.json` first (queue order handles it).
+Needs `reference/proposals/filter_sweep.json`, `reference/proposals/kick_attacks.json` and `experiments/filter_sweep_v2/cache/<song>.json` (`filter_sweep_v2.run compute`) first (queue order handles it).
 
 ## UI lane
 

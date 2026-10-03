@@ -1,0 +1,23 @@
+Armin - Revolution: bar states 53-62: 53:ope 54:ope 55:ope 56:ope 57:ope 58:ope 59:- 60:- 61:- 62:-
+  block closing bars 24-27 end 48.48s top aftermath=none conf=0.287
+  block opening bars 27-32 end 57.97s top aftermath=break conf=0.503
+  block closing bars 44-50 end 92.78s top aftermath=none conf=0.25
+  block opening bars 51-59 end 109.39s top aftermath=gap conf=0.67
+  block opening bars 71-79 end 146.56s top aftermath=none conf=0.332
+  block opening bars 96-99 end 183.25s top aftermath=none conf=0.272
+Medicine-MilkInc: bar states 7-19: 7:ope 8:ope 9:ope 10:ope 11:ope 12:ope 13:ope 14:ope 15:ope 16:- 17:- 18:- 19:-
+  block opening bars 7-16 end 27.25s top aftermath=drop conf=0.649
+  block opening bars 21-33 end 55.10s top aftermath=break conf=0.875
+  block closing bars 60-65 end 109.96s top aftermath=drop conf=0.496
+  block opening bars 66-70 end 118.53s top aftermath=none conf=0.256
+  block opening bars 75-81 end 138.68s top aftermath=drop conf=0.664
+
+ayuni: 2 sweeps (filter_sweep v1: 0)
+  opening 127.7-133.5s bars 65-68 hl 6.35 dB roll 0.42 oct aftermath=break conf=0.717
+  opening 145.4-155.2s bars 74-79 hl 2.78 dB roll 0.17 oct aftermath=none conf=0.262
+Charli-VonDutch: 2 sweeps (filter_sweep v1: 0)
+  opening 50.5-56.1s bars 28-31 hl 9.68 dB roll 0.58 oct aftermath=drop conf=0.642
+  closing 126.3-135.5s bars 69-74 hl -0.79 dB roll -0.42 oct aftermath=none conf=0.226
+
+corpus: 131 sweeps over 27 songs, 85 with aftermath none
+Armin - Revolu=6 Best Friend - =5 ChangedTheWayY=4 Charli-Guess=1 Charli-VonDutc=2 Chimera - Hana=3 Cinderella - E=14 CruelSummer - =3 Fascination (T=9 Gabry Ponte - =6 Hideaway - Kie=7 In da name of =1 It's a fine da=14 Medicine-MilkI=5 Only this mome=0 Pet Shop Boys =2 Queen of Kings=3 Rapture - Nadi=7 Rotate-Skillib=4 Sash - Raindro=4 StealTheShow-N=10 Titanium - Dav=6 Underworld - B=3 What a Feeling=4 Yonaka - Seize=3 _test_song=3 ayuni=2
