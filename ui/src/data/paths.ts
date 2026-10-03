@@ -174,11 +174,8 @@ export const artifactPaths = {
   // while its loudness stays level.
   filterSweep: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "filter_sweep.json")),
-  // Written by experiments/bar_features (`run export`). v3.12 item 1: one row
-  // per bar fusing loudness, bands, brightness, transients, drum counts,
-  // arrangement, sweeps and gestures.
-  barFeatures: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "bar_features.json")),
+  // Published top-level `bar_features.json` (v3.12 item 33): one row per bar.
+  barFeatures: (song: string) => encodePath(analysis(song, "bar_features.json")),
   // Written by experiments/downbeat_reanchor (`run export`). v3.12 item 30: one
   // row per bar of the re-anchored downbeat labels (times unchanged).
   downbeatReanchor: (song: string) =>
@@ -187,10 +184,10 @@ export const artifactPaths = {
   // runs with an end event on the beat grid and what follows it.
   filterSweepV2: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "filter_sweep_v2.json")),
-  // Written by experiments/light_changes (`run export`). v3.12 item 2: light
-  // change points with a role, detected on the bar-features table.
-  lightChanges: (song: string) =>
-    encodePath(analysis(song, "reference", "proposals", "light_changes.json")),
+  // The published top-level `song_event_timeline.json` (v3.12 item 33 adds its
+  // `light_change` rows); the Gestures lane reads the pre-trim copy above.
+  eventTimelinePublished: (song: string) =>
+    encodePath(analysis(song, "song_event_timeline.json")),
   // Written by experiments/phrases (`run export`). v3.10 item 15: the song cut
   // where the audio changes, one block per phrase with presence / density
   // features. Never bar-counted.

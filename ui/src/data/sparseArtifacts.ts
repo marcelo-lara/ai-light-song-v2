@@ -975,37 +975,22 @@ export async function loadFilterSweep(
 
 
 // ---------------------------------------------------------------------------
-// barFeatures — reference/proposals/bar_features.json
+// barFeatures — bar_features.json (published, top level)
 // ---------------------------------------------------------------------------
 //
-// v3.12 item 1: one row per bar fusing existing artifacts (loudness, FFT bands,
-// brightness, transients, drum counts, vocals cover, arrangement entries,
-// sweeps, gestures). `experiments/bar_features`. A feature table, not a claim.
-// Only `bars[]` is read here; `half_beats[]` is for later detectors.
+// v3.12 item 33 publishes one row per bar of `beats.json`; item 35 reads it
+// directly (the UI may read anything under data/). A feature table, not a claim.
 
 export interface BarFeatureRow {
   bar: number;
   start_s: number;
   end_s: number;
-  beats_in_bar: number;
   irregular: boolean;
-  mix_rms: number | null;
-  bass_rms: number | null;
-  drums_rms: number | null;
-  harmonic_rms: number | null;
-  vocals_rms: number | null;
   brightness: number | null;
-  transient_mean: number | null;
-  transient_std: number | null;
-  kick: number;
-  snare: number;
-  hat: number;
-  vocals_cover: number;
-  entered: string[];
-  left: string[];
-  sweep_opening: number;
-  sweep_closing: number;
-  gestures: string[];
+  transient_density: number | null;
+  kick_present: boolean | null;
+  sweep_state: string | null;
+  light_change_role: string | null;
 }
 
 export interface BarFeaturesFile {
@@ -1017,35 +1002,20 @@ export interface BarFeaturesFile {
 const numOrNull = (v: unknown): number | null => (v == null ? null : num(v));
 
 export function parseBarFeatures(raw: unknown): BarFeaturesFile {
-  const o = asObject(raw, "reference/proposals/bar_features.json");
+  const o = asObject(raw, "bar_features.json");
   const bars: BarFeatureRow[] = [];
   for (const row of arr(o.bars)) {
     const r = rec(row);
-    const loud = rec(r.loud_rms);
-    const sweep = rec(r.sweep);
     bars.push({
       bar: num(r.bar),
-      start_s: num(r.start_s),
-      end_s: num(r.end_s),
-      beats_in_bar: num(r.beats_in_bar),
+      start_s: num(r.start),
+      end_s: num(r.end),
       irregular: r.irregular === true,
-      mix_rms: numOrNull(loud.mix),
-      bass_rms: numOrNull(loud.bass),
-      drums_rms: numOrNull(loud.drums),
-      harmonic_rms: numOrNull(loud.harmonic),
-      vocals_rms: numOrNull(loud.vocals),
       brightness: numOrNull(r.brightness),
-      transient_mean: numOrNull(r.transient_mean),
-      transient_std: numOrNull(r.transient_std),
-      kick: num(r.kick),
-      snare: num(r.snare),
-      hat: num(r.hat),
-      vocals_cover: num(r.vocals_cover),
-      entered: arr(r.entered).map((x) => st(x)),
-      left: arr(r.left).map((x) => st(x)),
-      sweep_opening: num(sweep.opening),
-      sweep_closing: num(sweep.closing),
-      gestures: Object.keys(rec(r.gestures)),
+      transient_density: numOrNull(r.transient_density),
+      kick_present: typeof r.kick_present === "boolean" ? r.kick_present : null,
+      sweep_state: typeof r.sweep_state === "string" ? r.sweep_state : null,
+      light_change_role: typeof r.light_change_role === "string" ? r.light_change_role : null,
     });
   }
   bars.sort((a, b) => a.start_s - b.start_s);
@@ -1185,22 +1155,19 @@ export async function loadFilterSweepV2(
 
 
 // ---------------------------------------------------------------------------
-// lightChanges — reference/proposals/light_changes.json
+// lightChanges — song_event_timeline.json `light_change` rows (published)
 // ---------------------------------------------------------------------------
 //
-// v3.12 item 2: points where the light should change, each labelled with a role
-// (groove_in / build / break / drop / gap / fill / unknown), detected on the
-// per-bar feature table. `experiments/light_changes`. A proposal, not truth.
+// v3.12 item 33 publishes each light-change point as a `light_change` row of the
+// top-level `song_event_timeline.json` (`role`, `start_time`, `end_time` =
+// `start_time`, `confidence` null, `section_id`). Item 35 reads those rows; the
+// other rows of the file belong to the Gestures lane and are ignored here.
 
 export interface LightChangePoint {
-  bar: number;
-  time_s: number;
-  end_s: number;
   role: string;
-  score: number;
-  features: string[];
-  z: Record<string, number>;
-  irregular_bar: boolean;
+  start_time: number;
+  end_time: number;
+  section_id: string | null;
   confidence: number | null;
 }
 
@@ -1211,25 +1178,21 @@ export interface LightChangesFile {
 }
 
 export function parseLightChanges(raw: unknown): LightChangesFile {
-  const o = asObject(raw, "reference/proposals/light_changes.json");
+  const o = asObject(raw, "song_event_timeline.json");
   const points: LightChangePoint[] = [];
-  for (const row of arr(o.points)) {
+  for (const row of arr(o.events)) {
     const r = rec(row);
-    const z: Record<string, number> = {};
-    for (const [k, v] of Object.entries(rec(r.z))) z[k] = num(v);
+    if (r.type !== "light_change") continue;
+    const start = num(r.start_time);
     points.push({
-      bar: num(r.bar),
-      time_s: num(r.time_s),
-      end_s: num(r.end_s),
-      role: st(r.role),
-      score: num(r.score),
-      features: arr(r.features).map((x) => st(x)),
-      z,
-      irregular_bar: r.irregular_bar === true,
+      role: st(r.role) || "unknown",
+      start_time: start,
+      end_time: r.end_time == null ? start : num(r.end_time),
+      section_id: typeof r.section_id === "string" ? r.section_id : null,
       confidence: r.confidence == null ? null : num(r.confidence),
     });
   }
-  points.sort((a, b) => a.time_s - b.time_s);
+  points.sort((a, b) => a.start_time - b.start_time);
   return { schema_version: st(o.schema_version), song_name: st(o.song_name), points };
 }
 
@@ -1237,7 +1200,7 @@ export async function loadLightChanges(
   song: string,
   f?: typeof fetch,
 ): Promise<LoadResult<LightChangesFile>> {
-  const result = await loadJson(artifactPaths.lightChanges(song), parseLightChanges, f);
+  const result = await loadJson(artifactPaths.eventTimelinePublished(song), parseLightChanges, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, points: [] } };
   }

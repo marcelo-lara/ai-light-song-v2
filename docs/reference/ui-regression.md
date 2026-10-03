@@ -65,6 +65,7 @@ Each surface is one screenshot target. Capture full-page unless noted.
 | `phrases` | `song-full` and `_test_song`, Phrases lane events panel | `/?song=<fixture>`; click `lane-events-phrases` | v3.10 item 15. No screenshot; assertions only. Lane title is "Phrases"; the panel lists exactly as many `lane-event-phrases-N` cards as the fixture's `reference/proposals/phrases.json` has `blocks` (the real exports of `Armin - Revolution` for RegFull/RegPartial and of `_test_song`, copied by `build-fixtures.py`'s `NEEDED`; the count must be non-zero), the last block ends within 1 s of `info.json`'s duration, and the last card's range shows that end time. Runtime assertions as §5.2 |
 | `section-names` | `song-full` and `_test_song`, Section Names lane events panel | `/?song=<fixture>`; click `lane-events-sectionNames` | v3.10 item 17. No screenshot; assertions only. Lane title is "Section Names"; the panel lists exactly as many `lane-event-sectionNames-N` cards as the fixture's `reference/proposals/section_names.json` has `blocks`, in order, and each card's `.lane-events__label` equals that row's `label` (the real exports of `Armin - Revolution` for RegFull/RegPartial and of `_test_song`, copied by `build-fixtures.py`'s `NEEDED`; the count must be non-zero). Runtime assertions as §5.2 |
 | `verdict-checks` | `song-full` (RegFull), `RegPartial`, `_test_song`; the Pending proposals view | `/?song=<fixture>`; expand `lane-collapse-verdictChecks`; burger → "Pending proposals"; click Confirm / Reject | v3.11 item 24. One screenshot (`verdict-check-card.png`, the card only). Assertions: exactly one "Verdict Checks" lane on RegFull whose block count equals the `verdict.json` rows with `*_section_ids` evidence (the `bpm` row has none), each block's edges within 2 px of its first/last evidence section (the Segments row insets block right edges by 2 px, added back), one tint per outcome, canvas as wide as the lane body; no lane and no header on RegPartial / `_test_song` (no `verdict.json`); a block with a pending `verdict_check` seeks and opens Pending proposals focused on that card, one without only seeks; the LLM Pending Proposals lane counts pending `hint` rows only; Pending view shows two cards (one `hint`, one `verdict_check` with five evidence rows, the question, enabled Confirm / Reject); Reject with no / blank reason is disabled and the card stays; Confirm and Reject-with-reason write `second_pass.fields.chorus_is_drop.operator` (`{answer, reason, check_id}`) and flip the queue row. The spec snapshots and restores `verdict.json` and `pending.json` (both writable under the visual compose) |
+| `published-lanes` | `song-full` (RegFull) and `RegPartial` | `/?song=<fixture>`; expand `lane-collapse-lightChanges` / `lane-collapse-barFeatures` | v3.12 item 35. No screenshot; assertions only. Light Changes: exactly 3 cards/markers, labels `groove_in`, `build`, `drop` in time order, each marker's left x within 2 px of the ruler `.tl-bar-tick` of its bar (fixture times sit on bar starts). Bar Features: card count = `bar_features.json` bar count (≥ 8, exactly one `irregular`), the irregular bar's block is the only grey one (lowest canvas chroma), last block's right edge within 4 px of the ruler tick at its `end`. Neither lane carries a flask badge. `RegPartial` (no `bar_features.json`, no `light_change` rows): neither lane head nor body drawn. Runtime assertions as §5.2 on RegFull |
 | `footer-follow` | `.app-footer` with the follow toggle off, transport paused | `/?song=<full-fixture>`, clear `localStorage`, click `follow-toggle` once | Plan v1.5 item 6 / R6: the `arrows-in-line-horizontal` follow toggle sits immediately left of the `Lanes` button; `aria-pressed` and the pressed styling track the flag (default on, persisted per session); `.app-footer` |
 
 Component-level (optional, faster feedback): capture individual panels
@@ -222,7 +223,7 @@ Also assert, on every test:
   for `song-no-audio`. Optional files with a named, tolerated `404` in `helpers.ts`:
   `reference/{human,moises}/segments.json`, `artifacts/_run_progress.json`,
   `reference/proposals/pending.json` and (v3.11 item 24)
-  `reference/pre-analysis/verdict.json` — only `RegFull - Fixture` carries the last two.
+  `reference/pre-analysis/verdict.json` — only `RegFull - Fixture` carries the last two. v3.12 item 35 adds the published `bar_features.json` (only `RegFull` carries it; the lane is not drawn without it) and the experiment proposals `kick_attacks.json`, `downbeat_reanchor.json`, `filter_sweep_v2.json` (no fixture carries them; their lanes are not drawn).
 
 ### 5.3 Config sketch
 
@@ -335,7 +336,11 @@ E2E stability (issue #3) needs stable hooks. Added in plan item 1 (`ui/src/`):
   `whisperx` Compose service, `whisperx_vad/`), not an `experiments/` sandbox,
   reading `artifacts/whisperx-vad/whisperx_vad.json`. `vocalCadence` lost its
   badge in v3.9 item 1: it now reads the top-level published
-  `vocal_cadence.json`, not an `experiments/` sandbox.
+  `vocal_cadence.json`, not an `experiments/` sandbox. `barFeatures` and
+  `lightChanges` are never badged (v3.12 item 35): they read the published
+  `bar_features.json` and `song_event_timeline.json` `light_change` rows. The
+  badged `kickAttacks`, `filterSweepV2`, `downbeatReanchor` have no fixture file,
+  so they are not drawn and appear in neither list of `experiment-badge.spec.ts`.
 - block inspector (plan v1.5 item 9): `promote-hint` on the `rows-plus-bottom`
   "Create human hint" action, rendered under `block-inspector__title` for every
   inspected event and in both transport states. A Human Hints block routes to

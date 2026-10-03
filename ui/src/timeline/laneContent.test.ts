@@ -57,6 +57,7 @@ import type {
   PhrasesFile,
   SectionNamesFile,
 } from "../data/sparseArtifacts";
+import { parseLightChanges } from "../data/sparseArtifacts";
 import type { PendingProposalsFile, SectionRow, VerdictFile } from "../data/types";
 
 describe("humanHintsContent", () => {
@@ -809,31 +810,32 @@ describe("filterSweepContent", () => {
 
 describe("barFeaturesContent", () => {
   const row = {
-    bar: 9, start_s: 15.26, end_s: 16.96, beats_in_bar: 4, irregular: false,
-    mix_rms: 0.022, bass_rms: 0.009, drums_rms: 0.013, harmonic_rms: 0.032, vocals_rms: 0.017,
-    brightness: 0.66, transient_mean: 0.012, transient_std: 0.023, kick: 3, snare: 3, hat: 7,
-    vocals_cover: 1, entered: ["bass"], left: ["drums"], sweep_opening: 1, sweep_closing: 0, gestures: [],
+    bar: 9, start_s: 15.26, end_s: 16.96, irregular: false, brightness: 0.66,
+    transient_density: 0.012, kick_present: true, sweep_state: "opening", light_change_role: "build",
   };
   const file: BarFeaturesFile = {
-    schema_version: "1.0",
+    schema_version: "3.1",
     song_name: "_test_song",
     bars: [
       row,
-      { ...row, bar: 16, start_s: 27.25, end_s: 27.68, beats_in_bar: 1, irregular: true, brightness: null, gestures: ["build"] },
+      { ...row, bar: 16, start_s: 27.25, end_s: 27.68, irregular: true, brightness: null, kick_present: null,
+        sweep_state: null, light_change_role: null },
     ],
   };
   const blocks = barFeaturesContent(file);
 
-  it("labels a bar with its number and drum counts", () => {
+  it("labels a bar with its number and kick state", () => {
     expect(blocks[0]!.label).toBe("9");
-    expect(blocks[0]!.wideLabel).toContain("k3 s3 h7");
-    expect(blocks[0]!.detail).toContain("in: bass");
+    expect(blocks[0]!.wideLabel).toContain("kick");
+    expect(blocks[0]!.detail).toContain("sweep opening");
+    expect(blocks[0]!.detail).toContain("light change: build");
   });
 
-  it("flags a bar that is not 4 beats, and renders a null brightness honestly", () => {
+  it("flags a bar that is not 4 beats, and renders null fields honestly", () => {
     expect(blocks[1]!.tintId).toBe("barFeaturesIrregular");
-    expect(blocks[1]!.caption).toContain("1 beats (not 4)");
+    expect(blocks[1]!.caption).toContain("not 4 beats");
     expect(blocks[1]!.caption).toContain("brightness n/a");
+    expect(blocks[1]!.caption).toContain("kick n/a");
   });
 
   it("never throws on a missing file", () => {
@@ -875,29 +877,28 @@ describe("filterSweepV2Content", () => {
 });
 
 describe("lightChangesContent", () => {
-  const file: LightChangesFile = {
-    schema_version: "1.0",
+  const file: LightChangesFile = parseLightChanges({
+    schema_version: "3.1",
     song_name: "_test_song",
-    points: [
-      { bar: 8, time_s: 13.54, end_s: 15.26, role: "fill", score: 8.5, features: ["texture", "novelty"],
-        z: { texture: 4.9, novelty: 5.8, loudness: 0.4 }, irregular_bar: false, confidence: null },
-      { bar: 16, time_s: 27.25, end_s: 29.41, role: "mystery", score: 7.1, features: [],
-        z: {}, irregular_bar: true, confidence: null },
+    events: [
+      { type: "impact", start_time: 1, end_time: 1, confidence: 1, intensity: 1, section_id: null },
+      { type: "light_change", role: "mystery", start_time: 27.25, end_time: 27.25, confidence: null, section_id: null },
+      { type: "light_change", role: "fill", start_time: 13.54, end_time: 13.54, confidence: null, section_id: "section-001" },
     ],
-  };
+  });
   const blocks = lightChangesContent(file);
 
-  it("labels a point with its role, tinted per role, listing the groups that moved", () => {
-    expect(blocks[0]!.label).toBe("fill");
+  it("keeps only light_change rows, in time order, labelled with the role and tinted per role", () => {
+    expect(blocks.map((b) => b.label)).toEqual(["fill", "mystery"]);
     expect(blocks[0]!.tintId).toBe("lightChangeFill");
-    expect(blocks[0]!.detail).toBe("novelty +5.8, texture +4.9");
+    expect(blocks[0]!.start_s).toBe(13.54);
+    expect(blocks[0]!.detail).toBe("in section-001");
   });
 
-  it("renders an unknown role, no confidence and a grid slip honestly", () => {
+  it("renders an unknown role, no confidence and no section honestly", () => {
     expect(blocks[1]!.tintId).toBe("lightChangeUnknown");
-    expect(blocks[1]!.summary).toContain("no confidence reported");
-    expect(blocks[1]!.caption).toContain("bar not 4 beats");
-    expect(blocks[1]!.detail).toBe("no single feature group moved 2 sigma");
+    expect(blocks[1]!.summary).toContain("no confidence");
+    expect(blocks[1]!.detail).toBe("between published sections");
   });
 
   it("never throws on a missing file", () => {

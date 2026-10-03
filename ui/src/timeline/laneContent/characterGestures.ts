@@ -147,7 +147,7 @@ export function filterSweepV2Content(file: FilterSweepV2File | null): SparseBloc
 const fx = (v: number | null, d = 3): string => (v == null ? "n/a" : String(round(v, d)));
 
 /**
- * Per-bar feature table from `experiments/bar_features` — one block per bar,
+ * Per-bar table from the published `bar_features.json` — one block per bar,
  * tinted by the bar's brightness tercile within the song (grey when the bar is
  * not 4 beats long: a known grid slip, flagged and never repaired). The label
  * is the bar number; the caption carries the numbers. A feature table to read
@@ -159,7 +159,7 @@ export function barFeaturesContent(file: BarFeaturesFile | null): SparseBlock[] 
   const lo = br.length ? br[Math.floor(br.length / 3)]! : 0;
   const hi = br.length ? br[Math.floor((2 * br.length) / 3)]! : 0;
   return bars.map((b, i) => {
-    const drums = `k${b.kick} s${b.snare} h${b.hat}`;
+    const kick = b.kick_present == null ? "kick n/a" : b.kick_present ? "kick" : "no kick";
     const tint = b.irregular
       ? "barFeaturesIrregular"
       : b.brightness == null || b.brightness < lo
@@ -167,29 +167,24 @@ export function barFeaturesContent(file: BarFeaturesFile | null): SparseBlock[] 
         : b.brightness >= hi
           ? "barFeaturesHigh"
           : "barFeaturesMid";
-    const slip = b.irregular ? ` · ${b.beats_in_bar} beats (not 4)` : "";
-    const arrange = [
-      b.entered.length ? `in: ${b.entered.join(",")}` : "",
-      b.left.length ? `out: ${b.left.join(",")}` : "",
-    ].filter(Boolean).join(" ");
+    const slip = b.irregular ? " · not 4 beats" : "";
     return {
       id: `bar-features-${i + 1}`,
       start_s: b.start_s,
       end_s: b.end_s,
       label: String(b.bar),
-      wideLabel: `${b.bar} · ${drums} · br ${fx(b.brightness, 2)}${slip}`,
+      wideLabel: `${b.bar} · ${kick} · br ${fx(b.brightness, 2)}${slip}`,
       laneLabel: "Bar Features",
-      caption: `bar ${b.bar} ${formatRange(b.start_s, b.end_s)} · mix ${fx(b.mix_rms)} bass ${fx(b.bass_rms)} ` +
-        `drums ${fx(b.drums_rms)} harm ${fx(b.harmonic_rms)} voc ${fx(b.vocals_rms)} · brightness ${fx(b.brightness, 2)} ` +
-        `· transient ${fx(b.transient_mean)}±${fx(b.transient_std)} · ${drums}${slip}`,
+      caption: `bar ${b.bar} ${formatRange(b.start_s, b.end_s)} · brightness ${fx(b.brightness, 2)} ` +
+        `· transient density ${fx(b.transient_density)} · ${kick}${slip}`,
       reference: `bar-features-${i + 1}`,
-      detail: [arrange, b.sweep_opening > 0 ? `sweep opening ${pct(b.sweep_opening)}` : "",
-        b.sweep_closing > 0 ? `sweep closing ${pct(b.sweep_closing)}` : "",
-        b.gestures.length ? `gestures: ${b.gestures.join(", ")}` : "",
-        `vocals ${pct(b.vocals_cover)}`].filter(Boolean).join(" · "),
-      summary: `experiments/bar_features — bar ${b.bar}, ${b.beats_in_bar} beats` +
-        (b.irregular ? " (not 4: grid slip, flagged not repaired)" : "") +
-        `: RMS mix ${fx(b.mix_rms)}, brightness ${fx(b.brightness, 2)}, ${drums}, vocals cover ${pct(b.vocals_cover)}.`,
+      detail: [
+        b.sweep_state ? `sweep ${b.sweep_state}` : "",
+        b.light_change_role ? `light change: ${b.light_change_role}` : "",
+      ].filter(Boolean).join(" · "),
+      summary: `bar_features.json — bar ${b.bar}` +
+        (b.irregular ? " (not 4 beats: grid slip, flagged not repaired)" : "") +
+        `: brightness ${fx(b.brightness, 2)}, transient density ${fx(b.transient_density)}, ${kick}.`,
       tintId: tint,
       raw: b,
     };
@@ -206,35 +201,27 @@ const ROLE_TINT: Record<string, string> = {
 };
 
 /**
- * Light change points from `experiments/light_changes` — one block per point
- * (the bar it starts), labelled with its role, tinted per role. Points come from
- * multi-feature change detection against the previous bars, never a bar-count
- * grid; a role no rule claimed reads `unknown`. The score is pooled evidence,
- * not a probability: no confidence is reported. A proposal to audition, not truth.
+ * Light change points from the published `song_event_timeline.json`
+ * `light_change` rows — one marker per point, labelled with its role, tinted
+ * per role. A point has no duration (`end_time` = `start_time`), so the block is
+ * the minimum-width marker at the point's time. `confidence` is `null`: the
+ * point score is uncalibrated, and none is invented.
  */
 export function lightChangesContent(file: LightChangesFile | null): SparseBlock[] {
-  return (file?.points ?? []).map((p, i) => {
-    const moved = Object.entries(p.z)
-      .filter(([, v]) => Math.abs(v) >= 2)
-      .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
-      .map(([k, v]) => `${k} ${v > 0 ? "+" : ""}${round(v, 1)}`);
-    const slip = p.irregular_bar ? " · bar not 4 beats (grid slip)" : "";
-    return {
-      id: `light-change-${i + 1}`,
-      start_s: p.time_s,
-      end_s: p.end_s,
-      label: p.role === "groove_in" ? "groove" : p.role,
-      wideLabel: `${p.role} · bar ${p.bar}`,
-      laneLabel: "Light Changes",
-      caption: `bar ${p.bar} ${formatRange(p.time_s, p.end_s)} · ${p.role} · score ${round(p.score, 1)}${slip}`,
-      reference: `light-change-${i + 1}`,
-      detail: moved.length ? moved.join(", ") : "no single feature group moved 2 sigma",
-      summary: `experiments/light_changes — ${p.role} at bar ${p.bar}: pooled change score ${round(p.score, 1)} ` +
-        `over groups ${p.features.join(", ") || "n/a"}; no confidence reported (score is not calibrated).${slip}`,
-      tintId: ROLE_TINT[p.role] ?? "lightChangeUnknown",
-      raw: p,
-    };
-  });
+  return (file?.points ?? []).map((p, i) => ({
+    id: `light-change-${i + 1}`,
+    start_s: p.start_time,
+    end_s: p.end_time,
+    label: p.role,
+    wideLabel: p.role,
+    laneLabel: "Light Changes",
+    caption: `${formatRange(p.start_time, p.end_time)} · ${p.role}`,
+    reference: `light-change-${i + 1}`,
+    detail: p.section_id ? `in ${p.section_id}` : "between published sections",
+    summary: `song_event_timeline.json — light_change ${p.role} at ${round(p.start_time, 2)} s; no confidence (score is not calibrated).`,
+    tintId: ROLE_TINT[p.role] ?? "lightChangeUnknown",
+    raw: p,
+  }));
 }
 
 const pct = (v: number | null): string => (v == null ? "n/a" : `${Math.round(v * 100)}%`);

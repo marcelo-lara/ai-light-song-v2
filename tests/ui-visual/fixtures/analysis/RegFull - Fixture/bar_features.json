@@ -1,0 +1,127 @@
+{
+  "schema_version": "3.1",
+  "song_name": "Armin - Revolution",
+  "field_sources": {
+    "bar": "essentia",
+    "start": "essentia",
+    "end": "essentia",
+    "brightness": "essentia",
+    "transient_density": "essentia",
+    "irregular": "light_changes",
+    "kick_present": "light_changes",
+    "sweep_state": "light_changes",
+    "light_change_role": "light_changes"
+  },
+  "bars": [
+    {
+      "bar": 9,
+      "start": 15.23,
+      "end": 17.09,
+      "irregular": false,
+      "brightness": 0.41,
+      "transient_density": 0.004,
+      "kick_present": false,
+      "sweep_state": null,
+      "light_change_role": "groove_in"
+    },
+    {
+      "bar": 10,
+      "start": 17.09,
+      "end": 18.92,
+      "irregular": false,
+      "brightness": 0.44,
+      "transient_density": 0.005,
+      "kick_present": false,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 11,
+      "start": 18.92,
+      "end": 20.78,
+      "irregular": false,
+      "brightness": 0.47,
+      "transient_density": 0.006,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 12,
+      "start": 20.78,
+      "end": 22.62,
+      "irregular": false,
+      "brightness": 0.52,
+      "transient_density": 0.007,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 13,
+      "start": 22.62,
+      "end": 24.47,
+      "irregular": true,
+      "brightness": 0.58,
+      "transient_density": 0.008,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": "build"
+    },
+    {
+      "bar": 14,
+      "start": 24.47,
+      "end": 26.31,
+      "irregular": false,
+      "brightness": 0.63,
+      "transient_density": 0.009,
+      "kick_present": true,
+      "sweep_state": "opening",
+      "light_change_role": null
+    },
+    {
+      "bar": 15,
+      "start": 26.31,
+      "end": 28.17,
+      "irregular": false,
+      "brightness": 0.68,
+      "transient_density": 0.01,
+      "kick_present": true,
+      "sweep_state": "opening",
+      "light_change_role": null
+    },
+    {
+      "bar": 16,
+      "start": 28.17,
+      "end": 30.0,
+      "irregular": false,
+      "brightness": 0.72,
+      "transient_density": 0.011,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 17,
+      "start": 30.0,
+      "end": 31.86,
+      "irregular": false,
+      "brightness": 0.77,
+      "transient_density": 0.012,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": "drop"
+    },
+    {
+      "bar": 18,
+      "start": 31.86,
+      "end": 33.7,
+      "irregular": false,
+      "brightness": 0.8,
+      "transient_density": 0.013,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": null
+    }
+  ]
+}
