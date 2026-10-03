@@ -184,6 +184,13 @@ export function usePanelState({
         openPendingProposal(typeof rawRef === "string" ? rawRef : marker.id);
         return;
       }
+      if (marker.laneId === "verdictChecks") {
+        // Read-only lane: the seek above is the whole click, unless the
+        // verdict has a pending verdict_check, whose card then takes focus.
+        const pendingId = (marker.raw as Record<string, unknown> | undefined)?.pending_check_id;
+        if (typeof pendingId === "string" && pendingId) openPendingProposal(pendingId);
+        return;
+      }
       setActiveHintRef(null);
       setActiveSectionRef(null);
       setSelection(selectionFromMarker(marker));

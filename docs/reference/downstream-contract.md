@@ -120,12 +120,38 @@ file. `mcp/runs.py` is the only module that touches them.
 
 `get_structure_hint_brief(song)` returns `{brief, existing}` (the brief is also
 the MCP prompt `structure_hint`); `write_structure_hint(song, hint)` validates
-schema `1.0` and writes only `reference/pre-analysis/structure.json`, one level
+schema `1.1` (each `shape` field except `vocals` carries `basis`, `source`, `quote`) and writes only `reference/pre-analysis/structure.json`, one level
 under the song directory. Neither projects a song-fact file and the hint is
 never published at top level; schema and rules are in
 [`../mcp-definition.md`](../mcp-definition.md), "Pre-analysis structure hint".
 Both accept analysed songs and songs with audio that `request_analysis` would
 accept. The hint never carries a time.
+
+A consumer that reads the hint must first read `version_check.version_mismatch`
+in `reference/pre-analysis/verdict.json` (v3.11 item 21; written by the
+`version-check` stage, absent when the song has no hint). When it is `true` —
+the researched duration is more than 5 s from `info.json`'s, or the researched
+BPM more than 3 % (half/double time equal) from `bpm` — **ignore the hint's
+`track.version` and `shape`**: it describes another recording. A `null` on
+either side is not a mismatch.
+
+`verdict.json` also carries a `verdicts` block (v3.11 item 22, `hint-verdict`
+stage): per hint field, `confirmed`, `refuted` or `unresolved` against the
+published analysis, with section ids and counts as evidence. Treat a `refuted`
+field as wrong and an `unresolved` one as unchecked; `status: "skipped"` means
+no field was checked. The block is not a delivery file: nothing in the analysis
+reads it and the MCP server does not project it.
+
+`get_verdict_brief` / `write_verdict_pass` / `write_verdict_check` (v3.11 item
+23) run the second pass over the `refuted` / `unresolved` rows: results go into a
+`second_pass` block of the same `verdict.json` (`confirmed`, or `refuted` with
+`wrong: hint | analysis`), and an unanswerable `unresolved` claim becomes a
+`verdict_check` row in the proposals queue for the operator, whose answer is
+stored as `second_pass.fields.<field>.operator`. `refuted` + `wrong: analysis` also covers a claim that holds in the audio
+where the analysis lacks the labelling. Still no delivery file: a
+consumer treats the hint as a prior and ignores `shape` when `version_mismatch`.
+Schemas: [`../mcp-definition.md`](../mcp-definition.md), "Second pass over the
+verdicts".
 
 ## The join key: `section_id`
 

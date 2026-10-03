@@ -111,3 +111,36 @@ def append_hint_proposal(
     queue.setdefault("proposals", []).append(entry)
     _write_queue(song_dir, queue)
     return entry
+
+
+def find_verdict_checks(song_dir: Path, song_name: str) -> dict[str, dict[str, Any]]:
+    """The queue's `verdict_check` entries keyed by verdict field. A rejected
+    entry outranks an approved one, which outranks a pending one (a later
+    entry wins within a status), so a rejection is never lost to a re-queue."""
+    rank = {"pending": 0, "approved": 1, "rejected": 2}
+    found: dict[str, dict[str, Any]] = {}
+    for entry in _load_queue(song_dir, song_name).get("proposals", []):
+        if entry.get("type") != "verdict_check":
+            continue
+        field = entry["verdict_check"]["field"]
+        if field not in found or rank.get(entry.get("status"), 0) >= rank.get(found[field].get("status"), 0):
+            found[field] = entry
+    return found
+
+
+def append_verdict_check(song_dir: Path, song_name: str, check: dict[str, Any]) -> dict[str, Any]:
+    """Append an already-validated `verdict_check` (see `verdict.prepare_check`)
+    as a new queue kind beside `hint`."""
+    entry: dict[str, Any] = {
+        "id": _new_id(),
+        "type": "verdict_check",
+        "status": "pending",
+        "created_at": _now(),
+        "rejection_reason": None,
+        "evidence": check["cannot_settle"],
+        "verdict_check": check,
+    }
+    queue = _load_queue(song_dir, song_name)
+    queue.setdefault("proposals", []).append(entry)
+    _write_queue(song_dir, queue)
+    return entry

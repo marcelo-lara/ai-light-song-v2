@@ -1,0 +1,96 @@
+{
+  "schema_version": "3.1",
+  "song_name": "Armin - Revolution",
+  "generated_from": {
+    "hint": "reference/pre-analysis/structure.json",
+    "hint_schema_version": "1.1",
+    "info": "info.json"
+  },
+  "version_check": {
+    "version_mismatch": false,
+    "duration_delta_s": 0.79,
+    "bpm_delta_pct": null
+  },
+  "verdicts": {
+    "generated_from": {
+      "sections": "sections.json"
+    },
+    "status": "evaluated",
+    "reason": null,
+    "fields": {
+      "drops": {
+        "verdict": "refuted",
+        "evidence": {
+          "expected": 2,
+          "drop_runs": 1,
+          "drop_section_ids": [
+            "section-004",
+            "section-005"
+          ]
+        }
+      },
+      "has_build_ups": {
+        "verdict": "confirmed",
+        "evidence": {
+          "expected": true,
+          "build_up_section_ids": [
+            "section-010"
+          ]
+        }
+      },
+      "chorus_is_drop": {
+        "verdict": "unresolved",
+        "evidence": {
+          "expected": true,
+          "drop_like_chorus_section_ids": [
+            "section-007",
+            "section-008"
+          ]
+        }
+      },
+      "bpm": {
+        "verdict": "confirmed",
+        "evidence": {
+          "analysed_bpm": 129.41,
+          "bpm_delta_pct": 0.3
+        }
+      }
+    }
+  },
+  "second_pass": {
+    "fields": {
+      "drops": {
+        "verdict": "refuted",
+        "wrong": "hint",
+        "evidence": {
+          "stems": {
+            "read": "bass and drums entries in section-007 and section-008",
+            "showed": "bass and drums enter together at the start of section-007"
+          },
+          "drum_density": {
+            "read": "drum_density across section-007 and section-008",
+            "showed": "dense through both sections, no thinning"
+          },
+          "dropouts": {
+            "read": "dropouts before section-007",
+            "showed": "one short dropout ahead of section-007"
+          },
+          "loudness": {
+            "read": "loudness of section-007 against the song",
+            "showed": "section-007 sits near the song's 75th percentile"
+          },
+          "web_search": null
+        },
+        "first_pass_verdict": "refuted",
+        "operator": null
+      },
+      "chorus_is_drop": {
+        "verdict": null,
+        "wrong": null,
+        "evidence": null,
+        "first_pass_verdict": null,
+        "operator": null
+      }
+    }
+  }
+}

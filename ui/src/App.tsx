@@ -73,7 +73,14 @@ export function App(): React.JSX.Element {
     blockReviewsFile,
   });
 
-  const laneState = useLaneState();
+  // The Verdict Checks lane exists only for a song whose verdict.json has at
+  // least one verdict row — no data, no lane and no empty header.
+  const absentLaneIds = useMemo<ReadonlySet<string>>(
+    () =>
+      artifacts.verdictFile.data?.rows.length ? new Set<string>() : new Set(["verdictChecks"]),
+    [artifacts.verdictFile.data],
+  );
+  const laneState = useLaneState(absentLaneIds);
 
   // A click on an LLM Pending Proposals block opens the Pending Proposals
   // drawer scrolled to that proposal's card.

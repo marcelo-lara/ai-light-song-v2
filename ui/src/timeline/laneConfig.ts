@@ -25,6 +25,9 @@ export const TIMELINE_KEYS = [
   // (reference/proposals/pending.json). Only pending entries get a block;
   // decided entries carry no timeline span.
   "pendingProposals",
+  // v3.11 item 24 — hint verdicts + second pass (reference/pre-analysis/verdict.json);
+  // the Verdict Checks lane's source. Optional: no file -> no lane.
+  "verdictFile",
   // hand-authored section segmentation, editable via the same drag-to-edit /
   // double-click-to-create conventions as humanHints (reference/human, writable)
   "humanSections",
@@ -78,6 +81,7 @@ export const TIMELINE_KEYS = [
 export const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]> = {
   humanHints: "humanHints",
   llmPendingProposals: "pendingProposals",
+  verdictChecks: "verdictFile",
   humanSections: "humanSections",
   moisesSections: "moisesSections",
   // The raw, pre-fusion analyzer artifact — same source already loaded for

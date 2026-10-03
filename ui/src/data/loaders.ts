@@ -33,6 +33,7 @@ import {
   parseLyricValidations,
   parseLoudnessEnvelope,
   parsePendingProposals,
+  parseVerdictFile,
   parseReviewQueue,
   parseSongFacts,
   parseRmsLoudness,
@@ -53,6 +54,7 @@ import type {
   LoudnessEnvelope,
   MoisesSegmentsFile,
   PendingProposalsFile,
+  VerdictFile,
   ReviewQueue,
   RmsLoudness,
   SectionDisplayFile,
@@ -362,6 +364,19 @@ export const loadPendingProposals = async (
   return result;
 };
 
+// v3.11 item 24 — reference/pre-analysis/verdict.json is optional (a song with
+// no hint has none); a 404 resolves to no rows, which hides the lane.
+export const loadVerdictFile = async (
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<VerdictFile>> => {
+  const result = await loadJson<VerdictFile>(artifactPaths.verdictFile(song), parseVerdictFile, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, rows: [] } };
+  }
+  return result;
+};
+
 export const loadSongFacts = (song: string, f?: typeof fetch) =>
   loadJson<SongFactsFile>(artifactPaths.songFacts(song), parseSongFacts, f);
 
@@ -405,6 +420,7 @@ export const artifactLoaders = {
   reviewQueue: loadReviewQueue,
   songFacts: loadSongFacts,
   pendingProposals: loadPendingProposals,
+  verdictFile: loadVerdictFile,
 } as const;
 
 export type ArtifactKey = keyof typeof artifactLoaders;

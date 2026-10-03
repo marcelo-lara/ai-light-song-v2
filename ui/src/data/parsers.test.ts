@@ -10,6 +10,7 @@ import {
   parseHumanHints,
   parseHumanSegmentsFile,
   parsePendingProposals,
+  parseVerdictFile,
   parseInfo,
   parseLoudnessEnvelope,
   parseReviewQueue,
@@ -297,6 +298,87 @@ describe("parsePendingProposals", () => {
       ],
     });
     expect(file.proposals.map((p) => p.id)).toEqual(["h1"]);
+  });
+});
+
+const EVIDENCE = {
+  stems: { read: "bass entries", showed: "bass enters in section-003" },
+  drum_density: { read: "drum_density", showed: "dense from section-003" },
+  dropouts: { read: "dropouts", showed: "one dropout before section-003" },
+  loudness: { read: "loudness", showed: "p90 in section-003" },
+  web_search: { read: "web", showed: "a fan wiki says two drops" },
+};
+
+describe("parsePendingProposals — verdict_check", () => {
+  const row = (over: Record<string, unknown> = {}) => ({
+    id: "vc1", type: "verdict_check", status: "pending", created_at: "", evidence: "why",
+    verdict_check: {
+      field: "drops", claim: "The hint says two drops", evidence: EVIDENCE,
+      cannot_settle: "audio shows one", question: "Are there two drops?",
+      ...over,
+    },
+  });
+
+  it("keeps a complete verdict_check row", () => {
+    const file = parsePendingProposals({ proposals: [row()] });
+    const p = file.proposals[0]!;
+    expect(p.type).toBe("verdict_check");
+    if (p.type !== "verdict_check") throw new Error("narrow");
+    expect(p.verdict_check.field).toBe("drops");
+    expect(Object.keys(p.verdict_check.evidence)).toEqual([
+      "stems", "drum_density", "dropouts", "loudness", "web_search",
+    ]);
+  });
+
+  it("skips a row with a missing evidence kind or question instead of half-drawing it", () => {
+    const { web_search: _ignored, ...four } = EVIDENCE;
+    const file = parsePendingProposals({
+      proposals: [row({ evidence: four }), row({ question: "" }), row()],
+    });
+    expect(file.proposals).toHaveLength(1);
+  });
+});
+
+describe("parseVerdictFile", () => {
+  const raw = {
+    schema_version: "3.1",
+    song_name: "s",
+    verdicts: {
+      fields: {
+        drops: { verdict: "refuted", evidence: { drop_section_ids: ["section-002", "section-003"], expected: 2 } },
+        chorus_is_drop: { verdict: "unresolved", evidence: { drop_like_chorus_section_ids: ["section-005"], build_up_section_ids: ["section-004", "section-005"] } },
+        bpm: { verdict: "confirmed", evidence: { analysed_bpm: 128 } },
+        vocals: { verdict: "bogus", evidence: {} },
+      },
+    },
+    second_pass: {
+      fields: {
+        drops: { verdict: "refuted", wrong: "hint", evidence: null, first_pass_verdict: "refuted", operator: null },
+        chorus_is_drop: { operator: { answer: "rejected", reason: "no", check_id: "vc1" } },
+      },
+    },
+  };
+
+  it("collects every *_section_ids evidence key and drops an invalid verdict row", () => {
+    const file = parseVerdictFile(raw);
+    expect(file.rows.map((r) => r.field)).toEqual(["drops", "chorus_is_drop", "bpm"]);
+    expect(file.rows[0]!.section_ids).toEqual(["section-002", "section-003"]);
+    expect(file.rows[1]!.section_ids).toEqual(["section-005", "section-004"]);
+    expect(file.rows[2]!.section_ids).toEqual([]);
+  });
+
+  it("reads a settled second pass and an operator-only entry", () => {
+    const [drops, chorus, bpm] = parseVerdictFile(raw).rows;
+    expect(drops!.second_pass).toEqual({ verdict: "refuted", wrong: "hint", operator: null });
+    expect(chorus!.second_pass).toEqual({
+      verdict: null, wrong: null,
+      operator: { answer: "rejected", reason: "no", check_id: "vc1" },
+    });
+    expect(bpm!.second_pass).toBeNull();
+  });
+
+  it("a file with no verdicts block has no rows", () => {
+    expect(parseVerdictFile({ version_check: {} }).rows).toEqual([]);
   });
 });
 

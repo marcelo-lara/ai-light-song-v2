@@ -92,6 +92,9 @@ def test_registered_tool_names() -> None:
         "get_watcher_status",
         "get_structure_hint_brief",
         "write_structure_hint",
+        "get_verdict_brief",
+        "write_verdict_pass",
+        "write_verdict_check",
     ]
 
 

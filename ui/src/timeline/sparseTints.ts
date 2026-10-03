@@ -36,6 +36,12 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //   operator decision (mcp/propose_hint), auditioning against humanHints'
   //   amber (35) directly above it; distinct from moisesLyricsValidated's
   //   265 (it does not co-occur with this lane)
+  // v3.11 item 24 — Verdict Checks: one tint per outcome (the operator's
+  // answer, else a settled second pass, else the first pass).
+  verdictConfirmed: [150, 60, 40], // green — the hint's claim holds
+  verdictRefuted: [0, 72, 46], // red — the claim does not hold
+  verdictUnresolved: [43, 88, 46], // amber — evidence could not answer it
+  verdictChecks: [43, 30, 40], // lane fallback base, never drawn on a row
   humanSections: [55, 85, 46], // golden yellow — the operator's own hand-authored
   //   segmentation, deliberately near humanHints' amber (35, same "hand-authored"
   //   family) but distinct from it and from the production Sections lane's

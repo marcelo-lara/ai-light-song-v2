@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Armin - Revolution",
+  "proposals": [
+    {
+      "id": "prop-hint-001",
+      "type": "hint",
+      "status": "pending",
+      "created_at": "2026-10-01T10:00:00Z",
+      "rejection_reason": null,
+      "evidence": "impact with no covering hint",
+      "hint": {
+        "start": 100.0,
+        "end": 108.0,
+        "title": "Strobe on the impact",
+        "summary": "Impact-aligned strobe."
+      }
+    },
+    {
+      "id": "prop-check-001",
+      "type": "verdict_check",
+      "status": "pending",
+      "created_at": "2026-10-01T10:01:00Z",
+      "rejection_reason": null,
+      "evidence": "the audio reads as a drop but the web names it a chorus",
+      "verdict_check": {
+        "field": "chorus_is_drop",
+        "claim": "The chorus is a drop",
+        "evidence": {
+          "stems": {
+            "read": "bass and drums entries in section-007 and section-008",
+            "showed": "bass and drums enter together at the start of section-007"
+          },
+          "drum_density": {
+            "read": "drum_density across section-007 and section-008",
+            "showed": "dense through both sections, no thinning"
+          },
+          "dropouts": {
+            "read": "dropouts before section-007",
+            "showed": "one short dropout ahead of section-007"
+          },
+          "loudness": {
+            "read": "loudness of section-007 against the song",
+            "showed": "section-007 sits near the song's 75th percentile"
+          },
+          "web_search": {
+            "read": "one query for the claim on this version",
+            "showed": "a fan wiki calls the chorus a drop, no second source"
+          }
+        },
+        "cannot_settle": "the audio fits a drop and a chorus equally; the web has one source",
+        "question": "Is the chorus of this recording also its drop?"
+      }
+    }
+  ]
+}

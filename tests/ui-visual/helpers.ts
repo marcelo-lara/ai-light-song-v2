@@ -95,6 +95,13 @@ const OPTIONAL_RUN_PROGRESS_404 = /\/artifacts\/_run_progress\.json$/;
 const OPTIONAL_PROPOSALS_404 =
   /\/reference\/proposals\/pending\.json$/;
 
+// v3.11 item 24: `reference/pre-analysis/verdict.json` exists only for a song
+// whose hint went through the verdict stages; the loader resolves a 404 to "no
+// rows" and the Verdict Checks lane is then not drawn at all. Only
+// `RegFull - Fixture` carries one, so the other fixtures' 404 is the expected
+// "no verdict.json" case, named here (and only this).
+const OPTIONAL_VERDICT_404 = /\/reference\/pre-analysis\/verdict\.json$/;
+
 /**
  * Collect anything that should never happen on a healthy load: console
  * error/warning, page errors, unhandled rejections, and failed responses for a
@@ -139,6 +146,7 @@ export function assertNoRuntimeErrors(
     if (OPTIONAL_SEGMENTS_404.test(url)) return;
     if (OPTIONAL_RUN_PROGRESS_404.test(url)) return;
     if (OPTIONAL_PROPOSALS_404.test(url)) return;
+    if (OPTIONAL_VERDICT_404.test(url)) return;
     if (url.includes("/data/analysis/") || url.includes("/data/songs/")) {
       problems.push(`requestfailed: ${url} (${req.failure()?.errorText ?? "?"})`);
     }
@@ -150,6 +158,7 @@ export function assertNoRuntimeErrors(
     if (OPTIONAL_SEGMENTS_404.test(url)) return;
     if (OPTIONAL_RUN_PROGRESS_404.test(url)) return;
     if (OPTIONAL_PROPOSALS_404.test(url)) return;
+    if (OPTIONAL_VERDICT_404.test(url)) return;
     if (url.includes("/data/analysis/")) {
       problems.push(`response ${res.status()}: ${url}`);
     }

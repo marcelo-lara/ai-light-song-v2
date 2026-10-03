@@ -475,22 +475,63 @@ tier gets an honest `source: null` file (D1.1), never an inferred one.
 
 ### Pre-analysis structure hint — a prior, not a measurement
 
-v3.10 item 7. `reference/pre-analysis/structure.json` (schema `1.0`, contract in
-[`mcp-definition.md`](mcp-definition.md)) holds a web-researched guess at a
-song's version, genre family and expected shape (drops, build-ups). It is
-written only by the `mcp/` `write_structure_hint` tool and carries no time.
-**27 of 27 songs have one.** Seven (`_test_song`, `ayuni`, `Rotate-Skillibeng`,
-`StealTheShow-NeonDreams`, `Cinderella - Ella Lee`, `CruelSummer - Malvina`,
-`Chimera - Hana`) are family `other` with confidence <= 0.2 and nulls because
-research found nothing reliable; `shape.drops`, `chorus_is_drop` and
-`has_build_ups` are `null` on every song. Five songs' researched
-`track.version_duration_s` differs from `info.json` by more than 5 s
-(*ChangedTheWayYouKissMe-Example*, *Only this moment*, *Queen of Kings*,
-*Titanium*, *Underworld - Born Slippy*): their version and shape are to be
-ignored. No `src/` stage reads the file; of the experiments only
-`section_names` (as a prior) and `phrases`' scorer (to split EDM songs out)
-do. It is not validated against anything, and in the one experiment that used
-it the hint changed 2 of 27 songs and lowered label accuracy.
+v3.10 item 7, schema `1.1` since v3.11. `reference/pre-analysis/structure.json`
+(contract in [`mcp-definition.md`](mcp-definition.md)) holds a web-researched
+guess at a song's version, genre family and expected shape. Each `shape` field
+except `vocals` is `{value, basis, source, quote}` (`stated` or `inferred`, a
+`sources[]` index, a non-empty quote). It is written only by `write_structure_hint`
+and carries no time. **27 of 27 songs hold a `1.1` hint.** Non-null evidence
+`shape` fields: **6 of 81** (v3.10: 0 of 81): Armin `drops`; *Changed the Way You
+Kiss Me* and *Charli-Guess* `has_build_ups`; *Hideaway* `drops`, `chorus_is_drop`,
+`has_build_ups`. Web sources rarely state them, so the rest stay null. Families:
+edm 4, pop_edm 15, pop 2, rock 1, other 5; four songs are unidentifiable
+(confidence 0.05: `_test_song`, `ayuni`, `StealTheShow-NeonDreams`,
+`Cinderella - Ella Lee`).
+
+**Version check.** Seven songs' researched duration differs from `info.json` by
+more than 5 s (*Chimera - Hana*, *Rapture*, *Sash*, *Queen of Kings*,
+*Titanium*, *Only this moment*, *Underworld - Born Slippy*; none flags on BPM
+alone). The `version-check` stage (7.5) writes `version_mismatch: true` to
+`reference/pre-analysis/verdict.json`; their `track.version` and `shape` are
+ignored.
+
+**First-pass verdicts.** The `hint-verdict` stage (7.6, after the section
+stages) judges each non-null hint field against the published analysis:
+`confirmed`, `refuted` (a presence/absence contradiction only) or `unresolved`,
+with evidence of section ids and counts, never times (`drops` vs `Drop` /
+`Extended Drop` runs, plus a drop-like `Chorus` for `pop_edm`; `has_build_ups`
+vs `Build-Up`; `chorus_is_drop` vs a sung vocal in the Drop sections; `vocals`
+vs `vocals_phrase` coverage; `genre.bpm` vs the analysed BPM). No rows under
+`version_mismatch`, a family other than `edm` / `pop_edm`, or a `1.0` hint.
+Thresholds: `hint_verdict.py`'s docstring. Corpus run: 15 songs evaluated, 12
+skipped (7 `version_mismatch`, 5 `family`). Confirmed / refuted / unresolved:
+`vocals` 12/0/3, `bpm` 11/0/0, `drops` 0/1/1, `has_build_ups` 0/3/0,
+`chorus_is_drop` 0/0/1; 9 open verdicts on 5 songs. Accuracy is not measured
+against ground truth.
+
+**Known limitation.** First-pass `has_build_ups` counts only `Build-Up` labels,
+so a loudness or harmonic ramp with no such label is invisible to it: 3 of 3
+rows are `refuted`, all three `wrong: analysis` in the second pass. The
+labels on those songs are unreviewed allin1 output.
+
+**Second pass** (MCP LLM client, `get_verdict_brief` / `write_verdict_pass` /
+`write_verdict_check`, [`mcp-definition.md`](mcp-definition.md)): re-reads stems,
+`drum_density`, `dropouts` and loudness plus a targeted web search for each
+`refuted` / `unresolved` row and writes the `second_pass` block. Corpus run:
+settled 8 of 9: 3 `confirmed` (`vocals` on Armin, Charli-Guess, `ayuni`; the VAD
+coverage of 22-29 % undercounts fragmented vocals), 1 `refuted` `wrong: hint`
+(Armin `drops`: audio shows two build-release-beat re-entry events, the hint's
+count of 1 was inferred from a singular "a drop"), 4 `refuted` `wrong: analysis`
+(*Hideaway* `drops` and `has_build_ups`, *Charli-Guess* `has_build_ups`,
+*ChangedTheWayYouKissMe* `has_build_ups`, a weak call). One `verdict_check`
+queued: *Hideaway - Kiesza* `chorus_is_drop`, awaiting the operator. The
+operator's confirm/reject answer is stored as `operator` and is final.
+
+**Nothing in the analysis reads `verdict.json`**: it never reaches `mcp/`'s
+projected files. The only `src/` readers of the hint are `version-check` and
+`hint-verdict`; of the experiments only `section_names` (as a prior) and
+`phrases`' scorer (to split EDM songs out) do. In the one experiment that used
+the hint it changed 2 of 27 songs and lowered label accuracy.
 
 ### Analysis runs — watcher status
 

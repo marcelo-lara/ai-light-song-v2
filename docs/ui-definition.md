@@ -73,7 +73,7 @@ docker compose build ui         # production image
 **The debugger is read-only against generated data.** No snapshots, no caches,
 no derived JSON, no overrides, no helper files into `data/analysis/`.
 
-The only five writable paths:
+The only six writable paths:
 
 - `data/analysis/{song}/reference/human/human_hints.json` — explicit `Save`
 - `data/analysis/{song}/reference/human/song_facts.json` — explicit `Save`
@@ -115,6 +115,23 @@ The only five writable paths:
   This is the same request file `mcp/runs.py`'s `request_analysis` tool
   writes over stdio — one mechanism, two callers. Neither `_run_*` file is
   `reference/human/` material or a delivery artifact.
+- `data/analysis/{song}/reference/pre-analysis/verdict.json` — v3.11 item 24.
+  The only writable path under `reference/pre-analysis/`, and **narrower than
+  the file**: the one value the UI may set is
+  `second_pass.fields.<field>.operator = {answer: "confirmed"|"rejected",
+  reason: string|null, check_id}`, the operator's answer to a queued
+  `verdict_check`. Nothing else in the file is touched: an entry the second
+  pass wrote keeps its `verdict` / `wrong` / `evidence` / `first_pass_verdict`;
+  a field with no entry yet gets those four as `null`. `confirmed` = the hint's
+  claim holds; `rejected` = it does not (a reason is required). The answer is
+  final: a different answer for an answered field, a field with no first-pass
+  verdict row and a missing file are all 400s that write nothing. It is not a
+  new endpoint: `PUT /api/proposal-decision/<song>` (below) writes it, inside
+  the same per-song lock, before flipping the queue row, on **either** decision
+  (`structure.json` and the rest of `reference/pre-analysis/` stay unwritable
+  here). `mcp/` never writes `operator` (`write_verdict_pass` preserves it).
+
+`reference/proposals/pending.json` is not a seventh path: its only UI write is the `status` / `rejection_reason` flip of one row by `PUT /api/proposal-decision/<song>` (the MCP server alone appends rows).
 
 `Cancel` / closing a panel must never update the three explicit-`Save` files.
 The dev-server
@@ -179,7 +196,8 @@ unrestricted" above.
 | Arrangement State | `arrangement_state.json` | top-level published (v3.2); who is playing, per-stem RMS state changes |
 | Vocal Cadence | `vocal_cadence.json` | top-level published (v3.9 item 1, promoted from `experiments/vocal_cadence`); per-line bar-relative timing + separate call events from the operator's lyric alignment (`lyrics.json`) + `beats.json`; timing only, no lyric text. Lines render as blocks, calls as zero-length point markers. `source: null` + a `reason` (D1.1) when the song has no lyrics tier |
 | Human Hints | `reference/human/human_hints.json` | writable |
-| LLM Pending Proposals | `reference/proposals/pending.json` (the `propose_hint` queue, `docs/mcp-definition.md`) | read-only here, no experiment badge, directly below Human Hints, indigo tint (hue 245). One block per entry with `type: "hint"` **and** `status: "pending"`, sorted by `hint.start`; approved/rejected ones get no block. Block label = `hint.title`, detail = `evidence`, summary = `hint.summary`, reference = the proposal `id`. Hover (this lane only) sets a native tooltip: `<range> · <title>` / `<summary>` / `evidence: <evidence>`. Clicking a block (on the lane or in its events panel) seeks to `hint.start` and opens the **Pending proposals** drawer view (`PendingProposalsPanel.tsx`) scrolled to that proposal's card, highlighted (`review-queue__q--focused`). On each pending card the heading is `hint.title` (`(untitled)` when empty), then the `title · start–end` line, then `hint.summary`, then `evidence: …`. Clicking the card body seeks to `hint.start`, except clicks inside `.hint-editor__actions`, the reject-confirm row, or any button/input/textarea. The reject reason is a 2-row `<textarea class="input">`. Every approve/reject reloads the queue and hands it back to `App` (`onQueueChange`), so the lane drops the decided block without a song reload |
+| LLM Pending Proposals | `reference/proposals/pending.json` (the `propose_hint` queue, `docs/mcp-definition.md`) | read-only here, no experiment badge, directly below Human Hints, indigo tint (hue 245). One block per entry with `type: "hint"` **and** `status: "pending"`, sorted by `hint.start`; approved/rejected ones get no block. Block label = `hint.title`, detail = `evidence`, summary = `hint.summary`, reference = the proposal `id`. Hover (this lane only) sets a native tooltip: `<range> · <title>` / `<summary>` / `evidence: <evidence>`. Clicking a block (on the lane or in its events panel) seeks to `hint.start` and opens the **Pending proposals** drawer view (`PendingProposalsPanel.tsx`) scrolled to that proposal's card, highlighted (`review-queue__q--focused`). On each pending card the heading is `hint.title` (`(untitled)` when empty), then the `title · start–end` line, then `hint.summary`, then `evidence: …`. Clicking the card body seeks to `hint.start`, except clicks inside `.hint-editor__actions`, the reject-confirm row, or any button/input/textarea. The reject reason is a 2-row `<textarea class="input">`. Every approve/reject reloads the queue and hands it back to `App` (`onQueueChange`), so the lane drops the decided block without a song reload. **`verdict_check` rows (v3.11 item 24)** are a second card type in the same panel (`VerdictCheckCard.tsx`), never a block on this lane: heading = the claim, then `verdict check · <field>`, five evidence rows (`stems`, `drum_density`, `dropouts`, `loudness`, `web_search`, each `read:` / `showed:`), `cannot settle: …`, the question, and **Confirm** / **Reject** (Reject opens the reason textarea; `Confirm reject` stays disabled until the reason is non-blank). Confirm = approve (operator `confirmed`), Reject = reject with reason (operator `rejected`); both write `verdict.json`'s `operator` (see the write rule) and the queue row's `status` / `rejection_reason`. A decided check shows as `confirmed` / `rejected` in the Decided list. No re-run reminder, no drag, no card-click seek |
+| Verdict Checks | `reference/pre-analysis/verdict.json` (+ the queue for pending / decided checks, + the published `sections.json` to resolve ids) | read-only (v3.11 item 24), no badge, directly below LLM Pending Proposals. **Absent unless the song's `verdict.json` has at least one verdict row** — no data, no lane, no empty header (a lane with rows but no block is the ordinary ready-empty lane). One block per verdict row whose first-pass evidence names sections (every `*_section_ids` key): it spans the first to the last of those sections; rows with none (`bpm`, `vocals`) get no block. Tint = outcome, one colour each: `confirmed` green, `refuted` red, `unresolved` amber; the outcome shown is the operator's answer (`confirmed` → confirmed, `rejected` → refuted) if any, else a settled second pass, else the first pass. Hover tooltip: `<range> · <field> · <outcome>`, `<field>: first pass <verdict>`, `second pass: <verdict> (wrong: hint\|analysis)` when settled, `operator: <answer> — <reason>` when decided, `verdict_check pending` when queued. Clicking a block seeks to its start and, when the verdict has a pending `verdict_check`, opens the Pending proposals view on that card; otherwise it only seeks (no panel) |
 | Human Sections | `reference/human/segments.json` | writable. The operator's own hand-authored section segmentation, below Human Hints; `label` (fixed vocabulary or unset), `description` (free text). The segment editor and this lane read `segments.json` only. Inspecting a block on allin1 Segmentation or Moises Sections offers "Create human section", which seeds an unsaved editor draft from the block (see `docs/reference/ui-regression.md`, `inspector-promote`) |
 | Moises Sections | `reference/moises/segments.json` | read-only. Moises.ai's reference segmentation — same bare `{start, end, label}` shape as Human Sections but never edited; one fusion tier below it in `sections.json` (`docs/reference/analysis.segments.md`) |
 | allin1 Segmentation | `artifacts/section_segmentation/sections.json` | read-only. The raw, pre-fusion analyzer output — lets the operator see what our own segmentation produced even on a song where the fused Sections lane shows a human or Moises override instead |

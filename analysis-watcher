@@ -138,6 +138,8 @@ KNOWN_STAGES=(
   "generate-section-hints"
   "build-ui-data"
   "publish-vocal-cadence"
+  "version-check"
+  "hint-verdict"
   "build-human-hints-alignment"
   "build-validation-report"
   "write-validation-report"

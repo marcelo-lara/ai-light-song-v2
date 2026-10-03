@@ -71,3 +71,12 @@ describe("item 1 — per-stem FFT lanes", () => {
     for (const id of stemLanes) expect(typeof loaders[id]).toBe("function");
   });
 });
+
+describe("v3.11 item 24 — Verdict Checks lane", () => {
+  it("is registered as a read-only, non-experiment lane backed by verdictFile", () => {
+    const def = LANE_DEFS.find((d) => d.id === "verdictChecks");
+    expect(def?.label).toBe("Verdict Checks");
+    expect(def?.experiment).toBeUndefined();
+    expect(Object.keys(artifactLoaders)).toContain("verdictFile");
+  });
+});

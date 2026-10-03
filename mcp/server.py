@@ -43,6 +43,7 @@ from loaders import (
 from proposals import (
     ProposalValidationError,
     append_hint_proposal,
+    append_verdict_check,
 )
 from runs import (
     InvalidSongNameError,
@@ -62,6 +63,7 @@ from structure_hint import (
     load_existing,
     write_hint,
 )
+import verdict as _verdict
 from serializers import DetailScopeError, build_detail, build_song_overview
 
 server = MCPServer("ai-light-song-v2-mcp", version="0.1.0")
@@ -327,7 +329,7 @@ def structure_hint_prompt(song: str) -> str:
 
 @server.tool(name="write_structure_hint")
 def write_structure_hint(song: str, hint: dict[str, Any]) -> dict[str, Any]:
-    """Validate and store the song's pre-analysis structure hint (schema 1.0).
+    """Validate and store the song's pre-analysis structure hint (schema 1.1).
 
     Writes only the song's own pre-analysis ``structure.json``, replacing any
     earlier one. Refused - nothing written - naming the first bad field when
@@ -337,6 +339,74 @@ def write_structure_hint(song: str, hint: dict[str, Any]) -> dict[str, Any]:
     try:
         return write_hint(song_dir, song.strip(), hint)
     except StructureHintError as exc:
+        raise ToolError(str(exc)) from exc
+
+
+@server.tool(name="get_verdict_brief")
+def get_verdict_brief(song: str) -> dict[str, Any]:
+    """Instructions for the second pass over a song's hint verdicts.
+
+    ``{brief, status, reason, verdicts}``: ``brief`` is the instructions
+    (identical to the MCP prompt ``verdict_pass``); ``verdicts`` lists the
+    first-pass ``refuted`` / ``unresolved`` rows with their evidence, any
+    second-pass result, the queued check's status and the operator's answer.
+    Errors when the song has no verdict file.
+    """
+    song_dir = _resolve_song_or_error(song)
+    try:
+        return _verdict.load_brief(song_dir, song.strip())
+    except _verdict.VerdictError as exc:
+        raise ToolError(str(exc)) from exc
+
+
+@server.prompt(
+    name="verdict_pass",
+    description="Second pass: settle the refuted and unresolved hint verdicts against the audio.",
+)
+def verdict_pass_prompt(song: str) -> str:
+    return _verdict.build_brief(song.strip())
+
+
+@server.tool(name="write_verdict_pass")
+def write_verdict_pass(song: str, results: dict[str, Any]) -> dict[str, Any]:
+    """Store second-pass results ``{field: {verdict, wrong, evidence}}``.
+
+    Writes only the ``second_pass`` block of the song's verdict file. ``verdict``
+    is ``confirmed`` or ``refuted`` (``wrong``: ``hint`` | ``analysis``);
+    ``evidence`` carries the four audio kinds, each ``{read, showed}``, and an
+    optional ``web_search``. Refused - nothing written - on an unknown field,
+    any time key, missing evidence, a first-pass verdict that is already
+    confirmed, or a claim the operator answered. Never edits the hint.
+    """
+    song_dir = _resolve_song_or_error(song)
+    try:
+        return _verdict.write_pass(song_dir, results)
+    except _verdict.VerdictError as exc:
+        raise ToolError(str(exc)) from exc
+
+
+@server.tool(name="write_verdict_check")
+def write_verdict_check(
+    song: str,
+    field: str,
+    claim: str,
+    evidence: dict[str, Any],
+    cannot_settle: str,
+    question: str,
+) -> dict[str, Any]:
+    """Queue a ``verdict_check`` for the operator when a verdict stays unanswerable.
+
+    Appends one ``verdict_check`` entry to the song's proposals queue and
+    nothing else. ``evidence`` needs the four audio kinds and ``web_search``,
+    each ``{read, showed}``. Refused - nothing written - when anything is
+    missing, the verdict is not ``unresolved``, or the same claim is already
+    queued, answered or rejected.
+    """
+    song_dir = _resolve_song_or_error(song)
+    try:
+        check = _verdict.prepare_check(song_dir, song.strip(), field, claim, evidence, cannot_settle, question)
+        return append_verdict_check(song_dir, song.strip(), check)
+    except (_verdict.VerdictError, ProposalValidationError) as exc:
         raise ToolError(str(exc)) from exc
 
 

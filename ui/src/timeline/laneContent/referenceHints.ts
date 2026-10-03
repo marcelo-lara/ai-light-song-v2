@@ -2,7 +2,11 @@
 // lane adapters. Split out of laneContent.ts (v3.9 item 7) with no behaviour
 // change; see laneContent.ts for the dispatch table and shared SparseBlock type.
 
-import type { HumanHintsFile, PendingProposalsFile } from "../../data/types";
+import type {
+  HumanHintsFile,
+  PendingHintProposal,
+  PendingProposalsFile,
+} from "../../data/types";
 import type { MoisesLyricsFile } from "../../data/sparseArtifacts";
 import type { SparseBlock } from "../laneContent";
 import { formatRange, round } from "./shared";
@@ -42,9 +46,11 @@ export function llmPendingProposalsContent(
   file: PendingProposalsFile | null,
 ): SparseBlock[] {
   return (file?.proposals ?? [])
-    .filter((p) => p.type === "hint" && p.status === "pending")
+    .filter(
+      (p): p is PendingHintProposal => p.type === "hint" && p.status === "pending",
+    )
     .map((p) => {
-      const { start, end, title, summary } = p.hint!;
+      const { start, end, title, summary } = p.hint;
       return {
         id: `llmPendingProposals-${p.id}`,
         start_s: start,

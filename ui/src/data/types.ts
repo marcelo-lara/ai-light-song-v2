@@ -471,7 +471,7 @@ interface PendingProposalBase {
   evidence: string;
 }
 
-export type PendingProposal = PendingProposalBase & {
+export type PendingHintProposal = PendingProposalBase & {
   type: "hint";
   hint: ProposedHint;
   /** Operator-corrected start/end, set only when the times approved
@@ -481,8 +481,74 @@ export type PendingProposal = PendingProposalBase & {
   approved_hint?: { start: number; end: number };
 };
 
+/** One audio / web evidence kind of a `verdict_check`: what was read and what it showed. */
+export interface VerdictCheckEvidenceItem {
+  read: string;
+  showed: string;
+}
+
+export const VERDICT_CHECK_EVIDENCE_KINDS = [
+  "stems",
+  "drum_density",
+  "dropouts",
+  "loudness",
+  "web_search",
+] as const;
+
+export type VerdictCheckEvidenceKind = (typeof VERDICT_CHECK_EVIDENCE_KINDS)[number];
+
+/** `verdict_check` queue row body (v3.11 item 23, mcp `write_verdict_check`). */
+export interface VerdictCheckBody {
+  field: string;
+  claim: string;
+  evidence: Record<VerdictCheckEvidenceKind, VerdictCheckEvidenceItem>;
+  cannot_settle: string;
+  question: string;
+}
+
+export type PendingVerdictCheckProposal = PendingProposalBase & {
+  type: "verdict_check";
+  verdict_check: VerdictCheckBody;
+};
+
+export type PendingProposal = PendingHintProposal | PendingVerdictCheckProposal;
+
 export interface PendingProposalsFile {
   schema_version: string;
   song_name: string;
   proposals: PendingProposal[];
+}
+
+// ---------------------------------------------------------------------------
+// reference/pre-analysis/verdict.json  (v3.11 items 21-24 — hint verdicts and
+// the second pass over them; read-only here except `operator`, which only the
+// approve flow of a `verdict_check` writes.)
+// ---------------------------------------------------------------------------
+
+export type VerdictOutcome = "confirmed" | "refuted" | "unresolved";
+
+export interface VerdictOperatorAnswer {
+  answer: "confirmed" | "rejected";
+  reason: string | null;
+  check_id: string | null;
+}
+
+export interface VerdictSecondPass {
+  verdict: "confirmed" | "refuted" | null;
+  wrong: "hint" | "analysis" | null;
+  operator: VerdictOperatorAnswer | null;
+}
+
+export interface VerdictRow {
+  field: string;
+  verdict: VerdictOutcome;
+  /** every section id the first-pass evidence names (`*_section_ids` keys), in file order */
+  section_ids: string[];
+  second_pass: VerdictSecondPass | null;
+}
+
+export interface VerdictFile {
+  schema_version: string;
+  song_name: string;
+  rows: VerdictRow[];
 }

@@ -22,6 +22,8 @@ from analyzer.stages.segmentation import segment_sections
 from analyzer.stages.stems import ensure_stems
 from analyzer.stages.timing import extract_timing_grid
 from analyzer.stages.ui_data import build_ui_data, publish_arrangement_state
+from analyzer.stages.hint_verdict import publish_hint_verdict
+from analyzer.stages.version_check import publish_version_check
 from analyzer.stages.vocal_cadence import publish_vocal_cadence
 from analyzer.stages.validation import (
     build_validation_report,
@@ -49,6 +51,8 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "generate-section-hints": "6.2",
     "build-ui-data": "7.2",
     "publish-vocal-cadence": "7.4",
+    "version-check": "7.5",
+    "hint-verdict": "7.6",
     "build-human-hints-alignment": "8.8",
     "build-validation-report": "validation",
     "write-validation-report": "validation",
@@ -194,6 +198,21 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         _required_output_payload(paths, stage_name, paths.beats_output_path)
         _required_output_payload(paths, stage_name, paths.info_output_path)
         _run_stage(paths.song_name, "phase-1", stage_name, publish_vocal_cadence, paths)
+        return 0
+    if stage_name == "version-check":
+        # Phase 4 — reads reference/pre-analysis/structure.json (optional: no
+        # hint -> nothing written) and the PUBLISHED info.json, which it
+        # therefore requires even when the hint is absent.
+        _required_output_payload(paths, stage_name, paths.info_output_path)
+        _run_stage(paths.song_name, "phase-1", stage_name, publish_version_check, paths)
+        return 0
+    if stage_name == "hint-verdict":
+        # Phase 4 — reads the optional hint, the version_check block already in
+        # verdict.json, and the PUBLISHED sections/arrangement_state/loudness/
+        # info. No hint -> nothing written.
+        for required in (paths.sections_output_path, paths.arrangement_state_output_path, paths.loudness_output_path, paths.info_output_path):
+            _required_output_payload(paths, stage_name, required)
+        _run_stage(paths.song_name, "phase-1", stage_name, publish_hint_verdict, paths)
         return 0
     if stage_name == "build-gestures":
         fft_bands = _required_artifact_payload(paths, stage_name, "essentia", "fft_bands.json")
@@ -390,6 +409,14 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
             "field_sources": info_field_sources,
         }
         write_json(paths.info_output_path, info_payload)
+        # version-check (7.5, v3.11 item 21) — compares the optional
+        # pre-analysis hint with the info.json just written; writes
+        # reference/pre-analysis/verdict.json only when a hint exists.
+        _run_stage(paths.song_name, "phase-1", "version-check", publish_version_check, paths)
+        # hint-verdict (7.6, v3.11 item 22) — judges the hint against the
+        # published sections/arrangement_state/loudness; needs version-check's
+        # block, so it runs right after it.
+        _run_stage(paths.song_name, "phase-1", "hint-verdict", publish_hint_verdict, paths)
 
         report, exit_code = _run_stage(
             paths.song_name,

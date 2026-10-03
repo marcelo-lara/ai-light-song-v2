@@ -21,6 +21,7 @@ import type {
   PendingProposalsFile,
   SectionRow,
   SegmentationSection,
+  VerdictFile,
 } from "../data/types";
 import { REVIEWABLE_LANE_IDS, matchBlockReviews } from "../data/blockReviewMatch";
 import type {
@@ -73,6 +74,7 @@ import {
   kickCheckContent,
   crashCheckContent,
 } from "./laneContent/drumHitChecks";
+import { verdictChecksContent } from "./laneContent/verdicts";
 import { formatRange } from "./laneContent/shared";
 
 export {
@@ -98,6 +100,7 @@ export {
   clapEventsContent,
   kickCheckContent,
   crashCheckContent,
+  verdictChecksContent,
   formatRange,
 };
 
@@ -124,6 +127,8 @@ export interface SparseBlock {
   lyricTokenId?: number;
   lyricValidatable?: boolean;
   laneLabel: string;
+  /** Optional hover text for the lane (`SparseLane` sets it as the native tooltip on a lane that opts in). */
+  tooltip?: string;
   caption: string;
   reference: string;
   detail: string;
@@ -145,6 +150,8 @@ export interface SparseBlock {
 export interface LaneContentSources {
   humanHints?: HumanHintsFile | null;
   llmPendingProposals?: PendingProposalsFile | null;
+  /** v3.11 item 24 — reference/pre-analysis/verdict.json; the Verdict Checks lane. */
+  verdictFile?: VerdictFile | null;
   humanSections?: HumanSegmentsFile | null;
   moisesSections?: MoisesSegmentsFile | null;
   moisesLyrics?: MoisesLyricsFile | null;
@@ -177,6 +184,7 @@ export interface LaneContentSources {
 export const SPARSE_LANE_IDS = [
   "humanHints",
   "llmPendingProposals",
+  "verdictChecks",
   "humanSections",
   "moisesSections",
   "allin1Sections",
@@ -254,6 +262,12 @@ function buildLaneBlocksRaw(
       return humanHintsContent(s.humanHints ?? null);
     case "llmPendingProposals":
       return llmPendingProposalsContent(s.llmPendingProposals ?? null);
+    case "verdictChecks":
+      return verdictChecksContent(
+        s.verdictFile ?? null,
+        s.sections ?? [],
+        s.llmPendingProposals ?? null,
+      );
     case "humanSections":
       return humanSectionsContent(s.humanSections ?? null);
     case "moisesSections":

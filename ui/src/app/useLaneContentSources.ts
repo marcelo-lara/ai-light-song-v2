@@ -40,6 +40,7 @@ export function useLaneContentSources({
     () => ({
       humanHints: humanHintsFile,
       llmPendingProposals: pendingProposalsFileForLane,
+      verdictFile: artifacts.verdictFile.data,
       humanSections: humanSectionsFile,
       moisesSections: artifacts.moisesSections.data,
       moisesLyrics: artifacts.moisesLyrics.data,
@@ -66,6 +67,7 @@ export function useLaneContentSources({
     [
       humanHintsFile,
       pendingProposalsFileForLane,
+      artifacts.verdictFile.data,
       humanSectionsFile,
       artifacts.moisesSections.data,
       artifacts.moisesLyrics.data,

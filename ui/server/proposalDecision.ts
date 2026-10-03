@@ -10,6 +10,7 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 
 import { analysisRoot, readJsonBody } from "./shared";
 import {
+  applyVerdictOperator,
   buildApprovedHintEntry,
   hintAlreadyCaptured,
   withSongLock,
@@ -42,14 +43,33 @@ function pendingProposalsFilePath(song: unknown): string {
   return filePath;
 }
 
+// v3.11 item 24 — the ONE write outside reference/human/ and
+// reference/proposals/ this module makes: a decided `verdict_check`'s answer
+// into reference/pre-analysis/verdict.json (`second_pass.fields.<field>.operator`
+// only — see `applyVerdictOperator`). Same escape guard as the two above.
+function verdictFilePath(song: unknown): string {
+  const safeSong = path.basename(String(song || "").trim());
+  if (!safeSong) {
+    throw new Error("Song name is required.");
+  }
+  const songDir = path.join(analysisRoot, safeSong);
+  const filePath = path.join(songDir, "reference", "pre-analysis", "verdict.json");
+  const relativePath = path.relative(songDir, filePath);
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+    throw new Error("Song path is outside the reference data root.");
+  }
+  return filePath;
+}
+
 interface PendingProposalRecord {
   id: string;
-  type?: "hint";
+  type?: "hint" | "verdict_check";
   status: "pending" | "approved" | "rejected";
   created_at: string;
   rejection_reason: string | null;
   evidence: string;
   hint?: { start: number; end: number; title: string; summary?: string };
+  verdict_check?: { field: string };
   [key: string]: unknown;
 }
 
@@ -179,7 +199,38 @@ export async function handleProposalDecision(
       // as the status flip below — so the two can never diverge, and a
       // second concurrent approve for this song can never see a stale
       // snapshot of either file.
-      if (decision.status === "approved") {
+      // A verdict_check writes its answer on EITHER decision (confirmed on
+      // approve, rejected + reason on reject) — the second pass must see a
+      // rejection too. A missing verdict.json or a field with no first-pass
+      // row throws here, before the queue row is flipped.
+      if (current.type === "verdict_check") {
+        const field = current.verdict_check?.field;
+        if (typeof field !== "string" || !field) {
+          throw new Error(`Proposal "${decision.id}" is missing its "verdict_check" payload.`);
+        }
+        const verdictPath = verdictFilePath(song);
+        let verdictDoc: unknown;
+        try {
+          verdictDoc = JSON.parse(await fsp.readFile(verdictPath, "utf-8"));
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException)?.code === "ENOENT") {
+            throw new Error(`No verdict.json for "${song}" — the answer has nowhere to go.`);
+          }
+          throw error;
+        }
+        const applied = applyVerdictOperator(verdictDoc, field, {
+          answer: decision.status === "approved" ? "confirmed" : "rejected",
+          reason: decision.rejection_reason,
+          check_id: current.id,
+        });
+        if (applied.changed) {
+          await fsp.writeFile(
+            verdictPath,
+            JSON.stringify(applied.doc, null, 2) + "\n",
+            "utf-8",
+          );
+        }
+      } else if (decision.status === "approved") {
         if (current.type === "hint") {
           const hintsPath = humanHintsFilePath(song);
           let hintsFile: { song_name: string; human_hints: NormalizedHint[] };

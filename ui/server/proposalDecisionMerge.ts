@@ -97,6 +97,81 @@ export function buildApprovedHintEntry(
   };
 }
 
+// ---- verdict_check (v3.11 item 24) -------------------------------------
+//
+// The operator's answer to a queued `verdict_check` lands in
+// reference/pre-analysis/verdict.json as
+// `second_pass.fields.<field>.operator = {answer, reason, check_id}` and
+// NOTHING else in that file changes: an entry the second pass already wrote
+// keeps its `verdict` / `wrong` / `evidence` / `first_pass_verdict`; a field
+// with no entry yet gets those four as `null` (the shape mcp/verdict.py's
+// `_entry` documents), so an operator-only entry is valid.
+
+export const VERDICT_FIELDS = ["drops", "has_build_ups", "chorus_is_drop", "vocals", "bpm"] as const;
+
+export interface VerdictOperatorWrite {
+  answer: "confirmed" | "rejected";
+  reason: string | null;
+  check_id: string;
+}
+
+/** Returns a copy of `doc` with `operator` set on `second_pass.fields.<field>`;
+ *  `changed` is false when this very check already wrote the same answer (a
+ *  retry after a partial failure). Throws, writing nothing, when the field has
+ *  no first-pass verdict row, or a different answer/check is already stored
+ *  (the operator's answer is final). */
+export function applyVerdictOperator(
+  doc: unknown,
+  field: string,
+  operator: VerdictOperatorWrite,
+): { doc: Record<string, unknown>; changed: boolean } {
+  if (!doc || typeof doc !== "object") throw new Error("verdict.json is not a JSON object.");
+  if (!(VERDICT_FIELDS as readonly string[]).includes(field)) {
+    throw new Error(`Verdict field "${field}" is not one of ${VERDICT_FIELDS.join(", ")}.`);
+  }
+  const root = doc as Record<string, unknown>;
+  const verdicts = root.verdicts as { fields?: Record<string, unknown> } | undefined;
+  if (!verdicts?.fields || typeof verdicts.fields[field] !== "object" || !verdicts.fields[field]) {
+    throw new Error(`verdict.json has no first-pass verdict for "${field}".`);
+  }
+  const secondPass = (root.second_pass && typeof root.second_pass === "object"
+    ? root.second_pass
+    : {}) as Record<string, unknown>;
+  const fields = (secondPass.fields && typeof secondPass.fields === "object"
+    ? secondPass.fields
+    : {}) as Record<string, unknown>;
+  const existing =
+    fields[field] && typeof fields[field] === "object"
+      ? (fields[field] as Record<string, unknown>)
+      : {};
+  const stored = existing.operator as VerdictOperatorWrite | null | undefined;
+  if (stored) {
+    if (
+      stored.check_id === operator.check_id &&
+      stored.answer === operator.answer &&
+      (stored.reason ?? null) === operator.reason
+    ) {
+      return { doc: root, changed: false };
+    }
+    throw new Error(`The operator already answered the "${field}" claim.`);
+  }
+  const entry = {
+    verdict: null,
+    wrong: null,
+    evidence: null,
+    first_pass_verdict: null,
+    ...existing,
+    operator,
+  };
+  return {
+    doc: {
+      ...root,
+      second_pass: { ...secondPass, fields: { ...fields, [field]: entry } },
+    },
+    changed: true,
+  };
+}
+
 // One promise-chain per song, serializing every proposal-decision request
 // against it. Node has no real thread race, only interleaved `await`s, so
 // chaining is enough to guarantee a later request's file reads always see an

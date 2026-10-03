@@ -33,6 +33,7 @@ import {
   filterSweepContent,
   phrasesContent,
   sectionNamesContent,
+  verdictChecksContent,
 } from "./laneContent";
 import type {
   ArrangementStateFile,
@@ -46,7 +47,7 @@ import type {
   PhrasesFile,
   SectionNamesFile,
 } from "../data/sparseArtifacts";
-import type { PendingProposalsFile } from "../data/types";
+import type { PendingProposalsFile, SectionRow, VerdictFile } from "../data/types";
 
 describe("humanHintsContent", () => {
   it("maps every hint to a block carrying id + lighting hint", () => {
@@ -850,5 +851,75 @@ describe("sectionNamesContent", () => {
 
   it("never throws on a missing file", () => {
     expect(sectionNamesContent(null)).toEqual([]);
+  });
+});
+
+describe("verdictChecksContent", () => {
+  const sec = (id: string, start: number, end: number) =>
+    ({ section_id: id, start, end }) as unknown as SectionRow;
+  const sections = [sec("s1", 0, 10), sec("s2", 10, 20), sec("s3", 20, 30), sec("s4", 30, 40)];
+  const file: VerdictFile = {
+    schema_version: "3.1",
+    song_name: "s",
+    rows: [
+      { field: "drops", verdict: "refuted", section_ids: ["s3", "s2"], second_pass: null },
+      { field: "chorus_is_drop", verdict: "unresolved", section_ids: ["s4"], second_pass: null },
+      { field: "has_build_ups", verdict: "confirmed", section_ids: ["s1"], second_pass: null },
+      { field: "bpm", verdict: "confirmed", section_ids: [], second_pass: null },
+      { field: "vocals", verdict: "unresolved", section_ids: ["gone"], second_pass: null },
+    ],
+  };
+  const check = (status: "pending" | "approved" | "rejected", reason: string | null = null) =>
+    ({
+      id: "vc1", type: "verdict_check", status, created_at: "", rejection_reason: reason, evidence: "x",
+      verdict_check: { field: "chorus_is_drop" },
+    }) as unknown as PendingProposalsFile["proposals"][number];
+  const queue = (...proposals: PendingProposalsFile["proposals"]): PendingProposalsFile => ({
+    schema_version: "1.0", song_name: "s", proposals,
+  });
+
+  it("one block per row with resolvable section evidence, spanning first to last section", () => {
+    const blocks = verdictChecksContent(file, sections, null);
+    expect(blocks.map((b) => b.id)).toEqual([
+      "verdictChecks-has_build_ups", "verdictChecks-drops", "verdictChecks-chorus_is_drop",
+    ]);
+    const drops = blocks.find((b) => b.label === "drops")!;
+    expect([drops.start_s, drops.end_s]).toEqual([10, 30]);
+  });
+
+  it("tints by outcome: one tint per outcome", () => {
+    const tints = verdictChecksContent(file, sections, null).map((b) => b.tintId);
+    expect(new Set(tints)).toEqual(
+      new Set(["verdictConfirmed", "verdictRefuted", "verdictUnresolved"]),
+    );
+  });
+
+  it("a pending verdict_check is exposed to the click handler, nothing else is", () => {
+    const blocks = verdictChecksContent(file, sections, queue(check("pending")));
+    const raw = (id: string) => blocks.find((b) => b.id === id)!.raw as { pending_check_id: string | null };
+    expect(raw("verdictChecks-chorus_is_drop").pending_check_id).toBe("vc1");
+    expect(raw("verdictChecks-drops").pending_check_id).toBeNull();
+  });
+
+  it("a decided check retints the block and prints the operator answer in the tooltip", () => {
+    const blocks = verdictChecksContent(file, sections, queue(check("rejected", "audio disagrees")));
+    const b = blocks.find((x) => x.id === "verdictChecks-chorus_is_drop")!;
+    expect(b.tintId).toBe("verdictRefuted");
+    expect(b.tooltip).toContain("operator: rejected — audio disagrees");
+    expect((b.raw as { pending_check_id: string | null }).pending_check_id).toBeNull();
+  });
+
+  it("a settled second pass shows its wrong side", () => {
+    const f: VerdictFile = {
+      ...file,
+      rows: [{ field: "drops", verdict: "refuted", section_ids: ["s2"],
+        second_pass: { verdict: "refuted", wrong: "hint", operator: null } }],
+    };
+    const [b] = verdictChecksContent(f, sections, null);
+    expect(b!.tooltip).toContain("second pass: refuted (wrong: hint)");
+  });
+
+  it("no file, no blocks", () => {
+    expect(verdictChecksContent(null, sections, null)).toEqual([]);
   });
 });

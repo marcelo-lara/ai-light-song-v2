@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 import * as merge from "./proposalDecisionMerge";
 
 import {
+  applyVerdictOperator,
   buildApprovedHintEntry,
   hintAlreadyCaptured,
   nextHumanHintId,
@@ -140,5 +141,57 @@ describe("buildApprovedHintEntry", () => {
 describe("section-field proposals are gone", () => {
   it("exposes no section-field merge", () => {
     expect(merge).not.toHaveProperty("applyApprovedSectionField");
+  });
+});
+
+describe("applyVerdictOperator (v3.11 item 24)", () => {
+  const doc = () => ({
+    schema_version: "3.1",
+    verdicts: { fields: { drops: { verdict: "unresolved", evidence: {} } } },
+    second_pass: {
+      fields: {
+        drops: {
+          verdict: null, wrong: null, evidence: null, first_pass_verdict: null, operator: null,
+        },
+      },
+    },
+  });
+  const answer = { answer: "confirmed" as const, reason: null, check_id: "vc1" };
+
+  it("sets only operator and keeps the rest of the entry and the file", () => {
+    const d = doc();
+    (d.second_pass.fields.drops as Record<string, unknown>).verdict = "refuted";
+    const { doc: out, changed } = applyVerdictOperator(d, "drops", answer);
+    expect(changed).toBe(true);
+    const entry = (out.second_pass as { fields: Record<string, Record<string, unknown>> }).fields.drops!;
+    expect(entry.verdict).toBe("refuted");
+    expect(entry.operator).toEqual(answer);
+    expect(out.verdicts).toEqual(d.verdicts);
+  });
+
+  it("creates the second_pass block and an operator-only entry with null siblings", () => {
+    const { doc: out } = applyVerdictOperator(
+      { verdicts: { fields: { bpm: { verdict: "unresolved" } } } },
+      "bpm",
+      { answer: "rejected", reason: "no", check_id: "vc2" },
+    );
+    expect((out.second_pass as { fields: unknown }).fields).toEqual({
+      bpm: {
+        verdict: null, wrong: null, evidence: null, first_pass_verdict: null,
+        operator: { answer: "rejected", reason: "no", check_id: "vc2" },
+      },
+    });
+  });
+
+  it("a retry of the same answer is a no-op", () => {
+    const once = applyVerdictOperator(doc(), "drops", answer).doc;
+    expect(applyVerdictOperator(once, "drops", answer).changed).toBe(false);
+  });
+
+  it("refuses a different answer once one is stored, an unknown field, and a field with no verdict row", () => {
+    const once = applyVerdictOperator(doc(), "drops", answer).doc;
+    expect(() => applyVerdictOperator(once, "drops", { ...answer, check_id: "vc9" })).toThrow(/already answered/);
+    expect(() => applyVerdictOperator(doc(), "tempo", answer)).toThrow(/not one of/);
+    expect(() => applyVerdictOperator(doc(), "vocals", answer)).toThrow(/no first-pass verdict/);
   });
 });

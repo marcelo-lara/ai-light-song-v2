@@ -49,14 +49,19 @@ def roots(tmp_path, monkeypatch):
 
 def _hint(song: str) -> dict:
     return {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "song_name": song,
         "generated_at": "2026-10-01",
         "track": {"artist": "A", "title": "T", "version": "extended",
                   "remixer": None, "version_duration_s": 400.5},
         "genre": {"family": "edm", "subgenre": "big_room", "bpm": 128},
-        "shape": {"drops": 2, "chorus_is_drop": False,
-                  "has_build_ups": True, "vocals": None},
+        "shape": {
+            "drops": {"value": 2, "basis": "stated", "source": 0, "quote": "It has two drops."},
+            "chorus_is_drop": {"value": False, "basis": "inferred", "source": 0,
+                               "quote": "A sung chorus follows the second drop."},
+            "has_build_ups": {"value": None, "basis": None, "source": None, "quote": None},
+            "vocals": None,
+        },
         "confidence": 0.7,
         "sources": [{"url": "https://example.com/x", "title": "x"}],
     }
@@ -80,7 +85,7 @@ def test_brief_is_the_prompt_and_carries_the_rules(roots) -> None:
     prompt = asyncio.run(server.server.get_prompt("structure_hint", {"song": UNANALYSED}))
     assert prompt.messages[0].content.text == brief
     low = brief.lower()
-    for needle in ("research", "version", "genre", "null", "at least one source", "never write a time"):
+    for needle in ("inferred", "quote", "not a source", "never a bare guess", '"1.1"', "research", "version", "genre", "null", "at least one source", "never write a time"):
         assert needle in low
 
 
@@ -95,7 +100,17 @@ def _mutations():
     def missing_field(h): del h["track"]["remixer"]
     def wrong_name(h): h["song_name"] = "other"
     def conf(h): h["confidence"] = 1.5
+    def noquote(h): h["shape"]["drops"]["quote"] = ""
+    def nobasis(h): h["shape"]["chorus_is_drop"]["basis"] = None
+    def badsrc(h): h["shape"]["drops"]["source"] = 1
+    def v10(h):
+        h["schema_version"] = "1.0"
+        h["shape"] = {"drops": 2, "chorus_is_drop": False, "has_build_ups": True, "vocals": None}
+    def nullwith(h): h["shape"]["has_build_ups"]["quote"] = "x"
     return [
+        ("shape.drops.quote", noquote), ("shape.chorus_is_drop.basis", nobasis),
+        ("shape.drops.source", badsrc), ("schema_version", v10),
+        ("shape.has_build_ups.quote", nullwith),
         ("genre.family", enum), ("genre.subgenre", sub), ("sources", nosrc),
         ("sources", missing_src), ("timestamp", time_top),
         ("shape.drop_start", time_nested), ("sources[0].time", time_in_source),
@@ -131,3 +146,16 @@ def test_unknown_song_and_bad_name_refused(roots) -> None:
         with pytest.raises(ToolError):
             fn(*args)
     assert not (roots / "No Such Song").exists()
+
+
+def test_legacy_1_0_hint_is_readable_but_not_writable(roots) -> None:
+    legacy = _hint(UNANALYSED)
+    legacy["schema_version"] = "1.0"
+    legacy["shape"] = {"drops": 2, "chorus_is_drop": False, "has_build_ups": True, "vocals": None}
+    path = _path(roots, UNANALYSED)
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(legacy))
+    assert server.get_structure_hint_brief(UNANALYSED)["existing"] == legacy
+    with pytest.raises(ToolError, match="schema_version"):
+        server.write_structure_hint(UNANALYSED, legacy)
+    assert json.loads(path.read_text()) == legacy

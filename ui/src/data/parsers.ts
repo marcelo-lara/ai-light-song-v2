@@ -17,6 +17,7 @@ import {
   stringOrNull,
 } from "./parse";
 import { SEGMENT_FUNCTION_NAMES } from "./segmentFunctions";
+import { VERDICT_CHECK_EVIDENCE_KINDS } from "./types";
 import type {
   Beats,
   BeatRow,
@@ -41,6 +42,12 @@ import type {
   LoudnessSource,
   PendingProposal,
   PendingProposalsFile,
+  VerdictCheckBody,
+  VerdictFile,
+  VerdictOperatorAnswer,
+  VerdictRow,
+  VerdictSecondPass,
+  VerdictCheckEvidenceItem,
   ProposalStatus,
   ReviewQuestion,
   ReviewQueue,
@@ -717,7 +724,98 @@ function parsePendingProposalRow(raw: unknown): PendingProposal | null {
     };
   }
 
+  if (o.type === "verdict_check") {
+    const body = parseVerdictCheckBody(o.verdict_check);
+    if (!body) return null;
+    return { ...base, type: "verdict_check", verdict_check: body };
+  }
+
   return null;
+}
+
+function nonEmptyString(v: unknown): string | null {
+  return typeof v === "string" && v.trim() ? v : null;
+}
+
+// A `verdict_check` row the card cannot render in full (a missing claim,
+// question or evidence kind) is skipped, never half-drawn — the MCP tool
+// refuses to queue one, so a malformed row is a corrupt file.
+function parseVerdictCheckBody(raw: unknown): VerdictCheckBody | null {
+  const v = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : null;
+  if (!v) return null;
+  const field = nonEmptyString(v.field);
+  const claim = nonEmptyString(v.claim);
+  const question = nonEmptyString(v.question);
+  const cannotSettle = nonEmptyString(v.cannot_settle);
+  const ev = v.evidence && typeof v.evidence === "object" ? (v.evidence as Record<string, unknown>) : null;
+  if (!field || !claim || !question || !cannotSettle || !ev) return null;
+  const evidence = {} as Record<(typeof VERDICT_CHECK_EVIDENCE_KINDS)[number], VerdictCheckEvidenceItem>;
+  for (const kind of VERDICT_CHECK_EVIDENCE_KINDS) {
+    const item = ev[kind] && typeof ev[kind] === "object" ? (ev[kind] as Record<string, unknown>) : null;
+    const read = item ? nonEmptyString(item.read) : null;
+    const showed = item ? nonEmptyString(item.showed) : null;
+    if (!read || !showed) return null;
+    evidence[kind] = { read, showed };
+  }
+  return { field, claim, evidence, cannot_settle: cannotSettle, question };
+}
+
+// reference/pre-analysis/verdict.json — only what the Verdict Checks lane
+// needs. `*_section_ids` keys of a verdict's first-pass evidence are the
+// section evidence; BPM and vocals-coverage rows carry none.
+function parseVerdictOperator(raw: unknown): VerdictOperatorAnswer | null {
+  const o = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : null;
+  if (!o || (o.answer !== "confirmed" && o.answer !== "rejected")) return null;
+  return {
+    answer: o.answer,
+    reason: typeof o.reason === "string" ? o.reason : null,
+    check_id: typeof o.check_id === "string" ? o.check_id : null,
+  };
+}
+
+export function parseVerdictFile(raw: unknown): VerdictFile {
+  const o = asObject(raw, "verdict.json");
+  const verdicts =
+    o.verdicts && typeof o.verdicts === "object" ? (o.verdicts as Record<string, unknown>) : {};
+  const fields =
+    verdicts.fields && typeof verdicts.fields === "object"
+      ? (verdicts.fields as Record<string, unknown>)
+      : {};
+  const second =
+    o.second_pass && typeof o.second_pass === "object"
+      ? ((o.second_pass as Record<string, unknown>).fields as Record<string, unknown> | undefined)
+      : undefined;
+  const rows: VerdictRow[] = [];
+  for (const [field, value] of Object.entries(fields)) {
+    const row = value && typeof value === "object" ? (value as Record<string, unknown>) : null;
+    if (!row) continue;
+    const verdict = row.verdict;
+    if (verdict !== "confirmed" && verdict !== "refuted" && verdict !== "unresolved") continue;
+    const evidence =
+      row.evidence && typeof row.evidence === "object"
+        ? (row.evidence as Record<string, unknown>)
+        : {};
+    const section_ids: string[] = [];
+    for (const [key, ids] of Object.entries(evidence)) {
+      if (!key.endsWith("_section_ids") || !Array.isArray(ids)) continue;
+      for (const id of ids) if (typeof id === "string" && !section_ids.includes(id)) section_ids.push(id);
+    }
+    const sp = second?.[field];
+    const spo = sp && typeof sp === "object" ? (sp as Record<string, unknown>) : null;
+    let second_pass: VerdictSecondPass | null = null;
+    if (spo) {
+      const sv = spo.verdict === "confirmed" || spo.verdict === "refuted" ? spo.verdict : null;
+      const wrong = spo.wrong === "hint" || spo.wrong === "analysis" ? spo.wrong : null;
+      const operator = parseVerdictOperator(spo.operator);
+      if (sv || operator) second_pass = { verdict: sv, wrong, operator };
+    }
+    rows.push({ field, verdict, section_ids, second_pass });
+  }
+  return {
+    schema_version: stringOr(o.schema_version, "", "verdict.schema_version"),
+    song_name: stringOr(o.song_name, "", "verdict.song_name"),
+    rows,
+  };
 }
 
 export function parsePendingProposals(raw: unknown): PendingProposalsFile {

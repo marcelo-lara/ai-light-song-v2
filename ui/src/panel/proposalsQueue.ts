@@ -5,6 +5,7 @@
 
 import type {
   HumanHint,
+  PendingHintProposal,
   PendingProposal,
   PendingProposalsFile,
 } from "../data/types";
@@ -24,7 +25,7 @@ export function partitionProposals(file: PendingProposalsFile): {
 /** A proposal card's playhead window: the operator's dragged correction
  * (`timeEdit`) when given, else the proposal's own proposed start/end. */
 export function proposalWindow(
-  proposal: PendingProposal,
+  proposal: PendingHintProposal,
   timeEdit?: { start: number; end: number },
 ): { start: number; end: number } {
   return timeEdit ?? { start: proposal.hint.start, end: proposal.hint.end };
@@ -37,7 +38,7 @@ export function proposalWindow(
  * proposal's own `hint.start`/`hint.end` — `proposal.hint` itself is never
  * mutated by this. */
 export function hintDraftFromProposal(
-  proposal: PendingProposal,
+  proposal: PendingHintProposal,
   existingHints: HumanHint[],
   times?: { start: number; end: number },
 ): HintDraft {

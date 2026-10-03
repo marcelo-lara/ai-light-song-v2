@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import type { HumanHint, PendingProposal, PendingProposalsFile } from "../data/types";
+import type { HumanHint, PendingHintProposal, PendingProposalsFile } from "../data/types";
 
 import * as queue from "./proposalsQueue";
 import { hintDraftFromProposal, partitionProposals, proposalWindow } from "./proposalsQueue";
 
-const hintProposal = (over: Partial<PendingProposal> = {}): PendingProposal => ({
+const hintProposal = (over: Partial<PendingHintProposal> = {}): PendingHintProposal => ({
   id: "prop-1",
   type: "hint",
   status: "pending",
@@ -14,7 +14,7 @@ const hintProposal = (over: Partial<PendingProposal> = {}): PendingProposal => (
   evidence: "loudness spike",
   hint: { start: 10, end: 12, title: "Drop payoff", summary: "loudness spike" },
   ...over,
-} as PendingProposal);
+} as PendingHintProposal);
 
 describe("partitionProposals", () => {
   it("splits pending from decided, newest-decided first", () => {

@@ -5,10 +5,12 @@ MCP server that helps a reasoning model understand a song's mood,
 sections and dynamics — **drop sequences especially** — while spending as few
 tokens as possible.
 
-> **Status: built and green — nine tools.** Three reads, one proposal
+> **Status: built and green — twelve tools.** Three reads, one proposal
 > write (v3.7), two analysis-run tools (v3.8), `get_watcher_status`
 > (v3.10) and the structure-hint pair `get_structure_hint_brief` /
 > `write_structure_hint` (v3.10 item 7, plus the `structure_hint` prompt) —
+> and (v3.11 item 23) the second-pass trio `get_verdict_brief` /
+> `write_verdict_pass` / `write_verdict_check` (plus the `verdict_pass` prompt) —
 > see "The tool surface". `request_analysis` takes `force` (v3.10).
 > The stdio/Compose plumbing, song discovery, the exposure guard, the
 > fixture-based regression harness (`smoke-test` / `full-regression`, no
@@ -62,6 +64,16 @@ literals, and the tool descriptions avoid inner-folder paths, so
 `test_exposure.py` and smoke S4.10 stay unchanged and green. S4.11 now asserts
 the `/data` mount is writable for these bounded writers; the boundary itself is
 held by code, not the mount.
+
+**Third and fourth code-scoped writes (v3.11 item 23).** `write_verdict_pass`
+writes only the `second_pass` block of `reference/pre-analysis/verdict.json`;
+`write_verdict_check` appends only to the proposals queue. Both live in
+`mcp/verdict.py` (queue helpers in `mcp/proposals.py`) with path components as
+separate string literals, so `test_exposure.py` and smoke S4.10 stay unchanged
+and green. Neither edits the hint, the first-pass `version_check` / `verdicts`
+blocks or any analysis file; `get_verdict_brief` only reads the verdict file and
+the queue. `test_verdict.py` asserts that a pass plus a check change nothing but
+`verdict.json` and `pending.json`.
 
 **D3.1 exception (v3.8 item 3).** `request_analysis`/`get_analysis_progress`
 write/read `_run_request.json`/`_run_progress.json`, one level under a song's
@@ -122,7 +134,7 @@ originals keep these internal filesystem details and must never be exposed.
 | SDK | the official `mcp` package |
 | Transport | stdio |
 | State | none — reads `data/analysis/` on each call |
-| Writes | **read-only, with bounded exceptions:** `propose_hint` (v3.7) appends to a song's own inner-folder proposals queue file — never a top-level file, never the operator's own hand-authored file (see "Correction proposals"); `request_analysis` (v3.8) writes only `artifacts/_run_request.json` (see `request_analysis` / `get_analysis_progress`); `get_watcher_status` (v3.10) reads `data/analysis-watcher.heartbeat`; `write_structure_hint` (v3.10 item 7) writes only `reference/pre-analysis/structure.json` (see "Pre-analysis structure hint") |
+| Writes | **read-only, with bounded exceptions:** `propose_hint` (v3.7) appends to a song's own inner-folder proposals queue file — never a top-level file, never the operator's own hand-authored file (see "Correction proposals"); `request_analysis` (v3.8) writes only `artifacts/_run_request.json` (see `request_analysis` / `get_analysis_progress`); `get_watcher_status` (v3.10) reads `data/analysis-watcher.heartbeat`; `write_structure_hint` (v3.10 item 7) writes only `reference/pre-analysis/structure.json` (see "Pre-analysis structure hint"); `write_verdict_pass` (v3.11 item 23) writes only the `second_pass` block of `reference/pre-analysis/verdict.json`; `write_verdict_check` appends a `verdict_check` row to the proposals queue (see "Second pass over the verdicts") |
 | Container | its own Compose service; never the analyzer image |
 
 Song discovery is by directory name under `data/analysis/`, the same key the
@@ -166,7 +178,7 @@ discovery call they both need, (v3.7 item 10) one write tool that only ever
 queues a correction for human review, and (v3.8 item 3) two tools that let the
 caller request and poll a run for a song it cannot see yet, and (v3.10 item 7)
 two tools for the pre-analysis structure hint, and (v3.10 item 11)
-`get_watcher_status`. Nine tools, plus the `structure_hint` prompt. Everything else is out of scope for v1.
+`get_watcher_status`, and (v3.11 item 23) the second-pass trio. Twelve tools, plus the `structure_hint` and `verdict_pass` prompts. Everything else is out of scope for v1.
 
 **Not on this surface:** the v3.10 experiments `filter_sweep`, `phrases`,
 `downbeat_anchors` and `section_names` (measured on the whole corpus, none
@@ -339,6 +351,66 @@ inferred field *because a person set it*. A tool that wrote the operator's own
 file directly would make that provenance mean "whoever called the tool last,"
 which dissolves the one precedence rule the rest of the system trusts.
 
+### Second pass over the verdicts — `get_verdict_brief` / `write_verdict_pass` / `write_verdict_check` (v3.11 item 23)
+
+After the `hint-verdict` stage (`verdict.json`'s `verdicts.fields`), the client
+re-reads the audio for every `refuted` / `unresolved` verdict. The audio
+outranks the web: a source's answer settles a verdict only together with audio
+evidence that does not contradict it. Needs a verdict file; without one every
+tool errors (no hint, or the stages have not run).
+
+- `get_verdict_brief(song)` returns `{brief, status, reason, verdicts}`. `brief`
+  is the instructions verbatim (also the MCP prompt `verdict_pass`): per verdict
+  read stem entries/exits, `drum_density`, `dropouts` and loudness through
+  `get_detail`, run one targeted web search for that claim on the audio's
+  version, then answer or queue. `verdicts` is one row per first-pass
+  `refuted` / `unresolved` field:
+  `{field, verdict, evidence, second_pass, check, operator}` where `evidence`
+  is the first-pass evidence, `second_pass` is `null` or `{verdict, wrong,
+  evidence}`, `check` is `null` or `{id, status, rejection_reason}` (the queued
+  `verdict_check`), `operator` is `null` or the operator's answer (below).
+  `status` / `reason` echo `verdicts.status` / `.reason` (a `skipped` block has
+  no rows).
+- `write_verdict_pass(song, results)`: `results` is `{field: {verdict, wrong,
+  evidence}}`, `field` one of `drops`, `has_build_ups`, `chorus_is_drop`,
+  `vocals`, `bpm`. `verdict` is `confirmed` (`wrong: null`) or `refuted` with
+  `wrong: "hint" | "analysis"`. The verdict judges the analysis' agreement with
+  the hint: when the hint's claim holds in the audio but the analysis lacks the
+  labelling, record `refuted` + `wrong: "analysis"`, not `confirmed` (the brief
+  says so). `evidence` is `{stems, drum_density, dropouts,
+  loudness, web_search}`: the four audio kinds are required, each `{read,
+  showed}` (non-empty strings; section ids, never times); `web_search` is
+  `{read, showed}` or `null`, and never settles a verdict by itself because the
+  audio kinds are mandatory. Refused, nothing written (all-or-nothing across
+  `results`), on: an unknown field or key, any time-bearing key name, missing or
+  empty evidence, a first-pass verdict that is not `refuted` / `unresolved`, a
+  `verdict` that is not `confirmed` / `refuted`, `wrong` missing on `refuted` or
+  set on `confirmed`, a claim the operator already answered.
+- `write_verdict_check(song, field, claim, evidence, cannot_settle, question)`:
+  queues a `verdict_check` for a verdict that stays unanswerable. `evidence`
+  has the four audio kinds **and** `web_search`, each `{read, showed}`. Refused,
+  nothing written, when `claim`, `cannot_settle`, `question`, any evidence kind
+  or any `read` / `showed` is missing or empty, a key names a time, the field's
+  first-pass verdict is not `unresolved`, the field is already settled by a
+  second pass or answered by the operator, or a `verdict_check` for that field
+  is already queued, approved or **rejected** (a rejection is never re-queued).
+
+**Queue row** (`reference/proposals/pending.json`, new `type` beside `hint`):
+`{id, type: "verdict_check", status: "pending", created_at, rejection_reason:
+null, evidence: <cannot_settle text>, verdict_check: {field, claim, evidence,
+cannot_settle, question}}`. The one claim key is the verdict `field`. `question`
+is phrased so the operator can answer yes/no about the claim.
+
+**Stored second pass** (`verdict.json`, sibling of `version_check` / `verdicts`,
+untouched by those stages): `second_pass: {fields: {<field>: {verdict, wrong,
+evidence, first_pass_verdict, operator}}}`. `verdict` / `wrong` / `evidence` /
+`first_pass_verdict` are `null` until a pass is written; `operator` is `null`
+until answered. `operator` (written by the debugger's approve flow, never by
+this server) is `{answer: "confirmed" | "rejected", reason: string | null,
+check_id}`: `confirmed` = the operator says the hint's claim holds, `rejected` =
+it does not (`reason` required). An entry holding only `operator` is valid. The
+queue row's `status` flips to `approved` / `rejected` by the same flow.
+
 ### `request_analysis` / `get_analysis_progress` (v3.8 item 3)
 
 Let the caller start and poll a full `./analyze` run for a song it cannot see
@@ -416,13 +488,13 @@ queued.
   the songs root) as well as analysed songs: the hint is meant to exist
   before the first run.
 
-**Schema** (`schema_version: "1.0"`). Unknown → `null`, never a guess. No
+**Schema** (`schema_version: "1.1"`; a stored `1.0` hint stays readable through `existing` but `write_structure_hint` refuses it until re-written as `1.1`). Unknown → `null`, never a bare guess; a derived value is allowed only labelled `inferred` with a quote. No
 timestamps anywhere: web sources describe other versions, and an invented
 time is worse than none.
 
 | Field | Type | Values |
 | --- | --- | --- |
-| `schema_version` | string | `"1.0"` |
+| `schema_version` | string | `"1.1"` |
 | `song_name` | string | the song folder name |
 | `generated_at` | string | ISO date |
 | `track.artist`, `track.title` | string | as researched |
@@ -432,12 +504,21 @@ time is worse than none.
 | `genre.family` | enum | `edm`, `pop_edm`, `pop`, `rock`, `other` |
 | `genre.subgenre` | enum \| null | `big_room`, `house`, `techno`, `trance`, `dubstep`, `drum_and_bass`, `other` |
 | `genre.bpm` | number \| null | researched, not measured |
-| `shape.drops` | integer \| null | expected number of drops |
-| `shape.chorus_is_drop` | bool \| null | a sung chorus takes the drop's place |
-| `shape.has_build_ups` | bool \| null | |
+| `shape.drops` | `{value, basis, source, quote}` | `value`: integer \| null, expected number of drops |
+| `shape.chorus_is_drop` | `{value, basis, source, quote}` | `value`: bool \| null, a sung chorus takes the drop's place |
+| `shape.has_build_ups` | `{value, basis, source, quote}` | `value`: bool \| null |
 | `shape.vocals` | enum \| null | `none`, `chops`, `full` |
 | `confidence` | number 0–1 | overall |
-| `sources` | list of `{url, title}` | at least one |
+| `sources` | list of `{url, title}` | at least one; a chat-assistant answer is not a source |
+
+Evidence fields (`shape.drops`, `chorus_is_drop`, `has_build_ups`):
+`basis` is `stated` (a source says it) or `inferred` (derived from stated
+facts); `source` is an integer index into `sources[]`; `quote` is a non-empty
+supporting sentence. A non-null `value` without a valid `basis`, `source`
+index and `quote` is refused naming the field. `value: null` requires
+`basis`, `source` and `quote` all `null`. `quote` is a value, never a time
+key: the no-time-key scan covers every key name. `shape.vocals` stays a plain
+enum \| null.
 
 ## Honesty obligations
 

@@ -100,6 +100,9 @@ def test_stdio_server_initializes_and_lists_expected_tools() -> None:
                     "get_watcher_status",
                     "get_structure_hint_brief",
                     "write_structure_hint",
+                    "get_verdict_brief",
+                    "write_verdict_pass",
+                    "write_verdict_check",
                 ]
 
     asyncio.run(_run())

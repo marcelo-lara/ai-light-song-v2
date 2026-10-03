@@ -64,6 +64,9 @@ is authoritative over this list.
 | `generate-section-hints` | 6.2 |
 | `build-ui-data` | 7.2 |
 | `publish-arrangement-state` | 7.3 |
+| `publish-vocal-cadence` | 7.4 |
+| `version-check` (needs the published `info.json`; writes only when `reference/pre-analysis/structure.json` exists) | 7.5 |
+| `hint-verdict` (needs the published `sections.json`, `arrangement_state.json`, `loudness.json`, `info.json` and `verdict.json`'s `version_check` block; writes only when `reference/pre-analysis/structure.json` exists) | 7.6 |
 | `build-human-hints-alignment` | 8.8 |
 | `build-validation-report`, `write-validation-report`, `write-validation-markdown` | validation |
 

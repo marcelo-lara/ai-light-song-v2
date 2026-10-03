@@ -111,6 +111,10 @@ export function AppRightPanels({
             if (eventsPanel.laneId === "llmPendingProposals") {
               openPendingProposal(block.reference);
             }
+            if (eventsPanel.laneId === "verdictChecks") {
+              const pendingId = (block.raw as { pending_check_id?: string | null }).pending_check_id;
+              if (pendingId) openPendingProposal(pendingId);
+            }
           }}
           onSelectMarker={panel.handleSelectMarker}
           lyricValidation={

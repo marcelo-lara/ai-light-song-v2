@@ -24,6 +24,11 @@
 //
 // Reject: marks the entry "rejected" with an operator-entered reason. No
 // write to reference/human/ happens on a reject.
+//
+// verdict_check (v3.11 item 24) is the second card type. Confirm / Reject is
+// the same endpoint; the dev-server handler writes the answer as `operator`
+// on that verdict in reference/pre-analysis/verdict.json (see
+// ui/server/proposalDecision.ts) and flips the row, no re-run stage involved.
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -33,6 +38,7 @@ import type { PendingProposal, PendingProposalsFile } from "../data/types";
 
 import { isTimeInWindow } from "./laneEvents";
 import { RightPanel } from "./RightPanel";
+import { VerdictCheckCard } from "./VerdictCheckCard";
 import { partitionProposals, proposalWindow } from "./proposalsQueue";
 
 interface PendingProposalsPanelProps {
@@ -79,7 +85,13 @@ type CardState =
   | { phase: "error"; message: string };
 
 function summarize(p: PendingProposal): string {
+  if (p.type === "verdict_check") return `${p.verdict_check.field} · ${p.verdict_check.claim}`;
   return `${p.hint.title || "(untitled)"} · ${p.hint.start.toFixed(2)}s–${p.hint.end.toFixed(2)}s`;
+}
+
+/** What a decided row's status means to the operator: a confirmed verdict check is "confirmed", not "approved". */
+function decidedWord(p: PendingProposal): string {
+  return p.type === "verdict_check" && p.status === "approved" ? "confirmed" : p.status;
 }
 
 export function PendingProposalsPanel({
@@ -133,7 +145,7 @@ export function PendingProposalsPanel({
         // drag commit's already-clamped/validated times (0 <= start < end),
         // so no re-validation is needed here. Absent -> approved as proposed.
         const approvedTimes: { start: number; end: number } | undefined =
-          timeEdits[proposal.id];
+          proposal.type === "hint" ? timeEdits[proposal.id] : undefined;
         // The dev-server handler now does the reference/human/*.json write
         // itself, from its own fresh read, serialized per song (v3.9 item
         // 6) — this call is the whole approve, not a follow-up to a write
@@ -143,7 +155,11 @@ export function PendingProposalsPanel({
           status: "approved",
           ...(approvedTimes ? { approved_times: approvedTimes } : {}),
         });
-        setRerunReminders((cur) => ({ ...cur, [proposal.id]: "generate-section-hints" }));
+        // A hint approve republishes only on a stage re-run; a confirmed
+        // verdict_check changes no published file, so it has no reminder.
+        if (proposal.type === "hint") {
+          setRerunReminders((cur) => ({ ...cur, [proposal.id]: "generate-section-hints" }));
+        }
         setCard(proposal.id, { phase: "idle" });
         onResetTimes?.(proposal.id);
         reload();
@@ -208,7 +224,7 @@ export function PendingProposalsPanel({
   // their own handlers and must not also move the playhead.
   const handleCardClick = useCallback(
     (proposal: PendingProposal) => (event: React.MouseEvent<HTMLDivElement>) => {
-      if (!onSeek || queueState.status !== "ready") return;
+      if (!onSeek || queueState.status !== "ready" || proposal.type !== "hint") return;
       const cardWindow = proposalWindow(proposal, timeEdits[proposal.id]);
       const target = event.target as Element;
       if (target.closest(".hint-editor__actions, .hint-editor__row2, button, textarea, input")) {
@@ -254,6 +270,24 @@ export function PendingProposalsPanel({
             ) : (
               partitioned.pending.map((proposal) => {
                 const card = cards[proposal.id] ?? { phase: "idle" };
+                if (proposal.type === "verdict_check") {
+                  return (
+                    <VerdictCheckCard
+                      key={proposal.id}
+                      proposal={proposal}
+                      focused={proposal.id === focusId}
+                      card={card}
+                      reason={rejectReason[proposal.id] ?? ""}
+                      onReasonChange={(r) =>
+                        setRejectReason((cur) => ({ ...cur, [proposal.id]: r }))
+                      }
+                      onConfirm={() => void approve(proposal)}
+                      onStartReject={() => setCard(proposal.id, { phase: "confirming-reject" })}
+                      onCancelReject={() => setCard(proposal.id, { phase: "idle" })}
+                      onConfirmReject={() => void confirmReject(proposal)}
+                    />
+                  );
+                }
                 const working = card.phase === "working";
                 // The operator's dragged-edge correction for this hint card, if
                 // any — App.tsx's `timeEdits`, keyed by proposal id.
@@ -371,7 +405,7 @@ export function PendingProposalsPanel({
                 {partitioned.decided.map((proposal) => (
                   <li key={proposal.id} className="review-queue__context-item">
                     <div className="review-queue__context-field">
-                      {proposal.status} · {summarize(proposal)}
+                      {decidedWord(proposal)} · {summarize(proposal)}
                     </div>
                     {proposal.rejection_reason && (
                       <div className="review-queue__reason">{proposal.rejection_reason}</div>

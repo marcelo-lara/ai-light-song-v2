@@ -315,6 +315,94 @@ def inject_filter_sweep(out_name: str, *, blocks: list | None):
     print(f"  wrote {out_name}/reference/proposals/filter_sweep.json")
 
 
+FIXTURE_VERDICT_EVIDENCE = {
+    "stems": {"read": "bass and drums entries in section-007 and section-008",
+              "showed": "bass and drums enter together at the start of section-007"},
+    "drum_density": {"read": "drum_density across section-007 and section-008",
+                     "showed": "dense through both sections, no thinning"},
+    "dropouts": {"read": "dropouts before section-007",
+                 "showed": "one short dropout ahead of section-007"},
+    "loudness": {"read": "loudness of section-007 against the song",
+                 "showed": "section-007 sits near the song's 75th percentile"},
+    "web_search": {"read": "one query for the claim on this version",
+                   "showed": "a fan wiki calls the chorus a drop, no second source"},
+}
+
+
+def inject_verdict_and_queue(out_name: str):
+    """v3.11 item 24 — `reference/pre-analysis/verdict.json` and
+    `reference/proposals/pending.json` for `RegFull - Fixture` only (synthetic).
+
+    verdict.json: three section-evidence rows, one per outcome and
+    non-overlapping (drops `refuted` 004-005, chorus_is_drop `unresolved`
+    007-008, has_build_ups `confirmed` 010) plus a `bpm` row with no section
+    evidence (no block). `drops` carries a settled second pass.
+    pending.json: one pending `hint` and one pending `verdict_check` for
+    `chorus_is_drop`. `RegPartial - Fixture` and `_test_song` get neither
+    (the "no verdict.json -> no lane" case); `helpers.ts` tolerates the 404.
+    `verdict-checks.spec.ts` snapshots and restores both files."""
+    base = OUT / out_name / "reference"
+    (base / "pre-analysis").mkdir(parents=True, exist_ok=True)
+    (base / "proposals").mkdir(parents=True, exist_ok=True)
+    verdict = {
+        "schema_version": "3.1",
+        "song_name": REG_SOURCE,
+        "generated_from": {"hint": "reference/pre-analysis/structure.json",
+                           "hint_schema_version": "1.1", "info": "info.json"},
+        "version_check": {"version_mismatch": False, "duration_delta_s": 0.79,
+                          "bpm_delta_pct": None},
+        "verdicts": {
+            "generated_from": {"sections": "sections.json"},
+            "status": "evaluated",
+            "reason": None,
+            "fields": {
+                "drops": {"verdict": "refuted", "evidence": {
+                    "expected": 2, "drop_runs": 1,
+                    "drop_section_ids": ["section-004", "section-005"]}},
+                "has_build_ups": {"verdict": "confirmed", "evidence": {
+                    "expected": True, "build_up_section_ids": ["section-010"]}},
+                "chorus_is_drop": {"verdict": "unresolved", "evidence": {
+                    "expected": True,
+                    "drop_like_chorus_section_ids": ["section-007", "section-008"]}},
+                "bpm": {"verdict": "confirmed", "evidence": {
+                    "analysed_bpm": 129.41, "bpm_delta_pct": 0.3}},
+            },
+        },
+        "second_pass": {"fields": {
+            "drops": {
+                "verdict": "refuted", "wrong": "hint",
+                "evidence": {**FIXTURE_VERDICT_EVIDENCE, "web_search": None},
+                "first_pass_verdict": "refuted", "operator": None},
+            "chorus_is_drop": {
+                "verdict": None, "wrong": None, "evidence": None,
+                "first_pass_verdict": None, "operator": None},
+        }},
+    }
+    (base / "pre-analysis" / "verdict.json").write_text(json.dumps(verdict, indent=2) + "\n")
+    queue = {
+        "schema_version": "1.0",
+        "song_name": REG_SOURCE,
+        "proposals": [
+            {"id": "prop-hint-001", "type": "hint", "status": "pending",
+             "created_at": "2026-10-01T10:00:00Z", "rejection_reason": None,
+             "evidence": "impact with no covering hint",
+             "hint": {"start": 100.0, "end": 108.0, "title": "Strobe on the impact",
+                      "summary": "Impact-aligned strobe."}},
+            {"id": "prop-check-001", "type": "verdict_check", "status": "pending",
+             "created_at": "2026-10-01T10:01:00Z", "rejection_reason": None,
+             "evidence": "the audio reads as a drop but the web names it a chorus",
+             "verdict_check": {
+                 "field": "chorus_is_drop",
+                 "claim": "The chorus is a drop",
+                 "evidence": FIXTURE_VERDICT_EVIDENCE,
+                 "cannot_settle": "the audio fits a drop and a chorus equally; the web has one source",
+                 "question": "Is the chorus of this recording also its drop?"}},
+        ],
+    }
+    (base / "proposals" / "pending.json").write_text(json.dumps(queue, indent=2) + "\n")
+    print(f"  wrote {out_name}/reference/pre-analysis/verdict.json + proposals/pending.json")
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     OUT_SONGS.mkdir(parents=True, exist_ok=True)
@@ -323,6 +411,7 @@ def main():
     inject_lyric_validations("RegFull - Fixture", validated=True)
     inject_filter_sweep("RegFull - Fixture", blocks=FIXTURE_FILTER_SWEEPS)
     inject_block_reviews("RegFull - Fixture", reviewed=True)
+    inject_verdict_and_queue("RegFull - Fixture")
     inject_segments(
         "RegFull - Fixture",
         segments_json=[

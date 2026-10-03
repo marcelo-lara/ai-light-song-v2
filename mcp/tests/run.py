@@ -37,6 +37,9 @@ EXPECTED_TOOLS = [
     "get_watcher_status",
     "get_structure_hint_brief",
     "write_structure_hint",
+    "get_verdict_brief",
+    "write_verdict_pass",
+    "write_verdict_check",
 ]
 
 _RESULTS: list[tuple[str, str, str]] = []
@@ -127,7 +130,7 @@ async def _run_stdio_checks_against(params, writable_root: Path) -> None:
             record("S1.3 tools/list == list_songs, get_song_overview, get_detail, "
                    "propose_hint, request_analysis, "
                    "get_analysis_progress, get_watcher_status, get_structure_hint_brief, "
-                   "write_structure_hint", status, str(names))
+                   "write_structure_hint, get_verdict_brief, write_verdict_pass, write_verdict_check", status, str(names))
 
             # S1.4 — stray stdout would have broken the handshake above.
             record("S1.4 no stray stdout (proxy: handshake + list succeeded)",
@@ -371,13 +374,17 @@ async def _run_stdio_checks_against(params, writable_root: Path) -> None:
             hint_path = (writable_root / "McpUnanalysed - Fixture" / "reference"
                          / "pre-analysis" / "structure.json")
             good = {
-                "schema_version": "1.0", "song_name": "McpUnanalysed - Fixture",
+                "schema_version": "1.1", "song_name": "McpUnanalysed - Fixture",
                 "generated_at": "2026-10-01",
                 "track": {"artist": "A", "title": "T", "version": "extended",
                           "remixer": None, "version_duration_s": 400},
                 "genre": {"family": "edm", "subgenre": "big_room", "bpm": 128},
-                "shape": {"drops": 2, "chorus_is_drop": False,
-                          "has_build_ups": True, "vocals": "chops"},
+                "shape": {
+                    "drops": {"value": 2, "basis": "stated", "source": 0, "quote": "Two drops."},
+                    "chorus_is_drop": {"value": None, "basis": None, "source": None, "quote": None},
+                    "has_build_ups": {"value": True, "basis": "inferred", "source": 0,
+                                      "quote": "Builds into each drop."},
+                    "vocals": "chops"},
                 "confidence": 0.7,
                 "sources": [{"url": "https://example.com", "title": "x"}],
             }
@@ -423,6 +430,22 @@ async def _run_stdio_checks_against(params, writable_root: Path) -> None:
             record("S3.26 get_structure_hint_brief on a song with no analysis and no "
                    "audio errors", "PASS" if unknown.is_error else "FAIL",
                    _tool_text(unknown)[:80])
+
+            # v3.11 item 23 - second-pass tools: brief == prompt, and without a
+            # verdict file every one of them errors (nothing is invented).
+            vb = await session.call_tool("get_verdict_brief", {"song": "McpFull - Fixture"})
+            vp = await session.get_prompt("verdict_pass", {"song": "McpFull - Fixture"})
+            wp = await session.call_tool(
+                "write_verdict_pass", {"song": "McpFull - Fixture", "results": {"drops": {}}})
+            wc = await session.call_tool("write_verdict_check", {
+                "song": "McpFull - Fixture", "field": "drops", "claim": "x",
+                "evidence": {}, "cannot_settle": "x", "question": "x?"})
+            queue = writable_root / "McpFull - Fixture" / "reference" / "proposals" / "pending.json"
+            ok = (vb.is_error and wp.is_error and wc.is_error and not any(e.get("type") == "verdict_check" for e in (json.loads(queue.read_text())["proposals"] if queue.exists() else []))
+                  and "second pass" in " ".join(getattr(m.content, "text", "") for m in vp.messages).lower())
+            record("S3.27 verdict tools error without a verdict file and write nothing; "
+                   "verdict_pass prompt served", "PASS" if ok else "FAIL",
+                   f"errors={[vb.is_error, wp.is_error, wc.is_error]} queue_exists={queue.exists()}")
 
 
 def _check_build() -> None:

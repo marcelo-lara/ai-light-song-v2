@@ -135,6 +135,12 @@ export const artifactPaths = {
   // `/api/proposal-decision/<song>` endpoint, never a direct PUT of this path.
   pendingProposals: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "pending.json")),
+  // v3.11 items 21-24 — hint verdicts + second pass. Optional (absent until
+  // the version-check / hint-verdict stages have run on a song with a hint);
+  // read-only for the Verdict Checks lane. Its one write is the `operator`
+  // answer, through `/api/proposal-decision/<song>`, never a direct PUT.
+  verdictFile: (song: string) =>
+    encodePath(analysis(song, "reference", "pre-analysis", "verdict.json")),
   audio: (song: string) => encodePath(["data", "songs", `${song}.mp3`]),
   // v3.8 item 2/3 — request/progress pair for the host-side
   // ./analysis-watcher (item 1). `runRequest` is written by this UI's `PUT

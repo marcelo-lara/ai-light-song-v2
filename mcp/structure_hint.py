@@ -20,7 +20,7 @@ _INNER_DIRNAME = "reference"
 _HINT_DIRNAME = "pre-analysis"
 _HINT_FILENAME = "structure.json"
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"
 
 VERSIONS = ("radio_edit", "extended", "club_mix", "remix", "original")
 FAMILIES = ("edm", "pop_edm", "pop", "rock", "other")
@@ -35,10 +35,15 @@ _TRACK_KEYS = ("artist", "title", "version", "remixer", "version_duration_s")
 _GENRE_KEYS = ("family", "subgenre", "bpm")
 _SHAPE_KEYS = ("drops", "chorus_is_drop", "has_build_ups", "vocals")
 _SOURCE_KEYS = ("url", "title")
+_EVIDENCE_KEYS = ("value", "basis", "source", "quote")
+_EVIDENCE_FIELDS = ("drops", "chorus_is_drop", "has_build_ups")
+BASES = ("stated", "inferred")
 
 # A key naming a time is refused outright: web sources describe other versions
 # and an invented time is worse than none. `generated_at` and
 # `version_duration_s` are the schema's own legitimate names and are exempt.
+# Only key NAMES are scanned: a `quote` value may mention anything, but a key
+# named like a time (`quote` included, if it ever were) is refused.
 _TIME_KEY = re.compile(
     r"time|stamp|start|end|onset|offset|second|minute|(^|_)(s|ms|at|sec|bar|bars|beat|beats)($|_)",
     re.IGNORECASE,
@@ -64,9 +69,16 @@ def build_brief(song: str) -> str:
    subgenre, its BPM, and its expected shape (how many drops, whether a sung
    chorus takes the drop's place, whether it has build-ups, how vocals are
    used). Prefer sources that describe the same version as the audio.
-2. Fill EVERY field of the schema below. Use null for anything you could not
-   establish - never guess.
-3. Include at least one source ({{url, title}}) you actually used.
+2. Fill EVERY field of the schema below. Each of shape.drops,
+   shape.chorus_is_drop and shape.has_build_ups is {{value, basis, source,
+   quote}}: basis "stated" when a source says it outright, "inferred" when you
+   derive it from stated facts (e.g. chorus_is_drop from a described hook-loop
+   chorus); source is the index into sources[] of the page you read; quote is
+   the supporting sentence copied from it. A value with no quote is refused.
+   Use value null (with basis, source and quote all null) when there is no
+   evidence - null for no evidence, never a bare guess.
+3. Include at least one source ({{url, title}}) you actually read. A
+   chat-assistant answer (including your own recollection) is not a source.
 4. NEVER write a time. No timestamps, seconds, bars, beats or section
    positions anywhere. The only duration allowed is track.version_duration_s,
    the researched version's total length. Do not write sections or lighting
@@ -75,9 +87,9 @@ def build_brief(song: str) -> str:
    refused, fix the named field and call it again. A hint is only a prior; the
    audio always outranks it.
 
-Schema (schema_version "1.0"):
+Schema (schema_version "1.1"):
 {{
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "song_name": {song!r},
   "generated_at": "YYYY-MM-DD",
   "track": {{
@@ -93,9 +105,10 @@ Schema (schema_version "1.0"):
     "bpm": number or null
   }},
   "shape": {{
-    "drops": integer or null,
-    "chorus_is_drop": true/false or null,
-    "has_build_ups": true/false or null,
+    "drops": {{"value": integer, "basis": "stated"|"inferred", "source": index into sources[], "quote": string}}
+             or {{"value": null, "basis": null, "source": null, "quote": null}},
+    "chorus_is_drop": same shape, value true/false or null,
+    "has_build_ups": same shape, value true/false or null,
     "vocals": one of {list(VOCALS)} or null
   }},
   "confidence": number from 0 to 1 (overall),
@@ -167,8 +180,33 @@ def _bool(value: Any, name: str) -> None:
         raise StructureHintError(f"{name} must be true, false or null")
 
 
+def _evidence(value: Any, name: str, n_sources: int) -> None:
+    """A `shape` field `{value, basis, source, quote}`; names the bad field."""
+    ev = _obj(value, name, _EVIDENCE_KEYS)
+    val = ev["value"]
+    if name.endswith(".drops"):
+        if val is not None and not (isinstance(val, int) and not isinstance(val, bool) and val >= 0):
+            raise StructureHintError(f"{name}.value must be a non-negative integer or null")
+    else:
+        _bool(val, f"{name}.value")
+    if val is None:
+        for key in ("basis", "source", "quote"):
+            if ev[key] is not None:
+                raise StructureHintError(f"{name}.{key} must be null when {name}.value is null")
+        return
+    if ev["basis"] not in BASES:
+        raise StructureHintError(f"{name}.basis must be one of {list(BASES)} when a value is given")
+    src = ev["source"]
+    if not (isinstance(src, int) and not isinstance(src, bool) and 0 <= src < n_sources):
+        raise StructureHintError(
+            f"{name}.source must be an index into sources[] (0..{n_sources - 1})"
+        )
+    if not isinstance(ev["quote"], str) or not ev["quote"].strip():
+        raise StructureHintError(f"{name}.quote must be a non-empty string when a value is given")
+
+
 def validate_hint(hint: Any, song: str) -> dict[str, Any]:
-    """Validate against schema 1.0; raises `StructureHintError` naming the
+    """Validate against schema 1.1 (a 1.0 payload is refused); raises `StructureHintError` naming the
     first bad field. Returns the hint unchanged."""
     if not isinstance(hint, dict):
         raise StructureHintError("hint must be an object")
@@ -179,7 +217,10 @@ def validate_hint(hint: Any, song: str) -> dict[str, Any]:
         )
     top = _obj(hint, "hint", _TOP_KEYS)
     if top["schema_version"] != SCHEMA_VERSION:
-        raise StructureHintError(f"schema_version must be {SCHEMA_VERSION!r}")
+        raise StructureHintError(
+            f"schema_version must be {SCHEMA_VERSION!r} (1.0 hints are readable but "
+            f"must be re-written as {SCHEMA_VERSION})"
+        )
     if top["song_name"] != song:
         raise StructureHintError(f"song_name must be {song!r}, got {top['song_name']!r}")
     generated = top["generated_at"]
@@ -207,11 +248,10 @@ def validate_hint(hint: Any, song: str) -> dict[str, Any]:
         raise StructureHintError("genre.bpm must be a positive number or null")
 
     shape = _obj(top["shape"], "shape", _SHAPE_KEYS)
-    drops = shape["drops"]
-    if drops is not None and not (isinstance(drops, int) and not isinstance(drops, bool) and drops >= 0):
-        raise StructureHintError("shape.drops must be a non-negative integer or null")
-    _bool(shape["chorus_is_drop"], "shape.chorus_is_drop")
-    _bool(shape["has_build_ups"], "shape.has_build_ups")
+    sources_raw = top["sources"]
+    n_sources = len(sources_raw) if isinstance(sources_raw, list) else 0
+    for field in _EVIDENCE_FIELDS:
+        _evidence(shape[field], f"shape.{field}", n_sources)
     _enum(shape["vocals"], "shape.vocals", VOCALS, nullable=True)
 
     conf = top["confidence"]

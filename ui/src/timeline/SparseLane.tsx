@@ -153,7 +153,9 @@ export function SparseLane({
   // has no pointermove listener at all, so this must not change their
   // behaviour. Uses the container's native `title`, not a custom element.
   // Runs alongside drag's own cursor feedback below, not instead of it.
-  const tooltipEnabled = laneId === "llmPendingProposals";
+  // The Verdict Checks lane (v3.11 item 24) opts in too, with the block's own
+  // `tooltip` text.
+  const tooltipEnabled = laneId === "llmPendingProposals" || laneId === "verdictChecks";
 
   // live start/end for the block currently being (or just) dragged; overrides
   // the drawn geometry so the block follows the pointer. Cleared whenever the
@@ -384,7 +386,8 @@ export function SparseLane({
         const hit = findHit(x, y);
         if (tooltipEnabled) {
           el.title = hit
-            ? `${hit.block.caption}\n${hit.block.summary}\nevidence: ${hit.block.detail}`
+            ? (hit.block.tooltip ??
+              `${hit.block.caption}\n${hit.block.summary}\nevidence: ${hit.block.detail}`)
             : "";
         }
         if (!dragEnabled) return;

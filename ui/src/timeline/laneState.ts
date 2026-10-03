@@ -69,6 +69,7 @@ export const LANE_DEFS: readonly LaneDef[] = [
   { id: "waveform", label: "Waveform Anchor", sub: "decoded source mix", kind: "waveform", height: 84 },
   { id: "humanHints", label: "Human Hints", sub: "reference/human · human_hints", kind: "hints", height: 58 },
   { id: "llmPendingProposals", label: "LLM Pending Proposals", sub: "reference/proposals · pending.json · unreviewed MCP propose_hint", kind: "proposals", height: 50 },
+  { id: "verdictChecks", label: "Verdict Checks", sub: "reference/pre-analysis · verdict.json · hint verdicts + second pass, read-only", kind: "proposals", height: 50 },
   { id: "sections", label: "Sections", sub: "artifact-first segmentation", kind: "sections", height: 50 },
   { id: "humanSections", label: "Human Sections", sub: "reference/human · segments", kind: "hints", height: 58 },
   { id: "moisesSections", label: "Moises Sections", sub: "reference/moises · segments · read-only", kind: "proposals", height: 58 },
@@ -190,6 +191,8 @@ export function saveLaneState(state: LaneStateMap): void {
   }
 }
 
+const NO_ABSENT_LANES: ReadonlySet<string> = new Set();
+
 export interface UseLaneStateResult {
   /** every lane, registry order, with its flags + rendered height */
   lanes: Lane[];
@@ -205,7 +208,15 @@ export interface UseLaneStateResult {
   resetToDefaults(): void;
 }
 
-export function useLaneState(): UseLaneStateResult {
+/**
+ * `absentLaneIds`: lanes with no source data at all that must not exist for
+ * this song — no head, no lane-list row, no empty state (the Verdict Checks
+ * lane when the song has no `verdict.json` rows). Distinct from a ready-empty
+ * lane, which stays listed but starts hidden.
+ */
+export function useLaneState(
+  absentLaneIds: ReadonlySet<string> = NO_ABSENT_LANES,
+): UseLaneStateResult {
   const [state, setState] = useState<LaneStateMap>(loadLaneState);
 
   useEffect(() => {
@@ -239,7 +250,7 @@ export function useLaneState(): UseLaneStateResult {
 
   const lanes = useMemo<Lane[]>(
     () =>
-      LANE_DEFS.map((def) => {
+      LANE_DEFS.filter((def) => !absentLaneIds.has(def.id)).map((def) => {
         const flags = state[def.id] ?? { expanded: false, visible: true };
         return {
           ...def,
@@ -247,7 +258,7 @@ export function useLaneState(): UseLaneStateResult {
           renderHeight: flags.expanded ? def.height : COLLAPSED_LANE_HEIGHT,
         };
       }),
-    [state],
+    [state, absentLaneIds],
   );
 
   const visibleLanes = useMemo(() => lanes.filter((lane) => lane.visible), [lanes]);
