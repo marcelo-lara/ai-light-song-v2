@@ -1,6 +1,6 @@
 # Product refinement — v3.12
 
-**Status: items 8, 1, 2 built (1-2 as experiments, unpromoted); 3-7 open.** Theme: find the changes a light show must
+**Status: planned** in [`implementation-plan-v3.12.md`](implementation-plan-v3.12.md). Item 8 done; items 1–2 built as experiments and passed the operator's lane review. Theme: find the changes a light show must
 follow when loudness stays flat, and get them to the authoring model.
 
 Validation set for every item, positions on the current grid:
@@ -41,6 +41,8 @@ artifacts and acted on by none.
 ## 2. Light change points and roles — experiment first
 
 **Built 2026-10-03:** `experiments/light_changes`, lane "Light Changes". 7 of 8 targets hit (Armin 55, a slow ramp, missed), 4.7 points/min corpus-wide; `texture_novelty` carries the result; role rules were written against these songs. Numbers: its README.
+
+**Operator lane review: promote.** Armin good; Medicine, ayuni, Charli-VonDutch very good. Charli's points sit off the true bar where there is no kick to place them: a point's time is the beat where the change physically starts (half-beat table), snapped to the beat grid, and item 3 fixes the bar it is counted in.
 
 **Change.** Change-point detection on item 1's table (each bar against the
 previous 4–8) yields light-change points inside and across sections, each
@@ -98,7 +100,7 @@ separation (Medicine's beat leaking into `harmonic`) cannot hide the kick.
 
 ---
 
-## 5. Filter sweeps v2 — design only, not yet an experiment
+## 5. Filter sweeps v2 — experiment first
 
 **Change.** Track the resonant peak on a log-frequency spectrogram of the
 harmonic stem every half beat (peak Hz, resonance sharpness, high/low ratio),
@@ -106,7 +108,7 @@ then report behaviour, not a verdict: slope and consistency over the last
 1/2/4/8 bars. The cue event is the **sweep end** (top reached, cut, gap, drop
 landing), placed on the beat grid, plus what the next 1–2 bars do
 (`gap` / `drop` / `break` / nothing). A sweep end followed by nothing is a
-suspect detection.
+suspect detection. Feeds item 2 as an input; target: Armin bar 55 (the one item-2 miss, a slow 4-bar ramp).
 
 The current detector fails by construction: a centroid over 7 per-band-normalised
 bands barely moves in a dense mix, so the 1-octave gate rejects real sweeps.
@@ -119,6 +121,8 @@ bands barely moves in a dense mix, so the 1-octave gate rejects real sweeps.
 which carries brightness, transients or sweeps. After items 1–2 pass, publish
 per-bar texture (brightness, transient density, sweep state, light-change role)
 into a top-level file and project it through `get_detail`.
+
+Light-change points publish as `song_event_timeline.json` rows (`type: "light_change"`, `role`); per-bar texture as a new required top-level `bar_features.json`. Both are new producers on the closed vocabulary.
 
 | | |
 | --- | --- |
@@ -173,4 +177,4 @@ dead and would read `artifacts/` — removed there.
 
 ## Order
 
-8 → 1 → 2 → 4 → 3 → 6 → 7; 5 stays design-only until 1–2 are validated.
+4 → 3 → 5 → promote 1–2 → 6 → 7.
