@@ -1,6 +1,6 @@
 # Product refinement — v3.12
 
-**Status: open, nothing built.** Theme: find the changes a light show must
+**Status: items 8, 1, 2 built (1-2 as experiments, unpromoted); 3-7 open.** Theme: find the changes a light show must
 follow when loudness stays flat, and get them to the authoring model.
 
 Validation set for every item, positions on the current grid:
@@ -17,6 +17,8 @@ Medicine's mix RMS is flat (≈0.19) across bars 4–15: the change is brightnes
 ---
 
 ## 1. Per-bar feature table — experiment first
+
+**Built 2026-10-03:** `experiments/bar_features`, lane "Bar Features", all 27 songs; Medicine/Armin changes show at their bars (numbers in its README).
 
 **Change.** One row per bar fusing what already exists, nothing new extracted:
 mix and per-stem loudness, the 7 bands (mix + stems), brightness ratio,
@@ -37,6 +39,8 @@ artifacts and acted on by none.
 ---
 
 ## 2. Light change points and roles — experiment first
+
+**Built 2026-10-03:** `experiments/light_changes`, lane "Light Changes". 7 of 8 targets hit (Armin 55, a slow ramp, missed), 4.7 points/min corpus-wide; `texture_novelty` carries the result; role rules were written against these songs. Numbers: its README.
 
 **Change.** Change-point detection on item 1's table (each bar against the
 previous 4–8) yields light-change points inside and across sections, each

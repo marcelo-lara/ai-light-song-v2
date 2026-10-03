@@ -153,6 +153,14 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   barFeaturesMid: [200, 50, 40],
   barFeaturesHigh: [190, 70, 52], // bright cyan — bright bar
   barFeaturesIrregular: [200, 5, 36], // grey — bar length != 4 beats (grid slip)
+  // v3.12 item 2 — light changes. One tint per role.
+  lightChangeGrooveIn: [140, 55, 42], // green
+  lightChangeBuild: [45, 75, 50], // amber
+  lightChangeBreak: [225, 55, 45], // blue
+  lightChangeDrop: [355, 70, 50], // red
+  lightChangeGap: [260, 10, 30], // dark grey-violet
+  lightChangeFill: [300, 45, 48], // purple
+  lightChangeUnknown: [0, 0, 40], // grey — a change point no role rule claimed
   // v3.10 item 15 — phrases. One lane; the tint only marks a phrase whose edge
   // evidence disagrees (`resolved: false`) in grey, so it reads apart at a glance.
   phrases: [20, 60, 44], // burnt orange — distinct from gestures (10) by lane kind

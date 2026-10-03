@@ -39,6 +39,7 @@ import type {
   CrashCheckFile,
   FilterSweepFile,
   BarFeaturesFile,
+  LightChangesFile,
   PhrasesFile,
   SectionNamesFile,
 } from "../data/sparseArtifacts";
@@ -70,6 +71,7 @@ import {
   filterSweepContent,
   phrasesContent,
   barFeaturesContent,
+  lightChangesContent,
 } from "./laneContent/characterGestures";
 import {
   clapEventsContent,
@@ -100,6 +102,7 @@ export {
   filterSweepContent,
   phrasesContent,
   barFeaturesContent,
+  lightChangesContent,
   clapEventsContent,
   kickCheckContent,
   crashCheckContent,
@@ -177,6 +180,7 @@ export interface LaneContentSources {
   crashCheck?: CrashCheckFile | null;
   filterSweep?: FilterSweepFile | null;
   barFeatures?: BarFeaturesFile | null;
+  lightChanges?: LightChangesFile | null;
   phrases?: PhrasesFile | null;
   sectionNames?: SectionNamesFile | null;
   /** v3.7 item 1 — reference/human/block_reviews.json, unfiltered; tinting is
@@ -205,6 +209,7 @@ export const SPARSE_LANE_IDS = [
   "crashCheck",
   "filterSweep",
   "barFeatures",
+  "lightChanges",
   "phrases",
   "sectionNames",
   "sections",
@@ -305,6 +310,8 @@ function buildLaneBlocksRaw(
       return filterSweepContent(s.filterSweep ?? null);
     case "barFeatures":
       return barFeaturesContent(s.barFeatures ?? null);
+    case "lightChanges":
+      return lightChangesContent(s.lightChanges ?? null);
     case "phrases":
       return phrasesContent(s.phrases ?? null);
     case "sectionNames":

@@ -4,7 +4,7 @@
 // SparseBlock type.
 
 import type { EventTimeline } from "../../data/types";
-import type { BarFeaturesFile, CharacterFile, FilterSweepFile, PhrasesFile } from "../../data/sparseArtifacts";
+import type { BarFeaturesFile, CharacterFile, FilterSweepFile, LightChangesFile, PhrasesFile } from "../../data/sparseArtifacts";
 import type { SparseBlock } from "../laneContent";
 import { formatRange, round } from "./shared";
 
@@ -154,6 +154,47 @@ export function barFeaturesContent(file: BarFeaturesFile | null): SparseBlock[] 
         `: RMS mix ${fx(b.mix_rms)}, brightness ${fx(b.brightness, 2)}, ${drums}, vocals cover ${pct(b.vocals_cover)}.`,
       tintId: tint,
       raw: b,
+    };
+  });
+}
+
+const ROLE_TINT: Record<string, string> = {
+  groove_in: "lightChangeGrooveIn",
+  build: "lightChangeBuild",
+  break: "lightChangeBreak",
+  drop: "lightChangeDrop",
+  gap: "lightChangeGap",
+  fill: "lightChangeFill",
+};
+
+/**
+ * Light change points from `experiments/light_changes` — one block per point
+ * (the bar it starts), labelled with its role, tinted per role. Points come from
+ * multi-feature change detection against the previous bars, never a bar-count
+ * grid; a role no rule claimed reads `unknown`. The score is pooled evidence,
+ * not a probability: no confidence is reported. A proposal to audition, not truth.
+ */
+export function lightChangesContent(file: LightChangesFile | null): SparseBlock[] {
+  return (file?.points ?? []).map((p, i) => {
+    const moved = Object.entries(p.z)
+      .filter(([, v]) => Math.abs(v) >= 2)
+      .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
+      .map(([k, v]) => `${k} ${v > 0 ? "+" : ""}${round(v, 1)}`);
+    const slip = p.irregular_bar ? " · bar not 4 beats (grid slip)" : "";
+    return {
+      id: `light-change-${i + 1}`,
+      start_s: p.time_s,
+      end_s: p.end_s,
+      label: p.role === "groove_in" ? "groove" : p.role,
+      wideLabel: `${p.role} · bar ${p.bar}`,
+      laneLabel: "Light Changes",
+      caption: `bar ${p.bar} ${formatRange(p.time_s, p.end_s)} · ${p.role} · score ${round(p.score, 1)}${slip}`,
+      reference: `light-change-${i + 1}`,
+      detail: moved.length ? moved.join(", ") : "no single feature group moved 2 sigma",
+      summary: `experiments/light_changes — ${p.role} at bar ${p.bar}: pooled change score ${round(p.score, 1)} ` +
+        `over groups ${p.features.join(", ") || "n/a"}; no confidence reported (score is not calibrated).${slip}`,
+      tintId: ROLE_TINT[p.role] ?? "lightChangeUnknown",
+      raw: p,
     };
   });
 }

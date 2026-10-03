@@ -175,6 +175,10 @@ export const artifactPaths = {
   // arrangement, sweeps and gestures.
   barFeatures: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "bar_features.json")),
+  // Written by experiments/light_changes (`run export`). v3.12 item 2: light
+  // change points with a role, detected on the bar-features table.
+  lightChanges: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "light_changes.json")),
   // Written by experiments/phrases (`run export`). v3.10 item 15: the song cut
   // where the audio changes, one block per phrase with presence / density
   // features. Never bar-counted.

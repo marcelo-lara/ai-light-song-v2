@@ -32,6 +32,7 @@ import {
   crashCheckContent,
   filterSweepContent,
   barFeaturesContent,
+  lightChangesContent,
   phrasesContent,
   sectionNamesContent,
   verdictChecksContent,
@@ -46,6 +47,7 @@ import type {
   CrashCheckFile,
   FilterSweepFile,
   BarFeaturesFile,
+  LightChangesFile,
   PhrasesFile,
   SectionNamesFile,
 } from "../data/sparseArtifacts";
@@ -798,6 +800,37 @@ describe("barFeaturesContent", () => {
 
   it("never throws on a missing file", () => {
     expect(barFeaturesContent(null)).toEqual([]);
+  });
+});
+
+describe("lightChangesContent", () => {
+  const file: LightChangesFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    points: [
+      { bar: 8, time_s: 13.54, end_s: 15.26, role: "fill", score: 8.5, features: ["texture", "novelty"],
+        z: { texture: 4.9, novelty: 5.8, loudness: 0.4 }, irregular_bar: false, confidence: null },
+      { bar: 16, time_s: 27.25, end_s: 29.41, role: "mystery", score: 7.1, features: [],
+        z: {}, irregular_bar: true, confidence: null },
+    ],
+  };
+  const blocks = lightChangesContent(file);
+
+  it("labels a point with its role, tinted per role, listing the groups that moved", () => {
+    expect(blocks[0]!.label).toBe("fill");
+    expect(blocks[0]!.tintId).toBe("lightChangeFill");
+    expect(blocks[0]!.detail).toBe("novelty +5.8, texture +4.9");
+  });
+
+  it("renders an unknown role, no confidence and a grid slip honestly", () => {
+    expect(blocks[1]!.tintId).toBe("lightChangeUnknown");
+    expect(blocks[1]!.summary).toContain("no confidence reported");
+    expect(blocks[1]!.caption).toContain("bar not 4 beats");
+    expect(blocks[1]!.detail).toBe("no single feature group moved 2 sigma");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(lightChangesContent(null)).toEqual([]);
   });
 });
 

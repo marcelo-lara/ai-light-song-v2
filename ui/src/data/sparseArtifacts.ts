@@ -2,7 +2,7 @@
 // artifacts consumed by SparseLane (character, vocal transcription, vocal
 // phrases, allin1 posterior shadow labels, whisperx vad,
 // stem presence sections, vocal cadence, clap events, kick check, crash
-// check, filter sweep, bar features, phrases, section names, and the top-level published arrangement state).
+// check, filter sweep, bar features, light changes, phrases, section names, and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -1003,6 +1003,67 @@ export async function loadBarFeatures(
   const result = await loadJson(artifactPaths.barFeatures(song), parseBarFeatures, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, bars: [] } };
+  }
+  return result;
+}
+
+
+// ---------------------------------------------------------------------------
+// lightChanges — reference/proposals/light_changes.json
+// ---------------------------------------------------------------------------
+//
+// v3.12 item 2: points where the light should change, each labelled with a role
+// (groove_in / build / break / drop / gap / fill / unknown), detected on the
+// per-bar feature table. `experiments/light_changes`. A proposal, not truth.
+
+export interface LightChangePoint {
+  bar: number;
+  time_s: number;
+  end_s: number;
+  role: string;
+  score: number;
+  features: string[];
+  z: Record<string, number>;
+  irregular_bar: boolean;
+  confidence: number | null;
+}
+
+export interface LightChangesFile {
+  schema_version: string;
+  song_name: string;
+  points: LightChangePoint[];
+}
+
+export function parseLightChanges(raw: unknown): LightChangesFile {
+  const o = asObject(raw, "reference/proposals/light_changes.json");
+  const points: LightChangePoint[] = [];
+  for (const row of arr(o.points)) {
+    const r = rec(row);
+    const z: Record<string, number> = {};
+    for (const [k, v] of Object.entries(rec(r.z))) z[k] = num(v);
+    points.push({
+      bar: num(r.bar),
+      time_s: num(r.time_s),
+      end_s: num(r.end_s),
+      role: st(r.role),
+      score: num(r.score),
+      features: arr(r.features).map((x) => st(x)),
+      z,
+      irregular_bar: r.irregular_bar === true,
+      confidence: r.confidence == null ? null : num(r.confidence),
+    });
+  }
+  points.sort((a, b) => a.time_s - b.time_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), points };
+}
+
+export async function loadLightChanges(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<LightChangesFile>> {
+  const result = await loadJson(artifactPaths.lightChanges(song), parseLightChanges, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, points: [] } };
   }
   return result;
 }

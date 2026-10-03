@@ -1497,6 +1497,47 @@ A feature table; judged by what `light_changes` does with it. Not promoted.
 
 ---
 
+## Light Changes — where the light should change, and what kind of change
+
+*(no external model or repo — change-point detection on `bar_features`; `texture_novelty` as one input)*
+
+### Status
+
+**Built and run, 2026-10-03 (v3.12 item 2) — 27 songs, 4.7 points/min, 7 of 8
+validation targets hit.** Full writeup:
+[`../experiments/light_changes/README.md`](../experiments/light_changes/README.md).
+Queue row enabled. Debugger lane: **Light Changes**, flask badge. Nothing in `src/`
+reads it; not promoted.
+
+### Why? What for?
+
+A show must follow changes that sit inside a section with flat loudness
+(Medicine 8-23). Scored against operator-described light changes, not section
+boundaries; `texture_novelty` is re-measured as one input, not revived as a segmenter.
+
+### Experiment Plan
+
+Each bar vs the median of the previous <= 8 bars of the current segment (a point
+resets the segment), robust per-channel z, mix-level channels pooled into groups,
+`S >= 7`; a window under 2 beats merged forward; rule-based role (`groove_in`,
+`build`, `break`, `drop`, `gap`, `fill`, else `unknown`). No fixed bar grid.
+
+### Results evidence
+
+Medicine 8, 9, 16, 19, 23 all hit within one beat with the right role, bars 10-14 carry no
+point; Armin 59 `gap` and 60 `drop` hit, 55 (a slow ramp) missed. Same 8 targets: loudness-only
+3/8 at 3.5/min, 5/8 at a matched 4.6/min; without `texture_novelty` 2/8. Role rules were written
+looking at these two songs, so they are not independent evidence. *ayuni* 24 points,
+*Charli-VonDutch* 7, no bar truth.
+
+### Conclusion
+
+Beats the loudness-only baseline at a matched rate on a thin target set, and
+`texture_novelty` turns out to be the strongest input; roles skew to break/drop/build.
+The lane review decides. Not promoted.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

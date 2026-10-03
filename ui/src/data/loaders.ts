@@ -19,6 +19,7 @@ import {
   loadCrashCheck,
   loadFilterSweep,
   loadBarFeatures,
+  loadLightChanges,
   loadPhrases,
   loadSectionNames,
 } from "./sparseArtifacts";
@@ -396,6 +397,7 @@ export const artifactLoaders = {
   crashCheck: loadCrashCheck,
   filterSweep: loadFilterSweep,
   barFeatures: loadBarFeatures,
+  lightChanges: loadLightChanges,
   phrases: loadPhrases,
   sectionNames: loadSectionNames,
   character: loadCharacter,
