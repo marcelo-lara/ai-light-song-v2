@@ -8,7 +8,8 @@
     "confidence": "gestures",
     "intensity": "gestures",
     "gesture_id": "gestures",
-    "section_id": "allin1"
+    "section_id": "allin1",
+    "role": "light_changes"
   },
   "events": [
     {
@@ -54,6 +55,22 @@
       "end_time": 16.0,
       "confidence": 0.8,
       "intensity": 0.4,
+      "section_id": "section-002"
+    },
+    {
+      "type": "light_change",
+      "role": "groove_in",
+      "start_time": 4.0,
+      "end_time": 4.0,
+      "confidence": null,
+      "section_id": "section-001"
+    },
+    {
+      "type": "light_change",
+      "role": "build",
+      "start_time": 12.0,
+      "end_time": 12.0,
+      "confidence": null,
       "section_id": "section-002"
     },
     {

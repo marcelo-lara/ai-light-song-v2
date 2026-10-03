@@ -166,7 +166,8 @@
         "confidence": "gestures",
         "intensity": "gestures",
         "gesture_id": "gestures",
-        "section_id": "allin1"
+        "section_id": "allin1",
+        "role": "light_changes"
       }
     },
     "transitions": {
@@ -191,7 +192,117 @@
         "confidence": "gestures",
         "intensity": "gestures",
         "gesture_id": "gestures",
-        "section_id": "allin1"
+        "section_id": "allin1",
+        "role": "light_changes"
+      }
+    },
+    "light_change": {
+      "rows": [
+        {
+          "time": 12.0,
+          "role": "build",
+          "confidence": null,
+          "section_id": "section-002",
+          "position": {
+            "bar": 7,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        }
+      ],
+      "field_sources": {
+        "type": "gestures",
+        "start_time": "gestures",
+        "end_time": "gestures",
+        "confidence": "gestures",
+        "intensity": "gestures",
+        "gesture_id": "gestures",
+        "section_id": "allin1",
+        "role": "light_changes"
+      }
+    },
+    "bar_texture": {
+      "rows": [
+        {
+          "bar": 5,
+          "start": 8.0,
+          "end": 10.0,
+          "irregular": false,
+          "brightness": 0.48,
+          "transient_density": 0.014,
+          "kick_present": true,
+          "sweep_state": "opening",
+          "light_change_role": null,
+          "position": {
+            "bar": 5,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 6,
+          "start": 10.0,
+          "end": 12.0,
+          "irregular": false,
+          "brightness": 0.5,
+          "transient_density": 0.015,
+          "kick_present": true,
+          "sweep_state": "opening",
+          "light_change_role": null,
+          "position": {
+            "bar": 6,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 7,
+          "start": 12.0,
+          "end": 14.0,
+          "irregular": false,
+          "brightness": 0.52,
+          "transient_density": 0.016,
+          "kick_present": true,
+          "sweep_state": null,
+          "light_change_role": "build",
+          "position": {
+            "bar": 7,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 8,
+          "start": 14.0,
+          "end": 16.0,
+          "irregular": false,
+          "brightness": 0.54,
+          "transient_density": 0.017,
+          "kick_present": true,
+          "sweep_state": null,
+          "light_change_role": null,
+          "position": {
+            "bar": 8,
+            "beat": 1,
+            "section_id": "section-002",
+            "resolved": true
+          }
+        }
+      ],
+      "field_sources": {
+        "bar": "essentia",
+        "start": "essentia",
+        "end": "essentia",
+        "brightness": "essentia",
+        "transient_density": "essentia",
+        "irregular": "light_changes",
+        "kick_present": "light_changes",
+        "sweep_state": "light_changes",
+        "light_change_role": "light_changes"
       }
     },
     "hints": {

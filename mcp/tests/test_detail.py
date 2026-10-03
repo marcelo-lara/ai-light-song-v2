@@ -264,3 +264,38 @@ def test_position_still_resolved_true_when_no_off_grid_spans_given() -> None:
     sections = [{"section_id": "section-001", "start": 0.0, "end": 2.0}]
     pos = serializers._position(0.0, beats, sections, 60.0, None)
     assert pos["resolved"] is True
+
+
+# --------------------------------------------------------------------------- #
+# v3.12 item 34 — bar_texture and light_change rows
+# --------------------------------------------------------------------------- #
+
+def test_bar_texture_rows_cover_bars_in_span_with_position() -> None:
+    # Fixture grid: 2 s/bar. Bars 3-4 = 4.0-8.0 s.
+    st = _detail(bars=[3, 4])["structural"]
+    rows = st["bar_texture"]["rows"]
+    assert [r["bar"] for r in rows] == [3, 4]
+    assert all(r["position"]["bar"] == r["bar"] for r in rows)
+    assert rows[0]["light_change_role"] == "groove_in"
+    assert {"brightness", "transient_density", "kick_present", "sweep_state", "irregular"} <= set(rows[0])
+    assert st["bar_texture"]["field_sources"]["brightness"] == "essentia"
+
+
+def test_bar_texture_excludes_bars_outside_span() -> None:
+    st = _detail(start_ms=4000, end_ms=7000)["structural"]
+    assert [r["bar"] for r in st["bar_texture"]["rows"]] == [3, 4]
+    assert all(r["bar"] not in (1, 2, 5) for r in st["bar_texture"]["rows"])
+
+
+def test_light_change_rows_have_position_and_exclude_outside_span() -> None:
+    st = _detail(bars=[3, 4])["structural"]
+    rows = st["light_change"]["rows"]
+    assert [(r["time"], r["role"]) for r in rows] == [(4.0, "groove_in")]
+    assert rows[0]["position"]["bar"] == 3
+    assert rows[0]["confidence"] is None  # D5: honest null, separate field
+    assert st["light_change"]["field_sources"]["role"] == "light_changes"
+    # light_change rows are not gesture phases or transitions
+    assert all(r["type"] != "light_change" for r in st["phases"]["rows"])
+    assert all(r["transition"] != "light_change" for r in st["transitions"]["rows"])
+    # a span with no point has an empty block, never an absent one
+    assert _detail(start_ms=0, end_ms=3000)["structural"]["light_change"]["rows"] == []

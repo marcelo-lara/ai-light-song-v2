@@ -689,7 +689,9 @@ def _check_f2_honesty() -> None:
     VOCAB = {"essentia", "allin1", "omnizart", "demucs", "gestures",
              "human", "inference", "unknown", "arrangement_state",
              # v3.7 item 3/6 — section_id attributed against published sections.json.
-             "sections"}
+             "sections",
+             # v3.12 items 32-34 — `role` and the bar_features fields.
+             "light_changes"}
 
     full = build_song_overview("McpFull - Fixture", root=FIXTURE_ROOT)
     degen = build_song_overview("McpDegenerate - Fixture", root=FIXTURE_ROOT)
@@ -698,7 +700,8 @@ def _check_f2_honesty() -> None:
     fs_blocks = [full["identity"]["field_sources"], full["grid"]["field_sources"],
                  full["sections"]["field_sources"], full["gestures"]["field_sources"],
                  full["arrangement"]["field_sources"],
-                 full["human_hints"]["field_sources"]]
+                 full["human_hints"]["field_sources"],
+                 full["light_changes"]["field_sources"]]
     bad = [v for fs in fs_blocks for v in (fs or {}).values() if v not in VOCAB]
     record("F2.4 overview field_sources present, values in vocabulary",
            "PASS" if all(fs_blocks) and not bad else "FAIL",

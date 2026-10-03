@@ -591,8 +591,10 @@ decimated or dense-cap-gated (structural facts, like `arrangement_state` and
    that one's vocal entry, a bar early" rather than the boundary alone.
 8. **`bar_features.json`** — required (v3.12 item 33); per-bar texture
    (`brightness`, `transient_density`, `kick_present`, `sweep_state`,
-   `light_change_role`) that no other file carries. Published; the `get_detail`
-   / overview projection of it is item 34 and is not yet a tool field.
+   `light_change_role`) that no other file carries. Projected by `get_detail`'s
+   `bar_texture` block (v3.12 item 34); the overview carries the
+   `light_change` points as `light_changes` (`{time, role}`, count only in
+   `brief`).
 
 ## Not worth optimizing for this consumer
 

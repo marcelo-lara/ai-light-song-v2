@@ -8,7 +8,8 @@
     "confidence": "gestures",
     "intensity": "gestures",
     "gesture_id": "gestures",
-    "section_id": "allin1"
+    "section_id": "allin1",
+    "role": "light_changes"
   },
   "events": []
 }

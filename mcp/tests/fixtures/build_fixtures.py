@@ -157,6 +157,18 @@ def _phase_event(gesture_id: str, phase: str, start: float, end: float,
     }
 
 
+def _light_change(time: float, role: str, section_id: str) -> dict:
+    """v3.12 item 33 row shape; confidence is always null (D5)."""
+    return {
+        "type": "light_change",
+        "role": role,
+        "start_time": _round(time, 3),
+        "end_time": _round(time, 3),
+        "confidence": None,
+        "section_id": section_id,
+    }
+
+
 TIMELINE_FIELD_SOURCES = {
     "type": "gestures",
     "start_time": "gestures",
@@ -165,6 +177,7 @@ TIMELINE_FIELD_SOURCES = {
     "intensity": "gestures",
     "gesture_id": "gestures",
     "section_id": "allin1",
+    "role": "light_changes",
 }
 
 
@@ -180,6 +193,8 @@ def timeline(song_name: str, *, degenerate: bool) -> dict:
             _phase_event(g, "tension", 12.0, 13.5, 0.75, "section-002"),
             _phase_event(g, "impact", 13.5, 14.0, 0.95, "section-002"),
             _phase_event(g, "release", 14.0, 16.0, 0.40, "section-002"),
+            _light_change(4.0, "groove_in", "section-001"),
+            _light_change(12.0, "build", "section-002"),
             {
                 "type": "verse → chorus",
                 "start_time": 16.0,
@@ -493,7 +508,7 @@ def bar_features(song_name: str) -> dict:
             "transient_density": _round(0.01 + 0.001 * i, 4),
             "kick_present": i >= 2,
             "sweep_state": "opening" if 4 <= i < 6 else None,
-            "light_change_role": "groove_in" if i == 2 else None,
+            "light_change_role": {2: "groove_in", 6: "build"}.get(i),
         })
     return {"schema_version": "3.1", "song_name": song_name,
             "field_sources": BAR_FEATURES_FIELD_SOURCES, "bars": bars}
