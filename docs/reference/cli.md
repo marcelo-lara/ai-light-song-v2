@@ -57,9 +57,12 @@ is authoritative over this list.
 | `extract-timing-grid` / `validate-beats` | 1.2 |
 | `extract-fft-bands` | 1.3 |
 | `extract-mix-stem-loudness` | 1.4 |
+| `extract-harmonic-spectrum` (needs the published `beats.json` and `harmonic.wav`) | 1.5 |
 | `extract-drum-events` | 2.5 |
+| `detect-kick-attacks` (needs the mix `.mp3` and the published `beats.json`) | 2.6 |
 | `segment-sections` | 3.1 |
 | `detect-arrangement-state` | 3.2 |
+| `light-changes` (phase 3, never audio; needs the published `beats.json`, `loudness.json`, `drum_events.json`, `arrangement_state.json` and the artifacts `essentia/fft_bands*.json`, `kick_attacks/kick_attacks.json`, `harmonic_spectrum/half_beats.json`) | 3.3 |
 | `build-gestures` | 5.0 |
 | `generate-section-hints` | 6.2 |
 | `build-ui-data` | 7.2 |

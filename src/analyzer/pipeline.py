@@ -15,8 +15,11 @@ from analyzer.stages.arrangement_state import detect_arrangement_state
 from analyzer.stages.gestures import build_gestures
 from analyzer.stages.drums import extract_drum_events
 from analyzer.stages.fft_bands import extract_fft_bands
+from analyzer.stages.harmonic_spectrum import extract_harmonic_spectrum
 from analyzer.stages.hint_alignment import build_human_hints_alignment
 from analyzer.stages.hints import generate_section_hints
+from analyzer.stages.kick_attacks import detect_kick_attacks
+from analyzer.stages.light_changes import build_light_changes
 from analyzer.stages.loudness import extract_mix_stem_loudness
 from analyzer.stages.segmentation import segment_sections
 from analyzer.stages.stems import ensure_stems
@@ -43,9 +46,12 @@ STAGE_PIPELINE_IDS: dict[str, str] = {
     "validate-beats": "1.2",
     "extract-fft-bands": "1.3",
     "extract-mix-stem-loudness": "1.4",
+    "extract-harmonic-spectrum": "1.5",
     "extract-drum-events": "2.5",
+    "detect-kick-attacks": "2.6",
     "segment-sections": "3.1",
     "detect-arrangement-state": "3.2",
+    "light-changes": "3.3",
     "publish-arrangement-state": "7.3",
     "build-gestures": "5.0",
     "generate-section-hints": "6.2",
@@ -166,6 +172,29 @@ def _run_single_stage(paths: SongPaths, config: ValidationConfig, stage_name: st
         # pipeline; gate the single-stage path on the same prerequisite.
         _required_artifact_payload(paths, stage_name, "essentia", "fft_bands.drums.json")
         _run_stage(paths.song_name, "phase-1", stage_name, extract_drum_events, paths, stems, timing, sections)
+        return 0
+    if stage_name == "extract-harmonic-spectrum":
+        # Reads the harmonic stem and the PUBLISHED beats.json (half-beat windows).
+        _required_output_payload(paths, stage_name, paths.beats_output_path)
+        _existing_stems(paths, stage_name)
+        _run_stage(paths.song_name, "phase-1", stage_name, extract_harmonic_spectrum, paths)
+        return 0
+    if stage_name == "detect-kick-attacks":
+        # Reads the mix audio and the PUBLISHED beats.json (off-grid rule).
+        _required_output_payload(paths, stage_name, paths.beats_output_path)
+        _run_stage(paths.song_name, "phase-1", stage_name, detect_kick_attacks, paths)
+        return 0
+    if stage_name == "light-changes":
+        # Phase 3 — published files and artifacts only, never audio. The two audio
+        # measurements it needs are their own stages and must have run.
+        for required in (paths.beats_output_path, paths.loudness_output_path, paths.drum_events_output_path,
+                         paths.arrangement_state_output_path):
+            _required_output_payload(paths, stage_name, required)
+        for stem in ("", ".bass", ".drums", ".harmonic", ".vocals"):
+            _required_artifact_payload(paths, stage_name, "essentia", f"fft_bands{stem}.json")
+        _required_artifact_payload(paths, stage_name, "kick_attacks", "kick_attacks.json")
+        _required_artifact_payload(paths, stage_name, "harmonic_spectrum", "half_beats.json")
+        _run_stage(paths.song_name, "phase-1", stage_name, build_light_changes, paths)
         return 0
     if stage_name == "generate-section-hints":
         # v3.7 item 6 — attributes section_id against the PUBLISHED
@@ -390,6 +419,13 @@ def run_phase_1(paths: SongPaths, config: ValidationConfig, stage_name: str | No
         # top-level arrangement_state.json (D4) — publishing outside build-ui-data,
         # like generate-section-hints already does for hints.json.
         _run_stage(paths.song_name, "phase-1", "publish-arrangement-state", publish_arrangement_state, paths)
+        # v3.12 item 32 — light changes. The two audio measurements (harmonic-stem half-beat
+        # spectrum, kick attacks on the mix) run first, read the published beats.json, and
+        # write artifacts; `light-changes` is phase 3 and reads those plus the published
+        # loudness / drum_events / arrangement_state, never audio.
+        _run_stage(paths.song_name, "phase-1", "extract-harmonic-spectrum", extract_harmonic_spectrum, paths)
+        _run_stage(paths.song_name, "phase-1", "detect-kick-attacks", detect_kick_attacks, paths)
+        _run_stage(paths.song_name, "phase-1", "light-changes", build_light_changes, paths)
         human_hint_alignment = _run_stage(paths.song_name, "phase-1", "build-human-hints-alignment", build_human_hints_alignment, paths)
 
         # v3.1 item 2 — attribution header. `bpm` and `duration` are essentia's
