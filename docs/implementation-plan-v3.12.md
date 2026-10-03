@@ -72,7 +72,7 @@ needing a design decision → a `BUG` in the refinement doc, "Addressed by item 
 
 | | |
 | --- | --- |
-| Done | 9 of 11 |
+| Done | 10 of 11 |
 | Visual QA items | 35 |
 | MCP full-regression | 34, 37 (smoke-test on every item touching `mcp/` or a top-level file) |
 | Contract changes | 30 (`beats.json` bar labels), 33 (`light_change` rows, `bar_features.json`, producers), 36 (`vocal_cadence.json` source tier) |
@@ -220,12 +220,43 @@ Refinement item 7.
 
 ## 37. Corpus run and validation
 
-- [ ] Re-run the pipeline on all 27 songs.
-- [ ] Record in this item: validation-set hit/miss table (time and bar landed, role), corpus points/min, roles distribution, irregular-bar count before/after item 30, sweeps found per song.
-- [ ] Operator lane review list: ayuni, Charli-VonDutch bar placement; any song above 8 points/min.
+- [x] Re-run the pipeline on all 27 songs.
+- [x] Record in this item: validation-set hit/miss table (time and bar landed, role), corpus points/min, roles distribution, irregular-bar count before/after item 30, sweeps found per song.
+- [x] Operator lane review list: ayuni, Charli-VonDutch bar placement; any song above 8 points/min.
 
 **Checks**
-- [ ] MCP `full-regression`; `docker compose run --rm test`.
+- [x] MCP `full-regression`; `docker compose run --rm test`.
+
+**Run record (2026-10-03).** `docker compose run --rm -T app ./analyze --all-songs --device cuda` (CUDA available, GTX 1650): **27 passed, 0 failed**, about 36 min; whisperx and `ensure-stems` not re-run. Determinism: Medicine re-run a second time, then every top-level `*.json` plus `artifacts/{light_changes,kick_attacks,harmonic_spectrum}/` hashed on all 27 songs before and after: byte-identical. (No pre-run hash exists for the whole corpus; the first corpus run is the baseline, so only the Medicine re-run proves determinism.) Every song has the 10 required top-level files; `list_songs`, `get_song_overview` (full and brief) and `get_detail(bars=[1,2])` return without error on all 27.
+
+**Validation set** (old grid, D2; bar start from `bar_features.json`, hit = point within one beat of the bar start, role as expected):
+
+| Song | Target bar, role | Bar start s | Point landed | Offset | Role | Result |
+| --- | --- | --- | --- | --- | --- | --- |
+| Medicine | 8 fill | 13.54 | 13.11 (bar 7 beat 4) | -1.00 beat | fill | hit (at the limit) |
+| Medicine | 9 groove_in | 15.26 | 15.26 (9.1) | 0 | groove_in | hit |
+| Medicine | 16 build | 27.25 | 27.25 (16.1) | 0 | build | hit |
+| Medicine | 19 break | 31.10 | 30.69 (18.4) | -0.95 beat | break | hit |
+| Medicine | 23 drop | 37.96 | 37.54 (22.4) | -0.98 beat | drop | hit |
+| Medicine | none in 10-14 | | no point in bars 10-14 | | | hit |
+| Armin | 55 build | 102.01 | 102.01 (55.1, `sweep`) | 0 | build | hit |
+| Armin | 59 gap | 109.39 | 109.39 (59.1) | 0 | gap | hit |
+| Armin | 60 drop | 111.22 | 111.22 (60.1) | 0 | drop | hit |
+
+8 of 8 targets plus the empty span, as in D5. Medicine still carries the extra break at 29.41 (bar 18 beat 1) noted in D5 and 3 of its 5 hits sit 0.95-1.00 beat early, so any change to the beat floor risks them.
+
+**Corpus.** 494 points / 103.0 min = **4.80/min** (experiment 4.71), identical to D5, so items 33-34 added no points and the published `light_change` row count equals the artifact count on every song (494). Roles: break 168, drop 152, build 128, groove_in 18, gap 12, fill 12, unknown 4. Per song, points / per min (sweeps found, from `reference/proposals/filter_sweep_v2.json`, 131 total, not re-run: generated 2026-10-03 03:42 from unchanged inputs):
+Armin 29/8.97 (6 sweeps), Best Friend 17/5.64 (5), ChangedTheWay 14/4.43 (4), Charli-Guess 14/5.94 (1), Charli-VonDutch 8/2.97 (2), Chimera 19/3.61 (3), Cinderella 31/5.48 (14), CruelSummer 29/7.00 (3), Fascination 18/2.68 (9), Gabry Ponte 19/6.52 (6), Hideaway 15/3.58 (7), In da name 20/6.12 (1), It's a fine day 23/4.22 (14), Medicine 29/8.82 (5), Only this moment 11/2.89 (0), Pet Shop Boys 11/1.49 (2), Queen of Kings 11/4.51 (3), Rapture 27/7.52 (7), Rotate 13/4.55 (4), Sash 18/5.60 (4), StealTheShow 39/6.20 (10), Titanium 13/3.36 (6), Underworld 16/3.71 (3), What a Feeling 10/2.85 (4), Yonaka 9/3.41 (3), _test_song 7/7.23 (3), ayuni 24/8.74 (2).
+
+**Irregular bars** (`bar_features.json` `irregular: true`; D2: item 30 was not promoted, so before = after = today's grid). 99 irregular bars corpus-wide; **72 outside `off_grid_spans`** (bar start and end both outside a span; D2's 47 excluded song-edge partial bars, 74 counted them, a different count of the same grid). Most on: In da name of love 6, Cinderella 5, CruelSummer 5, Charli-VonDutch 5, Medicine 5.
+
+**vocal_cadence** (D9): 0 songs gained lines. Lines exist only where lyrics do: Armin 10, Hideaway 20, Queen of Kings 42 (human), Titanium 35, _test_song 5 (moises); the other 22 songs `source: null`, 0 lines.
+
+**Checks run:** MCP `full-regression` PASS 59 / FAIL 0 / DEFER 0; `docker compose run --rm test` 263 passed.
+
+**Operator lane review list.**
+- ayuni and Charli-VonDutch bar placement: ayuni 24 points (8.74/min) with 1 irregular bar, Charli-VonDutch 8 points (2.97/min) with 5 irregular bars and 2 sweeps (the old detector found 0).
+- Above 8 points/min: Armin - Revolution 8.97, Medicine-MilkInc 8.82, ayuni 8.74. Next: Rapture 7.52, _test_song 7.23, CruelSummer 7.00.
 
 ---
 
