@@ -278,12 +278,35 @@ than in a second file:
   (that value would point at unrelated allin1 sections). `field_sources`
   attributes it to that same tier.
 
+### `bar_features.json` (top-level, required — v3.12 item 33)
+
+Produced by the phase-4 `publish-light-changes` stage from the phase-3
+`light-changes` artifacts. `{ schema_version, song_name, field_sources, bars[] }`
+(no `generated_from`); one row per bar of `beats.json`: `bar`, `start`, `end`
+(seconds), `irregular` (bar is not 4 beats — flagged, never repaired),
+`brightness`, `transient_density`, `kick_present`, `sweep_state` (`opening` /
+`closing` / `null`), `light_change_role` (role of the `light_change` row whose
+time falls in the bar, else `null`). `field_sources`: `bar`/`start`/`end`/
+`brightness`/`transient_density` → `essentia`; the rest → `light_changes`.
+`mcp/` hard-requires the file (10 required top-level files, no degraded mode).
+
 ### `song_event_timeline.json` (top-level) — high priority
 
 Produced by the phase-3 `gestures` stage. `events[]`, each a **flat** row
 (never a composite with nested `phases[]`): `type`, `start_time`, `end_time`,
 `confidence`, `intensity`, `section_id` (+ `gesture_id` on a gesture-phase row,
 + `peak_time` on an `impact` row — v3.9 item 4).
+
+**v3.12 item 33 — `light_change` rows.** `{ type: "light_change", role,
+`start_time`, `end_time` (= `start_time`), `confidence`, `section_id` }`, no
+`intensity`/`gesture_id`. `role` is one of `groove_in`, `build`, `break`,
+`drop`, `gap`, `fill`, `unknown`; it is the only field attributed to the new
+producer `light_changes` (`field_sources.role`). `confidence` is always `null`
+(the point score is uncalibrated: an honest unknown, not a missing field).
+`section_id` is `null` for a point inside a gap between published sections.
+The rows are not gestures and not section transitions: `get_song_overview`'s
+`gestures` and `transitions` blocks and `get_detail`'s phase rows ignore them
+(they select on `gesture_id` / `"→"`) until item 34 projects them.
 
 - `type` is either a gesture-phase name (`approach`, `build`, `tension`,
   `impact`, `release`) or a section-pair transition `"<from> → <to>"`. **A drop
@@ -566,6 +589,12 @@ decimated or dense-cap-gated (structural facts, like `arrangement_state` and
 7. **`vocal_cadence.json`** — required (v3.9 item 1, D1.1); `lead_in_bars`
    and `cadence_repeats[]` are what let a chase key off "this section repeats
    that one's vocal entry, a bar early" rather than the boundary alone.
+8. **`bar_features.json`** — required (v3.12 item 33); per-bar texture
+   (`brightness`, `transient_density`, `kick_present`, `sweep_state`,
+   `light_change_role`) that no other file carries. Projected by `get_detail`'s
+   `bar_texture` block (v3.12 item 34); the overview carries the
+   `light_change` points as `light_changes` (`{time, role}`, count only in
+   `brief`).
 
 ## Not worth optimizing for this consumer
 

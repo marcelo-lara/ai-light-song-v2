@@ -1,0 +1,49 @@
+Downbeat F1 @ +-70 ms vs Moises downbeats; 5 songs; pooled = micro
+
+song                                incumbent       reanchor   reanchor-all      kick-only    events-only
+Armin - Revolution                      0.606          0.000          0.000            n/a          0.000
+Hideaway - Kiesza                       0.060          0.000          0.016          0.000          0.000
+Queen of Kings - Alessandra             0.878          0.143          0.954          0.000          0.247
+Titanium - David Guetta ft Sia          0.000          0.000          0.000            n/a          0.000
+_test_song                              0.618            n/a          0.000            n/a            n/a
+POOLED (5 songs)                        0.343          0.024          0.163          0.000          0.042
+
+pooled tp / predicted / reference:
+  incumbent       141 /  361 /  462
+  reanchor          6 /   41 /  462
+  reanchor-all     75 /  456 /  462
+  kick-only         0 /   18 /  462
+  events-only      11 /   59 /  462
+
+gate: reanchor pooled F1 0.024 vs allin1 0.343 (downbeat_anchors 0.301)
+
+irregular bars (bar != 4 beats), corpus-wide. strict = every bar; outside = skips bars holding an off_grid beat and the two song-edge partials
+song                            bars  strict  outside  old_outside  runs(phase source)  unresolved_spans  downbeats(conf/all)
+Armin - Revolution               104       2        0            1  {'anchors': 2, 'allin1': 1}                 3  14/103
+Best Friend - Sofi Tukker         77       1        0            0  {'anchors': 1}                     3  6/77
+ChangedTheWayYouKissMe-Example   103       4        0            3  {'allin1': 1, 'anchors': 2}                 2  12/102
+Charli-Guess                      76       3        0            1  {'anchors': 4}                     6  15/75
+Charli-VonDutch                   88       3        0            4  {'allin1': 1, 'anchors': 1}                 2  2/87
+Chimera - Hana                   164       2        0            0  {'anchors': 3}                     6  18/164
+Cinderella - Ella Lee            177       1        0            4  {'anchors': 1, 'allin1': 1}                 5  12/176
+CruelSummer - Malvina            124       3        0            3  {'anchors': 4}                     5  12/124
+Fascination (The Droyds One Armed Remix)   215       2        0            0  {'anchors': 1}                     3  23/214
+Gabry Ponte - Tutta L'Italia      94       2        0            0  {'anchors': 1}                     2  2/93
+Hideaway - Kiesza                128       2        0            4  {'anchors': 2}                     2  13/127
+In da name of love - Anita and Ray   107       5        0            4  {'allin1': 2, 'anchors': 2}                 3  16/106
+It's a fine day - Opus III       171       3        0            1  {'allin1': 2, 'anchors': 2}                 9  36/170
+Medicine-MilkInc                 116       3        0            4  {'anchors': 2}                     4  17/115
+Only this moment - royksopp      118       3        0            3  {'anchors': 2}                     5  28/117
+Pet Shop Boys - I'm not scared   203       1        0            0  {'anchors': 1}                     6  21/203
+Queen of Kings - Alessandra       78       2        0            0  {'anchors': 1}                     4  7/77
+Rapture - Nadia Ali              117       5        0            1  {'none': 2, 'anchors': 5}                 8  13/117
+Rotate-Skillibeng                 96       4        0            4  {'anchors': 6, 'allin1': 2}                 4  15/95
+Sash - Raindrops                 113       2        0            4  {'anchors': 1}                     1  0/112
+StealTheShow-NeonDreams          195       5        0            1  {'anchors': 4, 'none': 1, 'allin1': 3}                 5  12/194
+Titanium - David Guetta ft Sia   123       2        0            0  {'anchors': 1}                     3  7/122
+Underworld - Born Slippy         132       2        0            2  {'anchors': 1}                     4  23/131
+What a Feeling - Courtney Storm   107       4        0            2  {'allin1': 1, 'anchors': 2}                 2  4/106
+Yonaka - Seize the Power          89       2        0            1  {'anchors': 1}                     2  1/88
+_test_song                        29       3        0            0  {'anchors': 1, 'allin1': 1}                 1  0/28
+ayuni                             85       3        0            0  {'anchors': 2}                     3  2/84
+TOTAL                                     74        0           47

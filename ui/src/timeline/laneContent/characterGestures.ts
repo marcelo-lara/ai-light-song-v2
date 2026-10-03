@@ -4,7 +4,7 @@
 // SparseBlock type.
 
 import type { EventTimeline } from "../../data/types";
-import type { CharacterFile, FilterSweepFile, PhrasesFile } from "../../data/sparseArtifacts";
+import type { BarFeaturesFile, CharacterFile, DownbeatReanchorFile, FilterSweepFile, FilterSweepV2File, LightChangesFile, PhrasesFile } from "../../data/sparseArtifacts";
 import type { SparseBlock } from "../laneContent";
 import { formatRange, round } from "./shared";
 
@@ -106,6 +106,124 @@ export function filterSweepContent(file: FilterSweepFile | null): SparseBlock[] 
   });
 }
 
+const AFTERMATH_TINT: Record<string, string> = {
+  gap: "filterSweepV2Gap",
+  drop: "filterSweepV2Drop",
+  break: "filterSweepV2Break",
+};
+
+/**
+ * Filter sweeps v2 from `experiments/filter_sweep_v2` — a run of bars where the
+ * harmonic stem's high/low band ratio or rolloff moves consistently. The block
+ * spans the run; its end (on the beat grid, `end_time`) is the cue, and the
+ * aftermath says what the next 1-2 bars do. `none` = nothing follows, a suspect
+ * detection (lower confidence, grey). A proposal to audition, not ground truth.
+ */
+export function filterSweepV2Content(file: FilterSweepV2File | null): SparseBlock[] {
+  return (file?.blocks ?? []).map((b, i) => {
+    const conf = b.confidence == null ? "no confidence reported" : `confidence ${round(b.confidence, 2)}`;
+    const hl = b.hl_change_db == null ? "hl n/a" : `${round(b.hl_change_db, 1)} dB`;
+    const roll = b.roll_change_oct == null ? "rolloff n/a" : `${round(b.roll_change_oct, 2)} oct`;
+    const endBar = b.end_bar == null ? "song end" : `bar ${b.end_bar}`;
+    return {
+      id: `filter-sweep-v2-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: b.aftermath === "none" ? b.direction : `${b.direction} → ${b.aftermath}`,
+      wideLabel: `${b.direction} · bars ${b.start_bar}-${b.end_bar ?? "end"} · ends ${b.end_kind} → ${b.aftermath}`,
+      laneLabel: "Filter Sweeps v2",
+      caption: `${formatRange(b.start_s, b.end_s)} · ${b.direction} · end ${round(b.end_time, 2)} s (${endBar}) ${b.end_kind} · aftermath ${b.aftermath}`,
+      reference: `filter-sweep-v2-${i + 1}`,
+      detail: `${hl}, ${roll}, consistency ${round(b.consistency, 2)}`,
+      summary: `experiments/filter_sweep_v2 — ${b.direction} over bars ${b.start_bar}-${b.end_bar ?? "end"}: high/low ratio ${hl}, ` +
+        `rolloff ${roll}; end at ${round(b.end_time, 2)} s is a ${b.end_kind}, aftermath ${b.aftermath}` +
+        `${b.aftermath === "none" ? " (nothing follows: suspect)" : ""}; ${conf}.`,
+      tintId: AFTERMATH_TINT[b.aftermath] ?? "filterSweepV2None",
+      raw: b,
+    };
+  });
+}
+
+const fx = (v: number | null, d = 3): string => (v == null ? "n/a" : String(round(v, d)));
+
+/**
+ * Per-bar table from the published `bar_features.json` — one block per bar,
+ * tinted by the bar's brightness tercile within the song (grey when the bar is
+ * not 4 beats long: a known grid slip, flagged and never repaired). The label
+ * is the bar number; the caption carries the numbers. A feature table to read
+ * against the other lanes, not a claim.
+ */
+export function barFeaturesContent(file: BarFeaturesFile | null): SparseBlock[] {
+  const bars = file?.bars ?? [];
+  const br = bars.map((b) => b.brightness).filter((v): v is number => v != null).sort((a, b) => a - b);
+  const lo = br.length ? br[Math.floor(br.length / 3)]! : 0;
+  const hi = br.length ? br[Math.floor((2 * br.length) / 3)]! : 0;
+  return bars.map((b, i) => {
+    const kick = b.kick_present == null ? "kick n/a" : b.kick_present ? "kick" : "no kick";
+    const tint = b.irregular
+      ? "barFeaturesIrregular"
+      : b.brightness == null || b.brightness < lo
+        ? "barFeaturesLow"
+        : b.brightness >= hi
+          ? "barFeaturesHigh"
+          : "barFeaturesMid";
+    const slip = b.irregular ? " · not 4 beats" : "";
+    return {
+      id: `bar-features-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: String(b.bar),
+      wideLabel: `${b.bar} · ${kick} · br ${fx(b.brightness, 2)}${slip}`,
+      laneLabel: "Bar Features",
+      caption: `bar ${b.bar} ${formatRange(b.start_s, b.end_s)} · brightness ${fx(b.brightness, 2)} ` +
+        `· transient density ${fx(b.transient_density)} · ${kick}${slip}`,
+      reference: `bar-features-${i + 1}`,
+      detail: [
+        b.sweep_state ? `sweep ${b.sweep_state}` : "",
+        b.light_change_role ? `light change: ${b.light_change_role}` : "",
+      ].filter(Boolean).join(" · "),
+      summary: `bar_features.json — bar ${b.bar}` +
+        (b.irregular ? " (not 4 beats: grid slip, flagged not repaired)" : "") +
+        `: brightness ${fx(b.brightness, 2)}, transient density ${fx(b.transient_density)}, ${kick}.`,
+      tintId: tint,
+      raw: b,
+    };
+  });
+}
+
+const ROLE_TINT: Record<string, string> = {
+  groove_in: "lightChangeGrooveIn",
+  build: "lightChangeBuild",
+  break: "lightChangeBreak",
+  drop: "lightChangeDrop",
+  gap: "lightChangeGap",
+  fill: "lightChangeFill",
+};
+
+/**
+ * Light change points from the published `song_event_timeline.json`
+ * `light_change` rows — one marker per point, labelled with its role, tinted
+ * per role. A point has no duration (`end_time` = `start_time`), so the block is
+ * the minimum-width marker at the point's time. `confidence` is `null`: the
+ * point score is uncalibrated, and none is invented.
+ */
+export function lightChangesContent(file: LightChangesFile | null): SparseBlock[] {
+  return (file?.points ?? []).map((p, i) => ({
+    id: `light-change-${i + 1}`,
+    start_s: p.start_time,
+    end_s: p.end_time,
+    label: p.role,
+    wideLabel: p.role,
+    laneLabel: "Light Changes",
+    caption: `${formatRange(p.start_time, p.end_time)} · ${p.role}`,
+    reference: `light-change-${i + 1}`,
+    detail: p.section_id ? `in ${p.section_id}` : "between published sections",
+    summary: `song_event_timeline.json — light_change ${p.role} at ${round(p.start_time, 2)} s; no confidence (score is not calibrated).`,
+    tintId: ROLE_TINT[p.role] ?? "lightChangeUnknown",
+    raw: p,
+  }));
+}
+
 const pct = (v: number | null): string => (v == null ? "n/a" : `${Math.round(v * 100)}%`);
 const yn = (v: boolean | null): string => (v == null ? "n/a" : v ? "yes" : "no");
 
@@ -150,6 +268,33 @@ export function phrasesContent(file: PhrasesFile | null): SparseBlock[] {
         `ends on gap ${yn(b.ends_on_gap)}; ${b.repeat_of ? `repeats ${b.repeat_of}` : "no earlier repeat"}; ` +
         `${state}; ${conf}.`,
       tintId: b.resolved ? "phrases" : "phrasesUnresolved",
+      raw: b,
+    };
+  });
+}
+
+/**
+ * Re-anchored bar labels from `experiments/downbeat_reanchor` — one block per bar, label = the
+ * re-anchored bar number. Beat times are unchanged; only which beat is the downbeat moves. Grey
+ * when the downbeat carries no confidence (local anchors disagree, or none). A proposal to
+ * audition, not truth.
+ */
+export function downbeatReanchorContent(file: DownbeatReanchorFile | null): SparseBlock[] {
+  return (file?.bars ?? []).map((b, i) => {
+    const conf = b.downbeat_confidence == null ? "no confidence (unresolved)" : `confidence ${round(b.downbeat_confidence, 2)}`;
+    const len = b.irregular ? ` · ${b.beats_in_bar} beats (song edge or off-grid)` : "";
+    return {
+      id: `downbeat-reanchor-${i + 1}`,
+      start_s: b.start_s,
+      end_s: b.end_s,
+      label: String(b.bar),
+      wideLabel: `${b.bar} · ${b.resolved ? "resolved" : "unresolved"}${len}`,
+      laneLabel: "Downbeat Reanchor",
+      caption: `bar ${b.bar} ${formatRange(b.start_s, b.end_s)} · ${conf}${len}`,
+      reference: `downbeat-reanchor-${i + 1}`,
+      detail: `${b.beats_in_bar} beats`,
+      summary: "experiments/downbeat_reanchor — bar labels rebuilt from anchor votes on unchanged beat times; confidence null where anchors disagree or none exist. Proposal to audition, not truth.",
+      tintId: b.resolved ? "downbeatReanchor" : "downbeatReanchorUnresolved",
       raw: b,
     };
   });

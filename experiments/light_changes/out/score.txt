@@ -1,0 +1,70 @@
+# light_changes score
+
+## corpus rate (27 songs)
+light_changes         4.71 points/min   per-song median  4.57  max  8.83
+no texture_novelty    4.08 points/min   per-song median  4.52  max  8.75
+loudness-only |z|>=3  3.49 points/min   per-song median  3.66  max  7.54
+loudness-only rate-matched (|z|>=2.50)  4.60 points/min   per-song median  4.91  max  8.38
+
+## Medicine-MilkInc (operator span bars 9-17)
+light_changes: 5/5 hit, 29 points
+  bar   8 fill      HIT   nearest point bar   8 (+0.00 s)  role fill      role ok
+  bar   9 groove_in HIT   nearest point bar   9 (+0.00 s)  role groove_in role ok
+  bar  16 build     HIT   nearest point bar  16 (+0.00 s)  role build     role ok
+  bar  19 break     HIT   nearest point bar  19 (+0.00 s)  role break     role ok
+  bar  23 drop      HIT   nearest point bar  23 (+0.00 s)  role drop      role ok
+no texture_novelty: 0/5 hit, 20 points
+loudness-only |z|>=3: 1/5 hit, 15 points
+  bar   8 fill      MISS  nearest point bar   2 (-10.30 s)  role -         role differs
+  bar   9 groove_in MISS  nearest point bar   2 (-12.02 s)  role -         role differs
+  bar  16 build     MISS  nearest point bar  23 (+10.71 s)  role -         role differs
+  bar  19 break     MISS  nearest point bar  23 (+6.86 s)  role -         role differs
+  bar  23 drop      HIT   nearest point bar  23 (+0.00 s)  role -         role differs
+loudness-only rate-matched |z|>=2.50: 3/5 hit, 21 points
+  steady bars 10-14, light_changes: 0 points []
+  steady bars 10-14, no texture_novelty: 0 points []
+  steady bars 10-14, loudness-only |z|>=3: 0 points []
+  steady bars 10-14, loudness-only rate-matched |z|>=2.50: 0 points []
+  all points (light_changes): 8:fill, 9:groove_in, 16:build, 18:break, 19:break, 20:break, 21:break, 23:drop
+
+## Armin - Revolution (operator span bars 56-59)
+light_changes: 2/3 hit, 28 points
+  bar  55 build     MISS  nearest point bar  52 (-5.53 s)  role drop      role differs
+  bar  59 gap       HIT   nearest point bar  59 (+0.00 s)  role gap       role ok
+  bar  60 drop      HIT   nearest point bar  60 (+0.00 s)  role drop      role ok
+no texture_novelty: 2/3 hit, 26 points
+loudness-only |z|>=3: 2/3 hit, 15 points
+  bar  55 build     MISS  nearest point bar  59 (+7.38 s)  role -         role differs
+  bar  59 gap       HIT   nearest point bar  59 (+0.00 s)  role -         role differs
+  bar  60 drop      HIT   nearest point bar  60 (+0.00 s)  role -         role differs
+loudness-only rate-matched |z|>=2.50: 2/3 hit, 18 points
+  all points (light_changes): 52:drop, 59:gap, 60:drop
+
+## threshold sweep: targets hit (of 8) vs corpus points/min (full detector vs loudness-only)
+full detector, pooled-score threshold:
+  S>= 5.0:  6.59/min  7/8 hit  steady-bar points 0
+  S>= 6.0:  5.49/min  7/8 hit  steady-bar points 0
+  S>= 7.0:  4.71/min  7/8 hit  steady-bar points 0
+  S>= 8.0:  3.96/min  5/8 hit  steady-bar points 0
+  S>= 9.0:  3.49/min  4/8 hit  steady-bar points 0
+  S>=11.0:  2.72/min  3/8 hit  steady-bar points 0
+  S>=13.0:  2.11/min  2/8 hit  steady-bar points 0
+loudness-only, |z| threshold:
+  |z|>= 3.0:  3.49/min  3/8 hit  steady-bar points 0
+  |z|>= 2.5:  4.60/min  5/8 hit  steady-bar points 0
+  |z|>= 2.0:  5.97/min  6/8 hit  steady-bar points 0
+  |z|>=1.75:  7.02/min  7/8 hit  steady-bar points 0
+  |z|>= 1.5:  8.21/min  7/8 hit  steady-bar points 0
+
+## targets hit, both songs (8 targets)
+full        7/8
+no_novelty  2/8
+base3       3/8
+matched     5/8
+
+## ayuni — no bar-level truth (24 points, 8.75/min)
+  4:drop, 7:build, 8:groove_in, 10:drop, 23:build, 24:break, 25:break, 28:drop, 43:break, 44:drop, 52:fill, 53:break, 60:drop, 61:break, 62:break, 66:build, 67:fill, 68:break, 69:break, 70:build, 73:drop, 74:drop, 82:break, 83:break
+
+## Charli-VonDutch — no bar-level truth (7 points, 2.61/min)
+  15:break, 17:drop, 40:break, 53:drop, 84:break, 85:break, 87:break
+

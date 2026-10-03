@@ -1463,6 +1463,44 @@ it is untested. The operator's lane review decides. Not promoted.
 
 ---
 
+## Downbeat Reanchor — bar labels rebuilt from anchor votes
+
+*(no external model; reads item 29's kick attacks, timeline impacts, arrangement entries)*
+
+### Status
+
+**Built and run, 2026-10-03 (v3.12 item 30) — gate NOT met, not promoted.** Full writeup:
+[`../experiments/downbeat_reanchor/README.md`](../experiments/downbeat_reanchor/README.md).
+Queue row enabled (after `kick_attacks`). Debugger lane: **Downbeat Reanchor**, flask badge.
+Nothing in `src/` reads it; `timing.py` unchanged. Stays open: the follow-up
+(phase changes only inside an unresolved span) is in [`issues.md`](issues.md).
+
+### Why? What for?
+
+Bar numbers are short of target and Medicine bar 16 is a 1-beat bar that shifts every bar after
+it; rebuild the labels from facts on a downbeat, never warping time.
+
+### Experiment Plan
+
+Beat times unchanged; one phase per trusted run from weighted votes (kick-phase windows,
+impacts, bass/drums entries); bars always 4 beats; disagreeing local votes -> `downbeat_confidence`
+null; no vote -> allin1's phase, unresolved. Gate: F1 @ +-70 ms vs Moises > .343 and zero bars
+!= 4 beats outside `off_grid_spans`.
+
+### Results evidence
+
+Pooled F1 **0.024** (confidence-bearing) / **0.163** (all downbeats) vs allin1 .343, anchors .301.
+Irregular bars outside `off_grid_spans`: 0 (today's grid: 47). Only *Queen of Kings* lands (.954 on
+all downbeats); *Armin* has a real 1-beat slip inside one trusted run a constant phase cannot follow.
+No threshold was tuned on the validation songs; a post-hoc 24-point grid reached at most .166.
+
+### Conclusion
+
+Zero irregular bars is met by construction and costs the F1: a constant phase per run cannot
+follow a slip, and the votes are thin. Stays an experiment; items 32+ use the old grid.
+
+---
+
 ## Loose ends
 
 Open questions this queue depends on that are **not themselves experiments**.

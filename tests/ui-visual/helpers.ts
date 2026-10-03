@@ -92,8 +92,19 @@ const OPTIONAL_RUN_PROGRESS_404 = /\/artifacts\/_run_progress\.json$/;
 // because a lane whose file is absent is not rendered at all).
 // The frozen fixtures carry no `pending.json`, so its 404 is named here
 // (and only this — any other missing `/data/analysis/` file still fails).
+//
+// v3.12 item 35: the same holds for the three experiment proposal files added in
+// items 29-31 (`kick_attacks`, `downbeat_reanchor`, `filter_sweep_v2`). No frozen
+// fixture carries them, their loaders resolve a 404 to "no blocks", and the lane
+// is then not drawn, so their 404 is named here rather than adding three lanes
+// (and flask badges) to every fixture.
+//
+// v3.12 item 35: the published top-level `bar_features.json` is read by the Bar
+// Features lane and its loader resolves a 404 to "no bars" (lane not drawn). Only
+// `RegFull - Fixture` carries one (the spec `published-lanes` asserts the lane is
+// absent on `RegPartial`), so its 404 on the other fixtures is named here too.
 const OPTIONAL_PROPOSALS_404 =
-  /\/reference\/proposals\/pending\.json$/;
+  /\/(reference\/proposals\/(pending|kick_attacks|downbeat_reanchor|filter_sweep_v2)|bar_features)\.json$/;
 
 // v3.11 item 24: `reference/pre-analysis/verdict.json` exists only for a song
 // whose hint went through the verdict stages; the loader resolves a 404 to "no

@@ -107,6 +107,15 @@ it as a top-level file (phase 4).
 | `data/analysis/{song}/*.json` — top level | `mcp/`, `src/analyzer/`, `ui/` |
 | `…/artifacts/**`, `…/reference/**` | **`src/analyzer/` and `ui/` only** |
 
+The ten required top-level files (`mcp/loaders.py` `REQUIRED_TOP_LEVEL_FILES`; a
+missing one errors naming it, no degraded mode): `info.json`, `beats.json`,
+`hints.json`, `sections.json`, `song_event_timeline.json`, `drum_events.json`,
+`loudness.json`, `arrangement_state.json`, `vocal_cadence.json`, and — v3.12
+item 33 — `bar_features.json` (per-bar texture; projected by `get_detail`'s
+`bar_texture` block, and the `light_change` rows of `song_event_timeline.json`
+by the overview's `light_changes` block and `get_detail`'s `light_change` block,
+v3.12 item 34).
+
 Inner folders are the raw material phase 4 uses to build the top-level files.
 They are never a delivery surface. `mcp/` must contain no path that reaches into
 `artifacts/` or `reference/` — a signal only reaches this server by being
@@ -221,7 +230,7 @@ Returns:
   impact rows must not return 31 unrelated events.
 - **Arrangement** — one row per `arrangement_state` block: who is `playing`,
   who `entered`, who `left`, and the block `confidence` (a leading block carries
-  `null`). `arrangement_state.json` is one of the 9 required top-level files
+  `null`). `arrangement_state.json` is one of the 10 required top-level files
   (v3.6 item 9 dropped the old pre-v3.2 degraded/omitted path) — the block is
   always present. Also carries `vocals_phrase` — a
   second, independent read on the vocals stem from the promoted `whisperx_vad`
@@ -239,6 +248,13 @@ Returns:
   applied at publish time — the value is reported and the call is the
   consumer's.
 - **Transitions** — the `"<from> → <to>"` rows, with times.
+- **Light changes** (v3.12 item 34) — a `light_changes` block: one row
+  `{time, role}` per `light_change` point of `song_event_timeline.json`, plus
+  `field_sources`. No `position` (byte budget) and no per-row `confidence`
+  (always published `null`, D5; `get_detail` carries it). `scope: "brief"`
+  keeps only `{count}`. Roles are the published vocabulary (`groove_in`,
+  `build`, `break`, `drop`, `gap`, `fill`, `unknown`); a drop-role point is
+  the producer's label, not a section claim.
 - **Human hints** — the operator's own marks, verbatim, with their
   `lighting_hint` where one exists. These are ground truth and outrank every
   inferred field in the response.
@@ -251,7 +267,7 @@ Returns:
   highest-scoring earlier section this one's vocal cadence repeats, or
   `null`). Timing only — no lyric text anywhere. `source: null` (D1.1, no
   lyrics tier) still returns the block with `reason` set and every row's
-  fields omitted — `vocal_cadence.json` is one of the 9 required top-level
+  fields omitted — `vocal_cadence.json` is one of the 10 required top-level
   files, no degraded/absent path. The full per-section detail (`rests[]`,
   `held_notes[]`, `tokens_per_bar[]`, every `cadence_repeats[]` candidate) is
   `get_detail`'s job, not this one — see below.
@@ -274,11 +290,22 @@ phases, transitions, hints, drum events, aggregate intensity, the overlapping
 `arrangement_state` blocks, `vocal_cadence` (v3.9 item 1 — the section
 row(s)/lines/calls overlapping the span, at full detail: `rests[]`,
 `held_notes[]`, `tokens_per_bar[]`, every `cadence_repeats[]` candidate), `beats`,
-`stem_summary`, `drum_density` and `dropouts` — all structural block data,
+`stem_summary`, `drum_density`, `dropouts`, and — v3.12 item 34 —
+`light_change` and `bar_texture`, all structural block data,
 listed with no decimation and present even when the dense frames are withheld)
 and **withholds the dense frames**,
 saying so explicitly and naming the cap. It never silently truncates, and it
 never silently downsamples to fit.
+
+**`bar_texture` and `light_change` (v3.12 item 34).** `bar_texture.rows` is one
+row per `bar_features.json` bar overlapping the span: `bar`, `start`, `end`,
+`irregular`, `brightness`, `transient_density`, `kick_present`, `sweep_state`
+(`opening` / `closing` / `null`), `light_change_role`, and `position` (of
+`start`); bars outside the span are absent. `light_change.rows` is one row per
+point with `time` inside the span: `time`, `role`, `confidence` (published
+`null`, separate field, D5), `section_id` (`null` in a section gap) and
+`position`. Both blocks carry the source file's `field_sources` and are present
+(empty rows) when nothing falls in the span; neither is dense-cap gated.
 
 **`stem_summary` (v3.7 item 7).** Per requested stem, `{ peak, mean,
 peak_position }` over the resolved span, from `loudness.json`'s
@@ -310,7 +337,7 @@ the default is all five.
 **`position` (v3.7 item 3/5).** Every time field `get_detail` serializes — the
 span itself, section/phase/transition/hint edges, arrangement blocks and vocals phrases (including item 7's
 `peak_position`), drum-event rows, `drum_density` bar rows, `dropouts` span
-edges, and every dense loudness frame — carries a sibling `position`:
+edges, `bar_texture` bar rows (at `start`), `light_change` rows, and every dense loudness frame — carries a sibling `position`:
 `{"bar", "beat", "section_id", "resolved"}`, derived on read from the
 published beat grid; nothing in `src/` stores bars. `resolved: false` marks a
 bar derived by tempo arithmetic across a downbeat with `null`

@@ -59,6 +59,7 @@ def test_sparse_cap_hit_reports_withheld() -> None:
         "source": None, "reason": "no lyrics tier for this fixture",
         "lines": [], "sections": [], "calls": [], "field_sources": {},
     })
+    _write_json(song / "bar_features.json", {"bars": [], "field_sources": {}})
 
     # Create drum_events with SPARSE_ROW_CAP + 10 rows
     events = []

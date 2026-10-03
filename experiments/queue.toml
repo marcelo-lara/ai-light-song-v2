@@ -23,6 +23,10 @@
 # the cache `compute` writes. So one song = `compute && export`, regenerating
 # that experiment's reference/proposals/<name>.json for the song.
 #
+# Order matters: a row that reads another experiment's proposals file must come after it
+# (bar_features reads filter_sweep, kick_attacks and filter_sweep_v2's cache; filter_sweep_v2 recomputes the
+# bar_features table in memory for its aftermath, so it runs before bar_features; downbeat_reanchor reads kick_attacks).
+#
 # Adding or removing an experiment from the queue is a one-row edit here.
 
 # phrase_periodicity and voice_multiplicity were archived, 2026-09-17 — both
@@ -108,5 +112,35 @@ enabled = true
 [[experiment]]
 name = "section_names"
 command = "python -m experiments.section_names.run compute --song {song_name} && python -m experiments.section_names.run export --song {song_name}"
+image = "app"
+enabled = true
+
+[[experiment]]
+name = "kick_attacks"
+command = "python -m experiments.kick_attacks.run compute --song {song_name} && python -m experiments.kick_attacks.run export --song {song_name}"
+image = "app"
+enabled = true
+
+[[experiment]]
+name = "filter_sweep_v2"
+command = "python -m experiments.filter_sweep_v2.run compute --song {song_name} && python -m experiments.filter_sweep_v2.run export --song {song_name}"
+image = "app"
+enabled = true
+
+[[experiment]]
+name = "bar_features"
+command = "python -m experiments.bar_features.run compute --song {song_name} && python -m experiments.bar_features.run export --song {song_name}"
+image = "app"
+enabled = true
+
+[[experiment]]
+name = "light_changes"
+command = "python -m experiments.light_changes.run compute --song {song_name} && python -m experiments.light_changes.run export --song {song_name}"
+image = "app"
+enabled = true
+
+[[experiment]]
+name = "downbeat_reanchor"
+command = "python -m experiments.downbeat_reanchor.run export --song {song_name}"
 image = "app"
 enabled = true

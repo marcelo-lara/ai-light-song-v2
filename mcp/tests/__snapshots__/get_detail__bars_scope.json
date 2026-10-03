@@ -68,7 +68,8 @@
         "confidence": "gestures",
         "intensity": "gestures",
         "gesture_id": "gestures",
-        "section_id": "allin1"
+        "section_id": "allin1",
+        "role": "light_changes"
       }
     },
     "transitions": {
@@ -80,7 +81,83 @@
         "confidence": "gestures",
         "intensity": "gestures",
         "gesture_id": "gestures",
-        "section_id": "allin1"
+        "section_id": "allin1",
+        "role": "light_changes"
+      }
+    },
+    "light_change": {
+      "rows": [
+        {
+          "time": 4.0,
+          "role": "groove_in",
+          "confidence": null,
+          "section_id": "section-001",
+          "position": {
+            "bar": 3,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        }
+      ],
+      "field_sources": {
+        "type": "gestures",
+        "start_time": "gestures",
+        "end_time": "gestures",
+        "confidence": "gestures",
+        "intensity": "gestures",
+        "gesture_id": "gestures",
+        "section_id": "allin1",
+        "role": "light_changes"
+      }
+    },
+    "bar_texture": {
+      "rows": [
+        {
+          "bar": 3,
+          "start": 4.0,
+          "end": 6.0,
+          "irregular": false,
+          "brightness": 0.44,
+          "transient_density": 0.012,
+          "kick_present": true,
+          "sweep_state": null,
+          "light_change_role": "groove_in",
+          "position": {
+            "bar": 3,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        },
+        {
+          "bar": 4,
+          "start": 6.0,
+          "end": 8.0,
+          "irregular": false,
+          "brightness": 0.46,
+          "transient_density": 0.013,
+          "kick_present": true,
+          "sweep_state": null,
+          "light_change_role": null,
+          "position": {
+            "bar": 4,
+            "beat": 1,
+            "section_id": "section-001",
+            "resolved": true
+          }
+        }
+      ],
+      "field_sources": {
+        "bar": "essentia",
+        "start": "essentia",
+        "end": "essentia",
+        "brightness": "essentia",
+        "transient_density": "essentia",
+        "irregular": "light_changes",
+        "kick_present": "light_changes",
+        "sweep_state": "light_changes",
+        "light_change_role": "light_changes"
       }
     },
     "hints": {

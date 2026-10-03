@@ -1,8 +1,8 @@
 // sparseArtifacts.ts — types + tolerant parsers + loaders for the block-lane
 // artifacts consumed by SparseLane (character, vocal transcription, vocal
 // phrases, allin1 posterior shadow labels, whisperx vad,
-// stem presence sections, vocal cadence, clap events, kick check, crash
-// check, filter sweep, phrases, section names, and the top-level published arrangement state).
+// stem presence sections, vocal cadence, clap events, kick check, kick attacks, crash
+// check, filter sweep, bar features, filter sweeps v2, downbeat reanchor, light changes, phrases, section names, and the top-level published arrangement state).
 //
 // These artifacts are still schema_version "1.0" and their exact shapes vary
 // more than the essentia series, so the parsers here are deliberately tolerant:
@@ -817,6 +817,62 @@ export async function loadKickCheck(
 }
 
 // ---------------------------------------------------------------------------
+// kickAttacks — reference/proposals/kick_attacks.json
+// ---------------------------------------------------------------------------
+//
+// v3.12 item 29: kick attacks detected on the mix (steep 40-120 Hz rise with a
+// coincident 2-5 kHz click), echoes labelled `echo_of`. `experiments/kick_attacks`.
+// A proposal, not truth.
+
+export interface KickAttackEvent {
+  time: number;
+  confidence: number | null;
+  echo_of: number | null;
+  on_grid: boolean;
+  grid: string; // "trusted" | "untrusted"
+  rise_db: number | null;
+  click_db: number | null;
+  pitch_drop: boolean;
+}
+
+export interface KickAttacksFile {
+  schema_version: string;
+  song_name: string;
+  events: KickAttackEvent[];
+}
+
+export function parseKickAttacks(raw: unknown): KickAttacksFile {
+  const o = asObject(raw, "reference/proposals/kick_attacks.json");
+  const events: KickAttackEvent[] = [];
+  for (const row of arr(o.events)) {
+    const r = rec(row);
+    events.push({
+      time: num(r.time),
+      confidence: r.confidence == null ? null : num(r.confidence),
+      echo_of: r.echo_of == null ? null : num(r.echo_of),
+      on_grid: r.on_grid !== false,
+      grid: st(r.grid, "trusted"),
+      rise_db: r.rise_db == null ? null : num(r.rise_db),
+      click_db: r.click_db == null ? null : num(r.click_db),
+      pitch_drop: r.pitch_drop === true,
+    });
+  }
+  events.sort((a, b) => a.time - b.time);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), events };
+}
+
+export async function loadKickAttacks(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<KickAttacksFile>> {
+  const result = await loadJson(artifactPaths.kickAttacks(song), parseKickAttacks, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, events: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
 // crashCheck — reference/proposals/crash_check.json
 // ---------------------------------------------------------------------------
 //
@@ -913,6 +969,240 @@ export async function loadFilterSweep(
   const result = await loadJson(artifactPaths.filterSweep(song), parseFilterSweep, f);
   if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
     return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+
+// ---------------------------------------------------------------------------
+// barFeatures — bar_features.json (published, top level)
+// ---------------------------------------------------------------------------
+//
+// v3.12 item 33 publishes one row per bar of `beats.json`; item 35 reads it
+// directly (the UI may read anything under data/). A feature table, not a claim.
+
+export interface BarFeatureRow {
+  bar: number;
+  start_s: number;
+  end_s: number;
+  irregular: boolean;
+  brightness: number | null;
+  transient_density: number | null;
+  kick_present: boolean | null;
+  sweep_state: string | null;
+  light_change_role: string | null;
+}
+
+export interface BarFeaturesFile {
+  schema_version: string;
+  song_name: string;
+  bars: BarFeatureRow[];
+}
+
+const numOrNull = (v: unknown): number | null => (v == null ? null : num(v));
+
+export function parseBarFeatures(raw: unknown): BarFeaturesFile {
+  const o = asObject(raw, "bar_features.json");
+  const bars: BarFeatureRow[] = [];
+  for (const row of arr(o.bars)) {
+    const r = rec(row);
+    bars.push({
+      bar: num(r.bar),
+      start_s: num(r.start),
+      end_s: num(r.end),
+      irregular: r.irregular === true,
+      brightness: numOrNull(r.brightness),
+      transient_density: numOrNull(r.transient_density),
+      kick_present: typeof r.kick_present === "boolean" ? r.kick_present : null,
+      sweep_state: typeof r.sweep_state === "string" ? r.sweep_state : null,
+      light_change_role: typeof r.light_change_role === "string" ? r.light_change_role : null,
+    });
+  }
+  bars.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), bars };
+}
+
+export async function loadBarFeatures(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<BarFeaturesFile>> {
+  const result = await loadJson(artifactPaths.barFeatures(song), parseBarFeatures, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, bars: [] } };
+  }
+  return result;
+}
+
+
+// ---------------------------------------------------------------------------
+// downbeatReanchor — reference/proposals/downbeat_reanchor.json
+// ---------------------------------------------------------------------------
+//
+// v3.12 item 30: bar labels rebuilt from anchor votes (kick-phase windows,
+// impacts, bass/drums entries); beat times unchanged. `experiments/downbeat_reanchor`.
+// A proposal, not truth. Only `bars[]` is read here.
+
+export interface DownbeatReanchorBar {
+  bar: number;
+  start_s: number;
+  end_s: number;
+  beats_in_bar: number;
+  irregular: boolean;
+  resolved: boolean;
+  downbeat_confidence: number | null;
+}
+
+export interface DownbeatReanchorFile {
+  schema_version: string;
+  song_name: string;
+  bars: DownbeatReanchorBar[];
+}
+
+export function parseDownbeatReanchor(raw: unknown): DownbeatReanchorFile {
+  const o = asObject(raw, "reference/proposals/downbeat_reanchor.json");
+  const bars: DownbeatReanchorBar[] = [];
+  for (const row of arr(o.bars)) {
+    const r = rec(row);
+    bars.push({
+      bar: num(r.bar),
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      beats_in_bar: num(r.beats_in_bar),
+      irregular: r.irregular === true,
+      resolved: r.resolved === true,
+      downbeat_confidence: r.downbeat_confidence == null ? null : num(r.downbeat_confidence),
+    });
+  }
+  bars.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), bars };
+}
+
+export async function loadDownbeatReanchor(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<DownbeatReanchorFile>> {
+  const result = await loadJson(artifactPaths.downbeatReanchor(song), parseDownbeatReanchor, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, bars: [] } };
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// filterSweepV2 — reference/proposals/filter_sweep_v2.json
+// ---------------------------------------------------------------------------
+//
+// v3.12 item 31: a run of bars where the harmonic stem's high/low band ratio
+// or rolloff moves consistently, with the sweep END on the beat grid and what the
+// next 1-2 bars do (gap / drop / break / none). `experiments/filter_sweep_v2`.
+// A proposal, not truth. `none` means nothing follows the end: a suspect sweep.
+
+export interface FilterSweepV2Block {
+  start_s: number;
+  end_s: number;
+  direction: string; // "opening" | "closing"
+  start_bar: number;
+  end_bar: number | null;
+  end_time: number;
+  end_kind: string; // "top" | "cut"
+  aftermath: string; // "gap" | "drop" | "break" | "none"
+  hl_change_db: number | null;
+  roll_change_oct: number | null;
+  consistency: number;
+  confidence: number | null;
+}
+
+export interface FilterSweepV2File {
+  schema_version: string;
+  song_name: string;
+  blocks: FilterSweepV2Block[];
+}
+
+export function parseFilterSweepV2(raw: unknown): FilterSweepV2File {
+  const o = asObject(raw, "reference/proposals/filter_sweep_v2.json");
+  const blocks: FilterSweepV2Block[] = [];
+  for (const row of arr(o.blocks)) {
+    const r = rec(row);
+    blocks.push({
+      start_s: num(r.start_s),
+      end_s: num(r.end_s),
+      direction: st(r.direction),
+      start_bar: num(r.start_bar),
+      end_bar: r.end_bar == null ? null : num(r.end_bar),
+      end_time: num(r.end_time),
+      end_kind: st(r.end_kind),
+      aftermath: st(r.aftermath),
+      hl_change_db: r.hl_change_db == null ? null : num(r.hl_change_db),
+      roll_change_oct: r.roll_change_oct == null ? null : num(r.roll_change_oct),
+      consistency: num(r.consistency),
+      confidence: r.confidence == null ? null : num(r.confidence),
+    });
+  }
+  blocks.sort((a, b) => a.start_s - b.start_s);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), blocks };
+}
+
+export async function loadFilterSweepV2(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<FilterSweepV2File>> {
+  const result = await loadJson(artifactPaths.filterSweepV2(song), parseFilterSweepV2, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, blocks: [] } };
+  }
+  return result;
+}
+
+
+// ---------------------------------------------------------------------------
+// lightChanges — song_event_timeline.json `light_change` rows (published)
+// ---------------------------------------------------------------------------
+//
+// v3.12 item 33 publishes each light-change point as a `light_change` row of the
+// top-level `song_event_timeline.json` (`role`, `start_time`, `end_time` =
+// `start_time`, `confidence` null, `section_id`). Item 35 reads those rows; the
+// other rows of the file belong to the Gestures lane and are ignored here.
+
+export interface LightChangePoint {
+  role: string;
+  start_time: number;
+  end_time: number;
+  section_id: string | null;
+  confidence: number | null;
+}
+
+export interface LightChangesFile {
+  schema_version: string;
+  song_name: string;
+  points: LightChangePoint[];
+}
+
+export function parseLightChanges(raw: unknown): LightChangesFile {
+  const o = asObject(raw, "song_event_timeline.json");
+  const points: LightChangePoint[] = [];
+  for (const row of arr(o.events)) {
+    const r = rec(row);
+    if (r.type !== "light_change") continue;
+    const start = num(r.start_time);
+    points.push({
+      role: st(r.role) || "unknown",
+      start_time: start,
+      end_time: r.end_time == null ? start : num(r.end_time),
+      section_id: typeof r.section_id === "string" ? r.section_id : null,
+      confidence: r.confidence == null ? null : num(r.confidence),
+    });
+  }
+  points.sort((a, b) => a.start_time - b.start_time);
+  return { schema_version: st(o.schema_version), song_name: st(o.song_name), points };
+}
+
+export async function loadLightChanges(
+  song: string,
+  f?: typeof fetch,
+): Promise<LoadResult<LightChangesFile>> {
+  const result = await loadJson(artifactPaths.eventTimelinePublished(song), parseLightChanges, f);
+  if (!result.ok && result.error.kind === "http" && result.error.status === 404) {
+    return { ok: true, data: { schema_version: "", song_name: song, points: [] } };
   }
   return result;
 }

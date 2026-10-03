@@ -1,0 +1,46 @@
+kick_attacks vs omnizart kicks, +-50 ms (precision = my attacks with an omnizart kick; recall = omnizart kicks with an attack)
+  Armin - Revolution                            attacks   25 omnizart  347 precision  0.60 recall  0.04
+  Best Friend - Sofi Tukker                     attacks  165 omnizart  189 precision  0.14 recall  0.12
+  ChangedTheWayYouKissMe-Example                attacks   68 omnizart  264 precision  0.13 recall  0.03
+  Charli-Guess                                  attacks  297 omnizart  163 precision  0.29 recall  0.52
+  Charli-VonDutch                               attacks   89 omnizart  158 precision  0.06 recall  0.03
+  Chimera - Hana                                attacks  155 omnizart  174 precision  0.12 recall  0.10
+  Cinderella - Ella Lee                         attacks  506 omnizart  583 precision  0.52 recall  0.45
+  CruelSummer - Malvina                         attacks  225 omnizart  323 precision  0.77 recall  0.54
+  Fascination (The Droyds One Armed Remix)      attacks  734 omnizart  802 precision  0.87 recall  0.77
+  Gabry Ponte - Tutta L'Italia                  attacks  160 omnizart  275 precision  0.87 recall  0.51
+  Hideaway - Kiesza                             attacks  144 omnizart  296 precision  0.24 recall  0.12
+  In da name of love - Anita and Ray            attacks   88 omnizart  210 precision  0.39 recall  0.16
+  It's a fine day - Opus III                    attacks  545 omnizart  569 precision  0.53 recall  0.50
+  Medicine-MilkInc                              attacks  284 omnizart  297 precision  0.33 recall  0.32
+  Only this moment - royksopp                   attacks  577 omnizart  652 precision  0.73 recall  0.65
+  Pet Shop Boys - I'm not scared                attacks  979 omnizart  808 precision  0.61 recall  0.74
+  Queen of Kings - Alessandra                   attacks  111 omnizart  271 precision  0.72 recall  0.29
+  Rapture - Nadia Ali                           attacks  125 omnizart  252 precision  0.52 recall  0.26
+  Rotate-Skillibeng                             attacks  239 omnizart  126 precision  0.23 recall  0.42
+  Sash - Raindrops                              attacks   62 omnizart  259 precision  0.11 recall  0.03
+  StealTheShow-NeonDreams                       attacks  216 omnizart  645 precision  0.09 recall  0.03
+  Titanium - David Guetta ft Sia                attacks  154 omnizart  293 precision  0.75 recall  0.39
+  Underworld - Born Slippy                      attacks  281 omnizart  878 precision  0.83 recall  0.26
+  What a Feeling - Courtney Storm               attacks  175 omnizart  154 precision  0.30 recall  0.34
+  Yonaka - Seize the Power                      attacks  100 omnizart  230 precision  0.56 recall  0.24
+  _test_song                                    attacks   33 omnizart  101 precision  0.27 recall  0.09
+  ayuni                                         attacks  230 omnizart  111 precision  0.29 recall  0.60
+  mean over 27 songs: precision 0.44 recall 0.32
+
+Medicine-MilkInc kick_present per bar (bars 9-18 yes, 19-22 no)
+  bar  9   15.26-  16.96 kick_attacks  4 kick_present True  expected True 
+  bar 10   16.96-  18.67 kick_attacks  4 kick_present True  expected True 
+  bar 11   18.67-  20.39 kick_attacks  3 kick_present True  expected True 
+  bar 12   20.39-  22.11 kick_attacks  4 kick_present True  expected True 
+  bar 13   22.11-  23.81 kick_attacks  5 kick_present True  expected True 
+  bar 14   23.81-  25.53 kick_attacks  3 kick_present True  expected True 
+  bar 15   25.53-  27.25 kick_attacks  4 kick_present True  expected True 
+  bar 16   27.25-  27.68 kick_attacks  1 kick_present True  expected True 
+  bar 17   27.68-  29.41 kick_attacks  5 kick_present True  expected True 
+  bar 18   29.41-  31.10 kick_attacks  0 kick_present False expected True   MISMATCH
+  bar 19   31.10-  32.82 kick_attacks  0 kick_present False expected False
+  bar 20   32.82-  34.53 kick_attacks  0 kick_present False expected False
+  bar 21   34.53-  36.25 kick_attacks  0 kick_present False expected False
+  bar 22   36.25-  37.96 kick_attacks  0 kick_present False expected False
+  mismatches: 1 of 14

@@ -111,7 +111,7 @@ def list_songs() -> list[dict[str, Any]]:
 
 @server.tool(name="get_song_overview")
 def get_song_overview(song: str, scope: str | None = None) -> dict[str, Any]:
-    """Whole-song overview (identity, grid, sections, gestures, transitions, hints).
+    """Whole-song overview (identity, grid, sections, gestures, transitions, light-change points, hints).
 
     One small call, whole song. Optionally accepts scope="brief" to return a
     compact overview suitable for the concept-pass read (D3.3). The default

@@ -102,6 +102,7 @@ neither is deleted rather than relocated.
 | `timing.py` | `artifacts/essentia/beats.json` — essentia beat *times* plus allin1-derived downbeat *phase* |
 | `fft_bands.py` | `artifacts/essentia/fft_bands.json` — 7 fixed bands every 50 ms |
 | `loudness.py` | `artifacts/essentia/rms_loudness.json` (10 ms) and `loudness_envelope.json` (200 ms), per source |
+| `harmonic_spectrum.py` | `extract-harmonic-spectrum` (1.5, v3.12 item 32) — `artifacts/harmonic_spectrum/half_beats.json`: half-beat log-frequency spectrum rows of the harmonic stem (high/low ratio, 99 % rolloff, peak Hz). No confidence |
 
 No `confidence` field anywhere in phase 1 — there is nothing to be uncertain about.
 
@@ -110,6 +111,7 @@ No `confidence` field anywhere in phase 1 — there is nothing to be uncertain a
 | Module | Produces |
 | --- | --- |
 | `drums.py` | `artifacts/symbolic_transcription/drum_events.json` — Omnizart drum hits on the isolated drums stem; GM 35/38/42 only, plus a v3.4 `crash`/`hat` split on pitch 42 from the drums-stem brilliance band |
+| `kick_attacks.py` | `detect-kick-attacks` (2.6, v3.12 item 32) — `artifacts/kick_attacks/kick_attacks.json`: kick attacks on the **mix** (steep 40-120 Hz rise + coincident 2-5 kHz click), `echo_of` for echoes, off-grid survivors at low confidence; carries `confidence` |
 | `segmentation.py` | `artifacts/section_segmentation/sections.json` — All-In-One named functional segmentation |
 
 ### Phase 3 — relate (phases 1-2, **never audio**)
@@ -119,6 +121,7 @@ No `confidence` field anywhere in phase 1 — there is nothing to be uncertain a
 | `gestures.py` | `song_event_timeline.json` — gesture phases + section-pair transitions |
 | `arrangement_state.py` | `artifacts/arrangement_state.json` — per-stem RMS state blocks: who is playing, and where that changes |
 | `hint_alignment.py` | `find_primary_section`, the shared window→section matcher |
+| `light_changes.py` | `light-changes` (3.3, v3.12 item 32) — reads published `beats.json`, `loudness.json`, `drum_events.json`, `arrangement_state.json` and `artifacts/{essentia,kick_attacks,harmonic_spectrum}/`, never audio; writes `artifacts/light_changes/bar_features.json` (per-bar table) and `light_changes.json` (change points with a role). Runs after `publish-arrangement-state`; `publish-light-changes` (7.7) publishes it |
 
 `arrangement_state.py` (`detect-arrangement-state`) reads the published
 `loudness.json` — a phase-1 series, not audio — and asserts *who is playing* and
@@ -134,10 +137,11 @@ score, and is `null` for the leading block that has no flip.
 | --- | --- |
 | `hints.py` | `hints.json` — inference hints merged with `reference/human/human_hints.json` |
 | `ui_data.py` | `sections.json`, `beats.json`, `info.json`, `drum_events.json`, `loudness.json`, `arrangement_state.json` (`publish_arrangement_state`, fusing phase-3's `artifacts/arrangement_state.json`) — the compact top-level deliverables, each fused from its producers with a `field_sources` header |
+| `publish_light_changes.py` | `publish-light-changes` (v3.12 item 33) — top-level `bar_features.json` and the `light_change` rows of `song_event_timeline.json`, from `artifacts/light_changes/` |
 | `vocal_cadence.py` | `vocal_cadence.json` (v3.9 item 1) — per-line bar timing, per-section `lead_in_bars`/rests/held notes/cadence-repeats, calls, from `reference/human/lyrics.json` > `reference/moises/lyrics.json` (D1.1: neither → still written, `source: null`) plus the published `beats.json`/`sections.json`/`info.json`. Timing only |
 
 Together with `hints.py`'s `hints.json` and phase 3's `song_event_timeline.json`,
-these are the nine top-level files the `mcp/` server reads. Nothing the delivery
+these are the ten required top-level files (`bar_features.json` is `publish_light_changes.py`'s) the `mcp/` server reads. Nothing the delivery
 surface needs still lives only under `artifacts/`.
 
 ### Validation — orthogonal to all four
@@ -450,6 +454,26 @@ x3, `Yonaka` 113.065) and 5 in-place corrections toward the drums onset
 29.55 -> 29.585, `Yonaka` 143.25 -> 143.295, `Cinderella` 268.55 -> 268.575);
 no song gained more impacts than it has boundaries. Not audited by ear.
 
+### Light changes — `light_changes.py`, 8/8 targets, thresholds tuned on the targets
+
+v3.12 items 29-33, ported from `experiments/{bar_features,light_changes,kick_attacks,filter_sweep_v2}`. Finds where the light should change when loudness stays flat (Medicine 8-23 has a flat mix RMS of about 0.19; the change is brightness, transients and drum hits) and labels each point `groove_in`, `build`, `break`, `drop`, `gap`, `fill` or `unknown`. A bar is compared with the median of the previous <= 8 bars of the current segment (robust z, `S >= 7`); inside each filter-sweep `opening`/`closing` run the detector walks back to the ramp onset (climb >= 3 bars and >= 4.5 dB), which is what finds Armin bar 55. Point time is the beat that contains the change (half-beat table), floored, never late and always on the grid.
+
+| Check | Result |
+| --- | --- |
+| Validation targets within one beat, role right | **8 of 8**: Medicine 8 fill, 9 groove_in, 16 build, 19 break, 23 drop; Armin 55 build, 59 gap, 60 drop. Medicine 10-14 carry no point |
+| Rate, 27 songs | 494 points / 103.0 min = **4.80 points/min** (median 4.55/song, range 1.49-8.97); roles break 168, drop 152, build 128, groove_in 18, gap 12, fill 12, unknown 4 |
+| `confidence` | **`null`** on every point, with a `confidence_reason`: the pooled score is uncalibrated and a sweep point has no score (the honest-null rule, as `downbeat_confidence`) |
+| Medicine `kick_present` | right on 13 of 14 bars; **misses bar 18** (drum-roll hits are low-end bumps with a click <= 4 dB; lowering the click gate admits the bass hits of bars 20-21) |
+| `kick_attacks` vs omnizart kicks (+-50 ms, 27-song mean) | precision 0.44, recall 0.32 - a cross-check only (omnizart over-labels toms and snares); recall near zero on Armin, Sash, StealTheShow, Charli-VonDutch, ChangedTheWayYouKissMe where a hat bed hides the click. 6,767 attacks (68/min), 715 echoes, 35 % off-grid |
+| Sweep state | 131 sweeps in the experiment lane, 65 % with `aftermath: none`; sweep end events and `aftermath` were **not** ported (no consumer) |
+| Irregular bars | 99 corpus-wide (`irregular: true` in `bar_features.json`), 72 outside `off_grid_spans`; the grid is unchanged (see `downbeat_reanchor` below) |
+
+**Caveats.** Every threshold (`CLICK_DB` 6.5, `CLICK_MIN_DB` 4.0, `PRESENT_MIN_CONF` 0.25, `SWEEP_MIN_BARS` 3, `MOVE_MARGIN` 0.15, `MIN_STEP_SPREAD` 0.1, `HL_SLOPE` 1.5, `ROLL_SLOPE` 0.15, `MIN_CONS` 0.6, `DROPOUT_DB` 6, `MIN_RUN_BARS` 3, `HOLE_RATIO` 0.75, `DROP_RATIO` 1.25, S >= 7, the role rules) was chosen on *Medicine* and *Armin* and is not held out; the 8/8 is therefore a fit, not evidence of generalisation. Medicine 8, 19 and 23 sit 0.95-1.00 beat early (the floor rule) and any change to it risks them; Medicine carries one extra break at 29.41 s (bar 18 beat 1). *ayuni* and *Charli-VonDutch* have no bar truth; operator review only. Points are never audited per role.
+
+Published as `bar_features.json` and the `light_change` rows of `song_event_timeline.json` ([`reference/downstream-contract.md`](reference/downstream-contract.md)); projected by `get_song_overview`'s `light_changes` and `get_detail`'s `bar_texture` / `light_change` ([`mcp-definition.md`](mcp-definition.md)).
+
+**`downbeat_reanchor` (v3.12 item 30) - gate not met, not promoted.** Bar labels rebuilt from anchor votes (kick-phase windows, impacts, stem entries), one phase per trusted run, bars always 4 beats: downbeat F1 @ +-70 ms on the 5 Moises songs 0.024 (confidence-bearing) / 0.163 (all) vs allin1 0.343 and `downbeat_anchors` 0.301; 0 bars != 4 beats outside `off_grid_spans` by construction. It cannot follow a real 1-beat slip inside a run (*Armin*). `timing.py` unchanged; the 0.234 above stands.
+
 ### Vocal cadence — `vocal_cadence.py`, 12/12 on Queen of Kings
 
 v3.9 item 1, promoted from `experiments/vocal_cadence/`. Turns the operator's
@@ -472,6 +496,8 @@ count its cadence line as that boundary's lead-in (drop 2: the line starts at
 94.88 s, before the Fill section even begins). Not yet a corpus metric — only
 Queen of Kings carries the fact set to score against; a song with no lyrics
 tier gets an honest `source: null` file (D1.1), never an inferred one.
+
+**Word-onset tier (v3.12 item 36): gate not met, not shipped.** Line starts built from `vocal_onsets.json` word times (a rest >= 1 beat breaks a line) scored against lyric line starts on the 5 songs with lyrics, F1 @ +-1 beat: pooled precision 0.250, recall 0.563, **F1 0.346** against the 0.7 gate (Armin 0.053, Hideaway 0.000, Queen of Kings 0.504, `_test_song` 0.364, Titanium 0.368). Word onsets carry no end time and whisper splits slow phrasing, so rests cannot be measured. `vocal_cadence.py` unchanged: 22 of 27 songs have `source: null` and 0 lines.
 
 ### Pre-analysis structure hint — a prior, not a measurement
 

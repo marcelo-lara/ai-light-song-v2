@@ -1,0 +1,149 @@
+{
+  "schema_version": "3.1",
+  "song_name": "McpPartial - Fixture",
+  "field_sources": {
+    "bar": "essentia",
+    "start": "essentia",
+    "end": "essentia",
+    "brightness": "essentia",
+    "transient_density": "essentia",
+    "irregular": "light_changes",
+    "kick_present": "light_changes",
+    "sweep_state": "light_changes",
+    "light_change_role": "light_changes"
+  },
+  "bars": [
+    {
+      "bar": 1,
+      "start": 0.0,
+      "end": 2.0,
+      "irregular": false,
+      "brightness": 0.4,
+      "transient_density": 0.01,
+      "kick_present": false,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 2,
+      "start": 2.0,
+      "end": 4.0,
+      "irregular": false,
+      "brightness": 0.42,
+      "transient_density": 0.011,
+      "kick_present": false,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 3,
+      "start": 4.0,
+      "end": 6.0,
+      "irregular": false,
+      "brightness": 0.44,
+      "transient_density": 0.012,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": "groove_in"
+    },
+    {
+      "bar": 4,
+      "start": 6.0,
+      "end": 8.0,
+      "irregular": false,
+      "brightness": 0.46,
+      "transient_density": 0.013,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 5,
+      "start": 8.0,
+      "end": 10.0,
+      "irregular": false,
+      "brightness": 0.48,
+      "transient_density": 0.014,
+      "kick_present": true,
+      "sweep_state": "opening",
+      "light_change_role": null
+    },
+    {
+      "bar": 6,
+      "start": 10.0,
+      "end": 12.0,
+      "irregular": false,
+      "brightness": 0.5,
+      "transient_density": 0.015,
+      "kick_present": true,
+      "sweep_state": "opening",
+      "light_change_role": null
+    },
+    {
+      "bar": 7,
+      "start": 12.0,
+      "end": 14.0,
+      "irregular": false,
+      "brightness": 0.52,
+      "transient_density": 0.016,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": "build"
+    },
+    {
+      "bar": 8,
+      "start": 14.0,
+      "end": 16.0,
+      "irregular": false,
+      "brightness": 0.54,
+      "transient_density": 0.017,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 9,
+      "start": 16.0,
+      "end": 18.0,
+      "irregular": false,
+      "brightness": 0.56,
+      "transient_density": 0.018,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 10,
+      "start": 18.0,
+      "end": 20.0,
+      "irregular": false,
+      "brightness": 0.58,
+      "transient_density": 0.019,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 11,
+      "start": 20.0,
+      "end": 22.0,
+      "irregular": false,
+      "brightness": 0.6,
+      "transient_density": 0.02,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": null
+    },
+    {
+      "bar": 12,
+      "start": 22.0,
+      "end": 24.0,
+      "irregular": false,
+      "brightness": 0.62,
+      "transient_density": 0.021,
+      "kick_present": true,
+      "sweep_state": null,
+      "light_change_role": null
+    }
+  ]
+}

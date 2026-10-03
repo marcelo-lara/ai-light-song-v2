@@ -214,3 +214,29 @@ def test_overview_projects_the_sections_tier_note(tmp_path) -> None:
     ov = serializers.build_song_overview("McpFull - Fixture", root=tmp_path)
     assert ov["sections"]["tier_note"] == note
     assert "tier_note" not in _overview("McpFull - Fixture")["sections"]
+
+
+# --------------------------------------------------------------------------- #
+# v3.12 item 34 — light_changes block
+# --------------------------------------------------------------------------- #
+
+def test_overview_light_changes_rows_have_no_position() -> None:
+    lc = _overview("McpFull - Fixture")["light_changes"]
+    assert lc["rows"] == [
+        {"time": 4.0, "role": "groove_in"},
+        {"time": 12.0, "role": "build"},
+    ]
+    assert "position" not in json.dumps(lc)
+    assert lc["field_sources"]["role"] == "light_changes"
+
+
+def test_overview_brief_light_changes_is_count_only() -> None:
+    brief = serializers.build_song_overview("McpFull - Fixture", root=FIXTURE_ROOT, scope="brief")
+    assert brief["light_changes"] == {"count": 2}
+
+
+def test_overview_light_changes_empty_when_none_published() -> None:
+    ov = _overview("McpDegenerate - Fixture")
+    assert ov["light_changes"]["rows"] == []
+    brief = serializers.build_song_overview("McpDegenerate - Fixture", root=FIXTURE_ROOT, scope="brief")
+    assert brief["light_changes"] == {"count": 0}

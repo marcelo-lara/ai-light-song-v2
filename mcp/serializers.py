@@ -164,6 +164,20 @@ def build_song_overview(song: str, root: str | Path | None = None, scope: str | 
 
     overview["transitions"] = _transitions_block(timeline_doc, events)
 
+    # v3.12 item 34 — light-change points (song_event_timeline.json
+    # `light_change` rows). Rows are `{time, role}` only: no `position` (the
+    # overview byte budget), no per-row confidence (always null, D5 — the
+    # honest null stays on the published row; `get_detail` carries it).
+    # `brief` keeps only the count.
+    lc_rows = _light_change_rows(events)
+    if scope == "brief":
+        overview["light_changes"] = {"count": len(lc_rows)}
+    else:
+        overview["light_changes"] = {
+            "rows": [{"time": r["time"], "role": r["role"]} for r in lc_rows],
+            "field_sources": _light_change_field_sources(timeline_doc),
+        }
+
     # human_hints: brief scope gets only the total count, otherwise the full block
     if scope == "brief":
         overview["human_hints"] = {"total_hints": total_hints}
@@ -588,6 +602,25 @@ def _transitions_block(timeline_doc: dict, events: list[dict], pos_fn=None) -> d
     }
 
 
+def _light_change_rows(events: list[dict]) -> list[dict]:
+    """`light_change` rows of song_event_timeline.json, in published order."""
+    return [
+        {
+            "time": e.get("start_time"),
+            "role": e.get("role"),
+            "confidence": e.get("confidence"),
+            "section_id": e.get("section_id"),
+        }
+        for e in events
+        if e.get("type") == "light_change"
+    ]
+
+
+def _light_change_field_sources(timeline_doc: dict) -> dict[str, Any]:
+    fs = timeline_doc.get("field_sources") or {}
+    return {k: fs[k] for k in ("start_time", "role") if k in fs}
+
+
 def _vocal_cadence_block(cadence_doc: dict) -> dict[str, Any]:
     """Whole-song summary of the required vocal_cadence.json — tier, reason
     (when D1.1's no-lyrics path wrote the file), and total call count.
@@ -669,6 +702,7 @@ def build_detail(
     beats_list = beats_doc.get("beats", [])
     bpm = info_doc.get("bpm")
     cadence_doc = load_top_level_json(song_dir, "vocal_cadence.json")
+    bar_features_doc = load_top_level_json(song_dir, "bar_features.json")
 
     scope, span_start, span_end = _resolve_span(
         section_id=section_id,
@@ -716,6 +750,7 @@ def build_detail(
             span_start, span_end, sections_doc, timeline_doc, hints_doc,
             arrangement_doc, drum_doc, beats_doc, events, pos_fn,
             loudness_doc=loudness_doc, stem_set=stem_set, cadence_doc=cadence_doc,
+            bar_features_doc=bar_features_doc,
         ),
     }
 
@@ -1183,6 +1218,7 @@ def _structural_view(
     loudness_doc: dict | None = None,
     stem_set: list[str] | None = None,
     cadence_doc: dict | None = None,
+    bar_features_doc: dict | None = None,
 ) -> dict[str, Any]:
     section_rows = [
         {
@@ -1249,6 +1285,34 @@ def _structural_view(
             hint_rows.append(row)
     if pos_fn is not None:
         _attach_positions(hint_rows, [("start_time", "start_position"), ("end_time", "end_position")], pos_fn)
+
+    # v3.12 item 34 — light-change points inside the span (null confidence is
+    # published per D5; passed through as a separate field).
+    light_change_rows = [
+        r for r in _light_change_rows(events)
+        if r["time"] is not None and span_start <= float(r["time"]) <= span_end
+    ]
+    if pos_fn is not None:
+        _attach_positions(light_change_rows, [("time", "position")], pos_fn)
+
+    # v3.12 item 34 — per-bar texture for bars overlapping the span.
+    bar_texture_rows = [
+        {
+            "bar": b.get("bar"),
+            "start": b.get("start"),
+            "end": b.get("end"),
+            "irregular": b.get("irregular"),
+            "brightness": b.get("brightness"),
+            "transient_density": b.get("transient_density"),
+            "kick_present": b.get("kick_present"),
+            "sweep_state": b.get("sweep_state"),
+            "light_change_role": b.get("light_change_role"),
+        }
+        for b in (bar_features_doc or {}).get("bars", [])
+        if _overlaps(span_start, span_end, float(b["start"]), float(b["end"]))
+    ]
+    if pos_fn is not None:
+        _attach_positions(bar_texture_rows, [("start", "position")], pos_fn)
 
     intensities = [r["intensity"] for r in phase_rows if r["intensity"] is not None]
     if intensities:
@@ -1327,6 +1391,14 @@ def _structural_view(
         "transitions": {
             "rows": transition_rows,
             "field_sources": timeline_doc.get("field_sources"),
+        },
+        "light_change": {
+            "rows": light_change_rows,
+            "field_sources": timeline_doc.get("field_sources"),
+        },
+        "bar_texture": {
+            "rows": bar_texture_rows,
+            "field_sources": (bar_features_doc or {}).get("field_sources"),
         },
         "hints": {
             "rows": hint_rows,

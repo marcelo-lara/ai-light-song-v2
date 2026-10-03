@@ -29,8 +29,13 @@ import {
   vocalCadenceContent,
   clapEventsContent,
   kickCheckContent,
+  kickAttacksContent,
   crashCheckContent,
   filterSweepContent,
+  barFeaturesContent,
+  downbeatReanchorContent,
+  filterSweepV2Content,
+  lightChangesContent,
   phrasesContent,
   sectionNamesContent,
   verdictChecksContent,
@@ -42,11 +47,17 @@ import type {
   VocalCadenceFile,
   ClapEventsFile,
   KickCheckFile,
+  KickAttacksFile,
   CrashCheckFile,
   FilterSweepFile,
+  BarFeaturesFile,
+  DownbeatReanchorFile,
+  FilterSweepV2File,
+  LightChangesFile,
   PhrasesFile,
   SectionNamesFile,
 } from "../data/sparseArtifacts";
+import { parseLightChanges } from "../data/sparseArtifacts";
 import type { PendingProposalsFile, SectionRow, VerdictFile } from "../data/types";
 
 describe("humanHintsContent", () => {
@@ -703,6 +714,38 @@ describe("kickCheckContent", () => {
   });
 });
 
+describe("kickAttacksContent", () => {
+  const file: KickAttacksFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    events: [
+      { time: 17.363, confidence: 0.74, echo_of: null, on_grid: true, grid: "trusted", rise_db: 27.2, click_db: 18.5, pitch_drop: false },
+      { time: 17.691, confidence: 0.2, echo_of: 17.363, on_grid: false, grid: "trusted", rise_db: 8.8, click_db: 7.2, pitch_drop: false },
+      { time: 18.01, confidence: 0.26, echo_of: null, on_grid: false, grid: "trusted", rise_db: null, click_db: null, pitch_drop: true },
+    ],
+  };
+  const blocks = kickAttacksContent(file);
+
+  it("labels a kick, tinted on-grid", () => {
+    expect(blocks[0]!.label).toBe("kick");
+    expect(blocks[0]!.tintId).toBe("kickAttacks");
+    expect(blocks[0]!.detail).toBe("rise 27.2 dB · click 18.5 dB");
+  });
+
+  it("labels an echo with its parent and tints an off-grid kick apart", () => {
+    expect(blocks[1]!.label).toBe("echo");
+    expect(blocks[1]!.tintId).toBe("kickAttacksEcho");
+    expect(blocks[1]!.wideLabel).toContain("17.36");
+    expect(blocks[2]!.tintId).toBe("kickAttacksOffGrid");
+    expect(blocks[2]!.caption).toContain("off grid");
+  });
+
+  it("renders missing evidence honestly and never throws on a missing file", () => {
+    expect(blocks[2]!.detail).toBe("rise n/a dB · click n/a dB · pitch drop");
+    expect(kickAttacksContent(null)).toEqual([]);
+  });
+});
+
 describe("crashCheckContent", () => {
   const file: CrashCheckFile = {
     schema_version: "1.0",
@@ -762,6 +805,104 @@ describe("filterSweepContent", () => {
 
   it("never throws on a missing file", () => {
     expect(filterSweepContent(null)).toEqual([]);
+  });
+});
+
+describe("barFeaturesContent", () => {
+  const row = {
+    bar: 9, start_s: 15.26, end_s: 16.96, irregular: false, brightness: 0.66,
+    transient_density: 0.012, kick_present: true, sweep_state: "opening", light_change_role: "build",
+  };
+  const file: BarFeaturesFile = {
+    schema_version: "3.1",
+    song_name: "_test_song",
+    bars: [
+      row,
+      { ...row, bar: 16, start_s: 27.25, end_s: 27.68, irregular: true, brightness: null, kick_present: null,
+        sweep_state: null, light_change_role: null },
+    ],
+  };
+  const blocks = barFeaturesContent(file);
+
+  it("labels a bar with its number and kick state", () => {
+    expect(blocks[0]!.label).toBe("9");
+    expect(blocks[0]!.wideLabel).toContain("kick");
+    expect(blocks[0]!.detail).toContain("sweep opening");
+    expect(blocks[0]!.detail).toContain("light change: build");
+  });
+
+  it("flags a bar that is not 4 beats, and renders null fields honestly", () => {
+    expect(blocks[1]!.tintId).toBe("barFeaturesIrregular");
+    expect(blocks[1]!.caption).toContain("not 4 beats");
+    expect(blocks[1]!.caption).toContain("brightness n/a");
+    expect(blocks[1]!.caption).toContain("kick n/a");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(barFeaturesContent(null)).toEqual([]);
+  });
+});
+
+describe("filterSweepV2Content", () => {
+  const file: FilterSweepV2File = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    blocks: [
+      { start_s: 94.3, end_s: 109.4, direction: "opening", start_bar: 51, end_bar: 59, end_time: 109.39,
+        end_kind: "top", aftermath: "gap", hl_change_db: 8.2, roll_change_oct: 1.1, consistency: 0.7, confidence: 0.67 },
+      { start_s: 50, end_s: 60, direction: "closing", start_bar: 28, end_bar: null, end_time: 60,
+        end_kind: "top", aftermath: "none", hl_change_db: null, roll_change_oct: null, consistency: 0.6, confidence: null },
+    ],
+  };
+  const blocks = filterSweepV2Content(file);
+
+  it("labels a sweep with its aftermath and tints by it", () => {
+    expect(blocks[0]!.label).toBe("opening → gap");
+    expect(blocks[0]!.tintId).toBe("filterSweepV2Gap");
+    expect(blocks[0]!.caption).toContain("end 109.39 s (bar 59)");
+  });
+
+  it("renders no aftermath, a null change and no confidence honestly", () => {
+    expect(blocks[1]!.label).toBe("closing");
+    expect(blocks[1]!.tintId).toBe("filterSweepV2None");
+    expect(blocks[1]!.detail).toContain("hl n/a");
+    expect(blocks[1]!.summary).toContain("nothing follows: suspect");
+    expect(blocks[1]!.summary).toContain("no confidence reported");
+    expect(blocks[1]!.caption).toContain("song end");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(filterSweepV2Content(null)).toEqual([]);
+  });
+});
+
+describe("lightChangesContent", () => {
+  const file: LightChangesFile = parseLightChanges({
+    schema_version: "3.1",
+    song_name: "_test_song",
+    events: [
+      { type: "impact", start_time: 1, end_time: 1, confidence: 1, intensity: 1, section_id: null },
+      { type: "light_change", role: "mystery", start_time: 27.25, end_time: 27.25, confidence: null, section_id: null },
+      { type: "light_change", role: "fill", start_time: 13.54, end_time: 13.54, confidence: null, section_id: "section-001" },
+    ],
+  });
+  const blocks = lightChangesContent(file);
+
+  it("keeps only light_change rows, in time order, labelled with the role and tinted per role", () => {
+    expect(blocks.map((b) => b.label)).toEqual(["fill", "mystery"]);
+    expect(blocks[0]!.tintId).toBe("lightChangeFill");
+    expect(blocks[0]!.start_s).toBe(13.54);
+    expect(blocks[0]!.detail).toBe("in section-001");
+  });
+
+  it("renders an unknown role, no confidence and no section honestly", () => {
+    expect(blocks[1]!.tintId).toBe("lightChangeUnknown");
+    expect(blocks[1]!.summary).toContain("no confidence");
+    expect(blocks[1]!.detail).toBe("between published sections");
+  });
+
+  it("never throws on a missing file", () => {
+    expect(lightChangesContent(null)).toEqual([]);
   });
 });
 
@@ -921,5 +1062,33 @@ describe("verdictChecksContent", () => {
 
   it("no file, no blocks", () => {
     expect(verdictChecksContent(null, sections, null)).toEqual([]);
+  });
+});
+
+describe("downbeatReanchorContent", () => {
+  const file: DownbeatReanchorFile = {
+    schema_version: "1.0",
+    song_name: "_test_song",
+    bars: [
+      { bar: 2, start_s: 2.0, end_s: 4.0, beats_in_bar: 4, irregular: false, resolved: true, downbeat_confidence: 0.9 },
+      { bar: 3, start_s: 4.0, end_s: 5.5, beats_in_bar: 3, irregular: true, resolved: false, downbeat_confidence: null },
+    ],
+  };
+  const blocks = downbeatReanchorContent(file);
+
+  it("labels a resolved bar with its number and confidence", () => {
+    expect(blocks[0]!.label).toBe("2");
+    expect(blocks[0]!.tintId).toBe("downbeatReanchor");
+    expect(blocks[0]!.caption).toContain("confidence 0.9");
+  });
+
+  it("renders a null confidence honestly, grey", () => {
+    expect(blocks[1]!.tintId).toBe("downbeatReanchorUnresolved");
+    expect(blocks[1]!.caption).toContain("no confidence (unresolved)");
+    expect(blocks[1]!.caption).not.toMatch(/confidence 0/);
+  });
+
+  it("never throws on a missing file", () => {
+    expect(downbeatReanchorContent(null)).toEqual([]);
   });
 });

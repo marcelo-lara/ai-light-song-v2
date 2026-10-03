@@ -54,6 +54,8 @@ class ProducerVocabularyTests(unittest.TestCase):
                 "sections",
                 # v3.9 item 3 — beats.json's file-level off_grid_spans.
                 "beat_grid_fit",
+                # v3.12 item 33 — light_change rows and bar_features.json.
+                "light_changes",
             },
         )
 

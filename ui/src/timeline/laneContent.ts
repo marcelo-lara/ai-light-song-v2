@@ -36,8 +36,13 @@ import type {
   WhisperxVadFile,
   ClapEventsFile,
   KickCheckFile,
+  KickAttacksFile,
   CrashCheckFile,
   FilterSweepFile,
+  BarFeaturesFile,
+  DownbeatReanchorFile,
+  FilterSweepV2File,
+  LightChangesFile,
   PhrasesFile,
   SectionNamesFile,
 } from "../data/sparseArtifacts";
@@ -68,10 +73,15 @@ import {
   gesturesContent,
   filterSweepContent,
   phrasesContent,
+  barFeaturesContent,
+  downbeatReanchorContent,
+  filterSweepV2Content,
+  lightChangesContent,
 } from "./laneContent/characterGestures";
 import {
   clapEventsContent,
   kickCheckContent,
+  kickAttacksContent,
   crashCheckContent,
 } from "./laneContent/drumHitChecks";
 import { verdictChecksContent } from "./laneContent/verdicts";
@@ -97,8 +107,13 @@ export {
   gesturesContent,
   filterSweepContent,
   phrasesContent,
+  barFeaturesContent,
+  downbeatReanchorContent,
+  filterSweepV2Content,
+  lightChangesContent,
   clapEventsContent,
   kickCheckContent,
+  kickAttacksContent,
   crashCheckContent,
   verdictChecksContent,
   formatRange,
@@ -171,8 +186,13 @@ export interface LaneContentSources {
   gestures?: EventTimeline | null;
   clapEvents?: ClapEventsFile | null;
   kickCheck?: KickCheckFile | null;
+  kickAttacks?: KickAttacksFile | null;
   crashCheck?: CrashCheckFile | null;
   filterSweep?: FilterSweepFile | null;
+  barFeatures?: BarFeaturesFile | null;
+  downbeatReanchor?: DownbeatReanchorFile | null;
+  filterSweepV2?: FilterSweepV2File | null;
+  lightChanges?: LightChangesFile | null;
   phrases?: PhrasesFile | null;
   sectionNames?: SectionNamesFile | null;
   /** v3.7 item 1 — reference/human/block_reviews.json, unfiltered; tinting is
@@ -198,8 +218,13 @@ export const SPARSE_LANE_IDS = [
   "gestures",
   "clapEvents",
   "kickCheck",
+  "kickAttacks",
   "crashCheck",
   "filterSweep",
+  "barFeatures",
+  "downbeatReanchor",
+  "filterSweepV2",
+  "lightChanges",
   "phrases",
   "sectionNames",
   "sections",
@@ -294,10 +319,20 @@ function buildLaneBlocksRaw(
       return clapEventsContent(s.clapEvents ?? null);
     case "kickCheck":
       return kickCheckContent(s.kickCheck ?? null);
+    case "kickAttacks":
+      return kickAttacksContent(s.kickAttacks ?? null);
     case "crashCheck":
       return crashCheckContent(s.crashCheck ?? null);
     case "filterSweep":
       return filterSweepContent(s.filterSweep ?? null);
+    case "barFeatures":
+      return barFeaturesContent(s.barFeatures ?? null);
+    case "downbeatReanchor":
+      return downbeatReanchorContent(s.downbeatReanchor ?? null);
+    case "filterSweepV2":
+      return filterSweepV2Content(s.filterSweepV2 ?? null);
+    case "lightChanges":
+      return lightChangesContent(s.lightChanges ?? null);
     case "phrases":
       return phrasesContent(s.phrases ?? null);
     case "sectionNames":

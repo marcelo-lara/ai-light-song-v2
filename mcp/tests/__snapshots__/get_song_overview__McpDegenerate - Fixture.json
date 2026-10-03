@@ -79,7 +79,8 @@
       "confidence": "gestures",
       "intensity": "gestures",
       "gesture_id": "gestures",
-      "section_id": "allin1"
+      "section_id": "allin1",
+      "role": "light_changes"
     }
   },
   "arrangement": {
@@ -159,7 +160,15 @@
       "confidence": "gestures",
       "intensity": "gestures",
       "gesture_id": "gestures",
-      "section_id": "allin1"
+      "section_id": "allin1",
+      "role": "light_changes"
+    }
+  },
+  "light_changes": {
+    "rows": [],
+    "field_sources": {
+      "start_time": "gestures",
+      "role": "light_changes"
     }
   },
   "human_hints": {

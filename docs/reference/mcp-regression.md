@@ -131,12 +131,20 @@ unless a check names one.
 6. **(v3.6 item 9)** the `beats` block is still present when the span exceeds
    the 5 s dense-series cap, even though `dense` is withheld for that same
    call (F1.6).
-7. **(v3.6 item 9; v3.9 item 1 added `vocal_cadence.json`)** all 10 of
+7. **(v3.6 item 9; v3.9 item 1 added `vocal_cadence.json`; v3.12 item 33 added `bar_features.json`)** all 10 of
    `loaders.REQUIRED_TOP_LEVEL_FILES` are individually enforced — a probe song
    missing any single one of the 10 errors naming that exact file, never a
    silent degraded response (F1.7). `McpPartial - Fixture` only exercises
    `sections.json`; this check covers the other 9 by copying the full fixture
    and deleting one file at a time.
+
+8. **(v3.12 item 34)** `get_song_overview("McpFull - Fixture")["light_changes"]`
+   is `{rows: [{time: 4.0, role: "groove_in"}, {time: 12.0, role: "build"}], field_sources}`
+   with no `position`; `scope: "brief"` returns `{count: 2}` (pytest, covered by
+   the overview snapshot). `get_detail(bars=[3, 4])` on the same fixture returns
+   `structural.bar_texture.rows` for bars 3 and 4 only, each with `position`, and
+   `structural.light_change.rows` with the one point at 4.0 s (`groove_in`,
+   `confidence: null`, `position.bar` 3).
 
 > Snapshots are **regenerated, not defended** — regenerate them inside the
 > container (`MCP_REGEN_SNAPSHOTS=1 pytest mcp/tests/test_overview.py` for the
@@ -201,7 +209,8 @@ A few important checks added here:
 ### F4 — token budget
 
 20. The serialized `get_song_overview` for `McpFull - Fixture` is under its
-    stated budget. Record the observed size in bytes on every run — a budget
+    stated budget (6900 bytes; v3.12 item 34 raised the observed size from 5451 to
+    5779, the ceiling is unchanged). Record the observed size in bytes on every run — a budget
     silently creeping upward is the failure this catches.
 
 

@@ -140,6 +140,10 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   //   moisesLyrics (210) and allin1Posterior (130)
   kickCheckKeep: [105, 55, 40], // green — a kick that keeps its label
   kickCheckReject: [5, 70, 46], // red-orange — a kick relabelled away
+  // v3.12 item 29 — kick attacks on the mix. Echo and off-grid rows read apart.
+  kickAttacks: [150, 60, 40], // green — a kick attack on the grid
+  kickAttacksOffGrid: [150, 30, 30], // dusky green — beyond 1/4 beat from the grid, low confidence
+  kickAttacksEcho: [0, 0, 40], // grey — weaker, duller repeat of an earlier attack
   crashCheckKeep: [168, 55, 40], // teal-green — an isolated accent kept
   crashCheckReject: [355, 65, 46], // red — a stream member rejected
   // v3.10 item 14 — filter sweeps. One lane; the tint only splits direction
@@ -147,6 +151,29 @@ const BASE: Record<string, [hue: number, sat: number, light: number]> = {
   filterSweepOpening: [310, 55, 48], // magenta — distinct from vocalPhrases'
   //   rose (340) and characterShadow/vocalPhrasesSustained violets (265-280)
   filterSweepClosing: [310, 30, 36], // dusky magenta — same hue, darker/greyer
+  // v3.12 item 1 — bar features. Tinted by the bar's brightness tercile within
+  // the song (low / mid / high); a bar that is not 4 beats long is grey.
+  barFeaturesLow: [200, 35, 30], // slate blue — dark bar
+  barFeaturesMid: [200, 50, 40],
+  barFeaturesHigh: [190, 70, 52], // bright cyan — bright bar
+  barFeaturesIrregular: [200, 5, 36], // grey — bar length != 4 beats (grid slip)
+  // v3.12 item 30 — downbeat reanchor: a bar whose downbeat has agreeing anchors vs. none/disagreeing.
+  downbeatReanchor: [30, 60, 42], // amber — resolved downbeat
+  downbeatReanchorUnresolved: [30, 5, 36], // grey — confidence null (anchors disagree or none)
+  // v3.12 item 31 — filter sweeps v2. Tinted by aftermath: a sweep end followed by
+  // nothing (`none`) is a suspect detection and reads grey.
+  filterSweepV2Gap: [310, 60, 50], // magenta — sweep end followed by a gap
+  filterSweepV2Drop: [330, 70, 52], // hot pink — followed by a drop
+  filterSweepV2Break: [290, 50, 44], // violet-magenta — followed by a break
+  filterSweepV2None: [310, 10, 36], // grey — nothing follows, suspect
+  // v3.12 item 2 — light changes. One tint per role.
+  lightChangeGrooveIn: [140, 55, 42], // green
+  lightChangeBuild: [45, 75, 50], // amber
+  lightChangeBreak: [225, 55, 45], // blue
+  lightChangeDrop: [355, 70, 50], // red
+  lightChangeGap: [260, 10, 30], // dark grey-violet
+  lightChangeFill: [300, 45, 48], // purple
+  lightChangeUnknown: [0, 0, 40], // grey — a change point no role rule claimed
   // v3.10 item 15 — phrases. One lane; the tint only marks a phrase whose edge
   // evidence disagrees (`resolved: false`) in grey, so it reads apart at a glance.
   phrases: [20, 60, 44], // burnt orange — distinct from gestures (10) by lane kind

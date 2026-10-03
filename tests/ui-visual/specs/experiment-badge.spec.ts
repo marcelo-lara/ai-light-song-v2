@@ -28,6 +28,9 @@ import { assertNoRuntimeErrors, FIXTURES, gotoSong } from "../helpers";
 // This list must track `ui/src/timeline/laneState.ts`'s tagged set exactly.
 // v3.9 item 2 + the "crash over-fires" bug added three: clapEvents,
 // kickCheck, crashCheck. v3.10 item 14 added filterSweep, item 15 phrases, item 17 sectionNames.
+// v3.12 item 35: `barFeatures` and `lightChanges` read published files (no badge). `kickAttacks`,
+// `filterSweepV2` and `downbeatReanchor` are badged but the frozen fixtures carry no file for them, so the
+// lane is not drawn and they stay out of both lists.
 
 const BADGED = [
   "vocalPhrases",
@@ -50,6 +53,8 @@ const NOT_BADGED = [
   "gestures",
   "whisperxVad",
   "vocalCadence",
+  "barFeatures",
+  "lightChanges",
   "fftBands",
   "fftBandsBass",
   "fftBandsDrums",

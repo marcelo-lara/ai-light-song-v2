@@ -71,8 +71,13 @@ export const TIMELINE_KEYS = [
   // checks (experiments/clap_events, kick_check, crash_check).
   "clapEvents",
   "kickCheck",
+  "kickAttacks",
   "crashCheck",
   "filterSweep",
+  "barFeatures",
+  "downbeatReanchor",
+  "filterSweepV2",
+  "lightChanges",
   "phrases",
   "sectionNames",
 ] as const;
@@ -100,8 +105,13 @@ export const SPARSE_LANE_ARTIFACT: Record<string, (typeof TIMELINE_KEYS)[number]
   sections: "sectionsTopLevel",
   clapEvents: "clapEvents",
   kickCheck: "kickCheck",
+  kickAttacks: "kickAttacks",
   crashCheck: "crashCheck",
   filterSweep: "filterSweep",
+  barFeatures: "barFeatures",
+  downbeatReanchor: "downbeatReanchor",
+  filterSweepV2: "filterSweepV2",
+  lightChanges: "lightChanges",
   phrases: "phrases",
   sectionNames: "sectionNames",
 };

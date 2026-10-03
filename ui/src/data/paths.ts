@@ -160,6 +160,10 @@ export const artifactPaths = {
   // sibling): every omnizart `kick` kept/rejected by per-hit spectral shape.
   kickCheck: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "kick_check.json")),
+  // Written by experiments/kick_attacks (`run export`). v3.12 item 29: kick
+  // attacks on the mix (steep 40-120 Hz rise + 2-5 kHz click), echoes labelled.
+  kickAttacks: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "kick_attacks.json")),
   // Written by experiments/crash_check (`run export`). The "crash over-fires
   // on bright hats/rides" bug: every omnizart `crash` kept/rejected by
   // stream-period + decay-shape.
@@ -170,6 +174,20 @@ export const artifactPaths = {
   // while its loudness stays level.
   filterSweep: (song: string) =>
     encodePath(analysis(song, "reference", "proposals", "filter_sweep.json")),
+  // Published top-level `bar_features.json` (v3.12 item 33): one row per bar.
+  barFeatures: (song: string) => encodePath(analysis(song, "bar_features.json")),
+  // Written by experiments/downbeat_reanchor (`run export`). v3.12 item 30: one
+  // row per bar of the re-anchored downbeat labels (times unchanged).
+  downbeatReanchor: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "downbeat_reanchor.json")),
+  // Written by experiments/filter_sweep_v2 (`run export`). v3.12 item 31: sweep
+  // runs with an end event on the beat grid and what follows it.
+  filterSweepV2: (song: string) =>
+    encodePath(analysis(song, "reference", "proposals", "filter_sweep_v2.json")),
+  // The published top-level `song_event_timeline.json` (v3.12 item 33 adds its
+  // `light_change` rows); the Gestures lane reads the pre-trim copy above.
+  eventTimelinePublished: (song: string) =>
+    encodePath(analysis(song, "song_event_timeline.json")),
   // Written by experiments/phrases (`run export`). v3.10 item 15: the song cut
   // where the audio changes, one block per phrase with presence / density
   // features. Never bar-counted.
