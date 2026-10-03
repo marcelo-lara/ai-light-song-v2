@@ -16,7 +16,7 @@
 
 `vocal_onsets.json` word onsets (all 27 songs) as a third `vocal_cadence.json` tier for the ~22 songs with no human/Moises lyrics: onset times only, word text never read or published. The 1-beat-rest rule scored pooled F1 **0.346** @ +-1 beat against lyric line starts (gate 0.7); `source` stays `null` without lyrics.
 
-**Remaining.** A method that reaches F1 >= 0.7 (word ends, `vocals_phrase` cover, or a forced aligner), same constraints (`docs/issues.md`).
+**Remaining.** Superseded by [`product-refinement-v3.13.md`](product-refinement-v3.13.md) item 3: cadence from the vocals stem's pitch track, no lyrics; the line-start gate is withdrawn (lyric lines are textual, not acoustic units).
 
 ---
 

@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "song_name": "Fascination (The Droyds One Armed Remix)",
+  "reviews": [
+    {
+      "lane_id": "gestures",
+      "start": 59.246,
+      "verdict": "correct",
+      "reason": null,
+      "note": "",
+      "reviewed_at": "2026-10-03T00:57:51.981Z"
+    }
+  ]
+}

@@ -246,7 +246,7 @@ Current focus song: `_test_song`
 
 ### Medicine fill, break and drop `light_change` points sit 0.95-1.00 beat early
 
-- **Status:** `pending` — found in v3.12 items 32 and 37.
+- **Status:** `pending` — found in v3.12 items 32 and 37. Addressed by v3.13 items 40–41 (`docs/implementation-plan-v3.13.md`).
 - **Problem:** the point time is floored to the beat that contains the change, so Medicine 8 fill (-1.00 beat), 19 break (-0.95) and 23 drop (-0.98) land a full beat before the bar start, right at the one-beat hit limit; a cue fired a beat early is a cue missed. Medicine also carries an extra break at 29.41 s (bar 18 beat 1).
 - **Validation target:** the 8 validation targets in `docs/implementation-plan-v3.12.md` item 37.
 - **Success condition:** round-to-nearest (a one-line change) or a half-beat-aware rule puts those three within half a beat with Armin 55/59/60 and Medicine 9/16 unchanged and 10-14 still empty.
